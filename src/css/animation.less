@@ -1,0 +1,38 @@
+@keyframes rotate {
+    0% {
+        transform: rotateZ(-360deg);
+    }
+    100% {
+        transform: rotateZ(0deg);
+    }
+}
+
+@-webkit-keyframes rotate {
+    0% {
+        .transform(rotateZ(-360deg));
+    }
+    100% {
+        .transform(rotateZ(0deg));
+    }
+}
+
+@-moz-keyframes rotate {
+    0% {
+        .transform(rotateZ(-360deg));
+    }
+    100% {
+        .transform(rotateZ(0deg));
+    }
+}
+
+.transform(@transform) {
+    -webkit-transform: @transform;
+    -moz-transform: @transform;
+    transform: @transform;
+}
+
+.animation(@animation) {
+    -webkit-animation: @animation;
+    -moz-animation: @animation;
+    animation: @animation;
+}

@@ -1,0 +1,649 @@
+@import "variables";
+@import "mixins";
+@import "animation";
+
+// HTML
+
+*, *:before, *:after
+{
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+::selection {
+    background-color: @primary-color;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background: #393939;
+}
+::-webkit-scrollbar-thumb {
+    background-color: @primary-color;
+    width: 10px;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-button {
+    display: none;
+}
+::-webkit-scrollbar-track {
+    margin: 6px 0;
+}
+::-webkit-scrollbar-track-piece {
+}
+::-webkit-scrollbar-corner {
+}
+::-webkit-resizer {
+}
+
+html, body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: @font-normal;
+    color: @primary-text-color;
+    background-color: @page-background-color;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+     width: 100%;
+     height: 15px;
+     cursor: pointer;
+     background-color: transparent;
+     border: 0;
+ }
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: #fff;
+    border: 1px solid #787878;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 15px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+}
+
+input[type="range"]::-moz-range-thumb {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: #fff;
+    border: 1px solid #787878;
+}
+
+// Sections
+
+#container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+
+    -webkit-user-select: none;
+}
+
+#header {
+    height: 40px;
+    display: flex;
+    background-color: @header-background-color;
+    -webkit-app-region: drag;
+}
+
+#body {
+    flex: 1;
+    .flex-box(row, flex-start, stretch, stretch);
+}
+
+#view {
+    flex: 1;
+    .flex-box(column, flex-start, stretch, stretch);
+}
+
+#footer {
+    display: flex;
+    color: #fff;
+    background-color: @primary-color;
+    font-size: 10px;
+    padding: 10px;
+
+    div {
+        flex: 1;
+    }
+
+    .version {
+        text-align: right;
+    }
+}
+
+#title {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: @font-large;
+    font-weight: 300;
+    line-height: 40px;
+    letter-spacing: 5px;
+    color: @primary-text-color;
+    cursor: default;
+    padding-left: 20px;
+    flex: 1;
+}
+
+#control-box {
+    color: #fff;
+    -webkit-app-region: no-drag;
+
+    ul {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 0;
+        background-color: @control-box-background-color;
+        border-bottom: 1px solid @page-background-color;
+    }
+
+    li {
+        display: inline-block;
+        font-size: 16px;
+        width: 30px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        border-right: 1px solid @page-background-color;
+        transition: color 0.3s;
+
+        &:first-child {
+            border-left: 1px solid @page-background-color;
+        }
+
+        &:hover {
+            color: @primary-color;
+        }
+    }
+}
+
+#scene {
+    min-width: 900px;
+    overflow: hidden;
+    flex: 1;
+    position: relative;
+
+    canvas {
+        .absolute-center();
+        overflow: hidden;
+    }
+}
+
+#player {
+    min-width: 500px;
+    overflow: hidden;
+    padding: 10px 0;
+    background-color: @player-background-color;
+    border-top: 1px solid @player-border-color;
+    flex: 0 0 auto;
+    .flex-box(row, flex-start, center, stretch);
+
+    div {
+        vertical-align: middle;
+    }
+
+    .buttons {
+        margin: 0 20px;
+    }
+
+    .button {
+        display: inline-block;
+        flex-wrap: nowrap;
+        border: 2px solid @primary-color;
+        height: 40px;
+        width: 40px;
+        margin-right: 2px;
+        border-radius: 20px;
+        line-height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        transition: color 0.5s;
+
+        &:hover {
+            color: @primary-color;
+        }
+    }
+
+    .play-button {
+        font-size: 24px;
+        position: relative;
+
+        .icon-play {
+            font-size: 36px;
+            margin-left: 4px;
+        }
+    }
+
+    .stop-button {
+        font-size: 24px;
+    }
+
+    .volume {
+        .slider {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    }
+
+    .progress {
+        margin-left: 20px;
+        flex: 1;
+
+        input {
+            width: 100%;
+        }
+    }
+
+    .time-info {
+        margin: 0 20px;
+
+        div {
+            display: inline-block;
+        }
+
+        &:hover {
+            cursor: default;
+        }
+    }
+
+    .current-time {
+        color: @primary-text-color;
+    }
+
+    .total-time {
+        color: @secondary-text-color;
+    }
+
+    .split {
+        height: 30px;
+        border-right: 1px solid @primary-color;
+        margin: 0 8px;
+        transform: rotate(20deg);
+    }
+}
+
+#menu {
+    font-family: @primary-font;
+    font-size: @font-normal;
+    color: @menu-font-color;
+    background-color: @menu-background-color;
+    padding-left: 20px;
+
+    li {
+        padding: 5px 0;
+        display: inline-block;
+        margin-right: 16px;
+
+        &:hover {
+            cursor: default;
+            color: @primary-color;
+        }
+    }
+}
+
+#canvas {
+    background-color: @canvas-background-color;
+    width: 854px;
+    height: 480px;
+    display: block;
+}
+
+#waveform {
+    height: 120px;
+    padding: 10px 0px;
+    position: relative;
+
+    .container {
+        width: 854px;
+        height: 100px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+
+        div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .base {
+            z-index: 0;
+        }
+
+        .progress {
+            z-index: 1;
+        }
+
+        .overlay {
+            z-index: 2;
+        }
+    }
+}
+
+#loading {
+    width: 100px;
+    height: 100px;
+    content: '';
+    opacity: .5;
+    z-index: 100;
+
+    border-top: 3px solid @loading-dark-color;
+    border-bottom: 3px solid @loading-light-color;
+    border-left: 3px solid @loading-dark-color;
+    border-right: 3px solid @loading-light-color;
+    border-radius: 100%;
+
+    .absolute-center();
+    .animation(rotate .6s linear infinite);
+}
+
+#dock {
+    background-color: @dock-background-color;
+    min-width: 300px;
+    z-index: 100;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    .title {
+        font-size: @font-small;
+        padding: 10px;
+        color: @secondary-text-color;
+    }
+}
+
+#fps {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    color: #ccc;
+}
+
+// Styles
+
+.flex {
+    flex: 1;
+}
+
+// Elements
+
+.offScreen {
+    position: absolute;
+    right: 200%;
+}
+
+.bar {
+    padding: 5px;
+    background-color: @bar-background-color;
+    border-top: 1px solid @bar-border-top;
+    border-left: 1px solid @bar-border-top;
+}
+
+.control {
+    background-color: @control-background-color;
+    border-top: 1px solid @primary-border-top;
+    border-bottom: 1px solid @primary-border-bottom;
+    padding-bottom: 16px;
+    margin: 5px;
+
+    .header {
+        margin-bottom: 10px;
+
+        span {
+            font-size: @font-small;
+            color: @primary-color;
+            padding: 10px;
+            line-height: 20px;
+        }
+    }
+
+    .row {
+        padding-bottom: 8px;
+        margin: 0 20px 6px 20px;
+        position: relative;
+
+        .flex-box(row, flex-start, center, stretch);
+
+        label {
+            font-family: @primary-font;
+            font-size: @font-small;
+            color: @primary-text-color;
+            display: inline-block;
+            line-height: 20px;
+            margin-right: 8px;
+            text-align: right;
+
+            &:first-child {
+                min-width: 80px;
+            }
+        }
+
+        .input {
+            margin-right: 8px;
+
+            .input-range {
+                flex: 1;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .unit {
+            color: @secondary-text-color;
+            font-size: @font-small;
+            margin: 0 8px 0 -4px;
+        }
+
+        &:after {
+            content: "\0020";
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #555;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+}
+
+.input {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.input-field {
+    color: @input-font-color;
+    font-family: @primary-font;
+    font-size: @font-small;
+    line-height: 20px;
+    background-color: @input-background-color;
+    border: 1px solid @input-border-color;
+    border-radius: 2px;
+    padding: 0px 3px;
+    outline: none;
+
+    &:focus {
+        border: 1px solid @primary-color;
+    }
+
+    &:read-only {
+        color: #555;
+    }
+}
+
+.input-select {
+    display: inline-block;
+    position: relative;
+
+    ul {
+        list-style: none;
+    }
+
+    .input-field {
+        color: @primary-text-color;
+    }
+
+    &:after {
+        content: "\0020";
+        transform: rotate(135deg);
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        height: 5px;
+        width: 5px;
+        border-top: 1px solid @primary-color;
+        border-right: 1px solid @primary-color;
+        pointer-events: none;
+    }
+}
+
+.input-options {
+    position: absolute;
+    top: 22px;
+    z-index: 100;
+    //border: 1px solid @primary-color;
+
+    li {
+        font-family: @primary-font;
+        font-size: @font-small;
+        padding: 5px;
+        min-width: 100px;
+        background-color: @input-background-color;
+
+        &:hover {
+            cursor: default;
+            background-color: @primary-color;
+        }
+    }
+}
+
+.input-color {
+    &::-webkit-color-swatch-wrapper {
+    }
+
+    &::-webkit-color-swatch {
+        border: 0;
+    }
+}
+
+.input-color-range {
+    .flex-box(row, flex-start, center, stretch);
+
+    .color-range {
+        position: relative;
+        height: 16px;
+        border: 1px solid @input-border-color;
+        border-radius: 3px;
+    }
+}
+
+.input-range {
+    position: relative;
+    height: 20px;
+
+    .track {
+        height: 5px;
+        width: 100%;
+        border-radius: 5px;
+        background: #555555;
+        .absolute-center();
+    }
+
+    .fill {
+        height: 5px;
+        width: 100%;
+        border-radius: 5px;
+        background: @primary-color;
+        .absolute-left();
+    }
+
+    input {
+        background-color: transparent;
+        .absolute-center();
+    }
+}
+
+.input-toggle {
+    position: relative;
+    height: 17px;
+    width: 32px;
+    border-radius: 17px;
+    background-color: @input-background-color;
+    border: 1px solid @input-border-color;
+    transition: background-color 0.25s;
+
+    &:before {
+        content: "\0020";
+        width: 15px;
+        height: 15px;
+        border-radius: 15px;
+        background-color: #fff;
+        border: 1px solid #787878;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        transition: left 0.25s;
+        .absolute-left();
+    }
+}
+
+.input-toggle-on {
+    background-color: @primary-color;
+
+    &:before {
+        left: 15px;
+    }
+}
+
+.input-image {
+    height: 100px;
+    width: 100px;
+    background-color: @input-background-color;
+    border: 1px solid @input-border-color;
+    position: relative;
+    overflow: hidden;
+
+    img {
+        width: 100px;
+        height: auto;
+        .absolute-center();
+    }
+}
