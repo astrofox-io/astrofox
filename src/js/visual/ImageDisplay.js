@@ -5,8 +5,6 @@ var _ = require('lodash');
 
 var defaults = {
     image: null,
-    x: 100,
-    y: 100,
     width: 0,
     height: 0
 };
@@ -26,15 +24,24 @@ ImageDisplay.prototype.init = function(options) {
 };
 
 ImageDisplay.prototype.render = function() {
-    var canvas = this.canvas,
+    var width, height,
+        canvas = this.canvas,
         context = this.context,
         options = this.options,
-        img = options.image,
-        width = img.naturalWidth,
-        height = img.naturalHeight;
+        img = options.image;
 
+    if (img === null) return;
+
+    // Reset canvas
+    canvas.width = options.width;
+    canvas.height = options.height;
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Get original dimensions
+    width = img.naturalWidth;
+    height = img.naturalHeight;
+
+    // Resize smaller
     if (options.width < width && options.height < height) {
         var buffer = document.createElement('canvas'),
             bufferContext = buffer.getContext('2d');
@@ -54,10 +61,11 @@ ImageDisplay.prototype.render = function() {
             height /= 2;
         }
 
-        context.drawImage(buffer, 0, 0, width*2, height*2, options.x, options.y, options.width, options.height);;
+        context.drawImage(buffer, 0, 0, width*2, height*2, 0, 0, options.width, options.height);;
     }
+    // Draw normally
     else {
-        context.drawImage(img, options.x, options.y, options.width, options.height);
+        context.drawImage(img, 0, 0, options.width, options.height);
     }
 };
 

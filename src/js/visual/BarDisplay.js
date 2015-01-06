@@ -12,8 +12,7 @@ var defaults = {
     barSpacing: -1,
     color: '#ffffff',
     shadowHeight: 100,
-    shadowColor: '#cccccc',
-    clearCanvas: true
+    shadowColor: '#cccccc'
 };
 
 var BarDisplay = EventEmitter.extend({
@@ -31,13 +30,12 @@ BarDisplay.prototype.init = function(options) {
 };
 
 BarDisplay.prototype.render = function(data) {
-    var i, j, val, size, totalWidth,
+    var i, x, y, val, size, totalWidth,
         step = 1,
         len = data.length,
+        canvas = this.canvas,
         context = this.context,
         options = this.options,
-        x = options.x,
-        y = options.y,
         height = options.height,
         width = options.width,
         barWidth = options.barWidth,
@@ -46,16 +44,10 @@ BarDisplay.prototype.render = function(data) {
         color = options.color,
         shadowColor = options.shadowColor;
 
-    // Clear canvas
-    if (options.clearCanvas) {
-        context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    // Set background color
-    if (options.bgColor) {
-        this.setColor(options.bgColor);
-        context.fillRect(x, y, x + width, y + height);
-    }
+    // Reset canvas
+    canvas.width = options.width;
+    canvas.height = options.height + options.shadowHeight;
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
     // Calculate bar widths
     if (barWidth < 0 && barSpacing < 0) {
@@ -79,20 +71,20 @@ BarDisplay.prototype.render = function(data) {
     }
 
     // Draw bars
-    this.setColor(color, 0, y - height, 0, y);
+    this.setColor(color, 0, 0, 0, height);
 
-    for (i = 0, j = x; i < len; i += step, j += size) {
+    for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
         val = data[floor(i)] * height;
-        context.fillRect(j, y, barWidth, -val);
+        context.fillRect(x, y, barWidth, -val);
     }
 
     // Draw shadow bars
     if (shadowHeight > 0) {
-        this.setColor(shadowColor, 0, y, 0, y + shadowHeight);
+        this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
 
-        for (i = 0, j = x; i < len; i += step, j += size) {
+        for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
             val = data[floor(i)] * shadowHeight;
-            context.fillRect(j, y, barWidth, val);
+            context.fillRect(x, y, barWidth, val);
         }
     }
 };

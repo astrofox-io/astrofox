@@ -35,10 +35,10 @@ var SpectrumControl = React.createClass({
     handleChange: function(name, val) {
         var state = {};
 
-        if (name == 'barWidthAutoSize') {
+        if (name === 'barWidthAutoSize') {
             state.barWidth = (val) ? -1 : 1;
         }
-        if (name == 'barSpacingAutoSize') {
+        else if (name === 'barSpacingAutoSize') {
             state.barSpacing = (val) ? -1 : 1;
         }
 
@@ -50,11 +50,14 @@ var SpectrumControl = React.createClass({
     },
 
     renderScene: function(canvas, frame) {
-        var i, smoothing, len,
+        var i, smoothing, len, data,
             context = canvas.getContext('2d'),
-            player = this.props.player;
+            player = this.props.player,
+            state = this.state,
+            width = state.width / 2,
+            height = state.height;
 
-        var data = player.spectrum.getFrequencyData(
+        data = player.spectrum.getFrequencyData(
             frame,
             -100,
             this.state.maxDecibels,
@@ -67,7 +70,17 @@ var SpectrumControl = React.createClass({
         this.data = data;
         this.bars.render(data);
 
-        context.drawImage(this.canvas, 0, 0);
+        if (state.rotation % 360 !== 0) {
+            context.save();
+            context.translate(state.x, state.y - state.height);
+            context.translate(width, height);
+            context.rotate(state.rotation * Math.PI / 180);
+            context.drawImage(this.canvas, -width, -height);
+            context.restore();
+        }
+        else {
+            context.drawImage(this.canvas, state.x, state.y - state.height);
+        }
     },
 
     render: function() {
@@ -283,6 +296,14 @@ var SpectrumControl = React.createClass({
                         max={360}
                         value={this.state.rotation}
                         onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="rotation"
+                            min={0}
+                            max={360}
+                            value={this.state.rotation}
+                            onChange={this.handleChange} />
+                    </div>
                 </div>
             </div>
         );

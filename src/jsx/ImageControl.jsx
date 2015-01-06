@@ -7,7 +7,8 @@ var ImageControl = React.createClass({
             width: 0,
             height: 0,
             fixed: true,
-            ratio: 0
+            ratio: 0,
+            rotation: 0
         };
     },
 
@@ -49,8 +50,22 @@ var ImageControl = React.createClass({
 
     renderScene: function(canvas) {
         if (this.image && this.state.image !== null) {
-            var context = canvas.getContext('2d');
-            context.drawImage(this.canvas, 0, 0);
+            var context = canvas.getContext('2d'),
+                state = this.state,
+                width = state.width / 2,
+                height = state.height / 2;
+
+            if (state.rotation % 360 !== 0) {
+                context.save();
+                context.translate(state.x, state.y);
+                context.translate(width, height);
+                context.rotate(state.rotation * Math.PI / 180);
+                context.drawImage(this.canvas, -width, -height);
+                context.restore();
+            }
+            else {
+                context.drawImage(this.canvas, state.x, state.y);
+            }
         }
     },
 
@@ -148,6 +163,24 @@ var ImageControl = React.createClass({
                         value={this.state.fixed}
                         onChange={this.handleChange}
                     />
+                </div>
+                <div className="row">
+                    <label>Rotation</label>
+                    <NumberInput
+                        name="rotation"
+                        size="3"
+                        min={0}
+                        max={360}
+                        value={this.state.rotation}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="rotation"
+                            min={0}
+                            max={360}
+                            value={this.state.rotation}
+                            onChange={this.handleChange} />
+                    </div>
                 </div>
             </div>
         );
