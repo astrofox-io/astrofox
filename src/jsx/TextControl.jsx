@@ -8,7 +8,8 @@ var TextControl = React.createClass({
             bold: false,
             x: 100,
             y: 100,
-            color: '#FFFFFF'
+            color: '#FFFFFF',
+            rotation: 0
         };
     },
 
@@ -17,8 +18,15 @@ var TextControl = React.createClass({
         this.context = '2d';
         this.fontOptions = [
             'Arial',
-            'Times New Roman',
-            'Courier New'
+            'Arimo',
+            'Lato',
+            'Merriweather',
+            'Oswald',
+            'Oxygen',
+            'Raleway',
+            'Roboto',
+            'Roboto Condensed',
+            'Times New Roman'
         ];
     },
 
@@ -40,8 +48,27 @@ var TextControl = React.createClass({
     },
 
     renderScene: function(canvas) {
-        var context = canvas.getContext('2d');
-        context.drawImage(this.canvas, 0, 0);
+        if (this.state.text == '') return;
+
+        var context = canvas.getContext('2d'),
+            state = this.state,
+            width = this.canvas.width / 2,
+            height = this.canvas.height / 2;
+
+        if (state.rotation % 360 !== 0) {
+            context.save();
+            context.translate(state.x, state.y);
+            context.translate(width, height);
+            context.rotate(state.rotation * Math.PI / 180);
+            context.drawImage(this.canvas, -width, -height);
+            context.restore();
+        }
+        else {
+            context.drawImage(this.canvas, state.x, state.y);
+        }
+
+        //var context = canvas.getContext('2d');
+        //context.drawImage(this.canvas, 0, 0);
     },
 
     render: function() {
@@ -65,7 +92,7 @@ var TextControl = React.createClass({
                     <SelectInput
                         name="font"
                         size="20"
-                        values={this.fontOptions}
+                        items={this.fontOptions}
                         value={this.state.font}
                         onChange={this.handleChange} />
                 </div>
@@ -75,6 +102,25 @@ var TextControl = React.createClass({
                         name="size"
                         size="3"
                         value={this.state.size}
+                        onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label>Bold</label>
+                    <ToggleInput
+                        name="bold"
+                        value={this.state.bold}
+                        onChange={this.handleChange} />
+                    <label>Italic</label>
+                    <ToggleInput
+                        name="italic"
+                        value={this.state.italic}
+                        onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label>Color</label>
+                    <ColorInput
+                        name="color"
+                        value={this.state.color}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
@@ -110,23 +156,22 @@ var TextControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Bold</label>
-                    <ToggleInput
-                        name="bold"
-                        value={this.state.bold}
+                    <label>Rotation</label>
+                    <NumberInput
+                        name="rotation"
+                        size="3"
+                        min={0}
+                        max={360}
+                        value={this.state.rotation}
                         onChange={this.handleChange} />
-                    <label>Italic</label>
-                    <ToggleInput
-                        name="italic"
-                        value={this.state.italic}
-                        onChange={this.handleChange} />
-                </div>
-                <div className="row">
-                    <label>Color</label>
-                    <ColorInput
-                        name="color"
-                        value={this.state.color}
-                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="rotation"
+                            min={0}
+                            max={360}
+                            value={this.state.rotation}
+                            onChange={this.handleChange} />
+                    </div>
                 </div>
             </div>
         );

@@ -25,18 +25,24 @@ var TextDisplay = EventEmitter.extend({
 });
 
 TextDisplay.prototype.init = function(options) {
-    this.options = _.assign(this.options, defaults, options);
+    this.options = _.assign({}, defaults, options);
 };
 
 TextDisplay.prototype.render = function() {
-    var context = this.context,
-        options = this.options;
+    var canvas = this.canvas,
+        context = this.context,
+        options = this.options,
+        font = this.getFont();
 
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    context.font = font;
+    canvas.width = context.measureText(options.text).width;
+    canvas.height = options.size * 2;
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
-    context.font = this.getFont();
+    console.log(canvas.width, canvas.height, options.text, font, options.color);
+    context.font = font;
     context.fillStyle = options.color;
-    context.fillText(options.text, options.x, options.y);
+    context.fillText(options.text, 0, options.size);
 
     /*
     var message = "AstroFox";

@@ -95,38 +95,6 @@ var SpectrumControl = React.createClass({
                     <span>SPECTRUM</span>
                 </div>
                 <div className="row">
-                    <label>X</label>
-                    <NumberInput
-                        name="x"
-                        size="3"
-                        value={this.state.x}
-                        onChange={this.handleChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            min={0}
-                            max={maxWidth}
-                            value={this.state.x}
-                            onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="row">
-                    <label>Y</label>
-                    <NumberInput
-                        name="y"
-                        size="3"
-                        value={this.state.y}
-                        onChange={this.handleChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            min={0}
-                            max={maxHeight}
-                            value={this.state.y}
-                            onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="row">
                     <label>Width</label>
                     <NumberInput
                         name="width"
@@ -286,6 +254,38 @@ var SpectrumControl = React.createClass({
                         name="shadowColor"
                         value={this.state.shadowColor}
                         onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label>X</label>
+                    <NumberInput
+                        name="x"
+                        size="3"
+                        value={this.state.x}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="x"
+                            min={0}
+                            max={maxWidth}
+                            value={this.state.x}
+                            onChange={this.handleChange} />
+                    </div>
+                </div>
+                <div className="row">
+                    <label>Y</label>
+                    <NumberInput
+                        name="y"
+                        size="3"
+                        value={this.state.y}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="y"
+                            min={0}
+                            max={maxHeight}
+                            value={this.state.y}
+                            onChange={this.handleChange} />
+                    </div>
                 </div>
                 <div className="row">
                     <label>Rotation</label>

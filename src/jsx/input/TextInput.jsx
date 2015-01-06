@@ -7,7 +7,8 @@ var TextInput = React.createClass({
         return {
             name: "text",
             size: 20,
-            value: ""
+            value: "",
+            spellcheck: false
         };
     },
 
@@ -48,6 +49,7 @@ var TextInput = React.createClass({
                     className="input-field"
                     name={this.props.name}
                     size={this.props.size}
+                    spellCheck={this.props.spellcheck}
                     value={this.state.value}
                     onChange={this.handleChange}
                     onBlur={this.handleValueChange}

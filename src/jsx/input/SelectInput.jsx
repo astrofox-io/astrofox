@@ -46,8 +46,8 @@ var SelectInput = React.createClass({
         var style = { display: this.state.showItems ? 'block' : 'none' };
         var items = [];
 
-        if (this.props.values) {
-            items = this.props.values.map(function (item, index) {
+        if (this.props.items) {
+            items = this.props.items.map(function(item, index) {
                 var key = this.props.name + '' + index;
                 if (typeof item !== 'object') {
                     item = { name: item, value: item };
@@ -55,6 +55,7 @@ var SelectInput = React.createClass({
                 return (
                     <li className="input-option"
                         key={key}
+                        style={{fontFamily:item.value}}
                         onMouseDown={this.handleItemClick.bind(this, item)}>
                     {item.name}
                     </li>
