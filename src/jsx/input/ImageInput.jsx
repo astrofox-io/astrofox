@@ -75,8 +75,14 @@ var ImageInput = React.createClass({
             <div className="input input-image"
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
-                <img ref="image" style={style} />
-                <div className="input-image-delete icon-cancel" onClick={this.handleDelete} style={style}></div>
+                <img
+                    ref="image"
+                    style={style}
+                />
+                <div className="input-image-delete icon-cancel"
+                    onClick={this.handleDelete}
+                    style={style}>
+                </div>
             </div>
         );
     }

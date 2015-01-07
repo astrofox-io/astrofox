@@ -77,7 +77,7 @@ var TextControl = React.createClass({
 
         return (
             <div className="control">
-                <canvas ref="canvas" className="offScreen" width={maxWidth} height={maxHeight} />
+                <canvas ref="canvas" className="offScreen" />
                 <div className="header"><span>TEXT</span></div>
                 <div className="row">
                     <label>Text</label>

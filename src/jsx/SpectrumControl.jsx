@@ -90,7 +90,7 @@ var SpectrumControl = React.createClass({
 
         return (
             <div className="control">
-                <canvas ref="canvas" className="offScreen" width={maxWidth} height={maxHeight} />
+                <canvas ref="canvas" className="offScreen" />
                 <div className="header">
                     <span>SPECTRUM</span>
                 </div>
@@ -102,14 +102,16 @@ var SpectrumControl = React.createClass({
                         value={this.state.width}
                         min={0}
                         max={maxWidth}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="width"
                             min={0}
                             max={maxWidth}
                             value={this.state.width}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -120,14 +122,16 @@ var SpectrumControl = React.createClass({
                         min={0}
                         max={maxHeight}
                         value={this.state.height}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="height"
                             min={0}
                             max={maxHeight}
                             value={this.state.height}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -138,14 +142,16 @@ var SpectrumControl = React.createClass({
                         min={0}
                         max={maxHeight}
                         value={this.state.shadowHeight}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="shadowHeight"
                             min={0}
                             max={maxHeight}
                             value={this.state.shadowHeight}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -165,7 +171,8 @@ var SpectrumControl = React.createClass({
                             max={0}
                             step={1}
                             value={this.state.maxDecibels}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -177,7 +184,8 @@ var SpectrumControl = React.createClass({
                         min={0}
                         max={maxFrequency}
                         step={20}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="maxFrequency"
@@ -185,7 +193,8 @@ var SpectrumControl = React.createClass({
                             max={maxFrequency}
                             step={20}
                             value={this.state.maxFrequency}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -198,7 +207,8 @@ var SpectrumControl = React.createClass({
                         max={0.98}
                         step={0.01}
                         allowDecimal="true"
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="smoothingTimeConstant"
@@ -206,7 +216,8 @@ var SpectrumControl = React.createClass({
                             max={0.98}
                             step={0.01}
                             value={this.state.smoothingTimeConstant}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -218,12 +229,14 @@ var SpectrumControl = React.createClass({
                         max={maxWidth}
                         value={this.state.barWidth}
                         readOnly={this.state.barWidthAutoSize}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <label>Auto-Size</label>
                     <ToggleInput
                         name="barWidthAutoSize"
                         value={this.state.barWidthAutoSize}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div className="row">
                     <label>Bar Spacing</label>
@@ -239,21 +252,24 @@ var SpectrumControl = React.createClass({
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={this.state.barSpacingAutoSize}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div className="row">
                     <label>Bar Color</label>
                     <ColorRangeInput
                         name="color"
                         value={this.state.color}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div className="row">
                     <label>Shadow Color</label>
                     <ColorRangeInput
                         name="shadowColor"
                         value={this.state.shadowColor}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div className="row">
                     <label>X</label>
@@ -261,14 +277,16 @@ var SpectrumControl = React.createClass({
                         name="x"
                         size="3"
                         value={this.state.x}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={0}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -277,14 +295,16 @@ var SpectrumControl = React.createClass({
                         name="y"
                         size="3"
                         value={this.state.y}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={0}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -295,14 +315,16 @@ var SpectrumControl = React.createClass({
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="rotation"
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
             </div>

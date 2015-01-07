@@ -87,13 +87,14 @@ var ImageControl = React.createClass({
 
         return (
             <div className="control">
-                <canvas ref="canvas" className="offScreen" width="854" height="480" />
+                <canvas ref="canvas" className="offScreen" />
                 <div className="header"><span>IMAGE</span></div>
                 <div className="row">
                     <label>Image</label>
                     <ImageInput
                         name="image"
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div className="row">
                     <label>Width</label>
@@ -104,7 +105,8 @@ var ImageControl = React.createClass({
                         max={maxWidth*2}
                         value={this.state.width}
                         readOnly={readOnly}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="width"
@@ -112,7 +114,8 @@ var ImageControl = React.createClass({
                             max={maxWidth*2}
                             value={this.state.width}
                             readOnly={readOnly}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -124,7 +127,8 @@ var ImageControl = React.createClass({
                         max={maxHeight*2}
                         value={this.state.height}
                         readOnly={readOnly}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="height"
@@ -132,7 +136,8 @@ var ImageControl = React.createClass({
                             max={maxHeight*2}
                             value={this.state.height}
                             readOnly={readOnly}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -151,14 +156,16 @@ var ImageControl = React.createClass({
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -169,14 +176,16 @@ var ImageControl = React.createClass({
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -187,14 +196,16 @@ var ImageControl = React.createClass({
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="rotation"
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </div>
             </div>

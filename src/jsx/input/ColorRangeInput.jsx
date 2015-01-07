@@ -49,12 +49,14 @@ var ColorRangeInput = React.createClass({
                 <ColorInput
                     name="startColor"
                     value={this.state.startColor}
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange}
+                />
                 <div className="input color-range flex" style={style}></div>
                 <ColorInput
                     name="endColor"
                     value={this.state.endColor}
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange}
+                />
             </div>
         );
     }

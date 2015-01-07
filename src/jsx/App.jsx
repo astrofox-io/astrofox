@@ -71,20 +71,24 @@ var App = React.createClass({
                         <Scene
                             ref="scene"
                             player={this.player}
-                            onFileLoaded={this.handleFileLoad} />
+                            onFileLoaded={this.handleFileLoad}
+                        />
                         <Waveform
                             ref="waveform"
                             player={this.player}
-                            onProgressChange={this.handleWaveformProgressChange} />
+                            onProgressChange={this.handleWaveformProgressChange}
+                        />
                         <Player
                             ref="player"
                             player={this.player}
-                            onProgressChange={this.handlePlayerProgressChange} />
+                            onProgressChange={this.handlePlayerProgressChange}
+                        />
                     </div>
                     <ControlDock
                         ref="dock"
                         player={this.player}
-                        onControlLoad={this.handleControlLoad} />
+                        onControlLoad={this.handleControlLoad}
+                    />
                 </div>
                 <Footer filename={this.state.filename} />
             </div>
