@@ -33,22 +33,60 @@ var Player = React.createClass({
         this.forceUpdate();
     },
 
+    onProgressUpdate: function(val) {
+        this.forceUpdate();
+    },
+
+    getCurrentTime: function() {
+        var player = this.props.player;
+
+        if (this.refs.progress) {
+            return this.refs.progress.getPosition() * this.getTotalTime();
+        }
+
+        return player.getCurrentTime();
+    },
+
+    getTotalTime: function() {
+        var player = this.props.player;
+        return player.getDuration('audio');
+    },
+
     render: function() {
         var player = this.props.player;
-        var currentTime = player.getCurrentTime('audio');
-        var totalTime = player.getDuration('audio');
+        var currentTime = this.getCurrentTime();
+        var totalTime = this.getTotalTime();
         var isPlaying = player.isPlaying();
         var progressPosition = player.getProgress('audio');
 
         return (
             <div id="player">
                 <div className="buttons">
-                    <PlayButton isPlaying={isPlaying} onClick={this.onPlayButtonClick} />
-                    <StopButton onClick={this.onStopButtonClick} />
+                    <PlayButton
+                        ref="play"
+                        isPlaying={isPlaying}
+                        onClick={this.onPlayButtonClick}
+                    />
+                    <StopButton
+                        ref="stop"
+                        onClick={this.onStopButtonClick}
+                    />
                 </div>
-                <VolumeControl onChange={this.onVolumeChange} />
-                <ProgressControl progressPosition={progressPosition} onChange={this.onProgressChange} />
-                <TimeInfo currentTime={currentTime} totalTime={totalTime} />
+                <VolumeControl
+                    ref="volume"
+                    onChange={this.onVolumeChange}
+                />
+                <ProgressControl
+                    ref="progress"
+                    progressPosition={progressPosition}
+                    onChange={this.onProgressChange}
+                    onUpdate={this.onProgressUpdate}
+                />
+                <TimeInfo
+                    ref="time"
+                    currentTime={currentTime}
+                    totalTime={totalTime}
+                />
             </div>
         );
     }
@@ -125,7 +163,8 @@ var VolumeControl = React.createClass({
                         min="0"
                         max="100"
                         value={this.state.value}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div className="icon">
                     <i className={this.iconClassName} />
@@ -140,24 +179,45 @@ var ProgressControl = React.createClass({
         return { value: 0 };
     },
 
+    componentWillMount: function() {
+        this.max = 1000;
+    },
+
     componentWillReceiveProps: function(props) {
-        this.setState({ value: props.progressPosition * 1000 });
+        if (typeof props.progressPosition !== 'undefined' && !this.refs.progress.isActive()) {
+            this.setState({value: props.progressPosition * this.max});
+        }
     },
 
     handleChange: function(name, val) {
-        this.props.onChange(val / 1000);
-        this.setState({ value: val });
+        this.setState({ value: val }, function(){
+            this.props.onChange(this.getPosition());
+        }.bind(this));
+    },
+
+    handleUpdate: function(name, val) {
+        this.setState({ value: val }, function(){
+            this.props.onUpdate(this.getPosition());
+        }.bind(this));
+    },
+
+    getPosition: function() {
+        return this.state.value / this.max;
     },
 
     render: function() {
         return (
             <div className="progress">
                 <RangeInput
+                    ref="progress"
                     name="progress"
                     min="0"
-                    max="1000"
+                    max={this.max}
+                    buffered={true}
                     value={this.state.value}
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange}
+                    onUpdate={this.handleUpdate}
+                />
             </div>
         );
     }

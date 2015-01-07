@@ -1,6 +1,8 @@
 var RangeInput = React.createClass({
     getInitialState: function() {
-        return { value: 0 };
+        return {
+            value: 0
+        };
     },
 
     getDefaultProps: function() {
@@ -9,16 +11,19 @@ var RangeInput = React.createClass({
             min: 0,
             max: 100,
             step: 1,
-            width: "auto"
+            buffered: false,
+            onChange: function(){},
+            onUpdate: function(){}
         };
     },
 
     componentDidMount: function() {
+        this.active = false;
         this.setState({ value: this.props.value });
     },
 
     componentWillReceiveProps: function(props) {
-        if (typeof this.props.value !== "undefined") {
+        if (typeof this.props.value !== "undefined" && !this.active) {
             this.setState({value: props.value});
         }
     },
@@ -26,8 +31,29 @@ var RangeInput = React.createClass({
     handleChange: function(e) {
         var val = e.currentTarget.value;
         this.setState({ value: val }, function() {
-            this.props.onChange(this.props.name, Number(val));
+            if (!this.props.buffered) {
+                this.props.onChange(this.props.name, Number(val));
+            }
+            this.props.onUpdate(this.props.name, Number(val));
         }.bind(this));
+    },
+
+    handleMouseDown: function(e) {
+        if (this.props.buffered) {
+            this.active = true;
+        }
+    },
+
+    handleMouseUp: function(e) {
+        if (this.props.buffered) {
+            var val = e.currentTarget.value;
+            this.props.onChange(this.props.name, Number(val));
+            this.active = false;
+        }
+    },
+
+    isActive: function() {
+        return this.active;
     },
 
     render: function() {
@@ -47,7 +73,10 @@ var RangeInput = React.createClass({
                     max={max}
                     step={step}
                     value={val}
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange}
+                    onMouseDown={this.handleMouseDown}
+                    onMouseUp={this.handleMouseUp}
+                />
             </div>
         );
     }

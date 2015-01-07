@@ -8,7 +8,8 @@ var TextInput = React.createClass({
             name: "text",
             size: 20,
             value: "",
-            spellcheck: false
+            spellcheck: false,
+            buffered: false
         };
     },
 
@@ -23,7 +24,12 @@ var TextInput = React.createClass({
     },
 
     handleChange: function(e) {
-        this.setState({ value: e.target.value });
+        var val = e.target.value;
+        this.setState({ value: val });
+
+        if (!this.props.buffered) {
+            this.props.onChange(this.props.name, val);
+        }
     },
 
     handleValueChange: function(e) {
