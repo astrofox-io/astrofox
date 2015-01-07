@@ -50,6 +50,7 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
+
 .icon-play:before { content: '\e800'; } /* 'î €' */
 .icon-stop:before { content: '\e801'; } /* 'î ' */
 .icon-pause:before { content: '\e802'; } /* 'î ‚' */
@@ -61,4 +62,8 @@
 .icon-resize-full:before { content: '\e808'; } /* 'î ˆ' */
 .icon-record:before { content: '\e809'; } /* 'î ‰' */
 .icon-arrows-ccw:before { content: '\e80a'; } /* 'î Š' */
-.icon-cog:before { content: '\e80b'; } /* 'î ‹' *
+.icon-cog:before { content: '\e80b'; } /* 'î ‹' */
+.icon-lock:before { content: '\e80c'; } /* 'î Œ' */
+.icon-lock-open:before { content: '\e80d'; } /* 'î ' */
+.icon-link:before { content: '\e80e'; } /* 'î Ž' */
+.icon-menu:before { content: '\e80f'; } /* 'î ' */

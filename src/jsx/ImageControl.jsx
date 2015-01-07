@@ -52,6 +52,10 @@ var ImageControl = React.createClass({
         }.bind(this));
     },
 
+    handleLinkClick: function() {
+        this.handleChange('fixed', !this.state.fixed);
+    },
+
     getImageRatio: function() {
         var image = this.state.image;
 
@@ -83,7 +87,10 @@ var ImageControl = React.createClass({
         var image = this.state.image,
             readOnly = !image,
             maxHeight = ((image) ? image.height : 480),
-            maxWidth = ((image) ? image.width : 854);
+            maxWidth = ((image) ? image.width : 854),
+            linkClasses = 'icon-link input-link';
+
+        if (this.state.fixed) linkClasses += ' input-link-on';
 
         return (
             <div className="control">
@@ -97,7 +104,13 @@ var ImageControl = React.createClass({
                     />
                 </div>
                 <div className="row">
-                    <label>Width</label>
+                    <label>
+                        Width
+                        <i
+                            className={linkClasses}
+                            onClick={this.handleLinkClick}
+                        />
+                    </label>
                     <NumberInput
                         name="width"
                         size="3"
@@ -119,7 +132,13 @@ var ImageControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Height</label>
+                    <label>
+                        Height
+                        <i
+                            className={linkClasses}
+                            onClick={this.handleLinkClick}
+                        />
+                    </label>
                     <NumberInput
                         name="height"
                         size="3"
