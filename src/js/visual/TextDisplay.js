@@ -35,11 +35,10 @@ TextDisplay.prototype.render = function() {
         font = this.getFont();
 
     context.font = font;
-    canvas.width = context.measureText(options.text).width;
+    canvas.width = context.measureText(options.text).width * ((options.italic) ? 1.1 : 1.0);
     canvas.height = options.size * 2;
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    console.log(canvas.width, canvas.height, options.text, font, options.color);
     context.font = font;
     context.fillStyle = options.color;
     context.fillText(options.text, 0, options.size);
