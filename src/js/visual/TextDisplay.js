@@ -36,17 +36,20 @@ TextDisplay.prototype.render = function() {
 
     context.font = font;
     canvas.width = context.measureText(options.text).width * ((options.italic) ? 1.1 : 1.0);
-    canvas.height = options.size * 2;
+    canvas.height = options.size;
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     context.font = font;
     context.fillStyle = options.color;
-    context.fillText(options.text, 0, options.size);
+    context.textBaseline = 'top';
+    context.fillText(options.text, 0, 0);
 
     /*
-    var message = "AstroFox";
-    var size = context.measureText(message);
-    context.fillText(message, canvas.width / 2 - size.width / 2, canvas.height / 2 + 48/2);
+    context.beginPath();
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.lineWidth = 2;
+    context.strokeStyle = 'red';
+    context.stroke();
     */
 };
 

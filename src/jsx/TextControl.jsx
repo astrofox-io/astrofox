@@ -2,12 +2,12 @@ var TextControl = React.createClass({
     getInitialState: function() {
         return {
             text: '',
-            size: 20,
+            size: 40,
             font: 'Arial',
             italic: false,
             bold: false,
-            x: 100,
-            y: 100,
+            x: 0,
+            y: 0,
             color: '#FFFFFF',
             rotation: 0
         };
@@ -101,6 +101,7 @@ var TextControl = React.createClass({
                     <NumberInput
                         name="size"
                         size="3"
+                        min={0}
                         value={this.state.size}
                         onChange={this.handleChange} />
                 </div>
@@ -133,7 +134,7 @@ var TextControl = React.createClass({
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={0}
+                            min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
                             onChange={this.handleChange} />
@@ -149,7 +150,7 @@ var TextControl = React.createClass({
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={0}
+                            min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
                             onChange={this.handleChange} />
