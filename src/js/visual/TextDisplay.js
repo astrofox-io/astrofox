@@ -29,20 +29,33 @@ TextDisplay.prototype.init = function(options) {
 };
 
 TextDisplay.prototype.render = function() {
-    var canvas = this.canvas,
+    var width, height,
+        canvas = this.canvas,
         context = this.context,
         options = this.options,
         font = this.getFont();
 
-    context.font = font;
-    canvas.width = context.measureText(options.text).width * ((options.italic) ? 1.1 : 1.0);
-    canvas.height = options.size;
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    if (options.text.length == 0) return;
 
     context.font = font;
+    width = context.measureText(options.text).width;
+    height = options.size * 2;
+
+    // Fix for italics
+    if (options.italic) {
+        width += width/options.text.length;
+    }
+
+    // Reset canvas
+    canvas.width = width;
+    canvas.height = height;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw text
+    context.font = font;
     context.fillStyle = options.color;
-    context.textBaseline = 'top';
-    context.fillText(options.text, 0, 0);
+    context.textBaseline = 'middle';
+    context.fillText(options.text, 0, options.size);
 
     /*
     context.beginPath();
