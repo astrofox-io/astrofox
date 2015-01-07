@@ -22,7 +22,6 @@
 }
 ::-webkit-scrollbar-thumb {
     background-color: @primary-color;
-    width: 10px;
     border-radius: 10px;
 }
 ::-webkit-scrollbar-button {
@@ -642,26 +641,31 @@ input[type="range"]::-moz-range-thumb {
     position: relative;
     overflow: hidden;
 
+    .portrait {
+        width: 100%;
+        height: auto;
+    }
+
+    .landscape {
+        width: auto;
+        height: 100%;
+    }
+
     img {
-        width: 100px;
+        width: 100%;
         height: auto;
         .absolute-center();
     }
 }
 
 .input-image-delete {
-    background-color: #000;
-    opacity: 0.5;
-    z-index: 100;
-    width: 100px;
-    height: 100px;
-    position: relative;
-
-    i {
-        font-size: 30px;
-        height: 30px;
-        width: 30px;
-        text-align: center;
-        .absolute-center();
-    }
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    text-shadow: 1px 1px 2px #000;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
 }

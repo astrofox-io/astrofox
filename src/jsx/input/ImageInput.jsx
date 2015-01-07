@@ -1,8 +1,7 @@
 var ImageInput = React.createClass({
     getInitialState: function() {
         return {
-            src: '',
-            showIcon: false
+            src: ''
         };
     },
 
@@ -44,7 +43,7 @@ var ImageInput = React.createClass({
                 console.log('image loaded', timer.get('image_load'));
                 var data = fe.target.result;
 
-                this.setState({ src: data, showIcon: false }, function() {
+                this.setState({ src: data }, function() {
                     this.image.src = this.refs.image.getDOMNode().src = this.state.src;
                     this.props.onChange(this.props.name, this.image);
                 });
@@ -59,44 +58,25 @@ var ImageInput = React.createClass({
         }
     },
 
-    handleMouseOver: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.setState({ showIcon: true });
-    },
-
-    handleMouseOut: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.setState({ showIcon: false });
-    },
-
     handleDelete: function(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.image.src = '';
-        this.setState({ src: '', showIcon: false }, function() {
+        this.setState({ src: '' }, function() {
             this.props.onChange(this.props.name, null);
         }.bind(this));
     },
 
     render: function() {
-        var styleImage = { display: (this.state.src !== '') ? 'block' : 'none' };
-        var styleIcon = { display: (this.state.src !== '' && this.state.showIcon) ? 'block' : 'none' };
+        var style = { display: (this.state.src !== '') ? 'block' : 'none' };
 
         return (
             <div className="input input-image"
                 onDrop={this.handleDrop}
-                onDragOver={this.handleDragOver}
-                onMouseOver={this.handleMouseOver}
-                onMouseOut={this.handleMouseOut} >
-                <img ref="image" style={styleImage} />
-                <div className="input-image-delete" onClick={this.handleDelete} style={styleIcon}>
-                    <i className="icon-cancel" />
-                </div>
+                onDragOver={this.handleDragOver}>
+                <img ref="image" style={style} />
+                <div className="input-image-delete icon-cancel" onClick={this.handleDelete} style={style}></div>
             </div>
         );
     }
