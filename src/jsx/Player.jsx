@@ -81,6 +81,7 @@ var Player = React.createClass({
                     progressPosition={progressPosition}
                     onChange={this.onProgressChange}
                     onUpdate={this.onProgressUpdate}
+                    readOnly={totalTime==0}
                 />
                 <TimeInfo
                     ref="time"
@@ -217,6 +218,7 @@ var ProgressControl = React.createClass({
                     value={this.state.value}
                     onChange={this.handleChange}
                     onUpdate={this.handleUpdate}
+                    readOnly={this.props.readOnly}
                 />
             </div>
         );

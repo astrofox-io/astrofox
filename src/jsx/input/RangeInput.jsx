@@ -12,6 +12,7 @@ var RangeInput = React.createClass({
             max: 100,
             step: 1,
             buffered: false,
+            readOnly: false,
             onChange: function(){},
             onUpdate: function(){}
         };
@@ -76,6 +77,7 @@ var RangeInput = React.createClass({
                     onChange={this.handleChange}
                     onMouseDown={this.handleMouseDown}
                     onMouseUp={this.handleMouseUp}
+                    readOnly={this.props.readOnly}
                 />
             </div>
         );
