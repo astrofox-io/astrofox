@@ -15,7 +15,8 @@ var SpectrumControl = React.createClass({
             shadowHeight: 100,
             color: ['#ffffff', '#ffffff'],
             shadowColor: ['#cccccc', '#cccccc'],
-            rotation: 0
+            rotation: 0,
+            opacity: 1.0
         };
     },
 
@@ -325,6 +326,26 @@ var SpectrumControl = React.createClass({
                             value={this.state.rotation}
                             onChange={this.handleChange}
                         />
+                    </div>
+                </div>
+                <div className="row">
+                    <label>Opacity</label>
+                    <NumberInput
+                        name="opacity"
+                        size="3"
+                        min={0}
+                        max={1.0}
+                        step={0.1}
+                        value={this.state.opacity}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1.0}
+                            step={0.1}
+                            value={this.state.opacity}
+                            onChange={this.handleChange} />
                     </div>
                 </div>
             </div>

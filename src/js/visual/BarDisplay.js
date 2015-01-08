@@ -70,6 +70,9 @@ BarDisplay.prototype.render = function(data) {
         step = totalWidth / width;
     }
 
+    // Set opacity
+    context.globalAlpha = options.opacity;
+
     // Draw bars
     this.setColor(color, 0, 0, 0, height);
 

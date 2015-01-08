@@ -11,7 +11,8 @@ var defaults = {
     bold: false,
     x: 100,
     y: 100,
-    color: '#ffffff'
+    color: '#ffffff',
+    opacity: 1.0
 };
 
 var TextDisplay = EventEmitter.extend({
@@ -55,6 +56,7 @@ TextDisplay.prototype.render = function() {
     context.font = font;
     context.fillStyle = options.color;
     context.textBaseline = 'middle';
+    context.globalAlpha = options.opacity;
     context.fillText(options.text, 0, options.size);
 
     /*

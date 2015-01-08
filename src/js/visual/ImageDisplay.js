@@ -61,10 +61,12 @@ ImageDisplay.prototype.render = function() {
             height /= 2;
         }
 
+        context.globalAlpha = options.opacity;
         context.drawImage(buffer, 0, 0, width*2, height*2, 0, 0, options.width, options.height);;
     }
     // Draw normally
     else {
+        context.globalAlpha = options.opacity;
         context.drawImage(img, 0, 0, options.width, options.height);
     }
 };
