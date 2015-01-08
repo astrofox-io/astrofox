@@ -24,7 +24,6 @@ var RangeInput = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        console.log(props);
         if (typeof this.props.value !== "undefined" && !this.active) {
             this.setState({value: props.value});
         }

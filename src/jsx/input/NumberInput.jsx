@@ -39,7 +39,7 @@ var NumberInput = React.createClass({
             step = this.props.step;
 
         if (this.props.value !== val) {
-            var regex =/^(0|\-?[0-9]*\.[0-9]+|\-?[1-9]+[0-9]*)$/;
+            var regex =/^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
             if (regex.test(val)) {
                 if (step !== null && step > 0) {

@@ -121,7 +121,7 @@ var SpectrumControl = React.createClass({
                         name="height"
                         size="3"
                         min={0}
-                        max={maxHeight}
+                        max={maxWidth}
                         value={this.state.height}
                         onChange={this.handleChange}
                     />
@@ -129,7 +129,7 @@ var SpectrumControl = React.createClass({
                         <RangeInput
                             name="height"
                             min={0}
-                            max={maxHeight}
+                            max={maxWidth}
                             value={this.state.height}
                             onChange={this.handleChange}
                         />
@@ -141,7 +141,7 @@ var SpectrumControl = React.createClass({
                         name="shadowHeight"
                         size="3"
                         min={0}
-                        max={maxHeight}
+                        max={maxWidth}
                         value={this.state.shadowHeight}
                         onChange={this.handleChange}
                     />
@@ -149,7 +149,7 @@ var SpectrumControl = React.createClass({
                         <RangeInput
                             name="shadowHeight"
                             min={0}
-                            max={maxHeight}
+                            max={maxWidth}
                             value={this.state.shadowHeight}
                             onChange={this.handleChange}
                         />
@@ -205,7 +205,7 @@ var SpectrumControl = React.createClass({
                         size="3"
                         value={this.state.smoothingTimeConstant}
                         min={0}
-                        max={0.98}
+                        max={0.99}
                         step={0.01}
                         onChange={this.handleChange}
                     />
@@ -213,7 +213,7 @@ var SpectrumControl = React.createClass({
                         <RangeInput
                             name="smoothingTimeConstant"
                             min={0}
-                            max={0.98}
+                            max={0.99}
                             step={0.01}
                             value={this.state.smoothingTimeConstant}
                             onChange={this.handleChange}
