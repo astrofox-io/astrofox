@@ -13,12 +13,14 @@ var ImageControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.name = 'image';
-        this.context = '2d';
+        this.config = {
+            name: 'text',
+            context: '2d'
+        };
     },
 
     componentDidMount: function() {
-        console.log('control mounted', this.name);
+        console.log('control mounted', this.config.name);
         this.canvas = this.refs.canvas.getDOMNode();
         this.image = new AstroFox.ImageDisplay(this.canvas, this.state);
         this.props.onLoad(this)

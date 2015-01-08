@@ -15,8 +15,10 @@ var TextControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.name = 'text';
-        this.context = '2d';
+        this.config = {
+            name: 'text',
+            context: '2d'
+        };
         this.fontOptions = [
             'Arial',
             'Arimo',
@@ -32,7 +34,7 @@ var TextControl = React.createClass({
     },
 
     componentDidMount: function() {
-        console.log('control mounted', this.name);
+        console.log('control mounted', this.config.name);
         this.canvas = this.refs.canvas.getDOMNode();
         this.text = new AstroFox.TextDisplay(this.canvas, this.state);
         this.props.onLoad(this)
@@ -67,9 +69,6 @@ var TextControl = React.createClass({
         else {
             context.drawImage(this.canvas, state.x, state.y);
         }
-
-        //var context = canvas.getContext('2d');
-        //context.drawImage(this.canvas, 0, 0);
     },
 
     render: function() {

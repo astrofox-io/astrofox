@@ -21,13 +21,15 @@ var SpectrumControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.name = "spectrum";
-        this.context = '2d';
+        this.config = {
+            name: 'spectrum',
+            context: '2d'
+        };
         this.data = null;
     },
 
     componentDidMount: function() {
-        console.log('control mounted', this.name);
+        console.log('control mounted', this.config.name);
         this.canvas = this.refs.canvas.getDOMNode();
         this.bars = new AstroFox.BarDisplay(this.canvas, this.state);
         this.props.onLoad(this)
