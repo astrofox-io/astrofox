@@ -29,16 +29,17 @@ var ImageControl = React.createClass({
         state[name] = val;
 
         if (name === 'image') {
+            state.width = 0;
+            state.height = 0;
+            state.x = 0;
+            state.y = 0;
+            state.rotation = 0;
+            state.opacity = 1.0;
+
             if (val !== null) {
                 state.width = val.naturalWidth;
                 state.height = val.naturalHeight;
             }
-            else {
-                state.width = 0;
-                state.height = 0;
-            }
-            state.x = 0;
-            state.y = 0;
         }
         else if (name === 'width' && this.state.image && this.state.fixed) {
             state.height = Math.round(val * (1 / this.getImageRatio()));
@@ -86,9 +87,10 @@ var ImageControl = React.createClass({
 
     render: function() {
         var image = this.state.image,
+            imageWidth = (image) ? image.width : 0,
+            imageHeight = (image) ? image.height : 0,
             readOnly = !image,
-            maxHeight = ((image) ? image.height : 480),
-            maxWidth = ((image) ? image.width : 854),
+            maxSize = ((image) ? ((image.height > image.width) ? image.height : image.width) : 0) * 2,
             linkClasses = 'icon-link input-link';
 
         if (this.state.fixed) linkClasses += ' input-link-on';
@@ -116,7 +118,7 @@ var ImageControl = React.createClass({
                         name="width"
                         size="3"
                         min={0}
-                        max={maxWidth*2}
+                        max={imageWidth*2}
                         value={this.state.width}
                         readOnly={readOnly}
                         onChange={this.handleChange}
@@ -125,7 +127,7 @@ var ImageControl = React.createClass({
                         <RangeInput
                             name="width"
                             min={0}
-                            max={maxWidth*2}
+                            max={imageWidth*2}
                             value={this.state.width}
                             readOnly={readOnly}
                             onChange={this.handleChange}
@@ -144,7 +146,7 @@ var ImageControl = React.createClass({
                         name="height"
                         size="3"
                         min={0}
-                        max={maxHeight*2}
+                        max={imageHeight*2}
                         value={this.state.height}
                         readOnly={readOnly}
                         onChange={this.handleChange}
@@ -153,7 +155,7 @@ var ImageControl = React.createClass({
                         <RangeInput
                             name="height"
                             min={0}
-                            max={maxHeight*2}
+                            max={imageHeight*2}
                             value={this.state.height}
                             readOnly={readOnly}
                             onChange={this.handleChange}
@@ -173,17 +175,19 @@ var ImageControl = React.createClass({
                     <NumberInput
                         name="x"
                         size="3"
-                        min={-maxWidth}
-                        max={maxWidth}
+                        min={-maxSize}
+                        max={maxSize}
                         value={this.state.x}
+                        readOnly={readOnly}
                         onChange={this.handleChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-maxWidth}
-                            max={maxWidth}
+                            min={-maxSize}
+                            max={maxSize}
                             value={this.state.x}
+                            readOnly={readOnly}
                             onChange={this.handleChange}
                         />
                     </div>
@@ -193,17 +197,19 @@ var ImageControl = React.createClass({
                     <NumberInput
                         name="y"
                         size="3"
-                        min={-maxHeight}
-                        max={maxHeight}
+                        min={-maxSize}
+                        max={maxSize}
                         value={this.state.y}
+                        readOnly={readOnly}
                         onChange={this.handleChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-maxHeight}
-                            max={maxHeight}
+                            min={-maxSize}
+                            max={maxSize}
                             value={this.state.y}
+                            readOnly={readOnly}
                             onChange={this.handleChange}
                         />
                     </div>
@@ -216,6 +222,7 @@ var ImageControl = React.createClass({
                         min={0}
                         max={360}
                         value={this.state.rotation}
+                        readOnly={readOnly}
                         onChange={this.handleChange}
                     />
                     <div className="input flex">
@@ -224,6 +231,7 @@ var ImageControl = React.createClass({
                             min={0}
                             max={360}
                             value={this.state.rotation}
+                            readOnly={readOnly}
                             onChange={this.handleChange}
                         />
                     </div>
@@ -237,6 +245,7 @@ var ImageControl = React.createClass({
                         max={1.0}
                         step={0.1}
                         value={this.state.opacity}
+                        readOnly={readOnly}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
@@ -245,6 +254,7 @@ var ImageControl = React.createClass({
                             max={1.0}
                             step={0.1}
                             value={this.state.opacity}
+                            readOnly={readOnly}
                             onChange={this.handleChange} />
                     </div>
                 </div>

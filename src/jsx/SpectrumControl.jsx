@@ -207,7 +207,6 @@ var SpectrumControl = React.createClass({
                         min={0}
                         max={0.98}
                         step={0.01}
-                        allowDecimal="true"
                         onChange={this.handleChange}
                     />
                     <div className="input flex">
@@ -283,7 +282,7 @@ var SpectrumControl = React.createClass({
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={0}
+                            min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
                             onChange={this.handleChange}
@@ -301,8 +300,8 @@ var SpectrumControl = React.createClass({
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={0}
-                            max={maxHeight}
+                            min={-maxHeight}
+                            max={maxHeight*2}
                             value={this.state.y}
                             onChange={this.handleChange}
                         />

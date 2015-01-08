@@ -6,18 +6,13 @@ var NumberInput = React.createClass({
     getDefaultProps: function() {
         return {
             name: "number",
-            size: 4,
+            size: 3,
             value: 0,
             min: null,
             max: null,
             step: null,
-            allowDecimal: false,
             readOnly: false
         };
-    },
-
-    componentWillMount: function() {
-        this.allowedProps = ['value', 'readOnly'];
     },
 
     componentDidMount: function() {
@@ -25,13 +20,9 @@ var NumberInput = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        var state = {};
-        this.allowedProps.forEach(function(prop){
-            if (typeof props[prop] !== "undefined") {
-                state[prop] = props[prop];
-            }
-        });
-        this.setState({ value: props.value });
+        if (typeof props.value !== 'undefined') {
+            this.setState({value: props.value});
+        }
     },
 
     handleChange: function(e) {
@@ -48,13 +39,11 @@ var NumberInput = React.createClass({
             step = this.props.step;
 
         if (this.props.value !== val) {
-            var regex = (this.props.allowDecimal === "true") ?
-                /^(0|\-?[0-9]+\.[0-9]+)$/ :
-                /^(0|\-?[1-9]+[0-9]*)$/;
+            var regex =/^(0|\-?[0-9]*\.[0-9]+|\-?[1-9]+[0-9]*)$/;
 
             if (regex.test(val)) {
                 if (step !== null && step > 0) {
-                    val = Math.round(val / step) * step;
+                    val = (Math.round(val / step) * step).toPrecision(2);
                 }
 
                 if (min !== null && val < min) {
