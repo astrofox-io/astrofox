@@ -85,36 +85,37 @@ RenderManager.prototype.registerControl = function(control) {
 RenderManager.prototype.unregisterControl = function(control) {
     var index = this.controls.indexOf(control);
     if (index > -1) {
-        this.controls.splice(index, 1);
+        //this.controls.splice(index, 1);
+        spliceOne(this.controls, index);
     }
 };
 
 RenderManager.prototype.getFrame = function() {
     return this.frame;
-},
+};
 
-    RenderManager.prototype.updateFPS = function() {
-        var now = performance.now();
+RenderManager.prototype.updateFPS = function() {
+    var now = performance.now();
 
-        if (!this.time) {
-            this.time = now;
-            this.fps = 0;
-            this.frameCount = 0;
-            return;
-        }
+    if (!this.time) {
+        this.time = now;
+        this.fps = 0;
+        this.frameCount = 0;
+        return;
+    }
 
-        var delta = (now - this.time) / 1000;
+    var delta = (now - this.time) / 1000;
 
-        // Only update every second
-        if (delta > 1) {
-            this.fps = Math.ceil(this.frame / delta);
-            this.time = now;
-            this.frameCount = 0;
-        }
-        else {
-            this.frameCount += 1;
-        }
-    };
+    // Only update every second
+    if (delta > 1) {
+        this.fps = Math.ceil(this.frame / delta);
+        this.time = now;
+        this.frameCount = 0;
+    }
+    else {
+        this.frameCount += 1;
+    }
+};
 
 RenderManager.prototype.getFPS = function() {
     return this.fps;
@@ -122,7 +123,7 @@ RenderManager.prototype.getFPS = function() {
 
 RenderManager.prototype.clear = function() {
 
-},
+};
 
 RenderManager.prototype.render = function() {
     this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
@@ -148,5 +149,13 @@ RenderManager.prototype.render = function() {
 
     this.frame++;
 };
+
+// Supposedly 1.5x faster than Array.splice
+function spliceOne(list, index) {
+    for (var i = index, k = i+1, n = list.length; k < n; i += 1, k += 1) {
+        list[i] = list[k];
+    }
+    list.pop();
+}
 
 module.exports = RenderManager;

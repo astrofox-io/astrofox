@@ -50,13 +50,13 @@ var Scene = React.createClass({
 
     registerControl: function(control) {
         // DEBUG
-        console.log('control registered', control.name);
+        console.log('control registered', control.config.name);
         this.renderer.registerControl(control);
     },
 
     unregisterControl: function(control) {
         // DEBUG
-        console.log('control unregistered', control.name);
+        console.log('control unregistered', control.config.name);
         this.renderer.unregisterControl(control);
     },
 

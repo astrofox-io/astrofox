@@ -14,7 +14,7 @@ var ImageControl = React.createClass({
 
     componentWillMount: function() {
         this.config = {
-            name: 'text',
+            name: 'image',
             context: '2d'
         };
     },

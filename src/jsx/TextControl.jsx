@@ -20,8 +20,10 @@ var TextControl = React.createClass({
             context: '2d'
         };
         this.fontOptions = [
+            'Alegreya',
             'Arial',
             'Arimo',
+            'Fira Sans',
             'Lato',
             'Merriweather',
             'Oswald',

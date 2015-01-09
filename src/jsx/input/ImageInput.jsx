@@ -69,19 +69,16 @@ var ImageInput = React.createClass({
     },
 
     render: function() {
-        var style = { display: (this.state.src !== '') ? 'block' : 'none' };
+        var style = { display: (this.state.src !== '') ? 'inline-block' : 'none' };
 
         return (
             <div>
                 <div className="input input-image"
                     onDrop={this.handleDrop}
                     onDragOver={this.handleDragOver}>
-                    <img
-                        ref="image"
-                        style={style}
-                    />
+                    <img ref="image" style={style} />
                 </div>
-                <div className="input-image-delete icon-cancel"
+                <div className="input input-image-delete icon-cancel"
                     onClick={this.handleDelete}
                     style={style}>
                 </div>
