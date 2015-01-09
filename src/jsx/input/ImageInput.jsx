@@ -38,6 +38,8 @@ var ImageInput = React.createClass({
     },
 
     handleClick: function(e) {
+        e.preventDefault();
+
         this.refs.file.getDOMNode().click();
     },
 
@@ -92,19 +94,19 @@ var ImageInput = React.createClass({
                     onDrop={this.handleDrop}
                     onDragOver={this.handleDragOver}
                     onClick={this.handleClick}>
-                    <form ref="form" className="input-file">
-                        <input
-                            ref="file"
-                            type="file"
-                            onChange={this.handleFileOpen}
-                        />
-                    </form>
                     <img ref="image" style={style} />
                 </div>
                 <div className="input input-image-delete icon-cancel"
                     onClick={this.handleDelete}
                     style={style}
                 />
+                <form ref="form" className="input-file">
+                    <input
+                        ref="file"
+                        type="file"
+                        onChange={this.handleFileOpen}
+                    />
+                </form>
             </div>
         );
     }
