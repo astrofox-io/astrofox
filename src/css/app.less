@@ -592,6 +592,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 17px;
     background-color: @input-background-color;
     border: 1px solid @input-border-color;
+    cursor: pointer;
     transition: background-color 0.25s;
 
     &:before {
@@ -622,6 +623,7 @@ input[type="range"]::-webkit-slider-thumb {
     border: 1px solid @input-border-color;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
 
     .portrait {
         width: 100%;
@@ -646,6 +648,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: 20px;
     width: 20px;
     text-align: center;
+    outline: none;
     border: 1px solid @primary-color;
     border-radius: 20px;
     cursor: pointer;
@@ -664,4 +667,15 @@ input[type="range"]::-webkit-slider-thumb {
 
 .input-link-on {
     color: #ccc;
+}
+
+.input-file {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    opacity: 1;
+}
+
+::-webkit-file-upload-button {
+    //display: none;
 }

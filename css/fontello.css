@@ -23,7 +23,7 @@
   font-family: "fontello";
   font-style: normal;
   font-weight: normal;
-  speak: none;
+  /* speak: none; */
  
   display: inline-block;
   text-decoration: inherit;
@@ -50,20 +50,21 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
-
-.icon-play:before { content: '\e800'; } /* 'î €' */
-.icon-stop:before { content: '\e801'; } /* 'î ' */
-.icon-pause:before { content: '\e802'; } /* 'î ‚' */
-.icon-popup:before { content: '\e803'; } /* 'î ƒ' */
-.icon-minus:before { content: '\e804'; } /* 'î „' */
-.icon-cancel:before { content: '\e805'; } /* 'î …' */
-.icon-plus:before { content: '\e806'; } /* 'î †' */
-.icon-loop:before { content: '\e807'; } /* 'î ‡' */
-.icon-resize-full:before { content: '\e808'; } /* 'î ˆ' */
-.icon-record:before { content: '\e809'; } /* 'î ‰' */
-.icon-arrows-ccw:before { content: '\e80a'; } /* 'î Š' */
-.icon-cog:before { content: '\e80b'; } /* 'î ‹' */
-.icon-lock:before { content: '\e80c'; } /* 'î Œ' */
-.icon-lock-open:before { content: '\e80d'; } /* 'î ' */
-.icon-link:before { content: '\e80e'; } /* 'î Ž' */
-.icon-menu:before { content: '\e80f'; } /* 'î ' */
+.icon-play:before { content: '\e800'; } /* '' */
+.icon-stop:before { content: '\e801'; } /* '' */
+.icon-pause:before { content: '\e802'; } /* '' */
+.icon-popup:before { content: '\e803'; } /* '' */
+.icon-minus:before { content: '\e804'; } /* '' */
+.icon-cancel:before { content: '\e805'; } /* '' */
+.icon-plus:before { content: '\e806'; } /* '' */
+.icon-loop:before { content: '\e807'; } /* '' */
+.icon-resize-full:before { content: '\e808'; } /* '' */
+.icon-record:before { content: '\e809'; } /* '' */
+.icon-arrows-ccw:before { content: '\e80a'; } /* '' */
+.icon-cog:before { content: '\e80b'; } /* '' */
+.icon-lock:before { content: '\e80c'; } /* '' */
+.icon-lock-open:before { content: '\e80d'; } /* '' */
+.icon-link:before { content: '\e80e'; } /* '' */
+.icon-menu:before { content: '\e80f'; } /* '' */
+.icon-back:before { content: '\e810'; } /* '' */
+.icon-folder:before { content: '\e811'; } /* '' */
