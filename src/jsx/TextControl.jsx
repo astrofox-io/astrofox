@@ -24,14 +24,13 @@ var TextControl = React.createClass({
             'Arial',
             'Arimo',
             'Fira Sans',
-            'Lato',
             'Merriweather',
             'Oswald',
             'Oxygen',
             'Raleway',
             'Roboto',
-            'Roboto Condensed',
-            'Times New Roman'
+            'Times New Roman',
+            'Ubuntu'
         ];
     },
 
