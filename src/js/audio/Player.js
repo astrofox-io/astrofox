@@ -112,7 +112,7 @@ Player.prototype.play = function(id) {
             this.timer = setInterval(function(){
                 this.emit('time');
 
-                if (!sound.repeat && sound.getProgress(id) >= 1.0) {
+                if (!sound.repeat && sound.getPosition(id) >= 1.0) {
                     this.stop(id);
                 }
             }.bind(this), this.options.updateInterval);
@@ -178,10 +178,10 @@ Player.prototype.getDuration = function(id) {
     return 0;
 };
 
-Player.prototype.getProgress = function(id) {
+Player.prototype.getPosition = function(id) {
     var sound = this.sounds[id];
     if (sound) {
-        return sound.getProgress();
+        return sound.getPosition();
     }
     return 0;
 };

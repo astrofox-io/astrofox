@@ -40,7 +40,7 @@ SpectrumAnalyzer.prototype.disconnect = function() {
     this.analyzer.disconnect();
 };
 
-SpectrumAnalyzer.prototype.getFrequencyData = function(frame, minDB, maxDB, minFreq, maxFreq, smoothing, prev) {
+SpectrumAnalyzer.prototype.getFrequencyData = function(frame, minDB, maxDB, minFreq, maxFreq, smoothing, data) {
     var i,
         len = this.analyzer.frequencyBinCount,
         options = this.options,
@@ -50,7 +50,7 @@ SpectrumAnalyzer.prototype.getFrequencyData = function(frame, minDB, maxDB, minF
         maxVal = db2mag(maxDB || this.analyzer.maxDecibels),
         minBin = floor((minFreq || options.minFrequency) / range),
         maxBin = floor((maxFreq || options.maxFrequency) / range),
-        data = new Float32Array(maxBin);
+        results = new Float32Array(maxBin);
 
     // Get frequency data
     if (this.frame === frame && this.fft !== null) {
@@ -64,19 +64,18 @@ SpectrumAnalyzer.prototype.getFrequencyData = function(frame, minDB, maxDB, minF
 
     // Convert db to magnitude
     for (i = minBin; i < maxBin; i++) {
-        data[i] = convertDb(fft[i], minVal, maxVal);
+        results[i] = convertDb(fft[i], minVal, maxVal);
     }
 
     // Apply smoothing
-    len = data.length;
-    smoothing = (prev && prev.length === len) ? smoothing : 0;
+    smoothing = (data && data.length === maxBin) ? smoothing : 0;
     if (smoothing > 0) {
-        for (i = 0; i < len; i++) {
-            data[i] = (prev[i] * smoothing) + (data[i] * (1.0 - smoothing));
+        for (i = 0; i < maxBin; i++) {
+            results[i] = (data[i] * smoothing) + (results[i] * (1.0 - smoothing));
         }
     }
 
-    return data;
+    return results;
 };
 
 SpectrumAnalyzer.getTimeData = function() {

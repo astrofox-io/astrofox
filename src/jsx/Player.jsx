@@ -57,7 +57,7 @@ var Player = React.createClass({
         var currentTime = this.getCurrentTime();
         var totalTime = this.getTotalTime();
         var isPlaying = player.isPlaying();
-        var progressPosition = player.getProgress('audio');
+        var progressPosition = player.getPosition('audio');
 
         return (
             <div id="player">

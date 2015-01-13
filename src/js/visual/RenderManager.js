@@ -54,7 +54,7 @@ RenderManager.prototype.setup = function() {
 
     // SCENE 3D
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas3d });
-    this.renderer.setSize(this.canvas3d.width, this.canvas3d.height);
+    this.renderer.setSize(width, height);
     this.renderer.autoClear = false;
 
     this.scene3d = new THREE.Scene();

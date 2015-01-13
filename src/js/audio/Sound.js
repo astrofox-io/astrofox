@@ -38,7 +38,7 @@ Sound.prototype.getVolume = function() {
     return this.source.gain.value || 0;
 };
 
-Sound.prototype.getProgress = function() {
+Sound.prototype.getPosition = function() {
     return (this.getCurrentTime() / this.getDuration()) || 0;
 };
 

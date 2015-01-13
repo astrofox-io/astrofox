@@ -123,7 +123,7 @@ var Waveform = React.createClass({
             width = this.config.width,
             height = this.config.height + this.config.shadowHeight,
             seek = this.state.seek,
-            progressWidth = player.getProgress('audio') * width,
+            progressWidth = player.getPosition('audio') * width,
             style = { width: progressWidth + 'px' },
             clipStyle = { display: 'none' };
 
