@@ -23,9 +23,8 @@ var ControlDock = React.createClass({
     },
 
     render: function() {
-        var i = 0;
-        var controls = this.state.controls.map(function(result) {
-            return <div key={"control" + i++}>{result}</div>
+        var controls = this.state.controls.map(function(control, index) {
+            return <div key={"control" + index}>{control}</div>
         });
 
         return (

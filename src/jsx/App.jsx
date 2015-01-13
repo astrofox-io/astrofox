@@ -10,6 +10,15 @@ var App = React.createClass({
         this.player = new AstroFox.Player(this.audioContext);
     },
 
+    handleClick: function(e) {
+        this.refs.menu.setActiveIndex(-1);
+    },
+
+    handleDragDrop: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    },
+
     handleFileLoad: function(file, data, callback) {
         var player = this.player;
         var sound = new AstroFox.BufferedSound();
@@ -54,18 +63,14 @@ var App = React.createClass({
         this.refs.scene.registerControl(control);
     },
 
-    handleDragDrop: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-    },
-
     render: function() {
         return (
             <div id="container"
+                onClick={this.handleClick}
                 onDrop={this.handleDragDrop}
                 onDragOver={this.handleDragDrop}>
                 <Header />
-                <MenuBar />
+                <MenuBar ref="menu" />
                 <div id="body">
                     <div id="view">
                         <Scene
@@ -125,15 +130,101 @@ var Footer = React.createClass({
 });
 
 var MenuBar = React.createClass({
+    getInitialState: function() {
+        return {
+            activeIndex: -1
+        };
+    },
+
+    componentWillMount: function() {
+        this.items = [
+            { name: 'File', items: ['Render', 'Exit'] },
+            { name: 'Settings', items: [] },
+            { name: 'Help', items: ['About'] }
+        ];
+    },
+
+    handleClick: function(index) {
+        this.setActiveIndex((this.state.activeIndex === index) ? -1 : index);
+    },
+
+    handleMouseOver: function(index) {
+        if (this.state.activeIndex > -1) {
+            this.setActiveIndex(index);
+        }
+    },
+
+    setActiveIndex: function(index) {
+        this.setState({ activeIndex: index });
+    },
+
     render: function() {
+        var items = this.items.map(function(item, index) {
+            return (
+                <MenuItem
+                    key={"menu" + index}
+                    name={item.name}
+                    items={item.items}
+                    active={this.state.activeIndex === index}
+                    onClick={this.handleClick.bind(this, index)}
+                    onMouseOver={this.handleMouseOver.bind(this, index)}
+                />
+            );
+        }, this);
+
         return (
             <div id="menu">
-                <ul>
-                    <li>File</li>
-                    <li>Settings</li>
-                    <li>Help</li>
-                </ul>
+                <ul>{items}</ul>
             </div>
+        );
+    }
+});
+
+var MenuItem = React.createClass({
+    getInitialState: function() {
+        return {
+            showItems: false
+        };
+    },
+
+    componentWillReceiveProps: function(props) {
+        if (typeof props.active !== 'undefined') {
+            this.setState({ showItems: props.active });
+        }
+    },
+
+    handleClick: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.props.onClick();
+    },
+
+    handleMouseOver: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.props.onMouseOver();
+    },
+
+    render: function() {
+        var style = { display: (this.state.showItems) ? 'block' : 'none' };
+        var items = this.props.items.map(function(item, index) {
+            return <li key={"submenu" + index}>{item}</li>;
+        }, this);
+
+        return (
+            <li>
+                <div className="menu-item"
+                    onClick={this.handleClick}
+                    onMouseOver={this.handleMouseOver}>
+                    {this.props.name}
+                </div>
+                <ul className="submenu"
+                    style={style}>
+                    {items}
+                </ul>
+            </li>
         );
     }
 });

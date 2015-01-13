@@ -34,7 +34,7 @@ gulp.task('sprite', function () {
         .pipe(spritesmith({
             imgName: 'sprite.png',
             cssName: 'sprite.css',
-            cssTemplate: 'src/image/sprite/sprite.css.mustache'
+            cssTemplate: 'src/image/sprite/template/sprite.css.mustache'
         }));
 
     spriteData.pipe(gulp.dest('build'));

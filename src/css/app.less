@@ -290,13 +290,39 @@ input[type="range"]::-webkit-slider-thumb {
     padding-left: 20px;
 
     li {
-        padding: 5px 0;
         display: inline-block;
+        position: relative;
+        padding: 5px 0;
+    }
+
+    .menu-item {
         margin-right: 16px;
 
         &:hover {
             cursor: default;
             color: @primary-color;
+        }
+    }
+
+    .submenu {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        list-style: none;
+        z-index: 10;
+
+        li {
+            display: block;
+            font-family: @primary-font;
+            font-size: @font-small;
+            padding: 5px 5px 5px 20px;
+            min-width: 100px;
+            background-color: #222;
+
+            &:hover {
+                cursor: default;
+                background-color: @primary-color;
+            }
         }
     }
 }
