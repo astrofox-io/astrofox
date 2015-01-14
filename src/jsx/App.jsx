@@ -136,11 +136,18 @@ var MenuBar = React.createClass({
         };
     },
 
+    getDefaultProps: function() {
+        return {
+
+        };
+    },
+
     componentWillMount: function() {
         this.items = [
-            { name: 'File', items: ['Render', 'Exit'] },
-            { name: 'Settings', items: [] },
-            { name: 'Help', items: ['About'] }
+            { text: 'File', items: ['New', 'Open', 'Save', 'Exit'] },
+            { text: 'View', items: ['Preferences'] },
+            { text: 'Run', items: ['Render Scene'] },
+            { text: 'Help', items: ['About'] }
         ];
     },
 
@@ -154,6 +161,11 @@ var MenuBar = React.createClass({
         }
     },
 
+    handleItemClick: function() {
+        // TODO: Execute here?
+        this.setActiveIndex(-1);
+    },
+
     setActiveIndex: function(index) {
         this.setState({ activeIndex: index });
     },
@@ -161,13 +173,14 @@ var MenuBar = React.createClass({
     render: function() {
         var items = this.items.map(function(item, index) {
             return (
-                <MenuItem
-                    key={"menu" + index}
-                    name={item.name}
+                <MenuBarItem
+                    key={"menubaritem" + index}
+                    text={item.text}
                     items={item.items}
                     active={this.state.activeIndex === index}
                     onClick={this.handleClick.bind(this, index)}
                     onMouseOver={this.handleMouseOver.bind(this, index)}
+                    onItemClick={this.handleItemClick}
                 />
             );
         }, this);
@@ -180,7 +193,7 @@ var MenuBar = React.createClass({
     }
 });
 
-var MenuItem = React.createClass({
+var MenuBarItem = React.createClass({
     getInitialState: function() {
         return {
             showItems: false
@@ -207,23 +220,59 @@ var MenuItem = React.createClass({
         this.props.onMouseOver();
     },
 
+    handleItemClick: function(text) {
+        console.log(this.props.text + '/' + text);
+        this.props.onItemClick();
+    },
+
     render: function() {
         var style = { display: (this.state.showItems) ? 'block' : 'none' };
         var items = this.props.items.map(function(item, index) {
-            return <li key={"submenu" + index}>{item}</li>;
+            return (
+                <MenuItem
+                    key={"menuitem" + index}
+                    text={item}
+                    onClick={this.handleItemClick}
+                />
+            );
         }, this);
 
         return (
             <li>
-                <div className="menu-item"
+                <div className="menubar-item"
                     onClick={this.handleClick}
                     onMouseOver={this.handleMouseOver}>
-                    {this.props.name}
+                    {this.props.text}
                 </div>
-                <ul className="submenu"
+                <ul className="menu"
                     style={style}>
                     {items}
                 </ul>
+            </li>
+        );
+    }
+});
+
+var MenuItem = React.createClass({
+    getDefaultProps: function() {
+        return {
+            text: '',
+            onClick: function(){}
+        };
+    },
+
+    handleClick: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.props.onClick(this.props.text);
+    },
+
+    render: function() {
+        return (
+            <li className="menu-item"
+                onClick={this.handleClick}>
+                {this.props.text}
             </li>
         );
     }

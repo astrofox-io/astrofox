@@ -288,14 +288,16 @@ input[type="range"]::-webkit-slider-thumb {
     color: @menu-font-color;
     background-color: @menu-background-color;
     padding-left: 20px;
+    height: 20px;
 
     li {
         display: inline-block;
         position: relative;
-        padding: 5px 0;
     }
 
-    .menu-item {
+    .menubar-item {
+        line-height: 20px;
+        vertical-align: middle;
         margin-right: 16px;
 
         &:hover {
@@ -304,12 +306,13 @@ input[type="range"]::-webkit-slider-thumb {
         }
     }
 
-    .submenu {
+    .menu {
         position: absolute;
         top: 20px;
         left: 0;
         list-style: none;
         z-index: 10;
+        border: 1px solid #111;
 
         li {
             display: block;
