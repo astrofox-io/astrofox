@@ -298,7 +298,9 @@ input[type="range"]::-webkit-slider-thumb {
     .menubar-item {
         line-height: 20px;
         vertical-align: middle;
-        margin-right: 16px;
+        padding: 0px 8px;
+        z-index: 20;
+        position: relative;
 
         &:hover {
             cursor: default;
@@ -306,12 +308,18 @@ input[type="range"]::-webkit-slider-thumb {
         }
     }
 
+    .active {
+        color: @primary-color;
+        background-color: #222;
+    }
+
     .menu {
         position: absolute;
         top: 20px;
         left: 0;
         list-style: none;
-        z-index: 10;
+        z-index: 1;
+        background-color: #222;
         border: 1px solid #111;
 
         li {
@@ -319,12 +327,12 @@ input[type="range"]::-webkit-slider-thumb {
             font-family: @primary-font;
             font-size: @font-small;
             padding: 5px 5px 5px 20px;
-            min-width: 100px;
-            background-color: #222;
+            min-width: 140px;
 
             &:hover {
-                cursor: default;
+                color: @primary-text-color;
                 background-color: @primary-color;
+                cursor: default;
             }
         }
     }
