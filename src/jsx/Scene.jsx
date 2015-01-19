@@ -10,6 +10,7 @@ var Scene = React.createClass({
     componentDidMount: function() {
         this.canvas2d = this.refs.canvas2d.getDOMNode();
         this.canvas3d = this.refs.canvas3d.getDOMNode();
+        //this.canvas3d.getContext('webgl', { preserveDrawingBuffer: true });
         this.renderer = new AstroFox.RenderManager(this.canvas2d, this.canvas3d);
         // DEBUG
         console.log('scene loaded');
@@ -67,7 +68,11 @@ var Scene = React.createClass({
     renderScene: function() {
         requestAnimationFrame(this.renderScene);
 
-        this.renderer.render(this.canvas);
+        this.renderer.render();
+    },
+
+    renderMovie: function() {
+        this.renderer.renderMovie();
     },
 
     update: function(name, data) {
@@ -87,7 +92,7 @@ var Scene = React.createClass({
                 onDragOver={this.handleDragOver}>
                 <Loading loading={this.state.loading} />
                 <canvas ref="canvas3d" id="canvas3d" height="480" width="854"></canvas>
-                <canvas ref="canvas2d" id="canvas2d" height="480" width="854" className="offscreen"></canvas>
+                <canvas ref="canvas2d" id="canvas2d" height="480" width="854" className="offScreen"></canvas>
             </div>
         );
     }

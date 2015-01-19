@@ -63,6 +63,12 @@ var App = React.createClass({
         this.refs.scene.registerControl(control);
     },
 
+    handleMenuAction: function(action) {
+        if (action === 'File/Render Movie') {
+            this.refs.scene.renderMovie();
+        }
+    },
+
     render: function() {
         return (
             <div id="container"
@@ -70,7 +76,7 @@ var App = React.createClass({
                 onDrop={this.handleDragDrop}
                 onDragOver={this.handleDragDrop}>
                 <Header />
-                <MenuBar ref="menu" />
+                <MenuBar ref="menu" onMenuAction={this.handleMenuAction} />
                 <div id="body">
                     <div id="view">
                         <Scene
@@ -138,7 +144,7 @@ var MenuBar = React.createClass({
 
     getDefaultProps: function() {
         return {
-
+            onMenuAction: function(){}
         };
     },
 
@@ -161,9 +167,9 @@ var MenuBar = React.createClass({
         }
     },
 
-    handleItemClick: function() {
-        // TODO: Execute here?
+    handleItemClick: function(action) {
         this.setActiveIndex(-1);
+        this.props.onMenuAction(action);
     },
 
     setActiveIndex: function(index) {
@@ -221,8 +227,8 @@ var MenuBarItem = React.createClass({
     },
 
     handleItemClick: function(text) {
-        console.log(this.props.text + '/' + text);
-        this.props.onItemClick();
+        var action = this.props.text + '/' + text;
+        this.props.onItemClick(action);
     },
 
     render: function() {

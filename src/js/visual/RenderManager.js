@@ -28,40 +28,36 @@ RenderManager.prototype.setup = function() {
         height = this.canvas3d.height,
         factor = 2;
 
+    // Renderer
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas3d });
+    this.renderer.setSize(width, height);
+    this.renderer.autoClear = false;
+
     // Scene 2D
     this.scene2d = new THREE.Scene();
-
-    // Camera
     this.camera2d = new THREE.OrthographicCamera(-1 * width / factor, width / factor, height / factor, -1 * height / factor, 1, 10);
     this.camera2d.position.z = 10;
 
-    // Texture
-    var texture2d = new THREE.Texture(this.canvas2d);
-    texture2d.needsUpdate = true;
+    this.texture2d = new THREE.Texture(this.canvas2d);
+    this.texture2d.needsUpdate = true;
 
-    // Material
     var material = new THREE.SpriteMaterial({
-        map: texture2d,
+        map: this.texture2d,
         transparent: true
     });
 
-    // Sprite
     var sprite = new THREE.Sprite(material);
     sprite.scale.set(material.map.image.width, material.map.image.height, 1);
     sprite.position.set(0, 0, 1);
 
     this.scene2d.add(sprite);
 
-    // SCENE 3D
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas3d });
-    this.renderer.setSize(width, height);
-    this.renderer.autoClear = false;
-
+    // Scene 3D
     this.scene3d = new THREE.Scene();
     this.camera3d = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
     this.scene3d.add(this.camera3d);
 
-    /* 3d test
+    /*
     // light
     var pointLight = new THREE.PointLight(0xFFFFFF);
     pointLight.position.x = 10;
@@ -125,7 +121,7 @@ RenderManager.prototype.clear = function() {
 
 };
 
-RenderManager.prototype.render = function() {
+RenderManager.prototype.render = function(save) {
     this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
 
     _(this.controls).forEachRight(function(control) {
@@ -136,6 +132,8 @@ RenderManager.prototype.render = function() {
             );
         }
     }.bind(this));
+
+    this.texture2d.needsUpdate = true;
 
     //this.cube.rotation.x += 0.1;
     //this.cube.rotation.y += 0.1;
@@ -148,6 +146,22 @@ RenderManager.prototype.render = function() {
     this.updateFPS();
 
     this.frame++;
+
+    if (save) {
+        var img = this.renderer.domElement.toDataURL();
+
+        console.log('rendering...', img);
+
+        var data = img.replace('data:image/png;base64', '');
+        var buf = new AstroFox.Buffer(data, 'base64');
+        AstroFox.FS.writeFile('d:/image-' + Date.now() + '.png', buf);
+
+        console.log('render complete');
+    }
+};
+
+RenderManager.prototype.renderMovie = function() {
+    this.render(true);
 };
 
 // Supposedly 1.5x faster than Array.splice
