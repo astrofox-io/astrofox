@@ -21,7 +21,7 @@ var ImageControl = React.createClass({
 
     componentDidMount: function() {
         console.log('control mounted', this.config.name);
-        this.canvas = this.refs.canvas.getDOMNode();
+        this.canvas = document.createElement('canvas');
         this.image = new AstroFox.ImageDisplay(this.canvas, this.state);
         this.props.onLoad(this)
     },
@@ -66,7 +66,7 @@ var ImageControl = React.createClass({
         return (image !== null) ?  image.naturalWidth / image.naturalHeight :  0;
     },
 
-    renderScene: function(canvas) {
+    renderToCanvas: function(canvas) {
         if (this.image && this.state.image !== null) {
             var context = canvas.getContext('2d'),
                 state = this.state,
@@ -99,7 +99,6 @@ var ImageControl = React.createClass({
 
         return (
             <div className="control">
-                <canvas ref="canvas" className="offScreen" />
                 <div className="header"><span>IMAGE</span></div>
                 <div className="row">
                     <label>Image</label>

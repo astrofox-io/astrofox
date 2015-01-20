@@ -15,7 +15,7 @@ var defaults = {
 var SpectrumAnalyzer = function(context, analyzer, options) {
     this.audioContext = context;
     this.analyzer = analyzer || this.audioContext.createAnalyser();
-    this.frame = null;
+    this.id = null;
     this.fft = null;
     this.options = {};
 
@@ -40,7 +40,7 @@ SpectrumAnalyzer.prototype.disconnect = function() {
     this.analyzer.disconnect();
 };
 
-SpectrumAnalyzer.prototype.getFrequencyData = function(frame, minDB, maxDB, minFreq, maxFreq, smoothing, data) {
+SpectrumAnalyzer.prototype.getFrequencyData = function(id, minDB, maxDB, minFreq, maxFreq, smoothing, data) {
     var i,
         len = this.analyzer.frequencyBinCount,
         options = this.options,
@@ -53,13 +53,13 @@ SpectrumAnalyzer.prototype.getFrequencyData = function(frame, minDB, maxDB, minF
         results = new Float32Array(maxBin);
 
     // Get frequency data
-    if (this.frame === frame && this.fft !== null) {
+    if (this.id === id && this.fft !== null) {
         fft = this.fft;
     }
     else {
         this.analyzer.getFloatFrequencyData(fft);
         this.fft = fft;
-        this.frame = frame;
+        this.id = id;
     }
 
     // Convert db to magnitude

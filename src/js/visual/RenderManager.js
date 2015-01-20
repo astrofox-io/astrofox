@@ -5,8 +5,7 @@ var _ = require('lodash');
 var THREE = require('three');
 
 var RenderManager = EventEmitter.extend({
-    constructor: function(canvas2d, canvas3d, options) {
-        this.canvas2d = canvas2d;
+    constructor: function(canvas3d, options) {
         this.canvas3d = canvas3d;
         this.fps = 0;
         this.time = 0;
@@ -34,6 +33,10 @@ RenderManager.prototype.setup = function() {
     this.renderer.autoClear = false;
 
     // Scene 2D
+    this.canvas2d = document.createElement('canvas');
+    this.canvas2d.width = width;
+    this.canvas2d.height = height;
+
     this.scene2d = new THREE.Scene();
     this.camera2d = new THREE.OrthographicCamera(-1 * width / factor, width / factor, height / factor, -1 * height / factor, 1, 10);
     this.camera2d.position.z = 10;
@@ -125,8 +128,8 @@ RenderManager.prototype.render = function(save) {
     this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
 
     _(this.controls).forEachRight(function(control) {
-        if (control.renderScene) {
-            control.renderScene(
+        if (control.renderToCanvas) {
+            control.renderToCanvas(
                 (control.config.context == '3d') ? this.canvas3d : this.canvas2d,
                 this.frame
             );

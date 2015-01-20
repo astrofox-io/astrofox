@@ -36,7 +36,7 @@ var TextControl = React.createClass({
 
     componentDidMount: function() {
         console.log('control mounted', this.config.name);
-        this.canvas = this.refs.canvas.getDOMNode();
+        this.canvas = document.createElement('canvas');
         this.text = new AstroFox.TextDisplay(this.canvas, this.state);
         this.props.onLoad(this)
     },
@@ -44,14 +44,13 @@ var TextControl = React.createClass({
     handleChange: function(name, val) {
         var state = {};
         state[name] = val;
-        this.setState(state);
         this.setState(state, function() {
             this.text.init(this.state);
             this.text.render();
-        });
+        }.bind(this));
     },
 
-    renderScene: function(canvas) {
+    renderToCanvas: function(canvas) {
         if (this.state.text == '') return;
 
         var context = canvas.getContext('2d'),
@@ -78,7 +77,6 @@ var TextControl = React.createClass({
 
         return (
             <div className="control">
-                <canvas ref="canvas" className="offScreen" />
                 <div className="header"><span>TEXT</span></div>
                 <div className="row">
                     <label>Text</label>
