@@ -74,6 +74,12 @@ var Scene = React.createClass({
         this.renderer.renderMovie();
     },
 
+    saveImage: function() {
+        this.renderer.renderImage(function(buffer){
+            AstroFox.FS.writeFile('d:/image-' + Date.now() + '.png', buffer);
+        });
+    },
+
     update: function(name, data) {
         if (name === "spectrum") {
             for (var prop in data) {

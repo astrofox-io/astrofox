@@ -124,7 +124,7 @@ RenderManager.prototype.clear = function() {
 
 };
 
-RenderManager.prototype.render = function(save) {
+RenderManager.prototype.render = function(callback) {
     this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
 
     _(this.controls).forEachRight(function(control) {
@@ -150,21 +150,21 @@ RenderManager.prototype.render = function(save) {
 
     this.frame++;
 
-    if (save) {
-        var img = this.renderer.domElement.toDataURL();
-
-        console.log('rendering...', img);
-
-        var data = img.replace('data:image/png;base64', '');
-        var buf = new AstroFox.Buffer(data, 'base64');
-        AstroFox.FS.writeFile('d:/image-' + Date.now() + '.png', buf);
-
-        console.log('render complete');
-    }
+    if (callback) callback();
 };
 
 RenderManager.prototype.renderMovie = function() {
-    this.render(true);
+    console.log('render movie');
+};
+
+RenderManager.prototype.renderImage = function(callback) {
+    this.render(function(){
+        var img = this.renderer.domElement.toDataURL(),
+            data = img.replace('data:image/png;base64', ''),
+            buffer = new AstroFox.Buffer(data, 'base64');
+
+        if (callback) callback(buffer);
+    }.bind(this));
 };
 
 // Supposedly 1.5x faster than Array.splice
