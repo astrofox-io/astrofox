@@ -52,7 +52,7 @@ var SpectrumControl = React.createClass({
         }.bind(this));
     },
 
-    renderToCanvas: function(canvas, frame, data) {
+    renderToCanvas: function(canvas, frame, fft) {
         var i, smoothing, len,
             context = canvas.getContext('2d'),
             player = this.props.player,
@@ -60,9 +60,21 @@ var SpectrumControl = React.createClass({
             width = state.width / 2,
             height = state.height;
 
-        if (!data) {
-            data = player.spectrum.getFrequencyData(
-                frame,
+        if (typeof fft === 'undefined') {
+            fft = player.spectrum.getFrequencyData(frame);
+            data = player.spectrum.parseFrequencyData(
+                fft,
+                -100,
+                this.state.maxDecibels,
+                0,
+                this.state.maxFrequency,
+                this.state.smoothingTimeConstant,
+                this.data
+            );
+        }
+        else {
+            data = player.spectrum.parseFrequencyData(
+                fft,
                 -100,
                 this.state.maxDecibels,
                 0,

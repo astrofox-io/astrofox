@@ -15,13 +15,14 @@ var Player = EventEmitter.extend({
         this.sounds = {};
 
         this.audioContext = context;
-        this.spectrum = new SpectrumAnalyzer(this.audioContext, this.audioContext.createAnalyser());
+        this.analyzer = this.audioContext.createAnalyser();
+        this.spectrum = new SpectrumAnalyzer(this.audioContext, this.analyzer);
         this.waveform = new WaveformAnalyzer(this.audioContext);
-        this.processor = this.audioContext.createScriptProcessor();
         this.volume = this.audioContext.createGain();
         this.volume.connect(this.audioContext.destination);
 
-        this.processor.onaudioproces = this.processAudio;
+        //this.processor = this.audioContext.createScriptProcessor();
+        //this.processor.onaudioproces = this.processAudio;
 
         this.init(options);
     }
@@ -47,8 +48,8 @@ Player.prototype.load = function(id, sound) {
     this.sounds[id] = sound;
 
     sound.connect(this.volume);
-    sound.connect(this.spectrum.analyzer);
-    sound.connect(this.processor);
+    sound.connect(this.analyzer);
+    //sound.connect(this.processor);
 
     // TODO: handle mediaelement as well
     if (sound.buffer) {
@@ -56,48 +57,6 @@ Player.prototype.load = function(id, sound) {
     }
 
     this.emit('load');
-};
-
-Player.prototype.process = function(buffer, callback) {
-    var audioContext = new AudioContext();
-    var analyzer = audioContext.createAnalyser();
-    var processor = audioContext.createScriptProcessor(256, 1, 1);
-    var fft = new Float32Array(128);
-    var max = 0;
-
-    analyzer.fftSize = 256;
-    analyzer.minDecibels = -100;
-    analyzer.maxDecibels = 0;
-    analyzer.minFrequency = 0;
-    analyzer.maxFrequency = audioContext.sampleRate / 2;
-
-    for (var i = 0; i < buffer.duration; i++) {
-        var source = audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(analyzer);
-        source.start(0, i);
-        analyzer.getFloatFrequencyData(fft);
-        for (var j = 0; j < fft.length; j++) {
-            var val = Math.exp(0.1151292546497023 * fft[j]);
-            if (val > max) max = val;
-        }
-        console.log(max);
-        source.stop();
-    };
-
-    if (callback) callback(max);
-};
-
-Player.prototype.processAudio = function(e) {
-    var i,
-        buffer = e.inputBuffer.getChannelData(0),
-        len = buffer.length;
-
-    for (i = 0; i < len; i++) {
-
-    }
-
-    console.log('process');
 };
 
 Player.prototype.play = function(id) {

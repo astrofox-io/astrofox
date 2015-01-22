@@ -6,10 +6,7 @@ var defaults = {
     minDecibels: -100,
     maxDecibels: 0,
     fftSize: 2048,
-    smoothingTimeConstant: 0,
-    minFrequency : 0,
-    maxFrequency : 3000,
-    bars: 128
+    smoothingTimeConstant: 0
 };
 
 var SpectrumAnalyzer = function(context, analyzer, options) {
@@ -40,20 +37,10 @@ SpectrumAnalyzer.prototype.disconnect = function() {
     this.analyzer.disconnect();
 };
 
-SpectrumAnalyzer.prototype.getFrequencyData = function(id, minDB, maxDB, minFreq, maxFreq, smoothing, data) {
-    var i,
-        len = this.analyzer.frequencyBinCount,
-        options = this.options,
-        fft = new Float32Array(len),
-        range = this.audioContext.sampleRate / this.analyzer.fftSize,
-        minVal = db2mag(minDB || this.analyzer.minDecibels),
-        maxVal = db2mag(maxDB || this.analyzer.maxDecibels),
-        minBin = floor((minFreq || options.minFrequency) / range),
-        maxBin = floor((maxFreq || options.maxFrequency) / range),
-        results = new Float32Array(maxBin);
+SpectrumAnalyzer.prototype.getFrequencyData = function(id) {
+    var fft = new Float32Array(this.analyzer.frequencyBinCount);
 
-    // Get frequency data
-    if (this.id === id && this.fft !== null) {
+    if (typeof id !== 'undefined' && this.id === id && this.fft !== null) {
         fft = this.fft;
     }
     else {
@@ -62,16 +49,33 @@ SpectrumAnalyzer.prototype.getFrequencyData = function(id, minDB, maxDB, minFreq
         this.id = id;
     }
 
+    //console.log(fft);
+
+    return fft;
+};
+
+SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, minDB, maxDB, minFreq, maxFreq, smoothing, lastData) {
+    var i,
+        options = this.options,
+        range = this.audioContext.sampleRate / this.analyzer.fftSize,
+        minVal = db2mag(minDB),
+        maxVal = db2mag(maxDB),
+        minBin = floor(minFreq / range),
+        maxBin = floor(maxFreq / range),
+        results = new Float32Array(maxBin);
+
+    if (fft === null) fft = this.getFrequencyData();
+
     // Convert db to magnitude
     for (i = minBin; i < maxBin; i++) {
         results[i] = convertDb(fft[i], minVal, maxVal);
     }
 
     // Apply smoothing
-    smoothing = (data && data.length === maxBin) ? smoothing : 0;
+    smoothing = (lastData && lastData.length === maxBin) ? smoothing : 0;
     if (smoothing > 0) {
         for (i = 0; i < maxBin; i++) {
-            results[i] = (data[i] * smoothing) + (results[i] * (1.0 - smoothing));
+            results[i] = (lastData[i] * smoothing) + (results[i] * (1.0 - smoothing));
         }
     }
 

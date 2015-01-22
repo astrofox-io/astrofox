@@ -15,6 +15,10 @@ var Scene = React.createClass({
         console.log('scene loaded');
 
         this.renderScene();
+
+        this.props.player.on('play', function(){
+            this.renderScene();
+        }.bind(this));
     },
 
     handleDragOver: function(e){
@@ -65,18 +69,25 @@ var Scene = React.createClass({
     },
 
     renderScene: function() {
-        requestAnimationFrame(this.renderScene);
+        var player = this.props.player;
+
+        if (player.isPlaying()) requestAnimationFrame(this.renderScene);
 
         this.renderer.render();
     },
 
     renderMovie: function() {
-        this.renderer.renderMovie();
+        var player = this.props.player;
+        var sound = player.getSound('audio');
+
+        if (sound) {
+            this.renderer.renderMovie(player.audioContext, sound.buffer, player.analyzer);
+        }
     },
 
     saveImage: function() {
         this.renderer.renderImage(function(buffer){
-            AstroFox.FS.writeFile('d:/image-' + Date.now() + '.png', buffer);
+            Node.FS.writeFile('d:/image-' + Date.now() + '.png', buffer);
         });
     },
 
