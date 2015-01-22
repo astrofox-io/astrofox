@@ -39,13 +39,11 @@ TextDisplay.prototype.render = function() {
     if (options.text.length == 0) return;
 
     context.font = font;
-    width = context.measureText(options.text).width;
+    width = Math.ceil(context.measureText(options.text).width);
     height = options.size * 2;
 
-    // Fix for italics
-    if (options.italic) {
-        width += width/options.text.length;
-    }
+    // Fix for text clipping
+    width += width/options.text.length;
 
     // Reset canvas
     canvas.width = width;
