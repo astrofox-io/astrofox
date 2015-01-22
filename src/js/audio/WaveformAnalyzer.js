@@ -5,41 +5,10 @@ var EventEmitter = require('../core/EventEmitter.js');
 var WaveformAnalyzer = EventEmitter.extend({
     constructor: function (context) {
         this.audioContext = context;
-
         this.buffer = null;
         this.loaded = false;
-        this.data = [];
-
-        this.init();
     }
 });
-
-WaveformAnalyzer.prototype.init = function(){
-
-};
-
-WaveformAnalyzer.prototype.load = function(src) {
-    var request = new XMLHttpRequest();
-
-    this.src = src;
-
-    request.open('GET', this.src, true);
-    request.responseType = 'arraybuffer';
-
-    request.onload = function() {
-        this.audioContext.decodeAudioData(
-            request.response,
-            function(buffer) {
-                this.loadBuffer(buffer);
-            }.bind(this),
-            function(e){
-                alert(e);
-            }
-        );
-    }.bind(this);
-
-    request.send();
-};
 
 WaveformAnalyzer.prototype.loadBuffer = function(buffer) {
     this.buffer = buffer;
