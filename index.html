@@ -23,16 +23,26 @@
 </head>
 <body>
 <script>
-    if (typeof require !== 'undefined') {
-        AstroFox.FS = require('fs');
-        AstroFox.Buffer = require('buffer').Buffer;
-        AstroFox.GUI = require('nw.gui');
-    }
+var Node = {};
 
+if (typeof require !== 'undefined') {
+    Node.FS = require('fs');
+    Node.Buffer = require('buffer').Buffer;
+    Node.GUI = require('nw.gui');
+
+    if (process && process.platform === 'darwin') {
+        var mb = new Node.GUI.Menu({ type: 'menubar' });
+        mb.createMacBuiltin('AstroFox');
+        Node.GUI.Window.get().menu = mb;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function(event) {
     React.render(
         React.createElement(App, null),
         document.body
     );
+});
 </script>
 </body>
 </html>
