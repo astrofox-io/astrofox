@@ -80,8 +80,10 @@ var Scene = React.createClass({
         var player = this.props.player;
         var sound = player.getSound('audio');
 
+        if (player.isPlaying()) player.stop('audio');
+
         if (sound) {
-            this.renderer.renderMovie(player.audioContext, sound.buffer, player.analyzer);
+            this.renderer.renderMovie(player);
         }
     },
 

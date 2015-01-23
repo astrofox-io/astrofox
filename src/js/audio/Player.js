@@ -149,4 +149,21 @@ Player.prototype.isPlaying = function() {
     return false;
 };
 
+Player.prototype.getFFT = function(start, callback) {
+    var analyzer = this.analyzer,
+        fft = new Float32Array(this.analyzer.frequencyBinCount),
+        source = this.audioContext.createBufferSource();
+
+    source.buffer = this.getSound('audio').buffer;
+    source.connect(analyzer);
+
+    source.onended = function() {
+        analyzer.getFloatFrequencyData(fft);
+        source.disconnect();
+        if (callback) callback(fft, start+1);
+    }.bind(this);
+
+    source.start(0, start/60, 1/60);
+};
+
 module.exports = Player;

@@ -155,75 +155,15 @@ RenderManager.prototype.render = function(callback, data) {
     if (callback) callback();
 };
 
-RenderManager.prototype.renderMovie = function(context, buffer, analyzer) {
-    console.log('rendering movie');
-
-    var promises = [];
-
-    for (var i = 0; i < 60; i++) {
-        promises.push(this.getFFT);
-    }
-
-    var j = 0;
-    console.log('exec promises');
-    //var result = Q({ context: context, buffer: buffer, start: 0 });
-    var result = Q({ context: context, buffer: buffer, analyzer: analyzer, start: 0 });
-    promises.forEach(function(f) {
-        result = result.then(f.bind(this)).fail(function(error){
-            console.log('ERROR', error);
-        });
-    }.bind(this));
-    result.done(function(){
-        console.log('finished');
-    });
-};
-
-RenderManager.prototype.getFFT = function(obj) {
-    var deferred = Q.defer();
-
-    var context = obj.context,
-        buffer = obj.buffer,
-        analyzer = obj.analyzer,
-        start = obj.start,
-        fft = new Float32Array(1024),
-        fft2 = new Float32Array(1024);
-
-    var _analyzer = context.createAnalyser();
-
-    // Setup analyzer
-    _analyzer.fftSize = 2048;
-    _analyzer.minDecibels = -100;
-    _analyzer.maxDecibels = 0;
-    _analyzer.smoothingTimeConstant = 0;
-
-    var source = context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(_analyzer);
-
-    var sound = new AstroFox.BufferedSound(context);
-    sound.load(buffer);
-    sound.connect(analyzer);
-    sound.initBuffer();
-
-    source.onended = function() {
-        _analyzer.getFloatFrequencyData(fft);
-        analyzer.getFloatFrequencyData(fft2);
-
-        _analyzer.disconnect();
-        analyzer.disconnect();
-
-        source.disconnect();
-        console.log('processed ', start, fft, fft2);
+RenderManager.prototype.renderMovie = function(player) {
+    var callback = function(fft, next) {
         this.render(null, fft);
-
-        obj.start += 1;
-        deferred.resolve(obj);
+        if (next < 60) {
+            player.getFFT(next, callback);
+        }
     }.bind(this);
 
-    source.start(0, start/60, 1/60);
-    console.log('started', start);
-
-    return deferred.promise;
+    player.getFFT(0, callback);
 };
 
 RenderManager.prototype.renderImage = function(callback) {
