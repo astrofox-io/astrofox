@@ -19,14 +19,20 @@ var BarDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
-        this.options = {};
+        this.options = _.assign({}, defaults);
 
-        this.init(options);
+        this.configure(options);
     }
 });
 
-BarDisplay.prototype.init = function(options) {
-    this.options = _.assign({}, defaults, options);
+BarDisplay.prototype.configure = function(options) {
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (this.options.hasOwnProperty(prop)) {
+                this.options[prop] = options[prop];
+            }
+        }
+    }
 };
 
 BarDisplay.prototype.render = function(data) {

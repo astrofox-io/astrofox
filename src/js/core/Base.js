@@ -5,9 +5,8 @@ var Base = function() {};
 Base.extend = function(props) {
     var base = this,
         prototype = this.prototype,
-        props = props || {};
-
-    var obj = Object.create(prototype);
+        props = props || {},
+        obj = Object.create(prototype);
 
     for (var key in props) {
         obj[key] = props[key];

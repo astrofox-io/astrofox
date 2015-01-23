@@ -12,30 +12,19 @@ Sound.prototype.init = function(context) {
     this.loaded = false;
     this.repeat = false;
 
-    this.audioContext = context || AstroFox.getAudioContext();
-    this.volume = this.audioContext.createGain();
+    this.audioContext = context;
 };
 
 Sound.prototype.connect = function(node) {
     if (this.nodes.indexOf(node) < 0) {
         this.nodes.push(node);
     }
-    this.volume.connect(node);
 };
 
 Sound.prototype.disconnect = function() {
-    this.volume.disconnect();
-    if (this.source) this.source.disconnect();
-};
-
-Sound.prototype.setVolume = function(val) {
-    if (this.loaded) {
-        this.source.gain.value = val;
+    if (this.source) {
+        this.source.disconnect();
     }
-};
-
-Sound.prototype.getVolume = function() {
-    return this.source.gain.value || 0;
 };
 
 Sound.prototype.getPosition = function() {

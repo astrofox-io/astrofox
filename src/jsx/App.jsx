@@ -21,7 +21,7 @@ var App = React.createClass({
 
     handleFileLoad: function(file, data, callback) {
         var player = this.player;
-        var sound = new AstroFox.BufferedSound();
+        var sound = new AstroFox.BufferedSound(this.audioContext);
         var timer = AstroFox.getTimer();
 
         sound.on('load', function() {

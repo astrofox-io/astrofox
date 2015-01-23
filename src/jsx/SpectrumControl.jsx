@@ -21,17 +21,22 @@ var SpectrumControl = React.createClass({
     },
 
     componentWillMount: function() {
+        var player = this.props.player;
+
         this.config = {
             name: 'spectrum',
             context: '2d'
         };
         this.data = null;
+
+        this.canvas = document.createElement('canvas');
+        this.analyzer = new AstroFox.SpectrumAnalyzer(player.audioContext, player.analyzer, this.state);
+        this.bars = new AstroFox.BarDisplay(this.canvas, this.state);
     },
 
     componentDidMount: function() {
         console.log('control mounted', this.config.name);
-        this.canvas = document.createElement('canvas');
-        this.bars = new AstroFox.BarDisplay(this.canvas, this.state);
+
         this.props.onLoad(this)
     },
 
@@ -48,43 +53,26 @@ var SpectrumControl = React.createClass({
         state[name] = val;
 
         this.setState(state, function() {
-            this.bars.init(this.state);
+            this.bars.configure(this.state);
+            this.analyzer.configure(this.state);
         }.bind(this));
     },
 
     renderToCanvas: function(canvas, frame, fft) {
-        var i, smoothing, len,
+        var i, smoothing, data, len,
             context = canvas.getContext('2d'),
-            player = this.props.player,
+            canvas = this.canvas,
             state = this.state,
             width = state.width / 2,
             height = state.height;
 
-        if (typeof fft === 'undefined') {
-            fft = player.spectrum.getFrequencyData(frame);
-            data = player.spectrum.parseFrequencyData(
-                fft,
-                -100,
-                this.state.maxDecibels,
-                0,
-                this.state.maxFrequency,
-                this.state.smoothingTimeConstant,
-                this.data
-            );
+        if (typeof fft !== 'undefined') {
+            data = this.analyzer.parseFrequencyData(fft);
         }
         else {
-            data = player.spectrum.parseFrequencyData(
-                fft,
-                -100,
-                this.state.maxDecibels,
-                0,
-                this.state.maxFrequency,
-                this.state.smoothingTimeConstant,
-                this.data
-            );
+            data = this.analyzer.getFrequencyData();
         }
 
-        this.data = data;
         this.bars.render(data);
 
         if (state.rotation % 360 !== 0) {
@@ -92,16 +80,16 @@ var SpectrumControl = React.createClass({
             context.translate(state.x, state.y - state.height);
             context.translate(width, height);
             context.rotate(state.rotation * Math.PI / 180);
-            context.drawImage(this.canvas, -width, -height);
+            context.drawImage(canvas, -width, -height);
             context.restore();
         }
         else {
-            context.drawImage(this.canvas, state.x, state.y - state.height);
+            context.drawImage(canvas, state.x, state.y - state.height);
         }
     },
 
     render: function() {
-        var maxFrequency = this.props.player.spectrum.getMaxFrequency() / 2;
+        var maxFrequency = this.analyzer.getMaxFrequency() / 2;
         var maxHeight = 480;
         var maxWidth = 854;
 

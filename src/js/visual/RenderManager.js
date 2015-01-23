@@ -188,36 +188,22 @@ RenderManager.prototype.getFFT = function(obj) {
         fft = new Float32Array(1024),
         fft2 = new Float32Array(1024);
 
-    var spectrum = new AstroFox.SpectrumAnalyzer(context, context.createAnalyser());
-
-    var _analyzer = spectrum.analyzer; //context.createAnalyser(),
+    var _analyzer = context.createAnalyser();
 
     // Setup analyzer
     _analyzer.fftSize = 2048;
-    _analyzer.smoothingTimeConstant = 0;
     _analyzer.minDecibels = -100;
     _analyzer.maxDecibels = 0;
+    _analyzer.smoothingTimeConstant = 0;
 
-    //var volume = obj.context.createGain();
-    //volume.connect(obj.context.destination);
-
-    console.log('compare', _analyzer, analyzer);
-
-    /*
     var source = context.createBufferSource();
     source.buffer = buffer;
     source.connect(_analyzer);
-    source.connect(analyzer);
-    //source.connect(volume);
-    */
 
-    var sound = new AstroFox.BufferedSound();
+    var sound = new AstroFox.BufferedSound(context);
     sound.load(buffer);
-    sound.connect(_analyzer);
     sound.connect(analyzer);
     sound.initBuffer();
-
-    var source = sound.source;
 
     source.onended = function() {
         _analyzer.getFloatFrequencyData(fft);
@@ -234,7 +220,7 @@ RenderManager.prototype.getFFT = function(obj) {
         deferred.resolve(obj);
     }.bind(this);
 
-    source.start(0, start/10, 0.001);
+    source.start(0, start/60, 1/60);
     console.log('started', start);
 
     return deferred.promise;

@@ -5,81 +5,67 @@ var _ = require('lodash');
 var defaults = {
     minDecibels: -100,
     maxDecibels: 0,
-    fftSize: 2048,
+    minFrequency: 0,
+    maxFrequency: 22050,
     smoothingTimeConstant: 0
 };
 
 var SpectrumAnalyzer = function(context, analyzer, options) {
     this.audioContext = context;
-    this.analyzer = analyzer || this.audioContext.createAnalyser();
-    this.id = null;
-    this.fft = null;
-    this.options = {};
+    this.analyzer = analyzer;
+    this.data = null;
+    this.options =_.assign({}, defaults);
 
-    this.init(options);
+    this.configure(options);
 };
 
-SpectrumAnalyzer.prototype.init = function(options) {
-    this.options = _.assign({}, defaults, options);
-
-    for (var prop in this.options) {
-        if (this.analyzer.hasOwnProperty(prop)) {
-            this.analyzer[prop] = this.options[prop];
+SpectrumAnalyzer.prototype.configure = function(options) {
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (this.options.hasOwnProperty(prop)) {
+                this.options[prop] = options[prop];
+            }
         }
     }
 };
 
-SpectrumAnalyzer.prototype.connect = function(sound) {
-    sound.connect(this.analyzer);
-};
-
-SpectrumAnalyzer.prototype.disconnect = function() {
-    this.analyzer.disconnect();
-};
-
-SpectrumAnalyzer.prototype.getFrequencyData = function(id) {
+SpectrumAnalyzer.prototype.getFrequencyData = function() {
     var fft = new Float32Array(this.analyzer.frequencyBinCount);
 
-    if (typeof id !== 'undefined' && this.id === id && this.fft !== null) {
-        fft = this.fft;
-    }
-    else {
-        this.analyzer.getFloatFrequencyData(fft);
-        this.fft = fft;
-        this.id = id;
-    }
+    this.analyzer.getFloatFrequencyData(fft);
 
-    //console.log(fft);
-
-    return fft;
+    return this.parseFrequencyData(fft, this.audioContext.sampleRate, this.analyzer.fftSize);
 };
 
-SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, minDB, maxDB, minFreq, maxFreq, smoothing, lastData) {
+SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, sampleRate, fftSize) {
     var i,
         options = this.options,
-        range = this.audioContext.sampleRate / this.analyzer.fftSize,
-        minVal = db2mag(minDB),
-        maxVal = db2mag(maxDB),
-        minBin = floor(minFreq / range),
-        maxBin = floor(maxFreq / range),
-        results = new Float32Array(maxBin);
-
-    if (fft === null) fft = this.getFrequencyData();
+        last = this.data,
+        sampleRate = sampleRate || this.audioContext.sampleRate,
+        fftSize = fftSize || this.analyzer.fftSize,
+        range = sampleRate / fftSize,
+        minVal = db2mag(options.minDecibels),
+        maxVal = db2mag(options.maxDecibels),
+        minBin = floor(options.minFrequency / range),
+        maxBin = floor(options.maxFrequency / range),
+        smoothing = (last && last.length === maxBin) ? options.smoothingTimeConstant : 0,
+        data = new Float32Array(maxBin);
 
     // Convert db to magnitude
     for (i = minBin; i < maxBin; i++) {
-        results[i] = convertDb(fft[i], minVal, maxVal);
+        data[i] = convertDb(fft[i], minVal, maxVal);
     }
 
     // Apply smoothing
-    smoothing = (lastData && lastData.length === maxBin) ? smoothing : 0;
     if (smoothing > 0) {
         for (i = 0; i < maxBin; i++) {
-            results[i] = (lastData[i] * smoothing) + (results[i] * (1.0 - smoothing));
+            data[i] = (last[i] * smoothing) + (data[i] * (1.0 - smoothing));
         }
     }
 
-    return results;
+    this.data = data;
+
+    return data;
 };
 
 SpectrumAnalyzer.getTimeData = function() {

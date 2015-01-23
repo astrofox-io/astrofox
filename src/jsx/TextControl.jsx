@@ -45,7 +45,7 @@ var TextControl = React.createClass({
         var state = {};
         state[name] = val;
         this.setState(state, function() {
-            this.text.init(this.state);
+            this.text.configure(this.state);
             this.text.render();
         }.bind(this));
     },

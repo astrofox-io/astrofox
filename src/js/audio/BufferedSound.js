@@ -3,10 +3,10 @@
 var Sound = require('./Sound.js');
 
 var BufferedSound = Sound.extend({
-    constructor: function() {
+    constructor: function(context) {
         this.startTime = 0;
         this.stopTime = 0;
-        this.init();
+        this.init(context);
     }
 });
 

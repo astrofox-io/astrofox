@@ -51,7 +51,7 @@ var ImageControl = React.createClass({
         }
 
         this.setState(state, function() {
-            this.image.init(this.state);
+            this.image.configure(this.state);
             this.image.render();
         }.bind(this));
     },

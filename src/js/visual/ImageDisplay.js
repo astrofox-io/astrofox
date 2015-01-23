@@ -10,17 +10,23 @@ var defaults = {
 };
 
 var ImageDisplay = EventEmitter.extend({
-    constructor: function(canvas) {
+    constructor: function(canvas, options) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
-        this.options = {};
+        this.options = _.assign({}, defaults);
 
-        this.init(this.options);
+        this.configure(options);
     }
 });
 
-ImageDisplay.prototype.init = function(options) {
-    this.options = _.assign({}, defaults, options);
+ImageDisplay.prototype.configure = function(options) {
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (this.options.hasOwnProperty(prop)) {
+                this.options[prop] = options[prop];
+            }
+        }
+    }
 };
 
 ImageDisplay.prototype.render = function() {

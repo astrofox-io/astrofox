@@ -1,7 +1,6 @@
 'use strict';
 
 var EventEmitter = require('../core/EventEmitter.js');
-var SpectrumAnalyzer = require('./SpectrumAnalyzer.js');
 var WaveformAnalyzer = require('./WaveformAnalyzer.js');
 var _ = require('lodash');
 
@@ -15,32 +14,30 @@ var Player = EventEmitter.extend({
         this.sounds = {};
 
         this.audioContext = context;
+
         this.analyzer = this.audioContext.createAnalyser();
-        this.spectrum = new SpectrumAnalyzer(this.audioContext, this.analyzer);
+        this.analyzer.fftSize = 2048;
+        this.analyzer.minDecibels = -100;
+        this.analyzer.maxDecibels = 0;
+        this.analyzer.smoothingTimeConstant = 0;
+
         this.waveform = new WaveformAnalyzer(this.audioContext);
         this.volume = this.audioContext.createGain();
         this.volume.connect(this.audioContext.destination);
+        this.options = _.assign({}, defaults);
 
-        //this.processor = this.audioContext.createScriptProcessor();
-        //this.processor.onaudioproces = this.processAudio;
-
-        this.init(options);
+        this.configure(options);
     }
 });
 
-Player.prototype.init = function(options) {
-    this.options = _.assign({}, defaults, options);
-};
-
-Player.prototype.connect = function(node) {
-    if (this.nodes.indexOf(node) < 0) {
-        this.nodes.push(node);
+Player.prototype.configure = function(options) {
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (this.options.hasOwnProperty(prop)) {
+                this.options[prop] = options[prop];
+            }
+        }
     }
-    this.volume.connect(node);
-};
-
-Player.prototype.disconnect = function() {
-    this.volume.disconnect();
 };
 
 Player.prototype.load = function(id, sound) {
@@ -49,7 +46,6 @@ Player.prototype.load = function(id, sound) {
 
     sound.connect(this.volume);
     sound.connect(this.analyzer);
-    //sound.connect(this.processor);
 
     // TODO: handle mediaelement as well
     if (sound.buffer) {
