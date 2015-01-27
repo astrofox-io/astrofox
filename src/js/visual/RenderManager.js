@@ -4,6 +4,7 @@ var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 var THREE = require('three');
 var Q = require('q');
+var FFMPEG = require('fluent-ffmpeg');
 
 var RenderManager = EventEmitter.extend({
     constructor: function(canvas3d, options) {
@@ -156,19 +157,93 @@ RenderManager.prototype.render = function(callback, data) {
 };
 
 RenderManager.prototype.renderMovie = function(player) {
+    var outStream = Node.FS.createWriteStream('d:/output.mp4');
+
+    /*
+    var proc = new ffmpeg()
+        .on('start', function(){
+            console.log('ffmpeg started')
+        })
+        .on('error', function(err){
+            console.log('ffmpeg error', err.message)
+        })
+        .on('end', function(){
+            console.log('ffmpeg ended')
+        })
+        .fromFormat('rawvideo')
+        .addInputOption('-pixel_format', 'argb')
+        .addInputOption('-video_size', '854x480')
+        .toFormat('mpeg1video')
+        .withVideoBitrate('800k')
+        .withFps(60)
+        .writeToStream(outStream);
+
+
+         var proc = ffmpeg(input)
+         // loop for 5 seconds
+         .loop(5)
+         // using 25 fps
+         .fps(25)
+         // setup event handlers
+         .on('end', function() {
+         console.log('file has been converted succesfully');
+         })
+         .on('error', function(err) {
+         console.log('an error happened: ' + err.message);
+         })
+         // save to file
+         .save(outStream);
+        */
+
     var callback = function(fft, next) {
         this.render(null, fft);
         if (next < 60) {
             player.getFFT(next, callback);
+        }
+        else {
+            this.renderImage(function(buffer){
+
+                var input_file = new Node.Stream.Transform();
+                input_file.on('error', function(err) {
+                    console.log(err);
+                });
+
+                //var input_file = new Node.FS.createReadStream('d:/image-1421734147483.png');
+
+                var ffmpeg = Node.Spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-i', 'pipe:0', '-vcodec', 'libx264', '-loop', '1', '-t', '30', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', 'd:/fox.mp4']);
+                //var ffmpeg = Node.Spawn('ffmpeg', ['-i', 'pipe:0', '-f', 'image2pipe', '-movflags', 'frag_keyframe', 'pipe:1']);
+                //var ffmpeg = Node.Spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-vcodec', 'libx264', '-r', '24', '-i', '-', '-vcodec', 'mpeg4', '-qscale', '5', '-r', '24', 'video.avi']);
+                input_file.pipe(ffmpeg.stdin);
+                //ffmpeg.stdout.pipe(outStream);
+
+                ffmpeg.stderr.on('data', function (data) {
+                    console.log(data.toString());
+                });
+
+                ffmpeg.stderr.on('end', function () {
+                    console.log('file has been converted succesfully');
+                });
+
+                ffmpeg.stderr.on('exit', function () {
+                    console.log('child process exited');
+                });
+
+                ffmpeg.stderr.on('close', function() {
+                    console.log('...closing time! bye');
+                });
+
+                input_file.push(buffer);
+                input_file.push(null);
+            });
         }
     }.bind(this);
 
     player.getFFT(0, callback);
 };
 
-RenderManager.prototype.renderImage = function(callback) {
+RenderManager.prototype.renderImage = function(callback, format) {
     this.render(function() {
-        var img = this.renderer.domElement.toDataURL(),
+        var img = this.renderer.domElement.toDataURL(format || 'image/png'),
             data = img.replace(/^data:image\/\w+;base64,/, ''),
             buffer = new Node.Buffer(data, 'base64');
 

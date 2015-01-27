@@ -29,6 +29,8 @@ if (typeof require !== 'undefined') {
     Node.FS = require('fs');
     Node.Buffer = require('buffer').Buffer;
     Node.GUI = require('nw.gui');
+    Node.Stream = require('stream');
+    Node.Spawn = require('child_process').spawn;
 
     if (process && process.platform === 'darwin') {
         var mb = new Node.GUI.Menu({ type: 'menubar' });
