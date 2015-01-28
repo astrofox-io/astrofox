@@ -1,6 +1,8 @@
 'use strict';
 
-var AstroFox = {};
+var AstroFox = {
+    FPS: 29.97
+};
 
 AstroFox.Player = require('./audio/Player.js');
 AstroFox.Sound = require('./audio/Sound.js');

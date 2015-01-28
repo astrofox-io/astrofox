@@ -150,20 +150,24 @@ Player.prototype.isPlaying = function() {
 };
 
 Player.prototype.getFFT = function(start, callback) {
-    var analyzer = this.analyzer,
-        fft = new Float32Array(this.analyzer.frequencyBinCount),
-        source = this.audioContext.createBufferSource();
+    var fps = AstroFox.FPS,
+        analyzer = this.analyzer;
 
-    source.buffer = this.getSound('audio').buffer;
-    source.connect(analyzer);
+    this.source = this.audioContext.createBufferSource();
 
-    source.onended = function() {
-        analyzer.getFloatFrequencyData(fft);
-        source.disconnect();
+    this.source.buffer = this.getSound('audio').buffer;
+    this.source.connect(analyzer);
+
+    this.source.onended = function() {
+        var fft = new Float32Array(this.analyzer.frequencyBinCount);
+        this.analyzer.getFloatFrequencyData(fft);
+        this.source.disconnect();
+        //console.log('done fft', start);
         if (callback) callback(fft, start+1);
     }.bind(this);
 
-    source.start(0, start/60, 1/60);
+    this.source.start(0, start/fps, 1/fps);
+    //console.log('fft started', start);
 };
 
 module.exports = Player;

@@ -12,7 +12,8 @@ var defaults = {
     barSpacing: -1,
     color: '#ffffff',
     shadowHeight: 100,
-    shadowColor: '#cccccc'
+    shadowColor: '#cccccc',
+    opacity: 1.0
 };
 
 var BarDisplay = EventEmitter.extend({

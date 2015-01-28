@@ -15,10 +15,6 @@ var Scene = React.createClass({
         console.log('scene loaded');
 
         this.renderScene();
-
-        this.props.player.on('play', function(){
-            this.renderScene();
-        }.bind(this));
     },
 
     handleDragOver: function(e){
@@ -71,19 +67,19 @@ var Scene = React.createClass({
     renderScene: function() {
         var player = this.props.player;
 
-        if (player.isPlaying()) requestAnimationFrame(this.renderScene);
+        requestAnimationFrame(this.renderScene);
 
         this.renderer.render();
     },
 
-    renderMovie: function() {
+    saveVideo: function() {
         var player = this.props.player;
         var sound = player.getSound('audio');
 
         if (player.isPlaying()) player.stop('audio');
 
         if (sound) {
-            this.renderer.renderMovie(player);
+            this.renderer.renderVideo(player);
         }
     },
 

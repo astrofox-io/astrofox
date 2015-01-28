@@ -68,8 +68,8 @@ var App = React.createClass({
             case 'File/Save Image':
                 this.refs.scene.saveImage();
                 break;
-            case 'File/Render Movie':
-                this.refs.scene.renderMovie();
+            case 'File/Save Video':
+                this.refs.scene.saveVideo();
                 break;
         }
     },
@@ -155,7 +155,7 @@ var MenuBar = React.createClass({
 
     componentWillMount: function() {
         this.items = [
-            { text: 'File', items: ['New Project', 'Open Project', 'Save Project', 'Import Audio', 'Save Image', 'Render Movie', 'Exit'] },
+            { text: 'File', items: ['New Project', 'Open Project', 'Save Project', 'Import Audio', 'Save Image', 'Save Video', 'Exit'] },
             { text: 'Edit', items: ['Settings'] },
             { text: 'View', items: ['Control Dock', 'Full Screen'] },
             { text: 'Help', items: ['Register', 'About'] }
