@@ -318,8 +318,9 @@ input[type="range"]::-webkit-slider-thumb {
         left: 0;
         list-style: none;
         z-index: 1;
-        background-color: #222;
+        background-color: #1c1c1c;
         border: 1px solid #111;
+        overflow: hidden;
 
         li {
             display: block;
@@ -333,6 +334,15 @@ input[type="range"]::-webkit-slider-thumb {
                 background-color: @primary-color;
                 cursor: default;
             }
+        }
+
+        .begin-group:before {
+            content: "\0020";
+            border-top: 1px solid #111;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
         }
     }
 }

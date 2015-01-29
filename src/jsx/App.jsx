@@ -205,7 +205,7 @@ var MenuBar = React.createClass({
 
     componentWillMount: function() {
         this.items = [
-            { text: 'File', items: ['New Project', 'Open Project', 'Save Project', 'Import Audio', 'Save Image', 'Save Video', 'Exit'] },
+            { text: 'File', items: ['New Project', 'Open Project', 'Save Project', '|Import Audio', 'Save Image', 'Save Video', '|Exit'] },
             { text: 'Edit', items: ['Settings'] },
             { text: 'View', items: ['Control Dock', 'Full Screen'] },
             { text: 'Help', items: ['Register', 'About'] }
@@ -292,11 +292,15 @@ var MenuBarItem = React.createClass({
         if (this.props.active) {
             classes += " active";
         }
+        var beginGroup = false;
         var items = this.props.items.map(function(item, index) {
+            var beginGroup = item.indexOf('|') === 0,
+                text = (beginGroup) ? item.substr(1) : item;
             return (
                 <MenuItem
                     key={"menuitem" + index}
-                    text={item}
+                    text={text}
+                    beginGroup={beginGroup}
                     onClick={this.handleItemClick}
                 />
             );
@@ -334,8 +338,13 @@ var MenuItem = React.createClass({
     },
 
     render: function() {
+        var classes = 'menu-item';
+        if (this.props.beginGroup) {
+            classes += ' begin-group';
+        }
+
         return (
-            <li className="menu-item"
+            <li className={classes}
                 onClick={this.handleClick}>
                 {this.props.text}
             </li>
