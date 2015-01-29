@@ -135,12 +135,11 @@ input[type="range"]::-webkit-slider-thumb {
     color: @primary-text-color;
     cursor: default;
     padding-left: 20px;
-    flex: 1;
+    -webkit-app-region: no-drag;
 }
 
 #control-box {
     color: #fff;
-    -webkit-app-region: no-drag;
 
     ul {
         position: absolute;
@@ -149,6 +148,7 @@ input[type="range"]::-webkit-slider-thumb {
         font-size: 0;
         background-color: @control-box-background-color;
         border-bottom: 1px solid @page-background-color;
+        -webkit-app-region: no-drag;
     }
 
     li {

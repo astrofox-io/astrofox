@@ -12,8 +12,8 @@
   ],
   "window": {
     "title": "astrofox",
-    "toolbar": true,
-    "frame": true,
+    "toolbar": false,
+    "frame": false,
     "width": 1320,
     "height": 1000,
     "position": "mouse",
