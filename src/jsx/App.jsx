@@ -164,12 +164,13 @@ var Header = React.createClass({
     render: function() {
         return (
             <div id="header">
-                <div id="title" onClick={this.handleConsole}>ASTROFOX</div>
+                <div id="title">ASTROFOX</div>
                 <div id="control-box">
                     <ul>
+                        <li className="box icon-code" onClick={this.handleConsole}></li>
                         <li className="box icon-arrows-ccw" onClick={this.handleReload}></li>
                         <li className="box icon-minus" onClick={this.handleMinimize}></li>
-                        <li className="box icon-popup" onClick={this.handleMaximize}></li>
+                        <li className="box icon-plus" onClick={this.handleMaximize}></li>
                         <li className="box icon-cancel" onClick={this.handleClose}></li>
                     </ul>
                 </div>
