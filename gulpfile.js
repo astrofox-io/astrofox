@@ -12,7 +12,7 @@ var source = require('vinyl-source-stream');
 gulp.task('browserify', function(){
     return browserify('./src/js/astrofox.js')
         .bundle()
-        .pipe(source('bundle.js'))
+        .pipe(source('app.js'))
         .pipe(gulp.dest('build'));
 });
 
