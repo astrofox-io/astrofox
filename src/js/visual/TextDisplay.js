@@ -28,7 +28,7 @@ var TextDisplay = EventEmitter.extend({
 TextDisplay.prototype.configure = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
+            if (hasOwnProperty.call(this.options, prop)) {
                 this.options[prop] = options[prop];
             }
         }

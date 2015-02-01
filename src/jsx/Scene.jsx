@@ -8,9 +8,12 @@ var Scene = React.createClass({
     },
 
     componentDidMount: function() {
-        //this.canvas2d = this.refs.canvas2d.getDOMNode();
+        var app = this.props.app;
+
         this.canvas3d = this.refs.canvas3d.getDOMNode();
-        this.renderer = new AstroFox.RenderManager(this.canvas3d);
+        app.loadCanvas(this.canvas3d);
+
+        this.renderer = app.renderer;
         // DEBUG
         console.log('scene loaded');
 
@@ -26,10 +29,10 @@ var Scene = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        var file = e.dataTransfer.files[0];
-        var reader = new FileReader();
-        var timer = AstroFox.getTimer();
-        var player = this.props.player;
+        var file = e.dataTransfer.files[0],
+            reader = new FileReader(),
+            player = this.props.app.player,
+            timer = this.props.app.timer;
 
         player.stop('audio');
 
@@ -65,7 +68,7 @@ var Scene = React.createClass({
     },
 
     renderScene: function() {
-        var player = this.props.player;
+        var player = this.props.app.player;
 
         requestAnimationFrame(this.renderScene);
 
@@ -73,7 +76,7 @@ var Scene = React.createClass({
     },
 
     saveVideo: function() {
-        var player = this.props.player;
+        var player = this.props.app.player;
         var sound = player.getSound('audio');
 
         if (player.isPlaying()) player.stop('audio');
@@ -87,16 +90,6 @@ var Scene = React.createClass({
         this.renderer.renderImage(function(buffer){
             Node.FS.writeFile('d:/image-' + Date.now() + '.png', buffer);
         });
-    },
-
-    update: function(name, data) {
-        if (name === "spectrum") {
-            for (var prop in data) {
-                if (this.bars.options.hasOwnProperty(prop)) {
-                    this.bars.options[prop] = data[prop];
-                }
-            }
-        }
     },
 
     render: function() {

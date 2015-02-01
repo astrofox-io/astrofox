@@ -35,9 +35,11 @@ var TextControl = React.createClass({
     },
 
     componentDidMount: function() {
+        var FX = this.props.app.FX;
+
         console.log('control mounted', this.config.name);
         this.canvas = document.createElement('canvas');
-        this.text = new AstroFox.TextDisplay(this.canvas, this.state);
+        this.text = new FX.TextDisplay(this.canvas, this.state);
         this.props.onLoad(this)
     },
 

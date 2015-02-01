@@ -20,9 +20,11 @@ var ImageControl = React.createClass({
     },
 
     componentDidMount: function() {
+        var FX = this.props.app.FX;
+
         console.log('control mounted', this.config.name);
         this.canvas = document.createElement('canvas');
-        this.image = new AstroFox.ImageDisplay(this.canvas, this.state);
+        this.image = new FX.ImageDisplay(this.canvas, this.state);
         this.props.onLoad(this)
     },
 

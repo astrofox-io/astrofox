@@ -3,28 +3,37 @@
 var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 var THREE = require('three');
-var Q = require('q');
 var FFMPEG = require('fluent-ffmpeg');
 
+var defaults = {
+    audioOutput: 'mux',
+    videoOutput: 'mp4'
+};
+
 var RenderManager = EventEmitter.extend({
-    constructor: function(canvas3d, options) {
-        this.canvas3d = canvas3d;
+    constructor: function(options) {
         this.fps = 0;
         this.time = 0;
         this.frame = 0;
         this.frameCount = 0;
         this.controls = [];
-
-        this.init(options);
-        this.setup();
+        this.options = _.assign({}, defaults);
     }
 });
 
-RenderManager.prototype.init = function(options) {
-    this.options = _.assign({}, options);
+RenderManager.prototype.configure = function(options) {
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (hasOwnProperty.call(this.options, prop)) {
+                this.options[prop] = options[prop];
+            }
+        }
+    }
 };
 
-RenderManager.prototype.setup = function() {
+RenderManager.prototype.setupCanvas = function(canvas) {
+    this.canvas3d = canvas;
+
     var width = this.canvas3d.width,
         height = this.canvas3d.height,
         factor = 2;

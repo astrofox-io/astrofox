@@ -16,7 +16,10 @@ var Waveform = React.createClass({
     },
 
     componentDidMount: function() {
-        this.bars = new AstroFox.BarDisplay(
+        var FX = this.props.app.FX,
+            player = this.player = this.props.app.player;
+
+        this.bars = new FX.BarDisplay(
             this.refs.canvas.getDOMNode(),
             {
                 y: this.config.height,
@@ -30,7 +33,7 @@ var Waveform = React.createClass({
             }
         );
 
-        this.progress = new AstroFox.BarDisplay(
+        this.progress = new FX.BarDisplay(
             this.refs.progress.getDOMNode(),
             {
                 y: this.config.height,
@@ -44,7 +47,7 @@ var Waveform = React.createClass({
             }
         );
 
-        this.overlay = new AstroFox.BarDisplay(
+        this.overlay = new FX.BarDisplay(
             this.refs.overlay.getDOMNode(),
             {
                 y: this.config.height,
@@ -57,8 +60,6 @@ var Waveform = React.createClass({
                 shadowColor: '#403972'
             }
         );
-
-        var player = this.props.player;
 
         player.on('load', function() {
             this.draw(player.waveform.getData(this.config.bars));
@@ -77,12 +78,14 @@ var Waveform = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        var val = e.pageX - e.currentTarget.offsetLeft;
+        var val = e.pageX - e.currentTarget.offsetLeft,
+            player = this.player;
 
-        this.props.player.seek('audio', val / this.config.width);
-        this.props.onProgressChange(val);
+        player.seek('audio', val / this.config.width);
 
-        this.setState({ progress: val });
+        this.setState({ progress: val }, function() {
+            this.props.onProgressChange(val);
+        }.bind(this));
     },
 
     handleMouseMove: function(e) {
@@ -119,7 +122,7 @@ var Waveform = React.createClass({
     },
 
     render: function() {
-        var player = this.props.player,
+        var player = this.props.app.player,
             width = this.config.width,
             height = this.config.height + this.config.shadowHeight,
             seek = this.state.seek,

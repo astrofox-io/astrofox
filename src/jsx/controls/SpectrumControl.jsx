@@ -21,7 +21,8 @@ var SpectrumControl = React.createClass({
     },
 
     componentWillMount: function() {
-        var player = this.props.player;
+        var app = this.props.app,
+            FX = app.FX;
 
         this.config = {
             name: 'spectrum',
@@ -30,8 +31,8 @@ var SpectrumControl = React.createClass({
         this.data = null;
 
         this.canvas = document.createElement('canvas');
-        this.analyzer = new AstroFox.SpectrumAnalyzer(player.audioContext, player.analyzer, this.state);
-        this.bars = new AstroFox.BarDisplay(this.canvas, this.state);
+        this.analyzer = app.createAnalyzer(this.state);
+        this.bars = new FX.BarDisplay(this.canvas, this.state);
     },
 
     componentDidMount: function() {

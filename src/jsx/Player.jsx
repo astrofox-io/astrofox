@@ -1,6 +1,6 @@
 var Player = React.createClass({
     componentDidMount: function() {
-        var player = this.props.player;
+        var player = this.props.app.player;
 
         player.on('time', function() {
             if (player.isPlaying()) {
@@ -14,21 +14,21 @@ var Player = React.createClass({
     },
 
     onPlayButtonClick: function() {
-        this.props.player.play('audio');
+        this.props.app.player.play('audio');
         this.forceUpdate();
     },
 
     onStopButtonClick: function() {
-        this.props.player.stop('audio');
+        this.props.app.player.stop('audio');
         this.forceUpdate();
     },
 
     onVolumeChange: function(val) {
-        this.props.player.setVolume(val);
+        this.props.app.player.setVolume(val);
     },
 
     onProgressChange: function(val) {
-        this.props.player.seek('audio', val);
+        this.props.app.player.seek('audio', val);
         this.props.onProgressChange(val);
         this.forceUpdate();
     },
@@ -38,7 +38,7 @@ var Player = React.createClass({
     },
 
     getCurrentTime: function() {
-        var player = this.props.player;
+        var player = this.props.app.player;
 
         if (this.refs.progress) {
             return this.refs.progress.getPosition() * this.getTotalTime();
@@ -48,16 +48,16 @@ var Player = React.createClass({
     },
 
     getTotalTime: function() {
-        var player = this.props.player;
+        var player = this.props.app.player;
         return player.getDuration('audio');
     },
 
     render: function() {
-        var player = this.props.player;
-        var currentTime = this.getCurrentTime();
-        var totalTime = this.getTotalTime();
-        var isPlaying = player.isPlaying();
-        var progressPosition = player.getPosition('audio');
+        var player = this.props.app.player,
+            currentTime = this.getCurrentTime(),
+            totalTime = this.getTotalTime(),
+            isPlaying = player.isPlaying(),
+            progressPosition = player.getPosition('audio');
 
         return (
             <div id="player">

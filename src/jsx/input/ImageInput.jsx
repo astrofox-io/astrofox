@@ -67,11 +67,8 @@ var ImageInput = React.createClass({
         if (!(/^image/.test(file.type))) return;
 
         var reader = new FileReader();
-        var timer = AstroFox.getTimer();
 
         reader.onload = function(fe) {
-            // DEBUG
-            console.log('image loaded', timer.get('image_load'));
             var data = fe.target.result;
 
             this.setState({ src: data }, function() {
@@ -79,8 +76,6 @@ var ImageInput = React.createClass({
                 this.props.onChange(this.props.name, this.image);
             });
         }.bind(this);
-
-        timer.set('image_load');
 
         reader.readAsDataURL(file);
     },
