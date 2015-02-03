@@ -136,7 +136,7 @@ Scene.prototype.render = function(callback) {
     if (callback) callback();
 };
 
-Scene.prototype.renderVideo = function(output_file, fps, duration, getFFT) {
+Scene.prototype.renderVideo = function(output_file, fps, duration, func, callback) {
     var started = false;
     console.log('rending movie', duration, 'seconds,', fps, 'fps');
     var frames = duration * fps;
@@ -146,12 +146,11 @@ Scene.prototype.renderVideo = function(output_file, fps, duration, getFFT) {
         console.log(err);
     });
 
-    this.callback = function(fft, next) {
-        //this.render(null, fft);
+    this.callback = function(next) {
         if (next < frames) {
             this.renderImage(function(buffer) {
                 input_file.push(buffer);
-                getFFT(next, fps, this.callback);
+                func(next, fps, this.callback);
             }.bind(this));
         }
         else {
@@ -166,13 +165,14 @@ Scene.prototype.renderVideo = function(output_file, fps, duration, getFFT) {
     ffmpeg.stderr.on('data', function (data) {
         console.log(data.toString());
         if (!started) {
-            getFFT(0, fps, this.callback);
+            func(0, fps, this.callback);
             started = true;
         }
     }.bind(this));
 
     ffmpeg.stderr.on('end', function () {
         console.log('file has been converted succesfully');
+        if (callback) callback();
     });
 
     ffmpeg.stderr.on('exit', function () {

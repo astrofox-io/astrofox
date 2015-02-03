@@ -21,11 +21,13 @@ var defaults = {
 
 var Application = EventEmitter.extend({
     constructor: function() {
+        this.frame = null;
+        this.controls = [];
+
         this.audioContext = new (window.AudioContext || window.webkitAudioContext);
         this.player = new Player(this.audioContext);
         this.scene = new Scene();
         this.timer = new Timer();
-        this.controls = [];
         this.options = _.assign({}, defaults);
 
         this.analyzer = this.audioContext.createAnalyser();
@@ -98,9 +100,27 @@ Application.prototype.unregisterControl = function(control) {
     }
 };
 
-Application.prototype.renderScene = function(callback, data) {
-    var scene = this.scene,
-        frame = performance.now();
+Application.prototype.startRender = function() {
+    if (!this.frame) {
+        this.renderScene();
+    }
+};
+
+Application.prototype.stopRender = function() {
+    if (this.frame) {
+        window.cancelAnimationFrame(this.frame);
+        this.frame = null;
+    }
+};
+
+Application.prototype.renderScene = function() {
+    this.renderFrame(this.frame);
+
+    this.frame = window.requestAnimationFrame(this.renderScene.bind(this));
+};
+
+Application.prototype.renderFrame = function(frame, data, callback) {
+    var scene = this.scene;
 
     scene.clear();
 
@@ -119,7 +139,7 @@ Application.prototype.renderScene = function(callback, data) {
     if (callback) callback();
 };
 
-Application.prototype.getFFT = function(start, fps, callback) {
+Application.prototype.processFrame = function(frame, fps, callback) {
     var player = this.player,
         analyzer = this.analyzer,
         sound = player.getSound('audio'),
@@ -132,12 +152,15 @@ Application.prototype.getFFT = function(start, fps, callback) {
         var fft = new Float32Array(analyzer.frequencyBinCount);
 
         analyzer.getFloatFrequencyData(fft);
+
+        this.renderFrame(frame, fft);
+
         source.disconnect();
 
-        if (callback) callback(fft, start+1);
+        if (callback) callback(frame+1);
     }.bind(this);
 
-    source.start(0, start/fps, 0.1);
+    source.start(0, frame/fps, 1/fps);
 };
 
 Application.prototype.saveImage = function(file) {
@@ -152,11 +175,15 @@ Application.prototype.saveVideo = function(file) {
         scene = this.scene,
         sound = player.getSound('audio');
 
+    this.stopRender();
+
     if (player.isPlaying()) player.stop('audio');
 
     if (sound) {
         //scene.renderVideo(file, this.options.fps, 5, this.getFFT.bind(this));
-        scene.renderVideo(file, 29.97, 5, this.getFFT.bind(this));
+        scene.renderVideo(file, 29.97, 5, this.processFrame.bind(this), function(){
+            this.startRender();
+        }.bind(this));
     }
 };
 

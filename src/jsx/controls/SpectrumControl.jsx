@@ -17,7 +17,7 @@ var SpectrumControl = React.createClass({
             maxFrequency: 3000,
             shadowHeight: 100,
             color: ['#ffffff', '#ffffff'],
-            shadowColor: ['#cccccc', '#cccccc'],
+            shadowColor: ['#333333', '#000000'],
             rotation: 0,
             opacity: 1.0
         };
@@ -59,7 +59,6 @@ var SpectrumControl = React.createClass({
     renderToCanvas: function(canvas, frame, fft) {
         var data,
             context = canvas.getContext('2d'),
-            canvas = this.canvas,
             state = this.state,
             width = state.width / 2,
             height = state.height;
@@ -78,11 +77,11 @@ var SpectrumControl = React.createClass({
             context.translate(state.x, state.y - state.height);
             context.translate(width, height);
             context.rotate(state.rotation * Math.PI / 180);
-            context.drawImage(canvas, -width, -height);
+            context.drawImage(this.canvas, -width, -height);
             context.restore();
         }
         else {
-            context.drawImage(canvas, state.x, state.y - state.height);
+            context.drawImage(this.canvas, state.x, state.y - state.height);
         }
     },
 

@@ -16,7 +16,8 @@ var Scene = React.createClass({
         // DEBUG
         console.log('scene loaded');
 
-        this.renderScene();
+        //this.renderScene();
+        app.startRender();
     },
 
     handleDragOver: function(e){
