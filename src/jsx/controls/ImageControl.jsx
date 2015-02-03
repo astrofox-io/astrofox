@@ -1,4 +1,7 @@
 var ImageControl = React.createClass({
+    name: 'image',
+    context: '2d',
+
     getInitialState: function() {
         return {
             image: null,
@@ -13,16 +16,12 @@ var ImageControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.config = {
-            name: 'image',
-            context: '2d'
-        };
     },
 
     componentDidMount: function() {
         var FX = this.props.app.FX;
 
-        console.log('control mounted', this.config.name);
+        console.log('control mounted', this.name);
         this.canvas = document.createElement('canvas');
         this.image = new FX.ImageDisplay(this.canvas, this.state);
         this.props.onLoad(this)

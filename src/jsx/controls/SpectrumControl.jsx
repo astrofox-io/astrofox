@@ -1,4 +1,7 @@
 var SpectrumControl = React.createClass({
+    name: 'spectrum',
+    context: '2d',
+
     getInitialState: function() {
         return {
             height: 300,
@@ -24,19 +27,13 @@ var SpectrumControl = React.createClass({
         var app = this.props.app,
             FX = app.FX;
 
-        this.config = {
-            name: 'spectrum',
-            context: '2d'
-        };
-        this.data = null;
-
         this.canvas = document.createElement('canvas');
         this.analyzer = app.createAnalyzer(this.state);
         this.bars = new FX.BarDisplay(this.canvas, this.state);
     },
 
     componentDidMount: function() {
-        console.log('control mounted', this.config.name);
+        console.log('control mounted', this.name);
 
         this.props.onLoad(this)
     },
@@ -60,7 +57,7 @@ var SpectrumControl = React.createClass({
     },
 
     renderToCanvas: function(canvas, frame, fft) {
-        var i, smoothing, data, len,
+        var data,
             context = canvas.getContext('2d'),
             canvas = this.canvas,
             state = this.state,
@@ -233,6 +230,7 @@ var SpectrumControl = React.createClass({
                         max={maxWidth}
                         value={this.state.barWidth}
                         readOnly={this.state.barWidthAutoSize}
+                        hidden={this.state.barWidthAutoSize}
                         onChange={this.handleChange}
                     />
                     <label>Auto-Size</label>
@@ -251,6 +249,7 @@ var SpectrumControl = React.createClass({
                         max={maxWidth}
                         value={this.state.barSpacing}
                         readOnly={this.state.barSpacingAutoSize}
+                        hidden={this.state.barSpacingAutoSize}
                         onChange={this.handleChange} />
                     <label>Auto-Size</label>
                     <ToggleInput

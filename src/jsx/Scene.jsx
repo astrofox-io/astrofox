@@ -10,10 +10,9 @@ var Scene = React.createClass({
     componentDidMount: function() {
         var app = this.props.app;
 
-        this.canvas3d = this.refs.canvas3d.getDOMNode();
-        app.loadCanvas(this.canvas3d);
+        this.canvas = this.refs.canvas.getDOMNode();
+        app.loadCanvas(this.canvas);
 
-        this.renderer = app.renderer;
         // DEBUG
         console.log('scene loaded');
 
@@ -51,45 +50,14 @@ var Scene = React.createClass({
         this.isLoading(true);
     },
 
-    registerControl: function(control) {
-        // DEBUG
-        console.log('control registered', control.config.name);
-        this.renderer.registerControl(control);
-    },
-
-    unregisterControl: function(control) {
-        // DEBUG
-        console.log('control unregistered', control.config.name);
-        this.renderer.unregisterControl(control);
-    },
-
     isLoading: function(val) {
         this.setState({ loading: val });
     },
 
     renderScene: function() {
-        var player = this.props.app.player;
-
         requestAnimationFrame(this.renderScene);
 
-        this.renderer.render();
-    },
-
-    saveVideo: function() {
-        var player = this.props.app.player;
-        var sound = player.getSound('audio');
-
-        if (player.isPlaying()) player.stop('audio');
-
-        if (sound) {
-            this.renderer.renderVideo(player);
-        }
-    },
-
-    saveImage: function() {
-        this.renderer.renderImage(function(buffer){
-            Node.FS.writeFile('d:/image-' + Date.now() + '.png', buffer);
-        });
+        this.props.app.renderScene();
     },
 
     render: function() {
@@ -98,7 +66,7 @@ var Scene = React.createClass({
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
                 <Loading loading={this.state.loading} />
-                <canvas ref="canvas3d" id="canvas3d" height="480" width="854"></canvas>
+                <canvas ref="canvas" id="canvas" height="480" width="854"></canvas>
             </div>
         );
     }

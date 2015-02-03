@@ -1,4 +1,7 @@
 var TextControl = React.createClass({
+    name: 'text',
+    context: '2d',
+
     getInitialState: function() {
         return {
             text: '',
@@ -15,10 +18,6 @@ var TextControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.config = {
-            name: 'text',
-            context: '2d'
-        };
         this.fontOptions = [
             'Alegreya',
             'Arial',
@@ -37,7 +36,7 @@ var TextControl = React.createClass({
     componentDidMount: function() {
         var FX = this.props.app.FX;
 
-        console.log('control mounted', this.config.name);
+        console.log('control mounted', this.name);
         this.canvas = document.createElement('canvas');
         this.text = new FX.TextDisplay(this.canvas, this.state);
         this.props.onLoad(this)

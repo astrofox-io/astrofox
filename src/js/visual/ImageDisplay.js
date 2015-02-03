@@ -6,7 +6,8 @@ var _ = require('lodash');
 var defaults = {
     image: null,
     width: 0,
-    height: 0
+    height: 0,
+    opacity: 1.0
 };
 
 var ImageDisplay = EventEmitter.extend({

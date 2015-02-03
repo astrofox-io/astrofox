@@ -3,25 +3,26 @@
 var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 var THREE = require('three');
-var FFMPEG = require('fluent-ffmpeg');
 
 var defaults = {
     audioOutput: 'mux',
     videoOutput: 'mp4'
 };
 
-var RenderManager = EventEmitter.extend({
+var Scene = EventEmitter.extend({
     constructor: function(options) {
         this.fps = 0;
         this.time = 0;
         this.frame = 0;
-        this.frameCount = 0;
+        this.count = 0;
         this.controls = [];
         this.options = _.assign({}, defaults);
+        this.canvas2d = null;
+        this.canvas3d = null;
     }
 });
 
-RenderManager.prototype.configure = function(options) {
+Scene.prototype.configure = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
             if (hasOwnProperty.call(this.options, prop)) {
@@ -31,7 +32,7 @@ RenderManager.prototype.configure = function(options) {
     }
 };
 
-RenderManager.prototype.setupCanvas = function(canvas) {
+Scene.prototype.setupCanvas = function(canvas) {
     this.canvas3d = canvas;
 
     var width = this.canvas3d.width,
@@ -88,29 +89,17 @@ RenderManager.prototype.setupCanvas = function(canvas) {
     */
 };
 
-RenderManager.prototype.registerControl = function(control) {
-    this.controls.push(control);
+Scene.prototype.getFPS = function() {
+    return this.fps;
 };
 
-RenderManager.prototype.unregisterControl = function(control) {
-    var index = this.controls.indexOf(control);
-    if (index > -1) {
-        //this.controls.splice(index, 1);
-        spliceOne(this.controls, index);
-    }
-};
-
-RenderManager.prototype.getFrame = function() {
-    return this.frame;
-};
-
-RenderManager.prototype.updateFPS = function() {
+Scene.prototype.updateFPS = function() {
     var now = performance.now();
 
     if (!this.time) {
         this.time = now;
         this.fps = 0;
-        this.frameCount = 0;
+        this.count = 0;
         return;
     }
 
@@ -120,34 +109,18 @@ RenderManager.prototype.updateFPS = function() {
     if (delta > 1) {
         this.fps = Math.ceil(this.frame / delta);
         this.time = now;
-        this.frameCount = 0;
+        this.count = 0;
     }
     else {
-        this.frameCount += 1;
+        this.count += 1;
     }
 };
 
-RenderManager.prototype.getFPS = function() {
-    return this.fps;
-};
-
-RenderManager.prototype.clear = function() {
-
-};
-
-RenderManager.prototype.render = function(callback, data) {
+Scene.prototype.clear = function() {
     this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
+};
 
-    _(this.controls).forEachRight(function(control) {
-        if (control.renderToCanvas) {
-            control.renderToCanvas(
-                (control.config.context == '3d') ? this.canvas3d : this.canvas2d,
-                this.frame,
-                data
-            );
-        }
-    }.bind(this));
-
+Scene.prototype.render = function(callback) {
     this.texture2d.needsUpdate = true;
 
     //this.cube.rotation.x += 0.1;
@@ -160,18 +133,13 @@ RenderManager.prototype.render = function(callback, data) {
 
     this.updateFPS();
 
-    this.frame++;
-
     if (callback) callback();
 };
 
-RenderManager.prototype.renderVideo = function(player) {
-    var fps = AstroFox.FPS;
-    var duration = 5; //player.getSound('audio').getDuration();
+Scene.prototype.renderVideo = function(output_file, fps, duration, getFFT) {
     var started = false;
     console.log('rending movie', duration, 'seconds,', fps, 'fps');
     var seconds = duration * fps;
-    var output_file = 'd:/movie-' + Date.now() + '.mp4'
 
     var input_file = new Node.Stream.Transform();
     input_file.on('error', function(err) {
@@ -183,7 +151,7 @@ RenderManager.prototype.renderVideo = function(player) {
         if (next < seconds) {
             this.renderImage(function(buffer) {
                 input_file.push(buffer);
-                player.getFFT(next, this.callback);
+                getFFT(next, fps, this.callback);
             }.bind(this));
         }
         else {
@@ -198,7 +166,7 @@ RenderManager.prototype.renderVideo = function(player) {
     ffmpeg.stderr.on('data', function (data) {
         console.log(data.toString());
         if (!started) {
-            player.getFFT(0, this.callback);
+            getFFT(0, fps, this.callback);
             started = true;
         }
     }.bind(this));
@@ -216,7 +184,7 @@ RenderManager.prototype.renderVideo = function(player) {
     });
 };
 
-RenderManager.prototype.renderImage = function(callback, format) {
+Scene.prototype.renderImage = function(callback, format) {
     this.render(function() {
         var img = this.renderer.domElement.toDataURL(format || 'image/png'),
             data = img.replace(/^data:image\/\w+;base64,/, ''),
@@ -226,12 +194,4 @@ RenderManager.prototype.renderImage = function(callback, format) {
     }.bind(this));
 };
 
-// Supposedly 1.5x faster than Array.splice
-function spliceOne(list, index) {
-    for (var i = index, k = i+1, n = list.length; k < n; i += 1, k += 1) {
-        list[i] = list[k];
-    }
-    list.pop();
-}
-
-module.exports = RenderManager;
+module.exports = Scene;

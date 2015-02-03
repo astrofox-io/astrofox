@@ -11,7 +11,8 @@ var NumberInput = React.createClass({
             min: null,
             max: null,
             step: null,
-            readOnly: false
+            readOnly: false,
+            hidden: false
         };
     },
 
@@ -71,10 +72,15 @@ var NumberInput = React.createClass({
     },
 
     render: function(){
+        var classes = 'input-field';
+        if (this.props.hidden) {
+            classes += ' input-hidden';
+        }
+
         return (
             <div className="input">
                 <input type="text"
-                    className="input-field"
+                    className={classes}
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}

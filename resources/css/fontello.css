@@ -67,3 +67,6 @@
 .icon-window:before { content: '\e812'; } /* 'î ’' */
 .icon-dot-3:before { content: '\e813'; } /* 'î “' */
 .icon-code:before { content: '\e814'; } /* 'î ”' */
+.icon-check:before { content: '\e815'; } /* 'î •' */
+.icon-help-circled:before { content: '\e816'; } /* 'î –' */
+.icon-cw:before { content: '\e817'; } /* 'î —' *

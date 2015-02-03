@@ -39,16 +39,16 @@ var App = React.createClass({
     },
 
     handleControlLoad: function(control) {
-        this.refs.scene.registerControl(control);
+        this.app.registerControl(control);
     },
 
     handleMenuAction: function(action) {
         switch (action) {
             case 'File/Save Image':
-                this.refs.scene.saveImage();
+                this.app.saveImage('d:/image-' + Date.now() + '.png');
                 break;
             case 'File/Save Video':
-                this.refs.scene.saveVideo();
+                this.app.saveVideo('d:/movie-' + Date.now() + '.mp4');
                 break;
             case 'Edit/Settings':
                 this.loadSettings();

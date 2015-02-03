@@ -149,25 +149,4 @@ Player.prototype.isPlaying = function() {
     return false;
 };
 
-Player.prototype.getFFT = function(start, callback) {
-    var fps = AstroFox.FPS,
-        analyzer = this.analyzer;
-
-    this.source = this.audioContext.createBufferSource();
-
-    this.source.buffer = this.getSound('audio').buffer;
-    this.source.connect(analyzer);
-
-    this.source.onended = function() {
-        var fft = new Float32Array(this.analyzer.frequencyBinCount);
-        this.analyzer.getFloatFrequencyData(fft);
-        this.source.disconnect();
-        //console.log('done fft', start);
-        if (callback) callback(fft, start+1);
-    }.bind(this);
-
-    this.source.start(0, start/fps, 1/fps);
-    //console.log('fft started', start);
-};
-
 module.exports = Player;

@@ -175,11 +175,6 @@ input[type="range"]::-webkit-slider-thumb {
     overflow: hidden;
     flex: 1;
     position: relative;
-
-    #canvas3d {
-        .absolute-center();
-        overflow: hidden;
-    }
 }
 
 #player {
@@ -352,6 +347,8 @@ input[type="range"]::-webkit-slider-thumb {
     width: 854px;
     height: 480px;
     display: block;
+    overflow: hidden;
+    .absolute-center();
 }
 
 #waveform {
@@ -537,6 +534,10 @@ input[type="range"]::-webkit-slider-thumb {
     &:read-only {
         color: #555;
     }
+}
+
+.input-hidden {
+    color: transparent !important;
 }
 
 .input-select {
