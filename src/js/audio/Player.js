@@ -1,7 +1,6 @@
 'use strict';
 
 var EventEmitter = require('../core/EventEmitter.js');
-var WaveformAnalyzer = require('./WaveformAnalyzer.js');
 var _ = require('lodash');
 
 var defaults = {
@@ -10,18 +9,10 @@ var defaults = {
 
 var Player = EventEmitter.extend({
     constructor: function(context, options) {
+        this.audioContext = context;
         this.nodes = [];
         this.sounds = {};
 
-        this.audioContext = context;
-
-        this.analyzer = this.audioContext.createAnalyser();
-        this.analyzer.fftSize = 2048;
-        this.analyzer.minDecibels = -100;
-        this.analyzer.maxDecibels = 0;
-        this.analyzer.smoothingTimeConstant = 0;
-
-        this.waveform = new WaveformAnalyzer(this.audioContext);
         this.volume = this.audioContext.createGain();
         this.volume.connect(this.audioContext.destination);
         this.options = _.assign({}, defaults);
@@ -40,17 +31,13 @@ Player.prototype.configure = function(options) {
     }
 };
 
-Player.prototype.load = function(id, sound) {
+Player.prototype.load = function(id, sound, callback) {
     this.stop(id);
     this.sounds[id] = sound;
 
     sound.connect(this.volume);
-    sound.connect(this.analyzer);
 
-    // TODO: handle mediaelement as well
-    if (sound.buffer) {
-        this.waveform.loadBuffer(sound.buffer);
-    }
+    if (callback) callback();
 
     this.emit('load');
 };

@@ -139,7 +139,7 @@ Scene.prototype.render = function(callback) {
 Scene.prototype.renderVideo = function(output_file, fps, duration, getFFT) {
     var started = false;
     console.log('rending movie', duration, 'seconds,', fps, 'fps');
-    var seconds = duration * fps;
+    var frames = duration * fps;
 
     var input_file = new Node.Stream.Transform();
     input_file.on('error', function(err) {
@@ -147,8 +147,8 @@ Scene.prototype.renderVideo = function(output_file, fps, duration, getFFT) {
     });
 
     this.callback = function(fft, next) {
-        this.render(null, fft);
-        if (next < seconds) {
+        //this.render(null, fft);
+        if (next < frames) {
             this.renderImage(function(buffer) {
                 input_file.push(buffer);
                 getFFT(next, fps, this.callback);

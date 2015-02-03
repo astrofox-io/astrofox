@@ -6,6 +6,7 @@ var Timer = require('./core/Timer.js');
 var Player = require('./audio/Player.js');
 var BufferedSound = require('./audio/BufferedSound.js');
 var SpectrumAnalyzer = require('./audio/SpectrumAnalyzer.js');
+var WaveformAnalyzer = require('./audio/WaveformAnalyzer.js');
 var Scene = require('./visual/Scene.js');
 
 var BarDisplay = require('./visual/BarDisplay.js');
@@ -27,6 +28,14 @@ var Application = EventEmitter.extend({
         this.controls = [];
         this.options = _.assign({}, defaults);
 
+        this.analyzer = this.audioContext.createAnalyser();
+        this.analyzer.fftSize = 2048;
+        this.analyzer.minDecibels = -100;
+        this.analyzer.maxDecibels = 0;
+        this.analyzer.smoothingTimeConstant = 0;
+
+        this.waveform = new WaveformAnalyzer(this.audioContext);
+
         this.FX = {
             BarDisplay: BarDisplay,
             ImageDisplay: ImageDisplay,
@@ -37,13 +46,19 @@ var Application = EventEmitter.extend({
 
 Application.prototype.loadAudio = function(data, callback, error) {
     var player = this.player,
+        analyzer = this.analyzer,
+        waveform = this.waveform,
         timer = this.timer,
         sound = new BufferedSound(this.audioContext);
 
     sound.on('load', function() {
         console.log('sound loaded', timer.get('sound_load'));
 
-        player.load('audio', sound);
+        player.load('audio', sound, function() {
+            sound.connect(analyzer);
+            waveform.loadBuffer(sound.buffer);
+        });
+
         player.play('audio');
 
         if (callback) callback();
@@ -62,7 +77,7 @@ Application.prototype.loadCanvas = function(canvas) {
 };
 
 Application.prototype.createAnalyzer = function(options) {
-    return new SpectrumAnalyzer(this.audioContext, this.player.analyzer, options);
+    return new SpectrumAnalyzer(this.audioContext, this.analyzer, options);
 };
 
 Application.prototype.registerControl = function(control) {
@@ -106,22 +121,23 @@ Application.prototype.renderScene = function(callback, data) {
 
 Application.prototype.getFFT = function(start, fps, callback) {
     var player = this.player,
+        analyzer = this.analyzer,
         sound = player.getSound('audio'),
         source = this.source = this.audioContext.createBufferSource();
 
     source.buffer = sound.buffer;
-    source.connect(player.analyzer);
+    source.connect(analyzer);
 
     source.onended = function() {
-        var fft = new Float32Array(player.analyzer.frequencyBinCount);
+        var fft = new Float32Array(analyzer.frequencyBinCount);
 
-        player.analyzer.getFloatFrequencyData(fft);
+        analyzer.getFloatFrequencyData(fft);
         source.disconnect();
 
         if (callback) callback(fft, start+1);
     }.bind(this);
 
-    source.start(0, start/fps, 1/fps);
+    source.start(0, start/fps, 0.1);
 };
 
 Application.prototype.saveImage = function(file) {
@@ -139,7 +155,8 @@ Application.prototype.saveVideo = function(file) {
     if (player.isPlaying()) player.stop('audio');
 
     if (sound) {
-        scene.renderVideo(file, 60, 5, this.getFFT.bind(this));
+        //scene.renderVideo(file, this.options.fps, 5, this.getFFT.bind(this));
+        scene.renderVideo(file, 29.97, 5, this.getFFT.bind(this));
     }
 };
 

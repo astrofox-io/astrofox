@@ -16,8 +16,9 @@ var Waveform = React.createClass({
     },
 
     componentDidMount: function() {
-        var FX = this.props.app.FX,
-            player = this.player = this.props.app.player;
+        var app = this.props.app,
+            FX = app.FX,
+            player = this.player = app.player;
 
         this.bars = new FX.BarDisplay(
             this.refs.canvas.getDOMNode(),
@@ -62,7 +63,7 @@ var Waveform = React.createClass({
         );
 
         player.on('load', function() {
-            this.draw(player.waveform.getData(this.config.bars));
+            this.draw(app.waveform.getData(this.config.bars));
         }.bind(this));
 
         player.on('time', function(){
