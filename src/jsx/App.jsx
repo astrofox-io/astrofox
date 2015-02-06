@@ -18,11 +18,11 @@ var App = React.createClass({
         e.preventDefault();
     },
 
-    handleFileLoad: function(file, data, callback) {
+    handleFileLoad: function(filename, data, callback) {
         this.app.loadAudio(
             data,
             function(){
-                this.setState({ filename: file.name }, callback);
+                this.setState({ filename: filename }, callback);
             }.bind(this),
             function(){
                 this.refs.scene.isLoading(false);

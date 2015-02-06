@@ -22,8 +22,10 @@ var ImageControl = React.createClass({
         var FX = this.props.app.FX;
 
         console.log('control mounted', this.name);
+
         this.canvas = document.createElement('canvas');
         this.image = new FX.ImageDisplay(this.canvas, this.state);
+
         this.props.onLoad(this)
     },
 
@@ -67,10 +69,9 @@ var ImageControl = React.createClass({
         return (image !== null) ?  image.naturalWidth / image.naturalHeight :  0;
     },
 
-    renderToCanvas: function(canvas) {
+    renderToCanvas: function(context) {
         if (this.image && this.state.image !== null) {
-            var context = canvas.getContext('2d'),
-                state = this.state,
+            var state = this.state,
                 width = state.width / 2,
                 height = state.height / 2;
 
@@ -163,14 +164,6 @@ var ImageControl = React.createClass({
                             onChange={this.handleChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <label>Fixed Scaling</label>
-                    <ToggleInput
-                        name="fixed"
-                        value={this.state.fixed}
-                        onChange={this.handleChange}
-                    />
                 </div>
                 <div className="row">
                     <label>X</label>

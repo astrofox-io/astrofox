@@ -32,7 +32,8 @@ Player.prototype.configure = function(options) {
 };
 
 Player.prototype.load = function(id, sound, callback) {
-    this.stop(id);
+    this.unload(id);
+
     this.sounds[id] = sound;
 
     sound.connect(this.volume);
@@ -40,6 +41,14 @@ Player.prototype.load = function(id, sound, callback) {
     if (callback) callback();
 
     this.emit('load');
+};
+
+Player.prototype.unload = function(id) {
+    var sound = this.sounds[id];
+    if (sound) {
+        this.stop(id);
+        sound.unload();
+    }
 };
 
 Player.prototype.play = function(id) {

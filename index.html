@@ -11,21 +11,19 @@
     <script src="resources/js/libs/react.js"></script>
     <script src="build/app.js"></script>
     <script src="build/ui.js"></script>
-    <style>
-    </style>
 </head>
 <body>
 <script>
 var Node = {};
 
-if (process && typeof require !== 'undefined') {
+if (typeof process !== 'undefined' && typeof require !== 'undefined') {
     Node.GUI = require('nw.gui');
     Node.FS = require('fs');
     Node.Buffer = require('buffer').Buffer;
     Node.Stream = require('stream');
     Node.Spawn = require('child_process').spawn;
 
-    process.on('uncaughtException', function(e){
+    process.on('uncaughtException', function(e) {
         console.log(e.stack);
     });
 
@@ -37,7 +35,7 @@ if (process && typeof require !== 'undefined') {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function(e) {
     React.render(
         React.createElement(App, null),
         document.body

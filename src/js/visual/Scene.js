@@ -19,6 +19,8 @@ var Scene = EventEmitter.extend({
         this.options = _.assign({}, defaults);
         this.canvas2d = null;
         this.canvas3d = null;
+        this.context2d = null;
+        this.context3d = null;
     }
 });
 
@@ -87,6 +89,9 @@ Scene.prototype.setupCanvas = function(canvas) {
     this.cube.position.z = -10;
     this.scene3d.add(this.cube);
     */
+
+    this.context2d = this.canvas2d.getContext('2d');
+    this.context3d = this.canvas3d.getContext('webgl');
 };
 
 Scene.prototype.getFPS = function() {

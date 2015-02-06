@@ -56,19 +56,13 @@ var SpectrumControl = React.createClass({
         }.bind(this));
     },
 
-    renderToCanvas: function(canvas, frame, fft) {
+    renderToCanvas: function(context, frame, fft) {
         var data,
-            context = canvas.getContext('2d'),
             state = this.state,
             width = state.width / 2,
             height = state.height;
 
-        if (typeof fft !== 'undefined') {
-            data = this.analyzer.parseFrequencyData(fft);
-        }
-        else {
-            data = this.analyzer.getFrequencyData();
-        }
+        data = this.analyzer.parseFrequencyData(fft);
 
         this.bars.render(data);
 

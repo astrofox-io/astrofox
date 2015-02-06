@@ -24,6 +24,7 @@ Sound.prototype.connect = function(node) {
 Sound.prototype.disconnect = function() {
     if (this.source) {
         this.source.disconnect();
+        this.source = null;
     }
 };
 

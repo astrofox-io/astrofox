@@ -91,7 +91,7 @@ var ImageInput = React.createClass({
                     onClick={this.handleClick}>
                     <img ref="image" style={style} />
                 </div>
-                <div className="input input-image-delete icon-cancel"
+                <div className="input input-image-delete icon-cancel-circled"
                     onClick={this.handleDelete}
                     style={style}
                 />

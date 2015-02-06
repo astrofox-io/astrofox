@@ -16,7 +16,9 @@ var TextDisplay = require('./visual/TextDisplay.js');
 var _ = require('lodash');
 
 var defaults = {
-    fps: 29.97
+    fps: 29.97,
+    canvasHeight: 480,
+    canvasWidth: 854
 };
 
 var Application = EventEmitter.extend({
@@ -26,8 +28,10 @@ var Application = EventEmitter.extend({
 
         this.audioContext = new (window.AudioContext || window.webkitAudioContext);
         this.player = new Player(this.audioContext);
+        this.sound = new BufferedSound(this.audioContext);
         this.scene = new Scene();
         this.timer = new Timer();
+        this.reader = new FileReader();
         this.options = _.assign({}, defaults);
 
         this.analyzer = this.audioContext.createAnalyser();
@@ -45,6 +49,27 @@ var Application = EventEmitter.extend({
         };
     }
 });
+
+Application.prototype.loadFile = function(file, callback) {
+    var reader = this.reader,
+        player = this.player,
+        timer = this.timer;
+
+    player.stop('audio');
+
+    reader.onload = function(e) {
+        // DEBUG
+        console.log('file loaded', timer.get('file_load'));
+        var data = e.target.result;
+
+        if (callback) {
+            callback(file.name, data);
+        }
+    }.bind(this);
+
+    timer.set('file_load');
+    reader.readAsArrayBuffer(file);
+};
 
 Application.prototype.loadAudio = function(data, callback, error) {
     var player = this.player,
@@ -120,16 +145,20 @@ Application.prototype.renderScene = function() {
 };
 
 Application.prototype.renderFrame = function(frame, data, callback) {
-    var scene = this.scene;
+    var scene = this.scene,
+        analyzer = this.analyzer,
+        fft = new Float32Array(analyzer.frequencyBinCount);
+
+    analyzer.getFloatFrequencyData(fft);
 
     scene.clear();
 
     _(this.controls).forEachRight(function(control) {
         if (control.renderToCanvas) {
             control.renderToCanvas(
-                (control.context === '3d') ? scene.canvas3d : scene.canvas2d,
+                (control.context === '3d') ? scene.context3d : scene.context2d,
                 frame,
-                data
+                fft
             );
         }
     }.bind(this));

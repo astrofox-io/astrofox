@@ -51,11 +51,10 @@ var TextControl = React.createClass({
         }.bind(this));
     },
 
-    renderToCanvas: function(canvas) {
+    renderToCanvas: function(context) {
         if (this.state.text == '') return;
 
-        var context = canvas.getContext('2d'),
-            state = this.state,
+        var state = this.state,
             width = this.canvas.width / 2,
             height = this.canvas.height / 2;
 

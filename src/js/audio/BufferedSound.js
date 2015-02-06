@@ -26,6 +26,15 @@ BufferedSound.prototype.load = function(src) {
     }
 };
 
+BufferedSound.prototype.unload = function() {
+    if (this.source) {
+        this.source.disconnect();
+        this.source = null;
+        this.buffer = null;
+        this.off();
+    }
+};
+
 // Loads a url via AJAX
 BufferedSound.prototype.loadUrl = function(src) {
     var request = new XMLHttpRequest();
@@ -65,6 +74,9 @@ BufferedSound.prototype.loadBuffer = function(buffer) {
 };
 
 BufferedSound.prototype.initBuffer = function() {
+    if (this.source) {
+        this.source.disconnect();
+    }
     this.source = this.audioContext.createBufferSource();
     this.source.buffer = this.buffer;
 

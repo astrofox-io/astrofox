@@ -1,6 +1,5 @@
 {
   "name": "astrofox",
-  "main": "index.html",
   "description": "astrofox audio visualizer",
   "version": "0.0.1",
   "keywords": [
@@ -10,6 +9,8 @@
     "3d",
     "video"
   ],
+  "main": "main.js",
+  "main": "index.html",
   "window": {
     "title": "astrofox",
     "toolbar": false,
@@ -19,7 +20,8 @@
     "position": "mouse",
     "min_width": 400,
     "min_height": 200,
-    "fullscreen": false
+    "fullscreen": false,
+    "position": "center"
   },
   "devDependencies": {
     "gulp-concat": "^2.4.2",

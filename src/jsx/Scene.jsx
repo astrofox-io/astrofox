@@ -29,26 +29,15 @@ var Scene = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        var file = e.dataTransfer.files[0],
-            reader = new FileReader(),
-            player = this.props.app.player,
-            timer = this.props.app.timer;
-
-        player.stop('audio');
-
-        reader.onload = function(fe) {
-            // DEBUG
-            console.log('file loaded', timer.get('file_load'));
-            var data = fe.target.result;
-            this.props.onFileLoaded(file, data, function() {
-                this.isLoading(false);
-            }.bind(this));
-        }.bind(this);
-
-        timer.set('file_load');
-        reader.readAsArrayBuffer(file);
+        var file = e.dataTransfer.files[0];
 
         this.isLoading(true);
+
+        this.props.app.loadFile(file, function(filename, data) {
+            this.props.onFileLoaded(filename, data, function() {
+                this.isLoading(false);
+            }.bind(this));
+        }.bind(this));
     },
 
     isLoading: function(val) {

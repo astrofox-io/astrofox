@@ -1,6 +1,8 @@
 var Header = React.createClass({
     componentDidMount: function() {
-        this.window = Node.GUI.Window.get();
+        if (Node.GUI) {
+            this.window = Node.GUI.Window.get();
+        }
         this.maximized = false;
     },
 
