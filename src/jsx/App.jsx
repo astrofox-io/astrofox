@@ -54,12 +54,17 @@ var App = React.createClass({
                 this.loadSettings();
                 break;
             case 'Help/About':
+                this.showAbout();
                 break;
         }
     },
 
     loadSettings: function() {
 
+    },
+
+    showAbout: function() {
+        this.refs.modal.show(<div>oh hai!</div>);
     },
 
     render: function() {
@@ -76,6 +81,7 @@ var App = React.createClass({
                     onMenuAction={this.handleMenuAction}
                 />
                 <div id="body">
+                    <ModalWindow ref="modal" width={400} height={300} />
                     <div id="view">
                         <Scene
                             ref="scene"

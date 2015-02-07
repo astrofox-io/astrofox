@@ -1,4 +1,10 @@
 var Player = React.createClass({
+    getDefaultProps: function() {
+        return {
+            visible: true
+        };
+    },
+
     componentDidMount: function() {
         var player = this.props.app.player;
 
@@ -57,10 +63,11 @@ var Player = React.createClass({
             currentTime = this.getCurrentTime(),
             totalTime = this.getTotalTime(),
             isPlaying = player.isPlaying(),
-            progressPosition = player.getPosition('audio');
+            progressPosition = player.getPosition('audio'),
+            style = { display: (this.props.visible) ? 'flex' : 'none' };
 
         return (
-            <div id="player">
+            <div id="player" style={style}>
                 <div className="buttons">
                     <PlayButton
                         ref="play"

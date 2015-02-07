@@ -14,7 +14,8 @@ var ControlDock = React.createClass({
                     onLoad={this.handleControlLoad}
                     {...this.props}
                 />
-            ]
+            ],
+            visible: true
         };
     },
 
@@ -23,12 +24,14 @@ var ControlDock = React.createClass({
     },
 
     render: function() {
+        var style = { display: (this.state.visible) ? 'block' : 'none' };
+
         var controls = this.state.controls.map(function(control, index) {
             return <div key={"control" + index}>{control}</div>
         });
 
         return (
-            <div id="dock">
+            <div id="dock" style={style}>
                 <div className="title">CONTROLS</div>
                 {controls}
             </div>
