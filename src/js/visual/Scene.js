@@ -24,7 +24,7 @@ var Scene = EventEmitter.extend({
     }
 });
 
-Scene.prototype.configure = function(options) {
+Scene.prototype.init = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
             if (hasOwnProperty.call(this.options, prop)) {

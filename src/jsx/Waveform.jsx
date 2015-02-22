@@ -18,18 +18,19 @@ var Waveform = React.createClass({
     componentDidMount: function() {
         var app = this.props.app,
             FX = app.FX,
+            config = this.config,
             player = this.player = app.player;
 
         this.bars = new FX.BarDisplay(
             this.refs.canvas.getDOMNode(),
             {
-                y: this.config.height,
-                height: this.config.height,
-                width: this.config.width,
-                barWidth: this.config.barWidth,
-                barSpacing: this.config.barSpacing,
+                y: config.height,
+                height: config.height,
+                width: config.width,
+                barWidth: config.barWidth,
+                barSpacing: config.barSpacing,
                 color: ['#555555','#444444'],
-                shadowHeight: this.config.shadowHeight,
+                shadowHeight: config.shadowHeight,
                 shadowColor: '#333333'
             }
         );
@@ -37,13 +38,13 @@ var Waveform = React.createClass({
         this.progress = new FX.BarDisplay(
             this.refs.progress.getDOMNode(),
             {
-                y: this.config.height,
-                height: this.config.height,
-                width: this.config.width,
-                barWidth: this.config.barWidth,
-                barSpacing: this.config.barSpacing,
+                y: config.height,
+                height: config.height,
+                width: config.width,
+                barWidth: config.barWidth,
+                barSpacing: config.barSpacing,
                 color: ['#b6aaff','#927fff'],
-                shadowHeight: this.config.shadowHeight,
+                shadowHeight: config.shadowHeight,
                 shadowColor: '#554b96'
             }
         );
@@ -51,13 +52,13 @@ var Waveform = React.createClass({
         this.overlay = new FX.BarDisplay(
             this.refs.overlay.getDOMNode(),
             {
-                y: this.config.height,
-                height: this.config.height,
-                width: this.config.width,
-                barWidth: this.config.barWidth,
-                barSpacing: this.config.barSpacing,
+                y: config.height,
+                height: config.height,
+                width: config.width,
+                barWidth: config.barWidth,
+                barSpacing: config.barSpacing,
                 color: ['#8880bf','#6c5fbf'],
-                shadowHeight: this.config.shadowHeight,
+                shadowHeight: config.shadowHeight,
                 shadowColor: '#403972'
             }
         );
@@ -123,11 +124,10 @@ var Waveform = React.createClass({
     },
 
     render: function() {
-        var player = this.props.app.player,
-            width = this.config.width,
+        var width = this.config.width,
             height = this.config.height + this.config.shadowHeight,
             seek = this.state.seek,
-            progressWidth = player.getPosition('audio') * width,
+            progressWidth = this.props.app.player.getPosition('audio') * width,
             style = { width: progressWidth + 'px' },
             clipStyle = { display: 'none' };
 

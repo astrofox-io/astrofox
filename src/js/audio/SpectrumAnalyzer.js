@@ -16,10 +16,10 @@ var SpectrumAnalyzer = function(context, analyzer, options) {
     this.data = null;
     this.options =_.assign({}, defaults);
 
-    this.configure(options);
+    this.init(options);
 };
 
-SpectrumAnalyzer.prototype.configure = function(options) {
+SpectrumAnalyzer.prototype.init = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
             if (this.options.hasOwnProperty(prop)) {

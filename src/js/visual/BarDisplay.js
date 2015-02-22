@@ -22,11 +22,11 @@ var BarDisplay = EventEmitter.extend({
         this.context = canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        this.configure(options);
+        this.init(options);
     }
 });
 
-BarDisplay.prototype.configure = function(options) {
+BarDisplay.prototype.init = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
             if (this.options.hasOwnProperty(prop)) {

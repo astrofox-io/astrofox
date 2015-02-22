@@ -16,11 +16,11 @@ var ImageDisplay = EventEmitter.extend({
         this.context = canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        this.configure(options);
+        this.init(options);
     }
 });
 
-ImageDisplay.prototype.configure = function(options) {
+ImageDisplay.prototype.init = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
             if (this.options.hasOwnProperty(prop)) {

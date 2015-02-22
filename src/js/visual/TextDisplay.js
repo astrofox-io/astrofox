@@ -21,11 +21,11 @@ var TextDisplay = EventEmitter.extend({
         this.context = canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        this.configure(options);
+        this.init(options);
     }
 });
 
-TextDisplay.prototype.configure = function(options) {
+TextDisplay.prototype.init = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
             if (hasOwnProperty.call(this.options, prop)) {
