@@ -50,7 +50,7 @@ var Application = EventEmitter.extend({
     }
 });
 
-Application.prototype.loadFile = function(file, callback) {
+Application.prototype.loadAudioFile = function(file, callback) {
     var reader = this.reader,
         player = this.player,
         timer = this.timer;
@@ -71,7 +71,7 @@ Application.prototype.loadFile = function(file, callback) {
     reader.readAsArrayBuffer(file);
 };
 
-Application.prototype.loadAudio = function(data, callback, error) {
+Application.prototype.loadAudioData = function(data, callback, error) {
     var player = this.player,
         analyzer = this.analyzer,
         waveform = this.waveform,
