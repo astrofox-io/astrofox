@@ -9,6 +9,10 @@ var App = React.createClass({
         this.app = new AstroFox.Application();
     },
 
+    componentDidMount: function() {
+        this.file = this.refs.file.getDOMNode();
+    },
+
     handleClick: function(e) {
         this.refs.menu.setActiveIndex(-1);
     },
@@ -18,16 +22,16 @@ var App = React.createClass({
         e.preventDefault();
     },
 
-    handleFileLoad: function(filename, data, callback) {
-        this.app.loadAudio(
-            data,
-            function(){
-                this.setState({ filename: filename }, callback);
-            }.bind(this),
-            function(){
-                this.refs.scene.isLoading(false);
-            }.bind(this)
-        );
+    handleFileLoad: function(file, callback, error) {
+        this.app.loadAudioFile(file, function(data) {
+            this.app.loadAudioData(
+                data,
+                function() {
+                    this.setState({ filename: file.name }, callback);
+                }.bind(this),
+                error
+            );
+        }.bind(this));
     },
 
     handlePlayerProgressChange: function() {
@@ -42,8 +46,32 @@ var App = React.createClass({
         this.app.registerControl(control);
     },
 
+    handleFileOpen: function(e) {
+        e.preventDefault();
+
+        if (e.target.files.length > 0) {
+            var scene = this.refs.scene,
+                file = e.target.files[0];
+
+            scene.isLoading(true);
+
+            this.handleFileLoad(
+                file,
+                function() {
+                    scene.isLoading(false);
+                },
+                function() {
+                    scene.isLoading(false);
+                }
+            );
+        }
+    },
+
     handleMenuAction: function(action) {
         switch (action) {
+            case 'File/Import Audio':
+                this.file.click();
+                break;
             case 'File/Save Image':
                 this.app.saveImage('d:/image-' + Date.now() + '.png');
                 break;
@@ -108,6 +136,12 @@ var App = React.createClass({
                 <Footer
                     app={this.app}
                     filename={this.state.filename}
+                />
+                <input
+                    ref="file"
+                    type="file"
+                    className="hidden"
+                    onChange={this.handleFileOpen}
                 />
             </div>
         );

@@ -33,11 +33,15 @@ var Scene = React.createClass({
 
         this.isLoading(true);
 
-        this.props.app.loadFile(file, function(filename, data) {
-            this.props.onFileLoaded(filename, data, function() {
+        this.props.onFileLoaded(
+            file,
+            function() {
                 this.isLoading(false);
-            }.bind(this));
-        }.bind(this));
+            }.bind(this),
+            function() {
+                this.isLoading(false);
+            }.bind(this)
+        );
     },
 
     isLoading: function(val) {

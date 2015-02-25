@@ -63,7 +63,7 @@ Application.prototype.loadAudioFile = function(file, callback) {
         var data = e.target.result;
 
         if (callback) {
-            callback(file.name, data);
+            callback(data);
         }
     }.bind(this);
 
@@ -79,6 +79,7 @@ Application.prototype.loadAudioData = function(data, callback, error) {
         sound = new BufferedSound(this.audioContext);
 
     sound.on('load', function() {
+        // DEBUG
         console.log('sound loaded', timer.get('sound_load'));
 
         player.load('audio', sound, function() {
