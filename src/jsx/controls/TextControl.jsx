@@ -22,8 +22,8 @@ var TextControl = React.createClass({
             'Alegreya',
             'Arial',
             'Bangers',
+            'Cardo',
             'Dynalight',
-            'Felipa',
             'Fira Sans',
             'Merriweather',
             'Permanent Marker',
@@ -31,9 +31,7 @@ var TextControl = React.createClass({
             'Oxygen',
             'Racing Sans One',
             'Raleway',
-            'Roboto',
-            'Times New Roman',
-            'Ubuntu'
+            'Roboto'
         ];
     },
 
