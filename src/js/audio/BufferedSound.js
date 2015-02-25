@@ -26,13 +26,15 @@ BufferedSound.prototype.load = function(src) {
     }
 };
 
-BufferedSound.prototype.unload = function() {
+BufferedSound.prototype.unload = function(callback) {
     if (this.source) {
         this.source.disconnect();
         this.source = null;
         this.buffer = null;
         this.off();
     }
+
+    if (callback) callback();
 };
 
 // Loads a url via AJAX

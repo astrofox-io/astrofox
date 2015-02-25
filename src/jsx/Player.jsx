@@ -17,6 +17,10 @@ var Player = React.createClass({
         player.on('stop', function() {
             this.forceUpdate();
         }.bind(this));
+
+        player.on('seek', function() {
+            this.forceUpdate();
+        }.bind(this));
     },
 
     onPlayButtonClick: function() {
@@ -26,6 +30,11 @@ var Player = React.createClass({
 
     onStopButtonClick: function() {
         this.props.app.player.stop('audio');
+        this.forceUpdate();
+    },
+
+    onLoopButtonClick: function() {
+        this.props.app.player.toggleLoop();
         this.forceUpdate();
     },
 
@@ -46,8 +55,11 @@ var Player = React.createClass({
     getCurrentTime: function() {
         var player = this.props.app.player;
 
+        // Check if progress component loaded
         if (this.refs.progress) {
-            return this.refs.progress.getPosition() * this.getTotalTime();
+            var pos = this.refs.progress.getPosition();
+            if (pos > 1) pos = 1;
+            return pos * this.getTotalTime();
         }
 
         return player.getCurrentTime();
@@ -61,8 +73,9 @@ var Player = React.createClass({
     render: function() {
         var player = this.props.app.player,
             currentTime = this.getCurrentTime(),
-            totalTime = this.getTotalTime(),
+            totalTime = player.getDuration('audio'),
             isPlaying = player.isPlaying(),
+            loop = player.options.loop,
             progressPosition = player.getPosition('audio'),
             style = { display: (this.props.visible) ? 'flex' : 'none' };
 
@@ -94,6 +107,10 @@ var Player = React.createClass({
                     ref="time"
                     currentTime={currentTime}
                     totalTime={totalTime}
+                />
+                <LoopButton
+                    loop={loop}
+                    onClick={this.onLoopButtonClick}
                 />
             </div>
         );
@@ -129,6 +146,19 @@ var StopButton = React.createClass({
                 ref="button"
                 onClick={this.props.onClick}>
                 <i className="icon-stop" />
+            </div>
+        );
+    }
+});
+
+var LoopButton = React.createClass({
+    render: function() {
+        var classes = "loop-button";
+        if (this.props.loop) classes += " loop-button-on";
+
+        return (
+            <div className={classes} onClick={this.props.onClick}>
+                <i className="icon-loop" />
             </div>
         );
     }

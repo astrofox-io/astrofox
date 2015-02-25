@@ -37,5 +37,7 @@ Sound.prototype.play = function() {};
 Sound.prototype.pause = function() {};
 Sound.prototype.stop = function() {};
 Sound.prototype.seek = function() {};
+Sound.prototype.load = function() {};
+Sound.prototype.unload = function() {};
 
 module.exports = Sound;

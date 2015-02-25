@@ -4,6 +4,7 @@ var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 
 var defaults = {
+    loop: false,
     updateInterval: 500
 };
 
@@ -32,22 +33,25 @@ Player.prototype.init = function(options) {
 };
 
 Player.prototype.load = function(id, sound, callback) {
-    this.unload(id);
+    this.unload(id, function() {
+        this.sounds[id] = sound;
 
-    this.sounds[id] = sound;
+        sound.connect(this.volume);
 
-    sound.connect(this.volume);
+        if (callback) callback();
 
-    if (callback) callback();
-
-    this.emit('load');
+        this.emit('load');
+    }.bind(this));
 };
 
-Player.prototype.unload = function(id) {
+Player.prototype.unload = function(id, callback) {
     var sound = this.sounds[id];
     if (sound) {
         this.stop(id);
-        sound.unload();
+        sound.unload(callback);
+    }
+    else if (callback) {
+        callback();
     }
 };
 
@@ -60,13 +64,21 @@ Player.prototype.play = function(id) {
         else {
             sound.play();
 
-            this.timer = setInterval(function(){
-                this.emit('time');
+            this.timer = setInterval(
+                function() {
+                    if (!sound.repeat && sound.getPosition(id) >= 1.0) {
+                        if (this.options.loop) {
+                            this.seek(id, 0);
+                        }
+                        else {
+                            this.stop(id);
+                        }
+                    }
 
-                if (!sound.repeat && sound.getPosition(id) >= 1.0) {
-                    this.stop(id);
-                }
-            }.bind(this), this.options.updateInterval);
+                    this.emit('time');
+                }.bind(this),
+                this.options.updateInterval
+            );
 
             this.emit('play');
         }
@@ -135,6 +147,10 @@ Player.prototype.getPosition = function(id) {
         return sound.getPosition();
     }
     return 0;
+};
+
+Player.prototype.toggleLoop = function() {
+    this.options.loop = !this.options.loop;
 };
 
 Player.prototype.isPlaying = function() {

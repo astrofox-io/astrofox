@@ -74,6 +74,10 @@ var Waveform = React.createClass({
         player.on('stop', function(){
             this.forceUpdate();
         }.bind(this));
+
+        player.on('seek', function(){
+            this.forceUpdate();
+        }.bind(this));
     },
 
     handleClick: function(e) {
