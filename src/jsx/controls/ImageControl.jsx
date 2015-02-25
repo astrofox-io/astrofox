@@ -11,7 +11,7 @@ var ImageControl = React.createClass({
             height: 0,
             fixed: true,
             rotation: 0,
-            opacity: 1.0
+            opacity: 0
         };
     },
 
@@ -39,9 +39,10 @@ var ImageControl = React.createClass({
             state.x = 0;
             state.y = 0;
             state.rotation = 0;
-            state.opacity = 1.0;
+            state.opacity = 0;
 
             if (val !== null) {
+                state.opacity = 1.0;
                 state.width = val.naturalWidth;
                 state.height = val.naturalHeight;
             }
