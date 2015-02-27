@@ -85,17 +85,21 @@ var ImageInput = React.createClass({
 
         return (
             <div>
-                <div className="input input-image"
+                <div
+                    className="input input-image"
                     onDrop={this.handleDrop}
                     onDragOver={this.handleDragOver}
                     onClick={this.handleClick}>
                     <img ref="image" style={style} />
                 </div>
-                <div className="input input-image-delete icon-cancel-circled"
+                <div
+                    className="input input-image-delete icon-cancel-circled"
                     onClick={this.handleDelete}
                     style={style}
                 />
-                <form ref="form" className="input-file">
+                <form
+                    ref="form"
+                    className="input-file">
                     <input
                         ref="file"
                         type="file"

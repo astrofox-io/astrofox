@@ -10,7 +10,10 @@ var App = React.createClass({
     },
 
     componentDidMount: function() {
-        this.file = this.refs.file.getDOMNode();
+        this.fileInput = this.refs.file.getDOMNode();
+        this.saveInput = this.refs.save.getDOMNode();
+        this.saveInput.setAttribute('nwsaveas', '');
+        this.saveAction = null;
     },
 
     handleClick: function(e) {
@@ -67,20 +70,42 @@ var App = React.createClass({
         }
     },
 
+    handleFileSave: function(e) {
+        e.preventDefault();
+
+        this.saveAction(this.saveInput.value);
+
+        this.refs.form.getDOMNode().reset();
+    },
+
     handleMenuAction: function(action) {
         switch (action) {
             case 'File/Import Audio':
-                this.file.click();
+                this.fileInput.click();
                 break;
+
             case 'File/Save Image':
-                this.app.saveImage('d:/image-' + Date.now() + '.png');
+                this.saveAction = function(val) {
+                    this.app.saveImage(val);
+                }.bind(this);
+
+                this.saveInput.setAttribute('nwsaveas', 'image.png');
+                this.saveInput.click();
                 break;
+
             case 'File/Save Video':
-                this.app.saveVideo('d:/movie-' + Date.now() + '.mp4');
+                this.saveAction = function(val) {
+                    this.app.saveVideo(val);
+                }.bind(this);
+
+                this.saveInput.setAttribute('nwsaveas', 'video.mp4');
+                this.saveInput.click();
                 break;
+
             case 'Edit/Settings':
                 this.loadSettings();
                 break;
+
             case 'Help/About':
                 this.showAbout();
                 break;
@@ -88,7 +113,7 @@ var App = React.createClass({
     },
 
     loadSettings: function() {
-
+        this.refs.modal.show(<div>settings!</div>);
     },
 
     showAbout: function() {
@@ -137,12 +162,18 @@ var App = React.createClass({
                     app={this.app}
                     filename={this.state.filename}
                 />
-                <input
-                    ref="file"
-                    type="file"
-                    className="hidden"
-                    onChange={this.handleFileOpen}
-                />
+                <form ref="form" className="off-screen">
+                    <input
+                        ref="file"
+                        type="file"
+                        onChange={this.handleFileOpen}
+                    />
+                    <input
+                        ref="save"
+                        type="file"
+                        onChange={this.handleFileSave}
+                    />
+                </form>
             </div>
         );
     }

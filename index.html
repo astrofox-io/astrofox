@@ -8,11 +8,13 @@
     <link rel="stylesheet" href="resources/css/fontello.css" />
     <link rel="stylesheet" href="build/app.css" />
     <link rel="stylesheet" href="build/sprite.css" />
+    <script src="resources/js/libs/sjcl.js"></script>
     <script src="resources/js/libs/react.js"></script>
     <script src="build/app.js"></script>
     <script src="build/ui.js"></script>
 </head>
 <body>
+<div id="app"></div>
 <script>
 var Node = {};
 
@@ -38,7 +40,7 @@ if (typeof process !== 'undefined' && typeof require !== 'undefined') {
 document.addEventListener('DOMContentLoaded', function(e) {
     React.render(
         React.createElement(App, null),
-        document.body
+        document.getElementById("app")
     );
 });
 
