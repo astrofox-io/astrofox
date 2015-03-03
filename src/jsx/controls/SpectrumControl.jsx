@@ -38,6 +38,11 @@ var SpectrumControl = React.createClass({
         this.props.onLoad(this)
     },
 
+    componentDidUpdate: function() {
+        this.bars.init(this.state);
+        this.analyzer.init(this.state);
+    },
+
     handleChange: function(name, val) {
         var state = {};
 
@@ -50,10 +55,7 @@ var SpectrumControl = React.createClass({
 
         state[name] = val;
 
-        this.setState(state, function() {
-            this.bars.init(this.state);
-            this.analyzer.init(this.state);
-        }.bind(this));
+        this.setState(state);
     },
 
     getConfiguration: function() {

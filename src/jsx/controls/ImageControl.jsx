@@ -32,15 +32,17 @@ var ImageControl = React.createClass({
 
     componentDidUpdate: function() {
         var state = this.state,
-            img = this.img,
-            options = {
-                image: (img.src) ? img : null,
-                height: state.height,
-                width: state.width,
-                opacity: state.opacity
-            };
+            img = this.img;
 
-        this.image.init(options);
+        if (img.src != state.src) img.src = state.src;
+
+        this.image.init({
+            image: (img.src) ? img : null,
+            height: state.height,
+            width: state.width,
+            opacity: state.opacity
+        });
+
         this.image.render();
     },
 
