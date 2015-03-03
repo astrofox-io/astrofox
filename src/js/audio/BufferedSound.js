@@ -61,8 +61,7 @@ BufferedSound.prototype.loadData = function(data) {
             this.loadBuffer(buffer);
         }.bind(this),
         function(e){
-            alert('Failed to decode data');
-            this.emit('error');
+            this.emit('error', new Error('Failed to decode data'));
         }.bind(this)
     );
 };

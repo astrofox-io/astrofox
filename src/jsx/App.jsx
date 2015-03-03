@@ -13,6 +13,9 @@ var App = React.createClass({
         this.fileInput = this.refs.file.getDOMNode();
         this.saveInput = this.refs.save.getDOMNode();
         this.saveInput.setAttribute('nwsaveas', '');
+
+
+        this.openAction = null;
         this.saveAction = null;
     },
 
@@ -23,18 +26,6 @@ var App = React.createClass({
     handleDragDrop: function(e) {
         e.stopPropagation();
         e.preventDefault();
-    },
-
-    handleFileLoad: function(file, callback, error) {
-        this.app.loadAudioFile(file, function(data) {
-            this.app.loadAudioData(
-                data,
-                function() {
-                    this.setState({ filename: file.name }, callback);
-                }.bind(this),
-                error
-            );
-        }.bind(this));
     },
 
     handlePlayerProgressChange: function() {
@@ -53,20 +44,9 @@ var App = React.createClass({
         e.preventDefault();
 
         if (e.target.files.length > 0) {
-            var scene = this.refs.scene,
-                file = e.target.files[0];
+            this.openAction(e.target.files[0]);
 
-            scene.isLoading(true);
-
-            this.handleFileLoad(
-                file,
-                function() {
-                    scene.isLoading(false);
-                },
-                function() {
-                    scene.isLoading(false);
-                }
-            );
+            this.refs.form.getDOMNode().reset();
         }
     },
 
@@ -80,13 +60,37 @@ var App = React.createClass({
 
     handleMenuAction: function(action) {
         switch (action) {
+            case 'File/New Project':
+                break;
+
+            case 'File/Open Project':
+                this.openAction = function(file) {
+                    this.app.loadProject(file);
+                }.bind(this);
+
+                this.fileInput.click();
+                break;
+
+            case 'File/Save Project':
+                this.saveAction = function(file) {
+                    this.app.saveProject(file);
+                }.bind(this);
+
+                this.saveInput.setAttribute('nwsaveas', 'project.afx');
+                this.saveInput.click();
+                break;
+
             case 'File/Import Audio':
+                this.openAction = function(file) {
+                    this.loadAudioFile(file);
+                }.bind(this);
+
                 this.fileInput.click();
                 break;
 
             case 'File/Save Image':
-                this.saveAction = function(val) {
-                    this.app.saveImage(val);
+                this.saveAction = function(file) {
+                    this.app.saveImage(file);
                 }.bind(this);
 
                 this.saveInput.setAttribute('nwsaveas', 'image.png');
@@ -94,8 +98,8 @@ var App = React.createClass({
                 break;
 
             case 'File/Save Video':
-                this.saveAction = function(val) {
-                    this.app.saveVideo(val);
+                this.saveAction = function(file) {
+                    this.app.saveVideo(file);
                 }.bind(this);
 
                 this.saveInput.setAttribute('nwsaveas', 'video.mp4');
@@ -110,6 +114,33 @@ var App = React.createClass({
                 this.showAbout();
                 break;
         }
+    },
+
+    loadAudioFile: function(file) {
+        var scene = this.refs.scene;
+
+        scene.isLoading(true);
+
+        this.app.loadAudioFile(file, function(error, data) {
+            if (error) {
+                scene.isLoading(false);
+                throw error;
+            }
+
+            this.app.loadAudioData(
+                data,
+                function(error) {
+                    if (error) {
+                        scene.isLoading(false);
+                        throw error;
+                    }
+
+                    this.setState({ filename: file.name }, function() {
+                        scene.isLoading(false);
+                    });
+                }.bind(this)
+            );
+        }.bind(this));
     },
 
     loadSettings: function() {
@@ -139,7 +170,7 @@ var App = React.createClass({
                         <Scene
                             ref="scene"
                             app={this.app}
-                            onFileLoaded={this.handleFileLoad}
+                            onAudioFileLoaded={this.loadAudioFile}
                         />
                         <Waveform
                             ref="waveform"

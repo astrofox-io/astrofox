@@ -63,7 +63,7 @@ Application.prototype.loadAudioFile = function(file, callback) {
         var data = e.target.result;
 
         if (callback) {
-            callback(data);
+            callback(file.error, data);
         }
     }.bind(this);
 
@@ -71,7 +71,7 @@ Application.prototype.loadAudioFile = function(file, callback) {
     reader.readAsArrayBuffer(file);
 };
 
-Application.prototype.loadAudioData = function(data, callback, error) {
+Application.prototype.loadAudioData = function(data, callback) {
     var player = this.player,
         analyzer = this.analyzer,
         waveform = this.waveform,
@@ -92,8 +92,10 @@ Application.prototype.loadAudioData = function(data, callback, error) {
         if (callback) callback();
     }.bind(this));
 
-    if (error) {
-        sound.on('error', error);
+    if (callback) {
+        sound.on('error', function(error) {
+            callback(error);
+        });
     }
 
     timer.set('sound_load');
@@ -196,6 +198,8 @@ Application.prototype.processFrame = function(frame, fps, callback) {
 Application.prototype.saveImage = function(file) {
     this.scene.renderImage(function(buffer) {
         Node.FS.writeFile(file, buffer);
+
+        // DEBUG
         console.log(file + ' saved');
     });
 };
@@ -215,6 +219,41 @@ Application.prototype.saveVideo = function(file) {
             this.startRender();
         }.bind(this));
     }
+
+    // DEBUG
+    console.log(file + ' saved');
+};
+
+Application.prototype.saveProject = function(file) {
+    var data;
+
+    data = this.controls.map(function(control) {
+        return control.getConfiguration();
+    });
+
+    Node.FS.writeFile(file, JSON.stringify(data));
+
+    // DEBUG
+    console.log(file + ' saved');
+};
+
+Application.prototype.loadProject = function(file) {
+    var reader = this.reader,
+        controls = this.controls;
+
+    reader.onload = function(e) {
+        var data = JSON.parse(e.target.result);
+
+        data.forEach(function(config) {
+            controls.forEach(function(control) {
+                if (config.name == control.name) {
+                    control.setState(config.values);
+                }
+            }.bind(this));
+        }.bind(this));
+    };
+
+    reader.readAsText(file);
 };
 
 // Supposedly 1.5x faster than Array.splice

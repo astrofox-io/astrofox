@@ -1,10 +1,4 @@
 var ImageInput = React.createClass({
-    getInitialState: function() {
-        return {
-            src: ''
-        };
-    },
-
     getDefaultProps: function() {
         return {
             name: 'image',
@@ -13,13 +7,15 @@ var ImageInput = React.createClass({
         };
     },
 
-    componentWillMount: function() {
-        this.image = new Image();
+    componentDidMount: function() {
+        this.image = this.refs.image.getDOMNode();
+        this.file = this.refs.file.getDOMNode();
+        this.form = this.refs.form.getDOMNode();
     },
 
     componentWillReceiveProps: function(props) {
-        if (typeof props.src !== 'undefined' && props.src !== '') {
-            this.setState({ src: props.src });
+        if (typeof props.src !== 'undefined') {
+            this.image.src = props.src;
         }
     },
 
@@ -32,27 +28,21 @@ var ImageInput = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        var file = e.dataTransfer.files[0];
-
-        this.loadFile(file);
+        this.loadFile(e.dataTransfer.files[0]);
     },
 
     handleClick: function(e) {
         e.preventDefault();
 
-        this.refs.file.getDOMNode().click();
+        this.form.reset();
+        this.file.click();
     },
 
     handleDelete: function(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        this.image.src = '';
-        this.refs.form.getDOMNode().reset();
-
-        this.setState({ src: '' }, function() {
-            this.props.onChange(this.props.name, null);
-        }.bind(this));
+        this.loadImage('');
     },
 
     handleFileOpen: function(e) {
@@ -63,6 +53,11 @@ var ImageInput = React.createClass({
         }
     },
 
+    loadImage: function(src) {
+        this.image.src = src;
+        this.props.onChange('src', src);
+    },
+
     loadFile: function(file) {
         if (!(/^image/.test(file.type))) return;
 
@@ -71,17 +66,23 @@ var ImageInput = React.createClass({
         reader.onload = function(fe) {
             var data = fe.target.result;
 
-            this.setState({ src: data }, function() {
-                this.image.src = this.refs.image.getDOMNode().src = this.state.src;
-                this.props.onChange(this.props.name, this.image);
-            });
+            this.loadImage(data);
         }.bind(this);
 
         reader.readAsDataURL(file);
     },
 
+    getImage: function() {
+        return this.image;
+    },
+
+    getImageRatio: function() {
+        var image = this.image;
+        return (image.src) ?  image.naturalWidth / image.naturalHeight :  0;
+    },
+
     render: function() {
-        var style = { display: (this.state.src !== '') ? 'inline-block' : 'none' };
+        var style = { display: (this.props.src) ? 'inline-block' : 'none' };
 
         return (
             <div>

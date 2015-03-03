@@ -53,6 +53,13 @@ var TextControl = React.createClass({
         }.bind(this));
     },
 
+    getConfiguration: function() {
+        return {
+            name: this.name,
+            values: this.state
+        };
+    },
+
     renderToCanvas: function(context) {
         if (this.state.text == '') return;
 

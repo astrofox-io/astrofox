@@ -56,6 +56,13 @@ var SpectrumControl = React.createClass({
         }.bind(this));
     },
 
+    getConfiguration: function() {
+        return {
+            name: this.name,
+            values: this.state
+        };
+    },
+
     renderToCanvas: function(context, frame, fft) {
         var data,
             state = this.state,

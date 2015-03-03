@@ -31,17 +31,7 @@ var Scene = React.createClass({
 
         var file = e.dataTransfer.files[0];
 
-        this.isLoading(true);
-
-        this.props.onFileLoaded(
-            file,
-            function() {
-                this.isLoading(false);
-            }.bind(this),
-            function() {
-                this.isLoading(false);
-            }.bind(this)
-        );
+        this.props.onAudioFileLoaded(file);
     },
 
     isLoading: function(val) {

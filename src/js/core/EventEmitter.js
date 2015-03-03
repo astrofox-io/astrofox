@@ -45,7 +45,7 @@ EventEmitter.prototype.emit = function() {
         events = this.events[event] || [];
 
     events.forEach(function(e) {
-        e.fn.apply(e.audioContext, args);
+        e.fn.apply(e.context, args);
     });
 };
 
