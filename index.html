@@ -24,6 +24,7 @@ if (typeof process !== 'undefined' && typeof require !== 'undefined') {
     Node.Buffer = require('buffer').Buffer;
     Node.Stream = require('stream');
     Node.Spawn = require('child_process').spawn;
+    Node.Zlib = require('zlib');
 
     process.on('uncaughtException', function(e) {
         console.log(e.stack);
