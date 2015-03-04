@@ -43,9 +43,10 @@ var App = React.createClass({
     handleFileOpen: function(e) {
         e.preventDefault();
 
-        if (e.target.files.length > 0) {
-            this.openAction(e.target.files[0]);
+        var files = e.target.files;
 
+        if (files.length > 0) {
+            this.openAction(files[0].path);
             this.refs.form.getDOMNode().reset();
         }
     },
@@ -54,7 +55,6 @@ var App = React.createClass({
         e.preventDefault();
 
         this.saveAction(this.saveInput.value);
-
         this.refs.form.getDOMNode().reset();
     },
 

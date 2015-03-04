@@ -163,7 +163,7 @@ Scene.prototype.renderVideo = function(output_file, fps, duration, func, callbac
         }
     }.bind(this);
 
-    var ffmpeg = Node.Spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
+    var ffmpeg = Node.Spawn('./bin/ffmpeg.exe', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
     input_file.pipe(ffmpeg.stdin);
     //ffmpeg.stdout.pipe(outStream);
 

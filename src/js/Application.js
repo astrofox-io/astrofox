@@ -18,7 +18,8 @@ var _ = require('lodash');
 var defaults = {
     fps: 29.97,
     canvasHeight: 480,
-    canvasWidth: 854
+    canvasWidth: 854,
+    useGzip: true
 };
 
 var Application = EventEmitter.extend({
@@ -225,35 +226,65 @@ Application.prototype.saveVideo = function(file) {
 };
 
 Application.prototype.saveProject = function(file) {
-    var data;
+    var data, buffer,
+        options = this.options,
+        fs = Node.FS,
+        Buffer = Node.Buffer,
+        zlib = Node.Zlib;
 
     data = this.controls.map(function(control) {
         return control.getConfiguration();
     });
 
-    Node.FS.writeFile(file, JSON.stringify(data));
+    if (options.useGzip) {
+        data = JSON.stringify(data);
+
+        zlib.deflate(data, function(err, buf) {
+            buffer = new Buffer(buf);
+            fs.writeFileSync(file, buffer);
+        }.bind(this));
+    }
+    else {
+        fs.writeFile(file, JSON.stringify(data));
+    }
 
     // DEBUG
     console.log(file + ' saved');
 };
 
 Application.prototype.loadProject = function(file) {
-    var reader = this.reader,
-        controls = this.controls;
+    var data,
+        options = this.options,
+        reader = this.reader,
+        fs = Node.FS,
+        zlib = Node.Zlib;
 
-    reader.onload = function(e) {
-        var data = JSON.parse(e.target.result);
-
-        data.forEach(function(config) {
-            controls.forEach(function(control) {
-                if (config.name == control.name) {
-                    control.setState(config.values);
-                }
-            }.bind(this));
+    if (options.useGzip) {
+        data = fs.readFileSync(file);
+        zlib.inflate(data, function(err, buf) {
+            this.loadControls(JSON.parse(buf.toString()));
         }.bind(this));
-    };
+    }
+    else {
+        reader.onload = function(e) {
+            data = JSON.parse(e.target.result);
+            this.loadControls(data);
+        }.bind(this);
 
-    reader.readAsText(file);
+        reader.readAsText(file);
+    }
+};
+
+Application.prototype.loadControls = function(data) {
+    var controls = this.controls;
+
+    data.forEach(function (config) {
+        controls.forEach(function (control) {
+            if (config.name == control.name) {
+                control.setState(config.values);
+            }
+        }.bind(this));
+    }.bind(this));
 };
 
 // Supposedly 1.5x faster than Array.splice

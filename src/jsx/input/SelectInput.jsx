@@ -1,16 +1,16 @@
 var SelectInput = React.createClass({
     getInitialState: function() {
         return {
-            value: "",
+            value: '',
             showItems: false
         };
     },
 
     getDefaultProps: function() {
         return {
-            name: "select",
+            name: 'select',
             size: 20,
-            value: ""
+            value: ''
         };
     },
 
