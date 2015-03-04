@@ -215,7 +215,6 @@ Application.prototype.saveVideo = function(file) {
     if (player.isPlaying()) player.stop('audio');
 
     if (sound) {
-        //scene.renderVideo(file, this.options.fps, 5, this.getFFT.bind(this));
         scene.renderVideo(file, 29.97, 5, this.processFrame.bind(this), function(){
             this.startRender();
         }.bind(this));

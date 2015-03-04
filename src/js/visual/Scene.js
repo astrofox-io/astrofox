@@ -5,6 +5,7 @@ var _ = require('lodash');
 var THREE = require('three');
 
 var defaults = {
+    showFPS: true,
     audioOutput: 'mux',
     videoOutput: 'mp4'
 };
@@ -12,9 +13,9 @@ var defaults = {
 var Scene = EventEmitter.extend({
     constructor: function(options) {
         this.fps = 0;
+        this.ms = 0;
         this.time = 0;
         this.frame = 0;
-        this.count = 0;
         this.controls = [];
         this.options = _.assign({}, defaults);
         this.canvas2d = null;
@@ -99,26 +100,36 @@ Scene.prototype.getFPS = function() {
 };
 
 Scene.prototype.updateFPS = function() {
-    var now = performance.now();
+    var now = performance.now(),
+        options = this.options;
 
-    if (!this.time) {
-        this.time = now;
-        this.fps = 0;
-        this.count = 0;
-        return;
-    }
+    if (options.showFPS) {
+        if (!this.time) {
+            this.time = now;
+        }
 
-    var delta = (now - this.time) / 1000;
+        this.frame += 1;
 
-    // Only update every second
-    if (delta > 1) {
-        this.fps = Math.ceil(this.frame / delta);
-        this.time = now;
-        this.count = 0;
+        if (now > this.time + 1000) {
+            this.fps = Math.round( (this.frame * 1000) / (now - this.time));
+            this.ms = (now - this.time) / this.frame;
+            this.time = now;
+            this.frame = 0;
+        }
+
+        this.renderFPS();
     }
-    else {
-        this.count += 1;
-    }
+};
+
+Scene.prototype.renderFPS = function() {
+    var context = this.context2d;
+
+    context.font = '14px sans-serif';
+    context.fillStyle = '#fff';
+    context.shadowColor = '#000';
+    context.shadowOffsetX = 2;
+    context.shadowOffsetY = 2;
+    context.fillText(this.fps.toString() + ' FPS, ' + this.ms.toFixed(2) + ' ms', 10, 20);
 };
 
 Scene.prototype.clear = function() {
@@ -131,22 +142,23 @@ Scene.prototype.render = function(callback) {
     //this.cube.rotation.x += 0.1;
     //this.cube.rotation.y += 0.1;
 
+    this.updateFPS();
+
     this.renderer.clear();
     this.renderer.render(this.scene3d, this.camera3d);
     this.renderer.clearDepth();
     this.renderer.render(this.scene2d, this.camera2d);
 
-    this.updateFPS();
-
     if (callback) callback();
 };
 
 Scene.prototype.renderVideo = function(output_file, fps, duration, func, callback) {
-    var started = false;
-    console.log('rending movie', duration, 'seconds,', fps, 'fps');
-    var frames = duration * fps;
+    var started = false,
+        frames = duration * fps,
+        input_file = new Node.Stream.Transform();
 
-    var input_file = new Node.Stream.Transform();
+    console.log('rending movie', duration, 'seconds,', fps, 'fps');
+
     input_file.on('error', function(err) {
         console.log(err);
     });
@@ -185,7 +197,7 @@ Scene.prototype.renderVideo = function(output_file, fps, duration, func, callbac
     });
 
     ffmpeg.stderr.on('close', function() {
-        console.log('...closing time! bye');
+        console.log('program closed');
     });
 };
 

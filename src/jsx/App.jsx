@@ -19,6 +19,10 @@ var App = React.createClass({
         this.saveAction = null;
     },
 
+    componentDidUpdate: function() {
+
+    },
+
     handleClick: function(e) {
         this.refs.menu.setActiveIndex(-1);
     },

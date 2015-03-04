@@ -133,19 +133,16 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #footer {
-    display: flex;
     color: #fff;
     background-color: @primary-color;
     font-size: 10px;
     padding: 10px;
 
-    div {
-        flex: 1;
-    }
-
     .version {
         text-align: right;
     }
+
+    .flex-box(row, flex-start, stretch, stretch);
 }
 
 #title {
