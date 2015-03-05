@@ -25,6 +25,7 @@ var MenuBar = React.createClass({
                     text: 'View',
                     items: [
                         { text: 'Control Dock', beginGroup: false, checked: true },
+                        { text: 'Show FPS', beginGroup: false, checked: false },
                         { text: 'Full Screen', beginGroup: false, checked: false }
                     ]
                 },
@@ -55,26 +56,26 @@ var MenuBar = React.createClass({
         }
     },
 
-    handleItemClick: function(action) {
+    handleItemClick: function(action, checked) {
         this.setActiveIndex(-1);
-        this.props.onMenuAction(action);
+        this.props.onMenuAction(action, checked);
     },
 
     setActiveIndex: function(index) {
         this.setState({ activeIndex: index });
     },
 
-    toggleChecked: function(action) {
+    setCheckState: function(action, checked) {
         var items = this.state.items;
 
         this.state.items.forEach(function(barItem) {
             barItem.items.forEach(function(item, index) {
                 if (action === barItem.text + '/' + item.text) {
-                    barItem.items[index].checked = !barItem.items[index].checked;
+                    barItem.items[index].checked = checked;
                     this.setState(items);
                 }
-            });
-        });
+            }, this);
+        }, this);
     },
 
     render: function() {

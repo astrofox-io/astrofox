@@ -129,6 +129,10 @@ Application.prototype.unregisterControl = function(control) {
     }
 };
 
+Application.prototype.showFPS = function(val) {
+    this.scene.options.showFPS = val;
+};
+
 Application.prototype.startRender = function() {
     if (!this.frame) {
         this.renderScene();

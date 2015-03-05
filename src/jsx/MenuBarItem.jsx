@@ -25,9 +25,9 @@ var MenuBarItem = React.createClass({
         this.props.onMouseOver();
     },
 
-    handleItemClick: function(text) {
+    handleItemClick: function(text, checked) {
         var action = this.props.text + '/' + text;
-        this.props.onItemClick(action);
+        this.props.onItemClick(action, checked);
     },
 
     render: function() {

@@ -12,7 +12,7 @@ var MenuItem = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        this.props.onClick(this.props.text);
+        this.props.onClick(this.props.text, this.props.checked);
     },
 
     render: function() {

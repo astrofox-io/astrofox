@@ -12,11 +12,10 @@ var App = React.createClass({
     componentDidMount: function() {
         this.fileInput = this.refs.file.getDOMNode();
         this.saveInput = this.refs.save.getDOMNode();
-        this.saveInput.setAttribute('nwsaveas', '');
-
-
         this.openAction = null;
         this.saveAction = null;
+
+        this.saveInput.setAttribute('nwsaveas', '');
     },
 
     componentDidUpdate: function() {
@@ -62,7 +61,7 @@ var App = React.createClass({
         this.refs.form.getDOMNode().reset();
     },
 
-    handleMenuAction: function(action) {
+    handleMenuAction: function(action, checked) {
         switch (action) {
             case 'File/New Project':
                 break;
@@ -115,7 +114,12 @@ var App = React.createClass({
                 break;
 
             case 'View/Control Dock':
-                this.refs.menu.toggleChecked(action);
+                this.refs.menu.setCheckState(action, !checked);
+                break;
+
+            case 'View/Show FPS':
+                this.app.showFPS(!checked);
+                this.refs.menu.setCheckState(action, !checked);
                 break;
 
             case 'Help/About':
