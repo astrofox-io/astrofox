@@ -5,7 +5,7 @@ var _ = require('lodash');
 var THREE = require('three');
 
 var defaults = {
-    showFPS: true,
+    showFPS: false,
     audioOutput: 'mux',
     videoOutput: 'mp4'
 };

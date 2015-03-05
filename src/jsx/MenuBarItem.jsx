@@ -31,20 +31,20 @@ var MenuBarItem = React.createClass({
     },
 
     render: function() {
-        var style = { display: (this.state.showItems) ? 'block' : 'none' };
-        var classes = "menubar-item";
+        var style = { display: (this.state.showItems) ? 'block' : 'none' },
+            classes = 'menubar-item';
+
         if (this.props.active) {
-            classes += " active";
+            classes += ' active';
         }
-        var beginGroup = false;
+
         var items = this.props.items.map(function(item, index) {
-            var beginGroup = item.indexOf('|') === 0,
-                text = (beginGroup) ? item.substr(1) : item;
             return (
                 <MenuItem
-                    key={"menuitem" + index}
-                    text={text}
-                    beginGroup={beginGroup}
+                    key={'menuitem' + index}
+                    text={item.text}
+                    checked={item.checked}
+                    beginGroup={item.beginGroup}
                     onClick={this.handleItemClick}
                 />
             );
@@ -52,12 +52,14 @@ var MenuBarItem = React.createClass({
 
         return (
             <li>
-                <div className={classes}
+                <div
+                    className={classes}
                     onClick={this.handleClick}
                     onMouseOver={this.handleMouseOver}>
                     {this.props.text}
                 </div>
-                <ul className="menu"
+                <ul
+                    className="menu"
                     style={style}>
                     {items}
                 </ul>

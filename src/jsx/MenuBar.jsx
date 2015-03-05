@@ -1,7 +1,41 @@
 var MenuBar = React.createClass({
     getInitialState: function() {
         return {
-            activeIndex: -1
+            activeIndex: -1,
+            items: [
+                {
+                    text: 'File',
+                    items: [
+                        { text: 'New Project', beginGroup: false, checked: false },
+                        { text: 'Open Project', beginGroup: false, checked: false },
+                        { text: 'Save Project', beginGroup: false, checked: false },
+                        { text: 'Import Audio', beginGroup: true, checked: false },
+                        { text: 'Save Image', beginGroup: false, checked: false },
+                        { text: 'Save Video', beginGroup: false, checked: false },
+                        { text: 'Exit', beginGroup: true, checked: false }
+                    ]
+                },
+                {
+                    text: 'Edit',
+                    items: [
+                        { text: 'Settings', beginGroup: false, checked: false }
+                    ]
+                },
+                {
+                    text: 'View',
+                    items: [
+                        { text: 'Control Dock', beginGroup: false, checked: true },
+                        { text: 'Full Screen', beginGroup: false, checked: false }
+                    ]
+                },
+                {
+                    text: 'Help',
+                    items: [
+                        { text: 'Register', beginGroup: false, checked: false },
+                        { text: 'About', beginGroup: false, checked: false }
+                    ]
+                }
+            ]
         };
     },
 
@@ -9,15 +43,6 @@ var MenuBar = React.createClass({
         return {
             onMenuAction: function(){}
         };
-    },
-
-    componentWillMount: function() {
-        this.items = [
-            { text: 'File', items: ['New Project', 'Open Project', 'Save Project', '|Import Audio', 'Save Image', 'Save Video', '|Exit'] },
-            { text: 'Edit', items: ['Settings'] },
-            { text: 'View', items: ['Control Dock', 'Full Screen'] },
-            { text: 'Help', items: ['Register', 'About'] }
-        ];
     },
 
     handleClick: function(index) {
@@ -39,8 +64,21 @@ var MenuBar = React.createClass({
         this.setState({ activeIndex: index });
     },
 
+    toggleChecked: function(action) {
+        var items = this.state.items;
+
+        this.state.items.forEach(function(barItem) {
+            barItem.items.forEach(function(item, index) {
+                if (action === barItem.text + '/' + item.text) {
+                    barItem.items[index].checked = !barItem.items[index].checked;
+                    this.setState(items);
+                }
+            });
+        });
+    },
+
     render: function() {
-        var items = this.items.map(function(item, index) {
+        var items = this.state.items.map(function(item, index) {
             return (
                 <MenuBarItem
                     key={"menubaritem" + index}

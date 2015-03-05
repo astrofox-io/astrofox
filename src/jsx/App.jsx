@@ -114,6 +114,10 @@ var App = React.createClass({
                 this.loadSettings();
                 break;
 
+            case 'View/Control Dock':
+                this.refs.menu.toggleChecked(action);
+                break;
+
             case 'Help/About':
                 this.showAbout();
                 break;

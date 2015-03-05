@@ -363,6 +363,18 @@ input[type="range"]::-webkit-slider-thumb {
             }
         }
 
+        .checked:before {
+            content: "\2713";
+            color: @primary-color;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+
+        .checked:hover:before {
+            color: @primary-text-color;
+        }
+
         .begin-group:before {
             content: "\0020";
             border-top: 1px solid #111;
