@@ -19,24 +19,28 @@ var ModalWindow = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        var state = {};
+        var obj = {};
         for (var prop in props) {
             if (this.state.hasOwnProperty.call(prop)) {
-                state[prop] = props[prop];
+                obj[prop] = props[prop];
             }
         }
-        this.setState(state);
+        this.setState(obj);
     },
 
     handleClick: function() {
         this.setState({ visible: false });
     },
 
-    show: function(content) {
+    show: function(content, callback) {
         this.setState({
             content: content,
             visible: true
-        });
+        }, callback);
+    },
+
+    isVisible: function() {
+        return this.state.visible;
     },
 
     render: function() {

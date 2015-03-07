@@ -96,6 +96,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: 40px;
     display: flex;
     background-color: @header-background-color;
+    z-index: 1;
     -webkit-app-region: drag;
 }
 
@@ -137,6 +138,7 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: @primary-color;
     font-size: 10px;
     padding: 10px;
+    z-index: 1;
 
     .version {
         text-align: right;
@@ -456,20 +458,22 @@ input[type="range"]::-webkit-slider-thumb {
         font-size: @font-small;
         padding: 10px;
         color: @secondary-text-color;
+        cursor: default;
     }
 }
 
-#fps {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    color: #ccc;
+#layers {
+
 }
 
 // Styles
 
 .flex {
     flex: 1;
+}
+
+.blur {
+    -webkit-filter: blur(2px);
 }
 
 .hidden {
@@ -505,6 +509,7 @@ input[type="range"]::-webkit-slider-thumb {
             color: @primary-color;
             padding: 10px;
             line-height: 20px;
+            cursor: default;
         }
     }
 

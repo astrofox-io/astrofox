@@ -110,7 +110,7 @@ var App = React.createClass({
                 break;
 
             case 'Edit/Settings':
-                this.loadSettings();
+                this.refs.modal.show(<div>settings!</div>);
                 break;
 
             case 'View/Control Dock':
@@ -123,7 +123,7 @@ var App = React.createClass({
                 break;
 
             case 'Help/About':
-                this.showAbout();
+                this.refs.modal.show(<div>oh hai!</div>);
                 break;
         }
     },
@@ -155,14 +155,6 @@ var App = React.createClass({
         }.bind(this));
     },
 
-    loadSettings: function() {
-        this.refs.modal.show(<div>settings!</div>);
-    },
-
-    showAbout: function() {
-        this.refs.modal.show(<div>oh hai!</div>);
-    },
-
     render: function() {
         return (
             <div
@@ -176,9 +168,9 @@ var App = React.createClass({
                     app={this.app}
                     onMenuAction={this.handleMenuAction}
                 />
-                <div id="body">
+                <Body>
                     <ModalWindow ref="modal" width={400} height={300} />
-                    <div id="view">
+                    <MainView>
                         <Scene
                             ref="scene"
                             app={this.app}
@@ -194,13 +186,13 @@ var App = React.createClass({
                             app={this.app}
                             onProgressChange={this.handlePlayerProgressChange}
                         />
-                    </div>
+                    </MainView>
                     <ControlDock
                         ref="dock"
                         app={this.app}
                         onControlLoad={this.handleControlLoad}
                     />
-                </div>
+                </Body>
                 <Footer
                     app={this.app}
                     filename={this.state.filename}

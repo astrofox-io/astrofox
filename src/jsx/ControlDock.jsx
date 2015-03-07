@@ -32,8 +32,10 @@ var ControlDock = React.createClass({
 
         return (
             <div id="dock" style={style}>
+                <div className="title">LAYERS</div>
+                <LayersPanel controls={controls} />
                 <div className="title">CONTROLS</div>
-                {controls}
+                <ControlPanel controls={controls} />
             </div>
         );
     }

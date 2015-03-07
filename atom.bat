@@ -1,0 +1,1 @@
+C:\dev\atom-shell-v0.21.1-win32-ia32\atom.exe .
