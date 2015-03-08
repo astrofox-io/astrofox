@@ -449,10 +449,11 @@ input[type="range"]::-webkit-slider-thumb {
 
 #dock {
     background-color: @dock-background-color;
-    min-width: 320px;
+    width: 320px;
     z-index: 100;
-    overflow-x: hidden;
-    overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column;
 
     .title {
         font-size: @font-small;
@@ -463,7 +464,12 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #layers {
+    overflow: auto;
+}
 
+#controls {
+    flex: 1;
+    overflow: auto;
 }
 
 // Styles
@@ -772,4 +778,9 @@ input[type="range"]::-webkit-slider-thumb {
     width: 0;
     overflow: hidden;
     opacity: 1;
+}
+
+.layer {
+    padding: 10px;
+    border-bottom: 1px solid @primary-color;
 }

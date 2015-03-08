@@ -6,14 +6,11 @@ var ControlDock = React.createClass({
     },
 
     render: function() {
-        var style = { display: (this.state.visible) ? 'block' : 'none' };
+        var style = { display: (this.state.visible) ? 'flex' : 'none' };
 
         return (
             <div id="dock" style={style}>
-                <div className="title">LAYERS</div>
                 <LayersPanel {...this.props} />
-
-                <div className="title">CONTROLS</div>
                 <ControlPanel {...this.props} />
             </div>
         );
