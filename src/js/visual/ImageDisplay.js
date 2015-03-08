@@ -10,10 +10,13 @@ var defaults = {
     opacity: 1.0
 };
 
+var id = 0;
+
 var ImageDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
-        this.canvas = canvas;
-        this.context = canvas.getContext('2d');
+        this.id = id++;
+        this.canvas = canvas || document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
         this.init(options);
@@ -76,6 +79,30 @@ ImageDisplay.prototype.render = function() {
         context.globalAlpha = options.opacity;
         context.drawImage(img, 0, 0, options.width, options.height);
     }
+};
+
+ImageDisplay.prototype.renderToCanvas = function(context) {
+    if (this.options.image) {
+        var options = this.options,
+            width = options.width / 2,
+            height = options.height / 2;
+
+        if (options.rotation % 360 !== 0) {
+            context.save();
+            context.translate(options.x, options.y);
+            context.translate(width, height);
+            context.rotate(options.rotation * Math.PI / 180);
+            context.drawImage(this.canvas, -width, -height);
+            context.restore();
+        }
+        else {
+            context.drawImage(this.canvas, options.x, options.y);
+        }
+    }
+};
+
+ImageDisplay.prototype.toString = function() {
+    return 'ImageDisplay' + this.id;
 };
 
 function sharpen(ctx, w, h, mix) {

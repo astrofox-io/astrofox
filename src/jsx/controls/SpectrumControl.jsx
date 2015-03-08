@@ -24,23 +24,11 @@ var SpectrumControl = React.createClass({
     },
 
     componentWillMount: function() {
-        var app = this.props.app,
-            FX = app.FX;
-
-        this.canvas = document.createElement('canvas');
-        this.analyzer = app.createAnalyzer(this.state);
-        this.bars = new FX.BarDisplay(this.canvas, this.state);
-    },
-
-    componentDidMount: function() {
-        console.log('control mounted', this.name);
-
-        this.props.onLoad(this)
+        this.props.control.analyzer = this.props.app.createAnalyzer(this.state);
     },
 
     componentDidUpdate: function() {
-        this.bars.init(this.state);
-        this.analyzer.init(this.state);
+        this.props.control.init(this.state);
     },
 
     handleChange: function(name, val) {
@@ -65,31 +53,8 @@ var SpectrumControl = React.createClass({
         };
     },
 
-    renderToCanvas: function(context, frame, fft) {
-        var data,
-            state = this.state,
-            width = state.width / 2,
-            height = state.height;
-
-        data = this.analyzer.parseFrequencyData(fft);
-
-        this.bars.render(data);
-
-        if (state.rotation % 360 !== 0) {
-            context.save();
-            context.translate(state.x, state.y - state.height);
-            context.translate(width, height);
-            context.rotate(state.rotation * Math.PI / 180);
-            context.drawImage(this.canvas, -width, -height);
-            context.restore();
-        }
-        else {
-            context.drawImage(this.canvas, state.x, state.y - state.height);
-        }
-    },
-
     render: function() {
-        var maxFrequency = this.analyzer.getMaxFrequency() / 2;
+        var maxFrequency = 12000; //this.analyzer.getMaxFrequency() / 2;
         var maxHeight = 480;
         var maxWidth = 854;
 

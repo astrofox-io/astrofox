@@ -16,10 +16,14 @@ var defaults = {
     opacity: 1.0
 };
 
+var id = 0;
+
 var BarDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
-        this.canvas = canvas;
-        this.context = canvas.getContext('2d');
+        this.id = id++;
+        this.canvas = canvas || document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
+        this.analyzer = null;
         this.options = _.assign({}, defaults);
 
         this.init(options);
@@ -32,6 +36,9 @@ BarDisplay.prototype.init = function(options) {
             if (this.options.hasOwnProperty(prop)) {
                 this.options[prop] = options[prop];
             }
+        }
+        if (this.analyzer) {
+            this.analyzer.init(options);
         }
     }
 };
@@ -99,6 +106,31 @@ BarDisplay.prototype.render = function(data) {
     }
 };
 
+BarDisplay.prototype.renderToCanvas = function(context, frame, fft) {
+    if (this.analyzer) {
+        var data,
+            options = this.options,
+            width = options.width / 2,
+            height = options.height;
+
+        data = this.analyzer.parseFrequencyData(fft);
+
+        this.render(data);
+
+        if (options.rotation % 360 !== 0) {
+            context.save();
+            context.translate(options.x, options.y - options.height);
+            context.translate(width, height);
+            context.rotate(options.rotation * Math.PI / 180);
+            context.drawImage(this.canvas, -width, -height);
+            context.restore();
+        }
+        else {
+            context.drawImage(this.canvas, options.x, options.y - options.height);
+        }
+    }
+};
+
 BarDisplay.prototype.setColor = function(color, x1, y1, x2, y2) {
     var i, gradient, len,
         context = this.context;
@@ -114,6 +146,10 @@ BarDisplay.prototype.setColor = function(color, x1, y1, x2, y2) {
     else {
         context.fillStyle = color;
     }
+};
+
+BarDisplay.prototype.toString = function() {
+    return 'BarDisplay' + this.id;
 };
 
 function getColor(start, end, pct) {

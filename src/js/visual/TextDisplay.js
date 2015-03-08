@@ -15,10 +15,13 @@ var defaults = {
     opacity: 1.0
 };
 
+var id = 0;
+
 var TextDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
-        this.canvas = canvas;
-        this.context = canvas.getContext('2d');
+        this.id = id++;
+        this.canvas = canvas || document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
         this.init(options);
@@ -28,7 +31,7 @@ var TextDisplay = EventEmitter.extend({
 TextDisplay.prototype.init = function(options) {
     if (typeof options !== 'undefined') {
         for (var prop in options) {
-            if (hasOwnProperty.call(this.options, prop)) {
+            if (this.options.hasOwnProperty(prop)) {
                 this.options[prop] = options[prop];
             }
         }
@@ -72,6 +75,24 @@ TextDisplay.prototype.render = function() {
     */
 };
 
+TextDisplay.prototype.renderToCanvas = function(context) {
+    var options = this.options,
+        width = this.canvas.width / 2,
+        height = this.canvas.height / 2;
+
+    if (options.rotation % 360 !== 0) {
+        context.save();
+        context.translate(options.x, options.y);
+        context.translate(width, height);
+        context.rotate(options.rotation * Math.PI / 180);
+        context.drawImage(this.canvas, -width, -height);
+        context.restore();
+    }
+    else {
+        context.drawImage(this.canvas, options.x, options.y);
+    }
+};
+
 TextDisplay.prototype.getFont = function() {
     var options = this.options,
         font = [
@@ -82,6 +103,10 @@ TextDisplay.prototype.getFont = function() {
         ];
 
     return font.join(' ');
+};
+
+TextDisplay.prototype.toString = function() {
+    return 'TextDisplay' + this.id;
 };
 
 module.exports = TextDisplay;

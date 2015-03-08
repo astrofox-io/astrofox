@@ -6,7 +6,11 @@ var App = React.createClass({
     },
 
     componentWillMount: function() {
-        this.app = new AstroFox.Application();
+        var app = this.app = new AstroFox.Application();
+        app.registerControl(new app.FX.TextDisplay());
+        app.registerControl(new app.FX.TextDisplay());
+        app.registerControl(new app.FX.BarDisplay());
+        app.registerControl(new app.FX.ImageDisplay());
     },
 
     componentDidMount: function() {
@@ -37,10 +41,6 @@ var App = React.createClass({
 
     handleWaveformProgressChange: function() {
         this.refs.player.forceUpdate();
-    },
-
-    handleControlLoad: function(control) {
-        this.app.registerControl(control);
     },
 
     handleFileOpen: function(e) {
@@ -190,7 +190,7 @@ var App = React.createClass({
                     <ControlDock
                         ref="dock"
                         app={this.app}
-                        onControlLoad={this.handleControlLoad}
+                        controls={this.app.controls}
                     />
                 </Body>
                 <Footer

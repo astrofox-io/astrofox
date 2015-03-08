@@ -34,6 +34,7 @@ var Application = EventEmitter.extend({
         this.timer = new Timer();
         this.reader = new FileReader();
         this.options = _.assign({}, defaults);
+        this.controlId = 0;
 
         this.analyzer = this.audioContext.createAnalyser();
         this.analyzer.fftSize = 2048;
@@ -112,16 +113,10 @@ Application.prototype.createAnalyzer = function(options) {
 };
 
 Application.prototype.registerControl = function(control) {
-    // DEBUG
-    console.log('control registered', control.name);
-
     this.controls.push(control);
 };
 
 Application.prototype.unregisterControl = function(control) {
-    // DEBUG
-    console.log('control unregistered', control.name);
-
     var index = this.controls.indexOf(control);
     if (index > -1) {
         //this.controls.splice(index, 1);

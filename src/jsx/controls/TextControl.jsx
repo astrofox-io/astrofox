@@ -35,18 +35,11 @@ var TextControl = React.createClass({
         ];
     },
 
-    componentDidMount: function() {
-        var FX = this.props.app.FX;
-
-        console.log('control mounted', this.name);
-        this.canvas = document.createElement('canvas');
-        this.text = new FX.TextDisplay(this.canvas, this.state);
-        this.props.onLoad(this)
-    },
-
     componentDidUpdate: function() {
-        this.text.init(this.state);
-        this.text.render();
+        var control = this.props.control;
+
+        control.init(this.state);
+        control.render();
     },
 
     handleChange: function(name, val) {

@@ -1,4 +1,5 @@
 var ImageControl = React.createClass({
+    id: 0,
     name: 'image',
     context: '2d',
 
@@ -16,40 +17,30 @@ var ImageControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.img = new Image();
-    },
-
-    componentDidMount: function() {
-        var FX = this.props.app.FX;
-
-        console.log('control mounted', this.name);
-
-        this.canvas = document.createElement('canvas');
-        this.image = new FX.ImageDisplay(this.canvas, this.state);
-
-        this.props.onLoad(this)
+        this.image = new Image();
     },
 
     componentDidUpdate: function() {
         var state = this.state,
-            img = this.img;
+            image = this.image,
+            control = this.props.control;
 
-        if (img.src != state.src) img.src = state.src;
+        if (image.src != state.src) image.src = state.src;
 
-        this.image.init({
-            image: (img.src) ? img : null,
+        control.init({
+            image: (image.src) ? image : null,
             height: state.height,
             width: state.width,
             opacity: state.opacity
         });
 
-        this.image.render();
+        control.render();
     },
 
     handleChange: function(name, val) {
         var obj = {},
             state = this.state,
-            img = this.img,
+            img = this.image,
             ratio = (img.src) ? img.naturalWidth / img.naturalHeight : 0;
 
         obj[name] = val;
@@ -90,29 +81,9 @@ var ImageControl = React.createClass({
         };
     },
 
-    renderToCanvas: function(context) {
-        if (this.state.src) {
-            var state = this.state,
-                width = state.width / 2,
-                height = state.height / 2;
-
-            if (state.rotation % 360 !== 0) {
-                context.save();
-                context.translate(state.x, state.y);
-                context.translate(width, height);
-                context.rotate(state.rotation * Math.PI / 180);
-                context.drawImage(this.canvas, -width, -height);
-                context.restore();
-            }
-            else {
-                context.drawImage(this.canvas, state.x, state.y);
-            }
-        }
-    },
-
     render: function() {
         var state = this.state,
-            img = this.img,
+            img = this.image,
             readOnly = !state.src,
             imageWidth = (readOnly) ? 0 : img.width,
             imageHeight = (readOnly) ? 0 : img.height,
