@@ -2,46 +2,64 @@ var ControlDock = React.createClass({
     getInitialState: function() {
         return {
             visible: true,
-            panelHeight: 200
+            dragging: false,
+            panelHeight: 200,
+            startY: 0,
+            startHeight: 200
         };
     },
 
     componentWillMount: function() {
-        this.lastY = 0;
-        this.splitterActive = false;
         this.minPanelHeight = 100;
     },
 
     componentDidMount: function() {
+        this.dock = this.refs.dock.getDOMNode();
+
         this.props.app.on('mouseup', function() {
-            this.splitterActive = false;
+            this.setState({ dragging: false });
         }.bind(this));
     },
 
     handleMouseMove: function(e) {
-        if (this.splitterActive) {
-            var val = this.state.panelHeight + e.screenY - this.lastY;
+        var val,
+            state = this.state;
+
+        if (state.dragging) {
+            val = state.startHeight + e.pageY - state.startY;
             if (val < this.minPanelHeight) {
                 val = this.minPanelHeight;
             }
 
-            this.lastY  = e.screenY;
             this.setState({ panelHeight: val });
         }
     },
 
     handleStartDrag: function(e) {
-        this.splitterActive = true;
-        this.lastY = e.screenY;
+        this.setState({
+            dragging: true,
+            startY: e.pageY,
+            startHeight: this.state.panelHeight
+        });
     },
 
     render: function() {
-        var style = { display: (this.state.visible) ? 'flex' : 'none' };
+        var state = this.state,
+            style = { display: (state.visible) ? 'flex' : 'none' },
+            mouseMove = (state.dragging) ? this.handleMouseMove : null;
+
+        if (state.dragging) {
+            style.cursor = 'ns-resize';
+        }
 
         return (
-            <div id="dock" style={style} onMouseMove={this.handleMouseMove}>
+            <div
+                id="dock"
+                ref="dock"
+                style={style}
+                onMouseMove={mouseMove}>
                 <div className="title">LAYERS</div>
-                <LayersPanel {...this.props} height={this.state.panelHeight} />
+                <LayersPanel {...this.props} height={state.panelHeight} />
 
                 <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
 
