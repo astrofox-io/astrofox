@@ -28,9 +28,7 @@ var ControlPanel = React.createClass({
 
         return (
             <div id="controls">
-                <div class="scroll">
-                    {controls}
-                </div>
+                {controls}
             </div>
         );
     }

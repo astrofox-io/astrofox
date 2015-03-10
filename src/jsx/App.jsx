@@ -35,6 +35,14 @@ var App = React.createClass({
         e.preventDefault();
     },
 
+    handleMouseDown: function(e) {
+        this.app.emit('mousedown');
+    },
+
+    handleMouseUp: function(e) {
+        this.app.emit('mouseup');
+    },
+
     handlePlayerProgressChange: function() {
         this.refs.waveform.forceUpdate();
     },
@@ -161,7 +169,9 @@ var App = React.createClass({
                 id="container"
                 onClick={this.handleClick}
                 onDrop={this.handleDragDrop}
-                onDragOver={this.handleDragDrop}>
+                onDragOver={this.handleDragDrop}
+                onMouseDown={this.handleMouseDown}
+                onMouseUp={this.handleMouseUp}>
                 <Header />
                 <MenuBar
                     ref="menu"

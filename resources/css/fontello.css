@@ -71,3 +71,11 @@
 .icon-help-circled:before { content: '\e816'; } /* 'î –' */
 .icon-cw:before { content: '\e817'; } /* 'î —' */
 .icon-cancel-circled:before { content: '\e818'; } /* 'î ˜' */
+.icon-attention:before { content: '\e819'; } /* 'î ™' */
+.icon-export:before { content: '\e81a'; } /* 'î š' */
+.icon-trash:before { content: '\e81b'; } /* 'î ›' */
+.icon-font:before { content: '\e81c'; } /* 'î œ' */
+.icon-floppy:before { content: '\e81d'; } /* 'î ' */
+.icon-cube:before { content: '\e81f'; } /* 'î Ÿ' */
+.icon-plus-squared:before { content: '\e820'; } /* 'î  ' */
+.icon-minus-squared:before { content: '\e821'; } /* 'î ¡' */

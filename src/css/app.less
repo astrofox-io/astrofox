@@ -465,6 +465,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 #layers {
     overflow: auto;
+    position: relative;
 }
 
 #controls {
@@ -780,7 +781,60 @@ input[type="range"]::-webkit-slider-thumb {
     opacity: 1;
 }
 
+.splitter {
+    color: #999;
+    background-color: #333;
+}
+
+.splitter-horizontal {
+    height: 5px;
+    line-height: 5px;
+    text-align: center;
+    width: 100%;
+    cursor: ns-resize;
+}
+
+.splitter-vertical {
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+}
+
+.layers {
+    margin: 0 5px;
+    border: 1px solid #222;
+    border-bottom: 0;
+}
+
 .layer {
-    padding: 10px;
-    border-bottom: 1px solid @primary-color;
+    font-size: @font-small;
+    background-color: @menu-background-color;
+    border-bottom: 1px solid #222;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.layer-active {
+    background-color: @primary-color !important;
+}
+
+.commands {
+    padding: 5px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: @control-background-color;
+    border-top: 1px solid @primary-border-top;
+    border-bottom: 1px solid @primary-border-bottom;
+
+    .button {
+        width: 20px;
+        line-height: 20px;
+        margin-right: 5px;
+        text-align: center;
+        border: 1px solid @primary-color;
+        border-radius: 2px;
+        display: inline-block;
+        cursor: pointer;
+    }
 }
