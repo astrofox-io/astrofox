@@ -464,14 +464,19 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #layers {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    position: relative;
 }
 
 #controls {
-    flex: 1;
     overflow: auto;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 // Styles

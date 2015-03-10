@@ -1,9 +1,10 @@
 var ControlPanel = React.createClass({
-    getControl: function(control) {
+    getControl: function(control, key) {
         var FX = this.props.app.FX,
             props = {
                 app: this.props.app,
-                control: control
+                control: control,
+                key: key
             };
 
         if (control instanceof FX.BarDisplay) {
@@ -19,11 +20,7 @@ var ControlPanel = React.createClass({
 
     render: function() {
         var controls = this.props.controls.map(function(control) {
-            return (
-                <div key={"control" + control.toString()}>
-                    {this.getControl(control)}
-                </div>
-            );
+            return this.getControl(control, "control" + control.toString());
         }, this);
 
         return (

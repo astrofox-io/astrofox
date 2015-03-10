@@ -58,13 +58,15 @@ var ControlDock = React.createClass({
                 ref="dock"
                 style={style}
                 onMouseMove={mouseMove}>
-                <div className="title">LAYERS</div>
-                <LayersPanel {...this.props} height={state.panelHeight} />
+                <Panel title="LAYERS" height={state.panelHeight}>
+                    <LayersPanel {...this.props} />
+                </Panel>
 
                 <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
 
-                <div className="title">CONTROLS</div>
-                <ControlPanel {...this.props} />
+                <Panel title="CONTROLS" className="flex">
+                    <ControlPanel {...this.props} />
+                </Panel>
             </div>
         );
     }

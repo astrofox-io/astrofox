@@ -30,7 +30,7 @@ var LayersPanel = React.createClass({
         }, this);
 
         return (
-            <div id="layers" style={style}>
+            <div id="layers">
                 <div className="layers">
                     {layers}
                 </div>
