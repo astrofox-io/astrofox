@@ -464,7 +464,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #layers {
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
     position: relative;
 }
 
@@ -801,17 +802,22 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .layers {
-    margin: 0 5px;
-    border: 1px solid #222;
+    flex: 1;
     border-bottom: 0;
+    overflow: auto;
 }
 
 .layer {
     font-size: @font-small;
     background-color: @menu-background-color;
     border-bottom: 1px solid #222;
+    margin: 0 5px;
     padding: 5px;
     cursor: pointer;
+
+    &:first-child {
+        border-top: 1px solid #222;
+    }
 }
 
 .layer-active {
@@ -821,8 +827,6 @@ input[type="range"]::-webkit-slider-thumb {
 .commands {
     padding: 5px;
     width: 100%;
-    position: absolute;
-    bottom: 0;
     background-color: @control-background-color;
     border-top: 1px solid @primary-border-top;
     border-bottom: 1px solid @primary-border-bottom;
