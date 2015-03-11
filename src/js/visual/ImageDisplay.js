@@ -4,9 +4,12 @@ var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 
 var defaults = {
-    image: null,
+    src: '',
+    x: 0,
+    y: 0,
     width: 0,
     height: 0,
+    rotation: 0,
     opacity: 1.0
 };
 
@@ -15,6 +18,8 @@ var id = 0;
 var ImageDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.id = id++;
+        this.name = 'image';
+        this.image = new Image();
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
@@ -28,6 +33,9 @@ ImageDisplay.prototype.init = function(options) {
         for (var prop in options) {
             if (this.options.hasOwnProperty(prop)) {
                 this.options[prop] = options[prop];
+                if (prop === 'src' && this.image.src != options[prop]) {
+                    this.image.src = options[prop];
+                }
             }
         }
     }
@@ -38,9 +46,9 @@ ImageDisplay.prototype.render = function() {
         canvas = this.canvas,
         context = this.context,
         options = this.options,
-        img = options.image;
+        img = this.image;
 
-    if (img === null) return;
+    if (!options.src) return;
 
     // Reset canvas
     canvas.width = options.width;
@@ -82,7 +90,7 @@ ImageDisplay.prototype.render = function() {
 };
 
 ImageDisplay.prototype.renderToCanvas = function(context) {
-    if (this.options.image) {
+    if (this.options.src) {
         var options = this.options,
             width = options.width / 2,
             height = options.height / 2;

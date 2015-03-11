@@ -12,6 +12,7 @@ var defaults = {
     x: 100,
     y: 100,
     color: '#ffffff',
+    rotation: 0,
     opacity: 1.0
 };
 
@@ -20,6 +21,7 @@ var id = 0;
 var TextDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.id = id++;
+        this.name = 'text';
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
@@ -44,8 +46,6 @@ TextDisplay.prototype.render = function() {
         context = this.context,
         options = this.options,
         font = this.getFont();
-
-    if (options.text.length == 0) return;
 
     context.font = font;
     width = Math.ceil(context.measureText(options.text).width);

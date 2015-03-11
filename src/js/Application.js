@@ -34,7 +34,6 @@ var Application = EventEmitter.extend({
         this.timer = new Timer();
         this.reader = new FileReader();
         this.options = _.assign({}, defaults);
-        this.controlId = 0;
 
         this.analyzer = this.audioContext.createAnalyser();
         this.analyzer.fftSize = 2048;
@@ -231,7 +230,7 @@ Application.prototype.saveProject = function(file) {
         zlib = Node.Zlib;
 
     data = this.controls.map(function(control) {
-        return control.getConfiguration();
+        return control.toJSON();
     });
 
     if (options.useGzip) {
@@ -266,7 +265,8 @@ Application.prototype.loadProject = function(file) {
     else {
         reader.onload = function(e) {
             data = JSON.parse(e.target.result);
-            this.loadControls(data);
+            this.controls = data;
+            this.emit('controls');
         }.bind(this);
 
         reader.readAsText(file);
@@ -275,6 +275,8 @@ Application.prototype.loadProject = function(file) {
 
 Application.prototype.loadControls = function(data) {
     var controls = this.controls;
+
+    console.log(data);
 
     data.forEach(function (config) {
         controls.forEach(function (control) {

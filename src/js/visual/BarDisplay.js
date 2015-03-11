@@ -13,6 +13,7 @@ var defaults = {
     color: '#ffffff',
     shadowHeight: 100,
     shadowColor: '#cccccc',
+    rotation: 0,
     opacity: 1.0
 };
 
@@ -21,6 +22,7 @@ var id = 0;
 var BarDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.id = id++;
+        this.name = 'bar';
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.analyzer = null;

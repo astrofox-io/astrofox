@@ -1,7 +1,16 @@
 var Panel = React.createClass({
+    getDefaultProps: function() {
+        return { shouldUpdate: true };
+    },
+
+    shouldComponentUpdate: function(nextProps) {
+        return nextProps.shouldUpdate;
+    },
+
     render: function() {
-        var classes = 'panel ' + this.props.className,
-            style = (this.props.height) ? { height: this.props.height + 'px' } : {};
+        var props = this.props,
+            classes = 'panel ' + (props.className || ''),
+            style = (props.height) ? { height: props.height + 'px' } : null;
 
         return (
             <div className={classes} style={style}>

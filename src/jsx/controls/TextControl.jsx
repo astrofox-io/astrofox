@@ -1,54 +1,67 @@
 var TextControl = React.createClass({
-    name: 'text',
-    context: '2d',
+    defaultState: {
+        text: '',
+        size: 40,
+        font: 'Arial',
+        italic: false,
+        bold: false,
+        x: 0,
+        y: 0,
+        color: '#FFFFFF',
+        rotation: 0,
+        opacity: 1.0
+    },
+
+    fontOptions: [
+        'Alegreya',
+        'Arial',
+        'Bangers',
+        'Cardo',
+        'Dynalight',
+        'Fira Sans',
+        'Merriweather',
+        'Permanent Marker',
+        'Oswald',
+        'Oxygen',
+        'Racing Sans One',
+        'Raleway',
+        'Roboto'
+    ],
 
     getInitialState: function() {
-        return {
-            text: '',
-            size: 40,
-            font: 'Arial',
-            italic: false,
-            bold: false,
-            x: 0,
-            y: 0,
-            color: '#FFFFFF',
-            rotation: 0,
-            opacity: 1.0
-        };
+        return this.defaultState;
     },
 
     componentWillMount: function() {
-        this.fontOptions = [
-            'Alegreya',
-            'Arial',
-            'Bangers',
-            'Cardo',
-            'Dynalight',
-            'Fira Sans',
-            'Merriweather',
-            'Permanent Marker',
-            'Oswald',
-            'Oxygen',
-            'Racing Sans One',
-            'Raleway',
-            'Roboto'
-        ];
+        this.stateChanged = false;
     },
 
     componentDidUpdate: function() {
-        var control = this.props.control;
+        if (this.stateChanged) {
+            var control = this.props.control;
 
-        control.init(this.state);
-        control.render();
+            control.init(this.state);
+            control.render();
+        }
+
+        this.stateChanged = false;
+    },
+
+    shouldComponentUpdate: function() {
+        return this.stateChanged;
     },
 
     handleChange: function(name, val) {
-        var state = {};
-        state[name] = val;
-        this.setState(state);
+        var obj = {};
+
+        obj[name] = val;
+
+        this.stateChanged = true;
+
+        this.setState(obj);
     },
 
-    getConfiguration: function() {
+    toJSON: function() {
         return {
             name: this.name,
             values: this.state

@@ -19,7 +19,7 @@ var ControlPanel = React.createClass({
     },
 
     render: function() {
-        var controls = this.props.controls.map(function(control) {
+        var controls = this.props.app.controls.map(function(control) {
             return this.getControl(control, "control" + control.toString());
         }, this);
 

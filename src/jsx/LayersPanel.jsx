@@ -12,9 +12,7 @@ var LayersPanel = React.createClass({
     },
 
     render: function() {
-        var style = { height: this.props.height + 'px' };
-
-        var layers = this.props.controls.map(function(control, index) {
+        var layers = this.props.app.controls.map(function(control, index) {
             var classes = 'layer';
             if (index == this.state.activeIndex) {
                 classes += ' layer-active';

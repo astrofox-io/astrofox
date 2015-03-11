@@ -1,52 +1,67 @@
 var SpectrumControl = React.createClass({
-    name: 'spectrum',
-    context: '2d',
+    defaultState: {
+        height: 300,
+        width: 774,
+        x: 40,
+        y: 340,
+        barWidth: -1,
+        barSpacing: -1,
+        barWidthAutoSize: 1,
+        barSpacingAutoSize: 1,
+        smoothingTimeConstant: 0.5,
+        maxDecibels: -12,
+        maxFrequency: 3000,
+        shadowHeight: 100,
+        color: ['#ffffff', '#ffffff'],
+        shadowColor: ['#333333', '#000000'],
+        rotation: 0,
+        opacity: 1.0
+    },
 
     getInitialState: function() {
-        return {
-            height: 300,
-            width: 774,
-            x: 40,
-            y: 340,
-            barWidth: -1,
-            barSpacing: -1,
-            barWidthAutoSize: 1,
-            barSpacingAutoSize: 1,
-            smoothingTimeConstant: 0.5,
-            maxDecibels: -12,
-            maxFrequency: 3000,
-            shadowHeight: 100,
-            color: ['#ffffff', '#ffffff'],
-            shadowColor: ['#333333', '#000000'],
-            rotation: 0,
-            opacity: 1.0
-        };
+        return this.defaultState;
     },
 
     componentWillMount: function() {
-        this.props.control.analyzer = this.props.app.createAnalyzer(this.state);
+        this.stateChanged = false;
+    },
+
+    componentDidMount: function() {
+        var app = this.props.app,
+            control = this.props.control;
+
+        control.analyzer = app.createAnalyzer(this.state);
+        control.init(this.state);
     },
 
     componentDidUpdate: function() {
         this.props.control.init(this.state);
+
+        this.stateChanged = false;
+    },
+
+    shouldComponentUpdate: function() {
+        return this.stateChanged;
     },
 
     handleChange: function(name, val) {
-        var state = {};
+        var obj = {};
 
         if (name === 'barWidthAutoSize') {
-            state.barWidth = (val) ? -1 : 1;
+            obj.barWidth = (val) ? -1 : 1;
         }
         else if (name === 'barSpacingAutoSize') {
-            state.barSpacing = (val) ? -1 : 1;
+            obj.barSpacing = (val) ? -1 : 1;
         }
 
-        state[name] = val;
+        obj[name] = val;
 
-        this.setState(state);
+        this.stateChanged = true;
+
+        this.setState(obj);
     },
 
-    getConfiguration: function() {
+    toJSON: function() {
         return {
             name: this.name,
             values: this.state

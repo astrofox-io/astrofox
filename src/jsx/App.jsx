@@ -200,7 +200,6 @@ var App = React.createClass({
                     <ControlDock
                         ref="dock"
                         app={this.app}
-                        controls={this.app.controls}
                     />
                 </Body>
                 <Footer

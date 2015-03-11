@@ -1,23 +1,22 @@
 var ImageControl = React.createClass({
-    id: 0,
-    name: 'image',
-    context: '2d',
+    defaultState: {
+        src: '',
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        fixed: true,
+        rotation: 0,
+        opacity: 0
+    },
 
     getInitialState: function() {
-        return {
-            src: '',
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0,
-            fixed: true,
-            rotation: 0,
-            opacity: 0
-        };
+        return this.defaultState;
     },
 
     componentWillMount: function() {
         this.image = new Image();
+        this.stateChanged = false;
     },
 
     componentDidUpdate: function() {
@@ -27,21 +26,21 @@ var ImageControl = React.createClass({
 
         if (image.src != state.src) image.src = state.src;
 
-        control.init({
-            image: (image.src) ? image : null,
-            height: state.height,
-            width: state.width,
-            opacity: state.opacity
-        });
-
+        control.init(state);
         control.render();
+
+        this.stateChanged = false;
+    },
+
+    shouldComponentUpdate: function() {
+        return this.stateChanged;
     },
 
     handleChange: function(name, val) {
         var obj = {},
             state = this.state,
-            img = this.image,
-            ratio = (img.src) ? img.naturalWidth / img.naturalHeight : 0;
+            image = this.image,
+            ratio = (image.src) ? image.naturalWidth / image.naturalHeight : 0;
 
         obj[name] = val;
 
@@ -54,10 +53,10 @@ var ImageControl = React.createClass({
             obj.opacity = 0;
 
             if (val !== '') {
-                img.src = val;
+                obj.src = image.src = val;
                 obj.opacity = 1.0;
-                obj.width = img.naturalWidth;
-                obj.height = img.naturalHeight;
+                obj.width = image.naturalWidth;
+                obj.height = image.naturalHeight;
             }
         }
         else if (name === 'width' && state.src && state.fixed) {
@@ -67,6 +66,8 @@ var ImageControl = React.createClass({
             obj.width = Math.round(val * ratio);
         }
 
+        this.stateChanged = true;
+
         this.setState(obj);
     },
 
@@ -74,7 +75,7 @@ var ImageControl = React.createClass({
         this.handleChange('fixed', !this.state.fixed);
     },
 
-    getConfiguration: function() {
+    toJSON: function() {
         return {
             name: this.name,
             values: this.state
@@ -99,6 +100,7 @@ var ImageControl = React.createClass({
                     <label>Image</label>
                     <ImageInput
                         name="image"
+                        ref="image"
                         src={state.src}
                         onChange={this.handleChange}
                     />
