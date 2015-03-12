@@ -7,10 +7,9 @@ var App = React.createClass({
 
     componentWillMount: function() {
         var app = this.app = new AstroFox.Application();
-        app.registerControl(new app.FX.TextDisplay());
-        app.registerControl(new app.FX.TextDisplay());
-        app.registerControl(new app.FX.BarDisplay());
-        app.registerControl(new app.FX.ImageDisplay());
+        app.addDisplay(new app.FX.TextDisplay());
+        app.addDisplay(new app.FX.BarDisplay());
+        app.addDisplay(new app.FX.ImageDisplay());
     },
 
     componentDidMount: function() {

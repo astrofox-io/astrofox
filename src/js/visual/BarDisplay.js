@@ -4,14 +4,19 @@ var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 
 var defaults = {
-    x: 0,
-    y: 150,
     height: 300,
     width: 200,
+    x: 0,
+    y: 150,
     barWidth: -1,
     barSpacing: -1,
-    color: '#ffffff',
+    barWidthAutoSize: 1,
+    barSpacingAutoSize: 1,
+    smoothingTimeConstant: 0.5,
+    maxDecibels: -12,
+    maxFrequency: 3000,
     shadowHeight: 100,
+    color: '#ffffff',
     shadowColor: '#cccccc',
     rotation: 0,
     opacity: 1.0
@@ -22,27 +27,31 @@ var id = 0;
 var BarDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.id = id++;
-        this.name = 'bar';
+        this.name = 'BarDisplay';
+        this.type = '2d';
+        this.initialized = false;
+
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.analyzer = null;
         this.options = _.assign({}, defaults);
 
-        this.init(options);
+        if (options) {
+            this.init(options);
+        }
     }
 });
 
 BarDisplay.prototype.init = function(options) {
-    if (typeof options !== 'undefined') {
-        for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
-                this.options[prop] = options[prop];
-            }
-        }
-        if (this.analyzer) {
-            this.analyzer.init(options);
+    for (var prop in options) {
+        if (this.options.hasOwnProperty(prop)) {
+            this.options[prop] = options[prop];
         }
     }
+    if (this.analyzer) {
+        this.analyzer.init(options);
+    }
+    this.initialized = true;
 };
 
 BarDisplay.prototype.render = function(data) {
@@ -151,7 +160,14 @@ BarDisplay.prototype.setColor = function(color, x1, y1, x2, y2) {
 };
 
 BarDisplay.prototype.toString = function() {
-    return 'BarDisplay' + this.id;
+    return this.name + '' + this.id;
+};
+
+BarDisplay.prototype.toJSON = function() {
+    return {
+        name: this.name,
+        values: this.options
+    };
 };
 
 function getColor(start, end, pct) {

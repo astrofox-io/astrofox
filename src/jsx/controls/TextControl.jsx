@@ -36,13 +36,20 @@ var TextControl = React.createClass({
         this.stateChanged = false;
     },
 
-    componentDidUpdate: function() {
-        if (this.stateChanged) {
-            var control = this.props.control;
+    componentDidMount: function() {
+        var display = this.props.display;
 
-            control.init(this.state);
-            control.render();
+        if (display.initialized) {
+            this.stateChanged = true;
+            this.setState(display.options);
         }
+    },
+
+    componentDidUpdate: function() {
+        var display = this.props.display;
+
+        display.init(this.state);
+        display.render();
 
         this.stateChanged = false;
     },
@@ -61,16 +68,7 @@ var TextControl = React.createClass({
         this.setState(obj);
     },
 
-    toJSON: function() {
-        return {
-            name: this.name,
-            values: this.state
-        };
-    },
-
     renderToCanvas: function(context) {
-        if (this.state.text == '') return;
-
         var state = this.state,
             width = this.canvas.width / 2,
             height = this.canvas.height / 2;

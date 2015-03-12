@@ -12,17 +12,17 @@ var LayersPanel = React.createClass({
     },
 
     render: function() {
-        var layers = this.props.app.controls.map(function(control, index) {
+        var layers = this.props.app.displays.map(function(display, index) {
             var classes = 'layer';
             if (index == this.state.activeIndex) {
                 classes += ' layer-active';
             }
 
             return (
-                <div key={'layer' + control.toString()}
+                <div key={'layer' + display.toString()}
                     className={classes}
                     onClick={this.handleLayerClick.bind(this, index)}>
-                    {control.toString()}
+                    {display.toString()}
                 </div>
             );
         }, this);

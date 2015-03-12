@@ -9,7 +9,6 @@
     "3d",
     "video"
   ],
-  "main": "main.js",
   "main": "index.html",
   "window": {
     "title": "astrofox",
@@ -17,28 +16,26 @@
     "frame": false,
     "width": 1320,
     "height": 1000,
-    "position": "mouse",
+    "position": "center",
     "min_width": 400,
     "min_height": 200,
-    "fullscreen": false,
-    "position": "center"
+    "fullscreen": false
   },
   "devDependencies": {
     "gulp-concat": "^2.4.2",
     "gulp-imagemin": "^2.0.0",
-    "gulp-less": "^2.0.1",
+    "gulp-less": "^3.0.1",
     "gulp-minify-css": "^0.3.11",
-    "gulp-react": "^2.0.0",
+    "gulp-react": "^3.0.0",
     "gulp-rename": "^1.2.0",
-    "gulp-uglify": "^1.0.2",
-    "gulp.spritesmith": "^1.4.0"
+    "gulp-uglify": "^1.1.0",
+    "gulp.spritesmith": "^1.4.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "fluent-ffmpeg": "^2.0.0-rc3",
     "id3js": "^1.1.3",
     "lodash": "^2.4.1",
-    "react": "^0.12.1",
-    "three": "^0.69.0",
-    "q": "^1.1.2"
+    "react": "^0.13.0",
+    "three": "^0.69.0"
   }
 }

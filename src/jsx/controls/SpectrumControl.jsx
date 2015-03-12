@@ -28,14 +28,21 @@ var SpectrumControl = React.createClass({
 
     componentDidMount: function() {
         var app = this.props.app,
-            control = this.props.control;
+            display = this.props.display;
 
-        control.analyzer = app.createAnalyzer(this.state);
-        control.init(this.state);
+        if (display.initialized) {
+            this.stateChanged = true;
+            this.setState(display.options);
+            display.analyzer = app.createAnalyzer(display.options);
+        }
+        else {
+            display.init(this.state);
+            display.analyzer = app.createAnalyzer(this.state);
+        }
     },
 
     componentDidUpdate: function() {
-        this.props.control.init(this.state);
+        this.props.display.init(this.state);
 
         this.stateChanged = false;
     },
@@ -61,15 +68,8 @@ var SpectrumControl = React.createClass({
         this.setState(obj);
     },
 
-    toJSON: function() {
-        return {
-            name: this.name,
-            values: this.state
-        };
-    },
-
     render: function() {
-        var maxFrequency = 12000; //this.analyzer.getMaxFrequency() / 2;
+        var maxFrequency = 22000; //this.analyzer.getMaxFrequency() / 2;
         var maxHeight = 480;
         var maxWidth = 854;
 

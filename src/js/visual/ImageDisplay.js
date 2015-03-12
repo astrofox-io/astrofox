@@ -9,6 +9,7 @@ var defaults = {
     y: 0,
     width: 0,
     height: 0,
+    fixed: true,
     rotation: 0,
     opacity: 1.0
 };
@@ -18,27 +19,31 @@ var id = 0;
 var ImageDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.id = id++;
-        this.name = 'image';
+        this.name = 'ImageDisplay';
+        this.type = '2d';
+        this.initialized = false;
+
         this.image = new Image();
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        this.init(options);
+        if (options) {
+            this.init(options);
+        }
     }
 });
 
 ImageDisplay.prototype.init = function(options) {
-    if (typeof options !== 'undefined') {
-        for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
-                this.options[prop] = options[prop];
-                if (prop === 'src' && this.image.src != options[prop]) {
-                    this.image.src = options[prop];
-                }
+    for (var prop in options) {
+        if (this.options.hasOwnProperty(prop)) {
+            this.options[prop] = options[prop];
+            if (prop === 'src' && this.image.src != options[prop]) {
+                this.image.src = options[prop];
             }
         }
     }
+    this.initialized = true;
 };
 
 ImageDisplay.prototype.render = function() {
@@ -110,7 +115,14 @@ ImageDisplay.prototype.renderToCanvas = function(context) {
 };
 
 ImageDisplay.prototype.toString = function() {
-    return 'ImageDisplay' + this.id;
+    return this.name + '' + this.id;
+};
+
+ImageDisplay.prototype.toJSON = function() {
+    return {
+        name: this.name,
+        values: this.options
+    };
 };
 
 function sharpen(ctx, w, h, mix) {

@@ -21,23 +21,27 @@ var id = 0;
 var TextDisplay = EventEmitter.extend({
     constructor: function(canvas, options) {
         this.id = id++;
-        this.name = 'text';
+        this.name = 'TextDisplay';
+        this.type = '2d';
+        this.initialized = false;
+
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        this.init(options);
+        if (options) {
+            this.init(options);
+        }
     }
 });
 
 TextDisplay.prototype.init = function(options) {
-    if (typeof options !== 'undefined') {
-        for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
-                this.options[prop] = options[prop];
-            }
+    for (var prop in options) {
+        if (this.options.hasOwnProperty(prop)) {
+            this.options[prop] = options[prop];
         }
     }
+    this.initialized = true;
 };
 
 TextDisplay.prototype.render = function() {
@@ -106,7 +110,14 @@ TextDisplay.prototype.getFont = function() {
 };
 
 TextDisplay.prototype.toString = function() {
-    return 'TextDisplay' + this.id;
+    return this.name + '' + this.id;
+};
+
+TextDisplay.prototype.toJSON = function() {
+    return {
+        name: this.name,
+        values: this.options
+    };
 };
 
 module.exports = TextDisplay;

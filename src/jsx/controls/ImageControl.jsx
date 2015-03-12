@@ -19,15 +19,24 @@ var ImageControl = React.createClass({
         this.stateChanged = false;
     },
 
+    componentDidMount: function() {
+        var display = this.props.display;
+
+        if (display.initialized) {
+            this.stateChanged = true;
+            this.setState(display.options);
+        }
+    },
+
     componentDidUpdate: function() {
         var state = this.state,
             image = this.image,
-            control = this.props.control;
+            display = this.props.display;
 
         if (image.src != state.src) image.src = state.src;
 
-        control.init(state);
-        control.render();
+        display.init(state);
+        display.render();
 
         this.stateChanged = false;
     },
@@ -73,13 +82,6 @@ var ImageControl = React.createClass({
 
     handleLinkClick: function() {
         this.handleChange('fixed', !this.state.fixed);
-    },
-
-    toJSON: function() {
-        return {
-            name: this.name,
-            values: this.state
-        };
     },
 
     render: function() {

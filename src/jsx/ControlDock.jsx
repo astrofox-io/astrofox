@@ -11,20 +11,24 @@ var ControlDock = React.createClass({
 
     componentWillMount: function() {
         this.minPanelHeight = 100;
-        this.disableUpdate = false;
     },
 
     componentDidMount: function() {
-        this.dock = this.refs.dock.getDOMNode();
+        var app = this.props.app;
 
-        this.props.app.on('mouseup', function() {
-            this.disableUpdate = true;
+        app.on('mouseup', function() {
             this.setState({ dragging: false });
         }.bind(this));
+
+        app.on('project_loaded', function() {
+            this.refs.layers.forceUpdate();
+            this.refs.controls.forceUpdate();
+        }.bind(this));
+
+        this.dock = this.refs.dock.getDOMNode();
     },
 
     componentDidUpdate: function() {
-        this.disableUpdate = false;
     },
 
     handleMouseMove: function(e) {
@@ -42,7 +46,6 @@ var ControlDock = React.createClass({
     },
 
     handleStartDrag: function(e) {
-        this.disableUpdate = true;
         this.setState({
             dragging: true,
             startY: e.pageY,
@@ -53,8 +56,7 @@ var ControlDock = React.createClass({
     render: function() {
         var state = this.state,
             style = { display: (state.visible) ? 'flex' : 'none' },
-            mouseMove = (state.dragging) ? this.handleMouseMove : null,
-            disableUpdate = this.disableUpdate || state.dragging;
+            mouseMove = (state.dragging) ? this.handleMouseMove : null;
 
         if (state.dragging) {
             style.cursor = 'ns-resize';
@@ -67,13 +69,13 @@ var ControlDock = React.createClass({
                 style={style}
                 onMouseMove={mouseMove}>
                 <Panel title="LAYERS" height={state.panelHeight}>
-                    <LayersPanel {...this.props} />
+                    <LayersPanel ref="layers" {...this.props} />
                 </Panel>
 
                 <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
 
-                <Panel title="CONTROLS" className="flex" shouldUpdate={!disableUpdate}>
-                    <ControlPanel {...this.props} />
+                <Panel title="CONTROLS" className="flex" shouldUpdate={false}>
+                    <ControlPanel ref="controls" {...this.props} />
                 </Panel>
             </div>
         );

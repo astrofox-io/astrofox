@@ -19,13 +19,13 @@ var defaults = {
     fps: 29.97,
     canvasHeight: 480,
     canvasWidth: 854,
-    useGzip: true
+    useCompression: false
 };
 
 var Application = EventEmitter.extend({
     constructor: function() {
         this.frame = null;
-        this.controls = [];
+        this.displays = [];
 
         this.audioContext = new (window.AudioContext || window.webkitAudioContext);
         this.player = new Player(this.audioContext);
@@ -111,15 +111,15 @@ Application.prototype.createAnalyzer = function(options) {
     return new SpectrumAnalyzer(this.audioContext, this.analyzer, options);
 };
 
-Application.prototype.registerControl = function(control) {
-    this.controls.push(control);
+Application.prototype.addDisplay = function(control) {
+    this.displays.push(control);
 };
 
-Application.prototype.unregisterControl = function(control) {
-    var index = this.controls.indexOf(control);
+Application.prototype.removeDisplay = function(control) {
+    var index = this.displays.indexOf(control);
     if (index > -1) {
-        //this.controls.splice(index, 1);
-        spliceOne(this.controls, index);
+        //this.displays.splice(index, 1);
+        spliceOne(this.displays, index);
     }
 };
 
@@ -155,10 +155,10 @@ Application.prototype.renderFrame = function(frame, data, callback) {
 
     scene.clear();
 
-    _(this.controls).forEachRight(function(control) {
-        if (control.renderToCanvas) {
-            control.renderToCanvas(
-                (control.context === '3d') ? scene.context3d : scene.context2d,
+    _(this.displays).forEachRight(function(display) {
+        if (display.renderToCanvas) {
+            display.renderToCanvas(
+                (display.type === '3d') ? scene.context3d : scene.context2d,
                 frame,
                 fft
             );
@@ -229,17 +229,18 @@ Application.prototype.saveProject = function(file) {
         Buffer = Node.Buffer,
         zlib = Node.Zlib;
 
-    data = this.controls.map(function(control) {
-        return control.toJSON();
+    data = this.displays.map(function(display) {
+        return display.toJSON();
     });
 
-    if (options.useGzip) {
-        data = JSON.stringify(data);
-
-        zlib.deflate(data, function(err, buf) {
-            buffer = new Buffer(buf);
-            fs.writeFileSync(file, buffer);
-        }.bind(this));
+    if (options.useCompression) {
+        zlib.deflate(
+            JSON.stringify(data),
+            function(err, buf) {
+                buffer = new Buffer(buf);
+                fs.writeFileSync(file, buffer);
+            }.bind(this)
+        );
     }
     else {
         fs.writeFile(file, JSON.stringify(data));
@@ -250,40 +251,27 @@ Application.prototype.saveProject = function(file) {
 };
 
 Application.prototype.loadProject = function(file) {
-    var data,
-        options = this.options,
-        reader = this.reader,
+    var options = this.options,
         fs = Node.FS,
-        zlib = Node.Zlib;
-
-    if (options.useGzip) {
+        zlib = Node.Zlib,
         data = fs.readFileSync(file);
+
+    if (options.useCompression) {
         zlib.inflate(data, function(err, buf) {
             this.loadControls(JSON.parse(buf.toString()));
         }.bind(this));
     }
     else {
-        reader.onload = function(e) {
-            data = JSON.parse(e.target.result);
-            this.controls = data;
-            this.emit('controls');
-        }.bind(this);
-
-        reader.readAsText(file);
+        this.loadControls(JSON.parse(data));
     }
 };
 
 Application.prototype.loadControls = function(data) {
-    var controls = this.controls;
+    this.displays = [];
 
-    console.log(data);
-
-    data.forEach(function (config) {
-        controls.forEach(function (control) {
-            if (config.name == control.name) {
-                control.setState(config.values);
-            }
-        }.bind(this));
+    data.forEach(function(item) {
+        this.addDisplay(new this.FX[item.name](null, item.values));
+        this.emit('project_loaded');
     }.bind(this));
 };
 
