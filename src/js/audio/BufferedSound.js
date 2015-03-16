@@ -96,7 +96,7 @@ BufferedSound.prototype.getCurrentTime = function() {
 };
 
 BufferedSound.prototype.getDuration = function() {
-    return this.buffer.duration || 0;
+    return (this.buffer) ? this.buffer.duration : 0;
 };
 
 BufferedSound.prototype.updatePosition = function(pos) {

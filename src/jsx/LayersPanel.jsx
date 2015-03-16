@@ -7,14 +7,19 @@ var LayersPanel = React.createClass({
 
     handleLayerClick: function(index) {
         if (this.state.activeIndex !== index) {
-            this.setState({ activeIndex: index });
+            this.setState({ activeIndex: index }, function() {
+                this.props.onLayerSelected(index);
+            }.bind(this));
         }
     },
 
     render: function() {
-        var layers = this.props.app.displays.map(function(display, index) {
-            var classes = 'layer';
-            if (index == this.state.activeIndex) {
+        var classes, layers;
+
+        layers = this.props.app.displays.map(function(display, index) {
+            classes = 'layer';
+            if (index === this.state.activeIndex) {
+
                 classes += ' layer-active';
             }
 

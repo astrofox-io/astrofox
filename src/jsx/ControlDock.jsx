@@ -53,6 +53,10 @@ var ControlDock = React.createClass({
         });
     },
 
+    handleLayerSelected: function(index) {
+        this.refs.controls.scrollTo(index);
+    },
+
     render: function() {
         var state = this.state,
             style = { display: (state.visible) ? 'flex' : 'none' },
@@ -69,13 +73,20 @@ var ControlDock = React.createClass({
                 style={style}
                 onMouseMove={mouseMove}>
                 <Panel title="LAYERS" height={state.panelHeight}>
-                    <LayersPanel ref="layers" {...this.props} />
+                    <LayersPanel
+                        ref="layers"
+                        onLayerSelected={this.handleLayerSelected}
+                        {...this.props}
+                    />
                 </Panel>
 
                 <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
 
                 <Panel title="CONTROLS" className="flex" shouldUpdate={false}>
-                    <ControlPanel ref="controls" {...this.props} />
+                    <ControlPanel
+                        ref="controls"
+                        {...this.props}
+                    />
                 </Panel>
             </div>
         );
