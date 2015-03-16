@@ -10,7 +10,7 @@ var Scene = React.createClass({
     componentDidMount: function() {
         var app = this.props.app;
 
-        this.canvas = this.refs.canvas.getDOMNode();
+        this.canvas = React.findDOMNode(this.refs.canvas);
         app.loadCanvas(this.canvas);
 
         // DEBUG

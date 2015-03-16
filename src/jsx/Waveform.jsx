@@ -22,7 +22,7 @@ var Waveform = React.createClass({
             player = this.player = app.player;
 
         this.bars = new FX.BarDisplay(
-            this.refs.canvas.getDOMNode(),
+            React.findDOMNode(this.refs.canvas),
             {
                 y: config.height,
                 height: config.height,
@@ -36,7 +36,7 @@ var Waveform = React.createClass({
         );
 
         this.progress = new FX.BarDisplay(
-            this.refs.progress.getDOMNode(),
+            React.findDOMNode(this.refs.progress),
             {
                 y: config.height,
                 height: config.height,
@@ -50,7 +50,7 @@ var Waveform = React.createClass({
         );
 
         this.overlay = new FX.BarDisplay(
-            this.refs.overlay.getDOMNode(),
+            React.findDOMNode(this.refs.overlay),
             {
                 y: config.height,
                 height: config.height,

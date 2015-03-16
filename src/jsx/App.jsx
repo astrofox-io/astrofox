@@ -13,8 +13,9 @@ var App = React.createClass({
     },
 
     componentDidMount: function() {
-        this.fileInput = this.refs.file.getDOMNode();
-        this.saveInput = this.refs.save.getDOMNode();
+        this.fileForm = React.findDOMNode(this.refs.form);
+        this.fileInput = React.findDOMNode(this.refs.file);
+        this.saveInput = React.findDOMNode(this.refs.save);
         this.openAction = null;
         this.saveAction = null;
 
@@ -57,7 +58,7 @@ var App = React.createClass({
 
         if (files.length > 0) {
             this.openAction(files[0].path);
-            this.refs.form.getDOMNode().reset();
+            this.fileForm.reset();
         }
     },
 
@@ -65,7 +66,7 @@ var App = React.createClass({
         e.preventDefault();
 
         this.saveAction(this.saveInput.value);
-        this.refs.form.getDOMNode().reset();
+        this.fileForm.reset();
     },
 
     handleMenuAction: function(action, checked) {

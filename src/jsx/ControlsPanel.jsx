@@ -1,4 +1,4 @@
-var ControlPanel = React.createClass({
+var ControlsPanel = React.createClass({
     getControl: function(display, index) {
         var FX = this.props.app.FX,
             ref = 'ctrl' + index,

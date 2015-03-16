@@ -25,7 +25,7 @@ var ControlDock = React.createClass({
             this.refs.controls.forceUpdate();
         }.bind(this));
 
-        this.dock = this.refs.dock.getDOMNode();
+        this.dock = React.findDOMNode(this.refs.dock);
     },
 
     componentDidUpdate: function() {
@@ -83,7 +83,7 @@ var ControlDock = React.createClass({
                 <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
 
                 <Panel title="CONTROLS" className="flex" shouldUpdate={false}>
-                    <ControlPanel
+                    <ControlsPanel
                         ref="controls"
                         {...this.props}
                     />
