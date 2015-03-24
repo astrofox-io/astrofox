@@ -54,7 +54,11 @@ var ControlDock = React.createClass({
     },
 
     handleLayerSelected: function(index) {
-        this.refs.controls.scrollTo(index);
+        this.refs.controls.scrollToControl(index);
+    },
+
+    handleLayerChanged: function() {
+        this.refs.controls.forceUpdate();
     },
 
     render: function() {
@@ -76,6 +80,7 @@ var ControlDock = React.createClass({
                     <LayersPanel
                         ref="layers"
                         onLayerSelected={this.handleLayerSelected}
+                        onLayerChanged={this.handleLayerChanged}
                         {...this.props}
                     />
                 </Panel>

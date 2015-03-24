@@ -11,13 +11,30 @@ var LayersPanel = React.createClass({
         }.bind(this));
     },
 
+    handleAddClick: function() {
+
+    },
+
+    handleRemoveClick: function() {
+        var app = this.props.app,
+            index = this.state.activeIndex,
+            display = app.displays[index];
+
+        if (index === app.displays.length - 1) {
+            this.setState({ activeIndex: index - 1 });
+        }
+
+        app.removeDisplay(display);
+        this.forceUpdate();
+        this.props.onLayerChanged();
+    },
+
     render: function() {
-        var classes, layers;
+        var layers;
 
         layers = this.props.app.displays.map(function(display, index) {
-            classes = 'layer';
+            var classes = 'layer';
             if (index === this.state.activeIndex) {
-
                 classes += ' layer-active';
             }
 
@@ -36,8 +53,8 @@ var LayersPanel = React.createClass({
                     {layers}
                 </div>
                 <ul className="commands">
-                    <li className="button icon-plus" />
-                    <li className="button icon-minus" />
+                    <li className="button icon-plus" onClick={this.handleAddClick} />
+                    <li className="button icon-minus" onClick={this.handleRemoveClick} />
                 </ul>
             </div>
         );

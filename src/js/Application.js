@@ -111,12 +111,12 @@ Application.prototype.createAnalyzer = function(options) {
     return new SpectrumAnalyzer(this.audioContext, this.analyzer, options);
 };
 
-Application.prototype.addDisplay = function(control) {
-    this.displays.push(control);
+Application.prototype.addDisplay = function(display) {
+    this.displays.push(display);
 };
 
-Application.prototype.removeDisplay = function(control) {
-    var index = this.displays.indexOf(control);
+Application.prototype.removeDisplay = function(display) {
+    var index = this.displays.indexOf(display);
     if (index > -1) {
         //this.displays.splice(index, 1);
         spliceOne(this.displays, index);
