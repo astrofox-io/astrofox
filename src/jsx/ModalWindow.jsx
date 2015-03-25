@@ -44,7 +44,11 @@ var ModalWindow = React.createClass({
     },
 
     render: function() {
-        var style = { display: (this.state.visible) ? 'block' : 'none' };
+        var classes = 'modal';
+
+        if (this.state.visible) {
+            classes += ' modal-active';
+        }
 
         var windowStyle = {
             width: this.props.width + 'px',
@@ -52,10 +56,16 @@ var ModalWindow = React.createClass({
         };
 
         return (
-            <div onClick={this.handleClick} style={style}>
-                <div id="overlay" />
-                <div id="modal" style={windowStyle}>
-                    {this.state.content}
+            <div className={classes}>
+                <div className="overlay" />
+                <div className="window" style={windowStyle}>
+                    <div className="header">TITLE</div>
+                    <div className="content">
+                        {this.state.content}
+                    </div>
+                    <div className="buttons">
+                        <div className="button" onClick={this.handleClick}>OK</div>
+                    </div>
                 </div>
             </div>
         );
