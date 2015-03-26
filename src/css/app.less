@@ -821,8 +821,6 @@ input[type="range"]::-webkit-slider-thumb {
     .overlay {
         z-index: 200;
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
         background: #000;
@@ -832,12 +830,13 @@ input[type="range"]::-webkit-slider-thumb {
 
     .window {
         z-index: 300;
-        background-color: #434343;
+        position: absolute;
+        width: 100%;
+        height: 100%;
         opacity: 0;
         transform: perspective(800px) scale(0.7) rotateX(-90deg);
         transform-style: preserve-3d;
         transition: all 0.3s;
-        .absolute-center();
     }
     
     .header {
@@ -846,8 +845,13 @@ input[type="range"]::-webkit-slider-thumb {
         text-align: center;
         letter-spacing: 2px;
     }
+
+    .content {
+        background-color: #434343;
+    }
     
     .buttons {
+        background-color: #434343;
         text-align: right;
         padding: 10px;
     }
@@ -876,7 +880,10 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .about {
-    height: 100%;
+    width: 400px;
+    height: 300px;
+    .absolute-center();
+
     display: flex;
     flex-direction: column;
 

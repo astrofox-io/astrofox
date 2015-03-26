@@ -1,9 +1,7 @@
 var ModalWindow = React.createClass({
     getDefaultProps: function() {
         return {
-            visible: false,
-            width: 400,
-            height: 300
+            visible: false
         }
     },
 
@@ -14,15 +12,10 @@ var ModalWindow = React.createClass({
             classes += ' modal-active';
         }
 
-        var windowStyle = {
-            width: this.props.width + 'px',
-            height: this.props.height + 'px'
-        };
-
         return (
             <div className={classes}>
                 <div className="overlay" />
-                <div className="window" style={windowStyle}>
+                <div className="window">
                     {this.props.children}
                 </div>
             </div>
