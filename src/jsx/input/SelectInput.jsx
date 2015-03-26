@@ -50,14 +50,15 @@ var SelectInput = React.createClass({
             items = this.props.items.map(function(item, index) {
                 var key = this.props.name + '' + index;
                 if (typeof item !== 'object') {
-                    item = { name: item, value: item };
+                    item = { name: item, value: item, style: null };
                 }
                 return (
-                    <li className="input-option"
+                    <li
+                        className="input-option"
                         key={key}
-                        style={{fontFamily:item.value}}
+                        style={item.style}
                         onMouseDown={this.handleItemClick.bind(this, item)}>
-                    {item.name}
+                        {item.name}
                     </li>
                 );
             }, this);
@@ -65,7 +66,8 @@ var SelectInput = React.createClass({
 
         return (
             <div className="input-select">
-                <input type="text"
+                <input
+                    type="text"
                     className="input-field"
                     name={this.props.name}
                     size={this.props.size}
@@ -74,7 +76,9 @@ var SelectInput = React.createClass({
                     onBlur={this.handleBlur}
                     readOnly
                 />
-                <ul className="input-options" style={style}>
+                <ul
+                    className="input-options"
+                    style={style}>
                     {items}
                 </ul>
             </div>
