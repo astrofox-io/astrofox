@@ -1,7 +1,8 @@
 var App = React.createClass({
     getInitialState: function() {
         return {
-            filename: ''
+            filename: '',
+            modal: null
         };
     },
 
@@ -57,7 +58,7 @@ var App = React.createClass({
         var files = e.target.files;
 
         if (files.length > 0) {
-            this.openAction(files[0].path);
+            this.openAction(files[0]);
             this.fileForm.reset();
         }
     },
@@ -152,7 +153,8 @@ var App = React.createClass({
                 function(error) {
                     if (error) {
                         scene.isLoading(false);
-                        throw error;
+                        this.refs.modal.show(error.message);
+                        return;
                     }
 
                     this.setState({ filename: file.name }, function() {

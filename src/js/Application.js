@@ -68,6 +68,12 @@ Application.prototype.loadAudioFile = function(file, callback) {
         }
     }.bind(this);
 
+    reader.onerror = function(e) {
+        if (callback) {
+            callback(file.error, null);
+        }
+    }.bind(this);
+
     timer.set('file_load');
     reader.readAsArrayBuffer(file);
 };
@@ -196,10 +202,10 @@ Application.prototype.processFrame = function(frame, fps, callback) {
 
 Application.prototype.saveImage = function(file) {
     this.scene.renderImage(function(buffer) {
-        Node.FS.writeFile(file, buffer);
+        Node.FS.writeFile(file.path, buffer);
 
         // DEBUG
-        console.log(file + ' saved');
+        console.log(file.path + ' saved');
     });
 };
 
@@ -213,7 +219,7 @@ Application.prototype.saveVideo = function(file) {
     if (player.isPlaying()) player.stop('audio');
 
     if (sound) {
-        scene.renderVideo(file, 29.97, 5, this.processFrame.bind(this), function(){
+        scene.renderVideo(file.path, 29.97, 5, this.processFrame.bind(this), function(){
             this.startRender();
         }.bind(this));
     }
@@ -243,7 +249,7 @@ Application.prototype.saveProject = function(file) {
         );
     }
     else {
-        fs.writeFile(file, JSON.stringify(data));
+        fs.writeFile(file.path, JSON.stringify(data));
     }
 
     // DEBUG
@@ -254,7 +260,7 @@ Application.prototype.loadProject = function(file) {
     var options = this.options,
         fs = Node.FS,
         zlib = Node.Zlib,
-        data = fs.readFileSync(file);
+        data = fs.readFileSync(file.path);
 
     if (options.useCompression) {
         zlib.inflate(data, function(err, buf) {
