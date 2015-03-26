@@ -54,7 +54,7 @@ var Header = React.createClass({
             <div id="header">
                 <div id="title">ASTROFOX</div>
                 <div id="control-box">
-                    <ul>
+                    <ul className="box-group">
                         <li className="box icon-code" onClick={this.handleConsole}></li>
                         <li className="box icon-cw" onClick={this.handleReload}></li>
                         <li className="box icon-minus" onClick={this.handleMinimize}></li>

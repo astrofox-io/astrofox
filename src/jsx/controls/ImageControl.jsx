@@ -97,9 +97,9 @@ var ImageControl = React.createClass({
 
         return (
             <div className="control">
-                <div className="header"><span>IMAGE</span></div>
+                <div className="header">IMAGE</div>
                 <div className="row">
-                    <label>Image</label>
+                    <label className="label">Image</label>
                     <ImageInput
                         name="image"
                         ref="image"
@@ -108,7 +108,7 @@ var ImageControl = React.createClass({
                     />
                 </div>
                 <div className="row">
-                    <label>
+                    <label className="label">
                         Width
                         <i
                             className={linkClasses}
@@ -136,7 +136,7 @@ var ImageControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>
+                    <label className="label">
                         Height
                         <i
                             className={linkClasses}
@@ -164,7 +164,7 @@ var ImageControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>X</label>
+                    <label className="label">X</label>
                     <NumberInput
                         name="x"
                         size="3"
@@ -186,7 +186,7 @@ var ImageControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Y</label>
+                    <label className="label">Y</label>
                     <NumberInput
                         name="y"
                         size="3"
@@ -208,7 +208,7 @@ var ImageControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Rotation</label>
+                    <label className="label">Rotation</label>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -230,7 +230,7 @@ var ImageControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Opacity</label>
+                    <label className="label">Opacity</label>
                     <NumberInput
                         name="opacity"
                         size="3"

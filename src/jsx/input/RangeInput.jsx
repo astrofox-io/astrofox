@@ -79,7 +79,9 @@ var RangeInput = React.createClass({
             <div className="input-range">
                 <div className="track"></div>
                 <div className="fill" style={fillStyle}></div>
-                <input type="range"
+                <input
+                    className="range"
+                    type="range"
                     name={this.props.name}
                     min={min}
                     max={max}

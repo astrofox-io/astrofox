@@ -76,10 +76,10 @@ var SpectrumControl = React.createClass({
         return (
             <div className="control">
                 <div className="header">
-                    <span>SPECTRUM</span>
+                    SPECTRUM
                 </div>
                 <div className="row">
-                    <label>Max dB</label>
+                    <label className="label">Max dB</label>
                     <NumberInput
                         name="maxDecibels"
                         size="3"
@@ -100,7 +100,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Max Frequency</label>
+                    <label className="label">Max Frequency</label>
                     <NumberInput
                         name="maxFrequency"
                         size="4"
@@ -122,7 +122,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Smoothing</label>
+                    <label className="label">Smoothing</label>
                     <NumberInput
                         name="smoothingTimeConstant"
                         size="3"
@@ -144,7 +144,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Width</label>
+                    <label className="label">Width</label>
                     <NumberInput
                         name="width"
                         size="3"
@@ -164,7 +164,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Height</label>
+                    <label className="label">Height</label>
                     <NumberInput
                         name="height"
                         size="3"
@@ -184,7 +184,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Shadow Height</label>
+                    <label className="label">Shadow Height</label>
                     <NumberInput
                         name="shadowHeight"
                         size="3"
@@ -204,7 +204,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Bar Width</label>
+                    <label className="label">Bar Width</label>
                     <NumberInput
                         name="barWidth"
                         size="3"
@@ -215,7 +215,7 @@ var SpectrumControl = React.createClass({
                         hidden={this.state.barWidthAutoSize}
                         onChange={this.handleChange}
                     />
-                    <label>Auto-Size</label>
+                    <label className="label">Auto-Size</label>
                     <ToggleInput
                         name="barWidthAutoSize"
                         value={this.state.barWidthAutoSize}
@@ -223,7 +223,7 @@ var SpectrumControl = React.createClass({
                     />
                 </div>
                 <div className="row">
-                    <label>Bar Spacing</label>
+                    <label className="label">Bar Spacing</label>
                     <NumberInput
                         name="barSpacing"
                         size="3"
@@ -233,7 +233,7 @@ var SpectrumControl = React.createClass({
                         readOnly={this.state.barSpacingAutoSize}
                         hidden={this.state.barSpacingAutoSize}
                         onChange={this.handleChange} />
-                    <label>Auto-Size</label>
+                    <label className="label">Auto-Size</label>
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={this.state.barSpacingAutoSize}
@@ -241,7 +241,7 @@ var SpectrumControl = React.createClass({
                     />
                 </div>
                 <div className="row">
-                    <label>Bar Color</label>
+                    <label className="label">Bar Color</label>
                     <ColorRangeInput
                         name="color"
                         value={this.state.color}
@@ -249,7 +249,7 @@ var SpectrumControl = React.createClass({
                     />
                 </div>
                 <div className="row">
-                    <label>Shadow Color</label>
+                    <label className="label">Shadow Color</label>
                     <ColorRangeInput
                         name="shadowColor"
                         value={this.state.shadowColor}
@@ -257,7 +257,7 @@ var SpectrumControl = React.createClass({
                     />
                 </div>
                 <div className="row">
-                    <label>X</label>
+                    <label className="label">X</label>
                     <NumberInput
                         name="x"
                         size="3"
@@ -275,7 +275,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Y</label>
+                    <label className="label">Y</label>
                     <NumberInput
                         name="y"
                         size="3"
@@ -293,7 +293,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Rotation</label>
+                    <label className="label">Rotation</label>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -313,7 +313,7 @@ var SpectrumControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Opacity</label>
+                    <label className="label">Opacity</label>
                     <NumberInput
                         name="opacity"
                         size="3"

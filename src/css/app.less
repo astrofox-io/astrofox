@@ -139,7 +139,7 @@ input[type="range"]::-webkit-slider-thumb {
 #control-box {
     color: #fff;
 
-    ul {
+    .box-group {
         position: absolute;
         top: 0;
         right: 10px;
@@ -149,7 +149,7 @@ input[type="range"]::-webkit-slider-thumb {
         -webkit-app-region: no-drag;
     }
 
-    li {
+    .box {
         display: inline-block;
         font-size: 16px;
         width: 30px;
@@ -184,10 +184,6 @@ input[type="range"]::-webkit-slider-thumb {
     border-top: 1px solid @player-border-color;
     flex: 0 0 auto;
     .flex-box(row, flex-start, center, stretch);
-
-    div {
-        vertical-align: middle;
-    }
 
     .buttons {
         margin: 0 20px;
@@ -240,11 +236,13 @@ input[type="range"]::-webkit-slider-thumb {
 
     .volume {
         .slider {
+            vertical-align: middle;
             display: inline-block;
             width: 100px;
         }
 
         .icon {
+            vertical-align: middle;
             display: inline-block;
             margin-left: 8px;
             vertical-align: middle;
@@ -254,16 +252,13 @@ input[type="range"]::-webkit-slider-thumb {
     .progress {
         margin-left: 20px;
         flex: 1;
-
-        input {
-            width: 100%;
-        }
     }
 
     .time-info {
         margin: 0 20px;
 
-        div {
+        .time-part {
+            vertical-align: middle;
             display: inline-block;
         }
 
@@ -288,7 +283,7 @@ input[type="range"]::-webkit-slider-thumb {
     }
 }
 
-#menu {
+#menubar {
     font-family: @primary-font;
     font-size: @font-normal;
     color: @menu-font-color;
@@ -296,12 +291,12 @@ input[type="range"]::-webkit-slider-thumb {
     padding-left: 20px;
     height: 20px;
 
-    li {
+    .menubar-item {
         display: inline-block;
         position: relative;
     }
 
-    .menubar-item {
+    .menubar-text {
         line-height: 20px;
         vertical-align: middle;
         padding: 0 8px;
@@ -314,7 +309,7 @@ input[type="range"]::-webkit-slider-thumb {
         }
     }
 
-    .active {
+    .menubar-text-active {
         color: @primary-color;
         background-color: #222;
     }
@@ -329,7 +324,7 @@ input[type="range"]::-webkit-slider-thumb {
         border: 1px solid #111;
         overflow: hidden;
 
-        li {
+        .menu-item {
             display: block;
             font-family: @primary-font;
             font-size: @font-small;
@@ -387,7 +382,7 @@ input[type="range"]::-webkit-slider-thumb {
         position: relative;
         margin: 0 auto;
 
-        div {
+        .waveform {
             position: absolute;
             top: 0;
             left: 0;
@@ -429,7 +424,6 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: @dock-background-color;
     width: 320px;
     z-index: 100;
-
     display: flex;
     flex-direction: column;
 
@@ -496,14 +490,11 @@ input[type="range"]::-webkit-slider-thumb {
 
     .header {
         margin-bottom: 10px;
-
-        span {
-            font-size: @font-small;
-            color: @primary-color;
-            padding: 10px;
-            line-height: 20px;
-            cursor: default;
-        }
+        font-size: @font-small;
+        color: @primary-color;
+        line-height: 20px;
+        padding-left: 8px;
+        cursor: default;
     }
 
     .row {
@@ -513,7 +504,7 @@ input[type="range"]::-webkit-slider-thumb {
 
         .flex-box(row, flex-start, center, stretch);
 
-        label {
+        .label {
             font-family: @primary-font;
             font-size: @font-small;
             color: @primary-text-color;
@@ -590,10 +581,6 @@ input[type="range"]::-webkit-slider-thumb {
     display: inline-block;
     position: relative;
 
-    ul {
-        list-style: none;
-    }
-
     .input-field {
         color: @primary-text-color;
     }
@@ -616,9 +603,9 @@ input[type="range"]::-webkit-slider-thumb {
     position: absolute;
     top: 22px;
     z-index: 100;
-    //border: 1px solid @primary-color;
+    list-style: none;
 
-    li {
+    .input-option {
         font-family: @primary-font;
         font-size: @font-small;
         padding: 5px;
@@ -672,7 +659,7 @@ input[type="range"]::-webkit-slider-thumb {
         .absolute-left();
     }
 
-    input {
+    .range {
         background-color: transparent;
         .absolute-center();
     }
@@ -728,7 +715,7 @@ input[type="range"]::-webkit-slider-thumb {
         height: 100%;
     }
 
-    img {
+    .image {
         width: 100%;
         height: auto;
         .absolute-center();
@@ -851,7 +838,7 @@ input[type="range"]::-webkit-slider-thumb {
         background-color: #434343;
         padding: 10px;
         opacity: 0;
-        transform: perspective(800px) scale(0.7) rotateX(-70deg);
+        transform: perspective(800px) scale(0.7) rotateX(-90deg);
         transition: all 0.3s;
         .absolute-center();
     }

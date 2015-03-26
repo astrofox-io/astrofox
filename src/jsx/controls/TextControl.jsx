@@ -92,9 +92,9 @@ var TextControl = React.createClass({
 
         return (
             <div className="control">
-                <div className="header"><span>TEXT</span></div>
+                <div className="header">TEXT</div>
                 <div className="row">
-                    <label>Text</label>
+                    <label className="label">Text</label>
                     <TextInput
                         name="text"
                         size="20"
@@ -102,7 +102,7 @@ var TextControl = React.createClass({
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label>Font</label>
+                    <label className="label">Font</label>
                     <SelectInput
                         name="font"
                         size="20"
@@ -111,7 +111,7 @@ var TextControl = React.createClass({
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label>Size</label>
+                    <label className="label">Size</label>
                     <NumberInput
                         name="size"
                         size="3"
@@ -120,26 +120,26 @@ var TextControl = React.createClass({
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label>Bold</label>
+                    <label className="label">Bold</label>
                     <ToggleInput
                         name="bold"
                         value={this.state.bold}
                         onChange={this.handleChange} />
-                    <label>Italic</label>
+                    <label className="label">Italic</label>
                     <ToggleInput
                         name="italic"
                         value={this.state.italic}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label>Color</label>
+                    <label className="label">Color</label>
                     <ColorInput
                         name="color"
                         value={this.state.color}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label>X</label>
+                    <label className="label">X</label>
                     <NumberInput
                         name="x"
                         size="3"
@@ -155,7 +155,7 @@ var TextControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Y</label>
+                    <label className="label">Y</label>
                     <NumberInput
                         name="y"
                         size="3"
@@ -171,7 +171,7 @@ var TextControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Rotation</label>
+                    <label className="label">Rotation</label>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -189,7 +189,7 @@ var TextControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label>Opacity</label>
+                    <label className="label">Opacity</label>
                     <NumberInput
                         name="opacity"
                         size="3"

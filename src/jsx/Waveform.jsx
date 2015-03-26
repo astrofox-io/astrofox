@@ -149,13 +149,13 @@ var Waveform = React.createClass({
                     onClick={this.handleClick}
                     onMouseMove={this.handleMouseMove}
                     onMouseOut={this.handleMouseOut}>
-                    <div className="base">
+                    <div className="waveform base">
                         <canvas ref="canvas" width="854" height="100"></canvas>
                     </div>
-                    <div className="progress" style={style}>
+                    <div className="waveform progress" style={style}>
                         <canvas ref="progress" width="854" height="100"></canvas>
                     </div>
-                    <div className="overlay" style={clipStyle}>
+                    <div className="waveform overlay" style={clipStyle}>
                         <canvas ref="overlay" width="854" height="100"></canvas>
                     </div>
                 </div>

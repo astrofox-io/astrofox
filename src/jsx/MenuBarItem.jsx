@@ -32,10 +32,10 @@ var MenuBarItem = React.createClass({
 
     render: function() {
         var style = { display: (this.state.showItems) ? 'block' : 'none' },
-            classes = 'menubar-item';
+            classes = 'menubar-text';
 
         if (this.props.active) {
-            classes += ' active';
+            classes += ' menubar-text-active';
         }
 
         var items = this.props.items.map(function(item, index) {
@@ -51,7 +51,7 @@ var MenuBarItem = React.createClass({
         }, this);
 
         return (
-            <li>
+            <li className="menubar-item">
                 <div
                     className={classes}
                     onClick={this.handleClick}

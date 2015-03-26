@@ -94,7 +94,7 @@ var MenuBar = React.createClass({
         }, this);
 
         return (
-            <div id="menu">
+            <div id="menubar">
                 <ul>{items}</ul>
             </div>
         );

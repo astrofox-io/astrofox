@@ -285,9 +285,9 @@ var TimeInfo = React.createClass({
 
         return (
             <div className="time-info">
-                <div className="current-time">{currentTime}</div>
-                <div className="split"></div>
-                <div className="total-time">{totalTime}</div>
+                <div className="time-part current-time">{currentTime}</div>
+                <div className="time-part split"></div>
+                <div className="time-part total-time">{totalTime}</div>
             </div>
         );
     }
