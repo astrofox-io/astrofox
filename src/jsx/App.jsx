@@ -2,6 +2,7 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             filename: '',
+            showModal: false,
             modal: null
         };
     },
@@ -119,7 +120,7 @@ var App = React.createClass({
                 break;
 
             case 'Edit/Settings':
-                this.refs.modal.show(<div>settings!</div>);
+                this.setState({ modal: <div>settings!</div> });
                 break;
 
             case 'View/Control Dock':
@@ -132,9 +133,14 @@ var App = React.createClass({
                 break;
 
             case 'Help/About':
-                this.refs.modal.show(<div>oh hai!</div>);
+                var modal = <AboutPanel onOkClick={this.hideModal} />;
+                this.setState({ modal: modal, showModal: true });
                 break;
         }
+    },
+
+    hideModal: function() {
+        this.setState({ showModal: false });
     },
 
     loadAudioFile: function(file) {
@@ -153,7 +159,7 @@ var App = React.createClass({
                 function(error) {
                     if (error) {
                         scene.isLoading(false);
-                        this.refs.modal.show(error.message);
+                        this.setState({ modal: <div>{error.message}</div> });
                         return;
                     }
 
@@ -181,7 +187,9 @@ var App = React.createClass({
                     onMenuAction={this.handleMenuAction}
                 />
                 <Body>
-                    <ModalWindow ref="modal" width={400} height={300} />
+                    <ModalWindow visible={this.state.showModal}>
+                        {this.state.modal}
+                    </ModalWindow>
                     <MainView>
                         <Scene
                             ref="scene"

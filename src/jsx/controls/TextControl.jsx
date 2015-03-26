@@ -13,7 +13,6 @@ var TextControl = React.createClass({
     },
 
     fontOptions: [
-        'Alegreya',
         'Arial',
         'Bangers',
         'Cardo',
@@ -68,7 +67,7 @@ var TextControl = React.createClass({
         this.setState(obj);
     },
 
-    getFontOptions: function() {
+    getSelectItems: function() {
         return this.fontOptions.map(function(item) {
             return { name: item, value: item, style: { fontFamily: item } };
         });
@@ -95,7 +94,6 @@ var TextControl = React.createClass({
     render: function() {
         var maxHeight = 480;
         var maxWidth = 854;
-        var fontOptions = this.getFontOptions();
 
         return (
             <div className="control">
@@ -113,7 +111,7 @@ var TextControl = React.createClass({
                     <SelectInput
                         name="font"
                         size="20"
-                        items={fontOptions}
+                        items={this.getSelectItems()}
                         value={this.state.font}
                         onChange={this.handleChange} />
                 </div>

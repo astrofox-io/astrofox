@@ -1,21 +1,15 @@
 var ControlsPanel = React.createClass({
-    getControl: function(display, index) {
-        var FX = this.props.app.FX,
-            ref = 'ctrl' + index,
-            props = {
-                app: this.props.app,
-                display: display,
-                key: 'ctrl' + display.toString()
-            };
+    getControl: function(display) {
+        var FX = this.props.app.FX;
 
         if (display instanceof FX.BarDisplay) {
-            return <SpectrumControl ref={ref} {...props} />;
+            return SpectrumControl;
         }
         else if (display instanceof FX.ImageDisplay) {
-            return <ImageControl ref={ref} {...props} />;
+            return ImageControl;
         }
         else if (display instanceof FX.TextDisplay) {
-            return <TextControl ref={ref} {...props} />;
+            return TextControl;
         }
     },
 
@@ -26,7 +20,13 @@ var ControlsPanel = React.createClass({
 
     render: function() {
         var controls = this.props.app.displays.map(function(display, index) {
-            return this.getControl(display, index);
+            var Control = this.getControl(display);
+            var props = {
+                app: this.props.app,
+                display: display,
+                key: 'ctrl' + display.toString()
+            };
+            return <Control ref={'ctrl' + index} {...props} />;
         }, this);
 
         return (
