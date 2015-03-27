@@ -29,6 +29,19 @@ var LayersPanel = React.createClass({
         this.props.onLayerChanged();
     },
 
+    handleMoveUpClick: function() {
+        var index = this.state.activeIndex;
+
+        if (index <= 0) return;
+    },
+
+    handleMoveDownClick: function() {
+        var len = this.props.app.displays.length - 1,
+            index = this.state.activeIndex;
+
+        if (index == len) return;
+    },
+
     render: function() {
         var layers;
 
@@ -55,6 +68,8 @@ var LayersPanel = React.createClass({
                 <ul className="commands">
                     <li className="button icon-plus" onClick={this.handleAddClick} />
                     <li className="button icon-minus" onClick={this.handleRemoveClick} />
+                    <li className="button icon-up-open" onClick={this.handleMoveUpClick} />
+                    <li className="button icon-down-open" onClick={this.handleMoveDownClick} />
                 </ul>
             </div>
         );

@@ -120,7 +120,11 @@ var App = React.createClass({
                 break;
 
             case 'Edit/Settings':
-                this.setState({ modal: <div>settings!</div> });
+                this.showModal(
+                    <MessageWindow title="SETTINGS" onConfirm={this.hideModal}>
+                        Configuration Settings
+                    </MessageWindow>
+                );
                 break;
 
             case 'View/Control Dock':
@@ -133,7 +137,11 @@ var App = React.createClass({
                 break;
 
             case 'Help/About':
-                this.showModal(<AboutPanel onOkClick={this.hideModal} />);
+                this.showModal(
+                    <MessageWindow title="ABOUT" onConfirm={this.hideModal}>
+                        AstroFox version 1.0
+                    </MessageWindow>
+                );
                 break;
         }
     },
@@ -162,7 +170,11 @@ var App = React.createClass({
                 function(error) {
                     if (error) {
                         scene.isLoading(false);
-                        this.setState({ modal: <div>{error.message}</div> });
+                        this.showModal(
+                            <MessageWindow title="ERROR" onConfirm={this.hideModal}>
+                                {error.message}
+                            </MessageWindow>
+                        );
                         return;
                     }
 
@@ -190,9 +202,9 @@ var App = React.createClass({
                     onMenuAction={this.handleMenuAction}
                 />
                 <Body>
-                    <ModalWindow visible={this.state.showModal}>
+                    <Modal visible={this.state.showModal}>
                         {this.state.modal}
-                    </ModalWindow>
+                    </Modal>
                     <MainView>
                         <Scene
                             ref="scene"

@@ -1,4 +1,4 @@
-var ModalWindow = React.createClass({
+var Modal = React.createClass({
     getDefaultProps: function() {
         return {
             visible: false
