@@ -21,10 +21,14 @@ app.on('ready', function() {
     mainWindow = new BrowserWindow({
         width: 1320,
         height: 1000,
-        "min-width": 400,
-        "min-height": 200,
+        'min-width': 400,
+        'min-height': 200,
         x: 100,
-        frame: false
+        frame: false,
+        'web-preferences': {
+            'web-security': false,
+            'webgl': true
+        }
     });
 
     // and load the index.html of the app.
