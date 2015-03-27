@@ -133,10 +133,13 @@ var App = React.createClass({
                 break;
 
             case 'Help/About':
-                var modal = <AboutPanel onOkClick={this.hideModal} />;
-                this.setState({ modal: modal, showModal: true });
+                this.showModal(<AboutPanel onOkClick={this.hideModal} />);
                 break;
         }
+    },
+
+    showModal: function(modal) {
+        this.setState({ modal: modal, showModal: true });
     },
 
     hideModal: function() {

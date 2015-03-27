@@ -24,6 +24,7 @@ var ImageControl = React.createClass({
 
         if (display.initialized) {
             this.stateChanged = true;
+            this.image.src = display.options.src;
             this.setState(display.options);
         }
     },
@@ -42,7 +43,7 @@ var ImageControl = React.createClass({
     },
 
     shouldComponentUpdate: function() {
-        return this.stateChanged;
+        return true; //this.stateChanged;
     },
 
     handleChange: function(name, val) {

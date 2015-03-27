@@ -277,8 +277,9 @@ Application.prototype.loadControls = function(data) {
 
     data.forEach(function(item) {
         this.addDisplay(new this.FX[item.name](null, item.values));
-        this.emit('project_loaded');
     }.bind(this));
+
+    this.emit('project_loaded');
 };
 
 // Supposedly 1.5x faster than Array.splice

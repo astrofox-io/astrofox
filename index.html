@@ -19,7 +19,6 @@
 var Node = {};
 
 if (typeof process !== 'undefined' && typeof require !== 'undefined') {
-    Node.GUI = require('nw.gui');
     Node.FS = require('fs');
     Node.Buffer = require('buffer').Buffer;
     Node.Stream = require('stream');
@@ -30,14 +29,15 @@ if (typeof process !== 'undefined' && typeof require !== 'undefined') {
         console.log(e.stack);
     });
 
+    Node.GUI = require('nw.gui');
+    Node.GUI.Window.get().showDevTools();
+
     // OSX
     if (process.platform === 'darwin') {
         var mb = new Node.GUI.Menu({ type: 'menubar' });
         mb.createMacBuiltin('AstroFox');
         Node.GUI.Window.get().menu = mb;
     }
-
-    Node.GUI.Window.get().showDevTools();
 }
 
 document.addEventListener('DOMContentLoaded', function(e) {
