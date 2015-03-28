@@ -67,10 +67,8 @@ Application.prototype.loadAudioFile = function(file, callback) {
     reader.onload = function(e) {
         // DEBUG
         console.log('file loaded', timer.get('file_load'));
-        var data = e.target.result;
-
         if (callback) {
-            callback(file.error, data);
+            callback(file.error, e.target.result);
         }
     }.bind(this);
 
@@ -265,22 +263,37 @@ Application.prototype.loadProject = function(file) {
 
     if (options.useCompression) {
         IO.zlib.inflate(data, function(err, buf) {
-            this.loadControls(JSON.parse(buf.toString()));
+            try {
+                this.loadControls(JSON.parse(buf.toString()));
+            }
+            catch(err) {
+                this.emit('error', new Error('Invalid project file.'));
+            }
         }.bind(this));
     }
     else {
-        this.loadControls(JSON.parse(data));
+        try {
+            this.loadControls(JSON.parse(data));
+        }
+        catch(err) {
+            this.emit('error', new Error('Invalid project file.'));
+        }
     }
 };
 
 Application.prototype.loadControls = function(data) {
-    this.displays = [];
+    if (data instanceof Array) {
+        this.displays = [];
 
-    data.forEach(function(item) {
-        this.addDisplay(new this.FX[item.name](null, item.values));
-    }.bind(this));
+        data.forEach(function (item) {
+            this.addDisplay(new this.FX[item.name](null, item.values));
+        }.bind(this));
 
-    this.emit('project_loaded');
+        this.emit('project_loaded');
+    }
+    else {
+        this.emit('error', new Error('Invalid project file.'));
+    }
 };
 
 // Supposedly 1.5x faster than Array.splice

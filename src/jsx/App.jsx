@@ -12,6 +12,10 @@ var App = React.createClass({
         app.addDisplay(new app.FX.TextDisplay());
         app.addDisplay(new app.FX.BarDisplay());
         app.addDisplay(new app.FX.ImageDisplay());
+
+        app.on('error', function(err) {
+            this.showError(err);
+        }.bind(this));
     },
 
     componentDidMount: function() {
@@ -158,6 +162,14 @@ var App = React.createClass({
         this.setState({ showModal: false });
     },
 
+    showError: function(error) {
+        this.showModal(
+            <MessageWindow title="ERROR" onConfirm={this.hideModal}>
+                {error.message}
+            </MessageWindow>
+        );
+    },
+
     loadAudioFile: function(file) {
         var scene = this.refs.scene;
 
@@ -166,27 +178,24 @@ var App = React.createClass({
         this.app.loadAudioFile(file, function(error, data) {
             if (error) {
                 scene.isLoading(false);
-                throw error;
+                this.showError(error);
             }
-
-            this.app.loadAudioData(
-                data,
-                function(error) {
-                    if (error) {
-                        scene.isLoading(false);
-                        this.showModal(
-                            <MessageWindow title="ERROR" onConfirm={this.hideModal}>
-                                {error.message}
-                            </MessageWindow>
-                        );
-                        return;
-                    }
-
-                    this.setState({ filename: file.name }, function() {
-                        scene.isLoading(false);
-                    });
-                }.bind(this)
-            );
+            else {
+                this.app.loadAudioData(
+                    data,
+                    function (error) {
+                        if (error) {
+                            scene.isLoading(false);;
+                            this.showError(error);
+                        }
+                        else {
+                            this.setState({filename: file.name}, function () {
+                                scene.isLoading(false);
+                            });
+                        }
+                    }.bind(this)
+                );
+            }
         }.bind(this));
     },
 

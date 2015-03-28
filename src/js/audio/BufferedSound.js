@@ -61,7 +61,7 @@ BufferedSound.prototype.loadData = function(data) {
             this.loadBuffer(buffer);
         }.bind(this),
         function(e){
-            this.emit('error', new Error('Failed to decode data'));
+            this.emit('error', new Error('Invalid audio file.'));
         }.bind(this)
     );
 };
