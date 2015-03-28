@@ -16,28 +16,26 @@
 <body>
 <div id="app"></div>
 <script>
-var Node = {};
+var IO = {};
 
 if (typeof process !== 'undefined' && typeof require !== 'undefined') {
-    Node.FS = require('fs');
-    Node.Buffer = require('buffer').Buffer;
-    Node.Stream = require('stream');
-    Node.Spawn = require('child_process').spawn;
-    Node.Zlib = require('zlib');
+    var gui = require('nw.gui');
+    var win = gui.Window.get();
+
+    win.showDevTools();
 
     process.on('uncaughtException', function(e) {
         console.log(e.stack);
     });
 
-    Node.GUI = require('nw.gui');
-    Node.GUI.Window.get().showDevTools();
-
     // OSX
     if (process.platform === 'darwin') {
-        var mb = new Node.GUI.Menu({ type: 'menubar' });
+        var mb = new gui.Menu({ type: 'menubar' });
         mb.createMacBuiltin('AstroFox');
-        Node.GUI.Window.get().menu = mb;
+        win.menu = mb;
     }
+
+    IO.Window = win;
 }
 
 document.addEventListener('DOMContentLoaded', function(e) {
@@ -46,24 +44,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         document.getElementById("app")
     );
 });
-
-window.onerror = function(msg, url, line, col, error) {
-    // Note that col & error are new to the HTML 5 spec and may not be
-    // supported in every browser.  It worked for me in Chrome.
-    var extra = !col ? '' : '\ncolumn: ' + col;
-    extra += !error ? '' : '\nerror: ' + error;
-
-    // You can view the information in an alert to see things working like this:
-    console.error("Error: " + msg + "\nurl: " + url + "\nline: " + line + extra + "\n");
-
-    // TODO: Report this error via ajax so you can keep track
-    //       of what pages have JS issues
-    var suppressErrorAlert = true;
-
-    // If you return true, then error alerts (like in older versions of
-    // Internet Explorer) will be suppressed.
-    return suppressErrorAlert;
-};
 </script>
 </body>
 </html>

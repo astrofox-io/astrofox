@@ -1,8 +1,6 @@
 'use strict';
 
-var AstroFox = {
-    FPS: 29.97
-};
+var AstroFox = {};
 
 AstroFox.Application = require('./Application.js');
 

@@ -15,6 +15,12 @@ var TextDisplay = require('./visual/TextDisplay.js');
 
 var _ = require('lodash');
 
+var IO = {
+    Buffer: global.require('buffer').Buffer,
+    fs: global.require('fs'),
+    zlib: global.require('zlib')
+};
+
 var defaults = {
     fps: 29.97,
     canvasHeight: 480,
@@ -202,7 +208,7 @@ Application.prototype.processFrame = function(frame, fps, callback) {
 
 Application.prototype.saveImage = function(file) {
     this.scene.renderImage(function(buffer) {
-        Node.FS.writeFile(file.path, buffer);
+        IO.fs.writeFile(file.path, buffer);
 
         // DEBUG
         console.log(file.path + ' saved');
@@ -230,26 +236,23 @@ Application.prototype.saveVideo = function(file) {
 
 Application.prototype.saveProject = function(file) {
     var data, buffer,
-        options = this.options,
-        fs = Node.FS,
-        Buffer = Node.Buffer,
-        zlib = Node.Zlib;
+        options = this.options;
 
     data = this.displays.map(function(display) {
         return display.toJSON();
     });
 
     if (options.useCompression) {
-        zlib.deflate(
+        IO.zlib.deflate(
             JSON.stringify(data),
             function(err, buf) {
-                buffer = new Buffer(buf);
-                fs.writeFileSync(file, buffer);
+                buffer = new IO.Buffer(buf);
+                IO.fs.writeFileSync(file, buffer);
             }.bind(this)
         );
     }
     else {
-        fs.writeFile(file.path, JSON.stringify(data));
+        IO.fs.writeFile(file.path, JSON.stringify(data));
     }
 
     // DEBUG
@@ -258,12 +261,10 @@ Application.prototype.saveProject = function(file) {
 
 Application.prototype.loadProject = function(file) {
     var options = this.options,
-        fs = Node.FS,
-        zlib = Node.Zlib,
-        data = fs.readFileSync(file.path);
+        data = IO.fs.readFileSync(file.path);
 
     if (options.useCompression) {
-        zlib.inflate(data, function(err, buf) {
+        IO.zlib.inflate(data, function(err, buf) {
             this.loadControls(JSON.parse(buf.toString()));
         }.bind(this));
     }

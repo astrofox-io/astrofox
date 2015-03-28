@@ -67,8 +67,12 @@ var App = React.createClass({
     handleFileSave: function(e) {
         e.preventDefault();
 
-        this.saveAction(this.saveInput.value);
-        this.fileForm.reset();
+        var files = e.target.files;
+
+        if (files.length > 0) {
+            this.saveAction(files[0]);
+            this.fileForm.reset();
+        }
     },
 
     handleMenuAction: function(action, checked) {

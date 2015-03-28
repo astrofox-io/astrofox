@@ -10,7 +10,7 @@ var spritesmith = require('gulp.spritesmith')
 var source = require('vinyl-source-stream');
 
 gulp.task('browserify', function(){
-    return browserify('./src/js/astrofox.js')
+    return browserify('./src/js/AstroFox.js')
         .bundle()
         .pipe(source('app.js'))
         .pipe(gulp.dest('build'));

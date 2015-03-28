@@ -4,6 +4,12 @@ var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 var THREE = require('three');
 
+var IO = {
+    Buffer: global.require('buffer').Buffer,
+    Spawn: global.require('child_process').spawn,
+    Stream: global.require('stream')
+};
+
 var defaults = {
     showFPS: false,
     audioOutput: 'mux',
@@ -155,7 +161,7 @@ Scene.prototype.render = function(callback) {
 Scene.prototype.renderVideo = function(output_file, fps, duration, func, callback) {
     var started = false,
         frames = duration * fps,
-        input_file = new Node.Stream.Transform();
+        input_file = new IO.Stream.Transform();
 
     console.log('rending movie', duration, 'seconds,', fps, 'fps');
 
@@ -175,7 +181,7 @@ Scene.prototype.renderVideo = function(output_file, fps, duration, func, callbac
         }
     }.bind(this);
 
-    var ffmpeg = Node.Spawn('./bin/ffmpeg.exe', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
+    var ffmpeg = IO.Spawn('./bin/ffmpeg.exe', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
     input_file.pipe(ffmpeg.stdin);
     //ffmpeg.stdout.pipe(outStream);
 
@@ -205,7 +211,7 @@ Scene.prototype.renderImage = function(callback, format) {
     this.render(function() {
         var img = this.renderer.domElement.toDataURL(format || 'image/png'),
             data = img.replace(/^data:image\/\w+;base64,/, ''),
-            buffer = new Node.Buffer(data, 'base64');
+            buffer = new IO.Buffer(data, 'base64');
 
         if (callback) callback(buffer);
     }.bind(this));
