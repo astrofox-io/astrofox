@@ -133,6 +133,17 @@ Application.prototype.removeDisplay = function(display) {
     }
 };
 
+Application.prototype.swapDisplay = function(index, newIndex) {
+    var tmp,
+        displays = this.displays;
+
+    if (index > -1 && index < displays.length) {
+        tmp = displays[index];
+        displays[index] = displays[newIndex];
+        displays[newIndex] = tmp;
+    }
+};
+
 Application.prototype.showFPS = function(val) {
     this.scene.options.showFPS = val;
 };

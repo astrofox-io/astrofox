@@ -32,7 +32,7 @@ var App = React.createClass({
 
     },
 
-    handleClick: function(e) {
+    handleClick: function() {
         this.refs.menu.setActiveIndex(-1);
     },
 

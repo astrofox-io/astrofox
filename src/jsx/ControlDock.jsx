@@ -53,12 +53,16 @@ var ControlDock = React.createClass({
         });
     },
 
+    handleLayerAdd: function() {
+
+    },
+
     handleLayerSelected: function(index) {
         this.refs.controls.scrollToControl(index);
     },
 
-    handleLayerChanged: function() {
-        this.refs.controls.forceUpdate();
+    handleLayerChanged: function(callback) {
+        this.refs.controls.forceUpdate(callback);
     },
 
     render: function() {
@@ -79,6 +83,7 @@ var ControlDock = React.createClass({
                 <Panel title="LAYERS" height={state.panelHeight}>
                     <LayersPanel
                         ref="layers"
+                        onLayerAdd={this.handleLayerAdd}
                         onLayerSelected={this.handleLayerSelected}
                         onLayerChanged={this.handleLayerChanged}
                         {...this.props}

@@ -12,7 +12,7 @@ var LayersPanel = React.createClass({
     },
 
     handleAddClick: function() {
-
+        this.props.onLayerAdd();
     },
 
     handleRemoveClick: function() {
@@ -30,16 +30,32 @@ var LayersPanel = React.createClass({
     },
 
     handleMoveUpClick: function() {
-        var index = this.state.activeIndex;
+        var app = this.props.app,
+            index = this.state.activeIndex,
+            newIndex = index - 1;
 
-        if (index <= 0) return;
+        if (index > 0) {
+            app.swapDisplay(index, newIndex);
+            this.setState({ activeIndex: newIndex });
+            this.props.onLayerChanged(function() {
+                this.props.onLayerSelected(newIndex);
+            }.bind(this));
+        }
     },
 
     handleMoveDownClick: function() {
-        var len = this.props.app.displays.length - 1,
-            index = this.state.activeIndex;
+        var app = this.props.app,
+            len = this.props.app.displays.length - 1,
+            index = this.state.activeIndex,
+            newIndex = index + 1;
 
-        if (index == len) return;
+        if (index !== len) {
+            app.swapDisplay(index, newIndex);
+            this.setState({ activeIndex: newIndex });
+            this.props.onLayerChanged(function() {
+                this.props.onLayerSelected(newIndex);
+            }.bind(this));
+        }
     },
 
     render: function() {
