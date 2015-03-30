@@ -123,7 +123,9 @@ var PlayButton = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        this.setState({ playing: props.isPlaying })
+        if (typeof props.isPlaying !== 'undefined') {
+            this.setState({ playing: props.isPlaying });
+        }
     },
 
     render: function() {
@@ -223,7 +225,7 @@ var ProgressControl = React.createClass({
 
     componentWillReceiveProps: function(props) {
         if (typeof props.progressPosition !== 'undefined' && !this.refs.progress.isActive()) {
-            this.setState({value: props.progressPosition * this.max});
+            this.setState({ value: props.progressPosition * this.max });
         }
     },
 

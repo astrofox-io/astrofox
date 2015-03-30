@@ -1,15 +1,13 @@
 var Loading = React.createClass({
-    componentWillReceiveProps: function(props) {
-        this.props.loading = props.loading;
-    },
-
-    getStyle: function() {
-        return { display: this.props.loading ? 'block' : 'none' };
+    getDefaultProps: function() {
+        return { visible: false };
     },
 
     render: function() {
+        var style = { display: this.props.visible ? 'block' : 'none' };
+
         return (
-            <div id="loading" style={this.getStyle()}></div>
+            <div id="loading" style={style}></div>
         );
     }
 });

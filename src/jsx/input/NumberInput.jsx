@@ -22,7 +22,7 @@ var NumberInput = React.createClass({
 
     componentWillReceiveProps: function(props) {
         if (typeof props.value !== 'undefined') {
-            this.setState({value: props.value});
+            this.setState({ value: props.value });
         }
     },
 

@@ -14,7 +14,9 @@ var ToggleInput = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        this.setState({ value: props.value });
+        if (typeof props.value !== 'undefined') {
+            this.setState({ value: props.value });
+        }
     },
 
     handleClick: function(e) {
