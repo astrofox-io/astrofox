@@ -1,1 +1,1 @@
-C:\dev\atom-shell-v0.22.1-win32-ia32\atom.exe --ignore-gpu-blacklist .
+C:\dev\atom-shell-v0.22.3-win32-ia32\atom.exe --ignore-gpu-blacklist .
