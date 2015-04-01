@@ -21,11 +21,8 @@ var App = React.createClass({
     componentDidMount: function() {
         this.fileForm = React.findDOMNode(this.refs.form);
         this.fileInput = React.findDOMNode(this.refs.file);
-        this.saveInput = React.findDOMNode(this.refs.save);
-        this.openAction = null;
-        this.saveAction = null;
-
-        this.saveInput.setAttribute('nwsaveas', '');
+        this.fileInput.setAttribute('nwsaveas', '');
+        this.fileAction = null;
     },
 
     componentDidUpdate: function() {
@@ -57,24 +54,13 @@ var App = React.createClass({
         this.refs.player.forceUpdate();
     },
 
-    handleFileOpen: function(e) {
+    handleFileAction: function(e) {
         e.preventDefault();
 
         var files = e.target.files;
 
         if (files.length > 0) {
-            this.openAction(files[0]);
-            this.fileForm.reset();
-        }
-    },
-
-    handleFileSave: function(e) {
-        e.preventDefault();
-
-        var files = e.target.files;
-
-        if (files.length > 0) {
-            this.saveAction(files[0]);
+            this.fileAction(files[0]);
             this.fileForm.reset();
         }
     },
@@ -85,46 +71,33 @@ var App = React.createClass({
                 break;
 
             case 'File/Open Project':
-                this.openAction = function(file) {
+                this.loadFileDialog(function(file) {
                     this.app.loadProject(file);
-                }.bind(this);
-
-                this.fileInput.click();
+                }.bind(this), '');
                 break;
 
             case 'File/Save Project':
-                this.saveAction = function(file) {
+                this.loadFileDialog(function(file) {
                     this.app.saveProject(file);
-                }.bind(this);
-
-                this.saveInput.setAttribute('nwsaveas', 'project.afx');
-                this.saveInput.click();
+                }.bind(this), 'project.afx');
                 break;
 
-            case 'File/Import Audio':
-                this.openAction = function(file) {
+            case 'File/Load Audio':
+                this.loadFileDialog(function(file) {
                     this.loadAudioFile(file);
-                }.bind(this);
-
-                this.fileInput.click();
+                }.bind(this), '');
                 break;
 
             case 'File/Save Image':
-                this.saveAction = function(file) {
+                this.loadFileDialog(function(file) {
                     this.app.saveImage(file);
-                }.bind(this);
-
-                this.saveInput.setAttribute('nwsaveas', 'image.png');
-                this.saveInput.click();
+                }.bind(this), 'image.png');
                 break;
 
             case 'File/Save Video':
-                this.saveAction = function(file) {
+                this.loadFileDialog(function(file) {
                     this.app.saveVideo(file);
-                }.bind(this);
-
-                this.saveInput.setAttribute('nwsaveas', 'video.mp4');
-                this.saveInput.click();
+                }.bind(this), 'video.mp4');
                 break;
 
             case 'Edit/Settings':
@@ -136,6 +109,7 @@ var App = React.createClass({
                 break;
 
             case 'View/Control Dock':
+                this.refs.dock.showDock(!checked);
                 this.refs.menu.setCheckState(action, !checked);
                 break;
 
@@ -152,6 +126,17 @@ var App = React.createClass({
                 );
                 break;
         }
+    },
+
+    loadFileDialog: function(action, filename) {
+        this.fileAction = action;
+        if (filename) {
+            this.fileInput.setAttribute('nwsaveas', filename);
+        }
+        else {
+            this.fileInput.removeAttribute('nwsaveas');
+        }
+        this.fileInput.click();
     },
 
     showModal: function(modal) {
@@ -248,12 +233,7 @@ var App = React.createClass({
                     <input
                         ref="file"
                         type="file"
-                        onChange={this.handleFileOpen}
-                    />
-                    <input
-                        ref="save"
-                        type="file"
-                        onChange={this.handleFileSave}
+                        onChange={this.handleFileAction}
                     />
                 </form>
             </div>

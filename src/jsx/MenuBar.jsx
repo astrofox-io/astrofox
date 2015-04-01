@@ -6,34 +6,34 @@ var MenuBar = React.createClass({
                 {
                     text: 'File',
                     items: [
-                        { text: 'New Project', beginGroup: false, checked: false },
-                        { text: 'Open Project', beginGroup: false, checked: false },
-                        { text: 'Save Project', beginGroup: false, checked: false },
-                        { text: 'Import Audio', beginGroup: true, checked: false },
-                        { text: 'Save Image', beginGroup: false, checked: false },
-                        { text: 'Save Video', beginGroup: false, checked: false },
-                        { text: 'Exit', beginGroup: true, checked: false }
+                        { text: 'New Project' },
+                        { text: 'Open Project' },
+                        { text: 'Save Project' },
+                        { text: 'Load Audio', beginGroup: true },
+                        { text: 'Save Image' },
+                        { text: 'Save Video' },
+                        { text: 'Exit', beginGroup: true }
                     ]
                 },
                 {
                     text: 'Edit',
                     items: [
-                        { text: 'Settings', beginGroup: false, checked: false }
+                        { text: 'Settings' }
                     ]
                 },
                 {
                     text: 'View',
                     items: [
-                        { text: 'Control Dock', beginGroup: false, checked: true },
-                        { text: 'Show FPS', beginGroup: false, checked: false },
-                        { text: 'Full Screen', beginGroup: false, checked: false }
+                        { text: 'Control Dock', checked: true },
+                        { text: 'Show FPS' },
+                        { text: 'Full Screen' }
                     ]
                 },
                 {
                     text: 'Help',
                     items: [
-                        { text: 'Register', beginGroup: false, checked: false },
-                        { text: 'About', beginGroup: false, checked: false }
+                        { text: 'Register' },
+                        { text: 'About' }
                     ]
                 }
             ]

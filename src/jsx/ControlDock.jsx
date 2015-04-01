@@ -54,7 +54,7 @@ var ControlDock = React.createClass({
     },
 
     handleLayerAdd: function() {
-
+        this.props.onLayerAdd();
     },
 
     handleLayerSelected: function(index) {
@@ -63,6 +63,10 @@ var ControlDock = React.createClass({
 
     handleLayerChanged: function(callback) {
         this.refs.controls.forceUpdate(callback);
+    },
+
+    showDock: function(visible) {
+        this.setState({ visible: visible });
     },
 
     render: function() {
