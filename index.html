@@ -16,26 +16,25 @@
 <body>
 <div id="app"></div>
 <script>
-var IO = {};
-
 if (typeof process !== 'undefined' && typeof require !== 'undefined') {
-    var gui = require('nw.gui');
-    var win = gui.Window.get();
-
-    win.showDevTools();
-
+    // Catch errors
     process.on('uncaughtException', function(e) {
         console.log(e.stack);
     });
 
+    // Setup GUI
+    AstroFox.GUI = require('nw.gui');
+
+    var win = AstroFox.GUI.Window.get();
+
+    win.showDevTools();
+
     // OSX
     if (process.platform === 'darwin') {
-        var mb = new gui.Menu({ type: 'menubar' });
+        var mb = new AstroFox.GUI.Menu({ type: 'menubar' });
         mb.createMacBuiltin('AstroFox');
         win.menu = mb;
     }
-
-    IO.Window = win;
 }
 
 document.addEventListener('DOMContentLoaded', function(e) {

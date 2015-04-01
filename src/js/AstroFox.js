@@ -4,4 +4,6 @@ var AstroFox = {};
 
 AstroFox.Application = require('./Application.js');
 
-window.AstroFox = AstroFox;
+AstroFox.version = '1.0';
+
+module.exports = AstroFox;

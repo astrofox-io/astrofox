@@ -1,18 +1,20 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var minifycss = require('gulp-minify-css');
+var derequire = require('gulp-derequire');
 var less = require('gulp-less');
+var minifycss = require('gulp-minify-css');
 var react = require('gulp-react');
+var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
+var spritesmith = require('gulp.spritesmith');
 var browserify = require('browserify');
-var spritesmith = require('gulp.spritesmith')
 var source = require('vinyl-source-stream');
 
 gulp.task('browserify', function(){
-    return browserify('./src/js/AstroFox.js')
+    return browserify({ entries: './src/js/AstroFox.js', standalone: 'AstroFox' })
         .bundle()
         .pipe(source('app.js'))
+        .pipe(derequire())
         .pipe(gulp.dest('build'));
 });
 
