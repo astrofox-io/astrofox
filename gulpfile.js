@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var derequire = require('gulp-derequire');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
 var react = require('gulp-react');
@@ -14,7 +13,6 @@ gulp.task('browserify', function(){
     return browserify({ entries: './src/js/AstroFox.js', standalone: 'AstroFox' })
         .bundle()
         .pipe(source('app.js'))
-        .pipe(derequire())
         .pipe(gulp.dest('build'));
 });
 
