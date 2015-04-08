@@ -34,7 +34,7 @@ var Scene = React.createClass({
         this.props.onAudioFileLoaded(file);
     },
 
-    isLoading: function(val) {
+    showLoading: function(val) {
         this.setState({ loading: val });
     },
 

@@ -1,6 +1,8 @@
 var NumberInput = React.createClass({
     getInitialState: function() {
-        return { value: 0 };
+        return {
+            value: this.props.value || 0
+        };
     },
 
     getDefaultProps: function() {
@@ -14,10 +16,6 @@ var NumberInput = React.createClass({
             readOnly: false,
             hidden: false
         };
-    },
-
-    componentDidMount: function() {
-        this.setState({ value: this.props.value });
     },
 
     componentWillReceiveProps: function(props) {

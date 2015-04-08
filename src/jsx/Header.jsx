@@ -1,7 +1,7 @@
 var Header = React.createClass({
     componentDidMount: function() {
-        if (AstroFox.GUI) {
-            this.window = AstroFox.GUI.Window.get();
+        if (AstroFox.Browser) {
+            this.window = AstroFox.Browser.Window.get();
         }
         this.maximized = false;
     },

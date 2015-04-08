@@ -1,7 +1,7 @@
 var RangeInput = React.createClass({
     getInitialState: function() {
         return {
-            value: 0
+            value: this.props.value || 0
         };
     },
 
@@ -20,7 +20,6 @@ var RangeInput = React.createClass({
 
     componentDidMount: function() {
         this.active = false;
-        this.setState({ value: this.props.value });
     },
 
     componentWillReceiveProps: function(props) {
@@ -74,8 +73,8 @@ var RangeInput = React.createClass({
 
         return (
             <div className="input-range">
-                <div className="track"></div>
-                <div className="fill" style={fillStyle}></div>
+                <div className="track" />
+                <div className="fill" style={fillStyle} />
                 <input
                     className="range"
                     type="range"

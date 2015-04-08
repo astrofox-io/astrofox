@@ -1,4 +1,11 @@
 var MessageWindow = React.createClass({
+    getDefaultProps: function() {
+        return {
+            title: '',
+            onConfirm: function(){}
+        };
+    },
+
     handleClick: function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -8,7 +15,7 @@ var MessageWindow = React.createClass({
 
     render: function() {
         return (
-            <div className="message-window">
+            <div className="modal-window">
                 <div className="header">{this.props.title}</div>
                 <div className="content">
                     {this.props.children}

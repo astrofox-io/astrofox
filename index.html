@@ -23,15 +23,15 @@ if (typeof process !== 'undefined' && typeof require !== 'undefined') {
     });
 
     // Setup GUI
-    AstroFox.GUI = require('nw.gui');
+    AstroFox.Browser = require('nw.gui');
 
-    var win = AstroFox.GUI.Window.get();
+    var win = AstroFox.Browser.Window.get();
 
     win.showDevTools();
 
     // OSX
     if (process.platform === 'darwin') {
-        var mb = new AstroFox.GUI.Menu({ type: 'menubar' });
+        var mb = new AstroFox.Browser.Menu({ type: 'menubar' });
         mb.createMacBuiltin('AstroFox');
         win.menu = mb;
     }

@@ -128,14 +128,22 @@ var App = React.createClass({
         }
     },
 
+    handleLayerAdd: function() {
+        this.showModal(
+            <ControlsWindow title="ADD CONTROL" onConfirm={this.hideModal} />
+        );
+    },
+
     loadFileDialog: function(action, filename) {
         this.fileAction = action;
+
         if (filename) {
             this.fileInput.setAttribute('nwsaveas', filename);
         }
         else {
             this.fileInput.removeAttribute('nwsaveas');
         }
+
         this.fileInput.click();
     },
 
@@ -158,11 +166,11 @@ var App = React.createClass({
     loadAudioFile: function(file) {
         var scene = this.refs.scene;
 
-        scene.isLoading(true);
+        scene.showLoading(true);
 
         this.app.loadAudioFile(file, function(error, data) {
             if (error) {
-                scene.isLoading(false);
+                scene.showLoading(false);
                 this.showError(error);
             }
             else {
@@ -170,12 +178,12 @@ var App = React.createClass({
                     data,
                     function (error) {
                         if (error) {
-                            scene.isLoading(false);;
+                            scene.showLoading(false);;
                             this.showError(error);
                         }
                         else {
                             this.setState({filename: file.name}, function () {
-                                scene.isLoading(false);
+                                scene.showLoading(false);
                             });
                         }
                     }.bind(this)
@@ -223,6 +231,7 @@ var App = React.createClass({
                     <ControlDock
                         ref="dock"
                         app={this.app}
+                        onLayerAdd={this.handleLayerAdd}
                     />
                 </Body>
                 <Footer
