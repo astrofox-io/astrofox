@@ -15,6 +15,7 @@ var TextDisplay = require('./visual/TextDisplay.js');
 
 var _ = require('lodash');
 
+
 var IO = {
     Buffer: global.require('buffer').Buffer,
     fs: global.require('fs'),
@@ -161,6 +162,7 @@ Application.prototype.stopRender = function() {
     }
 };
 
+
 Application.prototype.renderScene = function() {
     this.renderFrame(this.frame);
 
@@ -184,7 +186,7 @@ Application.prototype.renderFrame = function(frame, data, callback) {
                 fft
             );
         }
-    }.bind(this));
+    }.bind(this)).value();
 
     scene.render();
 
@@ -267,6 +269,7 @@ Application.prototype.saveProject = function(file) {
     // DEBUG
     console.log(file + ' saved');
 };
+
 
 Application.prototype.loadProject = function(file) {
     var options = this.options,

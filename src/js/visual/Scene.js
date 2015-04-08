@@ -64,6 +64,7 @@ Scene.prototype.setupCanvas = function(canvas) {
 
     this.texture2d = new THREE.Texture(this.canvas2d);
     this.texture2d.needsUpdate = true;
+    THREE.LinearFilter = THREE.NearestFilter = this.texture2d.minFilter;
 
     var material = new THREE.SpriteMaterial({
         map: this.texture2d,
