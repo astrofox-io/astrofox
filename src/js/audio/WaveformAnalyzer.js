@@ -3,7 +3,7 @@
 var EventEmitter = require('../core/EventEmitter.js');
 
 var WaveformAnalyzer = EventEmitter.extend({
-    constructor: function (context) {
+    constructor: function(context) {
         this.audioContext = context;
         this.buffer = null;
         this.loaded = false;

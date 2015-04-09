@@ -1,4 +1,4 @@
-var SpectrumControl = React.createClass({
+var BarSpectrumControl = React.createClass({
     defaultState: {
         height: 300,
         width: 774,
@@ -8,14 +8,17 @@ var SpectrumControl = React.createClass({
         barSpacing: -1,
         barWidthAutoSize: 1,
         barSpacingAutoSize: 1,
-        smoothingTimeConstant: 0.5,
-        maxDecibels: -12,
-        maxFrequency: 3000,
         shadowHeight: 100,
         color: ['#ffffff', '#ffffff'],
         shadowColor: ['#333333', '#000000'],
         rotation: 0,
-        opacity: 1.0
+        opacity: 1.0,
+
+        smoothingTimeConstant: 0.5,
+        minDecibels: -100,
+        maxDecibels: -12,
+        minFrequency: 0,
+        maxFrequency: 3000
     },
 
     getInitialState: function() {
@@ -33,17 +36,16 @@ var SpectrumControl = React.createClass({
         if (display.initialized) {
             this.stateChanged = true;
             this.setState(display.options);
-            display.analyzer = app.createAnalyzer(display.options);
+            display.analyzer = app.spectrum;
         }
         else {
             display.init(this.state);
-            display.analyzer = app.createAnalyzer(this.state);
+            display.analyzer = app.spectrum;
         }
     },
 
     componentDidUpdate: function() {
         this.props.display.init(this.state);
-
         this.stateChanged = false;
     },
 
@@ -76,7 +78,7 @@ var SpectrumControl = React.createClass({
         return (
             <div className="control">
                 <div className="header">
-                    SPECTRUM
+                    BAR SPECTRUM
                 </div>
                 <div className="row">
                     <label className="label">Max dB</label>

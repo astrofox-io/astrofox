@@ -10,7 +10,7 @@ var App = React.createClass({
     componentWillMount: function() {
         var app = this.app = new AstroFox.Application();
         app.addDisplay(new app.FX.TextDisplay());
-        app.addDisplay(new app.FX.BarDisplay());
+        app.addDisplay(new app.FX.BarSpectrumDisplay());
         app.addDisplay(new app.FX.ImageDisplay());
 
         app.on('error', function(err) {

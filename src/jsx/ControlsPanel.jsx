@@ -2,8 +2,8 @@ var ControlsPanel = React.createClass({
     getControl: function(display) {
         var FX = this.props.app.FX;
 
-        if (display instanceof FX.BarDisplay) {
-            return SpectrumControl;
+        if (display instanceof FX.BarSpectrumDisplay) {
+            return BarSpectrumControl;
         }
         else if (display instanceof FX.ImageDisplay) {
             return ImageControl;

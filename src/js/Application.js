@@ -10,6 +10,7 @@ var WaveformAnalyzer = require('./audio/WaveformAnalyzer.js');
 var Scene = require('./visual/Scene.js');
 
 var BarDisplay = require('./visual/BarDisplay.js');
+var BarSpectrumDisplay = require('./visual/BarSpectrumDisplay.js');
 var ImageDisplay = require('./visual/ImageDisplay.js');
 var TextDisplay = require('./visual/TextDisplay.js');
 
@@ -41,17 +42,12 @@ var Application = EventEmitter.extend({
         this.timer = new Timer();
         this.reader = new FileReader();
         this.options = _.assign({}, defaults);
-
-        this.analyzer = this.audioContext.createAnalyser();
-        this.analyzer.fftSize = 2048;
-        this.analyzer.minDecibels = -100;
-        this.analyzer.maxDecibels = 0;
-        this.analyzer.smoothingTimeConstant = 0;
-
+        this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.waveform = new WaveformAnalyzer(this.audioContext);
 
         this.FX = {
             BarDisplay: BarDisplay,
+            BarSpectrumDisplay: BarSpectrumDisplay,
             ImageDisplay: ImageDisplay,
             TextDisplay: TextDisplay
         };
@@ -85,7 +81,7 @@ Application.prototype.loadAudioFile = function(file, callback) {
 
 Application.prototype.loadAudioData = function(data, callback) {
     var player = this.player,
-        analyzer = this.analyzer,
+        spectrum = this.spectrum,
         waveform = this.waveform,
         timer = this.timer,
         sound = new BufferedSound(this.audioContext);
@@ -95,7 +91,7 @@ Application.prototype.loadAudioData = function(data, callback) {
         console.log('sound loaded', timer.get('sound_load'));
 
         player.load('audio', sound, function() {
-            sound.connect(analyzer);
+            sound.connect(spectrum.analyzer);
             waveform.loadBuffer(sound.buffer);
         });
 
@@ -118,7 +114,7 @@ Application.prototype.loadCanvas = function(canvas) {
     this.scene.setupCanvas(canvas);
 };
 
-Application.prototype.createAnalyzer = function(options) {
+Application.prototype.__createAnalyzer = function(options) {
     return new SpectrumAnalyzer(this.audioContext, this.analyzer, options);
 };
 
@@ -171,7 +167,7 @@ Application.prototype.renderScene = function() {
 
 Application.prototype.renderFrame = function(frame, data, callback) {
     var scene = this.scene,
-        analyzer = this.analyzer,
+        analyzer = this.spectrum.analyzer,
         fft = new Float32Array(analyzer.frequencyBinCount);
 
     analyzer.getFloatFrequencyData(fft);
@@ -195,7 +191,7 @@ Application.prototype.renderFrame = function(frame, data, callback) {
 
 Application.prototype.processFrame = function(frame, fps, callback) {
     var player = this.player,
-        analyzer = this.analyzer,
+        analyzer = this.spectrum.analyzer,
         sound = player.getSound('audio'),
         source = this.source = this.audioContext.createBufferSource();
 

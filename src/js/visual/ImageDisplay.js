@@ -28,22 +28,25 @@ var ImageDisplay = EventEmitter.extend({
         this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        if (options) {
-            this.init(options);
-        }
+        this.init(options);
     }
 });
 
 ImageDisplay.prototype.init = function(options) {
-    for (var prop in options) {
-        if (this.options.hasOwnProperty(prop)) {
-            this.options[prop] = options[prop];
-            if (prop === 'src' && this.image.src != options[prop]) {
-                this.image.src = options[prop];
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (this.options.hasOwnProperty(prop)) {
+                this.options[prop] = options[prop];
+
+                // Set image src
+                if (prop === 'src' && this.image.src != options[prop]) {
+                    this.image.src = options[prop];
+                }
             }
         }
+
+        this.initialized = true;
     }
-    this.initialized = true;
 };
 
 ImageDisplay.prototype.render = function() {

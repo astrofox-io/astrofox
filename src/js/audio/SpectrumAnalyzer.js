@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-var defaults = {
+var _defaults = {
     minDecibels: -100,
     maxDecibels: 0,
     minFrequency: 0,
@@ -10,11 +10,18 @@ var defaults = {
     smoothingTimeConstant: 0
 };
 
-var SpectrumAnalyzer = function(context, analyzer, options) {
+var defaults = {
+    fftSize: 2048,
+    minDecibels: -100,
+    maxDecibels: 0,
+    smoothingTimeConstant: 0
+};
+
+var SpectrumAnalyzer = function(context, options) {
     this.audioContext = context;
-    this.analyzer = analyzer;
+    this.analyzer = _.extend(context.createAnalyser(), defaults);
+    this.options = _.assign({}, _defaults);
     this.data = null;
-    this.options =_.assign({}, defaults);
 
     this.init(options);
 };
@@ -29,25 +36,31 @@ SpectrumAnalyzer.prototype.init = function(options) {
     }
 };
 
-SpectrumAnalyzer.prototype.getFrequencyData = function() {
-    var fft = new Float32Array(this.analyzer.frequencyBinCount);
+SpectrumAnalyzer.prototype.getFrequencyData = function(options) {
+    var analyzer = this.analyzer,
+        fft = new Float32Array(analyzer.frequencyBinCount);
 
-    this.analyzer.getFloatFrequencyData(fft);
+    analyzer.getFloatFrequencyData(fft);
 
-    return this.parseFrequencyData(fft, this.audioContext.sampleRate, this.analyzer.fftSize);
+    return this.parseFrequencyData(fft, options);
 };
 
-SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, sampleRate, fftSize) {
+SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, options) {
+    if (!options) options = {};
+
     var i,
-        options = this.options,
         last = this.data,
-        sampleRate = sampleRate || this.audioContext.sampleRate,
-        fftSize = fftSize || this.analyzer.fftSize,
+        sampleRate = options.sampleRate || this.audioContext.sampleRate,
+        fftSize = options.fftSize || this.analyzer.fftSize,
         range = sampleRate / fftSize,
-        minVal = db2mag(options.minDecibels),
-        maxVal = db2mag(options.maxDecibels),
-        minBin = floor(options.minFrequency / range),
-        maxBin = floor(options.maxFrequency / range),
+        minDb = options.minDecibels || -100,
+        maxDb = options.maxDecibels || 0,
+        minHz = options.minFrequency || 0,
+        maxHz = options.maxFrequency || 22050,
+        minVal = db2mag(minDb),
+        maxVal = db2mag(maxDb),
+        minBin = floor(minHz / range),
+        maxBin = floor(maxHz / range),
         smoothing = (last && last.length === maxBin) ? options.smoothingTimeConstant : 0,
         data = new Float32Array(maxBin);
 
@@ -63,6 +76,7 @@ SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, sampleRate, fftSiz
         }
     }
 
+    // Save data for smoothing calculations
     this.data = data;
 
     return data;

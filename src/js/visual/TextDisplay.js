@@ -29,19 +29,20 @@ var TextDisplay = EventEmitter.extend({
         this.context = this.canvas.getContext('2d');
         this.options = _.assign({}, defaults);
 
-        if (options) {
-            this.init(options);
-        }
+        this.init(options);
     }
 });
 
 TextDisplay.prototype.init = function(options) {
-    for (var prop in options) {
-        if (this.options.hasOwnProperty(prop)) {
-            this.options[prop] = options[prop];
+    if (typeof options !== 'undefined') {
+        for (var prop in options) {
+            if (this.options.hasOwnProperty(prop)) {
+                this.options[prop] = options[prop];
+            }
         }
+
+        this.initialized = true;
     }
-    this.initialized = true;
 };
 
 TextDisplay.prototype.render = function() {
