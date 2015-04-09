@@ -8,9 +8,9 @@ var ImageInput = React.createClass({
     },
 
     componentDidMount: function() {
-        this.image = this.refs.image.getDOMNode();
-        this.file = this.refs.file.getDOMNode();
-        this.form = this.refs.form.getDOMNode();
+        this.image = React.findDOMNode(this.refs.image);
+        this.file = React.findDOMNode(this.refs.file);
+        this.form = React.findDOMNode(this.refs.form);
     },
 
     componentWillReceiveProps: function(props) {

@@ -244,7 +244,8 @@ var SpectrumControl = React.createClass({
                     <label className="label">Bar Color</label>
                     <ColorRangeInput
                         name="color"
-                        value={this.state.color}
+                        startColor={this.state.color[0]}
+                        endColor={this.state.color[1]}
                         onChange={this.handleChange}
                     />
                 </div>
@@ -252,7 +253,8 @@ var SpectrumControl = React.createClass({
                     <label className="label">Shadow Color</label>
                     <ColorRangeInput
                         name="shadowColor"
-                        value={this.state.shadowColor}
+                        startColor={this.state.shadowColor[0]}
+                        endColor={this.state.shadowColor[1]}
                         onChange={this.handleChange}
                     />
                 </div>

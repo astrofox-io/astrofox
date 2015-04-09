@@ -1,15 +1,17 @@
 var TextInput = React.createClass({
-    getInitialState: function() {
-        return { value: "" };
-    },
-
     getDefaultProps: function() {
         return {
-            name: "text",
+            name: 'text',
             size: 20,
-            value: "",
+            value: '',
             spellcheck: false,
             buffered: false
+        };
+    },
+
+    getInitialState: function() {
+        return {
+            value: this.props.value
         };
     },
 
@@ -18,7 +20,7 @@ var TextInput = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        if (typeof props.value !== "undefined") {
+        if (typeof props.value !== 'undefined') {
             this.setState({ value: props.value });
         }
     },

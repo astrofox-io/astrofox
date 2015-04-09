@@ -42,32 +42,34 @@ Scene.prototype.init = function(options) {
 };
 
 Scene.prototype.setupCanvas = function(canvas) {
-    this.canvas3d = canvas;
-
-    var width = this.canvas3d.width,
-        height = this.canvas3d.height,
+    var canvas3d = this.canvas3d = canvas,
+        canvas2d = this.canvas2d = document.createElement('canvas'),
+        scene2d = this.scene2d = new THREE.Scene(),
+        scene3d = this.scene3d = new THREE.Scene(),
+        width = canvas.width,
+        height = canvas.height,
         factor = 2;
 
     // Renderer
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas3d });
-    this.renderer.setSize(width, height);
-    this.renderer.autoClear = false;
+    var renderer = this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas3d });
+    renderer.setSize(width, height);
+    renderer.autoClear = false;
 
     // Scene 2D
-    this.canvas2d = document.createElement('canvas');
-    this.canvas2d.width = width;
-    this.canvas2d.height = height;
+    canvas2d.width = width;
+    canvas2d.height = height;
 
-    this.scene2d = new THREE.Scene();
-    this.camera2d = new THREE.OrthographicCamera(-1 * width / factor, width / factor, height / factor, -1 * height / factor, 1, 10);
-    this.camera2d.position.z = 10;
+    // Camera 2D
+    var camera2d = this.camera2d = new THREE.OrthographicCamera(-1 * width / factor, width / factor, height / factor, -1 * height / factor, 1, 10);
+    camera2d.position.z = 10;
 
-    this.texture2d = new THREE.Texture(this.canvas2d);
-    this.texture2d.needsUpdate = true;
-    THREE.LinearFilter = THREE.NearestFilter = this.texture2d.minFilter;
+    // Texture 2D
+    var texture = this.texture2d = new THREE.Texture(this.canvas2d);
+    texture.needsUpdate = true;
+    THREE.LinearFilter = THREE.NearestFilter = texture.minFilter;
 
     var material = new THREE.SpriteMaterial({
-        map: this.texture2d,
+        map: texture,
         transparent: true
     });
 
@@ -75,12 +77,11 @@ Scene.prototype.setupCanvas = function(canvas) {
     sprite.scale.set(material.map.image.width, material.map.image.height, 1);
     sprite.position.set(0, 0, 1);
 
-    this.scene2d.add(sprite);
+    scene2d.add(sprite);
 
     // Scene 3D
-    this.scene3d = new THREE.Scene();
-    this.camera3d = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
-    this.scene3d.add(this.camera3d);
+    var camera3d = this.camera3d = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
+    scene3d.add(camera3d);
 
     /*
     // light
@@ -98,8 +99,8 @@ Scene.prototype.setupCanvas = function(canvas) {
     this.scene3d.add(this.cube);
     */
 
-    this.context2d = this.canvas2d.getContext('2d');
-    this.context3d = this.canvas3d.getContext('webgl');
+    this.context2d = canvas2d.getContext('2d');
+    this.context3d = canvas3d.getContext('webgl');
 };
 
 Scene.prototype.getFPS = function() {

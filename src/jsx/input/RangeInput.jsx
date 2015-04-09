@@ -1,10 +1,4 @@
 var RangeInput = React.createClass({
-    getInitialState: function() {
-        return {
-            value: this.props.value || 0
-        };
-    },
-
     getDefaultProps: function() {
         return {
             name: "range",
@@ -12,9 +6,13 @@ var RangeInput = React.createClass({
             max: 100,
             step: 1,
             buffered: false,
-            readOnly: false,
-            onChange: function(){},
-            onUpdate: function(){}
+            readOnly: false
+        };
+    },
+
+    getInitialState: function() {
+        return {
+            value: this.props.value
         };
     },
 
@@ -31,10 +29,13 @@ var RangeInput = React.createClass({
     handleChange: function(e) {
         var val = e.currentTarget.value;
         this.setState({ value: val }, function() {
-            if (!this.props.buffered) {
+            if (!this.props.buffered && this.props.onChange) {
                 this.props.onChange(this.props.name, Number(val));
             }
-            this.props.onUpdate(this.props.name, Number(val));
+
+            if (this.props.onUpdate) {
+                this.props.onUpdate(this.props.name, Number(val));
+            }
         }.bind(this));
     },
 

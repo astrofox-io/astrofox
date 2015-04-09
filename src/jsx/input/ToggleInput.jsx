@@ -1,16 +1,15 @@
 var ToggleInput = React.createClass({
-    getInitialState: function() {
-        return { value: 0 };
-    },
-
     getDefaultProps: function() {
         return {
-            name: "toggle"
+            name: "toggle",
+            value: 0
         };
     },
 
-    componentDidMount: function() {
-        this.setState({ value: this.props.value });
+    getInitialState: function() {
+        return {
+            value: this.props.value
+        };
     },
 
     componentWillReceiveProps: function(props) {
@@ -26,7 +25,9 @@ var ToggleInput = React.createClass({
         var val = (this.state.value + 1) % 2;
 
         this.setState({ value: val }, function(){
-            this.props.onChange(this.props.name, val);
+            if (this.props.onChange) {
+                this.props.onChange(this.props.name, val);
+            }
         }.bind(this));
     },
 

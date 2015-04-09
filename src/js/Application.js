@@ -178,7 +178,7 @@ Application.prototype.renderFrame = function(frame, data, callback) {
 
     scene.clear();
 
-    _(this.displays).forEachRight(function(display) {
+    _.forEachRight(this.displays, function(display) {
         if (display.renderToCanvas) {
             display.renderToCanvas(
                 (display.type === '3d') ? scene.context3d : scene.context2d,
@@ -186,7 +186,7 @@ Application.prototype.renderFrame = function(frame, data, callback) {
                 fft
             );
         }
-    }.bind(this)).value();
+    }.bind(this));
 
     scene.render();
 

@@ -43,7 +43,7 @@ var ImageControl = React.createClass({
     },
 
     shouldComponentUpdate: function() {
-        return true; //this.stateChanged;
+        return this.stateChanged;
     },
 
     handleChange: function(name, val) {
