@@ -18,35 +18,20 @@ var defaults = {
 var id = 0;
 
 var ImageDisplay = function(canvas, options) {
-    this.id = id++;
-    this.name = 'ImageDisplay';
-    this.type = '2d';
-    this.initialized = false;
+    DisplayComponent.call(this, id++, 'ImageDisplay', '2d', canvas);
 
     this.image = new Image();
-    this.canvas = canvas || document.createElement('canvas');
-    this.context = this.canvas.getContext('2d');
     this.options = _.assign({}, defaults);
 
     this.init(options);
-
 };
 
 Class.extend(ImageDisplay, DisplayComponent, {
     init: function(options) {
-        if (typeof options !== 'undefined') {
-            for (var prop in options) {
-                if (this.options.hasOwnProperty(prop)) {
-                    this.options[prop] = options[prop];
+        this._super.init.call(this, options);
 
-                    // Set image src
-                    if (prop === 'src' && this.image.src != options[prop]) {
-                        this.image.src = options[prop];
-                    }
-                }
-            }
-
-            this.initialized = true;
+        if (this.image.src !== this.options.src) {
+            this.image.src = this.options.src;
         }
     },
 

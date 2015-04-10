@@ -12,18 +12,11 @@ var defaults = {
     maxFrequency: 3000
 };
 
-var id = 0;
-
 var BarSpectrumDisplay = function(canvas, options) {
-    BarDisplay.call(this, canvas, options);
+    BarDisplay.apply(this, arguments);
 
     this.options = _.assign({}, defaults, this.options);
     this.analyzer = null;
-
-    this.id = id++;
-    this.name = 'BarSpectrumDisplay';
-    this.type = '2d';
-    this.initialized = false;
 
     this.init(options);
 };

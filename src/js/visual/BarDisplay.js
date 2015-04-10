@@ -23,13 +23,8 @@ var defaults = {
 var id = 0;
 
 var BarDisplay = function(canvas, options) {
-    this.id = id++;
-    this.name = 'BarDisplay';
-    this.type = '2d';
-    this.initialized = false;
+    DisplayComponent.call(this, id++, 'BarDisplay', '2d', canvas);
 
-    this.canvas = canvas || document.createElement('canvas');
-    this.context = this.canvas.getContext('2d');
     this.options = _.assign({}, defaults);
 
     this.init(options);

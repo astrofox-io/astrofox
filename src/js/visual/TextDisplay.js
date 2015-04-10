@@ -20,13 +20,8 @@ var defaults = {
 var id = 0;
 
 var TextDisplay = function(canvas, options) {
-    this.id = id++;
-    this.name = 'TextDisplay';
-    this.type = '2d';
-    this.initialized = false;
+    DisplayComponent.call(this, id++, 'TextDisplay', '2d', canvas);
 
-    this.canvas = canvas || document.createElement('canvas');
-    this.context = this.canvas.getContext('2d');
     this.options = _.assign({}, defaults);
 
     this.init(options);

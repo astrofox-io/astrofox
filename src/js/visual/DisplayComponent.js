@@ -3,8 +3,16 @@
 var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 
-var DisplayComponent = function() {
+var DisplayComponent = function(id, name, type, canvas) {
+    this.id = id;
+    this.name = name;
+    this.type = type;
+    this.options = {};
     this.initialized = false;
+    this.canvas = canvas || document.createElement('canvas');
+    this.context = (type === '3d') ?
+        this.canvas.getContext('webgl') :
+        this.canvas.getContext('2d');
 };
 
 Class.extend(DisplayComponent, EventEmitter, {
@@ -17,7 +25,6 @@ Class.extend(DisplayComponent, EventEmitter, {
             }
 
             this.initialized = true;
-            this.emit('init');
         }
     },
 
