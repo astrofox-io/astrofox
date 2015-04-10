@@ -2,14 +2,10 @@
 
 var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
+var IO = require('../IO.js');
+
 var _ = require('lodash');
 var THREE = require('three');
-
-var IO = {
-    Buffer: global.require('buffer').Buffer,
-    Spawn: global.require('child_process').spawn,
-    Stream: global.require('stream')
-};
 
 var defaults = {
     showFPS: false,

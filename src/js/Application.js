@@ -10,17 +10,10 @@ var SpectrumAnalyzer = require('./audio/SpectrumAnalyzer.js');
 var WaveformAnalyzer = require('./audio/WaveformAnalyzer.js');
 var Scene = require('./visual/Scene.js');
 
-var BarDisplay = require('./visual/BarDisplay.js');
-var BarSpectrumDisplay = require('./visual/BarSpectrumDisplay.js');
-var ImageDisplay = require('./visual/ImageDisplay.js');
-var TextDisplay = require('./visual/TextDisplay.js');
-var _ = require('lodash');
+var FX = require('./FX.js');
+var IO = require('./IO.js');
 
-var IO = {
-    Buffer: global.require('buffer').Buffer,
-    fs: global.require('fs'),
-    zlib: global.require('zlib')
-};
+var _ = require('lodash');
 
 var defaults = {
     fps: 29.97,
@@ -43,12 +36,7 @@ var Application = function() {
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
     this.waveform = new WaveformAnalyzer(this.audioContext);
 
-    this.FX = {
-        BarDisplay: BarDisplay,
-        BarSpectrumDisplay: BarSpectrumDisplay,
-        ImageDisplay: ImageDisplay,
-        TextDisplay: TextDisplay
-    };
+    this.FX = FX;
 };
 
 Class.extend(Application, EventEmitter, {
@@ -288,7 +276,7 @@ Class.extend(Application, EventEmitter, {
             this.displays = [];
 
             data.forEach(function (item) {
-                this.addDisplay(new this.FX[item.name](null, item.values));
+                this.addDisplay(new FX[item.name](null, item.values));
             }.bind(this));
 
             this.emit('project_loaded');
