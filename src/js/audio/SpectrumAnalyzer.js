@@ -26,70 +26,74 @@ var SpectrumAnalyzer = function(context, options) {
     this.init(options);
 };
 
-SpectrumAnalyzer.prototype.init = function(options) {
-    if (typeof options !== 'undefined') {
-        for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
-                this.options[prop] = options[prop];
+SpectrumAnalyzer.prototype = {
+    constructor: SpectrumAnalyzer,
+
+    init: function (options) {
+        if (typeof options !== 'undefined') {
+            for (var prop in options) {
+                if (this.options.hasOwnProperty(prop)) {
+                    this.options[prop] = options[prop];
+                }
             }
         }
-    }
-};
+    },
 
-SpectrumAnalyzer.prototype.getFrequencyData = function(options) {
-    var analyzer = this.analyzer,
-        fft = new Float32Array(analyzer.frequencyBinCount);
+    getFrequencyData: function (options) {
+        var analyzer = this.analyzer,
+            fft = new Float32Array(analyzer.frequencyBinCount);
 
-    analyzer.getFloatFrequencyData(fft);
+        analyzer.getFloatFrequencyData(fft);
 
-    return this.parseFrequencyData(fft, options);
-};
+        return this.parseFrequencyData(fft, options);
+    },
 
-SpectrumAnalyzer.prototype.parseFrequencyData = function(fft, options) {
-    if (!options) options = {};
+    parseFrequencyData: function (fft, options) {
+        if (!options) options = {};
 
-    var i,
-        last = this.data,
-        sampleRate = options.sampleRate || this.audioContext.sampleRate,
-        fftSize = options.fftSize || this.analyzer.fftSize,
-        range = sampleRate / fftSize,
-        minDb = options.minDecibels || -100,
-        maxDb = options.maxDecibels || 0,
-        minHz = options.minFrequency || 0,
-        maxHz = options.maxFrequency || 22050,
-        minVal = db2mag(minDb),
-        maxVal = db2mag(maxDb),
-        minBin = floor(minHz / range),
-        maxBin = floor(maxHz / range),
-        smoothing = (last && last.length === maxBin) ? options.smoothingTimeConstant : 0,
-        data = new Float32Array(maxBin);
+        var i,
+            last = this.data,
+            sampleRate = options.sampleRate || this.audioContext.sampleRate,
+            fftSize = options.fftSize || this.analyzer.fftSize,
+            range = sampleRate / fftSize,
+            minDb = options.minDecibels || -100,
+            maxDb = options.maxDecibels || 0,
+            minHz = options.minFrequency || 0,
+            maxHz = options.maxFrequency || 22050,
+            minVal = db2mag(minDb),
+            maxVal = db2mag(maxDb),
+            minBin = floor(minHz / range),
+            maxBin = floor(maxHz / range),
+            smoothing = (last && last.length === maxBin) ? options.smoothingTimeConstant : 0,
+            data = new Float32Array(maxBin);
 
-    // Convert db to magnitude
-    for (i = minBin; i < maxBin; i++) {
-        data[i] = convertDb(fft[i], minVal, maxVal);
-    }
-
-    // Apply smoothing
-    if (smoothing > 0) {
-        for (i = 0; i < maxBin; i++) {
-            data[i] = (last[i] * smoothing) + (data[i] * (1.0 - smoothing));
+        // Convert db to magnitude
+        for (i = minBin; i < maxBin; i++) {
+            data[i] = convertDb(fft[i], minVal, maxVal);
         }
+
+        // Apply smoothing
+        if (smoothing > 0) {
+            for (i = 0; i < maxBin; i++) {
+                data[i] = (last[i] * smoothing) + (data[i] * (1.0 - smoothing));
+            }
+        }
+
+        // Save data for smoothing calculations
+        this.data = data;
+
+        return data;
+    },
+
+    getTimeData: function () {
+        var data = new Array(this.analyzer.frequencyBinCount);
+
+        return data;
+    },
+
+    getMaxFrequency: function () {
+        return this.audioContext.sampleRate / 2;
     }
-
-    // Save data for smoothing calculations
-    this.data = data;
-
-    return data;
-};
-
-SpectrumAnalyzer.getTimeData = function() {
-    var data = new Array(this.analyzer.frequencyBinCount);
-
-    return data;
-};
-
-SpectrumAnalyzer.prototype.getMaxFrequency = function() {
-    return this.audioContext.sampleRate / 2;
 };
 
 function convertDb(db, min, max) {

@@ -1,5 +1,6 @@
 'use strict';
 
+var Class = require('../core/Class.js');
 var BarDisplay = require('./BarDisplay.js');
 var _ = require('lodash');
 
@@ -27,9 +28,7 @@ var BarSpectrumDisplay = function(canvas, options) {
     this.init(options);
 };
 
-BarSpectrumDisplay.prototype = _.create(BarDisplay.prototype, {
-    constructor: BarSpectrumDisplay,
-
+Class.extend(BarSpectrumDisplay, BarDisplay, {
     renderToCanvas: function(context, frame, fft) {
         if (this.analyzer) {
             var data,

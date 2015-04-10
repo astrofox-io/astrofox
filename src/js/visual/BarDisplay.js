@@ -1,6 +1,7 @@
 'use strict';
 
-var EventEmitter = require('../core/EventEmitter.js');
+var Class = require('../core/Class.js');
+var DisplayComponent = require('./DisplayComponent');
 var _ = require('lodash');
 
 var defaults = {
@@ -21,125 +22,100 @@ var defaults = {
 
 var id = 0;
 
-var BarDisplay = EventEmitter.extend({
-    constructor: function(canvas, options) {
-        this.id = id++;
-        this.name = 'BarDisplay';
-        this.type = '2d';
-        this.initialized = false;
+var BarDisplay = function(canvas, options) {
+    this.id = id++;
+    this.name = 'BarDisplay';
+    this.type = '2d';
+    this.initialized = false;
 
-        this.canvas = canvas || document.createElement('canvas');
-        this.context = this.canvas.getContext('2d');
-        this.options = _.assign({}, defaults);
+    this.canvas = canvas || document.createElement('canvas');
+    this.context = this.canvas.getContext('2d');
+    this.options = _.assign({}, defaults);
 
-        if (options) {
-            this.init(options);
+    this.init(options);
+};
+
+Class.extend(BarDisplay, DisplayComponent, {
+    render: function(data) {
+        var i, x, y, val, size, totalWidth,
+            step = 1,
+            len = data.length,
+            canvas = this.canvas,
+            context = this.context,
+            options = this.options,
+            height = options.height,
+            width = options.width,
+            barWidth = options.barWidth,
+            barSpacing = options.barSpacing,
+            shadowHeight = options.shadowHeight,
+            color = options.color,
+            shadowColor = options.shadowColor;
+
+        // Reset canvas
+        canvas.width = options.width;
+        canvas.height = options.height + options.shadowHeight;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate bar widths
+        if (barWidth < 0 && barSpacing < 0) {
+            barWidth = barSpacing = (width / len) / 2;
+        }
+        else if (barSpacing > 0 && barWidth < 0) {
+            barWidth = (width - (len * barSpacing)) / len;
+            if (barWidth <= 0) barWidth = 1;
+        }
+        else if (barWidth > 0 && barSpacing < 0) {
+            barSpacing = (width - (len * barWidth)) / len;
+            if (barSpacing <= 0) barSpacing = 1;
+        }
+
+        // Calculate bars to display
+        size = barWidth + barSpacing;
+        totalWidth = size * len;
+
+        if (totalWidth > width) {
+            step = totalWidth / width;
+        }
+
+        // Set opacity
+        context.globalAlpha = options.opacity;
+
+        // Draw bars
+        this.setColor(color, 0, 0, 0, height);
+
+        for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
+            val = data[floor(i)] * height;
+            context.fillRect(x, y, barWidth, -val);
+        }
+
+        // Draw shadow bars
+        if (shadowHeight > 0) {
+            this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
+
+            for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
+                val = data[floor(i)] * shadowHeight;
+                context.fillRect(x, y, barWidth, val);
+            }
+        }
+    },
+
+    setColor: function(color, x1, y1, x2, y2) {
+        var i, gradient, len,
+            context = this.context;
+
+        if (color instanceof Array) {
+            len = color.length;
+            gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+            for (i = 0; i < len; i++) {
+                gradient.addColorStop(i / (len - 1), color[i]);
+            }
+            context.fillStyle = gradient;
+        }
+        else {
+            context.fillStyle = color;
         }
     }
 });
-
-BarDisplay.prototype.init = function(options) {
-    if (typeof options !== 'undefined') {
-        for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
-                this.options[prop] = options[prop];
-            }
-        }
-
-        this.initialized = true;
-    }
-};
-
-BarDisplay.prototype.render = function(data) {
-    var i, x, y, val, size, totalWidth,
-        step = 1,
-        len = data.length,
-        canvas = this.canvas,
-        context = this.context,
-        options = this.options,
-        height = options.height,
-        width = options.width,
-        barWidth = options.barWidth,
-        barSpacing = options.barSpacing,
-        shadowHeight = options.shadowHeight,
-        color = options.color,
-        shadowColor = options.shadowColor;
-
-    // Reset canvas
-    canvas.width = options.width;
-    canvas.height = options.height + options.shadowHeight;
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Calculate bar widths
-    if (barWidth < 0 && barSpacing < 0) {
-        barWidth = barSpacing = (width / len) / 2;
-    }
-    else if (barSpacing > 0 && barWidth < 0) {
-        barWidth = (width - (len * barSpacing)) / len;
-        if (barWidth <= 0) barWidth = 1;
-    }
-    else if (barWidth > 0 && barSpacing < 0) {
-        barSpacing = (width - (len * barWidth)) / len;
-        if (barSpacing <= 0) barSpacing = 1;
-    }
-
-    // Calculate bars to display
-    size = barWidth + barSpacing;
-    totalWidth = size * len;
-
-    if (totalWidth > width) {
-        step = totalWidth / width;
-    }
-
-    // Set opacity
-    context.globalAlpha = options.opacity;
-
-    // Draw bars
-    this.setColor(color, 0, 0, 0, height);
-
-    for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
-        val = data[floor(i)] * height;
-        context.fillRect(x, y, barWidth, -val);
-    }
-
-    // Draw shadow bars
-    if (shadowHeight > 0) {
-        this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
-
-        for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
-            val = data[floor(i)] * shadowHeight;
-            context.fillRect(x, y, barWidth, val);
-        }
-    }
-};
-
-BarDisplay.prototype.setColor = function(color, x1, y1, x2, y2) {
-    var i, gradient, len,
-        context = this.context;
-
-    if (color instanceof Array) {
-        len = color.length;
-        gradient = this.context.createLinearGradient(x1, y1, x2, y2);
-        for (i = 0; i < len; i++) {
-            gradient.addColorStop(i / (len - 1), color[i]);
-        }
-        context.fillStyle = gradient;
-    }
-    else {
-        context.fillStyle = color;
-    }
-};
-
-BarDisplay.prototype.toString = function() {
-    return this.name + '' + this.id;
-};
-
-BarDisplay.prototype.toJSON = function() {
-    return {
-        name: this.name,
-        values: this.options
-    };
-};
 
 function getColor(start, end, pct) {
     var startColor = {

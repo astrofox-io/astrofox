@@ -1,82 +1,69 @@
 'use strict';
 
+var Class = require('../core/Class.js');
 var Sound = require('./Sound.js');
+var _ = require('lodash');
 
-var MediaElementSound = Sound.extend({
-    constructor: function() {
-        this.init();
+
+var MediaElementSound = function(context) {
+    Sound.call(this, context);
+};
+
+Class.extend(MediaElementSound, Sound, {
+    load: function (audio) {
+        this.audio = audio;
+        this.source = this.audioContext.createMediaElementSource(this.audio);
+        this.loaded = true;
+
+        this.audio.addEventListener('playing', function () {
+            this.playing = true;
+            this.paused = false;
+        }.bind(this));
+
+        this.audio.addEventListener('pause', function () {
+            this.playing = false;
+            this.paused = true;
+        }.bind(this));
+
+        this.audio.addEventListener('ended', function () {
+            this.playing = false;
+            this.paused = false;
+        }.bind(this));
+
+        this.emit('load');
+    },
+
+    getDuration: function () {
+        return this.source.duration || 0;
+    },
+
+    getCurrentTime: function () {
+        return this.source.currentTime || 0;
+    },
+
+    play: function () {
+        this.audio.play();
+        this.playing = true;
+        this.paused = false;
+
+        this.emit('play');
+    },
+
+    pause: function () {
+        this.audio.pause();
+        this.playing = false;
+        this.paused = true;
+
+        this.emit('pause');
+    },
+
+    stop: function () {
+        this.audio.pause();
+        this.playing = false;
+        this.paused = false;
+
+        this.emit('stop');
     }
 });
 
-MediaElementSound.prototype.load = function(audio) {
-    this.audio = audio;
-    this.source = this.audioContext.createMediaElementSource(this.audio);
-    this.loaded = true;
-
-    // Doesn't work
-    this.processor = this.audioContext.createScriptProcessor(2048, 1, 1);
-    this.processor.onaudioproces = function(e) {
-        this.buffer = e.outputBuffer;
-    };
-
-    this.audio.addEventListener('playing', function() {
-        this.playing = true;
-        this.paused = false;
-    }.bind(this));
-
-    this.audio.addEventListener('pause', function() {
-        this.playing = false;
-        this.paused = true;
-    }.bind(this));
-
-    this.audio.addEventListener('ended', function() {
-        this.playing = false;
-        this.paused = false;
-    }.bind(this));
-
-    this.emit('load');
-};
-
-MediaElementSound.prototype.getDuration = function() {
-    return this.source.duration || 0;
-};
-
-MediaElementSound.prototype.getCurrentTime = function() {
-    return this.source.currentTime || 0;
-};
-
-/**
- * Start playing.
- */
-MediaElementSound.prototype.play = function() {
-    this.audio.play();
-    this.playing = true;
-    this.paused = false;
-
-    this.emit('play');
-};
-
-/**
- * Pauses playing.
- */
-MediaElementSound.prototype.pause = function() {
-    this.audio.pause();
-    this.playing = false;
-    this.paused = true;
-
-    this.emit('pause');
-};
-
-/**
- * Stops playing.
- */
-MediaElementSound.prototype.stop = function() {
-    this.audio.pause();
-    this.playing = false;
-    this.paused = false;
-
-    this.emit('stop');
-};
-
-// Export
 module.exports = MediaElementSound;
