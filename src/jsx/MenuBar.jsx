@@ -1,4 +1,15 @@
+'use strict';
+
+var React = require('react');
+var MenuBarItem = require('./MenuBarItem.jsx');
+
 var MenuBar = React.createClass({
+    getDefaultProps: function() {
+        return {
+            onMenuAction: function(){}
+        };
+    },
+
     getInitialState: function() {
         return {
             activeIndex: -1,
@@ -37,12 +48,6 @@ var MenuBar = React.createClass({
                     ]
                 }
             ]
-        };
-    },
-
-    getDefaultProps: function() {
-        return {
-            onMenuAction: function(){}
         };
     },
 
@@ -100,3 +105,5 @@ var MenuBar = React.createClass({
         );
     }
 });
+
+module.exports = MenuBar;

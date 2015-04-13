@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var Splitter = React.createClass({
     defaultProps: {
         type: 'horizontal'
@@ -23,3 +27,5 @@ var Splitter = React.createClass({
         );
     }
 });
+
+module.exports = Splitter;

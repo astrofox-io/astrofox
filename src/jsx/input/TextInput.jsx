@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var TextInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -67,3 +71,5 @@ var TextInput = React.createClass({
         );
     }
 });
+
+module.exports = TextInput;

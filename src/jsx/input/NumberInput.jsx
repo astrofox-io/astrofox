@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var NumberInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -91,3 +95,5 @@ var NumberInput = React.createClass({
         );
     }
 });
+
+module.exports = NumberInput;

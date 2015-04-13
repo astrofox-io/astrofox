@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var ColorPicker = React.createClass({
     render: function() {
         return (
@@ -7,3 +11,5 @@ var ColorPicker = React.createClass({
         );
     }
 });
+
+module.exports = ColorPicker;

@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var LayersPanel = React.createClass({
     getInitialState: function() {
         return {
@@ -91,3 +95,5 @@ var LayersPanel = React.createClass({
         );
     }
 });
+
+module.exports = LayersPanel;

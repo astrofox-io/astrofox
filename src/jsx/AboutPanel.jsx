@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var AboutPanel = React.createClass({
     handleClick: function(e) {
         e.preventDefault();
@@ -20,3 +24,5 @@ var AboutPanel = React.createClass({
         );
     }
 });
+
+module.exports = AboutPanel;

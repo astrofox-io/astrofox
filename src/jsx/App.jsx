@@ -1,3 +1,22 @@
+'use strict';
+
+var React = require('react');
+var Header = require('./Header.jsx');
+var Body = require('./Body.jsx');
+var Footer = require('./Footer.jsx');
+var MenuBar = require('./MenuBar.jsx');
+var MainView = require('./MainView.jsx');
+var Scene = require('./Scene.jsx');
+var Player = require('./Player.jsx');
+var Waveform = require('./Waveform.jsx');
+var Modal = require('./Modal.jsx');
+var MessageWindow = require('./MessageWindow.jsx');
+var ControlDock = require('./ControlDock.jsx');
+var ControlsWindow = require('./ControlsWindow.jsx');
+
+var Application = require('../js/Application.js');
+var FX = require('../js/FX.js');
+
 var App = React.createClass({
     getInitialState: function() {
         return {
@@ -8,10 +27,10 @@ var App = React.createClass({
     },
 
     componentWillMount: function() {
-        var app = this.app = new AstroFox.Application();
-        app.addDisplay(new app.FX.TextDisplay());
-        app.addDisplay(new app.FX.BarSpectrumDisplay());
-        app.addDisplay(new app.FX.ImageDisplay());
+        var app = this.app = new Application();
+        app.addDisplay(new FX.TextDisplay());
+        app.addDisplay(new FX.BarSpectrumDisplay());
+        app.addDisplay(new FX.ImageDisplay());
 
         app.on('error', function(err) {
             this.showError(err);
@@ -249,3 +268,5 @@ var App = React.createClass({
         );
     }
 });
+
+module.exports = App;

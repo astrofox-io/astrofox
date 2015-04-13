@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var Waveform = React.createClass({
     getInitialState: function() {
         return { progress: 0, seek: 0 };
@@ -163,3 +167,5 @@ var Waveform = React.createClass({
         );
     }
 });
+
+module.exports = Waveform;

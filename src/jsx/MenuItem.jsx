@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var MenuItem = React.createClass({
     getDefaultProps: function() {
         return {
@@ -34,3 +38,5 @@ var MenuItem = React.createClass({
         );
     }
 });
+
+module.exports = MenuItem;

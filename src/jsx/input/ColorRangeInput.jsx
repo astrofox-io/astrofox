@@ -1,3 +1,8 @@
+'use strict';
+
+var React = require('react');
+var ColorInput = require('./ColorInput.jsx');
+
 var ColorRangeInput = React.createClass({
     defaultColor: '#ffffff',
 
@@ -51,3 +56,5 @@ var ColorRangeInput = React.createClass({
         );
     }
 });
+
+module.exports = ColorRangeInput;

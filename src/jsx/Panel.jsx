@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var Panel = React.createClass({
     getDefaultProps: function() {
         return { shouldUpdate: true };
@@ -20,3 +24,5 @@ var Panel = React.createClass({
         );
     }
 });
+
+module.exports = Panel;

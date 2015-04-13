@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var ToggleInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -40,3 +44,5 @@ var ToggleInput = React.createClass({
         );
     }
 });
+
+module.exports = ToggleInput;

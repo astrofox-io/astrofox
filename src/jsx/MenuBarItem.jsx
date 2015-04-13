@@ -1,3 +1,8 @@
+'use strict';
+
+var React = require('react');
+var MenuItem = require('./MenuItem.jsx');
+
 var MenuBarItem = React.createClass({
     getInitialState: function() {
         return {
@@ -67,3 +72,5 @@ var MenuBarItem = React.createClass({
         );
     }
 });
+
+module.exports = MenuBarItem;

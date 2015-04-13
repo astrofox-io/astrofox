@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var Modal = React.createClass({
     getDefaultProps: function() {
         return {
@@ -22,3 +26,5 @@ var Modal = React.createClass({
         );
     }
 });
+
+module.exports = Modal;

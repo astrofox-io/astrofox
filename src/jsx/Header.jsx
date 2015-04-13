@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var Header = React.createClass({
     componentDidMount: function() {
         if (AstroFox.Browser) {
@@ -66,3 +70,5 @@ var Header = React.createClass({
         );
     }
 });
+
+module.exports = Header;

@@ -1,3 +1,8 @@
+'use strict';
+
+var React = require('react');
+var RangeInput = require('./input/RangeInput.jsx');
+
 var Player = React.createClass({
     getDefaultProps: function() {
         return {
@@ -294,3 +299,5 @@ var TimeInfo = React.createClass({
         );
     }
 });
+
+module.exports = Player;

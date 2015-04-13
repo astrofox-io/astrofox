@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var RangeInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -93,3 +97,5 @@ var RangeInput = React.createClass({
         );
     }
 });
+
+module.exports = RangeInput;

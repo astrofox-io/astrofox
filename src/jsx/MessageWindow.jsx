@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var MessageWindow = React.createClass({
     getDefaultProps: function() {
         return {
@@ -27,3 +31,5 @@ var MessageWindow = React.createClass({
         );
     }
 });
+
+module.exports = MessageWindow;

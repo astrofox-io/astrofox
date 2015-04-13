@@ -7,10 +7,11 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var spritesmith = require('gulp.spritesmith');
 var browserify = require('browserify');
+var reactify = require('reactify');
 var source = require('vinyl-source-stream');
 
 gulp.task('browserify', function(){
-    return browserify({ entries: './src/js/AstroFox.js', standalone: 'AstroFox' })
+    return browserify({ entries: './src/js/AstroFox.js', transform: [reactify], standalone: 'AstroFox' })
         .bundle()
         .pipe(source('app.js'))
         .pipe(gulp.dest('build'));
@@ -48,9 +49,9 @@ gulp.task('compile', function(){
         .pipe(gulp.dest('css'));
 });
 
-gulp.task('watch', ['less','react','browserify'], function(){
+gulp.task('watch', ['less','browserify'], function(){
     gulp.watch('src/css/**/*.less', ['less']);
-    gulp.watch('src/jsx/**/*.jsx', ['react']);
+    gulp.watch('src/jsx/**/*.jsx', ['browserify']);
     gulp.watch('src/js/**/*.js', ['browserify']);
 });
 

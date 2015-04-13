@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var SelectInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -87,3 +91,5 @@ var SelectInput = React.createClass({
         );
     }
 });
+
+module.exports = SelectInput;

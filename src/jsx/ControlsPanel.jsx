@@ -1,3 +1,10 @@
+'use strict';
+
+var React = require('react');
+var BarSpectrumControl = require('./controls/BarSpectrumControl.jsx');
+var ImageControl = require('./controls/ImageControl.jsx');
+var TextControl = require('./controls/TextControl.jsx');
+
 var ControlsPanel = React.createClass({
     getControl: function(display) {
         var FX = this.props.app.FX;
@@ -36,3 +43,5 @@ var ControlsPanel = React.createClass({
         );
     }
 });
+
+module.exports = ControlsPanel;

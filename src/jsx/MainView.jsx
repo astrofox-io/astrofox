@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var MainView = React.createClass({
     render: function(){
         return (
@@ -7,3 +11,5 @@ var MainView = React.createClass({
         );
     }
 });
+
+module.exports = MainView;

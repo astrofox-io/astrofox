@@ -1,3 +1,11 @@
+'use strict';
+
+var React = require('react');
+var Panel = require('./Panel.jsx');
+var Splitter = require('./Splitter.jsx');
+var ControlsPanel = require('./ControlsPanel.jsx');
+var LayersPanel = require('./LayersPanel.jsx');
+
 var ControlDock = React.createClass({
     getInitialState: function() {
         return {
@@ -106,3 +114,5 @@ var ControlDock = React.createClass({
         );
     }
 });
+
+module.exports = ControlDock;

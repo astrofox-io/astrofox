@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var ControlsWindow = React.createClass({
     handleClick: function(e) {
         e.preventDefault();
@@ -33,3 +37,5 @@ var ControlsWindow = React.createClass({
         );
     }
 });
+
+module.exports = ControlsWindow;

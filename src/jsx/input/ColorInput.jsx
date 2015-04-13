@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var ColorInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -26,3 +30,5 @@ var ColorInput = React.createClass({
         );
     }
 });
+
+module.exports = ColorInput;

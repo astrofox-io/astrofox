@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var Loading = React.createClass({
     getDefaultProps: function() {
         return { visible: false };
@@ -11,3 +15,5 @@ var Loading = React.createClass({
         );
     }
 });
+
+module.exports = Loading;

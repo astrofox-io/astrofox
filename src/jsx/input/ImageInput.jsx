@@ -1,3 +1,7 @@
+'use strict';
+
+var React = require('react');
+
 var ImageInput = React.createClass({
     getDefaultProps: function() {
         return {
@@ -115,3 +119,5 @@ var ImageInput = React.createClass({
         );
     }
 });
+
+module.exports = ImageInput;

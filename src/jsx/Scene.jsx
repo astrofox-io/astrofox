@@ -1,3 +1,8 @@
+'use strict';
+
+var React = require('react');
+var Loading = require('./Loading.jsx');
+
 var Scene = React.createClass({
     getInitialState: function() {
         return { loading: false };
@@ -55,3 +60,5 @@ var Scene = React.createClass({
         );
     }
 });
+
+module.exports = Scene;
