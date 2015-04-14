@@ -1,3 +1,11 @@
+'use strict';
+
+var React = require('react');
+var NumberInput = require('../input/NumberInput.jsx');
+var ColorRangeInput = require('../input/ColorRangeInput.jsx');
+var RangeInput = require('../input/RangeInput.jsx');
+var ToggleInput = require('../input/ToggleInput.jsx');
+
 var BarSpectrumControl = React.createClass({
     defaultState: {
         height: 300,
@@ -340,3 +348,5 @@ var BarSpectrumControl = React.createClass({
         );
     }
 });
+
+module.exports = BarSpectrumControl;

@@ -1,3 +1,10 @@
+'use strict';
+
+var React = require('react');
+var NumberInput = require('../input/NumberInput.jsx');
+var ImageInput = require('../input/ImageInput.jsx');
+var RangeInput = require('../input/RangeInput.jsx');
+
 var ImageControl = React.createClass({
     defaultState: {
         src: '',
@@ -255,4 +262,6 @@ var ImageControl = React.createClass({
             </div>
         );
     }
-})
+});
+
+module.exports = ImageControl;

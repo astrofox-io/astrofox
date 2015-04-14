@@ -51,8 +51,7 @@ gulp.task('compile', function(){
 
 gulp.task('watch', ['less','browserify'], function(){
     gulp.watch('src/css/**/*.less', ['less']);
-    gulp.watch('src/jsx/**/*.jsx', ['browserify']);
-    gulp.watch('src/js/**/*.js', ['browserify']);
+    gulp.watch('src/js/**/*.*', ['browserify']);
 });
 
 gulp.task('default', ['less','sprite','react','browserify']);

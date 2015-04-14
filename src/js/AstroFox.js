@@ -1,19 +1,28 @@
 'use strict';
 
 var React = require('react');
+var App = require('./ui/App.jsx');
+var GUI = global.window.require('nw.gui');
 
 var AstroFox = {};
 
-AstroFox.Application = require('./Application.js');
-AstroFox.FX = require('./FX.js');
-AstroFox.UI = require('./UI.js');
-AstroFox.Client = require('../jsx/App.jsx');
-
 AstroFox.version = '1.0';
 
-AstroFox.start = function(){
+AstroFox.start = function() {
+    // NW.js
+    var win = GUI.Window.get();
+    win.showDevTools();
+
+    // OSX
+    if (global.process.platform === 'darwin') {
+        var mb = new GUI.Menu({ type: 'menubar' });
+        mb.createMacBuiltin('AstroFox');
+        win.menu = mb;
+    }
+
+    // Render UI
     React.render(
-        React.createElement(AstroFox.Client, null),
+        React.createElement(App, null),
         document.getElementById("app")
     );
 };

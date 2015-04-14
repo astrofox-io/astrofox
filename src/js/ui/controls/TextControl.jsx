@@ -1,3 +1,13 @@
+'use strict';
+
+var React = require('react');
+var ColorInput = require('../input/ColorInput.jsx');
+var NumberInput = require('../input/NumberInput.jsx');
+var RangeInput = require('../input/RangeInput.jsx');
+var SelectInput = require('../input/SelectInput.jsx');
+var TextInput = require('../input/TextInput.jsx');
+var ToggleInput = require('../input/ToggleInput.jsx');
+
 var TextControl = React.createClass({
     defaultState: {
         text: '',
@@ -17,7 +27,6 @@ var TextControl = React.createClass({
         'Bangers',
         'Cardo',
         'Dynalight',
-        'Fira Sans',
         'Merriweather',
         'Permanent Marker',
         'Oswald',
@@ -217,3 +226,5 @@ var TextControl = React.createClass({
         );
     }
 });
+
+module.exports = TextControl;

@@ -13,7 +13,9 @@ var ControlsWindow = React.createClass({
     render: function() {
         return (
             <div className="modal-window">
-                <div className="header">{this.props.title}</div>
+                <div className="header">
+                    {this.props.title}
+                </div>
                 <div className="content">
                     <table>
                         <tr>

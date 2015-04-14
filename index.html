@@ -13,29 +13,13 @@
 <body>
 <div id="app"></div>
 <script>
-    console.log(AstroFox);
-if (typeof process !== 'undefined' && typeof require !== 'undefined') {
-    // Catch errors
+document.addEventListener('DOMContentLoaded', function(e) {
+    // Send errors to console
     process.on('uncaughtException', function(e) {
         console.log(e.stack);
     });
 
-    // Setup GUI
-    AstroFox.Browser = require('nw.gui');
-
-    var win = AstroFox.Browser.Window.get();
-
-    win.showDevTools();
-
-    // OSX
-    if (process.platform === 'darwin') {
-        var mb = new AstroFox.Browser.Menu({ type: 'menubar' });
-        mb.createMacBuiltin('AstroFox');
-        win.menu = mb;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function(e) {
+    // Start the application
     AstroFox.start();
 });
 </script>

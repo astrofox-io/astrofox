@@ -1,12 +1,11 @@
 'use strict';
 
 var React = require('react');
+var GUI = global.window.require('nw.gui');
 
 var Header = React.createClass({
     componentDidMount: function() {
-        if (AstroFox.Browser) {
-            this.window = AstroFox.Browser.Window.get();
-        }
+        this.window = GUI.Window.get();
         this.maximized = false;
     },
 

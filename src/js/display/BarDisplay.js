@@ -1,7 +1,7 @@
 'use strict';
 
 var Class = require('../core/Class.js');
-var DisplayComponent = require('./DisplayComponent');
+var DisplayComponent = require('./DisplayComponent.js');
 var _ = require('lodash');
 
 var defaults = {

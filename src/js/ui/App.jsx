@@ -14,8 +14,8 @@ var MessageWindow = require('./MessageWindow.jsx');
 var ControlDock = require('./ControlDock.jsx');
 var ControlsWindow = require('./ControlsWindow.jsx');
 
-var Application = require('../js/Application.js');
-var FX = require('../js/FX.js');
+var Application = require('../Application.js');
+var FX = require('../FX.js');
 
 var App = React.createClass({
     getInitialState: function() {

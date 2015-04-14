@@ -1,10 +1,10 @@
 'use strict';
 
 var FX = {
-    BarDisplay: require('./visual/BarDisplay.js'),
-    BarSpectrumDisplay: require('./visual/BarSpectrumDisplay.js'),
-    ImageDisplay: require('./visual/ImageDisplay.js'),
-    TextDisplay: require('./visual/TextDisplay.js')
+    BarDisplay: require('./display/BarDisplay.js'),
+    BarSpectrumDisplay: require('./display/BarSpectrumDisplay.js'),
+    ImageDisplay: require('./display/ImageDisplay.js'),
+    TextDisplay: require('./display/TextDisplay.js')
 };
 
 module.exports = FX;

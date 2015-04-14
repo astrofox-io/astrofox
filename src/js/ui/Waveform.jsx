@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var FX = require('../FX.js');
 
 var Waveform = React.createClass({
     getInitialState: function() {

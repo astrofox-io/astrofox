@@ -1,5 +1,7 @@
 'use strict';
 
-var UI = {};
+var UI = {
+    App: require('./ui/App.jsx')
+};
 
 module.exports = UI;
