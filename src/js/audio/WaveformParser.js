@@ -1,31 +1,17 @@
 'use strict';
 
-var WaveformAnalyzer = function(context) {
-    this.audioContext = context;
-    this.buffer = null;
-    this.loaded = false;
-};
-
-WaveformAnalyzer.prototype = {
-    constructor: WaveformAnalyzer,
-
-    loadBuffer: function (buffer) {
-        this.buffer = buffer;
-        this.loaded = true;
-    },
-
-    getData: function (bars) {
-        if (!this.buffer) return [];
-
+var WaveformParser = {
+    parseBuffer: function(buffer, options) {
         var i, j, c, start, end, max, val, values,
-            size = this.buffer.length / bars,
+            bars = options.bars,
+            size = buffer.length / bars,
             step = ~~(size / 10) || 1,
             data = new Float32Array(bars),
-            channels = this.buffer.numberOfChannels;
+            channels = buffer.numberOfChannels;
 
         // Process each channel
         for (c = 0; c < channels; c++) {
-            values = this.buffer.getChannelData(c);
+            values = buffer.getChannelData(c);
 
             // Process each bar
             for (i = 0; i < bars; i++) {
@@ -53,4 +39,4 @@ WaveformAnalyzer.prototype = {
     }
 };
 
-module.exports = WaveformAnalyzer;
+module.exports = WaveformParser;

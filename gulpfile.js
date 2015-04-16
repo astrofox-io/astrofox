@@ -15,20 +15,18 @@ var buffer = require('vinyl-buffer');
 
 var b = browserify({
     entries: './src/js/AstroFox.js',
-    transform: [
-        [reactify, {extension: 'jsx'}]
-    ],
+    transform: [reactify],
     noParse: ['lodash','three'],
     standalone: 'AstroFox',
     cache: {},
     packageCache: {}
 });
 
-var w = watchify(b);
-w.on('update', function(ids){
-    util.log(ids);
-    bundle();
-});
+var w = watchify(b)
+    .on('update', function(ids){
+        util.log(ids);
+        bundle();
+    });
 
 function bundle() {
     return w.bundle()
@@ -80,7 +78,7 @@ gulp.task('watchify', function() {
 });
 
 gulp.task('watch', ['less','watchify'], function() {
-    gulp.watch('src/css/**/*.less', ['less']);
+    gulp.watch('src/css/**/*.*', ['less']);
     gulp.watch('src/js/**/*.*', ['watchify']);
 });
 

@@ -2,10 +2,14 @@
 
 var React = require('react');
 var FX = require('../FX.js');
+var WaveformParser = require('../audio/WaveformParser.js');
 
 var Waveform = React.createClass({
     getInitialState: function() {
-        return { progress: 0, seek: 0 };
+        return {
+            progress: 0,
+            seek: 0
+        };
     },
 
     componentWillMount: function() {
@@ -22,7 +26,6 @@ var Waveform = React.createClass({
 
     componentDidMount: function() {
         var app = this.props.app,
-            FX = app.FX,
             config = this.config,
             player = this.player = app.player;
 
@@ -69,7 +72,11 @@ var Waveform = React.createClass({
         );
 
         player.on('load', function() {
-            this.draw(app.waveform.getData(this.config.bars));
+            var options = { bars: this.config.bars },
+                buffer = this.player.getSound('audio').buffer,
+                data = WaveformParser.parseBuffer(buffer, options);
+
+            this.draw(data);
         }.bind(this));
 
         player.on('time', function(){
@@ -137,7 +144,7 @@ var Waveform = React.createClass({
             height = this.config.height + this.config.shadowHeight,
             seek = this.state.seek,
             progressWidth = this.props.app.player.getPosition('audio') * width,
-            style = { width: progressWidth + 'px' },
+            progressStyle = { width: progressWidth + 'px' },
             clipStyle = { display: 'none' };
 
         if (seek > 0) {
@@ -157,7 +164,7 @@ var Waveform = React.createClass({
                     <div className="waveform base">
                         <canvas ref="canvas" width="854" height="100"></canvas>
                     </div>
-                    <div className="waveform progress" style={style}>
+                    <div className="waveform progress" style={progressStyle}>
                         <canvas ref="progress" width="854" height="100"></canvas>
                     </div>
                     <div className="waveform overlay" style={clipStyle}>

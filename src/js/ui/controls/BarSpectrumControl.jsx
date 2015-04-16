@@ -79,7 +79,7 @@ var BarSpectrumControl = React.createClass({
     },
 
     render: function() {
-        var maxFrequency = 22000; //this.analyzer.getMaxFrequency() / 2;
+        var maxFrequency = 22000;
         var maxHeight = 480;
         var maxWidth = 854;
 

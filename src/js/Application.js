@@ -6,7 +6,6 @@ var Timer = require('./core/Timer.js');
 var Player = require('./audio/Player.js');
 var BufferedSound = require('./audio/BufferedSound.js');
 var SpectrumAnalyzer = require('./audio/SpectrumAnalyzer.js');
-var WaveformAnalyzer = require('./audio/WaveformAnalyzer.js');
 var Scene = require('./display/Scene.js');
 var FX = require('./FX.js');
 var IO = require('./IO.js');
@@ -31,7 +30,6 @@ var Application = function() {
     this.reader = new FileReader();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
-    this.waveform = new WaveformAnalyzer(this.audioContext);
 
     this.FX = FX;
 };
@@ -65,7 +63,6 @@ Class.extend(Application, EventEmitter, {
     loadAudioData: function (data, callback) {
         var player = this.player,
             spectrum = this.spectrum,
-            waveform = this.waveform,
             timer = this.timer,
             sound = new BufferedSound(this.audioContext);
 
@@ -75,7 +72,6 @@ Class.extend(Application, EventEmitter, {
 
             player.load('audio', sound, function () {
                 sound.connect(spectrum.analyzer);
-                waveform.loadBuffer(sound.buffer);
             });
 
             player.play('audio');
@@ -144,15 +140,15 @@ Class.extend(Application, EventEmitter, {
     },
 
     renderFrame: function (frame, data, callback) {
-        var scene = this.scene,
-            analyzer = this.spectrum.analyzer,
-            fft = new Float32Array(analyzer.frequencyBinCount);
+        var fft,
+            scene = this.scene,
+            spectrum = this.spectrum;
 
-        analyzer.getFloatFrequencyData(fft);
+        fft = spectrum.getFrequencyData();
 
         scene.clear();
 
-        _.forEachRight(this.displays, function (display) {
+        _.forEachRight(this.displays, function(display) {
             if (display.renderToCanvas) {
                 display.renderToCanvas(
                     (display.type === '3d') ? scene.context3d : scene.context2d,
@@ -168,8 +164,9 @@ Class.extend(Application, EventEmitter, {
     },
 
     processFrame: function (frame, fps, callback) {
-        var player = this.player,
-            analyzer = this.spectrum.analyzer,
+        var fft,
+            player = this.player,
+            spectrum = this.spectrum,
             sound = player.getSound('audio'),
             source = this.source = this.audioContext.createBufferSource();
 
@@ -177,9 +174,7 @@ Class.extend(Application, EventEmitter, {
         source.connect(analyzer);
 
         source.onended = function () {
-            var fft = new Float32Array(analyzer.frequencyBinCount);
-
-            analyzer.getFloatFrequencyData(fft);
+            fft = spectrum.getFrequencyData();
 
             this.renderFrame(frame, fft);
 
