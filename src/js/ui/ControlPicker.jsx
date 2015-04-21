@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var ControlsWindow = React.createClass({
+var ControlPicker = React.createClass({
     handleClick: function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -16,7 +16,7 @@ var ControlsWindow = React.createClass({
                 <div className="header">
                     {this.props.title}
                 </div>
-                <div className="content">
+                <div className="body">
                     <table>
                         <tr>
                             <td>Text</td>
@@ -40,4 +40,4 @@ var ControlsWindow = React.createClass({
     }
 });
 
-module.exports = ControlsWindow;
+module.exports = ControlPicker;

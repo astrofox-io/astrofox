@@ -22,7 +22,7 @@ var ControlsPanel = React.createClass({
 
     scrollToControl: function(index) {
         var node = React.findDOMNode(this.refs['ctrl' + index]);
-        document.getElementById('controls').scrollTop = node.offsetTop;
+        this.refs.controls.scrollTop = node.offsetTop;
     },
 
     render: function() {
@@ -37,7 +37,7 @@ var ControlsPanel = React.createClass({
         }, this);
 
         return (
-            <div id="controls">
+            <div className="controls" ref="controls">
                 {controls}
             </div>
         );

@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var Modal = React.createClass({
+var Overlay = React.createClass({
     getDefaultProps: function() {
         return {
             visible: false
@@ -10,16 +10,16 @@ var Modal = React.createClass({
     },
 
     render: function() {
-        var classes = 'modal';
+        var classes = 'overlay';
 
         if (this.props.visible) {
-            classes += ' modal-active';
+            classes += ' overlay-active';
         }
 
         return (
             <div className={classes}>
-                <div className="overlay" />
-                <div className="window">
+                <div className="background" />
+                <div className="content">
                     {this.props.children}
                 </div>
             </div>
@@ -27,4 +27,4 @@ var Modal = React.createClass({
     }
 });
 
-module.exports = Modal;
+module.exports = Overlay;

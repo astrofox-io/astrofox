@@ -88,7 +88,7 @@ var ControlDock = React.createClass({
 
         return (
             <div
-                id="dock"
+                id="control-dock"
                 ref="dock"
                 style={style}
                 onMouseMove={mouseMove}>

@@ -1,0 +1,32 @@
+.scene {
+    min-width: 900px;
+    overflow: hidden;
+    flex: 1;
+    position: relative;
+
+    .canvas {
+        background-color: @canvas-background-color;
+        width: 854px;
+        height: 480px;
+        display: block;
+        overflow: hidden;
+        .absolute-center();
+    }
+
+    .loading {
+        width: 100px;
+        height: 100px;
+        content: '';
+        opacity: .5;
+        z-index: 100;
+
+        border-top: 3px solid @loading-dark-color;
+        border-bottom: 3px solid @loading-light-color;
+        border-left: 3px solid @loading-dark-color;
+        border-right: 3px solid @loading-light-color;
+        border-radius: 100%;
+
+        .absolute-center();
+        .animation(rotate .6s linear infinite);
+    }
+}

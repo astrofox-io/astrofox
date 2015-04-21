@@ -1,0 +1,205 @@
+.input {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.input-field {
+    color: @input-font-color;
+    font-family: @primary-font;
+    font-size: @font-small;
+    line-height: 20px;
+    background-color: @input-background-color;
+    border: 1px solid @input-border-color;
+    border-radius: 2px;
+    padding: 0 3px;
+    outline: none;
+
+    &:focus {
+        border: 1px solid @primary-color;
+    }
+
+    &:read-only {
+        color: #555;
+    }
+}
+
+.input-hidden {
+    color: transparent !important;
+}
+
+.input-select {
+    display: inline-block;
+    position: relative;
+
+    .input-field {
+        color: @primary-text-color;
+    }
+
+    &:after {
+        content: "\0020";
+        transform: rotate(135deg);
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        height: 5px;
+        width: 5px;
+        border-top: 1px solid @primary-color;
+        border-right: 1px solid @primary-color;
+        pointer-events: none;
+    }
+}
+
+.input-options {
+    position: absolute;
+    top: 22px;
+    z-index: 100;
+    list-style: none;
+
+    .input-option {
+        font-family: @primary-font;
+        font-size: @font-small;
+        padding: 5px;
+        min-width: 100px;
+        background-color: @input-background-color;
+
+        &:hover {
+            cursor: default;
+            background-color: @primary-color;
+        }
+    }
+}
+
+.input-color {
+    &::-webkit-color-swatch-wrapper {
+    }
+
+    &::-webkit-color-swatch {
+        border: 0;
+    }
+}
+
+.input-color-range {
+    .flex-box(row, flex-start, center, stretch);
+
+    .color-range {
+        position: relative;
+        height: 16px;
+        border: 1px solid @input-border-color;
+        border-radius: 3px;
+    }
+}
+
+.input-range {
+    position: relative;
+    height: 20px;
+
+    .track {
+        height: 4px;
+        width: 100%;
+        border-radius: 4px;
+        background: #555;
+        .absolute-center();
+    }
+
+    .fill {
+        height: 4px;
+        width: 100%;
+        border-radius: 4px;
+        background: @primary-color;
+        .absolute-left();
+    }
+
+    .range {
+        background-color: transparent;
+        .absolute-center();
+    }
+}
+
+.input-toggle {
+    position: relative;
+    height: 17px;
+    width: 32px;
+    border-radius: 17px;
+    background-color: @input-background-color;
+    border: 1px solid @input-border-color;
+    cursor: pointer;
+    transition: background-color 0.25s;
+
+    &:before {
+        content: "\0020";
+        width: 15px;
+        height: 15px;
+        border-radius: 15px;
+        background-color: #fff;
+        border: 1px solid #787878;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        transition: left 0.25s;
+        .absolute-left();
+    }
+}
+
+.input-toggle-on {
+    background-color: @primary-color;
+
+    &:before {
+        left: 15px;
+    }
+}
+
+.input-image {
+    height: 100px;
+    width: 100px;
+    background-color: @input-background-color;
+    border: 1px solid @input-border-color;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    .portrait {
+        width: 100%;
+        height: auto;
+    }
+
+    .landscape {
+        width: auto;
+        height: 100%;
+    }
+
+    .image {
+        width: 100%;
+        height: auto;
+        .absolute-center();
+    }
+}
+
+.input-image-delete {
+    font-size: 16px;
+    line-height: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+        color: @primary-color;
+    }
+}
+
+.input-link {
+    margin-left: 8px;
+    color: #555;
+    cursor: pointer;
+}
+
+.input-link-on {
+    color: #ccc;
+}
+
+.input-file {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    opacity: 1;
+}

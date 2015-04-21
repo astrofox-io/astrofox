@@ -85,7 +85,7 @@ var Player = React.createClass({
             style = { display: (this.props.visible) ? 'flex' : 'none' };
 
         return (
-            <div id="player" style={style}>
+            <div className="player" style={style}>
                 <div className="buttons">
                     <PlayButton
                         ref="play"

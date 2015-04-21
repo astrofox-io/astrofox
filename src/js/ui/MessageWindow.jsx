@@ -21,7 +21,7 @@ var MessageWindow = React.createClass({
         return (
             <div className="modal-window">
                 <div className="header">{this.props.title}</div>
-                <div className="content">
+                <div className="body">
                     {this.props.children}
                 </div>
                 <div className="buttons">

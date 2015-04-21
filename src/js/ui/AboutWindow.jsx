@@ -12,9 +12,9 @@ var AboutPanel = React.createClass({
 
     render: function() {
         return (
-            <div className="about">
+            <div className="modal-window">
                 <div className="header">ABOUT</div>
-                <div className="content">
+                <div className="body">
                     AstroFox version 1.0
                 </div>
                 <div className="buttons">

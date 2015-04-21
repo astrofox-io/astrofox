@@ -1,0 +1,49 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.splitter {
+    color: #999;
+    background-color: #333;
+}
+
+.splitter-horizontal {
+    height: 5px;
+    line-height: 5px;
+    text-align: center;
+    width: 100%;
+    cursor: ns-resize;
+}
+
+.splitter-vertical {
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+}
+
+.commands {
+    padding: 5px;
+    width: 100%;
+    background-color: @control-background-color;
+    border-top: 1px solid @primary-border-top;
+    border-bottom: 1px solid @primary-border-bottom;
+
+    .button {
+        color: @primary-text-color;
+        width: 20px;
+        line-height: 20px;
+        margin-right: 5px;
+        text-align: center;
+        border: 1px solid @input-border-color;
+        background-color: @input-background-color;
+        border-radius: 2px;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: @primary-color;
+    }
+}

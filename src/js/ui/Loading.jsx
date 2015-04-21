@@ -11,7 +11,7 @@ var Loading = React.createClass({
         var style = { display: this.props.visible ? 'block' : 'none' };
 
         return (
-            <div id="loading" style={style}></div>
+            <div className="loading" style={style}></div>
         );
     }
 });

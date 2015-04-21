@@ -9,10 +9,10 @@ var MainView = require('./MainView.jsx');
 var Scene = require('./Scene.jsx');
 var Player = require('./Player.jsx');
 var Waveform = require('./Waveform.jsx');
-var Modal = require('./Modal.jsx');
+var Overlay = require('./Overlay.jsx');
 var MessageWindow = require('./MessageWindow.jsx');
 var ControlDock = require('./ControlDock.jsx');
-var ControlsWindow = require('./ControlsWindow.jsx');
+var ControlPicker = require('./ControlPicker.jsx');
 
 var Application = require('../Application.js');
 var FX = require('../FX.js');
@@ -149,7 +149,7 @@ var App = React.createClass({
 
     handleLayerAdd: function() {
         this.showModal(
-            <ControlsWindow title="ADD CONTROL" onConfirm={this.hideModal} />
+            <ControlPicker title="ADD CONTROL" onConfirm={this.hideModal} />
         );
     },
 
@@ -227,9 +227,9 @@ var App = React.createClass({
                     onMenuAction={this.handleMenuAction}
                 />
                 <Body>
-                    <Modal visible={this.state.showModal}>
+                    <Overlay visible={this.state.showModal}>
                         {this.state.modal}
-                    </Modal>
+                    </Overlay>
                     <MainView>
                         <Scene
                             ref="scene"

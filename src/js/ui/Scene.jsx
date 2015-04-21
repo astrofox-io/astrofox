@@ -51,11 +51,11 @@ var Scene = React.createClass({
 
     render: function() {
         return (
-            <div id="scene"
+            <div className="scene"
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
                 <Loading visible={this.state.loading} />
-                <canvas ref="canvas" id="canvas" height="480" width="854"></canvas>
+                <canvas ref="canvas" className="canvas" height="480" width="854"></canvas>
             </div>
         );
     }

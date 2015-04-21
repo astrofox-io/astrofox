@@ -1,0 +1,78 @@
+#menubar {
+    font-family: @primary-font;
+    font-size: @font-normal;
+    color: @menu-font-color;
+    background-color: @menu-background-color;
+    padding-left: 20px;
+    height: 20px;
+
+    .menubar-item {
+        display: inline-block;
+        position: relative;
+    }
+
+    .menubar-text {
+        line-height: 20px;
+        vertical-align: middle;
+        padding: 0 8px;
+        z-index: 2;
+        position: relative;
+
+        &:hover {
+            cursor: default;
+            color: @primary-color;
+        }
+    }
+
+    .menubar-text-active {
+        color: @primary-color;
+        background-color: #222;
+    }
+
+    .menu {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        list-style: none;
+        z-index: 400;
+        background-color: #1c1c1c;
+        border: 1px solid #111;
+        overflow: hidden;
+
+        .menu-item {
+            position: relative;
+            display: block;
+            font-family: @primary-font;
+            font-size: @font-small;
+            padding: 5px 5px 5px 20px;
+            min-width: 140px;
+
+            &:hover {
+                color: @primary-text-color;
+                background-color: @primary-color;
+                cursor: default;
+            }
+        }
+
+        .checked:before {
+            content: "\2713";
+            color: @primary-color;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+
+        .checked:hover:before {
+            color: @primary-text-color;
+        }
+
+        .begin-group:before {
+            content: "\0020";
+            border-top: 1px solid #111;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+}

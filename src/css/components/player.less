@@ -1,0 +1,106 @@
+.player {
+    min-width: 500px;
+    overflow: hidden;
+    padding: 10px 0;
+    background-color: @player-background-color;
+    border-top: 1px solid @player-border-color;
+    flex: 0 0 auto;
+    .flex-box(row, flex-start, center, stretch);
+
+    .buttons {
+        margin: 0 20px;
+    }
+
+    .button {
+        display: inline-block;
+        flex-wrap: nowrap;
+        border: 2px solid @primary-color;
+        height: 40px;
+        width: 40px;
+        margin-right: 2px;
+        border-radius: 20px;
+        line-height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        transition: color 0.2s;
+
+        &:hover {
+            color: @primary-color;
+        }
+    }
+
+    .play-button {
+        font-size: 24px;
+        position: relative;
+
+        .icon-play {
+            font-size: 36px;
+            margin-left: 4px;
+        }
+    }
+
+    .stop-button {
+        font-size: 24px;
+    }
+
+    .loop-button {
+        display: inline-block;
+        font-size: 20px;
+        line-height: 20px;
+        margin-right: 20px;
+        cursor: pointer;
+        color: #555;
+    }
+
+    .loop-button-on {
+        color: @primary-color;
+    }
+
+    .volume {
+        .slider {
+            vertical-align: middle;
+            display: inline-block;
+            width: 100px;
+        }
+
+        .icon {
+            vertical-align: middle;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    }
+
+    .progress {
+        margin-left: 20px;
+        flex: 1;
+    }
+
+    .time-info {
+        margin: 0 20px;
+
+        .time-part {
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        &:hover {
+            cursor: default;
+        }
+    }
+
+    .current-time {
+        color: @primary-text-color;
+    }
+
+    .total-time {
+        color: @secondary-text-color;
+    }
+
+    .split {
+        height: 30px;
+        border-right: 1px solid @primary-color;
+        margin: 0 8px;
+        transform: rotate(20deg);
+    }
+}

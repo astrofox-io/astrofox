@@ -1,0 +1,32 @@
+#waveform {
+    height: 120px;
+    padding: 10px 0;
+    position: relative;
+
+    .container {
+        width: 854px;
+        height: 100px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+
+        .waveform {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .base {
+            z-index: 0;
+        }
+
+        .progress {
+            z-index: 1;
+        }
+
+        .overlay {
+            z-index: 2;
+        }
+    }
+}
