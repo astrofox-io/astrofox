@@ -4,11 +4,10 @@ var React = require('react');
 var BarSpectrumControl = require('./controls/BarSpectrumControl.jsx');
 var ImageControl = require('./controls/ImageControl.jsx');
 var TextControl = require('./controls/TextControl.jsx');
+var FX = require('../FX.js');
 
 var ControlsPanel = React.createClass({
     getControl: function(display) {
-        var FX = this.props.app.FX;
-
         if (display instanceof FX.BarSpectrumDisplay) {
             return BarSpectrumControl;
         }
@@ -37,7 +36,7 @@ var ControlsPanel = React.createClass({
         }, this);
 
         return (
-            <div className="controls" ref="controls">
+            <div id="controls" ref="controls">
                 {controls}
             </div>
         );

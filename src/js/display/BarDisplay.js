@@ -1,7 +1,7 @@
 'use strict';
 
 var Class = require('../core/Class.js');
-var DisplayComponent = require('./DisplayComponent.js');
+var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 
 var defaults = {
@@ -20,17 +20,25 @@ var defaults = {
     opacity: 1.0
 };
 
-var id = 0;
-
 var BarDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'BarDisplay', '2d', canvas);
-
+    this.canvas = canvas;
+    this.context = canvas.getContext('2d');
     this.options = _.assign({}, defaults);
 
     this.init(options);
 };
 
-Class.extend(BarDisplay, DisplayComponent, {
+Class.extend(BarDisplay, EventEmitter, {
+    init: function (options) {
+        if (typeof options !== 'undefined') {
+            for (var prop in options) {
+                if (hasOwnProperty.call(this.options, prop)) {
+                    this.options[prop] = options[prop];
+                }
+            }
+        }
+    },
+
     render: function(data) {
         var i, x, y, val, size, totalWidth,
             step = 1,
