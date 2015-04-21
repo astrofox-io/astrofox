@@ -1,0 +1,65 @@
+.control {
+    background-color: @control-background-color;
+    border-top: 1px solid @primary-border-top;
+    border-bottom: 1px solid @primary-border-bottom;
+    padding-bottom: 16px;
+    margin: 5px;
+
+    .header {
+        margin-bottom: 10px;
+        font-size: @font-small;
+        color: @primary-color;
+        line-height: 20px;
+        padding-left: 8px;
+        cursor: default;
+    }
+
+    .row {
+        padding-bottom: 8px;
+        margin: 0 20px 6px 20px;
+        position: relative;
+        .flex-box(row, flex-start, center, stretch);
+
+        .label {
+            font-family: @primary-font;
+            font-size: @font-small;
+            color: @primary-text-color;
+            display: inline-block;
+            line-height: 20px;
+            margin-right: 8px;
+            text-align: right;
+
+            &:first-child {
+                min-width: 80px;
+            }
+        }
+
+        .input {
+            margin-right: 8px;
+
+            .input-range {
+                flex: 1;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .unit {
+            color: @secondary-text-color;
+            font-size: @font-small;
+            margin: 0 8px 0 -4px;
+        }
+
+        &:after {
+            content: "\0020";
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #555;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+}
