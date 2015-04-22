@@ -1,11 +1,11 @@
 'use strict';
 
 var React = require('react');
-var GUI = global.window.require('nw.gui');
+var Browser = require('../Browser.js');
 
 var Header = React.createClass({
     componentDidMount: function() {
-        this.window = GUI.Window.get();
+        this.window = Browser.Window;
         this.maximized = false;
     },
 

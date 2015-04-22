@@ -2,29 +2,20 @@
 
 var React = require('react');
 var App = require('./ui/App.jsx');
-var GUI = global.window.require('nw.gui');
+var Browser = require('./Browser.js');
 
-var AstroFox = {};
+var AstroFox = {
+    version: '1.0',
 
-AstroFox.version = '1.0';
+    start: function() {
+        Browser.init();
 
-AstroFox.start = function() {
-    // NW.js
-    var win = GUI.Window.get();
-    win.showDevTools();
-
-    // OSX
-    if (global.process.platform === 'darwin') {
-        var mb = new GUI.Menu({ type: 'menubar' });
-        mb.createMacBuiltin('AstroFox');
-        win.menu = mb;
+        // Render UI
+        React.render(
+            React.createElement(App, null),
+            document.getElementById("app")
+        );
     }
-
-    // Render UI
-    React.render(
-        React.createElement(App, null),
-        document.getElementById("app")
-    );
 };
 
 module.exports = AstroFox;

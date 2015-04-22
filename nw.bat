@@ -1,1 +1,1 @@
-C:\dev\nwjs-v0.12.0-win-x64\nw.exe .
+C:\dev\nwjs-v0.12.1-win-x64\nw.exe .
