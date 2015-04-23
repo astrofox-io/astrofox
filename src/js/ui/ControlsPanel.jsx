@@ -21,7 +21,7 @@ var ControlsPanel = React.createClass({
 
     scrollToControl: function(index) {
         var node = React.findDOMNode(this.refs['ctrl' + index]);
-        this.refs.controls.scrollTop = node.offsetTop;
+        React.findDOMNode(this.refs.controls).scrollTop = node.offsetTop;
     },
 
     render: function() {
