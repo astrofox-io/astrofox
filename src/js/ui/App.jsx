@@ -183,32 +183,22 @@ var App = React.createClass({
     },
 
     loadAudioFile: function(file) {
-        var scene = this.refs.scene;
+        var scene = this.refs.scene,
+            app = this.app,
+            err = function(error) {
+                this.showError(error);
+            }.bind(this);
 
         scene.showLoading(true);
 
-        this.app.loadAudioFile(file, function(error, data) {
-            if (error) {
+        app.loadAudioFile(file)
+            .then(function(data) {
+                return app.loadAudioData(data);
+            })
+            .catch(err)
+            .then(function() {
                 scene.showLoading(false);
-                this.showError(error);
-            }
-            else {
-                this.app.loadAudioData(
-                    data,
-                    function (error) {
-                        if (error) {
-                            scene.showLoading(false);;
-                            this.showError(error);
-                        }
-                        else {
-                            this.setState({filename: file.name}, function () {
-                                scene.showLoading(false);
-                            });
-                        }
-                    }.bind(this)
-                );
-            }
-        }.bind(this));
+            });
     },
 
     render: function() {
@@ -234,7 +224,7 @@ var App = React.createClass({
                         <Scene
                             ref="scene"
                             app={this.app}
-                            onAudioFileLoaded={this.loadAudioFile}
+                            onFileDropped={this.loadAudioFile}
                         />
                         <Waveform
                             ref="waveform"

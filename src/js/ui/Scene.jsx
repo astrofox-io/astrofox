@@ -4,12 +4,14 @@ var React = require('react');
 var Loading = require('./Loading.jsx');
 
 var Scene = React.createClass({
-    getInitialState: function() {
-        return { loading: false };
+    getDefaultProps: function() {
+        return {
+            onFileDropped: function() {}
+        };
     },
 
-    componentWillMount: function() {
-
+    getInitialState: function() {
+        return { loading: false };
     },
 
     componentDidMount: function() {
@@ -36,7 +38,7 @@ var Scene = React.createClass({
 
         var file = e.dataTransfer.files[0];
 
-        this.props.onAudioFileLoaded(file);
+        this.props.onFileDropped(file);
     },
 
     showLoading: function(val) {

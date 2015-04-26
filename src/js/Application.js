@@ -27,7 +27,6 @@ var Application = function() {
     this.sound = new BufferedSound(this.audioContext);
     this.scene = new Scene();
     this.timer = new Timer();
-    this.reader = new FileReader();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
 
@@ -35,71 +34,69 @@ var Application = function() {
 };
 
 Class.extend(Application, EventEmitter, {
-    loadAudioFile: function (file, callback) {
-        var reader = this.reader,
-            player = this.player,
-            timer = this.timer;
+    loadAudioFile: function(file) {
+        return new Promise(function(resolve, reject) {
+            var reader = new FileReader(),
+                player = this.player,
+                timer = this.timer;
 
-        player.stop('audio');
+            player.stop('audio');
 
-        reader.onload = function (e) {
-            // DEBUG
-            console.log('file loaded', timer.get('file_load'));
-            if (callback) {
-                callback(file.error, e.target.result);
-            }
-        }.bind(this);
+            reader.onload = function(e) {
+                // DEBUG
+                console.log('file loaded', timer.get('file_load'));
+                resolve(e.target.result);
+            };
 
-        reader.onerror = function (e) {
-            if (callback) {
-                callback(file.error, null);
-            }
-        }.bind(this);
+            reader.onerror = function(e) {
+                reject(file.error);
+            }.bind(this);
 
-        timer.set('file_load');
-        reader.readAsArrayBuffer(file);
-    },
-
-    loadAudioData: function (data, callback) {
-        var player = this.player,
-            spectrum = this.spectrum,
-            timer = this.timer,
-            sound = new BufferedSound(this.audioContext);
-
-        sound.on('load', function () {
-            // DEBUG
-            console.log('sound loaded', timer.get('sound_load'));
-
-            player.load('audio', sound, function () {
-                sound.connect(spectrum.analyzer);
-            });
-
-            player.play('audio');
-
-            if (callback) callback();
+            timer.set('file_load');
+            reader.readAsArrayBuffer(file);
         }.bind(this));
-
-        if (callback) {
-            sound.on('error', function (error) {
-                callback(error);
-            });
-        }
-
-        timer.set('sound_load');
-        sound.load(data);
     },
 
-    loadCanvas: function (canvas) {
+    loadAudioData: function(data) {
+        return new Promise(function(resolve, reject) {
+            var player = this.player,
+                spectrum = this.spectrum,
+                timer = this.timer,
+                sound = new BufferedSound(this.audioContext);
+
+            sound.on('load', function() {
+                // DEBUG
+                console.log('sound loaded', timer.get('sound_load'));
+
+                player.load('audio', sound, function() {
+                    sound.connect(spectrum.analyzer);
+                });
+
+                player.play('audio');
+
+                resolve();
+            }.bind(this));
+
+            sound.on('error', function(error) {
+                reject(error);
+            });
+
+            timer.set('sound_load');
+            sound.load(data);
+        }.bind(this));
+    },
+
+    loadCanvas: function(canvas) {
         this.scene.setupCanvas(canvas);
     },
 
-    addDisplay: function (display) {
+    addDisplay: function(display) {
         this.displays.push(display);
 
         this.emit('display_changed');
     },
 
-    removeDisplay: function (display) {
+    removeDisplay: function(display) {
         var index = this.displays.indexOf(display);
         if (index > -1) {
             //this.displays.splice(index, 1);
@@ -109,7 +106,7 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
-    swapDisplay: function (index, newIndex) {
+    swapDisplay: function(index, newIndex) {
         var tmp,
             displays = this.displays;
 
@@ -120,30 +117,30 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
-    showFPS: function (val) {
+    showFPS: function(val) {
         this.scene.options.showFPS = val;
     },
 
-    startRender: function () {
+    startRender: function() {
         if (!this.frame) {
             this.renderScene();
         }
     },
 
-    stopRender: function () {
+    stopRender: function() {
         if (this.frame) {
             window.cancelAnimationFrame(this.frame);
             this.frame = null;
         }
     },
 
-    renderScene: function () {
+    renderScene: function() {
         this.renderFrame(this.frame);
 
         this.frame = window.requestAnimationFrame(this.renderScene.bind(this));
     },
 
-    renderFrame: function (frame, data, callback) {
+    renderFrame: function(frame, data, callback) {
         var fft,
             scene = this.scene,
             spectrum = this.spectrum;
@@ -167,7 +164,7 @@ Class.extend(Application, EventEmitter, {
         if (callback) callback();
     },
 
-    processFrame: function (frame, fps, callback) {
+    processFrame: function(frame, fps, callback) {
         var fft,
             player = this.player,
             spectrum = this.spectrum,
@@ -177,7 +174,7 @@ Class.extend(Application, EventEmitter, {
         source.buffer = sound.buffer;
         source.connect(analyzer);
 
-        source.onended = function () {
+        source.onended = function() {
             fft = spectrum.getFrequencyData();
 
             this.renderFrame(frame, fft);
@@ -190,8 +187,8 @@ Class.extend(Application, EventEmitter, {
         source.start(0, frame / fps, 1 / fps);
     },
 
-    saveImage: function (file) {
-        this.scene.renderImage(function (buffer) {
+    saveImage: function(file) {
+        this.scene.renderImage(function(buffer) {
             IO.fs.writeFile(file.path, buffer);
 
             // DEBUG
@@ -199,7 +196,7 @@ Class.extend(Application, EventEmitter, {
         });
     },
 
-    saveVideo: function (file) {
+    saveVideo: function(file) {
         var player = this.player,
             scene = this.scene,
             sound = player.getSound('audio');
@@ -209,7 +206,7 @@ Class.extend(Application, EventEmitter, {
         if (player.isPlaying()) player.stop('audio');
 
         if (sound) {
-            scene.renderVideo(file.path, 29.97, 5, this.processFrame.bind(this), function () {
+            scene.renderVideo(file.path, 29.97, 5, this.processFrame.bind(this), function() {
                 this.startRender();
             }.bind(this));
         }
@@ -218,18 +215,18 @@ Class.extend(Application, EventEmitter, {
         console.log(file + ' saved');
     },
 
-    saveProject: function (file) {
+    saveProject: function(file) {
         var data, buffer,
             options = this.options;
 
-        data = this.displays.map(function (display) {
+        data = this.displays.map(function(display) {
             return display.toJSON();
         });
 
         if (options.useCompression) {
             IO.zlib.deflate(
                 JSON.stringify(data),
-                function (err, buf) {
+                function(err, buf) {
                     buffer = new IO.Buffer(buf);
                     IO.fs.writeFileSync(file, buffer);
                 }.bind(this)
@@ -243,12 +240,12 @@ Class.extend(Application, EventEmitter, {
         console.log(file + ' saved');
     },
 
-    loadProject: function (file) {
+    loadProject: function(file) {
         var options = this.options,
             data = IO.fs.readFileSync(file.path);
 
         if (options.useCompression) {
-            IO.zlib.inflate(data, function (err, buf) {
+            IO.zlib.inflate(data, function(err, buf) {
                 try {
                     this.loadControls(JSON.parse(buf.toString()));
                 }
@@ -267,11 +264,11 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
-    loadControls: function (data) {
+    loadControls: function(data) {
         if (data instanceof Array) {
             this.displays = [];
 
-            data.forEach(function (item) {
+            data.forEach(function(item) {
                 this.addDisplay(new FX[item.name](null, item.values));
             }.bind(this));
 
