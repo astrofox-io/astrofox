@@ -95,6 +95,8 @@ Class.extend(Application, EventEmitter, {
 
     addDisplay: function (display) {
         this.displays.push(display);
+
+        this.emit('display_changed');
     },
 
     removeDisplay: function (display) {
@@ -102,6 +104,8 @@ Class.extend(Application, EventEmitter, {
         if (index > -1) {
             //this.displays.splice(index, 1);
             spliceOne(this.displays, index);
+
+            this.emit('display_changed');
         }
     },
 

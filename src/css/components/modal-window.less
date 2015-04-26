@@ -1,7 +1,9 @@
 .modal-window {
     min-width: 400px;
+    min-height: 300px;
 
     .header {
+        position: relative;
         background-color: #323232;
         padding: 10px;
         text-align: center;
@@ -26,6 +28,14 @@
         padding: 8px 10px;
         border-radius: 3px;
         margin-left: 10px;
+        cursor: pointer;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 16px;
         cursor: pointer;
     }
 }

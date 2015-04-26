@@ -27,6 +27,10 @@ var TextDisplay = function(canvas, options) {
     this.init(options);
 };
 
+TextDisplay.info = {
+    name: 'Text'
+};
+
 Class.extend(TextDisplay, DisplayComponent, {
     render: function () {
         var width, height,

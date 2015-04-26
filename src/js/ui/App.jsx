@@ -10,7 +10,7 @@ var Scene = require('./Scene.jsx');
 var Player = require('./Player.jsx');
 var Waveform = require('./Waveform.jsx');
 var Overlay = require('./Overlay.jsx');
-var MessageWindow = require('./MessageWindow.jsx');
+var ModalWindow = require('./ModalWindow.jsx');
 var ControlDock = require('./ControlDock.jsx');
 var ControlPicker = require('./ControlPicker.jsx');
 
@@ -121,9 +121,9 @@ var App = React.createClass({
 
             case 'Edit/Settings':
                 this.showModal(
-                    <MessageWindow title="SETTINGS" onConfirm={this.hideModal}>
+                    <ModalWindow title="SETTINGS" onClose={this.hideModal}>
                         Configuration Settings
-                    </MessageWindow>
+                    </ModalWindow>
                 );
                 break;
 
@@ -139,9 +139,9 @@ var App = React.createClass({
 
             case 'Help/About':
                 this.showModal(
-                    <MessageWindow title="ABOUT" onConfirm={this.hideModal}>
+                    <ModalWindow title="ABOUT" onClose={this.hideModal}>
                         AstroFox version 1.0
-                    </MessageWindow>
+                    </ModalWindow>
                 );
                 break;
         }
@@ -149,7 +149,7 @@ var App = React.createClass({
 
     handleLayerAdd: function() {
         this.showModal(
-            <ControlPicker title="ADD CONTROL" onConfirm={this.hideModal} />
+            <ControlPicker title="ADD CONTROL" onClose={this.hideModal} app={this.app} />
         );
     },
 
@@ -176,9 +176,9 @@ var App = React.createClass({
 
     showError: function(error) {
         this.showModal(
-            <MessageWindow title="ERROR" onConfirm={this.hideModal}>
+            <ModalWindow title="ERROR" onClose={this.hideModal}>
                 {error.message}
-            </MessageWindow>
+            </ModalWindow>
         );
     },
 

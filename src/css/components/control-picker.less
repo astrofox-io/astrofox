@@ -1,0 +1,29 @@
+.control-picker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .option {
+        border: 1px solid #333;
+        border-radius: 5px;
+        height: 100px;
+        width: 100px;
+        cursor: pointer;
+    }
+
+    .option:hover {
+        border-color: @primary-color;
+    }
+
+    .icon {
+        font-size: 20px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .name {
+        font-size: @font-small;
+        text-align: center;
+        margin: 5px 0;
+    }
+}

@@ -1,1 +1,1 @@
-C:\dev\electron-v0.24.0-win32-x64\electron.exe .
+C:\dev\atom-shell-v0.22.3-win32-ia32\atom.exe .

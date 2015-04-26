@@ -33,6 +33,11 @@ var ControlDock = React.createClass({
             this.refs.controls.forceUpdate();
         }.bind(this));
 
+        app.on('display_changed', function() {
+            this.refs.layers.forceUpdate();
+            this.refs.controls.forceUpdate();
+        }.bind(this));
+
         this.dock = React.findDOMNode(this.refs.dock);
     },
 

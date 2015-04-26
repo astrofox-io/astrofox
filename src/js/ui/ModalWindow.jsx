@@ -2,34 +2,37 @@
 
 var React = require('react');
 
-var MessageWindow = React.createClass({
+var ModalWindow = React.createClass({
     getDefaultProps: function() {
         return {
             title: '',
-            onConfirm: function(){}
+            onClose: function(){}
         };
     },
 
-    handleClick: function(e) {
+    handleClose: function(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.props.onConfirm();
+        this.props.onClose();
     },
 
     render: function() {
         return (
             <div className="modal-window">
-                <div className="header">{this.props.title}</div>
+                <div className="header">
+                    {this.props.title}
+                    <i className="close-button icon-cancel" onClick={this.handleClose} />
+                </div>
                 <div className="body">
                     {this.props.children}
                 </div>
                 <div className="buttons">
-                    <div className="button" onClick={this.handleClick}>OK</div>
+                    <div className="button" onClick={this.handleClose}>OK</div>
                 </div>
             </div>
         );
     }
 });
 
-module.exports = MessageWindow;
+module.exports = ModalWindow;

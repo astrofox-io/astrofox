@@ -28,6 +28,10 @@ var BarSpectrumDisplay = function(canvas, options) {
     this.init(options);
 };
 
+BarSpectrumDisplay.info = {
+    name: 'Bar Spectrum'
+};
+
 Class.extend(BarSpectrumDisplay, DisplayComponent, {
     init: function (options) {
         if (typeof options !== 'undefined') {

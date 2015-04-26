@@ -26,6 +26,10 @@ var ImageDisplay = function(canvas, options) {
     this.init(options);
 };
 
+ImageDisplay.info = {
+    name: 'Image'
+};
+
 Class.extend(ImageDisplay, DisplayComponent, {
     init: function(options) {
         this._super.init.call(this, options);

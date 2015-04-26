@@ -1,41 +1,51 @@
 'use strict';
 
 var React = require('react');
+var ModalWindow = require('../ui/ModalWindow.jsx');
+var FX = require('../FX.js');
 
 var ControlPicker = React.createClass({
-    handleClick: function(e) {
+    getDefaultProps: function() {
+        return {
+            onClose: function(){}
+        };
+    },
+
+    handleControlAdd: function(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.props.onConfirm();
+        this.props.onClose();
+    },
+
+    componentWillMount: function() {
+        this.app = this.props.app;
     },
 
     render: function() {
+        var controls = [
+            FX.TextDisplay,
+            FX.ImageDisplay,
+            FX.BarSpectrumDisplay
+        ].map(function(item, index){
+            var handleClick = function() {
+                this.props.app.addDisplay(new item);
+                this.props.onClose();
+            }.bind(this);
+            return (
+                <div key={"c" + index}>
+                    <div className="option" onClick={handleClick}></div>
+                    <div className="name">{item.info.name}</div>
+                </div>
+            );
+        }.bind(this));
+
         return (
-            <div className="modal-window">
-                <div className="header">
-                    {this.props.title}
+            <ModalWindow title="ADD CONTROL" onClose={this.props.onClose}>
+                <div className="control-picker">
+                    {controls}
                 </div>
-                <div className="body">
-                    <table>
-                        <tr>
-                            <td>Text</td>
-                            <td>Display text with different fonts and colors.</td>
-                        </tr>
-                        <tr>
-                            <td>Image</td>
-                            <td>Insert an image.</td>
-                        </tr>
-                        <tr>
-                            <td>Bar Spectrum</td>
-                            <td>Display the audio spectrum as bars.</td>
-                        </tr>
-                    </table>
-                </div>
-                <div className="buttons">
-                    <div className="button" onClick={this.handleClick}>OK</div>
-                </div>
-            </div>
+            </ModalWindow>
         );
     }
 });
