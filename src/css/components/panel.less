@@ -2,48 +2,36 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
 
-.splitter {
-    color: #999;
-    background-color: @splitter-bg-color;
-}
-
-.splitter-horizontal {
-    height: 5px;
-    line-height: 5px;
-    text-align: center;
-    width: 100%;
-    cursor: ns-resize;
-}
-
-.splitter-vertical {
-    width: 5px;
-    height: 100%;
-    cursor: ew-resize;
-}
-
-.commands {
-    padding: 5px;
-    width: 100%;
-    background-color: @control-bg-color;
-    border-top: 1px solid @control-top-border-color;
-    border-bottom: 1px solid @control-bottom-border-color;
-
-    .button {
-        color: @text-color;
-        width: 20px;
-        line-height: 20px;
-        margin-right: 5px;
-        text-align: center;
-        border: 1px solid @input-border-color;
-        background-color: @input-bg-color;
-        border-radius: 2px;
-        display: inline-block;
-        cursor: pointer;
+    .title {
+        font-size: @font-small;
+        padding: 10px;
+        color: @text-level1-color;
+        cursor: default;
     }
 
-    .button:hover {
-        background-color: @base-color;
+    .btn-group {
+        padding: 5px;
+        width: 100%;
+        background-color: @control-bg-color;
+        border-top: 1px solid @control-top-border-color;
+        border-bottom: 1px solid @control-bottom-border-color;
+
+        .btn {
+            color: @text-color;
+            width: 20px;
+            line-height: 20px;
+            margin-right: 5px;
+            text-align: center;
+            border: 1px solid @input-border-color;
+            background-color: @input-bg-color;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: @base-color;
+        }
     }
 }

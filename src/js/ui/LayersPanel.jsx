@@ -85,11 +85,11 @@ var LayersPanel = React.createClass({
                 <div className="layers">
                     {layers}
                 </div>
-                <ul className="commands">
-                    <li className="button icon-plus" onClick={this.handleAddClick} />
-                    <li className="button icon-minus" onClick={this.handleRemoveClick} />
-                    <li className="button icon-up-open" onClick={this.handleMoveUpClick} />
-                    <li className="button icon-down-open" onClick={this.handleMoveDownClick} />
+                <ul className="btn-group">
+                    <li className="btn icon-plus" onClick={this.handleAddClick} />
+                    <li className="btn icon-minus" onClick={this.handleRemoveClick} />
+                    <li className="btn icon-up-open" onClick={this.handleMoveUpClick} />
+                    <li className="btn icon-down-open" onClick={this.handleMoveDownClick} />
                 </ul>
             </div>
         );
