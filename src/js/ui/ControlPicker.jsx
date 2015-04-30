@@ -34,7 +34,7 @@ var ControlPicker = React.createClass({
             }.bind(this);
             return (
                 <div key={"c" + index}>
-                    <div className="option" onClick={handleClick}></div>
+                    <div className="item" onClick={handleClick}></div>
                     <div className="name">{item.info.name}</div>
                 </div>
             );

@@ -81,7 +81,7 @@ var LayersPanel = React.createClass({
         }, this);
 
         return (
-            <div id="layers">
+            <div className="layers-panel">
                 <div className="layers">
                     {layers}
                 </div>

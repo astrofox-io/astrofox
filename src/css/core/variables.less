@@ -1,48 +1,91 @@
-// Base colors
-@primary-color: #927FFF;
-@secondary-color: #312c59;
-//@primary-color: #9595d4;
-@primary-text-color: #f0f0f0;
-@secondary-text-color: #acacac;
-@page-background-color: #222222;
-@primary-background-color: #535353;
-@primary-border-top: #6a6a6a;
-@primary-border-bottom: #222222;
-@secondary-background-color: #393939;
-@secondary-border-top: #4a4a4a;
-@secondary-border-bottom: #222222;
+// Base Colors
+@base-color: #927FFF;
+@bg-color: #434343;
+@text-color: #f0f0f0;
+@border-color: #222;
+
+// Color Levels
+@bg-level1-color: darken(@bg-color, 4%); // #393939
+@bg-level2-color: darken(@bg-color, 8%); // #2f2f2f
+@bg-level3-color: darken(@bg-color, 12%); // #242424
+@bg-level4-color: darken(@bg-color, 16%); // #1a1a1a
+
+@text-level1-color: darken(@text-color, 30%); // #a3a3a3
+@border-top-color: lighten(@bg-color, 16%); // #6c6c6c
+@border-bottom-color: darken(@bg-color, 12%); // #242424
 
 // Fonts
-@primary-font: 'Roboto', 'Roboto Condensed', Arial, Helvetica, sans-serif;
+@font-family: 'Roboto', sans-serif;
+@font-family-alt: 'Roboto Condensed', sans-serif;
 @font-small: 11px;
 @font-normal: 12px;
 @font-large: 16px;
 
-// Elements
-@header-background-color: #393939;
-@menu-font-color: @secondary-text-color;
-@menu-background-color: #2d2d2d;
-@dock-background-color: #393939;
-@player-background-color: #1e1e1e;
-@player-border-color: #333333;
+// Page
+@page-bg-color: @bg-level3-color;
 
-@control-box-background-color: #393939;
-@canvas-background-color: #000;
-@loading-light-color: @primary-color;
-@loading-dark-color: @secondary-color;
-@waveform-background-color: #333333;
+// Header
+@header-bg-color: @bg-level1-color;
+@header-text-color: @text-color;
 
-// Interface
-@bar-background-color: @secondary-background-color;
-@bar-border-top: @secondary-border-top;
-@bar-border-bottom: @secondary-border-bottom;
+// Footer
+@footer-bg-color: @base-color;
+@footer-text-color: @text-color;
 
-@control-background-color: #434343;
+// Menu
+@menubar-text-color: @text-level1-color;
+@menubar-bg-color: darken(@bg-level2-color, 3%);
+@menubar-active-bg-color: darken(@menubar-bg-color, 6%);
+@menu-bg-color: @bg-level4-color;
+@menu-border-color: darken(@border-color, 6%);
+@menu-group-border-color: @menu-border-color;
 
-@input-font-color: @primary-text-color;
-@input-background-color: #3a3a3a;
-@input-border-color: #222222;
+// Player
+@player-background-color: @bg-level4-color;
+@player-border-color: lighten(@bg-level4-color, 6%);
 
-// Misc
-@shadow-start-color: #373759;
-@shadow-end-color: #54547a;
+// Window Buttons
+@window-btn-text-color: @text-color;
+@window-btn-bg-color: @bg-level1-color;
+@window-btn-border-color: @border-color;
+
+// Control Dock
+@dock-bg-color: @bg-level1-color;
+
+// Control Picker
+@picker-item-border-color: lighten(@border-color, 8%);
+@picker-item-hover-color: @base-color;
+
+// Layers
+@layer-bg-color: @bg-level2-color;
+@layer-border-color: @border-color;
+
+// Loading
+@loading-light-color: @base-color;
+@loading-dark-color: hardlight(@base-color, @bg-level3-color);
+
+// Control
+@control-bg-color: @bg-color;
+@control-top-border-color: @border-top-color;
+@control-bottom-border-color: @border-bottom-color;
+@control-row-top-color: lighten(@border-bottom-color, 6%);  // #333
+@control-row-bottom-color: darken(@border-top-color, 8%); // #585858
+
+// Splitter
+@splitter-bg-color: darken(@bg-level1-color, 3%);
+
+// Input
+@input-font-color: @text-color;
+@input-bg-color: @bg-level1-color;
+@input-border-color: @border-color;
+@input-font-size: @font-small;
+@input-readonly-color: lighten(@bg-level1-color, 10%);
+@input-range-bg-color: lighten(@bg-level1-color, 10%);
+@input-link-color: lighten(@bg-level1-color, 20%);
+@input-link-on-color: lighten(@bg-level1-color, 50%);
+@input-toggle-button-bg-color: @input-font-color;
+@input-toggle-border-color: @input-bg-color;
+
+// Modal Window
+@modal-header-bg-color: @bg-level1-color;
+@modal-bg-color: @bg-color;

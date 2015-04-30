@@ -14,7 +14,7 @@
     .button {
         display: inline-block;
         flex-wrap: nowrap;
-        border: 2px solid @primary-color;
+        border: 2px solid @base-color;
         height: 40px;
         width: 40px;
         margin-right: 2px;
@@ -25,7 +25,7 @@
         transition: color 0.2s;
 
         &:hover {
-            color: @primary-color;
+            color: @base-color;
         }
     }
 
@@ -53,7 +53,7 @@
     }
 
     .loop-button-on {
-        color: @primary-color;
+        color: @base-color;
     }
 
     .volume {
@@ -90,16 +90,16 @@
     }
 
     .current-time {
-        color: @primary-text-color;
+        color: @text-color;
     }
 
     .total-time {
-        color: @secondary-text-color;
+        color: @text-level1-color;
     }
 
     .split {
         height: 30px;
-        border-right: 1px solid @primary-color;
+        border-right: 1px solid @base-color;
         margin: 0 8px;
         transform: rotate(20deg);
     }

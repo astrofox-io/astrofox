@@ -3,20 +3,20 @@
     flex-direction: row;
     justify-content: space-between;
 
-    .option {
-        border: 1px solid #333;
+    .item {
+        border: 1px solid @picker-item-border-color;
         border-radius: 5px;
         height: 100px;
         width: 100px;
         cursor: pointer;
     }
 
-    .option:hover {
-        border-color: @primary-color;
+    .item:hover {
+        border-color: @picker-item-hover-color;
     }
 
     .icon {
-        font-size: 20px;
+        font-size: @font-large;
         text-align: center;
         margin: 0 auto;
     }

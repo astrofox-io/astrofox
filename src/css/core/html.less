@@ -6,10 +6,10 @@
 }
 
 html, body {
-    font-family: sans-serif;
+    font-family: @font-family;
     font-size: @font-normal;
-    color: @primary-text-color;
-    background-color: @page-background-color;
+    color: @text-color;
+    background-color: @page-bg-color;
     height: 100%;
     width: 100%;
     margin: 0;
@@ -47,7 +47,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 ::selection {
-    background-color: @primary-color;
+    background-color: @base-color;
 }
 
 ::-webkit-scrollbar {
@@ -56,7 +56,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: @primary-color;
+    background-color: @base-color;
     border-radius: 10px;
 }
 

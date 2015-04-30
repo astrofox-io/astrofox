@@ -2,21 +2,21 @@
     flex: 1;
     padding: 5px 0;
     overflow: auto;
-}
 
-.layer {
-    font-size: @font-small;
-    background-color: @menu-background-color;
-    border-bottom: 1px solid #222;
-    margin: 0 5px;
-    padding: 5px;
-    cursor: pointer;
+    .layer {
+        font-size: @font-small;
+        background-color: @layer-bg-color;
+        border-bottom: 1px solid @layer-border-color;
+        margin: 0 5px;
+        padding: 5px;
+        cursor: pointer;
 
-    &:first-child {
-        border-top: 1px solid #222;
+        &:first-child {
+            border-top: 1px solid @layer-border-color;
+        }
     }
-}
 
-.layer-active {
-    background-color: @primary-color !important;
+    .layer-active {
+        background-color: @base-color;
+    }
 }

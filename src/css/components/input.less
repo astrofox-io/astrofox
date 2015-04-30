@@ -4,27 +4,28 @@
 }
 
 .input-field {
+    font-family: @font-family;
+    font-size: @input-font-size;
     color: @input-font-color;
-    font-family: @primary-font;
-    font-size: @font-small;
     line-height: 20px;
-    background-color: @input-background-color;
+    background-color: @input-bg-color;
     border: 1px solid @input-border-color;
     border-radius: 2px;
     padding: 0 3px;
     outline: none;
 
     &:focus {
-        border: 1px solid @primary-color;
+        border: 1px solid @base-color;
     }
 
     &:read-only {
-        color: #555;
+        color: @input-readonly-color;
     }
 }
 
 .input-hidden {
     color: transparent !important;
+    -webkit-user-select: none;
 }
 
 .input-select {
@@ -32,7 +33,7 @@
     position: relative;
 
     .input-field {
-        color: @primary-text-color;
+        color: @input-font-color;
     }
 
     &:after {
@@ -43,8 +44,8 @@
         right: 7px;
         height: 5px;
         width: 5px;
-        border-top: 1px solid @primary-color;
-        border-right: 1px solid @primary-color;
+        border-top: 1px solid @base-color;
+        border-right: 1px solid @base-color;
         pointer-events: none;
     }
 }
@@ -56,15 +57,14 @@
     list-style: none;
 
     .input-option {
-        font-family: @primary-font;
         font-size: @font-small;
         padding: 5px;
         min-width: 100px;
-        background-color: @input-background-color;
+        background-color: @input-bg-color;
 
         &:hover {
             cursor: default;
-            background-color: @primary-color;
+            background-color: @base-color;
         }
     }
 }
@@ -97,7 +97,7 @@
         height: 4px;
         width: 100%;
         border-radius: 4px;
-        background: #555;
+        background: @input-range-bg-color;
         .absolute-center();
     }
 
@@ -105,7 +105,7 @@
         height: 4px;
         width: 100%;
         border-radius: 4px;
-        background: @primary-color;
+        background: @base-color;
         .absolute-left();
     }
 
@@ -120,7 +120,7 @@
     height: 17px;
     width: 32px;
     border-radius: 17px;
-    background-color: @input-background-color;
+    background-color: @input-bg-color;
     border: 1px solid @input-border-color;
     cursor: pointer;
     transition: background-color 0.25s;
@@ -130,8 +130,8 @@
         width: 15px;
         height: 15px;
         border-radius: 15px;
-        background-color: #fff;
-        border: 1px solid #787878;
+        background-color: @input-toggle-button-bg-color;
+        border: 1px solid @input-toggle-border-color;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
         transition: left 0.25s;
         .absolute-left();
@@ -139,7 +139,7 @@
 }
 
 .input-toggle-on {
-    background-color: @primary-color;
+    background-color: @base-color;
 
     &:before {
         left: 15px;
@@ -149,7 +149,7 @@
 .input-image {
     height: 100px;
     width: 100px;
-    background-color: @input-background-color;
+    background-color: @input-bg-color;
     border: 1px solid @input-border-color;
     position: relative;
     overflow: hidden;
@@ -183,18 +183,18 @@
     transition: color 0.3s;
 
     &:hover {
-        color: @primary-color;
+        color: @base-color;
     }
 }
 
 .input-link {
     margin-left: 8px;
-    color: #555;
+    color: @input-link-color;
     cursor: pointer;
 }
 
 .input-link-on {
-    color: #ccc;
+    color: @input-link-on-color;
 }
 
 .input-file {

@@ -55,14 +55,14 @@ var Header = React.createClass({
     render: function() {
         return (
             <div id="header">
-                <div id="title">ASTROFOX</div>
-                <div id="control-box">
-                    <ul className="box-group">
-                        <li className="box icon-code" onClick={this.handleConsole}></li>
-                        <li className="box icon-cw" onClick={this.handleReload}></li>
-                        <li className="box icon-minus" onClick={this.handleMinimize}></li>
-                        <li className="box icon-plus" onClick={this.handleMaximize}></li>
-                        <li className="box icon-cancel" onClick={this.handleClose}></li>
+                <div className="title">ASTROFOX</div>
+                <div className="btn-group">
+                    <ul>
+                        <li className="btn icon-code" onClick={this.handleConsole}></li>
+                        <li className="btn icon-cw" onClick={this.handleReload}></li>
+                        <li className="btn icon-minus" onClick={this.handleMinimize}></li>
+                        <li className="btn icon-plus" onClick={this.handleMaximize}></li>
+                        <li className="btn icon-cancel" onClick={this.handleClose}></li>
                     </ul>
                 </div>
             </div>

@@ -1,0 +1,46 @@
+#header {
+    display: flex;
+    height: 40px;
+    background-color: @header-bg-color;
+    z-index: 1;
+    -webkit-app-region: drag;
+
+    .title {
+        font-size: @font-large;
+        font-weight: 300;
+        line-height: 40px;
+        letter-spacing: 5px;
+        color: @header-text-color;
+        padding-left: 20px;
+        cursor: default;
+    }
+
+    .btn-group {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 0;
+        background-color: @window-btn-bg-color;
+        border-bottom: 1px solid @window-btn-border-color;
+        -webkit-app-region: no-drag;
+    }
+
+    .btn {
+        display: inline-block;
+        color: @window-btn-text-color;
+        font-size: 16px;
+        width: 30px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        border-right: 1px solid @window-btn-border-color;
+
+        &:first-child {
+            border-left: 1px solid @window-btn-border-color;
+        }
+
+        &:hover {
+            color: @base-color;
+        }
+    }
+}

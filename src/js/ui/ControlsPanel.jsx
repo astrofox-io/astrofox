@@ -36,7 +36,7 @@ var ControlsPanel = React.createClass({
         }, this);
 
         return (
-            <div id="controls" ref="controls">
+            <div className="controls-panel" ref="controls">
                 {controls}
             </div>
         );

@@ -5,7 +5,7 @@ var React = require('react');
 var MainView = React.createClass({
     render: function(){
         return (
-            <div id="view">
+            <div className="view">
                 {this.props.children}
             </div>
         );

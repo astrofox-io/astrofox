@@ -1,8 +1,8 @@
-#menubar {
-    font-family: @primary-font;
+.menubar {
+    font-family: @font-family;
     font-size: @font-normal;
-    color: @menu-font-color;
-    background-color: @menu-background-color;
+    color: @menubar-text-color;
+    background-color: @menubar-bg-color;
     padding-left: 20px;
     height: 20px;
 
@@ -20,13 +20,13 @@
 
         &:hover {
             cursor: default;
-            color: @primary-color;
+            color: @base-color;
         }
     }
 
     .menubar-text-active {
-        color: @primary-color;
-        background-color: #222;
+        color: @base-color;
+        background-color: @menubar-active-bg-color;
     }
 
     .menu {
@@ -35,40 +35,39 @@
         left: 0;
         list-style: none;
         z-index: 400;
-        background-color: #1c1c1c;
-        border: 1px solid #111;
+        background-color: @menu-bg-color;
+        border: 1px solid @menu-border-color;
         overflow: hidden;
 
         .menu-item {
             position: relative;
             display: block;
-            font-family: @primary-font;
             font-size: @font-small;
             padding: 5px 5px 5px 20px;
             min-width: 140px;
 
             &:hover {
-                color: @primary-text-color;
-                background-color: @primary-color;
+                color: @text-color;
+                background-color: @base-color;
                 cursor: default;
             }
         }
 
         .checked:before {
             content: "\2713";
-            color: @primary-color;
+            color: @base-color;
             position: absolute;
             top: 5px;
             left: 5px;
         }
 
         .checked:hover:before {
-            color: @primary-text-color;
+            color: @text-color;
         }
 
         .begin-group:before {
             content: "\0020";
-            border-top: 1px solid #111;
+            border-top: 1px solid @menu-group-border-color;
             position: absolute;
             top: 0;
             left: 0;

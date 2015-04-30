@@ -1,16 +1,16 @@
 .control {
-    background-color: @control-background-color;
-    border-top: 1px solid @primary-border-top;
-    border-bottom: 1px solid @primary-border-bottom;
+    background-color: @control-bg-color;
+    border-top: 1px solid @control-top-border-color;
+    border-bottom: 1px solid @control-bottom-border-color;
     padding-bottom: 16px;
     margin: 5px;
 
     .header {
-        margin-bottom: 10px;
         font-size: @font-small;
-        color: @primary-color;
+        color: @base-color;
         line-height: 20px;
         padding-left: 8px;
+        margin-bottom: 10px;
         cursor: default;
     }
 
@@ -21,9 +21,8 @@
         .flex-box(row, flex-start, center, stretch);
 
         .label {
-            font-family: @primary-font;
             font-size: @font-small;
-            color: @primary-text-color;
+            color: @text-color;
             display: inline-block;
             line-height: 20px;
             margin-right: 8px;
@@ -47,15 +46,15 @@
         }
 
         .unit {
-            color: @secondary-text-color;
+            color: @text-level1-color;
             font-size: @font-small;
             margin: 0 8px 0 -4px;
         }
 
         &:after {
             content: "\0020";
-            border-top: 1px solid #333;
-            border-bottom: 1px solid #555;
+            border-top: 1px solid @control-row-top-color;
+            border-bottom: 1px solid @control-row-bottom-color;
             position: absolute;
             bottom: 0;
             left: 0;
