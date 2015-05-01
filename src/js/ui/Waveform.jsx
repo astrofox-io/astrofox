@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
 var BarDisplay = require('../display/BarDisplay.js');
 var WaveformParser = require('../audio/WaveformParser.js');
 
@@ -25,9 +26,8 @@ var Waveform = React.createClass({
     },
 
     componentDidMount: function() {
-        var app = this.props.app,
-            config = this.config,
-            player = this.player = app.player;
+        var config = this.config,
+            player = Application.player;
 
         this.bars = new BarDisplay(
             React.findDOMNode(this.refs.canvas),
@@ -73,7 +73,7 @@ var Waveform = React.createClass({
 
         player.on('load', function() {
             var options = { bars: this.config.bars },
-                buffer = this.player.getSound('audio').buffer,
+                buffer = Application.player.getSound('audio').buffer,
                 data = WaveformParser.parseBuffer(buffer, options);
 
             this.draw(data);
@@ -97,7 +97,7 @@ var Waveform = React.createClass({
         e.preventDefault();
 
         var val = e.pageX - e.currentTarget.offsetLeft,
-            player = this.player;
+            player = Application.player;
 
         player.seek('audio', val / this.config.width);
 
@@ -143,7 +143,7 @@ var Waveform = React.createClass({
         var width = this.config.width,
             height = this.config.height + this.config.shadowHeight,
             seek = this.state.seek,
-            progressWidth = this.props.app.player.getPosition('audio') * width,
+            progressWidth = Application.player.getPosition('audio') * width,
             progressStyle = { width: progressWidth + 'px' },
             clipStyle = { display: 'none' };
 

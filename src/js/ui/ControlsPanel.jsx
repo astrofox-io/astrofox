@@ -1,10 +1,12 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
+var FX = require('../FX.js');
+
 var BarSpectrumControl = require('./controls/BarSpectrumControl.jsx');
 var ImageControl = require('./controls/ImageControl.jsx');
 var TextControl = require('./controls/TextControl.jsx');
-var FX = require('../FX.js');
 
 var ControlsPanel = React.createClass({
     getControl: function(display) {
@@ -25,10 +27,9 @@ var ControlsPanel = React.createClass({
     },
 
     render: function() {
-        var controls = this.props.app.displays.map(function(display, index) {
+        var controls = Application.displays.map(function(display, index) {
             var Control = this.getControl(display);
             var props = {
-                app: this.props.app,
                 display: display,
                 key: 'ctrl' + display.toString()
             };

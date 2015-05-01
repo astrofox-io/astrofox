@@ -27,7 +27,7 @@ var App = React.createClass({
     },
 
     componentWillMount: function() {
-        var app = this.app = new Application();
+        var app = this.app = Application;
         app.addDisplay(new FX.TextDisplay());
         app.addDisplay(new FX.BarSpectrumDisplay());
         app.addDisplay(new FX.ImageDisplay());
@@ -213,7 +213,6 @@ var App = React.createClass({
                 <Header />
                 <MenuBar
                     ref="menu"
-                    app={this.app}
                     onMenuAction={this.handleMenuAction}
                 />
                 <Body>
@@ -223,28 +222,23 @@ var App = React.createClass({
                     <MainView>
                         <Scene
                             ref="scene"
-                            app={this.app}
                             onFileDropped={this.loadAudioFile}
                         />
                         <Waveform
                             ref="waveform"
-                            app={this.app}
                             onProgressChange={this.handleWaveformProgressChange}
                         />
                         <Player
                             ref="player"
-                            app={this.app}
                             onProgressChange={this.handlePlayerProgressChange}
                         />
                     </MainView>
                     <ControlDock
                         ref="dock"
-                        app={this.app}
                         onLayerAdd={this.handleLayerAdd}
                     />
                 </Body>
                 <Footer
-                    app={this.app}
                     filename={this.state.filename}
                 />
                 <form ref="form" className="off-screen">

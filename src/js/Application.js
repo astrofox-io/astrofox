@@ -10,11 +10,12 @@ var Scene = require('./display/Scene.js');
 var FX = require('./FX.js');
 var IO = require('./IO.js');
 var _ = require('lodash');
+var Dispatcher = require('flux').Dispatcher;
 
 var defaults = {
     fps: 29.97,
-    canvasHeight: 480,
     canvasWidth: 854,
+    canvasHeight: 480,
     useCompression: false
 };
 
@@ -29,6 +30,7 @@ var Application = function() {
     this.timer = new Timer();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
+    this.dispatcher = new Dispatcher();
 
     this.FX = FX;
 };
@@ -288,4 +290,4 @@ function spliceOne(list, index) {
     list.pop();
 }
 
-module.exports = Application;
+module.exports = new Application;

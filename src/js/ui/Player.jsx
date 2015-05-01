@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
 var RangeInput = require('./input/RangeInput.jsx');
 
 var Player = React.createClass({
@@ -11,7 +12,7 @@ var Player = React.createClass({
     },
 
     componentDidMount: function() {
-        var player = this.props.app.player;
+        var player = Application.player;
 
         player.on('time', function() {
             if (player.isPlaying()) {
@@ -29,26 +30,26 @@ var Player = React.createClass({
     },
 
     onPlayButtonClick: function() {
-        this.props.app.player.play('audio');
+        Application.player.play('audio');
         this.forceUpdate();
     },
 
     onStopButtonClick: function() {
-        this.props.app.player.stop('audio');
+        Application.player.stop('audio');
         this.forceUpdate();
     },
 
     onLoopButtonClick: function() {
-        this.props.app.player.toggleLoop();
+        Application.player.toggleLoop();
         this.forceUpdate();
     },
 
     onVolumeChange: function(val) {
-        this.props.app.player.setVolume(val);
+        Application.player.setVolume(val);
     },
 
     onProgressChange: function(val) {
-        this.props.app.player.seek('audio', val);
+        Application.player.seek('audio', val);
         this.props.onProgressChange(val);
         this.forceUpdate();
     },
@@ -58,7 +59,7 @@ var Player = React.createClass({
     },
 
     getCurrentTime: function() {
-        var player = this.props.app.player;
+        var player = Application.player;
 
         // Check if progress component loaded
         if (this.refs.progress) {
@@ -71,12 +72,12 @@ var Player = React.createClass({
     },
 
     getTotalTime: function() {
-        var player = this.props.app.player;
+        var player = Application.player;
         return player.getDuration('audio');
     },
 
     render: function() {
-        var player = this.props.app.player,
+        var player = Application.player,
             currentTime = this.getCurrentTime(),
             totalTime = player.getDuration('audio'),
             isPlaying = player.isPlaying(),

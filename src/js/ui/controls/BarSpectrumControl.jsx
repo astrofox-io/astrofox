@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../../Application.js');
 var NumberInput = require('../input/NumberInput.jsx');
 var ColorRangeInput = require('../input/ColorRangeInput.jsx');
 var RangeInput = require('../input/RangeInput.jsx');
@@ -38,7 +39,7 @@ var BarSpectrumControl = React.createClass({
     },
 
     componentDidMount: function() {
-        var app = this.props.app,
+        var app = Application,
             display = this.props.display;
 
         if (display.initialized) {

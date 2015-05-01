@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
 var Loading = require('./Loading.jsx');
 
 var Scene = React.createClass({
@@ -15,16 +16,13 @@ var Scene = React.createClass({
     },
 
     componentDidMount: function() {
-        var app = this.props.app;
-
         this.canvas = React.findDOMNode(this.refs.canvas);
-        app.loadCanvas(this.canvas);
+        Application.loadCanvas(this.canvas);
 
         // DEBUG
         console.log('scene loaded');
 
-        //this.renderScene();
-        app.startRender();
+        Application.startRender();
     },
 
     handleDragOver: function(e){
@@ -43,12 +41,6 @@ var Scene = React.createClass({
 
     showLoading: function(val) {
         this.setState({ loading: val });
-    },
-
-    renderScene: function() {
-        requestAnimationFrame(this.renderScene);
-
-        this.props.app.renderScene();
     },
 
     render: function() {

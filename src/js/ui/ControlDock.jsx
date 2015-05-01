@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
 var Panel = require('./Panel.jsx');
 var Splitter = require('./Splitter.jsx');
 var ControlsPanel = require('./ControlsPanel.jsx');
@@ -22,18 +23,16 @@ var ControlDock = React.createClass({
     },
 
     componentDidMount: function() {
-        var app = this.props.app;
-
-        app.on('mouseup', function() {
+        Application.on('mouseup', function() {
             this.setState({ dragging: false });
         }.bind(this));
 
-        app.on('project_loaded', function() {
+        Application.on('project_loaded', function() {
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
         }.bind(this));
 
-        app.on('display_changed', function() {
+        Application.on('display_changed', function() {
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
         }.bind(this));

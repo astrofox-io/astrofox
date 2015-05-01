@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
 
 var LayersPanel = React.createClass({
     getInitialState: function() {
@@ -20,7 +21,7 @@ var LayersPanel = React.createClass({
     },
 
     handleRemoveClick: function() {
-        var app = this.props.app,
+        var app = Application,
             index = this.state.activeIndex,
             display = app.displays[index];
 
@@ -34,7 +35,7 @@ var LayersPanel = React.createClass({
     },
 
     handleMoveUpClick: function() {
-        var app = this.props.app,
+        var app = Application,
             index = this.state.activeIndex,
             newIndex = index - 1;
 
@@ -48,8 +49,8 @@ var LayersPanel = React.createClass({
     },
 
     handleMoveDownClick: function() {
-        var app = this.props.app,
-            len = this.props.app.displays.length - 1,
+        var app = Application,
+            len = Application.displays.length - 1,
             index = this.state.activeIndex,
             newIndex = index + 1;
 
@@ -65,7 +66,7 @@ var LayersPanel = React.createClass({
     render: function() {
         var layers;
 
-        layers = this.props.app.displays.map(function(display, index) {
+        layers = Application.displays.map(function(display, index) {
             var classes = 'layer';
             if (index === this.state.activeIndex) {
                 classes += ' layer-active';
