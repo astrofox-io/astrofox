@@ -75,15 +75,15 @@
 @splitter-bg-color: darken(@bg-level1-color, 3%);
 
 // Input
-@input-font-color: @text-color;
+@input-text-color: @text-color;
 @input-bg-color: @bg-level1-color;
 @input-border-color: @border-color;
 @input-font-size: @font-small;
-@input-readonly-color: lighten(@bg-level1-color, 10%);
+@input-readonly-color: darken(@text-color, 60%);
 @input-range-bg-color: lighten(@bg-level1-color, 10%);
-@input-link-color: lighten(@bg-level1-color, 20%);
-@input-link-on-color: lighten(@bg-level1-color, 50%);
-@input-toggle-button-bg-color: @input-font-color;
+@input-link-color: darken(@text-color, 50%);
+@input-link-on-color: darken(@text-color, 10%);
+@input-toggle-button-bg-color: @input-text-color;
 @input-toggle-border-color: @input-bg-color;
 
 // Modal Window
