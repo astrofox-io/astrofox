@@ -17,7 +17,7 @@ var LayersPanel = React.createClass({
     },
 
     handleAddClick: function() {
-        this.props.onLayerAdd();
+        Application.emit('pick_control');
     },
 
     handleRemoveClick: function() {
@@ -35,12 +35,11 @@ var LayersPanel = React.createClass({
     },
 
     handleMoveUpClick: function() {
-        var app = Application,
-            index = this.state.activeIndex,
+        var index = this.state.activeIndex,
             newIndex = index - 1;
 
         if (index > 0) {
-            app.swapDisplay(index, newIndex);
+            Application.swapDisplay(index, newIndex);
             this.setState({ activeIndex: newIndex });
             this.props.onLayerChanged(function() {
                 this.props.onLayerSelected(newIndex);

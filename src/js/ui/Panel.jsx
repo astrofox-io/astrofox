@@ -4,7 +4,9 @@ var React = require('react');
 
 var Panel = React.createClass({
     getDefaultProps: function() {
-        return { shouldUpdate: true };
+        return {
+            shouldUpdate: true
+        };
     },
 
     shouldComponentUpdate: function(nextProps) {

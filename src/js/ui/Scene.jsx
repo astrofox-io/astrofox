@@ -5,12 +5,6 @@ var Application = require('../Application.js');
 var Loading = require('./Loading.jsx');
 
 var Scene = React.createClass({
-    getDefaultProps: function() {
-        return {
-            onFileDropped: function() {}
-        };
-    },
-
     getInitialState: function() {
         return { loading: false };
     },
@@ -18,10 +12,6 @@ var Scene = React.createClass({
     componentDidMount: function() {
         this.canvas = React.findDOMNode(this.refs.canvas);
         Application.loadCanvas(this.canvas);
-
-        // DEBUG
-        console.log('scene loaded');
-
         Application.startRender();
     },
 
@@ -36,7 +26,9 @@ var Scene = React.createClass({
 
         var file = e.dataTransfer.files[0];
 
-        this.props.onFileDropped(file);
+        if (this.props.onFileDropped) {
+            this.props.onFileDropped(file);
+        }
     },
 
     showLoading: function(val) {

@@ -4,12 +4,6 @@ var React = require('react');
 var MenuBarItem = require('./MenuBarItem.jsx');
 
 var MenuBar = React.createClass({
-    getDefaultProps: function() {
-        return {
-            onMenuAction: function(){}
-        };
-    },
-
     getInitialState: function() {
         return {
             activeIndex: -1,
@@ -63,7 +57,10 @@ var MenuBar = React.createClass({
 
     handleItemClick: function(action, checked) {
         this.setActiveIndex(-1);
-        this.props.onMenuAction(action, checked);
+
+        if (this.props.onMenuAction) {
+            this.props.onMenuAction(action, checked);
+        }
     },
 
     setActiveIndex: function(index) {
@@ -87,7 +84,7 @@ var MenuBar = React.createClass({
         var items = this.state.items.map(function(item, index) {
             return (
                 <MenuBarItem
-                    key={"menubaritem" + index}
+                    key={index}
                     text={item.text}
                     items={item.items}
                     active={this.state.activeIndex === index}

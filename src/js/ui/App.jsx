@@ -1,6 +1,9 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
+var FX = require('../FX.js');
+
 var Header = require('./Header.jsx');
 var Body = require('./Body.jsx');
 var Footer = require('./Footer.jsx');
@@ -14,9 +17,6 @@ var ModalWindow = require('./ModalWindow.jsx');
 var ControlDock = require('./ControlDock.jsx');
 var ControlPicker = require('./ControlPicker.jsx');
 
-var Application = require('../Application.js');
-var FX = require('../FX.js');
-
 var App = React.createClass({
     getInitialState: function() {
         return {
@@ -27,13 +27,18 @@ var App = React.createClass({
     },
 
     componentWillMount: function() {
-        var app = this.app = Application;
-        app.addDisplay(new FX.TextDisplay());
-        app.addDisplay(new FX.BarSpectrumDisplay());
-        app.addDisplay(new FX.ImageDisplay());
+        Application.addDisplay(new FX.TextDisplay());
+        Application.addDisplay(new FX.BarSpectrumDisplay());
+        Application.addDisplay(new FX.ImageDisplay());
 
-        app.on('error', function(err) {
+        Application.on('error', function(err) {
             this.showError(err);
+        }.bind(this));
+
+        Application.on('pick_control', function(err) {
+            this.showModal(
+                <ControlPicker title="ADD CONTROL" onClose={this.hideModal} />
+            );
         }.bind(this));
     },
 
@@ -42,10 +47,6 @@ var App = React.createClass({
         this.fileInput = React.findDOMNode(this.refs.file);
         this.fileInput.setAttribute('nwsaveas', '');
         this.fileAction = null;
-    },
-
-    componentDidUpdate: function() {
-
     },
 
     handleClick: function() {
@@ -58,11 +59,11 @@ var App = React.createClass({
     },
 
     handleMouseDown: function(e) {
-        this.app.emit('mousedown');
+        Application.emit('mousedown');
     },
 
     handleMouseUp: function(e) {
-        this.app.emit('mouseup');
+        Application.emit('mouseup');
     },
 
     handlePlayerProgressChange: function() {
@@ -91,13 +92,13 @@ var App = React.createClass({
 
             case 'File/Open Project':
                 this.loadFileDialog(function(file) {
-                    this.app.loadProject(file);
+                    Application.loadProject(file);
                 }.bind(this), '');
                 break;
 
             case 'File/Save Project':
                 this.loadFileDialog(function(file) {
-                    this.app.saveProject(file);
+                    Application.saveProject(file);
                 }.bind(this), 'project.afx');
                 break;
 
@@ -109,13 +110,13 @@ var App = React.createClass({
 
             case 'File/Save Image':
                 this.loadFileDialog(function(file) {
-                    this.app.saveImage(file);
+                    Application.saveImage(file);
                 }.bind(this), 'image.png');
                 break;
 
             case 'File/Save Video':
                 this.loadFileDialog(function(file) {
-                    this.app.saveVideo(file);
+                    Application.saveVideo(file);
                 }.bind(this), 'video.mp4');
                 break;
 
@@ -133,7 +134,7 @@ var App = React.createClass({
                 break;
 
             case 'View/Show FPS':
-                this.app.showFPS(!checked);
+                Application.showFPS(!checked);
                 this.refs.menu.setCheckState(action, !checked);
                 break;
 
@@ -145,12 +146,6 @@ var App = React.createClass({
                 );
                 break;
         }
-    },
-
-    handleLayerAdd: function() {
-        this.showModal(
-            <ControlPicker title="ADD CONTROL" onClose={this.hideModal} app={this.app} />
-        );
     },
 
     loadFileDialog: function(action, filename) {
@@ -184,16 +179,15 @@ var App = React.createClass({
 
     loadAudioFile: function(file) {
         var scene = this.refs.scene,
-            app = this.app,
             err = function(error) {
                 this.showError(error);
             }.bind(this);
 
         scene.showLoading(true);
 
-        app.loadAudioFile(file)
+        Application.loadAudioFile(file)
             .then(function(data) {
-                return app.loadAudioData(data);
+                return Application.loadAudioData(data);
             })
             .catch(err)
             .then(function() {
@@ -233,10 +227,7 @@ var App = React.createClass({
                             onProgressChange={this.handlePlayerProgressChange}
                         />
                     </MainView>
-                    <ControlDock
-                        ref="dock"
-                        onLayerAdd={this.handleLayerAdd}
-                    />
+                    <ControlDock ref="dock" />
                 </Body>
                 <Footer
                     filename={this.state.filename}

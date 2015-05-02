@@ -13,13 +13,10 @@ var ControlDock = React.createClass({
             visible: true,
             dragging: false,
             panelHeight: 200,
+            minPanelHeight: 100,
             startY: 0,
             startHeight: 200
         };
-    },
-
-    componentWillMount: function() {
-        this.minPanelHeight = 100;
     },
 
     componentDidMount: function() {
@@ -40,17 +37,14 @@ var ControlDock = React.createClass({
         this.dock = React.findDOMNode(this.refs.dock);
     },
 
-    componentDidUpdate: function() {
-    },
-
     handleMouseMove: function(e) {
         var val,
             state = this.state;
 
         if (state.dragging) {
             val = state.startHeight + e.pageY - state.startY;
-            if (val < this.minPanelHeight) {
-                val = this.minPanelHeight;
+            if (val < state.minPanelHeight) {
+                val = state.minPanelHeight;
             }
 
             this.setState({ panelHeight: val });
@@ -63,10 +57,6 @@ var ControlDock = React.createClass({
             startY: e.pageY,
             startHeight: this.state.panelHeight
         });
-    },
-
-    handleLayerAdd: function() {
-        this.props.onLayerAdd();
     },
 
     handleLayerSelected: function(index) {
@@ -99,20 +89,15 @@ var ControlDock = React.createClass({
                 <Panel title="LAYERS" height={state.panelHeight}>
                     <LayersPanel
                         ref="layers"
-                        onLayerAdd={this.handleLayerAdd}
                         onLayerSelected={this.handleLayerSelected}
                         onLayerChanged={this.handleLayerChanged}
-                        {...this.props}
                     />
                 </Panel>
 
                 <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
 
                 <Panel title="CONTROLS" className="flex" shouldUpdate={false}>
-                    <ControlsPanel
-                        ref="controls"
-                        {...this.props}
-                    />
+                    <ControlsPanel ref="controls" />
                 </Panel>
             </div>
         );

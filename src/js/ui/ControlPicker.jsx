@@ -1,25 +1,16 @@
 'use strict';
 
 var React = require('react');
+var Application = require('../Application.js');
 var ModalWindow = require('../ui/ModalWindow.jsx');
 var FX = require('../FX.js');
 
 var ControlPicker = React.createClass({
-    getDefaultProps: function() {
-        return {
-            onClose: function(){}
-        };
-    },
-
     handleControlAdd: function(e) {
         e.preventDefault();
         e.stopPropagation();
 
         this.props.onClose();
-    },
-
-    componentWillMount: function() {
-        this.app = this.props.app;
     },
 
     render: function() {
@@ -29,8 +20,11 @@ var ControlPicker = React.createClass({
             FX.BarSpectrumDisplay
         ].map(function(item, index){
             var handleClick = function() {
-                this.props.app.addDisplay(new item);
-                this.props.onClose();
+                Application.addDisplay(new item);
+
+                if (this.props.onClose) {
+                    this.props.onClose();
+                }
             }.bind(this);
             return (
                 <div key={"c" + index}>
