@@ -20,7 +20,7 @@ var ControlPicker = React.createClass({
             FX.BarSpectrumDisplay
         ].map(function(item, index){
             var handleClick = function() {
-                Application.addDisplay(new item);
+                Application.addDisplay(new item, 0);
 
                 if (this.props.onClose) {
                     this.props.onClose();

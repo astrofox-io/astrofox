@@ -10,7 +10,6 @@ var Scene = require('./display/Scene.js');
 var FX = require('./FX.js');
 var IO = require('./IO.js');
 var _ = require('lodash');
-var Dispatcher = require('flux').Dispatcher;
 
 var defaults = {
     fps: 29.97,
@@ -30,7 +29,6 @@ var Application = function() {
     this.timer = new Timer();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
-    this.dispatcher = new Dispatcher();
 
     this.FX = FX;
 };
@@ -92,8 +90,13 @@ Class.extend(Application, EventEmitter, {
         this.scene.setupCanvas(canvas);
     },
 
-    addDisplay: function(display) {
-        this.displays.push(display);
+    addDisplay: function(display, index) {
+        if (typeof index !== 'undefined') {
+            this.displays.splice(index, 0, display);
+        }
+        else {
+            this.displays.push(display);
+        }
 
         this.emit('display_changed');
     },
@@ -101,8 +104,7 @@ Class.extend(Application, EventEmitter, {
     removeDisplay: function(display) {
         var index = this.displays.indexOf(display);
         if (index > -1) {
-            //this.displays.splice(index, 1);
-            spliceOne(this.displays, index);
+            this.displays.splice(index, 1);
 
             this.emit('display_changed');
         }
@@ -281,13 +283,5 @@ Class.extend(Application, EventEmitter, {
         }
     }
 });
-
-// Supposedly 1.5x faster than Array.splice
-function spliceOne(list, index) {
-    for (var i = index, k = i+1, n = list.length; k < n; i += 1, k += 1) {
-        list[i] = list[k];
-    }
-    list.pop();
-}
 
 module.exports = new Application;

@@ -33,8 +33,6 @@ var ControlDock = React.createClass({
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
         }.bind(this));
-
-        this.dock = React.findDOMNode(this.refs.dock);
     },
 
     handleMouseMove: function(e) {
@@ -83,7 +81,6 @@ var ControlDock = React.createClass({
         return (
             <div
                 className="control-dock"
-                ref="dock"
                 style={style}
                 onMouseMove={mouseMove}>
                 <Panel title="LAYERS" height={state.panelHeight}>

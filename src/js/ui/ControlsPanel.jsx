@@ -29,11 +29,14 @@ var ControlsPanel = React.createClass({
     render: function() {
         var controls = Application.displays.map(function(display, index) {
             var Control = this.getControl(display);
-            var props = {
-                display: display,
-                key: 'ctrl' + display.toString()
-            };
-            return <Control ref={'ctrl' + index} {...props} />;
+
+            return (
+                <Control
+                    ref={'ctrl' + index}
+                    key={'ctrl' + display.toString()}
+                    display={display}
+                />
+            );
         }, this);
 
         return (

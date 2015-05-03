@@ -9,6 +9,10 @@ var Header = React.createClass({
         this.maximized = false;
     },
 
+    shouldComponentUpdate: function() {
+        return false;
+    },
+
     handleMinimize: function(e) {
         e.preventDefault();
         e.stopPropagation();
