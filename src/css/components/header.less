@@ -1,18 +1,27 @@
 #header {
-    display: flex;
     height: 40px;
     background-color: @header-bg-color;
     z-index: 1;
     -webkit-app-region: drag;
 
     .title {
-        font-size: @font-large;
-        font-weight: 300;
+        font-size: @font-normal;
+        color: @text-level1-color;
         line-height: 40px;
         letter-spacing: 5px;
-        color: @header-text-color;
-        padding-left: 20px;
+        text-align: center;
         cursor: default;
+    }
+
+    .icon {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 15px solid @base-color;
     }
 
     .btn-group {

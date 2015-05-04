@@ -3,7 +3,6 @@
 var React = require('react');
 var Application = require('../Application.js');
 var Panel = require('./Panel.jsx');
-var Splitter = require('./Splitter.jsx');
 var ControlsPanel = require('./ControlsPanel.jsx');
 var LayersPanel = require('./LayersPanel.jsx');
 
@@ -11,19 +10,11 @@ var ControlDock = React.createClass({
     getInitialState: function() {
         return {
             visible: true,
-            dragging: false,
-            panelHeight: 200,
-            minPanelHeight: 100,
-            startY: 0,
-            startHeight: 200
+            dragging: false
         };
     },
 
     componentDidMount: function() {
-        Application.on('mouseup', function() {
-            this.setState({ dragging: false });
-        }.bind(this));
-
         Application.on('project_loaded', function() {
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
@@ -35,34 +26,24 @@ var ControlDock = React.createClass({
         }.bind(this));
     },
 
-    handleMouseMove: function(e) {
-        var val,
-            state = this.state;
-
-        if (state.dragging) {
-            val = state.startHeight + e.pageY - state.startY;
-            if (val < state.minPanelHeight) {
-                val = state.minPanelHeight;
-            }
-
-            this.setState({ panelHeight: val });
-        }
-    },
-
-    handleStartDrag: function(e) {
-        this.setState({
-            dragging: true,
-            startY: e.pageY,
-            startHeight: this.state.panelHeight
-        });
-    },
-
     handleLayerSelected: function(index) {
         this.refs.controls.scrollToControl(index);
     },
 
     handleLayerChanged: function(callback) {
         this.refs.controls.forceUpdate(callback);
+    },
+
+    handleDragStart: function() {
+        this.setState({ dragging: true });
+    },
+
+    handleDragEnd: function() {
+        this.setState({ dragging: false });
+    },
+
+    handleMouseMove: function(e) {
+        this.refs.panel.handleMouseMove(e);
     },
 
     showDock: function(visible) {
@@ -83,17 +64,25 @@ var ControlDock = React.createClass({
                 className="control-dock"
                 style={style}
                 onMouseMove={mouseMove}>
-                <Panel title="LAYERS" height={state.panelHeight}>
+                <Panel
+                    title="LAYERS"
+                    ref="panel"
+                    height={200}
+                    resizable={true}
+                    onDragStart={this.handleDragStart}
+                    onDragEnd={this.handleDragEnd}>
+
                     <LayersPanel
                         ref="layers"
                         onLayerSelected={this.handleLayerSelected}
                         onLayerChanged={this.handleLayerChanged}
                     />
                 </Panel>
+                <Panel
+                    title="CONTROLS"
+                    className="flex"
+                    shouldUpdate={false}>
 
-                <Splitter type="horizontal" onStartDrag={this.handleStartDrag} />
-
-                <Panel title="CONTROLS" className="flex" shouldUpdate={false}>
                     <ControlsPanel ref="controls" />
                 </Panel>
             </div>

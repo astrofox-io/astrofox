@@ -59,6 +59,7 @@ var Header = React.createClass({
     render: function() {
         return (
             <div id="header">
+                <div className="icon"></div>
                 <div className="title">ASTROFOX</div>
                 <div className="btn-group">
                     <ul>

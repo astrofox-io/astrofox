@@ -21,15 +21,14 @@ var LayersPanel = React.createClass({
     },
 
     handleRemoveClick: function() {
-        var app = Application,
-            index = this.state.activeIndex,
-            display = app.displays[index];
+        var index = this.state.activeIndex,
+            display = Application.displays[index];
 
-        if (index === app.displays.length - 1) {
+        if (index === Application.displays.length - 1) {
             this.setState({ activeIndex: index - 1 });
         }
 
-        app.removeDisplay(display);
+        Application.removeDisplay(display);
         this.forceUpdate();
         this.props.onLayerChanged();
     },
@@ -41,6 +40,7 @@ var LayersPanel = React.createClass({
         if (index > 0) {
             Application.swapDisplay(index, newIndex);
             this.setState({ activeIndex: newIndex });
+
             this.props.onLayerChanged(function() {
                 this.props.onLayerSelected(newIndex);
             }.bind(this));
@@ -72,7 +72,7 @@ var LayersPanel = React.createClass({
             }
 
             return (
-                <div key={'layer' + display.toString()}
+                <div key={display.toString()}
                     className={classes}
                     onClick={this.handleLayerClick.bind(this, index)}>
                     {display.toString()}

@@ -11,8 +11,10 @@ var Splitter = React.createClass({
         return this.defaultProps;
     },
 
-    startDrag: function(e) {
-        this.props.onStartDrag(e);
+    handleMouseDown: function(e) {
+        if (this.props.onDragStart) {
+            this.props.onDragStart(e);
+        }
     },
 
     render: function() {
@@ -21,7 +23,7 @@ var Splitter = React.createClass({
         return (
             <div
                 className={classes}
-                onMouseDown={this.startDrag}>
+                onMouseDown={this.handleMouseDown}>
                 <i className="icon-dot-3" />
             </div>
         );
