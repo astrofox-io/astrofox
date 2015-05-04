@@ -86,7 +86,12 @@ var ImageInput = React.createClass({
     },
 
     render: function() {
-        var style = { display: (this.props.src) ? 'inline-block' : 'none' };
+        var hasImage = !!this.props.src,
+            style = { display: (hasImage) ? 'inline-block' : 'none' },
+            classes = 'input input-image-icon ',
+            iconClick = (hasImage) ? this.handleDelete : this.handleClick;
+
+        classes += (hasImage) ? 'icon-cancel-circled' : 'icon-folder-open-empty';
 
         return (
             <div>
@@ -102,9 +107,8 @@ var ImageInput = React.createClass({
                     />
                 </div>
                 <div
-                    className="input input-image-delete icon-cancel-circled"
-                    onClick={this.handleDelete}
-                    style={style}
+                    className={classes}
+                    onClick={iconClick}
                 />
                 <form
                     ref="form"

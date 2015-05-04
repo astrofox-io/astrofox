@@ -14,7 +14,7 @@
     .button {
         display: inline-block;
         flex-wrap: nowrap;
-        border: 2px solid @base-color;
+        border: 2px solid lighten(@bg-level1-color, 10%);
         height: 40px;
         width: 40px;
         margin-right: 2px;
@@ -22,10 +22,10 @@
         line-height: 36px;
         text-align: center;
         vertical-align: middle;
-        transition: color 0.2s;
+        transition: all 0.2s;
 
         &:hover {
-            color: @base-color;
+            border: 2px solid @base-color;
         }
     }
 
