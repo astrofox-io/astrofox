@@ -2,7 +2,7 @@
     min-width: 500px;
     overflow: hidden;
     padding: 10px 0;
-    background-color: @player-background-color;
+    background-color: @player-bg-color;
     border-top: 1px solid @player-border-color;
     flex: 0 0 auto;
     .flex-box(row, flex-start, center, stretch);
@@ -14,7 +14,7 @@
     .button {
         display: inline-block;
         flex-wrap: nowrap;
-        border: 2px solid lighten(@bg-level1-color, 10%);
+        border: 2px solid @player-button-border-color;
         height: 40px;
         width: 40px;
         margin-right: 2px;
@@ -67,7 +67,6 @@
             vertical-align: middle;
             display: inline-block;
             margin-left: 8px;
-            vertical-align: middle;
         }
     }
 

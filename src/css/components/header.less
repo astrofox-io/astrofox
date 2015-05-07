@@ -6,7 +6,7 @@
 
     .title {
         font-size: @font-normal;
-        color: @text-level1-color;
+        color: @header-text-color;
         line-height: 40px;
         letter-spacing: 5px;
         text-align: center;
@@ -22,34 +22,5 @@
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
         border-top: 15px solid @base-color;
-    }
-
-    .btn-group {
-        position: absolute;
-        top: 0;
-        right: 10px;
-        font-size: 0;
-        background-color: @window-btn-bg-color;
-        border-bottom: 1px solid @window-btn-border-color;
-        -webkit-app-region: no-drag;
-
-        .btn {
-            display: inline-block;
-            color: @window-btn-text-color;
-            font-size: 16px;
-            width: 30px;
-            height: 24px;
-            line-height: 24px;
-            text-align: center;
-            border-right: 1px solid @window-btn-border-color;
-
-            &:first-child {
-                border-left: 1px solid @window-btn-border-color;
-            }
-
-            &:hover {
-                background-color: @base-color;
-            }
-        }
     }
 }

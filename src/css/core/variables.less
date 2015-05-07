@@ -1,3 +1,10 @@
+// Fonts
+@font-family: 'Roboto', sans-serif;
+@font-family-alt: 'Roboto Condensed', sans-serif;
+@font-small: 11px;
+@font-normal: 12px;
+@font-large: 16px;
+
 // Base Colors
 @base-color: #7A5FE4; //#8970FF; //#9777FF; //#7B66FF; //#927FFF;
 @bg-color: #434343;
@@ -11,26 +18,20 @@
 @bg-level4-color: darken(@bg-color, 16%); // #1a1a1a
 
 @text-level1-color: darken(@text-color, 30%); // #a3a3a3
+
 @border-top-color: lighten(@bg-color, 16%); // #6c6c6c
 @border-bottom-color: darken(@bg-color, 12%); // #242424
 
-// Fonts
-@font-family: 'Roboto', sans-serif;
-@font-family-alt: 'Roboto Condensed', sans-serif;
-@font-small: 11px;
-@font-normal: 12px;
-@font-large: 16px;
-
-// Page
-@page-bg-color: @bg-level3-color;
-
 // Header
-@header-bg-color: @bg-level1-color;
 @header-text-color: @text-color;
+@header-bg-color: @bg-level1-color;
+
+// Body
+@body-bg-color: @bg-level3-color;
 
 // Footer
-@footer-bg-color: @base-color;
 @footer-text-color: @text-color;
+@footer-bg-color: @base-color;
 
 // Menu
 @menubar-text-color: @text-level1-color;
@@ -41,13 +42,15 @@
 @menu-group-border-color: @menu-border-color;
 
 // Player
-@player-background-color: @bg-level4-color;
+@player-bg-color: @bg-level4-color;
 @player-border-color: lighten(@bg-level4-color, 6%);
+@player-button-border-color: lighten(@bg-level1-color, 10%);
 
 // Window Buttons
-@window-btn-text-color: @text-color;
-@window-btn-bg-color: @bg-level1-color;
-@window-btn-border-color: @border-color;
+@window-buttons-text-color: @text-color;
+@window-buttons-bg-color: @bg-level1-color;
+@window-buttons-border-color: @border-color;
+@window-buttons-hover-color: @base-color;
 
 // Control Dock
 @dock-bg-color: @bg-level1-color;
@@ -67,6 +70,8 @@
 // Control
 @control-header-text-color: @text-level1-color;
 @control-bg-color: @bg-color;
+@control-label-color: @text-color;
+@control-unit-label-color: @text-level1-color;
 @control-top-border-color: @border-top-color;
 @control-bottom-border-color: @border-bottom-color;
 @control-row-top-color: lighten(@border-bottom-color, 6%);  // #333

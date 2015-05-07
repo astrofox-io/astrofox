@@ -88,8 +88,8 @@ var ImageInput = React.createClass({
     render: function() {
         var hasImage = !!this.props.src,
             style = { display: (hasImage) ? 'inline-block' : 'none' },
-            classes = 'input input-image-icon ',
-            iconClick = (hasImage) ? this.handleDelete : this.handleClick;
+            classes = 'input-image-icon ',
+            handleClick = (hasImage) ? this.handleDelete : this.handleClick;
 
         classes += (hasImage) ? 'icon-cancel-circled' : 'icon-folder-open-empty';
 
@@ -99,17 +99,14 @@ var ImageInput = React.createClass({
                     className="input input-image"
                     onDrop={this.handleDrop}
                     onDragOver={this.handleDragOver}
-                    onClick={this.handleClick}>
+                    onClick={handleClick}>
                     <img
                         ref="image"
                         className="image"
                         style={style}
                     />
+                    <div className={classes} />
                 </div>
-                <div
-                    className={classes}
-                    onClick={iconClick}
-                />
                 <form
                     ref="form"
                     className="input-file">

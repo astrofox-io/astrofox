@@ -122,7 +122,6 @@
     border-radius: 17px;
     background-color: @input-bg-color;
     border: 1px solid @input-border-color;
-    cursor: pointer;
     transition: background-color 0.25s;
 
     &:before {
@@ -153,7 +152,6 @@
     border: 1px solid @input-border-color;
     position: relative;
     overflow: hidden;
-    cursor: pointer;
 
     .portrait {
         width: 100%;
@@ -173,23 +171,24 @@
 }
 
 .input-image-icon {
-    font-size: 16px;
-    line-height: 20px;
-    height: 20px;
-    width: 20px;
+    color: @text-color;
+    font-size: 24px;
     text-align: center;
-    outline: none;
-    cursor: pointer;
+    line-height: 100px;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    text-shadow: 1px 1px 0 #000;
+    .absolute-center();
 
     &:hover {
-        color: @base-color;
+        opacity: 1;
     }
 }
 
 .input-link {
     margin-left: 8px;
     color: @input-link-color;
-    cursor: pointer;
 }
 
 .input-link-on {
