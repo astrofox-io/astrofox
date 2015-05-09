@@ -1,12 +1,12 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../Application.js');
-var FX = require('../FX.js');
+var Application = require('../../Application.js');
+var FX = require('../../FX.js');
 
-var BarSpectrumControl = require('./controls/BarSpectrumControl.jsx');
-var ImageControl = require('./controls/ImageControl.jsx');
-var TextControl = require('./controls/TextControl.jsx');
+var BarSpectrumControl = require('../controls/BarSpectrumControl.jsx');
+var ImageControl = require('../controls/ImageControl.jsx');
+var TextControl = require('../controls/TextControl.jsx');
 
 var ControlsPanel = React.createClass({
     getControl: function(display) {

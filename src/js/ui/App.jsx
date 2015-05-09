@@ -13,9 +13,12 @@ var Scene = require('./Scene.jsx');
 var Player = require('./Player.jsx');
 var Waveform = require('./Waveform.jsx');
 var Overlay = require('./Overlay.jsx');
-var ModalWindow = require('./ModalWindow.jsx');
 var ControlDock = require('./ControlDock.jsx');
-var ControlPicker = require('./ControlPicker.jsx');
+
+var ModalWindow = require('./windows/ModalWindow.jsx');
+var AboutWindow = require('./windows/AboutWindow.jsx');
+var SettingsWindow = require('./windows/SettingsWindow.jsx');
+var ControlPickerWindow = require('./windows/ControlPickerWindow.jsx');
 
 var App = React.createClass({
     getInitialState: function() {
@@ -37,7 +40,7 @@ var App = React.createClass({
 
         Application.on('pick_control', function(err) {
             this.showModal(
-                <ControlPicker title="ADD CONTROL" onClose={this.hideModal} />
+                <ControlPickerWindow title="ADD CONTROL" onClose={this.hideModal} />
             );
         }.bind(this));
     },
@@ -121,11 +124,7 @@ var App = React.createClass({
                 break;
 
             case 'Edit/Settings':
-                this.showModal(
-                    <ModalWindow title="SETTINGS" onClose={this.hideModal}>
-                        Configuration Settings
-                    </ModalWindow>
-                );
+                this.showModal(<SettingsWindow onClose={this.hideModal} />);
                 break;
 
             case 'View/Control Dock':
@@ -139,11 +138,7 @@ var App = React.createClass({
                 break;
 
             case 'Help/About':
-                this.showModal(
-                    <ModalWindow title="ABOUT" onClose={this.hideModal}>
-                        AstroFox version 1.0
-                    </ModalWindow>
-                );
+                this.showModal(<AboutWindow onClose={this.hideModal} />);
                 break;
         }
     },

@@ -2,9 +2,10 @@
 
 var React = require('react');
 var Application = require('../Application.js');
-var Panel = require('./Panel.jsx');
-var ControlsPanel = require('./ControlsPanel.jsx');
-var LayersPanel = require('./LayersPanel.jsx');
+
+var Panel = require('./panels/Panel.jsx');
+var ControlsPanel = require('./panels/ControlsPanel.jsx');
+var LayersPanel = require('./panels/LayersPanel.jsx');
 
 var ControlDock = React.createClass({
     getInitialState: function() {

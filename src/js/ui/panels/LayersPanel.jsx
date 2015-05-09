@@ -1,19 +1,28 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../Application.js');
+var Application = require('../../Application.js');
+var TextInput = require('../input/TextInput.jsx');
 
 var LayersPanel = React.createClass({
     getInitialState: function() {
         return {
-            activeIndex: 0
+            activeIndex: 0,
+            editIndex: -1
         };
     },
 
     handleLayerClick: function(index) {
-        this.setState({ activeIndex: index }, function() {
+        var state = this.state,
+            editIndex = (index == state.editIndex) ? state.editIndex: -1;
+
+        this.setState({ activeIndex: index, editIndex: editIndex }, function() {
             this.props.onLayerSelected(index);
         }.bind(this));
+    },
+
+    handleDoubleClick: function(index) {
+        this.setState({ editIndex: index });
     },
 
     handleAddClick: function() {
@@ -48,18 +57,30 @@ var LayersPanel = React.createClass({
     },
 
     handleMoveDownClick: function() {
-        var app = Application,
-            len = Application.displays.length - 1,
+        var len = Application.displays.length - 1,
             index = this.state.activeIndex,
             newIndex = index + 1;
 
         if (index !== len) {
-            app.swapDisplay(index, newIndex);
+            Application.swapDisplay(index, newIndex);
             this.setState({ activeIndex: newIndex });
+
             this.props.onLayerChanged(function() {
                 this.props.onLayerSelected(newIndex);
             }.bind(this));
         }
+    },
+
+    handleLayerEdit: function(val, index) {
+        var display = Application.displays[index];
+
+        display.init({ displayName: val });
+
+        this.cancelEdit();
+    },
+
+    cancelEdit: function() {
+        this.setState({ editIndex: -1 });
     },
 
     render: function() {
@@ -71,11 +92,26 @@ var LayersPanel = React.createClass({
                 classes += ' layer-active';
             }
 
+            var handleChange = function(name, val) {
+                this.handleLayerEdit(val, index);
+            }.bind(this);
+
+            var displayName = (this.state.editIndex == index) ?
+                <TextInput
+                    value={display.options.displayName}
+                    buffered={true}
+                    autoFocus={true}
+                    autoSelect={true}
+                    onChange={handleChange}
+                    onCancel={this.cancelEdit} /> :
+                display.options.displayName;
+
             return (
                 <div key={display.toString()}
                     className={classes}
-                    onClick={this.handleLayerClick.bind(this, index)}>
-                    {display.toString()}
+                    onClick={this.handleLayerClick.bind(this, index)}
+                    onDoubleClick={this.handleDoubleClick.bind(this, index)}>
+                    {displayName}
                 </div>
             );
         }, this);

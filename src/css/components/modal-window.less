@@ -4,7 +4,7 @@
 
     .header {
         position: relative;
-        background-color: @modal-header-bg-color;
+        background-color: @bg-level1-color;
         padding: 10px;
         text-align: center;
         letter-spacing: 2px;
@@ -13,11 +13,11 @@
     .body {
         min-height: 100px;
         padding: 10px;
-        background-color: @modal-bg-color;
+        background-color: @bg-color;
     }
 
     .buttons {
-        background-color: @modal-bg-color;
+        background-color: @bg-color;
         text-align: center;
         padding: 10px;
     }
@@ -28,14 +28,27 @@
         padding: 8px 10px;
         border-radius: 3px;
         margin-left: 10px;
-        cursor: pointer;
+        cursor: default;
+
+        &:hover {
+            background-color: lighten(@base-color, 3%);
+        }
     }
 
     .close-button {
         position: absolute;
-        top: 5px;
-        right: 5px;
-        font-size: 16px;
-        cursor: pointer;
+        top: 0;
+        right: 0;
+        font-size: 14px;
+        line-height: 24px;
+        height: 24px;
+        width: 24px;
+        text-align: center;
+        letter-spacing: 0;
+
+        &:hover {
+            color: darken(@text-color, 10%);
+            background-color: @base-color;
+        }
     }
 }

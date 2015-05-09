@@ -1,11 +1,12 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../Application.js');
-var ModalWindow = require('../ui/ModalWindow.jsx');
-var FX = require('../FX.js');
+var Application = require('../../Application.js');
+var FX = require('../../FX.js');
 
-var ControlPicker = React.createClass({
+var ModalWindow = require('./ModalWindow.jsx');
+
+var ControlPickerWindow = React.createClass({
     handleControlAdd: function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -44,4 +45,4 @@ var ControlPicker = React.createClass({
     }
 });
 
-module.exports = ControlPicker;
+module.exports = ControlPickerWindow;

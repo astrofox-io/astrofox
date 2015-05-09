@@ -2,8 +2,8 @@
     min-width: 500px;
     overflow: hidden;
     padding: 10px 0;
-    background-color: @player-bg-color;
-    border-top: 1px solid @player-border-color;
+    background-color: @bg-level4-color;
+    border-top: 1px solid lighten(@bg-level4-color, 6%);
     flex: 0 0 auto;
     .flex-box(row, flex-start, center, stretch);
 
@@ -14,7 +14,7 @@
     .button {
         display: inline-block;
         flex-wrap: nowrap;
-        border: 2px solid @player-button-border-color;
+        border: 2px solid lighten(@bg-level1-color, 10%);
         height: 40px;
         width: 40px;
         margin-right: 2px;
@@ -48,7 +48,6 @@
         font-size: 20px;
         line-height: 20px;
         margin-right: 20px;
-        cursor: pointer;
         color: @bg-level1-color;
     }
 

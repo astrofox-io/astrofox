@@ -1,10 +1,10 @@
 'use strict';
 
+var _ = require('lodash');
 var Class = require('../core/Class.js');
 var BarDisplay = require('./BarDisplay.js');
 var DisplayComponent = require('./DisplayComponent.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
-var _ = require('lodash');
 
 var defaults = {
     smoothingTimeConstant: 0.5,
@@ -19,10 +19,9 @@ var defaults = {
 var id = 0;
 
 var BarSpectrumDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'BarSpectrumDisplay', '2d', canvas);
+    DisplayComponent.call(this, id++, 'BarSpectrumDisplay', '2d', canvas, defaults);
 
     this.bars = new BarDisplay(this.canvas, options);
-    this.options = _.assign({}, defaults, this.options);
     this.data = null;
 
     this.init(options);

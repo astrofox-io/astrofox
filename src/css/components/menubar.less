@@ -1,8 +1,8 @@
 .menubar {
     font-family: @font-family;
     font-size: @font-normal;
-    color: @menubar-text-color;
-    background-color: @menubar-bg-color;
+    color: @text-level1-color;
+    background-color: @bg-level2-color;
     padding-left: 20px;
     height: 20px;
 
@@ -26,7 +26,7 @@
 
     .menubar-text-active {
         color: @base-color;
-        background-color: @menubar-active-bg-color;
+        background-color: darken(@bg-level2-color, 6%);
     }
 
     .menu {
@@ -35,8 +35,8 @@
         left: 0;
         list-style: none;
         z-index: 400;
-        background-color: @menu-bg-color;
-        border: 1px solid @menu-border-color;
+        background-color: @bg-level2-color;
+        border: 1px solid darken(@border-color, 6%);
         overflow: hidden;
 
         .menu-item {
@@ -67,7 +67,7 @@
 
         .begin-group:before {
             content: "\0020";
-            border-top: 1px solid @menu-group-border-color;
+            border-top: 1px solid darken(@border-color, 6%);
             position: absolute;
             top: 0;
             left: 0;

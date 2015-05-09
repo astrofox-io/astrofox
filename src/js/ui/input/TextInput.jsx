@@ -8,7 +8,9 @@ var TextInput = React.createClass({
             name: 'text',
             size: 20,
             value: '',
-            spellcheck: false,
+            spellCheck: false,
+            autoFocus: false,
+            autoSelect: false,
             buffered: false
         };
     },
@@ -21,6 +23,10 @@ var TextInput = React.createClass({
 
     componentDidMount: function() {
         this.setState({ value: this.props.value });
+
+        if (this.props.autoSelect) {
+            React.findDOMNode(this.refs.input).select();
+        }
     },
 
     componentWillReceiveProps: function(props) {
@@ -33,14 +39,14 @@ var TextInput = React.createClass({
         var val = e.target.value;
         this.setState({ value: val });
 
-        if (!this.props.buffered) {
+        if (this.props.onChange && !this.props.buffered) {
             this.props.onChange(this.props.name, val);
         }
     },
 
     handleValueChange: function(e) {
         var val = this.state.value;
-        if (this.props.value !== val) {
+        if (this.props.onChange) {
             this.props.onChange(this.props.name, val);
         }
     },
@@ -49,19 +55,31 @@ var TextInput = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
+        console.log(e.keyCode);
+
         if (e.keyCode === 13) {
             this.handleValueChange(e);
+        }
+        else if (e.keyCode === 27) {
+            this.setState({ value: this.props.value });
+
+            if (this.props.onCancel) {
+                this.props.onCancel();
+            }
         }
     },
 
     render: function(){
         return (
             <div className="input">
-                <input type="text"
+                <input
+                    ref="input"
+                    type="text"
                     className="input-field"
                     name={this.props.name}
                     size={this.props.size}
-                    spellCheck={this.props.spellcheck}
+                    spellCheck={this.props.spellCheck}
+                    autoFocus={this.props.autoFocus}
                     value={this.state.value}
                     onChange={this.handleChange}
                     onBlur={this.handleValueChange}

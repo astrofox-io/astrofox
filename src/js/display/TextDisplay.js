@@ -1,8 +1,8 @@
 'use strict';
 
+var _ = require('lodash');
 var Class = require('../core/Class.js');
 var DisplayComponent = require('./DisplayComponent.js');
-var _ = require('lodash');
 
 var defaults = {
     text: '',
@@ -20,9 +20,7 @@ var defaults = {
 var id = 0;
 
 var TextDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'TextDisplay', '2d', canvas);
-
-    this.options = _.assign({}, defaults);
+    DisplayComponent.call(this, id++, 'TextDisplay', '2d', canvas, defaults);
 
     this.init(options);
 };

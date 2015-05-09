@@ -1,8 +1,8 @@
 'use strict';
 
+var _ = require('lodash');
 var Class = require('../core/Class.js');
 var DisplayComponent = require('./DisplayComponent.js');
-var _ = require('lodash');
 
 var defaults = {
     src: '',
@@ -18,10 +18,9 @@ var defaults = {
 var id = 0;
 
 var ImageDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'ImageDisplay', '2d', canvas);
+    DisplayComponent.call(this, id++, 'ImageDisplay', '2d', canvas, defaults);
 
     this.image = new Image();
-    this.options = _.assign({}, defaults);
 
     this.init(options);
 };

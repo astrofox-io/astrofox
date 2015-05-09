@@ -5,11 +5,11 @@
 
 .input-field {
     font-family: @font-family;
-    font-size: @input-font-size;
-    color: @input-text-color;
+    font-size: @font-small;
+    color: @text-color;
     line-height: 20px;
-    background-color: @input-bg-color;
-    border: 1px solid @input-border-color;
+    background-color: @bg-level1-color;
+    border: 1px solid @border-color;
     border-radius: 2px;
     padding: 0 3px;
     outline: none;
@@ -19,7 +19,7 @@
     }
 
     &:read-only {
-        color: @input-readonly-color;
+        color: darken(@text-color, 60%);
     }
 }
 
@@ -33,7 +33,7 @@
     position: relative;
 
     .input-field {
-        color: @input-text-color;
+        color: @text-color;
     }
 
     &:after {
@@ -60,7 +60,7 @@
         font-size: @font-small;
         padding: 5px;
         min-width: 100px;
-        background-color: @input-bg-color;
+        background-color: @bg-level1-color;
 
         &:hover {
             cursor: default;
@@ -84,7 +84,7 @@
     .color-range {
         position: relative;
         height: 16px;
-        border: 1px solid @input-border-color;
+        border: 1px solid @border-color;
         border-radius: 3px;
     }
 }
@@ -97,7 +97,7 @@
         height: 4px;
         width: 100%;
         border-radius: 4px;
-        background: @input-range-bg-color;
+        background: lighten(@bg-level1-color, 10%);
         .absolute-center();
     }
 
@@ -120,8 +120,8 @@
     height: 17px;
     width: 32px;
     border-radius: 17px;
-    background-color: @input-bg-color;
-    border: 1px solid @input-border-color;
+    background-color: @bg-level1-color;
+    border: 1px solid @border-color;
     transition: background-color 0.25s;
 
     &:before {
@@ -129,8 +129,8 @@
         width: 15px;
         height: 15px;
         border-radius: 15px;
-        background-color: @input-toggle-button-bg-color;
-        border: 1px solid @input-toggle-border-color;
+        background-color: @text-color;
+        border: 1px solid @bg-level1-color;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
         transition: left 0.25s;
         .absolute-left();
@@ -148,8 +148,8 @@
 .input-image {
     height: 100px;
     width: 100px;
-    background-color: @input-bg-color;
-    border: 1px solid @input-border-color;
+    background-color: @bg-level1-color;
+    border: 1px solid @border-color;
     position: relative;
     overflow: hidden;
 
@@ -178,7 +178,7 @@
     height: 100%;
     width: 100%;
     opacity: 0;
-    text-shadow: 1px 1px 0 #000;
+    text-shadow: 1px 1px 8px #000;
     .absolute-center();
 
     &:hover {
@@ -188,11 +188,11 @@
 
 .input-link {
     margin-left: 8px;
-    color: @input-link-color;
+    color: darken(@text-color, 50%);
 }
 
 .input-link-on {
-    color: @input-link-on-color;
+    color: darken(@text-color, 10%);
 }
 
 .input-file {

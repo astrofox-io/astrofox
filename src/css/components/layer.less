@@ -1,22 +1,32 @@
-.layers {
-    flex: 1;
-    padding: 5px 0;
-    overflow: auto;
+.layer {
+    font-size: @font-small;
+    background-color: @bg-level2-color;
+    border-bottom: 1px solid @border-color;
+    margin: 0 5px;
+    padding: 5px;
+    position: relative;
+    cursor: default;
 
-    .layer {
-        font-size: @font-small;
-        background-color: @layer-bg-color;
-        border-bottom: 1px solid @layer-border-color;
-        margin: 0 5px;
-        padding: 5px;
-        cursor: pointer;
-
-        &:first-child {
-            border-top: 1px solid @layer-border-color;
-        }
+    &:after {
+        content: "\00a0";
     }
 
-    .layer-active {
-        background-color: @base-color;
+    &:first-child {
+        border-top: 1px solid @border-color;
     }
+}
+
+.layer-active {
+    background-color: @base-color;
+
+    .layer-edit {
+        color: @text-color;
+    }
+}
+
+.layer-edit {
+    color: @base-color;
+    line-height: 20px;
+    padding-right: 10px;
+    .absolute-right();
 }
