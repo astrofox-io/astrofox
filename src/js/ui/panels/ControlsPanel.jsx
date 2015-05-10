@@ -33,7 +33,7 @@ var ControlsPanel = React.createClass({
             return (
                 <Control
                     ref={'ctrl' + index}
-                    key={'ctrl' + display.toString()}
+                    key={display.toString()}
                     display={display}
                 />
             );

@@ -7,6 +7,20 @@ var DisplayComponent = require('./DisplayComponent.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 
 var defaults = {
+    height: 300,
+    width: 200,
+    x: 0,
+    y: 150,
+    barWidth: -1,
+    barSpacing: -1,
+    barWidthAutoSize: 1,
+    barSpacingAutoSize: 1,
+    shadowHeight: 100,
+    color: '#ffffff',
+    shadowColor: '#cccccc',
+    rotation: 0,
+    opacity: 1.0,
+
     smoothingTimeConstant: 0.5,
     minDecibels: -100,
     maxDecibels: -12,
@@ -33,16 +47,11 @@ BarSpectrumDisplay.info = {
 
 Class.extend(BarSpectrumDisplay, DisplayComponent, {
     init: function (options) {
-        if (typeof options !== 'undefined') {
-            for (var prop in options) {
-                if (this.options.hasOwnProperty(prop)) {
-                    this.options[prop] = options[prop];
-                }
-            }
+        var changed = this._super.init.call(this, options);
 
-            this.bars.init(options);
-            this.initialized = true;
-        }
+        this.bars.init(options);
+
+        return changed;
     },
 
     renderToCanvas: function(context, frame, fft) {

@@ -131,7 +131,7 @@ var LayersPanel = React.createClass({
             }
 
             return (
-                <div key={index}
+                <div key={display.toString()}
                     className={classes}
                     onClick={this.handleLayerClick.bind(this, index)}>
                     {this.getDisplayElement(display, index)}

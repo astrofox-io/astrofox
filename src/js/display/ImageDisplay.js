@@ -16,6 +16,7 @@ var defaults = {
 };
 
 var id = 0;
+var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
 var ImageDisplay = function(canvas, options) {
     DisplayComponent.call(this, id++, 'ImageDisplay', '2d', canvas, defaults);
@@ -31,11 +32,16 @@ ImageDisplay.info = {
 
 Class.extend(ImageDisplay, DisplayComponent, {
     init: function(options) {
-        this._super.init.call(this, options);
+        var changed = this._super.init.call(this, options);
 
         if (this.image.src !== this.options.src) {
             this.image.src = this.options.src;
+            if (this.image.src !== BLANK_IMAGE) {
+                this.render();
+            }
         }
+
+        return changed;
     },
 
     render: function() {

@@ -20,15 +20,22 @@ var DisplayComponent = function(id, name, type, canvas, options) {
 
 Class.extend(DisplayComponent, EventEmitter, {
     init: function (options) {
+        var changed = false;
+
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (this.options.hasOwnProperty(prop)) {
-                    this.options[prop] = options[prop];
+                    if (this.options[prop] !== options[prop]) {
+                        this.options[prop] = options[prop];
+                        changed = true;
+                    }
                 }
             }
 
             this.initialized = true;
         }
+
+        return changed;
     },
 
     toString: function () {

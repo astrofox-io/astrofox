@@ -20,11 +20,6 @@ var ControlDock = React.createClass({
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
         }.bind(this));
-
-        Application.on('display_changed', function() {
-            this.refs.layers.forceUpdate();
-            this.refs.controls.forceUpdate();
-        }.bind(this));
     },
 
     handleLayerSelected: function(index) {

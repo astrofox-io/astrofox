@@ -97,16 +97,12 @@ Class.extend(Application, EventEmitter, {
         else {
             this.displays.push(display);
         }
-
-        this.emit('display_changed');
     },
 
     removeDisplay: function(display) {
         var index = this.displays.indexOf(display);
         if (index > -1) {
             this.displays.splice(index, 1);
-
-            this.emit('display_changed');
         }
     },
 
@@ -245,8 +241,9 @@ Class.extend(Application, EventEmitter, {
     },
 
     loadProject: function(file) {
-        var options = this.options,
-            data = IO.fs.readFileSync(file.path);
+        var options = this.options;
+
+        var data = IO.fs.readFileSync(file.path);
 
         if (options.useCompression) {
             IO.zlib.inflate(data, function(err, buf) {
@@ -254,6 +251,7 @@ Class.extend(Application, EventEmitter, {
                     this.loadControls(JSON.parse(buf.toString()));
                 }
                 catch (err) {
+                    alert(err);
                     this.emit('error', new Error('Invalid project file.'));
                 }
             }.bind(this));

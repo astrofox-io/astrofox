@@ -45,8 +45,9 @@ var ImageControl = React.createClass({
 
         if (image.src != state.src) image.src = state.src;
 
-        display.init(state);
-        display.render();
+        if (display.init(state)) {
+            display.render();
+        }
 
         this.stateChanged = false;
     },

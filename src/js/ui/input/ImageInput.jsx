@@ -2,12 +2,13 @@
 
 var React = require('react');
 
+var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
 var ImageInput = React.createClass({
     getDefaultProps: function() {
         return {
             name: 'image',
-            src: '',
-            onChange: function(){}
+            src: ''
         };
     },
 
@@ -46,7 +47,7 @@ var ImageInput = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        this.loadImage('');
+        this.loadImage(BLANK_IMAGE);
     },
 
     handleFileOpen: function(e) {
@@ -59,7 +60,10 @@ var ImageInput = React.createClass({
 
     loadImage: function(src) {
         this.image.src = src;
-        this.props.onChange('src', src);
+
+        if (this.props.onChange) {
+            this.props.onChange('src', src);
+        }
     },
 
     loadFile: function(file) {
@@ -86,7 +90,8 @@ var ImageInput = React.createClass({
     },
 
     render: function() {
-        var hasImage = !!this.props.src,
+        var props = this.props,
+            hasImage = (props.src && props.src !== BLANK_IMAGE),
             style = { display: (hasImage) ? 'inline-block' : 'none' },
             classes = 'input-image-icon ',
             handleClick = (hasImage) ? this.handleDelete : this.handleClick;
