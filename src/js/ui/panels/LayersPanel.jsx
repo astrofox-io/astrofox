@@ -16,13 +16,17 @@ var LayersPanel = React.createClass({
         var state = this.state,
             editIndex = (index == state.editIndex) ? state.editIndex: -1;
 
-        this.setState({ activeIndex: index, editIndex: editIndex }, function() {
-            this.props.onLayerSelected(index);
-        }.bind(this));
+        if (index !== state.activeIndex) {
+            this.setState({activeIndex: index, editIndex: editIndex});
+        }
+
+        this.props.onLayerSelected(index);
     },
 
     handleDoubleClick: function(index) {
-        this.setState({ editIndex: index });
+        if (index !== this.state.editIndex) {
+            this.setState({editIndex: index});
+        }
     },
 
     handleAddClick: function() {
@@ -83,35 +87,54 @@ var LayersPanel = React.createClass({
         this.setState({ editIndex: -1 });
     },
 
-    render: function() {
-        var layers;
+    getDisplayElement: function(display, index) {
+        var state = this.state;
 
-        layers = Application.displays.map(function(display, index) {
-            var classes = 'layer';
-            if (index === this.state.activeIndex) {
-                classes += ' layer-active';
-            }
-
+        if (state.editIndex === index) {
             var handleChange = function(name, val) {
-                this.handleLayerEdit(val, index);
+                if (val.length > 0) {
+                    this.handleLayerEdit(val, index);
+                }
             }.bind(this);
 
-            var displayName = (this.state.editIndex == index) ?
+            return (
                 <TextInput
                     value={display.options.displayName}
                     buffered={true}
                     autoFocus={true}
                     autoSelect={true}
                     onChange={handleChange}
-                    onCancel={this.cancelEdit} /> :
-                display.options.displayName;
+                    onCancel={this.cancelEdit}
+                />
+            );
+        }
+        else {
+            return (
+                <span onDoubleClick={this.handleDoubleClick.bind(this, index)}>
+                    {display.options.displayName}
+                </span>
+            );
+        }
+    },
+
+    render: function() {
+        var layers;
+
+        layers = Application.displays.map(function(display, index) {
+            var classes = 'layer';
+
+            if (index === this.state.editIndex) {
+                classes += ' layer-edit';
+            }
+            else if (index === this.state.activeIndex) {
+                classes += ' layer-active';
+            }
 
             return (
-                <div key={display.toString()}
+                <div key={index}
                     className={classes}
-                    onClick={this.handleLayerClick.bind(this, index)}
-                    onDoubleClick={this.handleDoubleClick.bind(this, index)}>
-                    {displayName}
+                    onClick={this.handleLayerClick.bind(this, index)}>
+                    {this.getDisplayElement(display, index)}
                 </div>
             );
         }, this);

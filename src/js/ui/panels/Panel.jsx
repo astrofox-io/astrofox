@@ -30,14 +30,16 @@ var Panel = React.createClass({
         var props = this.props;
 
         Application.on('mouseup', function() {
-            this.setState({
-                dragging: false
-            },
-            function() {
-                if (props.onDragEnd) {
-                    props.onDragEnd();
-                }
-            });
+            if (this.state.dragging) {
+                this.setState({
+                        dragging: false
+                    },
+                    function() {
+                        if (props.onDragEnd) {
+                            props.onDragEnd();
+                        }
+                    });
+            }
         }.bind(this));
     },
 

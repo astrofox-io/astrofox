@@ -46,17 +46,13 @@ var TextInput = React.createClass({
 
     handleValueChange: function(e) {
         var val = this.state.value;
+
         if (this.props.onChange) {
             this.props.onChange(this.props.name, val);
         }
     },
 
     handleKeyUp: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        console.log(e.keyCode);
-
         if (e.keyCode === 13) {
             this.handleValueChange(e);
         }
