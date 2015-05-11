@@ -16,7 +16,7 @@ var ControlDock = React.createClass({
     },
 
     componentDidMount: function() {
-        Application.on('project_loaded', function() {
+        Application.on('displays_updated', function() {
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
         }.bind(this));

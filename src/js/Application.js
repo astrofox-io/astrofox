@@ -274,7 +274,7 @@ Class.extend(Application, EventEmitter, {
                 this.addDisplay(new FX[item.name](null, item.values));
             }.bind(this));
 
-            this.emit('project_loaded');
+            this.emit('displays_updated');
         }
         else {
             this.emit('error', new Error('Invalid project file.'));

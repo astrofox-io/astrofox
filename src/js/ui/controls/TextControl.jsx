@@ -43,29 +43,26 @@ var TextControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.stateChanged = false;
+        this.shouldUpdate = false;
     },
 
     componentDidMount: function() {
         var display = this.props.display;
 
         if (display.initialized) {
-            this.stateChanged = true;
+            display.render();
+
+            this.shouldUpdate = true;
             this.setState(display.options);
         }
     },
 
     componentDidUpdate: function() {
-        var display = this.props.display;
-
-        display.init(this.state);
-        display.render();
-
-        this.stateChanged = false;
+        this.shouldUpdate = false;
     },
 
     shouldComponentUpdate: function() {
-        return this.stateChanged;
+        return this.shouldUpdate;
     },
 
     handleChange: function(name, val) {
@@ -73,9 +70,14 @@ var TextControl = React.createClass({
 
         obj[name] = val;
 
-        this.stateChanged = true;
+        this.shouldUpdate = true;
 
-        this.setState(obj);
+        this.setState(obj, function() {
+            var display = this.props.display;
+
+            display.init(this.state);
+            display.render();
+        });
     },
 
     getSelectItems: function() {

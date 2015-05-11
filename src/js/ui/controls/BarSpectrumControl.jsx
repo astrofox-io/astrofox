@@ -35,31 +35,29 @@ var BarSpectrumControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.stateChanged = false;
+        this.shouldUpdate = false;
     },
 
     componentDidMount: function() {
-        var app = Application,
-            display = this.props.display;
+        var display = this.props.display;
 
         if (display.initialized) {
-            this.stateChanged = true;
+            this.shouldUpdate = true;
             this.setState(display.options);
-            display.analyzer = app.spectrum;
         }
         else {
             display.init(this.state);
-            display.analyzer = app.spectrum;
         }
+
+        display.analyzer = Application.spectrum;
     },
 
     componentDidUpdate: function() {
-        this.props.display.init(this.state);
-        this.stateChanged = false;
+        this.shouldUpdate = false;
     },
 
     shouldComponentUpdate: function() {
-        return this.stateChanged;
+        return this.shouldUpdate;
     },
 
     handleChange: function(name, val) {
@@ -74,9 +72,10 @@ var BarSpectrumControl = React.createClass({
 
         obj[name] = val;
 
-        this.stateChanged = true;
-
-        this.setState(obj);
+        this.shouldUpdate = true;
+        this.setState(obj, function() {
+            this.props.display.init(this.state);
+        });
     },
 
     render: function() {

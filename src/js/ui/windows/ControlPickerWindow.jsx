@@ -1,32 +1,30 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 var Application = require('../../Application.js');
 var FX = require('../../FX.js');
 
 var ModalWindow = require('./ModalWindow.jsx');
 
 var ControlPickerWindow = React.createClass({
-    handleControlAdd: function(e) {
-        e.preventDefault();
+    handleControlClick: function(e) {
         e.stopPropagation();
 
         this.props.onClose();
     },
 
     render: function() {
-        var controls = [
-            FX.TextDisplay,
-            FX.ImageDisplay,
-            FX.BarSpectrumDisplay
-        ].map(function(item, index){
+        var controls = _.values(FX).map(function(item, index){
             var handleClick = function() {
                 Application.addDisplay(new item, 0);
+                Application.emit('displays_updated');
 
                 if (this.props.onClose) {
                     this.props.onClose();
                 }
             }.bind(this);
+
             return (
                 <div key={"c" + index}>
                     <div className="item" onClick={handleClick}></div>

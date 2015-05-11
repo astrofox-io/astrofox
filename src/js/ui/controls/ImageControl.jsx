@@ -25,35 +25,27 @@ var ImageControl = React.createClass({
 
     componentWillMount: function() {
         this.image = new Image();
-        this.stateChanged = false;
+        this.shouldUpdate = false;
     },
 
     componentDidMount: function() {
         var display = this.props.display;
 
         if (display.initialized) {
-            this.stateChanged = true;
+            display.render();
+
+            this.shouldUpdate = true;
             this.image.src = display.options.src;
             this.setState(display.options);
         }
     },
 
     componentDidUpdate: function() {
-        var state = this.state,
-            image = this.image,
-            display = this.props.display;
-
-        if (image.src != state.src) image.src = state.src;
-
-        if (display.init(state)) {
-            display.render();
-        }
-
-        this.stateChanged = false;
+        this.shouldUpdate = false;
     },
 
     shouldComponentUpdate: function() {
-        return this.stateChanged;
+        return this.shouldUpdate;
     },
 
     handleChange: function(name, val) {
@@ -86,9 +78,20 @@ var ImageControl = React.createClass({
             obj.width = Math.round(val * ratio);
         }
 
-        this.stateChanged = true;
+        this.shouldUpdate = true;
 
-        this.setState(obj);
+        this.setState(obj, function() {
+            var image = this.image,
+                state = this.state,
+                display = this.props.display;
+
+            if (image.src !== state.src) {
+                image.src = state.src;
+            }
+
+            display.init(obj);
+            display.render();
+        }.bind(this));
     },
 
     handleLinkClick: function() {

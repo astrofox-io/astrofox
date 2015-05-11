@@ -11,13 +11,12 @@ var ColorInput = React.createClass({
     },
 
     handleChange: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.props.onChange(this.props.name, e.target.value);
+        if (this.props.onChange) {
+            this.props.onChange(this.props.name, e.target.value);
+        }
     },
 
-    render: function(){
+    render: function() {
         return (
             <div className="input">
                 <input type="color"

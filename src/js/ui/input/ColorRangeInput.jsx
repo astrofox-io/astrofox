@@ -21,6 +21,10 @@ var ColorRangeInput = React.createClass({
         };
     },
 
+    componentWillReceiveProps: function(nextProps) {
+        this.setState(nextProps);
+    },
+
     handleChange: function(name, val) {
         var obj = {};
         obj[name] = val;
