@@ -228,7 +228,7 @@ Class.extend(Application, EventEmitter, {
                 JSON.stringify(data),
                 function(err, buf) {
                     buffer = new IO.Buffer(buf);
-                    IO.fs.writeFileSync(file, buffer);
+                    IO.fs.writeFileSync(file.path, buffer);
                 }.bind(this)
             );
         }
@@ -237,7 +237,7 @@ Class.extend(Application, EventEmitter, {
         }
 
         // DEBUG
-        console.log(file + ' saved');
+        console.log(file.path + ' saved');
     },
 
     loadProject: function(file) {

@@ -1,7 +1,5 @@
 *, *:before, *:after
 {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
@@ -40,19 +38,19 @@ input[type="range"]::-webkit-slider-thumb {
     width: 14px;
     height: 14px;
     border-radius: 14px;
-    background-color: #fff;
-    border: 1px solid #787878;
+    background-color: @text-color;
+    border: 1px solid lighten(@border-color, 20%);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 ::selection {
     color: @text-color;
-    background-color: rgba(122, 95, 228, 0.99);
+    background-color: rgba(122, 95, 228, 0.99); // @base-color
 }
 
 ::-webkit-scrollbar {
     width: 10px;
-    background: #393939;
+    background: @bg-level1-color;
 }
 
 ::-webkit-scrollbar-thumb {
