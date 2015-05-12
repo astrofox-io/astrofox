@@ -1,5 +1,8 @@
 'use strict';
 
+var _ = require('lodash');
+var Immutable = require('immutable');
+
 var Class = require('./core/Class.js');
 var EventEmitter = require('./core/EventEmitter.js');
 var Timer = require('./core/Timer.js');
@@ -9,7 +12,6 @@ var SpectrumAnalyzer = require('./audio/SpectrumAnalyzer.js');
 var Scene = require('./display/Scene.js');
 var FX = require('./FX.js');
 var IO = require('./IO.js');
-var _ = require('lodash');
 
 var defaults = {
     fps: 29.97,
@@ -20,7 +22,7 @@ var defaults = {
 
 var Application = function() {
     this.frame = null;
-    this.displays = [];
+    this.displays = new Immutable.List();
 
     this.audioContext = new (window.AudioContext || window.webkitAudioContext);
     this.player = new Player(this.audioContext);
@@ -91,29 +93,31 @@ Class.extend(Application, EventEmitter, {
     },
 
     addDisplay: function(display, index) {
-        if (typeof index !== 'undefined') {
-            this.displays.splice(index, 0, display);
-        }
-        else {
-            this.displays.push(display);
-        }
+        var displays = this.displays;
+
+        this.displays = (typeof index !== 'undefined') ?
+            displays.unshift(display) :
+            displays.push(display);
     },
 
     removeDisplay: function(display) {
-        var index = this.displays.indexOf(display);
+        var displays = this.displays,
+            index = displays.indexOf(display);
+
         if (index > -1) {
-            this.displays.splice(index, 1);
+            this.displays = displays.delete(index);
         }
     },
 
     swapDisplay: function(index, newIndex) {
-        var tmp,
-            displays = this.displays;
+        var displays = this.displays;
 
-        if (index > -1 && index < displays.length) {
-            tmp = displays[index];
-            displays[index] = displays[newIndex];
-            displays[newIndex] = tmp;
+        if (index > -1 && index < displays.size) {
+            this.displays = displays.withMutations(function(list) {
+                var tmp = list.get(index);
+                list.set(index, list.get(newIndex));
+                list.set(newIndex, tmp);
+            });
         }
     },
 
@@ -149,7 +153,7 @@ Class.extend(Application, EventEmitter, {
 
         scene.clear();
 
-        _.forEachRight(this.displays, function(display) {
+        this.displays.reverse().forEach(function(display) {
             if (display.renderToCanvas) {
                 display.renderToCanvas(
                     (display.type === '3d') ? scene.context3d : scene.context2d,

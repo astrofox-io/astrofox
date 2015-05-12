@@ -35,9 +35,9 @@ var LayersPanel = React.createClass({
 
     handleRemoveClick: function() {
         var index = this.state.activeIndex,
-            display = Application.displays[index];
+            display = Application.displays.get(index);
 
-        if (index === Application.displays.length - 1) {
+        if (index === Application.displays.size - 1) {
             this.setState({ activeIndex: index - 1 });
         }
 
@@ -61,7 +61,7 @@ var LayersPanel = React.createClass({
     },
 
     handleMoveDownClick: function() {
-        var len = Application.displays.length - 1,
+        var len = Application.displays.size - 1,
             index = this.state.activeIndex,
             newIndex = index + 1;
 

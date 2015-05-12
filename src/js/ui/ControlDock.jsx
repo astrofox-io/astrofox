@@ -26,8 +26,8 @@ var ControlDock = React.createClass({
         this.refs.controls.scrollToControl(index);
     },
 
-    handleLayerChanged: function(callback) {
-        this.refs.controls.forceUpdate(callback);
+    handleLayerChanged: function() {
+        this.refs.controls.forceUpdate();
     },
 
     handleDragStart: function() {
@@ -39,7 +39,7 @@ var ControlDock = React.createClass({
     },
 
     handleMouseMove: function(e) {
-        this.refs.panel.handleMouseMove(e);
+        this.refs.layersPanel.handleMouseMove(e);
     },
 
     showDock: function(visible) {
@@ -62,7 +62,7 @@ var ControlDock = React.createClass({
                 onMouseMove={mouseMove}>
                 <Panel
                     title="LAYERS"
-                    ref="panel"
+                    ref="layersPanel"
                     height={200}
                     resizable={true}
                     onDragStart={this.handleDragStart}
