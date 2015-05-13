@@ -1,11 +1,11 @@
 'use strict';
 
+var _ = require('lodash');
+var THREE = require('three');
+
 var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 var IO = require('../IO.js');
-
-var _ = require('lodash');
-var THREE = require('three');
 
 var defaults = {
     showFPS: false,
@@ -14,18 +14,21 @@ var defaults = {
 };
 
 var Scene = function(options) {
-    this.fps = 0;
-    this.ms = 0;
-    this.time = 0;
-    this.frame = 0;
-    this.controls = [];
-    this.options = _.assign({}, defaults);
-
     this.renderer = null;
     this.canvas2d = null;
     this.canvas3d = null;
     this.context2d = null;
     this.context3d = null;
+
+    this.stats = {
+        fps: 0,
+        ms: 0,
+        time: 0,
+        frames: 0,
+        stack: []
+    };
+
+    this.options = _.assign({}, defaults);
 
     this.init(options);
 };
@@ -103,48 +106,56 @@ Class.extend(Scene, EventEmitter, {
         this.context3d = canvas3d.getContext('webgl');
     },
 
-    getFPS: function () {
-        return this.fps;
-    },
-
     updateFPS: function () {
         var now = performance.now(),
-            options = this.options;
+            stats = this.stats;
 
-        if (options.showFPS) {
-            if (!this.time) {
-                this.time = now;
+        if (!stats.time) {
+            stats.time = now;
+        }
+
+        stats.frames += 1;
+
+        if (now > stats.time + 1000) {
+            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.ms = (now - stats.time) / stats.frames;
+            stats.time = now;
+            stats.frames = 0;
+
+            stats.stack.push(stats.fps);
+
+            if (stats.stack.length > 10) {
+                stats.stack.shift();
             }
 
-            this.frame += 1;
-
-            if (now > this.time + 1000) {
-                this.fps = Math.round((this.frame * 1000) / (now - this.time));
-                this.ms = (now - this.time) / this.frame;
-                this.time = now;
-                this.frame = 0;
-            }
-
-            this.renderFPS();
+            this.emit('tick', stats);
         }
     },
 
-    renderFPS: function () {
-        var context = this.context2d;
-
-        context.font = '14px sans-serif';
-        context.fillStyle = '#fff';
-        context.shadowColor = '#000';
-        context.shadowOffsetX = 2;
-        context.shadowOffsetY = 2;
-        context.fillText(this.fps.toString() + ' FPS, ' + this.ms.toFixed(2) + ' ms', 10, 20);
-    },
-
-    clear: function () {
+    clearCanvas: function () {
         this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
     },
 
-    render: function (callback) {
+    renderFrame: function(displays, data, callback) {
+        this.clearCanvas();
+
+        displays.forEach(function(display) {
+            if (display.renderToCanvas) {
+                display.renderToCanvas(
+                    (display.type === '3d') ? this.context3d : this.context2d,
+                    data
+                );
+            }
+        }.bind(this));
+
+        this.renderToCanvas();
+
+        if (callback) callback();
+    },
+
+    renderToCanvas: function (callback) {
+        var options = this.options;
+
         this.texture2d.needsUpdate = true;
 
         //this.cube.rotation.x += 0.1;

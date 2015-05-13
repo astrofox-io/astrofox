@@ -54,14 +54,14 @@ Class.extend(BarSpectrumDisplay, DisplayComponent, {
         return changed;
     },
 
-    renderToCanvas: function(context, frame, fft) {
+    renderToCanvas: function(context, payload) {
         var data,
             options = this.options,
             barOptions = this.bars.options,
             width = barOptions.width / 2,
             height = barOptions.height;
 
-        data = this.data = SpectrumParser.parseFFT(fft, options, this.data);
+        data = this.data = SpectrumParser.parseFFT(payload.fft, options, this.data);
 
         this.bars.render(data);
 

@@ -17,14 +17,14 @@ var MP3Decoder = AV.Decoder.extend(function() {
     
     this.prototype.init = function() {
         this.mp3_stream = new MP3Stream(this.bitstream);
-        this.frame = new MP3Frame();
+        this.frames = new MP3Frame();
         this.synth = new MP3Synth();
         this.seeking = false;
     };
     
     this.prototype.readChunk = function() {
         var stream = this.mp3_stream;
-        var frame = this.frame;
+        var frame = this.frames;
         var synth = this.synth;
 
         // if we just seeked, we may start getting errors involving the frame reservoir,
@@ -45,7 +45,7 @@ var MP3Decoder = AV.Decoder.extend(function() {
             frame.decode(stream);
         }
         
-        synth.frame(frame);
+        synth.frames(frame);
         
         // interleave samples
         var data = synth.pcm.samples,
@@ -7281,7 +7281,7 @@ MP3Synth.prototype.full = function(frame, nch, ns) {
  * NAME:    synth.frame()
  * DESCRIPTION: perform PCM synthesis of frame subband samples
  */
-MP3Synth.prototype.frame = function (frame) {
+MP3Synth.prototype.frames = function (frame) {
     var nch = frame.header.nchannels();
     var ns  = frame.header.nbsamples();
 

@@ -21,7 +21,7 @@ var defaults = {
 };
 
 var Application = function() {
-    this.frame = null;
+    this.frames = null;
     this.displays = new Immutable.List();
 
     this.audioContext = new (window.AudioContext || window.webkitAudioContext);
@@ -121,51 +121,31 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
-    showFPS: function(val) {
-        this.scene.options.showFPS = val;
-    },
-
     startRender: function() {
-        if (!this.frame) {
+        if (!this.frames) {
             this.renderScene();
         }
     },
 
     stopRender: function() {
-        if (this.frame) {
-            window.cancelAnimationFrame(this.frame);
-            this.frame = null;
+        if (this.frames) {
+            window.cancelAnimationFrame(this.frames);
+            this.frames = null;
         }
     },
 
     renderScene: function() {
-        this.renderFrame(this.frame);
+        var fft = this.spectrum.getFrequencyData();
 
-        this.frame = window.requestAnimationFrame(this.renderScene.bind(this));
-    },
-
-    renderFrame: function(frame, data, callback) {
-        var fft,
-            scene = this.scene,
-            spectrum = this.spectrum;
-
-        fft = spectrum.getFrequencyData();
-
-        scene.clear();
-
-        this.displays.reverse().forEach(function(display) {
-            if (display.renderToCanvas) {
-                display.renderToCanvas(
-                    (display.type === '3d') ? scene.context3d : scene.context2d,
-                    frame,
-                    fft
-                );
+        this.scene.renderFrame(
+            this.displays.reverse(),
+            {
+                frames: this.frames,
+                fft: fft
             }
-        }.bind(this));
+        );
 
-        scene.render();
-
-        if (callback) callback();
+        this.frames = window.requestAnimationFrame(this.renderScene.bind(this));
     },
 
     processFrame: function(frame, fps, callback) {

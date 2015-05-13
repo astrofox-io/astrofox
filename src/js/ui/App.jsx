@@ -132,11 +132,6 @@ var App = React.createClass({
                 this.refs.menu.setCheckState(action, !checked);
                 break;
 
-            case 'View/Show FPS':
-                Application.showFPS(!checked);
-                this.refs.menu.setCheckState(action, !checked);
-                break;
-
             case 'Help/About':
                 this.showModal(<AboutWindow onClose={this.hideModal} />);
                 break;

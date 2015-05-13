@@ -30,7 +30,6 @@ var MenuBar = React.createClass({
                     text: 'View',
                     items: [
                         { text: 'Control Dock', checked: true },
-                        { text: 'Show FPS' },
                         { text: 'Full Screen' }
                     ]
                 },

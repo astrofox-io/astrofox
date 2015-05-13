@@ -1,1 +1,1 @@
-C:\dev\electron-v0.25.2-win32-x64\electron.exe .
+C:\dev\electron-v0.26.0-win32-x64\electron.exe .

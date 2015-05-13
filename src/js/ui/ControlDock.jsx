@@ -30,18 +30,12 @@ var ControlDock = React.createClass({
         this.refs.controls.forceUpdate();
     },
 
-    showDock: function(visible) {
-        this.setState({ visible: visible });
+    showDock: function(val) {
+        this.setState({ visible: val });
     },
 
     render: function() {
-        var state = this.state,
-            style = { display: (state.visible) ? 'flex' : 'none' },
-            mouseMove = (state.dragging) ? this.handleMouseMove : null;
-
-        if (state.dragging) {
-            style.cursor = 'ns-resize';
-        }
+        var state = this.state;
 
         return (
             <PanelDock visible={state.visible}>
@@ -49,10 +43,7 @@ var ControlDock = React.createClass({
                     title="LAYERS"
                     ref="layersPanel"
                     height={200}
-                    resizable={true}
-                    onDragStart={this.handleDragStart}
-                    onDragEnd={this.handleDragEnd}>
-
+                    resizable={true}>
                     <LayersPanel
                         ref="layers"
                         onLayerSelected={this.handleLayerSelected}
@@ -63,7 +54,6 @@ var ControlDock = React.createClass({
                     title="CONTROLS"
                     className="flex"
                     shouldUpdate={false}>
-
                     <ControlsPanel ref="controls" />
                 </Panel>
             </PanelDock>
