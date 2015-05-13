@@ -4,14 +4,14 @@ var React = require('react');
 var Application = require('../Application.js');
 
 var Panel = require('./panels/Panel.jsx');
+var PanelDock = require('./panels/PanelDock.jsx');
 var ControlsPanel = require('./panels/ControlsPanel.jsx');
 var LayersPanel = require('./panels/LayersPanel.jsx');
 
 var ControlDock = React.createClass({
     getInitialState: function() {
         return {
-            visible: true,
-            dragging: false
+            visible: true
         };
     },
 
@@ -30,18 +30,6 @@ var ControlDock = React.createClass({
         this.refs.controls.forceUpdate();
     },
 
-    handleDragStart: function() {
-        this.setState({ dragging: true });
-    },
-
-    handleDragEnd: function() {
-        this.setState({ dragging: false });
-    },
-
-    handleMouseMove: function(e) {
-        this.refs.layersPanel.handleMouseMove(e);
-    },
-
     showDock: function(visible) {
         this.setState({ visible: visible });
     },
@@ -56,10 +44,7 @@ var ControlDock = React.createClass({
         }
 
         return (
-            <div
-                className="control-dock"
-                style={style}
-                onMouseMove={mouseMove}>
+            <PanelDock visible={state.visible}>
                 <Panel
                     title="LAYERS"
                     ref="layersPanel"
@@ -81,7 +66,7 @@ var ControlDock = React.createClass({
 
                     <ControlsPanel ref="controls" />
                 </Panel>
-            </div>
+            </PanelDock>
         );
     }
 });

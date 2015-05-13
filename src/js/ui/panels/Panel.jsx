@@ -59,9 +59,12 @@ var Panel = React.createClass({
             startHeight: state.height
         }, function() {
             if (props.onDragStart) {
-                props.onDragStart();
+                props.onDragStart(this);
             }
         });
+
+        e.stopPropagation();
+        e.preventDefault();
     },
 
     handleMouseMove: function(e) {
@@ -76,6 +79,9 @@ var Panel = React.createClass({
 
             this.setState({ height: val });
         }
+
+        e.stopPropagation();
+        e.preventDefault();
     },
 
     render: function() {

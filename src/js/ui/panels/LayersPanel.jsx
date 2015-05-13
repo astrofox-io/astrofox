@@ -76,7 +76,7 @@ var LayersPanel = React.createClass({
     },
 
     handleLayerEdit: function(val, index) {
-        var display = Application.displays[index];
+        var display = Application.displays.get(index);
 
         display.init({ displayName: val });
 
