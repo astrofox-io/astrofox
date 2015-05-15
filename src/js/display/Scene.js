@@ -34,7 +34,7 @@ var Scene = function(options) {
 };
 
 Class.extend(Scene, EventEmitter, {
-    init: function (options) {
+    init: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {
@@ -44,7 +44,7 @@ Class.extend(Scene, EventEmitter, {
         }
     },
 
-    setupCanvas: function (canvas) {
+    setupCanvas: function(canvas) {
         var canvas3d = this.canvas3d = canvas,
             canvas2d = this.canvas2d = document.createElement('canvas'),
             scene2d = this.scene2d = new THREE.Scene(),
@@ -106,7 +106,7 @@ Class.extend(Scene, EventEmitter, {
         this.context3d = canvas3d.getContext('webgl');
     },
 
-    updateFPS: function () {
+    updateFPS: function() {
         var now = performance.now(),
             stats = this.stats;
 
@@ -132,7 +132,13 @@ Class.extend(Scene, EventEmitter, {
         }
     },
 
-    clearCanvas: function () {
+    resetCanvas: function() {
+        console.log('canvas reset');
+        this.clearCanvas();
+        this.texture2d.needsUpdate = true;
+    },
+
+    clearCanvas: function() {
         this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
     },
 
@@ -141,10 +147,7 @@ Class.extend(Scene, EventEmitter, {
 
         displays.forEach(function(display) {
             if (display.renderToCanvas) {
-                display.renderToCanvas(
-                    (display.type === '3d') ? this.context3d : this.context2d,
-                    data
-                );
+                display.renderToCanvas(this, data);
             }
         }.bind(this));
 
@@ -153,11 +156,7 @@ Class.extend(Scene, EventEmitter, {
         if (callback) callback();
     },
 
-    renderToCanvas: function (callback) {
-        var options = this.options;
-
-        this.texture2d.needsUpdate = true;
-
+    renderToCanvas: function(callback) {
         //this.cube.rotation.x += 0.1;
         //this.cube.rotation.y += 0.1;
 
@@ -171,20 +170,20 @@ Class.extend(Scene, EventEmitter, {
         if (callback) callback();
     },
 
-    renderVideo: function (output_file, fps, duration, func, callback) {
+    renderVideo: function(output_file, fps, duration, func, callback) {
         var started = false,
             frames = duration * fps,
             input_file = new IO.Stream.Transform();
 
         console.log('rending movie', duration, 'seconds,', fps, 'fps');
 
-        input_file.on('error', function (err) {
+        input_file.on('error', function(err) {
             console.log(err);
         });
 
-        this.callback = function (next) {
+        this.callback = function(next) {
             if (next < frames) {
-                this.renderImage(function (buffer) {
+                this.renderImage(function(buffer) {
                     input_file.push(buffer);
                     func(next, fps, this.callback);
                 }.bind(this));
@@ -198,7 +197,7 @@ Class.extend(Scene, EventEmitter, {
         input_file.pipe(ffmpeg.stdin);
         //ffmpeg.stdout.pipe(outStream);
 
-        ffmpeg.stderr.on('data', function (data) {
+        ffmpeg.stderr.on('data', function(data) {
             console.log(data.toString());
             if (!started) {
                 func(0, fps, this.callback);
@@ -206,22 +205,22 @@ Class.extend(Scene, EventEmitter, {
             }
         }.bind(this));
 
-        ffmpeg.stderr.on('end', function () {
+        ffmpeg.stderr.on('end', function() {
             console.log('file has been converted succesfully');
             if (callback) callback();
         });
 
-        ffmpeg.stderr.on('exit', function () {
+        ffmpeg.stderr.on('exit', function() {
             console.log('child process exited');
         });
 
-        ffmpeg.stderr.on('close', function () {
+        ffmpeg.stderr.on('close', function() {
             console.log('program closed');
         });
     },
 
-    renderImage: function (callback, format) {
-        this.render(function () {
+    renderImage: function(callback, format) {
+        this.renderToCanvas(function() {
             var img = this.renderer.domElement.toDataURL(format || 'image/png'),
                 data = img.replace(/^data:image\/\w+;base64,/, ''),
                 buffer = new IO.Buffer(data, 'base64');

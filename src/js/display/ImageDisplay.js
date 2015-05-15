@@ -90,11 +90,14 @@ Class.extend(ImageDisplay, DisplayComponent, {
             context.globalAlpha = options.opacity;
             context.drawImage(img, 0, 0, options.width, options.height);
         }
+
+        this.needsUpdate = true;
     },
 
-    renderToCanvas: function(context) {
+    renderToCanvas: function(scene) {
         if (this.options.src) {
-            var options = this.options,
+            var context = scene.context2d,
+                options = this.options,
                 width = options.width / 2,
                 height = options.height / 2;
 
@@ -109,6 +112,11 @@ Class.extend(ImageDisplay, DisplayComponent, {
             else {
                 context.drawImage(this.canvas, options.x, options.y);
             }
+        }
+
+        if (this.needsUpdate) {
+            scene.texture2d.needsUpdate = true;
+            this.needsUpdate = false;
         }
     },
 

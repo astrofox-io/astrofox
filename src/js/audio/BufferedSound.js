@@ -12,7 +12,7 @@ var BufferedSound = function(context) {
 };
 
 Class.extend(BufferedSound, Sound, {
-    load: function (src) {
+    load: function(src) {
         if (typeof src === 'string') {
             this.loadUrl(src);
         }
@@ -28,7 +28,7 @@ Class.extend(BufferedSound, Sound, {
         }
     },
 
-    unload: function (callback) {
+    unload: function(callback) {
         if (this.source) {
             this.source.disconnect();
             this.source = null;
@@ -40,7 +40,7 @@ Class.extend(BufferedSound, Sound, {
     },
 
     // Loads a url via AJAX
-    loadUrl: function (src) {
+    loadUrl: function(src) {
         var request = new XMLHttpRequest();
 
         this.src = src;
@@ -48,7 +48,7 @@ Class.extend(BufferedSound, Sound, {
         request.open('GET', this.src, true);
         request.responseType = 'arraybuffer';
 
-        request.onload = function () {
+        request.onload = function() {
             this.loadData(request.response);
         }.bind(this);
 
@@ -56,39 +56,39 @@ Class.extend(BufferedSound, Sound, {
     },
 
     // Decodes an ArrayBuffer into an AudioBuffer
-    loadData: function (data) {
+    loadData: function(data) {
         this.audioContext.decodeAudioData(
             data,
-            function (buffer) {
+            function(buffer) {
                 this.loadBuffer(buffer);
             }.bind(this),
-            function (e) {
+            function(e) {
                 this.emit('error', new Error('Invalid audio file.'));
             }.bind(this)
         );
     },
 
     // Loads an AudioBuffer
-    loadBuffer: function (buffer) {
+    loadBuffer: function(buffer) {
         this.buffer = buffer;
         this.initBuffer();
         this.loaded = true;
         this.emit('load');
     },
 
-    initBuffer: function () {
+    initBuffer: function() {
         if (this.source) {
             this.source.disconnect();
         }
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
 
-        this.nodes.forEach(function (node) {
+        this.nodes.forEach(function(node) {
             this.source.connect(node);
         }.bind(this));
     },
 
-    getCurrentTime: function () {
+    getCurrentTime: function() {
         if (this.playing) {
             return this.stopTime + (this.audioContext.currentTime - this.startTime);
         }
@@ -97,15 +97,15 @@ Class.extend(BufferedSound, Sound, {
         }
     },
 
-    getDuration: function () {
+    getDuration: function() {
         return (this.buffer) ? this.buffer.duration : 0;
     },
 
-    updatePosition: function (pos) {
+    updatePosition: function(pos) {
         this.stopTime = ~~(pos * this.buffer.duration);
     },
 
-    play: function () {
+    play: function() {
         if (!this.loaded) return;
 
         this.initBuffer();
@@ -118,7 +118,7 @@ Class.extend(BufferedSound, Sound, {
         this.emit('play');
     },
 
-    pause: function () {
+    pause: function() {
         this.source.stop();
         this.stopTime += this.audioContext.currentTime - this.startTime;
         this.playing = false;
@@ -127,7 +127,7 @@ Class.extend(BufferedSound, Sound, {
         this.emit('pause');
     },
 
-    stop: function () {
+    stop: function() {
         this.source.stop();
         this.stopTime = 0;
         this.playing = false;
@@ -136,7 +136,7 @@ Class.extend(BufferedSound, Sound, {
         this.emit('stop');
     },
 
-    seek: function (pos) {
+    seek: function(pos) {
         if (this.playing) {
             this.stop();
             this.updatePosition(pos);

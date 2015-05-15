@@ -30,7 +30,7 @@ TextDisplay.info = {
 };
 
 Class.extend(TextDisplay, DisplayComponent, {
-    render: function () {
+    render: function() {
         var width, height,
             canvas = this.canvas,
             context = this.context,
@@ -56,6 +56,8 @@ Class.extend(TextDisplay, DisplayComponent, {
         context.globalAlpha = options.opacity;
         context.fillText(options.text, 0, options.size);
 
+        this.needsUpdate = true;
+
         /*
          context.beginPath();
          context.rect(0, 0, canvas.width, canvas.height);
@@ -65,8 +67,9 @@ Class.extend(TextDisplay, DisplayComponent, {
          */
     },
 
-    renderToCanvas: function (context) {
-        var options = this.options,
+    renderToCanvas: function(scene) {
+        var context = scene.context2d,
+            options = this.options,
             width = this.canvas.width / 2,
             height = this.canvas.height / 2;
 
@@ -81,9 +84,14 @@ Class.extend(TextDisplay, DisplayComponent, {
         else {
             context.drawImage(this.canvas, options.x, options.y);
         }
+
+        if (this.needsUpdate) {
+            scene.texture2d.needsUpdate = true;
+            this.needsUpdate = false;
+        }
     },
 
-    getFont: function () {
+    getFont: function() {
         var options = this.options,
             font = [
                 (options.italic) ? 'italic' : 'normal',
@@ -93,7 +101,7 @@ Class.extend(TextDisplay, DisplayComponent, {
             ];
 
         return font.join(' ');
-    },
+    }
 });
 
 module.exports = TextDisplay;

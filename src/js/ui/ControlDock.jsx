@@ -17,6 +17,7 @@ var ControlDock = React.createClass({
 
     componentDidMount: function() {
         Application.on('displays_updated', function() {
+            Application.resetScene();
             this.refs.layers.forceUpdate();
             this.refs.controls.forceUpdate();
         }.bind(this));
@@ -27,6 +28,7 @@ var ControlDock = React.createClass({
     },
 
     handleLayerChanged: function() {
+        Application.resetScene();
         this.refs.controls.forceUpdate();
     },
 

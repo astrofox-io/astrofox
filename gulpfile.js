@@ -55,11 +55,11 @@ gulp.task('less', function() {
 });
 
 gulp.task('sprite', function() {
-    var spriteData = gulp.src('src/image/sprite/*.png')
+    var spriteData = gulp.src('src/images/sprite/*.png')
         .pipe(spritesmith({
             imgName: 'sprite.png',
             cssName: 'sprite.css',
-            cssTemplate: 'src/image/sprite/template/sprite.css.mustache'
+            cssTemplate: 'src/images/sprite/template/sprite.css.mustache'
         }));
 
     spriteData.pipe(gulp.dest('build'));

@@ -46,7 +46,7 @@ BarSpectrumDisplay.info = {
 };
 
 Class.extend(BarSpectrumDisplay, DisplayComponent, {
-    init: function (options) {
+    init: function(options) {
         var changed = this._super.init.call(this, options);
 
         this.bars.init(options);
@@ -54,8 +54,9 @@ Class.extend(BarSpectrumDisplay, DisplayComponent, {
         return changed;
     },
 
-    renderToCanvas: function(context, payload) {
+    renderToCanvas: function(scene, payload) {
         var data,
+            context = scene.context2d,
             options = this.options,
             barOptions = this.bars.options,
             width = barOptions.width / 2,
@@ -64,6 +65,7 @@ Class.extend(BarSpectrumDisplay, DisplayComponent, {
         data = this.data = SpectrumParser.parseFFT(payload.fft, options, this.data);
 
         this.bars.render(data);
+        scene.texture2d.needsUpdate = true;
 
         if (barOptions.rotation % 360 !== 0) {
             context.save();

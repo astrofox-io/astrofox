@@ -29,7 +29,7 @@ var BarDisplay = function(canvas, options) {
 };
 
 Class.extend(BarDisplay, EventEmitter, {
-    init: function (options) {
+    init: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {

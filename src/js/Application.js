@@ -134,6 +134,11 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
+    resetScene: function() {
+        console.log('calling scene reset');
+        this.scene.resetCanvas();
+    },
+
     renderScene: function() {
         var fft = this.spectrum.getFrequencyData();
 

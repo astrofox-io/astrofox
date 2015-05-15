@@ -9,6 +9,7 @@ var DisplayComponent = function(id, name, type, canvas, options) {
     this.name = name;
     this.type = type;
     this.canvas = canvas || document.createElement('canvas');
+    this.needsUpdate = true;
 
     this.context = (type === '3d') ?
         this.canvas.getContext('webgl') :
@@ -19,7 +20,7 @@ var DisplayComponent = function(id, name, type, canvas, options) {
 };
 
 Class.extend(DisplayComponent, EventEmitter, {
-    init: function (options) {
+    init: function(options) {
         var changed = false;
 
         if (typeof options !== 'undefined') {
@@ -38,11 +39,11 @@ Class.extend(DisplayComponent, EventEmitter, {
         return changed;
     },
 
-    toString: function () {
+    toString: function() {
         return this.name + '' + this.id;
     },
 
-    toJSON: function () {
+    toJSON: function() {
         return {
             name: this.name,
             values: this.options
