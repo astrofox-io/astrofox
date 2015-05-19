@@ -7,6 +7,8 @@ var NumberInput = require('../input/NumberInput.jsx');
 var ImageInput = require('../input/ImageInput.jsx');
 var RangeInput = require('../input/RangeInput.jsx');
 
+var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
 var ImageControl = React.createClass({
     defaultState: {
         src: '',
@@ -38,6 +40,9 @@ var ImageControl = React.createClass({
             this.image.src = display.options.src;
             this.setState(display.options);
         }
+        else {
+            display.update(this.state);
+        }
     },
 
     componentDidUpdate: function() {
@@ -52,7 +57,8 @@ var ImageControl = React.createClass({
         var obj = {},
             state = this.state,
             image = this.image,
-            ratio = (image.src) ? image.naturalWidth / image.naturalHeight : 0;
+            ratio = (image.src) ? image.naturalWidth / image.naturalHeight : 0,
+            render = false;
 
         obj[name] = val;
 
@@ -64,18 +70,25 @@ var ImageControl = React.createClass({
             obj.rotation = 0;
             obj.opacity = 0;
 
-            if (val !== '') {
+            if (val !== BLANK_IMAGE) {
                 obj.src = image.src = val;
                 obj.opacity = 1.0;
                 obj.width = image.naturalWidth;
                 obj.height = image.naturalHeight;
             }
+
+            render = true;
         }
         else if (name === 'width' && state.src && state.fixed) {
             obj.height = Math.round(val * (1 / ratio));
+            render = true;
         }
         else if (name === 'height' && state.src && state.fixed) {
             obj.width = Math.round(val * ratio);
+            render = true;
+        }
+        else if (name === 'opacity') {
+            render = true;
         }
 
         this.shouldUpdate = true;
@@ -89,8 +102,11 @@ var ImageControl = React.createClass({
                 image.src = state.src;
             }
 
-            display.init(obj);
-            display.render();
+            display.update(obj);
+
+            if (render) {
+                display.render();
+            }
         }.bind(this));
     },
 

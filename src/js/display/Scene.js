@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var THREE = require('three');
+var CombinedCamera = require('../vendor/three/CombinedCamera.js');
 
 var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
@@ -10,16 +11,12 @@ var IO = require('../IO.js');
 var defaults = {
     showFPS: false,
     audioOutput: 'mux',
-    videoOutput: 'mp4'
+    videoOutput: 'mp4',
+    width: 854,
+    height: 480
 };
 
 var Scene = function(options) {
-    this.renderer = null;
-    this.canvas2d = null;
-    this.canvas3d = null;
-    this.context2d = null;
-    this.context3d = null;
-
     this.stats = {
         fps: 0,
         ms: 0,
@@ -28,13 +25,16 @@ var Scene = function(options) {
         stack: []
     };
 
+    this.scene2d = new THREE.Scene();
+    this.scene3d = new THREE.Scene();
+
     this.options = _.assign({}, defaults);
 
-    this.init(options);
+    this.update(options);
 };
 
 Class.extend(Scene, EventEmitter, {
-    init: function(options) {
+    update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {
@@ -44,18 +44,36 @@ Class.extend(Scene, EventEmitter, {
         }
     },
 
-    setupCanvas: function(canvas) {
-        var canvas3d = this.canvas3d = canvas,
+    addCube: function() {
+        // light
+        var pointLight = new THREE.PointLight(0xFFFFFF);
+        pointLight.position.x = 10;
+        pointLight.position.y = 50;
+        pointLight.position.z = 130;
+        this.scene3d.add(pointLight);
+
+        // cube
+        var geometry = new THREE.BoxGeometry(1,1,1);
+        var cmaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+        this.cube = new THREE.Mesh( geometry, cmaterial );
+        this.scene3d.add(this.cube);
+    },
+
+    loadCanvas: function(canvas) {
+        var options = this.options,
+            canvas3d = this.canvas3d = canvas,
             canvas2d = this.canvas2d = document.createElement('canvas'),
-            scene2d = this.scene2d = new THREE.Scene(),
-            scene3d = this.scene3d = new THREE.Scene(),
             width = canvas.width,
             height = canvas.height,
-            factor = 2;
+            right = width / 2,
+            top = height / 2,
+            left = -1 * right,
+            bottom = -1 * top,
+            aspect = width / height;
 
         // Renderer
-        var renderer = this.renderer = new THREE.WebGLRenderer({canvas: this.canvas3d});
-        renderer.setSize(width, height);
+        var renderer = this.renderer = new THREE.WebGLRenderer({ canvas: canvas3d });
+        //renderer.setSize(width, height);
         renderer.autoClear = false;
 
         // Scene 2D
@@ -63,11 +81,20 @@ Class.extend(Scene, EventEmitter, {
         canvas2d.height = height;
 
         // Camera 2D
-        var camera2d = this.camera2d = new THREE.OrthographicCamera(-1 * width / factor, width / factor, height / factor, -1 * height / factor, 1, 10);
-        camera2d.position.z = 10;
+        var camera2d = this.camera2d = new THREE.OrthographicCamera(left, right, top, bottom, 1, 10);
+        camera2d.position.set(0, 0, 10);
+
+        // Camera 3D
+        var camera3d = this.camera3d = new THREE.PerspectiveCamera(35, aspect, 0.1, 1000);
+        camera3d.position.set(0, 0, 10);
+        this.scene3d.add(camera3d);
+
+        // Rendering context
+        this.context2d = canvas2d.getContext('2d');
+        this.context3d = canvas3d.getContext('webgl');
 
         // Texture 2D
-        var texture = this.texture2d = new THREE.Texture(this.canvas2d);
+        var texture = this.texture = new THREE.Texture(this.canvas2d);
         texture.needsUpdate = true;
         THREE.LinearFilter = THREE.NearestFilter = texture.minFilter;
 
@@ -78,64 +105,10 @@ Class.extend(Scene, EventEmitter, {
 
         var sprite = new THREE.Sprite(material);
         sprite.scale.set(material.map.image.width, material.map.image.height, 1);
-        sprite.position.set(0, 0, 1);
 
-        scene2d.add(sprite);
+        this.scene2d.add(sprite);
 
-        // Scene 3D
-        var camera3d = this.camera3d = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
-        scene3d.add(camera3d);
-
-        /*
-         // light
-         var pointLight = new THREE.PointLight(0xFFFFFF);
-         pointLight.position.x = 10;
-         pointLight.position.y = 50;
-         pointLight.position.z = 130;
-         this.scene3d.add(pointLight);
-
-         // cube
-         var geometry = new THREE.BoxGeometry(1,1,1);
-         var material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-         this.cube = new THREE.Mesh( geometry, material );
-         this.cube.position.z = -10;
-         this.scene3d.add(this.cube);
-         */
-
-        this.context2d = canvas2d.getContext('2d');
-        this.context3d = canvas3d.getContext('webgl');
-    },
-
-    updateFPS: function() {
-        var now = performance.now(),
-            stats = this.stats;
-
-        if (!stats.time) {
-            stats.time = now;
-        }
-
-        stats.frames += 1;
-
-        if (now > stats.time + 1000) {
-            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
-            stats.ms = (now - stats.time) / stats.frames;
-            stats.time = now;
-            stats.frames = 0;
-
-            stats.stack.push(stats.fps);
-
-            if (stats.stack.length > 10) {
-                stats.stack.shift();
-            }
-
-            this.emit('tick', stats);
-        }
-    },
-
-    resetCanvas: function() {
-        console.log('canvas reset');
-        this.clearCanvas();
-        this.texture2d.needsUpdate = true;
+        //this.addCube();
     },
 
     clearCanvas: function() {
@@ -151,16 +124,20 @@ Class.extend(Scene, EventEmitter, {
             }
         }.bind(this));
 
-        this.renderToCanvas();
+        this.render();
 
         if (callback) callback();
     },
 
-    renderToCanvas: function(callback) {
-        //this.cube.rotation.x += 0.1;
-        //this.cube.rotation.y += 0.1;
+    render: function(callback) {
+        if (this.cube) {
+            this.cube.rotation.x += 0.1;
+            this.cube.rotation.y += 0.1;
+        }
 
         this.updateFPS();
+
+        this.texture.needsUpdate = true;
 
         this.renderer.clear();
         this.renderer.render(this.scene3d, this.camera3d);
@@ -227,6 +204,41 @@ Class.extend(Scene, EventEmitter, {
 
             if (callback) callback(buffer);
         }.bind(this));
+    },
+
+    getSize: function() {
+        var canvas =  this.canvas3d;
+
+        return {
+            width: canvas.width,
+            height: canvas.height
+        };
+    },
+
+    updateFPS: function() {
+        var now = performance.now(),
+            stats = this.stats;
+
+        if (!stats.time) {
+            stats.time = now;
+        }
+
+        stats.frames += 1;
+
+        if (now > stats.time + 1000) {
+            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.ms = (now - stats.time) / stats.frames;
+            stats.time = now;
+            stats.frames = 0;
+
+            stats.stack.push(stats.fps);
+
+            if (stats.stack.length > 10) {
+                stats.stack.shift();
+            }
+
+            this.emit('tick', stats);
+        }
     }
 });
 

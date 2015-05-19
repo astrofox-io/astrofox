@@ -1,8 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
+var THREE = require('three');
 var Class = require('../core/Class.js');
-var DisplayComponent = require('./DisplayComponent.js');
+var Display = require('./Display.js');
+var SpriteDisplay = require('./SpriteDisplay.js');
 
 var defaults = {
     text: '',
@@ -19,76 +21,52 @@ var defaults = {
 
 var id = 0;
 
-var TextDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'TextDisplay', '2d', canvas, defaults);
+var TextDisplay = function(options) {
+    SpriteDisplay.call(this, id++, 'TextDisplay', '2d', defaults);
 
-    this.init(options);
+    this.update(options);
 };
 
 TextDisplay.info = {
     name: 'Text'
 };
 
-Class.extend(TextDisplay, DisplayComponent, {
+Class.extend(TextDisplay, SpriteDisplay, {
     render: function() {
-        var width, height,
+        var width, height, length, spacing, r,
             canvas = this.canvas,
             context = this.context,
             options = this.options,
             font = this.getFont();
 
         context.font = font;
-        width = Math.ceil(context.measureText(options.text).width);
-        height = options.size * 2;
 
-        // Fix for text clipping
-        width += width / options.text.length;
+        length = Math.ceil(context.measureText(options.text).width);
+        spacing = Math.ceil(length / options.text.length);
+        width = length + spacing;
+        height = options.size * 2;
 
         // Reset canvas
         canvas.width = width;
         canvas.height = height;
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        //context.clearRect(0, 0, width, height);
 
         // Draw text
         context.font = font;
         context.fillStyle = options.color;
+        context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.globalAlpha = options.opacity;
-        context.fillText(options.text, 0, options.size);
+        context.fillText(options.text, width/2, height/2);
 
-        this.needsUpdate = true;
-
+        // Debugging
         /*
-         context.beginPath();
-         context.rect(0, 0, canvas.width, canvas.height);
-         context.lineWidth = 2;
-         context.strokeStyle = 'red';
-         context.stroke();
-         */
-    },
-
-    renderToCanvas: function(scene) {
-        var context = scene.context2d,
-            options = this.options,
-            width = this.canvas.width / 2,
-            height = this.canvas.height / 2;
-
-        if (options.rotation % 360 !== 0) {
-            context.save();
-            context.translate(options.x, options.y);
-            context.translate(width, height);
-            context.rotate(options.rotation * Math.PI / 180);
-            context.drawImage(this.canvas, -width, -height);
-            context.restore();
-        }
-        else {
-            context.drawImage(this.canvas, options.x, options.y);
-        }
-
-        if (this.needsUpdate) {
-            scene.texture2d.needsUpdate = true;
-            this.needsUpdate = false;
-        }
+        context.beginPath();
+        context.rect(0, 0, canvas.width, canvas.height);
+        context.lineWidth = 2;
+        context.strokeStyle = 'red';
+        context.stroke();
+        */
     },
 
     getFont: function() {

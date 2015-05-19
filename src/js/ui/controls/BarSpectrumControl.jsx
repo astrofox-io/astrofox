@@ -11,8 +11,8 @@ var BarSpectrumControl = React.createClass({
     defaultState: {
         height: 300,
         width: 774,
-        x: 40,
-        y: 340,
+        x: 0,
+        y: 0,
         barWidth: -1,
         barSpacing: -1,
         barWidthAutoSize: 1,
@@ -46,7 +46,7 @@ var BarSpectrumControl = React.createClass({
             this.setState(display.options);
         }
         else {
-            display.init(this.state);
+            display.update(this.state);
         }
 
         display.analyzer = Application.spectrum;
@@ -61,7 +61,8 @@ var BarSpectrumControl = React.createClass({
     },
 
     handleChange: function(name, val) {
-        var obj = {};
+        var obj = {},
+            display = this.props.display;
 
         if (name === 'barWidthAutoSize') {
             obj.barWidth = (val) ? -1 : 1;
@@ -74,7 +75,7 @@ var BarSpectrumControl = React.createClass({
 
         this.shouldUpdate = true;
         this.setState(obj, function() {
-            this.props.display.init(this.state);
+            display.update(this.state);
         });
     },
 
@@ -298,7 +299,7 @@ var BarSpectrumControl = React.createClass({
                         <RangeInput
                             name="y"
                             min={-maxHeight}
-                            max={maxHeight*2}
+                            max={maxHeight}
                             value={this.state.y}
                             onChange={this.handleChange}
                         />

@@ -4,23 +4,16 @@ var _ = require('lodash');
 var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 
-var DisplayComponent = function(id, name, type, canvas, options) {
+var Display = function(id, name, type, options) {
     this.id = id;
     this.name = name;
     this.type = type;
-    this.canvas = canvas || document.createElement('canvas');
-    this.needsUpdate = true;
-
-    this.context = (type === '3d') ?
-        this.canvas.getContext('webgl') :
-        this.canvas.getContext('2d');
-
     this.options = _.assign({ displayName: name + '' + id }, options);
     this.initialized = false;
 };
 
-Class.extend(DisplayComponent, EventEmitter, {
-    init: function(options) {
+Class.extend(Display, EventEmitter, {
+    update: function(options) {
         var changed = false;
 
         if (typeof options !== 'undefined') {
@@ -51,4 +44,4 @@ Class.extend(DisplayComponent, EventEmitter, {
     }
 });
 
-module.exports = DisplayComponent;
+module.exports = Display;

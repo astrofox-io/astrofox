@@ -25,11 +25,11 @@ var BarDisplay = function(canvas, options) {
     this.context = canvas.getContext('2d');
     this.options = _.assign({}, defaults);
 
-    this.init(options);
+    this.update(options);
 };
 
 Class.extend(BarDisplay, EventEmitter, {
-    init: function(options) {
+    update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {

@@ -2,7 +2,8 @@
 
 var _ = require('lodash');
 var Class = require('../core/Class.js');
-var DisplayComponent = require('./DisplayComponent.js');
+var Display = require('./Display.js');
+var SpriteDisplay = require('./SpriteDisplay.js');
 
 var defaults = {
     src: '',
@@ -18,27 +19,24 @@ var defaults = {
 var id = 0;
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-var ImageDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'ImageDisplay', '2d', canvas, defaults);
+var ImageDisplay = function(options) {
+    SpriteDisplay.call(this, id++, 'ImageDisplay', '2d', defaults);
 
     this.image = new Image();
 
-    this.init(options);
+    this.update(options);
 };
 
 ImageDisplay.info = {
     name: 'Image'
 };
 
-Class.extend(ImageDisplay, DisplayComponent, {
-    init: function(options) {
-        var changed = this._super.init.call(this, options);
+Class.extend(ImageDisplay, SpriteDisplay, {
+    update: function(options) {
+        var changed = this._super.update.call(this, options);
 
         if (this.image.src !== this.options.src) {
             this.image.src = this.options.src;
-            if (this.image.src !== BLANK_IMAGE) {
-                this.render();
-            }
         }
 
         return changed;
@@ -56,7 +54,6 @@ Class.extend(ImageDisplay, DisplayComponent, {
         // Reset canvas
         canvas.width = options.width;
         canvas.height = options.height;
-        context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Get original dimensions
         width = img.naturalWidth;
@@ -83,7 +80,7 @@ Class.extend(ImageDisplay, DisplayComponent, {
             }
 
             context.globalAlpha = options.opacity;
-            context.drawImage(buffer, 0, 0, width*2, height*2, 0, 0, options.width, options.height);;
+            context.drawImage(buffer, 0, 0, width*2, height*2, 0, 0, options.width, options.height);
         }
         // Draw normally
         else {
@@ -91,44 +88,7 @@ Class.extend(ImageDisplay, DisplayComponent, {
             context.drawImage(img, 0, 0, options.width, options.height);
         }
 
-        this.needsUpdate = true;
-    },
-
-    renderToCanvas: function(scene) {
-        if (this.options.src) {
-            var context = scene.context2d,
-                options = this.options,
-                width = options.width / 2,
-                height = options.height / 2;
-
-            if (options.rotation % 360 !== 0) {
-                context.save();
-                context.translate(options.x, options.y);
-                context.translate(width, height);
-                context.rotate(options.rotation * Math.PI / 180);
-                context.drawImage(this.canvas, -width, -height);
-                context.restore();
-            }
-            else {
-                context.drawImage(this.canvas, options.x, options.y);
-            }
-        }
-
-        if (this.needsUpdate) {
-            scene.texture2d.needsUpdate = true;
-            this.needsUpdate = false;
-        }
-    },
-
-    toString: function() {
-        return this.name + '' + this.id;
-    },
-
-    toJSON: function() {
-        return {
-            name: this.name,
-            values: this.options
-        };
+        console.log('image rendered', performance.now());
     }
 });
 

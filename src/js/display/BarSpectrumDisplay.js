@@ -3,14 +3,15 @@
 var _ = require('lodash');
 var Class = require('../core/Class.js');
 var BarDisplay = require('./BarDisplay.js');
-var DisplayComponent = require('./DisplayComponent.js');
+var Display = require('./Display.js');
+var SpriteDisplay = require('./SpriteDisplay.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 
 var defaults = {
     height: 300,
     width: 200,
     x: 0,
-    y: 150,
+    y: 0,
     barWidth: -1,
     barSpacing: -1,
     barWidthAutoSize: 1,
@@ -32,29 +33,36 @@ var defaults = {
 
 var id = 0;
 
-var BarSpectrumDisplay = function(canvas, options) {
-    DisplayComponent.call(this, id++, 'BarSpectrumDisplay', '2d', canvas, defaults);
+var BarSpectrumDisplay = function(options) {
+    SpriteDisplay.call(this, id++, 'BarSpectrumDisplay', '2d', defaults);
 
     this.bars = new BarDisplay(this.canvas, options);
     this.data = null;
 
-    this.init(options);
+    this.update(options);
 };
 
 BarSpectrumDisplay.info = {
     name: 'Bar Spectrum'
 };
 
-Class.extend(BarSpectrumDisplay, DisplayComponent, {
-    init: function(options) {
-        var changed = this._super.init.call(this, options);
+Class.extend(BarSpectrumDisplay, SpriteDisplay, {
+    update: function(options) {
+        var changed = this._super.update.call(this, options);
 
-        this.bars.init(options);
+        this.bars.update(options);
 
         return changed;
     },
 
     renderToCanvas: function(scene, payload) {
+        var data = this.data = SpectrumParser.parseFFT(payload.fft, this.options, this.data);
+        this.bars.render(data);
+
+        this._super.renderToCanvas.call(this, scene);
+    },
+
+    renderToCanvasQQQ: function(scene, payload) {
         var data,
             context = scene.context2d,
             options = this.options,
@@ -65,7 +73,6 @@ Class.extend(BarSpectrumDisplay, DisplayComponent, {
         data = this.data = SpectrumParser.parseFFT(payload.fft, options, this.data);
 
         this.bars.render(data);
-        scene.texture2d.needsUpdate = true;
 
         if (barOptions.rotation % 360 !== 0) {
             context.save();

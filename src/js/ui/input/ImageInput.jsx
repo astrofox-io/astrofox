@@ -8,7 +8,7 @@ var ImageInput = React.createClass({
     getDefaultProps: function() {
         return {
             name: 'image',
-            src: ''
+            src: BLANK_IMAGE
         };
     },
 

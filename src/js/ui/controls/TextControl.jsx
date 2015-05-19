@@ -55,6 +55,9 @@ var TextControl = React.createClass({
             this.shouldUpdate = true;
             this.setState(display.options);
         }
+        else {
+            display.update(this.state);
+        }
     },
 
     componentDidUpdate: function() {
@@ -75,7 +78,7 @@ var TextControl = React.createClass({
         this.setState(obj, function() {
             var display = this.props.display;
 
-            display.init(this.state);
+            display.update(this.state);
             display.render();
         });
     },
@@ -84,24 +87,6 @@ var TextControl = React.createClass({
         return this.fontOptions.map(function(item) {
             return { name: item, value: item, style: { fontFamily: item } };
         });
-    },
-
-    renderToCanvas: function(context) {
-        var state = this.state,
-            width = this.canvas.width / 2,
-            height = this.canvas.height / 2;
-
-        if (state.rotation % 360 !== 0) {
-            context.save();
-            context.translate(state.x, state.y);
-            context.translate(width, height);
-            context.rotate(state.rotation * Math.PI / 180);
-            context.drawImage(this.canvas, -width, -height);
-            context.restore();
-        }
-        else {
-            context.drawImage(this.canvas, state.x, state.y);
-        }
     },
 
     render: function() {

@@ -21,7 +21,7 @@ var defaults = {
 };
 
 var Application = function() {
-    this.frames = null;
+    this.frame = null;
     this.displays = new Immutable.List();
 
     this.audioContext = new (window.AudioContext || window.webkitAudioContext);
@@ -89,7 +89,7 @@ Class.extend(Application, EventEmitter, {
     },
 
     loadCanvas: function(canvas) {
-        this.scene.setupCanvas(canvas);
+        this.scene.loadCanvas(canvas);
     },
 
     addDisplay: function(display, index) {
@@ -98,6 +98,10 @@ Class.extend(Application, EventEmitter, {
         this.displays = (typeof index !== 'undefined') ?
             displays.unshift(display) :
             displays.push(display);
+
+        if (display.addToScene) {
+            display.addToScene(this.scene);
+        }
     },
 
     removeDisplay: function(display) {
@@ -106,6 +110,10 @@ Class.extend(Application, EventEmitter, {
 
         if (index > -1) {
             this.displays = displays.delete(index);
+
+            if (display.removeFromScene) {
+                display.removeFromScene(this.scene);
+            }
         }
     },
 
@@ -122,35 +130,34 @@ Class.extend(Application, EventEmitter, {
     },
 
     startRender: function() {
-        if (!this.frames) {
+        if (!this.frame) {
             this.renderScene();
         }
     },
 
     stopRender: function() {
-        if (this.frames) {
-            window.cancelAnimationFrame(this.frames);
-            this.frames = null;
+        if (this.frame) {
+            window.cancelAnimationFrame(this.frame);
+            this.frame = null;
         }
     },
 
     resetScene: function() {
-        console.log('calling scene reset');
-        this.scene.resetCanvas();
+        this.scene.clearCanvas();
     },
 
     renderScene: function() {
         var fft = this.spectrum.getFrequencyData();
 
+        this.frame = window.requestAnimationFrame(this.renderScene.bind(this));
+
         this.scene.renderFrame(
             this.displays.reverse(),
             {
-                frames: this.frames,
+                frame: this.frame,
                 fft: fft
             }
         );
-
-        this.frames = window.requestAnimationFrame(this.renderScene.bind(this));
     },
 
     processFrame: function(frame, fps, callback) {
@@ -257,10 +264,10 @@ Class.extend(Application, EventEmitter, {
 
     loadControls: function(data) {
         if (data instanceof Array) {
-            this.displays = [];
+            this.displays = this.displays.clear();
 
             data.forEach(function(item) {
-                this.addDisplay(new FX[item.name](null, item.values));
+                this.addDisplay(new FX[item.name](item.values));
             }.bind(this));
 
             this.emit('displays_updated');
