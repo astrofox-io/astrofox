@@ -9,10 +9,10 @@ var ToggleInput = require('../input/ToggleInput.jsx');
 
 var BarSpectrumControl = React.createClass({
     defaultState: {
-        height: 300,
-        width: 774,
+        height: 240,
+        width: 770,
         x: 0,
-        y: 0,
+        y: -120,
         barWidth: -1,
         barSpacing: -1,
         barWidthAutoSize: 1,

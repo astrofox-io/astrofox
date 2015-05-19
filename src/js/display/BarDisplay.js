@@ -57,7 +57,6 @@ Class.extend(BarDisplay, EventEmitter, {
         // Reset canvas
         canvas.width = options.width;
         canvas.height = options.height + options.shadowHeight;
-        context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Calculate bar widths
         if (barWidth < 0 && barSpacing < 0) {

@@ -5,6 +5,8 @@ var THREE = require('three');
 var Class = require('../core/Class.js');
 var Display = require('../display/Display.js');
 
+var radians = 0.017453292519943295;
+
 var SpriteDisplay = function() {
     Display.apply(this, arguments);
 
@@ -21,8 +23,8 @@ Class.extend(SpriteDisplay, Display, {
             halfWidth = canvas.width / 2,
             halfHeight = canvas.height / 2,
             size = scene.getSize(),
-            halfSceneWidth = size.width/2,
-            halfSceneHeight = size.height/2;
+            halfSceneWidth = size.width / 2,
+            halfSceneHeight = size.height / 2;
 
 
         if (options.rotation % 360 !== 0) {
@@ -31,7 +33,7 @@ Class.extend(SpriteDisplay, Display, {
 
             context.save();
             context.translate(x, y);
-            context.rotate(options.rotation * Math.PI/180);
+            context.rotate(options.rotation * radians);
             context.drawImage(canvas, -halfWidth, -halfHeight);
             context.restore();
         }

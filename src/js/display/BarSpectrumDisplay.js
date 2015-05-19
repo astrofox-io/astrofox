@@ -32,6 +32,7 @@ var defaults = {
 };
 
 var id = 0;
+var radians = 0.017453292519943295;
 
 var BarSpectrumDisplay = function(options) {
     SpriteDisplay.call(this, id++, 'BarSpectrumDisplay', '2d', defaults);
@@ -59,7 +60,34 @@ Class.extend(BarSpectrumDisplay, SpriteDisplay, {
         var data = this.data = SpectrumParser.parseFFT(payload.fft, this.options, this.data);
         this.bars.render(data);
 
-        this._super.renderToCanvas.call(this, scene);
+        var x, y,
+            canvas = this.canvas,
+            options = this.options,
+            barOptions = this.bars.options,
+            context = scene.context2d,
+            halfWidth = canvas.width / 2,
+            halfHeight = canvas.height / 2,
+            size = scene.getSize(),
+            halfSceneWidth = size.width / 2,
+            halfSceneHeight = size.height / 2;
+
+
+        if (options.rotation % 360 !== 0) {
+            x = halfSceneWidth + options.x;
+            y = barOptions.height - options.y;
+
+            context.save();
+            context.translate(x, y);
+            context.rotate(options.rotation * radians);
+            context.drawImage(canvas, -halfWidth, -barOptions.height);
+            context.restore();
+        }
+        else {
+            x = halfSceneWidth - halfWidth + options.x;
+            y = halfSceneHeight - barOptions.height - options.y;
+
+            context.drawImage(canvas, x, y);
+        }
     },
 
     renderToCanvasQQQ: function(scene, payload) {
