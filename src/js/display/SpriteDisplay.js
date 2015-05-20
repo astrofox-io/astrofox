@@ -5,7 +5,7 @@ var THREE = require('three');
 var Class = require('../core/Class.js');
 var Display = require('../display/Display.js');
 
-var radians = 0.017453292519943295;
+var RADIANS = 0.017453292519943295;
 
 var SpriteDisplay = function() {
     Display.apply(this, arguments);
@@ -33,7 +33,7 @@ Class.extend(SpriteDisplay, Display, {
 
             context.save();
             context.translate(x, y);
-            context.rotate(options.rotation * radians);
+            context.rotate(options.rotation * RADIANS);
             context.drawImage(canvas, -halfWidth, -halfHeight);
             context.restore();
         }

@@ -32,7 +32,7 @@ var defaults = {
 };
 
 var id = 0;
-var radians = 0.017453292519943295;
+var RADIANS = 0.017453292519943295;
 
 var BarSpectrumDisplay = function(options) {
     SpriteDisplay.call(this, id++, 'BarSpectrumDisplay', '2d', defaults);
@@ -66,7 +66,7 @@ Class.extend(BarSpectrumDisplay, SpriteDisplay, {
             barOptions = this.bars.options,
             context = scene.context2d,
             halfWidth = canvas.width / 2,
-            halfHeight = canvas.height / 2,
+            halfHeight = barOptions.height,
             size = scene.getSize(),
             halfSceneWidth = size.width / 2,
             halfSceneHeight = size.height / 2;
@@ -74,44 +74,19 @@ Class.extend(BarSpectrumDisplay, SpriteDisplay, {
 
         if (options.rotation % 360 !== 0) {
             x = halfSceneWidth + options.x;
-            y = barOptions.height - options.y;
+            y = halfHeight - options.y;
 
             context.save();
             context.translate(x, y);
-            context.rotate(options.rotation * radians);
-            context.drawImage(canvas, -halfWidth, -barOptions.height);
+            context.rotate(options.rotation * RADIANS);
+            context.drawImage(canvas, -halfWidth, -halfHeight);
             context.restore();
         }
         else {
             x = halfSceneWidth - halfWidth + options.x;
-            y = halfSceneHeight - barOptions.height - options.y;
+            y = halfSceneHeight - halfHeight - options.y;
 
             context.drawImage(canvas, x, y);
-        }
-    },
-
-    renderToCanvasQQQ: function(scene, payload) {
-        var data,
-            context = scene.context2d,
-            options = this.options,
-            barOptions = this.bars.options,
-            width = barOptions.width / 2,
-            height = barOptions.height;
-
-        data = this.data = SpectrumParser.parseFFT(payload.fft, options, this.data);
-
-        this.bars.render(data);
-
-        if (barOptions.rotation % 360 !== 0) {
-            context.save();
-            context.translate(barOptions.x, barOptions.y - height);
-            context.translate(width, height);
-            context.rotate(barOptions.rotation * Math.PI / 180);
-            context.drawImage(this.canvas, -width, -height);
-            context.restore();
-        }
-        else {
-            context.drawImage(this.canvas, barOptions.x, barOptions.y - height);
         }
     }
 });

@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Immutable = require('immutable');
 
+
 var Class = require('./core/Class.js');
 var EventEmitter = require('./core/EventEmitter.js');
 var Timer = require('./core/Timer.js');
@@ -24,7 +25,7 @@ var Application = function() {
     this.frame = null;
     this.displays = new Immutable.List();
 
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext);
+    this.audioContext = new window.AudioContext();
     this.player = new Player(this.audioContext);
     this.sound = new BufferedSound(this.audioContext);
     this.scene = new Scene();

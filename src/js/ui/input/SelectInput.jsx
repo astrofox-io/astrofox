@@ -7,7 +7,8 @@ var SelectInput = React.createClass({
         return {
             name: 'select',
             size: 20,
-            value: ''
+            value: '',
+            items: []
         };
     },
 
@@ -50,25 +51,22 @@ var SelectInput = React.createClass({
 
     render: function() {
         var style = { display: this.state.showItems ? 'block' : 'none' };
-        var items = [];
 
-        if (this.props.items) {
-            items = this.props.items.map(function(item, index) {
-                var key = this.props.name + '' + index;
-                if (typeof item !== 'object') {
-                    item = { name: item, value: item, style: null };
-                }
-                return (
-                    <li
-                        className="input-option"
-                        key={key}
-                        style={item.style}
-                        onMouseDown={this.handleItemClick.bind(this, item)}>
-                        {item.name}
-                    </li>
-                );
-            }, this);
-        }
+        var items = this.props.items.map(function(item, index) {
+            var key = this.props.name + '' + index;
+            if (typeof item !== 'object') {
+                item = { name: item, value: item, style: null };
+            }
+            return (
+                <li
+                    className="input-option"
+                    key={key}
+                    style={item.style}
+                    onMouseDown={this.handleItemClick.bind(this, item)}>
+                    {item.name}
+                </li>
+            );
+        }, this);
 
         return (
             <div className="input-select">

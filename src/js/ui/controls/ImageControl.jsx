@@ -117,7 +117,7 @@ var ImageControl = React.createClass({
     render: function() {
         var state = this.state,
             img = this.image,
-            readOnly = !state.src,
+            readOnly = !(state.src && state.src !== BLANK_IMAGE),
             imageWidth = (readOnly) ? 0 : img.width,
             imageHeight = (readOnly) ? 0 : img.height,
             maxSize = ((!readOnly) ? ((img.height > img.width) ? img.height : img.width) : 0) * 2,
