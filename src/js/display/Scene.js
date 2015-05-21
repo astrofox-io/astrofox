@@ -2,11 +2,12 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var CombinedCamera = require('../vendor/three/CombinedCamera.js');
 
 var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 var IO = require('../IO.js');
+
+var EffectComposer = require('../vendor/three/postprocessing/EffectComposer.js');
 
 var defaults = {
     showFPS: false,
@@ -27,6 +28,7 @@ var Scene = function(options) {
 
     this.scene2d = new THREE.Scene();
     this.scene3d = new THREE.Scene();
+    this.clock = new THREE.Clock();
 
     this.options = _.assign({}, defaults);
 
@@ -42,21 +44,6 @@ Class.extend(Scene, EventEmitter, {
                 }
             }
         }
-    },
-
-    addCube: function() {
-        // light
-        var pointLight = new THREE.PointLight(0xFFFFFF);
-        pointLight.position.x = 10;
-        pointLight.position.y = 50;
-        pointLight.position.z = 130;
-        this.scene3d.add(pointLight);
-
-        // cube
-        var geometry = new THREE.BoxGeometry(1,1,1);
-        var cmaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-        this.cube = new THREE.Mesh( geometry, cmaterial );
-        this.scene3d.add(this.cube);
     },
 
     loadCanvas: function(canvas) {
@@ -107,8 +94,6 @@ Class.extend(Scene, EventEmitter, {
         sprite.scale.set(material.map.image.width, material.map.image.height, 1);
 
         this.scene2d.add(sprite);
-
-        //this.addCube();
     },
 
     clearCanvas: function() {
@@ -116,11 +101,18 @@ Class.extend(Scene, EventEmitter, {
     },
 
     renderFrame: function(displays, data, callback) {
+        var texture = this.texture;
+
         this.clearCanvas();
 
+        // Render displays
         displays.forEach(function(display) {
             if (display.renderToCanvas) {
                 display.renderToCanvas(this, data);
+                texture.needsUpdate = true;
+            }
+            else if (display.updateScene) {
+                display.updateScene(this, data);
             }
         }.bind(this));
 
@@ -130,17 +122,13 @@ Class.extend(Scene, EventEmitter, {
     },
 
     render: function(callback) {
-        if (this.cube) {
-            this.cube.rotation.x += 0.1;
-            this.cube.rotation.y += 0.1;
-        }
-
         this.updateFPS();
 
-        this.texture.needsUpdate = true;
-
+        // Render 3D objects
         this.renderer.clear();
         this.renderer.render(this.scene3d, this.camera3d);
+
+        // Render 2D sprites
         this.renderer.clearDepth();
         this.renderer.render(this.scene2d, this.camera2d);
 

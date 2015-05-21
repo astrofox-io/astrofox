@@ -7,6 +7,7 @@ var FX = require('../../FX.js');
 var BarSpectrumControl = require('../controls/BarSpectrumControl.jsx');
 var ImageControl = require('../controls/ImageControl.jsx');
 var TextControl = require('../controls/TextControl.jsx');
+var CubeControl = require('../controls/CubeControl.jsx');
 
 var ControlsPanel = React.createClass({
     getControl: function(display) {
@@ -19,24 +20,35 @@ var ControlsPanel = React.createClass({
         else if (display instanceof FX.TextDisplay) {
             return TextControl;
         }
+        else if (display instanceof FX.CubeDisplay) {
+            return CubeControl;
+        }
+
+        return null;
     },
 
     scrollToControl: function(index) {
-        var node = React.findDOMNode(this.refs['ctrl' + index]);
-        React.findDOMNode(this.refs.controls).scrollTop = node.offsetTop;
+        var controls = React.findDOMNode(this.refs.controls),
+            node = React.findDOMNode(this.refs['ctrl' + index]);
+
+        if (node) {
+            controls.scrollTop = node.offsetTop;
+        }
     },
 
     render: function() {
         var controls = Application.displays.map(function(display, index) {
             var Control = this.getControl(display);
 
-            return (
-                <Control
-                    ref={'ctrl' + index}
-                    key={display.toString()}
-                    display={display}
-                />
-            );
+            if (Control !== null) {
+                return (
+                    <Control
+                        ref={'ctrl' + index}
+                        key={display.toString()}
+                        display={display}
+                        />
+                );
+            }
         }, this);
 
         return (
