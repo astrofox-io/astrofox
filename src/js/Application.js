@@ -4,15 +4,15 @@ var _ = require('lodash');
 var Immutable = require('immutable');
 
 
-var Class = require('./core/Class.js');
-var EventEmitter = require('./core/EventEmitter.js');
-var Timer = require('./core/Timer.js');
-var Player = require('./audio/Player.js');
-var BufferedSound = require('./audio/BufferedSound.js');
-var SpectrumAnalyzer = require('./audio/SpectrumAnalyzer.js');
-var Scene = require('./display/Scene.js');
-var FX = require('./FX.js');
-var IO = require('./IO.js');
+var Class = require('core/Class.js');
+var EventEmitter = require('core/EventEmitter.js');
+var Timer = require('core/Timer.js');
+var Player = require('audio/Player.js');
+var BufferedSound = require('audio/BufferedSound.js');
+var SpectrumAnalyzer = require('audio/SpectrumAnalyzer.js');
+var Scene = require('display/Scene.js');
+var FX = require('FX.js');
+var IO = require('IO.js');
 
 var defaults = {
     fps: 29.97,

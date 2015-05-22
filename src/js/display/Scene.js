@@ -3,13 +3,14 @@
 var _ = require('lodash');
 var THREE = require('three');
 
-var Class = require('../core/Class.js');
-var EventEmitter = require('../core/EventEmitter.js');
-var IO = require('../IO.js');
+var Class = require('core/Class.js');
+var EventEmitter = require('core/EventEmitter.js');
+var IO = require('IO.js');
 
-var EffectComposer = require('../vendor/three/postprocessing/EffectComposer.js');
-var RenderPass = require('../vendor/three/postprocessing/RenderPass.js');
-var ShaderPass = require('../vendor/three/postprocessing/ShaderPass.js');
+var EffectComposer = require('vendor/three/postprocessing/EffectComposer.js');
+var RenderPass = require('vendor/three/postprocessing/RenderPass.js');
+var ShaderPass = require('vendor/three/postprocessing/ShaderPass.js');
+var CopyShader = require('vendor/three/shaders/CopyShader.js');
 
 var defaults = {
     showFPS: false,
@@ -52,6 +53,8 @@ Class.extend(Scene, EventEmitter, {
         var options = this.options,
             canvas3d = this.canvas3d = canvas,
             canvas2d = this.canvas2d = document.createElement('canvas'),
+            scene2d = this.scene2d,
+            scene3d = this.scene3d,
             width = canvas.width,
             height = canvas.height,
             right = width / 2,
@@ -76,14 +79,13 @@ Class.extend(Scene, EventEmitter, {
         // Camera 3D
         var camera3d = this.camera3d = new THREE.PerspectiveCamera(35, aspect, 0.1, 1000);
         camera3d.position.set(0, 0, 10);
-        this.scene3d.add(camera3d);
 
         // Rendering context
         this.context2d = canvas2d.getContext('2d');
         this.context3d = canvas3d.getContext('webgl');
 
         // Texture 2D
-        var texture = this.texture = new THREE.Texture(this.canvas2d);
+        var texture = this.texture = new THREE.Texture(canvas2d);
         texture.needsUpdate = true;
         THREE.LinearFilter = THREE.NearestFilter = texture.minFilter;
 
@@ -95,7 +97,19 @@ Class.extend(Scene, EventEmitter, {
         var sprite = new THREE.Sprite(material);
         sprite.scale.set(material.map.image.width, material.map.image.height, 1);
 
-        this.scene2d.add(sprite);
+        // Add objects
+        scene3d.add(camera3d);
+        scene2d.add(sprite);
+
+        // Processing
+        var composer = this.effectComposer = new EffectComposer(renderer);
+        var renderPass = this.renderPass = new RenderPass(scene3d, camera3d);
+
+        var copyPass = new ShaderPass(CopyShader);
+        copyPass.renderToScreen = true;
+
+        composer.addPass(renderPass);
+        composer.addPass(copyPass);
     },
 
     clearCanvas: function() {
@@ -128,7 +142,8 @@ Class.extend(Scene, EventEmitter, {
 
         // Render 3D objects
         this.renderer.clear();
-        this.renderer.render(this.scene3d, this.camera3d);
+        //this.renderer.render(this.scene3d, this.camera3d);
+        this.effectComposer.render(0.1);
 
         // Render 2D sprites
         this.renderer.clearDepth();

@@ -4,7 +4,10 @@
 
 var THREE = require('three');
 
-THREE.CopyShader = require('../shaders/CopyShader.js');
+var CopyShader = require('../shaders/CopyShader.js');
+var ShaderPass = require('../postprocessing/ShaderPass.js');
+var MaskPass = require('../postprocessing/MaskPass.js');
+var ClearMaskPass = require('../postprocessing/ClearMaskPass.js');
 
 var EffectComposer = function ( renderer, renderTarget ) {
 
@@ -30,10 +33,10 @@ var EffectComposer = function ( renderer, renderTarget ) {
 
 	this.passes = [];
 
-	if ( THREE.CopyShader === undefined )
-		console.error( "EffectComposer relies on THREE.CopyShader" );
+	if ( CopyShader === undefined )
+		console.error( "EffectComposer relies on CopyShader" );
 
-	this.copyPass = new THREE.ShaderPass( THREE.CopyShader );
+	this.copyPass = new ShaderPass( CopyShader );
 
 };
 
@@ -104,11 +107,11 @@ EffectComposer.prototype = {
 
 			}
 
-			if ( pass instanceof THREE.MaskPass ) {
+			if ( pass instanceof MaskPass ) {
 
 				maskActive = true;
 
-			} else if ( pass instanceof THREE.ClearMaskPass ) {
+			} else if ( pass instanceof ClearMaskPass ) {
 
 				maskActive = false;
 

@@ -31,7 +31,7 @@ Class.extend(CubeDisplay, Display, {
         var geometry = new THREE.BoxGeometry(1,1,1);
         //var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
         //var Shader = {uniforms: uniforms, fragmentShader: fragment, vertexShader: vertex};
-        var material = new THREE.ShaderMaterial(Shader);
+        var material = new THREE.ShaderMaterial(THREE.ShaderLib['normal']);
         material.needsUpdate = true;
         var cube = this.cube = new THREE.Mesh(geometry, material);
 

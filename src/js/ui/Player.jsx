@@ -166,7 +166,7 @@ var LoopButton = React.createClass({
 
         return (
             <div className={classes} onClick={this.props.onClick}>
-                <i className="icon-loop" />
+                <i className="icon-arrows-ccw" />
             </div>
         );
     }

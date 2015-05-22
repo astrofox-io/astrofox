@@ -69,22 +69,6 @@ MaskPass.prototype = {
 };
 
 
-THREE.ClearMaskPass = function () {
 
-	this.enabled = true;
-
-};
-
-THREE.ClearMaskPass.prototype = {
-
-	render: function ( renderer, writeBuffer, readBuffer, delta ) {
-
-		var context = renderer.context;
-
-		context.disable( context.STENCIL_TEST );
-
-	}
-
-};
 
 module.exports = MaskPass;

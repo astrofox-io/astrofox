@@ -179,10 +179,13 @@
     width: 100%;
     opacity: 0;
     text-shadow: 1px 1px 8px #000;
+    transform: scale(0.5,0.5);
+    transition: all 0.25s;
     .absolute-center();
 
     &:hover {
         opacity: 1;
+        transform: scale(1,1);
     }
 }
 
