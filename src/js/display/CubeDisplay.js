@@ -4,42 +4,12 @@ var _ = require('lodash');
 var THREE = require('three');
 var Class = require('../core/Class.js');
 var Display = require('./Display.js');
-var Shader = require('../vendor/three/shaders/VerticalBlurShader');
+var Shader = require('../../shaders/test/TestShader.js');
 
 var defaults = {
 };
 
 var id = 0;
-
-var uniforms = {
-    time: { type: "f", value: 1.0 },
-    resolution: { type: "v2", value: new THREE.Vector2() }
-};
-
-var fragment = `
-uniform float time;
-uniform vec2 resolution;
-
-varying vec2 vUv;
-
-void main( void ) {
-    vec2 position = -1.0 + 2.0 * vUv;
-
-    float red = abs( sin( position.x * position.y + time / 5.0 ) );
-    float green = abs( sin( position.x * position.y + time / 4.0 ) );
-    float blue = abs( sin( position.x * position.y + time / 3.0 ) );
-    gl_FragColor = vec4( red, green, blue, 1.0 );
-}`;
-
-var vertex = `
-varying vec2 vUv;
-
-void main()
-{
-    vUv = uv;
-    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-    gl_Position = projectionMatrix * mvPosition;
-}`;
 
 var CubeDisplay = function(options) {
     Display.call(this, id++, 'CubeDisplay', '3d', defaults);
@@ -60,7 +30,8 @@ Class.extend(CubeDisplay, Display, {
 
         var geometry = new THREE.BoxGeometry(1,1,1);
         //var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-        var material = new THREE.ShaderMaterial({uniforms: uniforms, fragmentShader: fragment, vertexShader: vertex});
+        //var Shader = {uniforms: uniforms, fragmentShader: fragment, vertexShader: vertex};
+        var material = new THREE.ShaderMaterial(Shader);
         material.needsUpdate = true;
         var cube = this.cube = new THREE.Mesh(geometry, material);
 
@@ -73,7 +44,7 @@ Class.extend(CubeDisplay, Display, {
     },
 
     updateScene: function(scene) {
-        uniforms.time.value += scene.clock.getDelta() * 5;
+        Shader.uniforms.time.value += scene.clock.getDelta() * 5;
         this.cube.rotation.x += 0.025;
         this.cube.rotation.y += 0.05;
     }

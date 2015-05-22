@@ -8,6 +8,8 @@ var EventEmitter = require('../core/EventEmitter.js');
 var IO = require('../IO.js');
 
 var EffectComposer = require('../vendor/three/postprocessing/EffectComposer.js');
+var RenderPass = require('../vendor/three/postprocessing/RenderPass.js');
+var ShaderPass = require('../vendor/three/postprocessing/ShaderPass.js');
 
 var defaults = {
     showFPS: false,

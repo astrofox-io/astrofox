@@ -10,12 +10,13 @@ var spritesmith = require('gulp.spritesmith');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var watchify = require('watchify');
+var brfs = require('brfs');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
 var b = browserify({
     entries: './src/js/AstroFox.js',
-    transform: [reactify],
+    transform: [reactify, brfs],
     noParse: ['lodash','three'],
     standalone: 'AstroFox',
     cache: {},
