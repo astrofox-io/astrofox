@@ -2,9 +2,9 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
-var Display = require('./Display.js');
-var Shader = require('../../shaders/test/TestShader.js');
+var Class = require('core/Class.js');
+var Display = require('display/Display.js');
+var Shader = require('shaders/TestShader.js');
 
 var defaults = {
 };

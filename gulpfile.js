@@ -17,6 +17,8 @@ var buffer = require('vinyl-buffer');
 var b = browserify({
     entries: './src/js/AstroFox.js',
     transform: [reactify, brfs],
+    extensions: ['.js', '.jsx'],
+    paths: ['./node_modules', './src/js/'],
     noParse: ['lodash','three'],
     standalone: 'AstroFox',
     cache: {},

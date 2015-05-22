@@ -6,8 +6,9 @@ var TestShader = {
         time: { type: "f", value: 1.0 },
         resolution: { type: "v2", value: new THREE.Vector2() }
     },
-    vertexShader: fs.readFileSync(__dirname + '/vertex.glsl', 'ascii'),
-    fragmentShader: fs.readFileSync(__dirname + '/fragment.glsl', 'ascii')
+
+    vertexShader: fs.readFileSync(__dirname + '/../../glsl/test/vertex.glsl', 'ascii'),
+    fragmentShader: fs.readFileSync(__dirname + '/../../glsl/test/fragment.glsl', 'ascii')
 };
 
 module.exports = TestShader;
