@@ -4,12 +4,14 @@
 
 var THREE = require('three');
 
+var CopyShader = require('../shaders/CopyShader.js');
+
 var TexturePass = function ( texture, opacity ) {
 
-	if ( THREE.CopyShader === undefined )
-		console.error( "TexturePass relies on THREE.CopyShader" );
+	if ( CopyShader === undefined )
+		console.error( "TexturePass relies on CopyShader" );
 
-	var shader = THREE.CopyShader;
+	var shader = CopyShader;
 
 	this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 

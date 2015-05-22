@@ -4,6 +4,8 @@
 
 var THREE = require('three');
 
+var BokehShader = require('../shaders/BokehShader.js');
+
 var BokehPass = function ( scene, camera, params ) {
 
 	this.scene = scene;
@@ -33,11 +35,11 @@ var BokehPass = function ( scene, camera, params ) {
 
 	// bokeh material
 
-	if ( THREE.BokehShader === undefined ) {
-		console.error( "BokehPass relies on THREE.BokehShader" );
+	if ( BokehShader === undefined ) {
+		console.error( "BokehPass relies on BokehShader" );
 	}
 	
-	var bokehShader = THREE.BokehShader;
+	var bokehShader = BokehShader;
 	var bokehUniforms = THREE.UniformsUtils.clone( bokehShader.uniforms );
 
 	bokehUniforms[ "tDepth" ].value = this.renderTargetDepth;

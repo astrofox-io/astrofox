@@ -4,12 +4,14 @@
 
 var THREE = require('three');
 
+var FilmShader = require('../shaders/FilmShader.js');
+
 var FilmPass = function ( noiseIntensity, scanlinesIntensity, scanlinesCount, grayscale ) {
 
-	if ( THREE.FilmShader === undefined )
-		console.error( "FilmPass relies on THREE.FilmShader" );
+	if ( FilmShader === undefined )
+		console.error( "FilmPass relies on FilmShader" );
 
-	var shader = THREE.FilmShader;
+	var shader = FilmShader;
 
 	this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 

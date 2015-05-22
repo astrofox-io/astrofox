@@ -9,6 +9,9 @@
 
 var THREE = require('three');
 
+var LuminosityShader = require('../shaders/LuminosityShader.js');
+var ToneMapShader = require('../shaders/ToneMapShader.js');
+
 var AdaptiveToneMappingPass = function ( adaptive, resolution ) {
 
 	this.resolution = ( resolution !== undefined ) ? resolution : 256;
@@ -36,14 +39,14 @@ var AdaptiveToneMappingPass = function ( adaptive, resolution ) {
 
 	} );
 
-	if ( THREE.LuminosityShader === undefined )
-		console.error( "AdaptiveToneMappingPass relies on THREE.LuminosityShader" );
+	if ( LuminosityShader === undefined )
+		console.error( "AdaptiveToneMappingPass relies on LuminosityShader" );
 
 	this.materialLuminance = new THREE.ShaderMaterial( {
 
-		uniforms: THREE.LuminosityShader.uniforms,
-		vertexShader: THREE.LuminosityShader.vertexShader,
-		fragmentShader: THREE.LuminosityShader.fragmentShader,
+		uniforms: LuminosityShader.uniforms,
+		vertexShader: LuminosityShader.vertexShader,
+		fragmentShader: LuminosityShader.fragmentShader,
 		blending: THREE.NoBlending
 	} );
 
@@ -104,14 +107,14 @@ var AdaptiveToneMappingPass = function ( adaptive, resolution ) {
 		blending: THREE.NoBlending
 	} );
 
-	if ( THREE.ToneMapShader === undefined )
-		console.error( "AdaptiveToneMappingPass relies on THREE.ToneMapShader" );
+	if ( ToneMapShader === undefined )
+		console.error( "AdaptiveToneMappingPass relies on ToneMapShader" );
 
 	this.materialToneMap = new THREE.ShaderMaterial( {
 
-		uniforms: THREE.ToneMapShader.uniforms,
-		vertexShader: THREE.ToneMapShader.vertexShader,
-		fragmentShader: THREE.ToneMapShader.fragmentShader,
+		uniforms: ToneMapShader.uniforms,
+		vertexShader: ToneMapShader.vertexShader,
+		fragmentShader: ToneMapShader.fragmentShader,
 		blending: THREE.NoBlending
 	} );
 

@@ -4,6 +4,9 @@
 
 var THREE = require('three');
 
+var CopyShader = require('../shaders/CopyShader.js');
+var ConvolutionShader = require('../shaders/ConvolutionShader.js');
+
 var BloomPass = function ( strength, kernelSize, sigma, resolution ) {
 
 	strength = ( strength !== undefined ) ? strength : 1;
@@ -20,10 +23,10 @@ var BloomPass = function ( strength, kernelSize, sigma, resolution ) {
 
 	// copy material
 
-	if ( THREE.CopyShader === undefined )
-		console.error( "BloomPass relies on THREE.CopyShader" );
+	if ( CopyShader === undefined )
+		console.error( "BloomPass relies on CopyShader" );
 
-	var copyShader = THREE.CopyShader;
+	var copyShader = CopyShader;
 
 	this.copyUniforms = THREE.UniformsUtils.clone( copyShader.uniforms );
 
@@ -41,15 +44,15 @@ var BloomPass = function ( strength, kernelSize, sigma, resolution ) {
 
 	// convolution material
 
-	if ( THREE.ConvolutionShader === undefined )
-		console.error( "BloomPass relies on THREE.ConvolutionShader" );
+	if ( ConvolutionShader === undefined )
+		console.error( "BloomPass relies on ConvolutionShader" );
 
-	var convolutionShader = THREE.ConvolutionShader;
+	var convolutionShader = ConvolutionShader;
 
 	this.convolutionUniforms = THREE.UniformsUtils.clone( convolutionShader.uniforms );
 
 	this.convolutionUniforms[ "uImageIncrement" ].value = BloomPass.blurX;
-	this.convolutionUniforms[ "cKernel" ].value = THREE.ConvolutionShader.buildKernel( sigma );
+	this.convolutionUniforms[ "cKernel" ].value = ConvolutionShader.buildKernel( sigma );
 
 	this.materialConvolution = new THREE.ShaderMaterial( {
 

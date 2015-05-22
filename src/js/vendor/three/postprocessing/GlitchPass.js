@@ -1,10 +1,12 @@
 var THREE = require('three');
 
+var DigitalGlitch = require('../shaders/DigitalGlitch.js');
+
 var GlitchPass = function ( dt_size ) {
 
-	if ( THREE.DigitalGlitch === undefined ) console.error( "GlitchPass relies on THREE.DigitalGlitch" );
+	if ( DigitalGlitch === undefined ) console.error( "GlitchPass relies on DigitalGlitch" );
 	
-	var shader = THREE.DigitalGlitch;
+	var shader = DigitalGlitch;
 	this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 
 	if (dt_size == undefined) dt_size = 64;

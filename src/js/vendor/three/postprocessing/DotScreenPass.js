@@ -4,12 +4,14 @@
 
 var THREE = require('three');
 
+var DotScreenShader = require('../shaders/DotScreenShader.js');
+
 var DotScreenPass = function ( center, angle, scale ) {
 
-	if ( THREE.DotScreenShader === undefined )
-		console.error( "DotScreenPass relies on THREE.DotScreenShader" );
+	if ( DotScreenShader === undefined )
+		console.error( "DotScreenPass relies on DotScreenShader" );
 
-	var shader = THREE.DotScreenShader;
+	var shader = DotScreenShader;
 
 	this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 

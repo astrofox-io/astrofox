@@ -4,12 +4,14 @@
 
 var THREE = require('three');
 
+var CopyShader = require('../shaders/CopyShader.js');
+
 var SavePass = function ( renderTarget ) {
 
-	if ( THREE.CopyShader === undefined )
-		console.error( "SavePass relies on THREE.CopyShader" );
+	if ( CopyShader === undefined )
+		console.error( "SavePass relies on CopyShader" );
 
-	var shader = THREE.CopyShader;
+	var shader = CopyShader;
 
 	this.textureID = "tDiffuse";
 
