@@ -10,7 +10,11 @@ var IO = require('IO.js');
 var EffectComposer = require('vendor/three/postprocessing/EffectComposer.js');
 var RenderPass = require('vendor/three/postprocessing/RenderPass.js');
 var ShaderPass = require('vendor/three/postprocessing/ShaderPass.js');
+var MaskPass = require('vendor/three/postprocessing/MaskPass.js');
+var ClearMaskPass = require('vendor/three/postprocessing/ClearMaskPass.js');
+
 var CopyShader = require('vendor/three/shaders/CopyShader.js');
+var AdditiveBlendShader = require('vendor/three/shaders/AdditiveBlendShader.js');
 
 var defaults = {
     showFPS: false,
@@ -102,14 +106,30 @@ Class.extend(Scene, EventEmitter, {
         scene2d.add(sprite);
 
         // Processing
-        var composer = this.effectComposer = new EffectComposer(renderer);
-        var renderPass = this.renderPass = new RenderPass(scene3d, camera3d);
+        var parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: false };
+        var parameters2 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: false };
+
+        var renderTarget = new THREE.WebGLRenderTarget(canvas.width, canvas.height, parameters);
+        var renderTarget2 = new THREE.WebGLRenderTarget(canvas.width, canvas.height, parameters2);
+
+        var composer3d = this.composer3d = new EffectComposer(renderer, renderTarget);
+        var composer2d = this.composer2d = new EffectComposer(renderer, renderTarget2);
+        var composerf = this.composerf = new EffectComposer(renderer);
 
         var copyPass = new ShaderPass(CopyShader);
         copyPass.renderToScreen = true;
 
-        composer.addPass(renderPass);
-        composer.addPass(copyPass);
+        var blendPass = new ShaderPass(AdditiveBlendShader);
+        blendPass.uniforms[ 'tBase' ].value = composer3d.renderTarget2;
+        blendPass.uniforms[ 'tAdd' ].value = composer2d.renderTarget2;
+        blendPass.renderToScreen = true;
+
+        var render3d = new RenderPass(scene3d, camera3d);
+        var render2d = new RenderPass(scene2d, camera2d);
+
+        composer3d.addPass(render3d);
+        composer2d.addPass(render2d);
+        composerf.addPass(blendPass);
     },
 
     clearCanvas: function() {
@@ -142,12 +162,15 @@ Class.extend(Scene, EventEmitter, {
 
         // Render 3D objects
         this.renderer.clear();
+
         //this.renderer.render(this.scene3d, this.camera3d);
-        this.effectComposer.render(0.1);
+        this.composer3d.render(0.1);
+        this.composer2d.render(0.1);
+        this.composerf.render(0.1);
 
         // Render 2D sprites
-        this.renderer.clearDepth();
-        this.renderer.render(this.scene2d, this.camera2d);
+        //this.renderer.clearDepth();
+        //this.renderer.render(this.scene2d, this.camera2d);
 
         if (callback) callback();
     },
