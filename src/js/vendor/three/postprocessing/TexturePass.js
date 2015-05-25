@@ -22,13 +22,15 @@ var TexturePass = function ( texture, opacity ) {
 
 		uniforms: this.uniforms,
 		vertexShader: shader.vertexShader,
-		fragmentShader: shader.fragmentShader
+		fragmentShader: shader.fragmentShader,
+        transparent: true
 
 	} );
 
 	this.enabled = true;
+    this.clear = true;
 	this.needsSwap = false;
-
+    this.clearDepth = false;
 
 	this.camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1 );
 	this.scene  = new THREE.Scene();
@@ -44,7 +46,9 @@ TexturePass.prototype = {
 
 		this.quad.material = this.material;
 
-		renderer.render( this.scene, this.camera, readBuffer );
+        if (this.clearDepth) renderer.clearDepth();
+
+		renderer.render( this.scene, this.camera, readBuffer, this.clear );
 
 	}
 

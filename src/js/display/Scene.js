@@ -12,9 +12,13 @@ var RenderPass = require('vendor/three/postprocessing/RenderPass.js');
 var ShaderPass = require('vendor/three/postprocessing/ShaderPass.js');
 var MaskPass = require('vendor/three/postprocessing/MaskPass.js');
 var ClearMaskPass = require('vendor/three/postprocessing/ClearMaskPass.js');
+var TexturePass = require('vendor/three/postprocessing/TexturePass.js');
 
 var CopyShader = require('vendor/three/shaders/CopyShader.js');
 var AdditiveBlendShader = require('vendor/three/shaders/AdditiveBlendShader.js');
+var DotScreenShader = require('../vendor/three/shaders/DotScreenShader.js');
+var EdgeShader = require('../vendor/three/shaders/EdgeShader.js');
+var RGBShiftShader = require('../vendor/three/shaders/RGBShiftShader.js');
 
 var defaults = {
     showFPS: false,
@@ -68,9 +72,15 @@ Class.extend(Scene, EventEmitter, {
             aspect = width / height;
 
         // Renderer
-        var renderer = this.renderer = new THREE.WebGLRenderer({ canvas: canvas3d });
+        var renderer = this.renderer = new THREE.WebGLRenderer({
+            canvas: canvas3d,
+            antialias: true
+        });
         //renderer.setSize(width, height);
+        //renderer.setClearColor(0xFFFFFF, 0.0);
         renderer.autoClear = false;
+
+        console.log(renderer);
 
         // Scene 2D
         canvas2d.width = width;
@@ -113,27 +123,63 @@ Class.extend(Scene, EventEmitter, {
         var renderTarget2 = new THREE.WebGLRenderTarget(canvas.width, canvas.height, parameters2);
 
         var composer3d = this.composer3d = new EffectComposer(renderer, renderTarget);
+        //composer3d.renderTarget1.stencilBuffer = true;
+        //composer3d.renderTarget2.stencilBuffer = true;
+
         var composer2d = this.composer2d = new EffectComposer(renderer, renderTarget2);
         var composerf = this.composerf = new EffectComposer(renderer);
 
         var copyPass = new ShaderPass(CopyShader);
         copyPass.renderToScreen = true;
 
+        var copyPass2 = new ShaderPass(CopyShader);
+        copyPass2.renderToScreen = true;
+
+        var copyPass3 = new ShaderPass(CopyShader);
+        copyPass3.renderToScreen = true;
+
         var blendPass = new ShaderPass(AdditiveBlendShader);
         blendPass.uniforms[ 'tBase' ].value = composer3d.renderTarget2;
         blendPass.uniforms[ 'tAdd' ].value = composer2d.renderTarget2;
+        blendPass.needsSwap = true;
         blendPass.renderToScreen = true;
 
-        var render3d = new RenderPass(scene3d, camera3d);
-        var render2d = new RenderPass(scene2d, camera2d);
+        var render3dPass = new RenderPass(scene3d, camera3d);
+        var render2dPass = new RenderPass(scene2d, camera2d);
+        //render2dPass.clear = false;
+        //render2dPass.clearDepth = true;
 
-        composer3d.addPass(render3d);
-        composer2d.addPass(render2d);
-        composerf.addPass(blendPass);
+        var texture3d = new TexturePass(composer3d.renderTarget2);
+        //texture3d.clear = false;
+        //texture3d.clearDepth = true;
+
+        var texture2d = new TexturePass(composer2d.renderTarget2);
+        texture2d.clear = false;
+        //texture2d.clearDepth = true;
+
+        composer3d.addPass(render3dPass);
+        composer3d.addPass(new ShaderPass(EdgeShader));
+        //composer3d.addPass(new ShaderPass(RGBShiftShader));
+        //composer3d.addPass(new ShaderPass(DotScreenShader));
+        //composer3d.addPass(render2dPass);
+        composer3d.addPass(copyPass);
+
+        composer2d.addPass(render2dPass);
+        //composer2d.addPass(new ShaderPass(EdgeShader));
+        //composer2d.addPass(new ShaderPass(DotScreenShader));
+        composer2d.addPass(new ShaderPass(RGBShiftShader));
+        composer2d.addPass(copyPass2);
+
+        composerf.addPass(texture3d);
+        //composerf.addPass(texture2d);
+        composerf.addPass(copyPass3);
     },
 
     clearCanvas: function() {
-        this.canvas2d.getContext('2d').clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
+        var canvas = this.canvas2d,
+            context = this.context2d;
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
     },
 
     renderFrame: function(displays, data, callback) {
@@ -165,12 +211,13 @@ Class.extend(Scene, EventEmitter, {
 
         //this.renderer.render(this.scene3d, this.camera3d);
         this.composer3d.render(0.1);
-        this.composer2d.render(0.1);
+        //this.renderer.clearDepth();
+        //this.composer2d.render(0.1);
         this.composerf.render(0.1);
 
         // Render 2D sprites
-        //this.renderer.clearDepth();
-        //this.renderer.render(this.scene2d, this.camera2d);
+        this.renderer.clearDepth();
+        this.renderer.render(this.scene2d, this.camera2d);
 
         if (callback) callback();
     },
