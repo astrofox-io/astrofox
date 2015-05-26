@@ -20,7 +20,6 @@ var RenderPass = function ( scene, camera, overrideMaterial, clearColor, clearAl
 	this.enabled = true;
 	this.clear = true;
 	this.needsSwap = false;
-	this.clearDepth = false;
 
 };
 
@@ -38,8 +37,6 @@ RenderPass.prototype = {
 			renderer.setClearColor( this.clearColor, this.clearAlpha );
 
 		}
-
-        if (this.clearDepth) renderer.clearDepth();
 
 		renderer.render( this.scene, this.camera, readBuffer, this.clear );
 

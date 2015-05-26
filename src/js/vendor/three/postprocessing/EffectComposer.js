@@ -3,11 +3,10 @@
  */
 
 var THREE = require('three');
-
+var MaskPass = require('./MaskPass.js');
+var ClearMaskPass = require('./ClearMaskPass.js');
+var ShaderPass = require('./ShaderPass.js');
 var CopyShader = require('../shaders/CopyShader.js');
-var ShaderPass = require('../postprocessing/ShaderPass.js');
-var MaskPass = require('../postprocessing/MaskPass.js');
-var ClearMaskPass = require('../postprocessing/ClearMaskPass.js');
 
 var EffectComposer = function ( renderer, renderTarget ) {
 
@@ -61,16 +60,6 @@ EffectComposer.prototype = {
 		this.passes.splice( index, 0, pass );
 
 	},
-
-	removePass: function( pass ) {
-
-        var index = this.passes.indexOf(pass);
-
-        if (index > -1) {
-            this.passes.splice(index, 1);
-        }
-
-    },
 
 	render: function ( delta ) {
 

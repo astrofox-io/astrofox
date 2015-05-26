@@ -3,7 +3,6 @@
  */
 
 var THREE = require('three');
-
 var CopyShader = require('../shaders/CopyShader.js');
 
 var TexturePass = function ( texture, opacity ) {
@@ -22,15 +21,13 @@ var TexturePass = function ( texture, opacity ) {
 
 		uniforms: this.uniforms,
 		vertexShader: shader.vertexShader,
-		fragmentShader: shader.fragmentShader,
-        transparent: true
+		fragmentShader: shader.fragmentShader
 
 	} );
 
 	this.enabled = true;
-    this.clear = true;
 	this.needsSwap = false;
-    this.clearDepth = false;
+
 
 	this.camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1 );
 	this.scene  = new THREE.Scene();
@@ -46,9 +43,7 @@ TexturePass.prototype = {
 
 		this.quad.material = this.material;
 
-        if (this.clearDepth) renderer.clearDepth();
-
-		renderer.render( this.scene, this.camera, readBuffer, this.clear );
+		renderer.render( this.scene, this.camera, readBuffer );
 
 	}
 
