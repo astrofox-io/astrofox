@@ -87,8 +87,6 @@ Class.extend(ImageDisplay, SpriteDisplay, {
             context.globalAlpha = options.opacity;
             context.drawImage(img, 0, 0, options.width, options.height);
         }
-
-        console.log('image rendered', performance.now());
     }
 });
 
