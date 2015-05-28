@@ -10,6 +10,8 @@
  * resolution: width and height of webgl canvas
  */
 
+var THREE = require('three');
+
 module.exports = {
 
     uniforms: {
