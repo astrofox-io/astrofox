@@ -7,30 +7,52 @@
     flex: 1;
     position: relative;
 
-    .canvas {
-        background-color: #000;
-        width: 854px;
-        height: 480px;
-        display: block;
+    .viewport {
         overflow: hidden;
         .absolute-center();
     }
 
+    .canvas {
+        background-color: #000;
+    }
+
     .loading {
-        width: 100px;
-        height: 100px;
-        content: '';
-        opacity: .5;
-        z-index: 100;
-        box-shadow: 0 0 5px @base-color, inset 0 0 5px @base-color;
-
-        border-top: 3px solid @loading-dark-color;
-        border-bottom: 3px solid @loading-light-color;
-        border-left: 3px solid @loading-dark-color;
-        border-right: 3px solid @loading-light-color;
-        border-radius: 100%;
-
+        opacity: 0;
+        transition: all 0.3s;
         .absolute-center();
-        .animation(rotate .3s linear infinite);
+
+        &:before {
+            content: '\0020';
+            background-color: #000;
+            opacity: 0.8;
+            .absolute-center();
+        }
+
+        &:after {
+            content: '\0020';
+            width: 200px;
+            height: 200px;
+
+            /* box-shadow: 0 0 5px @base-color, inset 0 0 5px @base-color; */
+            border-top: 3px solid @loading-dark-color;
+            border-bottom: 3px solid @loading-light-color;
+            border-left: 3px solid @loading-dark-color;
+            border-right: 3px solid @loading-light-color;
+            border-radius: 100%;
+
+            .absolute-center();
+            .animation(rotate .3s linear infinite);
+
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+    }
+
+    .loading-active {
+        opacity: 1;
+
+        &:after {
+            width: 100px;
+            height: 100px;
+        }
     }
 }

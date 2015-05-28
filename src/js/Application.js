@@ -32,8 +32,6 @@ var Application = function() {
     this.timer = new Timer();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
-
-    this.FX = FX;
 };
 
 Class.extend(Application, EventEmitter, {
@@ -159,6 +157,8 @@ Class.extend(Application, EventEmitter, {
                 fft: fft
             }
         );
+
+        this.emit('render', fft);
     },
 
     processFrame: function(frame, fps, callback) {

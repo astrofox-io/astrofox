@@ -13,8 +13,8 @@ var ShaderPass = require('graphics/ShaderPass.js');
 var CopyShader = require('shaders/CopyShader.js');
 
 var EdgeShader = require('../vendor/three/shaders/EdgeShader2.js');
-var RGBShiftShader = require('../vendor/three/shaders/RGBShiftShader.js');
 var DotScreenShader = require('../vendor/three/shaders/DotScreenShader.js');
+var RGBShiftShader = require('../vendor/airtight/shaders/RGBShiftShader.js');
 
 var defaults = {
     showFPS: false,

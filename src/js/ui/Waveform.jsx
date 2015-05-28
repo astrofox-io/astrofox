@@ -81,15 +81,15 @@ var Waveform = React.createClass({
 
         player.on('time', function(){
             this.forceUpdate();
-        }.bind(this));
+        }, this);
 
         player.on('stop', function(){
             this.forceUpdate();
-        }.bind(this));
+        }, this);
 
         player.on('seek', function(){
             this.forceUpdate();
-        }.bind(this));
+        }, this);
     },
 
     handleClick: function(e) {
@@ -156,18 +156,18 @@ var Waveform = React.createClass({
         }
 
         return (
-            <div id="waveform">
+            <div className="waveform">
                 <div className="container"
                     onClick={this.handleClick}
                     onMouseMove={this.handleMouseMove}
                     onMouseOut={this.handleMouseOut}>
-                    <div className="waveform base">
+                    <div className="canvas base">
                         <canvas ref="canvas" width="854" height="100"></canvas>
                     </div>
-                    <div className="waveform progress" style={progressStyle}>
+                    <div className="canvas progress" style={progressStyle}>
                         <canvas ref="progress" width="854" height="100"></canvas>
                     </div>
-                    <div className="waveform overlay" style={clipStyle}>
+                    <div className="canvas overlay" style={clipStyle}>
                         <canvas ref="overlay" width="854" height="100"></canvas>
                     </div>
                 </div>

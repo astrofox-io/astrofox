@@ -11,6 +11,7 @@ var MenuBar = require('./MenuBar.jsx');
 var MainView = require('./MainView.jsx');
 var Scene = require('./Scene.jsx');
 var Player = require('./Player.jsx');
+var Spectrum = require('./Spectrum.jsx');
 var Waveform = require('./Waveform.jsx');
 var Overlay = require('./Overlay.jsx');
 var ControlDock = require('./ControlDock.jsx');
@@ -211,6 +212,9 @@ var App = React.createClass({
                         <Waveform
                             ref="waveform"
                             onProgressChange={this.handleWaveformProgressChange}
+                            />
+                        <Spectrum
+                            ref="spectrum"
                         />
                         <Player
                             ref="player"
