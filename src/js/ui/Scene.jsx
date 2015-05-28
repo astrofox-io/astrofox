@@ -6,7 +6,11 @@ var Loading = require('./Loading.jsx');
 
 var Scene = React.createClass({
     getInitialState: function() {
-        return { loading: false };
+        return {
+            width: 854,
+            height: 480,
+            loading: false
+        };
     },
 
     componentDidMount: function() {
@@ -36,12 +40,17 @@ var Scene = React.createClass({
     },
 
     render: function() {
+        var state = this.state,
+            style = { width: state.width, height: state.height };
+
         return (
             <div className="scene"
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
-                <Loading visible={this.state.loading} />
-                <canvas ref="canvas" className="canvas" height="480" width="854"></canvas>
+                <div className="viewport" style={style}>
+                    <Loading visible={state.loading} />
+                    <canvas ref="canvas" className="canvas" width={state.width} height={state.height}></canvas>
+                </div>
             </div>
         );
     }

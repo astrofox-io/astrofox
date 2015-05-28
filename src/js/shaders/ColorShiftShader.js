@@ -1,7 +1,7 @@
 var fs = require('fs');
 var THREE = require('three');
 
-var TestShader = {
+var ColorShiftShader = {
     uniforms: {
         time: { type: 'f', value: 1.0 },
         resolution: { type: 'v2', value: new THREE.Vector2() }
@@ -11,4 +11,4 @@ var TestShader = {
     fragmentShader: fs.readFileSync(__dirname + '/../../glsl/color-shift.fragment.glsl', 'ascii')
 };
 
-module.exports = TestShader;
+module.exports = ColorShiftShader;

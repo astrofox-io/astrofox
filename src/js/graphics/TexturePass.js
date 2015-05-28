@@ -8,7 +8,8 @@ var CopyShader = require('shaders/CopyShader.js');
 var defaults = {
     opacity: 1.0,
     transparent: true,
-    needsSwap: false
+    needsSwap: false,
+    needsUpdate: true
 };
 
 var TexturePass = function(texture, options) {
@@ -16,7 +17,7 @@ var TexturePass = function(texture, options) {
 
     this.update(options);
 
-    console.log(this.options);
+    this.texture = texture;
 
     this.uniforms = THREE.UniformsUtils.clone(CopyShader.uniforms);
     this.uniforms['opacity'].value = this.options.opacity;
@@ -37,7 +38,10 @@ var TexturePass = function(texture, options) {
 
 Class.extend(TexturePass, ComposerPass, {
     render: function(renderer, writeBuffer, readBuffer) {
+        var options = this.options;
+
         this.mesh.material = this.material;
+        this.texture.needsUpdate = options.needsUpdate;
 
         this.process(renderer, this.scene, this.camera, readBuffer);
     }

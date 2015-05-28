@@ -12,7 +12,7 @@ var RenderPass = require('graphics/RenderPass.js');
 var ShaderPass = require('graphics/ShaderPass.js');
 var CopyShader = require('shaders/CopyShader.js');
 
-var EdgeShader = require('../vendor/three/shaders/EdgeShader.js');
+var EdgeShader = require('../vendor/three/shaders/EdgeShader2.js');
 var RGBShiftShader = require('../vendor/three/shaders/RGBShiftShader.js');
 var DotScreenShader = require('../vendor/three/shaders/DotScreenShader.js');
 
@@ -33,8 +33,7 @@ var Scene = function(options) {
         stack: []
     };
 
-    this.scene2d = new THREE.Scene();
-    this.scene3d = new THREE.Scene();
+    this.scene = new THREE.Scene();
     this.clock = new THREE.Clock();
 
     this.options = _.assign({}, defaults);
@@ -54,11 +53,9 @@ Class.extend(Scene, EventEmitter, {
     },
 
     loadCanvas: function(canvas) {
-        var options = this.options,
-            canvas3d = this.canvas3d = canvas,
+        var canvas3d = this.canvas3d = canvas,
             canvas2d = this.canvas2d = document.createElement('canvas'),
-            scene2d = this.scene2d,
-            scene3d = this.scene3d,
+            scene = this.scene,
             width = canvas.width,
             height = canvas.height;
 
@@ -73,27 +70,24 @@ Class.extend(Scene, EventEmitter, {
         canvas2d.width = width;
         canvas2d.height = height;
 
-        // Camera 2D
-        var camera2d = this.camera2d = new THREE.OrthographicCamera(-width/2, width/2, height/2, -height/2, 0, 1);
-
         // Camera 3D
-        var camera3d = this.camera3d = new THREE.PerspectiveCamera(35, width/height, 1, 1000);
-        camera3d.position.set(0, 0, 10);
-
-        // Rendering context
-        this.context2d = canvas2d.getContext('2d');
-        this.context3d = canvas3d.getContext('webgl');
+        var camera = this.camera = new THREE.PerspectiveCamera(45, width/height, 1, 10000);
+        camera.position.set(0, 0, 10);
 
         // Texture 2D
         var texture = this.texture = new THREE.Texture(canvas2d);
         texture.minFilter = THREE.LinearFilter;
 
+        // Rendering context
+        this.context2d = canvas2d.getContext('2d');
+        this.context3d = canvas3d.getContext('webgl');
+
         // Processing
         var composer = this.composer = new Composer(renderer);
-        composer.addRenderPass(scene3d, camera3d);
-        composer.addShaderPass(DotScreenShader);
+        composer.addRenderPass(scene, camera);
+        //composer.addShaderPass(DotScreenShader);
         //composer.addShaderPass(EdgeShader);
-        composer.addShaderPass(RGBShiftShader);
+        //composer.addShaderPass(RGBShiftShader);
         //composer.addRenderPass(scene2d, camera2d, { forceClear: false });
         composer.addTexturePass(texture);
         //composer.addShaderPass(RGBShiftShader);
@@ -108,15 +102,12 @@ Class.extend(Scene, EventEmitter, {
     },
 
     renderFrame: function(displays, data, callback) {
-        var texture = this.texture;
-
         this.clearCanvas();
 
         // Render displays
         displays.forEach(function(display) {
             if (display.renderToCanvas) {
                 display.renderToCanvas(this, data);
-                texture.needsUpdate = true;
             }
             else if (display.updateScene) {
                 display.updateScene(this, data);

@@ -4,9 +4,11 @@ var _ = require('lodash');
 var THREE = require('three');
 var Class = require('core/Class.js');
 var Display = require('display/Display.js');
-var Shader = require('shaders/TestShader.js');
 
 var defaults = {
+    x: 0,
+    y: 0,
+    z: 0
 };
 
 var id = 0;
@@ -23,14 +25,12 @@ CubeDisplay.info = {
 
 Class.extend(CubeDisplay, Display, {
     addToScene: function(scene) {
-        var space = scene.scene3d;
+        var space = scene.scene;
 
         var pointLight = new THREE.PointLight(0xffffff);
         pointLight.position.set(10, 50, 130);
 
         var geometry = new THREE.BoxGeometry(1,1,1);
-        //var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-        //var Shader = {uniforms: uniforms, fragmentShader: fragment, vertexShader: vertex};
         var material = new THREE.ShaderMaterial(THREE.ShaderLib['normal']);
         material.needsUpdate = true;
         var cube = this.cube = new THREE.Mesh(geometry, material);
@@ -40,13 +40,16 @@ Class.extend(CubeDisplay, Display, {
     },
 
     removeFromScene: function(scene) {
-        scene.scene3d.remove(this.cube);
+        scene.scene.remove(this.cube);
     },
 
     updateScene: function(scene) {
-        Shader.uniforms.time.value += scene.clock.getDelta() * 5;
+        var options = this.options;
+
         this.cube.rotation.x += 0.025;
         this.cube.rotation.y += 0.05;
+
+        this.cube.position.set(options.x, options.y, options.z);
     }
 });
 

@@ -114,20 +114,18 @@ var TextControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Rotation</label>
+                    <label className="label">Z</label>
                     <NumberInput
-                        name="rotation"
+                        name="z"
                         size="3"
-                        min={0}
-                        max={360}
-                        value={this.state.rotation}
+                        value={this.state.z}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="rotation"
-                            min={0}
-                            max={360}
-                            value={this.state.rotation}
+                            name="z"
+                            min={-maxHeight}
+                            max={maxHeight}
+                            value={this.state.z}
                             onChange={this.handleChange} />
                     </div>
                 </div>

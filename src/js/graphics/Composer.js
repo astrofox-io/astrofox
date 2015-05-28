@@ -87,6 +87,18 @@ Class.extend(Composer, EventEmitter, {
         }
     },
 
+    swapPass: function(index, newIndex) {
+        var passes = this.passes;
+
+        if (index > -1 && index < passes.size) {
+            this.passes = passes.withMutations(function(list) {
+                var tmp = list.get(index);
+                list.set(index, list.get(newIndex));
+                list.set(newIndex, tmp);
+            });
+        }
+    },
+
     addRenderPass: function(scene, camera, options) {
         return this.addPass(new RenderPass(scene, camera, options));
     },
@@ -101,6 +113,13 @@ Class.extend(Composer, EventEmitter, {
 
     addTexturePass: function(texture, options) {
         return this.addPass(new TexturePass(texture, options));
+    },
+
+    addCanvasPass: function(canvas, options) {
+        var texture = new THREE.Texture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+
+        return this.addTexturePass(texture, options);
     },
 
     renderToScreen: function() {

@@ -8,10 +8,14 @@ var Loading = React.createClass({
     },
 
     render: function() {
-        var style = { display: this.props.visible ? 'block' : 'none' };
+        var classes = 'loading';
+
+        if (this.props.visible) {
+            classes += ' loading-active';
+        }
 
         return (
-            <div className="loading" style={style}></div>
+            <div className={classes}></div>
         );
     }
 });
