@@ -1,5 +1,4 @@
 uniform float time;
-uniform vec2 resolution;
 
 varying vec2 vUv;
 

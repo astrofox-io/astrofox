@@ -6,8 +6,8 @@ var CopyShader = {
         opacity:  { type: "f", value: 1.0 }
     },
 
-    vertexShader: fs.readFileSync(__dirname + '/../../glsl/basic.vertex.glsl', 'ascii'),
-    fragmentShader: fs.readFileSync(__dirname + '/../../glsl/copy.fragment.glsl', 'ascii')
+    vertexShader: fs.readFileSync(__dirname + '/glsl/basic.vertex.glsl', 'utf8'),
+    fragmentShader: fs.readFileSync(__dirname + '/glsl/copy.fragment.glsl', 'utf8')
 };
 
 module.exports = CopyShader;

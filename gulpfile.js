@@ -4,6 +4,7 @@ var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
 var react = require('gulp-react');
 var rename = require('gulp-rename');
+var strip = require('gulp-strip-comments');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 var spritesmith = require('gulp.spritesmith');

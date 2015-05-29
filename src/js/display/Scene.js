@@ -11,6 +11,9 @@ var Composer = require('graphics/Composer.js');
 var RenderPass = require('graphics/RenderPass.js');
 var ShaderPass = require('graphics/ShaderPass.js');
 var CopyShader = require('shaders/CopyShader.js');
+var ColorHalftoneShader = require('shaders/ColorHalftoneShader.js');
+var ColorShiftShader = require('shaders/ColorShiftShader.js');
+var HexagonPixelateShader = require('shaders/HexagonPixelateShader.js');
 
 var EdgeShader = require('../vendor/three/shaders/EdgeShader2.js');
 var DotScreenShader = require('../vendor/three/shaders/DotScreenShader.js');
@@ -85,11 +88,14 @@ Class.extend(Scene, EventEmitter, {
         // Processing
         var composer = this.composer = new Composer(renderer);
         composer.addRenderPass(scene, camera);
+        //composer.addShaderPass(ColorShiftShader);
         //composer.addShaderPass(DotScreenShader);
         //composer.addShaderPass(EdgeShader);
         //composer.addShaderPass(RGBShiftShader);
         //composer.addRenderPass(scene2d, camera2d, { forceClear: false });
         composer.addTexturePass(texture);
+        //composer.addShaderPass(DotScreenShader);
+        composer.addShaderPass(HexagonPixelateShader);
         //composer.addShaderPass(RGBShiftShader);
         composer.renderToScreen();
     },

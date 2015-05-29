@@ -1,14 +1,12 @@
 var fs = require('fs');
-var THREE = require('three');
 
 var ColorShiftShader = {
     uniforms: {
-        time: { type: 'f', value: 1.0 },
-        resolution: { type: 'v2', value: new THREE.Vector2() }
+        time: { type: 'f', value: 1.0 }
     },
 
-    vertexShader: fs.readFileSync(__dirname + '/../../glsl/basic.vertex.glsl', 'ascii'),
-    fragmentShader: fs.readFileSync(__dirname + '/../../glsl/color-shift.fragment.glsl', 'ascii')
+    vertexShader: fs.readFileSync(__dirname + '/glsl/basic.vertex.glsl', 'utf8'),
+    fragmentShader: fs.readFileSync(__dirname + '/glsl/color-shift.fragment.glsl', 'utf8')
 };
 
 module.exports = ColorShiftShader;

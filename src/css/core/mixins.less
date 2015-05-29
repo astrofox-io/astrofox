@@ -5,22 +5,22 @@
     height: @height;
 }
 
-.absolute-center() {
-    display: block;
+.absolute-center(@display: block) {
+    display: @display;
     position: absolute;
     margin: auto;
     top: 0; left: 0; bottom: 0; right: 0;
 }
 
-.absolute-left() {
-    display: block;
+.absolute-left(@display: block) {
+    display: @display;
     position: absolute;
     margin: auto;
     top: 0; left: 0; bottom: 0; right: auto;
 }
 
-.absolute-right() {
-    display: block;
+.absolute-right(@display: block) {
+    display: @display;
     position: absolute;
     margin: auto;
     top: 0; left: auto; bottom: 0; right: 0;

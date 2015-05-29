@@ -6,6 +6,8 @@ var Browser = require('./Browser.js');
 
 var AstroFox = {
     version: '1.0',
+    environment: 'dev',
+    license: null,
 
     start: function() {
         Browser.init();

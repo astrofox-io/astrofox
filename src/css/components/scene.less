@@ -1,5 +1,6 @@
 @loading-light-color: @base-color;
 @loading-dark-color: hardlight(@base-color, @bg-level3-color);
+@loading-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 
 .scene {
     min-width: 900px;
@@ -17,14 +18,14 @@
     }
 
     .loading {
-        opacity: 0;
-        transition: all 0.3s;
+        visibility: hidden;
         .absolute-center();
 
         &:before {
             content: '\0020';
             background-color: #000;
-            opacity: 0.8;
+            opacity: 0;
+            transition: @loading-transition;
             .absolute-center();
         }
 
@@ -32,25 +33,27 @@
             content: '\0020';
             width: 200px;
             height: 200px;
-
-            /* box-shadow: 0 0 5px @base-color, inset 0 0 5px @base-color; */
             border-top: 3px solid @loading-dark-color;
             border-bottom: 3px solid @loading-light-color;
             border-left: 3px solid @loading-dark-color;
             border-right: 3px solid @loading-light-color;
             border-radius: 100%;
-
+            opacity: 0;
+            transition: @loading-transition;
             .absolute-center();
             .animation(rotate .3s linear infinite);
-
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
     }
 
     .loading-active {
-        opacity: 1;
+        visibility: visible;
+
+        &:before {
+            opacity: 0.8;
+        }
 
         &:after {
+            opacity: 1;
             width: 100px;
             height: 100px;
         }
