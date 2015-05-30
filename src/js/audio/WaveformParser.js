@@ -3,11 +3,12 @@
 var WaveformParser = {
     parseBuffer: function(buffer, options) {
         var i, j, c, start, end, max, val, values,
-            bars = options.bars,
-            size = buffer.length / bars,
+            len = buffer.length,
+            channels = buffer.numberOfChannels,
+            bars = options.bars || len,
+            size = len / bars,
             step = ~~(size / 10) || 1,
-            data = new Float32Array(bars),
-            channels = buffer.numberOfChannels;
+            data = new Float32Array(bars);
 
         // Process each channel
         for (c = 0; c < channels; c++) {

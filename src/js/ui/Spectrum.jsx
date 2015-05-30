@@ -1,18 +1,19 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../Application.js');
+var Application = require('../core/Application.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 var BarDisplay = require('../display/BarDisplay.js');
 
 var defaults = {
     smoothingTimeConstant: 0.5,
     minDecibels: -100,
-    maxDecibels: -18,
+    maxDecibels: -20,
     minFrequency: 0,
-    maxFrequency: 6000,
-    fftSize: 512,
-    sampleRate: 44100
+    maxFrequency: 10000,
+    fftSize: 2048,
+    sampleRate: 44100,
+    binSize: 64
 };
 
 var Spectrum = React.createClass({
@@ -37,9 +38,6 @@ var Spectrum = React.createClass({
     },
 
     componentDidMount: function() {
-        var config = this.config,
-            player = Application.player;
-
         this.bars = new BarDisplay(
             React.findDOMNode(this.refs.canvas),
             this.config

@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../Application.js');
+var Application = require('../core/Application.js');
 var BarDisplay = require('../display/BarDisplay.js');
 var WaveformParser = require('../audio/WaveformParser.js');
 

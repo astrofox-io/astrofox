@@ -4,6 +4,7 @@ var _ = require('lodash');
 var THREE = require('three');
 var Class = require('core/Class.js');
 var Display = require('display/Display.js');
+var GridShader = require('shaders/GridShader.js');
 
 var defaults = {
     x: 0,
@@ -32,6 +33,7 @@ Class.extend(CubeDisplay, Display, {
 
         var geometry = new THREE.BoxGeometry(1,1,1);
         var material = new THREE.ShaderMaterial(THREE.ShaderLib['normal']);
+        //var material = new THREE.ShaderMaterial(GridShader);
         material.needsUpdate = true;
         var cube = this.cube = new THREE.Mesh(geometry, material);
 

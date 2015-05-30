@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../../Application.js');
+var Application = require('../../core/Application.js');
 
 var ColorInput = require('../input/ColorInput.jsx');
 var NumberInput = require('../input/NumberInput.jsx');

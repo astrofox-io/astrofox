@@ -2,7 +2,7 @@
 
 var React = require('react');
 var _ = require('lodash');
-var Application = require('../../Application.js');
+var Application = require('../../core/Application.js');
 var FX = require('../../FX.js');
 
 var ModalWindow = require('./ModalWindow.jsx');

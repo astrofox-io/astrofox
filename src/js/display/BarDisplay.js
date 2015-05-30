@@ -40,7 +40,7 @@ Class.extend(BarDisplay, EventEmitter, {
     },
 
     render: function(data) {
-        var i, x, y, val, size, totalWidth,
+        var i, x, y, val, size, index, last, totalWidth,
             step = 1,
             len = data.length,
             canvas = this.canvas,
@@ -62,13 +62,20 @@ Class.extend(BarDisplay, EventEmitter, {
         if (barWidth < 0 && barSpacing < 0) {
             barWidth = barSpacing = (width / len) / 2;
         }
-        else if (barSpacing > 0 && barWidth < 0) {
+        else if (barSpacing >= 0 && barWidth < 0) {
             barWidth = (width - (len * barSpacing)) / len;
             if (barWidth <= 0) barWidth = 1;
         }
         else if (barWidth > 0 && barSpacing < 0) {
             barSpacing = (width - (len * barWidth)) / len;
             if (barSpacing <= 0) barSpacing = 1;
+        }
+
+        if (barWidth > 0 && barWidth < 1) {
+            barWidth = 1;
+        }
+        if (barSpacing > 0 && barSpacing < 1) {
+            barSpacing = 1;
         }
 
         // Calculate bars to display
@@ -79,14 +86,22 @@ Class.extend(BarDisplay, EventEmitter, {
             step = totalWidth / width;
         }
 
+        if (width === 854) {
+            //console.log(barWidth, barSpacing, size, step);
+        }
+
         // Set opacity
         context.globalAlpha = options.opacity;
 
         // Draw bars
         this.setColor(color, 0, 0, 0, height);
 
-        for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
-            val = data[floor(i)] * height;
+        for (i = 0, x = 0, y = height, last = null; i < len; i += step, x += size) {
+            index = ~~i;
+            if (index === last) continue;
+            val = data[index] * height;
+            last = index;
+
             context.fillRect(x, y, barWidth, -val);
         }
 
@@ -94,8 +109,12 @@ Class.extend(BarDisplay, EventEmitter, {
         if (shadowHeight > 0) {
             this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
 
-            for (i = 0, x = 0, y = height; i < len; i += step, x += size) {
-                val = data[floor(i)] * shadowHeight;
+            for (i = 0, x = 0, y = height, last = null; i < len; i += step, x += size) {
+                index = ~~i;
+                if (index === last) continue;
+                val = data[index] * shadowHeight;
+                last = index;
+
                 context.fillRect(x, y, barWidth, val);
             }
         }

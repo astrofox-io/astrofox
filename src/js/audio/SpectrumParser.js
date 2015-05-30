@@ -2,7 +2,7 @@
 
 var SpectrumParser = {
     parseFFT: function(fft, options, last) {
-        var i,
+        var i, j, size, step, tmp, start, end, val, max,
             sampleRate = options.sampleRate || 44100,
             fftSize = options.fftSize || 2048,
             range = sampleRate / fftSize,
@@ -14,7 +14,8 @@ var SpectrumParser = {
             maxVal = db2mag(maxDb),
             minBin = floor(minHz / range),
             maxBin = floor(maxHz / range),
-            smoothing = (last && last.length === maxBin) ? options.smoothingTimeConstant : 0,
+            bins = options.binSize || maxBin,
+            smoothing = (last && last.length === bins) ? options.smoothingTimeConstant : 0,
             data = new Float32Array(maxBin);
 
         // Convert db to magnitude
@@ -22,9 +23,55 @@ var SpectrumParser = {
             data[i] = convertDb(fft[i], minVal, maxVal);
         }
 
+        if (bins !== maxBin && bins > 0) {
+            tmp = new Array(bins);
+
+            // Compress data
+            if (bins < maxBin) {
+                size = maxBin / bins;
+                step = ~~(size / 10) || 1;
+
+                for (i = 0; i < bins; i++) {
+                    start = ~~(i * size);
+                    end = ~~(start + size);
+                    max = 0;
+
+                    // Find max value within range
+                    for (j = start; j < end; j += step) {
+                        val = data[j];
+                        if (val > max) {
+                            max = val;
+                        }
+                        else if (-val > max) {
+                            max = -val;
+                        }
+                    }
+
+                    tmp[i] = max;
+                }
+
+                data = tmp;
+            }
+            // Expand data
+            else if (bins > maxBin) {
+                size = bins / maxBin;
+
+                for (i = 0; i < maxBin; i++) {
+                    start = ~~(i * size);
+                    end = ~~(start + size);
+
+                    for (j = start; j < end; j += 1) {
+                        tmp[j] = data[i];
+                    }
+                }
+
+                data = tmp;
+            }
+        }
+
         // Apply smoothing
         if (smoothing > 0) {
-            for (i = 0; i < maxBin; i++) {
+            for (i = 0; i < bins; i++) {
                 data[i] = (last[i] * smoothing) + (data[i] * (1.0 - smoothing));
             }
         }

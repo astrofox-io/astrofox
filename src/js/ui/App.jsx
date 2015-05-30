@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../Application.js');
+var Application = require('../core/Application.js');
 var FX = require('../FX.js');
 
 var Header = require('./Header.jsx');
