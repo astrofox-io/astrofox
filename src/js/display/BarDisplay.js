@@ -1,7 +1,5 @@
 'use strict';
 
-var Class = require('../core/Class.js');
-var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
 
 var defaults = {
@@ -28,22 +26,27 @@ var BarDisplay = function(canvas, options) {
     this.update(options);
 };
 
-Class.extend(BarDisplay, EventEmitter, {
+BarDisplay.prototype = {
     update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {
                     this.options[prop] = options[prop];
+
+                    if (prop === 'width') {
+                        this.canvas.width = options.width;
+                    }
+                    else if (prop === 'height' || prop === 'shadowHeight') {
+                        this.canvas.height = options.height + options.shadowHeight;
+                    }
                 }
             }
         }
     },
 
     render: function(data) {
-        var i, x, y, val, size, index, last, totalWidth,
-            step = 1,
+        var i, x, y, val, step, index, last, barSize, fullWidth,
             len = data.length,
-            canvas = this.canvas,
             context = this.context,
             options = this.options,
             height = options.height,
@@ -55,8 +58,7 @@ Class.extend(BarDisplay, EventEmitter, {
             shadowColor = options.shadowColor;
 
         // Reset canvas
-        canvas.width = options.width;
-        canvas.height = options.height + options.shadowHeight;
+        context.clearRect(0, 0, width, height + shadowHeight);
 
         // Calculate bar widths
         if (barWidth < 0 && barSpacing < 0) {
@@ -79,15 +81,14 @@ Class.extend(BarDisplay, EventEmitter, {
         }
 
         // Calculate bars to display
-        size = barWidth + barSpacing;
-        totalWidth = size * len;
+        barSize = barWidth + barSpacing;
+        fullWidth = barSize * len;
 
-        if (totalWidth > width) {
-            step = totalWidth / width;
-        }
+        // Stepping
+        step = (fullWidth > width) ? fullWidth / width : 1;
 
-        if (width === 854) {
-            //console.log(barWidth, barSpacing, size, step);
+        if (width !== 854) {
+            //console.log(totalWidth, width, size, step);
         }
 
         // Set opacity
@@ -96,7 +97,7 @@ Class.extend(BarDisplay, EventEmitter, {
         // Draw bars
         this.setColor(color, 0, 0, 0, height);
 
-        for (i = 0, x = 0, y = height, last = null; i < len; i += step, x += size) {
+        for (i = 0, x = 0, y = height, last = null; i < len && x < fullWidth; i += step, x += barSize) {
             index = ~~i;
             if (index === last) continue;
             val = data[index] * height;
@@ -109,7 +110,7 @@ Class.extend(BarDisplay, EventEmitter, {
         if (shadowHeight > 0) {
             this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
 
-            for (i = 0, x = 0, y = height, last = null; i < len; i += step, x += size) {
+            for (i = 0, x = 0, y = height, last = null; i < len && x < fullWidth; i += step, x += barSize) {
                 index = ~~i;
                 if (index === last) continue;
                 val = data[index] * shadowHeight;
@@ -135,30 +136,30 @@ Class.extend(BarDisplay, EventEmitter, {
         else {
             context.fillStyle = color;
         }
+    },
+
+    getColor: function(start, end, pct) {
+        var startColor = {
+            r: parseInt(start.substring(1,3), 16),
+            g: parseInt(start.substring(3,5), 16),
+            b: parseInt(start.substring(5,7), 16)
+        };
+
+        var endColor = {
+            r: parseInt(end.substring(1,3), 16),
+            g: parseInt(end.substring(3,5), 16),
+            b: parseInt(end.substring(5,7), 16)
+        };
+
+        var c = {
+            r: ~~((endColor.r - startColor.r) * pct) + startColor.r,
+            g: ~~((endColor.g - startColor.g) * pct) + startColor.g,
+            b: ~~((endColor.b - startColor.b) * pct) + startColor.b
+        };
+
+        return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
     }
-});
-
-function getColor(start, end, pct) {
-    var startColor = {
-        r: parseInt(start.substring(1,3), 16),
-        g: parseInt(start.substring(3,5), 16),
-        b: parseInt(start.substring(5,7), 16)
-    };
-
-    var endColor = {
-        r: parseInt(end.substring(1,3), 16),
-        g: parseInt(end.substring(3,5), 16),
-        b: parseInt(end.substring(5,7), 16)
-    };
-
-    var c = {
-        r: ~~((endColor.r - startColor.r) * pct) + startColor.r,
-        g: ~~((endColor.g - startColor.g) * pct) + startColor.g,
-        b: ~~((endColor.b - startColor.b) * pct) + startColor.b
-    };
-
-    return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
-}
+};
 
 function round(val) {
     return (val + 0.5) << 0;

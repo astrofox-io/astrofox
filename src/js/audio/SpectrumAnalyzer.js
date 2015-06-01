@@ -3,7 +3,7 @@
 var _ = require('lodash');
 
 var defaults = {
-    fftSize: 2048,
+    fftSize: 1024,
     minDecibels: -100,
     maxDecibels: 0,
     smoothingTimeConstant: 0
@@ -27,7 +27,10 @@ SpectrumAnalyzer.prototype = {
     },
 
     getTimeData: function() {
-        var data = new Array(this.analyzer.frequencyBinCount);
+        var analyzer = this.analyzer,
+            data = new Uint8Array(analyzer.frequencyBinCount);
+
+        analyzer.getByteTimeDomainData(data);
 
         return data;
     },

@@ -5,23 +5,20 @@ var Application = require('../core/Application.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 var BarDisplay = require('../display/BarDisplay.js');
 
-var defaults = {
-    smoothingTimeConstant: 0.5,
-    minDecibels: -100,
-    maxDecibels: -20,
-    minFrequency: 0,
-    maxFrequency: 10000,
-    fftSize: 2048,
-    sampleRate: 44100,
-    binSize: 64
-};
-
 var Spectrum = React.createClass({
+    defaultState: {
+        smoothingTimeConstant: 0.5,
+        minDecibels: -100,
+        maxDecibels: -20,
+        minFrequency: 0,
+        maxFrequency: 10000,
+        fftSize: 1024,
+        sampleRate: 44100,
+        binSize: 32
+    },
+
     getInitialState: function() {
-        return {
-            progress: 0,
-            seek: 0
-        };
+        return this.defaultState;
     },
 
     componentWillMount: function() {
@@ -44,7 +41,7 @@ var Spectrum = React.createClass({
         );
 
         Application.on('render', function(fft) {
-            var data = this.data = SpectrumParser.parseFFT(fft, defaults, this.data);
+            var data = this.data = SpectrumParser.parseFFT(fft, this.state, this.data);
 
             this.bars.render(data);
         }, this);

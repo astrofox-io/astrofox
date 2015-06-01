@@ -57,8 +57,8 @@ var Waveform = React.createClass({
             }
         );
 
-        this.overlay = new BarDisplay(
-            React.findDOMNode(this.refs.overlay),
+        this.seek = new BarDisplay(
+            React.findDOMNode(this.refs.seek),
             {
                 y: config.height,
                 height: config.height,
@@ -77,7 +77,7 @@ var Waveform = React.createClass({
                 data = WaveformParser.parseBuffer(buffer, options);
 
             this.draw(data);
-        }.bind(this));
+        }, this);
 
         player.on('time', function(){
             this.forceUpdate();
@@ -107,6 +107,8 @@ var Waveform = React.createClass({
     },
 
     handleMouseMove: function(e) {
+        if (!Application.player.getSound('audio')) return;
+
         e.stopPropagation();
         e.preventDefault();
 
@@ -136,7 +138,7 @@ var Waveform = React.createClass({
     draw: function(data) {
         this.bars.render(data);
         this.progress.render(data);
-        this.overlay.render(data);
+        this.seek.render(data);
     },
 
     render: function() {
@@ -167,8 +169,8 @@ var Waveform = React.createClass({
                     <div className="canvas progress" style={progressStyle}>
                         <canvas ref="progress" width="854" height="100"></canvas>
                     </div>
-                    <div className="canvas overlay" style={clipStyle}>
-                        <canvas ref="overlay" width="854" height="100"></canvas>
+                    <div className="canvas seek" style={clipStyle}>
+                        <canvas ref="seek" width="854" height="100"></canvas>
                     </div>
                 </div>
             </div>

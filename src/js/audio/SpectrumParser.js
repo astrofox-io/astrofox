@@ -4,7 +4,7 @@ var SpectrumParser = {
     parseFFT: function(fft, options, last) {
         var i, j, size, step, tmp, start, end, val, max,
             sampleRate = options.sampleRate || 44100,
-            fftSize = options.fftSize || 2048,
+            fftSize = options.fftSize || 1024,
             range = sampleRate / fftSize,
             minDb = options.minDecibels || -100,
             maxDb = options.maxDecibels || 0,
@@ -12,8 +12,8 @@ var SpectrumParser = {
             maxHz = options.maxFrequency || sampleRate/2,
             minVal = db2mag(minDb),
             maxVal = db2mag(maxDb),
-            minBin = floor(minHz / range),
-            maxBin = floor(maxHz / range),
+            minBin = ~~(minHz / range),
+            maxBin = ~~(maxHz / range),
             bins = options.binSize || maxBin,
             smoothing = (last && last.length === bins) ? options.smoothingTimeConstant : 0,
             data = new Float32Array(maxBin);
@@ -24,7 +24,7 @@ var SpectrumParser = {
         }
 
         if (bins !== maxBin && bins > 0) {
-            tmp = new Array(bins);
+            tmp = new Float32Array(bins);
 
             // Compress data
             if (bins < maxBin) {
@@ -93,10 +93,6 @@ function round(val) {
 function ceil(val) {
     var n = (val << 0);
     return (n == val) ? n : n + 1;
-}
-
-function floor(val) {
-    return ~~val;
 }
 
 function db2mag(val) {

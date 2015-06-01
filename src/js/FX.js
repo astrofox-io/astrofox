@@ -5,7 +5,7 @@ var FX = {
     ImageDisplay: require('display/ImageDisplay.js'),
     TextDisplay: require('display/TextDisplay.js'),
     CubeDisplay: require('display/CubeDisplay.js'),
-    TestDisplay: require('display/TestDisplay.js'),
+    TestDisplay: require('display/TestDisplay.js')
 };
 
 module.exports = FX;

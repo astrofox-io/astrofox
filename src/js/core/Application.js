@@ -136,7 +136,7 @@ Class.extend(Application, EventEmitter, {
 
     stopRender: function() {
         if (this.frame) {
-            window.cancelAnimationFrame(this.frame);
+            cancelAnimationFrame(this.frame);
             this.frame = null;
         }
     },
