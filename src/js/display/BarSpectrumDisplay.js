@@ -28,7 +28,8 @@ var defaults = {
     minFrequency: 0,
     maxFrequency: 3000,
     fftSize: 2048,
-    sampleRate: 44100
+    sampleRate: 44100,
+    showMagnitude: true
 };
 
 var id = 0;

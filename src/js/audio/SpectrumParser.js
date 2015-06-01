@@ -2,25 +2,31 @@
 
 var SpectrumParser = {
     parseFFT: function(fft, options, last) {
-        var i, j, size, step, tmp, start, end, val, max,
+        var i, j, db, size, step, tmp, start, end, val, max,
             sampleRate = options.sampleRate || 44100,
             fftSize = options.fftSize || 1024,
             range = sampleRate / fftSize,
             minDb = options.minDecibels || -100,
             maxDb = options.maxDecibels || 0,
             minHz = options.minFrequency || 0,
-            maxHz = options.maxFrequency || sampleRate/2,
-            minVal = db2mag(minDb),
-            maxVal = db2mag(maxDb),
+            maxHz = options.maxFrequency || sampleRate / 2,
             minBin = ~~(minHz / range),
             maxBin = ~~(maxHz / range),
             bins = options.binSize || maxBin,
             smoothing = (last && last.length === bins) ? options.smoothingTimeConstant : 0,
+            mag = options.showMagnitude || false,
             data = new Float32Array(maxBin);
 
-        // Convert db to magnitude
+        // Convert values to percent
         for (i = minBin; i < maxBin; i++) {
-            data[i] = convertDb(fft[i], minVal, maxVal);
+            db = -100 * (1 - fft[i]/256);
+
+            if (mag) {
+                data[i] = val2pct(db2mag(db), db2mag(minDb), db2mag(maxDb));
+            }
+            else {
+                data[i] = val2pct(db, -100, maxDb);
+            }
         }
 
         if (bins !== maxBin && bins > 0) {
@@ -80,8 +86,7 @@ var SpectrumParser = {
     }
 };
 
-function convertDb(db, min, max) {
-    var val = db2mag(db);
+function val2pct(val, min, max) {
     if (val > max) val = max;
     return (val - min) / (max - min);
 }

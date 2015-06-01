@@ -8,13 +8,14 @@ var BarDisplay = require('../display/BarDisplay.js');
 var Spectrum = React.createClass({
     defaultState: {
         smoothingTimeConstant: 0.5,
-        minDecibels: -100,
-        maxDecibels: -20,
+        minDecibels: -40,
+        maxDecibels: -0,
         minFrequency: 0,
-        maxFrequency: 10000,
+        maxFrequency: 14000,
         fftSize: 1024,
         sampleRate: 44100,
-        binSize: 32
+        binSize: 32,
+        showMagnitude: false
     },
 
     getInitialState: function() {
@@ -32,6 +33,7 @@ var Spectrum = React.createClass({
         };
 
         this.data = null;
+        this.i = 0;
     },
 
     componentDidMount: function() {
@@ -42,7 +44,7 @@ var Spectrum = React.createClass({
 
         Application.on('render', function(fft) {
             var data = this.data = SpectrumParser.parseFFT(fft, this.state, this.data);
-
+            //if (this.i++ % 60 === 0) console.log(data);
             this.bars.render(data);
         }, this);
     },
