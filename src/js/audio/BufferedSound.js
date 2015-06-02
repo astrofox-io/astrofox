@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('../core/Class.js');
-var Sound = require('./Sound.js');
 var _ = require('lodash');
+var Class = require('core/Class.js');
+var Sound = require('audio/Sound.js');
 
 var BufferedSound = function(context) {
     Sound.call(this, context);
@@ -30,7 +30,7 @@ Class.extend(BufferedSound, Sound, {
 
     unload: function(callback) {
         if (this.source) {
-            this.source.disconnect();
+            this.stop();
             this.source = null;
             this.buffer = null;
             this.off();
@@ -77,15 +77,12 @@ Class.extend(BufferedSound, Sound, {
     },
 
     initBuffer: function() {
-        if (this.source) {
-            this.source.disconnect();
-        }
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
 
         this.nodes.forEach(function(node) {
             this.source.connect(node);
-        }.bind(this));
+        }, this);
     },
 
     getCurrentTime: function() {
@@ -129,6 +126,7 @@ Class.extend(BufferedSound, Sound, {
 
     stop: function() {
         this.source.stop();
+        this.source.disconnect();
         this.stopTime = 0;
         this.playing = false;
         this.paused = false;

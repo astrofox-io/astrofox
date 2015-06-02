@@ -19,10 +19,8 @@ SpectrumAnalyzer.prototype = {
 
     getFrequencyData: function() {
         var analyzer = this.analyzer,
-            //fft = new Float32Array(analyzer.frequencyBinCount);
             fft = new Uint8Array(analyzer.frequencyBinCount);
 
-        //analyzer.getFloatFrequencyData(fft);
         analyzer.getByteFrequencyData(fft);
 
         return fft;

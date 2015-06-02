@@ -70,13 +70,13 @@ Class.extend(Application, EventEmitter, {
                 console.log('sound loaded', timer.get('sound_load'));
 
                 player.load('audio', sound, function() {
-                    sound.connect(spectrum.analyzer);
+                    sound.connectNode(spectrum.analyzer);
                 });
 
                 player.play('audio');
 
                 resolve();
-            }.bind(this));
+            }, this);
 
             sound.on('error', function(error) {
                 reject(error);

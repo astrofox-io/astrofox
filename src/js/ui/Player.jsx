@@ -11,32 +11,40 @@ var Player = React.createClass({
         };
     },
 
+    getInitialState: function() {
+        return {
+            progressPosition: 0
+        };
+    },
+
     componentDidMount: function() {
         var player = Application.player;
 
-        player.on('time', function() {
+        player.on('tick', function() {
             if (player.isPlaying()) {
-                this.forceUpdate();
+                this.setState({
+                    progressPosition: this.refs.progress.getPosition()
+                });
             }
-        }.bind(this));
+        }, this);
 
         player.on('stop', function() {
-            this.forceUpdate();
-        }.bind(this));
+            this.setState({ progressPosition: 0 });
+        }, this);
 
         player.on('seek', function() {
-            this.forceUpdate();
-        }.bind(this));
+            this.setState({
+                progressPosition: this.refs.progress.getPosition()
+            });
+        }, this);
     },
 
     onPlayButtonClick: function() {
         Application.player.play('audio');
-        this.forceUpdate();
     },
 
     onStopButtonClick: function() {
         Application.player.stop('audio');
-        this.forceUpdate();
     },
 
     onLoopButtonClick: function() {
@@ -50,39 +58,20 @@ var Player = React.createClass({
 
     onProgressChange: function(val) {
         Application.player.seek('audio', val);
-        this.props.onProgressChange(val);
-        this.forceUpdate();
     },
 
     onProgressUpdate: function(val) {
-        this.forceUpdate();
-    },
-
-    getCurrentTime: function() {
-        var player = Application.player;
-
-        // Check if progress component loaded
-        if (this.refs.progress) {
-            var pos = this.refs.progress.getPosition();
-            if (pos > 1) pos = 1;
-            return pos * this.getTotalTime();
-        }
-
-        return player.getCurrentTime();
-    },
-
-    getTotalTime: function() {
-        var player = Application.player;
-        return player.getDuration('audio');
+        this.setState({ progressPosition: val });
     },
 
     render: function() {
-        var player = Application.player,
-            currentTime = this.getCurrentTime(),
+        var state = this.state,
+            player = Application.player,
             totalTime = player.getDuration('audio'),
+            audioPosition = player.getPosition('audio'),
+            currentTime = state.progressPosition * totalTime,
             isPlaying = player.isPlaying(),
             loop = player.options.loop,
-            progressPosition = player.getPosition('audio'),
             style = { display: (this.props.visible) ? 'flex' : 'none' };
 
         return (
@@ -104,7 +93,7 @@ var Player = React.createClass({
                 />
                 <ProgressControl
                     ref="progress"
-                    progressPosition={progressPosition}
+                    progressPosition={audioPosition}
                     onChange={this.onProgressChange}
                     onUpdate={this.onProgressUpdate}
                     readOnly={totalTime==0}
@@ -248,7 +237,10 @@ var ProgressControl = React.createClass({
     },
 
     getPosition: function() {
-        return this.state.value / this.max;
+        var pos = this.state.value / this.max;
+        if (pos > 1) pos = 1;
+
+        return pos;
     },
 
     render: function() {

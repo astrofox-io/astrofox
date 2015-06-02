@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('../core/Class.js');
-var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
+var Class = require('core/Class.js');
+var EventEmitter = require('core/EventEmitter.js');
 
 var Sound = function(context) {
     this.audioContext = context;
@@ -18,16 +18,19 @@ var Sound = function(context) {
 Class.extend(Sound, EventEmitter, {
     constructor: Sound,
 
-    connect: function(node) {
+    connectNode: function(node) {
         if (this.nodes.indexOf(node) < 0) {
             this.nodes.push(node);
         }
     },
 
-    disconnect: function() {
+    disconnectNodes: function() {
         if (this.source) {
-            this.source.disconnect();
-            this.source = null;
+            //this.source.disconnect();
+            //this.source = null;
+            this.nodes.forEach(function(node) {
+                node.disconnect();
+            });
         }
     },
 

@@ -1,17 +1,17 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../core/Application.js');
-var SpectrumParser = require('../audio/SpectrumParser.js');
-var BarDisplay = require('../display/BarDisplay.js');
+var Application = require('core/Application.js');
+var SpectrumParser = require('audio/SpectrumParser.js');
+var BarDisplay = require('display/BarDisplay.js');
 
 var Spectrum = React.createClass({
     defaultState: {
         smoothingTimeConstant: 0.5,
-        minDecibels: -40,
-        maxDecibels: -0,
+        minDecibels: -60,
+        maxDecibels: -12,
         minFrequency: 0,
-        maxFrequency: 14000,
+        maxFrequency: 10000,
         fftSize: 1024,
         sampleRate: 44100,
         binSize: 32,
@@ -33,7 +33,6 @@ var Spectrum = React.createClass({
         };
 
         this.data = null;
-        this.i = 0;
     },
 
     componentDidMount: function() {
@@ -44,7 +43,7 @@ var Spectrum = React.createClass({
 
         Application.on('render', function(fft) {
             var data = this.data = SpectrumParser.parseFFT(fft, this.state, this.data);
-            //if (this.i++ % 60 === 0) console.log(data);
+
             this.bars.render(data);
         }, this);
     },
@@ -53,10 +52,14 @@ var Spectrum = React.createClass({
         return false;
     },
 
+    handleClick: function() {
+        this.setState({ showMagnitude: !this.state.showMagnitude });
+    },
+
     render: function() {
         return (
             <div className="spectrum">
-                <canvas ref="canvas" className="canvas" width="854" height="100"></canvas>
+                <canvas ref="canvas" className="canvas" width="854" height="100" onClick={this.handleClick}></canvas>
             </div>
         );
     }

@@ -21,6 +21,8 @@ var OscilloscopeDisplay = function(canvas, options) {
 };
 
 OscilloscopeDisplay.prototype = {
+    constructor: OscilloscopeDisplay,
+
     update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {

@@ -36,7 +36,7 @@ Class.extend(Player, EventEmitter, {
         this.unload(id, function() {
             this.sounds[id] = sound;
 
-            sound.connect(this.volume);
+            sound.connectNode(this.volume);
 
             if (callback) callback();
 
@@ -75,7 +75,7 @@ Class.extend(Player, EventEmitter, {
                             }
                         }
 
-                        this.emit('time');
+                        this.emit('tick');
                     }.bind(this),
                     this.options.updateInterval
                 );

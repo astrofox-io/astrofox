@@ -79,7 +79,7 @@ var Waveform = React.createClass({
             this.draw(data);
         }, this);
 
-        player.on('time', function(){
+        player.on('tick', function(){
             this.forceUpdate();
         }, this);
 
@@ -101,9 +101,7 @@ var Waveform = React.createClass({
 
         player.seek('audio', val / this.config.width);
 
-        this.setState({ progress: val }, function() {
-            this.props.onProgressChange(val);
-        }.bind(this));
+        this.setState({ progress: val });
     },
 
     handleMouseMove: function(e) {

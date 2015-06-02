@@ -71,14 +71,6 @@ var App = React.createClass({
         Application.emit('mouseup');
     },
 
-    handlePlayerProgressChange: function() {
-        this.refs.waveform.forceUpdate();
-    },
-
-    handleWaveformProgressChange: function() {
-        this.refs.player.forceUpdate();
-    },
-
     handleFileAction: function(e) {
         e.preventDefault();
 
@@ -206,24 +198,11 @@ var App = React.createClass({
                         {this.state.modal}
                     </Overlay>
                     <MainView>
-                        <Scene
-                            ref="scene"
-                            onFileDropped={this.loadAudioFile}
-                        />
-                        <Spectrum
-                            ref="spectrum"
-                        />
-                        <Oscilloscope
-                            ref="osc"
-                        />
-                        <Waveform
-                            ref="waveform"
-                            onProgressChange={this.handleWaveformProgressChange}
-                        />
-                        <Player
-                            ref="player"
-                            onProgressChange={this.handlePlayerProgressChange}
-                        />
+                        <Scene ref="scene" onFileDropped={this.loadAudioFile} />
+                        <Spectrum ref="spectrum" />
+                        <Oscilloscope ref="osc" />
+                        <Waveform ref="waveform" />
+                        <Player ref="player" />
                     </MainView>
                     <ControlDock ref="dock" />
                 </Body>
