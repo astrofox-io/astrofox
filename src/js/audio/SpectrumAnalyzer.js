@@ -12,6 +12,7 @@ var defaults = {
 var SpectrumAnalyzer = function(context) {
     this.audioContext = context;
     this.analyzer = _.extend(context.createAnalyser(), defaults);
+    this.enabled = true;
 };
 
 SpectrumAnalyzer.prototype = {
@@ -21,16 +22,20 @@ SpectrumAnalyzer.prototype = {
         var analyzer = this.analyzer,
             fft = new Uint8Array(analyzer.frequencyBinCount);
 
-        analyzer.getByteFrequencyData(fft);
+        if (this.enabled) {
+            analyzer.getByteFrequencyData(fft);
+        }
 
         return fft;
     },
 
     getTimeData: function() {
         var analyzer = this.analyzer,
-            data = new Uint8Array(analyzer.frequencyBinCount);
+            data = new Float32Array(analyzer.frequencyBinCount);
 
-        analyzer.getByteTimeDomainData(data);
+        if (this.enabled) {
+            analyzer.getFloatTimeDomainData(data);
+        }
 
         return data;
     },

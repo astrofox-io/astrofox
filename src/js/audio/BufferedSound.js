@@ -85,23 +85,6 @@ Class.extend(BufferedSound, Sound, {
         }, this);
     },
 
-    getCurrentTime: function() {
-        if (this.playing) {
-            return this.stopTime + (this.audioContext.currentTime - this.startTime);
-        }
-        else {
-            return this.stopTime;
-        }
-    },
-
-    getDuration: function() {
-        return (this.buffer) ? this.buffer.duration : 0;
-    },
-
-    updatePosition: function(pos) {
-        this.stopTime = ~~(pos * this.buffer.duration);
-    },
-
     play: function() {
         if (!this.loaded) return;
 
@@ -131,6 +114,7 @@ Class.extend(BufferedSound, Sound, {
     stop: function() {
         if (this.source) {
             this.source.stop();
+            this.source.disconnect();
             this.source = null;
         }
 
@@ -150,6 +134,25 @@ Class.extend(BufferedSound, Sound, {
         else {
             this.updatePosition(pos);
         }
+
+        this.emit('seek');
+    },
+
+    getCurrentTime: function() {
+        if (this.playing) {
+            return this.stopTime + (this.audioContext.currentTime - this.startTime);
+        }
+        else {
+            return this.stopTime;
+        }
+    },
+
+    getDuration: function() {
+        return (this.buffer) ? this.buffer.duration : 0;
+    },
+
+    updatePosition: function(pos) {
+        this.stopTime = ~~(pos * this.buffer.duration);
     }
 });
 

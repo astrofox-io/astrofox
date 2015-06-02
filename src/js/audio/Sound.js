@@ -18,9 +18,17 @@ var Sound = function(context) {
 Class.extend(Sound, EventEmitter, {
     constructor: Sound,
 
-    connectNode: function(node) {
+    addNode: function(node) {
         if (this.nodes.indexOf(node) < 0) {
             this.nodes.push(node);
+        }
+    },
+
+    removeNode: function(node) {
+        var index = this.nodes.indexOf(node);
+
+        if (index > -1) {
+            this.nodes.splice(index, 1);
         }
     },
 

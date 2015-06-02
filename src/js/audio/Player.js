@@ -36,7 +36,7 @@ Class.extend(Player, EventEmitter, {
         this.unload(id, function() {
             this.sounds[id] = sound;
 
-            sound.connectNode(this.volume);
+            sound.addNode(this.volume);
 
             if (callback) callback();
 

@@ -32,6 +32,9 @@ var Application = function() {
     this.timer = new Timer();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
+
+    this.player.on('play', this.updateAnalyzer.bind(this));
+    this.player.on('stop', this.updateAnalyzer.bind(this));
 };
 
 Class.extend(Application, EventEmitter, {
@@ -70,7 +73,7 @@ Class.extend(Application, EventEmitter, {
                 console.log('sound loaded', timer.get('sound_load'));
 
                 player.load('audio', sound, function() {
-                    sound.connectNode(spectrum.analyzer);
+                    sound.addNode(spectrum.analyzer);
                 });
 
                 player.play('audio');
@@ -275,6 +278,16 @@ Class.extend(Application, EventEmitter, {
         }
         else {
             this.emit('error', new Error('Invalid project file.'));
+        }
+    },
+
+    updateAnalyzer: function() {
+        var player = this.player,
+            spectrum = this.spectrum,
+            sound = player.getSound('audio');
+
+        if (sound) {
+            spectrum.enabled = (sound.playing || sound.paused);
         }
     }
 });

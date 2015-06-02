@@ -57,7 +57,7 @@ OscilloscopeDisplay.prototype = {
         context.beginPath();
 
         for(i = 0, x = 0; x < width; i += step, x++) {
-            y = (data[~~i] / 128.0) * halfHeight;
+            y = ((data[~~i] * height) + height) / 2;
 
             if (i === 0) {
                 context.moveTo(x, y);
