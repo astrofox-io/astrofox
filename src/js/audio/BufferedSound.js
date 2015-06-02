@@ -116,7 +116,11 @@ Class.extend(BufferedSound, Sound, {
     },
 
     pause: function() {
-        this.source.stop();
+        if (this.source) {
+            this.source.stop();
+            this.source = null;
+        }
+
         this.stopTime += this.audioContext.currentTime - this.startTime;
         this.playing = false;
         this.paused = true;
@@ -125,8 +129,11 @@ Class.extend(BufferedSound, Sound, {
     },
 
     stop: function() {
-        this.source.stop();
-        this.source.disconnect();
+        if (this.source) {
+            this.source.stop();
+            this.source = null;
+        }
+
         this.stopTime = 0;
         this.playing = false;
         this.paused = false;

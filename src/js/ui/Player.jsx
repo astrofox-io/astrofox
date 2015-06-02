@@ -28,6 +28,14 @@ var Player = React.createClass({
             }
         }, this);
 
+        player.on('play', function() {
+            this.forceUpdate();
+        }, this);
+
+        player.on('pause', function() {
+            this.forceUpdate();
+        }, this);
+
         player.on('stop', function() {
             this.setState({ progressPosition: 0 });
         }, this);

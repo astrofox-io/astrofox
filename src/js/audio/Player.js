@@ -59,7 +59,7 @@ Class.extend(Player, EventEmitter, {
         var sound = this.sounds[id];
         if (sound) {
             if (sound.playing) {
-                sound.pause();
+                this.pause(id);
             }
             else {
                 sound.play();
