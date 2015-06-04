@@ -14,14 +14,14 @@ var SpectrumParser = {
             maxBin = ~~(maxHz / range),
             bins = options.binSize || maxBin,
             smoothing = (last && last.length === bins) ? options.smoothingTimeConstant : 0,
-            mag = options.showMagnitude || false,
+            normalize = options.normalize || false,
             data = new Float32Array(maxBin);
 
         // Convert values to percent
         for (i = minBin; i < maxBin; i++) {
             db = -100 * (1 - fft[i]/256);
 
-            if (mag) {
+            if (normalize) {
                 data[i] = val2pct(db2mag(db), db2mag(minDb), db2mag(maxDb));
             }
             else {

@@ -29,7 +29,7 @@ var defaults = {
     maxFrequency: 3000,
     fftSize: 2048,
     sampleRate: 44100,
-    showMagnitude: true
+    normalize: true
 };
 
 var id = 0;
@@ -75,7 +75,7 @@ Class.extend(BarSpectrumDisplay, SpriteDisplay, {
 
         if (options.rotation % 360 !== 0) {
             x = halfSceneWidth + options.x;
-            y = halfHeight - options.y;
+            y = halfSceneHeight - options.y;
 
             context.save();
             context.translate(x, y);

@@ -53,8 +53,6 @@ var Player = React.createClass({
 
     onStopButtonClick: function() {
         Application.player.stop('audio');
-        Application.spectrum.analyzer.disconnect();
-        console.log(Application.spectrum.analyzer);
     },
 
     onLoopButtonClick: function() {

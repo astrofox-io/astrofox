@@ -99,31 +99,31 @@ Class.extend(Composer, EventEmitter, {
         }
     },
 
-    addRenderPass: function(scene, camera, options) {
-        return this.addPass(new RenderPass(scene, camera, options));
+    addRenderPass: function(scene, camera, options, index) {
+        return this.addPass(new RenderPass(scene, camera, options), index);
     },
 
-    addShaderPass: function(shader, options) {
-        return this.addPass(new ShaderPass(shader, options));
+    addShaderPass: function(shader, options, index) {
+        return this.addPass(new ShaderPass(shader, options), index);
     },
 
-    addCopyPass: function(options) {
-        return this.addShaderPass(CopyShader, options);
+    addTexturePass: function(texture, options, index) {
+        return this.addPass(new TexturePass(texture, options), index);
     },
 
-    addTexturePass: function(texture, options) {
-        return this.addPass(new TexturePass(texture, options));
-    },
-
-    addCanvasPass: function(canvas, options) {
+    addCanvasPass: function(canvas, options, index) {
         var texture = new THREE.Texture(canvas);
         texture.minFilter = THREE.LinearFilter;
 
-        return this.addTexturePass(texture, options);
+        return this.addTexturePass(texture, options, index);
     },
 
-    renderToScreen: function() {
-        return this.addCopyPass({ renderToScreen: true });
+    addCopyPass: function(options, index) {
+        return this.addShaderPass(CopyShader, options, index);
+    },
+
+    renderToScreen: function(index) {
+        return this.addCopyPass({ renderToScreen: true }, index);
     },
 
     render: function(delta) {

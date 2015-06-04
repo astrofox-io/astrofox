@@ -73,23 +73,12 @@ BarDisplay.prototype = {
             if (barSpacing <= 0) barSpacing = 1;
         }
 
-        if (barWidth > 0 && barWidth < 1) {
-            barWidth = 1;
-        }
-        if (barSpacing > 0 && barSpacing < 1) {
-            barSpacing = 1;
-        }
-
         // Calculate bars to display
         barSize = barWidth + barSpacing;
         fullWidth = barSize * len;
 
         // Stepping
         step = (fullWidth > width) ? fullWidth / width : 1;
-
-        if (width !== 854) {
-            //console.log(totalWidth, width, size, step);
-        }
 
         // Set opacity
         context.globalAlpha = options.opacity;

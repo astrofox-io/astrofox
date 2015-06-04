@@ -7,7 +7,7 @@ var defaults = {
     height: 200,
     width: 400,
     color: '#ffffff',
-    lineWidth: 2,
+    lineWidth: 1.0,
     rotation: 0,
     opacity: 1.0
 };

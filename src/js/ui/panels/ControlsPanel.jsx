@@ -7,7 +7,7 @@ var FX = require('../../FX.js');
 var BarSpectrumControl = require('../controls/BarSpectrumControl.jsx');
 var ImageControl = require('../controls/ImageControl.jsx');
 var TextControl = require('../controls/TextControl.jsx');
-var CubeControl = require('../controls/CubeControl.jsx');
+var ObjectControl = require('../controls/ObjectControl.jsx');
 
 var ControlsPanel = React.createClass({
     getControl: function(display) {
@@ -20,8 +20,8 @@ var ControlsPanel = React.createClass({
         else if (display instanceof FX.TextDisplay) {
             return TextControl;
         }
-        else if (display instanceof FX.CubeDisplay) {
-            return CubeControl;
+        else if (display instanceof FX.ObjectDisplay) {
+            return ObjectControl;
         }
 
         return null;

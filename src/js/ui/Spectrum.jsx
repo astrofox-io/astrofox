@@ -15,7 +15,7 @@ var Spectrum = React.createClass({
         fftSize: 1024,
         sampleRate: 44100,
         binSize: 32,
-        showMagnitude: false
+        normalize: false
     },
 
     getInitialState: function() {
@@ -53,7 +53,7 @@ var Spectrum = React.createClass({
     },
 
     handleClick: function() {
-        this.setState({ showMagnitude: !this.state.showMagnitude });
+        this.setState({ normalize: !this.state.normalize });
     },
 
     render: function() {

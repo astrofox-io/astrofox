@@ -63,6 +63,9 @@ Class.extend(Scene, EventEmitter, {
             width = canvas.width,
             height = canvas.height;
 
+        this.width = width;
+        this.height = height;
+
         // Renderer
         var renderer = this.renderer = new THREE.WebGLRenderer({
             canvas: canvas3d,
