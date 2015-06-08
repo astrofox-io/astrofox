@@ -25,6 +25,7 @@ var TextControl = React.createClass({
     },
 
     fontOptions: [
+        'Abel',
         'Arial',
         'Bangers',
         'Cardo',

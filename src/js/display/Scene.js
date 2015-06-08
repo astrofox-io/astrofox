@@ -91,7 +91,7 @@ Class.extend(Scene, EventEmitter, {
 
         // Processing
         var composer = this.composer = new Composer(renderer);
-        composer.addRenderPass(scene, camera);
+        //composer.addRenderPass(scene, camera);
         //composer.addShaderPass(ColorShiftShader);
         //composer.addShaderPass(DotScreenShader);
         //composer.addShaderPass(EdgeShader);
@@ -102,6 +102,8 @@ Class.extend(Scene, EventEmitter, {
         //composer.addShaderPass(GridShader);
         //composer.addShaderPass(RGBShiftShader);
         composer.renderToScreen();
+
+        //console.log(composer);
     },
 
     clearCanvas: function() {
@@ -120,21 +122,27 @@ Class.extend(Scene, EventEmitter, {
                 display.renderToCanvas(this, data);
             }
             else if (display.updateScene) {
-                display.updateScene(this, data);
+                //display.updateScene(this, data);
             }
         }.bind(this));
 
-        this.render();
+        this.render(displays, data);
 
         if (callback) callback();
     },
 
-    render: function(callback) {
+    render: function(displays, data, callback) {
         this.updateFPS();
 
         // Render 3D objects
         this.renderer.clear();
         this.composer.render();
+
+        displays.forEach(function(display) {
+            if (display.updateScene) {
+                display.updateScene(this, data);
+            }
+        }.bind(this));
 
         if (callback) callback();
     },

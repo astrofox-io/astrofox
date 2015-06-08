@@ -122,8 +122,8 @@ Class.extend(Composer, EventEmitter, {
         return this.addShaderPass(CopyShader, options, index);
     },
 
-    renderToScreen: function(index) {
-        return this.addCopyPass({ renderToScreen: true }, index);
+    renderToScreen: function(options, index) {
+        return this.addCopyPass(_.assign({ renderToScreen: true }, options), index);
     },
 
     render: function(delta) {

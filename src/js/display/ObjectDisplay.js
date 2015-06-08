@@ -4,10 +4,19 @@ var _ = require('lodash');
 var THREE = require('three');
 var Class = require('core/Class.js');
 var Display = require('display/Display.js');
+var SpectrumParser = require('audio/SpectrumParser.js');
+var Composer = require('graphics/Composer.js');
 var GridShader = require('shaders/GridShader.js');
+var DotScreenShader = require('vendor/three/shaders/DotScreenShader.js');
+var RGBShiftShader = require('vendor/airtight/shaders/RGBShiftShader.js');
+var MirrorShader = require('vendor/airtight/shaders/MirrorShader.js');
+
+var ColorHalftoneShader = require('shaders/ColorHalftoneShader.js');
+var ColorShiftShader = require('shaders/ColorShiftShader.js');
+var HexagonPixelateShader = require('shaders/HexagonPixelateShader.js');
 
 var defaults = {
-    geometry: 'mesh',
+    shape: 'Cube',
     x: 0,
     y: 0,
     z: 0,
@@ -29,10 +38,8 @@ ObjectDisplay.info = {
 Class.extend(ObjectDisplay, Display, {
     update: function(options) {
         if (typeof options !== 'undefined') {
-            this._super.update.call(this, options);
-
             if (options.wireframe !== undefined) {
-                this.material.wireframe = this.options.wireframe;
+                this.material.wireframe = options.wireframe;
                 this.material.needsUpdate = true;
 
             }
@@ -40,11 +47,15 @@ Class.extend(ObjectDisplay, Display, {
             if (options.shape !== undefined && options.shape !== this.options.shape) {
                 this.createMesh(options.shape);
             }
+
+            this._super.update.call(this, options);
         }
     },
 
     addToScene: function(view) {
         var options = this.options,
+            //composer = view.composer,
+            composer = this.composer = new Composer(view.renderer),
             scene = this.scene = new THREE.Scene();
 
         var camera = this.camera = new THREE.PerspectiveCamera(45, view.width/view.height, 1, 10000);
@@ -52,7 +63,17 @@ Class.extend(ObjectDisplay, Display, {
 
         this.createMesh(options.shape);
 
-        this.pass = view.composer.addRenderPass(scene, camera, { transparent: true, clearDepth: true, renderToScreen: true });
+        this.pass = composer.addRenderPass(scene, camera);
+        //this.pass = composer.addRenderPass(scene, camera, { transparent: true, clearDepth: true, forceClear: true, renderToScreen: true });
+        //composer.addShaderPass(RGBShiftShader, { console.log: true, clearDepth: true });
+        //composer.renderToScreen({ transparent: true, clearDepth: true, forceClear: true });
+        //composer.addCopyPass({ renderToScreen: true });
+        composer.addShaderPass(MirrorShader);
+        composer.addShaderPass(DotScreenShader);
+        composer.addShaderPass(RGBShiftShader);
+        composer.renderToScreen({ clearDepth: true, transparent: true });
+
+        //console.log(composer);
     },
 
     removeFromScene: function(view) {
@@ -60,13 +81,18 @@ Class.extend(ObjectDisplay, Display, {
         view.composer.removePass(this.pass);
     },
 
-    updateScene: function(view) {
-        var options = this.options;
+    updateScene: function(view, data) {
+        var options = this.options,
+            fft = this.fft = SpectrumParser.parseFFT(data.fft, { normalize: true }, this.fft),
+            x = fft[0],
+            y = fft[3];
 
-        this.mesh.rotation.x += 0.025;
-        this.mesh.rotation.y += 0.05;
+        this.mesh.rotation.x += 5 * x;
+        this.mesh.rotation.y += 3 * y;
 
         this.mesh.position.set(options.x, options.y, options.z);
+
+        this.composer.render();
     },
 
     createMesh: function(shape) {
@@ -85,6 +111,18 @@ Class.extend(ObjectDisplay, Display, {
                 break;
             case 'Sphere':
                 geometry = new THREE.SphereGeometry(40,10,10);
+                break;
+            case 'Dodecahedron':
+                geometry = new THREE.DodecahedronGeometry(40, 0);
+                break;
+            case 'Icosahedron':
+                geometry = new THREE.IcosahedronGeometry(40, 0);
+                break;
+            case 'Octahedron':
+                geometry = new THREE.OctahedronGeometry(40, 0);
+                break;
+            case 'Tetrahedron':
+                geometry = new THREE.TetrahedronGeometry(40, 0);
                 break;
             case 'Torus':
                 geometry = new THREE.TorusGeometry(50, 20, 10, 10);

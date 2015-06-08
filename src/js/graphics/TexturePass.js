@@ -9,7 +9,8 @@ var defaults = {
     opacity: 1.0,
     transparent: true,
     needsSwap: false,
-    needsUpdate: true
+    needsUpdate: true,
+    forceClear: true
 };
 
 var TexturePass = function(texture, options) {
@@ -32,7 +33,7 @@ var TexturePass = function(texture, options) {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2), null);
+    this.mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2), this.material);
     this.scene.add(this.mesh);
 };
 
@@ -40,7 +41,7 @@ Class.extend(TexturePass, ComposerPass, {
     render: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 
-        this.mesh.material = this.material;
+        //this.mesh.material = this.material;
         this.texture.needsUpdate = options.needsUpdate;
 
         this.process(renderer, this.scene, this.camera, readBuffer);

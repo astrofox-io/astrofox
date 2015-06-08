@@ -24,6 +24,10 @@ var ObjectControl = React.createClass({
     shapes: [
         'Cube',
         'Sphere',
+        'Dodecahedron',
+        'Icosahedron',
+        'Octahedron',
+        'Tetrahedron',
         'Torus',
         'Torus Knot'
     ],
@@ -40,6 +44,7 @@ var ObjectControl = React.createClass({
         var display = this.props.display;
 
         if (display.initialized) {
+            this.shouldUpdate = true;
             this.setState(display.options);
         }
         else {
@@ -47,8 +52,12 @@ var ObjectControl = React.createClass({
         }
     },
 
+    componentDidUpdate: function() {
+        this.shouldUpdate = false;
+    },
+
     shouldComponentUpdate: function() {
-        return false;
+        return this.shouldUpdate;
     },
 
     handleChange: function(name, val) {
@@ -56,6 +65,8 @@ var ObjectControl = React.createClass({
             obj = {};
 
         obj[name] = val;
+
+        this.shouldUpdate = true;
 
         this.setState(obj);
         display.update(obj);
@@ -75,14 +86,14 @@ var ObjectControl = React.createClass({
                         name="shape"
                         size="20"
                         items={this.shapes}
-                        value={state.shape}
+                        value={this.state.shape}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
                     <label className="label">Color</label>
                     <ColorInput
                         name="color"
-                        value={state.color}
+                        value={this.state.color}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
@@ -90,14 +101,14 @@ var ObjectControl = React.createClass({
                     <NumberInput
                         name="x"
                         size="3"
-                        value={state.x}
+                        value={this.state.x}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxWidth}
                             max={maxWidth}
-                            value={state.x}
+                            value={this.state.x}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -106,14 +117,14 @@ var ObjectControl = React.createClass({
                     <NumberInput
                         name="y"
                         size="3"
-                        value={state.y}
+                        value={this.state.y}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxHeight}
                             max={maxHeight}
-                            value={state.y}
+                            value={this.state.y}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -122,14 +133,14 @@ var ObjectControl = React.createClass({
                     <NumberInput
                         name="z"
                         size="3"
-                        value={state.z}
+                        value={this.state.z}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="z"
                             min={-maxHeight}
                             max={maxHeight}
-                            value={state.z}
+                            value={this.state.z}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -137,7 +148,7 @@ var ObjectControl = React.createClass({
                     <label className="label">Wireframe</label>
                     <ToggleInput
                         name="wireframe"
-                        value={state.wireframe}
+                        value={this.state.wireframe}
                         onChange={this.handleChange} />
                 </div>
             </div>
