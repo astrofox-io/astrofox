@@ -9,7 +9,7 @@ var Body = require('./Body.jsx');
 var Footer = require('./Footer.jsx');
 var MenuBar = require('./MenuBar.jsx');
 var MainView = require('./MainView.jsx');
-var Scene = require('./Scene.jsx');
+var Stage = require('./Stage.jsx');
 var Player = require('./Player.jsx');
 var Spectrum = require('./Spectrum.jsx');
 var Oscilloscope = require('./Oscilloscope.jsx');
@@ -198,7 +198,7 @@ var App = React.createClass({
                         {this.state.modal}
                     </Overlay>
                     <MainView>
-                        <Scene ref="scene" onFileDropped={this.loadAudioFile} />
+                        <Stage ref="scene" onFileDropped={this.loadAudioFile} />
                         <Spectrum ref="spectrum" />
                         <Oscilloscope ref="osc" />
                         <Waveform ref="waveform" />

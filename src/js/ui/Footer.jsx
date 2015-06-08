@@ -13,9 +13,9 @@ var Footer = React.createClass({
     },
 
     componentDidMount: function() {
-        Application.scene.on('tick', function(stats) {
+        Application.stage.on('tick', function(stats) {
             this.setState({ stats: stats });
-        }.bind(this));
+        }, this);
     },
 
     render: function() {

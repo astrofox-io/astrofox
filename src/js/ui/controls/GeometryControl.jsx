@@ -10,7 +10,7 @@ var SelectInput = require('../input/SelectInput.jsx');
 var TextInput = require('../input/TextInput.jsx');
 var ToggleInput = require('../input/ToggleInput.jsx');
 
-var ObjectControl = React.createClass({
+var GeometryControl = React.createClass({
     defaultState: {
         shape: 'Cube',
         x: 0,
@@ -156,4 +156,4 @@ var ObjectControl = React.createClass({
     }
 });
 
-module.exports = ObjectControl;
+module.exports = GeometryControl;

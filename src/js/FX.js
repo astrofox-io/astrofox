@@ -4,7 +4,7 @@ var FX = {
     BarSpectrumDisplay: require('display/BarSpectrumDisplay.js'),
     ImageDisplay: require('display/ImageDisplay.js'),
     TextDisplay: require('display/TextDisplay.js'),
-    ObjectDisplay: require('display/ObjectDisplay.js'),
+    GeometryDisplay: require('display/GeometryDisplay.js'),
     TestDisplay: require('display/TestDisplay.js')
 };
 

@@ -4,7 +4,7 @@ var React = require('react');
 var Application = require('../core/Application.js');
 var Loading = require('./Loading.jsx');
 
-var Scene = React.createClass({
+var Stage = React.createClass({
     getInitialState: function() {
         return {
             width: 854,
@@ -56,4 +56,4 @@ var Scene = React.createClass({
     }
 });
 
-module.exports = Scene;
+module.exports = Stage;

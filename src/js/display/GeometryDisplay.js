@@ -25,17 +25,17 @@ var defaults = {
 
 var id = 0;
 
-var ObjectDisplay = function(options) {
-    Display.call(this, id++, 'ObjectDisplay', '3d', defaults);
+var GeometryDisplay = function(options) {
+    Display.call(this, id++, 'GeometryDisplay', '3d', defaults);
 
     this.update(options);
 };
 
-ObjectDisplay.info = {
-    name: '3D Object'
+GeometryDisplay.info = {
+    name: '3D Geometry'
 };
 
-Class.extend(ObjectDisplay, Display, {
+Class.extend(GeometryDisplay, Display, {
     update: function(options) {
         if (typeof options !== 'undefined') {
             if (options.wireframe !== undefined) {
@@ -144,4 +144,4 @@ Class.extend(ObjectDisplay, Display, {
     }
 });
 
-module.exports = ObjectDisplay;
+module.exports = GeometryDisplay;

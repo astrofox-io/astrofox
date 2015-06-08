@@ -3,14 +3,13 @@
 var _ = require('lodash');
 var Immutable = require('immutable');
 
-
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
 var Timer = require('core/Timer.js');
 var Player = require('audio/Player.js');
 var BufferedSound = require('audio/BufferedSound.js');
 var SpectrumAnalyzer = require('audio/SpectrumAnalyzer.js');
-var Scene = require('display/Scene.js');
+var Stage = require('display/Stage.js');
 var FX = require('FX.js');
 var IO = require('IO.js');
 
@@ -28,7 +27,7 @@ var Application = function() {
     this.audioContext = new window.AudioContext();
     this.player = new Player(this.audioContext);
     this.sound = new BufferedSound(this.audioContext);
-    this.scene = new Scene();
+    this.stage = new Stage();
     this.timer = new Timer();
     this.options = _.assign({}, defaults);
     this.spectrum = new SpectrumAnalyzer(this.audioContext);
@@ -91,7 +90,7 @@ Class.extend(Application, EventEmitter, {
     },
 
     loadCanvas: function(canvas) {
-        this.scene.loadCanvas(canvas);
+        this.stage.loadCanvas(canvas);
     },
 
     addDisplay: function(display, index) {
@@ -102,7 +101,7 @@ Class.extend(Application, EventEmitter, {
             displays.push(display);
 
         if (display.addToScene) {
-            display.addToScene(this.scene);
+            display.addToScene(this.stage);
         }
     },
 
@@ -114,7 +113,7 @@ Class.extend(Application, EventEmitter, {
             this.displays = displays.delete(index);
 
             if (display.removeFromScene) {
-                display.removeFromScene(this.scene);
+                display.removeFromScene(this.stage);
             }
         }
     },
@@ -145,7 +144,7 @@ Class.extend(Application, EventEmitter, {
     },
 
     resetScene: function() {
-        this.scene.clearCanvas();
+        this.stage.clearCanvas();
     },
 
     renderScene: function() {
@@ -153,7 +152,7 @@ Class.extend(Application, EventEmitter, {
 
         this.frame = window.requestAnimationFrame(this.renderScene.bind(this));
 
-        this.scene.renderFrame(
+        this.stage.renderFrame(
             this.displays.reverse(),
             {
                 frame: this.frame,
@@ -188,7 +187,7 @@ Class.extend(Application, EventEmitter, {
     },
 
     saveImage: function(file) {
-        this.scene.renderImage(function(buffer) {
+        this.stage.renderImage(function(buffer) {
             IO.fs.writeFile(file.path, buffer);
 
             // DEBUG
@@ -198,7 +197,7 @@ Class.extend(Application, EventEmitter, {
 
     saveVideo: function(file) {
         var player = this.player,
-            scene = this.scene,
+            stage = this.stage,
             sound = player.getSound('audio');
 
         this.stopRender();
@@ -206,7 +205,7 @@ Class.extend(Application, EventEmitter, {
         if (player.isPlaying()) player.stop('audio');
 
         if (sound) {
-            scene.renderVideo(file.path, 29.97, 5, this.processFrame.bind(this), function() {
+            stage.renderVideo(file.path, 29.97, 5, this.processFrame.bind(this), function() {
                 this.startRender();
             }.bind(this));
         }
