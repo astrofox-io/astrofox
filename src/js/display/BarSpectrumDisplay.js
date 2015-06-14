@@ -1,11 +1,11 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
-var BarDisplay = require('./BarDisplay.js');
-var Display = require('./Display.js');
-var SpriteDisplay = require('./SpriteDisplay.js');
-var SpectrumParser = require('../audio/SpectrumParser.js');
+var Class = require('core/Class.js');
+var BarDisplay = require('display/BarDisplay.js');
+var Display = require('display/Display.js');
+var CanvasDisplay = require('display/CanvasDisplay.js');
+var SpectrumParser = require('audio/SpectrumParser.js');
 
 var defaults = {
     height: 300,
@@ -36,7 +36,7 @@ var id = 0;
 var RADIANS = 0.017453292519943295;
 
 var BarSpectrumDisplay = function(options) {
-    SpriteDisplay.call(this, id++, 'BarSpectrumDisplay', '2d', defaults);
+    CanvasDisplay.call(this, id++, 'BarSpectrumDisplay', defaults);
 
     this.bars = new BarDisplay(this.canvas, options);
     this.data = null;
@@ -48,7 +48,7 @@ BarSpectrumDisplay.info = {
     name: 'Bar Spectrum'
 };
 
-Class.extend(BarSpectrumDisplay, SpriteDisplay, {
+Class.extend(BarSpectrumDisplay, CanvasDisplay, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 

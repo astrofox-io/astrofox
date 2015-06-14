@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var THREE = require('three');
+
 var Class = require('core/Class.js');
 var Display = require('display/Display.js');
 var SpectrumParser = require('audio/SpectrumParser.js');
@@ -26,7 +27,7 @@ var defaults = {
 var id = 0;
 
 var GeometryDisplay = function(options) {
-    Display.call(this, id++, 'GeometryDisplay', '3d', defaults);
+    Display.call(this, id++, 'GeometryDisplay', defaults);
 
     this.update(options);
 };
@@ -52,18 +53,19 @@ Class.extend(GeometryDisplay, Display, {
         }
     },
 
-    addToScene: function(view) {
+    addToScene: function(scene) {
         var options = this.options,
             //composer = view.composer,
-            composer = this.composer = new Composer(view.renderer),
-            scene = this.scene = new THREE.Scene();
+            stage = scene.owner,
+            composer = this.composer = new Composer(stage.renderer),
+            tscene = this.scene = new THREE.Scene();
 
-        var camera = this.camera = new THREE.PerspectiveCamera(45, view.width/view.height, 1, 10000);
+        var camera = this.camera = new THREE.PerspectiveCamera(45, stage.width/stage.height, 1, 10000);
         camera.position.set(0, 0, 300);
 
         this.createMesh(options.shape);
 
-        this.pass = composer.addRenderPass(scene, camera);
+        this.pass = composer.addRenderPass(tscene, camera);
         //this.pass = composer.addRenderPass(scene, camera, { transparent: true, clearDepth: true, forceClear: true, renderToScreen: true });
         //composer.addShaderPass(RGBShiftShader, { console.log: true, clearDepth: true });
         //composer.renderToScreen({ transparent: true, clearDepth: true, forceClear: true });
@@ -72,25 +74,26 @@ Class.extend(GeometryDisplay, Display, {
         composer.addShaderPass(DotScreenShader);
         composer.addShaderPass(RGBShiftShader);
         composer.renderToScreen({ clearDepth: true, transparent: true });
+        //composer.renderToScreen();
 
         //console.log(composer);
     },
 
-    removeFromScene: function(view) {
+    removeFromScene: function(scene) {
         this.scene.remove(this.mesh);
-        view.composer.removePass(this.pass);
     },
 
     updateScene: function(view, data) {
         var options = this.options,
-            fft = this.fft = SpectrumParser.parseFFT(data.fft, { normalize: true }, this.fft),
+            fft = this.fft = SpectrumParser.parseFFT(data.fft, {normalize: true}, this.fft),
             x = fft[0],
-            y = fft[3];
+            y = fft[3],
+            z = fft[2];
 
         this.mesh.rotation.x += 5 * x;
         this.mesh.rotation.y += 3 * y;
 
-        this.mesh.position.set(options.x, options.y, options.z);
+        this.mesh.position.set(options.x, options.y, options.z * 8 * z);
 
         this.composer.render();
     },

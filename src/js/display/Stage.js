@@ -2,9 +2,11 @@
 
 var _ = require('lodash');
 var THREE = require('three');
+var Immutable = require('immutable');
 
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
+var NodeCollection = require('core/NodeCollection.js');
 var IO = require('IO.js');
 
 var Composer = require('graphics/Composer.js');
@@ -36,6 +38,8 @@ var Stage = function(options) {
         frames: 0,
         stack: []
     };
+    
+    this.scenes = new NodeCollection();
 
     this.scene = new THREE.Scene();
     this.clock = new THREE.Clock();
@@ -45,7 +49,7 @@ var Stage = function(options) {
     this.update(options);
 };
 
-Class.extend(Stage, EventEmitter, {
+Class.extend(Stage, NodeCollection, {
     update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
@@ -54,6 +58,50 @@ Class.extend(Stage, EventEmitter, {
                 }
             }
         }
+    },
+
+    addScene: function(scene) {
+        this.scenes.addNode(scene);
+
+        scene.addToStage(this);
+    },
+
+    removeScene: function(scene) {
+        this.scenes.removeNode(scene);
+
+        scene.removeFromStage(this);
+    },
+
+    moveScene(scene, i) {
+        var index = this.scenes.indexOf(scene);
+
+        this.scenes.swapNodes(index, index + i);
+    },
+
+    getScenes: function() {
+        return this.scenes.nodes;
+    },
+
+    getDisplays: function() {
+        var displays = [];
+
+        this.scenes.nodes.forEach(function(scene) {
+            scene.displays.nodes.forEach(function(display) {
+                displays.push(display);
+            });
+        });
+
+        return displays;
+    },
+
+    getDisplay: function(index) {
+        var displays = this.getDisplays();
+
+        return displays[index];
+    },
+
+    hasScenes: function() {
+        return this.scenes.nodes.size > 0;
     },
 
     loadCanvas: function(canvas) {
@@ -113,36 +161,29 @@ Class.extend(Stage, EventEmitter, {
         context.clearRect(0, 0, canvas.width, canvas.height);
     },
 
-    renderFrame: function(displays, data, callback) {
-        this.clearCanvas();
+    renderFrame: function(data, callback) {
+        var displays = this.getDisplays();
 
-        // Render displays
-        displays.forEach(function(display) {
+        this.clearCanvas();
+        this.renderer.clear();
+
+        // Render canvas displays
+        displays.reverse().forEach(function(display) {
             if (display.renderToCanvas) {
                 display.renderToCanvas(this, data);
             }
-            else if (display.updateScene) {
-                //display.updateScene(this, data);
-            }
-        }.bind(this));
+        }, this);
 
-        this.render(displays, data);
-
-        if (callback) callback();
-    },
-
-    render: function(displays, data, callback) {
-        this.updateFPS();
-
-        // Render 3D objects
-        this.renderer.clear();
         this.composer.render();
 
-        displays.forEach(function(display) {
+        // Render 3D displays
+        displays.reverse().forEach(function(display) {
             if (display.updateScene) {
                 display.updateScene(this, data);
             }
-        }.bind(this));
+        }, this);
+
+        this.updateFPS();
 
         if (callback) callback();
     },
@@ -239,6 +280,17 @@ Class.extend(Stage, EventEmitter, {
 
             this.emit('tick', stats);
         }
+    },
+
+    toJSON: function() {
+        var scenes = this.scenes.map(function(scene) {
+            return scene.toJSON();
+        });
+
+        return {
+            scenes: scenes,
+            options: this.options
+        };
     }
 });
 

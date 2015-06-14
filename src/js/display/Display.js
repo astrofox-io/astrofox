@@ -1,14 +1,15 @@
 "use strict";
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
-var EventEmitter = require('../core/EventEmitter.js');
+var Class = require('core/Class.js');
+var EventEmitter = require('core/EventEmitter.js');
 
-var Display = function(id, name, type, options) {
+var Display = function(id, name, options) {
     this.id = id;
     this.name = name;
-    this.type = type;
-    this.options = _.assign({ displayName: name + '' + id }, options);
+    this.displayName = name + '' + id;
+    this.options = _.assign({}, options);
+    this.owner = null;
     this.initialized = false;
 };
 
@@ -16,7 +17,7 @@ Class.extend(Display, EventEmitter, {
     update: function(options) {
         var changed = false;
 
-        if (typeof options !== 'undefined') {
+        if (typeof options === 'object') {
             for (var prop in options) {
                 if (this.options.hasOwnProperty(prop)) {
                     if (this.options[prop] !== options[prop]) {

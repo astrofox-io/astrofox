@@ -16,19 +16,19 @@ var ControlDock = React.createClass({
     },
 
     componentDidMount: function() {
-        Application.on('displays_updated', function() {
-            Application.resetScene();
-            this.refs.layers.forceUpdate();
+        Application.on('stage_updated', function() {
+            Application.stage.clearCanvas();
+            this.refs.layers.updateLayers();
             this.refs.controls.forceUpdate();
         }.bind(this));
     },
 
-    handleLayerSelected: function(index) {
-        this.refs.controls.scrollToControl(index);
+    handleLayerSelected: function(layer) {
+        this.refs.controls.scrollToControl(layer);
     },
 
     handleLayerChanged: function() {
-        Application.resetScene();
+        Application.stage.clearCanvas();
         this.refs.controls.forceUpdate();
     },
 

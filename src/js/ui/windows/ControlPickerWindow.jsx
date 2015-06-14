@@ -17,8 +17,8 @@ var ControlPickerWindow = React.createClass({
     render: function() {
         var controls = _.values(FX).map(function(item, index){
             var handleClick = function() {
-                Application.addDisplay(new item, 0);
-                Application.emit('displays_updated');
+                this.props.scene.addDisplay(new item, 0);
+                Application.emit('stage_updated');
 
                 if (this.props.onClose) {
                     this.props.onClose();

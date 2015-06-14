@@ -2,9 +2,10 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
-var Display = require('./Display.js');
-var SpriteDisplay = require('./SpriteDisplay.js');
+
+var Class = require('core/Class.js');
+var Display = require('display/Display.js');
+var CanvasDisplay = require('display/CanvasDisplay.js');
 
 var defaults = {
     text: '',
@@ -22,7 +23,7 @@ var defaults = {
 var id = 0;
 
 var TextDisplay = function(options) {
-    SpriteDisplay.call(this, id++, 'TextDisplay', '2d', defaults);
+    CanvasDisplay.call(this, id++, 'TextDisplay', defaults);
 
     this.update(options);
 };
@@ -31,7 +32,7 @@ TextDisplay.info = {
     name: 'Text'
 };
 
-Class.extend(TextDisplay, SpriteDisplay, {
+Class.extend(TextDisplay, CanvasDisplay, {
     render: function() {
         var width, height, length, spacing, r,
             canvas = this.canvas,

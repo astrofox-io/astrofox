@@ -1,15 +1,37 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../../core/Application.js');
-var FX = require('../../FX.js');
+var Application = require('core/Application.js');
+var FX = require('FX.js');
 
-var BarSpectrumControl = require('../controls/BarSpectrumControl.jsx');
-var ImageControl = require('../controls/ImageControl.jsx');
-var TextControl = require('../controls/TextControl.jsx');
-var GeometryControl = require('../controls/GeometryControl.jsx');
+var BarSpectrumControl = require('ui/controls/BarSpectrumControl.jsx');
+var ImageControl = require('ui/controls/ImageControl.jsx');
+var TextControl = require('ui/controls/TextControl.jsx');
+var GeometryControl = require('ui/controls/GeometryControl.jsx');
 
 var ControlsPanel = React.createClass({
+    getInitialState: function() {
+        return {
+            controls: []
+        };
+    },
+
+    componentWillMount: function() {
+        this.updateControls();
+    },
+
+    updateControls: function(callback) {
+        var controls = [];
+
+        Application.stage.scenes.nodes.forEach(function(scene) {
+            scene.displays.nodes.forEach(function(display) {
+                controls.push(display);
+            }, this);
+        }, this);
+
+        this.setState({ controls: controls }, callback);
+    },
+
     getControl: function(display) {
         if (display instanceof FX.BarSpectrumDisplay) {
             return BarSpectrumControl;
@@ -27,9 +49,10 @@ var ControlsPanel = React.createClass({
         return null;
     },
 
-    scrollToControl: function(index) {
-        var controls = React.findDOMNode(this.refs.controls),
-            node = React.findDOMNode(this.refs['ctrl' + index]);
+    scrollToControl: function(layer) {
+        var id = layer.toString(),
+            controls = React.findDOMNode(this.refs.controls),
+            node = React.findDOMNode(this.refs[id]);
 
         if (node) {
             controls.scrollTop = node.offsetTop;
@@ -37,16 +60,19 @@ var ControlsPanel = React.createClass({
     },
 
     render: function() {
-        var controls = Application.displays.map(function(display, index) {
-            var Control = this.getControl(display);
+        var displays = Application.stage.getDisplays();
+
+        var controls = displays.map(function(display, index) {
+            var id = display.toString(),
+                Control = this.getControl(display);
 
             if (Control !== null) {
                 return (
                     <Control
-                        ref={'ctrl' + index}
-                        key={display.toString()}
+                        ref={id}
+                        key={id}
                         display={display}
-                        />
+                    />
                 );
             }
         }, this);

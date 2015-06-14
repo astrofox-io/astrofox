@@ -1,9 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
-var Display = require('./Display.js');
-var SpriteDisplay = require('./SpriteDisplay.js');
+var Class = require('core/Class.js');
+var Display = require('display/Display.js');
+var CanvasDisplay = require('display/CanvasDisplay.js');
 
 var defaults = {
     src: '',
@@ -20,7 +20,7 @@ var id = 0;
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
 var ImageDisplay = function(options) {
-    SpriteDisplay.call(this, id++, 'ImageDisplay', '2d', defaults);
+    CanvasDisplay.call(this, id++, 'ImageDisplay', defaults);
 
     this.image = new Image();
 
@@ -31,7 +31,7 @@ ImageDisplay.info = {
     name: 'Image'
 };
 
-Class.extend(ImageDisplay, SpriteDisplay, {
+Class.extend(ImageDisplay, CanvasDisplay, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 

@@ -1,51 +1,80 @@
 'use strict';
 
 var Immutable = require('immutable');
+var Class = require('core/Class.js');
+var EventEmitter = require('core/EventEmitter.js');
+var NodeCollection = require('core/NodeCollection.js');
+var Composer = require('graphics/Composer.js');
 
-var Scene = function() {
-    this.displays = new Immutable.List();
+var id = 0;
+
+var Scene = function(name) {
+    this.id = id++;
+    this.name = name || 'Scene';
+    this.displayName = this.name + '' + this.id;
+    this.parent = null;
+    this.displays = new NodeCollection();
 };
 
-Scene.prototype = {
-    constructor: Scene,
+Class.extend(Scene, EventEmitter, {
+    addToStage: function(stage) {
+        this.parent = stage;
+        //this.composer = new Composer(stage.renderer);
+    },
 
-    addDisplay: function(display, index) {
-        var displays = this.displays;
+    removeFromStage: function(stage) {
+        this.parent = null;
+        this.composer = null;
+    },
 
-        this.displays = (typeof index !== 'undefined') ?
-            displays.unshift(display) :
-            displays.push(display);
+    addDisplay: function(display) {
+        this.displays.addNode(display);
+
+        display.parent = this;
 
         if (display.addToScene) {
-            display.addToScene(this.stage);
+            display.addToScene(this);
         }
     },
 
     removeDisplay: function(display) {
-        var displays = this.displays,
-            index = displays.indexOf(display);
+        this.displays.removeNode(display);
 
-        if (index > -1) {
-            this.displays = displays.delete(index);
+        display.parent = null;
 
-            if (display.removeFromScene) {
-                display.removeFromScene(this.stage);
-            }
+        if (display.removeFromScene) {
+            display.removeFromScene(this);
         }
     },
 
-    swapDisplay: function(index, newIndex) {
-        var displays = this.displays;
+    moveDisplay(display, i) {
+        var index = this.displays.indexOf(display);
 
-        if (index > -1 && index < displays.size) {
-            this.displays = displays.withMutations(function(list) {
-                var tmp = list.get(index);
-                list.set(index, list.get(newIndex));
-                list.set(newIndex, tmp);
-            });
-        }
+        this.displays.swapNodes(index, index + i);
     },
 
-};
+    getDisplays() {
+        return this.displays.nodes;
+    },
+
+    clear: function() {
+        this.displays.clear();
+    },
+
+    toString: function() {
+        return this.name + '' + this.id;
+    },
+
+    toJSON: function() {
+        var displays = this.displays.map(function(display) {
+            return display.toJSON();
+        });
+
+        return {
+            name: this.name,
+            displays: displays
+        };
+    }
+});
 
 module.exports = Scene;

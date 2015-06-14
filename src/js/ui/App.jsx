@@ -1,26 +1,27 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../core/Application.js');
-var FX = require('../FX.js');
+var Application = require('core/Application.js');
+var Scene = require('display/Scene.js');
+var FX = require('FX.js');
 
-var Header = require('./Header.jsx');
-var Body = require('./Body.jsx');
-var Footer = require('./Footer.jsx');
-var MenuBar = require('./MenuBar.jsx');
-var MainView = require('./MainView.jsx');
-var Stage = require('./Stage.jsx');
-var Player = require('./Player.jsx');
-var Spectrum = require('./Spectrum.jsx');
-var Oscilloscope = require('./Oscilloscope.jsx');
-var Waveform = require('./Waveform.jsx');
-var Overlay = require('./Overlay.jsx');
-var ControlDock = require('./ControlDock.jsx');
+var Header = require('ui/Header.jsx');
+var Body = require('ui/Body.jsx');
+var Footer = require('ui/Footer.jsx');
+var MenuBar = require('ui/MenuBar.jsx');
+var MainView = require('ui/MainView.jsx');
+var Stage = require('ui/Stage.jsx');
+var Player = require('ui/Player.jsx');
+var Spectrum = require('ui/Spectrum.jsx');
+var Oscilloscope = require('ui/Oscilloscope.jsx');
+var Waveform = require('ui/Waveform.jsx');
+var Overlay = require('ui/Overlay.jsx');
+var ControlDock = require('ui/ControlDock.jsx');
 
-var ModalWindow = require('./windows/ModalWindow.jsx');
-var AboutWindow = require('./windows/AboutWindow.jsx');
-var SettingsWindow = require('./windows/SettingsWindow.jsx');
-var ControlPickerWindow = require('./windows/ControlPickerWindow.jsx');
+var ModalWindow = require('ui/windows/ModalWindow.jsx');
+var AboutWindow = require('ui/windows/AboutWindow.jsx');
+var SettingsWindow = require('ui/windows/SettingsWindow.jsx');
+var ControlPickerWindow = require('ui/windows/ControlPickerWindow.jsx');
 
 var App = React.createClass({
     getInitialState: function() {
@@ -32,17 +33,21 @@ var App = React.createClass({
     },
 
     componentWillMount: function() {
-        Application.addDisplay(new FX.TextDisplay());
-        Application.addDisplay(new FX.BarSpectrumDisplay());
-        Application.addDisplay(new FX.ImageDisplay());
+        var scene = new Scene();
+
+        Application.stage.addScene(scene);
+
+        scene.addDisplay(new FX.TextDisplay());
+        scene.addDisplay(new FX.BarSpectrumDisplay());
+        scene.addDisplay(new FX.ImageDisplay());
 
         Application.on('error', function(err) {
             this.showError(err);
         }.bind(this));
 
-        Application.on('pick_control', function(err) {
+        Application.on('pick_control', function(scene) {
             this.showModal(
-                <ControlPickerWindow title="ADD CONTROL" onClose={this.hideModal} />
+                <ControlPickerWindow title="ADD CONTROL" scene={scene} onClose={this.hideModal} />
             );
         }.bind(this));
     },

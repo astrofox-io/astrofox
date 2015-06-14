@@ -2,19 +2,19 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
-var Display = require('../display/Display.js');
+var Class = require('core/Class.js');
+var Display = require('display/Display.js');
 
 var RADIANS = 0.017453292519943295;
 
-var SpriteDisplay = function() {
+var CanvasDisplay = function() {
     Display.apply(this, arguments);
 
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
 };
 
-Class.extend(SpriteDisplay, Display, {
+Class.extend(CanvasDisplay, Display, {
     renderToCanvas: function(scene) {
         var x, y,
             canvas = this.canvas,
@@ -46,4 +46,4 @@ Class.extend(SpriteDisplay, Display, {
     }
 });
 
-module.exports = SpriteDisplay;
+module.exports = CanvasDisplay;

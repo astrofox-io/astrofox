@@ -21,7 +21,7 @@
 
         .btn {
             color: @text-color;
-            width: 20px;
+            padding: 0 5px;
             line-height: 20px;
             margin-right: 5px;
             text-align: center;
@@ -33,6 +33,14 @@
 
         .btn:hover {
             background-color: @base-color;
+        }
+
+        .btn-disabled {
+            color: darken(@text-color, 60%);
+        }
+
+        .btn-disabled:hover {
+            background-color: @bg-level1-color;
         }
     }
 }

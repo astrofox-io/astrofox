@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var Class = require('core/Class.js');
 var Display = require('display/Display.js');
 
 var defaults = {
@@ -20,9 +21,7 @@ var OscilloscopeDisplay = function(canvas, options) {
     this.update(options);
 };
 
-OscilloscopeDisplay.prototype = {
-    constructor: OscilloscopeDisplay,
-
+Class.extend(OscilloscopeDisplay, Display, {
     update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
@@ -69,6 +68,6 @@ OscilloscopeDisplay.prototype = {
 
         context.stroke();
     }
-};
+});
 
 module.exports = OscilloscopeDisplay;

@@ -22,7 +22,6 @@ var defaults = {
 
 var Application = function() {
     this.frame = null;
-    this.displays = new Immutable.List();
 
     this.audioContext = new window.AudioContext();
     this.player = new Player(this.audioContext);
@@ -93,46 +92,9 @@ Class.extend(Application, EventEmitter, {
         this.stage.loadCanvas(canvas);
     },
 
-    addDisplay: function(display, index) {
-        var displays = this.displays;
-
-        this.displays = (typeof index !== 'undefined') ?
-            displays.unshift(display) :
-            displays.push(display);
-
-        if (display.addToScene) {
-            display.addToScene(this.stage);
-        }
-    },
-
-    removeDisplay: function(display) {
-        var displays = this.displays,
-            index = displays.indexOf(display);
-
-        if (index > -1) {
-            this.displays = displays.delete(index);
-
-            if (display.removeFromScene) {
-                display.removeFromScene(this.stage);
-            }
-        }
-    },
-
-    swapDisplay: function(index, newIndex) {
-        var displays = this.displays;
-
-        if (index > -1 && index < displays.size) {
-            this.displays = displays.withMutations(function(list) {
-                var tmp = list.get(index);
-                list.set(index, list.get(newIndex));
-                list.set(newIndex, tmp);
-            });
-        }
-    },
-
     startRender: function() {
         if (!this.frame) {
-            this.renderScene();
+            this.render();
         }
     },
 
@@ -143,24 +105,19 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
-    resetScene: function() {
-        this.stage.clearCanvas();
-    },
-
-    renderScene: function() {
-        var fft = this.spectrum.getFrequencyData();
-
-        this.frame = window.requestAnimationFrame(this.renderScene.bind(this));
-
-        this.stage.renderFrame(
-            this.displays.reverse(),
-            {
-                frame: this.frame,
+    render: function() {
+        var fft = this.spectrum.getFrequencyData(),
+            frame = window.requestAnimationFrame(this.render.bind(this)),
+            data = {
+                frame: frame,
                 fft: fft
-            }
-        );
+            };
 
-        this.emit('render', fft);
+        this.stage.renderFrame(data);
+
+        this.emit('render', data);
+
+        this.frame = frame;
     },
 
     processFrame: function(frame, fps, callback) {
@@ -218,8 +175,8 @@ Class.extend(Application, EventEmitter, {
         var data, buffer,
             options = this.options;
 
-        data = this.displays.map(function(display) {
-            return display.toJSON();
+        data = this.stage.scenes.map(function(scene) {
+            return scene.toJSON();
         });
 
         if (options.useCompression) {
@@ -267,13 +224,13 @@ Class.extend(Application, EventEmitter, {
 
     loadControls: function(data) {
         if (data instanceof Array) {
-            this.displays = this.displays.clear();
+            this.stage.scenes.clear();
 
             data.forEach(function(item) {
-                this.addDisplay(new FX[item.name](item.values));
+                this.stage.scenes.addScene(new FX[item.name](item.values));
             }.bind(this));
 
-            this.emit('displays_updated');
+            this.emit('stage_updated');
         }
         else {
             this.emit('error', new Error('Invalid project file.'));

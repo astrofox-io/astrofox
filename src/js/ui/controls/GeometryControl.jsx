@@ -1,14 +1,14 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../../core/Application.js');
+var Application = require('core/Application.js');
 
-var ColorInput = require('../input/ColorInput.jsx');
-var NumberInput = require('../input/NumberInput.jsx');
-var RangeInput = require('../input/RangeInput.jsx');
-var SelectInput = require('../input/SelectInput.jsx');
-var TextInput = require('../input/TextInput.jsx');
-var ToggleInput = require('../input/ToggleInput.jsx');
+var ColorInput = require('ui/input/ColorInput.jsx');
+var NumberInput = require('ui/input/NumberInput.jsx');
+var RangeInput = require('ui/input/RangeInput.jsx');
+var SelectInput = require('ui/input/SelectInput.jsx');
+var TextInput = require('ui/input/TextInput.jsx');
+var ToggleInput = require('ui/input/ToggleInput.jsx');
 
 var GeometryControl = React.createClass({
     defaultState: {
@@ -79,7 +79,7 @@ var GeometryControl = React.createClass({
 
         return (
             <div className="control">
-                <div className="header">3D OBJECT</div>
+                <div className="header">3D GEOMETRY</div>
                 <div className="row">
                     <label className="label">Shape</label>
                     <SelectInput

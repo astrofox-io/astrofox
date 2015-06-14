@@ -41,10 +41,10 @@ var Spectrum = React.createClass({
             this.config
         );
 
-        Application.on('render', function(fft) {
-            var data = this.data = SpectrumParser.parseFFT(fft, this.state, this.data);
+        Application.on('render', function(data) {
+            var fft = this.data = SpectrumParser.parseFFT(data.fft, this.state, this.data);
 
-            this.bars.render(data);
+            this.bars.render(fft);
         }, this);
     },
 
