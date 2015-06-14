@@ -60,7 +60,7 @@ var ControlsPanel = React.createClass({
     },
 
     render: function() {
-        var displays = Application.stage.getDisplays();
+        var displays = Application.stage.getDisplays().reverse();
 
         var controls = displays.map(function(display, index) {
             var id = display.toString(),

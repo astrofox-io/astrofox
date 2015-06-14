@@ -48,8 +48,13 @@ var LayersPanel = React.createClass({
     },
 
     handleAddScene: function() {
-        Application.stage.addScene(new Scene());
-        this.updateLayers();
+        var scene = new Scene();
+
+        Application.stage.addScene(scene);
+
+        this.updateLayers(function() {
+            this.setActiveLayer(scene);
+        }.bind(this));
     },
 
     handleAddClick: function() {
@@ -114,6 +119,12 @@ var LayersPanel = React.createClass({
         var state = this.state;
 
         return state.layers[state.activeIndex];
+    },
+
+    setActiveLayer: function(i) {
+        var index = (typeof i === 'number') ? i : this.state.layers.indexOf(i);
+
+        this.setState({ activeIndex: index });
     },
 
     getLayerComponent: function(obj, index) {

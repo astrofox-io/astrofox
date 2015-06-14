@@ -230,7 +230,7 @@ Class.extend(Application, EventEmitter, {
                 this.stage.scenes.addScene(new FX[item.name](item.values));
             }.bind(this));
 
-            this.emit('stage_updated');
+            this.emit('control_added');
         }
         else {
             this.emit('error', new Error('Invalid project file.'));

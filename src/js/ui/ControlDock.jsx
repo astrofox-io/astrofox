@@ -16,10 +16,17 @@ var ControlDock = React.createClass({
     },
 
     componentDidMount: function() {
-        Application.on('stage_updated', function() {
+        Application.on('control_added', function(control) {
+            var layers = this.refs.layers,
+                controls = this.refs.controls;
+
             Application.stage.clearCanvas();
-            this.refs.layers.updateLayers();
-            this.refs.controls.forceUpdate();
+
+            layers.updateLayers(function() {
+                layers.setActiveLayer(control);
+            });
+
+            controls.forceUpdate();
         }.bind(this));
     },
 
