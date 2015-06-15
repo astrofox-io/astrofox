@@ -103,7 +103,7 @@ var LayersPanel = React.createClass({
         this.moveLayer(-1);
     },
 
-    handleLayerEdit: function(val, index) {
+    handleLayerEdit: function(val) {
         var layer = this.getActiveLayer();
 
         layer.displayName = val;

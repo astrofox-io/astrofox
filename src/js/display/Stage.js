@@ -46,6 +46,10 @@ var Stage = function(options) {
 
     this.options = _.assign({}, defaults);
 
+    this.renderer = new THREE.WebGLRenderer({ antialias: false });
+    this.renderer.setSize(854, 480);
+    this.renderer.autoClear = false;
+
     this.update(options);
 };
 
@@ -79,7 +83,7 @@ Class.extend(Stage, NodeCollection, {
     },
 
     getScenes: function() {
-        return this.scenes.nodes;
+        return this.scenes.nodes.toJS();
     },
 
     getDisplays: function() {
@@ -92,12 +96,6 @@ Class.extend(Stage, NodeCollection, {
         });
 
         return displays;
-    },
-
-    getDisplay: function(index) {
-        var displays = this.getDisplays();
-
-        return displays[index];
     },
 
     hasScenes: function() {
@@ -162,6 +160,18 @@ Class.extend(Stage, NodeCollection, {
     },
 
     renderFrame: function(data, callback) {
+        this.renderer.clear();
+
+        this.getScenes().forEach(function(scene) {
+            scene.render(data);
+        });
+
+        this.updateFPS();
+
+        if (callback) callback();
+    },
+
+    renderFrame2: function(data, callback) {
         var displays = this.getDisplays();
 
         this.clearCanvas();

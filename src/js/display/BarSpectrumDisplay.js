@@ -65,7 +65,7 @@ Class.extend(BarSpectrumDisplay, CanvasDisplay, {
             canvas = this.canvas,
             options = this.options,
             barOptions = this.bars.options,
-            context = scene.context2d,
+            context = scene.context,
             halfWidth = canvas.width / 2,
             halfHeight = barOptions.height,
             size = scene.getSize(),

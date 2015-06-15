@@ -20,8 +20,6 @@ var ControlDock = React.createClass({
             var layers = this.refs.layers,
                 controls = this.refs.controls;
 
-            Application.stage.clearCanvas();
-
             layers.updateLayers(function() {
                 layers.setActiveLayer(control);
             });
@@ -35,7 +33,6 @@ var ControlDock = React.createClass({
     },
 
     handleLayerChanged: function() {
-        Application.stage.clearCanvas();
         this.refs.controls.forceUpdate();
     },
 

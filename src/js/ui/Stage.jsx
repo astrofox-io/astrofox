@@ -5,6 +5,12 @@ var Application = require('../core/Application.js');
 var Loading = require('./Loading.jsx');
 
 var Stage = React.createClass({
+    getDefaultProps: function() {
+        return {
+            onFileDropped: null
+        }
+    },
+
     getInitialState: function() {
         return {
             width: 854,
@@ -13,9 +19,15 @@ var Stage = React.createClass({
         };
     },
 
+    componentWillMount: function() {
+
+        //this.setState({ canvas: Application.stage.renderer.domElement });
+    },
+
     componentDidMount: function() {
-        this.canvas = React.findDOMNode(this.refs.canvas);
-        Application.loadCanvas(this.canvas);
+        React.findDOMNode(this.refs.viewport).appendChild(Application.stage.renderer.domElement);
+        //this.canvas = React.findDOMNode(this.refs.canvas);
+        //Application.loadCanvas(this.canvas);
         Application.startRender();
     },
 
@@ -47,9 +59,8 @@ var Stage = React.createClass({
             <div className="scene"
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
-                <div className="viewport" style={style}>
+                <div ref="viewport" className="viewport" style={style}>
                     <Loading visible={state.loading} />
-                    <canvas ref="canvas" className="canvas" width={state.width} height={state.height}></canvas>
                 </div>
             </div>
         );

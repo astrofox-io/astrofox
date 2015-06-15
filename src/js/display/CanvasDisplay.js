@@ -19,7 +19,7 @@ Class.extend(CanvasDisplay, Display, {
         var x, y,
             canvas = this.canvas,
             options = this.options,
-            context = scene.context2d,
+            context = scene.context,
             halfWidth = canvas.width / 2,
             halfHeight = canvas.height / 2,
             size = scene.getSize(),

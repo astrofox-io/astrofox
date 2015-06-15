@@ -1,6 +1,7 @@
 'use strict';
 
 var Immutable = require('immutable');
+var THREE = require('three');
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
 var NodeCollection = require('core/NodeCollection.js');
@@ -14,12 +15,21 @@ var Scene = function(name) {
     this.displayName = this.name + '' + this.id;
     this.parent = null;
     this.displays = new NodeCollection();
+    this.canvas = document.createElement('canvas');
+    this.context = this.canvas.getContext('2d');
+    this.texture = new THREE.Texture(this.canvas);
+    this.texture.minFilter = THREE.LinearFilter;
 };
 
 Class.extend(Scene, EventEmitter, {
     addToStage: function(stage) {
         this.parent = stage;
-        //this.composer = new Composer(stage.renderer);
+        this.composer = new Composer(stage.renderer);
+        this.composer.addTexturePass(this.texture);
+        this.composer.renderToScreen();
+
+        this.canvas.height = stage.options.height;
+        this.canvas.width = stage.options.width;
     },
 
     removeFromStage: function(stage) {
@@ -47,18 +57,46 @@ Class.extend(Scene, EventEmitter, {
         }
     },
 
-    moveDisplay(display, i) {
+    moveDisplay: function(display, i) {
         var index = this.displays.indexOf(display);
 
         this.displays.swapNodes(index, index + i);
     },
 
-    getDisplays() {
-        return this.displays.nodes;
+    getDisplays: function() {
+        return this.displays.nodes.toJS();
+    },
+
+    getSize: function() {
+        var canvas =  this.canvas;
+
+        return {
+            width: canvas.width,
+            height: canvas.height
+        };
     },
 
     clear: function() {
-        this.displays.clear();
+        this.displays.nodes.clear();
+    },
+
+    clearCanvas: function() {
+        var canvas = this.canvas,
+            context = this.context;
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    },
+
+    render: function(data) {
+        this.clearCanvas();
+
+        this.getDisplays().forEach(function(display) {
+            if (display.renderToCanvas) {
+                display.renderToCanvas(this, data);
+            }
+        }, this);
+
+        this.composer.render();
     },
 
     toString: function() {
