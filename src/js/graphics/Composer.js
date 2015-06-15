@@ -6,6 +6,7 @@ var Immutable = require('immutable');
 
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
+var NodeCollection = require('core/NodeCollection.js');
 
 var RenderPass = require('graphics/RenderPass.js');
 var ShaderPass = require('graphics/ShaderPass.js');
@@ -16,8 +17,7 @@ var CopyShader = require('shaders/CopyShader.js');
 
 var Composer = function(renderer, renderTarget) {
     this.renderer = renderer;
-    this.passes = new Immutable.List();
-    //this.copyPass = new ShaderPass(CopyShader);
+    this.passes = new NodeCollection();
     this.maskActive = false;
 
     if (typeof renderTarget === 'undefined') {
@@ -68,62 +68,56 @@ Class.extend(Composer, EventEmitter, {
         this.writeBuffer = tmp;
     },
 
-    addPass: function(pass, index) {
-        var passes = this.passes;
+    getPasses: function() {
+        return this.passes.nodes.toJS();
+    },
 
-        this.passes = (typeof index === 'number') ?
-            passes.splice(index, 0, pass) :
-            passes.push(pass);
+    addPass: function(pass) {
+        this.passes.addNode(pass);
 
         return pass;
     },
 
     removePass: function(pass) {
-        var passes = this.passes,
-            index = passes.indexOf(pass);
-
-        if (index > -1) {
-            this.passes = passes.delete(index);
-        }
+        this.passes.removeNode(pass);
     },
 
-    swapPass: function(index, newIndex) {
-        var passes = this.passes;
+    shiftPass: function(pass, i) {
+        var index = this.passes.indexOf(pass);
 
-        if (index > -1 && index < passes.size) {
-            this.passes = passes.withMutations(function(list) {
-                var tmp = list.get(index);
-                list.set(index, list.get(newIndex));
-                list.set(newIndex, tmp);
-            });
-        }
+        this.passes.swapNodes(index, index + i);
     },
 
-    addRenderPass: function(scene, camera, options, index) {
-        return this.addPass(new RenderPass(scene, camera, options), index);
+    addRenderPass: function(scene, camera, options) {
+        return this.addPass(new RenderPass(scene, camera, options));
     },
 
-    addShaderPass: function(shader, options, index) {
-        return this.addPass(new ShaderPass(shader, options), index);
+    addShaderPass: function(shader, options) {
+        return this.addPass(new ShaderPass(shader, options));
     },
 
-    addTexturePass: function(texture, options, index) {
-        return this.addPass(new TexturePass(texture, options), index);
+    addTexturePass: function(texture, options) {
+        return this.addPass(new TexturePass(texture, options));
     },
 
-    addCanvasPass: function(canvas, options, index) {
+    addCanvasPass: function(canvas, options) {
         var texture = new THREE.Texture(canvas);
         texture.minFilter = THREE.LinearFilter;
 
-        return this.addTexturePass(texture, options, index);
+        return this.addTexturePass(texture, options);
     },
 
-    addCopyPass: function(options, index) {
-        return this.addShaderPass(CopyShader, options, index);
+    addCopyPass: function(options) {
+        return this.addShaderPass(CopyShader, options);
     },
 
-    renderToScreen: function(options, index) {
-        return this.addCopyPass(_.assign({ renderToScreen: true }, options), index);
+    renderToScreen: function(options) {
+        this.render();
+
+        var pass = new ShaderPass(CopyShader, _.assign({ renderToScreen: true, transparent: true }, options));
+        pass.render(this.renderer, this.writeBuffer, this.readBuffer);
+
+        this.swapBuffers();
     },
 
     render: function(delta) {
@@ -134,7 +128,7 @@ Class.extend(Composer, EventEmitter, {
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
-        this.passes.forEach(function(pass){
+        this.getPasses().forEach(function(pass) {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer, delta, maskActive);
 
@@ -155,7 +149,7 @@ Class.extend(Composer, EventEmitter, {
                     this.maskActive = false;
                 }
             }
-        }.bind(this));
+        }, this);
     }
 });
 

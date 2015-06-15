@@ -122,9 +122,14 @@ var LayersPanel = React.createClass({
     },
 
     setActiveLayer: function(i) {
-        var index = (typeof i === 'number') ? i : this.state.layers.indexOf(i);
+        var props = this.props,
+            index = (typeof i === 'number') ? i : this.state.layers.indexOf(i);
 
-        this.setState({ activeIndex: index });
+        this.setState({ activeIndex: index }, function(){
+            if (props.onLayerSelected) {
+                props.onLayerSelected(this.getActiveLayer());
+            }
+        });
     },
 
     getLayerComponent: function(obj, index) {

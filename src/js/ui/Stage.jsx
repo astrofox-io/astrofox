@@ -19,15 +19,11 @@ var Stage = React.createClass({
         };
     },
 
-    componentWillMount: function() {
-
-        //this.setState({ canvas: Application.stage.renderer.domElement });
-    },
-
     componentDidMount: function() {
-        React.findDOMNode(this.refs.viewport).appendChild(Application.stage.renderer.domElement);
-        //this.canvas = React.findDOMNode(this.refs.canvas);
-        //Application.loadCanvas(this.canvas);
+        React.findDOMNode(this.refs.viewport).appendChild(
+            Application.stage.renderer.domElement
+        );
+
         Application.startRender();
     },
 

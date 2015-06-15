@@ -25,8 +25,8 @@ Class.extend(Scene, EventEmitter, {
     addToStage: function(stage) {
         this.parent = stage;
         this.composer = new Composer(stage.renderer);
-        this.composer.addTexturePass(this.texture);
-        this.composer.renderToScreen();
+        this.texturePass = this.composer.addTexturePass(this.texture);
+        this.texturePass.enabled = false;
 
         this.canvas.height = stage.options.height;
         this.canvas.width = stage.options.width;
@@ -41,6 +41,7 @@ Class.extend(Scene, EventEmitter, {
         this.displays.addNode(display);
 
         display.parent = this;
+        this.texturePass.enable = true;
 
         if (display.addToScene) {
             display.addToScene(this);
@@ -51,6 +52,10 @@ Class.extend(Scene, EventEmitter, {
         this.displays.removeNode(display);
 
         display.parent = null;
+
+        if (this.displays.size == 0) {
+            this.texturePass.enabled = false;
+        }
 
         if (display.removeFromScene) {
             display.removeFromScene(this);
@@ -96,7 +101,7 @@ Class.extend(Scene, EventEmitter, {
             }
         }, this);
 
-        this.composer.render();
+        this.composer.renderToScreen();
     },
 
     toString: function() {
