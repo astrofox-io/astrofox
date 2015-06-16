@@ -24,8 +24,9 @@ Class.extend(Scene, EventEmitter, {
     addToStage: function(stage) {
         this.parent = stage;
         this.composer = new Composer(stage.renderer);
-        this.canvasPass = this.composer.addCanvasPass(this.canvas);
-        this.canvasPass.options.enabled = false;
+
+        this.pass = this.composer.addCanvasPass(this.canvas);
+        this.pass.options.enabled = false;
 
         this.canvas.height = stage.options.height;
         this.canvas.width = stage.options.width;
@@ -46,7 +47,7 @@ Class.extend(Scene, EventEmitter, {
         }
 
         if (display instanceof CanvasDisplay) {
-            this.canvasPass.options.enabled = true;
+            this.pass.options.enabled = true;
         }
     },
 
@@ -56,7 +57,7 @@ Class.extend(Scene, EventEmitter, {
         display.parent = null;
 
         if (this.displays.size == 0) {
-            this.canvasPass.options.enabled = false;
+            this.pass.options.enabled = false;
         }
 
         if (display.removeFromScene) {

@@ -79,12 +79,16 @@ var ImageControl = React.createClass({
 
             render = true;
         }
-        else if (name === 'width' && state.src && state.fixed) {
-            obj.height = Math.round(val * (1 / ratio));
+        else if (name === 'width' && state.src) {
+            if (state.fixed) {
+                obj.height = Math.round(val * (1 / ratio));
+            }
             render = true;
         }
-        else if (name === 'height' && state.src && state.fixed) {
-            obj.width = Math.round(val * ratio);
+        else if (name === 'height' && state.src) {
+            if (state.fixed) {
+                obj.width = Math.round(val * ratio);
+            }
             render = true;
         }
         else if (name === 'opacity') {
