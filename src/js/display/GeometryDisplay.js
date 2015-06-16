@@ -7,14 +7,13 @@ var Class = require('core/Class.js');
 var Display = require('display/Display.js');
 var SpectrumParser = require('audio/SpectrumParser.js');
 var Composer = require('graphics/Composer.js');
-var GridShader = require('shaders/GridShader.js');
 var DotScreenShader = require('vendor/three/shaders/DotScreenShader.js');
 var RGBShiftShader = require('vendor/airtight/shaders/RGBShiftShader.js');
 var MirrorShader = require('vendor/airtight/shaders/MirrorShader.js');
-
 var ColorHalftoneShader = require('shaders/ColorHalftoneShader.js');
 var ColorShiftShader = require('shaders/ColorShiftShader.js');
 var HexagonPixelateShader = require('shaders/HexagonPixelateShader.js');
+var GridShader = require('shaders/GridShader.js');
 
 var defaults = {
     shape: 'Cube',
@@ -42,7 +41,6 @@ Class.extend(GeometryDisplay, Display, {
             if (options.wireframe !== undefined) {
                 this.material.wireframe = options.wireframe;
                 this.material.needsUpdate = true;
-
             }
 
             if (options.shape !== undefined && options.shape !== this.options.shape) {
@@ -83,7 +81,7 @@ Class.extend(GeometryDisplay, Display, {
         this.scene.remove(this.mesh);
     },
 
-    updateScene: function(view, data) {
+    updateScene: function(scene, data) {
         var options = this.options,
             fft = this.fft = SpectrumParser.parseFFT(data.fft, {normalize: true}, this.fft),
             x = fft[0],
@@ -110,7 +108,7 @@ Class.extend(GeometryDisplay, Display, {
 
         switch (shape) {
             case 'Cube':
-                geometry = new THREE.BoxGeometry(50,50,50);
+                geometry = new THREE.BoxGeometry(50, 50, 50);
                 break;
             case 'Sphere':
                 geometry = new THREE.SphereGeometry(40,10,10);

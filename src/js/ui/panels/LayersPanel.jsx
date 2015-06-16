@@ -229,13 +229,15 @@ var LayersPanel = React.createClass({
     render: function() {
         var layers,
             hasScenes = Application.stage.hasScenes(),
-            addClasses = 'btn icon-plus',
+            addClasses = 'btn icon-cube',
+            fxClasses = 'btn icon-light-up',
             removeClasses = 'btn icon-trash-empty',
             moveUpClasses = 'btn icon-up-open',
             moveDownClasses = 'btn icon-down-open';
 
         if (!hasScenes) {
             addClasses += ' btn-disabled';
+            fxClasses += ' btn-disabled';
             removeClasses += ' btn-disabled';
             moveUpClasses += ' btn-disabled';
             moveDownClasses += ' btn-disabled';
@@ -252,10 +254,11 @@ var LayersPanel = React.createClass({
                 </div>
                 <ul className="btn-group">
                     <li className="btn icon-picture" title="Add Scene" onClick={this.handleAddScene} />
-                    <li className={addClasses} title="Add Control" onClick={this.handleAddClick} />
-                    <li className={moveUpClasses} title="Move Up" onClick={this.handleMoveUpClick} />
-                    <li className={moveDownClasses} title="Move Down" onClick={this.handleMoveDownClick} />
-                    <li className={removeClasses} title="Remove Layer" onClick={this.handleRemoveClick} />
+                    <li className={addClasses} title="Add Display" onClick={this.handleAddClick} />
+                    <li className={fxClasses} title="Add Effect" onClick={this.handleAddClick} />
+                    <li className={moveUpClasses} title="Move Layer Up" onClick={this.handleMoveUpClick} />
+                    <li className={moveDownClasses} title="Move Layer Down" onClick={this.handleMoveDownClick} />
+                    <li className={removeClasses} title="Delete Layer" onClick={this.handleRemoveClick} />
                 </ul>
             </div>
         );

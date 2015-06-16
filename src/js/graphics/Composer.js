@@ -69,7 +69,7 @@ Class.extend(Composer, EventEmitter, {
     },
 
     getPasses: function() {
-        return this.passes.nodes.toJS();
+        return this.passes.nodes;
     },
 
     addPass: function(pass) {
@@ -128,7 +128,7 @@ Class.extend(Composer, EventEmitter, {
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
-        this.getPasses().forEach(function(pass) {
+        this.passes.nodes.forEach(function(pass) {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer, delta, maskActive);
 

@@ -8,16 +8,10 @@ var FX = require('../../FX.js');
 var ModalWindow = require('./ModalWindow.jsx');
 
 var ControlPickerWindow = React.createClass({
-    handleControlClick: function(e) {
-        e.stopPropagation();
-
-        this.props.onClose();
-    },
-
     render: function() {
-        var controls = _.values(FX).map(function(item, index){
+        var controls = _.values(FX).map(function(fx, index){
             var handleClick = function() {
-                var display = new item;
+                var display = new fx();
 
                 this.props.scene.addDisplay(display);
 
@@ -31,13 +25,13 @@ var ControlPickerWindow = React.createClass({
             return (
                 <div key={"c" + index}>
                     <div className="item" onClick={handleClick}></div>
-                    <div className="name">{item.info.name}</div>
+                    <div className="name">{fx.info.name}</div>
                 </div>
             );
         }.bind(this));
 
         return (
-            <ModalWindow title="ADD CONTROL" onClose={this.props.onClose}>
+            <ModalWindow title="ADD DISPLAY" onClose={this.props.onClose}>
                 <div className="control-picker">
                     {controls}
                 </div>

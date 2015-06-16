@@ -14,6 +14,11 @@
 <div id="app"></div>
 <script>
 document.addEventListener('DOMContentLoaded', function(e) {
+    // In case console doesn't open
+    process.on('uncaughtException', function(e) {
+        //alert(e.stack);
+    });
+
     // Start the application
     AstroFox.start();
 });

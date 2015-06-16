@@ -13,10 +13,7 @@ var Composer = require('graphics/Composer.js');
 var RenderPass = require('graphics/RenderPass.js');
 var ShaderPass = require('graphics/ShaderPass.js');
 var CopyShader = require('shaders/CopyShader.js');
-var ColorHalftoneShader = require('shaders/ColorHalftoneShader.js');
-var ColorShiftShader = require('shaders/ColorShiftShader.js');
-var HexagonPixelateShader = require('shaders/HexagonPixelateShader.js');
-var GridShader = require('shaders/GridShader.js');
+
 
 var EdgeShader = require('../vendor/three/shaders/EdgeShader2.js');
 var DotScreenShader = require('../vendor/three/shaders/DotScreenShader.js');
@@ -83,7 +80,7 @@ Class.extend(Stage, NodeCollection, {
     },
 
     getScenes: function() {
-        return this.scenes.nodes.toJS();
+        return this.scenes.nodes;
     },
 
     getDisplays: function() {
@@ -102,96 +99,12 @@ Class.extend(Stage, NodeCollection, {
         return this.scenes.nodes.size > 0;
     },
 
-    loadCanvas: function(canvas) {
-        var canvas3d = this.canvas3d = canvas,
-            canvas2d = this.canvas2d = document.createElement('canvas'),
-            scene = this.scene,
-            width = canvas.width,
-            height = canvas.height;
-
-        this.width = width;
-        this.height = height;
-
-        // Renderer
-        var renderer = this.renderer = new THREE.WebGLRenderer({
-            canvas: canvas3d,
-            antialias: false
-        });
-        renderer.autoClear = false;
-
-        // Scene 2D
-        canvas2d.width = width;
-        canvas2d.height = height;
-
-        // Camera 3D
-        var camera = this.camera = new THREE.PerspectiveCamera(45, width/height, 1, 10000);
-        camera.position.set(0, 0, 10);
-
-        // Texture 2D
-        var texture = this.texture = new THREE.Texture(canvas2d);
-        texture.minFilter = THREE.LinearFilter;
-
-        // Rendering context
-        this.context2d = canvas2d.getContext('2d');
-        this.context3d = canvas3d.getContext('webgl');
-
-        // Processing
-        var composer = this.composer = new Composer(renderer);
-        //composer.addRenderPass(scene, camera);
-        //composer.addShaderPass(ColorShiftShader);
-        //composer.addShaderPass(DotScreenShader);
-        //composer.addShaderPass(EdgeShader);
-        //composer.addShaderPass(RGBShiftShader);
-        //composer.addRenderPass(scene2d, camera2d, { forceClear: false });
-        composer.addTexturePass(texture);
-        //composer.addShaderPass(DotScreenShader);
-        //composer.addShaderPass(GridShader);
-        //composer.addShaderPass(RGBShiftShader);
-        composer.renderToScreen();
-
-        //console.log(composer);
-    },
-
-    clearCanvas: function() {
-        var canvas = this.canvas2d,
-            context = this.context2d;
-
-        context.clearRect(0, 0, canvas.width, canvas.height);
-    },
-
     renderFrame: function(data, callback) {
         this.renderer.clear();
 
-        this.getScenes().forEach(function(scene) {
+        this.scenes.nodes.forEach(function(scene) {
             scene.render(data);
         });
-
-        this.updateFPS();
-
-        if (callback) callback();
-    },
-
-    renderFrame2: function(data, callback) {
-        var displays = this.getDisplays();
-
-        this.clearCanvas();
-        this.renderer.clear();
-
-        // Render canvas displays
-        displays.reverse().forEach(function(display) {
-            if (display.renderToCanvas) {
-                display.renderToCanvas(this, data);
-            }
-        }, this);
-
-        this.composer.render();
-
-        // Render 3D displays
-        displays.reverse().forEach(function(display) {
-            if (display.updateScene) {
-                display.updateScene(this, data);
-            }
-        }, this);
 
         this.updateFPS();
 

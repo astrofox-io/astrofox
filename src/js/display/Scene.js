@@ -5,6 +5,7 @@ var THREE = require('three');
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
 var NodeCollection = require('core/NodeCollection.js');
+var CanvasDisplay = require('display/CanvasDisplay.js');
 var Composer = require('graphics/Composer.js');
 
 var id = 0;
@@ -17,16 +18,14 @@ var Scene = function(name) {
     this.displays = new NodeCollection();
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
-    this.texture = new THREE.Texture(this.canvas);
-    this.texture.minFilter = THREE.LinearFilter;
 };
 
 Class.extend(Scene, EventEmitter, {
     addToStage: function(stage) {
         this.parent = stage;
         this.composer = new Composer(stage.renderer);
-        this.texturePass = this.composer.addTexturePass(this.texture);
-        this.texturePass.enabled = false;
+        this.canvasPass = this.composer.addCanvasPass(this.canvas);
+        this.canvasPass.options.enabled = false;
 
         this.canvas.height = stage.options.height;
         this.canvas.width = stage.options.width;
@@ -41,10 +40,13 @@ Class.extend(Scene, EventEmitter, {
         this.displays.addNode(display);
 
         display.parent = this;
-        this.texturePass.enable = true;
 
         if (display.addToScene) {
             display.addToScene(this);
+        }
+
+        if (display instanceof CanvasDisplay) {
+            this.canvasPass.options.enabled = true;
         }
     },
 
@@ -54,7 +56,7 @@ Class.extend(Scene, EventEmitter, {
         display.parent = null;
 
         if (this.displays.size == 0) {
-            this.texturePass.enabled = false;
+            this.canvasPass.options.enabled = false;
         }
 
         if (display.removeFromScene) {
@@ -69,7 +71,7 @@ Class.extend(Scene, EventEmitter, {
     },
 
     getDisplays: function() {
-        return this.displays.nodes.toJS();
+        return this.displays.nodes;
     },
 
     getSize: function() {
@@ -95,7 +97,7 @@ Class.extend(Scene, EventEmitter, {
     render: function(data) {
         this.clearCanvas();
 
-        this.getDisplays().forEach(function(display) {
+        this.displays.nodes.forEach(function(display) {
             if (display.renderToCanvas) {
                 display.renderToCanvas(this, data);
             }
