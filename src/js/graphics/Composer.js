@@ -20,7 +20,7 @@ var Composer = function(renderer, renderTarget) {
     this.passes = new NodeCollection();
     this.maskActive = false;
 
-    this.copyPass = new ShaderPass(CopyShader, { renderToScreen: true, transparent: true });
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
 
     if (typeof renderTarget === 'undefined') {
         renderTarget = this.getRenderTarget(renderer);
@@ -113,10 +113,14 @@ Class.extend(Composer, EventEmitter, {
         return this.addShaderPass(CopyShader, options);
     },
 
+    clearPasses: function() {
+        this.passes.clear();
+    },
+
     renderToScreen: function(options) {
         this.render();
 
-        this.copyPass.update(_.assign({ renderToScreen: true }, options));
+        this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: true }, options));
         this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
         this.swapBuffers();

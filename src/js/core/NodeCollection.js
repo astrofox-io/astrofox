@@ -41,6 +41,10 @@ Class.extend(NodeCollection, EventEmitter, {
         }
     },
 
+    clear: function() {
+        this.nodes.clear();
+    },
+
     indexOf: function(node) {
         return this.nodes.indexOf(node);
     }

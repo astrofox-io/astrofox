@@ -32,8 +32,9 @@ Class.extend(Scene, EventEmitter, {
         this.canvas.width = stage.options.width;
     },
 
-    removeFromStage: function(stage) {
+    removeFromStage: function() {
         this.parent = null;
+        this.composer.clearPasses();
         this.composer = null;
     },
 
@@ -96,15 +97,22 @@ Class.extend(Scene, EventEmitter, {
     },
 
     render: function(data) {
+        var displays = this.displays.nodes;
+
         this.clearCanvas();
 
-        this.displays.nodes.forEach(function(display) {
-            if (display.renderToCanvas) {
-                display.renderToCanvas(this, data);
-            }
-        }, this);
+        if (displays.size > 0) {
+            displays.forEach(function(display) {
+                if (display.renderToCanvas) {
+                    display.renderToCanvas(this, data);
+                }
+                else if (display.updateScene) {
+                    display.updateScene(this, data);
+                }
+            }, this);
 
-        this.composer.renderToScreen();
+            this.composer.renderToScreen();
+        }
     },
 
     toString: function() {

@@ -171,7 +171,7 @@ Class.extend(Stage, NodeCollection, {
     },
 
     getSize: function() {
-        var canvas =  this.canvas3d;
+        var canvas =  this.renderer.domElement;
 
         return {
             width: canvas.width,

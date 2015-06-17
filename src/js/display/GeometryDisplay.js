@@ -53,32 +53,29 @@ Class.extend(GeometryDisplay, Display, {
 
     addToScene: function(scene) {
         var options = this.options,
-            //composer = view.composer,
-            stage = scene.owner,
-            composer = this.composer = new Composer(stage.renderer),
-            tscene = this.scene = new THREE.Scene();
+            stage = scene.parent,
+            size = stage.getSize();
 
-        var camera = this.camera = new THREE.PerspectiveCamera(45, stage.width/stage.height, 1, 10000);
-        camera.position.set(0, 0, 300);
+        this.scene = new THREE.Scene();
+
+        this.camera = new THREE.PerspectiveCamera(45, size.width/size.height, 1, 10000);
+        this.camera.position.set(0, 0, 300);
 
         this.createMesh(options.shape);
 
-        this.pass = composer.addRenderPass(tscene, camera);
-        //this.pass = composer.addRenderPass(scene, camera, { transparent: true, clearDepth: true, forceClear: true, renderToScreen: true });
-        //composer.addShaderPass(RGBShiftShader, { console.log: true, clearDepth: true });
-        //composer.renderToScreen({ transparent: true, clearDepth: true, forceClear: true });
-        //composer.addCopyPass({ renderToScreen: true });
-        composer.addShaderPass(MirrorShader);
-        composer.addShaderPass(DotScreenShader);
-        composer.addShaderPass(RGBShiftShader);
-        composer.renderToScreen({ clearDepth: true, transparent: true });
-        //composer.renderToScreen();
+        this.pass = scene.composer.addRenderPass(this.scene, this.camera, {clearDepth:true, forceClear:false});
 
-        //console.log(composer);
+        console.log(scene.composer.passes.nodes.toJS());
     },
 
     removeFromScene: function(scene) {
-        this.scene.remove(this.mesh);
+        if (this.mesh) {
+            this.scene.remove(this.mesh);
+        }
+
+        scene.composer.removePass(this.pass);
+
+        console.log(scene.composer.passes.nodes.toJS());
     },
 
     updateScene: function(scene, data) {
@@ -92,8 +89,6 @@ Class.extend(GeometryDisplay, Display, {
         this.mesh.rotation.y += 3 * y;
 
         this.mesh.position.set(options.x, options.y, options.z * 8 * z);
-
-        this.composer.render();
     },
 
     createMesh: function(shape) {
