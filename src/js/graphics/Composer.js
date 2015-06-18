@@ -22,18 +22,15 @@ var Composer = function(renderer, renderTarget) {
 
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
 
-    if (typeof renderTarget === 'undefined') {
-        renderTarget = this.getRenderTarget(renderer);
-    }
-
-    this.initRenderTarget(renderTarget);
+    this.setRenderTarget(renderTarget);
 };
 
 Class.extend(Composer, EventEmitter, {
-    getRenderTarget: function(renderer) {
-        var pixelRatio = renderer.getPixelRatio(),
-            width = Math.floor( renderer.context.canvas.width / pixelRatio ) || 1,
-            height = Math.floor( renderer.context.canvas.height / pixelRatio ) || 1;
+    getRenderTarget: function() {
+        var renderer = this.renderer,
+            pixelRatio = renderer.getPixelRatio(),
+            width = Math.floor(renderer.context.canvas.width / pixelRatio) || 1,
+            height = Math.floor(renderer.context.canvas.height / pixelRatio) || 1;
 
         return new THREE.WebGLRenderTarget(
             width,
@@ -47,12 +44,20 @@ Class.extend(Composer, EventEmitter, {
         );
     },
 
-    initRenderTarget: function(renderTarget) {
+    setRenderTarget: function(renderTarget) {
+        if (!renderTarget) {
+            renderTarget = this.getRenderTarget();
+        }
+
         this.writeTarget = renderTarget;
         this.readTarget = renderTarget.clone();
 
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
+    },
+
+    clear: function(color, depth, stencil) {
+        this.renderer.clearTarget(this.readTarget, color || true, depth || true, stencil || true);
     },
 
     setSize: function(width, height) {
@@ -61,7 +66,7 @@ Class.extend(Composer, EventEmitter, {
         renderTarget.width = width;
         renderTarget.height = height;
 
-        this.initRenderTarget(renderTarget);
+        this.setRenderTarget(renderTarget);
     },
 
     swapBuffers: function() {

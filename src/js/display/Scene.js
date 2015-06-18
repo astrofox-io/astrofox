@@ -57,13 +57,11 @@ Class.extend(Scene, EventEmitter, {
 
         display.parent = null;
 
-        if (this.displays.size == 0) {
-            this.pass.options.enabled = false;
-        }
-
         if (display.removeFromScene) {
             display.removeFromScene(this);
         }
+
+        this.checkDisplays();
     },
 
     moveDisplay: function(display, i) {
@@ -74,6 +72,18 @@ Class.extend(Scene, EventEmitter, {
 
     getDisplays: function() {
         return this.displays.nodes;
+    },
+
+    checkDisplays: function() {
+        var enabled = false;
+
+        this.displays.nodes.forEach(function(display) {
+            if (display instanceof CanvasDisplay) {
+                enabled = true;
+            }
+        });
+
+        this.pass.options.enabled = enabled;
     },
 
     getSize: function() {
@@ -100,6 +110,7 @@ Class.extend(Scene, EventEmitter, {
         var displays = this.displays.nodes;
 
         this.clearCanvas();
+        this.composer.clear();
 
         if (displays.size > 0) {
             displays.forEach(function(display) {

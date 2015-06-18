@@ -6,7 +6,9 @@ var defaults = {
     enabled: true,
     forceClear: false,
     needsSwap: false,
+    clearColor: false,
     clearDepth: false,
+    clearStencil: false,
     renderToScreen: false
 };
 
@@ -28,8 +30,8 @@ ComposerPass.prototype = {
     process: function(renderer, scene, camera, renderTarget) {
         var options = this.options;
 
-        if (options.clearDepth) {
-            renderer.clearDepth();
+        if (options.clearColor || options.clearDepth || options.clearStencil) {
+            renderer.clear(options.clearColor, options.clearDepth, options.clearStencil);
         }
 
         if (options.renderToScreen) {

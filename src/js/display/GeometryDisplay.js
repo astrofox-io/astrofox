@@ -63,9 +63,7 @@ Class.extend(GeometryDisplay, Display, {
 
         this.createMesh(options.shape);
 
-        this.pass = scene.composer.addRenderPass(this.scene, this.camera, {clearDepth:true, forceClear:false});
-
-        console.log(scene.composer.passes.nodes.toJS());
+        this.pass = scene.composer.addRenderPass(this.scene, this.camera, {clearDepth: true, forceClear: false});
     },
 
     removeFromScene: function(scene) {
@@ -74,8 +72,6 @@ Class.extend(GeometryDisplay, Display, {
         }
 
         scene.composer.removePass(this.pass);
-
-        console.log(scene.composer.passes.nodes.toJS());
     },
 
     updateScene: function(scene, data) {
