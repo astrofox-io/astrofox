@@ -1,44 +1,25 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../../core/Application.js');
-
-var ColorInput = require('../input/ColorInput.jsx');
-var NumberInput = require('../input/NumberInput.jsx');
-var RangeInput = require('../input/RangeInput.jsx');
-var SelectInput = require('../input/SelectInput.jsx');
-var TextInput = require('../input/TextInput.jsx');
-var ToggleInput = require('../input/ToggleInput.jsx');
+var Application = require('core/Application.js');
+var NumberInput = require('ui/input/NumberInput.jsx');
+var ColorInput = require('ui/input/ColorInput.jsx');
+var ColorRangeInput = require('ui/input/ColorRangeInput.jsx');
+var RangeInput = require('ui/input/RangeInput.jsx');
+var ToggleInput = require('ui/input/ToggleInput.jsx');
 
 var defaults = {
-    text: '',
-    size: 40,
-    font: 'Arial',
-    italic: false,
-    bold: false,
+    color: '#ffffff',
+    height: 240,
+    width: 770,
     x: 0,
     y: 0,
-    color: '#FFFFFF',
+    lineWidth: 1.0,
     rotation: 0,
     opacity: 1.0
 };
 
-var TextControl = React.createClass({
-    fontOptions: [
-        'Abel',
-        'Arial',
-        'Bangers',
-        'Cardo',
-        'Dynalight',
-        'Merriweather',
-        'Permanent Marker',
-        'Oswald',
-        'Oxygen',
-        'Racing Sans One',
-        'Raleway',
-        'Roboto'
-    ],
-
+var SoundwaveControl = React.createClass({
     getInitialState: function() {
         return defaults;
     },
@@ -51,8 +32,6 @@ var TextControl = React.createClass({
         var display = this.props.display;
 
         if (display.initialized) {
-            display.render();
-
             this.shouldUpdate = true;
             this.setState(display.options);
         }
@@ -70,23 +49,14 @@ var TextControl = React.createClass({
     },
 
     handleChange: function(name, val) {
-        var obj = {};
+        var obj = {},
+            display = this.props.display;
 
         obj[name] = val;
 
         this.shouldUpdate = true;
-
         this.setState(obj, function() {
-            var display = this.props.display;
-
             display.update(this.state);
-            display.render();
-        });
-    },
-
-    getSelectItems: function() {
-        return this.fontOptions.map(function(item) {
-            return { name: item, value: item, style: { fontFamily: item } };
         });
     },
 
@@ -96,51 +66,74 @@ var TextControl = React.createClass({
 
         return (
             <div className="control">
-                <div className="header">TEXT</div>
-                <div className="row">
-                    <label className="label">Text</label>
-                    <TextInput
-                        name="text"
-                        size="20"
-                        value={this.state.text}
-                        onChange={this.handleChange} />
-                </div>
-                <div className="row">
-                    <label className="label">Font</label>
-                    <SelectInput
-                        name="font"
-                        size="20"
-                        items={this.getSelectItems()}
-                        value={this.state.font}
-                        onChange={this.handleChange} />
-                </div>
-                <div className="row">
-                    <label className="label">Size</label>
-                    <NumberInput
-                        name="size"
-                        size="3"
-                        min={0}
-                        value={this.state.size}
-                        onChange={this.handleChange} />
-                </div>
-                <div className="row">
-                    <label className="label">Bold</label>
-                    <ToggleInput
-                        name="bold"
-                        value={this.state.bold}
-                        onChange={this.handleChange} />
-                    <label className="label">Italic</label>
-                    <ToggleInput
-                        name="italic"
-                        value={this.state.italic}
-                        onChange={this.handleChange} />
-                </div>
+                <div className="header">SOUNDWAVE</div>
                 <div className="row">
                     <label className="label">Color</label>
                     <ColorInput
                         name="color"
                         value={this.state.color}
                         onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label className="label">Line Width</label>
+                    <NumberInput
+                        name="lineWidth"
+                        size="3"
+                        value={this.state.lineWidth}
+                        min={0}
+                        max={10}
+                        onChange={this.handleChange}
+                        />
+                    <div className="input flex">
+                        <RangeInput
+                            name="lineWidth"
+                            min={0.01}
+                            max={10}
+                            step={0.01}
+                            value={this.state.lineWidth}
+                            onChange={this.handleChange}
+                            />
+                    </div>
+                </div>
+                <div className="row">
+                    <label className="label">Width</label>
+                    <NumberInput
+                        name="width"
+                        size="3"
+                        value={this.state.width}
+                        min={0}
+                        max={maxWidth}
+                        onChange={this.handleChange}
+                        />
+                    <div className="input flex">
+                        <RangeInput
+                            name="width"
+                            min={0}
+                            max={maxWidth}
+                            value={this.state.width}
+                            onChange={this.handleChange}
+                            />
+                    </div>
+                </div>
+                <div className="row">
+                    <label className="label">Height</label>
+                    <NumberInput
+                        name="height"
+                        size="3"
+                        min={0}
+                        max={maxWidth}
+                        value={this.state.height}
+                        onChange={this.handleChange}
+                        />
+                    <div className="input flex">
+                        <RangeInput
+                            name="height"
+                            min={0}
+                            max={maxWidth}
+                            value={this.state.height}
+                            onChange={this.handleChange}
+                            />
+                    </div>
                 </div>
                 <div className="row">
                     <label className="label">X</label>
@@ -174,6 +167,7 @@ var TextControl = React.createClass({
                             onChange={this.handleChange} />
                     </div>
                 </div>
+
                 <div className="row">
                     <label className="label">Rotation</label>
                     <NumberInput
@@ -182,14 +176,16 @@ var TextControl = React.createClass({
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                        />
                     <div className="input flex">
                         <RangeInput
                             name="rotation"
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            />
                     </div>
                 </div>
                 <div className="row">
@@ -217,4 +213,4 @@ var TextControl = React.createClass({
     }
 });
 
-module.exports = TextControl;
+module.exports = SoundwaveControl;

@@ -39,7 +39,7 @@ var BarSpectrumDisplay = function(options) {
     CanvasDisplay.call(this, id++, 'BarSpectrumDisplay', defaults);
 
     this.bars = new BarDisplay(this.canvas, options);
-    this.data = null;
+    this.fft = null;
 
     this.update(options);
 };
@@ -57,9 +57,9 @@ Class.extend(BarSpectrumDisplay, CanvasDisplay, {
         return changed;
     },
 
-    renderToCanvas: function(scene, payload) {
-        var data = this.data = SpectrumParser.parseFFT(payload.fft, this.options, this.data);
-        this.bars.render(data);
+    renderToCanvas: function(scene, data) {
+        var fft = this.data = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
+        this.bars.render(fft);
 
         var x, y,
             canvas = this.canvas,

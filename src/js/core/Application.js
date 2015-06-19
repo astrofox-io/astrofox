@@ -22,6 +22,7 @@ var defaults = {
 
 var Application = function() {
     this.frame = null;
+    this.data = null;
 
     this.audioContext = new window.AudioContext();
     this.player = new Player(this.audioContext);
@@ -107,10 +108,12 @@ Class.extend(Application, EventEmitter, {
 
     render: function() {
         var fft = this.spectrum.getFrequencyData(),
+            td = this.spectrum.getTimeData(),
             frame = window.requestAnimationFrame(this.render.bind(this)),
             data = {
                 frame: frame,
-                fft: fft
+                fft: fft,
+                td: td
             };
 
         this.stage.renderFrame(data);
@@ -118,6 +121,7 @@ Class.extend(Application, EventEmitter, {
         this.emit('render', data);
 
         this.frame = frame;
+        this.data = data;
     },
 
     processFrame: function(frame, fps, callback) {
@@ -144,7 +148,7 @@ Class.extend(Application, EventEmitter, {
     },
 
     saveImage: function(file) {
-        this.stage.renderImage(function(buffer) {
+        this.stage.renderImage(this.data, 'image/png', function(buffer) {
             IO.fs.writeFile(file.path, buffer);
 
             // DEBUG

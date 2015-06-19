@@ -111,6 +111,16 @@ Class.extend(Stage, NodeCollection, {
         if (callback) callback();
     },
 
+    renderImage: function(data, format, callback) {
+        this.renderFrame(data, function() {
+            var img = this.renderer.domElement.toDataURL(format || 'image/png'),
+                base64 = img.replace(/^data:image\/\w+;base64,/, ''),
+                buffer = new IO.Buffer(base64, 'base64');
+
+            if (callback) callback(buffer);
+        }.bind(this));
+    },
+
     renderVideo: function(output_file, fps, duration, func, callback) {
         var started = false,
             frames = duration * fps,
@@ -158,16 +168,6 @@ Class.extend(Stage, NodeCollection, {
         ffmpeg.stderr.on('close', function() {
             console.log('program closed');
         });
-    },
-
-    renderImage: function(callback, format) {
-        this.renderToCanvas(function() {
-            var img = this.renderer.domElement.toDataURL(format || 'image/png'),
-                data = img.replace(/^data:image\/\w+;base64,/, ''),
-                buffer = new IO.Buffer(data, 'base64');
-
-            if (callback) callback(buffer);
-        }.bind(this));
     },
 
     getSize: function() {

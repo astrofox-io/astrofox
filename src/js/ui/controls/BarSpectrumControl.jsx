@@ -7,31 +7,31 @@ var ColorRangeInput = require('../input/ColorRangeInput.jsx');
 var RangeInput = require('../input/RangeInput.jsx');
 var ToggleInput = require('../input/ToggleInput.jsx');
 
+var defaults = {
+    height: 240,
+    width: 770,
+    x: 0,
+    y: -120,
+    barWidth: -1,
+    barSpacing: -1,
+    barWidthAutoSize: 1,
+    barSpacingAutoSize: 1,
+    shadowHeight: 100,
+    color: ['#ffffff', '#ffffff'],
+    shadowColor: ['#333333', '#000000'],
+    rotation: 0,
+    opacity: 1.0,
+
+    smoothingTimeConstant: 0.5,
+    minDecibels: -100,
+    maxDecibels: -12,
+    minFrequency: 0,
+    maxFrequency: 3000
+};
+
 var BarSpectrumControl = React.createClass({
-    defaultState: {
-        height: 240,
-        width: 770,
-        x: 0,
-        y: -120,
-        barWidth: -1,
-        barSpacing: -1,
-        barWidthAutoSize: 1,
-        barSpacingAutoSize: 1,
-        shadowHeight: 100,
-        color: ['#ffffff', '#ffffff'],
-        shadowColor: ['#333333', '#000000'],
-        rotation: 0,
-        opacity: 1.0,
-
-        smoothingTimeConstant: 0.5,
-        minDecibels: -100,
-        maxDecibels: -12,
-        minFrequency: 0,
-        maxFrequency: 3000
-    },
-
     getInitialState: function() {
-        return this.defaultState;
+        return defaults;
     },
 
     componentWillMount: function() {
@@ -48,8 +48,6 @@ var BarSpectrumControl = React.createClass({
         else {
             display.update(this.state);
         }
-
-        display.analyzer = Application.spectrum;
     },
 
     componentDidUpdate: function() {

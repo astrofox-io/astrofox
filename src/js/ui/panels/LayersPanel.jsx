@@ -3,6 +3,7 @@
 var React = require('react');
 var Application = require('core/Application.js');
 var Display = require('display/Display.js');
+var CanvasDisplay = require('display/CanvasDisplay.js');
 var Stage = require('display/Stage.js');
 var Scene = require('display/Scene.js');
 var TextInput = require('ui/input/TextInput.jsx');
@@ -174,7 +175,10 @@ var LayersPanel = React.createClass({
             );
         }
 
-        if (obj instanceof Display) {
+        if (obj instanceof CanvasDisplay) {
+            icon = <i className="layer-icon icon-doc-landscape" />;
+        }
+        else if (obj instanceof Display) {
             icon = <i className="layer-icon icon-cube" />;
         }
         else if (obj instanceof Scene) {

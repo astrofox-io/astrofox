@@ -22,14 +22,16 @@ var Scene = function(name) {
 
 Class.extend(Scene, EventEmitter, {
     addToStage: function(stage) {
+        var size = stage.getSize();
+
         this.parent = stage;
         this.composer = new Composer(stage.renderer);
 
         this.pass = this.composer.addCanvasPass(this.canvas);
         this.pass.options.enabled = false;
 
-        this.canvas.height = stage.options.height;
-        this.canvas.width = stage.options.width;
+        this.canvas.height = size.height;
+        this.canvas.width = size.width;
     },
 
     removeFromStage: function() {

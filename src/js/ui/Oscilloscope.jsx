@@ -2,9 +2,9 @@
 
 var React = require('react');
 var Application = require('core/Application.js');
-var OscilloscopeDisplay = require('display/OscilloscopeDisplay.js');
+var WaveDisplay = require('display/WaveDisplay.js');
 
-var Oscilloscope = React.createClass({
+var Wave = React.createClass({
     config: {
         width: 854,
         height: 100,
@@ -12,15 +12,13 @@ var Oscilloscope = React.createClass({
     },
 
     componentDidMount: function() {
-        this.display = new OscilloscopeDisplay(
+        this.display = new WaveDisplay(
             React.findDOMNode(this.refs.canvas),
             this.config
         );
 
-        Application.on('render', function() {
-            var data = Application.spectrum.getTimeData();
-
-            this.display.render(data);
+        Application.on('render', function(data) {
+            this.display.render(data.td);
         }, this);
     },
 
@@ -33,4 +31,4 @@ var Oscilloscope = React.createClass({
     }
 });
 
-module.exports = Oscilloscope;
+module.exports = Wave;

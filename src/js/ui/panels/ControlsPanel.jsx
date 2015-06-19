@@ -7,6 +7,7 @@ var FX = require('FX.js');
 var BarSpectrumControl = require('ui/controls/BarSpectrumControl.jsx');
 var ImageControl = require('ui/controls/ImageControl.jsx');
 var TextControl = require('ui/controls/TextControl.jsx');
+var SoundwaveControl = require('ui/controls/SoundwaveControl.jsx');
 var GeometryControl = require('ui/controls/GeometryControl.jsx');
 
 var ControlsPanel = React.createClass({
@@ -41,6 +42,9 @@ var ControlsPanel = React.createClass({
         }
         else if (display instanceof FX.TextDisplay) {
             return TextControl;
+        }
+        else if (display instanceof FX.SoundwaveDisplay) {
+            return SoundwaveControl;
         }
         else if (display instanceof FX.GeometryDisplay) {
             return GeometryControl;

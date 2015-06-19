@@ -1,8 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('core/Class.js');
-var Display = require('display/Display.js');
 
 var defaults = {
     height: 200,
@@ -13,7 +11,9 @@ var defaults = {
     opacity: 1.0
 };
 
-var OscilloscopeDisplay = function(canvas, options) {
+var id = 0;
+
+var WaveDisplay = function(canvas, options) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
     this.options = _.assign({}, defaults);
@@ -21,7 +21,7 @@ var OscilloscopeDisplay = function(canvas, options) {
     this.update(options);
 };
 
-Class.extend(OscilloscopeDisplay, Display, {
+WaveDisplay.prototype = {
     update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
@@ -46,11 +46,11 @@ Class.extend(OscilloscopeDisplay, Display, {
             width = options.width,
             height = options.height,
             len = data.length,
-            halfHeight = height / 2,
             step = len / width;
 
         context.lineWidth = options.lineWidth;
         context.strokeStyle = options.color;
+        context.globalAlpha = options.opacity;
 
         context.clearRect(0, 0, width, height);
         context.beginPath();
@@ -68,6 +68,6 @@ Class.extend(OscilloscopeDisplay, Display, {
 
         context.stroke();
     }
-});
+};
 
-module.exports = OscilloscopeDisplay;
+module.exports = WaveDisplay;

@@ -9,20 +9,20 @@ var RangeInput = require('../input/RangeInput.jsx');
 
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-var ImageControl = React.createClass({
-    defaultState: {
-        src: '',
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        fixed: true,
-        rotation: 0,
-        opacity: 0
-    },
+var defaults = {
+    src: '',
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    fixed: true,
+    rotation: 0,
+    opacity: 0
+};
 
+var ImageControl = React.createClass({
     getInitialState: function() {
-        return this.defaultState;
+        return defaults;
     },
 
     componentWillMount: function() {
