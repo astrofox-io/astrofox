@@ -8,7 +8,7 @@ var defaults = {
     color: '#ffffff',
     lineWidth: 1.0,
     scrolling: false,
-    scrollSpeed: 0.05,
+    scrollSpeed: 0.15,
     rotation: 0,
     opacity: 1.0
 };
@@ -56,7 +56,7 @@ WaveDisplay.prototype = {
         return buffer;
     },
 
-    render: function(data) {
+    render: function(data, playing) {
         var i, len, buffer, size, slice,
             context = this.context,
             options = this.options,
@@ -70,19 +70,24 @@ WaveDisplay.prototype = {
 
         // Get data values
         if (options.scrolling) {
-            buffer = new Array(width);
-            len = this.buffer.length;
+            if (playing) {
+                buffer = new Array(width);
+                len = this.buffer.length;
 
-            for (i = 0; i < len; i++) {
-                buffer[i] = this.buffer[i];
+                for (i = 0; i < len; i++) {
+                    buffer[i] = this.buffer[i];
+                }
+
+                size = ~~(width * options.scrollSpeed * 0.3);
+                slice = this.parseData(data, size, height);
+                buffer = buffer.splice(size);
+                buffer = buffer.concat(slice);
+
+                this.buffer = buffer;
             }
-
-            size = ~~(width * options.scrollSpeed);
-            slice = this.parseData(data, size, height);
-            buffer = buffer.splice(size);
-            buffer = buffer.concat(slice);
-
-            this.buffer = buffer;
+            else {
+                buffer = this.buffer;
+            }
         }
         else {
             buffer = this.parseData(data, width, height);

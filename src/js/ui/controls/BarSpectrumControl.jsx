@@ -272,6 +272,8 @@ var BarSpectrumControl = React.createClass({
                     <NumberInput
                         name="x"
                         size="3"
+                        min={-maxWidth}
+                        max={maxWidth}
                         value={this.state.x}
                         onChange={this.handleChange}
                     />
@@ -290,6 +292,8 @@ var BarSpectrumControl = React.createClass({
                     <NumberInput
                         name="y"
                         size="3"
+                        min={-maxHeight}
+                        max={maxHeight}
                         value={this.state.y}
                         onChange={this.handleChange}
                     />

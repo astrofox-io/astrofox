@@ -16,7 +16,7 @@ var defaults = {
     y: 0,
     lineWidth: 1.0,
     scrolling: false,
-    scrollSpeed: 0.05,
+    scrollSpeed: 0.15,
     rotation: 0,
     opacity: 1.0
 };
@@ -144,6 +144,8 @@ var SoundwaveControl = React.createClass({
                     <NumberInput
                         name="x"
                         size="3"
+                        min={-maxWidth}
+                        max={maxWidth}
                         value={this.state.x}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -160,6 +162,8 @@ var SoundwaveControl = React.createClass({
                     <NumberInput
                         name="y"
                         size="3"
+                        min={-maxHeight}
+                        max={maxHeight}
                         value={this.state.y}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -184,7 +188,7 @@ var SoundwaveControl = React.createClass({
                         name="scrollSpeed"
                         size="3"
                         min={0}
-                        max={0.3}
+                        max={1.0}
                         step={0.01}
                         readOnly={!this.state.scrolling}
                         value={this.state.scrollSpeed}
@@ -193,7 +197,7 @@ var SoundwaveControl = React.createClass({
                         <RangeInput
                             name="scrollSpeed"
                             min={0}
-                            max={0.3}
+                            max={1.0}
                             step={0.01}
                             value={this.state.scrollSpeed}
                             readOnly={!this.state.scrolling}

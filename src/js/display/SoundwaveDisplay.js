@@ -41,7 +41,7 @@ Class.extend(SoundwaveDisplay, CanvasDisplay, {
     },
 
     renderToCanvas: function(scene, data) {
-        this.wave.render(data.td);
+        this.wave.render(data.td, data.playing);
 
         this._super.renderToCanvas.call(this, scene);
     }

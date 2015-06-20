@@ -142,6 +142,8 @@ var GeometryControl = React.createClass({
                     <NumberInput
                         name="x"
                         size="3"
+                        min={-maxVal}
+                        max={maxVal}
                         value={this.state.x}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -158,6 +160,8 @@ var GeometryControl = React.createClass({
                     <NumberInput
                         name="y"
                         size="3"
+                        min={-maxVal}
+                        max={maxVal}
                         value={this.state.y}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -174,6 +178,8 @@ var GeometryControl = React.createClass({
                     <NumberInput
                         name="z"
                         size="3"
+                        min={-maxVal}
+                        max={maxVal}
                         value={this.state.z}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -190,6 +196,9 @@ var GeometryControl = React.createClass({
                     <NumberInput
                         name="opacity"
                         size="3"
+                        min={0}
+                        max={1}
+                        step={0.1}
                         value={this.state.opacity}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -207,6 +216,8 @@ var GeometryControl = React.createClass({
                     <NumberInput
                         name="lightDistance"
                         size="3"
+                        min={-maxVal}
+                        max={maxVal}
                         value={this.state.lightDistance}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -223,6 +234,9 @@ var GeometryControl = React.createClass({
                     <NumberInput
                         name="lightIntensity"
                         size="3"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
                         value={this.state.lightIntensity}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -230,7 +244,7 @@ var GeometryControl = React.createClass({
                             name="lightIntensity"
                             min={0}
                             max={1.0}
-                            step={0.1}
+                            step={0.01}
                             value={this.state.lightIntensity}
                             onChange={this.handleChange} />
                     </div>

@@ -107,13 +107,12 @@ Class.extend(Application, EventEmitter, {
     },
 
     render: function() {
-        var fft = this.spectrum.getFrequencyData(),
-            td = this.spectrum.getTimeData(),
-            frame = window.requestAnimationFrame(this.render.bind(this)),
+        var frame = window.requestAnimationFrame(this.render.bind(this)),
             data = {
                 frame: frame,
-                fft: fft,
-                td: td
+                fft: this.spectrum.getFrequencyData(),
+                td: this.spectrum.getTimeData(),
+                playing: this.player.isPlaying()
             };
 
         this.stage.renderFrame(data);
