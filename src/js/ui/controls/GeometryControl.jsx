@@ -25,7 +25,7 @@ var defaults = {
 };
 
 var shapes = [
-    'Cube',
+    'Box',
     'Sphere',
     'Dodecahedron',
     'Icosahedron',

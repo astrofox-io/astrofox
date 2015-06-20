@@ -58,7 +58,7 @@ Class.extend(BarSpectrumDisplay, CanvasDisplay, {
     },
 
     renderToCanvas: function(scene, data) {
-        var fft = this.data = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
+        var fft = this.fft = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
         this.bars.render(fft);
 
         var x, y,
