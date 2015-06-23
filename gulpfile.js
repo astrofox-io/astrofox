@@ -1,23 +1,23 @@
 var gulp = require('gulp');
+var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
-var react = require('gulp-react');
 var rename = require('gulp-rename');
 var strip = require('gulp-strip-comments');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 var spritesmith = require('gulp.spritesmith');
 var browserify = require('browserify');
-var reactify = require('reactify');
+var glslify = require('glslify');
+var babelify = require('babelify');
 var watchify = require('watchify');
-var brfs = require('brfs');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
 var b = browserify({
     entries: './src/js/AstroFox.js',
-    transform: [reactify, brfs],
+    transform: [babelify, glslify],
     extensions: ['.js', '.jsx'],
     paths: ['./node_modules', './src/js/'],
     noParse: ['lodash','three'],
@@ -43,13 +43,6 @@ gulp.task('browserify', function() {
     return b.bundle()
         .pipe(source('app.js'))
         .pipe(gulp.dest('build'));
-});
-
-gulp.task('react', function() {
-    return gulp.src('src/jsx/**/*.jsx')
-        .pipe(react())
-        .pipe(concat('ui.js'))
-        .pipe(gulp.dest('build'))
 });
 
 gulp.task('less', function() {
