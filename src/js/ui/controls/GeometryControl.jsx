@@ -235,16 +235,16 @@ var GeometryControl = React.createClass({
                         name="lightIntensity"
                         size="3"
                         min={0}
-                        max={1.0}
-                        step={0.01}
+                        max={10.0}
+                        step={0.1}
                         value={this.state.lightIntensity}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="lightIntensity"
                             min={0}
-                            max={1.0}
-                            step={0.01}
+                            max={10.0}
+                            step={0.1}
                             value={this.state.lightIntensity}
                             onChange={this.handleChange} />
                     </div>

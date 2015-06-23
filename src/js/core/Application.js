@@ -21,7 +21,7 @@ var defaults = {
 };
 
 var Application = function() {
-    this.frame = null;
+    this.requestId = null;
     this.data = null;
 
     this.audioContext = new window.AudioContext();
@@ -94,22 +94,23 @@ Class.extend(Application, EventEmitter, {
     },
 
     startRender: function() {
-        if (!this.frame) {
+        if (!this.requestId) {
             this.render();
         }
     },
 
     stopRender: function() {
-        if (this.frame) {
-            cancelAnimationFrame(this.frame);
-            this.frame = null;
+        if (this.requestId) {
+            cancelAnimationFrame(this.requestId);
+            this.requestId = null;
         }
     },
 
-    render: function() {
-        var frame = window.requestAnimationFrame(this.render.bind(this)),
+    render: function(timestamp) {
+        var id = window.requestAnimationFrame(this.render.bind(this)),
             data = {
-                frame: frame,
+                id: id,
+                delta: performance.now() - timestamp,
                 fft: this.spectrum.getFrequencyData(),
                 td: this.spectrum.getTimeData(),
                 playing: this.player.isPlaying()
@@ -119,7 +120,7 @@ Class.extend(Application, EventEmitter, {
 
         this.emit('render', data);
 
-        this.frame = frame;
+        this.requestId = id;
         this.data = data;
     },
 
@@ -131,7 +132,7 @@ Class.extend(Application, EventEmitter, {
             source = this.source = this.audioContext.createBufferSource();
 
         source.buffer = sound.buffer;
-        source.connect(analyzer);
+        source.connect(spectrum.analyzer);
 
         source.onended = function() {
             fft = spectrum.getFrequencyData();

@@ -1,4 +1,5 @@
-var fs = require('fs');
+var THREE = require('three');
+var glslify = require('glslify');
 
 var CopyShader = {
     uniforms: {
@@ -6,8 +7,8 @@ var CopyShader = {
         opacity:  { type: "f", value: 1.0 }
     },
 
-    vertexShader: fs.readFileSync(__dirname + '/glsl/basic.vertex.glsl', 'utf8'),
-    fragmentShader: fs.readFileSync(__dirname + '/glsl/copy.fragment.glsl', 'utf8')
+    vertexShader: glslify('./glsl/basic.vertex.glsl'),
+    fragmentShader: glslify('./glsl/copy.fragment.glsl')
 };
 
 module.exports = CopyShader;
