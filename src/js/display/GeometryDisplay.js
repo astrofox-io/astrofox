@@ -102,6 +102,8 @@ Class.extend(GeometryDisplay, Display, {
         this.scene = _scene;
         this.lights = lights;
 
+        //scene.composer.addShaderPass(ShaderLibrary.dot_matrix);
+
         this.createMesh(options.shape);
         this.updateLights();
     },

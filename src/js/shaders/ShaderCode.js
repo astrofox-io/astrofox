@@ -3,24 +3,24 @@ var glslify = require('glslify');
 
 var ShaderCode = {
     vertex: {
-        basic: glslify('./glsl/basic.vertex.glsl'),
-        crosshatch: glslify('./glsl/crosshatch.vertex.glsl'),
-        hatch_glow: glslify('./glsl/hatch_glow.vertex.glsl')
+        basic: glslify('../../glsl/vertex/basic.glsl'),
+        crosshatch: glslify('../../glsl/vertex/crosshatch.glsl'),
+        hatch_glow: glslify('../../glsl/vertex/hatch_glow.glsl')
     },
     fragment: {
-        color_shift: glslify('./glsl/color_shift.fragment.glsl'),
-        copy: glslify('./glsl/copy.fragment.glsl'),
-        copy_alpha: glslify('./glsl/copy_alpha.fragment.glsl'),
-        crosshatch: glslify('./glsl/crosshatch.fragment.glsl'),
-        dot_screen: glslify('./glsl/dot_screen.fragment.glsl'),
-        dot_matrix: glslify('./glsl/dot_matrix.fragment.glsl'),
-        glow_chroma: glslify('./glsl/glow_chroma.fragment.glsl'),
-        grid: glslify('./glsl/grid.fragment.glsl'),
-        halftone: glslify('./glsl/halftone.fragment.glsl'),
-        hatch_glow: glslify('./glsl/hatch_glow.fragment.glsl'),
-        hexagon: glslify('./glsl/hexagon.fragment.glsl'),
-        mirror: glslify('./glsl/mirror.fragment.glsl'),
-        rgb_shift: glslify('./glsl/rgb_shift.fragment.glsl')
+        color_shift: glslify('../../glsl/fragment/color_shift.glsl'),
+        copy: glslify('../../glsl/fragment/copy.glsl'),
+        copy_alpha: glslify('../../glsl/fragment/copy_alpha.glsl'),
+        crosshatch: glslify('../../glsl/fragment/crosshatch.glsl'),
+        dot_screen: glslify('../../glsl/fragment/dot_screen.glsl'),
+        dot_matrix: glslify('../../glsl/fragment/dot_matrix.glsl'),
+        glow_chroma: glslify('../../glsl/fragment/glow_chroma.glsl'),
+        grid: glslify('../../glsl/fragment/grid.glsl'),
+        halftone: glslify('../../glsl/fragment/halftone.glsl'),
+        hatch_glow: glslify('../../glsl/fragment/hatch_glow.glsl'),
+        hexagon: glslify('../../glsl/fragment/hexagon.glsl'),
+        mirror: glslify('../../glsl/fragment/mirror.glsl'),
+        rgb_shift: glslify('../../glsl/fragment/rgb_shift.glsl')
     }
 };
 
