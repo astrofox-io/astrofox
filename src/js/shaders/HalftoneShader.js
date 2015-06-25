@@ -1,5 +1,5 @@
 var THREE = require('three');
-var glslify = require('glslify');
+var ShaderCode = require('shaders/ShaderCode.js');
 
 var HalftoneShader = {
     uniforms: {
@@ -10,8 +10,8 @@ var HalftoneShader = {
         tSize: { type: "v2", value: new THREE.Vector2(256, 256) }
     },
 
-    vertexShader: glslify('./glsl/basic.vertex.glsl'),
-    fragmentShader: glslify('./glsl/color-halftone.fragment.glsl')
+    vertexShader: ShaderCode.vertex.basic,
+    fragmentShader: ShaderCode.fragment.halftone
 };
 
 module.exports = HalftoneShader;

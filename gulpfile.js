@@ -27,7 +27,7 @@ var b = browserify({
 });
 
 var w = watchify(b)
-    .on('update', function(ids){
+    .on('update', function(ids) {
         util.log(ids);
         bundle();
     });
@@ -45,9 +45,14 @@ gulp.task('browserify', function() {
         .pipe(gulp.dest('build'));
 });
 
+gulp.task('watchify', function() {
+    return bundle();
+});
+
 gulp.task('less', function() {
     return gulp.src('src/css/app.less')
         .pipe(less())
+        .pipe(minifycss())
         .pipe(gulp.dest('build'));
 });
 
@@ -60,18 +65,6 @@ gulp.task('sprite', function() {
         }));
 
     spriteData.pipe(gulp.dest('build'));
-});
-
-gulp.task('compile', function(){
-    return gulp.src('src/css/app.less')
-        .pipe(less())
-        .pipe(concat('main.css'))
-        .pipe(minifycss())
-        .pipe(gulp.dest('css'));
-});
-
-gulp.task('watchify', function() {
-    return bundle();
 });
 
 gulp.task('watch', ['less','watchify'], function() {

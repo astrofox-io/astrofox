@@ -1,13 +1,13 @@
 var THREE = require('three');
-var glslify = require('glslify');
+var ShaderCode = require('shaders/ShaderCode.js');
 
 var GridShader = {
     uniforms: {
         tDiffuse: { type: "t", value: null }
     },
 
-    vertexShader: glslify('./glsl/grid.vertex.glsl'),
-    fragmentShader: glslify('./glsl/grid.fragment.glsl')
+    vertexShader: ShaderCode.vertex.basic,
+    fragmentShader: ShaderCode.fragment.grid
 };
 
 module.exports = GridShader;

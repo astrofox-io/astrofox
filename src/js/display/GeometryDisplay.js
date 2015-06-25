@@ -7,13 +7,7 @@ var Class = require('core/Class.js');
 var Display = require('display/Display.js');
 var SpectrumParser = require('audio/SpectrumParser.js');
 var Composer = require('graphics/Composer.js');
-var DotScreenShader = require('vendor/three/shaders/DotScreenShader.js');
-var RGBShiftShader = require('vendor/airtight/shaders/RGBShiftShader.js');
-var MirrorShader = require('vendor/airtight/shaders/MirrorShader.js');
-var ColorHalftoneShader = require('shaders/ColorHalftoneShader.js');
-var ColorShiftShader = require('shaders/ColorShiftShader.js');
-var HexagonPixelateShader = require('shaders/HexagonPixelateShader.js');
-var GridShader = require('shaders/GridShader.js');
+var ShaderLibrary = require('shaders/ShaderLibrary.js');
 
 var defaults = {
     shape: 'Box',

@@ -11,7 +11,7 @@ var ToggleInput = require('ui/input/ToggleInput.jsx');
 var defaults = {
     color: '#ffffff',
     height: 240,
-    width: 770,
+    width: 854,
     x: 0,
     y: 0,
     lineWidth: 1.0,

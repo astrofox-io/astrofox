@@ -48,7 +48,7 @@ var ControlDock = React.createClass({
                 <Panel
                     title="LAYERS"
                     ref="layersPanel"
-                    height={200}
+                    height={300}
                     resizable={true}>
                     <LayersPanel
                         ref="layers"

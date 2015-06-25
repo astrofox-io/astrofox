@@ -1,7 +1,7 @@
 var THREE = require('three');
-var glslify = require('glslify');
+var ShaderCode = require('shaders/ShaderCode.js');
 
-var HexagonPixelateShader = {
+var HexagonShader = {
     uniforms: {
         tDiffuse: { type: "t", value: null },
         center: { type: "v2", value: new THREE.Vector2(0.5, 0.5) },
@@ -9,8 +9,8 @@ var HexagonPixelateShader = {
         tSize: { type: "v2", value: new THREE.Vector2(256, 256) }
     },
 
-    vertexShader: glslify('./glsl/basic.vertex.glsl'),
-    fragmentShader: glslify('./glsl/hexagon-pixelate.fragment.glsl')
+    vertexShader: ShaderCode.vertex.basic,
+    fragmentShader: ShaderCode.fragment.hexagon
 };
 
-module.exports = HexagonPixelateShader;
+module.exports = HexagonShader;

@@ -12,17 +12,19 @@ var Panel = React.createClass({
     },
 
     getInitialState: function() {
+        var props = this.props;
+
         return {
-            visible: true,
+            visible: props.visible || true,
             dragging: false,
-            height: 200,
-            width: 200,
-            minHeight: 100,
-            minWidth: 100,
+            height: props.height || 200,
+            width: props.width || 200,
+            minHeight: props.minHeight || 100,
+            minWidth: props.minWidth || 100,
             startX: 0,
             startY: 0,
-            startWidth: 200,
-            startHeight: 200
+            startWidth: 0,
+            startHeight: 0
         };
     },
 
