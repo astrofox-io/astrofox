@@ -96,7 +96,7 @@ var ImageInput = React.createClass({
             classes = 'input-image-icon ',
             handleClick = (hasImage) ? this.handleDelete : this.handleClick;
 
-        classes += (hasImage) ? 'icon-cancel-circled' : 'icon-folder-open-empty';
+        classes += (hasImage) ? 'icon-circle-with-cross' : 'icon-folder-open-empty';
 
         return (
             <div>

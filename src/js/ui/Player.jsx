@@ -163,7 +163,7 @@ var LoopButton = React.createClass({
 
         return (
             <div className={classes} onClick={this.props.onClick}>
-                <i className="icon-arrows-ccw" />
+                <i className="icon-refresh" title="Repeat" />
             </div>
         );
     }
@@ -175,21 +175,21 @@ var VolumeControl = React.createClass({
     },
 
     componentWillMount: function() {
-        this.iconClassName = "sprite-volume-up";
+        this.iconClassName = "icon-volume";
     },
 
     handleChange: function(name, val) {
         if (val > 75) {
-            this.iconClassName = "sprite-volume-up";
+            this.iconClassName = "icon-volume";
         }
         else if (val > 25) {
-            this.iconClassName = "sprite-volume";
+            this.iconClassName = "icon-volume2";
         }
         else if (val > 0) {
-            this.iconClassName = "sprite-volume-down";
+            this.iconClassName = "icon-volume3";
         }
         else {
-            this.iconClassName = "sprite-volume-off";
+            this.iconClassName = "icon-volume4";
         }
 
         this.props.onChange(val / 100);
@@ -209,7 +209,7 @@ var VolumeControl = React.createClass({
                         onChange={this.handleChange}
                     />
                 </div>
-                <div className="icon">
+                <div className="speaker">
                     <i className={this.iconClassName} />
                 </div>
             </div>

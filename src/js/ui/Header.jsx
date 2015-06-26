@@ -67,7 +67,7 @@ var Header = React.createClass({
                         <li className="button icon-cw" onClick={this.handleReload}></li>
                         <li className="button icon-minus" onClick={this.handleMinimize}></li>
                         <li className="button icon-plus" onClick={this.handleMaximize}></li>
-                        <li className="button icon-cancel" onClick={this.handleClose}></li>
+                        <li className="button icon-cross" onClick={this.handleClose}></li>
                     </ul>
                 </div>
             </div>

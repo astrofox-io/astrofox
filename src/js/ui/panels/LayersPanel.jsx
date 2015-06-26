@@ -176,7 +176,7 @@ var LayersPanel = React.createClass({
         }
 
         if (obj instanceof CanvasDisplay) {
-            icon = <i className="layer-icon icon-doc-landscape" />;
+            icon = <i className="layer-icon icon-document-landscape" />;
         }
         else if (obj instanceof Display) {
             icon = <i className="layer-icon icon-cube" />;
@@ -235,9 +235,9 @@ var LayersPanel = React.createClass({
             hasScenes = Application.stage.hasScenes(),
             addClasses = 'btn icon-cube',
             fxClasses = 'btn icon-light-up',
-            removeClasses = 'btn icon-trash-empty',
-            moveUpClasses = 'btn icon-up-open',
-            moveDownClasses = 'btn icon-down-open';
+            removeClasses = 'btn icon-trash',
+            moveUpClasses = 'btn icon-chevron-up',
+            moveDownClasses = 'btn icon-chevron-down';
 
         if (!hasScenes) {
             addClasses += ' btn-disabled';

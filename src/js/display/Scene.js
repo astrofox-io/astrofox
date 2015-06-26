@@ -15,9 +15,10 @@ var Scene = function(name) {
     this.name = name || 'Scene';
     this.displayName = this.name + '' + this.id;
     this.parent = null;
-    this.displays = new NodeCollection();
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
+    this.displays = new NodeCollection();
+    this.effects = new NodeCollection();
 };
 
 Class.extend(Scene, EventEmitter, {
@@ -86,6 +87,32 @@ Class.extend(Scene, EventEmitter, {
         });
 
         this.pass.options.enabled = enabled;
+    },
+
+    addEffect: function(effect) {
+        this.effects.addNode(effect);
+
+        effect.parent = this;
+
+        if (effect.addToScene) {
+            effect.addToScene(this);
+        }
+    },
+
+    removeEffect: function(effect) {
+        this.effects.removeNode(effect);
+
+        effect.parent = null;
+
+        if (effect.removeFromScene) {
+            effect.removeFromScene(this);
+        }
+    },
+
+    moveEffect: function(effect, i) {
+        var index = this.effects.indexOf(effect);
+
+        this.effects.swapNodes(index, index + i);
     },
 
     getSize: function() {
