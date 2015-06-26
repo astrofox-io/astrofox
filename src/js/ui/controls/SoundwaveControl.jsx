@@ -2,11 +2,11 @@
 
 var React = require('react');
 var Application = require('core/Application.js');
-var NumberInput = require('ui/input/NumberInput.jsx');
-var ColorInput = require('ui/input/ColorInput.jsx');
-var ColorRangeInput = require('ui/input/ColorRangeInput.jsx');
-var RangeInput = require('ui/input/RangeInput.jsx');
-var ToggleInput = require('ui/input/ToggleInput.jsx');
+var NumberInput = require('ui/inputs/NumberInput.jsx');
+var ColorInput = require('ui/inputs/ColorInput.jsx');
+var ColorRangeInput = require('ui/inputs/ColorRangeInput.jsx');
+var RangeInput = require('ui/inputs/RangeInput.jsx');
+var ToggleInput = require('ui/inputs/ToggleInput.jsx');
 
 var defaults = {
     color: '#ffffff',

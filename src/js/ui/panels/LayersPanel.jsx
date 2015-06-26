@@ -6,7 +6,7 @@ var Display = require('display/Display.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
 var Stage = require('display/Stage.js');
 var Scene = require('display/Scene.js');
-var TextInput = require('ui/input/TextInput.jsx');
+var TextInput = require('ui/inputs/TextInput.jsx');
 
 var LayersPanel = React.createClass({
     getDefaultProps: function() {

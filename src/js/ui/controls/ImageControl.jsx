@@ -1,11 +1,11 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../../core/Application.js');
+var Application = require('core/Application.js');
 
-var NumberInput = require('../input/NumberInput.jsx');
-var ImageInput = require('../input/ImageInput.jsx');
-var RangeInput = require('../input/RangeInput.jsx');
+var NumberInput = require('ui/inputs/NumberInput.jsx');
+var ImageInput = require('ui/inputs/ImageInput.jsx');
+var RangeInput = require('ui/inputs/RangeInput.jsx');
 
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
