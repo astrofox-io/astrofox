@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var THREE = require('three');
 var Class = require('core/Class.js');
 var ComposerPass = require('graphics/ComposerPass.js');

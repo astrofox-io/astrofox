@@ -52,7 +52,7 @@ var Stage = function(options) {
 
 Class.extend(Stage, NodeCollection, {
     update: function(options) {
-        if (typeof options !== 'undefined') {
+        if (typeof options === 'object') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {
                     this.options[prop] = options[prop];

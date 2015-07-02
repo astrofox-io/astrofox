@@ -2,36 +2,45 @@
 
 var React = require('react');
 var _ = require('lodash');
-var Application = require('../../core/Application.js');
-var FX = require('../../FX.js');
+var Application = require('core/Application.js');
+var Display = require('display/Display.js');
+var ShaderDisplay = require('display/ShaderDisplay.js');
 
 var ModalWindow = require('./ModalWindow.jsx');
 
 var ControlPickerWindow = React.createClass({
     render: function() {
-        var controls = _.values(FX).map(function(fx, index){
+        var controls = _.values(this.props.items).map(function(item, index){
             var handleClick = function() {
-                var display = new fx();
+                var obj = new item();
 
-                this.props.scene.addDisplay(display);
-
-                Application.emit('control_added', display);
-
-                if (this.props.onClose) {
-                    this.props.onClose();
+                /*
+                if (obj instanceof ShaderDisplay) {
+                    this.props.scene.addEffect(obj);
+                    Application.emit('control_added', obj);
                 }
+                else if (obj instanceof Display) {
+                    this.props.scene.addDisplay(obj);
+                    Application.emit('control_added', obj);
+                }
+                */
+
+                this.props.scene.addDisplay(obj);
+                Application.emit('control_added', obj);
+
+                Application.emit('hide_modal');
             }.bind(this);
 
             return (
-                <div key={"c" + index}>
-                    <div className="item" onClick={handleClick}></div>
-                    <div className="name">{fx.info.name}</div>
+                <div key={"c" + index} className="item">
+                    <div className="image" onClick={handleClick}></div>
+                    <div className="name">{item.info.name}</div>
                 </div>
             );
         }.bind(this));
 
         return (
-            <ModalWindow title="ADD DISPLAY" onClose={this.props.onClose}>
+            <ModalWindow title={this.props.title}>
                 <div className="control-picker">
                     {controls}
                 </div>

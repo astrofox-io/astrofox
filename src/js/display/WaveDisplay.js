@@ -26,7 +26,7 @@ var WaveDisplay = function(canvas, options) {
 
 WaveDisplay.prototype = {
     update: function(options) {
-        if (typeof options !== 'undefined') {
+        if (typeof options === 'object') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {
                     this.options[prop] = options[prop];

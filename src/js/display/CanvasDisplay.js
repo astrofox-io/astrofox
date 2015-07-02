@@ -1,14 +1,12 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
 var Class = require('core/Class.js');
 var Display = require('display/Display.js');
 
 var RADIANS = 0.017453292519943295;
 
-var CanvasDisplay = function() {
-    Display.apply(this, arguments);
+var CanvasDisplay = function(id, name, options) {
+    Display.call(this, id, name, options);
 
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');

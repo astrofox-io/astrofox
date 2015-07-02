@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Class = require('core/Class.js');
-var Display = require('display/Display.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
 
 var defaults = {

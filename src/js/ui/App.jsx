@@ -3,7 +3,7 @@
 var React = require('react');
 var Application = require('core/Application.js');
 var Scene = require('display/Scene.js');
-var FX = require('FX.js');
+var DisplayLibrary = require('display/DisplayLibrary.js');
 
 var Header = require('ui/Header.jsx');
 var Body = require('ui/Body.jsx');
@@ -21,7 +21,6 @@ var ControlDock = require('ui/ControlDock.jsx');
 var ModalWindow = require('ui/windows/ModalWindow.jsx');
 var AboutWindow = require('ui/windows/AboutWindow.jsx');
 var SettingsWindow = require('ui/windows/SettingsWindow.jsx');
-var ControlPickerWindow = require('ui/windows/ControlPickerWindow.jsx');
 
 var App = React.createClass({
     getInitialState: function() {
@@ -37,19 +36,21 @@ var App = React.createClass({
 
         Application.stage.addScene(scene);
 
-        scene.addDisplay(new FX.ImageDisplay());
-        scene.addDisplay(new FX.BarSpectrumDisplay());
-        scene.addDisplay(new FX.TextDisplay());
+        scene.addDisplay(new DisplayLibrary.ImageDisplay());
+        scene.addDisplay(new DisplayLibrary.BarSpectrumDisplay());
+        scene.addDisplay(new DisplayLibrary.TextDisplay());
 
         Application.on('error', function(err) {
             this.showError(err);
-        }.bind(this));
+        }, this);
 
-        Application.on('pick_control', function(scene) {
-            this.showModal(
-                <ControlPickerWindow title="ADD CONTROL" scene={scene} onClose={this.hideModal} />
-            );
-        }.bind(this));
+        Application.on('show_modal', function(content) {
+            this.showModal(content);
+        }, this);
+
+        Application.on('hide_modal', function() {
+            this.hideModal();
+        }, this);
     },
 
     componentDidMount: function() {

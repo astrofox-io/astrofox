@@ -1,11 +1,16 @@
 .control-picker {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
     width: 660px;
     padding: 0 10px;
 
     .item {
+        margin: 0 5px 20px 5px;
+    }
+
+    .image {
         border: 1px solid lighten(@border-color, 8%);
         border-radius: 5px;
         height: 100px;
@@ -13,14 +18,8 @@
         cursor: pointer;
     }
 
-    .item:hover {
+    .image:hover {
         border-color: @base-color;
-    }
-
-    .icon {
-        font-size: @font-large;
-        text-align: center;
-        margin: 0 auto;
     }
 
     .name {

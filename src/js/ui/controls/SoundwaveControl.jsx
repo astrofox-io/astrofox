@@ -27,8 +27,6 @@ var SoundwaveControl = React.createClass({
     },
 
     componentWillMount: function() {
-        var display = this.props.display;
-
         this.shouldUpdate = false;
     },
 

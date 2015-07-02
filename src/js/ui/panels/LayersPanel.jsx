@@ -4,9 +4,14 @@ var React = require('react');
 var Application = require('core/Application.js');
 var Display = require('display/Display.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
+var ShaderDisplay = require('display/ShaderDisplay.js');
 var Stage = require('display/Stage.js');
 var Scene = require('display/Scene.js');
+var DisplayLibrary = require('display/DisplayLibrary.js');
+var EffectLibrary = require('display/EffectLibrary.js');
+
 var TextInput = require('ui/inputs/TextInput.jsx');
+var ControlPickerWindow = require('ui/windows/ControlPickerWindow.jsx');
 
 var LayersPanel = React.createClass({
     getDefaultProps: function() {
@@ -48,7 +53,7 @@ var LayersPanel = React.createClass({
         }
     },
 
-    handleAddScene: function() {
+    handleAddSceneClick: function() {
         var scene = new Scene();
 
         Application.stage.addScene(scene);
@@ -58,13 +63,29 @@ var LayersPanel = React.createClass({
         }.bind(this));
     },
 
-    handleAddClick: function() {
+    handleAddDisplayClick: function() {
         var state = this.state,
             layer = state.layers[state.activeIndex],
             scene = (layer instanceof Display) ? layer.parent : layer;
 
         if (Application.stage.hasScenes()) {
-            Application.emit('pick_control', scene);
+            Application.emit(
+                'show_modal',
+                <ControlPickerWindow title="ADD DISPLAY" scene={scene} items={DisplayLibrary} />
+            );
+        }
+    },
+
+    handleAddEffectClick: function() {
+        var state = this.state,
+            layer = state.layers[state.activeIndex],
+            scene = (layer instanceof Display) ? layer.parent : layer;
+
+        if (Application.stage.hasScenes()) {
+            Application.emit(
+                'show_modal',
+                <ControlPickerWindow title="ADD EFFECT" scene={scene} items={EffectLibrary} />
+            );
         }
     },
 
@@ -178,6 +199,9 @@ var LayersPanel = React.createClass({
         if (obj instanceof CanvasDisplay) {
             icon = <i className="layer-icon icon-document-landscape" />;
         }
+        if (obj instanceof ShaderDisplay) {
+            icon = <i className="layer-icon icon-light-up" />;
+        }
         else if (obj instanceof Display) {
             icon = <i className="layer-icon icon-cube" />;
         }
@@ -235,7 +259,7 @@ var LayersPanel = React.createClass({
             hasScenes = Application.stage.hasScenes(),
             addClasses = 'btn icon-cube',
             fxClasses = 'btn icon-light-up',
-            removeClasses = 'btn icon-trash',
+            removeClasses = 'btn icon-trash-empty',
             moveUpClasses = 'btn icon-chevron-up',
             moveDownClasses = 'btn icon-chevron-down';
 
@@ -257,9 +281,9 @@ var LayersPanel = React.createClass({
                     {layers}
                 </div>
                 <ul className="btn-group">
-                    <li className="btn icon-picture" title="Add Scene" onClick={this.handleAddScene} />
-                    <li className={addClasses} title="Add Display" onClick={this.handleAddClick} />
-                    <li className={fxClasses} title="Add Effect" onClick={this.handleAddClick} />
+                    <li className="btn icon-picture" title="Add Scene" onClick={this.handleAddSceneClick} />
+                    <li className={addClasses} title="Add Display" onClick={this.handleAddDisplayClick} />
+                    <li className={fxClasses} title="Add Effect" onClick={this.handleAddEffectClick} />
                     <li className={moveUpClasses} title="Move Layer Up" onClick={this.handleMoveUpClick} />
                     <li className={moveDownClasses} title="Move Layer Down" onClick={this.handleMoveDownClick} />
                     <li className={removeClasses} title="Delete Layer" onClick={this.handleRemoveClick} />

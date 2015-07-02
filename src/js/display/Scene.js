@@ -115,6 +115,10 @@ Class.extend(Scene, EventEmitter, {
         this.effects.swapNodes(index, index + i);
     },
 
+    getEffects: function() {
+        return this.effects.nodes;
+    },
+
     getSize: function() {
         var canvas =  this.canvas;
 

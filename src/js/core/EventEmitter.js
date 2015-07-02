@@ -33,7 +33,7 @@ EventEmitter.prototype = {
         return this.on(event, _fn = function() {
             this.off(event, _fn);
             return fn.apply(context, arguments);
-        }.bind(this));
+        }, this);
     },
 
     emit: function() {

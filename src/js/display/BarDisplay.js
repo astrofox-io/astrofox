@@ -28,7 +28,7 @@ var BarDisplay = function(canvas, options) {
 
 BarDisplay.prototype = {
     update: function(options) {
-        if (typeof options !== 'undefined') {
+        if (typeof options === 'object') {
             for (var prop in options) {
                 if (hasOwnProperty.call(this.options, prop)) {
                     this.options[prop] = options[prop];

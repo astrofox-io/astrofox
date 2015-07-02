@@ -125,7 +125,7 @@ Class.extend(Composer, EventEmitter, {
     renderToScreen: function(options) {
         this.render();
 
-        this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: true }, options));
+        this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: false }, options));
         this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
         this.swapBuffers();

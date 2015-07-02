@@ -1,14 +1,9 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 var Application = require('core/Application.js');
-var FX = require('FX.js');
-
-var BarSpectrumControl = require('ui/controls/BarSpectrumControl.jsx');
-var ImageControl = require('ui/controls/ImageControl.jsx');
-var TextControl = require('ui/controls/TextControl.jsx');
-var SoundwaveControl = require('ui/controls/SoundwaveControl.jsx');
-var GeometryControl = require('ui/controls/GeometryControl.jsx');
+var ControlLoader = require('util/ControlLoader.js');
 
 var ControlsPanel = React.createClass({
     getInitialState: function() {
@@ -33,26 +28,6 @@ var ControlsPanel = React.createClass({
         this.setState({ controls: controls }, callback);
     },
 
-    getControl: function(display) {
-        if (display instanceof FX.BarSpectrumDisplay) {
-            return BarSpectrumControl;
-        }
-        else if (display instanceof FX.ImageDisplay) {
-            return ImageControl;
-        }
-        else if (display instanceof FX.TextDisplay) {
-            return TextControl;
-        }
-        else if (display instanceof FX.SoundwaveDisplay) {
-            return SoundwaveControl;
-        }
-        else if (display instanceof FX.GeometryDisplay) {
-            return GeometryControl;
-        }
-
-        return null;
-    },
-
     scrollToControl: function(layer) {
         var id = layer.toString(),
             controls = React.findDOMNode(this.refs.controls),
@@ -66,19 +41,17 @@ var ControlsPanel = React.createClass({
     render: function() {
         var displays = Application.stage.getDisplays().reverse();
 
-        var controls = displays.map(function(display, index) {
+        var controls = displays.map(function(display) {
             var id = display.toString(),
-                Control = this.getControl(display);
+                Control = ControlLoader.getControl(display) || 'div';
 
-            if (Control !== null) {
-                return (
-                    <Control
-                        ref={id}
-                        key={id}
-                        display={display}
-                    />
-                );
-            }
+            return (
+                <Control
+                    ref={id}
+                    key={id}
+                    display={display}
+                />
+            );
         }, this);
 
         return (

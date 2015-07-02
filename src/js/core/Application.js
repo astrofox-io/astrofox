@@ -10,7 +10,7 @@ var Player = require('audio/Player.js');
 var BufferedSound = require('audio/BufferedSound.js');
 var SpectrumAnalyzer = require('audio/SpectrumAnalyzer.js');
 var Stage = require('display/Stage.js');
-var FX = require('FX.js');
+var DisplayLibrary = require('display/DisplayLibrary.js');
 var IO = require('IO.js');
 
 var defaults = {
@@ -87,10 +87,6 @@ Class.extend(Application, EventEmitter, {
             timer.set('sound_load');
             sound.load(data);
         }.bind(this));
-    },
-
-    loadCanvas: function(canvas) {
-        this.stage.loadCanvas(canvas);
     },
 
     startRender: function() {
@@ -231,7 +227,7 @@ Class.extend(Application, EventEmitter, {
             this.stage.scenes.clear();
 
             data.forEach(function(item) {
-                this.stage.scenes.addScene(new FX[item.name](item.values));
+                this.stage.scenes.addScene(new DisplayLibrary[item.name](item.values));
             }.bind(this));
 
             this.emit('control_added');

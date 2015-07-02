@@ -4,11 +4,15 @@ var _ = require('lodash');
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
 
+var defaults = {
+    enabled: true
+};
+
 var Display = function(id, name, options) {
     this.id = id;
     this.name = name;
     this.displayName = name + '' + id;
-    this.options = _.assign({}, options);
+    this.options = _.assign({}, defaults, options);
     this.owner = null;
     this.initialized = false;
 };
