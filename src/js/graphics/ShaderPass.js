@@ -9,7 +9,11 @@ var defaults = {
     textureId: 'tDiffuse',
     transparent: false,
     needsSwap: true,
-    forceClear: false
+    forceClear: false,
+    blending: THREE.NormalBlending,
+    blendSrc: THREE.SrcAlphaFactor,
+    blendDst: THREE.OneMinusSrcAlphaFactor,
+    blendEquation: THREE.AddEquation
 };
 
 var ShaderPass = function(shader, options) {
@@ -19,9 +23,14 @@ var ShaderPass = function(shader, options) {
         uniforms: THREE.UniformsUtils.clone(shader.uniforms),
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
-        defines: shader.defines || {},
-        transparent: this.options.transparent
+        defines: shader.defines || {}
     });
+
+    this.material.transparent = this.options.transparent;
+    this.material.blending = this.options.blending;
+    this.material.blendSrc = this.options.blendSrc;
+    this.material.blendDst = this.options.blendDst;
+    this.material.blendEquation = this.options.blendEquation;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);

@@ -20,7 +20,7 @@ var Composer = function(renderer, renderTarget) {
     this.passes = new NodeCollection();
     this.maskActive = false;
 
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true, blending: THREE.NormalBlending });
 
     this.setRenderTarget(renderTarget);
 };
@@ -49,11 +49,11 @@ Class.extend(Composer, EventEmitter, {
             renderTarget = this.getRenderTarget();
         }
 
-        this.writeTarget = renderTarget;
-        this.readTarget = renderTarget.clone();
+        this.readTarget = renderTarget;
+        this.writeTarget = renderTarget.clone();
 
-        this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
+        this.writeBuffer = this.writeTarget;
     },
 
     clear: function(color, depth, stencil) {

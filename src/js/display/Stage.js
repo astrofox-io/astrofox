@@ -9,16 +9,6 @@ var EventEmitter = require('core/EventEmitter.js');
 var NodeCollection = require('core/NodeCollection.js');
 var IO = require('IO.js');
 
-var Composer = require('graphics/Composer.js');
-var RenderPass = require('graphics/RenderPass.js');
-var ShaderPass = require('graphics/ShaderPass.js');
-var CopyShader = require('shaders/CopyShader.js');
-
-
-var EdgeShader = require('../vendor/three/shaders/EdgeShader2.js');
-var DotScreenShader = require('../vendor/three/shaders/DotScreenShader.js');
-var RGBShiftShader = require('../vendor/airtight/shaders/RGBShiftShader.js');
-
 var defaults = {
     showFPS: false,
     audioOutput: 'mux',
@@ -104,7 +94,7 @@ Class.extend(Stage, NodeCollection, {
 
         this.scenes.nodes.forEach(function(scene) {
             scene.render(data);
-        });
+        }, this);
 
         this.updateFPS();
 
