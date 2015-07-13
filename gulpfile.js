@@ -103,4 +103,4 @@ gulp.task('watch', ['less','watchify'], function() {
     gulp.watch('src/js/**/*.*', ['watchify']);
 });
 
-gulp.task('default', ['less','icons','browserify']);
+gulp.task('default', ['less','browserify']);

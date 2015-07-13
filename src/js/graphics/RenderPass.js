@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var THREE = require('three');
 var Class = require('core/Class.js');
 var ComposerPass = require('graphics/ComposerPass.js');
@@ -12,9 +13,7 @@ var defaults = {
 };
 
 var RenderPass = function(scene, camera, options) {
-    ComposerPass.call(this, defaults);
-
-    this.update(options);
+    ComposerPass.call(this, _.assign({}, defaults, options));
 
     this.scene = scene;
     this.camera = camera;

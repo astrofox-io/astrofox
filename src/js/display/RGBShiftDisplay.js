@@ -1,5 +1,6 @@
 'use strict';
 
+var THREE = require('three');
 var Class = require('core/Class.js');
 var ShaderDisplay = require('display/ShaderDisplay.js');
 var RGBShiftShader = require('shaders/RGBShiftShader.js');
@@ -40,6 +41,7 @@ Class.extend(RGBShiftDisplay, ShaderDisplay, {
 
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(this.shader);
+        //this.pass.material.blending = THREE.SubtractiveBlending;
     },
 
     removeFromScene: function(scene) {

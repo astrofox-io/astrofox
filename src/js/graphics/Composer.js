@@ -10,6 +10,7 @@ var NodeCollection = require('core/NodeCollection.js');
 
 var RenderPass = require('graphics/RenderPass.js');
 var ShaderPass = require('graphics/ShaderPass.js');
+var SpritePass = require('graphics/SpritePass.js');
 var TexturePass = require('graphics/TexturePass.js');
 var MaskPass = require('graphics/MaskPass.js');
 var ClearMaskPass = require('graphics/ClearMaskPass.js');
@@ -20,7 +21,7 @@ var Composer = function(renderer, renderTarget) {
     this.passes = new NodeCollection();
     this.maskActive = false;
 
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true, blending: THREE.NormalBlending });
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
 
     this.setRenderTarget(renderTarget);
 };
@@ -114,6 +115,13 @@ Class.extend(Composer, EventEmitter, {
         return this.addTexturePass(texture, options);
     },
 
+    addSpritePass: function(canvas, options) {
+        var texture = new THREE.Texture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+
+        return this.addPass(new SpritePass(texture, options));
+    },
+
     addCopyPass: function(options) {
         return this.addShaderPass(CopyShader, options);
     },
@@ -123,9 +131,9 @@ Class.extend(Composer, EventEmitter, {
     },
 
     renderToScreen: function(options) {
-        this.render();
+        //this.render();
 
-        this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: false }, options));
+        this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: true }, options));
         this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
         this.swapBuffers();

@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var Class = require('core/Class.js');
 var ComposerPass = require('graphics/ComposerPass.js');
 
@@ -7,8 +8,8 @@ var defaults = {
     inverse: false
 };
 
-var MaskPass = function(scene, camera) {
-    ComposerPass.call(this, defaults);
+var MaskPass = function(scene, camera, options) {
+    ComposerPass.call(this, _.assign({}, defaults, options));
 
     this.scene = scene;
     this.camera = camera;

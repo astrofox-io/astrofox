@@ -9,11 +9,7 @@ var defaults = {
     textureId: 'tDiffuse',
     transparent: false,
     needsSwap: true,
-    forceClear: false,
-    blending: THREE.NormalBlending,
-    blendSrc: THREE.SrcAlphaFactor,
-    blendDst: THREE.OneMinusSrcAlphaFactor,
-    blendEquation: THREE.AddEquation
+    forceClear: false
 };
 
 var ShaderPass = function(shader, options) {
@@ -23,18 +19,14 @@ var ShaderPass = function(shader, options) {
         uniforms: THREE.UniformsUtils.clone(shader.uniforms),
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
-        defines: shader.defines || {}
+        defines: shader.defines || {},
+        transparent: this.options.transparent
     });
-
-    this.material.transparent = this.options.transparent;
-    this.material.blending = this.options.blending;
-    this.material.blendSrc = this.options.blendSrc;
-    this.material.blendDst = this.options.blendDst;
-    this.material.blendEquation = this.options.blendEquation;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2), null);
+    this.plane = new THREE.PlaneBufferGeometry(2, 2);
+    this.mesh = new THREE.Mesh(this.plane, null);
     this.scene.add(this.mesh);
 };
 

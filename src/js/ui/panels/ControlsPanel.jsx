@@ -20,6 +20,7 @@ var ControlsPanel = React.createClass({
         var controls = [];
 
         Application.stage.scenes.nodes.forEach(function(scene) {
+            controls.push(scene);
             scene.displays.nodes.forEach(function(display) {
                 controls.push(display);
             }, this);
@@ -39,7 +40,14 @@ var ControlsPanel = React.createClass({
     },
 
     render: function() {
-        var displays = Application.stage.getDisplays().reverse();
+        var displays = [];
+
+        Application.stage.scenes.nodes.reverse().forEach(function(scene) {
+            displays.push(scene);
+            scene.displays.nodes.reverse().forEach(function(display) {
+                displays.push(display);
+            }, this);
+        }, this);
 
         var controls = displays.map(function(display) {
             var id = display.toString(),

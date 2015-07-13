@@ -66,7 +66,7 @@ var LayersPanel = React.createClass({
     handleAddDisplayClick: function() {
         var state = this.state,
             layer = state.layers[state.activeIndex],
-            scene = (layer instanceof Display) ? layer.parent : layer;
+            scene = (layer instanceof Scene) ? layer : layer.parent;
 
         if (Application.stage.hasScenes()) {
             Application.emit(
@@ -79,7 +79,7 @@ var LayersPanel = React.createClass({
     handleAddEffectClick: function() {
         var state = this.state,
             layer = state.layers[state.activeIndex],
-            scene = (layer instanceof Display) ? layer.parent : layer;
+            scene = (layer instanceof Scene) ? layer : layer.parent;
 
         if (Application.stage.hasScenes()) {
             Application.emit(
@@ -98,11 +98,11 @@ var LayersPanel = React.createClass({
             last = layers.length - 1;
 
         if (Application.stage.hasScenes() && layer) {
-            if (layer instanceof Display) {
-                layer.parent.removeDisplay(layer);
-            }
-            else if (layer instanceof Scene) {
+            if (layer instanceof Scene) {
                 layer.parent.removeScene(layer);
+            }
+            else if (layer instanceof Display) {
+                layer.parent.removeDisplay(layer);
             }
 
             this.updateLayers(function(){
@@ -159,7 +159,7 @@ var LayersPanel = React.createClass({
             state = this.state,
             classes = 'layer';
 
-        if (obj instanceof Display) {
+        if (!(obj instanceof Scene)) {
             classes += ' layer-control';
         }
 
@@ -196,17 +196,17 @@ var LayersPanel = React.createClass({
             );
         }
 
-        if (obj instanceof CanvasDisplay) {
+        if (obj instanceof Scene) {
+            icon = <i className="layer-icon icon-picture" />;
+        }
+        else if (obj instanceof CanvasDisplay) {
             icon = <i className="layer-icon icon-document-landscape" />;
         }
-        if (obj instanceof ShaderDisplay) {
+        else if (obj instanceof ShaderDisplay) {
             icon = <i className="layer-icon icon-light-up" />;
         }
         else if (obj instanceof Display) {
             icon = <i className="layer-icon icon-cube" />;
-        }
-        else if (obj instanceof Scene) {
-            icon = <i className="layer-icon icon-picture" />;
         }
 
         return (
@@ -237,11 +237,11 @@ var LayersPanel = React.createClass({
             props = this.props,
             layer = this.getActiveLayer();
 
-        if (layer instanceof Display) {
-            layer.parent.moveDisplay(layer, direction);
-        }
-        else if (layer instanceof Scene) {
+        if (layer instanceof Scene) {
             layer.parent.moveScene(layer, direction);
+        }
+        else if (layer instanceof Display) {
+            layer.parent.moveDisplay(layer, direction);
         }
 
         this.updateLayers(function(){

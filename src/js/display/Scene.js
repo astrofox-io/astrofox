@@ -1,27 +1,56 @@
 'use strict';
 
+var _ = require('lodash');
 var Immutable = require('immutable');
 var THREE = require('three');
 var Class = require('core/Class.js');
-var EventEmitter = require('core/EventEmitter.js');
 var NodeCollection = require('core/NodeCollection.js');
+var Display = require('display/Display.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
+var ShaderDisplay = require('display/ShaderDisplay.js');
 var Composer = require('graphics/Composer.js');
 
 var id = 0;
 
-var Scene = function(name) {
-    this.id = id++;
-    this.name = name || 'Scene';
-    this.displayName = this.name + '' + this.id;
+var defaults = {
+    blending: 'None'
+};
+
+var blendDefaults = {
+    blending: THREE.NormalBlending,
+    blendSrc: THREE.SrcAlphaFactor,
+    blendDst: THREE.OneMinusSrcAlphaFactor,
+    blendEquation: THREE.AddEquation
+};
+
+var blendModes = {
+    None: THREE.NoBlending,
+    Normal: THREE.NormalBlending,
+    Add: THREE.AdditiveBlending,
+    Subtract: THREE.SubtractiveBlending
+};
+
+var Scene = function(name, options) {
+    Display.call(this, id++, 'Scene', defaults);
+
     this.parent = null;
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.displays = new NodeCollection();
     this.effects = new NodeCollection();
+
+    this.update(options);
 };
 
-Class.extend(Scene, EventEmitter, {
+Class.extend(Scene, Display, {
+    update: function(options) {
+        this._super.update.call(this, options);
+
+        if (this.pass) {
+            this.pass.material.blending = blendModes[this.options.blending];
+        }
+    },
+
     addToStage: function(stage) {
         var size = stage.getSize();
 
@@ -30,6 +59,7 @@ Class.extend(Scene, EventEmitter, {
 
         this.pass = this.composer.addCanvasPass(this.canvas);
         this.pass.options.enabled = false;
+        this.pass.material.blending = blendModes[this.options.blending];
 
         this.canvas.height = size.height;
         this.canvas.width = size.width;
@@ -50,9 +80,7 @@ Class.extend(Scene, EventEmitter, {
             display.addToScene(this);
         }
 
-        if (display instanceof CanvasDisplay) {
-            this.pass.options.enabled = true;
-        }
+        this.checkDisplays();
     },
 
     removeDisplay: function(display) {
@@ -78,15 +106,20 @@ Class.extend(Scene, EventEmitter, {
     },
 
     checkDisplays: function() {
-        var enabled = false;
+        var enabled = false,
+            shader = false;
 
         this.displays.nodes.forEach(function(display) {
             if (display instanceof CanvasDisplay) {
                 enabled = true;
             }
+            else if (display instanceof ShaderDisplay) {
+                shader = true;
+            }
         });
 
         this.pass.options.enabled = enabled;
+        //this.pass.material.blending = (shader) ? THREE.NormalBlending : THREE.NoBlending;
     },
 
     addEffect: function(effect) {
@@ -155,8 +188,11 @@ Class.extend(Scene, EventEmitter, {
                 }
             }, this);
 
-            this.composer.renderToScreen();
+            //this.composer.renderToScreen();
+            this.composer.render();
         }
+
+        return this.composer.readBuffer;
     },
 
     toString: function() {

@@ -15,26 +15,20 @@ var defaults = {
 };
 
 var TexturePass = function(texture, options) {
-    ComposerPass.call(this, defaults);
-
-    this.update(options);
+    ComposerPass.call(this, _.assign({}, defaults, options));
 
     this.texture = texture;
 
-    this.uniforms = THREE.UniformsUtils.clone(CopyShader.uniforms);
-    this.uniforms['opacity'].value = this.options.opacity;
-    this.uniforms['tDiffuse'].value = texture;
-
-    this.material = new THREE.ShaderMaterial( {
-        uniforms: this.uniforms,
-        vertexShader: CopyShader.vertexShader,
-        fragmentShader: CopyShader.fragmentShader,
-        transparent: this.options.transparent
-    } );
+    this.material = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        map: texture,
+        transparent: true
+    });
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2), this.material);
+    this.plane = new THREE.PlaneBufferGeometry(2, 2);
+    this.mesh = new THREE.Mesh(this.plane, this.material);
     this.scene.add(this.mesh);
 };
 
@@ -42,7 +36,6 @@ Class.extend(TexturePass, ComposerPass, {
     render: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 
-        //this.mesh.material = this.material;
         this.texture.needsUpdate = options.needsUpdate;
 
         this.process(renderer, this.scene, this.camera, readBuffer);

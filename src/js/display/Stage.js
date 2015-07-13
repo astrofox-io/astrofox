@@ -7,6 +7,7 @@ var Immutable = require('immutable');
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
 var NodeCollection = require('core/NodeCollection.js');
+var Composer = require('graphics/Composer.js');
 var IO = require('IO.js');
 
 var defaults = {
@@ -33,9 +34,21 @@ var Stage = function(options) {
 
     this.options = _.assign({}, defaults);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: false });
     this.renderer.setSize(854, 480);
     this.renderer.autoClear = false;
+
+    /*
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = this.options.width;
+    this.canvas.height = this.options.height;
+    this.context = this.canvas.getContext('2d');
+    this.context.fillStyle = '#ff0000';
+    this.context.fillRect(0, 0, this.options.width, this.options.height);
+    */
+
+    this.composer = new Composer(this.renderer);
+    //this.pass = this.composer.addCanvasPass(this.canvas);
 
     this.update(options);
 };
@@ -55,6 +68,8 @@ Class.extend(Stage, NodeCollection, {
         this.scenes.addNode(scene);
 
         scene.addToStage(this);
+
+        //this.composer.addTexturePass(scene.composer.readBuffer, { renderToScreen: true });
     },
 
     removeScene: function(scene) {
@@ -90,10 +105,16 @@ Class.extend(Stage, NodeCollection, {
     },
 
     renderFrame: function(data, callback) {
+        var buffer;
+
         this.renderer.clear();
+        //this.composer.render();
+        //this.composer.renderToScreen();
 
         this.scenes.nodes.forEach(function(scene) {
-            scene.render(data);
+            buffer = scene.render(data);
+            this.composer.setRenderTarget(buffer);
+            this.composer.renderToScreen();
         }, this);
 
         this.updateFPS();

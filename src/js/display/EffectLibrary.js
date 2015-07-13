@@ -1,7 +1,8 @@
 'use strict';
 
 var EffectLibrary = {
-    RGBShift: require('display/RGBShiftDisplay.js')
+    RGBShiftDisplay: require('display/RGBShiftDisplay.js'),
+    DotScreenDisplay: require('display/DotScreenDisplay.js')
 };
 
 module.exports = EffectLibrary;

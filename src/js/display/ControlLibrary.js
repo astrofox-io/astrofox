@@ -1,4 +1,5 @@
 var ControlLibrary = {
+    SceneControl: require('ui/controls/SceneControl.jsx'),
     BarSpectrumControl: require('ui/controls/BarSpectrumControl.jsx'),
     ImageControl: require('ui/controls/ImageControl.jsx'),
     TextControl: require('ui/controls/TextControl.jsx'),

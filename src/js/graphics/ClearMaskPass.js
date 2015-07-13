@@ -1,23 +1,19 @@
-/**
- * @author alteredq / http://alteredqualia.com/
- */
+'use strict';
+
+var _ = require('lodash');
+var Class = require('core/Class.js');
+var ComposerPass = require('graphics/ComposerPass.js');
 
 var ClearMaskPass = function () {
-
     this.enabled = true;
-
 };
 
-ClearMaskPass.prototype = {
-
-    render: function ( renderer, writeBuffer, readBuffer, delta ) {
-
+Class.extend(ClearMaskPass, ComposerPass, {
+    render: function (renderer) {
         var context = renderer.context;
 
-        context.disable( context.STENCIL_TEST );
-
+        context.disable(context.STENCIL_TEST);
     }
-
-};
+});
 
 module.exports = ClearMaskPass;
