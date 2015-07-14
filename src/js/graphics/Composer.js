@@ -131,9 +131,11 @@ Class.extend(Composer, EventEmitter, {
     },
 
     renderToScreen: function(options) {
-        //this.render();
+        this.render();
 
         this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: true }, options));
+        this.copyPass.material.blending = options.blending;
+        this.copyPass.material.uniforms['opacity'].value = options.opacity;
         this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
         this.swapBuffers();

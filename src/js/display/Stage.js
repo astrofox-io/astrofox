@@ -105,16 +105,10 @@ Class.extend(Stage, NodeCollection, {
     },
 
     renderFrame: function(data, callback) {
-        var buffer;
-
         this.renderer.clear();
-        //this.composer.render();
-        //this.composer.renderToScreen();
 
         this.scenes.nodes.forEach(function(scene) {
-            buffer = scene.render(data);
-            this.composer.setRenderTarget(buffer);
-            this.composer.renderToScreen();
+            scene.render(data);
         }, this);
 
         this.updateFPS();

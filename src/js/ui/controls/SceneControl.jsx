@@ -5,6 +5,7 @@ var THREE = require('three');
 
 var NumberInput = require('ui/inputs/NumberInput.jsx');
 var ToggleInput = require('ui/inputs/ToggleInput.jsx');
+var RangeInput = require('ui/inputs/RangeInput.jsx');
 var SelectInput = require('ui/inputs/SelectInput.jsx');
 
 var blendModes = [
@@ -14,7 +15,8 @@ var blendModes = [
 var SceneControl = React.createClass({
     getInitialState: function() {
         return {
-            'blending': 'Normal'
+            'blending': 'Normal',
+            opacity: 1.0
         };
     },
 
@@ -68,6 +70,28 @@ var SceneControl = React.createClass({
                         items={blendModes}
                         value={this.state.blending}
                         onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label className="label">Opacity</label>
+                    <NumberInput
+                        name="opacity"
+                        size="3"
+                        value={this.state.opacity}
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        onChange={this.handleChange}
+                        />
+                    <div className="input flex">
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={this.state.opacity}
+                            onChange={this.handleChange}
+                            />
+                    </div>
                 </div>
             </div>
         );

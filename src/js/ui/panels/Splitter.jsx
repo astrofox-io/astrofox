@@ -24,7 +24,7 @@ var Splitter = React.createClass({
             <div
                 className={classes}
                 onMouseDown={this.handleMouseDown}>
-                <i className="icon-dot-3" />
+                <i className="icon-dots-three-horizontal" />
             </div>
         );
     }

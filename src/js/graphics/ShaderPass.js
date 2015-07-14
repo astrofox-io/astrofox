@@ -15,8 +15,10 @@ var defaults = {
 var ShaderPass = function(shader, options) {
     ComposerPass.call(this, _.assign({}, defaults, options));
 
+    this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+
     this.material = new THREE.ShaderMaterial({
-        uniforms: THREE.UniformsUtils.clone(shader.uniforms),
+        uniforms: this.uniforms,
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
         defines: shader.defines || {},

@@ -38,13 +38,11 @@ var LayersPanel = React.createClass({
             props = this.props,
             editIndex = (index == state.editIndex) ? state.editIndex: -1;
 
-        if (index !== state.activeIndex) {
-            this.setState({activeIndex: index, editIndex: editIndex}, function(){
-                if (props.onLayerSelected) {
-                    props.onLayerSelected(this.getActiveLayer());
-                }
-            }.bind(this));
-        }
+        this.setState({activeIndex: index, editIndex: editIndex}, function(){
+            if (props.onLayerSelected) {
+                props.onLayerSelected(this.getActiveLayer());
+            }
+        }.bind(this));
     },
 
     handleDoubleClick: function(index) {

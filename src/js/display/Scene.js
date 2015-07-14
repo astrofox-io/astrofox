@@ -13,7 +13,8 @@ var Composer = require('graphics/Composer.js');
 var id = 0;
 
 var defaults = {
-    blending: 'None'
+    blending: 'Normal',
+    opacity: 1.0
 };
 
 var blendDefaults = {
@@ -38,17 +39,18 @@ var Scene = function(name, options) {
     this.context = this.canvas.getContext('2d');
     this.displays = new NodeCollection();
     this.effects = new NodeCollection();
+    this.blending = THREE.NormalBlending;
 
     this.update(options);
 };
 
 Class.extend(Scene, Display, {
     update: function(options) {
-        this._super.update.call(this, options);
+        var changed = this._super.update.call(this, options);
 
-        if (this.pass) {
-            this.pass.material.blending = blendModes[this.options.blending];
-        }
+        this.blending = blendModes[this.options.blending];
+
+        return changed;
     },
 
     addToStage: function(stage) {
@@ -57,9 +59,9 @@ Class.extend(Scene, Display, {
         this.parent = stage;
         this.composer = new Composer(stage.renderer);
 
-        this.pass = this.composer.addCanvasPass(this.canvas);
-        this.pass.options.enabled = false;
-        this.pass.material.blending = blendModes[this.options.blending];
+        this.canvasPass = this.composer.addCanvasPass(this.canvas);
+        this.canvasPass.options.enabled = false;
+        this.canvasPass.material.blending = THREE.NoBlending;
 
         this.canvas.height = size.height;
         this.canvas.width = size.width;
@@ -118,8 +120,8 @@ Class.extend(Scene, Display, {
             }
         });
 
-        this.pass.options.enabled = enabled;
-        //this.pass.material.blending = (shader) ? THREE.NormalBlending : THREE.NoBlending;
+        this.canvasPass.options.enabled = enabled;
+        this.canvasPass.material.blending = (shader) ? THREE.AdditiveBlending : THREE.NoBlending;
     },
 
     addEffect: function(effect) {
@@ -188,8 +190,8 @@ Class.extend(Scene, Display, {
                 }
             }, this);
 
-            //this.composer.renderToScreen();
-            this.composer.render();
+            this.composer.renderToScreen({ blending: this.blending, opacity: this.options.opacity });
+            //this.composer.render();
         }
 
         return this.composer.readBuffer;
