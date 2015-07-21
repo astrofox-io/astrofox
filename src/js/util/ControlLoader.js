@@ -17,7 +17,8 @@ var ControlLoader = {
         GeometryDisplay: ControlLibrary.GeometryControl,
         // FX
         RGBShiftDisplay: ControlLibrary.RGBShiftControl,
-        DotScreenDisplay: ControlLibrary.DotScreenControl
+        DotScreenDisplay: ControlLibrary.DotScreenControl,
+        DotMatrixDisplay: ControlLibrary.DotMatrixControl
     },
 
     getControl: function(obj) {

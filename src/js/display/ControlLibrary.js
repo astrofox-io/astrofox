@@ -6,7 +6,8 @@ var ControlLibrary = {
     SoundwaveControl: require('ui/controls/SoundwaveControl.jsx'),
     GeometryControl: require('ui/controls/GeometryControl.jsx'),
     RGBShiftControl: require('ui/controls/RGBShiftControl.jsx'),
-    DotScreenControl: require('ui/controls/DotScreenControl.jsx')
+    DotScreenControl: require('ui/controls/DotScreenControl.jsx'),
+    DotMatrixControl: require('ui/controls/DotMatrixControl.jsx')
 };
 
 module.exports = ControlLibrary;
