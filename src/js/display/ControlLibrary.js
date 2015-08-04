@@ -7,7 +7,8 @@ var ControlLibrary = {
     GeometryControl: require('ui/controls/GeometryControl.jsx'),
     RGBShiftControl: require('ui/controls/RGBShiftControl.jsx'),
     DotScreenControl: require('ui/controls/DotScreenControl.jsx'),
-    DotMatrixControl: require('ui/controls/DotMatrixControl.jsx')
+    DotMatrixControl: require('ui/controls/DotMatrixControl.jsx'),
+    MirrorControl: require('ui/controls/MirrorControl.jsx')
 };
 
 module.exports = ControlLibrary;

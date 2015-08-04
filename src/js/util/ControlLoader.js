@@ -18,7 +18,8 @@ var ControlLoader = {
         // FX
         RGBShiftDisplay: ControlLibrary.RGBShiftControl,
         DotScreenDisplay: ControlLibrary.DotScreenControl,
-        DotMatrixDisplay: ControlLibrary.DotMatrixControl
+        DotMatrixDisplay: ControlLibrary.DotMatrixControl,
+        MirrorDisplay: ControlLibrary.MirrorControl
     },
 
     getControl: function(obj) {

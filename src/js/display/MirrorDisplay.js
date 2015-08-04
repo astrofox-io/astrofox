@@ -2,29 +2,27 @@
 
 var Class = require('core/Class.js');
 var ShaderDisplay = require('display/ShaderDisplay.js');
-var DotMatrixShader = require('shaders/DotMatrixShader.js');
+var MirrorShader = require('shaders/MirrorShader.js');
 
 var defaults = {
-    spacing: 10,
-    size: 4,
-    blur: 4
+    side: 1
 };
 
 var id = 0;
 
-var DotMatrixDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'DotMatrixDisplay', defaults);
+var MirrorDisplay = function(options) {
+    ShaderDisplay.call(this, id++, 'MirrorDisplay', defaults);
 
-    this.shader = DotMatrixShader;
+    this.shader = MirrorShader;
 
     this.update(options);
 };
 
-DotMatrixDisplay.info = {
-    name: 'Dot Matrix'
+MirrorDisplay.info = {
+    name: 'Mirror'
 };
 
-Class.extend(DotMatrixDisplay, ShaderDisplay, {
+Class.extend(MirrorDisplay, ShaderDisplay, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -49,4 +47,4 @@ Class.extend(DotMatrixDisplay, ShaderDisplay, {
     }
 });
 
-module.exports = DotMatrixDisplay;
+module.exports = MirrorDisplay;
