@@ -5,12 +5,11 @@ var NumberInput = require('ui/inputs/NumberInput.jsx');
 var RangeInput = require('ui/inputs/RangeInput.jsx');
 
 var defaults = {
-    spacing: 10,
-    size: 4,
-    blur: 4
+    h: 1,
+    v: 1
 };
 
-var DotScreenControl = React.createClass({
+var BlurControl = React.createClass({
     getInitialState: function() {
         return defaults;
     },
@@ -55,58 +54,40 @@ var DotScreenControl = React.createClass({
     render: function() {
         return (
             <div className="control">
-                <div className="header">DOT MATRIX</div>
+                <div className="header">BLUR</div>
                 <div className="row">
-                    <label className="label">Spacing</label>
+                    <label className="label">Horizontal</label>
                     <NumberInput
-                        name="spacing"
+                        name="h"
                         size="3"
-                        value={this.state.spacing}
+                        value={this.state.h}
                         min={0}
-                        max={100}
+                        max={10}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="spacing"
+                            name="h"
                             min={0}
-                            max={100}
-                            value={this.state.spacing}
+                            max={10}
+                            value={this.state.h}
                             onChange={this.handleChange} />
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Size</label>
+                    <label className="label">Vertical</label>
                     <NumberInput
-                        name="size"
+                        name="v"
                         size="3"
-                        value={this.state.size}
+                        value={this.state.v}
                         min={0}
-                        max={100}
+                        max={10}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="size"
+                            name="v"
                             min={0}
-                            max={100}
-                            value={this.state.size}
-                            onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="row">
-                    <label className="label">Blur</label>
-                    <NumberInput
-                        name="blur"
-                        size="3"
-                        value={this.state.blur}
-                        min={0}
-                        max={100}
-                        onChange={this.handleChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="blur"
-                            min={0}
-                            max={100}
-                            value={this.state.blur}
+                            max={10}
+                            value={this.state.v}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -115,4 +96,4 @@ var DotScreenControl = React.createClass({
     }
 });
 
-module.exports = DotScreenControl;
+module.exports = BlurControl;

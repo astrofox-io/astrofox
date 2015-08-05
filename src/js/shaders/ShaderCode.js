@@ -8,6 +8,7 @@ var ShaderCode = {
         hatch_glow: glslify('../../glsl/vertex/hatch_glow.glsl')
     },
     fragment: {
+        blur: glslify('../../glsl/fragment/blur.glsl'),
         color_shift: glslify('../../glsl/fragment/color_shift.glsl'),
         copy: glslify('../../glsl/fragment/copy.glsl'),
         copy_alpha: glslify('../../glsl/fragment/copy_alpha.glsl'),

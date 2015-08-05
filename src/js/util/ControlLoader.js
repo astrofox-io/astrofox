@@ -19,7 +19,8 @@ var ControlLoader = {
         RGBShiftDisplay: ControlLibrary.RGBShiftControl,
         DotScreenDisplay: ControlLibrary.DotScreenControl,
         DotMatrixDisplay: ControlLibrary.DotMatrixControl,
-        MirrorDisplay: ControlLibrary.MirrorControl
+        MirrorDisplay: ControlLibrary.MirrorControl,
+        BlurDisplay: ControlLibrary.BlurControl
     },
 
     getControl: function(obj) {
