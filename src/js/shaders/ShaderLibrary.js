@@ -2,7 +2,7 @@ var ShaderLibrary = {
     Copy: require('./CopyShader.js'),
     Depth: require('./DepthShader.js'),
     DotScreen: require('./DotScreenShader.js'),
-    DotMatrix: require('./DotMatrixShader.js'),
+    LED: require('./LEDShader.js'),
     Grid: require('./GridShader.js'),
     Halftone: require('./HalftoneShader.js'),
     HatchGlow: require('./HatchGlowShader.js'),

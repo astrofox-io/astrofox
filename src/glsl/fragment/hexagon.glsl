@@ -1,17 +1,22 @@
 uniform sampler2D tDiffuse;
 uniform vec2 center;
 uniform float scale;
-uniform vec2 tSize;
+uniform vec2 resolution;
 varying vec2 vUv;
 
 void main() {
-    vec2 tex = (vUv * tSize - center) / scale;
+    vec2 tex = (vUv * resolution - center) / scale;
     tex.y /= 0.866025404;
     tex.x -= tex.y * 0.5;
     
     vec2 a;
-    if (tex.x + tex.y - floor(tex.x) - floor(tex.y) < 1.0) a = vec2(floor(tex.x), floor(tex.y));
-    else a = vec2(ceil(tex.x), ceil(tex.y));
+    if (tex.x + tex.y - floor(tex.x) - floor(tex.y) < 1.0) {
+        a = vec2(floor(tex.x), floor(tex.y));
+    }
+    else {
+        a = vec2(ceil(tex.x), ceil(tex.y));
+    }
+    
     vec2 b = vec2(ceil(tex.x), floor(tex.y));
     vec2 c = vec2(floor(tex.x), ceil(tex.y));
     
@@ -35,6 +40,7 @@ void main() {
     
     choice.x += choice.y * 0.5;
     choice.y *= 0.866025404;
-    choice *= scale / tSize;
-    gl_FragColor = texture2D(tDiffuse, choice + center / tSize);
+    choice *= scale / resolution;
+    
+    gl_FragColor = texture2D(tDiffuse, choice + center / resolution);
 }

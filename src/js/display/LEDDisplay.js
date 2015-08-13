@@ -2,27 +2,29 @@
 
 var Class = require('core/Class.js');
 var ShaderDisplay = require('display/ShaderDisplay.js');
-var BlurShader = require('shaders/BlurShader.js');
+var LEDShader = require('shaders/LEDShader.js');
 
 var defaults = {
-    amount: 1.0
+    spacing: 10,
+    size: 4,
+    blur: 4
 };
 
 var id = 0;
 
-var BlurDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'BlurDisplay', defaults);
+var LEDDisplay = function(options) {
+    ShaderDisplay.call(this, id++, 'LEDDisplay', defaults);
 
-    this.shader = BlurShader;
+    this.shader = LEDShader;
 
     this.update(options);
 };
 
-BlurDisplay.info = {
-    name: 'Blur'
+LEDDisplay.info = {
+    name: 'LED'
 };
 
-Class.extend(BlurDisplay, ShaderDisplay, {
+Class.extend(LEDDisplay, ShaderDisplay, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -41,10 +43,10 @@ Class.extend(BlurDisplay, ShaderDisplay, {
 
     updateScene: function(scene) {
         if (this.changed) {
-            this.pass.setUniforms({ amount: [this.options.amount, this.options.amount] });
+            this.pass.setUniforms(this.options);
             this.changed = false;
         }
     }
 });
 
-module.exports = BlurDisplay;
+module.exports = LEDDisplay;

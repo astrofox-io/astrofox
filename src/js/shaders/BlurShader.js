@@ -3,8 +3,8 @@ var ShaderCode = require('shaders/ShaderCode.js');
 
 var BlurShader = {
     uniforms: {
-        tDiffuse: { type: "t", value: null },
-        delta: { type: 'v2', value: new THREE.Vector2(1, 1) },
+        tDiffuse: { type: 't', value: null },
+        amount: { type: 'v2', value: new THREE.Vector2(1, 1) },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 

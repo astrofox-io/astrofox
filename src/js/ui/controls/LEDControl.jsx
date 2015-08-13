@@ -10,7 +10,7 @@ var defaults = {
     blur: 4
 };
 
-var DotScreenControl = React.createClass({
+var LEDControl = React.createClass({
     getInitialState: function() {
         return defaults;
     },
@@ -55,20 +55,20 @@ var DotScreenControl = React.createClass({
     render: function() {
         return (
             <div className="control">
-                <div className="header">DOT MATRIX</div>
+                <div className="header">LED</div>
                 <div className="row">
                     <label className="label">Spacing</label>
                     <NumberInput
                         name="spacing"
                         size="3"
                         value={this.state.spacing}
-                        min={0}
+                        min={1}
                         max={100}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="spacing"
-                            min={0}
+                            min={1}
                             max={100}
                             value={this.state.spacing}
                             onChange={this.handleChange} />
@@ -115,4 +115,4 @@ var DotScreenControl = React.createClass({
     }
 });
 
-module.exports = DotScreenControl;
+module.exports = LEDControl;

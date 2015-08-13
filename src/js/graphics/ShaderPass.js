@@ -34,9 +34,16 @@ var ShaderPass = function(shader, options) {
 
 Class.extend(ShaderPass, ComposerPass, {
     setUniforms: function(props) {
+        var uniforms = this.uniforms;
+
         for (var prop in props) {
-            if (this.material.uniforms.hasOwnProperty(prop)) {
-                this.material.uniforms[prop].value = props[prop];
+            if (uniforms.hasOwnProperty(prop)) {
+                if (uniforms[prop].value.set) {
+                    uniforms[prop].value.set.apply(uniforms[prop].value, props[prop]);
+                }
+                else {
+                    uniforms[prop].value = props[prop];
+                }
             }
         }
 

@@ -14,12 +14,12 @@ var ShaderCode = {
         copy_alpha: glslify('../../glsl/fragment/copy_alpha.glsl'),
         crosshatch: glslify('../../glsl/fragment/crosshatch.glsl'),
         dot_screen: glslify('../../glsl/fragment/dot_screen.glsl'),
-        dot_matrix: glslify('../../glsl/fragment/dot_matrix.glsl'),
         glow_chroma: glslify('../../glsl/fragment/glow_chroma.glsl'),
         grid: glslify('../../glsl/fragment/grid.glsl'),
         halftone: glslify('../../glsl/fragment/halftone.glsl'),
         hatch_glow: glslify('../../glsl/fragment/hatch_glow.glsl'),
         hexagon: glslify('../../glsl/fragment/hexagon.glsl'),
+        led: glslify('../../glsl/fragment/led.glsl'),
         mirror: glslify('../../glsl/fragment/mirror.glsl'),
         rgb_shift: glslify('../../glsl/fragment/rgb_shift.glsl')
     }

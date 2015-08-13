@@ -1,16 +1,17 @@
 var THREE = require('three');
 var ShaderCode = require('shaders/ShaderCode.js');
 
-var HexagonShader = {
+var LEDShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
-        center: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
-        scale: { type: 'f', value: 10.0 },
+        spacing: { type: 'f', value: 10.0 },
+        size: { type: 'f', value: 4.0 },
+        blur: { type: 'f', value: 4.0 },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 
     vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.hexagon
+    fragmentShader: ShaderCode.fragment.led
 };
 
-module.exports = HexagonShader;
+module.exports = LEDShader;
