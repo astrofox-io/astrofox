@@ -1,28 +1,28 @@
 'use strict';
 
 var Class = require('core/Class.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
-var MirrorShader = require('shaders/MirrorShader.js');
+var Effect = require('effects/Effect.js');
+var BlurShader = require('shaders/BlurShader.js');
 
 var defaults = {
-    side: 1
+    amount: 1.0
 };
 
 var id = 0;
 
-var MirrorDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'MirrorDisplay', defaults);
+var BlurEffect = function(options) {
+    Effect.call(this, id++, 'BlurEffect', defaults);
 
-    this.shader = MirrorShader;
+    this.shader = BlurShader;
 
     this.update(options);
 };
 
-MirrorDisplay.info = {
-    name: 'Mirror'
+BlurEffect.info = {
+    name: 'Blur'
 };
 
-Class.extend(MirrorDisplay, ShaderDisplay, {
+Class.extend(BlurEffect, Effect, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -41,10 +41,10 @@ Class.extend(MirrorDisplay, ShaderDisplay, {
 
     updateScene: function(scene) {
         if (this.changed) {
-            this.pass.setUniforms(this.options);
+            this.pass.setUniforms({ amount: [this.options.amount, this.options.amount] });
             this.changed = false;
         }
     }
 });
 
-module.exports = MirrorDisplay;
+module.exports = BlurEffect;

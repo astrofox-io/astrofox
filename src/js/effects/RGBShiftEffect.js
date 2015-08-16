@@ -1,29 +1,31 @@
 'use strict';
 
+var THREE = require('three');
 var Class = require('core/Class.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
-var HexagonShader = require('shaders/HexagonShader.js');
+var Effect = require('effects/Effect.js');
+var RGBShiftShader = require('shaders/RGBShiftShader.js');
 
 var defaults = {
-    scale: 10.0,
-    center: 0.5
+    amount: 0.005,
+    angle: 0.0
 };
 
 var id = 0;
+var RADIANS = 0.017453292519943295;
 
-var HexagonDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'HexagonDisplay', defaults);
+var RGBShiftEffect = function(options) {
+    Effect.call(this, id++, 'RGBShiftEffect', defaults);
 
-    this.shader = HexagonShader;
+    this.shader = RGBShiftShader;
 
     this.update(options);
 };
 
-HexagonDisplay.info = {
-    name: 'Hexagon'
+RGBShiftEffect.info = {
+    name: 'RGB Shift'
 };
 
-Class.extend(HexagonDisplay, ShaderDisplay, {
+Class.extend(RGBShiftEffect, Effect, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -44,10 +46,14 @@ Class.extend(HexagonDisplay, ShaderDisplay, {
         var options = this.options;
 
         if (this.changed) {
-            this.pass.setUniforms({ scale: options.scale, center: [options.center, options.center] });
+            this.pass.setUniforms({
+                amount: options.amount,
+                angle: options.angle * RADIANS
+            });
+
             this.changed = false;
         }
     }
 });
 
-module.exports = HexagonDisplay;
+module.exports = RGBShiftEffect;

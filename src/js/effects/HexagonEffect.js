@@ -1,28 +1,29 @@
 'use strict';
 
 var Class = require('core/Class.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
-var BlurShader = require('shaders/BlurShader.js');
+var Effect = require('effects/Effect.js');
+var HexagonShader = require('shaders/HexagonShader.js');
 
 var defaults = {
-    amount: 1.0
+    scale: 10.0,
+    center: 0.5
 };
 
 var id = 0;
 
-var BlurDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'BlurDisplay', defaults);
+var HexagonEffect = function(options) {
+    Effect.call(this, id++, 'HexagonEffect', defaults);
 
-    this.shader = BlurShader;
+    this.shader = HexagonShader;
 
     this.update(options);
 };
 
-BlurDisplay.info = {
-    name: 'Blur'
+HexagonEffect.info = {
+    name: 'Hexagon'
 };
 
-Class.extend(BlurDisplay, ShaderDisplay, {
+Class.extend(HexagonEffect, Effect, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -40,11 +41,13 @@ Class.extend(BlurDisplay, ShaderDisplay, {
     },
 
     updateScene: function(scene) {
+        var options = this.options;
+
         if (this.changed) {
-            this.pass.setUniforms({ amount: [this.options.amount, this.options.amount] });
+            this.pass.setUniforms({ scale: options.scale, center: [options.center, options.center] });
             this.changed = false;
         }
     }
 });
 
-module.exports = BlurDisplay;
+module.exports = HexagonEffect;

@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var DisplayLibrary = require('display/DisplayLibrary.js');
-var EffectLibrary = require('display/EffectLibrary.js');
+var EffectsLibrary = require('effects/EffectsLibrary.js');
 var ControlLibrary = require('display/ControlLibrary.js');
 var Scene = require('display/Scene.js');
 var SceneControl = require('ui/controls/SceneControl.jsx');
@@ -15,18 +15,18 @@ var ControlLoader = {
         SoundwaveDisplay: ControlLibrary.SoundwaveControl,
         TextDisplay: ControlLibrary.TextControl,
         GeometryDisplay: ControlLibrary.GeometryControl,
-        // FX
-        RGBShiftDisplay: ControlLibrary.RGBShiftControl,
-        DotScreenDisplay: ControlLibrary.DotScreenControl,
-        LEDDisplay: ControlLibrary.LEDControl,
-        MirrorDisplay: ControlLibrary.MirrorControl,
-        BlurDisplay: ControlLibrary.BlurControl,
-        HexagonDisplay: ControlLibrary.HexagonControl
+        // Effects
+        RGBShiftEffect: ControlLibrary.RGBShiftControl,
+        DotScreenEffect: ControlLibrary.DotScreenControl,
+        LEDEffect: ControlLibrary.LEDControl,
+        MirrorEffect: ControlLibrary.MirrorControl,
+        BlurEffect: ControlLibrary.BlurControl,
+        HexagonEffect: ControlLibrary.HexagonControl
     },
 
     getControl: function(obj) {
         var control = null,
-            displays = _.assign({}, DisplayLibrary, EffectLibrary);
+            displays = _.assign({}, DisplayLibrary, EffectsLibrary);
 
         if (obj instanceof Scene) {
             return SceneControl;

@@ -3,12 +3,12 @@
 var Class = require('core/Class.js');
 var Display = require('display/Display.js');
 
-var ShaderDisplay = function(id, name, options) {
+var Effect = function(id, name, options) {
     Display.call(this, id, name, options);
 };
 
-Class.extend(ShaderDisplay, Display, {
+Class.extend(Effect, Display, {
 
 });
 
-module.exports = ShaderDisplay;
+module.exports = Effect;

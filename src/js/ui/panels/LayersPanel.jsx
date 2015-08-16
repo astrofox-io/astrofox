@@ -4,11 +4,11 @@ var React = require('react');
 var Application = require('core/Application.js');
 var Display = require('display/Display.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
 var Stage = require('display/Stage.js');
 var Scene = require('display/Scene.js');
+var Effect = require('effects/Effect.js');
 var DisplayLibrary = require('display/DisplayLibrary.js');
-var EffectLibrary = require('display/EffectLibrary.js');
+var EffectsLibrary = require('effects/EffectsLibrary.js');
 
 var TextInput = require('ui/inputs/TextInput.jsx');
 var ControlPickerWindow = require('ui/windows/ControlPickerWindow.jsx');
@@ -82,7 +82,7 @@ var LayersPanel = React.createClass({
         if (Application.stage.hasScenes()) {
             Application.emit(
                 'show_modal',
-                <ControlPickerWindow title="ADD EFFECT" scene={scene} items={EffectLibrary} />
+                <ControlPickerWindow title="ADD EFFECT" scene={scene} items={EffectsLibrary} />
             );
         }
     },
@@ -200,7 +200,7 @@ var LayersPanel = React.createClass({
         else if (obj instanceof CanvasDisplay) {
             icon = <i className="layer-icon icon-document-landscape" />;
         }
-        else if (obj instanceof ShaderDisplay) {
+        else if (obj instanceof Effect) {
             icon = <i className="layer-icon icon-light-up" />;
         }
         else if (obj instanceof Display) {

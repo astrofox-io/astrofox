@@ -1,37 +1,32 @@
 'use strict';
 
 var Class = require('core/Class.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
-var DotScreenShader = require('shaders/DotScreenShader.js');
+var Effect = require('effects/Effect.js');
+var LEDShader = require('shaders/LEDShader.js');
 
 var defaults = {
-    angle: 90,
-    scale: 1.0
+    spacing: 10,
+    size: 4,
+    blur: 4
 };
 
 var id = 0;
-var RADIANS = 0.017453292519943295;
 
-var DotScreenDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'DotScreenDisplay', defaults);
+var LEDEffect = function(options) {
+    Effect.call(this, id++, 'LEDEffect', defaults);
 
-    this.shader = DotScreenShader;
+    this.shader = LEDShader;
 
     this.update(options);
 };
 
-DotScreenDisplay.info = {
-    name: 'Dot Screen'
+LEDEffect.info = {
+    name: 'LED'
 };
 
-Class.extend(DotScreenDisplay, ShaderDisplay, {
+Class.extend(LEDEffect, Effect, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
-
-        if (options && options.angle !== undefined) {
-            this.options.angle = options.angle * RADIANS;
-            changed = true;
-        }
 
         this.changed = changed;
 
@@ -54,4 +49,4 @@ Class.extend(DotScreenDisplay, ShaderDisplay, {
     }
 });
 
-module.exports = DotScreenDisplay;
+module.exports = LEDEffect;

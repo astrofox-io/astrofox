@@ -1,31 +1,30 @@
 'use strict';
 
-var THREE = require('three');
 var Class = require('core/Class.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
-var RGBShiftShader = require('shaders/RGBShiftShader.js');
+var Effect = require('effects/Effect.js');
+var DotScreenShader = require('shaders/DotScreenShader.js');
 
 var defaults = {
-    amount: 0.005,
-    angle: 0.0
+    angle: 90,
+    scale: 1.0
 };
 
 var id = 0;
 var RADIANS = 0.017453292519943295;
 
-var RGBShiftDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'RGBShiftDisplay', defaults);
+var DotScreenEffect = function(options) {
+    Effect.call(this, id++, 'DotScreenEffect', defaults);
 
-    this.shader = RGBShiftShader;
+    this.shader = DotScreenShader;
 
     this.update(options);
 };
 
-RGBShiftDisplay.info = {
-    name: 'RGB Shift'
+DotScreenEffect.info = {
+    name: 'Dot Screen'
 };
 
-Class.extend(RGBShiftDisplay, ShaderDisplay, {
+Class.extend(DotScreenEffect, Effect, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -41,7 +40,6 @@ Class.extend(RGBShiftDisplay, ShaderDisplay, {
 
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(this.shader);
-        //this.pass.material.blending = THREE.SubtractiveBlending;
     },
 
     removeFromScene: function(scene) {
@@ -56,4 +54,4 @@ Class.extend(RGBShiftDisplay, ShaderDisplay, {
     }
 });
 
-module.exports = RGBShiftDisplay;
+module.exports = DotScreenEffect;

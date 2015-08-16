@@ -1,30 +1,28 @@
 'use strict';
 
 var Class = require('core/Class.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
-var LEDShader = require('shaders/LEDShader.js');
+var Effect = require('effects/Effect.js');
+var MirrorShader = require('shaders/MirrorShader.js');
 
 var defaults = {
-    spacing: 10,
-    size: 4,
-    blur: 4
+    side: 1
 };
 
 var id = 0;
 
-var LEDDisplay = function(options) {
-    ShaderDisplay.call(this, id++, 'LEDDisplay', defaults);
+var MirrorEffect = function(options) {
+    Effect.call(this, id++, 'MirrorEffect', defaults);
 
-    this.shader = LEDShader;
+    this.shader = MirrorShader;
 
     this.update(options);
 };
 
-LEDDisplay.info = {
-    name: 'LED'
+MirrorEffect.info = {
+    name: 'Mirror'
 };
 
-Class.extend(LEDDisplay, ShaderDisplay, {
+Class.extend(MirrorEffect, Effect, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
@@ -49,4 +47,4 @@ Class.extend(LEDDisplay, ShaderDisplay, {
     }
 });
 
-module.exports = LEDDisplay;
+module.exports = MirrorEffect;

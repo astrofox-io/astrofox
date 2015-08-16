@@ -80,15 +80,13 @@ var HexagonControl = React.createClass({
                         size="3"
                         value={this.state.center}
                         min={0}
-                        max={10}
-                        step={0.01}
+                        max={100}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="center"
                             min={0}
-                            max={10}
-                            step={0.01}
+                            max={100}
                             value={this.state.center}
                             onChange={this.handleChange} />
                     </div>

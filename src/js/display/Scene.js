@@ -7,7 +7,7 @@ var Class = require('core/Class.js');
 var NodeCollection = require('core/NodeCollection.js');
 var Display = require('display/Display.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
-var ShaderDisplay = require('display/ShaderDisplay.js');
+var Effect = require('effects/Effect.js');
 var Composer = require('graphics/Composer.js');
 
 var id = 0;
@@ -115,7 +115,7 @@ Class.extend(Scene, Display, {
             if (display instanceof CanvasDisplay) {
                 enabled = true;
             }
-            else if (display instanceof ShaderDisplay) {
+            else if (display instanceof Effect) {
                 shader = true;
             }
         });
