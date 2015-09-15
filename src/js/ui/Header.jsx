@@ -45,14 +45,14 @@ var Header = React.createClass({
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.showDevTools();
+        this.window.openDevTools();
     },
 
     handleReload: function(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.reloadDev();
+        this.window.reload();
     },
 
 

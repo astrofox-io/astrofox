@@ -105,8 +105,6 @@ Class.extend(GeometryDisplay, Display, {
         this.scene = _scene;
         this.lights = lights;
 
-        //scene.composer.addShaderPass(ShaderLibrary.hexagon);
-
         this.createMesh(options.shape);
         this.updateLights();
     },

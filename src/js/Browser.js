@@ -2,12 +2,16 @@
 
 var Browser = {
     init: function() {
+        var win;
+
         // NW.js
         if (global.__nw_require) {
             var GUI = global.window.require('nw.gui');
 
-            var win = this.Window = GUI.Window.get();
+            win = GUI.Window.get();
             win.showDevTools();
+
+            this.Window = new NWJS(win);
 
             // OSX
             if (global.process.platform === 'darwin') {
@@ -16,15 +20,24 @@ var Browser = {
                 win.menu = mb;
             }
         }
+        // Electron
+        else {
+            var remote = global.window.require('remote');
+
+            win = remote.getCurrentWindow();
+            win.openDevTools({ detach: true });
+
+            this.Window = new Electron(win);
+        }
     }
 };
 
-var NWWindow = function(window) {
+var NWJS = function(window) {
     this.window = window;
 };
 
-NWWindow.prototype = {
-    constructor: NWWindow,
+NWJS.prototype = {
+    constructor: NWJS,
 
     maximize: function() {
         this.window.maximize();
@@ -38,12 +51,48 @@ NWWindow.prototype = {
         this.window.unmaximize();
     },
 
-    showDevTools: function() {
+    openDevTools: function() {
         this.window.showDevTools();
     },
 
     reload: function() {
         this.window.reload();
+    },
+
+    close: function() {
+        this.window.close();
+    }
+};
+
+var Electron = function(window) {
+    this.window = window;
+};
+
+Electron.prototype = {
+    constructor: Electron,
+
+    maximize: function() {
+        this.window.maximize();
+    },
+
+    minimize: function() {
+        this.window.minimize();
+    },
+
+    unmaximize: function() {
+        this.window.unmaximize();
+    },
+
+    openDevTools: function() {
+        this.window.openDevTools({ detach: true });
+    },
+
+    reload: function() {
+        this.window.reload();
+    },
+
+    close: function() {
+        this.window.close();
     }
 };
 
