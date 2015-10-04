@@ -9,7 +9,7 @@
     "3d",
     "video"
   ],
-  "main": "index.html",
+  "main": "main.js",
   "window": {
     "title": "AstroFox",
     "toolbar": false,

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _ = require('lodash');
 var Class = require('core/Class.js');
@@ -11,8 +11,7 @@ var defaults = {
 var Display = function(id, name, options) {
     this.id = id;
     this.name = name;
-    this.displayName = name + '' + id;
-    this.options = _.assign({}, defaults, options);
+    this.options = _.assign({ displayName: name + '' + id }, defaults, options);
     this.owner = null;
     this.initialized = false;
 };
@@ -44,7 +43,7 @@ Class.extend(Display, EventEmitter, {
     toJSON: function() {
         return {
             name: this.name,
-            values: this.options
+            options: this.options
         };
     }
 });

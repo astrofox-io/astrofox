@@ -22,6 +22,9 @@ var ModalWindow = require('ui/windows/ModalWindow.jsx');
 var AboutWindow = require('ui/windows/AboutWindow.jsx');
 var SettingsWindow = require('ui/windows/SettingsWindow.jsx');
 
+var remote = global.require('remote');
+var dialog = remote.require('dialog');
+
 var App = React.createClass({
     getInitialState: function() {
         return {
@@ -95,31 +98,31 @@ var App = React.createClass({
 
             case 'File/Open Project':
                 this.loadFileDialog(function(file) {
-                    Application.loadProject(file);
+                    Application.loadProject(file[0]);
                 }.bind(this), '');
                 break;
 
             case 'File/Save Project':
-                this.loadFileDialog(function(file) {
-                    Application.saveProject(file);
+                this.loadFileDialog(function(filename) {
+                    Application.saveProject(filename);
                 }.bind(this), 'project.afx');
                 break;
 
             case 'File/Load Audio':
                 this.loadFileDialog(function(file) {
-                    this.loadAudioFile(file);
+                    this.loadAudioFile(file[0]);
                 }.bind(this), '');
                 break;
 
             case 'File/Save Image':
-                this.loadFileDialog(function(file) {
-                    Application.saveImage(file);
+                this.loadFileDialog(function(filename) {
+                    Application.saveImage(filename);
                 }.bind(this), 'image.png');
                 break;
 
             case 'File/Save Video':
-                this.loadFileDialog(function(file) {
-                    Application.saveVideo(file);
+                this.loadFileDialog(function(filename) {
+                    Application.saveVideo(filename);
                 }.bind(this), 'video.mp4');
                 break;
 
@@ -142,13 +145,13 @@ var App = React.createClass({
         this.fileAction = action;
 
         if (filename) {
-            this.fileInput.setAttribute('nwsaveas', filename);
+            dialog.showSaveDialog({ defaultPath: filename }, action);
         }
         else {
-            this.fileInput.removeAttribute('nwsaveas');
+            dialog.showOpenDialog(action);
         }
 
-        this.fileInput.click();
+        //this.fileInput.click();
     },
 
     showModal: function(modal) {
@@ -168,10 +171,7 @@ var App = React.createClass({
     },
 
     loadAudioFile: function(file) {
-        var scene = this.refs.scene,
-            err = function(error) {
-                this.showError(error);
-            }.bind(this);
+        var scene = this.refs.scene;
 
         scene.showLoading(true);
 
@@ -179,7 +179,9 @@ var App = React.createClass({
             .then(function(data) {
                 return Application.loadAudioData(data);
             })
-            .catch(err)
+            .catch(function(error) {
+                this.showError(error);
+            }.bind(this))
             .then(function() {
                 scene.showLoading(false);
             });

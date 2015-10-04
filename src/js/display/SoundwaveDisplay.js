@@ -22,7 +22,6 @@ var SoundwaveDisplay = function(options) {
     CanvasDisplay.call(this, id++, 'SoundwaveDisplay', defaults);
 
     this.wave = new WaveDisplay(this.canvas, options);
-    this.options = _.assign({}, defaults);
 
     this.update(options);
 };

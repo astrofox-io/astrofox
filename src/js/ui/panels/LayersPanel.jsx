@@ -126,7 +126,7 @@ var LayersPanel = React.createClass({
     handleLayerEdit: function(val) {
         var layer = this.getActiveLayer();
 
-        layer.displayName = val;
+        layer.options.displayName = val;
 
         this.cancelEdit();
     },
@@ -142,6 +142,8 @@ var LayersPanel = React.createClass({
     },
 
     setActiveLayer: function(i) {
+        if (typeof i === 'undefined') return;
+
         var props = this.props,
             index = (typeof i === 'number') ? i : this.state.layers.indexOf(i);
 
@@ -177,7 +179,7 @@ var LayersPanel = React.createClass({
 
             text = (
                 <TextInput
-                    value={obj.displayName}
+                    value={obj.options.displayName}
                     buffered={true}
                     autoFocus={true}
                     autoSelect={true}
@@ -189,7 +191,7 @@ var LayersPanel = React.createClass({
         else {
             text = (
                 <span onDoubleClick={this.handleDoubleClick.bind(this, index)}>
-                    {obj.displayName}
+                    {obj.options.displayName}
                 </span>
             );
         }

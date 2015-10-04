@@ -145,6 +145,8 @@ Class.extend(GeometryDisplay, Display, {
     },
 
     createMesh: function(shape) {
+        if (!this.scene) return;
+
         var geometry, material,
             scene = this.scene,
             mesh = this.mesh,

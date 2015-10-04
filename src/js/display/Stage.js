@@ -88,6 +88,12 @@ Class.extend(Stage, NodeCollection, {
         return this.scenes.nodes;
     },
 
+    clear: function() {
+        this.scenes.nodes.forEach(function(scene) {
+            this.removeScene(scene);
+        }.bind(this));
+    },
+
     getDisplays: function() {
         var displays = [];
 

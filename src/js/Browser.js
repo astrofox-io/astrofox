@@ -6,7 +6,7 @@ var Browser = {
 
         // NW.js
         if (global.__nw_require) {
-            var GUI = global.window.require('nw.gui');
+            var GUI = global.require('nw.gui');
 
             win = GUI.Window.get();
             win.showDevTools();
@@ -22,7 +22,7 @@ var Browser = {
         }
         // Electron
         else {
-            var remote = global.window.require('remote');
+            var remote = global.require('remote');
 
             win = remote.getCurrentWindow();
             win.openDevTools({ detach: true });

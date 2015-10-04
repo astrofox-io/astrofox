@@ -13,7 +13,7 @@ var ToggleInput = require('ui/inputs//ToggleInput.jsx');
 var defaults = {
     text: '',
     size: 40,
-    font: 'Arial',
+    font: 'Roboto',
     italic: false,
     bold: false,
     x: 0,
@@ -26,11 +26,11 @@ var defaults = {
 var TextControl = React.createClass({
     fontOptions: [
         'Abel',
-        'Arial',
         'Bangers',
         'Cardo',
         'Dynalight',
         'Merriweather',
+        'Playfair Display',
         'Permanent Marker',
         'Oswald',
         'Oxygen',

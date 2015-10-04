@@ -202,12 +202,13 @@ Class.extend(Scene, Display, {
     },
 
     toJSON: function() {
-        var displays = this.displays.map(function(display) {
+        var displays = this.displays.nodes.map(function(display) {
             return display.toJSON();
         });
 
         return {
             name: this.name,
+            options: this.options,
             displays: displays
         };
     }

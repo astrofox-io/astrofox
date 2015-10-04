@@ -10,8 +10,13 @@ var Player = require('audio/Player.js');
 var BufferedSound = require('audio/BufferedSound.js');
 var SpectrumAnalyzer = require('audio/SpectrumAnalyzer.js');
 var Stage = require('display/Stage.js');
+var Scene = require('display/Scene.js');
+var Display = require('display/Display.js');
 var DisplayLibrary = require('display/DisplayLibrary.js');
+var EffectsLibrary = require('effects/EffectsLibrary.js');
 var IO = require('IO.js');
+
+var VERSION = '1.0';
 
 var defaults = {
     fps: 29.97,
@@ -39,7 +44,8 @@ var Application = function() {
 Class.extend(Application, EventEmitter, {
     loadAudioFile: function(file) {
         return new Promise(function(resolve, reject) {
-            var reader = new FileReader(),
+            var buffer,
+                reader = new FileReader(),
                 player = this.player,
                 timer = this.timer;
 
@@ -56,6 +62,12 @@ Class.extend(Application, EventEmitter, {
             }.bind(this);
 
             timer.set('file_load');
+
+            if (typeof file === 'string') {
+                buffer = IO.fs.readFileSync(file);
+                file = new Blob([new Uint8Array(buffer).buffer]);
+            }
+
             reader.readAsArrayBuffer(file);
         }.bind(this));
     },
@@ -143,16 +155,18 @@ Class.extend(Application, EventEmitter, {
         source.start(0, frame / fps, 1 / fps);
     },
 
-    saveImage: function(file) {
+    saveImage: function(filename) {
         this.stage.renderImage(this.data, 'image/png', function(buffer) {
-            IO.fs.writeFile(file.path, buffer);
+            IO.fs.writeFile(filename, buffer, function(err) {
+                this.emit('error', new Error(err));
+            }.bind(this));
 
             // DEBUG
-            console.log(file.path + ' saved');
+            console.log(filename + ' saved');
         });
     },
 
-    saveVideo: function(file) {
+    saveVideo: function(filename) {
         var player = this.player,
             stage = this.stage,
             sound = player.getSound('audio');
@@ -162,44 +176,48 @@ Class.extend(Application, EventEmitter, {
         if (player.isPlaying()) player.stop('audio');
 
         if (sound) {
-            stage.renderVideo(file.path, 29.97, 5, this.processFrame.bind(this), function() {
+            stage.renderVideo(filename, 29.97, 5, this.processFrame.bind(this), function() {
                 this.startRender();
             }.bind(this));
         }
 
         // DEBUG
-        console.log(file + ' saved');
+        console.log(filename + ' saved');
     },
 
-    saveProject: function(file) {
-        var data, buffer,
+    saveProject: function(filename) {
+        var data, sceneData,
             options = this.options;
 
-        data = this.stage.scenes.map(function(scene) {
+        sceneData = this.stage.getScenes().map(function(scene) {
             return scene.toJSON();
         });
+
+        data = {
+            version: VERSION,
+            scenes: sceneData
+        };
 
         if (options.useCompression) {
             IO.zlib.deflate(
                 JSON.stringify(data),
                 function(err, buf) {
-                    buffer = new IO.Buffer(buf);
-                    IO.fs.writeFileSync(file.path, buffer);
+                    IO.fs.writeFileSync(filename, new IO.Buffer(buf));
                 }.bind(this)
             );
         }
         else {
-            IO.fs.writeFile(file.path, JSON.stringify(data));
+            IO.fs.writeFile(filename, JSON.stringify(data));
         }
 
         // DEBUG
-        console.log(file.path + ' saved');
+        console.log(filename + ' saved');
     },
 
-    loadProject: function(file) {
+    loadProject: function(filename) {
         var options = this.options;
 
-        var data = IO.fs.readFileSync(file.path);
+        var data = IO.fs.readFileSync(filename);
 
         if (options.useCompression) {
             IO.zlib.inflate(data, function(err, buf) {
@@ -207,8 +225,7 @@ Class.extend(Application, EventEmitter, {
                     this.loadControls(JSON.parse(buf.toString()));
                 }
                 catch (err) {
-                    alert(err);
-                    this.emit('error', new Error('Invalid project file.'));
+                    this.raiseError('Invalid project data.', err);
                 }
             }.bind(this));
         }
@@ -217,23 +234,32 @@ Class.extend(Application, EventEmitter, {
                 this.loadControls(JSON.parse(data));
             }
             catch (err) {
-                this.emit('error', new Error('Invalid project file.'));
+                this.raiseError('Invalid project data.', err);
             }
         }
     },
 
     loadControls: function(data) {
-        if (data instanceof Array) {
-            this.stage.scenes.clear();
+        var controls = _.assign({}, DisplayLibrary, EffectsLibrary);
 
-            data.forEach(function(item) {
-                this.stage.scenes.addScene(new DisplayLibrary[item.name](item.values));
+        if (typeof data === 'object') {
+            this.stage.clear();
+
+            data.scenes.forEach(function(item) {
+                var scene = new Scene(item.name, item.options);
+                this.stage.addScene(scene);
+
+                if (item.displays) {
+                    item.displays.forEach(function(display) {
+                        scene.addDisplay(new controls[display.name](display.options));
+                    }.bind(this));
+                }
             }.bind(this));
 
             this.emit('control_added');
         }
         else {
-            this.emit('error', new Error('Invalid project file.'));
+            this.raiseError('Invalid project data.');
         }
     },
 
@@ -245,7 +271,30 @@ Class.extend(Application, EventEmitter, {
         if (sound) {
             spectrum.enabled = (sound.playing || sound.paused);
         }
+    },
+
+    raiseError: function(msg, e) {
+        if (e) console.error(e);
+        this.emit('error', new Error(msg));
     }
 });
+
+function toArrayBuffer(buffer) {
+    var ab = new ArrayBuffer(buffer.length);
+    var view = new Uint8Array(ab);
+    for (var i = 0; i < buffer.length; ++i) {
+        view[i] = buffer[i];
+    }
+    return ab;
+}
+
+function toBuffer(ab) {
+    var buffer = new Buffer(ab.byteLength);
+    var view = new Uint8Array(ab);
+    for (var i = 0; i < buffer.length; ++i) {
+        buffer[i] = view[i];
+    }
+    return buffer;
+}
 
 module.exports = new Application;
