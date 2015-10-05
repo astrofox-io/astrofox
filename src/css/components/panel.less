@@ -1,7 +1,6 @@
 .panel {
     display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    position: relative;
 
     .title {
         font-size: @font-small;
@@ -10,16 +9,19 @@
         margin-left: 10px;
         color: @text-level1-color;
         cursor: default;
+        flex-shrink: 0;
     }
 
-    .btn-group {
+    .button-group {
         padding: 5px;
         width: 100%;
         background-color: @bg-color;
         border-top: 1px solid @border-top-color;
         border-bottom: 1px solid @border-bottom-color;
+        overflow: hidden;
+        flex-shrink: 0;
 
-        .btn {
+        .button {
             color: @text-color;
             padding: 0 5px;
             line-height: 20px;
@@ -31,15 +33,15 @@
             display: inline-block;
         }
 
-        .btn:hover {
+        .button:hover {
             background-color: @base-color;
         }
 
-        .btn-disabled {
+        .button-disabled {
             color: darken(@text-color, 60%);
         }
 
-        .btn-disabled:hover {
+        .button-disabled:hover {
             background-color: @bg-level1-color;
         }
     }

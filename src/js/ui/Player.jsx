@@ -80,7 +80,11 @@ var Player = React.createClass({
             currentTime = state.progressPosition * totalTime,
             isPlaying = player.isPlaying(),
             loop = player.options.loop,
-            style = { display: (this.props.visible) ? 'flex' : 'none' };
+            style = {};
+
+        if (!this.props.visible) {
+            style.display = 'none';
+        }
 
         return (
             <div className="player" style={style}>

@@ -257,18 +257,18 @@ var LayersPanel = React.createClass({
     render: function() {
         var layers,
             hasScenes = Application.stage.hasScenes(),
-            addClasses = 'btn icon-cube',
-            fxClasses = 'btn icon-light-up',
-            removeClasses = 'btn icon-trash-empty',
-            moveUpClasses = 'btn icon-chevron-up',
-            moveDownClasses = 'btn icon-chevron-down';
+            addClasses = 'button icon-cube',
+            fxClasses = 'button icon-light-up',
+            removeClasses = 'button icon-trash-empty',
+            moveUpClasses = 'button icon-chevron-up',
+            moveDownClasses = 'button icon-chevron-down';
 
         if (!hasScenes) {
-            addClasses += ' btn-disabled';
-            fxClasses += ' btn-disabled';
-            removeClasses += ' btn-disabled';
-            moveUpClasses += ' btn-disabled';
-            moveDownClasses += ' btn-disabled';
+            addClasses += ' button-disabled';
+            fxClasses += ' button-disabled';
+            removeClasses += ' button-disabled';
+            moveUpClasses += ' button-disabled';
+            moveDownClasses += ' button-disabled';
         }
 
         layers = this.state.layers.map(function(layer, index) {
@@ -280,8 +280,8 @@ var LayersPanel = React.createClass({
                 <div className="layers">
                     {layers}
                 </div>
-                <ul className="btn-group">
-                    <li className="btn icon-picture" title="Add Scene" onClick={this.handleAddSceneClick} />
+                <ul className="button-group">
+                    <li className="button icon-picture" title="Add Scene" onClick={this.handleAddSceneClick} />
                     <li className={addClasses} title="Add Display" onClick={this.handleAddDisplayClick} />
                     <li className={fxClasses} title="Add Effect" onClick={this.handleAddEffectClick} />
                     <li className={moveUpClasses} title="Move Layer Up" onClick={this.handleMoveUpClick} />

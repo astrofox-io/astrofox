@@ -49,6 +49,7 @@ var ControlDock = React.createClass({
                     title="LAYERS"
                     ref="layersPanel"
                     height={300}
+                    minHeight={100}
                     resizable={true}>
                     <LayersPanel
                         ref="layers"
@@ -58,7 +59,7 @@ var ControlDock = React.createClass({
                 </Panel>
                 <Panel
                     title="CONTROLS"
-                    className="flex"
+                    stretch={true}
                     shouldUpdate={false}>
                     <ControlsPanel ref="controls" />
                 </Panel>

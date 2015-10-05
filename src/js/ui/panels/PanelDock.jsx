@@ -34,13 +34,16 @@ var PanelDock = React.createClass({
             state = this.state,
             classes = 'panel-dock',
             style = {
-                display: (props.visible) ? 'flex' : 'none',
                 width: props.width,
                 cursor: (state.dragging) ? 'ns-resize' : null
             },
             mouseMove = (state.dragging) ? this.handleMouseMove : null;
 
         classes += (props.direction == 'vertical') ? ' flex-column' : ' flex-row';
+
+        if (!props.visible) {
+            style.display = 'none';
+        }
 
         var panels = React.Children.map(props.children, function(child) {
             var obj = child.props;

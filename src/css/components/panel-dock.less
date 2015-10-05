@@ -1,5 +1,20 @@
 .panel-dock {
-    background-color: @bg-level1-color;
-    z-index: 100;
     display: flex;
+    position: relative;
+    overflow: hidden;
+    z-index: 100;
+    background-color: @bg-level1-color;
+
+    .panel-horizontal {
+        flex-direction: row;
+    }
+
+    .panel-vertical {
+        flex-direction: column;
+    }
+
+    .panel-stretch {
+        flex: 1;
+        overflow: hidden;
+    }
 }

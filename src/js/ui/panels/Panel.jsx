@@ -7,7 +7,9 @@ var Splitter = require('./Splitter.jsx');
 var Panel = React.createClass({
     getDefaultProps: function() {
         return {
-            shouldUpdate: true
+            shouldUpdate: true,
+            direction: 'vertical',
+            stretch: false
         };
     },
 
@@ -17,10 +19,10 @@ var Panel = React.createClass({
         return {
             visible: props.visible || true,
             dragging: false,
-            height: props.height || 200,
-            width: props.width || 200,
-            minHeight: props.minHeight || 100,
-            minWidth: props.minWidth || 100,
+            height: props.height,
+            width: props.width,
+            minHeight: props.minHeight || 0,
+            minWidth: props.minWidth || 0,
             startX: 0,
             startY: 0,
             startWidth: 0,
@@ -34,13 +36,13 @@ var Panel = React.createClass({
         Application.on('mouseup', function() {
             if (this.state.dragging) {
                 this.setState({
-                        dragging: false
-                    },
-                    function() {
-                        if (props.onDragEnd) {
-                            props.onDragEnd();
-                        }
-                    });
+                    dragging: false
+                },
+                function() {
+                    if (props.onDragEnd) {
+                        props.onDragEnd();
+                    }
+                });
             }
         }.bind(this));
     },
@@ -89,8 +91,14 @@ var Panel = React.createClass({
     render: function() {
         var props = this.props,
             state = this.state,
-            classes = 'panel ' + (props.className || ''),
-            style = { height: state.height};
+            classes = 'panel',
+            style = (state.height) ? { height: state.height} : null;
+
+        classes += (props.direction == 'vertical') ? ' panel-vertical' : ' panel-horizontal';
+
+        if (props.stretch) {
+            classes += ' panel-stretch';
+        }
 
         var splitter = (props.resizable) ?
             <Splitter type="horizontal" onDragStart={this.handleStartDrag} /> : null;

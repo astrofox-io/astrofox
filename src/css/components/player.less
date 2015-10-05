@@ -4,8 +4,9 @@
     padding: 10px 0;
     background-color: @bg-level4-color;
     border-top: 1px solid lighten(@bg-level4-color, 6%);
-    flex: 0 0 auto;
-    .flex-box(row, flex-start, center, stretch);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
     .buttons {
         margin: 0 20px;
