@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // In case console doesn't open
     if (process) {
         process.on('uncaughtException', function(e) {
-            //alert(e.stack);
+            alert(e.stack);
         });
     }
 
