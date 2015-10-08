@@ -196,6 +196,16 @@ Class.extend(GeometryDisplay, Display, {
         //shader = THREE.ShaderLib[options.shader.toLowerCase()];
         //material = new THREE.ShaderMaterial(shader);
 
+        if (options.shading == 'Flat') {
+            geometry.computeFaceNormals();
+
+            for ( var i = 0; i < geometry.faces.length; i ++ ) {
+                geometry.faces[ i ].vertexNormals = [];
+            }
+
+            geometry = new THREE.BufferGeometry().fromGeometry(geometry);
+        }
+
         material = new shaders[options.shader]();
         material.shading = shading[options.shading];
         material.color = new THREE.Color().set(options.color);

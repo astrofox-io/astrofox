@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
@@ -13,9 +14,9 @@ var ImageInput = React.createClass({
     },
 
     componentDidMount: function() {
-        this.image = React.findDOMNode(this.refs.image);
-        this.file = React.findDOMNode(this.refs.file);
-        this.form = React.findDOMNode(this.refs.form);
+        this.image = ReactDOM.findDOMNode(this.refs.image);
+        this.file = ReactDOM.findDOMNode(this.refs.file);
+        this.form = ReactDOM.findDOMNode(this.refs.form);
     },
 
     componentWillReceiveProps: function(props) {

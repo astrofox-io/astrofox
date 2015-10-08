@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Application = require('core/Application.js');
 var WaveDisplay = require('display/WaveDisplay.js');
 
@@ -13,7 +14,7 @@ var Wave = React.createClass({
 
     componentDidMount: function() {
         this.display = new WaveDisplay(
-            React.findDOMNode(this.refs.canvas),
+            ReactDOM.findDOMNode(this.refs.canvas),
             this.config
         );
 

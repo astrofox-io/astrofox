@@ -6,7 +6,7 @@ var ToggleInput = React.createClass({
     getDefaultProps: function() {
         return {
             name: "toggle",
-            value: 0
+            value: false
         };
     },
 
@@ -26,7 +26,7 @@ var ToggleInput = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        var val = (this.state.value + 1) % 2;
+        var val = !this.state.value;
 
         this.setState({ value: val }, function(){
             if (this.props.onChange) {
@@ -37,7 +37,7 @@ var ToggleInput = React.createClass({
 
     render: function() {
         var classes = "input input-toggle";
-        if (this.state.value == 1) classes += " input-toggle-on";
+        if (this.state.value) classes += " input-toggle-on";
 
         return (
             <div className={classes} onClick={this.handleClick}></div>

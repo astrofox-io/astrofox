@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var TextInput = React.createClass({
     getDefaultProps: function() {
@@ -25,7 +26,7 @@ var TextInput = React.createClass({
         this.setState({ value: this.props.value });
 
         if (this.props.autoSelect) {
-            React.findDOMNode(this.refs.input).select();
+            ReactDOM.findDOMNode(this.refs.input).select();
         }
     },
 

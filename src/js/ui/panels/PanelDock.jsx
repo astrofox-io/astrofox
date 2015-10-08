@@ -46,13 +46,14 @@ var PanelDock = React.createClass({
         }
 
         var panels = React.Children.map(props.children, function(child) {
-            var obj = child.props;
-
-            if (obj.resizable) {
-                obj.onDragStart = this.handleDragStart;
-                obj.onDragEnd = this.handleDragEnd;
-
-                return React.cloneElement(child, obj);
+            if (child.props.resizable) {
+                return React.cloneElement(
+                    child,
+                    {
+                        onDragStart: this.handleDragStart,
+                        onDragEnd: this.handleDragEnd
+                    }
+                );
             }
 
             return child;

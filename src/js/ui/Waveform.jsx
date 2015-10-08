@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Application = require('../core/Application.js');
 var BarDisplay = require('../display/BarDisplay.js');
 var WaveformParser = require('../audio/WaveformParser.js');
@@ -30,7 +31,7 @@ var Waveform = React.createClass({
             player = Application.player;
 
         this.bars = new BarDisplay(
-            React.findDOMNode(this.refs.canvas),
+            ReactDOM.findDOMNode(this.refs.canvas),
             {
                 y: config.height,
                 height: config.height,
@@ -44,7 +45,7 @@ var Waveform = React.createClass({
         );
 
         this.progress = new BarDisplay(
-            React.findDOMNode(this.refs.progress),
+            ReactDOM.findDOMNode(this.refs.progress),
             {
                 y: config.height,
                 height: config.height,
@@ -58,7 +59,7 @@ var Waveform = React.createClass({
         );
 
         this.seek = new BarDisplay(
-            React.findDOMNode(this.refs.seek),
+            ReactDOM.findDOMNode(this.refs.seek),
             {
                 y: config.height,
                 height: config.height,

@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Application = require('core/Application.js');
 var SpectrumParser = require('audio/SpectrumParser.js');
 var BarDisplay = require('display/BarDisplay.js');
@@ -37,7 +38,7 @@ var Spectrum = React.createClass({
 
     componentDidMount: function() {
         this.bars = new BarDisplay(
-            React.findDOMNode(this.refs.canvas),
+            ReactDOM.findDOMNode(this.refs.canvas),
             this.config
         );
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var _ = require('lodash');
 var Application = require('core/Application.js');
 var ControlLoader = require('util/ControlLoader.js');
@@ -31,8 +32,8 @@ var ControlsPanel = React.createClass({
 
     scrollToControl: function(layer) {
         var id = layer.toString(),
-            controls = React.findDOMNode(this.refs.controls),
-            node = React.findDOMNode(this.refs[id]);
+            controls = ReactDOM.findDOMNode(this.refs.controls),
+            node = ReactDOM.findDOMNode(this.refs[id]);
 
         if (node) {
             controls.scrollTop = node.offsetTop;

@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Application = require('core/Application.js');
 var Scene = require('display/Scene.js');
 var DisplayLibrary = require('display/DisplayLibrary.js');
@@ -57,10 +58,6 @@ var App = React.createClass({
     },
 
     componentDidMount: function() {
-        this.fileForm = React.findDOMNode(this.refs.form);
-        this.fileInput = React.findDOMNode(this.refs.file);
-        this.fileInput.setAttribute('nwsaveas', '');
-        this.fileAction = null;
     },
 
     handleClick: function() {
@@ -78,17 +75,6 @@ var App = React.createClass({
 
     handleMouseUp: function(e) {
         Application.emit('mouseup');
-    },
-
-    handleFileAction: function(e) {
-        e.preventDefault();
-
-        var files = e.target.files;
-
-        if (files.length > 0) {
-            this.fileAction(files[0]);
-            this.fileForm.reset();
-        }
     },
 
     handleMenuAction: function(action, checked) {
@@ -142,8 +128,6 @@ var App = React.createClass({
     },
 
     loadFileDialog: function(action, filename) {
-        this.fileAction = action;
-
         if (filename) {
             dialog.showSaveDialog({ defaultPath: filename }, action);
         }
@@ -217,13 +201,6 @@ var App = React.createClass({
                 <Footer
                     filename={this.state.filename}
                 />
-                <form ref="form" className="off-screen">
-                    <input
-                        ref="file"
-                        type="file"
-                        onChange={this.handleFileAction}
-                    />
-                </form>
             </div>
         );
     }
