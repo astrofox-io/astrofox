@@ -6,8 +6,8 @@ var ColorShiftShader = {
         time: { type: 'f', value: 1.0 }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.color_shift
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.ColorShift
 };
 
 module.exports = ColorShiftShader;

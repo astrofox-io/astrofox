@@ -18,8 +18,8 @@ var DotScreenShader = {
         scale: { type: 'f', value: 1.0 }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.dot_screen
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.DotScreen
 };
 
 module.exports = DotScreenShader;

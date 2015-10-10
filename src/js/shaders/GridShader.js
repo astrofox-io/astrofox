@@ -6,8 +6,8 @@ var GridShader = {
         tDiffuse: { type: "t", value: null }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.grid
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.Grid
 };
 
 module.exports = GridShader;

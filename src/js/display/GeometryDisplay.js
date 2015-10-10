@@ -54,9 +54,6 @@ Class.extend(GeometryDisplay, Display, {
         if (typeof options !== 'undefined') {
             this._super.update.call(this, options);
 
-            _.forIn(options, function(val, key) {
-
-            });
             if (options.shape !== undefined || options.shader !== undefined || options.shading !== undefined) {
                 this.createMesh(this.options.shape);
             }

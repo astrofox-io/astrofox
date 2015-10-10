@@ -1,17 +1,15 @@
 var THREE = require('three');
 var ShaderCode = require('shaders/ShaderCode.js');
 
-var LEDShader = {
+var BoxBlurShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
-        spacing: { type: 'f', value: 10.0 },
-        size: { type: 'f', value: 4.0 },
-        blur: { type: 'f', value: 4.0 },
+        amount: { type: 'v2', value: new THREE.Vector2(1, 1) },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 
     vertexShader: ShaderCode.vertex.Basic,
-    fragmentShader: ShaderCode.fragment.LED
+    fragmentShader: ShaderCode.fragment.BoxBlur
 };
 
-module.exports = LEDShader;
+module.exports = BoxBlurShader;

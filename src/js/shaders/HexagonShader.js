@@ -9,8 +9,8 @@ var HexagonShader = {
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.hexagon
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.Hexagon
 };
 
 module.exports = HexagonShader;

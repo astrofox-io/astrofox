@@ -10,8 +10,8 @@ var HalftoneShader = {
         tSize: { type: "v2", value: new THREE.Vector2(854, 480) }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.halftone
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.Halftone
 };
 
 module.exports = HalftoneShader;

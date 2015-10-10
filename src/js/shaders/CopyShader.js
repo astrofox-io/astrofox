@@ -7,8 +7,8 @@ var CopyShader = {
         opacity:  { type: "f", value: 1.0 }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.copy
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.Copy
 };
 
 module.exports = CopyShader;

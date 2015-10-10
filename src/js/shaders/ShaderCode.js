@@ -3,25 +3,27 @@ var glslify = require('glslify');
 
 var ShaderCode = {
     vertex: {
-        basic: glslify('../../glsl/vertex/basic.glsl'),
-        crosshatch: glslify('../../glsl/vertex/crosshatch.glsl'),
-        hatch_glow: glslify('../../glsl/vertex/hatch_glow.glsl')
+        Basic: glslify('../../glsl/vertex/Basic.glsl'),
+        Normal: glslify('../../glsl/vertex/Normal.glsl'),
+        Position: glslify('../../glsl/vertex/Position.glsl')
     },
     fragment: {
-        blur: glslify('../../glsl/fragment/blur.glsl'),
-        color_shift: glslify('../../glsl/fragment/color_shift.glsl'),
-        copy: glslify('../../glsl/fragment/copy.glsl'),
-        copy_alpha: glslify('../../glsl/fragment/copy_alpha.glsl'),
-        crosshatch: glslify('../../glsl/fragment/crosshatch.glsl'),
-        dot_screen: glslify('../../glsl/fragment/dot_screen.glsl'),
-        glow_chroma: glslify('../../glsl/fragment/glow_chroma.glsl'),
-        grid: glslify('../../glsl/fragment/grid.glsl'),
-        halftone: glslify('../../glsl/fragment/halftone.glsl'),
-        hatch_glow: glslify('../../glsl/fragment/hatch_glow.glsl'),
-        hexagon: glslify('../../glsl/fragment/hexagon.glsl'),
-        led: glslify('../../glsl/fragment/led.glsl'),
-        mirror: glslify('../../glsl/fragment/mirror.glsl'),
-        rgb_shift: glslify('../../glsl/fragment/rgb_shift.glsl')
+        BarrelBlur: glslify('../../glsl/fragment/BarrelBlur.glsl'),
+        BoxBlur: glslify('../../glsl/fragment/BoxBlur.glsl'),
+        ColorShift: glslify('../../glsl/fragment/ColorShift.glsl'),
+        Copy: glslify('../../glsl/fragment/Copy.glsl'),
+        CopyAlpha: glslify('../../glsl/fragment/CopyAlpha.glsl'),
+        CrossHatch: glslify('../../glsl/fragment/CrossHatch.glsl'),
+        DotScreen: glslify('../../glsl/fragment/DotScreen.glsl'),
+        GaussianBlur: glslify('../../glsl/fragment/GaussianBlur.glsl'),
+        GlowChroma: glslify('../../glsl/fragment/GlowChroma.glsl'),
+        Grid: glslify('../../glsl/fragment/Grid.glsl'),
+        Halftone: glslify('../../glsl/fragment/Halftone.glsl'),
+        Hatch: glslify('../../glsl/fragment/Hatch.glsl'),
+        Hexagon: glslify('../../glsl/fragment/Hexagon.glsl'),
+        LED: glslify('../../glsl/fragment/LED.glsl'),
+        Mirror: glslify('../../glsl/fragment/Mirror.glsl'),
+        RGBShift: glslify('../../glsl/fragment/RGBShift.glsl')
     }
 };
 

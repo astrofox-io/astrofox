@@ -1,15 +1,15 @@
 var THREE = require('three');
 var ShaderCode = require('shaders/ShaderCode.js');
 
-var BlurShader = {
+var GaussianBlurShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
-        amount: { type: 'v2', value: new THREE.Vector2(1, 1) },
+        direction: { type: 'v2', value: new THREE.Vector2(0, 1) },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 
-    vertexShader: ShaderCode.vertex.basic,
-    fragmentShader: ShaderCode.fragment.blur
+    vertexShader: ShaderCode.vertex.Basic,
+    fragmentShader: ShaderCode.fragment.GaussianBlur
 };
 
-module.exports = BlurShader;
+module.exports = GaussianBlurShader;

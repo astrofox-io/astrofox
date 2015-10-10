@@ -4,7 +4,6 @@
 #extension GL_OES_standard_derivatives : enable
 
 varying vec3 vPos;
-
 uniform sampler2D tDiffuse;
 varying vec2 vUv;
 

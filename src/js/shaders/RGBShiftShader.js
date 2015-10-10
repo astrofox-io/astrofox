@@ -20,8 +20,8 @@ var RGBShiftShader = {
         angle: { type: 'f', value: 0.0 }
 	},
 
-	vertexShader: ShaderCode.vertex.basic,
-	fragmentShader: ShaderCode.fragment.rgb_shift
+	vertexShader: ShaderCode.vertex.Basic,
+	fragmentShader: ShaderCode.fragment.RGBShift
 };
 
 module.exports = RGBShiftShader;

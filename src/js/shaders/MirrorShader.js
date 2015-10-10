@@ -16,8 +16,8 @@ var MirrorShader = {
         side: { type: 'i', value: 1 }
 	},
 
-	vertexShader: ShaderCode.vertex.basic,
-	fragmentShader: ShaderCode.fragment.mirror
+	vertexShader: ShaderCode.vertex.Basic,
+	fragmentShader: ShaderCode.fragment.Mirror
 };
 
 module.exports = MirrorShader;

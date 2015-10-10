@@ -3,10 +3,18 @@
 var React = require('react');
 var NumberInput = require('ui/inputs/NumberInput.jsx');
 var RangeInput = require('ui/inputs/RangeInput.jsx');
+var SelectInput = require('ui/inputs/SelectInput.jsx');
 
 var defaults = {
+    type: 'Box',
     amount: 1.0
 };
+
+var types = [
+    'Box',
+    'Gaussian',
+    'Barrel'
+];
 
 var BlurControl = React.createClass({
     getInitialState: function() {
@@ -54,6 +62,15 @@ var BlurControl = React.createClass({
         return (
             <div className="control">
                 <div className="header">BLUR</div>
+                <div className="row">
+                    <label className="label">Type</label>
+                    <SelectInput
+                        name="type"
+                        size="20"
+                        items={types}
+                        value={this.state.type}
+                        onChange={this.handleChange} />
+                </div>
                 <div className="row">
                     <label className="label">Amount</label>
                     <NumberInput
