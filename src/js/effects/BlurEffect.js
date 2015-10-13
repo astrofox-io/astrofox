@@ -4,11 +4,17 @@ var Class = require('core/Class.js');
 var Effect = require('effects/Effect.js');
 var BoxBlurShader = require('shaders/BoxBlurShader.js');
 var GaussianBlurShader = require('shaders/GaussianBlurShader.js');
-var BarrelBlurShader = require('shaders/BarrelBlurShader.js');
+var ZoomBlurShader = require('shaders/ZoomBlurShader.js');
 
 var defaults = {
     type: 'Box',
     amount: 1.0
+};
+
+var shaders = {
+    Box: BoxBlurShader,
+    Gaussian: GaussianBlurShader,
+    Zoom: ZoomBlurShader
 };
 
 var id = 0;
@@ -55,6 +61,11 @@ Class.extend(BlurEffect, Effect, {
                     break;
 
                 case 'Gaussian':
+                    this.pass.setUniforms({ direction: [0, 1] });
+                    break;
+
+                case 'Zoom':
+                    this.pass.setUniforms({ amount: this.options.amount / 10 });
                     break;
             }
 
@@ -66,20 +77,15 @@ Class.extend(BlurEffect, Effect, {
         var options = this.options,
             composer = this.scene.composer;
 
-        composer.removePass(this.pass);
-
         switch (options.type) {
-            case 'Box':
-                this.pass = composer.addShaderPass(BoxBlurShader);
-                break;
-
             case 'Gaussian':
-                this.pass = composer.addShaderPass(GaussianBlurShader);
+                composer.removePass(this.pass);
+                this.pass = composer.addShaderPass(shaders[options.type]);
                 break;
 
-            case 'Barrel':
-                this.pass = composer.addShaderPass(BarrelBlurShader);
-                break;
+            default:
+                composer.removePass(this.pass);
+                this.pass = composer.addShaderPass(shaders[options.type]);
         }
     }
 });

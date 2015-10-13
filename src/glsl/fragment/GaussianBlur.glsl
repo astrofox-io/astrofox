@@ -3,6 +3,10 @@ uniform vec2 resolution;
 uniform vec2 direction;
 uniform int flip;
 
+varying vec2 vUv;
+
+const int iterations = 8;
+
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {
     vec4 color = vec4(0.0);
     vec2 off1 = vec2(1.411764705882353) * direction;
@@ -46,7 +50,5 @@ void main() {
         uv.y = 1.0 - uv.y;
     }
 
-    vec4 result = blur9(tDiffuse, uv, resolution.xy, direction);
-
-    gl_FragColor = result;
+    gl_FragColor = blur9(tDiffuse, uv, resolution.xy, direction);
 }

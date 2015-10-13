@@ -5,8 +5,7 @@ var NumberInput = require('ui/inputs/NumberInput.jsx');
 var RangeInput = require('ui/inputs/RangeInput.jsx');
 
 var defaults = {
-    scale: 10.0,
-    center: 0.5
+    scale: 10.0
 };
 
 var HexagonControl = React.createClass({
@@ -62,32 +61,14 @@ var HexagonControl = React.createClass({
                         size="3"
                         value={this.state.scale}
                         min={1}
-                        max={100}
+                        max={200}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="scale"
                             min={1}
-                            max={100}
+                            max={200}
                             value={this.state.scale}
-                            onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="row">
-                    <label className="label">Center</label>
-                    <NumberInput
-                        name="center"
-                        size="3"
-                        value={this.state.center}
-                        min={0}
-                        max={100}
-                        onChange={this.handleChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="center"
-                            min={0}
-                            max={100}
-                            value={this.state.center}
                             onChange={this.handleChange} />
                     </div>
                 </div>

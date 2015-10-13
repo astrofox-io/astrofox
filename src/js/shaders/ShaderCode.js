@@ -13,7 +13,6 @@ var ShaderCode = {
         ColorShift: glslify('../../glsl/fragment/ColorShift.glsl'),
         Copy: glslify('../../glsl/fragment/Copy.glsl'),
         CopyAlpha: glslify('../../glsl/fragment/CopyAlpha.glsl'),
-        CrossHatch: glslify('../../glsl/fragment/CrossHatch.glsl'),
         DotScreen: glslify('../../glsl/fragment/DotScreen.glsl'),
         GaussianBlur: glslify('../../glsl/fragment/GaussianBlur.glsl'),
         GlowChroma: glslify('../../glsl/fragment/GlowChroma.glsl'),
@@ -23,7 +22,8 @@ var ShaderCode = {
         Hexagon: glslify('../../glsl/fragment/Hexagon.glsl'),
         LED: glslify('../../glsl/fragment/LED.glsl'),
         Mirror: glslify('../../glsl/fragment/Mirror.glsl'),
-        RGBShift: glslify('../../glsl/fragment/RGBShift.glsl')
+        RGBShift: glslify('../../glsl/fragment/RGBShift.glsl'),
+        ZoomBlur: glslify('../../glsl/fragment/ZoomBlur.glsl')
     }
 };
 

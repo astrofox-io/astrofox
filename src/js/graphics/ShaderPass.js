@@ -39,6 +39,7 @@ Class.extend(ShaderPass, ComposerPass, {
         for (var prop in props) {
             if (uniforms.hasOwnProperty(prop)) {
                 if (uniforms[prop].value.set) {
+                    console.log('setting', uniforms[prop], props[prop]);
                     uniforms[prop].value.set.apply(uniforms[prop].value, props[prop]);
                 }
                 else {

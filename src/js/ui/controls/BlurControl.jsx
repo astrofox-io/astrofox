@@ -13,7 +13,7 @@ var defaults = {
 var types = [
     'Box',
     'Gaussian',
-    'Barrel'
+    'Zoom'
 ];
 
 var BlurControl = React.createClass({

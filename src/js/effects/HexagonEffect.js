@@ -5,8 +5,7 @@ var Effect = require('effects/Effect.js');
 var HexagonShader = require('shaders/HexagonShader.js');
 
 var defaults = {
-    scale: 10.0,
-    center: 0.5
+    scale: 10.0
 };
 
 var id = 0;
@@ -44,7 +43,7 @@ Class.extend(HexagonEffect, Effect, {
         var options = this.options;
 
         if (this.changed) {
-            this.pass.setUniforms({ scale: options.scale, center: [options.center, options.center] });
+            this.pass.setUniforms({ scale: options.scale });
             this.changed = false;
         }
     }
