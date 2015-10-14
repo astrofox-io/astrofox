@@ -48,8 +48,6 @@ Class.extend(Scene, Display, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
-        this.blending = blendModes[this.options.blending];
-
         return changed;
     },
 
@@ -175,10 +173,12 @@ Class.extend(Scene, Display, {
     },
 
     render: function(data) {
-        var displays = this.displays.nodes;
+        var displays = this.displays.nodes,
+            options = this.options,
+            composer = this.composer;
 
         this.clearCanvas();
-        this.composer.clear();
+        composer.clearScreen();
 
         if (displays.size > 0) {
             displays.forEach(function(display) {
@@ -190,8 +190,10 @@ Class.extend(Scene, Display, {
                 }
             }, this);
 
-            this.composer.renderToScreen({ blending: this.blending, opacity: this.options.opacity });
-            //this.composer.render();
+            composer.renderToScreen({
+                blending: blendModes[options.blending],
+                opacity: options.opacity
+            });
         }
 
         return this.composer.readBuffer;

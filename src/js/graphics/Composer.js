@@ -14,6 +14,7 @@ var SpritePass = require('graphics/SpritePass.js');
 var TexturePass = require('graphics/TexturePass.js');
 var MaskPass = require('graphics/MaskPass.js');
 var ClearMaskPass = require('graphics/ClearMaskPass.js');
+var MultiPass = require('graphics/MultiPass.js');
 var CopyShader = require('shaders/CopyShader.js');
 
 var Composer = function(renderer, renderTarget) {
@@ -57,7 +58,7 @@ Class.extend(Composer, EventEmitter, {
         this.writeBuffer = this.writeTarget;
     },
 
-    clear: function(color, depth, stencil) {
+    clearScreen: function(color, depth, stencil) {
         this.renderer.clearTarget(this.readTarget, color || true, depth || true, stencil || true);
     },
 
@@ -126,6 +127,18 @@ Class.extend(Composer, EventEmitter, {
         return this.addShaderPass(CopyShader, options);
     },
 
+    addMultiPass: function(passes) {
+        var composer = new Composer(this.renderer);
+
+        passes.forEach(function(pass) {
+            composer.addPass(pass);
+        });
+
+        composer.addCopyPass();
+
+        return this.addPass(new MultiPass(composer));
+    },
+
     clearPasses: function() {
         this.passes.clear();
     },
@@ -134,8 +147,12 @@ Class.extend(Composer, EventEmitter, {
         this.render();
 
         this.copyPass.update(_.assign({ renderToScreen: true, clearDepth: true }, options));
-        this.copyPass.material.blending = options.blending;
-        this.copyPass.material.uniforms['opacity'].value = options.opacity;
+
+        if (options) {
+            this.copyPass.material.blending = options.blending;
+            this.copyPass.material.uniforms['opacity'].value = options.opacity;
+        }
+
         this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
         this.swapBuffers();

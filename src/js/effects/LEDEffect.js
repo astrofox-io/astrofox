@@ -15,8 +15,6 @@ var id = 0;
 var LEDEffect = function(options) {
     Effect.call(this, id++, 'LEDEffect', defaults);
 
-    this.shader = LEDShader;
-
     this.update(options);
 };
 
@@ -34,7 +32,7 @@ Class.extend(LEDEffect, Effect, {
     },
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(this.shader);
+        this.pass = scene.composer.addShaderPass(LEDShader);
     },
 
     removeFromScene: function(scene) {

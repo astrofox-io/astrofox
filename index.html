@@ -12,13 +12,17 @@
 <body>
 <div id="app"></div>
 <script>
-var FS = require('fs');
+var error_caught = false;
 
 document.addEventListener('DOMContentLoaded', function(e) {
     // In case console doesn't open
     if (process) {
         process.on('uncaughtException', function(e) {
-            alert(e.stack);
+            if (!error_caught) {
+                alert(e.stack);
+                console.error(e);
+                error_caught = true;
+            }
         });
     }
 
