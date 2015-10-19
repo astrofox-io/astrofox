@@ -84,31 +84,41 @@ var App = React.createClass({
 
             case 'File/Open Project':
                 this.loadFileDialog(function(file) {
-                    Application.loadProject(file[0]);
+                    if (file) {
+                        Application.loadProject(file[0]);
+                    }
                 }.bind(this), '');
                 break;
 
             case 'File/Save Project':
                 this.loadFileDialog(function(filename) {
-                    Application.saveProject(filename);
+                    if (filename) {
+                        Application.saveProject(filename);
+                    }
                 }.bind(this), 'project.afx');
                 break;
 
             case 'File/Load Audio':
                 this.loadFileDialog(function(file) {
-                    this.loadAudioFile(file[0]);
+                    if (file) {
+                        this.loadAudioFile(file[0]);
+                    }
                 }.bind(this), '');
                 break;
 
             case 'File/Save Image':
                 this.loadFileDialog(function(filename) {
-                    Application.saveImage(filename);
+                    if (filename) {
+                        Application.saveImage(filename);
+                    }
                 }.bind(this), 'image.png');
                 break;
 
             case 'File/Save Video':
                 this.loadFileDialog(function(filename) {
-                    Application.saveVideo(filename);
+                    if (filename) {
+                        Application.saveVideo(filename);
+                    }
                 }.bind(this), 'video.mp4');
                 break;
 
