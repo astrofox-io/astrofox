@@ -22,7 +22,9 @@ var TexturePass = function(texture, options) {
     this.material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: texture,
-        transparent: true
+        transparent: true,
+        depthTest: false,
+        depthWrite: false
     });
 
     this.scene = new THREE.Scene();
@@ -33,12 +35,12 @@ var TexturePass = function(texture, options) {
 };
 
 Class.extend(TexturePass, ComposerPass, {
-    render: function(renderer, writeBuffer, readBuffer) {
+    process: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 
         this.texture.needsUpdate = options.needsUpdate;
 
-        this.process(renderer, this.scene, this.camera, readBuffer);
+        this.render(renderer, this.scene, this.camera, readBuffer);
     }
 });
 

@@ -37,7 +37,7 @@ Class.extend(BlurEffect, Effect, {
 
         var changed = this._super.update.call(this, options);
 
-        if (options && options.type != type) {
+        if (this.scene && options && options.type != type) {
             this.createShader();
         }
 

@@ -28,7 +28,8 @@ var blendModes = {
     None: THREE.NoBlending,
     Normal: THREE.NormalBlending,
     Add: THREE.AdditiveBlending,
-    Subtract: THREE.SubtractiveBlending
+    Subtract: THREE.SubtractiveBlending,
+    Multiply: THREE.MultiplyBlending
 };
 
 var Scene = function(name, options) {
@@ -39,7 +40,6 @@ var Scene = function(name, options) {
     this.context = this.canvas.getContext('2d');
     this.displays = new NodeCollection();
     this.effects = new NodeCollection();
-    this.blending = THREE.NormalBlending;
 
     this.update(options);
 };
@@ -58,8 +58,8 @@ Class.extend(Scene, Display, {
         this.composer = new Composer(stage.renderer);
 
         this.canvasPass = this.composer.addCanvasPass(this.canvas);
-        this.canvasPass.options.enabled = false;
         this.canvasPass.material.blending = THREE.NoBlending;
+        this.canvasPass.options.enabled = false;
 
         this.canvas.height = size.height;
         this.canvas.width = size.width;
@@ -67,6 +67,10 @@ Class.extend(Scene, Display, {
 
     removeFromStage: function() {
         this.parent = null;
+        this.displays.clear();
+        this.displays = null;
+        this.effects.clear();
+        this.effects = null;
         this.composer.clearPasses();
         this.composer = null;
     },
@@ -119,7 +123,7 @@ Class.extend(Scene, Display, {
         });
 
         this.canvasPass.options.enabled = enabled;
-        this.canvasPass.material.blending = (shader) ? THREE.AdditiveBlending : THREE.NoBlending;
+        //this.canvasPass.material.blending = (shader) ? THREE.AdditiveBlending : THREE.NoBlending;
     },
 
     addEffect: function(effect) {
@@ -178,7 +182,8 @@ Class.extend(Scene, Display, {
             composer = this.composer;
 
         this.clearCanvas();
-        composer.clearScreen();
+
+        composer.clearBuffer(true, true, true);
 
         if (displays.size > 0) {
             displays.forEach(function(display) {
@@ -190,13 +195,10 @@ Class.extend(Scene, Display, {
                 }
             }, this);
 
-            composer.renderToScreen({
-                blending: blendModes[options.blending],
-                opacity: options.opacity
-            });
+            composer.render();
         }
 
-        return this.composer.readBuffer;
+        return composer.readBuffer;
     },
 
     toString: function() {

@@ -163,7 +163,7 @@ Class.extend(Application, EventEmitter, {
 
             // DEBUG
             console.log(filename + ' saved');
-        });
+        }.bind(this));
     },
 
     saveVideo: function(filename) {

@@ -38,12 +38,12 @@ var SpritePass = function(texture, options) {
 };
 
 Class.extend(SpritePass, ComposerPass, {
-    render: function(renderer, writeBuffer, readBuffer) {
+    process: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 
         this.texture.needsUpdate = options.needsUpdate;
 
-        this.process(renderer, this.scene, this.camera, readBuffer);
+        this.render(renderer, this.scene, this.camera, readBuffer);
     }
 });
 

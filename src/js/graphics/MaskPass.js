@@ -16,7 +16,7 @@ var MaskPass = function(scene, camera, options) {
 };
 
 Class.extend(MaskPass, ComposerPass, {
-    render: function(renderer, writeBuffer, readBuffer) {
+    process: function(renderer, writeBuffer, readBuffer) {
         var context = renderer.context,
             options = this.options,
             writeValue = (options.inverse) ? 0 : 1,

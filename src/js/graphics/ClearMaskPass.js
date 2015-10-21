@@ -9,7 +9,7 @@ var ClearMaskPass = function () {
 };
 
 Class.extend(ClearMaskPass, ComposerPass, {
-    render: function (renderer) {
+    process: function (renderer) {
         var context = renderer.context;
 
         context.disable(context.STENCIL_TEST);

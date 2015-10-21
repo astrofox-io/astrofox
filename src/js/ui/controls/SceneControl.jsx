@@ -7,15 +7,48 @@ var NumberInput = require('ui/inputs/NumberInput.jsx');
 var ToggleInput = require('ui/inputs/ToggleInput.jsx');
 var RangeInput = require('ui/inputs/RangeInput.jsx');
 var SelectInput = require('ui/inputs/SelectInput.jsx');
+var BlendModes = require('graphics/BlendModes.js');
 
 var blendModes = [
-    'None', 'Normal', 'Add', 'Subtract'
+    'None3',
+    'Normal3',
+    'Add3',
+    'Subtract3',
+    'Multiply3',
+    '----',
+    'None',
+    'Normal',
+    'Add',
+    'Subtract',
+    'Multiply',
+    '----',
+    //'Dissolve',
+    'Darken',
+    'Multiply',
+    'ColorBurn',
+    'LinearBurn',
+    //'DarkerColor',
+    'Lighten',
+    'Screen',
+    'ColorDodge',
+    'LinearDodge',
+    //'LighterColor',
+    'Overlay',
+    'SoftLight',
+    'HardLight',
+    //'VividLight',
+    'LinearLight',
+    //'PinLight',
+    //'HardMix',
+    'Difference',
+    'Exclusion',
+    'Divide'
 ];
 
 var SceneControl = React.createClass({
     getInitialState: function() {
         return {
-            'blending': 'Normal',
+            blending: 'Normal',
             opacity: 1.0
         };
     },

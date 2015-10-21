@@ -111,11 +111,29 @@ Class.extend(Stage, NodeCollection, {
     },
 
     renderFrame: function(data, callback) {
+        var composer = this.composer,
+            buffer = null;
+
         this.renderer.clear();
 
-        this.scenes.nodes.forEach(function(scene) {
-            scene.render(data);
+        composer.clearBuffer(true, true, true);
+
+        this.scenes.nodes.forEach(function(scene, index) {
+            buffer = scene.render(data);
+
+            composer.blendBuffer(buffer, scene.options);
+            //composer.copyBuffer(buffer, scene.options);
+
+            /*
+            if (index === 0) {
+                composer.copyBuffer(buffer, scene.options);
+            }
+            else {
+                composer.blendBuffer(buffer, scene.options);
+            }*/
         }, this);
+
+        composer.renderToScreen();
 
         this.updateFPS();
 

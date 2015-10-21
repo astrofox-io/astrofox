@@ -27,7 +27,7 @@ ComposerPass.prototype = {
         }
     },
 
-    process: function(renderer, scene, camera, renderTarget) {
+    render: function(renderer, scene, camera, renderTarget) {
         var options = this.options;
 
         if (options.clearColor || options.clearDepth || options.clearStencil) {

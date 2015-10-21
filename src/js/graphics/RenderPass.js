@@ -23,7 +23,7 @@ var RenderPass = function(scene, camera, options) {
 };
 
 Class.extend(RenderPass, ComposerPass, {
-    render: function(renderer, writeBuffer, readBuffer) {
+    process: function(renderer, writeBuffer, readBuffer) {
         var scene = this.scene,
             camera = this.camera,
             options = this.options;
@@ -37,7 +37,7 @@ Class.extend(RenderPass, ComposerPass, {
             renderer.setClearColor(options.clearColor, options.clearAlpha);
         }
 
-        this.process(renderer, scene, camera, readBuffer);
+        this.render(renderer, scene, camera, readBuffer);
 
         if (options.clearColor) {
             renderer.setClearColor(this.clearColor, this.clearAlpha);

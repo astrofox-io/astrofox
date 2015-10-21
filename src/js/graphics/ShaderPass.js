@@ -50,16 +50,16 @@ Class.extend(ShaderPass, ComposerPass, {
         this.material.needsUpdate = true;
     },
 
-    render: function(renderer, writeBuffer, readBuffer) {
+    process: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 
-        if (this.material.uniforms[options.textureId] ) {
+        if (readBuffer && this.material.uniforms[options.textureId] ) {
             this.material.uniforms[options.textureId].value = readBuffer;
         }
 
         this.mesh.material = this.material;
 
-        this.process(renderer, this.scene, this.camera, writeBuffer);
+        this.render(renderer, this.scene, this.camera, writeBuffer);
     }
 });
 
