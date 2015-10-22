@@ -62,7 +62,7 @@ Class.extend(Scene, Display, {
         this.composer = new Composer(stage.renderer);
 
         this.canvasPass = this.composer.addCanvasPass(this.canvas);
-        this.canvasPass.material.blending = THREE.NormalBlending;
+        this.canvasPass.material.blending = (this.options.blending == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
         this.canvasPass.options.enabled = false;
 
         this.canvas.height = size.height;

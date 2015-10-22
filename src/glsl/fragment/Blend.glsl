@@ -86,6 +86,7 @@ void main() {
 	// darken
 	if (mode == 3) {
 		gl_FragColor = min(dest, src);
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
@@ -104,12 +105,14 @@ void main() {
 			applyColorBurnToChannel(dest.b, src.b),
 			applyColorBurnToChannel(dest.a, src.a)
 		);
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
 	// linear burn == subtract?
 	if (mode == 6) {
 		gl_FragColor = max(dest + src - 1.0, 0.0);
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
@@ -183,6 +186,7 @@ void main() {
 			applyOverlayToChannel(src.b, dest.b),
 			applyOverlayToChannel(src.a, dest.a)
 		);
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
@@ -199,6 +203,7 @@ void main() {
 			applyLinearLightToChannel(dest.b, src.b),
 			applyLinearLightToChannel(dest.a, src.a)
 		);
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
