@@ -25,7 +25,7 @@ var SpritePass = function(texture, options) {
 
     this.material = new THREE.SpriteMaterial({
         map: texture,
-        transparent : true
+        transparent : this.options.transparent
     });
 
     this.sprite = new THREE.Sprite(this.material);

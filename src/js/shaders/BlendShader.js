@@ -7,6 +7,7 @@ var BlendShader = {
         tInput2: { type: 't', value: null },
         mode: { type: 'i', value: 1 },
         opacity: { type: 'f', value: 1.0 },
+        multiplyAlpha: { type: 'i', value: 0 },
         sizeMode: { type: 'i', value: 0 },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) },
         resolution2: { type: 'v2', value: new THREE.Vector2(854, 480) },

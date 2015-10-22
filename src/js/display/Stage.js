@@ -34,7 +34,7 @@ var Stage = function(options) {
 
     this.options = _.assign({}, defaults);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: false });
+    this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true });
     this.renderer.setSize(854, 480);
     this.renderer.autoClear = false;
 
@@ -118,19 +118,10 @@ Class.extend(Stage, NodeCollection, {
 
         composer.clearBuffer(true, true, true);
 
-        this.scenes.nodes.forEach(function(scene, index) {
+        this.scenes.nodes.forEach(function(scene) {
             buffer = scene.render(data);
 
             composer.blendBuffer(buffer, scene.options);
-            //composer.copyBuffer(buffer, scene.options);
-
-            /*
-            if (index === 0) {
-                composer.copyBuffer(buffer, scene.options);
-            }
-            else {
-                composer.blendBuffer(buffer, scene.options);
-            }*/
         }, this);
 
         composer.renderToScreen();

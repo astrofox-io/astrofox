@@ -13,7 +13,6 @@ var ShaderCode = {
         BoxBlur: glslify('../../glsl/fragment/BoxBlur.glsl'),
         ColorShift: glslify('../../glsl/fragment/ColorShift.glsl'),
         Copy: glslify('../../glsl/fragment/Copy.glsl'),
-        CopyAlpha: glslify('../../glsl/fragment/CopyAlpha.glsl'),
         DotScreen: glslify('../../glsl/fragment/DotScreen.glsl'),
         GaussianBlur: glslify('../../glsl/fragment/GaussianBlur.glsl'),
         GlowChroma: glslify('../../glsl/fragment/GlowChroma.glsl'),

@@ -48,6 +48,10 @@ Class.extend(Scene, Display, {
     update: function(options) {
         var changed = this._super.update.call(this, options);
 
+        if (this.canvasPass) {
+            this.canvasPass.material.blending = (this.options.blending == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
+        }
+
         return changed;
     },
 
@@ -58,7 +62,7 @@ Class.extend(Scene, Display, {
         this.composer = new Composer(stage.renderer);
 
         this.canvasPass = this.composer.addCanvasPass(this.canvas);
-        this.canvasPass.material.blending = THREE.NoBlending;
+        this.canvasPass.material.blending = THREE.NormalBlending;
         this.canvasPass.options.enabled = false;
 
         this.canvas.height = size.height;
@@ -110,20 +114,15 @@ Class.extend(Scene, Display, {
     },
 
     checkDisplays: function() {
-        var enabled = false,
-            shader = false;
+        var enabled = false;
 
         this.displays.nodes.forEach(function(display) {
             if (display instanceof CanvasDisplay) {
                 enabled = true;
             }
-            else if (display instanceof Effect) {
-                shader = true;
-            }
         });
 
         this.canvasPass.options.enabled = enabled;
-        //this.canvasPass.material.blending = (shader) ? THREE.AdditiveBlending : THREE.NoBlending;
     },
 
     addEffect: function(effect) {

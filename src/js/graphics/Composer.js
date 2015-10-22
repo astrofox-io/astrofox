@@ -37,6 +37,10 @@ var Composer = function(renderer, renderTarget) {
     this.savePass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
+    //this.copyPass.material.blending = THREE.NoBlending;
+    //this.savePass.material.blending = THREE.NoBlending;
+    this.blendPass.material.blending = THREE.NoBlending;
+
     this.setRenderTarget(renderTarget);
 };
 
@@ -130,6 +134,13 @@ Class.extend(Composer, EventEmitter, {
         return this.addTexturePass(texture, options);
     },
 
+    addSpritePass: function(image, options) {
+        var texture = new THREE.Texture(image);
+        texture.minFilter = THREE.LinearFilter;
+
+        return this.addPass(new SpritePass(texture, options));
+    },
+
     addCopyPass: function(options) {
         return this.addShaderPass(CopyShader, options);
     },
@@ -174,6 +185,7 @@ Class.extend(Composer, EventEmitter, {
             pass.material.uniforms['tInput2'].value = buffer;
             pass.material.uniforms['opacity'].value = options.opacity;
             pass.material.uniforms['mode'].value = BlendModes[options.blending];
+            pass.material.uniforms['multiplyAlpha'].value = options.multiplyAlpha || 0;
 
             pass.process(this.renderer, this.writeBuffer);
 
@@ -200,7 +212,7 @@ Class.extend(Composer, EventEmitter, {
     renderToScreen: function() {
         var pass = this.copyPass;
 
-        pass.update({ renderToScreen: true, clearDepth: false });
+        pass.update({ renderToScreen: true, clearDepth: true });
 
         pass.process(this.renderer, this.writeBuffer, this.readBuffer);
 

@@ -11,7 +11,7 @@ var defaults = {
     transparent: true,
     needsSwap: false,
     needsUpdate: true,
-    forceClear: true
+    forceClear: false
 };
 
 var TexturePass = function(texture, options) {
@@ -22,9 +22,9 @@ var TexturePass = function(texture, options) {
     this.material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: texture,
-        transparent: true,
         depthTest: false,
-        depthWrite: false
+        depthWrite: false,
+        transparent: this.options.transparent
     });
 
     this.scene = new THREE.Scene();

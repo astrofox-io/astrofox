@@ -3,8 +3,8 @@ var ShaderCode = require('shaders/ShaderCode.js');
 
 var CopyShader = {
     uniforms: {
-        tDiffuse: { type: "t", value: null },
-        opacity:  { type: "f", value: 1.0 }
+        tDiffuse: { type: 't', value: null },
+        opacity:  { type: 'f', value: 1.0 }
     },
 
     vertexShader: ShaderCode.vertex.Basic,

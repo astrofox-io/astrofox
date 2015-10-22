@@ -8,35 +8,36 @@ uniform float aspectRatio;
 uniform float aspectRatio2;
 uniform int mode;
 uniform float opacity;
+uniform int multiplyAlpha;
 
 vec2 vUv2;
 
-float applyOverlayToChannel(float base, float blend) {
-	return (base < 0.5 ? (2.0 * base * blend) : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend)));
+float applyOverlayToChannel(float dest, float src) {
+	return (dest < 0.5 ? (2.0 * dest * src) : (1.0 - 2.0 * (1.0 - dest) * (1.0 - src)));
 }
 
-float applySoftLightToChannel(float base, float blend) {
-	return ((blend < 0.5) ? (2.0 * base * blend + base * base * (1.0 - 2.0 * blend)) : (sqrt(base) * (2.0 * blend - 1.0) + 2.0 * base * (1.0 - blend)));
+float applySoftLightToChannel(float dest, float src) {
+	return ((src < 0.5) ? (2.0 * dest * src + dest * dest * (1.0 - 2.0 * src)) : (sqrt(dest) * (2.0 * src - 1.0) + 2.0 * dest * (1.0 - src)));
 }
 
-float applyColorBurnToChannel(float base, float blend) {
-	return ((blend == 0.0) ? blend : max((1.0 - ((1.0 - base) / blend)), 0.0));
+float applyColorBurnToChannel(float dest, float src) {
+	return ((src == 0.0) ? src : max((1.0 - ((1.0 - dest) / src)), 0.0));
 }
 
-float applyColorDodgeToChannel(float base, float blend) {
-	return ((blend == 1.0) ? blend : min(base / (1.0 - blend), 1.0));
+float applyColorDodgeToChannel(float dest, float src) {
+	return ((src == 1.0) ? src : min(dest / (1.0 - src), 1.0));
 }
 
-float applyLinearBurnToChannel(float base, float blend) {
-	return max(base + blend - 1., 0.0);
+float applyLinearBurnToChannel(float dest, float src) {
+	return max(dest + src - 1., 0.0);
 }
 
-float applyLinearDodgeToChannel(float base, float blend) {
-	return min(base + blend, 1.);
+float applyLinearDodgeToChannel(float dest, float src) {
+	return min(dest + src, 1.);
 }
 
-float applyLinearLightToChannel(float base, float blend) {
-	return (blend < .5) ? applyLinearBurnToChannel(base, 2. * blend) : applyLinearDodgeToChannel(base, 2. * (blend - .5));
+float applyLinearLightToChannel(float dest, float src) {
+	return (src < .5) ? applyLinearBurnToChannel(dest, 2. * src) : applyLinearDodgeToChannel(dest, 2. * (src - .5));
 }
 
 void main() {
@@ -56,27 +57,24 @@ void main() {
 		}
 	}
 
-	vec4 base = texture2D(tInput, vUv);
-	vec4 blend = texture2D(tInput2, vUv2);
-	//blend.a = blend.a * opacity;
-	//blend = blend * blend.a;
-	blend = blend * opacity;
+	vec4 dest = texture2D(tInput, vUv);
+	vec4 src = texture2D(tInput2, vUv2);
+
+    if (multiplyAlpha == 1) {
+        src = vec4(src.rgb * src.a, src.a);
+    }
+
+	src = src * opacity;
 
     // none (*)
     if (mode == 0) {
-        //blend = vec4(blend.rgb / blend.a, blend.a);
-        gl_FragColor = blend;
+        gl_FragColor = src;
         return;
     }
 
     // normal
 	if (mode == 1) {
-        //gl_FragColor = base;
-        //gl_FragColor.a *= opacity;
-		//gl_FragColor = (base * (1.0 - blend.a)) + (blend * blend.a);
-		// blend = blend / blend.a; // wrong, washed out
-		// blend = vec4(blend.rgb / blend.a, blend.a); // wrong, alpha in center
-		gl_FragColor = mix(base, blend, blend.a);
+		gl_FragColor = mix(dest, src, src.a);
 		return;
 	}
 
@@ -87,33 +85,31 @@ void main() {
 
 	// darken
 	if (mode == 3) {
-	    //blend = vec4(blend.rgb / blend.a, blend.a);
-	    //blend = blend * blend.a; // wrong, too dark around edges
-		gl_FragColor = min(base, blend);
+		gl_FragColor = min(dest, src);
 		return;
 	}
 
 	// multiply
 	if (mode == 4) {
-	    //blend = vec4(blend.rgb / blend.a, blend.a);
-		gl_FragColor = base * blend;
+		gl_FragColor = src * dest;
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
 	// color burn
 	if (mode == 5) {
 		gl_FragColor = vec4(
-			applyColorBurnToChannel(base.r, blend.r),
-			applyColorBurnToChannel(base.g, blend.g),
-			applyColorBurnToChannel(base.b, blend.b),
-			applyColorBurnToChannel(base.a, blend.a)
+			applyColorBurnToChannel(dest.r, src.r),
+			applyColorBurnToChannel(dest.g, src.g),
+			applyColorBurnToChannel(dest.b, src.b),
+			applyColorBurnToChannel(dest.a, src.a)
 		);
 		return;
 	}
 
 	// linear burn == subtract?
 	if (mode == 6) {
-		gl_FragColor = max(base + blend - 1.0, 0.0);
+		gl_FragColor = max(dest + src - 1.0, 0.0);
 		return;
 	}
 
@@ -124,30 +120,30 @@ void main() {
 
 	// lighten
 	if (mode == 8) {
-		gl_FragColor = max(base, blend);
+		gl_FragColor = max(dest, src);
 		return;
 	}
 
     // screen
 	else if (mode == 9) {
-		gl_FragColor = (1.0 - ((1.0 - base) * (1.0 - blend)));
-		//gl_FragColor = gl_FragColor * opacity + base * (1. - opacity);
+		gl_FragColor = (1.0 - ((1.0 - dest) * (1.0 - src)));
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
     // color dodge
 	if (mode == 10) {
 		gl_FragColor = vec4(
-			applyColorDodgeToChannel(base.r, blend.r),
-			applyColorDodgeToChannel(base.g, blend.g),
-			applyColorDodgeToChannel(base.b, blend.b),
-			applyColorDodgeToChannel(base.a, blend.a)
+			applyColorDodgeToChannel(dest.r, src.r),
+			applyColorDodgeToChannel(dest.g, src.g),
+			applyColorDodgeToChannel(dest.b, src.b),
+			applyColorDodgeToChannel(dest.a, src.a)
 		);
 		return;
 	}
 	// linear dodge == add
 	if (mode == 11) {
-		gl_FragColor = min(base + blend, 1.0);
+		gl_FragColor = min(dest + src, 1.0);
 		return;
 	}
 
@@ -159,22 +155,22 @@ void main() {
 	// overlay
 	if (mode == 13) {
 		gl_FragColor = vec4(
-			applyOverlayToChannel(base.r, blend.r),
-			applyOverlayToChannel(base.g, blend.g),
-			applyOverlayToChannel(base.b, blend.b),
-			applyOverlayToChannel(base.a, blend.a)
+			applyOverlayToChannel(dest.r, src.r),
+			applyOverlayToChannel(dest.g, src.g),
+			applyOverlayToChannel(dest.b, src.b),
+			applyOverlayToChannel(dest.a, src.a)
 		);
-		//gl_FragColor = gl_FragColor * opacity + base * (1. - opacity);
+		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
 		return;
 	}
 
     // soft light
 	if (mode == 14) {
 		gl_FragColor = vec4(
-			applySoftLightToChannel(base.r, blend.r),
-			applySoftLightToChannel(base.g, blend.g),
-			applySoftLightToChannel(base.b, blend.b),
-			applySoftLightToChannel(base.a, blend.a)
+			applySoftLightToChannel(dest.r, src.r),
+			applySoftLightToChannel(dest.g, src.g),
+			applySoftLightToChannel(dest.b, src.b),
+			applySoftLightToChannel(dest.a, src.a)
 		);
 		return;
 	}
@@ -182,10 +178,10 @@ void main() {
 	// hard light (*)
 	if (mode == 15) {
 		gl_FragColor = vec4(
-			applyOverlayToChannel(blend.r, base.r),
-			applyOverlayToChannel(blend.g, base.g),
-			applyOverlayToChannel(blend.b, base.b),
-			applyOverlayToChannel(blend.a, base.a)
+			applyOverlayToChannel(src.r, dest.r),
+			applyOverlayToChannel(src.g, dest.g),
+			applyOverlayToChannel(src.b, dest.b),
+			applyOverlayToChannel(src.a, dest.a)
 		);
 		return;
 	}
@@ -198,10 +194,10 @@ void main() {
 	// linear light
 	if (mode == 17) {
 		gl_FragColor = vec4(
-			applyLinearLightToChannel(base.r, blend.r),
-			applyLinearLightToChannel(base.g, blend.g),
-			applyLinearLightToChannel(base.b, blend.b),
-			applyLinearLightToChannel(base.a, blend.a)
+			applyLinearLightToChannel(dest.r, src.r),
+			applyLinearLightToChannel(dest.g, src.g),
+			applyLinearLightToChannel(dest.b, src.b),
+			applyLinearLightToChannel(dest.a, src.a)
 		);
 		return;
 	}
@@ -217,36 +213,32 @@ void main() {
 
 	// difference
 	if (mode == 20) {
-		gl_FragColor = abs(base - blend);
-		gl_FragColor.a = base.a + blend.b;
+		gl_FragColor = abs(dest - src);
+		gl_FragColor.a = dest.a + src.b;
 		return;
 	}
 
 	// exclusion
 	if (mode == 21) {
-		//gl_FragColor = base + blend - 2. * base * blend;
-		blend = blend * blend.a;
-		gl_FragColor = base + blend - 2. * base * blend;
+		gl_FragColor = dest + src - 2. * dest * src;
 		return;
 	}
 
     // subtract (*)
 	if (mode == 22) {
-        gl_FragColor = base - blend * opacity;
+        gl_FragColor = dest - (src * dest);
         return;
 	}
 
     // divide (*)
 	if (mode == 23) {
-        gl_FragColor = base / blend;
+        gl_FragColor = dest / src;
         return;
 	}
 
     // add (**)
 	if (mode == 24) {
-	    blend = blend * blend.a;
-        gl_FragColor = base + blend;
-        //gl_FragColor = min(base + blend, 1.0);
+        gl_FragColor = dest + src * src.a;
         return;
 	}
 
