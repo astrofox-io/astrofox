@@ -131,65 +131,6 @@ Class.extend(Stage, NodeCollection, {
         if (callback) callback();
     },
 
-    renderImage: function(data, format, callback) {
-        this.renderFrame(data, function() {
-            var img = this.renderer.domElement.toDataURL(format || 'image/png'),
-                base64 = img.replace(/^data:image\/\w+;base64,/, ''),
-                buffer = new IO.Buffer(base64, 'base64');
-
-            if (callback) callback(buffer);
-        }.bind(this));
-    },
-
-    renderVideo: function(output_file, fps, duration, func, callback) {
-        var started = false,
-            frames = duration * fps,
-            input_file = new IO.Stream.Transform();
-
-        console.log('rending movie', duration, 'seconds,', fps, 'fps');
-
-        input_file.on('error', function(err) {
-            console.log(err);
-        });
-
-        this.callback = function(next) {
-            if (next < frames) {
-                this.renderImage(function(buffer) {
-                    input_file.push(buffer);
-                    func(next, fps, this.callback);
-                }.bind(this));
-            }
-            else {
-                input_file.push(null);
-            }
-        }.bind(this);
-
-        var ffmpeg = IO.Spawn('./bin/ffmpeg.exe', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
-        input_file.pipe(ffmpeg.stdin);
-        //ffmpeg.stdout.pipe(outStream);
-
-        ffmpeg.stderr.on('data', function(data) {
-            console.log(data.toString());
-            if (!started) {
-                func(0, fps, this.callback);
-                started = true;
-            }
-        }.bind(this));
-
-        ffmpeg.stderr.on('end', function() {
-            console.log('file has been converted succesfully');
-            if (callback) callback();
-        });
-
-        ffmpeg.stderr.on('exit', function() {
-            console.log('child process exited');
-        });
-
-        ffmpeg.stderr.on('close', function() {
-            console.log('program closed');
-        });
-    },
-
     getSize: function() {
         var canvas =  this.renderer.domElement;
 
@@ -197,6 +138,14 @@ Class.extend(Stage, NodeCollection, {
             width: canvas.width,
             height: canvas.height
         };
+    },
+
+    getImage: function(callback, format) {
+        var img = this.renderer.domElement.toDataURL(format || 'image/png'),
+            base64 = img.replace(/^data:image\/\w+;base64,/, ''),
+            buffer = new IO.Buffer(base64, 'base64');
+
+        if (callback) callback(buffer);
     },
 
     updateFPS: function() {

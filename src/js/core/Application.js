@@ -114,15 +114,21 @@ Class.extend(Application, EventEmitter, {
         }
     },
 
+    getFrameData: function() {
+        return {
+            delta: 0,
+            fft: this.spectrum.getFrequencyData(),
+            td: this.spectrum.getTimeData(),
+            playing: this.player.isPlaying()
+        };
+    },
+
     render: function(timestamp) {
-        var id = window.requestAnimationFrame(this.render.bind(this)),
-            data = {
-                id: id,
-                delta: performance.now() - timestamp,
-                fft: this.spectrum.getFrequencyData(),
-                td: this.spectrum.getTimeData(),
-                playing: this.player.isPlaying()
-            };
+        var now = performance.now(),
+            id = window.requestAnimationFrame(this.render.bind(this, now)),
+            data = this.getFrameData();
+
+        data.delta = now - timestamp;
 
         this.stage.renderFrame(data);
 
@@ -132,10 +138,101 @@ Class.extend(Application, EventEmitter, {
         this.data = data;
     },
 
+    saveImage: function(filename) {
+        var stage = this.stage,
+            data = this.getFrameData();
+
+        stage.renderFrame(data, function(){
+            stage.getImage(function(buffer) {
+                IO.fs.writeFile(filename, buffer, function(err) {
+                    if (err) {
+                        this.emit('error', new Error(err));
+                    }
+
+                    // DEBUG
+                    console.log(filename + ' saved.');
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
+    },
+
+    saveVideo: function(filename) {
+        var player = this.player,
+            sound = player.getSound('audio');
+
+        if (sound) {
+            this.stopRender();
+            player.stop('audio');
+
+            this.spectrum.enabled = true;
+
+            this.renderVideo(
+                filename,
+                29.97,
+                2,
+                this.startRender.bind(this)
+            );
+        }
+        else {
+            this.emit('error', new Error('No audio loaded.'));
+        }
+
+        // DEBUG
+        console.log(filename + ' saved');
+    },
+
+    renderVideo: function(output_file, fps, duration, callback) {
+        var started = false,
+            frames = duration * fps,
+            input_file = new IO.Stream.Transform();
+
+        console.log('rending movie', duration, 'seconds,', fps, 'fps');
+
+        input_file.on('error', function(err) {
+            console.error(err);
+        });
+
+        this.callback = function(next, buffer) {
+            if (next < frames) {
+                input_file.push(buffer);
+                this.processFrame(next, fps, this.callback);
+            }
+            else {
+                input_file.push(null);
+            }
+        }.bind(this);
+
+        var ffmpeg = IO.Spawn('./bin/ffmpeg.exe', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
+        input_file.pipe(ffmpeg.stdin);
+        //ffmpeg.stdout.pipe(outStream);
+
+        ffmpeg.stderr.on('data', function(data) {
+            console.log(data.toString());
+            if (!started) {
+                this.processFrame(0, fps, this.callback);
+                started = true;
+            }
+        }.bind(this));
+
+        ffmpeg.stderr.on('end', function() {
+            console.log('file has been converted succesfully');
+            if (callback) callback();
+        });
+
+        ffmpeg.stderr.on('exit', function() {
+            console.log('child process exited');
+        });
+
+        ffmpeg.stderr.on('close', function() {
+            console.log('program closed');
+        });
+    },
+
     processFrame: function(frame, fps, callback) {
-        var fft,
+        var data, image,
             player = this.player,
             spectrum = this.spectrum,
+            stage = this.stage,
             sound = player.getSound('audio'),
             source = this.source = this.audioContext.createBufferSource();
 
@@ -143,46 +240,21 @@ Class.extend(Application, EventEmitter, {
         source.connect(spectrum.analyzer);
 
         source.onended = function() {
-            fft = spectrum.getFrequencyData();
+            data = this.getFrameData();
+            data.delta = 1000 / fps;
 
-            this.renderFrame(frame, fft);
+            stage.renderFrame(data, function() {
+                stage.getImage(function(buffer) {
+                    image = buffer;
+                });
+            });
 
             source.disconnect();
 
-            if (callback) callback(frame + 1);
+            if (callback) callback(frame + 1, image);
         }.bind(this);
 
         source.start(0, frame / fps, 1 / fps);
-    },
-
-    saveImage: function(filename) {
-        this.stage.renderImage(this.data, 'image/png', function(buffer) {
-            IO.fs.writeFile(filename, buffer, function(err) {
-                this.emit('error', new Error(err));
-            }.bind(this));
-
-            // DEBUG
-            console.log(filename + ' saved');
-        }.bind(this));
-    },
-
-    saveVideo: function(filename) {
-        var player = this.player,
-            stage = this.stage,
-            sound = player.getSound('audio');
-
-        this.stopRender();
-
-        if (player.isPlaying()) player.stop('audio');
-
-        if (sound) {
-            stage.renderVideo(filename, 29.97, 5, this.processFrame.bind(this), function() {
-                this.startRender();
-            }.bind(this));
-        }
-
-        // DEBUG
-        console.log(filename + ' saved');
     },
 
     saveProject: function(filename) {
@@ -211,7 +283,7 @@ Class.extend(Application, EventEmitter, {
         }
 
         // DEBUG
-        console.log(filename + ' saved');
+        console.log(filename + ' saved.');
     },
 
     loadProject: function(filename) {
