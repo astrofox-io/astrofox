@@ -7,6 +7,14 @@
 }
 
 @font-face {
+    font-family: 'Abril Fatface';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/abril-fatface/abril-fatface.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
     font-family: 'Alegreya';
     font-style: normal;
     font-weight: 400;
@@ -31,6 +39,14 @@
 }
 
 @font-face {
+    font-family: 'Chunkfive';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/chunkfive/chunkfive.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
     font-family: 'Bangers';
     font-style: normal;
     font-weight: 400;
@@ -47,18 +63,10 @@
 }
 
 @font-face {
-    font-family: 'Felipa';
+    font-family: 'Intro';
     font-style: normal;
     font-weight: 400;
-    src: url(http://fonts.gstatic.com/s/felipa/v4/nKYNf-hMYFtb5lxIEOn_yg.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-@font-face {
-    font-family: 'Fira Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../fonts/fira_sans/fira_sans.woff2) format('woff2');
+    src: url(../fonts/intro/intro.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -90,7 +98,7 @@
     font-family: 'Permanent Marker';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/permanent_marker/permanent_marker.woff2) format('woff2');
+    src: url(../fonts/permanent-marker/permanent-marker.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -98,7 +106,7 @@
     font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/playfair_display/playfair_display.woff2) format('woff2');
+    src: url(../fonts/playfair-display/playfair-display.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -106,7 +114,7 @@
     font-family: 'Racing Sans One';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/racing_sans_one/racing_sans_one.woff2) format('woff2');
+    src: url(../fonts/racing-sans-one/racing-sans-one.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -130,7 +138,7 @@
     font-family: 'Roboto Condensed';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/roboto_condensed/roboto_condensed.woff2) format('woff2');
+    src: url(../fonts/roboto-condensed/roboto-condensed.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 

@@ -26,9 +26,12 @@ var defaults = {
 var TextControl = React.createClass({
     fontOptions: [
         'Abel',
+        'Abril Fatface',
         'Bangers',
         'Cardo',
+        'Chunkfive',
         'Dynalight',
+        'Intro',
         'Merriweather',
         'Playfair Display',
         'Permanent Marker',

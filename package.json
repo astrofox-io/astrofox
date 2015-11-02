@@ -50,9 +50,9 @@
     "mersennetwister": "^0.2.1",
     "nedb": "^1.2.1",
     "node-rsa": "^0.2.25",
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
-    "three": "^0.72.0",
+    "react": "^0.14.1",
+    "react-dom": "^0.14.1",
+    "three": "^0.73.0",
     "tinycolor2": "^1.1.2",
     "tween.js": "^0.14.0"
   }

@@ -28,7 +28,8 @@ app.on('ready', function() {
         'web-preferences': {
             'web-security': false,
             'webgl': true
-        }
+        },
+        'background-color': '#222222'
     });
 
     // and load the index.html of the app.
