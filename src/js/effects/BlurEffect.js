@@ -18,11 +18,10 @@ var shaders = {
     Zoom: ZoomBlurShader
 };
 
-var id = 0;
 var GAUSSIAN_ITERATIONS = 8;
 
 var BlurEffect = function(options) {
-    Effect.call(this, id++, 'BlurEffect', defaults);
+    Effect.call(this, 'BlurEffect', defaults);
 
     this.update(options);
 };

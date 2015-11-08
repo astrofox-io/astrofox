@@ -10,8 +10,6 @@ var CanvasDisplay = require('display/CanvasDisplay.js');
 var Effect = require('effects/Effect.js');
 var Composer = require('graphics/Composer.js');
 
-var id = 0;
-
 var defaults = {
     blending: 'Normal',
     opacity: 1.0
@@ -33,7 +31,7 @@ var blendModes = {
 };
 
 var Scene = function(name, options) {
-    Display.call(this, id++, 'Scene', defaults);
+    Display.call(this, 'Scene', defaults);
 
     this.parent = null;
     this.canvas = document.createElement('canvas');

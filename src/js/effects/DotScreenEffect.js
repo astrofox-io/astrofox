@@ -9,11 +9,10 @@ var defaults = {
     scale: 1.0
 };
 
-var id = 0;
 var RADIANS = 0.017453292519943295;
 
 var DotScreenEffect = function(options) {
-    Effect.call(this, id++, 'DotScreenEffect', defaults);
+    Effect.call(this, 'DotScreenEffect', defaults);
 
     this.shader = DotScreenShader;
 

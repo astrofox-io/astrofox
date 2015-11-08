@@ -37,10 +37,8 @@ var shading = {
     Smooth: THREE.SmoothShading
 };
 
-var id = 0;
-
 var GeometryDisplay = function(options) {
-    Display.call(this, id++, 'GeometryDisplay', defaults);
+    Display.call(this, 'GeometryDisplay', defaults);
 
     this.update(options);
 };

@@ -16,10 +16,8 @@ var defaults = {
     opacity: 1.0
 };
 
-var id = 0;
-
 var SoundwaveDisplay = function(options) {
-    CanvasDisplay.call(this, id++, 'SoundwaveDisplay', defaults);
+    CanvasDisplay.call(this, 'SoundwaveDisplay', defaults);
 
     this.wave = new WaveDisplay(this.canvas, options);
 

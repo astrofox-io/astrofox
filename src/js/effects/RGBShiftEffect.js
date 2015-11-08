@@ -10,11 +10,10 @@ var defaults = {
     angle: 0.0
 };
 
-var id = 0;
 var RADIANS = 0.017453292519943295;
 
 var RGBShiftEffect = function(options) {
-    Effect.call(this, id++, 'RGBShiftEffect', defaults);
+    Effect.call(this, 'RGBShiftEffect', defaults);
 
     this.shader = RGBShiftShader;
 

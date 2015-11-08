@@ -20,10 +20,8 @@ var defaults = {
     opacity: 1.0
 };
 
-var id = 0;
-
 var TextDisplay = function(options) {
-    CanvasDisplay.call(this, id++, 'TextDisplay', defaults);
+    CanvasDisplay.call(this, 'TextDisplay', defaults);
 
     this.update(options);
 };

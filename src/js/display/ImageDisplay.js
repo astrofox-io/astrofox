@@ -15,11 +15,10 @@ var defaults = {
     opacity: 1.0
 };
 
-var id = 0;
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
 var ImageDisplay = function(options) {
-    CanvasDisplay.call(this, id++, 'ImageDisplay', defaults);
+    CanvasDisplay.call(this, 'ImageDisplay', defaults);
 
     this.image = new Image();
 

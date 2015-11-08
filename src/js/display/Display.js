@@ -8,8 +8,10 @@ var defaults = {
     enabled: true
 };
 
-var Display = function(id, name, options) {
-    this.id = id;
+var id = 0;
+
+var Display = function(name, options) {
+    this.id = id++;
     this.name = name;
     this.options = _.assign({ displayName: name + '' + id }, defaults, options);
     this.owner = null;

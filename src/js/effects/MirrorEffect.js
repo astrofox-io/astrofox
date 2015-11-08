@@ -8,10 +8,8 @@ var defaults = {
     side: 1
 };
 
-var id = 0;
-
 var MirrorEffect = function(options) {
-    Effect.call(this, id++, 'MirrorEffect', defaults);
+    Effect.call(this, 'MirrorEffect', defaults);
 
     this.shader = MirrorShader;
 

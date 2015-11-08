@@ -13,8 +13,6 @@ var defaults = {
     opacity: 1.0
 };
 
-var id = 0;
-
 var WaveDisplay = function(canvas, options) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');

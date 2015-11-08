@@ -8,10 +8,8 @@ var defaults = {
     scale: 10.0
 };
 
-var id = 0;
-
 var HexagonEffect = function(options) {
-    Effect.call(this, id++, 'HexagonEffect', defaults);
+    Effect.call(this, 'HexagonEffect', defaults);
 
     this.shader = HexagonShader;
 

@@ -32,11 +32,10 @@ var defaults = {
     normalize: true
 };
 
-var id = 0;
 var RADIANS = 0.017453292519943295;
 
 var BarSpectrumDisplay = function(options) {
-    CanvasDisplay.call(this, id++, 'BarSpectrumDisplay', defaults);
+    CanvasDisplay.call(this, 'BarSpectrumDisplay', defaults);
 
     this.bars = new BarDisplay(this.canvas, options);
     this.fft = null;

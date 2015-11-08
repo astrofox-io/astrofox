@@ -10,10 +10,8 @@ var defaults = {
     blur: 4
 };
 
-var id = 0;
-
 var LEDEffect = function(options) {
-    Effect.call(this, id++, 'LEDEffect', defaults);
+    Effect.call(this, 'LEDEffect', defaults);
 
     this.update(options);
 };
