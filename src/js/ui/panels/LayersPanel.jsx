@@ -131,6 +131,22 @@ var LayersPanel = React.createClass({
         this.cancelEdit();
     },
 
+    handleLayerNameChange: function(index, name, val) {
+        if (val.length > 0) {
+            this.handleLayerEdit(val, index);
+        }
+    },
+
+    handleLayerEnabled: function(obj) {
+        var props = this.props;
+
+        obj.options.enabled = !obj.options.enabled;
+
+        if (props.onLayerChanged) {
+            props.onLayerChanged();
+        }
+    },
+
     cancelEdit: function() {
         this.setState({ editIndex: -1 });
     },
@@ -155,7 +171,7 @@ var LayersPanel = React.createClass({
     },
 
     getLayerComponent: function(obj, index) {
-        var text, icon,
+        var text, icon, enabled,
             state = this.state,
             classes = 'layer';
 
@@ -171,19 +187,13 @@ var LayersPanel = React.createClass({
         }
 
         if (state.editIndex === index) {
-            var handleChange = function(name, val) {
-                if (val.length > 0) {
-                    this.handleLayerEdit(val, index);
-                }
-            }.bind(this);
-
             text = (
                 <TextInput
                     value={obj.options.displayName}
                     buffered={true}
                     autoFocus={true}
                     autoSelect={true}
-                    onChange={handleChange}
+                    onChange={this.handleLayerNameChange.bind(this, index)}
                     onCancel={this.cancelEdit}
                 />
             );
@@ -197,23 +207,27 @@ var LayersPanel = React.createClass({
         }
 
         if (obj instanceof Scene) {
-            icon = <i className="layer-icon icon-picture" />;
+            icon = 'icon-picture';
         }
         else if (obj instanceof CanvasDisplay) {
-            icon = <i className="layer-icon icon-document-landscape" />;
+            icon = 'icon-document-landscape';
         }
         else if (obj instanceof Effect) {
-            icon = <i className="layer-icon icon-light-up" />;
+            icon = 'icon-light-up';
         }
         else if (obj instanceof Display) {
-            icon = <i className="layer-icon icon-cube" />;
+            icon = 'icon-cube';
         }
+
+        enabled = (obj.options.enabled) ? 'icon-eye' : 'icon-circle';
 
         return (
             <div key={obj.toString()}
                  className={classes}
                  onClick={this.handleLayerClick.bind(this, index)}>
-                {icon} {text}
+                <i className={'layer-icon ' + icon} />
+                {text}
+                <i className={'layer-enabled-icon ' + enabled} onClick={this.handleLayerEnabled.bind(this, obj)} />
             </div>
         );
     },

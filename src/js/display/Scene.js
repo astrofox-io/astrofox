@@ -186,11 +186,13 @@ Class.extend(Scene, Display, {
 
         if (displays.size > 0) {
             displays.forEach(function(display) {
-                if (display.renderToCanvas) {
-                    display.renderToCanvas(this, data);
-                }
-                else if (display.updateScene) {
-                    display.updateScene(this, data);
+                if (display.options.enabled) {
+                    if (display.renderToCanvas) {
+                        display.renderToCanvas(this, data);
+                    }
+                    else if (display.updateScene) {
+                        display.updateScene(this, data);
+                    }
                 }
             }, this);
 

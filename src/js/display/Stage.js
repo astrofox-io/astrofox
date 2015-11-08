@@ -119,9 +119,10 @@ Class.extend(Stage, NodeCollection, {
         composer.clearBuffer(true, true, true);
 
         this.scenes.nodes.forEach(function(scene) {
-            buffer = scene.render(data);
-
-            composer.blendBuffer(buffer, scene.options);
+            if (scene.options.enabled) {
+                buffer = scene.render(data);
+                composer.blendBuffer(buffer, scene.options);
+            }
         }, this);
 
         composer.renderToScreen();
