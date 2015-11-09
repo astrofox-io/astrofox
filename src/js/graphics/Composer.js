@@ -75,6 +75,10 @@ Class.extend(Composer, EventEmitter, {
         this.writeBuffer = this.writeTarget;
     },
 
+    clear: function(color, depth, stencil) {
+        this.renderer.clear(color, depth, stencil);
+    },
+
     clearBuffer: function(color, depth, stencil) {
         this.renderer.clearTarget(this.readTarget, color, depth, stencil);
         this.renderer.clearTarget(this.writeTarget, color, depth, stencil);

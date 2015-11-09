@@ -24,19 +24,6 @@ DotScreenEffect.info = {
 };
 
 Class.extend(DotScreenEffect, Effect, {
-    update: function(options) {
-        var changed = this._super.update.call(this, options);
-
-        if (options && options.angle !== undefined) {
-            this.options.angle = options.angle * RADIANS;
-            changed = true;
-        }
-
-        this.changed = changed;
-
-        return changed;
-    },
-
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(this.shader);
     },
@@ -46,9 +33,14 @@ Class.extend(DotScreenEffect, Effect, {
     },
 
     updateScene: function(scene) {
-        if (this.changed) {
-            this.pass.setUniforms(this.options);
-            this.changed = false;
+        var options = this.options;
+
+        if (this.hasUpdate) {
+            this.pass.setUniforms({
+                scale: options.scale,
+                angle: options.angle * RADIANS
+            });
+            this.hasUpdate = false;
         }
     }
 });

@@ -21,14 +21,6 @@ LEDEffect.info = {
 };
 
 Class.extend(LEDEffect, Effect, {
-    update: function(options) {
-        var changed = this._super.update.call(this, options);
-
-        this.changed = changed;
-
-        return changed;
-    },
-
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(LEDShader);
     },
@@ -38,9 +30,9 @@ Class.extend(LEDEffect, Effect, {
     },
 
     updateScene: function(scene) {
-        if (this.changed) {
+        if (this.hasUpdate) {
             this.pass.setUniforms(this.options);
-            this.changed = false;
+            this.hasUpdate = false;
         }
     }
 });

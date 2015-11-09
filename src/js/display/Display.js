@@ -15,19 +15,18 @@ var Display = function(name, options) {
     this.name = name;
     this.options = _.assign({ displayName: name + '' + id }, defaults, options);
     this.owner = null;
+    this.hasUpdate = false;
     this.initialized = false;
 };
 
 Class.extend(Display, EventEmitter, {
     update: function(options) {
-        var changed = false;
-
         if (typeof options === 'object') {
             for (var prop in options) {
                 if (this.options.hasOwnProperty(prop)) {
                     if (this.options[prop] !== options[prop]) {
                         this.options[prop] = options[prop];
-                        changed = true;
+                        this.hasUpdate = true;
                     }
                 }
             }
@@ -35,7 +34,7 @@ Class.extend(Display, EventEmitter, {
             this.initialized = true;
         }
 
-        return changed;
+        return this.hasUpdate;
     },
 
     toString: function() {

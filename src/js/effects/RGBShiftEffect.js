@@ -25,14 +25,6 @@ RGBShiftEffect.info = {
 };
 
 Class.extend(RGBShiftEffect, Effect, {
-    update: function(options) {
-        var changed = this._super.update.call(this, options);
-
-        this.changed = changed;
-
-        return changed;
-    },
-
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(this.shader);
     },
@@ -44,13 +36,13 @@ Class.extend(RGBShiftEffect, Effect, {
     updateScene: function(scene) {
         var options = this.options;
 
-        if (this.changed) {
+        if (this.hasUpdate) {
             this.pass.setUniforms({
                 amount: options.amount,
                 angle: options.angle * RADIANS
             });
 
-            this.changed = false;
+            this.hasUpdate = false;
         }
     }
 });

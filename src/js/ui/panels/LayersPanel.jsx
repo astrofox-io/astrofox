@@ -137,10 +137,15 @@ var LayersPanel = React.createClass({
         }
     },
 
-    handleLayerEnabled: function(obj) {
+    handleLayerEnabled: function(obj, e) {
+        e.stopPropagation();
+        e.preventDefault();
+
         var props = this.props;
 
-        obj.options.enabled = !obj.options.enabled;
+        obj.update({ enabled: !obj.options.enabled });
+
+        this.forceUpdate();
 
         if (props.onLayerChanged) {
             props.onLayerChanged();

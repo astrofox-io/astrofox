@@ -21,14 +21,6 @@ HexagonEffect.info = {
 };
 
 Class.extend(HexagonEffect, Effect, {
-    update: function(options) {
-        var changed = this._super.update.call(this, options);
-
-        this.changed = changed;
-
-        return changed;
-    },
-
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(this.shader);
     },
@@ -40,9 +32,9 @@ Class.extend(HexagonEffect, Effect, {
     updateScene: function(scene) {
         var options = this.options;
 
-        if (this.changed) {
+        if (this.hasUpdate) {
             this.pass.setUniforms({ scale: options.scale });
-            this.changed = false;
+            this.hasUpdate = false;
         }
     }
 });

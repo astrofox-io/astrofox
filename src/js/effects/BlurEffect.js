@@ -32,17 +32,13 @@ BlurEffect.info = {
 
 Class.extend(BlurEffect, Effect, {
     update: function(options) {
-        var type = this.options.type;
+        if (!options) return false;
 
-        var changed = this._super.update.call(this, options);
-
-        if (this.scene && options && options.type != type) {
+        if (this.scene && options.type !== this.options.type) {
             this.createShader();
         }
 
-        this.changed = changed;
-
-        return changed;
+        return Effect.prototype.update.call(this, options);
     },
 
     addToScene: function(scene) {
@@ -66,7 +62,7 @@ Class.extend(BlurEffect, Effect, {
                 case 'Gaussian':
                     this.pass.getPasses().forEach(function(pass, i) {
                         this.updateGaussianPass(pass, i);
-                    }.bind(this));
+                    }, this);
                     break;
 
                 case 'Zoom':

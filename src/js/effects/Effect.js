@@ -8,7 +8,13 @@ var Effect = function(name, options) {
 };
 
 Class.extend(Effect, Display, {
+    update: function(options) {
+        if (this.pass && options.enabled !== undefined) {
+            this.pass.options.enabled = options.enabled;
+        }
 
+        return Display.prototype.update.call(this, options);
+    }
 });
 
 module.exports = Effect;

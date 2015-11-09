@@ -30,11 +30,9 @@ SoundwaveDisplay.info = {
 
 Class.extend(SoundwaveDisplay, CanvasDisplay, {
     update: function(options) {
-        var changed = this._super.update.call(this, options);
-
         this.wave.update(options);
 
-        return changed;
+        return this._super.update.call(this, options);
     },
 
     renderToCanvas: function(scene, data) {

@@ -49,28 +49,33 @@ GeometryDisplay.info = {
 
 Class.extend(GeometryDisplay, Display, {
     update: function(options) {
-        if (typeof options !== 'undefined') {
-            this._super.update.call(this, options);
+        if (!options) return false;
 
-            if (options.shape !== undefined || options.shader !== undefined || options.shading !== undefined) {
-                this.createMesh(this.options.shape);
-            }
-            else if (options.wireframe !== undefined) {
-                this.material.wireframe = options.wireframe;
-                this.material.needsUpdate = true;
-            }
-            else if (options.opacity !== undefined) {
-                this.material.opacity = options.opacity;
-                this.material.needsUpdate = true;
-            }
-            else if (options.color !== undefined) {
-                this.material.color = new THREE.Color().set(options.color);
-                this.material.needsUpdate = true;
-            }
-            else if (options.lightDistance !== undefined || options.lightIntensity !== undefined) {
-                this.updateLights();
-            }
+        var changed = Display.prototype.update.call(this, options);
+
+        if (options.shape !== undefined || options.shader !== undefined || options.shading !== undefined) {
+            this.createMesh(this.options.shape);
         }
+        else if (options.enabled !== undefined && this.pass) {
+            this.pass.options.enabled = options.enabled;
+        }
+        else if (options.wireframe !== undefined) {
+            this.material.wireframe = options.wireframe;
+            this.material.needsUpdate = true;
+        }
+        else if (options.opacity !== undefined) {
+            this.material.opacity = options.opacity;
+            this.material.needsUpdate = true;
+        }
+        else if (options.color !== undefined) {
+            this.material.color = new THREE.Color().set(options.color);
+            this.material.needsUpdate = true;
+        }
+        else if (options.lightDistance !== undefined || options.lightIntensity !== undefined) {
+            this.updateLights();
+        }
+
+        return changed;
     },
 
     addToScene: function(scene) {
