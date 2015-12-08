@@ -53,7 +53,7 @@ Class.extend(BlurEffect, Effect, {
     updateScene: function(scene) {
         var options = this.options;
 
-        if (this.changed) {
+        if (this.hasUpdate) {
             switch (this.options.type) {
                 case 'Box':
                     this.pass.setUniforms({ amount: [options.amount, options.amount] });
@@ -70,7 +70,7 @@ Class.extend(BlurEffect, Effect, {
                     break;
             }
 
-            this.changed = false;
+            this.hasUpdate = false;
         }
     },
 
