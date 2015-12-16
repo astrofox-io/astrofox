@@ -224,7 +224,7 @@ var LayersPanel = React.createClass({
             icon = 'icon-cube';
         }
 
-        enabled = (obj.options.enabled) ? 'icon-eye' : 'icon-circle';
+        enabled = (obj.options.enabled) ? '' : 'layer-disabled';
 
         return (
             <div key={obj.toString()}
@@ -232,7 +232,7 @@ var LayersPanel = React.createClass({
                  onClick={this.handleLayerClick.bind(this, index)}>
                 <i className={'layer-icon ' + icon} />
                 {text}
-                <i className={'layer-enabled-icon ' + enabled} onClick={this.handleLayerEnabled.bind(this, obj)} />
+                <i className={'layer-options-icon icon-eye ' + enabled} onClick={this.handleLayerEnabled.bind(this, obj)} />
             </div>
         );
     },

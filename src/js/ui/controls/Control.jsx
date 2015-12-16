@@ -26,3 +26,5 @@ var Control = React.createClass({
         );
     }
 });
+
+module.exports = Control;

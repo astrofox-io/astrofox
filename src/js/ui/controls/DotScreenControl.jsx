@@ -9,8 +9,6 @@ var defaults = {
     scale: 1.0
 };
 
-var RADIANS = 0.017453292519943295;
-
 var DotScreenControl = React.createClass({
     getInitialState: function() {
         return defaults;

@@ -9,7 +9,8 @@ var ControlLoader = require('util/ControlLoader.js');
 var ControlsPanel = React.createClass({
     getInitialState: function() {
         return {
-            controls: []
+            controls: [],
+            activeIndex: -1
         };
     },
 
@@ -32,11 +33,10 @@ var ControlsPanel = React.createClass({
 
     scrollToControl: function(layer) {
         var id = layer.toString(),
-            controls = ReactDOM.findDOMNode(this.refs.controls),
             node = ReactDOM.findDOMNode(this.refs[id]);
 
         if (node) {
-            controls.scrollTop = node.offsetTop;
+            this.refs.controls.scrollTop = node.offsetTop;
         }
     },
 

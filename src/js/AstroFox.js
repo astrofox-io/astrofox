@@ -3,7 +3,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var App = require('./ui/App.jsx');
-var Browser = require('./Browser.js');
+var Window = require('./Window.js');
 
 var AstroFox = {
     version: '1.0',
@@ -11,7 +11,7 @@ var AstroFox = {
     license: null,
 
     start: function() {
-        Browser.init();
+        Window.init();
 
         // Render UI
         ReactDOM.render(

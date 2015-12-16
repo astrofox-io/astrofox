@@ -1,11 +1,11 @@
 'use strict';
 
 var React = require('react');
-var Browser = require('../Browser.js');
+var Window = require('../Window.js');
 
 var Header = React.createClass({
     componentDidMount: function() {
-        this.window = Browser.Window;
+        this.window = Window;
         this.maximized = false;
     },
 
