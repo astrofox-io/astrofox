@@ -63,8 +63,8 @@ var ImageControl = React.createClass({
         obj[name] = val;
 
         if (name === 'src') {
-            obj.width = 0;
-            obj.height = 0;
+            obj.width = 100;
+            obj.height = 100;
             obj.x = 0;
             obj.y = 0;
             obj.rotation = 0;

@@ -34,7 +34,7 @@ var Stage = function(options) {
 
     this.options = _.assign({}, defaults);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: false });
     this.renderer.setSize(854, 480);
     this.renderer.autoClear = false;
 

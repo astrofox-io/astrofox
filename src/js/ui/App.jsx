@@ -1,10 +1,10 @@
 'use strict';
 
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Application = require('core/Application.js');
 var Scene = require('display/Scene.js');
 var DisplayLibrary = require('display/DisplayLibrary.js');
+var Window = require('Window.js');
 
 var Header = require('ui/Header.jsx');
 var Body = require('ui/Body.jsx');
@@ -22,9 +22,6 @@ var ControlDock = require('ui/ControlDock.jsx');
 var ModalWindow = require('ui/windows/ModalWindow.jsx');
 var AboutWindow = require('ui/windows/AboutWindow.jsx');
 var SettingsWindow = require('ui/windows/SettingsWindow.jsx');
-
-var remote = global.require('remote');
-var dialog = remote.require('dialog');
 
 var App = React.createClass({
     getInitialState: function() {
@@ -83,43 +80,52 @@ var App = React.createClass({
                 break;
 
             case 'File/Open Project':
-                this.loadFileDialog(function(file) {
-                    if (file) {
-                        Application.loadProject(file[0]);
+                Window.showOpenDialog(function(files) {
+                    if (files) {
+                        Application.loadProject(files[0]);
                     }
-                }.bind(this), '');
+                }.bind(this));
                 break;
 
             case 'File/Save Project':
-                this.loadFileDialog(function(filename) {
-                    if (filename) {
-                        Application.saveProject(filename);
-                    }
-                }.bind(this), 'project.afx');
+                Window.showSaveDialog(
+                    'project.afx',
+                    function(filename) {
+                        if (filename) {
+                            Application.saveProject(filename);
+                        }
+                    }.bind(this)
+                );
                 break;
 
             case 'File/Load Audio':
-                this.loadFileDialog(function(file) {
-                    if (file) {
-                        this.loadAudioFile(file[0]);
+                Window.showOpenDialog(function(files) {
+                    if (files) {
+                        this.loadAudioFile(files[0]);
                     }
-                }.bind(this), '');
+                }.bind(this));
                 break;
 
             case 'File/Save Image':
-                this.loadFileDialog(function(filename) {
-                    if (filename) {
-                        Application.saveImage(filename);
-                    }
-                }.bind(this), 'image.png');
+                Window.showSaveDialog(
+                    'image.png',
+                    function(filename) {
+                        if (filename) {
+                            Application.saveImage(filename);
+                        }
+                    }.bind(this)
+                );
                 break;
 
             case 'File/Save Video':
-                this.loadFileDialog(function(filename) {
-                    if (filename) {
-                        Application.saveVideo(filename);
-                    }
-                }.bind(this), 'video.mp4');
+                Window.showSaveDialog(
+                    'video.mp4',
+                    function(filename) {
+                        if (filename) {
+                            Application.saveVideo(filename);
+                        }
+                    }.bind(this)
+                );
                 break;
 
             case 'Edit/Settings':
@@ -135,17 +141,6 @@ var App = React.createClass({
                 this.showModal(<AboutWindow onClose={this.hideModal} />);
                 break;
         }
-    },
-
-    loadFileDialog: function(action, filename) {
-        if (filename) {
-            dialog.showSaveDialog({ defaultPath: filename }, action);
-        }
-        else {
-            dialog.showOpenDialog(action);
-        }
-
-        //this.fileInput.click();
     },
 
     showModal: function(modal) {

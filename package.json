@@ -1,5 +1,5 @@
 {
-  "name": "AstroFox",
+  "name": "astrofox",
   "description": "Make awesome music videos.",
   "version": "0.0.1",
   "keywords": [
@@ -48,6 +48,7 @@
     "immutable": "^3.7.5",
     "lodash": "^3.10.1",
     "mersennetwister": "^0.2.1",
+    "mime": "^1.3.4",
     "nedb": "^1.2.1",
     "node-rsa": "^0.2.25",
     "react": "^0.14.3",

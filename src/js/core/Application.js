@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Immutable = require('immutable');
 
 var Class = require('core/Class.js');
 var EventEmitter = require('core/EventEmitter.js');
@@ -27,11 +26,9 @@ var defaults = {
 
 var Application = function() {
     this.requestId = null;
-    this.data = null;
 
     this.audioContext = new window.AudioContext();
     this.player = new Player(this.audioContext);
-    this.sound = new BufferedSound(this.audioContext);
     this.stage = new Stage();
     this.timer = new Timer();
     this.options = _.assign({}, defaults);
@@ -44,8 +41,7 @@ var Application = function() {
 Class.extend(Application, EventEmitter, {
     loadAudioFile: function(file) {
         return new Promise(function(resolve, reject) {
-            var buffer,
-                reader = new FileReader(),
+            var reader = new FileReader(),
                 player = this.player,
                 timer = this.timer;
 
@@ -64,8 +60,7 @@ Class.extend(Application, EventEmitter, {
             timer.set('file_load');
 
             if (typeof file === 'string') {
-                buffer = IO.fs.readFileSync(file);
-                file = new Blob([new Uint8Array(buffer).buffer]);
+                file = IO.readFileAsBlob(file);
             }
 
             reader.readAsArrayBuffer(file);
@@ -135,7 +130,6 @@ Class.extend(Application, EventEmitter, {
         this.emit('render', data);
 
         this.requestId = id;
-        this.data = data;
     },
 
     saveImage: function(filename) {
@@ -324,7 +318,7 @@ Class.extend(Application, EventEmitter, {
                 if (item.displays) {
                     item.displays.forEach(function(display) {
                         scene.addDisplay(new controls[display.name](display.options));
-                    }.bind(this));
+                    }, this);
                 }
             }.bind(this));
 

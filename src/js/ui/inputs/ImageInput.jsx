@@ -1,7 +1,8 @@
 'use strict';
 
 var React = require('react');
-var ReactDOM = require('react-dom');
+var Window = require('Window.js');
+var IO = require('IO.js');
 
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
@@ -14,14 +15,16 @@ var ImageInput = React.createClass({
     },
 
     componentDidMount: function() {
-        this.image = ReactDOM.findDOMNode(this.refs.image);
-        this.file = ReactDOM.findDOMNode(this.refs.file);
-        this.form = ReactDOM.findDOMNode(this.refs.form);
+        this.refs.image.onload = function() {
+            if (this.props.onChange) {
+                this.props.onChange('src', this.refs.image.src);
+            }
+        }.bind(this);
     },
 
     componentWillReceiveProps: function(props) {
         if (typeof props.src !== 'undefined') {
-            this.image.src = props.src;
+            this.loadImage(props.src);
         }
     },
 
@@ -34,14 +37,17 @@ var ImageInput = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        this.loadFile(e.dataTransfer.files[0]);
+        this.loadImageFile(e.dataTransfer.files[0]);
     },
 
     handleClick: function(e) {
         e.preventDefault();
 
-        this.form.reset();
-        this.file.click();
+        Window.showOpenDialog(function(files) {
+            if (files) {
+                this.loadImageFile(files[0]);
+            }
+        }.bind(this));
     },
 
     handleDelete: function(e) {
@@ -51,23 +57,18 @@ var ImageInput = React.createClass({
         this.loadImage(BLANK_IMAGE);
     },
 
-    handleFileOpen: function(e) {
-        e.preventDefault();
-
-        if (e.target.files.length > 0) {
-            this.loadFile(e.target.files[0]);
-        }
-    },
-
     loadImage: function(src) {
-        this.image.src = src;
-
-        if (this.props.onChange) {
-            this.props.onChange('src', src);
+        var image = this.refs.image;
+        if (image.src !== src) {
+            image.src = src;
         }
     },
 
-    loadFile: function(file) {
+    loadImageFile: function(file) {
+        if (typeof file === 'string') {
+            file = IO.readFileAsBlob(file);
+        }
+
         if (!(/^image/.test(file.type))) return;
 
         var reader = new FileReader();
@@ -82,11 +83,11 @@ var ImageInput = React.createClass({
     },
 
     getImage: function() {
-        return this.image;
+        return this.refs.image;
     },
 
     getImageRatio: function() {
-        var image = this.image;
+        var image = this.refs.image;
         return (image.src) ?  image.naturalWidth / image.naturalHeight :  0;
     },
 
@@ -100,28 +101,17 @@ var ImageInput = React.createClass({
         classes += (hasImage) ? 'icon-circle-with-cross' : 'icon-folder-open-empty';
 
         return (
-            <div>
-                <div
-                    className="input input-image"
-                    onDrop={this.handleDrop}
-                    onDragOver={this.handleDragOver}
-                    onClick={handleClick}>
-                    <img
-                        ref="image"
-                        className="image"
-                        style={style}
-                    />
-                    <div className={classes} />
-                </div>
-                <form
-                    ref="form"
-                    className="input-file">
-                    <input
-                        ref="file"
-                        type="file"
-                        onChange={this.handleFileOpen}
-                    />
-                </form>
+            <div
+                className="input input-image"
+                onDrop={this.handleDrop}
+                onDragOver={this.handleDragOver}
+                onClick={handleClick}>
+                <img
+                    ref="image"
+                    className="image"
+                    style={style}
+                />
+                <div className={classes} />
             </div>
         );
     }

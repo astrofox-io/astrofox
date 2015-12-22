@@ -1,6 +1,7 @@
 'use strict';
 
 const remote = global.require('electron').remote;
+const dialog = remote.dialog;
 
 var Window = {
     init: function() {
@@ -31,6 +32,14 @@ var Window = {
 
     close: function() {
         this.window.close();
+    },
+
+    showOpenDialog: function(action) {
+        dialog.showOpenDialog(action);
+    },
+
+    showSaveDialog: function(path, action) {
+        dialog.showSaveDialog({ defaultPath: path }, action);
     }
 };
 
