@@ -63,15 +63,17 @@ var ImageControl = React.createClass({
         obj[name] = val;
 
         if (name === 'src') {
-            obj.width = 100;
-            obj.height = 100;
+            obj.src = image.src = val;
+
+            // Reset values
+            obj.width = 0;
+            obj.height = 0;
             obj.x = 0;
             obj.y = 0;
             obj.rotation = 0;
             obj.opacity = 0;
 
             if (val !== BLANK_IMAGE) {
-                obj.src = image.src = val;
                 obj.opacity = 1.0;
                 obj.width = image.naturalWidth;
                 obj.height = image.naturalHeight;
@@ -98,13 +100,7 @@ var ImageControl = React.createClass({
         this.shouldUpdate = true;
 
         this.setState(obj, function() {
-            var image = this.image,
-                state = this.state,
-                display = this.props.display;
-
-            if (image.src !== state.src) {
-                image.src = state.src;
-            }
+            var display = this.props.display;
 
             display.update(obj);
 

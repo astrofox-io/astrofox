@@ -4,7 +4,7 @@ var _ = require('lodash');
 var Class = require('core/Class.js');
 var CanvasDisplay = require('display/CanvasDisplay.js');
 
-var defaults = {
+const defaults = {
     src: '',
     x: 0,
     y: 0,
@@ -15,7 +15,8 @@ var defaults = {
     opacity: 1.0
 };
 
-var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const MIN_RESIZE_WIDTH = 100;
+const MIN_RESIZE_HEIGHT = 100;
 
 var ImageDisplay = function(options) {
     CanvasDisplay.call(this, 'ImageDisplay', defaults);
@@ -41,7 +42,7 @@ Class.extend(ImageDisplay, CanvasDisplay, {
     },
 
     render: function() {
-        var width, height,
+        var i, w, h, y_src, y_dest, width, height, last_w, last_h,
             canvas = this.canvas,
             context = this.context,
             options = this.options,
@@ -57,32 +58,51 @@ Class.extend(ImageDisplay, CanvasDisplay, {
         width = img.naturalWidth;
         height = img.naturalHeight;
 
+        // Set opacity
+        context.globalAlpha = options.opacity;
+
         // Resize smaller
         if (options.width < width && options.height < height) {
             var buffer = document.createElement('canvas'),
                 bufferContext = buffer.getContext('2d');
 
-            // Draw image at original size
+            // Double sized canvas for two drawing regions
             buffer.width = width;
-            buffer.height = height;
+            buffer.height = height * 2;
+
+            // Draw image at original size
             bufferContext.drawImage(img, 0, 0, width, height);
 
-            width /= 2;
-            height /= 2;
+            i = 0;
+            y_src = 0;
+            last_w = width;
+            last_h = height;
 
-            // Step down
-            while (width >= 1 && height >= 1 && width > options.width && height > options.height) {
-                bufferContext.drawImage(buffer, 0, 0, buffer.width, buffer.height, 0, 0, buffer.width/2, buffer.height/2);
-                width /= 2;
-                height /= 2;
+            while (last_w > MIN_RESIZE_WIDTH && last_h > MIN_RESIZE_HEIGHT && last_w > options.width && last_h > options.height) {
+                y_src = (i % 2) ? height : 0;
+                y_dest = (i % 2) ? 0 : height;
+                w = ~~(width / ( 2 * (i + 1)));
+                h = ~~(height / ( 2 * (i + 1)));
+
+                if (w <= options.width || h <= options.height) break;
+
+                // Clear the drawing region
+                bufferContext.clearRect(0, y_dest, w, h);
+
+                // Draw into buffer region
+                bufferContext.drawImage(buffer, 0, y_src, last_w, last_h, 0, y_dest, w, h);
+                //console.log('draw ('+i+')', 0, y_src, last_w, last_h, 0, y_dest, w, h);
+
+                last_w = w;
+                last_h = h;
+                i++;
             }
 
-            context.globalAlpha = options.opacity;
-            context.drawImage(buffer, 0, 0, width*2, height*2, 0, 0, options.width, options.height);
+            context.drawImage(buffer, 0, (i % 2) ? height : 0, last_w, last_h, 0, 0, options.width, options.height);
+            //console.log('final draw ('+i+')', 0, (i % 2) ? height : 0, last_w, last_h, 0, 0, options.width, options.height, '\n\n');
         }
         // Draw normally
         else {
-            context.globalAlpha = options.opacity;
             context.drawImage(img, 0, 0, options.width, options.height);
         }
     }
