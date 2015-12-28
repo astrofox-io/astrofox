@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var babel = require('gulp-babel');
 var concat = require('gulp-concat');
+var duration = require('gulp-duration');
+var exit = require('gulp-exit');
 var iconfont = require('gulp-iconfont');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
@@ -18,61 +20,75 @@ var watchify = require('watchify');
 
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
+var nodeResolve = require('resolve');
 
-var b = browserify({
+var _ = require('lodash');
+
+var production = false;
+
+/*** Functions ***/
+
+var bundler = browserify({
     entries: './src/js/AstroFox.js',
     transform: [babelify, glslify],
     extensions: ['.js', '.jsx'],
     paths: ['./node_modules', './src/js/'],
     noParse: ['lodash','three'],
     standalone: 'AstroFox',
+    ignoreMissing: false,
+    detectGlobals: false,
     cache: {},
     packageCache: {}
 });
 
-var w = watchify(b)
-    .on('update', function(ids) {
-        util.log(ids);
-        bundle();
-    });
-
 function bundle() {
-    return w.bundle()
+    var timer = duration('bundle time');
+
+    return bundler.bundle()
+        .on('error', function(err){
+            util.log(util.colors.red(err.message));
+        })
+        .pipe(timer)
         .pipe(source('app.js'))
         .pipe(buffer())
-        .pipe(gulp.dest('build'));
+        .pipe(gulp.dest('./build'));
 }
 
-gulp.task('browserify', function() {
-    return b.bundle()
-        .pipe(source('app.js'))
-        .pipe(gulp.dest('build'));
-});
+function getNPMPackageIds() {
+    var manifest = require('./package.json');
 
-gulp.task('watchify', function() {
+    return _.keys(manifest.dependencies) || [];
+}
+
+/*** Tasks ***/
+
+// Builds application
+gulp.task('build', function() {
     return bundle();
 });
 
+// Builds application and watches for changes
+gulp.task('build-watch', function() {
+    bundler = watchify(bundler)
+        .on('update', function(ids) {
+            util.log(ids);
+            bundle();
+        });
+
+    return bundle();
+});
+
+// Compile LESS into CSS
 gulp.task('less', function() {
-    return gulp.src('src/css/app.less')
+    return gulp.src('./src/css/app.less')
         .pipe(less())
         .pipe(minifycss())
-        .pipe(gulp.dest('build'));
+        .pipe(gulp.dest('./build'));
 });
 
-gulp.task('sprite', function() {
-    var spriteData = gulp.src('src/images/sprite/*.png')
-        .pipe(spritesmith({
-            imgName: 'sprite.png',
-            cssName: 'sprite.css',
-            cssTemplate: 'src/images/sprite/template/sprite.css.mustache'
-        }));
-
-    spriteData.pipe(gulp.dest('build'));
-});
-
+// Build font library and CSS file
 gulp.task('icons', function(){
-    gulp.src(['src/svg/icons/*.svg'])
+    gulp.src(['./src/svg/icons/*.svg'])
         .pipe(iconfont({
             fontName: 'icons',
             appendUnicode: false,
@@ -86,21 +102,58 @@ gulp.task('icons', function(){
                 };
             });
 
-            gulp.src('src/svg/icons/template/icons.css.tpl')
+            gulp.src('/src/svg/icons/template/icons.css.tpl')
                 .pipe(template({
                     glyphs: icons,
                     fontName: options.fontName,
                     className: 'icon'
                 }))
                 .pipe(rename('icons.css'))
-                .pipe(gulp.dest('resources/css/'));
+                .pipe(gulp.dest('./resources/css/'));
         })
-        .pipe(gulp.dest('resources/fonts/icons/'));
+        .pipe(gulp.dest('./resources/fonts/icons/'));
 });
 
-gulp.task('watch', ['less','watchify'], function() {
-    gulp.watch('src/css/**/*.*', ['less']);
-    gulp.watch('src/js/**/*.*', ['watchify']);
+// Build sprite sheet
+gulp.task('sprite', function() {
+    var spriteData = gulp.src('./src/images/sprite/*.png')
+        .pipe(spritesmith({
+            imgName: 'sprite.png',
+            cssName: 'sprite.css',
+            cssTemplate: 'src/images/sprite/template/sprite.css.mustache'
+        }));
+
+    spriteData.pipe(gulp.dest('build'));
 });
 
-gulp.task('default', ['less','browserify']);
+// Builds separate vendor library
+gulp.task('build-vendor', function() {
+    var b = browserify({
+        debug: false
+    });
+
+    ['react','lodash','three','mime'].forEach(function (id) {
+        b.require(nodeResolve.sync(id), { expose: id });
+    });
+
+    return b.bundle()
+        .pipe(source('vendor.js'))
+        .pipe(buffer())
+        .pipe(gulp.dest('./build'));
+});
+
+// Builds application only library
+gulp.task('build-app', function() {
+    getNPMPackageIds().forEach(function (id) {
+        bundler.external(id);
+    });
+
+    compile(false);
+});
+
+gulp.task('watch', ['build-watch', 'less'], function() {
+    gulp.watch('./src/css/**/*.*', ['less']);
+    //gulp.watch('./src/js/**/*.*', ['build-watch']);
+});
+
+gulp.task('default', ['watch']);

@@ -1,10 +1,10 @@
 'use strict';
 
-const buffer = global.require('buffer').Buffer;
-const fs = global.require('fs');
-const spawn = global.require('child_process').spawn;
-const stream = global.require('stream');
-const zlib = global.require('zlib');
+const buffer = window.require('buffer').Buffer;
+const fs = window.require('fs');
+const spawn = window.require('child_process').spawn;
+const stream = window.require('stream');
+const zlib = window.require('zlib');
 const mime = require('mime');
 
 var IO = {

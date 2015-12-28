@@ -1,13 +1,11 @@
 'use strict';
 
-const remote = global.require('electron').remote;
+const remote = window.require('electron').remote;
 const dialog = remote.dialog;
 
 var Window = {
     init: function() {
         this.window = remote.getCurrentWindow();
-
-        this.openDevTools();
     },
 
     maximize: function() {

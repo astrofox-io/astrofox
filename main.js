@@ -34,6 +34,9 @@ app.on('ready', function() {
         'background-color': '#222222'
     });
 
+    // Debugging
+    mainWindow.openDevTools({ detach: true });
+
     // and load the index.html of the app.
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 

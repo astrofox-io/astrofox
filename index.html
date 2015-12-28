@@ -7,28 +7,13 @@
     <link rel="stylesheet" href="resources/css/fonts.css" />
     <link rel="stylesheet" href="resources/css/icons.css" />
     <link rel="stylesheet" href="build/app.css" />
+    <script src="build/vendor.js"></script>
     <script src="build/app.js"></script>
 </head>
 <body>
 <div id="app"></div>
 <script>
-var error_caught = false;
-
 document.addEventListener('DOMContentLoaded', function() {
-    // In case console doesn't open
-    if (process) {
-        process.on('uncaughtException', function(e) {
-            if (!error_caught) {
-                alert(e.stack);
-                console.error(e);
-                error_caught = true;
-            }
-        });
-
-        console.log(process.versions);
-    }
-
-    // Start the application
     AstroFox.start();
 });
 </script>
