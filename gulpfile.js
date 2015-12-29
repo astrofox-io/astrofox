@@ -79,7 +79,7 @@ gulp.task('build-watch', function() {
 });
 
 // Compile LESS into CSS
-gulp.task('less', function() {
+gulp.task('build-css', function() {
     return gulp.src('./src/css/app.less')
         .pipe(less())
         .pipe(minifycss())
@@ -87,10 +87,11 @@ gulp.task('less', function() {
 });
 
 // Build font library and CSS file
-gulp.task('icons', function(){
+gulp.task('build-icons', function(){
     gulp.src(['./src/svg/icons/*.svg'])
         .pipe(iconfont({
             fontName: 'icons',
+            fontHeight: 300,
             appendUnicode: false,
             normalize: true
         }))
@@ -115,7 +116,7 @@ gulp.task('icons', function(){
 });
 
 // Build sprite sheet
-gulp.task('sprite', function() {
+gulp.task('build-sprite', function() {
     var spriteData = gulp.src('./src/images/sprite/*.png')
         .pipe(spritesmith({
             imgName: 'sprite.png',
@@ -151,8 +152,8 @@ gulp.task('build-app', function() {
     compile(false);
 });
 
-gulp.task('watch', ['build-watch', 'less'], function() {
-    gulp.watch('./src/css/**/*.*', ['less']);
+gulp.task('watch', ['build-watch', 'build-css'], function() {
+    gulp.watch('./src/css/**/*.*', ['build-css']);
     //gulp.watch('./src/js/**/*.*', ['build-watch']);
 });
 
