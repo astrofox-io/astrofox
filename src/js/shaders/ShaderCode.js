@@ -1,4 +1,3 @@
-var THREE = require('three');
 var glslify = require('glslify');
 
 var ShaderCode = {

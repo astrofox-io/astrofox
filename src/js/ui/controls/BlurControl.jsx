@@ -7,7 +7,7 @@ var SelectInput = require('ui/inputs/SelectInput.jsx');
 
 var defaults = {
     type: 'Box',
-    amount: 1.0
+    amount: 0.1
 };
 
 var types = [
@@ -78,14 +78,14 @@ var BlurControl = React.createClass({
                         size="3"
                         value={this.state.amount}
                         min={0}
-                        max={10}
+                        max={1.0}
                         step={0.05}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
                             min={0}
-                            max={10}
+                            max={1.0}
                             step={0.05}
                             value={this.state.amount}
                             onChange={this.handleChange} />

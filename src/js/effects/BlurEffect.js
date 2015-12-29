@@ -18,7 +18,10 @@ var shaders = {
     Zoom: ZoomBlurShader
 };
 
-var GAUSSIAN_ITERATIONS = 8;
+const BOX_BLUR_MAX = 20;
+const ZOOM_BLUR_MAX = 1;
+const GAUSSIAN_MAX = 20;
+const GAUSSIAN_ITERATIONS = 8;
 
 var BlurEffect = function(options) {
     Effect.call(this, 'BlurEffect', defaults);
@@ -32,18 +35,22 @@ BlurEffect.info = {
 
 Class.extend(BlurEffect, Effect, {
     update: function(options) {
-        if (!options) return false;
+        if (!options) return;
 
-        if (this.scene && options.type !== this.options.type) {
-            this.createShader();
+        var type = this.options.type;
+
+        var changed = Effect.prototype.update.call(this, options);
+
+        if (this.scene && options.type != type) {
+            this.createShader(options.type);
         }
 
-        return Effect.prototype.update.call(this, options);
+        return changed;
     },
 
     addToScene: function(scene) {
         this.scene = scene;
-        this.createShader();
+        this.createShader(this.options.type);
     },
 
     removeFromScene: function(scene) {
@@ -51,12 +58,16 @@ Class.extend(BlurEffect, Effect, {
     },
 
     updateScene: function(scene) {
-        var options = this.options;
+        var amount, passes,
+            options = this.options;
 
         if (this.hasUpdate) {
             switch (this.options.type) {
                 case 'Box':
-                    this.pass.setUniforms({ amount: [options.amount, options.amount] });
+                    amount = BOX_BLUR_MAX * options.amount;
+                    passes = this.pass.getPasses();
+                    passes.get(0).setUniforms({ amount: [0, amount] });
+                    passes.get(1).setUniforms({ amount: [amount, 0] });
                     break;
 
                 case 'Gaussian':
@@ -66,7 +77,8 @@ Class.extend(BlurEffect, Effect, {
                     break;
 
                 case 'Zoom':
-                    this.pass.setUniforms({ amount: options.amount / 10 });
+                    amount = ZOOM_BLUR_MAX * options.amount;
+                    this.pass.setUniforms({ amount: amount });
                     break;
             }
 
@@ -76,37 +88,43 @@ Class.extend(BlurEffect, Effect, {
 
     updateGaussianPass: function(pass, i) {
         var options = this.options,
-            radius = (GAUSSIAN_ITERATIONS - i - 1) * options.amount / GAUSSIAN_ITERATIONS;
+            amount = options.amount * GAUSSIAN_MAX,
+            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount / GAUSSIAN_ITERATIONS;
 
         pass.setUniforms({ direction: (i % 2 == 0) ? [0, radius] : [radius, 0] });
     },
 
-    createShader: function() {
-        var options = this.options,
+    createShader: function(type) {
+        var pass,
+            passes = [],
+            shader = shaders[type],
             composer = this.scene.composer;
 
         if (this.pass) {
             composer.removePass(this.pass);
         }
 
-        switch (options.type) {
+        switch (type) {
             case 'Gaussian':
-                var passes = [],
-                    pass;
-
                 for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
-                    pass = new ShaderPass(GaussianBlurShader);
+                    pass = new ShaderPass(shader);
                     passes.push(pass);
 
                     this.updateGaussianPass(pass, i);
                 }
 
                 this.pass = composer.addMultiPass(passes);
+                break;
 
+            case 'Box':
+                passes.push(new ShaderPass(shader));
+                passes.push(new ShaderPass(shader));
+
+                this.pass = composer.addMultiPass(passes);
                 break;
 
             default:
-                this.pass = composer.addShaderPass(shaders[options.type]);
+                this.pass = composer.addShaderPass(shader);
         }
     }
 });
