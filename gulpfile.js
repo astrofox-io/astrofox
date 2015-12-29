@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var duration = require('gulp-duration');
 var exit = require('gulp-exit');
@@ -11,7 +10,6 @@ var strip = require('gulp-strip-comments');
 var template = require('gulp-template');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
-var spritesmith = require('gulp.spritesmith');
 
 var browserify = require('browserify');
 var glslify = require('glslify');
@@ -33,7 +31,7 @@ var bundler = browserify({
     transform: [babelify, glslify],
     extensions: ['.js', '.jsx'],
     paths: ['./node_modules', './src/js/'],
-    noParse: ['lodash','three'],
+    noParse: ['lodash','three', 'ttf2woff2'],
     standalone: 'AstroFox',
     ignoreMissing: false,
     detectGlobals: false,
@@ -113,18 +111,6 @@ gulp.task('build-icons', function(){
                 .pipe(gulp.dest('./resources/css/'));
         })
         .pipe(gulp.dest('./resources/fonts/icons/'));
-});
-
-// Build sprite sheet
-gulp.task('build-sprite', function() {
-    var spriteData = gulp.src('./src/images/sprite/*.png')
-        .pipe(spritesmith({
-            imgName: 'sprite.png',
-            cssName: 'sprite.css',
-            cssTemplate: 'src/images/sprite/template/sprite.css.mustache'
-        }));
-
-    spriteData.pipe(gulp.dest('build'));
 });
 
 // Builds separate vendor library
