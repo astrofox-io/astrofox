@@ -21,6 +21,7 @@ var ShaderCode = {
         Hexagon: glslify('../../glsl/fragment/Hexagon.glsl'),
         LED: glslify('../../glsl/fragment/LED.glsl'),
         Mirror: glslify('../../glsl/fragment/Mirror.glsl'),
+        Pixelate: glslify('../../glsl/fragment/Pixelate.glsl'),
         RGBShift: glslify('../../glsl/fragment/RGBShift.glsl'),
         ZoomBlur: glslify('../../glsl/fragment/ZoomBlur.glsl')
     }

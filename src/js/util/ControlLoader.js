@@ -20,6 +20,7 @@ var ControlLoader = {
         DotScreenEffect: ControlLibrary.DotScreenControl,
         LEDEffect: ControlLibrary.LEDControl,
         MirrorEffect: ControlLibrary.MirrorControl,
+        PixelateEffect: ControlLibrary.PixelateControl,
         BlurEffect: ControlLibrary.BlurControl,
         HexagonEffect: ControlLibrary.HexagonControl
     },
