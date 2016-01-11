@@ -24,7 +24,7 @@ var NumberInput = React.createClass({
 
     componentWillReceiveProps: function(props) {
         if (typeof props.value !== 'undefined') {
-            this.setState({ value: props.value });
+            this.setValue(props.value);
         }
     },
 
@@ -59,7 +59,7 @@ var NumberInput = React.createClass({
                 this.props.onChange(this.props.name, Number(val));
             }
             else {
-                this.setState({ value: this.props.value });
+                this.setValue(this.props.value);
             }
         }
     },
@@ -71,6 +71,20 @@ var NumberInput = React.createClass({
         if (e.keyCode === 13) {
             this.handleValueChange(e);
         }
+    },
+
+    setValue: function(val, callback) {
+        var min = this.props.min,
+            max = this.props.max;
+
+        if (val > max) {
+            val = max;
+        }
+        else if (val < min) {
+            val = min;
+        }
+
+        this.setState({ value: val }, callback);
     },
 
     render: function(){

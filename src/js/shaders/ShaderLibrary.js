@@ -4,7 +4,6 @@ var ShaderLibrary = {
     DotScreen: require('./DotScreenShader.js'),
     Grid: require('./GridShader.js'),
     Halftone: require('./HalftoneShader.js'),
-    HatchGlow: require('./HatchGlowShader.js'),
     Hexagon: require('./HexagonShader.js'),
     LED: require('./LEDShader.js'),
     Mirror: require('./MirrorShader.js'),

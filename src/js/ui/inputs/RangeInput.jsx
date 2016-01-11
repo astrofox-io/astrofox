@@ -25,14 +25,15 @@ var RangeInput = React.createClass({
     },
 
     componentWillReceiveProps: function(props) {
-        if (typeof this.props.value !== "undefined" && !this.active) {
-            this.setState({ value: props.value });
+        if (typeof props.value !== "undefined" && !this.active) {
+            this.setValue(props.value);
         }
     },
 
     handleChange: function(e) {
         var val = e.currentTarget.value;
-        this.setState({ value: val }, function() {
+
+        this.setValue(val, function() {
             if (!this.props.buffered && this.props.onChange) {
                 this.props.onChange(this.props.name, Number(val));
             }
@@ -70,6 +71,20 @@ var RangeInput = React.createClass({
             return ((val - min) / (max - min) * 100);
         }
         return 0;
+    },
+
+    setValue: function(val, callback) {
+        var min = this.props.min,
+            max = this.props.max;
+
+        if (val > max) {
+            val = max;
+        }
+        else if (val < min) {
+            val = min;
+        }
+
+        this.setState({ value: val }, callback);
     },
 
     render: function() {

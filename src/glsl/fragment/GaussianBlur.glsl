@@ -5,8 +5,6 @@ uniform int flip;
 
 varying vec2 vUv;
 
-const int iterations = 8;
-
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {
     vec4 color = vec4(0.0);
     vec2 off1 = vec2(1.411764705882353) * direction;

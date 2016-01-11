@@ -11,18 +11,20 @@ var ControlLoader = {
     mapping: {
         // Displays
         BarSpectrumDisplay: ControlLibrary.BarSpectrumControl,
+        GeometryDisplay: ControlLibrary.GeometryControl,
         ImageDisplay: ControlLibrary.ImageControl,
         SoundwaveDisplay: ControlLibrary.SoundwaveControl,
         TextDisplay: ControlLibrary.TextControl,
-        GeometryDisplay: ControlLibrary.GeometryControl,
+
         // Effects
-        RGBShiftEffect: ControlLibrary.RGBShiftControl,
+        BlurEffect: ControlLibrary.BlurControl,
         DotScreenEffect: ControlLibrary.DotScreenControl,
+        GlowEffect: ControlLibrary.GlowControl,
+        HexagonEffect: ControlLibrary.HexagonControl,
         LEDEffect: ControlLibrary.LEDControl,
         MirrorEffect: ControlLibrary.MirrorControl,
         PixelateEffect: ControlLibrary.PixelateControl,
-        BlurEffect: ControlLibrary.BlurControl,
-        HexagonEffect: ControlLibrary.HexagonControl
+        RGBShiftEffect: ControlLibrary.RGBShiftControl
     },
 
     getControl: function(obj) {

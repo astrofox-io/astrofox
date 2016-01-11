@@ -3,19 +3,15 @@
 var React = require('react');
 var NumberInput = require('ui/inputs/NumberInput.jsx');
 var RangeInput = require('ui/inputs/RangeInput.jsx');
-var SelectInput = require('ui/inputs/SelectInput.jsx');
 
 var defaults = {
-    type: 'Square',
-    size: 10
+    amount: 0.1,
+    intensity: 1
 };
 
-var types = [
-    'Square',
-    'Hexagon'
-];
+var GLOW_MAX = 50;
 
-var PixelateControl = React.createClass({
+var GlowControl = React.createClass({
     getInitialState: function() {
         return defaults;
     },
@@ -60,31 +56,44 @@ var PixelateControl = React.createClass({
     render: function() {
         return (
             <div className="control">
-                <div className="header">PIXELATE</div>
+                <div className="header">GLOW</div>
                 <div className="row">
-                    <label className="label">Type</label>
-                    <SelectInput
-                        name="type"
-                        size="20"
-                        items={types}
-                        value={this.state.type}
-                        onChange={this.handleChange} />
-                </div>
-                <div className="row">
-                    <label className="label">Size</label>
+                    <label className="label">Amount</label>
                     <NumberInput
-                        name="size"
+                        name="amount"
                         size="3"
-                        value={this.state.size}
-                        min={2}
-                        max={200}
+                        value={this.state.amount}
+                        min={0}
+                        step={0.01}
+                        max={1}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="size"
-                            min={2}
-                            max={200}
-                            value={this.state.size}
+                            name="amount"
+                            min={0}
+                            step={0.01}
+                            max={1}
+                            value={this.state.amount}
+                            onChange={this.handleChange} />
+                    </div>
+                </div>
+                <div className="row">
+                    <label className="label">Intensity</label>
+                    <NumberInput
+                        name="intensity"
+                        size="3"
+                        value={this.state.intensity}
+                        min={1}
+                        step={0.01}
+                        max={3}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="intensity"
+                            min={1}
+                            step={0.01}
+                            max={3}
+                            value={this.state.intensity}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -93,4 +102,4 @@ var PixelateControl = React.createClass({
     }
 });
 
-module.exports = PixelateControl;
+module.exports = GlowControl;

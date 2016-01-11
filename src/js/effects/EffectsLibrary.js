@@ -3,6 +3,7 @@
 var EffectsLibrary = {
     BlurEffect: require('effects/BlurEffect.js'),
     DotScreenEffect: require('effects/DotScreenEffect.js'),
+    GlowEffect: require('effects/GlowEffect.js'),
     LEDEffect: require('effects/LEDEffect.js'),
     MirrorEffect: require('effects/MirrorEffect.js'),
     PixelateEffect: require('effects/PixelateEffect.js'),

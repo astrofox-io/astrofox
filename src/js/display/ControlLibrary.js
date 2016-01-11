@@ -3,6 +3,7 @@ var ControlLibrary = {
     BlurControl: require('ui/controls/BlurControl.jsx'),
     DotScreenControl: require('ui/controls/DotScreenControl.jsx'),
     GeometryControl: require('ui/controls/GeometryControl.jsx'),
+    GlowControl: require('ui/controls/GlowControl.jsx'),
     HexagonControl: require('ui/controls/HexagonControl.jsx'),
     ImageControl: require('ui/controls/ImageControl.jsx'),
     LEDControl: require('ui/controls/LEDControl.jsx'),
