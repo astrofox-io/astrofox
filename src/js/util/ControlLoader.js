@@ -8,27 +8,9 @@ var Scene = require('display/Scene.js');
 var SceneControl = require('ui/controls/SceneControl.jsx');
 
 var ControlLoader = {
-    mapping: {
-        // Displays
-        BarSpectrumDisplay: ControlLibrary.BarSpectrumControl,
-        GeometryDisplay: ControlLibrary.GeometryControl,
-        ImageDisplay: ControlLibrary.ImageControl,
-        SoundwaveDisplay: ControlLibrary.SoundwaveControl,
-        TextDisplay: ControlLibrary.TextControl,
-
-        // Effects
-        BlurEffect: ControlLibrary.BlurControl,
-        DotScreenEffect: ControlLibrary.DotScreenControl,
-        GlowEffect: ControlLibrary.GlowControl,
-        HexagonEffect: ControlLibrary.HexagonControl,
-        LEDEffect: ControlLibrary.LEDControl,
-        MirrorEffect: ControlLibrary.MirrorControl,
-        PixelateEffect: ControlLibrary.PixelateControl,
-        RGBShiftEffect: ControlLibrary.RGBShiftControl
-    },
-
     getControl: function(obj) {
-        var control = null,
+        var name,
+            control = null,
             displays = _.assign({}, DisplayLibrary, EffectsLibrary);
 
         if (obj instanceof Scene) {
@@ -37,7 +19,8 @@ var ControlLoader = {
 
         _.forIn(displays, function(val, key) {
             if (obj instanceof val) {
-                control = this.mapping[key];
+                name = /(\w+)(Display|Effect)/.exec(key);
+                control = ControlLibrary[name[1] + 'Control'];
                 return false;
             }
         }, this);
