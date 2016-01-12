@@ -34,7 +34,6 @@ Class.extend(GlowEffect, Effect, {
         var options = this.options;
 
         if (this.hasUpdate) {
-
             this.pass.setUniforms({ size: options.amount * GLOW_MAX, amount: options.intensity });
             this.hasUpdate = false;
         }
