@@ -1,0 +1,86 @@
+'use strict';
+
+var THREE = require('three');
+
+var Class = require('core/Class.js');
+var Composer = require('graphics/Composer.js');
+var Effect = require('effects/Effect.js');
+var GaussianBlurShader = require('shaders/GaussianBlurShader.js');
+var CopyShader = require('shaders/CopyShader.js');
+var BlendShader = require('shaders/BlendShader.js');
+var ShaderPass = require('graphics/ShaderPass.js');
+var MultiPass = require('graphics/MultiPass.js');
+var SavePass = require('graphics/SavePass.js');
+var BlendPass = require('graphics/BlendPass.js');
+var BlendModes = require('graphics/BlendModes.js');
+
+var defaults = {
+    blending: 'Add',
+    amount: 0.1
+};
+
+const GAUSSIAN_MAX = 20;
+const GAUSSIAN_ITERATIONS = 8;
+
+var BloomEffect = function(options) {
+    Effect.call(this, 'BloomEffect', defaults);
+
+    this.update(options);
+};
+
+BloomEffect.info = {
+    name: 'Bloom'
+};
+
+Class.extend(BloomEffect, Effect, {
+    addToScene: function(scene) {
+        var pass,
+            passes = [],
+            composer = scene.composer;
+
+        passes.push(new SavePass(composer.saveBuffer));
+
+        for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
+            pass = new ShaderPass(GaussianBlurShader);
+            passes.push(pass);
+
+            this.updateGaussianPass(pass, i);
+        }
+
+        this.blendPass = new BlendPass(composer.saveBuffer);
+        passes.push(this.blendPass);
+
+        this.pass = composer.addMultiPass(passes);
+        this.scene = scene;
+    },
+
+    removeFromScene: function(scene) {
+        scene.composer.removePass(this.pass);
+    },
+
+    updateScene: function(scene) {
+        if (this.hasUpdate) {
+            var options = this.options;
+
+            this.pass.getPasses().forEach(function(pass, i) {
+                if (i > 0 && i < GAUSSIAN_ITERATIONS - 1) {
+                    this.updateGaussianPass(pass, i);
+                }
+            }, this);
+
+            this.blendPass.options.blending = options.blending;
+
+            this.hasUpdate = false;
+        }
+    },
+
+    updateGaussianPass: function(pass, i) {
+        var options = this.options,
+            amount = options.amount * GAUSSIAN_MAX,
+            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount / GAUSSIAN_ITERATIONS;
+
+        pass.setUniforms({ direction: (i % 2 == 0) ? [0, radius] : [radius, 0] });
+    }
+});
+
+module.exports = BloomEffect;

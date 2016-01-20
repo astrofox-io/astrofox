@@ -15,18 +15,9 @@ var TexturePass = require('graphics/TexturePass.js');
 var MultiPass = require('graphics/MultiPass.js');
 var MaskPass = require('graphics/MaskPass.js');
 var ClearMaskPass = require('graphics/ClearMaskPass.js');
-var MultiPass = require('graphics/MultiPass.js');
 var CopyShader = require('shaders/CopyShader.js');
 var BlendShader = require('shaders/BlendShader.js');
 var BlendModes = require('graphics/BlendModes.js');
-
-var threeBlendModes = {
-    None3: THREE.NoBlending,
-    Normal3: THREE.NormalBlending,
-    Add3: THREE.AdditiveBlending,
-    Subtract3: THREE.SubtractiveBlending,
-    Multiply3: THREE.MultiplyBlending
-};
 
 var Composer = function(renderer, renderTarget) {
     this.renderer = renderer;
@@ -34,11 +25,9 @@ var Composer = function(renderer, renderTarget) {
     this.maskActive = false;
 
     this.copyPass = new ShaderPass(CopyShader, { transparent: false });
-    this.savePass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    //this.copyPass.material.blending = THREE.NoBlending;
-    //this.savePass.material.blending = THREE.NoBlending;
+    // Do not pre-multiply alpha
     this.blendPass.material.blending = THREE.NoBlending;
 
     this.setRenderTarget(renderTarget);
@@ -73,6 +62,7 @@ Class.extend(Composer, EventEmitter, {
 
         this.readBuffer = this.readTarget;
         this.writeBuffer = this.writeTarget;
+        this.saveBuffer = renderTarget.clone();
     },
 
     clear: function(color, depth, stencil) {
@@ -82,6 +72,11 @@ Class.extend(Composer, EventEmitter, {
     clearBuffer: function(color, depth, stencil) {
         this.renderer.clearTarget(this.readTarget, color, depth, stencil);
         this.renderer.clearTarget(this.writeTarget, color, depth, stencil);
+        //this.renderer.clearTarget(this.saveBuffer, color, depth, stencil);
+    },
+
+    clearSaveBuffer: function(color, depth, stencil) {
+        this.renderer.clearTarget(this.saveBuffer, color, depth, stencil);
     },
 
     setSize: function(width, height) {
@@ -149,6 +144,10 @@ Class.extend(Composer, EventEmitter, {
         return this.addShaderPass(CopyShader, options);
     },
 
+    addSavePass(options) {
+        return this.addCopyPass(_.assign(options, { save: true, needsSwap: false }));
+    },
+
     addMultiPass: function(passes) {
         var composer = new Composer(this.renderer);
 
@@ -164,45 +163,18 @@ Class.extend(Composer, EventEmitter, {
     },
 
     blendBuffer: function(buffer, options) {
-        var pass;
+        var pass = this.blendPass;
 
-        if (threeBlendModes[options.blending] != null) {
-            pass = this.savePass;
+        pass.material.uniforms['tInput'].value = this.readBuffer;
+        pass.material.uniforms['tInput2'].value = buffer;
+        pass.material.uniforms['opacity'].value = options.opacity;
+        pass.material.uniforms['mode'].value = BlendModes[options.blending];
+        pass.material.uniforms['multiplyAlpha'].value = options.multiplyAlpha || 0;
 
-            pass.material.blending = threeBlendModes[options.blending];
-            pass.material.uniforms['opacity'].value = options.opacity;
+        pass.process(this.renderer, this.writeBuffer);
 
-            // Copy directly to read buffer
-            //pass.render(this.renderer, this.readBuffer, buffer);
-
-            // Copy to write buffer, then swap buffer, write->read
-            pass.process(this.renderer, this.readBuffer, buffer);
-            //this.swapBuffers();
-
-            //this.renderToScreen();
-        }
-        else {
-            pass = this.blendPass;
-            //pass.update({ clearDepth: true });
-
-            pass.material.uniforms['tInput'].value = this.readBuffer;
-            pass.material.uniforms['tInput2'].value = buffer;
-            pass.material.uniforms['opacity'].value = options.opacity;
-            pass.material.uniforms['mode'].value = BlendModes[options.blending];
-            pass.material.uniforms['multiplyAlpha'].value = options.multiplyAlpha || 0;
-
-            pass.process(this.renderer, this.writeBuffer);
-
-            // Swap buffers write->read
-            this.swapBuffers();
-
-            // Manually copy write buffer into read
-            //this.copyPass.material.blending = THREE.NormalBlending;
-            //this.copyPass.material.uniforms['opacity'].value = 1;
-            //this.copyPass.render(this.renderer, this.readBuffer, this.writeBuffer);
-
-            //this.renderToScreen();
-        }
+        // Swap buffers write->read
+        this.swapBuffers();
     },
 
     copyBuffer: function(buffer, options) {
@@ -233,7 +205,13 @@ Class.extend(Composer, EventEmitter, {
 
         this.passes.nodes.forEach(function(pass) {
             if (pass.options.enabled) {
-                pass.process(renderer, this.writeBuffer, this.readBuffer, delta, maskActive);
+                pass.process(
+                    renderer,
+                    this.writeBuffer,
+                    this.readBuffer,
+                    delta,
+                    maskActive
+                );
 
                 if (pass.options.needsSwap) {
                     if (maskActive) {
@@ -252,8 +230,8 @@ Class.extend(Composer, EventEmitter, {
                     this.maskActive = false;
                 }
                 else if (pass instanceof MultiPass) {
-                    this.copyPass.process(renderer, this.writeBuffer, this.readBuffer, delta);
-                    this.swapBuffers();
+                    //this.copyPass.process(renderer, this.writeBuffer, this.readBuffer, delta);
+                    //this.swapBuffers();
                 }
             }
         }, this);

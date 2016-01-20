@@ -1,5 +1,6 @@
 var ControlLibrary = {
     BarSpectrumControl: require('ui/controls/BarSpectrumControl.jsx'),
+    BloomControl: require('ui/controls/BloomControl.jsx'),
     BlurControl: require('ui/controls/BlurControl.jsx'),
     DotScreenControl: require('ui/controls/DotScreenControl.jsx'),
     GeometryControl: require('ui/controls/GeometryControl.jsx'),

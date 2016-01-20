@@ -1,6 +1,7 @@
 'use strict';
 
 var EffectsLibrary = {
+    BloomEffect: require('effects/BloomEffect.js'),
     BlurEffect: require('effects/BlurEffect.js'),
     DotScreenEffect: require('effects/DotScreenEffect.js'),
     GlowEffect: require('effects/GlowEffect.js'),

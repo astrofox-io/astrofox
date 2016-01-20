@@ -4,8 +4,14 @@ var _ = require('lodash');
 var Class = require('core/Class.js');
 var ComposerPass = require('graphics/ComposerPass.js');
 
-var MultiPass = function(composer) {
-    ComposerPass.call(this, {});
+var defaults = {
+    needsSwap: true,
+    forceClear: true,
+    clearDepth: true
+};
+
+var MultiPass = function(composer, options) {
+    ComposerPass.call(this, _.assign({}, defaults, options));
 
     this.composer = composer;
 };
