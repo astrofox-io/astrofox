@@ -24,24 +24,29 @@ var RangeInput = React.createClass({
         this.active = false;
     },
 
-    componentWillReceiveProps: function(props) {
-        if (typeof props.value !== "undefined" && !this.active) {
-            this.setValue(props.value);
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.value !== this.state.value && !this.active) {
+            this.setValue(nextProps.value, nextProps.min, nextProps.max);
         }
     },
 
     handleChange: function(e) {
         var val = e.currentTarget.value;
 
-        this.setValue(val, function() {
-            if (!this.props.buffered && this.props.onChange) {
-                this.props.onChange(this.props.name, Number(val));
-            }
+        this.setValue(
+            val,
+            this.props.min,
+            this.props.max,
+            function() {
+                if (!this.props.buffered && this.props.onChange) {
+                    this.props.onChange(this.props.name, Number(val));
+                }
 
-            if (this.props.onUpdate) {
-                this.props.onUpdate(this.props.name, Number(val));
-            }
-        }.bind(this));
+                if (this.props.onUpdate) {
+                    this.props.onUpdate(this.props.name, Number(val));
+                }
+            }.bind(this)
+        );
     },
 
     handleMouseDown: function(e) {
@@ -70,13 +75,11 @@ var RangeInput = React.createClass({
         if (max > min) {
             return ((val - min) / (max - min) * 100);
         }
+
         return 0;
     },
 
-    setValue: function(val, callback) {
-        var min = this.props.min,
-            max = this.props.max;
-
+    setValue: function(val, min, max, callback) {
         if (val > max) {
             val = max;
         }

@@ -25,13 +25,8 @@ var BlendPass = function(buffer, options) {
 
 Class.extend(BlendPass, ShaderPass, {
     process: function(renderer, writeBuffer, readBuffer) {
-        var options = this.options;
-
         this.material.uniforms['tInput'].value = readBuffer;
         this.material.uniforms['tInput2'].value = this.buffer;
-        this.material.uniforms['opacity'].value = options.opacity;
-        this.material.uniforms['mode'].value = BlendModes[options.blending];
-        this.material.uniforms['multiplyAlpha'].value = options.multiplyAlpha || 0;
 
         this.mesh.material = this.material;
 

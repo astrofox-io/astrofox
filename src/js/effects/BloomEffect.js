@@ -15,7 +15,7 @@ var BlendPass = require('graphics/BlendPass.js');
 var BlendModes = require('graphics/BlendModes.js');
 
 var defaults = {
-    blending: 'Add',
+    blending: 'Screen',
     amount: 0.1
 };
 
@@ -36,9 +36,11 @@ Class.extend(BloomEffect, Effect, {
     addToScene: function(scene) {
         var pass,
             passes = [],
-            composer = scene.composer;
+            composer = scene.composer,
+            options = this.options;
 
-        passes.push(new SavePass(composer.saveBuffer));
+        this.savePass = new SavePass(composer.saveBuffer);
+        passes.push(this.savePass);
 
         for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
             pass = new ShaderPass(GaussianBlurShader);
@@ -48,6 +50,7 @@ Class.extend(BloomEffect, Effect, {
         }
 
         this.blendPass = new BlendPass(composer.saveBuffer);
+        this.blendPass.setUniforms({ mode: BlendModes[options.blending] });
         passes.push(this.blendPass);
 
         this.pass = composer.addMultiPass(passes);
@@ -68,7 +71,7 @@ Class.extend(BloomEffect, Effect, {
                 }
             }, this);
 
-            this.blendPass.options.blending = options.blending;
+            this.blendPass.setUniforms({ mode: BlendModes[options.blending] });
 
             this.hasUpdate = false;
         }

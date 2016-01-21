@@ -78,14 +78,14 @@ var BloomControl = React.createClass({
                         value={this.state.amount}
                         min={0}
                         max={1.0}
-                        step={0.05}
+                        step={0.01}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
                             min={0}
                             max={1.0}
-                            step={0.05}
+                            step={0.01}
                             value={this.state.amount}
                             onChange={this.handleChange} />
                     </div>

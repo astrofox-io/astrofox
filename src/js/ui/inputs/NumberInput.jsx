@@ -22,9 +22,9 @@ var NumberInput = React.createClass({
         };
     },
 
-    componentWillReceiveProps: function(props) {
-        if (typeof props.value !== 'undefined') {
-            this.setValue(props.value);
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.value !== this.state.value) {
+            this.setValue(nextProps.value, nextProps.min, nextProps.max);
         }
     },
 
@@ -42,8 +42,9 @@ var NumberInput = React.createClass({
             step = this.props.step;
 
         if (this.props.value !== val) {
-            var regex =/^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
+            var regex = /^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
+            // If valid number
             if (regex.test(val)) {
                 if (step !== null && step > 0) {
                     val = (Math.round(val / step) * step).toPrecision(2);
@@ -58,8 +59,9 @@ var NumberInput = React.createClass({
 
                 this.props.onChange(this.props.name, Number(val));
             }
+            // Reset to old value
             else {
-                this.setValue(this.props.value);
+                this.setValue(this.props.value, min, max);
             }
         }
     },
@@ -73,10 +75,7 @@ var NumberInput = React.createClass({
         }
     },
 
-    setValue: function(val, callback) {
-        var min = this.props.min,
-            max = this.props.max;
-
+    setValue: function(val, min, max, callback) {
         if (val > max) {
             val = max;
         }
@@ -92,6 +91,8 @@ var NumberInput = React.createClass({
         if (this.props.hidden) {
             classes += ' input-hidden';
         }
+
+        //console.log('props', this.props, this.state);
 
         return (
             <div className="input">
