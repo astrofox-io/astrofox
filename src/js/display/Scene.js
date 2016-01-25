@@ -173,7 +173,7 @@ Class.extend(Scene, Display, {
         context.clearRect(0, 0, canvas.width, canvas.height);
     },
 
-    render: function(data) {
+    render: function(data, buffer) {
         var displays = this.displays.nodes,
             options = this.options,
             composer = this.composer;
@@ -181,6 +181,8 @@ Class.extend(Scene, Display, {
         this.clearCanvas();
 
         composer.clearBuffer(true, true, true);
+
+        if (buffer) composer.readBuffer = buffer.clone();
 
         if (displays.size > 0) {
             displays.forEach(function(display) {

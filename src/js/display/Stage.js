@@ -118,10 +118,15 @@ Class.extend(Stage, NodeCollection, {
 
         composer.clearBuffer(true, true, true);
 
-        this.scenes.nodes.forEach(function(scene) {
+        this.scenes.nodes.forEach(function(scene, index) {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
-                composer.blendBuffer(buffer, scene.options);
+                if (index > 0) {
+                    composer.blendBuffer(buffer, scene.options);
+                }
+                else {
+                    composer.copyBuffer(buffer, scene.options);
+                }
             }
         }, this);
 

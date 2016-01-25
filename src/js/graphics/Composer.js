@@ -24,7 +24,7 @@ var Composer = function(renderer, renderTarget) {
     this.passes = new NodeCollection();
     this.maskActive = false;
 
-    this.copyPass = new ShaderPass(CopyShader, { transparent: false });
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
     // Do not pre-multiply alpha
@@ -62,7 +62,6 @@ Class.extend(Composer, EventEmitter, {
 
         this.readBuffer = this.readTarget;
         this.writeBuffer = this.writeTarget;
-        this.saveBuffer = renderTarget.clone();
     },
 
     clear: function(color, depth, stencil) {
@@ -72,10 +71,6 @@ Class.extend(Composer, EventEmitter, {
     clearBuffer: function(color, depth, stencil) {
         this.renderer.clearTarget(this.readTarget, color, depth, stencil);
         this.renderer.clearTarget(this.writeTarget, color, depth, stencil);
-    },
-
-    clearSaveBuffer: function(color, depth, stencil) {
-        this.renderer.clearTarget(this.saveBuffer, color, depth, stencil);
     },
 
     setSize: function(width, height) {
@@ -141,10 +136,6 @@ Class.extend(Composer, EventEmitter, {
 
     addCopyPass: function(options) {
         return this.addShaderPass(CopyShader, options);
-    },
-
-    addSavePass(options) {
-        return this.addCopyPass(_.assign(options, { save: true, needsSwap: false }));
     },
 
     addMultiPass: function(passes) {

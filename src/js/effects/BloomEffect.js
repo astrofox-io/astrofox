@@ -39,7 +39,7 @@ Class.extend(BloomEffect, Effect, {
             composer = scene.composer,
             options = this.options;
 
-        this.savePass = new SavePass(composer.saveBuffer);
+        this.savePass = new SavePass(composer.getRenderTarget());
         passes.push(this.savePass);
 
         for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
@@ -49,7 +49,7 @@ Class.extend(BloomEffect, Effect, {
             this.updateGaussianPass(pass, i);
         }
 
-        this.blendPass = new BlendPass(composer.saveBuffer);
+        this.blendPass = new BlendPass(this.savePass.buffer);
         this.blendPass.setUniforms({ mode: BlendModes[options.blending] });
         passes.push(this.blendPass);
 

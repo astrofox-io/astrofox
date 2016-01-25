@@ -53,7 +53,7 @@ var HexagonControl = React.createClass({
     render: function() {
         return (
             <div className="control">
-                <div className="header">Hexagon</div>
+                <div className="header">HEXAGON</div>
                 <div className="row">
                     <label className="label">Scale</label>
                     <NumberInput
