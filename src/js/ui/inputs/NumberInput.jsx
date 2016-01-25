@@ -57,7 +57,9 @@ var NumberInput = React.createClass({
                     val = max;
                 }
 
-                this.props.onChange(this.props.name, Number(val));
+                this.setState({ value: val }, function() {
+                    this.props.onChange(this.props.name, Number(val));
+                }.bind(this));
             }
             // Reset to old value
             else {
@@ -76,10 +78,10 @@ var NumberInput = React.createClass({
     },
 
     setValue: function(val, min, max, callback) {
-        if (val > max) {
+        if (max != null && val > max) {
             val = max;
         }
-        else if (val < min) {
+        else if (min != null && val < min) {
             val = min;
         }
 
@@ -91,8 +93,6 @@ var NumberInput = React.createClass({
         if (this.props.hidden) {
             classes += ' input-hidden';
         }
-
-        //console.log('props', this.props, this.state);
 
         return (
             <div className="input">
