@@ -14,20 +14,9 @@ var ControlPickerWindow = React.createClass({
             var handleClick = function() {
                 var obj = new item();
 
-                /*
-                if (obj instanceof ShaderDisplay) {
-                    this.props.scene.addEffect(obj);
-                    Application.emit('control_added', obj);
-                }
-                else if (obj instanceof Display) {
-                    this.props.scene.addDisplay(obj);
-                    Application.emit('control_added', obj);
-                }
-                */
+                this.props.scene.addElement(obj);
 
-                this.props.scene.addDisplay(obj);
                 Application.emit('control_added', obj);
-
                 Application.emit('hide_modal');
             }.bind(this);
 

@@ -99,8 +99,8 @@ var LayersPanel = React.createClass({
             if (layer instanceof Scene) {
                 layer.parent.removeScene(layer);
             }
-            else if (layer instanceof Display) {
-                layer.parent.removeDisplay(layer);
+            else {
+                layer.parent.removeElement(layer);
             }
 
             this.updateLayers(function(){
@@ -243,6 +243,10 @@ var LayersPanel = React.createClass({
         Application.stage.scenes.nodes.reverse().forEach(function(scene) {
             layers.push(scene);
 
+            scene.effects.nodes.reverse().forEach(function(effect) {
+                layers.push(effect);
+            }, this);
+
             scene.displays.nodes.reverse().forEach(function(display) {
                 layers.push(display);
             }, this);
@@ -257,14 +261,15 @@ var LayersPanel = React.createClass({
             layer = this.getActiveLayer();
 
         if (layer instanceof Scene) {
-            layer.parent.moveScene(layer, direction);
+            layer.parent.shiftScene(layer, direction);
         }
-        else if (layer instanceof Display) {
-            layer.parent.moveDisplay(layer, direction);
+        else {
+            layer.parent.shiftElement(layer, direction);
         }
 
         this.updateLayers(function(){
             index = this.state.layers.indexOf(layer);
+
             this.setState({ activeIndex: index });
 
             props.onLayerChanged(function() {

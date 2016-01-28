@@ -14,8 +14,6 @@ var RADIANS = 0.017453292519943295;
 var DotScreenEffect = function(options) {
     Effect.call(this, 'DotScreenEffect', defaults);
 
-    this.shader = DotScreenShader;
-
     this.update(options);
 };
 
@@ -25,7 +23,7 @@ DotScreenEffect.info = {
 
 Class.extend(DotScreenEffect, Effect, {
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(this.shader);
+        this.pass = scene.composer.addShaderPass(DotScreenShader);
     },
 
     removeFromScene: function(scene) {

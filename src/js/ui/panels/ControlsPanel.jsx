@@ -26,6 +26,9 @@ var ControlsPanel = React.createClass({
             scene.displays.nodes.forEach(function(display) {
                 controls.push(display);
             }, this);
+            scene.effects.nodes.forEach(function(effect) {
+                controls.push(effect);
+            }, this);
         }, this);
 
         this.setState({ controls: controls }, callback);
@@ -45,6 +48,9 @@ var ControlsPanel = React.createClass({
 
         Application.stage.scenes.nodes.reverse().forEach(function(scene) {
             displays.push(scene);
+            scene.effects.nodes.reverse().forEach(function(effect) {
+                displays.push(effect);
+            }, this);
             scene.displays.nodes.reverse().forEach(function(display) {
                 displays.push(display);
             }, this);

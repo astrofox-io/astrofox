@@ -77,38 +77,63 @@ Class.extend(Scene, Display, {
         this.composer = null;
     },
 
-    addDisplay: function(display) {
-        this.displays.addNode(display);
+    addElement: function(obj) {
+        var nodes;
 
-        display.parent = this;
+        if (obj instanceof Effect) {
+            nodes = this.effects;
+        }
+        else if (obj instanceof Display) {
+            nodes = this.displays;
+        }
 
-        if (display.addToScene) {
-            display.addToScene(this);
+        nodes.addNode(obj);
+
+        obj.parent = this;
+
+        if (obj.addToScene) {
+            obj.addToScene(this);
         }
 
         this.checkDisplays();
     },
 
-    removeDisplay: function(display) {
-        this.displays.removeNode(display);
+    removeElement: function(obj) {
+        var nodes;
 
-        display.parent = null;
+        if (obj instanceof Effect) {
+            nodes = this.effects;
+        }
+        else if (obj instanceof Display) {
+            nodes = this.displays;
+        }
 
-        if (display.removeFromScene) {
-            display.removeFromScene(this);
+        nodes.removeNode(obj);
+
+        obj.parent = null;
+
+        if (obj.removeFromScene) {
+            obj.removeFromScene(this);
         }
 
         this.checkDisplays();
     },
 
-    moveDisplay: function(display, i) {
-        var index = this.displays.indexOf(display);
+    shiftElement: function(obj, i) {
+        var nodes, index;
 
-        this.displays.swapNodes(index, index + i);
-    },
+        if (obj instanceof Effect) {
+            nodes = this.effects;
+        }
+        else if (obj instanceof Display) {
+            nodes = this.displays;
+        }
 
-    getDisplays: function() {
-        return this.displays.nodes;
+        index = nodes.indexOf(obj);
+
+        if (nodes.swapNodes(index, index + i)) {
+            this.composer.shiftPass(obj.pass, i);
+        }
     },
 
     checkDisplays: function() {
@@ -121,36 +146,6 @@ Class.extend(Scene, Display, {
         });
 
         this.canvasPass.options.enabled = enabled;
-    },
-
-    addEffect: function(effect) {
-        this.effects.addNode(effect);
-
-        effect.parent = this;
-
-        if (effect.addToScene) {
-            effect.addToScene(this);
-        }
-    },
-
-    removeEffect: function(effect) {
-        this.effects.removeNode(effect);
-
-        effect.parent = null;
-
-        if (effect.removeFromScene) {
-            effect.removeFromScene(this);
-        }
-    },
-
-    moveEffect: function(effect, i) {
-        var index = this.effects.indexOf(effect);
-
-        this.effects.swapNodes(index, index + i);
-    },
-
-    getEffects: function() {
-        return this.effects.nodes;
     },
 
     getSize: function() {
@@ -175,6 +170,7 @@ Class.extend(Scene, Display, {
 
     render: function(data, buffer) {
         var displays = this.displays.nodes,
+            effects = this.effects.nodes,
             options = this.options,
             composer = this.composer;
 
@@ -184,7 +180,7 @@ Class.extend(Scene, Display, {
 
         if (buffer) composer.readBuffer = buffer.clone();
 
-        if (displays.size > 0) {
+        if (displays.size > 0 || effects.size > 0) {
             displays.forEach(function(display) {
                 if (display.options.enabled) {
                     if (display.renderToCanvas) {
@@ -192,6 +188,17 @@ Class.extend(Scene, Display, {
                     }
                     else if (display.updateScene) {
                         display.updateScene(this, data);
+                    }
+                }
+            }, this);
+
+            effects.forEach(function(effect) {
+                if (effect.options.enabled) {
+                    if (effect.renderToCanvas) {
+                        effect.renderToCanvas(this, data);
+                    }
+                    else if (effect.updateScene) {
+                        effect.updateScene(this, data);
                     }
                 }
             }, this);

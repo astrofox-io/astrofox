@@ -11,8 +11,6 @@ var defaults = {
 var HexagonEffect = function(options) {
     Effect.call(this, 'HexagonEffect', defaults);
 
-    this.shader = HexagonShader;
-
     this.update(options);
 };
 
@@ -22,7 +20,7 @@ HexagonEffect.info = {
 
 Class.extend(HexagonEffect, Effect, {
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(this.shader);
+        this.pass = scene.composer.addShaderPass(HexagonShader);
     },
 
     removeFromScene: function(scene) {

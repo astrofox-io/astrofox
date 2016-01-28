@@ -37,9 +37,9 @@ var App = React.createClass({
 
         Application.stage.addScene(scene);
 
-        scene.addDisplay(new DisplayLibrary.ImageDisplay());
-        scene.addDisplay(new DisplayLibrary.BarSpectrumDisplay());
-        scene.addDisplay(new DisplayLibrary.TextDisplay());
+        scene.addElement(new DisplayLibrary.ImageDisplay());
+        scene.addElement(new DisplayLibrary.BarSpectrumDisplay());
+        scene.addElement(new DisplayLibrary.TextDisplay());
 
         Application.on('error', function(err) {
             this.showError(err);

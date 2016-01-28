@@ -45,7 +45,6 @@
     "watchify": "^3.2.2"
   },
   "dependencies": {
-    "flux": "^2.1.1",
     "id3js": "^1.1.3",
     "immutable": "^3.7.5",
     "lodash": "^3.10.1",
@@ -55,6 +54,8 @@
     "node-rsa": "^0.2.25",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
+    "react-redux": "^4.0.6",
+    "redux": "^3.0.6",
     "three": "^0.73.0",
     "tinycolor2": "^1.1.2"
   }

@@ -77,6 +77,8 @@ var SceneControl = React.createClass({
         var display = this.props.display,
             obj = {};
 
+        if (val === '----') return;
+
         obj[name] = val;
 
         this.shouldUpdate = true;

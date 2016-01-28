@@ -11,8 +11,6 @@ var defaults = {
 var MirrorEffect = function(options) {
     Effect.call(this, 'MirrorEffect', defaults);
 
-    this.shader = MirrorShader;
-
     this.update(options);
 };
 
@@ -22,7 +20,7 @@ MirrorEffect.info = {
 
 Class.extend(MirrorEffect, Effect, {
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(this.shader);
+        this.pass = scene.composer.addShaderPass(MirrorShader);
     },
 
     removeFromScene: function(scene) {

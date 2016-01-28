@@ -15,8 +15,6 @@ var RADIANS = 0.017453292519943295;
 var RGBShiftEffect = function(options) {
     Effect.call(this, 'RGBShiftEffect', defaults);
 
-    this.shader = RGBShiftShader;
-
     this.update(options);
 };
 
@@ -26,7 +24,7 @@ RGBShiftEffect.info = {
 
 Class.extend(RGBShiftEffect, Effect, {
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(this.shader);
+        this.pass = scene.composer.addShaderPass(RGBShiftShader);
     },
 
     removeFromScene: function(scene) {

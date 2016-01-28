@@ -22,7 +22,7 @@ var nodeResolve = require('resolve');
 
 var _ = require('lodash');
 
-var production = false;
+var production = (process.env.NODE_ENV === 'production');
 
 /*** Functions ***/
 
@@ -119,7 +119,7 @@ gulp.task('build-vendor', function() {
         debug: false
     });
 
-    ['react','lodash','three','mime'].forEach(function (id) {
+    ['react','lodash','three','mime'].forEach(function(id) {
         b.require(nodeResolve.sync(id), { expose: id });
     });
 
@@ -131,7 +131,7 @@ gulp.task('build-vendor', function() {
 
 // Builds application only library
 gulp.task('build-app', function() {
-    getNPMPackageIds().forEach(function (id) {
+    getNPMPackageIds().forEach(function(id) {
         bundler.external(id);
     });
 

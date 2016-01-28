@@ -78,7 +78,7 @@ Class.extend(Stage, NodeCollection, {
         scene.removeFromStage(this);
     },
 
-    moveScene(scene, i) {
+    shiftScene(scene, i) {
         var index = this.scenes.indexOf(scene);
 
         this.scenes.swapNodes(index, index + i);
