@@ -1,27 +1,28 @@
 'use strict';
 
 var React = require('react');
-var Application = require('core/Application.js');
-var Scene = require('display/Scene.js');
-var DisplayLibrary = require('display/DisplayLibrary.js');
-var Window = require('Window.js');
 
-var Header = require('ui/Header.jsx');
-var Body = require('ui/Body.jsx');
-var Footer = require('ui/Footer.jsx');
-var MenuBar = require('ui/MenuBar.jsx');
-var MainView = require('ui/MainView.jsx');
-var Stage = require('ui/Stage.jsx');
-var Player = require('ui/Player.jsx');
-var Spectrum = require('ui/Spectrum.jsx');
-var Oscilloscope = require('ui/Oscilloscope.jsx');
-var Waveform = require('ui/Waveform.jsx');
-var Overlay = require('ui/Overlay.jsx');
-var ControlDock = require('ui/ControlDock.jsx');
+var Application = require('../core/Application.js');
+var Scene = require('../display/Scene.js');
+var DisplayLibrary = require('../display/DisplayLibrary.js');
+var Window = require('../Window.js');
 
-var ModalWindow = require('ui/windows/ModalWindow.jsx');
-var AboutWindow = require('ui/windows/AboutWindow.jsx');
-var SettingsWindow = require('ui/windows/SettingsWindow.jsx');
+var Header = require('../ui/Header.jsx');
+var Body = require('../ui/Body.jsx');
+var Footer = require('../ui/Footer.jsx');
+var MenuBar = require('../ui/MenuBar.jsx');
+var MainView = require('../ui/MainView.jsx');
+var Stage = require('../ui/Stage.jsx');
+var Player = require('../ui/Player.jsx');
+var Spectrum = require('../ui/Spectrum.jsx');
+var Oscilloscope = require('../ui/Oscilloscope.jsx');
+var Waveform = require('../ui/Waveform.jsx');
+var Overlay = require('../ui/Overlay.jsx');
+var ControlDock = require('../ui/ControlDock.jsx');
+
+var ModalWindow = require('../ui/windows/ModalWindow.jsx');
+var AboutWindow = require('../ui/windows/AboutWindow.jsx');
+var SettingsWindow = require('../ui/windows/SettingsWindow.jsx');
 
 var App = React.createClass({
     getInitialState: function() {
@@ -186,10 +187,7 @@ var App = React.createClass({
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}>
                 <Header />
-                <MenuBar
-                    ref="menu"
-                    onMenuAction={this.handleMenuAction}
-                />
+                <MenuBar ref="menu" onMenuAction={this.handleMenuAction} />
                 <Body>
                     <Overlay visible={this.state.showModal}>
                         {this.state.modal}
@@ -203,9 +201,7 @@ var App = React.createClass({
                     </MainView>
                     <ControlDock ref="dock" />
                 </Body>
-                <Footer
-                    filename={this.state.filename}
-                />
+                <Footer filename={this.state.filename} />
             </div>
         );
     }

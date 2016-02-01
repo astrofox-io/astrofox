@@ -18,11 +18,11 @@ var Player = function(context, options) {
     this.volume.connect(this.audioContext.destination);
     this.options = _.assign({}, defaults);
 
-    this.init(options);
+    this.update(options);
 };
 
 Class.extend(Player, EventEmitter, {
-    init: function(options) {
+    update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {
                 if (this.options.hasOwnProperty(prop)) {

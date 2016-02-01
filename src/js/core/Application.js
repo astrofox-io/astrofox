@@ -2,18 +2,19 @@
 
 var _ = require('lodash');
 
-var Class = require('core/Class.js');
-var EventEmitter = require('core/EventEmitter.js');
-var Timer = require('core/Timer.js');
-var Player = require('audio/Player.js');
-var BufferedSound = require('audio/BufferedSound.js');
-var SpectrumAnalyzer = require('audio/SpectrumAnalyzer.js');
-var Stage = require('display/Stage.js');
-var Scene = require('display/Scene.js');
-var Display = require('display/Display.js');
-var DisplayLibrary = require('display/DisplayLibrary.js');
-var EffectsLibrary = require('effects/EffectsLibrary.js');
-var IO = require('IO.js');
+var Class = require('../core/Class.js');
+var EventEmitter = require('../core/EventEmitter.js');
+var Timer = require('../core/Timer.js');
+var Player = require('../audio/Player.js');
+var BufferedSound = require('../audio/BufferedSound.js');
+var SpectrumAnalyzer = require('../audio/SpectrumAnalyzer.js');
+var Stage = require('../display/Stage.js');
+var Scene = require('../display/Scene.js');
+var Display = require('../display/Display.js');
+var DisplayLibrary = require('../display/DisplayLibrary.js');
+var EffectsLibrary = require('../effects/EffectsLibrary.js');
+var VideoRenderer = require('../video/VideoRenderer.js');
+var IO = require('../IO.js');
 
 var VERSION = '1.0';
 
@@ -28,6 +29,8 @@ var Application = function() {
     this.requestId = null;
 
     this.audioContext = new window.AudioContext();
+    this.audioFile = null;
+
     this.player = new Player(this.audioContext);
     this.stage = new Stage();
     this.timer = new Timer();
@@ -38,7 +41,9 @@ var Application = function() {
     this.player.on('stop', this.updateAnalyzer.bind(this));
 };
 
-Class.extend(Application, EventEmitter, {
+Application.prototype = _.create(EventEmitter.prototype, {
+    constructor: Application,
+
     loadAudioFile: function(file) {
         return new Promise(function(resolve, reject) {
             var reader = new FileReader(),
@@ -53,13 +58,14 @@ Class.extend(Application, EventEmitter, {
                 resolve(e.target.result);
             };
 
-            reader.onerror = function(e) {
+            reader.onerror = function() {
                 reject(file.error);
             }.bind(this);
 
             timer.set('file_load');
 
             if (typeof file === 'string') {
+                this.audioFile = file;
                 file = IO.readFileAsBlob(file);
             }
 
@@ -152,18 +158,21 @@ Class.extend(Application, EventEmitter, {
 
     saveVideo: function(filename) {
         var player = this.player,
-            sound = player.getSound('audio');
+            sound = player.getSound('audio'),
+            renderer = new VideoRenderer(filename, this.audioFile, {
+                fps: 29.97,
+                frames: 29.97 * 5
+            });
 
         if (sound) {
             this.stopRender();
+
             player.stop('audio');
 
             this.spectrum.enabled = true;
 
-            this.renderVideo(
-                filename,
-                29.97,
-                2,
+            renderer.renderVideo(
+                this.renderFrame.bind(this),
                 this.startRender.bind(this)
             );
         }
@@ -175,54 +184,7 @@ Class.extend(Application, EventEmitter, {
         console.log(filename + ' saved');
     },
 
-    renderVideo: function(output_file, fps, duration, callback) {
-        var started = false,
-            frames = duration * fps,
-            input_file = new IO.Stream.Transform();
-
-        console.log('rending movie', duration, 'seconds,', fps, 'fps');
-
-        input_file.on('error', function(err) {
-            console.error(err);
-        });
-
-        this.callback = function(next, buffer) {
-            if (next < frames) {
-                input_file.push(buffer);
-                this.processFrame(next, fps, this.callback);
-            }
-            else {
-                input_file.push(null);
-            }
-        }.bind(this);
-
-        var ffmpeg = IO.Spawn('./bin/ffmpeg.exe', ['-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', fps, '-i', 'pipe:0', '-vcodec', 'libx264', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-f', 'mp4', output_file]);
-        input_file.pipe(ffmpeg.stdin);
-        //ffmpeg.stdout.pipe(outStream);
-
-        ffmpeg.stderr.on('data', function(data) {
-            console.log(data.toString());
-            if (!started) {
-                this.processFrame(0, fps, this.callback);
-                started = true;
-            }
-        }.bind(this));
-
-        ffmpeg.stderr.on('end', function() {
-            console.log('file has been converted succesfully');
-            if (callback) callback();
-        });
-
-        ffmpeg.stderr.on('exit', function() {
-            console.log('child process exited');
-        });
-
-        ffmpeg.stderr.on('close', function() {
-            console.log('program closed');
-        });
-    },
-
-    processFrame: function(frame, fps, callback) {
+    renderFrame: function(frame, fps, callback) {
         var data, image,
             player = this.player,
             spectrum = this.spectrum,
@@ -245,7 +207,7 @@ Class.extend(Application, EventEmitter, {
 
             source.disconnect();
 
-            if (callback) callback(frame + 1, image);
+            callback(frame + 1, image);
         }.bind(this);
 
         source.start(0, frame / fps, 1 / fps);
@@ -317,7 +279,7 @@ Class.extend(Application, EventEmitter, {
 
                 if (item.displays) {
                     item.displays.forEach(function(display) {
-                        scene.addDisplay(new controls[display.name](display.options));
+                        scene.addElement(new controls[display.name](display.options));
                     }, this);
                 }
             }.bind(this));
@@ -344,23 +306,5 @@ Class.extend(Application, EventEmitter, {
         this.emit('error', new Error(msg));
     }
 });
-
-function toArrayBuffer(buffer) {
-    var ab = new ArrayBuffer(buffer.length);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buffer.length; ++i) {
-        view[i] = buffer[i];
-    }
-    return ab;
-}
-
-function toBuffer(ab) {
-    var buffer = new Buffer(ab.byteLength);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buffer.length; ++i) {
-        buffer[i] = view[i];
-    }
-    return buffer;
-}
 
 module.exports = new Application;
