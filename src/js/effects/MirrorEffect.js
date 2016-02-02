@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var MirrorShader = require('shaders/MirrorShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var MirrorShader = require('../shaders/MirrorShader.js');
 
 var defaults = {
     side: 1

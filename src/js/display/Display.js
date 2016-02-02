@@ -1,8 +1,8 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('core/Class.js');
-var EventEmitter = require('core/EventEmitter.js');
+var Class = require('../core/Class.js');
+var EventEmitter = require('../core/EventEmitter.js');
 
 var defaults = {
     enabled: true

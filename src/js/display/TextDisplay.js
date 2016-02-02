@@ -3,9 +3,9 @@
 var _ = require('lodash');
 var THREE = require('three');
 
-var Class = require('core/Class.js');
-var Display = require('display/Display.js');
-var CanvasDisplay = require('display/CanvasDisplay.js');
+var Class = require('../core/Class.js');
+var Display = require('../display/Display.js');
+var CanvasDisplay = require('../display/CanvasDisplay.js');
 
 var defaults = {
     text: '',

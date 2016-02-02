@@ -1,12 +1,12 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../core/Application.js');
+var Application = require('../../core/Application.js');
 
-var Panel = require('./panels/Panel.jsx');
-var PanelDock = require('./panels/PanelDock.jsx');
-var ControlsPanel = require('./panels/ControlsPanel.jsx');
-var LayersPanel = require('./panels/LayersPanel.jsx');
+var Panel = require('../panels/Panel.jsx');
+var PanelDock = require('../panels/PanelDock.jsx');
+var ControlsPanel = require('../panels/ControlsPanel.jsx');
+var LayersPanel = require('../panels/LayersPanel.jsx');
 
 var ControlDock = React.createClass({
     getInitialState: function() {

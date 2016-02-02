@@ -1,17 +1,18 @@
 'use strict';
 
 var React = require('react');
-var Application = require('core/Application.js');
-var Display = require('display/Display.js');
-var CanvasDisplay = require('display/CanvasDisplay.js');
-var Stage = require('display/Stage.js');
-var Scene = require('display/Scene.js');
-var Effect = require('effects/Effect.js');
-var DisplayLibrary = require('display/DisplayLibrary.js');
-var EffectsLibrary = require('effects/EffectsLibrary.js');
 
-var TextInput = require('ui/inputs/TextInput.jsx');
-var ControlPickerWindow = require('ui/windows/ControlPickerWindow.jsx');
+var Application = require('../../core/Application.js');
+var Display = require('../../display/Display.js');
+var CanvasDisplay = require('../../display/CanvasDisplay.js');
+var Stage = require('../../display/Stage.js');
+var Scene = require('../../display/Scene.js');
+var Effect = require('../../effects/Effect.js');
+var DisplayLibrary = require('../../display/DisplayLibrary.js');
+var EffectsLibrary = require('../../effects/EffectsLibrary.js');
+
+var TextInput = require('../../ui/inputs/TextInput.jsx');
+var ControlPickerWindow = require('../../ui/windows/ControlPickerWindow.jsx');
 
 var LayersPanel = React.createClass({
     getDefaultProps: function() {

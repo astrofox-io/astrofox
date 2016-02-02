@@ -1,8 +1,9 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../core/Application.js');
-var RangeInput = require('../ui/inputs/RangeInput.jsx');
+
+var Application = require('../../core/Application.js');
+var RangeInput = require('../inputs/RangeInput.jsx');
 
 var Player = React.createClass({
     getDefaultProps: function() {

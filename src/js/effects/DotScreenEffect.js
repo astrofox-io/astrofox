@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var DotScreenShader = require('shaders/DotScreenShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var DotScreenShader = require('../shaders/DotScreenShader.js');
 
 var defaults = {
     angle: 90,

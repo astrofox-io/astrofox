@@ -30,7 +30,7 @@ var bundler = browserify({
     entries: './src/js/AstroFox.js',
     transform: [babelify, glslify],
     extensions: ['.js', '.jsx'],
-    paths: ['./node_modules', './src/js/'],
+    //paths: ['./node_modules', './src/js/'],
     noParse: ['lodash','three', 'ttf2woff2'],
     standalone: 'AstroFox',
     ignoreMissing: false,

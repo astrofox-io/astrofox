@@ -1,9 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('core/Class.js');
-var CanvasDisplay = require('display/CanvasDisplay.js');
-var WaveDisplay = require('display/WaveDisplay.js');
+var Class = require('../core/Class.js');
+var CanvasDisplay = require('../display/CanvasDisplay.js');
+var WaveDisplay = require('../display/WaveDisplay.js');
 
 var defaults = {
     color: '#ffffff',

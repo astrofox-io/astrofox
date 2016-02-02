@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react');
-var NumberInput = require('ui/inputs/NumberInput.jsx');
-var RangeInput = require('ui/inputs/RangeInput.jsx');
+var NumberInput = require('../inputs/NumberInput.jsx');
+var RangeInput = require('../inputs/RangeInput.jsx');
 
 var defaults = {
     side: 1

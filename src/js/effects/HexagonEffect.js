@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var HexagonShader = require('shaders/HexagonShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var HexagonShader = require('../shaders/HexagonShader.js');
 
 var defaults = {
     scale: 10.0

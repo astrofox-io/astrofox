@@ -3,12 +3,13 @@
 var _ = require('lodash');
 var Immutable = require('immutable');
 var THREE = require('three');
-var Class = require('core/Class.js');
-var NodeCollection = require('core/NodeCollection.js');
-var Display = require('display/Display.js');
-var CanvasDisplay = require('display/CanvasDisplay.js');
-var Effect = require('effects/Effect.js');
-var Composer = require('graphics/Composer.js');
+
+var Class = require('../core/Class.js');
+var NodeCollection = require('../core/NodeCollection.js');
+var Display = require('../display/Display.js');
+var CanvasDisplay = require('../display/CanvasDisplay.js');
+var Effect = require('../effects/Effect.js');
+var Composer = require('../graphics/Composer.js');
 
 var defaults = {
     blending: 'Normal',

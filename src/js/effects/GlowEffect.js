@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var GlowShader = require('shaders/GlowShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var GlowShader = require('../shaders/GlowShader.js');
 
 var defaults = {
     amount: 0.1,

@@ -1,5 +1,7 @@
+'use strict';
+
 var THREE = require('three');
-var ShaderCode = require('shaders/ShaderCode.js');
+var ShaderCode = require('./ShaderCode.js');
 
 var BarrelBlurShader = {
     uniforms: {

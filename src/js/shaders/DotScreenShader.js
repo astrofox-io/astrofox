@@ -1,13 +1,5 @@
-/**
- * @author alteredq / http://alteredqualia.com/
- *
- * Dot screen shader
- * based on glfx.js sepia shader
- * https://github.com/evanw/glfx.js
- */
-
 var THREE = require('three');
-var ShaderCode = require('shaders/ShaderCode.js');
+var ShaderCode = require('./ShaderCode.js');
 
 var DotScreenShader = {
     uniforms: {

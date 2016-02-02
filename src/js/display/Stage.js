@@ -4,11 +4,11 @@ var _ = require('lodash');
 var THREE = require('three');
 var Immutable = require('immutable');
 
-var Class = require('core/Class.js');
-var EventEmitter = require('core/EventEmitter.js');
-var NodeCollection = require('core/NodeCollection.js');
-var Composer = require('graphics/Composer.js');
-var IO = require('IO.js');
+var Class = require('../core/Class.js');
+var EventEmitter = require('../core/EventEmitter.js');
+var NodeCollection = require('../core/NodeCollection.js');
+var Composer = require('../graphics/Composer.js');
+var IO = require('../IO.js');
 
 var defaults = {
     showFPS: false,

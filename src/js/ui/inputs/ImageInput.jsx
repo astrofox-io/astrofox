@@ -1,8 +1,9 @@
 'use strict';
 
 var React = require('react');
-var Window = require('Window.js');
-var IO = require('IO.js');
+
+var Window = require('../../Window.js');
+var IO = require('../../IO.js');
 
 var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 

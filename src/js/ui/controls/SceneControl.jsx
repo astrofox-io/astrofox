@@ -3,11 +3,11 @@
 var React = require('react');
 var THREE = require('three');
 
-var NumberInput = require('ui/inputs/NumberInput.jsx');
-var ToggleInput = require('ui/inputs/ToggleInput.jsx');
-var RangeInput = require('ui/inputs/RangeInput.jsx');
-var SelectInput = require('ui/inputs/SelectInput.jsx');
-var BlendModes = require('graphics/BlendModes.js');
+var NumberInput = require('../inputs/NumberInput.jsx');
+var ToggleInput = require('../inputs/ToggleInput.jsx');
+var RangeInput = require('../inputs/RangeInput.jsx');
+var SelectInput = require('../inputs/SelectInput.jsx');
+var BlendModes = require('../../graphics/BlendModes.js');
 
 var blendModes = [
     'None',

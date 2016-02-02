@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var PixelateShader = require('shaders/PixelateShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var PixelateShader = require('../shaders/PixelateShader.js');
 
 var defaults = {
     size: 10

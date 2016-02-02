@@ -2,9 +2,9 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('core/Class.js');
-var ComposerPass = require('graphics/ComposerPass.js');
-var CopyShader = require('shaders/CopyShader.js');
+var Class = require('../core/Class.js');
+var ComposerPass = require('../graphics/ComposerPass.js');
+var CopyShader = require('../shaders/CopyShader.js');
 
 var defaults = {
     opacity: 1.0,

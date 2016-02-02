@@ -2,7 +2,7 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Application = require('../core/Application.js');
+var Application = require('../../core/Application.js');
 var Loading = require('./Loading.jsx');
 
 var Stage = React.createClass({

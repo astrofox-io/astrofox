@@ -4,20 +4,20 @@ var _ = require('lodash');
 var THREE = require('three');
 var Immutable = require('immutable');
 
-var Class = require('core/Class.js');
-var EventEmitter = require('core/EventEmitter.js');
-var NodeCollection = require('core/NodeCollection.js');
+var Class = require('../core/Class.js');
+var EventEmitter = require('../core/EventEmitter.js');
+var NodeCollection = require('../core/NodeCollection.js');
 
-var RenderPass = require('graphics/RenderPass.js');
-var ShaderPass = require('graphics/ShaderPass.js');
-var SpritePass = require('graphics/SpritePass.js');
-var TexturePass = require('graphics/TexturePass.js');
-var MultiPass = require('graphics/MultiPass.js');
-var MaskPass = require('graphics/MaskPass.js');
-var ClearMaskPass = require('graphics/ClearMaskPass.js');
-var CopyShader = require('shaders/CopyShader.js');
-var BlendShader = require('shaders/BlendShader.js');
-var BlendModes = require('graphics/BlendModes.js');
+var RenderPass = require('../graphics/RenderPass.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
+var SpritePass = require('../graphics/SpritePass.js');
+var TexturePass = require('../graphics/TexturePass.js');
+var MultiPass = require('../graphics/MultiPass.js');
+var MaskPass = require('../graphics/MaskPass.js');
+var ClearMaskPass = require('../graphics/ClearMaskPass.js');
+var CopyShader = require('../shaders/CopyShader.js');
+var BlendShader = require('../shaders/BlendShader.js');
+var BlendModes = require('../graphics/BlendModes.js');
 
 var Composer = function(renderer, renderTarget) {
     this.renderer = renderer;

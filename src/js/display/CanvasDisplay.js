@@ -1,7 +1,7 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Display = require('display/Display.js');
+var Class = require('../core/Class.js');
+var Display = require('../display/Display.js');
 
 var RADIANS = 0.017453292519943295;
 

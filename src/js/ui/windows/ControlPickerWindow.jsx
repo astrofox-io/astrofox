@@ -2,9 +2,9 @@
 
 var React = require('react');
 var _ = require('lodash');
-var Application = require('core/Application.js');
-var Display = require('display/Display.js');
-var Effect = require('effects/Effect.js');
+var Application = require('../../core/Application.js');
+var Display = require('../../display/Display.js');
+var Effect = require('../../effects/Effect.js');
 
 var ModalWindow = require('./ModalWindow.jsx');
 

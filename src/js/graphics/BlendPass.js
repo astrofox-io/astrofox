@@ -2,10 +2,10 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('core/Class.js');
-var ShaderPass = require('graphics/ShaderPass.js');
-var BlendShader = require('shaders/BlendShader.js');
-var BlendModes = require('graphics/BlendModes.js');
+var Class = require('../core/Class.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
+var BlendShader = require('../shaders/BlendShader.js');
+var BlendModes = require('../graphics/BlendModes.js');
 
 var defaults = {
     transparent: true,

@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Application = require('core/Application.js');
+var Application = require('../../core/Application.js');
 
 var ModalWindow = React.createClass({
     getDefaultProps: function() {

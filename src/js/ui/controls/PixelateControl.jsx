@@ -1,9 +1,9 @@
 'use strict';
 
 var React = require('react');
-var NumberInput = require('ui/inputs/NumberInput.jsx');
-var RangeInput = require('ui/inputs/RangeInput.jsx');
-var SelectInput = require('ui/inputs/SelectInput.jsx');
+var NumberInput = require('../inputs/NumberInput.jsx');
+var RangeInput = require('../inputs/RangeInput.jsx');
+var SelectInput = require('../inputs/SelectInput.jsx');
 
 var defaults = {
     type: 'Square',

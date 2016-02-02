@@ -1,8 +1,8 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('core/Class.js');
-var Sound = require('audio/Sound.js');
+var Class = require('../core/Class.js');
+var Sound = require('../audio/Sound.js');
 
 var BufferedSound = function(context) {
     Sound.call(this, context);

@@ -2,9 +2,9 @@
 
 var _ = require('lodash');
 
-var Class = require('core/Class.js');
-var ShaderPass = require('graphics/ShaderPass.js');
-var CopyShader = require('shaders/CopyShader.js');
+var Class = require('../core/Class.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
+var CopyShader = require('../shaders/CopyShader.js');
 
 var defaults = {
     transparent: true,

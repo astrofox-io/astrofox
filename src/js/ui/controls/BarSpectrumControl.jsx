@@ -1,11 +1,11 @@
 'use strict';
 
 var React = require('react');
-var Application = require('core/Application.js');
-var NumberInput = require('ui/inputs/NumberInput.jsx');
-var ColorRangeInput = require('ui/inputs/ColorRangeInput.jsx');
-var RangeInput = require('ui/inputs/RangeInput.jsx');
-var ToggleInput = require('ui/inputs/ToggleInput.jsx');
+var Application = require('../../core/Application.js');
+var NumberInput = require('../inputs/NumberInput.jsx');
+var ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
+var RangeInput = require('../inputs/RangeInput.jsx');
+var ToggleInput = require('../inputs/ToggleInput.jsx');
 
 var defaults = {
     height: 240,

@@ -1,8 +1,8 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var LEDShader = require('shaders/LEDShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var LEDShader = require('../shaders/LEDShader.js');
 
 var defaults = {
     spacing: 10,

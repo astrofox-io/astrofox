@@ -1,8 +1,8 @@
 'use strict';
 
 var Immutable = require('immutable');
-var Class = require('core/Class.js');
-var EventEmitter = require('core/EventEmitter.js');
+var Class = require('../core/Class.js');
+var EventEmitter = require('../core/EventEmitter.js');
 
 var NodeCollection = function() {
     this.nodes = new Immutable.List();

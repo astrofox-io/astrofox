@@ -2,9 +2,9 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Application = require('../core/Application.js');
-var BarDisplay = require('../display/BarDisplay.js');
-var WaveformParser = require('../audio/WaveformParser.js');
+var Application = require('../../core/Application.js');
+var BarDisplay = require('../../display/BarDisplay.js');
+var WaveformParser = require('../../audio/WaveformParser.js');
 
 var Waveform = React.createClass({
     getInitialState: function() {
@@ -163,13 +163,13 @@ var Waveform = React.createClass({
                     onMouseMove={this.handleMouseMove}
                     onMouseOut={this.handleMouseOut}>
                     <div className="canvas base">
-                        <canvas ref="canvas" width="854" height="100"></canvas>
+                        <canvas ref="canvas" width="854" height="100" />
                     </div>
                     <div className="canvas progress" style={progressStyle}>
-                        <canvas ref="progress" width="854" height="100"></canvas>
+                        <canvas ref="progress" width="854" height="100" />
                     </div>
                     <div className="canvas seek" style={clipStyle}>
-                        <canvas ref="seek" width="854" height="100"></canvas>
+                        <canvas ref="seek" width="854" height="100" />
                     </div>
                 </div>
             </div>

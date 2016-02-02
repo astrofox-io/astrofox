@@ -3,8 +3,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var _ = require('lodash');
-var Application = require('core/Application.js');
-var ControlLoader = require('util/ControlLoader.js');
+
+var Application = require('../../core/Application.js');
+var ControlLoader = require('../../util/ControlLoader.js');
 
 var ControlsPanel = React.createClass({
     getInitialState: function() {

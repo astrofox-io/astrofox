@@ -1,9 +1,9 @@
 'use strict';
 
 var THREE = require('three');
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var RGBShiftShader = require('shaders/RGBShiftShader.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var RGBShiftShader = require('../shaders/RGBShiftShader.js');
 
 var defaults = {
     amount: 0.005,

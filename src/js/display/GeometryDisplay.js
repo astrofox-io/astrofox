@@ -3,11 +3,11 @@
 var _ = require('lodash');
 var THREE = require('three');
 
-var Class = require('core/Class.js');
-var Display = require('display/Display.js');
-var SpectrumParser = require('audio/SpectrumParser.js');
-var Composer = require('graphics/Composer.js');
-var ShaderLibrary = require('shaders/ShaderLibrary.js');
+var Class = require('../core/Class.js');
+var Display = require('../display/Display.js');
+var SpectrumParser = require('../audio/SpectrumParser.js');
+var Composer = require('../graphics/Composer.js');
+var ShaderLibrary = require('../shaders/ShaderLibrary.js');
 
 var defaults = {
     shape: 'Box',

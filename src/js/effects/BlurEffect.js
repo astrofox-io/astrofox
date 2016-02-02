@@ -1,11 +1,11 @@
 'use strict';
 
-var Class = require('core/Class.js');
-var Effect = require('effects/Effect.js');
-var BoxBlurShader = require('shaders/BoxBlurShader.js');
-var GaussianBlurShader = require('shaders/GaussianBlurShader.js');
-var ZoomBlurShader = require('shaders/ZoomBlurShader.js');
-var ShaderPass = require('graphics/ShaderPass.js');
+var Class = require('../core/Class.js');
+var Effect = require('../effects/Effect.js');
+var BoxBlurShader = require('../shaders/BoxBlurShader.js');
+var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
+var ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 
 var defaults = {
     type: 'Box',

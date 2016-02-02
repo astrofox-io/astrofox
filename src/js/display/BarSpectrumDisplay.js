@@ -1,11 +1,11 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('core/Class.js');
-var BarDisplay = require('display/BarDisplay.js');
-var Display = require('display/Display.js');
-var CanvasDisplay = require('display/CanvasDisplay.js');
-var SpectrumParser = require('audio/SpectrumParser.js');
+var Class = require('../core/Class.js');
+var BarDisplay = require('../display/BarDisplay.js');
+var Display = require('../display/Display.js');
+var CanvasDisplay = require('../display/CanvasDisplay.js');
+var SpectrumParser = require('../audio/SpectrumParser.js');
 
 var defaults = {
     height: 300,

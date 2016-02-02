@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Window = require('../Window.js');
+var Window = require('../../Window.js');
 
 var Header = React.createClass({
     componentDidMount: function() {
