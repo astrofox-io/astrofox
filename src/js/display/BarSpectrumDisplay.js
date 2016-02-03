@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var BarDisplay = require('../display/BarDisplay.js');
 var Display = require('../display/Display.js');
 var CanvasDisplay = require('../display/CanvasDisplay.js');
@@ -47,9 +46,11 @@ BarSpectrumDisplay.info = {
     name: 'Bar Spectrum'
 };
 
-Class.extend(BarSpectrumDisplay, CanvasDisplay, {
+BarSpectrumDisplay.prototype = _.create(CanvasDisplay.prototype, {
+    constructor: BarSpectrumDisplay,
+
     update: function(options) {
-        var changed = this._super.update.call(this, options);
+        var changed = Display.prototype.update.call(this, options);
 
         this.bars.update(options);
 

@@ -6,7 +6,7 @@ var RangeInput = require('../inputs/RangeInput.jsx');
 var SelectInput = require('../inputs/SelectInput.jsx');
 
 var defaults = {
-    type: 'Box',
+    type: 'Gaussian',
     amount: 0.1
 };
 

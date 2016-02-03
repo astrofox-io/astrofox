@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
 
 var defaults = {
@@ -37,7 +36,9 @@ var SpritePass = function(texture, options) {
     this.scene.add(this.sprite);
 };
 
-Class.extend(SpritePass, ComposerPass, {
+SpritePass.prototype = _.create(ComposerPass.prototype, {
+    constructor: SpritePass,
+
     process: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 

@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var CanvasDisplay = require('../display/CanvasDisplay.js');
 
 const defaults = {
@@ -30,7 +29,9 @@ ImageDisplay.info = {
     name: 'Image'
 };
 
-Class.extend(ImageDisplay, CanvasDisplay, {
+ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
+    constructor: ImageDisplay,
+
     update: function(options) {
         var changed = CanvasDisplay.prototype.update.call(this, options);
 

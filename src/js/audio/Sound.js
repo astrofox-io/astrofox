@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 
 var Sound = function(context) {
@@ -15,7 +14,7 @@ var Sound = function(context) {
     this.repeat = false;
 };
 
-Class.extend(Sound, EventEmitter, {
+Sound.prototype = _.create(EventEmitter.prototype, {
     constructor: Sound,
 
     addNode: function(node) {

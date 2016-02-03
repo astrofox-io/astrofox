@@ -1,8 +1,7 @@
 'use strict';
 
-var Class = require('../core/Class.js');
-var EventEmitter = require('../core/EventEmitter.js');
 var _ = require('lodash');
+var EventEmitter = require('../core/EventEmitter.js');
 
 var defaults = {
     loop: false,
@@ -21,7 +20,9 @@ var Player = function(context, options) {
     this.update(options);
 };
 
-Class.extend(Player, EventEmitter, {
+Player.prototype = _.create(EventEmitter.prototype, {
+    constructor: Player,
+
     update: function(options) {
         if (typeof options !== 'undefined') {
             for (var prop in options) {

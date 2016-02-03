@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var GlowShader = require('../shaders/GlowShader.js');
 
@@ -21,7 +21,9 @@ GlowEffect.info = {
     name: 'Glow'
 };
 
-Class.extend(GlowEffect, Effect, {
+GlowEffect.prototype = _.create(Effect.prototype, {
+    constructor: GlowEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(GlowShader);
     },

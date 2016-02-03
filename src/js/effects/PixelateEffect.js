@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var PixelateShader = require('../shaders/PixelateShader.js');
 
@@ -20,7 +20,9 @@ PixelateEffect.info = {
     name: 'Pixelate'
 };
 
-Class.extend(PixelateEffect, Effect, {
+PixelateEffect.prototype = _.create(Effect.prototype, {
+    constructor: PixelateEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(PixelateShader);
     },

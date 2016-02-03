@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Display = require('../display/Display.js');
 
 var RADIANS = 0.017453292519943295;
@@ -12,7 +12,9 @@ var CanvasDisplay = function(name, options) {
     this.context = this.canvas.getContext('2d');
 };
 
-Class.extend(CanvasDisplay, Display, {
+CanvasDisplay.prototype = _.create(Display.prototype, {
+    constructor: CanvasDisplay,
+
     renderToCanvas: function(scene) {
         var x, y,
             canvas = this.canvas,

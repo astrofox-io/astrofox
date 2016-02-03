@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var CanvasDisplay = require('../display/CanvasDisplay.js');
 var WaveDisplay = require('../display/WaveDisplay.js');
 
@@ -28,17 +27,19 @@ SoundwaveDisplay.info = {
     name: 'Soundwave'
 };
 
-Class.extend(SoundwaveDisplay, CanvasDisplay, {
+SoundwaveDisplay.prototype = _.create(CanvasDisplay.prototype, {
+    constructor: SoundwaveDisplay,
+
     update: function(options) {
         this.wave.update(options);
 
-        return this._super.update.call(this, options);
+        return CanvasDisplay.prototype.update.call(this, options);
     },
 
     renderToCanvas: function(scene, data) {
         this.wave.render(data.td, data.playing);
 
-        this._super.renderToCanvas.call(this, scene);
+        CanvasDisplay.prototype.renderToCanvas.call(this, scene);
     }
 });
 

@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 
 var defaults = {
@@ -19,7 +18,9 @@ var Display = function(name, options) {
     this.initialized = false;
 };
 
-Class.extend(Display, EventEmitter, {
+Display.prototype = _.create(EventEmitter.prototype, {
+    constructor: Display,
+
     update: function(options) {
         if (typeof options === 'object') {
             for (var prop in options) {

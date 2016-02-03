@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var LEDShader = require('../shaders/LEDShader.js');
 
@@ -20,7 +20,9 @@ LEDEffect.info = {
     name: 'LED'
 };
 
-Class.extend(LEDEffect, Effect, {
+LEDEffect.prototype = _.create(Effect.prototype, {
+    constructor: LEDEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(LEDShader);
     },

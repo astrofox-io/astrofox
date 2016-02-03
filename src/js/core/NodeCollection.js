@@ -1,14 +1,16 @@
 'use strict';
 
+var _ = require('lodash');
 var Immutable = require('immutable');
-var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 
 var NodeCollection = function() {
     this.nodes = new Immutable.List();
 };
 
-Class.extend(NodeCollection, EventEmitter, {
+NodeCollection.prototype = _.create(EventEmitter.prototype, {
+    constructor: NodeCollection,
+
     addNode: function(node) {
         var nodes = this.nodes;
 

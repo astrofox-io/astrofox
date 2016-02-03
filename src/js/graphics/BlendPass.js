@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var BlendShader = require('../shaders/BlendShader.js');
 var BlendModes = require('../graphics/BlendModes.js');
@@ -23,7 +22,9 @@ var BlendPass = function(buffer, options) {
     this.buffer = buffer;
 };
 
-Class.extend(BlendPass, ShaderPass, {
+BlendPass.prototype = _.create(ShaderPass.prototype, {
+    constructor: BlendPass,
+
     process: function(renderer, writeBuffer, readBuffer) {
         this.material.uniforms['tInput'].value = readBuffer;
         this.material.uniforms['tInput2'].value = this.buffer;

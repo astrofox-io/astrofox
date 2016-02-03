@@ -1,15 +1,15 @@
 'use strict';
 
-var Class = require('../core/Class.js');
-var Sound = require('./Sound.js');
 var _ = require('lodash');
-
+var Sound = require('./Sound.js');
 
 var MediaElementSound = function(context) {
     Sound.call(this, context);
 };
 
-Class.extend(MediaElementSound, Sound, {
+MediaElementSound.prototype = _.create(Sound.prototype, {
+    constructor: MediaElementSound,
+
     load: function(audio) {
         this.audio = audio;
         this.source = this.audioContext.createMediaElementSource(this.audio);

@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var BoxBlurShader = require('../shaders/BoxBlurShader.js');
 var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
@@ -8,7 +8,7 @@ var ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 
 var defaults = {
-    type: 'Box',
+    type: 'Gaussian',
     amount: 1.0
 };
 
@@ -33,7 +33,9 @@ BlurEffect.info = {
     name: 'Blur'
 };
 
-Class.extend(BlurEffect, Effect, {
+BlurEffect.prototype = _.create(Effect.prototype, {
+    constructor: BlurEffect,
+
     update: function(options) {
         if (!options) return;
 
@@ -117,10 +119,11 @@ Class.extend(BlurEffect, Effect, {
                 break;
 
             case 'Box':
-                passes.push(new ShaderPass(shader));
-                passes.push(new ShaderPass(shader));
+                passes.push(new ShaderPass(BoxBlurShader));
+                passes.push(new ShaderPass(BoxBlurShader));
 
                 this.pass = composer.addMultiPass(passes);
+
                 break;
 
             default:

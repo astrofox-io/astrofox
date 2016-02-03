@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 
-var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 var Timer = require('../core/Timer.js');
 var Player = require('../audio/Player.js');

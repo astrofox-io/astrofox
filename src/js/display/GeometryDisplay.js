@@ -2,8 +2,6 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-
-var Class = require('../core/Class.js');
 var Display = require('../display/Display.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 var Composer = require('../graphics/Composer.js');
@@ -47,7 +45,9 @@ GeometryDisplay.info = {
     name: '3D Geometry'
 };
 
-Class.extend(GeometryDisplay, Display, {
+GeometryDisplay.prototype = _.create(Display.prototype, {
+    constructor: GeometryDisplay,
+
     update: function(options) {
         if (!options) return false;
 

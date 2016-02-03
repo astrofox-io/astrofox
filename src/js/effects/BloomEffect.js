@@ -1,15 +1,10 @@
 'use strict';
 
-var THREE = require('three');
-
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Composer = require('../graphics/Composer.js');
 var Effect = require('../effects/Effect.js');
 var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
-var CopyShader = require('../shaders/CopyShader.js');
-var BlendShader = require('../shaders/BlendShader.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
-var MultiPass = require('../graphics/MultiPass.js');
 var SavePass = require('../graphics/SavePass.js');
 var BlendPass = require('../graphics/BlendPass.js');
 var BlendModes = require('../graphics/BlendModes.js');
@@ -32,7 +27,9 @@ BloomEffect.info = {
     name: 'Bloom'
 };
 
-Class.extend(BloomEffect, Effect, {
+BloomEffect.prototype = _.create(Effect.prototype, {
+    constructor: BloomEffect,
+
     addToScene: function(scene) {
         var pass,
             passes = [],

@@ -1,10 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
-var Immutable = require('immutable');
 var THREE = require('three');
-
-var Class = require('../core/Class.js');
 var NodeCollection = require('../core/NodeCollection.js');
 var Display = require('../display/Display.js');
 var CanvasDisplay = require('../display/CanvasDisplay.js');
@@ -43,9 +40,11 @@ var Scene = function(name, options) {
     this.update(options);
 };
 
-Class.extend(Scene, Display, {
+Scene.prototype = _.create(Display.prototype, {
+    constructor: Scene,
+
     update: function(options) {
-        var changed = this._super.update.call(this, options);
+        var changed = Display.prototype.update.call(this, options);
 
         if (this.canvasPass) {
             this.canvasPass.material.blending = (this.options.blending == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;

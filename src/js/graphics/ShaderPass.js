@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
 
 var defaults = {
@@ -32,7 +31,9 @@ var ShaderPass = function(shader, options) {
     this.scene.add(this.mesh);
 };
 
-Class.extend(ShaderPass, ComposerPass, {
+ShaderPass.prototype = _.create(ComposerPass.prototype, {
+    constructor: ShaderPass,
+    
     setUniforms: function(props) {
         var uniforms = this.uniforms;
 

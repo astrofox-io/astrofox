@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
 
 var defaults = {
@@ -15,7 +14,9 @@ var MaskPass = function(scene, camera, options) {
     this.camera = camera;
 };
 
-Class.extend(MaskPass, ComposerPass, {
+MaskPass.prototype = _.create(ComposerPass.prototype, {
+    constructor: MaskPass,
+
     process: function(renderer, writeBuffer, readBuffer) {
         var context = renderer.context,
             options = this.options,

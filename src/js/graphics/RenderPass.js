@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
 
 var defaults = {
@@ -22,7 +21,9 @@ var RenderPass = function(scene, camera, options) {
     this.clearAlpha = 1.0;
 };
 
-Class.extend(RenderPass, ComposerPass, {
+RenderPass.prototype = _.create(ComposerPass.prototype, {
+    constructor: RenderPass,
+
     process: function(renderer, writeBuffer, readBuffer) {
         var scene = this.scene,
             camera = this.camera,

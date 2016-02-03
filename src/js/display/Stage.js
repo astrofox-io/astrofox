@@ -2,9 +2,6 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Immutable = require('immutable');
-
-var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 var NodeCollection = require('../core/NodeCollection.js');
 var Composer = require('../graphics/Composer.js');
@@ -53,7 +50,9 @@ var Stage = function(options) {
     this.update(options);
 };
 
-Class.extend(Stage, NodeCollection, {
+Stage.prototype = _.create(NodeCollection.prototype, {
+    constructor: Stage,
+
     update: function(options) {
         if (typeof options === 'object') {
             for (var prop in options) {

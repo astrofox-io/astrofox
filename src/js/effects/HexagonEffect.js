@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var HexagonShader = require('../shaders/HexagonShader.js');
 
@@ -18,7 +18,9 @@ HexagonEffect.info = {
     name: 'Hexagon'
 };
 
-Class.extend(HexagonEffect, Effect, {
+HexagonEffect.prototype = _.create(Effect.prototype, {
+    constructor: HexagonEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(HexagonShader);
     },

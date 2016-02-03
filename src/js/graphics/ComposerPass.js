@@ -17,6 +17,8 @@ var ComposerPass = function(options) {
 };
 
 ComposerPass.prototype = {
+    constructor: ComposerPass,
+
     update: function(options) {
         for (var prop in options) {
             if (this.options.hasOwnProperty(prop)) {

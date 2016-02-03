@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var DotScreenShader = require('../shaders/DotScreenShader.js');
 
@@ -21,7 +21,9 @@ DotScreenEffect.info = {
     name: 'Dot Screen'
 };
 
-Class.extend(DotScreenEffect, Effect, {
+DotScreenEffect.prototype = _.create(Effect.prototype, {
+    constructor: DotScreenEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(DotScreenShader);
     },

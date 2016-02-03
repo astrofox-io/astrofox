@@ -1,8 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
+var CopyShader = require('../shaders/CopyShader.js');
 
 var defaults = {
     needsSwap: true,
@@ -14,9 +15,12 @@ var MultiPass = function(composer, options) {
     ComposerPass.call(this, _.assign({}, defaults, options));
 
     this.composer = composer;
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
 };
 
-Class.extend(MultiPass, ComposerPass, {
+MultiPass.prototype = _.create(ComposerPass.prototype, {
+    constructor: MultiPass,
+
     getPasses: function() {
         return this.composer.getPasses();
     },
@@ -28,6 +32,8 @@ Class.extend(MultiPass, ComposerPass, {
         composer.writeTarget = writeBuffer;
 
         composer.render();
+
+        this.copyPass.process(renderer, composer.writeBuffer, composer.readBuffer);
     }
 });
 

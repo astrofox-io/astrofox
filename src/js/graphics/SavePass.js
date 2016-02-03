@@ -1,8 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-
-var Class = require('../core/Class.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var CopyShader = require('../shaders/CopyShader.js');
 
@@ -18,7 +16,9 @@ var SavePass = function(buffer, options) {
     this.buffer = buffer;
 };
 
-Class.extend(SavePass, ShaderPass, {
+SavePass.prototype = _.create(ShaderPass.prototype, {
+    constructor: SavePass,
+
     process: function(renderer, writeBuffer, readBuffer) {
         ShaderPass.prototype.process.call(this, renderer, this.buffer, readBuffer);
     }

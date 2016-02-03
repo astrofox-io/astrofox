@@ -1,13 +1,15 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Display = require('../display/Display.js');
 
 var Effect = function(name, options) {
     Display.call(this, name, options);
 };
 
-Class.extend(Effect, Display, {
+Effect.prototype = _.create(Display.prototype, {
+    constructor: Effect,
+
     update: function(options) {
         if (this.pass && options.enabled !== undefined) {
             this.pass.options.enabled = options.enabled;

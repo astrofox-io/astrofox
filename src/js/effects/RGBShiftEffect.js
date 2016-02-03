@@ -1,7 +1,6 @@
 'use strict';
 
-var THREE = require('three');
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var RGBShiftShader = require('../shaders/RGBShiftShader.js');
 
@@ -22,7 +21,9 @@ RGBShiftEffect.info = {
     name: 'RGB Shift'
 };
 
-Class.extend(RGBShiftEffect, Effect, {
+RGBShiftEffect.prototype = _.create(Effect.prototype, {
+    constructor: RGBShiftEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(RGBShiftShader);
     },

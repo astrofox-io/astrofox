@@ -1,9 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var THREE = require('three');
-
-var Class = require('../core/Class.js');
 var Display = require('../display/Display.js');
 var CanvasDisplay = require('../display/CanvasDisplay.js');
 
@@ -30,7 +27,9 @@ TextDisplay.info = {
     name: 'Text'
 };
 
-Class.extend(TextDisplay, CanvasDisplay, {
+TextDisplay.prototype = _.create(CanvasDisplay.prototype, {
+    constructor: TextDisplay,
+
     render: function() {
         var width, height, length, spacing, r,
             canvas = this.canvas,

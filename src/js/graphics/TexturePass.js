@@ -2,9 +2,7 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
-var CopyShader = require('../shaders/CopyShader.js');
 
 var defaults = {
     opacity: 1.0,
@@ -34,7 +32,9 @@ var TexturePass = function(texture, options) {
     this.scene.add(this.mesh);
 };
 
-Class.extend(TexturePass, ComposerPass, {
+TexturePass.prototype = _.create(ComposerPass.prototype, {
+    constructor: TexturePass,
+
     process: function(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 

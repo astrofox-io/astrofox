@@ -1,6 +1,6 @@
 'use strict';
 
-var Class = require('../core/Class.js');
+var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var MirrorShader = require('../shaders/MirrorShader.js');
 
@@ -18,7 +18,9 @@ MirrorEffect.info = {
     name: 'Mirror'
 };
 
-Class.extend(MirrorEffect, Effect, {
+MirrorEffect.prototype = _.create(Effect.prototype, {
+    constructor: MirrorEffect,
+
     addToScene: function(scene) {
         this.pass = scene.composer.addShaderPass(MirrorShader);
     },

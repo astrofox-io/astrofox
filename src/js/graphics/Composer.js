@@ -2,12 +2,8 @@
 
 var _ = require('lodash');
 var THREE = require('three');
-var Immutable = require('immutable');
-
-var Class = require('../core/Class.js');
 var EventEmitter = require('../core/EventEmitter.js');
 var NodeCollection = require('../core/NodeCollection.js');
-
 var RenderPass = require('../graphics/RenderPass.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var SpritePass = require('../graphics/SpritePass.js');
@@ -33,7 +29,9 @@ var Composer = function(renderer, renderTarget) {
     this.setRenderTarget(renderTarget);
 };
 
-Class.extend(Composer, EventEmitter, {
+Composer.prototype = _.create(EventEmitter.prototype, {
+    constructor: Composer,
+
     getRenderTarget: function() {
         var renderer = this.renderer,
             pixelRatio = renderer.getPixelRatio(),
@@ -218,10 +216,6 @@ Class.extend(Composer, EventEmitter, {
                 }
                 else if (pass instanceof ClearMaskPass) {
                     this.maskActive = false;
-                }
-                else if (pass instanceof MultiPass) {
-                    //this.copyPass.process(renderer, this.writeBuffer, this.readBuffer, delta);
-                    //this.swapBuffers();
                 }
             }
         }, this);

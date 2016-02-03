@@ -1,14 +1,15 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
 
 var ClearMaskPass = function () {
     this.enabled = true;
 };
 
-Class.extend(ClearMaskPass, ComposerPass, {
+ClearMaskPass.prototype = _.create(ComposerPass.prototype, {
+    constructor: ClearMaskPass,
+
     process: function (renderer) {
         var context = renderer.context;
 

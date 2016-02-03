@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var Class = require('../core/Class.js');
 var Sound = require('../audio/Sound.js');
 
 var BufferedSound = function(context) {
@@ -11,7 +10,9 @@ var BufferedSound = function(context) {
     this.stopTime = 0;
 };
 
-Class.extend(BufferedSound, Sound, {
+BufferedSound.prototype = _.create(Sound.prototype, {
+    constructor: BufferedSound,
+
     load: function(src) {
         if (typeof src === 'string') {
             this.loadUrl(src);
