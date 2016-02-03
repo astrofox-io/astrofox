@@ -12,6 +12,7 @@ var defaults = {
 
 var types = [
     'Box',
+    'Circular',
     'Gaussian',
     'Zoom'
 ];

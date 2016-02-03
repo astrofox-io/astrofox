@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var BoxBlurShader = require('../shaders/BoxBlurShader.js');
+var CircularBlurShader = require('../shaders/CircularBlurShader.js');
 var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
 var ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
@@ -14,11 +15,13 @@ var defaults = {
 
 var shaders = {
     Box: BoxBlurShader,
+    Circular: CircularBlurShader,
     Gaussian: GaussianBlurShader,
     Zoom: ZoomBlurShader
 };
 
 const BOX_BLUR_MAX = 20;
+const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
 const GAUSSIAN_MAX = 20;
 const GAUSSIAN_ITERATIONS = 8;
@@ -70,6 +73,11 @@ BlurEffect.prototype = _.create(Effect.prototype, {
                     passes = this.pass.getPasses();
                     passes.get(0).setUniforms({ amount: [0, amount] });
                     passes.get(1).setUniforms({ amount: [amount, 0] });
+                    break;
+
+                case 'Circular':
+                    amount = CIRCULAR_BLUR_MAX * options.amount;
+                    this.pass.setUniforms({ amount: amount });
                     break;
 
                 case 'Gaussian':

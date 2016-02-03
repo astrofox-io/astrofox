@@ -10,6 +10,7 @@ var ShaderCode = {
         BarrelBlur: glslify('../../glsl/fragment/BarrelBlur.glsl'),
         Blend: glslify('../../glsl/fragment/Blend.glsl'),
         BoxBlur: glslify('../../glsl/fragment/BoxBlur.glsl'),
+        CircularBlur: glslify('../../glsl/fragment/CircularBlur.glsl'),
         ColorShift: glslify('../../glsl/fragment/ColorShift.glsl'),
         Copy: glslify('../../glsl/fragment/Copy.glsl'),
         DotScreen: glslify('../../glsl/fragment/DotScreen.glsl'),
