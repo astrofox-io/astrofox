@@ -35,17 +35,7 @@ var Stage = function(options) {
     this.renderer.setSize(854, 480);
     this.renderer.autoClear = false;
 
-    /*
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = this.options.width;
-    this.canvas.height = this.options.height;
-    this.context = this.canvas.getContext('2d');
-    this.context.fillStyle = '#ff0000';
-    this.context.fillRect(0, 0, this.options.width, this.options.height);
-    */
-
     this.composer = new Composer(this.renderer);
-    //this.pass = this.composer.addCanvasPass(this.canvas);
 
     this.update(options);
 };
@@ -67,8 +57,6 @@ Stage.prototype = _.create(NodeCollection.prototype, {
         this.scenes.addNode(scene);
 
         scene.addToStage(this);
-
-        //this.composer.addTexturePass(scene.composer.readBuffer, { renderToScreen: true });
     },
 
     removeScene: function(scene) {
@@ -91,18 +79,6 @@ Stage.prototype = _.create(NodeCollection.prototype, {
         this.scenes.nodes.forEach(function(scene) {
             this.removeScene(scene);
         }.bind(this));
-    },
-
-    getDisplays: function() {
-        var displays = [];
-
-        this.scenes.nodes.forEach(function(scene) {
-            scene.displays.nodes.forEach(function(display) {
-                displays.push(display);
-            });
-        });
-
-        return displays;
     },
 
     hasScenes: function() {

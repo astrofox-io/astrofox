@@ -3,15 +3,17 @@
 var _ = require('lodash');
 var Composer = require('../graphics/Composer.js');
 var Effect = require('../effects/Effect.js');
-var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var SavePass = require('../graphics/SavePass.js');
 var BlendPass = require('../graphics/BlendPass.js');
 var BlendModes = require('../graphics/BlendModes.js');
+var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
+var LuminanceShader = require('../shaders/LuminanceShader.js');
 
 var defaults = {
     blending: 'Screen',
-    amount: 0.1
+    amount: 0.1,
+    luminance: 1.0
 };
 
 const GAUSSIAN_MAX = 20;
@@ -39,6 +41,9 @@ BloomEffect.prototype = _.create(Effect.prototype, {
         this.savePass = new SavePass(composer.getRenderTarget());
         passes.push(this.savePass);
 
+        this.lumPass = new ShaderPass(LuminanceShader);
+        passes.push(this.lumPass);
+
         for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
             pass = new ShaderPass(GaussianBlurShader);
             passes.push(pass);
@@ -61,6 +66,8 @@ BloomEffect.prototype = _.create(Effect.prototype, {
     updateScene: function(scene) {
         if (this.hasUpdate) {
             var options = this.options;
+
+            this.lumPass.setUniforms({ amount: 1 - options.luminance });
 
             this.pass.getPasses().forEach(function(pass, i) {
                 if (i > 0 && i < GAUSSIAN_ITERATIONS - 1) {

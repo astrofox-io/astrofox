@@ -70,9 +70,9 @@ BlurEffect.prototype = _.create(Effect.prototype, {
             switch (this.options.type) {
                 case 'Box':
                     amount = BOX_BLUR_MAX * options.amount;
-                    passes = this.pass.getPasses();
-                    passes.get(0).setUniforms({ amount: [0, amount] });
-                    passes.get(1).setUniforms({ amount: [amount, 0] });
+                    this.pass.getPasses().forEach(function(pass, i) {
+                        this.updateBoxBlurPass(pass, i);
+                    }, this);
                     break;
 
                 case 'Circular':
@@ -98,10 +98,17 @@ BlurEffect.prototype = _.create(Effect.prototype, {
 
     updateGaussianPass: function(pass, i) {
         var options = this.options,
-            amount = options.amount * GAUSSIAN_MAX,
+            amount = GAUSSIAN_MAX * options.amount,
             radius = (GAUSSIAN_ITERATIONS - i - 1) * amount / GAUSSIAN_ITERATIONS;
 
         pass.setUniforms({ direction: (i % 2 == 0) ? [0, radius] : [radius, 0] });
+    },
+
+    updateBoxBlurPass: function(pass, i) {
+        var options = this.options,
+            amount = BOX_BLUR_MAX * options.amount;
+
+        pass.setUniforms({ amount: [(i % 2 == 0) ? 0 : amount, (i % 2 == 0) ? amount : 0]});
     },
 
     createShader: function(type) {

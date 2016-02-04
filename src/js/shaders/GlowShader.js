@@ -5,7 +5,7 @@ var GlowShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         amount: { type: 'f', value: 1.0 },
-        size: { type: 'f', value: 1.0 },
+        intensity: { type: 'f', value: 1.0 },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 

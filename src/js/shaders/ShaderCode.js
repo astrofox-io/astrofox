@@ -20,6 +20,7 @@ var ShaderCode = {
         Halftone: glslify('../../glsl/fragment/Halftone.glsl'),
         Hatch: glslify('../../glsl/fragment/Hatch.glsl'),
         Hexagon: glslify('../../glsl/fragment/Hexagon.glsl'),
+        Luminance: glslify('../../glsl/fragment/Luminance.glsl'),
         LED: glslify('../../glsl/fragment/LED.glsl'),
         Mirror: glslify('../../glsl/fragment/Mirror.glsl'),
         Pixelate: glslify('../../glsl/fragment/Pixelate.glsl'),

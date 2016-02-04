@@ -1,6 +1,6 @@
 uniform sampler2D tDiffuse;
-uniform float size;
 uniform float amount;
+uniform float intensity;
 uniform vec2 resolution;
 
 varying vec2 vUv;
@@ -8,8 +8,8 @@ varying vec2 vUv;
 void main() {
     vec4 src = texture2D(tDiffuse, vUv);
     vec4 sum = vec4(0.0);
-    float h = size / resolution.x;
-    float v = size / resolution.y;
+    float h = amount / resolution.x;
+    float v = amount / resolution.y;
 
     // horizontal blur
     sum += texture2D(tDiffuse, vec2(vUv.x - 4.0 * h, vUv.y)) * 0.051;
@@ -33,6 +33,6 @@ void main() {
     sum += texture2D(tDiffuse, vec2(vUv.x, vUv.y + 3.0 * v)) * 0.0918;
     sum += texture2D(tDiffuse, vec2(vUv.x, vUv.y + 4.0 * v)) * 0.051;
 
-    //gl_FragColor = vec4(mix(src.rgb, sum.rgb, 0.6) * amount, sum.a);
-    gl_FragColor = vec4(mix(src, sum, 0.6) * amount);
+    gl_FragColor = vec4(mix(src.rgb, sum.rgb, 0.6) * intensity, sum.a);
+    //gl_FragColor = vec4(mix(src, sum, 0.6) * intensity);
 }

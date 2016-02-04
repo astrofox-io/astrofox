@@ -36,7 +36,7 @@ GlowEffect.prototype = _.create(Effect.prototype, {
         var options = this.options;
 
         if (this.hasUpdate) {
-            this.pass.setUniforms({ size: options.amount * GLOW_MAX, amount: options.intensity });
+            this.pass.setUniforms({ amount: options.amount * GLOW_MAX, intensity: options.intensity });
             this.hasUpdate = false;
         }
     }

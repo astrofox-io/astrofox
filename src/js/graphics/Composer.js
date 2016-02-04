@@ -104,6 +104,8 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         var index = this.passes.indexOf(pass);
 
         this.passes.swapNodes(index, index + i);
+
+        console.log(this.passes.nodes.toArray());
     },
 
     addRenderPass: function(scene, camera, options) {

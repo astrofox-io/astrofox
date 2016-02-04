@@ -7,7 +7,8 @@ var SelectInput = require('../inputs/SelectInput.jsx');
 
 var defaults = {
     blending: 'Screen',
-    amount: 0.1
+    amount: 0.1,
+    luminance: 1.0
 };
 
 var blendModes = [
@@ -87,6 +88,26 @@ var BloomControl = React.createClass({
                             max={1.0}
                             step={0.01}
                             value={this.state.amount}
+                            onChange={this.handleChange} />
+                    </div>
+                </div>
+                <div className="row">
+                    <label className="label">Luminance</label>
+                    <NumberInput
+                        name="luminance"
+                        size="3"
+                        value={this.state.luminance}
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="luminance"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={this.state.luminance}
                             onChange={this.handleChange} />
                     </div>
                 </div>
