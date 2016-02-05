@@ -14,6 +14,7 @@ vec2 rot2d(vec2 p, float a) {
 
 void main() {
 	vec2 uv = gl_FragCoord.xy / resolution.xy;
+	vec4 src = texture2D(tDiffuse, vUv);
 
 	float maxofs = 12.0 * amount;
 	const int NUM_SAMPLES = 16;
@@ -43,6 +44,7 @@ void main() {
 		sum += texture2D(tDiffuse, vec2(uv.x, uv.y) - ofs[i], MIPBIAS);
     }
 
-	gl_FragColor.rgb = sum.rgb / NUM_SAMPLES_F;
-	gl_FragColor.a = texture2D(tDiffuse, vUv).a;
+	//gl_FragColor.rgb = sum.rgb / NUM_SAMPLES_F;
+	//gl_FragColor.a = sum.a + src.a;
+	gl_FragColor = sum / NUM_SAMPLES_F;
 }
