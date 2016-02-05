@@ -68,6 +68,12 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         this.renderer.clearTarget(this.writeTarget, color, depth, stencil);
     },
 
+    dispose: function() {
+        this.clearPasses();
+        this.readTarget.dispose();
+        this.writeTarget.dispose();
+    },
+
     setSize: function(width, height) {
         var renderTarget = this.writeTarget.clone();
 

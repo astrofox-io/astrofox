@@ -58,7 +58,7 @@ Scene.prototype = _.create(Display.prototype, {
         this.displays = null;
         this.effects.clear();
         this.effects = null;
-        this.composer.clearPasses();
+        this.composer.dispose();
         this.composer = null;
     },
 
