@@ -23,6 +23,8 @@ var Composer = function(renderer, renderTarget) {
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
+    //this.copyPass.material.blending = THREE.NormalBlending;
+
     // Do not pre-multiply alpha
     this.blendPass.material.blending = THREE.NoBlending;
 
@@ -155,24 +157,37 @@ Composer.prototype = _.create(EventEmitter.prototype, {
     blendBuffer: function(buffer, options) {
         var pass = this.blendPass;
 
-        pass.material.uniforms['tInput'].value = this.readBuffer;
-        pass.material.uniforms['tInput2'].value = buffer;
-        pass.material.uniforms['opacity'].value = options.opacity;
-        pass.material.uniforms['mode'].value = BlendModes[options.blending];
-        pass.material.uniforms['multiplyAlpha'].value = options.multiplyAlpha || 0;
+        pass.setUniforms({
+            tInput: this.readBuffer,
+            tInput2: buffer,
+            opacity: options.opacity,
+            mode: BlendModes[options.blending],
+            multiplyAlpha: options.multiplyAlpha || 0
+        });
 
         pass.process(this.renderer, this.writeBuffer);
 
-        // Swap buffers write->read
         this.swapBuffers();
     },
 
     copyBuffer: function(buffer, options) {
         var pass = this.copyPass;
 
-        pass.material.uniforms['opacity'].value = options.opacity;
+        if (options) {
+            pass.setUniforms(options);
+        }
 
         pass.process(this.renderer, this.readBuffer, buffer);
+    },
+
+    copyTarget: function(buffer, options) {
+        var pass = this.copyPass;
+
+        if (options) {
+            pass.setUniforms(options);
+        }
+
+        pass.process(this.renderer, this.readTarget, buffer);
     },
 
     renderToScreen: function() {
@@ -185,7 +200,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         pass.update({ renderToScreen: false, clearDepth: false });
     },
 
-    render: function(delta) {
+    render: function() {
         var renderer = this.renderer,
             context = this.renderer.context,
             maskActive = this.maskActive;
@@ -199,14 +214,13 @@ Composer.prototype = _.create(EventEmitter.prototype, {
                     renderer,
                     this.writeBuffer,
                     this.readBuffer,
-                    delta,
                     maskActive
                 );
 
                 if (pass.options.needsSwap) {
                     if (maskActive) {
                         context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
-                        this.copyPass.process(renderer, this.writeBuffer, this.readBuffer, delta);
+                        this.copyPass.process(renderer, this.writeBuffer, this.readBuffer);
                         context.stencilFunc(context.EQUAL, 1, 0xffffffff);
                     }
 
