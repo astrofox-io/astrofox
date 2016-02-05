@@ -41,12 +41,14 @@ var blendModes = [
     'Divide'
 ];
 
+var defaults = {
+    blendMode: 'Normal',
+    opacity: 1.0
+};
+
 var SceneControl = React.createClass({
     getInitialState: function() {
-        return {
-            blending: 'Normal',
-            opacity: 1.0
-        };
+        return defaults;
     },
 
     componentWillMount: function() {
@@ -96,10 +98,10 @@ var SceneControl = React.createClass({
                 <div className="row">
                     <label className="label">Blending</label>
                     <SelectInput
-                        name="blending"
+                        name="blendMode"
                         size="20"
                         items={blendModes}
-                        value={this.state.blending}
+                        value={this.state.blendMode}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">

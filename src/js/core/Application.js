@@ -281,6 +281,12 @@ Application.prototype = _.create(EventEmitter.prototype, {
                         scene.addElement(new controls[display.name](display.options));
                     }, this);
                 }
+
+                if (item.effects) {
+                    item.effects.forEach(function(effect) {
+                        scene.addElement(new controls[effect.name](effect.options));
+                    }, this);
+                }
             }.bind(this));
 
             this.emit('control_added');

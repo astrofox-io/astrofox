@@ -11,7 +11,7 @@ var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
 var LuminanceShader = require('../shaders/LuminanceShader.js');
 
 var defaults = {
-    blending: 'Screen',
+    blendMode: 'Screen',
     amount: 0.1,
     luminance: 1.0
 };
@@ -52,7 +52,7 @@ BloomEffect.prototype = _.create(Effect.prototype, {
         }
 
         this.blendPass = new BlendPass(this.savePass.buffer);
-        this.blendPass.setUniforms({ mode: BlendModes[options.blending] });
+        this.blendPass.setUniforms({ mode: BlendModes[options.blendMode] });
         passes.push(this.blendPass);
 
         this.pass = composer.addMultiPass(passes);
@@ -75,7 +75,7 @@ BloomEffect.prototype = _.create(Effect.prototype, {
                 }
             }, this);
 
-            this.blendPass.setUniforms({ mode: BlendModes[options.blending] });
+            this.blendPass.setUniforms({ mode: BlendModes[options.blendMode] });
 
             this.hasUpdate = false;
         }

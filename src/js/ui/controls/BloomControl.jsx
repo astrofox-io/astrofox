@@ -6,7 +6,7 @@ var RangeInput = require('../inputs/RangeInput.jsx');
 var SelectInput = require('../inputs/SelectInput.jsx');
 
 var defaults = {
-    blending: 'Screen',
+    blendMode: 'Screen',
     amount: 0.1,
     luminance: 1.0
 };
@@ -65,10 +65,10 @@ var BloomControl = React.createClass({
                 <div className="row">
                     <label className="label">Blend Mode</label>
                     <SelectInput
-                        name="blending"
+                        name="blendMode"
                         size="20"
                         items={blendModes}
-                        value={this.state.blending}
+                        value={this.state.blendMode}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">

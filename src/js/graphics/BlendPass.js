@@ -10,14 +10,13 @@ var defaults = {
     transparent: true,
     needsSwap: true,
     opacity: 1.0,
-    blending: 'Screen',
-    multiplyAlpha: false
+    blendMode: 'Screen',
+    multiplyAlpha: false,
+    blending: THREE.NoBlending
 };
 
 var BlendPass = function(buffer, options) {
     ShaderPass.call(this, BlendShader, _.assign({}, defaults, options));
-
-    this.material.blending = THREE.NoBlending;
 
     this.buffer = buffer;
 };

@@ -9,23 +9,8 @@ var Effect = require('../effects/Effect.js');
 var Composer = require('../graphics/Composer.js');
 
 var defaults = {
-    blending: 'Normal',
+    blendMode: 'Normal',
     opacity: 1.0
-};
-
-var blendDefaults = {
-    blending: THREE.NormalBlending,
-    blendSrc: THREE.SrcAlphaFactor,
-    blendDst: THREE.OneMinusSrcAlphaFactor,
-    blendEquation: THREE.AddEquation
-};
-
-var blendModes = {
-    None: THREE.NoBlending,
-    Normal: THREE.NormalBlending,
-    Add: THREE.AdditiveBlending,
-    Subtract: THREE.SubtractiveBlending,
-    Multiply: THREE.MultiplyBlending
 };
 
 var Scene = function(name, options) {
@@ -47,7 +32,7 @@ Scene.prototype = _.create(Display.prototype, {
         var changed = Display.prototype.update.call(this, options);
 
         if (this.canvasPass) {
-            this.canvasPass.material.blending = (this.options.blending == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
+            this.canvasPass.material.blending = (this.options.blendMode == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
         }
 
         return changed;
@@ -60,7 +45,7 @@ Scene.prototype = _.create(Display.prototype, {
         this.composer = new Composer(stage.renderer);
 
         this.canvasPass = this.composer.addCanvasPass(this.canvas);
-        this.canvasPass.material.blending = (this.options.blending == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
+        this.canvasPass.material.blending = (this.options.blendMode == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
         this.canvasPass.options.enabled = false;
 
         this.canvas.height = size.height;
@@ -178,8 +163,6 @@ Scene.prototype = _.create(Display.prototype, {
 
         composer.clearBuffer(true, true, true);
 
-        if (buffer) composer.readBuffer = buffer.clone();
-
         if (displays.size > 0 || effects.size > 0) {
             displays.forEach(function(display) {
                 if (display.options.enabled) {
@@ -218,10 +201,15 @@ Scene.prototype = _.create(Display.prototype, {
             return display.toJSON();
         });
 
+        var effects = this.effects.nodes.map(function(effect) {
+            return effect.toJSON();
+        });
+
         return {
             name: this.name,
             options: this.options,
-            displays: displays
+            displays: displays,
+            effects: effects
         };
     }
 });

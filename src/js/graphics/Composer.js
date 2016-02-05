@@ -20,13 +20,8 @@ var Composer = function(renderer, renderTarget) {
     this.passes = new NodeCollection();
     this.maskActive = false;
 
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
-    this.blendPass = new ShaderPass(BlendShader, { transparent: true });
-
-    //this.copyPass.material.blending = THREE.NormalBlending;
-
-    // Do not pre-multiply alpha
-    this.blendPass.material.blending = THREE.NoBlending;
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true, blending: THREE.NoBlending });
+    this.blendPass = new ShaderPass(BlendShader, { transparent: true, blending: THREE.NoBlending });
 
     this.setRenderTarget(renderTarget);
 };
@@ -124,14 +119,14 @@ Composer.prototype = _.create(EventEmitter.prototype, {
 
     addCanvasPass: function(canvas, options) {
         var texture = new THREE.Texture(canvas);
-        texture.minFilter = THREE.LinearFilter;
+        texture.minFilter = texture.magFilter = THREE.LinearFilter;
 
         return this.addTexturePass(texture, options);
     },
 
     addSpritePass: function(image, options) {
         var texture = new THREE.Texture(image);
-        texture.minFilter = THREE.LinearFilter;
+        texture.minFilter = texture.magFilter = THREE.LinearFilter;
 
         return this.addPass(new SpritePass(texture, options));
     },
@@ -161,7 +156,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
             tInput: this.readBuffer,
             tInput2: buffer,
             opacity: options.opacity,
-            mode: BlendModes[options.blending],
+            mode: BlendModes[options.blendMode],
             multiplyAlpha: options.multiplyAlpha || 0
         });
 

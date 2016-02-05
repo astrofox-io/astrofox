@@ -8,7 +8,8 @@ var defaults = {
     textureId: 'tDiffuse',
     transparent: false,
     needsSwap: true,
-    forceClear: false
+    forceClear: false,
+    blending: THREE.NormalBlending
 };
 
 var ShaderPass = function(shader, options) {
@@ -21,7 +22,8 @@ var ShaderPass = function(shader, options) {
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
         defines: shader.defines || {},
-        transparent: this.options.transparent
+        transparent: this.options.transparent,
+        blending: this.options.blending
     });
 
     this.scene = new THREE.Scene();

@@ -9,7 +9,8 @@ var defaults = {
     transparent: true,
     needsSwap: false,
     needsUpdate: true,
-    forceClear: false
+    forceClear: false,
+    blending: THREE.NormalBlending
 };
 
 var TexturePass = function(texture, options) {
@@ -22,7 +23,8 @@ var TexturePass = function(texture, options) {
         map: texture,
         depthTest: false,
         depthWrite: false,
-        transparent: this.options.transparent
+        transparent: this.options.transparent,
+        blending: this.options.blending
     });
 
     this.scene = new THREE.Scene();

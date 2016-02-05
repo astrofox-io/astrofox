@@ -31,7 +31,7 @@ var Stage = function(options) {
 
     this.options = _.assign({}, defaults);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: false });
+    this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
     this.renderer.setSize(854, 480);
     this.renderer.autoClear = false;
 
@@ -86,7 +86,8 @@ Stage.prototype = _.create(NodeCollection.prototype, {
     },
 
     renderFrame: function(data, callback) {
-        var composer = this.composer,
+        var options,
+            composer = this.composer,
             buffer = null;
 
         this.renderer.clear();
@@ -96,12 +97,13 @@ Stage.prototype = _.create(NodeCollection.prototype, {
         this.scenes.nodes.forEach(function(scene, index) {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
-                if (index > 0) {
-                    composer.blendBuffer(buffer, scene.options);
+                options = _.assign({}, scene.options);
+
+                if (index == 0) {
+                    options.blendMode = 'Normal';
                 }
-                else {
-                    composer.copyBuffer(buffer, scene.options);
-                }
+
+                composer.blendBuffer(buffer, options);
             }
         }, this);
 
