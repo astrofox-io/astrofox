@@ -3,8 +3,8 @@ var ShaderCode = require('./ShaderCode.js');
 
 var BlendShader = {
     uniforms: {
-        tInput: { type: 't', value: null },
-        tInput2: { type: 't', value: null },
+        tInputDest: { type: 't', value: null },
+        tInputSrc: { type: 't', value: null },
         mode: { type: 'i', value: 1 },
         opacity: { type: 'f', value: 1.0 },
         multiplyAlpha: { type: 'i', value: 0 },

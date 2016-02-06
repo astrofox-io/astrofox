@@ -25,8 +25,8 @@ BlendPass.prototype = _.create(ShaderPass.prototype, {
     constructor: BlendPass,
 
     process: function(renderer, writeBuffer, readBuffer) {
-        this.material.uniforms['tInput'].value = readBuffer;
-        this.material.uniforms['tInput2'].value = this.buffer;
+        this.material.uniforms['tInputDest'].value = readBuffer;
+        this.material.uniforms['tInputSrc'].value = this.buffer;
 
         this.mesh.material = this.material;
 

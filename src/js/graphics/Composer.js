@@ -22,7 +22,14 @@ var Composer = function(renderer, renderTarget) {
 
     this.copyPass = new ShaderPass(CopyShader, { transparent: true, blending: THREE.NoBlending });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true, blending: THREE.NoBlending });
-
+/*
+    this.blendPass.setBlending(
+        THREE.CustomBlending,
+        THREE.OneFactor,
+        THREE.ZeroFactor,
+        THREE.SubtractEquation
+    );
+*/
     this.setRenderTarget(renderTarget);
 };
 
@@ -159,8 +166,8 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         var pass = this.blendPass;
 
         pass.setUniforms({
-            tInput: this.readBuffer,
-            tInput2: buffer,
+            tInputDest: this.readBuffer,
+            tInputSrc: buffer,
             opacity: options.opacity,
             mode: BlendModes[options.blendMode],
             multiplyAlpha: options.multiplyAlpha || 0
@@ -171,7 +178,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         this.swapBuffers();
     },
 
-    copyBuffer: function(buffer, options) {
+    x_copyBuffer: function(buffer, options) {
         var pass = this.copyPass;
 
         if (options) {
@@ -181,7 +188,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         pass.process(this.renderer, this.readBuffer, buffer);
     },
 
-    copyTarget: function(buffer, options) {
+    x_copyTarget: function(buffer, options) {
         var pass = this.copyPass;
 
         if (options) {
@@ -194,11 +201,11 @@ Composer.prototype = _.create(EventEmitter.prototype, {
     renderToScreen: function() {
         var pass = this.copyPass;
 
-        pass.update({ renderToScreen: true, clearDepth: true });
+        pass.update({ renderToScreen: true });
 
         pass.process(this.renderer, this.writeBuffer, this.readBuffer);
 
-        pass.update({ renderToScreen: false, clearDepth: false });
+        pass.update({ renderToScreen: false });
     },
 
     render: function() {
@@ -220,9 +227,9 @@ Composer.prototype = _.create(EventEmitter.prototype, {
 
                 if (pass.options.needsSwap) {
                     if (maskActive) {
-                        context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
-                        this.copyPass.process(renderer, this.writeBuffer, this.readBuffer);
-                        context.stencilFunc(context.EQUAL, 1, 0xffffffff);
+                        //context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
+                        //this.copyPass.process(renderer, this.writeBuffer, this.readBuffer);
+                        //context.stencilFunc(context.EQUAL, 1, 0xffffffff);
                     }
 
                     this.swapBuffers();

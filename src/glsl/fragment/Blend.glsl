@@ -1,6 +1,6 @@
 varying vec2 vUv;
-uniform sampler2D tInput;
-uniform sampler2D tInput2;
+uniform sampler2D tInputDest;
+uniform sampler2D tInputSrc;
 uniform vec2 resolution;
 uniform vec2 resolution2;
 uniform int sizeMode;
@@ -57,8 +57,8 @@ void main() {
 		}
 	}
 
-	vec4 dest = texture2D(tInput, vUv);
-	vec4 src = texture2D(tInput2, vUv2);
+	vec4 dest = texture2D(tInputDest, vUv);
+	vec4 src = texture2D(tInputSrc, vUv2);
 
     if (multiplyAlpha == 1) {
         src = vec4(src.rgb * src.a, src.a);

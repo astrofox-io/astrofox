@@ -9,7 +9,9 @@ var defaults = {
     clearColor: false,
     clearDepth: false,
     clearStencil: false,
-    renderToScreen: false
+    renderToScreen: false,
+    setClearColor: null,
+    setClearAlpha: 1.0
 };
 
 var ComposerPass = function(options) {
@@ -29,18 +31,45 @@ ComposerPass.prototype = {
         }
     },
 
-    render: function(renderer, scene, camera, renderTarget) {
-        var options = this.options;
+    setBlending: function(blending, blendSrc, blendDst, blendEquation) {
+        if (this.material) {
+            var material = this.material;
 
+            material.blending = blending;
+            material.blendSrc = blendSrc;
+            material.blendDst = blendDst;
+            material.blendEquation = blendEquation;
+        }
+    },
+
+    render: function(renderer, scene, camera, renderTarget) {
+        var options = this.options,
+            clearColor, clearAlpha;
+
+        // Set new values
+        if (options.setClearColor) {
+            clearColor = renderer.getClearColor();
+            clearAlpha = renderer.getClearAlpha();
+
+            renderer.setClearColor(options.setClearColor, options.setClearAlpha);
+        }
+
+        // Clear buffers
         if (options.clearColor || options.clearDepth || options.clearStencil) {
             renderer.clear(options.clearColor, options.clearDepth, options.clearStencil);
         }
 
+        // Render
         if (options.renderToScreen) {
             renderer.render(scene, camera);
         }
         else {
             renderer.render(scene, camera, renderTarget, options.forceClear);
+        }
+
+        // Reset values
+        if (options.setClearColor) {
+            renderer.setClearColor(clearColor, clearAlpha);
         }
     }
 };

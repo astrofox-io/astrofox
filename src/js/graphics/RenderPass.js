@@ -7,8 +7,8 @@ var ComposerPass = require('../graphics/ComposerPass.js');
 var defaults = {
     forceClear: true,
     overrideMaterial: null,
-    clearColor: null,
-    clearAlpha: 1.0
+    setClearColor: null,
+    setClearAlpha: 1.0
 };
 
 var RenderPass = function(scene, camera, options) {
@@ -16,9 +16,6 @@ var RenderPass = function(scene, camera, options) {
 
     this.scene = scene;
     this.camera = camera;
-
-    this.clearColor = new THREE.Color();
-    this.clearAlpha = 1.0;
 };
 
 RenderPass.prototype = _.create(ComposerPass.prototype, {
@@ -31,18 +28,7 @@ RenderPass.prototype = _.create(ComposerPass.prototype, {
 
         scene.overrideMaterial = options.overrideMaterial;
 
-        if (options.clearColor) {
-            this.clearColor.copy(renderer.getClearColor());
-            this.clearAlpha = renderer.getClearAlpha();
-
-            renderer.setClearColor(options.clearColor, options.clearAlpha);
-        }
-
         this.render(renderer, scene, camera, readBuffer);
-
-        if (options.clearColor) {
-            renderer.setClearColor(this.clearColor, this.clearAlpha);
-        }
 
         scene.overrideMaterial = null;
     }
