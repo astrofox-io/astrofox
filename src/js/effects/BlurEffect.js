@@ -6,7 +6,11 @@ var BoxBlurShader = require('../shaders/BoxBlurShader.js');
 var CircularBlurShader = require('../shaders/CircularBlurShader.js');
 var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
 var ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
+var CopyShader = require('../shaders/CopyShader.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
+
+var RGBShiftShader = require('../shaders/RGBShiftShader.js');
+var DotScreenShader = require('../shaders/DotScreenShader.js');
 
 var defaults = {
     type: 'Gaussian',
@@ -23,7 +27,7 @@ var shaders = {
 const BOX_BLUR_MAX = 20;
 const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
-const GAUSSIAN_MAX = 20;
+const GAUSSIAN_BLUR_MAX = 3;
 const GAUSSIAN_ITERATIONS = 8;
 
 var BlurEffect = function(options) {
@@ -46,7 +50,7 @@ BlurEffect.prototype = _.create(Effect.prototype, {
 
         var changed = Effect.prototype.update.call(this, options);
 
-        if (this.scene && options.type != type) {
+        if (this.scene && options.type !== undefined && options.type != type) {
             this.createShader(options.type);
         }
 
@@ -70,9 +74,7 @@ BlurEffect.prototype = _.create(Effect.prototype, {
             switch (this.options.type) {
                 case 'Box':
                     amount = BOX_BLUR_MAX * options.amount;
-                    this.pass.getPasses().forEach(function(pass, i) {
-                        this.updateBoxBlurPass(pass, i);
-                    }, this);
+                    this.pass.setUniforms({ amount: amount });
                     break;
 
                 case 'Circular':
@@ -82,7 +84,9 @@ BlurEffect.prototype = _.create(Effect.prototype, {
 
                 case 'Gaussian':
                     this.pass.getPasses().forEach(function(pass, i) {
-                        this.updateGaussianPass(pass, i);
+                        if (i < GAUSSIAN_ITERATIONS) {
+                            this.updateGaussianPass(pass, i);
+                        }
                     }, this);
                     break;
 
@@ -98,17 +102,10 @@ BlurEffect.prototype = _.create(Effect.prototype, {
 
     updateGaussianPass: function(pass, i) {
         var options = this.options,
-            amount = GAUSSIAN_MAX * options.amount,
-            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount / GAUSSIAN_ITERATIONS;
+            amount = GAUSSIAN_BLUR_MAX * options.amount,
+            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount;
 
-        pass.setUniforms({ direction: (i % 2 == 0) ? [0, radius] : [radius, 0] });
-    },
-
-    updateBoxBlurPass: function(pass, i) {
-        var options = this.options,
-            amount = BOX_BLUR_MAX * options.amount;
-
-        pass.setUniforms({ amount: [(i % 2 == 0) ? 0 : amount, (i % 2 == 0) ? amount : 0]});
+        pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0] });
     },
 
     createShader: function(type) {
@@ -130,15 +127,23 @@ BlurEffect.prototype = _.create(Effect.prototype, {
                     this.updateGaussianPass(pass, i);
                 }
 
+                pass = new ShaderPass(CopyShader);
+                pass.setUniforms({ alpha: 1 });
+                passes.push(pass);
+
                 this.pass = composer.addMultiPass(passes);
                 break;
 
             case 'Box':
-                passes.push(new ShaderPass(BoxBlurShader));
+                this.pass = composer.addShaderPass(BoxBlurShader);
+                break;
+
+            case 'Test':
+                passes.push(new ShaderPass(DotScreenShader));
+                passes.push(new ShaderPass(RGBShiftShader));
                 passes.push(new ShaderPass(BoxBlurShader));
 
                 this.pass = composer.addMultiPass(passes);
-
                 break;
 
             default:

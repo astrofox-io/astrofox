@@ -4,7 +4,7 @@ var ShaderCode = require('./ShaderCode.js');
 var BoxBlurShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
-        amount: { type: 'v2', value: new THREE.Vector2(1, 1) },
+        amount: { type: 'f', value: 1.0 },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 

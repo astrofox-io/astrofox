@@ -2,6 +2,7 @@ uniform sampler2D tDiffuse;
 uniform vec2 resolution;
 uniform vec2 direction;
 uniform int flip;
+uniform int alpha;
 
 varying vec2 vUv;
 
@@ -49,4 +50,8 @@ void main() {
     }
 
     gl_FragColor = blur9(tDiffuse, uv, resolution.xy, direction);
+
+    if (alpha == 1) {
+        gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
+    }
 }

@@ -16,7 +16,7 @@ var defaults = {
     luminance: 1.0
 };
 
-const GAUSSIAN_MAX = 20;
+const GAUSSIAN_BLUR_MAX = 3;
 const GAUSSIAN_ITERATIONS = 8;
 
 var BloomEffect = function(options) {
@@ -83,10 +83,10 @@ BloomEffect.prototype = _.create(Effect.prototype, {
 
     updateGaussianPass: function(pass, i) {
         var options = this.options,
-            amount = options.amount * GAUSSIAN_MAX,
-            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount / GAUSSIAN_ITERATIONS;
+            amount = options.amount * GAUSSIAN_BLUR_MAX,
+            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount;
 
-        pass.setUniforms({ direction: (i % 2 == 0) ? [0, radius] : [radius, 0] });
+        pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0], alpha: (i === GAUSSIAN_ITERATIONS - 1) });
     }
 });
 

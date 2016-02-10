@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var THREE = require('three');
 var ComposerPass = require('../graphics/ComposerPass.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var CopyShader = require('../shaders/CopyShader.js');

@@ -22,14 +22,7 @@ var Composer = function(renderer, renderTarget) {
 
     this.copyPass = new ShaderPass(CopyShader, { transparent: true, blending: THREE.NoBlending });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true, blending: THREE.NoBlending });
-/*
-    this.blendPass.setBlending(
-        THREE.CustomBlending,
-        THREE.OneFactor,
-        THREE.ZeroFactor,
-        THREE.SubtractEquation
-    );
-*/
+
     this.setRenderTarget(renderTarget);
 };
 
@@ -114,8 +107,6 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         var index = this.passes.indexOf(pass);
 
         this.passes.swapNodes(index, index + i);
-
-        console.log(this.passes.nodes.toArray());
     },
 
     addRenderPass: function(scene, camera, options) {
@@ -178,7 +169,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         this.swapBuffers();
     },
 
-    x_copyBuffer: function(buffer, options) {
+    copyBuffer: function(buffer, options) {
         var pass = this.copyPass;
 
         if (options) {
@@ -188,7 +179,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         pass.process(this.renderer, this.readBuffer, buffer);
     },
 
-    x_copyTarget: function(buffer, options) {
+    copyTarget: function(buffer, options) {
         var pass = this.copyPass;
 
         if (options) {
