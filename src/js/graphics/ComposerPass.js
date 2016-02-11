@@ -39,6 +39,8 @@ ComposerPass.prototype = {
             material.blendSrc = blendSrc;
             material.blendDst = blendDst;
             material.blendEquation = blendEquation;
+
+            console.log('new blending set');
         }
     },
 

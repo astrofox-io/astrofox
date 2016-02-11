@@ -82,8 +82,8 @@ ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
             while (last_w > MIN_RESIZE_WIDTH && last_h > MIN_RESIZE_HEIGHT && last_w > options.width && last_h > options.height) {
                 y_src = (i % 2) ? height : 0;
                 y_dest = (i % 2) ? 0 : height;
-                w = ~~(width / ( 2 * (i + 1)));
-                h = ~~(height / ( 2 * (i + 1)));
+                w = ~~(width / (2 * (i + 1)));
+                h = ~~(height / (2 * (i + 1)));
 
                 if (w <= options.width || h <= options.height) break;
 
@@ -92,7 +92,6 @@ ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
 
                 // Draw into buffer region
                 bufferContext.drawImage(buffer, 0, y_src, last_w, last_h, 0, y_dest, w, h);
-                //console.log('draw ('+i+')', 0, y_src, last_w, last_h, 0, y_dest, w, h);
 
                 last_w = w;
                 last_h = h;
@@ -100,7 +99,6 @@ ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
             }
 
             context.drawImage(buffer, 0, (i % 2) ? height : 0, last_w, last_h, 0, 0, options.width, options.height);
-            //console.log('final draw ('+i+')', 0, (i % 2) ? height : 0, last_w, last_h, 0, 0, options.width, options.height, '\n\n');
         }
         // Draw normally
         else {

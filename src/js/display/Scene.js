@@ -7,6 +7,7 @@ var Display = require('../display/Display.js');
 var CanvasDisplay = require('../display/CanvasDisplay.js');
 var Effect = require('../effects/Effect.js');
 var Composer = require('../graphics/Composer.js');
+var TexturePass = require('../graphics/TexturePass.js');
 
 var defaults = {
     blendMode: 'Normal',
@@ -16,7 +17,7 @@ var defaults = {
 var Scene = function(name, options) {
     Display.call(this, 'Scene', defaults);
 
-    this.parent = null;
+    this.owner = null;
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.displays = new NodeCollection();
@@ -31,33 +32,38 @@ Scene.prototype = _.create(Display.prototype, {
     update: function(options) {
         var changed = Display.prototype.update.call(this, options);
 
-        if (this.canvasPass) {
-            this.canvasPass.material.blending = (this.options.blendMode == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
+        if (changed && this.owner) {
+            this.updatePasses();
         }
 
         return changed;
     },
 
     addToStage: function(stage) {
-        var size = stage.getSize();
+        var size = stage.getSize(),
+            texture;
 
-        this.parent = stage;
+        this.owner = stage;
         this.composer = new Composer(stage.renderer);
-
-        this.canvasPass = this.composer.addCanvasPass(this.canvas);
-        this.canvasPass.material.blending = (this.options.blendMode == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
-        this.canvasPass.options.enabled = false;
 
         this.canvas.height = size.height;
         this.canvas.width = size.width;
+
+        texture = new THREE.Texture(this.canvas);
+        texture.minFilter = texture.magFilter = THREE.LinearFilter;
+
+        this.canvasPass = new TexturePass(texture, { enabled: false, blending: THREE.NoBlending });
+
+        this.updatePasses();
     },
 
     removeFromStage: function() {
-        this.parent = null;
+        this.owner = null;
         this.displays.clear();
         this.displays = null;
         this.effects.clear();
         this.effects = null;
+        this.canvasPass = null;
         this.composer.dispose();
         this.composer = null;
     },
@@ -74,13 +80,13 @@ Scene.prototype = _.create(Display.prototype, {
 
         nodes.addNode(obj);
 
-        obj.parent = this;
+        obj.owner = this;
 
         if (obj.addToScene) {
             obj.addToScene(this);
         }
 
-        this.checkDisplays();
+        this.updatePasses();
     },
 
     removeElement: function(obj) {
@@ -95,13 +101,13 @@ Scene.prototype = _.create(Display.prototype, {
 
         nodes.removeNode(obj);
 
-        obj.parent = null;
+        obj.owner = null;
 
         if (obj.removeFromScene) {
             obj.removeFromScene(this);
         }
 
-        this.checkDisplays();
+        this.updatePasses();
     },
 
     shiftElement: function(obj, i) {
@@ -117,20 +123,38 @@ Scene.prototype = _.create(Display.prototype, {
         index = nodes.indexOf(obj);
 
         if (nodes.swapNodes(index, index + i)) {
-            this.composer.shiftPass(obj.pass, i);
+            this.updatePasses();
         }
     },
 
-    checkDisplays: function() {
-        var enabled = false;
+    updatePasses: function() {
+        var composer = this.composer,
+            enabled = false;
+
+        composer.clearPasses();
+        composer.addPass(this.canvasPass);
+
+        this.canvasPass.material.blending = (this.options.blendMode == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
 
         this.displays.nodes.forEach(function(display) {
-            if (display instanceof CanvasDisplay) {
+            if (display.pass) {
+                composer.addPass(display.pass);
+            }
+
+            if (!enabled && display instanceof CanvasDisplay) {
                 enabled = true;
             }
         });
 
+        this.effects.nodes.forEach(function(effect) {
+            if (effect.pass) {
+                composer.addPass(effect.pass);
+            }
+        });
+
         this.canvasPass.options.enabled = enabled;
+
+        console.log(this.composer.getPasses().toArray());
     },
 
     getSize: function() {
@@ -140,10 +164,6 @@ Scene.prototype = _.create(Display.prototype, {
             width: canvas.width,
             height: canvas.height
         };
-    },
-
-    clear: function() {
-        this.displays.nodes.clear();
     },
 
     clearCanvas: function() {

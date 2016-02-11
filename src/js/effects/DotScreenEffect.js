@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 var DotScreenShader = require('../shaders/DotScreenShader.js');
 
 var defaults = {
@@ -25,11 +26,11 @@ DotScreenEffect.prototype = _.create(Effect.prototype, {
     constructor: DotScreenEffect,
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(DotScreenShader);
+        this.pass = new ShaderPass(DotScreenShader);
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {

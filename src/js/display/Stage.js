@@ -75,7 +75,7 @@ Stage.prototype = _.create(NodeCollection.prototype, {
         return this.scenes.nodes;
     },
 
-    clear: function() {
+    clearScenes: function() {
         this.scenes.nodes.forEach(function(scene) {
             this.removeScene(scene);
         }.bind(this));

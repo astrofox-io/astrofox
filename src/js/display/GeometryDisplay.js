@@ -6,6 +6,7 @@ var Display = require('../display/Display.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 var Composer = require('../graphics/Composer.js');
 var ShaderLibrary = require('../shaders/ShaderLibrary.js');
+var RenderPass = require('../graphics/RenderPass.js');
 
 var defaults = {
     shape: 'Box',
@@ -81,7 +82,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
     addToScene: function(scene) {
         var _scene, camera, lights,
             options = this.options,
-            stage = scene.parent,
+            stage = scene.owner,
             size = stage.getSize(),
             fov = 45,
             near = 0.1,
@@ -101,8 +102,8 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         _scene.add(lights[1]);
         _scene.add(lights[2]);
 
-        this.pass = scene.composer.addRenderPass(_scene, camera, {clearDepth: true, forceClear: false});
-        this.scene = _scene;
+        this.pass = new RenderPass(_scene, camera, {clearDepth: true, forceClear: false});
+        this.scene3d = _scene;
         this.lights = lights;
 
         this.createMesh(options.shape);
@@ -111,10 +112,10 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
 
     removeFromScene: function(scene) {
         if (this.mesh) {
-            this.scene.remove(this.mesh);
+            this.scene3d.remove(this.mesh);
         }
 
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene, data) {
@@ -145,10 +146,10 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
     },
 
     createMesh: function(shape) {
-        if (!this.scene) return;
+        if (!this.scene3d) return;
 
         var geometry, material,
-            scene = this.scene,
+            scene = this.scene3d,
             mesh = this.mesh,
             options = this.options;
 
@@ -199,8 +200,8 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         if (options.shading == 'Flat') {
             geometry.computeFaceNormals();
 
-            for ( var i = 0; i < geometry.faces.length; i ++ ) {
-                geometry.faces[ i ].vertexNormals = [];
+            for (var i = 0; i < geometry.faces.length; i ++) {
+                geometry.faces[i].vertexNormals = [];
             }
 
             geometry = new THREE.BufferGeometry().fromGeometry(geometry);

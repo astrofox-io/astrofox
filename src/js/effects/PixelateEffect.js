@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 var PixelateShader = require('../shaders/PixelateShader.js');
 
 var defaults = {
@@ -24,11 +25,11 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
     constructor: PixelateEffect,
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(PixelateShader);
+        this.pass = new ShaderPass(PixelateShader);
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {
@@ -36,6 +37,7 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
             var amount = (854 / this.options.size);
 
             this.pass.setUniforms({ amount: amount });
+
             this.hasUpdate = false;
         }
     }

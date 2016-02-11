@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 var RGBShiftShader = require('../shaders/RGBShiftShader.js');
 
 var defaults = {
@@ -25,11 +26,11 @@ RGBShiftEffect.prototype = _.create(Effect.prototype, {
     constructor: RGBShiftEffect,
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(RGBShiftShader);
+        this.pass = new ShaderPass(RGBShiftShader);
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {

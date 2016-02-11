@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 var LEDShader = require('../shaders/LEDShader.js');
 
 var defaults = {
@@ -24,11 +25,11 @@ LEDEffect.prototype = _.create(Effect.prototype, {
     constructor: LEDEffect,
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(LEDShader);
+        this.pass = new ShaderPass(LEDShader);
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {

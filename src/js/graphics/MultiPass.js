@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var THREE = require('three');
+var NodeCollection = require('../core/NodeCollection.js');
 var ComposerPass = require('../graphics/ComposerPass.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var CopyShader = require('../shaders/CopyShader.js');
@@ -12,29 +13,27 @@ var defaults = {
     clearDepth: true
 };
 
-var MultiPass = function(composer, options) {
+var MultiPass = function(passes, options) {
     ComposerPass.call(this, _.assign({}, defaults, options));
 
-    this.composer = composer;
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
+    this.passes = new NodeCollection(passes);
 };
 
 MultiPass.prototype = _.create(ComposerPass.prototype, {
     constructor: MultiPass,
 
     getPasses: function() {
-        return this.composer.getPasses();
+        return this.passes.nodes;
     },
 
-    process: function(renderer, writeBuffer, readBuffer) {
-        var composer = this.composer;
+    addPass: function(pass) {
+        this.passes.addNode(pass);
 
-        composer.readTarget = readBuffer;
-        composer.writeTarget = writeBuffer;
+        return pass;
+    },
 
-        composer.render();
-
-        this.copyPass.process(renderer, composer.writeBuffer, composer.readBuffer);
+    removePass: function(pass) {
+        this.passes.removeNode(pass);
     }
 });
 

@@ -65,7 +65,7 @@ var LayersPanel = React.createClass({
     handleAddDisplayClick: function() {
         var state = this.state,
             layer = state.layers[state.activeIndex],
-            scene = (layer instanceof Scene) ? layer : layer.parent;
+            scene = (layer instanceof Scene) ? layer : layer.owner;
 
         if (Application.stage.hasScenes()) {
             Application.emit(
@@ -78,7 +78,7 @@ var LayersPanel = React.createClass({
     handleAddEffectClick: function() {
         var state = this.state,
             layer = state.layers[state.activeIndex],
-            scene = (layer instanceof Scene) ? layer : layer.parent;
+            scene = (layer instanceof Scene) ? layer : layer.owner;
 
         if (Application.stage.hasScenes()) {
             Application.emit(
@@ -98,10 +98,10 @@ var LayersPanel = React.createClass({
 
         if (Application.stage.hasScenes() && layer) {
             if (layer instanceof Scene) {
-                layer.parent.removeScene(layer);
+                layer.owner.removeScene(layer);
             }
             else {
-                layer.parent.removeElement(layer);
+                layer.owner.removeElement(layer);
             }
 
             this.updateLayers(function(){
@@ -262,10 +262,10 @@ var LayersPanel = React.createClass({
             layer = this.getActiveLayer();
 
         if (layer instanceof Scene) {
-            layer.parent.shiftScene(layer, direction);
+            layer.owner.shiftScene(layer, direction);
         }
         else {
-            layer.parent.shiftElement(layer, direction);
+            layer.owner.shiftElement(layer, direction);
         }
 
         this.updateLayers(function(){

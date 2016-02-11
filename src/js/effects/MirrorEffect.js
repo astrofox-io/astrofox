@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 var MirrorShader = require('../shaders/MirrorShader.js');
 
 var defaults = {
@@ -22,11 +23,11 @@ MirrorEffect.prototype = _.create(Effect.prototype, {
     constructor: MirrorEffect,
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(MirrorShader);
+        this.pass = new ShaderPass(MirrorShader);
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {

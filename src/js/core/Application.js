@@ -270,7 +270,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
         var controls = _.assign({}, DisplayLibrary, EffectsLibrary);
 
         if (typeof data === 'object') {
-            this.stage.clear();
+            this.stage.clearScenes();
 
             data.scenes.forEach(function(item) {
                 var scene = new Scene(item.name, item.options);

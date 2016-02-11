@@ -4,8 +4,17 @@ var _ = require('lodash');
 var Immutable = require('immutable');
 var EventEmitter = require('../core/EventEmitter.js');
 
-var NodeCollection = function() {
+var NodeCollection = function(values) {
     this.nodes = new Immutable.List();
+
+    if (values) {
+        this.nodes = this.nodes.withMutations(function(list) {
+            values.forEach(function(val) {
+                list.push(val);
+                this.emit('node_added', val);
+            }, this);
+        }.bind(this));
+    }
 };
 
 NodeCollection.prototype = _.create(EventEmitter.prototype, {
@@ -51,7 +60,7 @@ NodeCollection.prototype = _.create(EventEmitter.prototype, {
     },
 
     clear: function() {
-        this.nodes.clear();
+        this.nodes = this.nodes.clear();
     },
 
     indexOf: function(node) {

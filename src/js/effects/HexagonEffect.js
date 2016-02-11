@@ -22,11 +22,11 @@ HexagonEffect.prototype = _.create(Effect.prototype, {
     constructor: HexagonEffect,
 
     addToScene: function(scene) {
-        this.pass = scene.composer.addShaderPass(HexagonShader);
+        this.pass = new ShaderPass(HexagonShader);
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {

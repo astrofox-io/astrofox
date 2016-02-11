@@ -42,7 +42,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
                 minFilter: THREE.LinearFilter,
                 magFilter: THREE.LinearFilter,
                 format: THREE.RGBAFormat,
-                stencilBuffer: false
+                stencilBuffer: true
             }
         );
     },
@@ -59,7 +59,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         this.writeBuffer = this.writeTarget;
     },
 
-    clear: function(color, depth, stencil) {
+    clearScreen: function(color, depth, stencil) {
         this.renderer.clear(color, depth, stencil);
     },
 
@@ -103,12 +103,6 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         this.passes.removeNode(pass);
     },
 
-    shiftPass: function(pass, i) {
-        var index = this.passes.indexOf(pass);
-
-        this.passes.swapNodes(index, index + i);
-    },
-
     addRenderPass: function(scene, camera, options) {
         return this.addPass(new RenderPass(scene, camera, options));
     },
@@ -121,16 +115,16 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         return this.addPass(new TexturePass(texture, options));
     },
 
-    addCanvasPass: function(canvas, options) {
-        var texture = new THREE.Texture(canvas);
-        texture.minFilter = texture.magFilter = THREE.LinearFilter;
+    addImagePass: function(image, options) {
+        var texture = new THREE.Texture(image);
+        texture.minFilter = THREE.LinearFilter;
 
         return this.addTexturePass(texture, options);
     },
 
     addSpritePass: function(image, options) {
         var texture = new THREE.Texture(image);
-        texture.minFilter = texture.magFilter = THREE.LinearFilter;
+        texture.minFilter = THREE.LinearFilter;
 
         return this.addPass(new SpritePass(texture, options));
     },
@@ -139,14 +133,8 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         return this.addShaderPass(CopyShader, options);
     },
 
-    addMultiPass: function(passes) {
-        var composer = new Composer(this.renderer);
-
-        passes.forEach(function(pass) {
-            composer.addPass(pass);
-        });
-
-        return this.addPass(new MultiPass(composer));
+    addMultiPass: function(passes, options) {
+        return this.addPass(new MultiPass(passes, options));
     },
 
     clearPasses: function() {
@@ -209,12 +197,23 @@ Composer.prototype = _.create(EventEmitter.prototype, {
 
         this.passes.nodes.forEach(function(pass) {
             if (pass.options.enabled) {
-                pass.process(
-                    renderer,
-                    this.writeBuffer,
-                    this.readBuffer,
-                    maskActive
-                );
+                if (pass instanceof MultiPass) {
+                    pass.getPasses().forEach(function(p) {
+                        p.process(renderer, this.writeBuffer, this.readBuffer, maskActive);
+
+                        if (p.options.needsSwap) {
+                            this.swapBuffers();
+                        }
+                    }, this);
+                }
+                else {
+                    pass.process(
+                        renderer,
+                        this.writeBuffer,
+                        this.readBuffer,
+                        maskActive
+                    );
+                }
 
                 if (pass.options.needsSwap) {
                     if (maskActive) {

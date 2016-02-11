@@ -23,6 +23,7 @@ var SpritePass = function(texture, options) {
     this.texture = texture;
 
     this.material = new THREE.SpriteMaterial({
+        color: this.options.color,
         map: texture,
         transparent : this.options.transparent
     });
