@@ -31,16 +31,18 @@ ComposerPass.prototype = {
         }
     },
 
-    setBlending: function(blending, blendSrc, blendDst, blendEquation) {
+    setBlending: function(blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha) {
         if (this.material) {
             var material = this.material;
 
             material.blending = blending;
+            material.blendEquation = blendEquation;
             material.blendSrc = blendSrc;
             material.blendDst = blendDst;
-            material.blendEquation = blendEquation;
 
-            console.log('new blending set');
+            material.blendEquationAlpha = blendEquationAlpha || null;
+            material.blendSrcAlpha = blendSrcAlpha || null;
+            material.blendDstAlpha = blendDstAlpha || null;
         }
     },
 
