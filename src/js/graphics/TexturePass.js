@@ -5,11 +5,14 @@ var THREE = require('three');
 var ComposerPass = require('../graphics/ComposerPass.js');
 
 var defaults = {
+    color: 0xffffff,
     opacity: 1.0,
     transparent: true,
     needsSwap: false,
     needsUpdate: true,
     forceClear: false,
+    depthTest: true,
+    depthWrite: true,
     blending: THREE.NormalBlending
 };
 
@@ -19,10 +22,10 @@ var TexturePass = function(texture, options) {
     this.texture = texture;
 
     this.material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
         map: texture,
-        depthTest: false,
-        depthWrite: false,
+        color: this.options.color,
+        depthTest: this.options.depthTest,
+        depthWrite: this.options.depthWrite,
         transparent: this.options.transparent,
         blending: this.options.blending
     });
