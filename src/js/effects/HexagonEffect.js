@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
 var HexagonShader = require('../shaders/HexagonShader.js');
 
 var defaults = {
