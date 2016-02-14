@@ -50,7 +50,7 @@ Scene.prototype = _.create(Display.prototype, {
         this.canvas.width = size.width;
 
         texture = new THREE.Texture(this.canvas);
-        texture.minFilter = texture.magFilter = THREE.LinearFilter;
+        texture.minFilter = THREE.LinearFilter;
 
         this.canvasPass = new TexturePass(texture, { enabled: false, blending: THREE.NoBlending });
 
@@ -134,8 +134,6 @@ Scene.prototype = _.create(Display.prototype, {
         composer.clearPasses();
         composer.addPass(this.canvasPass);
 
-        this.canvasPass.material.blending = (this.options.blendMode == 'Normal') ? THREE.NoBlending : THREE.NormalBlending;
-
         this.displays.nodes.forEach(function(display) {
             if (display.pass) {
                 composer.addPass(display.pass);
@@ -153,8 +151,6 @@ Scene.prototype = _.create(Display.prototype, {
         });
 
         this.canvasPass.options.enabled = enabled;
-
-        console.log(this.composer.getPasses().toArray());
     },
 
     getSize: function() {

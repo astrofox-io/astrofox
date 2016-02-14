@@ -145,8 +145,8 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         var pass = this.blendPass;
 
         pass.setUniforms({
-            tInputDest: this.readBuffer,
-            tInputSrc: buffer,
+            tBase: this.readBuffer,
+            tBlend: buffer,
             opacity: options.opacity,
             mode: BlendModes[options.blendMode],
             multiplyAlpha: options.multiplyAlpha || 0

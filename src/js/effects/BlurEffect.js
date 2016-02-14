@@ -120,13 +120,10 @@ BlurEffect.prototype = _.create(Effect.prototype, {
                 for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
                     pass = new ShaderPass(shader);
                     passes.push(pass);
-
                     this.updateGaussianPass(pass, i);
                 }
 
                 pass = new ShaderPass(CopyShader);
-                //pass.setUniforms({ alpha: 1 });
-                //pass.setBlending(THREE.CustomBlending, THREE.ZeroFactor, THREE.ZeroFactor, THREE.AddEquation);
                 passes.push(pass);
 
                 this.pass = new MultiPass(passes);

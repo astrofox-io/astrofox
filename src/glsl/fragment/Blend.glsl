@@ -1,251 +1,287 @@
-varying vec2 vUv;
-uniform sampler2D tInputDest;
-uniform sampler2D tInputSrc;
-uniform vec2 resolution;
-uniform vec2 resolution2;
-uniform int sizeMode;
-uniform float aspectRatio;
-uniform float aspectRatio2;
+uniform sampler2D tBase;
+uniform sampler2D tBlend;
 uniform int mode;
 uniform float opacity;
-uniform int multiplyAlpha;
 
-vec2 vUv2;
+varying vec2 vUv;
 
-float applyOverlayToChannel(float dest, float src) {
-	return (dest < 0.5 ? (2.0 * dest * src) : (1.0 - 2.0 * (1.0 - dest) * (1.0 - src)));
+// Color Dodge
+float blendColorDodge(float base, float blend) {
+    return (blend==1.0)?blend:min(base/(1.0-blend),1.0);
 }
 
-float applySoftLightToChannel(float dest, float src) {
-	return ((src < 0.5) ? (2.0 * dest * src + dest * dest * (1.0 - 2.0 * src)) : (sqrt(dest) * (2.0 * src - 1.0) + 2.0 * dest * (1.0 - src)));
+vec3 blendColorDodge(vec3 base, vec3 blend) {
+    return vec3(blendColorDodge(base.r,blend.r),blendColorDodge(base.g,blend.g),blendColorDodge(base.b,blend.b));
 }
 
-float applyColorBurnToChannel(float dest, float src) {
-	return ((src == 0.0) ? src : max((1.0 - ((1.0 - dest) / src)), 0.0));
+// Color Burn
+float blendColorBurn(float base, float blend) {
+    return (blend==0.0)?blend:max((1.0-((1.0-base)/blend)),0.0);
 }
 
-float applyColorDodgeToChannel(float dest, float src) {
-	return ((src == 1.0) ? src : min(dest / (1.0 - src), 1.0));
+vec3 blendColorBurn(vec3 base, vec3 blend) {
+    return vec3(blendColorBurn(base.r,blend.r),blendColorBurn(base.g,blend.g),blendColorBurn(base.b,blend.b));
 }
 
-float applyLinearBurnToChannel(float dest, float src) {
-	return max(dest + src - 1., 0.0);
+// Vivid Light
+float blendVividLight(float base, float blend) {
+    return (blend<0.5)?blendColorBurn(base,(2.0*blend)):blendColorDodge(base,(2.0*(blend-0.5)));
 }
 
-float applyLinearDodgeToChannel(float dest, float src) {
-	return min(dest + src, 1.);
+vec3 blendVividLight(vec3 base, vec3 blend) {
+    return vec3(blendVividLight(base.r,blend.r),blendVividLight(base.g,blend.g),blendVividLight(base.b,blend.b));
+}
+// Hard Mix
+float blendHardMix(float base, float blend) {
+    return (blendVividLight(base,blend)<0.5)?0.0:1.0;
 }
 
-float applyLinearLightToChannel(float dest, float src) {
-	return (src < .5) ? applyLinearBurnToChannel(dest, 2. * src) : applyLinearDodgeToChannel(dest, 2. * (src - .5));
+vec3 blendHardMix(vec3 base, vec3 blend) {
+    return vec3(blendHardMix(base.r,blend.r),blendHardMix(base.g,blend.g),blendHardMix(base.b,blend.b));
+}
+
+// Linear Dodge
+float blendLinearDodge(float base, float blend) {
+    // Note : Same implementation as BlendAddf
+    return min(base+blend,1.0);
+}
+
+vec3 blendLinearDodge(vec3 base, vec3 blend) {
+    // Note : Same implementation as BlendAdd
+    return min(base+blend,vec3(1.0));
+}
+
+// Linear Burn
+float blendLinearBurn(float base, float blend) {
+    // Note : Same implementation as BlendSubtractf
+    return max(base+blend-1.0,0.0);
+}
+
+vec3 blendLinearBurn(vec3 base, vec3 blend) {
+    // Note : Same implementation as BlendSubtract
+    return max(base+blend-vec3(1.0),vec3(0.0));
+}
+
+// Linear Light
+float blendLinearLight(float base, float blend) {
+    return blend<0.5?blendLinearBurn(base,(2.0*blend)):blendLinearDodge(base,(2.0*(blend-0.5)));
+}
+
+vec3 blendLinearLight(vec3 base, vec3 blend) {
+    return vec3(blendLinearLight(base.r,blend.r),blendLinearLight(base.g,blend.g),blendLinearLight(base.b,blend.b));
+}
+
+// Lighten
+float blendLighten(float base, float blend) {
+    return max(blend,base);
+}
+
+vec3 blendLighten(vec3 base, vec3 blend) {
+    return vec3(blendLighten(base.r,blend.r),blendLighten(base.g,blend.g),blendLighten(base.b,blend.b));
+}
+
+// Darken
+float blendDarken(float base, float blend) {
+    return min(blend,base);
+}
+
+vec3 blendDarken(vec3 base, vec3 blend) {
+    return vec3(blendDarken(base.r,blend.r),blendDarken(base.g,blend.g),blendDarken(base.b,blend.b));
+}
+
+// Pin Light
+float blendPinLight(float base, float blend) {
+    return (blend<0.5)?blendDarken(base,(2.0*blend)):blendLighten(base,(2.0*(blend-0.5)));
+}
+
+vec3 blendPinLight(vec3 base, vec3 blend) {
+    return vec3(blendPinLight(base.r,blend.r),blendPinLight(base.g,blend.g),blendPinLight(base.b,blend.b));
+}
+
+// Reflect
+float blendReflect(float base, float blend) {
+    return (blend==1.0)?blend:min(base*base/(1.0-blend),1.0);
+}
+
+vec3 blendReflect(vec3 base, vec3 blend) {
+    return vec3(blendReflect(base.r,blend.r),blendReflect(base.g,blend.g),blendReflect(base.b,blend.b));
+}
+
+// Glow
+vec3 blendGlow(vec3 base, vec3 blend) {
+    return blendReflect(blend,base);
+}
+
+// Overlay
+float blendOverlay(float base, float blend) {
+    return base<0.5?(2.0*base*blend):(1.0-2.0*(1.0-base)*(1.0-blend));
+}
+
+vec3 blendOverlay(vec3 base, vec3 blend) {
+    return vec3(blendOverlay(base.r,blend.r),blendOverlay(base.g,blend.g),blendOverlay(base.b,blend.b));
+}
+
+// Hard Light
+vec3 blendHardLight(vec3 base, vec3 blend) {
+    return blendOverlay(blend,base);
+}
+
+// Phoenix
+vec3 blendPhoenix(vec3 base, vec3 blend) {
+    return min(base,blend)-max(base,blend)+vec3(1.0);
+}
+
+// Normal
+vec3 blendNormal(vec3 base, vec3 blend) {
+    return blend;
+}
+
+// Negation
+vec3 blendNegation(vec3 base, vec3 blend) {
+    return vec3(1.0)-abs(vec3(1.0)-base-blend);
+}
+
+// Multiply
+vec3 blendMultiply(vec3 base, vec3 blend) {
+    return base*blend;
+}
+
+// Average
+vec3 blendAverage(vec3 base, vec3 blend) {
+    return (base+blend)/2.0;
+}
+
+// Screen
+float blendScreen(float base, float blend) {
+    return 1.0-((1.0-base)*(1.0-blend));
+}
+
+vec3 blendScreen(vec3 base, vec3 blend) {
+    return vec3(blendScreen(base.r,blend.r),blendScreen(base.g,blend.g),blendScreen(base.b,blend.b));
+}
+
+// Soft Light
+float blendSoftLight(float base, float blend) {
+    return (blend<0.5)?(2.0*base*blend+base*base*(1.0-2.0*blend)):(sqrt(base)*(2.0*blend-1.0)+2.0*base*(1.0-blend));
+}
+
+vec3 blendSoftLight(vec3 base, vec3 blend) {
+    return vec3(blendSoftLight(base.r,blend.r),blendSoftLight(base.g,blend.g),blendSoftLight(base.b,blend.b));
+}
+
+// Subtract
+float blendSubtract(float base, float blend) {
+    return max(base+blend-1.0,0.0);
+}
+
+vec3 blendSubtract(vec3 base, vec3 blend) {
+    return max(base+blend-vec3(1.0),vec3(0.0));
+}
+
+// Exclusion
+vec3 blendExclusion(vec3 base, vec3 blend) {
+    return base+blend-2.0*base*blend;
+}
+
+// Difference
+vec3 blendDifference(vec3 base, vec3 blend) {
+    return abs(base-blend);
+}
+
+// Add
+float blendAdd(float base, float blend) {
+    return min(base+blend,1.0);
+}
+
+vec3 blendAdd(vec3 base, vec3 blend) {
+    return min(base+blend,vec3(1.0));
+}
+
+vec3 blendMode(int mode, vec3 base, vec3 blend) {
+    if (mode == 1) {
+        return blendAdd(base, blend);
+    }
+    if (mode == 2) {
+        return blendAverage(base, blend);
+    }
+    if (mode == 3) {
+        return blendColorBurn(base, blend);
+    }
+    if (mode == 4) {
+        return blendColorDodge(base, blend);
+    }
+    if (mode == 5) {
+        return blendDarken(base, blend);
+    }
+    if (mode == 6) {
+        return blendDifference(base, blend);
+    }
+    if (mode == 7) {
+        return blendExclusion(base, blend);
+    }
+    if (mode == 8) {
+        return blendGlow(base, blend);
+    }
+    if (mode == 9) {
+        return blendHardLight(base, blend);
+    }
+    if (mode == 10) {
+        return blendHardMix(base, blend);
+    }
+    if (mode == 11) {
+        return blendLighten(base, blend);
+    }
+    if (mode == 12) {
+        return blendLinearBurn(base, blend);
+    }
+    if (mode == 13) {
+        return blendLinearDodge(base, blend);
+    }
+    if (mode == 14) {
+        return blendLinearLight(base, blend);
+    }
+    if (mode == 15) {
+        return blendMultiply(base, blend);
+    }
+    if (mode == 16) {
+        return blendNegation(base, blend);
+    }
+    if (mode == 17) {
+        return blendNormal(base, blend);
+    }
+    if (mode == 18) {
+        return blendOverlay(base, blend);
+    }
+    if (mode == 19) {
+        return blendPhoenix(base, blend);
+    }
+    if (mode == 20) {
+        return blendPinLight(base, blend);
+    }
+    if (mode == 21) {
+        return blendReflect(base, blend);
+    }
+    if (mode == 22) {
+        return blendScreen(base, blend);
+    }
+    if (mode == 23) {
+        return blendSoftLight(base, blend);
+    }
+    if (mode == 24) {
+        return blendSubtract(base, blend);
+    }
+    if (mode == 25) {
+        return blendVividLight(base, blend);
+    }
+
+    return vec3(1., 0., 1.);
 }
 
 void main() {
-	vUv2 = vUv;
-	
-	if (sizeMode == 1) {
-		if (aspectRatio2 > aspectRatio) {
-			vUv2.x = vUv.x * aspectRatio / aspectRatio2;
-			vUv2.x += .5 * (1. - aspectRatio / aspectRatio2);	
-			vUv2.y = vUv.y;
-		}
+    vec4 base = texture2D(tBase, vUv);
+    vec4 blend = texture2D(tBlend, vUv) * opacity;
 
-		if (aspectRatio2 < aspectRatio) {
-			vUv2.x = vUv.x;
-			vUv2.y = vUv.y * aspectRatio2 / aspectRatio;
-			vUv2.y += .5 * (1. - aspectRatio2 / aspectRatio);
-		}
-	}
+    vec3 color = blendMode(mode, base.rgb, blend.rgb);
 
-	vec4 dest = texture2D(tInputDest, vUv);
-	vec4 src = texture2D(tInputSrc, vUv2);
-
-    if (multiplyAlpha == 1) {
-        src = vec4(src.rgb * src.a, src.a);
-    }
-
-	src = src * opacity;
-
-    // none (*)
-    if (mode == 0) {
-        gl_FragColor = src;
-        return;
-    }
-
-    // normal
-	if (mode == 1) {
-		gl_FragColor = mix(dest, src, src.a);
-		return;
-	}
-
-	// dissolve (*)
-	if (mode == 2) {
-        return;
-	}
-
-	// darken
-	if (mode == 3) {
-		gl_FragColor = min(dest, src);
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-	// multiply
-	if (mode == 4) {
-		gl_FragColor = src * dest;
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-	// color burn
-	if (mode == 5) {
-		gl_FragColor = vec4(
-			applyColorBurnToChannel(dest.r, src.r),
-			applyColorBurnToChannel(dest.g, src.g),
-			applyColorBurnToChannel(dest.b, src.b),
-			applyColorBurnToChannel(dest.a, src.a)
-		);
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-	// linear burn == subtract?
-	if (mode == 6) {
-		gl_FragColor = max(dest + src - 1.0, 0.0);
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-	// darker color (*)
-	if (mode == 7) {
-        return;
-	}
-
-	// lighten
-	if (mode == 8) {
-		gl_FragColor = max(dest, src);
-		return;
-	}
-
-    // screen
-	else if (mode == 9) {
-		gl_FragColor = (1.0 - ((1.0 - dest) * (1.0 - src)));
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-    // color dodge
-	if (mode == 10) {
-		gl_FragColor = vec4(
-			applyColorDodgeToChannel(dest.r, src.r),
-			applyColorDodgeToChannel(dest.g, src.g),
-			applyColorDodgeToChannel(dest.b, src.b),
-			applyColorDodgeToChannel(dest.a, src.a)
-		);
-		return;
-	}
-	// linear dodge == add
-	if (mode == 11) {
-		gl_FragColor = min(dest + src, 1.0);
-		return;
-	}
-
-    // lighter color (*)
-	if (mode == 12) {
-        return;
-	}
-
-	// overlay
-	if (mode == 13) {
-		gl_FragColor = vec4(
-			applyOverlayToChannel(dest.r, src.r),
-			applyOverlayToChannel(dest.g, src.g),
-			applyOverlayToChannel(dest.b, src.b),
-			applyOverlayToChannel(dest.a, src.a)
-		);
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-    // soft light
-	if (mode == 14) {
-		gl_FragColor = vec4(
-			applySoftLightToChannel(dest.r, src.r),
-			applySoftLightToChannel(dest.g, src.g),
-			applySoftLightToChannel(dest.b, src.b),
-			applySoftLightToChannel(dest.a, src.a)
-		);
-		return;
-	}
-
-	// hard light (*)
-	if (mode == 15) {
-		gl_FragColor = vec4(
-			applyOverlayToChannel(src.r, dest.r),
-			applyOverlayToChannel(src.g, dest.g),
-			applyOverlayToChannel(src.b, dest.b),
-			applyOverlayToChannel(src.a, dest.a)
-		);
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-	// vivid light (*)
-	if (mode == 16) {
-        return;
-	}
-
-	// linear light
-	if (mode == 17) {
-		gl_FragColor = vec4(
-			applyLinearLightToChannel(dest.r, src.r),
-			applyLinearLightToChannel(dest.g, src.g),
-			applyLinearLightToChannel(dest.b, src.b),
-			applyLinearLightToChannel(dest.a, src.a)
-		);
-		gl_FragColor = gl_FragColor * opacity + dest * (1. - opacity);
-		return;
-	}
-
-	// pin light (*)
-	if (mode == 18) {
-        return;
-	}
-    // hard mix (*)
-	if (mode == 19) {
-        return;
-	}
-
-	// difference
-	if (mode == 20) {
-		gl_FragColor = abs(dest - src);
-		gl_FragColor.a = dest.a + src.b;
-		return;
-	}
-
-	// exclusion
-	if (mode == 21) {
-		gl_FragColor = dest + src - 2. * dest * src;
-		return;
-	}
-
-    // subtract (*)
-	if (mode == 22) {
-        gl_FragColor = dest - (src * dest);
-        return;
-	}
-
-    // divide (*)
-	if (mode == 23) {
-        gl_FragColor = dest / src;
-        return;
-	}
-
-    // add (**)
-	if (mode == 24) {
-        gl_FragColor = dest + src * src.a;
-        return;
-	}
-
-    gl_FragColor = vec4(1., 0., 1., 1.);
+    gl_FragColor = mix(base, vec4(color, blend.a), blend.a);
 }
