@@ -13,6 +13,7 @@ var MultiPass = require('../graphics/MultiPass.js');
 
 var RGBShiftShader = require('../shaders/RGBShiftShader.js');
 var DotScreenShader = require('../shaders/DotScreenShader.js');
+var MirrorShader = require('../shaders/MirrorShader.js');
 
 var defaults = {
     type: 'Gaussian',
@@ -123,22 +124,11 @@ BlurEffect.prototype = _.create(Effect.prototype, {
                     this.updateGaussianPass(pass, i);
                 }
 
-                pass = new ShaderPass(CopyShader);
-                passes.push(pass);
-
                 this.pass = new MultiPass(passes);
                 break;
 
             case 'Box':
                 this.pass = new ShaderPass(BoxBlurShader);
-                break;
-
-            case 'Test':
-                passes.push(new ShaderPass(DotScreenShader));
-                passes.push(new ShaderPass(RGBShiftShader));
-                passes.push(new ShaderPass(BoxBlurShader));
-
-                this.pass = new MultiPass(passes);
                 break;
 
             default:

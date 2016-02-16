@@ -56,9 +56,6 @@ BloomEffect.prototype = _.create(Effect.prototype, {
         this.blendPass.setUniforms({ mode: BlendModes[options.blendMode] });
         passes.push(this.blendPass);
 
-        this.copyPass = new ShaderPass(CopyShader);
-        passes.push(this.copyPass);
-
         this.pass = composer.addMultiPass(passes);
         this.scene = scene;
     },

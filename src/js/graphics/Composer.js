@@ -199,10 +199,12 @@ Composer.prototype = _.create(EventEmitter.prototype, {
             if (pass.options.enabled) {
                 if (pass instanceof MultiPass) {
                     pass.getPasses().forEach(function(p) {
-                        p.process(renderer, this.writeBuffer, this.readBuffer, maskActive);
+                        if (p.options.enabled) {
+                            p.process(renderer, this.writeBuffer, this.readBuffer, maskActive);
 
-                        if (p.options.needsSwap) {
-                            this.swapBuffers();
+                            if (p.options.needsSwap) {
+                                this.swapBuffers();
+                            }
                         }
                     }, this);
                 }
@@ -213,24 +215,27 @@ Composer.prototype = _.create(EventEmitter.prototype, {
                         this.readBuffer,
                         maskActive
                     );
-                }
 
-                if (pass.options.needsSwap) {
-                    if (maskActive) {
-                        //context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
-                        //this.copyPass.process(renderer, this.writeBuffer, this.readBuffer);
-                        //context.stencilFunc(context.EQUAL, 1, 0xffffffff);
+                    if (pass.options.needsSwap) {
+                        /*
+                         if (maskActive) {
+                             context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
+                             this.copyPass.process(renderer, this.writeBuffer, this.readBuffer);
+                             context.stencilFunc(context.EQUAL, 1, 0xffffffff);
+                         }
+                         */
+
+                        this.swapBuffers();
                     }
-
-                    this.swapBuffers();
                 }
 
+                /*
                 if (pass instanceof MaskPass) {
                     this.maskActive = true;
                 }
                 else if (pass instanceof ClearMaskPass) {
                     this.maskActive = false;
-                }
+                }*/
             }
         }, this);
     }
