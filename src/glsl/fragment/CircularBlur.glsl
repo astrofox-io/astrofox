@@ -47,5 +47,4 @@ void main() {
 	//gl_FragColor.rgb = sum.rgb / NUM_SAMPLES_F;
 	//gl_FragColor.a = sum.a + src.a;
 	gl_FragColor = sum / NUM_SAMPLES_F;
-	gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
 }

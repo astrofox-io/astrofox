@@ -10,8 +10,8 @@ var defaults = {
     transparent: true,
     needsSwap: true,
     opacity: 1.0,
-    blendMode: 'Screen',
-    multiplyAlpha: false,
+    blendMode: 'Normal',
+    alpha: 1,
     blending: THREE.NoBlending
 };
 
@@ -27,6 +27,7 @@ BlendPass.prototype = _.create(ShaderPass.prototype, {
     process: function(renderer, writeBuffer, readBuffer) {
         this.material.uniforms['tBase'].value = readBuffer;
         this.material.uniforms['tBlend'].value = this.buffer;
+        this.material.uniforms['alpha'].value = this.options.alpha;
 
         this.mesh.material = this.material;
 

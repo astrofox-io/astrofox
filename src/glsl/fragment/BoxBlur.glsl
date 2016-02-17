@@ -33,5 +33,4 @@ void main() {
     sum += texture2D(tDiffuse, vec2(vUv.x, vUv.y + 4.0 * v)) * 0.051;
 
     gl_FragColor = sum;
-    gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
 }

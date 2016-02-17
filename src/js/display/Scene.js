@@ -52,7 +52,7 @@ Scene.prototype = _.create(Display.prototype, {
         texture = new THREE.Texture(this.canvas);
         texture.minFilter = THREE.LinearFilter;
 
-        this.canvasPass = new TexturePass(texture, { enabled: false, blending: THREE.NoBlending });
+        this.canvasPass = new TexturePass(texture, { enabled: false });
 
         this.updatePasses();
     },

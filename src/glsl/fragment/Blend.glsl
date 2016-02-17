@@ -1,6 +1,7 @@
 uniform sampler2D tBase;
 uniform sampler2D tBlend;
 uniform int mode;
+uniform int alpha;
 uniform float opacity;
 
 varying vec2 vUv;
@@ -281,7 +282,11 @@ void main() {
     vec4 base = texture2D(tBase, vUv);
     vec4 blend = texture2D(tBlend, vUv) * opacity;
 
-    vec3 color = blendMode(mode, base.rgb, blend.rgb);
+    if (alpha == 1) {
+        //blend.rgb /= blend.a + 0.00001;
+    }
 
-    gl_FragColor = mix(base, vec4(color, blend.a), blend.a);
+    vec3 color = blendMode(mode, base.rgb, blend.rgb / (blend.a + 0.0001));
+
+    gl_FragColor = mix(base, vec4(color, 1.0), blend.a);
 }

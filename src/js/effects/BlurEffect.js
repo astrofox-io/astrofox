@@ -108,7 +108,7 @@ BlurEffect.prototype = _.create(Effect.prototype, {
             amount = GAUSSIAN_BLUR_MAX * options.amount,
             radius = (GAUSSIAN_ITERATIONS - i - 1) * amount;
 
-        pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0], alpha: (i === GAUSSIAN_ITERATIONS - 1) });
+        pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0] });
     },
 
     createShader: function(type) {
