@@ -20,7 +20,6 @@ void main() {
         float percent = (t) / 40.0;
         float weight = 4.0 * (percent - percent * percent);
         vec4 s = texture2D(tDiffuse, vUv + toCenter * percent * amount / resolution);
-        s.rgb *= s.a;
         color += s * weight;
         total += weight;
     }
