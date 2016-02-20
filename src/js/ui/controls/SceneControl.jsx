@@ -1,8 +1,6 @@
 'use strict';
 
 var React = require('react');
-var THREE = require('three');
-
 var NumberInput = require('../inputs/NumberInput.jsx');
 var ToggleInput = require('../inputs/ToggleInput.jsx');
 var RangeInput = require('../inputs/RangeInput.jsx');
@@ -10,35 +8,31 @@ var SelectInput = require('../inputs/SelectInput.jsx');
 var BlendModes = require('../../graphics/BlendModes.js');
 
 var blendModes = [
-    "None",
-    "Normal",
-    "----",
-    "Darken",
-    "Multiply",
-    "Color Burn",
-    "Linear Burn",
-    '----',
-    "Lighten",
-    "Screen",
-    "Color Dodge",
-    "Linear Dodge",
-    '----',
-    "Overlay",
-    "Soft Light",
-    "Hard Light",
-    "Vivid Light",
-    "Linear Light",
-    "Pin Light",
-    "Hard Mix",
-    '----',
-    "Difference",
-    "Exclusion",
-    "Subtract",
-    "Divide",
-    "Negation",
-    "Phoenix",
-    "Glow",
-    "Reflect"
+    'None',
+    { name: 'Normal', value: 'Normal', split: true },
+    'Darken',
+    'Multiply',
+    'Color Burn',
+    { name: 'Linear Burn', value: 'Linear Burn', split: true },
+    'Lighten',
+    'Screen',
+    'Color Dodge',
+    { name: 'Linear Dodge', value: 'Linear Dodge', split: true },
+    'Overlay',
+    'Soft Light',
+    'Hard Light',
+    'Vivid Light',
+    'Linear Light',
+    'Pin Light',
+    { name: 'Hard Mix', value: 'Hard Mix', split: true },
+    'Difference',
+    'Exclusion',
+    'Subtract',
+    { name: 'Divide', value: 'Divide', split: true },
+    'Negation',
+    'Phoenix',
+    'Glow',
+    'Reflect'
 ];
 
 var defaults = {

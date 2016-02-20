@@ -53,13 +53,18 @@ var SelectInput = React.createClass({
         var style = { display: this.state.showItems ? 'block' : 'none' };
 
         var items = this.props.items.map(function(item, index) {
-            var key = this.props.name + '' + index;
+            var key = this.props.name + '' + index,
+                className = 'input-option';
+
             if (typeof item !== 'object') {
-                item = { name: item, value: item, style: null };
+                item = { name: item, value: item, style: null, split: false };
             }
+
+            if (item.split) className += ' input-option-split';
+
             return (
                 <li
-                    className="input-option"
+                    className={className}
                     key={key}
                     style={item.style}
                     onMouseDown={this.handleItemClick.bind(this, item)}>
