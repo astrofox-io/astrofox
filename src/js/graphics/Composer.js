@@ -11,17 +11,21 @@ var TexturePass = require('../graphics/TexturePass.js');
 var MultiPass = require('../graphics/MultiPass.js');
 var MaskPass = require('../graphics/MaskPass.js');
 var ClearMaskPass = require('../graphics/ClearMaskPass.js');
+var BlendModes = require('../graphics/BlendModes.js');
 var CopyShader = require('../shaders/CopyShader.js');
 var BlendShader = require('../shaders/BlendShader.js');
-var BlendModes = require('../graphics/BlendModes.js');
 
 var Composer = function(renderer, renderTarget) {
     this.renderer = renderer;
     this.passes = new NodeCollection();
     this.maskActive = false;
 
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true, blending: THREE.NoBlending });
-    this.blendPass = new ShaderPass(BlendShader, { transparent: true, blending: THREE.NoBlending });
+    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
+    this.blendPass = new ShaderPass(BlendShader, { transparent: true });
+
+    if (!renderTarget) {
+        renderTarget = this.getRenderTarget();
+    }
 
     this.setRenderTarget(renderTarget);
 };
@@ -48,10 +52,6 @@ Composer.prototype = _.create(EventEmitter.prototype, {
     },
 
     setRenderTarget: function(renderTarget) {
-        if (!renderTarget) {
-            renderTarget = this.getRenderTarget();
-        }
-
         this.readTarget = renderTarget;
         this.writeTarget = renderTarget.clone();
 
@@ -149,7 +149,7 @@ Composer.prototype = _.create(EventEmitter.prototype, {
             tBlend: buffer,
             opacity: options.opacity,
             mode: BlendModes[options.blendMode],
-            multiplyAlpha: options.multiplyAlpha || 0
+            alpha: 1
         });
 
         pass.process(this.renderer, this.writeBuffer);

@@ -1,12 +1,12 @@
 'use strict';
 
 var _ = require('lodash');
+var THREE = require('three');
 var Composer = require('../graphics/Composer.js');
 var Effect = require('../effects/Effect.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var SavePass = require('../graphics/SavePass.js');
 var BlendPass = require('../graphics/BlendPass.js');
-var BlendModes = require('../graphics/BlendModes.js');
 var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
 var LuminanceShader = require('../shaders/LuminanceShader.js');
 var CopyShader = require('../shaders/CopyShader.js');
@@ -39,21 +39,28 @@ BloomEffect.prototype = _.create(Effect.prototype, {
             composer = scene.composer,
             options = this.options;
 
-        this.savePass = new SavePass(composer.getRenderTarget());
+        this.savePass = new SavePass(
+            composer.getRenderTarget(),
+            { blending: THREE.NoBlending }
+        );
         passes.push(this.savePass);
 
         this.lumPass = new ShaderPass(LuminanceShader);
         passes.push(this.lumPass);
 
+        this.blurPasses = [];
         for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
             pass = new ShaderPass(GaussianBlurShader);
             passes.push(pass);
+            this.blurPasses.push(pass);
 
             this.updateGaussianPass(pass, i);
         }
 
-        this.blendPass = new BlendPass(this.savePass.buffer);
-        this.blendPass.setUniforms({ mode: BlendModes[options.blendMode] });
+        this.blendPass = new BlendPass(
+            this.savePass.buffer,
+            { blending: THREE.NoBlending, blendMode: options.blendMode, alpha: 1 }
+        );
         passes.push(this.blendPass);
 
         this.pass = composer.addMultiPass(passes);
@@ -70,13 +77,11 @@ BloomEffect.prototype = _.create(Effect.prototype, {
 
             this.lumPass.setUniforms({ amount: 1 - options.luminance });
 
-            this.pass.getPasses().forEach(function(pass, i) {
-                if (i > 0 && i < GAUSSIAN_ITERATIONS - 1) {
-                    this.updateGaussianPass(pass, i);
-                }
+            this.blurPasses.forEach(function(pass, i) {
+                this.updateGaussianPass(pass, i);
             }, this);
 
-            this.blendPass.setUniforms({ mode: BlendModes[options.blendMode] });
+            this.blendPass.update({ blendMode: options.blendMode });
 
             this.hasUpdate = false;
         }

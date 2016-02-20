@@ -10,5 +10,5 @@ void main(void) {
     float luminance = dot(luminanceVector, src.rgb);
     luminance = max(0.0, luminance - amount);
 
-    gl_FragColor = vec4(src.rgb * sign(luminance), src.a);
+    gl_FragColor = src * sign(luminance);
 }

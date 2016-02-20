@@ -1,32 +1,5 @@
-/*
 module.exports = {
-    "Normal": 1,
-    "Dissolve": 2,
-    "Darken": 3,
-    "Multiply": 4,
-    "Color Burn": 5,
-    "Linear Burn": 6,
-    "Darker Color": 7,
-    "Lighten": 8,
-    "Screen": 9,
-    "Color Dodge": 10,
-    "Linear Dodge": 11,
-    "Lighter Color": 12,
-    "Overlay": 13,
-    "Soft Light": 14,
-    "Hard Light": 15,
-    "Vivid Light": 16,
-    "Linear Light": 17,
-    "Pin Light": 18,
-    "Hard Mix": 19,
-    "Difference": 20,
-    "Exclusion": 21,
-    "Subtract": 22,
-    "Divide": 23,
-    "Add": 24
-};
-*/
-module.exports = {
+    "None": 0,
     "Add": 1,
     "Average": 2,
     "Color Burn": 3,
@@ -51,5 +24,6 @@ module.exports = {
     "Screen": 22,
     "Soft Light": 23,
     "Subtract": 24,
-    "Vivid Light": 25
+    "Vivid Light": 25,
+    "Divide": 26
 };

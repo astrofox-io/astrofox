@@ -172,11 +172,13 @@ vec3 blendSoftLight(vec3 base, vec3 blend) {
 
 // Subtract
 float blendSubtract(float base, float blend) {
-    return max(base+blend-1.0,0.0);
+    //return max(base+blend-1.0,0.0);
+    return max(base-blend,0.0);
 }
 
 vec3 blendSubtract(vec3 base, vec3 blend) {
-    return max(base+blend-vec3(1.0),vec3(0.0));
+    //return max(base+blend-vec3(1.0),vec3(0.0));
+    return max(base-blend,vec3(0.0));
 }
 
 // Exclusion
@@ -198,7 +200,19 @@ vec3 blendAdd(vec3 base, vec3 blend) {
     return min(base+blend,vec3(1.0));
 }
 
-vec3 blendMode(int mode, vec3 base, vec3 blend) {
+// Divide
+float blendDivide(float base, float blend) {
+    return min(base/blend,1.0);
+}
+
+vec3 blendDivide(vec3 base, vec3 blend) {
+    return min(base/blend,vec3(1.0));
+}
+
+vec3 blendColor(int mode, vec3 base, vec3 blend) {
+    if (mode == 0) {
+        return blend;
+    }
     if (mode == 1) {
         return blendAdd(base, blend);
     }
@@ -274,6 +288,9 @@ vec3 blendMode(int mode, vec3 base, vec3 blend) {
     if (mode == 25) {
         return blendVividLight(base, blend);
     }
+    if (mode == 26) {
+        return blendDivide(base, blend);
+    }
 
     return vec3(1., 0., 1.);
 }
@@ -283,10 +300,14 @@ void main() {
     vec4 blend = texture2D(tBlend, vUv) * opacity;
 
     if (alpha == 1) {
-        //blend.rgb /= blend.a + 0.00001;
+        blend.rgb /= (blend.a > 0.0) ? blend.a : 1.0;
     }
 
-    vec3 color = blendMode(mode, base.rgb, blend.rgb / (blend.a + 0.0001));
+    vec3 color = blendColor(mode, base.rgb, blend.rgb);
+
+    if (mode == 0) {
+        base = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 
     gl_FragColor = mix(base, vec4(color, 1.0), blend.a);
 }
