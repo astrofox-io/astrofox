@@ -4,12 +4,19 @@ var _ = require('lodash');
 var Effect = require('../effects/Effect.js');
 var ShaderPass = require('../graphics/ShaderPass.js');
 var PixelateShader = require('../shaders/PixelateShader.js');
+var HexagonShader = require('../shaders/HexagonShader.js');
 
 var defaults = {
+    type: 'Square',
     size: 10
 };
 
 var MAX_PIXEL_SIZE = 200;
+
+var shaders = {
+    Square: PixelateShader,
+    Hexagon: HexagonShader
+};
 
 var PixelateEffect = function(options) {
     Effect.call(this, 'PixelateEffect', defaults);
@@ -23,6 +30,17 @@ PixelateEffect.info = {
 
 PixelateEffect.prototype = _.create(Effect.prototype, {
     constructor: PixelateEffect,
+
+    update: function(options) {
+        var changed = Effect.prototype.update.call(this, options);
+console.log(options);
+        if (this.pass && options.type !== undefined) {
+            this.updateShader(this.options.type);
+        }
+
+        return changed;
+    },
+
 
     addToScene: function(scene) {
         this.pass = new ShaderPass(PixelateShader);
@@ -40,6 +58,12 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
 
             this.hasUpdate = false;
         }
+    },
+
+    updateShader: function(type) {
+        this.pass = new ShaderPass(shaders[type]);
+        this.pass.setUniforms(this.options);
+        this.owner.updatePasses();
     }
 });
 

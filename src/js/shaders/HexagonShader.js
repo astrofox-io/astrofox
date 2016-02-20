@@ -5,7 +5,7 @@ var HexagonShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         center: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
-        scale: { type: 'f', value: 10.0 },
+        size: { type: 'f', value: 10.0 },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 

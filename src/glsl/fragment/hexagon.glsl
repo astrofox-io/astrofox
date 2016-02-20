@@ -1,11 +1,11 @@
 uniform sampler2D tDiffuse;
 uniform vec2 center;
-uniform float scale;
+uniform float size;
 uniform vec2 resolution;
 varying vec2 vUv;
 
 void main() {
-    vec2 tex = (vUv * resolution - center) / scale;
+    vec2 tex = (vUv * resolution - center) / size;
     tex.y /= 0.866025404;
     tex.x -= tex.y * 0.5;
     
@@ -40,7 +40,7 @@ void main() {
     
     choice.x += choice.y * 0.5;
     choice.y *= 0.866025404;
-    choice *= scale / resolution;
+    choice *= size / resolution;
     
     gl_FragColor = texture2D(tDiffuse, choice + center / resolution);
 }
