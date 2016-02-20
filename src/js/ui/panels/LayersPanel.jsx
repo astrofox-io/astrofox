@@ -53,12 +53,17 @@ var LayersPanel = React.createClass({
     },
 
     handleAddSceneClick: function() {
-        var scene = new Scene();
+        var scene = new Scene(),
+            props = this.props;
 
         Application.stage.addScene(scene);
 
         this.updateLayers(function() {
             this.setActiveLayer(scene);
+
+            if (props.onLayerChanged) {
+                props.onLayerChanged();
+            }
         }.bind(this));
     },
 
