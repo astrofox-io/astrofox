@@ -9,26 +9,31 @@ var BlendModes = require('../../graphics/BlendModes.js');
 
 var blendModes = [
     'None',
-    { name: 'Normal', value: 'Normal', split: true },
+    'Normal',
+    { divider: true },
     'Darken',
     'Multiply',
     'Color Burn',
-    { name: 'Linear Burn', value: 'Linear Burn', split: true },
+    'Linear Burn',
+    { divider: true },
     'Lighten',
     'Screen',
     'Color Dodge',
-    { name: 'Linear Dodge', value: 'Linear Dodge', split: true },
+    'Linear Dodge',
+    { divider: true },
     'Overlay',
     'Soft Light',
     'Hard Light',
     'Vivid Light',
     'Linear Light',
     'Pin Light',
-    { name: 'Hard Mix', value: 'Hard Mix', split: true },
+    'Hard Mix',
+    { divider: true },
     'Difference',
     'Exclusion',
     'Subtract',
-    { name: 'Divide', value: 'Divide', split: true },
+    'Divide',
+    { divider: true },
     'Negation',
     'Phoenix',
     'Glow',
@@ -73,7 +78,7 @@ var SceneControl = React.createClass({
         var display = this.props.display,
             obj = {};
 
-        if (val === '----') return;
+        if (!val) return;
 
         obj[name] = val;
 

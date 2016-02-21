@@ -55,12 +55,12 @@
     top: 22px;
     z-index: 100;
     list-style: none;
+    background-color: @bg-level1-color;
 
     .input-option {
         font-size: @font-small;
         padding: 5px;
         min-width: 100px;
-        background-color: @bg-level1-color;
 
         &:hover {
             cursor: default;
@@ -68,8 +68,18 @@
         }
     }
 
-    .input-option-split {
-        border-bottom: 1px solid @base-color;
+    .input-option-divider {
+        height: 5px;
+
+        &:after {
+            content: "\0020";
+            border-top: 1px solid @base-color;
+            display: block;
+        }
+
+        &:hover {
+            background-color: transparent;
+        }
     }
 }
 

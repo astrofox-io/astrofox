@@ -57,10 +57,10 @@ var SelectInput = React.createClass({
                 className = 'input-option';
 
             if (typeof item !== 'object') {
-                item = { name: item, value: item, style: null, split: false };
+                item = { name: item, value: item, style: null, divider: false };
             }
 
-            if (item.split) className += ' input-option-split';
+            if (item.divider) className += ' input-option-divider';
 
             return (
                 <li
