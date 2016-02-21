@@ -86,21 +86,21 @@ Stage.prototype = _.create(NodeCollection.prototype, {
     },
 
     renderFrame: function(data, callback) {
-        var options,
+        var options, buffer,
             composer = this.composer,
-            buffer = null;
+            first = true;
 
-        this.renderer.clear();
-
+        composer.clearScreen(true, true, true);
         composer.clearBuffer(true, true, true);
 
-        this.scenes.nodes.forEach(function(scene, index) {
+        this.scenes.nodes.forEach(function(scene) {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
                 options = _.assign({}, scene.options);
 
-                if (index == 0) {
-                    options.blendMode = 'Normal';
+                if (first) {
+                    options.blendMode = 'None';
+                    first = false;
                 }
 
                 composer.blendBuffer(buffer, options);
