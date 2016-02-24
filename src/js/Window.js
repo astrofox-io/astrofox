@@ -33,11 +33,11 @@ var Window = {
     },
 
     showOpenDialog: function(action) {
-        dialog.showOpenDialog(action);
+        dialog.showOpenDialog(this.window, action);
     },
 
     showSaveDialog: function(path, action) {
-        dialog.showSaveDialog({ defaultPath: path }, action);
+        dialog.showSaveDialog(this.window, { defaultPath: path }, action);
     }
 };
 
