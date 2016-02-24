@@ -16,5 +16,4 @@ void main() {
     float dist_squared = dot(pos, pos);
 
     gl_FragColor = mix(color, vec4(0.0), smoothstep(size, size + blur, dist_squared));
-    //gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
 }

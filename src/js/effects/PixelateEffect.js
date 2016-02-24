@@ -33,7 +33,7 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
 
     update: function(options) {
         var changed = Effect.prototype.update.call(this, options);
-console.log(options);
+
         if (this.pass && options.type !== undefined) {
             this.updateShader(this.options.type);
         }

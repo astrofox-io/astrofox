@@ -267,7 +267,8 @@ Application.prototype = _.create(EventEmitter.prototype, {
     },
 
     loadControls: function(data) {
-        var controls = _.assign({}, DisplayLibrary, EffectsLibrary);
+        var control,
+            controls = _.assign({}, DisplayLibrary, EffectsLibrary);
 
         if (typeof data === 'object') {
             this.stage.clearScenes();
@@ -278,13 +279,25 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
                 if (item.displays) {
                     item.displays.forEach(function(display) {
-                        scene.addElement(new controls[display.name](display.options));
+                        control = controls[display.name];
+                        if (control) {
+                            scene.addElement(new control(display.options));
+                        }
+                        else {
+                            console.warn('Display "' + display.name + '" not found.');
+                        }
                     }, this);
                 }
 
                 if (item.effects) {
                     item.effects.forEach(function(effect) {
-                        scene.addElement(new controls[effect.name](effect.options));
+                        control = controls[effect.name];
+                        if (control) {
+                            scene.addElement(new control(effect.options));
+                        }
+                        else {
+                            console.warn('Effect "' + display.name + '" not found.');
+                        }
                     }, this);
                 }
             }.bind(this));
