@@ -5,9 +5,8 @@ var React = require('react');
 var MenuItem = React.createClass({
     getDefaultProps: function() {
         return {
-            text: '',
+            label: '',
             checked: false,
-            beginGroup: false,
             onClick: function(){}
         };
     },
@@ -16,7 +15,7 @@ var MenuItem = React.createClass({
         e.stopPropagation();
         e.preventDefault();
 
-        this.props.onClick(this.props.text, this.props.checked);
+        this.props.onClick(this);
     },
 
     render: function() {
@@ -26,14 +25,10 @@ var MenuItem = React.createClass({
             classes += ' checked';
         }
 
-        if (this.props.beginGroup) {
-            classes += ' begin-group';
-        }
-
         return (
             <li className={classes}
                 onClick={this.handleClick}>
-                {this.props.text}
+                {this.props.label}
             </li>
         );
     }

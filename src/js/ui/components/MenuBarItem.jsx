@@ -30,9 +30,9 @@ var MenuBarItem = React.createClass({
         this.props.onMouseOver();
     },
 
-    handleItemClick: function(text, checked) {
-        var action = this.props.text + '/' + text;
-        this.props.onItemClick(action, checked);
+    handleItemClick: function(item) {
+        var action = this.props.label + '/' + item.props.label;
+        this.props.onItemClick(action, item.props.checked);
     },
 
     render: function() {
@@ -44,15 +44,20 @@ var MenuBarItem = React.createClass({
         }
 
         var items = this.props.items.map(function(item, index) {
-            return (
-                <MenuItem
-                    key={'menuitem' + index}
-                    text={item.text}
-                    checked={item.checked}
-                    beginGroup={item.beginGroup}
-                    onClick={this.handleItemClick}
-                />
-            );
+            if (item.type == 'separator') {
+                return <div key={'menuitem' + index} className="menu-separator" />;
+            }
+            else if (item.label) {
+                return (
+                    <MenuItem
+                        key={'menuitem' + index}
+                        label={item.label}
+                        checked={item.checked}
+                        separator={item.type == 'separator'}
+                        onClick={this.handleItemClick}
+                    />
+                );
+            }
         }, this);
 
         return (
@@ -61,7 +66,7 @@ var MenuBarItem = React.createClass({
                     className={classes}
                     onClick={this.handleClick}
                     onMouseOver={this.handleMouseOver}>
-                    {this.props.text}
+                    {this.props.label}
                 </div>
                 <ul
                     className="menu"

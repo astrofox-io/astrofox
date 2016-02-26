@@ -2,45 +2,13 @@
 
 var React = require('react');
 var MenuBarItem = require('./MenuBarItem.jsx');
+var items = require('../../../conf/menu.json');
 
 var MenuBar = React.createClass({
     getInitialState: function() {
         return {
             activeIndex: -1,
-            items: [
-                {
-                    text: 'File',
-                    items: [
-                        { text: 'New Project' },
-                        { text: 'Open Project' },
-                        { text: 'Save Project' },
-                        { text: 'Load Audio', beginGroup: true },
-                        { text: 'Save Image' },
-                        { text: 'Save Video' },
-                        { text: 'Exit', beginGroup: true }
-                    ]
-                },
-                {
-                    text: 'Edit',
-                    items: [
-                        { text: 'Settings' }
-                    ]
-                },
-                {
-                    text: 'View',
-                    items: [
-                        { text: 'Control Dock', checked: true },
-                        { text: 'Full Screen' }
-                    ]
-                },
-                {
-                    text: 'Help',
-                    items: [
-                        { text: 'Register' },
-                        { text: 'About' }
-                    ]
-                }
-            ]
+            items: items
         };
     },
 
@@ -69,13 +37,15 @@ var MenuBar = React.createClass({
     setCheckState: function(action, checked) {
         var items = this.state.items;
 
-        this.state.items.forEach(function(barItem) {
-            barItem.items.forEach(function(item, index) {
-                if (action === barItem.text + '/' + item.text) {
-                    barItem.items[index].checked = checked;
-                    this.setState(items);
-                }
-            }, this);
+        items.forEach(function(barItem) {
+            if (barItem.submenu) {
+                barItem.submenu.forEach(function(menuItem) {
+                    if (action === barItem.label + '/' + menuItem.label) {
+                        menuItem.checked = checked;
+                        this.setState(items);
+                    }
+                }, this);
+            }
         }, this);
     },
 
@@ -84,8 +54,8 @@ var MenuBar = React.createClass({
             return (
                 <MenuBarItem
                     key={index}
-                    text={item.text}
-                    items={item.items}
+                    label={item.label}
+                    items={item.submenu}
                     active={this.state.activeIndex === index}
                     onClick={this.handleClick.bind(this, index)}
                     onMouseOver={this.handleMouseOver.bind(this, index)}

@@ -54,6 +54,20 @@
             }
         }
 
+        .menu-separator {
+            padding: 5px;
+
+            &:after {
+                content: "\0020";
+                border-top: 1px solid @base-color;
+                display: block;
+            }
+
+            &:hover {
+                background-color: transparent;
+            }
+        }
+
         .checked:before {
             content: "\2713";
             color: @base-color;

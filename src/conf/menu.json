@@ -1,0 +1,75 @@
+[
+  {
+    "label": "File",
+    "submenu": [
+      {
+        "label": "New Project"
+      },
+      {
+        "label": "Open Project"
+      },
+      {
+        "label": "Save Project"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "label": "Load Audio"
+      },
+      {
+        "label": "Save Image"
+      },
+      {
+        "label": "Save Video"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "label": "Exit"
+      }
+    ]
+  },
+  {
+    "label": "Edit",
+    "submenu": [
+      {
+        "label": "Settings"
+      }
+    ]
+  },
+  {
+    "label": "View",
+    "submenu": [
+      {
+        "label": "Control Dock",
+        "type": "checkbox",
+        "checked": true
+      },
+      {
+        "label": "Player",
+        "type": "checkbox",
+        "checked": true
+      },
+      {
+        "label": "Spectrum Analyzer",
+        "type": "checkbox",
+        "checked": true
+      },
+      {
+        "label": "Oscilloscope",
+        "type": "checkbox",
+        "checked": true
+      }
+    ]
+  },
+  {
+    "label": "Help",
+    "submenu": [
+      {
+        "label": "About"
+      }
+    ]
+  },
+]
