@@ -1,9 +1,21 @@
 'use strict';
 
-var React = require('react');
 var ReactDOM = require('react-dom');
 var App = require('./ui/App.jsx');
 var Window = require('./Window.js');
+var redux = require('redux');
+var Provider = require('react-redux').Provider;
+
+var settings = function(state, action) {
+    console.log(state, action);
+    return state;
+};
+
+var store = redux.createStore(function(state, action) {
+    return {
+        settings: settings(state, action)
+    };
+});
 
 var AstroFox = {
     version: '1.0',
@@ -15,7 +27,9 @@ var AstroFox = {
 
         // Render UI
         ReactDOM.render(
-            React.createElement(App, null),
+            <Provider store={store}>
+                <App />
+            </Provider>,
             document.getElementById('app')
         );
     }
