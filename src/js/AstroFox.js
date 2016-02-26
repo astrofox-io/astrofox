@@ -1,5 +1,6 @@
 'use strict';
 
+var React = require('react');
 var ReactDOM = require('react-dom');
 var App = require('./ui/App.jsx');
 var Window = require('./Window.js');
@@ -25,11 +26,12 @@ var AstroFox = {
     start: function() {
         Window.init();
 
-        // Render UI
         ReactDOM.render(
-            <Provider store={store}>
-                <App />
-            </Provider>,
+            React.createElement(
+                Provider,
+                { store: store },
+                React.createElement(App, null)
+            ),
             document.getElementById('app')
         );
     }
