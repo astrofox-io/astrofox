@@ -52,6 +52,35 @@ var LayersPanel = React.createClass({
         }
     },
 
+    handleLayerEdit: function(val) {
+        var layer = this.getActiveLayer();
+
+        layer.options.displayName = val;
+
+        this.cancelEdit();
+    },
+
+    handleLayerNameChange: function(index, name, val) {
+        if (val.length > 0) {
+            this.handleLayerEdit(val, index);
+        }
+    },
+
+    handleLayerEnabled: function(obj, e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var props = this.props;
+
+        obj.update({enabled: !obj.options.enabled});
+
+        this.forceUpdate(function() {
+            if (props.onLayerChanged) {
+                props.onLayerChanged(obj);
+            }
+        });
+    },
+
     handleAddSceneClick: function() {
         var scene = new Scene(),
             props = this.props;
@@ -62,7 +91,7 @@ var LayersPanel = React.createClass({
             this.setActiveLayer(scene);
 
             if (props.onLayerChanged) {
-                props.onLayerChanged();
+                props.onLayerChanged(scene);
             }
         }.bind(this));
     },
@@ -127,35 +156,6 @@ var LayersPanel = React.createClass({
 
     handleMoveDownClick: function() {
         this.moveLayer(-1);
-    },
-
-    handleLayerEdit: function(val) {
-        var layer = this.getActiveLayer();
-
-        layer.options.displayName = val;
-
-        this.cancelEdit();
-    },
-
-    handleLayerNameChange: function(index, name, val) {
-        if (val.length > 0) {
-            this.handleLayerEdit(val, index);
-        }
-    },
-
-    handleLayerEnabled: function(obj, e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        var props = this.props;
-
-        obj.update({ enabled: !obj.options.enabled });
-
-        this.forceUpdate();
-
-        if (props.onLayerChanged) {
-            props.onLayerChanged();
-        }
     },
 
     cancelEdit: function() {
@@ -287,15 +287,15 @@ var LayersPanel = React.createClass({
     render: function() {
         var layers,
             hasScenes = Application.stage.hasScenes(),
-            addClasses = 'button icon-cube',
-            fxClasses = 'button icon-light-up',
+            displayClasses = 'button icon-cube',
+            effectClasses = 'button icon-light-up',
             removeClasses = 'button icon-trash-empty',
             moveUpClasses = 'button icon-chevron-up',
             moveDownClasses = 'button icon-chevron-down';
 
         if (!hasScenes) {
-            addClasses += ' button-disabled';
-            fxClasses += ' button-disabled';
+            displayClasses += ' button-disabled';
+            effectClasses += ' button-disabled';
             removeClasses += ' button-disabled';
             moveUpClasses += ' button-disabled';
             moveDownClasses += ' button-disabled';
@@ -312,8 +312,8 @@ var LayersPanel = React.createClass({
                 </div>
                 <ul className="button-group">
                     <li className="button icon-picture" title="Add Scene" onClick={this.handleAddSceneClick} />
-                    <li className={addClasses} title="Add Display" onClick={this.handleAddDisplayClick} />
-                    <li className={fxClasses} title="Add Effect" onClick={this.handleAddEffectClick} />
+                    <li className={displayClasses} title="Add Display" onClick={this.handleAddDisplayClick} />
+                    <li className={effectClasses} title="Add Effect" onClick={this.handleAddEffectClick} />
                     <li className={moveUpClasses} title="Move Layer Up" onClick={this.handleMoveUpClick} />
                     <li className={moveDownClasses} title="Move Layer Down" onClick={this.handleMoveDownClick} />
                     <li className={removeClasses} title="Delete Layer" onClick={this.handleRemoveClick} />

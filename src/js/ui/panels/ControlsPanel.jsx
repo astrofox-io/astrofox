@@ -2,8 +2,6 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var _ = require('lodash');
-
 var Application = require('../../core/Application.js');
 var ControlLoader = require('../../util/ControlLoader.js');
 
@@ -35,7 +33,16 @@ var ControlsPanel = React.createClass({
         this.setState({ controls: controls }, callback);
     },
 
-    scrollToControl: function(layer) {
+    updateControl: function(layer) {
+        var id = layer.toString(),
+            control = this.refs[id];
+
+        if (control) {
+            this.refs[id].setState(layer.options);
+        }
+    },
+
+    focusControl: function(layer) {
         var id = layer.toString(),
             node = ReactDOM.findDOMNode(this.refs[id]);
 

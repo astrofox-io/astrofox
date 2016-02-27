@@ -29,11 +29,11 @@ var ControlDock = React.createClass({
     },
 
     handleLayerSelected: function(layer) {
-        this.refs.controls.scrollToControl(layer);
+        this.refs.controls.focusControl(layer);
     },
 
-    handleLayerChanged: function() {
-        this.refs.controls.forceUpdate();
+    handleLayerChanged: function(layer) {
+        this.refs.controls.updateControl(layer);
     },
 
     showDock: function(val) {
