@@ -33,7 +33,9 @@ var ControlDock = React.createClass({
     },
 
     handleLayerChanged: function(layer) {
-        this.refs.controls.updateControl(layer);
+        if (layer) {
+            this.refs.controls.updateControl(layer);
+        }
     },
 
     showDock: function(val) {

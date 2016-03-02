@@ -296,7 +296,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
                             scene.addElement(new control(effect.options));
                         }
                         else {
-                            console.warn('Effect "' + display.name + '" not found.');
+                            console.warn('Effect "' + effect.name + '" not found.');
                         }
                     }, this);
                 }
