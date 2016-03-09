@@ -39,7 +39,7 @@ var Stage = React.createClass({
 
         var file = e.dataTransfer.files[0];
 
-        if (this.props.onFileDropped) {
+        if (file && this.props.onFileDropped) {
             this.props.onFileDropped(file.path);
         }
     },
