@@ -92,7 +92,7 @@ var Panel = React.createClass({
         var props = this.props,
             state = this.state,
             classes = 'panel',
-            style = (state.height) ? { height: state.height} : null;
+            style = (state.height) ? { height: state.height } : null;
 
         classes += (props.direction == 'vertical') ? ' panel-vertical' : ' panel-horizontal';
 

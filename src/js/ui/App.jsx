@@ -154,7 +154,7 @@ var App = React.createClass({
 
     showError: function(error) {
         this.showModal(
-            <ModalWindow title="ERROR" onClose={this.hideModal}>
+            <ModalWindow title="ERROR">
                 {error.message}
             </ModalWindow>
         );

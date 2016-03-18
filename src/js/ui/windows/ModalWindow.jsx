@@ -16,6 +16,10 @@ var ModalWindow = React.createClass({
         e.stopPropagation();
 
         Application.emit('hide_modal');
+
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
     },
 
     render: function() {

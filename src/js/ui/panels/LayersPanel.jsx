@@ -13,6 +13,7 @@ var EffectsLibrary = require('../../effects/EffectsLibrary.js');
 
 var TextInput = require('../../ui/inputs/TextInput.jsx');
 var ControlPickerWindow = require('../../ui/windows/ControlPickerWindow.jsx');
+var MenuPanel = require('./MenuPanel.jsx');
 
 var LayersPanel = React.createClass({
     getDefaultProps: function() {

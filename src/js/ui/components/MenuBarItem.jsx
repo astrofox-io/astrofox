@@ -1,21 +1,9 @@
 'use strict';
 
 var React = require('react');
-var MenuItem = require('./MenuItem.jsx');
+var Menu = require('./Menu.jsx');
 
 var MenuBarItem = React.createClass({
-    getInitialState: function() {
-        return {
-            showItems: false
-        };
-    },
-
-    componentWillReceiveProps: function(props) {
-        if (typeof props.active !== 'undefined') {
-            this.setState({ showItems: props.active });
-        }
-    },
-
     handleClick: function(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -36,29 +24,11 @@ var MenuBarItem = React.createClass({
     },
 
     render: function() {
-        var style = { display: (this.state.showItems) ? 'block' : 'none' },
-            classes = 'menubar-text';
+        var classes = 'menubar-text';
 
         if (this.props.active) {
             classes += ' menubar-text-active';
         }
-
-        var items = this.props.items.map(function(item, index) {
-            if (item.type == 'separator') {
-                return <div key={'menuitem' + index} className="menu-separator" />;
-            }
-            else if (item.label) {
-                return (
-                    <MenuItem
-                        key={'menuitem' + index}
-                        label={item.label}
-                        checked={item.checked}
-                        separator={item.type == 'separator'}
-                        onClick={this.handleItemClick}
-                    />
-                );
-            }
-        }, this);
 
         return (
             <li className="menubar-item">
@@ -68,11 +38,11 @@ var MenuBarItem = React.createClass({
                     onMouseOver={this.handleMouseOver}>
                     {this.props.label}
                 </div>
-                <ul
-                    className="menu"
-                    style={style}>
-                    {items}
-                </ul>
+                <Menu
+                    items={this.props.items}
+                    visible={this.props.active}
+                    onItemClick={this.handleItemClick}
+                />
             </li>
         );
     }
