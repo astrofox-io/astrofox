@@ -35,15 +35,14 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
         var changed = Effect.prototype.update.call(this, options);
 
         if (this.pass && options.type !== undefined) {
-            this.updateShader(this.options.type);
+            this.setShader(this.options.type);
         }
 
         return changed;
     },
 
-
     addToScene: function(scene) {
-        this.pass = new ShaderPass(PixelateShader);
+        this.setShader(this.options.type);
     },
 
     removeFromScene: function(scene) {
@@ -60,7 +59,7 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
         }
     },
 
-    updateShader: function(type) {
+    setShader: function(type) {
         this.pass = new ShaderPass(shaders[type]);
         this.pass.setUniforms(this.options);
         this.owner.updatePasses();
