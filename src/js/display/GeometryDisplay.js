@@ -22,7 +22,7 @@ var defaults = {
     lightDistance: 500
 };
 
-var shaders = {
+var materials = {
     Normal: THREE.MeshNormalMaterial,
     Basic: THREE.MeshBasicMaterial,
     Phong: THREE.MeshPhongMaterial,
@@ -31,7 +31,6 @@ var shaders = {
 };
 
 var shading = {
-    None: THREE.NoShading,
     Flat: THREE.FlatShading,
     Smooth: THREE.SmoothShading
 };
@@ -200,14 +199,16 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         if (options.shading == 'Flat') {
             geometry.computeFaceNormals();
 
-            for (var i = 0; i < geometry.faces.length; i ++) {
-                geometry.faces[i].vertexNormals = [];
+            if (geometry.faces) {
+                for (var i = 0; i < geometry.faces.length; i++) {
+                    geometry.faces[i].vertexNormals = [];
+                }
             }
-
-            geometry = new THREE.BufferGeometry().fromGeometry(geometry);
         }
 
-        material = new shaders[options.shader]();
+        geometry = new THREE.BufferGeometry().fromGeometry(geometry);
+
+        material = new materials[options.shader]();
         material.shading = shading[options.shading];
         material.color = new THREE.Color().set(options.color);
         material.opacity = options.opacity;
