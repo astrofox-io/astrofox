@@ -11,8 +11,8 @@ var Effect = require('../../effects/Effect.js');
 var DisplayLibrary = require('../../display/DisplayLibrary.js');
 var EffectsLibrary = require('../../effects/EffectsLibrary.js');
 
-var TextInput = require('../../ui/inputs/TextInput.jsx');
-var ControlPickerWindow = require('../../ui/windows/ControlPickerWindow.jsx');
+var TextInput = require('../inputs/TextInput.jsx');
+var ControlPickerWindow = require('../windows/ControlPickerWindow.jsx');
 var MenuPanel = require('./MenuPanel.jsx');
 
 var LayersPanel = React.createClass({

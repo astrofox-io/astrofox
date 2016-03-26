@@ -2,7 +2,7 @@
 
 var React = require('react');
 var ModalWindow = require('./ModalWindow.jsx');
-var MenuPanel = require('../panels/MenuPanel.jsx');
+var MenuPanel = require('../components/MenuPanel.jsx');
 
 var SettingsWindow = React.createClass({
     render: function() {
