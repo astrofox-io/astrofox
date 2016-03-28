@@ -19,11 +19,11 @@ var Oscilloscope = require('./components/Oscilloscope.jsx');
 var Waveform = require('./components/Waveform.jsx');
 var Overlay = require('./components/Overlay.jsx');
 var ControlDock = require('./components/ControlDock.jsx');
+var Preload = require('../ui/components/Preload.jsx');
 
 var ModalWindow = require('../ui/windows/ModalWindow.jsx');
 var AboutWindow = require('../ui/windows/AboutWindow.jsx');
 var SettingsWindow = require('../ui/windows/SettingsWindow.jsx');
-var Fonts = require('../ui/components/Fonts.jsx');
 
 var App = React.createClass({
     getInitialState: function() {
@@ -203,7 +203,7 @@ var App = React.createClass({
                     <ControlDock ref="dock" />
                 </Body>
                 <Footer filename={this.state.filename} />
-                <Fonts />
+                <Preload />
             </div>
         );
     }

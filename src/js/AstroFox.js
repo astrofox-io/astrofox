@@ -24,6 +24,8 @@ var AstroFox = {
     license: null,
 
     start: function() {
+        console.log(process.versions);
+
         Window.init();
 
         ReactDOM.render(

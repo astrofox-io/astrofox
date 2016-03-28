@@ -9,7 +9,12 @@ var Window = {
     },
 
     maximize: function() {
-        this.window.maximize();
+        if (this.window.isMaximized()) {
+            this.unmaximize();
+        }
+        else {
+            this.window.maximize();
+        }
     },
 
     minimize: function() {

@@ -6,7 +6,6 @@ var Window = require('../../Window.js');
 var Header = React.createClass({
     componentDidMount: function() {
         this.window = Window;
-        this.maximized = false;
     },
 
     shouldComponentUpdate: function() {
@@ -24,14 +23,7 @@ var Header = React.createClass({
         e.preventDefault();
         e.stopPropagation();
 
-        if (this.maximized) {
-            this.window.unmaximize();
-        }
-        else {
-            this.window.maximize();
-        }
-
-        this.maximized = !this.maximized;
+        this.window.maximize();
     },
 
     handleClose: function(e) {
