@@ -57,6 +57,7 @@ var ImageControl = React.createClass({
         var obj = {},
             state = this.state,
             image = this.image,
+            src = image.src,
             ratio = (image.src) ? image.naturalWidth / image.naturalHeight : 0,
             render = false;
 
@@ -66,17 +67,19 @@ var ImageControl = React.createClass({
             obj.src = image.src = val;
 
             // Reset values
-            obj.width = 0;
-            obj.height = 0;
-            obj.x = 0;
-            obj.y = 0;
-            obj.rotation = 0;
-            obj.opacity = 0;
+            if (src !== val) {
+                obj.width = 0;
+                obj.height = 0;
+                obj.x = 0;
+                obj.y = 0;
+                obj.rotation = 0;
+                obj.opacity = 0;
 
-            if (val !== BLANK_IMAGE) {
-                obj.opacity = 1.0;
-                obj.width = image.naturalWidth;
-                obj.height = image.naturalHeight;
+                if (val !== BLANK_IMAGE) {
+                    obj.opacity = 1.0;
+                    obj.width = image.naturalWidth;
+                    obj.height = image.naturalHeight;
+                }
             }
 
             render = true;

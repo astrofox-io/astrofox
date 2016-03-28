@@ -9,6 +9,7 @@ var RangeInput = require('../inputs/RangeInput.jsx');
 var SelectInput = require('../inputs/SelectInput.jsx');
 var TextInput = require('../inputs/TextInput.jsx');
 var ToggleInput = require('../inputs/ToggleInput.jsx');
+var fontOptions = require('../../../conf/fonts.json');
 
 var defaults = {
     text: '',
@@ -24,23 +25,7 @@ var defaults = {
 };
 
 var TextControl = React.createClass({
-    fontOptions: [
-        'Abel',
-        'Abril Fatface',
-        'Bangers',
-        'Cardo',
-        'Chunkfive',
-        'Dynalight',
-        'Intro',
-        'Merriweather',
-        'Playfair Display',
-        'Permanent Marker',
-        'Oswald',
-        'Oxygen',
-        'Racing Sans One',
-        'Raleway',
-        'Roboto'
-    ],
+    fontOptions: fontOptions,
 
     getInitialState: function() {
         return defaults;
