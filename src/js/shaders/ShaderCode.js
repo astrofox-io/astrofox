@@ -14,6 +14,7 @@ var ShaderCode = {
         ColorShift: glslify('../../glsl/fragment/ColorShift.glsl'),
         Copy: glslify('../../glsl/fragment/Copy.glsl'),
         DotScreen: glslify('../../glsl/fragment/DotScreen.glsl'),
+        FXAA: glslify('../../glsl/fragment/FXAA.glsl'),
         GaussianBlur: glslify('../../glsl/fragment/GaussianBlur.glsl'),
         Glow: glslify('../../glsl/fragment/Glow.glsl'),
         Grid: glslify('../../glsl/fragment/Grid.glsl'),

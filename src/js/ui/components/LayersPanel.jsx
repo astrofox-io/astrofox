@@ -19,7 +19,9 @@ var LayersPanel = React.createClass({
     getDefaultProps: function() {
         return {
             onLayerSelected: null,
-            onLayerChanged: null
+            onLayerChanged: null,
+            onLayerAdded: null,
+            onLayerRemoved: null
         }
     },
 
@@ -91,8 +93,8 @@ var LayersPanel = React.createClass({
         this.updateLayers(function() {
             this.setActiveLayer(scene);
 
-            if (props.onLayerChanged) {
-                props.onLayerChanged(scene);
+            if (props.onLayerAdded) {
+                props.onLayerAdded(scene);
             }
         }.bind(this));
     },
@@ -145,8 +147,8 @@ var LayersPanel = React.createClass({
                 }
             });
 
-            if (props.onLayerChanged) {
-                props.onLayerChanged();
+            if (props.onLayerRemoved) {
+                props.onLayerRemoved();
             }
         }
     },

@@ -24,7 +24,7 @@ var ControlDock = React.createClass({
                 layers.setActiveLayer(obj);
             });
 
-            controls.forceUpdate();
+            controls.updateControls();
         }.bind(this));
     },
 
@@ -36,6 +36,14 @@ var ControlDock = React.createClass({
         if (layer) {
             this.refs.controls.updateControl(layer);
         }
+    },
+
+    handleLayerAdded: function() {
+        this.refs.controls.updateControls();
+    },
+
+    handleLayerRemoved: function() {
+        this.refs.controls.updateControls();
     },
 
     showDock: function(val) {
@@ -57,6 +65,8 @@ var ControlDock = React.createClass({
                         ref="layers"
                         onLayerSelected={this.handleLayerSelected}
                         onLayerChanged={this.handleLayerChanged}
+                        onLayerAdded={this.handleLayerAdded}
+                        onLayerRemoved={this.handleLayerRemoved}
                     />
                 </Panel>
                 <Panel

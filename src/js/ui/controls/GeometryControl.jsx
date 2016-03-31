@@ -18,6 +18,8 @@ var defaults = {
     y: 0,
     z: 0,
     wireframe: false,
+    lines: false,
+    edges: false,
     color: '#FFFFFF',
     opacity: 1.0,
     lightIntensity: 1.0,
@@ -102,7 +104,7 @@ var GeometryControl = React.createClass({
                         name="shape"
                         size="20"
                         items={shapes}
-                        value={this.state.shape}
+                        value={state.shape}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
@@ -111,7 +113,7 @@ var GeometryControl = React.createClass({
                         name="shader"
                         size="20"
                         items={shaders}
-                        value={this.state.shader}
+                        value={state.shader}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
@@ -120,21 +122,35 @@ var GeometryControl = React.createClass({
                         name="shading"
                         size="20"
                         items={shading}
-                        value={this.state.shading}
+                        value={state.shading}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
                     <label className="label">Color</label>
                     <ColorInput
                         name="color"
-                        value={this.state.color}
+                        value={state.color}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
                     <label className="label">Wireframe</label>
                     <ToggleInput
                         name="wireframe"
-                        value={this.state.wireframe}
+                        value={state.wireframe}
+                        onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label className="label">Border Lines</label>
+                    <ToggleInput
+                        name="lines"
+                        value={state.lines}
+                        onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label className="label">Edges</label>
+                    <ToggleInput
+                        name="edges"
+                        value={state.edges}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
@@ -144,14 +160,14 @@ var GeometryControl = React.createClass({
                         size="3"
                         min={-maxVal}
                         max={maxVal}
-                        value={this.state.x}
+                        value={state.x}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxVal}
                             max={maxVal}
-                            value={this.state.x}
+                            value={state.x}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -162,14 +178,14 @@ var GeometryControl = React.createClass({
                         size="3"
                         min={-maxVal}
                         max={maxVal}
-                        value={this.state.y}
+                        value={state.y}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxVal}
                             max={maxVal}
-                            value={this.state.y}
+                            value={state.y}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -180,14 +196,14 @@ var GeometryControl = React.createClass({
                         size="3"
                         min={-maxVal}
                         max={maxVal}
-                        value={this.state.z}
+                        value={state.z}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="z"
                             min={-maxVal}
                             max={maxVal}
-                            value={this.state.z}
+                            value={state.z}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -199,7 +215,7 @@ var GeometryControl = React.createClass({
                         min={0}
                         max={1}
                         step={0.1}
-                        value={this.state.opacity}
+                        value={state.opacity}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
@@ -207,7 +223,7 @@ var GeometryControl = React.createClass({
                             min={0}
                             max={1}
                             step={0.1}
-                            value={this.state.opacity}
+                            value={state.opacity}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -218,14 +234,14 @@ var GeometryControl = React.createClass({
                         size="3"
                         min={-maxVal}
                         max={maxVal}
-                        value={this.state.lightDistance}
+                        value={state.lightDistance}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="lightDistance"
                             min={-maxVal}
                             max={maxVal}
-                            value={this.state.lightDistance}
+                            value={state.lightDistance}
                             onChange={this.handleChange} />
                     </div>
                 </div>
@@ -237,7 +253,7 @@ var GeometryControl = React.createClass({
                         min={0}
                         max={10.0}
                         step={0.1}
-                        value={this.state.lightIntensity}
+                        value={state.lightIntensity}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
@@ -245,7 +261,7 @@ var GeometryControl = React.createClass({
                             min={0}
                             max={10.0}
                             step={0.1}
-                            value={this.state.lightIntensity}
+                            value={state.lightIntensity}
                             onChange={this.handleChange} />
                     </div>
                 </div>

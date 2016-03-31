@@ -20,13 +20,13 @@ var ControlsPanel = React.createClass({
     updateControls: function(callback) {
         var controls = [];
 
-        Application.stage.scenes.nodes.forEach(function(scene) {
+        Application.stage.scenes.nodes.reverse().forEach(function(scene) {
             controls.push(scene);
-            scene.displays.nodes.forEach(function(display) {
-                controls.push(display);
-            }, this);
-            scene.effects.nodes.forEach(function(effect) {
+            scene.effects.nodes.reverse().forEach(function(effect) {
                 controls.push(effect);
+            }, this);
+            scene.displays.nodes.reverse().forEach(function(display) {
+                controls.push(display);
             }, this);
         }, this);
 
@@ -52,19 +52,7 @@ var ControlsPanel = React.createClass({
     },
 
     render: function() {
-        var displays = [];
-
-        Application.stage.scenes.nodes.reverse().forEach(function(scene) {
-            displays.push(scene);
-            scene.effects.nodes.reverse().forEach(function(effect) {
-                displays.push(effect);
-            }, this);
-            scene.displays.nodes.reverse().forEach(function(display) {
-                displays.push(display);
-            }, this);
-        }, this);
-
-        var controls = displays.map(function(display) {
+        var controls = this.state.controls.map(function(display) {
             var id = display.toString(),
                 Control = ControlLoader.getControl(display) || 'div';
 

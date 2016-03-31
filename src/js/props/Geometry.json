@@ -1,0 +1,15 @@
+{
+  "shape": "Box",
+  "shader": "Normal",
+  "shading": "Smooth",
+  "x": 0,
+  "y": 0,
+  "z": 0,
+  "wireframe": false,
+  "lines": false,
+  "edges": false,
+  "color": "#FFFFFF",
+  "opacity": 1.0,
+  "lightIntensity": 1.0,
+  "lightDistance": 500
+}

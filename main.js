@@ -16,6 +16,9 @@ app.on('window-all-closed', function() {
     }
 });
 
+// Enable WebGL 2
+app.commandLine.appendSwitch('enable-unsafe-es3-apis');
+
 // This method will be called when atom-shell has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {

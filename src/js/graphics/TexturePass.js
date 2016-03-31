@@ -32,8 +32,8 @@ var TexturePass = function(texture, options) {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.plane = new THREE.PlaneBufferGeometry(2, 2);
-    this.mesh = new THREE.Mesh(this.plane, this.material);
+    this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
 };
 

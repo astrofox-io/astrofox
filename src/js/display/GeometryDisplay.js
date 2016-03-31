@@ -7,6 +7,9 @@ var SpectrumParser = require('../audio/SpectrumParser.js');
 var Composer = require('../graphics/Composer.js');
 var ShaderLibrary = require('../shaders/ShaderLibrary.js');
 var RenderPass = require('../graphics/RenderPass.js');
+var MultiPass = require('../graphics/MultiPass.js');
+var ShaderPass = require('../graphics/ShaderPass.js');
+var FXAAShader = require('../shaders/FXAAShader.js');
 
 var defaults = {
     shape: 'Box',
@@ -17,6 +20,8 @@ var defaults = {
     y: 0,
     z: 0,
     wireframe: false,
+    lines: false,
+    edges: false,
     opacity: 1.0,
     lightIntensity: 1.0,
     lightDistance: 500
@@ -53,7 +58,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
 
         var changed = Display.prototype.update.call(this, options);
 
-        if (options.shape !== undefined || options.shader !== undefined || options.shading !== undefined) {
+        if (options.shape !== undefined || options.shader !== undefined || options.shading !== undefined || options.lines !== undefined || options.edges !== undefined) {
             this.createMesh(this.options.shape);
         }
         else if (options.enabled !== undefined && this.pass) {
@@ -79,7 +84,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
     },
 
     addToScene: function(scene) {
-        var _scene, camera, lights,
+        var scene3d, camera, lights,
             options = this.options,
             stage = scene.owner,
             size = stage.getSize(),
@@ -87,22 +92,31 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
             near = 0.1,
             far = 1000;
 
-        _scene = new THREE.Scene();
+        scene3d = new THREE.Scene();
 
         camera = new THREE.PerspectiveCamera(fov, size.width/size.height, near, far);
         camera.position.set(0, 0, 0.5 * far);
+
+        //var ambientLight = new THREE.AmbientLight(0x000000);
+        //scene3d.add(ambientLight);
 
         lights = [];
         lights[0] = new THREE.PointLight(0xffffff, 1, 0);
         lights[1] = new THREE.PointLight(0xffffff, 1, 0);
         lights[2] = new THREE.PointLight(0xffffff, 1, 0);
 
-        _scene.add(lights[0]);
-        _scene.add(lights[1]);
-        _scene.add(lights[2]);
+        scene3d.add(lights[0]);
+        scene3d.add(lights[1]);
+        scene3d.add(lights[2]);
 
-        this.pass = new RenderPass(_scene, camera, {clearDepth: true, forceClear: false});
-        this.scene3d = _scene;
+        /*
+        this.pass = new MultiPass();
+        this.pass.addPass(new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false}));
+        this.pass.addPass(new ShaderPass(FXAAShader));
+        */
+        this.pass = new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false});
+        
+        this.scene3d = scene3d;
         this.lights = lights;
 
         this.createMesh(options.shape);
@@ -147,7 +161,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
     createMesh: function(shape) {
         if (!this.scene3d) return;
 
-        var geometry, material,
+        var geometry, material, obj,
             scene = this.scene3d,
             mesh = this.mesh,
             options = this.options;
@@ -196,7 +210,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         //shader = THREE.ShaderLib[options.shader.toLowerCase()];
         //material = new THREE.ShaderMaterial(shader);
 
-        if (options.shading == 'Flat') {
+        if (options.shading == 'Flat' && options.shader !== 'Phong') {
             geometry.computeFaceNormals();
 
             if (geometry.faces) {
@@ -214,8 +228,38 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         material.opacity = options.opacity;
         material.wireframe = options.wireframe;
         material.needsUpdate = true;
+        material.transparent = true;
+        material.side = THREE.DoubleSide;
 
-        mesh = new THREE.Mesh(geometry, material);
+        if (options.shader == 'Phong') {
+            material.color = new THREE.Color(0x156289);
+            material.emissive = new THREE.Color(0x072534);
+        }
+
+        mesh = new THREE.Object3D();
+
+        if (options.lines) {
+            mesh.add(new THREE.LineSegments(
+                new THREE.WireframeGeometry(geometry),
+                new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 1.0
+                })
+            ));
+        }
+        else if (options.edges) {
+            mesh.add(new THREE.LineSegments(
+                new THREE.EdgesGeometry(geometry, 5),
+                new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 1.0
+                })
+            ));
+        }
+
+        mesh.add(new THREE.Mesh(geometry, material));
 
         scene.add(mesh);
 

@@ -28,8 +28,8 @@ var ShaderPass = function(shader, options) {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.plane = new THREE.PlaneBufferGeometry(2, 2);
-    this.mesh = new THREE.Mesh(this.plane, null);
+    this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+    this.mesh = new THREE.Mesh(this.geometry, null);
     this.scene.add(this.mesh);
 };
 
