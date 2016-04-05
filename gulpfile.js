@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var duration = require('gulp-duration');
@@ -22,16 +24,14 @@ var nodeResolve = require('resolve');
 
 var _ = require('lodash');
 
+/*** Configuration ***/
+
 var production = (process.env.NODE_ENV === 'production');
 
-/*** Functions ***/
-
-var bundler = browserify({
+var appBundle = browserify({
     entries: './src/js/AstroFox.js',
     transform: [babelify, glslify],
     extensions: ['.js', '.jsx'],
-    //paths: ['./node_modules', './src/js/'],
-    noParse: ['lodash','three', 'ttf2woff2'],
     standalone: 'AstroFox',
     ignoreMissing: false,
     detectGlobals: false,
@@ -39,10 +39,19 @@ var bundler = browserify({
     packageCache: {}
 });
 
-function bundle() {
-    var timer = duration('bundle time');
+/*** Functions ***/
 
-    return bundler.bundle()
+function bundle(watch) {
+    let timer = duration('bundle time');
+    let b = (watch) ?
+        watchify(appBundle)
+            .on('update', function(ids) {
+                util.log(ids);
+                bundle();
+            }) :
+        appBundle;
+
+    return b.bundle()
         .on('error', function(err){
             util.log(util.colors.red(err.message));
         })
@@ -65,15 +74,38 @@ gulp.task('build', function() {
     return bundle();
 });
 
+// Builds separate vendor library
+gulp.task('build-vendor', function() {
+    let b = browserify({
+        debug: false
+    });
+
+    getNPMPackageIds().forEach(function(id) {
+        b.require(nodeResolve.sync(id), { expose: id });
+    });
+
+    return b.bundle()
+        .pipe(source('vendor.js'))
+        .pipe(buffer())
+        .pipe(gulp.dest('./build'));
+});
+
+// Builds application only library
+gulp.task('build-app', function() {
+    getNPMPackageIds().forEach(function(id) {
+        appBundle.external(id);
+    });
+
+    return bundle(false);
+});
+
 // Builds application and watches for changes
 gulp.task('build-watch', function() {
-    bundler = watchify(bundler)
-        .on('update', function(ids) {
-            util.log(ids);
-            bundle();
-        });
+    getNPMPackageIds().forEach(function(id) {
+        appBundle.external(id);
+    });
 
-    return bundle();
+    return bundle(true);
 });
 
 // Compile LESS into CSS
@@ -113,34 +145,8 @@ gulp.task('build-icons', function(){
         .pipe(gulp.dest('./resources/fonts/icons/'));
 });
 
-// Builds separate vendor library
-gulp.task('build-vendor', function() {
-    var b = browserify({
-        debug: false
-    });
-
-    ['react','lodash','three','mime'].forEach(function(id) {
-        b.require(nodeResolve.sync(id), { expose: id });
-    });
-
-    return b.bundle()
-        .pipe(source('vendor.js'))
-        .pipe(buffer())
-        .pipe(gulp.dest('./build'));
-});
-
-// Builds application only library
-gulp.task('build-app', function() {
-    getNPMPackageIds().forEach(function(id) {
-        bundler.external(id);
-    });
-
-    compile(false);
-});
-
-gulp.task('watch', ['build-watch', 'build-css'], function() {
+gulp.task('dev', ['build-watch', 'build-css'], function() {
     gulp.watch('./src/css/**/*.*', ['build-css']);
-    //gulp.watch('./src/js/**/*.*', ['build-watch']);
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
