@@ -57,7 +57,7 @@ BarSpectrumDisplay.prototype = _.create(CanvasDisplay.prototype, {
         return changed;
     },
 
-    renderToCanvas: function(scene, data) {
+    renderToCanvas: function(context, data) {
         var fft = this.fft = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
         this.bars.render(fft);
 
@@ -65,12 +65,10 @@ BarSpectrumDisplay.prototype = _.create(CanvasDisplay.prototype, {
             canvas = this.canvas,
             options = this.options,
             barOptions = this.bars.options,
-            context = scene.context,
             halfWidth = canvas.width / 2,
             halfHeight = barOptions.height,
-            size = scene.getSize(),
-            halfSceneWidth = size.width / 2,
-            halfSceneHeight = size.height / 2;
+            halfSceneWidth = context.canvas.width / 2,
+            halfSceneHeight = context.canvas.height / 2;
 
 
         if (options.rotation % 360 !== 0) {

@@ -45,9 +45,11 @@ TextDisplay.prototype = _.create(CanvasDisplay.prototype, {
         height = options.size * 2;
 
         // Reset canvas
-        canvas.width = width;
-        canvas.height = height;
-        //context.clearRect(0, 0, width, height);
+        if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
+        }
+        context.clearRect(0, 0, width, height);
 
         // Draw text
         context.font = font;

@@ -24,7 +24,7 @@ Display.prototype = _.create(EventEmitter.prototype, {
     update: function(options) {
         if (typeof options === 'object') {
             for (var prop in options) {
-                if (this.options.hasOwnProperty(prop)) {
+                if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
                     if (this.options[prop] !== options[prop]) {
                         this.options[prop] = options[prop];
                         this.hasUpdate = true;

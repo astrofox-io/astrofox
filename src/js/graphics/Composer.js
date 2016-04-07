@@ -112,14 +112,12 @@ Composer.prototype = _.create(EventEmitter.prototype, {
     },
 
     addTexturePass: function(texture, options) {
+        if (typeof texture !== THREE.Texture) {
+            texture = new THREE.Texture(texture);
+            texture.minFilter = THREE.LinearFilter;
+        }
+
         return this.addPass(new TexturePass(texture, options));
-    },
-
-    addImagePass: function(image, options) {
-        var texture = new THREE.Texture(image);
-        texture.minFilter = THREE.LinearFilter;
-
-        return this.addTexturePass(texture, options);
     },
 
     addSpritePass: function(image, options) {

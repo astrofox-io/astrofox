@@ -26,7 +26,7 @@ WaveDisplay.prototype = {
     update: function(options) {
         if (typeof options === 'object') {
             for (var prop in options) {
-                if (hasOwnProperty.call(this.options, prop)) {
+                if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
                     this.options[prop] = options[prop];
 
                     if (prop === 'width') {

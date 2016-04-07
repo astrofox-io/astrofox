@@ -15,16 +15,14 @@ var CanvasDisplay = function(name, options) {
 CanvasDisplay.prototype = _.create(Display.prototype, {
     constructor: CanvasDisplay,
 
-    renderToCanvas: function(scene) {
+    renderToCanvas: function(context) {
         var x, y,
             canvas = this.canvas,
             options = this.options,
-            context = scene.context,
             halfWidth = canvas.width / 2,
             halfHeight = canvas.height / 2,
-            size = scene.getSize(),
-            halfSceneWidth = size.width / 2,
-            halfSceneHeight = size.height / 2;
+            halfSceneWidth = context.canvas.width / 2,
+            halfSceneHeight = context.canvas.height / 2;
 
 
         if (options.rotation % 360 !== 0) {

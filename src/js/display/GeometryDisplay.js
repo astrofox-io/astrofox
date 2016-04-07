@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var THREE = require('three');
 var Display = require('../display/Display.js');
+var GLDisplay = require('../display/GLDisplay.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
 var Composer = require('../graphics/Composer.js');
 var ShaderLibrary = require('../shaders/ShaderLibrary.js');
@@ -114,10 +115,11 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         this.pass.addPass(new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false}));
         this.pass.addPass(new ShaderPass(FXAAShader));
         */
-        this.pass = new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false});
+        //this.pass = new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false});
         
         this.scene3d = scene3d;
         this.lights = lights;
+        this.camera = camera;
 
         this.createMesh(options.shape);
         this.updateLights();
@@ -131,7 +133,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         this.pass = null;
     },
 
-    updateScene: function(scene, data) {
+    updateScene: function(renderer, data) {
         var mesh = this.mesh,
             options = this.options,
             fft = this.fft = SpectrumParser.parseFFT(data.fft, {normalize: true}, this.fft),
@@ -142,6 +144,9 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         mesh.rotation.x += 5 * x;
         mesh.rotation.y += 3 * y;
         mesh.position.set(options.x, options.y, options.z);
+
+        renderer.clearDepth();
+        renderer.render(this.scene3d, this.camera);
     },
 
     updateLights: function() {

@@ -1,32 +1,30 @@
 'use strict';
 
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var duration = require('gulp-duration');
-var exit = require('gulp-exit');
-var iconfont = require('gulp-iconfont');
-var less = require('gulp-less');
-var minifycss = require('gulp-minify-css');
-var rename = require('gulp-rename');
-var strip = require('gulp-strip-comments');
-var template = require('gulp-template');
-var uglify = require('gulp-uglify');
-var util = require('gulp-util');
+const gulp = require('gulp');
+const concat = require('gulp-concat');
+const duration = require('gulp-duration');
+const exit = require('gulp-exit');
+const iconfont = require('gulp-iconfont');
+const less = require('gulp-less');
+const minifycss = require('gulp-minify-css');
+const rename = require('gulp-rename');
+const template = require('gulp-template');
+const uglify = require('gulp-uglify');
+const util = require('gulp-util');
 
-var browserify = require('browserify');
-var glslify = require('glslify');
-var babelify = require('babelify');
-var watchify = require('watchify');
+const browserify = require('browserify');
+const glslify = require('glslify');
+const babelify = require('babelify');
+const watchify = require('watchify');
+const envify = require('envify/custom');
 
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var nodeResolve = require('resolve');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const nodeResolve = require('resolve');
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 /*** Configuration ***/
-
-var production = (process.env.NODE_ENV === 'production');
 
 var appBundle = browserify({
     entries: './src/js/AstroFox.js',
@@ -62,7 +60,7 @@ function bundle(watch) {
 }
 
 function getNPMPackageIds() {
-    var manifest = require('./package.json');
+    let manifest = require('./package.json');
 
     return _.keys(manifest.dependencies) || [];
 }
@@ -80,6 +78,11 @@ gulp.task('build-vendor', function() {
         debug: false
     });
 
+    b.transform(envify({
+        _: 'purge',
+        NODE_ENV: process.env.NODE_ENV || 'development'
+    }), { global:true });
+
     getNPMPackageIds().forEach(function(id) {
         b.require(nodeResolve.sync(id), { expose: id });
     });
@@ -87,6 +90,7 @@ gulp.task('build-vendor', function() {
     return b.bundle()
         .pipe(source('vendor.js'))
         .pipe(buffer())
+        //.pipe(uglify())
         .pipe(gulp.dest('./build'));
 });
 
@@ -126,7 +130,7 @@ gulp.task('build-icons', function(){
             normalize: true
         }))
         .on('glyphs', function(glyphs, options) {
-            var icons = glyphs.map(function(glyph) {
+            let icons = glyphs.map(function(glyph) {
                 return {
                     name: glyph.name,
                     code: glyph.unicode[0].charCodeAt(0).toString(16).toUpperCase()
@@ -149,4 +153,6 @@ gulp.task('dev', ['build-watch', 'build-css'], function() {
     gulp.watch('./src/css/**/*.*', ['build-css']);
 });
 
-gulp.task('default', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
+gulp.task('production', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
+
+gulp.task('default', ['dev']);
