@@ -8,8 +8,8 @@ var CanvasDisplay = require('../../display/CanvasDisplay.js');
 var Stage = require('../../display/Stage.js');
 var Scene = require('../../display/Scene.js');
 var Effect = require('../../effects/Effect.js');
-var DisplayLibrary = require('../../display/DisplayLibrary.js');
-var EffectsLibrary = require('../../effects/EffectsLibrary.js');
+var DisplayLibrary = require('../../lib/DisplayLibrary.js');
+var EffectsLibrary = require('../../lib/EffectsLibrary.js');
 
 var TextInput = require('../inputs/TextInput.jsx');
 var ControlPickerWindow = require('../windows/ControlPickerWindow.jsx');

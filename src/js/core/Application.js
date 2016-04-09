@@ -10,8 +10,8 @@ var SpectrumAnalyzer = require('../audio/SpectrumAnalyzer.js');
 var Stage = require('../display/Stage.js');
 var Scene = require('../display/Scene.js');
 var Display = require('../display/Display.js');
-var DisplayLibrary = require('../display/DisplayLibrary.js');
-var EffectsLibrary = require('../effects/EffectsLibrary.js');
+var DisplayLibrary = require('../lib/DisplayLibrary.js');
+var EffectsLibrary = require('../lib/EffectsLibrary.js');
 var VideoRenderer = require('../video/VideoRenderer.js');
 var IO = require('../IO.js');
 
@@ -124,7 +124,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
     },
 
     render: function(timestamp) {
-        var now = performance.now(),
+        var now = window.performance.now(),
             id = window.requestAnimationFrame(this.render.bind(this, now)),
             data = this.getFrameData();
 

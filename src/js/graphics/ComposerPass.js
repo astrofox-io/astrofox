@@ -23,7 +23,7 @@ ComposerPass.prototype = {
 
     update: function(options) {
         for (var prop in options) {
-            if (this.options.hasOwnProperty(prop)) {
+            if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
                 if (this.options[prop] !== options[prop]) {
                     this.options[prop] = options[prop];
                 }

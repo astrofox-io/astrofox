@@ -1,9 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var DisplayLibrary = require('../display/DisplayLibrary.js');
-var EffectsLibrary = require('../effects/EffectsLibrary.js');
-var ControlLibrary = require('../display/ControlLibrary.js');
+var DisplayLibrary = require('../lib/DisplayLibrary.js');
+var EffectsLibrary = require('../lib/EffectsLibrary.js');
+var ControlLibrary = require('../lib/ControlLibrary.js');
 var Scene = require('../display/Scene.js');
 var SceneControl = require('../ui/controls/SceneControl.jsx');
 

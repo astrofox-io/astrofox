@@ -3,13 +3,13 @@ var Timer = function() {
 };
 
 Timer.prototype.set = function(id) {
-    this.timers[id] = performance.now();
+    this.timers[id] = window.performance.now();
 };
 
 Timer.prototype.get = function(id) {
     var timer = this.timers[id];
     if (timer) {
-        return (performance.now() - timer) / 1000;
+        return (window.performance.now() - timer) / 1000;
     }
     return 0;
 };

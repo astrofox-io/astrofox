@@ -4,7 +4,7 @@ var React = require('react');
 
 var Application = require('../core/Application.js');
 var Scene = require('../display/Scene.js');
-var DisplayLibrary = require('../display/DisplayLibrary.js');
+var DisplayLibrary = require('../lib/DisplayLibrary.js');
 var Window = require('../Window.js');
 
 var Header = require('./components/Header.jsx');

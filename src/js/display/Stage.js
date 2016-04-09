@@ -124,15 +124,15 @@ Stage.prototype = _.create(NodeCollection.prototype, {
     },
 
     getImage: function(callback, format) {
-        var img = this.renderer.domElement.toDataURL(format || 'image/png'),
-            base64 = img.replace(/^data:image\/\w+;base64,/, ''),
-            buffer = new IO.Buffer(base64, 'base64');
+        var img = this.renderer.domElement.toDataURL(format || 'image/png');
+        var base64 = img.replace(/^data:image\/\w+;base64,/, '');
+        var buffer = new IO.Buffer(base64, 'base64');
 
         if (callback) callback(buffer);
     },
 
     updateFPS: function() {
-        var now = performance.now(),
+        var now = window.performance.now(),
             stats = this.stats;
 
         if (!stats.time) {

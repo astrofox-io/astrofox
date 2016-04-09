@@ -16,7 +16,7 @@ const browserify = require('browserify');
 const glslify = require('glslify');
 const babelify = require('babelify');
 const watchify = require('watchify');
-const envify = require('envify/custom');
+const envify = require('loose-envify/custom');
 
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
