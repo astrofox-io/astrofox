@@ -54,20 +54,18 @@ BlurEffect.prototype = _.create(Effect.prototype, {
         var changed = Effect.prototype.update.call(this, options);
 
         if (this.owner && options.type !== undefined && options.type != type) {
-            this.createShader(options.type);
+            this.setPass(this.getShaderPass(options.type));
         }
 
         return changed;
     },
 
     addToScene: function(scene) {
-        this.createShader(this.options.type);
-
-        Effect.prototype.addToScene.call(this, scene);
+        this.setPass(this.getShaderPass(this.options.type));
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {
@@ -112,7 +110,7 @@ BlurEffect.prototype = _.create(Effect.prototype, {
         pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0] });
     },
 
-    createShader: function(type) {
+    getShaderPass: function(type) {
         var pass,
             passes = [],
             shader = shaders[type];
@@ -125,18 +123,16 @@ BlurEffect.prototype = _.create(Effect.prototype, {
                     this.updateGaussianPass(pass, i);
                 }
 
-                this.pass = new MultiPass(passes);
+                return new MultiPass(passes);
                 break;
 
             case 'Box':
-                this.pass = new ShaderPass(BoxBlurShader);
+                return new ShaderPass(BoxBlurShader);
                 break;
 
             default:
-                this.pass = new ShaderPass(shader);
+                return new ShaderPass(shader);
         }
-
-        this.owner.updatePasses();
     }
 });
 

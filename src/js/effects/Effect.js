@@ -18,12 +18,11 @@ Effect.prototype = _.create(Display.prototype, {
         return Display.prototype.update.call(this, options);
     },
 
-    addToScene: function(scene) {
-        this.owner = scene;
-        
-        if (this.pass) {
-            this.pass.options.enabled = this.options.enabled;
-        }
+    setPass: function(pass) {
+        this.pass = pass;
+        pass.options.enabled = this.options.enabled;
+
+        this.owner.updatePasses();
     }
 });
 

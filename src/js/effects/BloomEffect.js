@@ -39,15 +39,18 @@ BloomEffect.prototype = _.create(Effect.prototype, {
             composer = scene.composer,
             options = this.options;
 
+        // Save current frame
         this.savePass = new SavePass(
             composer.getRenderTarget(),
             { blending: THREE.NoBlending }
         );
         passes.push(this.savePass);
 
+        // Apply luminance threshold
         this.lumPass = new ShaderPass(LuminanceShader);
         passes.push(this.lumPass);
 
+        // Apply blur
         this.blurPasses = [];
         for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
             pass = new ShaderPass(GaussianBlurShader);
@@ -57,26 +60,26 @@ BloomEffect.prototype = _.create(Effect.prototype, {
             this.updateGaussianPass(pass, i);
         }
 
+        // Blend with original frame
         this.blendPass = new BlendPass(
             this.savePass.buffer,
-            { blending: THREE.NoBlending, blendMode: options.blendMode, alpha: 1 }
+            { blendMode: options.blendMode, alpha: 1 }
         );
         passes.push(this.blendPass);
 
-        this.pass = composer.addMultiPass(passes);
-
-        Effect.prototype.addToScene.call(this, scene);
+        // Set render pass
+        this.setPass(composer.addMultiPass(passes));
     },
 
     removeFromScene: function(scene) {
-        scene.composer.removePass(this.pass);
+        this.pass = null;
     },
 
     updateScene: function(scene) {
         if (this.hasUpdate) {
             var options = this.options;
 
-            this.lumPass.setUniforms({ amount: 1 - options.luminance });
+            this.lumPass.setUniforms({ amount: 1 - options.threshold });
 
             this.blurPasses.forEach(function(pass, i) {
                 this.updateGaussianPass(pass, i);

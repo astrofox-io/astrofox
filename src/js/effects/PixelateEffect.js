@@ -42,9 +42,7 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
     },
 
     addToScene: function(scene) {
-        this.setShader(this.options.type);
-
-        Effect.prototype.addToScene.call(this, scene);
+        this.setPass(this.getShaderPass(this.options.type));
     },
 
     removeFromScene: function(scene) {
@@ -61,10 +59,11 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
         }
     },
 
-    setShader: function(type) {
-        this.pass = new ShaderPass(shaders[type]);
-        this.pass.setUniforms(this.options);
-        this.owner.updatePasses();
+    getShaderPass: function(type) {
+        var pass = new ShaderPass(shaders[type]);
+        pass.setUniforms(this.options);
+
+        return pass;
     }
 });
 

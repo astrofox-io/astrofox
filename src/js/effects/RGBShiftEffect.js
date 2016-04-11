@@ -26,9 +26,7 @@ RGBShiftEffect.prototype = _.create(Effect.prototype, {
     constructor: RGBShiftEffect,
 
     addToScene: function(scene) {
-        this.pass = new ShaderPass(RGBShiftShader);
-
-        Effect.prototype.addToScene.call(this, scene);
+        this.setPass(new ShaderPass(RGBShiftShader));
     },
 
     removeFromScene: function(scene) {

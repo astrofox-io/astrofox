@@ -6,6 +6,7 @@ var EventEmitter = require('../core/EventEmitter.js');
 var NodeCollection = require('../core/NodeCollection.js');
 var Composer = require('../graphics/Composer.js');
 var IO = require('../IO.js');
+var FrameBuffer = require('../graphics/FrameBuffer.js');
 
 var defaults = {
     showFPS: false,
@@ -36,6 +37,9 @@ var Stage = function(options) {
     this.renderer.autoClear = false;
 
     this.composer = new Composer(this.renderer);
+
+    this.buffer2D = new FrameBuffer('2d');
+    this.buffer3D = new FrameBuffer('webgl');
 
     this.update(options);
 };

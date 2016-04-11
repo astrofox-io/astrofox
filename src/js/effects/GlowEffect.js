@@ -26,9 +26,7 @@ GlowEffect.prototype = _.create(Effect.prototype, {
     constructor: GlowEffect,
 
     addToScene: function(scene) {
-        this.pass = new ShaderPass(GlowShader);
-
-        Effect.prototype.addToScene.call(this, scene);
+        this.setPass(new ShaderPass(GlowShader));
     },
 
     removeFromScene: function(scene) {
@@ -39,7 +37,11 @@ GlowEffect.prototype = _.create(Effect.prototype, {
         var options = this.options;
 
         if (this.hasUpdate) {
-            this.pass.setUniforms({ amount: options.amount * GLOW_MAX, intensity: options.intensity });
+            this.pass.setUniforms({
+                amount: options.amount * GLOW_MAX,
+                intensity: options.intensity
+            });
+
             this.hasUpdate = false;
         }
     }

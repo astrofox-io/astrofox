@@ -26,9 +26,7 @@ DotScreenEffect.prototype = _.create(Effect.prototype, {
     constructor: DotScreenEffect,
 
     addToScene: function(scene) {
-        this.pass = new ShaderPass(DotScreenShader);
-
-        Effect.prototype.addToScene.call(this, scene);
+        this.setPass(new ShaderPass(DotScreenShader));
     },
 
     removeFromScene: function(scene) {
@@ -43,6 +41,7 @@ DotScreenEffect.prototype = _.create(Effect.prototype, {
                 scale: options.scale,
                 angle: options.angle * RADIANS
             });
+
             this.hasUpdate = false;
         }
     }

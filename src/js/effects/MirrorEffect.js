@@ -23,9 +23,7 @@ MirrorEffect.prototype = _.create(Effect.prototype, {
     constructor: MirrorEffect,
 
     addToScene: function(scene) {
-        this.pass = new ShaderPass(MirrorShader);
-
-        Effect.prototype.addToScene.call(this, scene);
+        this.setPass(new ShaderPass(MirrorShader));
     },
 
     removeFromScene: function(scene) {

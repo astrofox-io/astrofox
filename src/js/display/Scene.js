@@ -4,7 +4,6 @@ var _ = require('lodash');
 var THREE = require('three');
 var NodeCollection = require('../core/NodeCollection.js');
 var Display = require('../display/Display.js');
-var CanvasDisplay = require('../display/CanvasDisplay.js');
 var Effect = require('../effects/Effect.js');
 var Composer = require('../graphics/Composer.js');
 var TexturePass = require('../graphics/TexturePass.js');
@@ -21,8 +20,6 @@ var Scene = function(name, options) {
     this.owner = null;
     this.displays = new NodeCollection();
     this.effects = new NodeCollection();
-    this.buffer2D = new FrameBuffer('2d');
-    this.buffer3D = new FrameBuffer('webgl');
 
     this.update(options);
 };
@@ -41,9 +38,6 @@ Scene.prototype = _.create(Display.prototype, {
     },
 
     addToStage: function(stage) {
-        var size = stage.getSize(),
-            texture, texture2;
-
         this.owner = stage;
         this.composer = new Composer(stage.renderer);
 
@@ -56,7 +50,6 @@ Scene.prototype = _.create(Display.prototype, {
         this.displays = null;
         this.effects.clear();
         this.effects = null;
-        this.canvasPass = null;
         this.composer.dispose();
         this.composer = null;
     },
@@ -122,19 +115,16 @@ Scene.prototype = _.create(Display.prototype, {
 
     updatePasses: function() {
         var composer = this.composer,
-            enabled = false;
+            buffer2D = this.owner.buffer2D,
+            buffer3D = this.owner.buffer3D;
 
         composer.clearPasses();
-        composer.addPass(this.buffer3D.pass);
-        composer.addPass(this.buffer2D.pass);
+        composer.addPass(buffer3D.pass);
+        composer.addPass(buffer2D.pass);
 
         this.displays.nodes.forEach(function(display) {
             if (display.pass) {
                 composer.addPass(display.pass);
-            }
-
-            if (!enabled && display instanceof CanvasDisplay) {
-                enabled = true;
             }
         });
 
@@ -143,8 +133,6 @@ Scene.prototype = _.create(Display.prototype, {
                 composer.addPass(effect.pass);
             }
         });
-
-        this.buffer2D.pass.options.enabled = enabled;
     },
 
     getSize: function() {
@@ -167,10 +155,12 @@ Scene.prototype = _.create(Display.prototype, {
         var displays = this.displays.nodes,
             effects = this.effects.nodes,
             options = this.options,
-            composer = this.composer;
+            composer = this.composer,
+            buffer2D = this.owner.buffer2D,
+            buffer3D = this.owner.buffer3D;
 
-        this.buffer3D.clear();
-        this.buffer2D.clear();
+        buffer3D.clear();
+        buffer2D.clear();
 
         composer.clearBuffer(true, true, true);
 
@@ -178,10 +168,10 @@ Scene.prototype = _.create(Display.prototype, {
             displays.forEach(function(display) {
                 if (display.options.enabled) {
                     if (display.renderToCanvas) {
-                        display.renderToCanvas(this.buffer2D.context, data);
+                        display.renderToCanvas(buffer2D.context, data);
                     }
                     else if (display.updateScene) {
-                        display.updateScene(this.buffer3D.renderer, data);
+                        display.updateScene(buffer3D.renderer, data);
                     }
                 }
             }, this);
@@ -189,10 +179,10 @@ Scene.prototype = _.create(Display.prototype, {
             effects.forEach(function(effect) {
                 if (effect.options.enabled) {
                     if (effect.renderToCanvas) {
-                        effect.renderToCanvas(this.buffer2D.context, data);
+                        effect.renderToCanvas(buffer2D.context, data);
                     }
                     else if (effect.updateScene) {
-                        effect.updateScene(this.buffer3D.renderer, data);
+                        effect.updateScene(buffer3D.renderer, data);
                     }
                 }
             }, this);
