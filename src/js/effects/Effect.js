@@ -16,6 +16,14 @@ Effect.prototype = _.create(Display.prototype, {
         }
 
         return Display.prototype.update.call(this, options);
+    },
+
+    addToScene: function(scene) {
+        this.owner = scene;
+        
+        if (this.pass) {
+            this.pass.options.enabled = this.options.enabled;
+        }
     }
 });
 

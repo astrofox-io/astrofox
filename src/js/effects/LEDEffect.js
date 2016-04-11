@@ -26,6 +26,8 @@ LEDEffect.prototype = _.create(Effect.prototype, {
 
     addToScene: function(scene) {
         this.pass = new ShaderPass(LEDShader);
+
+        Effect.prototype.addToScene.call(this, scene);
     },
 
     removeFromScene: function(scene) {

@@ -267,8 +267,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
     },
 
     loadControls: function(data) {
-        var control,
-            controls = _.assign({}, DisplayLibrary, EffectsLibrary);
+        var component;
 
         if (typeof data === 'object') {
             this.stage.clearScenes();
@@ -279,9 +278,9 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
                 if (item.displays) {
                     item.displays.forEach(function(display) {
-                        control = controls[display.name];
-                        if (control) {
-                            scene.addElement(new control(display.options));
+                        component = DisplayLibrary[display.name];
+                        if (component) {
+                            scene.addElement(new component(display.options));
                         }
                         else {
                             console.warn('Display "' + display.name + '" not found.');
@@ -291,9 +290,9 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
                 if (item.effects) {
                     item.effects.forEach(function(effect) {
-                        control = controls[effect.name];
-                        if (control) {
-                            scene.addElement(new control(effect.options));
+                        component = EffectsLibrary[effect.name];
+                        if (component) {
+                            scene.addElement(new component(effect.options));
                         }
                         else {
                             console.warn('Effect "' + effect.name + '" not found.');

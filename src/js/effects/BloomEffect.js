@@ -14,7 +14,7 @@ var CopyShader = require('../shaders/CopyShader.js');
 var defaults = {
     blendMode: 'Screen',
     amount: 0.1,
-    luminance: 1.0
+    threshold: 1.0
 };
 
 const GAUSSIAN_BLUR_MAX = 3;
@@ -64,7 +64,8 @@ BloomEffect.prototype = _.create(Effect.prototype, {
         passes.push(this.blendPass);
 
         this.pass = composer.addMultiPass(passes);
-        this.scene = scene;
+
+        Effect.prototype.addToScene.call(this, scene);
     },
 
     removeFromScene: function(scene) {

@@ -43,6 +43,8 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
 
     addToScene: function(scene) {
         this.setShader(this.options.type);
+
+        Effect.prototype.addToScene.call(this, scene);
     },
 
     removeFromScene: function(scene) {

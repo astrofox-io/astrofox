@@ -8,7 +8,7 @@ var SelectInput = require('../inputs/SelectInput.jsx');
 var defaults = {
     blendMode: 'Screen',
     amount: 0.1,
-    luminance: 1.0
+    threshold: 1.0
 };
 
 var blendModes = [
@@ -92,22 +92,22 @@ var BloomControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Luminance</label>
+                    <label className="label">Threshold</label>
                     <NumberInput
-                        name="luminance"
+                        name="threshold"
                         size="3"
-                        value={this.state.luminance}
+                        value={this.state.threshold}
                         min={0}
                         max={1.0}
                         step={0.01}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="luminance"
+                            name="threshold"
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.luminance}
+                            value={this.state.threshold}
                             onChange={this.handleChange} />
                     </div>
                 </div>
