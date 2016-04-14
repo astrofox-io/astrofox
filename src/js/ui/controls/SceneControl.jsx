@@ -42,7 +42,9 @@ var blendModes = [
 
 var defaults = {
     blendMode: 'Normal',
-    opacity: 1.0
+    opacity: 1.0,
+    lightIntensity: 1.0,
+    lightDistance: 500
 };
 
 var SceneControl = React.createClass({
@@ -90,6 +92,7 @@ var SceneControl = React.createClass({
 
     render: function() {
         var state = this.state;
+        var maxVal = 500;
 
         return (
             <div className="control">
@@ -123,6 +126,44 @@ var SceneControl = React.createClass({
                             value={this.state.opacity}
                             onChange={this.handleChange}
                             />
+                    </div>
+                </div>
+                <div className="row">
+                    <label className="label">Light Distance</label>
+                    <NumberInput
+                        name="lightDistance"
+                        size="3"
+                        min={-maxVal}
+                        max={maxVal}
+                        value={state.lightDistance}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="lightDistance"
+                            min={-maxVal}
+                            max={maxVal}
+                            value={state.lightDistance}
+                            onChange={this.handleChange} />
+                    </div>
+                </div>
+                <div className="row">
+                    <label className="label">Light Intensity</label>
+                    <NumberInput
+                        name="lightIntensity"
+                        size="3"
+                        min={0}
+                        max={10.0}
+                        step={0.1}
+                        value={state.lightIntensity}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="lightIntensity"
+                            min={0}
+                            max={10.0}
+                            step={0.1}
+                            value={state.lightIntensity}
+                            onChange={this.handleChange} />
                     </div>
                 </div>
             </div>

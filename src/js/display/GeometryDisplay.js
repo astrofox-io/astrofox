@@ -20,11 +20,12 @@ var defaults = {
     y: 0,
     z: 0,
     wireframe: false,
-    lines: false,
     edges: false,
+    edgeColor: '#ffffff',
     opacity: 1.0,
-    lightIntensity: 1.0,
-    lightDistance: 500
+    startX: 0,
+    startY: 0,
+    startZ: 0
 };
 
 var materials = {
@@ -84,49 +85,18 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
     },
 
     addToScene: function(scene) {
-        var scene3d, camera, lights,
-            options = this.options,
-            stage = scene.owner,
-            size = stage.getSize(),
-            fov = 45,
-            near = 0.1,
-            far = 1000;
+        var options = this.options;
 
-        scene3d = new THREE.Scene();
-
-        camera = new THREE.PerspectiveCamera(fov, size.width/size.height, near, far);
-        camera.position.set(0, 0, 0.5 * far);
-
-        //var ambientLight = new THREE.AmbientLight(0x000000);
-        //scene3d.add(ambientLight);
-
-        lights = [];
-        lights[0] = new THREE.PointLight(0xffffff, 1, 0);
-        lights[1] = new THREE.PointLight(0xffffff, 1, 0);
-        lights[2] = new THREE.PointLight(0xffffff, 1, 0);
-
-        scene3d.add(lights[0]);
-        scene3d.add(lights[1]);
-        scene3d.add(lights[2]);
-
-        /*
-        this.pass = new MultiPass();
-        this.pass.addPass(new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false}));
-        this.pass.addPass(new ShaderPass(FXAAShader));
-        */
-        //this.pass = new RenderPass(scene3d, camera, {clearDepth: true, forceClear: false});
-        
-        this.scene3d = scene3d;
-        this.lights = lights;
-        this.camera = camera;
+        this.group = new THREE.Object3D();
 
         this.createMesh(options.shape);
-        this.updateLights();
+
+        scene.graph.add(this.group);
     },
 
     removeFromScene: function(scene) {
-        if (this.mesh) {
-            this.scene3d.remove(this.mesh);
+        if (this.group) {
+            scene.graph.remove(this.group);
         }
 
         this.pass = null;
@@ -143,35 +113,18 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         mesh.rotation.x += 5 * x;
         mesh.rotation.y += 3 * y;
         mesh.position.set(options.x, options.y, options.z);
-
-        renderer.clearDepth();
-        renderer.render(this.scene3d, this.camera);
-    },
-
-    updateLights: function() {
-        var lights = this.lights,
-            intensity = this.options.lightIntensity,
-            distance = this.options.lightDistance;
-
-        lights[0].intensity = intensity;
-        lights[1].intensity = intensity;
-        lights[2].intensity = intensity;
-
-        lights[0].position.set(0, distance * 2, 0);
-        lights[1].position.set(distance, distance * 2, distance);
-        lights[2].position.set(-distance, -distance * 2, -distance);
     },
 
     createMesh: function(shape) {
-        if (!this.scene3d) return;
+        if (!this.group) return;
 
-        var geometry, material, obj,
-            scene = this.scene3d,
+        var geometry, material,
+            group = this.group,
             mesh = this.mesh,
             options = this.options;
 
         if (mesh) {
-            scene.remove(mesh);
+            group.remove(mesh);
         }
 
         switch (shape) {
@@ -248,24 +201,24 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
                 new THREE.LineBasicMaterial({
                     color: 0xffffff,
                     transparent: true,
-                    opacity: 1.0
+                    opacity: 0.5
                 })
             ));
         }
         else if (options.edges) {
             mesh.add(new THREE.LineSegments(
-                new THREE.EdgesGeometry(geometry, 5),
+                new THREE.EdgesGeometry(geometry, 2),
                 new THREE.LineBasicMaterial({
                     color: 0xffffff,
                     transparent: true,
-                    opacity: 1.0
+                    opacity: 0.5
                 })
             ));
         }
 
         mesh.add(new THREE.Mesh(geometry, material));
 
-        scene.add(mesh);
+        group.add(mesh);
 
         this.mesh = mesh;
         this.material = material;

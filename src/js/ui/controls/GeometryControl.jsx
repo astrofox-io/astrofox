@@ -18,12 +18,13 @@ var defaults = {
     y: 0,
     z: 0,
     wireframe: false,
-    lines: false,
     edges: false,
     color: '#FFFFFF',
+    edgeColor: '#FFFFFF',
     opacity: 1.0,
-    lightIntensity: 1.0,
-    lightDistance: 500
+    startX: 0,
+    startY: 0,
+    startZ: 0
 };
 
 var shapes = [
@@ -140,13 +141,6 @@ var GeometryControl = React.createClass({
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Border Lines</label>
-                    <ToggleInput
-                        name="lines"
-                        value={state.lines}
-                        onChange={this.handleChange} />
-                </div>
-                <div className="row">
                     <label className="label">Edges</label>
                     <ToggleInput
                         name="edges"
@@ -224,44 +218,6 @@ var GeometryControl = React.createClass({
                             max={1}
                             step={0.1}
                             value={state.opacity}
-                            onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="row">
-                    <label className="label">Light Distance</label>
-                    <NumberInput
-                        name="lightDistance"
-                        size="3"
-                        min={-maxVal}
-                        max={maxVal}
-                        value={state.lightDistance}
-                        onChange={this.handleChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="lightDistance"
-                            min={-maxVal}
-                            max={maxVal}
-                            value={state.lightDistance}
-                            onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="row">
-                    <label className="label">Light Intensity</label>
-                    <NumberInput
-                        name="lightIntensity"
-                        size="3"
-                        min={0}
-                        max={10.0}
-                        step={0.1}
-                        value={state.lightIntensity}
-                        onChange={this.handleChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="lightIntensity"
-                            min={0}
-                            max={10.0}
-                            step={0.1}
-                            value={state.lightIntensity}
                             onChange={this.handleChange} />
                     </div>
                 </div>

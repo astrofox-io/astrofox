@@ -11,8 +11,14 @@ var FrameBuffer = require('../graphics/FrameBuffer.js');
 
 var defaults = {
     blendMode: 'Normal',
-    opacity: 1.0
+    opacity: 1.0,
+    lightIntensity: 1.0,
+    lightDistance: 500
 };
+
+const FOV = 45;
+const NEAR = 0.1;
+const FAR = 1000;
 
 var Scene = function(name, options) {
     Display.call(this, 'Scene', defaults);
@@ -28,20 +34,41 @@ Scene.prototype = _.create(Display.prototype, {
     constructor: Scene,
 
     update: function(options) {
+        if (!options) return false;
+
         var changed = Display.prototype.update.call(this, options);
 
         if (changed && this.owner) {
             this.updatePasses();
         }
 
+        if (options.lightDistance !== undefined || options.lightIntensity !== undefined) {
+            this.updateLights();
+        }
+
         return changed;
     },
 
     addToStage: function(stage) {
+        var size = stage.getSize();
+
         this.owner = stage;
         this.composer = new Composer(stage.renderer);
+        this.graph = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(FOV, size.width/size.height, NEAR, FAR);
+        this.camera.position.set(0, 0, 0.5 * FAR);
+        this.lights = [
+            new THREE.PointLight(0xffffff, 1, 0),
+            new THREE.PointLight(0xffffff, 1, 0),
+            new THREE.PointLight(0xffffff, 1, 0)
+        ];
+
+        this.lights.forEach(function(light) {
+            this.graph.add(light);
+        }.bind(this));
 
         this.updatePasses();
+        this.updateLights();
     },
 
     removeFromStage: function() {
@@ -135,29 +162,27 @@ Scene.prototype = _.create(Display.prototype, {
         });
     },
 
-    getSize: function() {
-        var canvas =  this.canvas;
+    updateLights: function() {
+        var lights = this.lights,
+            intensity = this.options.lightIntensity,
+            distance = this.options.lightDistance;
 
-        return {
-            width: canvas.width,
-            height: canvas.height
-        };
-    },
+        lights[0].intensity = intensity;
+        lights[1].intensity = intensity;
+        lights[2].intensity = intensity;
 
-    clearCanvas: function() {
-        var canvas = this.canvas,
-            context = this.context;
-
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        lights[0].position.set(0, distance * 2, 0);
+        lights[1].position.set(distance, distance * 2, distance);
+        lights[2].position.set(-distance, -distance * 2, -distance);
     },
 
     render: function(data) {
         var displays = this.displays.nodes,
             effects = this.effects.nodes,
-            options = this.options,
             composer = this.composer,
             buffer2D = this.owner.buffer2D,
-            buffer3D = this.owner.buffer3D;
+            buffer3D = this.owner.buffer3D,
+            hasGeometry = false;
 
         buffer3D.clear();
         buffer2D.clear();
@@ -172,9 +197,14 @@ Scene.prototype = _.create(Display.prototype, {
                     }
                     else if (display.updateScene) {
                         display.updateScene(buffer3D.renderer, data);
+                        hasGeometry = true;
                     }
                 }
             }, this);
+
+            if (hasGeometry) {
+                buffer3D.renderer.render(this.graph, this.camera);
+            }
 
             effects.forEach(function(effect) {
                 if (effect.options.enabled) {
