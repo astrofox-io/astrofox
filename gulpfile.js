@@ -6,7 +6,7 @@ const duration = require('gulp-duration');
 const exit = require('gulp-exit');
 const iconfont = require('gulp-iconfont');
 const less = require('gulp-less');
-const minifycss = require('gulp-minify-css');
+const cleancss = require('gulp-clean-css');
 const rename = require('gulp-rename');
 const template = require('gulp-template');
 const uglify = require('gulp-uglify');
@@ -116,7 +116,7 @@ gulp.task('build-watch', function() {
 gulp.task('build-css', function() {
     return gulp.src('./src/css/app.less')
         .pipe(less())
-        .pipe(minifycss())
+        .pipe(cleancss())
         .pipe(gulp.dest('./build'));
 });
 
