@@ -8,7 +8,7 @@ var NodeCollection = require('../core/NodeCollection.js');
 var Composer = require('../graphics/Composer.js');
 var FrameBuffer = require('../graphics/FrameBuffer.js');
 
-var Stage = function(options) {
+var Stage = function() {
     this.stats = {
         fps: 0,
         ms: 0,
@@ -22,6 +22,7 @@ var Stage = function(options) {
     this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
     this.renderer.setSize(854, 480);
     this.renderer.autoClear = false;
+
     this.composer = new Composer(this.renderer);
 
     this.buffer2D = new FrameBuffer('2d');
@@ -34,11 +35,15 @@ Stage.prototype = _.create(NodeCollection.prototype, {
     addScene: function(scene) {
         this.scenes.addNode(scene);
 
+        scene.owner = this;
+
         scene.addToStage(this);
     },
 
     removeScene: function(scene) {
         this.scenes.removeNode(scene);
+
+        scene.owner = null;
 
         scene.removeFromStage(this);
     },

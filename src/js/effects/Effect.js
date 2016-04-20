@@ -11,7 +11,7 @@ Effect.prototype = _.create(Display.prototype, {
     constructor: Effect,
 
     update: function(options) {
-        if (this.pass && options.enabled !== undefined) {
+        if (this.pass && options && options.enabled !== undefined) {
             this.pass.options.enabled = options.enabled;
         }
 

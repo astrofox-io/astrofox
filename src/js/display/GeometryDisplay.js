@@ -4,12 +4,6 @@ var _ = require('lodash');
 var THREE = require('three');
 var Display = require('../display/Display.js');
 var SpectrumParser = require('../audio/SpectrumParser.js');
-var Composer = require('../graphics/Composer.js');
-var ShaderLibrary = require('../lib/ShaderLibrary.js');
-var RenderPass = require('../graphics/RenderPass.js');
-var MultiPass = require('../graphics/MultiPass.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var FXAAShader = require('../shaders/FXAAShader.js');
 
 var defaults = {
     shape: 'Box',
@@ -55,30 +49,28 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
     constructor: GeometryDisplay,
 
     update: function(options) {
-        if (!options) return false;
-
         var changed = Display.prototype.update.call(this, options);
 
-        if (options.shape !== undefined || options.shader !== undefined || options.shading !== undefined || options.lines !== undefined || options.edges !== undefined) {
-            this.createMesh(this.options.shape);
-        }
-        else if (options.enabled !== undefined && this.pass) {
-            this.pass.options.enabled = options.enabled;
-        }
-        else if (options.wireframe !== undefined) {
-            this.material.wireframe = options.wireframe;
-            this.material.needsUpdate = true;
-        }
-        else if (options.opacity !== undefined) {
-            this.material.opacity = options.opacity;
-            this.material.needsUpdate = true;
-        }
-        else if (options.color !== undefined) {
-            this.material.color = new THREE.Color().set(options.color);
-            this.material.needsUpdate = true;
-        }
-        else if (options.lightDistance !== undefined || options.lightIntensity !== undefined) {
-            this.updateLights();
+        if (changed) {
+            if (options.shape !== undefined ||
+                options.shader !== undefined ||
+                options.shading !== undefined ||
+                options.lines !== undefined ||
+                options.edges !== undefined) {
+                this.createMesh(this.options.shape);
+            }
+            else if (options.wireframe !== undefined) {
+                this.material.wireframe = options.wireframe;
+                this.material.needsUpdate = true;
+            }
+            else if (options.opacity !== undefined) {
+                this.material.opacity = options.opacity;
+                this.material.needsUpdate = true;
+            }
+            else if (options.color !== undefined) {
+                this.material.color = new THREE.Color().set(options.color);
+                this.material.needsUpdate = true;
+            }
         }
 
         return changed;
@@ -98,8 +90,6 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         if (this.group) {
             scene.graph.remove(this.group);
         }
-
-        this.pass = null;
     },
 
     updateScene: function(renderer, data) {

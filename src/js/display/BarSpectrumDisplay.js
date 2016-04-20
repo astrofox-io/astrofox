@@ -52,7 +52,9 @@ BarSpectrumDisplay.prototype = _.create(CanvasDisplay.prototype, {
     update: function(options) {
         var changed = Display.prototype.update.call(this, options);
 
-        this.bars.update(options);
+        if (changed) {
+            this.bars.update(options);
+        }
 
         return changed;
     },

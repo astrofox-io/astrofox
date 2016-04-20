@@ -22,7 +22,7 @@ Display.prototype = _.create(EventEmitter.prototype, {
     constructor: Display,
 
     update: function(options) {
-        if (typeof options === 'object') {
+        if (options) {
             for (var prop in options) {
                 if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
                     if (this.options[prop] !== options[prop]) {

@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var Display = require('./Display.js');
 
 var defaults = {
     height: 200,
@@ -24,20 +25,18 @@ var WaveDisplay = function(canvas, options) {
 
 WaveDisplay.prototype = {
     update: function(options) {
-        if (typeof options === 'object') {
-            for (var prop in options) {
-                if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
-                    this.options[prop] = options[prop];
+        var changed = Display.prototype.update.call(this, options);
 
-                    if (prop === 'width') {
-                        this.canvas.width = options.width;
-                    }
-                    else if (prop === 'height') {
-                        this.canvas.height = options.height;
-                    }
-                }
+        if (changed) {
+            if (options.width !== undefined) {
+                this.canvas.width = options.width;
+            }
+            if (options.height !== undefined) {
+                this.canvas.height = options.height;
             }
         }
+
+        return changed;
     },
 
     parseData: function(data, width, height) {

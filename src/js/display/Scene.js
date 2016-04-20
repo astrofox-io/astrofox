@@ -34,16 +34,16 @@ Scene.prototype = _.create(Display.prototype, {
     constructor: Scene,
 
     update: function(options) {
-        if (!options) return false;
-
         var changed = Display.prototype.update.call(this, options);
 
-        if (changed && this.owner) {
-            this.updatePasses();
-        }
+        if (changed) {
+            if (this.owner) {
+                this.updatePasses();
+            }
 
-        if (options.lightDistance !== undefined || options.lightIntensity !== undefined) {
-            this.updateLights();
+            if (this.lights && (options.lightDistance !== undefined || options.lightIntensity !== undefined)) {
+                this.updateLights();
+            }
         }
 
         return changed;
@@ -52,7 +52,6 @@ Scene.prototype = _.create(Display.prototype, {
     addToStage: function(stage) {
         var size = stage.getSize();
 
-        this.owner = stage;
         this.composer = new Composer(stage.renderer);
         this.graph = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(FOV, size.width/size.height, NEAR, FAR);
