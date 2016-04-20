@@ -228,7 +228,7 @@ var SoundwaveControl = React.createClass({
                         size="3"
                         min={0}
                         max={1.0}
-                        step={0.1}
+                        step={0.01}
                         value={this.state.opacity}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -236,7 +236,7 @@ var SoundwaveControl = React.createClass({
                             name="opacity"
                             min={0}
                             max={1.0}
-                            step={0.1}
+                            step={0.01}
                             value={this.state.opacity}
                             onChange={this.handleChange} />
                     </div>

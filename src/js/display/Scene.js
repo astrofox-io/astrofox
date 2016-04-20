@@ -62,6 +62,8 @@ Scene.prototype = _.create(Display.prototype, {
             new THREE.PointLight(0xffffff, 1, 0)
         ];
 
+        this.graph.add(this.camera);
+
         this.lights.forEach(function(light) {
             this.graph.add(light);
         }.bind(this));

@@ -208,7 +208,7 @@ var GeometryControl = React.createClass({
                         size="3"
                         min={0}
                         max={1}
-                        step={0.1}
+                        step={0.01}
                         value={state.opacity}
                         onChange={this.handleChange} />
                     <div className="input flex">
@@ -216,7 +216,7 @@ var GeometryControl = React.createClass({
                             name="opacity"
                             min={0}
                             max={1}
-                            step={0.1}
+                            step={0.01}
                             value={state.opacity}
                             onChange={this.handleChange} />
                     </div>
