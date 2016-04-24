@@ -21,7 +21,8 @@ var LayersPanel = React.createClass({
             onLayerSelected: null,
             onLayerChanged: null,
             onLayerAdded: null,
-            onLayerRemoved: null
+            onLayerRemoved: null,
+            onLayerMoved: null
         }
     },
 
@@ -276,14 +277,12 @@ var LayersPanel = React.createClass({
             layer.owner.shiftElement(layer, direction);
         }
 
-        this.updateLayers(function(){
+        this.updateLayers(function() {
             index = this.state.layers.indexOf(layer);
 
             this.setState({ activeIndex: index });
 
-            props.onLayerChanged(function() {
-                props.onLayerSelected(this.getActiveLayer());
-            }.bind(this));
+            props.onLayerMoved(this.getActiveLayer());
         }.bind(this));
     },
 

@@ -46,6 +46,10 @@ var ControlDock = React.createClass({
         this.refs.controls.updateControls();
     },
 
+    handleLayerMoved: function() {
+        this.refs.controls.updateControls();
+    },
+
     showDock: function(val) {
         this.setState({ visible: val });
     },
@@ -67,6 +71,7 @@ var ControlDock = React.createClass({
                         onLayerChanged={this.handleLayerChanged}
                         onLayerAdded={this.handleLayerAdded}
                         onLayerRemoved={this.handleLayerRemoved}
+                        onLayerMoved={this.handleLayerMoved}
                     />
                 </Panel>
                 <Panel
