@@ -4,16 +4,11 @@ uniform vec2 resolution;
 
 varying vec2 vUv;
 
-float nrand(vec2 n) {
-	return fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
-}
-
 void main() {
     vec4 src = texture2D(tDiffuse, vUv);
     vec4 sum = vec4(0.0);
     float h = amount / resolution.x;
     float v = amount / resolution.y;
-    float rnd = nrand(0.01 * gl_FragCoord.xy);
 
     // horizontal blur
     sum += texture2D(tDiffuse, vec2(vUv.x - 4.0 * h, vUv.y)) * 0.051;
