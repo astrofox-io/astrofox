@@ -1,9 +1,10 @@
 var glslify = require('glslify');
 
-var ShaderCode = {
+module.exports = {
     vertex: {
         Basic: glslify('../../glsl/vertex/Basic.glsl'),
         Normal: glslify('../../glsl/vertex/Normal.glsl'),
+        Point: glslify('../../glsl/vertex/Point.glsl'),
         Position: glslify('../../glsl/vertex/Position.glsl')
     },
     fragment: {
@@ -25,9 +26,8 @@ var ShaderCode = {
         LED: glslify('../../glsl/fragment/LED.glsl'),
         Mirror: glslify('../../glsl/fragment/Mirror.glsl'),
         Pixelate: glslify('../../glsl/fragment/Pixelate.glsl'),
+        Point: glslify('../../glsl/fragment/Point.glsl'),
         RGBShift: glslify('../../glsl/fragment/RGBShift.glsl'),
         ZoomBlur: glslify('../../glsl/fragment/ZoomBlur.glsl')
     }
 };
-
-module.exports = ShaderCode;

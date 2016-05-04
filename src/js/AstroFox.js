@@ -4,25 +4,14 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Redux = require('redux');
 var Provider = require('react-redux').Provider;
-
-var App = require('./ui/App.jsx');
 var Window = require('./Window.js');
+var AppState = require('./reducers/AppState.js');
+var App = require('./ui/App.jsx');
 
-var settings = function(state, action) {
-    console.log(state, action);
-    return state;
-};
-
-var store = Redux.createStore(function(state, action) {
-    return {
-        settings: settings(state, action)
-    };
-});
+var store = Redux.createStore(AppState);
 
 var AstroFox = {
-    version: '1.0',
-    environment: 'dev',
-    license: null,
+    version: '0.1',
 
     start: function() {
         console.log(process.versions);

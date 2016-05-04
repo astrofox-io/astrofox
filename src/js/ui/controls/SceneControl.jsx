@@ -44,7 +44,8 @@ var defaults = {
     blendMode: 'Normal',
     opacity: 1.0,
     lightIntensity: 1.0,
-    lightDistance: 500
+    lightDistance: 500,
+    cameraZoom: 250
 };
 
 var SceneControl = React.createClass({
@@ -80,8 +81,6 @@ var SceneControl = React.createClass({
         var display = this.props.display,
             obj = {};
 
-        if (!val) return;
-
         obj[name] = val;
 
         this.shouldUpdate = true;
@@ -91,7 +90,6 @@ var SceneControl = React.createClass({
     },
 
     render: function() {
-        var state = this.state;
         var maxVal = 500;
 
         return (
@@ -129,40 +127,58 @@ var SceneControl = React.createClass({
                     </div>
                 </div>
                 <div className="row">
+                    <label className="label">Light Intensity</label>
+                    <NumberInput
+                        name="lightIntensity"
+                        size="3"
+                        min={0.0}
+                        max={10.0}
+                        step={0.1}
+                        value={this.state.lightIntensity}
+                        onChange={this.handleChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="lightIntensity"
+                            min={0.0}
+                            max={10.0}
+                            step={0.1}
+                            value={this.state.lightIntensity}
+                            onChange={this.handleChange} />
+                    </div>
+                </div>
+                <div className="row">
                     <label className="label">Light Distance</label>
                     <NumberInput
                         name="lightDistance"
                         size="3"
                         min={-maxVal}
                         max={maxVal}
-                        value={state.lightDistance}
+                        value={this.state.lightDistance}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="lightDistance"
                             min={-maxVal}
                             max={maxVal}
-                            value={state.lightDistance}
+                            value={this.state.lightDistance}
                             onChange={this.handleChange} />
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Light Intensity</label>
+                    <label className="label">Camera Zoom</label>
                     <NumberInput
-                        name="lightIntensity"
+                        name="cameraZoom"
                         size="3"
                         min={0}
-                        max={10.0}
-                        step={0.1}
-                        value={state.lightIntensity}
+                        max={1000}
+                        value={this.state.cameraZoom}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="lightIntensity"
+                            name="cameraZoom"
                             min={0}
-                            max={10.0}
-                            step={0.1}
-                            value={state.lightIntensity}
+                            max={1000}
+                            value={this.state.cameraZoom}
                             onChange={this.handleChange} />
                     </div>
                 </div>

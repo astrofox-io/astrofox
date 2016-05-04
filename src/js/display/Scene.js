@@ -1,24 +1,26 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var NodeCollection = require('../core/NodeCollection.js');
-var Display = require('../display/Display.js');
-var Effect = require('../effects/Effect.js');
-var Composer = require('../graphics/Composer.js');
-var TexturePass = require('../graphics/TexturePass.js');
-var FrameBuffer = require('../graphics/FrameBuffer.js');
+const _ = require('lodash');
+const THREE = require('three');
+const NodeCollection = require('../core/NodeCollection.js');
+const Display = require('../display/Display.js');
+const Effect = require('../effects/Effect.js');
+const Composer = require('../graphics/Composer.js');
+const TexturePass = require('../graphics/TexturePass.js');
+const FrameBuffer = require('../graphics/FrameBuffer.js');
 
-var defaults = {
+const defaults = {
     blendMode: 'Normal',
     opacity: 1.0,
     lightIntensity: 1.0,
-    lightDistance: 500
+    lightDistance: 500,
+    cameraZoom: 250
 };
 
 const FOV = 45;
-const NEAR = 0.1;
-const FAR = 1000;
+const NEAR = 1;
+const FAR = 10000;
+const CAMERA_POS_Z = 250;
 
 var Scene = function(name, options) {
     Display.call(this, 'Scene', defaults);
@@ -44,6 +46,10 @@ Scene.prototype = _.create(Display.prototype, {
             if (this.lights && (options.lightDistance !== undefined || options.lightIntensity !== undefined)) {
                 this.updateLights();
             }
+
+            if (options.cameraZoom !== undefined) {
+                this.camera.position.z = options.cameraZoom;
+            }
         }
 
         return changed;
@@ -54,8 +60,10 @@ Scene.prototype = _.create(Display.prototype, {
 
         this.composer = new Composer(stage.renderer);
         this.graph = new THREE.Scene();
+
         this.camera = new THREE.PerspectiveCamera(FOV, size.width/size.height, NEAR, FAR);
-        this.camera.position.set(0, 0, 0.5 * FAR);
+        this.camera.position.set(0, 0, CAMERA_POS_Z);
+
         this.lights = [
             new THREE.PointLight(0xffffff, 1, 0),
             new THREE.PointLight(0xffffff, 1, 0),
@@ -63,10 +71,11 @@ Scene.prototype = _.create(Display.prototype, {
         ];
 
         this.graph.add(this.camera);
+        this.graph.add(this.lights[0]);
+        this.graph.add(this.lights[1]);
+        this.graph.add(this.lights[2]);
 
-        this.lights.forEach(function(light) {
-            this.graph.add(light);
-        }.bind(this));
+        //this.graph.fog = new THREE.Fog(0x000000, NEAR, FAR);
 
         this.updatePasses();
         this.updateLights();

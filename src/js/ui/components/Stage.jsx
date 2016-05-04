@@ -28,6 +28,10 @@ var Stage = React.createClass({
         Application.startRender();
     },
 
+    handleMouseDown: function(e) {
+        e.preventDefault();
+    },
+
     handleDragOver: function(e){
         e.stopPropagation();
         e.preventDefault();
@@ -54,6 +58,7 @@ var Stage = React.createClass({
 
         return (
             <div className="scene"
+                onMouseDown={this.handleMouseDown}
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
                 <div ref="viewport" className="viewport" style={style}>

@@ -12,7 +12,7 @@ var ToggleInput = require('../inputs/ToggleInput.jsx');
 
 var defaults = {
     shape: 'Box',
-    shader: 'Normal',
+    shader: 'Standard',
     shading: 'Smooth',
     x: 0,
     y: 0,
@@ -43,7 +43,10 @@ var shaders = [
     'Basic',
     'Lambert',
     'Phong',
-    'Depth'
+    'Depth',
+    'Standard',
+    'Physical',
+    'Points'
 ];
 
 var shading = [
@@ -145,6 +148,13 @@ var GeometryControl = React.createClass({
                     <ToggleInput
                         name="edges"
                         value={state.edges}
+                        onChange={this.handleChange} />
+                </div>
+                <div className="row">
+                    <label className="label">Edge Color</label>
+                    <ColorInput
+                        name="edgeColor"
+                        value={state.edgeColor}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">

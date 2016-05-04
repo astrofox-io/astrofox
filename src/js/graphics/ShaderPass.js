@@ -40,7 +40,7 @@ ShaderPass.prototype = _.create(ComposerPass.prototype, {
         var uniforms = this.uniforms;
 
         for (var prop in props) {
-            if (uniforms.hasOwnProperty(prop)) {
+            if (props.hasOwnProperty(prop) && uniforms.hasOwnProperty(prop)) {
                 if (uniforms[prop].value != null && typeof uniforms[prop].value.set !== 'undefined') {
                     uniforms[prop].value.set.apply(uniforms[prop].value, props[prop]);
                 }

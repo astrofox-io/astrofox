@@ -1,26 +1,20 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var Effect = require('../effects/Effect.js');
-var BoxBlurShader = require('../shaders/BoxBlurShader.js');
-var CircularBlurShader = require('../shaders/CircularBlurShader.js');
-var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
-var ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
-var CopyShader = require('../shaders/CopyShader.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var MultiPass = require('../graphics/MultiPass.js');
+const _ = require('lodash');
+const Effect = require('../effects/Effect.js');
+const BoxBlurShader = require('../shaders/BoxBlurShader.js');
+const CircularBlurShader = require('../shaders/CircularBlurShader.js');
+const GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
+const ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const MultiPass = require('../graphics/MultiPass.js');
 
-var RGBShiftShader = require('../shaders/RGBShiftShader.js');
-var DotScreenShader = require('../shaders/DotScreenShader.js');
-var MirrorShader = require('../shaders/MirrorShader.js');
-
-var defaults = {
+const defaults = {
     type: 'Gaussian',
     amount: 1.0
 };
 
-var shaders = {
+const shaders = {
     Box: BoxBlurShader,
     Circular: CircularBlurShader,
     Gaussian: GaussianBlurShader,
