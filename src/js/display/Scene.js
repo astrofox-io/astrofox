@@ -47,7 +47,7 @@ Scene.prototype = _.create(Display.prototype, {
                 this.updateLights();
             }
 
-            if (options.cameraZoom !== undefined) {
+            if (this.camera && options.cameraZoom !== undefined) {
                 this.camera.position.z = options.cameraZoom;
             }
         }
