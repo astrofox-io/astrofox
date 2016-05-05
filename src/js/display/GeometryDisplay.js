@@ -6,22 +6,7 @@ const Display = require('../display/Display.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
 const PointShader = require('../shaders/PointShader.js');
 
-const defaults = {
-    shape: 'Box',
-    shader: 'Standard',
-    shading: 'Smooth',
-    color: '#ffffff',
-    x: 0,
-    y: 0,
-    z: 0,
-    wireframe: false,
-    edges: false,
-    edgeColor: '#ffffff',
-    opacity: 1.0,
-    startX: 0,
-    startY: 0,
-    startZ: 0
-};
+const config = require('../props/Geometry.json');
 
 const materials = {
     Normal: THREE.MeshNormalMaterial,
@@ -40,11 +25,10 @@ const shading = {
 };
 
 const CIRCLE_SPRITE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA00lEQVRYw92XsQ3EIAxFmYAqO13HDDdABmEbWkq2oKPLCrQ+n+Qiiox0IQQ796XfIEBPYIxtAMBI2jwJwKId2qMjuqArudCYpzl2JMCCXtEJfleiNctVgBc6QL8C7dEF8EZnuK5Me50C+C7YYJy2FkTr2DOMV+augwu4APcpHAPzCLDC/VpbAPbkU+tV2ueJPYCDeXIcgJ8I4DmAOBEgcgBlIkDhAOpEgKoSQPwKxINQ/BmKJyLxVCz+Gan4jsULEhUlmYqiVEVZrqIxUdGa/Xd3/AFAB1kjvlZTLAAAAABJRU5ErkJggg==';
-//const CIRCLE_SPRITE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAjgABBuQAAHhPAABF6gABEKcAADfcAAAV35+UbgAAABAwSURBVHgBACAQ3+8B////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAABAAAAAOgAAADAAAAAmAAAAGAAAAAAAAADoAAAA2gAAANAAAADGAAAAwAAAAPIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////AP///wD///8A////AP///wD///8A////AP///wD///8U////bP///8D/////////////////////////////////////////////////////////wP///2z///8U////AP///wD///8A////AP///wD///8A////AP///wAA////AP///wD///8A////AP///wD///8A////AP///0f///+v//////////////////////////////////////////////////////////////////////////////+v////R////wD///8A////AP///wD///8A////AP///wAA////AP///wD///8A////AP///wD///8A////YP///9f/////////////////////////////////////////////////////////////////////////////////////////1////2D///8A////AP///wD///8A////AP///wAA////AP///wD///8A////AP///wD///9g////5f///////////////////////////////////////////////////////////////////////////////////////////////////+X///9g////AP///wD///8A////AP///wAA////AP///wD///8A////AP///0f////X///////////////////////////////////////////////////////////////////////////////////////////////////////////////X////R////wD///8A////AP///wAA////AP///wD///8A////FP///6//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////r////xT///8A////AP///wAA////AP///wD///8A////bP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2z///8A////AP///wACAAAAAAAAAAAAAAAOAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFQAAAAOAAAAAAAAAAACAAAAAAAAAAAAAABAAAAAPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8AAABAAAAAAAAAAAACAAAAAAAAAAAAAAA6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6AAAAAAAAAAACAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAACAAAAAAAAAAAAAAAmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmAAAAAAAAAAAB////AAAAAAAAAAD2AAAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD3AAAACgAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAADoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADoAAAAAAAAAAACAAAAAAAAAAAAAADaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAAAAAAAAACAAAAAAAAAAAAAADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADQAAAAAAAAAAACAAAAAAAAAAAAAADGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADGAAAAAAAAAAACAAAAAAAAAAAAAADAAAAAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMEAAADAAAAAAAAAAAACAAAAAAAAAAAAAADyAAAArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAADyAAAAAAAAAAAA////AP///wD///8A////FP///6//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////r////xT///8A////AP///wACAAAAAAAAAAAAAAAAAAAA7AAAAJgAAADYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADYAAAAmAAAAOwAAAAAAAAAAAAAAAAA////AP///wD///8A////AP///wD///9g////5f///////////////////////////////////////////////////////////////////////////////////////////////////+X///9g////AP///wD///8A////AP///wAA////AP///wD///8A////AP///wD///8A////YP///9f/////////////////////////////////////////////////////////////////////////////////////////1////2D///8A////AP///wD///8A////AP///wAA////AP///wD///8A////AP///wD///8A////AP///0f///+v//////////////////////////////////////////////////////////////////////////////+v////R////wD///8A////AP///wD///8A////AP///wAA////AP///wD///8A////AP///wD///8A////AP///wD///8U////bP///8D/////////////////////////////////////////////////////////wP///2z///8U////AP///wD///8A////AP///wD///8A////AP///wAB////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAABAAAAAOgAAADAAAAAmAAAAGAAAAAAAAADoAAAA2gAAANAAAADGAAAAwAAAAPIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAD//9+ajorOUQS2AAAAAElFTkSuQmCC';
 const POINT_SIZE = 5;
 
 var GeometryDisplay = function(options) {
-    Display.call(this, 'GeometryDisplay', defaults);
+    Display.call(this, 'GeometryDisplay', config.options);
 
     this.update(options);
 };
@@ -61,7 +45,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
 
         if (changed) {
             if (options.shape !== undefined ||
-                options.shader !== undefined ||
+                options.material !== undefined ||
                 options.shading !== undefined ||
                 options.lines !== undefined ||
                 options.edges !== undefined ||
@@ -74,12 +58,17 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
             }
             else if (options.opacity !== undefined) {
                 this.material.opacity = options.opacity;
+
+                if (this.options.material == 'Points') {
+                    this.material.uniforms.opacity.value = options.opacity;
+                }
+
                 this.material.needsUpdate = true;
             }
             else if (options.color !== undefined) {
                 this.material.color = new THREE.Color().set(options.color);
 
-                if (this.options.shader == 'Points') {
+                if (this.options.material == 'Points') {
                     this.material.uniforms.color.value = this.material.color;
                 }
 
@@ -180,7 +169,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         }
 
         // Special handling for flat shading
-        if (options.shading === 'Flat' && (options.shader === 'Normal' || options.shader === 'Lambert')) {
+        if (options.shading === 'Flat' && (options.material === 'Normal' || options.material === 'Lambert')) {
             geometry.computeFaceNormals();
 
             if (geometry.faces) {
@@ -191,7 +180,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         }
 
         // Add edges
-        if (options.edges && !options.wireframe && options.shader !== 'Points') {
+        if (options.edges && options.material !== 'Points') {
             mesh.add(new THREE.LineSegments(
                 new THREE.EdgesGeometry(geometry, 2),
                 new THREE.LineBasicMaterial({
@@ -203,7 +192,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         }
 
         // Create mesh
-        if (options.shader === 'Points') {
+        if (options.material === 'Points') {
             var color = new THREE.Color().set(options.color);
             var vertices = geometry.vertices;
             var positions = new Float32Array(vertices.length * 3);
@@ -230,6 +219,7 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
 
             material.uniforms['tDiffuse'].value = this.sprite;
             material.uniforms['color'].value = color;
+            material.uniforms['opacity'].value = options.opacity;
             material.needsUpdate = true;
             material.transparent = true;
 
@@ -238,14 +228,14 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         else {
             geometry = new THREE.BufferGeometry().fromGeometry(geometry);
 
-            material = new materials[options.shader]();
+            material = new materials[options.material]();
             material.shading = shading[options.shading];
             material.color = new THREE.Color().set(options.color);
             material.opacity = options.opacity;
             material.wireframe = options.wireframe;
             material.needsUpdate = true;
             material.transparent = true;
-            material.side = (options.shader == 'Basic') ? THREE.FrontSide : THREE.DoubleSide;
+            material.side = (options.material == 'Basic') ? THREE.FrontSide : THREE.DoubleSide;
 
             mesh.add(new THREE.Mesh(geometry, material));
         }

@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require('react');
-var Application = require('../../core/Application.js');
 
 var ColorInput = require('../inputs/ColorInput.jsx');
 var NumberInput = require('../inputs/NumberInput.jsx');
@@ -10,53 +9,11 @@ var SelectInput = require('../inputs/SelectInput.jsx');
 var TextInput = require('../inputs/TextInput.jsx');
 var ToggleInput = require('../inputs/ToggleInput.jsx');
 
-var defaults = {
-    shape: 'Box',
-    shader: 'Standard',
-    shading: 'Smooth',
-    x: 0,
-    y: 0,
-    z: 0,
-    wireframe: false,
-    edges: false,
-    color: '#FFFFFF',
-    edgeColor: '#FFFFFF',
-    opacity: 1.0,
-    startX: 0,
-    startY: 0,
-    startZ: 0
-};
-
-var shapes = [
-    'Box',
-    'Sphere',
-    'Dodecahedron',
-    'Icosahedron',
-    'Octahedron',
-    'Tetrahedron',
-    'Torus',
-    'Torus Knot'
-];
-
-var shaders = [
-    'Normal',
-    'Basic',
-    'Lambert',
-    'Phong',
-    'Depth',
-    'Standard',
-    'Physical',
-    'Points'
-];
-
-var shading = [
-    'Smooth',
-    'Flat'
-];
+var config = require('../../props/Geometry.json');
 
 var GeometryControl = React.createClass({
     getInitialState: function() {
-        return defaults;
+        return config.options;
     },
 
     componentWillMount: function() {
@@ -107,17 +64,17 @@ var GeometryControl = React.createClass({
                     <SelectInput
                         name="shape"
                         size="20"
-                        items={shapes}
+                        items={config.shapes}
                         value={state.shape}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Shader</label>
+                    <label className="label">Material</label>
                     <SelectInput
-                        name="shader"
+                        name="material"
                         size="20"
-                        items={shaders}
-                        value={state.shader}
+                        items={config.materials}
+                        value={state.material}
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">
@@ -125,7 +82,7 @@ var GeometryControl = React.createClass({
                     <SelectInput
                         name="shading"
                         size="20"
-                        items={shading}
+                        items={config.shading}
                         value={state.shading}
                         onChange={this.handleChange} />
                 </div>
