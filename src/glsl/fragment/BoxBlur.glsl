@@ -5,7 +5,6 @@ uniform vec2 resolution;
 varying vec2 vUv;
 
 void main() {
-    vec4 src = texture2D(tDiffuse, vUv);
     vec4 sum = vec4(0.0);
     float h = amount / resolution.x;
     float v = amount / resolution.y;

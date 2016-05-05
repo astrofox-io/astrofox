@@ -6,6 +6,7 @@ var EffectsLibrary = require('../lib/EffectsLibrary.js');
 var ControlLibrary = require('../lib/ControlLibrary.js');
 var Scene = require('../display/Scene.js');
 var SceneControl = require('../ui/controls/SceneControl.jsx');
+var EmptyControl = require('../ui/controls/EmptyControl.jsx');
 
 var ControlLoader = {
     getControl: function(obj) {
@@ -24,6 +25,8 @@ var ControlLoader = {
                 return false;
             }
         }, this);
+
+        if (!control) control = EmptyControl;
 
         return control;
     }

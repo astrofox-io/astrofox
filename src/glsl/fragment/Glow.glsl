@@ -35,5 +35,5 @@ void main() {
 
     gl_FragColor = vec4(mix(src.rgb, sum.rgb, 0.6) * intensity, sum.a);
     //gl_FragColor = vec4(mix(src, sum, 0.6) * intensity);
-    gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
+    //gl_FragColor = sum * intensity;
 }
