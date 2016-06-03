@@ -4,7 +4,7 @@ var ShaderCode = require('./ShaderCode.js');
 var PixelateShader = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
-        amount: { type: 'f', value: 100 },
+        size: { type: 'f', value: 10 },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 

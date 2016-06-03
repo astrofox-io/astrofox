@@ -1,19 +1,22 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var SelectInput = require('../inputs/SelectInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const SelectInput = require('../inputs/SelectInput.jsx');
 
-var defaults = {
+const defaults = {
     type: 'Square',
     size: 10
 };
 
-var types = [
+const types = [
     'Square',
     'Hexagon'
 ];
+
+const MIN_PIXEL_SIZE = 2;
+const MAX_PIXEL_SIZE = 240;
 
 var PixelateControl = React.createClass({
     getInitialState: function() {
@@ -76,14 +79,14 @@ var PixelateControl = React.createClass({
                         name="size"
                         size="3"
                         value={this.state.size}
-                        min={2}
-                        max={200}
+                        min={MIN_PIXEL_SIZE}
+                        max={MAX_PIXEL_SIZE}
                         onChange={this.handleChange} />
                     <div className="input flex">
                         <RangeInput
                             name="size"
-                            min={2}
-                            max={200}
+                            min={MIN_PIXEL_SIZE}
+                            max={MAX_PIXEL_SIZE}
                             value={this.state.size}
                             onChange={this.handleChange} />
                     </div>

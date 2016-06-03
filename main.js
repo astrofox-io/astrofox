@@ -3,7 +3,14 @@ const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 
 // Report crashes to our server.
-electron.crashReporter.start();
+/*
+electron.crashReporter.start({
+    productName: 'YourName',
+    companyName: 'YourCompany',
+    submitURL: 'https://your-domain.com/url-to-submit',
+    autoSubmit: true
+});
+*/
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -17,7 +24,7 @@ app.on('window-all-closed', function() {
 });
 
 // Enable WebGL 2
-app.commandLine.appendSwitch('enable-unsafe-es3-apis');
+//app.commandLine.appendSwitch('enable-unsafe-es3-apis');
 
 // This method will be called when atom-shell has done everything
 // initialization and ready for creating browser windows.

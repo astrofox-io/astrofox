@@ -51,9 +51,7 @@ PixelateEffect.prototype = _.create(Effect.prototype, {
 
     updateScene: function(scene) {
         if (this.hasUpdate) {
-            var amount = (854 / this.options.size);
-
-            this.pass.setUniforms({ amount: amount });
+            this.pass.setUniforms({ size: this.options.size });
 
             this.hasUpdate = false;
         }
