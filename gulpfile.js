@@ -2,11 +2,12 @@
 
 const gulp = require('gulp');
 const concat = require('gulp-concat');
+const cleancss = require('gulp-clean-css');
 const duration = require('gulp-duration');
 const exit = require('gulp-exit');
 const iconfont = require('gulp-iconfont');
 const less = require('gulp-less');
-const cleancss = require('gulp-clean-css');
+const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
 const template = require('gulp-template');
 const uglify = require('gulp-uglify');
@@ -39,24 +40,30 @@ var appBundle = browserify({
 
 /*** Functions ***/
 
-function bundle(watch) {
+function build(bundle, src, dest, watch, min) {
     let timer = duration('bundle time');
+
     let b = (watch) ?
-        watchify(appBundle)
+        watchify(bundle)
             .on('update', function(ids) {
                 util.log(ids);
-                bundle();
+                build(bundle, src, dest, watch, min);
             }) :
-        appBundle;
+        bundle;
+
+    let minify = (min) ? uglify : util.noop;
 
     return b.bundle()
         .on('error', function(err){
             util.log(util.colors.red(err.message));
         })
+        .pipe(plumber())
         .pipe(timer)
-        .pipe(source('app.js'))
+        .pipe(source(src))
         .pipe(buffer())
-        .pipe(gulp.dest('./build'));
+        .pipe(minify())
+        .pipe(plumber.stop())
+        .pipe(gulp.dest(dest));
 }
 
 function getNPMPackageIds() {
@@ -67,16 +74,13 @@ function getNPMPackageIds() {
 
 /*** Tasks ***/
 
-// Builds application
-gulp.task('build', function() {
-    return bundle();
-});
-
 // Builds separate vendor library
 gulp.task('build-vendor', function() {
     let b = browserify({
         debug: false
     });
+
+    let minify = (process.env.NODE_ENV === 'production') ? uglify : util.noop;
 
     b.transform(envify({
         _: 'purge',
@@ -90,8 +94,8 @@ gulp.task('build-vendor', function() {
     return b.bundle()
         .pipe(source('vendor.js'))
         .pipe(buffer())
-        //.pipe(uglify())
-        .pipe(gulp.dest('./build'));
+        .pipe(minify())
+        .pipe(gulp.dest('build'));
 });
 
 // Builds application only library
@@ -100,7 +104,7 @@ gulp.task('build-app', function() {
         appBundle.external(id);
     });
 
-    return bundle(false);
+    return build(appBundle, 'app.js', 'build', false, true);
 });
 
 // Builds application and watches for changes
@@ -109,7 +113,7 @@ gulp.task('build-watch', function() {
         appBundle.external(id);
     });
 
-    return bundle(true);
+    return build(appBundle, 'app.js', 'build', true, false);
 });
 
 // Compile LESS into CSS

@@ -33,15 +33,16 @@ app.on('ready', function() {
     mainWindow = new BrowserWindow({
         width: 1320,
         height: 1200,
-        'min-width': 400,
-        'min-height': 200,
-        x: 100,
+        minWidth: 200,
+        minHeight: 100,
         frame: false,
-        'web-preferences': {
-            'web-security': false,
-            'webgl': true
+        backgroundColor: '#222222',
+        webPreferences: {
+            webSecurity: false,
+            webgl: true,
+            experimentalCanvasFeatures: true
         },
-        'background-color': '#222222'
+        titleBarStyle: 'hidden-inset'
     });
 
     // Debugging

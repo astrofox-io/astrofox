@@ -4,7 +4,9 @@ const defaults = {
     showControlDock: true
 };
 
-module.exports = function(state = defaults, action) {
+module.exports = function(state, action) {
+    if (!state) state = defaults;
+
     console.log(state, action);
 
     switch (action.type) {
