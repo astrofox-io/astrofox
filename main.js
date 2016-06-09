@@ -23,8 +23,15 @@ app.on('window-all-closed', function() {
     }
 });
 
-// Enable WebGL 2
+// Chrome flags
+// WebGL 2
 //app.commandLine.appendSwitch('enable-unsafe-es3-apis');
+
+// GPU rasterization
+//app.commandLine.appendSwitch('force-gpu-rasterization');
+
+// Disable background throttling
+//app.commandLine.appendSwitch('disable-renderer-background');
 
 // This method will be called when atom-shell has done everything
 // initialization and ready for creating browser windows.

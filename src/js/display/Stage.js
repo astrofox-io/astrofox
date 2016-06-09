@@ -9,14 +9,6 @@ var Composer = require('../graphics/Composer.js');
 var FrameBuffer = require('../graphics/FrameBuffer.js');
 
 var Stage = function() {
-    this.stats = {
-        fps: 0,
-        ms: 0,
-        time: 0,
-        frames: 0,
-        stack: []
-    };
-    
     this.scenes = new NodeCollection();
 
     this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
@@ -85,32 +77,6 @@ Stage.prototype = _.create(NodeCollection.prototype, {
         if (callback) callback(buffer);
     },
 
-    updateFPS: function() {
-        var now = window.performance.now(),
-            stats = this.stats;
-
-        if (!stats.time) {
-            stats.time = now;
-        }
-
-        stats.frames += 1;
-
-        if (now > stats.time + 1000) {
-            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
-            stats.ms = (now - stats.time) / stats.frames;
-            stats.time = now;
-            stats.frames = 0;
-
-            stats.stack.push(stats.fps);
-
-            if (stats.stack.length > 10) {
-                stats.stack.shift();
-            }
-
-            this.emit('tick', stats);
-        }
-    },
-
     toJSON: function() {
         var scenes = this.scenes.map(function(scene) {
             return scene.toJSON();
@@ -143,8 +109,6 @@ Stage.prototype = _.create(NodeCollection.prototype, {
         }, this);
 
         composer.renderToScreen();
-
-        this.updateFPS();
 
         if (callback) callback();
     }

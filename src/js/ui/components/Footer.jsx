@@ -6,15 +6,13 @@ var Application = require('../../core/Application.js');
 var Footer = React.createClass({
     getInitialState: function() {
         return {
-            stats: {
-                fps: 0
-            }
+            fps: 0
         };
     },
 
     componentDidMount: function() {
-        Application.stage.on('tick', function(stats) {
-            this.setState({ stats: stats });
+        Application.on('tick', function(stats) {
+            this.setState({ fps: stats.fps });
         }, this);
     },
 
@@ -22,7 +20,7 @@ var Footer = React.createClass({
         return (
             <div id="footer">
                 <div className="filename flex">{this.props.filename}</div>
-                <div className="fps">{this.state.stats.fps} FPS</div>
+                <div className="fps">{this.state.fps} FPS</div>
                 <div className="version">v1.0</div>
             </div>
         );

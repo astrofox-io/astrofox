@@ -29,6 +29,7 @@ var Application = function() {
 
     this.audioContext = new window.AudioContext();
     this.audioFile = null;
+    this.renderTime = null;
 
     this.player = new Player(this.audioContext);
     this.stage = new Stage();
@@ -38,6 +39,14 @@ var Application = function() {
 
     this.player.on('play', this.updateAnalyzer.bind(this));
     this.player.on('stop', this.updateAnalyzer.bind(this));
+
+    this.stats = {
+        fps: 0,
+        ms: 0,
+        time: 0,
+        frames: 0,
+        stack: []
+    };
 };
 
 Application.prototype = _.create(EventEmitter.prototype, {
@@ -123,18 +132,47 @@ Application.prototype = _.create(EventEmitter.prototype, {
         };
     },
 
-    render: function(timestamp) {
+    updateFPS: function() {
         var now = window.performance.now(),
-            id = window.requestAnimationFrame(this.render.bind(this, now)),
+            stats = this.stats;
+
+        if (!stats.time) {
+            stats.time = now;
+        }
+
+        stats.frames += 1;
+
+        if (now > stats.time + 1000) {
+            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.ms = (now - stats.time) / stats.frames;
+            stats.time = now;
+            stats.frames = 0;
+
+            stats.stack.push(stats.fps);
+
+            if (stats.stack.length > 10) {
+                stats.stack.shift();
+            }
+
+            this.emit('tick', stats);
+        }
+    },
+
+    render: function() {
+        var now = window.performance.now(),
+            id = window.requestAnimationFrame(this.render.bind(this)),
             data = this.getFrameData();
 
-        data.delta = now - timestamp;
+        data.delta = now - this.renderTime;
 
         this.stage.renderFrame(data);
 
         this.emit('render', data);
 
+        this.updateFPS();
+
         this.requestId = id;
+        this.renderTime = now;
     },
 
     saveImage: function(filename) {

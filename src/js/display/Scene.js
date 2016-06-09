@@ -7,7 +7,6 @@ const Display = require('../display/Display.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
 const TexturePass = require('../graphics/TexturePass.js');
-const FrameBuffer = require('../graphics/FrameBuffer.js');
 
 const defaults = {
     blendMode: 'Normal',
