@@ -18,10 +18,9 @@ const glslify = require('glslify');
 const babelify = require('babelify');
 const watchify = require('watchify');
 const envify = require('loose-envify/custom');
-
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
-const nodeResolve = require('resolve');
+const resolve = require('resolve');
 
 const _ = require('lodash');
 
@@ -47,7 +46,7 @@ function build(bundle, src, dest, watch, min) {
         watchify(bundle)
             .on('update', function(ids) {
                 util.log(ids);
-                build(bundle, src, dest, watch, min);
+                build(bundle, src, dest, false, min);
             }) :
         bundle;
 
@@ -76,26 +75,20 @@ function getNPMPackageIds() {
 
 // Builds separate vendor library
 gulp.task('build-vendor', function() {
-    let b = browserify({
+    let vendorBundle = browserify({
         debug: false
     });
 
-    let minify = (process.env.NODE_ENV === 'production') ? uglify : util.noop;
-
-    b.transform(envify({
+    vendorBundle.transform(envify({
         _: 'purge',
         NODE_ENV: process.env.NODE_ENV || 'development'
     }), { global:true });
 
     getNPMPackageIds().forEach(function(id) {
-        b.require(nodeResolve.sync(id), { expose: id });
+        vendorBundle.require(resolve.sync(id), { expose: id });
     });
 
-    return b.bundle()
-        .pipe(source('vendor.js'))
-        .pipe(buffer())
-        .pipe(minify())
-        .pipe(gulp.dest('build'));
+    return build(vendorBundle, 'vendor.js', 'build', false, (process.env.NODE_ENV === 'production'));
 });
 
 // Builds application only library
