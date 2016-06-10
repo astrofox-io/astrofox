@@ -132,9 +132,8 @@ Application.prototype = _.create(EventEmitter.prototype, {
         };
     },
 
-    updateFPS: function() {
-        var now = window.performance.now(),
-            stats = this.stats;
+    updateFPS: function(now) {
+        var stats = this.stats;
 
         if (!stats.time) {
             stats.time = now;
@@ -169,7 +168,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
         this.emit('render', data);
 
-        this.updateFPS();
+        this.updateFPS(now);
 
         this.requestId = id;
         this.renderTime = now;
