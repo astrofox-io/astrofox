@@ -1,43 +1,16 @@
 const electron = require('electron');
-const app = electron.app;  // Module to control application life.
-const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
-
-// Report crashes to our server.
-/*
-electron.crashReporter.start({
-    productName: 'YourName',
-    companyName: 'YourCompany',
-    submitURL: 'https://your-domain.com/url-to-submit',
-    autoSubmit: true
-});
-*/
+// Module to control application life.
+const {app} = electron;
+// Module to create native browser window.
+const {BrowserWindow} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
+// be closed automatically when the JavaScript object is garbage collected.
+let win;
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function() {
-    if (process.platform != 'darwin') {
-        app.quit();
-    }
-});
-
-// Chrome flags
-// WebGL 2
-//app.commandLine.appendSwitch('enable-unsafe-es3-apis');
-
-// GPU rasterization
-//app.commandLine.appendSwitch('force-gpu-rasterization');
-
-// Disable background throttling
-//app.commandLine.appendSwitch('disable-renderer-background');
-
-// This method will be called when atom-shell has done everything
-// initialization and ready for creating browser windows.
-app.on('ready', function() {
+function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({
+    win = new BrowserWindow({
         width: 1320,
         height: 1200,
         minWidth: 200,
@@ -47,22 +20,59 @@ app.on('ready', function() {
         webPreferences: {
             webSecurity: false,
             webgl: true,
+            textAreasAreResizable: false,
             experimentalCanvasFeatures: true
         },
         titleBarStyle: 'hidden-inset'
     });
 
-    // Debugging
-    mainWindow.openDevTools({ detach: true });
-
     // and load the index.html of the app.
-    mainWindow.loadURL('file://' + __dirname + '/index.html');
+    win.loadURL(`file://${__dirname}/index.html`);
+
+    // Open the DevTools.
+    win.webContents.openDevTools({ detach: true });
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
+    win.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        mainWindow = null;
+        win = null;
     });
+}
+
+// Chrome flags
+// WebGL 2
+//app.commandLine.appendSwitch('enable-unsafe-es3-apis');
+
+// GPU rasterization
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+
+// Disable background throttling
+//app.commandLine.appendSwitch('disable-renderer-background');
+
+// Number of raster threads
+app.commandLine.appendSwitch('num-raster-threads', 4);
+
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow);
+
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (win === null) {
+        createWindow();
+    }
 });
