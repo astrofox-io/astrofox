@@ -30,6 +30,7 @@ var ShaderPass = function(shader, options) {
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
     this.mesh = new THREE.Mesh(this.geometry, null);
+    this.mesh.material = this.material;
     this.scene.add(this.mesh);
 };
 
@@ -59,8 +60,6 @@ ShaderPass.prototype = _.create(ComposerPass.prototype, {
         if (readBuffer && this.material.uniforms[options.textureId] ) {
             this.material.uniforms[options.textureId].value = readBuffer;
         }
-
-        this.mesh.material = this.material;
 
         this.render(renderer, this.scene, this.camera, writeBuffer);
     }

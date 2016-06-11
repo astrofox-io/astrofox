@@ -29,7 +29,6 @@ var Application = function() {
 
     this.audioContext = new window.AudioContext();
     this.audioFile = null;
-    this.renderTime = null;
 
     this.player = new Player(this.audioContext);
     this.stage = new Stage();
@@ -46,6 +45,15 @@ var Application = function() {
         time: 0,
         frames: 0,
         stack: []
+    };
+
+    this.frameData = {
+        id: -1,
+        time: 0,
+        delta: 0,
+        fft: null,
+        td: null,
+        playing: false
     };
 };
 
@@ -124,12 +132,13 @@ Application.prototype = _.create(EventEmitter.prototype, {
     },
 
     getFrameData: function() {
-        return {
-            delta: 0,
-            fft: this.spectrum.getFrequencyData(),
-            td: this.spectrum.getTimeData(),
-            playing: this.player.isPlaying()
-        };
+        var data = this.frameData;
+
+        data.fft = this.spectrum.getFrequencyData();
+        data.td = this.spectrum.getTimeData();
+        data.playing = this.player.isPlaying();
+
+        return data;
     },
 
     updateFPS: function(now) {
@@ -162,16 +171,15 @@ Application.prototype = _.create(EventEmitter.prototype, {
             id = window.requestAnimationFrame(this.render.bind(this)),
             data = this.getFrameData();
 
-        data.delta = now - this.renderTime;
+        data.delta = now - data.time;
+        data.time = now;
+        data.id = id;
 
         this.stage.renderFrame(data);
 
         this.emit('render', data);
 
         this.updateFPS(now);
-
-        this.requestId = id;
-        this.renderTime = now;
     },
 
     saveImage: function(filename) {

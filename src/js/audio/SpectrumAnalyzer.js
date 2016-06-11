@@ -12,6 +12,8 @@ var defaults = {
 var SpectrumAnalyzer = function(context) {
     this.audioContext = context;
     this.analyzer = _.extend(context.createAnalyser(), defaults);
+    this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
+    this.td = new Float32Array(this.analyzer.frequencyBinCount);
     this.enabled = true;
 };
 
@@ -20,7 +22,7 @@ SpectrumAnalyzer.prototype = {
 
     getFrequencyData: function() {
         var analyzer = this.analyzer,
-            fft = new Uint8Array(analyzer.frequencyBinCount);
+            fft = this.fft;
 
         if (this.enabled) {
             analyzer.getByteFrequencyData(fft);
@@ -31,13 +33,13 @@ SpectrumAnalyzer.prototype = {
 
     getTimeData: function() {
         var analyzer = this.analyzer,
-            data = new Float32Array(analyzer.frequencyBinCount);
+            td = this.td;
 
         if (this.enabled) {
-            analyzer.getFloatTimeDomainData(data);
+            analyzer.getFloatTimeDomainData(td);
         }
 
-        return data;
+        return td;
     },
 
     getMaxFrequency: function() {
