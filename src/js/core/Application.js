@@ -359,6 +359,8 @@ Application.prototype = _.create(EventEmitter.prototype, {
             sound = player.getSound('audio');
 
         if (sound) {
+            spectrum.clearFrequencyData();
+            spectrum.clearTimeData();
             spectrum.enabled = (sound.playing || sound.paused);
         }
     },

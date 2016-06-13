@@ -42,6 +42,14 @@ SpectrumAnalyzer.prototype = {
         return td;
     },
 
+    clearFrequencyData: function() {
+        this.fft.fill(0);
+    },
+
+    clearTimeData: function(data) {
+        this.td.fill(0);
+    },
+
     getMaxFrequency: function() {
         return this.audioContext.sampleRate / 2;
     }
