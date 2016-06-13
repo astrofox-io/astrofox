@@ -20,7 +20,7 @@ var Wave = React.createClass({
         );
 
         Application.on('render', function(data) {
-            this.display.render(data.td);
+            this.display.render(data.td, data.playing);
         }, this);
     },
 

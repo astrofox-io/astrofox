@@ -55,6 +55,7 @@ var ImageControl = React.createClass({
 
     handleChange: function(name, val) {
         var obj = {},
+            display = this.props.display,
             state = this.state,
             image = this.image,
             src = image.src,
@@ -103,8 +104,6 @@ var ImageControl = React.createClass({
         this.shouldUpdate = true;
 
         this.setState(obj, function() {
-            var display = this.props.display;
-
             display.update(obj);
 
             if (render) {

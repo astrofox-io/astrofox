@@ -73,7 +73,7 @@ var BarSpectrumControl = React.createClass({
 
         this.shouldUpdate = true;
         this.setState(obj, function() {
-            display.update(this.state);
+            display.update(obj);
         });
     },
 

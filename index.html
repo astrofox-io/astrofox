@@ -13,7 +13,9 @@
 <div id="app"></div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.body.className = process.platform;
+    if (typeof process !== 'undefined') {
+        document.body.className = process.platform;
+    }
     AstroFox.start();
 });
 </script>

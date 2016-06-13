@@ -78,15 +78,16 @@ var SceneControl = React.createClass({
     },
 
     handleChange: function(name, val) {
-        var display = this.props.display,
-            obj = {};
+        var obj = {},
+            display = this.props.display;
 
         obj[name] = val;
 
         this.shouldUpdate = true;
 
-        this.setState(obj);
-        display.update(obj);
+        this.setState(obj, function() {
+            display.update(obj);
+        });
     },
 
     render: function() {

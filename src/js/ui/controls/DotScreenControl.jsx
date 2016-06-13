@@ -45,6 +45,7 @@ var DotScreenControl = React.createClass({
         obj[name] = val;
 
         this.shouldUpdate = true;
+        
         this.setState(obj, function() {
             display.update(this.state);
         });

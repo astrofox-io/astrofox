@@ -17,8 +17,8 @@ var defaults = {
 var WaveDisplay = function(canvas, options) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
+    this.buffer = new Float32Array(defaults.width);
     this.options = _.assign({}, defaults);
-    this.buffer = [];
 
     this.update(options);
 };
@@ -30,6 +30,7 @@ WaveDisplay.prototype = {
         if (changed) {
             if (options.width !== undefined) {
                 this.canvas.width = options.width;
+                this.buffer = new Float32Array(options.width);
             }
             if (options.height !== undefined) {
                 this.canvas.height = options.height;
@@ -39,26 +40,24 @@ WaveDisplay.prototype = {
         return changed;
     },
 
-    parseData: function(data, width, height) {
+    parseData: function(buffer, data, width, height) {
         var i, x, y,
             len = data.length,
-            step = len / width,
-            buffer = [];
+            step = len / width;
 
         for (i = 0, x = 0; x < width; i += step, x++) {
             y = ((data[~~i] * height) + height) / 2;
             buffer[x] = y;
         }
-
-        return buffer;
     },
 
     render: function(data, playing) {
-        var i, len, buffer, size, slice,
+        var i, size,
             context = this.context,
             options = this.options,
             width = options.width,
-            height = options.height;
+            height = options.height,
+            buffer = this.buffer;
 
         // Canvas setup
         context.lineWidth = options.lineWidth;
@@ -67,27 +66,18 @@ WaveDisplay.prototype = {
 
         // Get data values
         if (options.scrolling) {
-            if (playing) {
-                buffer = new Array(width);
-                len = this.buffer.length;
+            size = ~~(width * options.scrollSpeed * 0.3);
 
-                for (i = 0; i < len; i++) {
-                    buffer[i] = this.buffer[i];
-                }
-
-                size = ~~(width * options.scrollSpeed * 0.3);
-                slice = this.parseData(data, size, height);
-                buffer = buffer.splice(size);
-                buffer = buffer.concat(slice);
-
-                this.buffer = buffer;
+            // Move all elements down
+            for (i = width; i >= size; i--) {
+                buffer[i] = buffer[i - size];
             }
-            else {
-                buffer = this.buffer;
-            }
+
+            // Insert new slice
+            this.parseData(buffer, data, size, height);
         }
         else {
-            buffer = this.parseData(data, width, height);
+            this.parseData(buffer, data, width, height);
         }
 
         // Draw wave

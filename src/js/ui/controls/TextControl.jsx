@@ -58,16 +58,15 @@ var TextControl = React.createClass({
     },
 
     handleChange: function(name, val) {
-        var obj = {};
+        var obj = {},
+            display = this.props.display;
 
         obj[name] = val;
 
         this.shouldUpdate = true;
 
         this.setState(obj, function() {
-            var display = this.props.display;
-
-            display.update(this.state);
+            display.update(obj);
             display.render();
         });
     },
