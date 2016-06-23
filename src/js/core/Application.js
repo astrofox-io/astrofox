@@ -1,32 +1,35 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
+const remote = window.require('electron').remote;
 
-var EventEmitter = require('../core/EventEmitter.js');
-var Timer = require('../core/Timer.js');
-var Player = require('../audio/Player.js');
-var BufferedSound = require('../audio/BufferedSound.js');
-var SpectrumAnalyzer = require('../audio/SpectrumAnalyzer.js');
-var Stage = require('../display/Stage.js');
-var Scene = require('../display/Scene.js');
-var Display = require('../display/Display.js');
-var DisplayLibrary = require('../lib/DisplayLibrary.js');
-var EffectsLibrary = require('../lib/EffectsLibrary.js');
-var VideoRenderer = require('../video/VideoRenderer.js');
-var IO = require('../IO.js');
+const Window = require('../Window.js');
+const EventEmitter = require('../core/EventEmitter.js');
+const Timer = require('../core/Timer.js');
+const Player = require('../audio/Player.js');
+const BufferedSound = require('../audio/BufferedSound.js');
+const SpectrumAnalyzer = require('../audio/SpectrumAnalyzer.js');
+const Stage = require('../display/Stage.js');
+const Scene = require('../display/Scene.js');
+const Display = require('../display/Display.js');
+const DisplayLibrary = require('../lib/DisplayLibrary.js');
+const EffectsLibrary = require('../lib/EffectsLibrary.js');
+const VideoRenderer = require('../video/VideoRenderer.js');
+const IO = require('../IO.js');
+const MenuItems = require('../../conf/menu.json');
 
-var VERSION = '1.0';
+const VERSION = '1.0';
 
-var defaults = {
+const defaults = {
     fps: 29.97,
     canvasWidth: 854,
     canvasHeight: 480,
     useCompression: false
 };
 
-var Application = function() {
-    this.requestId = null;
+const FPS_POLL_INTERVAL = 500;
 
+var Application = function() {
     this.audioContext = new window.AudioContext();
     this.audioFile = null;
 
@@ -48,7 +51,7 @@ var Application = function() {
     };
 
     this.frameData = {
-        id: -1,
+        id: null,
         time: 0,
         delta: 0,
         fft: null,
@@ -60,7 +63,32 @@ var Application = function() {
 Application.prototype = _.create(EventEmitter.prototype, {
     constructor: Application,
 
+    init: function() {
+        // Create menu for OSX
+        if (process.platform === 'darwin') {
+            const menu = remote.Menu.buildFromTemplate(MenuItems);
+            remote.Menu.setApplicationMenu(menu);
+        }
+
+        this.startRender();
+    },
+
     loadAudioFile: function(file) {
+        this.emit('audio_file_loading');
+
+        this.getAudioData(file)
+            .then(function(data) {
+                return this.loadAudioData(data);
+            }.bind(this))
+            .catch(function(error) {
+                this.emit('error', error);
+            }.bind(this))
+            .then(function() {
+                this.emit('audio_file_loaded');
+            }.bind(this));
+    },
+
+    getAudioData: function(file) {
         return new Promise(function(resolve, reject) {
             var reader = new FileReader(),
                 player = this.player,
@@ -71,6 +99,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
             reader.onload = function(e) {
                 // DEBUG
                 console.log('file loaded', timer.get('file_load'));
+
                 resolve(e.target.result);
             };
 
@@ -119,15 +148,16 @@ Application.prototype = _.create(EventEmitter.prototype, {
     },
 
     startRender: function() {
-        if (!this.requestId) {
+        if (!this.frameData.id) {
             this.render();
         }
     },
 
     stopRender: function() {
-        if (this.requestId) {
-            cancelAnimationFrame(this.requestId);
-            this.requestId = null;
+        var id = this.frameData.id;
+        if (id) {
+            cancelAnimationFrame(id);
+            this.frameData.id = null;
         }
     },
 
@@ -150,7 +180,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
         stats.frames += 1;
 
-        if (now > stats.time + 1000) {
+        if (now > stats.time + FPS_POLL_INTERVAL) {
             stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
             stats.ms = (now - stats.time) / stats.frames;
             stats.time = now;
@@ -168,8 +198,8 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
     render: function() {
         var now = window.performance.now(),
-            id = window.requestAnimationFrame(this.render.bind(this)),
-            data = this.getFrameData();
+            data = this.getFrameData(),
+            id = window.requestAnimationFrame(this.render.bind(this));
 
         data.delta = now - data.time;
         data.time = now;

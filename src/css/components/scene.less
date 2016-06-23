@@ -2,7 +2,7 @@
 @loading-dark-color: hardlight(@base-color, @bg-level3-color);
 @loading-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 
-.scene {
+.stage {
     min-width: 900px;
     overflow: hidden;
     flex: 1;
@@ -18,44 +18,14 @@
     }
 
     .loading {
-        visibility: hidden;
         .absolute-center();
-
-        &:before {
-            content: '\0020';
-            background-color: #000;
-            opacity: 0;
-            transition: @loading-transition;
-            .absolute-center();
-        }
-
-        &:after {
-            content: '\0020';
-            width: 200px;
-            height: 200px;
-            border-top: 3px solid @loading-dark-color;
-            border-bottom: 3px solid @loading-light-color;
-            border-left: 3px solid @loading-dark-color;
-            border-right: 3px solid @loading-light-color;
-            border-radius: 100%;
-            opacity: 0;
-            transition: @loading-transition;
-            .absolute-center();
-            .animation(rotate .3s linear infinite);
-        }
-    }
-
-    .loading-active {
-        visibility: visible;
-
-        &:before {
-            opacity: 0.8;
-        }
-
-        &:after {
-            opacity: 1;
-            width: 100px;
-            height: 100px;
-        }
+        width: 100px;
+        height: 100px;
+        border-top: 3px solid @loading-dark-color;
+        border-bottom: 3px solid @loading-light-color;
+        border-left: 3px solid @loading-dark-color;
+        border-right: 3px solid @loading-light-color;
+        border-radius: 100%;
+        .animation(rotate .3s linear infinite);
     }
 }

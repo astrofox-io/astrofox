@@ -2,13 +2,13 @@
 
 var React = require('react');
 var MenuBarItem = require('./MenuBarItem.jsx');
-var items = require('../../../conf/menu.json');
+var MenuItems = require('../../../conf/menu.json');
 
 var MenuBar = React.createClass({
     getInitialState: function() {
         return {
             activeIndex: -1,
-            items: items
+            items: MenuItems
         };
     },
 
@@ -31,7 +31,9 @@ var MenuBar = React.createClass({
     },
 
     setActiveIndex: function(index) {
-        this.setState({ activeIndex: index });
+        if (this.state.activeIndex !== index) {
+            this.setState({activeIndex: index});
+        }
     },
 
     setCheckState: function(action, checked) {
@@ -65,7 +67,7 @@ var MenuBar = React.createClass({
         }, this);
 
         return (
-            <div className="menubar">
+            <div id="menubar" className="menubar">
                 <ul>{items}</ul>
             </div>
         );

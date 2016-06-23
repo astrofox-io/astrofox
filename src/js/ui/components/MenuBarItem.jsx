@@ -20,6 +20,7 @@ var MenuBarItem = React.createClass({
 
     handleItemClick: function(item) {
         var action = this.props.label + '/' + item.props.label;
+        
         this.props.onItemClick(action, item.props.checked);
     },
 

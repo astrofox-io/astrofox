@@ -9,8 +9,11 @@ const {BrowserWindow} = electron;
 let win;
 
 function createWindow() {
+    //BrowserWindow.addDevToolsExtension('C:/Users/mike/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.14.11_0');
+
     // Create the browser window.
     win = new BrowserWindow({
+        show: false,
         width: 1320,
         height: 1200,
         minWidth: 200,
@@ -29,8 +32,13 @@ function createWindow() {
     // and load the index.html of the app.
     win.loadURL(`file://${__dirname}/index.html`);
 
-    // Open the DevTools.
+    // Open the devtools
     win.webContents.openDevTools({ detach: true });
+
+    // Show window only when ready
+    win.on('ready-to-show', () => {
+        win.show()
+    });
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -42,17 +50,21 @@ function createWindow() {
 }
 
 // Chrome flags
+// Hardware acceleration
+app.commandLine.appendSwitch('ignore-gpu-blacklist');
+//app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
+
 // WebGL 2
 //app.commandLine.appendSwitch('enable-unsafe-es3-apis');
 
 // GPU rasterization
-app.commandLine.appendSwitch('enable-gpu-rasterization');
+//app.commandLine.appendSwitch('enable-gpu-rasterization');
 
 // Disable background throttling
 //app.commandLine.appendSwitch('disable-renderer-background');
 
 // Number of raster threads
-app.commandLine.appendSwitch('num-raster-threads', 4);
+//app.commandLine.appendSwitch('num-raster-threads', 4);
 
 
 // This method will be called when Electron has finished

@@ -21,7 +21,7 @@ var Footer = React.createClass({
             <div id="footer">
                 <div className="filename flex">{this.props.filename}</div>
                 <div className="fps">{this.state.fps} FPS</div>
-                <div className="version">v1.0</div>
+                <div className="version">v{process.versions.electron}</div>
             </div>
         );
     }

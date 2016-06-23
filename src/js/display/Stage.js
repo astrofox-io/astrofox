@@ -21,7 +21,7 @@ var Stage = function() {
     this.buffer3D = new FrameBuffer('webgl');
 };
 
-Stage.prototype = _.create(NodeCollection.prototype, {
+Stage.prototype = _.create(EventEmitter.prototype, {
     constructor: Stage,
 
     addScene: function(scene) {

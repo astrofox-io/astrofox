@@ -21,11 +21,9 @@ var Stage = React.createClass({
     },
 
     componentDidMount: function() {
-        ReactDOM.findDOMNode(this.refs.viewport).appendChild(
+        this.refs.viewport.appendChild(
             Application.stage.renderer.domElement
         );
-
-        Application.startRender();
     },
 
     handleMouseDown: function(e) {
@@ -56,13 +54,15 @@ var Stage = React.createClass({
         var state = this.state,
             style = { width: state.width, height: state.height };
 
+        var loading = (state.loading) ? <div className="loading" /> : null;
+
         return (
-            <div className="scene"
+            <div className="stage"
                 onMouseDown={this.handleMouseDown}
                 onDrop={this.handleDrop}
                 onDragOver={this.handleDragOver}>
                 <div ref="viewport" className="viewport" style={style}>
-                    <Loading visible={state.loading} />
+                    {loading}
                 </div>
             </div>
         );

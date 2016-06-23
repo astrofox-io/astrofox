@@ -35,6 +35,7 @@ var App = React.createClass({
     },
 
     componentWillMount: function() {
+        // Default setup
         var scene = new Scene();
 
         Application.stage.addScene(scene);
@@ -43,6 +44,7 @@ var App = React.createClass({
         scene.addElement(new DisplayLibrary.BarSpectrumDisplay());
         scene.addElement(new DisplayLibrary.TextDisplay());
 
+        // Events
         Application.on('error', function(err) {
             this.showError(err);
         }, this);
@@ -54,13 +56,22 @@ var App = React.createClass({
         Application.on('hide_modal', function() {
             this.hideModal();
         }, this);
+
+        Application.on('audio_file_loading', function() {
+            this.refs.stage.showLoading(true);
+        }, this);
+
+        Application.on('audio_file_loaded', function() {
+            this.refs.stage.showLoading(false);
+        }, this);
     },
 
     componentDidMount: function() {
+        Application.init();
     },
 
     handleClick: function() {
-        this.refs.menu.setActiveIndex(-1);
+        this.refs.menubar.setActiveIndex(-1);
     },
 
     handleDragDrop: function(e) {
@@ -86,7 +97,7 @@ var App = React.createClass({
                     if (files) {
                         Application.loadProject(files[0]);
                     }
-                }.bind(this));
+                });
                 break;
 
             case 'File/Save Project':
@@ -96,16 +107,16 @@ var App = React.createClass({
                         if (filename) {
                             Application.saveProject(filename);
                         }
-                    }.bind(this)
+                    }
                 );
                 break;
 
             case 'File/Load Audio':
                 Window.showOpenDialog(function(files) {
                     if (files) {
-                        this.loadAudioFile(files[0]);
+                        Application.loadAudioFile(files[0]);
                     }
-                }.bind(this));
+                });
                 break;
 
             case 'File/Save Image':
@@ -115,7 +126,7 @@ var App = React.createClass({
                         if (filename) {
                             Application.saveImage(filename);
                         }
-                    }.bind(this)
+                    }
                 );
                 break;
 
@@ -126,7 +137,7 @@ var App = React.createClass({
                         if (filename) {
                             Application.saveVideo(filename);
                         }
-                    }.bind(this)
+                    }
                 );
                 break;
 
@@ -136,13 +147,17 @@ var App = React.createClass({
 
             case 'View/Control Dock':
                 this.refs.dock.showDock(!checked);
-                this.refs.menu.setCheckState(action, !checked);
+                this.refs.menubar.setCheckState(action, !checked);
                 break;
 
             case 'Help/About':
                 this.showModal(<AboutWindow onClose={this.hideModal} />);
                 break;
         }
+    },
+
+    handleAudioFile: function(file) {
+        Application.loadAudioFile(file);
     },
 
     showModal: function(modal) {
@@ -161,23 +176,6 @@ var App = React.createClass({
         );
     },
 
-    loadAudioFile: function(file) {
-        var scene = this.refs.scene;
-
-        scene.showLoading(true);
-
-        Application.loadAudioFile(file)
-            .then(function(data) {
-                return Application.loadAudioData(data);
-            })
-            .catch(function(error) {
-                this.showError(error);
-            }.bind(this))
-            .then(function() {
-                scene.showLoading(false);
-            });
-    },
-
     render: function() {
         return (
             <div
@@ -188,13 +186,13 @@ var App = React.createClass({
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}>
                 <Header />
-                <MenuBar ref="menu" onMenuAction={this.handleMenuAction} />
+                <MenuBar ref="menubar" onMenuAction={this.handleMenuAction} />
                 <Body>
                     <Overlay visible={this.state.showModal}>
                         {this.state.modal}
                     </Overlay>
                     <MainView>
-                        <Stage ref="scene" onFileDropped={this.loadAudioFile} />
+                        <Stage ref="stage" onFileDropped={this.handleAudioFile} />
                         <Spectrum ref="spectrum" />
                         <Oscilloscope ref="osc" />
                         <Waveform ref="waveform" />
