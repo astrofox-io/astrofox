@@ -33,10 +33,10 @@ BarDisplay.prototype = {
 
         if (changed) {
             if (options.width !== undefined) {
-                this.canvas.width = options.width;
+                this.canvas.width = this.options.width;
             }
             if (options.height !== undefined || options.shadowHeight !== undefined) {
-                this.canvas.height = options.height + options.shadowHeight;
+                this.canvas.height = this.options.height + this.options.shadowHeight;
             }
         }
 
