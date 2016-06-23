@@ -7,6 +7,7 @@ const Display = require('../display/Display.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
 const TexturePass = require('../graphics/TexturePass.js');
+const Global = require('../core/Global.js');
 
 const defaults = {
     blendMode: 'Normal',
@@ -150,13 +151,11 @@ Scene.prototype = _.create(Display.prototype, {
     },
 
     updatePasses: function() {
-        var composer = this.composer,
-            buffer2D = this.owner.buffer2D,
-            buffer3D = this.owner.buffer3D;
+        var composer = this.composer;
 
         composer.clearPasses();
-        composer.addPass(buffer3D.pass);
-        composer.addPass(buffer2D.pass);
+        composer.addPass(Global.frameBuffers['2D'].pass);
+        composer.addPass(Global.frameBuffers['3D'].pass);
 
         this.displays.nodes.forEach(function(display) {
             if (display.pass) {
@@ -189,8 +188,8 @@ Scene.prototype = _.create(Display.prototype, {
         var displays = this.displays.nodes,
             effects = this.effects.nodes,
             composer = this.composer,
-            buffer2D = this.owner.buffer2D,
-            buffer3D = this.owner.buffer3D,
+            buffer2D = Global.frameBuffers['2D'],
+            buffer3D = Global.frameBuffers['3D'],
             hasGeometry = false;
 
         buffer3D.clear();

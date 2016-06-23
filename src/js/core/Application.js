@@ -4,6 +4,7 @@ const _ = require('lodash');
 const remote = window.require('electron').remote;
 
 const Window = require('../Window.js');
+const IO = require('../IO.js');
 const EventEmitter = require('../core/EventEmitter.js');
 const Timer = require('../core/Timer.js');
 const Player = require('../audio/Player.js');
@@ -15,8 +16,8 @@ const Display = require('../display/Display.js');
 const DisplayLibrary = require('../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../lib/EffectsLibrary.js');
 const VideoRenderer = require('../video/VideoRenderer.js');
-const IO = require('../IO.js');
-const MenuItems = require('../../conf/menu.json');
+
+const menuItemsConfig = require('../../conf/menu.json');
 
 const VERSION = '1.0';
 
@@ -29,7 +30,7 @@ const defaults = {
 
 const FPS_POLL_INTERVAL = 500;
 
-var Application = function() {
+const Application = function() {
     this.audioContext = new window.AudioContext();
     this.audioFile = null;
 
@@ -42,14 +43,6 @@ var Application = function() {
     this.player.on('play', this.updateAnalyzer.bind(this));
     this.player.on('stop', this.updateAnalyzer.bind(this));
 
-    this.stats = {
-        fps: 0,
-        ms: 0,
-        time: 0,
-        frames: 0,
-        stack: []
-    };
-
     this.frameData = {
         id: null,
         time: 0,
@@ -57,6 +50,14 @@ var Application = function() {
         fft: null,
         td: null,
         playing: false
+    };
+
+    this.stats = {
+        fps: 0,
+        ms: 0,
+        time: 0,
+        frames: 0,
+        stack: []
     };
 };
 
@@ -66,7 +67,7 @@ Application.prototype = _.create(EventEmitter.prototype, {
     init: function() {
         // Create menu for OSX
         if (process.platform === 'darwin') {
-            const menu = remote.Menu.buildFromTemplate(MenuItems);
+            const menu = remote.Menu.buildFromTemplate(menuItemsConfig);
             remote.Menu.setApplicationMenu(menu);
         }
 
@@ -401,4 +402,4 @@ Application.prototype = _.create(EventEmitter.prototype, {
     }
 });
 
-module.exports = new Application;
+module.exports = new Application();

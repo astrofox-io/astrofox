@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var IO = require('../IO.js');
-var EventEmitter = require('../core/EventEmitter.js');
-var NodeCollection = require('../core/NodeCollection.js');
-var Composer = require('../graphics/Composer.js');
-var FrameBuffer = require('../graphics/FrameBuffer.js');
+const _ = require('lodash');
+const THREE = require('three');
+const IO = require('../IO.js');
+const EventEmitter = require('../core/EventEmitter.js');
+const NodeCollection = require('../core/NodeCollection.js');
+const Composer = require('../graphics/Composer.js');
 
-var Stage = function() {
+const Stage = function() {
     this.scenes = new NodeCollection();
 
     this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
@@ -16,9 +15,6 @@ var Stage = function() {
     this.renderer.autoClear = false;
 
     this.composer = new Composer(this.renderer);
-
-    this.buffer2D = new FrameBuffer('2d');
-    this.buffer3D = new FrameBuffer('webgl');
 };
 
 Stage.prototype = _.create(EventEmitter.prototype, {
