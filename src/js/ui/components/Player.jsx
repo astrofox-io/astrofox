@@ -1,25 +1,18 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const classNames = require('classnames');
+const Application = require('../../core/Application.js');
+const RangeInput = require('../inputs/RangeInput.jsx');
 
-var Application = require('../../core/Application.js');
-var RangeInput = require('../inputs/RangeInput.jsx');
+class Player extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { playing: false, progressPosition: 0 };
+    }
 
-var Player = React.createClass({
-    getDefaultProps: function() {
-        return {
-            visible: true
-        };
-    },
-
-    getInitialState: function() {
-        return {
-            progressPosition: 0
-        };
-    },
-
-    componentDidMount: function() {
-        var player = Application.player;
+    componentDidMount() {
+        const player = Application.player;
 
         player.on('tick', function() {
             if (player.isPlaying()) {
@@ -30,11 +23,11 @@ var Player = React.createClass({
         }, this);
 
         player.on('play', function() {
-            this.forceUpdate();
+            this.setState({ playing: true });
         }, this);
 
         player.on('pause', function() {
-            this.forceUpdate();
+            this.setState({ playing: false });
         }, this);
 
         player.on('stop', function() {
@@ -46,34 +39,34 @@ var Player = React.createClass({
                 progressPosition: this.refs.progress.getPosition()
             });
         }, this);
-    },
+    }
 
-    onPlayButtonClick: function() {
+    onPlayButtonClick() {
         Application.player.play('audio');
-    },
+    }
 
-    onStopButtonClick: function() {
+    onStopButtonClick() {
         Application.player.stop('audio');
-    },
+    }
 
-    onLoopButtonClick: function() {
+    onLoopButtonClick() {
         Application.player.toggleLoop();
         this.forceUpdate();
-    },
+    }
 
-    onVolumeChange: function(val) {
+    onVolumeChange(val) {
         Application.player.setVolume(val);
-    },
+    }
 
-    onProgressChange: function(val) {
+    onProgressChange(val) {
         Application.player.seek('audio', val);
-    },
+    }
 
-    onProgressUpdate: function(val) {
+    onProgressUpdate(val) {
         this.setState({ progressPosition: val });
-    },
+    }
 
-    render: function() {
+    render() {
         var state = this.state,
             player = Application.player,
             totalTime = player.getDuration('audio'),
@@ -90,20 +83,10 @@ var Player = React.createClass({
         return (
             <div className="player" style={style}>
                 <div className="buttons">
-                    <PlayButton
-                        ref="play"
-                        isPlaying={isPlaying}
-                        onClick={this.onPlayButtonClick}
-                    />
-                    <StopButton
-                        ref="stop"
-                        onClick={this.onStopButtonClick}
-                    />
+                    <PlayButton playing={isPlaying} onClick={this.onPlayButtonClick} />
+                    <StopButton onClick={this.onStopButtonClick} />
                 </div>
-                <VolumeControl
-                    ref="volume"
-                    onChange={this.onVolumeChange}
-                />
+                <VolumeControl onChange={this.onVolumeChange} />
                 <ProgressControl
                     ref="progress"
                     progressPosition={audioPosition}
@@ -112,7 +95,6 @@ var Player = React.createClass({
                     readOnly={totalTime==0}
                 />
                 <TimeInfo
-                    ref="time"
                     currentTime={currentTime}
                     totalTime={totalTime}
                 />
@@ -123,86 +105,37 @@ var Player = React.createClass({
             </div>
         );
     }
-});
+}
 
-var PlayButton = React.createClass({
-    getInitialState: function() {
-        return { playing: false };
-    },
+Player.defaultProps = { visible: true };
 
-    componentWillReceiveProps: function(props) {
-        if (typeof props.isPlaying !== 'undefined') {
-            this.setState({ playing: props.isPlaying });
-        }
-    },
-
-    render: function() {
-        var classes = this.state.playing ? 'icon-pause' : 'icon-play';
-
-        return (
-            <div className="button play-button"
-                ref="button"
-                onClick={this.props.onClick}>
-                <i className={classes} />
-            </div>
-        );
+class VolumeControl extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: 100 };
+        this.handleChange = this.handleChange.bind(this);
     }
-});
 
-var StopButton = React.createClass({
-    render: function() {
-        return (
-            <div className="button stop-button"
-                ref="button"
-                onClick={this.props.onClick}>
-                <i className="icon-stop" />
-            </div>
-        );
-    }
-});
-
-var LoopButton = React.createClass({
-    render: function() {
-        var classes = "loop-button";
-        if (this.props.loop) classes += " loop-button-on";
-
-        return (
-            <div className={classes} onClick={this.props.onClick}>
-                <i className="icon-refresh" title="Repeat" />
-            </div>
-        );
-    }
-});
-
-var VolumeControl = React.createClass({
-    getInitialState: function() {
-        return { value: 100 };
-    },
-
-    componentWillMount: function() {
-        this.iconClassName = "icon-volume";
-    },
-
-    handleChange: function(name, val) {
-        if (val > 75) {
-            this.iconClassName = "icon-volume";
-        }
-        else if (val > 25) {
-            this.iconClassName = "icon-volume2";
-        }
-        else if (val > 0) {
-            this.iconClassName = "icon-volume3";
-        }
-        else {
-            this.iconClassName = "icon-volume4";
-        }
-
+    handleChange(name, val) {
         this.props.onChange(val / 100);
 
         this.setState({ value: val });
-    },
+    }
 
-    render: function() {
+    render() {
+        let icon = 'icon-volume4',
+            val = this.state.value;
+
+        if (val > 75) {
+            icon = "icon-volume";
+        }
+        else if (val > 25) {
+            icon = "icon-volume2";
+        }
+        else if (val > 0) {
+            icon = "icon-volume3";
+        }
+
         return (
             <div className="volume">
                 <div className="slider">
@@ -210,53 +143,51 @@ var VolumeControl = React.createClass({
                         name="progress"
                         min="0"
                         max="100"
-                        value={this.state.value}
+                        value={val}
                         onChange={this.handleChange}
                     />
                 </div>
                 <div className="speaker">
-                    <i className={this.iconClassName} />
+                    <i className={icon} />
                 </div>
             </div>
         );
     }
-});
+}
 
-var ProgressControl = React.createClass({
-    getInitialState: function() {
-        return { value: 0 };
-    },
-
-    componentWillMount: function() {
+class ProgressControl extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: 0 };
         this.max = 1000;
-    },
+    }
 
-    componentWillReceiveProps: function(props) {
+    componentWillReceiveProps(props) {
         if (typeof props.progressPosition !== 'undefined' && !this.refs.progress.isActive()) {
             this.setState({ value: props.progressPosition * this.max });
         }
-    },
+    }
 
-    handleChange: function(name, val) {
+    handleChange(name, val) {
         this.setState({ value: val }, function(){
             this.props.onChange(this.getPosition());
         }.bind(this));
-    },
+    }
 
-    handleUpdate: function(name, val) {
+    handleUpdate(name, val) {
         this.setState({ value: val }, function(){
             this.props.onUpdate(this.getPosition());
         }.bind(this));
-    },
+    }
 
-    getPosition: function() {
+    getPosition() {
         var pos = this.state.value / this.max;
         if (pos > 1) pos = 1;
 
         return pos;
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="progress">
                 <RangeInput
@@ -273,37 +204,59 @@ var ProgressControl = React.createClass({
             </div>
         );
     }
-});
+}
 
-var TimeInfo = React.createClass({
-    formatTime: function(val) {
-        var time = Math.ceil(val);
-        var hours   = Math.floor(time / 3600);
-        var minutes = Math.floor((time - (hours * 3600)) / 60);
-        var seconds = time - (hours * 3600) - (minutes * 60);
+const PlayButton = function(props) {
+    return (
+        <div className="button play-button" onClick={props.onClick}>
+            <i className={props.playing ? 'icon-pause' : 'icon-play'} />
+        </div>
+    );
+};
 
-        if (hours < 10) hours = "0" + hours;
-        if (minutes < 10 && hours !== "00") minutes = "0" + minutes;
-        if (seconds < 10) seconds = "0" + seconds;
+const StopButton = function(props) {
+    return (
+        <div className="button stop-button" onClick={props.onClick}>
+            <i className="icon-stop" />
+        </div>
+    );
+};
 
-        var format = minutes + ':' + seconds;
-        if (hours !== "00") format = hours + ':' + time;
+const LoopButton = function(props) {
+    return (
+        <div className={classNames({'loop-button': true, 'loop-button-on': props.loop })} onClick={props.onClick}>
+            <i className="icon-refresh" title="Repeat" />
+        </div>
+    );
+};
 
-        return format;
-    },
+const TimeInfo = function(props) {
+    var currentTime = formatTime(props.currentTime);
+    var totalTime = formatTime(props.totalTime);
 
-    render: function() {
-        var currentTime = this.formatTime(this.props.currentTime);
-        var totalTime = this.formatTime(this.props.totalTime);
+    return (
+        <div className="time-info">
+            <div className="time-part current-time">{currentTime}</div>
+            <div className="time-part split"></div>
+            <div className="time-part total-time">{totalTime}</div>
+        </div>
+    );
+};
 
-        return (
-            <div className="time-info">
-                <div className="time-part current-time">{currentTime}</div>
-                <div className="time-part split"></div>
-                <div className="time-part total-time">{totalTime}</div>
-            </div>
-        );
-    }
-});
+function formatTime(val) {
+    let time = Math.ceil(val);
+    let hours   = Math.floor(time / 3600);
+    let minutes = Math.floor((time - (hours * 3600)) / 60);
+    let seconds = time - (hours * 3600) - (minutes * 60);
+
+    if (hours < 10) hours = "0" + hours;
+    if (minutes < 10 && hours !== "00") minutes = "0" + minutes;
+    if (seconds < 10) seconds = "0" + seconds;
+
+    let format = minutes + ':' + seconds;
+    if (hours !== "00") format = hours + ':' + time;
+
+    return format;
+}
 
 module.exports = Player;
