@@ -9,6 +9,8 @@ class Player extends React.Component {
     constructor(props) {
         super(props);
         this.state = { playing: false, progressPosition: 0 };
+
+        this.onProgressUpdate = this.onProgressUpdate.bind(this);
     }
 
     componentDidMount() {
@@ -160,6 +162,10 @@ class ProgressControl extends React.Component {
         super(props);
         this.state = { value: 0 };
         this.max = 1000;
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleUpdate = this.handleUpdate.bind(this);
+        this.getPosition = this.getPosition.bind(this);
     }
 
     componentWillReceiveProps(props) {
