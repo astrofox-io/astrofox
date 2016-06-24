@@ -1,21 +1,22 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const classNames = require('classnames');
 
-var Application = require('../../core/Application.js');
-var Display = require('../../display/Display.js');
-var CanvasDisplay = require('../../display/CanvasDisplay.js');
-var Stage = require('../../display/Stage.js');
-var Scene = require('../../display/Scene.js');
-var Effect = require('../../effects/Effect.js');
-var DisplayLibrary = require('../../lib/DisplayLibrary.js');
-var EffectsLibrary = require('../../lib/EffectsLibrary.js');
+const Application = require('../../core/Application.js');
+const Display = require('../../display/Display.js');
+const CanvasDisplay = require('../../display/CanvasDisplay.js');
+const Stage = require('../../display/Stage.js');
+const Scene = require('../../display/Scene.js');
+const Effect = require('../../effects/Effect.js');
+const DisplayLibrary = require('../../lib/DisplayLibrary.js');
+const EffectsLibrary = require('../../lib/EffectsLibrary.js');
 
-var TextInput = require('../inputs/TextInput.jsx');
-var ControlPickerWindow = require('../windows/ControlPickerWindow.jsx');
-var MenuPanel = require('./MenuPanel.jsx');
+const TextInput = require('../inputs/TextInput.jsx');
+const ControlPickerWindow = require('../windows/ControlPickerWindow.jsx');
+const MenuPanel = require('./MenuPanel.jsx');
 
-var LayersPanel = React.createClass({
+const LayersPanel = React.createClass({
     getDefaultProps: function() {
         return {
             onLayerSelected: null,
@@ -101,11 +102,9 @@ var LayersPanel = React.createClass({
     },
 
     handleAddDisplayClick: function() {
-        var state = this.state,
-            layer = state.layers[state.activeIndex],
-            scene = (layer instanceof Scene) ? layer : layer.owner;
+        var scene = this.getActiveScene();
 
-        if (Application.stage.hasScenes()) {
+        if (scene) {
             Application.emit(
                 'show_modal',
                 <ControlPickerWindow title="ADD DISPLAY" scene={scene} items={DisplayLibrary} />
@@ -114,11 +113,9 @@ var LayersPanel = React.createClass({
     },
 
     handleAddEffectClick: function() {
-        var state = this.state,
-            layer = state.layers[state.activeIndex],
-            scene = (layer instanceof Scene) ? layer : layer.owner;
+        var scene = this.getActiveScene();
 
-        if (Application.stage.hasScenes()) {
+        if (scene) {
             Application.emit(
                 'show_modal',
                 <ControlPickerWindow title="ADD EFFECT" scene={scene} items={EffectsLibrary} />
@@ -172,11 +169,17 @@ var LayersPanel = React.createClass({
         return state.layers[state.activeIndex];
     },
 
-    setActiveLayer: function(i) {
-        if (typeof i === 'undefined') return;
+    getActiveScene: function() {
+        var layer = this.getActiveLayer();
+
+        return (this.state.activeIndex >= 0) ? ((layer instanceof Scene) ? layer : layer.owner) : null;
+    },
+
+    setActiveLayer: function(obj) {
+        if (typeof obj === 'undefined') return;
 
         var props = this.props,
-            index = (typeof i === 'number') ? i : this.state.layers.indexOf(i);
+            index = (typeof obj === 'number') ? obj : this.state.layers.indexOf(obj);
 
         this.setState({ activeIndex: index }, function(){
             if (props.onLayerSelected) {
@@ -186,20 +189,14 @@ var LayersPanel = React.createClass({
     },
 
     getLayerComponent: function(obj, index) {
-        var text, icon, enabled,
+        var text, icon,
             state = this.state,
-            classes = 'layer';
-
-        if (!(obj instanceof Scene)) {
-            classes += ' layer-control';
-        }
-
-        if (index === this.state.editIndex) {
-            classes += ' layer-edit';
-        }
-        else if (index === this.state.activeIndex) {
-            classes += ' layer-active';
-        }
+            classes = classNames({
+                'layer': true,
+                'layer-control': !(obj instanceof Scene),
+                'layer-edit': index === this.state.editIndex,
+                'layer-active': index === this.state.activeIndex
+            });
 
         if (state.editIndex === index) {
             text = (
@@ -234,15 +231,14 @@ var LayersPanel = React.createClass({
             icon = 'icon-cube';
         }
 
-        enabled = (obj.options.enabled) ? '' : 'layer-disabled';
-
         return (
             <div key={obj.toString()}
                  className={classes}
                  onClick={this.handleLayerClick.bind(this, index)}>
-                <i className={'layer-icon ' + icon} />
+                <i className={classNames('layer-icon', icon)} />
                 {text}
-                <i className={'layer-options-icon icon-eye ' + enabled} onClick={this.handleLayerEnabled.bind(this, obj)} />
+                <i className={classNames('layer-options-icon', 'icon-eye', {'layer-disabled': !obj.options.enabled})}
+                   onClick={this.handleLayerEnabled.bind(this, obj)} />
             </div>
         );
     },
@@ -266,42 +262,33 @@ var LayersPanel = React.createClass({
     },
 
     moveLayer: function(direction) {
-        var index,
+        var index, layer,
             props = this.props,
+            scene = this.getActiveScene();
+
+        if (scene) {
             layer = this.getActiveLayer();
 
-        if (layer instanceof Scene) {
-            layer.owner.shiftScene(layer, direction);
+            if (layer instanceof Scene) {
+                layer.owner.shiftScene(layer, direction);
+            }
+            else {
+                layer.owner.shiftElement(layer, direction);
+            }
+
+            this.updateLayers(function() {
+                index = this.state.layers.indexOf(layer);
+
+                this.setState({activeIndex: index});
+
+                props.onLayerMoved(this.getActiveLayer());
+            }.bind(this));
         }
-        else {
-            layer.owner.shiftElement(layer, direction);
-        }
-
-        this.updateLayers(function() {
-            index = this.state.layers.indexOf(layer);
-
-            this.setState({ activeIndex: index });
-
-            props.onLayerMoved(this.getActiveLayer());
-        }.bind(this));
     },
 
     render: function() {
         var layers,
-            hasScenes = Application.stage.hasScenes(),
-            displayClasses = 'button icon-cube',
-            effectClasses = 'button icon-light-up',
-            removeClasses = 'button icon-trash-empty',
-            moveUpClasses = 'button icon-chevron-up',
-            moveDownClasses = 'button icon-chevron-down';
-
-        if (!hasScenes) {
-            displayClasses += ' button-disabled';
-            effectClasses += ' button-disabled';
-            removeClasses += ' button-disabled';
-            moveUpClasses += ' button-disabled';
-            moveDownClasses += ' button-disabled';
-        }
+            classes = { 'button': true, 'button-disabled': !Application.stage.hasScenes() };
 
         layers = this.state.layers.map(function(layer, index) {
             return this.getLayerComponent(layer, index);
@@ -314,11 +301,11 @@ var LayersPanel = React.createClass({
                 </div>
                 <ul className="button-group">
                     <li className="button icon-picture" title="Add Scene" onClick={this.handleAddSceneClick} />
-                    <li className={displayClasses} title="Add Display" onClick={this.handleAddDisplayClick} />
-                    <li className={effectClasses} title="Add Effect" onClick={this.handleAddEffectClick} />
-                    <li className={moveUpClasses} title="Move Layer Up" onClick={this.handleMoveUpClick} />
-                    <li className={moveDownClasses} title="Move Layer Down" onClick={this.handleMoveDownClick} />
-                    <li className={removeClasses} title="Delete Layer" onClick={this.handleRemoveClick} />
+                    <li className={classNames(classes, 'icon-cube')} title="Add Display" onClick={this.handleAddDisplayClick} />
+                    <li className={classNames(classes, 'icon-light-up')} title="Add Effect" onClick={this.handleAddEffectClick} />
+                    <li className={classNames(classes, 'icon-chevron-up')} title="Move Layer Up" onClick={this.handleMoveUpClick} />
+                    <li className={classNames(classes, 'icon-chevron-down')} title="Move Layer Down" onClick={this.handleMoveDownClick} />
+                    <li className={classNames(classes, 'icon-trash-empty')} title="Delete Layer" onClick={this.handleRemoveClick} />
                 </ul>
             </div>
         );
