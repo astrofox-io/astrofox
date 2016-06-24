@@ -1,16 +1,14 @@
 'use strict';
 
-var EventEmitter = function(){};
-
-EventEmitter.prototype = {
-    on: function(event, fn, context) {
+class EventEmitter {
+    on(event, fn, context) {
         this.events = this.events || {};
         this.events[event] = this.events[event] || [];
 
         return this.events[event].push({fn: fn, context: context});
-    },
+    }
 
-    off: function(event, fn) {
+    off(event, fn) {
         if (!this.events || !this.events[event]) return;
 
         var events = this.events[event],
@@ -26,17 +24,17 @@ EventEmitter.prototype = {
         else {
             while (events.length > 0) events.pop();
         }
-    },
+    }
 
-    once: function(event, fn, context) {
+    once(event, fn, context) {
         var _fn;
         return this.on(event, _fn = function() {
             this.off(event, _fn);
             return fn.apply(context, arguments);
         }, this);
-    },
+    }
 
-    emit: function() {
+    emit() {
         this.events = this.events || {};
 
         var args = Array.apply([], arguments),
@@ -47,6 +45,6 @@ EventEmitter.prototype = {
             e.fn.apply(e.context, args);
         });
     }
-};
+}
 
 module.exports = EventEmitter;
