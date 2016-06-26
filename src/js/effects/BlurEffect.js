@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const Effect = require('../effects/Effect.js');
 const BoxBlurShader = require('../shaders/BoxBlurShader.js');
 const CircularBlurShader = require('../shaders/CircularBlurShader.js');
@@ -27,43 +26,37 @@ const ZOOM_BLUR_MAX = 1;
 const GAUSSIAN_BLUR_MAX = 3;
 const GAUSSIAN_ITERATIONS = 8;
 
-var BlurEffect = function(options) {
-    Effect.call(this, 'BlurEffect', defaults);
+class BlurEffect extends Effect { 
+    constructor(options) {
+        super('BlurEffect', defaults);
+        
+        this.update(options);
+    }
 
-    this.update(options);
-};
-
-BlurEffect.info = {
-    name: 'Blur'
-};
-
-BlurEffect.prototype = _.create(Effect.prototype, {
-    constructor: BlurEffect,
-
-    update: function(options) {
+    update(options) {
         if (!options) return;
 
-        var type = this.options.type;
+        let type = this.options.type;
 
-        var changed = Effect.prototype.update.call(this, options);
+        let changed = Effect.prototype.update.call(this, options);
 
         if (this.owner && options.type !== undefined && options.type != type) {
             this.setPass(this.getShaderPass(options.type));
         }
 
         return changed;
-    },
+    }
 
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(this.getShaderPass(this.options.type));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
-        var amount,
+    updateScene(scene) {
+        let amount,
             options = this.options;
 
         if (this.hasUpdate) {
@@ -94,24 +87,24 @@ BlurEffect.prototype = _.create(Effect.prototype, {
 
             this.hasUpdate = false;
         }
-    },
+    }
 
-    updateGaussianPass: function(pass, i) {
-        var options = this.options,
+    updateGaussianPass(pass, i) {
+        let options = this.options,
             amount = GAUSSIAN_BLUR_MAX * options.amount,
             radius = (GAUSSIAN_ITERATIONS - i - 1) * amount;
 
         pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0] });
-    },
+    }
 
-    getShaderPass: function(type) {
-        var pass,
+    getShaderPass(type) {
+        let pass,
             passes = [],
             shader = shaders[type];
 
         switch (type) {
             case 'Gaussian':
-                for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
+                for (let i = 0; i < GAUSSIAN_ITERATIONS; i++) {
                     pass = new ShaderPass(shader);
                     passes.push(pass);
                     this.updateGaussianPass(pass, i);
@@ -128,6 +121,10 @@ BlurEffect.prototype = _.create(Effect.prototype, {
                 return new ShaderPass(shader);
         }
     }
-});
+}
+
+BlurEffect.info = {
+    name: 'Blur'
+};
 
 module.exports = BlurEffect;

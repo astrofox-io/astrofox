@@ -1,27 +1,23 @@
 'use strict';
 
-var _ = require('lodash');
-
-var defaults = {
+const defaults = {
     fftSize: 1024,
     minDecibels: -100,
     maxDecibels: 0,
     smoothingTimeConstant: 0
 };
 
-var SpectrumAnalyzer = function(context) {
-    this.audioContext = context;
-    this.analyzer = _.extend(context.createAnalyser(), defaults);
-    this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
-    this.td = new Float32Array(this.analyzer.frequencyBinCount);
-    this.enabled = true;
-};
+class SpectrumAnalyzer {
+    constructor(context) {
+        this.audioContext = context;
+        this.analyzer = Object.assign(context.createAnalyser(), defaults);
+        this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
+        this.td = new Float32Array(this.analyzer.frequencyBinCount);
+        this.enabled = true;
+    }
 
-SpectrumAnalyzer.prototype = {
-    constructor: SpectrumAnalyzer,
-
-    getFrequencyData: function() {
-        var analyzer = this.analyzer,
+    getFrequencyData() {
+        let analyzer = this.analyzer,
             fft = this.fft;
 
         if (this.enabled) {
@@ -29,10 +25,10 @@ SpectrumAnalyzer.prototype = {
         }
 
         return fft;
-    },
+    }
 
-    getTimeData: function() {
-        var analyzer = this.analyzer,
+    getTimeData() {
+        let analyzer = this.analyzer,
             td = this.td;
 
         if (this.enabled) {
@@ -40,19 +36,19 @@ SpectrumAnalyzer.prototype = {
         }
 
         return td;
-    },
+    }
 
-    clearFrequencyData: function() {
+    clearFrequencyData() {
         this.fft.fill(0);
-    },
+    }
 
-    clearTimeData: function(data) {
+    clearTimeData(data) {
         this.td.fill(0);
-    },
+    }
 
-    getMaxFrequency: function() {
+    getMaxFrequency() {
         return this.audioContext.sampleRate / 2;
     }
-};
+}
 
 module.exports = SpectrumAnalyzer;

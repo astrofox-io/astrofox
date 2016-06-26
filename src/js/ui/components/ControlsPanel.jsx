@@ -1,24 +1,26 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Application = require('../../core/Application.js');
-var ControlLoader = require('../../util/ControlLoader.js');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const Application = require('../../core/Application.js');
+const ControlLoader = require('../../util/ControlLoader.js');
 
-var ControlsPanel = React.createClass({
-    getInitialState: function() {
-        return {
+class ControlsPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
             controls: [],
             activeIndex: -1
         };
-    },
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.updateControls();
-    },
+    }
 
-    updateControls: function(callback) {
-        var controls = [];
+    updateControls(callback) {
+        let controls = [];
 
         Application.stage.scenes.nodes.reverse().forEach(function(scene) {
             controls.push(scene);
@@ -31,29 +33,29 @@ var ControlsPanel = React.createClass({
         }, this);
 
         this.setState({ controls: controls }, callback);
-    },
+    }
 
-    updateControl: function(layer) {
-        var id = layer.toString(),
+    updateControl(layer) {
+        let id = layer.toString(),
             control = this.refs[id];
 
         if (control) {
             this.refs[id].setState(layer.options);
         }
-    },
+    }
 
-    focusControl: function(layer) {
-        var id = layer.toString(),
+    focusControl(layer) {
+        let id = layer.toString(),
             node = ReactDOM.findDOMNode(this.refs[id]);
 
         if (node) {
             this.refs.controls.scrollTop = node.offsetTop;
         }
-    },
+    }
 
-    render: function() {
-        var controls = this.state.controls.map(function(display) {
-            var id = display.toString(),
+    render() {
+        let controls = this.state.controls.map(function(display) {
+            let id = display.toString(),
                 Control = ControlLoader.getControl(display) || 'div';
 
             return (
@@ -71,6 +73,6 @@ var ControlsPanel = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ControlsPanel;

@@ -1,12 +1,11 @@
 'use strict';
 
-const _ = require('lodash');
 const THREE = require('three');
 const Display = require('../display/Display.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
 const PointShader = require('../shaders/PointShader.js');
 
-const config = require('../props/Geometry.json');
+const GeometryConfig = require('../props/Geometry.json');
 
 const materials = {
     Normal: THREE.MeshNormalMaterial,
@@ -27,21 +26,15 @@ const shading = {
 const POINT_SPRITE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA00lEQVRYw92XsQ3EIAxFmYAqO13HDDdABmEbWkq2oKPLCrQ+n+Qiiox0IQQ796XfIEBPYIxtAMBI2jwJwKId2qMjuqArudCYpzl2JMCCXtEJfleiNctVgBc6QL8C7dEF8EZnuK5Me50C+C7YYJy2FkTr2DOMV+augwu4APcpHAPzCLDC/VpbAPbkU+tV2ueJPYCDeXIcgJ8I4DmAOBEgcgBlIkDhAOpEgKoSQPwKxINQ/BmKJyLxVCz+Gan4jsULEhUlmYqiVEVZrqIxUdGa/Xd3/AFAB1kjvlZTLAAAAABJRU5ErkJggg==';
 const POINT_SIZE = 5;
 
-var GeometryDisplay = function(options) {
-    Display.call(this, 'GeometryDisplay', config.options);
+class GeometryDisplay extends Display {
+    constructor(options) {
+        super('GeometryDisplay', GeometryConfig.options);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-GeometryDisplay.info = {
-    name: '3D Geometry'
-};
-
-GeometryDisplay.prototype = _.create(Display.prototype, {
-    constructor: GeometryDisplay,
-
-    update: function(options) {
-        var changed = Display.prototype.update.call(this, options);
+    update(options) {
+        let changed = super.update(options);
 
         if (changed) {
             if (options.shape !== undefined ||
@@ -82,10 +75,10 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         }
 
         return changed;
-    },
+    }
 
-    addToScene: function(scene) {
-        var img = document.createElement('img');
+    addToScene(scene) {
+        let img = document.createElement('img');
 
         this.group = new THREE.Object3D();
 
@@ -99,16 +92,16 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         this.createMesh();
 
         scene.graph.add(this.group);
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         if (this.group) {
             scene.graph.remove(this.group);
         }
-    },
+    }
 
-    updateScene: function(renderer, data) {
-        var mesh = this.mesh,
+    updateScene(renderer, data) {
+        let mesh = this.mesh,
             options = this.options,
             fft = this.fft = SpectrumParser.parseFFT(data.fft, {normalize: true}, this.fft),
             x = fft[0],
@@ -118,12 +111,12 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         mesh.rotation.x += 5 * x;
         mesh.rotation.y += 3 * y;
         mesh.position.set(options.x, options.y, options.z);
-    },
+    }
 
-    createMesh: function() {
+    createMesh() {
         if (!this.group) return;
 
-        var i, len, geometry, material,
+        let i, len, geometry, material,
             group = this.group,
             mesh = this.mesh,
             options = this.options;
@@ -195,13 +188,13 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
 
         // Create mesh
         if (options.material === 'Points') {
-            var color = new THREE.Color().set(options.color);
-            var vertices = geometry.vertices;
-            var positions = new Float32Array(vertices.length * 3);
-            var colors = new Float32Array(vertices.length * 3);
-            var sizes = new Float32Array(vertices.length);
-            var vertex;
-            var vertextColor = new THREE.Color();
+            let color = new THREE.Color().set(options.color);
+            let vertices = geometry.vertices;
+            let positions = new Float32Array(vertices.length * 3);
+            let colors = new Float32Array(vertices.length * 3);
+            let sizes = new Float32Array(vertices.length);
+            let vertex;
+            let vertextColor = new THREE.Color();
 
             for (i = 0, len = vertices.length; i < len; i++) {
                 vertex = vertices[i];
@@ -247,6 +240,10 @@ GeometryDisplay.prototype = _.create(Display.prototype, {
         this.mesh = mesh;
         this.material = material;
     }
-});
+}
 
+GeometryDisplay.info = {
+    name: '3D Geometry'
+};
+    
 module.exports = GeometryDisplay;

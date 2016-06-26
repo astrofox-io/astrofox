@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var HalftoneShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: "t", value: null },
         center: { type: "v2", value: new THREE.Vector2(0.5, 0.5) },
@@ -13,5 +13,3 @@ var HalftoneShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.Halftone
 };
-
-module.exports = HalftoneShader;

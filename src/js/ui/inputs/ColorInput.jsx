@@ -1,33 +1,26 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
-var ColorInput = React.createClass({
-    getDefaultProps: function() {
-        return {
-            name: "color",
-            value: "#ffffff"
-        };
-    },
+var ColorInput = function(props) {
+    let onChange = (e) => props.onChange(props.name, e.target.value);
 
-    handleChange: function(e) {
-        if (this.props.onChange) {
-            this.props.onChange(this.props.name, e.target.value);
-        }
-    },
+    return (
+        <div className="input">
+            <input type="color"
+                className="input-field input-color"
+                name={props.name}
+                value={props.value}
+                onChange={onChange}
+            />
+        </div>
+    );
+};
 
-    render: function() {
-        return (
-            <div className="input">
-                <input type="color"
-                    className="input-field input-color"
-                    name={this.props.name}
-                    value={this.props.value}
-                    onChange={this.handleChange}
-                />
-            </div>
-        );
-    }
-});
+ColorInput.defaultProps = {
+    name: "color",
+    value: "#ffffff",
+    onChange: () => {}
+};
 
 module.exports = ColorInput;

@@ -169,6 +169,7 @@ var App = React.createClass({
     },
 
     showError: function(error) {
+        console.error(error);
         this.showModal(
             <ModalWindow title="ERROR">
                 {error.message}

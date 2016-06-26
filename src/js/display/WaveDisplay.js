@@ -1,9 +1,8 @@
 'use strict';
 
-var _ = require('lodash');
-var Display = require('./Display.js');
+const Display = require('./Display.js');
 
-var defaults = {
+const defaults = {
     height: 200,
     width: 400,
     color: '#ffffff',
@@ -14,18 +13,20 @@ var defaults = {
     opacity: 1.0
 };
 
-var WaveDisplay = function(canvas, options) {
-    this.canvas = canvas;
-    this.context = canvas.getContext('2d');
-    this.buffer = new Float32Array(defaults.width);
-    this.options = _.assign({}, defaults);
+class WaveDisplay extends Display {
+    constructor(canvas, options) {
+        super('WaveDisplay', defaults);
+        
+        this.canvas = canvas;
+        this.context = canvas.getContext('2d');
+        this.buffer = new Float32Array(defaults.width);
+        this.options = Object.assign({}, defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-WaveDisplay.prototype = {
-    update: function(options) {
-        var changed = Display.prototype.update.call(this, options);
+    update(options) {
+        let changed = super.update(options);
 
         if (changed) {
             if (options.width !== undefined) {
@@ -38,10 +39,10 @@ WaveDisplay.prototype = {
         }
 
         return changed;
-    },
+    }
 
-    parseData: function(buffer, data, width, height) {
-        var i, x, y,
+    parseData(buffer, data, width, height) {
+        let i, x, y,
             len = data.length,
             step = len / width;
 
@@ -49,10 +50,10 @@ WaveDisplay.prototype = {
             y = ((data[~~i] * height) + height) / 2;
             buffer[x] = y;
         }
-    },
+    }
 
-    render: function(data, playing) {
-        var i, size,
+    render(data, playing) {
+        let i, size,
             context = this.context,
             options = this.options,
             width = options.width,
@@ -95,6 +96,6 @@ WaveDisplay.prototype = {
 
         context.stroke();
     }
-};
+}
 
 module.exports = WaveDisplay;

@@ -1,48 +1,26 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const classNames = require('classnames');
 
-var ToggleInput = React.createClass({
-    getDefaultProps: function() {
-        return {
-            name: "toggle",
-            value: false
-        };
-    },
+const ToggleInput = function(props) {
+    let classes = {
+        'input': true,
+        'input-toggle': true,
+        'input-toggle-on': props.value
+    };
 
-    getInitialState: function() {
-        return {
-            value: this.props.value
-        };
-    },
+    let onClick = (e) => props.onChange(props.name, !props.value);
 
-    componentWillReceiveProps: function(props) {
-        if (typeof props.value !== 'undefined') {
-            this.setState({ value: props.value });
-        }
-    },
+    return (
+        <div className={classNames(classes)} onClick={onClick} />
+    );
+}
 
-    handleClick: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        var val = !this.state.value;
-
-        this.setState({ value: val }, function(){
-            if (this.props.onChange) {
-                this.props.onChange(this.props.name, val);
-            }
-        }.bind(this));
-    },
-
-    render: function() {
-        var classes = "input input-toggle";
-        if (this.state.value) classes += " input-toggle-on";
-
-        return (
-            <div className={classes} onClick={this.handleClick}></div>
-        );
-    }
-});
+ToggleInput.defaultProps = {
+    name: 'toggle',
+    value: false,
+    onChange: () => {}
+};
 
 module.exports = ToggleInput;

@@ -1,29 +1,28 @@
 "use strict";
 
-var _ = require('lodash');
-var EventEmitter = require('../core/EventEmitter.js');
-var IO = require('../IO.js');
+const EventEmitter = require('../core/EventEmitter.js');
+const IO = require('../IO.js');
 
-var defaults = {
+const defaults = {
     fps: 30,
     frames: 0
 };
 
-var VideoRenderer = function(videoFile, audioFile, options) {
-    this.options = _.assign({}, defaults, options);
+class VideoRenderer extends EventEmitter {
+    constructor(videoFile, audioFile, options) {
+        super();
+        
+        this.options = Object.assign({}, defaults, options);
 
-    this.stream = new IO.Stream.Transform();
-    this.videoFile = videoFile;
-    this.audioFile = audioFile;
-    this.started = false;
-    this.completed = false;
-};
+        this.stream = new IO.Stream.Transform();
+        this.videoFile = videoFile;
+        this.audioFile = audioFile;
+        this.started = false;
+        this.completed = false;
+    }
 
-VideoRenderer.prototype = _.create(EventEmitter.prototype, {
-    constructor: VideoRenderer,
-
-    processFrame: function(frame, image) {
-        var stream = this.stream,
+    processFrame(frame, image) {
+        let stream = this.stream,
             func = this.func,
             options = this.options;
 
@@ -35,10 +34,10 @@ VideoRenderer.prototype = _.create(EventEmitter.prototype, {
             this.completed = true;
             stream.push(null);
         }
-    },
+    }
 
-    renderVideo: function(func, callback) {
-        var options = this.options,
+    renderVideo(func, callback) {
+        let options = this.options,
             stream = this.stream;
 
         this.func = func;
@@ -52,7 +51,7 @@ VideoRenderer.prototype = _.create(EventEmitter.prototype, {
             console.error(err);
         });
 
-        var ffmpeg = IO.Spawn(
+        let ffmpeg = IO.Spawn(
             './bin/ffmpeg.exe',
             [
                 '-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', options.fps,
@@ -89,10 +88,10 @@ VideoRenderer.prototype = _.create(EventEmitter.prototype, {
                 this.copyAudio(this.audioFile);
             }
         }.bind(this));
-    },
+    }
 
-    copyAudio: function(audioFile) {
-        var ffmpeg = IO.Spawn(
+    copyAudio(audioFile) {
+        let ffmpeg = IO.Spawn(
             './bin/ffmpeg.exe',
             [
                 '-y',
@@ -119,6 +118,6 @@ VideoRenderer.prototype = _.create(EventEmitter.prototype, {
             console.log('program closed');
         });
     }
-});
+}
 
 module.exports = VideoRenderer;

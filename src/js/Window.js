@@ -3,7 +3,7 @@
 const remote = window.require('electron').remote;
 const dialog = remote.dialog;
 
-var Window = {
+const Window = {
     init: function() {
         this.window = remote.getCurrentWindow();
     },

@@ -1,14 +1,13 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var ColorInput = require('../inputs/ColorInput.jsx');
-var ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var ToggleInput = require('../inputs/ToggleInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const ColorInput = require('../inputs/ColorInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const ToggleInput = require('../inputs/ToggleInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     color: '#ffffff',
     height: 240,
     width: 854,
@@ -21,17 +20,20 @@ var defaults = {
     opacity: 1.0
 };
 
-var SoundwaveControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class SoundwaveControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    componentWillMount: function() {
+        this.state = defaults;
+    }
+
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -40,18 +42,18 @@ var SoundwaveControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -60,11 +62,11 @@ var SoundwaveControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
-        var maxHeight = 480;
-        var maxWidth = 854;
+    render() {
+        let maxHeight = 480;
+        let maxWidth = 854;
 
         return (
             <div className="control">
@@ -244,6 +246,6 @@ var SoundwaveControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SoundwaveControl;

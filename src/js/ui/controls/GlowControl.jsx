@@ -1,27 +1,31 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     amount: 0.1,
     intensity: 1
 };
 
-var GLOW_MAX = 50;
+const GLOW_MAX = 50;
 
-var GlowControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class GlowControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+        
+        this.state = defaults;
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -30,18 +34,18 @@ var GlowControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -51,9 +55,9 @@ var GlowControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="control">
                 <div className="header">GLOW</div>
@@ -100,6 +104,6 @@ var GlowControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = GlowControl;

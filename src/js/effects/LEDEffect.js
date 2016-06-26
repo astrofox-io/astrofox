@@ -1,43 +1,40 @@
 'use strict';
 
-var _ = require('lodash');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var LEDShader = require('../shaders/LEDShader.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const LEDShader = require('../shaders/LEDShader.js');
 
-var defaults = {
+const defaults = {
     spacing: 10,
     size: 4,
     blur: 4
 };
 
-var LEDEffect = function(options) {
-    Effect.call(this, 'LEDEffect', defaults);
+class LEDEffect extends Effect {
+    constructor(options) {
+        super('LEDEffect', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-LEDEffect.info = {
-    name: 'LED'
-};
-
-LEDEffect.prototype = _.create(Effect.prototype, {
-    constructor: LEDEffect,
-
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(new ShaderPass(LEDShader));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
+    updateScene(scene) {
         if (this.hasUpdate) {
             this.pass.setUniforms(this.options);
             this.hasUpdate = false;
         }
     }
-});
+}
+
+LEDEffect.info = {
+    name: 'LED'
+};
 
 module.exports = LEDEffect;

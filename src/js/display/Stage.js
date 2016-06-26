@@ -1,80 +1,77 @@
 'use strict';
 
-const _ = require('lodash');
 const THREE = require('three');
 const IO = require('../IO.js');
 const EventEmitter = require('../core/EventEmitter.js');
 const NodeCollection = require('../core/NodeCollection.js');
 const Composer = require('../graphics/Composer.js');
 
-const Stage = function() {
-    this.scenes = new NodeCollection();
-
-    this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
-    this.renderer.setSize(854, 480);
-    this.renderer.autoClear = false;
-
-    this.composer = new Composer(this.renderer);
-};
-
-Stage.prototype = _.create(EventEmitter.prototype, {
-    constructor: Stage,
-
-    addScene: function(scene) {
+class Stage {
+    constructor() {
+        this.scenes = new NodeCollection();
+    
+        this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
+        this.renderer.setSize(854, 480);
+        this.renderer.autoClear = false;
+    
+        this.composer = new Composer(this.renderer);
+    }
+    
+    addScene(scene) {
         this.scenes.addNode(scene);
 
         scene.owner = this;
 
         scene.addToStage(this);
-    },
+    }
 
-    removeScene: function(scene) {
+    removeScene(scene) {
         this.scenes.removeNode(scene);
 
         scene.owner = null;
 
         scene.removeFromStage(this);
-    },
+    }
 
     shiftScene(scene, i) {
-        var index = this.scenes.indexOf(scene);
+        let index = this.scenes.indexOf(scene);
 
         this.scenes.swapNodes(index, index + i);
-    },
+    }
 
-    getScenes: function() {
+    getScenes() {
         return this.scenes.nodes;
-    },
+    }
 
-    clearScenes: function() {
+    clearScenes() {
         this.scenes.nodes.forEach(function(scene) {
             this.removeScene(scene);
         }.bind(this));
-    },
+    }
 
-    hasScenes: function() {
+    hasScenes() {
         return this.scenes.nodes.size > 0;
-    },
+    }
 
-    getSize: function() {
-        var canvas =  this.renderer.domElement;
+    getSize() {
+        let canvas =  this.renderer.domElement;
 
         return {
             width: canvas.width,
             height: canvas.height
         };
-    },
+    }
 
-    getImage: function(callback, format) {
-        var img = this.renderer.domElement.toDataURL(format || 'image/png');
-        var base64 = img.replace(/^data:image\/\w+;base64,/, '');
-        var buffer = new IO.Buffer(base64, 'base64');
+    getImage(callback, format) {
+        let img = this.renderer.domElement.toDataURL(format || 'image/png');
+        let base64 = img.replace(/^data:image\/\w+;base64,/, '');
+        let buffer = new IO.Buffer(base64, 'base64');
 
         if (callback) callback(buffer);
-    },
+    }
 
-    toJSON: function() {
-        var scenes = this.scenes.map(function(scene) {
+    toJSON() {
+        let scenes = this.scenes.map(function(scene) {
             return scene.toJSON();
         });
 
@@ -82,10 +79,10 @@ Stage.prototype = _.create(EventEmitter.prototype, {
             scenes: scenes,
             options: this.options
         };
-    },
+    }
 
-    renderFrame: function(data, callback) {
-        var options, buffer,
+    renderFrame(data, callback) {
+        let options, buffer,
             composer = this.composer;
 
         composer.clearScreen(true, true, true);
@@ -108,6 +105,6 @@ Stage.prototype = _.create(EventEmitter.prototype, {
 
         if (callback) callback();
     }
-});
+}
 
 module.exports = Stage;

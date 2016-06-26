@@ -1,24 +1,28 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     scale: 10.0
 };
 
-var HexagonControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class HexagonControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+        
+        this.state = defaults;
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -27,18 +31,18 @@ var HexagonControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -48,9 +52,9 @@ var HexagonControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="control">
                 <div className="header">HEXAGON</div>
@@ -75,6 +79,6 @@ var HexagonControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = HexagonControl;

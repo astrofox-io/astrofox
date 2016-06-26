@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var ColorShiftShader = {
+module.exports = {
     uniforms: {
         time: { type: 'f', value: 1.0 }
     },
@@ -9,5 +9,3 @@ var ColorShiftShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.ColorShift
 };
-
-module.exports = ColorShiftShader;

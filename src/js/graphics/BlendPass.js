@@ -1,12 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var BlendShader = require('../shaders/BlendShader.js');
-var BlendModes = require('../graphics/BlendModes.js');
+const THREE = require('three');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const BlendShader = require('../shaders/BlendShader.js');
+const BlendModes = require('../graphics/BlendModes.js');
 
-var defaults = {
+const defaults = {
     transparent: true,
     needsSwap: true,
     opacity: 1.0,
@@ -16,17 +15,15 @@ var defaults = {
     baseBuffer: true
 };
 
-var BlendPass = function(buffer, options) {
-    ShaderPass.call(this, BlendShader, _.assign({}, defaults, options));
+class BlendPass extends ShaderPass {
+    constructor(buffer, options) {
+        super(BlendShader, Object.assign({}, defaults, options));
 
-    this.buffer = buffer;
-};
+        this.buffer = buffer;
+    }
 
-BlendPass.prototype = _.create(ShaderPass.prototype, {
-    constructor: BlendPass,
-
-    process: function(renderer, writeBuffer, readBuffer) {
-        var options = this.options;
+    process(renderer, writeBuffer, readBuffer) {
+        let options = this.options;
 
         this.setUniforms({
             tBase: (options.baseBuffer) ? this.buffer : readBuffer,
@@ -40,6 +37,6 @@ BlendPass.prototype = _.create(ShaderPass.prototype, {
 
         this.render(renderer, this.scene, this.camera, writeBuffer);
     }
-});
+}
 
 module.exports = BlendPass;

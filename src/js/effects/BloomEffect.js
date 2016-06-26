@@ -1,17 +1,16 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var Composer = require('../graphics/Composer.js');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var SavePass = require('../graphics/SavePass.js');
-var BlendPass = require('../graphics/BlendPass.js');
-var GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
-var LuminanceShader = require('../shaders/LuminanceShader.js');
-var CopyShader = require('../shaders/CopyShader.js');
+const THREE = require('three');
+const Composer = require('../graphics/Composer.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const SavePass = require('../graphics/SavePass.js');
+const BlendPass = require('../graphics/BlendPass.js');
+const GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
+const LuminanceShader = require('../shaders/LuminanceShader.js');
+const CopyShader = require('../shaders/CopyShader.js');
 
-var defaults = {
+const defaults = {
     blendMode: 'Screen',
     amount: 0.1,
     threshold: 1.0
@@ -20,21 +19,15 @@ var defaults = {
 const GAUSSIAN_BLUR_MAX = 3;
 const GAUSSIAN_ITERATIONS = 8;
 
-var BloomEffect = function(options) {
-    Effect.call(this, 'BloomEffect', defaults);
+class BloomEffect extends Effect {
+    constructor(options) {
+        super('BloomEffect', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-BloomEffect.info = {
-    name: 'Bloom'
-};
-
-BloomEffect.prototype = _.create(Effect.prototype, {
-    constructor: BloomEffect,
-
-    addToScene: function(scene) {
-        var pass,
+    addToScene(scene) {
+        let pass,
             passes = [],
             composer = scene.composer,
             options = this.options;
@@ -52,7 +45,7 @@ BloomEffect.prototype = _.create(Effect.prototype, {
 
         // Apply blur
         this.blurPasses = [];
-        for (var i = 0; i < GAUSSIAN_ITERATIONS; i++) {
+        for (let i = 0; i < GAUSSIAN_ITERATIONS; i++) {
             pass = new ShaderPass(GaussianBlurShader);
             passes.push(pass);
             this.blurPasses.push(pass);
@@ -69,15 +62,15 @@ BloomEffect.prototype = _.create(Effect.prototype, {
 
         // Set render pass
         this.setPass(composer.addMultiPass(passes));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
+    updateScene(scene) {
         if (this.hasUpdate) {
-            var options = this.options;
+            let options = this.options;
 
             this.lumPass.setUniforms({ amount: 1 - options.threshold });
 
@@ -89,15 +82,19 @@ BloomEffect.prototype = _.create(Effect.prototype, {
 
             this.hasUpdate = false;
         }
-    },
+    }
 
-    updateGaussianPass: function(pass, i) {
-        var options = this.options,
+    updateGaussianPass(pass, i) {
+        let options = this.options,
             amount = options.amount * GAUSSIAN_BLUR_MAX,
             radius = (GAUSSIAN_ITERATIONS - i - 1) * amount;
 
         pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0] });
     }
-});
+}
+
+BloomEffect.info = {
+    name: 'Bloom'
+};
 
 module.exports = BloomEffect;

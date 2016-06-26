@@ -1,10 +1,9 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var ComposerPass = require('../graphics/ComposerPass.js');
+const THREE = require('three');
+const ComposerPass = require('../graphics/ComposerPass.js');
 
-var defaults = {
+const defaults = {
     textureId: 'tDiffuse',
     transparent: false,
     needsSwap: true,
@@ -12,35 +11,33 @@ var defaults = {
     blending: THREE.NormalBlending
 };
 
-var ShaderPass = function(shader, options) {
-    ComposerPass.call(this, _.assign({}, defaults, options));
+class ShaderPass extends ComposerPass {
+    constructor(shader, options) {
+        super(Object.assign({}, defaults, options));
 
-    this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+        this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-    this.material = new THREE.ShaderMaterial({
-        uniforms: this.uniforms,
-        vertexShader: shader.vertexShader,
-        fragmentShader: shader.fragmentShader,
-        defines: shader.defines || {},
-        transparent: this.options.transparent,
-        blending: this.options.blending
-    });
+        this.material = new THREE.ShaderMaterial({
+            uniforms: this.uniforms,
+            vertexShader: shader.vertexShader,
+            fragmentShader: shader.fragmentShader,
+            defines: shader.defines || {},
+            transparent: this.options.transparent,
+            blending: this.options.blending
+        });
 
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.geometry = new THREE.PlaneBufferGeometry(2, 2);
-    this.mesh = new THREE.Mesh(this.geometry, null);
-    this.mesh.material = this.material;
-    this.scene.add(this.mesh);
-};
-
-ShaderPass.prototype = _.create(ComposerPass.prototype, {
-    constructor: ShaderPass,
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+        this.mesh = new THREE.Mesh(this.geometry, null);
+        this.mesh.material = this.material;
+        this.scene.add(this.mesh);
+    }
     
-    setUniforms: function(props) {
-        var uniforms = this.uniforms;
+    setUniforms(props) {
+        let uniforms = this.uniforms;
 
-        for (var prop in props) {
+        for (let prop in props) {
             if (props.hasOwnProperty(prop) && uniforms.hasOwnProperty(prop)) {
                 if (uniforms[prop].value != null && typeof uniforms[prop].value.set !== 'undefined') {
                     uniforms[prop].value.set.apply(uniforms[prop].value, props[prop]);
@@ -52,10 +49,10 @@ ShaderPass.prototype = _.create(ComposerPass.prototype, {
         }
 
         this.material.needsUpdate = true;
-    },
+    }
 
-    process: function(renderer, writeBuffer, readBuffer) {
-        var options = this.options;
+    process(renderer, writeBuffer, readBuffer) {
+        let options = this.options;
 
         if (readBuffer && this.material.uniforms[options.textureId] ) {
             this.material.uniforms[options.textureId].value = readBuffer;
@@ -63,6 +60,6 @@ ShaderPass.prototype = _.create(ComposerPass.prototype, {
 
         this.render(renderer, this.scene, this.camera, writeBuffer);
     }
-});
+}
 
 module.exports = ShaderPass;

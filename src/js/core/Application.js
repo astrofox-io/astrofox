@@ -30,41 +30,41 @@ const defaults = {
 
 const FPS_POLL_INTERVAL = 500;
 
-const Application = function() {
-    this.audioContext = new window.AudioContext();
-    this.audioFile = null;
+class Application extends EventEmitter {
+    constructor() {
+        super();
+    
+        this.audioContext = new window.AudioContext();
+        this.audioFile = null;
+    
+        this.player = new Player(this.audioContext);
+        this.stage = new Stage();
+        this.timer = new Timer();
+        this.options = Object.assign({}, defaults);
+        this.spectrum = new SpectrumAnalyzer(this.audioContext);
+    
+        this.player.on('play', this.updateAnalyzer.bind(this));
+        this.player.on('stop', this.updateAnalyzer.bind(this));
+    
+        this.frameData = {
+            id: null,
+            time: 0,
+            delta: 0,
+            fft: null,
+            td: null,
+            playing: false
+        };
+    
+        this.stats = {
+            fps: 0,
+            ms: 0,
+            time: 0,
+            frames: 0,
+            stack: []
+        };
+    }
 
-    this.player = new Player(this.audioContext);
-    this.stage = new Stage();
-    this.timer = new Timer();
-    this.options = _.assign({}, defaults);
-    this.spectrum = new SpectrumAnalyzer(this.audioContext);
-
-    this.player.on('play', this.updateAnalyzer.bind(this));
-    this.player.on('stop', this.updateAnalyzer.bind(this));
-
-    this.frameData = {
-        id: null,
-        time: 0,
-        delta: 0,
-        fft: null,
-        td: null,
-        playing: false
-    };
-
-    this.stats = {
-        fps: 0,
-        ms: 0,
-        time: 0,
-        frames: 0,
-        stack: []
-    };
-};
-
-Application.prototype = _.create(EventEmitter.prototype, {
-    constructor: Application,
-
-    init: function() {
+    init() {
         // Create menu for OSX
         if (process.platform === 'darwin') {
             const menu = remote.Menu.buildFromTemplate(menuItemsConfig);
@@ -72,9 +72,9 @@ Application.prototype = _.create(EventEmitter.prototype, {
         }
 
         this.startRender();
-    },
+    }
 
-    loadAudioFile: function(file) {
+    loadAudioFile(file) {
         this.emit('audio_file_loading');
 
         this.getAudioData(file)
@@ -87,11 +87,11 @@ Application.prototype = _.create(EventEmitter.prototype, {
             .then(function() {
                 this.emit('audio_file_loaded');
             }.bind(this));
-    },
+    }
 
-    getAudioData: function(file) {
+    getAudioData(file) {
         return new Promise(function(resolve, reject) {
-            var reader = new FileReader(),
+            let reader = new FileReader(),
                 player = this.player,
                 timer = this.timer;
 
@@ -117,11 +117,11 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
             reader.readAsArrayBuffer(file);
         }.bind(this));
-    },
+    }
 
-    loadAudioData: function(data) {
+    loadAudioData(data) {
         return new Promise(function(resolve, reject) {
-            var player = this.player,
+            let player = this.player,
                 spectrum = this.spectrum,
                 timer = this.timer,
                 sound = new BufferedSound(this.audioContext);
@@ -146,34 +146,34 @@ Application.prototype = _.create(EventEmitter.prototype, {
             timer.set('sound_load');
             sound.load(data);
         }.bind(this));
-    },
+    }
 
-    startRender: function() {
+    startRender() {
         if (!this.frameData.id) {
             this.render();
         }
-    },
+    }
 
-    stopRender: function() {
-        var id = this.frameData.id;
+    stopRender() {
+        let id = this.frameData.id;
         if (id) {
             cancelAnimationFrame(id);
             this.frameData.id = null;
         }
-    },
+    }
 
-    getFrameData: function() {
-        var data = this.frameData;
+    getFrameData() {
+        let data = this.frameData;
 
         data.fft = this.spectrum.getFrequencyData();
         data.td = this.spectrum.getTimeData();
         data.playing = this.player.isPlaying();
 
         return data;
-    },
+    }
 
-    updateFPS: function(now) {
-        var stats = this.stats;
+    updateFPS(now) {
+        let stats = this.stats;
 
         if (!stats.time) {
             stats.time = now;
@@ -195,10 +195,10 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
             this.emit('tick', stats);
         }
-    },
+    }
 
-    render: function() {
-        var now = window.performance.now(),
+    render() {
+        let now = window.performance.now(),
             data = this.getFrameData(),
             id = window.requestAnimationFrame(this.render.bind(this));
 
@@ -211,10 +211,10 @@ Application.prototype = _.create(EventEmitter.prototype, {
         this.emit('render', data);
 
         this.updateFPS(now);
-    },
+    }
 
-    saveImage: function(filename) {
-        var stage = this.stage,
+    saveImage(filename) {
+        let stage = this.stage,
             data = this.getFrameData();
 
         stage.renderFrame(data, function(){
@@ -229,10 +229,10 @@ Application.prototype = _.create(EventEmitter.prototype, {
                 }.bind(this));
             }.bind(this));
         }.bind(this));
-    },
+    }
 
-    saveVideo: function(filename) {
-        var player = this.player,
+    saveVideo(filename) {
+        let player = this.player,
             sound = player.getSound('audio'),
             renderer = new VideoRenderer(filename, this.audioFile, {
                 fps: 29.97,
@@ -257,10 +257,10 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
         // DEBUG
         console.log(filename + ' saved');
-    },
+    }
 
-    renderFrame: function(frame, fps, callback) {
-        var data, image,
+    renderFrame(frame, fps, callback) {
+        let data, image,
             player = this.player,
             spectrum = this.spectrum,
             stage = this.stage,
@@ -286,10 +286,10 @@ Application.prototype = _.create(EventEmitter.prototype, {
         }.bind(this);
 
         source.start(0, frame / fps, 1 / fps);
-    },
+    }
 
-    saveProject: function(filename) {
-        var data, sceneData,
+    saveProject(filename) {
+        let data, sceneData,
             options = this.options;
 
         sceneData = this.stage.getScenes().map(function(scene) {
@@ -315,12 +315,12 @@ Application.prototype = _.create(EventEmitter.prototype, {
 
         // DEBUG
         console.log(filename + ' saved.');
-    },
+    }
 
-    loadProject: function(filename) {
-        var options = this.options;
+    loadProject(filename) {
+        let options = this.options;
 
-        var data = IO.fs.readFileSync(filename);
+        let data = IO.fs.readFileSync(filename);
 
         if (options.useCompression) {
             IO.zlib.inflate(data, function(err, buf) {
@@ -340,16 +340,16 @@ Application.prototype = _.create(EventEmitter.prototype, {
                 this.raiseError('Invalid project data.', err);
             }
         }
-    },
+    }
 
-    loadControls: function(data) {
-        var component;
+    loadControls(data) {
+        let component;
 
         if (typeof data === 'object') {
             this.stage.clearScenes();
 
             data.scenes.forEach(function(item) {
-                var scene = new Scene(item.name, item.options);
+                let scene = new Scene(item.name, item.options);
                 this.stage.addScene(scene);
 
                 if (item.displays) {
@@ -382,10 +382,10 @@ Application.prototype = _.create(EventEmitter.prototype, {
         else {
             this.raiseError('Invalid project data.');
         }
-    },
+    }
 
-    updateAnalyzer: function() {
-        var player = this.player,
+    updateAnalyzer() {
+        let player = this.player,
             spectrum = this.spectrum,
             sound = player.getSound('audio');
 
@@ -394,12 +394,12 @@ Application.prototype = _.create(EventEmitter.prototype, {
             spectrum.clearTimeData();
             spectrum.enabled = (sound.playing || sound.paused);
         }
-    },
+    }
 
-    raiseError: function(msg, e) {
+    raiseError(msg, e) {
         if (e) console.error(e);
         this.emit('error', new Error(msg));
     }
-});
+}
 
 module.exports = new Application();

@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var BlendShader = {
+module.exports = {
     uniforms: {
         tBase: { type: 't', value: null },
         tBlend: { type: 't', value: null },
@@ -13,5 +13,3 @@ var BlendShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.Blend
 };
-
-module.exports = BlendShader;

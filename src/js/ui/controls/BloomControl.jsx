@@ -1,32 +1,36 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var SelectInput = require('../inputs/SelectInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const SelectInput = require('../inputs/SelectInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     blendMode: 'Screen',
     amount: 0.1,
     threshold: 1.0
 };
 
-var blendModes = [
+const blendModes = [
     'Add',
     'Screen'
 ];
 
-var BloomControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class BloomControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    componentWillMount: function() {
+        this.state = defaults;
+    }
+
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -35,18 +39,18 @@ var BloomControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -56,9 +60,9 @@ var BloomControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="control">
                 <div className="header">BLOOM</div>
@@ -114,6 +118,6 @@ var BloomControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = BloomControl;

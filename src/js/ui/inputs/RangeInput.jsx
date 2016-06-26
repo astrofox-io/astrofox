@@ -1,37 +1,30 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const autoBind = require('../../util/autoBind.js');
 
-var RangeInput = React.createClass({
-    getDefaultProps: function() {
-        return {
-            name: "range",
-            min: 0,
-            max: 100,
-            step: 1,
-            buffered: false,
-            readOnly: false
+class RangeInput extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+
+        this.state = {
+            value: props.value
         };
-    },
+    }
 
-    getInitialState: function() {
-        return {
-            value: this.props.value
-        };
-    },
-
-    componentDidMount: function() {
+    componentDidMount() {
         this.active = false;
-    },
+    }
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.value !== this.state.value && !this.active) {
             this.setValue(nextProps.value, nextProps.min, nextProps.max);
         }
-    },
+    }
 
-    handleChange: function(e) {
-        var val = e.currentTarget.value;
+    handleChange(e) {
+        let val = e.currentTarget.value;
 
         this.setValue(
             val,
@@ -47,28 +40,28 @@ var RangeInput = React.createClass({
                 }
             }.bind(this)
         );
-    },
+    }
 
-    handleMouseDown: function(e) {
+    handleMouseDown(e) {
         if (this.props.buffered) {
             this.active = true;
         }
-    },
+    }
 
-    handleMouseUp: function(e) {
+    handleMouseUp(e) {
         if (this.props.buffered) {
-            var val = e.currentTarget.value;
+            let val = e.currentTarget.value;
             this.props.onChange(this.props.name, Number(val));
             this.active = false;
         }
-    },
+    }
 
-    isActive: function() {
+    isActive() {
         return this.active;
-    },
+    }
 
-    getPosition: function() {
-        var min = this.props.min,
+    getPosition() {
+        let min = this.props.min,
             max = this.props.max,
             val = this.state.value;
 
@@ -77,9 +70,9 @@ var RangeInput = React.createClass({
         }
 
         return 0;
-    },
+    }
 
-    setValue: function(val, min, max, callback) {
+    setValue(val, min, max, callback) {
         if (val > max) {
             val = max;
         }
@@ -88,10 +81,10 @@ var RangeInput = React.createClass({
         }
 
         this.setState({ value: val }, callback);
-    },
+    }
 
-    render: function() {
-        var props = this.props,
+    render() {
+        let props = this.props,
             fillStyle = { width: + this.getPosition() + '%' };
 
         return (
@@ -114,6 +107,15 @@ var RangeInput = React.createClass({
             </div>
         );
     }
-});
+}
+
+RangeInput.defaultProps = {
+    name: "range",
+    min: 0,
+    max: 100,
+    step: 1,
+    buffered: false,
+    readOnly: false
+};
 
 module.exports = RangeInput;

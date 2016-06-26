@@ -1,19 +1,16 @@
 'use strict';
 
-var _ = require('lodash');
-var Sound = require('../audio/Sound.js');
+const Sound = require('../audio/Sound.js');
 
-var BufferedSound = function(context) {
-    Sound.call(this, context);
+class BufferedSound extends Sound {
+    constructor(context) {
+        super(context);
 
-    this.startTime = 0;
-    this.stopTime = 0;
-};
+        this.startTime = 0;
+        this.stopTime = 0;
+    }
 
-BufferedSound.prototype = _.create(Sound.prototype, {
-    constructor: BufferedSound,
-
-    load: function(src) {
+    load(src) {
         if (typeof src === 'string') {
             this.loadUrl(src);
         }
@@ -27,9 +24,9 @@ BufferedSound.prototype = _.create(Sound.prototype, {
             alert('Invalid source: ' + (typeof src));
             this.emit('error');
         }
-    },
+    }
 
-    unload: function(callback) {
+    unload(callback) {
         if (this.source) {
             this.stop();
             this.source = null;
@@ -38,11 +35,11 @@ BufferedSound.prototype = _.create(Sound.prototype, {
         }
 
         if (callback) callback();
-    },
+    }
 
     // Loads a url via AJAX
-    loadUrl: function(src) {
-        var request = new XMLHttpRequest();
+    loadUrl(src) {
+        let request = new XMLHttpRequest();
 
         this.src = src;
 
@@ -54,10 +51,10 @@ BufferedSound.prototype = _.create(Sound.prototype, {
         }.bind(this);
 
         request.send();
-    },
+    }
 
     // Decodes an ArrayBuffer into an AudioBuffer
-    loadData: function(data) {
+    loadData(data) {
         this.audioContext.decodeAudioData(
             data,
             function(buffer) {
@@ -67,26 +64,26 @@ BufferedSound.prototype = _.create(Sound.prototype, {
                 this.emit('error', new Error('Invalid audio file.'));
             }.bind(this)
         );
-    },
+    }
 
     // Loads an AudioBuffer
-    loadBuffer: function(buffer) {
+    loadBuffer(buffer) {
         this.buffer = buffer;
         this.initBuffer();
         this.loaded = true;
         this.emit('load');
-    },
+    }
 
-    initBuffer: function() {
+    initBuffer() {
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
 
         this.nodes.forEach(function(node) {
             this.source.connect(node);
         }, this);
-    },
+    }
 
-    play: function() {
+    play() {
         if (!this.loaded) return;
 
         this.initBuffer();
@@ -97,9 +94,9 @@ BufferedSound.prototype = _.create(Sound.prototype, {
         this.paused = false;
 
         this.emit('play');
-    },
+    }
 
-    pause: function() {
+    pause() {
         if (this.source) {
             this.source.stop();
             this.source = null;
@@ -110,9 +107,9 @@ BufferedSound.prototype = _.create(Sound.prototype, {
         this.paused = true;
 
         this.emit('pause');
-    },
+    }
 
-    stop: function() {
+    stop() {
         if (this.source) {
             this.source.stop();
             this.source.disconnect();
@@ -124,9 +121,9 @@ BufferedSound.prototype = _.create(Sound.prototype, {
         this.paused = false;
 
         this.emit('stop');
-    },
+    }
 
-    seek: function(pos) {
+    seek(pos) {
         if (this.playing) {
             this.stop();
             this.updatePosition(pos);
@@ -137,24 +134,24 @@ BufferedSound.prototype = _.create(Sound.prototype, {
         }
 
         this.emit('seek');
-    },
+    }
 
-    getCurrentTime: function() {
+    getCurrentTime() {
         if (this.playing) {
             return this.stopTime + (this.audioContext.currentTime - this.startTime);
         }
         else {
             return this.stopTime;
         }
-    },
+    }
 
-    getDuration: function() {
+    getDuration() {
         return (this.buffer) ? this.buffer.duration : 0;
-    },
+    }
 
-    updatePosition: function(pos) {
+    updatePosition(pos) {
         this.stopTime = ~~(pos * this.buffer.duration);
     }
-});
+}
 
 module.exports = BufferedSound;

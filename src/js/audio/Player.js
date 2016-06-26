@@ -1,39 +1,38 @@
 'use strict';
 
-var _ = require('lodash');
-var EventEmitter = require('../core/EventEmitter.js');
+const EventEmitter = require('../core/EventEmitter.js');
 
-var defaults = {
+const defaults = {
     loop: false,
     updateInterval: 500
 };
 
-var Player = function(context, options) {
-    this.audioContext = context;
-    this.nodes = [];
-    this.sounds = {};
+class Player extends EventEmitter {
+    constructor(context, options) {
+        super();
 
-    this.volume = this.audioContext.createGain();
-    this.volume.connect(this.audioContext.destination);
-    this.options = _.assign({}, defaults);
+        this.audioContext = context;
+        this.nodes = [];
+        this.sounds = {};
 
-    this.update(options);
-};
+        this.volume = this.audioContext.createGain();
+        this.volume.connect(this.audioContext.destination);
+        this.options = Object.assign({}, defaults);
 
-Player.prototype = _.create(EventEmitter.prototype, {
-    constructor: Player,
+        this.update(options);
+    }
 
-    update: function(options) {
+    update(options) {
         if (typeof options !== 'undefined') {
-            for (var prop in options) {
+            for (let prop in options) {
                 if (this.options.hasOwnProperty(prop)) {
                     this.options[prop] = options[prop];
                 }
             }
         }
-    },
+    }
 
-    load: function(id, sound, callback) {
+    load(id, sound, callback) {
         this.unload(id, function() {
             this.sounds[id] = sound;
 
@@ -43,9 +42,9 @@ Player.prototype = _.create(EventEmitter.prototype, {
 
             this.emit('load');
         }.bind(this));
-    },
+    }
 
-    unload: function(id, callback) {
+    unload(id, callback) {
         var sound = this.sounds[id];
         if (sound) {
             this.stop(id);
@@ -54,10 +53,10 @@ Player.prototype = _.create(EventEmitter.prototype, {
         else if (callback) {
             callback();
         }
-    },
+    }
 
-    play: function(id) {
-        var sound = this.sounds[id];
+    play(id) {
+        let sound = this.sounds[id];
         if (sound) {
             if (sound.playing) {
                 this.pause(id);
@@ -84,83 +83,87 @@ Player.prototype = _.create(EventEmitter.prototype, {
                 this.emit('play');
             }
         }
-    },
+    }
 
-    pause: function(id) {
-        var sound = this.sounds[id];
+    pause(id) {
+        let sound = this.sounds[id];
         if (sound) {
             sound.pause();
             clearInterval(this.timer);
             this.emit('pause');
         }
-    },
+    }
 
-    stop: function(id) {
-        var sound = this.sounds[id];
+    stop(id) {
+        let sound = this.sounds[id];
         if (sound) {
             sound.stop();
             clearInterval(this.timer);
             this.emit('stop');
         }
-    },
+    }
 
-    seek: function(id, val) {
-        var sound = this.sounds[id];
+    seek(id, val) {
+        let sound = this.sounds[id];
         if (sound) {
             sound.seek(val);
             this.emit('seek');
         }
-    },
+    }
 
-    getSound: function(id) {
+    getSound(id) {
         return this.sounds[id];
-    },
+    }
 
-    setVolume: function(val) {
+    setVolume(val) {
         if (this.volume) {
             this.volume.gain.value = val;
         }
-    },
+    }
 
-    getVolume: function() {
+    getVolume() {
         return this.volume.gain.value;
-    },
+    }
 
-    getCurrentTime: function(id) {
-        var sound = this.sounds[id];
+    getCurrentTime(id) {
+        let sound = this.sounds[id];
         if (sound) {
             return sound.getCurrentTime();
         }
         return 0;
-    },
+    }
 
-    getDuration: function(id) {
-        var sound = this.sounds[id];
+    getDuration(id) {
+        let sound = this.sounds[id];
         if (sound) {
             return sound.getDuration();
         }
         return 0;
-    },
+    }
 
-    getPosition: function(id) {
-        var sound = this.sounds[id];
+    getPosition(id) {
+        let sound = this.sounds[id];
         if (sound) {
             return sound.getPosition();
         }
         return 0;
-    },
+    }
 
-    toggleLoop: function() {
+    toggleLoop() {
         this.options.loop = !this.options.loop;
-    },
+    }
 
-    isPlaying: function() {
-        for (var id in this.sounds) {
+    isPlaying() {
+        for (let id in this.sounds) {
             if (this.sounds.hasOwnProperty(id) && this.sounds[id].playing) return true;
         }
 
         return false;
     }
-});
+
+    isLooping() {
+        return this.options.loop;
+    }
+}
 
 module.exports = Player;

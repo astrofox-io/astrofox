@@ -1,40 +1,41 @@
 'use strict';
 
-var React = require('react');
-var Menu = require('./Menu.jsx');
+const React = require('react');
+const Menu = require('./Menu.jsx');
+const classNames = require('classnames');
+const autoBind = require('../../util/autoBind.js');
 
-var MenuBarItem = React.createClass({
-    handleClick: function(e) {
+class MenuBarItem extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+    }
+
+    handleClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onClick();
-    },
+    }
 
-    handleMouseOver: function(e) {
+    handleMouseOver(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onMouseOver();
-    },
+    }
 
-    handleItemClick: function(item) {
-        var action = this.props.label + '/' + item.props.label;
+    handleItemClick(item) {
+        let action = this.props.label + '/' + item.props.label;
         
         this.props.onItemClick(action, item.props.checked);
-    },
+    }
 
-    render: function() {
-        var classes = 'menubar-text';
-
-        if (this.props.active) {
-            classes += ' menubar-text-active';
-        }
-
+    render() {
         return (
             <li className="menubar-item">
                 <div
-                    className={classes}
+                    className={classNames({ 'menubar-text': true, 'menubar-text-active': this.props.active })}
                     onClick={this.handleClick}
                     onMouseOver={this.handleMouseOver}>
                     {this.props.label}
@@ -42,11 +43,11 @@ var MenuBarItem = React.createClass({
                 <Menu
                     items={this.props.items}
                     visible={this.props.active}
-                    onItemClick={this.handleItemClick}
+                    onMenuItemClick={this.handleItemClick}
                 />
             </li>
         );
     }
-});
+}
 
 module.exports = MenuBarItem;

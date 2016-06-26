@@ -1,45 +1,39 @@
 'use strict';
 
-var React = require('react');
-var ColorInput = require('./ColorInput.jsx');
+const React = require('react');
+const ColorInput = require('./ColorInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var ColorRangeInput = React.createClass({
-    defaultColor: '#ffffff',
+class ColorRangeInput extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    getDefaultProps: function() {
-        return {
-            name: "color",
-            startColor: this.defaultColor,
-            endColor: this.defaultColor
+        this.state = {
+            startColor: props.startColor,
+            endColor: props.endColor
         };
-    },
+    }
 
-    getInitialState: function() {
-        return {
-            startColor: this.props.startColor,
-            endColor: this.props.endColor
-        };
-    },
-
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         this.setState(nextProps);
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {};
+    handleChange(name, val) {
+        let obj = {};
         obj[name] = val;
 
         this.setState(obj, function() {
             this.props.onChange(this.props.name, this.getValues());
         }.bind(this));
-    },
+    }
 
-    getValues: function() {
+    getValues() {
         return [this.state.startColor, this.state.endColor];
-    },
+    }
 
-    render: function(){
-        var colorRangeStyle = {
+    render(){
+        let colorRangeStyle = {
             backgroundImage: '-webkit-linear-gradient(left, '+this.state.startColor+','+this.state.endColor+')'
         };
 
@@ -59,6 +53,11 @@ var ColorRangeInput = React.createClass({
             </div>
         );
     }
-});
+}
+
+ColorRangeInput.defaultProps = {
+    startColor: '#ffffff',
+    endColor: '#ffffff'
+};
 
 module.exports = ColorRangeInput;

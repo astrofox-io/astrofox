@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var BoxBlurShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         amount: { type: 'f', value: 1.0 },
@@ -11,5 +11,3 @@ var BoxBlurShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.BoxBlur
 };
-
-module.exports = BoxBlurShader;

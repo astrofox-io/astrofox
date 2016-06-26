@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var MirrorShader = {
+module.exports = {
 	uniforms: {
         tDiffuse: { type: 't', value: null },
         side: { type: 'i', value: 1 }
@@ -10,5 +10,3 @@ var MirrorShader = {
 	vertexShader: ShaderCode.vertex.Basic,
 	fragmentShader: ShaderCode.fragment.Mirror
 };
-
-module.exports = MirrorShader;

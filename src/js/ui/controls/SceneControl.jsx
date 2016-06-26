@@ -1,13 +1,13 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var ToggleInput = require('../inputs/ToggleInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var SelectInput = require('../inputs/SelectInput.jsx');
-var BlendModes = require('../../graphics/BlendModes.js');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const ToggleInput = require('../inputs/ToggleInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const SelectInput = require('../inputs/SelectInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var blendModes = [
+const blendModesMenu = [
     'None',
     'Normal',
     { separator: true },
@@ -40,7 +40,7 @@ var blendModes = [
     'Reflect'
 ];
 
-var defaults = {
+const defaults = {
     blendMode: 'Normal',
     opacity: 1.0,
     lightIntensity: 1.0,
@@ -48,17 +48,20 @@ var defaults = {
     cameraZoom: 250
 };
 
-var SceneControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class SceneControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    componentWillMount: function() {
+        this.state = defaults;
+    }
+
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -67,18 +70,18 @@ var SceneControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -88,10 +91,10 @@ var SceneControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
-        var maxVal = 500;
+    render() {
+        let maxVal = 500;
 
         return (
             <div className="control">
@@ -101,7 +104,7 @@ var SceneControl = React.createClass({
                     <SelectInput
                         name="blendMode"
                         size="20"
-                        items={blendModes}
+                        items={blendModesMenu}
                         value={this.state.blendMode}
                         onChange={this.handleChange} />
                 </div>
@@ -186,6 +189,6 @@ var SceneControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SceneControl;

@@ -1,20 +1,23 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Application = require('../../core/Application.js');
-var BarDisplay = require('../../display/BarDisplay.js');
-var WaveformParser = require('../../audio/WaveformParser.js');
+const React = require('react');
+const Application = require('../../core/Application.js');
+const BarDisplay = require('../../display/BarDisplay.js');
+const WaveformParser = require('../../audio/WaveformParser.js');
+const autoBind = require('../../util/autoBind.js');
 
-var Waveform = React.createClass({
-    getInitialState: function() {
-        return {
+class Waveform extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+
+        this.state = {
             progress: 0,
             seek: 0
         };
-    },
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.config = {
             width: 854,
             height: 70,
@@ -24,14 +27,14 @@ var Waveform = React.createClass({
             bgColor: '#333333',
             bars: 213
         };
-    },
+    }
 
-    componentDidMount: function() {
-        var config = this.config,
+    componentDidMount() {
+        let config = this.config,
             player = Application.player;
 
         this.bars = new BarDisplay(
-            ReactDOM.findDOMNode(this.refs.canvas),
+            this.refs.canvas,
             {
                 y: config.height,
                 height: config.height,
@@ -45,7 +48,7 @@ var Waveform = React.createClass({
         );
 
         this.progress = new BarDisplay(
-            ReactDOM.findDOMNode(this.refs.progress),
+            this.refs.progress,
             {
                 y: config.height,
                 height: config.height,
@@ -59,7 +62,7 @@ var Waveform = React.createClass({
         );
 
         this.seek = new BarDisplay(
-            ReactDOM.findDOMNode(this.refs.seek),
+            this.refs.seek,
             {
                 y: config.height,
                 height: config.height,
@@ -73,7 +76,7 @@ var Waveform = React.createClass({
         );
 
         player.on('load', function() {
-            var options = { bars: this.config.bars },
+            let options = { bars: this.config.bars },
                 buffer = Application.player.getSound('audio').buffer,
                 data = WaveformParser.parseBuffer(buffer, options);
 
@@ -91,39 +94,39 @@ var Waveform = React.createClass({
         player.on('seek', function(){
             this.forceUpdate();
         }, this);
-    },
+    }
 
-    handleClick: function(e) {
+    handleClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        var val = e.pageX - e.currentTarget.offsetLeft,
+        let val = e.pageX - e.currentTarget.offsetLeft,
             player = Application.player;
 
         player.seek('audio', val / this.config.width);
 
         this.setState({ progress: val });
-    },
+    }
 
-    handleMouseMove: function(e) {
+    handleMouseMove(e) {
         if (!Application.player.getSound('audio')) return;
 
         e.stopPropagation();
         e.preventDefault();
 
-        var val = e.pageX - e.currentTarget.offsetLeft;
+        let val = e.pageX - e.currentTarget.offsetLeft;
         this.setState({ seek: val });
-    },
+    }
 
-    handleMouseOut: function(e) {
+    handleMouseOut(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ seek: 0 });
-    },
+    }
 
-    getClipPath: function(height, width, start, end) {
-        var points = [
+    getClipPath(height, width, start, end) {
+        let points = [
             start + 'px 0px',
             end + 'px 0px',
             end + 'px ' + height + 'px',
@@ -132,16 +135,16 @@ var Waveform = React.createClass({
         ];
 
         return 'polygon(' + points.join(',') + ')';
-    },
+    }
 
-    draw: function(data) {
+    draw(data) {
         this.bars.render(data);
         this.progress.render(data);
         this.seek.render(data);
-    },
+    }
 
-    render: function() {
-        var width = this.config.width,
+    render() {
+        let width = this.config.width,
             height = this.config.height + this.config.shadowHeight,
             seek = this.state.seek,
             progressWidth = Application.player.getPosition('audio') * width,
@@ -149,7 +152,7 @@ var Waveform = React.createClass({
             clipStyle = { display: 'none' };
 
         if (seek > 0) {
-            var path = (seek > progressWidth) ?
+            let path = (seek > progressWidth) ?
                 this.getClipPath(height, width, seek, progressWidth) :
                 this.getClipPath(height, width, progressWidth, seek);
 
@@ -175,6 +178,6 @@ var Waveform = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Waveform;

@@ -1,70 +1,75 @@
 'use strict';
 
-var React = require('react');
-var Window = require('../../Window.js');
+const React = require('react');
+const Window = require('../../Window.js');
+const autoBind = require('../../util/autoBind.js');
 
-var Header = React.createClass({
-    componentDidMount: function() {
+class Header extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+    }
+    
+    componentDidMount() {
         this.window = Window;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return false;
-    },
+    }
 
-    handleMinimize: function(e) {
+    handleMinimize(e) {
         e.preventDefault();
         e.stopPropagation();
 
         this.window.minimize();
-    },
+    }
 
-    handleMaximize: function(e) {
+    handleMaximize(e) {
         e.preventDefault();
         e.stopPropagation();
 
         this.window.maximize();
-    },
+    }
 
-    handleClose: function(e) {
+    handleClose(e) {
         e.preventDefault();
         e.stopPropagation();
 
         this.window.close(true);
-    },
+    }
 
-    handleConsole: function(e) {
+    handleConsole(e) {
         e.preventDefault();
         e.stopPropagation();
 
         this.window.openDevTools();
-    },
+    }
 
-    handleReload: function(e) {
+    handleReload(e) {
         e.preventDefault();
         e.stopPropagation();
 
         this.window.reload();
-    },
+    }
 
-
-    render: function() {
+    render() {
         return (
             <div id="header">
                 <div className="icon"><img src="resources/images/icon.png" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
                     <ul>
-                        <li className="button icon-code" onClick={this.handleConsole}></li>
-                        <li className="button icon-cw" onClick={this.handleReload}></li>
-                        <li className="button icon-minus" onClick={this.handleMinimize}></li>
-                        <li className="button icon-plus" onClick={this.handleMaximize}></li>
-                        <li className="button icon-cross" onClick={this.handleClose}></li>
+                        <li className="button icon-code" onClick={this.handleConsole} />
+                        <li className="button icon-cw" onClick={this.handleReload} />
+                        <li className="button icon-minus" onClick={this.handleMinimize} />
+                        <li className="button icon-plus" onClick={this.handleMaximize} />
+                        <li className="button icon-cross" onClick={this.handleClose} />
                     </ul>
                 </div>
             </div>
         );
     }
-});
+}
 
 module.exports = Header;

@@ -1,17 +1,14 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
+const React = require('react');
+const Application = require('../../core/Application.js');
 
-var ModalWindow = React.createClass({
-    getDefaultProps: function() {
-        return {
-            title: '',
-            onClose: function(){}
-        };
-    },
+class ModalWindow extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
-    handleClose: function(e) {
+    handleClose(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -20,24 +17,24 @@ var ModalWindow = React.createClass({
         if (this.props.onClose) {
             this.props.onClose();
         }
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="modal-window">
                 <div className="header">
                     {this.props.title}
-                    <i className="close-button icon-cross" onClick={this.handleClose} />
+                    <i className="close-button icon-cross" onClick={this.handleClose.bind(this)} />
                 </div>
                 <div className="body">
                     {this.props.children}
                 </div>
                 <div className="buttons">
-                    <div className="button" onClick={this.handleClose}>OK</div>
+                    <div className="button" onClick={this.handleClose.bind(this)}>OK</div>
                 </div>
             </div>
         );
     }
-});
+}
 
 module.exports = ModalWindow;

@@ -1,23 +1,14 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const classNames = require('classnames');
 
-var Loading = React.createClass({
-    getDefaultProps: function() {
-        return { visible: false };
-    },
+const Loading = function(props) {
+    return (
+        <div className={classNames({ 'loading': true, 'loading-active': props.visible })}></div>
+    );
+};
 
-    render: function() {
-        var classes = 'loading';
-
-        if (this.props.visible) {
-            classes += ' loading-active';
-        }
-
-        return (
-            <div className={classes}></div>
-        );
-    }
-});
+Loading.defaultProps = { visible: false };
 
 module.exports = Loading;

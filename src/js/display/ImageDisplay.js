@@ -1,7 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
-var CanvasDisplay = require('../display/CanvasDisplay.js');
+const CanvasDisplay = require('../display/CanvasDisplay.js');
 
 const defaults = {
     src: '',
@@ -17,33 +16,27 @@ const defaults = {
 const MIN_RESIZE_WIDTH = 100;
 const MIN_RESIZE_HEIGHT = 100;
 
-var ImageDisplay = function(options) {
-    CanvasDisplay.call(this, 'ImageDisplay', defaults);
+class ImageDisplay extends CanvasDisplay {
+    constructor(options) {
+        super('ImageDisplay', defaults);
 
-    this.image = new Image();
+        this.image = new Image();
 
-    this.update(options);
-};
-
-ImageDisplay.info = {
-    name: 'Image'
-};
-
-ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
-    constructor: ImageDisplay,
-
-    update: function(options) {
-        var changed = CanvasDisplay.prototype.update.call(this, options);
+        this.update(options);
+    }
+    
+    update(options) {
+        let changed = super.update(options);
 
         if (this.image.src !== this.options.src) {
             this.image.src = this.options.src;
         }
 
         return changed;
-    },
+    }
 
-    render: function() {
-        var i, w, h, y_src, y_dest, width, height, last_w, last_h,
+    render() {
+        let i, w, h, y_src, y_dest, width, height, last_w, last_h,
             canvas = this.canvas,
             context = this.context,
             options = this.options,
@@ -64,7 +57,7 @@ ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
 
         // Resize smaller
         if (options.width < width && options.height < height) {
-            var buffer = document.createElement('canvas'),
+            let buffer = document.createElement('canvas'),
                 bufferContext = buffer.getContext('2d');
 
             // Double sized canvas for two drawing regions
@@ -105,6 +98,10 @@ ImageDisplay.prototype = _.create(CanvasDisplay.prototype, {
             context.drawImage(img, 0, 0, options.width, options.height);
         }
     }
-});
+}
+
+ImageDisplay.info = {
+    name: 'Image'
+};
 
 module.exports = ImageDisplay;

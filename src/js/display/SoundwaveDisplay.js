@@ -1,10 +1,9 @@
 'use strict';
 
-var _ = require('lodash');
-var CanvasDisplay = require('../display/CanvasDisplay.js');
-var WaveDisplay = require('../display/WaveDisplay.js');
+const CanvasDisplay = require('../display/CanvasDisplay.js');
+const WaveDisplay = require('../display/WaveDisplay.js');
 
-var defaults = {
+const defaults = {
     color: '#ffffff',
     height: 240,
     width: 854,
@@ -15,32 +14,30 @@ var defaults = {
     opacity: 1.0
 };
 
-var SoundwaveDisplay = function(options) {
-    CanvasDisplay.call(this, 'SoundwaveDisplay', defaults);
+class SoundwaveDisplay extends CanvasDisplay {
+    constructor(options) {
+        super('SoundwaveDisplay', defaults);
 
-    this.wave = new WaveDisplay(this.canvas, options);
+        this.wave = new WaveDisplay(this.canvas, options);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-SoundwaveDisplay.info = {
-    name: 'Soundwave'
-};
-
-SoundwaveDisplay.prototype = _.create(CanvasDisplay.prototype, {
-    constructor: SoundwaveDisplay,
-
-    update: function(options) {
+    update(options) {
         this.wave.update(options);
 
-        return CanvasDisplay.prototype.update.call(this, options);
-    },
+        return super.update(options);
+    }
 
-    renderToCanvas: function(scene, data) {
+    renderToCanvas(scene, data) {
         this.wave.render(data.td, data.playing);
 
         CanvasDisplay.prototype.renderToCanvas.call(this, scene);
     }
-});
+}
+
+SoundwaveDisplay.info = {
+    name: 'Soundwave'
+};
 
 module.exports = SoundwaveDisplay;

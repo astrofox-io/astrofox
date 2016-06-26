@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var HexagonShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         center: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
@@ -12,5 +12,3 @@ var HexagonShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.Hexagon
 };
-
-module.exports = HexagonShader;

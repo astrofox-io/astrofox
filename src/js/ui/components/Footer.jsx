@@ -1,22 +1,24 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
+const React = require('react');
+const Application = require('../../core/Application.js');
 
-var Footer = React.createClass({
-    getInitialState: function() {
-        return {
+class Footer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
             fps: 0
         };
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         Application.on('tick', function(stats) {
             this.setState({ fps: stats.fps });
         }, this);
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div id="footer">
                 <div className="filename flex">{this.props.filename}</div>
@@ -25,6 +27,6 @@ var Footer = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Footer;

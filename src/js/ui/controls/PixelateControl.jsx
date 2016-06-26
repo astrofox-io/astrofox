@@ -4,6 +4,7 @@ const React = require('react');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
 const defaults = {
     type: 'Square',
@@ -18,17 +19,20 @@ const types = [
 const MIN_PIXEL_SIZE = 2;
 const MAX_PIXEL_SIZE = 240;
 
-var PixelateControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class PixelateControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    componentWillMount: function() {
+        this.state = defaults;
+    }
+
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -37,18 +41,18 @@ var PixelateControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -58,9 +62,9 @@ var PixelateControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="control">
                 <div className="header">PIXELATE</div>
@@ -94,6 +98,6 @@ var PixelateControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = PixelateControl;

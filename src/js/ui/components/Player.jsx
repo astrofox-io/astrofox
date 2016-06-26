@@ -4,13 +4,18 @@ const React = require('react');
 const classNames = require('classnames');
 const Application = require('../../core/Application.js');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
 class Player extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { playing: false, progressPosition: 0 };
+        autoBind(this);
 
-        this.onProgressUpdate = this.onProgressUpdate.bind(this);
+        this.state = {
+            playing: false,
+            looping: false,
+            progressPosition: 0
+        };
     }
 
     componentDidMount() {
@@ -53,7 +58,7 @@ class Player extends React.Component {
 
     onLoopButtonClick() {
         Application.player.toggleLoop();
-        this.forceUpdate();
+        this.setState({ looping: Application.player.isLooping() });
     }
 
     onVolumeChange(val) {
@@ -74,7 +79,7 @@ class Player extends React.Component {
             totalTime = player.getDuration('audio'),
             audioPosition = player.getPosition('audio'),
             currentTime = state.progressPosition * totalTime,
-            isPlaying = player.isPlaying(),
+            playing = player.isPlaying(),
             loop = player.options.loop,
             style = {};
 
@@ -85,7 +90,7 @@ class Player extends React.Component {
         return (
             <div className="player" style={style}>
                 <div className="buttons">
-                    <PlayButton playing={isPlaying} onClick={this.onPlayButtonClick} />
+                    <PlayButton playing={playing} onClick={this.onPlayButtonClick} />
                     <StopButton onClick={this.onStopButtonClick} />
                 </div>
                 <VolumeControl onChange={this.onVolumeChange} />
@@ -100,10 +105,7 @@ class Player extends React.Component {
                     currentTime={currentTime}
                     totalTime={totalTime}
                 />
-                <LoopButton
-                    loop={loop}
-                    onClick={this.onLoopButtonClick}
-                />
+                <LoopButton loop={loop} onClick={this.onLoopButtonClick} />
             </div>
         );
     }
@@ -114,8 +116,8 @@ Player.defaultProps = { visible: true };
 class VolumeControl extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = { value: 100 };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(name, val) {
@@ -146,7 +148,7 @@ class VolumeControl extends React.Component {
                         min="0"
                         max="100"
                         value={val}
-                        onChange={this.handleChange}
+                        onChange={this.handleChange.bind(this)}
                     />
                 </div>
                 <div className="speaker">
@@ -162,10 +164,6 @@ class ProgressControl extends React.Component {
         super(props);
         this.state = { value: 0 };
         this.max = 1000;
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleUpdate = this.handleUpdate.bind(this);
-        this.getPosition = this.getPosition.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -203,8 +201,8 @@ class ProgressControl extends React.Component {
                     max={this.max}
                     buffered={true}
                     value={this.state.value}
-                    onChange={this.handleChange}
-                    onUpdate={this.handleUpdate}
+                    onChange={this.handleChange.bind(this)}
+                    onUpdate={this.handleUpdate.bind(this)}
                     readOnly={this.props.readOnly}
                 />
             </div>

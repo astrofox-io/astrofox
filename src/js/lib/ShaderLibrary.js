@@ -1,4 +1,4 @@
-var ShaderLibrary = {
+module.exports = {
     Copy: require('./../shaders/CopyShader.js'),
     Depth: require('./../shaders/DepthShader.js'),
     DotScreen: require('./../shaders/DotScreenShader.js'),
@@ -10,5 +10,3 @@ var ShaderLibrary = {
     Pixelate: require('./../shaders/PixelateShader.js'),
     RGBShift: require('./../shaders/RGBShiftShader.js')
 };
-
-module.exports = ShaderLibrary;

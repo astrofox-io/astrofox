@@ -1,13 +1,13 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var ToggleInput = require('../inputs/ToggleInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const ToggleInput = require('../inputs/ToggleInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     height: 240,
     width: 770,
     x: 0,
@@ -29,17 +29,20 @@ var defaults = {
     maxFrequency: 3000
 };
 
-var BarSpectrumControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class BarSpectrumControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+        
+        this.state = defaults;
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -48,18 +51,18 @@ var BarSpectrumControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         if (name === 'barWidthAutoSize') {
@@ -75,12 +78,12 @@ var BarSpectrumControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
-        var maxFrequency = 22000;
-        var maxHeight = 480;
-        var maxWidth = 854;
+    render() {
+        let maxFrequency = 22000;
+        let maxHeight = 480;
+        let maxWidth = 854;
 
         return (
             <div className="control">
@@ -350,6 +353,6 @@ var BarSpectrumControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = BarSpectrumControl;

@@ -1,10 +1,9 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var ComposerPass = require('../graphics/ComposerPass.js');
+const THREE = require('three');
+const ComposerPass = require('../graphics/ComposerPass.js');
 
-var defaults = {
+const defaults = {
     opacity: 1.0,
     transparent: true,
     needsSwap: false,
@@ -14,39 +13,37 @@ var defaults = {
     height: 480
 };
 
-var SpritePass = function(texture, options) {
-    ComposerPass.call(this, _.assign({}, defaults, options));
+class SpritePass extends ComposerPass {
+    constructor(texture, options) {
+        super(Object.assign({}, defaults, options));
 
-    var height = this.options.height,
-        width = this.options.width;
+        let height = this.options.height,
+            width = this.options.width;
 
-    this.texture = texture;
+        this.texture = texture;
 
-    this.material = new THREE.SpriteMaterial({
-        color: this.options.color,
-        map: texture,
-        transparent : this.options.transparent
-    });
+        this.material = new THREE.SpriteMaterial({
+            color: this.options.color,
+            map: texture,
+            transparent : this.options.transparent
+        });
 
-    this.sprite = new THREE.Sprite(this.material);
-    this.sprite.scale.set(width, height, 0);
+        this.sprite = new THREE.Sprite(this.material);
+        this.sprite.scale.set(width, height, 0);
 
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.OrthographicCamera(-width/2, width/2, height/2, -height/2, 0, 1);
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.OrthographicCamera(-width/2, width/2, height/2, -height/2, 0, 1);
 
-    this.scene.add(this.sprite);
-};
+        this.scene.add(this.sprite);
+    }
 
-SpritePass.prototype = _.create(ComposerPass.prototype, {
-    constructor: SpritePass,
-
-    process: function(renderer, writeBuffer, readBuffer) {
-        var options = this.options;
+    process(renderer, writeBuffer, readBuffer) {
+        let options = this.options;
 
         this.texture.needsUpdate = options.needsUpdate;
 
         this.render(renderer, this.scene, this.camera, readBuffer);
     }
-});
+}
 
 module.exports = SpritePass;

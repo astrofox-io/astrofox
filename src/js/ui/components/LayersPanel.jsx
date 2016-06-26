@@ -11,36 +11,30 @@ const Scene = require('../../display/Scene.js');
 const Effect = require('../../effects/Effect.js');
 const DisplayLibrary = require('../../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../../lib/EffectsLibrary.js');
+const autoBind = require('../../util/autoBind.js');
 
 const TextInput = require('../inputs/TextInput.jsx');
 const ControlPickerWindow = require('../windows/ControlPickerWindow.jsx');
 const MenuPanel = require('./MenuPanel.jsx');
 
-const LayersPanel = React.createClass({
-    getDefaultProps: function() {
-        return {
-            onLayerSelected: null,
-            onLayerChanged: null,
-            onLayerAdded: null,
-            onLayerRemoved: null,
-            onLayerMoved: null
-        }
-    },
+class LayersPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    getInitialState: function() {
-        return {
+        this.state = {
             activeIndex: 0,
             editIndex: -1,
             layers: []
         };
-    },
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.updateLayers();
-    },
+    }
 
-    handleLayerClick: function(index) {
-        var state = this.state,
+    handleLayerClick(index) {
+        let state = this.state,
             props = this.props,
             editIndex = (index == state.editIndex) ? state.editIndex: -1;
 
@@ -49,33 +43,33 @@ const LayersPanel = React.createClass({
                 props.onLayerSelected(this.getActiveLayer());
             }
         }.bind(this));
-    },
+    }
 
-    handleDoubleClick: function(index) {
+    handleDoubleClick(index) {
         if (index !== this.state.editIndex) {
             this.setState({editIndex: index});
         }
-    },
+    }
 
-    handleLayerEdit: function(val) {
-        var layer = this.getActiveLayer();
+    handleLayerEdit(val) {
+        let layer = this.getActiveLayer();
 
         layer.options.displayName = val;
 
         this.cancelEdit();
-    },
+    }
 
-    handleLayerNameChange: function(index, name, val) {
+    handleLayerNameChange(index, name, val) {
         if (val.length > 0) {
             this.handleLayerEdit(val, index);
         }
-    },
+    }
 
-    handleLayerEnabled: function(obj, e) {
+    handleLayerEnabled(obj, e) {
         e.stopPropagation();
         e.preventDefault();
 
-        var props = this.props;
+        let props = this.props;
 
         obj.update({enabled: !obj.options.enabled});
 
@@ -84,10 +78,10 @@ const LayersPanel = React.createClass({
                 props.onLayerChanged(obj);
             }
         });
-    },
+    }
 
-    handleAddSceneClick: function() {
-        var scene = new Scene(),
+    handleAddSceneClick() {
+        let scene = new Scene(),
             props = this.props;
 
         Application.stage.addScene(scene);
@@ -99,10 +93,10 @@ const LayersPanel = React.createClass({
                 props.onLayerAdded(scene);
             }
         }.bind(this));
-    },
+    }
 
-    handleAddDisplayClick: function() {
-        var scene = this.getActiveScene();
+    handleAddDisplayClick() {
+        let scene = this.getActiveScene();
 
         if (scene) {
             Application.emit(
@@ -110,10 +104,10 @@ const LayersPanel = React.createClass({
                 <ControlPickerWindow title="ADD DISPLAY" scene={scene} items={DisplayLibrary} />
             );
         }
-    },
+    }
 
-    handleAddEffectClick: function() {
-        var scene = this.getActiveScene();
+    handleAddEffectClick() {
+        let scene = this.getActiveScene();
 
         if (scene) {
             Application.emit(
@@ -121,10 +115,10 @@ const LayersPanel = React.createClass({
                 <ControlPickerWindow title="ADD EFFECT" scene={scene} items={EffectsLibrary} />
             );
         }
-    },
+    }
 
-    handleRemoveClick: function() {
-        var state = this.state,
+    handleRemoveClick() {
+        let state = this.state,
             props = this.props,
             index = this.state.activeIndex,
             layers = state.layers,
@@ -149,36 +143,36 @@ const LayersPanel = React.createClass({
                 props.onLayerRemoved();
             }
         }
-    },
+    }
 
-    handleMoveUpClick: function() {
+    handleMoveUpClick() {
         this.moveLayer(1);
-    },
+    }
 
-    handleMoveDownClick: function() {
+    handleMoveDownClick() {
         this.moveLayer(-1);
-    },
+    }
 
-    cancelEdit: function() {
+    cancelEdit() {
         this.setState({ editIndex: -1 });
-    },
+    }
 
-    getActiveLayer: function() {
-        var state = this.state;
+    getActiveLayer() {
+        let state = this.state;
 
         return state.layers[state.activeIndex];
-    },
+    }
 
-    getActiveScene: function() {
-        var layer = this.getActiveLayer();
+    getActiveScene() {
+        let layer = this.getActiveLayer();
 
         return (this.state.activeIndex >= 0) ? ((layer instanceof Scene) ? layer : layer.owner) : null;
-    },
+    }
 
-    setActiveLayer: function(obj) {
+    setActiveLayer(obj) {
         if (typeof obj === 'undefined') return;
 
-        var props = this.props,
+        let props = this.props,
             index = (typeof obj === 'number') ? obj : this.state.layers.indexOf(obj);
 
         this.setState({ activeIndex: index }, function(){
@@ -186,10 +180,10 @@ const LayersPanel = React.createClass({
                 props.onLayerSelected(this.getActiveLayer());
             }
         });
-    },
+    }
 
-    getLayerComponent: function(obj, index) {
-        var text, icon,
+    getLayerComponent(obj, index) {
+        let text, icon,
             state = this.state,
             classes = classNames({
                 'layer': true,
@@ -241,10 +235,10 @@ const LayersPanel = React.createClass({
                    onClick={this.handleLayerEnabled.bind(this, obj)} />
             </div>
         );
-    },
+    }
 
-    updateLayers: function(callback) {
-        var layers = [];
+    updateLayers(callback) {
+        let layers = [];
 
         Application.stage.scenes.nodes.reverse().forEach(function(scene) {
             layers.push(scene);
@@ -259,10 +253,10 @@ const LayersPanel = React.createClass({
         }, this);
 
         this.setState({ layers: layers }, callback);
-    },
+    }
 
-    moveLayer: function(direction) {
-        var index, layer,
+    moveLayer(direction) {
+        let index, layer,
             props = this.props,
             scene = this.getActiveScene();
 
@@ -284,10 +278,10 @@ const LayersPanel = React.createClass({
                 props.onLayerMoved(this.getActiveLayer());
             }.bind(this));
         }
-    },
+    }
 
-    render: function() {
-        var layers,
+    render() {
+        let layers,
             classes = { 'button': true, 'button-disabled': !Application.stage.hasScenes() };
 
         layers = this.state.layers.map(function(layer, index) {
@@ -310,6 +304,6 @@ const LayersPanel = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = LayersPanel;

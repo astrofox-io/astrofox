@@ -1,48 +1,37 @@
 'use strict';
 
-var React = require('react');
-var MenuItem = require('./MenuItem.jsx');
+const React = require('react');
+const MenuItem = require('./MenuItem.jsx');
 
-var Menu = React.createClass({
-    getDefaultProps: function() {
-        return {
-            items: [],
-            visible: false
+const Menu = function(props) {
+    let style = { display: (props.visible) ? 'block' : 'none' };
+
+    let items = props.items.map(function(item, index) {
+        if (item.type == 'separator') {
+            return <div key={index} className="menu-separator" />;
         }
-    },
-
-    handleItemClick: function(item) {
-        if (this.props.onItemClick) {
-            this.props.onItemClick(item);
+        else if (item.label) {
+            return (
+                <MenuItem
+                    key={index}
+                    label={item.label}
+                    checked={item.checked}
+                    onClick={props.onMenuItemClick}
+                />
+            );
         }
-    },
+    });
 
-    render: function() {
-        var style = { display: (this.props.visible) ? 'block' : 'none' };
+    return (
+        <ul className="menu" style={style}>
+            {items}
+        </ul>
+    );
+};
 
-        var items = this.props.items.map(function(item, index) {
-            if (item.type == 'separator') {
-                return <div key={index} className="menu-separator" />;
-            }
-            else if (item.label) {
-                return (
-                    <MenuItem
-                        key={index}
-                        label={item.label}
-                        checked={item.checked}
-                        separator={item.type == 'separator'}
-                        onClick={this.handleItemClick}
-                    />
-                );
-            }
-        }, this);
-
-        return (
-            <ul className="menu" style={style}>
-                {items}
-            </ul>
-        );
-    }
-});
+Menu.defaultProps = {
+    items: [],
+    visible: false
+};
 
 module.exports = Menu;

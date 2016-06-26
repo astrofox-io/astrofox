@@ -1,40 +1,33 @@
 'use strict';
 
-var _ = require('lodash');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var DotScreenShader = require('../shaders/DotScreenShader.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const DotScreenShader = require('../shaders/DotScreenShader.js');
 
-var defaults = {
+const defaults = {
     angle: 90,
     scale: 1.0
 };
 
-var RADIANS = 0.017453292519943295;
+const RADIANS = 0.017453292519943295;
 
-var DotScreenEffect = function(options) {
-    Effect.call(this, 'DotScreenEffect', defaults);
+class DotScreenEffect extends Effect {
+    constructor(options) {
+        super('DotScreenEffect', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-DotScreenEffect.info = {
-    name: 'Dot Screen'
-};
-
-DotScreenEffect.prototype = _.create(Effect.prototype, {
-    constructor: DotScreenEffect,
-
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(new ShaderPass(DotScreenShader));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
-        var options = this.options;
+    updateScene(scene) {
+        let options = this.options;
 
         if (this.hasUpdate) {
             this.pass.setUniforms({
@@ -45,6 +38,10 @@ DotScreenEffect.prototype = _.create(Effect.prototype, {
             this.hasUpdate = false;
         }
     }
-});
+}
+
+DotScreenEffect.info = {
+    name: 'Dot Screen'
+};
 
 module.exports = DotScreenEffect;

@@ -1,26 +1,30 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     spacing: 10,
     size: 4,
     blur: 4
 };
 
-var LEDControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class LEDControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    componentWillMount: function() {
+        this.state = defaults;
+    }
+
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -29,18 +33,18 @@ var LEDControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -50,9 +54,9 @@ var LEDControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="control">
                 <div className="header">LED</div>
@@ -113,6 +117,6 @@ var LEDControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = LEDControl;

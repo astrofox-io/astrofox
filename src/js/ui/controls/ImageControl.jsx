@@ -1,15 +1,15 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
+const React = require('react');
+const Application = require('../../core/Application.js');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const ImageInput = require('../inputs/ImageInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var NumberInput = require('../inputs/NumberInput.jsx');
-var ImageInput = require('../inputs/ImageInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
+const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-var BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
-
-var defaults = {
+const defaults = {
     src: '',
     x: 0,
     y: 0,
@@ -20,18 +20,21 @@ var defaults = {
     opacity: 0
 };
 
-var ImageControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+class ImageControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    componentWillMount: function() {
+        this.state = defaults;
+    }
+
+    componentWillMount() {
         this.image = new Image();
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             display.render();
@@ -43,18 +46,18 @@ var ImageControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display,
             state = this.state,
             image = this.image,
@@ -109,15 +112,15 @@ var ImageControl = React.createClass({
             if (render) {
                 display.render();
             }
-        }.bind(this));
-    },
+        });
+    }
 
-    handleLinkClick: function() {
-        this.handleChange('fixed', !this.state.fixed);
-    },
+    handleLinkClick() {
+        this.handleChange.bind(this)('fixed', !this.state.fixed);
+    }
 
-    render: function() {
-        var state = this.state,
+    render() {
+        let state = this.state,
             img = this.image,
             readOnly = !(state.src && state.src !== BLANK_IMAGE),
             imageWidth = (readOnly) ? 0 : img.width,
@@ -144,7 +147,7 @@ var ImageControl = React.createClass({
                         Width
                         <i
                             className={linkClasses}
-                            onClick={this.handleLinkClick}
+                            onClick={this.handleLinkClick.bind(this)}
                         />
                     </label>
                     <NumberInput
@@ -286,6 +289,6 @@ var ImageControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ImageControl;

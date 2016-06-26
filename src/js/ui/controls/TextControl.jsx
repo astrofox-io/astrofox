@@ -1,17 +1,16 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
+const React = require('react');
+const ColorInput = require('../inputs/ColorInput.jsx');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const SelectInput = require('../inputs/SelectInput.jsx');
+const TextInput = require('../inputs/TextInput.jsx');
+const ToggleInput = require('../inputs/ToggleInput.jsx');
+const fontOptions = require('../../../conf/fonts.json');
+const autoBind = require('../../util/autoBind.js');
 
-var ColorInput = require('../inputs/ColorInput.jsx');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var SelectInput = require('../inputs/SelectInput.jsx');
-var TextInput = require('../inputs/TextInput.jsx');
-var ToggleInput = require('../inputs/ToggleInput.jsx');
-var fontOptions = require('../../../conf/fonts.json');
-
-var defaults = {
+const defaults = {
     text: '',
     size: 40,
     font: 'Roboto',
@@ -24,18 +23,19 @@ var defaults = {
     opacity: 1.0
 };
 
-var TextControl = React.createClass({
-    fontOptions: fontOptions,
+class TextControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    getInitialState: function() {
-        return defaults;
-    },
+        this.state = defaults;
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         var display = this.props.display;
 
         if (display.initialized) {
@@ -47,17 +47,17 @@ var TextControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
+    handleChange(name, val) {
         var obj = {},
             display = this.props.display;
 
@@ -69,15 +69,15 @@ var TextControl = React.createClass({
             display.update(obj);
             display.render();
         });
-    },
+    }
 
-    getSelectItems: function() {
-        return this.fontOptions.map(function(item) {
+    getSelectItems() {
+        return fontOptions.map(function(item) {
             return { name: item, value: item, style: { fontFamily: item } };
         });
-    },
+    }
 
-    render: function() {
+    render() {
         var maxHeight = 480;
         var maxWidth = 854;
 
@@ -206,6 +206,6 @@ var TextControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = TextControl;

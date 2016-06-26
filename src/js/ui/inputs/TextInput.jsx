@@ -1,59 +1,50 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const autoBind = require('../../util/autoBind.js');
 
-var TextInput = React.createClass({
-    getDefaultProps: function() {
-        return {
-            name: 'text',
-            size: 20,
-            value: '',
-            spellCheck: false,
-            autoFocus: false,
-            autoSelect: false,
-            buffered: false
+class TextInput extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+
+        this.state = {
+            value: props.value
         };
-    },
+    }
 
-    getInitialState: function() {
-        return {
-            value: this.props.value
-        };
-    },
-
-    componentDidMount: function() {
+    componentDidMount() {
         this.setState({ value: this.props.value });
 
         if (this.props.autoSelect) {
-            ReactDOM.findDOMNode(this.refs.input).select();
+            this.refs.input.select();
         }
-    },
+    }
 
-    componentWillReceiveProps: function(props) {
+    componentWillReceiveProps(props) {
         if (typeof props.value !== 'undefined') {
             this.setState({ value: props.value });
         }
-    },
+    }
 
-    handleChange: function(e) {
+    handleChange(e) {
         var val = e.target.value;
         this.setState({ value: val });
 
         if (this.props.onChange && !this.props.buffered) {
             this.props.onChange(this.props.name, val);
         }
-    },
+    }
 
-    handleValueChange: function(e) {
+    handleValueChange(e) {
         var val = this.state.value;
 
         if (this.props.onChange) {
             this.props.onChange(this.props.name, val);
         }
-    },
+    }
 
-    handleKeyUp: function(e) {
+    handleKeyUp(e) {
         if (e.keyCode === 13) {
             this.handleValueChange(e);
         }
@@ -64,9 +55,9 @@ var TextInput = React.createClass({
                 this.props.onCancel();
             }
         }
-    },
+    }
 
-    render: function(){
+    render() {
         return (
             <div className="input">
                 <input
@@ -85,6 +76,16 @@ var TextInput = React.createClass({
             </div>
         );
     }
-});
+}
+
+TextInput.defaultProps = {
+    name: 'text',
+    size: 20,
+    value: '',
+    spellCheck: false,
+    autoFocus: false,
+    autoSelect: false,
+    buffered: false
+};
 
 module.exports = TextInput;

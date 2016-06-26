@@ -7,7 +7,7 @@ const stream = window.require('stream');
 const zlib = window.require('zlib');
 const mime = require('mime');
 
-var IO = {
+const IO = {
     Buffer: Buffer,
     fs: fs,
     Spawn: spawn,

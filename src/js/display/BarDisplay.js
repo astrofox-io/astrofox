@@ -1,9 +1,8 @@
 'use strict';
 
-var _ = require('lodash');
-var Display = require('./Display.js');
+const Display = require('./Display.js');
 
-var defaults = {
+const defaults = {
     height: 300,
     width: 200,
     x: 0,
@@ -19,17 +18,18 @@ var defaults = {
     opacity: 1.0
 };
 
-var BarDisplay = function(canvas, options) {
-    this.canvas = canvas;
-    this.context = canvas.getContext('2d');
-    this.options = _.assign({}, defaults);
+class BarDisplay extends Display {
+    constructor(canvas, options) {
+        super('BarDisplay', defaults);
+        
+        this.canvas = canvas;
+        this.context = canvas.getContext('2d');
 
-    this.update(options);
-};
-
-BarDisplay.prototype = {
-    update: function(options) {
-        var changed = Display.prototype.update.call(this, options);
+        this.update(options);
+    }
+    
+    update(options) {
+        let changed = Display.prototype.update.call(this, options);
 
         if (changed) {
             if (options.width !== undefined) {
@@ -41,10 +41,10 @@ BarDisplay.prototype = {
         }
 
         return changed;
-    },
+    }
 
-    render: function(data) {
-        var i, x, y, val, step, index, last, barSize, fullWidth,
+    render(data) {
+        let i, x, y, val, step, index, last, barSize, fullWidth,
             len = data.length,
             context = this.context,
             options = this.options,
@@ -107,10 +107,10 @@ BarDisplay.prototype = {
                 context.fillRect(x, y, barWidth, val);
             }
         }
-    },
+    }
 
-    setColor: function(color, x1, y1, x2, y2) {
-        var i, gradient, len,
+    setColor(color, x1, y1, x2, y2) {
+        let i, gradient, len,
             context = this.context;
 
         if (color instanceof Array) {
@@ -124,22 +124,22 @@ BarDisplay.prototype = {
         else {
             context.fillStyle = color;
         }
-    },
+    }
 
-    getColor: function(start, end, pct) {
-        var startColor = {
+    getColor(start, end, pct) {
+        let startColor = {
             r: parseInt(start.substring(1,3), 16),
             g: parseInt(start.substring(3,5), 16),
             b: parseInt(start.substring(5,7), 16)
         };
 
-        var endColor = {
+        let endColor = {
             r: parseInt(end.substring(1,3), 16),
             g: parseInt(end.substring(3,5), 16),
             b: parseInt(end.substring(5,7), 16)
         };
 
-        var c = {
+        let c = {
             r: ~~((endColor.r - startColor.r) * pct) + startColor.r,
             g: ~~((endColor.g - startColor.g) * pct) + startColor.g,
             b: ~~((endColor.b - startColor.b) * pct) + startColor.b
@@ -147,7 +147,7 @@ BarDisplay.prototype = {
 
         return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
     }
-};
+}
 
 function round(val) {
     return (val + 0.5) << 0;

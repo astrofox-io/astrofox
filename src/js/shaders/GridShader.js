@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var GridShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: "t", value: null }
     },
@@ -9,5 +9,3 @@ var GridShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.Grid
 };
-
-module.exports = GridShader;

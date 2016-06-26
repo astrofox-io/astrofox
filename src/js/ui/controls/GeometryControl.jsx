@@ -1,27 +1,30 @@
 'use strict';
 
-var React = require('react');
+let React = require('react');
 
-var ColorInput = require('../inputs/ColorInput.jsx');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
-var SelectInput = require('../inputs/SelectInput.jsx');
-var TextInput = require('../inputs/TextInput.jsx');
-var ToggleInput = require('../inputs/ToggleInput.jsx');
+const ColorInput = require('../inputs/ColorInput.jsx');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const SelectInput = require('../inputs/SelectInput.jsx');
+const TextInput = require('../inputs/TextInput.jsx');
+const ToggleInput = require('../inputs/ToggleInput.jsx');
+const autoBind = require('../../util/autoBind.js');
+const config = require('../../props/Geometry.json');
 
-var config = require('../../props/Geometry.json');
+class GeometryControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-var GeometryControl = React.createClass({
-    getInitialState: function() {
-        return config.options;
-    },
+        this.state = config.options;
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -30,18 +33,18 @@ var GeometryControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -51,11 +54,11 @@ var GeometryControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
-        var state = this.state;
-        var maxVal = 500;
+    render() {
+        let state = this.state;
+        let maxVal = 500;
 
         return (
             <div className="control">
@@ -192,6 +195,6 @@ var GeometryControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = GeometryControl;

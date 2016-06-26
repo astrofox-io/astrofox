@@ -1,22 +1,14 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
-var Splitter = require('./Splitter.jsx');
+const React = require('react');
+const Application = require('../../core/Application.js');
+const Splitter = require('./Splitter.jsx');
 
-var Panel = React.createClass({
-    getDefaultProps: function() {
-        return {
-            shouldUpdate: true,
-            direction: 'vertical',
-            stretch: false
-        };
-    },
+class Panel extends React.Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState: function() {
-        var props = this.props;
-
-        return {
+        this.state = {
             visible: props.visible || true,
             dragging: false,
             height: props.height,
@@ -28,9 +20,9 @@ var Panel = React.createClass({
             startWidth: 0,
             startHeight: 0
         };
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         var props = this.props;
 
         Application.on('mouseup', function() {
@@ -45,13 +37,13 @@ var Panel = React.createClass({
                 });
             }
         }.bind(this));
-    },
+    }
 
-    shouldComponentUpdate: function(nextProps) {
+    shouldComponentUpdate(nextProps) {
         return nextProps.shouldUpdate;
-    },
+    }
 
-    handleStartDrag: function(e) {
+    handleStartDrag(e) {
         var props = this.props,
             state = this.state;
 
@@ -69,9 +61,9 @@ var Panel = React.createClass({
 
         e.stopPropagation();
         e.preventDefault();
-    },
+    }
 
-    handleMouseMove: function(e) {
+    handleMouseMove(e) {
         var val,
             state = this.state;
 
@@ -86,9 +78,9 @@ var Panel = React.createClass({
 
         e.stopPropagation();
         e.preventDefault();
-    },
+    }
 
-    render: function() {
+    render() {
         var props = this.props,
             state = this.state,
             classes = 'panel',
@@ -101,7 +93,7 @@ var Panel = React.createClass({
         }
 
         var splitter = (props.resizable) ?
-            <Splitter type="horizontal" onDragStart={this.handleStartDrag} /> : null;
+            <Splitter type="horizontal" onDragStart={this.handleStartDrag.bind(this)} /> : null;
 
         return (
             <div className={classes} style={style}>
@@ -111,6 +103,12 @@ var Panel = React.createClass({
             </div>
         );
     }
-});
+}
+
+Panel.defaultProps = {
+    shouldUpdate: true,
+    direction: 'vertical',
+    stretch: false
+};
 
 module.exports = Panel;

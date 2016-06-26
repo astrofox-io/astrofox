@@ -1,8 +1,8 @@
 'use strict';
 
-var SpectrumParser = {
-    parseFFT: function(fft, options, last) {
-        var i, j, db, size, step, tmp, start, end, val, max,
+class SpectrumParser {
+    static parseFFT(fft, options, last) {
+        let i, j, db, size, step, tmp, start, end, val, max,
             sampleRate = options.sampleRate || 44100,
             fftSize = options.fftSize || 1024,
             range = sampleRate / fftSize,
@@ -84,7 +84,7 @@ var SpectrumParser = {
 
         return data;
     }
-};
+}
 
 function val2pct(val, min, max) {
     if (val > max) val = max;

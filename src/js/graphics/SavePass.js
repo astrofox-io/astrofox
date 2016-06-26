@@ -1,27 +1,24 @@
 'use strict';
 
-var _ = require('lodash');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var CopyShader = require('../shaders/CopyShader.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const CopyShader = require('../shaders/CopyShader.js');
 
-var defaults = {
+const defaults = {
     transparent: true,
     needsSwap: false,
     forceClear: true
 };
 
-var SavePass = function(buffer, options) {
-    ShaderPass.call(this, CopyShader, _.assign({}, defaults, options));
+class SavePass extends ShaderPass {
+    constructor(buffer, options) {
+        super(CopyShader, Object.assign({}, defaults, options));
 
-    this.buffer = buffer;
-};
-
-SavePass.prototype = _.create(ShaderPass.prototype, {
-    constructor: SavePass,
-
-    process: function(renderer, writeBuffer, readBuffer) {
-        ShaderPass.prototype.process.call(this, renderer, this.buffer, readBuffer);
+        this.buffer = buffer;
     }
-});
+
+    process(renderer, writeBuffer, readBuffer) {
+        super.process(renderer, this.buffer, readBuffer);
+    }
+}
 
 module.exports = SavePass;

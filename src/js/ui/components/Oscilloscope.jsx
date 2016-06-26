@@ -1,36 +1,39 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const Application = require('../../core/Application.js');
+const WaveDisplay = require('../../display/WaveDisplay.js');
 
-var Application = require('../../core/Application.js');
-var WaveDisplay = require('../../display/WaveDisplay.js');
+const config = {
+    width: 854,
+    height: 100,
+    color: '#927FFF'
+};
 
-var Wave = React.createClass({
-    config: {
-        width: 854,
-        height: 100,
-        color: '#927FFF'
-    },
+class Oscilloscope extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         this.display = new WaveDisplay(
             ReactDOM.findDOMNode(this.refs.canvas),
-            this.config
+            config
         );
 
         Application.on('render', function(data) {
             this.display.render(data.td, data.playing);
         }, this);
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="oscilloscope">
                 <canvas ref="canvas" className="canvas" width="854" height="100" />
             </div>
         );
     }
-});
+}
 
-module.exports = Wave;
+module.exports = Oscilloscope;

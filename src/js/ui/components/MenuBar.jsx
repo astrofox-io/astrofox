@@ -1,43 +1,47 @@
 'use strict';
 
-var React = require('react');
-var MenuBarItem = require('./MenuBarItem.jsx');
-var MenuItems = require('../../../conf/menu.json');
+const React = require('react');
+const MenuBarItem = require('./MenuBarItem.jsx');
+const menuItemsConfig = require('../../../conf/menu.json');
+const autoBind = require('../../util/autoBind.js');
 
-var MenuBar = React.createClass({
-    getInitialState: function() {
-        return {
+class MenuBar extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+
+        this.state = {
             activeIndex: -1,
-            items: MenuItems
+            items: menuItemsConfig
         };
-    },
+    }
 
-    handleClick: function(index) {
+    handleClick(index) {
         this.setActiveIndex((this.state.activeIndex === index) ? -1 : index);
-    },
+    }
 
-    handleMouseOver: function(index) {
+    handleMouseOver(index) {
         if (this.state.activeIndex > -1) {
             this.setActiveIndex(index);
         }
-    },
+    }
 
-    handleItemClick: function(action, checked) {
+    handleItemClick(action, checked) {
         this.setActiveIndex(-1);
 
         if (this.props.onMenuAction) {
             this.props.onMenuAction(action, checked);
         }
-    },
+    }
 
-    setActiveIndex: function(index) {
+    setActiveIndex(index) {
         if (this.state.activeIndex !== index) {
             this.setState({activeIndex: index});
         }
-    },
+    }
 
-    setCheckState: function(action, checked) {
-        var items = this.state.items;
+    setCheckState(action, checked) {
+        let items = this.state.items;
 
         items.forEach(function(barItem) {
             if (barItem.submenu) {
@@ -49,10 +53,10 @@ var MenuBar = React.createClass({
                 }, this);
             }
         }, this);
-    },
+    }
 
-    render: function() {
-        var items = this.state.items.map(function(item, index) {
+    render() {
+        let items = this.state.items.map(function(item, index) {
             return (
                 <MenuBarItem
                     key={index}
@@ -72,6 +76,6 @@ var MenuBar = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = MenuBar;

@@ -1,27 +1,29 @@
 'use strict';
 
-var React = require('react');
-var NumberInput = require('../inputs/NumberInput.jsx');
-var RangeInput = require('../inputs/RangeInput.jsx');
+const React = require('react');
+const NumberInput = require('../inputs/NumberInput.jsx');
+const RangeInput = require('../inputs/RangeInput.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var defaults = {
+const defaults = {
     amount: 0.005,
     angle: 0.0
 };
 
-var RADIANS = 0.017453292519943295;
+class RGBShiftControl extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-var RGBShiftControl = React.createClass({
-    getInitialState: function() {
-        return defaults;
-    },
+        this.state = defaults;
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.shouldUpdate = false;
-    },
+    }
 
-    componentDidMount: function() {
-        var display = this.props.display;
+    componentDidMount() {
+        let display = this.props.display;
 
         if (display.initialized) {
             this.shouldUpdate = true;
@@ -30,18 +32,18 @@ var RGBShiftControl = React.createClass({
         else {
             display.update(this.state);
         }
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.shouldUpdate = false;
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return this.shouldUpdate;
-    },
+    }
 
-    handleChange: function(name, val) {
-        var obj = {},
+    handleChange(name, val) {
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -50,9 +52,9 @@ var RGBShiftControl = React.createClass({
         this.setState(obj, function() {
             display.update(obj);
         });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="control">
                 <div className="header">RGB SHIFT</div>
@@ -101,6 +103,6 @@ var RGBShiftControl = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = RGBShiftControl;

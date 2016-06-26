@@ -1,23 +1,24 @@
 'use strict';
 
-var React = require('react');
-var Application = require('../../core/Application.js');
+const React = require('react');
+const Application = require('../../core/Application.js');
+const Panel = require('../layout/Panel.jsx');
+const PanelDock = require('../layout/PanelDock.jsx');
+const ControlsPanel = require('./ControlsPanel.jsx');
+const LayersPanel = require('./LayersPanel.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var Panel = require('../layout/Panel.jsx');
-var PanelDock = require('../layout/PanelDock.jsx');
-var ControlsPanel = require('./ControlsPanel.jsx');
-var LayersPanel = require('./LayersPanel.jsx');
+class ControlDock extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-var ControlDock = React.createClass({
-    getInitialState: function() {
-        return {
-            visible: true
-        };
-    },
-
-    componentDidMount: function() {
+        this.state = { visible: true };
+    }
+    
+    componentDidMount() {
         Application.on('control_added', function(obj) {
-            var layers = this.refs.layers,
+            let layers = this.refs.layers,
                 controls = this.refs.controls;
 
             layers.updateLayers(function() {
@@ -26,36 +27,36 @@ var ControlDock = React.createClass({
 
             controls.updateControls();
         }.bind(this));
-    },
+    }
 
-    handleLayerSelected: function(layer) {
+    handleLayerSelected(layer) {
         this.refs.controls.focusControl(layer);
-    },
+    }
 
-    handleLayerChanged: function(layer) {
+    handleLayerChanged(layer) {
         if (layer) {
             this.refs.controls.updateControl(layer);
         }
-    },
+    }
 
-    handleLayerAdded: function() {
+    handleLayerAdded() {
         this.refs.controls.updateControls();
-    },
+    }
 
-    handleLayerRemoved: function() {
+    handleLayerRemoved() {
         this.refs.controls.updateControls();
-    },
+    }
 
-    handleLayerMoved: function() {
+    handleLayerMoved() {
         this.refs.controls.updateControls();
-    },
+    }
 
-    showDock: function(val) {
+    showDock(val) {
         this.setState({ visible: val });
-    },
+    }
 
-    render: function() {
-        var state = this.state;
+    render() {
+        let state = this.state;
 
         return (
             <PanelDock visible={state.visible}>
@@ -83,6 +84,6 @@ var ControlDock = React.createClass({
             </PanelDock>
         );
     }
-});
+}
 
 module.exports = ControlDock;

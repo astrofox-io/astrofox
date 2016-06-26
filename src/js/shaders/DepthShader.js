@@ -1,12 +1,9 @@
-var THREE = require('three');
+const THREE = require('three');
+const depthShader = THREE.ShaderLib['depthRGBA'];
+const depthUniforms = THREE.UniformsUtils.clone(depthShader.uniforms);
 
-var depthShader = THREE.ShaderLib['depthRGBA'];
-var depthUniforms = THREE.UniformsUtils.clone(depthShader.uniforms);
-
-var DepthShader = {
+module.exports = {
     uniforms: depthUniforms,
     fragmentShader: depthShader.fragmentShader,
     vertexShader: depthShader.vertexShader
 };
-
-module.exports = DepthShader;

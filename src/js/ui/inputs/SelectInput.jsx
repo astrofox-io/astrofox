@@ -1,59 +1,54 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const autoBind = require('../../util/autoBind.js');
 
-var SelectInput = React.createClass({
-    getDefaultProps: function() {
-        return {
-            name: 'select',
-            size: 20,
-            value: '',
-            items: []
-        };
-    },
+class SelectInput extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
 
-    getInitialState: function() {
-        return {
+        this.state = {
             value: this.props.value,
             showItems: false
         };
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         this.setState({ value: this.props.value });
-    },
+    }
 
-    componentWillReceiveProps: function(props) {
+    componentWillReceiveProps(props) {
         if (typeof props.value !== 'undefined') {
             this.setState({ value: props.value });
         }
-    },
+    }
 
-    handleClick: function(e) {
+    handleClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ showItems: !this.state.showItems });
-    },
+    }
 
-    handleItemClick: function(item) {
+    handleItemClick(item) {
         this.setState({ showItems: false }, function(){
             this.props.onChange(this.props.name, item.value);
         }.bind(this));
-    },
+    }
 
-    handleBlur: function(e) {
+    handleBlur(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ showItems: false });
-    },
+    }
 
-    render: function() {
-        var style = { display: this.state.showItems ? 'block' : 'none' };
+    render() {
+        let style = { display: this.state.showItems ? 'block' : 'none' };
 
-        var items = this.props.items.map(function(item, index) {
-            var key = this.props.name + '' + index,
+        let items = this.props.items.map(function(item, index) {
+            let key = this.props.name + '' + index,
                 className = 'input-option';
 
             if (typeof item !== 'object') {
@@ -93,6 +88,13 @@ var SelectInput = React.createClass({
             </div>
         );
     }
-});
+}
+
+SelectInput.defaultProps = {
+    name: 'select',
+    size: 20,
+    value: '',
+    items: []
+};
 
 module.exports = SelectInput;

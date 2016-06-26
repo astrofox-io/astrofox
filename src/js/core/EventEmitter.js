@@ -11,7 +11,7 @@ class EventEmitter {
     off(event, fn) {
         if (!this.events || !this.events[event]) return;
 
-        var events = this.events[event],
+        let events = this.events[event],
             i = events.length;
 
         if (fn) {
@@ -27,7 +27,7 @@ class EventEmitter {
     }
 
     once(event, fn, context) {
-        var _fn;
+        let _fn;
         return this.on(event, _fn = function() {
             this.off(event, _fn);
             return fn.apply(context, arguments);
@@ -37,7 +37,7 @@ class EventEmitter {
     emit() {
         this.events = this.events || {};
 
-        var args = Array.apply([], arguments),
+        let args = Array.apply([], arguments),
             event = args.shift(),
             events = this.events[event] || [];
 

@@ -1,41 +1,38 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Application = require('../../core/Application.js');
-var Loading = require('./Loading.jsx');
+const React = require('react');
+const Application = require('../../core/Application.js');
+const Loading = require('./Loading.jsx');
+const autoBind = require('../../util/autoBind.js');
 
-var Stage = React.createClass({
-    getDefaultProps: function() {
-        return {
-            onFileDropped: null
-        }
-    },
-
-    getInitialState: function() {
-        return {
+class Stage extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+        
+        this.state = {
             width: 854,
             height: 480,
             loading: false
         };
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         this.refs.viewport.appendChild(
             Application.stage.renderer.domElement
         );
-    },
+    }
 
-    handleMouseDown: function(e) {
+    handleMouseDown(e) {
         e.preventDefault();
-    },
+    }
 
-    handleDragOver: function(e){
+    handleDragOver(e){
         e.stopPropagation();
         e.preventDefault();
-    },
+    }
 
-    handleDrop: function(e){
+    handleDrop(e){
         e.stopPropagation();
         e.preventDefault();
 
@@ -44,13 +41,13 @@ var Stage = React.createClass({
         if (file && this.props.onFileDropped) {
             this.props.onFileDropped(file.path);
         }
-    },
+    }
 
-    showLoading: function(val) {
+    showLoading(val) {
         this.setState({ loading: val });
-    },
+    }
 
-    render: function() {
+    render() {
         var state = this.state,
             style = { width: state.width, height: state.height };
 
@@ -67,6 +64,6 @@ var Stage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Stage;

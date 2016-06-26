@@ -1,6 +1,4 @@
-'use strict';
-
-var EffectsLibrary = {
+module.exports = {
     BloomEffect: require('../effects/BloomEffect.js'),
     BlurEffect: require('../effects/BlurEffect.js'),
     DotScreenEffect: require('../effects/DotScreenEffect.js'),
@@ -10,5 +8,3 @@ var EffectsLibrary = {
     PixelateEffect: require('../effects/PixelateEffect.js'),
     RGBShiftEffect: require('../effects/RGBShiftEffect.js')
 };
-
-module.exports = EffectsLibrary;

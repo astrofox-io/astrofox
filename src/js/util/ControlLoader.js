@@ -1,15 +1,15 @@
 'use strict';
 
-var _ = require('lodash');
-var DisplayLibrary = require('../lib/DisplayLibrary.js');
-var EffectsLibrary = require('../lib/EffectsLibrary.js');
-var ControlLibrary = require('../lib/ControlLibrary.js');
-var Scene = require('../display/Scene.js');
-var SceneControl = require('../ui/controls/SceneControl.jsx');
-var EmptyControl = require('../ui/controls/EmptyControl.jsx');
+const _ = require('lodash');
+const DisplayLibrary = require('../lib/DisplayLibrary.js');
+const EffectsLibrary = require('../lib/EffectsLibrary.js');
+const ControlLibrary = require('../lib/ControlLibrary.js');
+const Scene = require('../display/Scene.js');
+const SceneControl = require('../ui/controls/SceneControl.jsx');
+const EmptyControl = require('../ui/controls/EmptyControl.jsx');
 
-var ControlLoader = {
-    getControl: function(obj) {
+class ControlLoader {
+    static getControl(obj) {
         var name,
             control = null,
             displays = _.assign({}, DisplayLibrary, EffectsLibrary);
@@ -30,7 +30,7 @@ var ControlLoader = {
 
         return control;
     }
-};
+}
 
 module.exports = ControlLoader;
 

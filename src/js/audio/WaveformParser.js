@@ -1,8 +1,8 @@
 'use strict';
 
-var WaveformParser = {
+const WaveformParser = {
     parseBuffer: function(buffer, options) {
-        var i, j, c, start, end, max, val, values,
+        let i, j, c, start, end, max, val, values,
             len = buffer.length,
             channels = buffer.numberOfChannels,
             bars = options.bars || len,

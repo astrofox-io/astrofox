@@ -1,12 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
-var BarDisplay = require('../display/BarDisplay.js');
-var Display = require('../display/Display.js');
-var CanvasDisplay = require('../display/CanvasDisplay.js');
-var SpectrumParser = require('../audio/SpectrumParser.js');
+const BarDisplay = require('../display/BarDisplay.js');
+const Display = require('../display/Display.js');
+const CanvasDisplay = require('../display/CanvasDisplay.js');
+const SpectrumParser = require('../audio/SpectrumParser.js');
 
-var defaults = {
+const defaults = {
     height: 300,
     width: 200,
     x: 0,
@@ -31,36 +30,30 @@ var defaults = {
     normalize: true
 };
 
-var RADIANS = 0.017453292519943295;
+const RADIANS = 0.017453292519943295;
 
-var BarSpectrumDisplay = function(options) {
-    CanvasDisplay.call(this, 'BarSpectrumDisplay', defaults);
-
-    this.bars = new BarDisplay(this.canvas, options);
-    this.fft = null;
-
-    this.update(options);
-};
-
-BarSpectrumDisplay.info = {
-    name: 'Bar Spectrum'
-};
-
-BarSpectrumDisplay.prototype = _.create(CanvasDisplay.prototype, {
-    constructor: BarSpectrumDisplay,
-
-    update: function(options) {
-        var changed = Display.prototype.update.call(this, options);
+class BarSpectrumDisplay extends CanvasDisplay { 
+    constructor(options) {
+        super('BarSpectrumDisplay', defaults);
+    
+        this.bars = new BarDisplay(this.canvas, options);
+        this.fft = null;
+    
+        this.update(options);
+    }
+    
+    update(options) {
+        let changed = super.update(options);
 
         if (changed) {
             this.bars.update(options);
         }
 
         return changed;
-    },
+    }
 
-    renderToCanvas: function(context, data) {
-        var fft = this.fft = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
+    renderToCanvas(context, data) {
+        let fft = this.fft = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
         this.bars.render(fft);
 
         var x, y,
@@ -90,6 +83,10 @@ BarSpectrumDisplay.prototype = _.create(CanvasDisplay.prototype, {
             context.drawImage(canvas, x, y);
         }
     }
-});
+}
+
+BarSpectrumDisplay.info = {
+    name: 'Bar Spectrum'
+};
 
 module.exports = BarSpectrumDisplay;

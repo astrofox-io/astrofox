@@ -1,68 +1,63 @@
 'use strict';
 
-var _ = require('lodash');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var PixelateShader = require('../shaders/PixelateShader.js');
-var HexagonShader = require('../shaders/HexagonShader.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const PixelateShader = require('../shaders/PixelateShader.js');
+const HexagonShader = require('../shaders/HexagonShader.js');
 
-var defaults = {
+const defaults = {
     type: 'Square',
     size: 10
 };
 
-var MAX_PIXEL_SIZE = 200;
-
-var shaders = {
+const shaders = {
     Square: PixelateShader,
     Hexagon: HexagonShader
 };
 
-var PixelateEffect = function(options) {
-    Effect.call(this, 'PixelateEffect', defaults);
+class PixelateEffect extends Effect {
+    constructor(options) {
+        super('PixelateEffect', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-PixelateEffect.info = {
-    name: 'Pixelate'
-};
-
-PixelateEffect.prototype = _.create(Effect.prototype, {
-    constructor: PixelateEffect,
-
-    update: function(options) {
-        var changed = Effect.prototype.update.call(this, options);
+    update(options) {
+        let changed = Effect.prototype.update.call(this, options);
 
         if (this.pass && options.type !== undefined) {
             this.setPass(this.getShaderPass(this.options.type));
         }
 
         return changed;
-    },
+    }
 
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(this.getShaderPass(this.options.type));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
+    updateScene(scene) {
         if (this.hasUpdate) {
             this.pass.setUniforms({ size: this.options.size });
 
             this.hasUpdate = false;
         }
-    },
+    }
 
-    getShaderPass: function(type) {
-        var pass = new ShaderPass(shaders[type]);
+    getShaderPass(type) {
+        let pass = new ShaderPass(shaders[type]);
         pass.setUniforms(this.options);
 
         return pass;
     }
-});
+}
+
+PixelateEffect.info = {
+    name: 'Pixelate'
+};
 
 module.exports = PixelateEffect;

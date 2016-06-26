@@ -1,33 +1,29 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
-var Splitter = React.createClass({
-    defaultProps: {
-        type: 'horizontal'
-    },
-
-    getDefaultProps: function() {
-        return this.defaultProps;
-    },
-
-    handleMouseDown: function(e) {
+class Splitter extends React.Component {
+    handleMouseDown(e) {
         if (this.props.onDragStart) {
             this.props.onDragStart(e);
         }
-    },
+    }
 
-    render: function() {
+    render() {
         var classes = 'splitter splitter-' + this.props.type;
 
         return (
             <div
                 className={classes}
-                onMouseDown={this.handleMouseDown}>
+                onMouseDown={this.handleMouseDown.bind(this)}>
                 <i className="icon-dots-three-horizontal" />
             </div>
         );
     }
-});
+}
+
+Splitter.defaultProps = {
+    type: 'horizontal'
+};
 
 module.exports = Splitter;

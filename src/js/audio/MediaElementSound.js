@@ -1,16 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-var Sound = require('./Sound.js');
+const Sound = require('./Sound.js');
 
-var MediaElementSound = function(context) {
-    Sound.call(this, context);
-};
+class MediaElementSound extends Sound {
+    constructor(context) {
+        super(context);
+    }
 
-MediaElementSound.prototype = _.create(Sound.prototype, {
-    constructor: MediaElementSound,
-
-    load: function(audio) {
+    load(audio) {
         this.audio = audio;
         this.source = this.audioContext.createMediaElementSource(this.audio);
         this.loaded = true;
@@ -31,39 +28,39 @@ MediaElementSound.prototype = _.create(Sound.prototype, {
         }.bind(this));
 
         this.emit('load');
-    },
+    }
 
-    getDuration: function() {
+    getDuration() {
         return this.source.duration || 0;
-    },
+    }
 
-    getCurrentTime: function() {
+    getCurrentTime() {
         return this.source.currentTime || 0;
-    },
+    }
 
-    play: function() {
+    play() {
         this.audio.play();
         this.playing = true;
         this.paused = false;
 
         this.emit('play');
-    },
+    }
 
-    pause: function() {
+    pause() {
         this.audio.pause();
         this.playing = false;
         this.paused = true;
 
         this.emit('pause');
-    },
+    }
 
-    stop: function() {
+    stop() {
         this.audio.pause();
         this.playing = false;
         this.paused = false;
 
         this.emit('stop');
     }
-});
+}
 
 module.exports = MediaElementSound;

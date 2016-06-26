@@ -1,28 +1,31 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const classNames = require('classnames');
 
-var MenuPanel = React.createClass({
-    getInitialState: function() {
-        return {
+class MenuPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
             activeIndex: 0
-        }
-    },
+        };
+    }
 
-    handleTabClick: function(index, e) {
+    handleTabClick(index) {
         this.setState({ activeIndex: index });
-    },
+    }
 
-    render: function() {
-        var tabs = this.props.tabs.map(function(tab, index) {
-            var classes = 'tab';
-
-            if (this.state.activeIndex == index) {
-                classes += ' tab-active';
-            }
-
-            return <div key={index} className={classes} onClick={this.handleTabClick.bind(this, index)}>{tab}</div>;
-        }.bind(this));
+    render() {
+        let tabs = this.props.tabs.map(function(tab, index) {
+            return (
+                <div
+                    key={index}
+                    className={classNames({ 'tab': true, 'tab-active': this.state.activeIndex == index })}
+                    onClick={this.handleTabClick.bind(this, index)}>{tab}
+                </div>
+            );
+        }, this);
 
         return (
             <div className="menu-panel">
@@ -35,6 +38,6 @@ var MenuPanel = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = MenuPanel;

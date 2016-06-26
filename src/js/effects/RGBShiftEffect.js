@@ -1,40 +1,33 @@
 'use strict';
 
-var _ = require('lodash');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var RGBShiftShader = require('../shaders/RGBShiftShader.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const RGBShiftShader = require('../shaders/RGBShiftShader.js');
 
-var defaults = {
+const defaults = {
     amount: 0.005,
     angle: 0.0
 };
 
-var RADIANS = 0.017453292519943295;
+const RADIANS = 0.017453292519943295;
 
-var RGBShiftEffect = function(options) {
-    Effect.call(this, 'RGBShiftEffect', defaults);
+class RGBShiftEffect extends Effect {
+    constructor(options) {
+        super('RGBShiftEffect', defaults);
+    
+        this.update(options);
+    }
 
-    this.update(options);
-};
-
-RGBShiftEffect.info = {
-    name: 'RGB Shift'
-};
-
-RGBShiftEffect.prototype = _.create(Effect.prototype, {
-    constructor: RGBShiftEffect,
-
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(new ShaderPass(RGBShiftShader));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
-        var options = this.options;
+    updateScene(scene) {
+        let options = this.options;
 
         if (this.hasUpdate) {
             this.pass.setUniforms({
@@ -45,6 +38,10 @@ RGBShiftEffect.prototype = _.create(Effect.prototype, {
             this.hasUpdate = false;
         }
     }
-});
+}
+
+RGBShiftEffect.info = {
+    name: 'RGB Shift'
+};
 
 module.exports = RGBShiftEffect;

@@ -1,28 +1,24 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var ComposerPass = require('../graphics/ComposerPass.js');
+const ComposerPass = require('../graphics/ComposerPass.js');
 
-var defaults = {
+const defaults = {
     forceClear: true,
     overrideMaterial: null,
     setClearColor: null,
     setClearAlpha: 1.0
 };
 
-var RenderPass = function(scene, camera, options) {
-    ComposerPass.call(this, _.assign({}, defaults, options));
+class RenderPass extends ComposerPass {
+    constructor(scene, camera, options) {
+        super(Object.assign({}, defaults, options));
 
-    this.scene = scene;
-    this.camera = camera;
-};
+        this.scene = scene;
+        this.camera = camera;
+    }
 
-RenderPass.prototype = _.create(ComposerPass.prototype, {
-    constructor: RenderPass,
-
-    process: function(renderer, writeBuffer, readBuffer) {
-        var scene = this.scene,
+    process(renderer, writeBuffer, readBuffer) {
+        let scene = this.scene,
             camera = this.camera,
             options = this.options;
 
@@ -32,6 +28,6 @@ RenderPass.prototype = _.create(ComposerPass.prototype, {
 
         scene.overrideMaterial = null;
     }
-});
+}
 
 module.exports = RenderPass;

@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const THREE = require('three');
 const NodeCollection = require('../core/NodeCollection.js');
 const Display = require('../display/Display.js');
@@ -22,21 +21,19 @@ const NEAR = 1;
 const FAR = 10000;
 const CAMERA_POS_Z = 250;
 
-var Scene = function(name, options) {
-    Display.call(this, 'Scene', defaults);
+class Scene extends Display {
+    constructor(name, options) {
+        super('Scene', defaults);
+    
+        this.owner = null;
+        this.displays = new NodeCollection();
+        this.effects = new NodeCollection();
+    
+        this.update(options);
+    }
 
-    this.owner = null;
-    this.displays = new NodeCollection();
-    this.effects = new NodeCollection();
-
-    this.update(options);
-};
-
-Scene.prototype = _.create(Display.prototype, {
-    constructor: Scene,
-
-    update: function(options) {
-        var changed = Display.prototype.update.call(this, options);
+    update(options) {
+        let changed = super.update(options);
 
         if (changed) {
             if (this.owner) {
@@ -53,10 +50,10 @@ Scene.prototype = _.create(Display.prototype, {
         }
 
         return changed;
-    },
+    }
 
-    addToStage: function(stage) {
-        var size = stage.getSize();
+    addToStage(stage) {
+        let size = stage.getSize();
 
         this.composer = new Composer(stage.renderer);
         this.graph = new THREE.Scene();
@@ -79,9 +76,9 @@ Scene.prototype = _.create(Display.prototype, {
 
         this.updatePasses();
         this.updateLights();
-    },
+    }
 
-    removeFromStage: function() {
+    removeFromStage() {
         this.owner = null;
         this.displays.clear();
         this.displays = null;
@@ -89,10 +86,10 @@ Scene.prototype = _.create(Display.prototype, {
         this.effects = null;
         this.composer.dispose();
         this.composer = null;
-    },
+    }
 
-    addElement: function(obj) {
-        var nodes;
+    addElement(obj) {
+        let nodes;
 
         if (obj instanceof Effect) {
             nodes = this.effects;
@@ -110,10 +107,10 @@ Scene.prototype = _.create(Display.prototype, {
         }
 
         this.updatePasses();
-    },
+    }
 
-    removeElement: function(obj) {
-        var nodes;
+    removeElement(obj) {
+        let nodes;
 
         if (obj instanceof Effect) {
             nodes = this.effects;
@@ -131,10 +128,10 @@ Scene.prototype = _.create(Display.prototype, {
         }
 
         this.updatePasses();
-    },
+    }
 
-    shiftElement: function(obj, i) {
-        var nodes, index;
+    shiftElement(obj, i) {
+        let nodes, index;
 
         if (obj instanceof Effect) {
             nodes = this.effects;
@@ -148,10 +145,10 @@ Scene.prototype = _.create(Display.prototype, {
         if (nodes.swapNodes(index, index + i)) {
             this.updatePasses();
         }
-    },
+    }
 
-    updatePasses: function() {
-        var composer = this.composer;
+    updatePasses() {
+        let composer = this.composer;
 
         composer.clearPasses();
         composer.addPass(Global.frameBuffers['2D'].pass);
@@ -168,10 +165,10 @@ Scene.prototype = _.create(Display.prototype, {
                 composer.addPass(effect.pass);
             }
         });
-    },
+    }
 
-    updateLights: function() {
-        var lights = this.lights,
+    updateLights() {
+        let lights = this.lights,
             intensity = this.options.lightIntensity,
             distance = this.options.lightDistance;
 
@@ -182,10 +179,10 @@ Scene.prototype = _.create(Display.prototype, {
         lights[0].position.set(0, distance * 2, 0);
         lights[1].position.set(distance, distance * 2, distance);
         lights[2].position.set(-distance, -distance * 2, -distance);
-    },
+    }
 
-    render: function(data) {
-        var displays = this.displays.nodes,
+    render(data) {
+        let displays = this.displays.nodes,
             effects = this.effects.nodes,
             composer = this.composer,
             buffer2D = Global.frameBuffers['2D'],
@@ -229,18 +226,18 @@ Scene.prototype = _.create(Display.prototype, {
         }
 
         return composer.readBuffer;
-    },
+    }
 
-    toString: function() {
+    toString() {
         return this.name + '' + this.id;
-    },
+    }
 
-    toJSON: function() {
-        var displays = this.displays.nodes.map(function(display) {
+    toJSON() {
+        let displays = this.displays.nodes.map(function(display) {
             return display.toJSON();
         });
 
-        var effects = this.effects.nodes.map(function(effect) {
+        let effects = this.effects.nodes.map(function(effect) {
             return effect.toJSON();
         });
 
@@ -251,6 +248,6 @@ Scene.prototype = _.create(Display.prototype, {
             effects: effects
         };
     }
-});
+}
 
 module.exports = Scene;

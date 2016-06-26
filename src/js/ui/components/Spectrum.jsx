@@ -1,30 +1,33 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var Application = require('../../core/Application.js');
-var SpectrumParser = require('../../audio/SpectrumParser.js');
-var BarDisplay = require('../../display/BarDisplay.js');
+const Application = require('../../core/Application.js');
+const SpectrumParser = require('../../audio/SpectrumParser.js');
+const BarDisplay = require('../../display/BarDisplay.js');
+const autoBind = require('../../util/autoBind.js');
 
-var Spectrum = React.createClass({
-    defaultState: {
-        smoothingTimeConstant: 0.5,
-        minDecibels: -60,
-        maxDecibels: -12,
-        minFrequency: 0,
-        maxFrequency: 10000,
-        fftSize: 1024,
-        sampleRate: 44100,
-        binSize: 32,
-        normalize: false
-    },
+class Spectrum extends React.Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState: function() {
-        return this.defaultState;
-    },
+        autoBind(this);
+        
+        this.state = {
+            smoothingTimeConstant: 0.5,
+            minDecibels: -60,
+            maxDecibels: -12,
+            minFrequency: 0,
+            maxFrequency: 10000,
+            fftSize: 1024,
+            sampleRate: 44100,
+            binSize: 32,
+            normalize: false
+        };
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         this.config = {
             width: 854,
             height: 100,
@@ -35,9 +38,9 @@ var Spectrum = React.createClass({
         };
 
         this.data = null;
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         this.bars = new BarDisplay(
             ReactDOM.findDOMNode(this.refs.canvas),
             this.config
@@ -48,23 +51,23 @@ var Spectrum = React.createClass({
 
             this.bars.render(fft);
         }, this);
-    },
+    }
 
-    shouldComponentUpdate: function() {
+    shouldComponentUpdate() {
         return false;
-    },
+    }
 
-    handleClick: function() {
+    handleClick() {
         this.setState({ normalize: !this.state.normalize });
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="spectrum">
-                <canvas ref="canvas" className="canvas" width="854" height="100" onClick={this.handleClick}></canvas>
+                <canvas ref="canvas" className="canvas" width="854" height="100" onClick={this.handleClick} />
             </div>
         );
     }
-});
+}
 
 module.exports = Spectrum;

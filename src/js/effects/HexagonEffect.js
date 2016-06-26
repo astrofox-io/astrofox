@@ -1,43 +1,40 @@
 'use strict';
 
-var _ = require('lodash');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var HexagonShader = require('../shaders/HexagonShader.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const HexagonShader = require('../shaders/HexagonShader.js');
 
-var defaults = {
+const defaults = {
     scale: 10.0
 };
 
-var HexagonEffect = function(options) {
-    Effect.call(this, 'HexagonEffect', defaults);
+class HexagonEffect extends Effect {
+    constructor(options) {
+        super('HexagonEffect', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-HexagonEffect.info = {
-    name: 'Hexagon'
-};
-
-HexagonEffect.prototype = _.create(Effect.prototype, {
-    constructor: HexagonEffect,
-
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(new ShaderPass(HexagonShader));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
-        var options = this.options;
+    updateScene(scene) {
+        let options = this.options;
 
         if (this.hasUpdate) {
             this.pass.setUniforms({ scale: options.scale });
             this.hasUpdate = false;
         }
     }
-});
+}
+
+HexagonEffect.info = {
+    name: 'Hexagon'
+};
 
 module.exports = HexagonEffect;

@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var LEDShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         spacing: { type: 'f', value: 10.0 },
@@ -13,5 +13,3 @@ var LEDShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.LED
 };
-
-module.exports = LEDShader;

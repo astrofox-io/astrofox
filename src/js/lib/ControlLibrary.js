@@ -1,4 +1,4 @@
-var ControlLibrary = {
+module.exports = {
     BarSpectrumControl: require('../ui/controls/BarSpectrumControl.jsx'),
     BloomControl: require('../ui/controls/BloomControl.jsx'),
     BlurControl: require('../ui/controls/BlurControl.jsx'),
@@ -14,5 +14,3 @@ var ControlLibrary = {
     TextControl: require('../ui/controls/TextControl.jsx'),
     RGBShiftControl: require('../ui/controls/RGBShiftControl.jsx')
 };
-
-module.exports = ControlLibrary;

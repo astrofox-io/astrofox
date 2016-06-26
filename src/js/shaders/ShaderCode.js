@@ -1,4 +1,4 @@
-var glslify = require('glslify');
+const glslify = require('glslify');
 
 module.exports = {
     vertex: {

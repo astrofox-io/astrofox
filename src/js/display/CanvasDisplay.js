@@ -1,21 +1,18 @@
 'use strict';
 
-var _ = require('lodash');
-var Display = require('../display/Display.js');
+const Display = require('../display/Display.js');
 
-var RADIANS = 0.017453292519943295;
+const RADIANS = 0.017453292519943295;
 
-var CanvasDisplay = function(name, options) {
-    Display.call(this, name, options);
+class CanvasDisplay extends Display {
+    constructor(name, options) {
+        super(name, options);
 
-    this.canvas = document.createElement('canvas');
-    this.context = this.canvas.getContext('2d');
-};
+        this.canvas = document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
+    }
 
-CanvasDisplay.prototype = _.create(Display.prototype, {
-    constructor: CanvasDisplay,
-
-    renderToCanvas: function(context) {
+    renderToCanvas(context) {
         var x, y,
             canvas = this.canvas,
             options = this.options,
@@ -42,6 +39,6 @@ CanvasDisplay.prototype = _.create(Display.prototype, {
             context.drawImage(canvas, x, y);
         }
     }
-});
+}
 
 module.exports = CanvasDisplay;

@@ -1,9 +1,7 @@
-'use strict';
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
-
-var BarrelBlurShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
@@ -12,5 +10,3 @@ var BarrelBlurShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.BarrelBlur
 };
-
-module.exports = BarrelBlurShader;

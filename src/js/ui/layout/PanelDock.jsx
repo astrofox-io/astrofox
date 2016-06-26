@@ -1,35 +1,31 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
-var PanelDock = React.createClass({
-    getDefaultProps: function() {
-        return {
-            direction: 'vertical',
-            width: 320
-        };
-    },
-    getInitialState: function() {
-        return {
+class PanelDock extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
             visible: true,
             dragging: false,
             activePanel: null
         };
-    },
+    }
 
-    handleDragStart: function(panel) {
+    handleDragStart(panel) {
         this.setState({ dragging: true, activePanel: panel });
-    },
+    }
 
-    handleDragEnd: function() {
+    handleDragEnd() {
         this.setState({ dragging: false });
-    },
+    }
 
-    handleMouseMove: function(e) {
+    handleMouseMove(e) {
         this.state.activePanel.handleMouseMove(e);
-    },
+    }
 
-    render: function() {
+    render() {
         var props = this.props,
             state = this.state,
             classes = 'panel-dock',
@@ -37,7 +33,7 @@ var PanelDock = React.createClass({
                 width: props.width,
                 cursor: (state.dragging) ? 'ns-resize' : null
             },
-            mouseMove = (state.dragging) ? this.handleMouseMove : null;
+            mouseMove = (state.dragging) ? this.handleMouseMove.bind(this) : null;
 
         classes += (props.direction == 'vertical') ? ' flex-column' : ' flex-row';
 
@@ -50,8 +46,8 @@ var PanelDock = React.createClass({
                 return React.cloneElement(
                     child,
                     {
-                        onDragStart: this.handleDragStart,
-                        onDragEnd: this.handleDragEnd
+                        onDragStart: this.handleDragStart.bind(this),
+                        onDragEnd: this.handleDragEnd.bind(this)
                     }
                 );
             }
@@ -68,6 +64,11 @@ var PanelDock = React.createClass({
             </div>
         )
     }
-});
+}
+
+PanelDock.defaultProps = {
+    direction: 'vertical',
+    width: 320
+};
 
 module.exports = PanelDock;

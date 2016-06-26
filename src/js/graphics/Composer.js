@@ -1,40 +1,39 @@
 'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
-var EventEmitter = require('../core/EventEmitter.js');
-var NodeCollection = require('../core/NodeCollection.js');
-var RenderPass = require('../graphics/RenderPass.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var SpritePass = require('../graphics/SpritePass.js');
-var TexturePass = require('../graphics/TexturePass.js');
-var MultiPass = require('../graphics/MultiPass.js');
-var MaskPass = require('../graphics/MaskPass.js');
-var ClearMaskPass = require('../graphics/ClearMaskPass.js');
-var BlendModes = require('../graphics/BlendModes.js');
-var CopyShader = require('../shaders/CopyShader.js');
-var BlendShader = require('../shaders/BlendShader.js');
+const THREE = require('three');
+const EventEmitter = require('../core/EventEmitter.js');
+const NodeCollection = require('../core/NodeCollection.js');
+const RenderPass = require('../graphics/RenderPass.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const SpritePass = require('../graphics/SpritePass.js');
+const TexturePass = require('../graphics/TexturePass.js');
+const MultiPass = require('../graphics/MultiPass.js');
+const MaskPass = require('../graphics/MaskPass.js');
+const ClearMaskPass = require('../graphics/ClearMaskPass.js');
+const BlendModes = require('../graphics/BlendModes.js');
+const CopyShader = require('../shaders/CopyShader.js');
+const BlendShader = require('../shaders/BlendShader.js');
 
-var Composer = function(renderer, renderTarget) {
-    this.renderer = renderer;
-    this.passes = new NodeCollection();
-    this.maskActive = false;
-
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
-    this.blendPass = new ShaderPass(BlendShader, { transparent: true });
-
-    if (!renderTarget) {
-        renderTarget = this.getRenderTarget();
+class Composer extends EventEmitter {
+    constructor(renderer, renderTarget) {
+        super();
+        
+        this.renderer = renderer;
+        this.passes = new NodeCollection();
+        this.maskActive = false;
+    
+        this.copyPass = new ShaderPass(CopyShader, { transparent: true });
+        this.blendPass = new ShaderPass(BlendShader, { transparent: true });
+    
+        if (!renderTarget) {
+            renderTarget = this.getRenderTarget();
+        }
+    
+        this.setRenderTarget(renderTarget);
     }
 
-    this.setRenderTarget(renderTarget);
-};
-
-Composer.prototype = _.create(EventEmitter.prototype, {
-    constructor: Composer,
-
-    getRenderTarget: function() {
-        var renderer = this.renderer,
+    getRenderTarget() {
+        let renderer = this.renderer,
             pixelRatio = renderer.getPixelRatio(),
             width = Math.floor(renderer.context.canvas.width / pixelRatio) || 1,
             height = Math.floor(renderer.context.canvas.height / pixelRatio) || 1;
@@ -49,98 +48,98 @@ Composer.prototype = _.create(EventEmitter.prototype, {
                 stencilBuffer: true
             }
         );
-    },
+    }
 
-    setRenderTarget: function(renderTarget) {
+    setRenderTarget(renderTarget) {
         this.readTarget = renderTarget;
         this.writeTarget = renderTarget.clone();
 
         this.readBuffer = this.readTarget;
         this.writeBuffer = this.writeTarget;
-    },
+    }
 
-    clearScreen: function(color, depth, stencil) {
+    clearScreen(color, depth, stencil) {
         this.renderer.clear(color, depth, stencil);
-    },
+    }
 
-    clearBuffer: function(color, depth, stencil) {
+    clearBuffer(color, depth, stencil) {
         this.renderer.clearTarget(this.readTarget, color, depth, stencil);
         this.renderer.clearTarget(this.writeTarget, color, depth, stencil);
-    },
+    }
 
-    dispose: function() {
+    dispose() {
         this.clearPasses();
         this.readTarget.dispose();
         this.writeTarget.dispose();
-    },
+    }
 
-    setSize: function(width, height) {
-        var renderTarget = this.writeTarget.clone();
+    setSize(width, height) {
+        let renderTarget = this.writeTarget.clone();
 
         renderTarget.width = width;
         renderTarget.height = height;
 
         this.setRenderTarget(renderTarget);
-    },
+    }
 
-    swapBuffers: function() {
-        var tmp = this.readBuffer;
+    swapBuffers() {
+        let tmp = this.readBuffer;
         this.readBuffer = this.writeBuffer;
         this.writeBuffer = tmp;
-    },
+    }
 
-    getPasses: function() {
+    getPasses() {
         return this.passes.nodes;
-    },
+    }
 
-    addPass: function(pass) {
+    addPass(pass) {
         this.passes.addNode(pass);
 
         return pass;
-    },
+    }
 
-    removePass: function(pass) {
+    removePass(pass) {
         this.passes.removeNode(pass);
-    },
+    }
 
-    addRenderPass: function(scene, camera, options) {
+    addRenderPass(scene, camera, options) {
         return this.addPass(new RenderPass(scene, camera, options));
-    },
+    }
 
-    addShaderPass: function(shader, options) {
+    addShaderPass(shader, options) {
         return this.addPass(new ShaderPass(shader, options));
-    },
+    }
 
-    addTexturePass: function(texture, options) {
+    addTexturePass(texture, options) {
         if (typeof texture !== THREE.Texture) {
             texture = new THREE.Texture(texture);
             texture.minFilter = THREE.LinearFilter;
         }
 
         return this.addPass(new TexturePass(texture, options));
-    },
+    }
 
-    addSpritePass: function(image, options) {
-        var texture = new THREE.Texture(image);
+    addSpritePass(image, options) {
+        let texture = new THREE.Texture(image);
         texture.minFilter = THREE.LinearFilter;
 
         return this.addPass(new SpritePass(texture, options));
-    },
+    }
 
-    addCopyPass: function(options) {
+    addCopyPass(options) {
         return this.addShaderPass(CopyShader, options);
-    },
+    }
 
-    addMultiPass: function(passes, options) {
+    addMultiPass(passes, options) {
         return this.addPass(new MultiPass(passes, options));
-    },
+    }
 
-    clearPasses: function() {
+    clearPasses() {
         this.passes.clear();
-    },
+    }
 
-    blendBuffer: function(buffer, options) {
-        var pass = this.blendPass;
+    blendBuffer(buffer, options) {
+        let pass = this.blendPass;
 
         pass.setUniforms({
             tBase: this.readBuffer,
@@ -153,40 +152,20 @@ Composer.prototype = _.create(EventEmitter.prototype, {
         pass.process(this.renderer, this.writeBuffer);
 
         this.swapBuffers();
-    },
+    }
 
-    copyBuffer: function(buffer, options) {
-        var pass = this.copyPass;
-
-        if (options) {
-            pass.setUniforms(options);
-        }
-
-        pass.process(this.renderer, this.readBuffer, buffer);
-    },
-
-    copyTarget: function(buffer, options) {
-        var pass = this.copyPass;
-
-        if (options) {
-            pass.setUniforms(options);
-        }
-
-        pass.process(this.renderer, this.readTarget, buffer);
-    },
-
-    renderToScreen: function() {
-        var pass = this.copyPass;
+    renderToScreen() {
+        let pass = this.copyPass;
 
         pass.update({ renderToScreen: true });
 
         pass.process(this.renderer, this.writeBuffer, this.readBuffer);
 
         pass.update({ renderToScreen: false });
-    },
+    }
 
-    render: function() {
-        var renderer = this.renderer,
+    render() {
+        let renderer = this.renderer,
             context = this.renderer.context,
             maskActive = this.maskActive;
 
@@ -237,6 +216,6 @@ Composer.prototype = _.create(EventEmitter.prototype, {
             }
         }, this);
     }
-});
+}
 
 module.exports = Composer;

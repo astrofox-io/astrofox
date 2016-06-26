@@ -1,49 +1,45 @@
 'use strict';
 
-var _ = require('lodash');
-var EventEmitter = require('../core/EventEmitter.js');
+const EventEmitter = require('../core/EventEmitter.js');
 
-var Sound = function(context) {
-    this.audioContext = context;
+class Sound extends EventEmitter {
+    constructor(context) {
+        super();
 
-    this.nodes = [];
-    this.source = null;
-    this.playing = false;
-    this.paused = false;
-    this.loaded = false;
-    this.repeat = false;
-};
+        this.audioContext = context;
+        this.nodes = [];
+        this.source = null;
+        this.playing = false;
+        this.paused = false;
+        this.loaded = false;
+        this.repeat = false;
+    }
 
-Sound.prototype = _.create(EventEmitter.prototype, {
-    constructor: Sound,
-
-    addNode: function(node) {
+    addNode(node) {
         if (this.nodes.indexOf(node) < 0) {
             this.nodes.push(node);
         }
-    },
+    }
 
-    removeNode: function(node) {
+    removeNode(node) {
         var index = this.nodes.indexOf(node);
 
         if (index > -1) {
             this.nodes.splice(index, 1);
         }
-    },
+    }
 
-    disconnectNodes: function() {
+    disconnectNodes() {
         if (this.source) {
-            //this.source.disconnect();
-            //this.source = null;
-            this.nodes.forEach(function(node) {
+            this.nodes.forEach(function (node) {
                 node.disconnect();
             });
         }
-    },
+    }
 
-    getPosition: function() {
+    getPosition() {
         return (this.getCurrentTime() / this.getDuration()) || 0;
     }
-});
+}
 
 module.exports = Sound;

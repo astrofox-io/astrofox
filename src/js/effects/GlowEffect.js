@@ -1,40 +1,33 @@
 'use strict';
 
-var _ = require('lodash');
-var Effect = require('../effects/Effect.js');
-var ShaderPass = require('../graphics/ShaderPass.js');
-var GlowShader = require('../shaders/GlowShader.js');
+const Effect = require('../effects/Effect.js');
+const ShaderPass = require('../graphics/ShaderPass.js');
+const GlowShader = require('../shaders/GlowShader.js');
 
-var defaults = {
+const defaults = {
     amount: 0.1,
     intensity: 1
 };
 
-var GLOW_MAX = 5;
+const GLOW_MAX = 5;
 
-var GlowEffect = function(options) {
-    Effect.call(this, 'GlowEffect', defaults);
+class GlowEffect extends Effect {
+    constructor(options) {
+        super('GlowEffect', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-GlowEffect.info = {
-    name: 'Glow'
-};
-
-GlowEffect.prototype = _.create(Effect.prototype, {
-    constructor: GlowEffect,
-
-    addToScene: function(scene) {
+    addToScene(scene) {
         this.setPass(new ShaderPass(GlowShader));
-    },
+    }
 
-    removeFromScene: function(scene) {
+    removeFromScene(scene) {
         this.pass = null;
-    },
+    }
 
-    updateScene: function(scene) {
-        var options = this.options;
+    updateScene(scene) {
+        let options = this.options;
 
         if (this.hasUpdate) {
             this.pass.setUniforms({
@@ -45,6 +38,10 @@ GlowEffect.prototype = _.create(Effect.prototype, {
             this.hasUpdate = false;
         }
     }
-});
+}
+
+GlowEffect.info = {
+    name: 'Glow'
+};
 
 module.exports = GlowEffect;

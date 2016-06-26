@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var CopyShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         opacity: { type: 'f', value: 1.0 },
@@ -11,5 +11,3 @@ var CopyShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.Copy
 };
-
-module.exports = CopyShader;

@@ -1,7 +1,7 @@
-var THREE = require('three');
-var ShaderCode = require('./ShaderCode.js');
+const THREE = require('three');
+const ShaderCode = require('./ShaderCode.js');
 
-var GlowShader = {
+module.exports = {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         amount: { type: 'f', value: 1.0 },
@@ -12,5 +12,3 @@ var GlowShader = {
     vertexShader: ShaderCode.vertex.Basic,
     fragmentShader: ShaderCode.fragment.Glow
 };
-
-module.exports = GlowShader;

@@ -1,8 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
-
-var BeatAnalyzer = function() {
-};
+class BeatAnalyzer {
+}
 
 module.exports = BeatAnalyzer;

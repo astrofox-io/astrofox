@@ -1,24 +1,21 @@
 'use strict';
 
-var _ = require('lodash');
-var ComposerPass = require('../graphics/ComposerPass.js');
+const ComposerPass = require('../graphics/ComposerPass.js');
 
-var defaults = {
+const defaults = {
     inverse: false
 };
 
-var MaskPass = function(scene, camera, options) {
-    ComposerPass.call(this, _.assign({}, defaults, options));
+class MaskPass extends ComposerPass {
+    constructor(scene, camera, options) {
+        super(Object.assign({}, defaults, options));
 
-    this.scene = scene;
-    this.camera = camera;
-};
+        this.scene = scene;
+        this.camera = camera;
+    }
 
-MaskPass.prototype = _.create(ComposerPass.prototype, {
-    constructor: MaskPass,
-
-    process: function(renderer, writeBuffer, readBuffer) {
-        var context = renderer.context,
+    process(renderer, writeBuffer, readBuffer) {
+        let context = renderer.context,
             options = this.options,
             writeValue = (options.inverse) ? 0 : 1,
             clearValue = (options.inverse) ? 1 : 0;
@@ -45,6 +42,6 @@ MaskPass.prototype = _.create(ComposerPass.prototype, {
         context.stencilFunc(context.EQUAL, 1, 0xffffffff);  // draw if == 1
         context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
     }
-});
+}
 
 module.exports = MaskPass;

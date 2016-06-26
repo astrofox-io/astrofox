@@ -1,10 +1,10 @@
 'use strict';
 
-var _ = require('lodash');
-var Display = require('../display/Display.js');
-var CanvasDisplay = require('../display/CanvasDisplay.js');
+const _ = require('lodash');
+const Display = require('../display/Display.js');
+const CanvasDisplay = require('../display/CanvasDisplay.js');
 
-var defaults = {
+const defaults = {
     text: '',
     size: 20,
     font: 'sans-serif',
@@ -17,21 +17,15 @@ var defaults = {
     opacity: 1.0
 };
 
-var TextDisplay = function(options) {
-    CanvasDisplay.call(this, 'TextDisplay', defaults);
+class TextDisplay extends CanvasDisplay {
+    constructor(options) {
+        super('TextDisplay', defaults);
 
-    this.update(options);
-};
+        this.update(options);
+    }
 
-TextDisplay.info = {
-    name: 'Text'
-};
-
-TextDisplay.prototype = _.create(CanvasDisplay.prototype, {
-    constructor: TextDisplay,
-
-    render: function() {
-        var width, height, length, spacing, r,
+    render() {
+        let width, height, length, spacing,
             canvas = this.canvas,
             context = this.context,
             options = this.options,
@@ -67,10 +61,10 @@ TextDisplay.prototype = _.create(CanvasDisplay.prototype, {
         context.strokeStyle = 'red';
         context.stroke();
         */
-    },
+    }
 
-    getFont: function() {
-        var options = this.options,
+    getFont() {
+        let options = this.options,
             font = [
                 (options.italic) ? 'italic' : 'normal',
                 (options.bold) ? 'bold' : 'normal',
@@ -80,6 +74,10 @@ TextDisplay.prototype = _.create(CanvasDisplay.prototype, {
 
         return font.join(' ');
     }
-});
+}
+
+TextDisplay.info = {
+    name: 'Text'
+};
 
 module.exports = TextDisplay;

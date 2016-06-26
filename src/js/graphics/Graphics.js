@@ -1,8 +1,10 @@
-var THREE = require('three');
+'use strict';
 
-var Graphics = {
-    getRenderTarget: function(renderer) {
-        var pixelRatio = renderer.getPixelRatio(),
+const THREE = require('three');
+
+class Graphics {
+    static getRenderTarget(renderer) {
+        let pixelRatio = renderer.getPixelRatio(),
             canvas = renderer.context.canvas,
             width = Math.floor(canvas.width / pixelRatio) || 1,
             height = Math.floor(canvas.height / pixelRatio) || 1;
@@ -18,6 +20,6 @@ var Graphics = {
             }
         );
     }
-};
+}
 
 module.exports = Graphics;

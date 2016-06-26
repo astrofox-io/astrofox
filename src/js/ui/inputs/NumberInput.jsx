@@ -1,48 +1,40 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const classNames = require('classnames');
+const autoBind = require('../../util/autoBind.js');
 
-var NumberInput = React.createClass({
-    getDefaultProps: function() {
-        return {
-            name: "number",
-            size: 3,
-            value: 0,
-            min: null,
-            max: null,
-            step: null,
-            readOnly: false,
-            hidden: false
+class NumberInput extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+
+        this.state = {
+            value: props.value
         };
-    },
+    }
 
-    getInitialState: function() {
-        return {
-            value: this.props.value
-        };
-    },
-
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.value !== this.state.value) {
             this.setValue(nextProps.value, nextProps.min, nextProps.max);
         }
-    },
+    }
 
-    handleChange: function(e) {
+    handleChange(e) {
         this.setState({ value: e.target.value });
-    },
+    }
 
-    handleValueChange: function(e) {
+    handleValueChange(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        var val = this.state.value,
+        let val = this.state.value,
             min = this.props.min,
             max = this.props.max,
             step = this.props.step;
 
         if (this.props.value !== val) {
-            var regex = /^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
+            let regex = /^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
             // If valid number
             if (regex.test(val)) {
@@ -66,18 +58,18 @@ var NumberInput = React.createClass({
                 this.setValue(this.props.value, min, max);
             }
         }
-    },
+    }
 
-    handleKeyUp: function(e) {
+    handleKeyUp(e) {
         e.stopPropagation();
         e.preventDefault();
 
         if (e.keyCode === 13) {
             this.handleValueChange(e);
         }
-    },
+    }
 
-    setValue: function(val, min, max, callback) {
+    setValue(val, min, max, callback) {
         if (max != null && val > max) {
             val = max;
         }
@@ -86,18 +78,13 @@ var NumberInput = React.createClass({
         }
 
         this.setState({ value: val }, callback);
-    },
+    }
 
-    render: function(){
-        var classes = 'input-field';
-        if (this.props.hidden) {
-            classes += ' input-hidden';
-        }
-
+    render(){
         return (
             <div className="input">
                 <input type="text"
-                    className={classes}
+                    className={classNames({ 'input-field': true, 'input-hidden': this.props.hidden })}
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}
@@ -109,6 +96,17 @@ var NumberInput = React.createClass({
             </div>
         );
     }
-});
+}
+
+NumberInput.defaultProps = {
+    name: "number",
+    size: 3,
+    value: 0,
+    min: null,
+    max: null,
+    step: null,
+    readOnly: false,
+    hidden: false
+};
 
 module.exports = NumberInput;

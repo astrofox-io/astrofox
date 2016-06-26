@@ -1,8 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
-
-var defaults = {
+const defaults = {
     enabled: true,
     forceClear: false,
     needsSwap: false,
@@ -14,26 +12,24 @@ var defaults = {
     setClearAlpha: 1.0
 };
 
-var ComposerPass = function(options) {
-    this.options = _.assign({}, defaults, options);
-};
+class ComposerPass {
+    constructor(options) {
+        this.options = Object.assign({}, defaults, options);
+    }
 
-ComposerPass.prototype = {
-    constructor: ComposerPass,
-
-    update: function(options) {
-        for (var prop in options) {
+    update(options) {
+        for (let prop in options) {
             if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
                 if (this.options[prop] !== options[prop]) {
                     this.options[prop] = options[prop];
                 }
             }
         }
-    },
+    }
 
-    setBlending: function(blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha) {
+    setBlending(blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha) {
         if (this.material) {
-            var material = this.material;
+            let material = this.material;
 
             material.blending = blending;
             material.blendEquation = blendEquation;
@@ -44,10 +40,10 @@ ComposerPass.prototype = {
             material.blendSrcAlpha = blendSrcAlpha || null;
             material.blendDstAlpha = blendDstAlpha || null;
         }
-    },
+    }
 
-    render: function(renderer, scene, camera, renderTarget) {
-        var options = this.options,
+    render(renderer, scene, camera, renderTarget) {
+        let options = this.options,
             clearColor, clearAlpha;
 
         // Set new values
@@ -76,6 +72,6 @@ ComposerPass.prototype = {
             renderer.setClearColor(clearColor, clearAlpha);
         }
     }
-};
+}
 
 module.exports = ComposerPass;
