@@ -2,6 +2,7 @@
 
 const React = require('react');
 const Application = require('../../core/Application.js');
+const bytesToSize = require('../../util/bytesToSize.js');
 
 class Footer extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class Footer extends React.Component {
         return (
             <div id="footer">
                 <div className="filename flex">{this.props.filename}</div>
+                <div className="fps">{bytesToSize(performance.memory.usedJSHeapSize,2)}</div>
                 <div className="fps">{this.state.fps} FPS</div>
                 <div className="version">v{process.versions.electron}</div>
             </div>

@@ -3,7 +3,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Application = require('../../core/Application.js');
-const ControlLoader = require('../../util/ControlLoader.js');
+const getControlComponent = require('../../util/getControlComponent.js');
 
 class ControlsPanel extends React.Component {
     constructor(props) {
@@ -56,7 +56,7 @@ class ControlsPanel extends React.Component {
     render() {
         let controls = this.state.controls.map(function(display) {
             let id = display.toString(),
-                Control = ControlLoader.getControl(display) || 'div';
+                Control = getControlComponent(display) || 'div';
 
             return (
                 <Control

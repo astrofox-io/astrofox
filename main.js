@@ -66,6 +66,9 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 // Number of raster threads
 //app.commandLine.appendSwitch('num-raster-threads', 4);
 
+// Memory profiling
+app.commandLine.appendSwitch('enable-precise-memory-info');
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
