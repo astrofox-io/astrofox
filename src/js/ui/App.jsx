@@ -1,42 +1,46 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
-var Application = require('../core/Application.js');
-var Scene = require('../display/Scene.js');
-var DisplayLibrary = require('../lib/DisplayLibrary.js');
-var Window = require('../Window.js');
+const Application = require('../core/Application.js');
+const Scene = require('../display/Scene.js');
+const DisplayLibrary = require('../lib/DisplayLibrary.js');
+const Window = require('../Window.js');
+const autoBind = require('../util/autoBind.js');
 
-var Header = require('./components/Header.jsx');
-var Body = require('./components/Body.jsx');
-var Footer = require('./components/Footer.jsx');
-var MenuBar = require('./components/MenuBar.jsx');
-var MainView = require('./components/MainView.jsx');
-var Stage = require('./components/Stage.jsx');
-var Player = require('./components/Player.jsx');
-var Spectrum = require('./components/Spectrum.jsx');
-var Oscilloscope = require('./components/Oscilloscope.jsx');
-var Waveform = require('./components/Waveform.jsx');
-var Overlay = require('./components/Overlay.jsx');
-var ControlDock = require('./components/ControlDock.jsx');
-var Preload = require('../ui/components/Preload.jsx');
+const Header = require('./components/Header.jsx');
+const Body = require('./components/Body.jsx');
+const Footer = require('./components/Footer.jsx');
+const MenuBar = require('./components/MenuBar.jsx');
+const MainView = require('./components/MainView.jsx');
+const Stage = require('./components/Stage.jsx');
+const Player = require('./components/Player.jsx');
+const Spectrum = require('./components/Spectrum.jsx');
+const Oscilloscope = require('./components/Oscilloscope.jsx');
+const Waveform = require('./components/Waveform.jsx');
+const Overlay = require('./components/Overlay.jsx');
+const ControlDock = require('./components/ControlDock.jsx');
+const Preload = require('../ui/components/Preload.jsx');
 
-var ModalWindow = require('../ui/windows/ModalWindow.jsx');
-var AboutWindow = require('../ui/windows/AboutWindow.jsx');
-var SettingsWindow = require('../ui/windows/SettingsWindow.jsx');
+const ModalWindow = require('../ui/windows/ModalWindow.jsx');
+const AboutWindow = require('../ui/windows/AboutWindow.jsx');
+const SettingsWindow = require('../ui/windows/SettingsWindow.jsx');
 
-var App = React.createClass({
-    getInitialState: function() {
-        return {
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        autoBind(this);
+
+        this.state = {
             filename: '',
             showModal: false,
             modal: null
         };
-    },
+    }
 
-    componentWillMount: function() {
+    componentWillMount() {
         // Default setup
-        var scene = new Scene();
+        let scene = new Scene();
 
         Application.stage.addScene(scene);
 
@@ -64,30 +68,30 @@ var App = React.createClass({
         Application.on('audio_file_loaded', function() {
             this.refs.stage.showLoading(false);
         }, this);
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         Application.init();
-    },
+    }
 
-    handleClick: function() {
+    handleClick() {
         this.refs.menubar.setActiveIndex(-1);
-    },
+    }
 
-    handleDragDrop: function(e) {
+    handleDragDrop(e) {
         e.stopPropagation();
         e.preventDefault();
-    },
+    }
 
-    handleMouseDown: function(e) {
+    handleMouseDown(e) {
         Application.emit('mousedown');
-    },
+    }
 
-    handleMouseUp: function(e) {
+    handleMouseUp(e) {
         Application.emit('mouseup');
-    },
+    }
 
-    handleMenuAction: function(action, checked) {
+    handleMenuAction(action, checked) {
         switch (action) {
             case 'File/New Project':
                 break;
@@ -154,30 +158,30 @@ var App = React.createClass({
                 this.showModal(<AboutWindow onClose={this.hideModal} />);
                 break;
         }
-    },
+    }
 
-    handleAudioFile: function(file) {
+    handleAudioFile(file) {
         Application.loadAudioFile(file);
-    },
+    }
 
-    showModal: function(modal) {
+    showModal(modal) {
         this.setState({ modal: modal, showModal: true });
-    },
+    }
 
-    hideModal: function() {
+    hideModal() {
         this.setState({ showModal: false });
-    },
+    }
 
-    showError: function(error) {
+    showError(error) {
         console.error(error);
         this.showModal(
             <ModalWindow title="ERROR">
                 {error.message}
             </ModalWindow>
         );
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div
                 id="container"
@@ -206,6 +210,6 @@ var App = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = App;

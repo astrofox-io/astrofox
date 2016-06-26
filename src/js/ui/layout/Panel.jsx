@@ -3,10 +3,12 @@
 const React = require('react');
 const Application = require('../../core/Application.js');
 const Splitter = require('./Splitter.jsx');
+const autoBind = require('../../util/autoBind.js');
 
 class Panel extends React.Component {
     constructor(props) {
         super(props);
+        autoBind(this);
 
         this.state = {
             visible: props.visible || true,
@@ -93,7 +95,7 @@ class Panel extends React.Component {
         }
 
         var splitter = (props.resizable) ?
-            <Splitter type="horizontal" onDragStart={this.handleStartDrag.bind(this)} /> : null;
+            <Splitter type="horizontal" onDragStart={this.handleStartDrag} /> : null;
 
         return (
             <div className={classes} style={style}>

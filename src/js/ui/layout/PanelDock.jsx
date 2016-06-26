@@ -1,10 +1,12 @@
 'use strict';
 
 const React = require('react');
+const autoBind = require('../../util/autoBind.js');
 
 class PanelDock extends React.Component {
     constructor(props) {
         super(props);
+        autoBind(this);
 
         this.state = {
             visible: true,
@@ -46,8 +48,8 @@ class PanelDock extends React.Component {
                 return React.cloneElement(
                     child,
                     {
-                        onDragStart: this.handleDragStart.bind(this),
-                        onDragEnd: this.handleDragEnd.bind(this)
+                        onDragStart: this.handleDragStart,
+                        onDragEnd: this.handleDragEnd
                     }
                 );
             }
