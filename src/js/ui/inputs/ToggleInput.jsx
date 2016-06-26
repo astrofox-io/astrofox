@@ -15,7 +15,7 @@ const ToggleInput = function(props) {
     return (
         <div className={classNames(classes)} onClick={onClick} />
     );
-}
+};
 
 ToggleInput.defaultProps = {
     name: 'toggle',
