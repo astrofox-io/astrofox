@@ -24,8 +24,8 @@ const defaults = {
     minDecibels: -100,
     maxDecibels: -12,
     minFrequency: 0,
-    maxFrequency: 3000,
-    fftSize: 2048,
+    maxFrequency: 6000,
+    fftSize: 1024,
     sampleRate: 44100,
     normalize: true
 };
@@ -34,12 +34,10 @@ const RADIANS = 0.017453292519943295;
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {
-        super('BarSpectrumDisplay', defaults);
+        super('BarSpectrumDisplay', Object.assign({}, defaults, options));
     
-        this.bars = new BarDisplay(this.canvas, options);
-        this.fft = null;
-    
-        this.update(options);
+        this.bars = new BarDisplay(this.canvas, this.options);
+        this.parser = new SpectrumParser(this.options);
     }
     
     update(options) {
@@ -47,13 +45,14 @@ class BarSpectrumDisplay extends CanvasDisplay {
 
         if (changed) {
             this.bars.update(options);
+            this.parser.update(options);
         }
 
         return changed;
     }
 
     renderToCanvas(context, data) {
-        let fft = this.fft = SpectrumParser.parseFFT(data.fft, this.options, this.fft);
+        let fft = this.parser.parseFFT(data.fft);
         this.bars.render(fft);
 
         var x, y,

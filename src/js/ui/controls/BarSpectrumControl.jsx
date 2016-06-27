@@ -26,7 +26,7 @@ const defaults = {
     minDecibels: -100,
     maxDecibels: -12,
     minFrequency: 0,
-    maxFrequency: 3000
+    maxFrequency: 6000
 };
 
 class BarSpectrumControl extends React.Component {

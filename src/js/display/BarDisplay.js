@@ -29,7 +29,7 @@ class BarDisplay extends Display {
     }
     
     update(options) {
-        let changed = Display.prototype.update.call(this, options);
+        let changed = super.update(options);
 
         if (changed) {
             if (options.width !== undefined) {

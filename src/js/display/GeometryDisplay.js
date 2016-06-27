@@ -31,6 +31,8 @@ class GeometryDisplay extends Display {
         super('GeometryDisplay', GeometryConfig.options);
 
         this.update(options);
+
+        this.parser = new SpectrumParser({ normalize: true });
     }
 
     update(options) {
@@ -103,7 +105,7 @@ class GeometryDisplay extends Display {
     updateScene(renderer, data) {
         let mesh = this.mesh,
             options = this.options,
-            fft = this.fft = SpectrumParser.parseFFT(data.fft, {normalize: true}, this.fft),
+            fft = this.parser.parseFFT(data.fft),
             x = fft[0],
             y = fft[3],
             z = fft[2];

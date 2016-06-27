@@ -11,7 +11,6 @@ const autoBind = require('../../util/autoBind.js');
 class Spectrum extends React.Component {
     constructor(props) {
         super(props);
-
         autoBind(this);
         
         this.state = {
@@ -36,8 +35,6 @@ class Spectrum extends React.Component {
             shadowHeight: 0,
             color: '#775fd8'
         };
-
-        this.data = null;
     }
 
     componentDidMount() {
@@ -46,8 +43,10 @@ class Spectrum extends React.Component {
             this.config
         );
 
+        this.parser = new SpectrumParser(this.state);
+
         Application.on('render', function(data) {
-            var fft = this.data = SpectrumParser.parseFFT(data.fft, this.state, this.data);
+            let fft = this.parser.parseFFT(data.fft);
 
             this.bars.render(fft);
         }, this);
@@ -58,7 +57,9 @@ class Spectrum extends React.Component {
     }
 
     handleClick() {
-        this.setState({ normalize: !this.state.normalize });
+        this.setState({ normalize: !this.state.normalize }, () => {
+            this.parser.update(this.state);
+        });
     }
 
     render() {

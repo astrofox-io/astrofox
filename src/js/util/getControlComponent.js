@@ -30,4 +30,3 @@ module.exports = function(obj) {
 
     return control;
 };
-
