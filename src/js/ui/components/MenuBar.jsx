@@ -26,7 +26,7 @@ class MenuBar extends React.Component {
         }
     }
 
-    handleItemClick(action, checked) {
+    handleMenuItemClick(action, checked) {
         this.setActiveIndex(-1);
 
         if (this.props.onMenuAction) {
@@ -65,7 +65,7 @@ class MenuBar extends React.Component {
                     active={this.state.activeIndex === index}
                     onClick={this.handleClick.bind(this, index)}
                     onMouseOver={this.handleMouseOver.bind(this, index)}
-                    onItemClick={this.handleItemClick}
+                    onMenuItemClick={this.handleMenuItemClick}
                 />
             );
         }, this);

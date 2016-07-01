@@ -17,7 +17,7 @@ const DisplayLibrary = require('../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../lib/EffectsLibrary.js');
 const VideoRenderer = require('../video/VideoRenderer.js');
 
-const menuItemsConfig = require('../../conf/menu.json');
+const menuConfig = require('../../conf/menu.json');
 
 const VERSION = '1.0';
 
@@ -60,14 +60,25 @@ class Application extends EventEmitter {
             ms: 0,
             time: 0,
             frames: 0,
-            stack: []
+            stack: new Uint8Array(10)
         };
     }
 
     init() {
         // Create menu for OSX
         if (process.platform === 'darwin') {
-            const menu = remote.Menu.buildFromTemplate(menuItemsConfig);
+            menuConfig.forEach((menuItem) => {
+                if (menuItem.submenu) {
+                    menuItem.submenu.forEach((subMenuItem) => {
+                        subMenuItem.click = (item, win, e) => {
+                            this.emit('menu_action', menuItem.label + '/' + subMenuItem.label, subMenuItem.checked);
+                        };
+                    }, this);
+                }
+            }, this);
+
+            const menu = remote.Menu.buildFromTemplate(menuConfig);
+
             remote.Menu.setApplicationMenu(menu);
         }
 
@@ -186,12 +197,8 @@ class Application extends EventEmitter {
             stats.ms = (now - stats.time) / stats.frames;
             stats.time = now;
             stats.frames = 0;
-
-            stats.stack.push(stats.fps);
-
-            if (stats.stack.length > 10) {
-                stats.stack.shift();
-            }
+            stats.stack.copyWithin(1, 0);
+            stats.stack[0] = stats.fps;
 
             this.emit('tick', stats);
         }

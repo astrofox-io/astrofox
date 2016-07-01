@@ -16,7 +16,7 @@ const Menu = function(props) {
                     key={index}
                     label={item.label}
                     checked={item.checked}
-                    onClick={props.onMenuItemClick}
+                    onClick={props.onMenuItemClick.bind(null, item)}
                 />
             );
         }

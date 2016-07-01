@@ -25,10 +25,10 @@ class MenuBarItem extends React.Component {
         this.props.onMouseOver();
     }
 
-    handleItemClick(item) {
-        let action = this.props.label + '/' + item.props.label;
+    handleMenuItemClick(item) {
+        let action = this.props.label + '/' + item.label;
         
-        this.props.onItemClick(action, item.props.checked);
+        this.props.onMenuItemClick(action, item.checked);
     }
 
     render() {
@@ -43,7 +43,7 @@ class MenuBarItem extends React.Component {
                 <Menu
                     items={this.props.items}
                     visible={this.props.active}
-                    onMenuItemClick={this.handleItemClick}
+                    onMenuItemClick={this.handleMenuItemClick}
                 />
             </li>
         );

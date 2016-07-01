@@ -49,24 +49,28 @@ class App extends React.Component {
         scene.addElement(new DisplayLibrary.TextDisplay());
 
         // Events
-        Application.on('error', function(err) {
+        Application.on('error', (err) => {
             this.showError(err);
         }, this);
 
-        Application.on('show_modal', function(content) {
+        Application.on('show_modal', (content) => {
             this.showModal(content);
         }, this);
 
-        Application.on('hide_modal', function() {
+        Application.on('hide_modal', () => {
             this.hideModal();
         }, this);
 
-        Application.on('audio_file_loading', function() {
+        Application.on('audio_file_loading', () => {
             this.refs.stage.showLoading(true);
         }, this);
 
-        Application.on('audio_file_loaded', function() {
+        Application.on('audio_file_loaded', () => {
             this.refs.stage.showLoading(false);
+        }, this);
+
+        Application.on('menu_action', (action, checked) => {
+            this.handleMenuAction(action, checked);
         }, this);
     }
 
