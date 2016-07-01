@@ -25,7 +25,7 @@ class Panel extends React.Component {
     }
 
     componentDidMount() {
-        var props = this.props;
+        let props = this.props;
 
         Application.on('mouseup', function() {
             if (this.state.dragging) {
@@ -46,7 +46,7 @@ class Panel extends React.Component {
     }
 
     handleStartDrag(e) {
-        var props = this.props,
+        let props = this.props,
             state = this.state;
 
         this.setState({
@@ -66,7 +66,7 @@ class Panel extends React.Component {
     }
 
     handleMouseMove(e) {
-        var val,
+        let val,
             state = this.state;
 
         if (state.dragging) {
@@ -83,7 +83,7 @@ class Panel extends React.Component {
     }
 
     render() {
-        var props = this.props,
+        let props = this.props,
             state = this.state,
             classes = 'panel',
             style = (state.height) ? { height: state.height } : null;
@@ -94,7 +94,7 @@ class Panel extends React.Component {
             classes += ' panel-stretch';
         }
 
-        var splitter = (props.resizable) ?
+        let splitter = (props.resizable) ?
             <Splitter type="horizontal" onDragStart={this.handleStartDrag} /> : null;
 
         return (

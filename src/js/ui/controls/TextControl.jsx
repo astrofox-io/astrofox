@@ -36,7 +36,7 @@ class TextControl extends React.Component {
     }
 
     componentDidMount() {
-        var display = this.props.display;
+        let display = this.props.display;
 
         if (display.initialized) {
             display.render();
@@ -58,7 +58,7 @@ class TextControl extends React.Component {
     }
 
     handleChange(name, val) {
-        var obj = {},
+        let obj = {},
             display = this.props.display;
 
         obj[name] = val;
@@ -78,8 +78,8 @@ class TextControl extends React.Component {
     }
 
     render() {
-        var maxHeight = 480;
-        var maxWidth = 854;
+        let maxHeight = 480;
+        let maxWidth = 854;
 
         return (
             <div className="control">

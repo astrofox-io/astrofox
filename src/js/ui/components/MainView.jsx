@@ -1,8 +1,8 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
-var MainView = function(props) {
+const MainView = function(props) {
     return (
         <div className="view">
             {props.children}

@@ -28,7 +28,7 @@ class PanelDock extends React.Component {
     }
 
     render() {
-        var props = this.props,
+        let props = this.props,
             state = this.state,
             classes = 'panel-dock',
             style = {
@@ -43,7 +43,7 @@ class PanelDock extends React.Component {
             style.display = 'none';
         }
 
-        var panels = React.Children.map(props.children, function(child) {
+        let panels = React.Children.map(props.children, function(child) {
             if (child.props.resizable) {
                 return React.cloneElement(
                     child,

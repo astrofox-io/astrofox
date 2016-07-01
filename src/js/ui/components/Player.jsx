@@ -74,7 +74,7 @@ class Player extends React.Component {
     }
 
     render() {
-        var state = this.state,
+        let state = this.state,
             player = Application.player,
             totalTime = player.getDuration('audio'),
             audioPosition = player.getPosition('audio'),
@@ -185,7 +185,7 @@ class ProgressControl extends React.Component {
     }
 
     getPosition() {
-        var pos = this.state.value / this.max;
+        let pos = this.state.value / this.max;
         if (pos > 1) pos = 1;
 
         return pos;
@@ -235,8 +235,8 @@ const LoopButton = function(props) {
 };
 
 const TimeInfo = function(props) {
-    var currentTime = formatTime(props.currentTime);
-    var totalTime = formatTime(props.totalTime);
+    let currentTime = formatTime(props.currentTime);
+    let totalTime = formatTime(props.totalTime);
 
     return (
         <div className="time-info">

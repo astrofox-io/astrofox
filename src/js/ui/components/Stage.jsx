@@ -36,7 +36,7 @@ class Stage extends React.Component {
         e.stopPropagation();
         e.preventDefault();
 
-        var file = e.dataTransfer.files[0];
+        let file = e.dataTransfer.files[0];
 
         if (file && this.props.onFileDropped) {
             this.props.onFileDropped(file.path);
@@ -48,10 +48,10 @@ class Stage extends React.Component {
     }
 
     render() {
-        var state = this.state,
+        let state = this.state,
             style = { width: state.width, height: state.height };
 
-        var loading = (state.loading) ? <div className="loading" /> : null;
+        let loading = (state.loading) ? <div className="loading" /> : null;
 
         return (
             <div className="stage"

@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-var ColorInput = function(props) {
+const ColorInput = function(props) {
     let onChange = (e) => props.onChange(props.name, e.target.value);
 
     return (

@@ -1,8 +1,8 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
-var Control = React.createClass({
+const Control = React.createClass({
     getDefaultProps: function() {
         return {
             inputs: []
@@ -10,7 +10,7 @@ var Control = React.createClass({
     },
 
     render: function() {
-        var inputs = this.props.inputs.map(function(input) {
+        let inputs = this.props.inputs.map(function(input) {
             return (
                 <div className="row">
 

@@ -7,16 +7,16 @@ const Display = require('../../display/Display.js');
 
 const ModalWindow = require('./ModalWindow.jsx');
 
-var ControlPickerWindow = function(props) {
-    var controls = _.values(props.items).map(function(item, index){
-        var handleClick = function() {
-            var obj = new item();
+const ControlPickerWindow = function(props) {
+    let controls = _.values(props.items).map(function(item, index){
+        let handleClick = function() {
+            let obj = new item();
 
             props.scene.addElement(obj);
 
             Application.emit('control_added', obj);
             Application.emit('hide_modal');
-        }.bind(this);
+        };
 
         return (
             <div key={"c" + index} className="item">

@@ -28,7 +28,8 @@ class TextInput extends React.Component {
     }
 
     handleChange(e) {
-        var val = e.target.value;
+        let val = e.target.value;
+        
         this.setState({ value: val });
 
         if (this.props.onChange && !this.props.buffered) {
@@ -37,7 +38,7 @@ class TextInput extends React.Component {
     }
 
     handleValueChange(e) {
-        var val = this.state.value;
+        let val = this.state.value;
 
         if (this.props.onChange) {
             this.props.onChange(this.props.name, val);
