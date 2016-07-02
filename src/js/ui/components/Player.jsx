@@ -6,6 +6,8 @@ const Application = require('../../core/Application.js');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
+const PROGRESS_MAX = 1000;
+
 class Player extends React.Component {
     constructor(props) {
         super(props);
@@ -14,36 +16,41 @@ class Player extends React.Component {
         this.state = {
             playing: false,
             looping: false,
-            progressPosition: 0
+            progressPosition: 0,
+            duration: 0
         };
     }
 
     componentDidMount() {
         const player = Application.player;
 
-        player.on('tick', function() {
-            if (player.isPlaying()) {
+        player.on('load', (id) => {
+            this.setState({ duration: player.getDuration(id) });
+        }, this);
+
+        player.on('tick', (id) => {
+            if (player.isPlaying() && !this.refs.progress.isBuffering()) {
                 this.setState({
-                    progressPosition: this.refs.progress.getPosition()
+                    progressPosition: player.getPosition(id)
                 });
             }
         }, this);
 
-        player.on('play', function() {
+        player.on('play', () => {
             this.setState({ playing: true });
         }, this);
 
-        player.on('pause', function() {
+        player.on('pause', () => {
             this.setState({ playing: false });
         }, this);
 
-        player.on('stop', function() {
+        player.on('stop', () => {
             this.setState({ progressPosition: 0 });
         }, this);
 
-        player.on('seek', function() {
+        player.on('seek', (id) => {
             this.setState({
-                progressPosition: this.refs.progress.getPosition()
+                progressPosition: player.getPosition(id)
             });
         }, this);
     }
@@ -58,7 +65,9 @@ class Player extends React.Component {
 
     onLoopButtonClick() {
         Application.player.toggleLoop();
-        this.setState({ looping: Application.player.isLooping() });
+        this.setState({
+            looping: Application.player.isLooping()
+        });
     }
 
     onVolumeChange(val) {
@@ -69,18 +78,18 @@ class Player extends React.Component {
         Application.player.seek('audio', val);
     }
 
-    onProgressUpdate(val) {
+    onProgressInput(val) {
         this.setState({ progressPosition: val });
     }
 
     render() {
         let state = this.state,
             player = Application.player,
-            totalTime = player.getDuration('audio'),
-            audioPosition = player.getPosition('audio'),
+            totalTime = state.duration,
+            audioPosition = state.progressPosition, //player.getPosition('audio'),
             currentTime = state.progressPosition * totalTime,
             playing = player.isPlaying(),
-            loop = player.options.loop,
+            loop = player.isLooping(),
             style = {};
 
         if (!this.props.visible) {
@@ -96,9 +105,9 @@ class Player extends React.Component {
                 <VolumeControl onChange={this.onVolumeChange} />
                 <ProgressControl
                     ref="progress"
-                    progressPosition={audioPosition}
+                    value={audioPosition * 1000}
                     onChange={this.onProgressChange}
-                    onUpdate={this.onProgressUpdate}
+                    onInput={this.onProgressInput}
                     readOnly={totalTime==0}
                 />
                 <TimeInfo
@@ -116,11 +125,12 @@ Player.defaultProps = { visible: true };
 class VolumeControl extends React.Component {
     constructor(props) {
         super(props);
+        autoBind(this);
 
         this.state = { value: 100 };
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         this.props.onChange(val / 100);
 
         this.setState({ value: val });
@@ -148,7 +158,7 @@ class VolumeControl extends React.Component {
                         min="0"
                         max="100"
                         value={val}
-                        onChange={this.handleChange.bind(this)}
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className="speaker">
@@ -162,33 +172,34 @@ class VolumeControl extends React.Component {
 class ProgressControl extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: 0 };
-        this.max = 1000;
+        autoBind(this);
+
+        this.state = {
+            value: 0
+        };
     }
 
     componentWillReceiveProps(props) {
-        if (typeof props.progressPosition !== 'undefined' && !this.refs.progress.isActive()) {
-            this.setState({ value: props.progressPosition * this.max });
+        if (!this.refs.progress.isBuffering())
+        {
+            this.setState({ value: props.value });
         }
     }
 
-    handleChange(name, val) {
-        this.setState({ value: val }, function(){
-            this.props.onChange(this.getPosition());
-        }.bind(this));
+    onChange(name, val) {
+        this.setState({ value: val }, () => {
+            this.props.onChange(val / PROGRESS_MAX);
+        });
     }
 
-    handleUpdate(name, val) {
-        this.setState({ value: val }, function(){
-            this.props.onUpdate(this.getPosition());
-        }.bind(this));
+    onInput(name, val) {
+        this.setState({ value: val }, () => {
+            this.props.onInput(val / PROGRESS_MAX);
+        });
     }
 
-    getPosition() {
-        let pos = this.state.value / this.max;
-        if (pos > 1) pos = 1;
-
-        return pos;
+    isBuffering() {
+        return this.refs.progress.isBuffering();
     }
 
     render() {
@@ -198,19 +209,19 @@ class ProgressControl extends React.Component {
                     ref="progress"
                     name="progress"
                     min="0"
-                    max={this.max}
-                    buffered={true}
+                    max={PROGRESS_MAX}
                     value={this.state.value}
-                    onChange={this.handleChange.bind(this)}
-                    onUpdate={this.handleUpdate.bind(this)}
+                    buffered={true}
+                    onChange={this.onChange}
+                    onInput={this.onInput}
                     readOnly={this.props.readOnly}
                 />
             </div>
         );
     }
-}
+};
 
-const PlayButton = function(props) {
+const PlayButton = (props) => {
     return (
         <div className="button play-button" onClick={props.onClick}>
             <i className={props.playing ? 'icon-pause' : 'icon-play'} />
@@ -218,7 +229,7 @@ const PlayButton = function(props) {
     );
 };
 
-const StopButton = function(props) {
+const StopButton = (props) => {
     return (
         <div className="button stop-button" onClick={props.onClick}>
             <i className="icon-stop" />
@@ -226,7 +237,7 @@ const StopButton = function(props) {
     );
 };
 
-const LoopButton = function(props) {
+const LoopButton = (props) => {
     return (
         <div className={classNames({'loop-button': true, 'loop-button-on': props.loop })} onClick={props.onClick}>
             <i className="icon-refresh" title="Repeat" />
@@ -234,7 +245,7 @@ const LoopButton = function(props) {
     );
 };
 
-const TimeInfo = function(props) {
+const TimeInfo = (props) => {
     let currentTime = formatTime(props.currentTime);
     let totalTime = formatTime(props.totalTime);
 

@@ -20,11 +20,11 @@ const Oscilloscope = require('./components/Oscilloscope.jsx');
 const Waveform = require('./components/Waveform.jsx');
 const Overlay = require('./components/Overlay.jsx');
 const ControlDock = require('./components/ControlDock.jsx');
-const Preload = require('../ui/components/Preload.jsx');
-
-const ModalWindow = require('../ui/windows/ModalWindow.jsx');
-const AboutWindow = require('../ui/windows/AboutWindow.jsx');
-const SettingsWindow = require('../ui/windows/SettingsWindow.jsx');
+const Preload = require('./components/Preload.jsx');
+const About = require('./components/About.jsx');
+const Settings = require('./components/Settings.jsx');
+const ControlPicker = require('./components/ControlPicker.jsx');
+const ModalWindow = require('./components/ModalWindow.jsx');
 
 class App extends React.Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class App extends React.Component {
         this.state = {
             filename: '',
             showModal: false,
-            modal: null
+            modalContent: null
         };
     }
 
@@ -50,8 +50,15 @@ class App extends React.Component {
 
         // Events
         Application.on('error', (err) => {
-            this.showError(err);
+            this.handleError(err);
         }, this);
+
+        Application.on('pick_control', (props) => {
+           this.showModal(
+               props.title,
+               <ControlPicker scene={props.scene} items={props.items} />
+           );
+        });
 
         Application.on('show_modal', (content) => {
             this.showModal(content);
@@ -88,11 +95,11 @@ class App extends React.Component {
     }
 
     handleMouseDown(e) {
-        Application.emit('mousedown');
+        Application.emit('mousedown', e);
     }
 
     handleMouseUp(e) {
-        Application.emit('mouseup');
+        Application.emit('mouseup', e);
     }
 
     handleMenuAction(action, checked) {
@@ -150,7 +157,7 @@ class App extends React.Component {
                 break;
 
             case 'Edit/Settings':
-                this.showModal(<SettingsWindow onClose={this.hideModal} />);
+                this.showModal('SETTINGS', <Settings />);
                 break;
 
             case 'View/Control Dock':
@@ -159,7 +166,7 @@ class App extends React.Component {
                 break;
 
             case 'Help/About':
-                this.showModal(<AboutWindow onClose={this.hideModal} />);
+                this.showModal('ABOUT', <About />);
                 break;
         }
     }
@@ -168,21 +175,27 @@ class App extends React.Component {
         Application.loadAudioFile(file);
     }
 
-    showModal(modal) {
-        this.setState({ modal: modal, showModal: true });
+    handleError(error) {
+        console.error(error);
+        this.showModal(
+            'ERROR',
+            <div>{error.message}</div>,
+            [{ text: 'OK', click: this.hideModal }]
+        );
+    }
+
+    showModal(title, content, buttons) {
+        let modal = (
+            <ModalWindow title={title} buttons={buttons} onClose={this.hideModal}>
+                {content}
+            </ModalWindow>
+        );
+
+        this.setState({ modalContent: modal, showModal: true });
     }
 
     hideModal() {
         this.setState({ showModal: false });
-    }
-
-    showError(error) {
-        console.error(error);
-        this.showModal(
-            <ModalWindow title="ERROR">
-                {error.message}
-            </ModalWindow>
-        );
     }
 
     render() {
@@ -198,7 +211,7 @@ class App extends React.Component {
                 <MenuBar ref="menubar" onMenuAction={this.handleMenuAction} />
                 <Body>
                     <Overlay visible={this.state.showModal}>
-                        {this.state.modal}
+                        {this.state.modalContent}
                     </Overlay>
                     <MainView>
                         <Stage ref="stage" onFileDropped={this.handleAudioFile} />

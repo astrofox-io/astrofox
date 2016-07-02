@@ -12,10 +12,7 @@ const Effect = require('../../effects/Effect.js');
 const DisplayLibrary = require('../../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../../lib/EffectsLibrary.js');
 const autoBind = require('../../util/autoBind.js');
-
 const TextInput = require('../inputs/TextInput.jsx');
-const ControlPickerWindow = require('../windows/ControlPickerWindow.jsx');
-const MenuPanel = require('./MenuPanel.jsx');
 
 class LayersPanel extends React.Component {
     constructor(props) {
@@ -100,8 +97,8 @@ class LayersPanel extends React.Component {
 
         if (scene) {
             Application.emit(
-                'show_modal',
-                <ControlPickerWindow title="ADD DISPLAY" scene={scene} items={DisplayLibrary} />
+                'pick_control',
+                { title: 'ADD DISPLAY', scene: scene, items: DisplayLibrary }
             );
         }
     }
@@ -111,8 +108,8 @@ class LayersPanel extends React.Component {
 
         if (scene) {
             Application.emit(
-                'show_modal',
-                <ControlPickerWindow title="ADD EFFECT" scene={scene} items={EffectsLibrary} />
+                'pick_control',
+                { title: 'ADD EFFECT', scene: scene, items: EffectsLibrary }
             );
         }
     }

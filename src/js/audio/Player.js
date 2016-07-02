@@ -4,7 +4,7 @@ const EventEmitter = require('../core/EventEmitter.js');
 
 const defaults = {
     loop: false,
-    updateInterval: 500
+    updateInterval: 200
 };
 
 class Player extends EventEmitter {
@@ -25,7 +25,7 @@ class Player extends EventEmitter {
     update(options) {
         if (typeof options !== 'undefined') {
             for (let prop in options) {
-                if (this.options.hasOwnProperty(prop)) {
+                if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
                     this.options[prop] = options[prop];
                 }
             }
@@ -40,7 +40,7 @@ class Player extends EventEmitter {
 
             if (callback) callback();
 
-            this.emit('load');
+            this.emit('load', id);
         }.bind(this));
     }
 
@@ -75,12 +75,12 @@ class Player extends EventEmitter {
                             }
                         }
 
-                        this.emit('tick');
+                        this.emit('tick', id);
                     }.bind(this),
                     this.options.updateInterval
                 );
 
-                this.emit('play');
+                this.emit('play', id);
             }
         }
     }
@@ -90,7 +90,7 @@ class Player extends EventEmitter {
         if (sound) {
             sound.pause();
             clearInterval(this.timer);
-            this.emit('pause');
+            this.emit('pause', id);
         }
     }
 
@@ -99,7 +99,7 @@ class Player extends EventEmitter {
         if (sound) {
             sound.stop();
             clearInterval(this.timer);
-            this.emit('stop');
+            this.emit('stop', id);
         }
     }
 
@@ -107,7 +107,7 @@ class Player extends EventEmitter {
         let sound = this.sounds[id];
         if (sound) {
             sound.seek(val);
-            this.emit('seek');
+            this.emit('seek', id);
         }
     }
 

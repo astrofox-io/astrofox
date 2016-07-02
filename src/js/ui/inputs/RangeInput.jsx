@@ -8,89 +8,43 @@ class RangeInput extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = {
-            value: props.value
-        };
-    }
-
-    componentDidMount() {
-        this.active = false;
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== this.state.value && !this.active) {
-            this.setValue(nextProps.value, nextProps.min, nextProps.max);
-        }
+        this.buffering = false;
     }
 
     handleChange(e) {
-        let val = e.currentTarget.value;
-
-        this.setValue(
-            val,
-            this.props.min,
-            this.props.max,
-            function() {
-                if (!this.props.buffered && this.props.onChange) {
-                    this.props.onChange(this.props.name, Number(val));
-                }
-
-                if (this.props.onUpdate) {
-                    this.props.onUpdate(this.props.name, Number(val));
-                }
-            }.bind(this)
-        );
+        if (this.props.buffered && this.buffering) {
+            this.props.onInput(this.props.name, e.currentTarget.value);
+        }
+        else {
+            this.props.onChange(this.props.name, e.currentTarget.value);
+        }
     }
 
     handleMouseDown(e) {
         if (this.props.buffered) {
-            this.active = true;
+            this.buffering = true;
         }
     }
 
     handleMouseUp(e) {
         if (this.props.buffered) {
-            let val = e.currentTarget.value;
-            this.props.onChange(this.props.name, Number(val));
-            this.active = false;
+            this.buffering = false;
+            this.props.onChange(this.props.name, e.currentTarget.value);
         }
     }
 
-    isActive() {
-        return this.active;
-    }
-
-    getPosition() {
-        let min = this.props.min,
-            max = this.props.max,
-            val = this.state.value;
-
-        if (max > min) {
-            return ((val - min) / (max - min) * 100);
-        }
-
-        return 0;
-    }
-
-    setValue(val, min, max, callback) {
-        if (val > max) {
-            val = max;
-        }
-        else if (val < min) {
-            val = min;
-        }
-
-        this.setState({ value: val }, callback);
+    isBuffering() {
+        return this.buffering;
     }
 
     render() {
         let props = this.props,
-            fillStyle = { width: + this.getPosition() + '%' };
+            fillStyle = { width: ~~(props.value / props.max * 100) + '%' };
 
         return (
             <div className="input-range">
-                <div className="track" />
-                <div className="fill" style={fillStyle} />
+                <div className="track"/>
+                <div className="fill" style={fillStyle}/>
                 <input
                     className="range"
                     type="range"
@@ -98,7 +52,7 @@ class RangeInput extends React.Component {
                     min={props.min}
                     max={props.max}
                     step={props.step}
-                    value={this.state.value}
+                    value={props.value}
                     onChange={this.handleChange}
                     onMouseDown={this.handleMouseDown}
                     onMouseUp={this.handleMouseUp}
@@ -112,10 +66,17 @@ class RangeInput extends React.Component {
 RangeInput.defaultProps = {
     name: "range",
     min: 0,
-    max: 100,
+    max: 1,
+    value: 0,
     step: 1,
     buffered: false,
-    readOnly: false
+    readOnly: false,
+    onChange: () => {},
+    onInput: () => {}
 };
+
+function clamp(num, min, max) {
+    return num < min ? min : num > max ? max : num;
+}
 
 module.exports = RangeInput;

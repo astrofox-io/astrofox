@@ -147,7 +147,7 @@ class ImageControl extends React.Component {
                         Width
                         <i
                             className={linkClasses}
-                            onClick={this.handleLinkClick.bind(this)}
+                            onClick={this.handleLinkClick}
                         />
                     </label>
                     <NumberInput
