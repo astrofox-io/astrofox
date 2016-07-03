@@ -11,7 +11,7 @@ class RangeInput extends React.Component {
         this.buffering = false;
     }
 
-    handleChange(e) {
+    onChange(e) {
         if (this.props.buffered && this.buffering) {
             this.props.onInput(this.props.name, e.currentTarget.value);
         }
@@ -20,13 +20,13 @@ class RangeInput extends React.Component {
         }
     }
 
-    handleMouseDown(e) {
+    onMouseDown(e) {
         if (this.props.buffered) {
             this.buffering = true;
         }
     }
 
-    handleMouseUp(e) {
+    onMouseUp(e) {
         if (this.props.buffered) {
             this.buffering = false;
             this.props.onChange(this.props.name, e.currentTarget.value);
@@ -39,23 +39,24 @@ class RangeInput extends React.Component {
 
     render() {
         let props = this.props,
-            fillStyle = { width: ~~(props.value / props.max * 100) + '%' };
+            fillStyle = { width: (val2pct(props.value, props.min, props.max) * 100) + '%' };
 
         return (
             <div className="input-range">
                 <div className="track"/>
                 <div className="fill" style={fillStyle}/>
                 <input
+                    key={props.name + '_' + props.min + '_' + props.max}
                     className="range"
                     type="range"
                     name={props.name}
                     min={props.min}
                     max={props.max}
                     step={props.step}
-                    value={props.value}
-                    onChange={this.handleChange}
-                    onMouseDown={this.handleMouseDown}
-                    onMouseUp={this.handleMouseUp}
+                    value={clamp(props.value, props.min, props.max)}
+                    onChange={this.onChange}
+                    onMouseDown={this.onMouseDown}
+                    onMouseUp={this.onMouseUp}
                     readOnly={props.readOnly}
                 />
             </div>
@@ -74,6 +75,13 @@ RangeInput.defaultProps = {
     onChange: () => {},
     onInput: () => {}
 };
+
+function val2pct(val, min, max) {
+    if (min === max) return max;
+    if (val > max) val = max;
+    else if (val < min) val = min;
+    return (val - min) / (max - min);
+}
 
 function clamp(num, min, max) {
     return num < min ? min : num > max ? max : num;
