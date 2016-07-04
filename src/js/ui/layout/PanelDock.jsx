@@ -15,16 +15,16 @@ class PanelDock extends React.Component {
         };
     }
 
-    handleDragStart(panel) {
+    onDragStart(panel) {
         this.setState({ dragging: true, activePanel: panel });
     }
 
-    handleDragEnd() {
+    onDragEnd() {
         this.setState({ dragging: false });
     }
 
-    handleMouseMove(e) {
-        this.state.activePanel.handleMouseMove(e);
+    onMouseMove(e) {
+        this.state.activePanel.onMouseMove(e);
     }
 
     render() {
@@ -35,7 +35,7 @@ class PanelDock extends React.Component {
                 width: props.width,
                 cursor: (state.dragging) ? 'ns-resize' : null
             },
-            mouseMove = (state.dragging) ? this.handleMouseMove.bind(this) : null;
+            mouseMove = (state.dragging) ? this.onMouseMove.bind(this) : null;
 
         classes += (props.direction == 'vertical') ? ' flex-column' : ' flex-row';
 
@@ -43,13 +43,13 @@ class PanelDock extends React.Component {
             style.display = 'none';
         }
 
-        let panels = React.Children.map(props.children, function(child) {
+        let panels = React.Children.map(props.children, child => {
             if (child.props.resizable) {
                 return React.cloneElement(
                     child,
                     {
-                        onDragStart: this.handleDragStart,
-                        onDragEnd: this.handleDragEnd
+                        onDragStart: this.onDragStart,
+                        onDragEnd: this.onDragEnd
                     }
                 );
             }

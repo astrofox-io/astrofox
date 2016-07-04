@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-module.exports = function(props) {
+module.exports = (props) => {
     return (
         <div id="body">
             {props.children}

@@ -80,7 +80,7 @@ class SceneControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -88,7 +88,7 @@ class SceneControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -106,7 +106,7 @@ class SceneControl extends React.Component {
                         size="20"
                         items={blendModesMenu}
                         value={this.state.blendMode}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Opacity</label>
@@ -117,7 +117,7 @@ class SceneControl extends React.Component {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -126,7 +126,7 @@ class SceneControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>
@@ -139,7 +139,7 @@ class SceneControl extends React.Component {
                         max={10.0}
                         step={0.1}
                         value={this.state.lightIntensity}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="lightIntensity"
@@ -147,7 +147,7 @@ class SceneControl extends React.Component {
                             max={10.0}
                             step={0.1}
                             value={this.state.lightIntensity}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -158,14 +158,14 @@ class SceneControl extends React.Component {
                         min={-maxVal}
                         max={maxVal}
                         value={this.state.lightDistance}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="lightDistance"
                             min={-maxVal}
                             max={maxVal}
                             value={this.state.lightDistance}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -176,14 +176,14 @@ class SceneControl extends React.Component {
                         min={0}
                         max={1000}
                         value={this.state.cameraZoom}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="cameraZoom"
                             min={0}
                             max={1000}
                             value={this.state.cameraZoom}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

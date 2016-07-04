@@ -44,9 +44,9 @@ class Stage {
     }
 
     clearScenes() {
-        this.scenes.nodes.forEach(function(scene) {
+        this.scenes.nodes.forEach(scene => {
             this.removeScene(scene);
-        }.bind(this));
+        });
     }
 
     hasScenes() {
@@ -71,7 +71,7 @@ class Stage {
     }
 
     toJSON() {
-        let scenes = this.scenes.map(function(scene) {
+        let scenes = this.scenes.map(scene => {
             return scene.toJSON();
         });
 
@@ -88,7 +88,7 @@ class Stage {
         composer.clearScreen(true, true, true);
         composer.clearBuffer(true, true, true);
 
-        this.scenes.nodes.forEach(function(scene, index) {
+        this.scenes.nodes.forEach((scene, index) => {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
                 options = _.assign({}, scene.options);

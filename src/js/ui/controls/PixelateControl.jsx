@@ -51,7 +51,7 @@ class PixelateControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -59,7 +59,7 @@ class PixelateControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -75,7 +75,7 @@ class PixelateControl extends React.Component {
                         size="20"
                         items={types}
                         value={this.state.type}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Size</label>
@@ -85,14 +85,14 @@ class PixelateControl extends React.Component {
                         value={this.state.size}
                         min={MIN_PIXEL_SIZE}
                         max={MAX_PIXEL_SIZE}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="size"
                             min={MIN_PIXEL_SIZE}
                             max={MAX_PIXEL_SIZE}
                             value={this.state.size}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

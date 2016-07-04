@@ -10,7 +10,7 @@ const EmptyControl = require('../ui/controls/EmptyControl.jsx');
 
 const displays = _.assign({}, DisplayLibrary, EffectsLibrary);
 
-module.exports = function(obj) {
+module.exports = (obj) => {
     let name,
         control = null;
 
@@ -18,7 +18,7 @@ module.exports = function(obj) {
         return SceneControl;
     }
 
-    _.forIn(displays, function(val, key) {
+    _.forIn(displays, (val, key) => {
         if (obj instanceof val) {
             name = /(\w+)(Display|Effect)/.exec(key);
             control = ControlLibrary[name[1] + 'Control'];

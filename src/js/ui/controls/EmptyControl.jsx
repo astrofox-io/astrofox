@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const EmptyControl = function(props) {
+const EmptyControl = (props) => {
     return (
         <div className="control">
             <div className="header">CONTROL</div>

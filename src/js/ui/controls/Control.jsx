@@ -3,17 +3,17 @@
 const React = require('react');
 
 const Control = React.createClass({
-    getDefaultProps: function() {
+    getDefaultProps: () => {
         return {
             inputs: []
         }
     },
 
-    render: function() {
-        let inputs = this.props.inputs.map(function(input) {
+    render: () => {
+        let inputs = this.props.inputs.map(input => {
             return (
                 <div className="row">
-
+                    {input}
                 </div>
             );
         });

@@ -46,9 +46,9 @@ class BufferedSound extends Sound {
         request.open('GET', this.src, true);
         request.responseType = 'arraybuffer';
 
-        request.onload = function() {
+        request.onload = () => {
             this.loadData(request.response);
-        }.bind(this);
+        };
 
         request.send();
     }
@@ -57,12 +57,12 @@ class BufferedSound extends Sound {
     loadData(data) {
         this.audioContext.decodeAudioData(
             data,
-            function(buffer) {
+            (buffer) => {
                 this.loadBuffer(buffer);
-            }.bind(this),
-            function(e) {
+            },
+            (e) => {
                 this.emit('error', new Error('Invalid audio file.'));
-            }.bind(this)
+            }
         );
     }
 
@@ -78,7 +78,7 @@ class BufferedSound extends Sound {
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
 
-        this.nodes.forEach(function(node) {
+        this.nodes.forEach((node) => {
             this.source.connect(node);
         }, this);
     }

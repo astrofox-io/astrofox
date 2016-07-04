@@ -41,7 +41,7 @@ class MirrorControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -49,7 +49,7 @@ class MirrorControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -66,14 +66,14 @@ class MirrorControl extends React.Component {
                         value={this.state.side}
                         min={0}
                         max={3}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="side"
                             min={0}
                             max={3}
                             value={this.state.side}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

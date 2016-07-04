@@ -42,14 +42,14 @@ class RGBShiftControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
         obj[name] = val;
 
         this.shouldUpdate = true;
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -67,7 +67,7 @@ class RGBShiftControl extends React.Component {
                         min={0}
                         max={1.0}
                         step={0.001}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -76,7 +76,7 @@ class RGBShiftControl extends React.Component {
                             max={1.0}
                             step={0.001}
                             value={this.state.amount}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>
@@ -88,7 +88,7 @@ class RGBShiftControl extends React.Component {
                         value={this.state.angle}
                         min={0}
                         max={360}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -96,7 +96,7 @@ class RGBShiftControl extends React.Component {
                             min={0}
                             max={360}
                             value={this.state.angle}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>

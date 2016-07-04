@@ -74,7 +74,7 @@ class BloomEffect extends Effect {
 
             this.lumPass.setUniforms({ amount: 1 - options.threshold });
 
-            this.blurPasses.forEach(function(pass, i) {
+            this.blurPasses.forEach((pass, i) => {
                 this.updateGaussianPass(pass, i);
             }, this);
 

@@ -52,14 +52,14 @@ class SoundwaveControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
         obj[name] = val;
 
         this.shouldUpdate = true;
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -76,7 +76,7 @@ class SoundwaveControl extends React.Component {
                     <ColorInput
                         name="color"
                         value={this.state.color}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Line Width</label>
@@ -86,7 +86,7 @@ class SoundwaveControl extends React.Component {
                         value={this.state.lineWidth}
                         min={0}
                         max={10}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -95,7 +95,7 @@ class SoundwaveControl extends React.Component {
                             max={10}
                             step={0.01}
                             value={this.state.lineWidth}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>
@@ -107,7 +107,7 @@ class SoundwaveControl extends React.Component {
                         value={this.state.width}
                         min={0}
                         max={maxWidth}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -115,7 +115,7 @@ class SoundwaveControl extends React.Component {
                             min={0}
                             max={maxWidth}
                             value={this.state.width}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>
@@ -127,7 +127,7 @@ class SoundwaveControl extends React.Component {
                         min={0}
                         max={maxWidth}
                         value={this.state.height}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -135,7 +135,7 @@ class SoundwaveControl extends React.Component {
                             min={0}
                             max={maxWidth}
                             value={this.state.height}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>
@@ -147,14 +147,14 @@ class SoundwaveControl extends React.Component {
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -165,14 +165,14 @@ class SoundwaveControl extends React.Component {
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -180,7 +180,7 @@ class SoundwaveControl extends React.Component {
                     <ToggleInput
                         name="scrolling"
                         value={this.state.scrolling}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Scroll Speed</label>
@@ -192,7 +192,7 @@ class SoundwaveControl extends React.Component {
                         step={0.01}
                         readOnly={!this.state.scrolling}
                         value={this.state.scrollSpeed}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="scrollSpeed"
@@ -201,7 +201,7 @@ class SoundwaveControl extends React.Component {
                             step={0.01}
                             value={this.state.scrollSpeed}
                             readOnly={!this.state.scrolling}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -212,7 +212,7 @@ class SoundwaveControl extends React.Component {
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -220,7 +220,7 @@ class SoundwaveControl extends React.Component {
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -232,7 +232,7 @@ class SoundwaveControl extends React.Component {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -240,7 +240,7 @@ class SoundwaveControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

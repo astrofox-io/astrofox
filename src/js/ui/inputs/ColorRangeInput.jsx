@@ -4,7 +4,7 @@ const React = require('react');
 const ColorInput = require('./ColorInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
-const ColorRangeInput = function(props) {
+const ColorRangeInput = (props) => {
     let colorRangeStyle = {
         backgroundImage: '-webkit-linear-gradient(left, '+props.startColor+','+props.endColor+')'
     };

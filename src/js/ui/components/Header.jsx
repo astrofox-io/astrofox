@@ -9,48 +9,44 @@ class Header extends React.Component {
         super(props);
         autoBind(this);
     }
-    
-    componentDidMount() {
-        this.window = Window;
-    }
 
     shouldComponentUpdate() {
         return false;
     }
 
-    handleMinimize(e) {
+    onMinimize(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.minimize();
+        Window.minimize();
     }
 
-    handleMaximize(e) {
+    onMaximize(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.maximize();
+        Window.maximize();
     }
 
-    handleClose(e) {
+    onClose(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.close(true);
+        Window.close(true);
     }
 
-    handleConsole(e) {
+    onConsole(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.openDevTools();
+        Window.openDevTools();
     }
 
-    handleReload(e) {
+    onReload(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        this.window.reload();
+        Window.reload();
     }
 
     render() {
@@ -60,11 +56,11 @@ class Header extends React.Component {
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
                     <ul>
-                        <li className="button icon-code" onClick={this.handleConsole} />
-                        <li className="button icon-cw" onClick={this.handleReload} />
-                        <li className="button icon-minus" onClick={this.handleMinimize} />
-                        <li className="button icon-plus" onClick={this.handleMaximize} />
-                        <li className="button icon-cross" onClick={this.handleClose} />
+                        <li className="button icon-code" onClick={this.onConsole} />
+                        <li className="button icon-cw" onClick={this.onReload} />
+                        <li className="button icon-minus" onClick={this.onMinimize} />
+                        <li className="button icon-plus" onClick={this.onMaximize} />
+                        <li className="button icon-cross" onClick={this.onClose} />
                     </ul>
                 </div>
             </div>

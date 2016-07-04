@@ -30,25 +30,25 @@ class LayersPanel extends React.Component {
         this.updateLayers();
     }
 
-    handleLayerClick(index) {
+    onLayerClick(index) {
         let state = this.state,
             props = this.props,
             editIndex = (index == state.editIndex) ? state.editIndex: -1;
 
-        this.setState({activeIndex: index, editIndex: editIndex}, function(){
+        this.setState({activeIndex: index, editIndex: editIndex}, () => {
             if (props.onLayerSelected) {
                 props.onLayerSelected(this.getActiveLayer());
             }
-        }.bind(this));
+        });
     }
 
-    handleDoubleClick(index) {
+    onDoubleClick(index) {
         if (index !== this.state.editIndex) {
             this.setState({editIndex: index});
         }
     }
 
-    handleLayerEdit(val) {
+    onLayerEdit(val) {
         let layer = this.getActiveLayer();
 
         layer.options.displayName = val;
@@ -56,13 +56,13 @@ class LayersPanel extends React.Component {
         this.cancelEdit();
     }
 
-    handleLayerNameChange(index, name, val) {
+    onLayerNameChange(index, name, val) {
         if (val.length > 0) {
-            this.handleLayerEdit(val, index);
+            this.onLayerEdit(val, index);
         }
     }
 
-    handleLayerEnabled(obj, e) {
+    onLayerEnabled(obj, e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -70,29 +70,29 @@ class LayersPanel extends React.Component {
 
         obj.update({enabled: !obj.options.enabled});
 
-        this.forceUpdate(function() {
+        this.forceUpdate(() => {
             if (props.onLayerChanged) {
                 props.onLayerChanged(obj);
             }
         });
     }
 
-    handleAddSceneClick() {
+    onAddSceneClick() {
         let scene = new Scene(),
             props = this.props;
 
         Application.stage.addScene(scene);
 
-        this.updateLayers(function() {
+        this.updateLayers(() => {
             this.setActiveLayer(scene);
 
             if (props.onLayerAdded) {
                 props.onLayerAdded(scene);
             }
-        }.bind(this));
+        });
     }
 
-    handleAddDisplayClick() {
+    onAddDisplayClick() {
         let scene = this.getActiveScene();
 
         if (scene) {
@@ -103,7 +103,7 @@ class LayersPanel extends React.Component {
         }
     }
 
-    handleAddEffectClick() {
+    onAddEffectClick() {
         let scene = this.getActiveScene();
 
         if (scene) {
@@ -114,7 +114,7 @@ class LayersPanel extends React.Component {
         }
     }
 
-    handleRemoveClick() {
+    onRemoveClick() {
         let state = this.state,
             props = this.props,
             index = this.state.activeIndex,
@@ -130,7 +130,7 @@ class LayersPanel extends React.Component {
                 layer.owner.removeElement(layer);
             }
 
-            this.updateLayers(function(){
+            this.updateLayers(() => {
                 if (index === last) {
                     this.setState({activeIndex: last - 1});
                 }
@@ -142,11 +142,11 @@ class LayersPanel extends React.Component {
         }
     }
 
-    handleMoveUpClick() {
+    onMoveUpClick() {
         this.moveLayer(1);
     }
 
-    handleMoveDownClick() {
+    onMoveDownClick() {
         this.moveLayer(-1);
     }
 
@@ -172,7 +172,7 @@ class LayersPanel extends React.Component {
         let props = this.props,
             index = (typeof obj === 'number') ? obj : this.state.layers.indexOf(obj);
 
-        this.setState({ activeIndex: index }, function(){
+        this.setState({ activeIndex: index }, () => {
             if (props.onLayerSelected) {
                 props.onLayerSelected(this.getActiveLayer());
             }
@@ -196,14 +196,14 @@ class LayersPanel extends React.Component {
                     buffered={true}
                     autoFocus={true}
                     autoSelect={true}
-                    onChange={this.handleLayerNameChange.bind(this, index)}
+                    onChange={this.onLayerNameChange.bind(this, index)}
                     onCancel={this.cancelEdit}
                 />
             );
         }
         else {
             text = (
-                <span onDoubleClick={this.handleDoubleClick.bind(this, index)}>
+                <span onDoubleClick={this.onDoubleClick.bind(this, index)}>
                     {obj.options.displayName}
                 </span>
             );
@@ -225,11 +225,11 @@ class LayersPanel extends React.Component {
         return (
             <div key={obj.toString()}
                  className={classes}
-                 onClick={this.handleLayerClick.bind(this, index)}>
+                 onClick={this.onLayerClick.bind(this, index)}>
                 <i className={classNames('layer-icon', icon)} />
                 {text}
                 <i className={classNames('layer-options-icon', 'icon-eye', {'layer-disabled': !obj.options.enabled})}
-                   onClick={this.handleLayerEnabled.bind(this, obj)} />
+                   onClick={this.onLayerEnabled.bind(this, obj)} />
             </div>
         );
     }
@@ -237,14 +237,14 @@ class LayersPanel extends React.Component {
     updateLayers(callback) {
         let layers = [];
 
-        Application.stage.scenes.nodes.reverse().forEach(function(scene) {
+        Application.stage.scenes.nodes.reverse().forEach(scene => {
             layers.push(scene);
 
-            scene.effects.nodes.reverse().forEach(function(effect) {
+            scene.effects.nodes.reverse().forEach(effect => {
                 layers.push(effect);
             }, this);
 
-            scene.displays.nodes.reverse().forEach(function(display) {
+            scene.displays.nodes.reverse().forEach(display => {
                 layers.push(display);
             }, this);
         }, this);
@@ -267,13 +267,13 @@ class LayersPanel extends React.Component {
                 layer.owner.shiftElement(layer, direction);
             }
 
-            this.updateLayers(function() {
+            this.updateLayers(() => {
                 index = this.state.layers.indexOf(layer);
 
                 this.setState({activeIndex: index});
 
                 props.onLayerMoved(this.getActiveLayer());
-            }.bind(this));
+            });
         }
     }
 
@@ -281,7 +281,7 @@ class LayersPanel extends React.Component {
         let layers,
             classes = { 'button': true, 'button-disabled': !Application.stage.hasScenes() };
 
-        layers = this.state.layers.map(function(layer, index) {
+        layers = this.state.layers.map((layer, index) => {
             return this.getLayerComponent(layer, index);
         }, this);
 
@@ -291,12 +291,12 @@ class LayersPanel extends React.Component {
                     {layers}
                 </div>
                 <ul className="button-group">
-                    <li className="button icon-picture" title="Add Scene" onClick={this.handleAddSceneClick} />
-                    <li className={classNames(classes, 'icon-cube')} title="Add Display" onClick={this.handleAddDisplayClick} />
-                    <li className={classNames(classes, 'icon-light-up')} title="Add Effect" onClick={this.handleAddEffectClick} />
-                    <li className={classNames(classes, 'icon-chevron-up')} title="Move Layer Up" onClick={this.handleMoveUpClick} />
-                    <li className={classNames(classes, 'icon-chevron-down')} title="Move Layer Down" onClick={this.handleMoveDownClick} />
-                    <li className={classNames(classes, 'icon-trash-empty')} title="Delete Layer" onClick={this.handleRemoveClick} />
+                    <li className="button icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
+                    <li className={classNames(classes, 'icon-cube')} title="Add Display" onClick={this.onAddDisplayClick} />
+                    <li className={classNames(classes, 'icon-light-up')} title="Add Effect" onClick={this.onAddEffectClick} />
+                    <li className={classNames(classes, 'icon-chevron-up')} title="Move Layer Up" onClick={this.onMoveUpClick} />
+                    <li className={classNames(classes, 'icon-chevron-down')} title="Move Layer Down" onClick={this.onMoveDownClick} />
+                    <li className={classNames(classes, 'icon-trash-empty')} title="Delete Layer" onClick={this.onRemoveClick} />
                 </ul>
             </div>
         );

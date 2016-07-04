@@ -27,25 +27,25 @@ class Panel extends React.Component {
     componentDidMount() {
         let props = this.props;
 
-        Application.on('mouseup', function() {
+        Application.on('mouseup', () => {
             if (this.state.dragging) {
                 this.setState({
                     dragging: false
                 },
-                function() {
+                () => {
                     if (props.onDragEnd) {
                         props.onDragEnd();
                     }
                 });
             }
-        }.bind(this));
+        });
     }
 
     shouldComponentUpdate(nextProps) {
         return nextProps.shouldUpdate;
     }
 
-    handleStartDrag(e) {
+    onStartDrag(e) {
         let props = this.props,
             state = this.state;
 
@@ -55,7 +55,7 @@ class Panel extends React.Component {
             startY: e.pageY,
             startWidth: state.width,
             startHeight: state.height
-        }, function() {
+        }, () => {
             if (props.onDragStart) {
                 props.onDragStart(this);
             }
@@ -65,7 +65,7 @@ class Panel extends React.Component {
         e.preventDefault();
     }
 
-    handleMouseMove(e) {
+    onMouseMove(e) {
         let val,
             state = this.state;
 
@@ -95,7 +95,7 @@ class Panel extends React.Component {
         }
 
         let splitter = (props.resizable) ?
-            <Splitter type="horizontal" onDragStart={this.handleStartDrag} /> : null;
+            <Splitter type="horizontal" onDragStart={this.onStartDrag} /> : null;
 
         return (
             <div className={classes} style={style}>

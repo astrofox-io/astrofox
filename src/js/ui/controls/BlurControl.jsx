@@ -50,7 +50,7 @@ class BlurControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -58,7 +58,7 @@ class BlurControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -74,7 +74,7 @@ class BlurControl extends React.Component {
                         size="20"
                         items={types}
                         value={this.state.type}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Amount</label>
@@ -85,7 +85,7 @@ class BlurControl extends React.Component {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
@@ -93,7 +93,7 @@ class BlurControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.amount}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

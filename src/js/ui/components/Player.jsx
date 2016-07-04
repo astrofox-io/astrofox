@@ -155,8 +155,8 @@ class VolumeControl extends React.Component {
                 <div className="slider">
                     <RangeInput
                         name="progress"
-                        min="0"
-                        max="100"
+                        min={0}
+                        max={100}
                         value={val}
                         onChange={this.onChange}
                     />
@@ -219,7 +219,7 @@ class ProgressControl extends React.Component {
             </div>
         );
     }
-};
+}
 
 const PlayButton = (props) => {
     return (

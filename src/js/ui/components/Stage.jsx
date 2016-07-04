@@ -23,16 +23,16 @@ class Stage extends React.Component {
         );
     }
 
-    handleMouseDown(e) {
+    onMouseDown(e) {
         e.preventDefault();
     }
 
-    handleDragOver(e){
+    onDragOver(e){
         e.stopPropagation();
         e.preventDefault();
     }
 
-    handleDrop(e){
+    onDrop(e){
         e.stopPropagation();
         e.preventDefault();
 
@@ -55,9 +55,9 @@ class Stage extends React.Component {
 
         return (
             <div className="stage"
-                onMouseDown={this.handleMouseDown}
-                onDrop={this.handleDrop}
-                onDragOver={this.handleDragOver}>
+                onMouseDown={this.onMouseDown}
+                onDrop={this.onDrop}
+                onDragOver={this.onDragOver}>
                 <div ref="viewport" className="viewport" style={style}>
                     {loading}
                 </div>

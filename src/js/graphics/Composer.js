@@ -172,10 +172,10 @@ class Composer extends EventEmitter {
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
-        this.passes.nodes.forEach(function(pass) {
+        this.passes.nodes.forEach(pass => {
             if (pass.options.enabled) {
                 if (pass instanceof MultiPass) {
-                    pass.getPasses().forEach(function(p) {
+                    pass.getPasses().forEach(p => {
                         if (p.options.enabled) {
                             p.process(renderer, this.writeBuffer, this.readBuffer, maskActive);
 

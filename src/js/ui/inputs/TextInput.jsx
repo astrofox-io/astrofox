@@ -27,7 +27,7 @@ class TextInput extends React.Component {
         }
     }
 
-    handleChange(e) {
+    onChange(e) {
         let val = e.target.value;
         
         this.setState({ value: val });
@@ -37,7 +37,7 @@ class TextInput extends React.Component {
         }
     }
 
-    handleValueChange(e) {
+    onValueChange(e) {
         let val = this.state.value;
 
         if (this.props.onChange) {
@@ -45,9 +45,9 @@ class TextInput extends React.Component {
         }
     }
 
-    handleKeyUp(e) {
+    onKeyUp(e) {
         if (e.keyCode === 13) {
-            this.handleValueChange(e);
+            this.onValueChange(e);
         }
         else if (e.keyCode === 27) {
             this.setState({ value: this.props.value });
@@ -70,9 +70,9 @@ class TextInput extends React.Component {
                     spellCheck={this.props.spellCheck}
                     autoFocus={this.props.autoFocus}
                     value={this.state.value}
-                    onChange={this.handleChange}
-                    onBlur={this.handleValueChange}
-                    onKeyUp={this.handleKeyUp}
+                    onChange={this.onChange}
+                    onBlur={this.onValueChange}
+                    onKeyUp={this.onKeyUp}
                 />
             </div>
         );

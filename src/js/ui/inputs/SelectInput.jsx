@@ -24,20 +24,20 @@ class SelectInput extends React.Component {
         }
     }
 
-    handleClick(e) {
+    onClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ showItems: !this.state.showItems });
     }
 
-    handleItemClick(item) {
-        this.setState({ showItems: false }, function(){
+    onItemClick(item) {
+        this.setState({ showItems: false }, () => {
             this.props.onChange(this.props.name, item.value);
-        }.bind(this));
+        });
     }
 
-    handleBlur(e) {
+    onBlur(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -47,7 +47,7 @@ class SelectInput extends React.Component {
     render() {
         let style = { display: this.state.showItems ? 'block' : 'none' };
 
-        let items = this.props.items.map(function(item, index) {
+        let items = this.props.items.map((item, index) => {
             let key = this.props.name + '' + index,
                 className = 'input-option';
 
@@ -62,7 +62,7 @@ class SelectInput extends React.Component {
                     className={className}
                     key={key}
                     style={item.style}
-                    onMouseDown={this.handleItemClick.bind(this, item)}>
+                    onMouseDown={this.onItemClick.bind(this, item)}>
                     {item.name}
                 </li>
             );
@@ -76,8 +76,8 @@ class SelectInput extends React.Component {
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}
-                    onClick={this.handleClick}
-                    onBlur={this.handleBlur}
+                    onClick={this.onClick}
+                    onBlur={this.onBlur}
                     readOnly
                 />
                 <ul

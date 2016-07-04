@@ -42,7 +42,7 @@ class DotScreenControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -50,7 +50,7 @@ class DotScreenControl extends React.Component {
 
         this.shouldUpdate = true;
         
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(this.state);
         });
     }
@@ -68,7 +68,7 @@ class DotScreenControl extends React.Component {
                         min={0}
                         max={2.0}
                         step={0.01}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -77,7 +77,7 @@ class DotScreenControl extends React.Component {
                             max={2.0}
                             step={0.01}
                             value={this.state.scale}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>
@@ -89,7 +89,7 @@ class DotScreenControl extends React.Component {
                         value={this.state.angle}
                         min={0}
                         max={360}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         />
                     <div className="input flex">
                         <RangeInput
@@ -97,7 +97,7 @@ class DotScreenControl extends React.Component {
                             min={0}
                             max={360}
                             value={this.state.angle}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                             />
                     </div>
                 </div>

@@ -28,7 +28,7 @@ class EventEmitter {
 
     once(event, fn, context) {
         let _fn;
-        return this.on(event, _fn = function() {
+        return this.on(event, _fn = () => {
             this.off(event, _fn);
             return fn.apply(context, arguments);
         }, this);
@@ -41,7 +41,7 @@ class EventEmitter {
             event = args.shift(),
             events = this.events[event] || [];
 
-        events.forEach(function(e) {
+        events.forEach(e => {
             e.fn.apply(e.context, args);
         });
     }

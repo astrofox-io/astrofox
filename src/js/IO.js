@@ -14,13 +14,13 @@ const IO = {
     Stream: stream,
     zlib: zlib,
 
-    readFileAsBlob: function(file) {
+    readFileAsBlob: (file) => {
         var data = fs.readFileSync(file);
 
         return new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) });
     },
 
-    toArrayBuffer: function(buffer) {
+    toArrayBuffer: (buffer) => {
         var ab = new ArrayBuffer(buffer.length);
         var view = new Uint8Array(ab);
 
@@ -31,7 +31,7 @@ const IO = {
         return ab;
     },
 
-    toBuffer: function(ab) {
+    toBuffer: (ab) => {
         var buffer = new Buffer(ab.byteLength);
         var view = new Uint8Array(ab);
 

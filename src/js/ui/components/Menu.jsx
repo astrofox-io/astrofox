@@ -3,10 +3,10 @@
 const React = require('react');
 const MenuItem = require('./MenuItem.jsx');
 
-const Menu = function(props) {
+const Menu = (props) => {
     let style = { display: (props.visible) ? 'block' : 'none' };
 
-    let items = props.items.map(function(item, index) {
+    let items = props.items.map((item, index) => {
         if (item.type == 'separator') {
             return <div key={index} className="menu-separator" />;
         }

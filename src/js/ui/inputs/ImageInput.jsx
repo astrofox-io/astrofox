@@ -14,11 +14,9 @@ class ImageInput extends React.Component {
     }
 
     componentDidMount() {
-        this.refs.image.onload = function() {
-            if (this.props.onChange) {
-                this.props.onChange('src', this.refs.image.src);
-            }
-        }.bind(this);
+        this.refs.image.onload = () => {
+            this.props.onChange('src', this.refs.image.src);
+        };
     }
 
     componentWillReceiveProps(props) {
@@ -27,29 +25,29 @@ class ImageInput extends React.Component {
         }
     }
 
-    handleDragOver(e) {
+    onDragOver(e) {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    handleDrop(e){
+    onDrop(e){
         e.stopPropagation();
         e.preventDefault();
 
         this.loadImageFile(e.dataTransfer.files[0]);
     }
 
-    handleClick(e) {
+    onClick(e) {
         e.preventDefault();
 
-        Window.showOpenDialog(function(files) {
+        Window.showOpenDialog(files => {
             if (files) {
                 this.loadImageFile(files[0]);
             }
-        }.bind(this));
+        });
     }
 
-    handleDelete(e) {
+    onDelete(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -72,11 +70,11 @@ class ImageInput extends React.Component {
 
         let reader = new FileReader();
 
-        reader.onload = function(fe) {
+        reader.onload = (fe) => {
             let data = fe.target.result;
 
             this.loadImage(data);
-        }.bind(this);
+        };
 
         reader.readAsDataURL(file);
     }
@@ -95,16 +93,16 @@ class ImageInput extends React.Component {
             hasImage = (props.src && props.src !== BLANK_IMAGE),
             style = { display: (hasImage) ? 'inline-block' : 'none' },
             classes = 'input-image-icon ',
-            handleClick = (hasImage) ? this.handleDelete : this.handleClick;
+            onClick = (hasImage) ? this.onDelete : this.onClick;
 
         classes += (hasImage) ? 'icon-circle-with-cross' : 'icon-folder-open-empty';
 
         return (
             <div
                 className="input input-image"
-                onDrop={this.handleDrop}
-                onDragOver={this.handleDragOver}
-                onClick={handleClick}>
+                onDrop={this.onDrop}
+                onDragOver={this.onDragOver}
+                onClick={onClick}>
                 <img
                     ref="image"
                     className="image"
@@ -118,7 +116,8 @@ class ImageInput extends React.Component {
 
 ImageInput.defaultProps = {
     name: 'image',
-    src: BLANK_IMAGE
+    src: BLANK_IMAGE,
+    onChange: () => {}
 };
 
 module.exports = ImageInput;

@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const About = function(props) {
+const About = (props) => {
     return (
         <div>
             AstroFox version 1.0

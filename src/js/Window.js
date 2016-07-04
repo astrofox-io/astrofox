@@ -3,47 +3,47 @@
 const remote = window.require('electron').remote;
 const dialog = remote.dialog;
 
-const Window = {
-    init: function() {
+class Window {
+    constructor() {
         this.window = remote.getCurrentWindow();
-    },
+    }
 
-    maximize: function() {
+    maximize() {
         if (this.window.isMaximized()) {
             this.unmaximize();
         }
         else {
             this.window.maximize();
         }
-    },
+    }
 
-    minimize: function() {
+    minimize() {
         this.window.minimize();
-    },
+    }
 
-    unmaximize: function() {
+    unmaximize() {
         this.window.unmaximize();
-    },
+    }
 
-    openDevTools: function() {
+    openDevTools() {
         this.window.openDevTools({ detach: true });
-    },
+    }
 
-    reload: function() {
+    reload() {
         this.window.reload();
-    },
+    }
 
-    close: function() {
+    close() {
         this.window.close();
-    },
+    }
 
-    showOpenDialog: function(action) {
+    showOpenDialog(action) {
         dialog.showOpenDialog(this.window, action);
-    },
+    }
 
-    showSaveDialog: function(path, action) {
+    showSaveDialog(path, action) {
         dialog.showSaveDialog(this.window, { defaultPath: path }, action);
     }
-};
+}
 
-module.exports = Window;
+module.exports = new Window;

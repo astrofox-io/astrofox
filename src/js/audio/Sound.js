@@ -31,7 +31,7 @@ class Sound extends EventEmitter {
 
     disconnectNodes() {
         if (this.source) {
-            this.nodes.forEach(function (node) {
+            this.nodes.forEach((node) => {
                 node.disconnect();
             });
         }

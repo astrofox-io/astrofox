@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 const Application = require('../../core/Application.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ImageInput = require('../inputs/ImageInput.jsx');
@@ -56,7 +57,7 @@ class ImageControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display,
             state = this.state,
@@ -106,7 +107,7 @@ class ImageControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
 
             if (render) {
@@ -115,8 +116,8 @@ class ImageControl extends React.Component {
         });
     }
 
-    handleLinkClick() {
-        this.handleChange.bind(this)('fixed', !this.state.fixed);
+    onLinkClick() {
+        this.onChange.bind(this)('fixed', !this.state.fixed);
     }
 
     render() {
@@ -139,15 +140,14 @@ class ImageControl extends React.Component {
                         name="image"
                         ref="image"
                         src={state.src}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className="row">
                     <label className="label">
                         Width
-                        <i
-                            className={linkClasses}
-                            onClick={this.handleLinkClick}
+                        <i className={linkClasses}
+                           onClick={this.onLinkClick}
                         />
                     </label>
                     <NumberInput
@@ -157,7 +157,7 @@ class ImageControl extends React.Component {
                         max={imageWidth*2}
                         value={state.width}
                         readOnly={readOnly}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -166,16 +166,15 @@ class ImageControl extends React.Component {
                             max={imageWidth*2}
                             value={state.width}
                             readOnly={readOnly}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
                 <div className="row">
                     <label className="label">
                         Height
-                        <i
-                            className={linkClasses}
-                            onClick={this.handleLinkClick}
+                        <i className={linkClasses}
+                           onClick={this.onLinkClick}
                         />
                     </label>
                     <NumberInput
@@ -185,7 +184,7 @@ class ImageControl extends React.Component {
                         max={imageHeight*2}
                         value={state.height}
                         readOnly={readOnly}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -194,7 +193,7 @@ class ImageControl extends React.Component {
                             max={imageHeight*2}
                             value={state.height}
                             readOnly={readOnly}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -207,7 +206,7 @@ class ImageControl extends React.Component {
                         max={maxSize}
                         value={state.x}
                         readOnly={readOnly}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -216,7 +215,7 @@ class ImageControl extends React.Component {
                             max={maxSize}
                             value={state.x}
                             readOnly={readOnly}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -229,7 +228,7 @@ class ImageControl extends React.Component {
                         max={maxSize}
                         value={state.y}
                         readOnly={readOnly}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -238,7 +237,7 @@ class ImageControl extends React.Component {
                             max={maxSize}
                             value={state.y}
                             readOnly={readOnly}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -251,7 +250,7 @@ class ImageControl extends React.Component {
                         max={360}
                         value={state.rotation}
                         readOnly={readOnly}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -260,7 +259,7 @@ class ImageControl extends React.Component {
                             max={360}
                             value={state.rotation}
                             readOnly={readOnly}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -274,7 +273,7 @@ class ImageControl extends React.Component {
                         step={0.01}
                         value={state.opacity}
                         readOnly={readOnly}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -283,7 +282,7 @@ class ImageControl extends React.Component {
                             step={0.01}
                             value={state.opacity}
                             readOnly={readOnly}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

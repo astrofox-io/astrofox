@@ -47,7 +47,7 @@ class VideoRenderer extends EventEmitter {
         // DEBUG
         console.log('rending movie', options.frames/options.fps, 'seconds /', options.fps, 'fps /', options.frames, 'frames');
 
-        stream.on('error', function(err) {
+        stream.on('error', (err) => {
             console.error(err);
         });
 
@@ -63,31 +63,31 @@ class VideoRenderer extends EventEmitter {
 
         stream.pipe(ffmpeg.stdin);
 
-        ffmpeg.stderr.on('data', function(data) {
+        ffmpeg.stderr.on('data', (data) => {
             console.log(data.toString());
 
             if (!this.started) {
                 func(0, options.fps, this.processFrame.bind(this));
                 this.started = true;
             }
-        }.bind(this));
+        });
 
-        ffmpeg.stderr.on('end', function() {
+        ffmpeg.stderr.on('end', () => {
             console.log('file has been converted succesfully');
             //if (callback) callback();
         });
 
-        ffmpeg.stderr.on('exit', function() {
+        ffmpeg.stderr.on('exit', () => {
             console.log('child process exited');
         });
 
-        ffmpeg.stderr.on('close', function() {
+        ffmpeg.stderr.on('close', () => {
             console.log('program closed');
 
             if (this.completed) {
                 this.copyAudio(this.audioFile);
             }
-        }.bind(this));
+        });
     }
 
     copyAudio(audioFile) {
@@ -102,19 +102,19 @@ class VideoRenderer extends EventEmitter {
             ]
         );
 
-        ffmpeg.stderr.on('data', function(data) {
+        ffmpeg.stderr.on('data', (data) => {
             console.log(data.toString());
-        }.bind(this));
+        });
 
-        ffmpeg.stderr.on('end', function() {
+        ffmpeg.stderr.on('end', () => {
             console.log('audio added succesfully');
         });
 
-        ffmpeg.stderr.on('exit', function() {
+        ffmpeg.stderr.on('exit', () => {
             console.log('child process exited');
         });
 
-        ffmpeg.stderr.on('close', function() {
+        ffmpeg.stderr.on('close', () => {
             console.log('program closed');
         });
     }

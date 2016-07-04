@@ -45,7 +45,7 @@ class Spectrum extends React.Component {
 
         this.parser = new SpectrumParser(this.state);
 
-        Application.on('render', function(data) {
+        Application.on('render', data => {
             let fft = this.parser.parseFFT(data.fft);
 
             this.bars.render(fft);
@@ -56,7 +56,7 @@ class Spectrum extends React.Component {
         return false;
     }
 
-    handleClick() {
+    onClick() {
         this.setState({ normalize: !this.state.normalize }, () => {
             this.parser.update(this.state);
         });
@@ -65,7 +65,7 @@ class Spectrum extends React.Component {
     render() {
         return (
             <div className="spectrum">
-                <canvas ref="canvas" className="canvas" width="854" height="100" onClick={this.handleClick} />
+                <canvas ref="canvas" className="canvas" width="854" height="100" onClick={this.onClick} />
             </div>
         );
     }

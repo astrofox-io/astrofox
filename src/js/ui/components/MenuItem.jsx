@@ -3,7 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const MenuItem = function(props) {
+const MenuItem = (props) => {
     return (
         <li className={classNames({'menu-item': true, 'checked': props.checked })}
             onClick={props.onClick}>

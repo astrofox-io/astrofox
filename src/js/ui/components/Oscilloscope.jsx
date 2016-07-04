@@ -22,7 +22,7 @@ class Oscilloscope extends React.Component {
             config
         );
 
-        Application.on('render', function(data) {
+        Application.on('render', data => {
             this.display.render(data.td, data.playing);
         }, this);
     }

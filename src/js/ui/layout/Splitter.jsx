@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const Splitter = function(props) {
+const Splitter = (props) => {
     let classes = 'splitter splitter-' + props.type;
     let onMouseDown = (e) => props.onDragStart(e);
 

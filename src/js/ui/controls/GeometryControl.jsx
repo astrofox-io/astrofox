@@ -43,7 +43,7 @@ class GeometryControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -51,7 +51,7 @@ class GeometryControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -70,7 +70,7 @@ class GeometryControl extends React.Component {
                         size="20"
                         items={config.shapes}
                         value={state.shape}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Material</label>
@@ -79,7 +79,7 @@ class GeometryControl extends React.Component {
                         size="20"
                         items={config.materials}
                         value={state.material}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Shading</label>
@@ -88,35 +88,35 @@ class GeometryControl extends React.Component {
                         size="20"
                         items={config.shading}
                         value={state.shading}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Color</label>
                     <ColorInput
                         name="color"
                         value={state.color}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Wireframe</label>
                     <ToggleInput
                         name="wireframe"
                         value={state.wireframe}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Edges</label>
                     <ToggleInput
                         name="edges"
                         value={state.edges}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Edge Color</label>
                     <ColorInput
                         name="edgeColor"
                         value={state.edgeColor}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">X</label>
@@ -126,14 +126,14 @@ class GeometryControl extends React.Component {
                         min={-maxVal}
                         max={maxVal}
                         value={state.x}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxVal}
                             max={maxVal}
                             value={state.x}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -144,14 +144,14 @@ class GeometryControl extends React.Component {
                         min={-maxVal}
                         max={maxVal}
                         value={state.y}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxVal}
                             max={maxVal}
                             value={state.y}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -162,14 +162,14 @@ class GeometryControl extends React.Component {
                         min={-maxVal}
                         max={maxVal}
                         value={state.z}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="z"
                             min={-maxVal}
                             max={maxVal}
                             value={state.z}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -181,7 +181,7 @@ class GeometryControl extends React.Component {
                         max={1}
                         step={0.01}
                         value={state.opacity}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -189,7 +189,7 @@ class GeometryControl extends React.Component {
                             max={1}
                             step={0.01}
                             value={state.opacity}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

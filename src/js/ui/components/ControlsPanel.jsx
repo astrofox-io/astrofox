@@ -22,12 +22,12 @@ class ControlsPanel extends React.Component {
     updateControls(callback) {
         let controls = [];
 
-        Application.stage.scenes.nodes.reverse().forEach(function(scene) {
+        Application.stage.scenes.nodes.reverse().forEach(scene => {
             controls.push(scene);
-            scene.effects.nodes.reverse().forEach(function(effect) {
+            scene.effects.nodes.reverse().forEach(effect => {
                 controls.push(effect);
             }, this);
-            scene.displays.nodes.reverse().forEach(function(display) {
+            scene.displays.nodes.reverse().forEach(display => {
                 controls.push(display);
             }, this);
         }, this);
@@ -54,7 +54,7 @@ class ControlsPanel extends React.Component {
     }
 
     render() {
-        let controls = this.state.controls.map(function(display) {
+        let controls = this.state.controls.map(display => {
             let id = display.toString(),
                 Control = getControlComponent(display) || 'div';
 

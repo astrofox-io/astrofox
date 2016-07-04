@@ -14,7 +14,7 @@ class Footer extends React.Component {
     }
 
     componentDidMount() {
-        Application.on('tick', function(stats) {
+        Application.on('tick', stats => {
             this.setState({ fps: stats.fps });
         }, this);
     }

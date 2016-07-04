@@ -3,7 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const Overlay = function(props) {
+const Overlay = (props) => {
     return (
         <div className={classNames({ 'overlay': true, 'overlay-active': props.visible })}>
             <div className="background" />

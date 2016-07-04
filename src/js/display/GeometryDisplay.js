@@ -84,11 +84,12 @@ class GeometryDisplay extends Display {
 
         this.group = new THREE.Object3D();
 
-        img.onload = function() {
+        img.onload = () => {
             this.sprite = new THREE.Texture(img);
             this.sprite.transparent = true;
             this.sprite.needsUpdate = true;
-        }.bind(this);
+        };
+        
         img.src = POINT_SPRITE;
 
         this.createMesh();

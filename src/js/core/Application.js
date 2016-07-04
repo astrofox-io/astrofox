@@ -89,35 +89,35 @@ class Application extends EventEmitter {
         this.emit('audio_file_loading');
 
         this.getAudioData(file)
-            .then(function(data) {
+            .then(data => {
                 return this.loadAudioData(data);
-            }.bind(this))
-            .catch(function(error) {
+            })
+            .catch(error => {
                 this.emit('error', error);
-            }.bind(this))
-            .then(function() {
+            })
+            .then(() => {
                 this.emit('audio_file_loaded');
-            }.bind(this));
+            });
     }
 
     getAudioData(file) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             let reader = new FileReader(),
                 player = this.player,
                 timer = this.timer;
 
             player.stop('audio');
 
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 // DEBUG
                 console.log('file loaded', timer.get('file_load'));
 
                 resolve(e.target.result);
             };
 
-            reader.onerror = function() {
+            reader.onerror = () => {
                 reject(file.error);
-            }.bind(this);
+            };
 
             timer.set('file_load');
 
@@ -127,21 +127,21 @@ class Application extends EventEmitter {
             }
 
             reader.readAsArrayBuffer(file);
-        }.bind(this));
+        });
     }
 
     loadAudioData(data) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             let player = this.player,
                 spectrum = this.spectrum,
                 timer = this.timer,
                 sound = new BufferedSound(this.audioContext);
 
-            sound.on('load', function() {
+            sound.on('load', () => {
                 // DEBUG
                 console.log('sound loaded', timer.get('sound_load'));
 
-                player.load('audio', sound, function() {
+                player.load('audio', sound, () => {
                     sound.addNode(spectrum.analyzer);
                 });
 
@@ -150,13 +150,13 @@ class Application extends EventEmitter {
                 resolve();
             }, this);
 
-            sound.on('error', function(error) {
+            sound.on('error', (error) => {
                 reject(error);
             });
 
             timer.set('sound_load');
             sound.load(data);
-        }.bind(this));
+        });
     }
 
     startRender() {
@@ -224,18 +224,18 @@ class Application extends EventEmitter {
         let stage = this.stage,
             data = this.getFrameData();
 
-        stage.renderFrame(data, function(){
-            stage.getImage(function(buffer) {
-                IO.fs.writeFile(filename, buffer, function(err) {
+        stage.renderFrame(data, () => {
+            stage.getImage(buffer => {
+                IO.fs.writeFile(filename, buffer, err => {
                     if (err) {
                         this.emit('error', new Error(err));
                     }
 
                     // DEBUG
                     console.log(filename + ' saved.');
-                }.bind(this));
-            }.bind(this));
-        }.bind(this));
+                });
+            });
+        });
     }
 
     saveVideo(filename) {
@@ -277,12 +277,12 @@ class Application extends EventEmitter {
         source.buffer = sound.buffer;
         source.connect(spectrum.analyzer);
 
-        source.onended = function() {
+        source.onended = () => {
             data = this.getFrameData();
             data.delta = 1000 / fps;
 
-            stage.renderFrame(data, function() {
-                stage.getImage(function(buffer) {
+            stage.renderFrame(data, () => {
+                stage.getImage(buffer => {
                     image = buffer;
                 });
             });
@@ -290,7 +290,7 @@ class Application extends EventEmitter {
             source.disconnect();
 
             callback(frame + 1, image);
-        }.bind(this);
+        };
 
         source.start(0, frame / fps, 1 / fps);
     }
@@ -299,7 +299,7 @@ class Application extends EventEmitter {
         let data, sceneData,
             options = this.options;
 
-        sceneData = this.stage.getScenes().map(function(scene) {
+        sceneData = this.stage.getScenes().map(scene => {
             return scene.toJSON();
         });
 
@@ -311,9 +311,9 @@ class Application extends EventEmitter {
         if (options.useCompression) {
             IO.zlib.deflate(
                 JSON.stringify(data),
-                function(err, buf) {
+                (err, buf) => {
                     IO.fs.writeFileSync(filename, new IO.Buffer(buf));
-                }.bind(this)
+                }
             );
         }
         else {
@@ -330,14 +330,14 @@ class Application extends EventEmitter {
         let data = IO.fs.readFileSync(filename);
 
         if (options.useCompression) {
-            IO.zlib.inflate(data, function(err, buf) {
+            IO.zlib.inflate(data, (err, buf) => {
                 try {
                     this.loadControls(JSON.parse(buf.toString()));
                 }
                 catch (err) {
                     this.raiseError('Invalid project data.', err);
                 }
-            }.bind(this));
+            });
         }
         else {
             try {
@@ -355,12 +355,12 @@ class Application extends EventEmitter {
         if (typeof data === 'object') {
             this.stage.clearScenes();
 
-            data.scenes.forEach(function(item) {
+            data.scenes.forEach(item => {
                 let scene = new Scene(item.name, item.options);
                 this.stage.addScene(scene);
 
                 if (item.displays) {
-                    item.displays.forEach(function(display) {
+                    item.displays.forEach(display => {
                         component = DisplayLibrary[display.name];
                         if (component) {
                             scene.addElement(new component(display.options));
@@ -372,7 +372,7 @@ class Application extends EventEmitter {
                 }
 
                 if (item.effects) {
-                    item.effects.forEach(function(effect) {
+                    item.effects.forEach(effect => {
                         component = EffectsLibrary[effect.name];
                         if (component) {
                             scene.addElement(new component(effect.options));
@@ -382,7 +382,7 @@ class Application extends EventEmitter {
                         }
                     }, this);
                 }
-            }.bind(this));
+            });
 
             this.emit('control_added');
         }

@@ -17,37 +17,37 @@ class ControlDock extends React.Component {
     }
     
     componentDidMount() {
-        Application.on('control_added', function(obj) {
+        Application.on('control_added', obj => {
             let layers = this.refs.layers,
                 controls = this.refs.controls;
 
-            layers.updateLayers(function() {
+            layers.updateLayers(() => {
                 layers.setActiveLayer(obj);
             });
 
             controls.updateControls();
-        }.bind(this));
+        });
     }
 
-    handleLayerSelected(layer) {
+    onLayerSelected(layer) {
         this.refs.controls.focusControl(layer);
     }
 
-    handleLayerChanged(layer) {
+    onLayerChanged(layer) {
         if (layer) {
             this.refs.controls.updateControl(layer);
         }
     }
 
-    handleLayerAdded() {
+    onLayerAdded() {
         this.refs.controls.updateControls();
     }
 
-    handleLayerRemoved() {
+    onLayerRemoved() {
         this.refs.controls.updateControls();
     }
 
-    handleLayerMoved() {
+    onLayerMoved() {
         this.refs.controls.updateControls();
     }
 
@@ -68,11 +68,11 @@ class ControlDock extends React.Component {
                     resizable={true}>
                     <LayersPanel
                         ref="layers"
-                        onLayerSelected={this.handleLayerSelected}
-                        onLayerChanged={this.handleLayerChanged}
-                        onLayerAdded={this.handleLayerAdded}
-                        onLayerRemoved={this.handleLayerRemoved}
-                        onLayerMoved={this.handleLayerMoved}
+                        onLayerSelected={this.onLayerSelected}
+                        onLayerChanged={this.onLayerChanged}
+                        onLayerAdded={this.onLayerAdded}
+                        onLayerRemoved={this.onLayerRemoved}
+                        onLayerMoved={this.onLayerMoved}
                     />
                 </Panel>
                 <Panel

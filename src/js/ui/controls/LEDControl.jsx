@@ -43,7 +43,7 @@ class LEDControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -51,7 +51,7 @@ class LEDControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -68,14 +68,14 @@ class LEDControl extends React.Component {
                         value={this.state.spacing}
                         min={1}
                         max={100}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="spacing"
                             min={1}
                             max={100}
                             value={this.state.spacing}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -86,14 +86,14 @@ class LEDControl extends React.Component {
                         value={this.state.size}
                         min={0}
                         max={100}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="size"
                             min={0}
                             max={100}
                             value={this.state.size}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -104,14 +104,14 @@ class LEDControl extends React.Component {
                         value={this.state.blur}
                         min={0}
                         max={100}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="blur"
                             min={0}
                             max={100}
                             value={this.state.blur}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

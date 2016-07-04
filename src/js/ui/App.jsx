@@ -50,7 +50,7 @@ class App extends React.Component {
 
         // Events
         Application.on('error', (err) => {
-            this.handleError(err);
+            this.onError(err);
         }, this);
 
         Application.on('pick_control', (props) => {
@@ -77,7 +77,7 @@ class App extends React.Component {
         }, this);
 
         Application.on('menu_action', (action, checked) => {
-            this.handleMenuAction(action, checked);
+            this.onMenuAction(action, checked);
         }, this);
     }
 
@@ -85,30 +85,30 @@ class App extends React.Component {
         Application.init();
     }
 
-    handleClick() {
+    onClick() {
         this.refs.menubar.setActiveIndex(-1);
     }
 
-    handleDragDrop(e) {
+    onDragDrop(e) {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    handleMouseDown(e) {
+    onMouseDown(e) {
         Application.emit('mousedown', e);
     }
 
-    handleMouseUp(e) {
+    onMouseUp(e) {
         Application.emit('mouseup', e);
     }
 
-    handleMenuAction(action, checked) {
+    onMenuAction(action, checked) {
         switch (action) {
             case 'File/New Project':
                 break;
 
             case 'File/Open Project':
-                Window.showOpenDialog(function(files) {
+                Window.showOpenDialog(files => {
                     if (files) {
                         Application.loadProject(files[0]);
                     }
@@ -118,7 +118,7 @@ class App extends React.Component {
             case 'File/Save Project':
                 Window.showSaveDialog(
                     'project.afx',
-                    function(filename) {
+                    filename => {
                         if (filename) {
                             Application.saveProject(filename);
                         }
@@ -127,7 +127,7 @@ class App extends React.Component {
                 break;
 
             case 'File/Load Audio':
-                Window.showOpenDialog(function(files) {
+                Window.showOpenDialog(files => {
                     if (files) {
                         Application.loadAudioFile(files[0]);
                     }
@@ -137,7 +137,7 @@ class App extends React.Component {
             case 'File/Save Image':
                 Window.showSaveDialog(
                     'image.png',
-                    function(filename) {
+                    filename => {
                         if (filename) {
                             Application.saveImage(filename);
                         }
@@ -148,7 +148,7 @@ class App extends React.Component {
             case 'File/Save Video':
                 Window.showSaveDialog(
                     'video.mp4',
-                    function(filename) {
+                    filename => {
                         if (filename) {
                             Application.saveVideo(filename);
                         }
@@ -171,11 +171,11 @@ class App extends React.Component {
         }
     }
 
-    handleAudioFile(file) {
+    onAudioFile(file) {
         Application.loadAudioFile(file);
     }
 
-    handleError(error) {
+    onError(error) {
         console.error(error);
         this.showModal(
             'ERROR',
@@ -202,19 +202,19 @@ class App extends React.Component {
         return (
             <div
                 id="container"
-                onClick={this.handleClick}
-                onDrop={this.handleDragDrop}
-                onDragOver={this.handleDragDrop}
-                onMouseDown={this.handleMouseDown}
-                onMouseUp={this.handleMouseUp}>
+                onClick={this.onClick}
+                onDrop={this.onDragDrop}
+                onDragOver={this.onDragDrop}
+                onMouseDown={this.onMouseDown}
+                onMouseUp={this.onMouseUp}>
                 <Header />
-                <MenuBar ref="menubar" onMenuAction={this.handleMenuAction} />
+                <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
                 <Body>
                     <Overlay visible={this.state.showModal}>
                         {this.state.modalContent}
                     </Overlay>
                     <MainView>
-                        <Stage ref="stage" onFileDropped={this.handleAudioFile} />
+                        <Stage ref="stage" onFileDropped={this.onAudioFile} />
                         <Spectrum ref="spectrum" />
                         <Oscilloscope ref="osc" />
                         <Waveform ref="waveform" />

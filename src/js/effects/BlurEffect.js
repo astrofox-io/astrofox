@@ -72,7 +72,7 @@ class BlurEffect extends Effect {
                     break;
 
                 case 'Gaussian':
-                    this.pass.getPasses().forEach(function(pass, i) {
+                    this.pass.getPasses().forEach((pass, i) => {
                         if (i < GAUSSIAN_ITERATIONS) {
                             this.updateGaussianPass(pass, i);
                         }

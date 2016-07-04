@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const MainView = function(props) {
+const MainView = (props) => {
     return (
         <div className="view">
             {props.children}

@@ -57,7 +57,7 @@ class TextControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -65,14 +65,14 @@ class TextControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
             display.render();
         });
     }
 
     getSelectItems() {
-        return fontOptions.map(function(item) {
+        return fontOptions.map(item => {
             return { name: item, value: item, style: { fontFamily: item } };
         });
     }
@@ -90,7 +90,7 @@ class TextControl extends React.Component {
                         name="text"
                         size="20"
                         value={this.state.text}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Font</label>
@@ -99,7 +99,7 @@ class TextControl extends React.Component {
                         size="20"
                         items={this.getSelectItems()}
                         value={this.state.font}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Size</label>
@@ -108,26 +108,26 @@ class TextControl extends React.Component {
                         size="3"
                         min={0}
                         value={this.state.size}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Bold</label>
                     <ToggleInput
                         name="bold"
                         value={this.state.bold}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <label className="label">Italic</label>
                     <ToggleInput
                         name="italic"
                         value={this.state.italic}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Color</label>
                     <ColorInput
                         name="color"
                         value={this.state.color}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">X</label>
@@ -137,14 +137,14 @@ class TextControl extends React.Component {
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -155,14 +155,14 @@ class TextControl extends React.Component {
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -173,14 +173,14 @@ class TextControl extends React.Component {
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="rotation"
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -192,7 +192,7 @@ class TextControl extends React.Component {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -200,7 +200,7 @@ class TextControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

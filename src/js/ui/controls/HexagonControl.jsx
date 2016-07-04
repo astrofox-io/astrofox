@@ -41,7 +41,7 @@ class HexagonControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -49,7 +49,7 @@ class HexagonControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -66,14 +66,14 @@ class HexagonControl extends React.Component {
                         value={this.state.scale}
                         min={1}
                         max={200}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="scale"
                             min={1}
                             max={200}
                             value={this.state.scale}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

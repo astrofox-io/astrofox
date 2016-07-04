@@ -10,12 +10,12 @@ class NodeCollection extends EventEmitter {
         this.nodes = new Immutable.List();
     
         if (values) {
-            this.nodes = this.nodes.withMutations(function(list) {
-                values.forEach(function(val) {
+            this.nodes = this.nodes.withMutations(list => {
+                values.forEach(val => {
                     list.push(val);
                     this.emit('node_added', val);
                 }, this);
-            }.bind(this));
+            });
         }
     }
 
@@ -47,7 +47,7 @@ class NodeCollection extends EventEmitter {
             changed = false;
 
         if (index !== newIndex && index > -1 && index < size && newIndex > -1 && newIndex < size) {
-            this.nodes = nodes.withMutations(function(list) {
+            this.nodes = nodes.withMutations(list => {
                 let tmp = list.get(index);
                 list.set(index, list.get(newIndex));
                 list.set(newIndex, tmp);

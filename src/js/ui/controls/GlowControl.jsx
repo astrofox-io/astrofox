@@ -44,7 +44,7 @@ class GlowControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -52,7 +52,7 @@ class GlowControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -70,7 +70,7 @@ class GlowControl extends React.Component {
                         min={0}
                         step={0.01}
                         max={1}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
@@ -78,7 +78,7 @@ class GlowControl extends React.Component {
                             step={0.01}
                             max={1}
                             value={this.state.amount}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -90,7 +90,7 @@ class GlowControl extends React.Component {
                         min={1}
                         step={0.01}
                         max={3}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="intensity"
@@ -98,7 +98,7 @@ class GlowControl extends React.Component {
                             step={0.01}
                             max={3}
                             value={this.state.intensity}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

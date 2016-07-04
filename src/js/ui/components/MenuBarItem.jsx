@@ -11,21 +11,21 @@ class MenuBarItem extends React.Component {
         autoBind(this);
     }
 
-    handleClick(e) {
+    onClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onClick();
     }
 
-    handleMouseOver(e) {
+    onMouseOver(e) {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onMouseOver();
     }
 
-    handleMenuItemClick(item) {
+    onMenuItemClick(item) {
         let action = this.props.label + '/' + item.label;
         
         this.props.onMenuItemClick(action, item.checked);
@@ -36,14 +36,14 @@ class MenuBarItem extends React.Component {
             <li className="menubar-item">
                 <div
                     className={classNames({ 'menubar-text': true, 'menubar-text-active': this.props.active })}
-                    onClick={this.handleClick}
-                    onMouseOver={this.handleMouseOver}>
+                    onClick={this.onClick}
+                    onMouseOver={this.onMouseOver}>
                     {this.props.label}
                 </div>
                 <Menu
                     items={this.props.items}
                     visible={this.props.active}
-                    onMenuItemClick={this.handleMenuItemClick}
+                    onMenuItemClick={this.onMenuItemClick}
                 />
             </li>
         );

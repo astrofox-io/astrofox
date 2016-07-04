@@ -2,7 +2,7 @@ var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 var precision;
 var i;
 
-module.exports = function(bytes, n) {
+module.exports = (bytes, n) => {
     if (bytes === 0) return 'N/A';
     n = n !== undefined ? n : 0;
     precision = Math.pow(10, n);

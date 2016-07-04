@@ -61,7 +61,7 @@ class BarSpectrumControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -75,7 +75,7 @@ class BarSpectrumControl extends React.Component {
         obj[name] = val;
 
         this.shouldUpdate = true;
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -99,7 +99,7 @@ class BarSpectrumControl extends React.Component {
                         min={-40}
                         max={0}
                         step={1}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="maxDecibels"
@@ -107,7 +107,7 @@ class BarSpectrumControl extends React.Component {
                             max={0}
                             step={1}
                             value={this.state.maxDecibels}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -120,7 +120,7 @@ class BarSpectrumControl extends React.Component {
                         min={0}
                         max={maxFrequency}
                         step={20}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -129,7 +129,7 @@ class BarSpectrumControl extends React.Component {
                             max={maxFrequency}
                             step={20}
                             value={this.state.maxFrequency}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -142,7 +142,7 @@ class BarSpectrumControl extends React.Component {
                         min={0}
                         max={0.99}
                         step={0.01}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -151,7 +151,7 @@ class BarSpectrumControl extends React.Component {
                             max={0.99}
                             step={0.01}
                             value={this.state.smoothingTimeConstant}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -163,7 +163,7 @@ class BarSpectrumControl extends React.Component {
                         value={this.state.width}
                         min={0}
                         max={maxWidth}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -171,7 +171,7 @@ class BarSpectrumControl extends React.Component {
                             min={0}
                             max={maxWidth}
                             value={this.state.width}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -183,7 +183,7 @@ class BarSpectrumControl extends React.Component {
                         min={0}
                         max={maxWidth}
                         value={this.state.height}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -191,7 +191,7 @@ class BarSpectrumControl extends React.Component {
                             min={0}
                             max={maxWidth}
                             value={this.state.height}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -203,7 +203,7 @@ class BarSpectrumControl extends React.Component {
                         min={0}
                         max={maxWidth}
                         value={this.state.shadowHeight}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -211,7 +211,7 @@ class BarSpectrumControl extends React.Component {
                             min={0}
                             max={maxWidth}
                             value={this.state.shadowHeight}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -225,13 +225,13 @@ class BarSpectrumControl extends React.Component {
                         value={this.state.barWidth}
                         readOnly={this.state.barWidthAutoSize}
                         hidden={this.state.barWidthAutoSize}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <label className="label">Auto-Size</label>
                     <ToggleInput
                         name="barWidthAutoSize"
                         value={this.state.barWidthAutoSize}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className="row">
@@ -244,12 +244,12 @@ class BarSpectrumControl extends React.Component {
                         value={this.state.barSpacing}
                         readOnly={this.state.barSpacingAutoSize}
                         hidden={this.state.barSpacingAutoSize}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <label className="label">Auto-Size</label>
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={this.state.barSpacingAutoSize}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className="row">
@@ -258,7 +258,7 @@ class BarSpectrumControl extends React.Component {
                         name="color"
                         startColor={this.state.color[0]}
                         endColor={this.state.color[1]}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className="row">
@@ -267,7 +267,7 @@ class BarSpectrumControl extends React.Component {
                         name="shadowColor"
                         startColor={this.state.shadowColor[0]}
                         endColor={this.state.shadowColor[1]}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className="row">
@@ -278,7 +278,7 @@ class BarSpectrumControl extends React.Component {
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -286,7 +286,7 @@ class BarSpectrumControl extends React.Component {
                             min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -298,7 +298,7 @@ class BarSpectrumControl extends React.Component {
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -306,7 +306,7 @@ class BarSpectrumControl extends React.Component {
                             min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -318,7 +318,7 @@ class BarSpectrumControl extends React.Component {
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
@@ -326,7 +326,7 @@ class BarSpectrumControl extends React.Component {
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.handleChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 </div>
@@ -339,7 +339,7 @@ class BarSpectrumControl extends React.Component {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -347,7 +347,7 @@ class BarSpectrumControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

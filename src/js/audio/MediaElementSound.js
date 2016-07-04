@@ -12,20 +12,20 @@ class MediaElementSound extends Sound {
         this.source = this.audioContext.createMediaElementSource(this.audio);
         this.loaded = true;
 
-        this.audio.addEventListener('playing', function() {
+        this.audio.addEventListener('playing', () => {
             this.playing = true;
             this.paused = false;
-        }.bind(this));
+        });
 
-        this.audio.addEventListener('pause', function() {
+        this.audio.addEventListener('pause', () => {
             this.playing = false;
             this.paused = true;
-        }.bind(this));
+        });
 
-        this.audio.addEventListener('ended', function() {
+        this.audio.addEventListener('ended', () => {
             this.playing = false;
             this.paused = false;
-        }.bind(this));
+        });
 
         this.emit('load');
     }

@@ -3,7 +3,7 @@
 const React = require('react');
 const MenuPanel = require('./MenuPanel.jsx');
 
-const Settings = function(props) {
+const Settings = (props) => {
     return (
         <div className="settings">
             <MenuPanel tabs={['one','two','three']}>

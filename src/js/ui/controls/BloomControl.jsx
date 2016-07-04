@@ -49,7 +49,7 @@ class BloomControl extends React.Component {
         return this.shouldUpdate;
     }
 
-    handleChange(name, val) {
+    onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
@@ -57,7 +57,7 @@ class BloomControl extends React.Component {
 
         this.shouldUpdate = true;
 
-        this.setState(obj, function() {
+        this.setState(obj, () => {
             display.update(obj);
         });
     }
@@ -73,7 +73,7 @@ class BloomControl extends React.Component {
                         size="20"
                         items={blendModes}
                         value={this.state.blendMode}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                 </div>
                 <div className="row">
                     <label className="label">Amount</label>
@@ -84,7 +84,7 @@ class BloomControl extends React.Component {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
@@ -92,7 +92,7 @@ class BloomControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.amount}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
@@ -104,7 +104,7 @@ class BloomControl extends React.Component {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.handleChange} />
+                        onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
                             name="threshold"
@@ -112,7 +112,7 @@ class BloomControl extends React.Component {
                             max={1.0}
                             step={0.01}
                             value={this.state.threshold}
-                            onChange={this.handleChange} />
+                            onChange={this.onChange} />
                     </div>
                 </div>
             </div>

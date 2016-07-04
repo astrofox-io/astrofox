@@ -75,7 +75,7 @@ class Waveform extends React.Component {
             }
         );
 
-        player.on('load', function() {
+        player.on('load', () => {
             let options = { bars: this.config.bars },
                 buffer = Application.player.getSound('audio').buffer,
                 data = WaveformParser.parseBuffer(buffer, options);
@@ -83,20 +83,20 @@ class Waveform extends React.Component {
             this.draw(data);
         }, this);
 
-        player.on('tick', function(){
+        player.on('tick', () => {
             this.forceUpdate();
         }, this);
 
-        player.on('stop', function(){
+        player.on('stop', () => {
             this.forceUpdate();
         }, this);
 
-        player.on('seek', function(){
+        player.on('seek', () => {
             this.forceUpdate();
         }, this);
     }
 
-    handleClick(e) {
+    onClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -108,7 +108,7 @@ class Waveform extends React.Component {
         this.setState({ progress: val });
     }
 
-    handleMouseMove(e) {
+    onMouseMove(e) {
         if (!Application.player.getSound('audio')) return;
 
         e.stopPropagation();
@@ -118,7 +118,7 @@ class Waveform extends React.Component {
         this.setState({ seek: val });
     }
 
-    handleMouseOut(e) {
+    onMouseOut(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -162,9 +162,9 @@ class Waveform extends React.Component {
         return (
             <div className="waveform">
                 <div className="container"
-                    onClick={this.handleClick}
-                    onMouseMove={this.handleMouseMove}
-                    onMouseOut={this.handleMouseOut}>
+                    onClick={this.onClick}
+                    onMouseMove={this.onMouseMove}
+                    onMouseOut={this.onMouseOut}>
                     <div className="canvas base">
                         <canvas ref="canvas" width="854" height="100" />
                     </div>

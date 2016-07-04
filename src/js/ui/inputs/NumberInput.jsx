@@ -20,11 +20,11 @@ class NumberInput extends React.Component {
         }
     }
 
-    handleChange(e) {
+    onChange(e) {
         this.setState({ value: e.target.value });
     }
 
-    handleValueChange(e) {
+    onValueChange(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -49,9 +49,9 @@ class NumberInput extends React.Component {
                     val = max;
                 }
 
-                this.setState({ value: val }, function() {
+                this.setState({ value: val }, () => {
                     this.props.onChange(this.props.name, Number(val));
-                }.bind(this));
+                });
             }
             // Reset to old value
             else {
@@ -60,12 +60,12 @@ class NumberInput extends React.Component {
         }
     }
 
-    handleKeyUp(e) {
+    onKeyUp(e) {
         e.stopPropagation();
         e.preventDefault();
 
         if (e.keyCode === 13) {
-            this.handleValueChange(e);
+            this.onValueChange(e);
         }
     }
 
@@ -88,9 +88,9 @@ class NumberInput extends React.Component {
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}
-                    onChange={this.handleChange}
-                    onBlur={this.handleValueChange}
-                    onKeyUp={this.handleKeyUp}
+                    onChange={this.onChange}
+                    onBlur={this.onValueChange}
+                    onKeyUp={this.onKeyUp}
                     readOnly={this.props.readOnly}
                 />
             </div>

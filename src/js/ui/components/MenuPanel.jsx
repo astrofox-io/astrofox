@@ -12,17 +12,17 @@ class MenuPanel extends React.Component {
         };
     }
 
-    handleTabClick(index) {
+    onTabClick(index) {
         this.setState({ activeIndex: index });
     }
 
     render() {
-        let tabs = this.props.tabs.map(function(tab, index) {
+        let tabs = this.props.tabs.map((tab, index) => {
             return (
                 <div
                     key={index}
                     className={classNames({ 'tab': true, 'tab-active': this.state.activeIndex == index })}
-                    onClick={this.handleTabClick.bind(this, index)}>{tab}
+                    onClick={this.onTabClick.bind(this, index)}>{tab}
                 </div>
             );
         }, this);

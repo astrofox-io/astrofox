@@ -3,7 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const ToggleInput = function(props) {
+const ToggleInput = (props) => {
     let classes = {
         'input': true,
         'input-toggle': true,

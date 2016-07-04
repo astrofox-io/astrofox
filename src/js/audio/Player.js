@@ -33,7 +33,7 @@ class Player extends EventEmitter {
     }
 
     load(id, sound, callback) {
-        this.unload(id, function() {
+        this.unload(id, () => {
             this.sounds[id] = sound;
 
             sound.addNode(this.volume);
@@ -41,7 +41,7 @@ class Player extends EventEmitter {
             if (callback) callback();
 
             this.emit('load', id);
-        }.bind(this));
+        });
     }
 
     unload(id, callback) {
@@ -65,7 +65,7 @@ class Player extends EventEmitter {
                 sound.play();
 
                 this.timer = setInterval(
-                    function() {
+                    () => {
                         if (!sound.repeat && sound.getPosition(id) >= 1.0) {
                             if (this.options.loop) {
                                 this.seek(id, 0);
@@ -76,7 +76,7 @@ class Player extends EventEmitter {
                         }
 
                         this.emit('tick', id);
-                    }.bind(this),
+                    },
                     this.options.updateInterval
                 );
 

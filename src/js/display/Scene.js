@@ -154,13 +154,13 @@ class Scene extends Display {
         composer.addPass(Global.frameBuffers['2D'].pass);
         composer.addPass(Global.frameBuffers['3D'].pass);
 
-        this.displays.nodes.forEach(function(display) {
+        this.displays.nodes.forEach(display => {
             if (display.pass) {
                 composer.addPass(display.pass);
             }
         });
 
-        this.effects.nodes.forEach(function(effect) {
+        this.effects.nodes.forEach(effect => {
             if (effect.pass) {
                 composer.addPass(effect.pass);
             }
@@ -195,7 +195,7 @@ class Scene extends Display {
         composer.clearBuffer(true, true, true);
 
         if (displays.size > 0 || effects.size > 0) {
-            displays.forEach(function(display) {
+            displays.forEach(display => {
                 if (display.options.enabled) {
                     if (display.renderToCanvas) {
                         display.renderToCanvas(buffer2D.context, data);
@@ -211,7 +211,7 @@ class Scene extends Display {
                 buffer3D.renderer.render(this.graph, this.camera);
             }
 
-            effects.forEach(function(effect) {
+            effects.forEach(effect => {
                 if (effect.options.enabled) {
                     if (effect.renderToCanvas) {
                         effect.renderToCanvas(buffer2D.context, data);
@@ -233,11 +233,11 @@ class Scene extends Display {
     }
 
     toJSON() {
-        let displays = this.displays.nodes.map(function(display) {
+        let displays = this.displays.nodes.map(display => {
             return display.toJSON();
         });
 
-        let effects = this.effects.nodes.map(function(effect) {
+        let effects = this.effects.nodes.map(effect => {
             return effect.toJSON();
         });
 

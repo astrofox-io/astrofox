@@ -5,7 +5,7 @@ const defaults = {
     canvasHeight: 480
 };
 
-module.exports = function(state, action) {
+module.exports = (state, action) => {
     if (!state) state = defaults;
 
     console.log(state, action);

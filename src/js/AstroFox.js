@@ -13,10 +13,8 @@ const store = Redux.createStore(AppState);
 const AstroFox = {
     version: '0.1',
 
-    start: function() {
+    start: () => {
         console.log(process.versions);
-
-        Window.init();
 
         ReactDOM.render(
             <Provider store={store}>

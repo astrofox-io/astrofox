@@ -4,9 +4,9 @@ const _ = require('lodash');
 const React = require('react');
 const Application = require('../../core/Application.js');
 
-const ControlPicker = function(props) {
-    let controls = _.values(props.items).map(function(item, index){
-        let handleClick = function() {
+const ControlPicker = (props) => {
+    let controls = _.values(props.items).map((item, index) => {
+        let onClick = () => {
             let obj = new item();
 
             props.scene.addElement(obj);
@@ -16,11 +16,11 @@ const ControlPicker = function(props) {
 
         return (
             <div key={index} className="item">
-                <div className="image" onClick={handleClick}></div>
+                <div className="image" onClick={onClick}></div>
                 <div className="name">{item.info.name}</div>
             </div>
         );
-    }.bind(this));
+    });
 
     return (
         <div className="control-picker">

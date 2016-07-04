@@ -3,8 +3,8 @@
 const React = require('react');
 const fontOptions = require('../../../conf/fonts.json');
 
-const Fonts = function(props) {
-    let fonts = fontOptions.map(function(item, index) {
+const Fonts = (props) => {
+    let fonts = fontOptions.map((item, index) => {
         return <div key={index} style={{fontFamily: item}}>{item}</div>;
     });
 
