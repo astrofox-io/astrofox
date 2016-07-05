@@ -44,7 +44,7 @@ function build(bundle, src, dest, watch, min) {
 
     let b = (watch) ?
         watchify(bundle)
-            .on('update', function(ids) {
+            .on('update', ids => {
                 util.log(ids);
                 build(bundle, src, dest, false, min);
             }) :
@@ -53,7 +53,7 @@ function build(bundle, src, dest, watch, min) {
     let minify = (min) ? uglify : util.noop;
 
     return b.bundle()
-        .on('error', function(err){
+        .on('error', err => {
             util.log(util.colors.red(err.message));
         })
         .pipe(plumber())
@@ -84,7 +84,7 @@ gulp.task('build-vendor', function() {
         NODE_ENV: process.env.NODE_ENV || 'development'
     }), { global:true });
 
-    getNPMPackageIds().forEach(function(id) {
+    getNPMPackageIds().forEach(id => {
         vendorBundle.require(resolve.sync(id), { expose: id });
     });
 
@@ -92,17 +92,27 @@ gulp.task('build-vendor', function() {
 });
 
 // Builds application only library
-gulp.task('build-app', function() {
-    getNPMPackageIds().forEach(function(id) {
+gulp.task('build-app', () => {
+    appBundle.transform(envify({
+        _: 'purge',
+        NODE_ENV: process.env.NODE_ENV
+    }), { global:true });
+
+    getNPMPackageIds().forEach(id => {
         appBundle.external(id);
     });
 
-    return build(appBundle, 'app.js', 'build', false, true);
+    return build(appBundle, 'app.js', 'build', false, (process.env.NODE_ENV === 'production'));
 });
 
 // Builds application and watches for changes
-gulp.task('build-watch', function() {
-    getNPMPackageIds().forEach(function(id) {
+gulp.task('build-app-watch', () => {
+    appBundle.transform(envify({
+        _: 'purge',
+        NODE_ENV: process.env.NODE_ENV
+    }), { global:true });
+
+    getNPMPackageIds().forEach(id => {
         appBundle.external(id);
     });
 
@@ -110,7 +120,7 @@ gulp.task('build-watch', function() {
 });
 
 // Compile LESS into CSS
-gulp.task('build-css', function() {
+gulp.task('build-css', () => {
     return gulp.src('./src/css/app.less')
         .pipe(less())
         .pipe(cleancss())
@@ -118,7 +128,7 @@ gulp.task('build-css', function() {
 });
 
 // Build font library and CSS file
-gulp.task('build-icons', function(){
+gulp.task('build-icons', () => {
     gulp.src(['./src/svg/icons/*.svg'])
         .pipe(iconfont({
             fontName: 'icons',
@@ -126,8 +136,8 @@ gulp.task('build-icons', function(){
             appendUnicode: false,
             normalize: true
         }))
-        .on('glyphs', function(glyphs, options) {
-            let icons = glyphs.map(function(glyph) {
+        .on('glyphs', (glyphs, options) => {
+            let icons = glyphs.map(glyph => {
                 return {
                     name: glyph.name,
                     code: glyph.unicode[0].charCodeAt(0).toString(16).toUpperCase()
@@ -146,10 +156,20 @@ gulp.task('build-icons', function(){
         .pipe(gulp.dest('./resources/fonts/icons/'));
 });
 
-gulp.task('dev', ['build-watch', 'build-css'], function() {
+gulp.task('set-dev', () => {
+    process.env.NODE_ENV = 'development';
+});
+
+gulp.task('set-prod', () => {
+    process.env.NODE_ENV = 'production';
+});
+
+gulp.task('build-dev', ['set-dev', 'build-vendor', 'build-app', 'build-css', 'build-icons']);
+
+gulp.task('build-prod', ['set-prod', 'build-vendor', 'build-app', 'build-css', 'build-icons']);
+
+gulp.task('watch-dev', ['set-dev', 'build-app-watch', 'build-css'], () => {
     gulp.watch('./src/css/**/*.*', ['build-css']);
 });
 
-gulp.task('production', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
-
-gulp.task('default', ['dev']);
+gulp.task('default', ['development']);

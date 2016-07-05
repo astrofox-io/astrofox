@@ -6,7 +6,7 @@ const remote = window.require('electron').remote;
 const Window = require('../Window.js');
 const IO = require('../IO.js');
 const EventEmitter = require('../core/EventEmitter.js');
-const Timer = require('../core/Timer.js');
+const Logger = require('../core/Logger.js');
 const Player = require('../audio/Player.js');
 const BufferedSound = require('../audio/BufferedSound.js');
 const SpectrumAnalyzer = require('../audio/SpectrumAnalyzer.js');
@@ -39,7 +39,6 @@ class Application extends EventEmitter {
     
         this.player = new Player(this.audioContext);
         this.stage = new Stage();
-        this.timer = new Timer();
         this.options = Object.assign({}, defaults);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
     
@@ -103,14 +102,14 @@ class Application extends EventEmitter {
     getAudioData(file) {
         return new Promise((resolve, reject) => {
             let reader = new FileReader(),
-                player = this.player,
-                timer = this.timer;
+                player = this.player;
 
             player.stop('audio');
 
+            Logger.timeStart('audio_load');
+
             reader.onload = (e) => {
-                // DEBUG
-                console.log('file loaded', timer.get('file_load'));
+                Logger.timeEnd('audio_load', 'Audio file loaded.');
 
                 resolve(e.target.result);
             };
@@ -118,8 +117,6 @@ class Application extends EventEmitter {
             reader.onerror = () => {
                 reject(file.error);
             };
-
-            timer.set('file_load');
 
             if (typeof file === 'string') {
                 this.audioFile = file;
@@ -134,12 +131,12 @@ class Application extends EventEmitter {
         return new Promise((resolve, reject) => {
             let player = this.player,
                 spectrum = this.spectrum,
-                timer = this.timer,
                 sound = new BufferedSound(this.audioContext);
 
+            Logger.timeStart('audio_data_load');
+
             sound.on('load', () => {
-                // DEBUG
-                console.log('sound loaded', timer.get('sound_load'));
+                Logger.timeEnd('audio_data_load', 'Audio data loaded.');
 
                 player.load('audio', sound, () => {
                     sound.addNode(spectrum.analyzer);
@@ -154,7 +151,6 @@ class Application extends EventEmitter {
                 reject(error);
             });
 
-            timer.set('sound_load');
             sound.load(data);
         });
     }
@@ -231,8 +227,7 @@ class Application extends EventEmitter {
                         this.emit('error', new Error(err));
                     }
 
-                    // DEBUG
-                    console.log(filename + ' saved.');
+                    Logger.log(filename + ' saved.');
                 });
             });
         });
@@ -262,8 +257,7 @@ class Application extends EventEmitter {
             this.emit('error', new Error('No audio loaded.'));
         }
 
-        // DEBUG
-        console.log(filename + ' saved');
+        Logger.log(filename + ' saved');
     }
 
     renderFrame(frame, fps, callback) {
@@ -320,8 +314,7 @@ class Application extends EventEmitter {
             IO.fs.writeFile(filename, JSON.stringify(data));
         }
 
-        // DEBUG
-        console.log(filename + ' saved.');
+        Logger.log(filename + ' saved.');
     }
 
     loadProject(filename) {
@@ -366,7 +359,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(display.options));
                         }
                         else {
-                            console.warn('Display "' + display.name + '" not found.');
+                            Logger.warn('Display "' + display.name + '" not found.');
                         }
                     }, this);
                 }
@@ -378,7 +371,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(effect.options));
                         }
                         else {
-                            console.warn('Effect "' + effect.name + '" not found.');
+                            Logger.warn('Effect "' + effect.name + '" not found.');
                         }
                     }, this);
                 }
@@ -404,7 +397,7 @@ class Application extends EventEmitter {
     }
 
     raiseError(msg, e) {
-        if (e) console.error(e);
+        if (e) Logger.error(e);
         this.emit('error', new Error(msg));
     }
 }

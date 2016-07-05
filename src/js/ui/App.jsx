@@ -176,7 +176,6 @@ class App extends React.Component {
     }
 
     onError(error) {
-        console.error(error);
         this.showModal(
             'ERROR',
             <div>{error.message}</div>,

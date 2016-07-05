@@ -64,9 +64,10 @@ class Player extends React.Component {
     }
 
     onLoopButtonClick() {
-        Application.player.toggleLoop();
-        this.setState({
-            looping: Application.player.isLooping()
+        let loop = !this.state.looping;
+
+        this.setState({ looping: loop }, () => {
+            Application.player.setLoop(loop);
         });
     }
 

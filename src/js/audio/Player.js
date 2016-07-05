@@ -2,13 +2,10 @@
 
 const EventEmitter = require('../core/EventEmitter.js');
 
-const defaults = {
-    loop: false,
-    updateInterval: 200
-};
+const UPDATE_INTERVAL = 200;
 
 class Player extends EventEmitter {
-    constructor(context, options) {
+    constructor(context) {
         super();
 
         this.audioContext = context;
@@ -17,19 +14,8 @@ class Player extends EventEmitter {
 
         this.volume = this.audioContext.createGain();
         this.volume.connect(this.audioContext.destination);
-        this.options = Object.assign({}, defaults);
 
-        this.update(options);
-    }
-
-    update(options) {
-        if (typeof options !== 'undefined') {
-            for (let prop in options) {
-                if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
-                    this.options[prop] = options[prop];
-                }
-            }
-        }
+        this.loop = false;
     }
 
     load(id, sound, callback) {
@@ -67,7 +53,7 @@ class Player extends EventEmitter {
                 this.timer = setInterval(
                     () => {
                         if (!sound.repeat && sound.getPosition(id) >= 1.0) {
-                            if (this.options.loop) {
+                            if (this.loop) {
                                 this.seek(id, 0);
                             }
                             else {
@@ -77,7 +63,7 @@ class Player extends EventEmitter {
 
                         this.emit('tick', id);
                     },
-                    this.options.updateInterval
+                    UPDATE_INTERVAL
                 );
 
                 this.emit('play', id);
@@ -149,8 +135,8 @@ class Player extends EventEmitter {
         return 0;
     }
 
-    toggleLoop() {
-        this.options.loop = !this.options.loop;
+    setLoop(val) {
+        this.loop = val;
     }
 
     isPlaying() {
@@ -162,7 +148,7 @@ class Player extends EventEmitter {
     }
 
     isLooping() {
-        return this.options.loop;
+        return this.loop;
     }
 }
 
