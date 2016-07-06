@@ -34,7 +34,7 @@ class App extends React.Component {
         this.state = {
             filename: '',
             showModal: false,
-            modalContent: null
+            modal: null
         };
     }
 
@@ -190,7 +190,7 @@ class App extends React.Component {
             </ModalWindow>
         );
 
-        this.setState({ modalContent: modal, showModal: true });
+        this.setState({ showModal: true, modal: modal });
     }
 
     hideModal() {
@@ -210,7 +210,7 @@ class App extends React.Component {
                 <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
                 <Body>
                     <Overlay visible={this.state.showModal}>
-                        {this.state.modalContent}
+                        {this.state.modal}
                     </Overlay>
                     <MainView>
                         <Stage ref="stage" onFileDropped={this.onAudioFile} />
