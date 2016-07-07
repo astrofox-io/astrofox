@@ -3,8 +3,9 @@
 const _ = require('lodash');
 const remote = window.require('electron').remote;
 
-const Window = require('../Window.js');
-const IO = require('../IO.js');
+const { Events } = require('./Global.js');
+const Window = require('./Window.js');
+const IO = require('./IO.js');
 const EventEmitter = require('../core/EventEmitter.js');
 const Logger = require('../core/Logger.js');
 const Player = require('../audio/Player.js');
@@ -70,7 +71,7 @@ class Application extends EventEmitter {
                 if (menuItem.submenu) {
                     menuItem.submenu.forEach((subMenuItem) => {
                         subMenuItem.click = (item, win, e) => {
-                            this.emit('menu_action', menuItem.label + '/' + subMenuItem.label, subMenuItem.checked);
+                            Events.emit('menu_action', menuItem.label + '/' + subMenuItem.label, subMenuItem.checked);
                         };
                     }, this);
                 }
@@ -80,22 +81,32 @@ class Application extends EventEmitter {
 
             remote.Menu.setApplicationMenu(menu);
         }
+        
+        // Default setup
+        let scene = this.stage.addScene();
 
+        scene.addElement(new DisplayLibrary.ImageDisplay());
+        scene.addElement(new DisplayLibrary.BarSpectrumDisplay());
+        scene.addElement(new DisplayLibrary.TextDisplay());
+
+        Events.emit('control_added');
+        
+        // Start rendering
         this.startRender();
     }
 
     loadAudioFile(file) {
-        this.emit('audio_file_loading');
+        Events.emit('audio_file_loading');
 
         this.getAudioData(file)
             .then(data => {
                 return this.loadAudioData(data);
             })
             .catch(error => {
-                this.emit('error', error);
+                Events.emit('error', error);
             })
             .then(() => {
-                this.emit('audio_file_loaded');
+                Events.emit('audio_file_loaded');
             });
     }
 
@@ -196,7 +207,7 @@ class Application extends EventEmitter {
             stats.stack.copyWithin(1, 0);
             stats.stack[0] = stats.fps;
 
-            this.emit('tick', stats);
+            Events.emit('tick', stats);
         }
     }
 
@@ -211,7 +222,7 @@ class Application extends EventEmitter {
 
         this.stage.renderFrame(data);
 
-        this.emit('render', data);
+        Events.emit('render', data);
 
         this.updateFPS(now);
     }
@@ -224,10 +235,10 @@ class Application extends EventEmitter {
             stage.getImage(buffer => {
                 IO.fs.writeFile(filename, buffer, err => {
                     if (err) {
-                        this.emit('error', new Error(err));
+                        Events.emit('error', new Error(err));
                     }
 
-                    Logger.log(filename + ' saved.');
+                    Logger.log('Image saved. (%s)', filename);
                 });
             });
         });
@@ -254,10 +265,10 @@ class Application extends EventEmitter {
             );
         }
         else {
-            this.emit('error', new Error('No audio loaded.'));
+            Events.emit('error', new Error('No audio loaded.'));
         }
 
-        Logger.log(filename + ' saved');
+        Logger.log('Video saved. (%s)', filename);
     }
 
     renderFrame(frame, fps, callback) {
@@ -314,7 +325,7 @@ class Application extends EventEmitter {
             IO.fs.writeFile(filename, JSON.stringify(data));
         }
 
-        Logger.log(filename + ' saved.');
+        Logger.log('Project saved. (%s)', filename);
     }
 
     loadProject(filename) {
@@ -377,7 +388,7 @@ class Application extends EventEmitter {
                 }
             });
 
-            this.emit('control_added');
+            Events.emit('control_added');
         }
         else {
             this.raiseError('Invalid project data.');
@@ -398,7 +409,7 @@ class Application extends EventEmitter {
 
     raiseError(msg, e) {
         if (e) Logger.error(e);
-        this.emit('error', new Error(msg));
+        Events.emit('error', new Error(msg));
     }
 }
 

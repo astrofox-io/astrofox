@@ -1,7 +1,8 @@
 'use strict';
 
 const React = require('react');
-const Application = require('../../core/Application.js');
+
+const { Events } = require('../../core/Global.js');
 const bytesToSize = require('../../util/bytesToSize.js');
 
 class Footer extends React.Component {
@@ -14,7 +15,7 @@ class Footer extends React.Component {
     }
 
     componentDidMount() {
-        Application.on('tick', stats => {
+        Events.on('tick', stats => {
             this.setState({ fps: stats.fps });
         }, this);
     }

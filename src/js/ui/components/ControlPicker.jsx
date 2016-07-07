@@ -2,7 +2,8 @@
 
 const _ = require('lodash');
 const React = require('react');
-const Application = require('../../core/Application.js');
+
+const { Events } = require('../../core/Global.js');
 
 const ControlPicker = (props) => {
     let controls = _.values(props.items).map((item, index) => {
@@ -11,7 +12,7 @@ const ControlPicker = (props) => {
 
             props.scene.addElement(obj);
 
-            Application.emit('control_added', obj);
+            Events.emit('control_added', obj);
         };
 
         return (

@@ -1,8 +1,9 @@
 'use strict';
 
 const React = require('react');
-const Window = require('../../Window.js');
-const IO = require('../../IO.js');
+
+const Window = require('../../core/Window.js');
+const IO = require('../../core/IO.js');
 const autoBind = require('../../util/autoBind.js');
 
 const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';

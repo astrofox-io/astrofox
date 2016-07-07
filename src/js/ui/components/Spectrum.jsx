@@ -3,7 +3,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const Application = require('../../core/Application.js');
+const { Events } = require('../../core/Global.js');
 const SpectrumParser = require('../../audio/SpectrumParser.js');
 const BarDisplay = require('../../display/BarDisplay.js');
 const autoBind = require('../../util/autoBind.js');
@@ -45,7 +45,7 @@ class Spectrum extends React.Component {
 
         this.parser = new SpectrumParser(this.state);
 
-        Application.on('render', data => {
+        Events.on('render', data => {
             let fft = this.parser.parseFFT(data.fft);
 
             this.bars.render(fft);

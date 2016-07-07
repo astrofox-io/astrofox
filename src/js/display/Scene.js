@@ -1,12 +1,13 @@
 'use strict';
 
 const THREE = require('three');
+
 const NodeCollection = require('../core/NodeCollection.js');
 const Display = require('../display/Display.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
 const TexturePass = require('../graphics/TexturePass.js');
-const Global = require('../core/Global.js');
+const { FrameBuffers } = require('../core/Global.js');
 
 const defaults = {
     blendMode: 'Normal',
@@ -151,8 +152,8 @@ class Scene extends Display {
         let composer = this.composer;
 
         composer.clearPasses();
-        composer.addPass(Global.frameBuffers['2D'].pass);
-        composer.addPass(Global.frameBuffers['3D'].pass);
+        composer.addPass(FrameBuffers['2D'].pass);
+        composer.addPass(FrameBuffers['3D'].pass);
 
         this.displays.nodes.forEach(display => {
             if (display.pass) {
@@ -185,8 +186,8 @@ class Scene extends Display {
         let displays = this.displays.nodes,
             effects = this.effects.nodes,
             composer = this.composer,
-            buffer2D = Global.frameBuffers['2D'],
-            buffer3D = Global.frameBuffers['3D'],
+            buffer2D = FrameBuffers['2D'],
+            buffer3D = FrameBuffers['3D'],
             hasGeometry = false;
 
         buffer3D.clear();

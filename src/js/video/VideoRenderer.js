@@ -1,7 +1,7 @@
 "use strict";
 
 const EventEmitter = require('../core/EventEmitter.js');
-const IO = require('../IO.js');
+const IO = require('../core/IO.js');
 
 const defaults = {
     fps: 30,

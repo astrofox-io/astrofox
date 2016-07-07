@@ -1,9 +1,11 @@
 'use strict';
 
 const React = require('react');
-const Application = require('../../core/Application.js');
-const Splitter = require('./Splitter.jsx');
+
+const { Events } = require('../../core/Global.js');
 const autoBind = require('../../util/autoBind.js');
+
+const Splitter = require('./Splitter.jsx');
 
 class Panel extends React.Component {
     constructor(props) {
@@ -27,7 +29,7 @@ class Panel extends React.Component {
     componentDidMount() {
         let props = this.props;
 
-        Application.on('mouseup', () => {
+        Events.on('mouseup', () => {
             if (this.state.dragging) {
                 this.setState({
                     dragging: false

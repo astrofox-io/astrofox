@@ -2,7 +2,8 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const Application = require('../../core/Application.js');
+
+const { Events } = require('../../core/Global.js');
 const WaveDisplay = require('../../display/WaveDisplay.js');
 
 const config = {
@@ -22,7 +23,7 @@ class Oscilloscope extends React.Component {
             config
         );
 
-        Application.on('render', data => {
+        Events.on('render', data => {
             this.display.render(data.td, data.playing);
         }, this);
     }

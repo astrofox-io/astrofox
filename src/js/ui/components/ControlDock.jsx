@@ -1,12 +1,14 @@
 'use strict';
 
 const React = require('react');
-const Application = require('../../core/Application.js');
+
+const { Events } = require('../../core/Global.js');
+const autoBind = require('../../util/autoBind.js');
+
 const Panel = require('../layout/Panel.jsx');
 const PanelDock = require('../layout/PanelDock.jsx');
 const ControlsPanel = require('./ControlsPanel.jsx');
 const LayersPanel = require('./LayersPanel.jsx');
-const autoBind = require('../../util/autoBind.js');
 
 class ControlDock extends React.Component {
     constructor(props) {
@@ -17,7 +19,7 @@ class ControlDock extends React.Component {
     }
     
     componentDidMount() {
-        Application.on('control_added', obj => {
+        Events.on('control_added', obj => {
             let layers = this.refs.layers,
                 controls = this.refs.controls;
 

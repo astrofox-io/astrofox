@@ -1,7 +1,8 @@
 'use strict';
 
 const React = require('react');
-const Window = require('../../Window.js');
+
+const Window = require('../../core/Window.js');
 const autoBind = require('../../util/autoBind.js');
 
 class Header extends React.Component {

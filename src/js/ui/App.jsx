@@ -2,10 +2,9 @@
 
 const React = require('react');
 
+const { Events } = require('../core/Global.js');
 const Application = require('../core/Application.js');
-const Scene = require('../display/Scene.js');
-const DisplayLibrary = require('../lib/DisplayLibrary.js');
-const Window = require('../Window.js');
+const Window = require('../core/Window.js');
 const autoBind = require('../util/autoBind.js');
 
 const Header = require('./components/Header.jsx');
@@ -39,44 +38,34 @@ class App extends React.Component {
     }
 
     componentWillMount() {
-        // Default setup
-        let scene = new Scene();
-
-        Application.stage.addScene(scene);
-
-        scene.addElement(new DisplayLibrary.ImageDisplay());
-        scene.addElement(new DisplayLibrary.BarSpectrumDisplay());
-        scene.addElement(new DisplayLibrary.TextDisplay());
-
-        // Events
-        Application.on('error', (err) => {
+        Events.on('error', (err) => {
             this.onError(err);
         }, this);
 
-        Application.on('pick_control', (props) => {
+        Events.on('pick_control', (props) => {
            this.showModal(
                props.title,
                <ControlPicker scene={props.scene} items={props.items} />
            );
         });
 
-        Application.on('show_modal', (content) => {
+        Events.on('show_modal', (content) => {
             this.showModal(content);
         }, this);
 
-        Application.on('hide_modal', () => {
+        Events.on('hide_modal', () => {
             this.hideModal();
         }, this);
 
-        Application.on('audio_file_loading', () => {
+        Events.on('audio_file_loading', () => {
             this.refs.stage.showLoading(true);
         }, this);
 
-        Application.on('audio_file_loaded', () => {
+        Events.on('audio_file_loaded', () => {
             this.refs.stage.showLoading(false);
         }, this);
 
-        Application.on('menu_action', (action, checked) => {
+        Events.on('menu_action', (action, checked) => {
             this.onMenuAction(action, checked);
         }, this);
     }
@@ -95,11 +84,11 @@ class App extends React.Component {
     }
 
     onMouseDown(e) {
-        Application.emit('mousedown', e);
+        Events.emit('mousedown', e);
     }
 
     onMouseUp(e) {
-        Application.emit('mouseup', e);
+        Events.emit('mouseup', e);
     }
 
     onMenuAction(action, checked) {

@@ -1,7 +1,9 @@
 'use strict';
 
 const THREE = require('three');
-const IO = require('../IO.js');
+
+const Scene = require('./Scene.js');
+const IO = require('../core/IO.js');
 const EventEmitter = require('../core/EventEmitter.js');
 const NodeCollection = require('../core/NodeCollection.js');
 const Composer = require('../graphics/Composer.js');
@@ -18,11 +20,17 @@ class Stage {
     }
     
     addScene(scene) {
+        if (typeof scene === 'undefined') {
+            scene = new Scene();
+        }
+
         this.scenes.addNode(scene);
 
         scene.owner = this;
 
         scene.addToStage(this);
+
+        return scene;
     }
 
     removeScene(scene) {

@@ -15,27 +15,27 @@ const IO = {
     zlib: zlib,
 
     readFileAsBlob: (file) => {
-        var data = fs.readFileSync(file);
+        let data = fs.readFileSync(file);
 
         return new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) });
     },
 
     toArrayBuffer: (buffer) => {
-        var ab = new ArrayBuffer(buffer.length);
-        var view = new Uint8Array(ab);
+        let ab = new ArrayBuffer(buffer.length);
+        let b = new Uint8Array(ab);
 
-        for (var i = 0; i < buffer.length; ++i) {
-            view[i] = buffer[i];
+        for (let i = 0; i < buffer.length; ++i) {
+            b[i] = buffer[i];
         }
 
         return ab;
     },
 
     toBuffer: (ab) => {
-        var buffer = new Buffer(ab.byteLength);
-        var view = new Uint8Array(ab);
+        let buffer = new Buffer(ab.byteLength);
+        let view = new Uint8Array(ab);
 
-        for (var i = 0; i < buffer.length; ++i) {
+        for (let i = 0; i < buffer.length; ++i) {
             buffer[i] = view[i];
         }
 

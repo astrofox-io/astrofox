@@ -1,7 +1,9 @@
 'use strict';
 
 const React = require('react');
+
 const autoBind = require('../../util/autoBind.js');
+const { clamp, val2pct } = require('../../util/math.js');
 
 class RangeInput extends React.Component {
     constructor(props) {
@@ -75,16 +77,5 @@ RangeInput.defaultProps = {
     onChange: () => {},
     onInput: () => {}
 };
-
-function val2pct(val, min, max) {
-    if (min === max) return max;
-    if (val > max) val = max;
-    else if (val < min) val = min;
-    return (val - min) / (max - min);
-}
-
-function clamp(num, min, max) {
-    return num < min ? min : num > max ? max : num;
-}
 
 module.exports = RangeInput;

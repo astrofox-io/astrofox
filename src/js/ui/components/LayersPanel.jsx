@@ -3,6 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
+const { Events } = require('../../core/Global.js');
 const Application = require('../../core/Application.js');
 const Display = require('../../display/Display.js');
 const CanvasDisplay = require('../../display/CanvasDisplay.js');
@@ -12,6 +13,7 @@ const Effect = require('../../effects/Effect.js');
 const DisplayLibrary = require('../../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../../lib/EffectsLibrary.js');
 const autoBind = require('../../util/autoBind.js');
+
 const TextInput = require('../inputs/TextInput.jsx');
 
 class LayersPanel extends React.Component {
@@ -96,7 +98,7 @@ class LayersPanel extends React.Component {
         let scene = this.getActiveScene();
 
         if (scene) {
-            Application.emit(
+            Events.emit(
                 'pick_control',
                 { title: 'ADD DISPLAY', scene: scene, items: DisplayLibrary }
             );
@@ -107,7 +109,7 @@ class LayersPanel extends React.Component {
         let scene = this.getActiveScene();
 
         if (scene) {
-            Application.emit(
+            Events.emit(
                 'pick_control',
                 { title: 'ADD EFFECT', scene: scene, items: EffectsLibrary }
             );
