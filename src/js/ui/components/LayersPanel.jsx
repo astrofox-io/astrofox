@@ -14,7 +14,7 @@ const DisplayLibrary = require('../../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../../lib/EffectsLibrary.js');
 const autoBind = require('../../util/autoBind.js');
 
-const TextInput = require('../inputs/TextInput.jsx');
+const Layer = require('./Layer.jsx');
 
 class LayersPanel extends React.Component {
     constructor(props) {
@@ -23,7 +23,6 @@ class LayersPanel extends React.Component {
 
         this.state = {
             activeIndex: 0,
-            editIndex: -1,
             layers: []
         };
     }
@@ -33,49 +32,20 @@ class LayersPanel extends React.Component {
     }
 
     onLayerClick(index) {
-        let state = this.state,
-            props = this.props,
-            editIndex = (index == state.editIndex) ? state.editIndex: -1;
-
-        this.setState({activeIndex: index, editIndex: editIndex}, () => {
-            if (props.onLayerSelected) {
-                props.onLayerSelected(this.getActiveLayer());
-            }
+        this.setState({activeIndex: index}, () => {
+            this.props.onLayerSelected(this.state.layers[index]);
         });
     }
 
-    onDoubleClick(index) {
-        if (index !== this.state.editIndex) {
-            this.setState({editIndex: index});
-        }
-    }
+    onLayerUpdate(index, name, val) {
+        let layer = this.state.layers[index],
+            obj = {};
 
-    onLayerEdit(val) {
-        let layer = this.getActiveLayer();
-
-        layer.options.displayName = val;
-
-        this.cancelEdit();
-    }
-
-    onLayerNameChange(index, name, val) {
-        if (val.length > 0) {
-            this.onLayerEdit(val, index);
-        }
-    }
-
-    onLayerEnabled(obj, e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        let props = this.props;
-
-        obj.update({enabled: !obj.options.enabled});
+        obj[name] = val;
+        layer.update(obj);
 
         this.forceUpdate(() => {
-            if (props.onLayerChanged) {
-                props.onLayerChanged(obj);
-            }
+            this.props.onLayerChanged(obj);
         });
     }
 
@@ -152,10 +122,6 @@ class LayersPanel extends React.Component {
         this.moveLayer(-1);
     }
 
-    cancelEdit() {
-        this.setState({ editIndex: -1 });
-    }
-
     getActiveLayer() {
         let state = this.state;
 
@@ -179,61 +145,6 @@ class LayersPanel extends React.Component {
                 props.onLayerSelected(this.getActiveLayer());
             }
         });
-    }
-
-    getLayerComponent(obj, index) {
-        let text, icon,
-            state = this.state,
-            classes = classNames({
-                'layer': true,
-                'layer-control': !(obj instanceof Scene),
-                'layer-edit': index === this.state.editIndex,
-                'layer-active': index === this.state.activeIndex
-            });
-
-        if (state.editIndex === index) {
-            text = (
-                <TextInput
-                    value={obj.options.displayName}
-                    buffered={true}
-                    autoFocus={true}
-                    autoSelect={true}
-                    onChange={this.onLayerNameChange.bind(this, index)}
-                    onCancel={this.cancelEdit}
-                />
-            );
-        }
-        else {
-            text = (
-                <span onDoubleClick={this.onDoubleClick.bind(this, index)}>
-                    {obj.options.displayName}
-                </span>
-            );
-        }
-
-        if (obj instanceof Scene) {
-            icon = 'icon-picture';
-        }
-        else if (obj instanceof CanvasDisplay) {
-            icon = 'icon-document-landscape';
-        }
-        else if (obj instanceof Effect) {
-            icon = 'icon-light-up';
-        }
-        else if (obj instanceof Display) {
-            icon = 'icon-cube';
-        }
-
-        return (
-            <div key={obj.toString()}
-                 className={classes}
-                 onClick={this.onLayerClick.bind(this, index)}>
-                <i className={classNames('layer-icon', icon)} />
-                {text}
-                <i className={classNames('layer-options-icon', 'icon-eye', {'layer-disabled': !obj.options.enabled})}
-                   onClick={this.onLayerEnabled.bind(this, obj)} />
-            </div>
-        );
     }
 
     updateLayers(callback) {
@@ -272,7 +183,7 @@ class LayersPanel extends React.Component {
             this.updateLayers(() => {
                 index = this.state.layers.indexOf(layer);
 
-                this.setState({activeIndex: index});
+                this.setState({ activeIndex: index });
 
                 props.onLayerMoved(this.getActiveLayer());
             });
@@ -281,10 +192,38 @@ class LayersPanel extends React.Component {
 
     render() {
         let layers,
+            state = this.state,
             classes = { 'button': true, 'button-disabled': !Application.stage.hasScenes() };
 
-        layers = this.state.layers.map((layer, index) => {
-            return this.getLayerComponent(layer, index);
+        layers = state.layers.map((layer, index) => {
+            let icon;
+
+            if (layer instanceof Scene) {
+                icon = 'icon-picture';
+            }
+            else if (layer instanceof CanvasDisplay) {
+                icon = 'icon-document-landscape';
+            }
+            else if (layer instanceof Effect) {
+                icon = 'icon-light-up';
+            }
+            else if (layer instanceof Display) {
+                icon = 'icon-cube';
+            }
+
+            return (
+                <Layer
+                    key={layer.id}
+                    name={layer.options.displayName}
+                    index={index}
+                    icon={icon}
+                    control={!(layer instanceof Scene)}
+                    enabled={layer.options.enabled}
+                    active={index === state.activeIndex}
+                    onLayerClick={this.onLayerClick}
+                    onLayerUpdate={this.onLayerUpdate}
+                />
+            );
         }, this);
 
         return (
@@ -304,5 +243,9 @@ class LayersPanel extends React.Component {
         );
     }
 }
+
+LayersPanel.defaultProps = {
+    onLayerSelected: () => {}
+};
 
 module.exports = LayersPanel;
