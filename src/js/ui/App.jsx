@@ -31,7 +31,7 @@ class App extends React.Component {
         autoBind(this);
 
         this.state = {
-            filename: '',
+            text: '',
             showModal: false,
             modal: null
         };
@@ -160,10 +160,6 @@ class App extends React.Component {
         }
     }
 
-    onAudioFile(file) {
-        Application.loadAudioFile(file);
-    }
-
     onError(error) {
         this.showModal(
             'ERROR',
@@ -186,6 +182,12 @@ class App extends React.Component {
         this.setState({ showModal: false });
     }
 
+    loadAudioFile(file) {
+        Application.loadAudioFile(file).then(tags => {
+            this.setState({ text: tags.artist + ' - ' + tags.title });
+        });
+    }
+
     render() {
         return (
             <div
@@ -202,7 +204,7 @@ class App extends React.Component {
                         {this.state.modal}
                     </Overlay>
                     <MainView>
-                        <Stage ref="stage" onFileDropped={this.onAudioFile} />
+                        <Stage ref="stage" onFileDropped={this.loadAudioFile} />
                         <Spectrum ref="spectrum" />
                         <Oscilloscope ref="osc" />
                         <Waveform ref="waveform" />
@@ -210,7 +212,7 @@ class App extends React.Component {
                     </MainView>
                     <ControlDock ref="dock" />
                 </Body>
-                <Footer filename={this.state.filename} />
+                <Footer text={this.state.text} />
                 <Preload />
             </div>
         );

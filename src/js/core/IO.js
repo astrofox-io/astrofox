@@ -1,46 +1,146 @@
 'use strict';
 
-const Buffer = window.require('buffer').Buffer;
+const NodeBuffer = window.require('buffer').Buffer;
 const fs = window.require('fs');
-const spawn = window.require('child_process').spawn;
-const stream = window.require('stream');
 const zlib = window.require('zlib');
 const mime = require('mime');
 
-const IO = {
-    Buffer: Buffer,
-    fs: fs,
-    Spawn: spawn,
-    Stream: stream,
-    zlib: zlib,
-
-    readFileAsBlob: (file) => {
-        let data = fs.readFileSync(file);
-
-        return new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) });
-    },
-
-    toArrayBuffer: (buffer) => {
-        let ab = new ArrayBuffer(buffer.length);
-        let b = new Uint8Array(ab);
-
-        for (let i = 0; i < buffer.length; ++i) {
-            b[i] = buffer[i];
+function readFile(file) {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(fs.readFileSync(file));
         }
-
-        return ab;
-    },
-
-    toBuffer: (ab) => {
-        let buffer = new Buffer(ab.byteLength);
-        let view = new Uint8Array(ab);
-
-        for (let i = 0; i < buffer.length; ++i) {
-            buffer[i] = view[i];
+        catch(err) {
+            reject(err);
         }
+    });
+}
 
-        return buffer;
+function readFileCompressed(file) {
+    return readFile(file).then(data => {
+        return decompress(data);
+    });
+}
+
+function readFileAsBlob(file) {
+    let data = fs.readFileSync(file);
+
+    return new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) });
+}
+
+function readFileAsArrayBuffer(file) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader(),
+            data = readFileAsBlob(file);
+
+        reader.onload = (e) => {
+            resolve(e.target.result);
+        };
+
+        reader.onerror = () => {
+            reject(data.error);
+        };
+
+        reader.readAsArrayBuffer(data);
+    });
+}
+
+function writeFile(file, data) {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(fs.writeFileSync(file, data));
+        }
+        catch(err) {
+            reject(err);
+        }
+    });
+}
+
+function writeFileCompressed(file, data) {
+    return compress(data).then(buffer => {
+        return writeFile(file, buffer);
+    })
+}
+
+function toArrayBuffer(buffer) {
+    let ab = new ArrayBuffer(buffer.length);
+    let b = new Uint8Array(ab);
+
+    for (let i = 0; i < buffer.length; ++i) {
+        b[i] = buffer[i];
     }
-};
 
-module.exports = IO;
+    return ab;
+}
+
+function toBuffer(ab) {
+    let buffer = new NodeBuffer(ab.byteLength);
+    let view = new Uint8Array(ab);
+
+    for (let i = 0; i < buffer.length; ++i) {
+        buffer[i] = view[i];
+    }
+
+    return buffer;
+}
+
+function compress(data) {
+    return new Promise((resolve, reject) => {
+        zlib.deflate(
+            data,
+            (error, buffer) => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(buffer);
+                }
+            }
+        )
+    });
+}
+
+function decompress(data) {
+    return new Promise((resolve, reject) => {
+        zlib.inflate(
+            data,
+            (error, buffer) => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(buffer)
+                }
+            }
+        );
+    });
+}
+/*
+IO.zlib.deflate(
+    JSON.stringify(data),
+    (err, buf) => {
+        IO.writeFile(filename, new IO.NodeBuffer(buf));
+    }
+);
+
+IO.zlib.inflate(data, (err, buf) => {
+    try {
+        this.loadControls(JSON.parse(buf.toString()));
+    }
+    catch (err) {
+        this.raiseError('Invalid project data.', err);
+    }
+});
+*/
+module.exports = {
+    readFile,
+    readFileCompressed,
+    readFileAsBlob,
+    readFileAsArrayBuffer,
+    writeFile,
+    writeFileCompressed,
+    toArrayBuffer,
+    toBuffer,
+    compress,
+    decompress
+};

@@ -23,10 +23,10 @@ class Footer extends React.Component {
     render() {
         return (
             <div id="footer">
-                <div className="filename flex">{this.props.filename}</div>
-                <div className="fps">{bytesToSize(performance.memory.usedJSHeapSize,2)}</div>
-                <div className="fps">{this.state.fps} FPS</div>
-                <div className="version">v{process.versions.electron}</div>
+                <div className="flex">{this.props.text}</div>
+                <div className="right">{bytesToSize(performance.memory.usedJSHeapSize,2)}</div>
+                <div className="right">{this.state.fps} FPS</div>
+                <div>v{process.versions.electron}</div>
             </div>
         );
     }

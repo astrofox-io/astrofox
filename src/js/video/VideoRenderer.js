@@ -1,7 +1,9 @@
 "use strict";
 
+const spawn = window.require('child_process').spawn;
+const Stream = window.require('stream');
 const EventEmitter = require('../core/EventEmitter.js');
-const IO = require('../core/IO.js');
+const Logger = require('../core/Logger.js');
 
 const defaults = {
     fps: 30,
@@ -14,7 +16,7 @@ class VideoRenderer extends EventEmitter {
         
         this.options = Object.assign({}, defaults, options);
 
-        this.stream = new IO.Stream.Transform();
+        this.stream = new Stream.Transform();
         this.videoFile = videoFile;
         this.audioFile = audioFile;
         this.started = false;
@@ -44,14 +46,13 @@ class VideoRenderer extends EventEmitter {
         this.started = false;
         this.completed = false;
 
-        // DEBUG
-        console.log('rending movie', options.frames/options.fps, 'seconds /', options.fps, 'fps /', options.frames, 'frames');
+        Logger.log('rending movie', options.frames/options.fps, 'seconds /', options.fps, 'fps /', options.frames, 'frames');
 
         stream.on('error', (err) => {
-            console.error(err);
+            Logger.error(err);
         });
 
-        let ffmpeg = IO.Spawn(
+        let ffmpeg = spawn(
             './bin/ffmpeg.exe',
             [
                 '-y', '-f', 'image2pipe', '-vcodec', 'png', '-r', options.fps,
@@ -64,7 +65,7 @@ class VideoRenderer extends EventEmitter {
         stream.pipe(ffmpeg.stdin);
 
         ffmpeg.stderr.on('data', (data) => {
-            console.log(data.toString());
+            Logger.log(data.toString());
 
             if (!this.started) {
                 func(0, options.fps, this.processFrame.bind(this));
@@ -73,16 +74,16 @@ class VideoRenderer extends EventEmitter {
         });
 
         ffmpeg.stderr.on('end', () => {
-            console.log('file has been converted succesfully');
+            Logger.log('file has been converted succesfully');
             //if (callback) callback();
         });
 
         ffmpeg.stderr.on('exit', () => {
-            console.log('child process exited');
+            Logger.log('child process exited');
         });
 
         ffmpeg.stderr.on('close', () => {
-            console.log('program closed');
+            Logger.log('program closed');
 
             if (this.completed) {
                 this.copyAudio(this.audioFile);
@@ -91,7 +92,7 @@ class VideoRenderer extends EventEmitter {
     }
 
     copyAudio(audioFile) {
-        let ffmpeg = IO.Spawn(
+        let ffmpeg = spawn(
             './bin/ffmpeg.exe',
             [
                 '-y',
@@ -103,19 +104,19 @@ class VideoRenderer extends EventEmitter {
         );
 
         ffmpeg.stderr.on('data', (data) => {
-            console.log(data.toString());
+            Logger.log(data.toString());
         });
 
         ffmpeg.stderr.on('end', () => {
-            console.log('audio added succesfully');
+            Logger.log('audio added succesfully');
         });
 
         ffmpeg.stderr.on('exit', () => {
-            console.log('child process exited');
+            Logger.log('child process exited');
         });
 
         ffmpeg.stderr.on('close', () => {
-            console.log('program closed');
+            Logger.log('program closed');
         });
     }
 }

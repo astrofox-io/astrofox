@@ -48,7 +48,7 @@ class Layer extends React.Component {
     }
 
     render() {
-        let text, icon,
+        let text,
             state = this.state,
             props = this.props,
             classes = classNames({

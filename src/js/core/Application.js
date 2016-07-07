@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const id3 = require('id3js');
 const remote = window.require('electron').remote;
 
 const { Events } = require('./Global.js');
@@ -47,7 +48,7 @@ class Application extends EventEmitter {
         this.player.on('stop', this.updateAnalyzer.bind(this));
     
         this.frameData = {
-            id: null,
+            id: 0,
             time: 0,
             delta: 0,
             fft: null,
@@ -98,44 +99,20 @@ class Application extends EventEmitter {
     loadAudioFile(file) {
         Events.emit('audio_file_loading');
 
-        this.getAudioData(file)
+        this.player.stop('audio');
+
+        return IO.readFileAsArrayBuffer(file)
             .then(data => {
                 return this.loadAudioData(data);
             })
-            .catch(error => {
-                Events.emit('error', error);
-            })
             .then(() => {
                 Events.emit('audio_file_loaded');
+
+                return this.loadAudioTags(file)
+            })
+            .catch(error => {
+                this.raiseError('Failed to load audio file.', error);
             });
-    }
-
-    getAudioData(file) {
-        return new Promise((resolve, reject) => {
-            let reader = new FileReader(),
-                player = this.player;
-
-            player.stop('audio');
-
-            Logger.timeStart('audio_load');
-
-            reader.onload = (e) => {
-                Logger.timeEnd('audio_load', 'Audio file loaded.');
-
-                resolve(e.target.result);
-            };
-
-            reader.onerror = () => {
-                reject(file.error);
-            };
-
-            if (typeof file === 'string') {
-                this.audioFile = file;
-                file = IO.readFileAsBlob(file);
-            }
-
-            reader.readAsArrayBuffer(file);
-        });
     }
 
     loadAudioData(data) {
@@ -158,11 +135,26 @@ class Application extends EventEmitter {
                 resolve();
             }, this);
 
-            sound.on('error', (error) => {
+            sound.on('error', error => {
                 reject(error);
             });
 
             sound.load(data);
+        });
+    }
+
+    loadAudioTags(file) {
+        return new Promise((resolve, reject) => {
+            let data = IO.readFileAsBlob(file);
+
+            id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(tags);
+                }
+            });
         });
     }
 
@@ -233,13 +225,13 @@ class Application extends EventEmitter {
 
         stage.renderFrame(data, () => {
             stage.getImage(buffer => {
-                IO.fs.writeFile(filename, buffer, err => {
-                    if (err) {
-                        Events.emit('error', new Error(err));
-                    }
-
-                    Logger.log('Image saved. (%s)', filename);
-                });
+                IO.writeFile(filename, buffer)
+                    .catch(error => {
+                        this.raiseError('Failed to save image file.', error);
+                    })
+                    .then(() => {
+                        Logger.log('Image saved. (%s)', filename);
+                    });
             });
         });
     }
@@ -300,57 +292,51 @@ class Application extends EventEmitter {
         source.start(0, frame / fps, 1 / fps);
     }
 
-    saveProject(filename) {
-        let data, sceneData,
+    saveProject(file) {
+        let p, data, sceneData,
             options = this.options;
 
         sceneData = this.stage.getScenes().map(scene => {
             return scene.toJSON();
         });
 
-        data = {
+        data = JSON.stringify({
             version: VERSION,
             scenes: sceneData
-        };
+        });
 
         if (options.useCompression) {
-            IO.zlib.deflate(
-                JSON.stringify(data),
-                (err, buf) => {
-                    IO.fs.writeFileSync(filename, new IO.Buffer(buf));
-                }
-            );
+            p = IO.writeFileCompressed(file, data);
         }
         else {
-            IO.fs.writeFile(filename, JSON.stringify(data));
+            p = IO.writeFile(file, data);
         }
 
-        Logger.log('Project saved. (%s)', filename);
+        p.catch(error => {
+            this.raiseError('Failed to save project file.', error);
+        })
+        .then(() => {
+            Logger.log('Project saved. (%s)', file);
+        });
     }
 
-    loadProject(filename) {
-        let options = this.options;
-
-        let data = IO.fs.readFileSync(filename);
+    loadProject(file) {
+        let p,
+            options = this.options;
 
         if (options.useCompression) {
-            IO.zlib.inflate(data, (err, buf) => {
-                try {
-                    this.loadControls(JSON.parse(buf.toString()));
-                }
-                catch (err) {
-                    this.raiseError('Invalid project data.', err);
-                }
-            });
+            p = IO.readFileCompressed(file);
         }
         else {
-            try {
-                this.loadControls(JSON.parse(data));
-            }
-            catch (err) {
-                this.raiseError('Invalid project data.', err);
-            }
+            p = IO.readFile(file);
         }
+
+        p.catch(error => {
+            this.raiseError('Failed to open project file.', error);
+        })
+        .then(data => {
+            this.loadControls(JSON.parse(data));
+        });
     }
 
     loadControls(data) {
@@ -407,8 +393,11 @@ class Application extends EventEmitter {
         }
     }
 
-    raiseError(msg, e) {
-        if (e) Logger.error(e);
+    raiseError(msg, err) {
+        if (err) {
+            Logger.error(err);
+        }
+
         Events.emit('error', new Error(msg));
     }
 }
