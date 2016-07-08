@@ -3,8 +3,6 @@
 const THREE = require('three');
 
 const Scene = require('./Scene.js');
-const IO = require('../core/IO.js');
-const EventEmitter = require('../core/EventEmitter.js');
 const NodeCollection = require('../core/NodeCollection.js');
 const Composer = require('../graphics/Composer.js');
 
@@ -73,7 +71,7 @@ class Stage {
     getImage(callback, format) {
         let img = this.renderer.domElement.toDataURL(format || 'image/png');
         let base64 = img.replace(/^data:image\/\w+;base64,/, '');
-        let buffer = new IO.Buffer(base64, 'base64');
+        let buffer = new Buffer(base64, 'base64');
 
         if (callback) callback(buffer);
     }

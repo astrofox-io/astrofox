@@ -39,7 +39,7 @@ class App extends React.Component {
 
     componentWillMount() {
         Events.on('error', (err) => {
-            this.onError(err);
+            this.showError(err);
         }, this);
 
         Events.on('pick_control', (props) => {
@@ -160,7 +160,7 @@ class App extends React.Component {
         }
     }
 
-    onError(error) {
+    showError(error) {
         this.showModal(
             'ERROR',
             <div>{error.message}</div>,

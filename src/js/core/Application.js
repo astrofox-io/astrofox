@@ -312,11 +312,11 @@ class Application extends EventEmitter {
             p = IO.writeFile(file, data);
         }
 
-        p.catch(error => {
-            this.raiseError('Failed to save project file.', error);
-        })
-        .then(() => {
+        p.then(() => {
             Logger.log('Project saved. (%s)', file);
+        })
+        .catch(error => {
+            this.raiseError('Failed to save project file.', error);
         });
     }
 
@@ -331,11 +331,11 @@ class Application extends EventEmitter {
             p = IO.readFile(file);
         }
 
-        p.catch(error => {
-            this.raiseError('Failed to open project file.', error);
-        })
-        .then(data => {
+        p.then(data => {
             this.loadControls(JSON.parse(data));
+        })
+        .catch(error => {
+            this.raiseError('Failed to open project file.', error);
         });
     }
 
