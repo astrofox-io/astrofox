@@ -163,7 +163,7 @@ class App extends React.Component {
     showError(error) {
         this.showModal(
             'ERROR',
-            <div>{error.message}</div>,
+            <div className="message">{error.message}</div>,
             [{ text: 'OK', click: this.hideModal }]
         );
     }

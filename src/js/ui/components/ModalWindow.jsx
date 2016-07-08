@@ -7,9 +7,9 @@ const ModalWindow = (props) => {
     let buttons = null;
 
     if (props.buttons) {
-        buttons = props.buttons.map((button) => {
+        buttons = props.buttons.map((button, index) => {
             return (
-                <div className="button" onClick={button.click}>
+                <div key={index} className="button" onClick={button.click}>
                     {button.text}
                 </div>
             );

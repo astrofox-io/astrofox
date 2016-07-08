@@ -4,7 +4,7 @@ const React = require('react');
 
 const About = (props) => {
     return (
-        <div>
+        <div className="message">
             AstroFox version 1.0
         </div>
     );

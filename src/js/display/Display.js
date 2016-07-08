@@ -4,13 +4,19 @@ const defaults = {
     enabled: true
 };
 
-var id = 0;
+let displayId = 0;
+const displayCount = {};
 
 class Display {
     constructor(name, options) {
-        this.id = id++;
+        this.id = displayId++;
         this.name = name;
-        this.options = Object.assign({displayName: name + '' + id}, defaults, options);
+
+        if (typeof displayCount[name] === 'undefined') {
+            displayCount[name] = 1;
+        }
+
+        this.options = Object.assign({ displayName: name + ' ' + displayCount[name]++ }, defaults, options);
         this.owner = null;
         this.hasUpdate = false;
         this.initialized = false;
