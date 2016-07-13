@@ -125,16 +125,8 @@ class Waveform extends React.Component {
         this.setState({ seek: 0 });
     }
 
-    getClipPath(height, width, start, end) {
-        let points = [
-            start + 'px 0px',
-            end + 'px 0px',
-            end + 'px ' + height + 'px',
-            start + 'px ' + height + 'px',
-            start + 'px 0px'
-        ];
-
-        return 'polygon(' + points.join(',') + ')';
+    getClipPath(start, end) {
+        return 'inset(0 ' + end + 'px 0 ' + start + 'px)';
     }
 
     draw(data) {
@@ -152,9 +144,9 @@ class Waveform extends React.Component {
             clipStyle = { display: 'none' };
 
         if (seek > 0) {
-            let path = (seek > progressWidth) ?
-                this.getClipPath(height, width, seek, progressWidth) :
-                this.getClipPath(height, width, progressWidth, seek);
+            let path = (seek < progressWidth) ?
+                this.getClipPath(seek, width - progressWidth) :
+                this.getClipPath(progressWidth, width - seek);
 
             clipStyle = { WebkitClipPath: path };
         }
