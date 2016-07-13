@@ -121,9 +121,11 @@ gulp.task('build-app-watch', () => {
 
 // Compile LESS into CSS
 gulp.task('build-css', () => {
+    let minify = (process.env.NODE_ENV === 'production') ? cleancss : util.noop;
+
     return gulp.src('./src/css/app.less')
         .pipe(less())
-        .pipe(cleancss())
+        .pipe(minify())
         .pipe(gulp.dest('./build'));
 });
 

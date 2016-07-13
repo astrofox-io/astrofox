@@ -199,19 +199,19 @@ class App extends React.Component {
                 onMouseUp={this.onMouseUp}>
                 <Header />
                 <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
-                <Body>
+                <div id="body">
                     <Overlay visible={this.state.showModal}>
                         {this.state.modal}
                     </Overlay>
-                    <MainView>
+                    <div id="viewport">
                         <Stage ref="stage" onFileDropped={this.loadAudioFile} />
                         <Spectrum ref="spectrum" />
                         <Oscilloscope ref="osc" />
                         <Waveform ref="waveform" />
                         <Player ref="player" />
-                    </MainView>
+                    </div>
                     <ControlDock ref="dock" />
-                </Body>
+                </div>
                 <Footer text={this.state.text} />
                 <Preload />
             </div>

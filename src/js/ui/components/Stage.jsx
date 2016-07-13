@@ -8,6 +8,7 @@ const autoBind = require('../../util/autoBind.js');
 class Stage extends React.Component {
     constructor(props) {
         super(props);
+
         autoBind(this);
         
         this.state = {
@@ -18,13 +19,9 @@ class Stage extends React.Component {
     }
 
     componentDidMount() {
-        this.refs.viewport.appendChild(
+        this.refs.stage.appendChild(
             Application.stage.renderer.domElement
         );
-    }
-
-    onMouseDown(e) {
-        e.preventDefault();
     }
 
     onDragOver(e){
@@ -48,19 +45,14 @@ class Stage extends React.Component {
     }
 
     render() {
-        let state = this.state,
-            style = { width: state.width, height: state.height };
-
-        let loading = (state.loading) ? <div className="loading" /> : null;
+        const loading = (this.state.loading) ? <div className="loading" /> : null;
 
         return (
-            <div className="stage"
-                onMouseDown={this.onMouseDown}
+            <div ref="stage"
+                className="stage"
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}>
-                <div ref="viewport" className="viewport" style={style}>
-                    {loading}
-                </div>
+                {loading}
             </div>
         );
     }

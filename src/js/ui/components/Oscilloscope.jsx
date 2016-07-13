@@ -6,7 +6,7 @@ const ReactDOM = require('react-dom');
 const { Events } = require('../../core/Global.js');
 const WaveDisplay = require('../../display/WaveDisplay.js');
 
-const config = {
+const defaults = {
     width: 854,
     height: 100,
     color: '#927FFF'
@@ -20,7 +20,7 @@ class Oscilloscope extends React.Component {
     componentDidMount() {
         this.display = new WaveDisplay(
             ReactDOM.findDOMNode(this.refs.canvas),
-            config
+            defaults
         );
 
         Events.on('render', data => {
@@ -31,7 +31,7 @@ class Oscilloscope extends React.Component {
     render() {
         return (
             <div className="oscilloscope">
-                <canvas ref="canvas" className="canvas" width="854" height="100" />
+                <canvas ref="canvas" width="854" height="100" />
             </div>
         );
     }
