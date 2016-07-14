@@ -12,71 +12,40 @@ class Waveform extends React.Component {
         autoBind(this);
 
         this.state = {
-            progress: 0,
+            position: 0,
             seek: 0
         };
     }
 
-    componentWillMount() {
-        this.config = {
-            width: 854,
-            height: 70,
-            barWidth: 3,
-            barSpacing: 1,
-            shadowHeight: 30,
-            bgColor: '#333333',
-            bars: 213
-        };
-    }
-
     componentDidMount() {
-        let config = this.config,
-            player = Application.player;
+        let player = Application.player;
 
-        this.bars = new BarDisplay(
-            this.refs.canvas,
-            {
-                y: config.height,
-                height: config.height,
-                width: config.width,
-                barWidth: config.barWidth,
-                barSpacing: config.barSpacing,
+        this.base = new BarDisplay(
+            this.refs.base,
+            Object.assign({}, this.props, {
                 color: ['#555555','#444444'],
-                shadowHeight: config.shadowHeight,
                 shadowColor: '#333333'
-            }
+            })
         );
 
         this.progress = new BarDisplay(
             this.refs.progress,
-            {
-                y: config.height,
-                height: config.height,
-                width: config.width,
-                barWidth: config.barWidth,
-                barSpacing: config.barSpacing,
+            Object.assign({}, this.props, {
                 color: ['#b6aaff','#927fff'],
-                shadowHeight: config.shadowHeight,
                 shadowColor: '#554b96'
-            }
+            })
         );
 
         this.seek = new BarDisplay(
             this.refs.seek,
-            {
-                y: config.height,
-                height: config.height,
-                width: config.width,
-                barWidth: config.barWidth,
-                barSpacing: config.barSpacing,
+            Object.assign({}, this.props, {
                 color: ['#8880bf','#6c5fbf'],
-                shadowHeight: config.shadowHeight,
                 shadowColor: '#403972'
-            }
+            })
         );
 
         player.on('load', () => {
-            let options = { bars: this.config.bars },
+            let options = { bars: this.props.bars },
                 buffer = Application.player.getSound('audio').buffer,
                 data = WaveformParser.parseBuffer(buffer, options);
 
@@ -84,15 +53,16 @@ class Waveform extends React.Component {
         }, this);
 
         player.on('tick', () => {
-            this.forceUpdate();
+            this.setState({ position: Application.player.getPosition('audio') })
         }, this);
 
         player.on('stop', () => {
-            this.forceUpdate();
+            this.setState({ position: 0 });
         }, this);
 
         player.on('seek', () => {
-            this.forceUpdate();
+            let val  = Application.player.getPosition('audio');
+            this.setState({ position: val, seek: val })
         }, this);
     }
 
@@ -103,19 +73,19 @@ class Waveform extends React.Component {
         let val = e.pageX - e.currentTarget.offsetLeft,
             player = Application.player;
 
-        player.seek('audio', val / this.config.width);
+        player.seek('audio', val / this.props.width);
 
         this.setState({ progress: val });
     }
 
     onMouseMove(e) {
-        if (!Application.player.getSound('audio')) return;
-
         e.stopPropagation();
         e.preventDefault();
 
-        let val = e.pageX - e.currentTarget.offsetLeft;
-        this.setState({ seek: val });
+        if (Application.player.getSound('audio')) {
+            let val = e.pageX - e.currentTarget.offsetLeft;
+            this.setState({seek: val});
+        }
     }
 
     onMouseOut(e) {
@@ -130,25 +100,25 @@ class Waveform extends React.Component {
     }
 
     draw(data) {
-        this.bars.render(data);
+        this.base.render(data);
         this.progress.render(data);
         this.seek.render(data);
     }
 
     render() {
-        let width = this.config.width,
-            height = this.config.height + this.config.shadowHeight,
+        let width = this.props.width,
+            height = this.props.height + this.props.shadowHeight,
             seek = this.state.seek,
-            progressWidth = Application.player.getPosition('audio') * width,
+            progressWidth = this.state.position * width,
             progressStyle = { width: progressWidth + 'px' },
-            clipStyle = { display: 'none' };
+            seekStyle = { display: 'none' };
 
         if (seek > 0) {
             let path = (seek < progressWidth) ?
                 this.getClipPath(seek, width - progressWidth) :
                 this.getClipPath(progressWidth, width - seek);
 
-            clipStyle = { WebkitClipPath: path };
+            seekStyle = { WebkitClipPath: path };
         }
 
         return (
@@ -158,18 +128,28 @@ class Waveform extends React.Component {
                     onMouseMove={this.onMouseMove}
                     onMouseOut={this.onMouseOut}>
                     <div className="canvas base">
-                        <canvas ref="canvas" width="854" height="100" />
+                        <canvas ref="base" width={width} height={height} />
                     </div>
                     <div className="canvas progress" style={progressStyle}>
-                        <canvas ref="progress" width="854" height="100" />
+                        <canvas ref="progress" width={width} height={height} />
                     </div>
-                    <div className="canvas seek" style={clipStyle}>
-                        <canvas ref="seek" width="854" height="100" />
+                    <div className="canvas seek" style={seekStyle}>
+                        <canvas ref="seek" width={width} height={height} />
                     </div>
                 </div>
             </div>
         );
     }
 }
+
+Waveform.defaultProps = {
+    width: 854,
+    height: 70,
+    barWidth: 3,
+    barSpacing: 1,
+    shadowHeight: 30,
+    bgColor: '#333333',
+    bars: 213
+};
 
 module.exports = Waveform;
