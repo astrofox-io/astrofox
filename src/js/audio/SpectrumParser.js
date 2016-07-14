@@ -38,17 +38,15 @@ class SpectrumParser {
     }
 
     update(options) {
-        if (options) {
+        if (typeof options === 'object') {
             let changed = false;
 
-            for (let prop in options) {
-                if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
-                    if (this.options[prop] !== options[prop]) {
-                        this.options[prop] = options[prop];
-                        changed = true;
-                    }
+            Object.keys(options).forEach(prop => {
+                if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
+                    this.options[prop] = options[prop];
+                    changed = true;
                 }
-            }
+            }, this);
 
             if (changed) this.init();
         }

@@ -37,16 +37,17 @@ class ShaderPass extends ComposerPass {
     setUniforms(props) {
         let uniforms = this.uniforms;
 
-        for (let prop in props) {
-            if (props.hasOwnProperty(prop) && uniforms.hasOwnProperty(prop)) {
-                if (uniforms[prop].value != null && typeof uniforms[prop].value.set !== 'undefined') {
-                    uniforms[prop].value.set.apply(uniforms[prop].value, props[prop]);
+        Object.keys(props).forEach(prop => {
+            if (uniforms.hasOwnProperty(prop)) {
+                let p = uniforms[prop].value;
+                if (p != null && typeof p.set !== 'undefined') {
+                    p.set.apply(p, props[prop]);
                 }
                 else {
                     uniforms[prop].value = props[prop];
                 }
             }
-        }
+        }, this);
 
         this.material.needsUpdate = true;
     }

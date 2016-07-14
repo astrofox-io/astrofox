@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const Display = require('../display/Display.js');
 const CanvasDisplay = require('../display/CanvasDisplay.js');
 

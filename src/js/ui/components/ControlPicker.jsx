@@ -1,12 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
 const React = require('react');
 
 const { Events } = require('../../core/Global.js');
 
 const ControlPicker = (props) => {
-    let controls = _.values(props.items).map((item, index) => {
+    let values = Object.keys(props.items).map(key => props.items[key]);
+
+    let controls = values.map((item, index) => {
         let onClick = () => {
             let obj = new item();
 

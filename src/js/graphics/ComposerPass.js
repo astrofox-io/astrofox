@@ -18,12 +18,12 @@ class ComposerPass {
     }
 
     update(options) {
-        for (let prop in options) {
-            if (options.hasOwnProperty(prop) && this.options.hasOwnProperty(prop)) {
-                if (this.options[prop] !== options[prop]) {
+        if (typeof options === 'object') {
+            Object.keys(options).forEach(prop => {
+                if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
                     this.options[prop] = options[prop];
                 }
-            }
+            }, this);
         }
     }
 

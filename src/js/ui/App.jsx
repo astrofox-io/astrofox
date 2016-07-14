@@ -8,10 +8,8 @@ const Window = require('../core/Window.js');
 const autoBind = require('../util/autoBind.js');
 
 const Header = require('./components/Header.jsx');
-const Body = require('./components/Body.jsx');
 const Footer = require('./components/Footer.jsx');
 const MenuBar = require('./components/MenuBar.jsx');
-const MainView = require('./components/MainView.jsx');
 const Stage = require('./components/Stage.jsx');
 const Player = require('./components/Player.jsx');
 const Spectrum = require('./components/Spectrum.jsx');
@@ -143,6 +141,10 @@ class App extends React.Component {
                         }
                     }
                 );
+                break;
+
+            case 'File/Exit':
+                Window.close();
                 break;
 
             case 'Edit/Settings':

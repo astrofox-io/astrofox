@@ -97,7 +97,7 @@ class Stage {
         this.scenes.nodes.forEach((scene, index) => {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
-                options = _.assign({}, scene.options);
+                options = Object.assign({}, scene.options);
 
                 if (index === 0) {
                     options.blendMode = 'None';
