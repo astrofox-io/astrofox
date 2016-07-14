@@ -3,7 +3,7 @@
 const React = require('react');
 
 const autoBind = require('../../util/autoBind.js');
-const { clamp, val2pct } = require('../../util/math.js');
+const { clamp, val2pct, hash } = require('../../util/math.js');
 
 class RangeInput extends React.Component {
     constructor(props) {
@@ -48,7 +48,7 @@ class RangeInput extends React.Component {
                 <div className="track"/>
                 <div className="fill" style={fillStyle}/>
                 <input
-                    key={props.name + '_' + props.min + '_' + props.max}
+                    key={hash(props.name + props.min + props.max + props.step)}
                     className="range"
                     type="range"
                     name={props.name}

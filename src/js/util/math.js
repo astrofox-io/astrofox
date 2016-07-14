@@ -40,6 +40,19 @@ function log10(val) {
     return Math.log(val) / Math.LN10;
 }
 
+function hash(s) {
+    let hash = 0, i, chr, len;
+    if (s.length === 0) return hash;
+
+    for (i = 0, len = s.length; i < len; i++) {
+        chr = s.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0;
+    }
+
+    return hash;
+}
+
 module.exports = {
     clamp,
     round,
@@ -48,5 +61,6 @@ module.exports = {
     val2pct,
     db2mag,
     mag2db,
-    log10
+    log10,
+    hash
 };
