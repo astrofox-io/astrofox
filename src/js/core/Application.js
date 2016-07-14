@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const id3 = require('id3js');
 const remote = window.require('electron').remote;
 
@@ -72,7 +71,13 @@ class Application extends EventEmitter {
                 if (menuItem.submenu) {
                     menuItem.submenu.forEach((subMenuItem) => {
                         subMenuItem.click = (item, win, e) => {
-                            Events.emit('menu_action', menuItem.label + '/' + subMenuItem.label, subMenuItem.checked);
+                            process.nextTick(() => {
+                                Events.emit(
+                                    'menu_action',
+                                    menuItem.label + '/' + subMenuItem.label,
+                                    subMenuItem.checked
+                                );
+                            });
                         };
                     }, this);
                 }
