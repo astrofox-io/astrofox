@@ -27,7 +27,8 @@
         "type": "separator"
       },
       {
-        "label": "Exit"
+        "label": "Exit",
+        "role": "quit"
       }
     ]
   },
