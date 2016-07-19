@@ -4,6 +4,7 @@ const BarDisplay = require('../display/BarDisplay.js');
 const Display = require('../display/Display.js');
 const CanvasDisplay = require('../display/CanvasDisplay.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
+const { deg2rad } = require('../util/math.js');
 
 const defaults = {
     height: 300,
@@ -29,8 +30,6 @@ const defaults = {
     sampleRate: 44100,
     normalize: true
 };
-
-const RADIANS = 0.017453292519943295;
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {
@@ -71,7 +70,7 @@ class BarSpectrumDisplay extends CanvasDisplay {
 
             context.save();
             context.translate(x, y);
-            context.rotate(options.rotation * RADIANS);
+            context.rotate(deg2rad(options.rotation));
             context.drawImage(canvas, -halfWidth, -halfHeight);
             context.restore();
         }

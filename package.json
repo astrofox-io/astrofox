@@ -61,11 +61,10 @@
     "lodash": "^4.13.1",
     "mersennetwister": "^0.2.1",
     "mime": "^1.3.4",
-    "nedb": "^1.8.0",
     "node-rsa": "^0.4.0",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
-    "three": "^0.78.0",
-    "tinycolor2": "^1.1.2"
+    "three": "^0.79.0",
+    "tinycolor2": "^1.4.1"
   }
 }

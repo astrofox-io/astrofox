@@ -2,12 +2,20 @@
 
 const THREE = require('three');
 
+const Display = require('./Display.js');
 const Scene = require('./Scene.js');
 const NodeCollection = require('../core/NodeCollection.js');
 const Composer = require('../graphics/Composer.js');
 
-class Stage {
+const defaults = {
+    width: 854,
+    height: 480
+};
+
+class Stage extends Display {
     constructor() {
+        super('Stage', defaults);
+
         this.scenes = new NodeCollection();
     
         this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });

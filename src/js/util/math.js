@@ -1,5 +1,7 @@
 'use strict';
 
+const RADIANS = 0.017453292519943295;
+
 function clamp(num, min, max) {
     return num < min ? min : num > max ? max : num;
 }
@@ -53,6 +55,10 @@ function hash(s) {
     return hash;
 }
 
+function deg2rad(val) {
+    return val * RADIANS;
+}
+
 module.exports = {
     clamp,
     round,
@@ -62,5 +68,6 @@ module.exports = {
     db2mag,
     mag2db,
     log10,
-    hash
+    hash,
+    deg2rad
 };

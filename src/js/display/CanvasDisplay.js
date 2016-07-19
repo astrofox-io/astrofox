@@ -1,8 +1,7 @@
 'use strict';
 
 const Display = require('../display/Display.js');
-
-const RADIANS = 0.017453292519943295;
+const { deg2rad } = require('../util/math.js');
 
 class CanvasDisplay extends Display {
     constructor(name, options) {
@@ -28,7 +27,7 @@ class CanvasDisplay extends Display {
 
             context.save();
             context.translate(x, y);
-            context.rotate(options.rotation * RADIANS);
+            context.rotate(deg2rad(options.rotation));
             context.drawImage(canvas, -halfWidth, -halfHeight);
             context.restore();
         }
