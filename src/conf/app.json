@@ -1,0 +1,10 @@
+{
+    "autoInstallUpdates": true,
+    "checkForUpdates": true,
+    "customFonts": [],
+    "showFPS": false,
+    "showWatermark": false,
+    "ffmpegPath": "./bin/",
+    "videoFPS": 60,
+    "videoFormat": "mp4"
+}

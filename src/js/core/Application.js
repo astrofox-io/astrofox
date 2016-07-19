@@ -1,7 +1,8 @@
 'use strict';
 
 const id3 = require('id3js');
-const remote = window.require('electron').remote;
+const { remote } = window.require('electron');
+const { Menu } = remote;
 
 const { Events } = require('./Global.js');
 const Window = require('./Window.js');
@@ -18,17 +19,11 @@ const DisplayLibrary = require('../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../lib/EffectsLibrary.js');
 const VideoRenderer = require('../video/VideoRenderer.js');
 
+const appConfig = require('../../conf/app.json');
 const menuConfig = require('../../conf/menu.json');
 
 const VERSION = '1.0';
-
-const defaults = {
-    fps: 29.97,
-    canvasWidth: 854,
-    canvasHeight: 480,
-    useCompression: false
-};
-
+const APP_CONFIG_FILE = './app.config';
 const FPS_POLL_INTERVAL = 500;
 
 class Application extends EventEmitter {
@@ -40,11 +35,12 @@ class Application extends EventEmitter {
     
         this.player = new Player(this.audioContext);
         this.stage = new Stage();
-        this.options = Object.assign({}, defaults);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
     
         this.player.on('play', this.updateAnalyzer.bind(this));
         this.player.on('stop', this.updateAnalyzer.bind(this));
+
+        this.config = Object.assign({}, appConfig);
     
         this.frameData = {
             id: 0,
@@ -65,27 +61,25 @@ class Application extends EventEmitter {
     }
 
     init() {
+        // Load config file
+        this.loadConfig();
+
         // Create menu for OSX
         if (process.platform === 'darwin') {
-            menuConfig.forEach((menuItem) => {
-                if (menuItem.submenu) {
-                    menuItem.submenu.forEach((subMenuItem) => {
-                        subMenuItem.click = (item, win, e) => {
-                            process.nextTick(() => {
-                                Events.emit(
-                                    'menu_action',
-                                    menuItem.label + '/' + subMenuItem.label,
-                                    subMenuItem.checked
-                                );
-                            });
-                        };
+            menuConfig.forEach(root => {
+                if (root.submenu) {
+                    root.submenu.forEach(item => {
+                        if (!item.role) {
+                            let action = `${root.label} / ${item.label}`;
+                            item.click = this.menuAction.bind(this, action);
+                        }
                     }, this);
                 }
             }, this);
 
-            const menu = remote.Menu.buildFromTemplate(menuConfig);
+            const menu = Menu.buildFromTemplate(menuConfig);
 
-            remote.Menu.setApplicationMenu(menu);
+            Menu.setApplicationMenu(menu);
         }
         
         // Default setup
@@ -99,6 +93,25 @@ class Application extends EventEmitter {
         
         // Start rendering
         this.startRender();
+    }
+
+    menuAction(action, menuItem, browserWindow, event) {
+        Events.emit('menu_action', action, !menuItem.checked);
+    }
+
+    loadConfig() {
+        if (!IO.fileExists(APP_CONFIG_FILE)) {
+            IO.writeFileCompressed(APP_CONFIG_FILE, JSON.stringify(appConfig)).then(() => {
+                Logger.log('Initialized config file:', appConfig);
+            });
+        }
+        else {
+            IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
+                Logger.log('Config loaded:', JSON.parse(data));
+
+                this.config = JSON.parse(data);
+            });
+        }
     }
 
     loadAudioFile(file) {
@@ -298,8 +311,7 @@ class Application extends EventEmitter {
     }
 
     saveProject(file) {
-        let p, data, sceneData,
-            options = this.options;
+        let data, sceneData;
 
         sceneData = this.stage.getScenes().map(scene => {
             return scene.toJSON();
@@ -310,14 +322,7 @@ class Application extends EventEmitter {
             scenes: sceneData
         });
 
-        if (options.useCompression) {
-            p = IO.writeFileCompressed(file, data);
-        }
-        else {
-            p = IO.writeFile(file, data);
-        }
-
-        p.then(() => {
+        IO.writeFileCompressed(file, data).then(() => {
             Logger.log('Project saved. (%s)', file);
         })
         .catch(error => {
@@ -326,19 +331,21 @@ class Application extends EventEmitter {
     }
 
     loadProject(file) {
-        let p,
-            options = this.options;
-
-        if (options.useCompression) {
-            p = IO.readFileCompressed(file);
-        }
-        else {
-            p = IO.readFile(file);
-        }
-
-        p.then(data => {
-            this.loadControls(JSON.parse(data));
-        })
+        IO.readFileCompressed(file).then(
+            data => {
+                this.loadControls(JSON.parse(data));
+            },
+            error => {
+                if (error.message.indexOf('incorrect header check') > -1) {
+                    IO.readFile(file).then(data => {
+                        this.loadControls(JSON.parse(data));
+                    });
+                }
+                else {
+                    throw error;
+                }
+            }
+        )
         .catch(error => {
             this.raiseError('Failed to open project file.', error);
         });

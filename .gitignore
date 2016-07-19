@@ -6,3 +6,4 @@
 bin
 build
 node_modules
+app.config

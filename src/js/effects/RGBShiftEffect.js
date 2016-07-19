@@ -3,13 +3,12 @@
 const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const RGBShiftShader = require('../shaders/RGBShiftShader.js');
+const { deg2rad } = require('../util/math.js');
 
 const defaults = {
     amount: 0.005,
     angle: 0.0
 };
-
-const RADIANS = 0.017453292519943295;
 
 class RGBShiftEffect extends Effect {
     constructor(options) {
@@ -32,7 +31,7 @@ class RGBShiftEffect extends Effect {
         if (this.hasUpdate) {
             this.pass.setUniforms({
                 amount: options.amount,
-                angle: options.angle * RADIANS
+                angle: deg2rad(options.angle)
             });
 
             this.hasUpdate = false;

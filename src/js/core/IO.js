@@ -86,7 +86,7 @@ function toBuffer(ab) {
 
 function compress(data) {
     return new Promise((resolve, reject) => {
-        zlib.deflate(
+        zlib.gzip(
             data,
             (error, buffer) => {
                 if (error) {
@@ -102,7 +102,7 @@ function compress(data) {
 
 function decompress(data) {
     return new Promise((resolve, reject) => {
-        zlib.inflate(
+        zlib.unzip(
             data,
             (error, buffer) => {
                 if (error) {
@@ -115,23 +115,18 @@ function decompress(data) {
         );
     });
 }
-/*
-IO.zlib.deflate(
-    JSON.stringify(data),
-    (err, buf) => {
-        IO.writeFile(filename, new IO.NodeBuffer(buf));
-    }
-);
 
-IO.zlib.inflate(data, (err, buf) => {
+function fileExists(file) {
     try {
-        this.loadControls(JSON.parse(buf.toString()));
+        fs.statSync(file);
     }
-    catch (err) {
-        this.raiseError('Invalid project data.', err);
+    catch (e) {
+        return false;
     }
-});
-*/
+
+    return true;
+}
+
 module.exports = {
     readFile,
     readFileCompressed,
@@ -142,5 +137,6 @@ module.exports = {
     toArrayBuffer,
     toBuffer,
     compress,
-    decompress
+    decompress,
+    fileExists
 };

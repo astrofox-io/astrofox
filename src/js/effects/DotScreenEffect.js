@@ -3,13 +3,12 @@
 const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const DotScreenShader = require('../shaders/DotScreenShader.js');
+const { deg2rad } = require('../util/math.js');
 
 const defaults = {
     angle: 90,
     scale: 1.0
 };
-
-const RADIANS = 0.017453292519943295;
 
 class DotScreenEffect extends Effect {
     constructor(options) {
@@ -32,7 +31,7 @@ class DotScreenEffect extends Effect {
         if (this.hasUpdate) {
             this.pass.setUniforms({
                 scale: options.scale,
-                angle: options.angle * RADIANS
+                angle: deg2rad(options.angle)
             });
 
             this.hasUpdate = false;
