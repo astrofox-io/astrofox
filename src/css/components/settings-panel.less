@@ -1,0 +1,53 @@
+.settings-panel {
+    display: flex;
+    flex-direction: column;
+    width: 700px;
+    height: 400px;
+
+    fieldset {
+        margin-bottom: 8px;
+    }
+
+    legend {
+        position: relative;
+        color: @text-level1-color;
+        font-weight: bold;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        width: 100%;
+        cursor: default;
+
+        &:after {
+            content: "\0020";
+            border-top: 1px solid lighten(@border-bottom-color, 6%);
+            border-bottom: 1px solid darken(@border-top-color, 8%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+
+    .tab-view {
+        padding: 16px 32px;
+    }
+
+    .canvas-option {
+        display: inline-block;
+        font-size: 24px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid @bg-level1-color;
+        border-radius: 4px;
+        cursor: default;
+        margin: 4px;
+    }
+
+    .canvas-option-selected {
+        border: 1px solid @base-color;
+    }
+
+    .buttons {
+        border-top: 1px solid @bg-level1-color;
+    }
+}

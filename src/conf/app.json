@@ -1,10 +1,13 @@
 {
-    "autoInstallUpdates": true,
-    "checkForUpdates": true,
-    "customFonts": [],
-    "showFPS": false,
-    "showWatermark": false,
-    "ffmpegPath": "./bin/",
-    "videoFPS": 60,
-    "videoFormat": "mp4"
+  "canvasSize": "16:9",
+  "checkForUpdates": true,
+  "downloadUpdates": true,
+  "sendCrashReports": true,
+  "sendUsageStats": true,
+  "showFPS": false,
+  "systemFonts": [],
+  "showWatermark": false,
+  "ffmpegPath": "./bin/ffmpeg.exe",
+  "videoFPS": 60,
+  "videoFormat": "mp4"
 }

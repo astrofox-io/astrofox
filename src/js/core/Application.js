@@ -89,7 +89,7 @@ class Application extends EventEmitter {
         scene.addElement(new DisplayLibrary.BarSpectrumDisplay());
         scene.addElement(new DisplayLibrary.TextDisplay());
 
-        Events.emit('control_added');
+        Events.emit('layers_update');
         
         // Start rendering
         this.startRender();
@@ -101,17 +101,30 @@ class Application extends EventEmitter {
 
     loadConfig() {
         if (!IO.fileExists(APP_CONFIG_FILE)) {
-            IO.writeFileCompressed(APP_CONFIG_FILE, JSON.stringify(appConfig)).then(() => {
-                Logger.log('Initialized config file:', appConfig);
-            });
+            this.saveConfig(this.config);
         }
         else {
             IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
-                Logger.log('Config loaded:', JSON.parse(data));
+                let config = JSON.parse(data);
 
-                this.config = JSON.parse(data);
+                Logger.log('Config file loaded.', config);
+
+                this.config = Object.assign({}, appConfig, config);
             });
         }
+    }
+
+    saveConfig(config, callback) {
+        let data = JSON.stringify(config);
+
+        IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
+            Logger.log('Config file saved.', config);
+
+            if (callback) callback();
+        })
+        .catch(error => {
+            this.raiseError('Failed to save config file.', error);
+        });
     }
 
     loadAudioFile(file) {
@@ -368,7 +381,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(display.options));
                         }
                         else {
-                            Logger.warn('Display "' + display.name + '" not found.');
+                            Logger.warn('Display %s not found.', display.name);
                         }
                     }, this);
                 }
@@ -380,13 +393,13 @@ class Application extends EventEmitter {
                             scene.addElement(new component(effect.options));
                         }
                         else {
-                            Logger.warn('Effect "' + effect.name + '" not found.');
+                            Logger.warn('Effect %s not found.', effect.name);
                         }
                     }, this);
                 }
             });
 
-            Events.emit('control_added');
+            Events.emit('layers_update');
         }
         else {
             this.raiseError('Invalid project data.');

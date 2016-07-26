@@ -19,7 +19,7 @@ class ControlDock extends React.Component {
     }
     
     componentDidMount() {
-        Events.on('control_added', obj => {
+        Events.on('layers_update', obj => {
             let layers = this.refs.layers,
                 controls = this.refs.controls;
 

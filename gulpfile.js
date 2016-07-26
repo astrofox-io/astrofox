@@ -166,12 +166,14 @@ gulp.task('set-prod', () => {
     process.env.NODE_ENV = 'production';
 });
 
-gulp.task('build-dev', ['set-dev', 'build-vendor', 'build-app', 'build-css', 'build-icons']);
+gulp.task('build-all', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
 
-gulp.task('build-prod', ['set-prod', 'build-vendor', 'build-app', 'build-css', 'build-icons']);
+gulp.task('build-dev', ['set-dev', 'build-all']);
 
-gulp.task('watch-dev', ['set-dev', 'build-app-watch', 'build-css'], () => {
+gulp.task('build-prod', ['set-prod', 'build-all']);
+
+gulp.task('build-dev-watch', ['set-dev', 'build-app-watch', 'build-css'], () => {
     gulp.watch('./src/css/**/*.*', ['build-css']);
 });
 
-gulp.task('default', ['development']);
+gulp.task('default', ['build-dev-watch']);

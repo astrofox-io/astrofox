@@ -13,7 +13,7 @@ const ControlPicker = (props) => {
 
             props.scene.addElement(obj);
 
-            Events.emit('control_added', obj);
+            Events.emit('layers_update', obj);
         };
 
         return (

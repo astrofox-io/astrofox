@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 const autoBind = require('../../util/autoBind.js');
 
 class SelectInput extends React.Component {
@@ -9,7 +10,7 @@ class SelectInput extends React.Component {
         autoBind(this);
 
         this.state = {
-            value: this.props.value,
+            value: '',
             showItems: false
         };
     }
@@ -48,19 +49,14 @@ class SelectInput extends React.Component {
         let style = { display: this.state.showItems ? 'block' : 'none' };
 
         let items = this.props.items.map((item, index) => {
-            let key = this.props.name + '' + index,
-                className = 'input-option';
-
             if (typeof item !== 'object') {
                 item = { name: item, value: item, style: null, separator: false };
             }
 
-            if (item.separator) className += ' input-option-separator';
-
             return (
                 <li
-                    className={className}
-                    key={key}
+                    key={index}
+                    className={classNames('input-option', { 'input-option-separator': item.separator })}
                     style={item.style}
                     onMouseDown={this.onItemClick.bind(this, item)}>
                     {item.name}

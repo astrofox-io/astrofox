@@ -20,45 +20,53 @@ class TabPanel extends React.Component {
     }
 
     render() {
-        const props = this.props;
+        const props = this.props,
+            activeIndex = this.state.activeIndex,
+            tabs = [],
+            content = [];
 
-        const activeIndex = this.state.activeIndex;
-
-        const menu = props.tabs.map((item, index) => {
-            return (
+        React.Children.map(props.children, (item, index) => {
+            tabs.push(
                 <div key={index}
                      className={classNames({ 'tab': true, 'tab-active': index === activeIndex })}
                      onClick={this.onTabClick.bind(this, index)}>
-                    {item}
+                    {item.props.name}
                 </div>
+            );
+
+            content.push(
+                React.cloneElement(
+                    item,
+                    {
+                        key: index,
+                        className: item.props.className,
+                        visible: index === activeIndex
+                    }
+                )
             );
         });
 
-        const content = React.Children.map(props.children, (item, index) => {
-            return (
-                <div style={{ display: (index !== activeIndex) ? 'none' : null }}>
-                    {item}
-                </div>
-            );
-        });
-
-        const panelClass = classNames({
+        const panelClass = {
             'tab-panel': true,
             'tab-position-left': props.tabPosition === 'left',
             'tab-position-right': props.tabPosition === 'right',
             'tab-position-top': props.tabPosition === 'top',
             'tab-position-bottom': props.tabPosition === 'bottom'
-        });
+        };
 
-        const tabClass = classNames({
+        if (props.className) {
+            panelClass[props.className] = true;
+        }
+
+        const tabClass = {
             'tabs': true,
             'tabs-horizontal': props.tabPosition === 'top' || props.tabPosition === 'bottom'
-        });
+        };
 
         return (
-            <div className={panelClass}>
-                <div className={tabClass}>
-                    {menu}
+            <div className={classNames(panelClass)}>
+                <div className={classNames(tabClass)}>
+                    {tabs}
                 </div>
                 <div className="tab-view">
                     {content}
