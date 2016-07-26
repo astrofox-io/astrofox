@@ -163,7 +163,7 @@ class VolumeControl extends React.Component {
                     />
                 </div>
                 <div className="speaker">
-                    <i className={icon} />
+                    <span className={icon} />
                 </div>
             </div>
         );
@@ -240,7 +240,7 @@ const StopButton = (props) => {
 
 const LoopButton = (props) => {
     return (
-        <div className={classNames({'loop-button', 'loop-button-on': props.loop })} onClick={props.onClick}>
+        <div className={classNames('loop-button', {'loop-button-on': props.loop })} onClick={props.onClick}>
             <span className="icon-refresh" title="Repeat" />
         </div>
     );

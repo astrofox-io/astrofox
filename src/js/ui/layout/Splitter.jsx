@@ -10,7 +10,7 @@ const Splitter = (props) => {
         <div
             className={classes}
             onMouseDown={onMouseDown}>
-            <i className="icon-dots-three-horizontal" />
+            <span className="icon-dots-three-horizontal" />
         </div>
     );
 };

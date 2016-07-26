@@ -84,7 +84,7 @@ class NumberInput extends React.Component {
         return (
             <div className="input">
                 <input type="text"
-                    className={classNames({'input-field', 'input-hidden': this.props.hidden})}
+                    className={classNames('input-field', {'input-hidden': this.props.hidden})}
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}

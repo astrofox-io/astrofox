@@ -35,7 +35,7 @@ class MenuBarItem extends React.Component {
         return (
             <li className="menubar-item">
                 <div
-                    className={classNames({'menubar-text', 'menubar-text-active': this.props.active})}
+                    className={classNames('menubar-text', {'menubar-text-active': this.props.active})}
                     onClick={this.onClick}
                     onMouseOver={this.onMouseOver}>
                     {this.props.label}

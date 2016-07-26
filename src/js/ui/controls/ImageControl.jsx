@@ -146,7 +146,7 @@ class ImageControl extends React.Component {
                 <div className="row">
                     <label className="label">
                         Width
-                        <i className={linkClasses}
+                        <span className={linkClasses}
                            onClick={this.onLinkClick}
                         />
                     </label>
@@ -173,7 +173,7 @@ class ImageControl extends React.Component {
                 <div className="row">
                     <label className="label">
                         Height
-                        <i className={linkClasses}
+                        <span className={linkClasses}
                            onClick={this.onLinkClick}
                         />
                     </label>

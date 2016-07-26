@@ -20,7 +20,7 @@ const ModalWindow = (props) => {
         <div className="modal-window">
             <div className="header">
                 {props.title}
-                <i className="close-button icon-cross" onClick={props.onClose} />
+                <span className="close-button icon-cross" onClick={props.onClose} />
             </div>
             <div className="body">
                 {props.children}
