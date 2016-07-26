@@ -114,19 +114,19 @@ const CanvasSizeInput = (props) => {
     return (
         <div className="flex">
             <div
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === '16:9')})}
+                className={classNames({'canvas-option', 'canvas-option-selected': (props.value === '16:9')})}
                 style={{width:107, height:60}}
                 onClick={() => props.onChange(props.name, '16:9')}>
                 {'16:9'}
             </div>
             <div
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === '4:3')})}
+                className={classNames({'canvas-option', 'canvas-option-selected': (props.value === '4:3')})}
                 style={{width:80, height:60}}
                 onClick={() => props.onChange(props.name, '4:3')}>
                 {'4:3'}
             </div>
             <div
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === '1:1')})}
+                className={classNames({'canvas-option', 'canvas-option-selected': (props.value === '1:1')})}
                 style={{width:60, height:60}}
                 onClick={() => props.onChange(props.name, '1:1')}>
                 {'1:1'}

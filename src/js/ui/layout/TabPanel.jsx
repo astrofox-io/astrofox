@@ -28,7 +28,7 @@ class TabPanel extends React.Component {
         React.Children.map(props.children, (item, index) => {
             tabs.push(
                 <div key={index}
-                     className={classNames({ 'tab': true, 'tab-active': index === activeIndex })}
+                     className={classNames({'tab', 'tab-active': index === activeIndex})}
                      onClick={this.onTabClick.bind(this, index)}>
                     {item.props.name}
                 </div>

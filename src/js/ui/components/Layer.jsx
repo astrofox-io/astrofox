@@ -83,7 +83,7 @@ class Layer extends React.Component {
             <div className={classes} onClick={this.onLayerClick}>
                 <i className={classNames('layer-icon', props.icon)}/>
                 {text}
-                <i className={classNames('layer-options-icon', 'icon-eye', {'layer-disabled': !props.enabled})}
+                <i className={classNames({'layer-options-icon', 'icon-eye', 'layer-disabled': !props.enabled})}
                    onClick={this.onEnableClick}/>
             </div>
         );

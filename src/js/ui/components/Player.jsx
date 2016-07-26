@@ -225,7 +225,7 @@ class ProgressControl extends React.Component {
 const PlayButton = (props) => {
     return (
         <div className="button play-button" onClick={props.onClick}>
-            <i className={props.playing ? 'icon-pause' : 'icon-play'} />
+            <span className={props.playing ? 'icon-pause' : 'icon-play'} />
         </div>
     );
 };
@@ -233,15 +233,15 @@ const PlayButton = (props) => {
 const StopButton = (props) => {
     return (
         <div className="button stop-button" onClick={props.onClick}>
-            <i className="icon-stop" />
+            <span className="icon-stop" />
         </div>
     );
 };
 
 const LoopButton = (props) => {
     return (
-        <div className={classNames({'loop-button': true, 'loop-button-on': props.loop })} onClick={props.onClick}>
-            <i className="icon-refresh" title="Repeat" />
+        <div className={classNames({'loop-button', 'loop-button-on': props.loop })} onClick={props.onClick}>
+            <span className="icon-refresh" title="Repeat" />
         </div>
     );
 };
@@ -252,9 +252,9 @@ const TimeInfo = (props) => {
 
     return (
         <div className="time-info">
-            <div className="time-part current-time">{currentTime}</div>
-            <div className="time-part split"></div>
-            <div className="time-part total-time">{totalTime}</div>
+            <span className="time-part current-time">{currentTime}</span>
+            <span className="time-part split"></span>
+            <span className="time-part total-time">{totalTime}</span>
         </div>
     );
 };
