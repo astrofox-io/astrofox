@@ -25,7 +25,7 @@ class LEDEffect extends Effect {
         this.pass = null;
     }
 
-    updateScene(scene) {
+    renderToScene(scene) {
         if (this.hasUpdate) {
             this.pass.setUniforms(this.options);
             this.hasUpdate = false;

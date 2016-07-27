@@ -103,7 +103,7 @@ class GeometryDisplay extends Display {
         }
     }
 
-    updateScene(renderer, data) {
+    renderToScene(renderer, data) {
         let mesh = this.mesh,
             options = this.options,
             fft = this.parser.parseFFT(data.fft),

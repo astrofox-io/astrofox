@@ -4,6 +4,7 @@ const THREE = require('three');
 
 const NodeCollection = require('../core/NodeCollection.js');
 const Display = require('../display/Display.js');
+const CanvasDisplay = require('../display/CanvasDisplay.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
 const TexturePass = require('../graphics/TexturePass.js');
@@ -190,46 +191,47 @@ class Scene extends Display {
         lights[2].position.set(-distance, -distance * 2, -distance);
     }
 
+    getTargetBuffer(display) {
+        return (display instanceof CanvasDisplay) ?
+            FrameBuffers['2D'].context :
+            FrameBuffers['3D'].context;
+    }
+
+    clearScene() {
+        FrameBuffers['2D'].clear();
+        FrameBuffers['3D'].clear();
+
+        this.composer.clearBuffer(true, true, true);
+    }
+
     render(data) {
         let displays = this.displays.nodes,
             effects = this.effects.nodes,
             composer = this.composer,
-            buffer2D = FrameBuffers['2D'],
-            buffer3D = FrameBuffers['3D'],
             hasGeometry = false;
 
-        buffer3D.clear();
-        buffer2D.clear();
-
-        composer.clearBuffer(true, true, true);
+        this.clearScene();
 
         if (displays.size > 0 || effects.size > 0) {
             displays.forEach(display => {
                 if (display.options.enabled) {
-                    if (display.renderToCanvas) {
-                        display.renderToCanvas(buffer2D.context, data);
-                    }
-                    else if (display.updateScene) {
-                        display.updateScene(buffer3D.renderer, data);
+                    display.renderToScene(this.getTargetBuffer(display), data);
+
+                    if (!(display instanceof CanvasDisplay)) {
                         hasGeometry = true;
                     }
                 }
-            }, this);
+            });
 
             if (hasGeometry) {
-                buffer3D.renderer.render(this.graph, this.camera);
+                FrameBuffers['3D'].renderer.render(this.graph, this.camera);
             }
 
             effects.forEach(effect => {
                 if (effect.options.enabled) {
-                    if (effect.renderToCanvas) {
-                        effect.renderToCanvas(buffer2D.context, data);
-                    }
-                    else if (effect.updateScene) {
-                        effect.updateScene(buffer3D.renderer, data);
-                    }
+                    effect.renderToScene(this.getTargetBuffer(effect), data);
                 }
-            }, this);
+            });
 
             composer.render();
         }

@@ -68,7 +68,7 @@ class BloomEffect extends Effect {
         this.pass = null;
     }
 
-    updateScene(scene) {
+    renderToScene(scene) {
         if (this.hasUpdate) {
             let options = this.options;
 

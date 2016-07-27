@@ -55,7 +55,7 @@ class BlurEffect extends Effect {
         this.pass = null;
     }
 
-    updateScene(scene) {
+    renderToScene(scene) {
         let amount,
             options = this.options;
 

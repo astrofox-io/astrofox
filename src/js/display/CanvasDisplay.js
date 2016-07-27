@@ -11,12 +11,18 @@ class CanvasDisplay extends Display {
         this.context = this.canvas.getContext('2d');
     }
 
-    renderToCanvas(context) {
+    renderToScene(context) {
+        this.renderToCanvas(
+            context,
+            this.canvas.width / 2,
+            this.canvas.height / 2
+        );
+    }
+
+    renderToCanvas(context, dx, dy) {
         var x, y,
             canvas = this.canvas,
             options = this.options,
-            halfWidth = canvas.width / 2,
-            halfHeight = canvas.height / 2,
             halfSceneWidth = context.canvas.width / 2,
             halfSceneHeight = context.canvas.height / 2;
 
@@ -27,12 +33,12 @@ class CanvasDisplay extends Display {
             context.save();
             context.translate(x, y);
             context.rotate(deg2rad(options.rotation));
-            context.drawImage(canvas, -halfWidth, -halfHeight);
+            context.drawImage(canvas, -dx, -dy);
             context.restore();
         }
         else {
-            x = halfSceneWidth - halfWidth + options.x;
-            y = halfSceneHeight - halfHeight - options.y;
+            x = halfSceneWidth - dx + options.x;
+            y = halfSceneHeight - dy - options.y;
 
             context.drawImage(canvas, x, y);
         }

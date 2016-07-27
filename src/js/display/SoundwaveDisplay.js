@@ -29,10 +29,14 @@ class SoundwaveDisplay extends CanvasDisplay {
         return super.update(options);
     }
 
-    renderToCanvas(scene, data) {
+    renderToScene(context, data) {
         this.wave.render(data.td, data.playing);
 
-        CanvasDisplay.prototype.renderToCanvas.call(this, scene);
+        this.renderToCanvas(
+            context,
+            this.canvas.width / 2,
+            this.canvas.height / 2
+        );
     }
 }
 

@@ -26,7 +26,7 @@ class GlowEffect extends Effect {
         this.pass = null;
     }
 
-    updateScene(scene) {
+    renderToScene(scene) {
         let options = this.options;
 
         if (this.hasUpdate) {

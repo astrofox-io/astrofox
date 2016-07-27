@@ -50,36 +50,15 @@ class BarSpectrumDisplay extends CanvasDisplay {
         return changed;
     }
 
-    renderToCanvas(context, data) {
+    renderToScene(context, data) {
         let fft = this.parser.parseFFT(data.fft);
         this.bars.render(fft);
 
-        var x, y,
-            canvas = this.canvas,
-            options = this.options,
-            barOptions = this.bars.options,
-            halfWidth = canvas.width / 2,
-            halfHeight = barOptions.height,
-            halfSceneWidth = context.canvas.width / 2,
-            halfSceneHeight = context.canvas.height / 2;
-
-
-        if (options.rotation % 360 !== 0) {
-            x = halfSceneWidth + options.x;
-            y = halfSceneHeight - options.y;
-
-            context.save();
-            context.translate(x, y);
-            context.rotate(deg2rad(options.rotation));
-            context.drawImage(canvas, -halfWidth, -halfHeight);
-            context.restore();
-        }
-        else {
-            x = halfSceneWidth - halfWidth + options.x;
-            y = halfSceneHeight - halfHeight - options.y;
-
-            context.drawImage(canvas, x, y);
-        }
+        this.renderToCanvas(
+            context,
+            this.canvas.width / 2,
+            this.bars.options.height
+        );
     }
 }
 
