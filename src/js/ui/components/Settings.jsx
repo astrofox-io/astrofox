@@ -16,7 +16,6 @@ const Tab = require('../layout/Tab.jsx');
 class Settings extends React.Component {
     constructor(props) {
         super(props);
-
         autoBind(this);
 
         this.state = Application.config;
@@ -33,6 +32,7 @@ class Settings extends React.Component {
     onSave() {
         Application.saveConfig(this.state, () => {
             Events.emit('hide_modal');
+            Events.emit('canvas_size_update', this.state.canvasSize);
         });
     }
 

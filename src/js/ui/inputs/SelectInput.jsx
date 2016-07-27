@@ -10,7 +10,7 @@ class SelectInput extends React.Component {
         autoBind(this);
 
         this.state = {
-            value: '',
+            value: props.value,
             showItems: false
         };
     }

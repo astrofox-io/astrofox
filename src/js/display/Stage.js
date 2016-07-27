@@ -6,10 +6,17 @@ const Display = require('./Display.js');
 const Scene = require('./Scene.js');
 const NodeCollection = require('../core/NodeCollection.js');
 const Composer = require('../graphics/Composer.js');
+const { Events, FrameBuffers } = require('../core/Global.js');
 
 const defaults = {
     width: 854,
     height: 480
+};
+
+const canvasSizes = {
+    '16:9': { width: 854, height: 480 },
+    '4:3': { width: 640, height: 480 },
+    '1:1': { width: 480, height: 480 }
 };
 
 class Stage extends Display {
@@ -19,12 +26,14 @@ class Stage extends Display {
         this.scenes = new NodeCollection();
     
         this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
-        this.renderer.setSize(854, 480);
+        this.renderer.setSize(defaults.width, defaults.height);
         this.renderer.autoClear = false;
     
         this.composer = new Composer(this.renderer);
+
+        Events.on('canvas_size_update', this.updateCanvasSize, this);
     }
-    
+
     addScene(scene) {
         if (typeof scene === 'undefined') {
             scene = new Scene();
@@ -82,6 +91,19 @@ class Stage extends Display {
         let buffer = new Buffer(base64, 'base64');
 
         if (callback) callback(buffer);
+    }
+
+    updateCanvasSize(size) {
+        let { width, height } = canvasSizes[size];
+
+        this.renderer.setSize(width, height);
+
+        this.scenes.nodes.forEach(scene => {
+            scene.setSize(width, height);
+        });
+
+        FrameBuffers['2D'].setSize(width, height);
+        FrameBuffers['3D'].setSize(width, height);
     }
 
     toJSON() {

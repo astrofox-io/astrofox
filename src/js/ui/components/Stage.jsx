@@ -8,7 +8,6 @@ const autoBind = require('../../util/autoBind.js');
 class Stage extends React.Component {
     constructor(props) {
         super(props);
-
         autoBind(this);
         
         this.state = {

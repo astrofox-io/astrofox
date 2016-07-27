@@ -89,6 +89,14 @@ class Scene extends Display {
         this.composer = null;
     }
 
+    setSize(width, height) {
+        this.displays.nodes.forEach(display => {
+            if (display.setSize) {
+                display.setSize(width, height);
+            }
+        })
+    }
+
     addElement(obj) {
         let nodes;
 

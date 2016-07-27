@@ -20,7 +20,6 @@ class CanvasDisplay extends Display {
             halfSceneWidth = context.canvas.width / 2,
             halfSceneHeight = context.canvas.height / 2;
 
-
         if (options.rotation % 360 !== 0) {
             x = halfSceneWidth + options.x;
             y = halfSceneHeight - options.y;
