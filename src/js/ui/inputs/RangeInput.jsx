@@ -14,11 +14,13 @@ class RangeInput extends React.Component {
     }
 
     onChange(e) {
+        let val = Number(e.currentTarget.value);
+
         if (this.props.buffered && this.buffering) {
-            this.props.onInput(this.props.name, e.currentTarget.value);
+            this.props.onInput(this.props.name, val);
         }
         else {
-            this.props.onChange(this.props.name, e.currentTarget.value);
+            this.props.onChange(this.props.name, val);
         }
     }
 
@@ -31,7 +33,7 @@ class RangeInput extends React.Component {
     onMouseUp(e) {
         if (this.props.buffered) {
             this.buffering = false;
-            this.props.onChange(this.props.name, e.currentTarget.value);
+            this.props.onChange(this.props.name, Number(e.currentTarget.value));
         }
     }
 
