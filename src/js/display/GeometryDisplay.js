@@ -33,6 +33,7 @@ class GeometryDisplay extends Display {
         this.update(options);
 
         this.parser = new SpectrumParser({ normalize: true });
+        this.hasGeometry = true;
     }
 
     update(options) {

@@ -32,8 +32,16 @@ class FrameBuffer {
     }
     
     setSize(width, height) {
-        this.canvas.width = width;
-        this.canvas.height = height;
+        let renderer = this.renderer,
+            canvas = this.canvas;
+
+        if (renderer) {
+            renderer.setScissor(width, height);
+        }
+        else {
+            canvas.width = width;
+            canvas.height = height;
+        }
     }
 
     clear() {

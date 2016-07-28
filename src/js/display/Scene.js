@@ -91,6 +91,9 @@ class Scene extends Display {
     }
 
     setSize(width, height) {
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+
         this.displays.nodes.forEach(display => {
             if (display.setSize) {
                 display.setSize(width, height);
@@ -217,7 +220,7 @@ class Scene extends Display {
                 if (display.options.enabled) {
                     display.renderToScene(this.getTargetBuffer(display), data);
 
-                    if (!(display instanceof CanvasDisplay)) {
+                    if (!hasGeometry && display.hasGeometry) {
                         hasGeometry = true;
                     }
                 }

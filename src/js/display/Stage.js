@@ -31,7 +31,15 @@ class Stage extends Display {
     
         this.composer = new Composer(this.renderer);
 
-        Events.on('canvas_size_update', this.updateCanvasSize, this);
+        Events.on('canvas_size_update', aspectRatio => {
+            let { width, height } = canvasSizes[aspectRatio];
+
+            this.update({ width: width, height: height });
+
+            if (this.hasUpdate) {
+                this.setSize(width, height);
+            }
+        }, this);
     }
 
     addScene(scene) {
@@ -77,7 +85,7 @@ class Stage extends Display {
     }
 
     getSize() {
-        let canvas =  this.renderer.domElement;
+        let canvas = this.renderer.domElement;
 
         return {
             width: canvas.width,
@@ -93,14 +101,12 @@ class Stage extends Display {
         if (callback) callback(buffer);
     }
 
-    updateCanvasSize(size) {
-        let { width, height } = canvasSizes[size];
-
-        this.renderer.setSize(width, height);
-
+    setSize(width, height) {
         this.scenes.nodes.forEach(scene => {
             scene.setSize(width, height);
         });
+
+        this.renderer.setSize(width, height);
 
         FrameBuffers['2D'].setSize(width, height);
         FrameBuffers['3D'].setSize(width, height);
