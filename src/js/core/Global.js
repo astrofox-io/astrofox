@@ -1,13 +1,9 @@
 'use strict';
 
 const EventEmitter = require('./EventEmitter.js');
-const FrameBuffer = require('../graphics/FrameBuffer.js');
+const Logger = require('./Logger.js');
 
 module.exports = {
-    Events: new EventEmitter,
-    
-    FrameBuffers: {
-        '2D': new FrameBuffer('2d'),
-        '3D': new FrameBuffer('webgl')
-    }
+    Events: new EventEmitter(),
+    Logger: new Logger()
 };

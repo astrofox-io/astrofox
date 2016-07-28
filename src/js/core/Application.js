@@ -4,11 +4,10 @@ const id3 = require('id3js');
 const { remote } = window.require('electron');
 const { Menu } = remote;
 
-const { Events } = require('./Global.js');
+const { Events, Logger } = require('./Global.js');
 const Window = require('./Window.js');
 const IO = require('./IO.js');
 const EventEmitter = require('../core/EventEmitter.js');
-const Logger = require('../core/Logger.js');
 const Player = require('../audio/Player.js');
 const BufferedSound = require('../audio/BufferedSound.js');
 const SpectrumAnalyzer = require('../audio/SpectrumAnalyzer.js');

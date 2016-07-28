@@ -2,7 +2,7 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const Logger = require('./core/Logger.js');
+const { Logger } = require('./core/Global.js');
 const App = require('./ui/App.jsx');
 
 const AstroFox = {

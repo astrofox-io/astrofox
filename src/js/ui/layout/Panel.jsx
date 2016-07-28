@@ -13,12 +13,12 @@ class Panel extends React.Component {
         autoBind(this);
 
         this.state = {
-            visible: props.visible || true,
+            visible: props.visible,
             dragging: false,
             height: props.height,
             width: props.width,
-            minHeight: props.minHeight || 0,
-            minWidth: props.minWidth || 0,
+            minHeight: props.minHeight,
+            minWidth: props.minWidth,
             startX: 0,
             startY: 0,
             startWidth: 0,
@@ -27,20 +27,11 @@ class Panel extends React.Component {
     }
 
     componentDidMount() {
-        let props = this.props;
+        Events.on('mouseup', this.checkDragState);
+    }
 
-        Events.on('mouseup', () => {
-            if (this.state.dragging) {
-                this.setState({
-                    dragging: false
-                },
-                () => {
-                    if (props.onDragEnd) {
-                        props.onDragEnd();
-                    }
-                });
-            }
-        });
+    componentWillUnmount() {
+        Events.off('mouseup', this.checkDragState);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -84,6 +75,19 @@ class Panel extends React.Component {
         e.preventDefault();
     }
 
+    checkDragState() {
+        if (this.state.dragging) {
+            this.setState(
+                { dragging: false },
+                () => {
+                    if (this.props.onDragEnd) {
+                        this.props.onDragEnd();
+                    }
+                }
+            );
+        }
+    }
+
     render() {
         let props = this.props,
             state = this.state,
@@ -112,7 +116,12 @@ class Panel extends React.Component {
 Panel.defaultProps = {
     shouldUpdate: true,
     direction: 'vertical',
-    stretch: false
+    stretch: false,
+    visible: true,
+    height: 100,
+    width: 100,
+    minHeight: 0,
+    minWidth: 0
 };
 
 module.exports = Panel;

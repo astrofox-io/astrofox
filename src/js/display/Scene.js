@@ -7,8 +7,6 @@ const Display = require('../display/Display.js');
 const CanvasDisplay = require('../display/CanvasDisplay.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
-const TexturePass = require('../graphics/TexturePass.js');
-const { FrameBuffers } = require('../core/Global.js');
 
 const defaults = {
     blendMode: 'Normal',
@@ -30,7 +28,7 @@ class Scene extends Display {
         this.owner = null;
         this.displays = new NodeCollection();
         this.effects = new NodeCollection();
-    
+
         this.update(options);
     }
 
@@ -56,6 +54,9 @@ class Scene extends Display {
 
     addToStage(stage) {
         let size = stage.getSize();
+
+        this.buffer2D = stage.buffer2D;
+        this.buffer3D = stage.buffer3D;
 
         this.composer = new Composer(stage.renderer);
         this.graph = new THREE.Scene();
@@ -164,8 +165,8 @@ class Scene extends Display {
         let composer = this.composer;
 
         composer.clearPasses();
-        composer.addPass(FrameBuffers['2D'].pass);
-        composer.addPass(FrameBuffers['3D'].pass);
+        composer.addPass(this.buffer2D.pass);
+        composer.addPass(this.buffer3D.pass);
 
         this.displays.nodes.forEach(display => {
             if (display.pass) {
@@ -196,13 +197,13 @@ class Scene extends Display {
 
     getTargetBuffer(display) {
         return (display instanceof CanvasDisplay) ?
-            FrameBuffers['2D'].context :
-            FrameBuffers['3D'].context;
+            this.buffer2D.context :
+            this.buffer3D.context;
     }
 
     clearScene() {
-        FrameBuffers['2D'].clear();
-        FrameBuffers['3D'].clear();
+        this.buffer2D.clear();
+        this.buffer3D.clear();
 
         this.composer.clearBuffer(true, true, true);
     }
@@ -227,7 +228,7 @@ class Scene extends Display {
             });
 
             if (hasGeometry) {
-                FrameBuffers['3D'].renderer.render(this.graph, this.camera);
+                this.buffer3D.renderer.render(this.graph, this.camera);
             }
 
             effects.forEach(effect => {

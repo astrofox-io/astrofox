@@ -5,6 +5,7 @@ const ReactDOM = require('react-dom');
 
 const { Events } = require('../../core/Global.js');
 const WaveDisplay = require('../../display/WaveDisplay.js');
+const autoBind = require('../../util/autoBind.js');
 
 const defaults = {
     width: 854,
@@ -15,6 +16,7 @@ const defaults = {
 class Oscilloscope extends React.Component {
     constructor(props) {
         super(props);
+        autoBind(this);
     }
 
     componentDidMount() {
@@ -23,9 +25,19 @@ class Oscilloscope extends React.Component {
             defaults
         );
 
-        Events.on('render', data => {
-            this.display.render(data.td, data.playing);
-        }, this);
+        Events.on('render', this.updateCanvas);
+    }
+
+    componentWillUnmount(data) {
+        Events.off('render', this.updateCanvas);
+    }
+
+    shouldComponentUpdate() {
+        return false;
+    }
+
+    updateCanvas(data) {
+        this.display.render(data.td, data.playing);
     }
 
     render() {

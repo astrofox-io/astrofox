@@ -45,11 +45,11 @@ class Spectrum extends React.Component {
 
         this.parser = new SpectrumParser(this.state);
 
-        Events.on('render', data => {
-            let fft = this.parser.parseFFT(data.fft);
+        Events.on('render', this.updateCanvas);
+    }
 
-            this.bars.render(fft);
-        }, this);
+    componentWillUnmount() {
+        Events.off('render', this.updateCanvas);
     }
 
     shouldComponentUpdate() {
@@ -60,6 +60,13 @@ class Spectrum extends React.Component {
         this.setState({ normalize: !this.state.normalize }, () => {
             this.parser.update(this.state);
         });
+    }
+
+    updateCanvas(data) {
+        let fft = this.parser.parseFFT(data.fft);
+
+        this.bars.render(fft);
+
     }
 
     render() {

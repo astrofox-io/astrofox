@@ -4,10 +4,12 @@ const React = require('react');
 
 const { Events } = require('../../core/Global.js');
 const bytesToSize = require('../../util/bytesToSize.js');
+const autoBind = require('../../util/autoBind.js');
 
 class Footer extends React.Component {
     constructor(props) {
         super(props);
+        autoBind(this);
 
         this.state = {
             fps: 0
@@ -15,9 +17,15 @@ class Footer extends React.Component {
     }
 
     componentDidMount() {
-        Events.on('tick', stats => {
-            this.setState({ fps: stats.fps });
-        }, this);
+        Events.on('tick', this.updateStats);
+    }
+
+    componentWillUnmount() {
+        Events.off('tick', this.updateStats);
+    }
+
+    updateStats(stats) {
+        this.setState({ fps: stats.fps });
     }
 
     render() {

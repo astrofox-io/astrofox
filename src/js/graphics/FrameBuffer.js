@@ -11,10 +11,7 @@ const defaults = {
 class FrameBuffer {
     constructor(type, options) {
         this.options = Object.assign({}, defaults, options);
-    
         this.canvas = document.createElement('canvas');
-        this.setSize(this.options.width, this.options.height);
-        
         this.renderer = null;
     
         if (type === 'webgl') {
@@ -29,6 +26,8 @@ class FrameBuffer {
         this.texture.minFilter = THREE.LinearFilter;
     
         this.pass = new TexturePass(this.texture);
+
+        this.setSize(this.options.width, this.options.height);
     }
     
     setSize(width, height) {

@@ -6,7 +6,8 @@ const Display = require('./Display.js');
 const Scene = require('./Scene.js');
 const NodeCollection = require('../core/NodeCollection.js');
 const Composer = require('../graphics/Composer.js');
-const { Events, FrameBuffers } = require('../core/Global.js');
+const FrameBuffer = require('../graphics/FrameBuffer.js');
+const { Events } = require('../core/Global.js');
 
 const defaults = {
     width: 854,
@@ -30,6 +31,9 @@ class Stage extends Display {
         this.renderer.autoClear = false;
     
         this.composer = new Composer(this.renderer);
+
+        this.buffer2D = new FrameBuffer('2d');
+        this.buffer3D = new FrameBuffer('webgl');
 
         Events.on('canvas_size_update', aspectRatio => {
             let { width, height } = canvasSizes[aspectRatio];
@@ -108,8 +112,8 @@ class Stage extends Display {
 
         this.renderer.setSize(width, height);
 
-        FrameBuffers['2D'].setSize(width, height);
-        FrameBuffers['3D'].setSize(width, height);
+        this.buffer2D.setSize(width, height);
+        this.buffer3D.setSize(width, height);
     }
 
     toJSON() {

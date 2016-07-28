@@ -19,16 +19,11 @@ class ControlDock extends React.Component {
     }
     
     componentDidMount() {
-        Events.on('layers_update', obj => {
-            let layers = this.refs.layers,
-                controls = this.refs.controls;
+        Events.on('layers_update', this.updateLayers);
+    }
 
-            layers.updateLayers(() => {
-                layers.setActiveLayer(obj);
-            });
-
-            controls.updateControls();
-        });
+    componentWillUnmount() {
+        Events.off('layers_update', this.updateLayers);
     }
 
     onLayerSelected(layer) {
@@ -55,6 +50,17 @@ class ControlDock extends React.Component {
 
     showDock(val) {
         this.setState({ visible: val });
+    }
+
+    updateLayers(obj) {
+        let layers = this.refs.layers,
+            controls = this.refs.controls;
+
+        layers.updateLayers(() => {
+            layers.setActiveLayer(obj);
+        });
+
+        controls.updateControls();
     }
 
     render() {
