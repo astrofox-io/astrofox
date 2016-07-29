@@ -13,6 +13,12 @@ const ToggleInput = require('../inputs/ToggleInput');
 const TabPanel = require('../layout/TabPanel.jsx');
 const Tab = require('../layout/Tab.jsx');
 
+const canvasSizes = {
+    '16:9': { width: 854, height: 480 },
+    '4:3': { width: 640, height: 480 },
+    '1:1': { width: 480, height: 480 }
+};
+
 class Settings extends React.Component {
     constructor(props) {
         super(props);
@@ -32,7 +38,7 @@ class Settings extends React.Component {
     onSave() {
         Application.saveConfig(this.state, () => {
             Events.emit('hide_modal');
-            Events.emit('canvas_size_update', this.state.canvasSize);
+            Events.emit('canvas_size_update', canvasSizes[this.state.canvasSize]);
         });
     }
 
@@ -111,26 +117,24 @@ class Settings extends React.Component {
 }
 
 const CanvasSizeInput = (props) => {
+    let options = Object.keys(canvasSizes).map((key, index) => {
+        let { width, height } = canvasSizes[key],
+            ratio = 60 / height;
+
+        return (
+            <div
+                key={index}
+                className={classNames('canvas-option', {'canvas-option-selected': (props.value === key)})}
+                style={{width: width * ratio, height: height * ratio}}
+                onClick={() => props.onChange(props.name, key)}>
+                {key}
+            </div>
+        );
+    });
+
     return (
         <div className="flex">
-            <div
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === '16:9')})}
-                style={{width:107, height:60}}
-                onClick={() => props.onChange(props.name, '16:9')}>
-                {'16:9'}
-            </div>
-            <div
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === '4:3')})}
-                style={{width:80, height:60}}
-                onClick={() => props.onChange(props.name, '4:3')}>
-                {'4:3'}
-            </div>
-            <div
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === '1:1')})}
-                style={{width:60, height:60}}
-                onClick={() => props.onChange(props.name, '1:1')}>
-                {'1:1'}
-            </div>
+            {options}
         </div>
     );
 };

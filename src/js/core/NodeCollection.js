@@ -1,30 +1,22 @@
 'use strict';
 
 const Immutable = require('immutable');
-const EventEmitter = require('../core/EventEmitter.js');
 
-class NodeCollection extends EventEmitter { 
+class NodeCollection {
     constructor(values) {
-        super();
-
         this.nodes = new Immutable.List();
     
         if (values) {
             this.nodes = this.nodes.withMutations(list => {
                 values.forEach(val => {
                     list.push(val);
-                    this.emit('node_added', val);
                 }, this);
             });
         }
     }
 
     addNode(node) {
-        let nodes = this.nodes;
-
-        this.nodes = nodes.push(node);
-
-        this.emit('node_added', node);
+        this.nodes = this.nodes.push(node);
     }
 
     removeNode(node) {
@@ -35,7 +27,6 @@ class NodeCollection extends EventEmitter {
         if (index > -1) {
             this.nodes = nodes.delete(index);
             changed = true;
-            this.emit('node_removed', node);
         }
 
         return changed;

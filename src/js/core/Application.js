@@ -331,6 +331,7 @@ class Application extends EventEmitter {
 
         data = JSON.stringify({
             version: VERSION,
+            stage: this.stage.toJSON(),
             scenes: sceneData
         });
 
@@ -380,7 +381,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(display.options));
                         }
                         else {
-                            Logger.warn('Display %s not found.', display.name);
+                            Logger.warn('Display "%s" not found.', display.name);
                         }
                     }, this);
                 }
@@ -392,7 +393,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(effect.options));
                         }
                         else {
-                            Logger.warn('Effect %s not found.', effect.name);
+                            Logger.warn('Effect "%s" not found.', effect.name);
                         }
                     }, this);
                 }

@@ -14,12 +14,6 @@ const defaults = {
     height: 480
 };
 
-const canvasSizes = {
-    '16:9': { width: 854, height: 480 },
-    '4:3': { width: 640, height: 480 },
-    '1:1': { width: 480, height: 480 }
-};
-
 class Stage extends Display {
     constructor() {
         super('Stage', defaults);
@@ -35,15 +29,19 @@ class Stage extends Display {
         this.buffer2D = new FrameBuffer('2d');
         this.buffer3D = new FrameBuffer('webgl');
 
-        Events.on('canvas_size_update', aspectRatio => {
-            let { width, height } = canvasSizes[aspectRatio];
-
-            this.update({ width: width, height: height });
-
-            if (this.hasUpdate) {
-                this.setSize(width, height);
-            }
+        Events.on('canvas_size_update', size => {
+            this.update(size);
         }, this);
+    }
+
+    update(options) {
+        let changed = super.update(options);
+
+        if (options.width !== undefined || options.height !== undefined) {
+            this.setSize(this.options.width, this.options.height);
+        }
+
+        return changed;
     }
 
     addScene(scene) {
@@ -117,12 +115,7 @@ class Stage extends Display {
     }
 
     toJSON() {
-        let scenes = this.scenes.map(scene => {
-            return scene.toJSON();
-        });
-
         return {
-            scenes: scenes,
             options: this.options
         };
     }

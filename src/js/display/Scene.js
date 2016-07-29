@@ -243,10 +243,6 @@ class Scene extends Display {
         return composer.readBuffer;
     }
 
-    toString() {
-        return this.name + '' + this.id;
-    }
-
     toJSON() {
         let displays = this.displays.nodes.map(display => {
             return display.toJSON();
