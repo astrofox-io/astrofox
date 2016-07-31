@@ -34,7 +34,7 @@
 
     .modal-window {
         opacity: 1;
-        transform: perspective(0) scale(1) rotateX(0deg);
+        transform: none;
         transition: all 0.3s;
     }
 }
@@ -46,7 +46,7 @@
 
     .modal-window {
         opacity: 1;
-        transform: perspective(0) scale(1) rotateX(0deg);
+        transform: none;
     }
 }
 
@@ -58,7 +58,7 @@
 
     .modal-window {
         opacity: 0;
-        transform: perspective(800px) scale(0.7) rotateX(90deg) translateZ(200px);
+        transform: perspective(800px) scale(0.7) rotateX(-90deg);
         transform-style: preserve-3d;
         transition: all .3s;
     }
