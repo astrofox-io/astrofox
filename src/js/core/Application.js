@@ -69,7 +69,7 @@ class Application extends EventEmitter {
                 if (root.submenu) {
                     root.submenu.forEach(item => {
                         if (!item.role) {
-                            let action = `${root.label} / ${item.label}`;
+                            let action = `${root.label}/${item.label}`;
                             item.click = this.menuAction.bind(this, action);
                         }
                     }, this);
