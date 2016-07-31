@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const { Events } = require('../core/Global.js');
 const Application = require('../core/Application.js');
@@ -181,7 +182,7 @@ class App extends React.Component {
     }
 
     hideModal() {
-        this.setState({ showModal: false });
+        this.setState({ showModal: false, modal: null });
     }
 
     loadAudioFile(file) {
@@ -202,9 +203,12 @@ class App extends React.Component {
                 <Header />
                 <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
                 <div id="body">
-                    <Overlay visible={this.state.showModal}>
+                    <ReactCSSTransitionGroup
+                        transitionName="overlay"
+                        transitionEnterTimeout={300}
+                        transitionLeaveTimeout={300}>
                         {this.state.modal}
-                    </Overlay>
+                    </ReactCSSTransitionGroup>
                     <div id="viewport">
                         <Stage ref="stage" onFileDropped={this.loadAudioFile} />
                         <Spectrum ref="spectrum" />
