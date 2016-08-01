@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const { Events } = require('../core/Global.js');
 const Application = require('../core/Application.js');
@@ -31,8 +30,8 @@ class App extends React.Component {
 
         this.state = {
             text: '',
-            showModal: false,
-            modal: null
+            modal: null,
+            error: null
         };
     }
 
@@ -50,10 +49,6 @@ class App extends React.Component {
 
         Events.on('show_modal', (content) => {
             this.showModal(content);
-        }, this);
-
-        Events.on('hide_modal', () => {
-            this.hideModal();
         }, this);
 
         Events.on('audio_file_loading', () => {
@@ -149,7 +144,7 @@ class App extends React.Component {
                 break;
 
             case 'Edit/Settings':
-                this.showModal('SETTINGS', <Settings />);
+                this.showModal('SETTINGS', <Settings key="settings" onClose={this.hideModal} />);
                 break;
 
             case 'View/Control Dock':
@@ -158,17 +153,22 @@ class App extends React.Component {
                 break;
 
             case 'Help/About':
-                this.showModal('ABOUT', <About />);
+                this.showModal('ABOUT', <About key="about" onClose={this.hideModal} />);
                 break;
         }
     }
 
     showError(error) {
-        this.showModal(
-            'ERROR',
-            <div className="message">{error.message}</div>,
-            [{ text: 'OK', click: this.hideModal }]
+        let onClose = () => this.setState({ error: null }),
+            buttons = [{ text: 'OK', click: onClose }];
+
+        let modal = (
+            <ModalWindow title="ERROR" buttons={buttons} onClose={onClose}>
+                <div className="message">{error.message}</div>
+            </ModalWindow>
         );
+
+        this.setState({ error: modal });
     }
 
     showModal(title, content, buttons) {
@@ -178,11 +178,11 @@ class App extends React.Component {
             </ModalWindow>
         );
 
-        this.setState({ showModal: true, modal: modal });
+        this.setState({ modal: modal });
     }
 
     hideModal() {
-        this.setState({ showModal: false, modal: null });
+        this.setState({ modal: null });
     }
 
     loadAudioFile(file) {
@@ -203,12 +203,6 @@ class App extends React.Component {
                 <Header />
                 <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
                 <div id="body">
-                    <ReactCSSTransitionGroup
-                        transitionName="overlay"
-                        transitionEnterTimeout={300}
-                        transitionLeaveTimeout={300}>
-                        {this.state.modal}
-                    </ReactCSSTransitionGroup>
                     <div id="viewport">
                         <Stage ref="stage" onFileDropped={this.loadAudioFile} />
                         <Spectrum ref="spectrum" />
@@ -217,6 +211,10 @@ class App extends React.Component {
                         <Player ref="player" />
                     </div>
                     <ControlDock ref="dock" />
+                    <Overlay visible={this.state.modal || this.state.error}>
+                        {this.state.modal}
+                        {this.state.error}
+                    </Overlay>
                 </div>
                 <Footer text={this.state.text} />
                 <Preload />

@@ -89,6 +89,12 @@ class Application extends EventEmitter {
         scene.addElement(new DisplayLibrary.TextDisplay());
 
         Events.emit('layers_update');
+
+        // Handle errors
+        window.onerror = (msg, src, line, col, err) => {
+            this.raiseError(msg, err);
+            return true;
+        };
         
         // Start rendering
         this.startRender();

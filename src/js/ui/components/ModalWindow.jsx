@@ -16,7 +16,7 @@ const ModalWindow = (props) => {
     }
 
     return (
-        <div className="overlay">
+        <div className="modal">
             <div className="background" />
             <div className="modal-window">
                 <div className="header">

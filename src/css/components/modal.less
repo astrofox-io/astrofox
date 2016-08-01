@@ -1,0 +1,131 @@
+.modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    z-index: 1;
+
+    .background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: 0.5;
+        z-index: 2;
+    }
+}
+
+.modal-enter {
+    .background {
+        opacity: 0;
+    }
+
+    .modal-window {
+        opacity: 0;
+        transform: perspective(800px) scale(0.7) rotateX(-90deg);
+        transform-style: preserve-3d;
+    }
+}
+
+.modal-enter-active {
+    .background {
+        opacity: 0.5;
+        transition: opacity .3s ease-in;
+    }
+
+    .modal-window {
+        opacity: 1;
+        transform: none;
+        transition: all 0.3s;
+    }
+}
+
+.modal-leave {
+    .background {
+        opacity: 0.5;
+    }
+
+    .modal-window {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.modal-leave-active {
+    .background {
+        opacity: 0;
+        transition: opacity .3s ease-in;
+    }
+
+    .modal-window {
+        opacity: 0;
+        box-shadow: none;
+        transform: perspective(800px) scale(0.7) rotateX(-90deg);
+        transform-style: preserve-3d;
+        transition: all .3s;
+    }
+}
+
+.modal-window {
+    margin: auto;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 5px 5px 40px rgba(0,0,0,0.5);
+    z-index: 3;
+
+    .header {
+        position: relative;
+        background-color: @bg-level1-color;
+        padding: 10px;
+        text-align: center;
+        letter-spacing: 2px;
+    }
+
+    .body {
+        position: relative;
+        min-height: 100px;
+        background-color: @bg-color;
+        display: flex;
+    }
+
+    .buttons {
+        background-color: @bg-color;
+        text-align: center;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: @base-color;
+        padding: 8px 10px;
+        border-radius: 3px;
+        margin: 10px 5px;
+        cursor: default;
+
+        &:hover {
+            background-color: lighten(@base-color, 3%);
+        }
+    }
+
+    .close-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 14px;
+        line-height: 24px;
+        height: 24px;
+        width: 24px;
+        text-align: center;
+        letter-spacing: 0;
+
+        &:hover {
+            color: darken(@text-color, 10%);
+            background-color: @base-color;
+        }
+    }
+
+    .message {
+        margin: auto;
+        padding: 20px;
+    }
+}

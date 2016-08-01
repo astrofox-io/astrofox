@@ -37,13 +37,14 @@ class Settings extends React.Component {
 
     onSave() {
         Application.saveConfig(this.state, () => {
-            Events.emit('hide_modal');
             Events.emit('canvas_size_update', canvasSizes[this.state.canvasSize]);
+
+            this.props.onClose();
         });
     }
 
     onCancel() {
-        Events.emit('hide_modal');
+        this.props.onClose();
     }
 
     render() {
@@ -115,6 +116,10 @@ class Settings extends React.Component {
         );
     }
 }
+
+Settings.defaultProps = {
+    onClose: () => {}
+};
 
 const CanvasSizeInput = (props) => {
     let options = Object.keys(canvasSizes).map((key, index) => {
