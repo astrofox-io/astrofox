@@ -35,7 +35,7 @@ class FrameBuffer {
             canvas = this.canvas;
 
         if (renderer) {
-            renderer.setScissor(width, height);
+            renderer.setSize(width, height);
         }
         else {
             canvas.width = width;
