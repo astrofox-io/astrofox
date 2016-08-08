@@ -54,13 +54,13 @@ class SelectInput extends React.Component {
             }
 
             return (
-                <li
+                <div
                     key={index}
                     className={classNames('input-option', {'input-option-separator': item.separator})}
                     style={item.style}
                     onMouseDown={this.onItemClick.bind(this, item)}>
                     {item.name}
-                </li>
+                </div>
             );
         }, this);
 
@@ -76,11 +76,11 @@ class SelectInput extends React.Component {
                     onBlur={this.onBlur}
                     readOnly="true"
                 />
-                <ul
+                <div
                     className="input-options"
                     style={style}>
                     {items}
-                </ul>
+                </div>
             </div>
         );
     }

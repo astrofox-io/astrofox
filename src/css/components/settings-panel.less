@@ -1,14 +1,14 @@
 .settings-panel {
     display: flex;
     flex-direction: column;
-    width: 700px;
+    width: 760px;
     height: 400px;
 
-    fieldset {
-        margin-bottom: 8px;
+    .group {
+        margin-bottom: 16px;
     }
 
-    legend {
+    .header {
         position: relative;
         color: @text-level1-color;
         font-weight: bold;
@@ -28,8 +28,23 @@
         }
     }
 
+    .row {
+        display: flex;
+        margin-bottom: 16px;
+        font-size: 11px;
+
+        .label {
+            width: 50%;
+            margin-right: 20px;
+        }
+    }
+
+    .tab-panel {
+        height: 100%;
+    }
+
     .tab-view {
-        padding: 16px 32px;
+        padding: 16px;
     }
 
     .canvas-option {
@@ -49,5 +64,6 @@
 
     .buttons {
         border-top: 1px solid @bg-level1-color;
+        text-align: center;
     }
 }

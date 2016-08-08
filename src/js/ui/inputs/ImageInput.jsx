@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const Window = require('../../core/Window.js');
 const IO = require('../../core/IO.js');
@@ -71,10 +72,8 @@ class ImageInput extends React.Component {
 
         let reader = new FileReader();
 
-        reader.onload = (fe) => {
-            let data = fe.target.result;
-
-            this.loadImage(data);
+        reader.onload = (e) => {
+            this.loadImage(e.target.result);
         };
 
         reader.readAsDataURL(file);
@@ -93,10 +92,12 @@ class ImageInput extends React.Component {
         let props = this.props,
             hasImage = (props.src && props.src !== BLANK_IMAGE),
             style = { display: (hasImage) ? 'inline-block' : 'none' },
-            classes = 'input-image-icon ',
+            classes = classNames({
+                'input-image-icon': true,
+                'icon-circle-with-cross': hasImage,
+                'icon-folder-open-empty': !hasImage
+            }),
             onClick = (hasImage) ? this.onDelete : this.onClick;
-
-        classes += (hasImage) ? 'icon-circle-with-cross' : 'icon-folder-open-empty';
 
         return (
             <div

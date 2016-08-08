@@ -1,6 +1,7 @@
 .input {
-    display: inline-block;
-    vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .input-field {
@@ -225,12 +226,26 @@
     min-width: 200px;
 }
 
-.input-row {
-    display: flex;
-    margin-bottom: 16px;
+.input-button {
+    color: @text-color;
+    padding: 0 5px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    border: 1px solid @border-color;
+    background-color: @bg-level1-color;
+    border-radius: 2px;
+    display: inline-block;
 
-    label {
-        flex: 1;
-        margin-right: 20px;
+    &:hover {
+        background-color: @base-color;
+    }
+}
+
+.input-button-disabled {
+    color: darken(@text-color, 60%);
+
+    &:hover {
+        background-color: @bg-level1-color;
     }
 }

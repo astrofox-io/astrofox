@@ -43,7 +43,7 @@ class App extends React.Component {
         Events.on('pick_control', (props) => {
            this.showModal(
                props.title,
-               <ControlPicker scene={props.scene} items={props.items} />
+               <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal} />
            );
         });
 

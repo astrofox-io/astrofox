@@ -406,6 +406,10 @@ class Application extends EventEmitter {
             });
 
             Events.emit('layers_update');
+
+            if (data.stage) {
+                this.stage.update(data.stage.options);
+            }
         }
         else {
             this.raiseError('Invalid project data.');

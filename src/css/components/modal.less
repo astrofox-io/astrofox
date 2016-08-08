@@ -74,7 +74,7 @@
     box-shadow: 5px 5px 40px rgba(0,0,0,0.5);
     z-index: 3;
 
-    .header {
+    & > .header {
         position: relative;
         background-color: @bg-level1-color;
         padding: 10px;
@@ -82,14 +82,14 @@
         letter-spacing: 2px;
     }
 
-    .body {
+    & > .body {
         position: relative;
         min-height: 100px;
         background-color: @bg-color;
         display: flex;
     }
 
-    .buttons {
+    & > .buttons {
         background-color: @bg-color;
         text-align: center;
     }

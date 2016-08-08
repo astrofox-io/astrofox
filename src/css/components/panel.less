@@ -12,7 +12,7 @@
         flex-shrink: 0;
     }
 
-    .button-group {
+    .action-panel {
         padding: 5px;
         width: 100%;
         background-color: @bg-color;
@@ -20,29 +20,5 @@
         border-bottom: 1px solid @border-bottom-color;
         overflow: hidden;
         flex-shrink: 0;
-
-        .button {
-            color: @text-color;
-            padding: 0 5px;
-            line-height: 20px;
-            margin-right: 5px;
-            text-align: center;
-            border: 1px solid @border-color;
-            background-color: @bg-level1-color;
-            border-radius: 2px;
-            display: inline-block;
-        }
-
-        .button:hover {
-            background-color: @base-color;
-        }
-
-        .button-disabled {
-            color: darken(@text-color, 60%);
-        }
-
-        .button-disabled:hover {
-            background-color: @bg-level1-color;
-        }
     }
 }

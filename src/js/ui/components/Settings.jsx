@@ -6,6 +6,7 @@ const Application = require('../../core/Application.js');
 const { Events } = require('../../core/Global.js');
 const autoBind = require('../../util/autoBind.js');
 
+const CanvasSettings = require('./CanvasSettings.jsx');
 const ListInput = require('../inputs/ListInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
@@ -13,18 +14,12 @@ const ToggleInput = require('../inputs/ToggleInput');
 const TabPanel = require('../layout/TabPanel.jsx');
 const Tab = require('../layout/Tab.jsx');
 
-const canvasSizes = {
-    '16:9': { width: 854, height: 480 },
-    '4:3': { width: 640, height: 480 },
-    '1:1': { width: 480, height: 480 }
-};
-
 class Settings extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = Application.config;
+        this.state = Object.assign({}, Application.config);
     }
 
     onChange(name, val) {
@@ -37,7 +32,7 @@ class Settings extends React.Component {
 
     onSave() {
         Application.saveConfig(this.state, () => {
-            Events.emit('canvas_size_update', canvasSizes[this.state.canvasSize]);
+            Application.stage.update(this.refs.canvasSettings.getSettings());
 
             this.props.onClose();
         });
@@ -52,60 +47,56 @@ class Settings extends React.Component {
 
         return (
             <div className="settings-panel">
-                <TabPanel tabPosition="left" className="flex">
+                <TabPanel tabPosition="left">
                     <Tab name="Project">
-                        <fieldset>
-                            <div className="input-row">
-                                <label>Canvas Size</label>
-                                <CanvasSizeInput name="canvasSize" value={state.canvasSize} onChange={this.onChange} />
-                            </div>
-                        </fieldset>
+                        <CanvasSettings ref="canvasSettings" values={Application.stage.options} />
                     </Tab>
 
                     <Tab name="General">
-                        <fieldset>
-                            <div className="input-row">
-                                <label>Automatically check for updates</label>
-                                <ToggleInput name="checkForUpdates" value={state.checkForUpdates} onChange={this.onChange} />
-                            </div>
-                            <div className="input-row">
-                                <label>Automatically download and install updates</label>
-                                <ToggleInput name="downloadUpdates" value={state.downloadUpdates} onChange={this.onChange} />
-                            </div>
-                            <div className="input-row">
-                                <label>Show FPS</label>
+                        <div className="group">
+                            <div className="header">Interface</div>
+                            <div className="row">
+                                <span className="label">Show FPS</span>
                                 <ToggleInput name="showFPS" value={state.showFPS} onChange={this.onChange} />
                             </div>
-                        </fieldset>
+                        </div>
 
-                        <fieldset>
-                            <legend>Fonts</legend>
-                            <div className="input-row">
-                                <label>System Fonts</label>
+                        <div className="group">
+                            <div className="header">Fonts</div>
+                            <div className="row">
+                                <span className="label">System Fonts</span>
                                 <ListInput name="systemFonts" options={state.systemFonts} onChange={this.onChange} />
                             </div>
-                        </fieldset>
+                        </div>
 
-                        <fieldset>
-                            <legend>Video</legend>
-                            <div className="input-row">
-                                <label>FFmpeg location</label>
+                        <div className="group">
+                            <div className="header">Video</div>
+                            <div className="row">
+                                <span className="label">FFmpeg location</span>
                                 <TextInput name="ffmpegPath" size="40" value={state.ffmpegPath} onChange={this.onChange} />
                             </div>
-                        </fieldset>
+                        </div>
                     </Tab>
 
                     <Tab name="Advanced">
-                        <fieldset>
-                            <div className="input-row">
-                                <label>Send usage statistics</label>
+                        <div className="group">
+                            <div className="row">
+                                <span className="label">Automatically check for updates</span>
+                                <ToggleInput name="checkForUpdates" value={state.checkForUpdates} onChange={this.onChange} />
+                            </div>
+                            <div className="row">
+                                <span className="label">Automatically download and install updates</span>
+                                <ToggleInput name="downloadUpdates" value={state.downloadUpdates} onChange={this.onChange} />
+                            </div>
+                            <div className="row">
+                                <span className="label">Send usage statistics</span>
                                 <ToggleInput name="sendUsageStats" value={state.sendUsageStats} onChange={this.onChange} />
                             </div>
-                            <div className="input-row">
-                                <label>Send crash reports</label>
+                            <div className="row">
+                                <span className="label">Send crash reports</span>
                                 <ToggleInput name="sendCrashReports" value={state.sendCrashReports} onChange={this.onChange} />
                             </div>
-                        </fieldset>
+                        </div>
                     </Tab>
                 </TabPanel>
                 <div className="buttons">
@@ -119,29 +110,6 @@ class Settings extends React.Component {
 
 Settings.defaultProps = {
     onClose: () => {}
-};
-
-const CanvasSizeInput = (props) => {
-    let options = Object.keys(canvasSizes).map((key, index) => {
-        let { width, height } = canvasSizes[key],
-            ratio = 60 / height;
-
-        return (
-            <div
-                key={index}
-                className={classNames('canvas-option', {'canvas-option-selected': (props.value === key)})}
-                style={{width: width * ratio, height: height * ratio}}
-                onClick={() => props.onChange(props.name, key)}>
-                {key}
-            </div>
-        );
-    });
-
-    return (
-        <div className="flex">
-            {options}
-        </div>
-    );
 };
 
 module.exports = Settings;

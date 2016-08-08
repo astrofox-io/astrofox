@@ -14,6 +14,8 @@ const ControlPicker = (props) => {
             props.scene.addElement(obj);
 
             Events.emit('layers_update', obj);
+
+            props.onClose();
         };
 
         return (

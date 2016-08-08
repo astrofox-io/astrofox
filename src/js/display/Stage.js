@@ -10,8 +10,10 @@ const FrameBuffer = require('../graphics/FrameBuffer.js');
 const { Events } = require('../core/Global.js');
 
 const defaults = {
+    aspectRatio: '16:9',
     width: 854,
-    height: 480
+    height: 480,
+    backgroundColor: '#000000'
 };
 
 class Stage extends Display {
@@ -26,12 +28,8 @@ class Stage extends Display {
     
         this.composer = new Composer(this.renderer);
 
-        this.buffer2D = new FrameBuffer('2d');
-        this.buffer3D = new FrameBuffer('webgl');
-
-        Events.on('canvas_size_update', size => {
-            this.update(size);
-        }, this);
+        this.buffer2D = new FrameBuffer('2d', defaults);
+        this.buffer3D = new FrameBuffer('webgl', defaults);
     }
 
     update(options) {
