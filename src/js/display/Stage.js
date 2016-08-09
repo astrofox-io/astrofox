@@ -30,6 +30,8 @@ class Stage extends Display {
 
         this.buffer2D = new FrameBuffer('2d', defaults);
         this.buffer3D = new FrameBuffer('webgl', defaults);
+
+        this.backgroundColor = new THREE.Color(defaults.backgroundColor);
     }
 
     update(options) {
@@ -40,7 +42,7 @@ class Stage extends Display {
         }
 
         if (options.backgroundColor !== undefined) {
-            this.renderer.setClearColor(new THREE.Color(options.backgroundColor), 1);
+            this.backgroundColor.set(options.backgroundColor);
         }
 
         return changed;
@@ -126,17 +128,12 @@ class Stage extends Display {
         let options, buffer,
             composer = this.composer;
 
-        composer.clearScreen(true, true, true);
-        composer.clearBuffer(true, true, true);
+        composer.clear(this.backgroundColor, 1);
 
-        this.scenes.nodes.forEach((scene, index) => {
+        this.scenes.nodes.forEach(scene => {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
                 options = Object.assign({}, scene.options);
-
-                if (index === 0) {
-                    options.blendMode = 'None';
-                }
 
                 composer.blendBuffer(buffer, options);
             }

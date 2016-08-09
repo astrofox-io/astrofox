@@ -59,12 +59,37 @@ class Composer extends EventEmitter {
     }
 
     clearScreen(color, depth, stencil) {
+        color = color !== false;
+        depth = depth !== false;
+        stencil = stencil !== false;
+
         this.renderer.clear(color, depth, stencil);
     }
 
     clearBuffer(color, depth, stencil) {
+        color = color !== false;
+        depth = depth !== false;
+        stencil = stencil !== false;
+
         this.renderer.clearTarget(this.readTarget, color, depth, stencil);
         this.renderer.clearTarget(this.writeTarget, color, depth, stencil);
+    }
+
+    clear(color, alpha) {
+        let renderer = this.renderer,
+            clearColor = renderer.getClearColor(),
+            clearAlpha = renderer.getClearAlpha();
+
+        if (color) {
+            renderer.setClearColor(color, alpha);
+        }
+
+        this.clearScreen();
+        this.clearBuffer();
+
+        if (color) {
+            renderer.setClearColor(clearColor, clearAlpha);
+        }
     }
 
     dispose() {

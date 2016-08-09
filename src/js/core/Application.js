@@ -307,9 +307,9 @@ class Application extends EventEmitter {
                 }
             }
         )
-            .catch(error => {
-                this.raiseError('Failed to open project file.', error);
-            });
+        .catch(error => {
+            this.raiseError('Failed to open project file.', error);
+        });
     }
 
     loadControls(data) {
@@ -366,9 +366,9 @@ class Application extends EventEmitter {
 
             if (callback) callback();
         })
-            .catch(error => {
-                this.raiseError('Failed to save config file.', error);
-            });
+        .catch(error => {
+            this.raiseError('Failed to save config file.', error);
+        });
     }
 
     saveImage(filename) {

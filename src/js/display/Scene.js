@@ -209,11 +209,10 @@ class Scene extends Display {
             this.buffer3D.context;
     }
 
-    clearScene() {
+    clear() {
         this.buffer2D.clear();
         this.buffer3D.clear();
-
-        this.composer.clearBuffer(true, true, true);
+        this.composer.clearBuffer();
     }
 
     render(data) {
@@ -222,7 +221,7 @@ class Scene extends Display {
             composer = this.composer,
             hasGeometry = false;
 
-        this.clearScene();
+        this.clear();
 
         if (displays.size > 0 || effects.size > 0) {
             displays.forEach(display => {
