@@ -69,7 +69,7 @@ class PixelateControl extends React.Component {
             <div className="control">
                 <div className="header">PIXELATE</div>
                 <div className="row">
-                    <label className="label">Type</label>
+                    <span className="label">Type</span>
                     <SelectInput
                         name="type"
                         size="20"
@@ -78,7 +78,7 @@ class PixelateControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Size</label>
+                    <span className="label">Size</span>
                     <NumberInput
                         name="size"
                         size="3"

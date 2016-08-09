@@ -68,7 +68,7 @@ class BlurControl extends React.Component {
             <div className="control">
                 <div className="header">BLUR</div>
                 <div className="row">
-                    <label className="label">Type</label>
+                    <span className="label">Type</span>
                     <SelectInput
                         name="type"
                         size="20"
@@ -77,7 +77,7 @@ class BlurControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Amount</label>
+                    <span className="label">Amount</span>
                     <NumberInput
                         name="amount"
                         size="3"

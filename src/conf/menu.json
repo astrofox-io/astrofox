@@ -36,6 +36,9 @@
     "label": "Edit",
     "submenu": [
       {
+        "label": "Canvas"
+      },
+      {
         "label": "Settings"
       }
     ]

@@ -62,7 +62,7 @@ class GlowControl extends React.Component {
             <div className="control">
                 <div className="header">GLOW</div>
                 <div className="row">
-                    <label className="label">Amount</label>
+                    <span className="label">Amount</span>
                     <NumberInput
                         name="amount"
                         size="3"
@@ -82,7 +82,7 @@ class GlowControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Intensity</label>
+                    <span className="label">Intensity</span>
                     <NumberInput
                         name="intensity"
                         size="3"

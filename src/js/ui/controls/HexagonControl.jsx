@@ -59,7 +59,7 @@ class HexagonControl extends React.Component {
             <div className="control">
                 <div className="header">HEXAGON</div>
                 <div className="row">
-                    <label className="label">Scale</label>
+                    <span className="label">Scale</span>
                     <NumberInput
                         name="scale"
                         size="3"

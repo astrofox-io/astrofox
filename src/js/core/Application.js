@@ -100,8 +100,118 @@ class Application extends EventEmitter {
         this.startRender();
     }
 
+    startRender() {
+        if (!this.frameData.id) {
+            this.render();
+        }
+    }
+
+    stopRender() {
+        let id = this.frameData.id;
+        if (id) {
+            cancelAnimationFrame(id);
+            this.frameData.id = null;
+        }
+    }
+
+    getFrameData() {
+        let data = this.frameData;
+
+        data.fft = this.spectrum.getFrequencyData();
+        data.td = this.spectrum.getTimeData();
+        data.playing = this.player.isPlaying();
+
+        return data;
+    }
+
+    updateFPS(now) {
+        let stats = this.stats;
+
+        if (!stats.time) {
+            stats.time = now;
+        }
+
+        stats.frames += 1;
+
+        if (now > stats.time + FPS_POLL_INTERVAL) {
+            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.ms = (now - stats.time) / stats.frames;
+            stats.time = now;
+            stats.frames = 0;
+            stats.stack.copyWithin(1, 0);
+            stats.stack[0] = stats.fps;
+
+            Events.emit('tick', stats);
+        }
+    }
+
+    updateAnalyzer() {
+        let player = this.player,
+            spectrum = this.spectrum,
+            sound = player.getSound('audio');
+
+        if (sound) {
+            spectrum.clearFrequencyData();
+            spectrum.clearTimeData();
+            spectrum.enabled = (sound.playing || sound.paused);
+        }
+    }
+
     menuAction(action, menuItem, browserWindow, event) {
         Events.emit('menu_action', action, !menuItem.checked);
+    }
+
+    raiseError(msg, err) {
+        if (err) {
+            Logger.error(err);
+        }
+
+        Events.emit('error', new Error(msg));
+    }
+
+    render() {
+        let now = window.performance.now(),
+            data = this.getFrameData(),
+            id = window.requestAnimationFrame(this.render.bind(this));
+
+        data.delta = now - data.time;
+        data.time = now;
+        data.id = id;
+
+        this.stage.renderFrame(data);
+
+        Events.emit('render', data);
+
+        this.updateFPS(now);
+    }
+
+    renderFrame(frame, fps, callback) {
+        let data, image,
+            player = this.player,
+            spectrum = this.spectrum,
+            stage = this.stage,
+            sound = player.getSound('audio'),
+            source = this.source = this.audioContext.createBufferSource();
+
+        source.buffer = sound.buffer;
+        source.connect(spectrum.analyzer);
+
+        source.onended = () => {
+            data = this.getFrameData();
+            data.delta = 1000 / fps;
+
+            stage.renderFrame(data, () => {
+                stage.getImage(buffer => {
+                    image = buffer;
+                });
+            });
+
+            source.disconnect();
+
+            callback(frame + 1, image);
+        };
+
+        source.start(0, frame / fps, 1 / fps);
     }
 
     loadConfig() {
@@ -117,19 +227,6 @@ class Application extends EventEmitter {
                 this.config = Object.assign({}, appConfig, config);
             });
         }
-    }
-
-    saveConfig(config, callback) {
-        let data = JSON.stringify(config);
-
-        IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
-            Logger.log('Config file saved.', config);
-
-            if (callback) callback();
-        })
-        .catch(error => {
-            this.raiseError('Failed to save config file.', error);
-        });
     }
 
     loadAudioFile(file) {
@@ -194,161 +291,6 @@ class Application extends EventEmitter {
         });
     }
 
-    startRender() {
-        if (!this.frameData.id) {
-            this.render();
-        }
-    }
-
-    stopRender() {
-        let id = this.frameData.id;
-        if (id) {
-            cancelAnimationFrame(id);
-            this.frameData.id = null;
-        }
-    }
-
-    getFrameData() {
-        let data = this.frameData;
-
-        data.fft = this.spectrum.getFrequencyData();
-        data.td = this.spectrum.getTimeData();
-        data.playing = this.player.isPlaying();
-
-        return data;
-    }
-
-    updateFPS(now) {
-        let stats = this.stats;
-
-        if (!stats.time) {
-            stats.time = now;
-        }
-
-        stats.frames += 1;
-
-        if (now > stats.time + FPS_POLL_INTERVAL) {
-            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
-            stats.ms = (now - stats.time) / stats.frames;
-            stats.time = now;
-            stats.frames = 0;
-            stats.stack.copyWithin(1, 0);
-            stats.stack[0] = stats.fps;
-
-            Events.emit('tick', stats);
-        }
-    }
-
-    render() {
-        let now = window.performance.now(),
-            data = this.getFrameData(),
-            id = window.requestAnimationFrame(this.render.bind(this));
-
-        data.delta = now - data.time;
-        data.time = now;
-        data.id = id;
-
-        this.stage.renderFrame(data);
-
-        Events.emit('render', data);
-
-        this.updateFPS(now);
-    }
-
-    saveImage(filename) {
-        let stage = this.stage,
-            data = this.getFrameData();
-
-        stage.renderFrame(data, () => {
-            stage.getImage(buffer => {
-                IO.writeFile(filename, buffer)
-                    .catch(error => {
-                        this.raiseError('Failed to save image file.', error);
-                    })
-                    .then(() => {
-                        Logger.log('Image saved. (%s)', filename);
-                    });
-            });
-        });
-    }
-
-    saveVideo(filename) {
-        let player = this.player,
-            sound = player.getSound('audio'),
-            renderer = new VideoRenderer(filename, this.audioFile, {
-                fps: 29.97,
-                frames: 29.97 * 5
-            });
-
-        if (sound) {
-            this.stopRender();
-
-            player.stop('audio');
-
-            this.spectrum.enabled = true;
-
-            renderer.renderVideo(
-                this.renderFrame.bind(this),
-                this.startRender.bind(this)
-            );
-        }
-        else {
-            Events.emit('error', new Error('No audio loaded.'));
-        }
-
-        Logger.log('Video saved. (%s)', filename);
-    }
-
-    renderFrame(frame, fps, callback) {
-        let data, image,
-            player = this.player,
-            spectrum = this.spectrum,
-            stage = this.stage,
-            sound = player.getSound('audio'),
-            source = this.source = this.audioContext.createBufferSource();
-
-        source.buffer = sound.buffer;
-        source.connect(spectrum.analyzer);
-
-        source.onended = () => {
-            data = this.getFrameData();
-            data.delta = 1000 / fps;
-
-            stage.renderFrame(data, () => {
-                stage.getImage(buffer => {
-                    image = buffer;
-                });
-            });
-
-            source.disconnect();
-
-            callback(frame + 1, image);
-        };
-
-        source.start(0, frame / fps, 1 / fps);
-    }
-
-    saveProject(file) {
-        let data, sceneData;
-
-        sceneData = this.stage.getScenes().map(scene => {
-            return scene.toJSON();
-        });
-
-        data = JSON.stringify({
-            version: VERSION,
-            stage: this.stage.toJSON(),
-            scenes: sceneData
-        });
-
-        IO.writeFileCompressed(file, data).then(() => {
-            Logger.log('Project saved. (%s)', file);
-        })
-        .catch(error => {
-            this.raiseError('Failed to save project file.', error);
-        });
-    }
-
     loadProject(file) {
         IO.readFileCompressed(file).then(
             data => {
@@ -365,9 +307,9 @@ class Application extends EventEmitter {
                 }
             }
         )
-        .catch(error => {
-            this.raiseError('Failed to open project file.', error);
-        });
+            .catch(error => {
+                this.raiseError('Failed to open project file.', error);
+            });
     }
 
     loadControls(data) {
@@ -416,24 +358,82 @@ class Application extends EventEmitter {
         }
     }
 
-    updateAnalyzer() {
-        let player = this.player,
-            spectrum = this.spectrum,
-            sound = player.getSound('audio');
+    saveConfig(config, callback) {
+        let data = JSON.stringify(config);
 
-        if (sound) {
-            spectrum.clearFrequencyData();
-            spectrum.clearTimeData();
-            spectrum.enabled = (sound.playing || sound.paused);
-        }
+        IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
+            Logger.log('Config file saved.', config);
+
+            if (callback) callback();
+        })
+            .catch(error => {
+                this.raiseError('Failed to save config file.', error);
+            });
     }
 
-    raiseError(msg, err) {
-        if (err) {
-            Logger.error(err);
+    saveImage(filename) {
+        let stage = this.stage,
+            data = this.getFrameData();
+
+        stage.renderFrame(data, () => {
+            stage.getImage(buffer => {
+                IO.writeFile(filename, buffer)
+                    .catch(error => {
+                        this.raiseError('Failed to save image file.', error);
+                    })
+                    .then(() => {
+                        Logger.log('Image saved. (%s)', filename);
+                    });
+            });
+        });
+    }
+
+    saveVideo(filename) {
+        let player = this.player,
+            sound = player.getSound('audio'),
+            renderer = new VideoRenderer(filename, this.audioFile, {
+                fps: 29.97,
+                frames: 29.97 * 5
+            });
+
+        if (sound) {
+            this.stopRender();
+
+            player.stop('audio');
+
+            this.spectrum.enabled = true;
+
+            renderer.renderVideo(
+                this.renderFrame.bind(this),
+                this.startRender.bind(this)
+            );
+        }
+        else {
+            Events.emit('error', new Error('No audio loaded.'));
         }
 
-        Events.emit('error', new Error(msg));
+        Logger.log('Video saved. (%s)', filename);
+    }
+
+    saveProject(file) {
+        let data, sceneData;
+
+        sceneData = this.stage.getScenes().map(scene => {
+            return scene.toJSON();
+        });
+
+        data = JSON.stringify({
+            version: VERSION,
+            stage: this.stage.toJSON(),
+            scenes: sceneData
+        });
+
+        IO.writeFileCompressed(file, data).then(() => {
+            Logger.log('Project saved. (%s)', file);
+        })
+        .catch(error => {
+            this.raiseError('Failed to save project file.', error);
+        });
     }
 }
 

@@ -64,7 +64,7 @@ class GeometryControl extends React.Component {
             <div className="control">
                 <div className="header">3D GEOMETRY</div>
                 <div className="row">
-                    <label className="label">Shape</label>
+                    <span className="label">Shape</span>
                     <SelectInput
                         name="shape"
                         size="20"
@@ -73,7 +73,7 @@ class GeometryControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Material</label>
+                    <span className="label">Material</span>
                     <SelectInput
                         name="material"
                         size="20"
@@ -82,7 +82,7 @@ class GeometryControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Shading</label>
+                    <span className="label">Shading</span>
                     <SelectInput
                         name="shading"
                         size="20"
@@ -91,35 +91,35 @@ class GeometryControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Color</label>
+                    <span className="label">Color</span>
                     <ColorInput
                         name="color"
                         value={state.color}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Wireframe</label>
+                    <span className="label">Wireframe</span>
                     <ToggleInput
                         name="wireframe"
                         value={state.wireframe}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Edges</label>
+                    <span className="label">Edges</span>
                     <ToggleInput
                         name="edges"
                         value={state.edges}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Edge Color</label>
+                    <span className="label">Edge Color</span>
                     <ColorInput
                         name="edgeColor"
                         value={state.edgeColor}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">X</label>
+                    <span className="label">X</span>
                     <NumberInput
                         name="x"
                         size="3"
@@ -137,7 +137,7 @@ class GeometryControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Y</label>
+                    <span className="label">Y</span>
                     <NumberInput
                         name="y"
                         size="3"
@@ -155,7 +155,7 @@ class GeometryControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Z</label>
+                    <span className="label">Z</span>
                     <NumberInput
                         name="z"
                         size="3"
@@ -173,7 +173,7 @@ class GeometryControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Opacity</label>
+                    <span className="label">Opacity</span>
                     <NumberInput
                         name="opacity"
                         size="3"

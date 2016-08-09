@@ -135,7 +135,7 @@ class ImageControl extends React.Component {
             <div className="control">
                 <div className="header">IMAGE</div>
                 <div className="row">
-                    <label className="label">Image</label>
+                    <span className="label">Image</span>
                     <ImageInput
                         name="image"
                         ref="image"
@@ -144,12 +144,12 @@ class ImageControl extends React.Component {
                     />
                 </div>
                 <div className="row">
-                    <label className="label">
+                    <span className="label">
                         Width
                         <span className={linkClasses}
                            onClick={this.onLinkClick}
                         />
-                    </label>
+                    </span>
                     <NumberInput
                         name="width"
                         size="3"
@@ -171,12 +171,12 @@ class ImageControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">
+                    <span className="label">
                         Height
                         <span className={linkClasses}
                            onClick={this.onLinkClick}
                         />
-                    </label>
+                    </span>
                     <NumberInput
                         name="height"
                         size="3"
@@ -198,7 +198,7 @@ class ImageControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">X</label>
+                    <span className="label">X</span>
                     <NumberInput
                         name="x"
                         size="3"
@@ -220,7 +220,7 @@ class ImageControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Y</label>
+                    <span className="label">Y</span>
                     <NumberInput
                         name="y"
                         size="3"
@@ -242,7 +242,7 @@ class ImageControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Rotation</label>
+                    <span className="label">Rotation</span>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -264,7 +264,7 @@ class ImageControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Opacity</label>
+                    <span className="label">Opacity</span>
                     <NumberInput
                         name="opacity"
                         size="3"

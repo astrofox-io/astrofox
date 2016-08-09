@@ -91,7 +91,7 @@ class BarSpectrumControl extends React.Component {
                     BAR SPECTRUM
                 </div>
                 <div className="row">
-                    <label className="label">Max dB</label>
+                    <span className="label">Max dB</span>
                     <NumberInput
                         name="maxDecibels"
                         size="3"
@@ -112,7 +112,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Max Frequency</label>
+                    <span className="label">Max Frequency</span>
                     <NumberInput
                         name="maxFrequency"
                         size="4"
@@ -134,7 +134,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Smoothing</label>
+                    <span className="label">Smoothing</span>
                     <NumberInput
                         name="smoothingTimeConstant"
                         size="3"
@@ -156,7 +156,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Width</label>
+                    <span className="label">Width</span>
                     <NumberInput
                         name="width"
                         size="3"
@@ -176,7 +176,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Height</label>
+                    <span className="label">Height</span>
                     <NumberInput
                         name="height"
                         size="3"
@@ -196,7 +196,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Shadow Height</label>
+                    <span className="label">Shadow Height</span>
                     <NumberInput
                         name="shadowHeight"
                         size="3"
@@ -216,7 +216,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Bar Width</label>
+                    <span className="label">Bar Width</span>
                     <NumberInput
                         name="barWidth"
                         size="3"
@@ -227,7 +227,7 @@ class BarSpectrumControl extends React.Component {
                         hidden={this.state.barWidthAutoSize}
                         onChange={this.onChange}
                     />
-                    <label className="label">Auto-Size</label>
+                    <span className="label">Auto-Size</span>
                     <ToggleInput
                         name="barWidthAutoSize"
                         value={this.state.barWidthAutoSize}
@@ -235,7 +235,7 @@ class BarSpectrumControl extends React.Component {
                     />
                 </div>
                 <div className="row">
-                    <label className="label">Bar Spacing</label>
+                    <span className="label">Bar Spacing</span>
                     <NumberInput
                         name="barSpacing"
                         size="3"
@@ -245,7 +245,7 @@ class BarSpectrumControl extends React.Component {
                         readOnly={this.state.barSpacingAutoSize}
                         hidden={this.state.barSpacingAutoSize}
                         onChange={this.onChange} />
-                    <label className="label">Auto-Size</label>
+                    <span className="label">Auto-Size</span>
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={this.state.barSpacingAutoSize}
@@ -253,7 +253,7 @@ class BarSpectrumControl extends React.Component {
                     />
                 </div>
                 <div className="row">
-                    <label className="label">Bar Color</label>
+                    <span className="label">Bar Color</span>
                     <ColorRangeInput
                         name="color"
                         startColor={this.state.color[0]}
@@ -262,7 +262,7 @@ class BarSpectrumControl extends React.Component {
                     />
                 </div>
                 <div className="row">
-                    <label className="label">Shadow Color</label>
+                    <span className="label">Shadow Color</span>
                     <ColorRangeInput
                         name="shadowColor"
                         startColor={this.state.shadowColor[0]}
@@ -271,7 +271,7 @@ class BarSpectrumControl extends React.Component {
                     />
                 </div>
                 <div className="row">
-                    <label className="label">X</label>
+                    <span className="label">X</span>
                     <NumberInput
                         name="x"
                         size="3"
@@ -291,7 +291,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Y</label>
+                    <span className="label">Y</span>
                     <NumberInput
                         name="y"
                         size="3"
@@ -311,7 +311,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Rotation</label>
+                    <span className="label">Rotation</span>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -331,7 +331,7 @@ class BarSpectrumControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Opacity</label>
+                    <span className="label">Opacity</span>
                     <NumberInput
                         name="opacity"
                         size="3"

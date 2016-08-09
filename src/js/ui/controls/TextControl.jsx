@@ -85,7 +85,7 @@ class TextControl extends React.Component {
             <div className="control">
                 <div className="header">TEXT</div>
                 <div className="row">
-                    <label className="label">Text</label>
+                    <span className="label">Text</span>
                     <TextInput
                         name="text"
                         size="20"
@@ -93,7 +93,7 @@ class TextControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Font</label>
+                    <span className="label">Font</span>
                     <SelectInput
                         name="font"
                         size="20"
@@ -102,7 +102,7 @@ class TextControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Size</label>
+                    <span className="label">Size</span>
                     <NumberInput
                         name="size"
                         size="3"
@@ -111,26 +111,26 @@ class TextControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Bold</label>
+                    <span className="label">Bold</span>
                     <ToggleInput
                         name="bold"
                         value={this.state.bold}
                         onChange={this.onChange} />
-                    <label className="label">Italic</label>
+                    <span className="label">Italic</span>
                     <ToggleInput
                         name="italic"
                         value={this.state.italic}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Color</label>
+                    <span className="label">Color</span>
                     <ColorInput
                         name="color"
                         value={this.state.color}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">X</label>
+                    <span className="label">X</span>
                     <NumberInput
                         name="x"
                         size="3"
@@ -148,7 +148,7 @@ class TextControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Y</label>
+                    <span className="label">Y</span>
                     <NumberInput
                         name="y"
                         size="3"
@@ -166,7 +166,7 @@ class TextControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Rotation</label>
+                    <span className="label">Rotation</span>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -184,7 +184,7 @@ class TextControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Opacity</label>
+                    <span className="label">Opacity</span>
                     <NumberInput
                         name="opacity"
                         size="3"

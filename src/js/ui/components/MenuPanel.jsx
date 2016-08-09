@@ -21,7 +21,7 @@ class MenuPanel extends React.Component {
             return (
                 <div
                     key={index}
-                    className={classNames({'tab', 'tab-active': this.state.activeIndex == index})}
+                    className={classNames('tab', {'tab-active': this.state.activeIndex == index})}
                     onClick={this.onTabClick.bind(this, index)}>{tab}
                 </div>
             );

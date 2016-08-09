@@ -60,7 +60,7 @@ class DotScreenControl extends React.Component {
             <div className="control">
                 <div className="header">DOT SCREEN</div>
                 <div className="row">
-                    <label className="label">Amount</label>
+                    <span className="label">Amount</span>
                     <NumberInput
                         name="scale"
                         size="3"
@@ -82,7 +82,7 @@ class DotScreenControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Angle</label>
+                    <span className="label">Angle</span>
                     <NumberInput
                         name="angle"
                         size="3"

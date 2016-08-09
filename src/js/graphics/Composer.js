@@ -74,12 +74,9 @@ class Composer extends EventEmitter {
     }
 
     setSize(width, height) {
-        let renderTarget = this.writeTarget.clone();
-
-        renderTarget.width = width;
-        renderTarget.height = height;
-
-        this.setRenderTarget(renderTarget);
+        this.renderer.setSize(width, height);
+        this.readTarget.setSize(width, height);
+        this.writeTarget.setSize(width, height);
     }
 
     swapBuffers() {

@@ -59,7 +59,7 @@ class RGBShiftControl extends React.Component {
             <div className="control">
                 <div className="header">RGB SHIFT</div>
                 <div className="row">
-                    <label className="label">Amount</label>
+                    <span className="label">Amount</span>
                     <NumberInput
                         name="amount"
                         size="3"
@@ -81,7 +81,7 @@ class RGBShiftControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Angle</label>
+                    <span className="label">Angle</span>
                     <NumberInput
                         name="angle"
                         size="3"

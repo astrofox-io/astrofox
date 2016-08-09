@@ -72,7 +72,7 @@ class MenuBar extends React.Component {
 
         return (
             <div id="menubar" className="menubar">
-                <ul>{items}</ul>
+                {items}
             </div>
         );
     }

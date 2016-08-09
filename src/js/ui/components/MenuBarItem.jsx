@@ -33,7 +33,7 @@ class MenuBarItem extends React.Component {
 
     render() {
         return (
-            <li className="menubar-item">
+            <div className="menubar-item">
                 <div
                     className={classNames('menubar-text', {'menubar-text-active': this.props.active})}
                     onClick={this.onClick}
@@ -45,7 +45,7 @@ class MenuBarItem extends React.Component {
                     visible={this.props.active}
                     onMenuItemClick={this.onMenuItemClick}
                 />
-            </li>
+            </div>
         );
     }
 }

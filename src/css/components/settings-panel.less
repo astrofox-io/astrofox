@@ -1,8 +1,11 @@
 .settings-panel {
     display: flex;
     flex-direction: column;
-    width: 760px;
-    height: 400px;
+    width: 100%;
+
+    .view {
+        padding: 16px;
+    }
 
     .group {
         margin-bottom: 16px;
@@ -37,29 +40,6 @@
             width: 50%;
             margin-right: 20px;
         }
-    }
-
-    .tab-panel {
-        height: 100%;
-    }
-
-    .tab-view {
-        padding: 16px;
-    }
-
-    .canvas-option {
-        display: inline-block;
-        font-size: 24px;
-        text-align: center;
-        line-height: 60px;
-        border: 1px solid @bg-level1-color;
-        border-radius: 4px;
-        cursor: default;
-        margin: 4px;
-    }
-
-    .canvas-option-selected {
-        border: 1px solid @base-color;
     }
 
     .buttons {

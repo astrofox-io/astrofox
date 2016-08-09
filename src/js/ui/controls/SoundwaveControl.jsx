@@ -72,14 +72,14 @@ class SoundwaveControl extends React.Component {
             <div className="control">
                 <div className="header">SOUNDWAVE</div>
                 <div className="row">
-                    <label className="label">Color</label>
+                    <span className="label">Color</span>
                     <ColorInput
                         name="color"
                         value={this.state.color}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Line Width</label>
+                    <span className="label">Line Width</span>
                     <NumberInput
                         name="lineWidth"
                         size="3"
@@ -100,7 +100,7 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Width</label>
+                    <span className="label">Width</span>
                     <NumberInput
                         name="width"
                         size="3"
@@ -120,7 +120,7 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Height</label>
+                    <span className="label">Height</span>
                     <NumberInput
                         name="height"
                         size="3"
@@ -140,7 +140,7 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">X</label>
+                    <span className="label">X</span>
                     <NumberInput
                         name="x"
                         size="3"
@@ -158,7 +158,7 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Y</label>
+                    <span className="label">Y</span>
                     <NumberInput
                         name="y"
                         size="3"
@@ -176,14 +176,14 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Scrolling</label>
+                    <span className="label">Scrolling</span>
                     <ToggleInput
                         name="scrolling"
                         value={this.state.scrolling}
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Scroll Speed</label>
+                    <span className="label">Scroll Speed</span>
                     <NumberInput
                         name="scrollSpeed"
                         size="3"
@@ -205,7 +205,7 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Rotation</label>
+                    <span className="label">Rotation</span>
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -224,7 +224,7 @@ class SoundwaveControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Opacity</label>
+                    <span className="label">Opacity</span>
                     <NumberInput
                         name="opacity"
                         size="3"

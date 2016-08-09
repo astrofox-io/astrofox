@@ -100,7 +100,7 @@ class SceneControl extends React.Component {
             <div className="control">
                 <div className="header">SCENE</div>
                 <div className="row">
-                    <label className="label">Blending</label>
+                    <span className="label">Blending</span>
                     <SelectInput
                         name="blendMode"
                         size="20"
@@ -109,7 +109,7 @@ class SceneControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Opacity</label>
+                    <span className="label">Opacity</span>
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -131,7 +131,7 @@ class SceneControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Light Intensity</label>
+                    <span className="label">Light Intensity</span>
                     <NumberInput
                         name="lightIntensity"
                         size="3"
@@ -151,7 +151,7 @@ class SceneControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Light Distance</label>
+                    <span className="label">Light Distance</span>
                     <NumberInput
                         name="lightDistance"
                         size="3"
@@ -169,7 +169,7 @@ class SceneControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Camera Zoom</label>
+                    <span className="label">Camera Zoom</span>
                     <NumberInput
                         name="cameraZoom"
                         size="3"

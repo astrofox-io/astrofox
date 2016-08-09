@@ -3,6 +3,7 @@
 const React = require('react');
 const autoBind = require('../../util/autoBind.js');
 
+const Application = require('../../core/Application.js');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 
@@ -24,7 +25,7 @@ class CanvasSettings extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = Object.assign({}, defaults, this.props.values);
+        this.state = Object.assign({}, defaults, Application.stage.options);
     }
 
     onChange(name, val) {
@@ -43,33 +44,40 @@ class CanvasSettings extends React.Component {
         this.props.onClose();
     }
 
-    getSettings() {
-        return this.state;
+    onSave() {
+        Application.stage.update(this.state);
+
+        this.props.onClose();
     }
 
     render() {
         const state = this.state;
 
         return (
-            <div className="group">
-                <div className="header">Canvas</div>
-                <div className="row">
-                    <span className="label">Aspect Ratio</span>
-                    <SelectInput
-                        name="aspectRatio"
-                        size="20"
-                        items={Object.keys(canvasSizes)}
-                        value={state.aspectRatio}
-                        onChange={this.onChange}
-                    />
+            <div className="settings-panel">
+                <div className="view">
+                    <div className="row">
+                        <span className="label">Aspect Ratio</span>
+                        <SelectInput
+                            name="aspectRatio"
+                            size="20"
+                            items={Object.keys(canvasSizes)}
+                            value={state.aspectRatio}
+                            onChange={this.onChange}
+                        />
+                    </div>
+                    <div className="row">
+                        <span className="label">Background Color</span>
+                        <ColorInput
+                            name="backgroundColor"
+                            value={state.backgroundColor}
+                            onChange={this.onChange}
+                        />
+                    </div>
                 </div>
-                <div className="row">
-                    <span className="label">Background Color</span>
-                    <ColorInput
-                        name="backgroundColor"
-                        value={state.backgroundColor}
-                        onChange={this.onChange}
-                    />
+                <div className="buttons">
+                    <div className="button" onClick={this.onSave}>OK</div>
+                    <div className="button" onClick={this.onCancel}>Cancel</div>
                 </div>
             </div>
         );
@@ -77,6 +85,8 @@ class CanvasSettings extends React.Component {
 }
 
 CanvasSettings.defaultProps = {
+    width: 200,
+    height: 100,
     values: {}
 };
 

@@ -6,7 +6,6 @@ const Application = require('../../core/Application.js');
 const { Events } = require('../../core/Global.js');
 const autoBind = require('../../util/autoBind.js');
 
-const CanvasSettings = require('./CanvasSettings.jsx');
 const ListInput = require('../inputs/ListInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
@@ -32,8 +31,6 @@ class Settings extends React.Component {
 
     onSave() {
         Application.saveConfig(this.state, () => {
-            Application.stage.update(this.refs.canvasSettings.getSettings());
-
             this.props.onClose();
         });
     }
@@ -45,14 +42,15 @@ class Settings extends React.Component {
     render() {
         const state = this.state;
 
-        return (
-            <div className="settings-panel">
-                <TabPanel tabPosition="left">
-                    <Tab name="Project">
-                        <CanvasSettings ref="canvasSettings" values={Application.stage.options} />
-                    </Tab>
+        const style = {
+            width: this.props.width,
+            height: this.props.height
+        };
 
-                    <Tab name="General">
+        return (
+            <div className="settings-panel" style={style}>
+                <TabPanel tabPosition="left">
+                    <Tab name="General" className="view">
                         <div className="group">
                             <div className="header">Interface</div>
                             <div className="row">
@@ -78,7 +76,7 @@ class Settings extends React.Component {
                         </div>
                     </Tab>
 
-                    <Tab name="Advanced">
+                    <Tab name="Advanced" className="view">
                         <div className="group">
                             <div className="row">
                                 <span className="label">Automatically check for updates</span>
@@ -109,6 +107,8 @@ class Settings extends React.Component {
 }
 
 Settings.defaultProps = {
+    width: 760,
+    height: 400,
     onClose: () => {}
 };
 

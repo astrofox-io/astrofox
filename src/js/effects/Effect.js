@@ -21,6 +21,19 @@ class Effect extends Display {
 
         this.owner.updatePasses();
     }
+
+    setSize(width, height) {
+        let pass = this.pass;
+
+        if (pass && pass.uniforms) {
+            Object.keys(pass.uniforms).forEach(key => {
+                if (key === 'resolution') {
+                    pass.uniforms[key].value.set(width, height);
+                    console.log(pass.uniforms);
+                }
+            });
+        }
+    }
 }
 
 module.exports = Effect;

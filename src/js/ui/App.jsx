@@ -20,6 +20,7 @@ const ControlDock = require('./components/ControlDock.jsx');
 const Preload = require('./components/Preload.jsx');
 const About = require('./components/About.jsx');
 const Settings = require('./components/Settings.jsx');
+const CanvasSettings = require('./components/CanvasSettings.jsx');
 const ControlPicker = require('./components/ControlPicker.jsx');
 const ModalWindow = require('./components/ModalWindow.jsx');
 
@@ -141,6 +142,10 @@ class App extends React.Component {
 
             case 'File/Exit':
                 Window.close();
+                break;
+
+            case 'Edit/Canvas':
+                this.showModal('CANVAS', <CanvasSettings key="canvas" onClose={this.hideModal} />);
                 break;
 
             case 'Edit/Settings':

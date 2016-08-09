@@ -61,7 +61,7 @@ class LEDControl extends React.Component {
             <div className="control">
                 <div className="header">LED</div>
                 <div className="row">
-                    <label className="label">Spacing</label>
+                    <span className="label">Spacing</span>
                     <NumberInput
                         name="spacing"
                         size="3"
@@ -79,7 +79,7 @@ class LEDControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Size</label>
+                    <span className="label">Size</span>
                     <NumberInput
                         name="size"
                         size="3"
@@ -97,7 +97,7 @@ class LEDControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Blur</label>
+                    <span className="label">Blur</span>
                     <NumberInput
                         name="blur"
                         size="3"

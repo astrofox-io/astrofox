@@ -67,7 +67,7 @@ class BloomControl extends React.Component {
             <div className="control">
                 <div className="header">BLOOM</div>
                 <div className="row">
-                    <label className="label">Blend Mode</label>
+                    <span className="label">Blend Mode</span>
                     <SelectInput
                         name="blendMode"
                         size="20"
@@ -76,7 +76,7 @@ class BloomControl extends React.Component {
                         onChange={this.onChange} />
                 </div>
                 <div className="row">
-                    <label className="label">Amount</label>
+                    <span className="label">Amount</span>
                     <NumberInput
                         name="amount"
                         size="3"
@@ -96,7 +96,7 @@ class BloomControl extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label className="label">Threshold</label>
+                    <span className="label">Threshold</span>
                     <NumberInput
                         name="threshold"
                         size="3"

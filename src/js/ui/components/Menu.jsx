@@ -23,9 +23,9 @@ const Menu = (props) => {
     });
 
     return (
-        <ul className="menu" style={style}>
+        <div className="menu" style={style}>
             {items}
-        </ul>
+        </div>
     );
 };
 

@@ -59,7 +59,7 @@ class MirrorControl extends React.Component {
             <div className="control">
                 <div className="header">MIRROR</div>
                 <div className="row">
-                    <label className="label">Side</label>
+                    <span className="label">Side</span>
                     <NumberInput
                         name="side"
                         size="3"

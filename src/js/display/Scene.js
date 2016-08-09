@@ -92,14 +92,22 @@ class Scene extends Display {
     }
 
     setSize(width, height) {
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-
         this.displays.nodes.forEach(display => {
             if (display.setSize) {
                 display.setSize(width, height);
             }
-        })
+        });
+
+        this.effects.nodes.forEach(effect => {
+            if (effect.setSize) {
+                effect.setSize(width, height);
+            }
+        });
+
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+
+        this.composer.setSize(width, height);
     }
 
     addElement(obj) {

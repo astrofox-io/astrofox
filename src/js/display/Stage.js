@@ -39,6 +39,10 @@ class Stage extends Display {
             this.setSize(this.options.width, this.options.height);
         }
 
+        if (options.backgroundColor !== undefined) {
+            this.renderer.setClearColor(new THREE.Color(options.backgroundColor), 1);
+        }
+
         return changed;
     }
 
@@ -106,7 +110,7 @@ class Stage extends Display {
             scene.setSize(width, height);
         });
 
-        this.renderer.setSize(width, height);
+        this.composer.setSize(width, height);
 
         this.buffer2D.setSize(width, height);
         this.buffer3D.setSize(width, height);
