@@ -352,6 +352,9 @@ class Application extends EventEmitter {
             if (data.stage) {
                 this.stage.update(data.stage.options);
             }
+            else {
+                this.stage.update(Stage.defaults);
+            }
         }
         else {
             this.raiseError('Invalid project data.');

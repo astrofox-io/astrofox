@@ -1,9 +1,5 @@
 'use strict';
 
-const defaults = {
-    enabled: true
-};
-
 let displayId = 0;
 const displayCount = {};
 
@@ -16,7 +12,14 @@ class Display {
             displayCount[name] = 1;
         }
 
-        this.options = Object.assign({ displayName: name + ' ' + displayCount[name]++ }, defaults, options);
+        this.options = Object.assign(
+            {
+                displayName: name + ' ' + displayCount[name]++,
+                enabled: true
+            },
+            options
+        );
+
         this.owner = null;
         this.hasUpdate = false;
         this.initialized = false;
@@ -30,8 +33,6 @@ class Display {
                     this.hasUpdate = true;
                 }
             }, this);
-
-            this.initialized = true;
         }
 
         return this.hasUpdate;

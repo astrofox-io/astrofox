@@ -22,6 +22,10 @@ class Effect extends Display {
         this.owner.updatePasses();
     }
 
+    updatePass() {
+        this.pass.setUniforms(this.options);
+    }
+
     setSize(width, height) {
         let pass = this.pass;
 
@@ -32,6 +36,14 @@ class Effect extends Display {
                     console.log(pass.uniforms);
                 }
             });
+        }
+    }
+
+    renderToScene(scene) {
+        if (this.hasUpdate) {
+            this.updatePass();
+
+            this.hasUpdate = false;
         }
     }
 }

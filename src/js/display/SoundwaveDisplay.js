@@ -5,11 +5,11 @@ const WaveDisplay = require('../display/WaveDisplay.js');
 
 class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
-        super('SoundwaveDisplay', SoundwaveDisplay.defaults);
+        super(SoundwaveDisplay.label, Object.assign({}, SoundwaveDisplay.defaults, options));
 
-        this.wave = new WaveDisplay(this.canvas, options);
+        this.wave = new WaveDisplay(this.canvas, this.options);
 
-        this.update(options);
+        this.initialized = !!options;
     }
 
     update(options) {
@@ -32,7 +32,7 @@ class SoundwaveDisplay extends CanvasDisplay {
 SoundwaveDisplay.label = 'Soundwave';
 
 SoundwaveDisplay.defaults = {
-    color: '#ffffff',
+    color: '#FFFFFF',
     height: 240,
     width: 854,
     x: 0,

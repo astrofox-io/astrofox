@@ -10,23 +10,8 @@ class MirrorControl extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = Object.assign({}, this.props.display.constructor.defaults);
-    }
-
-    componentWillMount() {
+        this.state = this.props.display.options;
         this.shouldUpdate = false;
-    }
-
-    componentDidMount() {
-        let display = this.props.display;
-
-        if (display.initialized) {
-            this.shouldUpdate = true;
-            this.setState(display.options);
-        }
-        else {
-            display.update(this.state);
-        }
     }
 
     componentDidUpdate() {

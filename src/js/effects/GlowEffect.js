@@ -8,30 +8,25 @@ const GLOW_MAX = 5;
 
 class GlowEffect extends Effect {
     constructor(options) {
-        super('GlowEffect', GlowEffect.defaults);
+        super('GlowEffect', Object.assign({}, GlowEffect.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
+    }
+
+    updatePass() {
+        this.pass.setUniforms({
+            amount: this.options.amount * GLOW_MAX,
+            intensity: this.options.intensity
+        });
     }
 
     addToScene(scene) {
         this.setPass(new ShaderPass(GlowShader));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        let options = this.options;
-
-        if (this.hasUpdate) {
-            this.pass.setUniforms({
-                amount: options.amount * GLOW_MAX,
-                intensity: options.intensity
-            });
-
-            this.hasUpdate = false;
-        }
     }
 }
 

@@ -10,32 +10,36 @@ const FrameBuffer = require('../graphics/FrameBuffer.js');
 const { Events } = require('../core/Global.js');
 
 class Stage extends Display {
-    constructor() {
-        super('Stage', Stage.defaults);
+    constructor(options) {
+        super('Stage', Object.assign({}, Stage.defaults, options));
 
         this.scenes = new NodeCollection();
     
         this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
-        this.renderer.setSize(Stage.defaults.width, Stage.defaults.height);
+        this.renderer.setSize(this.options.width, this.options.height);
         this.renderer.autoClear = false;
     
         this.composer = new Composer(this.renderer);
 
-        this.buffer2D = new FrameBuffer('2d', Stage.defaults);
-        this.buffer3D = new FrameBuffer('webgl', Stage.defaults);
+        this.buffer2D = new FrameBuffer('2d', this.options);
+        this.buffer3D = new FrameBuffer('webgl', this.options);
 
-        this.backgroundColor = new THREE.Color(Stage.defaults.backgroundColor);
+        this.backgroundColor = new THREE.Color(this.options.backgroundColor);
+
+        this.initialized = !!options;
     }
 
     update(options) {
         let changed = super.update(options);
 
-        if (options.width !== undefined || options.height !== undefined) {
-            this.setSize(this.options.width, this.options.height);
-        }
+        if (changed) {
+            if (options.width !== undefined || options.height !== undefined) {
+                this.setSize(this.options.width, this.options.height);
+            }
 
-        if (options.backgroundColor !== undefined) {
-            this.backgroundColor.set(options.backgroundColor);
+            if (options.backgroundColor !== undefined) {
+                this.backgroundColor.set(options.backgroundColor);
+            }
         }
 
         return changed;

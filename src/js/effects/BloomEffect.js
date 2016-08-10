@@ -15,9 +15,19 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BloomEffect extends Effect {
     constructor(options) {
-        super('BloomEffect', BloomEffect.defaults);
+        super('BloomEffect', Object.assign({}, BloomEffect.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
+    }
+
+    updatePass() {
+        this.lumPass.setUniforms({ amount: 1 - this.options.threshold });
+
+        this.blurPasses.forEach((pass, i) => {
+            this.updateGaussianPass(pass, i);
+        }, this);
+
+        this.blendPass.update({ blendMode: this.options.blendMode });
     }
 
     addToScene(scene) {
@@ -56,26 +66,11 @@ class BloomEffect extends Effect {
 
         // Set render pass
         this.setPass(composer.addMultiPass(passes));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        if (this.hasUpdate) {
-            let options = this.options;
-
-            this.lumPass.setUniforms({ amount: 1 - options.threshold });
-
-            this.blurPasses.forEach((pass, i) => {
-                this.updateGaussianPass(pass, i);
-            }, this);
-
-            this.blendPass.update({ blendMode: options.blendMode });
-
-            this.hasUpdate = false;
-        }
     }
 
     updateGaussianPass(pass, i) {

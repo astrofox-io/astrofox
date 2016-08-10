@@ -6,24 +6,18 @@ const LEDShader = require('../shaders/LEDShader.js');
 
 class LEDEffect extends Effect {
     constructor(options) {
-        super('LEDEffect', LEDEffect.defaults);
+        super('LEDEffect', Object.assign({}, LEDEffect.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
     }
 
     addToScene(scene) {
         this.setPass(new ShaderPass(LEDShader));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        if (this.hasUpdate) {
-            this.pass.setUniforms(this.options);
-            this.hasUpdate = false;
-        }
     }
 }
 

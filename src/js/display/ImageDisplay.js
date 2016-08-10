@@ -7,11 +7,11 @@ const MIN_RESIZE_HEIGHT = 100;
 
 class ImageDisplay extends CanvasDisplay {
     constructor(options) {
-        super('ImageDisplay', ImageDisplay.defaults);
+        super('ImageDisplay', Object.assign({}, ImageDisplay.defaults, options));
 
         this.image = new Image();
 
-        this.update(options);
+        this.initialized = !!options;
     }
     
     update(options) {

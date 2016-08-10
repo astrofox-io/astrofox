@@ -7,30 +7,25 @@ const { deg2rad } = require('../util/math.js');
 
 class RGBShiftEffect extends Effect {
     constructor(options) {
-        super('RGBShiftEffect', RGBShiftEffect.defaults);
-    
-        this.update(options);
+        super('RGBShiftEffect', Object.assign({}, RGBShiftEffect.defaults, options));
+
+        this.initialized = !!options;
+    }
+
+    updatePass() {
+        this.pass.setUniforms({
+            amount: this.options.amount,
+            angle: deg2rad(this.options.angle)
+        });
     }
 
     addToScene(scene) {
         this.setPass(new ShaderPass(RGBShiftShader));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        let options = this.options;
-
-        if (this.hasUpdate) {
-            this.pass.setUniforms({
-                amount: options.amount,
-                angle: deg2rad(options.angle)
-            });
-
-            this.hasUpdate = false;
-        }
     }
 }
 

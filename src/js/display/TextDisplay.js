@@ -5,9 +5,9 @@ const CanvasDisplay = require('../display/CanvasDisplay.js');
 
 class TextDisplay extends CanvasDisplay {
     constructor(options) {
-        super('TextDisplay', TextDisplay.defaults);
+        super('TextDisplay', Object.assign({}, TextDisplay.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
     }
 
     render() {

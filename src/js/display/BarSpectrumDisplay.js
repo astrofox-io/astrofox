@@ -11,6 +11,8 @@ class BarSpectrumDisplay extends CanvasDisplay {
     
         this.bars = new BarDisplay(this.canvas, this.options);
         this.parser = new SpectrumParser(this.options);
+
+        this.initialized = !!options;
     }
     
     update(options) {

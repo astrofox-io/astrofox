@@ -23,65 +23,61 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BlurEffect extends Effect { 
     constructor(options) {
-        super('BlurEffect', BlurEffect.defaults);
-        
-        this.update(options);
+        super('BlurEffect', Object.assign({}, BlurEffect.defaults, options));
+
+        this.initialized = !!options;
     }
 
     update(options) {
-        if (!options) return;
+        let type = this.options.type,
+            changed = super.update(options);
 
-        let type = this.options.type;
-
-        let changed = Effect.prototype.update.call(this, options);
-
-        if (this.owner && options.type !== undefined && options.type != type) {
-            this.setPass(this.getShaderPass(options.type));
+        if (changed) {
+            if (this.owner && options.type !== undefined && options.type != type) {
+                this.setPass(this.getShaderPass(options.type));
+            }
         }
 
         return changed;
     }
 
+    updatePass() {
+        let amount,
+            options = this.options;
+
+        switch (this.options.type) {
+            case 'Box':
+                amount = BOX_BLUR_MAX * options.amount;
+                this.pass.setUniforms({ amount: amount });
+                break;
+
+            case 'Circular':
+                amount = CIRCULAR_BLUR_MAX * options.amount;
+                this.pass.setUniforms({ amount: amount });
+                break;
+
+            case 'Gaussian':
+                this.pass.getPasses().forEach((pass, i) => {
+                    if (i < GAUSSIAN_ITERATIONS) {
+                        this.updateGaussianPass(pass, i);
+                    }
+                }, this);
+                break;
+
+            case 'Zoom':
+                amount = ZOOM_BLUR_MAX * options.amount;
+                this.pass.setUniforms({ amount: amount });
+                break;
+        }
+    }
+
     addToScene(scene) {
         this.setPass(this.getShaderPass(this.options.type));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        let amount,
-            options = this.options;
-
-        if (this.hasUpdate) {
-            switch (this.options.type) {
-                case 'Box':
-                    amount = BOX_BLUR_MAX * options.amount;
-                    this.pass.setUniforms({ amount: amount });
-                    break;
-
-                case 'Circular':
-                    amount = CIRCULAR_BLUR_MAX * options.amount;
-                    this.pass.setUniforms({ amount: amount });
-                    break;
-
-                case 'Gaussian':
-                    this.pass.getPasses().forEach((pass, i) => {
-                        if (i < GAUSSIAN_ITERATIONS) {
-                            this.updateGaussianPass(pass, i);
-                        }
-                    }, this);
-                    break;
-
-                case 'Zoom':
-                    amount = ZOOM_BLUR_MAX * options.amount;
-                    this.pass.setUniforms({ amount: amount });
-                    break;
-            }
-
-            this.hasUpdate = false;
-        }
     }
 
     updateGaussianPass(pass, i) {

@@ -15,10 +15,7 @@ class TextControl extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = Object.assign({}, this.props.display.constructor.defaults)
-    }
-
-    componentWillMount() {
+        this.state = this.props.display.options;
         this.shouldUpdate = false;
     }
 
@@ -29,10 +26,8 @@ class TextControl extends React.Component {
             display.render();
 
             this.shouldUpdate = true;
+
             this.setState(display.options);
-        }
-        else {
-            display.update(this.state);
         }
     }
 

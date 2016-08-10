@@ -15,12 +15,10 @@ class ImageControl extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = Object.assign({}, this.props.display.constructor.defaults);
-    }
-
-    componentWillMount() {
-        this.image = new Image();
+        this.state = this.props.display.options;
         this.shouldUpdate = false;
+
+        this.image = new Image();
     }
 
     componentDidMount() {
@@ -31,10 +29,8 @@ class ImageControl extends React.Component {
 
             this.shouldUpdate = true;
             this.image.src = display.options.src;
+
             this.setState(display.options);
-        }
-        else {
-            display.update(this.state);
         }
     }
 

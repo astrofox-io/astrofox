@@ -4,13 +4,16 @@ const Display = require('./Display.js');
 
 class WaveDisplay extends Display {
     constructor(canvas, options) {
-        super('WaveDisplay', WaveDisplay.defaults);
-        
+        super('WaveDisplay', Object.assign({}, WaveDisplay.defaults, options));
+
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
-        this.buffer = new Float32Array(WaveDisplay.defaults.width);
+        this.buffer = new Float32Array(this.options.width);
 
-        this.update(options);
+        canvas.width = this.options.width;
+        canvas.height = this.options.height;
+
+        this.initialized = !!options;
     }
 
     update(options) {

@@ -10,23 +10,8 @@ class RGBShiftControl extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = Object.assign({}, this.props.display.constructor.defaults);
-    }
-
-    componentWillMount() {
+        this.state = this.props.display.options;
         this.shouldUpdate = false;
-    }
-
-    componentDidMount() {
-        let display = this.props.display;
-
-        if (display.initialized) {
-            this.shouldUpdate = true;
-            this.setState(display.options);
-        }
-        else {
-            display.update(this.state);
-        }
     }
 
     componentDidUpdate() {
@@ -44,12 +29,14 @@ class RGBShiftControl extends React.Component {
         obj[name] = val;
 
         this.shouldUpdate = true;
+
         this.setState(obj, () => {
             display.update(obj);
         });
     }
 
     render() {
+        console.log('rgb', this.state);
         return (
             <div className="control">
                 <div className="header">RGB SHIFT</div>

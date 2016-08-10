@@ -6,24 +6,18 @@ const MirrorShader = require('../shaders/MirrorShader.js');
 
 class MirrorEffect extends Effect {
     constructor(options) {
-        super('MirrorEffect', MirrorEffect.defaults);
-    
-        this.update(options);
+        super('MirrorEffect', Object.assign({}, MirrorEffect.defaults, options));
+
+        this.initialized = !!options;
     }
     
     addToScene(scene) {
         this.setPass(new ShaderPass(MirrorShader));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        if (this.hasUpdate) {
-            this.pass.setUniforms(this.options);
-            this.hasUpdate = false;
-        }
     }
 }
 

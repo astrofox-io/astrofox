@@ -12,9 +12,9 @@ const shaders = {
 
 class PixelateEffect extends Effect {
     constructor(options) {
-        super('PixelateEffect', PixelateEffect.defaults);
+        super('PixelateEffect', Object.assign({}, PixelateEffect.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
     }
 
     update(options) {
@@ -27,20 +27,17 @@ class PixelateEffect extends Effect {
         return changed;
     }
 
+    updatePass() {
+        this.pass.setUniforms({ size: this.options.size });
+    }
+
     addToScene(scene) {
         this.setPass(this.getShaderPass(this.options.type));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        if (this.hasUpdate) {
-            this.pass.setUniforms({ size: this.options.size });
-
-            this.hasUpdate = false;
-        }
     }
 
     getShaderPass(type) {

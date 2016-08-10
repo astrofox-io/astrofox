@@ -7,30 +7,25 @@ const { deg2rad } = require('../util/math.js');
 
 class DotScreenEffect extends Effect {
     constructor(options) {
-        super('DotScreenEffect', DotScreenEffect.defaults);
+        super('DotScreenEffect', Object.assign({}, DotScreenEffect.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
+    }
+
+    updatePass() {
+        this.pass.setUniforms({
+            scale: options.scale,
+            angle: deg2rad(options.angle)
+        });
     }
 
     addToScene(scene) {
         this.setPass(new ShaderPass(DotScreenShader));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        let options = this.options;
-
-        if (this.hasUpdate) {
-            this.pass.setUniforms({
-                scale: options.scale,
-                angle: deg2rad(options.angle)
-            });
-
-            this.hasUpdate = false;
-        }
     }
 }
 

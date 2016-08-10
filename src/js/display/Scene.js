@@ -15,13 +15,13 @@ const CAMERA_POS_Z = 250;
 
 class Scene extends Display {
     constructor(name, options) {
-        super('Scene', Scene.defaults);
+        super('Scene', Object.assign({}, Scene.defaults, options));
     
         this.owner = null;
         this.displays = new NodeCollection();
         this.effects = new NodeCollection();
 
-        this.update(options);
+        this.initialized = !!options;
     }
 
     update(options) {

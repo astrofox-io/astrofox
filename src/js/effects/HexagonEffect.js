@@ -6,26 +6,22 @@ const HexagonShader = require('../shaders/HexagonShader.js');
 
 class HexagonEffect extends Effect {
     constructor(options) {
-        super('HexagonEffect', HexagonEffect.defaults);
+        super('HexagonEffect', Object.assign({}, HexagonEffect.defaults, options));
 
-        this.update(options);
+        this.initialized = !!options;
+    }
+
+    updatePass() {
+        this.pass.setUniforms({ scale: options.scale });
     }
 
     addToScene(scene) {
         this.setPass(new ShaderPass(HexagonShader));
+        this.updatePass();
     }
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    renderToScene(scene) {
-        let options = this.options;
-
-        if (this.hasUpdate) {
-            this.pass.setUniforms({ scale: options.scale });
-            this.hasUpdate = false;
-        }
     }
 }
 
