@@ -4,16 +4,11 @@ const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const GlowShader = require('../shaders/GlowShader.js');
 
-const defaults = {
-    amount: 0.1,
-    intensity: 1
-};
-
 const GLOW_MAX = 5;
 
 class GlowEffect extends Effect {
     constructor(options) {
-        super('GlowEffect', defaults);
+        super('GlowEffect', GlowEffect.defaults);
 
         this.update(options);
     }
@@ -40,8 +35,11 @@ class GlowEffect extends Effect {
     }
 }
 
-GlowEffect.info = {
-    name: 'Glow'
+GlowEffect.label = 'Glow';
+
+GlowEffect.defaults = {
+    amount: 0.1,
+    intensity: 1
 };
 
 module.exports = GlowEffect;

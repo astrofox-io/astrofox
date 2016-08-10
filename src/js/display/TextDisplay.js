@@ -3,22 +3,9 @@
 const Display = require('../display/Display.js');
 const CanvasDisplay = require('../display/CanvasDisplay.js');
 
-const defaults = {
-    text: '',
-    size: 20,
-    font: 'sans-serif',
-    italic: false,
-    bold: false,
-    x: 0,
-    y: 0,
-    color: '#ffffff',
-    rotation: 0,
-    opacity: 1.0
-};
-
 class TextDisplay extends CanvasDisplay {
     constructor(options) {
-        super('TextDisplay', defaults);
+        super('TextDisplay', TextDisplay.defaults);
 
         this.update(options);
     }
@@ -75,8 +62,19 @@ class TextDisplay extends CanvasDisplay {
     }
 }
 
-TextDisplay.info = {
-    name: 'Text'
+TextDisplay.label = 'Text';
+
+TextDisplay.defaults = {
+    text: '',
+    size: 40,
+    font: 'Roboto',
+    italic: false,
+    bold: false,
+    x: 0,
+    y: 0,
+    color: '#FFFFFF',
+    rotation: 0,
+    opacity: 1.0
 };
 
 module.exports = TextDisplay;

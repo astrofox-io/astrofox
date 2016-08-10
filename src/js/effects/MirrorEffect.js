@@ -4,13 +4,9 @@ const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const MirrorShader = require('../shaders/MirrorShader.js');
 
-const defaults = {
-    side: 1
-};
-
 class MirrorEffect extends Effect {
     constructor(options) {
-        super('MirrorEffect', defaults);
+        super('MirrorEffect', MirrorEffect.defaults);
     
         this.update(options);
     }
@@ -31,8 +27,10 @@ class MirrorEffect extends Effect {
     }
 }
 
-MirrorEffect.info = {
-    name: 'Mirror'
+MirrorEffect.label = 'Mirror';
+
+MirrorEffect.defaults = {
+    side: 1
 };
 
 module.exports = MirrorEffect;

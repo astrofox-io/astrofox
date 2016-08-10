@@ -4,13 +4,9 @@ const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const HexagonShader = require('../shaders/HexagonShader.js');
 
-const defaults = {
-    scale: 10.0
-};
-
 class HexagonEffect extends Effect {
     constructor(options) {
-        super('HexagonEffect', defaults);
+        super('HexagonEffect', HexagonEffect.defaults);
 
         this.update(options);
     }
@@ -33,8 +29,10 @@ class HexagonEffect extends Effect {
     }
 }
 
-HexagonEffect.info = {
-    name: 'Hexagon'
+HexagonEffect.label = 'Hexagon';
+
+HexagonEffect.defaults = {
+    scale: 10.0
 };
 
 module.exports = HexagonEffect;

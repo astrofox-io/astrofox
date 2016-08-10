@@ -6,11 +6,6 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    type: 'Square',
-    size: 10
-};
-
 const types = [
     'Square',
     'Hexagon'
@@ -24,7 +19,7 @@ class PixelateControl extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults);
     }
 
     componentWillMount() {

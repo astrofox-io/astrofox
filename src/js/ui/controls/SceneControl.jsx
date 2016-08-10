@@ -40,20 +40,12 @@ const blendModesMenu = [
     'Reflect'
 ];
 
-const defaults = {
-    blendMode: 'Normal',
-    opacity: 1.0,
-    lightIntensity: 1.0,
-    lightDistance: 500,
-    cameraZoom: 250
-};
-
 class SceneControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults)
     }
 
     componentWillMount() {

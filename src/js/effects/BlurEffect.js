@@ -8,11 +8,6 @@ const ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const MultiPass = require('../graphics/MultiPass.js');
 
-const defaults = {
-    type: 'Gaussian',
-    amount: 1.0
-};
-
 const shaders = {
     Box: BoxBlurShader,
     Circular: CircularBlurShader,
@@ -28,7 +23,7 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BlurEffect extends Effect { 
     constructor(options) {
-        super('BlurEffect', defaults);
+        super('BlurEffect', BlurEffect.defaults);
         
         this.update(options);
     }
@@ -123,8 +118,11 @@ class BlurEffect extends Effect {
     }
 }
 
-BlurEffect.info = {
-    name: 'Blur'
+BlurEffect.label = 'Blur';
+
+BlurEffect.defaults = {
+    type: 'Gaussian',
+    amount: 1.0
 };
 
 module.exports = BlurEffect;

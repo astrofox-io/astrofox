@@ -4,15 +4,9 @@ const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const LEDShader = require('../shaders/LEDShader.js');
 
-const defaults = {
-    spacing: 10,
-    size: 4,
-    blur: 4
-};
-
 class LEDEffect extends Effect {
     constructor(options) {
-        super('LEDEffect', defaults);
+        super('LEDEffect', LEDEffect.defaults);
 
         this.update(options);
     }
@@ -33,8 +27,12 @@ class LEDEffect extends Effect {
     }
 }
 
-LEDEffect.info = {
-    name: 'LED'
+LEDEffect.label = 'LED';
+
+LEDEffect.defaults = {
+    spacing: 10,
+    size: 4,
+    blur: 4
 };
 
 module.exports = LEDEffect;

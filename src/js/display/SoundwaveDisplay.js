@@ -3,20 +3,9 @@
 const CanvasDisplay = require('../display/CanvasDisplay.js');
 const WaveDisplay = require('../display/WaveDisplay.js');
 
-const defaults = {
-    color: '#ffffff',
-    height: 240,
-    width: 854,
-    x: 0,
-    y: 0,
-    lineWidth: 1.0,
-    rotation: 0,
-    opacity: 1.0
-};
-
 class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
-        super('SoundwaveDisplay', defaults);
+        super('SoundwaveDisplay', SoundwaveDisplay.defaults);
 
         this.wave = new WaveDisplay(this.canvas, options);
 
@@ -40,8 +29,17 @@ class SoundwaveDisplay extends CanvasDisplay {
     }
 }
 
-SoundwaveDisplay.info = {
-    name: 'Soundwave'
+SoundwaveDisplay.label = 'Soundwave';
+
+SoundwaveDisplay.defaults = {
+    color: '#ffffff',
+    height: 240,
+    width: 854,
+    x: 0,
+    y: 0,
+    lineWidth: 1.0,
+    rotation: 0,
+    opacity: 1.0
 };
 
 module.exports = SoundwaveDisplay;

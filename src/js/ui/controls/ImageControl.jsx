@@ -10,23 +10,12 @@ const autoBind = require('../../util/autoBind.js');
 
 const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-const defaults = {
-    src: '',
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    fixed: true,
-    rotation: 0,
-    opacity: 0
-};
-
 class ImageControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults);
     }
 
     componentWillMount() {

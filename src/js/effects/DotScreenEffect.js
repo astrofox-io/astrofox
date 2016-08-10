@@ -5,14 +5,9 @@ const ShaderPass = require('../graphics/ShaderPass.js');
 const DotScreenShader = require('../shaders/DotScreenShader.js');
 const { deg2rad } = require('../util/math.js');
 
-const defaults = {
-    angle: 90,
-    scale: 1.0
-};
-
 class DotScreenEffect extends Effect {
     constructor(options) {
-        super('DotScreenEffect', defaults);
+        super('DotScreenEffect', DotScreenEffect.defaults);
 
         this.update(options);
     }
@@ -39,8 +34,11 @@ class DotScreenEffect extends Effect {
     }
 }
 
-DotScreenEffect.info = {
-    name: 'Dot Screen'
+DotScreenEffect.label = 'Dot Screen';
+
+DotScreenEffect.defaults = {
+    angle: 90,
+    scale: 1.0
 };
 
 module.exports = DotScreenEffect;

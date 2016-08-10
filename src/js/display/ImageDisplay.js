@@ -2,23 +2,12 @@
 
 const CanvasDisplay = require('../display/CanvasDisplay.js');
 
-const defaults = {
-    src: '',
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    fixed: true,
-    rotation: 0,
-    opacity: 1.0
-};
-
 const MIN_RESIZE_WIDTH = 100;
 const MIN_RESIZE_HEIGHT = 100;
 
 class ImageDisplay extends CanvasDisplay {
     constructor(options) {
-        super('ImageDisplay', defaults);
+        super('ImageDisplay', ImageDisplay.defaults);
 
         this.image = new Image();
 
@@ -100,8 +89,17 @@ class ImageDisplay extends CanvasDisplay {
     }
 }
 
-ImageDisplay.info = {
-    name: 'Image'
+ImageDisplay.label = 'Image';
+
+ImageDisplay.defaults = {
+    src: '',
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    fixed: true,
+    rotation: 0,
+    opacity: 1.0
 };
 
 module.exports = ImageDisplay;

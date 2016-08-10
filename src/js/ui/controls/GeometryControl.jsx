@@ -9,14 +9,39 @@ const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const autoBind = require('../../util/autoBind.js');
-const config = require('../../props/Geometry.json');
+
+const shapes = [
+    'Box',
+    'Sphere',
+    'Dodecahedron',
+    'Icosahedron',
+    'Octahedron',
+    'Tetrahedron',
+    'Torus',
+    'Torus Knot'
+];
+
+const materials = [
+    'Basic',
+    'Lambert',
+    'Normal',
+    'Phong',
+    'Physical',
+    'Points',
+    'Standard'
+];
+
+const shading = [
+    'Smooth',
+    'Flat'
+];
 
 class GeometryControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = config.options;
+        this.state = Object.assign({}, this.props.display.constructor.defaults);
     }
 
     componentWillMount() {
@@ -57,8 +82,8 @@ class GeometryControl extends React.Component {
     }
 
     render() {
-        let state = this.state;
-        let maxVal = 500;
+        let state = this.state,
+            maxVal = 500;
 
         return (
             <div className="control">
@@ -68,7 +93,7 @@ class GeometryControl extends React.Component {
                     <SelectInput
                         name="shape"
                         size="20"
-                        items={config.shapes}
+                        items={shapes}
                         value={state.shape}
                         onChange={this.onChange} />
                 </div>
@@ -77,7 +102,7 @@ class GeometryControl extends React.Component {
                     <SelectInput
                         name="material"
                         size="20"
-                        items={config.materials}
+                        items={materials}
                         value={state.material}
                         onChange={this.onChange} />
                 </div>
@@ -86,7 +111,7 @@ class GeometryControl extends React.Component {
                     <SelectInput
                         name="shading"
                         size="20"
-                        items={config.shading}
+                        items={shading}
                         value={state.shading}
                         onChange={this.onChange} />
                 </div>

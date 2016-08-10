@@ -2,25 +2,9 @@
 
 const Display = require('./Display.js');
 
-const defaults = {
-    height: 300,
-    width: 200,
-    x: 0,
-    y: 150,
-    barWidth: -1,
-    barSpacing: -1,
-    barWidthAutoSize: 1,
-    barSpacingAutoSize: 1,
-    shadowHeight: 100,
-    color: '#ffffff',
-    shadowColor: '#cccccc',
-    rotation: 0,
-    opacity: 1.0
-};
-
 class BarDisplay extends Display {
     constructor(canvas, options) {
-        super('BarDisplay', defaults);
+        super('BarDisplay', BarDisplay.defaults);
         
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
@@ -149,17 +133,22 @@ class BarDisplay extends Display {
     }
 }
 
-function round(val) {
-    return (val + 0.5) << 0;
-}
+BarDisplay.label = 'Bars';
 
-function ceil(val) {
-    var n = (val << 0);
-    return (n == val) ? n : n + 1;
-}
-
-function floor(val) {
-    return ~~val;
-}
+BarDisplay.defaults = {
+    height: 300,
+    width: 200,
+    x: 0,
+    y: 150,
+    barWidth: -1,
+    barSpacing: -1,
+    barWidthAutoSize: 1,
+    barSpacingAutoSize: 1,
+    shadowHeight: 100,
+    color: '#ffffff',
+    shadowColor: '#cccccc',
+    rotation: 0,
+    opacity: 1.0
+};
 
 module.exports = BarDisplay;

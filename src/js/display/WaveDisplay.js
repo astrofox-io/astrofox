@@ -2,25 +2,13 @@
 
 const Display = require('./Display.js');
 
-const defaults = {
-    height: 200,
-    width: 400,
-    color: '#ffffff',
-    lineWidth: 1.0,
-    scrolling: false,
-    scrollSpeed: 0.15,
-    rotation: 0,
-    opacity: 1.0
-};
-
 class WaveDisplay extends Display {
     constructor(canvas, options) {
-        super('WaveDisplay', defaults);
+        super('WaveDisplay', WaveDisplay.defaults);
         
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
-        this.buffer = new Float32Array(defaults.width);
-        this.options = Object.assign({}, defaults);
+        this.buffer = new Float32Array(WaveDisplay.defaults.width);
 
         this.update(options);
     }
@@ -97,5 +85,18 @@ class WaveDisplay extends Display {
         context.stroke();
     }
 }
+
+WaveDisplay.label = 'Wave';
+
+WaveDisplay.defaults = {
+    height: 200,
+    width: 400,
+    color: '#FFFFFF',
+    lineWidth: 1.0,
+    scrolling: false,
+    scrollSpeed: 0.15,
+    rotation: 0,
+    opacity: 1.0
+};
 
 module.exports = WaveDisplay;

@@ -7,25 +7,12 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    color: '#ffffff',
-    height: 240,
-    width: 854,
-    x: 0,
-    y: 0,
-    lineWidth: 1.0,
-    scrolling: false,
-    scrollSpeed: 0.15,
-    rotation: 0,
-    opacity: 1.0
-};
-
 class SoundwaveControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults)
     }
 
     componentWillMount() {

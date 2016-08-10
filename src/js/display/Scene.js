@@ -8,14 +8,6 @@ const CanvasDisplay = require('../display/CanvasDisplay.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
 
-const defaults = {
-    blendMode: 'Normal',
-    opacity: 1.0,
-    lightIntensity: 1.0,
-    lightDistance: 500,
-    cameraZoom: 250
-};
-
 const FOV = 45;
 const NEAR = 1;
 const FAR = 10000;
@@ -23,7 +15,7 @@ const CAMERA_POS_Z = 250;
 
 class Scene extends Display {
     constructor(name, options) {
-        super('Scene', defaults);
+        super('Scene', Scene.defaults);
     
         this.owner = null;
         this.displays = new NodeCollection();
@@ -267,5 +259,15 @@ class Scene extends Display {
         };
     }
 }
+
+Scene.label = 'Scene';
+
+Scene.defaults = {
+    blendMode: 'Normal',
+    opacity: 1.0,
+    lightIntensity: 1.0,
+    lightDistance: 500,
+    cameraZoom: 250
+};
 
 module.exports = Scene;

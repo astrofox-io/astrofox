@@ -7,34 +7,12 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    height: 240,
-    width: 770,
-    x: 0,
-    y: -120,
-    barWidth: -1,
-    barSpacing: -1,
-    barWidthAutoSize: 1,
-    barSpacingAutoSize: 1,
-    shadowHeight: 100,
-    color: ['#ffffff', '#ffffff'],
-    shadowColor: ['#333333', '#000000'],
-    rotation: 0,
-    opacity: 1.0,
-
-    smoothingTimeConstant: 0.5,
-    minDecibels: -100,
-    maxDecibels: -12,
-    minFrequency: 0,
-    maxFrequency: 6000
-};
-
 class BarSpectrumControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
         
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults);
     }
 
     componentWillMount() {

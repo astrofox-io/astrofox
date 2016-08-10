@@ -5,17 +5,12 @@ const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    amount: 0.005,
-    angle: 0.0
-};
-
 class RGBShiftControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults);
     }
 
     componentWillMount() {

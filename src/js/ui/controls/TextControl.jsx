@@ -10,25 +10,12 @@ const ToggleInput = require('../inputs/ToggleInput.jsx');
 const fontOptions = require('../../../conf/fonts.json');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    text: '',
-    size: 40,
-    font: 'Roboto',
-    italic: false,
-    bold: false,
-    x: 0,
-    y: 0,
-    color: '#FFFFFF',
-    rotation: 0,
-    opacity: 1.0
-};
-
 class TextControl extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults)
     }
 
     componentWillMount() {

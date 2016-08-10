@@ -21,7 +21,7 @@ const ControlPicker = (props) => {
         return (
             <div key={index} className="item">
                 <div className="image" onClick={onClick}></div>
-                <div className="name">{item.info.name}</div>
+                <div className="name">{item.label}</div>
             </div>
         );
     });

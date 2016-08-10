@@ -10,18 +10,12 @@ const GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
 const LuminanceShader = require('../shaders/LuminanceShader.js');
 const CopyShader = require('../shaders/CopyShader.js');
 
-const defaults = {
-    blendMode: 'Screen',
-    amount: 0.1,
-    threshold: 1.0
-};
-
 const GAUSSIAN_BLUR_MAX = 3;
 const GAUSSIAN_ITERATIONS = 8;
 
 class BloomEffect extends Effect {
     constructor(options) {
-        super('BloomEffect', defaults);
+        super('BloomEffect', BloomEffect.defaults);
 
         this.update(options);
     }
@@ -93,8 +87,12 @@ class BloomEffect extends Effect {
     }
 }
 
-BloomEffect.info = {
-    name: 'Bloom'
+BloomEffect.label = 'Bloom';
+
+BloomEffect.defaults = {
+    blendMode: 'Screen',
+    amount: 0.1,
+    threshold: 1.0
 };
 
 module.exports = BloomEffect;

@@ -9,29 +9,22 @@ const Composer = require('../graphics/Composer.js');
 const FrameBuffer = require('../graphics/FrameBuffer.js');
 const { Events } = require('../core/Global.js');
 
-const defaults = {
-    aspectRatio: '16:9',
-    width: 854,
-    height: 480,
-    backgroundColor: '#000000'
-};
-
 class Stage extends Display {
     constructor() {
-        super('Stage', defaults);
+        super('Stage', Stage.defaults);
 
         this.scenes = new NodeCollection();
     
         this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
-        this.renderer.setSize(defaults.width, defaults.height);
+        this.renderer.setSize(Stage.defaults.width, Stage.defaults.height);
         this.renderer.autoClear = false;
     
         this.composer = new Composer(this.renderer);
 
-        this.buffer2D = new FrameBuffer('2d', defaults);
-        this.buffer3D = new FrameBuffer('webgl', defaults);
+        this.buffer2D = new FrameBuffer('2d', Stage.defaults);
+        this.buffer3D = new FrameBuffer('webgl', Stage.defaults);
 
-        this.backgroundColor = new THREE.Color(defaults.backgroundColor);
+        this.backgroundColor = new THREE.Color(Stage.defaults.backgroundColor);
     }
 
     update(options) {
@@ -144,5 +137,14 @@ class Stage extends Display {
         if (callback) callback();
     }
 }
+
+Stage.label = 'Stage';
+
+Stage.defaults = {
+    aspectRatio: '16:9',
+    width: 854,
+    height: 480,
+    backgroundColor: '#000000'
+};
 
 module.exports = Stage;

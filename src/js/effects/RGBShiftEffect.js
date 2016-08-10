@@ -5,14 +5,9 @@ const ShaderPass = require('../graphics/ShaderPass.js');
 const RGBShiftShader = require('../shaders/RGBShiftShader.js');
 const { deg2rad } = require('../util/math.js');
 
-const defaults = {
-    amount: 0.005,
-    angle: 0.0
-};
-
 class RGBShiftEffect extends Effect {
     constructor(options) {
-        super('RGBShiftEffect', defaults);
+        super('RGBShiftEffect', RGBShiftEffect.defaults);
     
         this.update(options);
     }
@@ -39,8 +34,11 @@ class RGBShiftEffect extends Effect {
     }
 }
 
-RGBShiftEffect.info = {
-    name: 'RGB Shift'
+RGBShiftEffect.label = 'RGB Shift';
+
+RGBShiftEffect.defaults = {
+    amount: 0.005,
+    angle: 0.0
 };
 
 module.exports = RGBShiftEffect;

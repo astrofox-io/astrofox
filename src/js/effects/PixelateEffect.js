@@ -5,11 +5,6 @@ const ShaderPass = require('../graphics/ShaderPass.js');
 const PixelateShader = require('../shaders/PixelateShader.js');
 const HexagonShader = require('../shaders/HexagonShader.js');
 
-const defaults = {
-    type: 'Square',
-    size: 10
-};
-
 const shaders = {
     Square: PixelateShader,
     Hexagon: HexagonShader
@@ -17,7 +12,7 @@ const shaders = {
 
 class PixelateEffect extends Effect {
     constructor(options) {
-        super('PixelateEffect', defaults);
+        super('PixelateEffect', PixelateEffect.defaults);
 
         this.update(options);
     }
@@ -56,8 +51,11 @@ class PixelateEffect extends Effect {
     }
 }
 
-PixelateEffect.info = {
-    name: 'Pixelate'
+PixelateEffect.label = 'Pixelate';
+
+PixelateEffect.defaults = {
+    type: 'Square',
+    size: 10
 };
 
 module.exports = PixelateEffect;

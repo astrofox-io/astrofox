@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const { Events } = require('../../core/Global.js');
 const autoBind = require('../../util/autoBind.js');
@@ -91,14 +92,13 @@ class Panel extends React.Component {
     render() {
         let props = this.props,
             state = this.state,
-            classes = 'panel',
-            style = (state.height) ? { height: state.height } : null;
-
-        classes += (props.direction == 'vertical') ? ' panel-vertical' : ' panel-horizontal';
-
-        if (props.stretch) {
-            classes += ' panel-stretch';
-        }
+            style = (state.height) ? { height: state.height } : null,
+            classes = classNames({
+                'panel': true,
+                'panel-vertical': (props.direction === 'vertical'),
+                'panel-horizontal': (props.direction !== 'vertical'),
+                'panel-stretch': props.stretch === true
+            });
 
         let splitter = (props.resizable) ?
             <Splitter type="horizontal" onDragStart={this.onStartDrag} /> : null;

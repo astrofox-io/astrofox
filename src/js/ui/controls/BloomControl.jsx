@@ -6,12 +6,6 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    blendMode: 'Screen',
-    amount: 0.1,
-    threshold: 1.0
-};
-
 const blendModes = [
     'Add',
     'Screen'
@@ -22,7 +16,7 @@ class BloomControl extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = defaults;
+        this.state = Object.assign({}, this.props.display.constructor.defaults);
     }
 
     componentWillMount() {

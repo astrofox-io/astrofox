@@ -5,8 +5,6 @@ const Display = require('../display/Display.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
 const PointShader = require('../shaders/PointShader.js');
 
-const GeometryConfig = require('../props/Geometry.json');
-
 const materials = {
     Normal: THREE.MeshNormalMaterial,
     Basic: THREE.MeshBasicMaterial,
@@ -28,7 +26,7 @@ const POINT_SIZE = 5;
 
 class GeometryDisplay extends Display {
     constructor(options) {
-        super('GeometryDisplay', GeometryConfig.options);
+        super('GeometryDisplay', GeometryDisplay.defaults);
 
         this.update(options);
 
@@ -246,8 +244,24 @@ class GeometryDisplay extends Display {
     }
 }
 
-GeometryDisplay.info = {
-    name: '3D Geometry'
+GeometryDisplay.label = 'Geometry';
+
+GeometryDisplay.defaults = {
+    shape: 'Box',
+    material: 'Standard',
+    shading: 'Smooth',
+    color: '#FFFFFF',
+    wireframe: false,
+    edges: false,
+    edgeColor: '#FFFFFF',
+    x: 0,
+    y: 0,
+    z: 0,
+    opacity: 1.0,
+    startX: 0,
+    startY: 0,
+    startZ: 0,
+    seed: 0
 };
     
 module.exports = GeometryDisplay;
