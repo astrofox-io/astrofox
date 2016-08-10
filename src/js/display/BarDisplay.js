@@ -4,7 +4,7 @@ const Display = require('./Display.js');
 
 class BarDisplay extends Display {
     constructor(canvas, options) {
-        super('BarDisplay', Object.assign({}, BarDisplay.defaults, options));
+        super(BarDisplay.label, Object.assign({}, BarDisplay.defaults, options));
         
         this.canvas = canvas;
         this.context = canvas.getContext('2d');

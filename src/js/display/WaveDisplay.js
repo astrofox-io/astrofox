@@ -4,7 +4,7 @@ const Display = require('./Display.js');
 
 class WaveDisplay extends Display {
     constructor(canvas, options) {
-        super('WaveDisplay', Object.assign({}, WaveDisplay.defaults, options));
+        super(WaveDisplay.label, Object.assign({}, WaveDisplay.defaults, options));
 
         this.canvas = canvas;
         this.context = canvas.getContext('2d');

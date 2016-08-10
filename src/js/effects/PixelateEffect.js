@@ -12,7 +12,7 @@ const shaders = {
 
 class PixelateEffect extends Effect {
     constructor(options) {
-        super('PixelateEffect', Object.assign({}, PixelateEffect.defaults, options));
+        super(PixelateEffect.label, Object.assign({}, PixelateEffect.defaults, options));
 
         this.initialized = !!options;
     }

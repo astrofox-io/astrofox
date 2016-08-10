@@ -23,7 +23,7 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BlurEffect extends Effect { 
     constructor(options) {
-        super('BlurEffect', Object.assign({}, BlurEffect.defaults, options));
+        super(BlurEffect.label, Object.assign({}, BlurEffect.defaults, options));
 
         this.initialized = !!options;
     }
@@ -118,7 +118,7 @@ BlurEffect.label = 'Blur';
 
 BlurEffect.defaults = {
     type: 'Gaussian',
-    amount: 1.0
+    amount: 0.1
 };
 
 module.exports = BlurEffect;

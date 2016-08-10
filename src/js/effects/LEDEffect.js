@@ -6,7 +6,7 @@ const LEDShader = require('../shaders/LEDShader.js');
 
 class LEDEffect extends Effect {
     constructor(options) {
-        super('LEDEffect', Object.assign({}, LEDEffect.defaults, options));
+        super(LEDEffect.label, Object.assign({}, LEDEffect.defaults, options));
 
         this.initialized = !!options;
     }

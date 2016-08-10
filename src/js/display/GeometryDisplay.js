@@ -26,7 +26,7 @@ const POINT_SIZE = 5;
 
 class GeometryDisplay extends Display {
     constructor(options) {
-        super('GeometryDisplay', Object.assign({}, GeometryDisplay.defaults, options));
+        super(GeometryDisplay.label, Object.assign({}, GeometryDisplay.defaults, options));
 
         this.parser = new SpectrumParser({ normalize: true });
         this.hasGeometry = true;

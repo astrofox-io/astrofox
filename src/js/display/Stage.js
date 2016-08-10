@@ -11,7 +11,7 @@ const { Events } = require('../core/Global.js');
 
 class Stage extends Display {
     constructor(options) {
-        super('Stage', Object.assign({}, Stage.defaults, options));
+        super(Stage.label, Object.assign({}, Stage.defaults, options));
 
         this.scenes = new NodeCollection();
     

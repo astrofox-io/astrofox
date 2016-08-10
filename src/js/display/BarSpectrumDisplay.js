@@ -7,7 +7,7 @@ const SpectrumParser = require('../audio/SpectrumParser.js');
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {
-        super('BarSpectrumDisplay', Object.assign({}, BarSpectrumDisplay.defaults, options));
+        super(BarSpectrumDisplay.label, Object.assign({}, BarSpectrumDisplay.defaults, options));
     
         this.bars = new BarDisplay(this.canvas, this.options);
         this.parser = new SpectrumParser(this.options);

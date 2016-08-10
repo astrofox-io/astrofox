@@ -5,16 +5,18 @@ const ShaderPass = require('../graphics/ShaderPass.js');
 const RGBShiftShader = require('../shaders/RGBShiftShader.js');
 const { deg2rad } = require('../util/math.js');
 
+const OFFSET_MAX = 854;
+
 class RGBShiftEffect extends Effect {
     constructor(options) {
-        super('RGBShiftEffect', Object.assign({}, RGBShiftEffect.defaults, options));
+        super(RGBShiftEffect.label, Object.assign({}, RGBShiftEffect.defaults, options));
 
         this.initialized = !!options;
     }
 
     updatePass() {
         this.pass.setUniforms({
-            amount: this.options.amount,
+            amount: this.options.offset / OFFSET_MAX,
             angle: deg2rad(this.options.angle)
         });
     }
@@ -32,7 +34,7 @@ class RGBShiftEffect extends Effect {
 RGBShiftEffect.label = 'RGB Shift';
 
 RGBShiftEffect.defaults = {
-    amount: 0.005,
+    offset: 5,
     angle: 0.0
 };
 
