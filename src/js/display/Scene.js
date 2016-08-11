@@ -15,7 +15,7 @@ const CAMERA_POS_Z = 250;
 
 class Scene extends Display {
     constructor(name, options) {
-        super(Scene.label, Object.assign({}, Scene.defaults, options));
+        super(Scene.className, Object.assign({}, Scene.defaults, options));
     
         this.owner = null;
         this.displays = new NodeCollection();
@@ -261,6 +261,8 @@ class Scene extends Display {
 }
 
 Scene.label = 'Scene';
+
+Scene.className = 'Scene';
 
 Scene.defaults = {
     blendMode: 'Normal',

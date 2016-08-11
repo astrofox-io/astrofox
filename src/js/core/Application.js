@@ -325,6 +325,8 @@ class Application extends EventEmitter {
                 if (item.displays) {
                     item.displays.forEach(display => {
                         component = DisplayLibrary[display.name];
+                        if (!component) component = DisplayLibrary[display.name + 'Display'];
+
                         if (component) {
                             scene.addElement(new component(display.options));
                         }
@@ -337,6 +339,8 @@ class Application extends EventEmitter {
                 if (item.effects) {
                     item.effects.forEach(effect => {
                         component = EffectsLibrary[effect.name];
+                        if (!component) component = EffectsLibrary[effect.name + 'Effect'];
+
                         if (component) {
                             scene.addElement(new component(effect.options));
                         }

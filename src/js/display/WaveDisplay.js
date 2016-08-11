@@ -4,7 +4,7 @@ const Display = require('./Display.js');
 
 class WaveDisplay extends Display {
     constructor(canvas, options) {
-        super(WaveDisplay.label, Object.assign({}, WaveDisplay.defaults, options));
+        super(WaveDisplay.className, Object.assign({}, WaveDisplay.defaults, options));
 
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
@@ -90,6 +90,8 @@ class WaveDisplay extends Display {
 }
 
 WaveDisplay.label = 'Wave';
+
+WaveDisplay.className = 'WaveDisplay';
 
 WaveDisplay.defaults = {
     height: 200,

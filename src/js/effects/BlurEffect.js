@@ -23,7 +23,7 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BlurEffect extends Effect { 
     constructor(options) {
-        super(BlurEffect.label, Object.assign({}, BlurEffect.defaults, options));
+        super(BlurEffect.className, Object.assign({}, BlurEffect.defaults, options));
 
         this.initialized = !!options;
     }
@@ -42,18 +42,13 @@ class BlurEffect extends Effect {
     }
 
     updatePass() {
-        let amount,
-            options = this.options;
-
         switch (this.options.type) {
             case 'Box':
-                amount = BOX_BLUR_MAX * options.amount;
-                this.pass.setUniforms({ amount: amount });
+                this.pass.setUniforms({ amount: this.options.amount * BOX_BLUR_MAX });
                 break;
 
             case 'Circular':
-                amount = CIRCULAR_BLUR_MAX * options.amount;
-                this.pass.setUniforms({ amount: amount });
+                this.pass.setUniforms({ amount: this.options.amount * CIRCULAR_BLUR_MAX });
                 break;
 
             case 'Gaussian':
@@ -65,8 +60,7 @@ class BlurEffect extends Effect {
                 break;
 
             case 'Zoom':
-                amount = ZOOM_BLUR_MAX * options.amount;
-                this.pass.setUniforms({ amount: amount });
+                this.pass.setUniforms({ amount: this.options.amount * ZOOM_BLUR_MAX });
                 break;
         }
     }
@@ -115,6 +109,8 @@ class BlurEffect extends Effect {
 }
 
 BlurEffect.label = 'Blur';
+
+BlurEffect.className = 'BlurEffect';
 
 BlurEffect.defaults = {
     type: 'Gaussian',

@@ -6,7 +6,7 @@ const LEDShader = require('../shaders/LEDShader.js');
 
 class LEDEffect extends Effect {
     constructor(options) {
-        super(LEDEffect.label, Object.assign({}, LEDEffect.defaults, options));
+        super(LEDEffect.className, Object.assign({}, LEDEffect.defaults, options));
 
         this.initialized = !!options;
     }
@@ -22,6 +22,8 @@ class LEDEffect extends Effect {
 }
 
 LEDEffect.label = 'LED';
+
+LEDEffect.className = 'LEDEffect';
 
 LEDEffect.defaults = {
     spacing: 10,

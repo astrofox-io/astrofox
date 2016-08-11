@@ -11,7 +11,7 @@ const { Events } = require('../core/Global.js');
 
 class Stage extends Display {
     constructor(options) {
-        super(Stage.label, Object.assign({}, Stage.defaults, options));
+        super(Stage.className, Object.assign({}, Stage.defaults, options));
 
         this.scenes = new NodeCollection();
     
@@ -115,12 +115,6 @@ class Stage extends Display {
         this.buffer3D.setSize(width, height);
     }
 
-    toJSON() {
-        return {
-            options: this.options
-        };
-    }
-
     renderFrame(data, callback) {
         let options, buffer,
             composer = this.composer;
@@ -140,9 +134,18 @@ class Stage extends Display {
 
         if (callback) callback();
     }
+
+    toJSON() {
+        return {
+            name: this.name,
+            options: this.options
+        };
+    }
 }
 
 Stage.label = 'Stage';
+
+Stage.className = 'Stage';
 
 Stage.defaults = {
     aspectRatio: '16:9',

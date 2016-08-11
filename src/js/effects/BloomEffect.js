@@ -15,7 +15,7 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BloomEffect extends Effect {
     constructor(options) {
-        super(BloomEffect.label, Object.assign({}, BloomEffect.defaults, options));
+        super(BloomEffect.className, Object.assign({}, BloomEffect.defaults, options));
 
         this.initialized = !!options;
     }
@@ -83,6 +83,8 @@ class BloomEffect extends Effect {
 }
 
 BloomEffect.label = 'Bloom';
+
+BloomEffect.className = 'BloomEffect';
 
 BloomEffect.defaults = {
     blendMode: 'Screen',

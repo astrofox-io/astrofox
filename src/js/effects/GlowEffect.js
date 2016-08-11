@@ -8,7 +8,7 @@ const GLOW_MAX = 5;
 
 class GlowEffect extends Effect {
     constructor(options) {
-        super(GlowEffect.label, Object.assign({}, GlowEffect.defaults, options));
+        super(GlowEffect.className, Object.assign({}, GlowEffect.defaults, options));
 
         this.initialized = !!options;
     }
@@ -31,6 +31,8 @@ class GlowEffect extends Effect {
 }
 
 GlowEffect.label = 'Glow';
+
+GlowEffect.className = 'GlowEffect';
 
 GlowEffect.defaults = {
     amount: 0.1,
