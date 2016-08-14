@@ -7,12 +7,6 @@ const { Events } = require('../../core/Global.js');
 const WaveDisplay = require('../../display/WaveDisplay.js');
 const autoBind = require('../../util/autoBind.js');
 
-const defaults = {
-    width: 854,
-    height: 100,
-    color: '#927FFF'
-};
-
 class Oscilloscope extends React.Component {
     constructor(props) {
         super(props);
@@ -21,8 +15,8 @@ class Oscilloscope extends React.Component {
 
     componentDidMount() {
         this.display = new WaveDisplay(
-            ReactDOM.findDOMNode(this.refs.canvas),
-            defaults
+            this.props,
+            this.refs.canvas
         );
 
         Events.on('render', this.updateCanvas);
@@ -48,5 +42,11 @@ class Oscilloscope extends React.Component {
         );
     }
 }
+
+Oscilloscope.defaultProps = {
+    width: 854,
+    height: 100,
+    color: '#927FFF'
+};
 
 module.exports = Oscilloscope;

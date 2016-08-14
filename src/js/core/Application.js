@@ -241,6 +241,8 @@ class Application extends EventEmitter {
             .then(() => {
                 Events.emit('audio_file_loaded');
 
+                this.audioFile = file;
+
                 return this.loadAudioTags(file)
             })
             .catch(error => {
@@ -395,15 +397,14 @@ class Application extends EventEmitter {
         });
     }
 
-    saveVideo(filename) {
+    saveVideo(filename, options) {
         let player = this.player,
-            sound = player.getSound('audio'),
-            renderer = new VideoRenderer(filename, this.audioFile, {
-                fps: 29.97,
-                frames: 29.97 * 5
-            });
+            sound = player.getSound('audio');
+
 
         if (sound) {
+            let renderer = new VideoRenderer(filename, this.audioFile, options);
+
             this.stopRender();
 
             player.stop('audio');

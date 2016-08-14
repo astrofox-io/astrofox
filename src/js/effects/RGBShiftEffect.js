@@ -37,7 +37,7 @@ RGBShiftEffect.className = 'RGBShiftEffect';
 
 RGBShiftEffect.defaults = {
     offset: 5,
-    angle: 0.0
+    angle: 45
 };
 
 module.exports = RGBShiftEffect;

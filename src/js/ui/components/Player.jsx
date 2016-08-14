@@ -24,11 +24,11 @@ class Player extends React.Component {
     componentDidMount() {
         const player = Application.player;
 
-        player.on('load', (id) => {
+        player.on('load', id => {
             this.setState({ duration: player.getDuration(id) });
         }, this);
 
-        player.on('tick', (id) => {
+        player.on('tick', id => {
             if (player.isPlaying() && !this.refs.progress.isBuffering()) {
                 this.setState({
                     progressPosition: player.getPosition(id)
@@ -48,7 +48,7 @@ class Player extends React.Component {
             this.setState({ progressPosition: 0 });
         }, this);
 
-        player.on('seek', (id) => {
+        player.on('seek', id => {
             this.setState({
                 progressPosition: player.getPosition(id)
             });

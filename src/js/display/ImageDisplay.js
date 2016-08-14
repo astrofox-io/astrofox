@@ -10,6 +10,12 @@ class ImageDisplay extends CanvasDisplay {
         super(ImageDisplay.className, Object.assign({}, ImageDisplay.defaults, options));
 
         this.image = new Image();
+        this.image.onload = () => {
+            this.imageLoaded = true;
+            this.render();
+        };
+
+        this.imageLoaded = false;
 
         this.initialized = !!options;
     }
@@ -25,6 +31,8 @@ class ImageDisplay extends CanvasDisplay {
     }
 
     render() {
+        if (!this.imageLoaded) return;
+
         let i, w, h, y_src, y_dest, width, height, last_w, last_h,
             canvas = this.canvas,
             context = this.context,

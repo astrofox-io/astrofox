@@ -2,8 +2,7 @@
 
 const React = require('react');
 const Application = require('../../core/Application.js');
-const BarDisplay = require('../../display/BarDisplay.js');
-const WaveformParser = require('../../audio/WaveformParser.js');
+const WaveformDisplay = require('../../display/WaveformDisplay.js');
 const autoBind = require('../../util/autoBind.js');
 
 class Waveform extends React.Component {
@@ -20,36 +19,36 @@ class Waveform extends React.Component {
     componentDidMount() {
         let player = Application.player;
 
-        this.base = new BarDisplay(
-            this.refs.base,
+        this.base = new WaveformDisplay(
             Object.assign({}, this.props, {
                 color: ['#555555','#444444'],
                 shadowColor: '#333333'
-            })
+            }),
+            this.refs.base
         );
 
-        this.progress = new BarDisplay(
-            this.refs.progress,
+        this.progress = new WaveformDisplay(
             Object.assign({}, this.props, {
-                color: ['#b6aaff','#927fff'],
-                shadowColor: '#554b96'
-            })
+                color: ['#B6AAFF','#927FFF'],
+                shadowColor: '#554B96'
+            }),
+            this.refs.progress
         );
 
-        this.seek = new BarDisplay(
-            this.refs.seek,
+        this.seek = new WaveformDisplay(
             Object.assign({}, this.props, {
-                color: ['#8880bf','#6c5fbf'],
+                color: ['#8880BF','#6C5FBF'],
                 shadowColor: '#403972'
-            })
+            }),
+            this.refs.seek
         );
 
         player.on('load', () => {
-            let options = { bars: this.props.bars },
-                buffer = Application.player.getSound('audio').buffer,
-                data = WaveformParser.parseBuffer(buffer, options);
+            let sound = Application.player.getSound('audio');
 
-            this.draw(data);
+            if (sound) {
+                this.draw(sound.buffer);
+            }
         }, this);
 
         player.on('tick', () => {

@@ -9,7 +9,7 @@ class BarSpectrumDisplay extends CanvasDisplay {
     constructor(options) {
         super(BarSpectrumDisplay.className, Object.assign({}, BarSpectrumDisplay.defaults, options));
     
-        this.bars = new BarDisplay(this.canvas, this.options);
+        this.bars = new BarDisplay(this.options, this.canvas);
         this.parser = new SpectrumParser(this.options);
 
         this.initialized = !!options;

@@ -7,7 +7,7 @@ class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
         super(SoundwaveDisplay.className, Object.assign({}, SoundwaveDisplay.defaults, options));
 
-        this.wave = new WaveDisplay(this.canvas, this.options);
+        this.wave = new WaveDisplay(this.options, this.canvas);
 
         this.initialized = !!options;
     }

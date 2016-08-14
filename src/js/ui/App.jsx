@@ -21,6 +21,7 @@ const Preload = require('./components/Preload.jsx');
 const About = require('./components/About.jsx');
 const Settings = require('./components/Settings.jsx');
 const CanvasSettings = require('./components/CanvasSettings.jsx');
+const VideoSettings = require('./components/VideoSettings.jsx');
 const ControlPicker = require('./components/ControlPicker.jsx');
 const ModalWindow = require('./components/ModalWindow.jsx');
 
@@ -37,18 +38,18 @@ class App extends React.Component {
     }
 
     componentWillMount() {
-        Events.on('error', (err) => {
+        Events.on('error', err => {
             this.showError(err);
         }, this);
 
-        Events.on('pick_control', (props) => {
+        Events.on('pick_control', props => {
            this.showModal(
-               props.title,
-               <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal} />
+               <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal} />,
+               props
            );
         });
 
-        Events.on('show_modal', (content) => {
+        Events.on('show_modal', content => {
             this.showModal(content);
         }, this);
 
@@ -130,13 +131,9 @@ class App extends React.Component {
                 break;
 
             case 'File/Save Video':
-                Window.showSaveDialog(
-                    'video.mp4',
-                    filename => {
-                        if (filename) {
-                            Application.saveVideo(filename);
-                        }
-                    }
+                this.showModal(
+                    <VideoSettings key="canvas" onClose={this.hideModal} />,
+                    { title: 'VIDEO', showCloseButton: false }
                 );
                 break;
 
@@ -145,11 +142,17 @@ class App extends React.Component {
                 break;
 
             case 'Edit/Canvas':
-                this.showModal('CANVAS', <CanvasSettings key="canvas" onClose={this.hideModal} />);
+                this.showModal(
+                    <CanvasSettings key="canvas" onClose={this.hideModal} />,
+                    { title: 'CANVAS' }
+                );
                 break;
 
             case 'Edit/Settings':
-                this.showModal('SETTINGS', <Settings key="settings" onClose={this.hideModal} />);
+                this.showModal(
+                    <Settings key="settings" onClose={this.hideModal} />,
+                    { title: 'SETTINGS' }
+                );
                 break;
 
             case 'View/Control Dock':
@@ -158,7 +161,10 @@ class App extends React.Component {
                 break;
 
             case 'Help/About':
-                this.showModal('ABOUT', <About key="about" onClose={this.hideModal} />);
+                this.showModal(
+                    <About key="about" onClose={this.hideModal} />,
+                    { title: 'ABOUT' }
+                );
                 break;
         }
     }
@@ -176,9 +182,9 @@ class App extends React.Component {
         this.setState({ error: modal });
     }
 
-    showModal(title, content, buttons) {
+    showModal(content, props) {
         let modal = (
-            <ModalWindow title={title} buttons={buttons} onClose={this.hideModal}>
+            <ModalWindow onClose={this.hideModal} {...props}>
                 {content}
             </ModalWindow>
         );

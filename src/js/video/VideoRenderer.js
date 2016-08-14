@@ -2,18 +2,22 @@
 
 const spawn = window.require('child_process').spawn;
 const Stream = window.require('stream');
+
 const EventEmitter = require('../core/EventEmitter.js');
-const Logger = require('../core/Logger.js');
+const { Logger } = require('../core/Global.js');
 
 const defaults = {
-    fps: 30,
-    frames: 0
+    fps: 29.97,
+    timeStart: 0,
+    timeEnd: 0,
+    format: 'mp4',
+    resolution: 480
 };
 
 class VideoRenderer extends EventEmitter {
     constructor(videoFile, audioFile, options) {
         super();
-        
+        console.log(options);
         this.options = Object.assign({}, defaults, options);
 
         this.stream = new Stream.Transform();
@@ -21,6 +25,8 @@ class VideoRenderer extends EventEmitter {
         this.audioFile = audioFile;
         this.started = false;
         this.completed = false;
+
+        console.log(videoFile, audioFile);
     }
 
     processFrame(frame, image) {
@@ -28,7 +34,7 @@ class VideoRenderer extends EventEmitter {
             func = this.func,
             options = this.options;
 
-        if (frame < options.frames) {
+        if (frame < this.frames) {
             stream.push(image);
             func(frame, options.fps, this.processFrame.bind(this));
         }
@@ -45,8 +51,9 @@ class VideoRenderer extends EventEmitter {
         this.func = func;
         this.started = false;
         this.completed = false;
+        this.frames = options.fps * (options.timeEnd - options.timeStart);
 
-        Logger.log('rending movie', options.frames/options.fps, 'seconds /', options.fps, 'fps /', options.frames, 'frames');
+        Logger.log('rending movie', this.frames/options.fps, 'seconds /', options.fps, 'fps /', this.frames, 'frames');
 
         stream.on('error', (err) => {
             Logger.error(err);

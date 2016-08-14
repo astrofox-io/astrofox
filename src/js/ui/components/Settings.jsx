@@ -107,7 +107,7 @@ class Settings extends React.Component {
 }
 
 Settings.defaultProps = {
-    width: 760,
+    width: 720,
     height: 400,
     onClose: () => {}
 };

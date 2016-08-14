@@ -3,11 +3,11 @@
 const Display = require('./Display.js');
 
 class BarDisplay extends Display {
-    constructor(canvas, options) {
+    constructor(options, canvas) {
         super(BarDisplay.className, Object.assign({}, BarDisplay.defaults, options));
         
-        this.canvas = canvas;
-        this.context = canvas.getContext('2d');
+        this.canvas = canvas || document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
 
         canvas.width = this.options.width;
         canvas.height = this.options.height + this.options.shadowHeight;
@@ -141,19 +141,13 @@ BarDisplay.label = 'Bars';
 BarDisplay.className = 'BarDisplay';
 
 BarDisplay.defaults = {
-    height: 300,
-    width: 200,
-    x: 0,
-    y: 150,
+    width: 300,
+    height: 100,
     barWidth: -1,
     barSpacing: -1,
-    barWidthAutoSize: 1,
-    barSpacingAutoSize: 1,
     shadowHeight: 100,
-    color: '#ffffff',
-    shadowColor: '#cccccc',
-    rotation: 0,
-    opacity: 1.0
+    color: '#FFFFFF',
+    shadowColor: '#CCCCCC'
 };
 
 module.exports = BarDisplay;

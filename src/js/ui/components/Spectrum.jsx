@@ -26,21 +26,10 @@ class Spectrum extends React.Component {
         };
     }
 
-    componentWillMount() {
-        this.config = {
-            width: 854,
-            height: 100,
-            barWidth: -1,
-            barSpacing: 1,
-            shadowHeight: 0,
-            color: '#775fd8'
-        };
-    }
-
     componentDidMount() {
         this.bars = new BarDisplay(
-            ReactDOM.findDOMNode(this.refs.canvas),
-            this.config
+            this.props,
+            this.refs.canvas
         );
 
         this.parser = new SpectrumParser(this.state);
@@ -77,5 +66,14 @@ class Spectrum extends React.Component {
         );
     }
 }
+
+Spectrum.defaultProps = {
+    width: 854,
+    height: 100,
+    barWidth: -1,
+    barSpacing: 1,
+    shadowHeight: 0,
+    color: '#775FD8'
+};
 
 module.exports = Spectrum;

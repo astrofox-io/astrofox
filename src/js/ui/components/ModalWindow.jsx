@@ -5,6 +5,9 @@ const React = require('react');
 const ModalWindow = (props) => {
     let buttons = null;
 
+    let closeButton = (props.showCloseButton !== false) ?
+            <span className="close-button icon-cross" onClick={props.onClose} /> : null;
+
     if (props.buttons) {
         buttons = props.buttons.map((button, index) => {
             return (
@@ -21,7 +24,7 @@ const ModalWindow = (props) => {
             <div className="modal-window">
                 <div className="header">
                     {props.title}
-                    <span className="close-button icon-cross" onClick={props.onClose} />
+                    {closeButton}
                 </div>
                 <div className="body">
                     {props.children}

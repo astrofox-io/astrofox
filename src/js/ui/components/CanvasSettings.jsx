@@ -1,21 +1,16 @@
 'use strict';
 
 const React = require('react');
+
 const autoBind = require('../../util/autoBind.js');
 
 const Application = require('../../core/Application.js');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 
-const defaults = {
-    aspectRatio: '16:9',
-    width: 854,
-    height: 480,
-    backgroundColor: '#000000'
-};
-
 const canvasSizes = {
     '16:9': { width: 854, height: 480 },
+    '3:2': { width: 720, height: 480 },
     '4:3': { width: 640, height: 480 },
     '1:1': { width: 480, height: 480 }
 };
@@ -25,7 +20,7 @@ class CanvasSettings extends React.Component {
         super(props);
         autoBind(this);
 
-        this.state = Object.assign({}, defaults, Application.stage.options);
+        this.state = Application.stage.options;
     }
 
     onChange(name, val) {
@@ -83,11 +78,5 @@ class CanvasSettings extends React.Component {
         );
     }
 }
-
-CanvasSettings.defaultProps = {
-    width: 200,
-    height: 100,
-    values: {}
-};
 
 module.exports = CanvasSettings;
