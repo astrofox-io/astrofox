@@ -39,8 +39,6 @@ class ImageDisplay extends CanvasDisplay {
             options = this.options,
             img = this.image;
 
-        if (!options.src) return;
-
         // Reset canvas
         canvas.width = options.width;
         canvas.height = options.height;

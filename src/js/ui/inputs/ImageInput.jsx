@@ -22,7 +22,7 @@ class ImageInput extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        if (typeof props.src !== 'undefined') {
+        if (props.src !== undefined) {
             this.loadImage(props.src);
         }
     }
@@ -58,6 +58,7 @@ class ImageInput extends React.Component {
 
     loadImage(src) {
         let image = this.refs.image;
+
         if (image.src !== src) {
             image.src = src;
         }
@@ -81,11 +82,6 @@ class ImageInput extends React.Component {
 
     getImage() {
         return this.refs.image;
-    }
-
-    getImageRatio() {
-        let image = this.refs.image;
-        return (image.src) ?  image.naturalWidth / image.naturalHeight :  0;
     }
 
     render() {

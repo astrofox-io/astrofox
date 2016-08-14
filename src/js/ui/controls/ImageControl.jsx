@@ -2,6 +2,7 @@
 
 const React = require('react');
 const classNames = require('classnames');
+
 const Application = require('../../core/Application.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ImageInput = require('../inputs/ImageInput.jsx');
@@ -16,9 +17,8 @@ class ImageControl extends React.Component {
         autoBind(this);
 
         this.state = this.props.display.options;
+        this.state.opacity = 0;
         this.shouldUpdate = false;
-
-        this.image = new Image();
     }
 
     componentDidMount() {
@@ -28,10 +28,11 @@ class ImageControl extends React.Component {
             display.render();
 
             this.shouldUpdate = true;
-            this.image.src = display.options.src;
 
             this.setState(display.options);
         }
+
+        this.image = this.refs.image.getImage();
     }
 
     componentDidUpdate() {
@@ -46,41 +47,36 @@ class ImageControl extends React.Component {
         let obj = {},
             display = this.props.display,
             state = this.state,
-            image = this.image,
-            src = image.src,
-            ratio = (image.src) ? image.naturalWidth / image.naturalHeight : 0,
-            render = false;
+            render = false,
+            image = this.refs.image.getImage(),
+            ratio = image.naturalWidth / image.naturalHeight;
 
         obj[name] = val;
 
         if (name === 'src') {
-            obj.src = image.src = val;
-
             // Reset values
-            if (src !== val) {
-                obj.width = 0;
-                obj.height = 0;
-                obj.x = 0;
-                obj.y = 0;
-                obj.rotation = 0;
-                obj.opacity = 0;
+            obj.width = 0;
+            obj.height = 0;
+            obj.x = 0;
+            obj.y = 0;
+            obj.rotation = 0;
+            obj.opacity = 0;
 
-                if (val !== BLANK_IMAGE) {
-                    obj.opacity = 1.0;
-                    obj.width = image.naturalWidth;
-                    obj.height = image.naturalHeight;
-                }
+            if (val !== BLANK_IMAGE) {
+                obj.opacity = 1.0;
+                obj.width = image.naturalWidth;
+                obj.height = image.naturalHeight;
             }
 
             render = true;
         }
-        else if (name === 'width' && state.src) {
+        else if (name === 'width') {
             if (state.fixed) {
-                obj.height = Math.round(val * (1 / ratio));
+                obj.height = Math.round(val * (1 / ratio)) || 0;
             }
             render = true;
         }
-        else if (name === 'height' && state.src) {
+        else if (name === 'height') {
             if (state.fixed) {
                 obj.width = Math.round(val * ratio);
             }
@@ -107,14 +103,16 @@ class ImageControl extends React.Component {
 
     render() {
         let state = this.state,
-            img = this.image,
-            readOnly = !(state.src && state.src !== BLANK_IMAGE),
-            imageWidth = (readOnly) ? 0 : img.width,
-            imageHeight = (readOnly) ? 0 : img.height,
-            maxSize = ((!readOnly) ? ((img.height > img.width) ? img.height : img.width) : 0) * 2,
-            linkClasses = 'icon-link input-link';
-
-        if (state.fixed) linkClasses += ' input-link-on';
+            image = this.image,
+            readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
+            width = (readOnly) ? 0 : image.naturalWidth,
+            height = (readOnly) ? 0 : image.naturalHeight,
+            linkClasses = classNames(
+                'icon-link input-link',
+                {
+                    'input-link-on': state.fixed
+                }
+            );
 
         return (
             <div className="control">
@@ -139,7 +137,7 @@ class ImageControl extends React.Component {
                         name="width"
                         size="3"
                         min={0}
-                        max={imageWidth*2}
+                        max={width*2}
                         value={state.width}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -148,7 +146,7 @@ class ImageControl extends React.Component {
                         <RangeInput
                             name="width"
                             min={0}
-                            max={imageWidth*2}
+                            max={width*2}
                             value={state.width}
                             readOnly={readOnly}
                             onChange={this.onChange}
@@ -166,7 +164,7 @@ class ImageControl extends React.Component {
                         name="height"
                         size="3"
                         min={0}
-                        max={imageHeight*2}
+                        max={height*2}
                         value={state.height}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -175,7 +173,7 @@ class ImageControl extends React.Component {
                         <RangeInput
                             name="height"
                             min={0}
-                            max={imageHeight*2}
+                            max={height*2}
                             value={state.height}
                             readOnly={readOnly}
                             onChange={this.onChange}
@@ -187,8 +185,8 @@ class ImageControl extends React.Component {
                     <NumberInput
                         name="x"
                         size="3"
-                        min={-maxSize}
-                        max={maxSize}
+                        min={-width*2}
+                        max={width*2}
                         value={state.x}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -196,8 +194,8 @@ class ImageControl extends React.Component {
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-maxSize}
-                            max={maxSize}
+                            min={-width*2}
+                            max={width*2}
                             value={state.x}
                             readOnly={readOnly}
                             onChange={this.onChange}
@@ -209,8 +207,8 @@ class ImageControl extends React.Component {
                     <NumberInput
                         name="y"
                         size="3"
-                        min={-maxSize}
-                        max={maxSize}
+                        min={-height*2}
+                        max={height*2}
                         value={state.y}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -218,8 +216,8 @@ class ImageControl extends React.Component {
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-maxSize}
-                            max={maxSize}
+                            min={-height*2}
+                            max={height*2}
                             value={state.y}
                             readOnly={readOnly}
                             onChange={this.onChange}
