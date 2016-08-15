@@ -46,7 +46,7 @@ class SpectrumParser {
                     this.options[prop] = options[prop];
                     changed = true;
                 }
-            }, this);
+            });
 
             if (changed) this.init();
         }

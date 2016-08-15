@@ -5,11 +5,9 @@ const WaveDisplay = require('../display/WaveDisplay.js');
 
 class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
-        super(SoundwaveDisplay.className, Object.assign({}, SoundwaveDisplay.defaults, options));
+        super(SoundwaveDisplay, options);
 
         this.wave = new WaveDisplay(this.options, this.canvas);
-
-        this.initialized = !!options;
     }
 
     update(options) {
@@ -18,11 +16,11 @@ class SoundwaveDisplay extends CanvasDisplay {
         return super.update(options);
     }
 
-    renderToScene(context, data) {
+    renderToScene(scene, data) {
         this.wave.render(data.td, data.playing);
 
         this.renderToCanvas(
-            context,
+            scene.getContext('2d'),
             this.canvas.width / 2,
             this.canvas.height / 2
         );

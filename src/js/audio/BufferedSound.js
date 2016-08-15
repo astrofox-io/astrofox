@@ -78,9 +78,9 @@ class BufferedSound extends Sound {
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
 
-        this.nodes.forEach((node) => {
+        this.nodes.forEach(node => {
             this.source.connect(node);
-        }, this);
+        });
     }
 
     play() {

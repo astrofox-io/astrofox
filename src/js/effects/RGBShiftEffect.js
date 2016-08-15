@@ -9,9 +9,7 @@ const OFFSET_MAX = 854;
 
 class RGBShiftEffect extends Effect {
     constructor(options) {
-        super(RGBShiftEffect.className, Object.assign({}, RGBShiftEffect.defaults, options));
-
-        this.initialized = !!options;
+        super(RGBShiftEffect, options);
     }
 
     updatePass() {

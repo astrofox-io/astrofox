@@ -4,16 +4,16 @@ const Display = require('../display/Display.js');
 const { deg2rad } = require('../util/math.js');
 
 class CanvasDisplay extends Display {
-    constructor(name, options) {
-        super(name, options);
+    constructor(type, options) {
+        super(type, options);
 
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
     }
 
-    renderToScene(context) {
+    renderToScene(scene) {
         this.renderToCanvas(
-            context,
+            scene.getContext('2d'),
             this.canvas.width / 2,
             this.canvas.height / 2
         );

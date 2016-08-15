@@ -15,9 +15,7 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BloomEffect extends Effect {
     constructor(options) {
-        super(BloomEffect.className, Object.assign({}, BloomEffect.defaults, options));
-
-        this.initialized = !!options;
+        super(BloomEffect, options);
     }
 
     updatePass() {
@@ -25,7 +23,7 @@ class BloomEffect extends Effect {
 
         this.blurPasses.forEach((pass, i) => {
             this.updateGaussianPass(pass, i);
-        }, this);
+        });
 
         this.blendPass.update({ blendMode: this.options.blendMode });
     }

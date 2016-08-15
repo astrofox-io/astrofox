@@ -26,17 +26,17 @@ class ControlsPanel extends React.Component {
             controls.push(scene);
             scene.effects.nodes.reverse().forEach(effect => {
                 controls.push(effect);
-            }, this);
+            });
             scene.displays.nodes.reverse().forEach(display => {
                 controls.push(display);
-            }, this);
-        }, this);
+            });
+        });
 
         this.setState({ controls: controls }, callback);
     }
 
     updateControl(layer) {
-        let id = layer.toString(),
+        let id = layer.id,
             control = this.refs[id];
 
         if (control) {
@@ -45,7 +45,7 @@ class ControlsPanel extends React.Component {
     }
 
     focusControl(layer) {
-        let id = layer.toString(),
+        let id = layer.id,
             node = ReactDOM.findDOMNode(this.refs[id]);
 
         if (node) {
@@ -55,7 +55,7 @@ class ControlsPanel extends React.Component {
 
     render() {
         let controls = this.state.controls.map(display => {
-            let id = display.toString(),
+            let id = display.id,
                 Control = getControlComponent(display) || 'div';
 
             return (
@@ -65,7 +65,7 @@ class ControlsPanel extends React.Component {
                     display={display}
                 />
             );
-        }, this);
+        });
 
         return (
             <div className="controls-panel" ref="controls">

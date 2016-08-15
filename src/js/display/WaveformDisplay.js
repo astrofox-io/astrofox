@@ -6,8 +6,6 @@ const Display = require('../display/Display.js');
 class WaveformDisplay extends BarDisplay {
     constructor(options, canvas) {
         super(Object.assign({}, WaveformDisplay.defaults, options), canvas);
-
-        this.initialized = !!options;
     }
 
     render(data) {

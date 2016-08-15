@@ -205,7 +205,7 @@ class Composer extends EventEmitter {
                                 this.swapBuffers();
                             }
                         }
-                    }, this);
+                    });
                 }
                 else {
                     pass.process(
@@ -236,7 +236,7 @@ class Composer extends EventEmitter {
                     this.maskActive = false;
                 }*/
             }
-        }, this);
+        });
     }
 }
 

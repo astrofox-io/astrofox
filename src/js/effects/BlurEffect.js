@@ -23,9 +23,7 @@ const GAUSSIAN_ITERATIONS = 8;
 
 class BlurEffect extends Effect { 
     constructor(options) {
-        super(BlurEffect.className, Object.assign({}, BlurEffect.defaults, options));
-
-        this.initialized = !!options;
+        super(BlurEffect, options);
     }
 
     update(options) {
@@ -56,7 +54,7 @@ class BlurEffect extends Effect {
                     if (i < GAUSSIAN_ITERATIONS) {
                         this.updateGaussianPass(pass, i);
                     }
-                }, this);
+                });
                 break;
 
             case 'Zoom':

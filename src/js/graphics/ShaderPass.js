@@ -47,7 +47,7 @@ class ShaderPass extends ComposerPass {
                     uniforms[prop].value = props[prop];
                 }
             }
-        }, this);
+        });
 
         this.material.needsUpdate = true;
     }

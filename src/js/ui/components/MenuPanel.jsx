@@ -25,7 +25,7 @@ class MenuPanel extends React.Component {
                     onClick={this.onTabClick.bind(this, index)}>{tab}
                 </div>
             );
-        }, this);
+        });
 
         return (
             <div className="menu-panel">

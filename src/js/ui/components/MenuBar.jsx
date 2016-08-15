@@ -50,7 +50,7 @@ class MenuBar extends React.Component {
                         menuItem.checked = checked;
                         this.setState(items);
                     }
-                }, this);
+                });
             }
         }, this);
     }
@@ -68,7 +68,7 @@ class MenuBar extends React.Component {
                     onMenuItemClick={this.onMenuItemClick}
                 />
             );
-        }, this);
+        });
 
         return (
             <div id="menubar" className="menubar">

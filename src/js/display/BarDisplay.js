@@ -4,15 +4,13 @@ const Display = require('./Display.js');
 
 class BarDisplay extends Display {
     constructor(options, canvas) {
-        super(BarDisplay.className, Object.assign({}, BarDisplay.defaults, options));
-        
+        super(BarDisplay, options);
+
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
 
         canvas.width = this.options.width;
         canvas.height = this.options.height + this.options.shadowHeight;
-
-        this.initialized = !!options;
     }
     
     update(options) {

@@ -3,8 +3,8 @@
 const Display = require('../display/Display.js');
 
 class Effect extends Display {
-    constructor(name, options) {
-        super(name, options);
+    constructor(type, options) {
+        super(type, options);
     }
 
     update(options) {

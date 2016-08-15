@@ -155,12 +155,12 @@ class LayersPanel extends React.Component {
 
             scene.effects.nodes.reverse().forEach(effect => {
                 layers.push(effect);
-            }, this);
+            });
 
             scene.displays.nodes.reverse().forEach(display => {
                 layers.push(display);
-            }, this);
-        }, this);
+            });
+        });
 
         this.setState({ layers: layers }, callback);
     }
@@ -224,7 +224,7 @@ class LayersPanel extends React.Component {
                     onLayerUpdate={this.onLayerUpdate}
                 />
             );
-        }, this);
+        });
 
         return (
             <div className="layers-panel">

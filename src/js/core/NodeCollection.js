@@ -10,7 +10,7 @@ class NodeCollection {
             this.nodes = this.nodes.withMutations(list => {
                 values.forEach(val => {
                     list.push(val);
-                }, this);
+                });
             });
         }
     }

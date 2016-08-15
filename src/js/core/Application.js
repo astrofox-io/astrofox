@@ -72,9 +72,9 @@ class Application extends EventEmitter {
                             let action = `${root.label}/${item.label}`;
                             item.click = this.menuAction.bind(this, action);
                         }
-                    }, this);
+                    });
                 }
-            }, this);
+            });
 
             const menu = Menu.buildFromTemplate(menuConfig);
 
@@ -321,7 +321,7 @@ class Application extends EventEmitter {
             this.stage.clearScenes();
 
             data.scenes.forEach(item => {
-                let scene = new Scene(item.name, item.options);
+                let scene = new Scene(item.options);
                 this.stage.addScene(scene);
 
                 if (item.displays) {
@@ -335,7 +335,7 @@ class Application extends EventEmitter {
                         else {
                             Logger.warn('Display "%s" not found.', display.name);
                         }
-                    }, this);
+                    });
                 }
 
                 if (item.effects) {
@@ -349,7 +349,7 @@ class Application extends EventEmitter {
                         else {
                             Logger.warn('Effect "%s" not found.', effect.name);
                         }
-                    }, this);
+                    });
                 }
             });
 

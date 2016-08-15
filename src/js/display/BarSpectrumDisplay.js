@@ -7,12 +7,10 @@ const SpectrumParser = require('../audio/SpectrumParser.js');
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {
-        super(BarSpectrumDisplay.className, Object.assign({}, BarSpectrumDisplay.defaults, options));
-    
+        super(BarSpectrumDisplay, options);
+
         this.bars = new BarDisplay(this.options, this.canvas);
         this.parser = new SpectrumParser(this.options);
-
-        this.initialized = !!options;
     }
     
     update(options) {
@@ -26,12 +24,13 @@ class BarSpectrumDisplay extends CanvasDisplay {
         return changed;
     }
 
-    renderToScene(context, data) {
+    renderToScene(scene, data) {
         let fft = this.parser.parseFFT(data.fft);
+
         this.bars.render(fft);
 
         this.renderToCanvas(
-            context,
+            scene.getContext('2d'),
             this.canvas.width / 2,
             this.bars.options.height
         );

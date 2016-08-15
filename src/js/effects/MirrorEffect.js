@@ -6,9 +6,7 @@ const MirrorShader = require('../shaders/MirrorShader.js');
 
 class MirrorEffect extends Effect {
     constructor(options) {
-        super(MirrorEffect.className, Object.assign({}, MirrorEffect.defaults, options));
-
-        this.initialized = !!options;
+        super(MirrorEffect, options);
     }
     
     addToScene(scene) {

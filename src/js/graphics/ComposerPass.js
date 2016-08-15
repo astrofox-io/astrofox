@@ -23,7 +23,7 @@ class ComposerPass {
                 if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
                     this.options[prop] = options[prop];
                 }
-            }, this);
+            });
         }
     }
 

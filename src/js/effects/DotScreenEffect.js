@@ -7,9 +7,7 @@ const { deg2rad } = require('../util/math.js');
 
 class DotScreenEffect extends Effect {
     constructor(options) {
-        super(DotScreenEffect.className, Object.assign({}, DotScreenEffect.defaults, options));
-
-        this.initialized = !!options;
+        super(DotScreenEffect, options);
     }
 
     updatePass() {

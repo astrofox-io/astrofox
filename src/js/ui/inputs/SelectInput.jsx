@@ -62,7 +62,7 @@ class SelectInput extends React.Component {
                     {item.name}
                 </div>
             );
-        }, this);
+        });
 
         return (
             <div className="input-select">

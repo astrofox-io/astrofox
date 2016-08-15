@@ -26,12 +26,10 @@ const POINT_SIZE = 5;
 
 class GeometryDisplay extends Display {
     constructor(options) {
-        super(GeometryDisplay.className, Object.assign({}, GeometryDisplay.defaults, options));
+        super(GeometryDisplay, options);
 
         this.parser = new SpectrumParser({ normalize: true });
         this.hasGeometry = true;
-
-        this.initialized = !!options;
     }
 
     update(options) {
@@ -102,7 +100,7 @@ class GeometryDisplay extends Display {
         }
     }
 
-    renderToScene(renderer, data) {
+    renderToScene(scene, data) {
         let mesh = this.mesh,
             options = this.options,
             fft = this.parser.parseFFT(data.fft),

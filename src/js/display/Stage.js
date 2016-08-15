@@ -11,7 +11,7 @@ const { Events } = require('../core/Global.js');
 
 class Stage extends Display {
     constructor(options) {
-        super(Stage.className, Object.assign({}, Stage.defaults, options));
+        super(Stage, options);
 
         this.scenes = new NodeCollection();
     
@@ -25,8 +25,6 @@ class Stage extends Display {
         this.buffer3D = new FrameBuffer('webgl', this.options);
 
         this.backgroundColor = new THREE.Color(this.options.backgroundColor);
-
-        this.initialized = !!options;
     }
 
     update(options) {
@@ -128,7 +126,7 @@ class Stage extends Display {
 
                 composer.blendBuffer(buffer, options);
             }
-        }, this);
+        });
 
         composer.renderToScreen();
 

@@ -1,45 +1,34 @@
 'use strict';
 
-let displayId = 0;
+const Component = require('../core/Component.js');
+
 const displayCount = {};
 
-class Display {
-    constructor(name, options) {
-        this.id = displayId++;
-        this.name = name;
-
-        if (typeof displayCount[name] === 'undefined') {
-            displayCount[name] = 1;
+class Display extends Component {
+    constructor(type, options) {
+        if (typeof displayCount[type.className] === 'undefined') {
+            displayCount[type.className] = 1;
         }
 
-        this.options = Object.assign(
-            {
-                displayName: name + ' ' + displayCount[name]++,
-                enabled: true
-            },
-            options
+        super(
+            Object.assign(
+                {
+                    displayName: type.label + ' ' + displayCount[type.className]++,
+                    enabled: true
+                },
+                type.defaults,
+                options
+            )
         );
 
+        this.name = type.className;
+        this.initialized = !!options;
         this.owner = null;
         this.hasUpdate = false;
-        this.initialized = false;
     }
 
     update(options) {
-        if (typeof options === 'object') {
-            Object.keys(options).forEach(prop => {
-                if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
-                    this.options[prop] = options[prop];
-                    this.hasUpdate = true;
-                }
-            }, this);
-        }
-
-        return this.hasUpdate;
-    }
-
-    toString() {
-        return this.name + '' + this.id;
+        return this.hasUpdate = super.update(options);
     }
 
     toJSON() {

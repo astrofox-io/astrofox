@@ -14,14 +14,12 @@ const FAR = 10000;
 const CAMERA_POS_Z = 250;
 
 class Scene extends Display {
-    constructor(name, options) {
-        super(Scene.className, Object.assign({}, Scene.defaults, options));
-    
+    constructor(options) {
+        super(Scene, options);
+
         this.owner = null;
         this.displays = new NodeCollection();
         this.effects = new NodeCollection();
-
-        this.initialized = !!options;
     }
 
     update(options) {
@@ -195,10 +193,10 @@ class Scene extends Display {
         lights[2].position.set(-distance, -distance * 2, -distance);
     }
 
-    getTargetBuffer(display) {
-        return (display instanceof CanvasDisplay) ?
-            this.buffer2D.context :
-            this.buffer3D.context;
+    getContext(type) {
+        return (type === 'webgl') ?
+            this.buffer3D.context :
+            this.buffer2D.context;
     }
 
     clear() {
@@ -218,7 +216,7 @@ class Scene extends Display {
         if (displays.size > 0 || effects.size > 0) {
             displays.forEach(display => {
                 if (display.options.enabled) {
-                    display.renderToScene(this.getTargetBuffer(display), data);
+                    display.renderToScene(this, data);
 
                     if (!hasGeometry && display.hasGeometry) {
                         hasGeometry = true;
@@ -232,7 +230,7 @@ class Scene extends Display {
 
             effects.forEach(effect => {
                 if (effect.options.enabled) {
-                    effect.renderToScene(this.getTargetBuffer(effect), data);
+                    effect.renderToScene(this, data);
                 }
             });
 

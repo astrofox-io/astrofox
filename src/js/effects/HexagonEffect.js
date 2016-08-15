@@ -6,9 +6,7 @@ const HexagonShader = require('../shaders/HexagonShader.js');
 
 class HexagonEffect extends Effect {
     constructor(options) {
-        super(HexagonEffect.className, Object.assign({}, HexagonEffect.defaults, options));
-
-        this.initialized = !!options;
+        super(HexagonEffect, options);
     }
 
     updatePass() {
