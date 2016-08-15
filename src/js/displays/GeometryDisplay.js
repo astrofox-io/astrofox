@@ -1,7 +1,7 @@
 'use strict';
 
 const THREE = require('three');
-const Display = require('../display/Display.js');
+const Display = require('./Display.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
 const PointShader = require('../shaders/PointShader.js');
 

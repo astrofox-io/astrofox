@@ -1,10 +1,21 @@
 'use strict';
 
-const Display = require('./Display.js');
+const Component = require('../core/Component.js');
 
-class WaveDisplay extends Display {
+const defaults = {
+    height: 200,
+    width: 400,
+    color: '#FFFFFF',
+    lineWidth: 1.0,
+    scrolling: false,
+    scrollSpeed: 0.15,
+    rotation: 0,
+    opacity: 1.0
+};
+
+class Wave extends Component {
     constructor(options, canvas) {
-        super(WaveDisplay, options);
+        super(Object.assign({}, defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
@@ -87,19 +98,4 @@ class WaveDisplay extends Display {
     }
 }
 
-WaveDisplay.label = 'Wave';
-
-WaveDisplay.className = 'WaveDisplay';
-
-WaveDisplay.defaults = {
-    height: 200,
-    width: 400,
-    color: '#FFFFFF',
-    lineWidth: 1.0,
-    scrolling: false,
-    scrollSpeed: 0.15,
-    rotation: 0,
-    opacity: 1.0
-};
-
-module.exports = WaveDisplay;
+module.exports = Wave;

@@ -1,7 +1,7 @@
 module.exports = {
-    BarSpectrumDisplay: require('../display/BarSpectrumDisplay.js'),
-    GeometryDisplay: require('../display/GeometryDisplay.js'),
-    ImageDisplay: require('../display/ImageDisplay.js'),
-    SoundwaveDisplay: require('../display/SoundwaveDisplay.js'),
-    TextDisplay: require('../display/TextDisplay.js')
+    BarSpectrumDisplay: require('../displays/BarSpectrumDisplay.js'),
+    GeometryDisplay: require('../displays/GeometryDisplay.js'),
+    ImageDisplay: require('../displays/ImageDisplay.js'),
+    SoundwaveDisplay: require('../displays/SoundwaveDisplay.js'),
+    TextDisplay: require('../displays/TextDisplay.js')
 };

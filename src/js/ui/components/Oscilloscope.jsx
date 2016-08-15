@@ -4,7 +4,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 const { Events } = require('../../core/Global.js');
-const WaveDisplay = require('../../display/WaveDisplay.js');
+const Wave = require('../../canvas/Wave.js');
 const autoBind = require('../../util/autoBind.js');
 
 class Oscilloscope extends React.Component {
@@ -14,7 +14,7 @@ class Oscilloscope extends React.Component {
     }
 
     componentDidMount() {
-        this.display = new WaveDisplay(
+        this.display = new Wave(
             this.props,
             this.refs.canvas
         );

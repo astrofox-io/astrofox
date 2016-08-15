@@ -1,5 +1,7 @@
 'use strict';
 
+const Component = require('../core/Component.js');
+
 const defaults = {
     enabled: true,
     forceClear: false,
@@ -12,19 +14,9 @@ const defaults = {
     setClearAlpha: 1.0
 };
 
-class ComposerPass {
+class ComposerPass extends Component {
     constructor(options) {
-        this.options = Object.assign({}, defaults, options);
-    }
-
-    update(options) {
-        if (typeof options === 'object') {
-            Object.keys(options).forEach(prop => {
-                if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
-                    this.options[prop] = options[prop];
-                }
-            });
-        }
+        super(Object.assign({}, defaults, options));
     }
 
     setBlending(blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha) {

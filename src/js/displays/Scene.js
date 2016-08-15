@@ -3,8 +3,8 @@
 const THREE = require('three');
 
 const NodeCollection = require('../core/NodeCollection.js');
-const Display = require('../display/Display.js');
-const CanvasDisplay = require('../display/CanvasDisplay.js');
+const Display = require('./Display.js');
+const CanvasDisplay = require('./CanvasDisplay.js');
 const Effect = require('../effects/Effect.js');
 const Composer = require('../graphics/Composer.js');
 

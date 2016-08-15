@@ -1,6 +1,6 @@
 'use strict';
 
-const Display = require('../display/Display.js');
+const Display = require('../displays/Display.js');
 
 class Effect extends Display {
     constructor(type, options) {

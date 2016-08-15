@@ -5,10 +5,10 @@ const classNames = require('classnames');
 
 const { Events } = require('../../core/Global.js');
 const Application = require('../../core/Application.js');
-const Display = require('../../display/Display.js');
-const CanvasDisplay = require('../../display/CanvasDisplay.js');
-const Stage = require('../../display/Stage.js');
-const Scene = require('../../display/Scene.js');
+const Display = require('../../displays/Display.js');
+const CanvasDisplay = require('../../displays/CanvasDisplay.js');
+const Stage = require('../../displays/Stage.js');
+const Scene = require('../../displays/Scene.js');
 const Effect = require('../../effects/Effect.js');
 const DisplayLibrary = require('../../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../../lib/EffectsLibrary.js');

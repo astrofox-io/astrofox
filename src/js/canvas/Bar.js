@@ -1,10 +1,20 @@
 'use strict';
 
-const Display = require('./Display.js');
+const Component = require('../core/Component.js');
 
-class BarDisplay extends Display {
+const defaults = {
+    width: 300,
+    height: 100,
+    barWidth: -1,
+    barSpacing: -1,
+    shadowHeight: 100,
+    color: '#FFFFFF',
+    shadowColor: '#CCCCCC'
+};
+
+class Bar extends Component {
     constructor(options, canvas) {
-        super(BarDisplay, options);
+        super(Object.assign({}, defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
@@ -134,18 +144,4 @@ class BarDisplay extends Display {
     }
 }
 
-BarDisplay.label = 'Bars';
-
-BarDisplay.className = 'BarDisplay';
-
-BarDisplay.defaults = {
-    width: 300,
-    height: 100,
-    barWidth: -1,
-    barSpacing: -1,
-    shadowHeight: 100,
-    color: '#FFFFFF',
-    shadowColor: '#CCCCCC'
-};
-
-module.exports = BarDisplay;
+module.exports = Bar;

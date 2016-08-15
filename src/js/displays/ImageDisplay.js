@@ -1,6 +1,6 @@
 'use strict';
 
-const CanvasDisplay = require('../display/CanvasDisplay.js');
+const CanvasDisplay = require('./CanvasDisplay.js');
 
 const MIN_RESIZE_WIDTH = 100;
 const MIN_RESIZE_HEIGHT = 100;

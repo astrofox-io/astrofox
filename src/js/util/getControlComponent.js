@@ -3,7 +3,7 @@
 const DisplayLibrary = require('../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../lib/EffectsLibrary.js');
 const ControlLibrary = require('../lib/ControlLibrary.js');
-const Scene = require('../display/Scene.js');
+const Scene = require('../displays/Scene.js');
 const SceneControl = require('../ui/controls/SceneControl.jsx');
 const EmptyControl = require('../ui/controls/EmptyControl.jsx');
 

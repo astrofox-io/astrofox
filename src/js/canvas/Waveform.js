@@ -1,11 +1,15 @@
 'use strict';
 
-const BarDisplay = require('../display/BarDisplay.js');
-const Display = require('../display/Display.js');
+const Component = require('../core/Component.js');
+const Bar = require('./Bar.js');
 
-class WaveformDisplay extends BarDisplay {
+const defaults = {
+    bars: 100
+};
+
+class Waveform extends Bar {
     constructor(options, canvas) {
-        super(Object.assign({}, WaveformDisplay.defaults, options), canvas);
+        super(Object.assign({}, defaults, options), canvas);
     }
 
     render(data) {
@@ -51,12 +55,4 @@ class WaveformDisplay extends BarDisplay {
     }
 }
 
-WaveformDisplay.label = 'Waveform';
-
-WaveformDisplay.className = 'WaveformDisplay';
-
-WaveformDisplay.defaults = {
-    bars: 100
-};
-
-module.exports = WaveformDisplay;
+module.exports = Waveform;

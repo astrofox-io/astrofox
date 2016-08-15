@@ -1,15 +1,15 @@
 'use strict';
 
-const BarDisplay = require('../display/BarDisplay.js');
-const Display = require('../display/Display.js');
-const CanvasDisplay = require('../display/CanvasDisplay.js');
+const Display = require('./Display.js');
+const CanvasDisplay = require('./CanvasDisplay.js');
+const Bar = require('../canvas/Bar.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {
         super(BarSpectrumDisplay, options);
 
-        this.bars = new BarDisplay(this.options, this.canvas);
+        this.bars = new Bar(this.options, this.canvas);
         this.parser = new SpectrumParser(this.options);
     }
     

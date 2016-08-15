@@ -5,7 +5,7 @@ const ReactDOM = require('react-dom');
 
 const { Events } = require('../../core/Global.js');
 const SpectrumParser = require('../../audio/SpectrumParser.js');
-const BarDisplay = require('../../display/BarDisplay.js');
+const Bar = require('../../canvas/Bar.js');
 const autoBind = require('../../util/autoBind.js');
 
 class Spectrum extends React.Component {
@@ -27,7 +27,7 @@ class Spectrum extends React.Component {
     }
 
     componentDidMount() {
-        this.bars = new BarDisplay(
+        this.bars = new Bar(
             this.props,
             this.refs.canvas
         );
