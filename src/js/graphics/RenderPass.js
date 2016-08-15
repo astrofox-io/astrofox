@@ -17,14 +17,14 @@ class RenderPass extends ComposerPass {
         this.camera = camera;
     }
 
-    process(renderer, writeBuffer, readBuffer) {
+    render(renderer, writeBuffer, readBuffer) {
         let scene = this.scene,
             camera = this.camera,
             options = this.options;
 
         scene.overrideMaterial = options.overrideMaterial;
 
-        this.render(renderer, scene, camera, readBuffer);
+        super.render(renderer, scene, camera, readBuffer);
 
         scene.overrideMaterial = null;
     }

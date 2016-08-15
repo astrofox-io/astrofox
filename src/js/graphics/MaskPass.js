@@ -14,7 +14,7 @@ class MaskPass extends ComposerPass {
         this.camera = camera;
     }
 
-    process(renderer, writeBuffer, readBuffer) {
+    render(renderer, writeBuffer, readBuffer) {
         let context = renderer.context,
             options = this.options,
             writeValue = (options.inverse) ? 0 : 1,

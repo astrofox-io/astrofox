@@ -37,12 +37,12 @@ class TexturePass extends ComposerPass {
         this.scene.add(this.mesh);
     }
 
-    process(renderer, writeBuffer, readBuffer) {
+    render(renderer, writeBuffer, readBuffer) {
         var options = this.options;
 
         this.texture.needsUpdate = options.needsUpdate;
 
-        this.render(renderer, this.scene, this.camera, readBuffer);
+        super.render(renderer, this.scene, this.camera, readBuffer);
     }
 }
 

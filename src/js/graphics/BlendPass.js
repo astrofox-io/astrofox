@@ -22,7 +22,7 @@ class BlendPass extends ShaderPass {
         this.buffer = buffer;
     }
 
-    process(renderer, writeBuffer, readBuffer) {
+    render(renderer, writeBuffer, readBuffer) {
         let options = this.options;
 
         this.setUniforms({
@@ -35,7 +35,7 @@ class BlendPass extends ShaderPass {
 
         this.mesh.material = this.material;
 
-        this.render(renderer, this.scene, this.camera, writeBuffer);
+        super.render(renderer, writeBuffer, readBuffer);
     }
 }
 

@@ -8,8 +8,6 @@ const ShaderPass = require('../graphics/ShaderPass.js');
 const SpritePass = require('../graphics/SpritePass.js');
 const TexturePass = require('../graphics/TexturePass.js');
 const MultiPass = require('../graphics/MultiPass.js');
-const MaskPass = require('../graphics/MaskPass.js');
-const ClearMaskPass = require('../graphics/ClearMaskPass.js');
 const BlendModes = require('../graphics/BlendModes.js');
 const CopyShader = require('../shaders/CopyShader.js');
 const BlendShader = require('../shaders/BlendShader.js');
@@ -171,7 +169,7 @@ class Composer extends EventEmitter {
             alpha: 1
         });
 
-        pass.process(this.renderer, this.writeBuffer);
+        pass.render(this.renderer, this.writeBuffer);
 
         this.swapBuffers();
     }
@@ -181,60 +179,24 @@ class Composer extends EventEmitter {
 
         pass.update({ renderToScreen: true });
 
-        pass.process(this.renderer, this.writeBuffer, this.readBuffer);
+        pass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
         pass.update({ renderToScreen: false });
     }
 
     render() {
-        let renderer = this.renderer,
-            context = this.renderer.context,
-            maskActive = this.maskActive;
+        let renderer = this.renderer;
 
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
         this.passes.nodes.forEach(pass => {
             if (pass.options.enabled) {
-                if (pass instanceof MultiPass) {
-                    pass.getPasses().forEach(p => {
-                        if (p.options.enabled) {
-                            p.process(renderer, this.writeBuffer, this.readBuffer, maskActive);
+                pass.render(renderer, this.writeBuffer, this.readBuffer);
 
-                            if (p.options.needsSwap) {
-                                this.swapBuffers();
-                            }
-                        }
-                    });
+                if (pass.options.needsSwap) {
+                    this.swapBuffers();
                 }
-                else {
-                    pass.process(
-                        renderer,
-                        this.writeBuffer,
-                        this.readBuffer,
-                        maskActive
-                    );
-
-                    if (pass.options.needsSwap) {
-                        /*
-                         if (maskActive) {
-                             context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
-                             this.copyPass.process(renderer, this.writeBuffer, this.readBuffer);
-                             context.stencilFunc(context.EQUAL, 1, 0xffffffff);
-                         }
-                         */
-
-                        this.swapBuffers();
-                    }
-                }
-
-                /*
-                if (pass instanceof MaskPass) {
-                    this.maskActive = true;
-                }
-                else if (pass instanceof ClearMaskPass) {
-                    this.maskActive = false;
-                }*/
             }
         });
     }

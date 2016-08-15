@@ -52,14 +52,14 @@ class ShaderPass extends ComposerPass {
         this.material.needsUpdate = true;
     }
 
-    process(renderer, writeBuffer, readBuffer) {
+    render(renderer, writeBuffer, readBuffer) {
         let options = this.options;
 
         if (readBuffer && this.material.uniforms[options.textureId] ) {
             this.material.uniforms[options.textureId].value = readBuffer;
         }
 
-        this.render(renderer, this.scene, this.camera, writeBuffer);
+        super.render(renderer, this.scene, this.camera, writeBuffer);
     }
 }
 

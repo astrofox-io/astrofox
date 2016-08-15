@@ -6,12 +6,9 @@ const Effect = require('../effects/Effect.js');
 const ShaderPass = require('../graphics/ShaderPass.js');
 const SavePass = require('../graphics/SavePass.js');
 const BlendPass = require('../graphics/BlendPass.js');
-const GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
+const GaussianBlurPass = require('../graphics/GaussianBlurPass');
 const LuminanceShader = require('../shaders/LuminanceShader.js');
 const CopyShader = require('../shaders/CopyShader.js');
-
-const GAUSSIAN_BLUR_MAX = 3;
-const GAUSSIAN_ITERATIONS = 8;
 
 class BloomEffect extends Effect {
     constructor(options) {
@@ -21,9 +18,7 @@ class BloomEffect extends Effect {
     updatePass() {
         this.lumPass.setUniforms({ amount: 1 - this.options.threshold });
 
-        this.blurPasses.forEach((pass, i) => {
-            this.updateGaussianPass(pass, i);
-        });
+        this.blurPass.setAmount(this.options.amount);
 
         this.blendPass.update({ blendMode: this.options.blendMode });
     }
@@ -46,6 +41,9 @@ class BloomEffect extends Effect {
         passes.push(this.lumPass);
 
         // Apply blur
+        this.blurPass = new GaussianBlurPass();
+        passes.push(this.blurPass);
+        /*
         this.blurPasses = [];
         for (let i = 0; i < GAUSSIAN_ITERATIONS; i++) {
             pass = new ShaderPass(GaussianBlurShader);
@@ -53,7 +51,7 @@ class BloomEffect extends Effect {
             this.blurPasses.push(pass);
 
             this.updateGaussianPass(pass, i);
-        }
+        }*/
 
         // Blend with original frame
         this.blendPass = new BlendPass(
@@ -69,14 +67,6 @@ class BloomEffect extends Effect {
 
     removeFromScene(scene) {
         this.pass = null;
-    }
-
-    updateGaussianPass(pass, i) {
-        let options = this.options,
-            amount = options.amount * GAUSSIAN_BLUR_MAX,
-            radius = (GAUSSIAN_ITERATIONS - i - 1) * amount;
-
-        pass.setUniforms({ direction: (i % 2 === 0) ? [0, radius] : [radius, 0] });
     }
 }
 

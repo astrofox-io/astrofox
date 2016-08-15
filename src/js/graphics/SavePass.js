@@ -16,8 +16,8 @@ class SavePass extends ShaderPass {
         this.buffer = buffer;
     }
 
-    process(renderer, writeBuffer, readBuffer) {
-        super.process(renderer, this.buffer, readBuffer);
+    render(renderer, writeBuffer, readBuffer) {
+        super.render(renderer, this.buffer, readBuffer);
     }
 }
 

@@ -9,7 +9,7 @@ class ClearMaskPass extends ComposerPass {
         this.enabled = true;
     }
     
-    process(renderer) {
+    render(renderer) {
         let context = renderer.context;
 
         context.disable(context.STENCIL_TEST);
