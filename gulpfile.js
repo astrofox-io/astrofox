@@ -131,7 +131,7 @@ gulp.task('build-css', () => {
 
 // Build font library and CSS file
 gulp.task('build-icons', () => {
-    gulp.src(['./src/svg/icons/*.svg'])
+    return gulp.src(['./src/svg/icons/*.svg'])
         .pipe(iconfont({
             fontName: 'icons',
             fontHeight: 300,
@@ -146,7 +146,7 @@ gulp.task('build-icons', () => {
                 };
             });
 
-            gulp.src('/src/svg/icons/template/icons.css.tpl')
+            return gulp.src('./src/svg/icons/template/icons.css.tpl')
                 .pipe(template({
                     glyphs: icons,
                     fontName: options.fontName,
