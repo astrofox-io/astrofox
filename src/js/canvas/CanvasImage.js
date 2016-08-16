@@ -3,17 +3,10 @@
 const Component = require('../core/Component.js');
 
 const MIN_RESIZE_WIDTH = 100;
-const MIN_RESIZE_HEIGHT = 100;
-
-const defaults = {
-    src: '',
-    width: 0,
-    height: 0
-};
 
 class CanvasImage extends Component {
     constructor(options, canvas) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, CanvasImage.defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;
@@ -21,17 +14,12 @@ class CanvasImage extends Component {
 
         this.context = this.canvas.getContext('2d');
 
-        this.buffer = document.createElement('canvas');
-        this.bufferContext = this.buffer.getContext('2d');
-
         this.image = new Image();
         this.image.onload = () => {
-            this.imageLoaded = true;
+            this.generateMipMaps();
             this.render();
         };
         this.image.src = this.options.src;
-
-        this.imageLoaded = false;
     }
 
     update(options) {
@@ -46,61 +34,63 @@ class CanvasImage extends Component {
         return changed;
     }
 
-    render() {
-        if (!this.imageLoaded) return;
+    generateMipMaps() {
+        let image = this.image,
+            src = image,
+            width = image.naturalWidth / 2,
+            height = image.naturalHeight / 2,
+            steps = this.getResizeSteps(image.naturalWidth, MIN_RESIZE_WIDTH),
+            mipmaps = [];
 
-        let i, w, h, y_src, y_dest, naturalWidth, naturalHeight, last_w, last_h,
-            canvas = this.canvas,
+        for (let i = 0; i < steps; i++) {
+            let canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            canvas.getContext('2d').drawImage(src, 0, 0, width, height);
+
+            mipmaps.push(canvas);
+
+            src = mipmaps[i];
+            width = width / 2;
+            height = height / 2;
+        }
+
+        this.mipmaps = mipmaps;
+    }
+
+    getResizeSteps(sourceWidth, targetWidth) {
+        return Math.ceil(Math.log(sourceWidth / targetWidth) / Math.log(2));
+    }
+
+    render() {
+        let canvas = this.canvas,
             context = this.context,
             image = this.image,
-            buffer = this.buffer,
-            bufferContext = this.bufferContext,
             { width, height} = this.options;
+
+        if (!image.src) return;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = buffer.width = width;
-            canvas.height = buffer.height = height;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        else {
+            context.clearRect(0, 0, width, height);
         }
 
-        // Get original dimensions
-        naturalWidth = image.naturalWidth;
-        naturalHeight = image.naturalHeight;
-
         // Resize smaller
-        if (width < naturalWidth && height < naturalHeight) {
-            // Double sized canvas for two drawing regions
-            buffer.width = naturalWidth;
-            buffer.height = naturalHeight * 2;
+        if (width < image.naturalWidth && height < image.naturalHeight) {
+            let src = image;
 
-            // Draw image at original size
-            bufferContext.drawImage(image, 0, 0, naturalWidth, naturalHeight);
+            this.mipmaps.forEach(map => {
+                if (width < map.width) {
+                    src = map;
+                }
+            });
 
-            i = 0;
-            y_src = 0;
-            last_w = naturalWidth;
-            last_h = naturalHeight;
-
-            while (last_w > MIN_RESIZE_WIDTH && last_h > MIN_RESIZE_HEIGHT && last_w > width && last_h > height) {
-                y_src = (i % 2) ? naturalHeight : 0;
-                y_dest = (i % 2) ? 0 : naturalHeight;
-                w = ~~(naturalWidth / (2 * (i + 1)));
-                h = ~~(naturalHeight / (2 * (i + 1)));
-
-                if (w <= width || h <= height) break;
-
-                // Clear the drawing region
-                bufferContext.clearRect(0, y_dest, w, h);
-
-                // Draw into buffer region
-                bufferContext.drawImage(buffer, 0, y_src, last_w, last_h, 0, y_dest, w, h);
-
-                last_w = w;
-                last_h = h;
-                i++;
-            }
-
-            context.drawImage(buffer, 0, (i % 2) ? naturalHeight : 0, last_w, last_h, 0, 0, width, height);
+            context.drawImage(src, 0, 0, width, height);
         }
         // Draw normally
         else {
@@ -108,5 +98,11 @@ class CanvasImage extends Component {
         }
     }
 }
+
+CanvasImage.defaults = {
+    src: '',
+    width: 0,
+    height: 0
+};
 
 module.exports = CanvasImage;

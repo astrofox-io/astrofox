@@ -2,19 +2,9 @@
 
 const Component = require('../core/Component.js');
 
-const defaults = {
-    width: 300,
-    height: 100,
-    barWidth: -1,
-    barSpacing: -1,
-    shadowHeight: 100,
-    color: '#FFFFFF',
-    shadowColor: '#CCCCCC'
-};
-
 class CanvasBars extends Component {
     constructor(options, canvas) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, CanvasBars.defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;
@@ -22,25 +12,11 @@ class CanvasBars extends Component {
 
         this.context = this.canvas.getContext('2d');
     }
-    
-    update(options) {
-        let changed = super.update(options);
-
-        if (changed) {
-            if (options.width !== undefined) {
-                this.canvas.width = this.options.width;
-            }
-            if (options.height !== undefined || options.shadowHeight !== undefined) {
-                this.canvas.height = this.options.height + this.options.shadowHeight;
-            }
-        }
-
-        return changed;
-    }
 
     render(data) {
         let i, x, y, val, step, index, last, barSize, fullWidth,
             len = data.length,
+            canvas = this.canvas,
             context = this.context,
             options = this.options,
             height = options.height,
@@ -52,7 +28,13 @@ class CanvasBars extends Component {
             shadowColor = options.shadowColor;
 
         // Reset canvas
-        context.clearRect(0, 0, width, height + shadowHeight);
+        if (canvas.width !== width || canvas.height !== height + shadowHeight) {
+            canvas.width = width;
+            canvas.height = height + shadowHeight;
+        }
+        else {
+            context.clearRect(0, 0, width, height + shadowHeight);
+        }
 
         // Calculate bar widths
         if (barWidth < 0 && barSpacing < 0) {
@@ -143,5 +125,15 @@ class CanvasBars extends Component {
         return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
     }
 }
+
+CanvasBars.defaults = {
+    width: 300,
+    height: 100,
+    barWidth: -1,
+    barSpacing: -1,
+    shadowHeight: 100,
+    color: '#FFFFFF',
+    shadowColor: '#CCCCCC'
+};
 
 module.exports = CanvasBars;

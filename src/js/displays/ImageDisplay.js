@@ -3,9 +3,6 @@
 const CanvasDisplay = require('./CanvasDisplay.js');
 const CanvasImage = require('../canvas/CanvasImage.js');
 
-const MIN_RESIZE_WIDTH = 100;
-const MIN_RESIZE_HEIGHT = 100;
-
 class ImageDisplay extends CanvasDisplay {
     constructor(options) {
         super(ImageDisplay, options);
@@ -18,9 +15,15 @@ class ImageDisplay extends CanvasDisplay {
 
         if (changed) {
             if (this.image.update(options)) {
-                if (options.src !== undefined ||
-                    options.width !== undefined ||
-                    options.height !== undefined) {
+                let render = false;
+
+                Object.keys(CanvasImage.defaults).forEach(prop => {
+                    if (options[prop] !== undefined) {
+                        render = true;
+                    }
+                });
+
+                if (render) {
                     this.image.render();
                 }
             }

@@ -2,65 +2,57 @@
 
 const Component = require('../core/Component.js');
 
-const defaults = {
-    text: '',
-    size: 40,
-    font: 'Roboto',
-    italic: false,
-    bold: false,
-    color: '#FFFFFF'
-};
-
 class CanvasText extends Component {
     constructor(options, canvas) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, CanvasText.defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;
-        this.canvas.height = this.options.height + this.options.shadowHeight;
+        this.canvas.height = this.options.height;
 
         this.context = this.canvas.getContext('2d');
     }
 
     getFont() {
-        let options = this.options,
-            font = [
-                (options.italic) ? 'italic' : 'normal',
-                (options.bold) ? 'bold' : 'normal',
-                options.size + 'px',
-                options.font
-            ];
+        let { italic, bold, size, font } = this.options;
 
-        return font.join(' ');
+        return [
+            (italic) ? 'italic' : 'normal',
+            (bold) ? 'bold' : 'normal',
+            size + 'px',
+            font
+        ].join(' ');
     }
 
     render() {
         let width, height, length, spacing,
             canvas = this.canvas,
             context = this.context,
-            options = this.options,
-            font = this.getFont();
+            font = this.getFont(),
+            { text, size, color } = this.options;
 
         context.font = font;
 
-        length = Math.ceil(context.measureText(options.text).width);
-        spacing = Math.ceil(length / options.text.length);
+        length = Math.ceil(context.measureText(text).width);
+        spacing = Math.ceil(length / text.length);
         width = length + spacing;
-        height = options.size * 2;
+        height = size * 2;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
             canvas.height = height;
         }
+        else {
+            context.clearRect(0, 0, width, height);
+        }
 
         // Draw text
         context.font = font;
-        context.fillStyle = options.color;
+        context.fillStyle = color;
         context.textAlign = 'center';
         context.textBaseline = 'middle';
-        //context.globalAlpha = options.opacity;
-        context.fillText(options.text, width/2, height/2);
+        context.fillText(text, width/2, height/2);
 
         // Debugging
         /*
@@ -72,5 +64,14 @@ class CanvasText extends Component {
          */
     }
 }
+
+CanvasText.defaults = {
+    text: '',
+    size: 40,
+    font: 'Roboto',
+    italic: false,
+    bold: false,
+    color: '#FFFFFF'
+};
 
 module.exports = CanvasText;

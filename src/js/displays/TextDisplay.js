@@ -15,7 +15,17 @@ class TextDisplay extends CanvasDisplay {
 
         if (changed) {
             if (this.text.update(options)) {
-                this.text.render();
+                let render = false;
+
+                Object.keys(CanvasText.defaults).forEach(prop => {
+                    if (options[prop] !== undefined) {
+                        render = true;
+                    }
+                });
+
+                if (render) {
+                    this.text.render();
+                }
             }
         }
 

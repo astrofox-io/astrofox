@@ -1,20 +1,10 @@
 'use strict';
 
 const Component = require('../core/Component.js');
-const { assignIn } = require('../util/object.js');
-
-const defaults = {
-    height: 200,
-    width: 400,
-    color: '#FFFFFF',
-    lineWidth: 1.0,
-    scrolling: false,
-    scrollSpeed: 0.15
-};
 
 class CanvasWave extends Component {
     constructor(options, canvas) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, CanvasWave.defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
@@ -22,22 +12,6 @@ class CanvasWave extends Component {
 
         this.canvas.width = this.options.width;
         this.canvas.height = this.options.height;
-    }
-
-    update(options) {
-        let changed = super.update(options);
-
-        if (changed) {
-            if (options.width !== undefined) {
-                this.canvas.width = options.width;
-                this.buffer = new Float32Array(options.width);
-            }
-            if (options.height !== undefined) {
-                this.canvas.height = options.height;
-            }
-        }
-
-        return changed;
     }
 
     parseData(buffer, data, width, height) {
@@ -51,33 +25,43 @@ class CanvasWave extends Component {
         }
     }
 
-    render(data) {
+    render(data, playing) {
         let i, size,
+            canvas = this.canvas,
             context = this.context,
-            options = this.options,
-            width = options.width,
-            height = options.height,
-            buffer = this.buffer;
+            buffer = this.buffer,
+            { width, height, color, lineWidth, scrolling, scrollSpeed } = this.options;
 
-        // Canvas setup
-        context.lineWidth = options.lineWidth;
-        context.strokeStyle = options.color;
-        context.globalAlpha = options.opacity;
-
-        // Get data values
-        if (options.scrolling) {
-            size = ~~(width * options.scrollSpeed * 0.3);
-
-            // Move all elements down
-            for (i = width; i >= size; i--) {
-                buffer[i] = buffer[i - size];
-            }
-
-            // Insert new slice
-            this.parseData(buffer, data, size, height);
+        // Reset canvas
+        if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
+            buffer = this.buffer = new Float32Array(width);
         }
         else {
-            this.parseData(buffer, data, width, height);
+            context.clearRect(0, 0, width, height);
+        }
+
+        // Canvas setup
+        context.lineWidth = lineWidth;
+        context.strokeStyle = color;
+
+        // Get data values
+        if (playing) {
+            if (scrolling) {
+                size = ~~(width * scrollSpeed * 0.3);
+
+                // Move all elements down
+                for (i = width; i >= size; i--) {
+                    buffer[i] = buffer[i - size];
+                }
+
+                // Insert new slice
+                this.parseData(buffer, data, size, height);
+            }
+            else {
+                this.parseData(buffer, data, width, height);
+            }
         }
 
         // Draw wave
@@ -96,5 +80,14 @@ class CanvasWave extends Component {
         context.stroke();
     }
 }
+
+CanvasWave.defaults = {
+    color: '#FFFFFF',
+    width: 400,
+    height: 200,
+    lineWidth: 1.0,
+    scrolling: false,
+    scrollSpeed: 0.15
+};
 
 module.exports = CanvasWave;

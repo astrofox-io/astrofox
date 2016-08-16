@@ -3,13 +3,9 @@
 const Component = require('../core/Component.js');
 const CanvasBars = require('./CanvasBars.js');
 
-const defaults = {
-    bars: 100
-};
-
 class CanvasWaveform extends CanvasBars {
     constructor(options, canvas) {
-        super(Object.assign({}, defaults, options), canvas);
+        super(Object.assign({}, CanvasWaveform.defaults, options), canvas);
     }
 
     render(data) {
@@ -54,5 +50,9 @@ class CanvasWaveform extends CanvasBars {
         return data;
     }
 }
+
+CanvasWaveform.defaults = {
+    bars: 100
+};
 
 module.exports = CanvasWaveform;

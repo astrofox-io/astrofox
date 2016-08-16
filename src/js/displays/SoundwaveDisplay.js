@@ -37,11 +37,13 @@ SoundwaveDisplay.className = 'SoundwaveDisplay';
 
 SoundwaveDisplay.defaults = {
     color: '#FFFFFF',
-    height: 240,
     width: 854,
+    height: 240,
+    lineWidth: 1.0,
+    scrolling: false,
+    scrollSpeed: 0.15,
     x: 0,
     y: 0,
-    lineWidth: 1.0,
     rotation: 0,
     opacity: 1.0
 };
