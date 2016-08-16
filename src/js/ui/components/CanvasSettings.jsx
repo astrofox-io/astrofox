@@ -2,8 +2,7 @@
 
 const React = require('react');
 
-const autoBind = require('../../util/autoBind.js');
-
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
@@ -15,10 +14,9 @@ const canvasSizes = {
     '1:1': { width: 480, height: 480 }
 };
 
-class CanvasSettings extends React.Component {
+class CanvasSettings extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = Application.stage.options;
     }

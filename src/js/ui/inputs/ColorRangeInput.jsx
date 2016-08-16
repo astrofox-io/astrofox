@@ -1,8 +1,8 @@
 'use strict';
 
 const React = require('react');
+
 const ColorInput = require('./ColorInput.jsx');
-const autoBind = require('../../util/autoBind.js');
 
 const ColorRangeInput = (props) => {
     let colorRangeStyle = {

@@ -2,10 +2,12 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const getControlComponent = require('../../util/getControlComponent.js');
 
-class ControlsPanel extends React.Component {
+class ControlsPanel extends UIComponent {
     constructor(props) {
         super(props);
         

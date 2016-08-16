@@ -3,14 +3,13 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+const UIComponent = require('../UIComponent.js');
 const { Events } = require('../../core/Global.js');
 const CanvasWave = require('../../canvas/CanvasWave.js');
-const autoBind = require('../../util/autoBind.js');
 
-class Oscilloscope extends React.Component {
+class Oscilloscope extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
     }
 
     componentDidMount() {

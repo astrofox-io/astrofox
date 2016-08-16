@@ -3,16 +3,15 @@
 const React = require('react');
 const classNames = require('classnames');
 
+const UIComponent = require('../UIComponent.js');
 const Window = require('../../core/Window.js');
 const IO = require('../../core/IO.js');
-const autoBind = require('../../util/autoBind.js');
 
 const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-class ImageInput extends React.Component {
+class ImageInput extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
     }
 
     componentDidMount() {

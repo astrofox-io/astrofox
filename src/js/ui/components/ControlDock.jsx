@@ -2,18 +2,17 @@
 
 const React = require('react');
 
+const UIComponent = require('../UIComponent.js');
 const { Events } = require('../../core/Global.js');
-const autoBind = require('../../util/autoBind.js');
 
 const Panel = require('../layout/Panel.jsx');
 const PanelDock = require('../layout/PanelDock.jsx');
 const ControlsPanel = require('./ControlsPanel.jsx');
 const LayersPanel = require('./LayersPanel.jsx');
 
-class ControlDock extends React.Component {
+class ControlDock extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = { visible: true };
     }

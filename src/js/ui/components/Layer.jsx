@@ -3,15 +3,12 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const autoBind = require('../../util/autoBind.js');
-
+const UIComponent = require('../UIComponent.js');
 const TextInput = require('../inputs/TextInput.jsx');
 
-class Layer extends React.Component {
+class Layer extends UIComponent {
     constructor(props) {
         super(props);
-
-        autoBind(this);
 
         this.state = {
             edit: false

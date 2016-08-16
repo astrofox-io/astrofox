@@ -2,9 +2,9 @@
 
 const React = require('react');
 
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const Window = require('../../core/Window.js');
-const autoBind = require('../../util/autoBind.js');
 
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
@@ -26,10 +26,9 @@ const fpsOptions = [
     60
 ];
 
-class VideoSettings extends React.Component {
+class VideoSettings extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = Object.assign(
             { isRunning: false },

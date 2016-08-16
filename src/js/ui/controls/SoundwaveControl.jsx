@@ -1,16 +1,16 @@
 'use strict';
 
 const React = require('react');
+
+const UIComponent = require('../UIComponent.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
-const autoBind = require('../../util/autoBind.js');
 
-class SoundwaveControl extends React.Component {
+class SoundwaveControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = this.props.display.options;
         this.shouldUpdate = false;

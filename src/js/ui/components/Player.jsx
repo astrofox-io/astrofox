@@ -2,16 +2,17 @@
 
 const React = require('react');
 const classNames = require('classnames');
+
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const RangeInput = require('../inputs/RangeInput.jsx');
-const autoBind = require('../../util/autoBind.js');
+const { formatTime } = require('../../util/format.js');
 
 const PROGRESS_MAX = 1000;
 
-class Player extends React.Component {
+class Player extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             playing: false,
@@ -123,10 +124,9 @@ class Player extends React.Component {
 
 Player.defaultProps = { visible: true };
 
-class VolumeControl extends React.Component {
+class VolumeControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = { value: 100 };
     }
@@ -170,10 +170,9 @@ class VolumeControl extends React.Component {
     }
 }
 
-class ProgressControl extends React.Component {
+class ProgressControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             value: 0
@@ -253,26 +252,10 @@ const TimeInfo = (props) => {
     return (
         <div className="time-info">
             <span className="time-part current-time">{currentTime}</span>
-            <span className="time-part split"></span>
+            <span className="time-part split" />
             <span className="time-part total-time">{totalTime}</span>
         </div>
     );
 };
-
-function formatTime(val) {
-    let time = Math.ceil(val);
-    let hours   = Math.floor(time / 3600);
-    let minutes = Math.floor((time - (hours * 3600)) / 60);
-    let seconds = time - (hours * 3600) - (minutes * 60);
-
-    if (hours < 10) hours = "0" + hours;
-    if (minutes < 10 && hours !== "00") minutes = "0" + minutes;
-    if (seconds < 10) seconds = "0" + seconds;
-
-    let format = minutes + ':' + seconds;
-    if (hours !== "00") format = hours + ':' + time;
-
-    return format;
-}
 
 module.exports = Player;

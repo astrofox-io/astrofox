@@ -3,7 +3,9 @@
 const React = require('react');
 const classNames = require('classnames');
 
-class MenuPanel extends React.Component {
+const UIComponent = require('../UIComponent.js');
+
+class MenuPanel extends UIComponent {
     constructor(props) {
         super(props);
         

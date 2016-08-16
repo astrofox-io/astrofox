@@ -2,12 +2,12 @@
 
 const React = require('react');
 const classNames = require('classnames');
-const autoBind = require('../../util/autoBind.js');
 
-class SelectInput extends React.Component {
+const UIComponent = require('../UIComponent.js');
+
+class SelectInput extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             value: props.value,

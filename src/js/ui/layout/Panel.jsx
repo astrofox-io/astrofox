@@ -3,15 +3,14 @@
 const React = require('react');
 const classNames = require('classnames');
 
+const UIComponent = require('../UIComponent.js');
 const { Events } = require('../../core/Global.js');
-const autoBind = require('../../util/autoBind.js');
 
 const Splitter = require('./Splitter.jsx');
 
-class Panel extends React.Component {
+class Panel extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             visible: props.visible,

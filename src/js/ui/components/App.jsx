@@ -2,33 +2,32 @@
 
 const React = require('react');
 
-const { Events } = require('../core/Global.js');
-const Application = require('../core/Application.js');
-const Window = require('../core/Window.js');
-const autoBind = require('../util/autoBind.js');
+const UIComponent = require('../UIComponent.js');
+const Application = require('../../core/Application.js');
+const Window = require('../../core/Window.js');
+const { Events } = require('../../core/Global.js');
 
-const Header = require('./components/Header.jsx');
-const Footer = require('./components/Footer.jsx');
-const MenuBar = require('./components/MenuBar.jsx');
-const Stage = require('./components/Stage.jsx');
-const Player = require('./components/Player.jsx');
-const Spectrum = require('./components/Spectrum.jsx');
-const Oscilloscope = require('./components/Oscilloscope.jsx');
-const Waveform = require('./components/Waveform.jsx');
-const Overlay = require('./components/Overlay.jsx');
-const ControlDock = require('./components/ControlDock.jsx');
-const Preload = require('./components/Preload.jsx');
-const About = require('./components/About.jsx');
-const Settings = require('./components/Settings.jsx');
-const CanvasSettings = require('./components/CanvasSettings.jsx');
-const VideoSettings = require('./components/VideoSettings.jsx');
-const ControlPicker = require('./components/ControlPicker.jsx');
-const ModalWindow = require('./components/ModalWindow.jsx');
+const Header = require('./Header.jsx');
+const Footer = require('./Footer.jsx');
+const MenuBar = require('./MenuBar.jsx');
+const Stage = require('./Stage.jsx');
+const Player = require('./Player.jsx');
+const Spectrum = require('./Spectrum.jsx');
+const Oscilloscope = require('./Oscilloscope.jsx');
+const Waveform = require('./Waveform.jsx');
+const Overlay = require('./Overlay.jsx');
+const ControlDock = require('./ControlDock.jsx');
+const Preload = require('./Preload.jsx');
+const About = require('./About.jsx');
+const Settings = require('./Settings.jsx');
+const CanvasSettings = require('./CanvasSettings.jsx');
+const VideoSettings = require('./VideoSettings.jsx');
+const ControlPicker = require('./ControlPicker.jsx');
+const ModalWindow = require('./ModalWindow.jsx');
 
-class App extends React.Component {
+class App extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             text: '',

@@ -1,14 +1,14 @@
 'use strict';
 
 const React = require('react');
-const Menu = require('./Menu.jsx');
 const classNames = require('classnames');
-const autoBind = require('../../util/autoBind.js');
 
-class MenuBarItem extends React.Component {
+const UIComponent = require('../UIComponent.js');
+const Menu = require('./Menu.jsx');
+
+class MenuBarItem extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
     }
 
     onClick(e) {

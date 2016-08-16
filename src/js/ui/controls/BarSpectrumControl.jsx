@@ -1,16 +1,16 @@
 'use strict';
 
 const React = require('react');
+
+const UIComponent = require('../UIComponent.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
-const autoBind = require('../../util/autoBind.js');
 
-class BarSpectrumControl extends React.Component {
+class BarSpectrumControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
         
         this.state = this.props.display.options;
         this.shouldUpdate = false;

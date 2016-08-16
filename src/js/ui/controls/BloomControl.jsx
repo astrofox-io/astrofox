@@ -1,20 +1,20 @@
 'use strict';
 
 const React = require('react');
+
+const UIComponent = require('../UIComponent.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
-const autoBind = require('../../util/autoBind.js');
 
 const blendModes = [
     'Add',
     'Screen'
 ];
 
-class BloomControl extends React.Component {
+class BloomControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = this.props.display.options;
         this.shouldUpdate = false;

@@ -1,14 +1,14 @@
 'use strict';
 
 const React = require('react');
+
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const CanvasWaveform = require('../../canvas/CanvasWaveform.js');
-const autoBind = require('../../util/autoBind.js');
 
-class Waveform extends React.Component {
+class Waveform extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             position: 0,

@@ -1,17 +1,15 @@
 'use strict';
 
 const React = require('react');
-const ReactDOM = require('react-dom');
 
+const UIComponent = require('../UIComponent.js');
 const { Events } = require('../../core/Global.js');
 const SpectrumParser = require('../../audio/SpectrumParser.js');
 const CanvasBars = require('../../canvas/CanvasBars.js');
-const autoBind = require('../../util/autoBind.js');
 
-class Spectrum extends React.Component {
+class Spectrum extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
         
         this.state = {
             smoothingTimeConstant: 0.5,

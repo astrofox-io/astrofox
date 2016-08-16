@@ -2,13 +2,13 @@
 
 const React = require('react');
 
+const UIComponent = require('../UIComponent.js');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
-const autoBind = require('../../util/autoBind.js');
 
 const shapes = [
     'Box',
@@ -36,10 +36,9 @@ const shading = [
     'Flat'
 ];
 
-class GeometryControl extends React.Component {
+class GeometryControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = this.props.display.options;
         this.shouldUpdate = false;

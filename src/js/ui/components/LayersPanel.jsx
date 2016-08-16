@@ -3,8 +3,9 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const { Events } = require('../../core/Global.js');
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
+const { Events } = require('../../core/Global.js');
 const Display = require('../../displays/Display.js');
 const CanvasDisplay = require('../../displays/CanvasDisplay.js');
 const Stage = require('../../displays/Stage.js');
@@ -12,14 +13,12 @@ const Scene = require('../../displays/Scene.js');
 const Effect = require('../../effects/Effect.js');
 const DisplayLibrary = require('../../lib/DisplayLibrary.js');
 const EffectsLibrary = require('../../lib/EffectsLibrary.js');
-const autoBind = require('../../util/autoBind.js');
 
 const Layer = require('./Layer.jsx');
 
-class LayersPanel extends React.Component {
+class LayersPanel extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             activeIndex: 0,

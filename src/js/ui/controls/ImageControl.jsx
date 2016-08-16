@@ -3,18 +3,17 @@
 const React = require('react');
 const classNames = require('classnames');
 
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ImageInput = require('../inputs/ImageInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
-const autoBind = require('../../util/autoBind.js');
 
 const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-class ImageControl extends React.Component {
+class ImageControl extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = this.props.display.options;
         this.state.opacity = 0;

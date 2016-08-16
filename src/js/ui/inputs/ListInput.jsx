@@ -1,12 +1,12 @@
 'use strict';
 
 const React = require('react');
-const autoBind = require('../../util/autoBind.js');
 
-class ListInput extends React.Component {
+const UIComponent = require('../UIComponent.js');
+
+class ListInput extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             values: []

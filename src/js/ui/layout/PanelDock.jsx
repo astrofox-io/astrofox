@@ -1,12 +1,12 @@
 'use strict';
 
 const React = require('react');
-const autoBind = require('../../util/autoBind.js');
 
-class PanelDock extends React.Component {
+const UIComponent = require('../UIComponent.js');
+
+class PanelDock extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             visible: true,

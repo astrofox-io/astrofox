@@ -1,14 +1,14 @@
 'use strict';
 
 const React = require('react');
+
+const UIComponent = require('../UIComponent.js');
 const MenuBarItem = require('./MenuBarItem.jsx');
 const menuItemsConfig = require('../../../conf/menu.json');
-const autoBind = require('../../util/autoBind.js');
 
-class MenuBar extends React.Component {
+class MenuBar extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             activeIndex: -1,

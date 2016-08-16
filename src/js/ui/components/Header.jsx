@@ -2,13 +2,12 @@
 
 const React = require('react');
 
+const UIComponent = require('../UIComponent.js');
 const Window = require('../../core/Window.js');
-const autoBind = require('../../util/autoBind.js');
 
-class Header extends React.Component {
+class Header extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
     }
 
     shouldComponentUpdate() {

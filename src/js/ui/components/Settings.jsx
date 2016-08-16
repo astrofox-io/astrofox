@@ -2,10 +2,10 @@
 
 const React = require('react');
 const classNames = require('classnames');
+
+const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
 const { Events } = require('../../core/Global.js');
-const autoBind = require('../../util/autoBind.js');
-
 const ListInput = require('../inputs/ListInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
@@ -13,10 +13,9 @@ const ToggleInput = require('../inputs/ToggleInput');
 const TabPanel = require('../layout/TabPanel.jsx');
 const Tab = require('../layout/Tab.jsx');
 
-class Settings extends React.Component {
+class Settings extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = Object.assign({}, Application.config);
     }

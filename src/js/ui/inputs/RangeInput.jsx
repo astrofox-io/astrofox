@@ -2,13 +2,12 @@
 
 const React = require('react');
 
-const autoBind = require('../../util/autoBind.js');
+const UIComponent = require('../UIComponent.js');
 const { clamp, val2pct, hash } = require('../../util/math.js');
 
-class RangeInput extends React.Component {
+class RangeInput extends UIComponent {
     constructor(props) {
         super(props);
-        autoBind(this);
 
         this.state = {
             value: props.value,
