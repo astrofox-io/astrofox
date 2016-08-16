@@ -12,15 +12,15 @@ const defaults = {
     shadowColor: '#CCCCCC'
 };
 
-class Bar extends Component {
+class CanvasBars extends Component {
     constructor(options, canvas) {
         super(Object.assign({}, defaults, options));
 
         this.canvas = canvas || document.createElement('canvas');
-        this.context = this.canvas.getContext('2d');
+        this.canvas.width = this.options.width;
+        this.canvas.height = this.options.height + this.options.shadowHeight;
 
-        canvas.width = this.options.width;
-        canvas.height = this.options.height + this.options.shadowHeight;
+        this.context = this.canvas.getContext('2d');
     }
     
     update(options) {
@@ -144,4 +144,4 @@ class Bar extends Component {
     }
 }
 
-module.exports = Bar;
+module.exports = CanvasBars;

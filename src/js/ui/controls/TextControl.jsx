@@ -23,8 +23,6 @@ class TextControl extends React.Component {
         let display = this.props.display;
 
         if (display.initialized) {
-            display.render();
-
             this.shouldUpdate = true;
 
             this.setState(display.options);
@@ -49,7 +47,6 @@ class TextControl extends React.Component {
 
         this.setState(obj, () => {
             display.update(obj);
-            display.render();
         });
     }
 

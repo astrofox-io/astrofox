@@ -2,10 +2,10 @@
 
 const React = require('react');
 const Application = require('../../core/Application.js');
-const Waveform = require('../../canvas/Waveform.js');
+const CanvasWaveform = require('../../canvas/CanvasWaveform.js');
 const autoBind = require('../../util/autoBind.js');
 
-class WaveformComponent extends React.Component {
+class Waveform extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
@@ -19,7 +19,7 @@ class WaveformComponent extends React.Component {
     componentDidMount() {
         let player = Application.player;
 
-        this.base = new Waveform(
+        this.base = new CanvasWaveform(
             Object.assign({}, this.props, {
                 color: ['#555555','#444444'],
                 shadowColor: '#333333'
@@ -27,7 +27,7 @@ class WaveformComponent extends React.Component {
             this.refs.base
         );
 
-        this.progress = new Waveform(
+        this.progress = new CanvasWaveform(
             Object.assign({}, this.props, {
                 color: ['#B6AAFF','#927FFF'],
                 shadowColor: '#554B96'
@@ -35,7 +35,7 @@ class WaveformComponent extends React.Component {
             this.refs.progress
         );
 
-        this.seek = new Waveform(
+        this.seek = new CanvasWaveform(
             Object.assign({}, this.props, {
                 color: ['#8880BF','#6C5FBF'],
                 shadowColor: '#403972'
@@ -141,7 +141,7 @@ class WaveformComponent extends React.Component {
     }
 }
 
-WaveformComponent.defaultProps = {
+Waveform.defaultProps = {
     width: 854,
     height: 70,
     barWidth: 3,
@@ -151,4 +151,4 @@ WaveformComponent.defaultProps = {
     bars: 213
 };
 
-module.exports = WaveformComponent;
+module.exports = Waveform;

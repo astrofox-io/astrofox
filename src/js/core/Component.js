@@ -5,7 +5,7 @@ let id = 0;
 class Component {
     constructor(options) {
         Object.defineProperty(this, 'id', { value: id++ });
-        this.options = options;
+        this.options = Object.assign({}, options);
     }
 
     update(options) {

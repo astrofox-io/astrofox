@@ -2,14 +2,14 @@
 
 const Display = require('./Display.js');
 const CanvasDisplay = require('./CanvasDisplay.js');
-const Bar = require('../canvas/Bar.js');
+const CanvasBars = require('../canvas/CanvasBars.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {
         super(BarSpectrumDisplay, options);
 
-        this.bars = new Bar(this.options, this.canvas);
+        this.bars = new CanvasBars(this.options, this.canvas);
         this.parser = new SpectrumParser(this.options);
     }
     

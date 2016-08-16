@@ -1,19 +1,23 @@
 'use strict';
 
 const CanvasDisplay = require('./CanvasDisplay.js');
-const Wave = require('../canvas/Wave.js');
+const CanvasWave = require('../canvas/CanvasWave.js');
 
 class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
         super(SoundwaveDisplay, options);
 
-        this.wave = new Wave(this.options, this.canvas);
+        this.wave = new CanvasWave(this.options, this.canvas);
     }
 
     update(options) {
-        this.wave.update(options);
+        let changed = super.update(options);
 
-        return super.update(options);
+        if (changed) {
+            this.wave.update(options);
+        }
+
+        return changed;
     }
 
     renderToScene(scene, data) {

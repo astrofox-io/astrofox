@@ -1,6 +1,7 @@
 'use strict';
 
 const Component = require('../core/Component.js');
+const { assignIn } = require('../util/object.js');
 
 const defaults = {
     height: 200,
@@ -8,12 +9,10 @@ const defaults = {
     color: '#FFFFFF',
     lineWidth: 1.0,
     scrolling: false,
-    scrollSpeed: 0.15,
-    rotation: 0,
-    opacity: 1.0
+    scrollSpeed: 0.15
 };
 
-class Wave extends Component {
+class CanvasWave extends Component {
     constructor(options, canvas) {
         super(Object.assign({}, defaults, options));
 
@@ -21,8 +20,8 @@ class Wave extends Component {
         this.context = this.canvas.getContext('2d');
         this.buffer = new Float32Array(this.options.width);
 
-        canvas.width = this.options.width;
-        canvas.height = this.options.height;
+        this.canvas.width = this.options.width;
+        this.canvas.height = this.options.height;
     }
 
     update(options) {
@@ -98,4 +97,4 @@ class Wave extends Component {
     }
 }
 
-module.exports = Wave;
+module.exports = CanvasWave;

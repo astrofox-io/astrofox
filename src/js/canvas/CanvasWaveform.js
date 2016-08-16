@@ -1,13 +1,13 @@
 'use strict';
 
 const Component = require('../core/Component.js');
-const Bar = require('./Bar.js');
+const CanvasBars = require('./CanvasBars.js');
 
 const defaults = {
     bars: 100
 };
 
-class Waveform extends Bar {
+class CanvasWaveform extends CanvasBars {
     constructor(options, canvas) {
         super(Object.assign({}, defaults, options), canvas);
     }
@@ -55,4 +55,4 @@ class Waveform extends Bar {
     }
 }
 
-module.exports = Waveform;
+module.exports = CanvasWaveform;

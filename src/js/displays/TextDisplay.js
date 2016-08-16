@@ -1,62 +1,25 @@
 'use strict';
 
-const Display = require('./Display.js');
 const CanvasDisplay = require('./CanvasDisplay.js');
+const CanvasText = require('../canvas/CanvasText.js');
 
 class TextDisplay extends CanvasDisplay {
     constructor(options) {
         super(TextDisplay, options);
+
+        this.text = new CanvasText(this.options, this.canvas);
     }
 
-    render() {
-        let width, height, length, spacing,
-            canvas = this.canvas,
-            context = this.context,
-            options = this.options,
-            font = this.getFont();
+    update(options) {
+        let changed = super.update(options);
 
-        context.font = font;
-
-        length = Math.ceil(context.measureText(options.text).width);
-        spacing = Math.ceil(length / options.text.length);
-        width = length + spacing;
-        height = options.size * 2;
-
-        // Reset canvas
-        if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
+        if (changed) {
+            if (this.text.update(options)) {
+                this.text.render();
+            }
         }
-        context.clearRect(0, 0, width, height);
 
-        // Draw text
-        context.font = font;
-        context.fillStyle = options.color;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.globalAlpha = options.opacity;
-        context.fillText(options.text, width/2, height/2);
-
-        // Debugging
-        /*
-        context.beginPath();
-        context.rect(0, 0, canvas.width, canvas.height);
-        context.lineWidth = 2;
-        context.strokeStyle = 'red';
-        context.stroke();
-        */
-    }
-
-    getFont() {
-        let options = this.options,
-            font = [
-                (options.italic) ? 'italic' : 'normal',
-                (options.bold) ? 'bold' : 'normal',
-                options.size + 'px',
-                options.font
-            ];
-
-        return font.join(' ');
+        return changed;
     }
 }
 

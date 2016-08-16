@@ -25,8 +25,6 @@ class ImageControl extends React.Component {
         let display = this.props.display;
 
         if (display.initialized) {
-            display.render();
-
             this.shouldUpdate = true;
 
             this.setState(display.options);
@@ -47,7 +45,6 @@ class ImageControl extends React.Component {
         let obj = {},
             display = this.props.display,
             state = this.state,
-            render = false,
             image = this.refs.image.getImage(),
             ratio = image.naturalWidth / image.naturalHeight;
 
@@ -67,33 +64,24 @@ class ImageControl extends React.Component {
                 obj.width = image.naturalWidth;
                 obj.height = image.naturalHeight;
             }
-
-            render = true;
         }
         else if (name === 'width') {
             if (state.fixed) {
                 obj.height = Math.round(val * (1 / ratio)) || 0;
             }
-            render = true;
         }
         else if (name === 'height') {
             if (state.fixed) {
                 obj.width = Math.round(val * ratio);
             }
-            render = true;
         }
         else if (name === 'opacity') {
-            render = true;
         }
 
         this.shouldUpdate = true;
 
         this.setState(obj, () => {
             display.update(obj);
-
-            if (render) {
-                display.render();
-            }
         });
     }
 
