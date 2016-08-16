@@ -14,29 +14,17 @@ class CanvasWave extends Component {
         this.canvas.height = this.options.height;
     }
 
-    parseData(buffer, data, width, height) {
+    render(data) {
         let i, x, y,
-            len = data.length,
-            step = len / width;
-
-        for (i = 0, x = 0; x < width; i += step, x++) {
-            y = ((data[~~i] * height) + height) / 2;
-            buffer[x] = y;
-        }
-    }
-
-    render(data, playing) {
-        let i, size,
             canvas = this.canvas,
             context = this.context,
-            buffer = this.buffer,
-            { width, height, color, lineWidth, scrolling, scrollSpeed } = this.options;
+            { width, height, color, lineWidth } = this.options,
+            step = (data.length / width);
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
             canvas.height = height;
-            buffer = this.buffer = new Float32Array(width);
         }
         else {
             context.clearRect(0, 0, width, height);
@@ -46,34 +34,16 @@ class CanvasWave extends Component {
         context.lineWidth = lineWidth;
         context.strokeStyle = color;
 
-        // Get data values
-        if (playing) {
-            if (scrolling) {
-                size = ~~(width * scrollSpeed * 0.3);
-
-                // Move all elements down
-                for (i = width; i >= size; i--) {
-                    buffer[i] = buffer[i - size];
-                }
-
-                // Insert new slice
-                this.parseData(buffer, data, size, height);
-            }
-            else {
-                this.parseData(buffer, data, width, height);
-            }
-        }
-
         // Draw wave
-        context.clearRect(0, 0, width, height);
         context.beginPath();
 
-        for (i = 0; i < width; i++) {
+        for (i = 0, x = 0; x < width; i += step, x++) {
+            y = data[~~i];
             if (i === 0) {
-                context.moveTo(i, buffer[i]);
+                context.moveTo(x, y);
             }
             else {
-                context.lineTo(i, buffer[i]);
+                context.lineTo(x, y);
             }
         }
 

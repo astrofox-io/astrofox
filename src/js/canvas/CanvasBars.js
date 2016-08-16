@@ -18,14 +18,7 @@ class CanvasBars extends Component {
             len = data.length,
             canvas = this.canvas,
             context = this.context,
-            options = this.options,
-            height = options.height,
-            width = options.width,
-            barWidth = options.barWidth,
-            barSpacing = options.barSpacing,
-            shadowHeight = options.shadowHeight,
-            color = options.color,
-            shadowColor = options.shadowColor;
+            { height, width, barWidth, barSpacing, color, shadowHeight, shadowColor } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height + shadowHeight) {
@@ -56,12 +49,10 @@ class CanvasBars extends Component {
         // Stepping
         step = (fullWidth > width) ? fullWidth / width : 1;
 
-        // Set opacity
-        context.globalAlpha = options.opacity;
-
-        // Draw bars
+        // Canvas setup
         this.setColor(color, 0, 0, 0, height);
 
+        // Draw bars
         for (i = 0, x = 0, y = height, last = null; i < len && x < fullWidth; i += step, x += barSize) {
             index = ~~i;
             if (index === last) continue;

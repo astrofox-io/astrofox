@@ -53,7 +53,6 @@ class Spectrum extends UIComponent {
         let fft = this.parser.parseFFT(data.fft);
 
         this.bars.render(fft);
-
     }
 
     render() {

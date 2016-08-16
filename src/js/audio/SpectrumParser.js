@@ -1,5 +1,6 @@
 'use strict';
 
+const Component = require('../core/Component.js');
 const { val2pct, db2mag } = require('../util/math.js');
 
 const defaults = {
@@ -14,19 +15,19 @@ const defaults = {
     normalize: false
 };
 
-class SpectrumParser {
+class SpectrumParser extends Component {
     constructor(options) {
-        this.options = Object.assign({}, defaults, options);
+        super(Object.assign({}, defaults, options));
 
         this.init();
     }
 
     init() {
-        let options = this.options,
-            range = options.sampleRate / options.fftSize,
-            minBin = ~~(options.minFrequency / range),
-            maxBin = ~~(options.maxFrequency / range),
-            bins = options.binSize || maxBin - minBin;
+        let { sampleRate, fftSize, minFrequency, maxFrequency, binSize } = this.options,
+            range = sampleRate / fftSize,
+            minBin = ~~(minFrequency / range),
+            maxBin = ~~(maxFrequency / range),
+            bins = binSize || maxBin - minBin;
 
         if (typeof this.fft === 'undefined' || bins !== this.fft.length) {
             this.fft = new Float32Array(bins);
@@ -38,18 +39,13 @@ class SpectrumParser {
     }
 
     update(options) {
-        if (typeof options === 'object') {
-            let changed = false;
+        let changed = super.update(options);
 
-            Object.keys(options).forEach(prop => {
-                if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
-                    this.options[prop] = options[prop];
-                    changed = true;
-                }
-            });
-
-            if (changed) this.init();
+        if (changed) {
+            this.init();
         }
+
+        return changed;
     }
 
     getDb(fft, minDb, maxDb, normalize) {
@@ -65,22 +61,18 @@ class SpectrumParser {
 
     parseFFT(fft) {
         let i, j, k, size, step, start, end, val, max,
-            options = this.options,
             data = this.fft,
             last = this.last,
             minBin = this.minBin,
             maxBin = this.maxBin,
-            minDb = options.minDecibels,
-            maxDb = options.maxDecibels,
-            normalize = options.normalize,
-            smoothing = options.smoothingTimeConstant,
             bins = data.length,
-            totalBins = maxBin - minBin;
+            totalBins = maxBin - minBin,
+            { minDecibels, maxDecibels, normalize, smoothingTimeConstant } = this.options;
 
         // Convert values
         if (bins === totalBins) {
             for (i = minBin; i < maxBin; i++) {
-                data[i] = this.getDb(fft[i], minDb, maxDb, normalize);
+                data[i] = this.getDb(fft[i], minDecibels, maxDecibels, normalize);
             }
         }
         // Compress data
@@ -104,7 +96,7 @@ class SpectrumParser {
                     }
                 }
 
-                data[i] = this.getDb(max, minDb, maxDb, normalize);
+                data[i] = this.getDb(max, minDecibels, maxDecibels, normalize);
             }
         }
         // Expand data
@@ -112,7 +104,7 @@ class SpectrumParser {
             size = bins / totalBins;
 
             for (i = minBin, j = 0; i < maxBin; i++, j++) {
-                val = this.getDb(fft[i], minDb, maxDb, normalize);
+                val = this.getDb(fft[i], minDecibels, maxDecibels, normalize);
                 start = ~~(j * size);
                 end = start + size;
 
@@ -123,9 +115,9 @@ class SpectrumParser {
         }
 
         // Apply smoothing
-        if (smoothing > 0) {
+        if (smoothingTimeConstant > 0) {
             for (i = 0; i < bins; i++) {
-                data[i] = (last[i] * smoothing) + (data[i] * (1.0 - smoothing));
+                data[i] = (last[i] * smoothingTimeConstant) + (data[i] * (1.0 - smoothingTimeConstant));
                 last[i] = data[i];
             }
         }

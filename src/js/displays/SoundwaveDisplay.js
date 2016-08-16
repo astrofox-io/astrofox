@@ -2,12 +2,14 @@
 
 const CanvasDisplay = require('./CanvasDisplay.js');
 const CanvasWave = require('../canvas/CanvasWave.js');
+const WaveParser = require('../audio/WaveParser.js');
 
 class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
         super(SoundwaveDisplay, options);
 
         this.wave = new CanvasWave(this.options, this.canvas);
+        this.parser = new WaveParser(this.options);
     }
 
     update(options) {
@@ -15,13 +17,16 @@ class SoundwaveDisplay extends CanvasDisplay {
 
         if (changed) {
             this.wave.update(options);
+            this.parser.update(options);
         }
 
         return changed;
     }
 
     renderToScene(scene, data) {
-        this.wave.render(data.td, data.playing);
+        let td = this.parser.parseTimeData(data.td);
+
+        this.wave.render(td);
 
         this.renderToCanvas(
             scene.getContext('2d'),
