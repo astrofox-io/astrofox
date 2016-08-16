@@ -22,8 +22,6 @@ const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const resolve = require('resolve');
 
-const _ = require('lodash');
-
 /*** Configuration ***/
 
 var appBundle = browserify({
@@ -68,7 +66,7 @@ function build(bundle, src, dest, watch, min) {
 function getNPMPackageIds() {
     let manifest = require('./package.json');
 
-    return _.keys(manifest.dependencies) || [];
+    return Object.keys(manifest.dependencies) || [];
 }
 
 /*** Tasks ***/
