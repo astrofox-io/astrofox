@@ -29,9 +29,9 @@ class SpectrumParser extends Component {
             maxBin = ~~(maxFrequency / range),
             bins = binSize || maxBin - minBin;
 
-        if (typeof this.fft === 'undefined' || bins !== this.fft.length) {
-            this.fft = new Float32Array(bins);
-            this.last = new Float32Array(bins);
+        if (typeof this.data === 'undefined' || bins !== this.data.length) {
+            this.data = new Float32Array(bins);
+            this.buffer = new Float32Array(bins);
         }
 
         this.minBin = minBin;
@@ -61,8 +61,8 @@ class SpectrumParser extends Component {
 
     parseFFT(fft) {
         let i, j, k, size, step, start, end, val, max,
-            data = this.fft,
-            last = this.last,
+            data = this.data,
+            buffer = this.buffer,
             minBin = this.minBin,
             maxBin = this.maxBin,
             bins = data.length,
@@ -117,8 +117,8 @@ class SpectrumParser extends Component {
         // Apply smoothing
         if (smoothingTimeConstant > 0) {
             for (i = 0; i < bins; i++) {
-                data[i] = (last[i] * smoothingTimeConstant) + (data[i] * (1.0 - smoothingTimeConstant));
-                last[i] = data[i];
+                data[i] = (buffer[i] * smoothingTimeConstant) + (data[i] * (1.0 - smoothingTimeConstant));
+                buffer[i] = data[i];
             }
         }
 

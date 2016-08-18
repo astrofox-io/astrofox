@@ -12,30 +12,25 @@ class SpectrumAnalyzer {
         this.audioContext = context;
         this.analyzer = Object.assign(context.createAnalyser(), defaults);
         this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
-        this.td = new Float32Array(this.analyzer.frequencyBinCount);
+        console.log(this.analyzer.frequencyBinCount, this.analyzer.fftSize);
+        this.td = new Float32Array(this.analyzer.fftSize);
         this.enabled = true;
     }
 
     getFrequencyData() {
-        let analyzer = this.analyzer,
-            fft = this.fft;
-
         if (this.enabled) {
-            analyzer.getByteFrequencyData(fft);
+            this.analyzer.getByteFrequencyData(this.fft);
         }
 
-        return fft;
+        return this.fft;
     }
 
     getTimeData() {
-        let analyzer = this.analyzer,
-            td = this.td;
-
         if (this.enabled) {
-            analyzer.getFloatTimeDomainData(td);
+            this.analyzer.getFloatTimeDomainData(this.td);
         }
 
-        return td;
+        return this.td;
     }
 
     clearFrequencyData() {

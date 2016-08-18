@@ -1,21 +1,32 @@
 'use strict';
 
-const WaveformParser = {
-    parseBuffer: (buffer, options) => {
+const Component = require('../core/Component.js');
+const CanvasBars = require('./CanvasBars.js');
+
+class CanvasAudio extends Component {
+    constructor(options, canvas) {
+        super(options);
+
+        this.bars = new CanvasBars(options, canvas);
+        this.data = new Float32Array(this.options.bars);
+    }
+
+    render(data) {
+        this.bars.render(this.parseAudioBuffer(data));
+    }
+
+    parseAudioBuffer(buffer) {
         let i, j, c, start, end, max, val, values,
-            len = buffer.length,
-            channels = buffer.numberOfChannels,
-            bars = options.bars || len,
-            size = len / bars,
-            step = ~~(size / 10) || 1,
-            data = new Float32Array(bars);
+            data = this.data,
+            size = buffer.length / data.length,
+            step = ~~(size / 10) || 1;
 
         // Process each channel
-        for (c = 0; c < channels; c++) {
+        for (c = 0; c < buffer.numberOfChannels; c++) {
             values = buffer.getChannelData(c);
 
             // Process each bar
-            for (i = 0; i < bars; i++) {
+            for (i = 0; i < data.length; i++) {
                 start = ~~(i * size);
                 end = ~~(start + size);
                 max = 0;
@@ -30,6 +41,7 @@ const WaveformParser = {
                         max = -val;
                     }
                 }
+
                 if (c == 0 || max > data[i]) {
                     data[i] = max;
                 }
@@ -38,6 +50,10 @@ const WaveformParser = {
 
         return data;
     }
+}
+
+CanvasAudio.defaults = {
+    bars: 100
 };
 
-module.exports = WaveformParser;
+module.exports = CanvasAudio;

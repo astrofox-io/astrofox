@@ -36,10 +36,6 @@ class Sound extends EventEmitter {
             });
         }
     }
-
-    getPosition() {
-        return (this.getCurrentTime() / this.getDuration()) || 0;
-    }
 }
 
 module.exports = Sound;

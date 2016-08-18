@@ -6,7 +6,6 @@ const ReactDOM = require('react-dom');
 const UIComponent = require('../UIComponent.js');
 const { Events } = require('../../core/Global.js');
 const CanvasWave = require('../../canvas/CanvasWave.js');
-const WaveParser = require('../../audio/WaveParser.js');
 
 class Oscilloscope extends UIComponent {
     constructor(props) {
@@ -19,12 +18,10 @@ class Oscilloscope extends UIComponent {
             this.refs.canvas
         );
 
-        this.parser = new WaveParser(this.props);
-
         Events.on('render', this.updateCanvas);
     }
 
-    componentWillUnmount(data) {
+    componentWillUnmount() {
         Events.off('render', this.updateCanvas);
     }
 
@@ -33,9 +30,7 @@ class Oscilloscope extends UIComponent {
     }
 
     updateCanvas(data) {
-        let td = this.parser.parseTimeData(data.td);
-
-        this.display.render(td);
+        this.display.render(data.td);
     }
 
     render() {

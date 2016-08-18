@@ -36,8 +36,9 @@ class Application extends EventEmitter {
         this.stage = new Stage();
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
     
-        this.player.on('play', this.updateAnalyzer.bind(this));
-        this.player.on('stop', this.updateAnalyzer.bind(this));
+        this.player.on('play', this.updateAnalyzer, this);
+        this.player.on('pause', this.updateAnalyzer, this);
+        this.player.on('stop', this.updateAnalyzer, this);
 
         this.config = Object.assign({}, appConfig);
     
@@ -146,14 +147,16 @@ class Application extends EventEmitter {
     }
 
     updateAnalyzer() {
-        let player = this.player,
-            spectrum = this.spectrum,
-            sound = player.getSound('audio');
+        let spectrum = this.spectrum,
+            sound = this.player.getSound('audio');
 
         if (sound) {
-            spectrum.clearFrequencyData();
-            spectrum.clearTimeData();
-            spectrum.enabled = (sound.playing || sound.paused);
+            if (!sound.paused) {
+                spectrum.clearFrequencyData();
+                spectrum.clearTimeData();
+            }
+
+            spectrum.enabled = sound.playing;
         }
     }
 

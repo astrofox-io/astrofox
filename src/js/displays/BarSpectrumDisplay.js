@@ -1,6 +1,5 @@
 'use strict';
 
-const Display = require('./Display.js');
 const CanvasDisplay = require('./CanvasDisplay.js');
 const CanvasBars = require('../canvas/CanvasBars.js');
 const SpectrumParser = require('../audio/SpectrumParser.js');

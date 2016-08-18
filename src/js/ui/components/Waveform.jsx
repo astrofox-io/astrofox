@@ -4,7 +4,7 @@ const React = require('react');
 
 const UIComponent = require('../UIComponent.js');
 const Application = require('../../core/Application.js');
-const CanvasWaveform = require('../../canvas/CanvasWaveform.js');
+const CanvasAudio = require('../../canvas/CanvasAudio.js');
 
 class Waveform extends UIComponent {
     constructor(props) {
@@ -19,7 +19,7 @@ class Waveform extends UIComponent {
     componentDidMount() {
         let player = Application.player;
 
-        this.base = new CanvasWaveform(
+        this.base = new CanvasAudio(
             Object.assign({}, this.props, {
                 color: ['#555555','#444444'],
                 shadowColor: '#333333'
@@ -27,7 +27,7 @@ class Waveform extends UIComponent {
             this.refs.base
         );
 
-        this.progress = new CanvasWaveform(
+        this.progress = new CanvasAudio(
             Object.assign({}, this.props, {
                 color: ['#B6AAFF','#927FFF'],
                 shadowColor: '#554B96'
@@ -35,7 +35,7 @@ class Waveform extends UIComponent {
             this.refs.progress
         );
 
-        this.seek = new CanvasWaveform(
+        this.seek = new CanvasAudio(
             Object.assign({}, this.props, {
                 color: ['#8880BF','#6C5FBF'],
                 shadowColor: '#403972'

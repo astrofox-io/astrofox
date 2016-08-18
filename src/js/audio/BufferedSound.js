@@ -149,6 +149,10 @@ class BufferedSound extends Sound {
         return (this.buffer) ? this.buffer.duration : 0;
     }
 
+    getPosition() {
+        return (this.getCurrentTime() / this.getDuration()) || 0;
+    }
+
     updatePosition(pos) {
         this.stopTime = ~~(pos * this.buffer.duration);
     }
