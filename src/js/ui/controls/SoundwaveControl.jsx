@@ -149,6 +149,26 @@ class SoundwaveControl extends UIComponent {
                     </div>
                 </div>
                 <div className="row">
+                    <span className="label">Smoothing</span>
+                    <NumberInput
+                        name="smoothing"
+                        size="3"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={this.state.smoothing}
+                        onChange={this.onChange} />
+                    <div className="input flex">
+                        <RangeInput
+                            name="smoothing"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={this.state.smoothing}
+                            onChange={this.onChange} />
+                    </div>
+                </div>
+                <div className="row">
                     <span className="label">Scrolling</span>
                     <ToggleInput
                         name="scrolling"

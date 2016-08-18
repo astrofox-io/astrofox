@@ -42,6 +42,7 @@ SoundwaveDisplay.defaults = {
     lineWidth: 1.0,
     scrolling: false,
     scrollSpeed: 0.15,
+    smoothing: 0,
     x: 0,
     y: 0,
     rotation: 0,
