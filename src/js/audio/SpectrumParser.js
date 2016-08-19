@@ -29,7 +29,7 @@ class SpectrumParser extends Component {
             maxBin = ~~(maxFrequency / range),
             bins = binSize || maxBin - minBin;
 
-        if (typeof this.data === 'undefined' || bins !== this.data.length) {
+        if (this.data === undefined || bins !== this.data.length) {
             this.data = new Float32Array(bins);
             this.buffer = new Float32Array(bins);
         }

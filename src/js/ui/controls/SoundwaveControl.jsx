@@ -149,22 +149,22 @@ class SoundwaveControl extends UIComponent {
                     </div>
                 </div>
                 <div className="row">
-                    <span className="label">Smoothing</span>
+                    <span className="label">Curve</span>
                     <NumberInput
-                        name="smoothing"
+                        name="curve"
                         size="3"
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={this.state.smoothing}
+                        value={this.state.curve}
                         onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="smoothing"
+                            name="curve"
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.smoothing}
+                            value={this.state.curve}
                             onChange={this.onChange} />
                     </div>
                 </div>
