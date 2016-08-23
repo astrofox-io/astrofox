@@ -74,7 +74,6 @@ class RangeInput extends UIComponent {
                 <div className="track"/>
                 <div className="fill" style={fillStyle}/>
                 <input
-                    key={hash(props.name + props.min + props.max + props.step)}
                     className="range"
                     type="range"
                     name={props.name}
