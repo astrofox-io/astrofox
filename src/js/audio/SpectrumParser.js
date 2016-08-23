@@ -11,68 +11,54 @@ const defaults = {
     maxDecibels: 0,
     minFrequency: 0,
     maxFrequency: 22050,
-    binSize: 0,
     normalize: false
 };
 
 class SpectrumParser extends Component {
     constructor(options) {
         super(Object.assign({}, defaults, options));
-
-        this.init();
     }
 
-    init() {
-        let { sampleRate, fftSize, minFrequency, maxFrequency, binSize } = this.options,
-            range = sampleRate / fftSize,
-            minBin = ~~(minFrequency / range),
-            maxBin = ~~(maxFrequency / range),
-            bins = binSize || maxBin - minBin;
-
-        if (this.data === undefined || bins !== this.data.length) {
-            this.data = new Float32Array(bins);
-            this.buffer = new Float32Array(bins);
-        }
-
-        this.minBin = minBin;
-        this.maxBin = maxBin;
-    }
-
-    update(options) {
-        let changed = super.update(options);
-
-        if (changed) {
-            this.init();
-        }
-
-        return changed;
-    }
-
-    getDb(fft, minDb, maxDb, normalize) {
-        let db = -100 * (1 - fft/256);
+    getDb(fft) {
+        let db = -100 * (1 - fft/256),
+            { minDecibels, maxDecibels, normalize } = this.options;
 
         if (normalize) {
-            return val2pct(db2mag(db), db2mag(minDb), db2mag(maxDb));
+            return val2pct(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
         }
         else {
-            return val2pct(db, -100, maxDb);
+            return val2pct(db, -100, maxDecibels);
         }
     }
 
-    parseFFT(fft) {
+    getBinRange() {
+        let { sampleRate, fftSize, minFrequency, maxFrequency } = this.options,
+            range = sampleRate / fftSize,
+            minBin = ~~(minFrequency / range),
+            maxBin = ~~(maxFrequency / range);
+
+        return { minBin, maxBin };
+    }
+
+    parseFFT(fft, bins) {
         let i, j, k, size, step, start, end, val, max,
-            data = this.data,
+            results = this.results,
             buffer = this.buffer,
-            minBin = this.minBin,
-            maxBin = this.maxBin,
-            bins = data.length,
+            { minBin, maxBin } = this.getBinRange(),
             totalBins = maxBin - minBin,
-            { minDecibels, maxDecibels, normalize, smoothingTimeConstant } = this.options;
+            { smoothingTimeConstant } = this.options;
+
+        bins = bins || totalBins;
+
+        if (results === undefined || results.length !== bins) {
+            results = this.results = new Float32Array(bins);
+            buffer = this.buffer = new Float32Array(bins);
+        }
 
         // Convert values
         if (bins === totalBins) {
             for (i = minBin; i < maxBin; i++) {
-                data[i] = this.getDb(fft[i], minDecibels, maxDecibels, normalize);
+                results[i] = this.getDb(fft[i]);
             }
         }
         // Compress data
@@ -96,7 +82,7 @@ class SpectrumParser extends Component {
                     }
                 }
 
-                data[i] = this.getDb(max, minDecibels, maxDecibels, normalize);
+                results[i] = this.getDb(max);
             }
         }
         // Expand data
@@ -104,12 +90,12 @@ class SpectrumParser extends Component {
             size = bins / totalBins;
 
             for (i = minBin, j = 0; i < maxBin; i++, j++) {
-                val = this.getDb(fft[i], minDecibels, maxDecibels, normalize);
+                val = this.getDb(fft[i]);
                 start = ~~(j * size);
                 end = start + size;
 
                 for (k = start; k < end; k += 1) {
-                    data[k] = val;
+                    results[k] = val;
                 }
             }
         }
@@ -117,12 +103,12 @@ class SpectrumParser extends Component {
         // Apply smoothing
         if (smoothingTimeConstant > 0) {
             for (i = 0; i < bins; i++) {
-                data[i] = (buffer[i] * smoothingTimeConstant) + (data[i] * (1.0 - smoothingTimeConstant));
-                buffer[i] = data[i];
+                results[i] = (buffer[i] * smoothingTimeConstant) + (results[i] * (1.0 - smoothingTimeConstant));
+                buffer[i] = results[i];
             }
         }
 
-        return data;
+        return results;
     }
 }
 

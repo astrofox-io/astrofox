@@ -19,7 +19,6 @@ class Spectrum extends UIComponent {
             maxFrequency: 10000,
             fftSize: 1024,
             sampleRate: 44100,
-            binSize: 32,
             normalize: false
         };
     }
@@ -50,7 +49,7 @@ class Spectrum extends UIComponent {
     }
 
     updateCanvas(data) {
-        let fft = this.parser.parseFFT(data.fft);
+        let fft = this.parser.parseFFT(data.fft, 32);
 
         this.bars.render(fft);
     }

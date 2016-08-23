@@ -13,74 +13,6 @@ class CanvasBars extends Component {
         this.context = this.canvas.getContext('2d');
     }
 
-    render(data) {
-        let i, x, y, val, step, index, last, barSize, fullWidth,
-            length = data.length,
-            canvas = this.canvas,
-            context = this.context,
-            { height, width, barWidth, barSpacing, color, shadowHeight, shadowColor } = this.options;
-
-        // Reset canvas
-        if (canvas.width !== width || canvas.height !== height + shadowHeight) {
-            canvas.width = width;
-            canvas.height = height + shadowHeight;
-        }
-        else {
-            context.clearRect(0, 0, width, height + shadowHeight);
-        }
-
-        // Calculate bar widths
-        if (barWidth < 0 && barSpacing < 0) {
-            barWidth = barSpacing = (width / length) / 2;
-        }
-        else if (barSpacing >= 0 && barWidth < 0) {
-            barWidth = (width - (length * barSpacing)) / length;
-            if (barWidth <= 0) barWidth = 1;
-        }
-        else if (barWidth > 0 && barSpacing < 0) {
-            barSpacing = (width - (length * barWidth)) / length;
-            if (barSpacing <= 0) barSpacing = 1;
-        }
-
-        // Calculate bars to display
-        barSize = barWidth + barSpacing;
-        fullWidth = barSize * length;
-
-        // Stepping
-        step = (fullWidth > width) ? fullWidth / width : 1;
-
-        // Canvas setup
-        this.setColor(color, 0, 0, 0, height);
-
-        // Draw bars
-        for (i = 0, x = 0, y = height, last = null; i < length && x < fullWidth; i += step, x += barSize) {
-            index = ~~i;
-
-            if (index !== last) {
-                val = data[index] * height;
-                last = index;
-
-                context.fillRect(x, y, barWidth, -val);
-            }
-        }
-
-        // Draw shadow bars
-        if (shadowHeight > 0) {
-            this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
-
-            for (i = 0, x = 0, y = height, last = null; i < length && x < fullWidth; i += step, x += barSize) {
-                index = ~~i;
-
-                if (index !== last) {
-                    val = data[index] * shadowHeight;
-                    last = index;
-
-                    context.fillRect(x, y, barWidth, val);
-                }
-            }
-        }
-    }
-
     setColor(color, x1, y1, x2, y2) {
         let i, gradient, len,
             context = this.context;
@@ -118,6 +50,74 @@ class CanvasBars extends Component {
         };
 
         return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
+    }
+
+    render(data) {
+        let i, x, y, val, step, index, last, barSize, fullWidth,
+            bars = data.length,
+            canvas = this.canvas,
+            context = this.context,
+            { height, width, barWidth, barSpacing, color, shadowHeight, shadowColor } = this.options;
+
+        // Reset canvas
+        if (canvas.width !== width || canvas.height !== height + shadowHeight) {
+            canvas.width = width;
+            canvas.height = height + shadowHeight;
+        }
+        else {
+            context.clearRect(0, 0, width, height + shadowHeight);
+        }
+
+        // Calculate bar widths
+        if (barWidth < 0 && barSpacing < 0) {
+            barWidth = barSpacing = (width / bars) / 2;
+        }
+        else if (barSpacing >= 0 && barWidth < 0) {
+            barWidth = (width - (bars * barSpacing)) / bars;
+            if (barWidth <= 0) barWidth = 1;
+        }
+        else if (barWidth > 0 && barSpacing < 0) {
+            barSpacing = (width - (bars * barWidth)) / bars;
+            if (barSpacing <= 0) barSpacing = 1;
+        }
+
+        // Calculate bars to display
+        barSize = barWidth + barSpacing;
+        fullWidth = barSize * bars;
+
+        // Stepping
+        step = (fullWidth > width) ? fullWidth / width : 1;
+
+        // Canvas setup
+        this.setColor(color, 0, 0, 0, height);
+
+        // Draw bars
+        for (i = 0, x = 0, y = height, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
+            index = ~~i;
+
+            if (index !== last) {
+                val = data[index] * height;
+                last = index;
+
+                context.fillRect(x, y, barWidth, -val);
+            }
+        }
+
+        // Draw shadow bars
+        if (shadowHeight > 0) {
+            this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
+
+            for (i = 0, x = 0, y = height, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
+                index = ~~i;
+
+                if (index !== last) {
+                    val = data[index] * shadowHeight;
+                    last = index;
+
+                    context.fillRect(x, y, barWidth, val);
+                }
+            }
+        }
     }
 }
 

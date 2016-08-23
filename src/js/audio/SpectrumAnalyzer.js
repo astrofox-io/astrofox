@@ -12,7 +12,6 @@ class SpectrumAnalyzer {
         this.audioContext = context;
         this.analyzer = Object.assign(context.createAnalyser(), defaults);
         this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
-        console.log(this.analyzer.frequencyBinCount, this.analyzer.fftSize);
         this.td = new Float32Array(this.analyzer.fftSize);
         this.enabled = true;
     }
@@ -37,7 +36,7 @@ class SpectrumAnalyzer {
         this.fft.fill(0);
     }
 
-    clearTimeData(data) {
+    clearTimeData() {
         this.td.fill(0);
     }
 
