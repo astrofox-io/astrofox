@@ -31,7 +31,7 @@ class BarSpectrumDisplay extends CanvasDisplay {
         this.renderToCanvas(
             scene.getContext('2d'),
             this.canvas.width / 2,
-            this.bars.options.height
+            this.options.height
         );
     }
 }
@@ -41,8 +41,8 @@ BarSpectrumDisplay.label = 'Bar Spectrum';
 BarSpectrumDisplay.className = 'BarSpectrumDisplay';
 
 BarSpectrumDisplay.defaults = {
-    height: 240,
     width: 770,
+    height: 240,
     x: 0,
     y: 0,
     barWidth: -1,

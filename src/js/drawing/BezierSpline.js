@@ -3,6 +3,24 @@
 class BezierSpline {
     static draw(context, points)
     {
+        context.beginPath();
+
+        this.drawPath(context, points);
+
+        context.stroke();
+    }
+
+    static drawPath(context, points) {
+        let { x, y, px, py } = this.getSplinePoints(points);
+
+        context.moveTo(points[0], points[1]);
+
+        for (let i = 0; i < points.length; i++) {
+            context.bezierCurveTo(px.p1[i], py.p1[i], px.p2[i], py.p2[i], x[i+1], y[i+1]);
+        }
+    }
+
+    static getSplinePoints(points) {
         let i, px, py,
             x = [],
             y = [];
@@ -17,15 +35,7 @@ class BezierSpline {
         px = this.computeControlPoints(x);
         py = this.computeControlPoints(y);
 
-        // Draw spline
-        context.beginPath();
-        context.moveTo(points[0], points[1]);
-
-        for (i = 0; i < points.length; i++) {
-            context.bezierCurveTo(px.p1[i], py.p1[i], px.p2[i], py.p2[i], x[i+1], y[i+1]);
-        }
-
-        context.stroke();
+        return { x, y, px, py };
     }
 
     static computeControlPoints(K) {
@@ -79,7 +89,7 @@ class BezierSpline {
 
         p2[n - 1] = 0.5 * (K[n] + p1[n - 1]);
 
-        return {p1: p1, p2: p2};
+        return { p1, p2 };
     }
 }
 

@@ -22,14 +22,16 @@ class SoundwaveDisplay extends CanvasDisplay {
     }
 
     renderToScene(scene, data) {
-        let points = WaveParser.parseTimeData(data.td, this.canvas.width, this.options.distance);
+        let canvas = this.canvas,
+            { smooth, distance } = this.options,
+            points = WaveParser.parseTimeData(data.td, canvas.width, distance);
 
-        this.wave.render(points);
+        this.wave.render(points, (distance > 3) ? smooth : false);
 
         this.renderToCanvas(
             scene.getContext('2d'),
-            this.canvas.width / 2,
-            this.canvas.height / 2
+            canvas.width / 2,
+            canvas.height / 2
         );
     }
 }

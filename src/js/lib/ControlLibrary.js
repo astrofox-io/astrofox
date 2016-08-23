@@ -9,8 +9,9 @@ module.exports = {
     LEDControl: require('../ui/controls/LEDControl.jsx'),
     MirrorControl: require('../ui/controls/MirrorControl.jsx'),
     PixelateControl: require('../ui/controls/PixelateControl.jsx'),
+    RGBShiftControl: require('../ui/controls/RGBShiftControl.jsx'),
     SceneControl: require('../ui/controls/SceneControl.jsx'),
     SoundwaveControl: require('../ui/controls/SoundwaveControl.jsx'),
     TextControl: require('../ui/controls/TextControl.jsx'),
-    RGBShiftControl: require('../ui/controls/RGBShiftControl.jsx')
+    WaveSpectrumControl: require('../ui/controls/WaveSpectrumControl.jsx')
 };

@@ -3,5 +3,6 @@ module.exports = {
     GeometryDisplay: require('../displays/GeometryDisplay.js'),
     ImageDisplay: require('../displays/ImageDisplay.js'),
     SoundwaveDisplay: require('../displays/SoundwaveDisplay.js'),
-    TextDisplay: require('../displays/TextDisplay.js')
+    TextDisplay: require('../displays/TextDisplay.js'),
+    WaveSpectrumDisplay: require('../displays/WaveSpectrumDisplay.js')
 };

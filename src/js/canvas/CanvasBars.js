@@ -1,6 +1,7 @@
 'use strict';
 
-const Component = require('../core/Component.js');
+const Component = require('../core/Component');
+const { setColor } = require('../util/canvas');
 
 class CanvasBars extends Component {
     constructor(options, canvas) {
@@ -11,45 +12,6 @@ class CanvasBars extends Component {
         this.canvas.height = this.options.height + this.options.shadowHeight;
 
         this.context = this.canvas.getContext('2d');
-    }
-
-    setColor(color, x1, y1, x2, y2) {
-        let i, gradient, len,
-            context = this.context;
-
-        if (color instanceof Array) {
-            len = color.length;
-            gradient = this.context.createLinearGradient(x1, y1, x2, y2);
-            for (i = 0; i < len; i++) {
-                gradient.addColorStop(i / (len - 1), color[i]);
-            }
-            context.fillStyle = gradient;
-        }
-        else {
-            context.fillStyle = color;
-        }
-    }
-
-    getColor(start, end, pct) {
-        let startColor = {
-            r: parseInt(start.substring(1,3), 16),
-            g: parseInt(start.substring(3,5), 16),
-            b: parseInt(start.substring(5,7), 16)
-        };
-
-        let endColor = {
-            r: parseInt(end.substring(1,3), 16),
-            g: parseInt(end.substring(3,5), 16),
-            b: parseInt(end.substring(5,7), 16)
-        };
-
-        let c = {
-            r: ~~((endColor.r - startColor.r) * pct) + startColor.r,
-            g: ~~((endColor.g - startColor.g) * pct) + startColor.g,
-            b: ~~((endColor.b - startColor.b) * pct) + startColor.b
-        };
-
-        return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
     }
 
     render(data) {
@@ -89,7 +51,7 @@ class CanvasBars extends Component {
         step = (fullWidth > width) ? fullWidth / width : 1;
 
         // Canvas setup
-        this.setColor(color, 0, 0, 0, height);
+        setColor(context, color, 0, 0, 0, height);
 
         // Draw bars
         for (i = 0, x = 0, y = height, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
@@ -105,7 +67,7 @@ class CanvasBars extends Component {
 
         // Draw shadow bars
         if (shadowHeight > 0) {
-            this.setColor(shadowColor, 0, height, 0, height + shadowHeight);
+            setColor(context, shadowColor, 0, height, 0, height + shadowHeight);
 
             for (i = 0, x = 0, y = height, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
                 index = ~~i;
