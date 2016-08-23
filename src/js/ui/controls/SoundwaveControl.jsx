@@ -149,53 +149,31 @@ class SoundwaveControl extends UIComponent {
                     </div>
                 </div>
                 <div className="row">
-                    <span className="label">Curve</span>
+                    <span className="label">Distance</span>
                     <NumberInput
-                        name="curve"
+                        name="distance"
                         size="3"
                         min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={this.state.curve}
+                        max={100}
+                        step={1}
+                        value={this.state.distance}
                         onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="curve"
+                            name="distance"
                             min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={this.state.curve}
+                            max={100}
+                            step={1}
+                            value={this.state.distance}
                             onChange={this.onChange} />
                     </div>
                 </div>
                 <div className="row">
-                    <span className="label">Scrolling</span>
+                    <span className="label">Smooth</span>
                     <ToggleInput
-                        name="scrolling"
-                        value={this.state.scrolling}
+                        name="smooth"
+                        value={this.state.smooth}
                         onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Scroll Speed</span>
-                    <NumberInput
-                        name="scrollSpeed"
-                        size="3"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        readOnly={!this.state.scrolling}
-                        value={this.state.scrollSpeed}
-                        onChange={this.onChange} />
-                    <div className="input flex">
-                        <RangeInput
-                            name="scrollSpeed"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={this.state.scrollSpeed}
-                            readOnly={!this.state.scrolling}
-                            onChange={this.onChange} />
-                    </div>
                 </div>
                 <div className="row">
                     <span className="label">Rotation</span>

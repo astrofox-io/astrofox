@@ -8,7 +8,7 @@ class CanvasAudio extends Component {
         super(options);
 
         this.bars = new CanvasBars(options, canvas);
-        this.data = new Float32Array(this.options.bars);
+        this.results = new Float32Array(this.options.bars);
     }
 
     render(data) {
@@ -17,8 +17,8 @@ class CanvasAudio extends Component {
 
     parseAudioBuffer(buffer) {
         let i, j, c, start, end, max, val, values,
-            data = this.data,
-            size = buffer.length / data.length,
+            results = this.results,
+            size = buffer.length / results.length,
             step = ~~(size / 10) || 1;
 
         // Process each channel
@@ -26,7 +26,7 @@ class CanvasAudio extends Component {
             values = buffer.getChannelData(c);
 
             // Process each bar
-            for (i = 0; i < data.length; i++) {
+            for (i = 0; i < results.length; i++) {
                 start = ~~(i * size);
                 end = ~~(start + size);
                 max = 0;
@@ -42,13 +42,13 @@ class CanvasAudio extends Component {
                     }
                 }
 
-                if (c == 0 || max > data[i]) {
-                    data[i] = max;
+                if (c == 0 || max > results[i]) {
+                    results[i] = max;
                 }
             }
         }
 
-        return data;
+        return results;
     }
 }
 

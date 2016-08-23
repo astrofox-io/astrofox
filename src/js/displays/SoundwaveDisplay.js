@@ -9,7 +9,6 @@ class SoundwaveDisplay extends CanvasDisplay {
         super(SoundwaveDisplay, options);
 
         this.wave = new CanvasWave(this.options, this.canvas);
-        this.parser = new WaveParser(this.options);
     }
 
     update(options) {
@@ -17,14 +16,13 @@ class SoundwaveDisplay extends CanvasDisplay {
 
         if (changed) {
             this.wave.update(options);
-            this.parser.update(options);
         }
 
         return changed;
     }
 
     renderToScene(scene, data) {
-        let points = this.parser.parseTimeData(data.td, data.playing);
+        let points = WaveParser.parseTimeData(data.td, this.canvas.width, this.options.distance);
 
         this.wave.render(points);
 
@@ -45,9 +43,8 @@ SoundwaveDisplay.defaults = {
     width: 854,
     height: 240,
     lineWidth: 1.0,
-    scrolling: false,
-    scrollSpeed: 0.15,
-    curve: 0,
+    distance: 0,
+    smooth: false,
     x: 0,
     y: 0,
     rotation: 0,

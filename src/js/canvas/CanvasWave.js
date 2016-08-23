@@ -1,8 +1,7 @@
 'use strict';
 
-const { getCurvePoints } = require('cardinal-spline-js');
-
 const Component = require('../core/Component.js');
+const BezierSpline = require('../drawing/BezierSpline.js');
 
 class CanvasWave extends Component {
     constructor(options, canvas) {
@@ -16,9 +15,10 @@ class CanvasWave extends Component {
     }
 
     render(points) {
-        let canvas = this.canvas,
+        let i,
+            canvas = this.canvas,
             context = this.context,
-            { width, height, color, lineWidth } = this.options;
+            { width, height, color, lineWidth, distance, smooth } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
@@ -34,18 +34,26 @@ class CanvasWave extends Component {
         context.strokeStyle = color;
 
         // Draw wave
-        context.beginPath();
-
-        for (let i = 0; i < points.length; i += 2) {
-            if (i === 0) {
-                context.moveTo(points[i], points[i+1] * height);
+        if (smooth && distance > 1) {
+            for (i = 0; i < points.length; i += 2) {
+                points[i+1] = points[i+1] * height;
             }
-            else {
-                context.lineTo(points[i], points[i+1] * height);
-            }
+            BezierSpline.draw(context, points);
         }
+        else {
+            context.beginPath();
 
-        context.stroke();
+            for (i = 0; i < points.length; i += 2) {
+                if (i === 0) {
+                    context.moveTo(points[i], points[i+1] * height);
+                }
+                else {
+                    context.lineTo(points[i], points[i+1] * height);
+                }
+            }
+
+            context.stroke();
+        }
     }
 }
 
@@ -54,8 +62,8 @@ CanvasWave.defaults = {
     width: 400,
     height: 200,
     lineWidth: 1.0,
-    scrolling: false,
-    scrollSpeed: 0.15
+    distance: 0,
+    smooth: false
 };
 
 module.exports = CanvasWave;

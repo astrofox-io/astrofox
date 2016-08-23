@@ -19,8 +19,6 @@ class Oscilloscope extends UIComponent {
             this.refs.canvas
         );
 
-        this.parser = new WaveParser(this.props);
-
         Events.on('render', this.updateCanvas);
     }
 
@@ -33,7 +31,7 @@ class Oscilloscope extends UIComponent {
     }
 
     updateCanvas(data) {
-        let points = this.parser.parseTimeData(data.td, data.playing);
+        let points = WaveParser.parseTimeData(data.td, 854, 0);
 
         this.display.render(points);
     }
