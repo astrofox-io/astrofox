@@ -153,11 +153,27 @@ class WaveSpectrumControl extends UIComponent {
                     </div>
                 </div>
                 <div className="row">
+                    <span className="label">Stroke</span>
+                    <ToggleInput
+                        name="stroke"
+                        value={this.state.stroke}
+                        onChange={this.onChange}
+                    />
+                </div>
+                <div className="row">
                     <span className="label">Stroke Color</span>
                     <ColorInput
                         name="color"
                         value={this.state.color}
                         onChange={this.onChange} />
+                </div>
+                <div className="row">
+                    <span className="label">Fill</span>
+                    <ToggleInput
+                        name="fill"
+                        value={this.state.fill}
+                        onChange={this.onChange}
+                    />
                 </div>
                 <div className="row">
                     <span className="label">Fill Color</span>
