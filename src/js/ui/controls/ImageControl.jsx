@@ -4,7 +4,6 @@ const React = require('react');
 const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ImageInput = require('../inputs/ImageInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
@@ -16,7 +15,6 @@ class ImageControl extends UIComponent {
         super(props);
 
         this.state = this.props.display.options;
-        this.state.opacity = 0;
         this.shouldUpdate = false;
     }
 
@@ -59,9 +57,16 @@ class ImageControl extends UIComponent {
             obj.opacity = 0;
 
             if (val !== BLANK_IMAGE) {
-                obj.opacity = 1.0;
-                obj.width = image.naturalWidth;
-                obj.height = image.naturalHeight;
+                // Load new image
+                if (val !== state.src) {
+                    obj.width = image.naturalWidth;
+                    obj.height = image.naturalHeight;
+                    obj.opacity = 1.0;
+                }
+                // Restore values from state
+                else {
+                    Object.assign(obj, state);
+                }
             }
         }
         else if (name === 'width') {
