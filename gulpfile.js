@@ -20,7 +20,6 @@ const watchify = require('watchify');
 const envify = require('loose-envify/custom');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
-const resolve = require('resolve');
 
 /*** Configuration ***/
 
@@ -74,7 +73,8 @@ function getNPMPackageIds() {
 // Builds separate vendor library
 gulp.task('build-vendor', function() {
     let vendorBundle = browserify({
-        debug: false
+        debug: false,
+        noParse: [require.resolve('babylon')]
     });
 
     vendorBundle.transform(envify({
@@ -83,7 +83,7 @@ gulp.task('build-vendor', function() {
     }), { global:true });
 
     getNPMPackageIds().forEach(id => {
-        vendorBundle.require(resolve.sync(id), { expose: id });
+        vendorBundle.require(require.resolve(id), { expose: id });
     });
 
     return build(vendorBundle, 'vendor.js', 'build', false, (process.env.NODE_ENV === 'production'));
