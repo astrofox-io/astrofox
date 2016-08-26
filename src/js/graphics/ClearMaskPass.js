@@ -1,6 +1,6 @@
 'use strict';
 
-var ComposerPass = require('../graphics/ComposerPass.js');
+var ComposerPass = require('../graphics/ComposerPass');
 
 class ClearMaskPass extends ComposerPass {
     constructor(options) {

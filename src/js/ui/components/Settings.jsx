@@ -3,9 +3,9 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
-const { Events } = require('../../core/Global.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
+const { Events } = require('../../core/Global');
 const ListInput = require('../inputs/ListInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');

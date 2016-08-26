@@ -3,16 +3,16 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
-const { Events } = require('../../core/Global.js');
-const Display = require('../../displays/Display.js');
-const CanvasDisplay = require('../../displays/CanvasDisplay.js');
-const Stage = require('../../displays/Stage.js');
-const Scene = require('../../displays/Scene.js');
-const Effect = require('../../effects/Effect.js');
-const DisplayLibrary = require('../../lib/DisplayLibrary.js');
-const EffectsLibrary = require('../../lib/EffectsLibrary.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
+const { Events } = require('../../core/Global');
+const Display = require('../../displays/Display');
+const CanvasDisplay = require('../../displays/CanvasDisplay');
+const Stage = require('../../displays/Stage');
+const Scene = require('../../displays/Scene');
+const Effect = require('../../effects/Effect');
+const DisplayLibrary = require('../../lib/DisplayLibrary');
+const EffectsLibrary = require('../../lib/EffectsLibrary');
 
 const Layer = require('./Layer.jsx');
 

@@ -1,8 +1,8 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const GlowShader = require('../shaders/GlowShader.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const GlowShader = require('../shaders/GlowShader');
 
 const GLOW_MAX = 5;
 

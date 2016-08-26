@@ -1,8 +1,8 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const LEDShader = require('../shaders/LEDShader.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const LEDShader = require('../shaders/LEDShader');
 
 class LEDEffect extends Effect {
     constructor(options) {

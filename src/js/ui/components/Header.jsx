@@ -2,8 +2,8 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const Window = require('../../core/Window.js');
+const UIComponent = require('../UIComponent');
+const Window = require('../../core/Window');
 
 class Header extends UIComponent {
     constructor(props) {

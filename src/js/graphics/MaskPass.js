@@ -1,6 +1,6 @@
 'use strict';
 
-const ComposerPass = require('../graphics/ComposerPass.js');
+const ComposerPass = require('../graphics/ComposerPass');
 
 const defaults = {
     inverse: false

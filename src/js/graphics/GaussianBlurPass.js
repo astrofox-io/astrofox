@@ -1,8 +1,8 @@
 'use strict';
 
-const ShaderPass = require('./ShaderPass.js');
-const MultiPass = require('./MultiPass.js');
-const GaussianBlurShader = require('../shaders/GaussianBlurShader.js');
+const ShaderPass = require('./ShaderPass');
+const MultiPass = require('./MultiPass');
+const GaussianBlurShader = require('../shaders/GaussianBlurShader');
 
 const defaults = {
     amount: 1.0,

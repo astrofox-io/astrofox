@@ -1,7 +1,7 @@
 'use strict';
 
 const THREE = require('three');
-const ComposerPass = require('../graphics/ComposerPass.js');
+const ComposerPass = require('../graphics/ComposerPass');
 
 const defaults = {
     opacity: 1.0,

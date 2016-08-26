@@ -1,7 +1,7 @@
 'use strict';
 
-const Display = require('./Display.js');
-const { deg2rad } = require('../util/math.js');
+const Display = require('./Display');
+const { deg2rad } = require('../util/math');
 
 class CanvasDisplay extends Display {
     constructor(type, options) {

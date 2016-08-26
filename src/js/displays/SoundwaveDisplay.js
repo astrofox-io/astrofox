@@ -1,8 +1,8 @@
 'use strict';
 
-const CanvasDisplay = require('./CanvasDisplay.js');
-const CanvasWave = require('../canvas/CanvasWave.js');
-const WaveParser = require('../audio/WaveParser.js');
+const CanvasDisplay = require('./CanvasDisplay');
+const CanvasWave = require('../canvas/CanvasWave');
+const WaveParser = require('../audio/WaveParser');
 
 class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {

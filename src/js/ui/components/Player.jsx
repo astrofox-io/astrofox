@@ -3,10 +3,10 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
 const RangeInput = require('../inputs/RangeInput.jsx');
-const { formatTime } = require('../../util/format.js');
+const { formatTime } = require('../../util/format');
 
 const PROGRESS_MAX = 1000;
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const THREE = require('three');
-const TexturePass = require('../graphics/TexturePass.js');
+const TexturePass = require('../graphics/TexturePass');
 
 const defaults = {
     width: 854,

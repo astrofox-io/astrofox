@@ -1,7 +1,7 @@
 'use strict';
 
-const ShaderPass = require('../graphics/ShaderPass.js');
-const CopyShader = require('../shaders/CopyShader.js');
+const ShaderPass = require('../graphics/ShaderPass');
+const CopyShader = require('../shaders/CopyShader');
 
 const defaults = {
     transparent: true,

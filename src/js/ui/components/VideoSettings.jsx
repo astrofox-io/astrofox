@@ -2,9 +2,9 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
-const Window = require('../../core/Window.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
+const Window = require('../../core/Window');
 
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');

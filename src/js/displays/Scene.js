@@ -2,11 +2,11 @@
 
 const THREE = require('three');
 
-const NodeCollection = require('../core/NodeCollection.js');
-const Display = require('./Display.js');
-const CanvasDisplay = require('./CanvasDisplay.js');
-const Effect = require('../effects/Effect.js');
-const Composer = require('../graphics/Composer.js');
+const NodeCollection = require('../core/NodeCollection');
+const Display = require('./Display');
+const CanvasDisplay = require('./CanvasDisplay');
+const Effect = require('../effects/Effect');
+const Composer = require('../graphics/Composer');
 
 const FOV = 45;
 const NEAR = 1;

@@ -1,6 +1,6 @@
 'use strict';
 
-const { val2pct } = require('../util/math.js');
+const { val2pct } = require('../util/math');
 
 class WaveParser {
     static parseTimeData(data, points, distance) {

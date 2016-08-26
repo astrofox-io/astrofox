@@ -1,7 +1,7 @@
 'use strict';
 
-const CanvasDisplay = require('./CanvasDisplay.js');
-const CanvasImage = require('../canvas/CanvasImage.js');
+const CanvasDisplay = require('./CanvasDisplay');
+const CanvasImage = require('../canvas/CanvasImage');
 
 class ImageDisplay extends CanvasDisplay {
     constructor(options) {

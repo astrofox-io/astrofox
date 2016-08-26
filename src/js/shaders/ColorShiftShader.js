@@ -1,5 +1,5 @@
 const THREE = require('three');
-const ShaderCode = require('./ShaderCode.js');
+const ShaderCode = require('./ShaderCode');
 
 module.exports = {
     uniforms: {

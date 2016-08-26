@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('../core/Component.js');
+const Component = require('../core/Component');
 
 const MIN_RESIZE_WIDTH = 100;
 

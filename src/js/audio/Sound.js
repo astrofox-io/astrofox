@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('../core/EventEmitter.js');
+const EventEmitter = require('../core/EventEmitter');
 
 class Sound extends EventEmitter {
     constructor(context) {

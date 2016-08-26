@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('../core/Component.js');
+const Component = require('../core/Component');
 
 class CanvasText extends Component {
     constructor(options, canvas) {

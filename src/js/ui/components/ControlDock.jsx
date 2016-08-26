@@ -2,8 +2,8 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const { Events } = require('../../core/Global.js');
+const UIComponent = require('../UIComponent');
+const { Events } = require('../../core/Global');
 
 const Panel = require('../layout/Panel.jsx');
 const PanelDock = require('../layout/PanelDock.jsx');

@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
+const UIComponent = require('../UIComponent');
 const MenuBarItem = require('./MenuBarItem.jsx');
 const menuItemsConfig = require('../../../conf/menu.json');
 

@@ -1,16 +1,16 @@
 'use strict';
 
 const THREE = require('three');
-const EventEmitter = require('../core/EventEmitter.js');
-const NodeCollection = require('../core/NodeCollection.js');
-const RenderPass = require('../graphics/RenderPass.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const SpritePass = require('../graphics/SpritePass.js');
-const TexturePass = require('../graphics/TexturePass.js');
-const MultiPass = require('../graphics/MultiPass.js');
-const BlendModes = require('../graphics/BlendModes.js');
-const CopyShader = require('../shaders/CopyShader.js');
-const BlendShader = require('../shaders/BlendShader.js');
+const EventEmitter = require('../core/EventEmitter');
+const NodeCollection = require('../core/NodeCollection');
+const RenderPass = require('../graphics/RenderPass');
+const ShaderPass = require('../graphics/ShaderPass');
+const SpritePass = require('../graphics/SpritePass');
+const TexturePass = require('../graphics/TexturePass');
+const MultiPass = require('../graphics/MultiPass');
+const BlendModes = require('../graphics/BlendModes');
+const CopyShader = require('../shaders/CopyShader');
+const BlendShader = require('../shaders/BlendShader');
 
 class Composer extends EventEmitter {
     constructor(renderer, renderTarget) {

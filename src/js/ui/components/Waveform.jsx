@@ -2,9 +2,9 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
-const CanvasAudio = require('../../canvas/CanvasAudio.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
+const CanvasAudio = require('../../canvas/CanvasAudio');
 
 class Waveform extends UIComponent {
     constructor(props) {

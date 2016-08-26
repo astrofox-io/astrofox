@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
+const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');

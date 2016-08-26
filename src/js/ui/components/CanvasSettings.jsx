@@ -2,8 +2,8 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 

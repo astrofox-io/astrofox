@@ -3,9 +3,9 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
-const getControlComponent = require('../../util/getControlComponent.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
+const getControlComponent = require('../../util/getControlComponent');
 
 class ControlsPanel extends UIComponent {
     constructor(props) {

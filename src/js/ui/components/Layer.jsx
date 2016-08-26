@@ -3,7 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
+const UIComponent = require('../UIComponent');
 const TextInput = require('../inputs/TextInput.jsx');
 
 class Layer extends UIComponent {

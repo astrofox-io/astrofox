@@ -3,8 +3,8 @@
 const spawn = window.require('child_process').spawn;
 const Stream = window.require('stream');
 
-const EventEmitter = require('../core/EventEmitter.js');
-const { Logger } = require('../core/Global.js');
+const EventEmitter = require('../core/EventEmitter');
+const { Logger } = require('../core/Global');
 
 const defaults = {
     fps: 29.97,

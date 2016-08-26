@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('../core/Component.js');
+const Component = require('../core/Component');
 
 const defaults = {
     enabled: true,

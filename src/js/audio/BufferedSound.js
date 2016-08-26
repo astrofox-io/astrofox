@@ -1,6 +1,6 @@
 'use strict';
 
-const Sound = require('../audio/Sound.js');
+const Sound = require('../audio/Sound');
 
 class BufferedSound extends Sound {
     constructor(context) {

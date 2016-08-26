@@ -1,9 +1,9 @@
 'use strict';
 
 const THREE = require('three');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const BlendShader = require('../shaders/BlendShader.js');
-const BlendModes = require('../graphics/BlendModes.js');
+const ShaderPass = require('../graphics/ShaderPass');
+const BlendShader = require('../shaders/BlendShader');
+const BlendModes = require('../graphics/BlendModes');
 
 const defaults = {
     transparent: true,

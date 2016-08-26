@@ -1,7 +1,7 @@
 'use strict';
 
-const Component = require('../core/Component.js');
-const CanvasBars = require('./CanvasBars.js');
+const Component = require('../core/Component');
+const CanvasBars = require('./CanvasBars');
 
 class CanvasAudio extends Component {
     constructor(options, canvas) {

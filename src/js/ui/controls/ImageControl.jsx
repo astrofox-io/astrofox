@@ -3,7 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
+const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ImageInput = require('../inputs/ImageInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');

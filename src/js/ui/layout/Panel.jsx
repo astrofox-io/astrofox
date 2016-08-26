@@ -3,8 +3,8 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
-const { Events } = require('../../core/Global.js');
+const UIComponent = require('../UIComponent');
+const { Events } = require('../../core/Global');
 
 const Splitter = require('./Splitter.jsx');
 

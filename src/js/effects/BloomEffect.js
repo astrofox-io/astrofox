@@ -1,14 +1,14 @@
 'use strict';
 
 const THREE = require('three');
-const Composer = require('../graphics/Composer.js');
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const SavePass = require('../graphics/SavePass.js');
-const BlendPass = require('../graphics/BlendPass.js');
+const Composer = require('../graphics/Composer');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const SavePass = require('../graphics/SavePass');
+const BlendPass = require('../graphics/BlendPass');
 const GaussianBlurPass = require('../graphics/GaussianBlurPass');
-const LuminanceShader = require('../shaders/LuminanceShader.js');
-const CopyShader = require('../shaders/CopyShader.js');
+const LuminanceShader = require('../shaders/LuminanceShader');
+const CopyShader = require('../shaders/CopyShader');
 
 class BloomEffect extends Effect {
     constructor(options) {

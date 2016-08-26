@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('../core/EventEmitter.js');
+const EventEmitter = require('../core/EventEmitter');
 
 const UPDATE_INTERVAL = 200;
 

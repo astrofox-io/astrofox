@@ -2,9 +2,9 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const { Events } = require('../../core/Global.js');
-const { formatSize } = require('../../util/format.js');
+const UIComponent = require('../UIComponent');
+const { Events } = require('../../core/Global');
+const { formatSize } = require('../../util/format');
 
 class Footer extends UIComponent {
     constructor(props) {

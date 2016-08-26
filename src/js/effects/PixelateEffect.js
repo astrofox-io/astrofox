@@ -1,9 +1,9 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const PixelateShader = require('../shaders/PixelateShader.js');
-const HexagonShader = require('../shaders/HexagonShader.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const PixelateShader = require('../shaders/PixelateShader');
+const HexagonShader = require('../shaders/HexagonShader');
 
 const shaders = {
     Square: PixelateShader,

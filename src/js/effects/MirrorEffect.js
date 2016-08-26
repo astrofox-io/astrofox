@@ -1,8 +1,8 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const MirrorShader = require('../shaders/MirrorShader.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const MirrorShader = require('../shaders/MirrorShader');
 
 class MirrorEffect extends Effect {
     constructor(options) {

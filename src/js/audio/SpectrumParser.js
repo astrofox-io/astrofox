@@ -1,7 +1,7 @@
 'use strict';
 
-const Component = require('../core/Component.js');
-const { val2pct, db2mag } = require('../util/math.js');
+const Component = require('../core/Component');
+const { val2pct, db2mag } = require('../util/math');
 
 const defaults = {
     smoothingTimeConstant: 0.5,

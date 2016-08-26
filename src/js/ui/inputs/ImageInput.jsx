@@ -3,9 +3,9 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
-const Window = require('../../core/Window.js');
-const IO = require('../../core/IO.js');
+const UIComponent = require('../UIComponent');
+const Window = require('../../core/Window');
+const IO = require('../../core/IO');
 
 const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 

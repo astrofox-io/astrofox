@@ -1,8 +1,8 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const HexagonShader = require('../shaders/HexagonShader.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const HexagonShader = require('../shaders/HexagonShader');
 
 class HexagonEffect extends Effect {
     constructor(options) {

@@ -1,8 +1,8 @@
 'use strict';
 
-const ComposerPass = require('../graphics/ComposerPass.js');
-const CopyShader = require('../shaders/CopyShader.js');
-const NodeCollection = require('../core/NodeCollection.js');
+const ComposerPass = require('../graphics/ComposerPass');
+const CopyShader = require('../shaders/CopyShader');
+const NodeCollection = require('../core/NodeCollection');
 
 const defaults = {
     needsSwap: true,

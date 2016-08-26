@@ -3,10 +3,10 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const UIComponent = require('../UIComponent.js');
-const { Events } = require('../../core/Global.js');
-const CanvasWave = require('../../canvas/CanvasWave.js');
-const WaveParser = require('../../audio/WaveParser.js');
+const UIComponent = require('../UIComponent');
+const { Events } = require('../../core/Global');
+const CanvasWave = require('../../canvas/CanvasWave');
+const WaveParser = require('../../audio/WaveParser');
 
 class Oscilloscope extends UIComponent {
     constructor(props) {

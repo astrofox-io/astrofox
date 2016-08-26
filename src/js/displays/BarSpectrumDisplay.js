@@ -1,8 +1,8 @@
 'use strict';
 
-const CanvasDisplay = require('./CanvasDisplay.js');
-const CanvasBars = require('../canvas/CanvasBars.js');
-const SpectrumParser = require('../audio/SpectrumParser.js');
+const CanvasDisplay = require('./CanvasDisplay');
+const CanvasBars = require('../canvas/CanvasBars');
+const SpectrumParser = require('../audio/SpectrumParser');
 
 class BarSpectrumDisplay extends CanvasDisplay { 
     constructor(options) {

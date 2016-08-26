@@ -2,12 +2,12 @@
 
 const THREE = require('three');
 
-const Display = require('./Display.js');
-const Scene = require('./Scene.js');
-const NodeCollection = require('../core/NodeCollection.js');
-const Composer = require('../graphics/Composer.js');
-const FrameBuffer = require('../graphics/FrameBuffer.js');
-const { Events } = require('../core/Global.js');
+const Display = require('./Display');
+const Scene = require('./Scene');
+const NodeCollection = require('../core/NodeCollection');
+const Composer = require('../graphics/Composer');
+const FrameBuffer = require('../graphics/FrameBuffer');
+const { Events } = require('../core/Global');
 
 class Stage extends Display {
     constructor(options) {

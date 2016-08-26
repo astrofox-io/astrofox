@@ -2,10 +2,10 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const Application = require('../../core/Application.js');
-const Window = require('../../core/Window.js');
-const { Events } = require('../../core/Global.js');
+const UIComponent = require('../UIComponent');
+const Application = require('../../core/Application');
+const Window = require('../../core/Window');
+const { Events } = require('../../core/Global');
 
 const Header = require('./Header.jsx');
 const Footer = require('./Footer.jsx');

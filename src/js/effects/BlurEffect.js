@@ -1,11 +1,11 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const BoxBlurShader = require('../shaders/BoxBlurShader.js');
-const CircularBlurShader = require('../shaders/CircularBlurShader.js');
-const ZoomBlurShader = require('../shaders/ZoomBlurShader.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const MultiPass = require('../graphics/MultiPass.js');
+const Effect = require('../effects/Effect');
+const BoxBlurShader = require('../shaders/BoxBlurShader');
+const CircularBlurShader = require('../shaders/CircularBlurShader');
+const ZoomBlurShader = require('../shaders/ZoomBlurShader');
+const ShaderPass = require('../graphics/ShaderPass');
+const MultiPass = require('../graphics/MultiPass');
 const GaussianBlurPass = require('../graphics/GaussianBlurPass');
 
 const shaders = {

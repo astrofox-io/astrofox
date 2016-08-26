@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const { Events } = require('../../core/Global.js');
+const { Events } = require('../../core/Global');
 
 const ControlPicker = (props) => {
     let values = Object.keys(props.items).map(key => props.items[key]);

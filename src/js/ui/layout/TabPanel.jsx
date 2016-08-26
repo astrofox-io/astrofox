@@ -3,7 +3,7 @@
 const React = require('react');
 const classNames = require('classnames');
 
-const UIComponent = require('../UIComponent.js');
+const UIComponent = require('../UIComponent');
 
 class TabPanel extends UIComponent {
     constructor(props) {

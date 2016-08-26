@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
+const UIComponent = require('../UIComponent');
 
 class TextInput extends UIComponent {
     constructor(props) {

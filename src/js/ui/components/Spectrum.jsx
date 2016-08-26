@@ -2,10 +2,10 @@
 
 const React = require('react');
 
-const UIComponent = require('../UIComponent.js');
-const { Events } = require('../../core/Global.js');
-const SpectrumParser = require('../../audio/SpectrumParser.js');
-const CanvasBars = require('../../canvas/CanvasBars.js');
+const UIComponent = require('../UIComponent');
+const { Events } = require('../../core/Global');
+const SpectrumParser = require('../../audio/SpectrumParser');
+const CanvasBars = require('../../canvas/CanvasBars');
 
 class Spectrum extends UIComponent {
     constructor(props) {

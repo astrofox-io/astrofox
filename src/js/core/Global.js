@@ -1,7 +1,7 @@
 'use strict';
 
-const EventEmitter = require('./EventEmitter.js');
-const Logger = require('./Logger.js');
+const EventEmitter = require('./EventEmitter');
+const Logger = require('./Logger');
 
 module.exports = {
     Events: new EventEmitter(),

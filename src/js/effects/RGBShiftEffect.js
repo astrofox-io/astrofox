@@ -1,9 +1,9 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const RGBShiftShader = require('../shaders/RGBShiftShader.js');
-const { deg2rad } = require('../util/math.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const RGBShiftShader = require('../shaders/RGBShiftShader');
+const { deg2rad } = require('../util/math');
 
 const OFFSET_MAX = 854;
 

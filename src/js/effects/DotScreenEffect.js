@@ -1,9 +1,9 @@
 'use strict';
 
-const Effect = require('../effects/Effect.js');
-const ShaderPass = require('../graphics/ShaderPass.js');
-const DotScreenShader = require('../shaders/DotScreenShader.js');
-const { deg2rad } = require('../util/math.js');
+const Effect = require('../effects/Effect');
+const ShaderPass = require('../graphics/ShaderPass');
+const DotScreenShader = require('../shaders/DotScreenShader');
+const { deg2rad } = require('../util/math');
 
 class DotScreenEffect extends Effect {
     constructor(options) {

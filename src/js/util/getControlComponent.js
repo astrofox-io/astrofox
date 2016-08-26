@@ -1,9 +1,9 @@
 'use strict';
 
-const DisplayLibrary = require('../lib/DisplayLibrary.js');
-const EffectsLibrary = require('../lib/EffectsLibrary.js');
-const ControlLibrary = require('../lib/ControlLibrary.js');
-const Scene = require('../displays/Scene.js');
+const DisplayLibrary = require('../lib/DisplayLibrary');
+const EffectsLibrary = require('../lib/EffectsLibrary');
+const ControlLibrary = require('../lib/ControlLibrary');
+const Scene = require('../displays/Scene');
 const SceneControl = require('../ui/controls/SceneControl.jsx');
 const EmptyControl = require('../ui/controls/EmptyControl.jsx');
 
