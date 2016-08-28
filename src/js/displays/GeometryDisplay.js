@@ -210,7 +210,7 @@ class GeometryDisplay extends Display {
             geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
             geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-            material = new THREE.ShaderMaterial(PointShader);
+            material = new THREE.ShaderMaterial(PointShader).clone();
 
             material.uniforms['tDiffuse'].value = this.sprite;
             material.uniforms['color'].value = color;
