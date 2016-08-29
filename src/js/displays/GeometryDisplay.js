@@ -242,7 +242,7 @@ class GeometryDisplay extends Display {
     }
 }
 
-GeometryDisplay.label = 'Geometry';
+GeometryDisplay.label = 'Geometry (3D)';
 
 GeometryDisplay.className = 'GeometryDisplay';
 

@@ -149,22 +149,22 @@ class SoundwaveControl extends UIComponent {
                     </div>
                 </div>
                 <div className="row">
-                    <span className="label">Distance</span>
+                    <span className="label">Wavelength</span>
                     <NumberInput
-                        name="distance"
+                        name="length"
                         size="3"
                         min={0}
                         max={100}
                         step={1}
-                        value={this.state.distance}
+                        value={this.state.length}
                         onChange={this.onChange} />
                     <div className="input flex">
                         <RangeInput
-                            name="distance"
+                            name="length"
                             min={0}
                             max={100}
                             step={1}
-                            value={this.state.distance}
+                            value={this.state.length}
                             onChange={this.onChange} />
                     </div>
                 </div>

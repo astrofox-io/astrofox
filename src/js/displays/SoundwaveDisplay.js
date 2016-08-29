@@ -23,10 +23,10 @@ class SoundwaveDisplay extends CanvasDisplay {
 
     renderToScene(scene, data) {
         let canvas = this.canvas,
-            { smooth, distance } = this.options,
-            points = WaveParser.parseTimeData(data.td, canvas.width, distance);
+            { smooth, length } = this.options,
+            points = WaveParser.parseTimeData(data.td, canvas.width, length);
 
-        this.wave.render(points, (distance > 3) ? smooth : false);
+        this.wave.render(points, (length > 3) ? smooth : false);
 
         this.renderToCanvas(
             scene.getContext('2d'),
@@ -45,7 +45,7 @@ SoundwaveDisplay.defaults = {
     width: 854,
     height: 240,
     lineWidth: 1.0,
-    distance: 0,
+    length: 0,
     smooth: false,
     x: 0,
     y: 0,

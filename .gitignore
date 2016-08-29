@@ -3,7 +3,7 @@
 *.iml
 *.bat
 .idea
-bin
-build
+/bin
+/build
 node_modules
 app.config
