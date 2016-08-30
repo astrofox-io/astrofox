@@ -3,14 +3,14 @@
 const DisplayLibrary = require('../lib/DisplayLibrary');
 const EffectsLibrary = require('../lib/EffectsLibrary');
 const ControlLibrary = require('../lib/ControlLibrary');
-const Scene = require('../displays/Scene');
+
 const SceneControl = require('../ui/controls/SceneControl.jsx');
 const EmptyControl = require('../ui/controls/EmptyControl.jsx');
 
 const displays = Object.assign({}, DisplayLibrary, EffectsLibrary);
 
 module.exports = (obj) => {
-    if (obj instanceof Scene) {
+    if (obj.constructor.className === 'Scene') {
         return SceneControl;
     }
 

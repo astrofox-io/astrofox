@@ -19,7 +19,7 @@ class CanvasWave extends Component {
         let i,
             canvas = this.canvas,
             context = this.context,
-            { width, height, color, lineWidth, stroke, fill, fillColor } = this.options;
+            { width, height, color, lineWidth, stroke, fill, fillColor, taper } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
@@ -42,6 +42,15 @@ class CanvasWave extends Component {
 
             context.beginPath();
 
+            // Taper edges
+            if (taper) {
+                points[0] = 0;
+                points[1] = height;
+
+                points[points.length-2] = width;
+                points[points.length-1] = height;
+            }
+
             // Draw spline
             BezierSpline.drawPath(context, points);
 
@@ -49,10 +58,16 @@ class CanvasWave extends Component {
                 setColor(context, fillColor, 0, 0, 0, height);
 
                 // Close loop
-                context.moveTo(width, points[points.length - 1]);
-                context.lineTo(width, height);
-                context.lineTo(0, height);
-                context.lineTo(0, points[1]);
+                if (taper) {
+                    context.moveTo(width, height);
+                    context.lineTo(0, height);
+                }
+                else {
+                    context.moveTo(width, points[points.length - 1]);
+                    context.lineTo(width, height);
+                    context.lineTo(0, height);
+                    context.lineTo(0, points[1]);
+                }
 
                 context.fill();
             }
@@ -92,7 +107,8 @@ CanvasWave.defaults = {
     lineWidth: 1.0,
     stroke: true,
     fill: false,
-    fillColor: null
+    fillColor: null,
+    taper: false
 };
 
 module.exports = CanvasWave;

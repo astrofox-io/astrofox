@@ -185,6 +185,14 @@ class WaveSpectrumControl extends UIComponent {
                     />
                 </div>
                 <div className="row">
+                    <span className="label">Taper Edges</span>
+                    <ToggleInput
+                        name="taper"
+                        value={this.state.taper}
+                        onChange={this.onChange}
+                    />
+                </div>
+                <div className="row">
                     <span className="label">X</span>
                     <NumberInput
                         name="x"
