@@ -11,19 +11,19 @@ class CanvasAudio extends Component {
         this.results = new Float32Array(this.options.bars);
     }
 
-    render(data) {
-        this.bars.render(this.parseAudioBuffer(data));
+    getCanvas() {
+        return this.bars.canvas;
     }
 
     parseAudioBuffer(buffer) {
-        let i, j, c, start, end, max, val, values,
+        let i, j, c, start, end, max, val, data,
             results = this.results,
             size = buffer.length / results.length,
             step = ~~(size / 10) || 1;
 
         // Process each channel
         for (c = 0; c < buffer.numberOfChannels; c++) {
-            values = buffer.getChannelData(c);
+            data = buffer.getChannelData(c);
 
             // Process each bar
             for (i = 0; i < results.length; i++) {
@@ -33,7 +33,7 @@ class CanvasAudio extends Component {
 
                 // Find max value within range
                 for (j = start; j < end; j += step) {
-                    val = values[j];
+                    val = data[j];
                     if (val > max) {
                         max = val;
                     }
@@ -49,6 +49,10 @@ class CanvasAudio extends Component {
         }
 
         return results;
+    }
+
+    render(data) {
+        this.bars.render(this.parseAudioBuffer(data));
     }
 }
 

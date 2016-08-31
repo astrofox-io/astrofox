@@ -5,8 +5,9 @@ const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
-const RangeInput = require('../inputs/RangeInput.jsx');
 const { formatTime } = require('../../util/format');
+
+const RangeInput = require('../inputs/RangeInput.jsx');
 
 const PROGRESS_MAX = 1000;
 
@@ -20,75 +21,79 @@ class Player extends UIComponent {
             progressPosition: 0,
             duration: 0
         };
+
+        this.player = Application.player;
     }
 
     componentDidMount() {
-        const player = Application.player;
+        const player = this.player;
 
         player.on('load', id => {
-            this.setState({ duration: player.getDuration(id) });
-        }, this);
+            this.setState({ duration: this.player.getDuration(id) });
+        });
 
         player.on('tick', id => {
-            if (player.isPlaying() && !this.refs.progress.isBuffering()) {
+            if (this.player.isPlaying() && !this.refs.progress.isBuffering()) {
                 this.setState({
-                    progressPosition: player.getPosition(id)
+                    progressPosition: this.player.getPosition(id)
                 });
             }
-        }, this);
+        });
 
         player.on('play', () => {
             this.setState({ playing: true });
-        }, this);
+        });
 
         player.on('pause', () => {
             this.setState({ playing: false });
-        }, this);
+        });
 
         player.on('stop', () => {
             this.setState({ progressPosition: 0 });
-        }, this);
+        });
 
         player.on('seek', id => {
             this.setState({
-                progressPosition: player.getPosition(id)
+                progressPosition: this.player.getPosition(id)
             });
-        }, this);
+        });
     }
 
     onPlayButtonClick() {
-        Application.player.play('audio');
+        this.player.play('audio');
     }
 
     onStopButtonClick() {
-        Application.player.stop('audio');
+        this.player.stop('audio');
     }
 
     onLoopButtonClick() {
         let loop = !this.state.looping;
 
         this.setState({ looping: loop }, () => {
-            Application.player.setLoop(loop);
+            this.player.setLoop(loop);
         });
     }
 
     onVolumeChange(val) {
-        Application.player.setVolume(val);
+        this.player.setVolume(val);
     }
 
     onProgressChange(val) {
-        Application.player.seek('audio', val);
+        console.log('seek from player', val);
+        this.player.seek('audio', val);
     }
 
     onProgressInput(val) {
+        console.log('input from player', val);
         this.setState({ progressPosition: val });
     }
 
     render() {
         let state = this.state,
-            player = Application.player,
+            player = this.player,
             totalTime = state.duration,
-            audioPosition = state.progressPosition, //player.getPosition('audio'),
+            audioPosition = state.progressPosition,
             currentTime = state.progressPosition * totalTime,
             playing = player.isPlaying(),
             loop = player.isLooping(),

@@ -66,7 +66,7 @@ class ControlDock extends UIComponent {
         let state = this.state;
 
         return (
-            <PanelDock visible={state.visible}>
+            <PanelDock id="control-dock" visible={state.visible}>
                 <Panel
                     title="LAYERS"
                     ref="layersPanel"

@@ -10,9 +10,10 @@ class RangeInput extends UIComponent {
         super(props);
 
         this.state = {
-            value: props.value,
-            buffering: false
+            value: props.value
         };
+
+        this.buffering = false
     }
 
     componentWillReceiveProps(props) {
@@ -26,7 +27,7 @@ class RangeInput extends UIComponent {
 
         let val = this.setValue(Number(e.currentTarget.value), props);
 
-        if (props.buffered && this.state.buffering) {
+        if (props.buffered && this.buffering) {
             props.onInput(props.name, val);
         }
         else {
@@ -36,17 +37,17 @@ class RangeInput extends UIComponent {
 
     onMouseDown(e) {
         if (this.props.buffered) {
-            this.setState({ buffering: true });
+            this.buffering = true;
         }
     }
 
     onMouseUp(e) {
         if (this.props.buffered) {
-            this.setState({ buffering: false });
-
+            this.buffering = false;
             this.onChange(e);
         }
     }
+
 
     setValue(val, props) {
         if (props.lowerLimit !== false && val < props.lowerLimit) {
@@ -62,7 +63,7 @@ class RangeInput extends UIComponent {
     }
 
     isBuffering() {
-        return this.state.buffering;
+        return this.buffering;
     }
 
     render() {

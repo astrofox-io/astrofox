@@ -59,6 +59,7 @@ class PanelDock extends UIComponent {
 
         return (
             <div
+                id={props.id}
                 className={classes}
                 style={style}
                 onMouseMove={mouseMove}>

@@ -14,7 +14,7 @@ const Stage = require('./Stage.jsx');
 const Player = require('./Player.jsx');
 const Spectrum = require('./Spectrum.jsx');
 const Oscilloscope = require('./Oscilloscope.jsx');
-const Waveform = require('./Waveform.jsx');
+const AudioWaveform = require('./AudioWaveform.jsx');
 const Overlay = require('./Overlay.jsx');
 const ControlDock = require('./ControlDock.jsx');
 const Preload = require('./Preload.jsx');
@@ -217,7 +217,7 @@ class App extends UIComponent {
                         <Stage ref="stage" onFileDropped={this.loadAudioFile} />
                         <Spectrum ref="spectrum" />
                         <Oscilloscope ref="osc" />
-                        <Waveform ref="waveform" />
+                        <AudioWaveform ref="waveform" />
                         <Player ref="player" />
                     </div>
                     <ControlDock ref="dock" />
