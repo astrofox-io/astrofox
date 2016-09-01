@@ -4,11 +4,11 @@ const gulp = require('gulp');
 const concat = require('gulp-concat');
 const cleancss = require('gulp-clean-css');
 const duration = require('gulp-duration');
-const exit = require('gulp-exit');
 const iconfont = require('gulp-iconfont');
 const less = require('gulp-less');
 const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
 const template = require('gulp-template');
 const uglify = require('gulp-uglify');
 const util = require('gulp-util');
@@ -24,10 +24,43 @@ const glsl = require('./src/build/gulp-compile-shaders.js');
 
 /*** Configuration ***/
 
+const config = {
+    app: {
+        src: 'src/js/AstroFox.js',
+        dest: 'build',
+        filename: 'app.js'
+    },
+    vendor: {
+        dest: 'build',
+        filename: 'vendor.js'
+    },
+    css: {
+        src: 'src/css/app.less',
+        dest: 'build',
+        sourcemap: '.'
+    },
+    icons: {
+        src: 'src/svg/icons/*.svg',
+        template: 'src/build/templates/icons.css.tpl',
+        css: {
+            dest: 'resources/css/',
+            filename: 'icons.css'
+        },
+        font: {
+            dest: 'resources/fonts/icons/'
+        }
+    },
+    glsl: {
+        src: 'src/glsl/**/*.glsl',
+        dest: 'src/js/lib/',
+        filename: 'ShaderCode.js'
+    }
+};
+
 const vendorIds = Object.keys(require('./package.json').dependencies);
 
 const appBundle = browserify({
-    entries: './src/js/AstroFox.js',
+    entries: config.app.src,
     transform: [babelify],
     extensions: ['.js', '.jsx'],
     standalone: 'AstroFox',
@@ -66,30 +99,30 @@ function buildVendor() {
         noParse: [require.resolve('babylon')]
     });
 
+    vendorIds.forEach(id => {
+        vendorBundle.require(require.resolve(id), { expose: id });
+    });
+
     vendorBundle.transform(envify({
         _: 'purge',
         NODE_ENV: getEnvironment()
     }), { global:true });
 
-    vendorIds.forEach(id => {
-        vendorBundle.require(require.resolve(id), { expose: id });
-    });
-
-    return build(vendorBundle, 'vendor.js', 'build');
+    return build(vendorBundle, config.vendor.filename, config.app.dest);
 }
 
 // Builds application only library
 function buildApp() {
+    vendorIds.forEach(id => {
+        appBundle.external(id);
+    });
+
     appBundle.transform(envify({
         _: 'purge',
         NODE_ENV: getEnvironment()
     }), { global:true });
 
-    vendorIds.forEach(id => {
-        appBundle.external(id);
-    });
-
-    return build(appBundle, 'app.js', 'build');
+    return build(appBundle, config.app.filename, config.app.dest);
 }
 
 // Builds application and watches for changes
@@ -105,25 +138,27 @@ function buildAppWatch() {
 
     watchify(appBundle).on('update', ids => {
         util.log(ids);
-        build(appBundle, 'app.js', 'build');
+        build(appBundle, config.app.filename, config.app.dest);
     });
 
-    return build(appBundle, 'app.js', 'build');
+    return build(appBundle, config.app.filename, config.app.dest);
 }
 
 // Compile LESS into CSS
 function buildCss() {
     let minify = (getEnvironment() === 'production') ? cleancss : util.noop;
 
-    return gulp.src('src/css/app.less')
+    return gulp.src(config.css.src)
+        .pipe(sourcemaps.init())
         .pipe(less())
-        .pipe(minify())
-        .pipe(gulp.dest('build'));
+        .pipe(cleancss())
+        .pipe(sourcemaps.write(config.css.sourcemap))
+        .pipe(gulp.dest(config.css.dest));
 }
 
 // Build font library and CSS file
 function buildIcons() {
-    return gulp.src('src/svg/icons/*.svg')
+    return gulp.src(config.icons.src)
         .pipe(iconfont({
             fontName: 'icons',
             fontHeight: 300,
@@ -138,26 +173,26 @@ function buildIcons() {
                 };
             });
 
-            return gulp.src('src/build/templates/icons.css.tpl')
+            return gulp.src(config.icons.template)
                 .pipe(template({
                     glyphs: icons,
                     fontName: options.fontName,
                     className: 'icon'
                 }))
-                .pipe(rename('icons.css'))
-                .pipe(gulp.dest('resources/css/'));
+                .pipe(rename(config.icons.css.filename))
+                .pipe(gulp.dest(config.icons.css.dest));
         })
-        .pipe(gulp.dest('resources/fonts/icons/'));
+        .pipe(gulp.dest(config.icons.font.dest));
 }
 
 // Compile GLSL into JS
 function buildShaders() {
-    return gulp.src('src/glsl/**/*.glsl')
+    return gulp.src(config.glsl.src)
         .pipe(plumber())
         .pipe(glsl())
-        .pipe(rename('ShaderCode.js'))
+        .pipe(rename(config.glsl.filename))
         .pipe(plumber.stop())
-        .pipe(gulp.dest('src/js/lib/'));
+        .pipe(gulp.dest(config.glsl.dest));
 }
 
 /*** Tasks ***/

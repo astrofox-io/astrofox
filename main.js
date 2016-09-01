@@ -32,12 +32,12 @@ function createWindow() {
     // and load the index.html of the app.
     win.loadURL(`file://${__dirname}/index.html`);
 
-    // Open the devtools
-    win.webContents.openDevTools({ detach: true });
-
     // Show window only when ready
     win.on('ready-to-show', () => {
-        win.show()
+        win.show();
+
+        // Open the devtools
+        win.webContents.openDevTools({ detach: true });
     });
 
     // Emitted when the window is closed.
