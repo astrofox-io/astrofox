@@ -4,6 +4,7 @@ const React = require('react');
 const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
+const { clamp, interval } = require('../../util/math.js');
 
 class NumberInput extends UIComponent {
     constructor(props) {
@@ -16,7 +17,7 @@ class NumberInput extends UIComponent {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.value !== this.state.value) {
-            this.setValue(nextProps.value, nextProps.min, nextProps.max);
+            this.setValue(nextProps.value, Object.assign({}, this.props, nextProps));
         }
     }
 
@@ -24,72 +25,78 @@ class NumberInput extends UIComponent {
         this.setState({ value: e.target.value });
     }
 
-    onValueChange(e) {
+    onKeyUp(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        let val = this.state.value,
-            min = this.props.min,
-            max = this.props.max,
-            step = this.props.step;
+        // Enter key
+        if (e.keyCode === 13) {
+            this.checkValue();
+        }
+    }
+
+    onBlur(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.checkValue();
+    }
+
+    setValue(val, props) {
+        val = this.parseValue(val, props);
+
+        this.setState({ value: val });
+
+        return val;
+    }
+
+    parseValue(val, props) {
+        let { min, max, step } = props;
+
+        // Round value to nearest interval
+        if (step !== null) {
+            val = interval(val, step).toPrecision(2);
+        }
+
+        // Clamp to min/max
+        if (min !== null && max !== null) {
+            val = clamp(val, min, max);
+        }
+
+        return Number(val);
+    }
+
+    checkValue() {
+        let val = this.state.value;
 
         if (this.props.value !== val) {
             let regex = /^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
             // If valid number
             if (regex.test(val)) {
-                if (step !== null && step > 0) {
-                    val = (Math.round(val / step) * step).toPrecision(2);
-                }
+                val = this.setValue(val, this.props);
 
-                if (min !== null && val < min) {
-                    val = min;
-                }
-                else if (max !== null && val > max) {
-                    val = max;
-                }
-
-                this.setState({ value: val }, () => {
-                    this.props.onChange(this.props.name, Number(val));
-                });
+                // Send new value to parent
+                this.props.onChange(this.props.name, val);
             }
             // Reset to old value
             else {
-                this.setValue(this.props.value, min, max);
+                this.setValue(this.props.value, this.props);
             }
         }
-    }
-
-    onKeyUp(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (e.keyCode === 13) {
-            this.onValueChange(e);
-        }
-    }
-
-    setValue(val, min, max, callback) {
-        if (max != null && val > max) {
-            val = max;
-        }
-        else if (min != null && val < min) {
-            val = min;
-        }
-
-        this.setState({ value: val }, callback);
     }
 
     render(){
         return (
             <div className="input">
-                <input type="text"
+                <input
+                    type="text"
                     className={classNames('input-field', {'input-hidden': this.props.hidden})}
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}
                     onChange={this.onChange}
-                    onBlur={this.onValueChange}
+                    onBlur={this.onBlur}
                     onKeyUp={this.onKeyUp}
                     readOnly={this.props.readOnly}
                 />
@@ -106,7 +113,8 @@ NumberInput.defaultProps = {
     max: null,
     step: null,
     readOnly: false,
-    hidden: false
+    hidden: false,
+    onChange: () => {}
 };
 
 module.exports = NumberInput;
