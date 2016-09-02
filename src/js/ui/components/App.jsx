@@ -37,6 +37,14 @@ class App extends UIComponent {
     }
 
     componentWillMount() {
+        window.onmousedown = (e) => {
+            Events.emit('mousedown', e);
+        };
+
+        window.onmouseup = (e) => {
+            Events.emit('mouseup', e);
+        };
+
         Events.on('error', err => {
             this.showError(err);
         }, this);
@@ -76,14 +84,6 @@ class App extends UIComponent {
     onDragDrop(e) {
         e.stopPropagation();
         e.preventDefault();
-    }
-
-    onMouseDown(e) {
-        Events.emit('mousedown', e);
-    }
-
-    onMouseUp(e) {
-        Events.emit('mouseup', e);
     }
 
     onMenuAction(action, checked) {
@@ -207,9 +207,7 @@ class App extends UIComponent {
                 id="container"
                 onClick={this.onClick}
                 onDrop={this.onDragDrop}
-                onDragOver={this.onDragDrop}
-                onMouseDown={this.onMouseDown}
-                onMouseUp={this.onMouseUp}>
+                onDragOver={this.onDragDrop}>
                 <Header />
                 <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
                 <div id="body">

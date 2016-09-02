@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 
@@ -30,14 +31,16 @@ class PanelDock extends UIComponent {
     render() {
         let props = this.props,
             state = this.state,
-            classes = 'panel-dock',
+            classes = classNames({
+                'panel-dock': true,
+                'flex-column': (props.direction === 'vertical'),
+                'flex-row': (props.direction !== 'vertical')
+            }),
             style = {
                 width: props.width,
                 cursor: (state.dragging) ? 'ns-resize' : null
             },
             mouseMove = (state.dragging) ? this.onMouseMove.bind(this) : null;
-
-        classes += (props.direction == 'vertical') ? ' flex-column' : ' flex-row';
 
         if (!props.visible) {
             style.display = 'none';

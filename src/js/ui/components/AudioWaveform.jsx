@@ -74,8 +74,6 @@ class Waveform extends UIComponent {
         e.preventDefault();
 
         this.player.seek('audio', (e.clientX - e.currentTarget.offsetLeft) / this.refs.canvas.width);
-
-        console.log('seek from canvas');
     }
 
     onMouseMove(e) {

@@ -77,14 +77,7 @@ class Panel extends UIComponent {
 
     checkDragState() {
         if (this.state.dragging) {
-            this.setState(
-                { dragging: false },
-                () => {
-                    if (this.props.onDragEnd) {
-                        this.props.onDragEnd();
-                    }
-                }
-            );
+            this.setState({ dragging: false }, this.props.onDragEnd);
         }
     }
 
@@ -120,7 +113,9 @@ Panel.defaultProps = {
     height: 100,
     width: 100,
     minHeight: 0,
-    minWidth: 0
+    minWidth: 0,
+    onDragStart: () => {},
+    onDragEnd: () => {}
 };
 
 module.exports = Panel;

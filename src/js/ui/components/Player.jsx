@@ -80,7 +80,6 @@ class Player extends UIComponent {
     }
 
     onProgressChange(val) {
-        console.log('seek from player', val);
         this.player.seek('audio', val);
     }
 
