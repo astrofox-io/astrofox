@@ -16,7 +16,7 @@ class NumberInput extends UIComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== this.state.value) {
+        if (nextProps.value !== undefined) {
             this.setValue(nextProps.value, Object.assign({}, this.props, nextProps));
         }
     }
@@ -54,12 +54,12 @@ class NumberInput extends UIComponent {
         let { min, max, step } = props;
 
         // Round value to nearest interval
-        if (step !== null) {
+        if (step !== false) {
             val = interval(val, step).toPrecision(2);
         }
 
         // Clamp to min/max
-        if (min !== null && max !== null) {
+        if (min !== false && max !== false) {
             val = clamp(val, min, max);
         }
 
@@ -109,9 +109,9 @@ NumberInput.defaultProps = {
     name: "number",
     size: 3,
     value: 0,
-    min: null,
-    max: null,
-    step: null,
+    min: false,
+    max: false,
+    step: false,
     readOnly: false,
     hidden: false,
     onChange: () => {}

@@ -33,7 +33,6 @@ class Effect extends Display {
             Object.keys(pass.uniforms).forEach(key => {
                 if (key === 'resolution') {
                     pass.uniforms[key].value.set(width, height);
-                    console.log(pass.uniforms);
                 }
             });
         }

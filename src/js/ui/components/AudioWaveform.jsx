@@ -64,7 +64,6 @@ class Waveform extends UIComponent {
 
         player.on('seek', () => {
             this.position = this.seek = this.player.getPosition('audio');
-            console.log(this.position);
             this.draw();
         });
     }

@@ -6,6 +6,10 @@ function clamp(num, min, max) {
     return num < min ? min : num > max ? max : num;
 }
 
+function interval(num, step) {
+    return ceil(num / step) * step;
+}
+
 function round(val) {
     return (val + 0.5) << 0;
 }
@@ -61,6 +65,7 @@ function deg2rad(val) {
 
 module.exports = {
     clamp,
+    interval,
     round,
     ceil,
     floor,

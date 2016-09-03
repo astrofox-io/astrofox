@@ -84,7 +84,6 @@ class Player extends UIComponent {
     }
 
     onProgressInput(val) {
-        console.log('input from player', val);
         this.setState({ progressPosition: val });
     }
 
@@ -111,7 +110,7 @@ class Player extends UIComponent {
                 <VolumeControl onChange={this.onVolumeChange} />
                 <ProgressControl
                     ref="progress"
-                    value={audioPosition * 1000}
+                    value={audioPosition * PROGRESS_MAX}
                     onChange={this.onProgressChange}
                     onInput={this.onProgressInput}
                     readOnly={totalTime==0}
@@ -159,7 +158,7 @@ class VolumeControl extends UIComponent {
             <div className="volume">
                 <div className="slider">
                     <RangeInput
-                        name="progress"
+                        name="volume"
                         min={0}
                         max={100}
                         value={val}
@@ -184,7 +183,7 @@ class ProgressControl extends UIComponent {
     }
 
     componentWillReceiveProps(props) {
-        if (!this.refs.progress.isBuffering())
+        if (!this.isBuffering())
         {
             this.setState({ value: props.value });
         }

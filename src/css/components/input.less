@@ -109,9 +109,9 @@
 .input-range {
     position: relative;
     height: 20px;
-    flex: 1;
+    width: 100%;
 
-    .track {
+    > .track {
         height: 4px;
         width: 100%;
         border-radius: 4px;
@@ -119,7 +119,7 @@
         .absolute-center();
     }
 
-    .fill {
+    > .fill {
         height: 4px;
         width: 100%;
         border-radius: 4px;
@@ -127,8 +127,27 @@
         .absolute-left();
     }
 
-    .range {
+    > .range {
         background-color: transparent;
+        .absolute-center();
+    }
+}
+
+.input-dual-range {
+    position: relative;
+    height: 40px;
+    flex: 1;
+
+    > .fill {
+        pointer-events: none;
+        height: 4px;
+        width: 100%;
+        border-radius: 4px;
+        background: @base-color;
+        .absolute-left();
+    }
+
+    .input-range {
         .absolute-center();
     }
 }

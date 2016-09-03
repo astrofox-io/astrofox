@@ -8,6 +8,7 @@ const Window = require('../../core/Window');
 
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const DualRangeInput = require('../inputs/DualRangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 
 const videoFormats = [
@@ -51,6 +52,11 @@ class VideoSettings extends UIComponent {
         let obj = {};
 
         obj[name] = val;
+
+        if (name === 'timeRange') {
+            obj.timeStart = val[0];
+            obj.timeEnd = val[1];
+        }
 
         this.setState(obj);
     }
@@ -106,7 +112,7 @@ class VideoSettings extends UIComponent {
     render() {
         const state = this.state,
             sound = Application.player.getSound('audio'),
-            max = (sound) ? sound.getDuration() : 0;
+            max = (sound) ? sound.getDuration() : 500;
 
         const style = {
             width: this.props.width,
@@ -189,6 +195,34 @@ class VideoSettings extends UIComponent {
                                 value={this.state.timeEnd}
                                 onChange={this.onChange} />
                         </div>
+                    </div>
+                    <div className="row">
+                        <span className="label">Time Range</span>
+                        <NumberInput
+                            name="timeStart"
+                            size="5"
+                            min={0}
+                            max={max}
+                            value={state.timeStart}
+                            onChange={this.onChange}
+                        />
+                        <div className="input flex">
+                            <DualRangeInput
+                                name="timeRange"
+                                min={0}
+                                max={max}
+                                step={0.1}
+                                value={[this.state.timeStart, this.state.timeEnd]}
+                                onChange={this.onChange} />
+                        </div>
+                        <NumberInput
+                            name="timeEnd"
+                            size="5"
+                            min={0}
+                            max={max}
+                            value={state.timeEnd}
+                            onChange={this.onChange}
+                        />
                     </div>
                 </div>
                 <div className="buttons">
