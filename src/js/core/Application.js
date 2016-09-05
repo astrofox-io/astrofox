@@ -404,7 +404,6 @@ class Application extends EventEmitter {
         let player = this.player,
             sound = player.getSound('audio');
 
-
         if (sound) {
             let renderer = new VideoRenderer(filename, this.audioFile, options);
 

@@ -159,6 +159,7 @@ class VideoSettings extends UIComponent {
                             size="10"
                             min={0}
                             max={max}
+                            step={0.1}
                             value={state.timeStart}
                             onChange={this.onChange}
                         />
@@ -181,6 +182,7 @@ class VideoSettings extends UIComponent {
                             size="10"
                             min={0}
                             max={max}
+                            step={0.1}
                             value={state.timeEnd}
                             onChange={this.onChange}
                         />
@@ -203,6 +205,7 @@ class VideoSettings extends UIComponent {
                             size="5"
                             min={0}
                             max={max}
+                            step={0.1}
                             value={state.timeStart}
                             onChange={this.onChange}
                         />
@@ -212,6 +215,7 @@ class VideoSettings extends UIComponent {
                                 min={0}
                                 max={max}
                                 step={0.1}
+                                minSize={200}
                                 value={[this.state.timeStart, this.state.timeEnd]}
                                 onChange={this.onChange} />
                         </div>
@@ -220,6 +224,7 @@ class VideoSettings extends UIComponent {
                             size="5"
                             min={0}
                             max={max}
+                            step={0.1}
                             value={state.timeEnd}
                             onChange={this.onChange}
                         />
@@ -241,7 +246,7 @@ VideoSettings.defaultProps = {
     resolution: 480,
     fps: 29.97,
     timeStart: 0,
-    timeEnd: 0
+    timeEnd: 500
 };
 
 module.exports = VideoSettings;

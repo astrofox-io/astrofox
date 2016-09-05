@@ -3,7 +3,7 @@
 const React = require('react');
 
 const UIComponent = require('../UIComponent');
-const { clamp, interval, val2pct } = require('../../util/math');
+const { val2pct } = require('../../util/math');
 
 const RangeInput = require('./RangeInput.jsx');
 
@@ -25,15 +25,33 @@ class DualRangeInput extends UIComponent {
     }
 
     onChange(name, val) {
-        let values = this.state.value,
+        let newSize, indexChanged,
+            values = this.state.value,
+            minSize = this.props.minSize,
             index = parseInt(name.substr(-1)),
-            midpoint = values[0] + ((values[1]-values[0])/2);
+            size = values[1] - values[0],
+            midpoint = values[0] + (size/2);
 
+        // Move specific thumb
         if (index === 1 && val < midpoint) {
             values[0] = val;
+            indexChanged = 0;
         }
         else {
             values[index] = val;
+            indexChanged = index;
+        }
+
+        // Enforce min size
+        newSize = values[1] - values[0];
+
+        if (minSize !== false && newSize < minSize) {
+            if (indexChanged == 1) {
+                values[1] = values[0] + minSize;
+            }
+            else {
+                values[0] = values[1] - minSize;
+            }
         }
 
         this.props.onChange(this.props.name, values);
@@ -101,6 +119,7 @@ DualRangeInput.defaultProps = {
     max: 1,
     value: [0,1],
     step: 1,
+    minSize: false,
     buffered: false,
     readOnly: false,
     onChange: () => {},

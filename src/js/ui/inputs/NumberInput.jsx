@@ -4,7 +4,7 @@ const React = require('react');
 const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
-const { clamp, interval } = require('../../util/math.js');
+const { clamp, roundTo } = require('../../util/math.js');
 
 class NumberInput extends UIComponent {
     constructor(props) {
@@ -51,11 +51,11 @@ class NumberInput extends UIComponent {
     }
 
     parseValue(val, props) {
-        let { min, max, step } = props;
+        let { min, max, step, decimals } = props;
 
         // Round value to nearest interval
         if (step !== false) {
-            val = interval(val, step).toPrecision(2);
+            val = roundTo(val, step);
         }
 
         // Clamp to min/max

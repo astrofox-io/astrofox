@@ -3,7 +3,7 @@
 const React = require('react');
 
 const UIComponent = require('../UIComponent');
-const { clamp, interval, val2pct } = require('../../util/math');
+const { val2pct } = require('../../util/math');
 
 class RangeInput extends UIComponent {
     constructor(props) {
