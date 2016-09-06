@@ -49,14 +49,14 @@ class RangeInput extends UIComponent {
     }
 
     setValue(val, props) {
-        val = this.parseValue(val, props);
+        val = this.checkValue(val, props);
 
         this.setState({ value: val });
 
         return val;
     }
 
-    parseValue(val, props) {
+    checkValue(val, props) {
         let { lowerLimit, upperLimit } = props;
 
         if (lowerLimit !== false && val < lowerLimit) {

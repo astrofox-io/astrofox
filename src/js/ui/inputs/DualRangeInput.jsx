@@ -11,59 +11,72 @@ class DualRangeInput extends UIComponent {
     constructor(props) {
         super(props);
 
-        this.state = {
-            value: props.value
-        };
-
         this.buffering = false
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== undefined) {
-            this.setState({ value: nextProps.value });
+        let { name, start, end, minRange } = this.props;
+
+        if (nextProps.start !== start || nextProps.end !== end) {
+            // Check if new values are within range
+            if (minRange !== false) {
+                let check = this.checkRange(
+                    nextProps.start,
+                    nextProps.end,
+                    (nextProps.start !== start) ? 0 : 1
+                );
+
+                if (check.start !== nextProps.start || check.end !== nextProps.end) {
+                    this.props.onChange(name, check);
+                }
+            }
         }
     }
 
     onChange(name, val) {
-        let newSize, indexChanged,
-            values = this.state.value,
-            minSize = this.props.minSize,
+        let { start, end } = this.props,
             index = parseInt(name.substr(-1)),
-            size = values[1] - values[0],
-            midpoint = values[0] + (size/2);
+            size = end - start,
+            midpoint = start + (size/2);
 
         // Move specific thumb
-        if (index === 1 && val < midpoint) {
-            values[0] = val;
-            indexChanged = 0;
-        }
-        else {
-            values[index] = val;
-            indexChanged = index;
-        }
-
-        // Enforce min size
-        newSize = values[1] - values[0];
-
-        if (minSize !== false && newSize < minSize) {
-            if (indexChanged == 1) {
-                values[1] = values[0] + minSize;
+        if (index == 1) {
+            if (val < midpoint) {
+                start = val;
+                index = 0;
             }
             else {
-                values[0] = values[1] - minSize;
+                end = val;
+                index = 1;
             }
         }
+        else {
+            start = val;
+            index = 0;
+        }
 
-        this.props.onChange(this.props.name, values);
+        this.props.onChange(this.props.name, this.checkRange(start, end, index));
     }
 
     onInput(name, val) {
-        let values = this.state.value,
-            index = parseInt(name.substr(-1));
+        // TODO
+    }
 
-        values[index] = val;
+    checkRange(start, end, index) {
+        let { minRange } = this.props,
+            range = end - start;
 
-        this.props.onInput(this.props.name, values);
+        // Enforce min range
+        if (minRange !== false && range < minRange) {
+            if (index == 1) {
+                end = start + minRange;
+            }
+            else {
+                start = end - minRange;
+            }
+        }
+
+        return { start, end };
     }
 
     isBuffering() {
@@ -71,10 +84,9 @@ class DualRangeInput extends UIComponent {
     }
 
     render() {
-        let val = this.state.value,
-            { name, min, max, step, buffered, readOnly } = this.props,
-            pct0 = val2pct(val[0], min, max) * 100,
-            pct1 = val2pct(val[1], min, max) * 100,
+        let { name, min, max, step, start, end, buffered, readOnly } = this.props,
+            pct0 = val2pct(start, min, max) * 100,
+            pct1 = val2pct(end, min, max) * 100,
             fillStyle = { width: pct1 - pct0 + '%', marginLeft: pct0 + '%' };
 
         return (
@@ -84,9 +96,9 @@ class DualRangeInput extends UIComponent {
                     min={min}
                     max={max}
                     step={step}
-                    value={val[0]}
+                    value={start}
                     lowerLimit={min}
-                    upperLimit={val[1]}
+                    upperLimit={end}
                     buffered={buffered}
                     readOnly={readOnly}
                     fillStyle="none"
@@ -98,7 +110,7 @@ class DualRangeInput extends UIComponent {
                     min={min}
                     max={max}
                     step={step}
-                    value={val[1]}
+                    value={end}
                     lowerLimit={min}
                     upperLimit={max}
                     buffered={buffered}
@@ -117,9 +129,10 @@ DualRangeInput.defaultProps = {
     name: "dualrange",
     min: 0,
     max: 1,
-    value: [0,1],
     step: 1,
-    minSize: false,
+    start: 0,
+    end: 0,
+    minRange: false,
     buffered: false,
     readOnly: false,
     onChange: () => {},

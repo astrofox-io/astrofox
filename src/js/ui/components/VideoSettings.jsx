@@ -54,8 +54,8 @@ class VideoSettings extends UIComponent {
         obj[name] = val;
 
         if (name === 'timeRange') {
-            obj.timeStart = val[0];
-            obj.timeEnd = val[1];
+            obj.timeStart = val.start;
+            obj.timeEnd = val.end;
         }
 
         this.setState(obj);
@@ -215,8 +215,9 @@ class VideoSettings extends UIComponent {
                                 min={0}
                                 max={max}
                                 step={0.1}
-                                minSize={200}
-                                value={[this.state.timeStart, this.state.timeEnd]}
+                                start={this.state.timeStart}
+                                end={this.state.timeEnd}
+                                minRange={1}
                                 onChange={this.onChange} />
                         </div>
                         <NumberInput
