@@ -159,7 +159,7 @@ class VideoSettings extends UIComponent {
                             size="10"
                             min={0}
                             max={max}
-                            step={0.1}
+                            step={0.01}
                             value={state.timeStart}
                             onChange={this.onChange}
                         />
@@ -168,7 +168,7 @@ class VideoSettings extends UIComponent {
                                 name="timeStart"
                                 min={0}
                                 max={max}
-                                step={0.1}
+                                step={0.01}
                                 lowerLimit={0}
                                 upperLimit={state.timeEnd}
                                 value={this.state.timeStart}
@@ -182,7 +182,7 @@ class VideoSettings extends UIComponent {
                             size="10"
                             min={0}
                             max={max}
-                            step={0.1}
+                            step={0.01}
                             value={state.timeEnd}
                             onChange={this.onChange}
                         />
@@ -191,7 +191,7 @@ class VideoSettings extends UIComponent {
                                 name="timeEnd"
                                 min={0}
                                 max={max}
-                                step={0.1}
+                                step={0.01}
                                 lowerLimit={state.timeStart}
                                 upperLimit={max}
                                 value={this.state.timeEnd}
@@ -205,7 +205,7 @@ class VideoSettings extends UIComponent {
                             size="5"
                             min={0}
                             max={max}
-                            step={0.1}
+                            step={0.01}
                             value={state.timeStart}
                             onChange={this.onChange}
                         />
@@ -214,7 +214,7 @@ class VideoSettings extends UIComponent {
                                 name="timeRange"
                                 min={0}
                                 max={max}
-                                step={0.1}
+                                step={0.01}
                                 start={this.state.timeStart}
                                 end={this.state.timeEnd}
                                 minRange={1}
@@ -225,7 +225,7 @@ class VideoSettings extends UIComponent {
                             size="5"
                             min={0}
                             max={max}
-                            step={0.1}
+                            step={0.01}
                             value={state.timeEnd}
                             onChange={this.onChange}
                         />

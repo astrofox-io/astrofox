@@ -148,7 +148,12 @@
     }
 
     .input-range {
+        pointer-events: none;
         .absolute-center();
+
+        .range::-webkit-slider-thumb {
+            pointer-events: all;
+        }
     }
 }
 

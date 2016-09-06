@@ -6,7 +6,7 @@ const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 const CanvasAudio = require('../../canvas/CanvasAudio');
 
-class Waveform extends UIComponent {
+class AudioWaveform extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -72,7 +72,9 @@ class Waveform extends UIComponent {
         e.stopPropagation();
         e.preventDefault();
 
-        this.player.seek('audio', (e.clientX - e.currentTarget.offsetLeft) / this.refs.canvas.width);
+        let rect = e.currentTarget.getBoundingClientRect();
+
+        this.player.seek('audio', (e.clientX - rect.left) / rect.width);
     }
 
     onMouseMove(e) {
@@ -80,7 +82,9 @@ class Waveform extends UIComponent {
         e.preventDefault();
 
         if (this.player.getSound('audio')) {
-            this.seek = (e.clientX - e.currentTarget.offsetLeft) / this.refs.canvas.width;
+            let rect = e.currentTarget.getBoundingClientRect();
+
+            this.seek = (e.clientX - rect.left) / rect.width;
             this.draw();
         }
     }
@@ -147,7 +151,7 @@ class Waveform extends UIComponent {
     }
 }
 
-Waveform.defaultProps = {
+AudioWaveform.defaultProps = {
     width: 854,
     height: 70,
     barWidth: 3,
@@ -157,4 +161,4 @@ Waveform.defaultProps = {
     bars: 213
 };
 
-module.exports = Waveform;
+module.exports = AudioWaveform;
