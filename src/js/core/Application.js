@@ -58,6 +58,8 @@ class Application extends EventEmitter {
             frames: 0,
             stack: new Uint8Array(10)
         };
+
+        this.rendering = false;
     }
 
     init() {
@@ -104,15 +106,23 @@ class Application extends EventEmitter {
     startRender() {
         if (!this.frameData.id) {
             this.render();
+            this.rendering = true;
         }
     }
 
     stopRender() {
         let id = this.frameData.id;
+
         if (id) {
-            cancelAnimationFrame(id);
-            this.frameData.id = null;
+            window.cancelAnimationFrame(id);
         }
+
+        this.frameData.id = 0;
+        this.rendering = false;
+    }
+
+    isRendering() {
+        return this.rendering;
     }
 
     getFrameData() {
@@ -181,7 +191,7 @@ class Application extends EventEmitter {
         data.time = now;
         data.id = id;
 
-        this.stage.renderFrame(data);
+        this.stage.render(data);
 
         Events.emit('render', data);
 
@@ -203,7 +213,7 @@ class Application extends EventEmitter {
             data = this.getFrameData();
             data.delta = 1000 / fps;
 
-            stage.renderFrame(data, () => {
+            stage.render(data, () => {
                 stage.getImage(buffer => {
                     image = buffer;
                 });
@@ -211,7 +221,7 @@ class Application extends EventEmitter {
 
             source.disconnect();
 
-            callback(frame + 1, image);
+            callback(image);
         };
 
         source.start(0, frame / fps, 1 / fps);
@@ -402,21 +412,34 @@ class Application extends EventEmitter {
 
     saveVideo(filename, options) {
         let player = this.player,
-            sound = player.getSound('audio');
+            sound = player.getSound('audio'),
+            { fps, timeStart, timeEnd } = options;
+
+        options.command = this.config.ffmpegPath;
 
         if (sound) {
-            let renderer = new VideoRenderer(filename, this.audioFile, options);
+            let renderer = this.renderer = new VideoRenderer(filename, this.audioFile, options);
 
+            // Setup before rendering
             this.stopRender();
-
             player.stop('audio');
-
             this.spectrum.enabled = true;
 
-            renderer.renderVideo(
-                this.renderFrame.bind(this),
-                this.startRender.bind(this)
-            );
+            // Handle events
+            renderer.on('ready', () => {
+                this.renderFrame(renderer.currentFrame, fps, image => {
+                    renderer.processFrame(image);
+                });
+            });
+
+            renderer.on('complete', () => {
+                Logger.log('Render complete.');
+
+                this.startRender();
+            });
+
+            // Start render
+            renderer.start();
         }
         else {
             Events.emit('error', new Error('No audio loaded.'));

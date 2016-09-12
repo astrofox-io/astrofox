@@ -113,7 +113,7 @@ class Stage extends Display {
         this.buffer3D.setSize(width, height);
     }
 
-    renderFrame(data, callback) {
+    render(data, callback) {
         let options, buffer,
             composer = this.composer;
 
