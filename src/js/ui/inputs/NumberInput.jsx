@@ -53,14 +53,14 @@ class NumberInput extends UIComponent {
     parseValue(val, props) {
         let { min, max, step } = props;
 
-        // Round value to nearest interval
-        if (step !== false) {
-            val = roundTo(val, step);
-        }
-
         // Clamp to min/max
         if (min !== false && max !== false) {
             val = clamp(val, min, max);
+        }
+
+        // Round value to nearest interval
+        if (step !== false) {
+            val = roundTo(val, step);
         }
 
         return Number(val);
