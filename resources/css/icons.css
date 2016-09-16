@@ -20,19 +20,19 @@
 }
 
 .icon-adjust:before { content: "\EA01" }
-.icon-ajust:before { content: "\EA02" }
-.icon-arrows-cw:before { content: "\EA03" }
-.icon-bar-graph:before { content: "\EA04" }
-.icon-block:before { content: "\EA05" }
-.icon-ccw:before { content: "\EA06" }
-.icon-chevron-down:before { content: "\EA07" }
-.icon-chevron-up:before { content: "\EA08" }
-.icon-circle-filled:before { content: "\EA09" }
-.icon-circle-with-cross:before { content: "\EA0A" }
-.icon-circle:before { content: "\EA0B" }
-.icon-cloud:before { content: "\EA0C" }
-.icon-code:before { content: "\EA0D" }
-.icon-cog:before { content: "\EA0E" }
+.icon-arrows-cw:before { content: "\EA02" }
+.icon-bar-graph:before { content: "\EA03" }
+.icon-block:before { content: "\EA04" }
+.icon-ccw:before { content: "\EA05" }
+.icon-chevron-down:before { content: "\EA06" }
+.icon-chevron-up:before { content: "\EA07" }
+.icon-circle-filled:before { content: "\EA08" }
+.icon-circle-with-cross:before { content: "\EA09" }
+.icon-circle:before { content: "\EA0A" }
+.icon-cloud:before { content: "\EA0B" }
+.icon-code:before { content: "\EA0C" }
+.icon-cog:before { content: "\EA0D" }
+.icon-contrast:before { content: "\EA0E" }
 .icon-crop:before { content: "\EA0F" }
 .icon-cross:before { content: "\EA10" }
 .icon-cube:before { content: "\EA11" }
@@ -82,4 +82,5 @@
 .icon-volume2:before { content: "\EA3D" }
 .icon-volume3:before { content: "\EA3E" }
 .icon-volume4:before { content: "\EA3F" }
-.icon-wave:before { content: "\EA40" }
+.icon-warning:before { content: "\EA40" }
+.icon-wave:before { content: "\EA41" }

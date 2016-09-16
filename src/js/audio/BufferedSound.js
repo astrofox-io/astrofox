@@ -6,64 +6,66 @@ class BufferedSound extends Sound {
     constructor(context) {
         super(context);
 
+        this.source = null;
         this.startTime = 0;
         this.stopTime = 0;
     }
 
     load(src) {
         if (typeof src === 'string') {
-            this.loadUrl(src);
+            Promise.resolve(this.loadUrl(src));
         }
         else if (src instanceof ArrayBuffer) {
-            this.loadData(src);
+            Promise.resolve(this.loadData(src));
         }
         else if (src instanceof AudioBuffer) {
-            this.loadBuffer(src);
+            Promise.resolve(this.loadBuffer(src));
         }
         else {
-            alert('Invalid source: ' + (typeof src));
-            this.emit('error');
+            Promise.reject('Invalid source: ' + (typeof src));
         }
     }
 
-    unload(callback) {
+    unload() {
         if (this.source) {
             this.stop();
             this.source = null;
             this.buffer = null;
             this.off();
         }
-
-        if (callback) callback();
     }
 
     // Loads a url via AJAX
     loadUrl(src) {
-        let request = new XMLHttpRequest();
+        return new Promise((resolve, reject) => {
+            let request = new XMLHttpRequest();
 
-        this.src = src;
+            request.open('GET', src);
+            request.responseType = 'arraybuffer';
 
-        request.open('GET', this.src, true);
-        request.responseType = 'arraybuffer';
+            request.onload = () => {
+                resolve(request.response);
+            };
 
-        request.onload = () => {
-            this.loadData(request.response);
-        };
+            request.onerror = () => {
+                reject();
+            };
 
-        request.send();
+            request.send();
+        }).then(response => {
+            this.loadData(response)
+        });
     }
 
     // Decodes an ArrayBuffer into an AudioBuffer
     loadData(data) {
-        this.audioContext.decodeAudioData(
-            data,
-            (buffer) => {
+        return this.audioContext.decodeAudioData(data)
+            .then(buffer => {
                 this.loadBuffer(buffer);
-            },
-            (e) => {
-                this.emit('error', new Error('Invalid audio file.'));
-            }
-        );
+            })
+            .catch(error => {
+                this.emit('error', 'Invalid audio file: ' + error.message);
+            });
     }
 
     // Loads an AudioBuffer

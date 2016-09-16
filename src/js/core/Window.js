@@ -1,48 +1,52 @@
 'use strict';
 
 const remote = window.require('electron').remote;
-const dialog = remote.dialog;
 
 class Window {
     constructor() {
-        this.window = remote.getCurrentWindow();
     }
 
     maximize() {
-        if (this.window.isMaximized()) {
+        let win = remote.getCurrentWindow();
+
+        if (win.isMaximized()) {
             this.unmaximize();
         }
         else {
-            this.window.maximize();
+            win.maximize();
         }
     }
 
     minimize() {
-        this.window.minimize();
+        remote.getCurrentWindow().minimize();
     }
 
     unmaximize() {
-        this.window.unmaximize();
+        remote.getCurrentWindow().unmaximize();
     }
 
     openDevTools() {
-        this.window.openDevTools({ detach: true });
+        remote.getCurrentWindow().openDevTools({ detach: true });
     }
 
     reload() {
-        this.window.reload();
+        remote.getCurrentWindow().reload();
     }
 
     close() {
-        this.window.close();
+        remote.getCurrentWindow().close();
     }
 
     showOpenDialog(action) {
-        dialog.showOpenDialog(this.window, action);
+        remote.dialog.showOpenDialog(remote.getCurrentWindow(), action);
     }
 
     showSaveDialog(path, action) {
-        dialog.showSaveDialog(this.window, { defaultPath: path }, action);
+        remote.dialog.showSaveDialog(remote.getCurrentWindow(), { defaultPath: path }, action);
+    }
+
+    showErrorBox(title, content) {
+        remote.dialog.showErrorBox(title, content);
     }
 }
 

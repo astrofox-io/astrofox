@@ -18,31 +18,30 @@ class Player extends EventEmitter {
         this.loop = false;
     }
 
-    load(id, sound, callback) {
-        this.unload(id, () => {
-            this.sounds[id] = sound;
+    load(id, sound) {
+        this.unload(id);
 
-            sound.addNode(this.volume);
+        this.sounds[id] = sound;
 
-            if (callback) callback();
+        sound.addNode(this.volume);
 
-            this.emit('load', id);
-        });
+        this.emit('load', id);
     }
 
-    unload(id, callback) {
-        var sound = this.sounds[id];
+    unload(id) {
+        let sound = this.sounds[id];
+
         if (sound) {
             this.stop(id);
-            sound.unload(callback);
-        }
-        else if (callback) {
-            callback();
+            sound.unload();
+
+            this.emit('unload', id);
         }
     }
 
     play(id) {
         let sound = this.sounds[id];
+
         if (sound) {
             if (sound.playing) {
                 this.pause(id);
@@ -73,6 +72,7 @@ class Player extends EventEmitter {
 
     pause(id) {
         let sound = this.sounds[id];
+
         if (sound) {
             sound.pause();
             clearInterval(this.timer);
@@ -82,6 +82,7 @@ class Player extends EventEmitter {
 
     stop(id) {
         let sound = this.sounds[id];
+
         if (sound) {
             sound.stop();
             clearInterval(this.timer);
@@ -91,6 +92,7 @@ class Player extends EventEmitter {
 
     seek(id, val) {
         let sound = this.sounds[id];
+
         if (sound) {
             sound.seek(val);
             this.emit('seek', id);
@@ -113,6 +115,7 @@ class Player extends EventEmitter {
 
     getCurrentTime(id) {
         let sound = this.sounds[id];
+
         if (sound) {
             return sound.getCurrentTime();
         }
@@ -121,6 +124,7 @@ class Player extends EventEmitter {
 
     getDuration(id) {
         let sound = this.sounds[id];
+
         if (sound) {
             return sound.getDuration();
         }
@@ -129,6 +133,7 @@ class Player extends EventEmitter {
 
     getPosition(id) {
         let sound = this.sounds[id];
+
         if (sound) {
             return sound.getPosition();
         }

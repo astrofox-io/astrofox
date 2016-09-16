@@ -8,7 +8,6 @@ class Sound extends EventEmitter {
 
         this.audioContext = context;
         this.nodes = [];
-        this.source = null;
         this.playing = false;
         this.paused = false;
         this.loaded = false;
@@ -30,11 +29,9 @@ class Sound extends EventEmitter {
     }
 
     disconnectNodes() {
-        if (this.source) {
-            this.nodes.forEach((node) => {
-                node.disconnect();
-            });
-        }
+        this.nodes.forEach((node) => {
+            node.disconnect();
+        });
     }
 }
 

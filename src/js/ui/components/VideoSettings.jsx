@@ -153,52 +153,6 @@ class VideoSettings extends UIComponent {
                         />
                     </div>
                     <div className="row">
-                        <span className="label">Start Time</span>
-                        <NumberInput
-                            name="timeStart"
-                            size="10"
-                            min={0}
-                            max={max}
-                            step={0.01}
-                            value={state.timeStart}
-                            onChange={this.onChange}
-                        />
-                        <div className="input flex">
-                            <RangeInput
-                                name="timeStart"
-                                min={0}
-                                max={max}
-                                step={0.01}
-                                lowerLimit={0}
-                                upperLimit={state.timeEnd}
-                                value={this.state.timeStart}
-                                onChange={this.onChange} />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <span className="label">End Time</span>
-                        <NumberInput
-                            name="timeEnd"
-                            size="10"
-                            min={0}
-                            max={max}
-                            step={0.01}
-                            value={state.timeEnd}
-                            onChange={this.onChange}
-                        />
-                        <div className="input flex">
-                            <RangeInput
-                                name="timeEnd"
-                                min={0}
-                                max={max}
-                                step={0.01}
-                                lowerLimit={state.timeStart}
-                                upperLimit={max}
-                                value={this.state.timeEnd}
-                                onChange={this.onChange} />
-                        </div>
-                    </div>
-                    <div className="row">
                         <span className="label">Time Range</span>
                         <NumberInput
                             name="timeStart"

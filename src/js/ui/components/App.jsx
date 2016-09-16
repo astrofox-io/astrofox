@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
@@ -31,8 +32,7 @@ class App extends UIComponent {
 
         this.state = {
             text: '',
-            modal: null,
-            error: null
+            modals: []
         };
     }
 
@@ -46,8 +46,12 @@ class App extends UIComponent {
         };
 
         Events.on('error', err => {
-            this.showError(err);
-        }, this);
+            this.showDialog({
+                title: 'ERROR',
+                icon: 'icon-warning',
+                message: err
+            });
+        });
 
         Events.on('pick_control', props => {
            this.showModal(
@@ -58,19 +62,19 @@ class App extends UIComponent {
 
         Events.on('show_modal', content => {
             this.showModal(content);
-        }, this);
+        });
 
         Events.on('audio_file_loading', () => {
             this.refs.stage.showLoading(true);
-        }, this);
+        });
 
         Events.on('audio_file_loaded', () => {
             this.refs.stage.showLoading(false);
-        }, this);
+        });
 
         Events.on('menu_action', (action, checked) => {
             this.onMenuAction(action, checked);
-        }, this);
+        });
     }
 
     componentDidMount() {
@@ -89,6 +93,7 @@ class App extends UIComponent {
     onMenuAction(action, checked) {
         switch (action) {
             case 'File/New Project':
+                throw new Error('This is an error.');
                 break;
 
             case 'File/Open Project':
@@ -132,7 +137,7 @@ class App extends UIComponent {
             case 'File/Save Video':
                 this.showModal(
                     <VideoSettings key="canvas" onClose={this.hideModal} />,
-                    { title: 'VIDEO', showCloseButton: false }
+                    { title: 'VIDEO', showCloseButton: false, buttons: null }
                 );
                 break;
 
@@ -143,14 +148,14 @@ class App extends UIComponent {
             case 'Edit/Canvas':
                 this.showModal(
                     <CanvasSettings key="canvas" onClose={this.hideModal} />,
-                    { title: 'CANVAS' }
+                    { title: 'CANVAS', buttons: null }
                 );
                 break;
 
             case 'Edit/Settings':
                 this.showModal(
                     <Settings key="settings" onClose={this.hideModal} />,
-                    { title: 'SETTINGS' }
+                    { title: 'SETTINGS', buttons: null }
                 );
                 break;
 
@@ -161,38 +166,57 @@ class App extends UIComponent {
 
             case 'Help/About':
                 this.showModal(
-                    <About key="about" onClose={this.hideModal} />,
+                    <About key="about" />,
                     { title: 'ABOUT' }
                 );
                 break;
         }
     }
 
-    showError(error) {
-        let onClose = () => this.setState({ error: null }),
-            buttons = [{ text: 'OK', click: onClose }];
+    showModal(content, props) {
+        if (this.dialogShown) return;
 
-        let modal = (
-            <ModalWindow title="ERROR" buttons={buttons} onClose={onClose}>
-                <div className="message">{error.message}</div>
-            </ModalWindow>
+        let modals = this.state.modals;
+
+        props = Object.assign(
+            {
+                onClose: this.hideModal.bind(this),
+                buttons: ['OK']
+            },
+            props
         );
 
-        this.setState({ error: modal });
-    }
-
-    showModal(content, props) {
-        let modal = (
-            <ModalWindow onClose={this.hideModal} {...props}>
+        modals.push(
+            <ModalWindow key={modals.length} title={props.title} buttons={props.buttons} onClose={props.onClose}>
                 {content}
             </ModalWindow>
         );
 
-        this.setState({ modal: modal });
+        this.setState({ modals: modals });
     }
 
     hideModal() {
-        this.setState({ modal: null });
+        let modals = this.state.modals;
+
+        modals.pop();
+
+        this.setState({ modals: modals });
+    }
+
+    showDialog(props) {
+        if (this.dialogShown) return;
+
+        props.onClose = () => { this.hideModal(); this.dialogShown = false; };
+
+        this.showModal(
+            <div className="dialog">
+                <span className={classNames('icon', props.icon)}/>
+                <span className="message">{props.message}</span>
+            </div>,
+            props
+        );
+
+        this.dialogShown = true;
     }
 
     loadAudioFile(file) {
@@ -202,6 +226,8 @@ class App extends UIComponent {
     }
 
     render() {
+        let { text, modals } = this.state;
+
         return (
             <div
                 id="container"
@@ -219,12 +245,11 @@ class App extends UIComponent {
                         <Player ref="player" />
                     </div>
                     <ControlDock ref="dock" />
-                    <Overlay visible={this.state.modal || this.state.error}>
-                        {this.state.modal}
-                        {this.state.error}
+                    <Overlay visible={modals.length}>
+                        {modals}
                     </Overlay>
                 </div>
-                <Footer text={this.state.text} />
+                <Footer text={text} />
                 <Preload />
             </div>
         );

@@ -47,6 +47,7 @@ class Logger {
             let timer = this.timers[id];
             if (timer) {
                 let t = (window.performance.now() - timer) / 1000;
+
                 console.log('%c%s %s:', 'color: blue;', (t < 1) ? ~~(t*1000) : t.toFixed(2), (t < 1) ? 'ms' : 'sec', msg);
 
                 return t;

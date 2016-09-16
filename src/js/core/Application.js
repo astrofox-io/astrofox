@@ -21,6 +21,7 @@ const VideoRenderer = require('../video/VideoRenderer');
 const appConfig = require('../../conf/app.json');
 const menuConfig = require('../../conf/menu.json');
 
+const APP_NAME = 'Astrofox';
 const VERSION = '1.0';
 const APP_CONFIG_FILE = './app.config';
 const FPS_POLL_INTERVAL = 500;
@@ -93,7 +94,7 @@ class Application extends EventEmitter {
 
         Events.emit('layers_update');
 
-        // Handle errors
+        // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
             this.raiseError(msg, err);
             return true;
@@ -119,10 +120,6 @@ class Application extends EventEmitter {
 
         this.frameData.id = 0;
         this.rendering = false;
-    }
-
-    isRendering() {
-        return this.rendering;
     }
 
     getFrameData() {
@@ -174,14 +171,6 @@ class Application extends EventEmitter {
         Events.emit('menu_action', action, !menuItem.checked);
     }
 
-    raiseError(msg, err) {
-        if (err) {
-            Logger.error(err);
-        }
-
-        Events.emit('error', new Error(msg));
-    }
-
     render() {
         let now = window.performance.now(),
             data = this.getFrameData(),
@@ -204,7 +193,7 @@ class Application extends EventEmitter {
             spectrum = this.spectrum,
             stage = this.stage,
             sound = player.getSound('audio'),
-            source = this.source = this.audioContext.createBufferSource();
+            source = this.bufferSource = this.audioContext.createBufferSource();
 
         source.buffer = sound.buffer;
         source.connect(spectrum.analyzer);
@@ -259,6 +248,8 @@ class Application extends EventEmitter {
                 return this.loadAudioTags(file)
             })
             .catch(error => {
+                Events.emit('audio_file_loaded');
+
                 this.raiseError('Failed to load audio file.', error);
             });
     }
@@ -274,9 +265,9 @@ class Application extends EventEmitter {
             sound.on('load', () => {
                 Logger.timeEnd('audio_data_load', 'Audio data loaded.');
 
-                player.load('audio', sound, () => {
-                    sound.addNode(spectrum.analyzer);
-                });
+                player.load('audio', sound);
+
+                sound.addNode(spectrum.analyzer);
 
                 player.play('audio');
 
@@ -315,6 +306,9 @@ class Application extends EventEmitter {
                 if (error.message.indexOf('incorrect header check') > -1) {
                     IO.readFile(file).then(data => {
                         this.loadControls(JSON.parse(data));
+                    })
+                    .catch(error => {
+                        this.raiseError('Invalid project file.', error);
                     });
                 }
                 else {
@@ -386,6 +380,8 @@ class Application extends EventEmitter {
         IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
             Logger.log('Config file saved.', config);
 
+            Object.assign(this.config, config);
+
             if (callback) callback();
         })
         .catch(error => {
@@ -412,8 +408,7 @@ class Application extends EventEmitter {
 
     saveVideo(filename, options) {
         let player = this.player,
-            sound = player.getSound('audio'),
-            { fps, timeStart, timeEnd } = options;
+            sound = player.getSound('audio');
 
         options.command = this.config.ffmpegPath;
 
@@ -427,7 +422,7 @@ class Application extends EventEmitter {
 
             // Handle events
             renderer.on('ready', () => {
-                this.renderFrame(renderer.currentFrame, fps, image => {
+                this.renderFrame(renderer.currentFrame, options.fps, image => {
                     renderer.processFrame(image);
                 });
             });
@@ -467,6 +462,22 @@ class Application extends EventEmitter {
         .catch(error => {
             this.raiseError('Failed to save project file.', error);
         });
+    }
+
+    raiseError(message, error) {
+        if (error) {
+            Logger.error(message + "\n", error);
+        }
+
+        Events.emit('error', message);
+    }
+
+    isRendering() {
+        return this.rendering;
+    }
+
+    hasAudio() {
+        return !!this.player.getSound('audio');
     }
 }
 
