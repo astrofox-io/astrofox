@@ -1,16 +1,21 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const Splitter = (props) => {
-    let classes = 'splitter splitter-' + props.type;
-    let onMouseDown = (e) => props.onDragStart(e);
+    let classes = {
+        splitter: true,
+        vertical: props.type === 'vertical',
+        horizontal: props.type !== 'vertical'
+    },
+    onMouseDown = (e) => props.onDragStart(e);
 
     return (
         <div
-            className={classes}
+            className={classNames(classes)}
             onMouseDown={onMouseDown}>
-            <span className="icon-dots-three-horizontal" />
+            <span className="grip icon-dots-three-horizontal" />
         </div>
     );
 };

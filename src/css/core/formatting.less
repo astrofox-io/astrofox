@@ -2,31 +2,33 @@
     flex: 1 0 auto;
 }
 
-.flex-column {
-    flex-direction: column;
-}
-
-.flex-row {
-    flex-direction: row;
-}
-
-.flex-center {
-    align-items: center;
-}
-
 .blur {
     -webkit-filter: blur(2px);
 }
 
-.hidden {
+.center {
+    text-align: center;
+}
+
+.no-display {
     display: none;
 }
 
 .off-screen {
     position: absolute;
-    right: 200%;
+    left: 100%;
+    bottom: -100%;
+    z-index: -1;
 }
 
-.center {
-    text-align: center;
+.hidden {
+    position: absolute;
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    clip: rect(0 0 0 0);
+    z-index: -1;
 }

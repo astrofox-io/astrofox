@@ -3,16 +3,16 @@
 const React = require('react');
 const fontOptions = require('../../../conf/fonts.json');
 
-const Fonts = (props) => {
+const Preload = (props) => {
     let fonts = fontOptions.map((item, index) => {
         return <div key={index} style={{fontFamily: item}}>{item}</div>;
     });
 
     return (
-        <div className="off-screen">
+        <div className="hidden">
             {fonts}
         </div>
     );
 };
 
-module.exports = Fonts;
+module.exports = Preload;

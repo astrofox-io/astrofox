@@ -30,7 +30,7 @@ class Footer extends UIComponent {
     render() {
         return (
             <div id="footer">
-                <div className="flex">{this.props.text}</div>
+                <div className="fill">{this.props.text}</div>
                 <div className="right">{formatSize(performance.memory.usedJSHeapSize,2)}</div>
                 <div className="right">{this.state.fps} FPS</div>
                 <div>v{process.versions.electron}</div>

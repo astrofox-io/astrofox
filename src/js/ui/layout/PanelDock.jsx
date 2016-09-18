@@ -33,8 +33,8 @@ class PanelDock extends UIComponent {
             state = this.state,
             classes = classNames({
                 'panel-dock': true,
-                'flex-column': (props.direction === 'vertical'),
-                'flex-row': (props.direction !== 'vertical')
+                'vertical': (props.direction === 'vertical'),
+                'horizontal': (props.direction !== 'vertical')
             }),
             style = {
                 width: props.width,

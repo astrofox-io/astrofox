@@ -1,3 +1,20 @@
+.panel-dock {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    background-color: @bg-level1-color;
+
+    &.vertical {
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    &.horizontal {
+        flex-direction: row;
+        flex-shrink: 0;
+    }
+}
+
 .panel {
     display: flex;
     position: relative;
@@ -12,7 +29,7 @@
         flex-shrink: 0;
     }
 
-    .action-panel {
+    .button-panel {
         padding: 5px;
         width: 100%;
         background-color: @bg-color;
@@ -20,5 +37,43 @@
         border-bottom: 1px solid @border-bottom-color;
         overflow: hidden;
         flex-shrink: 0;
+    }
+
+    &.vertical {
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    &.horizontal {
+        flex-direction: row;
+        flex-shrink: 0;
+    }
+
+    &.stretch {
+        flex: 1;
+        overflow: hidden;
+    }
+}
+
+.splitter {
+    color: @text-level1-color;
+    background-color: darken(@bg-level1-color, 3%);
+
+    &.horizontal {
+        height: 5px;
+        line-height: 5px;
+        text-align: center;
+        width: 100%;
+        cursor: ns-resize;
+    }
+
+    &.vertical {
+        width: 5px;
+        height: 100%;
+        cursor: ew-resize;
+
+        .grip::before {
+            transform: rotate(90deg);
+        }
     }
 }

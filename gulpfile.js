@@ -149,8 +149,10 @@ function buildCss() {
     let minify = (getEnvironment() === 'production') ? cleancss : util.noop;
 
     return gulp.src(config.css.src)
+        .pipe(plumber())
         .pipe(less())
         .pipe(minify())
+        .pipe(plumber.stop())
         .pipe(gulp.dest(config.css.dest));
 }
 

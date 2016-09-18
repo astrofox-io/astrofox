@@ -192,7 +192,10 @@ class LayersPanel extends UIComponent {
     render() {
         let layers,
             state = this.state,
-            classes = { 'input-button': true, 'input-button-disabled': !Application.stage.hasScenes() };
+            classes = {
+                'input-button': true,
+                'input-button-disabled': !Application.stage.hasScenes()
+            };
 
         layers = state.layers.map((layer, index) => {
             let icon;
@@ -230,14 +233,14 @@ class LayersPanel extends UIComponent {
                 <div className="layers">
                     {layers}
                 </div>
-                <ul className="action-panel">
-                    <li className="input-button icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
-                    <li className={classNames(classes, 'icon-cube')} title="Add Display" onClick={this.onAddDisplayClick} />
-                    <li className={classNames(classes, 'icon-light-up')} title="Add Effect" onClick={this.onAddEffectClick} />
-                    <li className={classNames(classes, 'icon-chevron-up')} title="Move Layer Up" onClick={this.onMoveUpClick} />
-                    <li className={classNames(classes, 'icon-chevron-down')} title="Move Layer Down" onClick={this.onMoveDownClick} />
-                    <li className={classNames(classes, 'icon-trash-empty')} title="Delete Layer" onClick={this.onRemoveClick} />
-                </ul>
+                <div className="button-panel">
+                    <span className="input-button icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
+                    <span className={classNames(classes, 'icon-cube')} title="Add Display" onClick={this.onAddDisplayClick} />
+                    <span className={classNames(classes, 'icon-light-up')} title="Add Effect" onClick={this.onAddEffectClick} />
+                    <span className={classNames(classes, 'icon-chevron-up')} title="Move Layer Up" onClick={this.onMoveUpClick} />
+                    <span className={classNames(classes, 'icon-chevron-down')} title="Move Layer Down" onClick={this.onMoveDownClick} />
+                    <span className={classNames(classes, 'icon-trash-empty')} title="Delete Layer" onClick={this.onRemoveClick} />
+                </div>
             </div>
         );
     }
