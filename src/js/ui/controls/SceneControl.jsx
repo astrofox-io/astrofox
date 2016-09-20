@@ -61,6 +61,10 @@ class SceneControl extends UIComponent {
         let obj = {},
             display = this.props.display;
 
+        if (name === 'blendMode' && typeof val !== 'string') {
+            return;
+        }
+
         obj[name] = val;
 
         this.shouldUpdate = true;
