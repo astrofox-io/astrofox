@@ -72,8 +72,8 @@ class App extends UIComponent {
             this.refs.stage.showLoading(false);
         });
 
-        Events.on('menu_action', (action, checked) => {
-            this.onMenuAction(action, checked);
+        Events.on('menu_action', action => {
+            this.onMenuAction(action);
         });
     }
 
@@ -90,7 +90,7 @@ class App extends UIComponent {
         e.preventDefault();
     }
 
-    onMenuAction(action, checked) {
+    onMenuAction(action) {
         switch (action) {
             case 'File/New Project':
                 throw new Error('This is an error.');
@@ -135,10 +135,19 @@ class App extends UIComponent {
                 break;
 
             case 'File/Save Video':
-                this.showModal(
-                    <VideoSettings key="canvas" onClose={this.hideModal} />,
-                    { title: 'VIDEO', showCloseButton: false, buttons: null }
-                );
+                if (Application.hasAudio()) {
+                    this.showModal(
+                        <VideoSettings key="canvas" onClose={this.hideModal}/>,
+                        {title: 'VIDEO', showCloseButton: false, buttons: null}
+                    );
+                }
+                else {
+                    this.showDialog({
+                        title: 'ERROR',
+                        icon: 'icon-warning',
+                        message: 'No audio file loaded.'
+                    })
+                }
                 break;
 
             case 'File/Exit':
@@ -160,8 +169,8 @@ class App extends UIComponent {
                 break;
 
             case 'View/Control Dock':
-                this.refs.dock.showDock(!checked);
-                this.refs.menubar.setCheckState(action, !checked);
+                this.refs.dock.toggleDock();
+                this.refs.menubar.setCheckState(action);
                 break;
 
             case 'Help/About':
@@ -180,14 +189,14 @@ class App extends UIComponent {
 
         props = Object.assign(
             {
-                onClose: this.hideModal.bind(this),
+                onClose: () => this.hideModal(),
                 buttons: ['OK']
             },
             props
         );
 
         modals.push(
-            <ModalWindow key={modals.length} title={props.title} buttons={props.buttons} onClose={props.onClose}>
+            <ModalWindow key={modals.length} {...props}>
                 {content}
             </ModalWindow>
         );
@@ -245,12 +254,12 @@ class App extends UIComponent {
                         <Player ref="player" />
                     </div>
                     <ControlDock ref="dock" />
-                    <Overlay visible={modals.length}>
-                        {modals}
-                    </Overlay>
                 </div>
                 <Footer text={text} />
                 <Preload />
+                <Overlay visible={modals.length}>
+                    {modals}
+                </Overlay>
             </div>
         );
     }

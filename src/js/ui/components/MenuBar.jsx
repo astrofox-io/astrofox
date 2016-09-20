@@ -4,7 +4,7 @@ const React = require('react');
 
 const UIComponent = require('../UIComponent');
 const MenuBarItem = require('./MenuBarItem.jsx');
-const menuItemsConfig = require('../../../conf/menu.json');
+const menuConfig = require('../../../conf/menu.json');
 
 class MenuBar extends UIComponent {
     constructor(props) {
@@ -12,7 +12,7 @@ class MenuBar extends UIComponent {
 
         this.state = {
             activeIndex: -1,
-            items: menuItemsConfig
+            items: menuConfig
         };
     }
 
@@ -40,19 +40,19 @@ class MenuBar extends UIComponent {
         }
     }
 
-    setCheckState(action, checked) {
+    setCheckState(action) {
         let items = this.state.items;
 
         items.forEach(barItem => {
             if (barItem.submenu) {
                 barItem.submenu.forEach(menuItem => {
                     if (action === barItem.label + '/' + menuItem.label) {
-                        menuItem.checked = checked;
+                        menuItem.checked = !menuItem.checked;
                         this.setState(items);
                     }
                 });
             }
-        }, this);
+        });
     }
 
     render() {

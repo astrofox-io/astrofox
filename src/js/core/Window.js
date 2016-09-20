@@ -45,6 +45,13 @@ class Window {
         remote.dialog.showSaveDialog(remote.getCurrentWindow(), { defaultPath: path }, action);
     }
 
+    showMessageBox(title, message, options) {
+        remote.dialog.showMessageBox(
+            remote.getCurrentWindow(),
+            Object.assign({ title: title, message: message, buttons: [] }, options)
+        );
+    }
+
     showErrorBox(title, content) {
         remote.dialog.showErrorBox(title, content);
     }

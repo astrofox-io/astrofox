@@ -47,8 +47,8 @@ class ControlDock extends UIComponent {
         this.refs.controls.updateControls();
     }
 
-    showDock(val) {
-        this.setState({ visible: val });
+    toggleDock() {
+        this.setState({ visible: !this.state.visible });
     }
 
     updateLayers(obj) {

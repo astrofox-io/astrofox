@@ -1,7 +1,6 @@
 #header {
     height: 40px;
     background-color: @bg-level1-color;
-    z-index: 1;
 
     .title {
         font-size: @font-normal;
@@ -18,12 +17,40 @@
         position: absolute;
         top: 5px;
         left: 5px;
-        /*
-        width: 0;
-        height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-top: 15px solid @base-color;
-        */
+    }
+
+    .window-buttons {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 0;
+        background-color: @bg-level1-color;
+        -webkit-app-region: no-drag;
+
+        .button {
+            display: inline-block;
+            color: @text-color;
+            font-size: 14px;
+            width: 30px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            vertical-align: middle;
+            border-right: 1px solid @border-color;
+            border-bottom: 1px solid @border-color;
+
+            &:first-child {
+                border-left: 1px solid @border-color;
+                border-bottom-left-radius: 5px;
+            }
+
+            &:last-child {
+                border-bottom-right-radius: 5px;
+            }
+
+            &:hover {
+                background-color: @base-color;
+            }
+        }
     }
 }
