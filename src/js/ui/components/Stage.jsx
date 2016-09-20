@@ -1,10 +1,10 @@
 'use strict';
 
 const React = require('react');
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
-const Loading = require('./Loading.jsx');
 
 class Stage extends UIComponent {
     constructor(props) {
@@ -51,7 +51,12 @@ class Stage extends UIComponent {
                 className="stage"
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}>
-                {loading}
+                <ReactCSSTransitionGroup
+                    transitionName="loading"
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={500}>
+                    {loading}
+                </ReactCSSTransitionGroup>
             </div>
         );
     }
