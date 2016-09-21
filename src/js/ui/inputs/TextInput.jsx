@@ -73,6 +73,7 @@ class TextInput extends UIComponent {
                     onChange={this.onChange}
                     onBlur={this.onValueChange}
                     onKeyUp={this.onKeyUp}
+                    readOnly={this.props.readOnly}
                 />
             </div>
         );
@@ -86,7 +87,8 @@ TextInput.defaultProps = {
     spellCheck: false,
     autoFocus: false,
     autoSelect: false,
-    buffered: false
+    buffered: false,
+    readOnly: false
 };
 
 module.exports = TextInput;
