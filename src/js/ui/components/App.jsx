@@ -97,57 +97,62 @@ class App extends UIComponent {
                 break;
 
             case 'File/Open Project':
-                Window.showOpenDialog(files => {
-                    if (files) {
-                        Application.loadProject(files[0]);
+                Window.showOpenDialog(
+                    files => {
+                        if (files) {
+                            Application.loadProject(files[0]);
+                        }
+                    },
+                    {
+                        filters: [
+                            { name: 'Project files', extensions: ['afx'] }
+                        ]
                     }
-                });
+                );
                 break;
 
             case 'File/Save Project':
                 Window.showSaveDialog(
-                    'project.afx',
                     filename => {
                         if (filename) {
                             Application.saveProject(filename);
                         }
-                    }
+                    },
+                    { defaultPath: 'project.afx' }
                 );
                 break;
 
             case 'File/Load Audio':
-                Window.showOpenDialog(files => {
-                    if (files) {
-                        Application.loadAudioFile(files[0]);
-                    }
-                });
-                break;
-
-            case 'File/Save Image':
-                Window.showSaveDialog(
-                    'image.png',
-                    filename => {
-                        if (filename) {
-                            Application.saveImage(filename);
+                Window.showOpenDialog(
+                    files => {
+                        if (files) {
+                            Application.loadAudioFile(files[0]);
                         }
+                    },
+                    {
+                        filters: [
+                            { name: 'Audio files', extensions: ['aac','mp3','m4a','ogg','wav'] }
+                        ]
                     }
                 );
                 break;
 
+            case 'File/Save Image':
+                Window.showSaveDialog(
+                    filename => {
+                        if (filename) {
+                            Application.saveImage(filename);
+                        }
+                    },
+                    { defaultPath: 'image.png' }
+                );
+                break;
+
             case 'File/Save Video':
-                if (Application.hasAudio()) {
-                    this.showModal(
-                        <VideoSettings key="canvas" onClose={this.hideModal}/>,
-                        {title: 'VIDEO', showCloseButton: false, buttons: null}
-                    );
-                }
-                else {
-                    this.showDialog({
-                        title: 'ERROR',
-                        icon: 'icon-warning',
-                        message: 'No audio file loaded.'
-                    })
-                }
+                this.showModal(
+                    <VideoSettings key="canvas" onClose={this.hideModal} />,
+                    {title: 'VIDEO', showCloseButton: false, buttons: null}
+                );
                 break;
 
             case 'File/Exit':
@@ -230,7 +235,12 @@ class App extends UIComponent {
 
     loadAudioFile(file) {
         Application.loadAudioFile(file).then(tags => {
-            this.setState({ text: tags.artist + ' - ' + tags.title });
+            if (tags.artist) {
+                this.setState({text: tags.artist + ' - ' + tags.title});
+            }
+        })
+        .catch(() => {
+            this.refs.stage.showLoading(false);
         });
     }
 

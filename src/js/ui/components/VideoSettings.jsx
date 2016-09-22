@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
@@ -10,6 +11,7 @@ const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const DualRangeInput = require('../inputs/DualRangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
+const TextInput = require('../inputs/TextInput.jsx');
 
 const videoFormats = [
     'mp4',
@@ -33,7 +35,8 @@ class VideoSettings extends UIComponent {
 
         this.state = Object.assign(
             { isRunning: false },
-            VideoSettings.defaultProps
+            VideoSettings.defaultProps,
+            props
         );
     }
 
@@ -69,7 +72,6 @@ class VideoSettings extends UIComponent {
         if (this.state.isRunning) return;
 
         Window.showSaveDialog(
-            'video.mp4',
             filename => {
                 if (filename) {
                     this.setState({ isRunning: true }, () => {
@@ -78,55 +80,75 @@ class VideoSettings extends UIComponent {
                         });
                     });
                 }
+            },
+            { defaultPath: 'video.mp4' }
+        );
+    }
+
+    onOpenVideoFile() {
+        Window.showSaveDialog(
+            null,
+            filename => {
+                this.setState({ videoFile: filename });
             }
         );
     }
 
-    renderVideo(filename, callback) {
-        let player = Application.player,
-            sound = player.getSound('audio'),
-            renderer = new VideoRenderer(filename, Application.audioFile, {
-                fps: 29.97,
-                frames: 29.97 * 5
-            });
-
-        if (sound) {
-            this.stopRender();
-
-            player.stop('audio');
-
-            this.spectrum.enabled = true;
-
-            renderer.renderVideo(
-                this.renderFrame.bind(this),
-                this.startRender.bind(this)
-            );
-        }
-        else {
-            Events.emit('error', new Error('No audio loaded.'));
-        }
-
-        Logger.log('Video saved. (%s)', filename);
+    onOpenAudioFile() {
+        Window.showOpenDialog(
+            files => {
+                Application.loadAudioFile(files[0]).then(() => {
+                    this.setState({ audioFile: files[0] });
+                });
+            }
+        );
     }
 
     render() {
         const state = this.state,
             sound = Application.player.getSound('audio'),
-            max = (sound) ? sound.getDuration() : 500;
+            max = (sound) ? sound.getDuration() : 0,
+            canStart = (state.videoFile.length && state.audioFile.length),
+            onStart = canStart ? this.onStart: null;
 
         const style = {
             width: this.props.width,
             height: this.props.height
         };
 
+        const buttonClass = {
+            button: true,
+            disabled: !canStart
+        };
+
         return (
             <div className="settings-panel" style={style}>
                 <div className="view">
                     <div className="row">
+                        <span className="label">Video File</span>
+                        <TextInput
+                            name="videoFile"
+                            size={40}
+                            value={state.videoFile}
+                            onChange={this.onChange}
+                        />
+                        <span className="input-button icon-folder-open-empty" onClick={this.onOpenVideoFile} />
+                    </div>
+                    <div className="row">
+                        <span className="label">Audio File</span>
+                        <TextInput
+                            name="audioFile"
+                            size={40}
+                            value={state.audioFile}
+                            onChange={this.onChange}
+                        />
+                        <span className="input-button icon-folder-open-empty" onClick={this.onOpenAudioFile} />
+                    </div>
+                    <div className="row">
                         <span className="label">Video Format</span>
                         <SelectInput
                             name="videoFormat"
-                            size="20"
+                            size={20}
                             items={videoFormats}
                             value={state.videoFormat}
                             onChange={this.onChange}
@@ -186,7 +208,7 @@ class VideoSettings extends UIComponent {
                     </div>
                 </div>
                 <div className="buttons">
-                    <div className="button" onClick={this.onStart}>Start</div>
+                    <div className={classNames(buttonClass)} onClick={onStart}>Start</div>
                     <div className="button" onClick={this.onCancel}>Cancel</div>
                 </div>
             </div>
@@ -195,13 +217,15 @@ class VideoSettings extends UIComponent {
 }
 
 VideoSettings.defaultProps = {
+    videoFile: '',
+    audioFile: '',
     width: 632,
     height: 'auto',
     videoFormat: 'mp4',
     resolution: 480,
     fps: 29.97,
     timeStart: 0,
-    timeEnd: 500
+    timeEnd: 0
 };
 
 module.exports = VideoSettings;

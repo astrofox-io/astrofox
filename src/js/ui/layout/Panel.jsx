@@ -89,7 +89,7 @@ class Panel extends UIComponent {
                 'panel': true,
                 'vertical': (props.direction === 'vertical'),
                 'horizontal': (props.direction !== 'vertical'),
-                'stretch': props.stretch === true
+                'stretch': props.stretch
             });
 
         let splitter = (props.resizable) ?

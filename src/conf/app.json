@@ -3,6 +3,7 @@
   "downloadUpdates": true,
   "sendCrashReports": true,
   "sendUsageStats": true,
+  "autoPlay": true,
   "showFPS": false,
   "systemFonts": [],
   "showWatermark": false,

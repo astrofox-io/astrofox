@@ -56,12 +56,16 @@ class Settings extends UIComponent {
                                 <span className="label">Show FPS</span>
                                 <ToggleInput name="showFPS" value={state.showFPS} onChange={this.onChange} />
                             </div>
+                            <div className="row">
+                                <span className="label">Autoplay audio</span>
+                                <ToggleInput name="autoPlay" value={state.autoPlay} onChange={this.onChange} />
+                            </div>
                         </div>
 
                         <div className="group">
                             <div className="header">Fonts</div>
                             <div className="row">
-                                <span className="label">System Fonts</span>
+                                <span className="label">System fonts</span>
                                 <ListInput name="systemFonts" options={state.systemFonts} onChange={this.onChange} />
                             </div>
                         </div>
@@ -70,7 +74,7 @@ class Settings extends UIComponent {
                             <div className="header">Video</div>
                             <div className="row">
                                 <span className="label">FFmpeg location</span>
-                                <TextInput name="ffmpegPath" size="40" value={state.ffmpegPath} onChange={this.onChange} />
+                                <TextInput name="ffmpegPath" size={40} value={state.ffmpegPath} onChange={this.onChange} />
                             </div>
                         </div>
                     </Tab>

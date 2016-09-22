@@ -88,23 +88,23 @@
             display: inline-block;
         }
 
+        .current-time {
+            color: @text-color;
+        }
+
+        .total-time {
+            color: @text-level1-color;
+        }
+
+        .split {
+            height: 30px;
+            border-right: 1px solid @base-color;
+            margin: 0 8px;
+            transform: rotate(20deg);
+        }
+
         &:hover {
             cursor: default;
         }
-    }
-
-    .current-time {
-        color: @text-color;
-    }
-
-    .total-time {
-        color: @text-level1-color;
-    }
-
-    .split {
-        height: 30px;
-        border-right: 1px solid @base-color;
-        margin: 0 8px;
-        transform: rotate(20deg);
     }
 }

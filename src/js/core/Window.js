@@ -37,12 +37,12 @@ class Window {
         remote.getCurrentWindow().close();
     }
 
-    showOpenDialog(action) {
-        remote.dialog.showOpenDialog(remote.getCurrentWindow(), action);
+    showOpenDialog(callback, options) {
+        remote.dialog.showOpenDialog(remote.getCurrentWindow(), options, callback);
     }
 
-    showSaveDialog(path, action) {
-        remote.dialog.showSaveDialog(remote.getCurrentWindow(), { defaultPath: path }, action);
+    showSaveDialog(callback, options) {
+        remote.dialog.showSaveDialog(remote.getCurrentWindow(), options, callback);
     }
 
     showMessageBox(title, message, options) {
