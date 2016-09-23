@@ -8,6 +8,7 @@ const ColorInput = require('../inputs/ColorInput.jsx');
 const ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 class WaveSpectrumControl extends UIComponent {
     constructor(props) {
@@ -43,12 +44,8 @@ class WaveSpectrumControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <div className="control">
-                <div className="header">
-                    WAVE SPECTRUM
-                </div>
-                <div className="row">
-                    <span className="label">Max dB</span>
+            <Control title="WAVE SPECTRUM">
+                <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"
                         size="3"
@@ -56,7 +53,8 @@ class WaveSpectrumControl extends UIComponent {
                         min={-40}
                         max={0}
                         step={1}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="maxDecibels"
@@ -67,9 +65,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Max Frequency</span>
+                </Row>
+                <Row label="Max Frequency">
                     <NumberInput
                         name="maxFrequency"
                         size="4"
@@ -89,9 +86,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Smoothing</span>
+                </Row>
+                <Row label="Smoothing">
                     <NumberInput
                         name="smoothingTimeConstant"
                         size="3"
@@ -111,9 +107,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Width</span>
+                </Row>
+                <Row label="Width">
                     <NumberInput
                         name="width"
                         size="3"
@@ -131,9 +126,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Height</span>
+                </Row>
+                <Row label="Height">
                     <NumberInput
                         name="height"
                         size="3"
@@ -151,49 +145,44 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Stroke</span>
+                </Row>
+                <Row label="Stroke">
                     <ToggleInput
                         name="stroke"
                         value={this.state.stroke}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">Stroke Color</span>
+                </Row>
+                <Row label="Stroke Color">
                     <ColorInput
                         name="color"
                         value={this.state.color}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Fill</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Fill">
                     <ToggleInput
                         name="fill"
                         value={this.state.fill}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">Fill Color</span>
+                </Row>
+                <Row label="Fill Color">
                     <ColorRangeInput
                         name="fillColor"
                         startColor={this.state.fillColor[0]}
                         endColor={this.state.fillColor[1]}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">Taper Edges</span>
+                </Row>
+                <Row label="Taper Edges">
                     <ToggleInput
                         name="taper"
                         value={this.state.taper}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">X</span>
+                </Row>
+                <Row label="X">
                     <NumberInput
                         name="x"
                         size="3"
@@ -211,9 +200,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Y</span>
+                </Row>
+                <Row label="Y">
                     <NumberInput
                         name="y"
                         size="3"
@@ -231,9 +219,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Rotation</span>
+                </Row>
+                <Row label="Rotation">
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -251,9 +238,8 @@ class WaveSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Opacity</span>
+                </Row>
+                <Row label="Opacity">
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -261,7 +247,8 @@ class WaveSpectrumControl extends UIComponent {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -269,10 +256,11 @@ class WaveSpectrumControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

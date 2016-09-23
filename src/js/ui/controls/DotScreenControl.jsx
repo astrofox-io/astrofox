@@ -5,6 +5,7 @@ const React = require('react');
 const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 class DotScreenControl extends UIComponent {
     constructor(props) {
@@ -37,10 +38,8 @@ class DotScreenControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">DOT SCREEN</div>
-                <div className="row">
-                    <span className="label">Amount</span>
+            <Control title="DOT SCREEN">
+                <Row label="Amount">
                     <NumberInput
                         name="scale"
                         size="3"
@@ -49,7 +48,7 @@ class DotScreenControl extends UIComponent {
                         max={2.0}
                         step={0.01}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="scale"
@@ -58,11 +57,10 @@ class DotScreenControl extends UIComponent {
                             step={0.01}
                             value={this.state.scale}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Angle</span>
+                </Row>
+                <Row label="Angle">
                     <NumberInput
                         name="angle"
                         size="3"
@@ -70,7 +68,7 @@ class DotScreenControl extends UIComponent {
                         min={0}
                         max={360}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="angle"
@@ -78,10 +76,10 @@ class DotScreenControl extends UIComponent {
                             max={360}
                             value={this.state.angle}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

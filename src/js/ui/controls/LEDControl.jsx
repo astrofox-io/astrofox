@@ -5,6 +5,7 @@ const React = require('react');
 const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 class LEDControl extends UIComponent {
     constructor(props) {
@@ -37,63 +38,65 @@ class LEDControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">LED</div>
-                <div className="row">
-                    <span className="label">Spacing</span>
+            <Control title="LED">
+                <Row label="Spacing">
                     <NumberInput
                         name="spacing"
                         size="3"
                         value={this.state.spacing}
                         min={1}
                         max={100}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="spacing"
                             min={1}
                             max={100}
                             value={this.state.spacing}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Size</span>
+                </Row>
+                <Row label="Size">
                     <NumberInput
                         name="size"
                         size="3"
                         value={this.state.size}
                         min={0}
                         max={100}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="size"
                             min={0}
                             max={100}
                             value={this.state.size}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Blur</span>
+                </Row>
+                <Row label="Blur">
                     <NumberInput
                         name="blur"
                         size="3"
                         value={this.state.blur}
                         min={0}
                         max={100}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="blur"
                             min={0}
                             max={100}
                             value={this.state.blur}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

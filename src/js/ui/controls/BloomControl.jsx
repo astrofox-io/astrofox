@@ -6,6 +6,7 @@ const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 const blendModes = [
     'Add',
@@ -43,19 +44,17 @@ class BloomControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">BLOOM</div>
-                <div className="row">
-                    <span className="label">Blend Mode</span>
+            <Control title="BLOOM">
+                <Row label="Blend Mode">
                     <SelectInput
                         name="blendMode"
                         size="20"
                         items={blendModes}
                         value={this.state.blendMode}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Amount</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Amount">
                     <NumberInput
                         name="amount"
                         size="3"
@@ -63,7 +62,8 @@ class BloomControl extends UIComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
@@ -71,11 +71,11 @@ class BloomControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.amount}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Threshold</span>
+                </Row>
+                <Row label="Threshold">
                     <NumberInput
                         name="threshold"
                         size="3"
@@ -83,7 +83,8 @@ class BloomControl extends UIComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="threshold"
@@ -91,10 +92,11 @@ class BloomControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.threshold}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

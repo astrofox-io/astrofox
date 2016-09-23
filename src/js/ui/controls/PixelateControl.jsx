@@ -6,6 +6,7 @@ const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 const types = [
     'Square',
@@ -46,36 +47,36 @@ class PixelateControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">PIXELATE</div>
-                <div className="row">
-                    <span className="label">Type</span>
+            <Control title="PIXELATE">
+                <Row label="Type">
                     <SelectInput
                         name="type"
                         size="20"
                         items={types}
                         value={this.state.type}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Size</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Size">
                     <NumberInput
                         name="size"
                         size="3"
                         value={this.state.size}
                         min={MIN_PIXEL_SIZE}
                         max={MAX_PIXEL_SIZE}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="size"
                             min={MIN_PIXEL_SIZE}
                             max={MAX_PIXEL_SIZE}
                             value={this.state.size}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

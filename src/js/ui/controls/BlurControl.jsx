@@ -6,6 +6,7 @@ const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 const types = [
     'Box',
@@ -45,19 +46,17 @@ class BlurControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">BLUR</div>
-                <div className="row">
-                    <span className="label">Type</span>
+            <Control title="BLUR">
+                <Row label="Type">
                     <SelectInput
                         name="type"
                         size="20"
                         items={types}
                         value={this.state.type}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Amount</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Amount">
                     <NumberInput
                         name="amount"
                         size="3"
@@ -65,7 +64,8 @@ class BlurControl extends UIComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
@@ -73,10 +73,11 @@ class BlurControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.amount}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

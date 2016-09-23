@@ -7,6 +7,7 @@ const NumberInput = require('../inputs/NumberInput.jsx');
 const ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 class BarSpectrumControl extends UIComponent {
     constructor(props) {
@@ -49,12 +50,8 @@ class BarSpectrumControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <div className="control">
-                <div className="header">
-                    BAR SPECTRUM
-                </div>
-                <div className="row">
-                    <span className="label">Max dB</span>
+            <Control title="BAR SPECTRUM">
+                <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"
                         size="3"
@@ -62,7 +59,8 @@ class BarSpectrumControl extends UIComponent {
                         min={-40}
                         max={0}
                         step={1}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="maxDecibels"
@@ -73,9 +71,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Max Frequency</span>
+                </Row>
+                <Row label="Max Frequency">
                     <NumberInput
                         name="maxFrequency"
                         size="4"
@@ -95,9 +92,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Smoothing</span>
+                </Row>
+                <Row label="Smoothing">
                     <NumberInput
                         name="smoothingTimeConstant"
                         size="3"
@@ -117,9 +113,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Width</span>
+                </Row>
+                <Row label="Width">
                     <NumberInput
                         name="width"
                         size="3"
@@ -137,9 +132,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Height</span>
+                </Row>
+                <Row label="Height">
                     <NumberInput
                         name="height"
                         size="3"
@@ -157,9 +151,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Shadow Height</span>
+                </Row>
+                <Row label="Shadow Height">
                     <NumberInput
                         name="shadowHeight"
                         size="3"
@@ -177,9 +170,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Bar Width</span>
+                </Row>
+                <Row label="Bar Width">
                     <NumberInput
                         name="barWidth"
                         size="3"
@@ -196,9 +188,8 @@ class BarSpectrumControl extends UIComponent {
                         value={this.state.barWidthAutoSize}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">Bar Spacing</span>
+                </Row>
+                <Row label="Bar Spacing">
                     <NumberInput
                         name="barSpacing"
                         size="3"
@@ -207,34 +198,32 @@ class BarSpectrumControl extends UIComponent {
                         value={this.state.barSpacing}
                         readOnly={this.state.barSpacingAutoSize}
                         hidden={this.state.barSpacingAutoSize}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <span className="label">Auto-Size</span>
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={this.state.barSpacingAutoSize}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">Bar Color</span>
+                </Row>
+                <Row label="Bar Color">
                     <ColorRangeInput
                         name="color"
                         startColor={this.state.color[0]}
                         endColor={this.state.color[1]}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">Shadow Color</span>
+                </Row>
+                <Row label="Shadow Color">
                     <ColorRangeInput
                         name="shadowColor"
                         startColor={this.state.shadowColor[0]}
                         endColor={this.state.shadowColor[1]}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">X</span>
+                </Row>
+                <Row label="X">
                     <NumberInput
                         name="x"
                         size="3"
@@ -252,9 +241,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Y</span>
+                </Row>
+                <Row label="Y">
                     <NumberInput
                         name="y"
                         size="3"
@@ -272,9 +260,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Rotation</span>
+                </Row>
+                <Row label="Rotation">
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -292,9 +279,8 @@ class BarSpectrumControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Opacity</span>
+                </Row>
+                <Row label="Opacity">
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -302,7 +288,8 @@ class BarSpectrumControl extends UIComponent {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -310,10 +297,11 @@ class BarSpectrumControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

@@ -69,6 +69,7 @@ class SelectInput extends UIComponent {
                 <input
                     type="text"
                     className="input-field"
+                    style={{width: this.props.width}}
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}
@@ -88,7 +89,8 @@ class SelectInput extends UIComponent {
 
 SelectInput.defaultProps = {
     name: 'select',
-    size: 20,
+    width: 140,
+    size: null,
     value: '',
     items: []
 };

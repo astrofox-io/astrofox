@@ -74,7 +74,7 @@ class Settings extends UIComponent {
                             <div className="header">Video</div>
                             <div className="row">
                                 <span className="label">FFmpeg location</span>
-                                <TextInput name="ffmpegPath" size={40} value={state.ffmpegPath} onChange={this.onChange} />
+                                <TextInput name="ffmpegPath" className="fill" size={40} value={state.ffmpegPath} onChange={this.onChange} />
                             </div>
                         </div>
                     </Tab>

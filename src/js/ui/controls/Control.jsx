@@ -2,29 +2,28 @@
 
 const React = require('react');
 
-const Control = React.createClass({
-    getDefaultProps: () => {
-        return {
-            inputs: []
-        }
-    },
+const Control = (props) => {
+    return (
+        <div className="control">
+            <div className="header">{props.title}</div>
+            {props.children}
+        </div>
+    );
+};
 
-    render: () => {
-        let inputs = this.props.inputs.map(input => {
-            return (
-                <div className="row">
-                    {input}
-                </div>
-            );
-        });
+const Row = (props) => {
+    let label = (props.label) ?
+        <span className="label">{props.label}</span> : null;
 
-        return (
-            <div className="control">
-                <div className="header">{this.props.title}</div>
-                {inputs}
-            </div>
-        );
-    }
-});
+    return (
+        <div className="row">
+            {label}
+            {props.children}
+        </div>
+    );
+};
 
-module.exports = Control;
+module.exports = {
+    Control,
+    Row
+};

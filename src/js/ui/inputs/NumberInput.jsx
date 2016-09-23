@@ -92,6 +92,7 @@ class NumberInput extends UIComponent {
                 <input
                     type="text"
                     className={classNames('input-field', {'input-hidden': this.props.hidden})}
+                    style={{width: this.props.width}}
                     name={this.props.name}
                     size={this.props.size}
                     value={this.state.value}
@@ -107,7 +108,8 @@ class NumberInput extends UIComponent {
 
 NumberInput.defaultProps = {
     name: "number",
-    size: 3,
+    size: null,
+    width: 40,
     value: 0,
     min: false,
     max: false,

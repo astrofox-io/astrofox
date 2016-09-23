@@ -1,14 +1,13 @@
 'use strict';
 
 const React = require('react');
+const { Control, Row } = require('./Control.jsx');
 
 const EmptyControl = (props) => {
     return (
-        <div className="control">
-            <div className="header">CONTROL</div>
-            <div className="row">
-            </div>
-        </div>
+        <Control title="empty">
+            <Row />
+        </Control>
     );
 };
 

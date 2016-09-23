@@ -1,14 +1,7 @@
 {
-  "name": "astrofox",
+  "name": "Astrofox",
   "description": "Make awesome music videos.",
   "version": "1.0.0",
-  "keywords": [
-    "audio",
-    "visualization",
-    "spectrum",
-    "3d",
-    "video"
-  ],
   "main": "main.js",
   "private": true,
   "devDependencies": {
@@ -17,7 +10,7 @@
     "babel-preset-react": "^6.11.1",
     "babelify": "^7.3.0",
     "browserify": "^13.0.1",
-    "glsl-man": "^1.0.9",
+    "glsl-man": "^1.1.0",
     "glslify": "^5.1.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.12",
@@ -48,7 +41,7 @@
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
     "react-dom": "^15.3.2",
-    "three": "^0.81.0",
+    "three": "^0.81.2",
     "tinycolor2": "^1.4.1"
   }
 }

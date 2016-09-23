@@ -5,6 +5,7 @@ const React = require('react');
 const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 class MirrorControl extends UIComponent {
     constructor(props) {
@@ -37,27 +38,27 @@ class MirrorControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">MIRROR</div>
-                <div className="row">
-                    <span className="label">Side</span>
+            <Control title="MIRROR">
+                <Row label="Side">
                     <NumberInput
                         name="side"
                         size="3"
                         value={this.state.side}
                         min={0}
                         max={3}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="side"
                             min={0}
                             max={3}
                             value={this.state.side}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

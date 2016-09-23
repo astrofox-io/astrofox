@@ -7,6 +7,7 @@ const NumberInput = require('../inputs/NumberInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 const blendModesMenu = [
     'None',
@@ -78,19 +79,17 @@ class SceneControl extends UIComponent {
         let maxVal = 500;
 
         return (
-            <div className="control">
-                <div className="header">SCENE</div>
-                <div className="row">
-                    <span className="label">Blending</span>
+            <Control title="SCENE">
+                <Row label="Blending">
                     <SelectInput
                         name="blendMode"
                         size="20"
                         items={blendModesMenu}
                         value={this.state.blendMode}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Opacity</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Opacity">
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -99,7 +98,7 @@ class SceneControl extends UIComponent {
                         max={1.0}
                         step={0.01}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -108,11 +107,10 @@ class SceneControl extends UIComponent {
                             step={0.01}
                             value={this.state.opacity}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Light Intensity</span>
+                </Row>
+                <Row label="Light Intensity">
                     <NumberInput
                         name="lightIntensity"
                         size="3"
@@ -120,7 +118,8 @@ class SceneControl extends UIComponent {
                         max={10.0}
                         step={0.1}
                         value={this.state.lightIntensity}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="lightIntensity"
@@ -128,46 +127,49 @@ class SceneControl extends UIComponent {
                             max={10.0}
                             step={0.1}
                             value={this.state.lightIntensity}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Light Distance</span>
+                </Row>
+                <Row label="Light Distance">
                     <NumberInput
                         name="lightDistance"
                         size="3"
                         min={-maxVal}
                         max={maxVal}
                         value={this.state.lightDistance}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="lightDistance"
                             min={-maxVal}
                             max={maxVal}
                             value={this.state.lightDistance}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Camera Zoom</span>
+                </Row>
+                <Row label="Camera Zoom">
                     <NumberInput
                         name="cameraZoom"
                         size="3"
                         min={0}
                         max={1000}
                         value={this.state.cameraZoom}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="cameraZoom"
                             min={0}
                             max={1000}
                             value={this.state.cameraZoom}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

@@ -7,6 +7,7 @@ const NumberInput = require('../inputs/NumberInput.jsx');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 class SoundwaveControl extends UIComponent {
     constructor(props) {
@@ -42,17 +43,15 @@ class SoundwaveControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <div className="control">
-                <div className="header">SOUNDWAVE</div>
-                <div className="row">
-                    <span className="label">Color</span>
+            <Control titel="SOUNDWAVE">
+                <Row label="Color">
                     <ColorInput
                         name="color"
                         value={this.state.color}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Line Width</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Line Width">
                     <NumberInput
                         name="lineWidth"
                         size="3"
@@ -60,7 +59,7 @@ class SoundwaveControl extends UIComponent {
                         min={0}
                         max={10}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="lineWidth"
@@ -69,11 +68,10 @@ class SoundwaveControl extends UIComponent {
                             step={0.01}
                             value={this.state.lineWidth}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Width</span>
+                </Row>
+                <Row label="Width">
                     <NumberInput
                         name="width"
                         size="3"
@@ -81,7 +79,7 @@ class SoundwaveControl extends UIComponent {
                         min={0}
                         max={maxWidth}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="width"
@@ -89,11 +87,10 @@ class SoundwaveControl extends UIComponent {
                             max={maxWidth}
                             value={this.state.width}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Height</span>
+                </Row>
+                <Row label="Height">
                     <NumberInput
                         name="height"
                         size="3"
@@ -101,7 +98,7 @@ class SoundwaveControl extends UIComponent {
                         max={maxWidth}
                         value={this.state.height}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="height"
@@ -109,47 +106,48 @@ class SoundwaveControl extends UIComponent {
                             max={maxWidth}
                             value={this.state.height}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">X</span>
+                </Row>
+                <Row label="X">
                     <NumberInput
                         name="x"
                         size="3"
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Y</span>
+                </Row>
+                <Row label="Y">
                     <NumberInput
                         name="y"
                         size="3"
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Wavelength</span>
+                </Row>
+                <Row label="Wavelength">
                     <NumberInput
                         name="length"
                         size="3"
@@ -157,7 +155,8 @@ class SoundwaveControl extends UIComponent {
                         max={100}
                         step={1}
                         value={this.state.length}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="length"
@@ -165,18 +164,18 @@ class SoundwaveControl extends UIComponent {
                             max={100}
                             step={1}
                             value={this.state.length}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Smooth</span>
+                </Row>
+                <Row label="Smooth">
                     <ToggleInput
                         name="smooth"
                         value={this.state.smooth}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Rotation</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Rotation">
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -184,18 +183,18 @@ class SoundwaveControl extends UIComponent {
                         max={360}
                         value={this.state.rotation}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="rotation"
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Opacity</span>
+                </Row>
+                <Row label="Opacity">
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -203,7 +202,8 @@ class SoundwaveControl extends UIComponent {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -211,10 +211,11 @@ class SoundwaveControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

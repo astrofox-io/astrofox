@@ -9,6 +9,8 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
+const { Control, Row } = require('./Control.jsx');
+
 const fontOptions = require('../../../conf/fonts.json');
 
 class TextControl extends UIComponent {
@@ -61,109 +63,111 @@ class TextControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <div className="control">
-                <div className="header">TEXT</div>
-                <div className="row">
-                    <span className="label">Text</span>
+            <Control title="TEXT">
+                <Row label="Text">
                     <TextInput
                         name="text"
                         size="20"
                         value={this.state.text}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Font</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Font">
                     <SelectInput
                         name="font"
                         size="20"
                         items={this.getSelectItems()}
                         value={this.state.font}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Size</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Size">
                     <NumberInput
                         name="size"
                         size="3"
                         min={0}
                         value={this.state.size}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Bold</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Bold">
                     <ToggleInput
                         name="bold"
                         value={this.state.bold}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <span className="label">Italic</span>
                     <ToggleInput
                         name="italic"
                         value={this.state.italic}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">Color</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="Color">
                     <ColorInput
                         name="color"
                         value={this.state.color}
-                        onChange={this.onChange} />
-                </div>
-                <div className="row">
-                    <span className="label">X</span>
+                        onChange={this.onChange}
+                    />
+                </Row>
+                <Row label="X">
                     <NumberInput
                         name="x"
                         size="3"
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             min={-maxWidth}
                             max={maxWidth}
                             value={this.state.x}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Y</span>
+                </Row>
+                <Row label="Y">
                     <NumberInput
                         name="y"
                         size="3"
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             min={-maxHeight}
                             max={maxHeight}
                             value={this.state.y}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Rotation</span>
+                </Row>
+                <Row label="Rotation">
                     <NumberInput
                         name="rotation"
                         size="3"
                         min={0}
                         max={360}
                         value={this.state.rotation}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="rotation"
                             min={0}
                             max={360}
                             value={this.state.rotation}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Opacity</span>
+                </Row>
+                <Row label="Opacity">
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -171,7 +175,8 @@ class TextControl extends UIComponent {
                         max={1.0}
                         step={0.01}
                         value={this.state.opacity}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -179,10 +184,11 @@ class TextControl extends UIComponent {
                             max={1.0}
                             step={0.01}
                             value={this.state.opacity}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

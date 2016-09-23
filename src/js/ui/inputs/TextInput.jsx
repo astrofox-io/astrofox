@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 
@@ -64,7 +65,8 @@ class TextInput extends UIComponent {
                 <input
                     ref="input"
                     type="text"
-                    className="input-field"
+                    className={classNames('input-field', this.props.className)}
+                    style={{width: this.props.width}}
                     name={this.props.name}
                     size={this.props.size}
                     spellCheck={this.props.spellCheck}
@@ -82,7 +84,8 @@ class TextInput extends UIComponent {
 
 TextInput.defaultProps = {
     name: 'text',
-    size: 20,
+    width: 140,
+    size: null,
     value: '',
     spellCheck: false,
     autoFocus: false,

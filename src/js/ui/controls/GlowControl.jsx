@@ -5,8 +5,7 @@ const React = require('react');
 const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
-
-const GLOW_MAX = 50;
+const { Control, Row } = require('./Control.jsx');
 
 class GlowControl extends UIComponent {
     constructor(props) {
@@ -39,10 +38,8 @@ class GlowControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">GLOW</div>
-                <div className="row">
-                    <span className="label">Amount</span>
+            <Control title="GLOW">
+                <Row label="Amount">
                     <NumberInput
                         name="amount"
                         size="3"
@@ -50,7 +47,8 @@ class GlowControl extends UIComponent {
                         min={0}
                         step={0.01}
                         max={1}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="amount"
@@ -58,11 +56,11 @@ class GlowControl extends UIComponent {
                             step={0.01}
                             max={1}
                             value={this.state.amount}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Intensity</span>
+                </Row>
+                <Row label="Intensity">
                     <NumberInput
                         name="intensity"
                         size="3"
@@ -70,7 +68,8 @@ class GlowControl extends UIComponent {
                         min={1}
                         step={0.01}
                         max={3}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="intensity"
@@ -78,10 +77,11 @@ class GlowControl extends UIComponent {
                             step={0.01}
                             max={3}
                             value={this.state.intensity}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

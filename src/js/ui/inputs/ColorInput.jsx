@@ -7,8 +7,10 @@ const ColorInput = (props) => {
 
     return (
         <div className="input">
-            <input type="color"
+            <input
+                type="color"
                 className="input-field input-color"
+                style={{width: props.width}}
                 name={props.name}
                 value={props.value}
                 onChange={onChange}
@@ -20,6 +22,7 @@ const ColorInput = (props) => {
 ColorInput.defaultProps = {
     name: "color",
     value: "#ffffff",
+    width: 40,
     onChange: () => {}
 };
 

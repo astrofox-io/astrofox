@@ -5,6 +5,7 @@ const React = require('react');
 const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 const OFFSET_MAX = 854;
 
@@ -39,10 +40,8 @@ class RGBShiftControl extends UIComponent {
 
     render() {
         return (
-            <div className="control">
-                <div className="header">RGB SHIFT</div>
-                <div className="row">
-                    <span className="label">Offset</span>
+            <Control title="RGB SHIFT">
+                <Row label="Offset">
                     <NumberInput
                         name="offset"
                         size="3"
@@ -51,7 +50,7 @@ class RGBShiftControl extends UIComponent {
                         max={OFFSET_MAX}
                         step={1}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="offset"
@@ -60,11 +59,10 @@ class RGBShiftControl extends UIComponent {
                             step={1}
                             value={this.state.offset}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Angle</span>
+                </Row>
+                <Row label="Angle">
                     <NumberInput
                         name="angle"
                         size="3"
@@ -72,7 +70,7 @@ class RGBShiftControl extends UIComponent {
                         min={0}
                         max={360}
                         onChange={this.onChange}
-                        />
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="angle"
@@ -80,10 +78,10 @@ class RGBShiftControl extends UIComponent {
                             max={360}
                             value={this.state.angle}
                             onChange={this.onChange}
-                            />
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }

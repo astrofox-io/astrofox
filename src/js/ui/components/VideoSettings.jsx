@@ -87,7 +87,6 @@ class VideoSettings extends UIComponent {
 
     onOpenVideoFile() {
         Window.showSaveDialog(
-            null,
             filename => {
                 this.setState({ videoFile: filename });
             }

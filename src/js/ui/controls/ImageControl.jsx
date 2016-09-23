@@ -7,6 +7,7 @@ const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const ImageInput = require('../inputs/ImageInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
+const { Control, Row } = require('./Control.jsx');
 
 const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
@@ -99,32 +100,24 @@ class ImageControl extends UIComponent {
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
             width = (readOnly) ? 0 : image.naturalWidth,
             height = (readOnly) ? 0 : image.naturalHeight,
-            linkClasses = classNames(
-                'icon-link input-link',
-                {
-                    'input-link-on': state.fixed
-                }
-            );
+            linkClasses = {
+                'icon-link': true,
+                'input-link': true,
+                'input-link-on': state.fixed
+            },
+            linkIcon = <span className={classNames(linkClasses)} onClick={this.onLinkClick} />;
 
         return (
-            <div className="control">
-                <div className="header">IMAGE</div>
-                <div className="row">
-                    <span className="label">Image</span>
+            <Control title="IMAGE">
+                <Row label="Image">
                     <ImageInput
                         name="image"
                         ref="image"
                         src={state.src}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="row">
-                    <span className="label">
-                        Width
-                        <span className={linkClasses}
-                           onClick={this.onLinkClick}
-                        />
-                    </span>
+                </Row>
+                <Row label={['Width', linkIcon]}>
                     <NumberInput
                         name="width"
                         size="3"
@@ -144,14 +137,8 @@ class ImageControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">
-                        Height
-                        <span className={linkClasses}
-                           onClick={this.onLinkClick}
-                        />
-                    </span>
+                </Row>
+                <Row label={['Height', linkIcon]}>
                     <NumberInput
                         name="height"
                         size="3"
@@ -171,9 +158,8 @@ class ImageControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">X</span>
+                </Row>
+                <Row label="X">
                     <NumberInput
                         name="x"
                         size="3"
@@ -193,9 +179,8 @@ class ImageControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Y</span>
+                </Row>
+                <Row label="Y">
                     <NumberInput
                         name="y"
                         size="3"
@@ -215,9 +200,8 @@ class ImageControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Rotation</span>
+                </Row>
+                <Row label="Rotation">
                     <NumberInput
                         name="rotation"
                         size="3"
@@ -237,9 +221,8 @@ class ImageControl extends UIComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </div>
-                <div className="row">
-                    <span className="label">Opacity</span>
+                </Row>
+                <Row label="Opacity">
                     <NumberInput
                         name="opacity"
                         size="3"
@@ -248,7 +231,8 @@ class ImageControl extends UIComponent {
                         step={0.01}
                         value={state.opacity}
                         readOnly={readOnly}
-                        onChange={this.onChange} />
+                        onChange={this.onChange}
+                    />
                     <div className="input flex">
                         <RangeInput
                             name="opacity"
@@ -257,10 +241,11 @@ class ImageControl extends UIComponent {
                             step={0.01}
                             value={state.opacity}
                             readOnly={readOnly}
-                            onChange={this.onChange} />
+                            onChange={this.onChange}
+                        />
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Control>
         );
     }
 }
