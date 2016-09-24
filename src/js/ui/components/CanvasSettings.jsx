@@ -53,7 +53,7 @@ class CanvasSettings extends UIComponent {
                         <span className="label">Aspect Ratio</span>
                         <SelectInput
                             name="aspectRatio"
-                            size="20"
+                            width={140}
                             items={Object.keys(canvasSizes)}
                             value={state.aspectRatio}
                             onChange={this.onChange}

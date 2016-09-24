@@ -54,7 +54,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Line Width">
                     <NumberInput
                         name="lineWidth"
-                        size="3"
+                        width={40}
                         value={this.state.lineWidth}
                         min={0}
                         max={10}
@@ -74,7 +74,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Width">
                     <NumberInput
                         name="width"
-                        size="3"
+                        width={40}
                         value={this.state.width}
                         min={0}
                         max={maxWidth}
@@ -93,7 +93,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Height">
                     <NumberInput
                         name="height"
-                        size="3"
+                        width={40}
                         min={0}
                         max={maxWidth}
                         value={this.state.height}
@@ -112,7 +112,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="X">
                     <NumberInput
                         name="x"
-                        size="3"
+                        width={40}
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
@@ -131,7 +131,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Y">
                     <NumberInput
                         name="y"
-                        size="3"
+                        width={40}
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
@@ -150,7 +150,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Wavelength">
                     <NumberInput
                         name="length"
-                        size="3"
+                        width={40}
                         min={0}
                         max={100}
                         step={1}
@@ -178,7 +178,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Rotation">
                     <NumberInput
                         name="rotation"
-                        size="3"
+                        width={40}
                         min={0}
                         max={360}
                         value={this.state.rotation}
@@ -197,7 +197,7 @@ class SoundwaveControl extends UIComponent {
                 <Row label="Opacity">
                     <NumberInput
                         name="opacity"
-                        size="3"
+                        width={40}
                         min={0}
                         max={1.0}
                         step={0.01}

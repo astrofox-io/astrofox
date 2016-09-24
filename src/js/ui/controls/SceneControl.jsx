@@ -83,7 +83,7 @@ class SceneControl extends UIComponent {
                 <Row label="Blending">
                     <SelectInput
                         name="blendMode"
-                        size="20"
+                        width={140}
                         items={blendModesMenu}
                         value={this.state.blendMode}
                         onChange={this.onChange}
@@ -92,7 +92,7 @@ class SceneControl extends UIComponent {
                 <Row label="Opacity">
                     <NumberInput
                         name="opacity"
-                        size="3"
+                        width={40}
                         value={this.state.opacity}
                         min={0}
                         max={1.0}
@@ -113,7 +113,7 @@ class SceneControl extends UIComponent {
                 <Row label="Light Intensity">
                     <NumberInput
                         name="lightIntensity"
-                        size="3"
+                        width={40}
                         min={0.0}
                         max={10.0}
                         step={0.1}
@@ -134,7 +134,7 @@ class SceneControl extends UIComponent {
                 <Row label="Light Distance">
                     <NumberInput
                         name="lightDistance"
-                        size="3"
+                        width={40}
                         min={-maxVal}
                         max={maxVal}
                         value={this.state.lightDistance}
@@ -153,7 +153,7 @@ class SceneControl extends UIComponent {
                 <Row label="Camera Zoom">
                     <NumberInput
                         name="cameraZoom"
-                        size="3"
+                        width={40}
                         min={0}
                         max={1000}
                         value={this.state.cameraZoom}

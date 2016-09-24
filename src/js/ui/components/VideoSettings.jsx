@@ -127,7 +127,7 @@ class VideoSettings extends UIComponent {
                         <span className="label">Video File</span>
                         <TextInput
                             name="videoFile"
-                            size={40}
+                            width={140}
                             value={state.videoFile}
                             onChange={this.onChange}
                         />
@@ -137,7 +137,7 @@ class VideoSettings extends UIComponent {
                         <span className="label">Audio File</span>
                         <TextInput
                             name="audioFile"
-                            size={40}
+                            width={140}
                             value={state.audioFile}
                             onChange={this.onChange}
                         />
@@ -147,7 +147,7 @@ class VideoSettings extends UIComponent {
                         <span className="label">Video Format</span>
                         <SelectInput
                             name="videoFormat"
-                            size={20}
+                            width={140}
                             items={videoFormats}
                             value={state.videoFormat}
                             onChange={this.onChange}
@@ -157,7 +157,7 @@ class VideoSettings extends UIComponent {
                         <span className="label">Video Resolution</span>
                         <SelectInput
                             name="resolution"
-                            size="20"
+                            width={140}
                             items={resolutionOptions}
                             value={state.resolution}
                             onChange={this.onChange}
@@ -167,7 +167,7 @@ class VideoSettings extends UIComponent {
                         <span className="label">FPS</span>
                         <SelectInput
                             name="fps"
-                            size="20"
+                            width={140}
                             items={fpsOptions}
                             value={state.fps}
                             onChange={this.onChange}
@@ -177,7 +177,7 @@ class VideoSettings extends UIComponent {
                         <span className="label">Time Range</span>
                         <NumberInput
                             name="timeStart"
-                            size="5"
+                            width={40}
                             min={0}
                             max={max}
                             step={0.01}
@@ -193,11 +193,12 @@ class VideoSettings extends UIComponent {
                                 start={this.state.timeStart}
                                 end={this.state.timeEnd}
                                 minRange={1}
-                                onChange={this.onChange} />
+                                onChange={this.onChange}
+                            />
                         </div>
                         <NumberInput
                             name="timeEnd"
-                            size="5"
+                            width={40}
                             min={0}
                             max={max}
                             step={0.01}

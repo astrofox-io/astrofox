@@ -42,7 +42,7 @@ class MirrorControl extends UIComponent {
                 <Row label="Side">
                     <NumberInput
                         name="side"
-                        size="3"
+                        width={40}
                         value={this.state.side}
                         min={0}
                         max={3}

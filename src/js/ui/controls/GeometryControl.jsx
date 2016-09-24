@@ -75,7 +75,7 @@ class GeometryControl extends UIComponent {
                 <Row label="Shape">
                     <SelectInput
                         name="shape"
-                        size="20"
+                        width={140}
                         items={shapes}
                         value={state.shape}
                         onChange={this.onChange}
@@ -84,7 +84,7 @@ class GeometryControl extends UIComponent {
                 <Row label="Material">
                     <SelectInput
                         name="material"
-                        size="20"
+                        width={140}
                         items={materials}
                         value={state.material}
                         onChange={this.onChange}
@@ -93,7 +93,7 @@ class GeometryControl extends UIComponent {
                 <Row label="Shading">
                     <SelectInput
                         name="shading"
-                        size="20"
+                        width={140}
                         items={shading}
                         value={state.shading}
                         onChange={this.onChange}
@@ -130,7 +130,7 @@ class GeometryControl extends UIComponent {
                 <Row label="X">
                     <NumberInput
                         name="x"
-                        size="3"
+                        width={40}
                         min={-maxVal}
                         max={maxVal}
                         value={state.x}
@@ -149,7 +149,7 @@ class GeometryControl extends UIComponent {
                 <Row label="Y">
                     <NumberInput
                         name="y"
-                        size="3"
+                        width={40}
                         min={-maxVal}
                         max={maxVal}
                         value={state.y}
@@ -168,7 +168,7 @@ class GeometryControl extends UIComponent {
                 <Row label="Z">
                     <NumberInput
                         name="z"
-                        size="3"
+                        width={40}
                         min={-maxVal}
                         max={maxVal}
                         value={state.z}
@@ -187,7 +187,7 @@ class GeometryControl extends UIComponent {
                 <Row label="Opacity">
                     <NumberInput
                         name="opacity"
-                        size="3"
+                        width={40}
                         min={0}
                         max={1}
                         step={0.01}

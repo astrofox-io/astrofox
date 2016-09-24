@@ -51,7 +51,7 @@ class PixelateControl extends UIComponent {
                 <Row label="Type">
                     <SelectInput
                         name="type"
-                        size="20"
+                        width={140}
                         items={types}
                         value={this.state.type}
                         onChange={this.onChange}
@@ -60,7 +60,7 @@ class PixelateControl extends UIComponent {
                 <Row label="Size">
                     <NumberInput
                         name="size"
-                        size="3"
+                        width={40}
                         value={this.state.size}
                         min={MIN_PIXEL_SIZE}
                         max={MAX_PIXEL_SIZE}

@@ -67,7 +67,7 @@ class TextControl extends UIComponent {
                 <Row label="Text">
                     <TextInput
                         name="text"
-                        size="20"
+                        width={140}
                         value={this.state.text}
                         onChange={this.onChange}
                     />
@@ -75,7 +75,7 @@ class TextControl extends UIComponent {
                 <Row label="Font">
                     <SelectInput
                         name="font"
-                        size="20"
+                        width={140}
                         items={this.getSelectItems()}
                         value={this.state.font}
                         onChange={this.onChange}
@@ -84,7 +84,7 @@ class TextControl extends UIComponent {
                 <Row label="Size">
                     <NumberInput
                         name="size"
-                        size="3"
+                        width={40}
                         min={0}
                         value={this.state.size}
                         onChange={this.onChange}
@@ -113,7 +113,7 @@ class TextControl extends UIComponent {
                 <Row label="X">
                     <NumberInput
                         name="x"
-                        size="3"
+                        width={40}
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
@@ -132,7 +132,7 @@ class TextControl extends UIComponent {
                 <Row label="Y">
                     <NumberInput
                         name="y"
-                        size="3"
+                        width={40}
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
@@ -151,7 +151,7 @@ class TextControl extends UIComponent {
                 <Row label="Rotation">
                     <NumberInput
                         name="rotation"
-                        size="3"
+                        width={40}
                         min={0}
                         max={360}
                         value={this.state.rotation}
@@ -170,7 +170,7 @@ class TextControl extends UIComponent {
                 <Row label="Opacity">
                     <NumberInput
                         name="opacity"
-                        size="3"
+                        width={40}
                         min={0}
                         max={1.0}
                         step={0.01}

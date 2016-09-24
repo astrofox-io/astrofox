@@ -54,7 +54,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"
-                        size="3"
+                        width={40}
                         value={this.state.maxDecibels}
                         min={-40}
                         max={0}
@@ -75,7 +75,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Max Frequency">
                     <NumberInput
                         name="maxFrequency"
-                        size="4"
+                        width={40}
                         value={this.state.maxFrequency}
                         min={0}
                         max={maxFrequency}
@@ -96,7 +96,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Smoothing">
                     <NumberInput
                         name="smoothingTimeConstant"
-                        size="3"
+                        width={40}
                         value={this.state.smoothingTimeConstant}
                         min={0}
                         max={0.99}
@@ -117,7 +117,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Width">
                     <NumberInput
                         name="width"
-                        size="3"
+                        width={40}
                         value={this.state.width}
                         min={0}
                         max={maxWidth}
@@ -136,7 +136,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Height">
                     <NumberInput
                         name="height"
-                        size="3"
+                        width={40}
                         min={0}
                         max={maxWidth}
                         value={this.state.height}
@@ -155,7 +155,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Shadow Height">
                     <NumberInput
                         name="shadowHeight"
-                        size="3"
+                        width={40}
                         min={0}
                         max={maxWidth}
                         value={this.state.shadowHeight}
@@ -174,7 +174,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Bar Width">
                     <NumberInput
                         name="barWidth"
-                        size="3"
+                        width={40}
                         min={-1}
                         max={maxWidth}
                         value={this.state.barWidth}
@@ -192,7 +192,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Bar Spacing">
                     <NumberInput
                         name="barSpacing"
-                        size="3"
+                        width={40}
                         min={-1}
                         max={maxWidth}
                         value={this.state.barSpacing}
@@ -226,7 +226,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="X">
                     <NumberInput
                         name="x"
-                        size="3"
+                        width={40}
                         min={-maxWidth}
                         max={maxWidth}
                         value={this.state.x}
@@ -245,7 +245,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Y">
                     <NumberInput
                         name="y"
-                        size="3"
+                        width={40}
                         min={-maxHeight}
                         max={maxHeight}
                         value={this.state.y}
@@ -264,7 +264,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Rotation">
                     <NumberInput
                         name="rotation"
-                        size="3"
+                        width={40}
                         min={0}
                         max={360}
                         value={this.state.rotation}
@@ -283,7 +283,7 @@ class BarSpectrumControl extends UIComponent {
                 <Row label="Opacity">
                     <NumberInput
                         name="opacity"
-                        size="3"
+                        width={40}
                         min={0}
                         max={1.0}
                         step={0.01}

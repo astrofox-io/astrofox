@@ -42,7 +42,7 @@ class DotScreenControl extends UIComponent {
                 <Row label="Amount">
                     <NumberInput
                         name="scale"
-                        size="3"
+                        width={40}
                         value={this.state.scale}
                         min={0}
                         max={2.0}
@@ -63,7 +63,7 @@ class DotScreenControl extends UIComponent {
                 <Row label="Angle">
                     <NumberInput
                         name="angle"
-                        size="3"
+                        width={40}
                         value={this.state.angle}
                         min={0}
                         max={360}

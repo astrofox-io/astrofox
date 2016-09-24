@@ -42,7 +42,7 @@ class LEDControl extends UIComponent {
                 <Row label="Spacing">
                     <NumberInput
                         name="spacing"
-                        size="3"
+                        width={40}
                         value={this.state.spacing}
                         min={1}
                         max={100}
@@ -61,7 +61,7 @@ class LEDControl extends UIComponent {
                 <Row label="Size">
                     <NumberInput
                         name="size"
-                        size="3"
+                        width={40}
                         value={this.state.size}
                         min={0}
                         max={100}
@@ -80,7 +80,7 @@ class LEDControl extends UIComponent {
                 <Row label="Blur">
                     <NumberInput
                         name="blur"
-                        size="3"
+                        width={40}
                         value={this.state.blur}
                         min={0}
                         max={100}

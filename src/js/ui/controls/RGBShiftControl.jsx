@@ -44,7 +44,7 @@ class RGBShiftControl extends UIComponent {
                 <Row label="Offset">
                     <NumberInput
                         name="offset"
-                        size="3"
+                        width={40}
                         value={this.state.offset}
                         min={0}
                         max={OFFSET_MAX}
@@ -65,7 +65,7 @@ class RGBShiftControl extends UIComponent {
                 <Row label="Angle">
                     <NumberInput
                         name="angle"
-                        size="3"
+                        width={40}
                         value={this.state.angle}
                         min={0}
                         max={360}

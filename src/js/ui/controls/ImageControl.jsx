@@ -105,7 +105,7 @@ class ImageControl extends UIComponent {
                 'input-link': true,
                 'input-link-on': state.fixed
             },
-            linkIcon = <span className={classNames(linkClasses)} onClick={this.onLinkClick} />;
+            linkIcon = <span key={0} className={classNames(linkClasses)} onClick={this.onLinkClick} />;
 
         return (
             <Control title="IMAGE">
@@ -120,7 +120,7 @@ class ImageControl extends UIComponent {
                 <Row label={['Width', linkIcon]}>
                     <NumberInput
                         name="width"
-                        size="3"
+                        width={40}
                         min={0}
                         max={width*2}
                         value={state.width}
@@ -141,7 +141,7 @@ class ImageControl extends UIComponent {
                 <Row label={['Height', linkIcon]}>
                     <NumberInput
                         name="height"
-                        size="3"
+                        width={40}
                         min={0}
                         max={height*2}
                         value={state.height}
@@ -162,7 +162,7 @@ class ImageControl extends UIComponent {
                 <Row label="X">
                     <NumberInput
                         name="x"
-                        size="3"
+                        width={40}
                         min={-width*2}
                         max={width*2}
                         value={state.x}
@@ -183,7 +183,7 @@ class ImageControl extends UIComponent {
                 <Row label="Y">
                     <NumberInput
                         name="y"
-                        size="3"
+                        width={40}
                         min={-height*2}
                         max={height*2}
                         value={state.y}
@@ -204,7 +204,7 @@ class ImageControl extends UIComponent {
                 <Row label="Rotation">
                     <NumberInput
                         name="rotation"
-                        size="3"
+                        width={40}
                         min={0}
                         max={360}
                         value={state.rotation}
@@ -225,7 +225,7 @@ class ImageControl extends UIComponent {
                 <Row label="Opacity">
                     <NumberInput
                         name="opacity"
-                        size="3"
+                        width={40}
                         min={0}
                         max={1.0}
                         step={0.01}

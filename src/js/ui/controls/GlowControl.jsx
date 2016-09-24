@@ -42,7 +42,7 @@ class GlowControl extends UIComponent {
                 <Row label="Amount">
                     <NumberInput
                         name="amount"
-                        size="3"
+                        width={40}
                         value={this.state.amount}
                         min={0}
                         step={0.01}
@@ -63,7 +63,7 @@ class GlowControl extends UIComponent {
                 <Row label="Intensity">
                     <NumberInput
                         name="intensity"
-                        size="3"
+                        width={40}
                         value={this.state.intensity}
                         min={1}
                         step={0.01}

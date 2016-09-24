@@ -48,7 +48,7 @@ class BloomControl extends UIComponent {
                 <Row label="Blend Mode">
                     <SelectInput
                         name="blendMode"
-                        size="20"
+                        width={140}
                         items={blendModes}
                         value={this.state.blendMode}
                         onChange={this.onChange}
@@ -57,7 +57,7 @@ class BloomControl extends UIComponent {
                 <Row label="Amount">
                     <NumberInput
                         name="amount"
-                        size="3"
+                        width={40}
                         value={this.state.amount}
                         min={0}
                         max={1.0}
@@ -78,7 +78,7 @@ class BloomControl extends UIComponent {
                 <Row label="Threshold">
                     <NumberInput
                         name="threshold"
-                        size="3"
+                        width={40}
                         value={this.state.threshold}
                         min={0}
                         max={1.0}

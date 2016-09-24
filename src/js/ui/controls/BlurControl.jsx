@@ -50,7 +50,7 @@ class BlurControl extends UIComponent {
                 <Row label="Type">
                     <SelectInput
                         name="type"
-                        size="20"
+                        width={140}
                         items={types}
                         value={this.state.type}
                         onChange={this.onChange}
@@ -59,7 +59,7 @@ class BlurControl extends UIComponent {
                 <Row label="Amount">
                     <NumberInput
                         name="amount"
-                        size="3"
+                        width={40}
                         value={this.state.amount}
                         min={0}
                         max={1.0}
