@@ -1,6 +1,5 @@
 Font license info
 
-
 ## Entypo
 
    Copyright (C) 2012 by Daniel Bruce
@@ -15,7 +14,5 @@ Font license info
    Copyright (C) 2012 by Dave Gandy
 
    Author:    Dave Gandy
-   License:   SIL ()
+   License:   SIL (http://scripts.sil.org/OFL)
    Homepage:  http://fortawesome.github.com/Font-Awesome/
-
-
