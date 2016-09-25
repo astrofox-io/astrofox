@@ -24,6 +24,24 @@ class TabPanel extends UIComponent {
             tabs = [],
             content = [];
 
+        const panelClass = {
+            'tab-panel': true,
+            'tab-position-left': props.tabPosition === 'left',
+            'tab-position-right': props.tabPosition === 'right',
+            'tab-position-top': props.tabPosition === 'top',
+            'tab-position-bottom': props.tabPosition === 'bottom'
+        };
+
+        if (props.className) {
+            panelClass[props.className] = true;
+        }
+
+        const tabClass = {
+            'tabs': true,
+            'tabs-horizontal': props.tabPosition === 'top' || props.tabPosition === 'bottom'
+        };
+
+        // Generate tabs and content
         React.Children.map(props.children, (item, index) => {
             tabs.push(
                 <div key={index}
@@ -45,25 +63,8 @@ class TabPanel extends UIComponent {
             );
         });
 
-        const panelClass = {
-            'tab-panel': true,
-            'tab-position-left': props.tabPosition === 'left',
-            'tab-position-right': props.tabPosition === 'right',
-            'tab-position-top': props.tabPosition === 'top',
-            'tab-position-bottom': props.tabPosition === 'bottom'
-        };
-
-        if (props.className) {
-            panelClass[props.className] = true;
-        }
-
-        const tabClass = {
-            'tabs': true,
-            'tabs-horizontal': props.tabPosition === 'top' || props.tabPosition === 'bottom'
-        };
-
         return (
-            <div className={classNames(panelClass)}>
+            <div id={props.id} className={classNames(panelClass)}>
                 <div className={classNames(tabClass)}>
                     {tabs}
                 </div>

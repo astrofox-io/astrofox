@@ -58,7 +58,7 @@ class ControlsPanel extends UIComponent {
     render() {
         let controls = this.state.controls.map(display => {
             let id = display.id,
-                Control = getControlComponent(display) || 'div';
+                Control = getControlComponent(display);
 
             return (
                 <Control

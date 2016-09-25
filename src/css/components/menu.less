@@ -1,3 +1,34 @@
+.menu-panel {
+    display: flex;
+    flex-direction: row;
+
+    .nav {
+        flex: 1;
+        width: 200px;
+        background-color: @bg-level3-color;
+
+        .tab {
+            color: @text-level1-color;
+            padding: 8px;
+            border-bottom: 1px solid @base-color;
+            cursor: default;
+
+            &:hover {
+                color: @text-color;
+            }
+        }
+
+        .tab-active {
+            color: @text-color;
+            background-color: @base-color;
+        }
+    }
+
+    .base {
+        flex: 1;
+    }
+}
+
 .menubar {
     font-family: @font-family;
     font-size: @font-normal;

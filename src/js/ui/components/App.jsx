@@ -20,7 +20,7 @@ const Overlay = require('./Overlay.jsx');
 const ControlDock = require('./ControlDock.jsx');
 const Preload = require('./Preload.jsx');
 const About = require('./About.jsx');
-const Settings = require('./Settings.jsx');
+const AppSettings = require('./AppSettings.jsx');
 const CanvasSettings = require('./CanvasSettings.jsx');
 const VideoSettings = require('./VideoSettings.jsx');
 const ControlPicker = require('./ControlPicker.jsx');
@@ -168,7 +168,7 @@ class App extends UIComponent {
 
             case 'Edit/Settings':
                 this.showModal(
-                    <Settings key="settings" onClose={this.hideModal} />,
+                    <AppSettings key="settings" onClose={this.hideModal} />,
                     { title: 'SETTINGS', buttons: null }
                 );
                 break;

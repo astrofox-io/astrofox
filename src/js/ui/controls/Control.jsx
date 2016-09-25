@@ -1,10 +1,11 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const Control = (props) => {
     return (
-        <div className="control">
+        <div className={classNames('control', props.className)}>
             <div className="header">{props.title}</div>
             {props.children}
         </div>
@@ -16,7 +17,7 @@ const Row = (props) => {
         <span className="label">{props.label}</span> : null;
 
     return (
-        <div className="row">
+        <div className={classNames('row', props.className)}>
             {label}
             {props.children}
         </div>

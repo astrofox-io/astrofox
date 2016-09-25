@@ -12,6 +12,7 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const DualRangeInput = require('../inputs/DualRangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
+const { Settings, Group, Row } = require('../components/Settings.jsx');
 
 const videoFormats = [
     'mp4',
@@ -110,21 +111,15 @@ class VideoSettings extends UIComponent {
             canStart = (state.videoFile.length && state.audioFile.length),
             onStart = canStart ? this.onStart: null;
 
-        const style = {
-            width: this.props.width,
-            height: this.props.height
-        };
-
         const buttonClass = {
             button: true,
             disabled: !canStart
         };
 
         return (
-            <div className="settings-panel" style={style}>
-                <div className="view">
-                    <div className="row">
-                        <span className="label">Video File</span>
+            <div id="video-settings" className="settings-panel">
+                <Settings>
+                    <Row label="Video File">
                         <TextInput
                             name="videoFile"
                             width={140}
@@ -132,9 +127,8 @@ class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                         <span className="input-button icon-folder-open-empty" onClick={this.onOpenVideoFile} />
-                    </div>
-                    <div className="row">
-                        <span className="label">Audio File</span>
+                    </Row>
+                    <Row label="Audio File">
                         <TextInput
                             name="audioFile"
                             width={140}
@@ -142,9 +136,8 @@ class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                         <span className="input-button icon-folder-open-empty" onClick={this.onOpenAudioFile} />
-                    </div>
-                    <div className="row">
-                        <span className="label">Video Format</span>
+                    </Row>
+                    <Row label="Video Format">
                         <SelectInput
                             name="videoFormat"
                             width={140}
@@ -152,9 +145,8 @@ class VideoSettings extends UIComponent {
                             value={state.videoFormat}
                             onChange={this.onChange}
                         />
-                    </div>
-                    <div className="row">
-                        <span className="label">Video Resolution</span>
+                    </Row>
+                    <Row label="Video Resolution">
                         <SelectInput
                             name="resolution"
                             width={140}
@@ -162,9 +154,8 @@ class VideoSettings extends UIComponent {
                             value={state.resolution}
                             onChange={this.onChange}
                         />
-                    </div>
-                    <div className="row">
-                        <span className="label">FPS</span>
+                    </Row>
+                    <Row label="FPS">
                         <SelectInput
                             name="fps"
                             width={140}
@@ -172,9 +163,8 @@ class VideoSettings extends UIComponent {
                             value={state.fps}
                             onChange={this.onChange}
                         />
-                    </div>
-                    <div className="row">
-                        <span className="label">Time Range</span>
+                    </Row>
+                    <Row label="Time Range">
                         <NumberInput
                             name="timeStart"
                             width={40}
@@ -205,8 +195,8 @@ class VideoSettings extends UIComponent {
                             value={state.timeEnd}
                             onChange={this.onChange}
                         />
-                    </div>
-                </div>
+                    </Row>
+                </Settings>
                 <div className="buttons">
                     <div className={classNames(buttonClass)} onClick={onStart}>Start</div>
                     <div className="button" onClick={this.onCancel}>Cancel</div>
@@ -219,8 +209,6 @@ class VideoSettings extends UIComponent {
 VideoSettings.defaultProps = {
     videoFile: '',
     audioFile: '',
-    width: 632,
-    height: 'auto',
     videoFormat: 'mp4',
     resolution: 480,
     fps: 29.97,
