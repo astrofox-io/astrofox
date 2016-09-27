@@ -5,71 +5,73 @@
     margin-bottom: 6px;
 }
 
-.control {
-    background-color: @bg-color;
-    border-top: 1px solid @border-top-color;
-    border-bottom: 1px solid @border-bottom-color;
-    padding-bottom: 16px;
-    margin: 0 5px 5px 5px;
+.controls {
+    .control {
+        background-color: @bg-color;
+        border-top: 1px solid @border-top-color;
+        border-bottom: 1px solid @border-bottom-color;
+        padding-bottom: 16px;
+        margin: 0 5px 5px 5px;
 
-    &:last-child {
-        margin-bottom: 0;
-    }
+        &:last-child {
+            margin-bottom: 0;
+        }
 
-    .header {
-        font-size: @font-small;
-        color: @text-level1-color;
-        text-shadow: 1px 1px 0 darken(@text-level1-color, 50%);
-        line-height: 20px;
-        padding-left: 8px;
-        margin-bottom: 10px;
-        cursor: default;
-    }
-
-    .row {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding-bottom: 8px;
-        margin: 0 10px 6px 10px;
-        position: relative;
-
-        .label {
+        .header {
             font-size: @font-small;
-            color: @text-color;
-            display: inline-block;
-            line-height: 20px;
-            margin-right: 8px;
-            text-align: right;
-            cursor: default;
-
-            &:first-child {
-                min-width: 80px;
-            }
-        }
-
-        .input {
-            margin-right: 8px;
-
-            &:last-child {
-                margin-right: 0;
-            }
-        }
-
-        .unit {
             color: @text-level1-color;
-            font-size: @font-small;
-            margin: 0 8px 0 -4px;
+            text-shadow: 1px 1px 0 darken(@text-level1-color, 50%);
+            line-height: 20px;
+            padding-left: 8px;
+            margin-bottom: 10px;
+            cursor: default;
         }
 
-        &:after {
-            content: "\0020";
-            border-top: 1px solid lighten(@border-bottom-color, 6%);
-            border-bottom: 1px solid darken(@border-top-color, 8%);
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+        .row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding-bottom: 8px;
+            margin: 0 10px 6px 10px;
+            position: relative;
+
+            .label {
+                font-size: @font-small;
+                color: @text-color;
+                display: inline-block;
+                line-height: 20px;
+                margin-right: 8px;
+                text-align: right;
+                cursor: default;
+
+                &:first-child {
+                    min-width: 80px;
+                }
+            }
+
+            .input {
+                margin-right: 8px;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+
+            .unit {
+                color: @text-level1-color;
+                font-size: @font-small;
+                margin: 0 8px 0 -4px;
+            }
+
+            &:after {
+                content: "\0020";
+                border-top: 1px solid lighten(@border-bottom-color, 6%);
+                border-bottom: 1px solid darken(@border-top-color, 8%);
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+            }
         }
     }
 }

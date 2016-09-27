@@ -23,6 +23,35 @@
             display: inline-block;
         }
 
+        .icon {
+            margin-right: 8px;
+        }
+
+        .options-icon {
+            position: absolute;
+            right: 8px;
+
+            &.disabled {
+                opacity: .3;
+            }
+        }
+
+        &.active {
+            background-color: @base-color;
+        }
+
+        &.edit {
+            background-color: @bg-level2-color;
+        }
+
+        &.child {
+            padding-left: 20px;
+        }
+
+        &.fx {
+            padding-left: 30px;
+        }
+
         &:after {
             content: "\00a0";
         }
@@ -30,34 +59,5 @@
         &:first-child {
             border-top: 1px solid @border-color;
         }
-    }
-
-    .layer-active {
-        background-color: @base-color;
-    }
-
-    .layer-edit {
-        background-color: @bg-level2-color;
-    }
-
-    .layer-control {
-        padding-left: 20px;
-    }
-
-    .layer-fx {
-        padding-left: 30px;
-    }
-
-    .layer-icon {
-        margin-right: 8px;
-    }
-
-    .layer-options-icon {
-        position: absolute;
-        right: 8px;
-    }
-
-    .layer-disabled {
-        opacity: .3;
     }
 }

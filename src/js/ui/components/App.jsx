@@ -253,6 +253,7 @@ class App extends UIComponent {
                 onClick={this.onClick}
                 onDrop={this.onDragDrop}
                 onDragOver={this.onDragDrop}>
+                <Preload />
                 <Header />
                 <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
                 <div id="body">
@@ -266,7 +267,6 @@ class App extends UIComponent {
                     <ControlDock ref="dock" />
                 </div>
                 <Footer text={text} />
-                <Preload />
                 <Overlay visible={modals.length}>
                     {modals}
                 </Overlay>

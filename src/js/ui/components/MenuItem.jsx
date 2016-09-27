@@ -5,7 +5,7 @@ const classNames = require('classnames');
 
 const MenuItem = (props) => {
     return (
-        <div className={classNames('menu-item', {'checked': props.checked })}
+        <div className={classNames('item', {'checked': props.checked })}
             onClick={props.onClick}>
             {props.label}
         </div>

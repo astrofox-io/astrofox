@@ -71,7 +71,9 @@ class ControlsPanel extends UIComponent {
 
         return (
             <div className="controls-panel" ref="controls">
-                {controls}
+                <div className="controls">
+                    {controls}
+                </div>
             </div>
         );
     }

@@ -38,26 +38,26 @@
     height: 20px;
     position: relative;
 
-    .menubar-item {
+    &>.item {
         display: inline-block;
         position: relative;
     }
 
-    .menubar-text {
+    .text {
         line-height: 20px;
         vertical-align: middle;
         padding: 0 8px;
         position: relative;
 
+        &.active {
+            color: @base-color;
+            background-color: darken(@bg-level2-color, 6%);
+        }
+
         &:hover {
             cursor: default;
             color: @base-color;
         }
-    }
-
-    .menubar-text-active {
-        color: @base-color;
-        background-color: darken(@bg-level2-color, 6%);
     }
 
     .menu {
@@ -70,7 +70,7 @@
         border: 1px solid darken(@border-color, 6%);
         overflow: hidden;
 
-        .menu-item {
+        &>.item {
             position: relative;
             display: block;
             font-size: @font-small;
@@ -84,7 +84,7 @@
             }
         }
 
-        .menu-separator {
+        .separator {
             padding: 5px;
 
             &:after {

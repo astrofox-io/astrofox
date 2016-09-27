@@ -33,9 +33,9 @@ class MenuBarItem extends UIComponent {
 
     render() {
         return (
-            <div className="menubar-item">
+            <div className="item">
                 <div
-                    className={classNames('menubar-text', {'menubar-text-active': this.props.active})}
+                    className={classNames('text', {'active': this.props.active})}
                     onClick={this.onClick}
                     onMouseOver={this.onMouseOver}>
                     {this.props.label}

@@ -8,7 +8,7 @@ const Menu = (props) => {
 
     let items = props.items.map((item, index) => {
         if (item.type == 'separator') {
-            return <div key={index} className="menu-separator" />;
+            return <div key={index} className="separator" />;
         }
         else if (item.label) {
             return (

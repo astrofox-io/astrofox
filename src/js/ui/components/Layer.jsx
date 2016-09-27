@@ -50,9 +50,9 @@ class Layer extends UIComponent {
             props = this.props,
             classes = classNames({
                 'layer': true,
-                'layer-control': props.control,
-                'layer-edit': state.edit,
-                'layer-active': props.active
+                'child': props.control,
+                'edit': state.edit,
+                'active': props.active
             });
 
         if (state.edit) {
@@ -78,10 +78,12 @@ class Layer extends UIComponent {
 
         return (
             <div className={classes} onClick={this.onLayerClick}>
-                <span className={classNames('layer-icon', props.icon)}/>
+                <span className={classNames('icon', props.icon)}/>
                 {text}
-                <span className={classNames('layer-options-icon icon-eye', {'layer-disabled': !props.enabled})}
-                   onClick={this.onEnableClick}/>
+                <span
+                    className={classNames('options-icon icon-eye', {'disabled': !props.enabled})}
+                    onClick={this.onEnableClick}
+                />
             </div>
         );
     }
