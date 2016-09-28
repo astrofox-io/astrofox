@@ -113,7 +113,7 @@ class BufferedSound extends Sound {
 
     stop() {
         if (this.source) {
-            this.source.stop();
+            if (this.playing) this.source.stop();
             this.source.disconnect();
             this.source = null;
         }

@@ -49,25 +49,37 @@ class AppSettings extends UIComponent {
                         <Settings>
                             <Group name="Interface">
                                 <Row label="Show FPS">
-                                    <ToggleInput name="showFPS" value={state.showFPS} onChange={this.onChange} />
+                                    <ToggleInput
+                                        name="showFPS"
+                                        value={state.showFPS}
+                                        onChange={this.onChange}
+                                    />
                                 </Row>
                                 <Row label="Autoplay audio">
-                                    <ToggleInput name="autoPlay" value={state.autoPlay} onChange={this.onChange} />
+                                    <ToggleInput
+                                        name="autoPlay"
+                                        value={state.autoPlay}
+                                        onChange={this.onChange}
+                                    />
                                 </Row>
                             </Group>
 
                             <Group name="Fonts">
                                 <Row label="System fonts">
-                                    <ListInput name="systemFonts" options={state.systemFonts} onChange={this.onChange} />
+                                    <ListInput
+                                        name="systemFonts"
+                                        options={state.systemFonts}
+                                        onChange={this.onChange}
+                                    />
                                 </Row>
                             </Group>
 
                             <Group name="Video">
                                 <Row label="FFmpeg location">
                                     <TextInput
+                                        className="flex"
                                         name="ffmpegPath"
-                                        className="fill"
-                                        size={40}
+                                        width="100%"
                                         value={state.ffmpegPath}
                                         onChange={this.onChange}
                                     />
@@ -79,16 +91,32 @@ class AppSettings extends UIComponent {
                     <Tab name="Advanced">
                         <Settings>
                             <Row label="Automatically check for updates">
-                                <ToggleInput name="checkForUpdates" value={state.checkForUpdates} onChange={this.onChange} />
+                                <ToggleInput
+                                    name="checkForUpdates"
+                                    value={state.checkForUpdates}
+                                    onChange={this.onChange}
+                                />
                             </Row>
                             <Row label="Automatically download and install updates">
-                                <ToggleInput name="downloadUpdates" value={state.downloadUpdates} onChange={this.onChange} />
+                                <ToggleInput
+                                    name="downloadUpdates"
+                                    value={state.downloadUpdates}
+                                    onChange={this.onChange}
+                                />
                             </Row>
                             <Row label="Send usage statistics">
-                                <ToggleInput name="sendUsageStats" value={state.sendUsageStats} onChange={this.onChange} />
+                                <ToggleInput
+                                    name="sendUsageStats"
+                                    value={state.sendUsageStats}
+                                    onChange={this.onChange}
+                                />
                             </Row>
                             <Row label="Send crash reports">
-                                <ToggleInput name="sendCrashReports" value={state.sendCrashReports} onChange={this.onChange} />
+                                <ToggleInput
+                                    name="sendCrashReports"
+                                    value={state.sendCrashReports}
+                                    onChange={this.onChange}
+                                />
                             </Row>
                         </Settings>
                     </Tab>

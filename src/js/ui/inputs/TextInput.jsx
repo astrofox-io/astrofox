@@ -60,22 +60,24 @@ class TextInput extends UIComponent {
     }
 
     render() {
+        let props = this.props;
+
         return (
-            <div className="input">
+            <div className={classNames('input', props.className)}>
                 <input
                     ref="input"
                     type="text"
-                    className={classNames('input-field', this.props.className)}
-                    style={{width: this.props.width}}
-                    name={this.props.name}
-                    size={this.props.size}
-                    spellCheck={this.props.spellCheck}
-                    autoFocus={this.props.autoFocus}
+                    className={classNames('input-field', props.inputClassName)}
+                    style={{width: props.width}}
+                    name={props.name}
+                    size={props.size}
+                    spellCheck={props.spellCheck}
+                    autoFocus={props.autoFocus}
                     value={this.state.value}
                     onChange={this.onChange}
                     onBlur={this.onValueChange}
                     onKeyUp={this.onKeyUp}
-                    readOnly={this.props.readOnly}
+                    readOnly={props.readOnly || props.disabled}
                 />
             </div>
         );
@@ -91,7 +93,8 @@ TextInput.defaultProps = {
     autoFocus: false,
     autoSelect: false,
     buffered: false,
-    readOnly: false
+    readOnly: false,
+    disabled: false
 };
 
 module.exports = TextInput;

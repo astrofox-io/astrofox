@@ -72,6 +72,12 @@ class App extends UIComponent {
             this.refs.stage.showLoading(false);
         });
 
+        Events.on('audio_tags', tags => {
+            if (tags && tags.artist) {
+                this.setState({ text: tags.artist + ' - ' + tags.title });
+            }
+        });
+
         Events.on('menu_action', action => {
             this.onMenuAction(action);
         });
@@ -150,8 +156,8 @@ class App extends UIComponent {
 
             case 'File/Save Video':
                 this.showModal(
-                    <VideoSettings key="canvas" onClose={this.hideModal} />,
-                    {title: 'VIDEO', showCloseButton: false, buttons: null}
+                    <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal} />,
+                    { title: 'VIDEO', buttons: null }
                 );
                 break;
 
@@ -234,10 +240,8 @@ class App extends UIComponent {
     }
 
     loadAudioFile(file) {
-        Application.loadAudioFile(file).then(tags => {
-            if (tags.artist) {
-                this.setState({text: tags.artist + ' - ' + tags.title});
-            }
+        Application.loadAudioFile(file).then(() => {
+            Application.player.play('audio');
         })
         .catch(() => {
             this.refs.stage.showLoading(false);

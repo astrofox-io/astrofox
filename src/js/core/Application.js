@@ -31,7 +31,7 @@ class Application extends EventEmitter {
         super();
     
         this.audioContext = new window.AudioContext();
-        this.audioFile = null;
+        this.audioFile = '';
     
         this.player = new Player(this.audioContext);
         this.stage = new Stage();
@@ -244,8 +244,9 @@ class Application extends EventEmitter {
                 Events.emit('audio_file_loaded');
 
                 this.audioFile = file;
+                this.loadAudioTags(file);
 
-                return this.loadAudioTags(file)
+                return file;
             })
             .catch(error => {
                 Events.emit('audio_file_loaded');
@@ -269,8 +270,6 @@ class Application extends EventEmitter {
 
                 sound.addNode(spectrum.analyzer);
 
-                player.play('audio');
-
                 resolve();
             }, this);
 
@@ -283,22 +282,17 @@ class Application extends EventEmitter {
     }
 
     loadAudioTags(file) {
-        return new Promise((resolve, reject) => {
-            let data = IO.readFileAsBlob(file);
-
+        IO.readFileAsBlob(file).then(data => {
             id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(tags);
+                if (!err) {
+                    Events.emit('audio_tags', tags);
                 }
             });
         });
     }
 
     loadProject(file) {
-        IO.readFileCompressed(file).then(
+        return IO.readFileCompressed(file).then(
             data => {
                 this.loadControls(JSON.parse(data));
             },

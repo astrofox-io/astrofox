@@ -32,10 +32,6 @@ class TabPanel extends UIComponent {
             'tab-position-bottom': props.tabPosition === 'bottom'
         };
 
-        if (props.className) {
-            panelClass[props.className] = true;
-        }
-
         const tabClass = {
             'tabs': true,
             'tabs-horizontal': props.tabPosition === 'top' || props.tabPosition === 'bottom'
@@ -64,7 +60,7 @@ class TabPanel extends UIComponent {
         });
 
         return (
-            <div id={props.id} className={classNames(panelClass)}>
+            <div id={props.id} className={classNames(panelClass, props.className)}>
                 <div className={classNames(tabClass)}>
                     {tabs}
                 </div>

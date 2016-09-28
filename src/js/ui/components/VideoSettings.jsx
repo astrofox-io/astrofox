@@ -12,6 +12,7 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const DualRangeInput = require('../inputs/DualRangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
+const Button = require('../inputs/Button.jsx');
 const { Settings, Group, Row } = require('../components/Settings.jsx');
 
 const videoFormats = [
@@ -35,10 +36,11 @@ class VideoSettings extends UIComponent {
         super(props);
 
         this.state = Object.assign(
-            { isRunning: false },
             VideoSettings.defaultProps,
             props
         );
+
+        this.isRunning = false;
     }
 
     componentDidMount() {
@@ -70,36 +72,34 @@ class VideoSettings extends UIComponent {
     }
 
     onStart() {
-        if (this.state.isRunning) return;
+        if (!this.isRunning) {
+            this.isRunning = true;
 
+            Application.saveVideo(filename, this.state, () => {
+                this.isRunning = false;
+            });
+        }
+    }
+
+    onOpenVideoFile() {
         Window.showSaveDialog(
             filename => {
                 if (filename) {
-                    this.setState({ isRunning: true }, () => {
-                        Application.saveVideo(filename, this.state, () => {
-                            this.setState({ isRunning: false });
-                        });
-                    });
+                    this.setState({ videoFile: filename });
                 }
             },
             { defaultPath: 'video.mp4' }
         );
     }
 
-    onOpenVideoFile() {
-        Window.showSaveDialog(
-            filename => {
-                this.setState({ videoFile: filename });
-            }
-        );
-    }
-
     onOpenAudioFile() {
         Window.showOpenDialog(
             files => {
-                Application.loadAudioFile(files[0]).then(() => {
-                    this.setState({ audioFile: files[0] });
-                });
+                if (files) {
+                    Application.loadAudioFile(files[0]).then(() => {
+                        this.setState({ audioFile: Application.audioFile });
+                    });
+                }
             }
         );
     }
@@ -108,7 +108,7 @@ class VideoSettings extends UIComponent {
         const state = this.state,
             sound = Application.player.getSound('audio'),
             max = (sound) ? sound.getDuration() : 0,
-            canStart = (state.videoFile.length && state.audioFile.length),
+            canStart = (state.videoFile && state.audioFile),
             onStart = canStart ? this.onStart: null;
 
         const buttonClass = {
@@ -121,21 +121,27 @@ class VideoSettings extends UIComponent {
                 <Settings>
                     <Row label="Video File">
                         <TextInput
+                            className="flex"
+                            inputClassName="normal-text"
                             name="videoFile"
-                            width={140}
+                            width="100%"
                             value={state.videoFile}
+                            readOnly={true}
                             onChange={this.onChange}
                         />
-                        <span className="input-button icon-folder-open-empty" onClick={this.onOpenVideoFile} />
+                        <Button icon="icon-folder-open-empty" onClick={this.onOpenVideoFile} />
                     </Row>
                     <Row label="Audio File">
                         <TextInput
+                            className="flex"
+                            inputClassName="normal-text"
                             name="audioFile"
-                            width={140}
+                            width="100%"
                             value={state.audioFile}
+                            readOnly={true}
                             onChange={this.onChange}
                         />
-                        <span className="input-button icon-folder-open-empty" onClick={this.onOpenAudioFile} />
+                        <Button icon="icon-folder-open-empty" onClick={this.onOpenAudioFile} />
                     </Row>
                     <Row label="Video Format">
                         <SelectInput
@@ -180,8 +186,8 @@ class VideoSettings extends UIComponent {
                                 min={0}
                                 max={max}
                                 step={0.01}
-                                start={this.state.timeStart}
-                                end={this.state.timeEnd}
+                                start={state.timeStart}
+                                end={state.timeEnd}
                                 minRange={1}
                                 onChange={this.onChange}
                             />

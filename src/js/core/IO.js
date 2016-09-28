@@ -23,25 +23,26 @@ function readFileCompressed(file) {
 }
 
 function readFileAsBlob(file) {
-    let data = fs.readFileSync(file);
-
-    return new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) });
+    return readFile(file).then(data => {
+        return Promise.resolve(new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) }));
+    });
 }
 
 function readFileAsArrayBuffer(file) {
-    return new Promise((resolve, reject) => {
-        let reader = new FileReader(),
-            data = readFileAsBlob(file);
+    return readFileAsBlob(file).then(data => {
+        return new Promise((resolve, reject) => {
+            let reader = new FileReader();
 
-        reader.onload = (e) => {
-            resolve(e.target.result);
-        };
+            reader.onload = (e) => {
+                resolve(e.target.result);
+            };
 
-        reader.onerror = () => {
-            reject(data.error);
-        };
+            reader.onerror = () => {
+                reject(data.error);
+            };
 
-        reader.readAsArrayBuffer(data);
+            reader.readAsArrayBuffer(data);
+        });
     });
 }
 
