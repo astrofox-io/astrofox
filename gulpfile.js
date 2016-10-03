@@ -4,6 +4,7 @@ const gulp = require('gulp');
 const concat = require('gulp-concat');
 const cleancss = require('gulp-clean-css');
 const duration = require('gulp-duration');
+const glsl = require('gulp-glsl');
 const iconfont = require('gulp-iconfont');
 const less = require('gulp-less');
 const plumber = require('gulp-plumber');
@@ -19,8 +20,6 @@ const watchify = require('watchify');
 const envify = require('loose-envify/custom');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
-
-const glsl = require('./src/build/gulp-compile-shaders.js');
 
 /*** Configuration ***/
 
@@ -189,7 +188,7 @@ function buildIcons() {
 function buildShaders() {
     return gulp.src(config.glsl.src)
         .pipe(plumber())
-        .pipe(glsl())
+        .pipe(glsl({ format: 'object' }))
         .pipe(rename(config.glsl.filename))
         .pipe(plumber.stop())
         .pipe(gulp.dest(config.glsl.dest));
@@ -223,7 +222,7 @@ gulp.task('build-dev', ['set-dev', 'build-all']);
 
 gulp.task('build-prod', ['set-prod', 'build-all']);
 
-gulp.task('build-watch', ['set-dev', 'build-app-watch', 'build-css', 'build-shaders'], () => {
+gulp.task('build-watch', ['set-dev', 'build-css', 'build-shaders', 'build-app-watch'], () => {
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/glsl/**/*.glsl', ['build-shaders']);
 });
