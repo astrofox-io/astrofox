@@ -12,7 +12,7 @@ class RenderProcess extends Process {
     }
 
     start() {
-        let { fps, output } = this.options;
+        let { fps, outputFile } = this.options;
 
         this.process = this.spawn(
             this.command,
@@ -27,7 +27,7 @@ class RenderProcess extends Process {
                 '-pix_fmt', 'yuv420p',
                 '-f', 'mp4',
                 '-stats',
-                output
+                outputFile
             ]
         );
 

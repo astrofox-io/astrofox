@@ -31,11 +31,19 @@ void main() {
     
     vec2 choice;
     if (alen < blen) {
-        if (alen < clen) choice = a;
-        else choice = c;
+        if (alen < clen) {
+            choice = a;
+        }
+        else {
+            choice = c;
+        }
     } else {
-        if (blen < clen) choice = b;
-        else choice = c;
+        if (blen < clen) {
+            choice = b;
+        }
+        else {
+            choice = c;
+        }
     }
     
     choice.x += choice.y * 0.5;

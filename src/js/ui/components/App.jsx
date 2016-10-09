@@ -60,18 +60,6 @@ class App extends UIComponent {
            );
         });
 
-        Events.on('show_modal', content => {
-            this.showModal(content);
-        });
-
-        Events.on('audio_file_loading', () => {
-            this.refs.stage.showLoading(true);
-        });
-
-        Events.on('audio_file_loaded', () => {
-            this.refs.stage.showLoading(false);
-        });
-
         Events.on('audio_tags', tags => {
             if (tags && tags.artist) {
                 this.setState({ text: tags.artist + ' - ' + tags.title });
@@ -240,11 +228,17 @@ class App extends UIComponent {
     }
 
     loadAudioFile(file) {
+       let showLoading = this.refs.stage.showLoading;
+
+        showLoading(true);
+
         Application.loadAudioFile(file).then(() => {
+            showLoading(false);
+
             Application.player.play('audio');
         })
         .catch(() => {
-            this.refs.stage.showLoading(false);
+            showLoading(false);
         });
     }
 

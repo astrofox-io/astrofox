@@ -64,19 +64,23 @@ class ImageInput extends UIComponent {
     }
 
     loadImageFile(file) {
-        if (typeof file === 'string') {
-            file = IO.readFileAsBlob(file);
+        if (file instanceof File) {
+            file = file.path;
         }
 
-        if (!(/^image/.test(file.type))) return;
+        if (typeof file === 'string') {
+            return IO.readFileAsBlob(file).then(data => {
+                this.loadImageBlob(data);
+            });
+        }
+    }
 
-        let reader = new FileReader();
-
-        reader.onload = (e) => {
-            this.loadImage(e.target.result);
-        };
-
-        reader.readAsDataURL(file);
+    loadImageBlob(blob) {
+        if (/^image/.test(blob.type)) {
+            IO.readAsDataUrl(blob).then(data => {
+                this.loadImage(data);
+            });
+        }
     }
 
     getImage() {

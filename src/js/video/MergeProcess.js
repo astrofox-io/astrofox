@@ -2,7 +2,7 @@
 
 const Process = require('./Process');
 
-class AudioProcess extends Process {
+class MergeProcess extends Process {
     constructor(command, options) {
         super();
 
@@ -12,16 +12,16 @@ class AudioProcess extends Process {
     }
 
     start() {
-        let { audioFile, start, duration, outputFile } = this.options;
+        let { audioFile, videoFile, outputFile } = this.options;
 
         this.process = this.spawn(
             this.command,
             [
                 '-y',
+                '-i', videoFile,
                 '-i', audioFile,
-                '-ss', start,
-                '-t', duration,
-                '-acodec', 'copy',
+                '-codec', 'copy',
+                '-shortest',
                 outputFile
             ]
         );
@@ -30,4 +30,4 @@ class AudioProcess extends Process {
     }
 }
 
-module.exports = AudioProcess;
+module.exports = MergeProcess;

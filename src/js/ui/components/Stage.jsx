@@ -18,9 +18,11 @@ class Stage extends UIComponent {
     }
 
     componentDidMount() {
-        this.refs.stage.appendChild(
-            Application.stage.renderer.domElement
-        );
+        let canvas = Application.stage.renderer.domElement;
+
+        canvas.className = 'canvas';
+
+        this.refs.stage.appendChild(canvas);
     }
 
     onDragOver(e){

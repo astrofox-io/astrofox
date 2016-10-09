@@ -1,9 +1,13 @@
+# System files
 .DS_Store
+Thumbs.db
 *.swp
 *.iml
 *.bat
-.idea
-/bin
-/build
-node_modules
-app.config
+.idea/
+
+# App files
+/bin/
+/build/
+/node_modules/
+/app.config

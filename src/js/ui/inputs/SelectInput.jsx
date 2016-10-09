@@ -56,7 +56,7 @@ class SelectInput extends UIComponent {
             return (
                 <div
                     key={index}
-                    className={classNames('input-option', {'input-option-separator': item.separator})}
+                    className={classNames('input-option', {separator: item.separator})}
                     style={item.style}
                     onMouseDown={this.onItemClick.bind(this, item)}>
                     {item.name}

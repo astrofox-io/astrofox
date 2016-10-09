@@ -24,25 +24,44 @@ function readFileCompressed(file) {
 
 function readFileAsBlob(file) {
     return readFile(file).then(data => {
-        return Promise.resolve(new Blob([new Uint8Array(data).buffer], { type: mime.lookup(file) }));
+        return Promise.resolve(
+            new Blob(
+                [new Uint8Array(data).buffer],
+                { type: mime.lookup(file) }
+            )
+        );
     });
 }
 
-function readFileAsArrayBuffer(file) {
-    return readFileAsBlob(file).then(data => {
-        return new Promise((resolve, reject) => {
-            let reader = new FileReader();
+function readAsArrayBuffer(blob) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
 
-            reader.onload = (e) => {
-                resolve(e.target.result);
-            };
+        reader.onload = (e) => {
+            resolve(e.target.result);
+        };
 
-            reader.onerror = () => {
-                reject(data.error);
-            };
+        reader.onerror = () => {
+            reject(e.target.error);
+        };
 
-            reader.readAsArrayBuffer(data);
-        });
+        reader.readAsArrayBuffer(blob);
+    });
+}
+
+function readAsDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+
+        reader.onload = (e) => {
+            resolve(e.target.result);
+        };
+
+        reader.onerror = () => {
+            reject(e.target.error);
+        };
+
+        reader.readAsDataURL(blob);
     });
 }
 
@@ -61,6 +80,17 @@ function writeFileCompressed(file, data) {
     return compress(data).then(buffer => {
         return writeFile(file, buffer);
     })
+}
+
+function removeFile(file) {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(fs.unlinkSync(file));
+        }
+        catch(err) {
+            reject(err);
+        }
+    });
 }
 
 function toArrayBuffer(buffer) {
@@ -132,9 +162,11 @@ module.exports = {
     readFile,
     readFileCompressed,
     readFileAsBlob,
-    readFileAsArrayBuffer,
+    readAsArrayBuffer,
+    readAsDataUrl,
     writeFile,
     writeFileCompressed,
+    removeFile,
     toArrayBuffer,
     toBuffer,
     compress,

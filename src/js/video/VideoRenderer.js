@@ -1,9 +1,13 @@
 "use strict";
 
+const path = window.require('path');
+
 const EventEmitter = require('../core/EventEmitter');
 const RenderProcess = require('./RenderProcess');
 const AudioProcess = require('./AudioProcess');
+const MergeProcess = require('./MergeProcess');
 const { Logger } = require('../core/Global');
+const { removeFile } = require('../core/IO');
 
 const defaults = {
     fps: 29.97,
@@ -20,17 +24,20 @@ class VideoRenderer extends EventEmitter {
         this.started = false;
         this.completed = false;
         this.options = Object.assign({}, defaults, options);
-        //this.frames = options.fps * (options.timeEnd - options.timeEnd);
-        this.frames = 60;
-        this.currentFrame = 1;
 
-        let { command, fps } = this.options;
+        let { command, fps } = this.options,
+            duration = options.timeEnd - options.timeStart,
+            tempVideoFile = videoFile + '.video' + path.extname(videoFile),
+            tempAudioFile = videoFile + '.audio' + path.extname(audioFile);
+
+        this.currentFrame = options.fps * options.timeStart;
+        this.frames = this.currentFrame + (options.fps * duration);
 
         this.renderProcess = new RenderProcess(
             command,
             {
                 fps: fps,
-                output: videoFile + '.tmp'
+                outputFile: tempVideoFile
             }
         );
 
@@ -38,16 +45,31 @@ class VideoRenderer extends EventEmitter {
             command,
             {
                 audioFile: audioFile,
-                videoFile: videoFile + '.tmp',
-                output: videoFile
+                start: options.timeStart,
+                duration: duration,
+                outputFile: tempAudioFile
             }
         );
+
+        this.mergeProcess = new MergeProcess(
+            command,
+            {
+                videoFile: tempVideoFile,
+                audioFile: tempAudioFile,
+                outputFile: videoFile
+            }
+        );
+
+        this.mergeProcess.on('close', () => {
+            removeFile(tempVideoFile);
+            removeFile(tempAudioFile);
+        })
     }
 
     start() {
         let render = this.renderProcess;
 
-        render.on('data', data => {
+        render.on('stderr', data => {
             Logger.log(data.toString());
 
             if (!this.started) {
@@ -61,11 +83,25 @@ class VideoRenderer extends EventEmitter {
             Logger.timeEnd('video', 'Video created.');
 
             this.audioProcess.on('close', () => {
-                this.completed = true;
+                Logger.log('Audio created.');
 
-                Logger.log('Audio copied.');
+                this.mergeProcess.on('close', () => {
+                    Logger.log('Audio and video merged.');
 
-                this.emit('complete');
+                    this.completed = true;
+
+                    this.emit('complete');
+                });
+
+                this.mergeProcess.on('stderr', data => {
+                    Logger.log(data.toString());
+                });
+
+                this.mergeProcess.start();
+            });
+
+            this.audioProcess.on('stderr', data => {
+                Logger.log(data.toString());
             });
 
             this.audioProcess.start();
@@ -77,10 +113,11 @@ class VideoRenderer extends EventEmitter {
     }
 
     processFrame(image) {
-        console.log('Processing', this.currentFrame, '/', this.frames);
+        Logger.log('Processing', this.currentFrame, '/', this.frames);
+
         this.renderProcess.push(image);
 
-        if (this.currentFrame < this.frames) {
+        if (this.currentFrame <= this.frames) {
             this.currentFrame++;
             this.emit('ready');
         }

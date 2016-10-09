@@ -4,6 +4,7 @@ const Transform = window.require('stream').Transform;
 const spawn = window.require('child_process').spawn;
 
 const EventEmitter = require('../core/EventEmitter');
+const { Logger } = require('../core/Global');
 
 class Process extends EventEmitter {
     constructor() {
@@ -15,15 +16,25 @@ class Process extends EventEmitter {
     }
 
     spawn(command, args) {
-        console.log(command, args);
+        Logger.log(command, args);
 
         // Spawn process
         this.process = spawn(command, args);
 
         // Connect handlers
-        // FFmpeg outputs data to stderr instead of stdout
-        this.process.stderr.on('data', this.handleData.bind(this));
-        this.process.on('close', this.handleClose.bind(this));
+        this.process.stdout.on('data', data => {
+            this.emit('stdout', data);
+        });
+
+        this.process.stderr.on('data', data => {
+            this.emit('stderr', data);
+        });
+
+        this.process.on('close', () => {
+            this.completed = true;
+
+            this.emit('close');
+        });
 
         // Connect stream
         this.stream.pipe(this.process.stdin);
@@ -35,20 +46,6 @@ class Process extends EventEmitter {
 
     end() {
         this.stream.push(null);
-    }
-
-    handleData(data) {
-        if (!this.started) {
-            this.started = true;
-        }
-
-        this.emit('data', data);
-    }
-
-    handleClose() {
-        this.completed = true;
-
-        this.emit('close');
     }
 }
 

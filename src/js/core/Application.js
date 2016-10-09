@@ -61,6 +61,7 @@ class Application extends EventEmitter {
         };
 
         this.rendering = false;
+        this.bufferSource = null;
     }
 
     init() {
@@ -232,25 +233,22 @@ class Application extends EventEmitter {
     }
 
     loadAudioFile(file) {
-        Events.emit('audio_file_loading');
-
         this.player.stop('audio');
 
-        return IO.readFileAsArrayBuffer(file)
+        return IO.readFileAsBlob(file)
+            .then(blob => {
+                return IO.readAsArrayBuffer(blob);
+            })
             .then(data => {
                 return this.loadAudioData(data);
             })
             .then(() => {
-                Events.emit('audio_file_loaded');
-
                 this.audioFile = file;
                 this.loadAudioTags(file);
 
                 return file;
             })
             .catch(error => {
-                Events.emit('audio_file_loaded');
-
                 this.raiseError('Failed to load audio file.', error);
             });
     }
@@ -400,7 +398,7 @@ class Application extends EventEmitter {
         });
     }
 
-    saveVideo(filename, options) {
+    saveVideo(filename, options, callback) {
         let player = this.player,
             sound = player.getSound('audio');
 
@@ -424,6 +422,10 @@ class Application extends EventEmitter {
             renderer.on('complete', () => {
                 Logger.log('Render complete.');
 
+                if (callback) callback();
+
+                this.bufferSource = null;
+                player.stop('audio');
                 this.startRender();
             });
 
@@ -431,7 +433,7 @@ class Application extends EventEmitter {
             renderer.start();
         }
         else {
-            Events.emit('error', new Error('No audio loaded.'));
+            this.raiseError('No audio loaded.');
         }
 
         Logger.log('Video saved. (%s)', filename);

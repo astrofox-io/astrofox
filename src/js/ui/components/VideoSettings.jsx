@@ -15,6 +15,8 @@ const TextInput = require('../inputs/TextInput.jsx');
 const Button = require('../inputs/Button.jsx');
 const { Settings, Group, Row } = require('../components/Settings.jsx');
 
+const { formatTime } = require('../../util/format');
+
 const videoFormats = [
     'mp4',
     'webm'
@@ -36,18 +38,17 @@ class VideoSettings extends UIComponent {
         super(props);
 
         this.state = Object.assign(
+            { isRunning: false },
             VideoSettings.defaultProps,
             props
         );
-
-        this.isRunning = false;
     }
 
     componentDidMount() {
         let player = Application.player,
             sound = player.getSound('audio');
 
-        player.stop();
+        player.stop('audio');
 
         if (sound) {
             this.setState({ timeEnd: sound.getDuration() });
@@ -72,11 +73,11 @@ class VideoSettings extends UIComponent {
     }
 
     onStart() {
-        if (!this.isRunning) {
-            this.isRunning = true;
+        if (!this.state.isRunning) {
+            this.setState({ isRunning: true });
 
-            Application.saveVideo(filename, this.state, () => {
-                this.isRunning = false;
+            Application.saveVideo(this.state.videoFile, this.state, () => {
+                this.setState({ isRunning: false });
             });
         }
     }
@@ -93,14 +94,23 @@ class VideoSettings extends UIComponent {
     }
 
     onOpenAudioFile() {
+        let path = Application.audioFile;
+
         Window.showOpenDialog(
             files => {
                 if (files) {
                     Application.loadAudioFile(files[0]).then(() => {
-                        this.setState({ audioFile: Application.audioFile });
+                        let sound = Application.player.getSound('audio');
+
+                        this.setState({
+                            audioFile: Application.audioFile,
+                            timeStart: 0,
+                            timeEnd: sound.getDuration()
+                        });
                     });
                 }
-            }
+            },
+            { defaultPath: path }
         );
     }
 
@@ -146,7 +156,7 @@ class VideoSettings extends UIComponent {
                     <Row label="Video Format">
                         <SelectInput
                             name="videoFormat"
-                            width={140}
+                            width={80}
                             items={videoFormats}
                             value={state.videoFormat}
                             onChange={this.onChange}
@@ -155,7 +165,7 @@ class VideoSettings extends UIComponent {
                     <Row label="Video Resolution">
                         <SelectInput
                             name="resolution"
-                            width={140}
+                            width={80}
                             items={resolutionOptions}
                             value={state.resolution}
                             onChange={this.onChange}
@@ -164,7 +174,7 @@ class VideoSettings extends UIComponent {
                     <Row label="FPS">
                         <SelectInput
                             name="fps"
-                            width={140}
+                            width={80}
                             items={fpsOptions}
                             value={state.fps}
                             onChange={this.onChange}
@@ -173,10 +183,10 @@ class VideoSettings extends UIComponent {
                     <Row label="Time Range">
                         <NumberInput
                             name="timeStart"
-                            width={40}
+                            width={60}
                             min={0}
                             max={max}
-                            step={0.01}
+                            step={0.025}
                             value={state.timeStart}
                             onChange={this.onChange}
                         />
@@ -185,7 +195,7 @@ class VideoSettings extends UIComponent {
                                 name="timeRange"
                                 min={0}
                                 max={max}
-                                step={0.01}
+                                step={0.025}
                                 start={state.timeStart}
                                 end={state.timeEnd}
                                 minRange={1}
@@ -194,13 +204,16 @@ class VideoSettings extends UIComponent {
                         </div>
                         <NumberInput
                             name="timeEnd"
-                            width={40}
+                            width={60}
                             min={0}
                             max={max}
-                            step={0.01}
+                            step={0.025}
                             value={state.timeEnd}
                             onChange={this.onChange}
                         />
+                    </Row>
+                    <Row label=" ">
+                        {formatTime(state.timeStart, true, true)} - {formatTime(state.timeEnd, true, true)}
                     </Row>
                 </Settings>
                 <div className="buttons">
