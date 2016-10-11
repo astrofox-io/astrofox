@@ -169,7 +169,7 @@ class Application extends EventEmitter {
     }
 
     menuAction(action, menuItem, browserWindow, event) {
-        Events.emit('menu_action', action, !menuItem.checked);
+        Events.emit('menu_action', action);
     }
 
     render() {

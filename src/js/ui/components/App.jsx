@@ -26,6 +26,8 @@ const VideoSettings = require('./VideoSettings.jsx');
 const ControlPicker = require('./ControlPicker.jsx');
 const ModalWindow = require('./ModalWindow.jsx');
 
+const menuConfig = require('../../../conf/menu.json');
+
 class App extends UIComponent {
     constructor(props) {
         super(props);
@@ -253,7 +255,7 @@ class App extends UIComponent {
                 onDragOver={this.onDragDrop}>
                 <Preload />
                 <Header />
-                <MenuBar ref="menubar" onMenuAction={this.onMenuAction} />
+                <MenuBar ref="menubar" items={menuConfig} onMenuAction={this.onMenuAction} />
                 <div id="body">
                     <div id="viewport">
                         <Stage ref="stage" onFileDropped={this.loadAudioFile} />

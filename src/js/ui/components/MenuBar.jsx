@@ -4,7 +4,6 @@ const React = require('react');
 
 const UIComponent = require('../UIComponent');
 const MenuBarItem = require('./MenuBarItem.jsx');
-const menuConfig = require('../../../conf/menu.json');
 
 class MenuBar extends UIComponent {
     constructor(props) {
@@ -12,7 +11,7 @@ class MenuBar extends UIComponent {
 
         this.state = {
             activeIndex: -1,
-            items: menuConfig
+            items: props.items
         };
     }
 
@@ -77,5 +76,9 @@ class MenuBar extends UIComponent {
         );
     }
 }
+
+MenuBar.defaultProps = {
+    items: {}
+};
 
 module.exports = MenuBar;
