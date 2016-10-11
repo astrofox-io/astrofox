@@ -1,7 +1,7 @@
 .player {
     min-width: 500px;
     overflow: hidden;
-    padding: 10px 0;
+    padding: 10px 20px;
     background-color: @bg-level4-color;
     border-top: 1px solid lighten(@bg-level4-color, 6%);
     display: flex;
@@ -9,7 +9,7 @@
     align-items: center;
 
     .buttons {
-        margin: 0 20px;
+        margin-right: 20px;
     }
 
     .button {
@@ -49,10 +49,8 @@
     }
 
     .loop-button {
-        display: inline-block;
         font-size: 20px;
         line-height: 20px;
-        margin-right: 20px;
         color: @bg-level1-color;
     }
 
@@ -61,31 +59,31 @@
     }
 
     .volume {
+        display: flex;
+        margin-right: 20px;
+
         .slider {
-            vertical-align: middle;
-            display: inline-block;
             width: 100px;
+            margin-right: 8px;
+            vertical-align: middle;
         }
 
         .speaker {
             font-size: 20px;
             vertical-align: middle;
-            display: inline-block;
-            margin-left: 8px;
         }
     }
 
     .progress {
-        margin-left: 20px;
+        margin-right: 20px;
         flex: 1;
     }
 
     .time-info {
-        margin: 0 20px;
+        margin-right: 20px;
 
         .time-part {
             vertical-align: middle;
-            display: inline-block;
         }
 
         .current-time {
@@ -97,6 +95,7 @@
         }
 
         .split {
+            display: inline-block;
             height: 30px;
             border-right: 1px solid @base-color;
             margin: 0 8px;
