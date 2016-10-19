@@ -37,15 +37,16 @@ class LayersPanel extends UIComponent {
     }
 
     onLayerUpdate(index, name, val) {
-        let layer = this.state.layers[index],
+        let layers = this.state.layers,
+            layer = layers[index],
             obj = {};
 
         obj[name] = val;
         layer.update(obj);
 
-        this.forceUpdate(() => {
-            this.props.onLayerChanged(obj);
-        });
+        this.setState({ layers: layers });
+
+        this.props.onLayerChanged(obj);
     }
 
     onAddSceneClick() {
