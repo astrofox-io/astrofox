@@ -9,7 +9,7 @@ const {BrowserWindow} = electron;
 let win;
 
 function createWindow() {
-    //BrowserWindow.addDevToolsExtension('C:/Users/mike/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.0_0');
+    //BrowserWindow.addDevToolsExtension('C:/Users/mike/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0');
 
     // Create the browser window.
     win = new BrowserWindow({

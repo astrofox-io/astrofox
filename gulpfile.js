@@ -24,6 +24,7 @@ const buffer = require('vinyl-buffer');
 
 const config = {
     app: {
+        name: 'AstroFox',
         src: 'src/js/AstroFox.js',
         dest: 'build',
         filename: 'app.js'
@@ -61,7 +62,7 @@ const appBundle = browserify({
     entries: config.app.src,
     transform: [babelify],
     extensions: ['.js', '.jsx'],
-    standalone: 'AstroFox',
+    standalone: config.app.name,
     ignoreMissing: false,
     detectGlobals: false,
     cache: {},

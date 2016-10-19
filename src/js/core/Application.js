@@ -5,7 +5,6 @@ const { remote } = window.require('electron');
 const { Menu } = remote;
 
 const { Events, Logger } = require('./Global');
-const Window = require('./Window');
 const IO = require('./IO');
 const EventEmitter = require('../core/EventEmitter');
 const Player = require('../audio/Player');
@@ -25,24 +24,20 @@ const APP_NAME = 'Astrofox';
 const VERSION = '1.0';
 const APP_CONFIG_FILE = './app.config';
 const FPS_POLL_INTERVAL = 500;
+const DEFAULT_PROJECT = './resources/projects/default.afx';
 
 class Application extends EventEmitter {
     constructor() {
         super();
     
         this.audioContext = new window.AudioContext();
-        this.audioFile = '';
-    
         this.player = new Player(this.audioContext);
         this.stage = new Stage();
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
-    
-        this.player.on('play', this.updateAnalyzer, this);
-        this.player.on('pause', this.updateAnalyzer, this);
-        this.player.on('stop', this.updateAnalyzer, this);
+        this.audioFile = '';
+        this.rendering = false;
+        this.bufferSource = null;
 
-        this.config = Object.assign({}, appConfig);
-    
         this.frameData = {
             id: 0,
             time: 0,
@@ -60,8 +55,13 @@ class Application extends EventEmitter {
             stack: new Uint8Array(10)
         };
 
-        this.rendering = false;
-        this.bufferSource = null;
+        // Player events
+        this.player.on('play', this.updateAnalyzer, this);
+        this.player.on('pause', this.updateAnalyzer, this);
+        this.player.on('stop', this.updateAnalyzer, this);
+
+        // Default configuration
+        this.config = Object.assign({}, appConfig);
     }
 
     init() {
@@ -85,21 +85,15 @@ class Application extends EventEmitter {
 
             Menu.setApplicationMenu(menu);
         }
-        
-        // Default setup
-        let scene = this.stage.addScene();
-
-        scene.addElement(new DisplayLibrary.ImageDisplay());
-        scene.addElement(new DisplayLibrary.BarSpectrumDisplay());
-        scene.addElement(new DisplayLibrary.TextDisplay());
-
-        Events.emit('layers_update');
 
         // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
             this.raiseError(msg, err);
             return true;
         };
+
+        // Default project
+        this.newProject();
         
         // Start rendering
         this.startRender();
@@ -126,9 +120,9 @@ class Application extends EventEmitter {
     getFrameData() {
         let data = this.frameData;
 
-        data.fft = this.spectrum.getFrequencyData();
-        data.td = this.spectrum.getTimeData();
         data.playing = this.player.isPlaying();
+        data.fft = this.spectrum.getFrequencyData(data.playing);
+        data.td = this.spectrum.getTimeData(data.playing);
 
         return data;
     }
@@ -163,8 +157,6 @@ class Application extends EventEmitter {
                 spectrum.clearFrequencyData();
                 spectrum.clearTimeData();
             }
-
-            spectrum.enabled = sound.playing;
         }
     }
 
@@ -410,7 +402,6 @@ class Application extends EventEmitter {
             // Setup before rendering
             this.stopRender();
             player.stop('audio');
-            this.spectrum.enabled = true;
 
             // Handle events
             renderer.on('ready', () => {
@@ -458,6 +449,10 @@ class Application extends EventEmitter {
         .catch(error => {
             this.raiseError('Failed to save project file.', error);
         });
+    }
+
+    newProject() {
+        this.loadProject(DEFAULT_PROJECT);
     }
 
     raiseError(message, error) {

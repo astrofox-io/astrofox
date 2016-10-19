@@ -89,7 +89,7 @@ class App extends UIComponent {
     onMenuAction(action) {
         switch (action) {
             case 'File/New Project':
-                throw new Error('This is an error.');
+                Application.newProject();
                 break;
 
             case 'File/Open Project':

@@ -13,19 +13,18 @@ class SpectrumAnalyzer {
         this.analyzer = Object.assign(context.createAnalyser(), defaults);
         this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
         this.td = new Float32Array(this.analyzer.fftSize);
-        this.enabled = true;
     }
 
-    getFrequencyData() {
-        if (this.enabled) {
+    getFrequencyData(update) {
+        if (update) {
             this.analyzer.getByteFrequencyData(this.fft);
         }
 
         return this.fft;
     }
 
-    getTimeData() {
-        if (this.enabled) {
+    getTimeData(update) {
+        if (update) {
             this.analyzer.getFloatTimeDomainData(this.td);
         }
 
