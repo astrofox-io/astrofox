@@ -3,32 +3,43 @@
     "label": "File",
     "submenu": [
       {
-        "label": "New Project"
+        "label": "New Project",
+        "action": "new_project"
       },
       {
-        "label": "Open Project"
+        "label": "Open Project",
+        "action": "open_project"
       },
       {
-        "label": "Save Project"
+        "label": "Save Project",
+        "action": "save_project"
+      },
+      {
+        "label": "Save Project As",
+        "action": "save_project_as"
       },
       {
         "type": "separator"
       },
       {
-        "label": "Load Audio"
+        "label": "Load Audio",
+        "action": "load_audio"
       },
       {
-        "label": "Save Image"
+        "label": "Save Image",
+        "action": "save_image"
       },
       {
-        "label": "Save Video"
+        "label": "Save Video",
+        "action": "save_video"
       },
       {
         "type": "separator"
       },
       {
         "label": "Exit",
-        "role": "quit"
+        "role": "quit",
+        "action": "exit"
       }
     ]
   },
@@ -36,10 +47,12 @@
     "label": "Edit",
     "submenu": [
       {
-        "label": "Canvas"
+        "label": "Canvas",
+        "action": "edit_canvas"
       },
       {
-        "label": "Settings"
+        "label": "Settings",
+        "action": "edit_settings"
       }
     ]
   },
@@ -49,22 +62,26 @@
       {
         "label": "Control Dock",
         "type": "checkbox",
-        "checked": true
+        "checked": true,
+        "action": "view_control_dock"
       },
       {
         "label": "Player",
         "type": "checkbox",
-        "checked": true
+        "checked": true,
+        "action": "view_player"
       },
       {
         "label": "Spectrum Analyzer",
         "type": "checkbox",
-        "checked": true
+        "checked": true,
+        "action": "view_spectrum"
       },
       {
         "label": "Oscilloscope",
         "type": "checkbox",
-        "checked": true
+        "checked": true,
+        "action": "view_oscilloscope"
       }
     ]
   },
@@ -72,7 +89,8 @@
     "label": "Help",
     "submenu": [
       {
-        "label": "About"
+        "label": "About",
+        "action": "about"
       }
     ]
   }

@@ -25,10 +25,17 @@ class Display extends Component {
         this.initialized = !!options;
         this.owner = null;
         this.hasUpdate = false;
+        this.changed = false;
     }
 
     update(options) {
-        return this.hasUpdate = super.update(options);
+        this.hasUpdate = super.update(options);
+
+        if (!this.changed && this.hasUpdate) {
+            this.changed = true;
+        }
+
+        return this.hasUpdate;
     }
 
     toJSON() {

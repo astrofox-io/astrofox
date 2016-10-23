@@ -11,7 +11,7 @@ const ModalWindow = (props) => {
     if (props.buttons) {
         buttons = props.buttons.map((button, index) => {
             return (
-                <div key={index} className="button" onClick={props.onClose.bind(null, index)}>
+                <div key={index} className="button" onClick={props.onClose.bind(null, button)}>
                     {button}
                 </div>
             );

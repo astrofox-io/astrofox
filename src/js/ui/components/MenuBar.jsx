@@ -45,7 +45,7 @@ class MenuBar extends UIComponent {
         items.forEach(barItem => {
             if (barItem.submenu) {
                 barItem.submenu.forEach(menuItem => {
-                    if (action === barItem.label + '/' + menuItem.label) {
+                    if (action === menuItem.action) {
                         menuItem.checked = !menuItem.checked;
                         this.setState(items);
                     }

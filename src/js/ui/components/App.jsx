@@ -39,13 +39,7 @@ class App extends UIComponent {
     }
 
     componentWillMount() {
-        window.onmousedown = (e) => {
-            Events.emit('mousedown', e);
-        };
-
-        window.onmouseup = (e) => {
-            Events.emit('mouseup', e);
-        };
+        Application.init();
 
         Events.on('error', err => {
             this.showDialog({
@@ -71,10 +65,12 @@ class App extends UIComponent {
         Events.on('menu_action', action => {
             this.onMenuAction(action);
         });
+
+        Events.on('unsaved_changes', this.onUnsavedChanges);
     }
 
     componentDidMount() {
-        Application.init();
+        Application.startRender();
     }
 
     onClick() {
@@ -88,11 +84,11 @@ class App extends UIComponent {
 
     onMenuAction(action) {
         switch (action) {
-            case 'File/New Project':
+            case 'new_project':
                 Application.newProject();
                 break;
 
-            case 'File/Open Project':
+            case 'open_project':
                 Window.showOpenDialog(
                     files => {
                         if (files) {
@@ -107,18 +103,15 @@ class App extends UIComponent {
                 );
                 break;
 
-            case 'File/Save Project':
-                Window.showSaveDialog(
-                    filename => {
-                        if (filename) {
-                            Application.saveProject(filename);
-                        }
-                    },
-                    { defaultPath: 'project.afx' }
-                );
+            case 'save_project':
+                this.saveProject();
                 break;
 
-            case 'File/Load Audio':
+            case 'save_project_as':
+                this.saveProjectAs();
+                break;
+
+            case 'load_audio':
                 Window.showOpenDialog(
                     files => {
                         if (files) {
@@ -133,7 +126,7 @@ class App extends UIComponent {
                 );
                 break;
 
-            case 'File/Save Image':
+            case 'save_image':
                 Window.showSaveDialog(
                     filename => {
                         if (filename) {
@@ -144,43 +137,87 @@ class App extends UIComponent {
                 );
                 break;
 
-            case 'File/Save Video':
+            case 'save_video':
                 this.showModal(
                     <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal} />,
                     { title: 'VIDEO', buttons: null }
                 );
                 break;
 
-            case 'File/Exit':
+            case 'exit':
                 Window.close();
                 break;
 
-            case 'Edit/Canvas':
+            case 'edit_canvas':
                 this.showModal(
                     <CanvasSettings key="canvas" onClose={this.hideModal} />,
                     { title: 'CANVAS', buttons: null }
                 );
                 break;
 
-            case 'Edit/Settings':
+            case 'edit_settings':
                 this.showModal(
                     <AppSettings key="settings" onClose={this.hideModal} />,
                     { title: 'SETTINGS', buttons: null }
                 );
                 break;
 
-            case 'View/Control Dock':
+            case 'view_control_dock':
                 this.refs.dock.toggleDock();
                 this.refs.menubar.setCheckState(action);
                 break;
 
-            case 'Help/About':
+            case 'about':
                 this.showModal(
                     <About key="about" />,
                     { title: 'ABOUT' }
                 );
                 break;
         }
+    }
+
+    onUnsavedChanges(callback) {
+        this.showDialog(
+            {
+                title: 'UNSAVED CHANGES',
+                message: 'Do you want to save project changes before closing?',
+                buttons: ['Yes', 'No', 'Cancel']
+            },
+            button => {
+                if (button === 'Yes') {
+                    this.saveProject(callback);
+                }
+                else if (button == 'No') {
+                    callback();
+                }
+            }
+        );
+    }
+
+    saveProject(callback) {
+        let file = Application.projectFile;
+
+        if (file) {
+            Application.saveProject(file);
+
+            if (callback) callback();
+        }
+        else {
+            this.saveProjectAs(callback);
+        }
+    }
+
+    saveProjectAs(callback) {
+        Window.showSaveDialog(
+            filename => {
+                if (filename) {
+                    Application.saveProject(filename);
+
+                    if (callback) callback();
+                }
+            },
+            { defaultPath: 'project.afx' }
+        );
     }
 
     showModal(content, props) {
@@ -213,10 +250,14 @@ class App extends UIComponent {
         this.setState({ modals: modals });
     }
 
-    showDialog(props) {
+    showDialog(props, callback) {
         if (this.dialogShown) return;
 
-        props.onClose = () => { this.hideModal(); this.dialogShown = false; };
+        props.onClose = (button) => {
+            this.hideModal();
+            this.dialogShown = false;
+            if (callback) callback(button);
+        };
 
         this.showModal(
             <div className="dialog">

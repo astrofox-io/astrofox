@@ -35,8 +35,10 @@ class Application extends EventEmitter {
         this.stage = new Stage();
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.audioFile = '';
+        this.projectFile = '';
         this.rendering = false;
         this.bufferSource = null;
+        this.menu = null;
 
         this.frameData = {
             id: 0,
@@ -68,23 +70,32 @@ class Application extends EventEmitter {
         // Load config file
         this.loadConfig();
 
+        // Create menu
+        menuConfig.forEach(root => {
+            if (root.submenu) {
+                root.submenu.forEach(item => {
+                    if (!item.role && item.action) {
+                        item.click = this.menuAction;
+                    }
+                });
+            }
+        });
+
+        this.menu = Menu.buildFromTemplate(menuConfig);
+
         // Create menu for OSX
         if (process.platform === 'darwin') {
-            menuConfig.forEach(root => {
-                if (root.submenu) {
-                    root.submenu.forEach(item => {
-                        if (!item.role) {
-                            let action = `${root.label}/${item.label}`;
-                            item.click = this.menuAction.bind(this, action);
-                        }
-                    });
-                }
-            });
-
-            const menu = Menu.buildFromTemplate(menuConfig);
-
-            Menu.setApplicationMenu(menu);
+            Menu.setApplicationMenu(this.menu);
         }
+
+        // Window events
+        window.onmousedown = (e) => {
+            Events.emit('mousedown', e);
+        };
+
+        window.onmouseup = (e) => {
+            Events.emit('mouseup', e);
+        };
 
         // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
@@ -94,9 +105,6 @@ class Application extends EventEmitter {
 
         // Default project
         this.newProject();
-        
-        // Start rendering
-        this.startRender();
     }
 
     startRender() {
@@ -115,53 +123,6 @@ class Application extends EventEmitter {
 
         this.frameData.id = 0;
         this.rendering = false;
-    }
-
-    getFrameData() {
-        let data = this.frameData;
-
-        data.playing = this.player.isPlaying();
-        data.fft = this.spectrum.getFrequencyData(data.playing);
-        data.td = this.spectrum.getTimeData(data.playing);
-
-        return data;
-    }
-
-    updateFPS(now) {
-        let stats = this.stats;
-
-        if (!stats.time) {
-            stats.time = now;
-        }
-
-        stats.frames += 1;
-
-        if (now > stats.time + FPS_POLL_INTERVAL) {
-            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
-            stats.ms = (now - stats.time) / stats.frames;
-            stats.time = now;
-            stats.frames = 0;
-            stats.stack.copyWithin(1, 0);
-            stats.stack[0] = stats.fps;
-
-            Events.emit('tick', stats);
-        }
-    }
-
-    updateAnalyzer() {
-        let spectrum = this.spectrum,
-            sound = this.player.getSound('audio');
-
-        if (sound) {
-            if (!sound.paused) {
-                spectrum.clearFrequencyData();
-                spectrum.clearTimeData();
-            }
-        }
-    }
-
-    menuAction(action, menuItem, browserWindow, event) {
-        Events.emit('menu_action', action);
     }
 
     render() {
@@ -210,17 +171,17 @@ class Application extends EventEmitter {
     }
 
     loadConfig() {
-        if (!IO.fileExists(APP_CONFIG_FILE)) {
-            this.saveConfig(this.config);
-        }
-        else {
-            IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
+        if (IO.fileExists(APP_CONFIG_FILE)) {
+            return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
                 let config = JSON.parse(data);
 
                 Logger.log('Config file loaded.', config);
 
                 this.config = Object.assign({}, appConfig, config);
             });
+        }
+        else {
+            this.saveConfig(this.config);
         }
     }
 
@@ -272,7 +233,7 @@ class Application extends EventEmitter {
     }
 
     loadAudioTags(file) {
-        IO.readFileAsBlob(file).then(data => {
+        return IO.readFileAsBlob(file).then(data => {
             id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
                 if (!err) {
                     Events.emit('audio_tags', tags);
@@ -285,11 +246,21 @@ class Application extends EventEmitter {
         return IO.readFileCompressed(file).then(
             data => {
                 this.loadControls(JSON.parse(data));
+                this.resetChanges();
+
+                this.projectFile = file;
+
+                Events.emit('project_loaded');
             },
             error => {
                 if (error.message.indexOf('incorrect header check') > -1) {
                     IO.readFile(file).then(data => {
                         this.loadControls(JSON.parse(data));
+                        this.resetChanges();
+
+                        this.projectFile = file;
+
+                        Events.emit('project_loaded');
                     })
                     .catch(error => {
                         this.raiseError('Invalid project file.', error);
@@ -344,8 +315,6 @@ class Application extends EventEmitter {
                 }
             });
 
-            Events.emit('layers_update');
-
             if (data.stage) {
                 this.stage.update(data.stage.options);
             }
@@ -361,7 +330,7 @@ class Application extends EventEmitter {
     saveConfig(config, callback) {
         let data = JSON.stringify(config);
 
-        IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
+        return IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
             Logger.log('Config file saved.', config);
 
             Object.assign(this.config, config);
@@ -443,8 +412,12 @@ class Application extends EventEmitter {
             scenes: sceneData
         });
 
-        IO.writeFileCompressed(file, data).then(() => {
+        return IO.writeFileCompressed(file, data).then(() => {
             Logger.log('Project saved. (%s)', file);
+
+            this.resetChanges();
+
+            this.projectFile = file;
         })
         .catch(error => {
             this.raiseError('Failed to save project file.', error);
@@ -452,7 +425,69 @@ class Application extends EventEmitter {
     }
 
     newProject() {
-        this.loadProject(DEFAULT_PROJECT);
+        if (this.stage.hasChanges()) {
+            Events.emit('unsaved_changes', () => {
+                this.loadProject(DEFAULT_PROJECT).then(() => {
+                    this.projectFile = '';
+                });
+            });
+        }
+        else {
+            this.loadProject(DEFAULT_PROJECT).then(() => {
+                this.projectFile = '';
+            });
+        }
+    }
+
+    getFrameData() {
+        let data = this.frameData;
+
+        data.playing = this.player.isPlaying();
+        data.fft = this.spectrum.getFrequencyData(data.playing);
+        data.td = this.spectrum.getTimeData(data.playing);
+
+        return data;
+    }
+
+    updateFPS(now) {
+        let stats = this.stats;
+
+        if (!stats.time) {
+            stats.time = now;
+        }
+
+        stats.frames += 1;
+
+        if (now > stats.time + FPS_POLL_INTERVAL) {
+            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.ms = (now - stats.time) / stats.frames;
+            stats.time = now;
+            stats.frames = 0;
+            stats.stack.copyWithin(1, 0);
+            stats.stack[0] = stats.fps;
+
+            Events.emit('tick', stats);
+        }
+    }
+
+    updateAnalyzer() {
+        let spectrum = this.spectrum,
+            sound = this.player.getSound('audio');
+
+        if (sound) {
+            if (!sound.paused) {
+                spectrum.clearFrequencyData();
+                spectrum.clearTimeData();
+            }
+        }
+    }
+
+    menuAction(menuItem, browserWindow, event) {
+        Events.emit('menu_action', menuItem.action);
+    }
+
+    resetChanges() {
+        this.stage.resetChanges();
     }
 
     raiseError(message, error) {

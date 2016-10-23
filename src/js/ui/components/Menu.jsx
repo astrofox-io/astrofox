@@ -16,6 +16,7 @@ const Menu = (props) => {
                     key={index}
                     label={item.label}
                     checked={item.checked}
+                    disabled={item.disabled}
                     onClick={props.onMenuItemClick.bind(null, item)}
                 />
             );

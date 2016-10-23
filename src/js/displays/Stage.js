@@ -54,6 +54,8 @@ class Stage extends Display {
 
         scene.addToStage(this);
 
+        this.changed = true;
+
         return scene;
     }
 
@@ -63,12 +65,16 @@ class Stage extends Display {
         scene.owner = null;
 
         scene.removeFromStage(this);
+
+        this.changed = true;
     }
 
     shiftScene(scene, i) {
         let index = this.scenes.indexOf(scene);
 
         this.scenes.swapNodes(index, index + i);
+
+        this.changed = true;
     }
 
     getScenes() {
@@ -79,10 +85,36 @@ class Stage extends Display {
         this.scenes.nodes.forEach(scene => {
             this.removeScene(scene);
         });
+
+        this.changed = true;
     }
 
     hasScenes() {
         return this.scenes.nodes.size > 0;
+    }
+
+    hasChanges() {
+        if (this.changed) {
+            return true;
+        }
+
+        let changes = false;
+
+        this.scenes.nodes.forEach(scene => {
+            if (!changes && scene.hasChanges()) {
+                changes = true;
+            }
+        });
+
+        return changes;
+    }
+
+    resetChanges() {
+        this.changed = false;
+
+        this.scenes.nodes.forEach(scene => {
+            scene.resetChanges();
+        });
     }
 
     getSize() {

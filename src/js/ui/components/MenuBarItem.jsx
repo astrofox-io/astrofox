@@ -26,9 +26,7 @@ class MenuBarItem extends UIComponent {
     }
 
     onMenuItemClick(item) {
-        let action = this.props.label + '/' + item.label;
-        
-        this.props.onMenuItemClick(action, item.checked);
+        this.props.onMenuItemClick(item.action, item.checked);
     }
 
     render() {

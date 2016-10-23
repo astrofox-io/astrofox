@@ -131,7 +131,7 @@ class LayersPanel extends UIComponent {
     getActiveScene() {
         let layer = this.getActiveLayer();
 
-        return (this.state.activeIndex >= 0) ? ((layer instanceof Scene) ? layer : layer.owner) : null;
+        return (layer && this.state.activeIndex >= 0) ? ((layer instanceof Scene) ? layer : layer.owner) : null;
     }
 
     setActiveLayer(obj) {
@@ -145,6 +145,10 @@ class LayersPanel extends UIComponent {
                 props.onLayerSelected(this.getActiveLayer());
             }
         });
+    }
+
+    setActiveIndex(index) {
+        this.setState({ activeIndex: index });
     }
 
     updateLayers(callback) {

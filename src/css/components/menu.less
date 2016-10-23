@@ -1,34 +1,3 @@
-.menu-panel {
-    display: flex;
-    flex-direction: row;
-
-    .nav {
-        flex: 1;
-        width: 200px;
-        background-color: @bg-level3-color;
-
-        .tab {
-            color: @text-level1-color;
-            padding: 8px;
-            border-bottom: 1px solid @base-color;
-            cursor: default;
-
-            &:hover {
-                color: @text-color;
-            }
-        }
-
-        .tab-active {
-            color: @text-color;
-            background-color: @base-color;
-        }
-    }
-
-    .base {
-        flex: 1;
-    }
-}
-
 .menubar {
     font-family: @font-family;
     font-size: @font-normal;
@@ -110,13 +79,13 @@
             color: @text-color;
         }
 
-        .begin-group:before {
-            content: "\0020";
-            border-top: 1px solid darken(@border-color, 6%);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .disabled {
+            color: @text-level2-color;
+        }
+
+        .disabled:hover {
+            color: @text-level2-color;
+            background-color: transparent;
         }
     }
 }

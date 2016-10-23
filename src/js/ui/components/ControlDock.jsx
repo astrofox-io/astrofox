@@ -19,6 +19,11 @@ class ControlDock extends UIComponent {
     
     componentDidMount() {
         Events.on('layers_update', this.updateLayers);
+
+        Events.on('project_loaded', () => {
+            this.updateLayers();
+            this.refs.layers.setActiveIndex(0);
+        });
     }
 
     componentWillUnmount() {

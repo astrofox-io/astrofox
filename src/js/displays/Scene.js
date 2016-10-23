@@ -119,6 +119,8 @@ class Scene extends Display {
         }
 
         this.updatePasses();
+
+        this.changed = true;
     }
 
     removeElement(obj) {
@@ -140,6 +142,8 @@ class Scene extends Display {
         }
 
         this.updatePasses();
+
+        this.changed = true;
     }
 
     shiftElement(obj, i) {
@@ -157,6 +161,8 @@ class Scene extends Display {
         if (nodes.swapNodes(index, index + i)) {
             this.updatePasses();
         }
+
+        this.changed = true;
     }
 
     updatePasses() {
@@ -255,6 +261,30 @@ class Scene extends Display {
             displays: displays,
             effects: effects
         };
+    }
+
+    hasChanges() {
+        if (this.changed) {
+            return true;
+        }
+
+        let changes = false;
+
+        this.displays.nodes.forEach(display => {
+            if (!changes && display.changed) {
+                changes = true;
+            }
+        });
+
+        return changes;
+    }
+
+    resetChanges() {
+        this.changed = false;
+
+        this.displays.nodes.forEach(display => {
+            display.changed = false;
+        });
     }
 }
 
