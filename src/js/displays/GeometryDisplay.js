@@ -101,6 +101,8 @@ class GeometryDisplay extends Display {
     }
 
     renderToScene(scene, data) {
+        if (!data.hasUpdate) return;
+
         let mesh = this.mesh,
             options = this.options,
             fft = this.parser.parseFFT(data.fft),

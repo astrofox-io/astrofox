@@ -1,6 +1,6 @@
 const electron = require('electron');
 // Module to control application life.
-const {app} = electron;
+const {app, globalShortcut} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
 
@@ -8,9 +8,11 @@ const {BrowserWindow} = electron;
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
-function createWindow() {
-    //BrowserWindow.addDevToolsExtension('C:/Users/mike/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0');
+function getEnvironment() {
+    return process.env.NODE_ENV || 'development';
+}
 
+function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         show: false,
@@ -24,7 +26,9 @@ function createWindow() {
             webSecurity: false,
             webgl: true,
             textAreasAreResizable: false,
-            experimentalCanvasFeatures: true
+            experimentalCanvasFeatures: true,
+            backgroundThrottling: false,
+            devTools: getEnvironment() === 'development'
         },
         titleBarStyle: 'hidden-inset'
     });
@@ -34,10 +38,23 @@ function createWindow() {
 
     // Show window only when ready
     win.on('ready-to-show', () => {
+        if (getEnvironment() !== 'development') {
+            // Disable devtools shortcut
+            globalShortcut.register('CommandOrControl+Shift+I', () => {
+            });
+
+            // Auto close devtools if opened
+            win.webContents.on('devtools-opened', () => {
+                win.webContents.closeDevTools();
+            });
+        }
+
         win.show();
 
         // Open the devtools
-        win.webContents.openDevTools({ detach: true });
+        if (getEnvironment() === 'development') {
+            win.webContents.openDevTools({detach: true});
+        }
     });
 
     // Emitted when the window is closed.
@@ -73,7 +90,9 @@ app.commandLine.appendSwitch('enable-precise-memory-info');
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -90,4 +109,9 @@ app.on('activate', () => {
     if (win === null) {
         createWindow();
     }
+});
+
+app.on('will-quit', () => {
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll();
 });

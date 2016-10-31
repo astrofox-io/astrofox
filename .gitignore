@@ -2,12 +2,14 @@
 .DS_Store
 Thumbs.db
 *.swp
-*.iml
-*.bat
+
+# IDE files
 .idea/
+*.iml
 
 # App files
 /bin/
 /build/
 /node_modules/
 /app.config
+*.bat

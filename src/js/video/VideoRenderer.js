@@ -37,6 +37,7 @@ class VideoRenderer extends EventEmitter {
             command,
             {
                 fps: fps,
+                format: 'mp4',
                 outputFile: tempVideoFile
             }
         );
@@ -122,7 +123,7 @@ class VideoRenderer extends EventEmitter {
             this.emit('ready');
         }
         else {
-            this.renderProcess.end();
+            this.renderProcess.push(null);
         }
     }
 }

@@ -153,7 +153,7 @@ class Application extends EventEmitter {
         source.connect(spectrum.analyzer);
 
         source.onended = () => {
-            data = this.getFrameData();
+            data = this.getFrameData(true);
             data.delta = 1000 / fps;
 
             stage.render(data, () => {
@@ -344,7 +344,7 @@ class Application extends EventEmitter {
 
     saveImage(filename) {
         let stage = this.stage,
-            data = this.getFrameData();
+            data = this.getFrameData(true);
 
         stage.renderFrame(data, () => {
             stage.getImage(buffer => {
@@ -439,12 +439,13 @@ class Application extends EventEmitter {
         }
     }
 
-    getFrameData() {
-        let data = this.frameData;
+    getFrameData(forceUpdate) {
+        let data = this.frameData,
+            update = !!forceUpdate || this.player.isPlaying();
 
-        data.playing = this.player.isPlaying();
-        data.fft = this.spectrum.getFrequencyData(data.playing);
-        data.td = this.spectrum.getTimeData(data.playing);
+        data.fft = this.spectrum.getFrequencyData(update);
+        data.td = this.spectrum.getTimeData(update);
+        data.hasUpdate = update;
 
         return data;
     }

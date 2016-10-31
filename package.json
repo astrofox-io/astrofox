@@ -22,7 +22,7 @@
     "babel-preset-es2015-node6": "^0.3.0",
     "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
-    "browserify": "^13.0.1",
+    "browserify": "^13.1.1",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.13",
     "gulp-duration": "0.0.0",

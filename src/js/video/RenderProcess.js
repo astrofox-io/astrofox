@@ -4,18 +4,13 @@ const Process = require('./Process');
 
 class RenderProcess extends Process {
     constructor(command, options) {
-        super();
-
-        this.command = command;
-        this.options = options;
-        this.process = null;
+        super(command, options);
     }
 
     start() {
-        let { fps, outputFile } = this.options;
+        let { fps, format, outputFile } = this.options;
 
-        this.process = this.spawn(
-            this.command,
+        super.start(
             [
                 '-y',
                 '-r', fps,
@@ -25,13 +20,11 @@ class RenderProcess extends Process {
                 '-vcodec', 'libx264',
                 '-movflags', '+faststart',
                 '-pix_fmt', 'yuv420p',
-                '-f', 'mp4',
+                '-f', format,
                 '-stats',
                 outputFile
             ]
         );
-
-        this.emit('start');
     }
 }
 

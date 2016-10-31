@@ -7,19 +7,21 @@ const EventEmitter = require('../core/EventEmitter');
 const { Logger } = require('../core/Global');
 
 class Process extends EventEmitter {
-    constructor() {
+    constructor(command, options) {
         super();
 
+        this.command = command;
+        this.options = options;
+
         this.stream = new Transform();
-        this.started = false;
-        this.completed = false;
+        this.process = null;
     }
 
-    spawn(command, args) {
-        Logger.log(command, args);
+    start(args) {
+        Logger.log(this.command, args);
 
         // Spawn process
-        this.process = spawn(command, args);
+        this.process = spawn(this.command, args);
 
         // Connect handlers
         this.process.stdout.on('data', data => {
@@ -30,22 +32,22 @@ class Process extends EventEmitter {
             this.emit('stderr', data);
         });
 
-        this.process.on('close', () => {
-            this.completed = true;
+        this.process.on('close', code => {
+            this.emit('close', code);
+        });
 
-            this.emit('close');
+        this.process.on('error', err => {
+            this.emit('error', err);
         });
 
         // Connect stream
         this.stream.pipe(this.process.stdin);
+
+        this.emit('start');
     }
 
     push(data) {
         this.stream.push(data);
-    }
-
-    end() {
-        this.stream.push(null);
     }
 }
 
