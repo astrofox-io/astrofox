@@ -13,7 +13,12 @@ const Button = (props) => {
     }
 
     return (
-        <span className={classNames(classes)} onClick={props.onClick}>{props.text}</span>
+        <span
+            className={classNames(classes)}
+            title={props.title}
+            onClick={props.onClick}>
+            {props.text}
+        </span>
     );
 };
 

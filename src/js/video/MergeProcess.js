@@ -1,10 +1,12 @@
 'use strict';
 
-const Process = require('./Process');
+const Process = require('./../core/Process');
 
 class MergeProcess extends Process {
     constructor(command, options) {
-        super(command, options);
+        super(command);
+
+        this.options = options;
     }
 
     start() {

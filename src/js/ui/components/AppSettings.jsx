@@ -6,13 +6,16 @@ const classNames = require('classnames');
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 const { Events } = require('../../core/Global');
+
 const ListInput = require('../inputs/ListInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput');
+const Button  = require('../inputs/Button.jsx');
 const TabPanel = require('../layout/TabPanel.jsx');
 const Tab = require('../layout/Tab.jsx');
 const { Settings, Group, Row } = require('../components/Settings.jsx');
+const { getVersion, getFormats, getCodecs } = require('../../util/ffmpeg');
 
 class AppSettings extends UIComponent {
     constructor(props) {
@@ -37,6 +40,16 @@ class AppSettings extends UIComponent {
 
     onCancel() {
         this.props.onClose();
+    }
+
+    showFFmpegInfo() {
+        getVersion(this.state.ffmpegPath)
+            .then(version => {
+                Events.emit('message', 'FFmpeg version ' + version);
+            })
+            .catch(err => {
+                Application.raiseError('Invalid file.', err);
+            });
     }
 
     render() {
@@ -83,6 +96,7 @@ class AppSettings extends UIComponent {
                                         value={state.ffmpegPath}
                                         onChange={this.onChange}
                                     />
+                                    <Button icon="icon-info" onClick={this.showFFmpegInfo} title="Check version" />
                                 </Row>
                             </Group>
                         </Settings>

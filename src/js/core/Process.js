@@ -3,22 +3,20 @@
 const Transform = window.require('stream').Transform;
 const spawn = window.require('child_process').spawn;
 
-const EventEmitter = require('../core/EventEmitter');
-const { Logger } = require('../core/Global');
+const EventEmitter = require('./EventEmitter');
+const { Logger } = require('./Global');
 
 class Process extends EventEmitter {
-    constructor(command, options) {
+    constructor(command) {
         super();
 
         this.command = command;
-        this.options = options;
-
         this.stream = new Transform();
         this.process = null;
     }
 
     start(args) {
-        Logger.log(this.command, args);
+        Logger.log('Executing:', this.command, (args || []).join(' '));
 
         // Spawn process
         this.process = spawn(this.command, args);

@@ -25,6 +25,7 @@ const CanvasSettings = require('./CanvasSettings.jsx');
 const VideoSettings = require('./VideoSettings.jsx');
 const ControlPicker = require('./ControlPicker.jsx');
 const ModalWindow = require('./ModalWindow.jsx');
+const Dialog = require('./Dialog.jsx');
 
 const menuConfig = require('../../../conf/menu.json');
 
@@ -40,6 +41,12 @@ class App extends UIComponent {
 
     componentWillMount() {
         Application.init();
+
+        Events.on('message', message => {
+            this.showDialog({
+                message: message
+            });
+        });
 
         Events.on('error', err => {
             this.showDialog({
@@ -260,10 +267,7 @@ class App extends UIComponent {
         };
 
         this.showModal(
-            <div className="dialog">
-                <span className={classNames('icon', props.icon)}/>
-                <span className="message">{props.message}</span>
-            </div>,
+            <Dialog icon={props.icon} message={props.message} />,
             props
         );
 

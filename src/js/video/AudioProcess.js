@@ -1,10 +1,12 @@
 'use strict';
 
-const Process = require('./Process');
+const Process = require('./../core/Process');
 
 class AudioProcess extends Process {
     constructor(command, options) {
-        super(command, options);
+        super(command);
+
+        this.options = options;
     }
 
     start() {
