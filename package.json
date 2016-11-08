@@ -2,7 +2,7 @@
   "name": "astrofox",
   "description": "Make awesome music videos.",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "./src/app/main.js",
   "productName": "Astrofox",
   "private": true,
   "dependencies": {

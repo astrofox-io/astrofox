@@ -4,6 +4,8 @@ const {app, globalShortcut} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
 
+const path = require('path');
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -34,7 +36,7 @@ function createWindow() {
     });
 
     // and load the index.html of the app.
-    win.loadURL(`file://${__dirname}/index.html`);
+    win.loadURL(path.resolve(__dirname, '..', 'browser', 'index.html'));
 
     // Show window only when ready
     win.on('ready-to-show', () => {

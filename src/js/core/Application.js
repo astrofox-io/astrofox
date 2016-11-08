@@ -24,7 +24,7 @@ const APP_NAME = 'Astrofox';
 const VERSION = '1.0';
 const APP_CONFIG_FILE = './app.config';
 const FPS_POLL_INTERVAL = 500;
-const DEFAULT_PROJECT = './resources/projects/default.afx';
+const DEFAULT_PROJECT = IO.resolve(__dirname, 'resources/projects/default.afx');
 
 class Application extends EventEmitter {
     constructor() {
@@ -67,6 +67,8 @@ class Application extends EventEmitter {
     }
 
     init() {
+        Logger.log(APP_NAME, 'version', VERSION, __dirname);
+
         // Load config file
         this.loadConfig();
 

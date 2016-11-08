@@ -3,6 +3,7 @@
 const NodeBuffer = window.require('buffer').Buffer;
 const fs = window.require('fs');
 const zlib = window.require('zlib');
+const path = window.require('path');
 const mime = require('mime');
 
 function readFile(file) {
@@ -158,6 +159,10 @@ function fileExists(file) {
     return true;
 }
 
+function resolve() {
+    return path.resolve.apply(null, arguments);
+}
+
 module.exports = {
     readFile,
     readFileCompressed,
@@ -171,5 +176,6 @@ module.exports = {
     toBuffer,
     compress,
     decompress,
-    fileExists
+    fileExists,
+    resolve
 };

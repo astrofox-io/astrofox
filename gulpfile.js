@@ -26,16 +26,16 @@ const config = {
     app: {
         name: 'AstroFox',
         src: 'src/js/AstroFox.js',
-        dest: 'build',
+        dest: 'src/browser/build',
         filename: 'app.js'
     },
     vendor: {
-        dest: 'build',
+        dest: 'src/browser/build',
         filename: 'vendor.js'
     },
     css: {
         src: 'src/css/app.less',
-        dest: 'build',
+        dest: 'src/browser/build',
         sourcemap: '.'
     },
     icons: {
@@ -194,7 +194,20 @@ function buildShaders() {
         .pipe(gulp.dest(config.glsl.dest));
 }
 
+// Builds files for deployment
+function buildDeploy() {
+
+}
+
 /*** Tasks ***/
+
+gulp.task('set-dev', () => {
+    process.env.NODE_ENV = 'development';
+});
+
+gulp.task('set-prod', () => {
+    process.env.NODE_ENV = 'production';
+});
 
 gulp.task('build-vendor', buildVendor);
 
@@ -208,13 +221,7 @@ gulp.task('build-icons', buildIcons);
 
 gulp.task('build-shaders', buildShaders);
 
-gulp.task('set-dev', () => {
-    process.env.NODE_ENV = 'development';
-});
-
-gulp.task('set-prod', () => {
-    process.env.NODE_ENV = 'production';
-});
+gulp.task('build-deploy', buildDeploy);
 
 gulp.task('build-all', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
 
