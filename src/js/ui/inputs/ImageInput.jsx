@@ -7,7 +7,7 @@ const UIComponent = require('../UIComponent');
 const Window = require('../../core/Window');
 const IO = require('../../core/IO');
 
-const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const BLANK_IMAGE = require('../../../images/data/BlankGif.json');
 
 class ImageInput extends UIComponent {
     constructor(props) {

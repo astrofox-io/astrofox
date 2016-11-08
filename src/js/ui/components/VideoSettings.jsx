@@ -89,7 +89,7 @@ class VideoSettings extends UIComponent {
                     this.setState({ videoFile: filename });
                 }
             },
-            { defaultPath: 'video.mp4' }
+            { defaultPath: 'video.' + this.state.videoFormat }
         );
     }
 
@@ -129,7 +129,7 @@ class VideoSettings extends UIComponent {
         return (
             <div id="video-settings" className="settings-panel">
                 <Settings>
-                    <Row label="Video File">
+                    <Row label="Save Video To">
                         <TextInput
                             className="flex"
                             inputClassName="normal-text"

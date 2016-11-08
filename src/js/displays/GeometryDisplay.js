@@ -21,7 +21,7 @@ const shading = {
     Smooth: THREE.SmoothShading
 };
 
-const POINT_SPRITE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA00lEQVRYw92XsQ3EIAxFmYAqO13HDDdABmEbWkq2oKPLCrQ+n+Qiiox0IQQ796XfIEBPYIxtAMBI2jwJwKId2qMjuqArudCYpzl2JMCCXtEJfleiNctVgBc6QL8C7dEF8EZnuK5Me50C+C7YYJy2FkTr2DOMV+augwu4APcpHAPzCLDC/VpbAPbkU+tV2ueJPYCDeXIcgJ8I4DmAOBEgcgBlIkDhAOpEgKoSQPwKxINQ/BmKJyLxVCz+Gan4jsULEhUlmYqiVEVZrqIxUdGa/Xd3/AFAB1kjvlZTLAAAAABJRU5ErkJggg==';
+const POINT_SPRITE = require('../../images/data/PointSprite.json');
 const POINT_SIZE = 5;
 
 class GeometryDisplay extends Display {
@@ -36,6 +36,7 @@ class GeometryDisplay extends Display {
         let changed = super.update(options);
 
         if (changed) {
+            // Create new mesh
             if (options.shape !== undefined ||
                 options.material !== undefined ||
                 options.shading !== undefined ||
@@ -44,12 +45,14 @@ class GeometryDisplay extends Display {
                 options.edgeColor !== undefined) {
                 this.createMesh();
             }
+            // Change wireframe
             else if (options.wireframe !== undefined) {
                 if (this.options.material !== 'Points') {
                     this.material.wireframe = options.wireframe;
                     this.material.needsUpdate = true;
                 }
             }
+            // Change opacity
             else if (options.opacity !== undefined) {
                 this.material.opacity = options.opacity;
 
@@ -59,6 +62,7 @@ class GeometryDisplay extends Display {
 
                 this.material.needsUpdate = true;
             }
+            // Change color
             else if (options.color !== undefined) {
                 this.material.color = new THREE.Color().set(options.color);
 
@@ -68,6 +72,11 @@ class GeometryDisplay extends Display {
 
                 this.material.needsUpdate = true;
             }
+            // Change position
+            else if (options.x !== undefined|| options.y !== undefined || options.z !== undefined) {
+                this.mesh.position.set(this.options.x, this.options.y, this.options.z);
+            }
+            // Change visibility
             else if (options.enabled !== undefined) {
                 this.group.visible = options.enabled;
             }
@@ -238,6 +247,9 @@ class GeometryDisplay extends Display {
         }
 
         group.add(mesh);
+
+        // Set inital position
+        mesh.position.set(options.x, options.y, options.z);
 
         this.mesh = mesh;
         this.material = material;

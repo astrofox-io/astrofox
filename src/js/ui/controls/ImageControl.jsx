@@ -9,7 +9,7 @@ const ImageInput = require('../inputs/ImageInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const { Control, Row } = require('./Control.jsx');
 
-const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const BLANK_IMAGE = require('../../../images/data/BlankGif.json');
 
 class ImageControl extends UIComponent {
     constructor(props) {

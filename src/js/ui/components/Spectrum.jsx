@@ -69,7 +69,8 @@ Spectrum.defaultProps = {
     barWidth: -1,
     barSpacing: 1,
     shadowHeight: 0,
-    color: '#775FD8'
+    color: '#775FD8',
+    backgroundColor: '#FF0000'
 };
 
 module.exports = Spectrum;
