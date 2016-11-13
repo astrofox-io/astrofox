@@ -36,7 +36,13 @@ function createWindow() {
     });
 
     // and load the index.html of the app.
-    win.loadURL(path.resolve(__dirname, '..', 'browser', 'index.html'));
+    let url = require('url').format({
+      protocol: 'file',
+      slashes: true,
+      pathname: path.join(__dirname, '..', 'browser', 'index.html')
+    });
+
+    win.loadURL(url);
 
     // Show window only when ready
     win.on('ready-to-show', () => {

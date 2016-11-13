@@ -23,8 +23,8 @@ const menuConfig = require('../../conf/menu.json');
 const APP_NAME = 'Astrofox';
 const VERSION = '1.0';
 const APP_CONFIG_FILE = './app.config';
-const FPS_POLL_INTERVAL = 500;
 const DEFAULT_PROJECT = IO.resolve(__dirname, 'resources/projects/default.afx');
+const FPS_POLL_INTERVAL = 500;
 
 class Application extends EventEmitter {
     constructor() {

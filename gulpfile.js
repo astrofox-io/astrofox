@@ -26,16 +26,16 @@ const config = {
     app: {
         name: 'AstroFox',
         src: 'src/js/AstroFox.js',
-        dest: 'src/browser/build',
+        dest: 'src/browser/resources/js/',
         filename: 'app.js'
     },
     vendor: {
-        dest: 'src/browser/build',
+        dest: 'src/browser/resources/js/',
         filename: 'vendor.js'
     },
     css: {
         src: 'src/css/app.less',
-        dest: 'src/browser/build',
+        dest: 'src/browser/resources/css/',
         sourcemap: '.'
     },
     icons: {
