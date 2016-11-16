@@ -3,7 +3,6 @@
   "description": "Make awesome music videos.",
   "version": "1.0.0",
   "main": "./src/app/main.js",
-  "productName": "Astrofox",
   "private": true,
   "dependencies": {
     "classnames": "^2.2.5",

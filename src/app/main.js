@@ -5,6 +5,7 @@ const {app, globalShortcut} = electron;
 const {BrowserWindow} = electron;
 
 const path = require('path');
+const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -36,13 +37,13 @@ function createWindow() {
     });
 
     // and load the index.html of the app.
-    let url = require('url').format({
-      protocol: 'file',
-      slashes: true,
-      pathname: path.join(__dirname, '..', 'browser', 'index.html')
+    let index = url.format({
+        protocol: 'file',
+        slashes: true,
+        pathname: path.join(__dirname, '..', 'browser', 'index.html')
     });
 
-    win.loadURL(url);
+    win.loadURL(index);
 
     // Show window only when ready
     win.on('ready-to-show', () => {

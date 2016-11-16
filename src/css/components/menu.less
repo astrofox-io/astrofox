@@ -1,7 +1,7 @@
 .menubar {
     font-size: @font-normal;
-    color: @text-level1-color;
-    background-color: @bg-level2-color;
+    color: @text-color1;
+    background-color: @bg-color2;
     padding-left: 20px;
     height: 20px;
     position: relative;
@@ -19,7 +19,7 @@
 
         &.active {
             color: @base-color;
-            background-color: darken(@bg-level2-color, 6%);
+            background-color: darken(@bg-color2, 6%);
         }
 
         &:hover {
@@ -34,7 +34,7 @@
         left: 0;
         list-style: none;
         z-index: 1;
-        background-color: darken(@bg-level2-color, 6%);
+        background-color: darken(@bg-color2, 6%);
         border: 1px solid darken(@border-color, 6%);
         overflow: hidden;
 
@@ -79,11 +79,11 @@
         }
 
         .disabled {
-            color: @text-level2-color;
+            color: @text-color2;
         }
 
         .disabled:hover {
-            color: @text-level2-color;
+            color: @text-color2;
             background-color: transparent;
         }
     }
