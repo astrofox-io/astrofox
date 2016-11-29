@@ -63,17 +63,17 @@ class App extends UIComponent {
            );
         });
 
-        Events.on('audio_tags', tags => {
+        Events.on('audio-tags', tags => {
             if (tags && tags.artist) {
                 this.setState({ text: tags.artist + ' - ' + tags.title });
             }
         });
 
-        Events.on('menu_action', action => {
+        Events.on('menu-action', action => {
             this.onMenuAction(action);
         });
 
-        Events.on('unsaved_changes', this.onUnsavedChanges);
+        Events.on('unsaved-changes', this.onUnsavedChanges);
     }
 
     componentDidMount() {

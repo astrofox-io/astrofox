@@ -8,7 +8,7 @@ Thumbs.db
 *.iml
 
 # App files
-/src/browser/resources/css/app.css
+/src/browser/resources/css/
 /src/browser/resources/js/
 /node_modules/
 /app.config

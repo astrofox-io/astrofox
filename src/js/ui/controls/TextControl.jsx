@@ -54,7 +54,7 @@ class TextControl extends UIComponent {
 
     getSelectItems() {
         return fontOptions.map(item => {
-            return { name: item, value: item, style: { fontFamily: item } };
+            return { name: item.name, value: item.name, style: { fontFamily: item.name } };
         });
     }
 

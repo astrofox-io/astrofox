@@ -20,6 +20,8 @@ const envify = require('loose-envify/custom');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 
+const fonts = require('./src/conf/fonts.json');
+
 /*** Configuration ***/
 
 const config = {
@@ -42,12 +44,17 @@ const config = {
         src: 'src/svg/icons/*.svg',
         template: 'src/build/templates/icons.css.tpl',
         css: {
-            dest: 'resources/css/',
+            dest: 'src/browser/resources/css/',
             filename: 'icons.css'
         },
         font: {
             dest: 'resources/fonts/icons/'
         }
+    },
+    fonts: {
+        template: 'src/build/templates/fonts.css.tpl',
+        filename: 'fonts.css',
+        dest: 'src/browser/resources/css/'
     },
     glsl: {
         src: 'src/glsl/**/*.glsl',
@@ -155,7 +162,22 @@ function buildCss() {
         .pipe(gulp.dest(config.css.dest));
 }
 
-// Build font library and CSS file
+// Build CSS for fonts
+function buildFonts() {
+    let minify = (getEnvironment() === 'production') ? cleancss : util.noop;
+
+    return gulp.src(config.fonts.template)
+        .pipe(plumber())
+        .pipe(template({
+            fonts: fonts
+        }))
+        .pipe(minify())
+        .pipe(rename(config.fonts.filename))
+        .pipe(plumber.stop())
+        .pipe(gulp.dest(config.fonts.dest));
+}
+
+// Build icon font library and CSS file
 function buildIcons() {
     return gulp.src(config.icons.src)
         .pipe(iconfont({
@@ -219,17 +241,19 @@ gulp.task('build-css', buildCss);
 
 gulp.task('build-icons', buildIcons);
 
+gulp.task('build-fonts', buildFonts);
+
 gulp.task('build-shaders', buildShaders);
 
 gulp.task('build-deploy', buildDeploy);
 
-gulp.task('build-all', ['build-vendor', 'build-app', 'build-css', 'build-icons']);
+gulp.task('build-all', ['build-vendor', 'build-app', 'build-css', 'build-icons', 'build-fonts']);
 
 gulp.task('build-dev', ['set-dev', 'build-all']);
 
 gulp.task('build-prod', ['set-prod', 'build-all']);
 
-gulp.task('build-watch', ['set-dev', 'build-css', 'build-shaders', 'build-app-watch'], () => {
+gulp.task('build-watch', ['set-dev', 'build-shaders', 'build-css', 'build-app-watch'], () => {
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/glsl/**/*.glsl', ['build-shaders']);
 });

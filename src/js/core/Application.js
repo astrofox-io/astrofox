@@ -1,12 +1,12 @@
 'use strict';
 
 const id3 = require('id3js');
-const { remote } = window.require('electron');
-const { Menu } = remote;
+const remote = window.require('electron').remote;
 
 const { Events, Logger } = require('./Global');
 const IO = require('./IO');
-const EventEmitter = require('../core/EventEmitter');
+const EventEmitter = require('./EventEmitter');
+const AppUpdater = require('./AppUpdater');
 const Player = require('../audio/Player');
 const BufferedSound = require('../audio/BufferedSound');
 const SpectrumAnalyzer = require('../audio/SpectrumAnalyzer');
@@ -25,21 +25,27 @@ const VERSION = '1.0';
 const APP_CONFIG_FILE = './app.config';
 const DEFAULT_PROJECT = IO.resolve(__dirname, 'resources/projects/default.afx');
 const FPS_POLL_INTERVAL = 500;
+const UPDATE_SERVER_HOST = 'localhost:3333';
 
 class Application extends EventEmitter {
     constructor() {
         super();
+
+        remote.getCurrentWindow().removeAllListeners();
     
         this.audioContext = new window.AudioContext();
         this.player = new Player(this.audioContext);
         this.stage = new Stage();
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
+        this.updater = new AppUpdater(UPDATE_SERVER_HOST);
+
         this.audioFile = '';
         this.projectFile = '';
         this.rendering = false;
         this.bufferSource = null;
         this.menu = null;
 
+        // Frame render data
         this.frameData = {
             id: 0,
             time: 0,
@@ -48,7 +54,8 @@ class Application extends EventEmitter {
             td: null,
             playing: false
         };
-    
+
+        // Rendering statistics
         this.stats = {
             fps: 0,
             ms: 0,
@@ -83,11 +90,11 @@ class Application extends EventEmitter {
             }
         });
 
-        this.menu = Menu.buildFromTemplate(menuConfig);
+        this.menu = remote.Menu.buildFromTemplate(menuConfig);
 
         // Create menu for OSX
         if (process.platform === 'darwin') {
-            Menu.setApplicationMenu(this.menu);
+            remote.Menu.setApplicationMenu(this.menu);
         }
 
         // Window events
@@ -214,10 +221,10 @@ class Application extends EventEmitter {
                 spectrum = this.spectrum,
                 sound = new BufferedSound(this.audioContext);
 
-            Logger.timeStart('audio_data_load');
+            Logger.timeStart('audio-data-load');
 
             sound.on('load', () => {
-                Logger.timeEnd('audio_data_load', 'Audio data loaded.');
+                Logger.timeEnd('audio-data-load', 'Audio data loaded.');
 
                 player.load('audio', sound);
 
@@ -238,7 +245,7 @@ class Application extends EventEmitter {
         return IO.readFileAsBlob(file).then(data => {
             id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
                 if (!err) {
-                    Events.emit('audio_tags', tags);
+                    Events.emit('audio-tags', tags);
                 }
             });
         });
@@ -252,7 +259,7 @@ class Application extends EventEmitter {
 
                 this.projectFile = file;
 
-                Events.emit('project_loaded');
+                Events.emit('project-loaded');
             },
             error => {
                 if (error.message.indexOf('incorrect header check') > -1) {
@@ -262,7 +269,7 @@ class Application extends EventEmitter {
 
                         this.projectFile = file;
 
-                        Events.emit('project_loaded');
+                        Events.emit('project-loaded');
                     })
                     .catch(error => {
                         this.raiseError('Invalid project file.', error);
@@ -428,7 +435,7 @@ class Application extends EventEmitter {
 
     newProject() {
         if (this.stage.hasChanges()) {
-            Events.emit('unsaved_changes', () => {
+            Events.emit('unsaved-changes', () => {
                 this.loadProject(DEFAULT_PROJECT).then(() => {
                     this.projectFile = '';
                 });
@@ -486,7 +493,7 @@ class Application extends EventEmitter {
     }
 
     menuAction(menuItem, browserWindow, event) {
-        Events.emit('menu_action', menuItem.action);
+        Events.emit('menu-action', menuItem.action);
     }
 
     resetChanges() {
@@ -499,6 +506,10 @@ class Application extends EventEmitter {
         }
 
         Events.emit('error', message);
+    }
+
+    checkForUpdates() {
+        this.updater.checkForUpdates();
     }
 
     isRendering() {

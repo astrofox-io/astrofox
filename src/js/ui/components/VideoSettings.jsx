@@ -162,7 +162,7 @@ class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                     </Row>
-                    <Row label="Video Resolution">
+                    <Row label="Video Resolution" className="display-none">
                         <SelectInput
                             name="resolution"
                             width={80}

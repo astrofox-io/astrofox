@@ -1,3 +1,4 @@
+
 @font-face {
     font-family: 'Abel';
     font-style: normal;
@@ -15,18 +16,10 @@
 }
 
 @font-face {
-    font-family: 'Alegreya';
+    font-family: 'Bangers';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/alegreya.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-@font-face {
-    font-family: 'Arimo';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../fonts/arimo.woff2) format('woff2');
+    src: url(../fonts/bangers.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -55,14 +48,6 @@
 }
 
 @font-face {
-    font-family: 'Bangers';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../fonts/bangers.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-@font-face {
     font-family: 'Dynalight';
     font-style: normal;
     font-weight: 400;
@@ -87,18 +72,10 @@
 }
 
 @font-face {
-    font-family: 'Oswald';
+    font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/oswald.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-@font-face {
-    font-family: 'Oxygen';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../fonts/oxygen.woff2) format('woff2');
+    src: url(../fonts/playfair-display.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -111,10 +88,18 @@
 }
 
 @font-face {
-    font-family: 'Playfair Display';
+    font-family: 'Oswald';
     font-style: normal;
     font-weight: 400;
-    src: url(../fonts/playfair-display.woff2) format('woff2');
+    src: url(../fonts/oswald.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/oxygen.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -139,14 +124,6 @@
     font-style: normal;
     font-weight: 400;
     src: url(../fonts/roboto.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-@font-face {
-    font-family: 'Roboto Condensed';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../fonts/roboto-condensed.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 

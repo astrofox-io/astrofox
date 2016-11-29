@@ -18,20 +18,22 @@ class ControlDock extends UIComponent {
     }
     
     componentDidMount() {
-        Events.on('layers_update', this.updateLayers);
-
-        Events.on('project_loaded', () => {
-            this.updateLayers();
-            this.refs.layers.setActiveIndex(0);
-        });
+        Events.on('layers-update', this.updateLayers);
+        Events.on('project-loaded', this.onProjectLoaded);
     }
 
     componentWillUnmount() {
-        Events.off('layers_update', this.updateLayers);
+        Events.off('layers-update', this.updateLayers);
+        Events.off('project-loaded', this.onProjectLoaded);
     }
 
     onLayerSelected(layer) {
         this.refs.controls.focusControl(layer);
+    }
+
+    onProjectLoaded() {
+        this.updateLayers();
+        this.refs.layers.setActiveIndex(0);
     }
 
     onLayerChanged(layer) {
