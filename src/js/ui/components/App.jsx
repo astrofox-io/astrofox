@@ -122,7 +122,7 @@ class App extends UIComponent {
                 Window.showOpenDialog(
                     files => {
                         if (files) {
-                            Application.loadAudioFile(files[0]);
+                            this.loadAudioFile(files[0]);
                         }
                     },
                     {
