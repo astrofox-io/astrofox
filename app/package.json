@@ -1,0 +1,9 @@
+{
+  "name": "Astrofox",
+  "version": "1.0.0",
+  "productName": "Astrofox",
+  "description": "Make awesome music videos.",
+  "author": "Mike Cao",
+  "main": "root/main.js",
+  "private": true
+}

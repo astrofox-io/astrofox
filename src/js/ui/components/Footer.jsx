@@ -13,6 +13,10 @@ class Footer extends UIComponent {
         this.state = {
             fps: 0
         };
+
+        if (process.env.NODE_ENV === 'development') {
+            this.dev = true;
+        }
     }
 
     componentDidMount() {
@@ -28,10 +32,13 @@ class Footer extends UIComponent {
     }
 
     render() {
+        let memSize = (this.dev !== undefined) ?
+            formatSize(performance.memory.usedJSHeapSize,2) : null;
+
         return (
             <div id="footer">
                 <div className="left flex">{this.props.text}</div>
-                <div className="right">{formatSize(performance.memory.usedJSHeapSize,2)}</div>
+                <div className="right">{memSize}</div>
                 <div className="right">{this.state.fps} FPS</div>
                 <div className="right">v{process.versions.electron}</div>
             </div>

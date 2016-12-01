@@ -1,9 +1,22 @@
 {
   "name": "astrofox",
-  "description": "Make awesome music videos.",
   "version": "1.0.0",
-  "main": "./src/app/main.js",
+  "main": "app/root/main.js",
+  "productName": "Astrofox",
+  "description": "Make awesome music videos.",
+  "author": "Mike Cao",
   "private": true,
+  "build": {
+    "appId": "io.astrofox.astrofox",
+    "copyright": "Copyright (c) 2016 Mike Cao",
+    "asar": true,
+    "mac": {
+      "category": "public.app-category.video"
+    },
+    "win": {
+      "iconUrl": "http://astrofox.io/astrofox.ico"
+    }
+  },
   "dependencies": {
     "classnames": "^2.2.5",
     "id3js": "^1.1.3",
@@ -23,6 +36,8 @@
     "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
+    "electron": "^1.4.10",
+    "electron-builder": "^10.4.1",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.13",
     "gulp-duration": "0.0.0",

@@ -28,23 +28,23 @@ const config = {
     app: {
         name: 'AstroFox',
         src: 'src/js/AstroFox.js',
-        dest: 'src/browser/resources/js/',
+        dest: 'app/browser/resources/js/',
         filename: 'app.js'
     },
     vendor: {
-        dest: 'src/browser/resources/js/',
+        dest: 'app/browser/resources/js/',
         filename: 'vendor.js'
     },
     css: {
         src: 'src/css/app.less',
-        dest: 'src/browser/resources/css/',
+        dest: 'app/browser/resources/css/',
         sourcemap: '.'
     },
     icons: {
         src: 'src/svg/icons/*.svg',
         template: 'src/build/templates/icons.css.tpl',
         css: {
-            dest: 'src/browser/resources/css/',
+            dest: 'app/browser/resources/css/',
             filename: 'icons.css'
         },
         font: {
@@ -54,7 +54,7 @@ const config = {
     fonts: {
         template: 'src/build/templates/fonts.css.tpl',
         filename: 'fonts.css',
-        dest: 'src/browser/resources/css/'
+        dest: 'app/browser/resources/css/'
     },
     glsl: {
         src: 'src/glsl/**/*.glsl',
@@ -247,7 +247,7 @@ gulp.task('build-shaders', buildShaders);
 
 gulp.task('build-deploy', buildDeploy);
 
-gulp.task('build-all', ['build-vendor', 'build-app', 'build-css', 'build-icons', 'build-fonts']);
+gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-fonts', 'build-vendor', 'build-app']);
 
 gulp.task('build-dev', ['set-dev', 'build-all']);
 
