@@ -1,7 +1,10 @@
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
+const debug = require('debug')('astrofox');
 const { app, BrowserWindow, globalShortcut } = electron;
+
+if (require('./squirrel')) return;
 
 let win;
 
@@ -53,13 +56,13 @@ function createWindow() {
     win.loadURL(index);
 
     win.webContents.on('dom-ready', () => {
-        console.log('dom ready');
+        debug('dom ready');
         showWindow();
     });
 
     // Show window only when ready
     win.on('ready-to-show', () => {
-        console.log('ready to show window...');
+        debug('ready to show window...');
         showWindow();
     });
 

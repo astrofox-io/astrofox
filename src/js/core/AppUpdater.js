@@ -42,7 +42,8 @@ class AppUpdater extends EventEmitter {
 
         Logger.log('URL:', feedUrl);
 
-        autoUpdater.setFeedURL(feedUrl);
+        this.feedUrl = feedUrl;
+        this.initialized = false;
     }
 
     quitAndInstall() {
@@ -50,6 +51,10 @@ class AppUpdater extends EventEmitter {
     }
 
     checkForUpdates() {
+        if (!this.initialized) {
+            autoUpdater.setFeedURL(this.feedUrl);
+            this.initialized = true;
+        }
         autoUpdater.checkForUpdates();
     }
 }

@@ -142,7 +142,10 @@ function buildAppWatch() {
         appBundle.external(id);
     });
 
-    watchify(appBundle).on('update', ids => {
+    watchify(
+        appBundle, {
+            ignoreWatch: ['**/node_modules/**']
+        }).on('update', ids => {
         util.log(ids);
         build(appBundle, config.app.filename, config.app.dest);
     });
