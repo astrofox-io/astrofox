@@ -1,7 +1,7 @@
 {
-  "name": "astrofox",
+  "name": "Astrofox",
   "version": "1.0.0-beta.0",
-  "main": "app/root/main.js",
+  "main": "app/main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
   "author": "Mike Cao <mike@mikecao.com>",
@@ -14,7 +14,6 @@
   },
   "build": {
     "appId": "io.astrofox.astrofox",
-    "copyright": "Copyright (c) 2016 Mike Cao",
     "productName": "Astrofox",
     "asar": true,
     "mac": {
@@ -30,7 +29,7 @@
       "category": "AudioVideo"
     },
     "squirrelWindows": {
-      "iconUrl": "http://astrofox.io/astrofox.ico"
+      "iconUrl": "http://astrofox.io/icon.ico"
     }
   },
   "dependencies": {
@@ -53,10 +52,10 @@
     "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
-    "electron": "^1.4.10",
+    "electron": "^1.4.11",
     "electron-builder": "^10.6.0",
     "gulp": "^3.9.1",
-    "gulp-clean-css": "^2.0.13",
+    "gulp-clean-css": "^2.2.1",
     "gulp-duration": "0.0.0",
     "gulp-glsl": "^1.0.2",
     "gulp-iconfont": "^8.0.1",

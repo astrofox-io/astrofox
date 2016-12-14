@@ -2,6 +2,7 @@
 
 const id3 = require('id3js');
 const remote = window.require('electron').remote;
+const path = window.require('path');
 
 const { Events, Logger } = require('./Global');
 const IO = require('./IO');
@@ -22,7 +23,7 @@ const menuConfig = require('../../conf/menu.json');
 
 const APP_NAME = 'Astrofox';
 const VERSION = '1.0';
-const APP_CONFIG_FILE = './app.config';
+const APP_CONFIG_FILE = path.join(remote.app.getPath('userData'), 'app.config');
 const DEFAULT_PROJECT = IO.resolve(__dirname, 'resources/projects/default.afx');
 const FPS_POLL_INTERVAL = 500;
 const UPDATE_SERVER_HOST = 'localhost:3333';
@@ -184,7 +185,7 @@ class Application extends EventEmitter {
             return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
                 let config = JSON.parse(data);
 
-                Logger.log('Config file loaded.', config);
+                Logger.log('Config file loaded.', APP_CONFIG_FILE,  config);
 
                 this.config = Object.assign({}, appConfig, config);
             });
@@ -340,7 +341,7 @@ class Application extends EventEmitter {
         let data = JSON.stringify(config);
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
-            Logger.log('Config file saved.', config);
+            Logger.log('Config file saved.', APP_CONFIG_FILE, config);
 
             Object.assign(this.config, config);
 

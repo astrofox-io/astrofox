@@ -8,9 +8,9 @@ Thumbs.db
 *.iml
 
 # App files
+node_modules
 /dist/
 /app/browser/resources/css/
 /app/browser/resources/js/
-/node_modules/
 /app.config
 *.bat

@@ -1,10 +1,13 @@
 {
-  "name": "astrofox",
+  "name": "Astrofox",
   "version": "1.0.0-beta.0",
-  "main": "root/main.js",
+  "main": "main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
   "author": "Mike Cao <mike@mikecao.com>",
   "homepage": "http://astrofox.io",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "debug": "^2.3.3"
+  }
 }

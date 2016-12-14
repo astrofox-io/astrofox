@@ -4,7 +4,7 @@ const url = require('url');
 const debug = require('debug')('astrofox');
 const { app, BrowserWindow, globalShortcut } = electron;
 
-if (require('./squirrel')) return;
+if (require('./lib/squirrel')) return;
 
 let win;
 
@@ -48,7 +48,7 @@ function createWindow() {
 
     // Load app index
     let index = url.format({
-        pathname: path.join(__dirname, '..', 'browser', 'index.html'),
+        pathname: path.join(__dirname, 'browser', 'index.html'),
         protocol: 'file',
         slashes: true
     });
@@ -74,11 +74,6 @@ function createWindow() {
 
 function showWindow() {
     win.show();
-
-    // Open the devtools
-    if (getEnvironment() === 'development') {
-        win.webContents.openDevTools({detach: true});
-    }
 }
 
 // Chrome flags
@@ -100,7 +95,6 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 
 // Memory profiling
 app.commandLine.appendSwitch('enable-precise-memory-info');
-
 
 app.on('ready', () => {
     createWindow();
