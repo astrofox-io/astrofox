@@ -132,9 +132,9 @@ archiver-utils@^1.3.0:
     normalize-path "^2.0.0"
     readable-stream "^2.0.0"
 
-archiver@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/archiver/-/archiver-1.2.0.tgz#fb5c6af5443b3fa6a426344753bad2a7b444aadd"
+archiver@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/archiver/-/archiver-1.3.0.tgz#4f2194d6d8f99df3f531e6881f14f15d55faaf22"
   dependencies:
     archiver-utils "^1.3.0"
     async "^2.0.0"
@@ -143,6 +143,7 @@ archiver@^1.2.0:
     lodash "^4.8.0"
     readable-stream "^2.0.0"
     tar-stream "^1.5.0"
+    walkdir "^0.0.11"
     zip-stream "^1.1.0"
 
 archy@^1.0.0:
@@ -924,9 +925,9 @@ classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
-clean-css@^3.4.21:
-  version "3.4.21"
-  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-3.4.21.tgz#2101d5dbd19d63dbc16a75ebd570e7c33948f65b"
+clean-css@^3.4.23:
+  version "3.4.23"
+  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-3.4.23.tgz#604fbbca24c12feb59b02f00b84f1fb7ded6d001"
   dependencies:
     commander "2.8.x"
     source-map "0.4.x"
@@ -1206,7 +1207,13 @@ debug@0.7.4:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-0.7.4.tgz#06e1ea8082c2cb14e39806e22e2f6f757f92af39"
 
-debug@2.X, debug@^2.1.1, debug@^2.1.3, debug@^2.2.0, debug@^2.3.2, debug@^2.3.3:
+debug@2.4.5:
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.4.5.tgz#34c7b12a1ca96674428f41fe92c49b4ce7cd0607"
+  dependencies:
+    ms "0.7.2"
+
+debug@2.X, debug@^2.1.1, debug@^2.1.3, debug@^2.2.0, debug@^2.3.2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
   dependencies:
@@ -1334,21 +1341,20 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-electron-builder@^10.6.0:
-  version "10.6.0"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-10.6.0.tgz#0e5dc148dbdfc189fea3c0bd9bfe4595d54d12b0"
+electron-builder@^10.9.3:
+  version "10.9.3"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-10.9.3.tgz#553702702a149b4ddfcf5745e8bb0f852fa131e3"
   dependencies:
     "7zip-bin" "^2.0.4"
     ansi-escapes "^1.4.0"
-    archiver "^1.2.0"
-    archiver-utils "^1.3.0"
+    archiver "^1.3.0"
     asar-electron-builder "^0.13.5"
     bluebird-lst-c "^1.0.5"
     chalk "^1.1.3"
     chromium-pickle-js "^0.2.0"
     cli-cursor "^1.0.2"
     cuint "^0.2.2"
-    debug "^2.3.3"
+    debug "2.4.5"
     electron-download-tf "3.1.0"
     electron-macos-sign "^1.3.4"
     fs-extra-p "^3.0.3"
@@ -1415,9 +1421,9 @@ electron-macos-sign@^1.3.4:
     minimist "^1.2.0"
     plist "^2.0.1"
 
-electron@^1.4.11:
-  version "1.4.11"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.4.11.tgz#368e8a85c2bf3076f62bc4840132f022c9cfb0ec"
+electron@^1.4.13:
+  version "1.4.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.4.13.tgz#aecc073484c25d351007d75ad8972b0f2f835ab3"
   dependencies:
     electron-download "^3.0.1"
     extract-zip "^1.0.3"
@@ -1940,14 +1946,15 @@ graceful-fs@~1.2.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-gulp-clean-css@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/gulp-clean-css/-/gulp-clean-css-2.2.1.tgz#bfa4012adec28ddfc18f122b16021311211149f4"
+gulp-clean-css@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/gulp-clean-css/-/gulp-clean-css-2.3.2.tgz#7410769c4474c12ccd55e98ea74b1898d428acd0"
   dependencies:
-    clean-css "^3.4.21"
+    clean-css "^3.4.23"
     gulp-util "^3.0.7"
     object-assign "^4.1.0"
     through2 "^2.0.3"
+    vinyl-sourcemaps-apply "^0.2.1"
 
 gulp-cond@^1.0.0:
   version "1.0.0"
@@ -4230,20 +4237,20 @@ tar@^2.0.0, tar@~2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-three@^0.81.2:
-  version "0.81.2"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.81.2.tgz#100c078dcfbb0a235e3d433066b1b26b145c69c3"
+three@^0.83.0:
+  version "0.83.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.83.0.tgz#3b7f94790af3e021dac1f44a2617569ca2032b0b"
 
 throttleit@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/throttleit/-/throttleit-0.0.2.tgz#cfedf88e60c00dd9697b61fdd2a8343a9b680eaf"
 
-through2@2.X, through2@^2, through2@^2.0.0, through2@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.1.tgz#384e75314d49f32de12eebb8136b8eb6b5d59da9"
+through2@2.X, through2@^2, through2@^2.0.1, through2@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.3.tgz#0004569b37c7c74ba39c43f3ced78d1ad94140be"
   dependencies:
-    readable-stream "~2.0.0"
-    xtend "~4.0.0"
+    readable-stream "^2.1.5"
+    xtend "~4.0.1"
 
 through2@^0.5.0:
   version "0.5.1"
@@ -4259,12 +4266,12 @@ through2@^0.6.1:
     readable-stream ">=1.0.33-1 <1.1.0-0"
     xtend ">=4.0.0 <4.1.0-0"
 
-through2@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.3.tgz#0004569b37c7c74ba39c43f3ced78d1ad94140be"
+through2@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.1.tgz#384e75314d49f32de12eebb8136b8eb6b5d59da9"
   dependencies:
-    readable-stream "^2.1.5"
-    xtend "~4.0.1"
+    readable-stream "~2.0.0"
+    xtend "~4.0.0"
 
 through2@~0.2.3:
   version "0.2.3"
@@ -4543,7 +4550,7 @@ vinyl-source-stream@^1.1.0:
     through2 "^0.6.1"
     vinyl "^0.4.3"
 
-vinyl-sourcemaps-apply@^0.2.0:
+vinyl-sourcemaps-apply@^0.2.0, vinyl-sourcemaps-apply@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/vinyl-sourcemaps-apply/-/vinyl-sourcemaps-apply-0.2.1.tgz#ab6549d61d172c2b1b87be5c508d239c8ef87705"
   dependencies:
@@ -4584,9 +4591,13 @@ vm-browserify@~0.0.1:
   dependencies:
     indexof "0.0.1"
 
-watchify@^3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/watchify/-/watchify-3.7.0.tgz#ee2f2c5c8c37312303f998b818b2b3450eefe648"
+walkdir@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/walkdir/-/walkdir-0.0.11.tgz#a16d025eb931bd03b52f308caed0f40fcebe9532"
+
+watchify@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/watchify/-/watchify-3.8.0.tgz#a5cacc3517ca1e637d7b0af745375cafb597d6bb"
   dependencies:
     anymatch "^1.3.0"
     browserify "^13.0.0"

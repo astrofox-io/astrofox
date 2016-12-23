@@ -28,33 +28,33 @@ const config = {
     app: {
         name: 'AstroFox',
         src: 'src/js/AstroFox.js',
-        dest: 'app/browser/resources/js/',
+        dest: 'app/browser/js/',
         filename: 'app.js'
     },
     vendor: {
-        dest: 'app/browser/resources/js/',
+        dest: 'app/browser/js/',
         filename: 'vendor.js'
     },
     css: {
         src: 'src/css/app.less',
-        dest: 'app/browser/resources/css/',
+        dest: 'app/browser/css/',
         sourcemap: '.'
     },
     icons: {
         src: 'src/svg/icons/*.svg',
         template: 'src/build/templates/icons.css.tpl',
         css: {
-            dest: 'app/browser/resources/css/',
+            dest: 'app/browser/css/',
             filename: 'icons.css'
         },
         font: {
-            dest: 'resources/fonts/icons/'
+            dest: 'fonts/icons/'
         }
     },
     fonts: {
         template: 'src/build/templates/fonts.css.tpl',
         filename: 'fonts.css',
-        dest: 'app/browser/resources/css/'
+        dest: 'app/browser/css/'
     },
     glsl: {
         src: 'src/glsl/**/*.glsl',

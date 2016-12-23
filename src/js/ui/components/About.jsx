@@ -20,7 +20,7 @@ class About extends UIComponent {
     render() {
         return (
             <div className="about">
-                <h1>AstroFox version 1.0</h1>
+                <div><img src="images/about_banner.jpg"/></div>
                 <div className="button" onClick={this.onUpdateCheck}>{'Check For Updates'}</div>
             </div>
         );

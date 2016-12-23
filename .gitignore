@@ -10,7 +10,7 @@ Thumbs.db
 # App files
 node_modules
 /dist/
-/app/browser/resources/css/
-/app/browser/resources/js/
+/app/browser/css/
+/app/browser/js/
 /app.config
 *.bat

@@ -52,7 +52,7 @@ class Header extends UIComponent {
     render() {
         return (
             <div id="header">
-                <div className="icon"><img src="resources/images/icon.png" /></div>
+                <div className="icon"><img src="images/icon.png" width="16" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
                     <ul>
