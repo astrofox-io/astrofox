@@ -31,6 +31,12 @@ class MultiPass extends ComposerPass {
         this.passes.removeNode(pass);
     }
 
+    setSize(width, height) {
+        this.passes.nodes.forEach(pass => {
+            pass.setSize(width, height);
+        });
+    }
+
     render(renderer, writeBuffer, readBuffer, callback) {
         this.writeBuffer = writeBuffer;
         this.readBuffer = readBuffer;

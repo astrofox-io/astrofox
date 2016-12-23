@@ -1,6 +1,7 @@
 'use strict';
 
 const Display = require('../displays/Display');
+const MultiPass = require('../graphics/MultiPass');
 
 class Effect extends Display {
     constructor(type, options) {
@@ -29,12 +30,8 @@ class Effect extends Display {
     setSize(width, height) {
         let pass = this.pass;
 
-        if (pass && pass.uniforms) {
-            Object.keys(pass.uniforms).forEach(key => {
-                if (key === 'resolution') {
-                    pass.uniforms[key].value.set(width, height);
-                }
-            });
+        if (pass) {
+            pass.setSize(width, height);
         }
     }
 

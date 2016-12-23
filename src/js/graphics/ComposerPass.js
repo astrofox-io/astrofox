@@ -19,6 +19,16 @@ class ComposerPass extends Component {
         super(Object.assign({}, defaults, options));
     }
 
+    setSize(width, height) {
+        if (this.uniforms) {
+            Object.keys(this.uniforms).forEach(key => {
+                if (key === 'resolution') {
+                    this.uniforms[key].value.set(width, height);
+                }
+            });
+        }
+    }
+
     setBlending(blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha) {
         if (this.material) {
             let material = this.material;

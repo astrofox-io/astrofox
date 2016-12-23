@@ -4,56 +4,56 @@ const remote = window.require('electron').remote;
 
 class Window {
     constructor() {
+        this.win = remote.getCurrentWindow();
+        this.dialog = remote.dialog;
     }
 
     maximize() {
-        let win = remote.getCurrentWindow();
-
-        if (win.isMaximized()) {
+        if (this.win.isMaximized()) {
             this.unmaximize();
         }
         else {
-            win.maximize();
+            this.win.maximize();
         }
     }
 
     minimize() {
-        remote.getCurrentWindow().minimize();
+        this.win.minimize();
     }
 
     unmaximize() {
-        remote.getCurrentWindow().unmaximize();
+        this.win.unmaximize();
     }
 
     openDevTools() {
-        remote.getCurrentWindow().openDevTools({ detach: true });
+        this.win.openDevTools({ detach: true });
     }
 
     reload() {
-        remote.getCurrentWindow().reload();
+        this.win.reload();
     }
 
     close() {
-        remote.getCurrentWindow().close();
+        this.win.close();
     }
 
     showOpenDialog(callback, options) {
-        remote.dialog.showOpenDialog(remote.getCurrentWindow(), options, callback);
+        this.dialog.showOpenDialog(this.win, options, callback);
     }
 
     showSaveDialog(callback, options) {
-        remote.dialog.showSaveDialog(remote.getCurrentWindow(), options, callback);
+        this.dialog.showSaveDialog(this.win, options, callback);
     }
 
     showMessageBox(title, message, options) {
-        remote.dialog.showMessageBox(
-            remote.getCurrentWindow(),
+        this.dialog.showMessageBox(
+            this.win,
             Object.assign({ title: title, message: message, buttons: [] }, options)
         );
     }
 
     showErrorBox(title, content) {
-        remote.dialog.showErrorBox(title, content);
+        this.dialog.showErrorBox(title, content);
     }
 }
 
