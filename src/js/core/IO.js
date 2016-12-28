@@ -94,6 +94,30 @@ function removeFile(file) {
     });
 }
 
+function fileExists(file) {
+    try {
+        fs.statSync(file);
+    }
+    catch (e) {
+        return false;
+    }
+
+    return true;
+}
+
+function createFolder(path) {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(fs.mkdirSync(path));
+        }
+        catch(err) {
+            if (err.code === 'EEXIST') resolve();
+
+            reject(err);
+        }
+    });
+}
+
 function toArrayBuffer(buffer) {
     let ab = new ArrayBuffer(buffer.length);
     let b = new Uint8Array(ab);
@@ -148,21 +172,6 @@ function decompress(data) {
     });
 }
 
-function fileExists(file) {
-    try {
-        fs.statSync(file);
-    }
-    catch (e) {
-        return false;
-    }
-
-    return true;
-}
-
-function resolve() {
-    return path.resolve.apply(null, arguments);
-}
-
 module.exports = {
     readFile,
     readFileCompressed,
@@ -172,10 +181,10 @@ module.exports = {
     writeFile,
     writeFileCompressed,
     removeFile,
+    fileExists,
+    createFolder,
     toArrayBuffer,
     toBuffer,
     compress,
-    decompress,
-    fileExists,
-    resolve
+    decompress
 };

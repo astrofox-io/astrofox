@@ -1,21 +1,18 @@
 'use strict';
 
 const React = require('react');
-const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
-const { Events } = require('../../core/Global');
 
 const ListInput = require('../inputs/ListInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
-const ToggleInput = require('../inputs/ToggleInput');
+const ToggleInput = require('../inputs/ToggleInput.jsx');
 const Button  = require('../inputs/Button.jsx');
 const TabPanel = require('../layout/TabPanel.jsx');
 const Tab = require('../layout/Tab.jsx');
 const { Settings, Group, Row } = require('../components/Settings.jsx');
-const { getVersion, getFormats, getCodecs } = require('../../util/ffmpeg');
 
 class AppSettings extends UIComponent {
     constructor(props) {
@@ -42,16 +39,6 @@ class AppSettings extends UIComponent {
         this.props.onClose();
     }
 
-    showFFmpegInfo() {
-        getVersion(this.state.ffmpegPath)
-            .then(version => {
-                Events.emit('message', 'FFmpeg version ' + version);
-            })
-            .catch(err => {
-                Application.raiseError('Invalid file.', err);
-            });
-    }
-
     render() {
         const state = this.state;
 
@@ -68,6 +55,16 @@ class AppSettings extends UIComponent {
                                         onChange={this.onChange}
                                     />
                                 </Row>
+                                <Row label="Show watermark">
+                                    <ToggleInput
+                                        name="showWatermark"
+                                        value={state.showWatermark}
+                                        onChange={this.onChange}
+                                    />
+                                </Row>
+                            </Group>
+
+                            <Group name="Audio">
                                 <Row label="Autoplay audio">
                                     <ToggleInput
                                         name="autoPlay"
@@ -77,26 +74,13 @@ class AppSettings extends UIComponent {
                                 </Row>
                             </Group>
 
-                            <Group name="Fonts">
+                            <Group name="Fonts" className="display-none">
                                 <Row label="System fonts">
                                     <ListInput
                                         name="systemFonts"
                                         options={state.systemFonts}
                                         onChange={this.onChange}
                                     />
-                                </Row>
-                            </Group>
-
-                            <Group name="Video">
-                                <Row label="FFmpeg location">
-                                    <TextInput
-                                        className="flex"
-                                        name="ffmpegPath"
-                                        width="100%"
-                                        value={state.ffmpegPath}
-                                        onChange={this.onChange}
-                                    />
-                                    <Button icon="icon-info" onClick={this.showFFmpegInfo} title="Check version" />
                                 </Row>
                             </Group>
                         </Settings>
@@ -108,13 +92,6 @@ class AppSettings extends UIComponent {
                                 <ToggleInput
                                     name="checkForUpdates"
                                     value={state.checkForUpdates}
-                                    onChange={this.onChange}
-                                />
-                            </Row>
-                            <Row label="Automatically download and install updates">
-                                <ToggleInput
-                                    name="downloadUpdates"
-                                    value={state.downloadUpdates}
                                     onChange={this.onChange}
                                 />
                             </Row>

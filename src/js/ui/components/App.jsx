@@ -147,7 +147,7 @@ class App extends UIComponent {
             case 'save_video':
                 this.showModal(
                     <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal} />,
-                    { title: 'VIDEO', buttons: null }
+                    { title: 'SAVE VIDEO', buttons: null }
                 );
                 break;
 

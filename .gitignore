@@ -9,7 +9,9 @@ Thumbs.db
 
 # App files
 node_modules
+/bin/
 /dist/
+/resources/
 /app/browser/css/
 /app/browser/js/
 /app.config

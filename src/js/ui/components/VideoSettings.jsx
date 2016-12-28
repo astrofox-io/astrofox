@@ -19,6 +19,7 @@ const { formatTime } = require('../../util/format');
 
 const videoFormats = [
     'mp4',
+    'mkv',
     'webm'
 ];
 
@@ -26,11 +27,6 @@ const resolutionOptions = [
     480,
     720,
     1080
-];
-
-const fpsOptions = [
-    29.97,
-    60
 ];
 
 class VideoSettings extends UIComponent {
@@ -74,10 +70,10 @@ class VideoSettings extends UIComponent {
 
     onStart() {
         if (!this.state.isRunning) {
-            this.setState({ isRunning: true });
+            this.setState({isRunning: true});
 
             Application.saveVideo(this.state.videoFile, this.state, () => {
-                this.setState({ isRunning: false });
+                this.setState({isRunning: false});
             });
         }
     }
@@ -89,7 +85,7 @@ class VideoSettings extends UIComponent {
                     this.setState({ videoFile: filename });
                 }
             },
-            { defaultPath: 'video.' + this.state.videoFormat }
+            { defaultPath: 'video.mp4' }
         );
     }
 
@@ -132,7 +128,7 @@ class VideoSettings extends UIComponent {
                     <Row label="Save Video To">
                         <TextInput
                             className="flex"
-                            inputClassName="normal-text"
+                            inputClassName="input-normal-text"
                             name="videoFile"
                             width="100%"
                             value={state.videoFile}
@@ -144,7 +140,7 @@ class VideoSettings extends UIComponent {
                     <Row label="Audio File">
                         <TextInput
                             className="flex"
-                            inputClassName="normal-text"
+                            inputClassName="input-normal-text"
                             name="audioFile"
                             width="100%"
                             value={state.audioFile}
@@ -152,15 +148,6 @@ class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                         <Button icon="icon-folder-open-empty" onClick={this.onOpenAudioFile} />
-                    </Row>
-                    <Row label="Video Format">
-                        <SelectInput
-                            name="videoFormat"
-                            width={80}
-                            items={videoFormats}
-                            value={state.videoFormat}
-                            onChange={this.onChange}
-                        />
                     </Row>
                     <Row label="Video Resolution" className="display-none">
                         <SelectInput
@@ -172,10 +159,12 @@ class VideoSettings extends UIComponent {
                         />
                     </Row>
                     <Row label="FPS">
-                        <SelectInput
+                        <NumberInput
                             name="fps"
-                            width={80}
-                            items={fpsOptions}
+                            width={60}
+                            min={24}
+                            max={60}
+                            step={1}
                             value={state.fps}
                             onChange={this.onChange}
                         />
@@ -228,7 +217,6 @@ class VideoSettings extends UIComponent {
 VideoSettings.defaultProps = {
     videoFile: '',
     audioFile: '',
-    videoFormat: 'mp4',
     resolution: 480,
     fps: 29.97,
     timeStart: 0,

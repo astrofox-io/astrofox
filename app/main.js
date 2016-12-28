@@ -2,7 +2,7 @@ const electron = require('electron');
 const path = require('path');
 const url = require('url');
 const debug = require('debug')('astrofox');
-const { app, BrowserWindow, globalShortcut } = electron;
+const { app, BrowserWindow, globalShortcut, systemPreferences } = electron;
 
 if (require('./lib/squirrel')) return;
 
@@ -35,11 +35,6 @@ function createWindow() {
 
     // Production settings
     if (getEnvironment() !== 'development') {
-        // Disable devtools shortcut
-        globalShortcut.register('CommandOrControl+Shift+I', () => {
-            // Do nothing
-        });
-
         // Auto close devtools if opened
         win.webContents.on('devtools-opened', () => {
             win.webContents.closeDevTools();
@@ -97,6 +92,18 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 app.commandLine.appendSwitch('enable-precise-memory-info');
 
 app.on('ready', () => {
+    if (getEnvironment() !== 'development') {
+        // Disable devtools shortcut
+        globalShortcut.register('CmdOrCtrl+Shift+I', () => {
+            // Do nothing
+        });
+    }
+
+    if (process.platform === 'darwin') {
+        systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true);
+        systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true);
+    }
+
     createWindow();
 });
 

@@ -30,8 +30,12 @@ class Process extends EventEmitter {
             this.emit('stderr', data);
         });
 
-        this.process.on('close', code => {
-            this.emit('close', code);
+        this.process.on('close', (code, signal) => {
+            this.emit('close', code, signal);
+        });
+
+        this.process.on('exit', (code, signal) => {
+            this.emit('exit', code, signal);
         });
 
         this.process.on('error', err => {
@@ -43,6 +47,8 @@ class Process extends EventEmitter {
 
         this.emit('start');
     }
+
+
 
     push(data) {
         this.stream.push(data);

@@ -1,10 +1,14 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 const MenuItem = require('./MenuItem.jsx');
 
 const Menu = (props) => {
-    let style = { display: (props.visible) ? 'block' : 'none' };
+    let classes = {
+        menu: true,
+        'display-none': (props.visible === false)
+    };
 
     let items = props.items.map((item, index) => {
         if (item.type == 'separator') {
@@ -24,7 +28,7 @@ const Menu = (props) => {
     });
 
     return (
-        <div className="menu" style={style}>
+        <div className={classNames(classes)}>
             {items}
         </div>
     );

@@ -7,7 +7,7 @@ function round(val) {
 
 // Fast ceiling
 function ceil(val) {
-    var n = (val << 0);
+    let n = (val << 0);
     return (n === val) ? n : n + 1;
 }
 

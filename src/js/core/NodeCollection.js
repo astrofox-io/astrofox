@@ -19,6 +19,10 @@ class NodeCollection {
         this.nodes = this.nodes.push(node);
     }
 
+    insertNode(index, val) {
+        this.nodes = this.nodes.insert(index, val);
+    }
+
     removeNode(node) {
         let nodes = this.nodes,
             index = nodes.indexOf(node),
@@ -55,6 +59,10 @@ class NodeCollection {
 
     indexOf(node) {
         return this.nodes.indexOf(node);
+    }
+
+    count() {
+        return this.nodes.size;
     }
 }
 

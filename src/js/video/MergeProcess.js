@@ -1,27 +1,37 @@
 'use strict';
 
-const Process = require('./../core/Process');
+const Process = require('../core/Process');
 
 class MergeProcess extends Process {
-    constructor(command, options) {
+    constructor(command,) {
         super(command);
-
-        this.options = options;
     }
 
-    start() {
-        let { audioFile, videoFile, outputFile } = this.options;
+    start(videoFile, audioFile, outputFile) {
+        return new Promise((resolve, reject) => {
+            this.on('close', () => {
+                resolve();
+            });
 
-        super.start(
-            [
-                '-y',
-                '-i', videoFile,
-                '-i', audioFile,
-                '-codec', 'copy',
-                '-shortest',
-                outputFile
-            ]
-        );
+            this.on('error', err => {
+                reject(err);
+            });
+
+            this.on('stderr', data => {
+                this.emit('data', data);
+            });
+
+            super.start(
+                [
+                    '-y',
+                    '-i', videoFile,
+                    '-i', audioFile,
+                    '-codec', 'copy',
+                    '-shortest',
+                    outputFile
+                ]
+            );
+        });
     }
 }
 

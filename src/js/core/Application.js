@@ -4,7 +4,7 @@ const id3 = require('id3js');
 const remote = window.require('electron').remote;
 const path = window.require('path');
 
-const { Events, Logger } = require('./Global');
+const { APP_NAME, APP_VERSION, USER_DATA_PATH, TEMP_PATH, Events, Logger } = require('./Global');
 const IO = require('./IO');
 const EventEmitter = require('./EventEmitter');
 const AppUpdater = require('./AppUpdater');
@@ -21,9 +21,7 @@ const VideoRenderer = require('../video/VideoRenderer');
 const appConfig = require('../../conf/app.json');
 const menuConfig = require('../../conf/menu.json');
 
-const APP_NAME = 'Astrofox';
-const VERSION = '1.0';
-const APP_CONFIG_FILE = path.join(remote.app.getPath('userData'), 'app.config');
+const APP_CONFIG_FILE = path.join(USER_DATA_PATH, 'app.config');
 const DEFAULT_PROJECT = path.join(__dirname, '..', 'projects', 'default.afx');
 const FPS_POLL_INTERVAL = 500;
 const UPDATE_SERVER_HOST = 'localhost:3333';
@@ -36,8 +34,8 @@ class Application extends EventEmitter {
     
         this.audioContext = new window.AudioContext();
         this.player = new Player(this.audioContext);
-        this.stage = new Stage();
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
+        this.stage = new Stage();
         this.updater = new AppUpdater(UPDATE_SERVER_HOST);
 
         this.audioFile = '';
@@ -72,13 +70,31 @@ class Application extends EventEmitter {
 
         // Default configuration
         this.config = Object.assign({}, appConfig);
+
+        // Window events
+        window.onmousedown = (e) => {
+            Events.emit('mousedown', e);
+        };
+
+        window.onmouseup = (e) => {
+            Events.emit('mouseup', e);
+        };
+
+        // Handle uncaught errors
+        window.onerror = (msg, src, line, col, err) => {
+            this.raiseError(msg, err);
+            return true;
+        };
     }
 
     init() {
-        Logger.log(APP_NAME, 'version', VERSION, __dirname);
+        Logger.log(APP_NAME, 'version', APP_VERSION, __dirname);
 
         // Load config file
         this.loadConfig();
+
+        // Create temp folder
+        IO.createFolder(TEMP_PATH);
 
         // Create menu
         menuConfig.forEach(root => {
@@ -97,21 +113,6 @@ class Application extends EventEmitter {
         if (process.platform === 'darwin') {
             remote.Menu.setApplicationMenu(this.menu);
         }
-
-        // Window events
-        window.onmousedown = (e) => {
-            Events.emit('mousedown', e);
-        };
-
-        window.onmouseup = (e) => {
-            Events.emit('mouseup', e);
-        };
-
-        // Handle uncaught errors
-        window.onerror = (msg, src, line, col, err) => {
-            this.raiseError(msg, err);
-            return true;
-        };
 
         // Default project
         this.newProject();
@@ -372,8 +373,6 @@ class Application extends EventEmitter {
     saveVideo(filename, options, callback) {
         let player = this.player,
             sound = player.getSound('audio');
-
-        options.command = this.config.ffmpegPath;
 
         if (sound) {
             let renderer = this.renderer = new VideoRenderer(filename, this.audioFile, options);
