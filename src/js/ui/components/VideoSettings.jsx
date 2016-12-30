@@ -1,5 +1,7 @@
 'use strict';
 
+const path = window.require('path');
+
 const React = require('react');
 const classNames = require('classnames');
 
@@ -16,10 +18,10 @@ const Button = require('../inputs/Button.jsx');
 const { Settings, Group, Row } = require('../components/Settings.jsx');
 
 const { formatTime } = require('../../util/format');
+const { replaceExt } = require('../../util/file');
 
 const videoFormats = [
     'mp4',
-    'mkv',
     'webm'
 ];
 
@@ -60,6 +62,9 @@ class VideoSettings extends UIComponent {
             obj.timeStart = val.start;
             obj.timeEnd = val.end;
         }
+        else if (name === 'format' && this.state.videoFile) {
+            obj.videoFile = replaceExt(this.state.videoFile, '.' + val);
+        }
 
         this.setState(obj);
     }
@@ -85,7 +90,7 @@ class VideoSettings extends UIComponent {
                     this.setState({ videoFile: filename });
                 }
             },
-            { defaultPath: 'video.mp4' }
+            { defaultPath: 'video.' + this.state.format }
         );
     }
 
@@ -148,6 +153,15 @@ class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                         <Button icon="icon-folder-open-empty" onClick={this.onOpenAudioFile} />
+                    </Row>
+                    <Row label="Format">
+                        <SelectInput
+                            name="format"
+                            width={80}
+                            items={videoFormats}
+                            value={state.format}
+                            onChange={this.onChange}
+                        />
                     </Row>
                     <Row label="Video Resolution" className="display-none">
                         <SelectInput
@@ -217,8 +231,9 @@ class VideoSettings extends UIComponent {
 VideoSettings.defaultProps = {
     videoFile: '',
     audioFile: '',
+    format: 'mp4',
     resolution: 480,
-    fps: 29.97,
+    fps: 30,
     timeStart: 0,
     timeEnd: 0
 };

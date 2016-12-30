@@ -16,7 +16,7 @@ class Process extends EventEmitter {
     }
 
     start(args) {
-        Logger.log('Executing:', this.command, (args || []).join(' '));
+        Logger.log('%cStarting process:', 'color: lightgreen; background-color: gray;', this.command, (args || []).join(' '));
 
         // Spawn process
         this.process = spawn(this.command, args);

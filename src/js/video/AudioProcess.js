@@ -3,21 +3,37 @@
 const path = window.require('path');
 
 const Process = require('../core/Process');
-const { TEMP_PATH } = require('../core/Global');
+const { replaceExt } = require('../util/file');
 
-const codecs = ['.m4a','.aac'];
+const codecs = {
+    mp4: 'aac',
+    webm: 'libvorbis'
+};
+
+const exts = {
+    mp4: '.acc',
+    webm: '.ogg'
+};
 
 class AudioProcess extends Process {
     constructor(command) {
         super(command);
     }
 
-    start(id, audioFile, start, duration) {
+    start(outputFile, format, audioFile, timeStart, timeEnd) {
         return new Promise((resolve, reject) => {
             let ext = path.extname(audioFile),
-                codec = (codecs.indexOf(ext) >= 0) ? 'copy' : 'aac',
-                outputExt = (codec === 'copy') ? ext : '.aac',
-                outputFile = path.join(TEMP_PATH, id + outputExt);
+                duration = timeEnd - timeStart,
+                codec = codecs[format],
+                outputExt = exts[format];
+
+            if ((format === 'mp4' && ['.mp3','.m4a','aac'].indexOf(ext) >= 0) ||
+                (format === 'webm' && ext === '.ogg')) {
+                codec = 'copy';
+                outputExt = ext;
+            }
+
+            outputFile = replaceExt(outputFile, outputExt);
 
             this.on('close', () => {
                 resolve(outputFile);
@@ -31,17 +47,26 @@ class AudioProcess extends Process {
                 this.emit('data', data);
             });
 
-            super.start(
-                [
-                    '-y',
-                    '-i', audioFile,
-                    '-ss', start,
-                    '-t', duration,
-                    '-acodec', codec,
-                    '-vbr', 3,
-                    outputFile
-                ]
-            );
+            let args = [
+                '-y',
+                '-i', audioFile,
+                '-ss', timeStart,
+                '-t', duration,
+                '-c:a', codec,
+            ];
+
+            // Encdoing options
+            if (codec === 'aac') {
+                args.push('-b:a', '192k');
+            }
+            else if (codec === 'libvorbis') {
+                args.push('-qscale:a', 6);
+            }
+
+            // Output file
+            args.push(outputFile);
+
+            super.start(args);
         });
     }
 }

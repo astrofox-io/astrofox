@@ -3,16 +3,23 @@
 const path = window.require('path');
 
 const Process = require('../core/Process');
-const { TEMP_PATH } = require('../core/Global');
+const { replaceExt } = require('../util/file');
+
+const codecs = {
+    mp4: 'libx264',
+    webm: 'libvpx'
+};
 
 class RenderProcess extends Process {
     constructor(command) {
         super(command);
     }
 
-    start(id, fps, format) {
+    start(outputFile, format, fps) {
         return new Promise((resolve, reject) => {
-            let outputFile = path.join(TEMP_PATH, id + '.' + format);
+            let codec = codecs[format];
+
+            outputFile = replaceExt(outputFile, '.' + format);
 
             this.on('close', () => {
                 resolve(outputFile);
@@ -26,21 +33,43 @@ class RenderProcess extends Process {
                 this.emit('data', data);
             });
 
-            super.start(
-                [
-                    '-y',
-                    '-r', fps,
-                    '-f', 'image2pipe',
-                    '-vcodec', 'png',
-                    '-i', 'pipe:0',
-                    '-vcodec', 'libx264',
+            let args = [
+                '-y',
+                '-stats',
+                '-r', fps,
+                '-f', 'image2pipe',
+                '-c:v', 'png',
+                '-i', 'pipe:0',
+                '-c:v', codec,
+                '-pix_fmt', 'yuv420p',
+                '-f', format,
+            ];
+
+            // Encoding options
+            if (format === 'mp4') {
+                args.push(
+                    '-profile:v', 'high',
+                    '-preset', 'slow',
+                    '-crf', 18,
+                    '-tune', 'animation',
                     '-movflags', '+faststart',
-                    '-pix_fmt', 'yuv420p',
-                    '-f', format,
-                    '-stats',
-                    outputFile
-                ]
-            );
+                );
+            }
+            else if (format === 'webm') {
+                args.push(
+                    '-quality', 'good',
+                    '-cpu-used', 0,
+                    '-qmin', 0,
+                    '-qmax', 50,
+                    '-b:v', '20M',
+                    '-crf', 4
+                );
+            }
+
+            // Output file
+            args.push(outputFile);
+
+            super.start(args);
         });
     }
 }

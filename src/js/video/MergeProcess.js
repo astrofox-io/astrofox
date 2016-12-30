@@ -28,6 +28,7 @@ class MergeProcess extends Process {
                     '-i', audioFile,
                     '-codec', 'copy',
                     '-shortest',
+                    '-movflags', '+faststart',
                     outputFile
                 ]
             );

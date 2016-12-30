@@ -357,7 +357,7 @@ class Application extends EventEmitter {
         let stage = this.stage,
             data = this.getFrameData(true);
 
-        stage.renderFrame(data, () => {
+        stage.render(data, () => {
             stage.getImage(buffer => {
                 IO.writeFile(filename, buffer)
                     .catch(error => {
@@ -404,8 +404,6 @@ class Application extends EventEmitter {
         else {
             this.raiseError('No audio loaded.');
         }
-
-        Logger.log('Video saved. (%s)', filename);
     }
 
     saveProject(file) {
@@ -416,7 +414,7 @@ class Application extends EventEmitter {
         });
 
         data = JSON.stringify({
-            version: VERSION,
+            version: APP_VERSION,
             stage: this.stage.toJSON(),
             scenes: sceneData
         });

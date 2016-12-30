@@ -7,7 +7,7 @@ const EventEmitter = require('../core/EventEmitter');
 const RenderProcess = require('./RenderProcess');
 const AudioProcess = require('./AudioProcess');
 const MergeProcess = require('./MergeProcess');
-const { Logger, Events, TEMP_PATH, FFMPEG_PATH } = require('../core/Global');
+const { Logger, TEMP_PATH, FFMPEG_PATH } = require('../core/Global');
 const { removeFile } = require('../core/IO');
 const { uniqueId } = require('../util/crypto');
 
@@ -57,24 +57,25 @@ class VideoRenderer extends EventEmitter {
 
     start() {
         let id = uniqueId(),
-            { fps, timeStart, timeEnd, format } = this.options,
-            audioFile, videoFile;
+            outputVideo = path.join(TEMP_PATH, id + '.video'),
+            outputAudio = path.join(TEMP_PATH, id + '.audio'),
+            { fps, timeStart, timeEnd, format } = this.options;
 
         Logger.log('Starting render', id);
 
         // Start rendering
-        this.renderProcess.start(id, fps, format)
+        this.renderProcess.start(outputVideo, format, fps)
             .then(file => {
-                videoFile = file;
-                return this.audioProcess.start(id, this.audio, timeStart, timeEnd - timeStart);
+                outputVideo = file;
+                return this.audioProcess.start(outputAudio, format, this.audio, timeStart, timeEnd);
             })
             .then(file => {
-                audioFile = file;
-                return this.mergeProcess.start(videoFile, audioFile, this.video);
+                outputAudio = file;
+                return this.mergeProcess.start(outputVideo, outputAudio, this.video);
             })
             .then(() => {
-                removeFile(videoFile);
-                removeFile(audioFile);
+                //removeFile(outputVideo);
+                //removeFile(outputAudio);
 
                 this.completed = true;
                 this.emit('complete');
