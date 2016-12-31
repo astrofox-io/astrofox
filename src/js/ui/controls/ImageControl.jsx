@@ -10,6 +10,8 @@ const RangeInput = require('../inputs/RangeInput.jsx');
 const { Control, Row } = require('./Control.jsx');
 
 const BLANK_IMAGE = require('../../../images/data/BlankGif.json');
+const CANVAS_WIDTH = 854;
+const CANVAS_HEIGHT = 480;
 
 class ImageControl extends UIComponent {
     constructor(props) {
@@ -100,6 +102,8 @@ class ImageControl extends UIComponent {
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
             width = (readOnly) ? 0 : image.naturalWidth,
             height = (readOnly) ? 0 : image.naturalHeight,
+            xMax = (width > CANVAS_WIDTH) ? width : CANVAS_WIDTH,
+            yMax = (height > CANVAS_HEIGHT) ? height : CANVAS_HEIGHT,
             linkClasses = {
                 'icon-link': true,
                 'input-link': true,
@@ -163,8 +167,8 @@ class ImageControl extends UIComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-width*2}
-                        max={width*2}
+                        min={-xMax}
+                        max={xMax}
                         value={state.x}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -172,8 +176,8 @@ class ImageControl extends UIComponent {
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-width*2}
-                            max={width*2}
+                            min={-xMax}
+                            max={xMax}
                             value={state.x}
                             readOnly={readOnly}
                             onChange={this.onChange}
@@ -184,8 +188,8 @@ class ImageControl extends UIComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-height*2}
-                        max={height*2}
+                        min={-yMax}
+                        max={yMax}
                         value={state.y}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -193,8 +197,8 @@ class ImageControl extends UIComponent {
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-height*2}
-                            max={height*2}
+                            min={-yMax}
+                            max={yMax}
                             value={state.y}
                             readOnly={readOnly}
                             onChange={this.onChange}
