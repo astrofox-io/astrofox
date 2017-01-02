@@ -6,7 +6,7 @@ const classNames = require('classnames');
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 const Window = require('../../core/Window');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 
 const Header = require('./Header.jsx');
 const Footer = require('./Footer.jsx');
@@ -42,13 +42,13 @@ class App extends UIComponent {
     componentWillMount() {
         Application.init();
 
-        Events.on('message', message => {
+        events.on('message', message => {
             this.showDialog({
                 message: message
             });
         });
 
-        Events.on('error', err => {
+        events.on('error', err => {
             this.showDialog({
                 title: 'ERROR',
                 icon: 'icon-warning',
@@ -56,24 +56,24 @@ class App extends UIComponent {
             });
         });
 
-        Events.on('pick_control', props => {
+        events.on('pick_control', props => {
            this.showModal(
                <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal} />,
                props
            );
         });
 
-        Events.on('audio-tags', tags => {
+        events.on('audio-tags', tags => {
             if (tags && tags.artist) {
                 this.setState({ text: tags.artist + ' - ' + tags.title });
             }
         });
 
-        Events.on('menu-action', action => {
+        events.on('menu-action', action => {
             this.onMenuAction(action);
         });
 
-        Events.on('unsaved-changes', this.onUnsavedChanges);
+        events.on('unsaved-changes', this.onUnsavedChanges);
     }
 
     componentDidMount() {

@@ -4,7 +4,7 @@ const Transform = window.require('stream').Transform;
 const spawn = window.require('child_process').spawn;
 
 const EventEmitter = require('./EventEmitter');
-const { Logger } = require('./Global');
+const { logger } = require('./Global');
 
 class Process extends EventEmitter {
     constructor(command) {
@@ -16,7 +16,7 @@ class Process extends EventEmitter {
     }
 
     start(args) {
-        Logger.log('%cStarting process:', 'color: lightgreen; background-color: gray;', this.command, (args || []).join(' '));
+        logger.log('%cStarting process:', 'color: lightgreen; background-color: gray;', this.command, (args || []).join(' '));
 
         // Spawn process
         this.process = spawn(this.command, args);

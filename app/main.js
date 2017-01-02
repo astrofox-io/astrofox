@@ -51,24 +51,34 @@ function createWindow() {
     win.loadURL(index);
 
     win.webContents.on('dom-ready', () => {
-        debug('dom ready');
-        showWindow();
+        debug('dom-ready');
+        win.show();
     });
 
     // Show window only when ready
     win.on('ready-to-show', () => {
-        debug('ready to show window...');
-        showWindow();
+        debug('ready-to-show');
+        win.show();
     });
 
     // Window close
+    win.on('close', () => {
+        debug('close');
+        win = null;
+    });
+
     win.on('closed', () => {
+        debug('closed');
         win = null;
     });
 }
 
 function showWindow() {
     win.show();
+
+    if (process.platform === 'darwin') {
+        win.webContents.openDevTools();
+    }
 }
 
 // Chrome flags
@@ -92,6 +102,10 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 app.commandLine.appendSwitch('enable-precise-memory-info');
 
 app.on('ready', () => {
+    debug('ready');
+
+    globalShortcut.unregisterAll();
+
     if (getEnvironment() !== 'development') {
         // Disable devtools shortcut
         globalShortcut.register('CmdOrCtrl+Shift+I', () => {
@@ -109,18 +123,24 @@ app.on('ready', () => {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
+    debug('window-all-closed');
+
+    win = null;
+
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
 app.on('activate', () => {
+    debug('activate');
     if (win === null) {
         createWindow();
     }
 });
 
 app.on('will-quit', () => {
+    debug('will-quit');
     // Unregister all shortcuts
     globalShortcut.unregisterAll();
 });

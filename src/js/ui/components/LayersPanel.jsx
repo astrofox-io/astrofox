@@ -5,7 +5,7 @@ const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 const Display = require('../../displays/Display');
 const CanvasDisplay = require('../../displays/CanvasDisplay');
 const Stage = require('../../displays/Stage');
@@ -68,7 +68,7 @@ class LayersPanel extends UIComponent {
         let scene = this.getActiveScene();
 
         if (scene) {
-            Events.emit(
+            events.emit(
                 'pick_control',
                 { title: 'ADD DISPLAY', scene: scene, items: DisplayLibrary }
             );
@@ -79,7 +79,7 @@ class LayersPanel extends UIComponent {
         let scene = this.getActiveScene();
 
         if (scene) {
-            Events.emit(
+            events.emit(
                 'pick_control',
                 { title: 'ADD EFFECT', scene: scene, items: EffectsLibrary }
             );

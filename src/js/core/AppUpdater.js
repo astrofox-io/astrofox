@@ -3,7 +3,7 @@
 const { app, autoUpdater } = window.require('electron').remote;
 const os = window.require('os');
 const EventEmitter = require('./EventEmitter');
-const { Logger } = require('./Global');
+const { logger } = require('./Global');
 
 class AppUpdater extends EventEmitter {
     constructor(url) {
@@ -17,11 +17,11 @@ class AppUpdater extends EventEmitter {
             feedUrl = `https://${url}/update/${platform}_${arch}/${version}`;
         
         autoUpdater.addListener('update-available', () => {
-            Logger.log('A new update is available');
+            logger.log('A new update is available');
         });
 
         autoUpdater.addListener('update-downloaded', (e, releaseNotes, releaseName, releaseDate, updateURL) => {
-            Logger.log('Update downloaded', releaseNotes, releaseName, releaseDate, updateURL);
+            logger.log('Update downloaded', releaseNotes, releaseName, releaseDate, updateURL);
 
             this.emit('update-downloaded', {
                 releaseNotes, releaseName, releaseDate, updateURL
@@ -29,18 +29,18 @@ class AppUpdater extends EventEmitter {
         });
 
         autoUpdater.addListener('error', (error) => {
-            Logger.error(error);
+            logger.error(error);
         });
 
         autoUpdater.addListener('checking-for-update', () => {
-            Logger.log('checking-for-update');
+            logger.log('checking-for-update');
         });
 
         autoUpdater.addListener('update-not-available', () => {
-            Logger.log('update-not-available');
+            logger.log('update-not-available');
         });
 
-        Logger.log('URL:', feedUrl);
+        logger.log('URL:', feedUrl);
 
         this.feedUrl = feedUrl;
         this.initialized = false;

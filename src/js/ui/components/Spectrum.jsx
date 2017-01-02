@@ -3,7 +3,7 @@
 const React = require('react');
 
 const UIComponent = require('../UIComponent');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 const SpectrumParser = require('../../audio/SpectrumParser');
 const CanvasBars = require('../../canvas/CanvasBars');
 
@@ -31,11 +31,11 @@ class Spectrum extends UIComponent {
 
         this.parser = new SpectrumParser(this.state);
 
-        Events.on('render', this.updateCanvas);
+        events.on('render', this.updateCanvas);
     }
 
     componentWillUnmount() {
-        Events.off('render', this.updateCanvas);
+        events.off('render', this.updateCanvas);
     }
 
     shouldComponentUpdate() {

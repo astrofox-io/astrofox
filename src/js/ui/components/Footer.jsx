@@ -3,7 +3,7 @@
 const React = require('react');
 
 const UIComponent = require('../UIComponent');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 const { formatSize } = require('../../util/format');
 
 class Footer extends UIComponent {
@@ -20,11 +20,11 @@ class Footer extends UIComponent {
     }
 
     componentDidMount() {
-        Events.on('tick', this.updateStats);
+        events.on('tick', this.updateStats);
     }
 
     componentWillUnmount() {
-        Events.off('tick', this.updateStats);
+        events.off('tick', this.updateStats);
     }
 
     updateStats(stats) {

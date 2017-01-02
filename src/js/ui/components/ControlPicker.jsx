@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 
 const ControlPicker = (props) => {
     let values = Object.keys(props.items).map(key => props.items[key]);
@@ -13,7 +13,7 @@ const ControlPicker = (props) => {
 
             props.scene.addElement(obj);
 
-            Events.emit('layers-update', obj);
+            events.emit('layers-update', obj);
 
             props.onClose();
         };

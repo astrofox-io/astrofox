@@ -7,7 +7,7 @@ const EventEmitter = require('../core/EventEmitter');
 const RenderProcess = require('./RenderProcess');
 const AudioProcess = require('./AudioProcess');
 const MergeProcess = require('./MergeProcess');
-const { Logger, TEMP_PATH, FFMPEG_PATH } = require('../core/Global');
+const { logger, TEMP_PATH, FFMPEG_PATH } = require('../core/Global');
 const { removeFile } = require('../core/IO');
 const { uniqueId } = require('../util/crypto');
 
@@ -37,7 +37,7 @@ class VideoRenderer extends EventEmitter {
         this.mergeProcess = new MergeProcess(FFMPEG_PATH);
 
         this.renderProcess.on('data', data => {
-            Logger.log(data.toString());
+            logger.log(data.toString());
 
             // Start requesting frames
             if (!this.started) {
@@ -47,11 +47,11 @@ class VideoRenderer extends EventEmitter {
         });
 
         this.audioProcess.on('data', data => {
-            Logger.log(data.toString());
+            logger.log(data.toString());
         });
 
         this.mergeProcess.on('data', data => {
-            Logger.log(data.toString());
+            logger.log(data.toString());
         });
     }
 
@@ -61,7 +61,7 @@ class VideoRenderer extends EventEmitter {
             outputAudio = path.join(TEMP_PATH, id + '.audio'),
             { fps, timeStart, timeEnd, format } = this.options;
 
-        Logger.log('Starting render', id);
+        logger.log('Starting render', id);
 
         // Start rendering
         this.renderProcess.start(outputVideo, format, fps)
@@ -81,14 +81,14 @@ class VideoRenderer extends EventEmitter {
                 this.emit('complete');
             })
             .catch(err => {
-                Logger.error(err);
+                logger.error(err);
             });
 
         this.emit('start');
     }
 
     processFrame(image) {
-        Logger.log('Processing', this.currentFrame, '/', this.frames);
+        logger.log('Processing', this.currentFrame, '/', this.frames);
 
         this.renderProcess.push(image);
 

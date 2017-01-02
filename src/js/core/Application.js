@@ -4,7 +4,7 @@ const id3 = require('id3js');
 const remote = window.require('electron').remote;
 const path = window.require('path');
 
-const { APP_NAME, APP_VERSION, USER_DATA_PATH, TEMP_PATH, Events, Logger } = require('./Global');
+const { APP_NAME, APP_VERSION, USER_DATA_PATH, TEMP_PATH, events, logger } = require('./Global');
 const IO = require('./IO');
 const EventEmitter = require('./EventEmitter');
 const AppUpdater = require('./AppUpdater');
@@ -73,11 +73,11 @@ class Application extends EventEmitter {
 
         // Window events
         window.onmousedown = (e) => {
-            Events.emit('mousedown', e);
+            events.emit('mousedown', e);
         };
 
         window.onmouseup = (e) => {
-            Events.emit('mouseup', e);
+            events.emit('mouseup', e);
         };
 
         // Handle uncaught errors
@@ -88,7 +88,7 @@ class Application extends EventEmitter {
     }
 
     init() {
-        Logger.log(APP_NAME, 'version', APP_VERSION, __dirname);
+        logger.log(APP_NAME, 'version', APP_VERSION, __dirname);
 
         // Load config file
         this.loadConfig();
@@ -147,7 +147,7 @@ class Application extends EventEmitter {
 
         this.stage.render(data);
 
-        Events.emit('render', data);
+        events.emit('render', data);
 
         this.updateFPS(now);
     }
@@ -186,7 +186,7 @@ class Application extends EventEmitter {
             return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
                 let config = JSON.parse(data);
 
-                Logger.log('Config file loaded.', APP_CONFIG_FILE,  config);
+                logger.log('Config file loaded.', APP_CONFIG_FILE,  config);
 
                 this.config = Object.assign({}, appConfig, config);
             });
@@ -223,10 +223,10 @@ class Application extends EventEmitter {
                 spectrum = this.spectrum,
                 sound = new BufferedSound(this.audioContext);
 
-            Logger.timeStart('audio-data-load');
+            logger.timeStart('audio-data-load');
 
             sound.on('load', () => {
-                Logger.timeEnd('audio-data-load', 'Audio data loaded.');
+                logger.timeEnd('audio-data-load', 'Audio data loaded.');
 
                 player.load('audio', sound);
 
@@ -247,7 +247,7 @@ class Application extends EventEmitter {
         return IO.readFileAsBlob(file).then(data => {
             id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
                 if (!err) {
-                    Events.emit('audio-tags', tags);
+                    events.emit('audio-tags', tags);
                 }
             });
         });
@@ -261,7 +261,7 @@ class Application extends EventEmitter {
 
                 this.projectFile = file;
 
-                Events.emit('project-loaded');
+                events.emit('project-loaded');
             },
             error => {
                 if (error.message.indexOf('incorrect header check') > -1) {
@@ -271,7 +271,7 @@ class Application extends EventEmitter {
 
                         this.projectFile = file;
 
-                        Events.emit('project-loaded');
+                        events.emit('project-loaded');
                     })
                     .catch(error => {
                         this.raiseError('Invalid project file.', error);
@@ -306,7 +306,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(display.options));
                         }
                         else {
-                            Logger.warn('Display "%s" not found.', display.name);
+                            logger.warn('Display "%s" not found.', display.name);
                         }
                     });
                 }
@@ -320,7 +320,7 @@ class Application extends EventEmitter {
                             scene.addElement(new component(effect.options));
                         }
                         else {
-                            Logger.warn('Effect "%s" not found.', effect.name);
+                            logger.warn('Effect "%s" not found.', effect.name);
                         }
                     });
                 }
@@ -342,7 +342,7 @@ class Application extends EventEmitter {
         let data = JSON.stringify(config);
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
-            Logger.log('Config file saved.', APP_CONFIG_FILE, config);
+            logger.log('Config file saved.', APP_CONFIG_FILE, config);
 
             Object.assign(this.config, config);
 
@@ -364,7 +364,7 @@ class Application extends EventEmitter {
                         this.raiseError('Failed to save image file.', error);
                     })
                     .then(() => {
-                        Logger.log('Image saved. (%s)', filename);
+                        logger.log('Image saved. (%s)', filename);
                     });
             });
         });
@@ -389,7 +389,7 @@ class Application extends EventEmitter {
             });
 
             renderer.on('complete', () => {
-                Logger.log('Render complete.');
+                logger.log('Render complete.');
 
                 if (callback) callback();
 
@@ -420,7 +420,7 @@ class Application extends EventEmitter {
         });
 
         return IO.writeFileCompressed(file, data).then(() => {
-            Logger.log('Project saved. (%s)', file);
+            logger.log('Project saved. (%s)', file);
 
             this.resetChanges();
 
@@ -433,7 +433,7 @@ class Application extends EventEmitter {
 
     newProject() {
         if (this.stage.hasChanges()) {
-            Events.emit('unsaved-changes', () => {
+            events.emit('unsaved-changes', () => {
                 this.loadProject(DEFAULT_PROJECT).then(() => {
                     this.projectFile = '';
                 });
@@ -474,7 +474,7 @@ class Application extends EventEmitter {
             stats.stack.copyWithin(1, 0);
             stats.stack[0] = stats.fps;
 
-            Events.emit('tick', stats);
+            events.emit('tick', stats);
         }
     }
 
@@ -491,7 +491,7 @@ class Application extends EventEmitter {
     }
 
     menuAction(menuItem, browserWindow, event) {
-        Events.emit('menu-action', menuItem.action);
+        events.emit('menu-action', menuItem.action);
     }
 
     resetChanges() {
@@ -500,10 +500,10 @@ class Application extends EventEmitter {
 
     raiseError(message, error) {
         if (error) {
-            Logger.error(message + "\n", error);
+            logger.error(message + "\n", error);
         }
 
-        Events.emit('error', message);
+        events.emit('error', message);
     }
 
     checkForUpdates() {

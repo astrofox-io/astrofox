@@ -3,7 +3,7 @@
 const React = require('react');
 
 const UIComponent = require('../UIComponent');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 
 const Panel = require('../layout/Panel.jsx');
 const PanelDock = require('../layout/PanelDock.jsx');
@@ -18,13 +18,13 @@ class ControlDock extends UIComponent {
     }
     
     componentDidMount() {
-        Events.on('layers-update', this.updateLayers);
-        Events.on('project-loaded', this.onProjectLoaded);
+        events.on('layers-update', this.updateLayers);
+        events.on('project-loaded', this.onProjectLoaded);
     }
 
     componentWillUnmount() {
-        Events.off('layers-update', this.updateLayers);
-        Events.off('project-loaded', this.onProjectLoaded);
+        events.off('layers-update', this.updateLayers);
+        events.off('project-loaded', this.onProjectLoaded);
     }
 
     onLayerSelected(layer) {

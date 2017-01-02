@@ -7,7 +7,7 @@ const Scene = require('./Scene');
 const NodeCollection = require('../core/NodeCollection');
 const Composer = require('../graphics/Composer');
 const FrameBuffer = require('../graphics/FrameBuffer');
-const { Events } = require('../core/Global');
+const { events } = require('../core/Global');
 
 class Stage extends Display {
     constructor(options) {

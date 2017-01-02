@@ -4,7 +4,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 const UIComponent = require('../UIComponent');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 const CanvasWave = require('../../canvas/CanvasWave');
 const WaveParser = require('../../audio/WaveParser');
 
@@ -19,11 +19,11 @@ class Oscilloscope extends UIComponent {
             this.refs.canvas
         );
 
-        Events.on('render', this.updateCanvas);
+        events.on('render', this.updateCanvas);
     }
 
     componentWillUnmount() {
-        Events.off('render', this.updateCanvas);
+        events.off('render', this.updateCanvas);
     }
 
     shouldComponentUpdate() {

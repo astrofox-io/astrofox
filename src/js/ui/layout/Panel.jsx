@@ -4,7 +4,7 @@ const React = require('react');
 const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
-const { Events } = require('../../core/Global');
+const { events } = require('../../core/Global');
 
 const Splitter = require('./Splitter.jsx');
 
@@ -27,11 +27,11 @@ class Panel extends UIComponent {
     }
 
     componentDidMount() {
-        Events.on('mouseup', this.checkDragState);
+        events.on('mouseup', this.checkDragState);
     }
 
     componentWillUnmount() {
-        Events.off('mouseup', this.checkDragState);
+        events.off('mouseup', this.checkDragState);
     }
 
     shouldComponentUpdate(nextProps) {

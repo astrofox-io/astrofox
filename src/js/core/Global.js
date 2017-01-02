@@ -18,6 +18,6 @@ module.exports = {
     USER_DATA_PATH,
     TEMP_PATH,
     FFMPEG_PATH,
-    Events: new EventEmitter(),
-    Logger: new Logger()
+    events: new EventEmitter(),
+    logger: new Logger()
 };
