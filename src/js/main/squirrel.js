@@ -1,7 +1,7 @@
 const path = require('path');
 const spawn = require('child_process').spawn;
-const debug = require('debug')('astrofox');
 const app = require('electron').app;
+const debug = require('debug')('astrofox');
 
 let run = function(args, done) {
     let updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
@@ -37,4 +37,4 @@ let check = function() {
     return false;
 };
 
-module.exports = check();
+module.exports = check;

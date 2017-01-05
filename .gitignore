@@ -12,6 +12,7 @@ node_modules
 /bin/
 /dist/
 /resources/
+/app/main.js
 /app/browser/css/
 /app/browser/js/
 /app.config

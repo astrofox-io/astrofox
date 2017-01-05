@@ -2,14 +2,14 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const { logger } = require('./core/Global');
+const { logger, APP_NAME, APP_VERSION } = require('./core/Global');
 const App = require('./ui/components/App.jsx');
 
 const AstroFox = {
-    version: '0.1',
+    version: APP_VERSION,
 
     start: () => {
-        logger.log(process.versions);
+        logger.log(APP_NAME, 'version', APP_VERSION, __dirname);
 
         ReactDOM.render(
             <App />,

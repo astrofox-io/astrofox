@@ -3,8 +3,11 @@ const path = require('path');
 const url = require('url');
 const debug = require('debug')('astrofox');
 const { app, BrowserWindow, globalShortcut, systemPreferences } = electron;
+const squirrel = require('./squirrel');
 
-if (require('./lib/squirrel')) return;
+if (squirrel()) {
+    process.exit();
+}
 
 let win;
 

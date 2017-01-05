@@ -42,7 +42,6 @@ class Application extends EventEmitter {
         this.projectFile = '';
         this.rendering = false;
         this.bufferSource = null;
-        this.menu = null;
 
         // Frame render data
         this.frameData = {
@@ -88,33 +87,33 @@ class Application extends EventEmitter {
     }
 
     init() {
-        logger.log(APP_NAME, 'version', APP_VERSION, __dirname);
-
         // Load config file
         this.loadConfig();
 
         // Create temp folder
         IO.createFolder(TEMP_PATH);
 
-        // Create menu
-        menuConfig.forEach(root => {
-            if (root.submenu) {
-                root.submenu.forEach(item => {
-                    if (!item.role && item.action) {
-                        item.click = this.menuAction;
-                    }
-                });
-            }
-        });
-
-        this.menu = remote.Menu.buildFromTemplate(menuConfig);
-
-        // Create menu for OSX
+        // Create menu for macOS
         if (process.platform === 'darwin') {
-            remote.Menu.setApplicationMenu(this.menu);
+            menuConfig.forEach(root => {
+                if (root.submenu) {
+                    root.submenu.forEach(item => {
+                        if (!item.role && item.action) {
+                            item.click = this.menuAction;
+                        }
+                    });
+                }
+            });
+
+            remote.Menu.setApplicationMenu(
+                remote.Menu.buildFromTemplate(menuConfig)
+            );
+        }
+        else {
+            remote.Menu.setApplicationMenu(null);
         }
 
-        // Default project
+        // Load default project
         this.newProject();
     }
 

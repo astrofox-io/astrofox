@@ -51,10 +51,13 @@
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-babili": "^0.0.9",
     "babel-preset-es2015-node6": "^0.4.0",
     "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
+    "babili": "^0.0.9",
     "browserify": "^13.1.1",
+    "bundle-collapser": "^1.2.1",
     "electron": "^1.4.13",
     "electron-builder": "^10.15.1",
     "gulp": "^3.9.1",
