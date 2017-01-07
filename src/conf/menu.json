@@ -53,6 +53,12 @@
       {
         "label": "Settings",
         "action": "edit_settings"
+      },
+      {
+        "label": "Reload",
+        "role": "reload",
+        "action": "reload",
+        "accelerator": "CmdOrCtrl+R"
       }
     ]
   },

@@ -94,25 +94,21 @@ class Application extends EventEmitter {
         // Create temp folder
         IO.createFolder(TEMP_PATH);
 
-        // Create menu for macOS
-        if (process.platform === 'darwin') {
-            menuConfig.forEach(root => {
-                if (root.submenu) {
-                    root.submenu.forEach(item => {
-                        if (!item.role && item.action) {
-                            item.click = this.menuAction;
-                        }
-                    });
-                }
-            });
 
-            remote.Menu.setApplicationMenu(
-                remote.Menu.buildFromTemplate(menuConfig)
-            );
-        }
-        else {
-            remote.Menu.setApplicationMenu(null);
-        }
+        // Create menu
+        menuConfig.forEach(root => {
+            if (root.submenu) {
+                root.submenu.forEach(item => {
+                    if (!item.role && item.action) {
+                        item.click = this.menuAction;
+                    }
+                });
+            }
+        });
+
+        remote.Menu.setApplicationMenu(
+            remote.Menu.buildFromTemplate(menuConfig)
+        );
 
         // Load default project
         this.newProject();

@@ -79,13 +79,6 @@ function createWindow() {
 function showWindow() {
     win.show();
 
-    debug('register', globalShortcut.register('CmdOrCtrl+R', () => {
-        debug('reload');
-        win.reload();
-    }));
-
-    debug(globalShortcut.isRegistered('CmdOrCtrl+R'));
-
     if (process.platform === 'darwin') {
         win.webContents.openDevTools();
     }
