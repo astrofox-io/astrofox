@@ -55,13 +55,13 @@ function createWindow() {
 
     win.webContents.on('dom-ready', () => {
         debug('dom-ready');
-        win.show();
+        showWindow();
     });
 
     // Show window only when ready
     win.on('ready-to-show', () => {
         debug('ready-to-show');
-        win.show();
+        showWindow();
     });
 
     // Window close
@@ -78,6 +78,13 @@ function createWindow() {
 
 function showWindow() {
     win.show();
+
+    debug('register', globalShortcut.register('CmdOrCtrl+R', () => {
+        debug('reload');
+        win.reload();
+    }));
+
+    debug(globalShortcut.isRegistered('CmdOrCtrl+R'));
 
     if (process.platform === 'darwin') {
         win.webContents.openDevTools();

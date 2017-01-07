@@ -92,7 +92,8 @@ class App extends UIComponent {
     onMenuAction(action) {
         switch (action) {
             case 'new_project':
-                Application.newProject();
+                throw new Error('testing error');
+                //Application.newProject();
                 break;
 
             case 'open_project':

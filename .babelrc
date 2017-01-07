@@ -1,17 +1,9 @@
 {
   "presets": [
-    "es2015-node6",
+    "es2015",
     "react"
   ],
-  "env": {
-    "production": {
-      "presets": ["babili"],
-      "comments": false,
-      "compact": true,
-      "minified": true
-    }
-  },
   "plugins": [
-    ["transform-runtime", {"polyfill": false}]
+    "external-helpers-2"
   ]
 }

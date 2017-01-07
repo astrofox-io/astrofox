@@ -7,7 +7,8 @@ const EventEmitter = require('../core/EventEmitter');
 const RenderProcess = require('./RenderProcess');
 const AudioProcess = require('./AudioProcess');
 const MergeProcess = require('./MergeProcess');
-const { logger, TEMP_PATH, FFMPEG_PATH } = require('../core/Global');
+const { logger } = require('../core/Global');
+const { TEMP_PATH, FFMPEG_PATH } = require('../core/Common');
 const { removeFile } = require('../core/IO');
 const { uniqueId } = require('../util/crypto');
 

@@ -4,7 +4,8 @@ const id3 = require('id3js');
 const remote = window.require('electron').remote;
 const path = window.require('path');
 
-const { APP_NAME, APP_VERSION, USER_DATA_PATH, TEMP_PATH, events, logger } = require('./Global');
+const { APP_NAME, APP_VERSION, APP_PATH, USER_DATA_PATH, TEMP_PATH } = require('./Common');
+const { events, logger } = require('./Global');
 const IO = require('./IO');
 const EventEmitter = require('./EventEmitter');
 const AppUpdater = require('./AppUpdater');
@@ -22,7 +23,7 @@ const appConfig = require('../../conf/app.json');
 const menuConfig = require('../../conf/menu.json');
 
 const APP_CONFIG_FILE = path.join(USER_DATA_PATH, 'app.config');
-const DEFAULT_PROJECT = path.join(__dirname, '..', 'projects', 'default.afx');
+const DEFAULT_PROJECT = path.join(APP_PATH, 'projects', 'default.afx');
 const FPS_POLL_INTERVAL = 500;
 const UPDATE_SERVER_HOST = 'localhost:3333';
 

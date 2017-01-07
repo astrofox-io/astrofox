@@ -15,6 +15,8 @@ const util = require('gulp-util');
 
 const browserify = require('browserify');
 const babelify = require('babelify');
+const helpers = require('babelify-external-helpers');
+
 const collapse = require('bundle-collapser/plugin');
 const watchify = require('watchify');
 const envify = require('loose-envify/custom');
@@ -23,6 +25,7 @@ const buffer = require('vinyl-buffer');
 
 const fonts = require('./src/conf/fonts.json');
 const vendorIds = Object.keys(require('./package.json').dependencies);
+const mainIds = ['electron','path','url','child_process','debug'];
 
 /*** Configuration ***/
 
@@ -46,7 +49,7 @@ const config = {
         src: 'src/svg/icons/*.svg',
         templateFile: 'src/build/templates/icons.css.tpl',
         cssDest: 'app/browser/css/',
-        cssfilename: 'icons.css',
+        cssFilename: 'icons.css',
         fontDest: 'fonts/icons/'
     },
     fonts: {
@@ -66,46 +69,91 @@ const config = {
     }
 };
 
-const appBundle = browserify({
+const appBundle = {
     entries: config.app.src,
     transform: [babelify],
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.json'],
     standalone: config.app.name,
+    cache: {},
+    packageCache: {},
     ignoreMissing: false,
     detectGlobals: false,
-    cache: {},
-    packageCache: {}
-});
+    browserField: false,
+    builtins: false,
+    commondir: false,
+    insertGlobalVars: {
+        process: undefined,
+        global: undefined,
+        'Buffer.isBuffer': undefined,
+        Buffer: undefined
+    }
+};
 
-const mainBundle = browserify({
+const mainBundle = {
     entries: config.main.src,
     transform: [babelify],
+    cache: {},
+    packageCache: {},
     ignoreMissing: false,
     detectGlobals: false,
-    cache: {},
-    packageCache: {}
-});
+    browserField: false,
+    builtins: false,
+    commondir: false,
+    insertGlobalVars: {
+        process: undefined,
+        global: undefined,
+        'Buffer.isBuffer': undefined,
+        Buffer: undefined
+    }
+};
+
+const vendorBundle = {
+    noParse: [require.resolve('babylon')]
+};
 
 /*** Functions ***/
 
+// Error reporting
+function logError(err) {
+    let { red, yellow, magenta, blue } = util.colors;
+
+    if (err.fileName) {
+        // Regular error
+        util.log(
+            red(err.name)
+            + ': ' + yellow(err.fileName)
+            + ': ' + 'Line ' + magenta(err.lineNumber)
+            + ' & ' + 'Column ' + magenta(err.columnNumber || err.column)
+            + ': ' + blue(err.description)
+        );
+    }
+    else {
+        // Browserify error
+        util.log(
+            red(err.name)
+            + ': '
+            + yellow(err.message)
+        );
+    }
+}
+
+// Gets environment setting
 function getEnvironment() {
     return process.env.NODE_ENV || 'development';
 }
 
+// Builds browserify bundles
 function build(bundle, src, dest) {
-    let minify = (getEnvironment() === 'production') ? uglify : util.noop;
-
     return bundle
-        .plugin(collapse)
         .bundle()
-        .on('error', err => {
-            util.log(util.colors.red(err.message));
-        })
-        .pipe(plumber())
         .pipe(duration('bundle time'))
+        .pipe(plumber())
         .pipe(source(src))
-        .pipe(buffer())
-        //.pipe(minify())
+        .pipe(buffer()) // Convert to gulp pipline
+        .pipe(sourcemaps.init({ loadMaps: true })) // Extract the inline sourcemaps
+            .pipe(uglify()) // Minify
+            .on('error', logError)
+        .pipe(sourcemaps.write('.')) // Set folder for sourcemaps to output to
         .pipe(plumber.stop())
         .pipe(gulp.dest(dest));
 }
@@ -114,89 +162,105 @@ function build(bundle, src, dest) {
 function buildVendor() {
     let { filename, dest } = config.vendor;
 
-    let vendorBundle = browserify({
-        debug: false,
-        noParse: [require.resolve('babylon')]
-    });
+    let bundle = browserify(vendorBundle)
+        .require(vendorIds)
+        .transform(
+            envify({
+                _: 'purge',
+                NODE_ENV: getEnvironment()
+            }),
+            { global: true }
+        )
+        .plugin(collapse);
 
-    vendorIds.forEach(id => {
-        vendorBundle.require(require.resolve(id), { expose: id });
-    });
-
-    vendorBundle.transform(envify({
-        _: 'purge',
-        NODE_ENV: getEnvironment()
-    }), { global:true });
-
-    return build(vendorBundle, filename, dest);
+    return build(bundle, filename, dest);
 }
 
 // Builds application only library
 function buildApp() {
     let { filename, dest } = config.app;
 
-    vendorIds.forEach(id => {
-        appBundle.external(id);
-    });
+    let bundle = browserify(appBundle)
+        .external(vendorIds)
+        .transform(
+            envify({
+                _: 'purge',
+                NODE_ENV: getEnvironment()
+            }),
+            { global: true }
+        )
+        .plugin(helpers)
+        .plugin(collapse);
 
-    appBundle.transform(envify({
-        _: 'purge',
-        NODE_ENV: getEnvironment()
-    }), { global:true });
-
-    return build(appBundle, filename, dest);
+    return build(bundle, filename, dest);
 }
 
 // Builds application and watches for changes
 function buildAppWatch() {
     let { filename, dest } = config.app;
 
-    appBundle.transform(envify({
-        _: 'purge',
-        NODE_ENV: getEnvironment()
-    }), { global:true });
-
-    vendorIds.forEach(id => {
-        appBundle.external(id);
-    });
-
-    watchify(
-        appBundle,
-        { ignoreWatch: ['**/node_modules/**']}
-    )
+    let bundle = browserify(appBundle)
+        .external(vendorIds)
+        .transform(
+            envify({
+                _: 'purge',
+                NODE_ENV: getEnvironment()
+            }),
+            { global: true }
+        )
+        .plugin(helpers)
+        .plugin(collapse)
+        .plugin(watchify, { ignoreWatch: ['**/node_modules/**'] })
         .on('update', ids => {
             util.log(ids);
-            build(appBundle, filename, dest);
+            build(bundle, filename, dest);
         });
 
-    return build(appBundle, filename, dest);
+    return build(bundle, filename, dest);
+}
+
+// Builds main file for electron
+function buildMain() {
+    let { filename, dest } = config.main;
+
+    let bundle = browserify(mainBundle)
+        .external(mainIds)
+        .transform(
+            envify({
+                _: 'purge',
+                NODE_ENV: getEnvironment()
+            }),
+            { global:true }
+        );
+
+    return build(bundle, filename, dest);
 }
 
 // Compile LESS into CSS
 function buildCss() {
-    let { src, dest } = config.css,
-        minify = (getEnvironment() === 'production') ? cleancss : util.noop;
+    let { src, dest } = config.css;
 
     return gulp.src(src)
         .pipe(plumber())
+        .pipe(sourcemaps.init())
         .pipe(less())
-        .pipe(minify())
+        .pipe(cleancss())
+        .pipe(sourcemaps.write('.'))
         .pipe(plumber.stop())
         .pipe(gulp.dest(dest));
 }
 
 // Build CSS for fonts
 function buildFonts() {
-    let { templateFile, filename, dest } = config.fonts,
-        minify = (getEnvironment() === 'production') ? cleancss : util.noop;
+    let { templateFile, filename, dest } = config.fonts;
 
     return gulp.src(templateFile)
         .pipe(plumber())
-        .pipe(template({
-            fonts: fonts
-        }))
-        .pipe(minify())
+        .pipe(template({ fonts: fonts }))
         .pipe(rename(filename))
+        .pipe(sourcemaps.init())
+        .pipe(cleancss())
+        .pipe(sourcemaps.write('.'))
         .pipe(plumber.stop())
         .pipe(gulp.dest(dest));
 }
@@ -221,12 +285,17 @@ function buildIcons() {
             });
 
             return gulp.src(templateFile)
+                .pipe(plumber())
                 .pipe(template({
                     glyphs: icons,
                     fontName: options.fontName,
                     className: 'icon'
                 }))
                 .pipe(rename(cssFilename))
+                .pipe(sourcemaps.init())
+                .pipe(cleancss())
+                .pipe(sourcemaps.write('.'))
+                .pipe(plumber.stop())
                 .pipe(gulp.dest(cssDest));
         })
         .pipe(gulp.dest(fontDest));
@@ -242,24 +311,6 @@ function buildShaders() {
         .pipe(rename(filename))
         .pipe(plumber.stop())
         .pipe(gulp.dest(dest));
-}
-
-// Builds main file for electron
-function buildMain() {
-    let { filename, dest } = config.main;
-
-    process.env.NODE_ENV = 'production';
-
-    ['electron','path','url','child_process','debug'].forEach(id => {
-        mainBundle.external(id);
-    });
-
-    mainBundle.transform(envify({
-        _: 'purge',
-        NODE_ENV: getEnvironment()
-    }), { global:true });
-
-    return build(mainBundle, filename, dest);
 }
 
 /*** Tasks ***/
@@ -294,8 +345,9 @@ gulp.task('build-dev', ['set-dev', 'build-all']);
 
 gulp.task('build-prod', ['set-prod', 'build-all']);
 
-gulp.task('start-dev', ['set-dev', 'build-shaders', 'build-css', 'build-app-watch'], () => {
+gulp.task('start-dev', ['set-dev', 'build-shaders', 'build-css', 'build-main', 'build-app-watch'], () => {
     gulp.watch('./src/css/**/*.less', ['build-css']);
+    gulp.watch('./src/js/main/**/*.js', ['build-main']);
     gulp.watch('./src/glsl/**/*.glsl', ['build-shaders']);
 });
 
