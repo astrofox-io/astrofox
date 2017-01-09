@@ -6,7 +6,7 @@ const Common = require('./core/Common');
 const { logger } = require('./core/Global');
 const App = require('./ui/components/App.jsx');
 
-const AstroFox = {
+module.exports = {
     start: () => {
         logger.log(Common);
 
@@ -16,5 +16,3 @@ const AstroFox = {
         );
     }
 };
-
-module.exports = AstroFox;

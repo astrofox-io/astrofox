@@ -6,8 +6,5 @@
   "description": "Astrofox",
   "author": "Mike Cao <mike@mikecao.com>",
   "homepage": "http://astrofox.io",
-  "private": true,
-  "dependencies": {
-    "debug": "^2.3.3"
-  }
+  "private": true
 }

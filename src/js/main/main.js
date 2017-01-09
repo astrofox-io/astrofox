@@ -9,15 +9,11 @@ if (squirrel()) {
     process.exit();
 }
 
-let win;
-
-function getEnvironment() {
-    return process.env.NODE_ENV || 'development';
-}
+let mainWindow;
 
 function createWindow() {
     // Create window
-    win = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         show: false,
         width: 1320,
         height: 1200,
@@ -31,16 +27,16 @@ function createWindow() {
             textAreasAreResizable: false,
             experimentalCanvasFeatures: true,
             backgroundThrottling: false,
-            devTools: getEnvironment() === 'development'
+            devTools: (process.env.NODE_ENV !== 'production')
         },
         titleBarStyle: 'hidden-inset'
     });
 
     // Production settings
-    if (getEnvironment() !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
         // Auto close devtools if opened
-        win.webContents.on('devtools-opened', () => {
-            win.webContents.closeDevTools();
+        mainWindow.webContents.on('devtools-opened', () => {
+            mainWindow.webContents.closeDevTools();
         });
     }
 
@@ -51,36 +47,36 @@ function createWindow() {
         slashes: true
     });
 
-    win.loadURL(index);
+    mainWindow.loadURL(index);
 
-    win.webContents.on('dom-ready', () => {
+    mainWindow.webContents.on('dom-ready', () => {
         debug('dom-ready');
         showWindow();
     });
 
     // Show window only when ready
-    win.on('ready-to-show', () => {
+    mainWindow.on('ready-to-show', () => {
         debug('ready-to-show');
         showWindow();
     });
 
     // Window close
-    win.on('close', () => {
+    mainWindow.on('close', () => {
         debug('close');
-        win = null;
+        mainWindow = null;
     });
 
-    win.on('closed', () => {
+    mainWindow.on('closed', () => {
         debug('closed');
-        win = null;
+        mainWindow = null;
     });
 }
 
 function showWindow() {
-    win.show();
+    mainWindow.show();
 
-    if (process.platform === 'darwin') {
-        win.webContents.openDevTools();
+    if (process.env.NODE_ENV !== 'production') {
+        mainWindow.webContents.openDevTools();
     }
 }
 
@@ -107,15 +103,7 @@ app.commandLine.appendSwitch('enable-precise-memory-info');
 app.on('ready', () => {
     debug('ready');
 
-    globalShortcut.unregisterAll();
-
-    if (getEnvironment() !== 'development') {
-        // Disable devtools shortcut
-        globalShortcut.register('CmdOrCtrl+Shift+I', () => {
-            // Do nothing
-        });
-    }
-
+    // Disable menu item on macOS
     if (process.platform === 'darwin') {
         systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true);
         systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true);
@@ -124,11 +112,11 @@ app.on('ready', () => {
     createWindow();
 });
 
-// Quit when all windows are closed.
+// Quit when all windows are closed
 app.on('window-all-closed', () => {
     debug('window-all-closed');
 
-    win = null;
+    mainWindow = null;
 
     if (process.platform !== 'darwin') {
         app.quit();
@@ -137,13 +125,14 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
     debug('activate');
-    if (win === null) {
+    if (mainWindow === null) {
         createWindow();
     }
 });
 
 app.on('will-quit', () => {
     debug('will-quit');
+
     // Unregister all shortcuts
     globalShortcut.unregisterAll();
 });

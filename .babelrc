@@ -1,9 +1,9 @@
 {
   "presets": [
-    "es2015",
+    ["es2015", {"modules":false}],
     "react"
   ],
   "plugins": [
-    "external-helpers-2"
+    ["transform-runtime", {"polyfill": false}]
   ]
 }
