@@ -1,6 +1,6 @@
 'use strict';
 
-const webpack = require('webpack');
+const del = require('del');
 const gulp = require('gulp');
 const cleancss = require('gulp-clean-css');
 const glsl = require('gulp-glsl');
@@ -13,6 +13,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const template = require('gulp-template');
 const uglify = require('gulp-uglify');
 const gutil = require('gulp-util');
+const webpack = require('webpack');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 
@@ -23,11 +24,10 @@ const mainConfig = require('./webpack.main.config');
 const fontConfig = require('./src/conf/fonts.json');
 
 const config = {
-    js: {
-        name: 'AstroFox',
-        src: 'src/js/AstroFox.js',
-        dest: 'app/browser/js/',
-        filename: 'app.js'
+    main: {
+        src: 'src/js/main/main.js',
+        dest: 'app/',
+        filename: 'main.js'
     },
     css: {
         src: 'src/css/app.less',
@@ -50,11 +50,6 @@ const config = {
         src: 'src/glsl/**/*.glsl',
         dest: 'src/js/lib/',
         filename: 'ShaderCode.js'
-    },
-    main: {
-        src: 'src/js/main/main.js',
-        dest: 'app/',
-        filename: 'main.js'
     }
 };
 
@@ -113,8 +108,10 @@ function buildCss() {
 
     return gulp.src(src)
         .pipe(plumber())
+        .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(gulpif(getEnvironment() === 'production', cleancss()))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest));
 }
 
@@ -203,9 +200,13 @@ gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-font
 
 gulp.task('build-dev', ['set-dev', 'build-all']);
 
-gulp.task('build-prod', ['set-prod', 'build-all']);
+gulp.task('build-prod', ['set-prod', 'build-all'], () => {
+    // Remove sourcemaps
+    del(['./app/**/*.map']);
+});
 
 gulp.task('start-dev', ['set-dev', 'build-shaders', 'build-css', 'build-main', 'build-js-watch'], () => {
+    // Watch for changes
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/js/main/**/*.js', ['build-main']);
     gulp.watch('./src/glsl/**/*.glsl', ['build-shaders']);

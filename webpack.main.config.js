@@ -19,7 +19,7 @@ const config = {
     module: {
         rules: [
             {
-                test: /\.(js|json)$/,
+                test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'src/js')
                 ]
@@ -30,7 +30,10 @@ const config = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify((PROD) ? 'production' : 'development')
         })
-    ]
+    ],
+    watchOptions: {
+        ignored: /node_modules/
+    }
 };
 
 if (PROD) {

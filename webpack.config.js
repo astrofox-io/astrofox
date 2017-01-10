@@ -6,7 +6,7 @@ const PROD = process.env.NODE_ENV === 'production';
 
 const config = {
     target: 'electron-renderer',
-    devtool: (PROD) ? 'source-map' : false,
+    devtool: (PROD) ? false : 'source-map',
     entry: {
         app: './src/js/index.js',
         vendor: vendorIds
@@ -52,7 +52,7 @@ if (PROD) {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             comments: false,
-            sourceMap: true
+            sourceMap: false
         })
     );
 }

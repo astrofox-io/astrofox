@@ -1,12 +1,14 @@
 const path = require('path');
 const spawn = require('child_process').spawn;
 const app = require('electron').app;
-const debug = require('debug')('astrofox');
+const Logger = require('../core/Logger');
+
+const log = (new Logger()).log;
 
 let run = function(args, done) {
     let updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
 
-    debug('Spawning `%s` with args `%s`', updateExe, args);
+    log('Spawning `%s` with args `%s`', updateExe, args);
 
     spawn(updateExe, args, {
         detached: true
@@ -17,7 +19,7 @@ let check = function() {
     if (process.platform === 'win32') {
         let cmd = process.argv[1];
 
-        debug('Processing squirrel command `%s`', cmd);
+        log('Processing squirrel command `%s`', cmd);
 
         let target = path.basename(process.execPath);
 

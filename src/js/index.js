@@ -6,13 +6,17 @@ const Common = require('./core/Common');
 const { logger } = require('./core/Global');
 const App = require('./ui/components/App.jsx');
 
-module.exports = {
+let Astrofox = {
     start: () => {
-        logger.log(Common);
-
         ReactDOM.render(
             <App />,
             document.getElementById('app')
         );
     }
 };
+
+if (process.env.NODE_ENV !== 'production') {
+    Astrofox.env = Common;
+}
+
+module.exports = Astrofox;

@@ -1,15 +1,16 @@
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
-const debug = require('debug')('astrofox');
-const { app, BrowserWindow, globalShortcut, systemPreferences } = electron;
 const squirrel = require('./squirrel');
+const Logger = require('../core/Logger');
+const { app, BrowserWindow, globalShortcut, systemPreferences } = electron;
 
 if (squirrel()) {
     process.exit();
 }
 
-let mainWindow;
+let mainWindow = null;
+const log = (new Logger()).log;
 
 function createWindow() {
     // Create window
@@ -40,34 +41,33 @@ function createWindow() {
         });
     }
 
-    // Load app index
-    let index = url.format({
+    // Load index page
+    mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'browser', 'index.html'),
         protocol: 'file',
         slashes: true
-    });
+    }));
 
-    mainWindow.loadURL(index);
-
+    // Show window when DOM ready
     mainWindow.webContents.on('dom-ready', () => {
-        debug('dom-ready');
+        log('dom-ready');
         showWindow();
     });
 
     // Show window only when ready
     mainWindow.on('ready-to-show', () => {
-        debug('ready-to-show');
+        log('ready-to-show');
         showWindow();
     });
 
     // Window close
     mainWindow.on('close', () => {
-        debug('close');
+        log('close');
         mainWindow = null;
     });
 
     mainWindow.on('closed', () => {
-        debug('closed');
+        log('closed');
         mainWindow = null;
     });
 }
@@ -98,12 +98,14 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 //app.commandLine.appendSwitch('num-raster-threads', 4);
 
 // Memory profiling
-app.commandLine.appendSwitch('enable-precise-memory-info');
+if (process.env.NODE_ENV !== 'production') {
+    app.commandLine.appendSwitch('enable-precise-memory-info');
+}
 
 app.on('ready', () => {
-    debug('ready');
+    log('ready');
 
-    // Disable menu item on macOS
+    // Disable menu items on macOS
     if (process.platform === 'darwin') {
         systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true);
         systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true);
@@ -112,9 +114,8 @@ app.on('ready', () => {
     createWindow();
 });
 
-// Quit when all windows are closed
 app.on('window-all-closed', () => {
-    debug('window-all-closed');
+    log('window-all-closed');
 
     mainWindow = null;
 
@@ -124,15 +125,15 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-    debug('activate');
+    log('activate');
+
     if (mainWindow === null) {
         createWindow();
     }
 });
 
 app.on('will-quit', () => {
-    debug('will-quit');
+    log('will-quit');
 
-    // Unregister all shortcuts
     globalShortcut.unregisterAll();
 });
