@@ -1,6 +1,6 @@
 'use strict';
 
-const path = window.require('path');
+const path = require('path');
 
 const Process = require('../core/Process');
 const { replaceExt } = require('../util/file');

@@ -1,6 +1,6 @@
 'use strict';
 
-const crypto = window.require('crypto');
+const crypto = require('crypto');
 
 function sha1(s) {
     return crypto.createHash('sha1').update(s).digest('hex');

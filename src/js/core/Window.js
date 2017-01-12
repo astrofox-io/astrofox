@@ -1,6 +1,6 @@
 'use strict';
 
-const remote = window.require('electron').remote;
+const remote = require('electron').remote;
 
 class Window {
     constructor() {

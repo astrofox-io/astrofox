@@ -1,6 +1,6 @@
 'use strict';
 
-const path = window.require('path');
+const path = require('path');
 
 const React = require('react');
 const classNames = require('classnames');

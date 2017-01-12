@@ -1,7 +1,7 @@
 'use strict';
 
-const { app, autoUpdater } = window.require('electron').remote;
-const os = window.require('os');
+const { app, autoUpdater } = require('electron').remote;
+const os = require('os');
 const EventEmitter = require('./EventEmitter');
 const { logger } = require('./Global');
 

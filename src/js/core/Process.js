@@ -1,7 +1,7 @@
 'use strict';
 
-const Transform = window.require('stream').Transform;
-const spawn = window.require('child_process').spawn;
+const Transform = require('stream').Transform;
+const spawn = require('child_process').spawn;
 
 const EventEmitter = require('./EventEmitter');
 const { logger } = require('./Global');

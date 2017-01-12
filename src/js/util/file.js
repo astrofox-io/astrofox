@@ -1,6 +1,6 @@
 'use strict';
 
-const path = window.require('path');
+const path = require('path');
 
 function replaceExt(file, ext) {
     let base = path.basename(file, path.extname(file)) + ext;

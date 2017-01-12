@@ -1,7 +1,7 @@
 'use strict';
 
-const remote = window.require('electron').remote;
-const path = window.require('path');
+const remote = require('electron').remote;
+const path = require('path');
 
 const APP_NAME = 'Astrofox';
 const APP_VERSION = '1.0.0';

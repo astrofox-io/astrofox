@@ -1,9 +1,9 @@
 'use strict';
 
-const NodeBuffer = window.require('buffer').Buffer;
-const fs = window.require('fs');
-const zlib = window.require('zlib');
-const path = window.require('path');
+const NodeBuffer = require('buffer').Buffer;
+const fs = require('fs');
+const zlib = require('zlib');
+const path = require('path');
 const mime = require('mime');
 
 function readFile(file) {

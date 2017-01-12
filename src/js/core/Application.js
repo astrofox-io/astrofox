@@ -1,8 +1,8 @@
 'use strict';
 
 const id3 = require('id3js');
-const remote = window.require('electron').remote;
-const path = window.require('path');
+const remote = require('electron').remote;
+const path = require('path');
 
 const { APP_NAME, APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } = require('./Environment');
 const { events, logger, raiseError } = require('./Global');
