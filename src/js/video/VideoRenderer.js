@@ -1,6 +1,5 @@
 'use strict';
 
-const remote = window.require('electron').remote;
 const path = window.require('path');
 
 const EventEmitter = require('../core/EventEmitter');
@@ -8,8 +7,8 @@ const RenderProcess = require('./RenderProcess');
 const AudioProcess = require('./AudioProcess');
 const MergeProcess = require('./MergeProcess');
 const { logger } = require('../core/Global');
-const { TEMP_PATH, FFMPEG_PATH } = require('../core/Common');
 const { removeFile } = require('../core/IO');
+const { TEMP_PATH, FFMPEG_PATH } = require('../core/Environment');
 const { uniqueId } = require('../util/crypto');
 
 const defaults = {
@@ -75,8 +74,10 @@ class VideoRenderer extends EventEmitter {
                 return this.mergeProcess.start(outputVideo, outputAudio, this.video);
             })
             .then(() => {
-                //removeFile(outputVideo);
-                //removeFile(outputAudio);
+                if (process.env.NODE_ENV === 'production') {
+                    removeFile(outputVideo);
+                    removeFile(outputAudio);
+                }
 
                 this.completed = true;
                 this.emit('complete');

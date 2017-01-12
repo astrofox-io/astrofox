@@ -21,7 +21,7 @@ const buffer = require('vinyl-buffer');
 
 const appConfig = require('./webpack.config');
 const mainConfig = require('./webpack.main.config');
-const fontConfig = require('./src/conf/fonts.json');
+const fontConfig = require('./src/config/fonts.json');
 
 const config = {
     main: {
@@ -91,7 +91,10 @@ function buildJsWatch(done) {
 
     webpack(appConfig)
         .watch(
-            { aggregateTimeout: 300 },
+            {
+                aggregateTimeout: 300,
+                ignored: /node_modules/
+            },
             logWebpack(done, watch)
         );
 }
@@ -196,7 +199,7 @@ gulp.task('build-fonts', buildFonts);
 
 gulp.task('build-shaders', buildShaders);
 
-gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-fonts', 'build-js', 'build-main']);
+gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-fonts', 'build-main', 'build-js']);
 
 gulp.task('build-dev', ['set-dev', 'build-all']);
 

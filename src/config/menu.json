@@ -53,12 +53,6 @@
       {
         "label": "Settings",
         "action": "edit_settings"
-      },
-      {
-        "label": "Reload",
-        "role": "reload",
-        "action": "reload",
-        "accelerator": "CmdOrCtrl+R"
       }
     ]
   },
@@ -88,6 +82,24 @@
         "type": "checkbox",
         "checked": true,
         "action": "view_oscilloscope"
+      }
+    ]
+  },
+  {
+    "label": "Developer",
+    "visible": false,
+    "submenu": [
+      {
+        "label": "Reload",
+        "role": "reload",
+        "accelerator": "CmdOrCtrl+R",
+        "visible": false
+      },
+      {
+        "label": "Developer tools",
+        "role": "toggledevtools",
+        "accelerator": "CmdOrCtrl+Shift+I",
+        "visible": false
       }
     ]
   },

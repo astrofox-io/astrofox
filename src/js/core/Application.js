@@ -4,8 +4,8 @@ const id3 = require('id3js');
 const remote = window.require('electron').remote;
 const path = window.require('path');
 
-const { APP_NAME, APP_VERSION, APP_PATH, USER_DATA_PATH, TEMP_PATH } = require('./Common');
-const { events, logger } = require('./Global');
+const { APP_NAME, APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } = require('./Environment');
+const { events, logger, raiseError } = require('./Global');
 const IO = require('./IO');
 const EventEmitter = require('./EventEmitter');
 const AppUpdater = require('./AppUpdater');
@@ -13,16 +13,11 @@ const Player = require('../audio/Player');
 const BufferedSound = require('../audio/BufferedSound');
 const SpectrumAnalyzer = require('../audio/SpectrumAnalyzer');
 const Stage = require('../displays/Stage');
-const Scene = require('../displays/Scene');
-const Display = require('../displays/Display');
-const DisplayLibrary = require('../lib/DisplayLibrary');
-const EffectsLibrary = require('../lib/EffectsLibrary');
 const VideoRenderer = require('../video/VideoRenderer');
 
-const appConfig = require('../../conf/app.json');
-const menuConfig = require('../../conf/menu.json');
+const appConfig = require('../../config/app.json');
+const menuConfig = require('../../config/menu.json');
 
-const APP_CONFIG_FILE = path.join(USER_DATA_PATH, 'app.config');
 const DEFAULT_PROJECT = path.join(APP_PATH, 'projects', 'default.afx');
 const FPS_POLL_INTERVAL = 500;
 const UPDATE_SERVER_HOST = 'localhost:3333';
@@ -82,18 +77,17 @@ class Application extends EventEmitter {
 
         // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
-            this.raiseError(msg, err);
+            raiseError(msg, err);
             return true;
         };
     }
 
     init() {
         // Load config file
-        this.loadConfig();
+        this.loadConfigFile();
 
         // Create temp folder
         IO.createFolder(TEMP_PATH);
-
 
         // Create menu
         menuConfig.forEach(root => {
@@ -177,7 +171,7 @@ class Application extends EventEmitter {
         source.start(0, frame / fps, 1 / fps);
     }
 
-    loadConfig() {
+    loadConfigFile() {
         if (IO.fileExists(APP_CONFIG_FILE)) {
             return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
                 let config = JSON.parse(data);
@@ -188,7 +182,7 @@ class Application extends EventEmitter {
             });
         }
         else {
-            this.saveConfig(this.config);
+            this.saveConfigFile(this.config);
         }
     }
 
@@ -209,7 +203,7 @@ class Application extends EventEmitter {
                 return file;
             })
             .catch(error => {
-                this.raiseError('Failed to load audio file.', error);
+                raiseError('Failed to load audio file.', error);
             });
     }
 
@@ -252,7 +246,7 @@ class Application extends EventEmitter {
     loadProject(file) {
         return IO.readFileCompressed(file).then(
             data => {
-                this.loadControls(JSON.parse(data));
+                this.stage.loadConfig(JSON.parse(data));
                 this.resetChanges();
 
                 this.projectFile = file;
@@ -262,7 +256,7 @@ class Application extends EventEmitter {
             error => {
                 if (error.message.indexOf('incorrect header check') > -1) {
                     IO.readFile(file).then(data => {
-                        this.loadControls(JSON.parse(data));
+                        this.stage.loadConfig(JSON.parse(data));
                         this.resetChanges();
 
                         this.projectFile = file;
@@ -270,7 +264,7 @@ class Application extends EventEmitter {
                         events.emit('project-loaded');
                     })
                     .catch(error => {
-                        this.raiseError('Invalid project file.', error);
+                        raiseError('Invalid project file.', error);
                     });
                 }
                 else {
@@ -279,62 +273,11 @@ class Application extends EventEmitter {
             }
         )
         .catch(error => {
-            this.raiseError('Failed to open project file.', error);
+            raiseError('Failed to open project file.', error);
         });
     }
 
-    loadControls(data) {
-        let component;
-
-        if (typeof data === 'object') {
-            this.stage.clearScenes();
-
-            data.scenes.forEach(item => {
-                let scene = new Scene(item.options);
-                this.stage.addScene(scene);
-
-                if (item.displays) {
-                    item.displays.forEach(display => {
-                        component = DisplayLibrary[display.name];
-                        if (!component) component = DisplayLibrary[display.name + 'Display'];
-
-                        if (component) {
-                            scene.addElement(new component(display.options));
-                        }
-                        else {
-                            logger.warn('Display "%s" not found.', display.name);
-                        }
-                    });
-                }
-
-                if (item.effects) {
-                    item.effects.forEach(effect => {
-                        component = EffectsLibrary[effect.name];
-                        if (!component) component = EffectsLibrary[effect.name + 'Effect'];
-
-                        if (component) {
-                            scene.addElement(new component(effect.options));
-                        }
-                        else {
-                            logger.warn('Effect "%s" not found.', effect.name);
-                        }
-                    });
-                }
-            });
-
-            if (data.stage) {
-                this.stage.update(data.stage.options);
-            }
-            else {
-                this.stage.update(Stage.defaults);
-            }
-        }
-        else {
-            this.raiseError('Invalid project data.');
-        }
-    }
-
-    saveConfig(config, callback) {
+    saveConfigFile(config, callback) {
         let data = JSON.stringify(config);
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
@@ -345,7 +288,7 @@ class Application extends EventEmitter {
             if (callback) callback();
         })
         .catch(error => {
-            this.raiseError('Failed to save config file.', error);
+            raiseError('Failed to save config file.', error);
         });
     }
 
@@ -357,7 +300,7 @@ class Application extends EventEmitter {
             stage.getImage(buffer => {
                 IO.writeFile(filename, buffer)
                     .catch(error => {
-                        this.raiseError('Failed to save image file.', error);
+                        raiseError('Failed to save image file.', error);
                     })
                     .then(() => {
                         logger.log('Image saved. (%s)', filename);
@@ -390,7 +333,9 @@ class Application extends EventEmitter {
                 if (callback) callback();
 
                 this.bufferSource = null;
+                this.renderer = null;
                 player.stop('audio');
+
                 this.startRender();
             });
 
@@ -398,7 +343,7 @@ class Application extends EventEmitter {
             renderer.start();
         }
         else {
-            this.raiseError('No audio loaded.');
+            raiseError('No audio loaded.');
         }
     }
 
@@ -423,7 +368,7 @@ class Application extends EventEmitter {
             this.projectFile = file;
         })
         .catch(error => {
-            this.raiseError('Failed to save project file.', error);
+            raiseError('Failed to save project file.', error);
         });
     }
 
@@ -492,14 +437,6 @@ class Application extends EventEmitter {
 
     resetChanges() {
         this.stage.resetChanges();
-    }
-
-    raiseError(message, error) {
-        if (error) {
-            logger.error(message + "\n", error);
-        }
-
-        events.emit('error', message);
     }
 
     checkForUpdates() {

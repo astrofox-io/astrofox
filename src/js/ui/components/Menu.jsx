@@ -14,7 +14,7 @@ const Menu = (props) => {
         if (item.type == 'separator') {
             return <div key={index} className="separator" />;
         }
-        else if (item.label) {
+        else if (item.label && item.visible !== false) {
             return (
                 <MenuItem
                     key={index}
@@ -25,6 +25,8 @@ const Menu = (props) => {
                 />
             );
         }
+
+        return null;
     });
 
     return (

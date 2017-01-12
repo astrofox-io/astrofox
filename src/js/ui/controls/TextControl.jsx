@@ -11,7 +11,7 @@ const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const { Control, Row } = require('./Control.jsx');
 
-const fontOptions = require('../../../conf/fonts.json');
+const fontOptions = require('../../../config/fonts.json');
 
 class TextControl extends UIComponent {
     constructor(props) {

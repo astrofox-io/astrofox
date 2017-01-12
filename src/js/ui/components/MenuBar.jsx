@@ -56,17 +56,19 @@ class MenuBar extends UIComponent {
 
     render() {
         let items = this.state.items.map((item, index) => {
-            return (
-                <MenuBarItem
-                    key={index}
-                    label={item.label}
-                    items={item.submenu}
-                    active={this.state.activeIndex === index}
-                    onClick={this.onClick.bind(this, index)}
-                    onMouseOver={this.onMouseOver.bind(this, index)}
-                    onMenuItemClick={this.onMenuItemClick}
-                />
-            );
+            if (item.visible !== false) {
+                return (
+                    <MenuBarItem
+                        key={index}
+                        label={item.label}
+                        items={item.submenu}
+                        active={this.state.activeIndex === index}
+                        onClick={this.onClick.bind(this, index)}
+                        onMouseOver={this.onMouseOver.bind(this, index)}
+                        onMenuItemClick={this.onMenuItemClick}
+                    />
+                );
+            }
         });
 
         return (

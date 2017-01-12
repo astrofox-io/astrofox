@@ -42,10 +42,7 @@ const config = {
             filename: 'vendor.js',
             minChunks: Infinity
         })
-    ],
-    watchOptions: {
-        ignored: /node_modules/
-    }
+    ]
 };
 
 if (PROD) {

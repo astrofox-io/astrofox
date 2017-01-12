@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const fontOptions = require('../../../conf/fonts.json');
+const fontOptions = require('../../../config/fonts.json');
 
 const Preload = (props) => {
     let fonts = fontOptions.map((item, index) => {

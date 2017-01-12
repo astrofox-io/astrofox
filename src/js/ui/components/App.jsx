@@ -27,7 +27,7 @@ const ControlPicker = require('./ControlPicker.jsx');
 const ModalWindow = require('./ModalWindow.jsx');
 const Dialog = require('./Dialog.jsx');
 
-const menuConfig = require('../../../conf/menu.json');
+const menuConfig = require('../../../config/menu.json');
 
 class App extends UIComponent {
     constructor(props) {

@@ -30,10 +30,7 @@ const config = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify((PROD) ? 'production' : 'development')
         })
-    ],
-    watchOptions: {
-        ignored: /node_modules/
-    }
+    ]
 };
 
 if (PROD) {

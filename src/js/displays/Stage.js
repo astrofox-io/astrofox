@@ -2,12 +2,14 @@
 
 const THREE = require('three');
 
-const Display = require('./Display');
 const Scene = require('./Scene');
+const Display = require('../displays/Display');
+const DisplayLibrary = require('../lib/DisplayLibrary');
+const EffectsLibrary = require('../lib/EffectsLibrary');
 const NodeCollection = require('../core/NodeCollection');
 const Composer = require('../graphics/Composer');
 const FrameBuffer = require('../graphics/FrameBuffer');
-const { events } = require('../core/Global');
+const { logger, raiseError } = require('../core/Global');
 
 class Stage extends Display {
     constructor(options) {
@@ -143,6 +145,62 @@ class Stage extends Display {
 
         this.buffer2D.setSize(width, height);
         this.buffer3D.setSize(width, height);
+    }
+
+    loadConfig(config) {
+        let component;
+
+        if (typeof config === 'object') {
+            this.clearScenes();
+
+            if (config.scenes) {
+                config.scenes.forEach(scene => {
+                    let newScene = new Scene(scene.options);
+
+                    this.addScene(newScene);
+
+                    if (scene.displays) {
+                        scene.displays.forEach(display => {
+                            component = DisplayLibrary[display.name];
+
+                            if (!component) component = DisplayLibrary[display.name + 'Display'];
+
+                            if (component) {
+                                newScene.addElement(new component(display.options));
+                            }
+                            else {
+                                logger.warn('Display "%s" not found.', display.name);
+                            }
+                        });
+                    }
+
+                    if (scene.effects) {
+                        scene.effects.forEach(effect => {
+                            component = EffectsLibrary[effect.name];
+
+                            if (!component) component = EffectsLibrary[effect.name + 'Effect'];
+
+                            if (component) {
+                                newScene.addElement(new component(effect.options));
+                            }
+                            else {
+                                logger.warn('Effect "%s" not found.', effect.name);
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (config.stage) {
+                this.update(config.stage.options);
+            }
+            else {
+                this.update(Stage.defaults);
+            }
+        }
+        else {
+            raiseError('Invalid project data.');
+        }
     }
 
     render(data, callback) {
