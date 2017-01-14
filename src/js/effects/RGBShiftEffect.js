@@ -19,12 +19,12 @@ class RGBShiftEffect extends Effect {
         });
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(new ShaderPass(RGBShiftShader));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

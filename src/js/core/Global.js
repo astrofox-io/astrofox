@@ -8,7 +8,7 @@ const events = new EventEmitter();
 
 function raiseError(msg, err) {
     if (err) {
-        logger.error(msg + "\n", err);
+        logger.error(msg + '\n', err);
     }
 
     events.emit('error', msg, err);

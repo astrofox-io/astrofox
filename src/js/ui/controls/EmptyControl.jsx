@@ -3,7 +3,7 @@
 const React = require('react');
 const { Control, Row } = require('./Control.jsx');
 
-const EmptyControl = (props) => {
+const EmptyControl = () => {
     return (
         <Control title="empty">
             <Row />

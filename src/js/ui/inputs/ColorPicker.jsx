@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-const ColorPicker = (props) => {
+const ColorPicker = () => {
     return (
         <div>
             <canvas ref="canvas" />

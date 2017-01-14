@@ -4,7 +4,6 @@ const THREE = require('three');
 
 const NodeCollection = require('../core/NodeCollection');
 const Display = require('./Display');
-const CanvasDisplay = require('./CanvasDisplay');
 const Effect = require('../effects/Effect');
 const Composer = require('../graphics/Composer');
 

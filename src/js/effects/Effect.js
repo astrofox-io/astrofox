@@ -1,7 +1,6 @@
 'use strict';
 
 const Display = require('../displays/Display');
-const MultiPass = require('../graphics/MultiPass');
 
 class Effect extends Display {
     constructor(type, options) {
@@ -35,7 +34,7 @@ class Effect extends Display {
         }
     }
 
-    renderToScene(scene) {
+    renderToScene() {
         if (this.hasUpdate) {
             this.updatePass();
 

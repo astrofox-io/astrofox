@@ -38,7 +38,7 @@ class TextInput extends UIComponent {
         }
     }
 
-    onValueChange(e) {
+    onValueChange() {
         let val = this.state.value;
 
         if (this.props.onChange) {

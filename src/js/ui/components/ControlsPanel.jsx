@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const ReactDOM = require('react-dom');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
@@ -15,6 +14,8 @@ class ControlsPanel extends UIComponent {
             controls: [],
             activeIndex: -1
         };
+
+        this.nodes = {};
     }
 
     componentWillMount() {
@@ -48,7 +49,7 @@ class ControlsPanel extends UIComponent {
 
     focusControl(layer) {
         let id = layer.id,
-            node = ReactDOM.findDOMNode(this.refs[id]);
+            node = this.nodes[id];
 
         if (node) {
             this.refs.controls.scrollTop = node.offsetTop;
@@ -56,16 +57,19 @@ class ControlsPanel extends UIComponent {
     }
 
     render() {
-        let controls = this.state.controls.map(display => {
+        let controls = this.state.controls.map((display, index, arr) => {
             let id = display.id,
-                Control = getControlComponent(display);
+                Control = getControlComponent(display),
+                isLast = index == arr.length - 1;
 
             return (
-                <Control
-                    ref={id}
-                    key={id}
-                    display={display}
-                />
+                <div key={id} ref={el => this.nodes[id] = el}>
+                    <Control
+                        ref={id}
+                        display={display}
+                        className={isLast ? 'control-last' : null}
+                    />
+                </div>
             );
         });
 

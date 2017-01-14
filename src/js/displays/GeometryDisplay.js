@@ -121,6 +121,7 @@ class GeometryDisplay extends Display {
 
         mesh.rotation.x += 5 * x;
         mesh.rotation.y += 3 * y;
+        mesh.rotation.z += 2 * z;
         mesh.position.set(options.x, options.y, options.z);
     }
 

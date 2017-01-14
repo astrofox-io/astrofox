@@ -6,10 +6,7 @@ const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 
 const ListInput = require('../inputs/ListInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
-const Button  = require('../inputs/Button.jsx');
 const TabPanel = require('../layout/TabPanel.jsx');
 const Tab = require('../layout/Tab.jsx');
 const { Settings, Group, Row } = require('../components/Settings.jsx');

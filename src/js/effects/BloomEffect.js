@@ -1,14 +1,12 @@
 'use strict';
 
 const THREE = require('three');
-const Composer = require('../graphics/Composer');
 const Effect = require('../effects/Effect');
 const ShaderPass = require('../graphics/ShaderPass');
 const SavePass = require('../graphics/SavePass');
 const BlendPass = require('../graphics/BlendPass');
 const GaussianBlurPass = require('../graphics/GaussianBlurPass');
 const LuminanceShader = require('../shaders/LuminanceShader');
-const CopyShader = require('../shaders/CopyShader');
 
 class BloomEffect extends Effect {
     constructor(options) {
@@ -24,8 +22,7 @@ class BloomEffect extends Effect {
     }
 
     addToScene(scene) {
-        let pass,
-            passes = [],
+        let passes = [],
             composer = scene.composer,
             options = this.options;
 
@@ -43,15 +40,6 @@ class BloomEffect extends Effect {
         // Apply blur
         this.blurPass = new GaussianBlurPass();
         passes.push(this.blurPass);
-        /*
-        this.blurPasses = [];
-        for (let i = 0; i < GAUSSIAN_ITERATIONS; i++) {
-            pass = new ShaderPass(GaussianBlurShader);
-            passes.push(pass);
-            this.blurPasses.push(pass);
-
-            this.updateGaussianPass(pass, i);
-        }*/
 
         // Blend with original frame
         this.blendPass = new BlendPass(
@@ -65,7 +53,7 @@ class BloomEffect extends Effect {
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

@@ -13,12 +13,12 @@ class HexagonEffect extends Effect {
         this.pass.setUniforms({ scale: this.options.scale });
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(new ShaderPass(HexagonShader));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

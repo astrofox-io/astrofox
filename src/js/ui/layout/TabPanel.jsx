@@ -11,7 +11,7 @@ class TabPanel extends UIComponent {
 
         this.state = {
             activeIndex: 0
-        }
+        };
     }
 
     onTabClick(index) {

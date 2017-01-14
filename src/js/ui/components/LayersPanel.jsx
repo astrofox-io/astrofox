@@ -8,7 +8,6 @@ const Application = require('../../core/Application');
 const { events } = require('../../core/Global');
 const Display = require('../../displays/Display');
 const CanvasDisplay = require('../../displays/CanvasDisplay');
-const Stage = require('../../displays/Stage');
 const Scene = require('../../displays/Scene');
 const Effect = require('../../effects/Effect');
 const DisplayLibrary = require('../../lib/DisplayLibrary');

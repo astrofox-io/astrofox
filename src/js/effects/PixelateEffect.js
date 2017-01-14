@@ -29,12 +29,12 @@ class PixelateEffect extends Effect {
         this.pass.setUniforms({ size: this.options.size });
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(this.getShaderPass(this.options.type));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 

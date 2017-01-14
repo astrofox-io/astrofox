@@ -1,3 +1,4 @@
+/* eslint-disable react/require-render-return */
 'use strict';
 
 const Component = require('../core/Component');

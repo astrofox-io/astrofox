@@ -13,7 +13,8 @@ const defaults = {
 class GaussianBlurPass extends MultiPass {
     constructor(options) {
         let passes = [];
-            options = Object.assign({}, defaults, options);
+
+        options = Object.assign({}, defaults, options);
 
         for (let i = 0; i < options.passes; i++) {
             passes.push(new ShaderPass(GaussianBlurShader));

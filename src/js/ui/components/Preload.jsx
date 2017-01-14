@@ -3,7 +3,7 @@
 const React = require('react');
 const fontOptions = require('../../../config/fonts.json');
 
-const Preload = (props) => {
+const Preload = () => {
     let fonts = fontOptions.map((item, index) => {
         return <div key={index} style={{fontFamily: item.name}}>{item.name}</div>;
     });

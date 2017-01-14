@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 

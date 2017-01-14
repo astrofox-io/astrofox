@@ -6,7 +6,7 @@ const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 const ColorInput = require('../inputs/ColorInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
-const { Settings, Group, Row } = require('../components/Settings.jsx');
+const { Settings, Row } = require('../components/Settings.jsx');
 
 const canvasSizes = {
     '16:9': { width: 854, height: 480 },

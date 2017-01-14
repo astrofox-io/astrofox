@@ -13,10 +13,6 @@ class Footer extends UIComponent {
         this.state = {
             fps: 0
         };
-
-        if (process.env.NODE_ENV === 'development') {
-            this.dev = true;
-        }
     }
 
     componentDidMount() {
@@ -32,8 +28,11 @@ class Footer extends UIComponent {
     }
 
     render() {
-        let memSize = (this.dev !== undefined) ?
-            formatSize(performance.memory.usedJSHeapSize,2) : null;
+        let memSize = null;
+
+        if (process.env.NODE_ENV !== 'production') {
+            memSize = formatSize(performance.memory.usedJSHeapSize, 2);
+        }
 
         return (
             <div id="footer">
@@ -42,7 +41,7 @@ class Footer extends UIComponent {
                 <div className="right">{this.state.fps} FPS</div>
                 <div className="right">v{process.versions.electron}</div>
             </div>
-        )
+        );
     }
 }
 

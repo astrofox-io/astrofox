@@ -45,12 +45,12 @@ class BarSpectrumControl extends UIComponent {
     }
 
     render() {
-        let maxFrequency = 22000;
-        let maxHeight = 480;
-        let maxWidth = 854;
+        let maxFrequency = 22000,
+            maxHeight = 480,
+            maxWidth = 854;
 
         return (
-            <Control title="BAR SPECTRUM">
+            <Control title="BAR SPECTRUM" className={this.props.className}>
                 <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"

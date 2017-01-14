@@ -9,12 +9,12 @@ class MirrorEffect extends Effect {
         super(MirrorEffect, options);
     }
     
-    addToScene(scene) {
+    addToScene() {
         this.setPass(new ShaderPass(MirrorShader));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

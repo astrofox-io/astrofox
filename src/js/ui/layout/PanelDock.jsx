@@ -68,7 +68,7 @@ class PanelDock extends UIComponent {
                 onMouseMove={mouseMove}>
                 {panels}
             </div>
-        )
+        );
     }
 }
 

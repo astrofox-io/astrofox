@@ -4,7 +4,7 @@ const id3 = require('id3js');
 const remote = require('electron').remote;
 const path = require('path');
 
-const { APP_NAME, APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } = require('./Environment');
+const { APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } = require('./Environment');
 const { events, logger, raiseError } = require('./Global');
 const IO = require('./IO');
 const EventEmitter = require('./EventEmitter');
@@ -431,7 +431,7 @@ class Application extends EventEmitter {
         }
     }
 
-    menuAction(menuItem, browserWindow, event) {
+    menuAction(menuItem) {
         events.emit('menu-action', menuItem.action);
     }
 

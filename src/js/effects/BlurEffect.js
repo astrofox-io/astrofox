@@ -5,7 +5,6 @@ const BoxBlurShader = require('../shaders/BoxBlurShader');
 const CircularBlurShader = require('../shaders/CircularBlurShader');
 const ZoomBlurShader = require('../shaders/ZoomBlurShader');
 const ShaderPass = require('../graphics/ShaderPass');
-const MultiPass = require('../graphics/MultiPass');
 const GaussianBlurPass = require('../graphics/GaussianBlurPass');
 
 const shaders = {
@@ -56,12 +55,12 @@ class BlurEffect extends Effect {
         }
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(this.getShaderPass(this.options.type));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 

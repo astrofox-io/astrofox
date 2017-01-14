@@ -7,7 +7,6 @@ const ColorInput = require('../inputs/ColorInput.jsx');
 const NumberInput = require('../inputs/NumberInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
-const TextInput = require('../inputs/TextInput.jsx');
 const ToggleInput = require('../inputs/ToggleInput.jsx');
 const { Control, Row } = require('./Control.jsx');
 
@@ -71,7 +70,7 @@ class GeometryControl extends UIComponent {
             maxVal = 500;
 
         return (
-            <Control title="3D GEOMETRY">
+            <Control title="3D GEOMETRY" className={this.props.className}>
                 <Row label="Shape">
                     <SelectInput
                         name="shape"

@@ -9,12 +9,12 @@ class LEDEffect extends Effect {
         super(LEDEffect, options);
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(new ShaderPass(LEDShader));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

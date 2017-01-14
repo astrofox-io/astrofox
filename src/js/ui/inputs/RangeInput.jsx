@@ -13,7 +13,7 @@ class RangeInput extends UIComponent {
             value: props.value
         };
 
-        this.buffering = false
+        this.buffering = false;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -35,7 +35,7 @@ class RangeInput extends UIComponent {
         }
     }
 
-    onMouseDown(e) {
+    onMouseDown() {
         if (this.props.buffered) {
             this.buffering = true;
         }
@@ -115,7 +115,7 @@ class RangeInput extends UIComponent {
 }
 
 RangeInput.defaultProps = {
-    name: "range",
+    name: 'range',
     min: 0,
     max: 1,
     value: 0,

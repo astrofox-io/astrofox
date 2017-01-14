@@ -3,7 +3,6 @@
 const NodeBuffer = require('buffer').Buffer;
 const fs = require('fs');
 const zlib = require('zlib');
-const path = require('path');
 const mime = require('mime');
 
 function readFile(file) {
@@ -42,7 +41,7 @@ function readAsArrayBuffer(blob) {
             resolve(e.target.result);
         };
 
-        reader.onerror = () => {
+        reader.onerror = (e) => {
             reject(e.target.error);
         };
 
@@ -58,7 +57,7 @@ function readAsDataUrl(blob) {
             resolve(e.target.result);
         };
 
-        reader.onerror = () => {
+        reader.onerror = (e) => {
             reject(e.target.error);
         };
 
@@ -80,7 +79,7 @@ function writeFile(file, data) {
 function writeFileCompressed(file, data) {
     return compress(data).then(buffer => {
         return writeFile(file, buffer);
-    })
+    });
 }
 
 function removeFile(file) {
@@ -152,7 +151,7 @@ function compress(data) {
                     resolve(buffer);
                 }
             }
-        )
+        );
     });
 }
 
@@ -165,7 +164,7 @@ function decompress(data) {
                     reject(error);
                 }
                 else {
-                    resolve(buffer)
+                    resolve(buffer);
                 }
             }
         );

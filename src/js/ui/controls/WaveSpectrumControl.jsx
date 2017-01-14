@@ -44,7 +44,7 @@ class WaveSpectrumControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <Control title="WAVE SPECTRUM">
+            <Control title="WAVE SPECTRUM" className={this.props.className}>
                 <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"

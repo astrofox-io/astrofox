@@ -53,7 +53,7 @@ class BufferedSound extends Sound {
 
             request.send();
         }).then(response => {
-            this.loadData(response)
+            this.loadData(response);
         });
     }
 

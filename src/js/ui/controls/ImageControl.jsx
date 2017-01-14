@@ -82,8 +82,6 @@ class ImageControl extends UIComponent {
                 obj.width = Math.round(val * ratio);
             }
         }
-        else if (name === 'opacity') {
-        }
 
         this.shouldUpdate = true;
 
@@ -112,7 +110,7 @@ class ImageControl extends UIComponent {
             linkIcon = <span key={0} className={classNames(linkClasses)} onClick={this.onLinkClick} />;
 
         return (
-            <Control title="IMAGE">
+            <Control title="IMAGE" className={this.props.className}>
                 <Row label="Image">
                     <ImageInput
                         name="image"

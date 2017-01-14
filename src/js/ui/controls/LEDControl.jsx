@@ -38,7 +38,7 @@ class LEDControl extends UIComponent {
 
     render() {
         return (
-            <Control title="LED">
+            <Control title="LED" className={this.props.className}>
                 <Row label="Spacing">
                     <NumberInput
                         name="spacing"

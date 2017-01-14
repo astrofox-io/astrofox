@@ -46,7 +46,7 @@ class BlurControl extends UIComponent {
 
     render() {
         return (
-            <Control title="BLUR">
+            <Control title="BLUR" className={this.props.className}>
                 <Row label="Type">
                     <SelectInput
                         name="type"

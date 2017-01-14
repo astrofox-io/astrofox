@@ -11,7 +11,7 @@ class DualRangeInput extends UIComponent {
     constructor(props) {
         super(props);
 
-        this.buffering = false
+        this.buffering = false;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -69,10 +69,6 @@ class DualRangeInput extends UIComponent {
         this.props.onChange(this.props.name, this.parseValues(start, end, index));
     }
 
-    onInput(name, val) {
-        // TODO
-    }
-
     parseValues(start, end, index) {
         let { minRange } = this.props,
             range = end - start;
@@ -102,12 +98,12 @@ class DualRangeInput extends UIComponent {
 
         return (
             <div
-                ref="range"
-                className="input-dual-range"
+                ref='range'
+                className='input-dual-range'
                 onClick={this.onClick}>
                 <RangeInput
-                    ref="range0"
-                    name="range0"
+                    ref='range0'
+                    name='range0'
                     min={min}
                     max={max}
                     step={step}
@@ -116,13 +112,13 @@ class DualRangeInput extends UIComponent {
                     upperLimit={end}
                     buffered={buffered}
                     readOnly={readOnly}
-                    fillStyle="none"
+                    fillStyle='none'
                     onChange={this.onChange}
                     onInput={this.onInput}
                 />
                 <RangeInput
-                    ref="range1"
-                    name="range1"
+                    ref='range1'
+                    name='range1'
                     min={min}
                     max={max}
                     step={step}
@@ -131,18 +127,18 @@ class DualRangeInput extends UIComponent {
                     upperLimit={max}
                     buffered={buffered}
                     readOnly={readOnly}
-                    fillStyle="none"
+                    fillStyle='none'
                     onChange={this.onChange}
                     onInput={this.onInput}
                 />
-                <div className="fill" style={fillStyle} />
+                <div className='fill' style={fillStyle} />
             </div>
         );
     }
 }
 
 DualRangeInput.defaultProps = {
-    name: "dualrange",
+    name: 'dualrange',
     min: 0,
     max: 1,
     step: 1,

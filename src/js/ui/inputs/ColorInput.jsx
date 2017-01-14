@@ -20,8 +20,8 @@ const ColorInput = (props) => {
 };
 
 ColorInput.defaultProps = {
-    name: "color",
-    value: "#ffffff",
+    name: 'color',
+    value: '#ffffff',
     width: 40,
     onChange: () => {}
 };

@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const ReactDOM = require('react-dom');
 
 const UIComponent = require('../UIComponent');
 const { events } = require('../../core/Global');

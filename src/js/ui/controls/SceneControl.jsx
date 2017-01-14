@@ -4,7 +4,6 @@ const React = require('react');
 
 const UIComponent = require('../UIComponent');
 const NumberInput = require('../inputs/NumberInput.jsx');
-const ToggleInput = require('../inputs/ToggleInput.jsx');
 const RangeInput = require('../inputs/RangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const { Control, Row } = require('./Control.jsx');
@@ -79,7 +78,7 @@ class SceneControl extends UIComponent {
         let maxVal = 500;
 
         return (
-            <Control title="SCENE">
+            <Control title="SCENE" className={this.props.className}>
                 <Row label="Blending">
                     <SelectInput
                         name="blendMode"

@@ -1,7 +1,6 @@
 'use strict';
 
 const ComposerPass = require('../graphics/ComposerPass');
-const CopyShader = require('../shaders/CopyShader');
 const NodeCollection = require('../core/NodeCollection');
 
 const defaults = {
@@ -52,6 +51,10 @@ class MultiPass extends ComposerPass {
                 }
             }
         });
+
+        if (callback) {
+            callback();
+        }
     }
 }
 

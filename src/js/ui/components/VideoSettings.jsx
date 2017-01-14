@@ -1,7 +1,5 @@
 'use strict';
 
-const path = require('path');
-
 const React = require('react');
 const classNames = require('classnames');
 
@@ -10,12 +8,11 @@ const Application = require('../../core/Application');
 const Window = require('../../core/Window');
 
 const NumberInput = require('../inputs/NumberInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
 const DualRangeInput = require('../inputs/DualRangeInput.jsx');
 const SelectInput = require('../inputs/SelectInput.jsx');
 const TextInput = require('../inputs/TextInput.jsx');
 const Button = require('../inputs/Button.jsx');
-const { Settings, Group, Row } = require('../components/Settings.jsx');
+const { Settings, Row } = require('../components/Settings.jsx');
 
 const { formatTime } = require('../../util/format');
 const { replaceExt } = require('../../util/file');

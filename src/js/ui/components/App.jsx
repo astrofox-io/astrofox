@@ -1,12 +1,11 @@
 'use strict';
 
 const React = require('react');
-const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
 const Window = require('../../core/Window');
-const { events } = require('../../core/Global');
+const {events} = require('../../core/Global');
 
 const Header = require('./Header.jsx');
 const Footer = require('./Footer.jsx');
@@ -57,15 +56,15 @@ class App extends UIComponent {
         });
 
         events.on('pick_control', props => {
-           this.showModal(
-               <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal} />,
-               props
-           );
+            this.showModal(
+                <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal}/>,
+                props
+            );
         });
 
         events.on('audio-tags', tags => {
             if (tags && tags.artist) {
-                this.setState({ text: tags.artist + ' - ' + tags.title });
+                this.setState({text: tags.artist + ' - ' + tags.title});
             }
         });
 
@@ -104,7 +103,7 @@ class App extends UIComponent {
                     },
                     {
                         filters: [
-                            { name: 'Project files', extensions: ['afx'] }
+                            {name: 'Project files', extensions: ['afx']}
                         ]
                     }
                 );
@@ -127,7 +126,7 @@ class App extends UIComponent {
                     },
                     {
                         filters: [
-                            { name: 'Audio files', extensions: ['aac','mp3','m4a','ogg','wav'] }
+                            {name: 'Audio files', extensions: ['aac', 'mp3', 'm4a', 'ogg', 'wav']}
                         ]
                     }
                 );
@@ -140,14 +139,14 @@ class App extends UIComponent {
                             Application.saveImage(filename);
                         }
                     },
-                    { defaultPath: 'image.png' }
+                    {defaultPath: 'image.png'}
                 );
                 break;
 
             case 'save_video':
                 this.showModal(
-                    <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal} />,
-                    { title: 'SAVE VIDEO', buttons: null }
+                    <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal}/>,
+                    {title: 'SAVE VIDEO', buttons: null}
                 );
                 break;
 
@@ -157,15 +156,15 @@ class App extends UIComponent {
 
             case 'edit_canvas':
                 this.showModal(
-                    <CanvasSettings key="canvas" onClose={this.hideModal} />,
-                    { title: 'CANVAS', buttons: null }
+                    <CanvasSettings key="canvas" onClose={this.hideModal}/>,
+                    {title: 'CANVAS', buttons: null}
                 );
                 break;
 
             case 'edit_settings':
                 this.showModal(
-                    <AppSettings key="settings" onClose={this.hideModal} />,
-                    { title: 'SETTINGS', buttons: null }
+                    <AppSettings key="settings" onClose={this.hideModal}/>,
+                    {title: 'SETTINGS', buttons: null}
                 );
                 break;
 
@@ -176,8 +175,8 @@ class App extends UIComponent {
 
             case 'about':
                 this.showModal(
-                    <About key="about" />,
-                    { title: 'ABOUT' }
+                    <About key="about"/>,
+                    {title: 'ABOUT'}
                 );
                 break;
         }
@@ -223,7 +222,7 @@ class App extends UIComponent {
                     if (callback) callback();
                 }
             },
-            { defaultPath: 'project.afx' }
+            {defaultPath: 'project.afx'}
         );
     }
 
@@ -246,7 +245,7 @@ class App extends UIComponent {
             </ModalWindow>
         );
 
-        this.setState({ modals: modals });
+        this.setState({modals: modals});
     }
 
     hideModal() {
@@ -254,7 +253,7 @@ class App extends UIComponent {
 
         modals.pop();
 
-        this.setState({ modals: modals });
+        this.setState({modals: modals});
     }
 
     showDialog(props, callback) {
@@ -267,7 +266,7 @@ class App extends UIComponent {
         };
 
         this.showModal(
-            <Dialog icon={props.icon} message={props.message} />,
+            <Dialog icon={props.icon} message={props.message}/>,
             props
         );
 
@@ -275,7 +274,7 @@ class App extends UIComponent {
     }
 
     loadAudioFile(file) {
-       let showLoading = this.refs.stage.showLoading;
+        let showLoading = this.refs.stage.showLoading;
 
         showLoading(true);
 
@@ -284,13 +283,13 @@ class App extends UIComponent {
 
             Application.player.play('audio');
         })
-        .catch(() => {
-            showLoading(false);
-        });
+            .catch(() => {
+                showLoading(false);
+            });
     }
 
     render() {
-        let { text, modals } = this.state;
+        let {text, modals} = this.state;
 
         return (
             <div
@@ -300,18 +299,18 @@ class App extends UIComponent {
                 onDragOver={this.onDragDrop}>
                 <Preload />
                 <Header />
-                <MenuBar ref="menubar" items={menuConfig} onMenuAction={this.onMenuAction} />
+                <MenuBar ref="menubar" items={menuConfig} onMenuAction={this.onMenuAction}/>
                 <div id="body">
                     <div id="viewport">
-                        <Stage ref="stage" onFileDropped={this.loadAudioFile} />
-                        <Spectrum ref="spectrum" />
-                        <Oscilloscope ref="osc" />
-                        <AudioWaveform ref="waveform" />
-                        <Player ref="player" />
+                        <Stage ref="stage" onFileDropped={this.loadAudioFile}/>
+                        <Spectrum ref="spectrum"/>
+                        <Oscilloscope ref="osc"/>
+                        <AudioWaveform ref="waveform"/>
+                        <Player ref="player"/>
                     </div>
-                    <ControlDock ref="dock" />
+                    <ControlDock ref="dock"/>
                 </div>
-                <Footer text={text} />
+                <Footer text={text}/>
                 <Overlay visible={modals.length}>
                     {modals}
                 </Overlay>

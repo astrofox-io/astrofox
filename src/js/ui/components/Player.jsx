@@ -145,13 +145,13 @@ class VolumeControl extends UIComponent {
             val = this.state.value;
 
         if (val > 75) {
-            icon = "icon-volume";
+            icon = 'icon-volume';
         }
         else if (val > 25) {
-            icon = "icon-volume2";
+            icon = 'icon-volume2';
         }
         else if (val > 0) {
-            icon = "icon-volume3";
+            icon = 'icon-volume3';
         }
 
         return (

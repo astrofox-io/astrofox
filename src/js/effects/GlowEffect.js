@@ -18,12 +18,12 @@ class GlowEffect extends Effect {
         });
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(new ShaderPass(GlowShader));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

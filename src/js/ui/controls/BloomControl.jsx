@@ -44,7 +44,7 @@ class BloomControl extends UIComponent {
 
     render() {
         return (
-            <Control title="BLOOM">
+            <Control title="BLOOM" className={this.props.className}>
                 <Row label="Blend Mode">
                     <SelectInput
                         name="blendMode"

@@ -1,7 +1,5 @@
 'use strict';
 
-const path = require('path');
-
 const Process = require('../core/Process');
 const { replaceExt } = require('../util/file');
 
@@ -52,7 +50,7 @@ class RenderProcess extends Process {
                     '-preset', 'slow',
                     '-crf', 18,
                     '-tune', 'animation',
-                    '-movflags', '+faststart',
+                    '-movflags', '+faststart'
                 );
             }
             else if (format === 'webm') {

@@ -20,7 +20,7 @@ class CanvasDisplay extends Display {
     }
 
     renderToCanvas(context, dx, dy) {
-        var x, y,
+        let x, y,
             canvas = this.canvas,
             options = this.options,
             halfSceneWidth = context.canvas.width / 2,

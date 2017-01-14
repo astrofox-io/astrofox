@@ -11,11 +11,8 @@ const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const template = require('gulp-template');
-const uglify = require('gulp-uglify');
 const gutil = require('gulp-util');
 const webpack = require('webpack');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
 
 /*** Configuration ***/
 
@@ -76,7 +73,7 @@ function logWebpack(done, watch) {
             done();
             watch = true;
         }
-    }
+    };
 }
 
 // Builds application bundles
@@ -90,11 +87,10 @@ function buildJsWatch(done) {
     let watch = false;
 
     webpack(appConfig)
-        .watch(
-            {
-                aggregateTimeout: 300,
-                ignored: /node_modules/
-            },
+        .watch({
+            aggregateTimeout: 300,
+            ignored: /node_modules/
+        },
             logWebpack(done, watch)
         );
 }

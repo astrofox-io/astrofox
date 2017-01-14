@@ -1,12 +1,12 @@
 module.exports = {
-    Copy: require('./../shaders/CopyShader.js'),
-    Depth: require('./../shaders/DepthShader.js'),
-    DotScreen: require('./../shaders/DotScreenShader.js'),
-    Grid: require('./../shaders/GridShader.js'),
-    Halftone: require('./../shaders/HalftoneShader.js'),
-    Hexagon: require('./../shaders/HexagonShader.js'),
-    LED: require('./../shaders/LEDShader.js'),
-    Mirror: require('./../shaders/MirrorShader.js'),
-    Pixelate: require('./../shaders/PixelateShader.js'),
-    RGBShift: require('./../shaders/RGBShiftShader.js')
+    Copy: require('./../shaders/CopyShader'),
+    Depth: require('./../shaders/DepthShader'),
+    DotScreen: require('./../shaders/DotScreenShader'),
+    Grid: require('./../shaders/GridShader'),
+    Halftone: require('./../shaders/HalftoneShader'),
+    Hexagon: require('./../shaders/HexagonShader'),
+    LED: require('./../shaders/LEDShader'),
+    Mirror: require('./../shaders/MirrorShader'),
+    Pixelate: require('./../shaders/PixelateShader'),
+    RGBShift: require('./../shaders/RGBShiftShader')
 };

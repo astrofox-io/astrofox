@@ -40,7 +40,7 @@ class RGBShiftControl extends UIComponent {
 
     render() {
         return (
-            <Control title="RGB SHIFT">
+            <Control title="RGB SHIFT" className={this.props.className}>
                 <Row label="Offset">
                     <NumberInput
                         name="offset"

@@ -1,4 +1,3 @@
-const THREE = require('three');
 const ShaderCode = require('../lib/ShaderCode');
 
 module.exports = {

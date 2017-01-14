@@ -17,12 +17,12 @@ class DotScreenEffect extends Effect {
         });
     }
 
-    addToScene(scene) {
+    addToScene() {
         this.setPass(new ShaderPass(DotScreenShader));
         this.updatePass();
     }
 
-    removeFromScene(scene) {
+    removeFromScene() {
         this.pass = null;
     }
 }

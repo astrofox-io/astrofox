@@ -10,7 +10,7 @@ const ToggleInput = (props) => {
         'input-toggle-on': props.value
     };
 
-    let onClick = (e) => props.onChange(props.name, !props.value);
+    let onClick = () => props.onChange(props.name, !props.value);
 
     return (
         <div className={classNames(classes)} onClick={onClick} />

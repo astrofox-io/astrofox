@@ -3,7 +3,7 @@
 const Process = require('../core/Process');
 
 class MergeProcess extends Process {
-    constructor(command,) {
+    constructor(command) {
         super(command);
     }
 

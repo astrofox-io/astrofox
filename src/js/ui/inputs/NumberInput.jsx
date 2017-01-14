@@ -107,7 +107,7 @@ class NumberInput extends UIComponent {
 }
 
 NumberInput.defaultProps = {
-    name: "number",
+    name: 'number',
     size: null,
     width: 40,
     value: 0,
