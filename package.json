@@ -16,6 +16,10 @@
     "appId": "io.astrofox.astrofox",
     "productName": "Astrofox",
     "asar": true,
+    "files": [
+      "**/*",
+      "!**/*.map"
+    ],
     "extraResources": [
       {
         "from": "resources/ffmpeg/${os}/${arch}",
@@ -39,6 +43,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "debug": "^2.6.0",
     "id3js": "^1.1.3",
     "immutable": "^3.8.1",
     "mime": "^1.3.4",
@@ -66,7 +71,8 @@
     "eslint-plugin-react": "^6.9.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.3.2",
-    "gulp-glsl": "^1.0.3",
+    "gulp-glsl": "^1.0.4",
+    "gulp-header": "^1.8.8",
     "gulp-iconfont": "^8.0.1",
     "gulp-if": "^2.0.2",
     "gulp-less": "^3.3.0",

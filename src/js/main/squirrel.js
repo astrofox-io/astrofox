@@ -1,9 +1,7 @@
 const path = require('path');
 const spawn = require('child_process').spawn;
 const app = require('electron').app;
-const Logger = require('../core/Logger');
-
-const log = (new Logger()).log;
+const log = require('debug')('squirrel');
 
 let run = function(args, done) {
     let updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');

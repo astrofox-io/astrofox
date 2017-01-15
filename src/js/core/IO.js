@@ -1,6 +1,5 @@
 'use strict';
 
-const NodeBuffer = require('buffer').Buffer;
 const fs = require('fs');
 const zlib = require('zlib');
 const mime = require('mime');
@@ -93,17 +92,6 @@ function removeFile(file) {
     });
 }
 
-function fileExists(file) {
-    try {
-        fs.statSync(file);
-    }
-    catch (e) {
-        return false;
-    }
-
-    return true;
-}
-
 function createFolder(path) {
     return new Promise((resolve, reject) => {
         try {
@@ -117,26 +105,8 @@ function createFolder(path) {
     });
 }
 
-function toArrayBuffer(buffer) {
-    let ab = new ArrayBuffer(buffer.length);
-    let b = new Uint8Array(ab);
-
-    for (let i = 0; i < buffer.length; ++i) {
-        b[i] = buffer[i];
-    }
-
-    return ab;
-}
-
-function toBuffer(ab) {
-    let buffer = new NodeBuffer(ab.byteLength);
-    let view = new Uint8Array(ab);
-
-    for (let i = 0; i < buffer.length; ++i) {
-        buffer[i] = view[i];
-    }
-
-    return buffer;
+function fileExists(file) {
+    return fs.existsSync(file);
 }
 
 function compress(data) {
@@ -180,10 +150,8 @@ module.exports = {
     writeFile,
     writeFileCompressed,
     removeFile,
-    fileExists,
     createFolder,
-    toArrayBuffer,
-    toBuffer,
+    fileExists,
     compress,
     decompress
 };

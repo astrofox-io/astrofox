@@ -1,8 +1,11 @@
+// hack
+delete process.env.DEBUG_FD;
+
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
 const squirrel = require('./squirrel');
-const Logger = require('../core/Logger');
+const log = require('debug')('main');
 const { app, BrowserWindow, globalShortcut, systemPreferences } = electron;
 
 if (squirrel()) {
@@ -10,7 +13,6 @@ if (squirrel()) {
 }
 
 let mainWindow = null;
-const log = (new Logger()).log;
 
 function createWindow() {
     // Create window

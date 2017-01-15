@@ -4,34 +4,34 @@
     "submenu": [
       {
         "label": "New Project",
-        "action": "new_project"
+        "action": "new-project"
       },
       {
         "label": "Open Project",
-        "action": "open_project"
+        "action": "open-project"
       },
       {
         "label": "Save Project",
-        "action": "save_project"
+        "action": "save-project"
       },
       {
         "label": "Save Project As",
-        "action": "save_project_as"
+        "action": "save-project-as"
       },
       {
         "type": "separator"
       },
       {
         "label": "Load Audio",
-        "action": "load_audio"
+        "action": "load-audio"
       },
       {
         "label": "Save Image",
-        "action": "save_image"
+        "action": "save-image"
       },
       {
         "label": "Save Video",
-        "action": "save_video"
+        "action": "save-video"
       },
       {
         "type": "separator"
@@ -48,11 +48,11 @@
     "submenu": [
       {
         "label": "Canvas",
-        "action": "edit_canvas"
+        "action": "edit-canvas"
       },
       {
         "label": "Settings",
-        "action": "edit_settings"
+        "action": "edit-settings"
       }
     ]
   },
@@ -63,25 +63,25 @@
         "label": "Control Dock",
         "type": "checkbox",
         "checked": true,
-        "action": "view_control_dock"
+        "action": "view-control-dock"
       },
       {
         "label": "Player",
         "type": "checkbox",
         "checked": true,
-        "action": "view_player"
+        "action": "view-player"
       },
       {
         "label": "Spectrum Analyzer",
         "type": "checkbox",
         "checked": true,
-        "action": "view_spectrum"
+        "action": "view-spectrum"
       },
       {
         "label": "Oscilloscope",
         "type": "checkbox",
         "checked": true,
-        "action": "view_oscilloscope"
+        "action": "view-oscilloscope"
       }
     ]
   },

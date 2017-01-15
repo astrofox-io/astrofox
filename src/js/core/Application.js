@@ -176,7 +176,7 @@ class Application extends EventEmitter {
             return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
                 let config = JSON.parse(data);
 
-                logger.log('Config file loaded.', APP_CONFIG_FILE,  config);
+                logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
                 this.config = Object.assign({}, appConfig, config);
             });

@@ -3,6 +3,7 @@
 const React = require('react');
 
 const UIComponent = require('../UIComponent');
+const { APP_VERSION } = require('../../core/Environment');
 const { events } = require('../../core/Global');
 const { formatSize } = require('../../util/format');
 
@@ -40,6 +41,7 @@ class Footer extends UIComponent {
                 <div className="right">{memSize}</div>
                 <div className="right">{this.state.fps} FPS</div>
                 <div className="right">v{process.versions.electron}</div>
+                <div className="right">v{APP_VERSION}</div>
             </div>
         );
     }

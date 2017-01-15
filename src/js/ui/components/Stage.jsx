@@ -36,7 +36,7 @@ class Stage extends UIComponent {
 
         let file = e.dataTransfer.files[0];
 
-        if (file && this.props.onFileDropped) {
+        if (file) {
             this.props.onFileDropped(file.path);
         }
     }
@@ -63,5 +63,9 @@ class Stage extends UIComponent {
         );
     }
 }
+
+Stage.defaultProps = {
+    onFileDropped: () => {}
+};
 
 module.exports = Stage;

@@ -3,7 +3,7 @@
 const EventEmitter = require('./EventEmitter');
 const Logger = require('./Logger');
 
-const logger = new Logger();
+const logger = new Logger('astrofox');
 const events = new EventEmitter();
 
 function raiseError(msg, err) {

@@ -4,6 +4,7 @@ const del = require('del');
 const gulp = require('gulp');
 const cleancss = require('gulp-clean-css');
 const glsl = require('gulp-glsl');
+const header = require('gulp-header');
 const iconfont = require('gulp-iconfont');
 const gulpif = require('gulp-if');
 const less = require('gulp-less');
@@ -166,8 +167,8 @@ function buildShaders() {
 
     return gulp.src(src)
         .pipe(plumber())
-        .pipe(glsl({ format: 'object' }))
-        .pipe(rename(filename))
+        .pipe(glsl({ format: 'object', filename: filename }))
+        .pipe(header('/* eslint-disable quotes */\n'))
         .pipe(gulp.dest(dest));
 }
 

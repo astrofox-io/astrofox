@@ -26,7 +26,8 @@ const ControlPicker = require('./ControlPicker.jsx');
 const ModalWindow = require('./ModalWindow.jsx');
 const Dialog = require('./Dialog.jsx');
 
-const menuConfig = require('../../../config/menu.json');
+const menuConfig = require('../../../config/menu');
+const audioExtensions = require('../../../config/audioExtensions');
 
 class App extends UIComponent {
     constructor(props) {
@@ -90,11 +91,11 @@ class App extends UIComponent {
 
     onMenuAction(action) {
         switch (action) {
-            case 'new_project':
+            case 'new-project':
                 Application.newProject();
                 break;
 
-            case 'open_project':
+            case 'open-project':
                 Window.showOpenDialog(
                     files => {
                         if (files) {
@@ -109,15 +110,15 @@ class App extends UIComponent {
                 );
                 break;
 
-            case 'save_project':
+            case 'save-project':
                 this.saveProject();
                 break;
 
-            case 'save_project_as':
+            case 'save-project-as':
                 this.saveProjectAs();
                 break;
 
-            case 'load_audio':
+            case 'load-audio':
                 Window.showOpenDialog(
                     files => {
                         if (files) {
@@ -126,13 +127,13 @@ class App extends UIComponent {
                     },
                     {
                         filters: [
-                            {name: 'Audio files', extensions: ['aac', 'mp3', 'm4a', 'ogg', 'wav']}
+                            {name: 'Audio files', extensions: audioExtensions}
                         ]
                     }
                 );
                 break;
 
-            case 'save_image':
+            case 'save-image':
                 Window.showSaveDialog(
                     filename => {
                         if (filename) {
@@ -143,7 +144,7 @@ class App extends UIComponent {
                 );
                 break;
 
-            case 'save_video':
+            case 'save-video':
                 this.showModal(
                     <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal}/>,
                     {title: 'SAVE VIDEO', buttons: null}
@@ -154,21 +155,21 @@ class App extends UIComponent {
                 Window.close();
                 break;
 
-            case 'edit_canvas':
+            case 'edit-canvas':
                 this.showModal(
                     <CanvasSettings key="canvas" onClose={this.hideModal}/>,
                     {title: 'CANVAS', buttons: null}
                 );
                 break;
 
-            case 'edit_settings':
+            case 'edit-settings':
                 this.showModal(
                     <AppSettings key="settings" onClose={this.hideModal}/>,
                     {title: 'SETTINGS', buttons: null}
                 );
                 break;
 
-            case 'view_control_dock':
+            case 'view-control-dock':
                 this.refs.dock.toggleDock();
                 this.refs.menubar.setCheckState(action);
                 break;
