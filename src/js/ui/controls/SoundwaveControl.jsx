@@ -43,7 +43,7 @@ class SoundwaveControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <Control titel="SOUNDWAVE" className={this.props.className}>
+            <Control label="SOUNDWAVE" className={this.props.className}>
                 <Row label="Color">
                     <ColorInput
                         name="color"

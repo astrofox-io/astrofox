@@ -38,7 +38,7 @@ class DotScreenControl extends UIComponent {
 
     render() {
         return (
-            <Control title="DOT SCREEN" className={this.props.className}>
+            <Control label="DOT SCREEN" className={this.props.className}>
                 <Row label="Amount">
                     <NumberInput
                         name="scale"

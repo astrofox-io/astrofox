@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
@@ -12,7 +13,7 @@ class ControlsPanel extends UIComponent {
         
         this.state = {
             controls: [],
-            activeIndex: -1
+            activeIndex: 0
         };
 
         this.nodes = {};
@@ -25,12 +26,12 @@ class ControlsPanel extends UIComponent {
     updateControls(callback) {
         let controls = [];
 
-        Application.stage.scenes.nodes.reverse().forEach(scene => {
+        Application.stage.getScenes().reverse().forEach(scene => {
             controls.push(scene);
-            scene.effects.nodes.reverse().forEach(effect => {
+            scene.getEffects().reverse().forEach(effect => {
                 controls.push(effect);
             });
-            scene.displays.nodes.reverse().forEach(display => {
+            scene.getDisplays().reverse().forEach(display => {
                 controls.push(display);
             });
         });
@@ -43,16 +44,17 @@ class ControlsPanel extends UIComponent {
             control = this.refs[id];
 
         if (control) {
-            this.refs[id].setState(layer.options);
+            control.setState(layer.options);
         }
     }
 
-    focusControl(layer) {
+    focusControl(layer, index) {
         let id = layer.id,
             node = this.nodes[id];
 
         if (node) {
             this.refs.controls.scrollTop = node.offsetTop;
+            this.setState({ activeIndex: index });
         }
     }
 
@@ -60,14 +62,18 @@ class ControlsPanel extends UIComponent {
         let controls = this.state.controls.map((display, index, arr) => {
             let id = display.id,
                 Control = getControlComponent(display),
-                isLast = index == arr.length - 1;
+                wrapperClass = { 'control-active': index === this.state.activeIndex },
+                controlClass = { 'control-last': index == arr.length - 1 };
 
             return (
-                <div key={id} ref={el => this.nodes[id] = el}>
+                <div
+                    key={id}
+                    ref={el => this.nodes[id] = el}
+                    className={classNames(wrapperClass)}>
                     <Control
                         ref={id}
                         display={display}
-                        className={isLast ? 'control-last' : null}
+                        className={classNames(controlClass)}
                     />
                 </div>
             );

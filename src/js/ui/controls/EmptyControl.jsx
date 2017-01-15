@@ -5,7 +5,7 @@ const { Control, Row } = require('./Control.jsx');
 
 const EmptyControl = () => {
     return (
-        <Control title="empty">
+        <Control label="empty">
             <Row />
         </Control>
     );

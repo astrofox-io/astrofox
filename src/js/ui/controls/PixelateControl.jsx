@@ -47,7 +47,7 @@ class PixelateControl extends UIComponent {
 
     render() {
         return (
-            <Control title="PIXELATE" className={this.props.className}>
+            <Control label="PIXELATE" className={this.props.className}>
                 <Row label="Type">
                     <SelectInput
                         name="type"

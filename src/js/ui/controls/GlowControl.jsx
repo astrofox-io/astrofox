@@ -38,7 +38,7 @@ class GlowControl extends UIComponent {
 
     render() {
         return (
-            <Control title="GLOW" className={this.props.className}>
+            <Control label="GLOW" className={this.props.className}>
                 <Row label="Amount">
                     <NumberInput
                         name="amount"

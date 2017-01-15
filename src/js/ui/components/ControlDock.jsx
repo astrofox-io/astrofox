@@ -27,13 +27,15 @@ class ControlDock extends UIComponent {
         events.off('project-loaded', this.onProjectLoaded);
     }
 
-    onLayerSelected(layer) {
-        this.refs.controls.focusControl(layer);
-    }
-
     onProjectLoaded() {
         this.updateLayers();
         this.refs.layers.setActiveIndex(0);
+    }
+
+    onLayerSelected(layer, index) {
+        if (layer) {
+            this.refs.controls.focusControl(layer, index);
+        }
     }
 
     onLayerChanged(layer) {

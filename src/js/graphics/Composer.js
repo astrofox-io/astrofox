@@ -190,7 +190,7 @@ class Composer extends EventEmitter {
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
-        this.passes.nodes.forEach(pass => {
+        this.getPasses().forEach(pass => {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer);
 

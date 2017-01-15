@@ -63,7 +63,7 @@ class TextControl extends UIComponent {
         let maxWidth = 854;
 
         return (
-            <Control title="TEXT" className={this.props.className}>
+            <Control label="TEXT" className={this.props.className}>
                 <Row label="Text">
                     <TextInput
                         name="text"

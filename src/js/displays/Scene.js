@@ -81,13 +81,13 @@ class Scene extends Display {
     }
 
     setSize(width, height) {
-        this.displays.nodes.forEach(display => {
+        this.getDisplays().forEach(display => {
             if (display.setSize) {
                 display.setSize(width, height);
             }
         });
 
-        this.effects.nodes.forEach(effect => {
+        this.getEffects().forEach(effect => {
             if (effect.setSize) {
                 effect.setSize(width, height);
             }
@@ -171,13 +171,13 @@ class Scene extends Display {
         composer.addPass(this.buffer2D.pass);
         composer.addPass(this.buffer3D.pass);
 
-        this.displays.nodes.forEach(display => {
+        this.getDisplays().forEach(display => {
             if (display.pass) {
                 composer.addPass(display.pass);
             }
         });
 
-        this.effects.nodes.forEach(effect => {
+        this.getEffects().forEach(effect => {
             if (effect.pass) {
                 composer.addPass(effect.pass);
             }
@@ -198,6 +198,14 @@ class Scene extends Display {
         lights[2].position.set(-distance, -distance * 2, -distance);
     }
 
+    getDisplays() {
+        return this.displays.nodes;
+    }
+
+    getEffects() {
+        return this.effects.nodes;
+    }
+
     getContext(type) {
         return (type === 'webgl') ?
             this.buffer3D.context :
@@ -211,8 +219,8 @@ class Scene extends Display {
     }
 
     render(data) {
-        let displays = this.displays.nodes,
-            effects = this.effects.nodes,
+        let displays = this.getDisplays(),
+            effects = this.getEffects(),
             composer = this.composer,
             hasGeometry = false;
 
@@ -246,11 +254,11 @@ class Scene extends Display {
     }
 
     toJSON() {
-        let displays = this.displays.nodes.map(display => {
+        let displays = this.getDisplays().map(display => {
             return display.toJSON();
         });
 
-        let effects = this.effects.nodes.map(effect => {
+        let effects = this.getEffects().map(effect => {
             return effect.toJSON();
         });
 
@@ -269,7 +277,7 @@ class Scene extends Display {
 
         let changes = false;
 
-        this.displays.nodes.forEach(display => {
+        this.getDisplays().forEach(display => {
             if (!changes && display.changed) {
                 changes = true;
             }
@@ -281,7 +289,7 @@ class Scene extends Display {
     resetChanges() {
         this.changed = false;
 
-        this.displays.nodes.forEach(display => {
+        this.getDisplays().forEach(display => {
             display.changed = false;
         });
     }

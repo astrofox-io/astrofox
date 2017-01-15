@@ -78,7 +78,7 @@ class SceneControl extends UIComponent {
         let maxVal = 500;
 
         return (
-            <Control title="SCENE" className={this.props.className}>
+            <Control label="SCENE" className={this.props.className}>
                 <Row label="Blending">
                     <SelectInput
                         name="blendMode"

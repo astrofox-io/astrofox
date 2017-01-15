@@ -84,7 +84,7 @@ class Stage extends Display {
     }
 
     clearScenes() {
-        this.scenes.nodes.forEach(scene => {
+        this.getScenes().forEach(scene => {
             this.removeScene(scene);
         });
 
@@ -92,7 +92,7 @@ class Stage extends Display {
     }
 
     hasScenes() {
-        return this.scenes.nodes.size > 0;
+        return this.getScenes().size > 0;
     }
 
     hasChanges() {
@@ -102,7 +102,7 @@ class Stage extends Display {
 
         let changes = false;
 
-        this.scenes.nodes.forEach(scene => {
+        this.getScenes().forEach(scene => {
             if (!changes && scene.hasChanges()) {
                 changes = true;
             }
@@ -114,7 +114,7 @@ class Stage extends Display {
     resetChanges() {
         this.changed = false;
 
-        this.scenes.nodes.forEach(scene => {
+        this.getScenes().forEach(scene => {
             scene.resetChanges();
         });
     }
@@ -137,7 +137,7 @@ class Stage extends Display {
     }
 
     setSize(width, height) {
-        this.scenes.nodes.forEach(scene => {
+        this.getScenes().forEach(scene => {
             scene.setSize(width, height);
         });
 
@@ -209,7 +209,7 @@ class Stage extends Display {
 
         composer.clear(this.backgroundColor, 1);
 
-        this.scenes.nodes.forEach(scene => {
+        this.getScenes().forEach(scene => {
             if (scene.options.enabled) {
                 buffer = scene.render(data);
                 options = Object.assign({}, scene.options);

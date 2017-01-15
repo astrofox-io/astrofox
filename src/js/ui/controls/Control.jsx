@@ -6,7 +6,9 @@ const classNames = require('classnames');
 const Control = (props) => {
     return (
         <div className={classNames('control', props.className)}>
-            <div className="header">{props.title}</div>
+            <div className="header">
+                <span className="label">{props.label}</span>
+            </div>
             {props.children}
         </div>
     );

@@ -5,13 +5,13 @@ const classNames = require('classnames');
 
 const UIComponent = require('../UIComponent');
 const Application = require('../../core/Application');
-const { events } = require('../../core/Global');
 const Display = require('../../displays/Display');
 const CanvasDisplay = require('../../displays/CanvasDisplay');
 const Scene = require('../../displays/Scene');
 const Effect = require('../../effects/Effect');
 const DisplayLibrary = require('../../lib/DisplayLibrary');
 const EffectsLibrary = require('../../lib/EffectsLibrary');
+const { events } = require('../../core/Global');
 
 const Layer = require('./Layer.jsx');
 
@@ -30,9 +30,7 @@ class LayersPanel extends UIComponent {
     }
 
     onLayerClick(index) {
-        this.setState({activeIndex: index}, () => {
-            this.props.onLayerSelected(this.state.layers[index]);
-        });
+        this.setActiveIndex(index);
     }
 
     onLayerUpdate(index, name, val) {
@@ -49,17 +47,14 @@ class LayersPanel extends UIComponent {
     }
 
     onAddSceneClick() {
-        let scene = new Scene(),
-            props = this.props;
+        let scene = new Scene();
 
         Application.stage.addScene(scene);
 
         this.updateLayers(() => {
             this.setActiveLayer(scene);
 
-            if (props.onLayerAdded) {
-                props.onLayerAdded(scene);
-            }
+            this.props.onLayerAdded(scene);
         });
     }
 
@@ -87,7 +82,6 @@ class LayersPanel extends UIComponent {
 
     onRemoveClick() {
         let state = this.state,
-            props = this.props,
             index = this.state.activeIndex,
             layers = state.layers,
             layer = layers[index],
@@ -103,13 +97,11 @@ class LayersPanel extends UIComponent {
 
             this.updateLayers(() => {
                 if (index === last) {
-                    this.setState({activeIndex: last - 1});
+                    this.setActiveIndex(last - 1);
                 }
             });
 
-            if (props.onLayerRemoved) {
-                props.onLayerRemoved();
-            }
+            this.props.onLayerRemoved();
         }
     }
 
@@ -136,31 +128,28 @@ class LayersPanel extends UIComponent {
     setActiveLayer(obj) {
         if (typeof obj === 'undefined') return;
 
-        let props = this.props,
-            index = (typeof obj === 'number') ? obj : this.state.layers.indexOf(obj);
+        let index = (typeof obj === 'number') ? obj : this.state.layers.indexOf(obj);
 
-        this.setState({ activeIndex: index }, () => {
-            if (props.onLayerSelected) {
-                props.onLayerSelected(this.getActiveLayer());
-            }
-        });
+        this.setActiveIndex(index);
     }
 
     setActiveIndex(index) {
-        this.setState({ activeIndex: index });
+        this.setState({ activeIndex: index }, () => {
+            this.props.onLayerSelected(this.getActiveLayer(), index);
+        });
     }
 
     updateLayers(callback) {
         let layers = [];
 
-        Application.stage.scenes.nodes.reverse().forEach(scene => {
+        Application.stage.getScenes().reverse().forEach(scene => {
             layers.push(scene);
 
-            scene.effects.nodes.reverse().forEach(effect => {
+            scene.getEffects().reverse().forEach(effect => {
                 layers.push(effect);
             });
 
-            scene.displays.nodes.reverse().forEach(display => {
+            scene.getDisplays().reverse().forEach(display => {
                 layers.push(display);
             });
         });
@@ -186,7 +175,7 @@ class LayersPanel extends UIComponent {
             this.updateLayers(() => {
                 index = this.state.layers.indexOf(layer);
 
-                this.setState({ activeIndex: index });
+                this.setActiveIndex(index);
 
                 props.onLayerMoved(this.getActiveLayer());
             });
@@ -249,9 +238,5 @@ class LayersPanel extends UIComponent {
         );
     }
 }
-
-LayersPanel.defaultProps = {
-    onLayerSelected: () => {}
-};
 
 module.exports = LayersPanel;

@@ -38,7 +38,7 @@ class MirrorControl extends UIComponent {
 
     render() {
         return (
-            <Control title="MIRROR" className={this.props.className}>
+            <Control label="MIRROR" className={this.props.className}>
                 <Row label="Side">
                     <NumberInput
                         name="side"

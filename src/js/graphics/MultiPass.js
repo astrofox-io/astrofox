@@ -31,7 +31,7 @@ class MultiPass extends ComposerPass {
     }
 
     setSize(width, height) {
-        this.passes.nodes.forEach(pass => {
+        this.getPasses().forEach(pass => {
             pass.setSize(width, height);
         });
     }

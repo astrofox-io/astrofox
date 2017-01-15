@@ -70,7 +70,7 @@ class GeometryControl extends UIComponent {
             maxVal = 500;
 
         return (
-            <Control title="3D GEOMETRY" className={this.props.className}>
+            <Control label="3D GEOMETRY" className={this.props.className}>
                 <Row label="Shape">
                     <SelectInput
                         name="shape"
