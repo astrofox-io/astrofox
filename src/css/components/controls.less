@@ -14,14 +14,17 @@
         margin: 0 5px 5px 5px;
 
         .header {
-            font-size: @font-small;
-            color: @text-color1;
-            text-shadow: 1px 1px 0 darken(@text-color1, 50%);
-            line-height: 20px;
             padding-left: 8px;
             margin-bottom: 10px;
             cursor: default;
             position: relative;
+
+            .label {
+                font-size: @font-small;
+                color: @text-color1;
+                text-shadow: 1px 1px 0 darken(@text-color1, 50%);
+                line-height: 20px;
+            }
         }
 
         .row {
@@ -76,7 +79,9 @@
         margin-bottom: 0;
     }
 
-    .control-active .header .label {
-        border-bottom: 1px solid @base-color;
+    .control-active {
+        .control {
+            border-top: 1px solid @base-color;
+        }
     }
 }

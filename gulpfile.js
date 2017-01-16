@@ -58,6 +58,11 @@ function getEnvironment() {
     return process.env.NODE_ENV || 'development';
 }
 
+function logError(err) {
+    gutil.log(gutil.colors.red('ERROR: ' + err.message));
+    this.emit('end');
+}
+
 // Logs webpack output
 function logWebpack(done, watch) {
     return (err, stats) => {
@@ -107,7 +112,7 @@ function buildCss() {
     let { src, dest } = config.css;
 
     return gulp.src(src)
-        .pipe(plumber())
+        .pipe(plumber({errorHandler: logError}))
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(gulpif(getEnvironment() === 'production', cleancss()))
