@@ -1,6 +1,4 @@
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 const ColorInput = (props) => {
     let onChange = (e) => props.onChange(props.name, e.target.value);
@@ -26,4 +24,4 @@ ColorInput.defaultProps = {
     onChange: () => {}
 };
 
-module.exports = ColorInput;
+export default ColorInput;

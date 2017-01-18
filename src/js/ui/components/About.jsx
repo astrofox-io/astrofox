@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-
-class About extends UIComponent {
+export default class About extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -27,5 +25,3 @@ class About extends UIComponent {
         );
     }
 }
-
-module.exports = About;

@@ -1,7 +1,7 @@
-const THREE = require('three');
-const ShaderCode = require('../lib/ShaderCode');
+import * as THREE from 'three';
+import glsl from '../lib/glsl';
 
-module.exports = {
+export default {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         tSize: { type: 'v2', value: new THREE.Vector2(256, 256) },
@@ -10,6 +10,6 @@ module.exports = {
         scale: { type: 'f', value: 1.0 }
     },
 
-    vertexShader: ShaderCode.vertex.Basic,
-    fragmentShader: ShaderCode.fragment.DotScreen
+    vertexShader: glsl.vertex.Basic,
+    fragmentShader: glsl.fragment.DotScreen
 };

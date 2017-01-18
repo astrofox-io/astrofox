@@ -1,9 +1,7 @@
-'use strict';
+import Display from './Display';
+import { deg2rad } from '../util/math';
 
-const Display = require('./Display');
-const { deg2rad } = require('../util/math');
-
-class CanvasDisplay extends Display {
+export default class CanvasDisplay extends Display {
     constructor(type, options) {
         super(type, options);
 
@@ -48,5 +46,3 @@ class CanvasDisplay extends Display {
         context.globalAlpha = 1.0;
     }
 }
-
-module.exports = CanvasDisplay;

@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import { APP_VERSION } from '../../core/Environment';
+import { events } from '../../core/Global';
+import { formatSize } from '../../util/format';
 
-const UIComponent = require('../UIComponent');
-const { APP_VERSION } = require('../../core/Environment');
-const { events } = require('../../core/Global');
-const { formatSize } = require('../../util/format');
-
-class Footer extends UIComponent {
+export default class Footer extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -46,5 +44,3 @@ class Footer extends UIComponent {
         );
     }
 }
-
-module.exports = Footer;

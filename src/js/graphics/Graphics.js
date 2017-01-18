@@ -1,8 +1,6 @@
-'use strict';
+import * as THREE from 'three';
 
-const THREE = require('three');
-
-class Graphics {
+export default class Graphics {
     static getRenderTarget(renderer) {
         let pixelRatio = renderer.getPixelRatio(),
             canvas = renderer.context.canvas,
@@ -21,5 +19,3 @@ class Graphics {
         );
     }
 }
-
-module.exports = Graphics;

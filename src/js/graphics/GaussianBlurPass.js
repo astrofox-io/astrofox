@@ -1,8 +1,6 @@
-'use strict';
-
-const ShaderPass = require('./ShaderPass');
-const MultiPass = require('./MultiPass');
-const GaussianBlurShader = require('../shaders/GaussianBlurShader');
+import ShaderPass from './ShaderPass';
+import MultiPass from './MultiPass';
+import GaussianBlurShader from '../shaders/GaussianBlurShader';
 
 const defaults = {
     amount: 1.0,
@@ -10,7 +8,7 @@ const defaults = {
     radius: 3
 };
 
-class GaussianBlurPass extends MultiPass {
+export default class GaussianBlurPass extends MultiPass {
     constructor(options) {
         let passes = [];
 
@@ -33,5 +31,3 @@ class GaussianBlurPass extends MultiPass {
         });
     }
 }
-
-module.exports = GaussianBlurPass;

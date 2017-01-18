@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import { events } from '../../core/Global';
+import SpectrumParser from '../../audio/SpectrumParser';
+import CanvasBars from '../../canvas/CanvasBars';
 
-const UIComponent = require('../UIComponent');
-const { events } = require('../../core/Global');
-const SpectrumParser = require('../../audio/SpectrumParser');
-const CanvasBars = require('../../canvas/CanvasBars');
-
-class Spectrum extends UIComponent {
+export default class Spectrum extends UIComponent {
     constructor(props) {
         super(props);
         
@@ -72,5 +70,3 @@ Spectrum.defaultProps = {
     color: '#775FD8',
     backgroundColor: '#FF0000'
 };
-
-module.exports = Spectrum;

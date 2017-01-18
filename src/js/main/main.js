@@ -1,5 +1,7 @@
 // hack
-delete process.env.DEBUG_FD;
+if (process.env.NODE_ENV !== 'production') {
+    delete process.env.DEBUG_FD;
+}
 
 const electron = require('electron');
 const path = require('path');

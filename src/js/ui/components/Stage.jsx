@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-const React = require('react');
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-
-class Stage extends UIComponent {
+export default class Stage extends UIComponent {
     constructor(props) {
         super(props);
         
@@ -67,5 +65,3 @@ class Stage extends UIComponent {
 Stage.defaultProps = {
     onFileDropped: () => {}
 };
-
-module.exports = Stage;

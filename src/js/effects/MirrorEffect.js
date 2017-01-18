@@ -1,10 +1,8 @@
-'use strict';
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import MirrorShader from '../shaders/MirrorShader';
 
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const MirrorShader = require('../shaders/MirrorShader');
-
-class MirrorEffect extends Effect {
+export default class MirrorEffect extends Effect {
     constructor(options) {
         super(MirrorEffect, options);
     }
@@ -26,5 +24,3 @@ MirrorEffect.className = 'MirrorEffect';
 MirrorEffect.defaults = {
     side: 1
 };
-
-module.exports = MirrorEffect;

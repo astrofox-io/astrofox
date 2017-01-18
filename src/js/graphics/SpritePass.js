@@ -1,7 +1,5 @@
-'use strict';
-
-const THREE = require('three');
-const ComposerPass = require('../graphics/ComposerPass');
+import * as THREE from 'three';
+import ComposerPass from '../graphics/ComposerPass';
 
 const defaults = {
     opacity: 1.0,
@@ -13,7 +11,7 @@ const defaults = {
     height: 480
 };
 
-class SpritePass extends ComposerPass {
+export default class SpritePass extends ComposerPass {
     constructor(texture, options) {
         super(Object.assign({}, defaults, options));
 
@@ -45,5 +43,3 @@ class SpritePass extends ComposerPass {
         super.render(renderer, this.scene, this.camera, readBuffer);
     }
 }
-
-module.exports = SpritePass;

@@ -1,10 +1,8 @@
-'use strict';
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import HexagonShader from '../shaders/HexagonShader';
 
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const HexagonShader = require('../shaders/HexagonShader');
-
-class HexagonEffect extends Effect {
+export default class HexagonEffect extends Effect {
     constructor(options) {
         super(HexagonEffect, options);
     }
@@ -30,5 +28,3 @@ HexagonEffect.className = 'HexagonEffect';
 HexagonEffect.defaults = {
     scale: 10.0
 };
-
-module.exports = HexagonEffect;

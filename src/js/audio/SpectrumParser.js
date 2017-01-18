@@ -1,7 +1,5 @@
-'use strict';
-
-const Component = require('../core/Component');
-const { val2pct, db2mag } = require('../util/math');
+import Component from '../core/Component';
+import { val2pct, db2mag } from '../util/math';
 
 const defaults = {
     smoothingTimeConstant: 0.5,
@@ -14,7 +12,7 @@ const defaults = {
     normalize: false
 };
 
-class SpectrumParser extends Component {
+export default class SpectrumParser extends Component {
     constructor(options) {
         super(Object.assign({}, defaults, options));
     }
@@ -111,5 +109,3 @@ class SpectrumParser extends Component {
         return results;
     }
 }
-
-module.exports = SpectrumParser;

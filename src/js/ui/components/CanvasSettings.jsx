@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
-
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const ColorInput = require('../inputs/ColorInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const { Settings, Row } = require('../components/Settings.jsx');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import ColorInput from '../inputs/ColorInput.jsx';
+import SelectInput from '../inputs/SelectInput.jsx';
+import { Settings, Row } from '../components/Settings.jsx';
 
 const canvasSizes = {
     '16:9': { width: 854, height: 480 },
@@ -15,7 +13,7 @@ const canvasSizes = {
     '1:1': { width: 480, height: 480 }
 };
 
-class CanvasSettings extends UIComponent {
+export default class CanvasSettings extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -75,5 +73,3 @@ class CanvasSettings extends UIComponent {
         );
     }
 }
-
-module.exports = CanvasSettings;

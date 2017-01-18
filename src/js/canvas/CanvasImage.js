@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
 'use strict';
 
-const Component = require('../core/Component');
+import Component from '../core/Component';
 
 const MIN_RESIZE_WIDTH = 100;
 
@@ -106,4 +106,4 @@ CanvasImage.defaults = {
     height: 0
 };
 
-module.exports = CanvasImage;
+export default CanvasImage;

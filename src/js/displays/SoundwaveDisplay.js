@@ -1,10 +1,8 @@
-'use strict';
+import CanvasDisplay from './CanvasDisplay';
+import CanvasWave from '../canvas/CanvasWave';
+import WaveParser from '../audio/WaveParser';
 
-const CanvasDisplay = require('./CanvasDisplay');
-const CanvasWave = require('../canvas/CanvasWave');
-const WaveParser = require('../audio/WaveParser');
-
-class SoundwaveDisplay extends CanvasDisplay {
+export default class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {
         super(SoundwaveDisplay, options);
 
@@ -52,5 +50,3 @@ SoundwaveDisplay.defaults = {
     rotation: 0,
     opacity: 1.0
 };
-
-module.exports = SoundwaveDisplay;

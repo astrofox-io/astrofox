@@ -168,11 +168,11 @@ function buildIcons() {
 
 // Compile GLSL into JS
 function buildShaders() {
-    let { src, filename, dest } = config.glsl;
+    let { src, dest } = config.glsl;
 
     return gulp.src(src)
         .pipe(plumber())
-        .pipe(glsl({ format: 'object', filename: filename }))
+        .pipe(glsl({ format: 'object', es6: true }))
         .pipe(header('/* eslint-disable quotes */\n'))
         .pipe(gulp.dest(dest));
 }

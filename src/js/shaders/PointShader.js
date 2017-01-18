@@ -1,14 +1,14 @@
-const THREE = require('three');
-const ShaderCode = require('../lib/ShaderCode');
+import * as THREE from 'three';
+import glsl from '../lib/glsl';
 
-module.exports = {
+export default {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         opacity: { type: 'f', value: 1.0 },
         color: { type: 'c', value: new THREE.Color(0xffffff) }
     },
 
-    vertexShader: ShaderCode.vertex.Point,
-    fragmentShader: ShaderCode.fragment.Point,
+    vertexShader: glsl.vertex.Point,
+    fragmentShader: glsl.fragment.Point,
     alphaTest: 0.9
 };

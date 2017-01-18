@@ -1,15 +1,13 @@
-'use strict';
+import * as displayLibrary from '../lib/displays';
+import * as effectsLibrary from '../lib/effects';
+import * as controlLibrary from '../lib/controls';
 
-const DisplayLibrary = require('../lib/DisplayLibrary');
-const EffectsLibrary = require('../lib/EffectsLibrary');
-const ControlLibrary = require('../lib/ControlLibrary');
+import SceneControl from '../ui/controls/SceneControl.jsx';
+import EmptyControl from '../ui/controls/EmptyControl.jsx';
 
-const SceneControl = require('../ui/controls/SceneControl.jsx');
-const EmptyControl = require('../ui/controls/EmptyControl.jsx');
+const displays = Object.assign({}, displayLibrary, effectsLibrary);
 
-const displays = Object.assign({}, DisplayLibrary, EffectsLibrary);
-
-function getControlComponent(obj) {
+export function getControlComponent(obj) {
     if (obj.constructor.className === 'Scene') {
         return SceneControl;
     }
@@ -17,13 +15,9 @@ function getControlComponent(obj) {
     for (let key in displays) {
         if (displays.hasOwnProperty(key) && obj instanceof displays[key]) {
             let name = /(\w+)(Display|Effect)/.exec(key);
-            return ControlLibrary[name[1] + 'Control'];
+            return controlLibrary[name[1] + 'Control'];
         }
     }
 
     return EmptyControl;
 }
-
-module.exports = {
-    getControlComponent
-};

@@ -1,8 +1,8 @@
 /* eslint-disable react/require-render-return */
 'use strict';
 
-const Component = require('../core/Component');
-const { setColor } = require('../util/canvas');
+import Component from '../core/Component';
+import { setColor } from '../util/canvas';
 
 class CanvasBars extends Component {
     constructor(options, canvas) {
@@ -94,4 +94,4 @@ CanvasBars.defaults = {
     shadowColor: '#CCCCCC'
 };
 
-module.exports = CanvasBars;
+export default CanvasBars;

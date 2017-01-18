@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import TextInput from '../inputs/TextInput.jsx';
 
-const UIComponent = require('../UIComponent');
-const TextInput = require('../inputs/TextInput.jsx');
-
-class Layer extends UIComponent {
+export default class Layer extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -98,5 +96,3 @@ Layer.defaultProps = {
     enabled: true,
     onLayerUpdate: () => {}
 };
-
-module.exports = Layer;

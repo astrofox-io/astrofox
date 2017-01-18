@@ -1,17 +1,15 @@
-'use strict';
+import * as THREE from 'three';
 
-const THREE = require('three');
+import Scene from './Scene';
+import Display from '../displays/Display';
+import NodeCollection from '../core/NodeCollection';
+import Composer from '../graphics/Composer';
+import FrameBuffer from '../graphics/FrameBuffer';
+import { logger, raiseError } from '../core/Global';
+import * as displayLibrary from '../lib/displays';
+import * as effectsLibrary from '../lib/effects';
 
-const Scene = require('./Scene');
-const Display = require('../displays/Display');
-const DisplayLibrary = require('../lib/DisplayLibrary');
-const EffectsLibrary = require('../lib/EffectsLibrary');
-const NodeCollection = require('../core/NodeCollection');
-const Composer = require('../graphics/Composer');
-const FrameBuffer = require('../graphics/FrameBuffer');
-const { logger, raiseError } = require('../core/Global');
-
-class Stage extends Display {
+export default class Stage extends Display {
     constructor(options) {
         super(Stage, options);
 
@@ -161,9 +159,9 @@ class Stage extends Display {
 
                     if (scene.displays) {
                         scene.displays.forEach(display => {
-                            component = DisplayLibrary[display.name];
+                            component = displayLibrary[display.name];
 
-                            if (!component) component = DisplayLibrary[display.name + 'Display'];
+                            if (!component) component = displayLibrary[display.name + 'Display'];
 
                             if (component) {
                                 newScene.addElement(new component(display.options));
@@ -176,9 +174,9 @@ class Stage extends Display {
 
                     if (scene.effects) {
                         scene.effects.forEach(effect => {
-                            component = EffectsLibrary[effect.name];
+                            component = effectsLibrary[effect.name];
 
-                            if (!component) component = EffectsLibrary[effect.name + 'Effect'];
+                            if (!component) component = effectsLibrary[effect.name + 'Effect'];
 
                             if (component) {
                                 newScene.addElement(new component(effect.options));
@@ -241,5 +239,3 @@ Stage.defaults = {
     height: 480,
     backgroundColor: '#000000'
 };
-
-module.exports = Stage;

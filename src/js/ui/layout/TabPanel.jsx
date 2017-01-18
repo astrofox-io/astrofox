@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
 
-const UIComponent = require('../UIComponent');
-
-class TabPanel extends UIComponent {
+export default class TabPanel extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -75,5 +73,3 @@ class TabPanel extends UIComponent {
 TabPanel.defaultProps = {
     tabPosition: 'top'
 };
-
-module.exports = TabPanel;

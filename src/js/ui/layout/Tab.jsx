@@ -1,6 +1,4 @@
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 const Tab = (props) => {
     let style = (props.visible) ? null : {display: 'none'};
@@ -12,4 +10,4 @@ const Tab = (props) => {
     );
 };
 
-module.exports = Tab;
+export default Tab;

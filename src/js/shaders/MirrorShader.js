@@ -1,11 +1,11 @@
-const ShaderCode = require('../lib/ShaderCode');
+import glsl from '../lib/glsl';
 
-module.exports = {
+export default {
     uniforms: {
         tDiffuse: {type: 't', value: null},
         side: {type: 'i', value: 1}
     },
 
-    vertexShader: ShaderCode.vertex.Basic,
-    fragmentShader: ShaderCode.fragment.Mirror
+    vertexShader: glsl.vertex.Basic,
+    fragmentShader: glsl.fragment.Mirror
 };

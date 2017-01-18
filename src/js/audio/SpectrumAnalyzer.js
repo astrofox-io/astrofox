@@ -1,5 +1,3 @@
-'use strict';
-
 const defaults = {
     fftSize: 1024,
     minDecibels: -100,
@@ -7,7 +5,7 @@ const defaults = {
     smoothingTimeConstant: 0
 };
 
-class SpectrumAnalyzer {
+export default class SpectrumAnalyzer {
     constructor(context) {
         this.audioContext = context;
         this.analyzer = Object.assign(context.createAnalyser(), defaults);
@@ -43,5 +41,3 @@ class SpectrumAnalyzer {
         return this.audioContext.sampleRate / 2;
     }
 }
-
-module.exports = SpectrumAnalyzer;

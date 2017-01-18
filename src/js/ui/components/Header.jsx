@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import Window from '../../core/Window';
 
-const UIComponent = require('../UIComponent');
-const Window = require('../../core/Window');
-
-class Header extends UIComponent {
+export default class Header extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -67,5 +65,3 @@ class Header extends UIComponent {
         );
     }
 }
-
-module.exports = Header;

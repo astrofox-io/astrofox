@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import { getControlComponent } from '../../util/controls';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const { getControlComponent } = require('../../util/controls');
-
-class ControlsPanel extends UIComponent {
+export default class ControlsPanel extends UIComponent {
     constructor(props) {
         super(props);
         
@@ -88,5 +86,3 @@ class ControlsPanel extends UIComponent {
         );
     }
 }
-
-module.exports = ControlsPanel;

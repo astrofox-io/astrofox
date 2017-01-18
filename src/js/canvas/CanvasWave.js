@@ -1,9 +1,9 @@
 /* eslint-disable react/require-render-return */
 'use strict';
 
-const Component = require('../core/Component');
-const BezierSpline = require('../drawing/BezierSpline');
-const { setColor } = require('../util/canvas');
+import Component from '../core/Component';
+import BezierSpline from '../drawing/BezierSpline';
+import { setColor } from '../util/canvas';
 
 class CanvasWave extends Component {
     constructor(options, canvas) {
@@ -112,4 +112,4 @@ CanvasWave.defaults = {
     taper: false
 };
 
-module.exports = CanvasWave;
+export default CanvasWave;

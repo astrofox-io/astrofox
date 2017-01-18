@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import Menu from './Menu.jsx';
 
-const UIComponent = require('../UIComponent');
-const Menu = require('./Menu.jsx');
-
-class MenuBarItem extends UIComponent {
+export default class MenuBarItem extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -47,5 +45,3 @@ class MenuBarItem extends UIComponent {
         );
     }
 }
-
-module.exports = MenuBarItem;

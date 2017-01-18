@@ -1,35 +1,33 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import Window from '../../core/Window';
+import {events} from '../../core/Global';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const Window = require('../../core/Window');
-const {events} = require('../../core/Global');
+import Header from './Header.jsx';
+import Footer from './Footer.jsx';
+import MenuBar from './MenuBar.jsx';
+import Stage from './Stage.jsx';
+import Player from './Player.jsx';
+import Spectrum from './Spectrum.jsx';
+import Oscilloscope from './Oscilloscope.jsx';
+import AudioWaveform from './AudioWaveform.jsx';
+import Overlay from './Overlay.jsx';
+import ControlDock from './ControlDock.jsx';
+import Preload from './Preload.jsx';
+import About from './About.jsx';
+import AppSettings from './AppSettings.jsx';
+import CanvasSettings from './CanvasSettings.jsx';
+import VideoSettings from './VideoSettings.jsx';
+import ControlPicker from './ControlPicker.jsx';
+import ModalWindow from './ModalWindow.jsx';
+import Dialog from './Dialog.jsx';
 
-const Header = require('./Header.jsx');
-const Footer = require('./Footer.jsx');
-const MenuBar = require('./MenuBar.jsx');
-const Stage = require('./Stage.jsx');
-const Player = require('./Player.jsx');
-const Spectrum = require('./Spectrum.jsx');
-const Oscilloscope = require('./Oscilloscope.jsx');
-const AudioWaveform = require('./AudioWaveform.jsx');
-const Overlay = require('./Overlay.jsx');
-const ControlDock = require('./ControlDock.jsx');
-const Preload = require('./Preload.jsx');
-const About = require('./About.jsx');
-const AppSettings = require('./AppSettings.jsx');
-const CanvasSettings = require('./CanvasSettings.jsx');
-const VideoSettings = require('./VideoSettings.jsx');
-const ControlPicker = require('./ControlPicker.jsx');
-const ModalWindow = require('./ModalWindow.jsx');
-const Dialog = require('./Dialog.jsx');
+import menuConfig from '../../../config/menu';
+import audioExtensions from '../../../config/audioExtensions';
 
-const menuConfig = require('../../../config/menu');
-const audioExtensions = require('../../../config/audioExtensions');
-
-class App extends UIComponent {
+export default class App extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -319,5 +317,3 @@ class App extends UIComponent {
         );
     }
 }
-
-module.exports = App;

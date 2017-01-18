@@ -1,17 +1,15 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
+import ListInput from '../inputs/ListInput.jsx';
+import ToggleInput from '../inputs/ToggleInput.jsx';
+import TabPanel from '../layout/TabPanel.jsx';
+import Tab from '../layout/Tab.jsx';
+import { Settings, Group, Row } from '../components/Settings.jsx';
 
-const ListInput = require('../inputs/ListInput.jsx');
-const ToggleInput = require('../inputs/ToggleInput.jsx');
-const TabPanel = require('../layout/TabPanel.jsx');
-const Tab = require('../layout/Tab.jsx');
-const { Settings, Group, Row } = require('../components/Settings.jsx');
-
-class AppSettings extends UIComponent {
+export default class AppSettings extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -121,5 +119,3 @@ class AppSettings extends UIComponent {
 AppSettings.defaultProps = {
     onClose: () => {}
 };
-
-module.exports = AppSettings;

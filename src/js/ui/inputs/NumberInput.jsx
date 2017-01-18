@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import { clamp, roundTo } from '../../util/math.js';
 
-const UIComponent = require('../UIComponent');
-const { clamp, roundTo } = require('../../util/math.js');
-
-class NumberInput extends UIComponent {
+export default class NumberInput extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -118,5 +116,3 @@ NumberInput.defaultProps = {
     hidden: false,
     onChange: () => {}
 };
-
-module.exports = NumberInput;

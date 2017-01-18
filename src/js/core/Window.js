@@ -1,6 +1,4 @@
-'use strict';
-
-const remote = require('electron').remote;
+import { remote } from 'electron';
 
 class Window {
     constructor() {
@@ -57,4 +55,4 @@ class Window {
     }
 }
 
-module.exports = new Window;
+export default new Window;

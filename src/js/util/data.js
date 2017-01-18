@@ -1,8 +1,6 @@
-'use strict';
-
 const NodeBuffer = require('buffer').Buffer;
 
-function toArrayBuffer(buffer) {
+export function toArrayBuffer(buffer) {
     let ab = new ArrayBuffer(buffer.length);
     let b = new Uint8Array(ab);
 
@@ -13,7 +11,7 @@ function toArrayBuffer(buffer) {
     return ab;
 }
 
-function toBuffer(ab) {
+export function toBuffer(ab) {
     let buffer = new NodeBuffer(ab.byteLength);
     let view = new Uint8Array(ab);
 
@@ -23,8 +21,3 @@ function toBuffer(ab) {
 
     return buffer;
 }
-
-module.exports = {
-    toArrayBuffer,
-    toBuffer
-};

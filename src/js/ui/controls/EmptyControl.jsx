@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const { Control, Row } = require('./Control.jsx');
+import React from 'react';
+import { Control, Row } from './Control.jsx';
 
 const EmptyControl = () => {
     return (
@@ -11,4 +9,4 @@ const EmptyControl = () => {
     );
 };
 
-module.exports = EmptyControl;
+export default EmptyControl;

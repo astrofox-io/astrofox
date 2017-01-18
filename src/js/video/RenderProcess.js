@@ -1,14 +1,12 @@
-'use strict';
-
-const Process = require('../core/Process');
-const { replaceExt } = require('../util/file');
+import Process from '../core/Process';
+import { replaceExt } from '../util/file';
 
 const codecs = {
     mp4: 'libx264',
     webm: 'libvpx'
 };
 
-class RenderProcess extends Process {
+export default class RenderProcess extends Process {
     constructor(command) {
         super(command);
     }
@@ -71,5 +69,3 @@ class RenderProcess extends Process {
         });
     }
 }
-
-module.exports = RenderProcess;

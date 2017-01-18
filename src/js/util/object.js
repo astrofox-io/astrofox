@@ -1,8 +1,6 @@
-'use strict';
-
 const excludedFuncs = ['constructor', 'render'];
 
-function autoBind(context) {
+export function autoBind(context) {
     Object.getOwnPropertyNames(context.constructor.prototype).forEach(function(func) {
         if (typeof this[func] === 'function' && !excludedFuncs.includes(func)) {
             this[func] = this[func].bind(this);
@@ -10,7 +8,7 @@ function autoBind(context) {
     }, context);
 }
 
-function assignIn(dest, source) {
+export function assignIn(dest, source) {
     let obj = Object.assign({}, dest);
 
     Object.keys(source).forEach(prop => {
@@ -21,8 +19,3 @@ function assignIn(dest, source) {
 
     return obj;
 }
-
-module.exports = {
-    autoBind,
-    assignIn
-};

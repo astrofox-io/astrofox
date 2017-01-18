@@ -1,10 +1,8 @@
-'use strict';
-
-const Component = require('../core/Component');
+import Component from '../core/Component';
 
 const displayCount = {};
 
-class Display extends Component {
+export default class Display extends Component {
     constructor(type, options) {
         if (typeof displayCount[type.className] === 'undefined') {
             displayCount[type.className] = 1;
@@ -45,5 +43,3 @@ class Display extends Component {
         };
     }
 }
-
-module.exports = Display;

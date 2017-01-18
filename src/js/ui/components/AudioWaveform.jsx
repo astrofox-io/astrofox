@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import CanvasAudio from '../../canvas/CanvasAudio';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const CanvasAudio = require('../../canvas/CanvasAudio');
-
-class AudioWaveform extends UIComponent {
+export default class AudioWaveform extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -160,5 +158,3 @@ AudioWaveform.defaultProps = {
     bgColor: '#333333',
     bars: 213
 };
-
-module.exports = AudioWaveform;

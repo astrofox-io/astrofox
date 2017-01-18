@@ -1,12 +1,6 @@
-'use strict';
+import path from 'path';
 
-const path = require('path');
-
-function replaceExt(file, ext) {
+export function replaceExt(file, ext) {
     let base = path.basename(file, path.extname(file)) + ext;
     return path.join(path.dirname(file), base);
 }
-
-module.exports = {
-    replaceExt
-};

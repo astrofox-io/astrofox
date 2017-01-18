@@ -1,21 +1,19 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import Window from '../../core/Window';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const Window = require('../../core/Window');
+import NumberInput from '../inputs/NumberInput.jsx';
+import DualRangeInput from '../inputs/DualRangeInput.jsx';
+import SelectInput from '../inputs/SelectInput.jsx';
+import TextInput from '../inputs/TextInput.jsx';
+import Button from '../inputs/Button.jsx';
+import { Settings, Row } from '../components/Settings.jsx';
 
-const NumberInput = require('../inputs/NumberInput.jsx');
-const DualRangeInput = require('../inputs/DualRangeInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const TextInput = require('../inputs/TextInput.jsx');
-const Button = require('../inputs/Button.jsx');
-const { Settings, Row } = require('../components/Settings.jsx');
-
-const { formatTime } = require('../../util/format');
-const { replaceExt } = require('../../util/file');
+import { formatTime } from '../../util/format';
+import { replaceExt } from '../../util/file';
 
 const videoFormats = [
     'mp4',
@@ -28,7 +26,7 @@ const resolutionOptions = [
     1080
 ];
 
-class VideoSettings extends UIComponent {
+export default class VideoSettings extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -234,5 +232,3 @@ VideoSettings.defaultProps = {
     timeStart: 0,
     timeEnd: 0
 };
-
-module.exports = VideoSettings;

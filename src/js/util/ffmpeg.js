@@ -1,8 +1,6 @@
-'use strict';
+import Process from '../core/Process';
 
-const Process = require('../core/Process');
-
-function getVersion(ffmpeg) {
+export function getVersion(ffmpeg) {
     return new Promise((resolve, reject) => {
         let buffer = '';
 
@@ -32,7 +30,7 @@ function getVersion(ffmpeg) {
     });
 }
 
-function getFormats(ffmpeg) {
+export function getFormats(ffmpeg) {
     return new Promise((resolve, reject) => {
         let buffer = '';
 
@@ -71,7 +69,7 @@ function getFormats(ffmpeg) {
     });
 }
 
-function getCodecs(ffmpeg) {
+export function getCodecs(ffmpeg) {
     return new Promise((resolve, reject) => {
         let buffer = '';
 
@@ -111,9 +109,3 @@ function getCodecs(ffmpeg) {
         process.start(['-codecs']);
     });
 }
-
-module.exports = {
-    getVersion,
-    getFormats,
-    getCodecs
-};

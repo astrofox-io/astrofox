@@ -1,6 +1,4 @@
-'use strict';
-
-class EventEmitter {
+export default class EventEmitter {
     on(event, fn, context) {
         this.events = this.events || {};
         this.events[event] = this.events[event] || [];
@@ -46,5 +44,3 @@ class EventEmitter {
         });
     }
 }
-
-module.exports = EventEmitter;

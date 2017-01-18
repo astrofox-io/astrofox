@@ -1,19 +1,17 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import NumberInput from '../inputs/NumberInput.jsx';
+import ImageInput from '../inputs/ImageInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import { Control, Row } from './Control.jsx';
 
-const UIComponent = require('../UIComponent');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const ImageInput = require('../inputs/ImageInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const { Control, Row } = require('./Control.jsx');
-
-const BLANK_IMAGE = require('../../../images/data/BlankGif.json');
+import BLANK_IMAGE from '../../../images/data/BlankGif.json';
 const CANVAS_WIDTH = 854;
 const CANVAS_HEIGHT = 480;
 
-class ImageControl extends UIComponent {
+export default class ImageControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -251,5 +249,3 @@ class ImageControl extends UIComponent {
         );
     }
 }
-
-module.exports = ImageControl;

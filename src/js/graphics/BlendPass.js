@@ -1,9 +1,7 @@
-'use strict';
-
-const THREE = require('three');
-const ShaderPass = require('../graphics/ShaderPass');
-const BlendShader = require('../shaders/BlendShader');
-const BlendModes = require('../graphics/BlendModes');
+import * as THREE from 'three';
+import ShaderPass from '../graphics/ShaderPass';
+import BlendShader from '../shaders/BlendShader';
+import BlendModes from '../graphics/BlendModes';
 
 const defaults = {
     transparent: true,
@@ -15,7 +13,7 @@ const defaults = {
     baseBuffer: true
 };
 
-class BlendPass extends ShaderPass {
+export default class BlendPass extends ShaderPass {
     constructor(buffer, options) {
         super(BlendShader, Object.assign({}, defaults, options));
 
@@ -38,5 +36,3 @@ class BlendPass extends ShaderPass {
         super.render(renderer, writeBuffer, readBuffer);
     }
 }
-
-module.exports = BlendPass;

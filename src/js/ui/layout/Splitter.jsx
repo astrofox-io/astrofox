@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
 const Splitter = (props) => {
     let classes = {
@@ -26,4 +24,4 @@ Splitter.defaultProps = {
     }
 };
 
-module.exports = Splitter;
+export default Splitter;

@@ -1,11 +1,11 @@
-const ShaderCode = require('../lib/ShaderCode');
+import glsl from '../lib/glsl';
 
-module.exports = {
+export default {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         amount: { type: 'f', value: 0.0 }
     },
 
-    vertexShader: ShaderCode.vertex.Basic,
-    fragmentShader: ShaderCode.fragment.Luminance
+    vertexShader: glsl.vertex.Basic,
+    fragmentShader: glsl.fragment.Luminance
 };

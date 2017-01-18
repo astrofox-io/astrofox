@@ -1,9 +1,7 @@
-'use strict';
-
-const THREE = require('three');
-const Display = require('./Display');
-const SpectrumParser = require('../audio/SpectrumParser');
-const PointShader = require('../shaders/PointShader');
+import * as THREE from 'three';
+import Display from './Display';
+import SpectrumParser from '../audio/SpectrumParser';
+import PointShader from '../shaders/PointShader';
 
 const materials = {
     Normal: THREE.MeshNormalMaterial,
@@ -21,10 +19,10 @@ const shading = {
     Smooth: THREE.SmoothShading
 };
 
-const POINT_SPRITE = require('../../images/data/PointSprite.json');
+import POINT_SPRITE from '../../images/data/PointSprite.json';
 const POINT_SIZE = 5;
 
-class GeometryDisplay extends Display {
+export default class GeometryDisplay extends Display {
     constructor(options) {
         super(GeometryDisplay, options);
 
@@ -278,5 +276,3 @@ GeometryDisplay.defaults = {
     startZ: 0,
     seed: 0
 };
-    
-module.exports = GeometryDisplay;

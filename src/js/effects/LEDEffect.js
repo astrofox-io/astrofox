@@ -1,10 +1,8 @@
-'use strict';
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import LEDShader from '../shaders/LEDShader';
 
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const LEDShader = require('../shaders/LEDShader');
-
-class LEDEffect extends Effect {
+export default class LEDEffect extends Effect {
     constructor(options) {
         super(LEDEffect, options);
     }
@@ -28,5 +26,3 @@ LEDEffect.defaults = {
     size: 4,
     blur: 4
 };
-
-module.exports = LEDEffect;

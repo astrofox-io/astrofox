@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
-'use strict';
-
-class Logger {
+export default class Logger {
     constructor(name) {
         this.name = name;
         this.timers = {};
@@ -78,5 +76,3 @@ class Logger {
         }
     }
 }
-
-module.exports = Logger;

@@ -1,16 +1,14 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import NumberInput from '../inputs/NumberInput.jsx';
+import ColorInput from '../inputs/ColorInput.jsx';
+import ColorRangeInput from '../inputs/ColorRangeInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import ToggleInput from '../inputs/ToggleInput.jsx';
+import { Control, Row } from './Control.jsx';
 
-const UIComponent = require('../UIComponent');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const ColorInput = require('../inputs/ColorInput.jsx');
-const ColorRangeInput = require('../inputs/ColorRangeInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const ToggleInput = require('../inputs/ToggleInput.jsx');
-const { Control, Row } = require('./Control.jsx');
-
-class WaveSpectrumControl extends UIComponent {
+export default class WaveSpectrumControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -264,5 +262,3 @@ class WaveSpectrumControl extends UIComponent {
         );
     }
 }
-
-module.exports = WaveSpectrumControl;

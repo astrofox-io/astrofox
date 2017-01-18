@@ -1,7 +1,5 @@
-'use strict';
-
-const ShaderPass = require('../graphics/ShaderPass');
-const CopyShader = require('../shaders/CopyShader');
+import ShaderPass from '../graphics/ShaderPass';
+import CopyShader from '../shaders/CopyShader';
 
 const defaults = {
     transparent: true,
@@ -9,7 +7,7 @@ const defaults = {
     forceClear: true
 };
 
-class SavePass extends ShaderPass {
+export default class SavePass extends ShaderPass {
     constructor(buffer, options) {
         super(CopyShader, Object.assign({}, defaults, options));
 
@@ -20,5 +18,3 @@ class SavePass extends ShaderPass {
         super.render(renderer, this.buffer, readBuffer);
     }
 }
-
-module.exports = SavePass;

@@ -1,19 +1,17 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import ColorInput from '../inputs/ColorInput.jsx';
+import NumberInput from '../inputs/NumberInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import SelectInput from '../inputs/SelectInput.jsx';
+import TextInput from '../inputs/TextInput.jsx';
+import ToggleInput from '../inputs/ToggleInput.jsx';
+import { Control, Row } from './Control.jsx';
 
-const UIComponent = require('../UIComponent');
-const ColorInput = require('../inputs/ColorInput.jsx');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const TextInput = require('../inputs/TextInput.jsx');
-const ToggleInput = require('../inputs/ToggleInput.jsx');
-const { Control, Row } = require('./Control.jsx');
+import fontOptions from '../../../config/fonts.json';
 
-const fontOptions = require('../../../config/fonts.json');
-
-class TextControl extends UIComponent {
+export default class TextControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -192,5 +190,3 @@ class TextControl extends UIComponent {
         );
     }
 }
-
-module.exports = TextControl;

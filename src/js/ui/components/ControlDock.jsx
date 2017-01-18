@@ -1,16 +1,14 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import { events } from '../../core/Global';
 
-const UIComponent = require('../UIComponent');
-const { events } = require('../../core/Global');
+import Panel from '../layout/Panel.jsx';
+import PanelDock from '../layout/PanelDock.jsx';
+import ControlsPanel from './ControlsPanel.jsx';
+import LayersPanel from './LayersPanel.jsx';
 
-const Panel = require('../layout/Panel.jsx');
-const PanelDock = require('../layout/PanelDock.jsx');
-const ControlsPanel = require('./ControlsPanel.jsx');
-const LayersPanel = require('./LayersPanel.jsx');
-
-class ControlDock extends UIComponent {
+export default class ControlDock extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -101,5 +99,3 @@ class ControlDock extends UIComponent {
         );
     }
 }
-
-module.exports = ControlDock;

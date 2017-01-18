@@ -1,7 +1,5 @@
-'use strict';
-
-const THREE = require('three');
-const ComposerPass = require('../graphics/ComposerPass');
+import * as THREE from 'three';
+import ComposerPass from '../graphics/ComposerPass';
 
 const defaults = {
     color: 0xffffff,
@@ -15,7 +13,7 @@ const defaults = {
     blending: THREE.NormalBlending
 };
 
-class TexturePass extends ComposerPass {
+export default class TexturePass extends ComposerPass {
     constructor(texture, options) {
         super(Object.assign({}, defaults, options));
 
@@ -45,5 +43,3 @@ class TexturePass extends ComposerPass {
         super.render(renderer, this.scene, this.camera, readBuffer);
     }
 }
-
-module.exports = TexturePass;

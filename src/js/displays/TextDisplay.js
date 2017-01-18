@@ -1,9 +1,7 @@
-'use strict';
+import CanvasDisplay from './CanvasDisplay';
+import CanvasText from '../canvas/CanvasText';
 
-const CanvasDisplay = require('./CanvasDisplay');
-const CanvasText = require('../canvas/CanvasText');
-
-class TextDisplay extends CanvasDisplay {
+export default class TextDisplay extends CanvasDisplay {
     constructor(options) {
         super(TextDisplay, options);
 
@@ -49,5 +47,3 @@ TextDisplay.defaults = {
     rotation: 0,
     opacity: 1.0
 };
-
-module.exports = TextDisplay;

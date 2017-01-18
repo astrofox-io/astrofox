@@ -1,21 +1,13 @@
-'use strict';
+import EventEmitter from './EventEmitter';
+import Logger from './Logger';
 
-const EventEmitter = require('./EventEmitter');
-const Logger = require('./Logger');
+export const logger = new Logger('astrofox');
+export const events = new EventEmitter();
 
-const logger = new Logger('astrofox');
-const events = new EventEmitter();
-
-function raiseError(msg, err) {
+export function raiseError(msg, err) {
     if (err) {
         logger.error(msg + '\n', err);
     }
 
     events.emit('error', msg, err);
 }
-
-module.exports = {
-    events,
-    logger,
-    raiseError
-};

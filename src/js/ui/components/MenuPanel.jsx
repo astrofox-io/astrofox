@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
 
-const UIComponent = require('../UIComponent');
-
-class MenuPanel extends UIComponent {
+export default class MenuPanel extends UIComponent {
     constructor(props) {
         super(props);
         
@@ -41,5 +39,3 @@ class MenuPanel extends UIComponent {
         );
     }
 }
-
-module.exports = MenuPanel;

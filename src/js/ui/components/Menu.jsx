@@ -1,8 +1,6 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
-const MenuItem = require('./MenuItem.jsx');
+import React from 'react';
+import classNames from 'classnames';
+import MenuItem from './MenuItem.jsx';
 
 const Menu = (props) => {
     let classes = {
@@ -41,4 +39,4 @@ Menu.defaultProps = {
     visible: false
 };
 
-module.exports = Menu;
+export default Menu;

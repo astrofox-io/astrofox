@@ -1,8 +1,6 @@
-'use strict';
+import Display from '../displays/Display';
 
-const Display = require('../displays/Display');
-
-class Effect extends Display {
+export default class Effect extends Display {
     constructor(type, options) {
         super(type, options);
     }
@@ -42,5 +40,3 @@ class Effect extends Display {
         }
     }
 }
-
-module.exports = Effect;

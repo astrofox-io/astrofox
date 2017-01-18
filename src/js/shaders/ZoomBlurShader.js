@@ -1,7 +1,7 @@
-const THREE = require('three');
-const ShaderCode = require('../lib/ShaderCode');
+import * as THREE from 'three';
+import glsl from '../lib/glsl';
 
-module.exports = {
+export default {
     uniforms: {
         tDiffuse: { type: 't', value: null },
         center: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
@@ -9,6 +9,6 @@ module.exports = {
         resolution: { type: 'v2', value: new THREE.Vector2(854, 480) }
     },
 
-    vertexShader: ShaderCode.vertex.Basic,
-    fragmentShader: ShaderCode.fragment.ZoomBlur
+    vertexShader: glsl.vertex.Basic,
+    fragmentShader: glsl.fragment.ZoomBlur
 };

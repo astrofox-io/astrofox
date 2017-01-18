@@ -15,7 +15,7 @@ const config = {
         path: path.resolve(__dirname, 'app/browser/js/'),
         filename: 'app.js',
         library: 'Astrofox',
-        libraryTarget: 'umd'
+        libraryTarget: 'var'
     },
     module: {
         rules: [

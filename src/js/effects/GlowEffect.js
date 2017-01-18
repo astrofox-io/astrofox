@@ -1,12 +1,10 @@
-'use strict';
-
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const GlowShader = require('../shaders/GlowShader');
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import GlowShader from '../shaders/GlowShader';
 
 const GLOW_MAX = 5;
 
-class GlowEffect extends Effect {
+export default class GlowEffect extends Effect {
     constructor(options) {
         super(GlowEffect, options);
     }
@@ -36,5 +34,3 @@ GlowEffect.defaults = {
     amount: 0.1,
     intensity: 1
 };
-
-module.exports = GlowEffect;

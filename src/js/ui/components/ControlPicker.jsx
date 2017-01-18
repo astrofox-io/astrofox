@@ -1,8 +1,6 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
-
-const { events } = require('../../core/Global');
+import { events } from '../../core/Global';
 
 const ControlPicker = (props) => {
     let values = Object.keys(props.items).map(key => props.items[key]);
@@ -33,4 +31,4 @@ const ControlPicker = (props) => {
     );
 };
 
-module.exports = ControlPicker;
+export default ControlPicker;

@@ -1,6 +1,4 @@
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 const ColorPicker = () => {
     return (
@@ -10,4 +8,4 @@ const ColorPicker = () => {
     );
 };
 
-module.exports = ColorPicker;
+export default ColorPicker;

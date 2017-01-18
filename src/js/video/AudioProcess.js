@@ -1,9 +1,7 @@
-'use strict';
+import path from 'path';
 
-const path = require('path');
-
-const Process = require('../core/Process');
-const { replaceExt } = require('../util/file');
+import Process from '../core/Process';
+import { replaceExt } from '../util/file';
 
 const codecs = {
     mp4: 'aac',
@@ -15,7 +13,7 @@ const exts = {
     webm: '.ogg'
 };
 
-class AudioProcess extends Process {
+export default class AudioProcess extends Process {
     constructor(command) {
         super(command);
     }
@@ -70,5 +68,3 @@ class AudioProcess extends Process {
         });
     }
 }
-
-module.exports = AudioProcess;

@@ -1,11 +1,9 @@
-'use strict';
-
-const Effect = require('../effects/Effect');
-const BoxBlurShader = require('../shaders/BoxBlurShader');
-const CircularBlurShader = require('../shaders/CircularBlurShader');
-const ZoomBlurShader = require('../shaders/ZoomBlurShader');
-const ShaderPass = require('../graphics/ShaderPass');
-const GaussianBlurPass = require('../graphics/GaussianBlurPass');
+import Effect from '../effects/Effect';
+import BoxBlurShader from '../shaders/BoxBlurShader';
+import CircularBlurShader from '../shaders/CircularBlurShader';
+import ZoomBlurShader from '../shaders/ZoomBlurShader';
+import ShaderPass from '../graphics/ShaderPass';
+import GaussianBlurPass from '../graphics/GaussianBlurPass';
 
 const shaders = {
     Box: BoxBlurShader,
@@ -17,7 +15,7 @@ const BOX_BLUR_MAX = 20;
 const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
 
-class BlurEffect extends Effect { 
+export default class BlurEffect extends Effect {
     constructor(options) {
         super(BlurEffect, options);
     }
@@ -83,5 +81,3 @@ BlurEffect.defaults = {
     type: 'Gaussian',
     amount: 0.1
 };
-
-module.exports = BlurEffect;

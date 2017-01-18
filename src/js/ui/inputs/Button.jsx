@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
 const Button = (props) => {
     let classes = {
@@ -22,4 +20,4 @@ const Button = (props) => {
     );
 };
 
-module.exports = Button;
+export default Button;

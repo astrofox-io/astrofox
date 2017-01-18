@@ -1,8 +1,6 @@
-'use strict';
-
 const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 
-function padLeft(n, len, c) {
+export function padLeft(n, len, c) {
     n = n + '';
     c = c || '0';
     len = len - n.length;
@@ -15,7 +13,7 @@ function padLeft(n, len, c) {
     return n;
 }
 
-function formatSize(val, decimals) {
+export function formatSize(val, decimals) {
     if (val === 0) return 'N/A';
 
     let precision = Math.pow(10, decimals || 0);
@@ -24,7 +22,7 @@ function formatSize(val, decimals) {
     return Math.round(val * precision / Math.pow(1024, i)) / precision + ' ' + sizes[i];
 }
 
-function formatTime(val, pad, ms) {
+export function formatTime(val, pad, ms) {
     let time = Math.ceil(val);
     let hours = Math.floor(time / 3600);
     let minutes = Math.floor((time - (hours * 3600)) / 60);
@@ -43,8 +41,3 @@ function formatTime(val, pad, ms) {
 
     return format;
 }
-
-module.exports = {
-    formatSize,
-    formatTime
-};

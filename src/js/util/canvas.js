@@ -1,6 +1,4 @@
-'use strict';
-
-function getColor(start, end, pct) {
+export function getColor(start, end, pct) {
     let startColor = {
         r: parseInt(start.substring(1,3), 16),
         g: parseInt(start.substring(3,5), 16),
@@ -22,7 +20,7 @@ function getColor(start, end, pct) {
     return '#' + c.r.toString(16) + c.g.toString(16) + c.b.toString(16);
 }
 
-function setColor(context, color, x1, y1, x2, y2) {
+export function setColor(context, color, x1, y1, x2, y2) {
     let i, gradient;
 
     if (color instanceof Array) {
@@ -38,8 +36,3 @@ function setColor(context, color, x1, y1, x2, y2) {
         context.fillStyle = color;
     }
 }
-
-module.exports = {
-    getColor,
-    setColor
-};

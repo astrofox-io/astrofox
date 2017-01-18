@@ -1,8 +1,6 @@
-'use strict';
+import Sound from '../audio/Sound';
 
-const Sound = require('../audio/Sound');
-
-class BufferedSound extends Sound {
+export default class BufferedSound extends Sound {
     constructor(context) {
         super(context);
 
@@ -159,5 +157,3 @@ class BufferedSound extends Sound {
         this.stopTime = ~~(pos * this.buffer.duration);
     }
 }
-
-module.exports = BufferedSound;

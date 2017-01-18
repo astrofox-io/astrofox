@@ -1,7 +1,5 @@
-'use strict';
-
-const ComposerPass = require('../graphics/ComposerPass');
-const NodeCollection = require('../core/NodeCollection');
+import ComposerPass from '../graphics/ComposerPass';
+import NodeCollection from '../core/NodeCollection';
 
 const defaults = {
     needsSwap: true,
@@ -9,7 +7,7 @@ const defaults = {
     clearDepth: true
 };
 
-class MultiPass extends ComposerPass { 
+export default class MultiPass extends ComposerPass {
     constructor(passes, options) {
         super(Object.assign({}, defaults, options));
     
@@ -57,5 +55,3 @@ class MultiPass extends ComposerPass {
         }
     }
 }
-
-module.exports = MultiPass;

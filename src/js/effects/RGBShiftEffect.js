@@ -1,13 +1,11 @@
-'use strict';
-
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const RGBShiftShader = require('../shaders/RGBShiftShader');
-const { deg2rad } = require('../util/math');
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import RGBShiftShader from '../shaders/RGBShiftShader';
+import { deg2rad } from '../util/math';
 
 const OFFSET_MAX = 854;
 
-class RGBShiftEffect extends Effect {
+export default class RGBShiftEffect extends Effect {
     constructor(options) {
         super(RGBShiftEffect, options);
     }
@@ -37,5 +35,3 @@ RGBShiftEffect.defaults = {
     offset: 5,
     angle: 45
 };
-
-module.exports = RGBShiftEffect;

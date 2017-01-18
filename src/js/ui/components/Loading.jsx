@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
 const Loading = (props) => {
     return (
@@ -13,4 +11,4 @@ Loading.defaultProps = {
     visible: false
 };
 
-module.exports = Loading;
+export default Loading;

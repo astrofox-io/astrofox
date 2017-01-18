@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     'None': 0,
     'Add': 1,
     'Average': 2,

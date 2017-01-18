@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
 const ToggleInput = (props) => {
     let classes = {
@@ -23,4 +21,4 @@ ToggleInput.defaultProps = {
     onChange: () => {}
 };
 
-module.exports = ToggleInput;
+export default ToggleInput;

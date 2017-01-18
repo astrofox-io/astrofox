@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import { events } from '../../core/Global';
+import CanvasWave from '../../canvas/CanvasWave';
+import WaveParser from '../../audio/WaveParser';
 
-const UIComponent = require('../UIComponent');
-const { events } = require('../../core/Global');
-const CanvasWave = require('../../canvas/CanvasWave');
-const WaveParser = require('../../audio/WaveParser');
-
-class Oscilloscope extends UIComponent {
+export default class Oscilloscope extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -49,5 +47,3 @@ Oscilloscope.defaultProps = {
     height: 100,
     color: '#927FFF'
 };
-
-module.exports = Oscilloscope;

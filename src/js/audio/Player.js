@@ -1,10 +1,8 @@
-'use strict';
-
-const EventEmitter = require('../core/EventEmitter');
+import EventEmitter from '../core/EventEmitter';
 
 const UPDATE_INTERVAL = 200;
 
-class Player extends EventEmitter {
+export default class Player extends EventEmitter {
     constructor(context) {
         super();
 
@@ -156,5 +154,3 @@ class Player extends EventEmitter {
         return this.loop;
     }
 }
-
-module.exports = Player;

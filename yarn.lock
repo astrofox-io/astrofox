@@ -2564,9 +2564,9 @@ gulp-cond@^1.0.0:
   dependencies:
     readable-stream "^2.0.1"
 
-gulp-glsl@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/gulp-glsl/-/gulp-glsl-1.0.4.tgz#fdbc87597099fd08c459c318cc5c68c1bf9ea4e1"
+gulp-glsl@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/gulp-glsl/-/gulp-glsl-1.1.0.tgz#698535939cf36f2038cf4f7254ce3e257e791cc5"
   dependencies:
     glsl-man "^1.1.6"
     gulp-util "^3.0.7"
@@ -5101,7 +5101,7 @@ ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
 
-uglify-js@2.7.0, uglify-js@^2.7.0:
+uglify-js@2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.7.0.tgz#f021e38ba2ca740860f5bd5c695c2a817345f0ec"
   dependencies:
@@ -5110,7 +5110,7 @@ uglify-js@2.7.0, uglify-js@^2.7.0:
     uglify-to-browserify "~1.0.0"
     yargs "~3.10.0"
 
-uglify-js@^2.7.5:
+uglify-js@^2.7.0, uglify-js@^2.7.5:
   version "2.7.5"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.7.5.tgz#4612c0c7baaee2ba7c487de4904ae122079f2ca8"
   dependencies:
@@ -5331,9 +5331,9 @@ webpack-sources@^0.1.4:
     source-list-map "~0.1.7"
     source-map "~0.5.3"
 
-webpack@2.2.0-rc.6:
-  version "2.2.0-rc.6"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.2.0-rc.6.tgz#aa503ba64802143ff067920e4a376c83005ee3fe"
+webpack@2.2.0-rc.7:
+  version "2.2.0-rc.7"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.2.0-rc.7.tgz#08199749827fe2c21e2ddeb1615893b2b6dde40a"
   dependencies:
     acorn "^4.0.4"
     acorn-dynamic-import "^2.0.0"

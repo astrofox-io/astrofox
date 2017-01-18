@@ -1,8 +1,6 @@
-'use strict';
+import ComposerPass from '../graphics/ComposerPass';
 
-var ComposerPass = require('../graphics/ComposerPass');
-
-class ClearMaskPass extends ComposerPass {
+export default class ClearMaskPass extends ComposerPass {
     constructor(options) {
         super(options);
         
@@ -15,5 +13,3 @@ class ClearMaskPass extends ComposerPass {
         context.disable(context.STENCIL_TEST);
     }
 }
-
-module.exports = ClearMaskPass;

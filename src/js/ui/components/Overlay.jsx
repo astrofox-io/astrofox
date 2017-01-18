@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+import React from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const Overlay = (props) => {
     return (
@@ -25,4 +23,4 @@ const Component = (props) => {
     );
 };
 
-module.exports = Overlay;
+export default Overlay;

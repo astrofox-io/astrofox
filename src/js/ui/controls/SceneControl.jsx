@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
-
-const UIComponent = require('../UIComponent');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const { Control, Row } = require('./Control.jsx');
+import UIComponent from '../UIComponent';
+import NumberInput from '../inputs/NumberInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import SelectInput from '../inputs/SelectInput.jsx';
+import { Control, Row } from './Control.jsx';
 
 const blendModesMenu = [
     'None',
@@ -41,7 +39,7 @@ const blendModesMenu = [
     'Reflect'
 ];
 
-class SceneControl extends UIComponent {
+export default class SceneControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -172,5 +170,3 @@ class SceneControl extends UIComponent {
         );
     }
 }
-
-module.exports = SceneControl;

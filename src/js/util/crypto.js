@@ -1,21 +1,13 @@
-'use strict';
+import crypto from 'crypto';
 
-const crypto = require('crypto');
-
-function sha1(s) {
+export function sha1(s) {
     return crypto.createHash('sha1').update(s).digest('hex');
 }
 
-function sha256(s) {
+export function sha256(s) {
     return crypto.createHash('sha256').update(s).digest('hex');
 }
 
-function uniqueId() {
+export function uniqueId() {
     return crypto.randomBytes(16).toString('hex');
 }
-
-module.exports = {
-    sha1,
-    sha256,
-    uniqueId
-};

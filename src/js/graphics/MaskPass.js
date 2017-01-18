@@ -1,12 +1,10 @@
-'use strict';
-
-const ComposerPass = require('../graphics/ComposerPass');
+import ComposerPass from '../graphics/ComposerPass';
 
 const defaults = {
     inverse: false
 };
 
-class MaskPass extends ComposerPass {
+export default class MaskPass extends ComposerPass {
     constructor(scene, camera, options) {
         super(Object.assign({}, defaults, options));
 
@@ -43,5 +41,3 @@ class MaskPass extends ComposerPass {
         context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
     }
 }
-
-module.exports = MaskPass;

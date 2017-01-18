@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
 
-const UIComponent = require('../UIComponent');
-
-class PanelDock extends UIComponent {
+export default class PanelDock extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -76,5 +74,3 @@ PanelDock.defaultProps = {
     direction: 'vertical',
     width: 320
 };
-
-module.exports = PanelDock;

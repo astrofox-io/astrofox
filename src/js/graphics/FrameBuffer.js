@@ -1,14 +1,12 @@
-'use strict';
-
-const THREE = require('three');
-const TexturePass = require('../graphics/TexturePass');
+import * as THREE from 'three';
+import TexturePass from '../graphics/TexturePass';
 
 const defaults = {
     width: 854,
     height: 480
 };
 
-class FrameBuffer {
+export default class FrameBuffer {
     constructor(type, options) {
         this.options = Object.assign({}, defaults, options);
         this.canvas = document.createElement('canvas');
@@ -60,5 +58,3 @@ class FrameBuffer {
         this.renderer.render(scene, camera);
     }
 }
-
-module.exports = FrameBuffer;

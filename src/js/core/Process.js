@@ -1,12 +1,10 @@
-'use strict';
-
 const Transform = require('stream').Transform;
 const spawn = require('child_process').spawn;
 
-const EventEmitter = require('./EventEmitter');
-const { logger } = require('./Global');
+import EventEmitter from './EventEmitter';
+import { logger } from './Global';
 
-class Process extends EventEmitter {
+export default class Process extends EventEmitter {
     constructor(command) {
         super();
 
@@ -54,5 +52,3 @@ class Process extends EventEmitter {
         this.stream.push(data);
     }
 }
-
-module.exports = Process;

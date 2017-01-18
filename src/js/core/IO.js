@@ -1,10 +1,8 @@
-'use strict';
+import fs from 'fs';
+import zlib from 'zlib';
+import mime from 'mime';
 
-const fs = require('fs');
-const zlib = require('zlib');
-const mime = require('mime');
-
-function readFile(file) {
+export function readFile(file) {
     return new Promise((resolve, reject) => {
         try {
             resolve(fs.readFileSync(file));
@@ -15,13 +13,13 @@ function readFile(file) {
     });
 }
 
-function readFileCompressed(file) {
+export function readFileCompressed(file) {
     return readFile(file).then(data => {
         return decompress(data);
     });
 }
 
-function readFileAsBlob(file) {
+export function readFileAsBlob(file) {
     return readFile(file).then(data => {
         return Promise.resolve(
             new Blob(
@@ -32,7 +30,7 @@ function readFileAsBlob(file) {
     });
 }
 
-function readAsArrayBuffer(blob) {
+export function readAsArrayBuffer(blob) {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
 
@@ -48,7 +46,7 @@ function readAsArrayBuffer(blob) {
     });
 }
 
-function readAsDataUrl(blob) {
+export function readAsDataUrl(blob) {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
 
@@ -64,7 +62,7 @@ function readAsDataUrl(blob) {
     });
 }
 
-function writeFile(file, data) {
+export function writeFile(file, data) {
     return new Promise((resolve, reject) => {
         try {
             resolve(fs.writeFileSync(file, data));
@@ -75,13 +73,13 @@ function writeFile(file, data) {
     });
 }
 
-function writeFileCompressed(file, data) {
+export function writeFileCompressed(file, data) {
     return compress(data).then(buffer => {
         return writeFile(file, buffer);
     });
 }
 
-function removeFile(file) {
+export function removeFile(file) {
     return new Promise((resolve, reject) => {
         try {
             resolve(fs.unlinkSync(file));
@@ -92,7 +90,7 @@ function removeFile(file) {
     });
 }
 
-function createFolder(path) {
+export function createFolder(path) {
     return new Promise((resolve, reject) => {
         try {
             resolve(fs.mkdirSync(path));
@@ -105,11 +103,11 @@ function createFolder(path) {
     });
 }
 
-function fileExists(file) {
+export function fileExists(file) {
     return fs.existsSync(file);
 }
 
-function compress(data) {
+export function compress(data) {
     return new Promise((resolve, reject) => {
         zlib.gzip(
             data,
@@ -125,7 +123,7 @@ function compress(data) {
     });
 }
 
-function decompress(data) {
+export function decompress(data) {
     return new Promise((resolve, reject) => {
         zlib.unzip(
             data,
@@ -140,18 +138,3 @@ function decompress(data) {
         );
     });
 }
-
-module.exports = {
-    readFile,
-    readFileCompressed,
-    readFileAsBlob,
-    readAsArrayBuffer,
-    readAsDataUrl,
-    writeFile,
-    writeFileCompressed,
-    removeFile,
-    createFolder,
-    fileExists,
-    compress,
-    decompress
-};

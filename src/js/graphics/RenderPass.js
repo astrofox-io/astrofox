@@ -1,6 +1,4 @@
-'use strict';
-
-const ComposerPass = require('../graphics/ComposerPass');
+import ComposerPass from '../graphics/ComposerPass';
 
 const defaults = {
     forceClear: true,
@@ -9,7 +7,7 @@ const defaults = {
     setClearAlpha: 1.0
 };
 
-class RenderPass extends ComposerPass {
+export default class RenderPass extends ComposerPass {
     constructor(scene, camera, options) {
         super(Object.assign({}, defaults, options));
 
@@ -29,5 +27,3 @@ class RenderPass extends ComposerPass {
         scene.overrideMaterial = null;
     }
 }
-
-module.exports = RenderPass;

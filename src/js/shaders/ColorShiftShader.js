@@ -1,10 +1,10 @@
-const ShaderCode = require('../lib/ShaderCode');
+import glsl from '../lib/glsl';
 
-module.exports = {
+export default {
     uniforms: {
         time: { type: 'f', value: 1.0 }
     },
 
-    vertexShader: ShaderCode.vertex.Basic,
-    fragmentShader: ShaderCode.fragment.ColorShift
+    vertexShader: glsl.vertex.Basic,
+    fragmentShader: glsl.fragment.ColorShift
 };

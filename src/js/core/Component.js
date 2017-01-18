@@ -1,8 +1,6 @@
-'use strict';
-
 let id = 0;
 
-class Component {
+export default class Component {
     constructor(options) {
         Object.defineProperty(this, 'id', { value: id++ });
         this.options = Object.assign({}, options);
@@ -27,5 +25,3 @@ class Component {
         return this.id.toString();
     }
 }
-
-module.exports = Component;

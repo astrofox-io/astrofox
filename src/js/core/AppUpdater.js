@@ -1,11 +1,12 @@
-'use strict';
+import { remote } from 'electron';
+import os from 'os';
 
-const { app, autoUpdater } = require('electron').remote;
-const os = require('os');
-const EventEmitter = require('./EventEmitter');
-const { logger } = require('./Global');
+import EventEmitter from './EventEmitter';
+import { logger } from './Global';
 
-class AppUpdater extends EventEmitter {
+const { app, autoUpdater } = remote;
+
+export default class AppUpdater extends EventEmitter {
     constructor(url) {
         super();
 
@@ -58,5 +59,3 @@ class AppUpdater extends EventEmitter {
         autoUpdater.checkForUpdates();
     }
 }
-
-module.exports = AppUpdater;

@@ -1,10 +1,8 @@
-'use strict';
+import CanvasDisplay from './CanvasDisplay';
+import CanvasWave from '../canvas/CanvasWave';
+import SpectrumParser from '../audio/SpectrumParser';
 
-const CanvasDisplay = require('./CanvasDisplay');
-const CanvasWave = require('../canvas/CanvasWave');
-const SpectrumParser = require('../audio/SpectrumParser');
-
-class WaveSpectrumDisplay extends CanvasDisplay {
+export default class WaveSpectrumDisplay extends CanvasDisplay {
     constructor(options) {
         super(WaveSpectrumDisplay, options);
 
@@ -82,5 +80,3 @@ WaveSpectrumDisplay.defaults = {
     sampleRate: 44100,
     normalize: true
 };
-
-module.exports = WaveSpectrumDisplay;

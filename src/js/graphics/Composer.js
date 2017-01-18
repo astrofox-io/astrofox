@@ -1,18 +1,16 @@
-'use strict';
+import * as THREE from 'three';
+import EventEmitter from '../core/EventEmitter';
+import NodeCollection from '../core/NodeCollection';
+import RenderPass from '../graphics/RenderPass';
+import ShaderPass from '../graphics/ShaderPass';
+import SpritePass from '../graphics/SpritePass';
+import TexturePass from '../graphics/TexturePass';
+import MultiPass from '../graphics/MultiPass';
+import BlendModes from '../graphics/BlendModes';
+import CopyShader from '../shaders/CopyShader';
+import BlendShader from '../shaders/BlendShader';
 
-const THREE = require('three');
-const EventEmitter = require('../core/EventEmitter');
-const NodeCollection = require('../core/NodeCollection');
-const RenderPass = require('../graphics/RenderPass');
-const ShaderPass = require('../graphics/ShaderPass');
-const SpritePass = require('../graphics/SpritePass');
-const TexturePass = require('../graphics/TexturePass');
-const MultiPass = require('../graphics/MultiPass');
-const BlendModes = require('../graphics/BlendModes');
-const CopyShader = require('../shaders/CopyShader');
-const BlendShader = require('../shaders/BlendShader');
-
-class Composer extends EventEmitter {
+export default class Composer extends EventEmitter {
     constructor(renderer, renderTarget) {
         super();
         
@@ -201,5 +199,3 @@ class Composer extends EventEmitter {
         });
     }
 }
-
-module.exports = Composer;

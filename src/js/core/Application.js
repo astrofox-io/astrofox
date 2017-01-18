@@ -1,22 +1,20 @@
-'use strict';
+import id3 from 'id3js';
+import { remote } from 'electron';
+import path from 'path';
 
-const id3 = require('id3js');
-const remote = require('electron').remote;
-const path = require('path');
+import { APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } from './Environment';
+import { events, logger, raiseError } from './Global';
+import * as IO from './IO';
+import EventEmitter from './EventEmitter';
+import AppUpdater from './AppUpdater';
+import Player from '../audio/Player';
+import BufferedSound from '../audio/BufferedSound';
+import SpectrumAnalyzer from '../audio/SpectrumAnalyzer';
+import Stage from '../displays/Stage';
+import VideoRenderer from '../video/VideoRenderer';
 
-const { APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } = require('./Environment');
-const { events, logger, raiseError } = require('./Global');
-const IO = require('./IO');
-const EventEmitter = require('./EventEmitter');
-const AppUpdater = require('./AppUpdater');
-const Player = require('../audio/Player');
-const BufferedSound = require('../audio/BufferedSound');
-const SpectrumAnalyzer = require('../audio/SpectrumAnalyzer');
-const Stage = require('../displays/Stage');
-const VideoRenderer = require('../video/VideoRenderer');
-
-const appConfig = require('../../config/app.json');
-const menuConfig = require('../../config/menu.json');
+import appConfig from '../../config/app.json';
+import menuConfig from '../../config/menu.json';
 
 const DEFAULT_PROJECT = path.join(APP_PATH, 'projects', 'default.afx');
 const FPS_POLL_INTERVAL = 500;
@@ -452,4 +450,4 @@ class Application extends EventEmitter {
     }
 }
 
-module.exports = new Application();
+export default new Application();

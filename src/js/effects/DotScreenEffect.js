@@ -1,11 +1,9 @@
-'use strict';
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import DotScreenShader from '../shaders/DotScreenShader';
+import { deg2rad } from '../util/math';
 
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const DotScreenShader = require('../shaders/DotScreenShader');
-const { deg2rad } = require('../util/math');
-
-class DotScreenEffect extends Effect {
+export default class DotScreenEffect extends Effect {
     constructor(options) {
         super(DotScreenEffect, options);
     }
@@ -35,5 +33,3 @@ DotScreenEffect.defaults = {
     angle: 90,
     scale: 1.0
 };
-
-module.exports = DotScreenEffect;

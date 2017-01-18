@@ -1,7 +1,5 @@
 /* eslint-disable react/require-render-return */
-'use strict';
-
-const Component = require('../core/Component');
+import Component from '../core/Component';
 
 const defaults = {
     enabled: true,
@@ -15,7 +13,7 @@ const defaults = {
     setClearAlpha: 1.0
 };
 
-class ComposerPass extends Component {
+export default class ComposerPass extends Component {
     constructor(options) {
         super(Object.assign({}, defaults, options));
     }
@@ -76,5 +74,3 @@ class ComposerPass extends Component {
         }
     }
 }
-
-module.exports = ComposerPass;

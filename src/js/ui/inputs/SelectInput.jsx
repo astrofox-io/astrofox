@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
 
-const UIComponent = require('../UIComponent');
-
-class SelectInput extends UIComponent {
+export default class SelectInput extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -94,5 +92,3 @@ SelectInput.defaultProps = {
     value: '',
     items: []
 };
-
-module.exports = SelectInput;

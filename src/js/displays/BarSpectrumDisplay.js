@@ -1,10 +1,8 @@
-'use strict';
+import CanvasDisplay from './CanvasDisplay';
+import CanvasBars from '../canvas/CanvasBars';
+import SpectrumParser from '../audio/SpectrumParser';
 
-const CanvasDisplay = require('./CanvasDisplay');
-const CanvasBars = require('../canvas/CanvasBars');
-const SpectrumParser = require('../audio/SpectrumParser');
-
-class BarSpectrumDisplay extends CanvasDisplay { 
+export default class BarSpectrumDisplay extends CanvasDisplay {
     constructor(options) {
         super(BarSpectrumDisplay, options);
 
@@ -63,5 +61,3 @@ BarSpectrumDisplay.defaults = {
     sampleRate: 44100,
     normalize: true
 };
-
-module.exports = BarSpectrumDisplay;

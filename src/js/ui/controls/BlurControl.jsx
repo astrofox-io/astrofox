@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
-
-const UIComponent = require('../UIComponent');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const { Control, Row } = require('./Control.jsx');
+import UIComponent from '../UIComponent';
+import NumberInput from '../inputs/NumberInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import SelectInput from '../inputs/SelectInput.jsx';
+import { Control, Row } from './Control.jsx';
 
 const types = [
     'Box',
@@ -15,7 +13,7 @@ const types = [
     'Zoom'
 ];
 
-class BlurControl extends UIComponent {
+export default class BlurControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -81,5 +79,3 @@ class BlurControl extends UIComponent {
         );
     }
 }
-
-module.exports = BlurControl;

@@ -1,9 +1,7 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
-
-const Control = (props) => {
+export const Control = (props) => {
     return (
         <div className={classNames('control', props.className)}>
             <div className="header">
@@ -14,7 +12,7 @@ const Control = (props) => {
     );
 };
 
-const Row = (props) => {
+export const Row = (props) => {
     let label = (props.label) ?
         <span className="label">{props.label}</span> : null;
 
@@ -24,9 +22,4 @@ const Row = (props) => {
             {props.children}
         </div>
     );
-};
-
-module.exports = {
-    Control,
-    Row
 };

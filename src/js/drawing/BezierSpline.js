@@ -1,6 +1,4 @@
-'use strict';
-
-class BezierSpline {
+export default class BezierSpline {
     static draw(context, points)
     {
         context.beginPath();
@@ -92,5 +90,3 @@ class BezierSpline {
         return { p1, p2 };
     }
 }
-
-module.exports = BezierSpline;

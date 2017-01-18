@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
 const MenuItem = (props) => {
     let classes = {
@@ -19,4 +17,4 @@ const MenuItem = (props) => {
     );
 };
 
-module.exports = MenuItem;
+export default MenuItem;

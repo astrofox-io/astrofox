@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import { val2pct } from '../../util/math';
 
-const UIComponent = require('../UIComponent');
-const { val2pct } = require('../../util/math');
-
-class RangeInput extends UIComponent {
+export default class RangeInput extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -128,5 +126,3 @@ RangeInput.defaultProps = {
     onChange: () => {},
     onInput: () => {}
 };
-
-module.exports = RangeInput;

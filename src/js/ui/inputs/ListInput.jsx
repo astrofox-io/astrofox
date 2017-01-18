@@ -1,10 +1,8 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
 
-const UIComponent = require('../UIComponent');
-
-class ListInput extends UIComponent {
+export default class ListInput extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -38,5 +36,3 @@ ListInput.defaultProps = {
     name: 'list',
     options: []
 };
-
-module.exports = ListInput;

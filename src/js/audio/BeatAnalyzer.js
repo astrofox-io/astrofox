@@ -1,6 +1,2 @@
-'use strict';
-
-class BeatAnalyzer {
+export default class BeatAnalyzer {
 }
-
-module.exports = BeatAnalyzer;

@@ -1,14 +1,12 @@
-'use strict';
+import * as THREE from 'three';
+import Effect from '../effects/Effect';
+import ShaderPass from '../graphics/ShaderPass';
+import SavePass from '../graphics/SavePass';
+import BlendPass from '../graphics/BlendPass';
+import GaussianBlurPass from '../graphics/GaussianBlurPass';
+import LuminanceShader from '../shaders/LuminanceShader';
 
-const THREE = require('three');
-const Effect = require('../effects/Effect');
-const ShaderPass = require('../graphics/ShaderPass');
-const SavePass = require('../graphics/SavePass');
-const BlendPass = require('../graphics/BlendPass');
-const GaussianBlurPass = require('../graphics/GaussianBlurPass');
-const LuminanceShader = require('../shaders/LuminanceShader');
-
-class BloomEffect extends Effect {
+export default class BloomEffect extends Effect {
     constructor(options) {
         super(BloomEffect, options);
     }
@@ -67,5 +65,3 @@ BloomEffect.defaults = {
     amount: 0.1,
     threshold: 1.0
 };
-
-module.exports = BloomEffect;

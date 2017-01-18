@@ -1,9 +1,7 @@
-'use strict';
-
-const React = require('react');
-const ReactDOM = require('react-dom');
-const Environment = require('./core/Environment');
-const App = require('./ui/components/App.jsx');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import * as Environment from './core/Environment';
+import App from './ui/components/App.jsx';
 
 let Astrofox = {
     start: () => {
@@ -18,4 +16,4 @@ if (process.env.NODE_ENV !== 'production') {
     Astrofox.env = Environment;
 }
 
-module.exports = Astrofox;
+export default Astrofox;

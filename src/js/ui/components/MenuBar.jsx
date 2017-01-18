@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import MenuBarItem from './MenuBarItem.jsx';
 
-const UIComponent = require('../UIComponent');
-const MenuBarItem = require('./MenuBarItem.jsx');
-
-class MenuBar extends UIComponent {
+export default class MenuBar extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -82,5 +80,3 @@ class MenuBar extends UIComponent {
 MenuBar.defaultProps = {
     items: {}
 };
-
-module.exports = MenuBar;

@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
 'use strict';
 
-const Component = require('../core/Component');
+import Component from '../core/Component';
 
 class CanvasText extends Component {
     constructor(options, canvas) {
@@ -75,4 +75,4 @@ CanvasText.defaults = {
     color: '#FFFFFF'
 };
 
-module.exports = CanvasText;
+export default CanvasText;

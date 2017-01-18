@@ -1,8 +1,6 @@
-'use strict';
+import EventEmitter from '../core/EventEmitter';
 
-const EventEmitter = require('../core/EventEmitter');
-
-class Sound extends EventEmitter {
+export default class Sound extends EventEmitter {
     constructor(context) {
         super();
 
@@ -34,5 +32,3 @@ class Sound extends EventEmitter {
         });
     }
 }
-
-module.exports = Sound;

@@ -1,8 +1,8 @@
 'use strict';
 
-const { val2pct } = require('../util/math');
+import { val2pct } from '../util/math';
 
-class WaveParser {
+export default class WaveParser {
     static parseTimeData(data, points, distance) {
         let i, j, step,
             results = [];
@@ -36,5 +36,3 @@ class WaveParser {
         return results;
     }
 }
-
-module.exports = WaveParser;

@@ -1,17 +1,15 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import { formatTime } from '../../util/format';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const { formatTime } = require('../../util/format');
-
-const RangeInput = require('../inputs/RangeInput.jsx');
+import RangeInput from '../inputs/RangeInput.jsx';
 
 const PROGRESS_MAX = 1000;
 
-class Player extends UIComponent {
+export default class Player extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -260,5 +258,3 @@ const TimeInfo = (props) => {
         </div>
     );
 };
-
-module.exports = Player;

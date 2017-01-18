@@ -1,8 +1,6 @@
-'use strict';
+import Immutable from 'immutable';
 
-const Immutable = require('immutable');
-
-class NodeCollection {
+export default class NodeCollection {
     constructor(values) {
         this.nodes = new Immutable.List();
     
@@ -65,5 +63,3 @@ class NodeCollection {
         return this.nodes.size;
     }
 }
-
-module.exports = NodeCollection;

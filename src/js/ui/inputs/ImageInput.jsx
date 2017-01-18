@@ -1,15 +1,13 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import Window from '../../core/Window';
+import * as IO from '../../core/IO';
 
-const UIComponent = require('../UIComponent');
-const Window = require('../../core/Window');
-const IO = require('../../core/IO');
+import BLANK_IMAGE from '../../../images/data/BlankGif.json';
 
-const BLANK_IMAGE = require('../../../images/data/BlankGif.json');
-
-class ImageInput extends UIComponent {
+export default class ImageInput extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -120,5 +118,3 @@ ImageInput.defaultProps = {
     src: BLANK_IMAGE,
     onChange: () => {}
 };
-
-module.exports = ImageInput;

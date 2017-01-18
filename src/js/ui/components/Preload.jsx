@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const fontOptions = require('../../../config/fonts.json');
+import React from 'react';
+import fontOptions from '../../../config/fonts.json';
 
 const Preload = () => {
     let fonts = fontOptions.map((item, index) => {
@@ -15,4 +13,4 @@ const Preload = () => {
     );
 };
 
-module.exports = Preload;
+export default Preload;

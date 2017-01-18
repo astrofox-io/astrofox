@@ -1,8 +1,8 @@
 /* eslint-disable react/require-render-return */
 'use strict';
 
-const Component = require('../core/Component');
-const CanvasBars = require('./CanvasBars');
+import Component from '../core/Component';
+import CanvasBars from './CanvasBars';
 
 class CanvasAudio extends Component {
     constructor(options, canvas) {
@@ -61,4 +61,4 @@ CanvasAudio.defaults = {
     bars: 100
 };
 
-module.exports = CanvasAudio;
+export default CanvasAudio;

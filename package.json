@@ -71,7 +71,7 @@
     "eslint-plugin-react": "^6.9.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.3.2",
-    "gulp-glsl": "^1.0.4",
+    "gulp-glsl": "^1.1.0",
     "gulp-header": "^1.8.8",
     "gulp-iconfont": "^8.0.1",
     "gulp-if": "^2.0.2",
@@ -84,6 +84,6 @@
     "gulp-util": "^3.0.8",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "2.2.0-rc.6"
+    "webpack": "2.2.0-rc.7"
   }
 }

@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
 const Dialog = (props) => {
     let icon = (props.icon) ?
@@ -16,4 +14,4 @@ const Dialog = (props) => {
     );
 };
 
-module.exports = Dialog;
+export default Dialog;

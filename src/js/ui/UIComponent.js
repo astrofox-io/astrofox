@@ -1,7 +1,5 @@
-'use strict';
-
-const React = require('react');
-const { autoBind } = require('../util/object');
+import React from 'react';
+import { autoBind } from '../util/object';
 
 class UIComponent extends React.Component {
     constructor(props) {
@@ -10,4 +8,4 @@ class UIComponent extends React.Component {
     }
 }
 
-module.exports = UIComponent;
+export default UIComponent;

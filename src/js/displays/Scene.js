@@ -1,18 +1,16 @@
-'use strict';
+import * as THREE from 'three';
 
-const THREE = require('three');
-
-const NodeCollection = require('../core/NodeCollection');
-const Display = require('./Display');
-const Effect = require('../effects/Effect');
-const Composer = require('../graphics/Composer');
+import NodeCollection from '../core/NodeCollection';
+import Display from './Display';
+import Effect from '../effects/Effect';
+import Composer from '../graphics/Composer';
 
 const FOV = 45;
 const NEAR = 1;
 const FAR = 10000;
 const CAMERA_POS_Z = 250;
 
-class Scene extends Display {
+export default class Scene extends Display {
     constructor(options) {
         super(Scene, options);
 
@@ -306,5 +304,3 @@ Scene.defaults = {
     lightDistance: 500,
     cameraZoom: 250
 };
-
-module.exports = Scene;

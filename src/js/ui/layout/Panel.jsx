@@ -1,14 +1,12 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import { events } from '../../core/Global';
 
-const UIComponent = require('../UIComponent');
-const { events } = require('../../core/Global');
+import Splitter from './Splitter.jsx';
 
-const Splitter = require('./Splitter.jsx');
-
-class Panel extends UIComponent {
+export default class Panel extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -117,5 +115,3 @@ Panel.defaultProps = {
     onDragStart: () => {},
     onDragEnd: () => {}
 };
-
-module.exports = Panel;

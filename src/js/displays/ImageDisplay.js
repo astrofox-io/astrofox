@@ -1,9 +1,7 @@
-'use strict';
+import CanvasDisplay from './CanvasDisplay';
+import CanvasImage from '../canvas/CanvasImage';
 
-const CanvasDisplay = require('./CanvasDisplay');
-const CanvasImage = require('../canvas/CanvasImage');
-
-class ImageDisplay extends CanvasDisplay {
+export default class ImageDisplay extends CanvasDisplay {
     constructor(options) {
         super(ImageDisplay, options);
 
@@ -47,5 +45,3 @@ ImageDisplay.defaults = {
     rotation: 0,
     opacity: 1.0
 };
-
-module.exports = ImageDisplay;

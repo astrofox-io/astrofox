@@ -1,7 +1,5 @@
-'use strict';
-
-const THREE = require('three');
-const ComposerPass = require('../graphics/ComposerPass');
+import * as THREE from 'three';
+import ComposerPass from '../graphics/ComposerPass';
 
 const defaults = {
     textureId: 'tDiffuse',
@@ -11,7 +9,7 @@ const defaults = {
     blending: THREE.NormalBlending
 };
 
-class ShaderPass extends ComposerPass {
+export default class ShaderPass extends ComposerPass {
     constructor(shader, options) {
         super(Object.assign({}, defaults, options));
 
@@ -62,5 +60,3 @@ class ShaderPass extends ComposerPass {
         super.render(renderer, this.scene, this.camera, writeBuffer);
     }
 }
-
-module.exports = ShaderPass;

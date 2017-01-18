@@ -1,6 +1,4 @@
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 const ModalWindow = (props) => {
     let buttons = null;
@@ -37,4 +35,4 @@ const ModalWindow = (props) => {
     );
 };
 
-module.exports = ModalWindow;
+export default ModalWindow;

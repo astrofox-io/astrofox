@@ -1,12 +1,10 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
-
-const UIComponent = require('../UIComponent');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const SelectInput = require('../inputs/SelectInput.jsx');
-const { Control, Row } = require('./Control.jsx');
+import UIComponent from '../UIComponent';
+import NumberInput from '../inputs/NumberInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import SelectInput from '../inputs/SelectInput.jsx';
+import { Control, Row } from './Control.jsx';
 
 const types = [
     'Square',
@@ -16,7 +14,7 @@ const types = [
 const MIN_PIXEL_SIZE = 2;
 const MAX_PIXEL_SIZE = 240;
 
-class PixelateControl extends UIComponent {
+export default class PixelateControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -80,5 +78,3 @@ class PixelateControl extends UIComponent {
         );
     }
 }
-
-module.exports = PixelateControl;

@@ -1,8 +1,6 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
-
-const ColorInput = require('./ColorInput.jsx');
+import ColorInput from './ColorInput.jsx';
 
 const ColorRangeInput = (props) => {
     let colorRangeStyle = {
@@ -36,4 +34,4 @@ ColorRangeInput.defaultProps = {
     endColor: '#ffffff'
 };
 
-module.exports = ColorRangeInput;
+export default ColorRangeInput;

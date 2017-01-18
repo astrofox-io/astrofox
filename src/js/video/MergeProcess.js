@@ -1,8 +1,6 @@
-'use strict';
+import Process from '../core/Process';
 
-const Process = require('../core/Process');
-
-class MergeProcess extends Process {
+export default class MergeProcess extends Process {
     constructor(command) {
         super(command);
     }
@@ -35,5 +33,3 @@ class MergeProcess extends Process {
         });
     }
 }
-
-module.exports = MergeProcess;

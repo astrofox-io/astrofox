@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
 
-const UIComponent = require('../UIComponent');
-
-class TextInput extends UIComponent {
+export default class TextInput extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -96,5 +94,3 @@ TextInput.defaultProps = {
     readOnly: false,
     disabled: false
 };
-
-module.exports = TextInput;

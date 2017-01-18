@@ -1,21 +1,19 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
+import UIComponent from '../UIComponent';
+import Application from '../../core/Application';
+import Display from '../../displays/Display';
+import CanvasDisplay from '../../displays/CanvasDisplay';
+import Scene from '../../displays/Scene';
+import Effect from '../../effects/Effect';
+import { events } from '../../core/Global';
+import * as displayLibrary from '../../lib/displays';
+import * as effectsLibrary from '../../lib/effects';
 
-const UIComponent = require('../UIComponent');
-const Application = require('../../core/Application');
-const Display = require('../../displays/Display');
-const CanvasDisplay = require('../../displays/CanvasDisplay');
-const Scene = require('../../displays/Scene');
-const Effect = require('../../effects/Effect');
-const DisplayLibrary = require('../../lib/DisplayLibrary');
-const EffectsLibrary = require('../../lib/EffectsLibrary');
-const { events } = require('../../core/Global');
+import Layer from './Layer.jsx';
 
-const Layer = require('./Layer.jsx');
-
-class LayersPanel extends UIComponent {
+export default class LayersPanel extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -64,7 +62,7 @@ class LayersPanel extends UIComponent {
         if (scene) {
             events.emit(
                 'pick_control',
-                { title: 'ADD DISPLAY', scene: scene, items: DisplayLibrary }
+                { title: 'ADD DISPLAY', scene: scene, items: displayLibrary }
             );
         }
     }
@@ -75,7 +73,7 @@ class LayersPanel extends UIComponent {
         if (scene) {
             events.emit(
                 'pick_control',
-                { title: 'ADD EFFECT', scene: scene, items: EffectsLibrary }
+                { title: 'ADD EFFECT', scene: scene, items: effectsLibrary }
             );
         }
     }
@@ -238,5 +236,3 @@ class LayersPanel extends UIComponent {
         );
     }
 }
-
-module.exports = LayersPanel;

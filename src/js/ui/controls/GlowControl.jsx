@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
 
-const React = require('react');
+import UIComponent from '../UIComponent';
+import NumberInput from '../inputs/NumberInput.jsx';
+import RangeInput from '../inputs/RangeInput.jsx';
+import { Control, Row } from './Control.jsx';
 
-const UIComponent = require('../UIComponent');
-const NumberInput = require('../inputs/NumberInput.jsx');
-const RangeInput = require('../inputs/RangeInput.jsx');
-const { Control, Row } = require('./Control.jsx');
-
-class GlowControl extends UIComponent {
+export default class GlowControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -85,5 +83,3 @@ class GlowControl extends UIComponent {
         );
     }
 }
-
-module.exports = GlowControl;

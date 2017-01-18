@@ -1,15 +1,13 @@
-'use strict';
+import path from 'path';
 
-const path = require('path');
-
-const EventEmitter = require('../core/EventEmitter');
-const RenderProcess = require('./RenderProcess');
-const AudioProcess = require('./AudioProcess');
-const MergeProcess = require('./MergeProcess');
-const { logger } = require('../core/Global');
-const { removeFile } = require('../core/IO');
-const { TEMP_PATH, FFMPEG_PATH } = require('../core/Environment');
-const { uniqueId } = require('../util/crypto');
+import EventEmitter from '../core/EventEmitter';
+import RenderProcess from './RenderProcess';
+import AudioProcess from './AudioProcess';
+import MergeProcess from './MergeProcess';
+import { logger } from '../core/Global';
+import { removeFile } from '../core/IO';
+import { TEMP_PATH, FFMPEG_PATH } from '../core/Environment';
+import { uniqueId } from '../util/crypto';
 
 const defaults = {
     fps: 30,
@@ -19,7 +17,7 @@ const defaults = {
     resolution: 480
 };
 
-class VideoRenderer extends EventEmitter {
+export default class VideoRenderer extends EventEmitter {
     constructor(videoFile, audioFile, options) {
         super();
 
@@ -103,5 +101,3 @@ class VideoRenderer extends EventEmitter {
         }
     }
 }
-
-module.exports = VideoRenderer;

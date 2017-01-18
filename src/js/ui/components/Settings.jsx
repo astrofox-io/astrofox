@@ -1,9 +1,7 @@
-'use strict';
+import React from 'react';
+import classNames from 'classnames';
 
-const React = require('react');
-const classNames = require('classnames');
-
-const Settings = (props) => {
+export const Settings = (props) => {
     return (
         <div className={classNames('settings', props.className)}>
             {props.children}
@@ -11,7 +9,7 @@ const Settings = (props) => {
     );
 };
 
-const Group = (props) => {
+export const Group = (props) => {
     return (
         <div className={classNames('group', props.className)}>
             <div className="name">{props.name}</div>
@@ -20,7 +18,7 @@ const Group = (props) => {
     );
 };
 
-const Row = (props) => {
+export const Row = (props) => {
     let label = (props.label) ?
         <span className="label">{props.label}</span> : null;
 
@@ -30,10 +28,4 @@ const Row = (props) => {
             {props.children}
         </div>
     );
-};
-
-module.exports = {
-    Settings,
-    Group,
-    Row
 };
