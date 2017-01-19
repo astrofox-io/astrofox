@@ -19,7 +19,7 @@ export default class Sound extends EventEmitter {
     }
 
     removeNode(node) {
-        var index = this.nodes.indexOf(node);
+        let index = this.nodes.indexOf(node);
 
         if (index > -1) {
             this.nodes.splice(index, 1);

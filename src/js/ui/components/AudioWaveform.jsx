@@ -37,22 +37,21 @@ export default class AudioWaveform extends UIComponent {
         );
 
         // Set player events
-        const player = this.player = Application.player;
+        let player = Application.player;
 
         player.on('load', () => {
-            let sound = this.player.getSound('audio');
+            let audio = Application.getAudio();
 
-            if (sound) {
-                this.baseCanvas.render(sound.buffer);
-                this.progressCanvas.render(sound.buffer);
-                this.seekCanvas.render(sound.buffer);
+            if (audio) {
+                this.baseCanvas.render(audio.buffer);
+                this.progressCanvas.render(audio.buffer);
+                this.seekCanvas.render(audio.buffer);
             }
         });
 
         player.on('tick', () => {
-            this.position = this.player.getPosition('audio');
+            this.position = Application.getAudioPosition();
             this.draw();
-
         });
 
         player.on('stop', () => {
@@ -61,7 +60,7 @@ export default class AudioWaveform extends UIComponent {
         });
 
         player.on('seek', () => {
-            this.position = this.seek = this.player.getPosition('audio');
+            this.position = this.seek = Application.getAudioPosition();
             this.draw();
         });
     }
@@ -72,14 +71,14 @@ export default class AudioWaveform extends UIComponent {
 
         let rect = e.currentTarget.getBoundingClientRect();
 
-        this.player.seek('audio', (e.clientX - rect.left) / rect.width);
+        Application.seekAudio((e.clientX - rect.left) / rect.width);
     }
 
     onMouseMove(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        if (this.player.getSound('audio')) {
+        if (Application.hasAudio()) {
             let rect = e.currentTarget.getBoundingClientRect();
 
             this.seek = (e.clientX - rect.left) / rect.width;

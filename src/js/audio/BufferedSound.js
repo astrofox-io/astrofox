@@ -5,22 +5,23 @@ export default class BufferedSound extends Sound {
         super(context);
 
         this.source = null;
+        this.buffer = null;
         this.startTime = 0;
         this.stopTime = 0;
     }
 
     load(src) {
         if (typeof src === 'string') {
-            Promise.resolve(this.loadUrl(src));
+            return this.loadUrl(src);
         }
         else if (src instanceof ArrayBuffer) {
-            Promise.resolve(this.loadData(src));
+            return this.loadData(src);
         }
         else if (src instanceof AudioBuffer) {
-            Promise.resolve(this.loadBuffer(src));
+            return this.loadBuffer(src);
         }
         else {
-            Promise.reject('Invalid source: ' + (typeof src));
+            return Promise.reject('Invalid source: ' + (typeof src));
         }
     }
 

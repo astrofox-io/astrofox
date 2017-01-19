@@ -58,11 +58,11 @@ export default class Player extends UIComponent {
     }
 
     onPlayButtonClick() {
-        this.player.play('audio');
+        Application.playAudio();
     }
 
     onStopButtonClick() {
-        this.player.stop('audio');
+        Application.stopAudio();
     }
 
     onLoopButtonClick() {

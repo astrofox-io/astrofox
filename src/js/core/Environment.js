@@ -8,3 +8,5 @@ export const USER_DATA_PATH = remote.app.getPath('userData');
 export const TEMP_PATH = path.join(remote.app.getPath('temp'), APP_NAME);
 export const FFMPEG_PATH = path.join(APP_PATH, '..', 'bin', (process.platform === 'win32') ? 'ffmpeg.exe' : 'ffmpeg');
 export const APP_CONFIG_FILE = path.join(USER_DATA_PATH, 'app.config');
+export const DEFAULT_PROJECT = path.join(APP_PATH, 'projects', 'default.afx');
+export const UPDATE_SERVER_URL = 'localhost:3333';

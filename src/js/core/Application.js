@@ -1,8 +1,7 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
-import path from 'path';
 
-import { APP_VERSION, APP_PATH, APP_CONFIG_FILE, TEMP_PATH } from './Environment';
+import { APP_VERSION, APP_CONFIG_FILE, TEMP_PATH, DEFAULT_PROJECT, UPDATE_SERVER_URL } from './Environment';
 import { events, logger, raiseError } from './Global';
 import * as IO from './IO';
 import EventEmitter from './EventEmitter';
@@ -16,9 +15,7 @@ import VideoRenderer from '../video/VideoRenderer';
 import appConfig from '../../config/app.json';
 import menuConfig from '../../config/menu.json';
 
-const DEFAULT_PROJECT = path.join(APP_PATH, 'projects', 'default.afx');
 const FPS_POLL_INTERVAL = 500;
-const UPDATE_SERVER_HOST = 'localhost:3333';
 
 class Application extends EventEmitter {
     constructor() {
@@ -30,7 +27,7 @@ class Application extends EventEmitter {
         this.player = new Player(this.audioContext);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.stage = new Stage();
-        this.updater = new AppUpdater(UPDATE_SERVER_HOST);
+        this.updater = new AppUpdater(UPDATE_SERVER_URL);
 
         this.audioFile = '';
         this.projectFile = '';
@@ -57,9 +54,9 @@ class Application extends EventEmitter {
         };
 
         // Player events
-        this.player.on('play', this.updateAnalyzer, this);
-        this.player.on('pause', this.updateAnalyzer, this);
-        this.player.on('stop', this.updateAnalyzer, this);
+        this.player.on('play', this.resetAnalyzer, this);
+        this.player.on('pause', this.resetAnalyzer, this);
+        this.player.on('stop', this.resetAnalyzer, this);
 
         // Default configuration
         this.config = Object.assign({}, appConfig);
@@ -80,6 +77,7 @@ class Application extends EventEmitter {
         };
     }
 
+    //region Main Methods
     init() {
         // Load config file
         this.loadConfigFile();
@@ -92,7 +90,7 @@ class Application extends EventEmitter {
             if (root.submenu) {
                 root.submenu.forEach(item => {
                     if (!item.role && item.action) {
-                        item.click = this.menuAction;
+                        item.click = this.doMenuAction;
                     }
                 });
             }
@@ -106,6 +104,64 @@ class Application extends EventEmitter {
         this.newProject();
     }
 
+    doMenuAction(menuItem) {
+        events.emit('menu-action', menuItem.action);
+    }
+
+    resetAnalyzer() {
+        let spectrum = this.spectrum,
+            audio = this.getAudio();
+
+        if (audio && !audio.paused) {
+            spectrum.clearFrequencyData();
+            spectrum.clearTimeData();
+        }
+    }
+
+    resetChanges() {
+        this.stage.resetChanges();
+    }
+
+    checkForUpdates() {
+        this.updater.checkForUpdates();
+    }
+
+    isRendering() {
+        return this.rendering;
+    }
+    //endregion
+
+    //region Audio Methods
+    getAudio() {
+        return this.player.getSound('audio');
+    }
+
+    playAudio() {
+        this.player.play('audio');
+    }
+
+    stopAudio() {
+        this.player.stop('audio');
+    }
+
+    pauseAudio() {
+        this.player.pause('audio');
+    }
+
+    seekAudio(pos) {
+        this.player.seek('audio', pos);
+    }
+
+    getAudioPosition() {
+        return this.player.getPosition('audio');
+    }
+
+    hasAudio() {
+        return !!this.getAudio();
+    }
+    //endregion
+
+    //region Render Methods
     startRender() {
         if (!this.frameData.id) {
             this.render();
@@ -126,12 +182,11 @@ class Application extends EventEmitter {
 
     render() {
         let now = window.performance.now(),
-            data = this.getFrameData(),
-            id = window.requestAnimationFrame(this.render.bind(this));
+            data = this.getFrameData();
 
+        data.id = window.requestAnimationFrame(this.render.bind(this));
         data.delta = now - data.time;
         data.time = now;
-        data.id = id;
 
         this.stage.render(data);
 
@@ -142,13 +197,12 @@ class Application extends EventEmitter {
 
     renderFrame(frame, fps, callback) {
         let data, image,
-            player = this.player,
             spectrum = this.spectrum,
             stage = this.stage,
-            sound = player.getSound('audio'),
+            audio = this.getAudio(),
             source = this.bufferSource = this.audioContext.createBufferSource();
 
-        source.buffer = sound.buffer;
+        source.buffer = audio.buffer;
         source.connect(spectrum.analyzer);
 
         source.onended = () => {
@@ -169,6 +223,40 @@ class Application extends EventEmitter {
         source.start(0, frame / fps, 1 / fps);
     }
 
+    getFrameData(forceUpdate) {
+        let data = this.frameData,
+            update = !!forceUpdate || this.player.isPlaying();
+
+        data.fft = this.spectrum.getFrequencyData(update);
+        data.td = this.spectrum.getTimeData(update);
+        data.hasUpdate = update;
+
+        return data;
+    }
+
+    updateFPS(now) {
+        let stats = this.stats;
+
+        if (!stats.time) {
+            stats.time = now;
+        }
+
+        stats.frames += 1;
+
+        if (now > stats.time + FPS_POLL_INTERVAL) {
+            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.ms = (now - stats.time) / stats.frames;
+            stats.time = now;
+            stats.frames = 0;
+            stats.stack.copyWithin(1, 0);
+            stats.stack[0] = stats.fps;
+
+            events.emit('tick', stats);
+        }
+    }
+    //endregion
+
+    //region Save/load Methods
     loadConfigFile() {
         if (IO.fileExists(APP_CONFIG_FILE)) {
             return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
@@ -185,7 +273,7 @@ class Application extends EventEmitter {
     }
 
     loadAudioFile(file) {
-        this.player.stop('audio');
+        this.stopAudio();
 
         return IO.readFileAsBlob(file)
             .then(blob => {
@@ -211,7 +299,7 @@ class Application extends EventEmitter {
                 spectrum = this.spectrum,
                 sound = new BufferedSound(this.audioContext);
 
-            logger.timeStart('audio-data-load');
+            logger.time('audio-data-load');
 
             sound.on('load', () => {
                 logger.timeEnd('audio-data-load', 'Audio data loaded.');
@@ -308,15 +396,14 @@ class Application extends EventEmitter {
     }
 
     saveVideo(filename, options, callback) {
-        let player = this.player,
-            sound = player.getSound('audio');
+        if (this.hasAudio()) {
+            logger.time('video-render');
 
-        if (sound) {
             let renderer = this.renderer = new VideoRenderer(filename, this.audioFile, options);
 
             // Setup before rendering
             this.stopRender();
-            player.stop('audio');
+            this.stopAudio();
 
             // Handle events
             renderer.on('ready', () => {
@@ -326,13 +413,12 @@ class Application extends EventEmitter {
             });
 
             renderer.on('complete', () => {
-                logger.log('Render complete.');
+                logger.timeEnd('video-render', 'Render complete.');
 
                 if (callback) callback();
 
                 this.bufferSource = null;
                 this.renderer = null;
-                player.stop('audio');
 
                 this.startRender();
             });
@@ -384,70 +470,7 @@ class Application extends EventEmitter {
             });
         }
     }
-
-    getFrameData(forceUpdate) {
-        let data = this.frameData,
-            update = !!forceUpdate || this.player.isPlaying();
-
-        data.fft = this.spectrum.getFrequencyData(update);
-        data.td = this.spectrum.getTimeData(update);
-        data.hasUpdate = update;
-
-        return data;
-    }
-
-    updateFPS(now) {
-        let stats = this.stats;
-
-        if (!stats.time) {
-            stats.time = now;
-        }
-
-        stats.frames += 1;
-
-        if (now > stats.time + FPS_POLL_INTERVAL) {
-            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
-            stats.ms = (now - stats.time) / stats.frames;
-            stats.time = now;
-            stats.frames = 0;
-            stats.stack.copyWithin(1, 0);
-            stats.stack[0] = stats.fps;
-
-            events.emit('tick', stats);
-        }
-    }
-
-    updateAnalyzer() {
-        let spectrum = this.spectrum,
-            sound = this.player.getSound('audio');
-
-        if (sound) {
-            if (!sound.paused) {
-                spectrum.clearFrequencyData();
-                spectrum.clearTimeData();
-            }
-        }
-    }
-
-    menuAction(menuItem) {
-        events.emit('menu-action', menuItem.action);
-    }
-
-    resetChanges() {
-        this.stage.resetChanges();
-    }
-
-    checkForUpdates() {
-        this.updater.checkForUpdates();
-    }
-
-    isRendering() {
-        return this.rendering;
-    }
-
-    hasAudio() {
-        return !!this.player.getSound('audio');
-    }
+    //endregion
 }
 
 export default new Application();

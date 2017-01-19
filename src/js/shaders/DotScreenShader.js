@@ -1,11 +1,11 @@
-import * as THREE from 'three';
+import { Vector2 } from 'three';
 import glsl from '../lib/glsl';
 
 export default {
     uniforms: {
         tDiffuse: { type: 't', value: null },
-        tSize: { type: 'v2', value: new THREE.Vector2(256, 256) },
-        center: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
+        tSize: { type: 'v2', value: new Vector2(256, 256) },
+        center: { type: 'v2', value: new Vector2(0.5, 0.5) },
         angle: { type: 'f', value: 1.57 },
         scale: { type: 'f', value: 1.0 }
     },

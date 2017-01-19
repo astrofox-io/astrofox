@@ -54,10 +54,9 @@ export default class Logger {
         }
     }
 
-    timeStart(id, msg) {
+    time(id) {
         if (process.env.NODE_ENV !== 'production') {
             this.timers[id] = window.performance.now();
-            if (msg) this.log(msg);
         }
     }
 

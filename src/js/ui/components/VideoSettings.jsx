@@ -38,13 +38,12 @@ export default class VideoSettings extends UIComponent {
     }
 
     componentDidMount() {
-        let player = Application.player,
-            sound = player.getSound('audio');
+        let audio = Application.getAudio();
 
-        player.stop('audio');
+        Application.stopAudio();
 
-        if (sound) {
-            this.setState({ timeEnd: sound.getDuration() });
+        if (audio) {
+            this.setState({ timeEnd: audio.getDuration() });
         }
     }
 
@@ -96,12 +95,12 @@ export default class VideoSettings extends UIComponent {
             files => {
                 if (files) {
                     Application.loadAudioFile(files[0]).then(() => {
-                        let sound = Application.player.getSound('audio');
+                        let audio = Application.getAudio();
 
                         this.setState({
                             audioFile: Application.audioFile,
                             timeStart: 0,
-                            timeEnd: sound.getDuration()
+                            timeEnd: audio.getDuration()
                         });
                     });
                 }
@@ -112,8 +111,8 @@ export default class VideoSettings extends UIComponent {
 
     render() {
         const state = this.state,
-            sound = Application.player.getSound('audio'),
-            max = (sound) ? sound.getDuration() : 0,
+            audio = Application.getAudio(),
+            max = (audio) ? audio.getDuration() : 0,
             canStart = (state.videoFile && state.audioFile),
             onStart = canStart ? this.onStart: null;
 

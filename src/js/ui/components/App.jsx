@@ -280,7 +280,7 @@ export default class App extends UIComponent {
         Application.loadAudioFile(file).then(() => {
             showLoading(false);
 
-            Application.player.play('audio');
+            Application.playAudio();
         })
             .catch(() => {
                 showLoading(false);
