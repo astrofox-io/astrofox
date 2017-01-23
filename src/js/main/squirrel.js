@@ -1,7 +1,9 @@
-const path = require('path');
-const spawn = require('child_process').spawn;
-const app = require('electron').app;
-const log = require('debug')('squirrel');
+import path from 'path';
+import { spawn } from 'child_process';
+import { app } from 'electron';
+import debug from 'debug';
+
+const log = debug('squirrel');
 
 let run = function(args, done) {
     let updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
@@ -13,7 +15,7 @@ let run = function(args, done) {
     }).on('close', done);
 };
 
-let check = function() {
+export default function check() {
     if (process.platform === 'win32') {
         let cmd = process.argv[1];
 
@@ -35,6 +37,4 @@ let check = function() {
         }
     }
     return false;
-};
-
-module.exports = check;
+}

@@ -1,86 +1,31 @@
-// hack
-if (process.env.NODE_ENV !== 'production') {
-    delete process.env.DEBUG_FD;
-}
+import electron from 'electron';
+import fs from 'fs';
+import debug from 'debug';
+import squirrel from './squirrel';
+import * as env from './environment';
+import { createWindow, disposeWindow } from './window';
 
-const electron = require('electron');
-const path = require('path');
-const url = require('url');
-const squirrel = require('./squirrel');
-const log = require('debug')('main');
-const { app, BrowserWindow, globalShortcut, systemPreferences } = electron;
-
+// Check for updates via squirrel
 if (squirrel()) {
     process.exit();
 }
 
-let mainWindow = null;
+const { app, globalShortcut, systemPreferences } = electron;
+const log = debug('main');
 
-function createWindow() {
-    // Create window
-    mainWindow = new BrowserWindow({
-        show: false,
-        width: 1320,
-        height: 1200,
-        minWidth: 200,
-        minHeight: 100,
-        frame: false,
-        backgroundColor: '#222222',
-        webPreferences: {
-            webSecurity: false,
-            webgl: true,
-            textAreasAreResizable: false,
-            experimentalCanvasFeatures: true,
-            backgroundThrottling: false,
-            devTools: (process.env.NODE_ENV !== 'production')
-        },
-        titleBarStyle: 'hidden-inset'
-    });
+// Set global variables
+global['env'] = env;
 
-    // Production settings
-    if (process.env.NODE_ENV === 'production') {
-        // Auto close devtools if opened
-        mainWindow.webContents.on('devtools-opened', () => {
-            mainWindow.webContents.closeDevTools();
-        });
+// Create temp folder for application
+function createTempFolder() {
+    try {
+        fs.mkdirSync(env.TEMP_PATH);
+        log('Temp folder created:', env.TEMP_PATH);
     }
-
-    // Load index page
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'browser', 'index.html'),
-        protocol: 'file',
-        slashes: true
-    }));
-
-    // Show window when DOM ready
-    mainWindow.webContents.on('dom-ready', () => {
-        log('dom-ready');
-        showWindow();
-    });
-
-    // Show window only when ready
-    mainWindow.on('ready-to-show', () => {
-        log('ready-to-show');
-        showWindow();
-    });
-
-    // Window close
-    mainWindow.on('close', () => {
-        log('close');
-        mainWindow = null;
-    });
-
-    mainWindow.on('closed', () => {
-        log('closed');
-        mainWindow = null;
-    });
-}
-
-function showWindow() {
-    mainWindow.show();
-
-    if (process.env.NODE_ENV !== 'production') {
-        mainWindow.webContents.openDevTools();
+    catch(err) {
+        if (err.code !== 'EEXIST') {
+            log('ERROR:', err.message);
+        }
     }
 }
 
@@ -115,13 +60,15 @@ app.on('ready', () => {
         systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true);
     }
 
+    createTempFolder();
+
     createWindow();
 });
 
 app.on('window-all-closed', () => {
     log('window-all-closed');
 
-    mainWindow = null;
+    disposeWindow();
 
     if (process.platform !== 'darwin') {
         app.quit();
@@ -131,9 +78,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     log('activate');
 
-    if (mainWindow === null) {
-        createWindow();
-    }
+    createWindow();
 });
 
 app.on('will-quit', () => {

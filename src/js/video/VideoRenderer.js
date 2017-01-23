@@ -5,7 +5,7 @@ import RenderProcess from './RenderProcess';
 import AudioProcess from './AudioProcess';
 import MergeProcess from './MergeProcess';
 import { logger } from '../core/Global';
-import { removeFile } from '../core/IO';
+import { removeFile } from '../util/io';
 import { TEMP_PATH, FFMPEG_PATH } from '../core/Environment';
 import { uniqueId } from '../util/crypto';
 

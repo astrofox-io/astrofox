@@ -1,9 +1,9 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
 
-import { APP_VERSION, APP_CONFIG_FILE, TEMP_PATH, DEFAULT_PROJECT, UPDATE_SERVER_URL } from './Environment';
+import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, UPDATE_SERVER_URL } from './Environment';
 import { events, logger, raiseError } from './Global';
-import * as IO from './IO';
+import * as IO from '../util/io';
 import EventEmitter from './EventEmitter';
 import AppUpdater from './AppUpdater';
 import Player from '../audio/Player';
@@ -81,9 +81,6 @@ class Application extends EventEmitter {
     init() {
         // Load config file
         this.loadConfigFile();
-
-        // Create temp folder
-        IO.createFolder(TEMP_PATH);
 
         // Create menu
         menuConfig.forEach(root => {
@@ -275,6 +272,8 @@ class Application extends EventEmitter {
     loadAudioFile(file) {
         this.stopAudio();
 
+        logger.time('audio-file-load');
+
         return IO.readFileAsBlob(file)
             .then(blob => {
                 return IO.readAsArrayBuffer(blob);
@@ -285,6 +284,8 @@ class Application extends EventEmitter {
             .then(() => {
                 this.audioFile = file;
                 this.loadAudioTags(file);
+
+                logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
 
                 return file;
             })

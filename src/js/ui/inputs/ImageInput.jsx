@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Window from '../../core/Window';
-import * as IO from '../../core/IO';
+import * as IO from '../../util/io';
 
 import BLANK_IMAGE from '../../../images/data/BlankGif.json';
 
