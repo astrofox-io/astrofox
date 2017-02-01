@@ -1,17 +1,12 @@
-import electron from 'electron';
+import { app, globalShortcut, systemPreferences, ipcMain } from 'electron';
 import fs from 'fs';
 import debug from 'debug';
-import squirrel from './squirrel';
 import * as env from './environment';
+import AppUpdater from './autoupdate';
 import { createWindow, disposeWindow } from './window';
 
-// Check for updates via squirrel
-if (squirrel()) {
-    process.exit();
-}
-
-const { app, globalShortcut, systemPreferences } = electron;
 const log = debug('main');
+const updater = new AppUpdater();
 
 // Set global variables
 global['env'] = env;
@@ -51,6 +46,7 @@ if (process.env.NODE_ENV !== 'production') {
     app.commandLine.appendSwitch('enable-precise-memory-info');
 }
 
+// Application events
 app.on('ready', () => {
     log('ready');
 
@@ -85,4 +81,16 @@ app.on('will-quit', () => {
     log('will-quit');
 
     globalShortcut.unregisterAll();
+});
+
+// IPC events
+
+ipcMain.on('check-for-updates', event => {
+    updater.checkForUpdates().then(res => {
+        event.sender.send('check-for-updates-response', res);
+    });
+});
+
+ipcMain.on('quit-and-install', () => {
+    updater.quitAndInstall();
 });

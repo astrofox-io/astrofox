@@ -31,21 +31,28 @@
     },
     "win": {
       "target": [
-        "squirrel"
+        "nsis"
       ]
     },
     "linux": {
       "category": "AudioVideo"
     },
+    "nsis": {
+      "oneClick": true
+    },
     "squirrelWindows": {
       "iconUrl": "http://astrofox.io/icon.ico"
+    },
+    "publish": {
+      "provider": "generic",
+      "url": "https://astrofox.io/download",
+      "channel": "latest"
     }
   },
   "dependencies": {
-    "ansi-styles": "^3.0.0",
     "classnames": "^2.2.5",
-    "color-convert": "^1.9.0",
     "debug": "^2.6.0",
+    "del": "^2.2.2",
     "id3js": "^1.1.3",
     "immutable": "^3.8.1",
     "mime": "^1.3.4",
@@ -53,7 +60,6 @@
     "react": "^15.4.2",
     "react-addons-css-transition-group": "^15.4.2",
     "react-dom": "^15.4.2",
-    "rimraf": "^2.5.4",
     "three": "^0.84.0",
     "tinycolor2": "^1.4.1"
   },
@@ -65,11 +71,9 @@
     "babel-preset-es2015-node6": "^0.4.0",
     "babel-preset-react": "^6.22.0",
     "babili": "^0.0.10",
-    "del": "^2.2.2",
     "electron": "^1.4.15",
-    "electron-auto-updater": "^1.0.0",
-    "electron-builder": "^11.4.4",
-    "electron-builder-squirrel-windows": "^11.5.0",
+    "electron-builder": "^12.0.3",
+    "electron-updater": "^1.3.2",
     "eslint": "^3.14.0",
     "eslint-plugin-react": "^6.9.0",
     "gulp": "^3.9.1",
@@ -84,6 +88,6 @@
     "gulp-sourcemaps": "^2.3.1",
     "gulp-template": "^4.0.0",
     "gulp-util": "^3.0.8",
-    "webpack": "2.2.0"
+    "webpack": "^2.2.1"
   }
 }

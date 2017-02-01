@@ -20,9 +20,9 @@ const ModalWindow = (props) => {
         <div className="modal">
             <div className="background" />
             <div className="modal-window">
+                {closeButton}
                 <div className="header">
                     {props.title}
-                    {closeButton}
                 </div>
                 <div className="body">
                     {props.children}

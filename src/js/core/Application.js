@@ -1,7 +1,7 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
 
-import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, UPDATE_SERVER_URL } from './Environment';
+import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
 import { events, logger, raiseError } from './Global';
 import * as IO from '../util/io';
 import EventEmitter from './EventEmitter';
@@ -27,7 +27,7 @@ class Application extends EventEmitter {
         this.player = new Player(this.audioContext);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.stage = new Stage();
-        this.updater = new AppUpdater(UPDATE_SERVER_URL);
+        this.updater = new AppUpdater();
 
         this.audioFile = '';
         this.projectFile = '';
@@ -117,10 +117,6 @@ class Application extends EventEmitter {
 
     resetChanges() {
         this.stage.resetChanges();
-    }
-
-    checkForUpdates() {
-        this.updater.checkForUpdates();
     }
 
     isRendering() {

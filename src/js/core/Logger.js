@@ -66,9 +66,10 @@ export default class Logger {
             if (timer) {
                 let t = (window.performance.now() - timer) / 1000,
                     val = (t < 1) ? ~~(t*1000) : t.toFixed(2),
-                    ms = (t < 1) ? 'ms' : 'sec';
+                    ms = (t < 1) ? 'ms' : 'sec',
+                    f = (typeof msg === 'object') ? '%o' : '%s';
 
-                this.output(console.log, ['%s %c+%s', msg, 'color:green;', val + ms]);
+                this.output(console.log, [f + ' %c+%s', msg, 'color:green;', val + ms]);
 
                 return t;
             }

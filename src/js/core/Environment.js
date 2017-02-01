@@ -8,6 +8,5 @@ export const {
     TEMP_PATH,
     FFMPEG_PATH,
     APP_CONFIG_FILE,
-    DEFAULT_PROJECT,
-    UPDATE_SERVER_URL
+    DEFAULT_PROJECT
 } = remote.getGlobal('env');

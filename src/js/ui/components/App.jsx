@@ -175,7 +175,7 @@ export default class App extends UIComponent {
             case 'about':
                 this.showModal(
                     <About key="about"/>,
-                    {title: 'ABOUT'}
+                    {title: 'ABOUT', buttons: ['Close']}
                 );
                 break;
         }

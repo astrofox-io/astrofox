@@ -1,13 +1,11 @@
-import electron from 'electron';
+import { BrowserWindow } from 'electron';
 import path from 'path';
 import url from 'url';
 import debug from 'debug';
 
 const log = debug('window');
 
-const { BrowserWindow } = electron;
-
-let mainWindow = null;
+export let mainWindow = null;
 
 export function createWindow() {
     if (mainWindow !== null) return;
