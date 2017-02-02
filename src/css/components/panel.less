@@ -2,7 +2,7 @@
     display: flex;
     position: relative;
     overflow: hidden;
-    background-color: @bg-color1;
+    background-color: @bg-color2;
 
     &.vertical {
         flex-direction: column;
@@ -24,7 +24,7 @@
         height: 24px;
         line-height: 24px;
         margin-left: 10px;
-        color: @text-color1;
+        color: @text-color2;
         cursor: default;
         flex-shrink: 0;
     }
@@ -32,7 +32,7 @@
     .button-panel {
         padding: 5px;
         width: 100%;
-        background-color: @bg-color;
+        background-color: @bg-color1;
         border-top: 1px solid @border-top-color;
         border-bottom: 1px solid @border-bottom-color;
         overflow: hidden;
@@ -56,8 +56,8 @@
 }
 
 .splitter {
-    color: @text-color1;
-    background-color: darken(@bg-color1, 3%);
+    color: @text-color2;
+    background-color: darken(@bg-color2, 3%);
 
     &.horizontal {
         height: 5px;

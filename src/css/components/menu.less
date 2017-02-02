@@ -1,7 +1,7 @@
 .menubar {
     font-size: @font-normal;
-    color: @text-color1;
-    background-color: @bg-color2;
+    color: @text-color2;
+    background-color: @bg-color3;
     padding-left: 20px;
     height: 20px;
     position: relative;
@@ -18,13 +18,13 @@
         position: relative;
 
         &.active {
-            color: @base-color;
-            background-color: darken(@bg-color2, 6%);
+            color: @color1;
+            background-color: darken(@bg-color3, 6%);
         }
 
         &:hover {
             cursor: default;
-            color: @base-color;
+            color: @color1;
         }
     }
 
@@ -34,7 +34,7 @@
         left: 0;
         list-style: none;
         z-index: 1;
-        background-color: darken(@bg-color2, 6%);
+        background-color: darken(@bg-color3, 6%);
         border: 1px solid darken(@border-color, 6%);
         overflow: hidden;
 
@@ -46,8 +46,8 @@
             min-width: 140px;
 
             &:hover {
-                color: @text-color;
-                background-color: @base-color;
+                color: @text-color1;
+                background-color: @color1;
                 cursor: default;
             }
         }
@@ -57,7 +57,7 @@
 
             &:after {
                 content: "\0020";
-                border-top: 1px solid @base-color;
+                border-top: 1px solid @color1;
                 display: block;
             }
 
@@ -68,22 +68,22 @@
 
         .checked:before {
             content: "\2713";
-            color: @base-color;
+            color: @color1;
             position: absolute;
             top: 5px;
             left: 5px;
         }
 
         .checked:hover:before {
-            color: @text-color;
+            color: @text-color1;
         }
 
         .disabled {
-            color: @text-color2;
+            color: @text-color3;
         }
 
         .disabled:hover {
-            color: @text-color2;
+            color: @text-color3;
             background-color: transparent;
         }
     }

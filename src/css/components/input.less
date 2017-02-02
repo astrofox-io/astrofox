@@ -1,20 +1,20 @@
 .input-field {
     font-size: @font-small;
-    color: @text-color;
+    color: @text-color1;
     line-height: 20px;
-    background-color: @bg-color1;
+    background-color: @bg-color2;
     border: 1px solid @border-color;
     border-radius: 2px;
     padding: 0 3px;
     outline: none;
 
     &:focus {
-        border: 1px solid @base-color;
+        border: 1px solid @color1;
     }
 
     &:read-only {
         border-color: @border-color;
-        color: darken(@text-color, 60%);
+        color: darken(@text-color1, 60%);
     }
 
     &.fill {
@@ -32,10 +32,10 @@
     position: relative;
 
     .input-field {
-        color: @text-color;
+        color: @text-color1;
 
         &:focus {
-            border: 1px solid @base-color;
+            border: 1px solid @color1;
         }
     }
 
@@ -47,8 +47,8 @@
         right: 7px;
         height: 5px;
         width: 5px;
-        border-top: 1px solid @base-color;
-        border-right: 1px solid @base-color;
+        border-top: 1px solid @color1;
+        border-right: 1px solid @color1;
         pointer-events: none;
     }
 }
@@ -58,7 +58,7 @@
     top: 22px;
     z-index: 100;
     list-style: none;
-    background-color: @bg-color1;
+    background-color: @bg-color2;
 
     .input-option {
         font-size: @font-small;
@@ -67,7 +67,7 @@
 
         &:hover {
             cursor: default;
-            background-color: @base-color;
+            background-color: @color1;
         }
     }
 
@@ -76,7 +76,7 @@
 
         &:after {
             content: "\0020";
-            border-top: 1px solid @base-color;
+            border-top: 1px solid @color1;
             display: block;
         }
 
@@ -117,7 +117,7 @@
         height: 4px;
         width: 100%;
         border-radius: 4px;
-        background: lighten(@bg-color1, 10%);
+        background: lighten(@bg-color2, 10%);
         .absolute-center();
     }
 
@@ -125,7 +125,7 @@
         height: 4px;
         width: 100%;
         border-radius: 4px;
-        background: @base-color;
+        background: @color1;
         .absolute-left();
     }
 
@@ -145,7 +145,7 @@
         height: 4px;
         width: 100%;
         border-radius: 4px;
-        background: @base-color;
+        background: @color1;
         .absolute-left();
     }
 
@@ -164,7 +164,7 @@
     height: 17px;
     width: 32px;
     border-radius: 17px;
-    background-color: @bg-color1;
+    background-color: @bg-color2;
     border: 1px solid @border-color;
     transition: background-color 0.25s;
 
@@ -173,7 +173,7 @@
         width: 15px;
         height: 15px;
         border-radius: 15px;
-        background-color: @text-color;
+        background-color: @text-color1;
         border: 1px solid lighten(@border-color, 20%);
         box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
         transition: left 0.25s;
@@ -182,7 +182,7 @@
 }
 
 .input-toggle-on {
-    background-color: @base-color;
+    background-color: @color1;
 
     &:before {
         left: 15px;
@@ -192,7 +192,7 @@
 .input-image {
     height: 100px;
     width: 100px;
-    background-color: @bg-color1;
+    background-color: @bg-color2;
     border: 1px solid @border-color;
     border-radius: 2px;
     position: relative;
@@ -216,7 +216,7 @@
 }
 
 .input-image-icon {
-    color: @text-color;
+    color: @text-color1;
     font-size: 24px;
     text-align: center;
     line-height: 100px;
@@ -236,11 +236,11 @@
 
 .input-link {
     margin-left: 8px;
-    color: darken(@text-color, 50%);
+    color: darken(@text-color1, 50%);
 }
 
 .input-link-on {
-    color: darken(@text-color, 10%);
+    color: darken(@text-color1, 10%);
 }
 
 .input-file {
@@ -255,30 +255,30 @@
 }
 
 .input-button {
-    color: @text-color;
+    color: @text-color1;
     padding: 0 5px;
     line-height: 20px;
     min-width: 20px;
     margin-right: 5px;
     text-align: center;
     border: 1px solid @border-color;
-    background-color: @bg-color1;
+    background-color: @bg-color2;
     border-radius: 2px;
     display: inline-block;
 
     &:hover {
-        background-color: @base-color;
+        background-color: @color1;
     }
 }
 
 .input-button-disabled {
-    color: darken(@text-color, 60%);
+    color: darken(@text-color1, 60%);
 
     &:hover {
-        background-color: @bg-color1;
+        background-color: @bg-color2;
     }
 }
 
 .input-normal-text {
-    color: @text-color !important;
+    color: @text-color1 !important;
 }

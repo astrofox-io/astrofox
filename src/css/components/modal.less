@@ -77,7 +77,7 @@
 
     &>.header {
         position: relative;
-        background-color: @bg-color1;
+        background-color: @bg-color2;
         padding: 10px;
         text-align: center;
         letter-spacing: 2px;
@@ -88,31 +88,31 @@
     &>.body {
         position: relative;
         min-height: 100px;
-        background-color: @bg-color;
+        background-color: @bg-color1;
         display: flex;
         flex-direction: column;
     }
 
     &>.buttons {
-        background-color: @bg-color;
+        background-color: @bg-color1;
         text-align: center;
     }
 
     .button {
         display: inline-block;
-        background-color: @base-color;
+        background-color: @color1;
         padding: 8px 10px;
         border-radius: 3px;
         margin: 10px 5px;
         cursor: default;
 
         &:hover {
-            background-color: lighten(@base-color, 3%);
+            background-color: lighten(@color1, 3%);
         }
 
         &.disabled {
-            color: @text-color1;
-            background-color: @bg-color1;
+            color: @text-color2;
+            background-color: @bg-color2;
         }
     }
 
@@ -129,8 +129,8 @@
         z-index: 4;
 
         &:hover {
-            color: darken(@text-color, 10%);
-            background-color: @base-color;
+            color: darken(@text-color1, 10%);
+            background-color: @color1;
         }
     }
 

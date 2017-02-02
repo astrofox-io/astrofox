@@ -7,7 +7,7 @@
 
 .controls {
     .control {
-        background-color: @bg-color;
+        background-color: @bg-color1;
         border-top: 1px solid @border-top-color;
         border-bottom: 1px solid @border-bottom-color;
         padding-bottom: 16px;
@@ -21,8 +21,8 @@
 
             .label {
                 font-size: @font-small;
-                color: @text-color1;
-                text-shadow: 1px 1px 0 darken(@text-color1, 50%);
+                color: @text-color2;
+                text-shadow: 1px 1px 0 darken(@text-color2, 50%);
                 line-height: 20px;
             }
         }
@@ -37,7 +37,7 @@
 
             .label {
                 font-size: @font-small;
-                color: @text-color;
+                color: @text-color1;
                 display: inline-block;
                 line-height: 20px;
                 margin-right: 8px;
@@ -58,7 +58,7 @@
             }
 
             .unit {
-                color: @text-color1;
+                color: @text-color2;
                 font-size: @font-small;
                 margin: 0 8px 0 -4px;
             }
@@ -81,7 +81,7 @@
 
     .control-active {
         .control {
-            border-top: 1px solid @base-color;
+            border-top: 1px solid @color1;
         }
     }
 }

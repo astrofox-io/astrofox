@@ -1631,38 +1631,31 @@ electron-builder-core@11.2.1:
   version "11.2.1"
   resolved "https://registry.yarnpkg.com/electron-builder-core/-/electron-builder-core-11.2.1.tgz#1dca8c1a1cee8b51750b7708a04913aeffacf8a8"
 
-electron-builder-http@12.0.2, electron-builder-http@~12.0.2:
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-12.0.2.tgz#47e83e8646786d93ac0584a694a4a5c021051c28"
-  dependencies:
-    debug "2.6.0"
-    fs-extra-p "^3.1.0"
-
-electron-builder-http@12.1.0:
+electron-builder-http@12.1.0, electron-builder-http@~12.1.0:
   version "12.1.0"
   resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-12.1.0.tgz#4469498f36a5c7af74a94c637b4d874ca1300b7e"
   dependencies:
     debug "2.6.0"
     fs-extra-p "^3.1.0"
 
-electron-builder-util@12.0.2:
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/electron-builder-util/-/electron-builder-util-12.0.2.tgz#c6f51e3973dc399830f1c75ef03d371843263327"
+electron-builder-util@12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-util/-/electron-builder-util-12.1.0.tgz#2d2ef87ba54710cc35caa1a0d3b80dcc4f52eb30"
   dependencies:
     "7zip-bin" "^2.0.4"
     bluebird-lst-c "^1.0.6"
     chalk "^1.1.3"
     debug "2.6.0"
-    electron-builder-http "~12.0.2"
+    electron-builder-http "~12.1.0"
     fs-extra-p "^3.1.0"
     is-ci "^1.0.10"
     node-emoji "^1.5.1"
-    source-map-support "^0.4.10"
+    source-map-support "^0.4.11"
     stat-mode "^0.2.2"
 
-electron-builder@^12.0.3:
-  version "12.0.3"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-12.0.3.tgz#3e9526ab39c47f9893104662ab94386036f40078"
+electron-builder@^12.2.2:
+  version "12.2.2"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-12.2.2.tgz#f26979e27bd9232acf8f8de720816186ddf36470"
   dependencies:
     "7zip-bin" "^2.0.4"
     asar-electron-builder "^0.13.5"
@@ -1671,8 +1664,8 @@ electron-builder@^12.0.3:
     chromium-pickle-js "^0.2.0"
     cuint "^0.2.2"
     electron-builder-core "11.2.1"
-    electron-builder-http "12.0.2"
-    electron-builder-util "12.0.2"
+    electron-builder-http "12.1.0"
+    electron-builder-util "12.1.0"
     electron-download-tf "3.1.0"
     electron-macos-sign "~1.5.0"
     fs-extra-p "^3.1.0"
@@ -4538,15 +4531,9 @@ source-map-resolve@^0.3.0:
     source-map-url "~0.3.0"
     urix "~0.1.0"
 
-source-map-support@^0.4.10, source-map-support@^0.4.11:
+source-map-support@^0.4.11, source-map-support@^0.4.2:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.11.tgz#647f939978b38535909530885303daf23279f322"
-  dependencies:
-    source-map "^0.5.3"
-
-source-map-support@^0.4.2:
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.10.tgz#d7b19038040a14c0837a18e630a196453952b378"
   dependencies:
     source-map "^0.5.3"
 
