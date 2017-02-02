@@ -6,7 +6,7 @@ import Application from '../../core/Application';
 import Window from '../../core/Window';
 
 import NumberInput from '../inputs/NumberInput.jsx';
-import DualRangeInput from '../inputs/DualRangeInput.jsx';
+import TimeInput from '../inputs/TimeInput.jsx';
 import SelectInput from '../inputs/SelectInput.jsx';
 import TextInput from '../inputs/TextInput.jsx';
 import Button from '../inputs/Button.jsx';
@@ -52,11 +52,7 @@ export default class VideoSettings extends UIComponent {
 
         obj[name] = val;
 
-        if (name === 'timeRange') {
-            obj.timeStart = val.start;
-            obj.timeEnd = val.end;
-        }
-        else if (name === 'format' && this.state.videoFile) {
+        if (name === 'format' && this.state.videoFile) {
             obj.videoFile = replaceExt(this.state.videoFile, '.' + val);
         }
 
@@ -177,40 +173,27 @@ export default class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                     </Row>
-                    <Row label="Time Range">
-                        <NumberInput
+                    <Row label="Start Time">
+                        <TimeInput
                             name="timeStart"
-                            width={60}
+                            width={80}
                             min={0}
-                            max={max}
-                            step={0.025}
+                            max={state.timeEnd}
                             value={state.timeStart}
-                            onChange={this.onChange}
-                        />
-                        <div className="input flex">
-                            <DualRangeInput
-                                name="timeRange"
-                                min={0}
-                                max={max}
-                                step={0.025}
-                                start={state.timeStart}
-                                end={state.timeEnd}
-                                minRange={1}
-                                onChange={this.onChange}
-                            />
-                        </div>
-                        <NumberInput
-                            name="timeEnd"
-                            width={60}
-                            min={0}
-                            max={max}
-                            step={0.025}
-                            value={state.timeEnd}
+                            readOnly={!audio}
                             onChange={this.onChange}
                         />
                     </Row>
-                    <Row label=" ">
-                        {formatTime(state.timeStart, true, true)} - {formatTime(state.timeEnd, true, true)}
+                    <Row label="End Time">
+                        <TimeInput
+                            name="timeEnd"
+                            width={80}
+                            min={0}
+                            max={max}
+                            value={state.timeEnd}
+                            readOnly={!audio}
+                            onChange={this.onChange}
+                        />
                     </Row>
                 </Settings>
                 <div className="buttons">

@@ -23,19 +23,16 @@ export function formatSize(val, decimals) {
 }
 
 export function formatTime(val, pad, ms) {
-    let time = Math.ceil(val);
-    let hours = Math.floor(time / 3600);
-    let minutes = Math.floor((time - (hours * 3600)) / 60);
-    let seconds = time - (hours * 3600) - (minutes * 60);
-    let milliseconds = val - Math.floor(val);
+    let hours = ~~(val / 3600);
+    let minutes = ~~((val - (hours * 3600)) / 60);
+    let seconds = ~~val - (hours * 3600) - (minutes * 60);
+    let milliseconds = Math.round((val - ~~val) * 1000) / 1000;
 
     if (hours < 10 && pad) hours = '0' + hours;
     if (minutes < 10 && pad) minutes = '0' + minutes;
     if (seconds < 10) seconds = '0' + seconds;
 
-    let format = minutes + ':' + seconds;
-
-    if (hours > 0) format = hours + ':' + format;
+    let format = ((hours > 0) ? hours + ':' : '') + minutes + ':' + seconds;
 
     if (ms) format += '.' + padLeft((milliseconds + '').substr(2, 3), 3);
 

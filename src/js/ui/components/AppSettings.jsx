@@ -25,7 +25,7 @@ export default class AppSettings extends UIComponent {
     }
 
     onSave() {
-        Application.saveConfig(this.state, () => {
+        Application.saveConfigFile(this.state, () => {
             this.props.onClose();
         });
     }

@@ -25,7 +25,6 @@ export default class NumberInput extends UIComponent {
 
     onKeyUp(e) {
         e.stopPropagation();
-        e.preventDefault();
 
         // Enter key
         if (e.keyCode === 13) {
@@ -35,7 +34,6 @@ export default class NumberInput extends UIComponent {
 
     onBlur(e) {
         e.stopPropagation();
-        e.preventDefault();
 
         this.checkValue();
     }
@@ -65,21 +63,22 @@ export default class NumberInput extends UIComponent {
     }
 
     checkValue() {
-        let val = this.state.value;
+        let val = this.state.value,
+            props = this.props;
 
-        if (this.props.value !== val) {
+        if (props.value !== val) {
             let regex = /^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
             // If valid number
             if (regex.test(val)) {
-                val = this.setValue(val, this.props);
+                val = this.setValue(val, props);
 
                 // Send new value to parent
-                this.props.onChange(this.props.name, val);
+                props.onChange(props.name, val);
             }
             // Reset to old value
             else {
-                this.setValue(this.props.value, this.props);
+                this.setValue(props.value, props);
             }
         }
     }
