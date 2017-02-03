@@ -2,7 +2,7 @@ import React from 'react';
 
 import UIComponent from '../UIComponent';
 import TextInput from './TextInput.jsx';
-import { formatTime } from '../../util/format';
+import { formatSeekTime } from '../../util/format';
 import { clamp } from '../../util/math.js';
 
 export default class TimeInput extends UIComponent {
@@ -60,7 +60,7 @@ export default class TimeInput extends UIComponent {
                 size={props.size}
                 buffered={true}
                 readOnly={props.readOnly}
-                value={formatTime(this.state.value, true, true)}
+                value={formatSeekTime(this.state.value)}
                 onChange={this.onChange}
             />
         );

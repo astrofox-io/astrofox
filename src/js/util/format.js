@@ -22,19 +22,37 @@ export function formatSize(val, decimals) {
     return Math.round(val * precision / Math.pow(1024, i)) / precision + ' ' + sizes[i];
 }
 
-export function formatTime(val, pad, ms) {
-    let hours = ~~(val / 3600);
-    let minutes = ~~((val - (hours * 3600)) / 60);
-    let seconds = ~~val - (hours * 3600) - (minutes * 60);
-    let milliseconds = Math.round((val - ~~val) * 1000) / 1000;
+export function parseTime(val) {
+    let days = ~~(val / 86400),
+        hours = ~~(val / 3600) - (days * 24),
+        minutes = ~~(val / 60) - (days * 1440) - (hours * 60),
+        seconds = ~~val - (days * 86400) - (hours * 3600) - (minutes * 60),
+        ms = Math.round((val - ~~val) * 1000);
 
-    if (hours < 10 && pad) hours = '0' + hours;
-    if (minutes < 10 && pad) minutes = '0' + minutes;
-    if (seconds < 10) seconds = '0' + seconds;
+    return {
+        days, hours, minutes, seconds, ms
+    };
+}
 
-    let format = ((hours > 0) ? hours + ':' : '') + minutes + ':' + seconds;
+export function formatTime(val, options) {
+    let t = '',
+        formats = options || ['m','ms'],
+        { days, hours, minutes, seconds, ms } = parseTime(val);
 
-    if (ms) format += '.' + padLeft((milliseconds + '').substr(2, 3), 3);
+    if (days > 0 && 'd' in formats) t += days + 'd';
+    if (hours > 0 && 'h' in formats) t += hours + 'h';
+    if (minutes > 0 && 'm' in formats) t += minutes + 'm';
+    if (seconds > 0 && 's' in formats) t += seconds + 's';
+    if (ms > 0 && 'ms' in formats) t += ms + 'ms';
 
-    return format;
+    return t;
+}
+
+export function formatSeekTime(val) {
+    let { hours, minutes, seconds, ms } = parseTime(val);
+
+    return (hours > 0 ? (hours < 10 ? '0'+hours : hours) + ':' : '') +
+        (minutes < 10 ? '0'+minutes : minutes) + ':' +
+        (seconds < 10 ? '0'+seconds : seconds) + '.' +
+        (ms == 0 ? '000' : ms);
 }

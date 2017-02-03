@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
-import { formatTime } from '../../util/format';
+import { parseTime, padLeft } from '../../util/format';
 
 import RangeInput from '../inputs/RangeInput.jsx';
 
@@ -247,8 +247,10 @@ const LoopButton = (props) => {
 };
 
 const TimeInfo = (props) => {
-    let currentTime = formatTime(props.currentTime);
-    let totalTime = formatTime(props.totalTime);
+    let current = parseTime(props.currentTime),
+        total = parseTime(props.totalTime),
+        currentTime = current.minutes + ':' + padLeft(current.seconds, 2),
+        totalTime = total.minutes + ':' + padLeft(total.seconds, 2);
 
     return (
         <div className="time-info">

@@ -60,16 +60,15 @@ export default class Logger {
         }
     }
 
-    timeEnd(id, msg) {
+    timeEnd(id) {
         if (process.env.NODE_ENV !== 'production') {
             let timer = this.timers[id];
             if (timer) {
                 let t = (window.performance.now() - timer) / 1000,
-                    val = (t < 1) ? ~~(t*1000) : t.toFixed(2),
-                    ms = (t < 1) ? 'ms' : 'sec',
-                    f = (typeof msg === 'object') ? '%o' : '%s';
+                    val = (t < 1) ? ~~(t*1000)+'ms' : t.toFixed(2)+'s',
+                    args = Array.prototype.slice.call(arguments, 1);
 
-                this.output(console.log, [f + ' %c+%s', msg, 'color:green;', val + ms]);
+                this.output(console.log, ['%c+%s', 'color:green;', val].concat(args));
 
                 return t;
             }
