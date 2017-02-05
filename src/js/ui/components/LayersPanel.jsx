@@ -10,8 +10,8 @@ import Effect from '../../effects/Effect';
 import { events } from '../../core/Global';
 import * as displayLibrary from '../../lib/displays';
 import * as effectsLibrary from '../../lib/effects';
-
 import Layer from './Layer';
+import ButtonInput from '../inputs/ButtonInput';
 
 export default class LayersPanel extends UIComponent {
     constructor(props) {
@@ -120,7 +120,9 @@ export default class LayersPanel extends UIComponent {
     getActiveScene() {
         let layer = this.getActiveLayer();
 
-        return (layer && this.state.activeIndex >= 0) ? ((layer instanceof Scene) ? layer : layer.owner) : null;
+        return (layer && this.state.activeIndex >= 0) ?
+            (layer instanceof Scene ? layer : layer.owner) :
+            null;
     }
 
     setActiveLayer(obj) {
@@ -183,10 +185,7 @@ export default class LayersPanel extends UIComponent {
     render() {
         let layers,
             state = this.state,
-            classes = {
-                'input-button': true,
-                'input-button-disabled': !Application.stage.hasScenes()
-            };
+            disabled = !Application.stage.hasScenes();
 
         layers = state.layers.map((layer, index) => {
             let icon;
@@ -225,12 +224,12 @@ export default class LayersPanel extends UIComponent {
                     {layers}
                 </div>
                 <div className="button-panel">
-                    <span className="input-button icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
-                    <span className={classNames(classes, 'icon-cube')} title="Add Display" onClick={this.onAddDisplayClick} />
-                    <span className={classNames(classes, 'icon-light-up')} title="Add Effect" onClick={this.onAddEffectClick} />
-                    <span className={classNames(classes, 'icon-chevron-up')} title="Move Layer Up" onClick={this.onMoveUpClick} />
-                    <span className={classNames(classes, 'icon-chevron-down')} title="Move Layer Down" onClick={this.onMoveDownClick} />
-                    <span className={classNames(classes, 'icon-trash-empty')} title="Delete Layer" onClick={this.onRemoveClick} />
+                    <ButtonInput icon="icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
+                    <ButtonInput icon="icon-cube" title="Add Display" onClick={this.onAddDisplayClick} disabled={disabled} />
+                    <ButtonInput icon="icon-light-up" title="Add Effect" onClick={this.onAddEffectClick} disabled={disabled} />
+                    <ButtonInput icon="icon-chevron-up" title="Move Layer Up" onClick={this.onMoveUpClick} disabled={disabled} />
+                    <ButtonInput icon="icon-chevron-down" title="Move Layer Down" onClick={this.onMoveDownClick} disabled={disabled} />
+                    <ButtonInput icon="icon-trash-empty" title="Delete Layer" onClick={this.onRemoveClick} disabled={disabled} />
                 </div>
             </div>
         );

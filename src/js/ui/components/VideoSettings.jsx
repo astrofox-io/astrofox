@@ -5,14 +5,13 @@ import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import Window from '../../core/Window';
 
+import Button from '../components/Button';
+import ButtonInput from '../inputs/ButtonInput';
 import NumberInput from '../inputs/NumberInput';
 import TimeInput from '../inputs/TimeInput';
 import SelectInput from '../inputs/SelectInput';
 import TextInput from '../inputs/TextInput';
-import Button from './Button';
 import { Settings, Row } from '../components/Settings';
-
-import { formatTime } from '../../util/format';
 import { replaceExt } from '../../util/file';
 
 const videoFormats = [
@@ -109,13 +108,7 @@ export default class VideoSettings extends UIComponent {
         const state = this.state,
             audio = Application.getAudio(),
             max = (audio) ? audio.getDuration() : 0,
-            canStart = (state.videoFile && state.audioFile),
-            onStart = canStart ? this.onStart: null;
-
-        const buttonClass = {
-            button: true,
-            disabled: !canStart
-        };
+            canStart = (state.videoFile && state.audioFile);
 
         return (
             <div id="video-settings" className="settings-panel">
@@ -130,7 +123,10 @@ export default class VideoSettings extends UIComponent {
                             readOnly={true}
                             onChange={this.onChange}
                         />
-                        <Button icon="icon-folder-open-empty" onClick={this.onOpenVideoFile} />
+                        <ButtonInput
+                            icon="icon-folder-open-empty"
+                            onClick={this.onOpenVideoFile}
+                        />
                     </Row>
                     <Row label="Audio File">
                         <TextInput
@@ -142,7 +138,10 @@ export default class VideoSettings extends UIComponent {
                             readOnly={true}
                             onChange={this.onChange}
                         />
-                        <Button icon="icon-folder-open-empty" onClick={this.onOpenAudioFile} />
+                        <ButtonInput
+                            icon="icon-folder-open-empty"
+                            onClick={this.onOpenAudioFile}
+                        />
                     </Row>
                     <Row label="Format">
                         <SelectInput
@@ -197,8 +196,8 @@ export default class VideoSettings extends UIComponent {
                     </Row>
                 </Settings>
                 <div className="buttons">
-                    <div className={classNames(buttonClass)} onClick={onStart}>Start</div>
-                    <div className="button" onClick={this.onCancel}>Cancel</div>
+                    <Button text="Start" onClick={this.onStart} disabled={!canStart} />
+                    <Button text="Cancel" onClick={this.onCancel} />
                 </div>
             </div>
         );

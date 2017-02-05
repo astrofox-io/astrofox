@@ -3,18 +3,14 @@ import classNames from 'classnames';
 
 const Button = (props) => {
     let classes = {
-        'button': true,
+        button: true,
+        disabled: props.disabled
     };
-
-    if (props.icon) {
-        classes[props.icon] = true;
-    }
 
     return (
         <span
             className={classNames(classes, props.className)}
-            title={props.title}
-            onClick={props.onClick}>
+            onClick={props.disabled ? null : props.onClick}>
             {props.text}
         </span>
     );
