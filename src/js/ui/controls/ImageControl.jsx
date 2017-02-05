@@ -2,10 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import NumberInput from '../inputs/NumberInput.jsx';
-import ImageInput from '../inputs/ImageInput.jsx';
-import RangeInput from '../inputs/RangeInput.jsx';
-import { Control, Row } from './Control.jsx';
+import NumberInput from '../inputs/NumberInput';
+import ImageInput from '../inputs/ImageInput';
+import RangeInput from '../inputs/RangeInput';
+import { Control, Row } from './Control';
 
 import BLANK_IMAGE from '../../../images/data/BlankGif.json';
 const CANVAS_WIDTH = 854;

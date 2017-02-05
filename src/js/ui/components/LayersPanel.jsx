@@ -11,7 +11,7 @@ import { events } from '../../core/Global';
 import * as displayLibrary from '../../lib/displays';
 import * as effectsLibrary from '../../lib/effects';
 
-import Layer from './Layer.jsx';
+import Layer from './Layer';
 
 export default class LayersPanel extends UIComponent {
     constructor(props) {

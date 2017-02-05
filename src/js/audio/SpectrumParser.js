@@ -33,18 +33,18 @@ export default class SpectrumParser extends Component {
         let { sampleRate, fftSize, minFrequency, maxFrequency } = this.options,
             range = sampleRate / fftSize,
             minBin = ~~(minFrequency / range),
-            maxBin = ~~(maxFrequency / range);
+            maxBin = ~~(maxFrequency / range),
+            totalBins = maxBin - minBin;
 
-        return { minBin, maxBin };
+        return { minBin, maxBin, totalBins };
     }
 
     parseFFT(fft, bins) {
         let i, j, k, size, step, start, end, val, max,
             results = this.results,
             buffer = this.buffer,
-            { minBin, maxBin } = this.getBinRange(),
-            totalBins = maxBin - minBin,
-            { smoothingTimeConstant } = this.options;
+            { smoothingTimeConstant } = this.options,
+            { minBin, maxBin, totalBins } = this.getBinRange();
 
         bins = bins || totalBins;
 

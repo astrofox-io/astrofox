@@ -2,9 +2,10 @@ import React from 'react';
 
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
-import ColorInput from '../inputs/ColorInput.jsx';
-import SelectInput from '../inputs/SelectInput.jsx';
-import { Settings, Row } from '../components/Settings.jsx';
+import Button from '../components/Button';
+import ColorInput from '../inputs/ColorInput';
+import SelectInput from '../inputs/SelectInput';
+import { Settings, Row } from '../components/Settings';
 
 const canvasSizes = {
     '16:9': { width: 854, height: 480 },
@@ -66,8 +67,8 @@ export default class CanvasSettings extends UIComponent {
                     </Row>
                 </Settings>
                 <div className="buttons">
-                    <div className="button" onClick={this.onSave}>OK</div>
-                    <div className="button" onClick={this.onCancel}>Cancel</div>
+                    <Button onClick={this.onSave} text="OK" />
+                    <Button onClick={this.onCancel} text="Cancel" />
                 </div>
             </div>
         );

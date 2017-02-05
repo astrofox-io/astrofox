@@ -34,16 +34,25 @@ export function parseTime(val) {
     };
 }
 
-export function formatTime(val, options) {
+export function formatTime(val) {
+    let { hour, minutes, seconds } = parseTime(val);
+
+    return (hour > 0 ? hour + ':' : '') + minutes + ':' + padLeft(seconds, 2);
+}
+
+export function formatShortTime(val, formats) {
     let t = '',
-        formats = options || ['m','ms'],
         { days, hours, minutes, seconds, ms } = parseTime(val);
 
-    if (days > 0 && 'd' in formats) t += days + 'd';
-    if (hours > 0 && 'h' in formats) t += hours + 'h';
-    if (minutes > 0 && 'm' in formats) t += minutes + 'm';
-    if (seconds > 0 && 's' in formats) t += seconds + 's';
-    if (ms > 0 && 'ms' in formats) t += ms + 'ms';
+    if (formats === undefined) {
+        formats = ['m', 'ms'];
+    }
+
+    if (days > 0 && formats.indexOf('d') !== -1) t += days + 'd';
+    if (hours > 0 && formats.indexOf('h') !== -1) t += hours + 'h';
+    if (minutes > 0 && formats.indexOf('m') !== -1) t += minutes + 'm';
+    if (seconds > 0 && formats.indexOf('s') !== -1) t += seconds + 's';
+    if (ms > 0 && formats.indexOf('ms') !== -1) t += ms + 'ms';
 
     return t;
 }

@@ -53,13 +53,11 @@ export default class Header extends UIComponent {
                 <div className="icon"><img src="images/icon.png" width="16" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
-                    <ul>
-                        <li className="button icon-code" onClick={this.onConsole} />
-                        <li className="button icon-cw" onClick={this.onReload} />
-                        <li className="button icon-minus" onClick={this.onMinimize} />
-                        <li className="button icon-plus" onClick={this.onMaximize} />
-                        <li className="button icon-cross" onClick={this.onClose} />
-                    </ul>
+                    <span className="button icon-code" onClick={this.onConsole} />
+                    <span className="button icon-cw" onClick={this.onReload} />
+                    <span className="button icon-minus" onClick={this.onMinimize} />
+                    <span className="button icon-plus" onClick={this.onMaximize} />
+                    <span className="button icon-cross" onClick={this.onClose} />
                 </div>
             </div>
         );

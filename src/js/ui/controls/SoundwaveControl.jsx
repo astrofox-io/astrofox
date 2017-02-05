@@ -1,11 +1,11 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import NumberInput from '../inputs/NumberInput.jsx';
-import ColorInput from '../inputs/ColorInput.jsx';
-import RangeInput from '../inputs/RangeInput.jsx';
-import ToggleInput from '../inputs/ToggleInput.jsx';
-import { Control, Row } from './Control.jsx';
+import NumberInput from '../inputs/NumberInput';
+import ColorInput from '../inputs/ColorInput';
+import RangeInput from '../inputs/RangeInput';
+import ToggleInput from '../inputs/ToggleInput';
+import { Control, Row } from './Control';
 
 export default class SoundwaveControl extends UIComponent {
     constructor(props) {

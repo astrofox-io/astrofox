@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Environment from './core/Environment';
-import App from './ui/components/App.jsx';
+import App from './ui/components/App';
 
 let Astrofox = {
     start: () => {

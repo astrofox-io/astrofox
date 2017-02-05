@@ -14,7 +14,9 @@ export default class ImageInput extends UIComponent {
 
     componentDidMount() {
         this.refs.image.onload = () => {
-            this.props.onChange('src', this.refs.image.src);
+            if (this.props.onChange) {
+                this.props.onChange('src', this.refs.image.src);
+            }
         };
     }
 
@@ -116,5 +118,5 @@ export default class ImageInput extends UIComponent {
 ImageInput.defaultProps = {
     name: 'image',
     src: BLANK_IMAGE,
-    onChange: () => {}
+    onChange: null
 };

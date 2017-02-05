@@ -1,12 +1,12 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import ColorInput from '../inputs/ColorInput.jsx';
-import NumberInput from '../inputs/NumberInput.jsx';
-import RangeInput from '../inputs/RangeInput.jsx';
-import SelectInput from '../inputs/SelectInput.jsx';
-import ToggleInput from '../inputs/ToggleInput.jsx';
-import { Control, Row } from './Control.jsx';
+import ColorInput from '../inputs/ColorInput';
+import NumberInput from '../inputs/NumberInput';
+import RangeInput from '../inputs/RangeInput';
+import SelectInput from '../inputs/SelectInput';
+import ToggleInput from '../inputs/ToggleInput';
+import { Control, Row } from './Control';
 
 const shapes = [
     'Box',

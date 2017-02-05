@@ -1,9 +1,16 @@
 import React from 'react';
-import classNames from 'classnames';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const Loading = (props) => {
+    const loading = (props.visible) ? <div className="loading" /> : null;
+
     return (
-        <div className={classNames('loading', {'loading-active': props.visible})}></div>
+        <ReactCSSTransitionGroup
+            transitionName="loading"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={500}>
+            {loading}
+        </ReactCSSTransitionGroup>
     );
 };
 

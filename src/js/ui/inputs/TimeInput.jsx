@@ -1,7 +1,7 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import TextInput from './TextInput.jsx';
+import TextInput from './TextInput';
 import { formatSeekTime } from '../../util/format';
 import { clamp } from '../../util/math.js';
 

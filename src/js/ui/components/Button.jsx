@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 const Button = (props) => {
     let classes = {
-        'input-button': true,
+        'button': true,
     };
 
     if (props.icon) {
@@ -12,7 +12,7 @@ const Button = (props) => {
 
     return (
         <span
-            className={classNames(classes)}
+            className={classNames(classes, props.className)}
             title={props.title}
             onClick={props.onClick}>
             {props.text}

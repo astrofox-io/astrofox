@@ -1,40 +1,40 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
+
+import Loading from './Loading';
+import RenderInfo from './RenderInfo';
 
 export default class Stage extends UIComponent {
     constructor(props) {
         super(props);
         
         this.state = {
-            width: 854,
-            height: 480,
-            loading: false
+            loading: false,
+            rendering: false
         };
     }
 
     componentDidMount() {
-        let canvas = Application.stage.renderer.domElement;
-
-        canvas.className = 'canvas';
-
-        this.refs.stage.appendChild(canvas);
+        this.refs.canvas.appendChild(
+            Application.stage.renderer.domElement
+        );
     }
 
-    onDragOver(e){
+    onDragOver(e) {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    onDrop(e){
+    onDrop(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        let file = e.dataTransfer.files[0];
+        const file = e.dataTransfer.files[0];
 
-        if (file) {
+        if (file && this.props.onFileDropped) {
             this.props.onFileDropped(file.path);
         }
     }
@@ -44,24 +44,29 @@ export default class Stage extends UIComponent {
     }
 
     render() {
-        const loading = (this.state.loading) ? <div className="loading" /> : null;
+        const classes = {
+            'stage': true,
+            'stage-rendering': this.props.rendering
+        };
+
+        let renderInfo = (this.props.rendering) ? <RenderInfo/> : null;
+        //let renderInfo = <RenderInfo />;
 
         return (
             <div ref="stage"
-                className="stage"
+                className={classNames(classes)}
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}>
-                <ReactCSSTransitionGroup
-                    transitionName="loading"
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={500}>
-                    {loading}
-                </ReactCSSTransitionGroup>
+                <Loading visible={this.state.loading} />
+                <div ref="canvas" className="canvas">
+                    {renderInfo}
+                </div>
             </div>
         );
     }
 }
 
 Stage.defaultProps = {
-    onFileDropped: () => {}
+    rendering: false,
+    onFileDropped: null
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import MenuItem from './MenuItem.jsx';
+import MenuItem from './MenuItem';
 
 const Menu = (props) => {
     let classes = {

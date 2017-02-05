@@ -3,7 +3,7 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import { val2pct } from '../../util/math';
 
-import RangeInput from './RangeInput.jsx';
+import RangeInput from './RangeInput';
 
 export default class DualRangeInput extends UIComponent {
     constructor(props) {
@@ -25,7 +25,9 @@ export default class DualRangeInput extends UIComponent {
                 );
 
                 if (check.start !== nextProps.start || check.end !== nextProps.end) {
-                    this.props.onChange(name, check);
+                    if (this.props.onChange) {
+                        this.props.onChange(name, check);
+                    }
                 }
             }
         }
@@ -50,7 +52,9 @@ export default class DualRangeInput extends UIComponent {
             index = 1;
         }
 
-        this.props.onChange(this.props.name, this.parseValues(start, end, index));
+        if (this.props.onChange) {
+            this.props.onChange(this.props.name, this.parseValues(start, end, index));
+        }
     }
 
     onChange(name, val) {
@@ -64,7 +68,9 @@ export default class DualRangeInput extends UIComponent {
             end = val;
         }
 
-        this.props.onChange(this.props.name, this.parseValues(start, end, index));
+        if (this.props.onChange) {
+            this.props.onChange(this.props.name, this.parseValues(start, end, index));
+        }
     }
 
     parseValues(start, end, index) {
@@ -145,6 +151,6 @@ DualRangeInput.defaultProps = {
     minRange: false,
     buffered: false,
     readOnly: false,
-    onChange: () => {},
-    onInput: () => {}
+    onChange: null,
+    onInput: null
 };

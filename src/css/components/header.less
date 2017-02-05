@@ -24,12 +24,15 @@
         top: 0;
         right: 10px;
         font-size: 0;
-        background-color: @bg-color2;
+        background-color: transparent;
         -webkit-app-region: no-drag;
 
-        .button {
+        &>.button {
+            margin: 0;
+            padding: 0;
             display: inline-block;
             color: @text-color1;
+            background-color: @bg-color2;
             font-size: 14px;
             width: 30px;
             height: 24px;

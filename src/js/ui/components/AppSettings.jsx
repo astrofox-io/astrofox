@@ -3,11 +3,12 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 
-import ListInput from '../inputs/ListInput.jsx';
-import ToggleInput from '../inputs/ToggleInput.jsx';
-import TabPanel from '../layout/TabPanel.jsx';
-import Tab from '../layout/Tab.jsx';
-import { Settings, Group, Row } from '../components/Settings.jsx';
+import Button from '../components/Button';
+import ListInput from '../inputs/ListInput';
+import ToggleInput from '../inputs/ToggleInput';
+import TabPanel from '../layout/TabPanel';
+import Tab from '../layout/Tab';
+import { Settings, Group, Row } from '../components/Settings';
 
 export default class AppSettings extends UIComponent {
     constructor(props) {
@@ -26,12 +27,16 @@ export default class AppSettings extends UIComponent {
 
     onSave() {
         Application.saveConfigFile(this.state, () => {
-            this.props.onClose();
+            if (this.props.onClose) {
+                this.props.onClose();
+            }
         });
     }
 
     onCancel() {
-        this.props.onClose();
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
     }
 
     render() {
@@ -108,8 +113,8 @@ export default class AppSettings extends UIComponent {
                     </Tab>
                 </TabPanel>
                 <div className="buttons">
-                    <div className="button" onClick={this.onSave}>Save</div>
-                    <div className="button" onClick={this.onCancel}>Cancel</div>
+                    <Button onClick={this.onSave} text="Save" />
+                    <Button onClick={this.onCancel} text="Cancel" />
                 </div>
             </div>
         );
@@ -117,5 +122,5 @@ export default class AppSettings extends UIComponent {
 }
 
 AppSettings.defaultProps = {
-    onClose: () => {}
+    onClose: null
 };

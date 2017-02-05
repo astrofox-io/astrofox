@@ -296,11 +296,7 @@ class Application extends EventEmitter {
                 spectrum = this.spectrum,
                 sound = new BufferedSound(this.audioContext);
 
-            logger.time('audio-data-load');
-
             sound.on('load', () => {
-                logger.timeEnd('audio-data-load', 'Audio data loaded.');
-
                 player.load('audio', sound);
 
                 sound.addNode(spectrum.analyzer);

@@ -5,12 +5,12 @@ import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import Window from '../../core/Window';
 
-import NumberInput from '../inputs/NumberInput.jsx';
-import TimeInput from '../inputs/TimeInput.jsx';
-import SelectInput from '../inputs/SelectInput.jsx';
-import TextInput from '../inputs/TextInput.jsx';
-import Button from '../inputs/Button.jsx';
-import { Settings, Row } from '../components/Settings.jsx';
+import NumberInput from '../inputs/NumberInput';
+import TimeInput from '../inputs/TimeInput';
+import SelectInput from '../inputs/SelectInput';
+import TextInput from '../inputs/TextInput';
+import Button from './Button';
+import { Settings, Row } from '../components/Settings';
 
 import { formatTime } from '../../util/format';
 import { replaceExt } from '../../util/file';

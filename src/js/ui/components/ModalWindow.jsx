@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Button from './Button';
+
 const ModalWindow = (props) => {
     let buttons = null;
 
@@ -7,11 +9,13 @@ const ModalWindow = (props) => {
             <span className="close-button icon-cross" onClick={props.onClose} /> : null;
 
     if (props.buttons) {
-        buttons = props.buttons.map((button, index) => {
+        buttons = props.buttons.map((text, index) => {
             return (
-                <div key={index} className="button" onClick={props.onClose.bind(null, button)}>
-                    {button}
-                </div>
+                <Button
+                    key={index}
+                    text={text}
+                    onClick={props.onClose.bind(null, text)}
+                />
             );
         });
     }

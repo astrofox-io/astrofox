@@ -3,10 +3,10 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import { events } from '../../core/Global';
 
-import Panel from '../layout/Panel.jsx';
-import PanelDock from '../layout/PanelDock.jsx';
-import ControlsPanel from './ControlsPanel.jsx';
-import LayersPanel from './LayersPanel.jsx';
+import Panel from '../layout/Panel';
+import PanelDock from '../layout/PanelDock';
+import ControlsPanel from './ControlsPanel';
+import LayersPanel from './LayersPanel';
 
 export default class ControlDock extends UIComponent {
     constructor(props) {

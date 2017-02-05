@@ -1,0 +1,16 @@
+.button {
+    display: inline-block;
+    background-color: @color1;
+    padding: 8px 10px;
+    border-radius: 3px;
+    cursor: default;
+
+    &:hover {
+        background-color: lighten(@color1, 3%);
+    }
+
+    &.disabled {
+        color: @text-color2;
+        background-color: @bg-color2;
+    }
+}

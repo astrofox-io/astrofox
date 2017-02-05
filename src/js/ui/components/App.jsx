@@ -5,24 +5,24 @@ import Application from '../../core/Application';
 import Window from '../../core/Window';
 import {events} from '../../core/Global';
 
-import Header from './Header.jsx';
-import Footer from './Footer.jsx';
-import MenuBar from './MenuBar.jsx';
-import Stage from './Stage.jsx';
-import Player from './Player.jsx';
-import Spectrum from './Spectrum.jsx';
-import Oscilloscope from './Oscilloscope.jsx';
-import AudioWaveform from './AudioWaveform.jsx';
-import Overlay from './Overlay.jsx';
-import ControlDock from './ControlDock.jsx';
-import Preload from './Preload.jsx';
-import About from './About.jsx';
-import AppSettings from './AppSettings.jsx';
-import CanvasSettings from './CanvasSettings.jsx';
-import VideoSettings from './VideoSettings.jsx';
-import ControlPicker from './ControlPicker.jsx';
-import ModalWindow from './ModalWindow.jsx';
-import Dialog from './Dialog.jsx';
+import Header from './Header';
+import Footer from './Footer';
+import MenuBar from './MenuBar';
+import Stage from './Stage';
+import Player from './Player';
+import Spectrum from './Spectrum';
+import Oscilloscope from './Oscilloscope';
+import AudioWaveform from './AudioWaveform';
+import Overlay from './Overlay';
+import ControlDock from './ControlDock';
+import Preload from './Preload';
+import About from './About';
+import AppSettings from './AppSettings';
+import CanvasSettings from './CanvasSettings';
+import VideoSettings from './VideoSettings';
+import ControlPicker from './ControlPicker';
+import ModalWindow from './ModalWindow';
+import Dialog from './Dialog';
 
 import menuConfig from '../../../config/menu';
 import audioExtensions from '../../../config/audioExtensions';
@@ -301,7 +301,7 @@ export default class App extends UIComponent {
                 <MenuBar ref="menubar" items={menuConfig} onMenuAction={this.onMenuAction}/>
                 <div id="body">
                     <div id="viewport">
-                        <Stage ref="stage" onFileDropped={this.loadAudioFile}/>
+                        <Stage ref="stage" onFileDropped={this.loadAudioFile} rendering={false} />
                         <Spectrum ref="spectrum"/>
                         <Oscilloscope ref="osc"/>
                         <AudioWaveform ref="waveform"/>
@@ -310,7 +310,7 @@ export default class App extends UIComponent {
                     <ControlDock ref="dock"/>
                 </div>
                 <Footer text={text}/>
-                <Overlay visible={modals.length}>
+                <Overlay>
                     {modals}
                 </Overlay>
             </div>

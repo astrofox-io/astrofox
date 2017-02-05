@@ -1,12 +1,12 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import NumberInput from '../inputs/NumberInput.jsx';
-import ColorInput from '../inputs/ColorInput.jsx';
-import ColorRangeInput from '../inputs/ColorRangeInput.jsx';
-import RangeInput from '../inputs/RangeInput.jsx';
-import ToggleInput from '../inputs/ToggleInput.jsx';
-import { Control, Row } from './Control.jsx';
+import NumberInput from '../inputs/NumberInput';
+import ColorInput from '../inputs/ColorInput';
+import ColorRangeInput from '../inputs/ColorRangeInput';
+import RangeInput from '../inputs/RangeInput';
+import ToggleInput from '../inputs/ToggleInput';
+import { Control, Row } from './Control';
 
 export default class WaveSpectrumControl extends UIComponent {
     constructor(props) {

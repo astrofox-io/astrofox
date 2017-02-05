@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import TextInput from '../inputs/TextInput.jsx';
+import TextInput from '../inputs/TextInput';
 
 export default class Layer extends UIComponent {
     constructor(props) {
@@ -17,19 +17,25 @@ export default class Layer extends UIComponent {
         e.stopPropagation();
         e.preventDefault();
 
-        this.props.onLayerClick(this.props.index);
+        if (this.props.onLayerClick) {
+            this.props.onLayerClick(this.props.index);
+        }
     }
 
     onEnableClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        this.props.onLayerUpdate(this.props.index, 'enabled', !this.props.enabled);
+        if (this.props.onLayerUpdate) {
+            this.props.onLayerUpdate(this.props.index, 'enabled', !this.props.enabled);
+        }
     }
 
     onNameChange(name, val) {
         if (val.length > 0) {
-            this.props.onLayerUpdate(this.props.index, name, val);
+            if (this.props.onLayerUpdate) {
+                this.props.onLayerUpdate(this.props.index, name, val);
+            }
             this.cancelEdit();
         }
     }
@@ -94,5 +100,6 @@ Layer.defaultProps = {
     control: false,
     active: false,
     enabled: true,
-    onLayerUpdate: () => {}
+    onLayerClick: null,
+    onLayerUpdate: null
 };

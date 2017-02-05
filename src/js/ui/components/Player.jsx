@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
-import { parseTime, padLeft } from '../../util/format';
+import { formatTime } from '../../util/format';
 
-import RangeInput from '../inputs/RangeInput.jsx';
+import RangeInput from '../inputs/RangeInput';
 
 const PROGRESS_MAX = 1000;
 
@@ -247,16 +247,11 @@ const LoopButton = (props) => {
 };
 
 const TimeInfo = (props) => {
-    let current = parseTime(props.currentTime),
-        total = parseTime(props.totalTime),
-        currentTime = current.minutes + ':' + padLeft(current.seconds, 2),
-        totalTime = total.minutes + ':' + padLeft(total.seconds, 2);
-
     return (
         <div className="time-info">
-            <span className="time-part current-time">{currentTime}</span>
+            <span className="time-part current-time">{formatTime(props.currentTime)}</span>
             <span className="time-part split" />
-            <span className="time-part total-time">{totalTime}</span>
+            <span className="time-part total-time">{formatTime(props.totalTime)}</span>
         </div>
     );
 };

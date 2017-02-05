@@ -1,5 +1,5 @@
 import React from 'react';
-import { Control, Row } from './Control.jsx';
+import { Control, Row } from './Control';
 
 const EmptyControl = () => {
     return (

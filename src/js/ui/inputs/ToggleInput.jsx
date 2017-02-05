@@ -8,7 +8,11 @@ const ToggleInput = (props) => {
         'input-toggle-on': props.value
     };
 
-    let onClick = () => props.onChange(props.name, !props.value);
+    let onClick = () => {
+        if (props.onChange) {
+            props.onChange(props.name, !props.value);
+        }
+    };
 
     return (
         <div className={classNames(classes)} onClick={onClick} />
@@ -18,7 +22,7 @@ const ToggleInput = (props) => {
 ToggleInput.defaultProps = {
     name: 'toggle',
     value: false,
-    onChange: () => {}
+    onChange: null
 };
 
 export default ToggleInput;

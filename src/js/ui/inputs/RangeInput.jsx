@@ -25,10 +25,10 @@ export default class RangeInput extends UIComponent {
 
         let val = this.setValue(e.currentTarget.value, props);
 
-        if (props.buffered && this.buffering) {
+        if (props.buffered && this.buffering && props.onInput) {
             props.onInput(props.name, val);
         }
-        else {
+        else if (props.onChange) {
             props.onChange(props.name, val);
         }
     }
@@ -123,6 +123,6 @@ RangeInput.defaultProps = {
     buffered: false,
     readOnly: false,
     fillStyle: 'left',
-    onChange: () => {},
-    onInput: () => {}
+    onChange: null,
+    onInput: null
 };

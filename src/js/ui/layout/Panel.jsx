@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import UIComponent from '../UIComponent';
 import { events } from '../../core/Global';
 
-import Splitter from './Splitter.jsx';
+import Splitter from './Splitter';
 
 export default class Panel extends UIComponent {
     constructor(props) {
@@ -112,6 +112,6 @@ Panel.defaultProps = {
     width: 100,
     minHeight: 0,
     minWidth: 0,
-    onDragStart: () => {},
-    onDragEnd: () => {}
+    onDragStart: null,
+    onDragEnd: null
 };

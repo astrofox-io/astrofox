@@ -1,7 +1,11 @@
 import React from 'react';
 
 const ColorInput = (props) => {
-    let onChange = (e) => props.onChange(props.name, e.target.value);
+    let onChange = (e) => {
+        if (props.onChange) {
+            props.onChange(props.name, e.target.value);
+        }
+    };
 
     return (
         <div className="input">
@@ -21,7 +25,7 @@ ColorInput.defaultProps = {
     name: 'color',
     value: '#ffffff',
     width: 40,
-    onChange: () => {}
+    onChange: null
 };
 
 export default ColorInput;

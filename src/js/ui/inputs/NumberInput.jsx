@@ -74,7 +74,9 @@ export default class NumberInput extends UIComponent {
                 val = this.setValue(val, props);
 
                 // Send new value to parent
-                props.onChange(props.name, val);
+                if (props.onChange) {
+                    props.onChange(props.name, val);
+                }
             }
             // Reset to old value
             else {
@@ -113,5 +115,5 @@ NumberInput.defaultProps = {
     step: false,
     readOnly: false,
     hidden: false,
-    onChange: () => {}
+    onChange: null
 };

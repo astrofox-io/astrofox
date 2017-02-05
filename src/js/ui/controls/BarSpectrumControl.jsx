@@ -1,11 +1,11 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import NumberInput from '../inputs/NumberInput.jsx';
-import ColorRangeInput from '../inputs/ColorRangeInput.jsx';
-import RangeInput from '../inputs/RangeInput.jsx';
-import ToggleInput from '../inputs/ToggleInput.jsx';
-import { Control, Row } from './Control.jsx';
+import NumberInput from '../inputs/NumberInput';
+import ColorRangeInput from '../inputs/ColorRangeInput';
+import RangeInput from '../inputs/RangeInput';
+import ToggleInput from '../inputs/ToggleInput';
+import { Control, Row } from './Control';
 
 export default class BarSpectrumControl extends UIComponent {
     constructor(props) {

@@ -1,9 +1,9 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import NumberInput from '../inputs/NumberInput.jsx';
-import RangeInput from '../inputs/RangeInput.jsx';
-import { Control, Row } from './Control.jsx';
+import NumberInput from '../inputs/NumberInput';
+import RangeInput from '../inputs/RangeInput';
+import { Control, Row } from './Control';
 
 const OFFSET_MAX = 854;
 
