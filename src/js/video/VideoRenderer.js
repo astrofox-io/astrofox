@@ -29,10 +29,12 @@ export default class VideoRenderer extends EventEmitter {
         this.completed = false;
         this.currentFrame = options.fps * options.timeStart;
         this.frames = this.currentFrame + (options.fps * (options.timeEnd - options.timeStart));
+        this.startTime = window.performance.now();
 
         this.renderProcess = new RenderProcess(FFMPEG_PATH);
         this.audioProcess = new AudioProcess(FFMPEG_PATH);
         this.mergeProcess = new MergeProcess(FFMPEG_PATH);
+        this.currentProcess = null;
 
         this.renderProcess.on('data', data => {
             logger.log(data.toString());
@@ -61,14 +63,18 @@ export default class VideoRenderer extends EventEmitter {
 
         logger.log('Starting render', id);
 
+        this.currentProcess = this.renderProcess;
+
         // Start rendering
         this.renderProcess.start(outputVideo, format, fps)
             .then(file => {
                 outputVideo = file;
+                this.currentProcess = this.audioProcess;
                 return this.audioProcess.start(outputAudio, format, this.audio, timeStart, timeEnd);
             })
             .then(file => {
                 outputAudio = file;
+                this.currentProcess = this.mergeProcess;
                 return this.mergeProcess.start(outputVideo, outputAudio, this.video);
             })
             .then(() => {
@@ -82,22 +88,38 @@ export default class VideoRenderer extends EventEmitter {
             })
             .catch(err => {
                 logger.error(err);
+
+                this.completed = true;
+                this.emit('complete');
             });
 
         this.emit('start');
     }
 
-    processFrame(image) {
-        logger.log('Processing', this.currentFrame, '/', this.frames);
-
-        this.renderProcess.push(image);
-
-        if (this.currentFrame <= this.frames) {
-            this.currentFrame++;
-            this.emit('ready');
+    stop() {
+        if (!this.completed && this.currentProcess) {
+            this.currentProcess.stop();
         }
-        else {
-            this.renderProcess.push(null);
+    }
+
+    processFrame(image) {
+        if (this.completed) return;
+
+        try {
+            this.renderProcess.push(image);
+
+            if (this.currentFrame < this.frames) {
+                this.currentFrame++;
+                this.emit('ready');
+            }
+            else {
+                this.renderProcess.push(null);
+            }
+        }
+        catch (error) {
+            if (error.message.indexOf('write EPIPE') < 0) {
+                throw error;
+            }
         }
     }
 }

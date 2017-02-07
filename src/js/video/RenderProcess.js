@@ -17,7 +17,10 @@ export default class RenderProcess extends Process {
 
             outputFile = replaceExt(outputFile, '.' + format);
 
-            this.on('close', () => {
+            this.on('close', code => {
+                if (code !== 0) {
+                    reject('Process was terminated.');
+                }
                 resolve(outputFile);
             });
 

@@ -33,7 +33,10 @@ export default class AudioProcess extends Process {
 
             outputFile = replaceExt(outputFile, outputExt);
 
-            this.on('close', () => {
+            this.on('close', code => {
+                if (code !== 0) {
+                    reject('Process was terminated.');
+                }
                 resolve(outputFile);
             });
 

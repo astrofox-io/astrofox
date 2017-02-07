@@ -8,9 +8,10 @@
   "homepage": "http://astrofox.io",
   "private": true,
   "scripts": {
-    "start-app": "electron ./app",
+    "run-app": "electron ./app",
     "build-win": "build --x64 --win",
-    "build-mac": "build --x64 --mac"
+    "build-mac": "build --x64 --mac",
+    "lint": "eslint --ext .js,.json,.jsx src/js || exit 0"
   },
   "build": {
     "appId": "io.astrofox.astrofox",
@@ -71,13 +72,13 @@
     "babel-preset-es2015-node6": "^0.4.0",
     "babel-preset-react": "^6.22.0",
     "babili": "^0.0.10",
-    "electron": "^1.4.15",
+    "electron": "beta",
     "electron-builder": "^12.3.1",
     "electron-updater": "^1.4.2",
     "eslint": "^3.15.0",
     "eslint-plugin-react": "^6.9.0",
     "gulp": "^3.9.1",
-    "gulp-clean-css": "^2.3.2",
+    "gulp-clean-css": "^3.0.0",
     "gulp-glsl": "^1.1.0",
     "gulp-header": "^1.8.8",
     "gulp-iconfont": "^8.0.1",
@@ -85,7 +86,7 @@
     "gulp-less": "^3.3.0",
     "gulp-plumber": "^1.1.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^2.3.1",
+    "gulp-sourcemaps": "^2.4.1",
     "gulp-template": "^4.0.0",
     "gulp-util": "^3.0.8",
     "webpack": "^2.2.1"

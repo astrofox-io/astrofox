@@ -3,66 +3,14 @@
     width: 100%;
     height: 100%;
     display: flex;
-    z-index: 1;
 
-    .background {
+    &:before {
+        content: "\0020";
         position: absolute;
         width: 100%;
         height: 100%;
         background: #000;
         opacity: 0.5;
-        z-index: 2;
-    }
-}
-
-.modal-enter {
-    .background {
-        opacity: 0;
-    }
-
-    .modal-window {
-        opacity: 0;
-        transform: perspective(800px) scale(0.7) rotateX(-90deg);
-        transform-style: preserve-3d;
-    }
-}
-
-.modal-enter-active {
-    .background {
-        opacity: 0.5;
-        transition: opacity .3s ease-in;
-    }
-
-    .modal-window {
-        opacity: 1;
-        transform: none;
-        transition: all .3s;
-    }
-}
-
-.modal-leave {
-    .background {
-        opacity: 0.5;
-    }
-
-    .modal-window {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-.modal-leave-active {
-    .background {
-        opacity: 0;
-        transition: opacity .3s ease-in;
-    }
-
-    .modal-window {
-        opacity: 0;
-        box-shadow: none;
-        transform: perspective(800px) scale(0.7) rotateX(-90deg);
-        transform-style: preserve-3d;
-        transition: all .3s;
     }
 }
 
@@ -73,7 +21,6 @@
     display: flex;
     flex-direction: column;
     box-shadow: 5px 5px 40px rgba(0,0,0,0.5);
-    z-index: 3;
 
     &>.header {
         position: relative;
@@ -112,7 +59,7 @@
         width: 24px;
         text-align: center;
         letter-spacing: 0;
-        z-index: 4;
+        z-index: 1;
 
         &:hover {
             color: darken(@text-color1, 10%);
@@ -137,5 +84,57 @@
         .message {
             flex: 1;
         }
+    }
+}
+
+
+.overlay-enter {
+    &:before {
+        opacity: 0;
+    }
+
+    .modal-window {
+        opacity: 0;
+        transform: perspective(800px) scale(0.7) rotateX(-90deg);
+        transform-style: preserve-3d;
+    }
+}
+
+.overlay-enter-active {
+    &:before {
+        opacity: 0.5;
+        transition: opacity .3s ease-in;
+    }
+
+    .modal-window {
+        opacity: 1;
+        transform: none;
+        transition: all .3s;
+    }
+}
+
+.overlay-leave {
+    &:before {
+        opacity: 0.5;
+    }
+
+    .modal-window {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.overlay-leave-active {
+    &:before {
+        opacity: 0;
+        transition: opacity .3s ease-in;
+    }
+
+    .modal-window {
+        opacity: 0;
+        box-shadow: none;
+        transform: perspective(800px) scale(0.7) rotateX(-90deg);
+        transform-style: preserve-3d;
+        transition: all .3s;
     }
 }

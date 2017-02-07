@@ -7,7 +7,10 @@ export default class MergeProcess extends Process {
 
     start(videoFile, audioFile, outputFile) {
         return new Promise((resolve, reject) => {
-            this.on('close', () => {
+            this.on('close', code => {
+                if (code !== 0) {
+                    reject('Process was terminated.');
+                }
                 resolve();
             });
 

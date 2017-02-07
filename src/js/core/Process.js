@@ -14,7 +14,7 @@ export default class Process extends EventEmitter {
     }
 
     start(args) {
-        logger.log('%cStarting process:', 'color:lightgreen;background-color:gray;', this.command, (args || []).join(' '));
+        logger.log('Starting process:', this.command, (args || []).join(' '));
 
         // Spawn process
         this.process = spawn(this.command, args);
@@ -29,6 +29,8 @@ export default class Process extends EventEmitter {
         });
 
         this.process.on('close', (code, signal) => {
+            logger.log('Process ended with code', code, 'and signal', signal);
+
             this.emit('close', code, signal);
         });
 
@@ -46,7 +48,9 @@ export default class Process extends EventEmitter {
         this.emit('start');
     }
 
-
+    stop(signal) {
+        this.process.kill(signal);
+    }
 
     push(data) {
         this.stream.push(data);

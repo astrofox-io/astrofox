@@ -5,7 +5,7 @@ const Overlay = (props) => {
     return (
         <ReactCSSTransitionGroup
             component={Component}
-            transitionName="modal"
+            transitionName="overlay"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {props.children}

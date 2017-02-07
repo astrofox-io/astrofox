@@ -33,7 +33,8 @@ export default class App extends UIComponent {
 
         this.state = {
             text: '',
-            modals: []
+            modals: [],
+            renderVideo: false
         };
     }
 
@@ -72,6 +73,10 @@ export default class App extends UIComponent {
         });
 
         events.on('unsaved-changes', this.onUnsavedChanges);
+
+        events.on('start-render', () => {
+            this.setState({ rendering: true });
+        });
     }
 
     componentDidMount() {
@@ -144,7 +149,11 @@ export default class App extends UIComponent {
 
             case 'save-video':
                 this.showModal(
-                    <VideoSettings key="canvas" audioFile={Application.audioFile} onClose={this.hideModal}/>,
+                    <VideoSettings
+                        key="video"
+                        onStart={this.startRender}
+                        onClose={this.hideModal}
+                    />,
                     {title: 'SAVE VIDEO', buttons: null}
                 );
                 break;
@@ -287,8 +296,22 @@ export default class App extends UIComponent {
             });
     }
 
+    startRender(options) {
+        this.hideModal();
+
+        let { videoFile, audioFile } = options;
+
+        Application.saveVideo(videoFile, audioFile, options);
+
+        this.setState({ renderVideo: true });
+    }
+
+    stopRender() {
+        this.setState({ renderVideo: false });
+    }
+
     render() {
-        let {text, modals} = this.state;
+        let { text, modals, renderVideo } = this.state;
 
         return (
             <div
@@ -298,10 +321,19 @@ export default class App extends UIComponent {
                 onDragOver={this.onDragDrop}>
                 <Preload />
                 <Header />
-                <MenuBar ref="menubar" items={menuConfig} onMenuAction={this.onMenuAction}/>
+                <MenuBar
+                    ref="menubar"
+                    items={menuConfig}
+                    onMenuAction={this.onMenuAction}
+                />
                 <div id="body">
                     <div id="viewport">
-                        <Stage ref="stage" onFileDropped={this.loadAudioFile} rendering={false} />
+                        <Stage
+                            ref="stage"
+                            renderVideo={renderVideo}
+                            onFileDropped={this.loadAudioFile}
+                            onStopRender={this.stopRender}
+                        />
                         <Spectrum ref="spectrum"/>
                         <Oscilloscope ref="osc"/>
                         <AudioWaveform ref="waveform"/>

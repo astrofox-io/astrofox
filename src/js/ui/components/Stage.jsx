@@ -13,7 +13,7 @@ export default class Stage extends UIComponent {
         
         this.state = {
             loading: false,
-            rendering: false
+            renderVideo: false
         };
     }
 
@@ -39,6 +39,12 @@ export default class Stage extends UIComponent {
         }
     }
 
+    stopRender() {
+        if (this.props.onStopRender) {
+            this.props.onStopRender();
+        }
+    }
+
     showLoading(val) {
         this.setState({ loading: val });
     }
@@ -46,11 +52,12 @@ export default class Stage extends UIComponent {
     render() {
         const classes = {
             'stage': true,
-            'stage-rendering': this.props.rendering
+            'stage-video-render': this.props.renderVideo
         };
 
-        let renderInfo = (this.props.rendering) ? <RenderInfo/> : null;
-        //let renderInfo = <RenderInfo />;
+        let renderInfo = (this.props.renderVideo) ?
+            <RenderInfo onButtonClick={this.stopRender} /> :
+            null;
 
         return (
             <div ref="stage"
@@ -65,8 +72,3 @@ export default class Stage extends UIComponent {
         );
     }
 }
-
-Stage.defaultProps = {
-    rendering: false,
-    onFileDropped: null
-};

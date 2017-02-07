@@ -32,7 +32,6 @@ class Application extends EventEmitter {
         this.audioFile = '';
         this.projectFile = '';
         this.rendering = false;
-        this.bufferSource = null;
 
         // Frame render data
         this.frameData = {
@@ -193,7 +192,7 @@ class Application extends EventEmitter {
             spectrum = this.spectrum,
             stage = this.stage,
             audio = this.getAudio(),
-            source = this.bufferSource = this.audioContext.createBufferSource();
+            source = this.audioContext.createBufferSource();
 
         source.buffer = audio.buffer;
         source.connect(spectrum.analyzer);
@@ -218,7 +217,7 @@ class Application extends EventEmitter {
 
     getFrameData(forceUpdate) {
         let data = this.frameData,
-            update = !!forceUpdate || this.player.isPlaying();
+            update = forceUpdate || this.player.isPlaying();
 
         data.fft = this.spectrum.getFrequencyData(update);
         data.td = this.spectrum.getTimeData(update);
@@ -252,13 +251,14 @@ class Application extends EventEmitter {
     //region Save/load Methods
     loadConfigFile() {
         if (IO.fileExists(APP_CONFIG_FILE)) {
-            return IO.readFileCompressed(APP_CONFIG_FILE).then(data => {
-                let config = JSON.parse(data);
+            return IO.readFileCompressed(APP_CONFIG_FILE)
+                .then(data => {
+                    let config = JSON.parse(data);
 
-                logger.log('Config file loaded:', APP_CONFIG_FILE, config);
+                    logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
-                this.config = Object.assign({}, appConfig, config);
-            });
+                    this.config = Object.assign({}, appConfig, config);
+                });
         }
         else {
             this.saveConfigFile(this.config);
@@ -313,18 +313,19 @@ class Application extends EventEmitter {
     }
 
     loadAudioTags(file) {
-        return IO.readFileAsBlob(file).then(data => {
-            id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
-                if (!err) {
-                    events.emit('audio-tags', tags);
-                }
+        return IO.readFileAsBlob(file)
+            .then(data => {
+                id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
+                    if (!err) {
+                        events.emit('audio-tags', tags);
+                    }
+                });
             });
-        });
     }
 
     loadProject(file) {
-        return IO.readFileCompressed(file).then(
-            data => {
+        return IO.readFileCompressed(file)
+            .then(data => {
                 this.stage.loadConfig(JSON.parse(data));
                 this.resetChanges();
 
@@ -349,26 +350,26 @@ class Application extends EventEmitter {
                 else {
                     throw error;
                 }
-            }
-        )
-        .catch(error => {
-            raiseError('Failed to open project file.', error);
-        });
+            })
+            .catch(error => {
+                raiseError('Failed to open project file.', error);
+            });
     }
 
     saveConfigFile(config, callback) {
         let data = JSON.stringify(config);
 
-        return IO.writeFileCompressed(APP_CONFIG_FILE, data).then(() => {
-            logger.log('Config file saved.', APP_CONFIG_FILE, config);
+        return IO.writeFileCompressed(APP_CONFIG_FILE, data)
+            .then(() => {
+                logger.log('Config file saved.', APP_CONFIG_FILE, config);
 
-            Object.assign(this.config, config);
+                Object.assign(this.config, config);
 
-            if (callback) callback();
-        })
-        .catch(error => {
-            raiseError('Failed to save config file.', error);
-        });
+                if (callback) callback();
+            })
+            .catch(error => {
+                raiseError('Failed to save config file.', error);
+            });
     }
 
     saveImage(filename) {
@@ -378,21 +379,21 @@ class Application extends EventEmitter {
         stage.render(data, () => {
             stage.getImage(buffer => {
                 IO.writeFile(filename, buffer)
-                    .catch(error => {
-                        raiseError('Failed to save image file.', error);
-                    })
                     .then(() => {
                         logger.log('Image saved. (%s)', filename);
+                    })
+                    .catch(error => {
+                        raiseError('Failed to save image file.', error);
                     });
             });
         });
     }
 
-    saveVideo(filename, options, callback) {
+    saveVideo(videoFile, audioFile, options) {
         if (this.hasAudio()) {
             logger.time('video-render');
 
-            let renderer = this.renderer = new VideoRenderer(filename, this.audioFile, options);
+            let renderer = this.renderer = new VideoRenderer(videoFile, audioFile, options);
 
             // Setup before rendering
             this.stopRender();
@@ -408,16 +409,17 @@ class Application extends EventEmitter {
             renderer.on('complete', () => {
                 logger.timeEnd('video-render', 'Render complete.');
 
-                if (callback) callback();
-
-                this.bufferSource = null;
                 this.renderer = null;
 
                 this.startRender();
+                this.spectrum.clearFrequencyData();
+                this.spectrum.clearTimeData();
             });
 
             // Start render
             renderer.start();
+
+            events.emit('start-render');
         }
         else {
             raiseError('No audio loaded.');
@@ -437,30 +439,33 @@ class Application extends EventEmitter {
             scenes: sceneData
         });
 
-        return IO.writeFileCompressed(file, data).then(() => {
-            logger.log('Project saved. (%s)', file);
+        return IO.writeFileCompressed(file, data)
+            .then(() => {
+                logger.log('Project saved. (%s)', file);
 
-            this.resetChanges();
+                this.resetChanges();
 
-            this.projectFile = file;
-        })
-        .catch(error => {
-            raiseError('Failed to save project file.', error);
-        });
+                this.projectFile = file;
+            })
+            .catch(error => {
+                raiseError('Failed to save project file.', error);
+            });
     }
 
     newProject() {
         if (this.stage.hasChanges()) {
             events.emit('unsaved-changes', () => {
-                this.loadProject(DEFAULT_PROJECT).then(() => {
-                    this.projectFile = '';
-                });
+                this.loadProject(DEFAULT_PROJECT)
+                    .then(() => {
+                        this.projectFile = '';
+                    });
             });
         }
         else {
-            this.loadProject(DEFAULT_PROJECT).then(() => {
-                this.projectFile = '';
-            });
+            this.loadProject(DEFAULT_PROJECT)
+                .then(() => {
+                    this.projectFile = '';
+                });
         }
     }
     //endregion

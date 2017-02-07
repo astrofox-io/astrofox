@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';

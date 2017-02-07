@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
@@ -29,11 +28,15 @@ export default class VideoSettings extends UIComponent {
     constructor(props) {
         super(props);
 
-        this.state = Object.assign(
-            { isRunning: false },
-            VideoSettings.defaultProps,
-            props
-        );
+        this.state = {
+            videoFile: '',
+            audioFile: '',
+            format: 'mp4',
+            resolution: 480,
+            fps: 30,
+            timeStart: 0,
+            timeEnd: 0
+        };
     }
 
     componentDidMount() {
@@ -42,7 +45,10 @@ export default class VideoSettings extends UIComponent {
         Application.stopAudio();
 
         if (audio) {
-            this.setState({ timeEnd: audio.getDuration() });
+            this.setState({
+                audioFile: Application.audioFile,
+                timeEnd: audio.getDuration()
+            });
         }
     }
 
@@ -59,16 +65,14 @@ export default class VideoSettings extends UIComponent {
     }
 
     onCancel() {
-        this.props.onClose();
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
     }
 
     onStart() {
-        if (!this.state.isRunning) {
-            this.setState({isRunning: true});
-
-            Application.saveVideo(this.state.videoFile, this.state, () => {
-                this.setState({isRunning: false});
-            });
+        if (this.props.onStart) {
+            this.props.onStart(this.state);
         }
     }
 
@@ -203,13 +207,3 @@ export default class VideoSettings extends UIComponent {
         );
     }
 }
-
-VideoSettings.defaultProps = {
-    videoFile: '',
-    audioFile: '',
-    format: 'mp4',
-    resolution: 480,
-    fps: 30,
-    timeStart: 0,
-    timeEnd: 0
-};

@@ -22,7 +22,6 @@ const ModalWindow = (props) => {
 
     return (
         <div className="modal">
-            <div className="background" />
             <div className="modal-window">
                 {closeButton}
                 <div className="header">

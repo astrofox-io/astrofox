@@ -8,18 +8,63 @@ import { formatTime } from '../../util/format';
 export default class RenderInfo extends UIComponent {
     constructor(props) {
         super(props);
+
+        this.state = {
+            complete: false,
+            fps: 0,
+            currentFrame: 0,
+            frames: 0,
+            startTime: 0,
+            elapsedTime: 0
+        };
     }
 
-    onClick() {
+    onButtonClick() {
+        if (this.renderer) {
+            this.renderer.stop();
+        }
 
+        if (this.props.onButtonClick) {
+            this.props.onButtonClick();
+        }
+    }
+
+    componentWillMount() {
+        if (!Application.renderer) return;
+
+        this.renderer = Application.renderer;
+
+        this.renderer.on('ready', this.processInfo, this);
+        this.renderer.on('complete', this.setComplete, this);
+    }
+
+    componentWillUnmount() {
+        if (this.renderer) {
+            this.renderer.off('ready', this.processInfo, this);
+            this.renderer.off('complete', this.setComplete, this);
+        }
+    }
+
+    processInfo() {
+        let { currentFrame, frames, startTime } = this.renderer;
+
+        this.setState({
+            currentFrame,
+            frames,
+            startTime
+        });
+    }
+
+    setComplete() {
+        this.setState({ complete: true });
     }
 
     render() {
-        let currentFrame = 11234,
-            totalFrames = 95678,
-            elapsedTime = 1116,
-            progress = ~~(currentFrame/totalFrames*100),
-            fps = 27.98;
+        let { currentFrame, frames, startTime, complete } = this.state,
+            elapsedTime = (window.performance.now() - startTime) / 1000,
+            progress = frames > 0 ? (currentFrame/frames*100) : 0,
+            fps = elapsedTime > 0 ? currentFrame / elapsedTime : 0,
+            text = complete ? 'Finished' : 'Cancel';
 
         const style = { width: progress + '%' };
 
@@ -31,7 +76,7 @@ export default class RenderInfo extends UIComponent {
                 <div className="render-stats">
                     <div className="info">
                         <span className="label">Progress</span>
-                        {progress + '%'}
+                        {~~progress + '%'}
                     </div>
                     <div className="info">
                         <span className="label">Elapsed Time</span>
@@ -39,13 +84,13 @@ export default class RenderInfo extends UIComponent {
                     </div>
                     <div className="info">
                         <span className="label">Frames</span>
-                        {currentFrame} / {totalFrames}
+                        {currentFrame} / {~~frames}
                     </div>
                     <div className="info">
                         <span className="label">FPS</span>
-                        {fps}
+                        {fps.toFixed(1)}
                     </div>
-                    <Button text="Cancel" onClick={this.onClick} />
+                    <Button text={text} onClick={this.onButtonClick} />
                 </div>
             </div>
         );
