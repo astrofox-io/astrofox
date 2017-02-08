@@ -12,7 +12,7 @@ let Astrofox = {
     }
 };
 
-if (process.env.NODE_ENV !== 'production') {
+if (!__PROD__) {
     Astrofox.env = Environment;
 }
 

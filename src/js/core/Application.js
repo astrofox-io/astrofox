@@ -155,7 +155,8 @@ class Application extends EventEmitter {
 
     //region Render Methods
     startRender() {
-        if (!this.frameData.id) {
+        if (!this.rendering) {
+            this.resetAnalyzer();
             this.render();
             this.rendering = true;
         }
@@ -412,8 +413,6 @@ class Application extends EventEmitter {
                 this.renderer = null;
 
                 this.startRender();
-                this.spectrum.clearFrequencyData();
-                this.spectrum.clearTimeData();
             });
 
             // Start render

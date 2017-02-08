@@ -6,7 +6,7 @@ export default class Logger {
     }
     
     output(method, args) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (!__PROD__) {
             let label = ['%c%s%c', 'color:indigo;font-weight:bold;', this.name, 'color:black'];
 
             // Convert to array
@@ -25,53 +25,39 @@ export default class Logger {
     }
 
     log() {
-        if (process.env.NODE_ENV !== 'production') {
-            this.output(console.log, arguments);
-        }
+        this.output(console.log, arguments);
     }
 
     info() {
-        if (process.env.NODE_ENV !== 'production') {
-            this.output(console.info, arguments);
-        }
+        this.output(console.info, arguments);
     }
 
     warn() {
-        if (process.env.NODE_ENV !== 'production') {
-            this.output(console.warn, arguments);
-        }
+        this.output(console.warn, arguments);
     }
 
     error() {
-        if (process.env.NODE_ENV !== 'production') {
-            this.output(console.error, arguments);
-        }
+        this.output(console.error, arguments);
     }
 
     trace() {
-        if (process.env.NODE_ENV !== 'production') {
-            this.output(console.trace, arguments);
-        }
+        this.output(console.trace, arguments);
     }
 
     time(id) {
-        if (process.env.NODE_ENV !== 'production') {
-            this.timers[id] = window.performance.now();
-        }
+        this.timers[id] = window.performance.now();
     }
 
     timeEnd(id) {
-        if (process.env.NODE_ENV !== 'production') {
-            let timer = this.timers[id];
-            if (timer) {
-                let t = (window.performance.now() - timer) / 1000,
-                    val = (t < 1) ? ~~(t*1000)+'ms' : t.toFixed(2)+'s',
-                    args = Array.prototype.slice.call(arguments, 1);
+        let timer = this.timers[id];
+        if (timer) {
+            let t = (window.performance.now() - timer) / 1000,
+                val = (t < 1) ? ~~(t*1000)+'ms' : t.toFixed(2)+'s',
+                args = Array.prototype.slice.call(arguments, 1);
 
-                this.output(console.log, ['%c+%s', 'color:green;', val].concat(args));
+            this.output(console.log, ['%c+%s', 'color:green;', val].concat(args));
 
-                return t;
-            }
+            return t;
         }
     }
 }

@@ -42,7 +42,7 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 //app.commandLine.appendSwitch('num-raster-threads', 4);
 
 // Memory profiling
-if (process.env.NODE_ENV !== 'production') {
+if (!__PROD__) {
     app.commandLine.appendSwitch('enable-precise-memory-info');
 }
 

@@ -73,7 +73,7 @@
     "babel-preset-react": "^6.22.0",
     "babili": "^0.0.10",
     "electron": "beta",
-    "electron-builder": "^12.3.1",
+    "electron-builder": "^13.0.0",
     "electron-updater": "^1.4.2",
     "eslint": "^3.15.0",
     "eslint-plugin-react": "^6.9.0",

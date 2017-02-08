@@ -27,10 +27,12 @@ export default class Footer extends UIComponent {
     }
 
     render() {
-        let memSize = null;
+        let memSize = null,
+            electronVersion = null;
 
-        if (process.env.NODE_ENV !== 'production') {
+        if (!__PROD__) {
             memSize = formatSize(performance.memory.usedJSHeapSize, 2);
+            electronVersion = process.versions.electron;
         }
 
         return (
@@ -38,8 +40,8 @@ export default class Footer extends UIComponent {
                 <div className="left flex">{this.props.text}</div>
                 <div className="right">{memSize}</div>
                 <div className="right">{this.state.fps} FPS</div>
-                <div className="right">v{process.versions.electron}</div>
-                <div className="right">v{APP_VERSION}</div>
+                <div className="right">{electronVersion}</div>
+                <div className="right">{APP_VERSION}</div>
             </div>
         );
     }

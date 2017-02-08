@@ -38,7 +38,8 @@ const config = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify((PROD) ? 'production' : 'development')
+            '__PROD__': PROD,
+            'process.env.NODE_ENV': JSON.stringify(PROD ? 'production' : 'development')
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
