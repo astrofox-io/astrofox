@@ -1,8 +1,6 @@
 {
-  "checkForUpdates": true,
-  "sendCrashReports": true,
-  "sendUsageStats": true,
-  "autoPlay": true,
+  "autoUpdate": true,
+  "autoPlayAudio": true,
   "showFPS": false,
   "systemFonts": [],
   "showWatermark": false

@@ -5,7 +5,6 @@ import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
 import { events, logger, raiseError } from './Global';
 import * as IO from '../util/io';
 import EventEmitter from './EventEmitter';
-import AppUpdater from './AppUpdater';
 import Player from '../audio/Player';
 import BufferedSound from '../audio/BufferedSound';
 import SpectrumAnalyzer from '../audio/SpectrumAnalyzer';
@@ -27,7 +26,6 @@ class Application extends EventEmitter {
         this.player = new Player(this.audioContext);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.stage = new Stage();
-        this.updater = new AppUpdater();
 
         this.audioFile = '';
         this.projectFile = '';
@@ -417,8 +415,6 @@ class Application extends EventEmitter {
 
             // Start render
             renderer.start();
-
-            events.emit('start-render');
         }
         else {
             raiseError('No audio loaded.');

@@ -36,7 +36,12 @@ export default class Oscilloscope extends UIComponent {
     render() {
         return (
             <div className="oscilloscope">
-                <canvas ref="canvas" width="854" height="100" />
+                <canvas
+                    ref="canvas"
+                    className="canvas"
+                    width="854"
+                    height="100"
+                />
             </div>
         );
     }

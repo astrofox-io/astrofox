@@ -55,7 +55,13 @@ export default class Spectrum extends UIComponent {
     render() {
         return (
             <div className="spectrum">
-                <canvas ref="canvas" width="854" height="100" onClick={this.onClick} />
+                <canvas
+                    ref="canvas"
+                    className="canvas"
+                    width="854"
+                    height="100"
+                    onClick={this.onClick}
+                />
             </div>
         );
     }

@@ -3,7 +3,7 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import Window from '../../core/Window';
 
-export default class Header extends UIComponent {
+export default class TitleBar extends UIComponent {
     constructor(props) {
         super(props);
     }
@@ -48,13 +48,19 @@ export default class Header extends UIComponent {
     }
 
     render() {
+        let devButtons = [];
+
+        if (!__PROD__) {
+            devButtons.push(<span key={0} className="button icon-code" onClick={this.onConsole} />);
+            devButtons.push(<span key={1} className="button icon-cw" onClick={this.onReload} />);
+        }
+
         return (
-            <div id="header">
+            <div className="titlebar">
                 <div className="icon"><img src="images/icon.png" width="16" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
-                    <span className="button icon-code" onClick={this.onConsole} />
-                    <span className="button icon-cw" onClick={this.onReload} />
+                    {devButtons}
                     <span className="button icon-minus" onClick={this.onMinimize} />
                     <span className="button icon-plus" onClick={this.onMaximize} />
                     <span className="button icon-cross" onClick={this.onClose} />

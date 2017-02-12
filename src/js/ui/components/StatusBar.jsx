@@ -5,7 +5,7 @@ import { APP_VERSION } from '../../core/Environment';
 import { events } from '../../core/Global';
 import { formatSize } from '../../util/format';
 
-export default class Footer extends UIComponent {
+export default class StatusBar extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -36,12 +36,18 @@ export default class Footer extends UIComponent {
         }
 
         return (
-            <div id="footer">
-                <div className="left flex">{this.props.text}</div>
-                <div className="right">{memSize}</div>
-                <div className="right">{this.state.fps} FPS</div>
-                <div className="right">{electronVersion}</div>
-                <div className="right">{APP_VERSION}</div>
+            <div className="statusbar">
+                <div className="area left">
+                    <span>{this.props.text}</span>
+                </div>
+                <div className="area center">
+                </div>
+                <div className="area right">
+                    <span>{memSize}</span>
+                    <span>{this.state.fps} FPS</span>
+                    <span>{electronVersion}</span>
+                    <span>{APP_VERSION}</span>
+                </div>
             </div>
         );
     }

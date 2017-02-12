@@ -107,6 +107,10 @@
     "label": "Help",
     "submenu": [
       {
+        "label": "Check For Updates...",
+        "action": "check-for-updates"
+      },
+      {
         "label": "About",
         "action": "about"
       }

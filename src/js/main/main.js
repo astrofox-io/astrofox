@@ -6,7 +6,7 @@ import AppUpdater from './autoupdate';
 import { createWindow, disposeWindow } from './window';
 
 const log = debug('main');
-const updater = new AppUpdater();
+const appUpdater = new AppUpdater();
 
 // Set global variables
 global['env'] = env;
@@ -86,11 +86,11 @@ app.on('will-quit', () => {
 // IPC events
 
 ipcMain.on('check-for-updates', event => {
-    updater.checkForUpdates().then(res => {
-        event.sender.send('check-for-updates-response', res);
+    appUpdater.checkForUpdates().then(result => {
+        event.sender.send('check-for-updates-complete', result);
     });
 });
 
 ipcMain.on('quit-and-install', () => {
-    updater.quitAndInstall();
+    appUpdater.quitAndInstall();
 });

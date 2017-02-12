@@ -37,7 +37,7 @@ const config = {
         templateFile: 'src/build/templates/icons.css.tpl',
         cssDest: 'app/browser/css/',
         cssFilename: 'icons.css',
-        fontDest: 'fonts/icons/'
+        fontDest: 'app/browser/fonts/icons/'
     },
     fonts: {
         templateFile: 'src/build/templates/fonts.css.tpl',

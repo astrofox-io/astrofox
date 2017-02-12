@@ -14,7 +14,9 @@ export default class AppUpdater {
         }
 
         autoUpdater.addListener('error', error => {
-            log(error);
+            log('update-error');
+
+            this.sendMessage('update-error', error.message);
         });
 
         autoUpdater.addListener('checking-for-update', () => {
@@ -23,34 +25,40 @@ export default class AppUpdater {
 
         autoUpdater.addListener('update-available', () => {
             log('update-available');
+
+            this.sendMessage('update-available');
         });
 
         autoUpdater.addListener('update-not-available', () => {
             log('update-not-available');
+
+            this.sendMessage('update-not-available');
         });
 
         autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName, releaseDate, updateURL) => {
             log('update-downloaded');
 
-            mainWindow.webContents.send('update-downloaded', {
-                releaseNotes,
-                releaseName,
-                releaseDate,
-                updateURL
-            });
+            this.sendMessage(
+                'update-downloaded',
+                {
+                    releaseNotes,
+                    releaseName,
+                    releaseDate,
+                    updateURL
+                }
+            );
         });
     }
 
     checkForUpdates() {
-        return autoUpdater.checkForUpdates()
-            .then(result => {
-                log(result);
-
-                return result;
-            });
+        return autoUpdater.checkForUpdates();
     }
 
     quitAndInstall() {
-        autoUpdater.quitAndInstall();
+        return autoUpdater.quitAndInstall();
+    }
+
+    sendMessage(channel, data) {
+        mainWindow.webContents.send(channel, data);
     }
 }

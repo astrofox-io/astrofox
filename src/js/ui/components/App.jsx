@@ -3,26 +3,27 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import Window from '../../core/Window';
-import {events} from '../../core/Global';
+import { events } from '../../core/Global';
 
-import Header from './Header';
-import Footer from './Footer';
-import MenuBar from './MenuBar';
-import Stage from './Stage';
-import Player from './Player';
-import Spectrum from './Spectrum';
-import Oscilloscope from './Oscilloscope';
-import AudioWaveform from './AudioWaveform';
-import Overlay from './Overlay';
-import ControlDock from './ControlDock';
-import Preload from './Preload';
 import About from './About';
 import AppSettings from './AppSettings';
+import AudioWaveform from './AudioWaveform';
 import CanvasSettings from './CanvasSettings';
-import VideoSettings from './VideoSettings';
+import ControlDock from './ControlDock';
 import ControlPicker from './ControlPicker';
-import ModalWindow from './ModalWindow';
 import Dialog from './Dialog';
+import MenuBar from './MenuBar';
+import ModalWindow from './ModalWindow';
+import Oscilloscope from './Oscilloscope';
+import Overlay from './Overlay';
+import Player from './Player';
+import Preload from './Preload';
+import StatusBar from './StatusBar';
+import Stage from './Stage';
+import Spectrum from './Spectrum';
+import TitleBar from './TitleBar';
+import Updates from './Updates';
+import VideoSettings from './VideoSettings';
 
 import menuConfig from '../../../config/menu';
 import audioExtensions from '../../../config/audioExtensions';
@@ -73,10 +74,6 @@ export default class App extends UIComponent {
         });
 
         events.on('unsaved-changes', this.onUnsavedChanges);
-
-        events.on('start-render', () => {
-            this.setState({ rendering: true });
-        });
     }
 
     componentDidMount() {
@@ -179,6 +176,13 @@ export default class App extends UIComponent {
             case 'view-control-dock':
                 this.refs.dock.toggleDock();
                 this.refs.menubar.setCheckState(action);
+                break;
+
+            case 'check-for-updates':
+                this.showModal(
+                    <Updates onClose={this.hideModal} />,
+                    {title: 'UPDATES', buttons: null}
+                );
                 break;
 
             case 'about':
@@ -320,7 +324,7 @@ export default class App extends UIComponent {
                 onDrop={this.onDragDrop}
                 onDragOver={this.onDragDrop}>
                 <Preload />
-                <Header />
+                <TitleBar />
                 <MenuBar
                     ref="menubar"
                     items={menuConfig}
@@ -341,7 +345,7 @@ export default class App extends UIComponent {
                     </div>
                     <ControlDock ref="dock"/>
                 </div>
-                <Footer text={text}/>
+                <StatusBar text={text}/>
                 <Overlay>
                     {modals}
                 </Overlay>

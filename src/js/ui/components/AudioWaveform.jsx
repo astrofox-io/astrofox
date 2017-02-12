@@ -137,6 +137,7 @@ export default class AudioWaveform extends UIComponent {
             <div className="waveform">
                 <canvas
                     ref="canvas"
+                    className="canvas"
                     width={width}
                     height={height}
                     onClick={this.onClick}

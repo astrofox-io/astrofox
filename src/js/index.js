@@ -3,17 +3,15 @@ import ReactDOM from 'react-dom';
 import * as Environment from './core/Environment';
 import App from './ui/components/App';
 
-let Astrofox = {
-    start: () => {
-        ReactDOM.render(
-            <App />,
-            document.getElementById('app')
-        );
-    }
-};
-
-if (!__PROD__) {
-    Astrofox.env = Environment;
+export function start() {
+    ReactDOM.render(
+        <App />,
+        document.getElementById('app')
+    );
 }
 
-export default Astrofox;
+export let env = {};
+
+if (!__PROD__) {
+    env = Environment;
+}
