@@ -5157,6 +5157,10 @@ watchpack@^1.2.0:
     chokidar "^1.4.3"
     graceful-fs "^4.1.2"
 
+webpack-node-externals@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-1.5.4.tgz#ea05ba17108a23e776c35c42e7bb0e86c225be00"
+
 webpack-sources@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-0.1.4.tgz#ccc2c817e08e5fa393239412690bb481821393cd"

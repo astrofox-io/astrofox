@@ -10,11 +10,13 @@ export default class AppUpdater extends EventEmitter {
         this.checking = false;
         this.downloading = false;
         this.downloadComplete = false;
+        this.hasUpdate = false;
         this.versionInfo = null;
 
         ipcRenderer.on('update-available', () => {
             this.checking = false;
             this.downloading = true;
+            this.hasUpdate = true;
 
             this.emit('update-available');
         });

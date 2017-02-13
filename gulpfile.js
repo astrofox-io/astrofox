@@ -84,7 +84,7 @@ function logWebpack(done, watch) {
 
 // Builds application bundles
 function buildJs(done) {
-    webpack(appConfig)
+    return webpack(appConfig)
         .run(logWebpack(done));
 }
 
@@ -92,7 +92,7 @@ function buildJs(done) {
 function buildJsWatch(done) {
     let watch = false;
 
-    webpack(appConfig)
+    return webpack(appConfig)
         .watch({
             aggregateTimeout: 300,
             ignored: /node_modules/
@@ -103,7 +103,7 @@ function buildJsWatch(done) {
 
 // Builds main file for electron
 function buildMain(done) {
-    webpack(mainConfig)
+    return webpack(mainConfig)
         .run(logWebpack(done));
 }
 
@@ -179,14 +179,6 @@ function buildShaders() {
 
 /*** Tasks ***/
 
-gulp.task('set-dev', () => {
-    process.env.NODE_ENV = 'development';
-});
-
-gulp.task('set-prod', () => {
-    process.env.NODE_ENV = 'production';
-});
-
 gulp.task('build-js', buildJs);
 
 gulp.task('build-js-watch', buildJsWatch);
@@ -203,14 +195,14 @@ gulp.task('build-shaders', buildShaders);
 
 gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-fonts', 'build-main', 'build-js']);
 
-gulp.task('build-dev', ['set-dev', 'build-all']);
+gulp.task('build-dev', ['build-all']);
 
-gulp.task('build-prod', ['set-prod', 'build-all'], () => {
+gulp.task('build-prod', ['build-all'], () => {
     // Remove sourcemaps
     del(['./app/**/*.map']);
 });
 
-gulp.task('start-dev', ['set-dev', 'build-shaders', 'build-css', 'build-main', 'build-js-watch'], () => {
+gulp.task('start-dev', ['build-shaders', 'build-css', 'build-main', 'build-js-watch'], () => {
     // Watch for changes
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/js/main/**/*.js', ['build-main']);

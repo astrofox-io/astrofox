@@ -2,7 +2,7 @@ import id3 from 'id3js';
 import { remote } from 'electron';
 
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
-import { events, logger, raiseError } from './Global';
+import { appUpdater, events, logger, raiseError } from './Global';
 import * as IO from '../util/io';
 import EventEmitter from './EventEmitter';
 import Player from '../audio/Player';
@@ -96,6 +96,10 @@ class Application extends EventEmitter {
 
         // Load default project
         this.newProject();
+
+        if (this.config.autoUpdate) {
+            appUpdater.checkForUpdates();
+        }
     }
 
     doMenuAction(menuItem) {

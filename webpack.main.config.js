@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 
 const PROD = process.env.NODE_ENV === 'production';
 
@@ -22,10 +23,21 @@ const config = {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'src/js')
-                ]
+                ],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true
+                    }
+                }
             }
         ]
     },
+    externals: [
+        nodeExternals({
+            modulesFromFile: true
+        })
+    ],
     plugins: [
         new webpack.DefinePlugin({
             '__PROD__': PROD

@@ -1,5 +1,5 @@
 {
-  "name": "astrofox",
+  "name": "Astrofox",
   "version": "1.0.0-beta.1",
   "main": "app/main.js",
   "productName": "Astrofox",
@@ -90,6 +90,7 @@
     "gulp-sourcemaps": "^2.4.1",
     "gulp-template": "^4.0.0",
     "gulp-util": "^3.0.8",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-node-externals": "^1.5.4"
   }
 }

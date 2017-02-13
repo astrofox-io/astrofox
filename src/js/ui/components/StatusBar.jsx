@@ -15,11 +15,11 @@ export default class StatusBar extends UIComponent {
     }
 
     componentDidMount() {
-        events.on('tick', this.updateStats);
+        events.on('tick', this.updateStats, this);
     }
 
     componentWillUnmount() {
-        events.off('tick', this.updateStats);
+        events.off('tick', this.updateStats, this);
     }
 
     updateStats(stats) {
@@ -44,8 +44,8 @@ export default class StatusBar extends UIComponent {
                 </div>
                 <div className="area right">
                     <span>{memSize}</span>
-                    <span>{this.state.fps} FPS</span>
                     <span>{electronVersion}</span>
+                    <span>{this.state.fps} FPS</span>
                     <span>{APP_VERSION}</span>
                 </div>
             </div>

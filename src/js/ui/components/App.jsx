@@ -3,7 +3,8 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import Window from '../../core/Window';
-import { events } from '../../core/Global';
+import { appUpdater, events } from '../../core/Global';
+import { APP_VERSION } from '../../core/Environment';
 
 import About from './About';
 import AppSettings from './AppSettings';
@@ -74,6 +75,12 @@ export default class App extends UIComponent {
         });
 
         events.on('unsaved-changes', this.onUnsavedChanges);
+
+        appUpdater.on('check-for-updates-complete', () => {
+            if (appUpdater.hasUpdate) {
+                this.checkForUpdates();
+            }
+        });
     }
 
     componentDidMount() {
@@ -179,10 +186,7 @@ export default class App extends UIComponent {
                 break;
 
             case 'check-for-updates':
-                this.showModal(
-                    <Updates onClose={this.hideModal} />,
-                    {title: 'UPDATES', buttons: null}
-                );
+                this.checkForUpdates();
                 break;
 
             case 'about':
@@ -312,6 +316,13 @@ export default class App extends UIComponent {
 
     stopRender() {
         this.setState({ renderVideo: false });
+    }
+
+    checkForUpdates() {
+        this.showModal(
+            <Updates onClose={this.hideModal} />,
+            {title: 'UPDATES', buttons: null}
+        );
     }
 
     render() {

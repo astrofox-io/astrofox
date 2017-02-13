@@ -8,6 +8,8 @@ import { createWindow, disposeWindow } from './window';
 const log = debug('main');
 const appUpdater = new AppUpdater();
 
+log('NODE_ENV', process.env.NODE_ENV || 'development');
+
 // Set global variables
 global['env'] = env;
 
