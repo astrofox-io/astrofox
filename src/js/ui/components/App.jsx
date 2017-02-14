@@ -4,7 +4,6 @@ import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import Window from '../../core/Window';
 import { appUpdater, events } from '../../core/Global';
-import { APP_VERSION } from '../../core/Environment';
 
 import About from './About';
 import AppSettings from './AppSettings';
@@ -191,8 +190,8 @@ export default class App extends UIComponent {
 
             case 'about':
                 this.showModal(
-                    <About key="about"/>,
-                    {title: 'ABOUT', buttons: ['Close']}
+                    <About key="about" onClose={this.hideModal} />,
+                    {title: null, buttons: null}
                 );
                 break;
         }
@@ -247,6 +246,7 @@ export default class App extends UIComponent {
 
         let modals = this.state.modals;
 
+        // Default button
         props = Object.assign(
             {
                 onClose: () => this.hideModal(),
@@ -319,10 +319,19 @@ export default class App extends UIComponent {
     }
 
     checkForUpdates() {
+        if (this.updatesShown) return;
+
+        let onClose = () => {
+            this.hideModal();
+            this.updatesShown = false;
+        };
+
         this.showModal(
-            <Updates onClose={this.hideModal} />,
+            <Updates onClose={onClose} />,
             {title: 'UPDATES', buttons: null}
         );
+
+        this.updatesShown = true;
     }
 
     render() {

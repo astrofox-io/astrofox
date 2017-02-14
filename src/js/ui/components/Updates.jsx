@@ -18,13 +18,10 @@ export default class Updater extends UIComponent {
         appUpdater.on('update', this.onCheckComplete, this);
 
         if (!appUpdater.checking && !appUpdater.downloading && !appUpdater.downloadComplete) {
-            this.setState({ message: 'Checking for updates...'});
-
             appUpdater.checkForUpdates();
         }
-        else {
-            this.onCheckComplete();
-        }
+
+        this.onCheckComplete();
     }
 
     componentWillUnmount() {
@@ -44,6 +41,9 @@ export default class Updater extends UIComponent {
         }
         else if (appUpdater.installing) {
             this.setState({ message: 'Installing update...' });
+        }
+        else if (appUpdater.checking) {
+            this.setState({ message: 'Checking for updates...' });
         }
         else {
             this.setState({ message: 'You have the latest version.' });

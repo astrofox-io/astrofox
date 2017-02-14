@@ -3,10 +3,15 @@ import React from 'react';
 import Button from './Button';
 
 const ModalWindow = (props) => {
-    let buttons = null;
+    let title, buttons, closeButton;
 
-    let closeButton = (props.showCloseButton !== false) ?
-            <span className="close-button icon-cross" onClick={props.onClose} /> : null;
+    if (props.title) {
+        title = (
+            <div className="header">
+                {props.title}
+            </div>
+        );
+    }
 
     if (props.buttons) {
         buttons = props.buttons.map((text, index) => {
@@ -20,13 +25,20 @@ const ModalWindow = (props) => {
         });
     }
 
+    if (props.showCloseButton !== false) {
+        closeButton = (
+            <span
+                className="close-button icon-cross"
+                onClick={props.onClose}
+            />
+        );
+    }
+
     return (
         <div className="modal">
             <div className="modal-window">
                 {closeButton}
-                <div className="header">
-                    {props.title}
-                </div>
+                {title}
                 <div className="body">
                     {props.children}
                 </div>
