@@ -8,6 +8,7 @@ import { createWindow, disposeWindow } from './window';
 const log = debug('main');
 const appUpdater = new AppUpdater();
 
+// Show environment
 log('NODE_ENV', process.env.NODE_ENV || 'development');
 
 // Set global variables
@@ -92,6 +93,13 @@ ipcMain.on('check-for-updates', event => {
         event.sender.send('check-for-updates-complete', result);
     });
 });
+
+ipcMain.on('download-update', event => {
+    appUpdater.downloadUpdate().then(result => {
+        event.sender.send('download-update-complete', result);
+    });
+});
+
 
 ipcMain.on('quit-and-install', () => {
     appUpdater.quitAndInstall();

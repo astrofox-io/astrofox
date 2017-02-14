@@ -7,39 +7,55 @@ export default class AppUpdater extends EventEmitter {
     constructor() {
         super();
 
+        this.autoDownload = true;
         this.checking = false;
         this.downloading = false;
         this.downloadComplete = false;
         this.hasUpdate = false;
+        this.installing = false;
         this.versionInfo = null;
+        this.error = null;
 
+        // New version available
         ipcRenderer.on('update-available', () => {
             this.checking = false;
-            this.downloading = true;
             this.hasUpdate = true;
 
-            this.emit('update-available');
+            if (this.autoDownload) {
+                this.downloadUpdate();
+            }
+
+            this.emit('update', 'update-available');
         });
 
+        // Already at latest version
         ipcRenderer.on('update-not-available', () => {
             this.checking = false;
 
-            this.emit('update-not-available');
+            this.emit('update', 'update-not-available');
         });
 
-        ipcRenderer.on('update-downloaded', (event, data) => {
+        // Update downloaded successfully
+        ipcRenderer.on('update-downloaded', () => {
             this.downloading = false;
             this.downloadComplete = true;
 
-            this.emit('update-downloaded', null, data);
+            this.emit('update', 'update-downloaded');
         });
 
+        // Update error
         ipcRenderer.on('update-error', (event, error) => {
             this.checkComplete(error);
         });
 
+        // Check for updates response
         ipcRenderer.on('check-for-updates-complete', (event, data) => {
             this.checkComplete(null, data);
+        });
+
+        // Download update response
+        ipcRenderer.on('download-update-complete', (event, data) => {
+            logger.timeEnd('download-update', 'Download complete:', data);
         });
     }
 
@@ -48,6 +64,7 @@ export default class AppUpdater extends EventEmitter {
 
         if (error) {
             logger.error(error);
+            this.error = error;
         }
 
         if (data && data.versionInfo) {
@@ -56,12 +73,13 @@ export default class AppUpdater extends EventEmitter {
 
         logger.timeEnd('check-for-updates', 'Update check complete', data);
 
-        this.emit('check-for-updates-complete', error, data);
+        this.emit('update', 'check-for-updates-complete');
     }
 
     checkForUpdates() {
         if (!this.checking) {
             this.checking = true;
+            this.error = null;
 
             logger.time('check-for-updates');
 
@@ -69,7 +87,25 @@ export default class AppUpdater extends EventEmitter {
         }
     }
 
+    downloadUpdate() {
+        if (!this.downloading) {
+            this.downloading = true;
+
+            logger.time('download-update');
+
+            ipcRenderer.send('download-update');
+
+            this.emit('update', 'download-update');
+        }
+    }
+
     quitAndInstall() {
-        ipcRenderer.send('quit-and-install');
+        if (!this.installing) {
+            this.installing = true;
+
+            ipcRenderer.send('quit-and-install');
+
+            this.emit('update', 'quit-and-install');
+        }
     }
 }

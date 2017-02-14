@@ -13,6 +13,8 @@ export default class AppUpdater {
             return;
         }
 
+        autoUpdater.autoDownload = false;
+
         autoUpdater.addListener('error', error => {
             log('update-error');
 
@@ -56,6 +58,10 @@ export default class AppUpdater {
 
     quitAndInstall() {
         return autoUpdater.quitAndInstall();
+    }
+
+    downloadUpdate() {
+        return autoUpdater.downloadUpdate();
     }
 
     sendMessage(channel, data) {

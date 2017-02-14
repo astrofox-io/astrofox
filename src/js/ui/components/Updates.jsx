@@ -15,9 +15,7 @@ export default class Updater extends UIComponent {
     }
 
     componentDidMount() {
-        appUpdater.on('check-for-updates-complete', this.onCheckComplete, this);
-        appUpdater.on('update-error', this.onCheckComplete, this);
-        appUpdater.on('update-downloaded', this.onCheckComplete, this);
+        appUpdater.on('update', this.onCheckComplete, this);
 
         if (!appUpdater.checking && !appUpdater.downloading && !appUpdater.downloadComplete) {
             this.setState({ message: 'Checking for updates...'});
@@ -30,23 +28,22 @@ export default class Updater extends UIComponent {
     }
 
     componentWillUnmount() {
-        appUpdater.off('check-for-updates-complete', this.onCheckComplete, this);
-        appUpdater.off('update-error', this.onCheckComplete, this);
-        appUpdater.off('update-downloaded', this.onCheckComplete, this);
+        appUpdater.off('update', this.onCheckComplete, this);
     }
 
-    onCheckComplete(error) {
-        if (error) {
+    onCheckComplete() {
+        if (appUpdater.error) {
             this.setState({ message: 'Unable to check for updates.' });
-            return;
         }
-
-        if (appUpdater.downloading) {
+        else if (appUpdater.downloading) {
             this.setState({ message: 'Downloading update...' });
         }
         else if (appUpdater.downloadComplete) {
             let version = appUpdater.versionInfo.version;
             this.setState({ message: `A new update (${version}) is ready to install.` });
+        }
+        else if (appUpdater.installing) {
+            this.setState({ message: 'Installing update...' });
         }
         else {
             this.setState({ message: 'You have the latest version.' });
@@ -62,12 +59,12 @@ export default class Updater extends UIComponent {
             installButton,
             closeText = 'Close';
 
-        if (appUpdater.checking || appUpdater.downloading) {
+        if (appUpdater.checking || appUpdater.downloading || appUpdater.installing) {
             spinner = <Spinner size={30} />;
         }
 
-        if (appUpdater.downloadComplete) {
-            installButton = <Button text="Restart and Install" onClick={this.installUpdate}/>;
+        if (appUpdater.downloadComplete && !appUpdater.installing) {
+            installButton = <Button text="Restart and Install Now" onClick={this.installUpdate}/>;
             closeText = 'Install Later';
         }
 

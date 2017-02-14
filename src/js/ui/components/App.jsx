@@ -76,8 +76,8 @@ export default class App extends UIComponent {
 
         events.on('unsaved-changes', this.onUnsavedChanges);
 
-        appUpdater.on('check-for-updates-complete', () => {
-            if (appUpdater.hasUpdate) {
+        appUpdater.on('update', event => {
+            if (event === 'check-for-updates-complete' && appUpdater.hasUpdate) {
                 this.checkForUpdates();
             }
         });
