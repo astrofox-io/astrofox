@@ -125,7 +125,7 @@ function buildFonts() {
     let { templateFile, filename, dest } = config.fonts;
 
     return gulp.src(templateFile)
-        .pipe(plumber())
+        .pipe(plumber({errorHandler: logError}))
         .pipe(template({ fonts: fontConfig }))
         .pipe(gulpif(getEnvironment() === 'production', cleancss()))
         .pipe(rename(filename))
@@ -137,7 +137,7 @@ function buildIcons() {
     let { src, templateFile, cssDest, cssFilename, fontDest } = config.icons;
 
     return gulp.src(src)
-        .pipe(plumber())
+        .pipe(plumber({errorHandler: logError}))
         .pipe(iconfont({
             fontName: 'icons',
             fontHeight: 300,
@@ -153,7 +153,7 @@ function buildIcons() {
             });
 
             return gulp.src(templateFile)
-                .pipe(plumber())
+                .pipe(plumber({errorHandler: logError}))
                 .pipe(template({
                     glyphs: icons,
                     fontName: options.fontName,
@@ -171,7 +171,7 @@ function buildShaders() {
     let { src, dest } = config.glsl;
 
     return gulp.src(src)
-        .pipe(plumber())
+        .pipe(plumber({errorHandler: logError}))
         .pipe(glsl({ format: 'object', es6: true }))
         .pipe(header('/* eslint-disable quotes */\n'))
         .pipe(gulp.dest(dest));
@@ -202,11 +202,11 @@ gulp.task('build-prod', ['build-all'], () => {
     del(['./app/**/*.map']);
 });
 
-gulp.task('start-dev', ['build-shaders', 'build-css', 'build-main', 'build-js-watch'], () => {
+gulp.task('watch', ['build-shaders', 'build-css', 'build-main', 'build-js-watch'], () => {
     // Watch for changes
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/js/main/**/*.js', ['build-main']);
     gulp.watch('./src/glsl/**/*.glsl', ['build-shaders']);
 });
 
-gulp.task('default', ['start-dev']);
+gulp.task('default', ['watch']);

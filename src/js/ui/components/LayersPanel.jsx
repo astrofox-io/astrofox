@@ -7,10 +7,10 @@ import CanvasDisplay from '../../displays/CanvasDisplay';
 import Scene from '../../displays/Scene';
 import Effect from '../../effects/Effect';
 import { events } from '../../core/Global';
-import * as displayLibrary from '../../lib/displays';
-import * as effectsLibrary from '../../lib/effects';
 import Layer from './Layer';
 import ButtonInput from '../inputs/ButtonInput';
+
+const { stage } = Application;
 
 export default class LayersPanel extends UIComponent {
     constructor(props) {
@@ -46,7 +46,7 @@ export default class LayersPanel extends UIComponent {
     onAddSceneClick() {
         let scene = new Scene();
 
-        Application.stage.addScene(scene);
+        stage.addScene(scene);
 
         this.updateLayers(() => {
             this.setActiveLayer(scene);
@@ -59,10 +59,7 @@ export default class LayersPanel extends UIComponent {
         let scene = this.getActiveScene();
 
         if (scene) {
-            events.emit(
-                'pick_control',
-                { title: 'ADD DISPLAY', scene: scene, items: displayLibrary }
-            );
+            events.emit('pick-control', 'display');
         }
     }
 
@@ -70,10 +67,7 @@ export default class LayersPanel extends UIComponent {
         let scene = this.getActiveScene();
 
         if (scene) {
-            events.emit(
-                'pick_control',
-                { title: 'ADD EFFECT', scene: scene, items: effectsLibrary }
-            );
+            events.emit('pick-control', 'effect');
         }
     }
 
@@ -84,7 +78,7 @@ export default class LayersPanel extends UIComponent {
             layer = layers[index],
             last = layers.length - 1;
 
-        if (Application.stage.hasScenes() && layer) {
+        if (stage.hasScenes() && layer) {
             if (layer instanceof Scene) {
                 layer.owner.removeScene(layer);
             }
@@ -141,7 +135,7 @@ export default class LayersPanel extends UIComponent {
     updateLayers(callback) {
         let layers = [];
 
-        Application.stage.getScenes().reverse().forEach(scene => {
+        stage.getScenes().reverse().forEach(scene => {
             layers.push(scene);
 
             scene.getEffects().reverse().forEach(effect => {
@@ -184,7 +178,7 @@ export default class LayersPanel extends UIComponent {
     render() {
         let layers,
             state = this.state,
-            disabled = !Application.stage.hasScenes();
+            disabled = !stage.hasScenes();
 
         layers = state.layers.map((layer, index) => {
             let icon;

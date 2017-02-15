@@ -1,34 +1,58 @@
 import React from 'react';
 
+import UIComponent from '../UIComponent';
 import { events } from '../../core/Global';
+import { TabPanel, Tab } from '../layout/TabPanel';
+import * as displayLibrary from '../../lib/displays';
+import * as effectsLibrary from '../../lib/effects';
 
-const ControlPicker = (props) => {
-    let values = Object.keys(props.items).map(key => props.items[key]);
+export default class ControlPicker extends UIComponent {
+    constructor(props) {
+        super(props);
+    }
 
-    let controls = values.map((item, index) => {
-        let onClick = () => {
-            let obj = new item();
+    onClick(item) {
+        events.emit('control-picked', item);
 
-            props.scene.addElement(obj);
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
+    }
 
-            events.emit('layers-update', obj);
+    render() {
+        let displays = Object.keys(displayLibrary).map((key, index) => {
+            let display = displayLibrary[key];
 
-            props.onClose();
-        };
+            return (
+                <div key={index} className="item">
+                    <div className="image" onClick={this.onClick.bind(null, display)}></div>
+                    <div className="name">{display.label}</div>
+                </div>
+            );
+        });
+
+        let effects = Object.keys(effectsLibrary).map((key, index) => {
+            let effect = effectsLibrary[key];
+
+            return (
+                <div key={index} className="item">
+                    <div className="image" onClick={this.onClick.bind(null, effect)}></div>
+                    <div className="name">{effect.label}</div>
+                </div>
+            );
+        });
 
         return (
-            <div key={index} className="item">
-                <div className="image" onClick={onClick}></div>
-                <div className="name">{item.label}</div>
+            <div id="control-picker" className="picker-panel">
+                <TabPanel tabPosition="left" activeIndex={this.props.activeIndex}>
+                    <Tab name="Displays" contentClassName="picker">
+                        {displays}
+                    </Tab>
+                    <Tab name="Effects" contentClassName="picker">
+                        {effects}
+                    </Tab>
+                </TabPanel>
             </div>
         );
-    });
-
-    return (
-        <div className="control-picker">
-            {controls}
-        </div>
-    );
+    }
 };
-
-export default ControlPicker;

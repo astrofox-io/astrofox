@@ -56,10 +56,15 @@ export default class App extends UIComponent {
             });
         });
 
-        events.on('pick_control', props => {
+        events.on('pick-control', type => {
+            const types = ['display', 'effect'];
+
             this.showModal(
-                <ControlPicker scene={props.scene} items={props.items} onClose={this.hideModal}/>,
-                props
+                <ControlPicker
+                    activeIndex={types.indexOf(type)}
+                    onClose={this.hideModal}
+                />,
+                { title: 'ADD CONTROL', buttons: ['Close'] }
             );
         });
 
@@ -77,7 +82,7 @@ export default class App extends UIComponent {
 
         appUpdater.on('update', event => {
             if (event === 'check-for-updates-complete' && appUpdater.hasUpdate) {
-                this.checkForUpdates();
+                this.showCheckForUpdates();
             }
         });
     }
@@ -185,7 +190,7 @@ export default class App extends UIComponent {
                 break;
 
             case 'check-for-updates':
-                this.checkForUpdates();
+                this.showCheckForUpdates();
                 break;
 
             case 'about':
@@ -282,11 +287,27 @@ export default class App extends UIComponent {
         };
 
         this.showModal(
-            <Dialog icon={props.icon} message={props.message}/>,
+            <Dialog icon={props.icon} message={props.message} />,
             props
         );
 
         this.dialogShown = true;
+    }
+
+    showCheckForUpdates() {
+        if (this.updatesShown) return;
+
+        let onClose = () => {
+            this.hideModal();
+            this.updatesShown = false;
+        };
+
+        this.showModal(
+            <Updates onClose={onClose} />,
+            {title: 'UPDATES', buttons: null}
+        );
+
+        this.updatesShown = true;
     }
 
     loadAudioFile(file) {
@@ -316,22 +337,6 @@ export default class App extends UIComponent {
 
     stopRender() {
         this.setState({ renderVideo: false });
-    }
-
-    checkForUpdates() {
-        if (this.updatesShown) return;
-
-        let onClose = () => {
-            this.hideModal();
-            this.updatesShown = false;
-        };
-
-        this.showModal(
-            <Updates onClose={onClose} />,
-            {title: 'UPDATES', buttons: null}
-        );
-
-        this.updatesShown = true;
     }
 
     render() {

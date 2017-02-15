@@ -1,6 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
 
+export const SettingsPanel = (props) => {
+    return (
+        <div id={props.id} className={classNames('settings-panel', props.className)}>
+            {props.children}
+        </div>
+    );
+};
+
 export const Settings = (props) => {
     return (
         <div className={classNames('settings', props.className)}>

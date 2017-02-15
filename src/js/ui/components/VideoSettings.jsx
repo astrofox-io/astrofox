@@ -10,7 +10,7 @@ import NumberInput from '../inputs/NumberInput';
 import TimeInput from '../inputs/TimeInput';
 import SelectInput from '../inputs/SelectInput';
 import TextInput from '../inputs/TextInput';
-import { Settings, Row } from '../components/Settings';
+import { SettingsPanel, Settings, Row } from '../layout/SettingsPanel';
 import { replaceExt } from '../../util/file';
 
 const videoFormats = [
@@ -115,7 +115,7 @@ export default class VideoSettings extends UIComponent {
             canStart = (state.videoFile && state.audioFile);
 
         return (
-            <div id="video-settings" className="settings-panel">
+            <SettingsPanel id="video-settings">
                 <Settings>
                     <Row label="Save Video To">
                         <TextInput
@@ -203,7 +203,7 @@ export default class VideoSettings extends UIComponent {
                     <Button text="Start" onClick={this.onStart} disabled={!canStart} />
                     <Button text="Cancel" onClick={this.onCancel} />
                 </div>
-            </div>
+            </SettingsPanel>
         );
     }
 }

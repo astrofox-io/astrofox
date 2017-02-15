@@ -5,7 +5,7 @@ import Application from '../../core/Application';
 import Button from '../components/Button';
 import ColorInput from '../inputs/ColorInput';
 import SelectInput from '../inputs/SelectInput';
-import { Settings, Row } from '../components/Settings';
+import { SettingsPanel, Settings, Row } from '../layout/SettingsPanel';
 
 const canvasSizes = {
     '16:9': { width: 854, height: 480 },
@@ -47,7 +47,7 @@ export default class CanvasSettings extends UIComponent {
         const state = this.state;
 
         return (
-            <div id="canvas-settings" className="settings-panel">
+            <SettingsPanel id="canvas-settings">
                 <Settings>
                     <Row label="Aspect Ratio">
                         <SelectInput
@@ -70,7 +70,7 @@ export default class CanvasSettings extends UIComponent {
                     <Button onClick={this.onSave} text="OK" />
                     <Button onClick={this.onCancel} text="Cancel" />
                 </div>
-            </div>
+            </SettingsPanel>
         );
     }
 }

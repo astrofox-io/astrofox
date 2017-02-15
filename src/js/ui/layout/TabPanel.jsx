@@ -3,12 +3,12 @@ import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 
-export default class TabPanel extends UIComponent {
+export class TabPanel extends UIComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            activeIndex: 0
+            activeIndex: props.activeIndex
         };
     }
 
@@ -22,7 +22,7 @@ export default class TabPanel extends UIComponent {
             tabs = [],
             content = [];
 
-        const panelClass = {
+        const panelClasses = {
             'tab-panel': true,
             'tab-position-left': props.tabPosition === 'left',
             'tab-position-right': props.tabPosition === 'right',
@@ -30,27 +30,32 @@ export default class TabPanel extends UIComponent {
             'tab-position-bottom': props.tabPosition === 'bottom'
         };
 
-        const tabClass = {
+        const tabsClass = {
             'tabs': true,
             'tabs-horizontal': props.tabPosition === 'top' || props.tabPosition === 'bottom'
         };
 
         // Generate tabs and content
-        React.Children.map(props.children, (item, index) => {
+        React.Children.map(props.children, (child, index) => {
+            const tabClasses = {
+                'tab': true,
+                'tab-active': index === activeIndex
+            };
+
             tabs.push(
                 <div key={index}
-                     className={classNames('tab', {'tab-active': index === activeIndex})}
+                     className={classNames(tabClasses, child.props.className)}
                      onClick={this.onTabClick.bind(this, index)}>
-                    {item.props.name}
+                    {child.props.name}
                 </div>
             );
 
             content.push(
                 React.cloneElement(
-                    item,
+                    child,
                     {
                         key: index,
-                        className: item.props.className,
+                        className: child.props.contentClassName,
                         visible: index === activeIndex
                     }
                 )
@@ -58,11 +63,11 @@ export default class TabPanel extends UIComponent {
         });
 
         return (
-            <div id={props.id} className={classNames(panelClass, props.className)}>
-                <div className={classNames(tabClass)}>
+            <div id={props.id} className={classNames(panelClasses, props.className)}>
+                <div className={classNames(tabsClass)}>
                     {tabs}
                 </div>
-                <div className="tab-view">
+                <div className={classNames('tab-content', props.contentClassName)}>
                     {content}
                 </div>
             </div>
@@ -72,4 +77,14 @@ export default class TabPanel extends UIComponent {
 
 TabPanel.defaultProps = {
     tabPosition: 'top'
+};
+
+export const Tab = (props) => {
+    let style = (props.visible) ? null : {display: 'none'};
+
+    return (
+        <div className={props.className} style={style}>
+            {props.children}
+        </div>
+    );
 };

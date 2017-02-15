@@ -16,12 +16,12 @@ export default class ControlDock extends UIComponent {
     }
     
     componentDidMount() {
-        events.on('layers-update', this.updateLayers);
+        events.on('control-picked', this.updateLayers);
         events.on('project-loaded', this.onProjectLoaded);
     }
 
     componentWillUnmount() {
-        events.off('layers-update', this.updateLayers);
+        events.off('control-picked', this.updateLayers);
         events.off('project-loaded', this.onProjectLoaded);
     }
 
@@ -58,9 +58,18 @@ export default class ControlDock extends UIComponent {
         this.setState({ visible: !this.state.visible });
     }
 
-    updateLayers(obj) {
-        let layers = this.refs.layers,
+    updateLayers(newElement) {
+        let obj, scene,
+            layers = this.refs.layers,
             controls = this.refs.controls;
+
+        if (newElement) {
+            scene = layers.getActiveScene();
+            if (scene) {
+                obj = new newElement();
+                scene.addElement(obj);
+            }
+        }
 
         layers.updateLayers(() => {
             layers.setActiveLayer(obj);
