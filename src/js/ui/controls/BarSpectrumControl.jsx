@@ -1,26 +1,17 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ColorRangeInput from '../inputs/ColorRangeInput';
 import RangeInput from '../inputs/RangeInput';
 import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
-export default class BarSpectrumControl extends UIComponent {
+export default class BarSpectrumControl extends UIPureComponent {
     constructor(props) {
         super(props);
         
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
-    }
-
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
     }
 
     onChange(name, val) {
@@ -36,7 +27,6 @@ export default class BarSpectrumControl extends UIComponent {
 
         obj[name] = val;
 
-        this.shouldUpdate = true;
         this.setState(obj, () => {
             display.update(obj);
         });

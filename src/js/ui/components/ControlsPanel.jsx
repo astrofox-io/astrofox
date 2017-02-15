@@ -5,6 +5,8 @@ import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import { getControlComponent } from '../../util/controls';
 
+const { stage } = Application;
+
 export default class ControlsPanel extends UIComponent {
     constructor(props) {
         super(props);
@@ -24,7 +26,7 @@ export default class ControlsPanel extends UIComponent {
     updateControls(callback) {
         let controls = [];
 
-        Application.stage.getScenes().reverse().forEach(scene => {
+        stage.getScenes().reverse().forEach(scene => {
             controls.push(scene);
             scene.getEffects().reverse().forEach(effect => {
                 controls.push(effect);
@@ -59,19 +61,19 @@ export default class ControlsPanel extends UIComponent {
     render() {
         let controls = this.state.controls.map((display, index, arr) => {
             let id = display.id,
-                Control = getControlComponent(display),
-                wrapperClass = { 'control-active': index === this.state.activeIndex },
-                controlClass = { 'control-last': index == arr.length - 1 };
+                Component = getControlComponent(display),
+                classes = {
+                    'control-active': index === this.state.activeIndex,
+                    'control-last': index == arr.length - 1
+                };
 
             return (
                 <div
                     key={id}
-                    ref={el => this.nodes[id] = el}
-                    className={classNames(wrapperClass)}>
-                    <Control
-                        ref={id}
+                    ref={el => this.nodes[id] = el}>
+                    <Component
                         display={display}
-                        className={classNames(controlClass)}
+                        className={classNames(classes)}
                     />
                 </div>
             );

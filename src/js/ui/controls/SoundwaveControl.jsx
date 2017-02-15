@@ -1,13 +1,13 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ColorInput from '../inputs/ColorInput';
 import RangeInput from '../inputs/RangeInput';
 import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
-export default class SoundwaveControl extends UIComponent {
+export default class SoundwaveControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -15,21 +15,11 @@ export default class SoundwaveControl extends UIComponent {
         this.shouldUpdate = false;
     }
 
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
-    }
-
     onChange(name, val) {
         let obj = {},
             display = this.props.display;
 
         obj[name] = val;
-
-        this.shouldUpdate = true;
 
         this.setState(obj, () => {
             display.update(obj);

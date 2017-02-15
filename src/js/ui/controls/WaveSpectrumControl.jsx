@@ -13,15 +13,6 @@ export default class WaveSpectrumControl extends UIComponent {
         super(props);
 
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
-    }
-
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
     }
 
     onChange(name, val) {
@@ -30,7 +21,6 @@ export default class WaveSpectrumControl extends UIComponent {
 
         obj[name] = val;
 
-        this.shouldUpdate = true;
         this.setState(obj, () => {
             display.update(obj);
         });

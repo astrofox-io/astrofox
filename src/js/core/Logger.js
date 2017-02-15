@@ -14,8 +14,8 @@ export default class Logger {
                 args = Array.prototype.slice.call(args);
             }
 
-            // If colors are defined, merge with label
-            if (args.length && typeof args[0] === 'string' && args[0].indexOf('%c') >= 0) {
+            // If format specifiers are defined, merge with label
+            if (args.length && typeof args[0] === 'string' && /%[sidfoOc]{1}/.test(args[0])) {
                 label[0] += ' ' + args[0];
                 args = args.slice(1);
             }

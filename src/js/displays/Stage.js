@@ -167,7 +167,7 @@ export default class Stage extends Display {
                                 newScene.addElement(new component(display.options));
                             }
                             else {
-                                logger.warn('Display "%s" not found.', display.name);
+                                logger.warn('Display not found:', display.name);
                             }
                         });
                     }
@@ -182,7 +182,7 @@ export default class Stage extends Display {
                                 newScene.addElement(new component(effect.options));
                             }
                             else {
-                                logger.warn('Effect "%s" not found.', effect.name);
+                                logger.warn('Effect not found:', effect.name);
                             }
                         });
                     }

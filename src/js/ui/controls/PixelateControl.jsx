@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -14,20 +14,11 @@ const types = [
 const MIN_PIXEL_SIZE = 2;
 const MAX_PIXEL_SIZE = 240;
 
-export default class PixelateControl extends UIComponent {
+export default class PixelateControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
-    }
-
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
     }
 
     onChange(name, val) {
@@ -35,8 +26,6 @@ export default class PixelateControl extends UIComponent {
             display = this.props.display;
 
         obj[name] = val;
-
-        this.shouldUpdate = true;
 
         this.setState(obj, () => {
             display.update(obj);

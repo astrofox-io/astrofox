@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ImageInput from '../inputs/ImageInput';
 import RangeInput from '../inputs/RangeInput';
@@ -11,32 +11,21 @@ import BLANK_IMAGE from '../../../images/data/BlankGif.json';
 const CANVAS_WIDTH = 854;
 const CANVAS_HEIGHT = 480;
 
-export default class ImageControl extends UIComponent {
+export default class ImageControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
     }
 
     componentDidMount() {
         let display = this.props.display;
 
         if (display.initialized) {
-            this.shouldUpdate = true;
-
             this.setState(display.options);
         }
 
         this.image = this.refs.image.getImage();
-    }
-
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
     }
 
     onChange(name, val) {
@@ -80,8 +69,6 @@ export default class ImageControl extends UIComponent {
                 obj.width = Math.round(val * ratio);
             }
         }
-
-        this.shouldUpdate = true;
 
         this.setState(obj, () => {
             display.update(obj);

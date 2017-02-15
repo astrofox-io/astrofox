@@ -1,26 +1,17 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
 const OFFSET_MAX = 854;
 
-export default class RGBShiftControl extends UIComponent {
+export default class RGBShiftControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
-    }
-
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
     }
 
     onChange(name, val) {
@@ -28,8 +19,6 @@ export default class RGBShiftControl extends UIComponent {
             display = this.props.display;
 
         obj[name] = val;
-
-        this.shouldUpdate = true;
 
         this.setState(obj, () => {
             display.update(obj);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import ColorInput from '../inputs/ColorInput';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
@@ -34,20 +34,11 @@ const shading = [
     'Flat'
 ];
 
-export default class GeometryControl extends UIComponent {
+export default class GeometryControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
-    }
-
-    componentDidUpdate() {
-        this.shouldUpdate = false;
-    }
-
-    shouldComponentUpdate() {
-        return this.shouldUpdate;
     }
 
     onChange(name, val) {
@@ -55,8 +46,6 @@ export default class GeometryControl extends UIComponent {
             display = this.props.display;
 
         obj[name] = val;
-
-        this.shouldUpdate = true;
 
         this.setState(obj, () => {
             display.update(obj);
