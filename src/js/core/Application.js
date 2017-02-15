@@ -98,7 +98,7 @@ class Application extends EventEmitter {
         this.newProject();
 
         if (this.config.autoUpdate) {
-            appUpdater.checkForUpdates();
+            //appUpdater.checkForUpdates();
         }
     }
 

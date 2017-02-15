@@ -1,0 +1,3 @@
+provider: generic
+url: 'https://astrofox.io/download/win/x64'
+channel: latest

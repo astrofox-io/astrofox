@@ -1,7 +1,9 @@
 import { autoUpdater } from 'electron-updater';
+import path from 'path';
 import * as os from 'os';
 import debug from 'debug';
 import { mainWindow } from './window';
+import { APP_PATH } from './environment';
 
 const log = debug('autoupdate');
 
@@ -15,40 +17,36 @@ export default class AppUpdater {
 
         autoUpdater.autoDownload = false;
 
-        autoUpdater.addListener('error', error => {
+        if (!__PROD__) {
+            autoUpdater.updateConfigPath = path.join(APP_PATH, `app-update-${platform}.yml`);
+        }
+
+        autoUpdater.on('error', error => {
             log('update-error');
 
-            this.sendMessage('update-error', error.message);
+            this.sendMessage('update-error', error.stack || error.message);
         });
 
-        autoUpdater.addListener('checking-for-update', () => {
+        autoUpdater.on('checking-for-update', () => {
             log('checking-for-update');
         });
 
-        autoUpdater.addListener('update-available', () => {
+        autoUpdater.on('update-available', () => {
             log('update-available');
 
             this.sendMessage('update-available');
         });
 
-        autoUpdater.addListener('update-not-available', () => {
+        autoUpdater.on('update-not-available', () => {
             log('update-not-available');
 
             this.sendMessage('update-not-available');
         });
 
-        autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName, releaseDate, updateURL) => {
+        autoUpdater.on('update-downloaded', () => {
             log('update-downloaded');
 
-            this.sendMessage(
-                'update-downloaded',
-                {
-                    releaseNotes,
-                    releaseName,
-                    releaseDate,
-                    updateURL
-                }
-            );
+            this.sendMessage('update-downloaded');
         });
     }
 
