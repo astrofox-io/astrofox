@@ -19,28 +19,27 @@ export default class ControlPicker extends UIComponent {
         }
     }
 
+    getItems(items) {
+        return Object.keys(items).map((key, index) => {
+            let item = items[key],
+                style = { backgroundImage: `url(images/controls/${item.name}.png)` };
+
+            return (
+                <div key={index} className="item">
+                    <div
+                        className="image"
+                        onClick={this.onClick.bind(null, item)}
+                        style={style}
+                    />
+                    <div className="name">{item.label}</div>
+                </div>
+            );
+        });
+    }
+
     render() {
-        let displays = Object.keys(displayLibrary).map((key, index) => {
-            let display = displayLibrary[key];
-
-            return (
-                <div key={index} className="item">
-                    <div className="image" onClick={this.onClick.bind(null, display)}></div>
-                    <div className="name">{display.label}</div>
-                </div>
-            );
-        });
-
-        let effects = Object.keys(effectsLibrary).map((key, index) => {
-            let effect = effectsLibrary[key];
-
-            return (
-                <div key={index} className="item">
-                    <div className="image" onClick={this.onClick.bind(null, effect)}></div>
-                    <div className="name">{effect.label}</div>
-                </div>
-            );
-        });
+        let displays = this.getItems(displayLibrary),
+            effects = this.getItems(effectsLibrary);
 
         return (
             <div id="control-picker" className="picker-panel">

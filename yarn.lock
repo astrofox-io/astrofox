@@ -443,9 +443,9 @@ babel-helpers@^6.22.0:
     babel-runtime "^6.22.0"
     babel-template "^6.22.0"
 
-babel-loader@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-6.3.0.tgz#e0b47dfb3442a2024f6ffebaae76a1eda376f356"
+babel-loader@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-6.3.1.tgz#e4d590279bbd1dc3b06949850c20ca4187d50991"
   dependencies:
     find-cache-dir "^0.1.1"
     loader-utils "^0.2.16"
@@ -1682,9 +1682,9 @@ electron-builder-util@13.6.0, electron-builder-util@~13.6.0:
     stat-mode "^0.2.2"
     tunnel-agent "^0.4.3"
 
-electron-builder@^13.7.0:
-  version "13.7.0"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-13.7.0.tgz#6030c1f470d7f00eb223f7dee314a50e36d6cae8"
+electron-builder@^13.9.0:
+  version "13.9.0"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-13.9.0.tgz#779055df96a61c9e0e7a1363b20d7020d35e7616"
   dependencies:
     "7zip-bin" "^2.0.4"
     asar-electron-builder "^0.13.5"
