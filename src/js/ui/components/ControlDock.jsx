@@ -11,8 +11,6 @@ import LayersPanel from './LayersPanel';
 export default class ControlDock extends UIComponent {
     constructor(props) {
         super(props);
-
-        this.state = { visible: true };
     }
     
     componentDidMount() {
@@ -54,10 +52,6 @@ export default class ControlDock extends UIComponent {
         this.refs.controls.updateControls();
     }
 
-    toggleDock() {
-        this.setState({ visible: !this.state.visible });
-    }
-
     updateLayers(newElement) {
         let obj, scene,
             layers = this.refs.layers,
@@ -79,10 +73,8 @@ export default class ControlDock extends UIComponent {
     }
 
     render() {
-        let state = this.state;
-
         return (
-            <PanelDock id="control-dock" visible={state.visible}>
+            <PanelDock id="control-dock" visible={this.props.visible}>
                 <Panel
                     title="LAYERS"
                     ref="layersPanel"
@@ -100,8 +92,7 @@ export default class ControlDock extends UIComponent {
                 </Panel>
                 <Panel
                     title="CONTROLS"
-                    stretch={true}
-                    shouldUpdate={false}>
+                    stretch={true}>
                     <ControlsPanel ref="controls" />
                 </Panel>
             </PanelDock>

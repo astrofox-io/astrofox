@@ -22,8 +22,6 @@ export default class TextControl extends UIPureComponent {
         let display = this.props.display;
 
         if (display.initialized) {
-            this.shouldUpdate = true;
-
             this.setState(display.options);
         }
     }

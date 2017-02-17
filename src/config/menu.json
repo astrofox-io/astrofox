@@ -92,14 +92,12 @@
       {
         "label": "Reload",
         "role": "reload",
-        "accelerator": "CmdOrCtrl+R",
-        "visible": false
+        "accelerator": "CmdOrCtrl+R"
       },
       {
         "label": "Developer tools",
         "role": "toggledevtools",
-        "accelerator": "CmdOrCtrl+Shift+I",
-        "visible": false
+        "accelerator": "CmdOrCtrl+Shift+I"
       }
     ]
   },

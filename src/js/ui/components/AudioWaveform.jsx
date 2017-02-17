@@ -131,10 +131,15 @@ export default class AudioWaveform extends UIComponent {
 
     render() {
         let width = this.props.width,
-            height = this.props.height + this.props.shadowHeight;
+            height = this.props.height + this.props.shadowHeight,
+            style = {};
+
+        if (!this.props.visible) {
+            style.display = 'none';
+        }
 
         return (
-            <div className="waveform">
+            <div className="waveform" style={style}>
                 <canvas
                     ref="canvas"
                     className="canvas"
@@ -150,6 +155,7 @@ export default class AudioWaveform extends UIComponent {
 }
 
 AudioWaveform.defaultProps = {
+    visible: true,
     width: 854,
     height: 70,
     barWidth: 3,

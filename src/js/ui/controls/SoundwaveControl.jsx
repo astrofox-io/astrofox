@@ -12,7 +12,6 @@ export default class SoundwaveControl extends UIPureComponent {
         super(props);
 
         this.state = this.props.display.options;
-        this.shouldUpdate = false;
     }
 
     onChange(name, val) {

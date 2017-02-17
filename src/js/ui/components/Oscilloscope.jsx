@@ -23,10 +23,6 @@ export default class Oscilloscope extends UIComponent {
         events.off('render', this.updateCanvas);
     }
 
-    shouldComponentUpdate() {
-        return false;
-    }
-
     updateCanvas(data) {
         let points = WaveParser.parseTimeData(data.td, 854, 0);
 
@@ -34,8 +30,14 @@ export default class Oscilloscope extends UIComponent {
     }
 
     render() {
+        let style = {};
+
+        if (!this.props.visible) {
+            style.display = 'none';
+        }
+
         return (
-            <div className="oscilloscope">
+            <div className="oscilloscope" style={style}>
                 <canvas
                     ref="canvas"
                     className="canvas"
@@ -49,6 +51,6 @@ export default class Oscilloscope extends UIComponent {
 
 Oscilloscope.defaultProps = {
     width: 854,
-    height: 100,
+    height: 75,
     color: '#927FFF'
 };

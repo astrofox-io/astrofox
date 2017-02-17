@@ -1,12 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import { events } from '../../core/Global';
 
 import Splitter from './Splitter';
 
-export default class Panel extends UIComponent {
+export default class Panel extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -30,10 +30,6 @@ export default class Panel extends UIComponent {
 
     componentWillUnmount() {
         events.off('mouseup', this.checkDragState);
-    }
-
-    shouldComponentUpdate(nextProps) {
-        return nextProps.shouldUpdate;
     }
 
     onStartDrag(e) {
@@ -80,7 +76,8 @@ export default class Panel extends UIComponent {
     }
 
     render() {
-        let props = this.props,
+        let splitter,
+            props = this.props,
             state = this.state,
             style = (state.height) ? { height: state.height } : null,
             classes = classNames({
@@ -90,8 +87,9 @@ export default class Panel extends UIComponent {
                 'stretch': props.stretch
             });
 
-        let splitter = (props.resizable) ?
-            <Splitter type="horizontal" onDragStart={this.onStartDrag} /> : null;
+        if (props.resizable) {
+            splitter = <Splitter type="horizontal" onDragStart={this.onStartDrag}/>;
+        }
 
         return (
             <div className={classes} style={style}>
@@ -104,7 +102,6 @@ export default class Panel extends UIComponent {
 }
 
 Panel.defaultProps = {
-    shouldUpdate: true,
     direction: 'vertical',
     stretch: false,
     visible: true,

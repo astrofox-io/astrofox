@@ -35,7 +35,11 @@ export default class App extends UIComponent {
         this.state = {
             text: '',
             modals: [],
-            renderVideo: false
+            renderVideo: false,
+            showControlDock: true,
+            showPlayer: true,
+            showOscilloscope: true,
+            showSpectrum: true
         };
     }
 
@@ -185,8 +189,23 @@ export default class App extends UIComponent {
                 break;
 
             case 'view-control-dock':
-                this.refs.dock.toggleDock();
-                this.refs.menubar.setCheckState(action);
+                this.setState({ showControlDock: !this.state.showControlDock });
+                this.refs.menubar.setCheckState('view-control-dock');
+                break;
+
+            case 'view-player':
+                this.setState({ showPlayer: !this.state.showPlayer });
+                this.refs.menubar.setCheckState('view-player');
+                break;
+
+            case 'view-oscilloscope':
+                this.setState({ showOscilloscope: !this.state.showOscilloscope });
+                this.refs.menubar.setCheckState('view-oscilloscope');
+                break;
+
+            case 'view-spectrum':
+                this.setState({ showSpectrum: !this.state.showSpectrum });
+                this.refs.menubar.setCheckState('view-spectrum');
                 break;
 
             case 'check-for-updates':
@@ -340,7 +359,7 @@ export default class App extends UIComponent {
     }
 
     render() {
-        let { text, modals, renderVideo } = this.state;
+        let state = this.state;
 
         return (
             <div
@@ -359,20 +378,20 @@ export default class App extends UIComponent {
                     <div id="viewport">
                         <Stage
                             ref="stage"
-                            renderVideo={renderVideo}
+                            renderVideo={state.renderVideo}
                             onFileDropped={this.loadAudioFile}
                             onStopRender={this.stopRender}
                         />
-                        <Spectrum ref="spectrum"/>
-                        <Oscilloscope ref="osc"/>
-                        <AudioWaveform ref="waveform"/>
-                        <Player ref="player"/>
+                        <Spectrum ref="spectrum" visible={state.showSpectrum} />
+                        <Oscilloscope ref="osc" visible={state.showOscilloscope} />
+                        <AudioWaveform ref="waveform" visible={state.showPlayer} />
+                        <Player ref="player" visible={state.showPlayer} />
                     </div>
-                    <ControlDock ref="dock"/>
+                    <ControlDock ref="dock" visible={state.showControlDock} />
                 </div>
-                <StatusBar text={text}/>
+                <StatusBar text={state.text}/>
                 <Overlay>
-                    {modals}
+                    {state.modals}
                 </Overlay>
             </div>
         );
