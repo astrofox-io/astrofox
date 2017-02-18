@@ -44,10 +44,11 @@ export default class CanvasSettings extends UIComponent {
     }
 
     render() {
-        const state = this.state;
+        const state = this.state,
+            props = this.props;
 
         return (
-            <SettingsPanel id="canvas-settings">
+            <SettingsPanel width={props.width} height={props.height}>
                 <Settings>
                     <Row label="Aspect Ratio">
                         <SelectInput

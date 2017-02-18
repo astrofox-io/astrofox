@@ -109,13 +109,14 @@ export default class VideoSettings extends UIComponent {
     }
 
     render() {
-        const state = this.state,
+        const props = this.props,
+            state = this.state,
             audio = Application.getAudio(),
             max = (audio) ? audio.getDuration() : 0,
             canStart = (state.videoFile && state.audioFile);
 
         return (
-            <SettingsPanel id="video-settings">
+            <SettingsPanel width={props.width} height={props.height}>
                 <Settings>
                     <Row label="Save Video To">
                         <TextInput

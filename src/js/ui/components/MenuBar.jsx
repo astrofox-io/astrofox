@@ -28,6 +28,10 @@ export default class MenuBar extends UIComponent {
 
         if (this.props.onMenuAction) {
             this.props.onMenuAction(action, checked);
+
+            if (typeof checked !== 'undefined') {
+                this.setCheckState(action);
+            }
         }
     }
 
@@ -70,7 +74,7 @@ export default class MenuBar extends UIComponent {
         });
 
         return (
-            <div id="menubar" className="menubar">
+            <div className="menubar">
                 {items}
             </div>
         );

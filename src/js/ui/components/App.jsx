@@ -65,6 +65,8 @@ export default class App extends UIComponent {
 
             this.showModal(
                 <ControlPicker
+                    width={720}
+                    height={300}
                     activeIndex={types.indexOf(type)}
                     onClose={this.hideModal}
                 />,
@@ -162,7 +164,7 @@ export default class App extends UIComponent {
             case 'save-video':
                 this.showModal(
                     <VideoSettings
-                        key="video"
+                        width={640}
                         onStart={this.startRender}
                         onClose={this.hideModal}
                     />,
@@ -176,36 +178,38 @@ export default class App extends UIComponent {
 
             case 'edit-canvas':
                 this.showModal(
-                    <CanvasSettings key="canvas" onClose={this.hideModal}/>,
+                    <CanvasSettings
+                        width={500}
+                        onClose={this.hideModal}
+                    />,
                     {title: 'CANVAS', buttons: null}
                 );
                 break;
 
             case 'edit-settings':
                 this.showModal(
-                    <AppSettings key="settings" onClose={this.hideModal}/>,
+                    <AppSettings
+                        width={500}
+                        onClose={this.hideModal}
+                    />,
                     {title: 'SETTINGS', buttons: null}
                 );
                 break;
 
             case 'view-control-dock':
                 this.setState({ showControlDock: !this.state.showControlDock });
-                this.refs.menubar.setCheckState('view-control-dock');
                 break;
 
             case 'view-player':
                 this.setState({ showPlayer: !this.state.showPlayer });
-                this.refs.menubar.setCheckState('view-player');
                 break;
 
             case 'view-oscilloscope':
                 this.setState({ showOscilloscope: !this.state.showOscilloscope });
-                this.refs.menubar.setCheckState('view-oscilloscope');
                 break;
 
             case 'view-spectrum':
                 this.setState({ showSpectrum: !this.state.showSpectrum });
-                this.refs.menubar.setCheckState('view-spectrum');
                 break;
 
             case 'check-for-updates':

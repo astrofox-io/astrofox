@@ -8,14 +8,30 @@ export function autoBind(context) {
     }, context);
 }
 
-export function assignIn(dest, source) {
+export function assignExists(dest, source) {
     let obj = Object.assign({}, dest);
 
-    Object.keys(source).forEach(prop => {
-        if (obj.hasOwnProperty(prop) && obj[prop] !== source[prop]) {
-            obj[prop] = source[prop];
+    return assignKeys(Object.keys(source), obj);
+}
+
+export function assignKeys(keys, source) {
+    let obj = {};
+
+    keys.forEach(key => {
+        if (source.hasOwnProperty(key)) {
+            obj[key] = source[key];
         }
     });
+
+    return obj;
+}
+
+export function styles(keys, props) {
+    let obj = assignKeys(keys, props);
+
+    if (typeof props.style === 'object') {
+        Object.assign(obj, props.style);
+    }
 
     return obj;
 }

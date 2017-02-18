@@ -37,10 +37,11 @@ export default class AppSettings extends UIComponent {
     }
 
     render() {
-        const state = this.state;
+        const props = this.props,
+            state = this.state;
 
         return (
-            <SettingsPanel id="app-settings">
+            <SettingsPanel width={props.width} height={props.height}>
                 <Settings>
                     <Group name="General">
                         <Row label="Show FPS">
