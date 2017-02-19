@@ -19,14 +19,17 @@
 
     .image {
         background-color: #000;
-        border: 1px solid transparent;
-        border-radius: 5px;
+        background-position: center;
+        border: 2px solid @bg-color1;
+        border-radius: 7px;
         height: 75px;
         width: 75px;
-    }
+        transition: border-color 0.5s;
 
-    .image:hover {
-        border-color: @color1;
+        &:hover {
+            border-color: @color1;
+            transition: none;
+        }
     }
 
     .name {
