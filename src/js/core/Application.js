@@ -79,11 +79,22 @@ class Application extends EventEmitter {
         // Load config file
         this.loadConfigFile();
 
-        // Create menu
+        // Create app menu
+        let menu = [];
+
         menuConfig.forEach(root => {
+            if (__PROD__) {
+                if (root.visible !== false) {
+                    menu.push(root);
+                }
+            }
+            else {
+                menu.push(root);
+            }
+
             if (root.submenu) {
                 root.submenu.forEach(item => {
-                    if (!item.role && item.action) {
+                    if (item.action && !item.role) {
                         item.click = this.doMenuAction;
                     }
                 });
@@ -91,7 +102,7 @@ class Application extends EventEmitter {
         });
 
         remote.Menu.setApplicationMenu(
-            remote.Menu.buildFromTemplate(menuConfig)
+            remote.Menu.buildFromTemplate(menu)
         );
 
         // Load default project

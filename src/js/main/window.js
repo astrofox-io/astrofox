@@ -19,6 +19,7 @@ export function createWindow() {
         minHeight: 100,
         frame: false,
         backgroundColor: '#222222',
+        titleBarStyle: 'hidden-inset',
         webPreferences: {
             webSecurity: false,
             webgl: true,
@@ -26,8 +27,7 @@ export function createWindow() {
             experimentalCanvasFeatures: true,
             backgroundThrottling: false,
             devTools: !__PROD__
-        },
-        titleBarStyle: 'hidden-inset'
+        }
     });
 
     // Production settings

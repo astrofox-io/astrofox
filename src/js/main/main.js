@@ -100,7 +100,6 @@ ipcMain.on('download-update', event => {
     });
 });
 
-
 ipcMain.on('quit-and-install', () => {
     appUpdater.quitAndInstall();
 });
