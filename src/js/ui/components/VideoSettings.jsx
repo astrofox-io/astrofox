@@ -12,6 +12,7 @@ import SelectInput from '../inputs/SelectInput';
 import TextInput from '../inputs/TextInput';
 import { SettingsPanel, Settings, Row } from '../layout/SettingsPanel';
 import { replaceExt } from '../../util/file';
+import { formatTime } from '../../util/format';
 
 const videoFormats = [
     'mp4',
@@ -198,6 +199,9 @@ export default class VideoSettings extends UIComponent {
                             readOnly={!audio}
                             onChange={this.onChange}
                         />
+                    </Row>
+                    <Row label="Total Time">
+                        {formatTime(state.timeEnd - state.timeStart)}
                     </Row>
                 </Settings>
                 <div className="buttons">
