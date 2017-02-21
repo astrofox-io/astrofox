@@ -67,7 +67,7 @@ export default class AppSettings extends UIComponent {
                         </Row>
                     </Group>
                     <Group name="Audio">
-                        <Row label="Autoplay audio">
+                        <Row label="Play audio on load">
                             <ToggleInput
                                 name="autoPlayAudio"
                                 value={state.autoPlayAudio}

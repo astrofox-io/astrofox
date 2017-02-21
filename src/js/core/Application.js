@@ -293,7 +293,12 @@ class Application extends EventEmitter {
             })
             .then(() => {
                 this.audioFile = file;
+
                 this.loadAudioTags(file);
+
+                if (this.config.autoPlayAudio) {
+                    this.playAudio();
+                }
 
                 logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
 
