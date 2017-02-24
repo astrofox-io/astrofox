@@ -7,6 +7,7 @@ import { appUpdater, events } from '../../core/Global';
 
 import About from './About';
 import AppSettings from './AppSettings';
+import AppUpdates from './AppUpdates';
 import AudioWaveform from './AudioWaveform';
 import CanvasSettings from './CanvasSettings';
 import ControlDock from './ControlDock';
@@ -22,7 +23,6 @@ import StatusBar from './StatusBar';
 import Stage from './Stage';
 import Spectrum from './Spectrum';
 import TitleBar from './TitleBar';
-import Updates from './Updates';
 import VideoSettings from './VideoSettings';
 
 import menuConfig from '../../../config/menu';
@@ -326,7 +326,7 @@ export default class App extends UIComponent {
         };
 
         this.showModal(
-            <Updates onClose={onClose} />,
+            <AppUpdates onClose={onClose} />,
             {title: 'UPDATES', buttons: null}
         );
 

@@ -1,6 +1,6 @@
 {
+  "checkForUpdates": true,
   "autoUpdate": true,
   "autoPlayAudio": true,
-  "showFPS": false,
   "showWatermark": false
 }

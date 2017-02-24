@@ -5,7 +5,7 @@ import { appUpdater } from '../../core/Global';
 import Button from  '../components/Button';
 import Spinner from '../components/Spinner';
 
-export default class Updater extends UIComponent {
+export default class AppUpdates extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -15,20 +15,20 @@ export default class Updater extends UIComponent {
     }
 
     componentDidMount() {
-        appUpdater.on('update', this.onCheckComplete, this);
+        appUpdater.on('update', this.updateStatus, this);
 
         if (!appUpdater.checking && !appUpdater.downloading && !appUpdater.downloadComplete) {
             appUpdater.checkForUpdates();
         }
 
-        this.onCheckComplete();
+        this.updateStatus();
     }
 
     componentWillUnmount() {
-        appUpdater.off('update', this.onCheckComplete, this);
+        appUpdater.off('update', this.updateStatus, this);
     }
 
-    onCheckComplete() {
+    updateStatus() {
         if (appUpdater.error) {
             this.setState({ message: 'Unable to check for updates.' });
         }
@@ -45,6 +45,10 @@ export default class Updater extends UIComponent {
         else if (appUpdater.checking) {
             this.setState({ message: 'Checking for updates...' });
         }
+        else if (appUpdater.hasUpdate) {
+            let version = appUpdater.versionInfo.version;
+            this.setState({ message: `A new update (${version}) is available.` });
+        }
         else {
             this.setState({ message: 'You have the latest version.' });
         }
@@ -54,9 +58,14 @@ export default class Updater extends UIComponent {
         appUpdater.quitAndInstall();
     }
 
+    downloadUpdate() {
+        appUpdater.downloadUpdate();
+    }
+
     render() {
         let spinner,
             installButton,
+            downloadButton,
             closeText = 'Close';
 
         if (appUpdater.checking || appUpdater.downloading || appUpdater.installing) {
@@ -68,6 +77,10 @@ export default class Updater extends UIComponent {
             closeText = 'Install Later';
         }
 
+        if (appUpdater.hasUpdate && !appUpdater.downloading && !appUpdater.downloadComplete) {
+            downloadButton = <Button text="Download Now" onClick={this.downloadUpdate} />;
+        }
+
         return (
             <div className="updates">
                 <div className="message">
@@ -76,6 +89,7 @@ export default class Updater extends UIComponent {
                 </div>
                 <div className="buttons">
                     {installButton}
+                    {downloadButton}
                     <Button text={closeText} onClick={this.props.onClose} />
                 </div>
             </div>

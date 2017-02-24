@@ -77,40 +77,41 @@ class Application extends EventEmitter {
     //region Main Methods
     init() {
         // Load config file
-        this.loadConfigFile();
+        this.loadConfigFile().then(() => {
+            // Create app menu
+            let menu = [];
 
-        // Create app menu
-        let menu = [];
-
-        menuConfig.forEach(root => {
-            if (__PROD__) {
-                if (root.visible !== false) {
+            menuConfig.forEach(root => {
+                if (__PROD__) {
+                    if (root.visible !== false) {
+                        menu.push(root);
+                    }
+                }
+                else {
                     menu.push(root);
                 }
-            }
-            else {
-                menu.push(root);
-            }
 
-            if (root.submenu) {
-                root.submenu.forEach(item => {
-                    if (item.action && !item.role) {
-                        item.click = this.doMenuAction;
-                    }
-                });
+                if (root.submenu) {
+                    root.submenu.forEach(item => {
+                        if (item.action && !item.role) {
+                            item.click = this.doMenuAction;
+                        }
+                    });
+                }
+            });
+
+            remote.Menu.setApplicationMenu(
+                remote.Menu.buildFromTemplate(menu)
+            );
+
+            // Load default project
+            this.newProject();
+
+            // Check for app updates
+            if (this.config.checkForUpdates) {
+                appUpdater.checkForUpdates();
             }
         });
-
-        remote.Menu.setApplicationMenu(
-            remote.Menu.buildFromTemplate(menu)
-        );
-
-        // Load default project
-        this.newProject();
-
-        if (this.config.autoUpdate) {
-            //appUpdater.checkForUpdates();
-        }
     }
 
     doMenuAction(menuItem) {

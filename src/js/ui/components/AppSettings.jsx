@@ -44,10 +44,17 @@ export default class AppSettings extends UIComponent {
             <SettingsPanel width={props.width} height={props.height}>
                 <Settings>
                     <Group name="General">
-                        <Row label="Show FPS">
+                        <Row label="Check for updates on start up">
                             <ToggleInput
-                                name="showFPS"
-                                value={state.showFPS}
+                                name="checkForUpdates"
+                                value={state.checkForUpdates}
+                                onChange={this.onChange}
+                            />
+                        </Row>
+                        <Row label="Automatically download and install updates">
+                            <ToggleInput
+                                name="autoUpdate"
+                                value={state.autoUpdate}
                                 onChange={this.onChange}
                             />
                         </Row>
@@ -55,13 +62,6 @@ export default class AppSettings extends UIComponent {
                             <ToggleInput
                                 name="showWatermark"
                                 value={state.showWatermark}
-                                onChange={this.onChange}
-                            />
-                        </Row>
-                        <Row label="Automatically install updates">
-                            <ToggleInput
-                                name="autoUpdate"
-                                value={state.autoUpdate}
                                 onChange={this.onChange}
                             />
                         </Row>
