@@ -17,7 +17,10 @@ export default class AppUpdates extends UIComponent {
     componentDidMount() {
         appUpdater.on('update', this.updateStatus, this);
 
-        if (!appUpdater.checking && !appUpdater.downloading && !appUpdater.downloadComplete) {
+        if (!appUpdater.hasUpdate &&
+            !appUpdater.checking &&
+            !appUpdater.downloading &&
+            !appUpdater.downloadComplete) {
             appUpdater.checkForUpdates();
         }
 
@@ -47,7 +50,7 @@ export default class AppUpdates extends UIComponent {
         }
         else if (appUpdater.hasUpdate) {
             let version = appUpdater.versionInfo.version;
-            this.setState({ message: `A new update (${version}) is available.` });
+            this.setState({ message: `A new update (${version}) is available to download.` });
         }
         else {
             this.setState({ message: 'You have the latest version.' });
