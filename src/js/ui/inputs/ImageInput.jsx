@@ -5,7 +5,7 @@ import UIComponent from '../UIComponent';
 import Window from '../../core/Window';
 import * as IO from '../../util/io';
 
-import BLANK_IMAGE from '../../../images/data/BlankGif.json';
+import BLANK_IMAGE from '../../../images/data/blankGif.json';
 
 export default class ImageInput extends UIComponent {
     constructor(props) {
@@ -13,9 +13,9 @@ export default class ImageInput extends UIComponent {
     }
 
     componentDidMount() {
-        this.refs.image.onload = () => {
+        this.image.onload = () => {
             if (this.props.onChange) {
-                this.props.onChange('src', this.refs.image.src);
+                this.props.onChange('src', this.image.src);
             }
         };
     }
@@ -56,10 +56,8 @@ export default class ImageInput extends UIComponent {
     }
 
     loadImage(src) {
-        let image = this.refs.image;
-
-        if (image.src !== src) {
-            image.src = src;
+        if (this.image.src !== src) {
+            this.image.src = src;
         }
     }
 
@@ -84,7 +82,7 @@ export default class ImageInput extends UIComponent {
     }
 
     getImage() {
-        return this.refs.image;
+        return this.image;
     }
 
     render() {
@@ -105,7 +103,7 @@ export default class ImageInput extends UIComponent {
                 onDragOver={this.onDragOver}
                 onClick={onClick}>
                 <img
-                    ref="image"
+                    ref={(image) => { this.image = image; }}
                     className="image"
                     style={style}
                 />
