@@ -64,7 +64,7 @@ export default class ControlsPanel extends UIComponent {
                 Component = getControlComponent(display),
                 classes = {
                     'control-active': index === this.state.activeIndex,
-                    'control-last': index == arr.length - 1
+                    'control-last': index === arr.length - 1
                 };
 
             return (

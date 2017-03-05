@@ -2,8 +2,9 @@ import id3 from 'id3js';
 import { remote } from 'electron';
 
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
-import { appUpdater, events, logger, raiseError } from './Global';
+import { events, logger, raiseError } from './Global';
 import * as IO from '../util/io';
+import AppUpdater from './AppUpdater';
 import EventEmitter from './EventEmitter';
 import Player from '../audio/Player';
 import BufferedSound from '../audio/BufferedSound';
@@ -26,6 +27,7 @@ class Application extends EventEmitter {
         this.player = new Player(this.audioContext);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.stage = new Stage();
+        this.updater = new AppUpdater(this);
 
         this.audioFile = '';
         this.projectFile = '';
@@ -109,7 +111,7 @@ class Application extends EventEmitter {
 
             // Check for app updates
             if (this.config.checkForUpdates) {
-                appUpdater.checkForUpdates();
+                this.updater.checkForUpdates();
             }
         });
     }
@@ -400,7 +402,7 @@ class Application extends EventEmitter {
             stage.getImage(buffer => {
                 IO.writeFile(filename, buffer)
                     .then(() => {
-                        logger.log('Image saved. (%s)', filename);
+                        logger.log('Image saved:', filename);
                     })
                     .catch(error => {
                         raiseError('Failed to save image file.', error);
@@ -457,7 +459,7 @@ class Application extends EventEmitter {
 
         return IO.writeFileCompressed(file, data)
             .then(() => {
-                logger.log('Project saved. (%s)', file);
+                logger.log('Project saved:', file);
 
                 this.resetChanges();
 

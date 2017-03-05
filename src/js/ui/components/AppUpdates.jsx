@@ -1,9 +1,11 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import { appUpdater } from '../../core/Global';
+import Application from '../../core/Application';
 import Button from  '../components/Button';
 import Spinner from '../components/Spinner';
+
+const appUpdater = Application.updater;
 
 export default class AppUpdates extends UIComponent {
     constructor(props) {
@@ -50,7 +52,7 @@ export default class AppUpdates extends UIComponent {
         }
         else if (appUpdater.hasUpdate) {
             let version = appUpdater.versionInfo.version;
-            this.setState({ message: `A new update (${version}) is available to download.` });
+            this.setState({ message: `A new update (${version}) is available to download and install.` });
         }
         else {
             this.setState({ message: 'You have the latest version.' });

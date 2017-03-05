@@ -9,6 +9,10 @@ import { logger, raiseError } from '../core/Global';
 import * as displayLibrary from '../lib/displays';
 import * as effectsLibrary from '../lib/effects';
 
+import WATERMARK from '../../images/data/watermark';
+const WATERMARK_HEIGHT = 96,
+    WATERMARK_WIDTH = 96;
+
 export default class Stage extends Display {
     constructor(options) {
         super(Stage, options);
@@ -25,6 +29,16 @@ export default class Stage extends Display {
         this.buffer3D = new FrameBuffer('webgl', this.options);
 
         this.backgroundColor = new THREE.Color(this.options.backgroundColor);
+
+        this.watermarkScene = new Scene();
+        this.watermarkDisplay = new displayLibrary['ImageDisplay']({
+            src: WATERMARK,
+            width: WATERMARK_WIDTH,
+            height: WATERMARK_HEIGHT,
+            opacity: 0.5
+        });
+        this.watermarkScene.displays.addNode(this.watermarkDisplay);
+        this.watermarkScene.addToStage(this);
     }
 
     update(options) {
@@ -202,23 +216,31 @@ export default class Stage extends Display {
     }
 
     render(data, callback) {
-        let options, buffer,
-            composer = this.composer;
+        let composer = this.composer;
 
         composer.clear(this.backgroundColor, 1);
 
         this.getScenes().forEach(scene => {
             if (scene.options.enabled) {
-                buffer = scene.render(data);
-                options = Object.assign({}, scene.options);
-
-                composer.blendBuffer(buffer, options);
+                this.renderScene(scene, data);
             }
         });
+
+        // Show watermark
+        this.renderScene(this.watermarkScene, data);
 
         composer.renderToScreen();
 
         if (callback) callback();
+    }
+
+    renderScene(scene, data) {
+        let options, buffer,
+            composer = this.composer;
+
+        buffer = scene.render(data);
+        options = Object.assign({}, scene.options);
+        composer.blendBuffer(buffer, options);
     }
 
     toJSON() {

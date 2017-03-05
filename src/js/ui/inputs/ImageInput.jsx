@@ -13,16 +13,20 @@ export default class ImageInput extends UIComponent {
     }
 
     componentDidMount() {
-        this.image.onload = () => {
-            if (this.props.onChange) {
-                this.props.onChange('src', this.image.src);
-            }
-        };
+        if (this.props.src) {
+            this.loadImage(this.props.src);
+        }
     }
 
     componentWillReceiveProps(props) {
         if (props.src !== undefined) {
             this.loadImage(props.src);
+        }
+    }
+
+    onChange() {
+        if (this.props.onChange) {
+            this.props.onChange(this.props.name, this.image.src);
         }
     }
 
@@ -106,6 +110,7 @@ export default class ImageInput extends UIComponent {
                     ref={(image) => { this.image = image; }}
                     className="image"
                     style={style}
+                    onLoad={this.onChange}
                 />
                 <div className={classes} />
             </div>

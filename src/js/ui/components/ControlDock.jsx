@@ -14,18 +14,42 @@ export default class ControlDock extends UIComponent {
     }
     
     componentDidMount() {
-        events.on('control-picked', this.updateLayers);
-        events.on('project-loaded', this.onProjectLoaded);
+        events.on('control-picked', this.onControlPicked, this);
+        events.on('project-loaded', this.onProjectLoaded, this);
     }
 
     componentWillUnmount() {
-        events.off('control-picked', this.updateLayers);
-        events.off('project-loaded', this.onProjectLoaded);
+        events.off('control-picked', this.onControlPicked, this);
+        events.off('project-loaded', this.onProjectLoaded, this);
+    }
+
+    onControlPicked(newElement) {
+        let obj, scene,
+            layers = this.refs.layers,
+            controls = this.refs.controls;
+
+        scene = layers.getActiveScene();
+
+        if (scene) {
+            obj = new newElement();
+            scene.addElement(obj);
+        }
+
+        layers.updateLayers(() => {
+            layers.setActiveLayer(obj);
+        });
+
+        controls.updateControls();
     }
 
     onProjectLoaded() {
-        this.updateLayers();
-        this.refs.layers.setActiveIndex(0);
+        let layers = this.refs.layers,
+            controls = this.refs.controls;
+
+        layers.updateLayers(() => {
+            layers.setActiveIndex(0);
+            controls.updateControls();
+        });
     }
 
     onLayerSelected(layer, index) {
@@ -50,26 +74,6 @@ export default class ControlDock extends UIComponent {
 
     onLayerMoved() {
         this.refs.controls.updateControls();
-    }
-
-    updateLayers(newElement) {
-        let obj, scene,
-            layers = this.refs.layers,
-            controls = this.refs.controls;
-
-        if (newElement) {
-            scene = layers.getActiveScene();
-            if (scene) {
-                obj = new newElement();
-                scene.addElement(obj);
-            }
-        }
-
-        layers.updateLayers(() => {
-            layers.setActiveLayer(obj);
-        });
-
-        controls.updateControls();
     }
 
     render() {

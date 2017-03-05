@@ -87,7 +87,6 @@ app.on('will-quit', () => {
 });
 
 // IPC events
-
 ipcMain.on('check-for-updates', event => {
     appUpdater.checkForUpdates().then(result => {
         event.sender.send('check-for-updates-complete', result);

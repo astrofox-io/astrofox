@@ -1,17 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import ImageInput from '../inputs/ImageInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-import BLANK_IMAGE from '../../../images/data/BlankGif.json';
+import BLANK_IMAGE from '../../../images/data/blankGif.json';
 const CANVAS_WIDTH = 854;
 const CANVAS_HEIGHT = 480;
 
-export default class ImageControl extends UIPureComponent {
+export default class ImageControl extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -25,7 +25,7 @@ export default class ImageControl extends UIPureComponent {
             this.setState(display.options);
         }
 
-        this.image = this.refs.image.getImage();
+        this.image  = this.refs.image.getImage();
     }
 
     onChange(name, val) {
@@ -83,10 +83,10 @@ export default class ImageControl extends UIPureComponent {
         let state = this.state,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
-            width = (readOnly) ? 0 : image.naturalWidth,
-            height = (readOnly) ? 0 : image.naturalHeight,
-            xMax = (width > CANVAS_WIDTH) ? width : CANVAS_WIDTH,
-            yMax = (height > CANVAS_HEIGHT) ? height : CANVAS_HEIGHT,
+            width = readOnly ? 0 : image.naturalWidth,
+            height = readOnly ? 0 : image.naturalHeight,
+            xMax = readOnly ? 0 : (width > CANVAS_WIDTH) ? width : CANVAS_WIDTH,
+            yMax = readOnly ? 0 : (height > CANVAS_HEIGHT) ? height : CANVAS_HEIGHT,
             linkClasses = {
                 'icon-link': true,
                 'input-link': true,
@@ -98,7 +98,7 @@ export default class ImageControl extends UIPureComponent {
             <Control label="IMAGE" className={this.props.className}>
                 <Row label="Image">
                     <ImageInput
-                        name="image"
+                        name="src"
                         ref="image"
                         src={state.src}
                         onChange={this.onChange}
@@ -216,7 +216,7 @@ export default class ImageControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={state.opacity}
+                        value={readOnly ? 0 : state.opacity}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -226,7 +226,7 @@ export default class ImageControl extends UIPureComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={state.opacity}
+                            value={readOnly ? 0 : state.opacity}
                             readOnly={readOnly}
                             onChange={this.onChange}
                         />

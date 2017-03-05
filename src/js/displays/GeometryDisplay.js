@@ -19,7 +19,7 @@ const shading = {
     Smooth: THREE.SmoothShading
 };
 
-import POINT_SPRITE from '../../images/data/PointSprite.json';
+import POINT_SPRITE from '../../images/data/pointSprite.json';
 const POINT_SIZE = 5;
 
 export default class GeometryDisplay extends Display {

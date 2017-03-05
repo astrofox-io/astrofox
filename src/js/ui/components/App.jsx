@@ -3,7 +3,7 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import Application from '../../core/Application';
 import Window from '../../core/Window';
-import { appUpdater, events } from '../../core/Global';
+import { events } from '../../core/Global';
 
 import About from './About';
 import AppSettings from './AppSettings';
@@ -86,8 +86,8 @@ export default class App extends UIComponent {
 
         events.on('unsaved-changes', this.onUnsavedChanges);
 
-        appUpdater.on('update', event => {
-            if (event === 'check-for-updates-complete' && appUpdater.hasUpdate) {
+        Application.updater.on('update', event => {
+            if (event === 'check-for-updates-complete' && Application.updater.hasUpdate) {
                 this.showCheckForUpdates();
             }
         });
