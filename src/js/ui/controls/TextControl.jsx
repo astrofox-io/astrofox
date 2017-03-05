@@ -22,7 +22,9 @@ export default class TextControl extends UIComponent {
         let display = this.props.display;
 
         if (display.initialized) {
-            this.setState(display.options);
+            this.setState(display.options, () => {
+                display.text.render();
+            });
         }
     }
 
