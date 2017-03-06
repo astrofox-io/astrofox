@@ -19,8 +19,7 @@ export default class AppUpdates extends UIComponent {
     componentDidMount() {
         appUpdater.on('update', this.updateStatus, this);
 
-        if (!appUpdater.hasUpdate &&
-            !appUpdater.checking &&
+        if (!appUpdater.checking &&
             !appUpdater.downloading &&
             !appUpdater.downloadComplete) {
             appUpdater.checkForUpdates();

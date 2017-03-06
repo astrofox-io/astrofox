@@ -227,7 +227,9 @@ export default class Stage extends Display {
         });
 
         // Show watermark
-        this.renderScene(this.watermarkScene, data);
+        if (this.watermarkScene.options.enabled) {
+            this.renderScene(this.watermarkScene, data);
+        }
 
         composer.renderToScreen();
 

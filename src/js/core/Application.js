@@ -2,7 +2,7 @@ import id3 from 'id3js';
 import { remote } from 'electron';
 
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
-import { events, logger, raiseError } from './Global';
+import { events, logger, license, raiseError } from './Global';
 import * as IO from '../util/io';
 import AppUpdater from './AppUpdater';
 import EventEmitter from './EventEmitter';
@@ -74,6 +74,9 @@ class Application extends EventEmitter {
             raiseError(msg, err);
             return true;
         };
+
+        // Bind context
+        this.render = this.render.bind(this);
     }
 
     //region Main Methods
@@ -105,6 +108,9 @@ class Application extends EventEmitter {
             remote.Menu.setApplicationMenu(
                 remote.Menu.buildFromTemplate(menu)
             );
+
+            // Check for license
+            license.init();
 
             // Load default project
             this.newProject();
@@ -193,7 +199,7 @@ class Application extends EventEmitter {
         let now = window.performance.now(),
             data = this.getFrameData();
 
-        data.id = window.requestAnimationFrame(this.render.bind(this));
+        data.id = window.requestAnimationFrame(this.render);
         data.delta = now - data.time;
         data.time = now;
 

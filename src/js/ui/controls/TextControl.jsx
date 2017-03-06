@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import ColorInput from '../inputs/ColorInput';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
@@ -11,7 +11,7 @@ import { Control, Row } from './Control';
 
 import fontOptions from '../../../config/fonts.json';
 
-export default class TextControl extends UIComponent {
+export default class TextControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
