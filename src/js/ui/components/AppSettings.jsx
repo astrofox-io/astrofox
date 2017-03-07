@@ -23,11 +23,12 @@ export default class AppSettings extends UIComponent {
     }
 
     onSave() {
-        Application.saveConfigFile(this.state, () => {
-            if (this.props.onClose) {
-                this.props.onClose();
-            }
-        });
+        Application.saveConfigFile(this.state)
+            .then(() => {
+                if (this.props.onClose) {
+                    this.props.onClose();
+                }
+            });
     }
 
     onCancel() {
@@ -58,7 +59,7 @@ export default class AppSettings extends UIComponent {
                                 onChange={this.onChange}
                             />
                         </Row>
-                        <Row label="Show watermark">
+                        <Row label="Show watermark" description="Watermark will still appear in videos">
                             <ToggleInput
                                 name="showWatermark"
                                 value={state.showWatermark}

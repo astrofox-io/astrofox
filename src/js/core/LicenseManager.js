@@ -15,6 +15,7 @@ export default class LicenseManager {
         return readFile(LICENSE_FILE)
             .then(data => {
                 this.license = JSON.parse(this.key.decryptPublic(data).toString());
+
                 logger.log('License found:', this.license);
             })
             .catch(error => {

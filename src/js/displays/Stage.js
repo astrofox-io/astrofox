@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import Scene from './Scene';
 import Display from '../displays/Display';
+import WatermarkDisplay from '../displays/WatermarkDisplay';
 import NodeCollection from '../core/NodeCollection';
 import Composer from '../graphics/Composer';
 import FrameBuffer from '../graphics/FrameBuffer';
@@ -9,14 +10,11 @@ import { logger, raiseError } from '../core/Global';
 import * as displayLibrary from '../lib/displays';
 import * as effectsLibrary from '../lib/effects';
 
-import WATERMARK from '../../images/data/watermark';
-const WATERMARK_HEIGHT = 96,
-    WATERMARK_WIDTH = 96;
-
 export default class Stage extends Display {
-    constructor(options) {
+    constructor(app, options) {
         super(Stage, options);
 
+        this.app = app;
         this.scenes = new NodeCollection();
     
         this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
@@ -30,15 +28,12 @@ export default class Stage extends Display {
 
         this.backgroundColor = new THREE.Color(this.options.backgroundColor);
 
+        this.watermarkDisplay = new WatermarkDisplay();
+        this.watermarkDisplay.setSize(this.options.width, this.options.height);
+
         this.watermarkScene = new Scene();
-        this.watermarkDisplay = new displayLibrary['ImageDisplay']({
-            src: WATERMARK,
-            width: WATERMARK_WIDTH,
-            height: WATERMARK_HEIGHT,
-            opacity: 0.5
-        });
-        this.watermarkScene.displays.addNode(this.watermarkDisplay);
         this.watermarkScene.addToStage(this);
+        this.watermarkScene.addElement(this.watermarkDisplay);
     }
 
     update(options) {
@@ -157,6 +152,10 @@ export default class Stage extends Display {
 
         this.buffer2D.setSize(width, height);
         this.buffer3D.setSize(width, height);
+
+        if (this.watermarkScene.options.enabled) {
+            this.watermarkDisplay.setSize(width, height);
+        }
     }
 
     loadConfig(config) {

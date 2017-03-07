@@ -30,12 +30,22 @@ export const Group = (props) => {
 };
 
 export const Row = (props) => {
-    let label = (props.label) ?
-        <span className="label">{props.label}</span> : null;
+    let label, description;
+
+    if (props.label) {
+        label = <div className="label">{props.label}</div>;
+    }
+
+    if (props.description) {
+        description = <div className="description">{props.description}</div>;
+    }
 
     return (
         <div className={classNames('row', props.className)}>
-            {label}
+            <div className="text">
+                {label}
+                {description}
+            </div>
             {props.children}
         </div>
     );

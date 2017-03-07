@@ -26,7 +26,7 @@ class Application extends EventEmitter {
         this.audioContext = new window.AudioContext();
         this.player = new Player(this.audioContext);
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
-        this.stage = new Stage();
+        this.stage = new Stage(this);
         this.updater = new AppUpdater(this);
 
         this.audioFile = '';
@@ -82,44 +82,45 @@ class Application extends EventEmitter {
     //region Main Methods
     init() {
         // Load config file
-        this.loadConfigFile().then(() => {
-            // Create app menu
-            let menu = [];
-
-            menuConfig.forEach(root => {
-                if (__PROD__) {
-                    if (root.visible !== false) {
-                        menu.push(root);
-                    }
-                }
-                else {
-                    menu.push(root);
-                }
-
-                if (root.submenu) {
-                    root.submenu.forEach(item => {
-                        if (item.action && !item.role) {
-                            item.click = this.doMenuAction;
-                        }
-                    });
+        this.loadConfigFile()
+            .then(() => {
+                // Check for app updates
+                if (this.config.checkForUpdates) {
+                    this.updater.checkForUpdates();
                 }
             });
 
-            remote.Menu.setApplicationMenu(
-                remote.Menu.buildFromTemplate(menu)
-            );
+        // Create app menu
+        let menu = [];
 
-            // Check for license
-            license.init();
+        menuConfig.forEach(root => {
+            if (__PROD__) {
+                if (root.visible !== false) {
+                    menu.push(root);
+                }
+            }
+            else {
+                menu.push(root);
+            }
 
-            // Load default project
-            this.newProject();
-
-            // Check for app updates
-            if (this.config.checkForUpdates) {
-                this.updater.checkForUpdates();
+            if (root.submenu) {
+                root.submenu.forEach(item => {
+                    if (item.action && !item.role) {
+                        item.click = this.doMenuAction;
+                    }
+                });
             }
         });
+
+        remote.Menu.setApplicationMenu(
+            remote.Menu.buildFromTemplate(menu)
+        );
+
+        // Check for license
+        license.init();
+
+        // Load default project
+        this.newProject();
     }
 
     doMenuAction(menuItem) {
@@ -269,6 +270,10 @@ class Application extends EventEmitter {
             events.emit('tick', stats);
         }
     }
+
+    updateWatermark() {
+        this.stage.watermarkDisplay.update({ enabled: this.config.showWatermark });
+    }
     //endregion
 
     //region Save/load Methods
@@ -281,10 +286,12 @@ class Application extends EventEmitter {
                     logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
                     this.config = Object.assign({}, appConfig, config);
+
+                    this.updateWatermark();
                 });
         }
         else {
-            this.saveConfigFile(this.config);
+            return this.saveConfigFile(this.config);
         }
     }
 
@@ -384,7 +391,7 @@ class Application extends EventEmitter {
             });
     }
 
-    saveConfigFile(config, callback) {
+    saveConfigFile(config) {
         let data = JSON.stringify(config);
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data)
@@ -393,7 +400,7 @@ class Application extends EventEmitter {
 
                 Object.assign(this.config, config);
 
-                if (callback) callback();
+                this.updateWatermark();
             })
             .catch(error => {
                 raiseError('Failed to save config file.', error);
