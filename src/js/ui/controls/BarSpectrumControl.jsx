@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Application from '../../core/Application';
 import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ColorRangeInput from '../inputs/ColorRangeInput';
@@ -8,13 +7,13 @@ import RangeInput from '../inputs/RangeInput';
 import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
-const { stage } = Application;
-
 export default class BarSpectrumControl extends UIPureComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         
         this.state = this.props.display.options;
+
+        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -36,8 +35,7 @@ export default class BarSpectrumControl extends UIPureComponent {
     }
 
     render() {
-        const maxHeight = stage.options.height,
-            maxWidth = stage.options.width;
+        const { width, height } = this.app.stage.getSize();
 
         return (
             <Control label="BAR SPECTRUM" className={this.props.className}>
@@ -110,7 +108,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={this.state.width}
                         width={40}
                         min={0}
-                        max={maxWidth}
+                        max={width}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -118,7 +116,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                             name="width"
                             value={this.state.width}
                             min={0}
-                            max={maxWidth}
+                            max={width}
                             onChange={this.onChange}
                         />
                     </div>
@@ -129,7 +127,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={this.state.height}
                         width={40}
                         min={0}
-                        max={maxWidth}
+                        max={width}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -137,7 +135,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                             name="height"
                             value={this.state.height}
                             min={0}
-                            max={maxWidth}
+                            max={width}
                             onChange={this.onChange}
                         />
                     </div>
@@ -148,7 +146,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={this.state.shadowHeight}
                         width={40}
                         min={0}
-                        max={maxWidth}
+                        max={width}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -156,7 +154,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                             name="shadowHeight"
                             value={this.state.shadowHeight}
                             min={0}
-                            max={maxWidth}
+                            max={width}
                             onChange={this.onChange}
                         />
                     </div>
@@ -167,7 +165,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={this.state.barWidth}
                         width={40}
                         min={-1}
-                        max={maxWidth}
+                        max={width}
                         readOnly={this.state.barWidthAutoSize}
                         hidden={this.state.barWidthAutoSize}
                         onChange={this.onChange}
@@ -185,7 +183,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={this.state.barSpacing}
                         width={40}
                         min={-1}
-                        max={maxWidth}
+                        max={width}
                         readOnly={this.state.barSpacingAutoSize}
                         hidden={this.state.barSpacingAutoSize}
                         onChange={this.onChange}
@@ -218,16 +216,16 @@ export default class BarSpectrumControl extends UIPureComponent {
                         name="x"
                         value={this.state.x}
                         width={40}
-                        min={-maxWidth}
-                        max={maxWidth}
+                        min={-width}
+                        max={width}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             value={this.state.x}
-                            min={-maxWidth}
-                            max={maxWidth}
+                            min={-width}
+                            max={width}
                             onChange={this.onChange}
                         />
                     </div>
@@ -237,16 +235,16 @@ export default class BarSpectrumControl extends UIPureComponent {
                         name="y"
                         value={this.state.y}
                         width={40}
-                        min={-maxHeight}
-                        max={maxHeight}
+                        min={-height}
+                        max={height}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             value={this.state.y}
-                            min={-maxHeight}
-                            max={maxHeight}
+                            min={-height}
+                            max={height}
                             onChange={this.onChange}
                         />
                     </div>
@@ -295,3 +293,7 @@ export default class BarSpectrumControl extends UIPureComponent {
         );
     }
 }
+
+BarSpectrumControl.contextTypes = {
+    app: React.PropTypes.object
+};

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import Window from '../../core/Window';
 import { events } from '../../core/Global';
 
@@ -41,10 +40,16 @@ export default class App extends UIComponent {
             showOscilloscope: true,
             showSpectrum: true
         };
+        
+        this.app = props.app;
+    }
+
+    getChildContext() {
+        return { app: this.app };
     }
 
     componentWillMount() {
-        Application.init();
+        this.app.init();
 
         events.on('message', message => {
             this.showDialog({
@@ -86,15 +91,15 @@ export default class App extends UIComponent {
 
         events.on('unsaved-changes', this.onUnsavedChanges);
 
-        Application.updater.on('update', event => {
-            if (event === 'check-for-updates-complete' && Application.updater.hasUpdate) {
+        this.app.updater.on('update', event => {
+            if (event === 'check-for-updates-complete' && this.app.updater.hasUpdate) {
                 this.showCheckForUpdates();
             }
         });
     }
 
     componentDidMount() {
-        Application.startRender();
+        this.app.startRender();
     }
 
     onClick() {
@@ -109,14 +114,14 @@ export default class App extends UIComponent {
     onMenuAction(action) {
         switch (action) {
             case 'new-project':
-                Application.newProject();
+                this.app.newProject();
                 break;
 
             case 'open-project':
                 Window.showOpenDialog(
                     files => {
                         if (files) {
-                            Application.loadProject(files[0]);
+                            this.app.loadProject(files[0]);
                         }
                     },
                     {
@@ -154,7 +159,7 @@ export default class App extends UIComponent {
                 Window.showSaveDialog(
                     filename => {
                         if (filename) {
-                            Application.saveImage(filename);
+                            this.app.saveImage(filename);
                         }
                     },
                     {defaultPath: 'image.png'}
@@ -244,10 +249,10 @@ export default class App extends UIComponent {
     }
 
     saveProject(callback) {
-        let file = Application.projectFile;
+        let file = this.app.projectFile;
 
         if (file) {
-            Application.saveProject(file);
+            this.app.saveProject(file);
 
             if (callback) callback();
         }
@@ -260,7 +265,7 @@ export default class App extends UIComponent {
         Window.showSaveDialog(
             filename => {
                 if (filename) {
-                    Application.saveProject(filename);
+                    this.app.saveProject(filename);
 
                     if (callback) callback();
                 }
@@ -338,7 +343,7 @@ export default class App extends UIComponent {
 
         showLoading(true);
 
-        Application.loadAudioFile(file)
+        this.app.loadAudioFile(file)
             .then(() => {
                 showLoading(false);
             })
@@ -352,7 +357,7 @@ export default class App extends UIComponent {
 
         let { videoFile, audioFile } = options;
 
-        Application.saveVideo(videoFile, audioFile, options);
+        this.app.saveVideo(videoFile, audioFile, options);
 
         this.setState({ renderVideo: true });
     }
@@ -400,3 +405,7 @@ export default class App extends UIComponent {
         );
     }
 }
+
+App.childContextTypes = {
+    app: React.PropTypes.object
+};

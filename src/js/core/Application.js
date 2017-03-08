@@ -17,7 +17,7 @@ import menuConfig from '../../config/menu.json';
 
 const FPS_POLL_INTERVAL = 500;
 
-class Application extends EventEmitter {
+export default class Application extends EventEmitter {
     constructor() {
         super();
 
@@ -501,5 +501,3 @@ class Application extends EventEmitter {
     }
     //endregion
 }
-
-export default new Application();

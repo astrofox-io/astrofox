@@ -2,8 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
-
 import Loading from './Loading';
 import RenderInfo from './RenderInfo';
 
@@ -19,7 +17,7 @@ export default class Stage extends UIComponent {
 
     componentDidMount() {
         this.refs.canvas.appendChild(
-            Application.stage.renderer.domElement
+            this.context.app.stage.renderer.domElement
         );
     }
 
@@ -72,3 +70,7 @@ export default class Stage extends UIComponent {
         );
     }
 }
+
+Stage.contextTypes = {
+    app: React.PropTypes.object
+};

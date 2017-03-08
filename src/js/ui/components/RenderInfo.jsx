@@ -1,13 +1,12 @@
 import React from 'react';
 
-import Application from '../../core/Application';
 import UIComponent from '../UIComponent';
 import Button from './Button';
 import { formatTime } from '../../util/format';
 
 export default class RenderInfo extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             complete: false,
@@ -17,6 +16,8 @@ export default class RenderInfo extends UIComponent {
             startTime: 0,
             elapsedTime: 0
         };
+
+        this.app = context.app;
     }
 
     onButtonClick() {
@@ -30,9 +31,9 @@ export default class RenderInfo extends UIComponent {
     }
 
     componentWillMount() {
-        if (!Application.renderer) return;
+        if (!this.app.renderer) return;
 
-        this.renderer = Application.renderer;
+        this.renderer = this.app.renderer;
 
         this.renderer.on('ready', this.processInfo, this);
         this.renderer.on('complete', this.setComplete, this);
@@ -96,3 +97,7 @@ export default class RenderInfo extends UIComponent {
         );
     }
 }
+
+RenderInfo.contextTypes = {
+    app: React.PropTypes.object
+};

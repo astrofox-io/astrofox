@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import Window from '../../core/Window';
 
 import Button from '../components/Button';
@@ -26,8 +25,8 @@ const resolutionOptions = [
 ];
 
 export default class VideoSettings extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             videoFile: '',
@@ -38,16 +37,18 @@ export default class VideoSettings extends UIComponent {
             timeStart: 0,
             timeEnd: 0
         };
+        
+        this.app = context.app;
     }
 
     componentDidMount() {
-        let audio = Application.getAudio();
+        let audio = this.app.getAudio();
 
-        Application.stopAudio();
+        this.app.stopAudio();
 
         if (audio) {
             this.setState({
-                audioFile: Application.audioFile,
+                audioFile: this.app.audioFile,
                 timeEnd: audio.getDuration()
             });
         }
@@ -89,16 +90,16 @@ export default class VideoSettings extends UIComponent {
     }
 
     onOpenAudioFile() {
-        let path = Application.audioFile;
+        let path = this.app.audioFile;
 
         Window.showOpenDialog(
             files => {
                 if (files) {
-                    Application.loadAudioFile(files[0]).then(() => {
-                        let audio = Application.getAudio();
+                    this.app.loadAudioFile(files[0]).then(() => {
+                        let audio = this.app.getAudio();
 
                         this.setState({
-                            audioFile: Application.audioFile,
+                            audioFile: this.app.audioFile,
                             timeStart: 0,
                             timeEnd: audio.getDuration()
                         });
@@ -112,7 +113,7 @@ export default class VideoSettings extends UIComponent {
     render() {
         const props = this.props,
             state = this.state,
-            audio = Application.getAudio(),
+            audio = this.app.getAudio(),
             max = (audio) ? audio.getDuration() : 0,
             canStart = (state.videoFile && state.audioFile);
 
@@ -212,3 +213,7 @@ export default class VideoSettings extends UIComponent {
         );
     }
 }
+
+VideoSettings.contextTypes = {
+    app: React.PropTypes.object
+};

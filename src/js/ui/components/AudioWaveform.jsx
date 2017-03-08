@@ -1,12 +1,13 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import CanvasAudio from '../../canvas/CanvasAudio';
 
 export default class AudioWaveform extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
+        
+        this.app = context.app;
     }
 
     componentDidMount() {
@@ -37,10 +38,10 @@ export default class AudioWaveform extends UIComponent {
         );
 
         // Set player events
-        let player = Application.player;
+        let player = this.app.player;
 
         player.on('load', () => {
-            let audio = Application.getAudio();
+            let audio = this.app.getAudio();
 
             if (audio) {
                 this.baseCanvas.render(audio.buffer);
@@ -50,7 +51,7 @@ export default class AudioWaveform extends UIComponent {
         });
 
         player.on('tick', () => {
-            this.position = Application.getAudioPosition();
+            this.position = this.app.getAudioPosition();
             this.draw();
         });
 
@@ -60,7 +61,7 @@ export default class AudioWaveform extends UIComponent {
         });
 
         player.on('seek', () => {
-            this.position = this.seek = Application.getAudioPosition();
+            this.position = this.seek = this.app.getAudioPosition();
             this.draw();
         });
     }
@@ -71,14 +72,14 @@ export default class AudioWaveform extends UIComponent {
 
         let rect = e.currentTarget.getBoundingClientRect();
 
-        Application.seekAudio((e.clientX - rect.left) / rect.width);
+        this.app.seekAudio((e.clientX - rect.left) / rect.width);
     }
 
     onMouseMove(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        if (Application.hasAudio()) {
+        if (this.app.hasAudio()) {
             let rect = e.currentTarget.getBoundingClientRect();
 
             this.seek = (e.clientX - rect.left) / rect.width;
@@ -163,4 +164,8 @@ AudioWaveform.defaultProps = {
     shadowHeight: 30,
     bgColor: '#333333',
     bars: 213
+};
+
+AudioWaveform.contextTypes = {
+    app: React.PropTypes.object
 };

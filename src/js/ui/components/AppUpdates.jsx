@@ -1,15 +1,14 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import Button from  '../components/Button';
 import Spinner from '../components/Spinner';
 
-const appUpdater = Application.updater;
-
 export default class AppUpdates extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
+
+        this.appUpdater = context.app.updater;
 
         this.state = {
             message: null
@@ -17,6 +16,8 @@ export default class AppUpdates extends UIComponent {
     }
 
     componentDidMount() {
+        let appUpdater = this.appUpdater;
+
         appUpdater.on('update', this.updateStatus, this);
 
         if (!appUpdater.checking &&
@@ -29,10 +30,12 @@ export default class AppUpdates extends UIComponent {
     }
 
     componentWillUnmount() {
-        appUpdater.off('update', this.updateStatus, this);
+        this.appUpdater.off('update', this.updateStatus, this);
     }
 
     updateStatus() {
+        let appUpdater = this.appUpdater;
+
         if (appUpdater.error) {
             this.setState({ message: 'Unable to check for updates.' });
         }
@@ -59,29 +62,30 @@ export default class AppUpdates extends UIComponent {
     }
 
     installUpdate() {
-        appUpdater.quitAndInstall();
+        this.appUpdater.quitAndInstall();
     }
 
     downloadUpdate() {
-        appUpdater.downloadUpdate();
+        this.appUpdater.downloadUpdate();
     }
 
     render() {
         let spinner,
             installButton,
             downloadButton,
-            closeText = 'Close';
+            closeText = 'Close',
+            { checking, installing, downloading, downloadComplete, hasUpdate } = this.appUpdater;
 
-        if (appUpdater.checking || appUpdater.downloading || appUpdater.installing) {
+        if (checking || downloading || installing) {
             spinner = <Spinner size={30} />;
         }
 
-        if (appUpdater.downloadComplete && !appUpdater.installing) {
+        if (downloadComplete && !installing) {
             installButton = <Button text="Restart and Install Now" onClick={this.installUpdate}/>;
             closeText = 'Install Later';
         }
 
-        if (appUpdater.hasUpdate && !appUpdater.downloading && !appUpdater.downloadComplete) {
+        if (hasUpdate && !downloading && !downloadComplete) {
             downloadButton = <Button text="Download Now" onClick={this.downloadUpdate} />;
         }
 
@@ -100,3 +104,7 @@ export default class AppUpdates extends UIComponent {
         );
     }
 }
+
+AppUpdates.contextTypes = {
+    app: React.PropTypes.object
+};

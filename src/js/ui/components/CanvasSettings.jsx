@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import Button from '../components/Button';
 import ColorInput from '../inputs/ColorInput';
 import SelectInput from '../inputs/SelectInput';
@@ -15,10 +14,11 @@ const canvasSizes = {
 };
 
 export default class CanvasSettings extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
-        this.state = Application.stage.options;
+        this.app = context.app;
+        this.state = this.app.stage.options;
     }
 
     onChange(name, val) {
@@ -38,7 +38,7 @@ export default class CanvasSettings extends UIComponent {
     }
 
     onSave() {
-        Application.stage.update(this.state);
+        this.app.stage.update(this.state);
 
         this.props.onClose();
     }
@@ -75,3 +75,7 @@ export default class CanvasSettings extends UIComponent {
         );
     }
 }
+
+CanvasSettings.contextTypes = {
+    app: React.PropTypes.object
+};

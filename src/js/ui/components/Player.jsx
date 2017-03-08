@@ -2,16 +2,14 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import { formatTime } from '../../util/format';
-
 import RangeInput from '../inputs/RangeInput';
 
 const PROGRESS_MAX = 1000;
 
 export default class Player extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             playing: false,
@@ -20,20 +18,20 @@ export default class Player extends UIComponent {
             duration: 0
         };
 
-        this.player = Application.player;
+        this.app = context.app;
     }
 
     componentDidMount() {
-        const player = this.player;
+        const player = this.app.player;
 
         player.on('load', id => {
-            this.setState({ duration: this.player.getDuration(id) });
+            this.setState({ duration: player.getDuration(id) });
         });
 
         player.on('tick', id => {
-            if (this.player.isPlaying() && !this.refs.progress.isBuffering()) {
+            if (player.isPlaying() && !this.refs.progress.isBuffering()) {
                 this.setState({
-                    progressPosition: this.player.getPosition(id)
+                    progressPosition: player.getPosition(id)
                 });
             }
         });
@@ -52,33 +50,33 @@ export default class Player extends UIComponent {
 
         player.on('seek', id => {
             this.setState({
-                progressPosition: this.player.getPosition(id)
+                progressPosition: player.getPosition(id)
             });
         });
     }
 
     onPlayButtonClick() {
-        Application.playAudio();
+        this.app.playAudio();
     }
 
     onStopButtonClick() {
-        Application.stopAudio();
+        this.app.stopAudio();
     }
 
     onLoopButtonClick() {
         let loop = !this.state.looping;
 
         this.setState({ looping: loop }, () => {
-            this.player.setLoop(loop);
+            this.app.player.setLoop(loop);
         });
     }
 
     onVolumeChange(val) {
-        this.player.setVolume(val);
+        this.app.player.setVolume(val);
     }
 
     onProgressChange(val) {
-        this.player.seek('audio', val);
+        this.app.player.seek('audio', val);
     }
 
     onProgressInput(val) {
@@ -87,7 +85,7 @@ export default class Player extends UIComponent {
 
     render() {
         let state = this.state,
-            player = this.player,
+            player = this.app.player,
             totalTime = state.duration,
             audioPosition = state.progressPosition,
             currentTime = state.progressPosition * totalTime,
@@ -123,7 +121,13 @@ export default class Player extends UIComponent {
     }
 }
 
-Player.defaultProps = { visible: true };
+Player.defaultProps = {
+    visible: true
+};
+
+Player.contextTypes = {
+    app: React.PropTypes.object
+};
 
 class VolumeControl extends UIComponent {
     constructor(props) {

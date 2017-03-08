@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import Display from '../../displays/Display';
 import CanvasDisplay from '../../displays/CanvasDisplay';
 import Scene from '../../displays/Scene';
@@ -10,16 +9,16 @@ import { events } from '../../core/Global';
 import Layer from './Layer';
 import ButtonInput from '../inputs/ButtonInput';
 
-const { stage } = Application;
-
 export default class LayersPanel extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             activeIndex: 0,
             layers: []
         };
+
+        this.app = context.app;
     }
 
     componentWillMount() {
@@ -46,7 +45,7 @@ export default class LayersPanel extends UIComponent {
     onAddSceneClick() {
         let scene = new Scene();
 
-        stage.addScene(scene);
+        this.app.stage.addScene(scene);
 
         this.updateLayers(() => {
             this.setActiveLayer(scene);
@@ -78,7 +77,7 @@ export default class LayersPanel extends UIComponent {
             layer = layers[index],
             last = layers.length - 1;
 
-        if (stage.hasScenes() && layer) {
+        if (this.app.stage.hasScenes() && layer) {
             if (layer instanceof Scene) {
                 layer.owner.removeScene(layer);
             }
@@ -135,7 +134,7 @@ export default class LayersPanel extends UIComponent {
     updateLayers(callback) {
         let layers = [];
 
-        stage.getScenes().reverse().forEach(scene => {
+        this.app.stage.getScenes().reverse().forEach(scene => {
             layers.push(scene);
 
             scene.getEffects().reverse().forEach(effect => {
@@ -178,7 +177,7 @@ export default class LayersPanel extends UIComponent {
     render() {
         let layers,
             state = this.state,
-            disabled = !stage.hasScenes();
+            disabled = !this.app.stage.hasScenes();
 
         layers = state.layers.map((layer, index) => {
             let icon;
@@ -228,3 +227,7 @@ export default class LayersPanel extends UIComponent {
         );
     }
 }
+
+LayersPanel.contextTypes = {
+    app: React.PropTypes.object
+};

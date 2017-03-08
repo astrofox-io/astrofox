@@ -2,14 +2,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
 import { getControlComponent } from '../../util/controls';
 
-const { stage } = Application;
-
 export default class ControlsPanel extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         
         this.state = {
             controls: [],
@@ -17,6 +14,8 @@ export default class ControlsPanel extends UIComponent {
         };
 
         this.nodes = {};
+
+        this.app = context.app;
     }
 
     componentWillMount() {
@@ -26,7 +25,7 @@ export default class ControlsPanel extends UIComponent {
     updateControls(callback) {
         let controls = [];
 
-        stage.getScenes().reverse().forEach(scene => {
+        this.app.stage.getScenes().reverse().forEach(scene => {
             controls.push(scene);
             scene.getEffects().reverse().forEach(effect => {
                 controls.push(effect);
@@ -88,3 +87,7 @@ export default class ControlsPanel extends UIComponent {
         );
     }
 }
+
+ControlsPanel.contextTypes = {
+    app: React.PropTypes.object
+};

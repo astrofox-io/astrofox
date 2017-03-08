@@ -1,17 +1,16 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import Application from '../../core/Application';
-
 import Button from '../components/Button';
 import ToggleInput from '../inputs/ToggleInput';
 import { SettingsPanel, Settings, Group, Row } from '../layout/SettingsPanel';
 
 export default class AppSettings extends UIComponent {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
-        this.state = Object.assign({}, Application.config);
+        this.app = context.app;
+        this.state = Object.assign({}, this.app.config);
     }
 
     onChange(name, val) {
@@ -23,7 +22,7 @@ export default class AppSettings extends UIComponent {
     }
 
     onSave() {
-        Application.saveConfigFile(this.state)
+        this.app.saveConfigFile(this.state)
             .then(() => {
                 if (this.props.onClose) {
                     this.props.onClose();
@@ -85,3 +84,7 @@ export default class AppSettings extends UIComponent {
         );
     }
 }
+
+AppSettings.contextTypes = {
+    app: React.PropTypes.object
+};
