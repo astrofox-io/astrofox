@@ -6,7 +6,7 @@ import { getControlComponent } from '../../util/controls';
 
 export default class ControlsPanel extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
         
         this.state = {
             controls: [],
@@ -14,6 +14,7 @@ export default class ControlsPanel extends UIComponent {
         };
 
         this.nodes = {};
+        this.controls = null;
 
         this.app = context.app;
     }
@@ -40,7 +41,7 @@ export default class ControlsPanel extends UIComponent {
 
     updateControl(layer) {
         let id = layer.id,
-            control = this.refs[id];
+            control = this.nodes[id];
 
         if (control) {
             control.setState(layer.options);
@@ -52,7 +53,7 @@ export default class ControlsPanel extends UIComponent {
             node = this.nodes[id];
 
         if (node) {
-            this.refs.controls.scrollTop = node.offsetTop;
+            this.controls.scrollTop = node.offsetTop;
             this.setState({ activeIndex: index });
         }
     }
@@ -79,7 +80,7 @@ export default class ControlsPanel extends UIComponent {
         });
 
         return (
-            <div className="controls-panel" ref="controls">
+            <div className="controls-panel" ref={el => this.controls = el}>
                 <div className="controls">
                     {controls}
                 </div>

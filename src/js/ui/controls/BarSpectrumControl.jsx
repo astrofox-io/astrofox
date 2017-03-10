@@ -9,7 +9,7 @@ import { Control, Row } from './Control';
 
 export default class BarSpectrumControl extends UIPureComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
         
         this.state = this.props.display.options;
 

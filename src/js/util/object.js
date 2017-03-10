@@ -1,20 +1,15 @@
 const excludedFuncs = ['constructor', 'render'];
 
-export function autoBind(context) {
+export function autoBind(context, excluded) {
+    excluded = excluded || excludedFuncs;
     Object.getOwnPropertyNames(context.constructor.prototype).forEach(function(func) {
-        if (typeof this[func] === 'function' && !excludedFuncs.includes(func)) {
+        if (typeof this[func] === 'function' && !excluded.includes(func)) {
             this[func] = this[func].bind(this);
         }
     }, context);
 }
 
-export function assignExists(dest, source) {
-    let obj = Object.assign({}, dest);
-
-    return assignKeys(Object.keys(source), obj);
-}
-
-export function assignKeys(keys, source) {
+export function filterByKey(keys, source) {
     let obj = {};
 
     keys.forEach(key => {
@@ -27,7 +22,7 @@ export function assignKeys(keys, source) {
 }
 
 export function styles(keys, props) {
-    let obj = assignKeys(keys, props);
+    let obj = filterByKey(keys, props);
 
     if (typeof props.style === 'object') {
         Object.assign(obj, props.style);

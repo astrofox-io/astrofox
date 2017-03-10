@@ -5,13 +5,14 @@ import CanvasAudio from '../../canvas/CanvasAudio';
 
 export default class AudioWaveform extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
         
         this.app = context.app;
+        this.canvas = null;
     }
 
     componentDidMount() {
-        this.context = this.refs.canvas.getContext('2d');
+        this.drawContext = this.canvas.getContext('2d');
         this.position = 0;
         this.seek = 0;
 
@@ -96,10 +97,8 @@ export default class AudioWaveform extends UIComponent {
     }
 
     draw() {
-        let canvas = this.refs.canvas,
-            width = canvas.width,
-            height = canvas.height,
-            context = this.context,
+        let { width, height } = this.canvas,
+            context = this.drawContext,
             position = this.position * width,
             seek = this.seek * width,
             sx = (seek < position) ? seek : position,
@@ -142,7 +141,7 @@ export default class AudioWaveform extends UIComponent {
         return (
             <div className="waveform" style={style}>
                 <canvas
-                    ref="canvas"
+                    ref={el => this.canvas = el}
                     className="canvas"
                     width={width}
                     height={height}

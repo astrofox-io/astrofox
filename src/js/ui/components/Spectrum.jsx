@@ -19,12 +19,14 @@ export default class Spectrum extends UIComponent {
             sampleRate: 44100,
             normalize: false
         };
+
+        this.canvas = null;
     }
 
     componentDidMount() {
         this.bars = new CanvasBars(
             this.props,
-            this.refs.canvas
+            this.canvas
         );
 
         this.parser = new SpectrumParser(this.state);
@@ -58,7 +60,7 @@ export default class Spectrum extends UIComponent {
         return (
             <div className="spectrum" style={style}>
                 <canvas
-                    ref="canvas"
+                    ref={el => this.canvas = el}
                     className="canvas"
                     width="854"
                     height="100"

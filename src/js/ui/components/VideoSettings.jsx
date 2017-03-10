@@ -26,7 +26,7 @@ const resolutionOptions = [
 
 export default class VideoSettings extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.state = {
             videoFile: '',

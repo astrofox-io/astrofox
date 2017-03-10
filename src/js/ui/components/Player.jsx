@@ -9,7 +9,7 @@ const PROGRESS_MAX = 1000;
 
 export default class Player extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.state = {
             playing: false,
@@ -29,7 +29,7 @@ export default class Player extends UIComponent {
         });
 
         player.on('tick', id => {
-            if (player.isPlaying() && !this.refs.progress.isBuffering()) {
+            if (player.isPlaying() && !this.progressControl.isBuffering()) {
                 this.setState({
                     progressPosition: player.getPosition(id)
                 });
@@ -105,7 +105,7 @@ export default class Player extends UIComponent {
                 </div>
                 <VolumeControl onChange={this.onVolumeChange} />
                 <ProgressControl
-                    ref="progress"
+                    ref={el => this.progressControl = el}
                     value={audioPosition * PROGRESS_MAX}
                     onChange={this.onProgressChange}
                     onInput={this.onProgressInput}
@@ -204,14 +204,14 @@ class ProgressControl extends UIComponent {
     }
 
     isBuffering() {
-        return this.refs.progress.isBuffering();
+        return this.progressInput.isBuffering();
     }
 
     render() {
         return (
             <div className="progress">
                 <RangeInput
-                    ref="progress"
+                    ref={el => this.progressInput = el}
                     name="progress"
                     min="0"
                     max={PROGRESS_MAX}

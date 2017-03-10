@@ -16,7 +16,7 @@ export default class TextInput extends UIComponent {
         this.setState({ value: this.props.value });
 
         if (this.props.autoSelect) {
-            this.refs.input.select();
+            this.textInput.select();
         }
     }
 
@@ -63,7 +63,7 @@ export default class TextInput extends UIComponent {
         return (
             <div className={classNames('input', props.className)}>
                 <input
-                    ref="input"
+                    ref={el => this.textInput = el}
                     type="text"
                     className={classNames('input-field', props.inputClassName)}
                     style={{width: props.width}}

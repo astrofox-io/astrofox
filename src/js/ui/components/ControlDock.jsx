@@ -25,8 +25,8 @@ export default class ControlDock extends UIComponent {
 
     onControlPicked(newElement) {
         let obj, scene,
-            layers = this.refs.layers,
-            controls = this.refs.controls;
+            layers = this.layers,
+            controls = this.controls;
 
         scene = layers.getActiveScene();
 
@@ -43,8 +43,8 @@ export default class ControlDock extends UIComponent {
     }
 
     onProjectLoaded() {
-        let layers = this.refs.layers,
-            controls = this.refs.controls;
+        let layers = this.layers,
+            controls = this.controls;
 
         layers.updateLayers(() => {
             layers.setActiveIndex(0);
@@ -54,26 +54,26 @@ export default class ControlDock extends UIComponent {
 
     onLayerSelected(layer, index) {
         if (layer) {
-            this.refs.controls.focusControl(layer, index);
+            this.controls.focusControl(layer, index);
         }
     }
 
     onLayerChanged(layer) {
         if (layer) {
-            this.refs.controls.updateControl(layer);
+            this.controls.updateControl(layer);
         }
     }
 
     onLayerAdded() {
-        this.refs.controls.updateControls();
+        this.controls.updateControls();
     }
 
     onLayerRemoved() {
-        this.refs.controls.updateControls();
+        this.controls.updateControls();
     }
 
     onLayerMoved() {
-        this.refs.controls.updateControls();
+        this.controls.updateControls();
     }
 
     render() {
@@ -81,12 +81,11 @@ export default class ControlDock extends UIComponent {
             <PanelDock id="control-dock" visible={this.props.visible}>
                 <Panel
                     title="LAYERS"
-                    ref="layersPanel"
                     height={300}
                     minHeight={100}
                     resizable={true}>
                     <LayersPanel
-                        ref="layers"
+                        ref={el => this.layers = el}
                         onLayerSelected={this.onLayerSelected}
                         onLayerChanged={this.onLayerChanged}
                         onLayerAdded={this.onLayerAdded}
@@ -97,7 +96,9 @@ export default class ControlDock extends UIComponent {
                 <Panel
                     title="CONTROLS"
                     stretch={true}>
-                    <ControlsPanel ref="controls" />
+                    <ControlsPanel
+                        ref={el => this.controls = el}
+                    />
                 </Panel>
             </PanelDock>
         );

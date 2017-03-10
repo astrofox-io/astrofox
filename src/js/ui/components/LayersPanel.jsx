@@ -11,7 +11,7 @@ import ButtonInput from '../inputs/ButtonInput';
 
 export default class LayersPanel extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.state = {
             activeIndex: 0,

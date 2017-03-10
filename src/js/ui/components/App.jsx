@@ -103,7 +103,7 @@ export default class App extends UIComponent {
     }
 
     onClick() {
-        this.refs.menubar.setActiveIndex(-1);
+        this.menubar.setActiveIndex(-1);
     }
 
     onDragDrop(e) {
@@ -339,7 +339,7 @@ export default class App extends UIComponent {
     }
 
     loadAudioFile(file) {
-        let showLoading = this.refs.stage.showLoading;
+        let showLoading = this.stage.showLoading;
 
         showLoading(true);
 
@@ -378,24 +378,39 @@ export default class App extends UIComponent {
                 <Preload />
                 <TitleBar />
                 <MenuBar
-                    ref="menubar"
+                    ref={el => this.menubar = el}
                     items={menuConfig}
                     onMenuAction={this.onMenuAction}
                 />
                 <div id="body">
                     <div id="viewport">
                         <Stage
-                            ref="stage"
+                            ref={el => this.stage = el}
                             renderVideo={state.renderVideo}
                             onFileDropped={this.loadAudioFile}
                             onStopRender={this.stopRender}
                         />
-                        <Spectrum ref="spectrum" visible={state.showSpectrum} />
-                        <Oscilloscope ref="osc" visible={state.showOscilloscope} />
-                        <AudioWaveform ref="waveform" visible={state.showPlayer} />
-                        <Player ref="player" visible={state.showPlayer} />
+                        <Spectrum
+                            ref={el => this.spectrum = el}
+                            visible={state.showSpectrum}
+                        />
+                        <Oscilloscope
+                            ref={el => this.osc = el}
+                            visible={state.showOscilloscope}
+                        />
+                        <AudioWaveform
+                            ref={el => this.waveform = el}
+                            visible={state.showPlayer}
+                        />
+                        <Player
+                            ref={el => this.player = el}
+                            visible={state.showPlayer}
+                        />
                     </div>
-                    <ControlDock ref="dock" visible={state.showControlDock} />
+                    <ControlDock
+                        ref={el => this.controlDock = el}
+                        visible={state.showControlDock}
+                    />
                 </div>
                 <StatusBar text={state.text}/>
                 <Overlay>

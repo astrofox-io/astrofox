@@ -36,8 +36,8 @@ export default class WatermarkDisplay extends CanvasDisplay {
 
     setSize(width, height) {
         this.update({
-            x: -width/2 + WATERMARK_WIDTH * 0.6,
-            y: -height/2 + WATERMARK_HEIGHT * 0.6
+            x: 0,
+            y: -height/2 + 10 + (WATERMARK_HEIGHT * 0.5)
         });
     }
 }
@@ -54,6 +54,6 @@ WatermarkDisplay.defaults = {
     height: WATERMARK_HEIGHT,
     fixed: true,
     rotation: 0,
-    opacity: 1.0,
+    opacity: 0.5,
     enabled: false
 };

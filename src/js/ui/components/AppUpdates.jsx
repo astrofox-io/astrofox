@@ -6,7 +6,7 @@ import Spinner from '../components/Spinner';
 
 export default class AppUpdates extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.appUpdater = context.app.updater;
 

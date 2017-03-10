@@ -6,18 +6,21 @@ import Loading from './Loading';
 import RenderInfo from './RenderInfo';
 
 export default class Stage extends UIComponent {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
         
         this.state = {
             loading: false,
             renderVideo: false
         };
+
+        this.app = context.app;
+        this.canvas = null;
     }
 
     componentDidMount() {
-        this.refs.canvas.appendChild(
-            this.context.app.stage.renderer.domElement
+        this.canvas.appendChild(
+            this.app.stage.renderer.domElement
         );
     }
 
@@ -58,12 +61,12 @@ export default class Stage extends UIComponent {
             null;
 
         return (
-            <div ref="stage"
+            <div
                 className={classNames(classes)}
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}>
                 <Loading visible={this.state.loading} />
-                <div ref="canvas" className="canvas">
+                <div ref={el => this.canvas = el} className="canvas">
                     {renderInfo}
                 </div>
             </div>

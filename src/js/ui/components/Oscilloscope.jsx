@@ -13,7 +13,7 @@ export default class Oscilloscope extends UIComponent {
     componentDidMount() {
         this.display = new CanvasWave(
             this.props,
-            this.refs.canvas
+            this.canvas
         );
 
         events.on('render', this.updateCanvas);
@@ -39,7 +39,7 @@ export default class Oscilloscope extends UIComponent {
         return (
             <div className="oscilloscope" style={style}>
                 <canvas
-                    ref="canvas"
+                    ref={el => this.canvas = el}
                     className="canvas"
                     width="854"
                     height="100"

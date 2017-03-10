@@ -15,7 +15,7 @@ const canvasSizes = {
 
 export default class CanvasSettings extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.app = context.app;
         this.state = this.app.stage.options;

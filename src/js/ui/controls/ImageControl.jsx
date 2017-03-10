@@ -8,14 +8,14 @@ import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
 import BLANK_IMAGE from '../../../images/data/blankGif.json';
-const CANVAS_WIDTH = 854;
-const CANVAS_HEIGHT = 480;
 
 export default class ImageControl extends UIComponent {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
 
         this.state = this.props.display.options;
+
+        this.app = context.app;
     }
 
     componentDidMount() {
@@ -25,14 +25,14 @@ export default class ImageControl extends UIComponent {
             this.setState(display.options);
         }
 
-        this.image  = this.refs.image.getImage();
+        this.image = this.imageInput.getImage();
     }
 
     onChange(name, val) {
         let obj = {},
             display = this.props.display,
             state = this.state,
-            image = this.refs.image.getImage(),
+            image = this.imageInput.getImage(),
             ratio = image.naturalWidth / image.naturalHeight;
 
         obj[name] = val;
@@ -80,13 +80,14 @@ export default class ImageControl extends UIComponent {
     }
 
     render() {
-        let state = this.state,
+        let size = this.app.stage.getSize(),
+            state = this.state,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
             width = readOnly ? 0 : image.naturalWidth,
             height = readOnly ? 0 : image.naturalHeight,
-            xMax = readOnly ? 0 : (width > CANVAS_WIDTH) ? width : CANVAS_WIDTH,
-            yMax = readOnly ? 0 : (height > CANVAS_HEIGHT) ? height : CANVAS_HEIGHT,
+            xMax = readOnly ? 0 : (width > size.width) ? width : size.width,
+            yMax = readOnly ? 0 : (height > size.height) ? height : size.height,
             linkClasses = {
                 'icon-link': true,
                 'input-link': true,
@@ -99,7 +100,7 @@ export default class ImageControl extends UIComponent {
                 <Row label="Image">
                     <ImageInput
                         name="src"
-                        ref="image"
+                        ref={el => this.imageInput = el}
                         src={state.src}
                         onChange={this.onChange}
                     />
@@ -236,3 +237,7 @@ export default class ImageControl extends UIComponent {
         );
     }
 }
+
+ImageControl.contextTypes = {
+    app: React.PropTypes.object
+};

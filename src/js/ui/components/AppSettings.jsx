@@ -7,7 +7,7 @@ import { SettingsPanel, Settings, Group, Row } from '../layout/SettingsPanel';
 
 export default class AppSettings extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.app = context.app;
         this.state = Object.assign({}, this.app.config);

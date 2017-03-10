@@ -6,7 +6,7 @@ import { formatTime } from '../../util/format';
 
 export default class RenderInfo extends UIComponent {
     constructor(props, context) {
-        super(props, context);
+        super(props);
 
         this.state = {
             complete: false,
