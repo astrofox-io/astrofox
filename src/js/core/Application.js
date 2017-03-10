@@ -2,10 +2,11 @@ import id3 from 'id3js';
 import { remote } from 'electron';
 
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
-import { events, logger, license, raiseError } from './Global';
+import { events, logger, raiseError } from './Global';
 import * as IO from '../util/io';
 import AppUpdater from './AppUpdater';
 import EventEmitter from './EventEmitter';
+import LicenseManager from './LicenseManager';
 import Player from '../audio/Player';
 import BufferedSound from '../audio/BufferedSound';
 import SpectrumAnalyzer from '../audio/SpectrumAnalyzer';
@@ -28,10 +29,14 @@ export default class Application extends EventEmitter {
         this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.stage = new Stage(this);
         this.updater = new AppUpdater(this);
+        this.license = new LicenseManager();
 
         this.audioFile = '';
         this.projectFile = '';
         this.rendering = false;
+
+        // Default configuration
+        this.config = Object.assign({}, appConfig);
 
         // Frame render data
         this.frameData = {
@@ -52,13 +57,15 @@ export default class Application extends EventEmitter {
             stack: new Uint8Array(10)
         };
 
+        // App events
+        this.on('config-updated', () => {
+            this.showWatermark(this.config.showWatermark);
+        });
+
         // Player events
         this.player.on('play', this.resetAnalyzer, this);
         this.player.on('pause', this.resetAnalyzer, this);
         this.player.on('stop', this.resetAnalyzer, this);
-
-        // Default configuration
-        this.config = Object.assign({}, appConfig);
 
         // Window events
         window.onmousedown = (e) => {
@@ -81,6 +88,9 @@ export default class Application extends EventEmitter {
 
     //region Main Methods
     init() {
+        // Check for license
+        this.license.load();
+
         // Load config file
         this.loadConfigFile()
             .then(() => {
@@ -115,9 +125,6 @@ export default class Application extends EventEmitter {
         remote.Menu.setApplicationMenu(
             remote.Menu.buildFromTemplate(menu)
         );
-
-        // Check for license
-        license.init();
 
         // Load default project
         this.newProject();
@@ -271,8 +278,10 @@ export default class Application extends EventEmitter {
         }
     }
 
-    updateWatermark() {
-        this.stage.watermarkDisplay.update({ enabled: this.config.showWatermark });
+    showWatermark(show) {
+        this.stage.watermarkDisplay.update({
+            enabled: show
+        });
     }
     //endregion
 
@@ -287,7 +296,7 @@ export default class Application extends EventEmitter {
 
                     this.config = Object.assign({}, appConfig, config);
 
-                    this.updateWatermark();
+                    this.emit('config-updated');
                 });
         }
         else {
@@ -400,7 +409,7 @@ export default class Application extends EventEmitter {
 
                 Object.assign(this.config, config);
 
-                this.updateWatermark();
+                this.emit('config-updated');
             })
             .catch(error => {
                 raiseError('Failed to save config file.', error);
@@ -428,11 +437,14 @@ export default class Application extends EventEmitter {
         if (this.hasAudio()) {
             logger.time('video-render');
 
-            let renderer = this.renderer = new VideoRenderer(videoFile, audioFile, options);
+            let renderer = this.renderer = new VideoRenderer(videoFile, audioFile, options),
+                { showWatermark } = this.config,
+                hasLicense = this.license.check();
 
             // Setup before rendering
             this.stopRender();
             this.stopAudio();
+            this.showWatermark(showWatermark || !hasLicense);
 
             // Handle events
             renderer.on('ready', () => {
@@ -445,6 +457,7 @@ export default class Application extends EventEmitter {
                 logger.timeEnd('video-render', 'Render complete.');
 
                 this.renderer = null;
+                this.showWatermark(showWatermark);
 
                 this.startRender();
             });
