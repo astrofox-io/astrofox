@@ -1,15 +1,15 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 const Overlay = (props) => {
     return (
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
             component={Component}
             transitionName="overlay"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {props.children}
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
     );
 };
 

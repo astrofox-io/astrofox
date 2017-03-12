@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import UIComponent from '../UIComponent';
 import RenderInfo from './RenderInfo';
@@ -70,13 +70,13 @@ export default class Stage extends UIComponent {
                     className="canvas"
                     onDrop={this.onDrop}
                     onDragOver={this.onDragOver}>
-                    <ReactCSSTransitionGroup
+                    <CSSTransitionGroup
                         transitionName="stage"
                         transitionEnterTimeout={500}
                         transitionLeaveTimeout={500}>
                         {loading}
                         {renderInfo}
-                    </ReactCSSTransitionGroup>
+                    </CSSTransitionGroup>
                 </div>
             </div>
         );
