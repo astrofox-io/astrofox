@@ -133,20 +133,21 @@ export default class Player extends UIComponent {
                         onClick={this.onLoopButtonClick}
                     />
                     <ToggleButton
-                        icon="icon-bar-graph"
-                        title="Spectrum"
-                        active={showSpectrum}
-                        onClick={this.onSpectrumButtonClick}
-                    />
-                    <ToggleButton
                         icon="icon-sound-waves"
                         title="Oscilloscope"
                         active={showOsc}
                         onClick={this.onOscButtonClick}
                     />
+                    <ToggleButton
+                        icon="icon-bar-graph"
+                        title="Spectrum"
+                        active={showSpectrum}
+                        onClick={this.onSpectrumButtonClick}
+                    />
                 </div>
-                <Spectrum visible={showSpectrum} />
                 <Oscilloscope visible={showOsc} />
+                <Spectrum visible={showSpectrum} />
+
             </div>
         );
     }
@@ -189,6 +190,9 @@ class VolumeControl extends UIComponent {
 
         return (
             <div className="volume">
+                <div className="speaker">
+                    <span className={icon} />
+                </div>
                 <div className="slider">
                     <RangeInput
                         name="volume"
@@ -197,9 +201,6 @@ class VolumeControl extends UIComponent {
                         value={val}
                         onChange={this.onChange}
                     />
-                </div>
-                <div className="speaker">
-                    <span className={icon} />
                 </div>
             </div>
         );

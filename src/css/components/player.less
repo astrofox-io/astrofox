@@ -54,12 +54,20 @@
     .toggle-button {
         font-size: 20px;
         line-height: 36px;
-        color: @bg-color2;
+        color: @bg-color1;
         margin: 0 2px;
+
+        &:hover {
+            color: lighten(@bg-color1, 10%);
+        }
     }
 
     .toggle-button-on {
         color: @color1;
+
+        &:hover {
+            color: @color1;
+        }
     }
 
     .volume {
@@ -78,6 +86,7 @@
             align-items: center;
             font-size: 20px;
             line-height: 36px;
+            margin-right: 10px;
         }
     }
 
