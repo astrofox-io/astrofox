@@ -74,10 +74,11 @@ export default class Spectrum extends UIComponent {
 Spectrum.defaultProps = {
     visible: true,
     width: 854,
-    height: 75,
+    height: 50,
     barWidth: -1,
     barSpacing: 1,
     shadowHeight: 0,
+    minHeight: 1,
     color: '#775FD8',
     backgroundColor: '#FF0000'
 };

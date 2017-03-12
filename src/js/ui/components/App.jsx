@@ -7,20 +7,17 @@ import { events } from '../../core/Global';
 import About from './About';
 import AppSettings from './AppSettings';
 import AppUpdates from './AppUpdates';
-import AudioWaveform from './AudioWaveform';
 import CanvasSettings from './CanvasSettings';
 import ControlDock from './ControlDock';
 import ControlPicker from './ControlPicker';
 import Dialog from './Dialog';
 import MenuBar from './MenuBar';
 import ModalWindow from './ModalWindow';
-import Oscilloscope from './Oscilloscope';
 import Overlay from './Overlay';
 import Player from './Player';
 import Preload from './Preload';
 import StatusBar from './StatusBar';
 import Stage from './Stage';
-import Spectrum from './Spectrum';
 import TitleBar from './TitleBar';
 import VideoSettings from './VideoSettings';
 
@@ -32,12 +29,10 @@ export default class App extends UIComponent {
         super(props);
 
         this.state = {
-            text: '',
+            statusBarText: '',
             modals: [],
             showControlDock: true,
-            showPlayer: true,
-            showOscilloscope: true,
-            showSpectrum: true
+            showPlayer: true
         };
         
         this.app = props.app;
@@ -80,7 +75,7 @@ export default class App extends UIComponent {
 
         events.on('audio-tags', tags => {
             if (tags && tags.artist) {
-                this.setState({text: tags.artist + ' - ' + tags.title});
+                this.setState({statusBarText: tags.artist + ' - ' + tags.title});
             }
         });
 
@@ -206,14 +201,6 @@ export default class App extends UIComponent {
 
             case 'view-player':
                 this.setState({ showPlayer: !this.state.showPlayer });
-                break;
-
-            case 'view-oscilloscope':
-                this.setState({ showOscilloscope: !this.state.showOscilloscope });
-                break;
-
-            case 'view-spectrum':
-                this.setState({ showSpectrum: !this.state.showSpectrum });
                 break;
 
             case 'check-for-updates':
@@ -382,29 +369,15 @@ export default class App extends UIComponent {
                             ref={el => this.stage = el}
                             onFileDropped={this.loadAudioFile}
                         />
-                        <Spectrum
-                            ref={el => this.spectrum = el}
-                            visible={state.showSpectrum}
-                        />
-                        <Oscilloscope
-                            ref={el => this.osc = el}
-                            visible={state.showOscilloscope}
-                        />
-                        <AudioWaveform
-                            ref={el => this.waveform = el}
-                            visible={state.showPlayer}
-                        />
                         <Player
-                            ref={el => this.player = el}
                             visible={state.showPlayer}
                         />
                     </div>
                     <ControlDock
-                        ref={el => this.controlDock = el}
                         visible={state.showControlDock}
                     />
                 </div>
-                <StatusBar text={state.text}/>
+                <StatusBar text={state.statusBarText} />
                 <Overlay>
                     {state.modals}
                 </Overlay>

@@ -51,6 +51,6 @@ export default class Oscilloscope extends UIComponent {
 
 Oscilloscope.defaultProps = {
     width: 854,
-    height: 75,
+    height: 50,
     color: '#927FFF'
 };

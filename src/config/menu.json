@@ -70,18 +70,6 @@
         "type": "checkbox",
         "checked": true,
         "action": "view-player"
-      },
-      {
-        "label": "Spectrum Analyzer",
-        "type": "checkbox",
-        "checked": true,
-        "action": "view-spectrum"
-      },
-      {
-        "label": "Oscilloscope",
-        "type": "checkbox",
-        "checked": true,
-        "action": "view-oscilloscope"
       }
     ]
   },

@@ -3,6 +3,7 @@
 
 import Component from '../core/Component';
 import { setColor } from '../util/canvas';
+import { clamp } from '../util/math';
 
 class CanvasBars extends Component {
     constructor(options, canvas) {
@@ -20,7 +21,7 @@ class CanvasBars extends Component {
             bars = data.length,
             canvas = this.canvas,
             context = this.context,
-            { height, width, barWidth, barSpacing, color, shadowHeight, shadowColor } = this.options;
+            { height, width, barWidth, barSpacing, color, shadowHeight, shadowColor, minHeight } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height + shadowHeight) {
@@ -59,7 +60,7 @@ class CanvasBars extends Component {
             index = ~~i;
 
             if (index !== last) {
-                val = data[index] * height;
+                val = clamp(data[index] * height , minHeight, height);
                 last = index;
 
                 context.fillRect(x, y, barWidth, -val);
@@ -87,6 +88,7 @@ class CanvasBars extends Component {
 CanvasBars.defaults = {
     width: 300,
     height: 100,
+    minHeight: 0,
     barWidth: -1,
     barSpacing: -1,
     shadowHeight: 100,

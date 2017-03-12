@@ -2,6 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
+import AudioWaveform from './AudioWaveform';
+import Oscilloscope from './Oscilloscope';
+import Spectrum from './Spectrum';
 import { formatTime } from '../../util/format';
 import RangeInput from '../inputs/RangeInput';
 
@@ -15,7 +18,9 @@ export default class Player extends UIComponent {
             playing: false,
             looping: false,
             progressPosition: 0,
-            duration: 0
+            duration: 0,
+            showSpectrum: false,
+            showOsc: false
         };
 
         this.app = context.app;
@@ -71,6 +76,14 @@ export default class Player extends UIComponent {
         });
     }
 
+    onSpectrumButtonClick() {
+        this.setState({ showSpectrum: !this.state.showSpectrum });
+    }
+
+    onOscButtonClick() {
+        this.setState({ showOsc: !this.state.showOsc });
+    }
+
     onVolumeChange(val) {
         this.app.player.setVolume(val);
     }
@@ -84,13 +97,9 @@ export default class Player extends UIComponent {
     }
 
     render() {
-        let state = this.state,
-            player = this.app.player,
-            totalTime = state.duration,
-            audioPosition = state.progressPosition,
-            currentTime = state.progressPosition * totalTime,
+        let player = this.app.player,
+            { duration, progressPosition, looping, showSpectrum, showOsc } = this.state,
             playing = player.isPlaying(),
-            loop = player.isLooping(),
             style = {};
 
         if (!this.props.visible) {
@@ -98,24 +107,46 @@ export default class Player extends UIComponent {
         }
 
         return (
-            <div className="player" style={style}>
-                <div className="buttons">
-                    <PlayButton playing={playing} onClick={this.onPlayButtonClick} />
-                    <StopButton onClick={this.onStopButtonClick} />
+            <div style={style}>
+                <AudioWaveform />
+                <div className="player">
+                    <div className="buttons">
+                        <PlayButton playing={playing} onClick={this.onPlayButtonClick} />
+                        <StopButton onClick={this.onStopButtonClick} />
+                    </div>
+                    <VolumeControl onChange={this.onVolumeChange} />
+                    <ProgressControl
+                        ref={el => this.progressControl = el}
+                        value={progressPosition * PROGRESS_MAX}
+                        onChange={this.onProgressChange}
+                        onInput={this.onProgressInput}
+                        readOnly={duration==0}
+                    />
+                    <TimeInfo
+                        currentTime={duration * progressPosition}
+                        totalTime={duration}
+                    />
+                    <ToggleButton
+                        icon="icon-refresh"
+                        title="Repeat"
+                        active={looping}
+                        onClick={this.onLoopButtonClick}
+                    />
+                    <ToggleButton
+                        icon="icon-bar-graph"
+                        title="Spectrum"
+                        active={showSpectrum}
+                        onClick={this.onSpectrumButtonClick}
+                    />
+                    <ToggleButton
+                        icon="icon-sound-waves"
+                        title="Oscilloscope"
+                        active={showOsc}
+                        onClick={this.onOscButtonClick}
+                    />
                 </div>
-                <VolumeControl onChange={this.onVolumeChange} />
-                <ProgressControl
-                    ref={el => this.progressControl = el}
-                    value={audioPosition * PROGRESS_MAX}
-                    onChange={this.onProgressChange}
-                    onInput={this.onProgressInput}
-                    readOnly={totalTime==0}
-                />
-                <TimeInfo
-                    currentTime={currentTime}
-                    totalTime={totalTime}
-                />
-                <LoopButton loop={loop} onClick={this.onLoopButtonClick} />
+                <Spectrum visible={showSpectrum} />
+                <Oscilloscope visible={showOsc} />
             </div>
         );
     }
@@ -242,10 +273,10 @@ const StopButton = (props) => {
     );
 };
 
-const LoopButton = (props) => {
+const ToggleButton = (props) => {
     return (
-        <div className={classNames('loop-button', {'loop-button-on': props.loop })} onClick={props.onClick}>
-            <span className="icon-refresh" title="Repeat" />
+        <div className={classNames('toggle-button', {'toggle-button-on': props.active })} onClick={props.onClick}>
+            <span className={props.icon} title={props.title} />
         </div>
     );
 };
