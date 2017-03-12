@@ -34,7 +34,6 @@ export default class App extends UIComponent {
         this.state = {
             text: '',
             modals: [],
-            renderVideo: false,
             showControlDock: true,
             showPlayer: true,
             showOscilloscope: true,
@@ -358,12 +357,7 @@ export default class App extends UIComponent {
         let { videoFile, audioFile } = options;
 
         this.app.saveVideo(videoFile, audioFile, options);
-
-        this.setState({ renderVideo: true });
-    }
-
-    stopRender() {
-        this.setState({ renderVideo: false });
+        this.stage.startRender();
     }
 
     render() {
@@ -386,9 +380,7 @@ export default class App extends UIComponent {
                     <div id="viewport">
                         <Stage
                             ref={el => this.stage = el}
-                            renderVideo={state.renderVideo}
                             onFileDropped={this.loadAudioFile}
-                            onStopRender={this.stopRender}
                         />
                         <Spectrum
                             ref={el => this.spectrum = el}

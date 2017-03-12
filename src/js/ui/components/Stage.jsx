@@ -1,8 +1,7 @@
 import React from 'react';
-import classNames from 'classnames';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import UIComponent from '../UIComponent';
-import Loading from './Loading';
 import RenderInfo from './RenderInfo';
 
 export default class Stage extends UIComponent {
@@ -11,7 +10,7 @@ export default class Stage extends UIComponent {
         
         this.state = {
             loading: false,
-            renderVideo: false
+            rendering: false
         };
 
         this.app = context.app;
@@ -40,10 +39,12 @@ export default class Stage extends UIComponent {
         }
     }
 
+    startRender() {
+        this.setState({ rendering: true });
+    }
+
     stopRender() {
-        if (this.props.onStopRender) {
-            this.props.onStopRender();
-        }
+        this.setState({ rendering: false });
     }
 
     showLoading(val) {
@@ -51,23 +52,31 @@ export default class Stage extends UIComponent {
     }
 
     render() {
-        const classes = {
-            'stage': true,
-            'stage-video-render': this.props.renderVideo
-        };
+        let loading = null,
+            renderInfo = null;
 
-        let renderInfo = (this.props.renderVideo) ?
-            <RenderInfo onButtonClick={this.stopRender} /> :
-            null;
+        if (this.state.loading) {
+            loading = <div className="loading"/>;
+        }
+
+        if (this.state.rendering) {
+            renderInfo = <RenderInfo onButtonClick={this.stopRender} />;
+        }
 
         return (
-            <div
-                className={classNames(classes)}
-                onDrop={this.onDrop}
-                onDragOver={this.onDragOver}>
-                <Loading visible={this.state.loading} />
-                <div ref={el => this.canvas = el} className="canvas">
-                    {renderInfo}
+            <div className="stage">
+                <div
+                    ref={el => this.canvas = el}
+                    className="canvas"
+                    onDrop={this.onDrop}
+                    onDragOver={this.onDragOver}>
+                    <ReactCSSTransitionGroup
+                        transitionName="stage"
+                        transitionEnterTimeout={500}
+                        transitionLeaveTimeout={500}>
+                        {loading}
+                        {renderInfo}
+                    </ReactCSSTransitionGroup>
                 </div>
             </div>
         );

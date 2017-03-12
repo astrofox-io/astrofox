@@ -1,5 +1,6 @@
 .stage {
     display: flex;
+    flex-direction: column;
     flex: 1;
     min-width: 900px;
     overflow: hidden;
@@ -11,6 +12,7 @@
         flex-direction: column-reverse;
         justify-content: center;
         box-shadow: 0px 5px 20px rgba(0,0,0,0.5);
+        z-index: 1;
     }
 
     .loading {
@@ -25,34 +27,10 @@
         .animation(rotate .3s linear infinite);
     }
 
-    .loading-enter {
-        opacity: 0;
-        width: 200px;
-        height: 200px;
-    }
-
-    .loading-enter-active {
-        opacity: 1;
-        width: 100px;
-        height: 100px;
-        transition: all .3s ease-in;
-    }
-
-    .loading-leave {
-        opacity: 1;
-        width: 100px;
-        height: 100px;
-    }
-
-    .loading-leave-active {
-        opacity: 0;
-        width: 200px;
-        height: 200px;
-        transition: all .3s ease-out;
-    }
-
     .render-info {
         background-color: @bg-color5;
+        overflow: hidden;
+        z-index: 1;
 
         .render-progress {
             background-color: @bg-color3;
@@ -81,25 +59,86 @@
             }
         }
 
-
+        &:before {
+            content: "\0020";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            opacity: 0.5;
+            z-index: -1;
+        }
     }
 }
 
-.stage-video-render {
-    &:before {
-        content: "\0020";
-        position: fixed;
-        top: -40px;
-        width: 100%;
-        height: 110%;
-        background: #000;
-        opacity: 0.5;
-        z-index: 1;
+.stage-enter {
+    &.loading {
+        opacity: 0;
+        width: 200px;
+        height: 200px;
     }
 
-    .canvas {
-        flex-shrink: 0;
-        z-index: 2;
-        box-shadow: 0px 5px 40px rgba(0,0,0,0.5);
+    &.render-info {
+        max-height: 0;
+
+        &:before {
+            opacity: 0;
+        }
+    }
+}
+
+.stage-enter-active {
+    &.loading {
+        opacity: 1;
+        width: 100px;
+        height: 100px;
+        transition: all .3s ease-in;
+    }
+
+    &.render-info {
+        max-height: 100px;
+        transition: max-height .5s;
+
+        &:before {
+            opacity: 0.5;
+            transition: all .5s ease-in;
+        }
+    }
+}
+
+.stage-leave {
+    &.loading {
+        opacity: 1;
+        width: 100px;
+        height: 100px;
+    }
+
+    &.render-info {
+        max-height: 100px;
+
+        &:before {
+            opacity: 0.5;
+        }
+    }
+}
+
+.stage-leave-active {
+    &.loading {
+        opacity: 0;
+        width: 200px;
+        height: 200px;
+        transition: all .3s ease-out;
+    }
+
+    &.render-info {
+        max-height: 0;
+        transition: max-height .5s;
+
+        &:before {
+            opacity: 0;
+            transition: all .5s ease-out;
+        }
     }
 }

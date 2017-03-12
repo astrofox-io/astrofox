@@ -20,21 +20,10 @@ export default class RenderInfo extends UIComponent {
         this.app = context.app;
     }
 
-    onButtonClick() {
-        if (this.renderer) {
-            this.renderer.stop();
-        }
-
-        if (this.props.onButtonClick) {
-            this.props.onButtonClick();
-        }
-    }
-
     componentWillMount() {
         if (!this.app.renderer) return;
 
         this.renderer = this.app.renderer;
-
         this.renderer.on('ready', this.processInfo, this);
         this.renderer.on('complete', this.setComplete, this);
     }
@@ -43,6 +32,22 @@ export default class RenderInfo extends UIComponent {
         if (this.renderer) {
             this.renderer.off('ready', this.processInfo, this);
             this.renderer.off('complete', this.setComplete, this);
+        }
+    }
+
+    componentDidMount() {
+        if (this.renderer) {
+            this.renderer.start();
+        }
+    }
+
+    onButtonClick() {
+        if (this.renderer) {
+            this.renderer.stop();
+        }
+
+        if (this.props.onButtonClick) {
+            this.props.onButtonClick();
         }
     }
 

@@ -405,7 +405,7 @@ export default class Application extends EventEmitter {
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data)
             .then(() => {
-                logger.log('Config file saved.', APP_CONFIG_FILE, config);
+                logger.log('Config file saved:', APP_CONFIG_FILE, config);
 
                 Object.assign(this.config, config);
 
@@ -463,7 +463,7 @@ export default class Application extends EventEmitter {
             });
 
             // Start render
-            renderer.start();
+            //renderer.start();
         }
         else {
             raiseError('No audio loaded.');

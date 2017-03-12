@@ -11,7 +11,9 @@ const About = (props, context) => {
 
     return (
         <div className="about">
-            <div className="name">{APP_NAME}</div>
+            <div className="name">
+                {APP_NAME}
+            </div>
             <div className="version">
                 {`Version ${APP_VERSION}`}
             </div>

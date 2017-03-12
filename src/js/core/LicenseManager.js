@@ -39,7 +39,7 @@ export default class LicenseManager {
     }
 
     info() {
-        return this.license;
+        return Object.assign({}, this.license);
     }
 
     check() {
