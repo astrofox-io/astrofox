@@ -137,7 +137,7 @@ export default class Player extends UIComponent {
                         totalTime={duration}
                     />
                     <ToggleButton
-                        icon="icon-refresh"
+                        icon="icon-cycle"
                         title="Repeat"
                         active={looping}
                         onClick={this.onLoopButtonClick}
@@ -270,7 +270,10 @@ class ProgressControl extends UIComponent {
 const PlayButton = (props) => {
     return (
         <div className="button play-button" onClick={props.onClick}>
-            <span className={props.playing ? 'icon-pause' : 'icon-play'} />
+            <span
+                className={props.playing ? 'icon-pause' : 'icon-play'}
+                title={props.playing ? 'Pause' : 'Play'}
+            />
         </div>
     );
 };
@@ -278,7 +281,7 @@ const PlayButton = (props) => {
 const StopButton = (props) => {
     return (
         <div className="button stop-button" onClick={props.onClick}>
-            <span className="icon-stop" />
+            <span className="icon-stop" title="Stop" />
         </div>
     );
 };

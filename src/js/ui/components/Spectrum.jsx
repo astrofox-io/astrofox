@@ -12,7 +12,7 @@ export default class Spectrum extends UIComponent {
         this.state = {
             smoothingTimeConstant: 0.5,
             minDecibels: -60,
-            maxDecibels: -12,
+            maxDecibels: -20,
             minFrequency: 0,
             maxFrequency: 10000,
             fftSize: 1024,
