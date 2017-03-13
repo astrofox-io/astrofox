@@ -31,11 +31,11 @@ export default class Spectrum extends UIComponent {
 
         this.parser = new SpectrumParser(this.state);
 
-        events.on('render', this.updateCanvas);
+        events.on('render', this.updateCanvas, this);
     }
 
     componentWillUnmount() {
-        events.off('render', this.updateCanvas);
+        events.off('render', this.updateCanvas, this);
     }
 
     onClick() {
@@ -51,14 +51,8 @@ export default class Spectrum extends UIComponent {
     }
 
     render() {
-        let style = {};
-
-        if (!this.props.visible) {
-            style.display = 'none';
-        }
-
         return (
-            <div className="spectrum" style={style}>
+            <div className="spectrum">
                 <canvas
                     ref={el => this.canvas = el}
                     className="canvas"
@@ -72,7 +66,6 @@ export default class Spectrum extends UIComponent {
 }
 
 Spectrum.defaultProps = {
-    visible: true,
     width: 854,
     height: 50,
     barWidth: -1,

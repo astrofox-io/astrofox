@@ -100,10 +100,20 @@ export default class Player extends UIComponent {
         let player = this.app.player,
             { duration, progressPosition, looping, showSpectrum, showOsc } = this.state,
             playing = player.isPlaying(),
-            style = {};
+            style = {},
+            spectrum = null,
+            osc = null;
 
         if (!this.props.visible) {
             style.display = 'none';
+        }
+
+        if (showSpectrum) {
+            spectrum = <Spectrum />;
+        }
+
+        if (showOsc) {
+            osc = <Oscilloscope />;
         }
 
         return (
@@ -145,9 +155,8 @@ export default class Player extends UIComponent {
                         onClick={this.onSpectrumButtonClick}
                     />
                 </div>
-                <Oscilloscope visible={showOsc} />
-                <Spectrum visible={showSpectrum} />
-
+                {osc}
+                {spectrum}
             </div>
         );
     }

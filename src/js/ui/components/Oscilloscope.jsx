@@ -16,11 +16,11 @@ export default class Oscilloscope extends UIComponent {
             this.canvas
         );
 
-        events.on('render', this.updateCanvas);
+        events.on('render', this.updateCanvas, this);
     }
 
     componentWillUnmount() {
-        events.off('render', this.updateCanvas);
+        events.off('render', this.updateCanvas, this);
     }
 
     updateCanvas(data) {
@@ -30,14 +30,8 @@ export default class Oscilloscope extends UIComponent {
     }
 
     render() {
-        let style = {};
-
-        if (!this.props.visible) {
-            style.display = 'none';
-        }
-
         return (
-            <div className="oscilloscope" style={style}>
+            <div className="oscilloscope">
                 <canvas
                     ref={el => this.canvas = el}
                     className="canvas"
