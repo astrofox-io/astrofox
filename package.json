@@ -1,6 +1,6 @@
 {
   "name": "Astrofox",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "main": "app/main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
@@ -49,13 +49,13 @@
     },
     "publish": {
       "provider": "generic",
-      "url": "https://astrofox.io/download/${os}/${arch}",
+      "url": "https://astrofox.io/download/${os}",
       "channel": "latest"
     }
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "debug": "^2.6.2",
+    "debug": "^2.6.3",
     "del": "^2.2.2",
     "id3js": "^1.1.3",
     "immutable": "^3.8.1",
@@ -71,13 +71,13 @@
     "babel-loader": "^6.4.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-babili": "^0.0.12",
-    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-es2015": "^6.24.0",
     "babel-preset-es2015-node6": "^0.4.0",
     "babel-preset-react": "^6.23.0",
     "babili": "^0.0.12",
     "electron": "^1.6.2",
-    "electron-builder": "^15.3.0",
-    "electron-updater": "^1.8.3",
+    "electron-builder": "^15.4.3",
+    "electron-updater": "^1.9.0",
     "eslint": "^3.17.1",
     "eslint-plugin-react": "^6.10.0",
     "gulp": "^3.9.1",

@@ -9,7 +9,7 @@ const log = debug('main');
 const appUpdater = new AppUpdater();
 
 // Show environment
-log('NODE_ENV', process.env.NODE_ENV || 'development');
+log('NODE_ENV', __PROD__ ? 'production' : 'development');
 
 // Set global variables
 global['env'] = env;

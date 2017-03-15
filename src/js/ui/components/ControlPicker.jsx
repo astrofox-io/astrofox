@@ -23,7 +23,7 @@ export default class ControlPicker extends UIComponent {
     getItems(items) {
         return Object.keys(items).map((key, index) => {
             let item = items[key],
-                style = { backgroundImage: `url(images/controls/${item.name}.png)` };
+                style = { backgroundImage: `url(./images/controls/${item.name}.png)` };
 
             return (
                 <div key={index} className="item">

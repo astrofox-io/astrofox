@@ -142,7 +142,8 @@ function buildIcons() {
             fontName: 'icons',
             fontHeight: 300,
             appendUnicode: false,
-            normalize: true
+            normalize: true,
+            formats: ['ttf', 'eot', 'woff', 'woff2']
         }))
         .on('glyphs', (glyphs, options) => {
             let icons = glyphs.map(glyph => {

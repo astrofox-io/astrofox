@@ -1,8 +1,9 @@
 @font-face {
     font-family: '<%= fontName %>';
-    src: url('../fonts/<%= fontName %>/<%= fontName %>.eot'),
+    src: url('../fonts/<%= fontName %>/<%= fontName %>.woff2') format('woff2'),
         url('../fonts/<%= fontName %>/<%= fontName %>.woff') format('woff'),
-        url('../fonts/<%= fontName %>/<%= fontName %>.ttf') format('truetype');
+        url('../fonts/<%= fontName %>/<%= fontName %>.ttf') format('truetype'),
+        url('../fonts/<%= fontName %>/<%= fontName %>.eot');
     font-weight: normal;
     font-style: normal;
 }

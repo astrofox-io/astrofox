@@ -4,9 +4,9 @@ import { APP_NAME, APP_VERSION } from '../../core/Environment';
 import Button from './Button';
 
 const About = (props, context) => {
-    let license = context.app.license.info(),
-        info = license ?
-            <div className="license-info">{`Licensed to ${license.user}`}</div> :
+    let info = context.app.license.info(),
+        licenseInfo = info.user !== undefined ?
+            <div className="license-info">{`Licensed to ${info.user}`}</div> :
             null;
 
     return (
@@ -20,7 +20,7 @@ const About = (props, context) => {
             <div className="copyright">
                 {'Copyright \u00A9 Mike Cao'}
             </div>
-            {info}
+            {licenseInfo}
             <div className="buttons">
                 <Button text="Close" onClick={props.onClose} />
             </div>
