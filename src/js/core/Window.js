@@ -23,6 +23,18 @@ class Window {
         this.win.unmaximize();
     }
 
+    isMaximized() {
+        return this.win.isMaximized();
+    }
+
+    onMaximize(callback) {
+        this.win.on('maximize', callback);
+    }
+
+    onUnmaximize(callback) {
+        this.win.on('unmaximize', callback);
+    }
+
     openDevTools() {
         this.win.openDevTools({ detach: true });
     }

@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import Window from '../../core/Window';
@@ -10,6 +11,11 @@ export default class TitleBar extends UIComponent {
 
     shouldComponentUpdate() {
         return false;
+    }
+
+    componentDidMount() {
+        Window.onMaximize(() => this.forceUpdate());
+        Window.onUnmaximize(() => this.forceUpdate());
     }
 
     onMinimize(e) {
@@ -48,22 +54,20 @@ export default class TitleBar extends UIComponent {
     }
 
     render() {
-        let devButtons = [];
-
-        if (!__PROD__) {
-            devButtons.push(<span key={0} className="button icon-code" onClick={this.onConsole} />);
-            devButtons.push(<span key={1} className="button icon-cw" onClick={this.onReload} />);
-        }
+        let classes = {
+            'button': true,
+            'icon-restore': Window.isMaximized(),
+            'icon-maximize': !Window.isMaximized()
+        };
 
         return (
             <div className="titlebar">
                 <div className="icon"><img src="images/icon.png" width="16" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
-                    {devButtons}
-                    <span className="button icon-minus" onClick={this.onMinimize} />
-                    <span className="button icon-plus" onClick={this.onMaximize} />
-                    <span className="button icon-cross" onClick={this.onClose} />
+                    <span className="button icon-subtract" onClick={this.onMinimize} />
+                    <span className={classNames(classes)} onClick={this.onMaximize} />
+                    <span className="button icon-multiply" onClick={this.onClose} />
                 </div>
             </div>
         );

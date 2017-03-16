@@ -80,9 +80,9 @@ ajv@^4.7.0:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
-ajv@^5.0.3-beta.0:
-  version "5.0.3-beta.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.0.3-beta.0.tgz#4ee44b57ab3bb43bc00fe727af9b350c9d9712fa"
+ajv@^5.0.4-beta.0:
+  version "5.0.4-beta.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.0.4-beta.0.tgz#7d929baca196a46f81a8802ac21271fd0d1b6186"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -628,7 +628,7 @@ babel-plugin-transform-es2015-modules-amd@^6.24.0:
     babel-runtime "^6.22.0"
     babel-template "^6.22.0"
 
-babel-plugin-transform-es2015-modules-commonjs@^6.24.0:
+babel-plugin-transform-es2015-modules-commonjs@^6.24.0, babel-plugin-transform-es2015-modules-commonjs@^6.7.4:
   version "6.24.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.24.0.tgz#e921aefb72c2cc26cb03d107626156413222134f"
   dependencies:
@@ -636,15 +636,6 @@ babel-plugin-transform-es2015-modules-commonjs@^6.24.0:
     babel-runtime "^6.22.0"
     babel-template "^6.23.0"
     babel-types "^6.23.0"
-
-babel-plugin-transform-es2015-modules-commonjs@^6.7.4:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.22.0.tgz#6ca04e22b8e214fb50169730657e7a07dc941145"
-  dependencies:
-    babel-plugin-transform-strict-mode "^6.22.0"
-    babel-runtime "^6.22.0"
-    babel-template "^6.22.0"
-    babel-types "^6.22.0"
 
 babel-plugin-transform-es2015-modules-systemjs@^6.22.0:
   version "6.22.0"
@@ -953,7 +944,7 @@ babel-template@^6.23.0:
     babylon "^6.11.0"
     lodash "^4.2.0"
 
-babel-traverse@^6.22.0, babel-traverse@^6.22.1:
+babel-traverse@^6.22.0:
   version "6.22.1"
   resolved "https://registry.yarnpkg.com/babel-traverse/-/babel-traverse-6.22.1.tgz#3b95cd6b7427d6f1f757704908f2fc9748a5f59f"
   dependencies:
@@ -967,7 +958,7 @@ babel-traverse@^6.22.0, babel-traverse@^6.22.1:
     invariant "^2.2.0"
     lodash "^4.2.0"
 
-babel-traverse@^6.23.0:
+babel-traverse@^6.22.1, babel-traverse@^6.23.0:
   version "6.23.1"
   resolved "https://registry.yarnpkg.com/babel-traverse/-/babel-traverse-6.23.1.tgz#d3cb59010ecd06a97d81310065f966b699e14f48"
   dependencies:
@@ -1551,13 +1542,7 @@ debug@0.7.4:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-0.7.4.tgz#06e1ea8082c2cb14e39806e22e2f6f757f92af39"
 
-debug@2.6.2, debug@2.X, debug@^2.1.1, debug@^2.1.3, debug@^2.2.0:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.2.tgz#dfa96a861ee9b8c2f29349b3bcc41aa599a71e0f"
-  dependencies:
-    ms "0.7.2"
-
-debug@^2.6.0, debug@^2.6.1, debug@^2.6.3:
+debug@2.6.3, debug@2.X, debug@^2.1.1, debug@^2.1.3, debug@^2.2.0, debug@^2.6.0, debug@^2.6.1, debug@^2.6.3:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.3.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
@@ -1695,51 +1680,51 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-electron-builder-core@15.3.0:
-  version "15.3.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-core/-/electron-builder-core-15.3.0.tgz#8367e836371235b034f4e33497d9baacfecd32a6"
+electron-builder-core@15.5.1:
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/electron-builder-core/-/electron-builder-core-15.5.1.tgz#25257c136860f71f7d2fa96a410fed34e7b43a16"
 
-electron-builder-http@15.3.0, electron-builder-http@~15.3.0:
-  version "15.3.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-15.3.0.tgz#913684c984fcacf4273a2138738b9059650cc38f"
+electron-builder-http@15.5.1, electron-builder-http@~15.5.1:
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-15.5.1.tgz#c3311ae57c66fc346edf0b8214220c38532f0e00"
   dependencies:
-    debug "2.6.2"
+    debug "2.6.3"
     fs-extra-p "^4.0.2"
 
-electron-builder-util@15.4.0, electron-builder-util@~15.4.0:
-  version "15.4.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-util/-/electron-builder-util-15.4.0.tgz#3fa3da56daa188ca99529bf0bb49322ef778d7e3"
+electron-builder-util@15.5.1, electron-builder-util@~15.5.1:
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/electron-builder-util/-/electron-builder-util-15.5.1.tgz#e0b1a766352054deec0e8f5a0d68f4dc5c545bbe"
   dependencies:
     "7zip-bin" "^2.0.4"
     bluebird-lst "^1.0.1"
     chalk "^1.1.3"
-    debug "2.6.2"
-    electron-builder-http "~15.3.0"
+    debug "2.6.3"
+    electron-builder-http "~15.5.1"
     fs-extra-p "^4.0.2"
     ini "^1.3.4"
     is-ci "^1.0.10"
     node-emoji "^1.5.1"
-    source-map-support "^0.4.11"
+    source-map-support "^0.4.12"
     stat-mode "^0.2.2"
     tunnel-agent "^0.6.0"
 
-electron-builder@^15.4.3:
-  version "15.4.3"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-15.4.3.tgz#1e9218150aa402017bcbcfc9478a61a6f72300bd"
+electron-builder@^15.5.1:
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-15.5.1.tgz#5902a2a26c0364173259bb75641dada7773a7d44"
   dependencies:
     "7zip-bin" "^2.0.4"
-    ajv "^5.0.3-beta.0"
+    ajv "^5.0.4-beta.0"
     ajv-keywords "^2.0.1-beta.1"
     bluebird-lst "^1.0.1"
     chalk "^1.1.3"
     chromium-pickle-js "^0.2.0"
     cuint "^0.2.2"
-    electron-builder-core "15.3.0"
-    electron-builder-http "15.3.0"
-    electron-builder-util "15.4.0"
+    electron-builder-core "15.5.1"
+    electron-builder-http "15.5.1"
+    electron-builder-util "15.5.1"
     electron-download-tf "4.0.0"
     electron-macos-sign "~1.6.0"
-    electron-publish "15.4.0"
+    electron-publish "15.5.1"
     fs-extra-p "^4.0.2"
     hosted-git-info "^2.2.0"
     is-ci "^1.0.10"
@@ -1793,28 +1778,28 @@ electron-macos-sign@~1.6.0:
     isbinaryfile "^3.0.2"
     plist "^2.0.1"
 
-electron-publish@15.4.0:
-  version "15.4.0"
-  resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-15.4.0.tgz#f8df366cff57d2472a790a5f56b0ff6a92de690a"
+electron-publish@15.5.1:
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-15.5.1.tgz#44bbd7bafda9936882a00d136229331dc7fba2b4"
   dependencies:
     bluebird-lst "^1.0.1"
     chalk "^1.1.3"
-    electron-builder-http "~15.3.0"
-    electron-builder-util "~15.4.0"
+    electron-builder-http "~15.5.1"
+    electron-builder-util "~15.5.1"
     fs-extra-p "^4.0.2"
     mime "^1.3.4"
     progress-ex "^2.0.0"
 
-electron-updater@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.9.0.tgz#5afa38fec21b955ce60bbabcc48d202020171af8"
+electron-updater@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.10.1.tgz#056671931c658b456b164b84e9f523ad95c40a3d"
   dependencies:
     bluebird-lst "^1.0.1"
-    electron-builder-http "15.3.0"
+    electron-builder-http "15.5.1"
     fs-extra-p "^4.0.2"
     js-yaml "^3.8.2"
     semver "^5.3.0"
-    source-map-support "^0.4.11"
+    source-map-support "^0.4.12"
 
 electron@^1.6.2:
   version "1.6.2"
@@ -2534,13 +2519,14 @@ gulp-cond@^1.0.0:
   dependencies:
     readable-stream "^2.0.1"
 
-gulp-glsl@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/gulp-glsl/-/gulp-glsl-1.1.0.tgz#698535939cf36f2038cf4f7254ce3e257e791cc5"
+gulp-glsl@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gulp-glsl/-/gulp-glsl-1.2.0.tgz#b041509d35fb0e7ca079dd4b2b6a48323c483368"
   dependencies:
     glsl-man "^1.1.6"
     gulp-util "^3.0.7"
-    object-assign "^4.1.0"
+    object-assign "^4.1.1"
+    object-keys "^1.0.11"
     through2 "^2.0.1"
 
 gulp-header@^1.8.8:
@@ -3891,7 +3877,7 @@ oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
 
-object-assign@*, object-assign@^4.0.1, object-assign@^4.1.0:
+object-assign@*, object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
@@ -3903,7 +3889,7 @@ object-assign@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
 
-object-keys@^1.0.10, object-keys@^1.0.8:
+object-keys@^1.0.10, object-keys@^1.0.11, object-keys@^1.0.8:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
 
@@ -4651,7 +4637,13 @@ source-map-resolve@^0.3.0:
     source-map-url "~0.3.0"
     urix "~0.1.0"
 
-source-map-support@^0.4.11, source-map-support@^0.4.2:
+source-map-support@^0.4.12:
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.12.tgz#f47d02bf01efaf0c160d3a37d038401b92b1867e"
+  dependencies:
+    source-map "^0.5.6"
+
+source-map-support@^0.4.2:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.11.tgz#647f939978b38535909530885303daf23279f322"
   dependencies:
@@ -4661,7 +4653,7 @@ source-map-url@~0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.3.0.tgz#7ecaf13b57bcd09da8a40c5d269db33799d4aaf9"
 
-source-map@0.5.x, source-map@0.X, source-map@^0.5.0, source-map@^0.5.1, source-map@^0.5.3, source-map@~0.5.1, source-map@~0.5.3:
+source-map@0.5.x, source-map@0.X, source-map@^0.5.0, source-map@^0.5.1, source-map@^0.5.3, source-map@^0.5.6, source-map@~0.5.1, source-map@~0.5.3:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
 
