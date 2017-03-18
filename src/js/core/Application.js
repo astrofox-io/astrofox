@@ -44,8 +44,7 @@ export default class Application extends EventEmitter {
             time: 0,
             delta: 0,
             fft: null,
-            td: null,
-            playing: false
+            td: null
         };
 
         // Rendering statistics
@@ -205,7 +204,7 @@ export default class Application extends EventEmitter {
 
     render() {
         let now = window.performance.now(),
-            data = this.getFrameData();
+            data = this.getFrameData(this.player.isPlaying());
 
         data.id = window.requestAnimationFrame(this.render);
         data.delta = now - data.time;
@@ -246,13 +245,18 @@ export default class Application extends EventEmitter {
         source.start(0, frame / fps, 1 / fps);
     }
 
-    getFrameData(forceUpdate) {
-        let data = this.frameData,
-            update = forceUpdate || this.player.isPlaying();
+    getFrameData(update) {
+        let data = this.frameData;
 
         data.fft = this.spectrum.getFrequencyData(update);
         data.td = this.spectrum.getTimeData(update);
         data.hasUpdate = update;
+
+        // Rendering single frame
+        if (data.id === 0) {
+            // Fix time data display bug
+            data.td = data.td.subarray(0, ~~(data.td.length * 0.93));
+        }
 
         return data;
     }

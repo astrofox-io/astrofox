@@ -6,9 +6,9 @@ const defaults = {
 };
 
 export default class SpectrumAnalyzer {
-    constructor(context) {
+    constructor(context, options) {
         this.audioContext = context;
-        this.analyzer = Object.assign(context.createAnalyser(), defaults);
+        this.analyzer = Object.assign(context.createAnalyser(), defaults, options);
         this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
         this.td = new Float32Array(this.analyzer.fftSize);
     }
