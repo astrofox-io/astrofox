@@ -6,9 +6,5 @@
   "description": "Astrofox",
   "author": "Mike Cao <mike@mikecao.com>",
   "homepage": "http://astrofox.io",
-  "private": true,
-  "dependencies": {
-    "debug": "^2.6.1",
-    "electron-updater": "^1.10.3"
-  }
+  "private": true
 }
