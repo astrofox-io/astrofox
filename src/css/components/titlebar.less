@@ -38,8 +38,20 @@
             line-height: 25px;
             border-radius: 0;
 
+            img {
+                opacity: 0.5;
+            }
+
             &:hover {
                 background-color: @color1;
+            }
+        }
+    }
+
+    &.is-focused {
+        .button {
+            img {
+                opacity: 0.8;
             }
         }
     }

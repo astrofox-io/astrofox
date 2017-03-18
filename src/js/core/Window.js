@@ -6,6 +6,14 @@ class Window {
         this.dialog = remote.dialog;
     }
 
+    getWindow() {
+        return this.win;
+    }
+
+    on(event, callback) {
+        this.win.on(event, callback);
+    }
+
     maximize() {
         if (this.win.isMaximized()) {
             this.unmaximize();
@@ -15,28 +23,12 @@ class Window {
         }
     }
 
-    minimize() {
-        this.win.minimize();
-    }
-
     unmaximize() {
         this.win.unmaximize();
     }
 
-    isMaximized() {
-        return this.win.isMaximized();
-    }
-
-    onMaximize(callback) {
-        this.win.on('maximize', callback);
-    }
-
-    onUnmaximize(callback) {
-        this.win.on('unmaximize', callback);
-    }
-
-    openDevTools() {
-        this.win.openDevTools({ detach: true });
+    minimize() {
+        this.win.minimize();
     }
 
     reload() {
@@ -64,6 +56,10 @@ class Window {
 
     showErrorBox(title, content) {
         this.dialog.showErrorBox(title, content);
+    }
+
+    openDevTools() {
+        this.win.openDevTools({ detach: true });
     }
 }
 

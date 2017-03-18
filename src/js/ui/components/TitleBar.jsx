@@ -14,8 +14,10 @@ export default class TitleBar extends UIComponent {
     }
 
     componentDidMount() {
-        Window.onMaximize(() => this.forceUpdate());
-        Window.onUnmaximize(() => this.forceUpdate());
+        Window.on('maximize', () => this.forceUpdate());
+        Window.on('unmaximize', () => this.forceUpdate());
+        Window.on('focus', () => this.forceUpdate());
+        Window.on('blur', () => this.forceUpdate());
     }
 
     onMinimize(e) {
@@ -54,11 +56,16 @@ export default class TitleBar extends UIComponent {
     }
 
     render() {
-        let icon = Window.isMaximized() ? 'restore' : 'maximize';
+        let win = Window.getWindow(),
+            icon = win.isMaximized() ? 'restore' : 'maximize',
+            classes = {
+                'titlebar': true,
+                'is-focused': win.isFocused()
+            };
 
         return (
-            <div className="titlebar">
-                <div className="icon"><img src="images/icon.png" width="16" /></div>
+            <div className={classNames(classes)}>
+                <div className="icon"><img src="./images/icon.png" width="16" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
                     <span className="button" onClick={this.onMinimize}>
