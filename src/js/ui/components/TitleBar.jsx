@@ -54,20 +54,22 @@ export default class TitleBar extends UIComponent {
     }
 
     render() {
-        let classes = {
-            'button': true,
-            'icon-restore': Window.isMaximized(),
-            'icon-maximize': !Window.isMaximized()
-        };
+        let icon = Window.isMaximized() ? 'restore' : 'maximize';
 
         return (
             <div className="titlebar">
                 <div className="icon"><img src="images/icon.png" width="16" /></div>
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
-                    <span className="button icon-subtract" onClick={this.onMinimize} />
-                    <span className={classNames(classes)} onClick={this.onMaximize} />
-                    <span className="button icon-multiply" onClick={this.onClose} />
+                    <span className="button" onClick={this.onMinimize}>
+                        <img src="./images/buttons/minimize.gif" />
+                    </span>
+                    <span className="button" onClick={this.onMaximize}>
+                        <img src={`./images/buttons/${icon}.gif`} />
+                    </span>
+                    <span className="button" onClick={this.onClose}>
+                        <img src="./images/buttons/close.gif" />
+                    </span>
                 </div>
             </div>
         );

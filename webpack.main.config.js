@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
 
 const PROD = process.env.NODE_ENV === 'production';
 
@@ -33,11 +32,6 @@ const config = {
             }
         ]
     },
-    externals: [
-        nodeExternals({
-            modulesFromFile: true
-        })
-    ],
     plugins: [
         new webpack.DefinePlugin({
             '__PROD__': PROD
