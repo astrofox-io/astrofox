@@ -1043,11 +1043,7 @@ bluebird-lst@^1.0.2:
   dependencies:
     bluebird "^3.5.0"
 
-bluebird@^3.4.7:
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.7.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
-
-bluebird@^3.5.0:
+bluebird@^3.4.7, bluebird@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
@@ -1282,9 +1278,9 @@ classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
-clean-css@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.0.7.tgz#d8fa8b4d87a125f38fa3d64afc59abfc68ba7790"
+clean-css@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.0.9.tgz#63ff450b3f939508cc0cd2989bb9daaedc98333e"
   dependencies:
     source-map "0.5.x"
 
@@ -1813,12 +1809,12 @@ electron-publish@15.6.2:
     mime "^1.3.4"
     progress-ex "^2.0.0"
 
-electron-updater@^1.10.3:
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.10.3.tgz#20534b7a54ca8a800276a87eb1fbe26c26e4bfbf"
+electron-updater@^1.10.4:
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.10.4.tgz#41f7084fd801b096f57d798b3ffe641debf7a471"
   dependencies:
     bluebird-lst "^1.0.2"
-    electron-builder-http "15.6.2"
+    electron-builder-http "~15.6.2"
     fs-extra-p "^4.1.0"
     js-yaml "^3.8.2"
     semver "^5.3.0"
@@ -1969,9 +1965,9 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint-plugin-react@^6.10.0:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-6.10.0.tgz#9c48b48d101554b5355413e7c64238abde6ef1ef"
+eslint-plugin-react@^6.10.2:
+  version "6.10.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-6.10.2.tgz#e5492fc842ab19a3ba3e26bbf7a3455bd9c7b06f"
   dependencies:
     array.prototype.find "^2.0.1"
     doctrine "^1.2.2"
@@ -2541,11 +2537,11 @@ graceful-fs@~1.2.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-gulp-clean-css@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/gulp-clean-css/-/gulp-clean-css-3.0.3.tgz#dcd6767413d51a9de9e4bc47b8ae7e02b43b1c4a"
+gulp-clean-css@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/gulp-clean-css/-/gulp-clean-css-3.0.4.tgz#0c5ad8d045407c88f3c2b9f03570963967dcfd54"
   dependencies:
-    clean-css "^4.0.7"
+    clean-css "^4.0.9"
     gulp-util "^3.0.8"
     through2 "^2.0.3"
     vinyl-sourcemaps-apply "^0.2.1"
@@ -4676,15 +4672,9 @@ source-map-resolve@^0.3.0:
     source-map-url "~0.3.0"
     urix "~0.1.0"
 
-source-map-support@^0.4.13:
+source-map-support@^0.4.13, source-map-support@^0.4.2:
   version "0.4.13"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.13.tgz#9782e6f7deb424d5f173327a1879eb46453bdcd4"
-  dependencies:
-    source-map "^0.5.6"
-
-source-map-support@^0.4.2:
-  version "0.4.12"
-  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.12.tgz#f47d02bf01efaf0c160d3a37d038401b92b1867e"
   dependencies:
     source-map "^0.5.6"
 
