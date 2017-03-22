@@ -1,4 +1,5 @@
 const excludedFuncs = ['constructor', 'render'];
+const defaultKeys = ['width', 'height', 'margin', 'padding', 'border'];
 
 export function autoBind(context, excluded) {
     excluded = excluded || excludedFuncs;
@@ -21,7 +22,8 @@ export function filterByKey(keys, source) {
     return obj;
 }
 
-export function styles(keys, props) {
+export function styleProps(props, keys) {
+    keys = keys || defaultKeys;
     let obj = filterByKey(keys, props);
 
     if (typeof props.style === 'object') {

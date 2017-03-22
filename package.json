@@ -1,6 +1,6 @@
 {
   "name": "Astrofox",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "main": "app/main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
@@ -49,7 +49,7 @@
     },
     "publish": {
       "provider": "generic",
-      "url": "https://astrofox.io/download/${os}",
+      "url": "https://astrofox.io/download/${os}/${arch}",
       "channel": "latest"
     }
   },
@@ -79,7 +79,7 @@
     "electron-builder": "^15.6.2",
     "electron-updater": "^1.10.4",
     "eslint": "^3.18.0",
-    "eslint-plugin-react": "^6.10.2",
+    "eslint-plugin-react": "^6.10.3",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.0.4",
     "gulp-glsl": "^1.2.0",

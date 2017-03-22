@@ -1,12 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
-import { styles } from '../../util/object';
+import { styleProps } from '../../util/object';
 
 export const SettingsPanel = (props) => {
     return (
-        <div id={props.id}
+        <div
+            id={props.id}
             className={classNames('settings-panel', props.className)}
-            style={styles(['width', 'height'], props)}>
+            style={styleProps(props)}>
             {props.children}
         </div>
     );
