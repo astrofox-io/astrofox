@@ -6,7 +6,8 @@ export default {
         tBlend: { type: 't', value: null },
         mode: { type: 'i', value: 0 },
         alpha: { type: 'i', value: 0 },
-        opacity: { type: 'f', value: 1.0 }
+        opacity: { type: 'f', value: 1.0 },
+        mask: { type: 'i', value: 0 }
     },
 
     vertexShader: glsl.vertex.Basic,

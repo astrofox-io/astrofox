@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import EventEmitter from '../core/EventEmitter';
 import NodeCollection from '../core/NodeCollection';
-import RenderPass from '../graphics/RenderPass';
-import ShaderPass from '../graphics/ShaderPass';
-import SpritePass from '../graphics/SpritePass';
-import TexturePass from '../graphics/TexturePass';
-import MultiPass from '../graphics/MultiPass';
-import BlendModes from '../graphics/BlendModes';
+import MultiPass from './MultiPass';
+import RenderPass from './RenderPass';
+import ShaderPass from './ShaderPass';
+import SpritePass from './SpritePass';
+import TexturePass from './TexturePass';
 import CopyShader from '../shaders/CopyShader';
 import BlendShader from '../shaders/BlendShader';
+import blendModes from '../../config/blendModes';
 
 export default class Composer extends EventEmitter {
     constructor(renderer, renderTarget) {
@@ -157,14 +157,16 @@ export default class Composer extends EventEmitter {
     }
 
     blendBuffer(buffer, options) {
-        let pass = this.blendPass;
+        let pass = this.blendPass,
+            { opacity, blendMode, mask } = options;
 
         pass.setUniforms({
             tBase: this.readBuffer,
             tBlend: buffer,
-            opacity: options.opacity,
-            mode: BlendModes[options.blendMode],
-            alpha: 1
+            opacity: opacity,
+            mode: blendModes[blendMode],
+            alpha: 1,
+            mask: mask
         });
 
         pass.render(this.renderer, this.writeBuffer);

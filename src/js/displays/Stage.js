@@ -5,7 +5,7 @@ import Display from '../displays/Display';
 import WatermarkDisplay from '../displays/WatermarkDisplay';
 import NodeCollection from '../core/NodeCollection';
 import Composer from '../graphics/Composer';
-import FrameBuffer from '../graphics/FrameBuffer';
+import { CanvasBuffer, GLBuffer } from '../graphics/FrameBuffer';
 import { logger, raiseError } from '../core/Global';
 import * as displayLibrary from '../lib/displays';
 import * as effectsLibrary from '../lib/effects';
@@ -14,22 +14,29 @@ export default class Stage extends Display {
     constructor(app, options) {
         super(Stage, options);
 
+        let { width, height, backgroundColor } = this.options;
+
         this.app = app;
         this.scenes = new NodeCollection();
     
-        this.renderer = new THREE.WebGLRenderer({ antialias: false, premultipliedAlpha: true, alpha: false });
-        this.renderer.setSize(this.options.width, this.options.height);
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: false,
+            premultipliedAlpha: true,
+            alpha: false
+        });
+
+        this.renderer.setSize(width, height);
         this.renderer.autoClear = false;
     
         this.composer = new Composer(this.renderer);
 
-        this.buffer2D = new FrameBuffer('2d', this.options);
-        this.buffer3D = new FrameBuffer('webgl', this.options);
+        this.buffer2D = new CanvasBuffer(width, height);
+        this.buffer3D = new GLBuffer(width, height);
 
-        this.backgroundColor = new THREE.Color(this.options.backgroundColor);
+        this.backgroundColor = new THREE.Color(backgroundColor);
 
         this.watermarkDisplay = new WatermarkDisplay();
-        this.watermarkDisplay.setSize(this.options.width, this.options.height);
+        this.watermarkDisplay.setSize(width, height);
 
         this.watermarkScene = new Scene();
         this.watermarkScene.addToStage(this);

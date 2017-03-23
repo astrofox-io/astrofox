@@ -1,4 +1,4 @@
-import ComposerPass from '../graphics/ComposerPass';
+import ComposerPass from './ComposerPass';
 
 const defaults = {
     forceClear: true,
@@ -18,9 +18,11 @@ export default class RenderPass extends ComposerPass {
     render(renderer, writeBuffer, readBuffer) {
         let scene = this.scene,
             camera = this.camera,
-            options = this.options;
+            { overrideMaterial } = this.options;
 
-        scene.overrideMaterial = options.overrideMaterial;
+        if (overrideMaterial) {
+            scene.overrideMaterial = overrideMaterial;
+        }
 
         super.render(renderer, scene, camera, readBuffer);
 

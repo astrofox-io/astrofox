@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import ComposerPass from '../graphics/ComposerPass';
+import ComposerPass from './ComposerPass';
 
 const defaults = {
     opacity: 1.0,

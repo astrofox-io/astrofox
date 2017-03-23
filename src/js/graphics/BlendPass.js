@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import ShaderPass from '../graphics/ShaderPass';
+import ShaderPass from './ShaderPass';
 import BlendShader from '../shaders/BlendShader';
-import BlendModes from '../graphics/BlendModes';
+import blendModes from '../../config/blendModes';
 
 const defaults = {
     transparent: true,
@@ -27,7 +27,7 @@ export default class BlendPass extends ShaderPass {
             tBase: (options.baseBuffer) ? this.buffer : readBuffer,
             tBlend: (options.baseBuffer) ? readBuffer : this.buffer,
             opacity: options.opacity,
-            mode: BlendModes[options.blendMode],
+            mode: blendModes[options.blendMode],
             alpha: options.alpha
         });
 

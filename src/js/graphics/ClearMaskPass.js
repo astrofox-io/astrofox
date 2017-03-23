@@ -1,4 +1,4 @@
-import ComposerPass from '../graphics/ComposerPass';
+import ComposerPass from './ComposerPass';
 
 export default class ClearMaskPass extends ComposerPass {
     constructor(options) {
@@ -8,8 +8,6 @@ export default class ClearMaskPass extends ComposerPass {
     }
     
     render(renderer) {
-        let context = renderer.context;
-
-        context.disable(context.STENCIL_TEST);
+        renderer.state.buffers.stencil.setTest(false);
     }
 }

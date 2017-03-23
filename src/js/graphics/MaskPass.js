@@ -1,7 +1,8 @@
-import ComposerPass from '../graphics/ComposerPass';
+import ComposerPass from './ComposerPass';
 
 const defaults = {
-    inverse: false
+    inverse: false,
+    clear: true
 };
 
 export default class MaskPass extends ComposerPass {
@@ -13,31 +14,35 @@ export default class MaskPass extends ComposerPass {
     }
 
     render(renderer, writeBuffer, readBuffer) {
-        let context = renderer.context,
-            options = this.options,
-            writeValue = (options.inverse) ? 0 : 1,
-            clearValue = (options.inverse) ? 1 : 0;
+        let { context, state } = renderer,
+            { clear, inverse } = this.options,
+            writeValue = (inverse) ? 0 : 1,
+            clearValue = (inverse) ? 1 : 0;
 
         // Don't update color or depth
-        context.colorMask(false, false, false, false);
-        context.depthMask(false);
+        state.buffers.color.setMask(false);
+        state.buffers.depth.setMask(false);
+
+        // Lock buffers
+        state.buffers.color.setLocked(true);
+        state.buffers.depth.setLocked(true);
 
         // Set up stencil
-        context.enable(context.STENCIL_TEST);
-        context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
-        context.stencilFunc(context.ALWAYS, writeValue, 0xffffffff);
-        context.clearStencil(clearValue);
+        state.buffers.stencil.setTest(true);
+        state.buffers.stencil.setOp(context.REPLACE, context.REPLACE, context.REPLACE);
+        state.buffers.stencil.setFunc(context.ALWAYS, writeValue, 0xffffffff);
+        state.buffers.stencil.setClear(clearValue);
 
         // Draw into the stencil buffer
-        renderer.render(this.scene, this.camera, readBuffer, this.clear);
-        renderer.render(this.scene, this.camera, writeBuffer, this.clear);
+        renderer.render(this.scene, this.camera, readBuffer, clear);
+        renderer.render(this.scene, this.camera, writeBuffer, clear);
 
-        // Re-enable update of color and depth
-        context.colorMask(true, true, true, true);
-        context.depthMask(true);
+        // Unlock color and depth buffer for subsequent rendering
+        state.buffers.color.setLocked(false);
+        state.buffers.depth.setLocked(false);
 
         // Only render where stencil is set to 1
-        context.stencilFunc(context.EQUAL, 1, 0xffffffff);  // draw if == 1
-        context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
+        state.buffers.stencil.setFunc(context.EQUAL, 1, 0xffffffff);
+        state.buffers.stencil.setOp(context.KEEP, context.KEEP, context.KEEP);
     }
 }

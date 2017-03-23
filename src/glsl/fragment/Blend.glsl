@@ -3,6 +3,7 @@ uniform sampler2D tBlend;
 uniform int mode;
 uniform int alpha;
 uniform float opacity;
+uniform int mask;
 
 varying vec2 vUv;
 
@@ -32,6 +33,7 @@ float blendVividLight(float base, float blend) {
 vec3 blendVividLight(vec3 base, vec3 blend) {
     return vec3(blendVividLight(base.r,blend.r),blendVividLight(base.g,blend.g),blendVividLight(base.b,blend.b));
 }
+
 // Hard Mix
 float blendHardMix(float base, float blend) {
     return (blendVividLight(base,blend)<0.5)?0.0:1.0;
@@ -299,6 +301,7 @@ void main() {
     vec4 base = texture2D(tBase, vUv);
     vec4 blend = texture2D(tBlend, vUv) * opacity;
 
+    // Pre-multiplied alpha
     if (alpha == 1) {
         blend.rgb /= (blend.a > 0.0) ? blend.a : 1.0;
     }
@@ -309,5 +312,16 @@ void main() {
         base = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
-    gl_FragColor = mix(base, vec4(color, 1.0), blend.a);
+    if (mask == 1) {
+        // Normal
+        if (mode == 17) {
+            gl_FragColor = vec4(base.r, base.g, base.b, blend.a);
+        }
+        else {
+            gl_FragColor = vec4(color.r, color.g, color.b, blend.a);
+        }
+    }
+    else {
+        gl_FragColor = mix(base, vec4(color, 1.0), blend.a);
+    }
 }

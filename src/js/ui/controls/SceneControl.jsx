@@ -4,6 +4,7 @@ import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
+import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
 const blendModesMenu = [
@@ -154,6 +155,13 @@ export default class SceneControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
+                </Row>
+                <Row label="Mask">
+                    <ToggleInput
+                        name="mask"
+                        value={this.state.mask}
+                        onChange={this.onChange}
+                    />
                 </Row>
             </Control>
         );

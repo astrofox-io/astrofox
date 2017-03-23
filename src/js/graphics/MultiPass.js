@@ -1,4 +1,4 @@
-import ComposerPass from '../graphics/ComposerPass';
+import ComposerPass from './ComposerPass';
 import NodeCollection from '../core/NodeCollection';
 
 const defaults = {

@@ -1,59 +1,59 @@
 import * as THREE from 'three';
-import TexturePass from '../graphics/TexturePass';
+import TexturePass from './TexturePass';
 
-const defaults = {
-    width: 854,
-    height: 480
-};
-
-export default class FrameBuffer {
-    constructor(type, options) {
-        this.options = Object.assign({}, defaults, options);
+class FrameBuffer {
+    constructor() {
         this.canvas = document.createElement('canvas');
-        this.renderer = null;
-    
-        if (type === 'webgl') {
-            this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: this.canvas});
-            this.renderer.autoClear = false;
-        }
-        else {
-            this.context = this.canvas.getContext('2d');
-        }
-    
+
         this.texture = new THREE.Texture(this.canvas);
         this.texture.minFilter = THREE.LinearFilter;
     
         this.pass = new TexturePass(this.texture);
-
-        this.setSize(this.options.width, this.options.height);
     }
-    
-    setSize(width, height) {
-        let renderer = this.renderer,
-            canvas = this.canvas;
+}
 
-        if (renderer) {
-            renderer.setSize(width, height);
-        }
-        else {
-            canvas.width = width;
-            canvas.height = height;
-        }
+export class CanvasBuffer extends FrameBuffer {
+    constructor(width, height) {
+        super();
+
+        this.context = this.canvas.getContext('2d');
+
+        this.setSize(width, height);
+    }
+
+    setSize(width, height) {
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
 
     clear() {
-        let renderer = this.renderer,
-            context = this.context,
-            canvas = this.canvas;
-
-        if (renderer) {
-            renderer.clear();
-        }
-        else {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
-    
+}
+
+export class GLBuffer extends FrameBuffer {
+    constructor(width, height) {
+        super();
+
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            canvas: this.canvas
+        });
+
+        this.renderer.autoClear = false;
+
+        this.setSize(width, height);
+    }
+
+    setSize(width, height) {
+        this.renderer.setSize(width, height);
+    }
+
+    clear() {
+        this.renderer.clear();
+    }
+
     render(scene, camera) {
         this.renderer.render(scene, camera);
     }

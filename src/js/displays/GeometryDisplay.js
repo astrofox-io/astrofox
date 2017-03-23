@@ -54,7 +54,7 @@ export default class GeometryDisplay extends Display {
             else if (options.opacity !== undefined) {
                 this.material.opacity = options.opacity;
 
-                if (this.options.material == 'Points') {
+                if (this.options.material === 'Points') {
                     this.material.uniforms.opacity.value = options.opacity;
                 }
 
@@ -64,7 +64,7 @@ export default class GeometryDisplay extends Display {
             else if (options.color !== undefined) {
                 this.material.color = new THREE.Color().set(options.color);
 
-                if (this.options.material == 'Points') {
+                if (this.options.material === 'Points') {
                     this.material.uniforms.color.value = this.material.color;
                 }
 
@@ -240,7 +240,7 @@ export default class GeometryDisplay extends Display {
             material.wireframe = options.wireframe;
             material.needsUpdate = true;
             material.transparent = true;
-            material.side = (options.material == 'Basic') ? THREE.FrontSide : THREE.DoubleSide;
+            material.side = (options.material === 'Basic') ? THREE.FrontSide : THREE.DoubleSide;
 
             mesh.add(new THREE.Mesh(geometry, material));
         }

@@ -1,4 +1,4 @@
-import ShaderPass from '../graphics/ShaderPass';
+import ShaderPass from './ShaderPass';
 import CopyShader from '../shaders/CopyShader';
 
 const defaults = {
