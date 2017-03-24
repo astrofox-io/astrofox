@@ -304,5 +304,6 @@ Scene.defaults = {
     lightDistance: 500,
     cameraZoom: 250,
     mask: false,
+    inverse: false,
     stencil: false
 };

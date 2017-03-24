@@ -162,6 +162,12 @@ export default class SceneControl extends UIPureComponent {
                         value={this.state.mask}
                         onChange={this.onChange}
                     />
+                    <span className="label">Inverse</span>
+                    <ToggleInput
+                        name="inverse"
+                        value={this.state.inverse}
+                        onChange={this.onChange}
+                    />
                 </Row>
             </Control>
         );

@@ -158,7 +158,7 @@ export default class Composer extends EventEmitter {
 
     blendBuffer(buffer, options) {
         let pass = this.blendPass,
-            { opacity, blendMode, mask } = options;
+            { opacity, blendMode, mask, inverse } = options;
 
         pass.setUniforms({
             tBase: this.readBuffer,
@@ -166,7 +166,8 @@ export default class Composer extends EventEmitter {
             opacity: opacity,
             mode: blendModes[blendMode],
             alpha: 1,
-            mask: mask
+            mask: mask,
+            inverse: inverse
         });
 
         pass.render(this.renderer, this.writeBuffer);

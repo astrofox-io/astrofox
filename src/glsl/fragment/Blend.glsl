@@ -4,6 +4,7 @@ uniform int mode;
 uniform int alpha;
 uniform float opacity;
 uniform int mask;
+uniform int inverse;
 
 varying vec2 vUv;
 
@@ -300,6 +301,7 @@ vec3 blendColor(int mode, vec3 base, vec3 blend) {
 void main() {
     vec4 base = texture2D(tBase, vUv);
     vec4 blend = texture2D(tBlend, vUv) * opacity;
+    float a = inverse == 1 ? 1.0 - blend.a : blend.a;
 
     // Pre-multiplied alpha
     if (alpha == 1) {
@@ -308,6 +310,7 @@ void main() {
 
     vec3 color = blendColor(mode, base.rgb, blend.rgb);
 
+    // No blending, set base to black
     if (mode == 0) {
         base = vec4(0.0, 0.0, 0.0, 1.0);
     }
@@ -315,10 +318,10 @@ void main() {
     if (mask == 1) {
         // Normal
         if (mode == 17) {
-            gl_FragColor = vec4(base.r, base.g, base.b, blend.a);
+            gl_FragColor = vec4(base.r, base.g, base.b, a);
         }
         else {
-            gl_FragColor = vec4(color.r, color.g, color.b, blend.a);
+            gl_FragColor = vec4(color.r, color.g, color.b, a);
         }
     }
     else {

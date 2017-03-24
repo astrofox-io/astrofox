@@ -49,7 +49,7 @@
     },
     "publish": {
       "provider": "generic",
-      "url": "https://astrofox.io/download/${os}/${arch}",
+      "url": "https://astrofox.io/download/${os}",
       "channel": "latest"
     }
   },
@@ -76,7 +76,7 @@
     "babel-preset-react": "^6.23.0",
     "babili": "^0.0.12",
     "electron": "^1.6.2",
-    "electron-builder": "^16.2.0",
+    "electron-builder": "^16.2.1",
     "electron-updater": "^1.11.0",
     "eslint": "^3.18.0",
     "eslint-plugin-react": "^6.10.3",
