@@ -26,9 +26,13 @@ export default class ShaderPass extends ComposerPass {
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
         this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+
         this.mesh = new THREE.Mesh(this.geometry, null);
         this.mesh.material = this.material;
+        this.mesh.frustumCulled = false;
+
         this.scene.add(this.mesh);
     }
     
@@ -38,7 +42,7 @@ export default class ShaderPass extends ComposerPass {
         Object.keys(props).forEach(prop => {
             if (uniforms.hasOwnProperty(prop)) {
                 let p = uniforms[prop].value;
-                if (p != null && typeof p.set !== 'undefined') {
+                if (p !== null && typeof p.set !== 'undefined') {
                     p.set.apply(p, props[prop]);
                 }
                 else {

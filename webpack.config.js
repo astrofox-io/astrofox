@@ -6,7 +6,7 @@ const PROD = process.env.NODE_ENV === 'production';
 
 const config = {
     target: 'electron-renderer',
-    devtool: (PROD) ? false : 'source-map',
+    devtool: PROD ? false : 'source-map',
     entry: {
         app: './src/js/index.js',
         vendor: vendorIds

@@ -9,6 +9,6 @@
   "private": true,
   "dependencies": {
     "debug": "^2.6.3",
-    "electron-updater": "^1.11.0"
+    "electron-updater": "^1.11.2"
   }
 }

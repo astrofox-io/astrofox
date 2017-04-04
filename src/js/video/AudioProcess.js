@@ -9,7 +9,7 @@ const codecs = {
 };
 
 const exts = {
-    mp4: '.acc',
+    mp4: '.aac',
     webm: '.ogg'
 };
 
@@ -25,7 +25,8 @@ export default class AudioProcess extends Process {
                 codec = codecs[format],
                 outputExt = exts[format];
 
-            if ((format === 'mp4' && ['.mp3','.m4a','aac'].indexOf(ext) >= 0) ||
+            // If source is already in correct format, just copy
+            if ((format === 'mp4' && ['.m4a','.aac'].indexOf(ext) >= 0) ||
                 (format === 'webm' && ext === '.ogg')) {
                 codec = 'copy';
                 outputExt = ext;
@@ -56,7 +57,7 @@ export default class AudioProcess extends Process {
                 '-c:a', codec,
             ];
 
-            // Encdoing options
+            // Encoding options
             if (codec === 'aac') {
                 args.push('-b:a', '192k');
             }

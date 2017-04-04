@@ -27,14 +27,14 @@ export default class VideoRenderer extends EventEmitter {
 
         this.started = false;
         this.completed = false;
-        this.currentFrame = options.fps * options.timeStart;
-        this.frames = this.currentFrame + (options.fps * (options.timeEnd - options.timeStart));
-        this.startTime = window.performance.now();
+        this.currentFrame = 0;
+        this.frames = options.fps * (options.timeEnd - options.timeStart);
 
         this.renderProcess = new RenderProcess(FFMPEG_PATH);
         this.audioProcess = new AudioProcess(FFMPEG_PATH);
         this.mergeProcess = new MergeProcess(FFMPEG_PATH);
         this.currentProcess = null;
+        this.startTime = 0;
 
         this.renderProcess.on('data', data => {
             logger.log(data.toString());
@@ -63,6 +63,7 @@ export default class VideoRenderer extends EventEmitter {
 
         logger.log('Starting render', id);
 
+        this.startTime = window.performance.now();
         this.currentProcess = this.renderProcess;
 
         // Start rendering

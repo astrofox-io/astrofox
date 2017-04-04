@@ -271,7 +271,7 @@ export default class Application extends EventEmitter {
         stats.frames += 1;
 
         if (now > stats.time + FPS_POLL_INTERVAL) {
-            stats.fps = Math.round((stats.frames * 1000) / (now - stats.time));
+            stats.fps = Math.round(stats.frames / ((now - stats.time) / 1000));
             stats.ms = (now - stats.time) / stats.frames;
             stats.time = now;
             stats.frames = 0;
@@ -465,9 +465,6 @@ export default class Application extends EventEmitter {
 
                 this.startRender();
             });
-
-            // Start render
-            //renderer.start();
         }
         else {
             raiseError('No audio loaded.');
