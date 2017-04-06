@@ -3,6 +3,7 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import UIComponent from '../UIComponent';
 import RenderInfo from './RenderInfo';
+import { events } from '../../core/Global';
 
 export default class Stage extends UIComponent {
     constructor(props, context) {
@@ -21,6 +22,12 @@ export default class Stage extends UIComponent {
         this.canvas.appendChild(
             this.app.stage.renderer.domElement
         );
+
+        events.on('stage-resize', this.setSize, this);
+    }
+
+    componentWillUnmount() {
+        events.off('stage-resize', this.setSize, this);
     }
 
     onDragOver(e) {
@@ -49,6 +56,15 @@ export default class Stage extends UIComponent {
 
     showLoading(val) {
         this.setState({ loading: val });
+    }
+
+    setSize(width, height) {
+        let canvas = this.app.stage.renderer.domElement;
+
+        if (canvas) {
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+        }
     }
 
     render() {

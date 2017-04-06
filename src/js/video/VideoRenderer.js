@@ -27,8 +27,10 @@ export default class VideoRenderer extends EventEmitter {
 
         this.started = false;
         this.completed = false;
-        this.currentFrame = 0;
+
         this.frames = options.fps * (options.timeEnd - options.timeStart);
+        this.currentFrame = options.fps * options.timeStart;
+        this.lastFrame = this.currentFrame + this.frames;
 
         this.renderProcess = new RenderProcess(FFMPEG_PATH);
         this.audioProcess = new AudioProcess(FFMPEG_PATH);
@@ -109,7 +111,7 @@ export default class VideoRenderer extends EventEmitter {
         try {
             this.renderProcess.push(image);
 
-            if (this.currentFrame < this.frames) {
+            if (this.currentFrame < this.lastFrame) {
                 this.currentFrame++;
                 this.emit('ready');
             }

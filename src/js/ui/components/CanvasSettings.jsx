@@ -13,6 +13,12 @@ const canvasSizes = {
     '1:1': { width: 480, height: 480 }
 };
 
+const pixelRatios = [
+    { name: '480', value: 1.0 },
+    { name: '720', value: 1.5 },
+    { name: '1080', value: 2.25 }
+];
+
 export default class CanvasSettings extends UIComponent {
     constructor(props, context) {
         super(props);
@@ -56,6 +62,15 @@ export default class CanvasSettings extends UIComponent {
                             width={140}
                             items={Object.keys(canvasSizes)}
                             value={state.aspectRatio}
+                            onChange={this.onChange}
+                        />
+                    </Row>
+                    <Row label="Resolution">
+                        <SelectInput
+                            name="pixelRatio"
+                            width={140}
+                            items={pixelRatios}
+                            value={state.pixelRatio}
                             onChange={this.onChange}
                         />
                     </Row>

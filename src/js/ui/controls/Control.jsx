@@ -13,12 +13,21 @@ export const Control = (props) => {
 };
 
 export const Row = (props) => {
-    let label = (props.label) ?
-        <span className="label">{props.label}</span> : null;
+    let label = null,
+        icon = null;
+
+    if (props.label) {
+        label = <span className="label">{props.label}</span>;
+    }
+
+    if (props.react) {
+        icon = <span className="react-icon icon-flash" onClick={props.react} />;
+    }
 
     return (
         <div className={classNames('row', props.className)}>
             {label}
+            {icon}
             {props.children}
         </div>
     );

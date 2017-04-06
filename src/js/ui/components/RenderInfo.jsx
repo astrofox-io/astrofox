@@ -11,8 +11,9 @@ export default class RenderInfo extends UIComponent {
         this.state = {
             complete: false,
             fps: 0,
-            currentFrame: 0,
             frames: 0,
+            currentFrame: 0,
+            lastFrame: 0,
             startTime: 0,
             elapsedTime: 0
         };
@@ -52,11 +53,12 @@ export default class RenderInfo extends UIComponent {
     }
 
     processInfo() {
-        let { currentFrame, frames, startTime } = this.renderer;
+        let { frames, currentFrame, lastFrame, startTime } = this.renderer;
 
         this.setState({
-            currentFrame,
             frames,
+            currentFrame,
+            lastFrame,
             startTime
         });
     }
@@ -66,10 +68,11 @@ export default class RenderInfo extends UIComponent {
     }
 
     render() {
-        let { currentFrame, frames, startTime, complete } = this.state,
+        let { frames, currentFrame, lastFrame, startTime, complete } = this.state,
             elapsedTime = (window.performance.now() - startTime) / 1000,
-            progress = frames > 0 ? (currentFrame/frames*100) : 0,
-            fps = elapsedTime > 0 ? currentFrame / elapsedTime : 0,
+            frame = frames - (lastFrame - currentFrame),
+            progress = frames > 0 ? (frame/frames) * 100 : 0,
+            fps = elapsedTime > 0 ? frame / elapsedTime : 0,
             text = complete ? 'Finished' : 'Cancel';
 
         const style = { width: progress + '%' };
@@ -90,7 +93,7 @@ export default class RenderInfo extends UIComponent {
                     </div>
                     <div className="info">
                         <span className="label">Frames</span>
-                        {currentFrame} / {~~frames}
+                        {~~frame} / {~~frames}
                     </div>
                     <div className="info">
                         <span className="label">FPS</span>

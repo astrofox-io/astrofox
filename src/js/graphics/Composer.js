@@ -41,7 +41,7 @@ export default class Composer extends EventEmitter {
                 minFilter: THREE.LinearFilter,
                 magFilter: THREE.LinearFilter,
                 format: THREE.RGBAFormat,
-                stencilBuffer: true
+                stencilBuffer: false
             }
         );
     }
@@ -52,6 +52,19 @@ export default class Composer extends EventEmitter {
 
         this.readBuffer = this.readTarget;
         this.writeBuffer = this.writeTarget;
+    }
+
+    getSize() {
+        return {
+            width: this.readTarget.width,
+            height: this.readTarget.height
+        };
+    }
+
+    setSize(width, height) {
+        this.renderer.setSize(width, height, true);
+        this.readTarget.setSize(width, height);
+        this.writeTarget.setSize(width, height);
     }
 
     clearScreen(color, depth, stencil) {
@@ -92,12 +105,6 @@ export default class Composer extends EventEmitter {
         this.clearPasses();
         this.readTarget.dispose();
         this.writeTarget.dispose();
-    }
-
-    setSize(width, height) {
-        this.renderer.setSize(width, height);
-        this.readTarget.setSize(width, height);
-        this.writeTarget.setSize(width, height);
     }
 
     swapBuffers() {

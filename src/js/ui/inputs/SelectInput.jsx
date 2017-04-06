@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-
 import UIComponent from '../UIComponent';
+import { styleProps } from '../../util/react';
 
 export default class SelectInput extends UIComponent {
     constructor(props) {
@@ -18,7 +18,7 @@ export default class SelectInput extends UIComponent {
     }
 
     componentWillReceiveProps(props) {
-        if (typeof props.value !== 'undefined') {
+        if (props.value !== undefined) {
             this.setState({ value: props.value });
         }
     }
@@ -44,11 +44,23 @@ export default class SelectInput extends UIComponent {
     }
 
     render() {
-        let style = { display: this.state.showItems ? 'block' : 'none' };
+        let displayValue = '',
+            state = this.state,
+            props = this.props;
 
-        let items = this.props.items.map((item, index) => {
+
+        let optionClasses = {
+            'input-options': true,
+            'display-none': !state.showItems
+        };
+
+        let items = props.items.map((item, index) => {
             if (typeof item !== 'object') {
-                item = { name: item, value: item, style: null, separator: false };
+                item = { name: item, value: item };
+            }
+
+            if (item.value === props.value) {
+                displayValue = item.name;
             }
 
             return (
@@ -67,17 +79,15 @@ export default class SelectInput extends UIComponent {
                 <input
                     type="text"
                     className="input-field"
-                    style={{width: this.props.width}}
-                    name={this.props.name}
-                    size={this.props.size}
-                    value={this.state.value}
+                    style={styleProps(props)}
+                    name={props.name}
+                    size={props.size}
+                    value={displayValue}
                     onClick={this.onClick}
                     onBlur={this.onBlur}
                     readOnly="true"
                 />
-                <div
-                    className="input-options"
-                    style={style}>
+                <div className={classNames(optionClasses)}>
                     {items}
                 </div>
             </div>

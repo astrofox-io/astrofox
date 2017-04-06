@@ -5,7 +5,7 @@ import { events } from '../../core/Global';
 import { TabPanel, Tab } from '../layout/TabPanel';
 import * as displayLibrary from '../../lib/displays';
 import * as effectsLibrary from '../../lib/effects';
-import { styleProps } from '../../util/object';
+import { styleProps } from '../../util/react';
 
 export default class ControlPicker extends UIComponent {
     constructor(props) {

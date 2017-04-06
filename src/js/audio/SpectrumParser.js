@@ -24,9 +24,8 @@ export default class SpectrumParser extends Component {
         if (normalize) {
             return val2pct(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
         }
-        else {
-            return val2pct(db, -100, maxDecibels);
-        }
+
+        return val2pct(db, -100, maxDecibels);
     }
 
     getBinRange() {
@@ -55,8 +54,8 @@ export default class SpectrumParser extends Component {
 
         // Convert values
         if (bins === totalBins) {
-            for (i = minBin; i < maxBin; i++) {
-                results[i] = this.getDb(fft[i]);
+            for (i = minBin, k = 0; i < maxBin; i++, k++) {
+                results[k] = this.getDb(fft[i]);
             }
         }
         // Compress data
@@ -64,7 +63,7 @@ export default class SpectrumParser extends Component {
             size = totalBins / bins;
             step = ~~(size / 10) || 1;
 
-            for (i = minBin; i < maxBin; i++) {
+            for (i = minBin, k = 0; i < maxBin; i++, k++) {
                 start = ~~(i * size);
                 end = ~~(start + size);
                 max = 0;
@@ -72,6 +71,7 @@ export default class SpectrumParser extends Component {
                 // Find max value within range
                 for (j = start; j < end; j += step) {
                     val = fft[j];
+
                     if (val > max) {
                         max = val;
                     }
@@ -80,7 +80,7 @@ export default class SpectrumParser extends Component {
                     }
                 }
 
-                results[i] = this.getDb(max);
+                results[k] = this.getDb(max);
             }
         }
         // Expand data

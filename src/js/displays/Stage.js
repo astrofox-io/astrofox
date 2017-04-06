@@ -6,7 +6,7 @@ import WatermarkDisplay from '../displays/WatermarkDisplay';
 import NodeCollection from '../core/NodeCollection';
 import Composer from '../graphics/Composer';
 import { CanvasBuffer, GLBuffer } from '../graphics/FrameBuffer';
-import { logger, raiseError } from '../core/Global';
+import { logger, raiseError, events } from '../core/Global';
 import * as displayLibrary from '../lib/displays';
 import * as effectsLibrary from '../lib/effects';
 
@@ -133,15 +133,6 @@ export default class Stage extends Display {
         });
     }
 
-    getSize() {
-        let canvas = this.renderer.domElement;
-
-        return {
-            width: canvas.width,
-            height: canvas.height
-        };
-    }
-
     getImage(callback, format) {
         let img = this.renderer.domElement.toDataURL(format || 'image/png');
         let base64 = img.replace(/^data:image\/\w+;base64,/, '');
@@ -150,7 +141,15 @@ export default class Stage extends Display {
         if (callback) callback(buffer);
     }
 
-    setSize(width, height) {
+    getSize() {
+        return this.composer.getSize();
+    }
+
+    setSize(w, h) {
+        let r = this.options.pixelRatio,
+            width = w * r,
+            height = h * r;
+
         this.getScenes().forEach(scene => {
             scene.setSize(width, height);
         });
@@ -161,8 +160,10 @@ export default class Stage extends Display {
         this.buffer3D.setSize(width, height);
 
         if (this.watermarkScene.options.enabled) {
-            this.watermarkDisplay.setSize(width, height);
+            this.watermarkScene.setSize(width, height);
         }
+
+        //events.emit('stage-resize', w, h);
     }
 
     loadConfig(config) {
@@ -267,5 +268,6 @@ Stage.defaults = {
     aspectRatio: '16:9',
     width: 854,
     height: 480,
+    pixelRatio: 1.0,
     backgroundColor: '#000000'
 };
