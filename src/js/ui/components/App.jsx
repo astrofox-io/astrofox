@@ -195,6 +195,18 @@ export default class App extends UIComponent {
                 );
                 break;
 
+            case 'zoom-in':
+                this.app.stage.setZoom(1);
+                break;
+
+            case 'zoom-out':
+                this.app.stage.setZoom(-1);
+                break;
+
+            case 'zoom-reset':
+                this.app.stage.setZoom(0);
+                break;
+
             case 'view-control-dock':
                 this.setState({ showControlDock: !this.state.showControlDock });
                 break;

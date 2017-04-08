@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -11,7 +11,7 @@ const blendModes = [
     'Screen'
 ];
 
-export default class BloomControl extends UIPureComponent {
+export default class BloomControl extends UIComponent {
     constructor(props) {
         super(props);
 

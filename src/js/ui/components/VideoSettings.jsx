@@ -174,7 +174,6 @@ export default class VideoSettings extends UIComponent {
                             width={60}
                             min={24}
                             max={60}
-                            step={1}
                             value={state.fps}
                             onChange={this.onChange}
                         />

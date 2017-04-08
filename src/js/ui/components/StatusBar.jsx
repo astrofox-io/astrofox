@@ -27,28 +27,66 @@ export default class StatusBar extends UIComponent {
     }
 
     render() {
-        let memSize = null,
-            electronVersion = null;
+        let memSize, electronVersion;
 
         if (!__PROD__) {
-            memSize = formatSize(performance.memory.usedJSHeapSize, 2);
+            memSize = formatSize(window.performance.memory.usedJSHeapSize, 2);
             electronVersion = process.versions.electron;
         }
 
         return (
             <div className="statusbar">
                 <div className="area left">
-                    <span>{this.props.text}</span>
+                    <span className="item">{this.props.text}</span>
                 </div>
                 <div className="area center">
+                    <Zoom />
                 </div>
                 <div className="area right">
-                    <span>{memSize}</span>
-                    <span>{electronVersion}</span>
-                    <span>{this.state.fps} FPS</span>
-                    <span>{APP_VERSION}</span>
+                    <span className="item">{memSize}</span>
+                    <span className="item">{electronVersion}</span>
+                    <span className="item">{this.state.fps} FPS</span>
+                    <span className="item">{APP_VERSION}</span>
                 </div>
             </div>
         );
     }
 }
+
+class Zoom extends UIComponent {
+    constructor(props, context) {
+        super(props);
+
+        this.app = context.app;
+    }
+
+    componentDidMount() {
+        events.on('zoom', this.forceUpdate, this);
+    }
+
+    componentWillUnmount() {
+        events.off('zoom', this.forceUpdate, this);
+    }
+
+    setZoom(val) {
+        this.app.stage.setZoom(val);
+        this.forceUpdate();
+    }
+
+    render() {
+        let { width, height, zoom } = this.app.stage.options;
+
+        return (
+            <div className="zoom">
+                <span className="item">{width} x {height}</span>
+                <span className="zoom-button" onClick={() => this.setZoom(-1)}>-</span>
+                <span className="zoom-value">{zoom * 100}%</span>
+                <span className="zoom-button" onClick={() => this.setZoom(1)}>+</span>
+            </div>
+        );
+    }
+}
+
+Zoom.contextTypes = {
+    app: React.PropTypes.object
+};

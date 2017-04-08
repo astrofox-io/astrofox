@@ -14,12 +14,15 @@ export default class Stage extends Display {
     constructor(app, options) {
         super(Stage, options);
 
-        let { width, height, backgroundColor } = this.options;
-
         this.app = app;
         this.scenes = new NodeCollection();
-    
+    }
+
+    init(canvas) {
+        let { width, height, backgroundColor } = this.options;
+
         this.renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
             antialias: false,
             premultipliedAlpha: true,
             alpha: false
@@ -27,7 +30,7 @@ export default class Stage extends Display {
 
         this.renderer.setSize(width, height);
         this.renderer.autoClear = false;
-    
+
         this.composer = new Composer(this.renderer);
 
         this.buffer2D = new CanvasBuffer(width, height);
@@ -145,11 +148,7 @@ export default class Stage extends Display {
         return this.composer.getSize();
     }
 
-    setSize(w, h) {
-        let r = this.options.pixelRatio,
-            width = w * r,
-            height = h * r;
-
+    setSize(width, height) {
         this.getScenes().forEach(scene => {
             scene.setSize(width, height);
         });
@@ -163,7 +162,27 @@ export default class Stage extends Display {
             this.watermarkScene.setSize(width, height);
         }
 
-        //events.emit('stage-resize', w, h);
+        events.emit('stage-resize');
+    }
+
+    setZoom(val) {
+        let zoom = this.options.zoom;
+
+        if (val > 0) {
+            if (zoom < 1.0) {
+                this.update({ zoom: zoom + 0.25 });
+            }
+        }
+        else if (val < 0) {
+            if (zoom > 0.25) {
+                this.update({ zoom: zoom - 0.25 });
+            }
+        }
+        else {
+            this.update({ zoom: 1.0 });
+        }
+
+        events.emit('zoom');
     }
 
     loadConfig(config) {
@@ -265,9 +284,8 @@ Stage.label = 'Stage';
 Stage.className = 'Stage';
 
 Stage.defaults = {
-    aspectRatio: '16:9',
     width: 854,
     height: 480,
-    pixelRatio: 1.0,
+    zoom: 1.0,
     backgroundColor: '#000000'
 };

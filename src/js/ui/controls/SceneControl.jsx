@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -40,7 +40,7 @@ const blendModesMenu = [
     'Reflect'
 ];
 
-export default class SceneControl extends UIPureComponent {
+export default class SceneControl extends UIComponent {
     constructor(props) {
         super(props);
 

@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
+import { events } from '../../core/Global';
 import { getControlComponent } from '../../util/controls';
 
 export default class ControlsPanel extends UIComponent {
@@ -21,6 +22,10 @@ export default class ControlsPanel extends UIComponent {
 
     componentWillMount() {
         this.updateControls();
+    }
+
+    componentDidMount() {
+        events.on('stage-resize', this.updateControls, this);
     }
 
     updateControls(callback) {

@@ -1,13 +1,13 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
 const OFFSET_MAX = 854;
 
-export default class RGBShiftControl extends UIPureComponent {
+export default class RGBShiftControl extends UIComponent {
     constructor(props) {
         super(props);
 

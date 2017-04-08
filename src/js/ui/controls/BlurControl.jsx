@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -13,7 +13,7 @@ const types = [
     'Zoom'
 ];
 
-export default class BlurControl extends UIPureComponent {
+export default class BlurControl extends UIComponent {
     constructor(props) {
         super(props);
 

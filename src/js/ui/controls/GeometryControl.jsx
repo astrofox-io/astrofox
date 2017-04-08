@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import ColorInput from '../inputs/ColorInput';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
@@ -34,7 +34,7 @@ const shading = [
     'Flat'
 ];
 
-export default class GeometryControl extends UIPureComponent {
+export default class GeometryControl extends UIComponent {
     constructor(props) {
         super(props);
 

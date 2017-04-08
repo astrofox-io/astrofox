@@ -60,6 +60,21 @@
     "label": "View",
     "submenu": [
       {
+        "label": "Zoom In",
+        "action": "zoom-in"
+      },
+      {
+        "label": "Zoom Out",
+        "action": "zoom-out"
+      },
+      {
+        "label": "Actual Size",
+        "action": "zoom-reset"
+      },
+      {
+        "type": "separator"
+      },
+      {
         "label": "Control Dock",
         "type": "checkbox",
         "checked": true,

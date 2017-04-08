@@ -3,42 +3,69 @@
     flex-direction: row;
     color: @text-color1;
     background-color: @color1;
-    font-size: 10px;
-    padding: 8px 0;
+    font-size: 11px;
+    padding: 0 20px;
     cursor: default;
     white-space: nowrap;
     z-index: 1;
 
-    .left {
-        display: flex;
-        justify-content: flex-start;
-        text-align: left;
-        margin-left: 20px;
+    .item {
+        display: inline-block;
+        line-height: 28px;
+    }
 
-        span {
+    .left {
+        text-align: left;
+        width: 33%;
+
+        .item {
             margin-right: 20px;
         }
     }
 
     .center {
-        display: flex;
-        justify-content: center;
         text-align: center;
         flex: 1;
+        width: 34%;
 
-        span {
-            margin: 10px;
+        .item {
+            margin: 0 10px;
         }
     }
 
     .right {
-        display: flex;
-        justify-content: flex-end;
         text-align: right;
-        margin-right: 20px;
+        width: 33%;
 
-        span {
+        .item {
             margin-left: 20px;
         }
+    }
+
+    .item-button {
+        padding: 0 8px;
+
+        &:hover {
+            background-color: lighten(@color1, 5%);
+        }
+    }
+}
+
+.zoom {
+    line-height: 28px;
+
+    .zoom-button {
+        display: inline-block;
+        width: 30px;
+
+        &:hover {
+            background-color: lighten(@color1, 5%);
+        }
+    }
+
+    .zoom-value {
+        display: inline-block;
+        width: 50px;
+        text-align: center;
     }
 }

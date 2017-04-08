@@ -25,7 +25,7 @@ export default class BlurEffect extends Effect {
             changed = super.update(options);
 
         if (changed) {
-            if (this.owner && options.type !== undefined && options.type != type) {
+            if (this.owner && options.type !== undefined && options.type !== type) {
                 this.setPass(this.getShaderPass(options.type));
             }
         }

@@ -2,31 +2,40 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-width: 900px;
-    overflow: hidden;
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
     position: relative;
 
+    .scroll {
+        margin: auto;
+    }
+
     .canvas {
+        position: relative;
         margin: auto;
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
         justify-content: center;
         box-shadow: 0px 5px 20px rgba(0,0,0,0.5);
         z-index: 1;
-        min-width: 0;
-        overflow: auto;
+        margin: 40px;
     }
 
     .loading {
         width: 100px;
         height: 100px;
+        margin: -50px 0 0 -50px;
         border-top: 3px solid transparent;
         border-left: 3px solid transparent;
         border-bottom: 3px solid @color1;
         border-right: 3px solid @color1;
         border-radius: 100%;
-        .absolute-center();
-        .animation(rotate .3s linear infinite);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        animation: rotate .3s linear infinite;
     }
 
     .render-info {
@@ -40,7 +49,7 @@
             .render-progress-bar {
                 height: 5px;
                 background-color: @color1;
-                transition: width 0.5s ease;
+                transition: width 0.5s ease-out;
             }
         }
 
@@ -80,6 +89,7 @@
         opacity: 0;
         width: 200px;
         height: 200px;
+        margin: -100px 0 0 -100px;
     }
 
     &.render-info {
@@ -96,7 +106,8 @@
         opacity: 1;
         width: 100px;
         height: 100px;
-        transition: all .3s ease-in;
+        margin: -50px 0 0 -50px;
+        transition: all .3s ease-out;
     }
 
     &.render-info {
@@ -105,7 +116,7 @@
 
         &:before {
             opacity: 0.5;
-            transition: all .5s ease-in;
+            transition: all .5s ease-out;
         }
     }
 }
@@ -115,6 +126,7 @@
         opacity: 1;
         width: 100px;
         height: 100px;
+        margin: -50px 0 0 -50px;
     }
 
     &.render-info {
@@ -131,7 +143,8 @@
         opacity: 0;
         width: 200px;
         height: 200px;
-        transition: all .3s ease-out;
+        margin: -100px 0 0 -100px;
+        transition: all .3s ease-in;
     }
 
     &.render-info {
@@ -140,7 +153,7 @@
 
         &:before {
             opacity: 0;
-            transition: all .5s ease-out;
+            transition: all .5s ease-in;
         }
     }
 }

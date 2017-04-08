@@ -1,11 +1,11 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-export default class LEDControl extends UIPureComponent {
+export default class LEDControl extends UIComponent {
     constructor(props) {
         super(props);
 

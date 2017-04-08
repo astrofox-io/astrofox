@@ -4,6 +4,7 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import UIComponent from '../UIComponent';
 import RenderInfo from './RenderInfo';
 import { events } from '../../core/Global';
+import { FirstChild } from '../../util/react';
 
 export default class Stage extends UIComponent {
     constructor(props, context) {
@@ -19,15 +20,13 @@ export default class Stage extends UIComponent {
     }
 
     componentDidMount() {
-        this.canvas.appendChild(
-            this.app.stage.renderer.domElement
-        );
+        this.app.stage.init(this.canvas);
 
-        events.on('stage-resize', this.setSize, this);
+        events.on('zoom', this.forceUpdate, this);
     }
 
     componentWillUnmount() {
-        events.off('stage-resize', this.setSize, this);
+        events.off('zoom', this.forceUpdate, this);
     }
 
     onDragOver(e) {
@@ -58,41 +57,46 @@ export default class Stage extends UIComponent {
         this.setState({ loading: val });
     }
 
-    setSize(width, height) {
-        let canvas = this.app.stage.renderer.domElement;
-
-        if (canvas) {
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-        }
-    }
-
     render() {
-        let loading = null,
-            renderInfo = null;
+        let loadingIcon, renderInfo,
+            { loading, rendering } = this.state,
+            { width, height, zoom } = this.app.stage.options,
+            style = {
+                width: (width * zoom) + 'px',
+                height: (height * zoom) + 'px'
+            };
 
-        if (this.state.loading) {
-            loading = <div className="loading"/>;
+        if (loading) {
+            loadingIcon = <div className="loading"/>;
         }
 
-        if (this.state.rendering) {
+        if (rendering) {
             renderInfo = <RenderInfo onButtonClick={this.stopRender} />;
         }
 
         return (
             <div className="stage">
-                <div
-                    ref={el => this.canvas = el}
-                    className="canvas"
-                    onDrop={this.onDrop}
-                    onDragOver={this.onDragOver}>
-                    <CSSTransitionGroup
-                        transitionName="stage"
-                        transitionEnterTimeout={500}
-                        transitionLeaveTimeout={500}>
-                        {loading}
-                        {renderInfo}
-                    </CSSTransitionGroup>
+                <div className="scroll">
+                    <div
+                        className="canvas"
+                        onDrop={this.onDrop}
+                        onDragOver={this.onDragOver}>
+                        <canvas ref={el => this.canvas = el} style={style} />
+                        <CSSTransitionGroup
+                            component={FirstChild}
+                            transitionName="stage"
+                            transitionEnterTimeout={500}
+                            transitionLeaveTimeout={500}>
+                            {loadingIcon}
+                        </CSSTransitionGroup>
+                        <CSSTransitionGroup
+                            component="div"
+                            transitionName="stage"
+                            transitionEnterTimeout={500}
+                            transitionLeaveTimeout={500}>
+                            {renderInfo}
+                        </CSSTransitionGroup>
+                    </div>
                 </div>
             </div>
         );

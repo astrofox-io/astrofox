@@ -1,13 +1,13 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
+import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
 import ColorRangeInput from '../inputs/ColorRangeInput';
 import RangeInput from '../inputs/RangeInput';
 import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
-export default class BarSpectrumControl extends UIPureComponent {
+export default class BarSpectrumControl extends UIComponent {
     constructor(props, context) {
         super(props);
         
