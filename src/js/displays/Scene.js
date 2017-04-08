@@ -42,6 +42,8 @@ export default class Scene extends Display {
     addToStage(stage) {
         let size = stage.getSize();
 
+        this.owner = stage;
+
         this.buffer2D = stage.buffer2D;
         this.buffer3D = stage.buffer3D;
 
@@ -113,6 +115,12 @@ export default class Scene extends Display {
 
         if (obj.addToScene) {
             obj.addToScene(this);
+        }
+
+        if (obj.setSize) {
+            const { width, height } = this.owner.getSize();
+
+            obj.setSize(width, height);
         }
 
         this.updatePasses();
