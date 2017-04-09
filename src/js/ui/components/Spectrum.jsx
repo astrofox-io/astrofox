@@ -56,8 +56,8 @@ export default class Spectrum extends UIComponent {
                 <canvas
                     ref={el => this.canvas = el}
                     className="canvas"
-                    width="854"
-                    height="100"
+                    width={this.props.width}
+                    height={this.props.height}
                     onClick={this.onClick}
                 />
             </div>

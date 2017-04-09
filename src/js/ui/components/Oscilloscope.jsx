@@ -24,7 +24,7 @@ export default class Oscilloscope extends UIComponent {
     }
 
     updateCanvas(data) {
-        let points = WaveParser.parseTimeData(data.td, 854, 0);
+        let points = WaveParser.parseTimeData(data.td, this.props.width, 0);
 
         this.display.render(points);
     }
@@ -35,8 +35,8 @@ export default class Oscilloscope extends UIComponent {
                 <canvas
                     ref={el => this.canvas = el}
                     className="canvas"
-                    width="854"
-                    height="100"
+                    width={this.props.width}
+                    height={this.props.height}
                 />
             </div>
         );

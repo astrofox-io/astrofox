@@ -80,6 +80,10 @@ export default class Scene extends Display {
         this.composer = null;
     }
 
+    getSize() {
+        return this.composer.getSize();
+    }
+
     setSize(width, height) {
         this.getDisplays().forEach(display => {
             if (display.setSize) {

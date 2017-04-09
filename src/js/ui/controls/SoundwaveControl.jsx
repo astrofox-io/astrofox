@@ -8,10 +8,12 @@ import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
 export default class SoundwaveControl extends UIComponent {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
 
         this.state = this.props.display.options;
+
+        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -26,15 +28,15 @@ export default class SoundwaveControl extends UIComponent {
     }
 
     render() {
-        let maxHeight = 480;
-        let maxWidth = 854;
+        const { width, height } = this.app.stage.getSize(),
+            state = this.state;
 
         return (
             <Control label="SOUNDWAVE" className={this.props.className}>
                 <Row label="Color">
                     <ColorInput
                         name="color"
-                        value={this.state.color}
+                        value={state.color}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -42,7 +44,7 @@ export default class SoundwaveControl extends UIComponent {
                     <NumberInput
                         name="lineWidth"
                         width={40}
-                        value={this.state.lineWidth}
+                        value={state.lineWidth}
                         min={0}
                         max={10}
                         onChange={this.onChange}
@@ -53,7 +55,7 @@ export default class SoundwaveControl extends UIComponent {
                             min={0.01}
                             max={10}
                             step={0.01}
-                            value={this.state.lineWidth}
+                            value={state.lineWidth}
                             onChange={this.onChange}
                         />
                     </div>
@@ -62,17 +64,17 @@ export default class SoundwaveControl extends UIComponent {
                     <NumberInput
                         name="width"
                         width={40}
-                        value={this.state.width}
+                        value={state.width}
                         min={0}
-                        max={maxWidth}
+                        max={width}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="width"
                             min={0}
-                            max={maxWidth}
-                            value={this.state.width}
+                            max={width}
+                            value={state.width}
                             onChange={this.onChange}
                         />
                     </div>
@@ -82,16 +84,16 @@ export default class SoundwaveControl extends UIComponent {
                         name="height"
                         width={40}
                         min={0}
-                        max={maxWidth}
-                        value={this.state.height}
+                        max={width}
+                        value={state.height}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="height"
                             min={0}
-                            max={maxWidth}
-                            value={this.state.height}
+                            max={width}
+                            value={state.height}
                             onChange={this.onChange}
                         />
                     </div>
@@ -100,17 +102,17 @@ export default class SoundwaveControl extends UIComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-maxWidth}
-                        max={maxWidth}
-                        value={this.state.x}
+                        min={-width}
+                        max={width}
+                        value={state.x}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-maxWidth}
-                            max={maxWidth}
-                            value={this.state.x}
+                            min={-width}
+                            max={width}
+                            value={state.x}
                             onChange={this.onChange}
                         />
                     </div>
@@ -119,17 +121,17 @@ export default class SoundwaveControl extends UIComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-maxHeight}
-                        max={maxHeight}
-                        value={this.state.y}
+                        min={-height}
+                        max={height}
+                        value={state.y}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-maxHeight}
-                            max={maxHeight}
-                            value={this.state.y}
+                            min={-height}
+                            max={height}
+                            value={state.y}
                             onChange={this.onChange}
                         />
                     </div>
@@ -141,7 +143,7 @@ export default class SoundwaveControl extends UIComponent {
                         min={0}
                         max={100}
                         step={1}
-                        value={this.state.length}
+                        value={state.length}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -150,7 +152,7 @@ export default class SoundwaveControl extends UIComponent {
                             min={0}
                             max={100}
                             step={1}
-                            value={this.state.length}
+                            value={state.length}
                             onChange={this.onChange}
                         />
                     </div>
@@ -158,7 +160,7 @@ export default class SoundwaveControl extends UIComponent {
                 <Row label="Smooth">
                     <ToggleInput
                         name="smooth"
-                        value={this.state.smooth}
+                        value={state.smooth}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -168,7 +170,7 @@ export default class SoundwaveControl extends UIComponent {
                         width={40}
                         min={0}
                         max={360}
-                        value={this.state.rotation}
+                        value={state.rotation}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -176,7 +178,7 @@ export default class SoundwaveControl extends UIComponent {
                             name="rotation"
                             min={0}
                             max={360}
-                            value={this.state.rotation}
+                            value={state.rotation}
                             onChange={this.onChange}
                         />
                     </div>
@@ -188,7 +190,7 @@ export default class SoundwaveControl extends UIComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={this.state.opacity}
+                        value={state.opacity}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -197,7 +199,7 @@ export default class SoundwaveControl extends UIComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.opacity}
+                            value={state.opacity}
                             onChange={this.onChange}
                         />
                     </div>
@@ -206,3 +208,7 @@ export default class SoundwaveControl extends UIComponent {
         );
     }
 }
+
+SoundwaveControl.contextTypes = {
+    app: React.PropTypes.object
+};

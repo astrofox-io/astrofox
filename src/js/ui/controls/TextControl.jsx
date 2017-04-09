@@ -12,10 +12,12 @@ import { Control, Row } from './Control';
 import fontOptions from '../../../config/fonts.json';
 
 export default class TextControl extends UIComponent {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
 
         this.state = this.props.display.options;
+
+        this.app = context.app;
     }
 
     componentDidMount() {
@@ -46,8 +48,8 @@ export default class TextControl extends UIComponent {
     }
 
     render() {
-        let maxHeight = 480;
-        let maxWidth = 854;
+        const { width, height } = this.app.stage.getSize(),
+            state = this.state;
 
         return (
             <Control label="TEXT" className={this.props.className}>
@@ -55,7 +57,7 @@ export default class TextControl extends UIComponent {
                     <TextInput
                         name="text"
                         width={140}
-                        value={this.state.text}
+                        value={state.text}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -64,7 +66,7 @@ export default class TextControl extends UIComponent {
                         name="font"
                         width={140}
                         items={this.getSelectItems()}
-                        value={this.state.font}
+                        value={state.font}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -73,27 +75,27 @@ export default class TextControl extends UIComponent {
                         name="size"
                         width={40}
                         min={0}
-                        value={this.state.size}
+                        value={state.size}
                         onChange={this.onChange}
                     />
                 </Row>
                 <Row label="Bold">
                     <ToggleInput
                         name="bold"
-                        value={this.state.bold}
+                        value={state.bold}
                         onChange={this.onChange}
                     />
                     <span className="label">Italic</span>
                     <ToggleInput
                         name="italic"
-                        value={this.state.italic}
+                        value={state.italic}
                         onChange={this.onChange}
                     />
                 </Row>
                 <Row label="Color">
                     <ColorInput
                         name="color"
-                        value={this.state.color}
+                        value={state.color}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -101,17 +103,17 @@ export default class TextControl extends UIComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-maxWidth}
-                        max={maxWidth}
-                        value={this.state.x}
+                        min={-width}
+                        max={width}
+                        value={state.x}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-maxWidth}
-                            max={maxWidth}
-                            value={this.state.x}
+                            min={-width}
+                            max={width}
+                            value={state.x}
                             onChange={this.onChange}
                         />
                     </div>
@@ -120,17 +122,17 @@ export default class TextControl extends UIComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-maxHeight}
-                        max={maxHeight}
-                        value={this.state.y}
+                        min={-height}
+                        max={height}
+                        value={state.y}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-maxHeight}
-                            max={maxHeight}
-                            value={this.state.y}
+                            min={-height}
+                            max={height}
+                            value={state.y}
                             onChange={this.onChange}
                         />
                     </div>
@@ -141,7 +143,7 @@ export default class TextControl extends UIComponent {
                         width={40}
                         min={0}
                         max={360}
-                        value={this.state.rotation}
+                        value={state.rotation}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -149,7 +151,7 @@ export default class TextControl extends UIComponent {
                             name="rotation"
                             min={0}
                             max={360}
-                            value={this.state.rotation}
+                            value={state.rotation}
                             onChange={this.onChange}
                         />
                     </div>
@@ -161,7 +163,7 @@ export default class TextControl extends UIComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={this.state.opacity}
+                        value={state.opacity}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -170,7 +172,7 @@ export default class TextControl extends UIComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.opacity}
+                            value={state.opacity}
                             onChange={this.onChange}
                         />
                     </div>
@@ -179,3 +181,7 @@ export default class TextControl extends UIComponent {
         );
     }
 }
+
+TextControl.contextTypes = {
+    app: React.PropTypes.object
+};

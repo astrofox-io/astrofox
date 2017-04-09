@@ -7,7 +7,7 @@ export default {
         spacing: { type: 'f', value: 10.0 },
         size: { type: 'f', value: 4.0 },
         blur: { type: 'f', value: 4.0 },
-        resolution: { type: 'v2', value: new Vector2(854, 480) }
+        resolution: { type: 'v2', value: new Vector2(1, 1) }
     },
 
     vertexShader: glsl.vertex.Basic,

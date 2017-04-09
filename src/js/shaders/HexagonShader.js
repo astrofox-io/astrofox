@@ -6,7 +6,7 @@ export default {
         tDiffuse: { type: 't', value: null },
         center: { type: 'v2', value: new Vector2(0.5, 0.5) },
         size: { type: 'f', value: 10.0 },
-        resolution: { type: 'v2', value: new Vector2(854, 480) }
+        resolution: { type: 'v2', value: new Vector2(1, 1) }
     },
 
     vertexShader: glsl.vertex.Basic,

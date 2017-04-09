@@ -90,7 +90,7 @@ export default class Stage extends UIComponent {
                             {loadingIcon}
                         </CSSTransitionGroup>
                         <CSSTransitionGroup
-                            component="div"
+                            component={FirstChild}
                             transitionName="stage"
                             transitionEnterTimeout={500}
                             transitionLeaveTimeout={500}>

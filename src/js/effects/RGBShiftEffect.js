@@ -3,16 +3,16 @@ import ShaderPass from '../graphics/ShaderPass';
 import RGBShiftShader from '../shaders/RGBShiftShader';
 import { deg2rad } from '../util/math';
 
-const OFFSET_MAX = 854;
-
 export default class RGBShiftEffect extends Effect {
     constructor(options) {
         super(RGBShiftEffect, options);
     }
 
     updatePass() {
+        let { width } = this.owner.getSize();
+
         this.pass.setUniforms({
-            amount: this.options.offset / OFFSET_MAX,
+            amount: this.options.offset / width,
             angle: deg2rad(this.options.angle)
         });
     }

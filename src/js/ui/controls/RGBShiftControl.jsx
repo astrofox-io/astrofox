@@ -5,13 +5,13 @@ import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-const OFFSET_MAX = 854;
-
 export default class RGBShiftControl extends UIComponent {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
 
         this.state = this.props.display.options;
+
+        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -26,6 +26,8 @@ export default class RGBShiftControl extends UIComponent {
     }
 
     render() {
+        const { width } = this.app.stage.getSize();
+
         return (
             <Control label="RGB SHIFT" className={this.props.className}>
                 <Row label="Offset">
@@ -34,7 +36,7 @@ export default class RGBShiftControl extends UIComponent {
                         width={40}
                         value={this.state.offset}
                         min={0}
-                        max={OFFSET_MAX}
+                        max={width}
                         step={1}
                         onChange={this.onChange}
                     />
@@ -42,7 +44,7 @@ export default class RGBShiftControl extends UIComponent {
                         <RangeInput
                             name="offset"
                             min={0.0}
-                            max={OFFSET_MAX}
+                            max={width}
                             step={1}
                             value={this.state.offset}
                             onChange={this.onChange}
@@ -72,3 +74,7 @@ export default class RGBShiftControl extends UIComponent {
         );
     }
 }
+
+RGBShiftControl.contextTypes = {
+    app: React.PropTypes.object
+};

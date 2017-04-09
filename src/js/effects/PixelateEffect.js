@@ -37,8 +37,11 @@ export default class PixelateEffect extends Effect {
     }
 
     getShaderPass(type) {
-        let pass = new ShaderPass(shaders[type]);
+        let pass = new ShaderPass(shaders[type]),
+            { width, height } = this.owner.getSize();
+        
         pass.setUniforms(this.options);
+        pass.setSize(width, height);
 
         return pass;
     }

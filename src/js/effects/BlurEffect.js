@@ -34,21 +34,23 @@ export default class BlurEffect extends Effect {
     }
 
     updatePass() {
-        switch (this.options.type) {
+        let { type, amount } = this.options;
+
+        switch (type) {
             case 'Box':
-                this.pass.setUniforms({ amount: this.options.amount * BOX_BLUR_MAX });
+                this.pass.setUniforms({ amount: amount * BOX_BLUR_MAX });
                 break;
 
             case 'Circular':
-                this.pass.setUniforms({ amount: this.options.amount * CIRCULAR_BLUR_MAX });
+                this.pass.setUniforms({ amount: amount * CIRCULAR_BLUR_MAX });
                 break;
 
             case 'Gaussian':
-                this.pass.setAmount(this.options.amount);
+                this.pass.setAmount(amount);
                 break;
 
             case 'Zoom':
-                this.pass.setUniforms({ amount: this.options.amount * ZOOM_BLUR_MAX });
+                this.pass.setUniforms({ amount: amount * ZOOM_BLUR_MAX });
                 break;
         }
     }
@@ -63,13 +65,21 @@ export default class BlurEffect extends Effect {
     }
 
     getShaderPass(type) {
+        let pass,
+            { width, height } = this.owner.getSize();
+
         switch (type) {
             case 'Gaussian':
-                return new GaussianBlurPass();
+                pass = new GaussianBlurPass();
+                break;
 
             default:
-                return new ShaderPass(shaders[type]);
+                pass = new ShaderPass(shaders[type]);
         }
+
+        pass.setSize(width, height);
+
+        return pass;
     }
 }
 
