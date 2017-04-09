@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import { events } from '../../core/Global';
 import SpectrumParser from '../../audio/SpectrumParser';
 import CanvasBars from '../../canvas/CanvasBars';
 
@@ -30,12 +29,6 @@ export default class Spectrum extends UIComponent {
         );
 
         this.parser = new SpectrumParser(this.state);
-
-        events.on('render', this.updateCanvas, this);
-    }
-
-    componentWillUnmount() {
-        events.off('render', this.updateCanvas, this);
     }
 
     onClick() {
@@ -44,7 +37,7 @@ export default class Spectrum extends UIComponent {
         });
     }
 
-    updateCanvas(data) {
+    draw(data) {
         let fft = this.parser.parseFFT(data.fft, 32);
 
         this.bars.render(fft);

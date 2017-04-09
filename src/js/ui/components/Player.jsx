@@ -5,6 +5,7 @@ import UIComponent from '../UIComponent';
 import AudioWaveform from './AudioWaveform';
 import Oscilloscope from './Oscilloscope';
 import Spectrum from './Spectrum';
+import { events } from '../../core/Global';
 import { formatTime } from '../../util/format';
 import RangeInput from '../inputs/RangeInput';
 
@@ -15,10 +16,12 @@ export default class Player extends UIComponent {
         super(props);
 
         this.state = {
+            audio: null,
             playing: false,
             looping: false,
             progressPosition: 0,
             duration: 0,
+            showWaveform: true,
             showSpectrum: false,
             showOsc: false
         };
@@ -31,13 +34,22 @@ export default class Player extends UIComponent {
 
         player.on('load', id => {
             this.setState({ duration: player.getDuration(id) });
+
+            if (this.waveform) {
+                this.waveform.renderBars(this.app.getAudio());
+            }
         });
 
         player.on('tick', id => {
             if (player.isPlaying() && !this.progressControl.isBuffering()) {
-                this.setState({
-                    progressPosition: player.getPosition(id)
-                });
+                let pos = player.getPosition(id);
+
+                this.setState({ progressPosition: pos });
+
+                if (this.waveform) {
+                    this.waveform.position = pos;
+                    this.waveform.draw(pos);
+                }
             }
         });
 
@@ -51,12 +63,36 @@ export default class Player extends UIComponent {
 
         player.on('stop', () => {
             this.setState({ progressPosition: 0 });
+
+            if (this.waveform) {
+                this.waveform.position = 0;
+                this.waveform.seek = 0;
+                this.waveform.draw();
+            }
         });
 
         player.on('seek', id => {
+            let pos = player.getPosition(id);
+
             this.setState({
-                progressPosition: player.getPosition(id)
+                progressPosition: pos
             });
+
+            if (this.waveform) {
+                this.waveform.position = pos;
+                this.waveform.seek = pos;
+                this.waveform.draw();
+            }
+        });
+
+        events.on('render', data => {
+            if (this.spectrum) {
+                this.spectrum.draw(data);
+            }
+
+            if (this.oscilloscope) {
+                this.oscilloscope.draw(data);
+            }
         });
     }
 
@@ -76,6 +112,14 @@ export default class Player extends UIComponent {
         });
     }
 
+    onWaveformClick(val) {
+        this.app.seekAudio(val);
+    }
+
+    onWaveformButtonClick() {
+        this.setState({ showWaveform: !this.state.showWaveform });
+    }
+
     onSpectrumButtonClick() {
         this.setState({ showSpectrum: !this.state.showSpectrum });
     }
@@ -89,7 +133,7 @@ export default class Player extends UIComponent {
     }
 
     onProgressChange(val) {
-        this.app.player.seek('audio', val);
+        this.app.seekAudio(val);
     }
 
     onProgressInput(val) {
@@ -97,28 +141,26 @@ export default class Player extends UIComponent {
     }
 
     render() {
-        let player = this.app.player,
-            { duration, progressPosition, looping, showSpectrum, showOsc } = this.state,
-            playing = player.isPlaying(),
-            style = {},
-            spectrum = null,
-            osc = null;
-
-        if (!this.props.visible) {
-            style.display = 'none';
-        }
+        let spectrum, osc,
+            player = this.app.player,
+            { duration, progressPosition, looping, showWaveform, showSpectrum, showOsc } = this.state,
+            playing = player.isPlaying();
 
         if (showSpectrum) {
-            spectrum = <Spectrum />;
+            spectrum = <Spectrum ref={el => this.spectrum = el} />;
         }
 
         if (showOsc) {
-            osc = <Oscilloscope />;
+            osc = <Oscilloscope ref={el => this.oscilloscope = el} />;
         }
 
         return (
-            <div style={style}>
-                <AudioWaveform />
+            <div className={classNames({ 'display-none': !this.props.visible })}>
+                <AudioWaveform
+                    ref={el => this.waveform = el}
+                    visible={showWaveform && duration}
+                    onClick={this.onWaveformClick}
+                />
                 <div className="player">
                     <div className="buttons">
                         <PlayButton playing={playing} onClick={this.onPlayButtonClick} />
@@ -130,17 +172,17 @@ export default class Player extends UIComponent {
                         value={progressPosition * PROGRESS_MAX}
                         onChange={this.onProgressChange}
                         onInput={this.onProgressInput}
-                        readOnly={duration==0}
+                        readOnly={!duration}
                     />
                     <TimeInfo
                         currentTime={duration * progressPosition}
                         totalTime={duration}
                     />
                     <ToggleButton
-                        icon="icon-cycle"
-                        title="Repeat"
-                        active={looping}
-                        onClick={this.onLoopButtonClick}
+                        icon="icon-sound-bars"
+                        title="Waveform"
+                        active={showWaveform}
+                        onClick={this.onWaveformButtonClick}
                     />
                     <ToggleButton
                         icon="icon-sound-waves"
@@ -153,6 +195,12 @@ export default class Player extends UIComponent {
                         title="Spectrum"
                         active={showSpectrum}
                         onClick={this.onSpectrumButtonClick}
+                    />
+                    <ToggleButton
+                        icon="icon-cycle"
+                        title="Repeat"
+                        active={looping}
+                        onClick={this.onLoopButtonClick}
                     />
                 </div>
                 {osc}

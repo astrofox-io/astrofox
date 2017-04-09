@@ -1,14 +1,15 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import CanvasAudio from '../../canvas/CanvasAudio';
 
 export default class AudioWaveform extends UIComponent {
-    constructor(props, context) {
+    constructor(props) {
         super(props);
-        
-        this.app = context.app;
+
         this.canvas = null;
+        this.drawContext = null;
     }
 
     componentDidMount() {
@@ -37,55 +38,27 @@ export default class AudioWaveform extends UIComponent {
                 shadowColor: '#403972'
             })
         );
-
-        // Set player events
-        let player = this.app.player;
-
-        player.on('load', () => {
-            let audio = this.app.getAudio();
-
-            if (audio) {
-                this.baseCanvas.render(audio.buffer);
-                this.progressCanvas.render(audio.buffer);
-                this.seekCanvas.render(audio.buffer);
-            }
-        });
-
-        player.on('tick', () => {
-            this.position = this.app.getAudioPosition();
-            this.draw();
-        });
-
-        player.on('stop', () => {
-            this.position = this.seek = 0;
-            this.draw();
-        });
-
-        player.on('seek', () => {
-            this.position = this.seek = this.app.getAudioPosition();
-            this.draw();
-        });
     }
 
     onClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        let rect = e.currentTarget.getBoundingClientRect();
+        if (this.props.onClick) {
+            let rect = e.currentTarget.getBoundingClientRect();
 
-        this.app.seekAudio((e.clientX - rect.left) / rect.width);
+            this.props.onClick((e.clientX - rect.left) / rect.width);
+        }
     }
 
     onMouseMove(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        if (this.app.hasAudio()) {
-            let rect = e.currentTarget.getBoundingClientRect();
+        let rect = e.currentTarget.getBoundingClientRect();
 
-            this.seek = (e.clientX - rect.left) / rect.width;
-            this.draw();
-        }
+        this.seek = (e.clientX - rect.left) / rect.width;
+        this.draw();
     }
 
     onMouseOut(e) {
@@ -129,17 +102,24 @@ export default class AudioWaveform extends UIComponent {
         }
     }
 
+    renderBars(audio) {
+        if (audio) {
+            this.baseCanvas.render(audio.buffer);
+            this.progressCanvas.render(audio.buffer);
+            this.seekCanvas.render(audio.buffer);
+        }
+    }
+
     render() {
         let width = this.props.width,
             height = this.props.height + this.props.shadowHeight,
-            style = {};
-
-        if (!this.props.visible) {
-            style.display = 'none';
-        }
+            classes = {
+                'waveform': true,
+                'display-none': !this.props.visible
+            };
 
         return (
-            <div className="waveform" style={style}>
+            <div className={classNames(classes)}>
                 <canvas
                     ref={el => this.canvas = el}
                     className="canvas"
@@ -163,8 +143,4 @@ AudioWaveform.defaultProps = {
     shadowHeight: 30,
     bgColor: '#333333',
     bars: 213
-};
-
-AudioWaveform.contextTypes = {
-    app: React.PropTypes.object
 };

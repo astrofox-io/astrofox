@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import { events } from '../../core/Global';
 import CanvasWave from '../../canvas/CanvasWave';
 import WaveParser from '../../audio/WaveParser';
 
@@ -15,15 +14,9 @@ export default class Oscilloscope extends UIComponent {
             this.props,
             this.canvas
         );
-
-        events.on('render', this.updateCanvas, this);
     }
 
-    componentWillUnmount() {
-        events.off('render', this.updateCanvas, this);
-    }
-
-    updateCanvas(data) {
+    draw(data) {
         let points = WaveParser.parseTimeData(data.td, this.props.width, 0);
 
         this.display.render(points);
