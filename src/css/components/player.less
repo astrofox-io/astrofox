@@ -10,6 +10,7 @@
 
     .buttons {
         margin-right: 20px;
+        white-space: nowrap;
     }
 
     .button {
@@ -100,6 +101,7 @@
     .time-info {
         line-height: 36px;
         margin-right: 20px;
+        white-space: nowrap;
 
         .time-part {
             vertical-align: middle;
@@ -124,5 +126,54 @@
         &:hover {
             cursor: default;
         }
+    }
+}
+
+.waveform {
+    min-width: 900px;
+    position: relative;
+    background-color: @bg-color5;
+    border-top: 1px solid lighten(@bg-color5, 6%);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
+    max-height: 200px;
+    transition: max-height .2s ease-out;
+    overflow: hidden;
+
+    .canvas {
+        margin: 20px auto;
+        display: block;
+    }
+}
+
+.waveform-hidden {
+    max-height: 0;
+    transition: max-height .2s ease-in;
+}
+
+.oscilloscope {
+    min-width: 900px;
+    position: relative;
+    background-color: @bg-color5;
+    padding-bottom: 10px;
+
+    .canvas {
+        display: block;
+        margin: 0 auto;
+        border: 1px solid lighten(@bg-color5, 6%);
+        box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+    }
+}
+
+.spectrum {
+    min-width: 900px;
+    position: relative;
+    background-color: @bg-color5;
+    padding-bottom: 10px;
+
+    .canvas {
+        display: block;
+        margin: 0 auto;
+        border: 1px solid lighten(@bg-color5, 6%);
+        box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
     }
 }

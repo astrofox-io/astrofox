@@ -16,7 +16,6 @@ export default class Player extends UIComponent {
         super(props);
 
         this.state = {
-            audio: null,
             playing: false,
             looping: false,
             progressPosition: 0,
@@ -142,9 +141,8 @@ export default class Player extends UIComponent {
 
     render() {
         let spectrum, osc,
-            player = this.app.player,
-            { duration, progressPosition, looping, showWaveform, showSpectrum, showOsc } = this.state,
-            playing = player.isPlaying();
+            playing = this.app.player.isPlaying(),
+            { duration, progressPosition, looping, showWaveform, showSpectrum, showOsc } = this.state;
 
         if (showSpectrum) {
             spectrum = <Spectrum ref={el => this.spectrum = el} />;
@@ -222,32 +220,46 @@ class VolumeControl extends UIComponent {
     constructor(props) {
         super(props);
 
-        this.state = { value: 100 };
+        this.state = {
+            value: 100,
+            mute: false
+        };
     }
 
-    onChange(name, val) {
-        this.props.onChange(val / 100);
+    onChange(name, value) {
+        this.props.onChange(value / 100);
 
-        this.setState({ value: val });
+        this.setState({ value: value, mute: false });
+    }
+
+    onClick() {
+        this.setState((prevState, props) => {
+            props.onChange(prevState.mute ? prevState.value / 100 : 0);
+
+            return { mute: !prevState.mute };
+        });
     }
 
     render() {
-        let icon = 'icon-volume4',
-            val = this.state.value;
+        let icon,
+            { value, mute } = this.state;
 
-        if (val > 75) {
-            icon = 'icon-volume';
+        if (value < 10 || mute) {
+            icon = 'icon-volume4';
         }
-        else if (val > 25) {
+        else if (value < 25) {
+            icon = 'icon-volume3';
+        }
+        else if (value < 75) {
             icon = 'icon-volume2';
         }
-        else if (val > 0) {
-            icon = 'icon-volume3';
+        else {
+            icon = 'icon-volume';
         }
 
         return (
             <div className="volume">
-                <div className="speaker">
+                <div className="speaker" onClick={this.onClick}>
                     <span className={icon} />
                 </div>
                 <div className="slider">
@@ -255,7 +267,7 @@ class VolumeControl extends UIComponent {
                         name="volume"
                         min={0}
                         max={100}
-                        value={val}
+                        value={mute ? 0 : value}
                         onChange={this.onChange}
                     />
                 </div>

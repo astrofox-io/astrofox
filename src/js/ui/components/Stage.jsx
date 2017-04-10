@@ -58,21 +58,12 @@ export default class Stage extends UIComponent {
     }
 
     render() {
-        let loadingIcon, renderInfo,
-            { loading, rendering } = this.state,
+        let { loading, rendering } = this.state,
             { width, height, zoom } = this.app.stage.options,
             style = {
                 width: (width * zoom) + 'px',
                 height: (height * zoom) + 'px'
             };
-
-        if (loading) {
-            loadingIcon = <div className="loading"/>;
-        }
-
-        if (rendering) {
-            renderInfo = <RenderInfo onButtonClick={this.stopRender} />;
-        }
 
         return (
             <div className="stage">
@@ -82,26 +73,50 @@ export default class Stage extends UIComponent {
                         onDrop={this.onDrop}
                         onDragOver={this.onDragOver}>
                         <canvas ref={el => this.canvas = el} style={style} />
-                        <CSSTransitionGroup
-                            component={FirstChild}
-                            transitionName="stage"
-                            transitionEnterTimeout={500}
-                            transitionLeaveTimeout={500}>
-                            {loadingIcon}
-                        </CSSTransitionGroup>
-                        <CSSTransitionGroup
-                            component={FirstChild}
-                            transitionName="stage"
-                            transitionEnterTimeout={500}
-                            transitionLeaveTimeout={500}>
-                            {renderInfo}
-                        </CSSTransitionGroup>
+                        <Loading visible={loading} />
+                        <Rendering visible={rendering} onButtonClick={this.stopRender} />
                     </div>
                 </div>
             </div>
         );
     }
 }
+
+const Loading = (props) => {
+    let loadingIcon;
+
+    if (props.visible) {
+        loadingIcon = <div className="loading"/>;
+    }
+
+    return (
+        <CSSTransitionGroup
+            component={FirstChild}
+            transitionName="stage"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={500}>
+            {loadingIcon}
+        </CSSTransitionGroup>
+    );
+};
+
+const Rendering = (props) => {
+    let renderInfo;
+
+    if (props.visible) {
+        renderInfo = <RenderInfo onButtonClick={props.onButtonClick} />;
+    }
+
+    return (
+        <CSSTransitionGroup
+            component={FirstChild}
+            transitionName="stage"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={500}>
+            {renderInfo}
+        </CSSTransitionGroup>
+    );
+};
 
 Stage.contextTypes = {
     app: React.PropTypes.object

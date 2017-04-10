@@ -115,7 +115,7 @@ export default class AudioWaveform extends UIComponent {
             height = this.props.height + this.props.shadowHeight,
             classes = {
                 'waveform': true,
-                'display-none': !this.props.visible
+                'waveform-hidden': !this.props.visible
             };
 
         return (
