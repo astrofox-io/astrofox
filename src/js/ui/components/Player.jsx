@@ -104,10 +104,10 @@ export default class Player extends UIComponent {
     }
 
     onLoopButtonClick() {
-        let loop = !this.state.looping;
+        this.setState(prevState => {
+            this.app.player.setLoop(!prevState.looping);
 
-        this.setState({ looping: loop }, () => {
-            this.app.player.setLoop(loop);
+            return { looping: !prevState.looping };
         });
     }
 
@@ -116,15 +116,15 @@ export default class Player extends UIComponent {
     }
 
     onWaveformButtonClick() {
-        this.setState({ showWaveform: !this.state.showWaveform });
+        this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
     }
 
     onSpectrumButtonClick() {
-        this.setState({ showSpectrum: !this.state.showSpectrum });
+        this.setState(prevState => ({ showSpectrum: !prevState.showSpectrum }));
     }
 
     onOscButtonClick() {
-        this.setState({ showOsc: !this.state.showOsc });
+        this.setState(prevState => ({ showOsc: !prevState.showOsc }));
     }
 
     onVolumeChange(val) {

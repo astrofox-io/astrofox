@@ -208,11 +208,11 @@ export default class App extends UIComponent {
                 break;
 
             case 'view-control-dock':
-                this.setState({ showControlDock: !this.state.showControlDock });
+                this.setState(prevState => ({ showControlDock: !prevState.showControlDock }));
                 break;
 
             case 'view-player':
-                this.setState({ showPlayer: !this.state.showPlayer });
+                this.setState(prevState => ({ showPlayer: !prevState.showPlayer }));
                 break;
 
             case 'check-for-updates':

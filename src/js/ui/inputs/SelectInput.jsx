@@ -27,7 +27,7 @@ export default class SelectInput extends UIComponent {
         e.stopPropagation();
         e.preventDefault();
 
-        this.setState({ showItems: !this.state.showItems });
+        this.setState(prevState => ({ showItems: !prevState.showItems }));
     }
 
     onItemClick(item) {

@@ -32,7 +32,7 @@ export default class Spectrum extends UIComponent {
     }
 
     onClick() {
-        this.setState({ normalize: !this.state.normalize }, () => {
+        this.setState(prevState => ({ normalize: !prevState.normalize }), () => {
             this.parser.update(this.state);
         });
     }

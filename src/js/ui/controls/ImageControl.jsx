@@ -76,7 +76,7 @@ export default class ImageControl extends UIComponent {
     }
 
     onLinkClick() {
-        this.onChange.bind(this)('fixed', !this.state.fixed);
+        this.onChange('fixed', !this.state.fixed);
     }
 
     render() {
