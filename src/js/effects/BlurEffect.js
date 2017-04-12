@@ -4,6 +4,7 @@ import CircularBlurShader from '../shaders/CircularBlurShader';
 import ZoomBlurShader from '../shaders/ZoomBlurShader';
 import ShaderPass from '../graphics/ShaderPass';
 import GaussianBlurPass from '../graphics/GaussianBlurPass';
+import { val2pct } from '../util/math';
 
 const shaders = {
     Box: BoxBlurShader,
@@ -21,12 +22,15 @@ export default class BlurEffect extends Effect {
     }
 
     update(options) {
-        let type = this.options.type,
+        let { type}  = this.options,
             changed = super.update(options);
 
         if (changed) {
-            if (this.owner && options.type !== undefined && options.type !== type) {
+            if (options.type !== undefined && options.type !== type) {
                 this.setPass(this.getShaderPass(options.type));
+            }
+            if (options.x !== undefined || options.y !== undefined) {
+                this.updatePass();
             }
         }
 
@@ -34,7 +38,8 @@ export default class BlurEffect extends Effect {
     }
 
     updatePass() {
-        let { type, amount } = this.options;
+        let { type, amount, x, y } = this.options,
+            { width, height } = this.owner.getSize();
 
         switch (type) {
             case 'Box':
@@ -50,7 +55,13 @@ export default class BlurEffect extends Effect {
                 break;
 
             case 'Zoom':
-                this.pass.setUniforms({ amount: amount * ZOOM_BLUR_MAX });
+                this.pass.setUniforms({
+                    amount: amount * ZOOM_BLUR_MAX,
+                    center: [
+                        val2pct(x, -width/2, width/2),
+                        val2pct(y, -height/2, height/2)
+                    ]
+                });
                 break;
         }
     }
@@ -89,5 +100,7 @@ BlurEffect.className = 'BlurEffect';
 
 BlurEffect.defaults = {
     type: 'Gaussian',
-    amount: 0.1
+    amount: 0.1,
+    x: 0,
+    y: 0
 };

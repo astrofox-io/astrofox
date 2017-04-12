@@ -14,10 +14,12 @@ const types = [
 ];
 
 export default class BlurControl extends UIComponent {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
 
         this.state = this.props.display.options;
+
+        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -32,6 +34,51 @@ export default class BlurControl extends UIComponent {
     }
 
     render() {
+        let centerOptions,
+            state = this.state,
+            { width, height } = this.app.stage.getSize();
+
+        if (state.type === 'Zoom') {
+            centerOptions = [
+                <Row label="X" key="x">
+                    <NumberInput
+                        name="x"
+                        min={-width/2}
+                        max={width/2}
+                        value={state.x}
+                        onChange={this.onChange}
+                    />
+                    <div className="input flex">
+                        <RangeInput
+                            name="x"
+                            min={-width/2}
+                            max={width/2}
+                            value={state.x}
+                            onChange={this.onChange}
+                        />
+                    </div>
+                </Row>,
+                <Row label="Y" key="y">
+                    <NumberInput
+                        name="y"
+                        min={-height/2}
+                        max={height/2}
+                        value={state.y}
+                        onChange={this.onChange}
+                    />
+                    <div className="input flex">
+                        <RangeInput
+                            name="y"
+                            min={-height/2}
+                            max={height/2}
+                            value={state.y}
+                            onChange={this.onChange}
+                        />
+                    </div>
+                </Row>
+            ];
+        }
+
         return (
             <Control label="BLUR" className={this.props.className}>
                 <Row label="Type">
@@ -39,7 +86,7 @@ export default class BlurControl extends UIComponent {
                         name="type"
                         width={140}
                         items={types}
-                        value={this.state.type}
+                        value={state.type}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -47,7 +94,7 @@ export default class BlurControl extends UIComponent {
                     <NumberInput
                         name="amount"
                         width={40}
-                        value={this.state.amount}
+                        value={state.amount}
                         min={0}
                         max={1.0}
                         step={0.01}
@@ -59,12 +106,17 @@ export default class BlurControl extends UIComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.amount}
+                            value={state.amount}
                             onChange={this.onChange}
                         />
                     </div>
                 </Row>
+                {centerOptions}
             </Control>
         );
     }
 }
+
+BlurControl.contextTypes = {
+    app: React.PropTypes.object
+};

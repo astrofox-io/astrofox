@@ -42,6 +42,7 @@ export default class ShaderPass extends ComposerPass {
         Object.keys(props).forEach(prop => {
             if (uniforms.hasOwnProperty(prop)) {
                 let p = uniforms[prop].value;
+
                 if (p !== null && typeof p.set !== 'undefined') {
                     p.set.apply(p, props[prop]);
                 }

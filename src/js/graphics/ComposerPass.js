@@ -19,12 +19,8 @@ export default class ComposerPass extends Component {
     }
 
     setSize(width, height) {
-        if (this.uniforms) {
-            Object.keys(this.uniforms).forEach(key => {
-                if (key === 'resolution') {
-                    this.uniforms[key].value.set(width, height);
-                }
-            });
+        if (this.setUniforms) {
+            this.setUniforms({ resolution: [width, height] });
         }
     }
 
