@@ -24,23 +24,29 @@ debug@2.6.3, debug@^2.6.3:
   dependencies:
     ms "0.7.2"
 
-electron-builder-http@~16.6.0:
-  version "16.6.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-16.6.0.tgz#60676caf0f1d9daf385ce070b07eec49efb29f0f"
+electron-builder-http@~17.0.1:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-17.0.2.tgz#e2c8874d6e63dcf94b0bea403e21a843b4b55071"
   dependencies:
     debug "2.6.3"
     fs-extra-p "^4.1.0"
 
-electron-updater@^1.11.2:
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.11.2.tgz#87afc623bd2a7d4345e7cc2329937221a85e0132"
+electron-is-dev@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.1.2.tgz#8a1043e32b3a1da1c3f553dce28ce764246167e3"
+
+electron-updater@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.14.0.tgz#033b18847de12680467405ec0d64ec66c2553f7a"
   dependencies:
     bluebird-lst "^1.0.2"
-    electron-builder-http "~16.6.0"
+    electron-builder-http "~17.0.1"
+    electron-is-dev "^0.1.2"
     fs-extra-p "^4.1.0"
-    js-yaml "^3.8.2"
+    js-yaml "^3.8.3"
     semver "^5.3.0"
     source-map-support "^0.4.14"
+    xelement "^1.0.13"
 
 esprima@^3.1.1:
   version "3.1.3"
@@ -64,9 +70,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
-js-yaml@^3.8.2:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.8.2.tgz#02d3e2c0f6beab20248d412c352203827d786721"
+js-yaml@^3.8.3:
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.8.3.tgz#33a05ec481c850c8875929166fe1beb61c728766"
   dependencies:
     argparse "^1.0.7"
     esprima "^3.1.1"
@@ -80,6 +86,10 @@ jsonfile@^2.1.0:
 ms@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
+
+sax@^1.2.1:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.2.tgz#fd8631a23bc7826bef5d871bdb87378c95647828"
 
 semver@^5.3.0:
   version "5.3.0"
@@ -98,3 +108,9 @@ source-map@^0.5.6:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
+
+xelement@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/xelement/-/xelement-1.0.13.tgz#36b724d1e6489d6aae285b06995ae5e33cec10b7"
+  dependencies:
+    sax "^1.2.1"
