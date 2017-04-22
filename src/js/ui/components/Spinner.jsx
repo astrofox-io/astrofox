@@ -1,13 +1,14 @@
 import React from 'react';
+import classNames from 'classnames';
 
 const Spinner = (props) => {
     let style = {
-        width: props.size,
-        height: props.size
+        width: props.size + 'px',
+        height: props.size + 'px'
     };
 
     return (
-        <div className="spinner" style={style}>
+        <div className={classNames('spinner', props.className)} style={style}>
             <svg className="svg" viewBox="25 25 50 50">
                 <circle
                     className="circle"

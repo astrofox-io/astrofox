@@ -2,6 +2,7 @@ import React from 'react';
 
 import UIComponent from '../UIComponent';
 import Button from  '../components/Button';
+import Checkmark from '../components/Checkmark';
 import Spinner from '../components/Spinner';
 
 export default class AppUpdates extends UIComponent {
@@ -70,14 +71,14 @@ export default class AppUpdates extends UIComponent {
     }
 
     render() {
-        let spinner,
+        let icon,
             installButton,
             downloadButton,
             closeText = 'Close',
             { checking, installing, downloading, downloadComplete, hasUpdate } = this.appUpdater;
 
         if (checking || downloading || installing) {
-            spinner = <Spinner size={30} />;
+            icon = <Spinner className="icon" size={30} />;
         }
 
         if (downloadComplete && !installing) {
@@ -89,10 +90,14 @@ export default class AppUpdates extends UIComponent {
             downloadButton = <Button text="Download Now" onClick={this.downloadUpdate} />;
         }
 
+        if (!hasUpdate && !icon) {
+            icon = <Checkmark className="icon" size={30} />;
+        }
+
         return (
             <div className="updates">
                 <div className="message">
-                    {spinner}
+                    {icon}
                     {this.state.message}
                 </div>
                 <div className="buttons">

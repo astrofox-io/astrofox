@@ -1,3 +1,18 @@
+@keyframes spinner-dash {
+    0% {
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -124;
+    }
+}
+
 .spinner {
     position: relative;
     display: flex;
@@ -16,6 +31,6 @@
         stroke-linecap: round;
         stroke-dasharray: 1,200;
         stroke-dashoffset: 0;
-        animation: dash 1.5s ease-in-out infinite;
+        animation: spinner-dash 1.5s ease-in-out infinite;
     }
 }

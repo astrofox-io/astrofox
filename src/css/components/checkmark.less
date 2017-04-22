@@ -1,0 +1,42 @@
+@keyframes checkmark {
+    0% {
+        stroke-dashoffset: 50px
+    }
+    100% {
+        stroke-dashoffset: 0
+    }
+}
+
+@keyframes checkmark-circle {
+    0% {
+        stroke-dashoffset: 240px
+    }
+    100% {
+        stroke-dashoffset: 480px
+    }
+}
+
+.checkmark {
+    .svg {
+        display: inline-block;
+        transform-origin: center center;
+    }
+
+    .circle {
+        stroke: @color1;
+        stroke-width: 2;
+        fill: none;
+        stroke-dasharray: 240px, 240px;
+        stroke-dashoffset: 480px;
+        animation: checkmark-circle 0.6s ease-in-out backwards
+    }
+
+    .path {
+        stroke: @color1;
+        stroke-width: 2;
+        fill: none;
+        stroke-dasharray: 50px, 50px;
+        stroke-dashoffset: 0px;
+        animation: checkmark 0.25s ease-in-out 0.7s backwards
+    }
+}
