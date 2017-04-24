@@ -8,6 +8,8 @@ uniform int inverse;
 
 varying vec2 vUv;
 
+const vec3 vLuma = vec3(0.2126, 0.7152, 0.0722);
+
 // Color Dodge
 float blendColorDodge(float base, float blend) {
     return (blend==1.0)?blend:min(base/(1.0-blend),1.0);
@@ -295,13 +297,14 @@ vec3 blendColor(int mode, vec3 base, vec3 blend) {
         return blendDivide(base, blend);
     }
 
-    return vec3(1., 0., 1.);
+    return vec3(1.0, 0.0, 1.0);
 }
 
 void main() {
     vec4 base = texture2D(tBase, vUv);
     vec4 blend = texture2D(tBlend, vUv) * opacity;
-    float a = inverse == 1 ? 1.0 - blend.a : blend.a;
+    float luma = dot(vLuma, blend.rgb);
+    float a = inverse == 1 ? 1.0 - luma : luma;
 
     // Pre-multiplied alpha
     if (alpha == 1) {

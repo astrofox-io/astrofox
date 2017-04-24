@@ -18,17 +18,17 @@ bluebird@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
-debug@2.6.3, debug@^2.6.3:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.3.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
+debug@2.6.4, debug@^2.6.3:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.4.tgz#7586a9b3c39741c0282ae33445c4e8ac74734fe0"
   dependencies:
-    ms "0.7.2"
+    ms "0.7.3"
 
-electron-builder-http@~17.0.1:
-  version "17.0.2"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-17.0.2.tgz#e2c8874d6e63dcf94b0bea403e21a843b4b55071"
+electron-builder-http@~17.0.3:
+  version "17.0.3"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-17.0.3.tgz#fb350112ead7ebc9d744eda4134cc4492a9afd02"
   dependencies:
-    debug "2.6.3"
+    debug "2.6.4"
     fs-extra-p "^4.1.0"
 
 electron-is-dev@^0.1.2:
@@ -36,11 +36,11 @@ electron-is-dev@^0.1.2:
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.1.2.tgz#8a1043e32b3a1da1c3f553dce28ce764246167e3"
 
 electron-updater@^1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.14.0.tgz#033b18847de12680467405ec0d64ec66c2553f7a"
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.14.1.tgz#cdc45ca72b9b98ce96c480fd1185d0c6d726ce03"
   dependencies:
     bluebird-lst "^1.0.2"
-    electron-builder-http "~17.0.1"
+    electron-builder-http "~17.0.3"
     electron-is-dev "^0.1.2"
     fs-extra-p "^4.1.0"
     js-yaml "^3.8.3"
@@ -83,9 +83,9 @@ jsonfile@^2.1.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-ms@0.7.2:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
+ms@0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
 
 sax@^1.2.1:
   version "1.2.2"
