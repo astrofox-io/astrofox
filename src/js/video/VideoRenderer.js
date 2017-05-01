@@ -81,7 +81,7 @@ export default class VideoRenderer extends EventEmitter {
                 return this.mergeProcess.start(outputVideo, outputAudio, this.video);
             })
             .then(() => {
-                if (!__PROD__) {
+                if (process.env.NODE_ENV === 'production') {
                     removeFile(outputVideo);
                     removeFile(outputAudio);
                 }

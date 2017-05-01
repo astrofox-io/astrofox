@@ -9,7 +9,7 @@ const log = debug('main');
 const appUpdater = new AppUpdater();
 
 // Show environment
-log('NODE_ENV', __PROD__ ? 'production' : 'development');
+log('NODE_ENV', process.env.NODE_ENV);
 
 // Set global variables
 global['env'] = env;
@@ -45,7 +45,7 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 //app.commandLine.appendSwitch('num-raster-threads', 4);
 
 // Memory profiling
-if (!__PROD__) {
+if (process.env.NODE_ENV !== 'production') {
     app.commandLine.appendSwitch('enable-precise-memory-info');
 }
 

@@ -16,6 +16,6 @@ export function start() {
 
 export let env = {};
 
-if (!__PROD__) {
+if (process.env.NODE_ENV !== 'production') {
     env = Environment;
 }

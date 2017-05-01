@@ -2,16 +2,16 @@ const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 
-const PROD = process.env.NODE_ENV === 'production';
+const __PROD__ = process.env.NODE_ENV === 'production';
 
 const config = {
-    target: 'electron',
+    target: 'electron-main',
     node: {
         __dirname: false,
         __filename: false
     },
     entry: {
-        main: './src/js/main/main.js',
+        main: path.resolve(__dirname, 'src/js/main/main.js'),
     },
     output: {
         path: path.resolve(__dirname, 'app'),
@@ -35,7 +35,7 @@ const config = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            '__PROD__': PROD
+            '__PROD__': __PROD__
         })
     ],
     externals: [
@@ -45,7 +45,7 @@ const config = {
     ]
 };
 
-if (PROD) {
+if (__PROD__) {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             comments: false

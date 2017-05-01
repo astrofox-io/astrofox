@@ -1,6 +1,4 @@
 /* eslint-disable react/require-render-return */
-'use strict';
-
 import Component from '../core/Component';
 
 const MIN_RESIZE_WIDTH = 100;

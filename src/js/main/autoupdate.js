@@ -18,7 +18,7 @@ export default class AppUpdater {
 
         autoUpdater.autoDownload = false;
 
-        if (!__PROD__) {
+        if (process.env.NODE_ENV !== 'production') {
             let file = path.join(APP_PATH, `app-update-${platform}.yml`);
             if (fs.existsSync(file)) {
                 autoUpdater.updateConfigPath = file;

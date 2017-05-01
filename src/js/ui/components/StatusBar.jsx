@@ -29,7 +29,7 @@ export default class StatusBar extends UIComponent {
     render() {
         let memSize, electronVersion;
 
-        if (!__PROD__) {
+        if (process.env.NODE_ENV !== 'production') {
             memSize = formatSize(window.performance.memory.usedJSHeapSize, 2);
             electronVersion = process.versions.electron;
         }

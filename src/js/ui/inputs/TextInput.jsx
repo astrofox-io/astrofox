@@ -13,8 +13,6 @@ export default class TextInput extends UIComponent {
     }
 
     componentDidMount() {
-        this.setState({ value: this.props.value });
-
         if (this.props.autoSelect) {
             this.textInput.select();
         }

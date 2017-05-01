@@ -1,14 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const __PROD__ = process.env.NODE_ENV === 'production';
 const vendorIds = Object.keys(require('./package.json').dependencies);
-const PROD = process.env.NODE_ENV === 'production';
 
 const config = {
     target: 'electron-renderer',
-    devtool: PROD ? false : 'source-map',
+    devtool: __PROD__ ? false : 'source-map',
     entry: {
-        app: './src/js/index.js',
+        app: path.resolve(__dirname, 'src/js/index.js'),
         vendor: vendorIds
     },
     output: {
@@ -16,6 +16,9 @@ const config = {
         filename: 'app.js',
         library: 'Astrofox',
         libraryTarget: 'var'
+    },
+    resolve: {
+        extensions: ['.js', '.json', '.jsx']
     },
     module: {
         rules: [
@@ -33,14 +36,7 @@ const config = {
             }
         ]
     },
-    resolve: {
-        extensions: ['.js', '.json', '.jsx']
-    },
     plugins: [
-        new webpack.DefinePlugin({
-            '__PROD__': PROD,
-            'process.env.NODE_ENV': JSON.stringify(PROD ? 'production' : 'development')
-        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.js',
@@ -49,7 +45,12 @@ const config = {
     ]
 };
 
-if (PROD) {
+if (__PROD__) {
+    config.plugins.push(
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production')
+        })
+    );
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             comments: false,

@@ -1,5 +1,3 @@
-'use strict';
-
 import { val2pct } from '../util/math';
 
 export default class WaveParser {

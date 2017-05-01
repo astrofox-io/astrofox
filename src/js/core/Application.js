@@ -103,7 +103,7 @@ export default class Application extends EventEmitter {
         let menu = [];
 
         menuConfig.forEach(root => {
-            if (__PROD__) {
+            if (process.env.NODE_ENV !== 'production') {
                 if (root.visible !== false) {
                     menu.push(root);
                 }

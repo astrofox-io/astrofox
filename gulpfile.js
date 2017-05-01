@@ -1,5 +1,3 @@
-'use strict';
-
 const del = require('del');
 const gulp = require('gulp');
 const cleancss = require('gulp-clean-css');
@@ -70,6 +68,16 @@ function logWebpack(done, watch) {
             throw new gutil.PluginError('[webpack]', err);
         }
 
+        const info = stats.toJson();
+
+        if (stats.hasErrors()) {
+            gutil.log(info.errors);
+        }
+
+        if (stats.hasWarnings()) {
+            gutil.log(info.warnings);
+        }
+
         gutil.log(stats.toString({
             chunks: false,
             colors: true
@@ -90,13 +98,15 @@ function buildJs(done) {
 
 // Builds application bundles and watches for changes
 function buildJsWatch(done) {
-    let watch = false;
-
-    return webpack(appConfig)
-        .watch({
+    let watch = false,
+        options = {
             aggregateTimeout: 300,
             ignored: /node_modules/
-        },
+        };
+
+    return webpack(appConfig)
+        .watch(
+            options,
             logWebpack(done, watch)
         );
 }
@@ -203,7 +213,7 @@ gulp.task('build-prod', ['build-all'], () => {
     del(['./app/**/*.map']);
 });
 
-gulp.task('watch', ['build-shaders', 'build-css', 'build-main', 'build-js-watch'], () => {
+gulp.task('watch', ['build-css', 'build-main', 'build-js-watch'], () => {
     // Watch for changes
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/js/main/**/*.js', ['build-main']);

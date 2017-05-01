@@ -1,6 +1,4 @@
 /* eslint-disable react/require-render-return */
-'use strict';
-
 import Component from '../core/Component';
 
 class CanvasText extends Component {

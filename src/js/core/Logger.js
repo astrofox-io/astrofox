@@ -6,7 +6,7 @@ export default class Logger {
     }
     
     output(method, args) {
-        if (!__PROD__) {
+        if (process.env.NODE_ENV !== 'production') {
             let label = ['%c%s%c', 'color:indigo;font-weight:bold;', this.name, 'color:black'];
 
             // Convert to array

@@ -18,9 +18,15 @@ bluebird@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
-debug@2.6.4, debug@^2.6.3:
+debug@2.6.4:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.4.tgz#7586a9b3c39741c0282ae33445c4e8ac74734fe0"
+  dependencies:
+    ms "0.7.3"
+
+debug@^2.6.6:
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.6.tgz#a9fa6fbe9ca43cf1e79f73b75c0189cbb7d6db5a"
   dependencies:
     ms "0.7.3"
 
@@ -36,8 +42,8 @@ electron-is-dev@^0.1.2:
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.1.2.tgz#8a1043e32b3a1da1c3f553dce28ce764246167e3"
 
 electron-updater@^1.14.0:
-  version "1.14.1"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.14.1.tgz#cdc45ca72b9b98ce96c480fd1185d0c6d726ce03"
+  version "1.14.2"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.14.2.tgz#49bd145a5a71f0a44b2e8962e3ea64e26d69e57d"
   dependencies:
     bluebird-lst "^1.0.2"
     electron-builder-http "~17.0.3"

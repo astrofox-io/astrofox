@@ -26,12 +26,12 @@ export function createWindow() {
             textAreasAreResizable: false,
             experimentalCanvasFeatures: true,
             backgroundThrottling: false,
-            devTools: !__PROD__
+            devTools: process.env.NODE_ENV !== 'production'
         }
     });
 
     // Production settings
-    if (__PROD__) {
+    if (process.env.NODE_ENV === 'production') {
         // Auto close devtools if opened
         mainWindow.webContents.on('devtools-opened', () => {
             mainWindow.webContents.closeDevTools();
@@ -72,7 +72,7 @@ export function createWindow() {
 export function showWindow() {
     mainWindow.show();
 
-    if (!__PROD__) {
+    if (process.env.NODE_ENV !== 'production') {
         mainWindow.webContents.openDevTools();
     }
 }
