@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import UIComponent from '../UIComponent';
@@ -119,5 +120,5 @@ const Rendering = (props) => {
 };
 
 Stage.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

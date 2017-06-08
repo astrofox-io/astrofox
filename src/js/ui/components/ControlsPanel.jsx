@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
@@ -95,5 +96,5 @@ export default class ControlsPanel extends UIComponent {
 }
 
 ControlsPanel.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

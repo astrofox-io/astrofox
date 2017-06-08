@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import ColorInput from '../inputs/ColorInput';
@@ -183,5 +184,5 @@ export default class TextControl extends UIComponent {
 }
 
 TextControl.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

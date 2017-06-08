@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import { APP_VERSION } from '../../core/Environment';
@@ -88,5 +89,5 @@ class Zoom extends UIComponent {
 }
 
 Zoom.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
@@ -278,5 +279,5 @@ export default class WaveSpectrumControl extends UIComponent {
 }
 
 WaveSpectrumControl.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

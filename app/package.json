@@ -8,7 +8,7 @@
   "homepage": "http://astrofox.io",
   "private": true,
   "dependencies": {
-    "debug": "^2.6.6",
-    "electron-updater": "^1.14.0"
+    "debug": "^2.6.8",
+    "electron-updater": "^1.16.0"
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import Button from  '../components/Button';
@@ -111,5 +112,5 @@ export default class AppUpdates extends UIComponent {
 }
 
 AppUpdates.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

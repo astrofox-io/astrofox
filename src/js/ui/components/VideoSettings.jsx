@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import Window from '../../core/Window';
@@ -214,5 +215,5 @@ export default class VideoSettings extends UIComponent {
 }
 
 VideoSettings.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

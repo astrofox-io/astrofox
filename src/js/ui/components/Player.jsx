@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
@@ -213,7 +214,7 @@ Player.defaultProps = {
 };
 
 Player.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };
 
 class VolumeControl extends UIComponent {

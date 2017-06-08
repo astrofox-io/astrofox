@@ -16,7 +16,7 @@ const webpack = require('webpack');
 /*** Configuration ***/
 
 const appConfig = require('./webpack.config');
-const mainConfig = require('./webpack.main.config');
+const mainConfig = require('./webpack.config.main');
 const fontConfig = require('./src/config/fonts.json');
 
 const config = {

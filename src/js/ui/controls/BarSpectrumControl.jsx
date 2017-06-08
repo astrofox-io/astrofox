@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import NumberInput from '../inputs/NumberInput';
@@ -319,5 +320,5 @@ export default class BarSpectrumControl extends UIComponent {
 }
 
 BarSpectrumControl.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

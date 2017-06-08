@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import Button from './Button';
@@ -107,5 +108,5 @@ export default class RenderInfo extends UIComponent {
 }
 
 RenderInfo.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

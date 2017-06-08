@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
@@ -239,5 +240,5 @@ export default class ImageControl extends UIComponent {
 }
 
 ImageControl.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

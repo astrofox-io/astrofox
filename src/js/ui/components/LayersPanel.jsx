@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
 import Display from '../../displays/Display';
@@ -229,5 +230,5 @@ export default class LayersPanel extends UIComponent {
 }
 
 LayersPanel.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };

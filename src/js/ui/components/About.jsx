@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import { APP_NAME, APP_VERSION } from '../../core/Environment';
 import Button from './Button';
@@ -29,7 +30,7 @@ const About = (props, context) => {
 };
 
 About.contextTypes = {
-    app: React.PropTypes.object
+    app: propTypes.object
 };
 
 export default About;
