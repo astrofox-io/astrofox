@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Button from './Button';
+import Button from '../interface/Button';
 
 const ModalWindow = (props) => {
     let title, buttons, closeButton;

@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
-import Button from '../components/Button';
+import Button from '../interface/Button';
 import ColorInput from '../inputs/ColorInput';
 import NumberInput from '../inputs/NumberInput';
 import { SettingsPanel, Settings, Row } from '../layout/SettingsPanel';

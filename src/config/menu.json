@@ -90,7 +90,7 @@
   },
   {
     "label": "Developer",
-    "visible": false,
+    "hidden": true,
     "submenu": [
       {
         "label": "Reload",

@@ -1,29 +1,29 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import Window from '../../core/Window';
-import { events } from '../../core/Global';
+import UIComponent from './UIComponent';
+import Window from '../core/Window';
+import { events } from '../core/Global';
 
-import About from './About';
-import AppSettings from './AppSettings';
-import AppUpdates from './AppUpdates';
-import CanvasSettings from './CanvasSettings';
-import ControlDock from './ControlDock';
-import ControlPicker from './ControlPicker';
-import Dialog from './Dialog';
-import MenuBar from './MenuBar';
-import ModalWindow from './ModalWindow';
-import Overlay from './Overlay';
-import Player from './Player';
-import Preload from './Preload';
-import StatusBar from './StatusBar';
-import Stage from './Stage';
-import TitleBar from './TitleBar';
-import VideoSettings from './VideoSettings';
+import About from './window/About';
+import AppSettings from './settings/AppSettings';
+import AppUpdates from './window/AppUpdates';
+import CanvasSettings from './settings/CanvasSettings';
+import ControlDock from './panels/ControlDock';
+import ControlPicker from './window/ControlPicker';
+import Dialog from './window/Dialog';
+import MenuBar from './nav/MenuBar';
+import ModalWindow from './window/ModalWindow';
+import Overlay from './window/Overlay';
+import Player from './audio/Player';
+import StatusBar from './window/StatusBar';
+import Stage from './stage/Stage';
+import TitleBar from './window/TitleBar';
+import VideoSettings from './settings/VideoSettings';
 
-import menuConfig from '../../../config/menu';
-import audioExtensions from '../../../config/audioExtensions';
+import menuConfig from '../../config/menu';
+import audioExtensions from '../../config/audioExtensions';
+import fontOptions from '../../config/fonts.json';
 
 export default class App extends UIComponent {
     constructor(props) {
@@ -401,4 +401,16 @@ export default class App extends UIComponent {
 
 App.childContextTypes = {
     app: propTypes.object
+};
+
+const Preload = () => {
+    let fonts = fontOptions.map((item, index) => {
+        return <div key={index} style={{fontFamily: item.name}}>{item.name}</div>;
+    });
+
+    return (
+        <div className="hidden">
+            {fonts}
+        </div>
+    );
 };

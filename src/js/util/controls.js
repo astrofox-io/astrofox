@@ -2,8 +2,8 @@ import * as displayLibrary from '../lib/displays';
 import * as effectsLibrary from '../lib/effects';
 import * as controlLibrary from '../lib/controls';
 
-import SceneControl from '../ui/controls/SceneControl';
-import EmptyControl from '../ui/controls/EmptyControl';
+import SceneControl from '../components/controls/SceneControl';
+import EmptyControl from '../components/controls/EmptyControl';
 
 const displays = Object.assign({}, displayLibrary, effectsLibrary);
 

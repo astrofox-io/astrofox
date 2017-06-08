@@ -4,7 +4,7 @@ import propTypes from 'prop-types';
 import UIComponent from '../UIComponent';
 import Window from '../../core/Window';
 
-import Button from '../components/Button';
+import Button from '../interface/Button';
 import ButtonInput from '../inputs/ButtonInput';
 import NumberInput from '../inputs/NumberInput';
 import TimeInput from '../inputs/TimeInput';

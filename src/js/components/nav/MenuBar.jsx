@@ -58,7 +58,7 @@ export default class MenuBar extends UIComponent {
 
     render() {
         let items = this.state.items.map((item, index) => {
-            if (item.visible !== false) {
+            if (item.hidden !== true) {
                 return (
                     <MenuBarItem
                         key={index}

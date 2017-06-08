@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 import { APP_NAME, APP_VERSION } from '../../core/Environment';
-import Button from './Button';
+import Button from '../interface/Button';
 
 const About = (props, context) => {
     let info = context.app.license.info(),

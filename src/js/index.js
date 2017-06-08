@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import Application from './core/Application';
 import * as Environment from './core/Environment';
-import App from './ui/components/App';
+import App from './components/App';
 
 const app = new Application();
 

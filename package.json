@@ -44,7 +44,7 @@
       "oneClick": true
     },
     "squirrelWindows": {
-      "iconUrl": "http://astrofox.io/icon.ico"
+      "iconUrl": "https://astrofox.io/icon.ico"
     },
     "publish": {
       "provider": "generic",

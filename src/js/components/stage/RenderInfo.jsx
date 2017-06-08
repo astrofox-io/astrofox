@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 import UIComponent from '../UIComponent';
-import Button from './Button';
+import Button from '../interface/Button';
 import { formatTime } from '../../util/format';
 
 export default class RenderInfo extends UIComponent {
