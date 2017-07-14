@@ -91,9 +91,9 @@ export default class Stage extends Display {
     shiftScene(scene, i) {
         let index = this.scenes.indexOf(scene);
 
-        this.scenes.swapNodes(index, index + i);
+        this.changed = this.scenes.swapNodes(index, index + i);
 
-        this.changed = true;
+        return this.changed;
     }
 
     getScenes() {
@@ -106,6 +106,24 @@ export default class Stage extends Display {
         });
 
         this.changed = true;
+    }
+
+    getSortedDisplays() {
+        let displays = [];
+
+        this.getScenes().reverse().forEach(scene => {
+            displays.push(scene);
+
+            scene.getEffects().reverse().forEach(effect => {
+                displays.push(effect);
+            });
+
+            scene.getDisplays().reverse().forEach(display => {
+                displays.push(display);
+            });
+        });
+
+        return displays;
     }
 
     hasScenes() {

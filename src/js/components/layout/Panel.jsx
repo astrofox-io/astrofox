@@ -3,7 +3,6 @@ import classNames from 'classnames';
 
 import UIPureComponent from '../UIPureComponent';
 import { events } from '../../core/Global';
-
 import Splitter from './Splitter';
 
 export default class Panel extends UIPureComponent {
@@ -77,24 +76,24 @@ export default class Panel extends UIPureComponent {
 
     render() {
         let splitter,
-            props = this.props,
-            state = this.state,
-            style = (state.height) ? { height: state.height } : null,
-            classes = classNames({
+            { height } = this.state,
+            { title, children, direction, stretch, resizable, className } = this.props,
+            style = (height) ? { height: height } : null,
+            classes = {
                 'panel': true,
-                'vertical': (props.direction === 'vertical'),
-                'horizontal': (props.direction !== 'vertical'),
-                'stretch': props.stretch
-            });
+                'vertical': (direction === 'vertical'),
+                'horizontal': (direction !== 'vertical'),
+                'stretch': stretch
+            };
 
-        if (props.resizable) {
-            splitter = <Splitter type="horizontal" onDragStart={this.onStartDrag}/>;
+        if (resizable) {
+            splitter = <Splitter type="horizontal" onDragStart={this.onStartDrag} />;
         }
 
         return (
-            <div className={classes} style={style}>
-                <div className="title">{this.props.title}</div>
-                {this.props.children}
+            <div className={classNames(classes, className)} style={style}>
+                <div className="title">{title}</div>
+                {children}
                 {splitter}
             </div>
         );
@@ -105,8 +104,8 @@ Panel.defaultProps = {
     direction: 'vertical',
     stretch: false,
     visible: true,
-    height: 100,
-    width: 100,
+    height: null,
+    width: null,
     minHeight: 0,
     minWidth: 0,
     onDragStart: null,

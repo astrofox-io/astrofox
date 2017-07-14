@@ -167,11 +167,13 @@ export default class Scene extends Display {
 
         index = nodes.indexOf(obj);
 
-        if (nodes.swapNodes(index, index + i)) {
+        this.changed = nodes.swapNodes(index, index + i);
+
+        if (this.changed) {
             this.updatePasses();
         }
 
-        this.changed = true;
+        return this.changed;
     }
 
     updatePasses() {

@@ -15,32 +15,41 @@ export default class LayersPanel extends UIComponent {
         super(props);
 
         this.state = {
-            activeIndex: 0,
-            layers: []
+            displays: [],
+            activeIndex: 0
         };
 
         this.app = context.app;
     }
 
-    componentWillMount() {
-        this.updateLayers();
+    componentDidMount() {
+        events.on('project-loaded', this.onProjectLoaded, this);
+
+        this.updateState();
+    }
+
+    componentWillUnmount() {
+        events.off('project-loaded', this.onProjectLoaded, this);
+    }
+
+    onProjectLoaded() {
+        this.updateState(0);
     }
 
     onLayerClick(index) {
-        this.setActiveIndex(index);
+        this.setActiveLayer(index);
     }
 
     onLayerUpdate(index, name, val) {
-        let layers = this.state.layers,
-            layer = layers[index],
-            obj = {};
+        let { displays } = this.state,
+            display = displays[index],
+            obj = { [name]: val };
 
-        obj[name] = val;
-        layer.update(obj);
+        display.update(obj);
 
-        this.setState({ layers: layers });
+        this.setState({ displays: displays.slice(0) });
 
-        this.props.onLayerChanged(obj);
+        this.props.onLayerUpdate(display);
     }
 
     onAddSceneClick() {
@@ -48,18 +57,16 @@ export default class LayersPanel extends UIComponent {
 
         this.app.stage.addScene(scene);
 
-        this.updateLayers(() => {
-            this.setActiveLayer(scene);
-
-            this.props.onLayerAdded(scene);
-        });
+        this.updateState(0);
     }
 
     onAddDisplayClick() {
         let scene = this.getActiveScene();
 
         if (scene) {
-            events.emit('pick-control', 'display');
+            events.emit('pick-control', 'display', (display) => {
+                this.addLayer(display);
+            });
         }
     }
 
@@ -67,32 +74,31 @@ export default class LayersPanel extends UIComponent {
         let scene = this.getActiveScene();
 
         if (scene) {
-            events.emit('pick-control', 'effect');
+            events.emit('pick-control', 'effect', (display) => {
+                this.addLayer(display);
+            });
         }
     }
 
     onRemoveClick() {
-        let state = this.state,
-            index = this.state.activeIndex,
-            layers = state.layers,
-            layer = layers[index],
-            last = layers.length - 1;
+        let { displays, activeIndex } = this.state,
+            display = displays[activeIndex],
+            last = displays.length - 1;
 
-        if (this.app.stage.hasScenes() && layer) {
-            if (layer instanceof Scene) {
-                layer.owner.removeScene(layer);
+        if (this.app.stage.hasScenes() && display) {
+            if (display instanceof Scene) {
+                display.owner.removeScene(display);
             }
             else {
-                layer.owner.removeElement(layer);
+                display.owner.removeElement(display);
             }
 
-            this.updateLayers(() => {
-                if (index === last) {
-                    this.setActiveIndex(last - 1);
-                }
-            });
-
-            this.props.onLayerRemoved();
+            if (activeIndex === last) {
+                this.updateState(last - 1);
+            }
+            else {
+                this.updateState();
+            }
         }
     }
 
@@ -105,15 +111,15 @@ export default class LayersPanel extends UIComponent {
     }
 
     getActiveLayer() {
-        let state = this.state;
+        let { displays, activeIndex } = this.state;
 
-        return state.layers[state.activeIndex];
+        return displays[activeIndex];
     }
 
     getActiveScene() {
         let layer = this.getActiveLayer();
 
-        return (layer && this.state.activeIndex >= 0) ?
+        return layer ?
             (layer instanceof Scene ? layer : layer.owner) :
             null;
     }
@@ -121,95 +127,104 @@ export default class LayersPanel extends UIComponent {
     setActiveLayer(obj) {
         if (typeof obj === 'undefined') return;
 
-        let index = (typeof obj === 'number') ? obj : this.state.layers.indexOf(obj);
+        let index = (typeof obj === 'number') ? obj : this.state.displays.indexOf(obj);
 
         this.setActiveIndex(index);
     }
 
     setActiveIndex(index) {
-        this.setState({ activeIndex: index }, () => {
-            this.props.onLayerSelected(this.getActiveLayer(), index);
-        });
+        if (index !== this.state.activeIndex) {
+            this.setState({ activeIndex: index });
+        }
+
+        this.props.onLayerSelected(index);
     }
 
-    updateLayers(callback) {
-        let layers = [];
+    addLayer(display) {
+        let scene = this.getActiveScene();
 
-        this.app.stage.getScenes().reverse().forEach(scene => {
-            layers.push(scene);
+        if (scene) {
+            scene.addElement(display);
+        }
 
-            scene.getEffects().reverse().forEach(effect => {
-                layers.push(effect);
-            });
+        this.setActiveLayer(display);
 
-            scene.getDisplays().reverse().forEach(display => {
-                layers.push(display);
-            });
-        });
-
-        this.setState({ layers: layers }, callback);
+        this.updateState(display);
     }
 
     moveLayer(direction) {
-        let index, layer,
-            props = this.props,
+        let layer,
             scene = this.getActiveScene();
 
         if (scene) {
             layer = this.getActiveLayer();
 
             if (layer instanceof Scene) {
-                layer.owner.shiftScene(layer, direction);
+                if (layer.owner.shiftScene(layer, direction)) {
+                    this.updateState(layer);
+                }
             }
             else {
-                layer.owner.shiftElement(layer, direction);
+                if (layer.owner.shiftElement(layer, direction)) {
+                    this.updateState(layer);
+                }
             }
-
-            this.updateLayers(() => {
-                index = this.state.layers.indexOf(layer);
-
-                this.setActiveIndex(index);
-
-                props.onLayerMoved(this.getActiveLayer());
-            });
         }
     }
 
-    render() {
-        let layers,
-            state = this.state,
-            disabled = !this.app.stage.hasScenes();
+    updateState(index) {
+        this.setState(prevState => {
+            let displays = this.app.stage.getSortedDisplays(),
+                activeIndex = index === undefined ?
+                    prevState.activeIndex :
+                    typeof index === 'object' ?
+                        displays.indexOf(index) :
+                        index;
 
-        layers = state.layers.map((layer, index) => {
+            const state = { displays, activeIndex };
+
+            this.props.onChange(state);
+
+            return state;
+        });
+    }
+
+    getLayers() {
+        return this.state.displays.map((display, index) => {
             let icon;
 
-            if (layer instanceof Scene) {
+            if (display instanceof Scene) {
                 icon = 'icon-picture';
             }
-            else if (layer instanceof CanvasDisplay) {
+            else if (display instanceof CanvasDisplay) {
                 icon = 'icon-document-landscape';
             }
-            else if (layer instanceof Effect) {
+            else if (display instanceof Effect) {
                 icon = 'icon-light-up';
             }
-            else if (layer instanceof Display) {
+            else if (display instanceof Display) {
                 icon = 'icon-cube';
             }
 
             return (
                 <Layer
-                    key={layer.id}
-                    name={layer.options.displayName}
+                    key={display.id}
+                    name={display.options.displayName}
                     index={index}
                     icon={icon}
-                    control={!(layer instanceof Scene)}
-                    enabled={layer.options.enabled}
-                    active={index === state.activeIndex}
+                    control={!(display instanceof Scene)}
+                    enabled={display.options.enabled}
+                    active={index === this.state.activeIndex}
                     onLayerClick={this.onLayerClick}
                     onLayerUpdate={this.onLayerUpdate}
                 />
             );
         });
+    }
+
+    render() {
+        let layers = this.getLayers(),
+            disabled = !this.app.stage.hasScenes();
 
         return (
             <div className="layers-panel">

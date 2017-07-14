@@ -4,7 +4,6 @@ import propTypes from 'prop-types';
 import UIComponent from './UIComponent';
 import Window from '../core/Window';
 import { events } from '../core/Global';
-
 import About from './window/About';
 import AppSettings from './settings/AppSettings';
 import AppUpdates from './window/AppUpdates';
@@ -16,6 +15,7 @@ import MenuBar from './nav/MenuBar';
 import ModalWindow from './window/ModalWindow';
 import Overlay from './window/Overlay';
 import Player from './audio/Player';
+import Reactor from './audio/Reactor';
 import StatusBar from './window/StatusBar';
 import Stage from './stage/Stage';
 import TitleBar from './window/TitleBar';
@@ -33,7 +33,8 @@ export default class App extends UIComponent {
             statusBarText: '',
             modals: [],
             showControlDock: true,
-            showPlayer: true
+            showPlayer: true,
+            showReactor: false
         };
         
         this.app = props.app;
@@ -60,7 +61,7 @@ export default class App extends UIComponent {
             });
         });
 
-        events.on('pick-control', type => {
+        events.on('pick-control', (type, callback) => {
             const types = ['display', 'effect'];
 
             this.showModal(
@@ -68,6 +69,7 @@ export default class App extends UIComponent {
                     width={720}
                     height={300}
                     activeIndex={types.indexOf(type)}
+                    onControlPicked={callback}
                     onClose={this.hideModal}
                 />,
                 { title: 'ADD CONTROL', buttons: ['Close'] }
@@ -390,6 +392,9 @@ export default class App extends UIComponent {
                         visible={state.showControlDock}
                     />
                 </div>
+                <Reactor
+                    visible={state.showReactor}
+                />
                 <StatusBar text={state.statusBarText} />
                 <Overlay>
                     {state.modals}

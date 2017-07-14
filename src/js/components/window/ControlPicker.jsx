@@ -1,7 +1,6 @@
 import React from 'react';
 
 import UIComponent from '../UIComponent';
-import { events } from '../../core/Global';
 import { TabPanel, Tab } from '../layout/TabPanel';
 import * as displayLibrary from '../../lib/displays';
 import * as effectsLibrary from '../../lib/effects';
@@ -13,7 +12,9 @@ export default class ControlPicker extends UIComponent {
     }
 
     onClick(item) {
-        events.emit('control-picked', item);
+        if (this.props.onControlPicked) {
+            this.props.onControlPicked(new item());
+        }
 
         if (this.props.onClose) {
             this.props.onClose();

@@ -62,4 +62,12 @@ export default class NodeCollection {
     count() {
         return this.nodes.size;
     }
+
+    toArray() {
+        return this.nodes.toArray();
+    }
+
+    map(f) {
+        return this.nodes.map(f);
+    }
 }

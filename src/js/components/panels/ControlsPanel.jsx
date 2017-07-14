@@ -1,75 +1,53 @@
 import React from 'react';
-import propTypes from 'prop-types';
 import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import { events } from '../../core/Global';
 import { getControlComponent } from '../../util/controls';
 
 export default class ControlsPanel extends UIComponent {
-    constructor(props, context) {
+    constructor(props) {
         super(props);
-        
+
         this.state = {
-            controls: [],
+            displays: [],
             activeIndex: 0
         };
 
         this.nodes = {};
         this.controls = null;
-
-        this.app = context.app;
     }
 
-    componentWillMount() {
-        this.updateControls();
-    }
-
-    componentDidMount() {
-        events.on('stage-resize', this.updateControls, this);
-    }
-
-    updateControls(callback) {
-        let controls = [];
-
-        this.app.stage.getScenes().reverse().forEach(scene => {
-            controls.push(scene);
-            scene.getEffects().reverse().forEach(effect => {
-                controls.push(effect);
-            });
-            scene.getDisplays().reverse().forEach(display => {
-                controls.push(display);
-            });
-        });
-
-        this.setState({ controls: controls }, callback);
-    }
-
-    updateControl(layer) {
-        let id = layer.id,
-            control = this.nodes[id];
+    updateControl(display) {
+        let control = this.controls[display.id];
 
         if (control) {
-            control.setState(layer.options);
+            control.setState(display.options);
         }
     }
 
-    focusControl(layer, index) {
-        let id = layer.id,
-            node = this.nodes[id];
+    focusControl(index) {
+        let { displays } = this.state,
+            display = displays[index];
 
-        if (node) {
-            this.controls.scrollTop = node.offsetTop;
-            this.setState({ activeIndex: index });
+        if (display) {
+            let node = this.nodes[display.id];
+
+            if (node) {
+                this.controls.scrollTop = node.offsetTop;
+
+                this.setState({ activeIndex: index });
+            }
         }
     }
 
-    render() {
-        let controls = this.state.controls.map((display, index, arr) => {
+    getControls() {
+        let { displays, activeIndex } = this.state;
+
+        return displays.map((display, index, arr) => {
             let id = display.id,
                 Component = getControlComponent(display),
                 classes = {
-                    'control-active': index === this.state.activeIndex,
+                    'control-active': index === activeIndex,
                     'control-last': index === arr.length - 1
                 };
 
@@ -84,6 +62,14 @@ export default class ControlsPanel extends UIComponent {
                 </div>
             );
         });
+    }
+
+    updateState(state) {
+        this.setState(state);
+    }
+
+    render() {
+        let controls = this.getControls();
 
         return (
             <div className="controls-panel" ref={el => this.controls = el}>
@@ -94,7 +80,3 @@ export default class ControlsPanel extends UIComponent {
         );
     }
 }
-
-ControlsPanel.contextTypes = {
-    app: propTypes.object
-};

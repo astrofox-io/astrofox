@@ -80,7 +80,8 @@ function logWebpack(done, watch) {
 
         gutil.log(stats.toString({
             chunks: false,
-            colors: true
+            colors: true,
+            modules: false
         }));
 
         if (done && !watch) {

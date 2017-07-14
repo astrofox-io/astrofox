@@ -1,9 +1,11 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
-import Window from '../../core/Window';
+import Panel from '../layout/Panel';
 import { events } from '../../core/Global';
+import Spectrum from '../audio/Spectrum';
 
 export default class Reactor extends UIComponent {
     constructor(props, context) {
@@ -13,10 +15,17 @@ export default class Reactor extends UIComponent {
     }
 
     render() {
+        let classes = {
+            'reactor': true,
+            'display-none': false //!this.props.visible
+        };
+
         return (
-            <div className="reactor">
-                REACTOR
-            </div>
+            <Panel title="REACTOR" height="auto">
+                <div className={classNames(classes)}>
+                    REACTOR
+                </div>
+            </Panel>
         );
     }
 }
