@@ -2,8 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 
 export const Control = (props) => {
+    const classes = {
+        'control': true,
+        'control-active': props.active
+    };
+
     return (
-        <div className={classNames('control', props.className)}>
+        <div className={classNames(classes, props.className)}>
             <div className="header">
                 <span className="label">{props.label}</span>
             </div>

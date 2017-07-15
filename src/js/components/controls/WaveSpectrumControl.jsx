@@ -1,7 +1,6 @@
 import React from 'react';
-import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ColorInput from '../inputs/ColorInput';
 import ColorRangeInput from '../inputs/ColorRangeInput';
@@ -9,13 +8,11 @@ import RangeInput from '../inputs/RangeInput';
 import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
-export default class WaveSpectrumControl extends UIComponent {
-    constructor(props, context) {
+export default class WaveSpectrumControl extends UIPureComponent {
+    constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-
-        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -30,11 +27,11 @@ export default class WaveSpectrumControl extends UIComponent {
     }
 
     render() {
-        const { width, height } = this.app.stage.getSize(),
+        const { active, stageWidth, stageHeight } = this.props,
             state = this.state;
 
         return (
-            <Control label="WAVE SPECTRUM" className={this.props.className}>
+            <Control label="WAVE SPECTRUM" active={active}>
                 <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"
@@ -127,14 +124,14 @@ export default class WaveSpectrumControl extends UIComponent {
                         width={40}
                         value={state.width}
                         min={0}
-                        max={width}
+                        max={stageWidth}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="width"
                             min={0}
-                            max={width}
+                            max={stageWidth}
                             value={state.width}
                             onChange={this.onChange}
                         />
@@ -145,7 +142,7 @@ export default class WaveSpectrumControl extends UIComponent {
                         name="height"
                         width={40}
                         min={0}
-                        max={width}
+                        max={stageWidth}
                         value={state.height}
                         onChange={this.onChange}
                     />
@@ -153,7 +150,7 @@ export default class WaveSpectrumControl extends UIComponent {
                         <RangeInput
                             name="height"
                             min={0}
-                            max={width}
+                            max={stageWidth}
                             value={state.height}
                             onChange={this.onChange}
                         />
@@ -199,16 +196,16 @@ export default class WaveSpectrumControl extends UIComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-width}
-                        max={width}
+                        min={-stageWidth}
+                        max={stageWidth}
                         value={state.x}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-width}
-                            max={width}
+                            min={-stageWidth}
+                            max={stageWidth}
                             value={state.x}
                             onChange={this.onChange}
                         />
@@ -218,16 +215,16 @@ export default class WaveSpectrumControl extends UIComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-height}
-                        max={height}
+                        min={-stageHeight}
+                        max={stageHeight}
                         value={state.y}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-height}
-                            max={height}
+                            min={-stageHeight}
+                            max={stageHeight}
                             value={state.y}
                             onChange={this.onChange}
                         />
@@ -277,7 +274,3 @@ export default class WaveSpectrumControl extends UIComponent {
         );
     }
 }
-
-WaveSpectrumControl.contextTypes = {
-    app: propTypes.object
-};

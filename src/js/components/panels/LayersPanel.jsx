@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import Display from '../../displays/Display';
 import CanvasDisplay from '../../displays/CanvasDisplay';
 import Scene from '../../displays/Scene';
@@ -10,7 +10,7 @@ import { events } from '../../core/Global';
 import Layer from './Layer';
 import ButtonInput from '../inputs/ButtonInput';
 
-export default class LayersPanel extends UIComponent {
+export default class LayersPanel extends UIPureComponent {
     constructor(props, context) {
         super(props);
 

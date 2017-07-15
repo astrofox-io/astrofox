@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import ColorInput from '../inputs/ColorInput';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
@@ -34,7 +34,11 @@ const shading = [
     'Flat'
 ];
 
-export default class GeometryControl extends UIComponent {
+const MAX_X_RANGE = 500;
+const MAX_Y_RANGE = 500;
+const MAX_Z_RANGE = 1000;
+
+export default class GeometryControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -53,11 +57,11 @@ export default class GeometryControl extends UIComponent {
     }
 
     render() {
-        let state = this.state,
-            maxVal = 500;
+        const { active } = this.props,
+            state = this.state;
 
         return (
-            <Control label="3D GEOMETRY" className={this.props.className}>
+            <Control label="3D GEOMETRY" active={active}>
                 <Row label="Shape">
                     <SelectInput
                         name="shape"
@@ -117,16 +121,16 @@ export default class GeometryControl extends UIComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-maxVal}
-                        max={maxVal}
+                        min={-MAX_X_RANGE}
+                        max={MAX_X_RANGE}
                         value={state.x}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-maxVal}
-                            max={maxVal}
+                            min={-MAX_X_RANGE}
+                            max={MAX_X_RANGE}
                             value={state.x}
                             onChange={this.onChange}
                         />
@@ -136,16 +140,16 @@ export default class GeometryControl extends UIComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-maxVal}
-                        max={maxVal}
+                        min={-MAX_Y_RANGE}
+                        max={MAX_Y_RANGE}
                         value={state.y}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-maxVal}
-                            max={maxVal}
+                            min={-MAX_Y_RANGE}
+                            max={MAX_Y_RANGE}
                             value={state.y}
                             onChange={this.onChange}
                         />
@@ -155,16 +159,16 @@ export default class GeometryControl extends UIComponent {
                     <NumberInput
                         name="z"
                         width={40}
-                        min={-maxVal}
-                        max={maxVal}
+                        min={-MAX_Z_RANGE}
+                        max={MAX_Z_RANGE}
                         value={state.z}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="z"
-                            min={-maxVal}
-                            max={maxVal}
+                            min={-MAX_Z_RANGE}
+                            max={MAX_Z_RANGE}
                             value={state.z}
                             onChange={this.onChange}
                         />

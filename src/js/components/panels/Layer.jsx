@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import TextInput from '../inputs/TextInput';
 
-export default class Layer extends UIComponent {
+export default class Layer extends UIPureComponent {
     constructor(props) {
         super(props);
 

@@ -1,20 +1,17 @@
 import React from 'react';
-import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ColorRangeInput from '../inputs/ColorRangeInput';
 import RangeInput from '../inputs/RangeInput';
 import ToggleInput from '../inputs/ToggleInput';
 import { Control, Row } from './Control';
 
-export default class BarSpectrumControl extends UIComponent {
-    constructor(props, context) {
+export default class BarSpectrumControl extends UIPureComponent {
+    constructor(props) {
         super(props);
         
         this.state = this.props.display.options;
-
-        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -22,10 +19,10 @@ export default class BarSpectrumControl extends UIComponent {
             display = this.props.display;
 
         if (name === 'barWidthAutoSize') {
-            obj.barWidth = (val) ? -1 : 1;
+            obj.barWidth = val ? -1 : 1;
         }
         else if (name === 'barSpacingAutoSize') {
-            obj.barSpacing = (val) ? -1 : 1;
+            obj.barSpacing = val ? -1 : 1;
         }
 
         obj[name] = val;
@@ -36,11 +33,11 @@ export default class BarSpectrumControl extends UIComponent {
     }
 
     render() {
-        const { width, height } = this.app.stage.getSize(),
+        const { active, stageWidth, stageHeight } = this.props,
             state = this.state;
 
         return (
-            <Control label="BAR SPECTRUM" className={this.props.className}>
+            <Control label="BAR SPECTRUM" active={active}>
                 <Row label="Max dB">
                     <NumberInput
                         name="maxDecibels"
@@ -133,7 +130,7 @@ export default class BarSpectrumControl extends UIComponent {
                         value={state.width}
                         width={40}
                         min={0}
-                        max={width}
+                        max={stageWidth}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -141,7 +138,7 @@ export default class BarSpectrumControl extends UIComponent {
                             name="width"
                             value={state.width}
                             min={0}
-                            max={width}
+                            max={stageWidth}
                             onChange={this.onChange}
                         />
                     </div>
@@ -152,7 +149,7 @@ export default class BarSpectrumControl extends UIComponent {
                         value={state.height}
                         width={40}
                         min={0}
-                        max={width}
+                        max={stageWidth}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -160,7 +157,7 @@ export default class BarSpectrumControl extends UIComponent {
                             name="height"
                             value={state.height}
                             min={0}
-                            max={width}
+                            max={stageWidth}
                             onChange={this.onChange}
                         />
                     </div>
@@ -171,7 +168,7 @@ export default class BarSpectrumControl extends UIComponent {
                         value={state.shadowHeight}
                         width={40}
                         min={0}
-                        max={width}
+                        max={stageWidth}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -179,7 +176,7 @@ export default class BarSpectrumControl extends UIComponent {
                             name="shadowHeight"
                             value={state.shadowHeight}
                             min={0}
-                            max={width}
+                            max={stageWidth}
                             onChange={this.onChange}
                         />
                     </div>
@@ -190,7 +187,7 @@ export default class BarSpectrumControl extends UIComponent {
                         value={state.barWidth}
                         width={40}
                         min={-1}
-                        max={width}
+                        max={stageWidth}
                         readOnly={state.barWidthAutoSize}
                         hidden={state.barWidthAutoSize}
                         onChange={this.onChange}
@@ -208,7 +205,7 @@ export default class BarSpectrumControl extends UIComponent {
                         value={state.barSpacing}
                         width={40}
                         min={-1}
-                        max={width}
+                        max={stageWidth}
                         readOnly={state.barSpacingAutoSize}
                         hidden={state.barSpacingAutoSize}
                         onChange={this.onChange}
@@ -241,16 +238,16 @@ export default class BarSpectrumControl extends UIComponent {
                         name="x"
                         value={state.x}
                         width={40}
-                        min={-width}
-                        max={width}
+                        min={-stageWidth}
+                        max={stageWidth}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
                             value={state.x}
-                            min={-width}
-                            max={width}
+                            min={-stageWidth}
+                            max={stageWidth}
                             onChange={this.onChange}
                         />
                     </div>
@@ -260,16 +257,16 @@ export default class BarSpectrumControl extends UIComponent {
                         name="y"
                         value={state.y}
                         width={40}
-                        min={-height}
-                        max={height}
+                        min={-stageHeight}
+                        max={stageHeight}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
                             value={state.y}
-                            min={-height}
-                            max={height}
+                            min={-stageHeight}
+                            max={stageHeight}
                             onChange={this.onChange}
                         />
                     </div>
@@ -318,7 +315,3 @@ export default class BarSpectrumControl extends UIComponent {
         );
     }
 }
-
-BarSpectrumControl.contextTypes = {
-    app: propTypes.object
-};

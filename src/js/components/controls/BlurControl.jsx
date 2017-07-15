@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -14,7 +14,7 @@ const types = [
     'Zoom'
 ];
 
-export default class BlurControl extends UIComponent {
+export default class BlurControl extends UIPureComponent {
     constructor(props, context) {
         super(props);
 
@@ -37,23 +37,23 @@ export default class BlurControl extends UIComponent {
     render() {
         let centerOptions,
             state = this.state,
-            { width, height } = this.app.stage.getSize();
+            { active, stageWidth, stageHeight } = this.props;
 
         if (state.type === 'Zoom') {
             centerOptions = [
                 <Row label="X" key="x">
                     <NumberInput
                         name="x"
-                        min={-width/2}
-                        max={width/2}
+                        min={-stageWidth/2}
+                        max={stageWidth/2}
                         value={state.x}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-width/2}
-                            max={width/2}
+                            min={-stageWidth/2}
+                            max={stageWidth/2}
                             value={state.x}
                             onChange={this.onChange}
                         />
@@ -62,16 +62,16 @@ export default class BlurControl extends UIComponent {
                 <Row label="Y" key="y">
                     <NumberInput
                         name="y"
-                        min={-height/2}
-                        max={height/2}
+                        min={-stageHeight/2}
+                        max={stageHeight/2}
                         value={state.y}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-height/2}
-                            max={height/2}
+                            min={-stageHeight/2}
+                            max={stageHeight/2}
                             value={state.y}
                             onChange={this.onChange}
                         />
@@ -81,7 +81,7 @@ export default class BlurControl extends UIComponent {
         }
 
         return (
-            <Control label="BLUR" className={this.props.className}>
+            <Control label="BLUR" active={active}>
                 <Row label="Type">
                     <SelectInput
                         name="type"

@@ -1,18 +1,15 @@
 import React from 'react';
-import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-export default class RGBShiftControl extends UIComponent {
-    constructor(props, context) {
+export default class RGBShiftControl extends UIPureComponent {
+    constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-
-        this.app = context.app;
     }
 
     onChange(name, val) {
@@ -27,7 +24,8 @@ export default class RGBShiftControl extends UIComponent {
     }
 
     render() {
-        const { width } = this.app.stage.getSize();
+        const { active, stageWidth } = this.props,
+            { offset, angle } = this.state;
 
         return (
             <Control label="RGB SHIFT" className={this.props.className}>
@@ -35,9 +33,9 @@ export default class RGBShiftControl extends UIComponent {
                     <NumberInput
                         name="offset"
                         width={40}
-                        value={this.state.offset}
+                        value={offset}
                         min={0}
-                        max={width}
+                        max={stageWidth}
                         step={1}
                         onChange={this.onChange}
                     />
@@ -45,9 +43,9 @@ export default class RGBShiftControl extends UIComponent {
                         <RangeInput
                             name="offset"
                             min={0.0}
-                            max={width}
+                            max={stageWidth}
                             step={1}
-                            value={this.state.offset}
+                            value={offset}
                             onChange={this.onChange}
                         />
                     </div>
@@ -56,7 +54,7 @@ export default class RGBShiftControl extends UIComponent {
                     <NumberInput
                         name="angle"
                         width={40}
-                        value={this.state.angle}
+                        value={angle}
                         min={0}
                         max={360}
                         onChange={this.onChange}
@@ -66,7 +64,7 @@ export default class RGBShiftControl extends UIComponent {
                             name="angle"
                             min={0}
                             max={360}
-                            value={this.state.angle}
+                            value={angle}
                             onChange={this.onChange}
                         />
                     </div>
@@ -75,7 +73,3 @@ export default class RGBShiftControl extends UIComponent {
         );
     }
 }
-
-RGBShiftControl.contextTypes = {
-    app: propTypes.object
-};

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import Panel from '../layout/Panel';
 import PanelDock from '../layout/PanelDock';
 import ControlsPanel from './ControlsPanel';
 import LayersPanel from './LayersPanel';
 
-export default class ControlDock extends UIComponent {
+export default class ControlDock extends UIPureComponent {
     constructor(props) {
         super(props);
     }

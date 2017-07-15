@@ -1,7 +1,6 @@
 import React from 'react';
-import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import ColorInput from '../inputs/ColorInput';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
@@ -12,13 +11,11 @@ import { Control, Row } from './Control';
 
 import fontOptions from '../../../config/fonts.json';
 
-export default class TextControl extends UIComponent {
-    constructor(props, context) {
+export default class TextControl extends UIPureComponent {
+    constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-
-        this.app = context.app;
     }
 
     componentDidMount() {
@@ -49,11 +46,11 @@ export default class TextControl extends UIComponent {
     }
 
     render() {
-        const { width, height } = this.app.stage.getSize(),
+        const { active, stageWidth, stageHeight } = this.props,
             state = this.state;
 
         return (
-            <Control label="TEXT" className={this.props.className}>
+            <Control label="TEXT" active={active}>
                 <Row label="Text">
                     <TextInput
                         name="text"
@@ -104,16 +101,16 @@ export default class TextControl extends UIComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-width}
-                        max={width}
+                        min={-stageWidth}
+                        max={stageWidth}
                         value={state.x}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="x"
-                            min={-width}
-                            max={width}
+                            min={-stageWidth}
+                            max={stageWidth}
                             value={state.x}
                             onChange={this.onChange}
                         />
@@ -123,16 +120,16 @@ export default class TextControl extends UIComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-height}
-                        max={height}
+                        min={-stageHeight}
+                        max={stageHeight}
                         value={state.y}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="y"
-                            min={-height}
-                            max={height}
+                            min={-stageHeight}
+                            max={stageHeight}
                             value={state.y}
                             onChange={this.onChange}
                         />
@@ -182,7 +179,3 @@ export default class TextControl extends UIComponent {
         );
     }
 }
-
-TextControl.contextTypes = {
-    app: propTypes.object
-};

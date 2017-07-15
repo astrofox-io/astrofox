@@ -107,7 +107,7 @@ export default class ImageInput extends UIComponent {
                 onDragOver={this.onDragOver}
                 onClick={onClick}>
                 <img
-                    ref={(image) => { this.image = image; }}
+                    ref={image => this.image = image}
                     className="image"
                     style={style}
                     onLoad={this.onChange}

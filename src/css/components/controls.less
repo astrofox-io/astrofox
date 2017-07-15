@@ -89,10 +89,15 @@
                 width: 100%;
             }
         }
+
     }
 
-    .control-last {
-        margin-bottom: 0;
+    .control-wrapper {
+        &:last-child {
+            .control {
+                margin-bottom: 0;
+            }
+        }
     }
 
     .control-active {

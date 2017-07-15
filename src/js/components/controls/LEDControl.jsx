@@ -1,11 +1,11 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-export default class LEDControl extends UIComponent {
+export default class LEDControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -24,13 +24,16 @@ export default class LEDControl extends UIComponent {
     }
 
     render() {
+        const { active } = this.props,
+            { spacing, size, blur } = this.state;
+
         return (
-            <Control label="LED" className={this.props.className}>
+            <Control label="LED" active={active}>
                 <Row label="Spacing">
                     <NumberInput
                         name="spacing"
                         width={40}
-                        value={this.state.spacing}
+                        value={spacing}
                         min={1}
                         max={100}
                         onChange={this.onChange}
@@ -40,7 +43,7 @@ export default class LEDControl extends UIComponent {
                             name="spacing"
                             min={1}
                             max={100}
-                            value={this.state.spacing}
+                            value={spacing}
                             onChange={this.onChange}
                         />
                     </div>
@@ -49,7 +52,7 @@ export default class LEDControl extends UIComponent {
                     <NumberInput
                         name="size"
                         width={40}
-                        value={this.state.size}
+                        value={size}
                         min={0}
                         max={100}
                         onChange={this.onChange}
@@ -59,7 +62,7 @@ export default class LEDControl extends UIComponent {
                             name="size"
                             min={0}
                             max={100}
-                            value={this.state.size}
+                            value={size}
                             onChange={this.onChange}
                         />
                     </div>
@@ -68,7 +71,7 @@ export default class LEDControl extends UIComponent {
                     <NumberInput
                         name="blur"
                         width={40}
-                        value={this.state.blur}
+                        value={blur}
                         min={0}
                         max={100}
                         onChange={this.onChange}
@@ -78,7 +81,7 @@ export default class LEDControl extends UIComponent {
                             name="blur"
                             min={0}
                             max={100}
-                            value={this.state.blur}
+                            value={blur}
                             onChange={this.onChange}
                         />
                     </div>

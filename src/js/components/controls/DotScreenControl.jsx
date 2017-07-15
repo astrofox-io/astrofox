@@ -1,11 +1,11 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-export default class DotScreenControl extends UIComponent {
+export default class DotScreenControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -24,13 +24,16 @@ export default class DotScreenControl extends UIComponent {
     }
 
     render() {
+        const { active } = this.props,
+            { scale, angle } = this.state;
+
         return (
-            <Control label="DOT SCREEN" className={this.props.className}>
+            <Control label="DOT SCREEN" active={active}>
                 <Row label="Amount">
                     <NumberInput
                         name="scale"
                         width={40}
-                        value={this.state.scale}
+                        value={scale}
                         min={0}
                         max={2.0}
                         step={0.01}
@@ -42,7 +45,7 @@ export default class DotScreenControl extends UIComponent {
                             min={0.0}
                             max={2.0}
                             step={0.01}
-                            value={this.state.scale}
+                            value={scale}
                             onChange={this.onChange}
                         />
                     </div>
@@ -51,7 +54,7 @@ export default class DotScreenControl extends UIComponent {
                     <NumberInput
                         name="angle"
                         width={40}
-                        value={this.state.angle}
+                        value={angle}
                         min={0}
                         max={360}
                         onChange={this.onChange}
@@ -61,7 +64,7 @@ export default class DotScreenControl extends UIComponent {
                             name="angle"
                             min={0}
                             max={360}
-                            value={this.state.angle}
+                            value={angle}
                             onChange={this.onChange}
                         />
                     </div>

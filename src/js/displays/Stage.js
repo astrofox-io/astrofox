@@ -163,7 +163,11 @@ export default class Stage extends Display {
     }
 
     getSize() {
-        return this.composer.getSize();
+        if (this.composer) {
+            return this.composer.getSize();
+        }
+
+        return { width: 0, height: 0 };
     }
 
     setSize(width, height) {

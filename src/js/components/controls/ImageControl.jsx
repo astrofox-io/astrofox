@@ -1,8 +1,7 @@
 import React from 'react';
-import propTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import ImageInput from '../inputs/ImageInput';
 import RangeInput from '../inputs/RangeInput';
@@ -10,13 +9,11 @@ import { Control, Row } from './Control';
 
 import BLANK_IMAGE from '../../../images/data/blankGif.json';
 
-export default class ImageControl extends UIComponent {
-    constructor(props, context) {
+export default class ImageControl extends UIPureComponent {
+    constructor(props) {
         super(props);
 
         this.state = this.props.display.options;
-
-        this.app = context.app;
     }
 
     componentDidMount() {
@@ -31,8 +28,8 @@ export default class ImageControl extends UIComponent {
 
     onChange(name, val) {
         let obj = {},
-            display = this.props.display,
-            state = this.state,
+            { display } = this.props,
+            { src, fixed } = this.state,
             image = this.imageInput.getImage(),
             ratio = image.naturalWidth / image.naturalHeight;
 
@@ -49,30 +46,35 @@ export default class ImageControl extends UIComponent {
 
             if (val !== BLANK_IMAGE) {
                 // Load new image
-                if (val !== state.src) {
+                if (val !== src) {
                     obj.width = image.naturalWidth;
                     obj.height = image.naturalHeight;
                     obj.opacity = 1.0;
                 }
                 // Restore values from state
                 else {
-                    Object.assign(obj, state);
+                    Object.assign(obj, this.state);
                 }
             }
         }
         else if (name === 'width') {
-            if (state.fixed) {
+            if (fixed) {
                 obj.height = Math.round(val * (1 / ratio)) || 0;
             }
         }
         else if (name === 'height') {
-            if (state.fixed) {
+            if (fixed) {
                 obj.width = Math.round(val * ratio);
             }
         }
 
         this.setState(obj, () => {
             display.update(obj);
+
+            if (name === 'src') {
+                this.image = image;
+                this.forceUpdate();
+            }
         });
     }
 
@@ -81,14 +83,14 @@ export default class ImageControl extends UIComponent {
     }
 
     render() {
-        let size = this.app.stage.getSize(),
+        let { active, stageWidth, stageHeight } = this.props,
             state = this.state,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
             width = readOnly ? 0 : image.naturalWidth,
             height = readOnly ? 0 : image.naturalHeight,
-            xMax = readOnly ? 0 : (width > size.width) ? width : size.width,
-            yMax = readOnly ? 0 : (height > size.height) ? height : size.height,
+            xMax = readOnly ? 0 : (width > stageWidth) ? width : stageWidth,
+            yMax = readOnly ? 0 : (height > stageHeight) ? height : stageHeight,
             linkClasses = {
                 'icon-link': true,
                 'input-link': true,
@@ -97,7 +99,7 @@ export default class ImageControl extends UIComponent {
             linkIcon = <span key={0} className={classNames(linkClasses)} onClick={this.onLinkClick} />;
 
         return (
-            <Control label="IMAGE" className={this.props.className}>
+            <Control label="IMAGE" active={active}>
                 <Row label="Image">
                     <ImageInput
                         name="src"
@@ -238,7 +240,3 @@ export default class ImageControl extends UIComponent {
         );
     }
 }
-
-ImageControl.contextTypes = {
-    app: propTypes.object
-};

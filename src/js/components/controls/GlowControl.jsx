@@ -1,11 +1,11 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-export default class GlowControl extends UIComponent {
+export default class GlowControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -24,13 +24,16 @@ export default class GlowControl extends UIComponent {
     }
 
     render() {
+        const { active } = this.props,
+            { amount, intensity } = this.state;
+
         return (
-            <Control label="GLOW" className={this.props.className}>
+            <Control label="GLOW" active={active}>
                 <Row label="Amount">
                     <NumberInput
                         name="amount"
                         width={40}
-                        value={this.state.amount}
+                        value={amount}
                         min={0}
                         step={0.01}
                         max={1}
@@ -42,7 +45,7 @@ export default class GlowControl extends UIComponent {
                             min={0}
                             step={0.01}
                             max={1}
-                            value={this.state.amount}
+                            value={amount}
                             onChange={this.onChange}
                         />
                     </div>
@@ -51,7 +54,7 @@ export default class GlowControl extends UIComponent {
                     <NumberInput
                         name="intensity"
                         width={40}
-                        value={this.state.intensity}
+                        value={intensity}
                         min={1}
                         step={0.01}
                         max={3}
@@ -63,7 +66,7 @@ export default class GlowControl extends UIComponent {
                             min={1}
                             step={0.01}
                             max={3}
-                            value={this.state.intensity}
+                            value={intensity}
                             onChange={this.onChange}
                         />
                     </div>

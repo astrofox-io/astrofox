@@ -1,11 +1,11 @@
 import React from 'react';
-import classNames from 'classnames';
+import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import { getControlComponent } from '../../util/controls';
 
-export default class ControlsPanel extends UIComponent {
-    constructor(props) {
+export default class ControlsPanel extends UIPureComponent {
+    constructor(props, context) {
         super(props);
 
         this.state = {
@@ -14,7 +14,9 @@ export default class ControlsPanel extends UIComponent {
         };
 
         this.nodes = {};
-        this.controls = null;
+        this.controls = {};
+
+        this.app = context.app;
     }
 
     updateControl(display) {
@@ -33,7 +35,7 @@ export default class ControlsPanel extends UIComponent {
             let node = this.nodes[display.id];
 
             if (node) {
-                this.controls.scrollTop = node.offsetTop;
+                this.nodes.panel.scrollTop = node.offsetTop;
 
                 this.setState({ activeIndex: index });
             }
@@ -41,23 +43,24 @@ export default class ControlsPanel extends UIComponent {
     }
 
     getControls() {
-        let { displays, activeIndex } = this.state;
+        let { displays, activeIndex } = this.state,
+            { width, height } = this.app.stage.getSize();
 
-        return displays.map((display, index, arr) => {
+        return displays.map((display, index) => {
             let id = display.id,
-                Component = getControlComponent(display),
-                classes = {
-                    'control-active': index === activeIndex,
-                    'control-last': index === arr.length - 1
-                };
+                Component = getControlComponent(display);
 
             return (
                 <div
                     key={id}
-                    ref={el => this.nodes[id] = el}>
+                    ref={el => this.nodes[id] = el}
+                    className="control-wrapper">
                     <Component
+                        ref={el => this.controls[id] = el}
                         display={display}
-                        className={classNames(classes)}
+                        active={index === activeIndex}
+                        stageWidth={width}
+                        stageHeight={height}
                     />
                 </div>
             );
@@ -72,7 +75,7 @@ export default class ControlsPanel extends UIComponent {
         let controls = this.getControls();
 
         return (
-            <div className="controls-panel" ref={el => this.controls = el}>
+            <div className="controls-panel" ref={el => this.nodes.panel = el}>
                 <div className="controls">
                     {controls}
                 </div>
@@ -80,3 +83,7 @@ export default class ControlsPanel extends UIComponent {
         );
     }
 }
+
+ControlsPanel.contextTypes = {
+    app: propTypes.object
+};

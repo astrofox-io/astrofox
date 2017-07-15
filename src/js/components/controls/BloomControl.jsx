@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -11,7 +11,7 @@ const blendModes = [
     'Screen'
 ];
 
-export default class BloomControl extends UIComponent {
+export default class BloomControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -30,14 +30,17 @@ export default class BloomControl extends UIComponent {
     }
 
     render() {
+        const { active } = this.props,
+            { blendMode, amount, threshold } = this.state;
+
         return (
-            <Control label="BLOOM" className={this.props.className}>
+            <Control label="BLOOM" active={active}>
                 <Row label="Blend Mode">
                     <SelectInput
                         name="blendMode"
                         width={140}
                         items={blendModes}
-                        value={this.state.blendMode}
+                        value={blendMode}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -45,7 +48,7 @@ export default class BloomControl extends UIComponent {
                     <NumberInput
                         name="amount"
                         width={40}
-                        value={this.state.amount}
+                        value={amount}
                         min={0}
                         max={1.0}
                         step={0.01}
@@ -57,7 +60,7 @@ export default class BloomControl extends UIComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.amount}
+                            value={amount}
                             onChange={this.onChange}
                         />
                     </div>
@@ -66,7 +69,7 @@ export default class BloomControl extends UIComponent {
                     <NumberInput
                         name="threshold"
                         width={40}
-                        value={this.state.threshold}
+                        value={threshold}
                         min={0}
                         max={1.0}
                         step={0.01}
@@ -78,7 +81,7 @@ export default class BloomControl extends UIComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.threshold}
+                            value={threshold}
                             onChange={this.onChange}
                         />
                     </div>

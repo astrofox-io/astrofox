@@ -63,16 +63,17 @@ export default class SceneControl extends UIPureComponent {
     }
 
     render() {
-        let maxVal = 500;
+        const { active } = this.props,
+            state = this.state;
 
         return (
-            <Control label="SCENE" className={this.props.className}>
+            <Control label="SCENE" active={active}>
                 <Row label="Blending">
                     <SelectInput
                         name="blendMode"
                         width={140}
                         items={blendModesMenu}
-                        value={this.state.blendMode}
+                        value={state.blendMode}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -80,7 +81,7 @@ export default class SceneControl extends UIPureComponent {
                     <NumberInput
                         name="opacity"
                         width={40}
-                        value={this.state.opacity}
+                        value={state.opacity}
                         min={0}
                         max={1.0}
                         step={0.01}
@@ -92,7 +93,7 @@ export default class SceneControl extends UIPureComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            value={this.state.opacity}
+                            value={state.opacity}
                             onChange={this.onChange}
                         />
                     </div>
@@ -104,7 +105,7 @@ export default class SceneControl extends UIPureComponent {
                         min={0.0}
                         max={10.0}
                         step={0.1}
-                        value={this.state.lightIntensity}
+                        value={state.lightIntensity}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -113,7 +114,7 @@ export default class SceneControl extends UIPureComponent {
                             min={0.0}
                             max={10.0}
                             step={0.1}
-                            value={this.state.lightIntensity}
+                            value={state.lightIntensity}
                             onChange={this.onChange}
                         />
                     </div>
@@ -122,17 +123,17 @@ export default class SceneControl extends UIPureComponent {
                     <NumberInput
                         name="lightDistance"
                         width={40}
-                        min={-maxVal}
-                        max={maxVal}
-                        value={this.state.lightDistance}
+                        min={-500}
+                        max={500}
+                        value={state.lightDistance}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
                         <RangeInput
                             name="lightDistance"
-                            min={-maxVal}
-                            max={maxVal}
-                            value={this.state.lightDistance}
+                            min={-500}
+                            max={500}
+                            value={state.lightDistance}
                             onChange={this.onChange}
                         />
                     </div>
@@ -143,7 +144,7 @@ export default class SceneControl extends UIPureComponent {
                         width={40}
                         min={0}
                         max={1000}
-                        value={this.state.cameraZoom}
+                        value={state.cameraZoom}
                         onChange={this.onChange}
                     />
                     <div className="input flex">
@@ -151,7 +152,7 @@ export default class SceneControl extends UIPureComponent {
                             name="cameraZoom"
                             min={0}
                             max={1000}
-                            value={this.state.cameraZoom}
+                            value={state.cameraZoom}
                             onChange={this.onChange}
                         />
                     </div>
@@ -159,13 +160,13 @@ export default class SceneControl extends UIPureComponent {
                 <Row label="Mask">
                     <ToggleInput
                         name="mask"
-                        value={this.state.mask}
+                        value={state.mask}
                         onChange={this.onChange}
                     />
                     <span className="label">Inverse</span>
                     <ToggleInput
                         name="inverse"
-                        value={this.state.inverse}
+                        value={state.inverse}
                         onChange={this.onChange}
                     />
                 </Row>

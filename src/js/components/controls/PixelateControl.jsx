@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import SelectInput from '../inputs/SelectInput';
@@ -14,7 +14,7 @@ const types = [
 const MIN_PIXEL_SIZE = 2;
 const MAX_PIXEL_SIZE = 240;
 
-export default class PixelateControl extends UIComponent {
+export default class PixelateControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -33,14 +33,17 @@ export default class PixelateControl extends UIComponent {
     }
 
     render() {
+        const { active } = this.props,
+            { type, size } = this.state;
+
         return (
-            <Control label="PIXELATE" className={this.props.className}>
+            <Control label="PIXELATE" active={active}>
                 <Row label="Type">
                     <SelectInput
                         name="type"
                         width={140}
                         items={types}
-                        value={this.state.type}
+                        value={type}
                         onChange={this.onChange}
                     />
                 </Row>
@@ -48,7 +51,7 @@ export default class PixelateControl extends UIComponent {
                     <NumberInput
                         name="size"
                         width={40}
-                        value={this.state.size}
+                        value={size}
                         min={MIN_PIXEL_SIZE}
                         max={MAX_PIXEL_SIZE}
                         onChange={this.onChange}
@@ -58,7 +61,7 @@ export default class PixelateControl extends UIComponent {
                             name="size"
                             min={MIN_PIXEL_SIZE}
                             max={MAX_PIXEL_SIZE}
-                            value={this.state.size}
+                            value={size}
                             onChange={this.onChange}
                         />
                     </div>

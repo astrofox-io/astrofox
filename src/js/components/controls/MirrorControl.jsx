@@ -1,11 +1,11 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import NumberInput from '../inputs/NumberInput';
 import RangeInput from '../inputs/RangeInput';
 import { Control, Row } from './Control';
 
-export default class MirrorControl extends UIComponent {
+export default class MirrorControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -24,13 +24,16 @@ export default class MirrorControl extends UIComponent {
     }
 
     render() {
+        const { active } = this.props,
+            { side } = this.state;
+
         return (
-            <Control label="MIRROR" className={this.props.className}>
+            <Control label="MIRROR" active={active}>
                 <Row label="Side">
                     <NumberInput
                         name="side"
                         width={40}
-                        value={this.state.side}
+                        value={side}
                         min={0}
                         max={3}
                         onChange={this.onChange}
@@ -40,7 +43,7 @@ export default class MirrorControl extends UIComponent {
                             name="side"
                             min={0}
                             max={3}
-                            value={this.state.side}
+                            value={side}
                             onChange={this.onChange}
                         />
                     </div>
