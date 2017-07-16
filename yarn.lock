@@ -40,8 +40,8 @@
     through2 "^2.0.3"
 
 "@types/node@^7.0.18":
-  version "7.0.36"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.36.tgz#54286fcce8a4f7498cea1ec5fce5f5edd3521948"
+  version "7.0.37"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.37.tgz#f129fff94d14a60c3d99eadb9fe0c98119e09c8f"
 
 abbrev@1:
   version "1.1.0"
@@ -189,13 +189,6 @@ argparse@^1.0.6, argparse@^1.0.7:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.9.tgz#73d83bc263f86e97f8cc4f6bae1b0e90a7d22c86"
   dependencies:
     sprintf-js "~1.0.2"
-
-"argparse@~ 0.1.15", argparse@~0.1.15:
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/argparse/-/argparse-0.1.16.tgz#cfd01e0fbba3d6caed049fbd758d40f65196f57c"
-  dependencies:
-    underscore "~1.7.0"
-    underscore.string "~2.4.0"
 
 arr-diff@^2.0.0:
   version "2.0.0"
@@ -1243,7 +1236,7 @@ chalk@^2.0.0, chalk@^2.0.1:
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
 
-chokidar@^1.4.3, chokidar@^1.6.1:
+chokidar@^1.6.1, chokidar@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
   dependencies:
@@ -1281,9 +1274,9 @@ classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
-clean-css@4.1.6:
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.6.tgz#5a47beb526994cb4f7bf36188a55ed3b45528f0b"
+clean-css@4.1.7:
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.7.tgz#b9aea4f85679889cf3eae8b40349ec4ebdfdd032"
   dependencies:
     source-map "0.5.x"
 
@@ -1348,8 +1341,8 @@ color-convert@~0.5.0:
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-0.5.3.tgz#bdb6c69ce660fadffe0b0007cc447e1b9f7282bd"
 
 color-name@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.2.tgz#5c8ab72b64bd2215d617ae9559ebb148475cf98d"
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 
 combined-stream@^1.0.5, combined-stream@~1.0.5:
   version "1.0.5"
@@ -1582,6 +1575,12 @@ debug@2.2.0:
 debug@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.0.tgz#3912dc55d7167fc3af17d2b85c13f93deaedaa43"
+  dependencies:
+    ms "0.7.2"
+
+debug@2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
   dependencies:
     ms "0.7.2"
 
@@ -2592,10 +2591,10 @@ graceful-fs@~1.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-1.2.3.tgz#15a4806a57547cb2d2dbf27f42e89a8c3451b364"
 
 gulp-clean-css@^3.5.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/gulp-clean-css/-/gulp-clean-css-3.6.0.tgz#434f2b80c55aa45254cda30207e1a1166f0d1e52"
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/gulp-clean-css/-/gulp-clean-css-3.7.0.tgz#54b33526dc899930949fb37b4cacf851c5d5d93b"
   dependencies:
-    clean-css "4.1.6"
+    clean-css "4.1.7"
     gulp-util "3.0.8"
     through2 "2.0.3"
     vinyl-sourcemaps-apply "0.2.1"
@@ -2701,22 +2700,22 @@ gulp-spawn@^0.3.0:
     plexer "0.0.1"
 
 gulp-svg2ttf@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/gulp-svg2ttf/-/gulp-svg2ttf-2.0.0.tgz#97d16ffa194ecd034276e1a7a1dc3499e7b6dfae"
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/gulp-svg2ttf/-/gulp-svg2ttf-2.0.1.tgz#11d68bbbe27b89f47657b4d8f29cf33854d7e68c"
   dependencies:
     bufferstreams "^1.1.0"
     gulp-util "^3.0.7"
     readable-stream "^2.0.4"
-    svg2ttf "^4.0.0"
+    svg2ttf "^4.1.0"
 
 gulp-svgicons2svgfont@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/gulp-svgicons2svgfont/-/gulp-svgicons2svgfont-3.0.1.tgz#033a5582cc93b506ee654e622d43e9e6a4294525"
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/gulp-svgicons2svgfont/-/gulp-svgicons2svgfont-3.0.2.tgz#f08f8308a4fd1aefb301d253fa835ce563a8189e"
   dependencies:
     gulp-util "~3.0.6"
     plexer "1.0.1"
     readable-stream "^2.0.2"
-    svgicons2svgfont "^5.0.0"
+    svgicons2svgfont "^6.0.0"
 
 gulp-template@^4.0.0:
   version "4.0.0"
@@ -2727,13 +2726,13 @@ gulp-template@^4.0.0:
     through2 "^2.0.0"
 
 gulp-ttf2eot@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/gulp-ttf2eot/-/gulp-ttf2eot-1.1.1.tgz#de9584a16c4ff4e3c5815b3d5eb1977ecc54d35c"
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/gulp-ttf2eot/-/gulp-ttf2eot-1.1.2.tgz#67516fe253baecbb3910b417a08dcb51e34acb0c"
   dependencies:
     bufferstreams "^1.1.0"
     gulp-util "^3.0.7"
     readable-stream "^2.0.4"
-    ttf2eot "^1.3.0"
+    ttf2eot "^2.0.0"
 
 gulp-ttf2woff2@^2.0.2:
   version "2.0.2"
@@ -2745,13 +2744,13 @@ gulp-ttf2woff2@^2.0.2:
     ttf2woff2 "^2.0.3"
 
 gulp-ttf2woff@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/gulp-ttf2woff/-/gulp-ttf2woff-1.1.0.tgz#3a2ede53158f02a6323fd6f4dba008b2eb30ba5b"
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/gulp-ttf2woff/-/gulp-ttf2woff-1.1.1.tgz#e22ca6e71bd9ad105751644f8b1c7e3be3b086ac"
   dependencies:
     bufferstreams "^1.0.2"
     gulp-util "^3.0.6"
     readable-stream "^2.0.1"
-    ttf2woff "^1.3.0"
+    ttf2woff "^2.0.1"
 
 gulp-util@*, gulp-util@3.0.8, gulp-util@^3, gulp-util@^3.0.0, gulp-util@^3.0.6, gulp-util@^3.0.7, gulp-util@^3.0.8, gulp-util@~3.0.6:
   version "3.0.8"
@@ -3251,8 +3250,8 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
 
 jschardet@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.4.2.tgz#2aa107f142af4121d145659d44f50830961e699a"
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.5.0.tgz#a61f310306a5a71188e1b1acd08add3cfbb08b1e"
 
 jsesc@^1.3.0:
   version "1.3.0"
@@ -4198,7 +4197,11 @@ package-json@^4.0.0:
     registry-url "^3.0.3"
     semver "^5.1.0"
 
-"pako@~ 0.2.2", pako@~0.2.0:
+pako@^1.0.0:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.5.tgz#d2205dfe5b9da8af797e7c163db4d1f84e4600bc"
+
+pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
@@ -5109,13 +5112,14 @@ supports-color@^4.0.0:
   dependencies:
     has-flag "^2.0.0"
 
-svg-pathdata@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/svg-pathdata/-/svg-pathdata-1.0.4.tgz#7a681342aac7effd8d52afba7999910c9da3b959"
+svg-pathdata@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/svg-pathdata/-/svg-pathdata-3.1.0.tgz#402a34e25cd995dc37850ae1ad7248c7023a5a1f"
   dependencies:
+    debug "2.6.1"
     readable-stream "~2.0.4"
 
-svg2ttf@^4.0.0:
+svg2ttf@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/svg2ttf/-/svg2ttf-4.1.0.tgz#82022e568bd03c1abb668fdd8d15f008956a0e10"
   dependencies:
@@ -5126,17 +5130,18 @@ svg2ttf@^4.0.0:
     svgpath "^2.1.5"
     xmldom "~0.1.22"
 
-svgicons2svgfont@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/svgicons2svgfont/-/svgicons2svgfont-5.0.1.tgz#5b4bf9dca9a74b55286f8b72dc7ae736f12fe02f"
+svgicons2svgfont@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/svgicons2svgfont/-/svgicons2svgfont-6.0.0.tgz#7a60e7a34de8807edac91ca85f31abc0094884f8"
   dependencies:
     commander "^2.9.0"
+    debug "2.6.1"
     neatequal "^1.0.0"
     readable-stream "^2.0.4"
     sax "^1.1.5"
     string.fromcodepoint "^0.2.1"
     string.prototype.codepointat "^0.2.0"
-    svg-pathdata "^1.0.4"
+    svg-pathdata "^3.1.0"
 
 svgpath@^2.1.5:
   version "2.2.1"
@@ -5319,11 +5324,12 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
-ttf2eot@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/ttf2eot/-/ttf2eot-1.3.0.tgz#94671eacfa5ad7799cd6f9f5b6030f513b032ac2"
+ttf2eot@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ttf2eot/-/ttf2eot-2.0.0.tgz#8e6337a585abd1608a0c84958ab483ce69f6654b"
   dependencies:
-    argparse "~0.1.15"
+    argparse "^1.0.6"
+    microbuffer "^1.0.0"
 
 ttf2woff2@^2.0.3:
   version "2.0.3"
@@ -5334,12 +5340,13 @@ ttf2woff2@^2.0.3:
     nan "^2.1.0"
     node-gyp "^3.0.3"
 
-ttf2woff@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/ttf2woff/-/ttf2woff-1.3.0.tgz#76a27a6f30ea037a9ed64c9ff43ec7ed461e6d2a"
+ttf2woff@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ttf2woff/-/ttf2woff-2.0.1.tgz#871832240024b09db9570904c7c1928b8057c969"
   dependencies:
-    argparse "~ 0.1.15"
-    pako "~ 0.2.2"
+    argparse "^1.0.6"
+    microbuffer "^1.0.0"
+    pako "^1.0.0"
 
 tty-browserify@0.0.0:
   version "0.0.0"
@@ -5397,14 +5404,6 @@ uid-number@^0.0.6:
 unc-path-regex@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
-
-underscore.string@~2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/underscore.string/-/underscore.string-2.4.0.tgz#8cdd8fbac4e2d2ea1e7e2e8097c42f442280f85b"
-
-underscore@~1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.7.0.tgz#6bbaf0877500d36be34ecaa584e0db9fef035209"
 
 unique-stream@^1.0.0:
   version "1.0.0"
@@ -5571,12 +5570,12 @@ warning@^3.0.0:
   dependencies:
     loose-envify "^1.0.0"
 
-watchpack@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.3.1.tgz#7d8693907b28ce6013e7f3610aa2a1acf07dad87"
+watchpack@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.4.0.tgz#4a1472bcbb952bd0a9bb4036801f954dfb39faac"
   dependencies:
     async "^2.1.2"
-    chokidar "^1.4.3"
+    chokidar "^1.7.0"
     graceful-fs "^4.1.2"
 
 webpack-node-externals@^1.6.0:
@@ -5591,8 +5590,8 @@ webpack-sources@^1.0.1:
     source-map "~0.5.3"
 
 webpack@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.2.0.tgz#8b0cae0e1a9fd76bfbf0eab61a8c2ada848c312f"
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.3.0.tgz#ce2f9e076566aba91f74887133a883fd7da187bc"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"
@@ -5613,7 +5612,7 @@ webpack@^3.0.0:
     supports-color "^3.1.0"
     tapable "~0.2.5"
     uglifyjs-webpack-plugin "^0.4.6"
-    watchpack "^1.3.1"
+    watchpack "^1.4.0"
     webpack-sources "^1.0.1"
     yargs "^6.0.0"
 

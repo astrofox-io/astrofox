@@ -53,19 +53,15 @@ export default class LayersPanel extends UIPureComponent {
     }
 
     onAddSceneClick() {
-        let scene = new Scene();
-
-        this.app.stage.addScene(scene);
-
-        this.updateState(0);
+        this.addLayer(new Scene());
     }
 
     onAddDisplayClick() {
         let scene = this.getActiveScene();
 
         if (scene) {
-            events.emit('pick-control', 'display', (display) => {
-                this.addLayer(display);
+            events.emit('pick-control', 'display', display => {
+                this.addLayer(display, Display);
             });
         }
     }
@@ -74,8 +70,8 @@ export default class LayersPanel extends UIPureComponent {
         let scene = this.getActiveScene();
 
         if (scene) {
-            events.emit('pick-control', 'effect', (display) => {
-                this.addLayer(display);
+            events.emit('pick-control', 'effect', display => {
+                this.addLayer(display, Effect);
             });
         }
     }
@@ -140,16 +136,44 @@ export default class LayersPanel extends UIPureComponent {
         this.props.onLayerSelected(index);
     }
 
-    addLayer(display) {
-        let scene = this.getActiveScene();
+    addLayer(obj, type) {
+        if (obj instanceof Scene) {
+            this.addScene(obj);
+        }
+        else {
+            this.addElement(obj, type);
+        }
+    }
+
+    addScene(newScene) {
+        const { displays } = this.state,
+            scene = this.getActiveScene();
+
+        let scenes = displays.filter(display => {
+            return display instanceof Scene;
+        });
+
+        this.app.stage.addScene(newScene, scenes.length - scenes.indexOf(scene));
+
+        this.updateState(newScene);
+    }
+
+    addElement(display, type) {
+        const { displays } = this.state,
+            scene = this.getActiveScene(),
+            active = this.getActiveLayer();
+
+        let nodes = displays.filter(display => {
+            return display instanceof type;
+        });
 
         if (scene) {
-            scene.addElement(display);
+            scene.addElement(display, nodes.length - nodes.indexOf(active));
+
+            this.setActiveLayer(display);
+
+            this.updateState(display);
         }
-
-        this.setActiveLayer(display);
-
-        this.updateState(display);
     }
 
     moveLayer(direction) {

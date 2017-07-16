@@ -103,7 +103,7 @@ export default class Scene extends Display {
         this.composer.setSize(width, height);
     }
 
-    addElement(obj) {
+    addElement(obj, index) {
         let nodes;
 
         if (obj instanceof Effect) {
@@ -113,7 +113,12 @@ export default class Scene extends Display {
             nodes = this.displays;
         }
 
-        nodes.addNode(obj);
+        if (index !== undefined) {
+            nodes.insertNode(index, obj);
+        }
+        else {
+            nodes.addNode(obj);
+        }
 
         obj.owner = this;
 

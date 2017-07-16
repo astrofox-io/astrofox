@@ -62,16 +62,23 @@ export default class Stage extends Display {
         return changed;
     }
 
-    addScene(scene) {
+    addScene(scene, index) {
         if (typeof scene === 'undefined') {
             scene = new Scene();
         }
 
-        this.scenes.addNode(scene);
+        if (index !== undefined) {
+            this.scenes.insertNode(index, scene);
+        }
+        else {
+            this.scenes.addNode(scene);
+        }
 
         scene.owner = this;
 
-        scene.addToStage(this);
+        if (scene.addToStage) {
+            scene.addToStage(this);
+        }
 
         this.changed = true;
 
