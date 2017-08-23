@@ -19,6 +19,10 @@ export default class ControlsPanel extends UIPureComponent {
         this.app = context.app;
     }
 
+    componentDidUpdate() {
+        this.focusControl(this.state.activeIndex);
+    }
+
     updateControl(display) {
         let control = this.controls[display.id];
 
