@@ -7,6 +7,7 @@ class FrameBuffer {
 
         this.texture = new THREE.Texture(this.canvas);
         this.texture.minFilter = THREE.LinearFilter;
+        this.texture.needsUpdate = true;
     
         this.pass = new TexturePass(this.texture);
     }
@@ -42,6 +43,9 @@ export class GLBuffer extends FrameBuffer {
         });
 
         this.renderer.autoClear = false;
+
+        // Initialize renderer, required since r87
+        this.renderer.render(new THREE.Scene(), new THREE.Camera());
 
         this.setSize(width, height);
     }

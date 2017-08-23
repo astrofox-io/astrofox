@@ -1,6 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import UIComponent from '../UIComponent';
 import RenderInfo from './RenderInfo';
@@ -87,17 +87,19 @@ const Loading = (props) => {
     let loadingIcon;
 
     if (props.visible) {
-        loadingIcon = <div className="loading"/>;
+        loadingIcon = (
+            <CSSTransition
+                classNames="stage"
+                timeout={{enter:500, exit: 500}}>
+                <div className="loading"/>
+            </CSSTransition>
+        );
     }
 
     return (
-        <CSSTransitionGroup
-            component={FirstChild}
-            transitionName="stage"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={500}>
+        <TransitionGroup component={FirstChild}>
             {loadingIcon}
-        </CSSTransitionGroup>
+        </TransitionGroup>
     );
 };
 
@@ -105,17 +107,19 @@ const Rendering = (props) => {
     let renderInfo;
 
     if (props.visible) {
-        renderInfo = <RenderInfo onButtonClick={props.onButtonClick} />;
+        renderInfo = (
+            <CSSTransition
+                classNames="stage"
+                timeout={{enter:500, exit: 500}}>
+                <RenderInfo onButtonClick={props.onButtonClick} />
+            </CSSTransition>
+        );
     }
 
     return (
-        <CSSTransitionGroup
-            component={FirstChild}
-            transitionName="stage"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={500}>
+        <TransitionGroup component={FirstChild}>
             {renderInfo}
-        </CSSTransitionGroup>
+        </TransitionGroup>
     );
 };
 

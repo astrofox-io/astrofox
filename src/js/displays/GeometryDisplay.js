@@ -14,11 +14,6 @@ const materials = {
     Points: THREE.PointsMaterial
 };
 
-const shading = {
-    Flat: THREE.FlatShading,
-    Smooth: THREE.SmoothShading
-};
-
 import POINT_SPRITE from '../../images/data/pointSprite.json';
 const POINT_SIZE = 5;
 
@@ -234,7 +229,7 @@ export default class GeometryDisplay extends Display {
             geometry = new THREE.BufferGeometry().fromGeometry(geometry);
 
             material = new materials[options.material]();
-            material.shading = shading[options.shading];
+            material.flatShading = options.shading === 'Flat';
             material.color = new THREE.Color().set(options.color);
             material.opacity = options.opacity;
             material.wireframe = options.wireframe;

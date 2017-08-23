@@ -83,7 +83,7 @@ app.on('activate', () => {
 app.on('will-quit', () => {
     log('will-quit');
 
-    globalShortcut.unregisterAll();
+    //globalShortcut.unregisterAll();
 });
 
 // IPC events
