@@ -1,5 +1,6 @@
 const del = require('del');
 const gulp = require('gulp');
+const babel = require('gulp-babel');
 const cleancss = require('gulp-clean-css');
 const glsl = require('gulp-glsl');
 const header = require('gulp-header');
@@ -151,7 +152,7 @@ function buildIcons() {
         .pipe(plumber({errorHandler: logError}))
         .pipe(iconfont({
             fontName: 'icons',
-            fontHeight: 300,
+            fontHeight: 1000,
             appendUnicode: false,
             normalize: true,
             formats: ['ttf', 'eot', 'woff', 'woff2']
@@ -189,6 +190,18 @@ function buildShaders() {
         .pipe(gulp.dest(dest));
 }
 
+// Minify javascript
+function minifyJs() {
+    return gulp.src(['app/browser/js/*.js','app/main.js'])
+        .pipe(babel({
+            presets: [
+                ['minify']
+            ],
+            babelrc: false
+        }))
+        .pipe(gulp.dest('dist/js'));
+}
+
 /*** Tasks ***/
 
 gulp.task('build-js', buildJs);
@@ -204,6 +217,8 @@ gulp.task('build-icons', buildIcons);
 gulp.task('build-fonts', buildFonts);
 
 gulp.task('build-shaders', buildShaders);
+
+gulp.task('minify-js', minifyJs);
 
 gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-fonts', 'build-main', 'build-js']);
 

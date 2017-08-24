@@ -1,12 +1,13 @@
 const path = require('path');
 const webpack = require('webpack');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 
-const __PROD__ = process.env.NODE_ENV === 'production';
+const PRODUCTION = process.env.NODE_ENV === 'production';
 const vendorIds = Object.keys(require('./package.json').dependencies);
 
 const config = {
     target: 'electron-renderer',
-    devtool: __PROD__ ? false : 'source-map',
+    devtool: PRODUCTION ? false : 'source-map',
     entry: {
         app: path.resolve(__dirname, 'src/js/index.js'),
         vendor: vendorIds
@@ -45,15 +46,18 @@ const config = {
     ]
 };
 
-if (__PROD__) {
+if (PRODUCTION) {
     config.plugins.push(
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            comments: false,
-            sourceMap: false
-        })
+        new MinifyPlugin(
+            {},
+            {
+                test: /\.js$/,
+                comments: false
+            }
+        )
     );
 }
 

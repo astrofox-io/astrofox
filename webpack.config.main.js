@@ -1,8 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 
-const __PROD__ = process.env.NODE_ENV === 'production';
+const PRODUCTION = process.env.NODE_ENV === 'production';
 
 const config = {
     target: 'electron-main',
@@ -33,23 +33,21 @@ const config = {
             }
         ]
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            '__PROD__': __PROD__
-        })
-    ],
-    externals: [
-        nodeExternals({
-            modulesFromFile: true
-        })
-    ]
+    plugins: []
 };
 
-if (__PROD__) {
+if (PRODUCTION) {
     config.plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            comments: false
-        })
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production')
+        }),
+        new MinifyPlugin(
+            {},
+            {
+                test: /\.js$/,
+                comments: false
+            }
+        )
     );
 }
 

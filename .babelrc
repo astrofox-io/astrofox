@@ -1,6 +1,10 @@
 {
   "presets": [
-    ["es2015", {"modules":false}],
+    ["env", {
+      "targets": {
+        "electron": "1.7.6"
+      }
+    }],
     "react"
   ],
   "plugins": [

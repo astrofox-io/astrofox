@@ -1,14 +1,11 @@
 {
   "name": "Astrofox",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "main": "main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
   "author": "Mike Cao <mike@mikecao.com>",
   "homepage": "http://astrofox.io",
   "private": true,
-  "dependencies": {
-    "debug": "^2.6.8",
-    "electron-updater": "^1.16.0"
-  }
+  "dependencies": {}
 }
