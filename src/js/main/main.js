@@ -1,4 +1,4 @@
-import { app, globalShortcut, systemPreferences, ipcMain } from 'electron';
+import { app, systemPreferences, ipcMain } from 'electron';
 import fs from 'fs';
 import debug from 'debug';
 import * as env from './environment';
@@ -82,8 +82,6 @@ app.on('activate', () => {
 
 app.on('will-quit', () => {
     log('will-quit');
-
-    //globalShortcut.unregisterAll();
 });
 
 // IPC events

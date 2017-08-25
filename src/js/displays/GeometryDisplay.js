@@ -15,7 +15,7 @@ const materials = {
 };
 
 import POINT_SPRITE from '../../images/data/pointSprite.json';
-const POINT_SIZE = 5;
+const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends Display {
     constructor(options) {
@@ -79,9 +79,10 @@ export default class GeometryDisplay extends Display {
     }
 
     addToScene(scene) {
-        let img = document.createElement('img');
-
         this.group = new THREE.Object3D();
+
+        // Load point sprite image
+        let img = document.createElement('img');
 
         img.onload = () => {
             this.sprite = new THREE.Texture(img);
@@ -121,12 +122,13 @@ export default class GeometryDisplay extends Display {
     createMesh() {
         if (!this.group) return;
 
-        let i, len, geometry, material,
+        let geometry, material, rotation,
             group = this.group,
             mesh = this.mesh,
             options = this.options;
 
         if (mesh) {
+            rotation = mesh.rotation.clone();
             group.remove(mesh);
         }
 
@@ -136,47 +138,36 @@ export default class GeometryDisplay extends Display {
         switch (options.shape) {
             case 'Box':
                 // width, height, depth, widthSegments:1, heightSegments:1, depthSegments:1
-                geometry = new THREE.BoxGeometry(50, 50, 50);
+                geometry = new THREE.BoxBufferGeometry(50, 50, 50);
                 break;
             case 'Sphere':
                 // radius:50, widthSegments:8, heightSegments:6, phiStart:0, phiLength:PI*2, thetaStart:0, thetaLength:PI
-                geometry = new THREE.SphereGeometry(40, 10, 10);
+                geometry = new THREE.SphereBufferGeometry(40, 10, 10);
                 break;
             case 'Dodecahedron':
                 // radius:1, detail:0
-                geometry = new THREE.DodecahedronGeometry(40, 0);
+                geometry = new THREE.DodecahedronBufferGeometry(40, 0);
                 break;
             case 'Icosahedron':
                 // radius:1, detail:0
-                geometry = new THREE.IcosahedronGeometry(40, 0);
+                geometry = new THREE.IcosahedronBufferGeometry(40, 0);
                 break;
             case 'Octahedron':
                 // radius:1, detail:0
-                geometry = new THREE.OctahedronGeometry(40, 0);
+                geometry = new THREE.OctahedronBufferGeometry(40, 0);
                 break;
             case 'Tetrahedron':
                 // radius:1, detail:0
-                geometry = new THREE.TetrahedronGeometry(40, 0);
+                geometry = new THREE.TetrahedronBufferGeometry(40, 0);
                 break;
             case 'Torus':
                 // radius:100, tube:40, radialSegments:8, tubularSegments:6, arc:PI*2
-                geometry = new THREE.TorusGeometry(50, 20, 10, 10);
+                geometry = new THREE.TorusBufferGeometry(50, 20, 10, 10);
                 break;
             case 'Torus Knot':
                 // radius:100, tube:40, radialSegments:64, tubularSegments:8, p:2, q:3, heightScale:1
-                geometry = new THREE.TorusKnotGeometry(50, 10, 20, 10);
+                geometry = new THREE.TorusKnotBufferGeometry(50, 10, 20, 10);
                 break;
-        }
-
-        // Special handling for flat shading
-        if (options.shading === 'Flat' && (options.material === 'Normal' || options.material === 'Lambert')) {
-            geometry.computeFaceNormals();
-
-            if (geometry.faces) {
-                for (i = 0, len = geometry.faces.length; i < len; i++) {
-                    geometry.faces[i].vertexNormals = [];
-                }
-            }
         }
 
         // Add edges
@@ -193,30 +184,20 @@ export default class GeometryDisplay extends Display {
 
         // Create mesh
         if (options.material === 'Points') {
-            let color = new THREE.Color().set(options.color);
-            let vertices = geometry.vertices;
-            let positions = new Float32Array(vertices.length * 3);
-            let colors = new Float32Array(vertices.length * 3);
-            let sizes = new Float32Array(vertices.length);
-            let vertex;
-            let vertextColor = new THREE.Color();
+            let length = geometry.getAttribute('position').count,
+                colors = new Float32Array(length * 3),
+                sizes = new Float32Array(length),
+                color = new THREE.Color().set(options.color);
 
-            for (i = 0, len = vertices.length; i < len; i++) {
-                vertex = vertices[i];
-                vertex.toArray(positions, i * 3);
-                //vertextColor.setHSL(0.01 + 0.1 * (i / len), 1.0, 0.5).lerp(color, 0.5);
-                //vertextColor.set(color);
-                vertextColor.toArray(colors, i * 3);
+            for (let i = 0; i < length; i++) {
+                color.toArray(colors, i * 3);
                 sizes[i] = POINT_SIZE;
             }
 
-            geometry = new THREE.BufferGeometry();
-            geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
             geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
             geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
             material = new THREE.ShaderMaterial(PointShader).clone();
-
             material.uniforms['tDiffuse'].value = this.sprite;
             material.uniforms['color'].value = color;
             material.uniforms['opacity'].value = options.opacity;
@@ -226,8 +207,6 @@ export default class GeometryDisplay extends Display {
             mesh.add(new THREE.Points(geometry, material));
         }
         else {
-            geometry = new THREE.BufferGeometry().fromGeometry(geometry);
-
             material = new materials[options.material]();
             material.flatShading = options.shading === 'Flat';
             material.color = new THREE.Color().set(options.color);
@@ -242,8 +221,11 @@ export default class GeometryDisplay extends Display {
 
         group.add(mesh);
 
-        // Set inital position
         mesh.position.set(options.x, options.y, options.z);
+
+        if (rotation) {
+            mesh.rotation.set(rotation.x, rotation.y, rotation.z);
+        }
 
         this.mesh = mesh;
         this.material = material;
