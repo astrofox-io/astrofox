@@ -24,7 +24,7 @@ export default class RGBShiftControl extends UIPureComponent {
     }
 
     render() {
-        const { active, stageWidth } = this.props,
+        const { stageWidth } = this.props,
             { offset, angle } = this.state;
 
         return (

@@ -43,9 +43,10 @@ export class TabPanel extends UIComponent {
             };
 
             tabs.push(
-                <div key={index}
-                     className={classNames(tabClasses, child.props.className)}
-                     onClick={this.onTabClick.bind(this, index)}>
+                <div
+                    key={index}
+                    className={classNames(tabClasses, child.props.className)}
+                    onClick={this.onTabClick.bind(this, index)}>
                     {child.props.name}
                 </div>
             );

@@ -61,7 +61,7 @@ export default class DualRangeInput extends UIComponent {
         let { start, end } = this.props,
             index = name === 'range0' ? 0 : 1;
 
-        if (index == 0) {
+        if (index === 0) {
             start = val;
         }
         else {
@@ -102,11 +102,11 @@ export default class DualRangeInput extends UIComponent {
 
         return (
             <div
-                ref='range'
+                ref={e => this.range = e}
                 className='input-dual-range'
                 onClick={this.onClick}>
                 <RangeInput
-                    ref='range0'
+                    ref={e => this.range0 = e}
                     name='range0'
                     min={min}
                     max={max}
@@ -121,7 +121,7 @@ export default class DualRangeInput extends UIComponent {
                     onInput={this.onInput}
                 />
                 <RangeInput
-                    ref='range1'
+                    ref={e => this.range1 = e}
                     name='range1'
                     min={min}
                     max={max}

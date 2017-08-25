@@ -41,18 +41,15 @@ export default class GeometryDisplay extends Display {
             else if (options.wireframe !== undefined) {
                 if (this.options.material !== 'Points') {
                     this.material.wireframe = options.wireframe;
-                    this.material.needsUpdate = true;
                 }
             }
             // Change opacity
             else if (options.opacity !== undefined) {
                 this.material.opacity = options.opacity;
-                this.material.needsUpdate = true;
             }
             // Change color
             else if (options.color !== undefined) {
                 this.material.color = new THREE.Color().set(options.color);
-                this.material.needsUpdate = true;
             }
             // Change position
             else if (options.x !== undefined|| options.y !== undefined || options.z !== undefined) {

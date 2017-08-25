@@ -86,7 +86,7 @@ export function getCodecs(ffmpeg) {
         process.on('close', () => {
             let codecs = { audio: {}, video: {}, subtitle: {}},
                 lines = buffer.split(/\r\n|\r|\n/),
-                regex = /^\s*([D\.])([E\.])([VAS])([I\.])([L\.])([S\.]) ([^ ]+) +(.*)$/,
+                regex = /^\s*([D.])([E.])([VAS])([I.])([L.])([S.]) ([^ ]+) +(.*)$/,
                 types = { V: 'video', A: 'audio', S: 'subtitle' };
 
             lines.forEach(line => {

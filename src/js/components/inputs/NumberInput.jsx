@@ -67,7 +67,7 @@ export default class NumberInput extends UIComponent {
             props = this.props;
 
         if (props.value !== val) {
-            let regex = /^(0|\-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
+            let regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
             // If valid number
             if (regex.test(val)) {

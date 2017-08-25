@@ -383,17 +383,18 @@ export default class Application extends EventEmitter {
             },
             error => {
                 if (error.message.indexOf('incorrect header check') > -1) {
-                    IO.readFile(file).then(data => {
-                        this.stage.loadConfig(JSON.parse(data));
-                        this.resetChanges();
+                    IO.readFile(file)
+                        .then(data => {
+                            this.stage.loadConfig(JSON.parse(data));
+                            this.resetChanges();
 
-                        this.projectFile = file;
+                            this.projectFile = file;
 
-                        events.emit('project-loaded');
-                    })
-                    .catch(error => {
-                        raiseError('Invalid project file.', error);
-                    });
+                            events.emit('project-loaded');
+                        })
+                        .catch(error => {
+                            raiseError('Invalid project file.', error);
+                        });
                 }
                 else {
                     throw error;

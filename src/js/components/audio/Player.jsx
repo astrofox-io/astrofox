@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
+import UIPureComponent from '../UIPureComponent';
 import AudioWaveform from './AudioWaveform';
 import Oscilloscope from './Oscilloscope';
 import Spectrum from './Spectrum';
@@ -12,7 +12,7 @@ import RangeInput from '../inputs/RangeInput';
 
 const PROGRESS_MAX = 1000;
 
-export default class Player extends UIComponent {
+export default class Player extends UIPureComponent {
     constructor(props, context) {
         super(props);
 
@@ -217,7 +217,7 @@ Player.contextTypes = {
     app: propTypes.object
 };
 
-class VolumeControl extends UIComponent {
+class VolumeControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -277,7 +277,7 @@ class VolumeControl extends UIComponent {
     }
 }
 
-class ProgressControl extends UIComponent {
+class ProgressControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
