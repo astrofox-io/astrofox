@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import Display from './Display';
 import SpectrumParser from '../audio/SpectrumParser';
-import PointShader from '../shaders/PointShader';
 
 const materials = {
     Normal: THREE.MeshNormalMaterial,
@@ -48,21 +47,11 @@ export default class GeometryDisplay extends Display {
             // Change opacity
             else if (options.opacity !== undefined) {
                 this.material.opacity = options.opacity;
-
-                if (this.options.material === 'Points') {
-                    this.material.uniforms.opacity.value = options.opacity;
-                }
-
                 this.material.needsUpdate = true;
             }
             // Change color
             else if (options.color !== undefined) {
                 this.material.color = new THREE.Color().set(options.color);
-
-                if (this.options.material === 'Points') {
-                    this.material.uniforms.color.value = this.material.color;
-                }
-
                 this.material.needsUpdate = true;
             }
             // Change position
@@ -175,46 +164,40 @@ export default class GeometryDisplay extends Display {
             mesh.add(new THREE.LineSegments(
                 new THREE.EdgesGeometry(geometry, 2),
                 new THREE.LineBasicMaterial({
-                    color: new THREE.Color().set(this.options.edgeColor),
+                    color: new THREE.Color().set(options.edgeColor),
                     transparent: true,
                     opacity: 0.9
                 })
             ));
         }
 
+        // Get material
+        material = new materials[options.material]();
+
         // Create mesh
         if (options.material === 'Points') {
-            let length = geometry.getAttribute('position').count,
-                colors = new Float32Array(length * 3),
-                sizes = new Float32Array(length),
-                color = new THREE.Color().set(options.color);
-
-            for (let i = 0; i < length; i++) {
-                color.toArray(colors, i * 3);
-                sizes[i] = POINT_SIZE;
-            }
-
-            geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
-            geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-            material = new THREE.ShaderMaterial(PointShader).clone();
-            material.uniforms['tDiffuse'].value = this.sprite;
-            material.uniforms['color'].value = color;
-            material.uniforms['opacity'].value = options.opacity;
-            material.needsUpdate = true;
-            material.transparent = true;
+            Object.assign(material, {
+                size: POINT_SIZE,
+                sizeAttenuation: true,
+                map: this.sprite,
+                transparent: true,
+                alphaTest: 0.5,
+                color: new THREE.Color().set(options.color),
+                needsUpdate: true
+            });
 
             mesh.add(new THREE.Points(geometry, material));
         }
         else {
-            material = new materials[options.material]();
-            material.flatShading = options.shading === 'Flat';
-            material.color = new THREE.Color().set(options.color);
-            material.opacity = options.opacity;
-            material.wireframe = options.wireframe;
-            material.needsUpdate = true;
-            material.transparent = true;
-            material.side = (options.material === 'Basic') ? THREE.FrontSide : THREE.DoubleSide;
+            Object.assign(material, {
+                flatShading: options.shading === 'Flat',
+                color: new THREE.Color().set(options.color),
+                opacity: options.opacity,
+                wireframe: options.wireframe,
+                needsUpdate: true,
+                transparent: true,
+                side: (options.material === 'Basic') ? THREE.FrontSide : THREE.DoubleSide
+            });
 
             mesh.add(new THREE.Mesh(geometry, material));
         }
