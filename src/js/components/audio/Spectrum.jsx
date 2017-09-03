@@ -3,20 +3,22 @@ import React from 'react';
 import UIComponent from '../UIComponent';
 import SpectrumParser from '../../audio/SpectrumParser';
 import CanvasBars from '../../canvas/CanvasBars';
+import { fftSize, sampleRate } from '../../../config/system.json';
 
 export default class Spectrum extends UIComponent {
     constructor(props) {
         super(props);
         
         this.state = {
+            fftSize: fftSize,
+            sampleRate: sampleRate,
             smoothingTimeConstant: 0.5,
             minDecibels: -60,
             maxDecibels: -20,
             minFrequency: 0,
             maxFrequency: 10000,
-            fftSize: 1024,
-            sampleRate: 44100,
-            normalize: false
+            normalize: false,
+            bins: 32
         };
 
         this.canvas = null;
@@ -38,7 +40,7 @@ export default class Spectrum extends UIComponent {
     }
 
     draw(data) {
-        let fft = this.parser.parseFFT(data.fft, 32);
+        let fft = this.parser.parseFFT(data.fft);
 
         this.bars.render(fft);
     }

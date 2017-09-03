@@ -41,7 +41,7 @@ class CanvasAudio extends Component {
                     }
                 }
 
-                if (c == 0 || max > results[i]) {
+                if (c === 0 || max > results[i]) {
                     results[i] = max;
                 }
             }

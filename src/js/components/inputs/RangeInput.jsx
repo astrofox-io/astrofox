@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import UIComponent from '../UIComponent';
 import { val2pct } from '../../util/math';
@@ -88,12 +89,12 @@ export default class RangeInput extends UIComponent {
 
     render() {
         let val = this.state.value,
-            { name, min, max, step, readOnly } = this.props;
+            { name, min, max, step, readOnly, showTrack } = this.props;
 
         return (
             <div className="input-range">
-                <div className="track"/>
-                <div className="fill" style={this.getFillStyle()}/>
+                <div className={classNames({ 'track': true, 'display-none': !showTrack })} />
+                <div className="fill" style={this.getFillStyle()} />
                 <input
                     className="range"
                     type="range"
@@ -123,6 +124,7 @@ RangeInput.defaultProps = {
     buffered: false,
     readOnly: false,
     fillStyle: 'left',
+    showTrack: true,
     onChange: null,
     onInput: null
 };

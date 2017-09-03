@@ -5,102 +5,100 @@
     margin-bottom: 6px;
 }
 
-.controls {
-    .control {
-        background-color: @bg-color1;
-        border-top: 1px solid @border-color-top;
-        border-bottom: 1px solid @border-color-bottom;
-        padding-bottom: 16px;
-        margin: 0 5px 5px 5px;
+.control {
+    background-color: @bg-color1;
+    border-top: 1px solid @border-color-top;
+    border-bottom: 1px solid @border-color-bottom;
+    padding-bottom: 16px;
+    margin: 0 5px 5px 5px;
 
-        .header {
-            padding-left: 8px;
-            margin-bottom: 10px;
+    .header {
+        padding-left: 8px;
+        margin-bottom: 10px;
+        cursor: default;
+        position: relative;
+
+        .label {
+            font-size: @font-small;
+            color: @text-color2;
+            text-shadow: 1px 1px 0 darken(@text-color2, 50%);
+            line-height: 20px;
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 8px;
+        margin: 0 10px 6px 10px;
+        position: relative;
+
+        .label {
+            font-size: @font-small;
+            color: @text-color1;
+            display: inline-block;
+            line-height: 20px;
+            margin-right: 8px;
+            text-align: right;
             cursor: default;
-            position: relative;
 
-            .label {
-                font-size: @font-small;
-                color: @text-color2;
-                text-shadow: 1px 1px 0 darken(@text-color2, 50%);
-                line-height: 20px;
+            &:first-child {
+                margin-left: 20px;
+                min-width: 80px;
             }
         }
 
-        .row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding-bottom: 8px;
-            margin: 0 10px 6px 10px;
-            position: relative;
+        .input {
+            margin-right: 8px;
 
-            .label {
-                font-size: @font-small;
-                color: @text-color1;
-                display: inline-block;
-                line-height: 20px;
-                margin-right: 8px;
-                text-align: right;
-                cursor: default;
-
-                &:first-child {
-                    margin-left: 20px;
-                    min-width: 80px;
-                }
-            }
-
-            .input {
-                margin-right: 8px;
-
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
-
-            .unit {
-                color: @text-color2;
-                font-size: @font-small;
-                margin: 0 8px 0 -4px;
-            }
-
-            .react-icon {
-                color: @text-color3;
-                position: absolute;
-                left: 0;
-                font-size: 16px;
-
-                &:hover {
-                    color: @color1;
-                }
-            }
-
-            .react-icon-on {
-                color: @text-color1;
-            }
-
-            &:after {
-                content: "\0020";
-                border-top: 1px solid lighten(@border-color-bottom, 6%);
-                border-bottom: 1px solid darken(@border-color-top, 8%);
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
+            &:last-child {
+                margin-right: 0;
             }
         }
 
-    }
+        .unit {
+            color: @text-color2;
+            font-size: @font-small;
+            margin: 0 8px 0 -4px;
+        }
 
-    .control-wrapper {
-        &:last-child {
-            .control {
-                margin-bottom: 0;
+        .react-icon {
+            color: @text-color3;
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+
+            &:hover {
+                color: @color1;
             }
+        }
+
+        .react-icon-on {
+            color: @text-color1;
+        }
+
+        &:after {
+            content: "\0020";
+            border-top: 1px solid lighten(@border-color-bottom, 6%);
+            border-bottom: 1px solid darken(@border-color-top, 8%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
         }
     }
 
-    .control-active {
-        border-top: 1px solid @color1;
+}
+
+.control-wrapper {
+    &:last-child {
+        .control {
+            margin-bottom: 0;
+        }
     }
+}
+
+.control-active {
+    border-top: 1px solid @color1;
 }

@@ -1,20 +1,31 @@
 import Component from '../core/Component';
 import { val2pct, db2mag } from '../util/math';
-
-const defaults = {
-    smoothingTimeConstant: 0.5,
-    sampleRate: 44100,
-    fftSize: 1024,
-    minDecibels: -100,
-    maxDecibels: 0,
-    minFrequency: 0,
-    maxFrequency: 22050,
-    normalize: false
-};
+import { fftSize, sampleRate } from '../../config/system.json';
 
 export default class SpectrumParser extends Component {
     constructor(options) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, SpectrumParser.defaults, options));
+
+        this.setBinRange();
+    }
+
+    update(options) {
+        let changed = super.update(options);
+
+        if (changed) {
+            this.setBinRange();
+        }
+
+        return changed;
+    }
+
+    setBinRange() {
+        let { sampleRate, fftSize, minFrequency, maxFrequency } = this.options,
+            range = sampleRate / fftSize;
+
+        this.minBin = ~~(minFrequency / range);
+        this.maxBin = ~~(maxFrequency / range);
+        this.totalBins = this.maxBin - this.minBin;
     }
 
     getDb(fft) {
@@ -28,25 +39,14 @@ export default class SpectrumParser extends Component {
         return val2pct(db, -100, maxDecibels);
     }
 
-    getBinRange() {
-        let { sampleRate, fftSize, minFrequency, maxFrequency } = this.options,
-            range = sampleRate / fftSize,
-            minBin = ~~(minFrequency / range),
-            maxBin = ~~(maxFrequency / range),
-            totalBins = maxBin - minBin;
-
-        return { minBin, maxBin, totalBins };
-    }
-
-    parseFFT(fft, bins) {
+    parseFFT(fft) {
         let i, j, k, size, step, start, end, val, max,
-            results = this.results,
-            buffer = this.buffer,
-            { smoothingTimeConstant } = this.options,
-            { minBin, maxBin, totalBins } = this.getBinRange();
+            { results, buffer, minBin, maxBin, totalBins } = this,
+            { smoothingTimeConstant, bins } = this.options;
 
         bins = bins || totalBins;
 
+        // Resize data arrays
         if (results === undefined || results.length !== bins) {
             results = this.results = new Float32Array(bins);
             buffer = this.buffer = new Float32Array(bins);
@@ -109,3 +109,15 @@ export default class SpectrumParser extends Component {
         return results;
     }
 }
+
+SpectrumParser.defaults = {
+    fftSize: fftSize,
+    sampleRate: sampleRate,
+    smoothingTimeConstant: 0.5,
+    minDecibels: -100,
+    maxDecibels: 0,
+    minFrequency: 0,
+    maxFrequency: sampleRate / 2,
+    normalize: false,
+    bins: 0
+};

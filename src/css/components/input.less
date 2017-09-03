@@ -4,7 +4,7 @@
     line-height: 20px;
     background-color: @bg-color2;
     border: 1px solid @border-color;
-    border-radius: 2px;
+    border-radius: @input-radius;
     padding: 0 3px;
     outline: none;
 
@@ -118,7 +118,8 @@
         width: 100%;
         border-radius: 4px;
         background: lighten(@bg-color2, 10%);
-        .absolute-center();
+        position: absolute;
+        margin: 8px 0;
     }
 
     &>.fill {
@@ -139,6 +140,15 @@
     position: relative;
     height: 22px;
     flex: 1;
+
+    &>.track {
+        height: 4px;
+        width: 100%;
+        border-radius: 4px;
+        background: lighten(@bg-color2, 10%);
+        position: absolute;
+        margin: 8px 0;
+    }
 
     &>.fill {
         pointer-events: none;
@@ -194,7 +204,7 @@
     width: 100px;
     background-color: @bg-color2;
     border: 1px solid @border-color;
-    border-radius: 2px;
+    border-radius: @input-radius;
     position: relative;
     overflow: hidden;
 
@@ -263,12 +273,17 @@
     text-align: center;
     border: 1px solid @border-color;
     background-color: @bg-color2;
-    border-radius: 2px;
+    border-radius: @input-radius;
     display: inline-block;
+    cursor: default;
 
     &:hover {
         background-color: @color1;
     }
+}
+
+.input-button-active {
+    background-color: @color1;
 }
 
 .input-button-disabled {
@@ -279,6 +294,31 @@
     }
 }
 
+.icon-button-text {
+    margin: 0 5px;
+}
+
 .input-normal-text {
     color: @text-color1 !important;
+}
+
+.input-button-group {
+    margin-right: 5px;
+
+    .input-button {
+        margin-right: 0;
+        border-right: 0;
+        border-radius: 0;
+
+        &:first-child {
+            border-top-left-radius: @input-radius;
+            border-bottom-left-radius: @input-radius;
+        }
+
+        &:last-child {
+            border-top-right-radius: @input-radius;
+            border-bottom-right-radius: @input-radius;
+            border-right: 1px solid @border-color;
+        }
+    }
 }

@@ -9,6 +9,7 @@ import Effect from '../../effects/Effect';
 import { events } from '../../core/Global';
 import Layer from './Layer';
 import ButtonInput from '../inputs/ButtonInput';
+import ButtonGroup from '../inputs/ButtonGroup';
 
 export default class LayersPanel extends UIPureComponent {
     constructor(props, context) {
@@ -255,12 +256,14 @@ export default class LayersPanel extends UIPureComponent {
                 <div className="layers">
                     {layers}
                 </div>
-                <div className="button-panel">
+                <div className="panel-buttons">
                     <ButtonInput icon="icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
                     <ButtonInput icon="icon-cube" title="Add Display" onClick={this.onAddDisplayClick} disabled={disabled} />
                     <ButtonInput icon="icon-light-up" title="Add Effect" onClick={this.onAddEffectClick} disabled={disabled} />
-                    <ButtonInput icon="icon-chevron-up" title="Move Layer Up" onClick={this.onMoveUpClick} disabled={disabled} />
-                    <ButtonInput icon="icon-chevron-down" title="Move Layer Down" onClick={this.onMoveDownClick} disabled={disabled} />
+                    <ButtonGroup>
+                        <ButtonInput icon="icon-chevron-up" title="Move Layer Up" onClick={this.onMoveUpClick} disabled={disabled} />
+                        <ButtonInput icon="icon-chevron-down" title="Move Layer Down" onClick={this.onMoveDownClick} disabled={disabled} />
+                    </ButtonGroup>
                     <ButtonInput icon="icon-trash-empty" title="Delete Layer" onClick={this.onRemoveClick} disabled={disabled} />
                 </div>
             </div>

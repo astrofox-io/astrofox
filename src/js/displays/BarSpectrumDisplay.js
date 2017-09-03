@@ -1,13 +1,14 @@
 import CanvasDisplay from './CanvasDisplay';
 import CanvasBars from '../canvas/CanvasBars';
 import SpectrumParser from '../audio/SpectrumParser';
+import { fftSize, sampleRate } from '../../config/system.json';
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
     constructor(options) {
         super(BarSpectrumDisplay, options);
 
         this.bars = new CanvasBars(this.options, this.canvas);
-        this.parser = new SpectrumParser(this.options);
+        this.parser = new SpectrumParser(Object.assign(this.options, { fftSize, sampleRate }));
     }
     
     update(options) {
@@ -52,12 +53,12 @@ BarSpectrumDisplay.defaults = {
     shadowColor: ['#333333', '#000000'],
     rotation: 0,
     opacity: 1.0,
+    fftSize: fftSize,
+    sampleRate: sampleRate,
     smoothingTimeConstant: 0.5,
     minDecibels: -100,
     maxDecibels: -12,
     minFrequency: 0,
     maxFrequency: 6000,
-    fftSize: 1024,
-    sampleRate: 44100,
     normalize: true
 };

@@ -29,16 +29,6 @@
         flex-shrink: 0;
     }
 
-    .button-panel {
-        padding: 5px;
-        width: 100%;
-        background-color: @bg-color1;
-        border-top: 1px solid @border-color-top;
-        border-bottom: 1px solid @border-color-bottom;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
-
     &.vertical {
         flex-direction: column;
         flex-shrink: 0;
@@ -53,6 +43,16 @@
         flex: 1;
         overflow: hidden;
     }
+}
+
+.panel-buttons {
+    padding: 5px;
+    width: 100%;
+    background-color: @bg-color1;
+    border-top: 1px solid @border-color-top;
+    border-bottom: 1px solid @border-color-bottom;
+    overflow: hidden;
+    display: flex;
 }
 
 .splitter {

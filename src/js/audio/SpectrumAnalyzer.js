@@ -1,5 +1,7 @@
+import { fftSize, sampleRate } from '../../config/system.json';
+
 const defaults = {
-    fftSize: 1024,
+    fftSize: fftSize,
     minDecibels: -100,
     maxDecibels: 0,
     smoothingTimeConstant: 0
@@ -29,6 +31,12 @@ export default class SpectrumAnalyzer {
         return this.td;
     }
 
+    getVolume() {
+        return this.fft.reduce(function(a, b) {
+            return a + b;
+        }) / this.fft.length;
+    }
+
     clearFrequencyData() {
         this.fft.fill(0);
     }
@@ -38,6 +46,6 @@ export default class SpectrumAnalyzer {
     }
 
     getMaxFrequency() {
-        return this.audioContext.sampleRate / 2;
+        return sampleRate / 2;
     }
 }

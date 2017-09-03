@@ -379,6 +379,9 @@ export default class App extends UIComponent {
                     onMenuAction={this.onMenuAction}
                 />
                 <div id="body">
+                    <Reactor
+                        visible={state.showReactor}
+                    />
                     <div id="viewport">
                         <Stage
                             ref={el => this.stage = el}
@@ -392,9 +395,6 @@ export default class App extends UIComponent {
                         visible={state.showControlDock}
                     />
                 </div>
-                <Reactor
-                    visible={state.showReactor}
-                />
                 <StatusBar text={state.statusBarText} />
                 <Overlay>
                     {state.modals}

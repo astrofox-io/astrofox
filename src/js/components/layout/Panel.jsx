@@ -75,7 +75,7 @@ export default class Panel extends UIPureComponent {
     }
 
     render() {
-        let splitter,
+        let splitter, text,
             { height } = this.state,
             { title, children, direction, stretch, resizable, className } = this.props,
             style = (height) ? { height: height } : null,
@@ -90,9 +90,13 @@ export default class Panel extends UIPureComponent {
             splitter = <Splitter type="horizontal" onDragStart={this.onStartDrag} />;
         }
 
+        if (title) {
+            text = <div className="title">{title}</div>;
+        }
+
         return (
             <div className={classNames(classes, className)} style={style}>
-                <div className="title">{title}</div>
+                {text}
                 {children}
                 {splitter}
             </div>

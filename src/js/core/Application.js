@@ -44,7 +44,8 @@ export default class Application extends EventEmitter {
             time: 0,
             delta: 0,
             fft: null,
-            td: null
+            td: null,
+            volume: 0
         };
 
         // Rendering statistics
@@ -246,10 +247,12 @@ export default class Application extends EventEmitter {
     }
 
     getFrameData(update) {
-        let data = this.frameData;
+        let data = this.frameData,
+            spectrum = this.spectrum;
 
-        data.fft = this.spectrum.getFrequencyData(update);
-        data.td = this.spectrum.getTimeData(update);
+        data.fft = spectrum.getFrequencyData(update);
+        data.td = spectrum.getTimeData(update);
+        data.volume = spectrum.getVolume();
         data.hasUpdate = update;
 
         // Rendering single frame
