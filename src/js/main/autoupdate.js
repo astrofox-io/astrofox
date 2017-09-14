@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import * as os from 'os';
 import debug from 'debug';
-import { mainWindow } from './window';
-import { APP_PATH } from './environment';
+import { mainWindow } from 'main/window';
+import { APP_PATH } from 'main/environment';
 
 const log = debug('autoupdate');
 

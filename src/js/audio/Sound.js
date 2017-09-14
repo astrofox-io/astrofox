@@ -1,4 +1,4 @@
-import EventEmitter from '../core/EventEmitter';
+import EventEmitter from 'core/EventEmitter';
 
 export default class Sound extends EventEmitter {
     constructor(context) {

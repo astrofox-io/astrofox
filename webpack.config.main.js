@@ -17,6 +17,10 @@ const config = {
         path: path.resolve(__dirname, 'app'),
         filename: 'main.js'
     },
+    resolve: {
+        extensions: ['.js', '.json'],
+        modules: [path.resolve(__dirname, 'src/js'), 'node_modules']
+    },
     module: {
         rules: [
             {

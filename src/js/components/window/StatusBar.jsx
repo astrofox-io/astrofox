@@ -1,10 +1,10 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import { APP_VERSION } from '../../core/Environment';
-import { events } from '../../core/Global';
-import { formatSize } from '../../util/format';
+import UIComponent from 'components/UIComponent';
+import { APP_VERSION } from 'core/Environment';
+import { events } from 'core/Global';
+import { formatSize } from 'util/format';
 
 export default class StatusBar extends UIComponent {
     constructor(props) {

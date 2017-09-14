@@ -1,15 +1,15 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIPureComponent from '../UIPureComponent';
-import Display from '../../displays/Display';
-import CanvasDisplay from '../../displays/CanvasDisplay';
-import Scene from '../../displays/Scene';
-import Effect from '../../effects/Effect';
-import { events } from '../../core/Global';
-import Layer from './Layer';
-import ButtonInput from '../inputs/ButtonInput';
-import ButtonGroup from '../inputs/ButtonGroup';
+import UIPureComponent from 'components/UIPureComponent';
+import Display from 'displays/Display';
+import CanvasDisplay from 'displays/CanvasDisplay';
+import Scene from 'displays/Scene';
+import Effect from 'effects/Effect';
+import { events } from 'core/Global';
+import Layer from 'components/panels/Layer';
+import ButtonInput from 'components/inputs/ButtonInput';
+import ButtonGroup from 'components/inputs/ButtonGroup';
 
 export default class LayersPanel extends UIPureComponent {
     constructor(props, context) {

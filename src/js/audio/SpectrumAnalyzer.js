@@ -1,4 +1,4 @@
-import { fftSize, sampleRate } from '../../config/system.json';
+import { fftSize, sampleRate } from 'config/system.json';
 
 const defaults = {
     fftSize: fftSize,

@@ -1,9 +1,9 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import Button from '../interface/Button';
-import { formatTime } from '../../util/format';
+import UIComponent from 'components/UIComponent';
+import Button from 'components/interface/Button';
+import { formatTime } from 'util/format';
 
 export default class RenderInfo extends UIComponent {
     constructor(props, context) {

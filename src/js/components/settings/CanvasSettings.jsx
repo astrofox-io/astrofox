@@ -1,11 +1,11 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import Button from '../interface/Button';
-import ColorInput from '../inputs/ColorInput';
-import NumberInput from '../inputs/NumberInput';
-import { SettingsPanel, Settings, Row } from '../layout/SettingsPanel';
+import UIComponent from 'components/UIComponent';
+import Button from 'components/interface/Button';
+import ColorInput from 'components/inputs/ColorInput';
+import NumberInput from 'components/inputs/NumberInput';
+import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
 
 export default class CanvasSettings extends UIComponent {
     constructor(props, context) {

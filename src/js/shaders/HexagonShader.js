@@ -1,5 +1,6 @@
 import { Vector2 } from 'three';
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/Hexagon';
 
 export default {
     uniforms: {
@@ -9,6 +10,6 @@ export default {
         resolution: { type: 'v2', value: new Vector2(1, 1) }
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.Hexagon
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

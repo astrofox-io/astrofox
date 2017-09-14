@@ -2,10 +2,10 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import UIComponent from '../UIComponent';
-import RenderInfo from './RenderInfo';
-import { events } from '../../core/Global';
-import { FirstChild } from '../../util/react';
+import UIComponent from 'components/UIComponent';
+import RenderInfo from 'components/stage/RenderInfo';
+import { events } from 'core/Global';
+import { FirstChild } from 'util/react';
 
 export default class Stage extends UIComponent {
     constructor(props, context) {

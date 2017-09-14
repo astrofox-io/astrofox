@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from '../UIPureComponent';
-import { events } from '../../core/Global';
-import Splitter from './Splitter';
+import UIPureComponent from 'components/UIPureComponent';
+import { events } from 'core/Global';
+import Splitter from 'components/layout/Splitter';
 
 export default class Panel extends UIPureComponent {
     constructor(props) {

@@ -1,4 +1,5 @@
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/Copy';
 
 export default {
     uniforms: {
@@ -7,6 +8,6 @@ export default {
         alpha: { type: 'i', value: 0 }
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.Copy
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

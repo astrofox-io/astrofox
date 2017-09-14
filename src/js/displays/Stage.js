@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
-import Scene from './Scene';
-import Display from '../displays/Display';
-import WatermarkDisplay from '../displays/WatermarkDisplay';
-import NodeCollection from '../core/NodeCollection';
-import Composer from '../graphics/Composer';
-import { CanvasBuffer, GLBuffer } from '../graphics/FrameBuffer';
-import { logger, raiseError, events } from '../core/Global';
-import * as displayLibrary from '../lib/displays';
-import * as effectsLibrary from '../lib/effects';
+import Scene from 'displays/Scene';
+import Display from 'displays/Display';
+import WatermarkDisplay from 'displays/WatermarkDisplay';
+import NodeCollection from 'core/NodeCollection';
+import Composer from 'graphics/Composer';
+import { CanvasBuffer, GLBuffer } from 'graphics/FrameBuffer';
+import { logger, raiseError, events } from 'core/Global';
+import * as displayLibrary from 'lib/displays';
+import * as effectsLibrary from 'lib/effects';
 
 export default class Stage extends Display {
     constructor(app, options) {

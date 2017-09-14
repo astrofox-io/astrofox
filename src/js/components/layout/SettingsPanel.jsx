@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { styleProps } from '../../util/react';
+import { styleProps } from 'util/react';
 
 export const SettingsPanel = (props) => {
     return (

@@ -1,9 +1,9 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
-import SpectrumParser from '../../audio/SpectrumParser';
-import CanvasBars from '../../canvas/CanvasBars';
-import { fftSize, sampleRate } from '../../../config/system.json';
+import UIComponent from 'components/UIComponent';
+import SpectrumParser from 'audio/SpectrumParser';
+import CanvasBars from 'canvas/CanvasBars';
+import { fftSize, sampleRate } from 'config/system.json';
 
 export default class Spectrum extends UIComponent {
     constructor(props) {

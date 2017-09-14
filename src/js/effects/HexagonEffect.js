@@ -1,6 +1,6 @@
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import HexagonShader from '../shaders/HexagonShader';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import HexagonShader from 'shaders/HexagonShader';
 
 export default class HexagonEffect extends Effect {
     constructor(options) {

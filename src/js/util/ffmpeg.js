@@ -1,4 +1,4 @@
-import Process from '../core/Process';
+import Process from 'core/Process';
 
 export function getVersion(ffmpeg) {
     return new Promise((resolve, reject) => {

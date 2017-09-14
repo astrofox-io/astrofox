@@ -1,10 +1,10 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
-import NumberInput from '../inputs/NumberInput';
-import RangeInput from '../inputs/RangeInput';
-import SelectInput from '../inputs/SelectInput';
-import { Control, Row } from './Control';
+import UIPureComponent from 'components/UIPureComponent';
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+import SelectInput from 'components/inputs/SelectInput';
+import { Control, Row } from 'components/controls/Control';
 
 const types = [
     'Square',

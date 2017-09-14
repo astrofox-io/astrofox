@@ -1,9 +1,8 @@
 import { ShaderLib, UniformsUtils } from 'three';
-const depthShader = ShaderLib['depthRGBA'];
-const depthUniforms = UniformsUtils.clone(depthShader.uniforms);
+const { uniforms, fragmentShader, vertexShader } = ShaderLib['depthRGBA'];
 
 export default {
-    uniforms: depthUniforms,
-    fragmentShader: depthShader.fragmentShader,
-    vertexShader: depthShader.vertexShader
+    uniforms: UniformsUtils.clone(uniforms),
+    fragmentShader: fragmentShader,
+    vertexShader: vertexShader
 };

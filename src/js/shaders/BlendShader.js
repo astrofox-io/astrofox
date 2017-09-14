@@ -1,4 +1,5 @@
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/Blend';
 
 export default {
     uniforms: {
@@ -11,6 +12,6 @@ export default {
         inverse: { type: 'i', value: 0 }
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.Blend
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

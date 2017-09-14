@@ -1,4 +1,5 @@
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/RGBShift';
 
 export default {
     uniforms: {
@@ -7,6 +8,6 @@ export default {
         angle: {type: 'f', value: 0.0}
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.RGBShift
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

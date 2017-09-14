@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 
-import EventEmitter from './EventEmitter';
-import { logger } from './Global';
+import EventEmitter from 'core/EventEmitter';
+import { logger } from 'core/Global';
 
 export default class AppUpdater extends EventEmitter {
     constructor(app) {

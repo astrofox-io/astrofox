@@ -1,20 +1,20 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
 
-import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from './Environment';
-import { events, logger, raiseError } from './Global';
-import * as IO from '../util/io';
-import AppUpdater from './AppUpdater';
-import EventEmitter from './EventEmitter';
-import LicenseManager from './LicenseManager';
-import Player from '../audio/Player';
-import BufferedSound from '../audio/BufferedSound';
-import SpectrumAnalyzer from '../audio/SpectrumAnalyzer';
-import Stage from '../displays/Stage';
-import VideoRenderer from '../video/VideoRenderer';
+import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from 'core/Environment';
+import { events, logger, raiseError } from 'core/Global';
+import * as IO from 'util/io';
+import AppUpdater from 'core/AppUpdater';
+import EventEmitter from 'core/EventEmitter';
+import LicenseManager from 'core/LicenseManager';
+import Player from 'audio/Player';
+import BufferedSound from 'audio/BufferedSound';
+import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
+import Stage from 'displays/Stage';
+import VideoRenderer from 'video/VideoRenderer';
 
-import appConfig from '../../config/app.json';
-import menuConfig from '../../config/menu.json';
+import appConfig from 'config/app.json';
+import menuConfig from 'config/menu.json';
 
 const FPS_POLL_INTERVAL = 500;
 

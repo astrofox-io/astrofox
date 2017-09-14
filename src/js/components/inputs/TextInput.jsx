@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
+import UIComponent from 'components/UIComponent';
 
 export default class TextInput extends UIComponent {
     constructor(props) {

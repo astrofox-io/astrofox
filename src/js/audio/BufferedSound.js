@@ -1,4 +1,4 @@
-import Sound from '../audio/Sound';
+import Sound from 'audio/Sound';
 
 export default class BufferedSound extends Sound {
     constructor(context) {

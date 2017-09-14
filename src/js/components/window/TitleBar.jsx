@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
-import Window from '../../core/Window';
+import UIComponent from 'components/UIComponent';
+import Window from 'core/Window';
 
 export default class TitleBar extends UIComponent {
     constructor(props) {

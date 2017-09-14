@@ -1,6 +1,6 @@
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import LEDShader from '../shaders/LEDShader';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import LEDShader from 'shaders/LEDShader';
 
 export default class LEDEffect extends Effect {
     constructor(options) {

@@ -1,18 +1,18 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import Window from '../../core/Window';
+import UIComponent from 'components/UIComponent';
+import Window from 'core/Window';
 
-import Button from '../interface/Button';
-import ButtonInput from '../inputs/ButtonInput';
-import NumberInput from '../inputs/NumberInput';
-import TimeInput from '../inputs/TimeInput';
-import SelectInput from '../inputs/SelectInput';
-import TextInput from '../inputs/TextInput';
-import { SettingsPanel, Settings, Row } from '../layout/SettingsPanel';
-import { replaceExt } from '../../util/file';
-import { formatTime } from '../../util/format';
+import Button from 'components/interface/Button';
+import ButtonInput from 'components/inputs/ButtonInput';
+import NumberInput from 'components/inputs/NumberInput';
+import TimeInput from 'components/inputs/TimeInput';
+import SelectInput from 'components/inputs/SelectInput';
+import TextInput from 'components/inputs/TextInput';
+import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
+import { replaceExt } from 'util/file';
+import { formatTime } from 'util/format';
 
 const videoFormats = [
     'mp4',

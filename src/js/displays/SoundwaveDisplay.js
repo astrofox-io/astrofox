@@ -1,6 +1,6 @@
-import CanvasDisplay from './CanvasDisplay';
-import CanvasWave from '../canvas/CanvasWave';
-import WaveParser from '../audio/WaveParser';
+import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasWave from 'canvas/CanvasWave';
+import WaveParser from 'audio/WaveParser';
 
 export default class SoundwaveDisplay extends CanvasDisplay {
     constructor(options) {

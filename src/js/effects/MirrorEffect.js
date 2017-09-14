@@ -1,6 +1,6 @@
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import MirrorShader from '../shaders/MirrorShader';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import MirrorShader from 'shaders/MirrorShader';
 
 export default class MirrorEffect extends Effect {
     constructor(options) {

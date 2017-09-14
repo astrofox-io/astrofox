@@ -1,8 +1,8 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
-import CanvasWave from '../../canvas/CanvasWave';
-import WaveParser from '../../audio/WaveParser';
+import UIComponent from 'components/UIComponent';
+import CanvasWave from 'canvas/CanvasWave';
+import WaveParser from 'audio/WaveParser';
 
 export default class Oscilloscope extends UIComponent {
     constructor(props) {

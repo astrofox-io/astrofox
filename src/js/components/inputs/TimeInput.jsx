@@ -1,9 +1,9 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
-import TextInput from './TextInput';
-import { formatSeekTime } from '../../util/format';
-import { clamp } from '../../util/math.js';
+import UIComponent from 'components/UIComponent';
+import TextInput from 'lib/inputs';
+import { formatSeekTime } from 'util/format';
+import { clamp } from 'util/math.js';
 
 export default class TimeInput extends UIComponent {
     constructor(props) {

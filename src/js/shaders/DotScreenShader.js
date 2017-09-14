@@ -1,5 +1,6 @@
 import { Vector2 } from 'three';
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/DotScreen';
 
 export default {
     uniforms: {
@@ -10,6 +11,6 @@ export default {
         scale: { type: 'f', value: 1.0 }
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.DotScreen
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import SavePass from '../graphics/SavePass';
-import BlendPass from '../graphics/BlendPass';
-import GaussianBlurPass from '../graphics/GaussianBlurPass';
-import LuminanceShader from '../shaders/LuminanceShader';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import SavePass from 'graphics/SavePass';
+import BlendPass from 'graphics/BlendPass';
+import GaussianBlurPass from 'graphics/GaussianBlurPass';
+import LuminanceShader from 'shaders/LuminanceShader';
 
 export default class BloomEffect extends Effect {
     constructor(options) {

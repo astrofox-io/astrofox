@@ -1,4 +1,4 @@
-const NodeBuffer = require('buffer').Buffer;
+import { Buffer as NodeBuffer } from 'buffer';
 
 export function toArrayBuffer(buffer) {
     let ab = new ArrayBuffer(buffer.length);

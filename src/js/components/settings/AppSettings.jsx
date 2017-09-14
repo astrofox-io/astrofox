@@ -1,10 +1,10 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import Button from '../interface/Button';
-import ToggleInput from '../inputs/ToggleInput';
-import { SettingsPanel, Settings, Group, Row } from '../layout/SettingsPanel';
+import UIComponent from 'components/UIComponent';
+import Button from 'components/interface/Button';
+import ToggleInput from 'components/inputs/ToggleInput';
+import { SettingsPanel, Settings, Group, Row } from 'components/layout/SettingsPanel';
 
 export default class AppSettings extends UIComponent {
     constructor(props, context) {

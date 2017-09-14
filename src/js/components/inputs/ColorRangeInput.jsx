@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ColorInput from './ColorInput';
+import ColorInput from 'components/inputs/ColorInput';
 
 const ColorRangeInput = (props) => {
     let colorRangeStyle = {

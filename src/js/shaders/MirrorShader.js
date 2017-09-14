@@ -1,4 +1,5 @@
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/Mirror';
 
 export default {
     uniforms: {
@@ -6,6 +7,6 @@ export default {
         side: {type: 'i', value: 1}
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.Mirror
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

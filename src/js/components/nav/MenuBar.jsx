@@ -1,7 +1,7 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
-import MenuBarItem from './MenuBarItem';
+import UIComponent from 'components/UIComponent';
+import MenuBarItem from 'components/nav/MenuBarItem';
 
 export default class MenuBar extends UIComponent {
     constructor(props) {

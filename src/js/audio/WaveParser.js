@@ -1,4 +1,4 @@
-import { val2pct } from '../util/math';
+import { val2pct } from 'util/math';
 
 export default class WaveParser {
     static parseTimeData(data, points, distance) {

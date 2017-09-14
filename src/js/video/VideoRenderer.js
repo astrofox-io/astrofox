@@ -1,13 +1,13 @@
 import path from 'path';
 
-import EventEmitter from '../core/EventEmitter';
-import RenderProcess from './RenderProcess';
-import AudioProcess from './AudioProcess';
-import MergeProcess from './MergeProcess';
-import { logger } from '../core/Global';
-import { removeFile } from '../util/io';
-import { TEMP_PATH, FFMPEG_PATH } from '../core/Environment';
-import { uniqueId } from '../util/crypto';
+import EventEmitter from 'core/EventEmitter';
+import RenderProcess from 'video/RenderProcess';
+import AudioProcess from 'video/AudioProcess';
+import MergeProcess from 'video/MergeProcess';
+import { logger } from 'core/Global';
+import { removeFile } from 'util/io';
+import { TEMP_PATH, FFMPEG_PATH } from 'core/Environment';
+import { uniqueId } from 'util/crypto';
 
 const defaults = {
     fps: 30,

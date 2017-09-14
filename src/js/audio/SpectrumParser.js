@@ -1,6 +1,6 @@
-import Component from '../core/Component';
-import { val2pct, db2mag } from '../util/math';
-import { fftSize, sampleRate } from '../../config/system.json';
+import Component from 'core/Component';
+import { val2pct, db2mag } from 'util/math';
+import { fftSize, sampleRate } from 'config/system.json';
 
 export default class SpectrumParser extends Component {
     constructor(options) {

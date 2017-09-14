@@ -1,7 +1,7 @@
-import CanvasDisplay from './CanvasDisplay';
-import CanvasWave from '../canvas/CanvasWave';
-import SpectrumParser from '../audio/SpectrumParser';
-import { fftSize, sampleRate } from '../../config/system.json';
+import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasWave from 'canvas/CanvasWave';
+import SpectrumParser from 'audio/SpectrumParser';
+import { fftSize, sampleRate } from 'config/system.json';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
     constructor(options) {

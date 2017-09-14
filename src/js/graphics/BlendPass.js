@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import ShaderPass from './ShaderPass';
-import BlendShader from '../shaders/BlendShader';
-import blendModes from '../../config/blendModes';
+import ShaderPass from 'graphics/ShaderPass';
+import BlendShader from 'shaders/BlendShader';
+import blendModes from 'config/blendModes';
 
 const defaults = {
     transparent: true,

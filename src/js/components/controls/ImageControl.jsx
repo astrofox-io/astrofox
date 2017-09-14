@@ -1,13 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from '../UIPureComponent';
-import NumberInput from '../inputs/NumberInput';
-import ImageInput from '../inputs/ImageInput';
-import RangeInput from '../inputs/RangeInput';
-import { Control, Row } from './Control';
+import UIPureComponent from 'components/UIPureComponent';
+import NumberInput from 'components/inputs/NumberInput';
+import ImageInput from 'components/inputs/ImageInput';
+import RangeInput from 'components/inputs/RangeInput';
+import { Control, Row } from 'components/controls/Control';
 
-import BLANK_IMAGE from '../../../images/data/blankGif.json';
+import BLANK_IMAGE from 'images/blankGif.json';
 
 export default class ImageControl extends UIPureComponent {
     constructor(props) {

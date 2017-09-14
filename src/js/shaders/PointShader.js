@@ -1,5 +1,6 @@
 import { Color } from 'three';
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Point';
+import fragment from 'glsl/fragment/Point';
 
 export default {
     uniforms: {
@@ -8,7 +9,7 @@ export default {
         color: { type: 'c', value: new Color(0xffffff) }
     },
 
-    vertexShader: glsl.vertex.Point,
-    fragmentShader: glsl.fragment.Point,
+    vertexShader: vertex,
+    fragmentShader: fragment,
     alphaTest: 0.9
 };

@@ -1,6 +1,6 @@
 /* eslint-disable react/require-render-return */
-import Component from '../core/Component';
-import CanvasBars from './CanvasBars';
+import Component from 'core/Component';
+import CanvasBars from 'canvas/CanvasBars';
 
 class CanvasAudio extends Component {
     constructor(options, canvas) {

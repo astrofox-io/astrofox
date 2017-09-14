@@ -19,12 +19,22 @@ const config = {
         libraryTarget: 'var'
     },
     resolve: {
-        extensions: ['.js', '.json', '.jsx']
+        extensions: ['.js', '.json', '.jsx', '.glsl'],
+        alias: {
+            glsl: path.resolve(__dirname, 'src/glsl')
+        },
+        modules: [path.resolve(__dirname, 'src/js'), 'node_modules']
+    },
+    resolveLoader: {
+        modules: [
+            'node_modules',
+            path.resolve(__dirname, 'build/loaders')
+        ]
     },
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                test: /\.js[x]?$/,
                 include: [
                     path.resolve(__dirname, 'src/js')
                 ],
@@ -34,6 +44,10 @@ const config = {
                         cacheDirectory: true
                     }
                 }
+            },
+            {
+                test: /\.glsl$/,
+                use: ['glsl-loader']
             }
         ]
     },

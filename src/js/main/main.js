@@ -1,9 +1,9 @@
 import { app, systemPreferences, ipcMain } from 'electron';
 import fs from 'fs';
 import debug from 'debug';
-import * as env from './environment';
-import AppUpdater from './autoupdate';
-import { createWindow, disposeWindow } from './window';
+import * as env from 'main/environment';
+import AppUpdater from 'main/autoupdate';
+import { createWindow, disposeWindow } from 'main/window';
 
 const log = debug('main');
 const appUpdater = new AppUpdater();

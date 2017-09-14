@@ -1,10 +1,11 @@
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/Grid';
 
 export default {
     uniforms: {
         tDiffuse: { type: 't', value: null }
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.Grid
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

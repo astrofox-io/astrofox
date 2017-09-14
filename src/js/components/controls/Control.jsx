@@ -26,7 +26,7 @@ export const Row = (props) => {
     }
 
     if (props.react) {
-        icon = <span className="react-icon icon-flash" onClick={props.react} />;
+        icon = <span className="react-icon icon-flash" onClick={onReactClick} />;
     }
 
     return (
@@ -36,4 +36,8 @@ export const Row = (props) => {
             {props.children}
         </div>
     );
+};
+
+const onReactClick = () => {
+
 };

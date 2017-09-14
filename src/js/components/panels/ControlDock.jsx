@@ -1,10 +1,10 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
-import Panel from '../layout/Panel';
-import PanelDock from '../layout/PanelDock';
-import ControlsPanel from './ControlsPanel';
-import LayersPanel from './LayersPanel';
+import UIPureComponent from 'components/UIPureComponent';
+import Panel from 'components/layout/Panel';
+import PanelDock from 'components/layout/PanelDock';
+import ControlsPanel from 'components/panels/ControlsPanel';
+import LayersPanel from 'components/panels/LayersPanel';
 
 export default class ControlDock extends UIPureComponent {
     constructor(props) {

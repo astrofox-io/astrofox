@@ -1,4 +1,4 @@
-import Process from '../core/Process';
+import Process from 'core/Process';
 
 export default class MergeProcess extends Process {
     constructor(command) {

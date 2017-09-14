@@ -1,10 +1,10 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
-import { TabPanel, Tab } from '../layout/TabPanel';
-import * as displayLibrary from '../../lib/displays';
-import * as effectsLibrary from '../../lib/effects';
-import { styleProps } from '../../util/react';
+import UIComponent from 'components/UIComponent';
+import { TabPanel, Tab } from 'components/layout/TabPanel';
+import * as displayLibrary from 'lib/displays';
+import * as effectsLibrary from 'lib/effects';
+import { styleProps } from 'util/react';
 
 export default class ControlPicker extends UIComponent {
     constructor(props) {

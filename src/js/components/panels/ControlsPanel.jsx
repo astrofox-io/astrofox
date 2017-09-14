@@ -1,8 +1,8 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIPureComponent from '../UIPureComponent';
-import { getControlComponent } from '../../util/controls';
+import UIPureComponent from 'components/UIPureComponent';
+import { getControlComponent } from 'util/controls';
 
 export default class ControlsPanel extends UIPureComponent {
     constructor(props, context) {

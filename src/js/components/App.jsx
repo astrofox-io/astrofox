@@ -1,29 +1,37 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from './UIComponent';
-import Window from '../core/Window';
-import { events } from '../core/Global';
-import About from './window/About';
-import AppSettings from './settings/AppSettings';
-import AppUpdates from './window/AppUpdates';
-import CanvasSettings from './settings/CanvasSettings';
-import ControlDock from './panels/ControlDock';
-import ControlPicker from './window/ControlPicker';
-import Dialog from './window/Dialog';
-import MenuBar from './nav/MenuBar';
-import ModalWindow from './window/ModalWindow';
-import Overlay from './window/Overlay';
-import Player from './audio/Player';
-import Reactor from './audio/Reactor';
-import StatusBar from './window/StatusBar';
-import Stage from './stage/Stage';
-import TitleBar from './window/TitleBar';
-import VideoSettings from './settings/VideoSettings';
+import Window from 'core/Window';
+import { events } from 'core/Global';
 
-import menuConfig from '../../config/menu';
-import audioExtensions from '../../config/audioExtensions';
-import fontOptions from '../../config/fonts.json';
+import UIComponent from 'components/UIComponent';
+
+import About from 'components/window/About';
+import AppUpdates from 'components/window/AppUpdates';
+import Dialog from 'components/window/Dialog';
+import ModalWindow from 'components/window/ModalWindow';
+import Overlay from 'components/window/Overlay';
+import ControlPicker from 'components/window/ControlPicker';
+import StatusBar from 'components/window/StatusBar';
+import TitleBar from 'components/window/TitleBar';
+
+import AppSettings from 'components/settings/AppSettings';
+import CanvasSettings from 'components/settings/CanvasSettings';
+import VideoSettings from 'components/settings/VideoSettings';
+
+import ControlDock from 'components/panels/ControlDock';
+
+import MenuBar from 'components/nav/MenuBar';
+
+import Player from 'components/audio/Player';
+import Reactor from 'components/audio/Reactor';
+import AudioAnalyzer from 'components/audio/AudioAnalyzer';
+
+import Stage from 'components/stage/Stage';
+
+import menuConfig from 'config/menu';
+import audioExtensions from 'config/audioExtensions';
+import fontOptions from 'config/fonts.json';
 
 export default class App extends UIComponent {
     constructor(props) {
@@ -379,10 +387,8 @@ export default class App extends UIComponent {
                     onMenuAction={this.onMenuAction}
                 />
                 <div id="body">
-                    <Reactor
-                        visible={state.showReactor}
-                    />
                     <div id="viewport">
+                        <AudioAnalyzer />
                         <Stage
                             ref={el => this.stage = el}
                             onFileDropped={this.loadAudioFile}

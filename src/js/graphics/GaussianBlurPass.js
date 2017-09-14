@@ -1,6 +1,6 @@
-import ShaderPass from './ShaderPass';
-import MultiPass from './MultiPass';
-import GaussianBlurShader from '../shaders/GaussianBlurShader';
+import ShaderPass from 'graphics/ShaderPass';
+import MultiPass from 'graphics/MultiPass';
+import GaussianBlurShader from 'shaders/GaussianBlurShader';
 
 const defaults = {
     amount: 1.0,

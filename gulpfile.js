@@ -2,8 +2,6 @@ const del = require('del');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const cleancss = require('gulp-clean-css');
-const glsl = require('gulp-glsl');
-const header = require('gulp-header');
 const iconfont = require('gulp-iconfont');
 const gulpif = require('gulp-if');
 const less = require('gulp-less');
@@ -18,7 +16,7 @@ const webpack = require('webpack');
 
 const appConfig = require('./webpack.config');
 const mainConfig = require('./webpack.config.main');
-const fontConfig = require('./src/config/fonts.json');
+const fontConfig = require('./src/js/config/fonts.json');
 
 const config = {
     main: {
@@ -33,20 +31,19 @@ const config = {
     },
     icons: {
         src: 'src/svg/icons/*.svg',
-        templateFile: 'src/build/templates/icons.css.tpl',
+        templateFile: 'build/templates/icons.css.tpl',
         cssDest: 'app/browser/css/',
         cssFilename: 'icons.css',
         fontDest: 'app/browser/fonts/icons/'
     },
     fonts: {
-        templateFile: 'src/build/templates/fonts.css.tpl',
+        templateFile: 'build/templates/fonts.css.tpl',
         filename: 'fonts.css',
         dest: 'app/browser/css/'
     },
     glsl: {
         src: 'src/glsl/**/*.glsl',
-        dest: 'src/js/lib/',
-        filename: 'ShaderCode.js'
+        dest: 'src/js/lib/'
     }
 };
 
@@ -179,17 +176,6 @@ function buildIcons() {
         .pipe(gulp.dest(fontDest));
 }
 
-// Compile GLSL into JS
-function buildShaders() {
-    let { src, dest } = config.glsl;
-
-    return gulp.src(src)
-        .pipe(plumber({errorHandler: logError}))
-        .pipe(glsl({ format: 'object', es6: true }))
-        .pipe(header('/* eslint-disable quotes */\n'))
-        .pipe(gulp.dest(dest));
-}
-
 // Minify javascript
 function minifyJs() {
     return gulp.src(['app/browser/js/*.js','app/main.js'])
@@ -216,8 +202,6 @@ gulp.task('build-icons', buildIcons);
 
 gulp.task('build-fonts', buildFonts);
 
-gulp.task('build-shaders', buildShaders);
-
 gulp.task('minify-js', minifyJs);
 
 gulp.task('build-all', ['build-shaders', 'build-css', 'build-icons', 'build-fonts', 'build-main', 'build-js']);
@@ -233,7 +217,6 @@ gulp.task('watch', ['build-css', 'build-main', 'build-js-watch'], () => {
     // Watch for changes
     gulp.watch('./src/css/**/*.less', ['build-css']);
     gulp.watch('./src/js/main/**/*.js', ['build-main']);
-    gulp.watch('./src/glsl/**/*.glsl', ['build-shaders']);
 });
 
 gulp.task('default', ['watch']);

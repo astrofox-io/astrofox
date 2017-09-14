@@ -1,15 +1,15 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
-import ColorInput from '../inputs/ColorInput';
-import NumberInput from '../inputs/NumberInput';
-import RangeInput from '../inputs/RangeInput';
-import SelectInput from '../inputs/SelectInput';
-import TextInput from '../inputs/TextInput';
-import ToggleInput from '../inputs/ToggleInput';
-import { Control, Row } from './Control';
+import UIPureComponent from 'components/UIPureComponent';
+import ColorInput from 'components/inputs/ColorInput';
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+import SelectInput from 'components/inputs/SelectInput';
+import TextInput from 'components/inputs/TextInput';
+import ToggleInput from 'components/inputs/ToggleInput';
+import { Control, Row } from 'components/controls/Control';
 
-import fontOptions from '../../../config/fonts.json';
+import fontOptions from 'config/fonts.json';
 
 export default class TextControl extends UIPureComponent {
     constructor(props) {

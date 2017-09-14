@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Application from './core/Application';
-import * as Environment from './core/Environment';
-import App from './components/App';
+import Application from 'core/Application';
+import * as Environment from 'core/Environment';
+import App from 'components/App';
 
 const app = new Application();
 

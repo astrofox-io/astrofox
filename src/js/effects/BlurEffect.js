@@ -1,10 +1,10 @@
-import Effect from '../effects/Effect';
-import BoxBlurShader from '../shaders/BoxBlurShader';
-import CircularBlurShader from '../shaders/CircularBlurShader';
-import ZoomBlurShader from '../shaders/ZoomBlurShader';
-import ShaderPass from '../graphics/ShaderPass';
-import GaussianBlurPass from '../graphics/GaussianBlurPass';
-import { val2pct } from '../util/math';
+import Effect from 'effects/Effect';
+import BoxBlurShader from 'shaders/BoxBlurShader';
+import CircularBlurShader from 'shaders/CircularBlurShader';
+import ZoomBlurShader from 'shaders/ZoomBlurShader';
+import ShaderPass from 'graphics/ShaderPass';
+import GaussianBlurPass from 'graphics/GaussianBlurPass';
+import { val2pct } from 'util/math';
 
 const shaders = {
     Box: BoxBlurShader,

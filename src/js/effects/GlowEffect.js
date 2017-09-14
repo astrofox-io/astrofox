@@ -1,6 +1,6 @@
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import GlowShader from '../shaders/GlowShader';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import GlowShader from 'shaders/GlowShader';
 
 const GLOW_MAX = 5;
 

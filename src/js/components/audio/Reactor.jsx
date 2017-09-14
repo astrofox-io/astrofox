@@ -2,19 +2,19 @@ import React from 'react';
 import propTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UIPureComponent from '../UIPureComponent';
-import AudioReactor from '../../audio/AudioReactor';
-import CanvasBars from '../../canvas/CanvasBars';
-import Panel from '../layout/Panel';
-import NumberInput from '../inputs/NumberInput';
-import ButtonInput from '../inputs/ButtonInput';
-import RangeInput from '../inputs/RangeInput';
-import SelectInput from '../inputs/SelectInput';
-import DualRangeInput from '../inputs/DualRangeInput';
-import ToggleInput from '../inputs/ToggleInput';
-import ButtonGroup from '../inputs/ButtonGroup';
-import { Control, Row } from '../controls/Control';
-import { events } from '../../core/Global';
+import UIPureComponent from 'components/UIPureComponent';
+import AudioReactor from 'audio/AudioReactor';
+import CanvasBars from 'canvas/CanvasBars';
+import Panel from 'components/layout/Panel';
+import NumberInput from 'components/inputs/NumberInput';
+import ButtonInput from 'components/inputs/ButtonInput';
+import RangeInput from 'components/inputs/RangeInput';
+import SelectInput from 'components/inputs/SelectInput';
+import DualRangeInput from 'components/inputs/DualRangeInput';
+import ToggleInput from 'components/inputs/ToggleInput';
+import ButtonGroup from 'components/inputs/ButtonGroup';
+import { Control, Row } from 'components/controls/Control';
+import { events } from 'core/Global';
 
 const MIN_FREQUENCY = 0;
 const MAX_FREQUENCY = 4200;
@@ -36,9 +36,9 @@ export default class Reactor extends UIPureComponent {
     componentDidMount() {
         this.spectrum = new CanvasBars(
             {
-                width: BARS * 11,
+                width: BARS * 9,
                 height: 150,
-                barWidth: 10,
+                barWidth: 8,
                 barSpacing: 1,
                 shadowHeight: 0,
                 color: '#775FD8',

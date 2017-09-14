@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
-import Component from '../core/Component';
-import { setColor } from '../util/canvas';
-import { clamp } from '../util/math';
+import Component from 'core/Component';
+import { setColor } from 'util/canvas';
+import { clamp } from 'util/math';
 
 class CanvasBars extends Component {
     constructor(options, canvas) {

@@ -1,7 +1,7 @@
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import RGBShiftShader from '../shaders/RGBShiftShader';
-import { deg2rad } from '../util/math';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import RGBShiftShader from 'shaders/RGBShiftShader';
+import { deg2rad } from 'util/math';
 
 export default class RGBShiftEffect extends Effect {
     constructor(options) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import UIComponent from '../UIComponent';
-import { styleProps } from '../../util/react';
+import UIComponent from 'components/UIComponent';
+import { styleProps } from 'util/react';
 
 export default class SelectInput extends UIComponent {
     constructor(props) {

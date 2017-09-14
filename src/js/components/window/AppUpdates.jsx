@@ -1,10 +1,10 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from '../UIComponent';
-import Button from  '../interface/Button';
-import Checkmark from '../interface/Checkmark';
-import Spinner from '../interface/Spinner';
+import UIComponent from 'components/UIComponent';
+import Button from 'components/interface/Button';
+import Checkmark from 'components/interface/Checkmark';
+import Spinner from 'components/interface/Spinner';
 
 export default class AppUpdates extends UIComponent {
     constructor(props, context) {

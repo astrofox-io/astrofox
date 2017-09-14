@@ -1,5 +1,5 @@
-import CanvasDisplay from './CanvasDisplay';
-import CanvasImage from '../canvas/CanvasImage';
+import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasImage from 'canvas/CanvasImage';
 
 export default class ImageDisplay extends CanvasDisplay {
     constructor(options) {

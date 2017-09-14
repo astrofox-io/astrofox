@@ -1,5 +1,5 @@
 /* eslint-disable react/require-render-return */
-import Component from '../core/Component';
+import Component from 'core/Component';
 
 const defaults = {
     enabled: true,

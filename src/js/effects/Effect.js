@@ -1,4 +1,4 @@
-import Display from '../displays/Display';
+import Display from 'displays/Display';
 
 export default class Effect extends Display {
     constructor(type, options) {

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import UIPureComponent from '../UIPureComponent';
-import NumberInput from '../inputs/NumberInput';
-import RangeInput from '../inputs/RangeInput';
-import SelectInput from '../inputs/SelectInput';
-import ToggleInput from '../inputs/ToggleInput';
-import { Control, Row } from './Control';
+import UIPureComponent from 'components/UIPureComponent';
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+import SelectInput from 'components/inputs/SelectInput';
+import ToggleInput from 'components/inputs/ToggleInput';
+import { Control, Row } from 'components/controls/Control';
 
 const blendModesMenu = [
     'None',
@@ -77,7 +77,7 @@ export default class SceneControl extends UIPureComponent {
                         onChange={this.onChange}
                     />
                 </Row>
-                <Row label="Opacity">
+                <Row label="Opacity" react={true}>
                     <NumberInput
                         name="opacity"
                         width={40}

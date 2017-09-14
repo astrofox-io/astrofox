@@ -1,5 +1,5 @@
-import ShaderPass from './ShaderPass';
-import CopyShader from '../shaders/CopyShader';
+import ShaderPass from 'graphics/ShaderPass';
+import CopyShader from 'shaders/CopyShader';
 
 const defaults = {
     transparent: true,

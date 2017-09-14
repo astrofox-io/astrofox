@@ -1,5 +1,5 @@
 import React from 'react';
-import { filterByKey } from './object';
+import { filterByKey } from 'util/object';
 
 const defaultKeys = ['width', 'height', 'margin', 'padding', 'border'];
 

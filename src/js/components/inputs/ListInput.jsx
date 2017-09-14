@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UIComponent from '../UIComponent';
+import UIComponent from 'components/UIComponent';
 
 export default class ListInput extends UIComponent {
     constructor(props) {

@@ -1,5 +1,5 @@
-import Process from '../core/Process';
-import { replaceExt } from '../util/file';
+import Process from 'core/Process';
+import { replaceExt } from 'util/file';
 
 const codecs = {
     mp4: 'libx264',

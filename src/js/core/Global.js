@@ -1,5 +1,5 @@
-import EventEmitter from './EventEmitter';
-import Logger from './Logger';
+import EventEmitter from 'core/EventEmitter';
+import Logger from 'core/Logger';
 
 export const logger = new Logger('astrofox');
 export const events = new EventEmitter();

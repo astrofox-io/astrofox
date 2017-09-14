@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
-import { clamp, roundTo } from '../../util/math.js';
+import UIComponent from 'components/UIComponent';
+import { clamp, roundTo } from 'util/math.js';
 
 export default class NumberInput extends UIComponent {
     constructor(props) {

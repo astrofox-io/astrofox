@@ -1,4 +1,5 @@
-import glsl from '../lib/glsl';
+import vertex from 'glsl/vertex/Basic';
+import fragment from 'glsl/fragment/Luminance';
 
 export default {
     uniforms: {
@@ -6,6 +7,6 @@ export default {
         amount: { type: 'f', value: 0.0 }
     },
 
-    vertexShader: glsl.vertex.Basic,
-    fragmentShader: glsl.fragment.Luminance
+    vertexShader: vertex,
+    fragmentShader: fragment
 };

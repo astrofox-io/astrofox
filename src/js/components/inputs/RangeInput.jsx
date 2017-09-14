@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
-import { val2pct } from '../../util/math';
+import UIComponent from 'components/UIComponent';
+import { val2pct } from 'util/math';
 
 export default class RangeInput extends UIComponent {
     constructor(props) {

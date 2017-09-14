@@ -1,6 +1,6 @@
-import Component from '../core/Component';
-import SpectrumParser from '../audio/SpectrumParser';
-import { fftSize, sampleRate } from '../../config/system.json';
+import Component from 'core/Component';
+import SpectrumParser from 'audio/SpectrumParser';
+import { fftSize, sampleRate } from 'config/system.json';
 
 export default class AudioReactor extends Component {
     constructor(options) {
@@ -37,7 +37,7 @@ export default class AudioReactor extends Component {
     }
 }
 
-AudioReactor.maxBins = 16;
+AudioReactor.maxBins = 64;
 
 AudioReactor.frequencyRange = AudioReactor.maxBins * sampleRate / fftSize;
 

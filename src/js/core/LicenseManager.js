@@ -1,9 +1,9 @@
 import NodeRSA from 'node-rsa';
-import { LICENSE_FILE } from './Environment';
-import { logger } from './Global';
-import { readFile, writeFile } from '../util/io';
+import { LICENSE_FILE } from 'core/Environment';
+import { logger } from 'core/Global';
+import { readFile, writeFile } from 'util/io';
 
-import KEY_DATA from '../../config/key.json';
+import KEY_DATA from 'config/key.json';
 
 export default class LicenseManager {
     constructor() {

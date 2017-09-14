@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
-import Component from '../core/Component';
-import BezierSpline from '../drawing/BezierSpline';
-import { setColor } from '../util/canvas';
+import Component from 'core/Component';
+import BezierSpline from 'drawing/BezierSpline';
+import { setColor } from 'util/canvas';
 
 class CanvasWave extends Component {
     constructor(options, canvas) {

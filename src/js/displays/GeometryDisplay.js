@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import Display from './Display';
-import SpectrumParser from '../audio/SpectrumParser';
+import Display from 'displays/Display';
+import SpectrumParser from 'audio/SpectrumParser';
 
 const materials = {
     Normal: THREE.MeshNormalMaterial,
@@ -13,7 +13,7 @@ const materials = {
     Points: THREE.PointsMaterial
 };
 
-import POINT_SPRITE from '../../images/data/pointSprite.json';
+import POINT_SPRITE from 'images/pointSprite.json';
 const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends Display {
@@ -70,8 +70,9 @@ export default class GeometryDisplay extends Display {
         // Load point sprite image
         let img = document.createElement('img');
 
+        this.sprite = new THREE.Texture(img);
+
         img.onload = () => {
-            this.sprite = new THREE.Texture(img);
             this.sprite.transparent = true;
             this.sprite.needsUpdate = true;
         };

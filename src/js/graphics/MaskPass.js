@@ -1,4 +1,4 @@
-import ComposerPass from './ComposerPass';
+import ComposerPass from 'graphics/ComposerPass';
 
 const defaults = {
     inverse: false,

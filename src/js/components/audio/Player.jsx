@@ -2,13 +2,13 @@ import React from 'react';
 import propTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UIPureComponent from '../UIPureComponent';
-import AudioWaveform from './AudioWaveform';
-import Oscilloscope from './Oscilloscope';
-import Spectrum from './Spectrum';
-import { events } from '../../core/Global';
-import { formatTime } from '../../util/format';
-import RangeInput from '../inputs/RangeInput';
+import UIPureComponent from 'components/UIPureComponent';
+import AudioWaveform from 'components/audio/AudioWaveform';
+import Oscilloscope from 'components/audio/Oscilloscope';
+import Spectrum from 'components/audio/Spectrum';
+import { events } from 'core/Global';
+import { formatTime } from 'util/format';
+import RangeInput from 'components/inputs/RangeInput';
 
 const PROGRESS_MAX = 1000;
 

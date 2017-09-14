@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from '../UIComponent';
-import CanvasAudio from '../../canvas/CanvasAudio';
+import UIComponent from 'components/UIComponent';
+import CanvasAudio from 'canvas/CanvasAudio';
 
 export default class AudioWaveform extends UIComponent {
     constructor(props) {

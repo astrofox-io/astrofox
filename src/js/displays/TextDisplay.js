@@ -1,5 +1,5 @@
-import CanvasDisplay from './CanvasDisplay';
-import CanvasText from '../canvas/CanvasText';
+import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasText from 'canvas/CanvasText';
 
 export default class TextDisplay extends CanvasDisplay {
     constructor(options) {

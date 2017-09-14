@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import ComposerPass from './ComposerPass';
+import ComposerPass from 'graphics/ComposerPass';
 
 const defaults = {
     color: 0xffffff,

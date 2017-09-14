@@ -1,8 +1,8 @@
-const Transform = require('stream').Transform;
-const spawn = require('child_process').spawn;
+import { Transform } from 'stream';
+import { spawn } from 'child_process';
 
-import EventEmitter from './EventEmitter';
-import { logger } from './Global';
+import EventEmitter from 'core/EventEmitter';
+import { logger } from 'core/Global';
 
 export default class Process extends EventEmitter {
     constructor(command) {

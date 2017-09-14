@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from '../UIPureComponent';
-import TextInput from '../inputs/TextInput';
+import UIPureComponent from 'components/UIPureComponent';
+import TextInput from 'components/inputs/TextInput';
 
 export default class Layer extends UIPureComponent {
     constructor(props) {

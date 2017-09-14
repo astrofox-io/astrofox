@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import TexturePass from './TexturePass';
+import TexturePass from 'graphics/TexturePass';
 
 class FrameBuffer {
     constructor() {

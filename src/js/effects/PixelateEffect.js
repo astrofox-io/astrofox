@@ -1,7 +1,7 @@
-import Effect from '../effects/Effect';
-import ShaderPass from '../graphics/ShaderPass';
-import PixelateShader from '../shaders/PixelateShader';
-import HexagonShader from '../shaders/HexagonShader';
+import Effect from 'effects/Effect';
+import ShaderPass from 'graphics/ShaderPass';
+import PixelateShader from 'shaders/PixelateShader';
+import HexagonShader from 'shaders/HexagonShader';
 
 const shaders = {
     Square: PixelateShader,

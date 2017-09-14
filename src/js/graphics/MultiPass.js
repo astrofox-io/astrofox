@@ -1,5 +1,5 @@
-import ComposerPass from './ComposerPass';
-import NodeCollection from '../core/NodeCollection';
+import ComposerPass from 'graphics/ComposerPass';
+import NodeCollection from 'core/NodeCollection';
 
 const defaults = {
     needsSwap: true,
