@@ -1,6 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import Icon from 'components/interface/Icon';
+import iconReact from 'svg/icons/flash.svg';
+
 export const Control = (props) => {
     const classes = {
         'control': true,
@@ -26,7 +29,7 @@ export const Row = (props) => {
     }
 
     if (props.react) {
-        icon = <span className="react-icon icon-flash" onClick={onReactClick} />;
+        icon = <Icon className="react-icon" glyph={iconReact} onClick={onReactClick} />;
     }
 
     return (

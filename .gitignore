@@ -14,8 +14,7 @@ node_modules
 /dist/
 /resources/
 /app/main.js
-/app/browser/css/
-/app/browser/js/
+/app/browser/
 /app.config
 *.bat
 *.map

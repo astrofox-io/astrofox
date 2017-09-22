@@ -9,6 +9,19 @@ import Spectrum from 'components/audio/Spectrum';
 import { events } from 'core/Global';
 import { formatTime } from 'util/format';
 import RangeInput from 'components/inputs/RangeInput';
+import Icon from 'components/interface/Icon';
+
+import iconSoundBars from 'svg/icons/sound-bars.svg';
+import iconSoundWaves from 'svg/icons/sound-waves.svg';
+import iconBarGraph from 'svg/icons/bar-graph.svg';
+import iconRepeat from 'svg/icons/cycle.svg';
+import iconPlay from 'svg/icons/play.svg';
+import iconStop from 'svg/icons/stop.svg';
+import iconPause from 'svg/icons/pause.svg';
+import iconVolume1 from 'svg/icons/volume.svg';
+import iconVolume2 from 'svg/icons/volume2.svg';
+import iconVolume3 from 'svg/icons/volume3.svg';
+import iconVolume4 from 'svg/icons/volume4.svg';
 
 const PROGRESS_MAX = 1000;
 
@@ -178,25 +191,25 @@ export default class Player extends UIPureComponent {
                         totalTime={duration}
                     />
                     <ToggleButton
-                        icon="icon-sound-bars"
+                        icon={iconSoundBars}
                         title="Waveform"
                         active={showWaveform}
                         onClick={this.onWaveformButtonClick}
                     />
                     <ToggleButton
-                        icon="icon-sound-waves"
+                        icon={iconSoundWaves}
                         title="Oscilloscope"
                         active={showOsc}
                         onClick={this.onOscButtonClick}
                     />
                     <ToggleButton
-                        icon="icon-bar-graph"
+                        icon={iconBarGraph}
                         title="Spectrum"
                         active={showSpectrum}
                         onClick={this.onSpectrumButtonClick}
                     />
                     <ToggleButton
-                        icon="icon-cycle"
+                        icon={iconRepeat}
                         title="Repeat"
                         active={looping}
                         onClick={this.onLoopButtonClick}
@@ -246,22 +259,22 @@ class VolumeControl extends UIPureComponent {
             { value, mute } = this.state;
 
         if (value < 10 || mute) {
-            icon = 'icon-volume4';
+            icon = iconVolume4;
         }
         else if (value < 25) {
-            icon = 'icon-volume3';
+            icon = iconVolume3;
         }
         else if (value < 75) {
-            icon = 'icon-volume2';
+            icon = iconVolume2;
         }
         else {
-            icon = 'icon-volume';
+            icon = iconVolume1;
         }
 
         return (
             <div className="volume">
                 <div className="speaker" onClick={this.onClick}>
-                    <span className={icon} />
+                    <Icon className="icon" glyph={icon} />
                 </div>
                 <div className="slider">
                     <RangeInput
@@ -331,10 +344,7 @@ class ProgressControl extends UIPureComponent {
 const PlayButton = (props) => {
     return (
         <div className="button play-button" onClick={props.onClick}>
-            <span
-                className={props.playing ? 'icon-pause' : 'icon-play'}
-                title={props.playing ? 'Pause' : 'Play'}
-            />
+            <Icon className="icon" glyph={props.playing ? iconPause : iconPlay} />
         </div>
     );
 };
@@ -342,7 +352,7 @@ const PlayButton = (props) => {
 const StopButton = (props) => {
     return (
         <div className="button stop-button" onClick={props.onClick}>
-            <span className="icon-stop" title="Stop" />
+            <Icon className="icon" glyph={iconStop} />
         </div>
     );
 };
@@ -350,7 +360,7 @@ const StopButton = (props) => {
 const ToggleButton = (props) => {
     return (
         <div className={classNames('toggle-button', {'toggle-button-on': props.active })} onClick={props.onClick}>
-            <span className={props.icon} title={props.title} />
+            <Icon className="icon" glyph={props.icon} width={20} height={20} />
         </div>
     );
 };

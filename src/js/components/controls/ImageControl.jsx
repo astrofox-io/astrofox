@@ -7,7 +7,7 @@ import ImageInput from 'components/inputs/ImageInput';
 import RangeInput from 'components/inputs/RangeInput';
 import { Control, Row } from 'components/controls/Control';
 
-import BLANK_IMAGE from 'images/blankGif.json';
+import BLANK_IMAGE from 'images/data/blank.gif';
 
 export default class ImageControl extends UIPureComponent {
     constructor(props) {

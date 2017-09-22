@@ -3,6 +3,9 @@ import classNames from 'classnames';
 
 import UIPureComponent from 'components/UIPureComponent';
 import TextInput from 'components/inputs/TextInput';
+import Icon from 'components/interface/Icon';
+
+import iconVisible from 'svg/icons/eye.svg';
 
 export default class Layer extends UIPureComponent {
     constructor(props) {
@@ -82,12 +85,15 @@ export default class Layer extends UIPureComponent {
 
         return (
             <div className={classes} onClick={this.onLayerClick}>
-                <span className={classNames('icon', props.icon)}/>
+                <Icon className="icon" glyph={props.icon} />
                 {text}
-                <span
-                    className={classNames('options-icon icon-eye', {'disabled': !props.enabled})}
-                    onClick={this.onEnableClick}
-                />
+                <span onClick={this.onEnableClick}>
+                    <Icon
+                        className={classNames('options-icon icon-eye', {'disabled': !props.enabled})}
+                        glyph={iconVisible}
+
+                    />
+                </span>
             </div>
         );
     }

@@ -1,9 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const vendorIds = Object.keys(require('./package.json').dependencies);
+
+const extractLess = new ExtractTextPlugin({
+    filename: 'css/[name].css',
+    allChunks: true
+});
 
 const config = {
     target: 'electron-renderer',
@@ -13,15 +20,18 @@ const config = {
         vendor: vendorIds
     },
     output: {
-        path: path.resolve(__dirname, 'app/browser/js/'),
-        filename: 'app.js',
+        path: path.resolve(__dirname, 'app/browser'),
+        filename: 'js/[name].js',
         library: 'Astrofox',
         libraryTarget: 'var'
     },
     resolve: {
-        extensions: ['.js', '.json', '.jsx', '.glsl'],
+        extensions: ['.js', '.json', '.jsx', '.glsl', '.svg'],
         alias: {
-            glsl: path.resolve(__dirname, 'src/glsl')
+            css: path.resolve(__dirname, 'src/css'),
+            images: path.resolve(__dirname, 'src/images'),
+            glsl: path.resolve(__dirname, 'src/glsl'),
+            svg: path.resolve(__dirname, 'src/svg')
         },
         modules: [path.resolve(__dirname, 'src/js'), 'node_modules']
     },
@@ -34,7 +44,7 @@ const config = {
     module: {
         rules: [
             {
-                test: /\.js[x]?$/,
+                test: /\.jsx?$/,
                 include: [
                     path.resolve(__dirname, 'src/js')
                 ],
@@ -46,17 +56,87 @@ const config = {
                 }
             },
             {
+                test: /\.(css|less)$/,
+                use: extractLess.extract({
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true,
+                                minimize: PRODUCTION
+                            }
+                        },
+                        {
+                            loader: 'less-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        }
+                    ]
+                })
+            },
+            {
                 test: /\.glsl$/,
-                use: ['glsl-loader']
+                use: {
+                    loader: 'glsl-loader'
+                }
+            },
+            {
+                test: /\.(jpg|png|gif)$/,
+                include: path.resolve(__dirname, 'src/images/data'),
+                use: {
+                    loader: 'url-loader'
+                }
+            },
+            {
+                test: /\.(jpg|png|gif)$/,
+                include: path.resolve(__dirname, 'src/images/browser'),
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: 'images/[path][name].[ext]',
+                        context: 'src/images/browser'
+                    }
+                }
+            },
+            {
+                test: /\.svg$/,
+                use: {
+                    loader: 'svg-sprite-loader',
+                    options: {
+                        extract: true
+                    }
+                }
+            },
+            {
+                test: /\.(eot|ttf|woff|woff2)$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: 'fonts/[name].[ext]',
+                        publicPath: '../'
+                    }
+                }
+            },
+            {
+                test: /\.html$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].html'
+                    }
+                }
             }
         ]
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.js',
+            filename: 'js/[name].js',
             minChunks: Infinity
-        })
+        }),
+        extractLess,
+        new SpriteLoaderPlugin()
     ]
 };
 

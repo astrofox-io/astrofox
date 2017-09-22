@@ -24,7 +24,7 @@ export function readFileAsBlob(file) {
         return Promise.resolve(
             new Blob(
                 [new Uint8Array(data).buffer],
-                { type: mime.lookup(file) }
+                { type: mime.getType(file) }
             )
         );
     });

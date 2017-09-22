@@ -41,7 +41,7 @@ export default class TextControl extends UIPureComponent {
 
     getSelectItems() {
         return fontOptions.map(item => {
-            return { name: item.name, value: item.name, style: { fontFamily: item.name } };
+            return { name: item, value: item, style: { fontFamily: item } };
         });
     }
 

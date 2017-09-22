@@ -13,7 +13,7 @@ const materials = {
     Points: THREE.PointsMaterial
 };
 
-import POINT_SPRITE from 'images/pointSprite.json';
+import POINT_SPRITE from 'images/data/point.png';
 const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends Display {

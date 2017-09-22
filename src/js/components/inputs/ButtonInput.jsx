@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import Icon from 'components/interface/Icon';
+
 const ButtonInput = (props) => {
     let icon = null,
         text = null,
@@ -11,7 +13,7 @@ const ButtonInput = (props) => {
         };
 
     if (props.icon) {
-        icon = <span className={props.icon} />;
+        icon = <Icon className="icon" glyph={props.icon} />;
     }
 
     if (props.text) {

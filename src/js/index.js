@@ -19,3 +19,7 @@ export let env = {};
 if (process.env.NODE_ENV !== 'production') {
     env = Environment;
 }
+
+/* webpack */
+require('../css/app.less');
+require('../html/index.html');

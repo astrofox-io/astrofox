@@ -1,6 +1,6 @@
 import CanvasDisplay from 'displays/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
-import WATERMARK from 'images/watermark';
+import WATERMARK from 'images/data/watermark.png';
 
 const WATERMARK_HEIGHT = 96,
     WATERMARK_WIDTH = 96;

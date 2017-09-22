@@ -10,6 +10,15 @@ import { events } from 'core/Global';
 import Layer from 'components/panels/Layer';
 import ButtonInput from 'components/inputs/ButtonInput';
 import ButtonGroup from 'components/inputs/ButtonGroup';
+import Icon from 'components/interface/Icon';
+
+import iconScene from 'svg/icons/picture.svg';
+import iconDisplay from 'svg/icons/cube.svg';
+import iconEffect from 'svg/icons/light-up.svg';
+import iconMoveUp from 'svg/icons/chevron-up.svg';
+import iconMoveDown from 'svg/icons/chevron-down.svg';
+import iconDelete from 'svg/icons/trash-empty.svg';
+import iconCanvasDisplay from 'svg/icons/document-landscape.svg';
 
 export default class LayersPanel extends UIPureComponent {
     constructor(props, context) {
@@ -219,16 +228,16 @@ export default class LayersPanel extends UIPureComponent {
             let icon;
 
             if (display instanceof Scene) {
-                icon = 'icon-picture';
+                icon = iconScene;
             }
             else if (display instanceof CanvasDisplay) {
-                icon = 'icon-document-landscape';
+                icon = iconCanvasDisplay;
             }
             else if (display instanceof Effect) {
-                icon = 'icon-light-up';
+                icon = iconEffect;
             }
             else if (display instanceof Display) {
-                icon = 'icon-cube';
+                icon = iconDisplay;
             }
 
             return (
@@ -257,14 +266,14 @@ export default class LayersPanel extends UIPureComponent {
                     {layers}
                 </div>
                 <div className="panel-buttons">
-                    <ButtonInput icon="icon-picture" title="Add Scene" onClick={this.onAddSceneClick} />
-                    <ButtonInput icon="icon-cube" title="Add Display" onClick={this.onAddDisplayClick} disabled={disabled} />
-                    <ButtonInput icon="icon-light-up" title="Add Effect" onClick={this.onAddEffectClick} disabled={disabled} />
+                    <ButtonInput icon={iconScene} title="Add Scene" onClick={this.onAddSceneClick} />
+                    <ButtonInput icon={iconDisplay} title="Add Display" onClick={this.onAddDisplayClick} disabled={disabled} />
+                    <ButtonInput icon={iconEffect} title="Add Effect" onClick={this.onAddEffectClick} disabled={disabled} />
                     <ButtonGroup>
-                        <ButtonInput icon="icon-chevron-up" title="Move Layer Up" onClick={this.onMoveUpClick} disabled={disabled} />
-                        <ButtonInput icon="icon-chevron-down" title="Move Layer Down" onClick={this.onMoveDownClick} disabled={disabled} />
+                        <ButtonInput icon={iconMoveUp} title="Move Layer Up" onClick={this.onMoveUpClick} disabled={disabled} />
+                        <ButtonInput icon={iconMoveDown} title="Move Layer Down" onClick={this.onMoveDownClick} disabled={disabled} />
                     </ButtonGroup>
-                    <ButtonInput icon="icon-trash-empty" title="Delete Layer" onClick={this.onRemoveClick} disabled={disabled} />
+                    <ButtonInput icon={iconDelete} title="Delete Layer" onClick={this.onRemoveClick} disabled={disabled} />
                 </div>
             </div>
         );
