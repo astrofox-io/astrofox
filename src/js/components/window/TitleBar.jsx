@@ -3,12 +3,13 @@ import classNames from 'classnames';
 
 import UIComponent from 'components/UIComponent';
 import Window from 'core/Window';
+import Icon from 'components/interface/Icon';
 
-import appIcon from 'images/browser/app/icon.png';
-import minimizeButton from 'images/browser/buttons/minimize.gif';
-import maximizeButton from 'images/browser/buttons/maximize.gif';
-import closeButton from 'images/browser/buttons/close.gif';
-import restoreButton from 'images/browser/buttons/restore.gif';
+import appIcon from 'svg/logo.svg';
+import buttonMinimize from 'images/browser/button-minimize.gif';
+import buttonMaximize from 'images/browser/button-maximize.gif';
+import buttonClose from 'images/browser/button-close.gif';
+import buttonRestore from 'images/browser/button-restore.gif';
 
 export default class TitleBar extends UIComponent {
     constructor(props) {
@@ -63,7 +64,7 @@ export default class TitleBar extends UIComponent {
 
     render() {
         let win = Window.getWindow(),
-            icon = win.isMaximized() ? restoreButton : maximizeButton,
+            icon = win.isMaximized() ? buttonRestore : buttonMaximize,
             classes = {
                 'titlebar': true,
                 'is-focused': win.isFocused()
@@ -71,17 +72,17 @@ export default class TitleBar extends UIComponent {
 
         return (
             <div className={classNames(classes)}>
-                <div className="icon"><img src={appIcon} width="16" /></div>
+                <Icon className="icon" glyph={appIcon} />
                 <div className="title">ASTROFOX</div>
                 <div className="window-buttons">
                     <span className="button" onClick={this.onMinimize}>
-                        <img src={minimizeButton} />
+                        <img src={buttonMinimize} />
                     </span>
                     <span className="button" onClick={this.onMaximize}>
                         <img src={icon} />
                     </span>
                     <span className="button" onClick={this.onClose}>
-                        <img src={closeButton} />
+                        <img src={buttonClose} />
                     </span>
                 </div>
             </div>

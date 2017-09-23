@@ -72,7 +72,8 @@ const config = {
                                 sourceMap: true
                             }
                         }
-                    ]
+                    ],
+                    publicPath: '../'
                 })
             },
             {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="1024px" height="1024px" viewBox="0 0 1024 1024" enable-background="new 0 0 1024 1024" xml:space="preserve">
+<g id="XMLID_1_">
+	<g>
+		<polygon fill="#897EBB" points="792,373.6 792.1,603.6 504.1,719 504,719 792,603.6 504,488.6 792,373.6 		"/>
+		<polygon fill="#7062AB" points="792,144 792,373.6 792,373.6 504,258.4 504,258.4 		"/>
+		<polygon fill="#897EBB" points="792,373.6 504,488.6 504,488.6 503.9,258.4 504,258.4 		"/>
+		<polygon fill="#897EBB" points="792,603.6 504,719 504,719 504,488.6 504,488.6 		"/>
+		<polygon fill="#897EBB" points="504,719 504,719 504,719 		"/>
+		<polygon fill="#897EBB" points="504,258.4 504,258.4 503.9,258.4 216,373.5 216,144 		"/>
+		<polygon fill="#897EBB" points="504,488.6 504,488.6 504,488.6 		"/>
+		<polygon fill="#897EBB" points="504,719 504,719 216,603.6 216.1,603.5 216.1,603.6 		"/>
+		<polygon fill="#7062AB" points="504,488.6 504,719 216.1,603.6 216.1,603.5 		"/>
+		<polygon fill="#7062AB" points="504,488.6 504,488.6 216.1,603.5 216,373.6 		"/>
+		<polygon fill="#7062AB" points="503.9,258.4 504,488.6 216,373.6 216,373.5 		"/>
+		<polygon fill="#897EBB" points="216,373.5 216,373.6 216,373.6 		"/>
+	</g>
+	<g>
+		<line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-miterlimit="10" x1="216.1" y1="603.5" x2="216" y2="373.6"/>
+		<polyline fill="none" stroke="#FFFFFF" stroke-width="6" stroke-miterlimit="10" points="216,373.5 216,144 504,258.4 792,144 
+			792,373.6 792.1,603.6 504.1,719 504,719 		"/>
+		<polyline fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" stroke-miterlimit="10" points="504,719 
+			504,719 792,603.6 504,488.6 504,488.6 216,373.6 216,373.6 216,373.5 503.9,258.4 504,258.4 792,373.6 504,488.6 504,488.6 
+			216.1,603.5 216,603.6 504,719 		"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" stroke-miterlimit="10" x1="504" y1="719" x2="504" y2="719"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" stroke-miterlimit="10" x1="504" y1="719" x2="504" y2="488.6"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" stroke-miterlimit="10" x1="504" y1="488.6" x2="504" y2="488.6"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" stroke-miterlimit="10" x1="504" y1="488.6" x2="503.9" y2="258.4"/>
+	</g>
+</g>
+</svg>

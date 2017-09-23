@@ -342,8 +342,14 @@ class ProgressControl extends UIPureComponent {
 }
 
 const PlayButton = (props) => {
+    const classes = {
+        'button': true,
+        'play-button': !props.playing,
+        'pause-button': props.playing
+    };
+
     return (
-        <div className="button play-button" onClick={props.onClick}>
+        <div className={classNames(classes)} onClick={props.onClick}>
             <Icon className="icon" glyph={props.playing ? iconPause : iconPlay} />
         </div>
     );
