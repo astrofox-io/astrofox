@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Display from 'displays/Display';
+import Display from 'core/Display';
 import SpectrumParser from 'audio/SpectrumParser';
 
 const materials = {

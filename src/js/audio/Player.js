@@ -8,7 +8,7 @@ export default class Player extends EventEmitter {
 
         this.audioContext = context;
         this.nodes = [];
-        this.sounds = {};
+        this.audio = null;
 
         this.volume = this.audioContext.createGain();
         this.volume.connect(this.audioContext.destination);
@@ -16,89 +16,89 @@ export default class Player extends EventEmitter {
         this.loop = false;
     }
 
-    load(id, sound) {
-        this.unload(id);
+    load(audio) {
+        this.unload();
 
-        this.sounds[id] = sound;
+        this.audio = audio;
 
-        sound.addNode(this.volume);
+        audio.addNode(this.volume);
 
-        this.emit('load', id);
+        this.emit('load');
     }
 
-    unload(id) {
-        let sound = this.sounds[id];
+    unload() {
+        let audio = this.audio;
 
-        if (sound) {
-            this.stop(id);
-            sound.unload();
+        if (audio) {
+            this.stop();
+            audio.unload();
 
-            this.emit('unload', id);
+            this.emit('unload');
         }
     }
 
-    play(id) {
-        let sound = this.sounds[id];
+    play() {
+        let audio = this.audio;
 
-        if (sound) {
-            if (sound.playing) {
-                this.pause(id);
+        if (audio) {
+            if (audio.playing) {
+                this.pause();
             }
             else {
-                sound.play();
+                audio.play();
 
                 this.timer = setInterval(
                     () => {
-                        if (!sound.repeat && sound.getPosition(id) >= 1.0) {
+                        if (!audio.repeat && audio.getPosition() >= 1.0) {
                             if (this.loop) {
-                                this.seek(id, 0);
+                                this.seek(0);
                             }
                             else {
-                                this.stop(id);
+                                this.stop();
                             }
                         }
 
-                        this.emit('tick', id);
+                        this.emit('tick');
                     },
                     UPDATE_INTERVAL
                 );
 
-                this.emit('play', id);
+                this.emit('play');
             }
         }
     }
 
-    pause(id) {
-        let sound = this.sounds[id];
+    pause() {
+        let audio = this.audio;
 
-        if (sound) {
-            sound.pause();
+        if (audio) {
+            audio.pause();
             clearInterval(this.timer);
-            this.emit('pause', id);
+            this.emit('pause');
         }
     }
 
-    stop(id) {
-        let sound = this.sounds[id];
+    stop() {
+        let audio = this.audio;
 
-        if (sound) {
-            sound.stop();
+        if (audio) {
+            audio.stop();
             clearInterval(this.timer);
-            this.emit('stop', id);
+            this.emit('stop');
         }
     }
 
-    seek(id, val) {
-        let sound = this.sounds[id];
+    seek(val) {
+        let audio = this.audio;
 
-        if (sound) {
-            sound.seek(val);
-            this.emit('seek', id);
+        if (audio) {
+            audio.seek(val);
+            this.emit('seek');
         }
     }
 
-    getSound(id) {
-        return this.sounds[id];
+    getAudio() {
+        return this.audio;
     }
 
     setVolume(val) {
@@ -111,30 +111,32 @@ export default class Player extends EventEmitter {
         return this.volume.gain.value;
     }
 
-    getCurrentTime(id) {
-        let sound = this.sounds[id];
+    getCurrentTime() {
+        let audio = this.audio;
 
-        if (sound) {
-            return sound.getCurrentTime();
+        if (audio) {
+            return audio.getCurrentTime();
         }
         return 0;
     }
 
-    getDuration(id) {
-        let sound = this.sounds[id];
+    getDuration() {
+        let audio = this.audio;
 
-        if (sound) {
-            return sound.getDuration();
+        if (audio) {
+            return audio.getDuration();
         }
+
         return 0;
     }
 
-    getPosition(id) {
-        let sound = this.sounds[id];
+    getPosition() {
+        let audio = this.audio;
 
-        if (sound) {
-            return sound.getPosition();
+        if (audio) {
+            return audio.getPosition();
         }
+
         return 0;
     }
 
@@ -143,11 +145,7 @@ export default class Player extends EventEmitter {
     }
 
     isPlaying() {
-        for (let id in this.sounds) {
-            if (this.sounds.hasOwnProperty(id) && this.sounds[id].playing) return true;
-        }
-
-        return false;
+        return this.audio && this.audio.playing;
     }
 
     isLooping() {

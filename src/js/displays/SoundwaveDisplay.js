@@ -1,4 +1,4 @@
-import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
 

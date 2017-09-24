@@ -1,4 +1,4 @@
-import Effect from 'effects/Effect';
+import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
 import RGBShiftShader from 'shaders/RGBShiftShader';
 import { deg2rad } from 'util/math';

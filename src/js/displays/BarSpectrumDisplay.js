@@ -1,4 +1,4 @@
-import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasBars from 'canvas/CanvasBars';
 import SpectrumParser from 'audio/SpectrumParser';
 import { fftSize, sampleRate } from 'config/system.json';

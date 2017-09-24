@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
 import NodeCollection from 'core/NodeCollection';
-import Display from 'displays/Display';
-import Effect from 'effects/Effect';
+import Display from 'core/Display';
+import Effect from 'core/Effect';
 import Composer from 'graphics/Composer';
 
 const FOV = 45;

@@ -1,4 +1,4 @@
-import Effect from 'effects/Effect';
+import Effect from 'core/Effect';
 import BoxBlurShader from 'shaders/BoxBlurShader';
 import CircularBlurShader from 'shaders/CircularBlurShader';
 import ZoomBlurShader from 'shaders/ZoomBlurShader';

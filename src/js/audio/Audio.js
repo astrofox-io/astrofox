@@ -1,13 +1,19 @@
-import Sound from 'audio/Sound';
+import EventEmitter from 'core/EventEmitter';
 
-export default class BufferedSound extends Sound {
+export default class Audio extends EventEmitter {
     constructor(context) {
-        super(context);
+        super();
 
+        this.audioContext = context;
         this.source = null;
         this.buffer = null;
         this.startTime = 0;
         this.stopTime = 0;
+        this.nodes = [];
+        this.playing = false;
+        this.paused = false;
+        this.loaded = false;
+        this.repeat = false;
     }
 
     load(src) {
@@ -73,6 +79,26 @@ export default class BufferedSound extends Sound {
         this.initBuffer();
         this.loaded = true;
         this.emit('load');
+    }
+
+    addNode(node) {
+        if (this.nodes.indexOf(node) < 0) {
+            this.nodes.push(node);
+        }
+    }
+
+    removeNode(node) {
+        let index = this.nodes.indexOf(node);
+
+        if (index > -1) {
+            this.nodes.splice(index, 1);
+        }
+    }
+
+    disconnectNodes() {
+        this.nodes.forEach((node) => {
+            node.disconnect();
+        });
     }
 
     initBuffer() {

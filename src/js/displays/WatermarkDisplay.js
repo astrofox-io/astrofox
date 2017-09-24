@@ -1,4 +1,4 @@
-import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
 import WATERMARK from 'images/data/watermark.png';
 

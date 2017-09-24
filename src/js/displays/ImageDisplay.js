@@ -1,4 +1,4 @@
-import CanvasDisplay from 'displays/CanvasDisplay';
+import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
 
 export default class ImageDisplay extends CanvasDisplay {

@@ -1,4 +1,4 @@
-import Display from 'displays/Display';
+import Display from 'core/Display';
 import { deg2rad } from 'util/math';
 
 export default class CanvasDisplay extends Display {

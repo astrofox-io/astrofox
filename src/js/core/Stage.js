@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import Scene from 'displays/Scene';
-import Display from 'displays/Display';
+import Scene from 'core/Scene';
+import Display from 'core/Display';
 import WatermarkDisplay from 'displays/WatermarkDisplay';
 import NodeCollection from 'core/NodeCollection';
 import Composer from 'graphics/Composer';

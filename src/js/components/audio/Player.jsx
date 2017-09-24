@@ -45,17 +45,17 @@ export default class Player extends UIPureComponent {
     componentDidMount() {
         const player = this.app.player;
 
-        player.on('load', id => {
-            this.setState({ duration: player.getDuration(id) });
+        player.on('load', () => {
+            this.setState({ duration: player.getDuration() });
 
             if (this.waveform) {
-                this.waveform.renderBars(this.app.getAudio());
+                this.waveform.renderBars(this.app.player.getAudio());
             }
         });
 
-        player.on('tick', id => {
+        player.on('tick', () => {
             if (player.isPlaying() && !this.progressControl.isBuffering()) {
-                let pos = player.getPosition(id);
+                let pos = player.getPosition();
 
                 this.setState({ progressPosition: pos });
 
@@ -84,8 +84,8 @@ export default class Player extends UIPureComponent {
             }
         });
 
-        player.on('seek', id => {
-            let pos = player.getPosition(id);
+        player.on('seek', () => {
+            let pos = player.getPosition();
 
             this.setState({
                 progressPosition: pos
@@ -110,11 +110,11 @@ export default class Player extends UIPureComponent {
     }
 
     onPlayButtonClick() {
-        this.app.playAudio();
+        this.app.player.play();
     }
 
     onStopButtonClick() {
-        this.app.stopAudio();
+        this.app.player.stop();
     }
 
     onLoopButtonClick() {
@@ -126,7 +126,7 @@ export default class Player extends UIPureComponent {
     }
 
     onWaveformClick(val) {
-        this.app.seekAudio(val);
+        this.app.player.seek(val);
     }
 
     onWaveformButtonClick() {
@@ -146,7 +146,7 @@ export default class Player extends UIPureComponent {
     }
 
     onProgressChange(val) {
-        this.app.seekAudio(val);
+        this.app.player.seek(val);
     }
 
     onProgressInput(val) {

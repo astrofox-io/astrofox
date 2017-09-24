@@ -1,4 +1,4 @@
-import Effect from 'effects/Effect';
+import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
 import GlowShader from 'shaders/GlowShader';
 

@@ -8,9 +8,9 @@ import AppUpdater from 'core/AppUpdater';
 import EventEmitter from 'core/EventEmitter';
 import LicenseManager from 'core/LicenseManager';
 import Player from 'audio/Player';
-import BufferedSound from 'audio/BufferedSound';
+import Audio from 'audio/Audio';
 import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
-import Stage from 'displays/Stage';
+import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
 
 import appConfig from 'config/app.json';
@@ -136,7 +136,7 @@ export default class Application extends EventEmitter {
 
     resetAnalyzer() {
         let spectrum = this.spectrum,
-            audio = this.getAudio();
+            audio = this.player.getAudio();
 
         if (audio && !audio.paused) {
             spectrum.clearFrequencyData();
@@ -150,36 +150,6 @@ export default class Application extends EventEmitter {
 
     isRendering() {
         return this.rendering;
-    }
-    //endregion
-
-    //region Audio Methods
-    getAudio() {
-        return this.player.getSound('audio');
-    }
-
-    playAudio() {
-        this.player.play('audio');
-    }
-
-    stopAudio() {
-        this.player.stop('audio');
-    }
-
-    pauseAudio() {
-        this.player.pause('audio');
-    }
-
-    seekAudio(pos) {
-        this.player.seek('audio', pos);
-    }
-
-    getAudioPosition() {
-        return this.player.getPosition('audio');
-    }
-
-    hasAudio() {
-        return !!this.getAudio();
     }
     //endregion
 
@@ -205,7 +175,8 @@ export default class Application extends EventEmitter {
 
     render() {
         let now = window.performance.now(),
-            data = this.getFrameData(this.player.isPlaying());
+            playing = this.player.isPlaying(),
+            data = this.getFrameData(playing);
 
         data.id = window.requestAnimationFrame(this.render);
         data.delta = now - data.time;
@@ -222,7 +193,7 @@ export default class Application extends EventEmitter {
         let data, image,
             spectrum = this.spectrum,
             stage = this.stage,
-            audio = this.getAudio(),
+            audio = this.player.getAudio(),
             source = this.audioContext.createBufferSource();
 
         source.buffer = audio.buffer;
@@ -312,7 +283,7 @@ export default class Application extends EventEmitter {
     }
 
     loadAudioFile(file) {
-        this.stopAudio();
+        this.player.stop();
 
         logger.time('audio-file-load');
 
@@ -329,7 +300,7 @@ export default class Application extends EventEmitter {
                 this.loadAudioTags(file);
 
                 if (this.config.autoPlayAudio) {
-                    this.playAudio();
+                    this.player.play();
                 }
 
                 logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
@@ -345,21 +316,21 @@ export default class Application extends EventEmitter {
         return new Promise((resolve, reject) => {
             let player = this.player,
                 spectrum = this.spectrum,
-                sound = new BufferedSound(this.audioContext);
+                audio = new Audio(this.audioContext);
 
-            sound.on('load', () => {
-                player.load('audio', sound);
+            audio.on('load', () => {
+                player.load(audio);
 
-                sound.addNode(spectrum.analyzer);
+                audio.addNode(spectrum.analyzer);
 
                 resolve();
             }, this);
 
-            sound.on('error', error => {
+            audio.on('error', error => {
                 reject(error);
             });
 
-            sound.load(data);
+            audio.load(data);
         });
     }
 
@@ -442,7 +413,7 @@ export default class Application extends EventEmitter {
     }
 
     saveVideo(videoFile, audioFile, options) {
-        if (this.hasAudio()) {
+        if (this.player.getAudio()) {
             logger.time('video-render');
 
             let renderer = this.renderer = new VideoRenderer(videoFile, audioFile, options),
@@ -451,7 +422,7 @@ export default class Application extends EventEmitter {
 
             // Setup before rendering
             this.stopRender();
-            this.stopAudio();
+            this.player.stop();
             this.showWatermark(showWatermark || !hasLicense);
 
             // Handle events
