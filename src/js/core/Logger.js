@@ -1,4 +1,7 @@
 /* eslint-disable no-console */
+const LABEL_CSS = 'color:indigo;background-color:lavender;font-weight:bold;';
+const TIMER_CSS = 'color:green;background-color:honeydew;';
+
 export default class Logger {
     constructor(name) {
         this.name = name;
@@ -7,7 +10,7 @@ export default class Logger {
     
     output(method, args) {
         if (process.env.NODE_ENV !== 'production') {
-            let label = ['%c%s%c', 'color:indigo;font-weight:bold;', this.name, 'color:black'];
+            let label = ['%c%s%c', LABEL_CSS, this.name, 'color:black'];
 
             // Convert to array
             if (!Array.isArray(args)) {
@@ -15,7 +18,7 @@ export default class Logger {
             }
 
             // If format specifiers are defined, merge with label
-            if (args.length && typeof args[0] === 'string' && /%[sidfoOc]{1}/.test(args[0])) {
+            if (args.length && typeof args[0] === 'string' && /%[sidfoOc]/.test(args[0])) {
                 label[0] += ' ' + args[0];
                 args = args.slice(1);
             }
@@ -50,12 +53,13 @@ export default class Logger {
 
     timeEnd(id) {
         let timer = this.timers[id];
+
         if (timer) {
             let t = (window.performance.now() - timer) / 1000,
                 val = (t < 1) ? ~~(t*1000)+'ms' : t.toFixed(2)+'s',
                 args = Array.prototype.slice.call(arguments, 1);
 
-            this.output(console.log, ['%c+%s', 'color:green;', val].concat(args));
+            this.output(console.log, ['%c+%s', TIMER_CSS, val].concat(args));
 
             return t;
         }

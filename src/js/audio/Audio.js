@@ -1,9 +1,5 @@
-import EventEmitter from 'core/EventEmitter';
-
-export default class Audio extends EventEmitter {
+export default class Audio {
     constructor(context) {
-        super();
-
         this.audioContext = context;
         this.source = null;
         this.buffer = null;
@@ -12,7 +8,6 @@ export default class Audio extends EventEmitter {
         this.nodes = [];
         this.playing = false;
         this.paused = false;
-        this.loaded = false;
         this.repeat = false;
     }
 
@@ -36,7 +31,6 @@ export default class Audio extends EventEmitter {
             this.stop();
             this.source = null;
             this.buffer = null;
-            this.off();
         }
     }
 
@@ -69,7 +63,7 @@ export default class Audio extends EventEmitter {
                 this.loadBuffer(buffer);
             })
             .catch(error => {
-                this.emit('error', 'Invalid audio file: ' + error.message);
+                throw error;
             });
     }
 
@@ -77,8 +71,6 @@ export default class Audio extends EventEmitter {
     loadBuffer(buffer) {
         this.buffer = buffer;
         this.initBuffer();
-        this.loaded = true;
-        this.emit('load');
     }
 
     addNode(node) {
@@ -95,6 +87,12 @@ export default class Audio extends EventEmitter {
         }
     }
 
+    reconnectNodes() {
+        this.nodes.forEach(node => {
+            this.source.connect(node);
+        });
+    }
+
     disconnectNodes() {
         this.nodes.forEach((node) => {
             node.disconnect();
@@ -105,22 +103,18 @@ export default class Audio extends EventEmitter {
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
 
-        this.nodes.forEach(node => {
-            this.source.connect(node);
-        });
+        this.reconnectNodes();
     }
 
     play() {
-        if (!this.loaded) return;
+        if (this.buffer) {
+            this.initBuffer();
 
-        this.initBuffer();
-
-        this.startTime = this.audioContext.currentTime;
-        this.source.start(0, this.getCurrentTime());
-        this.playing = true;
-        this.paused = false;
-
-        this.emit('play');
+            this.startTime = this.audioContext.currentTime;
+            this.source.start(0, this.getCurrentTime());
+            this.playing = true;
+            this.paused = false;
+        }
     }
 
     pause() {
@@ -132,8 +126,6 @@ export default class Audio extends EventEmitter {
         this.stopTime += this.audioContext.currentTime - this.startTime;
         this.playing = false;
         this.paused = true;
-
-        this.emit('pause');
     }
 
     stop() {
@@ -146,8 +138,6 @@ export default class Audio extends EventEmitter {
         this.stopTime = 0;
         this.playing = false;
         this.paused = false;
-
-        this.emit('stop');
     }
 
     seek(pos) {
@@ -159,21 +149,16 @@ export default class Audio extends EventEmitter {
         else {
             this.updatePosition(pos);
         }
-
-        this.emit('seek');
     }
 
     getCurrentTime() {
-        if (this.playing) {
-            return this.stopTime + (this.audioContext.currentTime - this.startTime);
-        }
-        else {
-            return this.stopTime;
-        }
+        return this.playing ?
+            this.stopTime + (this.audioContext.currentTime - this.startTime) :
+            this.stopTime;
     }
 
     getDuration() {
-        return (this.buffer) ? this.buffer.duration : 0;
+        return this.buffer ? this.buffer.duration : 0;
     }
 
     getPosition() {

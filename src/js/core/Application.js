@@ -308,7 +308,7 @@ export default class Application extends EventEmitter {
                 return file;
             })
             .catch(error => {
-                raiseError('Failed to load audio file.', error);
+                raiseError('Invalid audio file.', error);
             });
     }
 
@@ -318,19 +318,17 @@ export default class Application extends EventEmitter {
                 spectrum = this.spectrum,
                 audio = new Audio(this.audioContext);
 
-            audio.on('load', () => {
-                player.load(audio);
+            audio.load(data)
+                .then(() => {
+                    player.load(audio);
 
-                audio.addNode(spectrum.analyzer);
+                    audio.addNode(spectrum.analyzer);
 
-                resolve();
-            }, this);
-
-            audio.on('error', error => {
-                reject(error);
-            });
-
-            audio.load(data);
+                    resolve();
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
 
@@ -375,7 +373,7 @@ export default class Application extends EventEmitter {
                 }
             })
             .catch(error => {
-                raiseError('Failed to open project file.', error);
+                raiseError('Invalid project file.', error);
             });
     }
 
