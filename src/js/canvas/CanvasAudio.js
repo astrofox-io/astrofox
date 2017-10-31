@@ -2,7 +2,7 @@
 import Component from 'core/Component';
 import CanvasBars from 'canvas/CanvasBars';
 
-class CanvasAudio extends Component {
+export default class CanvasAudio extends Component {
     constructor(options, canvas) {
         super(options);
 
@@ -58,5 +58,3 @@ class CanvasAudio extends Component {
 CanvasAudio.defaults = {
     bars: 100
 };
-
-export default CanvasAudio;

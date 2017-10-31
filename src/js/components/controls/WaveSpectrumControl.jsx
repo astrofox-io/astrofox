@@ -6,7 +6,7 @@ import ColorInput from 'components/inputs/ColorInput';
 import ColorRangeInput from 'components/inputs/ColorRangeInput';
 import RangeInput from 'components/inputs/RangeInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 export default class WaveSpectrumControl extends UIPureComponent {
     constructor(props) {
@@ -32,7 +32,7 @@ export default class WaveSpectrumControl extends UIPureComponent {
 
         return (
             <Control label="WAVE SPECTRUM" active={active}>
-                <Row label="Max dB">
+                <Option label="Max dB">
                     <NumberInput
                         name="maxDecibels"
                         width={40}
@@ -52,8 +52,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Min Frequency">
+                </Option>
+                <Option label="Min Frequency">
                     <NumberInput
                         name="minFrequency"
                         width={40}
@@ -74,8 +74,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Max Frequency">
+                </Option>
+                <Option label="Max Frequency">
                     <NumberInput
                         name="maxFrequency"
                         width={40}
@@ -96,8 +96,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Smoothing">
+                </Option>
+                <Option label="Smoothing">
                     <NumberInput
                         name="smoothingTimeConstant"
                         width={40}
@@ -117,8 +117,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Width">
+                </Option>
+                <Option label="Width">
                     <NumberInput
                         name="width"
                         width={40}
@@ -136,8 +136,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Height">
+                </Option>
+                <Option label="Height">
                     <NumberInput
                         name="height"
                         width={40}
@@ -155,44 +155,44 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Stroke">
+                </Option>
+                <Option label="Stroke">
                     <ToggleInput
                         name="stroke"
                         value={state.stroke}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Stroke Color">
+                </Option>
+                <Option label="Stroke Color">
                     <ColorInput
                         name="color"
                         value={state.color}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Fill">
+                </Option>
+                <Option label="Fill">
                     <ToggleInput
                         name="fill"
                         value={state.fill}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Fill Color">
+                </Option>
+                <Option label="Fill Color">
                     <ColorRangeInput
                         name="fillColor"
                         startColor={state.fillColor[0]}
                         endColor={state.fillColor[1]}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Taper Edges">
+                </Option>
+                <Option label="Taper Edges">
                     <ToggleInput
                         name="taper"
                         value={state.taper}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="X">
+                </Option>
+                <Option label="X">
                     <NumberInput
                         name="x"
                         width={40}
@@ -210,8 +210,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Y">
+                </Option>
+                <Option label="Y">
                     <NumberInput
                         name="y"
                         width={40}
@@ -229,8 +229,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Rotation">
+                </Option>
+                <Option label="Rotation">
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -248,8 +248,8 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Opacity">
+                </Option>
+                <Option label="Opacity">
                     <NumberInput
                         name="opacity"
                         width={40}
@@ -269,7 +269,7 @@ export default class WaveSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
+                </Option>
             </Control>
         );
     }

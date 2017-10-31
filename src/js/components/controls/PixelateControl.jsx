@@ -4,7 +4,7 @@ import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 const types = [
     'Square',
@@ -38,7 +38,7 @@ export default class PixelateControl extends UIPureComponent {
 
         return (
             <Control label="PIXELATE" active={active}>
-                <Row label="Type">
+                <Option label="Type">
                     <SelectInput
                         name="type"
                         width={140}
@@ -46,8 +46,8 @@ export default class PixelateControl extends UIPureComponent {
                         value={type}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Size">
+                </Option>
+                <Option label="Size">
                     <NumberInput
                         name="size"
                         width={40}
@@ -65,7 +65,7 @@ export default class PixelateControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
+                </Option>
             </Control>
         );
     }

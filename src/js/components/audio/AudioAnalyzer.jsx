@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+
 import { events } from 'core/Global';
 import UIPureComponent from 'components/UIPureComponent';
 import SpectrumParser from 'audio/SpectrumParser';
@@ -30,12 +32,14 @@ export default class AudioAnalyzer extends UIPureComponent {
     }
 
     componentDidMount() {
+        let { barWidth, barHeight, barSpacing } = this.props;
+
         this.spectrum = new CanvasBars(
             {
-                width: BARS * 11,
-                height: 100,
-                barWidth: 10,
-                barSpacing: 1,
+                width: BARS * (barWidth + barSpacing),
+                height: barHeight,
+                barWidth: barWidth,
+                barSpacing: barSpacing,
                 shadowHeight: 0,
                 color: '#775FD8',
                 backgroundColor: '#FF0000'
@@ -55,14 +59,23 @@ export default class AudioAnalyzer extends UIPureComponent {
     }
 
     render() {
+        const { barWidth, barHeight, barSpacing, visible, reactor } = this.props,
+            classes = {
+                'analyzer': true,
+                'display-none': !visible
+            };
+
+        let text = reactor ? 'REACTOR ' + reactor.id : 'nothing';
+
         return (
-            <div className="analyzer">
+            <div className={classNames(classes)}>
                 <div className="analyzer-spectrum">
+                    <div>{text}</div>
                     <canvas
                         ref={el => this.canvas = el}
                         className="canvas spectrum-canvas"
-                        width={BARS * 11}
-                        height={150}
+                        width={BARS * (barWidth + barSpacing)}
+                        height={barHeight}
                         onClick={this.onClick}
                     />
                 </div>
@@ -70,3 +83,9 @@ export default class AudioAnalyzer extends UIPureComponent {
         );
     }
 }
+
+AudioAnalyzer.defaultProps = {
+    barWidth: 10,
+    barHeight: 100,
+    barSpacing: 1
+};

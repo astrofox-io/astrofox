@@ -7,7 +7,7 @@ import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import TextInput from 'components/inputs/TextInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 import fontOptions from 'config/fonts.json';
 
@@ -51,15 +51,15 @@ export default class TextControl extends UIPureComponent {
 
         return (
             <Control label="TEXT" active={active}>
-                <Row label="Text">
+                <Option label="Text">
                     <TextInput
                         name="text"
                         width={140}
                         value={state.text}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Font">
+                </Option>
+                <Option label="Font">
                     <SelectInput
                         name="font"
                         width={140}
@@ -67,8 +67,8 @@ export default class TextControl extends UIPureComponent {
                         value={state.font}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Size">
+                </Option>
+                <Option label="Size">
                     <NumberInput
                         name="size"
                         width={40}
@@ -76,8 +76,8 @@ export default class TextControl extends UIPureComponent {
                         value={state.size}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Bold">
+                </Option>
+                <Option label="Bold">
                     <ToggleInput
                         name="bold"
                         value={state.bold}
@@ -89,15 +89,15 @@ export default class TextControl extends UIPureComponent {
                         value={state.italic}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Color">
+                </Option>
+                <Option label="Color">
                     <ColorInput
                         name="color"
                         value={state.color}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="X">
+                </Option>
+                <Option label="X">
                     <NumberInput
                         name="x"
                         width={40}
@@ -106,17 +106,15 @@ export default class TextControl extends UIPureComponent {
                         value={state.x}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            min={-stageWidth}
-                            max={stageWidth}
-                            value={state.x}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Y">
+                    <RangeInput
+                        name="x"
+                        min={-stageWidth}
+                        max={stageWidth}
+                        value={state.x}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Y">
                     <NumberInput
                         name="y"
                         width={40}
@@ -125,17 +123,15 @@ export default class TextControl extends UIPureComponent {
                         value={state.y}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            min={-stageHeight}
-                            max={stageHeight}
-                            value={state.y}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Rotation">
+                    <RangeInput
+                        name="y"
+                        min={-stageHeight}
+                        max={stageHeight}
+                        value={state.y}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Rotation">
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -144,17 +140,15 @@ export default class TextControl extends UIPureComponent {
                         value={state.rotation}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="rotation"
-                            min={0}
-                            max={360}
-                            value={state.rotation}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Opacity">
+                    <RangeInput
+                        name="rotation"
+                        min={0}
+                        max={360}
+                        value={state.rotation}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Opacity">
                     <NumberInput
                         name="opacity"
                         width={40}
@@ -164,17 +158,15 @@ export default class TextControl extends UIPureComponent {
                         value={state.opacity}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="opacity"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={state.opacity}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="opacity"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={state.opacity}
+                        onChange={this.onChange}
+                    />
+                </Option>
             </Control>
         );
     }

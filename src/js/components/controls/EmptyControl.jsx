@@ -1,10 +1,10 @@
 import React from 'react';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 const EmptyControl = () => {
     return (
         <Control label="empty">
-            <Row />
+            <Option />
         </Control>
     );
 };

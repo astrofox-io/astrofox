@@ -3,7 +3,7 @@ import Component from 'core/Component';
 import { setColor } from 'util/canvas';
 import { clamp } from 'util/math';
 
-class CanvasBars extends Component {
+export default class CanvasBars extends Component {
     constructor(options, canvas) {
         super(Object.assign({}, CanvasBars.defaults, options));
 
@@ -93,5 +93,3 @@ CanvasBars.defaults = {
     color: '#FFFFFF',
     shadowColor: '#CCCCCC'
 };
-
-export default CanvasBars;

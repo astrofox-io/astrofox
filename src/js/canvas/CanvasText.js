@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
 import Component from 'core/Component';
 
-class CanvasText extends Component {
+export default class CanvasText extends Component {
     constructor(options, canvas) {
         super(Object.assign({}, CanvasText.defaults, options));
 
@@ -72,5 +72,3 @@ CanvasText.defaults = {
     bold: false,
     color: '#FFFFFF'
 };
-
-export default CanvasText;

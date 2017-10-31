@@ -5,7 +5,7 @@ import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 const blendModesMenu = [
     'None',
@@ -49,8 +49,9 @@ export default class SceneControl extends UIPureComponent {
 
     onChange(name, val) {
         let obj = {},
-            display = this.props.display;
+            { display } = this.props;
 
+        // Ignore separators
         if (name === 'blendMode' && typeof val !== 'string') {
             return;
         }
@@ -62,13 +63,18 @@ export default class SceneControl extends UIPureComponent {
         });
     }
 
+    onReactorChange(name, reactor) {
+        this.props.display.reactors[name] = reactor;
+        this.forceUpdate();
+    }
+
     render() {
-        const { active } = this.props,
+        const { active, display } = this.props,
             state = this.state;
 
         return (
             <Control label="SCENE" active={active}>
-                <Row label="Blending">
+                <Option label="Blending">
                     <SelectInput
                         name="blendMode"
                         width={140}
@@ -76,8 +82,12 @@ export default class SceneControl extends UIPureComponent {
                         value={state.blendMode}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Opacity" react={true}>
+                </Option>
+                <Option
+                    label="Opacity"
+                    display={display}
+                    reactorName="opacity"
+                    onReactorChange={this.onReactorChange}>
                     <NumberInput
                         name="opacity"
                         width={40}
@@ -87,18 +97,16 @@ export default class SceneControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="opacity"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={state.opacity}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Light Intensity">
+                    <RangeInput
+                        name="opacity"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={state.opacity}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Light Intensity">
                     <NumberInput
                         name="lightIntensity"
                         width={40}
@@ -108,18 +116,16 @@ export default class SceneControl extends UIPureComponent {
                         value={state.lightIntensity}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="lightIntensity"
-                            min={0.0}
-                            max={10.0}
-                            step={0.1}
-                            value={state.lightIntensity}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Light Distance">
+                    <RangeInput
+                        name="lightIntensity"
+                        min={0.0}
+                        max={10.0}
+                        step={0.1}
+                        value={state.lightIntensity}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Light Distance">
                     <NumberInput
                         name="lightDistance"
                         width={40}
@@ -128,17 +134,15 @@ export default class SceneControl extends UIPureComponent {
                         value={state.lightDistance}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="lightDistance"
-                            min={-500}
-                            max={500}
-                            value={state.lightDistance}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Camera Zoom">
+                    <RangeInput
+                        name="lightDistance"
+                        min={-500}
+                        max={500}
+                        value={state.lightDistance}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Camera Zoom">
                     <NumberInput
                         name="cameraZoom"
                         width={40}
@@ -147,17 +151,15 @@ export default class SceneControl extends UIPureComponent {
                         value={state.cameraZoom}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="cameraZoom"
-                            min={0}
-                            max={1000}
-                            value={state.cameraZoom}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Mask">
+                    <RangeInput
+                        name="cameraZoom"
+                        min={0}
+                        max={1000}
+                        value={state.cameraZoom}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Mask">
                     <ToggleInput
                         name="mask"
                         value={state.mask}
@@ -169,7 +171,7 @@ export default class SceneControl extends UIPureComponent {
                         value={state.inverse}
                         onChange={this.onChange}
                     />
-                </Row>
+                </Option>
             </Control>
         );
     }

@@ -3,7 +3,7 @@ import React from 'react';
 import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 export default class LEDControl extends UIPureComponent {
     constructor(props) {
@@ -29,7 +29,7 @@ export default class LEDControl extends UIPureComponent {
 
         return (
             <Control label="LED" active={active}>
-                <Row label="Spacing">
+                <Option label="Spacing">
                     <NumberInput
                         name="spacing"
                         width={40}
@@ -47,8 +47,8 @@ export default class LEDControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Size">
+                </Option>
+                <Option label="Size">
                     <NumberInput
                         name="size"
                         width={40}
@@ -66,8 +66,8 @@ export default class LEDControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Blur">
+                </Option>
+                <Option label="Blur">
                     <NumberInput
                         name="blur"
                         width={40}
@@ -85,7 +85,7 @@ export default class LEDControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
+                </Option>
             </Control>
         );
     }

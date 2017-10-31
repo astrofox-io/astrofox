@@ -10,7 +10,6 @@ import { events } from 'core/Global';
 import Layer from 'components/panels/Layer';
 import ButtonInput from 'components/inputs/ButtonInput';
 import ButtonGroup from 'components/inputs/ButtonGroup';
-import Icon from 'components/interface/Icon';
 
 import iconScene from 'svg/icons/picture.svg';
 import iconDisplay from 'svg/icons/cube.svg';
@@ -93,10 +92,10 @@ export default class LayersPanel extends UIPureComponent {
 
         if (this.app.stage.hasScenes() && display) {
             if (display instanceof Scene) {
-                display.owner.removeScene(display);
+                display.stage.removeScene(display);
             }
             else {
-                display.owner.removeElement(display);
+                display.scene.removeElement(display);
             }
 
             if (activeIndex === last) {
@@ -126,7 +125,7 @@ export default class LayersPanel extends UIPureComponent {
         let layer = this.getActiveLayer();
 
         return layer ?
-            (layer instanceof Scene ? layer : layer.owner) :
+            (layer instanceof Scene ? layer : layer.scene) :
             null;
     }
 
@@ -194,12 +193,12 @@ export default class LayersPanel extends UIPureComponent {
             layer = this.getActiveLayer();
 
             if (layer instanceof Scene) {
-                if (layer.owner.shiftScene(layer, direction)) {
+                if (layer.stage.shiftScene(layer, direction)) {
                     this.updateState(layer);
                 }
             }
             else {
-                if (layer.owner.shiftElement(layer, direction)) {
+                if (layer.scene.shiftElement(layer, direction)) {
                     this.updateState(layer);
                 }
             }

@@ -4,7 +4,7 @@ import propTypes from 'prop-types';
 import Window from 'core/Window';
 import { events } from 'core/Global';
 
-import UIComponent from 'components/UIComponent';
+import UIPureComponent from 'components/UIPureComponent';
 
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
@@ -24,7 +24,6 @@ import ControlDock from 'components/panels/ControlDock';
 import MenuBar from 'components/nav/MenuBar';
 
 import Player from 'components/audio/Player';
-import Reactor from 'components/audio/Reactor';
 import AudioAnalyzer from 'components/audio/AudioAnalyzer';
 
 import Stage from 'components/stage/Stage';
@@ -33,16 +32,17 @@ import menuConfig from 'config/menu';
 import audioExtensions from 'config/audioExtensions';
 import fontOptions from 'config/fonts.json';
 
-export default class App extends UIComponent {
+export default class App extends UIPureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
             statusBarText: '',
             modals: [],
+            reactor: null,
             showControlDock: true,
             showPlayer: true,
-            showReactor: false
+            showAnalyzer: false
         };
         
         this.app = props.app;
@@ -101,6 +101,8 @@ export default class App extends UIComponent {
                 this.showCheckForUpdates();
             }
         });
+
+        events.on('reactor-edit', this.showReactor);
     }
 
     componentDidMount() {
@@ -250,7 +252,7 @@ export default class App extends UIComponent {
                 if (button === 'Yes') {
                     this.saveProject(callback);
                 }
-                else if (button == 'No') {
+                else if (button === 'No') {
                     callback();
                 }
             }
@@ -347,6 +349,15 @@ export default class App extends UIComponent {
         this.updatesShown = true;
     }
 
+    showReactor(reactor) {
+        this.setState(prevState => {
+            return {
+                reactor: reactor,
+                showAnalyzer: reactor && (reactor !== prevState.reactor || !prevState.showAnalyzer)
+            };
+        });
+    }
+
     loadAudioFile(file) {
         let showLoading = this.stage.showLoading;
 
@@ -371,7 +382,7 @@ export default class App extends UIComponent {
     }
 
     render() {
-        let state = this.state;
+        let { showPlayer, showControlDock, showAnalyzer, reactor, statusBarText, modals } = this.state;
 
         return (
             <div
@@ -388,22 +399,25 @@ export default class App extends UIComponent {
                 />
                 <div id="body">
                     <div id="viewport">
-                        <AudioAnalyzer />
+                        <AudioAnalyzer
+                            visible={showAnalyzer}
+                            reactor={reactor}
+                        />
                         <Stage
                             ref={el => this.stage = el}
                             onFileDropped={this.loadAudioFile}
                         />
                         <Player
-                            visible={state.showPlayer}
+                            visible={showPlayer}
                         />
                     </div>
                     <ControlDock
-                        visible={state.showControlDock}
+                        visible={showControlDock}
                     />
                 </div>
-                <StatusBar text={state.statusBarText} />
+                <StatusBar text={statusBarText} />
                 <Overlay>
-                    {state.modals}
+                    {modals}
                 </Overlay>
             </div>
         );

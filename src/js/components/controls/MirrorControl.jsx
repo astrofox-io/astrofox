@@ -3,7 +3,7 @@ import React from 'react';
 import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 export default class MirrorControl extends UIPureComponent {
     constructor(props) {
@@ -29,7 +29,7 @@ export default class MirrorControl extends UIPureComponent {
 
         return (
             <Control label="MIRROR" active={active}>
-                <Row label="Side">
+                <Option label="Side">
                     <NumberInput
                         name="side"
                         width={40}
@@ -38,16 +38,14 @@ export default class MirrorControl extends UIPureComponent {
                         max={3}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="side"
-                            min={0}
-                            max={3}
-                            value={side}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="side"
+                        min={0}
+                        max={3}
+                        value={side}
+                        onChange={this.onChange}
+                    />
+                </Option>
             </Control>
         );
     }

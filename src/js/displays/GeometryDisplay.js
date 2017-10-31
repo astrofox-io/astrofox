@@ -81,12 +81,12 @@ export default class GeometryDisplay extends Display {
 
         this.createMesh();
 
-        scene.graph.add(this.group);
+        scene.scene.add(this.group);
     }
 
     removeFromScene(scene) {
         if (this.group) {
-            scene.graph.remove(this.group);
+            scene.scene.remove(this.group);
         }
     }
 

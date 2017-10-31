@@ -5,7 +5,7 @@ import NumberInput from 'components/inputs/NumberInput';
 import ColorRangeInput from 'components/inputs/ColorRangeInput';
 import RangeInput from 'components/inputs/RangeInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 export default class BarSpectrumControl extends UIPureComponent {
     constructor(props) {
@@ -38,7 +38,7 @@ export default class BarSpectrumControl extends UIPureComponent {
 
         return (
             <Control label="BAR SPECTRUM" active={active}>
-                <Row label="Max dB">
+                <Option label="Max dB">
                     <NumberInput
                         name="maxDecibels"
                         value={state.maxDecibels}
@@ -58,8 +58,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Min Frequency">
+                </Option>
+                <Option label="Min Frequency">
                     <NumberInput
                         name="minFrequency"
                         value={state.minFrequency}
@@ -80,8 +80,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Max Frequency">
+                </Option>
+                <Option label="Max Frequency">
                     <NumberInput
                         name="maxFrequency"
                         value={state.maxFrequency}
@@ -102,8 +102,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Smoothing">
+                </Option>
+                <Option label="Smoothing">
                     <NumberInput
                         name="smoothingTimeConstant"
                         value={state.smoothingTimeConstant}
@@ -123,8 +123,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Width">
+                </Option>
+                <Option label="Width">
                     <NumberInput
                         name="width"
                         value={state.width}
@@ -142,8 +142,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Height">
+                </Option>
+                <Option label="Height">
                     <NumberInput
                         name="height"
                         value={state.height}
@@ -161,8 +161,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Shadow Height">
+                </Option>
+                <Option label="Shadow Height">
                     <NumberInput
                         name="shadowHeight"
                         value={state.shadowHeight}
@@ -180,8 +180,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Bar Width">
+                </Option>
+                <Option label="Bar Width">
                     <NumberInput
                         name="barWidth"
                         value={state.barWidth}
@@ -198,8 +198,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={state.barWidthAutoSize}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Bar Spacing">
+                </Option>
+                <Option label="Bar Spacing">
                     <NumberInput
                         name="barSpacing"
                         value={state.barSpacing}
@@ -216,24 +216,24 @@ export default class BarSpectrumControl extends UIPureComponent {
                         value={state.barSpacingAutoSize}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Bar Color">
+                </Option>
+                <Option label="Bar Color">
                     <ColorRangeInput
                         name="color"
                         startColor={state.color[0]}
                         endColor={state.color[1]}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Shadow Color">
+                </Option>
+                <Option label="Shadow Color">
                     <ColorRangeInput
                         name="shadowColor"
                         startColor={state.shadowColor[0]}
                         endColor={state.shadowColor[1]}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="X">
+                </Option>
+                <Option label="X">
                     <NumberInput
                         name="x"
                         value={state.x}
@@ -251,8 +251,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Y">
+                </Option>
+                <Option label="Y">
                     <NumberInput
                         name="y"
                         value={state.y}
@@ -270,8 +270,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Rotation">
+                </Option>
+                <Option label="Rotation">
                     <NumberInput
                         name="rotation"
                         value={state.rotation}
@@ -289,8 +289,8 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
-                <Row label="Opacity">
+                </Option>
+                <Option label="Opacity">
                     <NumberInput
                         name="opacity"
                         value={state.opacity}
@@ -310,7 +310,7 @@ export default class BarSpectrumControl extends UIPureComponent {
                             onChange={this.onChange}
                         />
                     </div>
-                </Row>
+                </Option>
             </Control>
         );
     }

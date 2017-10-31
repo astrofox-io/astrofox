@@ -3,7 +3,7 @@ import React from 'react';
 import UIComponent from 'components/UIComponent';
 import { val2pct } from 'util/math';
 
-import RangeInput from 'lib/inputs';
+import RangeInput from 'components/inputs/RangeInput';
 
 export default class DualRangeInput extends UIComponent {
     constructor(props) {

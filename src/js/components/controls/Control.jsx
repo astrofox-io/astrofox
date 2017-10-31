@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import AudioReactor from 'audio/AudioReactor';
+import Reactor from 'components/audio/Reactor';
 import Icon from 'components/interface/Icon';
 import iconReact from 'svg/icons/flash.svg';
 
@@ -20,27 +22,44 @@ export const Control = (props) => {
     );
 };
 
-export const Row = (props) => {
-    let label = null,
-        icon = null;
+export const Option = (props) => {
+    let text, icon, input, reactor,
+        { label, className, children, display, reactorName, onReactorChange } = props;
 
-    if (props.label) {
-        label = <span className="label">{props.label}</span>;
+    if (label) {
+        text = <span className="label">{label}</span>;
     }
 
-    if (props.react) {
-        icon = <Icon className="react-icon" glyph={iconReact} onClick={onReactClick} />;
+    if (display && display.reactors) {
+        reactor = display.reactors[reactorName];
     }
+
+    if (reactorName) {
+        const classes = {
+            'react-icon': true,
+            'react-icon-on': reactor
+        };
+
+        const onClick = () => {
+            onReactorChange(reactorName, reactor ? null : new AudioReactor());
+        };
+
+        icon = (
+            <Icon
+                className={classNames(classes)}
+                glyph={iconReact}
+                onClick={onClick}
+            />
+        );
+    }
+
+    input = reactor ? <Reactor reactor={reactor} /> : children;
 
     return (
-        <div className={classNames('row', props.className)}>
-            {label}
+        <div className={classNames('option', className)}>
+            {text}
             {icon}
-            {props.children}
+            {input}
         </div>
     );
-};
-
-const onReactClick = () => {
-
 };

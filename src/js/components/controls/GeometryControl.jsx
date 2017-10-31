@@ -6,7 +6,7 @@ import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 const shapes = [
     'Box',
@@ -62,7 +62,7 @@ export default class GeometryControl extends UIPureComponent {
 
         return (
             <Control label="3D GEOMETRY" active={active}>
-                <Row label="Shape">
+                <Option label="Shape">
                     <SelectInput
                         name="shape"
                         width={140}
@@ -70,8 +70,8 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.shape}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Material">
+                </Option>
+                <Option label="Material">
                     <SelectInput
                         name="material"
                         width={140}
@@ -79,8 +79,8 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.material}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Shading">
+                </Option>
+                <Option label="Shading">
                     <SelectInput
                         name="shading"
                         width={140}
@@ -88,36 +88,36 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.shading}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Color">
+                </Option>
+                <Option label="Color">
                     <ColorInput
                         name="color"
                         value={state.color}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Wireframe">
+                </Option>
+                <Option label="Wireframe">
                     <ToggleInput
                         name="wireframe"
                         value={state.wireframe}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Edges">
+                </Option>
+                <Option label="Edges">
                     <ToggleInput
                         name="edges"
                         value={state.edges}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Edge Color">
+                </Option>
+                <Option label="Edge Color">
                     <ColorInput
                         name="edgeColor"
                         value={state.edgeColor}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="X">
+                </Option>
+                <Option label="X">
                     <NumberInput
                         name="x"
                         width={40}
@@ -126,17 +126,15 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.x}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            min={-MAX_X_RANGE}
-                            max={MAX_X_RANGE}
-                            value={state.x}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Y">
+                    <RangeInput
+                        name="x"
+                        min={-MAX_X_RANGE}
+                        max={MAX_X_RANGE}
+                        value={state.x}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Y">
                     <NumberInput
                         name="y"
                         width={40}
@@ -145,17 +143,15 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.y}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            min={-MAX_Y_RANGE}
-                            max={MAX_Y_RANGE}
-                            value={state.y}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Z">
+                    <RangeInput
+                        name="y"
+                        min={-MAX_Y_RANGE}
+                        max={MAX_Y_RANGE}
+                        value={state.y}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Z">
                     <NumberInput
                         name="z"
                         width={40}
@@ -164,17 +160,15 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.z}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="z"
-                            min={-MAX_Z_RANGE}
-                            max={MAX_Z_RANGE}
-                            value={state.z}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Opacity">
+                    <RangeInput
+                        name="z"
+                        min={-MAX_Z_RANGE}
+                        max={MAX_Z_RANGE}
+                        value={state.z}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Opacity">
                     <NumberInput
                         name="opacity"
                         width={40}
@@ -184,17 +178,15 @@ export default class GeometryControl extends UIPureComponent {
                         value={state.opacity}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="opacity"
-                            min={0}
-                            max={1}
-                            step={0.01}
-                            value={state.opacity}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="opacity"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={state.opacity}
+                        onChange={this.onChange}
+                    />
+                </Option>
             </Control>
         );
     }

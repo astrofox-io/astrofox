@@ -5,7 +5,7 @@ import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 const types = [
     'Box',
@@ -41,7 +41,7 @@ export default class BlurControl extends UIPureComponent {
 
         if (state.type === 'Zoom') {
             centerOptions = [
-                <Row label="X" key="x">
+                <Option label="X" key="x">
                     <NumberInput
                         name="x"
                         min={-stageWidth/2}
@@ -49,17 +49,15 @@ export default class BlurControl extends UIPureComponent {
                         value={state.x}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            min={-stageWidth/2}
-                            max={stageWidth/2}
-                            value={state.x}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>,
-                <Row label="Y" key="y">
+                    <RangeInput
+                        name="x"
+                        min={-stageWidth/2}
+                        max={stageWidth/2}
+                        value={state.x}
+                        onChange={this.onChange}
+                    />
+                </Option>,
+                <Option label="Y" key="y">
                     <NumberInput
                         name="y"
                         min={-stageHeight/2}
@@ -67,22 +65,20 @@ export default class BlurControl extends UIPureComponent {
                         value={state.y}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            min={-stageHeight/2}
-                            max={stageHeight/2}
-                            value={state.y}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="y"
+                        min={-stageHeight/2}
+                        max={stageHeight/2}
+                        value={state.y}
+                        onChange={this.onChange}
+                    />
+                </Option>
             ];
         }
 
         return (
             <Control label="BLUR" active={active}>
-                <Row label="Type">
+                <Option label="Type">
                     <SelectInput
                         name="type"
                         width={140}
@@ -90,8 +86,8 @@ export default class BlurControl extends UIPureComponent {
                         value={state.type}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Amount">
+                </Option>
+                <Option label="Amount">
                     <NumberInput
                         name="amount"
                         width={40}
@@ -101,17 +97,15 @@ export default class BlurControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="amount"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={state.amount}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="amount"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={state.amount}
+                        onChange={this.onChange}
+                    />
+                </Option>
                 {centerOptions}
             </Control>
         );

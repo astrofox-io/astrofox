@@ -3,7 +3,7 @@ import Component from 'core/Component';
 
 const MIN_RESIZE_WIDTH = 100;
 
-class CanvasImage extends Component {
+export default class CanvasImage extends Component {
     constructor(options, canvas) {
         super(Object.assign({}, CanvasImage.defaults, options));
 
@@ -103,5 +103,3 @@ CanvasImage.defaults = {
     width: 0,
     height: 0
 };
-
-export default CanvasImage;

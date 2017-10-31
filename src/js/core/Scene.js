@@ -14,16 +14,20 @@ export default class Scene extends Display {
     constructor(options) {
         super(Scene, options);
 
-        this.owner = null;
+        this.stage = null;
         this.displays = new NodeCollection();
         this.effects = new NodeCollection();
+
+        this.reactors = {
+            opacity: null
+        };
     }
 
     update(options) {
         let changed = super.update(options);
 
         if (changed) {
-            if (this.owner) {
+            if (this.stage) {
                 this.updatePasses();
             }
 
@@ -40,17 +44,17 @@ export default class Scene extends Display {
     }
 
     addToStage(stage) {
-        let size = stage.getSize();
+        let { width, height } = stage.getSize();
 
-        this.owner = stage;
+        this.stage = stage;
 
         this.buffer2D = stage.buffer2D;
         this.buffer3D = stage.buffer3D;
 
         this.composer = new Composer(stage.renderer);
-        this.graph = new THREE.Scene();
+        this.scene = new THREE.Scene();
 
-        this.camera = new THREE.PerspectiveCamera(FOV, size.width/size.height, NEAR, FAR);
+        this.camera = new THREE.PerspectiveCamera(FOV, width/height, NEAR, FAR);
         this.camera.position.set(0, 0, CAMERA_POS_Z);
 
         this.lights = [
@@ -59,19 +63,19 @@ export default class Scene extends Display {
             new THREE.PointLight(0xffffff, 1, 0)
         ];
 
-        this.graph.add(this.camera);
-        this.graph.add(this.lights[0]);
-        this.graph.add(this.lights[1]);
-        this.graph.add(this.lights[2]);
+        this.scene.add(this.camera);
+        this.scene.add(this.lights[0]);
+        this.scene.add(this.lights[1]);
+        this.scene.add(this.lights[2]);
 
-        //this.graph.fog = new THREE.Fog(0x000000, NEAR, FAR);
+        //this.scene.fog = new THREE.Fog(0x000000, NEAR, FAR);
 
         this.updatePasses();
         this.updateLights();
     }
 
     removeFromStage() {
-        this.owner = null;
+        this.stage = null;
         this.displays.clear();
         this.displays = null;
         this.effects.clear();
@@ -120,14 +124,14 @@ export default class Scene extends Display {
             nodes.addNode(obj);
         }
 
-        obj.owner = this;
+        obj.scene = this;
 
         if (obj.addToScene) {
             obj.addToScene(this);
         }
 
         if (obj.setSize) {
-            const { width, height } = this.owner.getSize();
+            const { width, height } = this.stage.getSize();
 
             obj.setSize(width, height);
         }
@@ -149,7 +153,7 @@ export default class Scene extends Display {
 
         nodes.removeNode(obj);
 
-        obj.owner = null;
+        obj.scene = null;
 
         if (obj.removeFromScene) {
             obj.removeFromScene(this);
@@ -255,7 +259,7 @@ export default class Scene extends Display {
             });
 
             if (hasGeometry) {
-                this.buffer3D.renderer.render(this.graph, this.camera);
+                this.buffer3D.renderer.render(this.scene, this.camera);
             }
 
             effects.forEach(effect => {
@@ -279,11 +283,16 @@ export default class Scene extends Display {
             return effect.toJSON();
         });
 
+        let reactors = this.reactors.map(reactor => {
+            return reactor.toJSON();
+        });
+
         return {
             name: this.name,
             options: this.options,
             displays: displays,
-            effects: effects
+            effects: effects,
+            reactors: reactors
         };
     }
 

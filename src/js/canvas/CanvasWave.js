@@ -3,7 +3,7 @@ import Component from 'core/Component';
 import BezierSpline from 'drawing/BezierSpline';
 import { setColor } from 'util/canvas';
 
-class CanvasWave extends Component {
+export default class CanvasWave extends Component {
     constructor(options, canvas) {
         super(Object.assign({}, CanvasWave.defaults, options));
 
@@ -109,5 +109,3 @@ CanvasWave.defaults = {
     fillColor: null,
     taper: false
 };
-
-export default CanvasWave;

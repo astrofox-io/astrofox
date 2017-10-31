@@ -4,7 +4,7 @@ import { fftSize, sampleRate } from 'config/system.json';
 
 export default class AudioReactor extends Component {
     constructor(options) {
-        super(options);
+        super(Object.assign({}, AudioReactor.defaults, options));
 
         this.spectrum = new SpectrumParser(Object.assign({}, AudioReactor.parserDefaults));
 
@@ -34,6 +34,10 @@ export default class AudioReactor extends Component {
         this.result.output = output / (end - start);
 
         return this.result;
+    }
+
+    toJSON() {
+        return this.options;
     }
 }
 

@@ -16,6 +16,7 @@ export default class Stage extends Display {
 
         this.app = app;
         this.scenes = new NodeCollection();
+        this.shouldRender = true;
     }
 
     init(canvas) {
@@ -74,7 +75,7 @@ export default class Stage extends Display {
             this.scenes.addNode(scene);
         }
 
-        scene.owner = this;
+        scene.stage = this;
 
         if (scene.addToStage) {
             scene.addToStage(this);
@@ -88,7 +89,7 @@ export default class Stage extends Display {
     removeScene(scene) {
         this.scenes.removeNode(scene);
 
-        scene.owner = null;
+        scene.stage = null;
 
         scene.removeFromStage(this);
 

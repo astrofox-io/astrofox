@@ -5,7 +5,7 @@ import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import ImageInput from 'components/inputs/ImageInput';
 import RangeInput from 'components/inputs/RangeInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 import BLANK_IMAGE from 'images/data/blank.gif';
 
@@ -78,12 +78,18 @@ export default class ImageControl extends UIPureComponent {
         });
     }
 
+    onReactorChange(name, reactor) {
+        this.props.display.reactors[name] = reactor;
+        this.forceUpdate();
+    }
+
     onLinkClick() {
         this.onChange('fixed', !this.state.fixed);
     }
 
     render() {
-        let { active, stageWidth, stageHeight } = this.props,
+        let { active, stageWidth, stageHeight, display } = this.props,
+            { reactors } = display,
             state = this.state,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
@@ -100,15 +106,15 @@ export default class ImageControl extends UIPureComponent {
 
         return (
             <Control label="IMAGE" active={active}>
-                <Row label="Image">
+                <Option label="Image">
                     <ImageInput
                         name="src"
                         ref={el => this.imageInput = el}
                         src={state.src}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label={['Width', linkIcon]}>
+                </Option>
+                <Option label={['Width', linkIcon]}>
                     <NumberInput
                         name="width"
                         width={40}
@@ -118,18 +124,16 @@ export default class ImageControl extends UIPureComponent {
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="width"
-                            min={0}
-                            max={width*2}
-                            value={state.width}
-                            readOnly={readOnly}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label={['Height', linkIcon]}>
+                    <RangeInput
+                        name="width"
+                        min={0}
+                        max={width*2}
+                        value={state.width}
+                        readOnly={readOnly}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label={['Height', linkIcon]}>
                     <NumberInput
                         name="height"
                         width={40}
@@ -139,18 +143,16 @@ export default class ImageControl extends UIPureComponent {
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="height"
-                            min={0}
-                            max={height*2}
-                            value={state.height}
-                            readOnly={readOnly}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="X">
+                    <RangeInput
+                        name="height"
+                        min={0}
+                        max={height*2}
+                        value={state.height}
+                        readOnly={readOnly}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="X">
                     <NumberInput
                         name="x"
                         width={40}
@@ -160,18 +162,16 @@ export default class ImageControl extends UIPureComponent {
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            min={-xMax}
-                            max={xMax}
-                            value={state.x}
-                            readOnly={readOnly}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Y">
+                    <RangeInput
+                        name="x"
+                        min={-xMax}
+                        max={xMax}
+                        value={state.x}
+                        readOnly={readOnly}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Y">
                     <NumberInput
                         name="y"
                         width={40}
@@ -181,18 +181,16 @@ export default class ImageControl extends UIPureComponent {
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            min={-yMax}
-                            max={yMax}
-                            value={state.y}
-                            readOnly={readOnly}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Rotation">
+                    <RangeInput
+                        name="y"
+                        min={-yMax}
+                        max={yMax}
+                        value={state.y}
+                        readOnly={readOnly}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Rotation">
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -202,18 +200,20 @@ export default class ImageControl extends UIPureComponent {
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="rotation"
-                            min={0}
-                            max={360}
-                            value={state.rotation}
-                            readOnly={readOnly}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Opacity">
+                    <RangeInput
+                        name="rotation"
+                        min={0}
+                        max={360}
+                        value={state.rotation}
+                        readOnly={readOnly}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option
+                    label="Opacity"
+                    display={display}
+                    reactorName="opacity"
+                    onReactorChange={this.onReactorChange}>
                     <NumberInput
                         name="opacity"
                         width={40}
@@ -224,18 +224,16 @@ export default class ImageControl extends UIPureComponent {
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="opacity"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={readOnly ? 0 : state.opacity}
-                            readOnly={readOnly}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="opacity"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={readOnly ? 0 : state.opacity}
+                        readOnly={readOnly}
+                        onChange={this.onChange}
+                    />
+                </Option>
             </Control>
         );
     }

@@ -3,7 +3,7 @@ import React from 'react';
 import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 export default class GlowControl extends UIPureComponent {
     constructor(props) {
@@ -29,7 +29,7 @@ export default class GlowControl extends UIPureComponent {
 
         return (
             <Control label="GLOW" active={active}>
-                <Row label="Amount">
+                <Option label="Amount">
                     <NumberInput
                         name="amount"
                         width={40}
@@ -39,18 +39,16 @@ export default class GlowControl extends UIPureComponent {
                         max={1}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="amount"
-                            min={0}
-                            step={0.01}
-                            max={1}
-                            value={amount}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Intensity">
+                    <RangeInput
+                        name="amount"
+                        min={0}
+                        step={0.01}
+                        max={1}
+                        value={amount}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Intensity">
                     <NumberInput
                         name="intensity"
                         width={40}
@@ -60,17 +58,15 @@ export default class GlowControl extends UIPureComponent {
                         max={3}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="intensity"
-                            min={1}
-                            step={0.01}
-                            max={3}
-                            value={intensity}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="intensity"
+                        min={1}
+                        step={0.01}
+                        max={3}
+                        value={intensity}
+                        onChange={this.onChange}
+                    />
+                </Option>
             </Control>
         );
     }

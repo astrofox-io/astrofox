@@ -4,7 +4,7 @@ import UIPureComponent from 'components/UIPureComponent';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
-import { Control, Row } from 'components/controls/Control';
+import { Control, Option } from 'components/controls/Control';
 
 const blendModes = [
     'Add',
@@ -35,7 +35,7 @@ export default class BloomControl extends UIPureComponent {
 
         return (
             <Control label="BLOOM" active={active}>
-                <Row label="Blend Mode">
+                <Option label="Blend Mode">
                     <SelectInput
                         name="blendMode"
                         width={140}
@@ -43,8 +43,8 @@ export default class BloomControl extends UIPureComponent {
                         value={blendMode}
                         onChange={this.onChange}
                     />
-                </Row>
-                <Row label="Amount">
+                </Option>
+                <Option label="Amount">
                     <NumberInput
                         name="amount"
                         width={40}
@@ -54,18 +54,16 @@ export default class BloomControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="amount"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={amount}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
-                <Row label="Threshold">
+                    <RangeInput
+                        name="amount"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={amount}
+                        onChange={this.onChange}
+                    />
+                </Option>
+                <Option label="Threshold">
                     <NumberInput
                         name="threshold"
                         width={40}
@@ -75,17 +73,15 @@ export default class BloomControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="threshold"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={threshold}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                </Row>
+                    <RangeInput
+                        name="threshold"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={threshold}
+                        onChange={this.onChange}
+                    />
+                </Option>
             </Control>
         );
     }
