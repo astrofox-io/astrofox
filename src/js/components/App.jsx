@@ -24,7 +24,7 @@ import ControlDock from 'components/panels/ControlDock';
 import MenuBar from 'components/nav/MenuBar';
 
 import Player from 'components/audio/Player';
-import AudioAnalyzer from 'components/audio/AudioAnalyzer';
+import ReactorControl from 'components/controls/ReactorControl';
 
 import Stage from 'components/stage/Stage';
 
@@ -399,7 +399,7 @@ export default class App extends UIPureComponent {
                 />
                 <div id="body">
                     <div id="viewport">
-                        <AudioAnalyzer
+                        <ReactorControl
                             visible={showAnalyzer}
                             reactor={reactor}
                         />

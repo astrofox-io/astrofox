@@ -6,7 +6,9 @@ import NumberInput from 'components/inputs/NumberInput';
 import ImageInput from 'components/inputs/ImageInput';
 import RangeInput from 'components/inputs/RangeInput';
 import { Control, Option } from 'components/controls/Control';
+import Icon from 'components/interface/Icon';
 
+import iconLink from 'svg/icons/link.svg';
 import BLANK_IMAGE from 'images/data/blank.gif';
 
 export default class ImageControl extends UIPureComponent {
@@ -89,7 +91,6 @@ export default class ImageControl extends UIPureComponent {
 
     render() {
         let { active, stageWidth, stageHeight, display } = this.props,
-            { reactors } = display,
             state = this.state,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
@@ -98,11 +99,10 @@ export default class ImageControl extends UIPureComponent {
             xMax = readOnly ? 0 : (width > stageWidth) ? width : stageWidth,
             yMax = readOnly ? 0 : (height > stageHeight) ? height : stageHeight,
             linkClasses = {
-                'icon-link': true,
                 'input-link': true,
                 'input-link-on': state.fixed
             },
-            linkIcon = <span key={0} className={classNames(linkClasses)} onClick={this.onLinkClick} />;
+            linkIcon = <Icon key={0} className={classNames(linkClasses)} glyph={iconLink} onClick={this.onLinkClick} />;
 
         return (
             <Control label="IMAGE" active={active}>

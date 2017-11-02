@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import AudioReactor from 'audio/AudioReactor';
-import Reactor from 'components/audio/Reactor';
+import ReactorInput from 'components/inputs/ReactorInput';
 import Icon from 'components/interface/Icon';
 import iconReact from 'svg/icons/flash.svg';
 
@@ -53,7 +53,7 @@ export const Option = (props) => {
         );
     }
 
-    input = reactor ? <Reactor reactor={reactor} /> : children;
+    input = reactor ? <ReactorInput reactor={reactor} /> : children;
 
     return (
         <div className={classNames('option', className)}>

@@ -233,45 +233,28 @@ export default class Scene extends Display {
             this.buffer2D.context;
     }
 
-    clear() {
-        this.buffer2D.clear();
-        this.buffer3D.clear();
-        this.composer.clearBuffer();
-    }
-
-    render(data) {
-        let displays = this.getDisplays(),
-            effects = this.getEffects(),
-            composer = this.composer,
-            hasGeometry = false;
-
-        this.clear();
-
-        if (displays.size > 0 || effects.size > 0) {
-            displays.forEach(display => {
-                if (display.options.enabled) {
-                    display.renderToScene(this, data);
-
-                    if (!hasGeometry && display.hasGeometry) {
-                        hasGeometry = true;
-                    }
-                }
-            });
-
-            if (hasGeometry) {
-                this.buffer3D.renderer.render(this.scene, this.camera);
-            }
-
-            effects.forEach(effect => {
-                if (effect.options.enabled) {
-                    effect.renderToScene(this, data);
-                }
-            });
-
-            composer.render();
+    hasChanges() {
+        if (this.changed) {
+            return true;
         }
 
-        return composer.readBuffer;
+        let changes = false;
+
+        this.getDisplays().forEach(display => {
+            if (!changes && display.changed) {
+                changes = true;
+            }
+        });
+
+        return changes;
+    }
+
+    resetChanges() {
+        this.changed = false;
+
+        this.getDisplays().forEach(display => {
+            display.changed = false;
+        });
     }
 
     toJSON() {
@@ -296,28 +279,48 @@ export default class Scene extends Display {
         };
     }
 
-    hasChanges() {
-        if (this.changed) {
-            return true;
-        }
-
-        let changes = false;
-
-        this.getDisplays().forEach(display => {
-            if (!changes && display.changed) {
-                changes = true;
-            }
-        });
-
-        return changes;
+    clear() {
+        this.buffer2D.clear();
+        this.buffer3D.clear();
+        this.composer.clearBuffer();
     }
 
-    resetChanges() {
-        this.changed = false;
+    render(data) {
+        let displays = this.getDisplays(),
+            effects = this.getEffects(),
+            composer = this.composer,
+            hasGeometry = false;
 
-        this.getDisplays().forEach(display => {
-            display.changed = false;
-        });
+        this.clear();
+        this.updateReactors(data);
+
+        if (displays.size > 0 || effects.size > 0) {
+            displays.forEach(display => {
+                if (display.options.enabled) {
+                    display.updateReactors(data);
+                    display.renderToScene(this, data);
+
+                    if (!hasGeometry && display.hasGeometry) {
+                        hasGeometry = true;
+                    }
+                }
+            });
+
+            if (hasGeometry) {
+                this.buffer3D.renderer.render(this.scene, this.camera);
+            }
+
+            effects.forEach(effect => {
+                if (effect.options.enabled) {
+                    effect.updateReactors(data);
+                    effect.renderToScene(this, data);
+                }
+            });
+
+            composer.render();
+        }
+
+        return composer.readBuffer;
     }
 }
 

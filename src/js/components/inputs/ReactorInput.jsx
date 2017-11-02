@@ -6,7 +6,7 @@ import Icon from 'components/interface/Icon';
 import CanvasMeter from 'canvas/CanvasMeter';
 import editIcon from 'svg/icons/gear.svg';
 
-export default class Reactor extends UIPureComponent {
+export default class ReactorInput extends UIPureComponent {
     constructor(props) {
         super(props);
 
@@ -36,15 +36,15 @@ export default class Reactor extends UIPureComponent {
         events.emit('reactor-edit', this.reactor);
     }
 
-    draw(data) {
-        let { output } = this.reactor.parse(data.fft);
+    draw() {
+        let { output } = this.reactor.getResult();
 
         this.meter.render(output);
     }
 
     render() {
         return (
-            <div className="reactor">
+            <div className="input-reactor">
                 <div className="reactor-meter">
                     <canvas
                         ref={el => this.canvas = el}
@@ -63,7 +63,7 @@ export default class Reactor extends UIPureComponent {
     }
 }
 
-Reactor.defaultProps = {
+ReactorInput.defaultProps = {
     width: 100,
     height: 10,
     color: '#775fd8'

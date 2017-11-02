@@ -45,7 +45,7 @@ export default class AudioWaveform extends UIComponent {
         e.preventDefault();
 
         if (this.props.onClick) {
-            let rect = e.currentTarget.getBoundingClientRect();
+            const rect = e.currentTarget.getBoundingClientRect();
 
             this.props.onClick((e.clientX - rect.left) / rect.width);
         }
@@ -55,7 +55,7 @@ export default class AudioWaveform extends UIComponent {
         e.stopPropagation();
         e.preventDefault();
 
-        let rect = e.currentTarget.getBoundingClientRect();
+        const rect = e.currentTarget.getBoundingClientRect();
 
         this.seek = (e.clientX - rect.left) / rect.width;
         this.draw();
@@ -70,7 +70,7 @@ export default class AudioWaveform extends UIComponent {
     }
 
     draw() {
-        let { width, height } = this.canvas,
+        const { width, height } = this.canvas,
             context = this.drawContext,
             position = this.position * width,
             seek = this.seek * width,
@@ -111,11 +111,10 @@ export default class AudioWaveform extends UIComponent {
     }
 
     render() {
-        let width = this.props.width,
-            height = this.props.height + this.props.shadowHeight,
+        const { width, height, shadowHeight, visible } = this.props,
             classes = {
                 'waveform': true,
-                'waveform-hidden': !this.props.visible
+                'waveform-hidden': !visible
             };
 
         return (
@@ -124,7 +123,7 @@ export default class AudioWaveform extends UIComponent {
                     ref={el => this.canvas = el}
                     className="canvas"
                     width={width}
-                    height={height}
+                    height={height+shadowHeight}
                     onClick={this.onClick}
                     onMouseMove={this.onMouseMove}
                     onMouseOut={this.onMouseOut}

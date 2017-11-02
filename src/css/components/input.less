@@ -226,12 +226,9 @@
 }
 
 .input-image-icon {
-    color: @text-color1;
-    font-size: 24px;
-    text-align: center;
-    line-height: 100px;
-    height: 100%;
-    width: 100%;
+    fill: @text-color1;
+    height: 24px;
+    width: 24px;
     opacity: 0;
     text-shadow: 1px 1px 8px #000;
     transform: scale(0.5,0.5);
@@ -246,11 +243,13 @@
 
 .input-link {
     margin-left: 8px;
-    color: darken(@text-color1, 50%);
+    fill: darken(@text-color1, 50%);
+    width: 12px;
+    height: 12px;
 }
 
 .input-link-on {
-    color: darken(@text-color1, 10%);
+    fill: darken(@text-color1, 10%);
 }
 
 .input-file {
@@ -326,5 +325,76 @@
             border-bottom-right-radius: @input-radius;
             border-right: 1px solid @border-color;
         }
+    }
+}
+
+.input-reactor {
+    position: relative;
+
+    .reactor-meter {
+        line-height: 20px;
+        background-color: @bg-color2;
+        border: 1px solid @border-color;
+        border-radius: @input-radius;
+        padding: 0 3px;
+    }
+
+    .reactor-edit-icon {
+        position: absolute;
+        fill: @text-color3;
+        width: 12px;
+        height: 12px;
+        top: 5px;
+        right: -20px;
+
+        &:hover {
+            fill: @text-color1;
+        }
+    }
+}
+
+.input-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid lighten(@color1, 10%);
+
+    .input-box-center {
+        position: absolute;
+        cursor: move;
+        width: 100%;
+        height: 100%;
+    }
+
+    .input-box-top {
+        position: absolute;
+        cursor: ns-resize;
+        width: 100%;
+        height: 10px;
+        top: -5px;
+    }
+
+    .input-box-right {
+        position: absolute;
+        cursor: ew-resize;
+        width: 10px;
+        height: 100%;
+        right: -5px;
+    }
+
+    .input-box-bottom {
+        position: absolute;
+        cursor: ns-resize;
+        width: 100%;
+        height: 10px;
+        bottom: -5px;
+    }
+
+    .input-box-left {
+        position: absolute;
+        cursor: ew-resize;
+        width: 10px;
+        height: 100%;
+        left: -5px;
     }
 }

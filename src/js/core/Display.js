@@ -36,6 +36,21 @@ export default class Display extends Component {
         return this.hasUpdate;
     }
 
+    updateReactors(data) {
+        let reactor;
+        const { reactors } = this;
+
+        if (reactors) {
+            Object.keys(reactors).forEach(name => {
+                reactor = reactors[name];
+                if (reactor) {
+                    reactor.parse(data);
+                    this.options[name] = reactor.getResult().output;
+                }
+            });
+        }
+    }
+
     toJSON() {
         return {
             name: this.name,

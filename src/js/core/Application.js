@@ -76,6 +76,10 @@ export default class Application extends EventEmitter {
             events.emit('mouseup', e);
         };
 
+        window.onmousemove = (e) => {
+            events.emit('mousemove', e);
+        };
+
         // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
             raiseError(msg, err);

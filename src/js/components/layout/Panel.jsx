@@ -10,12 +10,9 @@ export default class Panel extends UIPureComponent {
         super(props);
 
         this.state = {
-            visible: props.visible,
-            dragging: false,
+            resizing: false,
             height: props.height,
             width: props.width,
-            minHeight: props.minHeight,
-            minWidth: props.minWidth,
             startX: 0,
             startY: 0,
             startWidth: 0,
@@ -24,53 +21,48 @@ export default class Panel extends UIPureComponent {
     }
 
     componentDidMount() {
-        events.on('mouseup', this.checkDragState);
+        events.on('mouseup', this.endResize);
     }
 
     componentWillUnmount() {
-        events.off('mouseup', this.checkDragState);
+        events.off('mouseup', this.endResize);
     }
 
-    onStartDrag(e) {
+    startResize(x, y) {
         let props = this.props,
-            state = this.state;
+            { width, height } = this.state;
 
         this.setState({
-            dragging: true,
-            startX: e.pageX,
-            startY: e.pageY,
-            startWidth: state.width,
-            startHeight: state.height
+            resizing: true,
+            startX: x,
+            startY: y,
+            startWidth: width,
+            startHeight: height
         }, () => {
-            if (props.onDragStart) {
-                props.onDragStart(this);
+            if (props.onResizeStart) {
+                props.onResizeStart(this);
             }
         });
-
-        e.stopPropagation();
-        e.preventDefault();
     }
 
-    onMouseMove(e) {
+    updatePosition(x, y) {
         let val,
-            state = this.state;
+            { resizing, startY, startHeight } = this.state,
+            { minHeight } = this.props;
 
-        if (state.dragging) {
-            val = state.startHeight + e.pageY - state.startY;
-            if (val < state.minHeight) {
-                val = state.minHeight;
+        if (resizing) {
+            val = startHeight + y - startY;
+            if (val < minHeight) {
+                val = minHeight;
             }
 
             this.setState({ height: val });
         }
-
-        e.stopPropagation();
-        e.preventDefault();
     }
 
-    checkDragState() {
-        if (this.state.dragging) {
-            this.setState({ dragging: false }, this.props.onDragEnd);
+    endResize() {
+        if (this.state.resizing) {
+            this.setState({ resizing: false }, this.props.onResizeEnd);
         }
     }
 
@@ -78,7 +70,7 @@ export default class Panel extends UIPureComponent {
         let splitter, text,
             { height } = this.state,
             { title, children, direction, stretch, resizable, className } = this.props,
-            style = (height) ? { height: height } : null,
+            style = (height) ? { height } : null,
             classes = {
                 'panel': true,
                 'vertical': (direction === 'vertical'),
@@ -87,7 +79,7 @@ export default class Panel extends UIPureComponent {
             };
 
         if (resizable) {
-            splitter = <Splitter type="horizontal" onDragStart={this.onStartDrag} />;
+            splitter = <Splitter type="horizontal" onResize={this.startResize} />;
         }
 
         if (title) {

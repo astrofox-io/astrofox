@@ -1,5 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
+import Icon from 'components/interface/Icon';
+import iconDots from 'svg/icons/dots-three-horizontal.svg';
 
 const Splitter = (props) => {
     let classes = {
@@ -7,21 +9,25 @@ const Splitter = (props) => {
             vertical: props.type === 'vertical',
             horizontal: props.type !== 'vertical'
         },
-        onMouseDown = (e) => props.onDragStart(e);
+        onMouseDown = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            props.onResize(e.pageX, e.pageY);
+        };
 
     return (
         <div
             className={classNames(classes)}
             onMouseDown={onMouseDown}>
-            <span className="grip icon-dots-three-horizontal"/>
+            <Icon className="grip" glyph={iconDots} />
         </div>
     );
 };
 
 Splitter.defaultProps = {
     type: 'horizontal',
-    onDragStart: () => {
-    }
+    onResize: () => {}
 };
 
 export default Splitter;

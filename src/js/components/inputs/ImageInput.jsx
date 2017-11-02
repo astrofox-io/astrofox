@@ -1,9 +1,12 @@
 import React from 'react';
-import classNames from 'classnames';
 
 import UIComponent from 'components/UIComponent';
 import Window from 'core/Window';
+import Icon from 'components/interface/Icon';
 import * as IO from 'util/io';
+
+import folderIcon from 'svg/icons/folder-open-empty.svg';
+import closeIcon from 'svg/icons/circle-with-cross.svg';
 
 import BLANK_IMAGE from 'images/data/blank.gif';
 
@@ -25,8 +28,10 @@ export default class ImageInput extends UIComponent {
     }
 
     onChange() {
-        if (this.props.onChange) {
-            this.props.onChange(this.props.name, this.image.src);
+        const { name, onChange } = this.props;
+
+        if (onChange) {
+            onChange(name, this.image.src);
         }
     }
 
@@ -90,14 +95,10 @@ export default class ImageInput extends UIComponent {
     }
 
     render() {
-        let props = this.props,
-            hasImage = (props.src && props.src !== BLANK_IMAGE),
+        let { src } = this.props,
+            hasImage = (src && src !== BLANK_IMAGE),
             style = { display: (hasImage) ? 'inline-block' : 'none' },
-            classes = classNames({
-                'input-image-icon': true,
-                'icon-circle-with-cross': hasImage,
-                'icon-folder-open-empty': !hasImage
-            }),
+            icon = hasImage ? closeIcon : folderIcon,
             onClick = (hasImage) ? this.onDelete : this.onClick;
 
         return (
@@ -112,7 +113,9 @@ export default class ImageInput extends UIComponent {
                     style={style}
                     onLoad={this.onChange}
                 />
-                <div className={classes} />
+                <div className="input-image-icon">
+                    <Icon glyph={icon} />
+                </div>
             </div>
         );
     }

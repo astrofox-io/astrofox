@@ -9,21 +9,24 @@ export default class PanelDock extends UIComponent {
 
         this.state = {
             visible: true,
-            dragging: false,
+            resizing: false,
             activePanel: null
         };
     }
 
-    onDragStart(panel) {
-        this.setState({ dragging: true, activePanel: panel });
+    onResizeStart(panel) {
+        this.setState({ resizing: true, activePanel: panel });
     }
 
-    onDragEnd() {
-        this.setState({ dragging: false });
+    onResizeEnd() {
+        this.setState({ resizing: false });
     }
 
     onMouseMove(e) {
-        this.state.activePanel.onMouseMove(e);
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.state.activePanel.updatePosition(e.pageX, e.pageY);
     }
 
     render() {
@@ -36,9 +39,9 @@ export default class PanelDock extends UIComponent {
             }),
             style = {
                 width: props.width,
-                cursor: (state.dragging) ? 'ns-resize' : null
+                cursor: (state.resizing) ? 'ns-resize' : null
             },
-            mouseMove = (state.dragging) ? this.onMouseMove.bind(this) : null;
+            mouseMove = (state.resizing) ? this.onMouseMove.bind(this) : null;
 
         if (!props.visible) {
             style.display = 'none';
@@ -49,8 +52,8 @@ export default class PanelDock extends UIComponent {
                 return React.cloneElement(
                     child,
                     {
-                        onDragStart: this.onDragStart,
-                        onDragEnd: this.onDragEnd
+                        onResizeStart: this.onResizeStart,
+                        onResizeEnd: this.onResizeEnd
                     }
                 );
             }
