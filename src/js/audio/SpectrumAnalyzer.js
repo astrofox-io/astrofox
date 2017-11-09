@@ -1,16 +1,9 @@
 import { fftSize, sampleRate } from 'config/system.json';
 
-const defaults = {
-    fftSize: fftSize,
-    minDecibels: -100,
-    maxDecibels: 0,
-    smoothingTimeConstant: 0
-};
-
 export default class SpectrumAnalyzer {
     constructor(context, options) {
         this.audioContext = context;
-        this.analyzer = Object.assign(context.createAnalyser(), defaults, options);
+        this.analyzer = Object.assign(context.createAnalyser(), SpectrumAnalyzer.defaults, options);
         this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
         this.td = new Float32Array(this.analyzer.fftSize);
     }
@@ -49,3 +42,10 @@ export default class SpectrumAnalyzer {
         return sampleRate / 2;
     }
 }
+
+SpectrumAnalyzer.defaults = {
+    fftSize: fftSize,
+    minDecibels: -100,
+    maxDecibels: 0,
+    smoothingTimeConstant: 0
+};

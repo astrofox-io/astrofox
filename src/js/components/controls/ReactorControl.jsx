@@ -1,12 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
-
-import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'core/Global';
-import { fftSize, sampleRate } from 'config/system.json';
-
 import UIPureComponent from 'components/UIPureComponent';
 import BoxInput from 'components/inputs/BoxInput';
 
@@ -52,7 +48,7 @@ export default class ReactorControl extends UIPureComponent {
 
     onChange(name, value) {
         const { x, y, width, height } = value,
-            { barWidth, barHeight, barSpacing } = this.props,
+            { reactor, barWidth, barHeight, barSpacing } = this.props,
             maxWidth = BARS * (barWidth + barSpacing),
             maxHeight = barHeight;
 
@@ -63,7 +59,7 @@ export default class ReactorControl extends UIPureComponent {
             y2: (y + height) / maxHeight
         };
 
-        this.props.reactor.update({ [name]: range });
+        reactor.update({ [name]: value, range: range });
     }
 
     draw() {
@@ -99,8 +95,7 @@ export default class ReactorControl extends UIPureComponent {
                     <BoxInput
                         ref={el => this.box = el}
                         name="selection"
-                        width={BARS * (barWidth + barSpacing)}
-                        height={barHeight}
+                        value={reactor ? reactor.options.selection : {}}
                         minWidth={barWidth}
                         minHeight={barWidth}
                         maxWidth={BARS * (barWidth + barSpacing)}
@@ -123,5 +118,7 @@ export default class ReactorControl extends UIPureComponent {
 ReactorControl.defaultProps = {
     barWidth: 10,
     barHeight: 100,
-    barSpacing: 1
+    barSpacing: 1,
+    reactor: null,
+    visible: false
 };

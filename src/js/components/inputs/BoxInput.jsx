@@ -10,10 +10,7 @@ export default class BoxInput extends UIComponent {
 
         this.state = {
             resizing: false,
-            width: props.width,
-            height: props.height,
-            x: props.x,
-            y: props.y
+            value: props.value
         };
     }
 
@@ -27,45 +24,52 @@ export default class BoxInput extends UIComponent {
         events.off('mousemove', this.onMouseMove);
     }
 
-    onMouseMove(e) {
-        let { resizing, position, x, y, width, height, startX, startY, startWidth, startHeight, startTop, startLeft } = this.state,
-            { minWidth, minHeight, maxWidth, maxHeight, name, onChange } = this.props;
+    componentWillReceiveProps(props) {
+        if (typeof props.value !== 'undefined') {
+            this.setState({ value: props.value });
+        }
+    }
 
-        if (resizing) {
-            const dx = e.pageX - startX,
+    onMouseMove(e) {
+        if (this.state.resizing) {
+            let { value, position, startX, startY, startWidth, startHeight, startTop, startLeft } = this.state,
+                { minWidth, minHeight, maxWidth, maxHeight, name, onChange } = this.props,
+                dx = e.pageX - startX,
                 dy = e.pageY - startY;
 
             switch (position) {
                 case 'top':
-                    y = clamp(startTop + dy, 0, startTop + startHeight - minHeight);
-                    height = clamp(startHeight - dy, minHeight, startTop + startHeight);
+                    value.y = clamp(startTop + dy, 0, startTop + startHeight - minHeight);
+                    value.height = clamp(startHeight - dy, minHeight, startTop + startHeight);
                     break;
                 case 'right':
-                    width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
+                    value.width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
                     break;
                 case 'bottom':
-                    height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
+                    value.height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
                     break;
                 case 'left':
-                    x = clamp(startLeft + dx, 0, startLeft + startWidth - minWidth);
-                    width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
+                    value.x = clamp(startLeft + dx, 0, startLeft + startWidth - minWidth);
+                    value.width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
                     break;
                 case 'center':
-                    x = clamp(startLeft + dx, 0, maxWidth - startWidth);
-                    y = clamp(startTop + dy, 0, maxHeight - startHeight);
+                    value.x = clamp(startLeft + dx, 0, maxWidth - startWidth);
+                    value.y = clamp(startTop + dy, 0, maxHeight - startHeight);
                     break;
             }
 
-            this.setState({ x, y, width, height });
+            const newValue = Object.assign({}, value);
+
+            this.setState({ value: newValue});
 
             if (onChange) {
-                onChange(name, { x, y, width, height });
+                onChange(name, newValue);
             }
         }
     }
 
     startResize(pos, e) {
-        const { x, y, width, height } = this.state;
+        const { x, y, width, height } = this.state.value;
 
         this.setState({
             resizing: true,
@@ -89,7 +93,7 @@ export default class BoxInput extends UIComponent {
     }
 
     render() {
-        const { x, y, width, height } = this.state;
+        const { x, y, width, height } = this.state.value;
 
         return (
             <div
@@ -121,10 +125,12 @@ export default class BoxInput extends UIComponent {
 
 BoxInput.defaultProps = {
     name: 'box',
-    width: 100,
-    height: 100,
-    x: 0,
-    y: 0,
+    value: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100
+    },
     minWidth: 1,
     minHeight: 1,
     maxWidth: 100,

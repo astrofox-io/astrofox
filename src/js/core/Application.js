@@ -10,13 +10,16 @@ import LicenseManager from 'core/LicenseManager';
 import Player from 'audio/Player';
 import Audio from 'audio/Audio';
 import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
+import SpectrumParser from 'audio/SpectrumParser';
 import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
+import { fftSize, sampleRate } from 'config/system.json';
 
 import appConfig from 'config/app.json';
 import menuConfig from 'config/menu.json';
 
 const FPS_POLL_INTERVAL = 500;
+const REACTOR_BINS = 64;
 
 export default class Application extends EventEmitter {
     constructor() {
@@ -26,10 +29,21 @@ export default class Application extends EventEmitter {
     
         this.audioContext = new window.AudioContext();
         this.player = new Player(this.audioContext);
-        this.spectrum = new SpectrumAnalyzer(this.audioContext);
         this.stage = new Stage(this);
         this.updater = new AppUpdater(this);
         this.license = new LicenseManager();
+        this.analyzer = new SpectrumAnalyzer(this.audioContext);
+        this.parser = new SpectrumParser({
+            fftSize: fftSize,
+            sampleRate: sampleRate,
+            smoothingTimeConstant: 0.5,
+            minDecibels: -100,
+            maxDecibels: -12,
+            minFrequency: 0,
+            maxFrequency: Math.ceil(sampleRate/fftSize * REACTOR_BINS),
+            normalize: true,
+            bins: REACTOR_BINS
+        });
 
         this.audioFile = '';
         this.projectFile = '';
@@ -45,6 +59,7 @@ export default class Application extends EventEmitter {
             delta: 0,
             fft: null,
             td: null,
+            reactor: null,
             volume: 0
         };
 
@@ -139,12 +154,12 @@ export default class Application extends EventEmitter {
     }
 
     resetAnalyzer() {
-        let spectrum = this.spectrum,
+        let analyzer = this.analyzer,
             audio = this.player.getAudio();
 
         if (audio && !audio.paused) {
-            spectrum.clearFrequencyData();
-            spectrum.clearTimeData();
+            analyzer.clearFrequencyData();
+            analyzer.clearTimeData();
         }
     }
 
@@ -195,13 +210,13 @@ export default class Application extends EventEmitter {
 
     renderFrame(frame, fps, callback) {
         let data, image,
-            spectrum = this.spectrum,
+            analyzer = this.analyzer,
             stage = this.stage,
             audio = this.player.getAudio(),
             source = this.audioContext.createBufferSource();
 
         source.buffer = audio.buffer;
-        source.connect(spectrum.analyzer);
+        source.connect(analyzer.analyzer);
 
         source.onended = () => {
             data = this.getFrameData(true);
@@ -222,21 +237,21 @@ export default class Application extends EventEmitter {
     }
 
     getFrameData(update) {
-        let data = this.frameData,
-            spectrum = this.spectrum;
+        let { frameData, analyzer, parser } = this;
 
-        data.fft = spectrum.getFrequencyData(update);
-        data.td = spectrum.getTimeData(update);
-        data.volume = spectrum.getVolume();
-        data.hasUpdate = update;
+        frameData.fft = analyzer.getFrequencyData(update);
+        frameData.td = analyzer.getTimeData(update);
+        frameData.volume = analyzer.getVolume();
+        frameData.hasUpdate = update;
+        frameData.reactor = parser.parseFFT(frameData.fft);
 
         // Rendering single frame
-        if (data.id === 0) {
+        if (frameData.id === 0) {
             // Fix time data display bug
-            data.td = data.td.subarray(0, ~~(data.td.length * 0.93));
+            frameData.td = frameData.td.subarray(0, ~~(frameData.td.length * 0.93));
         }
 
-        return data;
+        return frameData;
     }
 
     updateFPS(now) {
@@ -319,14 +334,14 @@ export default class Application extends EventEmitter {
     loadAudioData(data) {
         return new Promise((resolve, reject) => {
             let player = this.player,
-                spectrum = this.spectrum,
+                analyzer = this.analyzer,
                 audio = new Audio(this.audioContext);
 
             audio.load(data)
                 .then(() => {
                     player.load(audio);
 
-                    audio.addNode(spectrum.analyzer);
+                    audio.addNode(analyzer.analyzer);
 
                     resolve();
                 })

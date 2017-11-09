@@ -9,8 +9,6 @@ import editIcon from 'svg/icons/gear.svg';
 export default class ReactorInput extends UIPureComponent {
     constructor(props) {
         super(props);
-
-        this.reactor = props.reactor;
     }
 
     componentDidMount() {
@@ -26,18 +24,20 @@ export default class ReactorInput extends UIPureComponent {
         );
 
         events.on('render', this.draw);
+        events.emit('reactor-edit', this.props.reactor);
     }
 
     componentWillUnmount() {
         events.off('render', this.draw);
+        events.emit('reactor-edit', null);
     }
 
     onClick() {
-        events.emit('reactor-edit', this.reactor);
+        events.emit('reactor-edit', this.props.reactor);
     }
 
     draw() {
-        let { output } = this.reactor.getResult();
+        let { output } = this.props.reactor.getResult();
 
         this.meter.render(output);
     }

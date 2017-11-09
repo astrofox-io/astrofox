@@ -39,7 +39,7 @@ export default class BlurEffect extends Effect {
 
     updatePass() {
         let { type, amount, x, y } = this.options,
-            { width, height } = this.owner.getSize();
+            { width, height } = this.stage.getSize();
 
         switch (type) {
             case 'Box':
@@ -77,7 +77,7 @@ export default class BlurEffect extends Effect {
 
     getShaderPass(type) {
         let pass,
-            { width, height } = this.owner.getSize();
+            { width, height } = this.scene.getSize();
 
         switch (type) {
             case 'Gaussian':

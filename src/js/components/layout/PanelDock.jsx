@@ -1,72 +1,38 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
+import UIPureComponent from 'components/UIPureComponent';
 
-export default class PanelDock extends UIComponent {
+export default class PanelDock extends UIPureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            visible: true,
-            resizing: false,
-            activePanel: null
+            visible: props.visible
         };
     }
 
-    onResizeStart(panel) {
-        this.setState({ resizing: true, activePanel: panel });
-    }
-
-    onResizeEnd() {
-        this.setState({ resizing: false });
-    }
-
-    onMouseMove(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.state.activePanel.updatePosition(e.pageX, e.pageY);
-    }
-
     render() {
-        let props = this.props,
-            state = this.state,
+        const { width, direction, visible, children } = this.props,
             classes = classNames({
                 'panel-dock': true,
-                'vertical': (props.direction === 'vertical'),
-                'horizontal': (props.direction !== 'vertical')
+                'vertical': direction === 'vertical',
+                'horizontal': direction !== 'vertical',
+                'display-none': !visible
             }),
             style = {
-                width: props.width,
-                cursor: (state.resizing) ? 'ns-resize' : null
-            },
-            mouseMove = (state.resizing) ? this.onMouseMove.bind(this) : null;
+                width: width
+            };
 
-        if (!props.visible) {
-            style.display = 'none';
-        }
-
-        let panels = React.Children.map(props.children, child => {
-            if (child.props.resizable) {
-                return React.cloneElement(
-                    child,
-                    {
-                        onResizeStart: this.onResizeStart,
-                        onResizeEnd: this.onResizeEnd
-                    }
-                );
-            }
-
-            return child;
-        }, this);
+        const panels = React.Children.map(children, child => {
+            return React.cloneElement(child, { dock: this });
+        });
 
         return (
             <div
-                id={props.id}
+                ref={el => this.domElement = el}
                 className={classes}
-                style={style}
-                onMouseMove={mouseMove}>
+                style={style}>
                 {panels}
             </div>
         );
@@ -75,5 +41,6 @@ export default class PanelDock extends UIComponent {
 
 PanelDock.defaultProps = {
     direction: 'vertical',
-    width: 320
+    width: 320,
+    visible: true
 };

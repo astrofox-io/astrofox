@@ -1,42 +1,18 @@
 import Component from 'core/Component';
-import SpectrumParser from 'audio/SpectrumParser';
-import { fftSize, sampleRate } from 'config/system.json';
 import { val2pct } from 'util/math';
 
 export default class AudioReactor extends Component {
     constructor(options) {
         super(Object.assign({}, AudioReactor.defaults, options));
 
-        this.spectrum = new SpectrumParser({
-            fftSize: fftSize,
-            sampleRate: sampleRate,
-            smoothingTimeConstant: 0.5,
-            minDecibels: -100,
-            maxDecibels: -12,
-            minFrequency: 0,
-            maxFrequency: Math.ceil(sampleRate/fftSize * AudioReactor.maxBins),
-            normalize: true,
-            bins: AudioReactor.maxBins
-        });
-
         this.result = { fft: null, output: 0 };
     }
 
-    update(options) {
-        const changed = super.update(options);
-
-        if (changed) {
-            this.spectrum.update(options);
-        }
-
-        return changed;
-    }
-
     parse(data) {
-        let fft = this.spectrum.parseFFT(data.fft),
+        let fft = data.reactor,
             output = 0;
 
-        const { x1, y1, x2, y2 } = this.options.selection,
+        const { x1, y1, x2, y2 } = this.options.range,
             start = ~~(x1 * fft.length),
             end = ~~(x2 * fft.length);
 
@@ -59,25 +35,10 @@ export default class AudioReactor extends Component {
     }
 }
 
-AudioReactor.maxBins = 64;
-
-AudioReactor.frequencyRange = AudioReactor.maxBins * sampleRate / fftSize;
-
 AudioReactor.defaults = {
     outputMode: 'Average',
-    selection: { x1: 0, x2: 1, y1: 0, y2: 1 }
-};
-
-AudioReactor.parserDefaults = {
-    fftSize: fftSize,
-    sampleRate: sampleRate,
-    smoothingTimeConstant: 0.5,
-    minDecibels: -100,
-    maxDecibels: -12,
-    minFrequency: 0,
-    maxFrequency: Math.ceil(sampleRate/fftSize * AudioReactor.maxBins),
-    normalize: true,
-    bins: AudioReactor.maxBins
+    selection: { x: 0, y: 0, width: 100, height: 100 },
+    range: { x1: 0, x2: 1, y1: 0, y2: 1 }
 };
 
 AudioReactor.outputModes = [

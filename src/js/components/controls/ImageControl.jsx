@@ -15,7 +15,7 @@ export default class ImageControl extends UIPureComponent {
     constructor(props) {
         super(props);
 
-        this.state = this.props.display.options;
+        this.state = props.display.options;
     }
 
     componentDidMount() {
@@ -80,8 +80,8 @@ export default class ImageControl extends UIPureComponent {
         });
     }
 
-    onReactorChange(name, reactor) {
-        this.props.display.reactors[name] = reactor;
+    onReactorChange(name, options) {
+        this.props.display.setReactor(name, options);
         this.forceUpdate();
     }
 
@@ -94,10 +94,10 @@ export default class ImageControl extends UIPureComponent {
             state = this.state,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
-            width = readOnly ? 0 : image.naturalWidth,
-            height = readOnly ? 0 : image.naturalHeight,
-            xMax = readOnly ? 0 : (width > stageWidth) ? width : stageWidth,
-            yMax = readOnly ? 0 : (height > stageHeight) ? height : stageHeight,
+            imageWidth = readOnly ? 0 : image.naturalWidth,
+            imageHeight = readOnly ? 0 : image.naturalHeight,
+            xMax = readOnly ? 0 : (imageWidth > stageWidth) ? imageWidth : stageWidth,
+            yMax = readOnly ? 0 : (imageHeight > stageHeight) ? imageHeight : stageHeight,
             linkClasses = {
                 'input-link': true,
                 'input-link-on': state.fixed
@@ -105,7 +105,7 @@ export default class ImageControl extends UIPureComponent {
             linkIcon = <Icon key={0} className={classNames(linkClasses)} glyph={iconLink} onClick={this.onLinkClick} />;
 
         return (
-            <Control label="IMAGE" active={active}>
+            <Control label="IMAGE" active={active} display={display}>
                 <Option label="Image">
                     <ImageInput
                         name="src"
@@ -119,7 +119,7 @@ export default class ImageControl extends UIPureComponent {
                         name="width"
                         width={40}
                         min={0}
-                        max={width*2}
+                        max={imageWidth*2}
                         value={state.width}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -127,7 +127,7 @@ export default class ImageControl extends UIPureComponent {
                     <RangeInput
                         name="width"
                         min={0}
-                        max={width*2}
+                        max={imageWidth*2}
                         value={state.width}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -138,7 +138,7 @@ export default class ImageControl extends UIPureComponent {
                         name="height"
                         width={40}
                         min={0}
-                        max={height*2}
+                        max={imageHeight*2}
                         value={state.height}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -146,7 +146,7 @@ export default class ImageControl extends UIPureComponent {
                     <RangeInput
                         name="height"
                         min={0}
-                        max={height*2}
+                        max={imageHeight*2}
                         value={state.height}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -211,7 +211,6 @@ export default class ImageControl extends UIPureComponent {
                 </Option>
                 <Option
                     label="Opacity"
-                    display={display}
                     reactorName="opacity"
                     onReactorChange={this.onReactorChange}>
                     <NumberInput

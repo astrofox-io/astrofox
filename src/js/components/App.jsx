@@ -4,7 +4,7 @@ import propTypes from 'prop-types';
 import Window from 'core/Window';
 import { events } from 'core/Global';
 
-import UIPureComponent from 'components/UIPureComponent';
+import UIComponent from 'components/UIComponent';
 
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
@@ -32,7 +32,7 @@ import menuConfig from 'config/menu';
 import audioExtensions from 'config/audioExtensions';
 import fontOptions from 'config/fonts.json';
 
-export default class App extends UIPureComponent {
+export default class App extends UIComponent {
     constructor(props) {
         super(props);
 
@@ -42,7 +42,7 @@ export default class App extends UIPureComponent {
             reactor: null,
             showControlDock: true,
             showPlayer: true,
-            showAnalyzer: false
+            showReactor: false
         };
         
         this.app = props.app;
@@ -293,7 +293,7 @@ export default class App extends UIPureComponent {
         // Default button
         props = Object.assign(
             {
-                onClose: () => this.hideModal(),
+                onClose: this.hideModal,
                 buttons: ['OK']
             },
             props
@@ -353,7 +353,7 @@ export default class App extends UIPureComponent {
         this.setState(prevState => {
             return {
                 reactor: reactor,
-                showAnalyzer: reactor && (reactor !== prevState.reactor || !prevState.showAnalyzer)
+                showReactor: reactor // && (reactor !== prevState.reactor || !prevState.showReactor)
             };
         });
     }
@@ -382,7 +382,7 @@ export default class App extends UIPureComponent {
     }
 
     render() {
-        let { showPlayer, showControlDock, showAnalyzer, reactor, statusBarText, modals } = this.state;
+        let { showPlayer, showControlDock, showReactor, reactor, statusBarText, modals } = this.state;
 
         return (
             <div
@@ -400,7 +400,7 @@ export default class App extends UIPureComponent {
                 <div id="body">
                     <div id="viewport">
                         <ReactorControl
-                            visible={showAnalyzer}
+                            visible={showReactor}
                             reactor={reactor}
                         />
                         <Stage

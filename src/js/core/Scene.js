@@ -17,10 +17,6 @@ export default class Scene extends Display {
         this.stage = null;
         this.displays = new NodeCollection();
         this.effects = new NodeCollection();
-
-        this.reactors = {
-            opacity: null
-        };
     }
 
     update(options) {

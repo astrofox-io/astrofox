@@ -9,7 +9,7 @@ export default class RGBShiftEffect extends Effect {
     }
 
     updatePass() {
-        let { width } = this.owner.getSize();
+        let { width } = this.scene.getSize();
 
         this.pass.setUniforms({
             amount: this.options.offset / width,

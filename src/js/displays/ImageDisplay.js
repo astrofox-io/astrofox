@@ -6,10 +6,6 @@ export default class ImageDisplay extends CanvasDisplay {
         super(ImageDisplay, options);
 
         this.image = new CanvasImage(this.options, this.canvas);
-
-        this.reactors = {
-            opacity: null
-        };
     }
     
     update(options) {

@@ -17,7 +17,7 @@ export default class Effect extends Display {
         this.pass = pass;
         pass.options.enabled = this.options.enabled;
 
-        this.owner.updatePasses();
+        this.scene.updatePasses();
     }
 
     updatePass() {

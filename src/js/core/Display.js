@@ -1,4 +1,5 @@
 import Component from 'core/Component';
+import AudioReactor from 'audio/AudioReactor';
 
 const displayCount = {};
 
@@ -21,9 +22,10 @@ export default class Display extends Component {
 
         this.name = type.className;
         this.initialized = !!options;
-        this.owner = null;
+        this.scene = null;
         this.hasUpdate = false;
         this.changed = false;
+        this.reactors = {};
     }
 
     update(options) {
@@ -34,6 +36,18 @@ export default class Display extends Component {
         }
 
         return this.hasUpdate;
+    }
+
+    setReactor(name, options) {
+        const reactor = this.reactors[name];
+
+        if (reactor) {
+            this.update({ [name]: reactor.options.lastValue });
+            this.reactors[name] = null;
+        }
+        else {
+            this.reactors[name] = new AudioReactor(options);
+        }
     }
 
     updateReactors(data) {
@@ -54,7 +68,8 @@ export default class Display extends Component {
     toJSON() {
         return {
             name: this.name,
-            options: this.options
+            options: this.options,
+            reactors: this.reactors
         };
     }
 }

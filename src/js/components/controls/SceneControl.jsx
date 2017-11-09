@@ -63,8 +63,8 @@ export default class SceneControl extends UIPureComponent {
         });
     }
 
-    onReactorChange(name, reactor) {
-        this.props.display.reactors[name] = reactor;
+    onReactorChange(name, options) {
+        this.props.display.setReactor(name, options);
         this.forceUpdate();
     }
 
@@ -73,7 +73,7 @@ export default class SceneControl extends UIPureComponent {
             state = this.state;
 
         return (
-            <Control label="SCENE" active={active}>
+            <Control label="SCENE" active={active} display={display}>
                 <Option label="Blending">
                     <SelectInput
                         name="blendMode"
@@ -85,7 +85,6 @@ export default class SceneControl extends UIPureComponent {
                 </Option>
                 <Option
                     label="Opacity"
-                    display={display}
                     reactorName="opacity"
                     onReactorChange={this.onReactorChange}>
                     <NumberInput
