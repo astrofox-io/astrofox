@@ -13,8 +13,8 @@ import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
 import SpectrumParser from 'audio/SpectrumParser';
 import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
-import { fftSize, sampleRate } from 'config/system.json';
 
+import { fftSize, sampleRate } from 'config/system.json';
 import appConfig from 'config/app.json';
 import menuConfig from 'config/menu.json';
 
@@ -34,12 +34,7 @@ export default class Application extends EventEmitter {
         this.license = new LicenseManager();
         this.analyzer = new SpectrumAnalyzer(this.audioContext);
         this.parser = new SpectrumParser({
-            fftSize: fftSize,
-            sampleRate: sampleRate,
-            smoothingTimeConstant: 0.5,
-            minDecibels: -100,
             maxDecibels: -12,
-            minFrequency: 0,
             maxFrequency: Math.ceil(sampleRate/fftSize * REACTOR_BINS),
             normalize: true,
             bins: REACTOR_BINS

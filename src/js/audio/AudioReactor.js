@@ -1,5 +1,5 @@
 import Component from 'core/Component';
-import { val2pct } from 'util/math';
+import { val2pct, floor, ceil } from 'util/math';
 
 export default class AudioReactor extends Component {
     constructor(options) {
@@ -13,8 +13,8 @@ export default class AudioReactor extends Component {
             output = 0;
 
         const { x1, y1, x2, y2 } = this.options.range,
-            start = ~~(x1 * fft.length),
-            end = ~~(x2 * fft.length);
+            start = floor(x1 * fft.length),
+            end = ceil(x2 * fft.length);
 
         for (let i = start; i < end; i++) {
             output += val2pct(fft[i], 1 - y2, 1 - y1);
