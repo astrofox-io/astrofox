@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import AudioReactor from 'audio/AudioReactor';
 import ReactorInput from 'components/inputs/ReactorInput';
 import Icon from 'components/interface/Icon';
 import iconReact from 'svg/icons/flash.svg';
@@ -39,6 +38,9 @@ export function Option(props) {
 
     if (display && display.reactors) {
         reactor = display.reactors[reactorName];
+        if (reactor) {
+            reactor.label = ['REACTOR', display.options.displayName, label];
+        }
     }
 
     if (reactorName) {

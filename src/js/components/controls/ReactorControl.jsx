@@ -73,18 +73,36 @@ export default class ReactorControl extends UIPureComponent {
         }
     }
 
+    getLabel() {
+        const { reactor } = this.props;
+
+        if (reactor) {
+            return reactor.label.map((item, index) => {
+                return (<span key={index}>{item}</span>);
+            });
+        }
+    }
+
+    getSelection() {
+        const { reactor } = this.props;
+
+        if (reactor) {
+            return reactor.options.selection;
+        }
+    }
+
     render() {
-        const { barWidth, barHeight, barSpacing, visible, reactor } = this.props,
+        const { barWidth, barHeight, barSpacing, visible } = this.props,
             classes = {
                 'reactor': true,
                 'display-none': !visible
             };
 
-        let text = reactor ? 'REACTOR ' + reactor.id : 'nothing';
-
         return (
             <div className={classNames(classes)}>
-                <div>{text}</div>
+                <div className="reactor-label">
+                    {this.getLabel()}
+                </div>
                 <div className="reactor-spectrum">
                     <canvas
                         ref={el => this.spectrumCanvas = el}
@@ -95,7 +113,7 @@ export default class ReactorControl extends UIPureComponent {
                     <BoxInput
                         ref={el => this.box = el}
                         name="selection"
-                        value={reactor ? reactor.options.selection : {}}
+                        value={this.getSelection()}
                         minWidth={barWidth}
                         minHeight={barWidth}
                         maxWidth={BARS * (barWidth + barSpacing)}

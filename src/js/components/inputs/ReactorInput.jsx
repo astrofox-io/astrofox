@@ -32,7 +32,7 @@ export default class ReactorInput extends UIPureComponent {
         events.emit('reactor-edit', null);
     }
 
-    onClick() {
+    showReactorControl() {
         events.emit('reactor-edit', this.props.reactor);
     }
 
@@ -45,7 +45,9 @@ export default class ReactorInput extends UIPureComponent {
     render() {
         return (
             <div className="input-reactor">
-                <div className="reactor-meter">
+                <div
+                    className="reactor-meter"
+                    onDoubleClick={this.showReactorControl}>
                     <canvas
                         ref={el => this.canvas = el}
                         className="canvas"
@@ -56,7 +58,7 @@ export default class ReactorInput extends UIPureComponent {
                 <Icon
                     className="reactor-edit-icon"
                     glyph={editIcon}
-                    onClick={this.onClick}
+                    onClick={this.showReactorControl}
                 />
             </div>
         );
@@ -66,5 +68,5 @@ export default class ReactorInput extends UIPureComponent {
 ReactorInput.defaultProps = {
     width: 100,
     height: 10,
-    color: '#775fd8'
+    color: '#775fd8',
 };

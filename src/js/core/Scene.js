@@ -17,6 +17,7 @@ export default class Scene extends Display {
         this.stage = null;
         this.displays = new NodeCollection();
         this.effects = new NodeCollection();
+        this.reactors = {};
     }
 
     update(options) {
@@ -262,16 +263,12 @@ export default class Scene extends Display {
             return effect.toJSON();
         });
 
-        let reactors = this.reactors.map(reactor => {
-            return reactor.toJSON();
-        });
-
         return {
             name: this.name,
             options: this.options,
             displays: displays,
             effects: effects,
-            reactors: reactors
+            reactors: this.reactors
         };
     }
 

@@ -353,7 +353,7 @@ export default class App extends UIComponent {
         this.setState(prevState => {
             return {
                 reactor: reactor,
-                showReactor: reactor // && (reactor !== prevState.reactor || !prevState.showReactor)
+                showReactor: reactor && (reactor !== prevState.reactor || !prevState.showReactor)
             };
         });
     }
