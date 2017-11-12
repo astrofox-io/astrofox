@@ -350,7 +350,7 @@ const PlayButton = (props) => {
 
     return (
         <div className={classNames(classes)} onClick={props.onClick}>
-            <Icon className="icon" glyph={props.playing ? iconPause : iconPlay} />
+            <Icon className="icon" glyph={props.playing ? iconPause : iconPlay} title={props.title} />
         </div>
     );
 };
@@ -358,7 +358,7 @@ const PlayButton = (props) => {
 const StopButton = (props) => {
     return (
         <div className="button stop-button" onClick={props.onClick}>
-            <Icon className="icon" glyph={iconStop} />
+            <Icon className="icon" glyph={iconStop} title={props.title} />
         </div>
     );
 };
@@ -366,7 +366,7 @@ const StopButton = (props) => {
 const ToggleButton = (props) => {
     return (
         <div className={classNames('toggle-button', {'toggle-button-on': props.active })} onClick={props.onClick}>
-            <Icon className="icon" glyph={props.icon} width={20} height={20} />
+            <Icon className="icon" glyph={props.icon} title={props.title} width={20} height={20} />
         </div>
     );
 };

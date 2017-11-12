@@ -37,6 +37,9 @@ export default class AudioReactor extends Component {
 
 AudioReactor.defaults = {
     outputMode: 'Average',
+    lastValue: 0,
+    min: 0,
+    max: 1,
     selection: { x: 0, y: 0, width: 100, height: 100 },
     range: { x1: 0, x2: 1, y1: 0, y2: 1 }
 };

@@ -5,10 +5,11 @@ const Icon = (props) => {
         { viewBox, url } = props.glyph;
 
     return (
-        <svg role="img" className={className} viewBox={viewBox} width={width} height={height} onClick={onClick}>
-            {title ? <title>{title}</title> : null}
-            <use xlinkHref={url} />
-        </svg>
+        <span className={className} title={title}>
+            <svg role="img" viewBox={viewBox} width={width} height={height} onClick={onClick}>
+                <use xlinkHref={url} />
+            </svg>
+        </span>
     );
 };
 

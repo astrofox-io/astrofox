@@ -30,7 +30,7 @@ export function Control(props) {
 
 export function Option(props) {
     let text, icon, input, reactor,
-        { label, className, children, display, reactorName, onReactorChange } = props;
+        { label, className, children, display, reactorName, reactorMin, reactorMax, onReactorChange } = props;
 
     if (label) {
         text = <span className="label">{label}</span>;
@@ -49,8 +49,14 @@ export function Option(props) {
             'reactor-icon-on': reactor
         };
 
-        const onClick = () => {
-            onReactorChange(reactorName, { lastValue: display.options[reactorName] });
+        const onIconClick = () => {
+            onReactorChange(
+                reactorName,
+                {
+                    lastValue: display.options[reactorName],
+                    min: reactorMin || 0,
+                    max: reactorMax || 1
+                });
         };
 
         icon = (
@@ -58,7 +64,7 @@ export function Option(props) {
                 className={classNames(classes)}
                 glyph={iconReact}
                 title={reactor ? 'Enable Reactor' : 'Disable Reactor'}
-                onClick={onClick}
+                onClick={onIconClick}
             />
         );
     }

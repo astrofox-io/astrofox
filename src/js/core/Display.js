@@ -43,7 +43,7 @@ export default class Display extends Component {
 
         if (reactor) {
             this.update({ [name]: reactor.options.lastValue });
-            this.reactors[name] = null;
+            delete this.reactors[name];
         }
         else {
             this.reactors[name] = new AudioReactor(options);
@@ -58,8 +58,11 @@ export default class Display extends Component {
             Object.keys(reactors).forEach(name => {
                 reactor = reactors[name];
                 if (reactor) {
-                    reactor.parse(data);
-                    this.options[name] = reactor.getResult().output;
+                    const output = (reactor.parse(data)).output,
+                        { min, max } = reactor.options,
+                        value = ((max - min) * output) + min;
+
+                    this.update({ [name]:  value});
                 }
             });
         }

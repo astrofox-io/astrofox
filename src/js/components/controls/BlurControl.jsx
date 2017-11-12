@@ -34,10 +34,15 @@ export default class BlurControl extends UIPureComponent {
         });
     }
 
+    onReactorChange(name, options) {
+        this.props.display.setReactor(name, options);
+        this.forceUpdate();
+    }
+
     render() {
         let centerOptions,
             state = this.state,
-            { active, stageWidth, stageHeight } = this.props;
+            { display, active, stageWidth, stageHeight } = this.props;
 
         if (state.type === 'Zoom') {
             centerOptions = [
@@ -77,7 +82,10 @@ export default class BlurControl extends UIPureComponent {
         }
 
         return (
-            <Control label="BLUR" active={active}>
+            <Control
+                label="BLUR"
+                display={display}
+                active={active}>
                 <Option label="Type">
                     <SelectInput
                         name="type"
@@ -87,7 +95,10 @@ export default class BlurControl extends UIPureComponent {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Amount">
+                <Option
+                    label="Amount"
+                    reactorName="amount"
+                    onReactorChange={this.onReactorChange}>
                     <NumberInput
                         name="amount"
                         width={40}
