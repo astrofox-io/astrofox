@@ -1,34 +1,27 @@
 .reactor {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
     width: 100%;
-    min-width: 500px;
+    min-width: 910px;
     overflow: hidden;
     background-color: @bg-color5;
-    border-bottom: 1px solid lighten(@bg-color5, 6%);
+    border-top: 1px solid lighten(@bg-color5, 6%);
     position: relative;
-    margin: 0 auto;
-    padding: 30px;
+    padding: 10px 20px;
 
-    .reactor-label {
+    .reactor-title {
+        color: @text-color2;
         font-size: @font-small;
-        color: @text-color3;
-        position: absolute;
-        top: 5px;
-        text-align: center;
+        text-shadow: 1px 1px 0 darken(@text-color2, 50%);
+    }
 
-        span {
-            cursor: default;
-            margin: 0 8px;
+    .reactor-display {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
 
-            &:before {
-                content: "\2022";
-                margin: 0 8px;
-                color: @color1;
-            }
-        }
+    .reactor-controls {
+        min-width: 300px;
     }
 
     .reactor-spectrum {
@@ -44,13 +37,38 @@
         border: 1px solid lighten(@bg-color5, 6%);
     }
 
-    canvas {
-        display: block;
-    }
-}
+    // Overrides
+    .control {
+        background-color: transparent;
+        border: 0;
+        margin: 0;
 
-.analyzer-selection-overlay {
-    position: absolute;
-    border: 1px solid lighten(@color1, 10%);
-    top: 1px;
+        >.header {
+            padding: 0;
+            margin: 0;
+        }
+
+        >.label {
+            color: @text-color2;
+        }
+
+        .input-field {
+            border-color: lighten(@bg-color2, 20%);
+
+            &:focus {
+                border-color: @color1;
+            }
+        }
+
+        .option {
+            >.label {
+                color: @text-color1;
+                margin-left: 0;
+            }
+
+            &:after {
+                content: none;
+            }
+        }
+    }
 }

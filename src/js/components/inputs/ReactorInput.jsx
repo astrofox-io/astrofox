@@ -58,6 +58,7 @@ export default class ReactorInput extends UIPureComponent {
                 <Icon
                     className="reactor-edit-icon"
                     glyph={editIcon}
+                    title="Edit Reactor"
                     onClick={this.showReactorControl}
                 />
             </div>

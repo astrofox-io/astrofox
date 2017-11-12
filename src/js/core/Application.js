@@ -34,7 +34,7 @@ export default class Application extends EventEmitter {
         this.license = new LicenseManager();
         this.analyzer = new SpectrumAnalyzer(this.audioContext);
         this.parser = new SpectrumParser({
-            maxDecibels: -12,
+            maxDecibels: -20,
             maxFrequency: Math.ceil(sampleRate/fftSize * REACTOR_BINS),
             normalize: true,
             bins: REACTOR_BINS

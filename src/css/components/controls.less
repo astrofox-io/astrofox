@@ -12,17 +12,18 @@
     padding-bottom: 16px;
     margin: 0 5px 5px 5px;
 
-    .header {
+    >.header {
         padding-left: 8px;
         margin-bottom: 10px;
         cursor: default;
         position: relative;
 
-        .label {
+        >.label {
             font-size: @font-small;
             color: @text-color2;
             text-shadow: 1px 1px 0 darken(@text-color2, 50%);
             line-height: 20px;
+            overflow: hidden;
         }
     }
 
@@ -34,7 +35,7 @@
         margin: 0 10px;
         position: relative;
 
-        .label {
+        >.label {
             font-size: @font-small;
             color: @text-color1;
             display: inline-block;
@@ -49,7 +50,7 @@
             }
         }
 
-        .input {
+        >.input {
             margin-right: 8px;
 
             &:last-child {
@@ -63,7 +64,7 @@
             margin: 0 8px 0 -4px;
         }
 
-        .react-icon {
+        .reactor-icon {
             position: absolute;
             fill: @text-color3;
             width: 16px;
@@ -74,7 +75,7 @@
             }
         }
 
-        .react-icon-on {
+        .reactor-icon-on {
             fill: @color1;
         }
 

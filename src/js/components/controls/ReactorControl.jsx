@@ -4,13 +4,23 @@ import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'core/Global';
 import UIPureComponent from 'components/UIPureComponent';
+import { Control, Option } from 'components/controls/Control';
 import BoxInput from 'components/inputs/BoxInput';
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
 
 const BARS = 64;
 
 export default class ReactorControl extends UIPureComponent {
     constructor(props) {
         super(props);
+
+        let { maxDecibels, smoothingTimeConstant } = props.parser.options;
+
+        this.state = {
+            maxDecibels,
+            smoothingTimeConstant
+        };
     }
 
     componentDidMount() {
@@ -73,26 +83,17 @@ export default class ReactorControl extends UIPureComponent {
         }
     }
 
-    getLabel() {
-        const { reactor } = this.props;
+    updateParser(name, value) {
+        let obj = { [name]: value };
 
-        if (reactor) {
-            return reactor.label.map((item, index) => {
-                return (<span key={index}>{item}</span>);
-            });
-        }
-    }
+        this.setState(obj);
 
-    getSelection() {
-        const { reactor } = this.props;
-
-        if (reactor) {
-            return reactor.options.selection;
-        }
+        this.props.parser.update(obj);
     }
 
     render() {
-        const { barWidth, barHeight, barSpacing, visible } = this.props,
+        const { reactor, barWidth, barHeight, barSpacing, visible } = this.props,
+            { maxDecibels, smoothingTimeConstant } = this.state,
             classes = {
                 'reactor': true,
                 'display-none': !visible
@@ -100,33 +101,75 @@ export default class ReactorControl extends UIPureComponent {
 
         return (
             <div className={classNames(classes)}>
-                <div className="reactor-label">
-                    {this.getLabel()}
-                </div>
-                <div className="reactor-spectrum">
-                    <canvas
-                        ref={el => this.spectrumCanvas = el}
-                        width={BARS * (barWidth + barSpacing)}
-                        height={barHeight}
-                        onClick={this.onClick}
-                    />
-                    <BoxInput
-                        ref={el => this.box = el}
-                        name="selection"
-                        value={this.getSelection()}
-                        minWidth={barWidth}
-                        minHeight={barWidth}
-                        maxWidth={BARS * (barWidth + barSpacing)}
-                        maxHeight={barHeight}
-                        onChange={this.onChange}
-                    />
-                </div>
-                <div className="reactor-output">
-                    <canvas
-                        ref={el => this.outputCanvas = el}
-                        width={20}
-                        height={barHeight}
-                    />
+                <div className="reactor-title">{reactor ? reactor.label : 'REACTOR'}</div>
+                <div className="reactor-display">
+                    <div className="reactor-controls">
+                        <Control>
+                            <Option label="Max dB">
+                                <NumberInput
+                                    name="maxDecibels"
+                                    value={maxDecibels}
+                                    width={40}
+                                    min={-40}
+                                    max={0}
+                                    step={1}
+                                    onChange={this.updateParser}
+                                />
+                                <RangeInput
+                                    name="maxDecibels"
+                                    value={maxDecibels}
+                                    min={-40}
+                                    max={0}
+                                    step={1}
+                                    onChange={this.updateParser}
+                                />
+                            </Option>
+                            <Option label="Smoothing">
+                                <NumberInput
+                                    name="smoothingTimeConstant"
+                                    value={smoothingTimeConstant}
+                                    width={40}
+                                    min={0}
+                                    max={0.99}
+                                    step={0.01}
+                                    onChange={this.updateParser}
+                                />
+                                <RangeInput
+                                    name="smoothingTimeConstant"
+                                    value={smoothingTimeConstant}
+                                    min={0}
+                                    max={0.99}
+                                    step={0.01}
+                                    onChange={this.updateParser}
+                                />
+                            </Option>
+                        </Control>
+                    </div>
+                    <div className="reactor-spectrum">
+                        <canvas
+                            ref={el => this.spectrumCanvas = el}
+                            width={BARS * (barWidth + barSpacing)}
+                            height={barHeight}
+                            onClick={this.onClick}
+                        />
+                        <BoxInput
+                            ref={el => this.box = el}
+                            name="selection"
+                            value={reactor ? reactor.options.selection : {}}
+                            minWidth={barWidth}
+                            minHeight={barWidth}
+                            maxWidth={BARS * (barWidth + barSpacing)}
+                            maxHeight={barHeight}
+                            onChange={this.onChange}
+                        />
+                    </div>
+                    <div className="reactor-output">
+                        <canvas
+                            ref={el => this.outputCanvas = el}
+                            width={20}
+                            height={barHeight}
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -134,7 +177,7 @@ export default class ReactorControl extends UIPureComponent {
 }
 
 ReactorControl.defaultProps = {
-    barWidth: 10,
+    barWidth: 8,
     barHeight: 100,
     barSpacing: 1,
     reactor: null,

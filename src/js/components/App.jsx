@@ -399,16 +399,17 @@ export default class App extends UIComponent {
                 />
                 <div id="body">
                     <div id="viewport">
-                        <ReactorControl
-                            visible={showReactor}
-                            reactor={reactor}
-                        />
                         <Stage
                             ref={el => this.stage = el}
                             onFileDropped={this.loadAudioFile}
                         />
                         <Player
                             visible={showPlayer}
+                        />
+                        <ReactorControl
+                            visible={showReactor}
+                            reactor={reactor}
+                            parser={this.app.parser}
                         />
                     </div>
                     <ControlDock

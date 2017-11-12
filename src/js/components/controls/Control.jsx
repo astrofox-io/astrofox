@@ -39,14 +39,14 @@ export function Option(props) {
     if (display && display.reactors) {
         reactor = display.reactors[reactorName];
         if (reactor) {
-            reactor.label = ['REACTOR', display.options.displayName, label];
+            reactor.label = ['REACTOR', display.options.displayName, label].join(' → ');
         }
     }
 
     if (reactorName) {
         const classes = {
-            'react-icon': true,
-            'react-icon-on': reactor
+            'reactor-icon': true,
+            'reactor-icon-on': reactor
         };
 
         const onClick = () => {
@@ -57,6 +57,7 @@ export function Option(props) {
             <Icon
                 className={classNames(classes)}
                 glyph={iconReact}
+                title={reactor ? 'Enable Reactor' : 'Disable Reactor'}
                 onClick={onClick}
             />
         );
