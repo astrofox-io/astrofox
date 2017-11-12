@@ -42,16 +42,14 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         step={1}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="maxDecibels"
-                            min={-40}
-                            max={0}
-                            step={1}
-                            value={state.maxDecibels}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="maxDecibels"
+                        min={-40}
+                        max={0}
+                        step={1}
+                        value={state.maxDecibels}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Min Frequency">
                     <NumberInput
@@ -63,17 +61,15 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         step={20}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="minFrequency"
-                            min={60}
-                            max={22000}
-                            step={20}
-                            upperLimit={state.maxFrequency}
-                            value={state.minFrequency}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="minFrequency"
+                        min={60}
+                        max={22000}
+                        step={20}
+                        upperLimit={state.maxFrequency}
+                        value={state.minFrequency}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Max Frequency">
                     <NumberInput
@@ -85,17 +81,15 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         step={20}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="maxFrequency"
-                            min={60}
-                            max={22000}
-                            step={20}
-                            lowerLimit={state.minFrequency}
-                            value={state.maxFrequency}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="maxFrequency"
+                        min={60}
+                        max={22000}
+                        step={20}
+                        lowerLimit={state.minFrequency}
+                        value={state.maxFrequency}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Smoothing">
                     <NumberInput
@@ -107,16 +101,14 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="smoothingTimeConstant"
-                            min={0}
-                            max={0.99}
-                            step={0.01}
-                            value={state.smoothingTimeConstant}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="smoothingTimeConstant"
+                        min={0}
+                        max={0.99}
+                        step={0.01}
+                        value={state.smoothingTimeConstant}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Width">
                     <NumberInput
@@ -127,15 +119,13 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         max={stageWidth}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="width"
-                            min={0}
-                            max={stageWidth}
-                            value={state.width}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="width"
+                        min={0}
+                        max={stageWidth}
+                        value={state.width}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Height">
                     <NumberInput
@@ -146,15 +136,13 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         value={state.height}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="height"
-                            min={0}
-                            max={stageWidth}
-                            value={state.height}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="height"
+                        min={0}
+                        max={stageWidth}
+                        value={state.height}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Stroke">
                     <ToggleInput
@@ -201,15 +189,13 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         value={state.x}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            min={-stageWidth}
-                            max={stageWidth}
-                            value={state.x}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="x"
+                        min={-stageWidth}
+                        max={stageWidth}
+                        value={state.x}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Y">
                     <NumberInput
@@ -220,15 +206,13 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         value={state.y}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            min={-stageHeight}
-                            max={stageHeight}
-                            value={state.y}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="y"
+                        min={-stageHeight}
+                        max={stageHeight}
+                        value={state.y}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Rotation">
                     <NumberInput
@@ -239,15 +223,13 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         value={state.rotation}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="rotation"
-                            min={0}
-                            max={360}
-                            value={state.rotation}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="rotation"
+                        min={0}
+                        max={360}
+                        value={state.rotation}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Opacity">
                     <NumberInput
@@ -259,16 +241,14 @@ export default class WaveSpectrumControl extends UIPureComponent {
                         value={state.opacity}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="opacity"
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            value={state.opacity}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="opacity"
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        value={state.opacity}
+                        onChange={this.onChange}
+                    />
                 </Option>
             </Control>
         );

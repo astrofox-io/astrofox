@@ -38,15 +38,13 @@ export default class LEDControl extends UIPureComponent {
                         max={100}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="spacing"
-                            min={1}
-                            max={100}
-                            value={spacing}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="spacing"
+                        min={1}
+                        max={100}
+                        value={spacing}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Size">
                     <NumberInput
@@ -57,15 +55,13 @@ export default class LEDControl extends UIPureComponent {
                         max={100}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="size"
-                            min={0}
-                            max={100}
-                            value={size}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="size"
+                        min={0}
+                        max={100}
+                        value={size}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Blur">
                     <NumberInput
@@ -76,15 +72,13 @@ export default class LEDControl extends UIPureComponent {
                         max={100}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="blur"
-                            min={0}
-                            max={100}
-                            value={blur}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="blur"
+                        min={0}
+                        max={100}
+                        value={blur}
+                        onChange={this.onChange}
+                    />
                 </Option>
             </Control>
         );

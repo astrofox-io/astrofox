@@ -48,16 +48,14 @@ export default class BarSpectrumControl extends UIPureComponent {
                         step={1}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="maxDecibels"
-                            value={state.maxDecibels}
-                            min={-40}
-                            max={0}
-                            step={1}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="maxDecibels"
+                        value={state.maxDecibels}
+                        min={-40}
+                        max={0}
+                        step={1}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Min Frequency">
                     <NumberInput
@@ -69,17 +67,15 @@ export default class BarSpectrumControl extends UIPureComponent {
                         step={10}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="minFrequency"
-                            value={state.minFrequency}
-                            min={0}
-                            max={22000}
-                            step={10}
-                            upperLimit={state.maxFrequency}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="minFrequency"
+                        value={state.minFrequency}
+                        min={0}
+                        max={22000}
+                        step={10}
+                        upperLimit={state.maxFrequency}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Max Frequency">
                     <NumberInput
@@ -91,17 +87,15 @@ export default class BarSpectrumControl extends UIPureComponent {
                         step={10}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="maxFrequency"
-                            value={state.maxFrequency}
-                            min={0}
-                            max={22000}
-                            step={10}
-                            lowerLimit={state.minFrequency}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="maxFrequency"
+                        value={state.maxFrequency}
+                        min={0}
+                        max={22000}
+                        step={10}
+                        lowerLimit={state.minFrequency}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Smoothing">
                     <NumberInput
@@ -113,16 +107,14 @@ export default class BarSpectrumControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="smoothingTimeConstant"
-                            value={state.smoothingTimeConstant}
-                            min={0}
-                            max={0.99}
-                            step={0.01}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="smoothingTimeConstant"
+                        value={state.smoothingTimeConstant}
+                        min={0}
+                        max={0.99}
+                        step={0.01}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Width">
                     <NumberInput
@@ -133,15 +125,13 @@ export default class BarSpectrumControl extends UIPureComponent {
                         max={stageWidth}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="width"
-                            value={state.width}
-                            min={0}
-                            max={stageWidth}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="width"
+                        value={state.width}
+                        min={0}
+                        max={stageWidth}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Height">
                     <NumberInput
@@ -152,15 +142,13 @@ export default class BarSpectrumControl extends UIPureComponent {
                         max={stageWidth}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="height"
-                            value={state.height}
-                            min={0}
-                            max={stageWidth}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="height"
+                        value={state.height}
+                        min={0}
+                        max={stageWidth}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Shadow Height">
                     <NumberInput
@@ -171,15 +159,13 @@ export default class BarSpectrumControl extends UIPureComponent {
                         max={stageWidth}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="shadowHeight"
-                            value={state.shadowHeight}
-                            min={0}
-                            max={stageWidth}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="shadowHeight"
+                        value={state.shadowHeight}
+                        min={0}
+                        max={stageWidth}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Bar Width">
                     <NumberInput
@@ -242,15 +228,13 @@ export default class BarSpectrumControl extends UIPureComponent {
                         max={stageWidth}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="x"
-                            value={state.x}
-                            min={-stageWidth}
-                            max={stageWidth}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="x"
+                        value={state.x}
+                        min={-stageWidth}
+                        max={stageWidth}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Y">
                     <NumberInput
@@ -261,15 +245,13 @@ export default class BarSpectrumControl extends UIPureComponent {
                         max={stageHeight}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="y"
-                            value={state.y}
-                            min={-stageHeight}
-                            max={stageHeight}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="y"
+                        value={state.y}
+                        min={-stageHeight}
+                        max={stageHeight}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Rotation">
                     <NumberInput
@@ -280,15 +262,13 @@ export default class BarSpectrumControl extends UIPureComponent {
                         max={360}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="rotation"
-                            value={state.rotation}
-                            min={0}
-                            max={360}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="rotation"
+                        value={state.rotation}
+                        min={0}
+                        max={360}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Opacity">
                     <NumberInput
@@ -300,16 +280,14 @@ export default class BarSpectrumControl extends UIPureComponent {
                         step={0.01}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="opacity"
-                            value={state.opacity}
-                            min={0}
-                            max={1.0}
-                            step={0.01}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="opacity"
+                        value={state.opacity}
+                        min={0}
+                        max={1.0}
+                        step={0.01}
+                        onChange={this.onChange}
+                    />
                 </Option>
             </Control>
         );

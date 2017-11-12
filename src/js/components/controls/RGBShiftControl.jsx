@@ -39,16 +39,14 @@ export default class RGBShiftControl extends UIPureComponent {
                         step={1}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="offset"
-                            min={0.0}
-                            max={stageWidth}
-                            step={1}
-                            value={offset}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="offset"
+                        min={0.0}
+                        max={stageWidth}
+                        step={1}
+                        value={offset}
+                        onChange={this.onChange}
+                    />
                 </Option>
                 <Option label="Angle">
                     <NumberInput
@@ -59,15 +57,13 @@ export default class RGBShiftControl extends UIPureComponent {
                         max={360}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="angle"
-                            min={0}
-                            max={360}
-                            value={angle}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="angle"
+                        min={0}
+                        max={360}
+                        value={angle}
+                        onChange={this.onChange}
+                    />
                 </Option>
             </Control>
         );

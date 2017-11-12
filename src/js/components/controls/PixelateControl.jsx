@@ -56,15 +56,13 @@ export default class PixelateControl extends UIPureComponent {
                         max={MAX_PIXEL_SIZE}
                         onChange={this.onChange}
                     />
-                    <div className="input flex">
-                        <RangeInput
-                            name="size"
-                            min={MIN_PIXEL_SIZE}
-                            max={MAX_PIXEL_SIZE}
-                            value={size}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <RangeInput
+                        name="size"
+                        min={MIN_PIXEL_SIZE}
+                        max={MAX_PIXEL_SIZE}
+                        value={size}
+                        onChange={this.onChange}
+                    />
                 </Option>
             </Control>
         );
