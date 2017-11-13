@@ -409,7 +409,6 @@ export default class App extends UIComponent {
                         <ReactorControl
                             visible={showReactor}
                             reactor={reactor}
-                            parser={this.app.parser}
                         />
                     </div>
                     <ControlDock

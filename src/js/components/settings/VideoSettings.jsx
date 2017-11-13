@@ -13,6 +13,7 @@ import TextInput from 'components/inputs/TextInput';
 import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
 import { replaceExt } from 'util/file';
 import { formatTime } from 'util/format';
+import folderIcon from 'svg/icons/folder-open-empty.svg';
 
 const videoFormats = [
     'mp4',
@@ -132,7 +133,8 @@ export default class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                         <ButtonInput
-                            icon="icon-folder-open-empty"
+                            icon={folderIcon}
+                            title="Save File"
                             onClick={this.onOpenVideoFile}
                         />
                     </Row>
@@ -147,7 +149,8 @@ export default class VideoSettings extends UIComponent {
                             onChange={this.onChange}
                         />
                         <ButtonInput
-                            icon="icon-folder-open-empty"
+                            icon={folderIcon}
+                            title="Open File"
                             onClick={this.onOpenAudioFile}
                         />
                     </Row>

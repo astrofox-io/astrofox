@@ -9,6 +9,7 @@ module.exports = {
         "eslint:recommended",
         "plugin:react/recommended"
     ],
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
@@ -20,6 +21,7 @@ module.exports = {
         "react"
     ],
     "rules": {
+        "strict": 0,
         "indent": [
             "error",
             4,

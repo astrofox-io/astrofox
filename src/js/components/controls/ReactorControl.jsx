@@ -14,13 +14,6 @@ const BARS = 64;
 export default class ReactorControl extends UIPureComponent {
     constructor(props) {
         super(props);
-
-        let { maxDecibels, smoothingTimeConstant } = props.parser.options;
-
-        this.state = {
-            maxDecibels,
-            smoothingTimeConstant
-        };
     }
 
     componentDidMount() {
@@ -84,16 +77,17 @@ export default class ReactorControl extends UIPureComponent {
     }
 
     updateParser(name, value) {
-        let obj = { [name]: value };
+        const { reactor } = this.props;
 
-        this.setState(obj);
-
-        this.props.parser.update(obj);
+        if (reactor) {
+            reactor.parser.update({ [name]: value });
+            this.forceUpdate();
+        }
     }
 
     render() {
         const { reactor, barWidth, barHeight, barSpacing, visible } = this.props,
-            { maxDecibels, smoothingTimeConstant } = this.state,
+            { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {}),
             classes = {
                 'reactor': true,
                 'display-none': !visible

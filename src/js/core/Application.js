@@ -10,16 +10,13 @@ import LicenseManager from 'core/LicenseManager';
 import Player from 'audio/Player';
 import Audio from 'audio/Audio';
 import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
-import SpectrumParser from 'audio/SpectrumParser';
 import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
 
-import { fftSize, sampleRate } from 'config/system.json';
 import appConfig from 'config/app.json';
 import menuConfig from 'config/menu.json';
 
 const FPS_POLL_INTERVAL = 500;
-const REACTOR_BINS = 64;
 
 export default class Application extends EventEmitter {
     constructor() {
@@ -33,12 +30,6 @@ export default class Application extends EventEmitter {
         this.updater = new AppUpdater(this);
         this.license = new LicenseManager();
         this.analyzer = new SpectrumAnalyzer(this.audioContext);
-        this.parser = new SpectrumParser({
-            maxDecibels: -20,
-            maxFrequency: Math.ceil(sampleRate/fftSize * REACTOR_BINS),
-            normalize: true,
-            bins: REACTOR_BINS
-        });
 
         this.audioFile = '';
         this.projectFile = '';
@@ -232,13 +223,12 @@ export default class Application extends EventEmitter {
     }
 
     getFrameData(update) {
-        let { frameData, analyzer, parser } = this;
+        let { frameData, analyzer } = this;
 
         frameData.fft = analyzer.getFrequencyData(update);
         frameData.td = analyzer.getTimeData(update);
         frameData.volume = analyzer.getVolume();
         frameData.hasUpdate = update;
-        frameData.reactor = parser.parseFFT(frameData.fft);
 
         // Rendering single frame
         if (frameData.id === 0) {

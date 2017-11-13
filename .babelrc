@@ -8,6 +8,7 @@
     "react"
   ],
   "plugins": [
-    ["transform-runtime", {"polyfill": false}]
+    ["transform-runtime", {"polyfill": false}],
+    "transform-class-properties"
   ]
 }
