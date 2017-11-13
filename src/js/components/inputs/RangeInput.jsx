@@ -1,10 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
 import { val2pct } from 'util/math';
 
-export default class RangeInput extends UIComponent {
+export default class RangeInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -21,7 +20,7 @@ export default class RangeInput extends UIComponent {
         }
     }
 
-    onChange(e) {
+    onChange = (e) => {
         let props = this.props;
 
         let val = this.setValue(e.currentTarget.value, props);
@@ -32,20 +31,20 @@ export default class RangeInput extends UIComponent {
         else if (props.onChange) {
             props.onChange(props.name, val);
         }
-    }
+    };
 
-    onMouseDown() {
+    onMouseDown = () => {
         if (this.props.buffered) {
             this.buffering = true;
         }
-    }
+    };
 
-    onMouseUp(e) {
+    onMouseUp = (e) => {
         if (this.props.buffered) {
             this.buffering = false;
             this.onChange(e);
         }
-    }
+    };
 
     setValue(val, props) {
         val = this.parseValue(val, props);

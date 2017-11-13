@@ -1,27 +1,26 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
 import Panel from 'components/layout/Panel';
 import PanelDock from 'components/layout/PanelDock';
 import ControlsPanel from 'components/panels/ControlsPanel';
 import LayersPanel from 'components/panels/LayersPanel';
 
-export default class ControlDock extends UIPureComponent {
+export default class ControlDock extends React.PureComponent {
     constructor(props) {
         super(props);
     }
 
-    onLayerSelected(index) {
+    onLayerSelected = (index) => {
         this.controls.focusControl(index);
-    }
+    };
 
-    onLayerUpdate(display) {
+    onLayerUpdate = (display) => {
         this.controls.updateControl(display);
-    }
+    };
 
-    updateControls(newState) {
+    updateControls = (newState) => {
         this.controls.updateState(newState);
-    }
+    };
 
     render() {
         return (

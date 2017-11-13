@@ -2,12 +2,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { events } from 'core/Global';
-import UIPureComponent from 'components/UIPureComponent';
 import Icon from 'components/interface/Icon';
 import { clamp } from 'util/math';
 import iconDots from 'svg/icons/dots-three-horizontal.svg';
 
-export default class Splitter extends UIPureComponent {
+export default class Splitter extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -17,16 +16,16 @@ export default class Splitter extends UIPureComponent {
     }
 
     componentDidMount() {
-        events.on('mouseup', this.endResize);
-        events.on('mousemove', this.onMouseMove);
+        events.on('mouseup', this.endResize, this);
+        events.on('mousemove', this.onMouseMove, this);
     }
 
     componentWillUnmount() {
-        events.off('mouseup', this.endResize);
-        events.off('mousemove', this.onMouseMove);
+        events.off('mouseup', this.endResize, this);
+        events.off('mousemove', this.onMouseMove, this);
     }
 
-    onMouseMove(e) {
+    onMouseMove = (e) => {
         if (this.state.resizing) {
             let { startY, startX, startWidth, startHeight } = this.state,
                 { type, panel } = this.props,
@@ -44,9 +43,9 @@ export default class Splitter extends UIPureComponent {
 
             panel.setSize(width, height);
         }
-    }
+    };
 
-    startResize(e) {
+    startResize = (e) => {
         let { panel } = this.props,
             { width, height } = panel.getSize();
 
@@ -57,13 +56,13 @@ export default class Splitter extends UIPureComponent {
             startWidth: width,
             startHeight: height
         });
-    }
+    };
 
-    endResize() {
+    endResize = () => {
         if (this.state.resizing) {
             this.setState({ resizing: false });
         }
-    }
+    };
 
     render() {
         let { type } = this.props,

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
 import Window from 'core/Window';
 import Icon from 'components/interface/Icon';
 import * as IO from 'util/io';
@@ -10,7 +9,7 @@ import closeIcon from 'svg/icons/circle-with-cross.svg';
 
 import BLANK_IMAGE from 'images/data/blank.gif';
 
-export default class ImageInput extends UIComponent {
+export default class ImageInput extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -27,27 +26,27 @@ export default class ImageInput extends UIComponent {
         }
     }
 
-    onChange() {
+    onChange = () => {
         const { name, onChange } = this.props;
 
         if (onChange) {
             onChange(name, this.image.src);
         }
-    }
+    };
 
-    onDragOver(e) {
+    onDragOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
-    }
+    };
 
-    onDrop(e){
+    onDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.loadImageFile(e.dataTransfer.files[0]);
-    }
+    };
 
-    onClick(e) {
+    onClick = (e) => {
         e.preventDefault();
 
         Window.showOpenDialog(files => {
@@ -55,14 +54,14 @@ export default class ImageInput extends UIComponent {
                 this.loadImageFile(files[0]);
             }
         });
-    }
+    };
 
-    onDelete(e) {
+    onDelete = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.loadImage(BLANK_IMAGE);
-    }
+    };
 
     loadImage(src) {
         if (this.image.src !== src) {

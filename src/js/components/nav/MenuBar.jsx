@@ -1,9 +1,8 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
 import MenuBarItem from 'components/nav/MenuBarItem';
 
-export default class MenuBar extends UIComponent {
+export default class MenuBar extends React.Component {
     constructor(props) {
         super(props);
 
@@ -13,17 +12,17 @@ export default class MenuBar extends UIComponent {
         };
     }
 
-    onClick(index) {
+    onClick = (index) => {
         this.setActiveIndex((this.state.activeIndex === index) ? -1 : index);
-    }
+    };
 
-    onMouseOver(index) {
+    onMouseOver = (index) => {
         if (this.state.activeIndex > -1) {
             this.setActiveIndex(index);
         }
-    }
+    };
 
-    onMenuItemClick(action, checked) {
+    onMenuItemClick = (action, checked) => {
         this.setActiveIndex(-1);
 
         if (this.props.onMenuAction) {
@@ -33,7 +32,7 @@ export default class MenuBar extends UIComponent {
                 this.setCheckState(action);
             }
         }
-    }
+    };
 
     setActiveIndex(index) {
         if (this.state.activeIndex !== index) {

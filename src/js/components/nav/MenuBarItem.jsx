@@ -1,31 +1,30 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
 import Menu from 'components/nav/Menu';
 
-export default class MenuBarItem extends UIComponent {
+export default class MenuBarItem extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    onClick(e) {
+    onClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onClick();
-    }
+    };
 
-    onMouseOver(e) {
+    onMouseOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onMouseOver();
-    }
+    };
 
-    onMenuItemClick(item) {
+    onMenuItemClick = (item) => {
         this.props.onMenuItemClick(item.action, item.checked);
-    }
+    };
 
     render() {
         return (

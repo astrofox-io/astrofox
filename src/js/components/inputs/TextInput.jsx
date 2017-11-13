@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
-
-export default class TextInput extends UIComponent {
+export default class TextInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -24,7 +22,7 @@ export default class TextInput extends UIComponent {
         }
     }
 
-    onChange(e) {
+    onChange = (e) => {
         let val = e.target.value;
         
         this.setState({ value: val });
@@ -32,17 +30,17 @@ export default class TextInput extends UIComponent {
         if (this.props.onChange && !this.props.buffered) {
             this.props.onChange(this.props.name, val);
         }
-    }
+    };
 
-    onValueChange() {
+    onValueChange = () => {
         let val = this.state.value;
 
         if (this.props.onChange) {
             this.props.onChange(this.props.name, val);
         }
-    }
+    };
 
-    onKeyUp(e) {
+    onKeyUp = (e) => {
         if (e.keyCode === 13) {
             this.onValueChange(e);
         }
@@ -53,7 +51,7 @@ export default class TextInput extends UIComponent {
                 this.props.onCancel();
             }
         }
-    }
+    };
 
     render() {
         let props = this.props;

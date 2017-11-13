@@ -1,35 +1,29 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
+import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option } from 'components/controls/Control';
 
-export default class RGBShiftControl extends UIPureComponent {
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+
+export class RGBShiftControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     render() {
-        const { stageWidth } = this.props,
-            { offset, angle } = this.state;
+        const { display, stageWidth, active, onChange, onReactorChange, offset, angle } = this.props;
 
         return (
-            <Control label="RGB SHIFT" className={this.props.className}>
-                <Option label="Offset">
+            <Control
+                label="RGB SHIFT"
+                display={display}
+                active={active}>
+                <Option
+                    label="Offset"
+                    reactorName="offset"
+                    reactorMax={stageWidth}
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="offset"
                         width={40}
@@ -37,7 +31,7 @@ export default class RGBShiftControl extends UIPureComponent {
                         min={0}
                         max={stageWidth}
                         step={1}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="offset"
@@ -45,27 +39,33 @@ export default class RGBShiftControl extends UIPureComponent {
                         max={stageWidth}
                         step={1}
                         value={offset}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
-                <Option label="Angle">
+                <Option
+                    label="Angle"
+                    reactorName="angle"
+                    reactorMax={360}
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="angle"
                         width={40}
                         value={angle}
                         min={0}
                         max={360}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="angle"
                         min={0}
                         max={360}
                         value={angle}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(RGBShiftControl);

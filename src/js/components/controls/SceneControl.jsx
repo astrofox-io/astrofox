@@ -1,13 +1,14 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Option } from 'components/controls/Control';
 
-const blendModesMenu = [
+const BLEND_MODES_MENU = [
     'None',
     'Normal',
     { separator: true },
@@ -40,37 +41,26 @@ const blendModesMenu = [
     'Reflect'
 ];
 
-export default class SceneControl extends UIPureComponent {
+export class SceneControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
     }
 
-    onChange(name, val) {
-        let obj = {},
-            { display } = this.props;
-
+    onChange = (name, value) => {
         // Ignore separators
-        if (name === 'blendMode' && typeof val !== 'string') {
+        if (name === 'blendMode' && typeof value !== 'string') {
             return;
         }
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
-    }
-
-    onReactorChange(name, options) {
-        this.props.display.setReactor(name, options);
-        this.forceUpdate();
-    }
+        
+        this.props.onChange(name, value);
+    };
 
     render() {
-        const { active, display } = this.props,
-            state = this.state;
+        const {
+            active, display, blendMode, opacity,
+            lightIntensity, lightDistance, cameraZoom, mask, inverse,
+            onReactorChange
+        } = this.props;
 
         return (
             <Control label="SCENE" active={active} display={display}>
@@ -78,19 +68,19 @@ export default class SceneControl extends UIPureComponent {
                     <SelectInput
                         name="blendMode"
                         width={140}
-                        items={blendModesMenu}
-                        value={state.blendMode}
+                        items={BLEND_MODES_MENU}
+                        value={blendMode}
                         onChange={this.onChange}
                     />
                 </Option>
                 <Option
                     label="Opacity"
                     reactorName="opacity"
-                    onReactorChange={this.onReactorChange}>
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="opacity"
                         width={40}
-                        value={state.opacity}
+                        value={opacity}
                         min={0}
                         max={1.0}
                         step={0.01}
@@ -101,7 +91,7 @@ export default class SceneControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={state.opacity}
+                        value={opacity}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -112,7 +102,7 @@ export default class SceneControl extends UIPureComponent {
                         min={0.0}
                         max={10.0}
                         step={0.1}
-                        value={state.lightIntensity}
+                        value={lightIntensity}
                         onChange={this.onChange}
                     />
                     <RangeInput
@@ -120,7 +110,7 @@ export default class SceneControl extends UIPureComponent {
                         min={0.0}
                         max={10.0}
                         step={0.1}
-                        value={state.lightIntensity}
+                        value={lightIntensity}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -130,14 +120,14 @@ export default class SceneControl extends UIPureComponent {
                         width={40}
                         min={-500}
                         max={500}
-                        value={state.lightDistance}
+                        value={lightDistance}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="lightDistance"
                         min={-500}
                         max={500}
-                        value={state.lightDistance}
+                        value={lightDistance}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -147,27 +137,27 @@ export default class SceneControl extends UIPureComponent {
                         width={40}
                         min={0}
                         max={1000}
-                        value={state.cameraZoom}
+                        value={cameraZoom}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="cameraZoom"
                         min={0}
                         max={1000}
-                        value={state.cameraZoom}
+                        value={cameraZoom}
                         onChange={this.onChange}
                     />
                 </Option>
                 <Option label="Mask">
                     <ToggleInput
                         name="mask"
-                        value={state.mask}
+                        value={mask}
                         onChange={this.onChange}
                     />
                     <span className="label">Inverse</span>
                     <ToggleInput
                         name="inverse"
-                        value={state.inverse}
+                        value={inverse}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -175,3 +165,5 @@ export default class SceneControl extends UIPureComponent {
         );
     }
 }
+
+export default DisplayControl(SceneControl);

@@ -1,12 +1,11 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from 'components/UIComponent';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';
 
-export default class AppUpdates extends UIComponent {
+export default class AppUpdates extends React.Component {
     constructor(props, context) {
         super(props);
 
@@ -63,13 +62,13 @@ export default class AppUpdates extends UIComponent {
         }
     }
 
-    installUpdate() {
+    installUpdate = () => {
         this.appUpdater.quitAndInstall();
-    }
+    };
 
-    downloadUpdate() {
+    downloadUpdate = () => {
         this.appUpdater.downloadUpdate();
-    }
+    };
 
     render() {
         let icon,

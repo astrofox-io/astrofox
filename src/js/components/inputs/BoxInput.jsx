@@ -1,10 +1,9 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
 import { clamp } from 'util/math.js';
 import { events } from 'core/Global';
 
-export default class BoxInput extends UIComponent {
+export default class BoxInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -30,7 +29,7 @@ export default class BoxInput extends UIComponent {
         }
     }
 
-    onMouseMove(e) {
+    onMouseMove = (e) => {
         if (this.state.resizing) {
             let { value, position, startX, startY, startWidth, startHeight, startTop, startLeft } = this.state,
                 { minWidth, minHeight, maxWidth, maxHeight, name, onChange } = this.props,
@@ -66,9 +65,9 @@ export default class BoxInput extends UIComponent {
                 onChange(name, newValue);
             }
         }
-    }
+    };
 
-    startResize(pos, e) {
+    startResize = (pos, e) => {
         const { x, y, width, height } = this.state.value;
 
         this.setState({
@@ -84,13 +83,13 @@ export default class BoxInput extends UIComponent {
 
         e.stopPropagation();
         e.preventDefault();
-    }
+    };
 
-    endResize() {
+    endResize = () => {
         if (this.state.resizing) {
             this.setState({resizing: false});
         }
-    }
+    };
 
     render() {
         const { x, y, width, height } = this.state.value;

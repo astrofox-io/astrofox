@@ -1,12 +1,11 @@
 import React from 'react';
 import { events } from 'core/Global';
 
-import UIPureComponent from 'components/UIPureComponent';
 import Icon from 'components/interface/Icon';
 import CanvasMeter from 'canvas/CanvasMeter';
 import editIcon from 'svg/icons/gear.svg';
 
-export default class ReactorInput extends UIPureComponent {
+export default class ReactorInput extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -32,9 +31,9 @@ export default class ReactorInput extends UIPureComponent {
         events.emit('reactor-edit', null);
     }
 
-    showReactorControl() {
+    showReactorControl = () => {
         events.emit('reactor-edit', this.props.reactor);
-    }
+    };
 
     draw() {
         let { output } = this.props.reactor.getResult();

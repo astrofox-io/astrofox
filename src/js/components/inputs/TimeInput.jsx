@@ -1,11 +1,10 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
 import TextInput from 'components/inputs/TextInput';
 import { formatSeekTime } from 'util/format';
 import { clamp } from 'util/math.js';
 
-export default class TimeInput extends UIComponent {
+export default class TimeInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -20,7 +19,7 @@ export default class TimeInput extends UIComponent {
         }
     }
 
-    onChange(name, val) {
+    onChange = (name, val) => {
         let { min, max } = this.props;
 
         const regex = /^(0?\d+:)?(0?\d+):(\d{2}(\.\d{1,3})?)$/;
@@ -48,7 +47,7 @@ export default class TimeInput extends UIComponent {
         else {
             this.setState({ value: this.props.value });
         }
-    }
+    };
 
     render() {
         let props = this.props;

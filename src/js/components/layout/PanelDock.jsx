@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from 'components/UIPureComponent';
-
-export default class PanelDock extends UIPureComponent {
+export default class PanelDock extends React.PureComponent {
     constructor(props) {
         super(props);
 

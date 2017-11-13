@@ -2,12 +2,11 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import UIComponent from 'components/UIComponent';
 import RenderInfo from 'components/stage/RenderInfo';
 import { events } from 'core/Global';
 import { FirstChild } from 'util/react';
 
-export default class Stage extends UIComponent {
+export default class Stage extends React.Component {
     constructor(props, context) {
         super(props);
         
@@ -30,12 +29,12 @@ export default class Stage extends UIComponent {
         events.off('zoom', this.forceUpdate, this);
     }
 
-    onDragOver(e) {
+    onDragOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
-    }
+    };
 
-    onDrop(e) {
+    onDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -44,7 +43,7 @@ export default class Stage extends UIComponent {
         if (file && this.props.onFileDropped) {
             this.props.onFileDropped(file.path);
         }
-    }
+    };
 
     startRender() {
         this.setState({ rendering: true });

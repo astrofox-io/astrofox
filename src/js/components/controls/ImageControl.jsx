@@ -1,21 +1,20 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import NumberInput from 'components/inputs/NumberInput';
 import ImageInput from 'components/inputs/ImageInput';
 import RangeInput from 'components/inputs/RangeInput';
-import { Control, Option } from 'components/controls/Control';
 import Icon from 'components/interface/Icon';
 
 import iconLink from 'svg/icons/link.svg';
 import BLANK_IMAGE from 'images/data/blank.gif';
 
-export default class ImageControl extends UIPureComponent {
+export class ImageControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = props.display.options;
     }
 
     componentDidMount() {
@@ -28,14 +27,11 @@ export default class ImageControl extends UIPureComponent {
         this.image = this.imageInput.getImage();
     }
 
-    onChange(name, val) {
+    onChange = (name, value) => {
         let obj = {},
-            { display } = this.props,
-            { src, fixed } = this.state,
+            { display, src, fixed } = this.props,
             image = this.imageInput.getImage(),
             ratio = image.naturalWidth / image.naturalHeight;
-
-        obj[name] = val;
 
         if (name === 'src') {
             // Reset values
@@ -46,52 +42,44 @@ export default class ImageControl extends UIPureComponent {
             obj.rotation = 0;
             obj.opacity = 0;
 
-            if (val !== BLANK_IMAGE) {
+            if (value !== BLANK_IMAGE) {
                 // Load new image
-                if (val !== src) {
+                if (value !== src) {
                     obj.width = image.naturalWidth;
                     obj.height = image.naturalHeight;
                     obj.opacity = 1.0;
                 }
-                // Restore values from state
+                // Restore values
                 else {
-                    Object.assign(obj, this.state);
+                    Object.assign(obj, display.options);
                 }
             }
         }
         else if (name === 'width') {
             if (fixed) {
-                obj.height = Math.round(val * (1 / ratio)) || 0;
+                obj.height = Math.round(value * (1 / ratio)) || 0;
             }
         }
         else if (name === 'height') {
             if (fixed) {
-                obj.width = Math.round(val * ratio);
+                obj.width = Math.round(value * ratio);
             }
         }
 
-        this.setState(obj, () => {
-            display.update(obj);
+        this.props.onChange(name, value, obj);
 
-            if (name === 'src') {
-                this.image = image;
-                this.forceUpdate();
-            }
-        });
-    }
+        if (name === 'src') {
+            this.image = image;
+            this.forceUpdate();
+        }
+    };
 
-    onReactorChange(name, options) {
-        this.props.display.setReactor(name, options);
-        this.forceUpdate();
-    }
-
-    onLinkClick() {
-        this.onChange('fixed', !this.state.fixed);
-    }
+    onLinkClick = () => {
+        this.onChange('fixed', !this.props.fixed);
+    };
 
     render() {
-        let { active, stageWidth, stageHeight, display } = this.props,
-            state = this.state,
+        let { active, stageWidth, stageHeight, display, fixed, src, width, height, x, y, rotation, opacity } = this.props,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
             imageWidth = readOnly ? 0 : image.naturalWidth,
@@ -100,7 +88,7 @@ export default class ImageControl extends UIPureComponent {
             yMax = readOnly ? 0 : (imageHeight > stageHeight) ? imageHeight : stageHeight,
             linkClasses = {
                 'input-link': true,
-                'input-link-on': state.fixed
+                'input-link-on': fixed
             },
             linkIcon = <Icon key={0} className={classNames(linkClasses)} glyph={iconLink} onClick={this.onLinkClick} />;
 
@@ -110,7 +98,7 @@ export default class ImageControl extends UIPureComponent {
                     <ImageInput
                         name="src"
                         ref={el => this.imageInput = el}
-                        src={state.src}
+                        src={src}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -120,7 +108,7 @@ export default class ImageControl extends UIPureComponent {
                         width={40}
                         min={0}
                         max={imageWidth*2}
-                        value={state.width}
+                        value={width}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -128,7 +116,7 @@ export default class ImageControl extends UIPureComponent {
                         name="width"
                         min={0}
                         max={imageWidth*2}
-                        value={state.width}
+                        value={width}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -139,7 +127,7 @@ export default class ImageControl extends UIPureComponent {
                         width={40}
                         min={0}
                         max={imageHeight*2}
-                        value={state.height}
+                        value={height}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -147,7 +135,7 @@ export default class ImageControl extends UIPureComponent {
                         name="height"
                         min={0}
                         max={imageHeight*2}
-                        value={state.height}
+                        value={height}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -158,7 +146,7 @@ export default class ImageControl extends UIPureComponent {
                         width={40}
                         min={-xMax}
                         max={xMax}
-                        value={state.x}
+                        value={x}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -166,7 +154,7 @@ export default class ImageControl extends UIPureComponent {
                         name="x"
                         min={-xMax}
                         max={xMax}
-                        value={state.x}
+                        value={x}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -177,7 +165,7 @@ export default class ImageControl extends UIPureComponent {
                         width={40}
                         min={-yMax}
                         max={yMax}
-                        value={state.y}
+                        value={y}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -185,7 +173,7 @@ export default class ImageControl extends UIPureComponent {
                         name="y"
                         min={-yMax}
                         max={yMax}
-                        value={state.y}
+                        value={y}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -196,7 +184,7 @@ export default class ImageControl extends UIPureComponent {
                         width={40}
                         min={0}
                         max={360}
-                        value={state.rotation}
+                        value={rotation}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -204,7 +192,7 @@ export default class ImageControl extends UIPureComponent {
                         name="rotation"
                         min={0}
                         max={360}
-                        value={state.rotation}
+                        value={rotation}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -219,7 +207,7 @@ export default class ImageControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={readOnly ? 0 : state.opacity}
+                        value={readOnly ? 0 : opacity}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -228,7 +216,7 @@ export default class ImageControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={readOnly ? 0 : state.opacity}
+                        value={readOnly ? 0 : opacity}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
@@ -237,3 +225,5 @@ export default class ImageControl extends UIPureComponent {
         );
     }
 }
+
+export default DisplayControl(ImageControl);

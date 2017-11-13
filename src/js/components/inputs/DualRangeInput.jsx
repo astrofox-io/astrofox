@@ -1,18 +1,16 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
+import RangeInput from 'components/inputs/RangeInput';
 import { val2pct } from 'util/math';
 
-import RangeInput from 'components/inputs/RangeInput';
-
-export default class DualRangeInput extends UIComponent {
+export default class DualRangeInput extends React.Component {
     constructor(props) {
         super(props);
 
         this.buffering = false;
     }
 
-    onTrackClick(e) {
+    onTrackClick = (e) => {
         e.stopPropagation();
 
         if (!this.props.allowClick) return;
@@ -36,9 +34,9 @@ export default class DualRangeInput extends UIComponent {
         if (this.props.onChange) {
             this.props.onChange(this.props.name, this.parseValues(start, end, index));
         }
-    }
+    };
 
-    onChange(key, val) {
+    onChange = (key, val) => {
         let { name, start, end, onChange } = this.props,
             index = key === 'range-start' ? 0 : 1;
 
@@ -52,7 +50,7 @@ export default class DualRangeInput extends UIComponent {
         if (onChange) {
             onChange(name, {start, end});
         }
-    }
+    };
 
     parseValues(start, end, index) {
         let { minRange } = this.props,

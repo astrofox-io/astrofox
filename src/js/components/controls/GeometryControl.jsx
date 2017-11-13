@@ -1,14 +1,15 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import ColorInput from 'components/inputs/ColorInput';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Option } from 'components/controls/Control';
 
-const shapes = [
+const SHAPES = [
     'Box',
     'Sphere',
     'Dodecahedron',
@@ -19,7 +20,7 @@ const shapes = [
     'Torus Knot'
 ];
 
-const materials = [
+const MATERIALS = [
     'Basic',
     'Lambert',
     'Normal',
@@ -29,7 +30,7 @@ const materials = [
     'Standard'
 ];
 
-const shading = [
+const SHADING = [
     'Smooth',
     'Flat'
 ];
@@ -38,27 +39,17 @@ const MAX_X_RANGE = 500;
 const MAX_Y_RANGE = 500;
 const MAX_Z_RANGE = 1000;
 
-export default class GeometryControl extends UIPureComponent {
+export class GeometryControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     render() {
-        const { active } = this.props,
-            state = this.state;
+        const { 
+            active, shape, material, shading, color, 
+            wireframe, edges, edgeColor, x, y, z, opacity,
+            onChange
+        } = this.props;
 
         return (
             <Control label="3D GEOMETRY" active={active}>
@@ -66,55 +57,55 @@ export default class GeometryControl extends UIPureComponent {
                     <SelectInput
                         name="shape"
                         width={140}
-                        items={shapes}
-                        value={state.shape}
-                        onChange={this.onChange}
+                        items={SHAPES}
+                        value={shape}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Material">
                     <SelectInput
                         name="material"
                         width={140}
-                        items={materials}
-                        value={state.material}
-                        onChange={this.onChange}
+                        items={MATERIALS}
+                        value={material}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Shading">
                     <SelectInput
                         name="shading"
                         width={140}
-                        items={shading}
-                        value={state.shading}
-                        onChange={this.onChange}
+                        items={SHADING}
+                        value={shading}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Color">
                     <ColorInput
                         name="color"
-                        value={state.color}
-                        onChange={this.onChange}
+                        value={color}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Wireframe">
                     <ToggleInput
                         name="wireframe"
-                        value={state.wireframe}
-                        onChange={this.onChange}
+                        value={wireframe}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Edges">
                     <ToggleInput
                         name="edges"
-                        value={state.edges}
-                        onChange={this.onChange}
+                        value={edges}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Edge Color">
                     <ColorInput
                         name="edgeColor"
-                        value={state.edgeColor}
-                        onChange={this.onChange}
+                        value={edgeColor}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="X">
@@ -123,15 +114,15 @@ export default class GeometryControl extends UIPureComponent {
                         width={40}
                         min={-MAX_X_RANGE}
                         max={MAX_X_RANGE}
-                        value={state.x}
-                        onChange={this.onChange}
+                        value={x}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="x"
                         min={-MAX_X_RANGE}
                         max={MAX_X_RANGE}
-                        value={state.x}
-                        onChange={this.onChange}
+                        value={x}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Y">
@@ -140,15 +131,15 @@ export default class GeometryControl extends UIPureComponent {
                         width={40}
                         min={-MAX_Y_RANGE}
                         max={MAX_Y_RANGE}
-                        value={state.y}
-                        onChange={this.onChange}
+                        value={y}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="y"
                         min={-MAX_Y_RANGE}
                         max={MAX_Y_RANGE}
-                        value={state.y}
-                        onChange={this.onChange}
+                        value={y}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Z">
@@ -157,15 +148,15 @@ export default class GeometryControl extends UIPureComponent {
                         width={40}
                         min={-MAX_Z_RANGE}
                         max={MAX_Z_RANGE}
-                        value={state.z}
-                        onChange={this.onChange}
+                        value={z}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="z"
                         min={-MAX_Z_RANGE}
                         max={MAX_Z_RANGE}
-                        value={state.z}
-                        onChange={this.onChange}
+                        value={z}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Opacity">
@@ -175,19 +166,21 @@ export default class GeometryControl extends UIPureComponent {
                         min={0}
                         max={1}
                         step={0.01}
-                        value={state.opacity}
-                        onChange={this.onChange}
+                        value={opacity}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="opacity"
                         min={0}
                         max={1}
                         step={0.01}
-                        value={state.opacity}
-                        onChange={this.onChange}
+                        value={opacity}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(GeometryControl);

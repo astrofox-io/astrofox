@@ -1,12 +1,11 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from 'components/UIComponent';
 import Button from 'components/interface/Button';
 import ToggleInput from 'components/inputs/ToggleInput';
 import { SettingsPanel, Settings, Group, Row } from 'components/layout/SettingsPanel';
 
-export default class AppSettings extends UIComponent {
+export default class AppSettings extends React.Component {
     constructor(props, context) {
         super(props);
 
@@ -14,28 +13,28 @@ export default class AppSettings extends UIComponent {
         this.state = Object.assign({}, this.app.config);
     }
 
-    onChange(name, val) {
+    onChange = (name, val) => {
         let obj = {};
 
         obj[name] = val;
 
         this.setState(obj);
-    }
+    };
 
-    onSave() {
+    onSave = () => {
         this.app.saveConfigFile(this.state)
             .then(() => {
                 if (this.props.onClose) {
                     this.props.onClose();
                 }
             });
-    }
+    };
 
-    onCancel() {
+    onCancel = () => {
         if (this.props.onClose) {
             this.props.onClose();
         }
-    }
+    };
 
     render() {
         const props = this.props,

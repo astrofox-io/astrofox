@@ -1,10 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
 import CanvasAudio from 'canvas/CanvasAudio';
 
-export default class AudioWaveform extends UIComponent {
+export default class AudioWaveform extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -40,7 +39,7 @@ export default class AudioWaveform extends UIComponent {
         );
     }
 
-    onClick(e) {
+    onClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -49,9 +48,9 @@ export default class AudioWaveform extends UIComponent {
 
             this.props.onClick((e.clientX - rect.left) / rect.width);
         }
-    }
+    };
 
-    onMouseMove(e) {
+    onMouseMove = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -59,15 +58,15 @@ export default class AudioWaveform extends UIComponent {
 
         this.seek = (e.clientX - rect.left) / rect.width;
         this.draw();
-    }
+    };
 
-    onMouseOut(e) {
+    onMouseOut = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.seek = 0;
         this.draw();
-    }
+    };
 
     draw() {
         const { width, height } = this.canvas,

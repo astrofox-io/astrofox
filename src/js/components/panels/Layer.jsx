@@ -1,13 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from 'components/UIPureComponent';
 import TextInput from 'components/inputs/TextInput';
 import Icon from 'components/interface/Icon';
 
 import iconVisible from 'svg/icons/eye.svg';
 
-export default class Layer extends UIPureComponent {
+export default class Layer extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -16,40 +15,40 @@ export default class Layer extends UIPureComponent {
         };
     }
 
-    onLayerClick(e) {
+    onLayerClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         if (this.props.onLayerClick) {
             this.props.onLayerClick(this.props.index);
         }
-    }
+    };
 
-    onEnableClick(e) {
+    onEnableClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         if (this.props.onLayerUpdate) {
             this.props.onLayerUpdate(this.props.index, 'enabled', !this.props.enabled);
         }
-    }
+    };
 
-    onNameChange(name, val) {
+    onNameChange = (name, val) => {
         if (val.length > 0) {
             if (this.props.onLayerUpdate) {
                 this.props.onLayerUpdate(this.props.index, name, val);
             }
-            this.cancelEdit();
+            this.onCancelEdit();
         }
-    }
+    };
     
-    enableEdit() {
+    onEnableEdit = () => {
         this.setState({ edit: true });
-    }
+    };
 
-    cancelEdit() {
+    ononCancelEdit = () => {
         this.setState({ edit: false });
-    }
+    };
 
     render() {
         let text,
@@ -71,13 +70,13 @@ export default class Layer extends UIPureComponent {
                     autoFocus={true}
                     autoSelect={true}
                     onChange={this.onNameChange}
-                    onCancel={this.cancelEdit}
+                    onCancel={this.onCancelEdit}
                 />
             );
         }
         else {
             text = (
-                <span onDoubleClick={this.enableEdit}>
+                <span onDoubleClick={this.onEnableEdit}>
                     {props.name}
                 </span>
             );

@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
-
-export class TabPanel extends UIComponent {
+export class TabPanel extends React.PureComponent {
     constructor(props) {
         super(props);
 

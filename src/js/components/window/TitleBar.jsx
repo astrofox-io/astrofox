@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
 import Window from 'core/Window';
 import Icon from 'components/interface/Icon';
 
@@ -11,7 +10,7 @@ import buttonMaximize from 'images/browser/button-maximize.gif';
 import buttonClose from 'images/browser/button-close.gif';
 import buttonRestore from 'images/browser/button-restore.gif';
 
-export default class TitleBar extends UIComponent {
+export default class TitleBar extends React.Component {
     constructor(props) {
         super(props);
     }

@@ -1,31 +1,18 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
+import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option } from 'components/controls/Control';
 
-export default class MirrorControl extends UIPureComponent {
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+
+export class MirrorControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     render() {
-        const { active } = this.props,
-            { side } = this.state;
+        const { active, side, onChange } = this.props;
 
         return (
             <Control label="MIRROR" active={active}>
@@ -36,17 +23,19 @@ export default class MirrorControl extends UIPureComponent {
                         value={side}
                         min={0}
                         max={3}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="side"
                         min={0}
                         max={3}
                         value={side}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(MirrorControl);

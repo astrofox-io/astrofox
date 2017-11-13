@@ -1,7 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIPureComponent from 'components/UIPureComponent';
 import Display from 'core/Display';
 import CanvasDisplay from 'core/CanvasDisplay';
 import Scene from 'core/Scene';
@@ -19,7 +18,7 @@ import iconMoveDown from 'svg/icons/chevron-down.svg';
 import iconDelete from 'svg/icons/trash-empty.svg';
 import iconCanvasDisplay from 'svg/icons/document-landscape.svg';
 
-export default class LayersPanel extends UIPureComponent {
+export default class LayersPanel extends React.PureComponent {
     constructor(props, context) {
         super(props);
 
@@ -41,15 +40,15 @@ export default class LayersPanel extends UIPureComponent {
         events.off('project-loaded', this.onProjectLoaded, this);
     }
 
-    onProjectLoaded() {
+    onProjectLoaded = () => {
         this.updateState(0);
-    }
+    };
 
-    onLayerClick(index) {
+    onLayerClick = (index) => {
         this.setActiveLayer(index);
-    }
+    };
 
-    onLayerUpdate(index, name, val) {
+    onLayerUpdate = (index, name, val) => {
         let { displays } = this.state,
             display = displays[index],
             obj = { [name]: val };
@@ -59,13 +58,13 @@ export default class LayersPanel extends UIPureComponent {
         this.setState({ displays: displays.slice(0) });
 
         this.props.onLayerUpdate(display);
-    }
+    };
 
-    onAddSceneClick() {
+    onAddSceneClick = () => {
         this.addLayer(new Scene());
-    }
+    };
 
-    onAddDisplayClick() {
+    onAddDisplayClick = () => {
         let scene = this.getActiveScene();
 
         if (scene) {
@@ -73,9 +72,9 @@ export default class LayersPanel extends UIPureComponent {
                 this.addLayer(display, Display);
             });
         }
-    }
+    };
 
-    onAddEffectClick() {
+    onAddEffectClick = () => {
         let scene = this.getActiveScene();
 
         if (scene) {
@@ -83,9 +82,9 @@ export default class LayersPanel extends UIPureComponent {
                 this.addLayer(display, Effect);
             });
         }
-    }
+    };
 
-    onRemoveClick() {
+    onRemoveClick = () => {
         let { displays, activeIndex } = this.state,
             display = displays[activeIndex],
             last = displays.length - 1;
@@ -105,15 +104,15 @@ export default class LayersPanel extends UIPureComponent {
                 this.updateState();
             }
         }
-    }
+    };
 
-    onMoveUpClick() {
+    onMoveUpClick = () => {
         this.moveLayer(1);
-    }
+    };
 
-    onMoveDownClick() {
+    onMoveDownClick = () => {
         this.moveLayer(-1);
-    }
+    };
 
     getActiveLayer() {
         let { displays, activeIndex } = this.state;

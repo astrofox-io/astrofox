@@ -1,12 +1,13 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
-import { Control, Option } from 'components/controls/Control';
 
-const types = [
+const TYPES = [
     'Square',
     'Hexagon'
 ];
@@ -14,27 +15,13 @@ const types = [
 const MIN_PIXEL_SIZE = 2;
 const MAX_PIXEL_SIZE = 240;
 
-export default class PixelateControl extends UIPureComponent {
+export class PixelateControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     render() {
-        const { active } = this.props,
-            { type, size } = this.state;
+        const { active, type, size, onChange } = this.props;
 
         return (
             <Control label="PIXELATE" active={active}>
@@ -42,9 +29,9 @@ export default class PixelateControl extends UIPureComponent {
                     <SelectInput
                         name="type"
                         width={140}
-                        items={types}
+                        items={TYPES}
                         value={type}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Size">
@@ -54,17 +41,19 @@ export default class PixelateControl extends UIPureComponent {
                         value={size}
                         min={MIN_PIXEL_SIZE}
                         max={MAX_PIXEL_SIZE}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="size"
                         min={MIN_PIXEL_SIZE}
                         max={MAX_PIXEL_SIZE}
                         value={size}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(PixelateControl);

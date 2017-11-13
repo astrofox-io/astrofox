@@ -1,37 +1,24 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
-import { Control, Option } from 'components/controls/Control';
 
-const blendModes = [
+const BLEND_MODES = [
     'Add',
     'Screen'
 ];
 
-export default class BloomControl extends UIPureComponent {
+export class BloomControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     render() {
-        const { active } = this.props,
-            { blendMode, amount, threshold } = this.state;
+        const { active, blendMode, amount, threshold, onChange } = this.props;
 
         return (
             <Control label="BLOOM" active={active}>
@@ -39,9 +26,9 @@ export default class BloomControl extends UIPureComponent {
                     <SelectInput
                         name="blendMode"
                         width={140}
-                        items={blendModes}
+                        items={BLEND_MODES}
                         value={blendMode}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Amount">
@@ -52,7 +39,7 @@ export default class BloomControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="amount"
@@ -60,7 +47,7 @@ export default class BloomControl extends UIPureComponent {
                         max={1.0}
                         step={0.01}
                         value={amount}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Threshold">
@@ -71,7 +58,7 @@ export default class BloomControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="threshold"
@@ -79,10 +66,12 @@ export default class BloomControl extends UIPureComponent {
                         max={1.0}
                         step={0.01}
                         value={threshold}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(BloomControl);

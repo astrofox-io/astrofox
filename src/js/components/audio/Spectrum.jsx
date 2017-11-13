@@ -1,11 +1,10 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
 import { fftSize, sampleRate } from 'config/system.json';
 
-export default class Spectrum extends UIComponent {
+export default class Spectrum extends React.PureComponent {
     constructor(props) {
         super(props);
         
@@ -33,11 +32,11 @@ export default class Spectrum extends UIComponent {
         this.parser = new SpectrumParser(this.state);
     }
 
-    onClick() {
+    onClick = () => {
         this.setState(prevState => ({ normalize: !prevState.normalize }), () => {
             this.parser.update(this.state);
         });
-    }
+    };
 
     draw(data) {
         let fft = this.parser.parseFFT(data.fft);

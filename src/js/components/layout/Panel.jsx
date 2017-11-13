@@ -1,10 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIPureComponent from 'components/UIPureComponent';
 import Splitter from 'components/layout/Splitter';
 
-export default class Panel extends UIPureComponent {
+export default class Panel extends React.PureComponent {
     constructor(props) {
         super(props);
 

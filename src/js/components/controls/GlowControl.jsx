@@ -1,35 +1,28 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
+import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option } from 'components/controls/Control';
 
-export default class GlowControl extends UIPureComponent {
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+
+export class GlowControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     render() {
-        const { active } = this.props,
-            { amount, intensity } = this.state;
+        const { display, active, amount, intensity, onChange, onReactorChange } = this.props;
 
         return (
-            <Control label="GLOW" active={active}>
-                <Option label="Amount">
+            <Control
+                label="GLOW"
+                active={active}
+                display={display}>
+                <Option
+                    label="Amount"
+                    reactorName="amount"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="amount"
                         width={40}
@@ -37,7 +30,7 @@ export default class GlowControl extends UIPureComponent {
                         min={0}
                         step={0.01}
                         max={1}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="amount"
@@ -45,10 +38,13 @@ export default class GlowControl extends UIPureComponent {
                         step={0.01}
                         max={1}
                         value={amount}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
-                <Option label="Intensity">
+                <Option
+                    label="Intensity"
+                    reactorName="intensity"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="intensity"
                         width={40}
@@ -56,7 +52,7 @@ export default class GlowControl extends UIPureComponent {
                         min={1}
                         step={0.01}
                         max={3}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="intensity"
@@ -64,10 +60,12 @@ export default class GlowControl extends UIPureComponent {
                         step={0.01}
                         max={3}
                         value={intensity}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(GlowControl);

@@ -1,7 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from 'components/UIComponent';
 import Window from 'core/Window';
 
 import Button from 'components/interface/Button';
@@ -11,8 +10,10 @@ import TimeInput from 'components/inputs/TimeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import TextInput from 'components/inputs/TextInput';
 import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
+
 import { replaceExt } from 'util/file';
 import { formatTime } from 'util/format';
+
 import folderIcon from 'svg/icons/folder-open-empty.svg';
 
 const videoFormats = [
@@ -26,7 +27,7 @@ const resolutionOptions = [
     1080
 ];
 
-export default class VideoSettings extends UIComponent {
+export default class VideoSettings extends React.Component {
     constructor(props, context) {
         super(props);
 
@@ -56,7 +57,7 @@ export default class VideoSettings extends UIComponent {
         }
     }
 
-    onChange(name, val) {
+    onChange = (name, val) => {
         let obj = {};
 
         obj[name] = val;
@@ -66,21 +67,21 @@ export default class VideoSettings extends UIComponent {
         }
 
         this.setState(obj);
-    }
+    };
 
-    onCancel() {
+    onCancel = () => {
         if (this.props.onClose) {
             this.props.onClose();
         }
-    }
+    };
 
-    onStart() {
+    onStart = () => {
         if (this.props.onStart) {
             this.props.onStart(this.state);
         }
-    }
+    };
 
-    onOpenVideoFile() {
+    onOpenVideoFile = () => {
         Window.showSaveDialog(
             filename => {
                 if (filename) {
@@ -89,9 +90,9 @@ export default class VideoSettings extends UIComponent {
             },
             { defaultPath: 'video.' + this.state.format }
         );
-    }
+    };
 
-    onOpenAudioFile() {
+    onOpenAudioFile = () => {
         let path = this.app.audioFile;
 
         Window.showOpenDialog(
@@ -110,7 +111,7 @@ export default class VideoSettings extends UIComponent {
             },
             { defaultPath: path }
         );
-    }
+    };
 
     render() {
         const props = this.props,

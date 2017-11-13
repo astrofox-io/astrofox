@@ -1,11 +1,10 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from 'components/UIComponent';
 import Button from 'components/interface/Button';
 import { formatTime } from 'util/format';
 
-export default class RenderInfo extends UIComponent {
+export default class RenderInfo extends React.Component {
     constructor(props, context) {
         super(props);
 
@@ -43,7 +42,7 @@ export default class RenderInfo extends UIComponent {
         }
     }
 
-    onButtonClick() {
+    onButtonClick = () => {
         if (this.renderer) {
             this.renderer.stop();
         }
@@ -51,7 +50,7 @@ export default class RenderInfo extends UIComponent {
         if (this.props.onButtonClick) {
             this.props.onButtonClick();
         }
-    }
+    };
 
     processInfo() {
         let { frames, currentFrame, lastFrame, startTime } = this.renderer;

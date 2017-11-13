@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
-import UIComponent from 'components/UIComponent';
+
 import { styleProps } from 'util/react';
 
-export default class SelectInput extends UIComponent {
+export default class SelectInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -23,25 +23,27 @@ export default class SelectInput extends UIComponent {
         }
     }
 
-    onClick(e) {
+    onClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState(prevState => ({ showItems: !prevState.showItems }));
-    }
+    };
 
-    onItemClick(item) {
-        this.setState({ showItems: false }, () => {
-            this.props.onChange(this.props.name, item.value);
-        });
-    }
+    onItemClick = (item) => {
+        return () => {
+            this.setState({showItems: false}, () => {
+                this.props.onChange(this.props.name, item.value);
+            });
+        };
+    };
 
-    onBlur(e) {
+    onBlur = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ showItems: false });
-    }
+    };
 
     render() {
         let displayValue = '',
@@ -68,7 +70,7 @@ export default class SelectInput extends UIComponent {
                     key={index}
                     className={classNames('input-option', {separator: item.separator})}
                     style={item.style}
-                    onMouseDown={this.onItemClick.bind(this, item)}>
+                    onMouseDown={this.onItemClick(item)}>
                     {item.name}
                 </div>
             );

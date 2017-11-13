@@ -1,31 +1,18 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
+import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option } from 'components/controls/Control';
 
-export default class DotScreenControl extends UIPureComponent {
+import NumberInput from 'components/inputs/NumberInput';
+import RangeInput from 'components/inputs/RangeInput';
+
+export class DotScreenControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-        
-        this.setState(obj, () => {
-            display.update(this.state);
-        });
     }
 
     render() {
-        const { active } = this.props,
-            { scale, angle } = this.state;
+        const { active, scale, angle, onChange } = this.props;
 
         return (
             <Control label="DOT SCREEN" active={active}>
@@ -37,7 +24,7 @@ export default class DotScreenControl extends UIPureComponent {
                         min={0}
                         max={2.0}
                         step={0.01}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="scale"
@@ -45,7 +32,7 @@ export default class DotScreenControl extends UIPureComponent {
                         max={2.0}
                         step={0.01}
                         value={scale}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Angle">
@@ -55,17 +42,19 @@ export default class DotScreenControl extends UIPureComponent {
                         value={angle}
                         min={0}
                         max={360}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="angle"
                         min={0}
                         max={360}
                         value={angle}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(DotScreenControl);

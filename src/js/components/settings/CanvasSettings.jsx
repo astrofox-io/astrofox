@@ -1,13 +1,12 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIComponent from 'components/UIComponent';
 import Button from 'components/interface/Button';
 import ColorInput from 'components/inputs/ColorInput';
 import NumberInput from 'components/inputs/NumberInput';
 import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
 
-export default class CanvasSettings extends UIComponent {
+export default class CanvasSettings extends React.Component {
     constructor(props, context) {
         super(props);
 
@@ -15,23 +14,23 @@ export default class CanvasSettings extends UIComponent {
         this.state = this.app.stage.options;
     }
 
-    onChange(name, val) {
+    onChange = (name, val) => {
         let obj = {};
 
         obj[name] = val;
 
         this.setState(obj);
-    }
+    };
 
-    onCancel() {
+    onCancel = () => {
         this.props.onClose();
-    }
+    };
 
-    onSave() {
+    onSave = () => {
         this.app.stage.update(this.state);
 
         this.props.onClose();
-    }
+    };
 
     render() {
         const state = this.state,

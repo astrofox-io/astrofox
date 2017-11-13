@@ -2,7 +2,6 @@ import React from 'react';
 import propTypes from 'prop-types';
 import classNames from 'classnames';
 
-import UIPureComponent from 'components/UIPureComponent';
 import AudioWaveform from 'components/audio/AudioWaveform';
 import Oscilloscope from 'components/audio/Oscilloscope';
 import Spectrum from 'components/audio/Spectrum';
@@ -25,7 +24,7 @@ import iconVolume4 from 'svg/icons/volume4.svg';
 
 const PROGRESS_MAX = 1000;
 
-export default class Player extends UIPureComponent {
+export default class Player extends React.PureComponent {
     constructor(props, context) {
         super(props);
 
@@ -109,49 +108,49 @@ export default class Player extends UIPureComponent {
         });
     }
 
-    onPlayButtonClick() {
+    onPlayButtonClick = () => {
         this.app.player.play();
-    }
+    };
 
-    onStopButtonClick() {
+    onStopButtonClick = () =>  {
         this.app.player.stop();
-    }
+    };
 
-    onLoopButtonClick() {
+    onLoopButtonClick = () =>  {
         this.setState(prevState => {
             this.app.player.setLoop(!prevState.looping);
 
             return { looping: !prevState.looping };
         });
-    }
+    };
 
-    onWaveformClick(val) {
+    onWaveformClick = (val) => {
         this.app.player.seek(val);
-    }
+    };
 
-    onWaveformButtonClick() {
+    onWaveformButtonClick = () =>  {
         this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
-    }
+    };
 
-    onSpectrumButtonClick() {
+    onSpectrumButtonClick = () => {
         this.setState(prevState => ({ showSpectrum: !prevState.showSpectrum }));
-    }
+    };
 
-    onOscButtonClick() {
+    onOscButtonClick = () =>  {
         this.setState(prevState => ({ showOsc: !prevState.showOsc }));
-    }
+    };
 
-    onVolumeChange(val) {
-        this.app.player.setVolume(val);
-    }
+    onVolumeChange = (value) =>  {
+        this.app.player.setVolume(value);
+    };
 
-    onProgressChange(val) {
-        this.app.player.seek(val);
-    }
+    onProgressChange = (value) =>  {
+        this.app.player.seek(value);
+    };
 
-    onProgressInput(val) {
-        this.setState({ progressPosition: val });
-    }
+    onProgressInput = (value) => {
+        this.setState({ progressPosition: value });
+    };
 
     render() {
         let spectrum, osc,
@@ -230,7 +229,7 @@ Player.contextTypes = {
     app: propTypes.object
 };
 
-class VolumeControl extends UIPureComponent {
+class VolumeControl extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -240,19 +239,19 @@ class VolumeControl extends UIPureComponent {
         };
     }
 
-    onChange(name, value) {
+    onChange = (name, value) => {
         this.props.onChange(value / 100);
 
         this.setState({ value: value, mute: false });
-    }
+    };
 
-    onClick() {
+    onClick = () =>  {
         this.setState((prevState, props) => {
             props.onChange(prevState.mute ? prevState.value / 100 : 0);
 
             return { mute: !prevState.mute };
         });
-    }
+    };
 
     render() {
         let icon,
@@ -290,7 +289,7 @@ class VolumeControl extends UIPureComponent {
     }
 }
 
-class ProgressControl extends UIPureComponent {
+class ProgressControl extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -306,17 +305,17 @@ class ProgressControl extends UIPureComponent {
         }
     }
 
-    onChange(name, val) {
+    onChange = (name, val) => {
         this.setState({ value: val }, () => {
             this.props.onChange(val / PROGRESS_MAX);
         });
-    }
+    };
 
-    onInput(name, val) {
+    onInput = (name, val) => {
         this.setState({ value: val }, () => {
             this.props.onInput(val / PROGRESS_MAX);
         });
-    }
+    };
 
     isBuffering() {
         return this.progressInput.isBuffering();

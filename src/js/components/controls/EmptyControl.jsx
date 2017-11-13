@@ -3,7 +3,7 @@ import { Control, Option } from 'components/controls/Control';
 
 const EmptyControl = () => {
     return (
-        <Control label="empty">
+        <Control label="EMPTY">
             <Option />
         </Control>
     );

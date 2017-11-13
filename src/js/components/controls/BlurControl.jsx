@@ -1,11 +1,12 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
-import { Control, Option } from 'components/controls/Control';
 
 const types = [
     'Box',
@@ -14,52 +15,34 @@ const types = [
     'Zoom'
 ];
 
-export default class BlurControl extends UIPureComponent {
-    constructor(props, context) {
+export class BlurControl extends React.Component {
+    constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
-
-        this.app = context.app;
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
-    }
-
-    onReactorChange(name, options) {
-        this.props.display.setReactor(name, options);
-        this.forceUpdate();
     }
 
     render() {
         let centerOptions,
-            state = this.state,
-            { display, active, stageWidth, stageHeight } = this.props;
+            {
+                display, active, stageWidth, stageHeight, onChange, onReactorChange,
+                x, y, type, amount
+            } = this.props;
 
-        if (state.type === 'Zoom') {
+        if (type === 'Zoom') {
             centerOptions = [
                 <Option label="X" key="x">
                     <NumberInput
                         name="x"
                         min={-stageWidth/2}
                         max={stageWidth/2}
-                        value={state.x}
-                        onChange={this.onChange}
+                        value={x}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="x"
                         min={-stageWidth/2}
                         max={stageWidth/2}
-                        value={state.x}
-                        onChange={this.onChange}
+                        value={x}
+                        onChange={onChange}
                     />
                 </Option>,
                 <Option label="Y" key="y">
@@ -67,15 +50,15 @@ export default class BlurControl extends UIPureComponent {
                         name="y"
                         min={-stageHeight/2}
                         max={stageHeight/2}
-                        value={state.y}
-                        onChange={this.onChange}
+                        value={y}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="y"
                         min={-stageHeight/2}
                         max={stageHeight/2}
-                        value={state.y}
-                        onChange={this.onChange}
+                        value={y}
+                        onChange={onChange}
                     />
                 </Option>
             ];
@@ -91,30 +74,30 @@ export default class BlurControl extends UIPureComponent {
                         name="type"
                         width={140}
                         items={types}
-                        value={state.type}
-                        onChange={this.onChange}
+                        value={type}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option
                     label="Amount"
                     reactorName="amount"
-                    onReactorChange={this.onReactorChange}>
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="amount"
                         width={40}
-                        value={state.amount}
+                        value={amount}
                         min={0}
                         max={1.0}
                         step={0.01}
-                        onChange={this.onChange}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="amount"
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={state.amount}
-                        onChange={this.onChange}
+                        value={amount}
+                        onChange={onChange}
                     />
                 </Option>
                 {centerOptions}
@@ -126,3 +109,5 @@ export default class BlurControl extends UIPureComponent {
 BlurControl.contextTypes = {
     app: propTypes.object
 };
+
+export default DisplayControl(BlurControl);

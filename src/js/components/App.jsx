@@ -4,8 +4,6 @@ import propTypes from 'prop-types';
 import Window from 'core/Window';
 import { events } from 'core/Global';
 
-import UIComponent from 'components/UIComponent';
-
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
 import Dialog from 'components/window/Dialog';
@@ -32,7 +30,7 @@ import menuConfig from 'config/menu';
 import audioExtensions from 'config/audioExtensions';
 import fontOptions from 'config/fonts.json';
 
-export default class App extends UIComponent {
+export default class App extends React.Component {
     constructor(props) {
         super(props);
 
@@ -78,7 +76,7 @@ export default class App extends UIComponent {
                     height={300}
                     activeIndex={types.indexOf(type)}
                     onControlPicked={callback}
-                    onClose={this.hideModal}
+                    onClose={this.onModalClose}
                 />,
                 { title: 'ADD CONTROL', buttons: ['Close'] }
             );
@@ -109,16 +107,16 @@ export default class App extends UIComponent {
         this.app.startRender();
     }
 
-    onClick() {
+    onClick = () => {
         this.menubar.setActiveIndex(-1);
-    }
+    };
 
-    onDragDrop(e) {
+    onDragDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
-    }
+    };
 
-    onMenuAction(action) {
+    onMenuAction = (action) => {
         switch (action) {
             case 'new-project':
                 this.app.newProject();
@@ -177,8 +175,8 @@ export default class App extends UIComponent {
                 this.showModal(
                     <VideoSettings
                         width={640}
-                        onStart={this.startRender}
-                        onClose={this.hideModal}
+                        onStart={this.onRenderStart}
+                        onClose={this.onModalClose}
                     />,
                     {title: 'SAVE VIDEO', buttons: null}
                 );
@@ -192,7 +190,7 @@ export default class App extends UIComponent {
                 this.showModal(
                     <CanvasSettings
                         width={500}
-                        onClose={this.hideModal}
+                        onClose={this.onModalClose}
                     />,
                     {title: 'CANVAS', buttons: null}
                 );
@@ -202,7 +200,7 @@ export default class App extends UIComponent {
                 this.showModal(
                     <AppSettings
                         width={500}
-                        onClose={this.hideModal}
+                        onClose={this.onModalClose}
                     />,
                     {title: 'SETTINGS', buttons: null}
                 );
@@ -234,14 +232,14 @@ export default class App extends UIComponent {
 
             case 'about':
                 this.showModal(
-                    <About key="about" onClose={this.hideModal} />,
+                    <About key="about" onClose={this.onModalClose} />,
                     {title: null, buttons: null}
                 );
                 break;
         }
-    }
+    };
 
-    onUnsavedChanges(callback) {
+    onUnsavedChanges = (callback) => {
         this.showDialog(
             {
                 title: 'UNSAVED CHANGES',
@@ -257,7 +255,15 @@ export default class App extends UIComponent {
                 }
             }
         );
-    }
+    };
+
+    onModalClose = () => {
+        this.hideModal();
+    };
+
+    onStartRender = () => {
+        this.startRender();
+    };
 
     saveProject(callback) {
         let file = this.app.projectFile;
@@ -293,7 +299,7 @@ export default class App extends UIComponent {
         // Default button
         props = Object.assign(
             {
-                onClose: this.hideModal,
+                onClose: this.onModalClose,
                 buttons: ['OK']
             },
             props
@@ -314,7 +320,7 @@ export default class App extends UIComponent {
         modals.pop();
 
         this.setState({modals: modals});
-    }
+    };
 
     showDialog(props, callback) {
         if (this.dialogShown) return;

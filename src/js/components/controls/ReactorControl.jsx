@@ -1,17 +1,18 @@
 import React from 'react';
 import classNames from 'classnames';
+
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'core/Global';
-import UIPureComponent from 'components/UIPureComponent';
+
 import { Control, Option } from 'components/controls/Control';
 import BoxInput from 'components/inputs/BoxInput';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 
-const BARS = 64;
+const REACTOR_BARS = 64;
 
-export default class ReactorControl extends UIPureComponent {
+export default class ReactorControl extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -21,7 +22,7 @@ export default class ReactorControl extends UIPureComponent {
 
         this.spectrum = new CanvasBars(
             {
-                width: BARS * (barWidth + barSpacing),
+                width: REACTOR_BARS * (barWidth + barSpacing),
                 height: barHeight,
                 barWidth: barWidth,
                 barSpacing: barSpacing,
@@ -42,27 +43,11 @@ export default class ReactorControl extends UIPureComponent {
             this.outputCanvas
         );
 
-        events.on('render', this.draw);
+        events.on('render', this.draw, this);
     }
 
     componentWillUnmount() {
-        events.off('render', this.draw);
-    }
-
-    onChange(name, value) {
-        const { x, y, width, height } = value,
-            { reactor, barWidth, barHeight, barSpacing } = this.props,
-            maxWidth = BARS * (barWidth + barSpacing),
-            maxHeight = barHeight;
-
-        let range = {
-            x1: x / maxWidth,
-            x2: (x + width) / maxWidth,
-            y1: y / maxHeight,
-            y2: (y + height) / maxHeight
-        };
-
-        reactor.update({ [name]: value, range: range });
+        events.off('render', this.draw, this);
     }
 
     draw() {
@@ -76,14 +61,30 @@ export default class ReactorControl extends UIPureComponent {
         }
     }
 
-    updateParser(name, value) {
+    updateReactor = (name, value) => {
+        const { x, y, width, height } = value,
+            { reactor, barWidth, barHeight, barSpacing } = this.props,
+            maxWidth = REACTOR_BARS * (barWidth + barSpacing),
+            maxHeight = barHeight;
+
+        let range = {
+            x1: x / maxWidth,
+            x2: (x + width) / maxWidth,
+            y1: y / maxHeight,
+            y2: (y + height) / maxHeight
+        };
+
+        reactor.update({ [name]: value, range: range });
+    };
+
+    updateParser = (name, value) => {
         const { reactor } = this.props;
 
         if (reactor) {
             reactor.parser.update({ [name]: value });
             this.forceUpdate();
         }
-    }
+    };
 
     render() {
         const { reactor, barWidth, barHeight, barSpacing, visible } = this.props,
@@ -107,7 +108,7 @@ export default class ReactorControl extends UIPureComponent {
                                     min={-40}
                                     max={0}
                                     step={1}
-                                    onChange={this.updateParser}
+                                    updateReactor={this.updateParser}
                                 />
                                 <RangeInput
                                     name="maxDecibels"
@@ -115,7 +116,7 @@ export default class ReactorControl extends UIPureComponent {
                                     min={-40}
                                     max={0}
                                     step={1}
-                                    onChange={this.updateParser}
+                                    updateReactor={this.updateParser}
                                 />
                             </Option>
                             <Option label="Smoothing">
@@ -126,7 +127,7 @@ export default class ReactorControl extends UIPureComponent {
                                     min={0}
                                     max={0.99}
                                     step={0.01}
-                                    onChange={this.updateParser}
+                                    updateReactor={this.updateParser}
                                 />
                                 <RangeInput
                                     name="smoothingTimeConstant"
@@ -134,7 +135,7 @@ export default class ReactorControl extends UIPureComponent {
                                     min={0}
                                     max={0.99}
                                     step={0.01}
-                                    onChange={this.updateParser}
+                                    updateReactor={this.updateParser}
                                 />
                             </Option>
                         </Control>
@@ -142,7 +143,7 @@ export default class ReactorControl extends UIPureComponent {
                     <div className="reactor-spectrum">
                         <canvas
                             ref={el => this.spectrumCanvas = el}
-                            width={BARS * (barWidth + barSpacing)}
+                            width={REACTOR_BARS * (barWidth + barSpacing)}
                             height={barHeight}
                             onClick={this.onClick}
                         />
@@ -152,9 +153,9 @@ export default class ReactorControl extends UIPureComponent {
                             value={reactor ? reactor.options.selection : {}}
                             minWidth={barWidth}
                             minHeight={barWidth}
-                            maxWidth={BARS * (barWidth + barSpacing)}
+                            maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
                             maxHeight={barHeight}
-                            onChange={this.onChange}
+                            onChange={this.updateReactor}
                         />
                     </div>
                     <div className="reactor-output">

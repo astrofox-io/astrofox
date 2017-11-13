@@ -1,42 +1,28 @@
 import React from 'react';
 
-import UIPureComponent from 'components/UIPureComponent';
+import DisplayControl from 'components/controls/DisplayControl';
+import { Control, Option } from 'components/controls/Control';
+
 import ColorInput from 'components/inputs/ColorInput';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
 import SelectInput from 'components/inputs/SelectInput';
 import TextInput from 'components/inputs/TextInput';
 import ToggleInput from 'components/inputs/ToggleInput';
-import { Control, Option } from 'components/controls/Control';
 
 import fontOptions from 'config/fonts.json';
 
-export default class TextControl extends UIPureComponent {
+export class TextControl extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = this.props.display.options;
     }
 
     componentDidMount() {
-        let display = this.props.display;
+        const { display } = this.props;
 
         if (display.initialized) {
-            this.setState(display.options, () => {
-                display.text.render();
-            });
+            display.text.render();
         }
-    }
-
-    onChange(name, val) {
-        let obj = {},
-            display = this.props.display;
-
-        obj[name] = val;
-
-        this.setState(obj, () => {
-            display.update(obj);
-        });
     }
 
     getSelectItems() {
@@ -46,8 +32,10 @@ export default class TextControl extends UIPureComponent {
     }
 
     render() {
-        const { active, stageWidth, stageHeight } = this.props,
-            state = this.state;
+        const {
+            active, stageWidth, stageHeight, onChange,
+            text, size, font, bold, italic, color, x, y, rotation, opacity
+        } = this.props;
 
         return (
             <Control label="TEXT" active={active}>
@@ -55,8 +43,8 @@ export default class TextControl extends UIPureComponent {
                     <TextInput
                         name="text"
                         width={140}
-                        value={state.text}
-                        onChange={this.onChange}
+                        value={text}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Font">
@@ -64,8 +52,8 @@ export default class TextControl extends UIPureComponent {
                         name="font"
                         width={140}
                         items={this.getSelectItems()}
-                        value={state.font}
-                        onChange={this.onChange}
+                        value={font}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Size">
@@ -73,28 +61,28 @@ export default class TextControl extends UIPureComponent {
                         name="size"
                         width={40}
                         min={0}
-                        value={state.size}
-                        onChange={this.onChange}
+                        value={size}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Bold">
                     <ToggleInput
                         name="bold"
-                        value={state.bold}
-                        onChange={this.onChange}
+                        value={bold}
+                        onChange={onChange}
                     />
                     <span className="label">Italic</span>
                     <ToggleInput
                         name="italic"
-                        value={state.italic}
-                        onChange={this.onChange}
+                        value={italic}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Color">
                     <ColorInput
                         name="color"
-                        value={state.color}
-                        onChange={this.onChange}
+                        value={color}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="X">
@@ -103,15 +91,15 @@ export default class TextControl extends UIPureComponent {
                         width={40}
                         min={-stageWidth}
                         max={stageWidth}
-                        value={state.x}
-                        onChange={this.onChange}
+                        value={x}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="x"
                         min={-stageWidth}
                         max={stageWidth}
-                        value={state.x}
-                        onChange={this.onChange}
+                        value={x}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Y">
@@ -120,15 +108,15 @@ export default class TextControl extends UIPureComponent {
                         width={40}
                         min={-stageHeight}
                         max={stageHeight}
-                        value={state.y}
-                        onChange={this.onChange}
+                        value={y}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="y"
                         min={-stageHeight}
                         max={stageHeight}
-                        value={state.y}
-                        onChange={this.onChange}
+                        value={y}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Rotation">
@@ -137,15 +125,15 @@ export default class TextControl extends UIPureComponent {
                         width={40}
                         min={0}
                         max={360}
-                        value={state.rotation}
-                        onChange={this.onChange}
+                        value={rotation}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="rotation"
                         min={0}
                         max={360}
-                        value={state.rotation}
-                        onChange={this.onChange}
+                        value={rotation}
+                        onChange={onChange}
                     />
                 </Option>
                 <Option label="Opacity">
@@ -155,19 +143,21 @@ export default class TextControl extends UIPureComponent {
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={state.opacity}
-                        onChange={this.onChange}
+                        value={opacity}
+                        onChange={onChange}
                     />
                     <RangeInput
                         name="opacity"
                         min={0}
                         max={1.0}
                         step={0.01}
-                        value={state.opacity}
-                        onChange={this.onChange}
+                        value={opacity}
+                        onChange={onChange}
                     />
                 </Option>
             </Control>
         );
     }
 }
+
+export default DisplayControl(TextControl);

@@ -1,17 +1,16 @@
 import React from 'react';
 
-import UIComponent from 'components/UIComponent';
 import { TabPanel, Tab } from 'components/layout/TabPanel';
 import * as displayLibrary from 'lib/displays';
 import * as effectsLibrary from 'lib/effects';
 import { styleProps } from 'util/react';
 
-export default class ControlPicker extends UIComponent {
+export default class ControlPicker extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    onClick(item) {
+    onClick = (item) => {
         if (this.props.onControlPicked) {
             this.props.onControlPicked(new item());
         }
@@ -19,7 +18,7 @@ export default class ControlPicker extends UIComponent {
         if (this.props.onClose) {
             this.props.onClose();
         }
-    }
+    };
 
     getItems(items) {
         return Object.keys(items).map((key, index) => {

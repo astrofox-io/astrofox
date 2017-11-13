@@ -1,10 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UIComponent from 'components/UIComponent';
 import { clamp, roundTo } from 'util/math.js';
 
-export default class NumberInput extends UIComponent {
+export default class NumberInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -19,24 +18,24 @@ export default class NumberInput extends UIComponent {
         }
     }
 
-    onChange(e) {
+    onChange = (e) => {
         this.setState({ value: e.target.value });
-    }
+    };
 
-    onKeyUp(e) {
+    onKeyUp = (e) => {
         e.stopPropagation();
 
         // Enter key
         if (e.keyCode === 13) {
             this.checkValue();
         }
-    }
+    };
 
-    onBlur(e) {
+    onBlur = (e) => {
         e.stopPropagation();
 
         this.checkValue();
-    }
+    };
 
     setValue(val, props) {
         val = this.parseValue(val, props);
