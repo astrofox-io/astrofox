@@ -50,7 +50,7 @@ export default class ReactorControl extends React.PureComponent {
         events.off('render', this.draw, this);
     }
 
-    draw() {
+    draw = () => {
         const { reactor } = this.props;
 
         if (reactor) {
@@ -59,7 +59,7 @@ export default class ReactorControl extends React.PureComponent {
             this.spectrum.render(fft);
             this.output.render(output);
         }
-    }
+    };
 
     updateReactor = (name, value) => {
         const { x, y, width, height } = value,
@@ -108,7 +108,7 @@ export default class ReactorControl extends React.PureComponent {
                                     min={-40}
                                     max={0}
                                     step={1}
-                                    updateReactor={this.updateParser}
+                                    onChange={this.updateParser}
                                 />
                                 <RangeInput
                                     name="maxDecibels"
@@ -116,7 +116,7 @@ export default class ReactorControl extends React.PureComponent {
                                     min={-40}
                                     max={0}
                                     step={1}
-                                    updateReactor={this.updateParser}
+                                    onChange={this.updateParser}
                                 />
                             </Option>
                             <Option label="Smoothing">
@@ -127,7 +127,7 @@ export default class ReactorControl extends React.PureComponent {
                                     min={0}
                                     max={0.99}
                                     step={0.01}
-                                    updateReactor={this.updateParser}
+                                    onChange={this.updateParser}
                                 />
                                 <RangeInput
                                     name="smoothingTimeConstant"
@@ -135,20 +135,20 @@ export default class ReactorControl extends React.PureComponent {
                                     min={0}
                                     max={0.99}
                                     step={0.01}
-                                    updateReactor={this.updateParser}
+                                    onChange={this.updateParser}
                                 />
                             </Option>
                         </Control>
                     </div>
                     <div className="reactor-spectrum">
                         <canvas
-                            ref={el => this.spectrumCanvas = el}
+                            ref={e => this.spectrumCanvas = e}
                             width={REACTOR_BARS * (barWidth + barSpacing)}
                             height={barHeight}
                             onClick={this.onClick}
                         />
                         <BoxInput
-                            ref={el => this.box = el}
+                            ref={e => this.box = e}
                             name="selection"
                             value={reactor ? reactor.options.selection : {}}
                             minWidth={barWidth}
@@ -160,7 +160,7 @@ export default class ReactorControl extends React.PureComponent {
                     </div>
                     <div className="reactor-output">
                         <canvas
-                            ref={el => this.outputCanvas = el}
+                            ref={e => this.outputCanvas = e}
                             width={20}
                             height={barHeight}
                         />

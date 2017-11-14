@@ -21,10 +21,10 @@ export class PixelateControl extends React.Component {
     }
 
     render() {
-        const { active, type, size, onChange } = this.props;
+        const { display, active, type, size, onChange, onReactorChange } = this.props;
 
         return (
-            <Control label="PIXELATE" active={active}>
+            <Control label="PIXELATE" active={active} display={display}>
                 <Option label="Type">
                     <SelectInput
                         name="type"
@@ -34,7 +34,12 @@ export class PixelateControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Size">
+                <Option
+                    label="Size"
+                    reactorName="size"
+                    reactorMin={MIN_PIXEL_SIZE}
+                    reactorMax={MAX_PIXEL_SIZE}
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="size"
                         width={40}

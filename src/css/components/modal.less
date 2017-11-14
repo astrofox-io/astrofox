@@ -53,17 +53,20 @@
         position: absolute;
         top: 0;
         right: 0;
-        font-size: 14px;
-        line-height: 24px;
         height: 24px;
         width: 24px;
+        padding-top: 5px;
         text-align: center;
-        letter-spacing: 0;
         z-index: 1;
 
         &:hover {
-            color: darken(@text-color1, 10%);
             background-color: @color1;
+        }
+
+        svg {
+            fill: @text-color1;
+            height: 14px;
+            width: 14px;
         }
     }
 

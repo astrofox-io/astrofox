@@ -15,44 +15,34 @@ import BLANK_IMAGE from 'images/data/blank.gif';
 export class ImageControl extends React.Component {
     constructor(props) {
         super(props);
-    }
 
-    componentDidMount() {
-        let display = this.props.display;
-
-        if (display.initialized) {
-            this.setState(display.options);
-        }
-
-        this.image = this.imageInput.getImage();
+        this.image = document.createElement('img');
     }
 
     onChange = (name, value) => {
         let obj = {},
-            { display, src, fixed } = this.props,
+            { src, fixed, onChange } = this.props,
             image = this.imageInput.getImage(),
             ratio = image.naturalWidth / image.naturalHeight;
 
         if (name === 'src') {
-            // Reset values
-            obj.width = 0;
-            obj.height = 0;
-            obj.x = 0;
-            obj.y = 0;
-            obj.rotation = 0;
-            obj.opacity = 0;
+            this.image = image;
 
-            if (value !== BLANK_IMAGE) {
-                // Load new image
-                if (value !== src) {
-                    obj.width = image.naturalWidth;
-                    obj.height = image.naturalHeight;
-                    obj.opacity = 1.0;
-                }
-                // Restore values
-                else {
-                    Object.assign(obj, display.options);
-                }
+            // Reset values
+            if (value === BLANK_IMAGE) {
+                obj.width = 0;
+                obj.height = 0;
+                obj.x = 0;
+                obj.y = 0;
+                obj.rotation = 0;
+                obj.opacity = 0;
+            }
+
+            // Load new image
+            if (value !== src) {
+                obj.width = image.naturalWidth;
+                obj.height = image.naturalHeight;
+                obj.opacity = 1.0;
             }
         }
         else if (name === 'width') {
@@ -66,11 +56,8 @@ export class ImageControl extends React.Component {
             }
         }
 
-        this.props.onChange(name, value, obj);
-
-        if (name === 'src') {
-            this.image = image;
-            this.forceUpdate();
+        if (onChange) {
+            onChange(name, value, obj);
         }
     };
 
@@ -79,11 +66,16 @@ export class ImageControl extends React.Component {
     };
 
     render() {
-        let { active, stageWidth, stageHeight, display, fixed, src, width, height, x, y, rotation, opacity } = this.props,
+        let {
+                active, stageWidth, stageHeight, display, onReactorChange,
+                fixed, src, width, height, x, y, rotation, opacity
+            } = this.props,
             image = this.image,
             readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
             imageWidth = readOnly ? 0 : image.naturalWidth,
             imageHeight = readOnly ? 0 : image.naturalHeight,
+            maxWidth = imageWidth * 2,
+            maxHeight = imageHeight * 2,
             xMax = readOnly ? 0 : (imageWidth > stageWidth) ? imageWidth : stageWidth,
             yMax = readOnly ? 0 : (imageHeight > stageHeight) ? imageHeight : stageHeight,
             linkClasses = {
@@ -97,8 +89,8 @@ export class ImageControl extends React.Component {
                 <Option label="Image">
                     <ImageInput
                         name="src"
-                        ref={el => this.imageInput = el}
-                        src={src}
+                        ref={e => this.imageInput = e}
+                        value={src}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -107,7 +99,7 @@ export class ImageControl extends React.Component {
                         name="width"
                         width={40}
                         min={0}
-                        max={imageWidth*2}
+                        max={maxWidth}
                         value={width}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -115,7 +107,7 @@ export class ImageControl extends React.Component {
                     <RangeInput
                         name="width"
                         min={0}
-                        max={imageWidth*2}
+                        max={maxWidth}
                         value={width}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -126,7 +118,7 @@ export class ImageControl extends React.Component {
                         name="height"
                         width={40}
                         min={0}
-                        max={imageHeight*2}
+                        max={maxHeight}
                         value={height}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -134,7 +126,7 @@ export class ImageControl extends React.Component {
                     <RangeInput
                         name="height"
                         min={0}
-                        max={imageHeight*2}
+                        max={maxHeight}
                         value={height}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -200,7 +192,7 @@ export class ImageControl extends React.Component {
                 <Option
                     label="Opacity"
                     reactorName="opacity"
-                    onReactorChange={this.onReactorChange}>
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="opacity"
                         width={40}

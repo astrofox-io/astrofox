@@ -25,17 +25,15 @@ export class TextControl extends React.Component {
         }
     }
 
-    getSelectItems() {
-        return fontOptions.map(item => {
-            return { name: item, value: item, style: { fontFamily: item } };
-        });
-    }
-
     render() {
         const {
             active, stageWidth, stageHeight, onChange,
             text, size, font, bold, italic, color, x, y, rotation, opacity
         } = this.props;
+
+        const fonts = fontOptions.map(item => {
+            return { name: item, value: item, style: { fontFamily: item } };
+        });
 
         return (
             <Control label="TEXT" active={active}>
@@ -51,7 +49,7 @@ export class TextControl extends React.Component {
                     <SelectInput
                         name="font"
                         width={140}
-                        items={this.getSelectItems()}
+                        items={fonts}
                         value={font}
                         onChange={onChange}
                     />

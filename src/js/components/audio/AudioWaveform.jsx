@@ -68,7 +68,7 @@ export default class AudioWaveform extends React.PureComponent {
         this.draw();
     };
 
-    draw() {
+    draw = () => {
         const { width, height } = this.canvas,
             context = this.drawContext,
             position = this.position * width,
@@ -99,15 +99,15 @@ export default class AudioWaveform extends React.PureComponent {
                 sx, 0, dx, height
             );
         }
-    }
+    };
 
-    renderBars(audio) {
+    renderBars = (audio) => {
         if (audio) {
             this.baseCanvas.render(audio.buffer);
             this.progressCanvas.render(audio.buffer);
             this.seekCanvas.render(audio.buffer);
         }
-    }
+    };
 
     render() {
         const { width, height, shadowHeight, visible } = this.props,
@@ -119,7 +119,7 @@ export default class AudioWaveform extends React.PureComponent {
         return (
             <div className={classNames(classes)}>
                 <canvas
-                    ref={el => this.canvas = el}
+                    ref={e => this.canvas = e}
                     className="canvas"
                     width={width}
                     height={height+shadowHeight}

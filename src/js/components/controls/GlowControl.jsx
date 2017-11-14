@@ -44,6 +44,8 @@ export class GlowControl extends React.Component {
                 <Option
                     label="Intensity"
                     reactorName="intensity"
+                    reactorMin={1}
+                    reactorMax={3}
                     onReactorChange={onReactorChange}>
                     <NumberInput
                         name="intensity"

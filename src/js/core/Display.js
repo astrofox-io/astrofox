@@ -62,7 +62,7 @@ export default class Display extends Component {
                         { min, max } = reactor.options,
                         value = ((max - min) * output) + min;
 
-                    this.update({ [name]:  value});
+                    this.update({ [name]: value });
                 }
             });
         }

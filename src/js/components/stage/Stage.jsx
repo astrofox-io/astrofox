@@ -38,24 +38,25 @@ export default class Stage extends React.Component {
         e.stopPropagation();
         e.preventDefault();
 
-        const file = e.dataTransfer.files[0];
+        const file = e.dataTransfer.files[0],
+            { onFileDropped } = this.props;
 
-        if (file && this.props.onFileDropped) {
-            this.props.onFileDropped(file.path);
+        if (file && onFileDropped) {
+            onFileDropped(file.path);
         }
     };
 
-    startRender() {
+    startRender = () => {
         this.setState({ rendering: true });
-    }
+    };
 
-    stopRender() {
+    stopRender = () => {
         this.setState({ rendering: false });
-    }
+    };
 
-    showLoading(val) {
-        this.setState({ loading: val });
-    }
+    showLoading = (value) => {
+        this.setState({ loading: value });
+    };
 
     render() {
         let { loading, rendering } = this.state,
@@ -72,7 +73,7 @@ export default class Stage extends React.Component {
                         className="canvas"
                         onDrop={this.onDrop}
                         onDragOver={this.onDragOver}>
-                        <canvas ref={el => this.canvas = el} style={style} />
+                        <canvas ref={e => this.canvas = e} style={style} />
                         <Loading visible={loading} />
                         <Rendering visible={rendering} onButtonClick={this.stopRender} />
                     </div>

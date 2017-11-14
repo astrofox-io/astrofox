@@ -40,7 +40,7 @@ export default class ControlDock extends React.PureComponent {
                     title="CONTROLS"
                     stretch={true}>
                     <ControlsPanel
-                        ref={el => this.controls = el}
+                        ref={e => this.controls = e}
                     />
                 </Panel>
             </PanelDock>

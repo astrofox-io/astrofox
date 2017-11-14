@@ -46,13 +46,13 @@ export class GeometryControl extends React.Component {
 
     render() {
         const { 
-            active, shape, material, shading, color, 
+            display, active, shape, material, shading, color,
             wireframe, edges, edgeColor, x, y, z, opacity,
-            onChange
+            onChange, onReactorChange
         } = this.props;
 
         return (
-            <Control label="3D GEOMETRY" active={active}>
+            <Control label="3D GEOMETRY" active={active} display={display}>
                 <Option label="Shape">
                     <SelectInput
                         name="shape"
@@ -159,7 +159,10 @@ export class GeometryControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Opacity">
+                <Option
+                    label="Opacity"
+                    reactorName="opacity"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="opacity"
                         width={40}

@@ -56,10 +56,10 @@ export default class ControlsPanel extends React.PureComponent {
             return (
                 <div
                     key={id}
-                    ref={el => this.nodes[id] = el}
+                    ref={e => this.nodes[id] = e}
                     className="control-wrapper">
                     <Component
-                        ref={el => this.controls[id] = el}
+                        ref={e => this.controls[id] = e}
                         display={display}
                         active={index === activeIndex}
                         stageWidth={width}
@@ -78,7 +78,7 @@ export default class ControlsPanel extends React.PureComponent {
         let controls = this.getControls();
 
         return (
-            <div className="controls-panel" ref={el => this.nodes.panel = el}>
+            <div className="controls-panel" ref={e => this.nodes.panel = e}>
                 <div className="controls">
                     {controls}
                 </div>

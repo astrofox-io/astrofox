@@ -76,7 +76,7 @@ export default class App extends React.Component {
                     height={300}
                     activeIndex={types.indexOf(type)}
                     onControlPicked={callback}
-                    onClose={this.onModalClose}
+                    onClose={this.hideModal}
                 />,
                 { title: 'ADD CONTROL', buttons: ['Close'] }
             );
@@ -175,8 +175,8 @@ export default class App extends React.Component {
                 this.showModal(
                     <VideoSettings
                         width={640}
-                        onStart={this.onRenderStart}
-                        onClose={this.onModalClose}
+                        onStart={this.startRender}
+                        onClose={this.hideModal}
                     />,
                     {title: 'SAVE VIDEO', buttons: null}
                 );
@@ -190,7 +190,7 @@ export default class App extends React.Component {
                 this.showModal(
                     <CanvasSettings
                         width={500}
-                        onClose={this.onModalClose}
+                        onClose={this.hideModal}
                     />,
                     {title: 'CANVAS', buttons: null}
                 );
@@ -200,7 +200,7 @@ export default class App extends React.Component {
                 this.showModal(
                     <AppSettings
                         width={500}
-                        onClose={this.onModalClose}
+                        onClose={this.hideModal}
                     />,
                     {title: 'SETTINGS', buttons: null}
                 );
@@ -232,7 +232,7 @@ export default class App extends React.Component {
 
             case 'about':
                 this.showModal(
-                    <About key="about" onClose={this.onModalClose} />,
+                    <About key="about" onClose={this.hideModal} />,
                     {title: null, buttons: null}
                 );
                 break;
@@ -257,15 +257,7 @@ export default class App extends React.Component {
         );
     };
 
-    onModalClose = () => {
-        this.hideModal();
-    };
-
-    onStartRender = () => {
-        this.startRender();
-    };
-
-    saveProject(callback) {
+    saveProject = (callback) => {
         let file = this.app.projectFile;
 
         if (file) {
@@ -276,9 +268,9 @@ export default class App extends React.Component {
         else {
             this.saveProjectAs(callback);
         }
-    }
+    };
 
-    saveProjectAs(callback) {
+    saveProjectAs = (callback) => {
         Window.showSaveDialog(
             filename => {
                 if (filename) {
@@ -289,9 +281,9 @@ export default class App extends React.Component {
             },
             {defaultPath: 'project.afx'}
         );
-    }
+    };
 
-    showModal(content, props) {
+    showModal = (content, props) => {
         if (this.dialogShown) return;
 
         let modals = this.state.modals;
@@ -299,7 +291,7 @@ export default class App extends React.Component {
         // Default button
         props = Object.assign(
             {
-                onClose: this.onModalClose,
+                onClose: this.hideModal,
                 buttons: ['OK']
             },
             props
@@ -312,9 +304,9 @@ export default class App extends React.Component {
         );
 
         this.setState({modals: modals});
-    }
+    };
 
-    hideModal() {
+    hideModal = () => {
         let modals = this.state.modals;
 
         modals.pop();
@@ -322,7 +314,7 @@ export default class App extends React.Component {
         this.setState({modals: modals});
     };
 
-    showDialog(props, callback) {
+    showDialog = (props, callback) => {
         if (this.dialogShown) return;
 
         props.onClose = (button) => {
@@ -337,9 +329,9 @@ export default class App extends React.Component {
         );
 
         this.dialogShown = true;
-    }
+    };
 
-    showCheckForUpdates() {
+    showCheckForUpdates = () => {
         if (this.updatesShown) return;
 
         let onClose = () => {
@@ -353,18 +345,18 @@ export default class App extends React.Component {
         );
 
         this.updatesShown = true;
-    }
+    };
 
-    showReactor(reactor) {
+    showReactor = (reactor) => {
         this.setState(prevState => {
             return {
                 reactor: reactor,
                 showReactor: reactor && (reactor !== prevState.reactor || !prevState.showReactor)
             };
         });
-    }
+    };
 
-    loadAudioFile(file) {
+    loadAudioFile = (file) => {
         let showLoading = this.stage.showLoading;
 
         showLoading(true);
@@ -376,16 +368,16 @@ export default class App extends React.Component {
             .catch(() => {
                 showLoading(false);
             });
-    }
+    };
 
-    startRender(options) {
+    startRender = (options) => {
         this.hideModal();
 
         let { videoFile, audioFile } = options;
 
         this.app.saveVideo(videoFile, audioFile, options);
         this.stage.startRender();
-    }
+    };
 
     render() {
         let { showPlayer, showControlDock, showReactor, reactor, statusBarText, modals } = this.state;
@@ -399,14 +391,14 @@ export default class App extends React.Component {
                 <Preload />
                 <TitleBar />
                 <MenuBar
-                    ref={el => this.menubar = el}
+                    ref={e => this.menubar = e}
                     items={menuConfig}
                     onMenuAction={this.onMenuAction}
                 />
                 <div id="body">
                     <div id="viewport">
                         <Stage
-                            ref={el => this.stage = el}
+                            ref={e => this.stage = e}
                             onFileDropped={this.loadAudioFile}
                         />
                         <Player

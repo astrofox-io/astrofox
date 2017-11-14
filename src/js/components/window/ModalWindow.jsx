@@ -1,6 +1,9 @@
 import React from 'react';
 
 import Button from 'components/interface/Button';
+import Icon from 'components/interface/Icon';
+
+import closeIcon from 'svg/icons/cross.svg';
 
 const ModalWindow = (props) => {
     let title, buttons, closeButton;
@@ -27,8 +30,9 @@ const ModalWindow = (props) => {
 
     if (props.showCloseButton !== false) {
         closeButton = (
-            <span
-                className="close-button icon-cross"
+            <Icon
+                className="close-button"
+                glyph={closeIcon}
                 onClick={props.onClose}
             />
         );

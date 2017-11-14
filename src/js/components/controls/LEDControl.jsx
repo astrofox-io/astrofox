@@ -12,11 +12,16 @@ export class LEDControl extends React.Component {
     }
 
     render() {
-        const { active, spacing, size, blur, onChange } = this.props;
+        const { display, active, spacing, size, blur, onChange, onReactorChange } = this.props;
 
         return (
-            <Control label="LED" active={active}>
-                <Option label="Spacing">
+            <Control label="LED" active={active} display={display}>
+                <Option
+                    label="Spacing"
+                    reactorName="spacing"
+                    reactorMin={1}
+                    reactorMax={100}
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="spacing"
                         width={40}
@@ -33,7 +38,11 @@ export class LEDControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Size">
+                <Option
+                    label="Size"
+                    reactorName="size"
+                    reactorMax={100}
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="size"
                         width={40}
@@ -50,7 +59,11 @@ export class LEDControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Blur">
+                <Option 
+                    label="Blur"
+                    reactorName="blur"
+                    reactorMax={100}
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="blur"
                         width={40}

@@ -22,12 +22,12 @@ export default class ReactorInput extends React.PureComponent {
             this.canvas
         );
 
-        events.on('render', this.draw);
+        events.on('render', this.draw, this);
         events.emit('reactor-edit', this.props.reactor);
     }
 
     componentWillUnmount() {
-        events.off('render', this.draw);
+        events.off('render', this.draw, this);
         events.emit('reactor-edit', null);
     }
 
@@ -35,11 +35,11 @@ export default class ReactorInput extends React.PureComponent {
         events.emit('reactor-edit', this.props.reactor);
     };
 
-    draw() {
-        let { output } = this.props.reactor.getResult();
+    draw = () => {
+        const { output } = this.props.reactor.getResult();
 
         this.meter.render(output);
-    }
+    };
 
     render() {
         return (
@@ -48,7 +48,7 @@ export default class ReactorInput extends React.PureComponent {
                     className="reactor-meter"
                     onDoubleClick={this.showReactorControl}>
                     <canvas
-                        ref={el => this.canvas = el}
+                        ref={e => this.canvas = e}
                         className="canvas"
                         width={this.props.width}
                         height={this.props.height}

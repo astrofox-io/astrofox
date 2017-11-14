@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 import AudioWaveform from 'components/audio/AudioWaveform';
 import Oscilloscope from 'components/audio/Oscilloscope';
-import Spectrum from 'components/audio/Spectrum';
 import { events } from 'core/Global';
 import { formatTime } from 'util/format';
 import RangeInput from 'components/inputs/RangeInput';
@@ -12,7 +11,6 @@ import Icon from 'components/interface/Icon';
 
 import iconSoundBars from 'svg/icons/sound-bars.svg';
 import iconSoundWaves from 'svg/icons/sound-waves.svg';
-import iconBarGraph from 'svg/icons/bar-graph.svg';
 import iconRepeat from 'svg/icons/cycle.svg';
 import iconPlay from 'svg/icons/play.svg';
 import iconStop from 'svg/icons/stop.svg';
@@ -34,7 +32,6 @@ export default class Player extends React.PureComponent {
             progressPosition: 0,
             duration: 0,
             showWaveform: true,
-            showSpectrum: false,
             showOsc: false
         };
 
@@ -132,10 +129,6 @@ export default class Player extends React.PureComponent {
         this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
     };
 
-    onSpectrumButtonClick = () => {
-        this.setState(prevState => ({ showSpectrum: !prevState.showSpectrum }));
-    };
-
     onOscButtonClick = () =>  {
         this.setState(prevState => ({ showOsc: !prevState.showOsc }));
     };
@@ -153,22 +146,18 @@ export default class Player extends React.PureComponent {
     };
 
     render() {
-        let spectrum, osc,
+        let osc,
             playing = this.app.player.isPlaying(),
-            { duration, progressPosition, looping, showWaveform, showSpectrum, showOsc } = this.state;
-
-        if (showSpectrum) {
-            spectrum = <Spectrum ref={el => this.spectrum = el} />;
-        }
+            { duration, progressPosition, looping, showWaveform, showOsc } = this.state;
 
         if (showOsc) {
-            osc = <Oscilloscope ref={el => this.oscilloscope = el} />;
+            osc = <Oscilloscope ref={e => this.oscilloscope = e} />;
         }
 
         return (
             <div className={classNames({ 'display-none': !this.props.visible })}>
                 <AudioWaveform
-                    ref={el => this.waveform = el}
+                    ref={e => this.waveform = e}
                     visible={showWaveform && duration}
                     onClick={this.onWaveformClick}
                 />
@@ -179,7 +168,7 @@ export default class Player extends React.PureComponent {
                     </div>
                     <VolumeControl onChange={this.onVolumeChange} />
                     <ProgressControl
-                        ref={el => this.progressControl = el}
+                        ref={e => this.progressControl = e}
                         value={progressPosition * PROGRESS_MAX}
                         onChange={this.onProgressChange}
                         onInput={this.onProgressInput}
@@ -202,12 +191,6 @@ export default class Player extends React.PureComponent {
                         onClick={this.onOscButtonClick}
                     />
                     <ToggleButton
-                        icon={iconBarGraph}
-                        title="Spectrum"
-                        active={showSpectrum}
-                        onClick={this.onSpectrumButtonClick}
-                    />
-                    <ToggleButton
                         icon={iconRepeat}
                         title="Repeat"
                         active={looping}
@@ -215,7 +198,6 @@ export default class Player extends React.PureComponent {
                     />
                 </div>
                 {osc}
-                {spectrum}
             </div>
         );
     }
@@ -325,7 +307,7 @@ class ProgressControl extends React.PureComponent {
         return (
             <div className="progress">
                 <RangeInput
-                    ref={el => this.progressInput = el}
+                    ref={e => this.progressInput = e}
                     name="progress"
                     min="0"
                     max={PROGRESS_MAX}

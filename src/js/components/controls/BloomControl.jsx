@@ -18,10 +18,13 @@ export class BloomControl extends React.Component {
     }
 
     render() {
-        const { active, blendMode, amount, threshold, onChange } = this.props;
+        const { display, active, blendMode, amount, threshold, onChange, onReactorChange } = this.props;
 
         return (
-            <Control label="BLOOM" active={active}>
+            <Control
+                label="BLOOM"
+                active={active}
+                display={display}>
                 <Option label="Blend Mode">
                     <SelectInput
                         name="blendMode"
@@ -31,7 +34,10 @@ export class BloomControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Amount">
+                <Option
+                    label="Amount"
+                    reactorName="amount"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="amount"
                         width={40}
@@ -50,7 +56,10 @@ export class BloomControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Threshold">
+                <Option
+                    label="Threshold"
+                    reactorName="threshold"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="threshold"
                         width={40}

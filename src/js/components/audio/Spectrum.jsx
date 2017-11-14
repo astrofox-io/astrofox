@@ -38,17 +38,17 @@ export default class Spectrum extends React.PureComponent {
         });
     };
 
-    draw(data) {
+    draw = (data) => {
         let fft = this.parser.parseFFT(data.fft);
 
         this.bars.render(fft);
-    }
+    };
 
     render() {
         return (
             <div className="spectrum">
                 <canvas
-                    ref={el => this.canvas = el}
+                    ref={e => this.canvas = e}
                     className="canvas"
                     width={this.props.width}
                     height={this.props.height}

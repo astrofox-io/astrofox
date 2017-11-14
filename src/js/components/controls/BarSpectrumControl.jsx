@@ -28,14 +28,14 @@ export class BarSpectrumControl extends React.Component {
 
     render() {
         const {
-            active, stageWidth, stageHeight,
+            display, active, stageWidth, stageHeight, onReactorChange,
             maxDecibels, minFrequency, maxFrequency, smoothingTimeConstant,
             width, height, shadowHeight, barWidth, barWidthAutoSize, barSpacing, barSpacingAutoSize,
             x, y, color, shadowColor, rotation, opacity
         } = this.props;
 
         return (
-            <Control label="BAR SPECTRUM" active={active}>
+            <Control label="BAR SPECTRUM" active={active} display={display}>
                 <Option label="Max dB">
                     <NumberInput
                         name="maxDecibels"
@@ -268,7 +268,10 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Opacity">
+                <Option
+                    label="Opacity"
+                    reactorName="opacity"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="opacity"
                         value={opacity}

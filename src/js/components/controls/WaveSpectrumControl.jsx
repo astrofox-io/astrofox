@@ -16,13 +16,13 @@ export class WaveSpectrumControl extends React.Component {
 
     render() {
         const { 
-            active, stageWidth, stageHeight, onChange,
+            display, active, stageWidth, stageHeight, onChange, onReactorChange,
             maxDecibels, minFrequency, maxFrequency, smoothingTimeConstant, width, height,
             stroke, color, fill, fillColor, taper, x, y, rotation, opacity
         } = this.props;
 
         return (
-            <Control label="WAVE SPECTRUM" active={active}>
+            <Control label="WAVE SPECTRUM" active={active} display={display}>
                 <Option label="Max dB">
                     <NumberInput
                         name="maxDecibels"
@@ -222,7 +222,10 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Opacity">
+                <Option
+                    label="Opacity"
+                    reactorName="opacity"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="opacity"
                         width={40}

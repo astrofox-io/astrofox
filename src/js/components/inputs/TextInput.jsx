@@ -59,7 +59,7 @@ export default class TextInput extends React.Component {
         return (
             <div className={classNames('input', props.className)}>
                 <input
-                    ref={el => this.textInput = el}
+                    ref={e => this.textInput = e}
                     type="text"
                     className={classNames('input-field', props.inputClassName)}
                     style={{width: props.width}}

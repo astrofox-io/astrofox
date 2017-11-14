@@ -17,8 +17,8 @@ export class RGBShiftControl extends React.Component {
         return (
             <Control
                 label="RGB SHIFT"
-                display={display}
-                active={active}>
+                active={active}
+                display={display}>
                 <Option
                     label="Offset"
                     reactorName="offset"

@@ -15,20 +15,22 @@ export default class Oscilloscope extends React.PureComponent {
         );
     }
 
-    draw(data) {
-        let points = WaveParser.parseTimeData(data.td, this.props.width, 0);
+    draw = (data) => {
+        const points = WaveParser.parseTimeData(data.td, this.props.width, 0);
 
         this.display.render(points);
-    }
+    };
 
     render() {
+        const { width, height } = this.props;
+
         return (
             <div className="oscilloscope">
                 <canvas
-                    ref={el => this.canvas = el}
+                    ref={e => this.canvas = e}
                     className="canvas"
-                    width={this.props.width}
-                    height={this.props.height}
+                    width={width}
+                    height={height}
                 />
             </div>
         );

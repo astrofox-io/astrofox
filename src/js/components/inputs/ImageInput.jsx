@@ -1,8 +1,9 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import Window from 'core/Window';
 import Icon from 'components/interface/Icon';
-import * as IO from 'util/io';
+import { readFileAsBlob, readAsDataUrl } from 'util/io';
 
 import folderIcon from 'svg/icons/folder-open-empty.svg';
 import closeIcon from 'svg/icons/circle-with-cross.svg';
@@ -14,20 +15,10 @@ export default class ImageInput extends React.Component {
         super(props);
     }
 
-    componentDidMount() {
-        if (this.props.src) {
-            this.loadImage(this.props.src);
-        }
-    }
-
-    componentWillReceiveProps(props) {
-        if (props.src !== undefined) {
-            this.loadImage(props.src);
-        }
-    }
-
-    onChange = () => {
+    onImageLoad = () => {
         const { name, onChange } = this.props;
+
+        this.forceUpdate();
 
         if (onChange) {
             onChange(name, this.image.src);
@@ -63,58 +54,60 @@ export default class ImageInput extends React.Component {
         this.loadImage(BLANK_IMAGE);
     };
 
-    loadImage(src) {
-        if (this.image.src !== src) {
+    loadImage = (src) => {
+        if (src && this.image.src !== src) {
             this.image.src = src;
         }
-    }
+    };
 
-    loadImageFile(file) {
+    loadImageFile = (file) => {
         if (file instanceof File) {
             file = file.path;
         }
 
         if (typeof file === 'string') {
-            return IO.readFileAsBlob(file).then(data => {
+            return readFileAsBlob(file).then(data => {
                 this.loadImageBlob(data);
             });
         }
-    }
+    };
 
-    loadImageBlob(blob) {
+    loadImageBlob = (blob) => {
         if (/^image/.test(blob.type)) {
-            IO.readAsDataUrl(blob).then(data => {
+            readAsDataUrl(blob).then(data => {
                 this.loadImage(data);
             });
         }
-    }
+    };
 
-    getImage() {
+    getImage = () => {
         return this.image;
-    }
+    };
 
     render() {
-        let { src } = this.props,
-            hasImage = (src && src !== BLANK_IMAGE),
-            style = { display: (hasImage) ? 'inline-block' : 'none' },
+        let { image } = this,
+            { value } = this.props,
+            hasImage = (image && image.src && image.src !== BLANK_IMAGE) || (value && value !== BLANK_IMAGE),
             icon = hasImage ? closeIcon : folderIcon,
-            onClick = (hasImage) ? this.onDelete : this.onClick;
+            onClick = (hasImage) ? this.onDelete : this.onClick,
+            classes = {
+                'image': true,
+                'display-none': !hasImage
+            };
 
         return (
             <div
-                className="input input-image"
+                className="input-image"
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}
                 onClick={onClick}>
                 <img
-                    ref={image => this.image = image}
-                    className="image"
-                    style={style}
-                    onLoad={this.onChange}
+                    ref={e => this.image = e}
+                    className={classNames(classes)}
+                    src={value || BLANK_IMAGE}
+                    onLoad={this.onImageLoad}
                 />
-                <div className="input-image-icon">
-                    <Icon glyph={icon} />
-                </div>
+                <Icon glyph={icon} className="input-image-icon" />
             </div>
         );
     }
@@ -122,6 +115,5 @@ export default class ImageInput extends React.Component {
 
 ImageInput.defaultProps = {
     name: 'image',
-    src: BLANK_IMAGE,
-    onChange: null
+    value: BLANK_IMAGE
 };

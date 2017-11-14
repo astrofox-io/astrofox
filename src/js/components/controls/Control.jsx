@@ -6,31 +6,35 @@ import Icon from 'components/interface/Icon';
 import iconReact from 'svg/icons/flash.svg';
 
 export function Control(props) {
-    const classes = {
-        'control': true,
-        'control-active': props.active
-    };
+    const { label, active, className, display, children } = props,
+        classes = {
+            'control': true,
+            'control-active': active
+        };
 
-    const children = React.Children.map(props.children, child => {
-        if (props.display && child && child.type === Option) {
-            return React.cloneElement(child, { display: props.display });
+    const options = React.Children.map(children, child => {
+        if (display && child && child.type === Option) {
+            return React.cloneElement(child, { display });
         }
         return child;
     });
 
     return (
-        <div className={classNames(classes, props.className)}>
+        <div className={classNames(classes, className)}>
             <div className="header">
-                <span className="label">{props.label}</span>
+                <span className="label">{label}</span>
             </div>
-            {children}
+            {options}
         </div>
     );
 }
 
 export function Option(props) {
     let text, icon, input, reactor,
-        { label, className, children, display, reactorName, reactorMin, reactorMax, onReactorChange } = props;
+        {
+            label, className, children, display,
+            reactorName, reactorMin, reactorMax, onReactorChange
+        } = props;
 
     if (label) {
         text = <span className="label">{label}</span>;
@@ -63,7 +67,7 @@ export function Option(props) {
             <Icon
                 className={classNames(classes)}
                 glyph={iconReact}
-                title={reactor ? 'Enable Reactor' : 'Disable Reactor'}
+                title={reactor ? 'Disable Reactor' : 'Enable Reactor'}
                 onClick={onIconClick}
             />
         );

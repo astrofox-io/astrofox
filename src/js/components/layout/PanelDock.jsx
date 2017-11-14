@@ -28,7 +28,7 @@ export default class PanelDock extends React.PureComponent {
 
         return (
             <div
-                ref={el => this.domElement = el}
+                ref={e => this.domElement = e}
                 className={classes}
                 style={style}>
                 {panels}

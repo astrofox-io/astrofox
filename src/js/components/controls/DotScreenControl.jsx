@@ -12,11 +12,14 @@ export class DotScreenControl extends React.Component {
     }
 
     render() {
-        const { active, scale, angle, onChange } = this.props;
+        const { display, active, scale, angle, onChange, onReactorChange } = this.props;
 
         return (
-            <Control label="DOT SCREEN" active={active}>
-                <Option label="Amount">
+            <Control label="DOT SCREEN" active={active} display={display}>
+                <Option
+                    label="Amount"
+                    reactorName="scale"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="scale"
                         width={40}
@@ -35,7 +38,10 @@ export class DotScreenControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Angle">
+                <Option
+                    label="Angle"
+                    reactorName="angle"
+                    onReactorChange={onReactorChange}>
                     <NumberInput
                         name="angle"
                         width={40}
