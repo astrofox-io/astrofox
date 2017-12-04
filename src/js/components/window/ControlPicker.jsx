@@ -11,25 +11,29 @@ export default class ControlPicker extends React.Component {
     }
 
     onClick = (item) => {
-        if (this.props.onControlPicked) {
-            this.props.onControlPicked(new item());
-        }
+        return () => {
+            const { onControlPicked, onClose } = this.props;
 
-        if (this.props.onClose) {
-            this.props.onClose();
-        }
+            if (onControlPicked) {
+                onControlPicked(new item());
+            }
+
+            if (onClose) {
+                onClose();
+            }
+        };
     };
 
     getItems(items) {
         return Object.keys(items).map((key, index) => {
             let item = items[key],
-                style = { backgroundImage: `url(./images/controls/${item.name}.png)` };
+                style = { backgroundImage: `url(./images/controls/${item.className}.png)` };
 
             return (
                 <div key={index} className="item">
                     <div
                         className="image"
-                        onClick={this.onClick.bind(null, item)}
+                        onClick={this.onClick(item)}
                         style={style}
                     />
                     <div className="name">{item.label}</div>

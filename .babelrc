@@ -10,5 +10,17 @@
   "plugins": [
     ["transform-runtime", {"polyfill": false}],
     "transform-class-properties"
-  ]
+  ],
+  "env": {
+    "production": {
+      "presets": [
+        ["es2015", {"modules": false}],
+        "react"
+      ],
+      "plugins": [
+        ["transform-runtime", {"polyfill": false}],
+        "transform-class-properties"
+      ]
+    }
+  }
 }
