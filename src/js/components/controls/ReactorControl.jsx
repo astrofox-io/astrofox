@@ -9,8 +9,24 @@ import { Control, Option } from 'components/controls/Control';
 import BoxInput from 'components/inputs/BoxInput';
 import NumberInput from 'components/inputs/NumberInput';
 import RangeInput from 'components/inputs/RangeInput';
+import ButtonInput from 'components/inputs/ButtonInput';
+import ButtonGroup from 'components/inputs/ButtonGroup';
+
+import iconLeft from 'svg/icons/chevron-left.svg';
+import iconRight from 'svg/icons/chevron-right.svg';
+import iconMinus from 'svg/icons/minus.svg';
+import iconPlus from 'svg/icons/plus.svg';
+import iconCircle from 'svg/icons/dots-three-horizontal.svg';
 
 const REACTOR_BARS = 64;
+
+const OUTPUT_MODES = [
+    { title: 'Backwards', icon: iconLeft },
+    { title: 'Forward', icon: iconRight },
+    { title: 'Cycle Backwards', icon: iconMinus },
+    { title: 'Cycle Forward', icon: iconPlus },
+    { title: 'Cycle', icon: iconCircle }
+];
 
 export default class ReactorControl extends React.PureComponent {
     constructor(props) {
@@ -62,19 +78,25 @@ export default class ReactorControl extends React.PureComponent {
     };
 
     updateReactor = (name, value) => {
-        const { x, y, width, height } = value,
-            { reactor, barWidth, barHeight, barSpacing } = this.props,
-            maxWidth = REACTOR_BARS * (barWidth + barSpacing),
-            maxHeight = barHeight;
+        let {reactor, barWidth, barHeight, barSpacing} = this.props,
+            obj = { [name]: value };
 
-        let range = {
-            x1: x / maxWidth,
-            x2: (x + width) / maxWidth,
-            y1: y / maxHeight,
-            y2: (y + height) / maxHeight
-        };
+        if (name === 'selection') {
+            const {x, y, width, height} = value,
+                maxWidth = REACTOR_BARS * (barWidth + barSpacing),
+                maxHeight = barHeight;
 
-        reactor.update({ [name]: value, range: range });
+            obj.range = {
+                x1: x / maxWidth,
+                x2: (x + width) / maxWidth,
+                y1: y / maxHeight,
+                y2: (y + height) / maxHeight
+            };
+        }
+
+        reactor.update(obj);
+
+        this.forceUpdate();
     };
 
     updateParser = (name, value) => {
@@ -89,17 +111,40 @@ export default class ReactorControl extends React.PureComponent {
     render() {
         const { reactor, barWidth, barHeight, barSpacing, visible } = this.props,
             { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {}),
-            classes = {
-                'reactor': true,
-                'display-none': !visible
-            };
+            { outputMode } = (reactor ? reactor.options : {});
+
+        const classes = {
+            'reactor': true,
+            'display-none': !visible
+        };
+
+        const title = reactor ? reactor.label.map((n, i) => <span key={i}>{n}</span>) : null;
+
+        const modeButtons = (
+            <ButtonGroup>
+                {OUTPUT_MODES.map((mode, index) => {
+                    return (
+                        <ButtonInput
+                            key={index}
+                            icon={mode.icon}
+                            title={mode.title}
+                            active={outputMode === mode.title}
+                            onClick={() => this.updateReactor('outputMode', mode.title)}
+                        />
+                    );
+                })}
+            </ButtonGroup>
+        );
 
         return (
             <div className={classNames(classes)}>
-                <div className="reactor-title">{reactor ? reactor.label : 'REACTOR'}</div>
+                <div className="reactor-title">{title}</div>
                 <div className="reactor-display">
                     <div className="reactor-controls">
                         <Control>
+                            <Option label="Output Mode">
+                                {modeButtons}
+                            </Option>
                             <Option label="Max dB">
                                 <NumberInput
                                     name="maxDecibels"

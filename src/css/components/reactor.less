@@ -5,12 +5,26 @@
     background-color: @bg-color5;
     border-top: 1px solid lighten(@bg-color5, 6%);
     position: relative;
-    padding: 10px 20px;
+    padding: 10px 20px 15px;
 
     .reactor-title {
         color: @text-color2;
         font-size: @font-small;
         text-shadow: 1px 1px 0 darken(@text-color2, 50%);
+
+        span {
+            font-weight: bold;
+
+            &:after {
+                content: "\2022";
+                color: @color1;
+                margin: 8px;
+            }
+
+            &:last-child:after {
+                content: none;
+            }
+        }
     }
 
     .reactor-display {
@@ -22,6 +36,7 @@
 
     .reactor-controls {
         min-width: 300px;
+        margin-top: 10px;
     }
 
     .reactor-spectrum {

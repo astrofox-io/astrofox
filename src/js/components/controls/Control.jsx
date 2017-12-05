@@ -43,7 +43,7 @@ export function Option(props) {
     if (display && display.reactors) {
         reactor = display.reactors[reactorName];
         if (reactor) {
-            reactor.label = ['REACTOR', display.options.displayName, label].join(' → ');
+            reactor.label = ['REACTOR', display.options.displayName, label];
         }
     }
 

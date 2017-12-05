@@ -46,7 +46,8 @@ export default class Application extends EventEmitter {
             fft: null,
             td: null,
             reactor: null,
-            volume: 0
+            volume: 0,
+            playing: 0
         };
 
         // Rendering statistics
@@ -223,12 +224,13 @@ export default class Application extends EventEmitter {
     }
 
     getFrameData(update) {
-        let { frameData, analyzer } = this;
+        let { frameData, analyzer, player } = this;
 
         frameData.fft = analyzer.getFrequencyData(update);
         frameData.td = analyzer.getTimeData(update);
         frameData.volume = analyzer.getVolume();
         frameData.hasUpdate = update;
+        frameData.playing = player.isPlaying();
 
         // Rendering single frame
         if (frameData.id === 0) {
