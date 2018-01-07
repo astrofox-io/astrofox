@@ -12,7 +12,7 @@ Thumbs.db
 node_modules
 /bin/
 /dist/
-/resources/
+/build/resources/
 /app/main.js
 /app/browser/
 /app.config

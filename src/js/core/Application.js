@@ -88,6 +88,11 @@ export default class Application extends EventEmitter {
             return true;
         };
 
+        // Apply OS specific styles
+        window.onload = () => {
+            window.document.body.className = process.platform;
+        };
+
         // Bind context
         this.render = this.render.bind(this);
     }
