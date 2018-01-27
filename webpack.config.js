@@ -16,7 +16,7 @@ const config = {
     target: 'electron-renderer',
     devtool: PRODUCTION ? false : 'source-map',
     entry: {
-        app: path.resolve(__dirname, 'src/js/index.js'),
+        app: path.resolve(__dirname, 'src/app/index.js'),
         vendor: vendorIds
     },
     output: {
@@ -27,18 +27,12 @@ const config = {
     },
     resolve: {
         extensions: ['.js', '.json', '.jsx', '.glsl', '.svg'],
-        alias: {
-            css: path.resolve(__dirname, 'src/css'),
-            images: path.resolve(__dirname, 'src/images'),
-            glsl: path.resolve(__dirname, 'src/glsl'),
-            svg: path.resolve(__dirname, 'src/svg')
-        },
-        modules: [path.resolve(__dirname, 'src/js'), 'node_modules']
+        modules: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'src/app'), 'node_modules']
     },
     resolveLoader: {
         modules: [
             'node_modules',
-            path.resolve(__dirname, 'build/loaders')
+            path.resolve(__dirname, 'src/build/loaders')
         ]
     },
     module: {
@@ -46,7 +40,7 @@ const config = {
             {
                 test: /\.jsx?$/,
                 include: [
-                    path.resolve(__dirname, 'src/js')
+                    path.resolve(__dirname, 'src')
                 ],
                 use: {
                     loader: 'babel-loader',

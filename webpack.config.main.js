@@ -11,15 +11,14 @@ const config = {
         __filename: false
     },
     entry: {
-        main: path.resolve(__dirname, 'src/js/main/main.js'),
+        main: path.resolve(__dirname, 'src/main/index.js'),
     },
     output: {
         path: path.resolve(__dirname, 'app'),
         filename: 'main.js'
     },
     resolve: {
-        extensions: ['.js', '.json'],
-        modules: [path.resolve(__dirname, 'src/js'), 'node_modules']
+        extensions: ['.js', '.json']
     },
     module: {
         rules: [
