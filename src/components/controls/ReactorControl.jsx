@@ -125,7 +125,7 @@ export default class ReactorControl extends PureComponent {
                 <div className={styles.title}>
                     {
                         reactor &&
-                        reactor.label.map((n, i) => <span key={i}>{n}</span>)
+                        reactor.options.displayName
                     }
                 </div>
                 <div className={styles.display}>

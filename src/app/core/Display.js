@@ -5,7 +5,7 @@ const displayCount = {};
 
 export default class Display extends Component {
     constructor(type, options) {
-        if (typeof displayCount[type.className] === 'undefined') {
+        if (displayCount[type.className] === undefined) {
             displayCount[type.className] = 1;
         }
 
@@ -46,7 +46,7 @@ export default class Display extends Component {
             delete this.reactors[name];
         }
         else {
-            this.reactors[name] = new AudioReactor(options);
+            return this.reactors[name] = new AudioReactor(options);
         }
     }
 

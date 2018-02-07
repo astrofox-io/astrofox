@@ -16,12 +16,6 @@ export default function DisplayControl(ControlComponent) {
             this.props.display.update(obj);
         }
 
-        onReactorChange = (name, options) => {
-            this.props.display.setReactor(name, options);
-
-            this.forceUpdate();
-        }
-
         render() {
             return (
                 <ControlComponent

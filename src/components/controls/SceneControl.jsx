@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 import {
@@ -6,6 +6,7 @@ import {
     RangeInput,
     SelectInput,
     ToggleInput,
+    ReactorInput,
 } from 'lib/inputs';
 
 const blendModes = [
@@ -41,7 +42,7 @@ const blendModes = [
     'Reflect'
 ].map(item => typeof item !== 'object' ? { name: item, value: item } : item);
 
-export class SceneControl extends Component {
+export class SceneControl extends PureComponent {
     onChange = (name, value) => {
         const { onChange } = this.props;
 
@@ -76,28 +77,30 @@ export class SceneControl extends Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="opacity"
-                    onReactorChange={onReactorChange}
-                >
+                <Option>
                     <Label text="Opacity" />
-                    <NumberInput
+                    <ReactorInput
                         name="opacity"
-                        width={40}
-                        value={opacity}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        onChange={this.onChange}
-                    />
-                    <RangeInput
-                        name="opacity"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={opacity}
-                        onChange={this.onChange}
-                    />
+                        onReactorChange={onReactorChange}
+                    >
+                        <NumberInput
+                            name="opacity"
+                            width={40}
+                            value={opacity}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            onChange={this.onChange}
+                        />
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={opacity}
+                            onChange={this.onChange}
+                        />
+                    </ReactorInput>
                 </Option>
                 <Option>
                     <Label text="Light Intensity" />

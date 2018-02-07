@@ -7,6 +7,16 @@ const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
 
 export default class AudioReactor extends Component {
+    static defaults = {
+        displayName: 'Reactor',
+        outputMode: 'Forward',
+        lastValue: 0,
+        min: 0,
+        max: 1,
+        selection: { x: 0, y: 0, width: 100, height: 100 },
+        range: { x1: 0, x2: 1, y1: 0, y2: 1 }
+    }
+
     constructor(options) {
         super(Object.assign({}, AudioReactor.defaults, options));
 
@@ -87,12 +97,3 @@ export default class AudioReactor extends Component {
         return this.options;
     }
 }
-
-AudioReactor.defaults = {
-    outputMode: 'Forward',
-    lastValue: 0,
-    min: 0,
-    max: 1,
-    selection: { x: 0, y: 0, width: 100, height: 100 },
-    range: { x1: 0, x2: 1, y1: 0, y2: 1 }
-};

@@ -8,7 +8,7 @@ const ButtonInput = ({ title, icon, text, active, disabled, onClick, className }
         className={
             classNames({
                 [styles.button]: true,
-                [styles.offScreen]: active,
+                [styles.active]: active,
                 [styles.disabled]: disabled,
             }, className)
         }

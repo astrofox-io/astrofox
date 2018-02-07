@@ -1,8 +1,6 @@
 import React, { Children, cloneElement } from 'react';
 import classNames from 'classnames';
 import ReactorInput from 'components/inputs/ReactorInput';
-import Icon from 'components/interface/Icon';
-import iconReact from 'svg/icons/flash.svg';
 import styles from './Control.less';
 
 export function Control({ label, active, className, display, children }) {
@@ -32,50 +30,17 @@ export function Control({ label, active, className, display, children }) {
     );
 }
 
-export function Option({
-    className, children, display,
-    reactorName, reactorMin, reactorMax, onReactorChange
-}) {
-    let icon, reactor;
-
-    if (display && display.reactors) {
-        reactor = display.reactors[reactorName];
-        if (reactor) {
-            reactor.label = ['REACTOR', display.options.displayName];
-        }
-    }
-
-    if (reactorName) {
-        icon = (
-            <Icon
-                className={classNames({
-                    [styles.reactorIcon]: true,
-                    [styles.reactorIconActive]: reactor
-                })}
-                glyph={iconReact}
-                title={reactor ? 'Disable Reactor' : 'Enable Reactor'}
-                onClick={() => {
-                    onReactorChange(
-                        reactorName,
-                        {
-                            lastValue: display.options[reactorName],
-                            min: reactorMin || 0,
-                            max: reactorMax || 1
-                        }
-                    );
-                }}
-            />
-        );
-    }
-
+export function Option({ className, children, display }) {
     return (
         <div className={classNames(styles.option, className)}>
             {
-                reactor ?
-                    <ReactorInput reactor={reactor} /> :
-                    children
+                Children.map(children, child => {
+                    if (display && child && child.type === ReactorInput) {
+                        return cloneElement(child, { display });
+                    }
+                    return child;
+                })
             }
-            {icon}
         </div>
     );
 }

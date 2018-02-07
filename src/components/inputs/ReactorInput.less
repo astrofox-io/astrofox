@@ -2,6 +2,8 @@
 
 .reactor {
     position: relative;
+    display: flex;
+    flex-direction: row;
 }
 
 .meter {
@@ -13,13 +15,33 @@
 
 .icon {
     position: absolute;
-    fill: @text-color3;
-    width: 12px;
-    height: 12px;
-    top: 5px;
-    right: -20px;
+    top: 10px;
 
-    &:hover {
-        fill: @text-color1;
+    svg {
+        fill: @text-color3;
+        width: 16px;
+        height: 16px;
+
+        &:hover {
+            fill: @text-color1;
+        }
     }
+}
+
+.editIcon {
+    margin: 5px 0 0 8px;
+
+    svg {
+        fill: @text-color3;
+        width: 12px;
+        height: 12px;
+
+        &:hover {
+            fill: @text-color1;
+        }
+    }
+}
+
+.hidden {
+    display: none;
 }
