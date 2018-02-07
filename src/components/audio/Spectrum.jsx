@@ -1,26 +1,31 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
 import { fftSize, sampleRate } from 'config/system.json';
+import styles from './Spectrum.less';
 
-export default class Spectrum extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        
-        this.state = {
-            fftSize: fftSize,
-            sampleRate: sampleRate,
-            smoothingTimeConstant: 0.5,
-            minDecibels: -60,
-            maxDecibels: -20,
-            minFrequency: 0,
-            maxFrequency: 10000,
-            normalize: false,
-            bins: 32
-        };
+export default class Spectrum extends PureComponent {
+    static defaultProps = {
+        width: 854,
+        height: 50,
+        barWidth: -1,
+        barSpacing: 1,
+        shadowHeight: 0,
+        minHeight: 1,
+        color: '#775FD8',
+        backgroundColor: '#FF0000'
+    }
 
-        this.canvas = null;
+    state = {
+        fftSize: fftSize,
+        sampleRate: sampleRate,
+        smoothingTimeConstant: 0.5,
+        minDecibels: -60,
+        maxDecibels: -20,
+        minFrequency: 0,
+        maxFrequency: 10000,
+        normalize: false,
+        bins: 32
     }
 
     componentDidMount() {
@@ -45,27 +50,18 @@ export default class Spectrum extends React.PureComponent {
     };
 
     render() {
+        const { width, height } = this.props;
+
         return (
             <div className="spectrum">
                 <canvas
                     ref={e => this.canvas = e}
                     className="canvas"
-                    width={this.props.width}
-                    height={this.props.height}
+                    width={width}
+                    height={height}
                     onClick={this.onClick}
                 />
             </div>
         );
     }
 }
-
-Spectrum.defaultProps = {
-    width: 854,
-    height: 50,
-    barWidth: -1,
-    barSpacing: 1,
-    shadowHeight: 0,
-    minHeight: 1,
-    color: '#775FD8',
-    backgroundColor: '#FF0000'
-};

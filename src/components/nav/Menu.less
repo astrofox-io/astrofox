@@ -1,0 +1,95 @@
+@import (reference) "~styles/index.less";
+
+.menuBar {
+    font-size: @font-normal;
+    color: @text-color2;
+    background-color: @bg-color3;
+    padding-left: 20px;
+    height: 20px;
+    position: relative;
+}
+
+.barItem {
+    display: inline-block;
+    position: relative;
+}
+
+.text {
+    line-height: 20px;
+    vertical-align: middle;
+    padding: 0 8px;
+    position: relative;
+
+    &.active {
+        color: @color1;
+        background-color: darken(@bg-color3, 6%);
+    }
+
+    &:hover {
+        cursor: default;
+        color: @color1;
+    }
+}
+
+.menu {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    list-style: none;
+    background-color: darken(@bg-color3, 6%);
+    border: 1px solid darken(@border-color, 6%);
+    overflow: hidden;
+    z-index: 100;
+}
+
+
+.menuChecked {
+    &:before {
+        content: "\2713";
+        color: @color1;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+
+    &:hover:before {
+        color: @text-color1;
+    }
+}
+
+.menuDisabled {
+    color: @text-color3;
+
+    &:hover {
+        color: @text-color3;
+        background-color: transparent;
+    }
+}
+
+.menuItem {
+    position: relative;
+    display: block;
+    font-size: @font-small;
+    padding: 5px 5px 5px 20px;
+    min-width: 140px;
+
+    &:hover {
+        color: @text-color1;
+        background-color: @color1;
+        cursor: default;
+    }
+}
+
+.separator {
+    padding: 5px;
+
+    &:after {
+        content: "\0020";
+        border-top: 1px solid @color1;
+        display: block;
+    }
+
+    &:hover {
+        background-color: transparent;
+    }
+}

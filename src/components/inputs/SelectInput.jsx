@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
+import styles from './SelectInput.less';
 
-import { styleProps } from 'utils/react';
+export default class SelectInput extends Component {
+    static defaultProps = {
+        name: 'select',
+        width: 140,
+        value: '',
+        items: [],
+        displayField: 'name',
+        valueField: 'value',
+    }
 
-export default class SelectInput extends React.Component {
     constructor(props) {
         super(props);
 
@@ -13,13 +21,9 @@ export default class SelectInput extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.setState({ value: this.props.value });
-    }
-
-    componentWillReceiveProps(props) {
-        if (props.value !== undefined) {
-            this.setState({ value: props.value });
+    componentWillReceiveProps({ value }) {
+        if (value !== undefined) {
+            this.setState({ value });
         }
     }
 
@@ -27,80 +31,74 @@ export default class SelectInput extends React.Component {
         e.stopPropagation();
         e.preventDefault();
 
-        this.setState(prevState => ({ showItems: !prevState.showItems }));
-    };
+        this.setState(({ showItems }) => ({ showItems: !showItems }));
+    }
 
-    onItemClick = (item) => {
-        return () => {
-            this.setState({showItems: false}, () => {
-                this.props.onChange(this.props.name, item.value);
-            });
-        };
-    };
+    onItemClick = (value) => () => {
+        const { name, onChange } = this.props;
+
+        this.setState({ showItems: false });
+
+        onChange(name, value);
+    }
 
     onBlur = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ showItems: false });
-    };
+    }
 
-    render() {
-        let displayValue = '',
-            state = this.state,
-            props = this.props;
+    getDisplayText() {
+        const { items, displayField, valueField } = this.props;
+        const { value } = this.state;
+        let text = '';
 
-
-        let optionClasses = {
-            'input-options': true,
-            'display-none': !state.showItems
-        };
-
-        let items = props.items.map((item, index) => {
-            if (typeof item !== 'object') {
-                item = { name: item, value: item };
+        items.forEach(item => {
+            if (text.length === 0 && item[valueField] === value) {
+                text = item[displayField];
             }
-
-            if (item.value === props.value) {
-                displayValue = item.name;
-            }
-
-            return (
-                <div
-                    key={index}
-                    className={classNames('input-option', {separator: item.separator})}
-                    style={item.style}
-                    onMouseDown={this.onItemClick(item)}>
-                    {item.name}
-                </div>
-            );
         });
 
+        return text;
+    }
+
+    render() {
+        const { items, name, width, className, displayField, valueField } = this.props;
+        const { showItems } = this.state;
+
         return (
-            <div className="input-select">
+            <div className={styles.select}>
                 <input
                     type="text"
-                    className="input-field"
-                    style={styleProps(props)}
-                    name={props.name}
-                    size={props.size}
-                    value={displayValue}
+                    className={classNames(styles.input, className)}
+                    name={name}
+                    style={{width}}
+                    value={this.getDisplayText()}
                     onClick={this.onClick}
                     onBlur={this.onBlur}
                     readOnly="true"
                 />
-                <div className={classNames(optionClasses)}>
-                    {items}
+                <div className={classNames({
+                    [styles.options]: true,
+                    [styles.hidden]: !showItems
+                })}>
+                    {
+                        items.map((item, index) => (
+                            <div
+                                key={index}
+                                className={classNames({
+                                    [styles.option]: true,
+                                    [styles.separator]: item.separator,
+                                })}
+                                style={item.style}
+                                onMouseDown={this.onItemClick(item[valueField])}>
+                                {item[displayField]}
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         );
     }
 }
-
-SelectInput.defaultProps = {
-    name: 'select',
-    width: 140,
-    size: null,
-    value: '',
-    items: []
-};

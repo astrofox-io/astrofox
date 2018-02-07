@@ -1,22 +1,21 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    ColorInput,
+    NumberInput,
+    RangeInput,
+    SelectInput,
+    TextInput,
+    ToggleInput,
+} from 'lib/inputs';
+import fonts from 'config/fonts.json';
 
-import ColorInput from 'components/inputs/ColorInput';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import SelectInput from 'components/inputs/SelectInput';
-import TextInput from 'components/inputs/TextInput';
-import ToggleInput from 'components/inputs/ToggleInput';
+const fontOptions = fonts.map(item => (
+    { name: item, value: item, style: { fontFamily: item } }
+));
 
-import fontOptions from 'config/fonts.json';
-
-export class TextControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class TextControl extends Component {
     componentDidMount() {
         const { display } = this.props;
 
@@ -31,13 +30,10 @@ export class TextControl extends React.Component {
             text, size, font, bold, italic, color, x, y, rotation, opacity
         } = this.props;
 
-        const fonts = fontOptions.map(item => {
-            return { name: item, value: item, style: { fontFamily: item } };
-        });
-
         return (
             <Control label="TEXT" active={active}>
-                <Option label="Text">
+                <Option>
+                    <Label text="Text" />
                     <TextInput
                         name="text"
                         width={140}
@@ -45,16 +41,18 @@ export class TextControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Font">
+                <Option>
+                    <Label text="Font" />
                     <SelectInput
                         name="font"
                         width={140}
-                        items={fonts}
+                        items={fontOptions}
                         value={font}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Size">
+                <Option>
+                    <Label text="Size" />
                     <NumberInput
                         name="size"
                         width={40}
@@ -63,27 +61,30 @@ export class TextControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Bold">
+                <Option>
+                    <Label text="Bold" />
                     <ToggleInput
                         name="bold"
                         value={bold}
                         onChange={onChange}
                     />
-                    <span className="label">Italic</span>
+                    <Label text="Italic" />
                     <ToggleInput
                         name="italic"
                         value={italic}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Color">
+                <Option>
+                    <Label text="Color" />
                     <ColorInput
                         name="color"
                         value={color}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="X">
+                <Option>
+                    <Label text="X" />
                     <NumberInput
                         name="x"
                         width={40}
@@ -100,7 +101,8 @@ export class TextControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Y">
+                <Option>
+                    <Label text="Y" />
                     <NumberInput
                         name="y"
                         width={40}
@@ -117,7 +119,8 @@ export class TextControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Rotation">
+                <Option>
+                    <Label text="Rotation" />
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -134,7 +137,8 @@ export class TextControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Opacity">
+                <Option>
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         width={40}

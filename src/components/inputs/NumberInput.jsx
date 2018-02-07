@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
-
 import { clamp, roundTo } from 'utils/math.js';
+import styles from './NumberInput.less';
 
-export default class NumberInput extends React.Component {
+export default class NumberInput extends Component {
+    static defaultProps = {
+        name: 'number',
+        width: 40,
+        value: 0,
+        min: false,
+        max: false,
+        step: false,
+        readOnly: false,
+        hidden: false,
+        onChange: () => {}
+    }
+
     constructor(props) {
         super(props);
 
@@ -20,7 +32,7 @@ export default class NumberInput extends React.Component {
 
     onChange = (e) => {
         this.setState({ value: e.target.value });
-    };
+    }
 
     onKeyUp = (e) => {
         e.stopPropagation();
@@ -29,13 +41,13 @@ export default class NumberInput extends React.Component {
         if (e.keyCode === 13) {
             this.checkValue();
         }
-    };
+    }
 
     onBlur = (e) => {
         e.stopPropagation();
 
         this.checkValue();
-    };
+    }
 
     setValue(val, props) {
         val = this.parseValue(val, props);
@@ -84,35 +96,24 @@ export default class NumberInput extends React.Component {
         }
     }
 
-    render(){
+    render() {
+        const { name, width, className, readOnly } = this.props;
+        const { value } = this.state;
+
         return (
-            <div className="input">
+            <div>
                 <input
                     type="text"
-                    className={classNames('input-field', {'input-hidden': this.props.hidden})}
-                    style={{width: this.props.width}}
-                    name={this.props.name}
-                    size={this.props.size}
-                    value={this.state.value}
+                    className={classNames(styles.input, className)}
+                    style={{width}}
+                    name={name}
+                    value={value}
                     onChange={this.onChange}
                     onBlur={this.onBlur}
                     onKeyUp={this.onKeyUp}
-                    readOnly={this.props.readOnly}
+                    readOnly={readOnly}
                 />
             </div>
         );
     }
 }
-
-NumberInput.defaultProps = {
-    name: 'number',
-    size: null,
-    width: 40,
-    value: 0,
-    min: false,
-    max: false,
-    step: false,
-    readOnly: false,
-    hidden: false,
-    onChange: null
-};

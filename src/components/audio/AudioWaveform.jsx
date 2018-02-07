@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
-
 import CanvasAudio from 'canvas/CanvasAudio';
+import styles from './AudioWaveform.less';
 
-export default class AudioWaveform extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.canvas = null;
-        this.drawContext = null;
+export default class AudioWaveform extends PureComponent {
+    static defaultProps = {
+        visible: true,
+        width: 854,
+        height: 70,
+        barWidth: 3,
+        barSpacing: 1,
+        shadowHeight: 30,
+        bgColor: '#333333',
+        bars: 213
     }
 
     componentDidMount() {
@@ -48,7 +52,7 @@ export default class AudioWaveform extends React.PureComponent {
 
             this.props.onClick((e.clientX - rect.left) / rect.width);
         }
-    };
+    }
 
     onMouseMove = (e) => {
         e.stopPropagation();
@@ -58,7 +62,7 @@ export default class AudioWaveform extends React.PureComponent {
 
         this.seek = (e.clientX - rect.left) / rect.width;
         this.draw();
-    };
+    }
 
     onMouseOut = (e) => {
         e.stopPropagation();
@@ -66,7 +70,7 @@ export default class AudioWaveform extends React.PureComponent {
 
         this.seek = 0;
         this.draw();
-    };
+    }
 
     draw = () => {
         const { width, height } = this.canvas,
@@ -99,7 +103,7 @@ export default class AudioWaveform extends React.PureComponent {
                 sx, 0, dx, height
             );
         }
-    };
+    }
 
     renderBars = (audio) => {
         if (audio) {
@@ -107,20 +111,19 @@ export default class AudioWaveform extends React.PureComponent {
             this.progressCanvas.render(audio.buffer);
             this.seekCanvas.render(audio.buffer);
         }
-    };
+    }
 
     render() {
-        const { width, height, shadowHeight, visible } = this.props,
-            classes = {
-                'waveform': true,
-                'waveform-hidden': !visible
-            };
+        const { width, height, shadowHeight, visible } = this.props;
 
         return (
-            <div className={classNames(classes)}>
+            <div className={classNames({
+                [styles.waveform]: true,
+                [styles.hidden]: !visible
+            })}>
                 <canvas
                     ref={e => this.canvas = e}
-                    className="canvas"
+                    className={styles.canvas}
                     width={width}
                     height={height+shadowHeight}
                     onClick={this.onClick}
@@ -131,14 +134,3 @@ export default class AudioWaveform extends React.PureComponent {
         );
     }
 }
-
-AudioWaveform.defaultProps = {
-    visible: true,
-    width: 854,
-    height: 70,
-    barWidth: 3,
-    barSpacing: 1,
-    shadowHeight: 30,
-    bgColor: '#333333',
-    bars: 213
-};

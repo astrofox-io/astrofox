@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { PureComponent, Children, cloneElement } from 'react';
 import classNames from 'classnames';
+import styles from './TabPanel.less';
 
-export class TabPanel extends React.PureComponent {
+export class TabPanel extends PureComponent {
+    static defaultProps = {
+        tabPosition: 'top'
+    }
+
     constructor(props) {
         super(props);
 
@@ -10,47 +15,39 @@ export class TabPanel extends React.PureComponent {
         };
     }
 
-    onTabClick(index) {
+    onTabClick = (index) => {
         this.setState({ activeIndex: index });
     }
 
     render() {
-        const props = this.props,
-            activeIndex = this.state.activeIndex,
-            tabs = [],
-            content = [];
-
-        const panelClasses = {
-            'tab-panel': true,
-            'tab-position-left': props.tabPosition === 'left',
-            'tab-position-right': props.tabPosition === 'right',
-            'tab-position-top': props.tabPosition === 'top',
-            'tab-position-bottom': props.tabPosition === 'bottom'
-        };
-
-        const tabsClass = {
-            'tabs': true,
-            'tabs-horizontal': props.tabPosition === 'top' || props.tabPosition === 'bottom'
-        };
+        const {
+            tabPosition,
+            className,
+            tabClassName,
+            contentClassName,
+            children
+        } = this.props;
+        const { activeIndex } = this.state;
+        const tabs = [];
+        const content = [];
 
         // Generate tabs and content
-        React.Children.map(props.children, (child, index) => {
-            const tabClasses = {
-                'tab': true,
-                'tab-active': index === activeIndex
-            };
-
+        Children.map(children, (child, index) => {
             tabs.push(
                 <div
                     key={index}
-                    className={classNames(tabClasses, child.props.className)}
-                    onClick={this.onTabClick.bind(this, index)}>
+                    className={classNames({
+                        [styles.tab]: true,
+                        [styles.active]: index === activeIndex
+                    }, tabClassName, child.props.className)}
+                    onClick={() => this.onTabClick(index)}
+                >
                     {child.props.name}
                 </div>
             );
 
             content.push(
-                React.cloneElement(
+                cloneElement(
                     child,
                     {
                         key: index,
@@ -62,11 +59,24 @@ export class TabPanel extends React.PureComponent {
         });
 
         return (
-            <div id={props.id} className={classNames(panelClasses, props.className)}>
-                <div className={classNames(tabsClass)}>
+            <div
+                className={classNames({
+                    [styles.panel]: true,
+                    [styles.positionLeft]: tabPosition === 'left',
+                    [styles.positionRight]: tabPosition === 'right',
+                    [styles.positionTop]: tabPosition === 'top',
+                    [styles.positionBottom]: tabPosition === 'bottom'
+                }, className)}
+            >
+                <div
+                    className={classNames({
+                        [styles.tabs]: true,
+                        [styles.horizontal]: tabPosition === 'top' || tabPosition === 'bottom'
+                    })}
+                >
                     {tabs}
                 </div>
-                <div className={classNames('tab-content', props.contentClassName)}>
+                <div className={classNames(styles.content, contentClassName)}>
                     {content}
                 </div>
             </div>
@@ -74,16 +84,15 @@ export class TabPanel extends React.PureComponent {
     }
 }
 
-TabPanel.defaultProps = {
-    tabPosition: 'top'
-};
-
-export const Tab = (props) => {
-    let style = (props.visible) ? null : {display: 'none'};
-
-    return (
-        <div className={props.className} style={style}>
-            {props.children}
-        </div>
-    );
-};
+export const Tab = ({ visible, className, children }) => (
+    <div
+        className={classNames(
+            {
+                [styles.hidden]: !visible
+            },
+            className)
+        }
+    >
+        {children}
+    </div>
+);

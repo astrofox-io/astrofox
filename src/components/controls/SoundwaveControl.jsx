@@ -1,12 +1,13 @@
 import React from 'react';
 
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
-
-import NumberInput from 'components/inputs/NumberInput';
-import ColorInput from 'components/inputs/ColorInput';
-import RangeInput from 'components/inputs/RangeInput';
-import ToggleInput from 'components/inputs/ToggleInput';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    ColorInput,
+    RangeInput,
+    ToggleInput
+} from 'lib/inputs';
 
 export class SoundwaveControl extends React.Component {
     constructor(props) {
@@ -16,19 +17,22 @@ export class SoundwaveControl extends React.Component {
     render() {
         const {
             active, stageWidth, stageHeight, onChange,
-            color, length, lineWidth, width, height, x, y, smooth, rotation, opacity
+            color, length, lineWidth, width, height, x, y,
+            smooth, rotation, opacity
         } = this.props;
 
         return (
             <Control label="SOUNDWAVE" active={active}>
-                <Option label="Color">
+                <Option>
+                    <Label text="Color" />
                     <ColorInput
                         name="color"
                         value={color}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Line Width">
+                <Option>
+                    <Label text="Line Width" />
                     <NumberInput
                         name="lineWidth"
                         width={40}
@@ -46,7 +50,8 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Width">
+                <Option>
+                    <Label text="Width" />
                     <NumberInput
                         name="width"
                         width={40}
@@ -63,7 +68,8 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Height">
+                <Option>
+                    <Label text="Height" />
                     <NumberInput
                         name="height"
                         width={40}
@@ -80,7 +86,8 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="X">
+                <Option>
+                    <Label text="X" />
                     <NumberInput
                         name="x"
                         width={40}
@@ -97,7 +104,8 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Y">
+                <Option>
+                    <Label text="Y" />
                     <NumberInput
                         name="y"
                         width={40}
@@ -114,7 +122,8 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Wavelength">
+                <Option>
+                    <Label text="Wavelength" />
                     <NumberInput
                         name="length"
                         width={40}
@@ -133,14 +142,16 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Smooth">
+                <Option>
+                    <Label text="Smooth" />
                     <ToggleInput
                         name="smooth"
                         value={smooth}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Rotation">
+                <Option>
+                    <Label text="Rotation" />
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -157,7 +168,8 @@ export class SoundwaveControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Opacity">
+                <Option>
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         width={40}

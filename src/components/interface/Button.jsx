@@ -1,17 +1,18 @@
 import React from 'react';
 import classNames from 'classnames';
+import styles from './Button.less';
 
-const Button = (props) => {
+const Button = ({ text, disabled, className, onClick }) => {
     let classes = {
-        button: true,
-        disabled: props.disabled
+        [styles.button]: true,
+        [styles.disabled]: disabled
     };
 
     return (
         <span
-            className={classNames(classes, props.className)}
-            onClick={props.disabled ? null : props.onClick}>
-            {props.text}
+            className={classNames(classes, className)}
+            onClick={disabled ? null : onClick}>
+            {text}
         </span>
     );
 };

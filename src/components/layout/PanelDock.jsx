@@ -1,44 +1,36 @@
-import React from 'react';
+import React, { PureComponent, Children, cloneElement } from 'react';
 import classNames from 'classnames';
+import styles from './PanelDock.less';
+import globalStyles from 'styles/index.less';
 
-export default class PanelDock extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visible: props.visible
-        };
+export default class PanelDock extends PureComponent {
+    static defaultProps = {
+        direction: 'vertical',
+        width: 320,
+        visible: true
     }
 
     render() {
-        const { width, direction, visible, children } = this.props,
-            classes = classNames({
-                'panel-dock': true,
-                'vertical': direction === 'vertical',
-                'horizontal': direction !== 'vertical',
-                'display-none': !visible
-            }),
-            style = {
-                width: width
-            };
-
-        const panels = React.Children.map(children, child => {
-            return React.cloneElement(child, { dock: this });
-        });
+        const {width, direction, visible, children} = this.props;
 
         return (
             <div
                 ref={e => this.domElement = e}
-                className={classes}
-                style={style}>
-                {panels}
+                className={classNames({
+                    [styles.dock]: true,
+                    [styles.vertical]: direction === 'vertical',
+                    [styles.horizontal]: direction !== 'vertical',
+                    [globalStyles.displayNone]: !visible
+                })}
+                style={{
+                    width: width
+                }}>
+                {
+                    Children.map(children, child => (
+                        cloneElement(child, {dock: this})
+                    ))
+                }
             </div>
         );
     }
 }
-
-PanelDock.defaultProps = {
-    direction: 'vertical',
-    width: 320,
-    visible: true
-};

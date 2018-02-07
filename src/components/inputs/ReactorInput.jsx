@@ -1,13 +1,15 @@
-import React from 'react';
-import { events } from 'core/Global';
-
+import React, { PureComponent } from 'react';
 import Icon from 'components/interface/Icon';
 import CanvasMeter from 'canvas/CanvasMeter';
+import { events } from 'core/Global';
 import editIcon from 'svg/icons/gear.svg';
+import styles from './ReactorInput.less';
 
-export default class ReactorInput extends React.PureComponent {
-    constructor(props) {
-        super(props);
+export default class ReactorInput extends PureComponent {
+    static defaultProps = {
+        width: 100,
+        height: 10,
+        color: '#775fd8',
     }
 
     componentDidMount() {
@@ -33,19 +35,19 @@ export default class ReactorInput extends React.PureComponent {
 
     showReactorControl = () => {
         events.emit('reactor-edit', this.props.reactor);
-    };
+    }
 
     draw = () => {
         const { output } = this.props.reactor.getResult();
 
         this.meter.render(output);
-    };
+    }
 
     render() {
         return (
-            <div className="input-reactor">
+            <div className={styles.reactor}>
                 <div
-                    className="reactor-meter"
+                    className={styles.meter}
                     onDoubleClick={this.showReactorControl}>
                     <canvas
                         ref={e => this.canvas = e}
@@ -55,7 +57,7 @@ export default class ReactorInput extends React.PureComponent {
                     />
                 </div>
                 <Icon
-                    className="reactor-edit-icon"
+                    className={styles.icon}
                     glyph={editIcon}
                     title="Edit Reactor"
                     onClick={this.showReactorControl}
@@ -64,9 +66,3 @@ export default class ReactorInput extends React.PureComponent {
         );
     }
 }
-
-ReactorInput.defaultProps = {
-    width: 100,
-    height: 10,
-    color: '#775fd8',
-};

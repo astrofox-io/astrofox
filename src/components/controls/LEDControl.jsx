@@ -1,27 +1,23 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-
-export class LEDControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class LEDControl extends PureComponent {
     render() {
         const { display, active, spacing, size, blur, onChange, onReactorChange } = this.props;
 
         return (
             <Control label="LED" active={active} display={display}>
                 <Option
-                    label="Spacing"
                     reactorName="spacing"
                     reactorMin={1}
                     reactorMax={100}
                     onReactorChange={onReactorChange}>
+                    <Label text="Spacing" />
                     <NumberInput
                         name="spacing"
                         width={40}
@@ -39,10 +35,10 @@ export class LEDControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Size"
                     reactorName="size"
                     reactorMax={100}
                     onReactorChange={onReactorChange}>
+                    <Label text="Size" />
                     <NumberInput
                         name="size"
                         width={40}
@@ -59,11 +55,11 @@ export class LEDControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option 
-                    label="Blur"
+                <Option
                     reactorName="blur"
                     reactorMax={100}
                     onReactorChange={onReactorChange}>
+                    <Label text="Blur" />
                     <NumberInput
                         name="blur"
                         width={40}

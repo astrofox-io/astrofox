@@ -1,25 +1,21 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-
-export class DotScreenControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class DotScreenControl extends PureComponent {
     render() {
         const { display, active, scale, angle, onChange, onReactorChange } = this.props;
 
         return (
             <Control label="DOT SCREEN" active={active} display={display}>
                 <Option
-                    label="Amount"
                     reactorName="scale"
                     onReactorChange={onReactorChange}>
+                    <Label text="Amount" />
                     <NumberInput
                         name="scale"
                         width={40}
@@ -39,9 +35,9 @@ export class DotScreenControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Angle"
                     reactorName="angle"
                     onReactorChange={onReactorChange}>
+                    <Label text="Angle" />
                     <NumberInput
                         name="angle"
                         width={40}

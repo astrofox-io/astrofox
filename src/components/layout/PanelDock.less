@@ -1,0 +1,18 @@
+@import (reference) "~styles/index.less";
+
+.dock {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    background-color: @bg-color2;
+
+    &.vertical {
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    &.horizontal {
+        flex-direction: row;
+        flex-shrink: 0;
+    }
+}

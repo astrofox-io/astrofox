@@ -1,32 +1,27 @@
 import React from 'react';
+import { ColorInput } from 'lib/inputs';
+import styles from './ColorRangeInput.less';
 
-import ColorInput from 'components/inputs/ColorInput';
-
-const ColorRangeInput = (props) => {
-    let colorRangeStyle = {
-        backgroundImage: '-webkit-linear-gradient(left, '+props.startColor+','+props.endColor+')'
-    };
-
-    let onChange = (name, val) => {
-        props.onChange(props.name, (name === 'startColor') ? [val, props.endColor] : [props.startColor, val]);
-    };
-
-    return (
-        <div className="input-color-range flex">
-            <ColorInput
-                name="startColor"
-                value={props.startColor}
-                onChange={onChange}
-            />
-            <div className="input color-range flex" style={colorRangeStyle} />
-            <ColorInput
-                name="endColor"
-                value={props.endColor}
-                onChange={onChange}
-            />
-        </div>
-    );
-};
+const ColorRangeInput = ({ name, startColor, endColor, onChange }) => (
+    <div className={styles.input}>
+        <ColorInput
+            name="startColor"
+            value={startColor}
+            onChange={(n, value) => onChange(name, [value, endColor])}
+        />
+        <div
+            className={styles.range}
+            style={{
+                backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`
+            }}
+        />
+        <ColorInput
+            name="endColor"
+            value={endColor}
+            onChange={(n, value) => onChange(name, [startColor, value])}
+        />
+    </div>
+);
 
 ColorRangeInput.defaultProps = {
     name: 'color',

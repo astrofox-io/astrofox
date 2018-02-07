@@ -1,30 +1,40 @@
-import React from 'react';
+import React, { Children, cloneElement } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import styles from './Overlay.less';
 
-const Overlay = (props) => {
-    let children = React.Children.map(props.children, (child, index) => {
-        return (
-            <CSSTransition
-                key={index}
-                classNames="overlay"
-                timeout={{ enter: 300, exit: 300 }}>
-                {child}
-            </CSSTransition>
-        );
-    });
-    return (
-        <TransitionGroup component={Component}>
-            {children}
-        </TransitionGroup>
-    );
+const classes = {
+    enter: styles.overlayEnter,
+    enterActive: styles.overlayEnterActive,
+    exit: styles.overlayExit,
+    exitActive: styles.overlayExitActive,
 };
 
-const Component = (props) => {
-    let style = (React.Children.count(props.children) > 0) ? null : {display:'none'};
+const timeout = {
+    enter: 300,
+    exit: 300,
+};
+
+const Overlay = ({ children }) => (
+    <TransitionGroup component={Component}>
+        {
+            Children.map(children, (child, index) => (
+                <CSSTransition
+                    key={index}
+                    classNames={classes}
+                    timeout={timeout}>
+                    {cloneElement(child, {className: styles.element})}
+                </CSSTransition>
+            ))
+        }
+    </TransitionGroup>
+);
+
+const Component = ({ children }) => {
+    let style = (Children.count(children) > 0) ? null : {display:'none'};
 
     return (
-        <div id="overlay" style={style}>
-            {props.children}
+        <div className={styles.overlay} style={style}>
+            {children}
         </div>
     );
 };

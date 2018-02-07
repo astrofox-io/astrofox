@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
-
 import { val2pct } from 'utils/math';
+import styles from './RangeInput.less';
 
-export default class RangeInput extends React.Component {
+export default class RangeInput extends Component {
+    static defaultProps = {
+        name: 'range',
+        min: 0,
+        max: 1,
+        value: 0,
+        step: 1,
+        lowerLimit: false,
+        upperLimit: false,
+        buffered: false,
+        readOnly: false,
+        fillStyle: 'left',
+        showTrack: true,
+        onChange: null,
+        onInput: null
+    }
+
     constructor(props) {
         super(props);
 
@@ -31,20 +47,20 @@ export default class RangeInput extends React.Component {
         else if (props.onChange) {
             props.onChange(props.name, val);
         }
-    };
+    }
 
     onMouseDown = () => {
         if (this.props.buffered) {
             this.buffering = true;
         }
-    };
+    }
 
     onMouseUp = (e) => {
         if (this.props.buffered) {
             this.buffering = false;
             this.onChange(e);
         }
-    };
+    }
 
     setValue(val, props) {
         val = this.parseValue(val, props);
@@ -72,36 +88,46 @@ export default class RangeInput extends React.Component {
     }
 
     getFillStyle() {
-        let val = this.state.value,
-            { min, max, fillStyle } = this.props,
-            pct = val2pct(val, min, max) * 100;
+        const { min, max, fillStyle } = this.props;
+        const { value } = this.state;
+        const pct = val2pct(value, min, max) * 100;
 
         switch (fillStyle) {
             case 'left':
-                return {width: pct + '%'};
+                return { width: pct + '%' };
             case 'right':
-                return {width: (100 - pct) + '%', marginLeft: pct + '%'};
+                return { width: (100 - pct) + '%', marginLeft: pct + '%' };
             default:
-                return {display: 'none'};
+                return { display: 'none' };
         }
     }
 
     render() {
-        let val = this.state.value,
-            { name, min, max, step, readOnly, showTrack } = this.props;
+        const { name, min, max, step, readOnly, showTrack } = this.props;
+        const { value } = this.state;
+
 
         return (
-            <div className="input-range">
-                <div className={classNames({ 'track': true, 'display-none': !showTrack })} />
-                <div className="fill" style={this.getFillStyle()} />
+            <div className={styles.range}>
+                <div
+                    className={classNames({
+                        [styles.track]: true,
+                        [styles.hidden]: !showTrack
+                    })}
+                    onMouseDown={e => console.log('track')}
+                />
+                <div
+                    className={styles.fill}
+                    style={this.getFillStyle()}
+                    onMouseDown={e => console.log('fill')}
+                />
                 <input
-                    className="range"
                     type="range"
                     name={name}
                     min={min}
                     max={max}
                     step={step}
-                    value={val}
+                    value={value}
                     onChange={this.onChange}
                     onMouseDown={this.onMouseDown}
                     onMouseUp={this.onMouseUp}
@@ -111,19 +137,3 @@ export default class RangeInput extends React.Component {
         );
     }
 }
-
-RangeInput.defaultProps = {
-    name: 'range',
-    min: 0,
-    max: 1,
-    value: 0,
-    step: 1,
-    lowerLimit: false,
-    upperLimit: false,
-    buffered: false,
-    readOnly: false,
-    fillStyle: 'left',
-    showTrack: true,
-    onChange: null,
-    onInput: null
-};

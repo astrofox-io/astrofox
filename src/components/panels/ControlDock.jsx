@@ -1,15 +1,10 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import Panel from 'components/layout/Panel';
 import PanelDock from 'components/layout/PanelDock';
 import ControlsPanel from 'components/panels/ControlsPanel';
 import LayersPanel from 'components/panels/LayersPanel';
 
-export default class ControlDock extends React.PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
+export default class ControlDock extends PureComponent {
     onLayerSelected = (index) => {
         this.controls.focusControl(index);
     };
@@ -23,8 +18,10 @@ export default class ControlDock extends React.PureComponent {
     };
 
     render() {
+        const { visible } = this.props;
+
         return (
-            <PanelDock id="control-dock" visible={this.props.visible}>
+            <PanelDock visible={visible}>
                 <Panel
                     title="LAYERS"
                     height={300}

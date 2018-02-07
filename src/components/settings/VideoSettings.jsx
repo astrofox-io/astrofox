@@ -1,20 +1,19 @@
 import React from 'react';
-import propTypes from 'prop-types';
-
+import PropTypes from 'prop-types';
 import Window from 'core/Window';
-
 import Button from 'components/interface/Button';
-import ButtonInput from 'components/inputs/ButtonInput';
-import NumberInput from 'components/inputs/NumberInput';
-import TimeInput from 'components/inputs/TimeInput';
-import SelectInput from 'components/inputs/SelectInput';
-import TextInput from 'components/inputs/TextInput';
-import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
-
+import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import {
+    ButtonInput,
+    NumberInput,
+    TimeInput,
+    SelectInput,
+    TextInput,
+} from 'lib/inputs';
 import { replaceExt } from 'utils/file';
 import { formatTime } from 'utils/format';
-
 import folderIcon from 'svg/icons/folder-open-empty.svg';
+import styles from './VideoSettings.less';
 
 const videoFormats = [
     'mp4',
@@ -28,6 +27,15 @@ const resolutionOptions = [
 ];
 
 export default class VideoSettings extends React.Component {
+    static contextTypes = {
+        app: PropTypes.object,
+    }
+
+    static defaultProps = {
+        onStart: () => {},
+        onClose: () => {},
+    }
+
     constructor(props, context) {
         super(props);
 
@@ -70,15 +78,11 @@ export default class VideoSettings extends React.Component {
     };
 
     onCancel = () => {
-        if (this.props.onClose) {
-            this.props.onClose();
-        }
+        this.props.onClose();
     };
 
     onStart = () => {
-        if (this.props.onStart) {
-            this.props.onStart(this.state);
-        }
+        this.props.onStart(this.state);
     };
 
     onOpenVideoFile = () => {
@@ -114,14 +118,21 @@ export default class VideoSettings extends React.Component {
     };
 
     render() {
-        const props = this.props,
-            state = this.state,
-            audio = this.app.player.getAudio(),
-            max = (audio) ? audio.getDuration() : 0,
-            canStart = (state.videoFile && state.audioFile);
+        const {
+            videoFile,
+            audioFile,
+            format,
+            resolution,
+            fps,
+            timeStart,
+            timeEnd,
+        } = this.state;
+        const audio = this.app.player.getAudio();
+        const max = (audio) ? audio.getDuration() : 0;
+        const canStart = videoFile && audioFile;
 
         return (
-            <SettingsPanel width={props.width} height={props.height}>
+            <SettingsPanel className={styles.panel}>
                 <Settings>
                     <Row label="Save Video To">
                         <TextInput
@@ -129,7 +140,7 @@ export default class VideoSettings extends React.Component {
                             inputClassName="input-normal-text"
                             name="videoFile"
                             width="100%"
-                            value={state.videoFile}
+                            value={videoFile}
                             readOnly={true}
                             onChange={this.onChange}
                         />
@@ -145,7 +156,7 @@ export default class VideoSettings extends React.Component {
                             inputClassName="input-normal-text"
                             name="audioFile"
                             width="100%"
-                            value={state.audioFile}
+                            value={audioFile}
                             readOnly={true}
                             onChange={this.onChange}
                         />
@@ -160,7 +171,7 @@ export default class VideoSettings extends React.Component {
                             name="format"
                             width={80}
                             items={videoFormats}
-                            value={state.format}
+                            value={format}
                             onChange={this.onChange}
                         />
                     </Row>
@@ -169,7 +180,7 @@ export default class VideoSettings extends React.Component {
                             name="resolution"
                             width={80}
                             items={resolutionOptions}
-                            value={state.resolution}
+                            value={resolution}
                             onChange={this.onChange}
                         />
                     </Row>
@@ -179,7 +190,7 @@ export default class VideoSettings extends React.Component {
                             width={60}
                             min={24}
                             max={60}
-                            value={state.fps}
+                            value={fps}
                             onChange={this.onChange}
                         />
                     </Row>
@@ -188,8 +199,8 @@ export default class VideoSettings extends React.Component {
                             name="timeStart"
                             width={80}
                             min={0}
-                            max={state.timeEnd}
-                            value={state.timeStart}
+                            max={timeEnd}
+                            value={timeStart}
                             readOnly={!audio}
                             onChange={this.onChange}
                         />
@@ -200,24 +211,20 @@ export default class VideoSettings extends React.Component {
                             width={80}
                             min={0}
                             max={max}
-                            value={state.timeEnd}
+                            value={timeEnd}
                             readOnly={!audio}
                             onChange={this.onChange}
                         />
                     </Row>
                     <Row label="Total Time">
-                        {formatTime(state.timeEnd - state.timeStart)}
+                        {formatTime(timeEnd - timeStart)}
                     </Row>
                 </Settings>
-                <div className="buttons">
+                <ButtonRow>
                     <Button text="Start" onClick={this.onStart} disabled={!canStart} />
                     <Button text="Cancel" onClick={this.onCancel} />
-                </div>
+                </ButtonRow>
             </SettingsPanel>
         );
     }
 }
-
-VideoSettings.contextTypes = {
-    app: propTypes.object
-};

@@ -1,26 +1,26 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
-
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    BoxInput,
+    NumberInput,
+    RangeInput,
+    ButtonInput,
+    ButtonGroup,
+} from 'lib/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'core/Global';
-
-import { Control, Option } from 'components/controls/Control';
-import BoxInput from 'components/inputs/BoxInput';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import ButtonInput from 'components/inputs/ButtonInput';
-import ButtonGroup from 'components/inputs/ButtonGroup';
-
 import iconLeft from 'svg/icons/chevron-left.svg';
 import iconRight from 'svg/icons/chevron-right.svg';
 import iconMinus from 'svg/icons/minus.svg';
 import iconPlus from 'svg/icons/plus.svg';
 import iconCircle from 'svg/icons/dots-three-horizontal.svg';
+import styles from './ReactorControl.less';
 
-const REACTOR_BARS = 64;
+const reactorBars = 64;
 
-const OUTPUT_MODES = [
+const outputModes = [
     { title: 'Backwards', icon: iconLeft },
     { title: 'Forward', icon: iconRight },
     { title: 'Cycle Backwards', icon: iconMinus },
@@ -28,9 +28,13 @@ const OUTPUT_MODES = [
     { title: 'Cycle', icon: iconCircle }
 ];
 
-export default class ReactorControl extends React.PureComponent {
-    constructor(props) {
-        super(props);
+export default class ReactorControl extends PureComponent {
+    static defaultProps = {
+        barWidth: 8,
+        barHeight: 100,
+        barSpacing: 1,
+        reactor: null,
+        visible: false
     }
 
     componentDidMount() {
@@ -38,7 +42,7 @@ export default class ReactorControl extends React.PureComponent {
 
         this.spectrum = new CanvasBars(
             {
-                width: REACTOR_BARS * (barWidth + barSpacing),
+                width: reactorBars * (barWidth + barSpacing),
                 height: barHeight,
                 barWidth: barWidth,
                 barSpacing: barSpacing,
@@ -70,12 +74,12 @@ export default class ReactorControl extends React.PureComponent {
         const { reactor } = this.props;
 
         if (reactor) {
-            let {fft, output} = reactor.getResult();
+            const { fft, output } = reactor.getResult();
 
             this.spectrum.render(fft);
             this.output.render(output);
         }
-    };
+    }
 
     updateReactor = (name, value) => {
         let {reactor, barWidth, barHeight, barSpacing} = this.props,
@@ -83,7 +87,7 @@ export default class ReactorControl extends React.PureComponent {
 
         if (name === 'selection') {
             const {x, y, width, height} = value,
-                maxWidth = REACTOR_BARS * (barWidth + barSpacing),
+                maxWidth = reactorBars * (barWidth + barSpacing),
                 maxHeight = barHeight;
 
             obj.range = {
@@ -97,7 +101,7 @@ export default class ReactorControl extends React.PureComponent {
         reactor.update(obj);
 
         this.forceUpdate();
-    };
+    }
 
     updateParser = (name, value) => {
         const { reactor } = this.props;
@@ -106,49 +110,49 @@ export default class ReactorControl extends React.PureComponent {
             reactor.parser.update({ [name]: value });
             this.forceUpdate();
         }
-    };
+    }
 
     render() {
-        const { reactor, barWidth, barHeight, barSpacing, visible } = this.props,
-            { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {}),
-            { outputMode } = (reactor ? reactor.options : {});
-
-        const classes = {
-            'reactor': true,
-            'display-none': !visible
-        };
-
-        const title = reactor ? reactor.label.map((n, i) => <span key={i}>{n}</span>) : null;
-
-        const modeButtons = (
-            <ButtonGroup>
-                {OUTPUT_MODES.map((mode, index) => {
-                    return (
-                        <ButtonInput
-                            key={index}
-                            icon={mode.icon}
-                            title={mode.title}
-                            active={outputMode === mode.title}
-                            onClick={() => this.updateReactor('outputMode', mode.title)}
-                        />
-                    );
-                })}
-            </ButtonGroup>
-        );
+        const { reactor, barWidth, barHeight, barSpacing, visible } = this.props;
+        const { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {});
+        const { outputMode } = (reactor ? reactor.options : {});
 
         return (
-            <div className={classNames(classes)}>
-                <div className="reactor-title">{title}</div>
-                <div className="reactor-display">
-                    <div className="reactor-controls">
-                        <Control>
-                            <Option label="Output Mode">
-                                {modeButtons}
+            <div className={classNames({
+                [styles.reactor]: true,
+                [styles.hidden]: !visible
+            })}>
+                <div className={styles.title}>
+                    {
+                        reactor &&
+                        reactor.label.map((n, i) => <span key={i}>{n}</span>)
+                    }
+                </div>
+                <div className={styles.display}>
+                    <div className={styles.controls}>
+                        <Control className={styles.control}>
+                            <Option className={styles.option}>
+                                <Label text="Output Mode" className={styles.label} />
+                                <ButtonGroup>
+                                    {
+                                        outputModes.map((mode, index) => (
+                                            <ButtonInput
+                                                key={index}
+                                                icon={mode.icon}
+                                                title={mode.title}
+                                                active={outputMode === mode.title}
+                                                onClick={() => this.updateReactor('outputMode', mode.title)}
+                                            />
+                                        ))
+                                    }
+                                </ButtonGroup>
                             </Option>
-                            <Option label="Max dB">
+                            <Option className={styles.option}>
+                                <Label text="Max dB" className={styles.label} />
                                 <NumberInput
                                     name="maxDecibels"
                                     value={maxDecibels}
+                                    className={styles.input}
                                     width={40}
                                     min={-40}
                                     max={0}
@@ -164,10 +168,12 @@ export default class ReactorControl extends React.PureComponent {
                                     onChange={this.updateParser}
                                 />
                             </Option>
-                            <Option label="Smoothing">
+                            <Option className={styles.option}>
+                                <Label text="Smoothing" className={styles.label} />
                                 <NumberInput
                                     name="smoothingTimeConstant"
                                     value={smoothingTimeConstant}
+                                    className={styles.input}
                                     width={40}
                                     min={0}
                                     max={0.99}
@@ -185,10 +191,10 @@ export default class ReactorControl extends React.PureComponent {
                             </Option>
                         </Control>
                     </div>
-                    <div className="reactor-spectrum">
+                    <div className={styles.spectrum}>
                         <canvas
                             ref={e => this.spectrumCanvas = e}
-                            width={REACTOR_BARS * (barWidth + barSpacing)}
+                            width={reactorBars * (barWidth + barSpacing)}
                             height={barHeight}
                             onClick={this.onClick}
                         />
@@ -198,12 +204,12 @@ export default class ReactorControl extends React.PureComponent {
                             value={reactor ? reactor.options.selection : {}}
                             minWidth={barWidth}
                             minHeight={barWidth}
-                            maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
+                            maxWidth={reactorBars * (barWidth + barSpacing)}
                             maxHeight={barHeight}
                             onChange={this.updateReactor}
                         />
                     </div>
-                    <div className="reactor-output">
+                    <div className={styles.output}>
                         <canvas
                             ref={e => this.outputCanvas = e}
                             width={20}
@@ -215,11 +221,3 @@ export default class ReactorControl extends React.PureComponent {
         );
     }
 }
-
-ReactorControl.defaultProps = {
-    barWidth: 8,
-    barHeight: 100,
-    barSpacing: 1,
-    reactor: null,
-    visible: false
-};

@@ -1,0 +1,25 @@
+@import (reference) "~styles/index.less";
+
+.reactor {
+    position: relative;
+}
+
+.meter {
+    background-color: @bg-color2;
+    border: 1px solid @border-color;
+    border-radius: @input-radius;
+    padding: 5px;
+}
+
+.icon {
+    position: absolute;
+    fill: @text-color3;
+    width: 12px;
+    height: 12px;
+    top: 5px;
+    right: -20px;
+
+    &:hover {
+        fill: @text-color1;
+    }
+}

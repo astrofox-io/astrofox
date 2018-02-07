@@ -1,18 +1,19 @@
 import React from 'react';
 import classNames from 'classnames';
+import styles from './Menu.less';
 
-const MenuItem = (props) => {
+const MenuItem = ({ label, checked, disabled, onClick }) => {
     let classes = {
-        item: true,
-        checked: props.checked,
-        disabled: props.disabled
+        [styles.menuItem]: true,
+        [styles.menuChecked]: checked,
+        [styles.menuDisabled]: disabled
     };
 
     return (
         <div
             className={classNames(classes)}
-            onClick={props.onClick}>
-            {props.label}
+            onClick={onClick}>
+            {label}
         </div>
     );
 };

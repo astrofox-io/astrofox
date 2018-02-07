@@ -1,53 +1,45 @@
 import React from 'react';
 import classNames from 'classnames';
-import { styleProps } from 'utils/react';
+import styles from './SettingsPanel.less';
 
-export const SettingsPanel = (props) => {
-    return (
-        <div
-            id={props.id}
-            className={classNames('settings-panel', props.className)}
-            style={styleProps(props)}>
-            {props.children}
+export const SettingsPanel = ({ id, className, children }) => (
+    <div
+        id={id}
+        className={classNames(styles.panel, className)}
+    >
+        {children}
+    </div>
+);
+
+export const Settings = ({ className, children }) => (
+    <div className={classNames(styles.settings, className)}>
+        {children}
+    </div>
+);
+
+export const Group = ({ name, className, children }) => (
+    <div className={classNames(styles.group, className)}>
+        <div className={styles.name}>{name}</div>
+        {children}
+    </div>
+);
+
+export const Row = ({ label, description, className, children }) => (
+    <div className={classNames(styles.row, className)}>
+        <div className={styles.text}>
+            {
+                label &&
+                <div className={styles.label}>{label}</div>
+            }
+            {
+                description &&
+                <div className={styles.description}>{description}</div>
+            }
         </div>
-    );
-};
+        {children}
+    </div>
+);
 
-export const Settings = (props) => {
-    return (
-        <div className={classNames('settings', props.className)}>
-            {props.children}
-        </div>
-    );
-};
-
-export const Group = (props) => {
-    return (
-        <div className={classNames('group', props.className)}>
-            <div className="name">{props.name}</div>
-            {props.children}
-        </div>
-    );
-};
-
-export const Row = (props) => {
-    let label, description;
-
-    if (props.label) {
-        label = <div className="label">{props.label}</div>;
-    }
-
-    if (props.description) {
-        description = <div className="description">{props.description}</div>;
-    }
-
-    return (
-        <div className={classNames('row', props.className)}>
-            <div className="text">
-                {label}
-                {description}
-            </div>
-            {props.children}
-        </div>
-    );
-};
+export const ButtonRow = ({ children }) => (
+    <div className={styles.buttons}>{children}</div>
+);

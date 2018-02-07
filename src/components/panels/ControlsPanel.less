@@ -1,0 +1,16 @@
+@import (reference) "~styles/index.less";
+
+.panel {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    margin-bottom: 6px;
+}
+
+.wrapper {
+    &:last-child {
+        .control {
+            margin-bottom: 0;
+        }
+    }
+}

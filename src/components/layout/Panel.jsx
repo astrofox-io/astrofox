@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-
 import Splitter from 'components/layout/Splitter';
+import styles from './Panel.less';
 
 export default class Panel extends React.PureComponent {
     constructor(props) {
@@ -14,12 +14,18 @@ export default class Panel extends React.PureComponent {
     }
 
     getSize() {
-        const { width, height } = this.state,
-            { minWidth, minHeight, dock } = this.props;
-
+        const { width, height } = this.state;
+        const { minWidth, minHeight, dock } = this.props;
         const rect = dock.domElement.getBoundingClientRect();
 
-        return { width, height, minWidth, minHeight, maxWidth: rect.width, maxHeight: rect.height };
+        return {
+            width,
+            height,
+            minWidth,
+            minHeight,
+            maxWidth: rect.width,
+            maxHeight: rect.height,
+        };
     }
 
     setSize(width, height) {
@@ -27,30 +33,40 @@ export default class Panel extends React.PureComponent {
     }
 
     render() {
-        let splitter, text,
-            { title, children, direction, stretch, resizable, className } = this.props,
-            { height } = this.state,
-            style = (height) ? { height } : null,
-            classes = {
-                'panel': true,
-                'vertical': (direction === 'vertical'),
-                'horizontal': (direction !== 'vertical'),
-                'stretch': stretch
-            };
+        const {
+            title,
+            children,
+            direction,
+            stretch,
+            resizable,
+            className
+        } = this.props;
 
-        if (resizable) {
-            splitter = <Splitter type="horizontal" panel={this} />;
-        }
+        const { height } = this.state;
 
-        if (title) {
-            text = <div className="title">{title}</div>;
-        }
+        const style = height ? { height } : null;
 
         return (
-            <div className={classNames(classes, className)} style={style}>
-                {text}
+            <div
+                className={
+                    classNames({
+                        [styles.panel]: true,
+                        [styles.vertical]: direction === 'vertical',
+                        [styles.horizontal]: direction !== 'vertical',
+                        [styles.stretch]: stretch
+                    }, className)
+                }
+                style={style}
+            >
+                {
+                    title &&
+                    <div className={styles.title}>{title}</div>
+                }
                 {children}
-                {splitter}
+                {
+                    resizable &&
+                    <Splitter type="horizontal" panel={this} />
+                }
             </div>
         );
     }

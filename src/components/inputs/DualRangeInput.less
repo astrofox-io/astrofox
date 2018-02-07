@@ -1,0 +1,34 @@
+@import (reference) "../../styles/index.less";
+
+.input {
+    position: relative;
+    height: 22px;
+    flex: 1;
+}
+
+.track {
+    height: 4px;
+    width: 100%;
+    border-radius: 4px;
+    background: lighten(@bg-color2, 10%);
+    position: absolute;
+    margin: 8px 0;
+}
+
+.fill {
+    pointer-events: none;
+    height: 4px;
+    width: 100%;
+    border-radius: 4px;
+    background: @color1;
+    .absolute-left();
+}
+
+.range {
+    pointer-events: none;
+    .absolute-center();
+
+    &::-webkit-slider-thumb {
+        pointer-events: all;
+    }
+}

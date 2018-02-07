@@ -1,18 +1,14 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import { NumberInput, RangeInput } from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-
-export class GlowControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class GlowControl extends PureComponent {
     render() {
-        const { display, active, amount, intensity, onChange, onReactorChange } = this.props;
+        const {
+            display, active, amount, intensity,
+            onChange, onReactorChange
+        } = this.props;
 
         return (
             <Control
@@ -20,9 +16,9 @@ export class GlowControl extends React.Component {
                 active={active}
                 display={display}>
                 <Option
-                    label="Amount"
                     reactorName="amount"
                     onReactorChange={onReactorChange}>
+                    <Label text="Amount" />
                     <NumberInput
                         name="amount"
                         width={40}
@@ -42,11 +38,11 @@ export class GlowControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Intensity"
                     reactorName="intensity"
                     reactorMin={1}
                     reactorMax={3}
                     onReactorChange={onReactorChange}>
+                    <Label text="Intensity" />
                     <NumberInput
                         name="intensity"
                         width={40}

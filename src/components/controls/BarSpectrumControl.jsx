@@ -1,19 +1,16 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    ColorRangeInput,
+    RangeInput,
+    ToggleInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import ColorRangeInput from 'components/inputs/ColorRangeInput';
-import RangeInput from 'components/inputs/RangeInput';
-import ToggleInput from 'components/inputs/ToggleInput';
-
-export class BarSpectrumControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class BarSpectrumControl extends Component {
     onChange = (name, value) => {
+        const { onChange } = this.props;
         const obj = {};
 
         if (name === 'barWidthAutoSize') {
@@ -23,8 +20,8 @@ export class BarSpectrumControl extends React.Component {
             obj.barSpacing = value ? -1 : 1;
         }
 
-        this.props.onChange(name, value, obj);
-    };
+        onChange(name, value, obj);
+    }
 
     render() {
         const {
@@ -36,7 +33,8 @@ export class BarSpectrumControl extends React.Component {
 
         return (
             <Control label="BAR SPECTRUM" active={active} display={display}>
-                <Option label="Max dB">
+                <Option>
+                    <Label text="Max dB" />
                     <NumberInput
                         name="maxDecibels"
                         value={maxDecibels}
@@ -55,7 +53,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Min Frequency">
+                <Option>
+                    <Label text="Min Frequency" />
                     <NumberInput
                         name="minFrequency"
                         value={minFrequency}
@@ -75,7 +74,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Max Frequency">
+                <Option>
+                    <Label text="Max Frequency" />
                     <NumberInput
                         name="maxFrequency"
                         value={maxFrequency}
@@ -95,7 +95,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Smoothing">
+                <Option>
+                    <Label text="Smoothing" />
                     <NumberInput
                         name="smoothingTimeConstant"
                         value={smoothingTimeConstant}
@@ -114,7 +115,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Width">
+                <Option>
+                    <Label text="Width" />
                     <NumberInput
                         name="width"
                         value={width}
@@ -131,7 +133,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Height">
+                <Option>
+                    <Label text="Height" />
                     <NumberInput
                         name="height"
                         value={height}
@@ -148,7 +151,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Shadow Height">
+                <Option>
+                    <Label text="Shadow Height" />
                     <NumberInput
                         name="shadowHeight"
                         value={shadowHeight}
@@ -165,7 +169,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Bar Width">
+                <Option>
+                    <Label text="Bar Width" />
                     <NumberInput
                         name="barWidth"
                         value={barWidth}
@@ -176,14 +181,15 @@ export class BarSpectrumControl extends React.Component {
                         hidden={barWidthAutoSize}
                         onChange={this.onChange}
                     />
-                    <span className="label">Auto-Size</span>
+                    <Label text="Auto-Size" />
                     <ToggleInput
                         name="barWidthAutoSize"
                         value={barWidthAutoSize}
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Bar Spacing">
+                <Option>
+                    <Label text="Bar Spacing" />
                     <NumberInput
                         name="barSpacing"
                         value={barSpacing}
@@ -201,7 +207,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Bar Color">
+                <Option>
+                    <Label text="Bar Color" />
                     <ColorRangeInput
                         name="color"
                         startColor={color[0]}
@@ -209,7 +216,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Shadow Color">
+                <Option>
+                    <Label text="Shadow Color" />
                     <ColorRangeInput
                         name="shadowColor"
                         startColor={shadowColor[0]}
@@ -217,7 +225,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="X">
+                <Option>
+                    <Label text="X" />
                     <NumberInput
                         name="x"
                         value={x}
@@ -234,7 +243,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Y">
+                <Option>
+                    <Label text="Y" />
                     <NumberInput
                         name="y"
                         value={y}
@@ -251,7 +261,8 @@ export class BarSpectrumControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Rotation">
+                <Option>
+                    <Label text="Rotation" />
                     <NumberInput
                         name="rotation"
                         value={rotation}
@@ -269,9 +280,9 @@ export class BarSpectrumControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Opacity"
                     reactorName="opacity"
                     onReactorChange={onReactorChange}>
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         value={opacity}

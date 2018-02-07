@@ -1,19 +1,13 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
-
+import { Control, Option, Label } from 'components/controls/Control';
 import NumberInput from 'components/inputs/NumberInput';
 import ColorInput from 'components/inputs/ColorInput';
 import ColorRangeInput from 'components/inputs/ColorRangeInput';
 import RangeInput from 'components/inputs/RangeInput';
 import ToggleInput from 'components/inputs/ToggleInput';
 
-export class WaveSpectrumControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class WaveSpectrumControl extends Component {
     render() {
         const { 
             display, active, stageWidth, stageHeight, onChange, onReactorChange,
@@ -22,8 +16,12 @@ export class WaveSpectrumControl extends React.Component {
         } = this.props;
 
         return (
-            <Control label="WAVE SPECTRUM" active={active} display={display}>
-                <Option label="Max dB">
+            <Control
+                label="WAVE SPECTRUM"
+                active={active}
+                display={display}>
+                <Option>
+                    <Label text="Max dB" />
                     <NumberInput
                         name="maxDecibels"
                         width={40}
@@ -42,7 +40,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Min Frequency">
+                <Option>
+                    <Label text="Min Frequency" />
                     <NumberInput
                         name="minFrequency"
                         width={40}
@@ -62,7 +61,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Max Frequency">
+                <Option>
+                    <Label text="Max Frequency" />
                     <NumberInput
                         name="maxFrequency"
                         width={40}
@@ -82,7 +82,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Smoothing">
+                <Option>
+                    <Label text="Smoothing" />
                     <NumberInput
                         name="smoothingTimeConstant"
                         width={40}
@@ -101,7 +102,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Width">
+                <Option>
+                    <Label text="Width" />
                     <NumberInput
                         name="width"
                         width={40}
@@ -118,7 +120,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Height">
+                <Option>
+                    <Label text="Height" />
                     <NumberInput
                         name="height"
                         width={40}
@@ -135,28 +138,32 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Stroke">
+                <Option>
+                    <Label text="Stroke" />
                     <ToggleInput
                         name="stroke"
                         value={stroke}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Stroke Color">
+                <Option>
+                    <Label text="Stroke Color" />
                     <ColorInput
                         name="color"
                         value={color}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Fill">
+                <Option>
+                    <Label text="Fill" />
                     <ToggleInput
                         name="fill"
                         value={fill}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Fill Color">
+                <Option>
+                    <Label text="Fill Color" />
                     <ColorRangeInput
                         name="fillColor"
                         startColor={fillColor[0]}
@@ -164,14 +171,16 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Taper Edges">
+                <Option>
+                    <Label text="Taper Edges" />
                     <ToggleInput
                         name="taper"
                         value={taper}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="X">
+                <Option>
+                    <Label text="X" />
                     <NumberInput
                         name="x"
                         width={40}
@@ -188,7 +197,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Y">
+                <Option>
+                    <Label text="Y" />
                     <NumberInput
                         name="y"
                         width={40}
@@ -205,7 +215,8 @@ export class WaveSpectrumControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Rotation">
+                <Option>
+                    <Label text="Rotation" />
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -223,9 +234,9 @@ export class WaveSpectrumControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Opacity"
                     reactorName="opacity"
                     onReactorChange={onReactorChange}>
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         width={40}

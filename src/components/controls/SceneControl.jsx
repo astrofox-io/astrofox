@@ -1,14 +1,14 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+    SelectInput,
+    ToggleInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import SelectInput from 'components/inputs/SelectInput';
-import ToggleInput from 'components/inputs/ToggleInput';
-
-const BLEND_MODES_MENU = [
+const blendModes = [
     'None',
     'Normal',
     { separator: true },
@@ -39,21 +39,19 @@ const BLEND_MODES_MENU = [
     'Phoenix',
     'Glow',
     'Reflect'
-];
+].map(item => typeof item !== 'object' ? { name: item, value: item } : item);
 
-export class SceneControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class SceneControl extends Component {
     onChange = (name, value) => {
+        const { onChange } = this.props;
+
         // Ignore separators
         if (name === 'blendMode' && typeof value !== 'string') {
             return;
         }
         
-        this.props.onChange(name, value);
-    };
+        onChange(name, value);
+    }
 
     render() {
         const {
@@ -63,20 +61,26 @@ export class SceneControl extends React.Component {
         } = this.props;
 
         return (
-            <Control label="SCENE" active={active} display={display}>
-                <Option label="Blending">
+            <Control
+                label="SCENE"
+                active={active}
+                display={display}
+            >
+                <Option>
+                    <Label text="Blending" />
                     <SelectInput
                         name="blendMode"
                         width={140}
-                        items={BLEND_MODES_MENU}
+                        items={blendModes}
                         value={blendMode}
                         onChange={this.onChange}
                     />
                 </Option>
                 <Option
-                    label="Opacity"
                     reactorName="opacity"
-                    onReactorChange={onReactorChange}>
+                    onReactorChange={onReactorChange}
+                >
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         width={40}
@@ -95,7 +99,8 @@ export class SceneControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Light Intensity">
+                <Option>
+                    <Label text="Light Intensity" />
                     <NumberInput
                         name="lightIntensity"
                         width={40}
@@ -114,7 +119,8 @@ export class SceneControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Light Distance">
+                <Option>
+                    <Label text="Light Distance" />
                     <NumberInput
                         name="lightDistance"
                         width={40}
@@ -131,7 +137,8 @@ export class SceneControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Camera Zoom">
+                <Option>
+                    <Label text="Camera Zoom" />
                     <NumberInput
                         name="cameraZoom"
                         width={40}
@@ -148,13 +155,14 @@ export class SceneControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Mask">
+                <Option>
+                    <Label text="Mask" />
                     <ToggleInput
                         name="mask"
                         value={mask}
                         onChange={this.onChange}
                     />
-                    <span className="label">Inverse</span>
+                    <Label text="Inverse" />
                     <ToggleInput
                         name="inverse"
                         value={inverse}

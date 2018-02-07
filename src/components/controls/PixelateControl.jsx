@@ -1,57 +1,55 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+    SelectInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import SelectInput from 'components/inputs/SelectInput';
-
-const TYPES = [
+const renderModes = [
     'Square',
     'Hexagon'
 ];
 
-const MIN_PIXEL_SIZE = 2;
-const MAX_PIXEL_SIZE = 240;
+const minPixelSize = 2;
+const maxPixelSize = 240;
 
-export class PixelateControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class PixelateControl extends PureComponent {
     render() {
         const { display, active, type, size, onChange, onReactorChange } = this.props;
 
         return (
             <Control label="PIXELATE" active={active} display={display}>
-                <Option label="Type">
+                <Option>
+                    <Label text="Type" />
                     <SelectInput
                         name="type"
                         width={140}
-                        items={TYPES}
+                        items={renderModes}
                         value={type}
                         onChange={onChange}
                     />
                 </Option>
                 <Option
-                    label="Size"
                     reactorName="size"
-                    reactorMin={MIN_PIXEL_SIZE}
-                    reactorMax={MAX_PIXEL_SIZE}
-                    onReactorChange={onReactorChange}>
+                    reactorMin={minPixelSize}
+                    reactorMax={maxPixelSize}
+                    onReactorChange={onReactorChange}
+                >
+                    <Label text="Size" />
                     <NumberInput
                         name="size"
                         width={40}
                         value={size}
-                        min={MIN_PIXEL_SIZE}
-                        max={MAX_PIXEL_SIZE}
+                        min={minPixelSize}
+                        max={maxPixelSize}
                         onChange={onChange}
                     />
                     <RangeInput
                         name="size"
-                        min={MIN_PIXEL_SIZE}
-                        max={MAX_PIXEL_SIZE}
+                        min={minPixelSize}
+                        max={maxPixelSize}
                         value={size}
                         onChange={onChange}
                     />

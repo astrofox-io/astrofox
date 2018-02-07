@@ -1,18 +1,18 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-
-export class RGBShiftControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+export class RGBShiftControl extends Component {
 
     render() {
-        const { display, stageWidth, active, onChange, onReactorChange, offset, angle } = this.props;
+        const {
+            display, stageWidth, active, onChange,
+            onReactorChange, offset, angle
+        } = this.props;
 
         return (
             <Control
@@ -20,10 +20,11 @@ export class RGBShiftControl extends React.Component {
                 active={active}
                 display={display}>
                 <Option
-                    label="Offset"
                     reactorName="offset"
                     reactorMax={stageWidth}
-                    onReactorChange={onReactorChange}>
+                    onReactorChange={onReactorChange}
+                >
+                    <Label text="Offset" />
                     <NumberInput
                         name="offset"
                         width={40}
@@ -43,10 +44,11 @@ export class RGBShiftControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Angle"
                     reactorName="angle"
                     reactorMax={360}
-                    onReactorChange={onReactorChange}>
+                    onReactorChange={onReactorChange}
+                >
+                    <Label text="Angle" />
                     <NumberInput
                         name="angle"
                         width={40}

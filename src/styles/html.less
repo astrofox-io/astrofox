@@ -1,0 +1,79 @@
+*, *:before, *:after
+{
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: @font-family;
+    font-size: @font-normal;
+    color: @text-color1;
+    background-color: @bg-color4;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    outline: none;
+    background-color: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 15px;
+    background-color: transparent;
+    border: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    position: relative;
+    width: 14px;
+    height: 14px;
+    border-radius: 14px;
+    background-color: @text-color1;
+    border: 1px solid lighten(@border-color, 20%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+canvas {
+    display: block;
+}
+
+::selection {
+    color: @text-color1;
+    background-color: lighten(@color1, 20%);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: @bg-color2;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: @color1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-track-piece {
+}
+
+::-webkit-scrollbar-corner {
+    background: @bg-color2;
+}
+
+::-webkit-resizer {
+    background: @bg-color2;
+}

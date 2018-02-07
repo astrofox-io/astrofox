@@ -1,0 +1,45 @@
+@import (reference) "~styles/index.less";
+
+.button {
+    color: @text-color1;
+    padding: 0 5px;
+    line-height: 20px;
+    min-width: 20px;
+    margin-right: 5px;
+    text-align: center;
+    border: 1px solid @border-color;
+    background-color: @bg-color2;
+    border-radius: @input-radius;
+    display: inline-block;
+    cursor: default;
+
+    &:hover {
+        background-color: @color1;
+    }
+}
+
+.icon {
+    display: inline-block;
+
+    svg {
+        fill: @text-color1;
+        width: 12px;
+        height: 12px;
+    }
+}
+
+.active {
+    background-color: @color1;
+}
+
+.disabled {
+    color: darken(@text-color1, 60%);
+
+    &:hover {
+        background-color: @bg-color2;
+    }
+}
+
+.text {
+    margin: 0 5px;
+}

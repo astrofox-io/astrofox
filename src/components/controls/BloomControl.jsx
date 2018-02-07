@@ -1,43 +1,43 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+    SelectInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import SelectInput from 'components/inputs/SelectInput';
-
-const BLEND_MODES = [
+const blendOptions = [
     'Add',
     'Screen'
 ];
 
-export class BloomControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class BloomControl extends PureComponent {
     render() {
-        const { display, active, blendMode, amount, threshold, onChange, onReactorChange } = this.props;
+        const {
+            display, active, blendMode, amount, threshold,
+            onChange, onReactorChange,
+        } = this.props;
 
         return (
             <Control
                 label="BLOOM"
                 active={active}
                 display={display}>
-                <Option label="Blend Mode">
+                <Option>
+                    <Label text="Blend Mode" />
                     <SelectInput
                         name="blendMode"
                         width={140}
-                        items={BLEND_MODES}
+                        items={blendOptions}
                         value={blendMode}
                         onChange={onChange}
                     />
                 </Option>
                 <Option
-                    label="Amount"
                     reactorName="amount"
                     onReactorChange={onReactorChange}>
+                    <Label text="Amount" />
                     <NumberInput
                         name="amount"
                         width={40}
@@ -57,9 +57,9 @@ export class BloomControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Threshold"
                     reactorName="threshold"
                     onReactorChange={onReactorChange}>
+                    <Label text="Threshold" />
                     <NumberInput
                         name="threshold"
                         width={40}

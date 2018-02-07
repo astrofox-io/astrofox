@@ -1,0 +1,72 @@
+@import (reference) "~styles/index.less";
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    &:before {
+        content: "\0020";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: 0.5;
+    }
+}
+
+.modal {
+    position: relative;
+    margin: auto;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 5px 5px 40px rgba(0,0,0,0.5);
+}
+
+
+.header {
+    position: relative;
+    background-color: @bg-color2;
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+    min-height: 32px;
+    cursor: default;
+}
+
+.body {
+    position: relative;
+    min-height: 100px;
+    background-color: @bg-color1;
+    display: flex;
+    flex-direction: column;
+}
+
+.buttons {
+    background-color: @bg-color1;
+    text-align: center;
+    padding: 10px;
+}
+
+.closeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 24px;
+    width: 24px;
+    padding-top: 5px;
+    text-align: center;
+    z-index: 1;
+
+    &:hover {
+        background-color: @color1;
+    }
+
+    svg {
+        fill: @text-color1;
+        height: 14px;
+        width: 14px;
+    }
+}

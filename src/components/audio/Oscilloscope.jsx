@@ -1,11 +1,13 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
+import styles from './Oscilloscope.less';
 
-export default class Oscilloscope extends React.PureComponent {
-    constructor(props) {
-        super(props);
+export default class Oscilloscope extends PureComponent {
+    static defaultProps = {
+        width: 854,
+        height: 50,
+        color: '#927FFF'
     }
 
     componentDidMount() {
@@ -15,20 +17,20 @@ export default class Oscilloscope extends React.PureComponent {
         );
     }
 
-    draw = (data) => {
-        const points = WaveParser.parseTimeData(data.td, this.props.width, 0);
+    draw = ({ td }) => {
+        const { width } = this.props;
 
-        this.display.render(points);
+        this.display.render(WaveParser.parseTimeData(td, width, 0));
     };
 
     render() {
         const { width, height } = this.props;
 
         return (
-            <div className="oscilloscope">
+            <div className={styles.oscilloscope}>
                 <canvas
                     ref={e => this.canvas = e}
-                    className="canvas"
+                    className={styles.canvas}
                     width={width}
                     height={height}
                 />
@@ -36,9 +38,3 @@ export default class Oscilloscope extends React.PureComponent {
         );
     }
 }
-
-Oscilloscope.defaultProps = {
-    width: 854,
-    height: 50,
-    color: '#927FFF'
-};

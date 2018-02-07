@@ -1,12 +1,22 @@
 import React from 'react';
-import propTypes from 'prop-types';
-
+import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
-import ColorInput from 'components/inputs/ColorInput';
-import NumberInput from 'components/inputs/NumberInput';
-import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
+import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import {
+    ColorInput,
+    NumberInput
+} from 'lib/inputs';
+import styles from './CanvasSettings.less';
 
 export default class CanvasSettings extends React.Component {
+    static contextTypes = {
+        app: PropTypes.object
+    }
+
+    static defaultProps = {
+        onClose: () => {},
+    }
+
     constructor(props, context) {
         super(props);
 
@@ -33,11 +43,14 @@ export default class CanvasSettings extends React.Component {
     };
 
     render() {
-        const state = this.state,
-            props = this.props;
+        const {
+            width,
+            height,
+            backgroundColor
+        } = this.state;
 
         return (
-            <SettingsPanel width={props.width} height={props.height}>
+            <SettingsPanel className={styles.panel}>
                 <Settings>
                     <Row label="Width">
                         <NumberInput
@@ -46,7 +59,7 @@ export default class CanvasSettings extends React.Component {
                             min={240}
                             max={1920}
                             step={2}
-                            value={state.width}
+                            value={width}
                             onChange={this.onChange}
                         />
                     </Row>
@@ -57,27 +70,23 @@ export default class CanvasSettings extends React.Component {
                             min={240}
                             max={1080}
                             step={2}
-                            value={state.height}
+                            value={height}
                             onChange={this.onChange}
                         />
                     </Row>
                     <Row label="Background Color">
                         <ColorInput
                             name="backgroundColor"
-                            value={state.backgroundColor}
+                            value={backgroundColor}
                             onChange={this.onChange}
                         />
                     </Row>
                 </Settings>
-                <div className="buttons">
+                <ButtonRow>
                     <Button onClick={this.onSave} text="OK" />
                     <Button onClick={this.onCancel} text="Cancel" />
-                </div>
+                </ButtonRow>
             </SettingsPanel>
         );
     }
 }
-
-CanvasSettings.contextTypes = {
-    app: propTypes.object
-};

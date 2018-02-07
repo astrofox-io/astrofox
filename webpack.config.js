@@ -23,16 +23,20 @@ const config = {
         path: path.resolve(__dirname, 'app/browser'),
         filename: 'js/[name].js',
         library: 'Astrofox',
-        libraryTarget: 'var'
+        libraryTarget: 'var',
     },
     resolve: {
         extensions: ['.js', '.json', '.jsx', '.glsl', '.svg'],
-        modules: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'src/app'), 'node_modules']
+        modules: [
+            path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, 'src/app'),
+            'node_modules',
+        ]
     },
     resolveLoader: {
         modules: [
             'node_modules',
-            path.resolve(__dirname, 'src/build/loaders')
+            path.resolve(__dirname, 'src/build/loaders'),
         ]
     },
     module: {
@@ -47,7 +51,7 @@ const config = {
                     options: {
                         cacheDirectory: true
                     }
-                }
+                },
             },
             {
                 test: /\.(css|less)$/,
@@ -56,8 +60,12 @@ const config = {
                         {
                             loader: 'css-loader',
                             options: {
+                                modules: true,
+                                camelCase: true,
                                 sourceMap: true,
-                                minimize: PRODUCTION
+                                minimize: PRODUCTION,
+                                localIdentName: '[name]__[local]--[hash:base64:5]',
+                                importLoaders: 1
                             }
                         },
                         {
@@ -67,21 +75,21 @@ const config = {
                             }
                         }
                     ],
-                    publicPath: '../'
+                    publicPath: '../',
                 })
             },
             {
                 test: /\.glsl$/,
                 use: {
                     loader: 'glsl-loader'
-                }
+                },
             },
             {
                 test: /\.(jpg|png|gif)$/,
                 include: path.resolve(__dirname, 'src/images/data'),
                 use: {
                     loader: 'url-loader'
-                }
+                },
             },
             {
                 test: /\.(jpg|png|gif)$/,
@@ -91,8 +99,8 @@ const config = {
                     options: {
                         name: 'images/[path][name].[ext]',
                         context: 'src/images/browser'
-                    }
-                }
+                    },
+                },
             },
             {
                 test: /\.svg$/,
@@ -100,8 +108,8 @@ const config = {
                     loader: 'svg-sprite-loader',
                     options: {
                         extract: true
-                    }
-                }
+                    },
+                },
             },
             {
                 test: /\.(eot|ttf|woff|woff2)$/,
@@ -110,8 +118,8 @@ const config = {
                     options: {
                         name: 'fonts/[name].[ext]',
                         publicPath: '../'
-                    }
-                }
+                    },
+                },
             },
             {
                 test: /\.html$/,
@@ -119,8 +127,8 @@ const config = {
                     loader: 'file-loader',
                     options: {
                         name: '[name].html'
-                    }
-                }
+                    },
+                },
             }
         ]
     },
@@ -128,10 +136,10 @@ const config = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'js/[name].js',
-            minChunks: Infinity
+            minChunks: Infinity,
         }),
         extractLess,
-        new SpriteLoaderPlugin()
+        new SpriteLoaderPlugin(),
     ]
 };
 
@@ -145,8 +153,8 @@ if (PRODUCTION) {
             {
                 test: /\.js$/,
                 comments: false
-            }
-        )
+            },
+        ),
     );
 }
 

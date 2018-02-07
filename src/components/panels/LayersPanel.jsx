@@ -1,6 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
-
+import PropTypes from 'prop-types';
 import Display from 'core/Display';
 import CanvasDisplay from 'core/CanvasDisplay';
 import Scene from 'core/Scene';
@@ -9,7 +8,6 @@ import { events } from 'core/Global';
 import Layer from 'components/panels/Layer';
 import ButtonInput from 'components/inputs/ButtonInput';
 import ButtonGroup from 'components/inputs/ButtonGroup';
-
 import iconScene from 'svg/icons/picture.svg';
 import iconDisplay from 'svg/icons/cube.svg';
 import iconEffect from 'svg/icons/light-up.svg';
@@ -17,6 +15,8 @@ import iconMoveUp from 'svg/icons/chevron-up.svg';
 import iconMoveDown from 'svg/icons/chevron-down.svg';
 import iconDelete from 'svg/icons/trash-empty.svg';
 import iconCanvasDisplay from 'svg/icons/document-landscape.svg';
+import styles from './LayersPanel.less';
+import panelStyles from '../layout/Panel.less';
 
 export default class LayersPanel extends React.PureComponent {
     constructor(props, context) {
@@ -85,7 +85,7 @@ export default class LayersPanel extends React.PureComponent {
     };
 
     onRemoveClick = () => {
-        let { displays, activeIndex } = this.state,
+        const { displays, activeIndex } = this.state,
             display = displays[activeIndex],
             last = displays.length - 1;
 
@@ -115,13 +115,13 @@ export default class LayersPanel extends React.PureComponent {
     };
 
     getActiveLayer() {
-        let { displays, activeIndex } = this.state;
+        const { displays, activeIndex } = this.state;
 
         return displays[activeIndex];
     }
 
     getActiveScene() {
-        let layer = this.getActiveLayer();
+        const layer = this.getActiveLayer();
 
         return layer ?
             (layer instanceof Scene ? layer : layer.scene) :
@@ -129,9 +129,9 @@ export default class LayersPanel extends React.PureComponent {
     }
 
     setActiveLayer(obj) {
-        if (typeof obj === 'undefined') return;
+        if (obj === undefined) return;
 
-        let index = (typeof obj === 'number') ? obj : this.state.displays.indexOf(obj);
+        const index = (typeof obj === 'number') ? obj : this.state.displays.indexOf(obj);
 
         this.setActiveIndex(index);
     }
@@ -157,7 +157,7 @@ export default class LayersPanel extends React.PureComponent {
         const { displays } = this.state,
             scene = this.getActiveScene();
 
-        let scenes = displays.filter(display => {
+        const scenes = displays.filter(display => {
             return display instanceof Scene;
         });
 
@@ -171,7 +171,7 @@ export default class LayersPanel extends React.PureComponent {
             scene = this.getActiveScene(),
             active = this.getActiveLayer();
 
-        let nodes = displays.filter(display => {
+        const nodes = displays.filter(display => {
             return display instanceof type;
         });
 
@@ -185,11 +185,8 @@ export default class LayersPanel extends React.PureComponent {
     }
 
     moveLayer(direction) {
-        let layer,
-            scene = this.getActiveScene();
-
-        if (scene) {
-            layer = this.getActiveLayer();
+        if (this.getActiveScene()) {
+            const layer = this.getActiveLayer();
 
             if (layer instanceof Scene) {
                 if (layer.stage.shiftScene(layer, direction)) {
@@ -206,7 +203,7 @@ export default class LayersPanel extends React.PureComponent {
 
     updateState(index) {
         this.setState(prevState => {
-            let displays = this.app.stage.getSortedDisplays(),
+            const displays = this.app.stage.getSortedDisplays(),
                 activeIndex = index === undefined ?
                     prevState.activeIndex :
                     typeof index === 'object' ?
@@ -255,15 +252,15 @@ export default class LayersPanel extends React.PureComponent {
     }
 
     render() {
-        let layers = this.getLayers(),
+        const layers = this.getLayers(),
             disabled = !this.app.stage.hasScenes();
 
         return (
-            <div className="layers-panel">
-                <div className="layers">
+            <div className={styles.panel}>
+                <div className={styles.layers}>
                     {layers}
                 </div>
-                <div className="panel-buttons">
+                <div className={panelStyles.buttons}>
                     <ButtonInput icon={iconScene} title="Add Scene" onClick={this.onAddSceneClick} />
                     <ButtonInput icon={iconDisplay} title="Add Display" onClick={this.onAddDisplayClick} disabled={disabled} />
                     <ButtonInput icon={iconEffect} title="Add Effect" onClick={this.onAddEffectClick} disabled={disabled} />
@@ -279,5 +276,5 @@ export default class LayersPanel extends React.PureComponent {
 }
 
 LayersPanel.contextTypes = {
-    app: propTypes.object
+    app: PropTypes.object
 };

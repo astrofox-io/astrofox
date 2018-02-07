@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
-
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
-
-import NumberInput from 'components/inputs/NumberInput';
-import ImageInput from 'components/inputs/ImageInput';
-import RangeInput from 'components/inputs/RangeInput';
+import { Control, Option, Label } from 'components/controls/Control';
 import Icon from 'components/interface/Icon';
-
+import {
+    NumberInput,
+    ImageInput,
+    RangeInput
+} from 'lib/inputs';
 import iconLink from 'svg/icons/link.svg';
-import BLANK_IMAGE from 'images/data/blank.gif';
+import blankImage from 'images/data/blank.gif';
+import styles from './ImageControl.less';
 
-export class ImageControl extends React.Component {
+export class ImageControl extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -29,7 +29,7 @@ export class ImageControl extends React.Component {
             this.image = image;
 
             // Reset values
-            if (value === BLANK_IMAGE) {
+            if (value === blankImage) {
                 obj.width = 0;
                 obj.height = 0;
                 obj.x = 0;
@@ -66,27 +66,23 @@ export class ImageControl extends React.Component {
     };
 
     render() {
-        let {
+        const {
                 active, stageWidth, stageHeight, display, onReactorChange,
                 fixed, src, width, height, x, y, rotation, opacity
             } = this.props,
             image = this.image,
-            readOnly = !(image && image.src && image.src !== BLANK_IMAGE),
+            readOnly = !(image && image.src && image.src !== blankImage),
             imageWidth = readOnly ? 0 : image.naturalWidth,
             imageHeight = readOnly ? 0 : image.naturalHeight,
             maxWidth = imageWidth * 2,
             maxHeight = imageHeight * 2,
             xMax = readOnly ? 0 : (imageWidth > stageWidth) ? imageWidth : stageWidth,
-            yMax = readOnly ? 0 : (imageHeight > stageHeight) ? imageHeight : stageHeight,
-            linkClasses = {
-                'input-link': true,
-                'input-link-on': fixed
-            },
-            linkIcon = <Icon key={0} className={classNames(linkClasses)} glyph={iconLink} onClick={this.onLinkClick} />;
+            yMax = readOnly ? 0 : (imageHeight > stageHeight) ? imageHeight : stageHeight;
 
         return (
             <Control label="IMAGE" active={active} display={display}>
-                <Option label="Image">
+                <Option>
+                    <Label text="Image" />
                     <ImageInput
                         name="src"
                         ref={e => this.imageInput = e}
@@ -94,7 +90,17 @@ export class ImageControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label={['Width', linkIcon]}>
+                <Option>
+                    <Label text="Width">
+                        <Icon
+                            className={classNames({
+                                [styles.linkIcon]: true,
+                                [styles.linkIconActive]: fixed
+                            })}
+                            glyph={iconLink}
+                            onClick={this.onLinkClick}
+                        />
+                    </Label>
                     <NumberInput
                         name="width"
                         width={40}
@@ -113,7 +119,17 @@ export class ImageControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label={['Height', linkIcon]}>
+                <Option>
+                    <Label text="Height">
+                        <Icon
+                            className={classNames({
+                                [styles.linkIcon]: true,
+                                [styles.linkIconActive]: fixed
+                            })}
+                            glyph={iconLink}
+                            onClick={this.onLinkClick}
+                        />
+                    </Label>
                     <NumberInput
                         name="height"
                         width={40}
@@ -132,7 +148,8 @@ export class ImageControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="X">
+                <Option>
+                    <Label text="X" />
                     <NumberInput
                         name="x"
                         width={40}
@@ -151,7 +168,8 @@ export class ImageControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Y">
+                <Option>
+                    <Label text="Y" />
                     <NumberInput
                         name="y"
                         width={40}
@@ -170,7 +188,8 @@ export class ImageControl extends React.Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option label="Rotation">
+                <Option>
+                    <Label text="Rotation" />
                     <NumberInput
                         name="rotation"
                         width={40}
@@ -190,9 +209,9 @@ export class ImageControl extends React.Component {
                     />
                 </Option>
                 <Option
-                    label="Opacity"
                     reactorName="opacity"
                     onReactorChange={onReactorChange}>
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         width={40}

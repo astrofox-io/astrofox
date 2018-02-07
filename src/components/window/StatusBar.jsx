@@ -1,17 +1,13 @@
-import React from 'react';
-import propTypes from 'prop-types';
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { APP_VERSION } from 'core/Environment';
 import { events } from 'core/Global';
 import { formatSize } from 'utils/format';
+import styles from './StatusBar.less';
 
-export default class StatusBar extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            fps: 0
-        };
+export default class StatusBar extends Component {
+    state = {
+        fps: 0
     }
 
     componentDidMount() {
@@ -28,6 +24,8 @@ export default class StatusBar extends React.Component {
 
     render() {
         let memSize, electronVersion;
+        const { text } = this.props;
+        const { fps } = this.state;
 
         if (process.env.NODE_ENV !== 'production') {
             memSize = formatSize(window.performance.memory.usedJSHeapSize, 2);
@@ -35,18 +33,18 @@ export default class StatusBar extends React.Component {
         }
 
         return (
-            <div className="statusbar">
-                <div className="area left">
-                    <span className="item">{this.props.text}</span>
+            <div className={styles.statusBar}>
+                <div className={styles.left}>
+                    <span className={styles.item}>{text}</span>
                 </div>
-                <div className="area center">
+                <div className={styles.center}>
                     <Zoom />
                 </div>
-                <div className="area right">
-                    <span className="item">{memSize}</span>
-                    <span className="item">{electronVersion}</span>
-                    <span className="item">{this.state.fps} FPS</span>
-                    <span className="item">{APP_VERSION}</span>
+                <div className={styles.right}>
+                    <span className={styles.item}>{memSize}</span>
+                    <span className={styles.item}>{electronVersion}</span>
+                    <span className={styles.item}>{fps} FPS</span>
+                    <span className={styles.item}>{APP_VERSION}</span>
                 </div>
             </div>
         );
@@ -54,6 +52,10 @@ export default class StatusBar extends React.Component {
 }
 
 class Zoom extends React.Component {
+    static contextTypes = {
+        app: PropTypes.object
+    }
+
     constructor(props, context) {
         super(props);
 
@@ -77,16 +79,12 @@ class Zoom extends React.Component {
         let { width, height, zoom } = this.app.stage.options;
 
         return (
-            <div className="zoom">
-                <span className="item">{width} x {height}</span>
-                <span className="zoom-button" onClick={() => this.setZoom(-1)}>-</span>
-                <span className="zoom-value">{zoom * 100}%</span>
-                <span className="zoom-button" onClick={() => this.setZoom(1)}>+</span>
+            <div className={styles.zoom}>
+                <span className={styles.item}>{width} x {height}</span>
+                <span className={styles.zoomButton} onClick={() => this.setZoom(-1)}>-</span>
+                <span className={styles.zoomValue}>{zoom * 100}%</span>
+                <span className={styles.zoomButton} onClick={() => this.setZoom(1)}>+</span>
             </div>
         );
     }
 }
-
-Zoom.contextTypes = {
-    app: propTypes.object
-};

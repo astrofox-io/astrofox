@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
-
-import Window from 'core/Window';
 import Icon from 'components/interface/Icon';
+import Window from 'core/Window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
-
 import folderIcon from 'svg/icons/folder-open-empty.svg';
 import closeIcon from 'svg/icons/circle-with-cross.svg';
+import blankImage from 'images/data/blank.gif';
+import styles from './ImageInput.less';
 
-import BLANK_IMAGE from 'images/data/blank.gif';
-
-export default class ImageInput extends React.Component {
-    constructor(props) {
-        super(props);
+export default class ImageInput extends Component {
+    static defaultProps = {
+        name: 'image',
+        value: blankImage,
+        onChange: () => {}
     }
 
     onImageLoad = () => {
@@ -20,22 +20,20 @@ export default class ImageInput extends React.Component {
 
         this.forceUpdate();
 
-        if (onChange) {
-            onChange(name, this.image.src);
-        }
-    };
+        onChange(name, this.image.src);
+    }
 
     onDragOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
-    };
+    }
 
     onDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.loadImageFile(e.dataTransfer.files[0]);
-    };
+    }
 
     onClick = (e) => {
         e.preventDefault();
@@ -45,20 +43,20 @@ export default class ImageInput extends React.Component {
                 this.loadImageFile(files[0]);
             }
         });
-    };
+    }
 
     onDelete = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
-        this.loadImage(BLANK_IMAGE);
-    };
+        this.loadImage(blankImage);
+    }
 
     loadImage = (src) => {
         if (src && this.image.src !== src) {
             this.image.src = src;
         }
-    };
+    }
 
     loadImageFile = (file) => {
         if (file instanceof File) {
@@ -70,7 +68,7 @@ export default class ImageInput extends React.Component {
                 this.loadImageBlob(data);
             });
         }
-    };
+    }
 
     loadImageBlob = (blob) => {
         if (/^image/.test(blob.type)) {
@@ -78,42 +76,37 @@ export default class ImageInput extends React.Component {
                 this.loadImage(data);
             });
         }
-    };
+    }
 
     getImage = () => {
         return this.image;
-    };
+    }
 
     render() {
-        let { image } = this,
-            { value } = this.props,
-            hasImage = (image && image.src && image.src !== BLANK_IMAGE) || (value && value !== BLANK_IMAGE),
-            icon = hasImage ? closeIcon : folderIcon,
-            onClick = (hasImage) ? this.onDelete : this.onClick,
-            classes = {
-                'image': true,
-                'display-none': !hasImage
-            };
+        const { image } = this;
+        const { value } = this.props;
+        const hasImage = (image && image.src && image.src !== blankImage) || (value && value !== blankImage);
 
         return (
             <div
-                className="input-image"
+                className={styles.image}
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}
-                onClick={onClick}>
+                onClick={hasImage ? this.onDelete : this.onClick}>
                 <img
                     ref={e => this.image = e}
-                    className={classNames(classes)}
-                    src={value || BLANK_IMAGE}
+                    className={classNames({
+                        [styles.img]: true,
+                        [styles.hidden]: !hasImage
+                    })}
+                    src={value || blankImage}
                     onLoad={this.onImageLoad}
                 />
-                <Icon glyph={icon} className="input-image-icon" />
+                <Icon
+                    glyph={hasImage ? closeIcon : folderIcon}
+                    className={styles.icon}
+                />
             </div>
         );
     }
 }
-
-ImageInput.defaultProps = {
-    name: 'image',
-    value: BLANK_IMAGE
-};

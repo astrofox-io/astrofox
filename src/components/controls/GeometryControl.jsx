@@ -1,15 +1,15 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    ColorInput,
+    NumberInput,
+    RangeInput,
+    SelectInput,
+    ToggleInput,
+} from 'lib/inputs';
 
-import ColorInput from 'components/inputs/ColorInput';
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import SelectInput from 'components/inputs/SelectInput';
-import ToggleInput from 'components/inputs/ToggleInput';
-
-const SHAPES = [
+const shapeOptions = [
     'Box',
     'Sphere',
     'Dodecahedron',
@@ -20,7 +20,7 @@ const SHAPES = [
     'Torus Knot'
 ];
 
-const MATERIALS = [
+const materialOptions = [
     'Basic',
     'Lambert',
     'Normal',
@@ -30,139 +30,148 @@ const MATERIALS = [
     'Standard'
 ];
 
-const SHADING = [
+const shadingOptions = [
     'Smooth',
     'Flat'
 ];
 
-const MAX_X_RANGE = 500;
-const MAX_Y_RANGE = 500;
-const MAX_Z_RANGE = 1000;
+const maxXRange = 500;
+const maxYRange = 500;
+const maxZRange = 1000;
 
-export class GeometryControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+export class GeometryControl extends PureComponent {
     render() {
-        const { 
+        const {
             display, active, shape, material, shading, color,
             wireframe, edges, edgeColor, x, y, z, opacity,
             onChange, onReactorChange
         } = this.props;
 
         return (
-            <Control label="3D GEOMETRY" active={active} display={display}>
-                <Option label="Shape">
+            <Control
+                label="3D GEOMETRY"
+                active={active}
+                display={display}>
+                <Option>
+                    <Label text="Shape" />
                     <SelectInput
                         name="shape"
                         width={140}
-                        items={SHAPES}
+                        items={shapeOptions}
                         value={shape}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Material">
+                <Option>
+                    <Label text="Material" />
                     <SelectInput
                         name="material"
                         width={140}
-                        items={MATERIALS}
+                        items={materialOptions}
                         value={material}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Shading">
+                <Option>
+                    <Label text="shading" />
                     <SelectInput
                         name="shading"
                         width={140}
-                        items={SHADING}
+                        items={shadingOptions}
                         value={shading}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Color">
+                <Option>
+                    <Label text="Color" />
                     <ColorInput
                         name="color"
                         value={color}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Wireframe">
+                <Option>
+                    <Label text="Wireframe" />
                     <ToggleInput
                         name="wireframe"
                         value={wireframe}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Edges">
+                <Option>
+                    <Label text="Edges" />
                     <ToggleInput
                         name="edges"
                         value={edges}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Edge Color">
+                <Option>
+                    <Label text="Edge Color" />
                     <ColorInput
                         name="edgeColor"
                         value={edgeColor}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="X">
+                <Option>
+                    <Label text="X" />
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-MAX_X_RANGE}
-                        max={MAX_X_RANGE}
+                        min={-maxXRange}
+                        max={maxXRange}
                         value={x}
                         onChange={onChange}
                     />
                     <RangeInput
                         name="x"
-                        min={-MAX_X_RANGE}
-                        max={MAX_X_RANGE}
+                        min={-maxXRange}
+                        max={maxXRange}
                         value={x}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Y">
+                <Option>
+                    <Label text="Y" />
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-MAX_Y_RANGE}
-                        max={MAX_Y_RANGE}
+                        min={-maxYRange}
+                        max={maxYRange}
                         value={y}
                         onChange={onChange}
                     />
                     <RangeInput
                         name="y"
-                        min={-MAX_Y_RANGE}
-                        max={MAX_Y_RANGE}
+                        min={-maxYRange}
+                        max={maxYRange}
                         value={y}
                         onChange={onChange}
                     />
                 </Option>
-                <Option label="Z">
+                <Option>
+                    <Label text="Z" />
                     <NumberInput
                         name="z"
                         width={40}
-                        min={-MAX_Z_RANGE}
-                        max={MAX_Z_RANGE}
+                        min={-maxZRange}
+                        max={maxZRange}
                         value={z}
                         onChange={onChange}
                     />
                     <RangeInput
                         name="z"
-                        min={-MAX_Z_RANGE}
-                        max={MAX_Z_RANGE}
+                        min={-maxZRange}
+                        max={maxZRange}
                         value={z}
                         onChange={onChange}
                     />
                 </Option>
                 <Option
-                    label="Opacity"
                     reactorName="opacity"
                     onReactorChange={onReactorChange}>
+                    <Label text="Opacity" />
                     <NumberInput
                         name="opacity"
                         width={40}

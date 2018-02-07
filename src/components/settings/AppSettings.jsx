@@ -1,11 +1,19 @@
-import React from 'react';
-import propTypes from 'prop-types';
-
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
-import ToggleInput from 'components/inputs/ToggleInput';
-import { SettingsPanel, Settings, Group, Row } from 'components/layout/SettingsPanel';
+import { SettingsPanel, Settings, Group, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import { ToggleInput } from 'lib/inputs';
+import styles from './AppSettings.less';
 
-export default class AppSettings extends React.Component {
+export default class AppSettings extends PureComponent {
+    static contextTypes = {
+        app: PropTypes.object,
+    }
+
+    static defaultProps = {
+        onClose: () => {},
+    }
+
     constructor(props, context) {
         super(props);
 
@@ -13,55 +21,51 @@ export default class AppSettings extends React.Component {
         this.state = Object.assign({}, this.app.config);
     }
 
-    onChange = (name, val) => {
-        let obj = {};
-
-        obj[name] = val;
-
-        this.setState(obj);
+    onChange = (name, value) => {
+        this.setState({ [name]: value });
     };
 
     onSave = () => {
         this.app.saveConfigFile(this.state)
             .then(() => {
-                if (this.props.onClose) {
-                    this.props.onClose();
-                }
+                this.props.onClose();
             });
-    };
+    }
 
     onCancel = () => {
-        if (this.props.onClose) {
-            this.props.onClose();
-        }
-    };
+        this.props.onClose();
+    }
 
     render() {
-        const props = this.props,
-            state = this.state;
+        const {
+            checkForUpdates,
+            autoUpdate,
+            showWatermark,
+            autoPlayAudio,
+        } = this.state;
 
         return (
-            <SettingsPanel width={props.width} height={props.height}>
+            <SettingsPanel className={styles.panel}>
                 <Settings>
                     <Group name="General">
                         <Row label="Check for updates on start up">
                             <ToggleInput
                                 name="checkForUpdates"
-                                value={state.checkForUpdates}
+                                value={checkForUpdates}
                                 onChange={this.onChange}
                             />
                         </Row>
                         <Row label="Automatically download and install updates">
                             <ToggleInput
                                 name="autoUpdate"
-                                value={state.autoUpdate}
+                                value={autoUpdate}
                                 onChange={this.onChange}
                             />
                         </Row>
                         <Row label="Show watermark" description="Watermark will still appear in videos">
                             <ToggleInput
                                 name="showWatermark"
-                                value={state.showWatermark}
+                                value={showWatermark}
                                 onChange={this.onChange}
                             />
                         </Row>
@@ -70,21 +74,17 @@ export default class AppSettings extends React.Component {
                         <Row label="Play audio on load">
                             <ToggleInput
                                 name="autoPlayAudio"
-                                value={state.autoPlayAudio}
+                                value={autoPlayAudio}
                                 onChange={this.onChange}
                             />
                         </Row>
                     </Group>
                 </Settings>
-                <div className="buttons">
-                    <Button onClick={this.onSave} text="Save" />
-                    <Button onClick={this.onCancel} text="Cancel" />
-                </div>
+                <ButtonRow>
+                    <Button text="Save" onClick={this.onSave} />
+                    <Button text="Cancel" onClick={this.onCancel} />
+                </ButtonRow>
             </SettingsPanel>
         );
     }
 }
-
-AppSettings.contextTypes = {
-    app: propTypes.object
-};

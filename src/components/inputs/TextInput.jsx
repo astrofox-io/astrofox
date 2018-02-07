@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
+import styles from './TextInput.less';
 
-export default class TextInput extends React.Component {
+export default class TextInput extends Component {
+    static defaultProps = {
+        name: 'text',
+        width: 140,
+        size: null,
+        value: '',
+        spellCheck: false,
+        autoFocus: false,
+        autoSelect: false,
+        buffered: false,
+        readOnly: false,
+        disabled: false,
+        onChange: () => {},
+        onCancel: () => {},
+    }
+
     constructor(props) {
         super(props);
 
@@ -16,77 +32,76 @@ export default class TextInput extends React.Component {
         }
     }
 
-    componentWillReceiveProps(props) {
-        if (typeof props.value !== 'undefined') {
-            this.setState({ value: props.value });
+    componentWillReceiveProps({ value }) {
+        if (value !== undefined) {
+            this.setState({ value });
         }
     }
 
     onChange = (e) => {
-        let val = e.target.value;
+        const value = e.target.value;
+        const { name, buffered, onChange } = this.props;
         
-        this.setState({ value: val });
+        this.setState({ value });
 
-        if (this.props.onChange && !this.props.buffered) {
-            this.props.onChange(this.props.name, val);
+        if (!buffered) {
+            onChange(name, value);
         }
     };
 
     onValueChange = () => {
-        let val = this.state.value;
+        const { name, onChange } = this.props;
+        const { value } = this.state;
 
-        if (this.props.onChange) {
-            this.props.onChange(this.props.name, val);
-        }
+        onChange(name, value);
     };
 
     onKeyUp = (e) => {
+        const { value, onCancel } = this.props;
+
         if (e.keyCode === 13) {
             this.onValueChange(e);
         }
         else if (e.keyCode === 27) {
-            this.setState({ value: this.props.value });
+            this.setState({ value });
 
-            if (this.props.onCancel) {
-                this.props.onCancel();
-            }
+            onCancel();
         }
     };
 
     render() {
-        let props = this.props;
+        const {
+            name,
+            width,
+            size,
+            spellCheck,
+            autoFocus,
+            readOnly,
+            disabled,
+            className,
+            inputClassName
+        } = this.props;
+
+        const { value } = this.state;
 
         return (
-            <div className={classNames('input', props.className)}>
+            <div className={classNames(className)}>
                 <input
                     ref={e => this.textInput = e}
                     type="text"
-                    className={classNames('input-field', props.inputClassName)}
-                    style={{width: props.width}}
-                    name={props.name}
-                    size={props.size}
-                    spellCheck={props.spellCheck}
-                    autoFocus={props.autoFocus}
-                    value={this.state.value}
+                    className={classNames(styles.text, inputClassName)}
+                    style={{width}}
+                    name={name}
+                    size={size}
+                    spellCheck={spellCheck}
+                    autoFocus={autoFocus}
+                    value={value}
                     onChange={this.onChange}
                     onBlur={this.onValueChange}
                     onKeyUp={this.onKeyUp}
-                    readOnly={props.readOnly || props.disabled}
+                    readOnly={readOnly || disabled}
                 />
             </div>
         );
     }
 }
-
-TextInput.defaultProps = {
-    name: 'text',
-    width: 140,
-    size: null,
-    value: '',
-    spellCheck: false,
-    autoFocus: false,
-    autoSelect: false,
-    buffered: false,
-    readOnly: false,
-    disabled: false
-};

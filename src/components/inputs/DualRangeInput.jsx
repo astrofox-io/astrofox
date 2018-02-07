@@ -1,9 +1,24 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import RangeInput from 'components/inputs/RangeInput';
 import { val2pct } from 'utils/math';
+import styles from './DualRangeInput.less';
 
-export default class DualRangeInput extends React.Component {
+export default class DualRangeInput extends Component {
+    static defaultProps = {
+        name: 'dualrange',
+        min: 0,
+        max: 1,
+        step: 1,
+        start: 0,
+        end: 0,
+        minRange: false,
+        buffered: false,
+        readOnly: false,
+        allowClick: true,
+        onChange: () => {},
+        onInput: () => {}
+    }
+
     constructor(props) {
         super(props);
 
@@ -13,9 +28,12 @@ export default class DualRangeInput extends React.Component {
     onTrackClick = (e) => {
         e.stopPropagation();
 
-        if (!this.props.allowClick) return;
+        const { name, start, end, max, min, allowClick, onChange } = this.props;
 
-        let { start, end, max, min } = this.props,
+        if (!allowClick) return;
+
+        let newStart = start,
+            newEnd = end,
             size = end - start,
             midpoint = start + (size/2),
             index = 0,
@@ -23,38 +41,36 @@ export default class DualRangeInput extends React.Component {
             val = ((e.clientX - rect.left) / rect.width) * (max - min);
 
         if (val < midpoint) {
-            start = val;
+            newStart = val;
             index = 0;
         }
         else {
-            end = val;
+            newEnd = val;
             index = 1;
         }
 
-        if (this.props.onChange) {
-            this.props.onChange(this.props.name, this.parseValues(start, end, index));
-        }
-    };
+        onChange(name, this.parseValues(newStart, newEnd, index));
+    }
 
     onChange = (key, val) => {
-        let { name, start, end, onChange } = this.props,
+        const { name, start, end, onChange } = this.props;
+        let newStart = start,
+            newEnd = end,
             index = key === 'range-start' ? 0 : 1;
 
         if (index === 0) {
-            start = val;
+            newStart = val;
         }
         else {
-            end = val;
+            newEnd = val;
         }
 
-        if (onChange) {
-            onChange(name, {start, end});
-        }
-    };
+        onChange(name, { start: newStart, end: newEnd });
+    }
 
     parseValues(start, end, index) {
-        let { minRange } = this.props,
-            range = end - start;
+        const { minRange } = this.props;
+        let range = end - start;
 
         // Enforce min range
         if (minRange !== false && range < minRange) {
@@ -82,12 +98,13 @@ export default class DualRangeInput extends React.Component {
         return (
             <div
                 ref={e => this.range = e}
-                className='input-dual-range'
+                className={styles.input}
                 onMouseDown={this.onTrackClick}>
-                <div className="track" />
-                <div className='fill' style={fillStyle} />
+                <div className={styles.track} />
+                <div className={styles.fill} style={fillStyle} />
                 <RangeInput
                     ref={e => this.range0 = e}
+                    className={styles.range}
                     name='range-start'
                     min={min}
                     max={max}
@@ -104,6 +121,7 @@ export default class DualRangeInput extends React.Component {
                 />
                 <RangeInput
                     ref={e => this.range1 = e}
+                    className={styles.range}
                     name='range-end'
                     min={min}
                     max={max}
@@ -122,18 +140,3 @@ export default class DualRangeInput extends React.Component {
         );
     }
 }
-
-DualRangeInput.defaultProps = {
-    name: 'dualrange',
-    min: 0,
-    max: 1,
-    step: 1,
-    start: 0,
-    end: 0,
-    minRange: false,
-    buffered: false,
-    readOnly: false,
-    allowClick: true,
-    onChange: null,
-    onInput: null
-};

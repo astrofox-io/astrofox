@@ -1,14 +1,12 @@
-import React from 'react';
-import propTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import AudioWaveform from 'components/audio/AudioWaveform';
 import Oscilloscope from 'components/audio/Oscilloscope';
+import Icon from 'components/interface/Icon';
+import { RangeInput } from 'lib/inputs';
 import { events } from 'core/Global';
 import { formatTime } from 'utils/format';
-import RangeInput from 'components/inputs/RangeInput';
-import Icon from 'components/interface/Icon';
-
 import iconSoundBars from 'svg/icons/sound-bars.svg';
 import iconSoundWaves from 'svg/icons/sound-waves.svg';
 import iconRepeat from 'svg/icons/cycle.svg';
@@ -19,10 +17,11 @@ import iconVolume1 from 'svg/icons/volume.svg';
 import iconVolume2 from 'svg/icons/volume2.svg';
 import iconVolume3 from 'svg/icons/volume3.svg';
 import iconVolume4 from 'svg/icons/volume4.svg';
+import styles from './Player.less';
 
-const PROGRESS_MAX = 1000;
+const progressMax = 1000;
 
-export default class Player extends React.PureComponent {
+export default class Player extends PureComponent {
     constructor(props, context) {
         super(props);
 
@@ -113,7 +112,7 @@ export default class Player extends React.PureComponent {
         this.app.player.stop();
     };
 
-    onLoopButtonClick = () =>  {
+    onLoopButtonClick = () => {
         this.setState(prevState => {
             this.app.player.setLoop(!prevState.looping);
 
@@ -125,25 +124,25 @@ export default class Player extends React.PureComponent {
         this.app.player.seek(val);
     };
 
-    onWaveformButtonClick = () =>  {
+    onWaveformButtonClick = () => {
         this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
-    };
+    }
 
-    onOscButtonClick = () =>  {
+    onOscButtonClick = () => {
         this.setState(prevState => ({ showOsc: !prevState.showOsc }));
-    };
+    }
 
-    onVolumeChange = (value) =>  {
+    onVolumeChange = (value) => {
         this.app.player.setVolume(value);
-    };
+    }
 
-    onProgressChange = (value) =>  {
+    onProgressChange = (value) => {
         this.app.player.seek(value);
-    };
+    }
 
     onProgressInput = (value) => {
         this.setState({ progressPosition: value });
-    };
+    }
 
     render() {
         let osc,
@@ -155,21 +154,21 @@ export default class Player extends React.PureComponent {
         }
 
         return (
-            <div className={classNames({ 'display-none': !this.props.visible })}>
+            <div className={classNames({ [styles.hidden]: !this.props.visible })}>
                 <AudioWaveform
                     ref={e => this.waveform = e}
                     visible={showWaveform && duration}
                     onClick={this.onWaveformClick}
                 />
-                <div className="player">
-                    <div className="buttons">
+                <div className={styles.player}>
+                    <div className={styles.buttons}>
                         <PlayButton playing={playing} onClick={this.onPlayButtonClick} />
                         <StopButton onClick={this.onStopButtonClick} />
                     </div>
                     <VolumeControl onChange={this.onVolumeChange} />
                     <ProgressControl
                         ref={e => this.progressControl = e}
-                        value={progressPosition * PROGRESS_MAX}
+                        value={progressPosition * progressMax}
                         onChange={this.onProgressChange}
                         onInput={this.onProgressInput}
                         readOnly={!duration}
@@ -208,10 +207,10 @@ Player.defaultProps = {
 };
 
 Player.contextTypes = {
-    app: propTypes.object
+    app: PropTypes.object
 };
 
-class VolumeControl extends React.PureComponent {
+class VolumeControl extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -225,15 +224,15 @@ class VolumeControl extends React.PureComponent {
         this.props.onChange(value / 100);
 
         this.setState({ value: value, mute: false });
-    };
+    }
 
-    onClick = () =>  {
+    onClick = () => {
         this.setState((prevState, props) => {
             props.onChange(prevState.mute ? prevState.value / 100 : 0);
 
             return { mute: !prevState.mute };
         });
-    };
+    }
 
     render() {
         let icon,
@@ -253,11 +252,11 @@ class VolumeControl extends React.PureComponent {
         }
 
         return (
-            <div className="volume">
-                <div className="speaker" onClick={this.onClick}>
-                    <Icon className="icon" glyph={icon} />
+            <div className={styles.volume}>
+                <div className={styles.speaker} onClick={this.onClick}>
+                    <Icon className={styles.icon} glyph={icon} />
                 </div>
-                <div className="slider">
+                <div className={styles.slider}>
                     <RangeInput
                         name="volume"
                         min={0}
@@ -271,7 +270,7 @@ class VolumeControl extends React.PureComponent {
     }
 }
 
-class ProgressControl extends React.PureComponent {
+class ProgressControl extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -289,13 +288,13 @@ class ProgressControl extends React.PureComponent {
 
     onChange = (name, val) => {
         this.setState({ value: val }, () => {
-            this.props.onChange(val / PROGRESS_MAX);
+            this.props.onChange(val / progressMax);
         });
     };
 
     onInput = (name, val) => {
         this.setState({ value: val }, () => {
-            this.props.onInput(val / PROGRESS_MAX);
+            this.props.onInput(val / progressMax);
         });
     };
 
@@ -305,12 +304,12 @@ class ProgressControl extends React.PureComponent {
 
     render() {
         return (
-            <div className="progress">
+            <div className={styles.progress}>
                 <RangeInput
                     ref={e => this.progressInput = e}
                     name="progress"
                     min="0"
-                    max={PROGRESS_MAX}
+                    max={progressMax}
                     value={this.state.value}
                     buffered={true}
                     onChange={this.onChange}
@@ -322,42 +321,53 @@ class ProgressControl extends React.PureComponent {
     }
 }
 
-const PlayButton = (props) => {
-    const classes = {
-        'button': true,
-        'play-button': !props.playing,
-        'pause-button': props.playing
-    };
+const PlayButton = ({ playing, title, onClick }) => (
+    <div
+        className={classNames({
+            [styles.button]: true,
+            [styles.playButton]: !playing,
+            [styles.pauseButton]: playing
+        })}
+        onClick={onClick}>
+        <Icon className={styles.icon} glyph={playing ? iconPause : iconPlay} title={title} />
+    </div>
+);
 
+const StopButton = ({ title, onClick }) => {
     return (
-        <div className={classNames(classes)} onClick={props.onClick}>
-            <Icon className="icon" glyph={props.playing ? iconPause : iconPlay} title={props.title} />
+        <div
+            className={classNames(styles.button, styles.stopButton)}
+            onClick={onClick}
+        >
+            <Icon className={styles.icon} glyph={iconStop} title={title} />
         </div>
     );
 };
 
-const StopButton = (props) => {
+const ToggleButton = ({ active, title, icon, onClick }) => {
     return (
-        <div className="button stop-button" onClick={props.onClick}>
-            <Icon className="icon" glyph={iconStop} title={props.title} />
+        <div
+            className={classNames({
+                [styles.toggleButton]: true,
+                [styles.toggleButtonActive]: active
+            })}
+            onClick={onClick}
+        >
+            <Icon className={styles.icon} glyph={icon} title={title} width={20} height={20} />
         </div>
     );
 };
 
-const ToggleButton = (props) => {
+const TimeInfo = ({ currentTime, totalTime }) => {
     return (
-        <div className={classNames('toggle-button', {'toggle-button-on': props.active })} onClick={props.onClick}>
-            <Icon className="icon" glyph={props.icon} title={props.title} width={20} height={20} />
-        </div>
-    );
-};
-
-const TimeInfo = (props) => {
-    return (
-        <div className="time-info">
-            <span className="time-part current-time">{formatTime(props.currentTime)}</span>
-            <span className="time-part split" />
-            <span className="time-part total-time">{formatTime(props.totalTime)}</span>
+        <div className={styles.timeInfo}>
+            <span className={classNames(styles.timePart, styles.currentTime)}>
+                {formatTime(currentTime)}
+            </span>
+            <span className={classNames(styles.timePart, styles.timeSplit)} />
+            <span className={classNames(styles.timePart, styles.totalTime)}>
+                {formatTime(totalTime)}
+            </span>
         </div>
     );
 };

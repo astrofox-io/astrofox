@@ -1,9 +1,23 @@
-import React from 'react';
-
-import { clamp } from 'utils/math.js';
+import React, { PureComponent } from 'react';
 import { events } from 'core/Global';
+import { clamp } from 'utils/math.js';
+import styles from './BoxInput.less';
 
-export default class BoxInput extends React.Component {
+export default class BoxInput extends PureComponent {
+    static defaultProps = {
+        name: 'box',
+        value: {
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 100
+        },
+        minWidth: 1,
+        minHeight: 1,
+        maxWidth: 100,
+        maxHeight: 100
+    }
+
     constructor(props) {
         super(props);
 
@@ -23,17 +37,29 @@ export default class BoxInput extends React.Component {
         events.off('mousemove', this.onMouseMove);
     }
 
-    componentWillReceiveProps(props) {
-        if (typeof props.value !== 'undefined') {
-            this.setState({ value: props.value });
+    componentWillReceiveProps({ value }) {
+        if (value !== undefined) {
+            this.setState({ value });
         }
     }
 
     onMouseMove = (e) => {
-        if (this.state.resizing) {
-            let { value, position, startX, startY, startWidth, startHeight, startTop, startLeft } = this.state,
-                { minWidth, minHeight, maxWidth, maxHeight, name, onChange } = this.props,
-                dx = e.pageX - startX,
+        const {
+            resizing,
+            value,
+            position,
+            startX,
+            startY,
+            startWidth,
+            startHeight,
+            startTop,
+            startLeft
+        } = this.state;
+
+        if (resizing) {
+            const { minWidth, minHeight, maxWidth, maxHeight, name, onChange } = this.props;
+
+            let dx = e.pageX - startX,
                 dy = e.pageY - startY;
 
             switch (position) {
@@ -59,7 +85,7 @@ export default class BoxInput extends React.Component {
 
             const newValue = Object.assign({}, value);
 
-            this.setState({ value: newValue});
+            this.setState({ value: newValue });
 
             if (onChange) {
                 onChange(name, newValue);
@@ -67,7 +93,10 @@ export default class BoxInput extends React.Component {
         }
     };
 
-    startResize = (pos, e) => {
+    startResize = (pos) => (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
         const { x, y, width, height } = this.state.value;
 
         this.setState({
@@ -80,15 +109,10 @@ export default class BoxInput extends React.Component {
             startLeft: x,
             startTop: y
         });
-
-        e.stopPropagation();
-        e.preventDefault();
     };
 
     endResize = () => {
-        if (this.state.resizing) {
-            this.setState({resizing: false});
-        }
+        this.setState({ resizing: false });
     };
 
     render() {
@@ -96,42 +120,30 @@ export default class BoxInput extends React.Component {
 
         return (
             <div
-                className="input-box" style={{width,height,top: y, left: x}}>
+                className={styles.box}
+                style={{width, height, top: y, left: x}}
+            >
                 <div
-                    className="input-box-center"
-                    onMouseDown={this.startResize.bind(this, 'center')}
+                    className={styles.center}
+                    onMouseDown={this.startResize('center')}
                 />
                 <div
-                    className="input-box-top"
-                    onMouseDown={this.startResize.bind(this, 'top')}
+                    className={styles.top}
+                    onMouseDown={this.startResize('top')}
                 />
                 <div
-                    className="input-box-right"
-                    onMouseDown={this.startResize.bind(this, 'right')}
+                    className={styles.right}
+                    onMouseDown={this.startResize('right')}
                 />
                 <div
-                    className="input-box-bottom"
-                    onMouseDown={this.startResize.bind(this, 'bottom')}
+                    className={styles.bottom}
+                    onMouseDown={this.startResize('bottom')}
                 />
                 <div
-                    className="input-box-left"
-                    onMouseDown={this.startResize.bind(this, 'left')}
+                    className={styles.left}
+                    onMouseDown={this.startResize('left')}
                 />
             </div>
         );
     }
 }
-
-BoxInput.defaultProps = {
-    name: 'box',
-    value: {
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 100
-    },
-    minWidth: 1,
-    minHeight: 1,
-    maxWidth: 100,
-    maxHeight: 100
-};

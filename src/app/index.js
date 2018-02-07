@@ -21,6 +21,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 /* webpack */
-require('../styles/app.less');
+require('../styles/index.less');
 require('../html/index.html');
 require.context('../images/browser/controls', false, /\.(jpg|png|gif)$/);

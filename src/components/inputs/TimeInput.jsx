@@ -1,10 +1,9 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import TextInput from 'components/inputs/TextInput';
 import { formatSeekTime } from 'utils/format';
 import { clamp } from 'utils/math.js';
 
-export default class TimeInput extends React.Component {
+export default class TimeInput extends Component {
     constructor(props) {
         super(props);
 
@@ -13,14 +12,14 @@ export default class TimeInput extends React.Component {
         };
     }
 
-    componentWillReceiveProps(props) {
-        if (typeof props.value !== 'undefined') {
-            this.setState({ value: props.value });
+    componentWillReceiveProps({ value }) {
+        if (value !== undefined) {
+            this.setState({ value });
         }
     }
 
     onChange = (name, val) => {
-        let { min, max } = this.props;
+        const { value, min, max, onChange } = this.props;
 
         const regex = /^(0?\d+:)?(0?\d+):(\d{2}(\.\d{1,3})?)$/;
 
@@ -39,27 +38,32 @@ export default class TimeInput extends React.Component {
             }
 
             // Send value to parent
-            if (this.props.onChange) {
-                this.props.onChange(name, val);
-            }
+            onChange(name, val);
         }
         // Reset to previous value
         else {
-            this.setState({ value: this.props.value });
+            this.setState({ value });
         }
     };
 
     render() {
-        let props = this.props;
+        const {
+            name,
+            width,
+            size,
+            readOnly,
+        } = this.props;
+
+        const { value } = this.state;
 
         return (
             <TextInput
-                name={props.name}
-                width={props.width}
-                size={props.size}
+                name={name}
+                width={width}
+                size={size}
                 buffered={true}
-                readOnly={props.readOnly}
-                value={formatSeekTime(this.state.value)}
+                readOnly={readOnly}
+                value={formatSeekTime(value)}
                 onChange={this.onChange}
             />
         );
@@ -71,5 +75,6 @@ TimeInput.defaultProps = {
     width: 140,
     size: null,
     value: 0,
-    readOnly: false
+    readOnly: false,
+    onChange: () => {}
 };

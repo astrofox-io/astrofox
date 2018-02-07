@@ -1,85 +1,90 @@
-import React from 'react';
+import React, { Children, cloneElement } from 'react';
 import classNames from 'classnames';
-
 import ReactorInput from 'components/inputs/ReactorInput';
 import Icon from 'components/interface/Icon';
 import iconReact from 'svg/icons/flash.svg';
+import styles from './Control.less';
 
-export function Control(props) {
-    const { label, active, className, display, children } = props,
-        classes = {
-            'control': true,
-            'control-active': active
-        };
-
-    const options = React.Children.map(children, child => {
-        if (display && child && child.type === Option) {
-            return React.cloneElement(child, { display });
-        }
-        return child;
-    });
-
+export function Control({ label, active, className, display, children }) {
     return (
-        <div className={classNames(classes, className)}>
-            <div className="header">
-                <span className="label">{label}</span>
-            </div>
-            {options}
+        <div className={classNames({
+            [styles.control]: true,
+            [styles.active]: active
+        }, className)}
+        >
+            {
+                label &&
+                <div className={styles.header}>
+                    <span className={styles.text}>
+                        {label}
+                    </span>
+                </div>
+            }
+            {
+                Children.map(children, child => {
+                    if (display && child && child.type === Option) {
+                        return cloneElement(child, { display });
+                    }
+                    return child;
+                })
+            }
         </div>
     );
 }
 
-export function Option(props) {
-    let text, icon, input, reactor,
-        {
-            label, className, children, display,
-            reactorName, reactorMin, reactorMax, onReactorChange
-        } = props;
-
-    if (label) {
-        text = <span className="label">{label}</span>;
-    }
+export function Option({
+    className, children, display,
+    reactorName, reactorMin, reactorMax, onReactorChange
+}) {
+    let icon, reactor;
 
     if (display && display.reactors) {
         reactor = display.reactors[reactorName];
         if (reactor) {
-            reactor.label = ['REACTOR', display.options.displayName, label];
+            reactor.label = ['REACTOR', display.options.displayName];
         }
     }
 
     if (reactorName) {
-        const classes = {
-            'reactor-icon': true,
-            'reactor-icon-on': reactor
-        };
-
-        const onIconClick = () => {
-            onReactorChange(
-                reactorName,
-                {
-                    lastValue: display.options[reactorName],
-                    min: reactorMin || 0,
-                    max: reactorMax || 1
-                });
-        };
-
         icon = (
             <Icon
-                className={classNames(classes)}
+                className={classNames({
+                    [styles.reactorIcon]: true,
+                    [styles.reactorIconActive]: reactor
+                })}
                 glyph={iconReact}
                 title={reactor ? 'Disable Reactor' : 'Enable Reactor'}
-                onClick={onIconClick}
+                onClick={() => {
+                    onReactorChange(
+                        reactorName,
+                        {
+                            lastValue: display.options[reactorName],
+                            min: reactorMin || 0,
+                            max: reactorMax || 1
+                        }
+                    );
+                }}
             />
         );
     }
 
-    input = reactor ? <ReactorInput reactor={reactor} /> : children;
-
     return (
-        <div className={classNames('option', className)}>
-            {text}
+        <div className={classNames(styles.option, className)}>
+            {
+                reactor ?
+                    <ReactorInput reactor={reactor} /> :
+                    children
+            }
             {icon}
-            {input}
+        </div>
+    );
+}
+
+export function Label({ text, className, children }) {
+    return (
+        <div className={classNames(styles.label, className)}>
+            {text}
+            {children && children}
         </div>
     );
 }

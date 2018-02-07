@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
-
-import { events } from 'core/Global';
 import Icon from 'components/interface/Icon';
+import { events } from 'core/Global';
 import { clamp } from 'utils/math';
 import iconDots from 'svg/icons/dots-three-horizontal.svg';
+import styles from './Splitter.less';
 
-export default class Splitter extends React.PureComponent {
-    constructor(props) {
-        super(props);
+export default class Splitter extends PureComponent {
+    static defaultProps = {
+        type: 'horizontal'
+    }
 
-        this.state = {
-            resizing: false
-        };
+    state = {
+        resizing: false,
+        startY: 0,
+        startX: 0,
+        startWidth: 0,
+        startHeight: 0,
     }
 
     componentDidMount() {
@@ -26,10 +30,18 @@ export default class Splitter extends React.PureComponent {
     }
 
     onMouseMove = (e) => {
-        if (this.state.resizing) {
-            let { startY, startX, startWidth, startHeight } = this.state,
-                { type, panel } = this.props,
-                { width, height, minWidth, minHeight, maxWidth, maxHeight } = panel.getSize();
+        const { resizing, startY, startX, startWidth, startHeight } = this.state;
+
+        if (resizing) {
+            const { type, panel } = this.props;
+            let {
+                width,
+                height,
+                minWidth,
+                minHeight,
+                maxWidth,
+                maxHeight
+            } = panel.getSize();
 
             switch (type) {
                 case 'horizontal':
@@ -46,8 +58,8 @@ export default class Splitter extends React.PureComponent {
     };
 
     startResize = (e) => {
-        let { panel } = this.props,
-            { width, height } = panel.getSize();
+        const { panel } = this.props;
+        const { width, height } = panel.getSize();
 
         this.setState({
             resizing: true,
@@ -65,23 +77,20 @@ export default class Splitter extends React.PureComponent {
     };
 
     render() {
-        let { type } = this.props,
-            classes = {
-                splitter: true,
-                vertical: type === 'vertical',
-                horizontal: type !== 'vertical'
-            };
+        const { type } = this.props;
 
         return (
             <div
-                className={classNames(classes)}
+                className={
+                    classNames({
+                        [styles.splitter]: true,
+                        [styles.vertical]: type === 'vertical',
+                        [styles.horizontal]: type !== 'vertical'
+                    })
+                }
                 onMouseDown={this.startResize}>
-                <Icon className="grip" glyph={iconDots} />
+                <Icon className={styles.grip} glyph={iconDots} />
             </div>
         );
     }
 }
-
-Splitter.defaultProps = {
-    type: 'horizontal'
-};

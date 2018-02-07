@@ -1,31 +1,22 @@
 import React from 'react';
+import styles from './ColorInput.less';
 
-const ColorInput = (props) => {
-    let onChange = (e) => {
-        if (props.onChange) {
-            props.onChange(props.name, e.target.value);
-        }
-    };
-
-    return (
-        <div className="input">
-            <input
-                type="color"
-                className="input-field input-color"
-                style={{width: props.width}}
-                name={props.name}
-                value={props.value}
-                onChange={onChange}
-            />
-        </div>
-    );
-};
+const ColorInput = ({ name, value, width, onChange }) => (
+    <input
+        type="color"
+        className={styles.input}
+        style={{width}}
+        name={name}
+        value={value}
+        onChange={e => onChange(name, e.target.value)}
+    />
+);
 
 ColorInput.defaultProps = {
     name: 'color',
     value: '#ffffff',
     width: 40,
-    onChange: null
+    onChange: () => {}
 };
 
 export default ColorInput;

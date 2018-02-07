@@ -1,0 +1,75 @@
+@import (reference) "~styles/index.less";
+
+.panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    flex: 1 0 auto;
+}
+
+.group {
+    margin-bottom: 24px;
+}
+
+.name {
+    position: relative;
+    color: @text-color2;
+    font-weight: bold;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+    width: 100%;
+    cursor: default;
+
+    &:after {
+        content: "\0020";
+        border-top: 1px solid lighten(@border-color-bottom, 6%);
+        border-bottom: 1px solid darken(@border-color-top, 8%);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+}
+
+.row {
+    display: flex;
+    margin-bottom: 16px;
+    font-size: 11px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.text {
+    width: 50%;
+    margin-right: 20px;
+}
+
+.label {
+    color: @text-color1;
+    margin-bottom: 3px;
+}
+
+.description {
+    color: @text-color2;
+    align-self: flex-end;
+}
+
+.input {
+    margin-right: 8px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.buttons {
+    text-align: center;
+    margin-bottom: 10px;
+}

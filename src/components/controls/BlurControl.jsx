@@ -1,87 +1,51 @@
-import React from 'react';
-import propTypes from 'prop-types';
-
+import React, { PureComponent, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+    SelectInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-import SelectInput from 'components/inputs/SelectInput';
-
-const types = [
+const blurOptions = [
     'Box',
     'Circular',
     'Gaussian',
     'Zoom'
 ];
 
-export class BlurControl extends React.Component {
-    constructor(props) {
-        super(props);
+export class BlurControl extends PureComponent {
+    static contextTypes = {
+        app: PropTypes.object
     }
 
     render() {
-        let centerOptions,
-            {
-                display, active, stageWidth, stageHeight, onChange, onReactorChange,
-                x, y, type, amount
-            } = this.props;
-
-        if (type === 'Zoom') {
-            centerOptions = [
-                <Option label="X" key="x">
-                    <NumberInput
-                        name="x"
-                        min={-stageWidth/2}
-                        max={stageWidth/2}
-                        value={x}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="x"
-                        min={-stageWidth/2}
-                        max={stageWidth/2}
-                        value={x}
-                        onChange={onChange}
-                    />
-                </Option>,
-                <Option label="Y" key="y">
-                    <NumberInput
-                        name="y"
-                        min={-stageHeight/2}
-                        max={stageHeight/2}
-                        value={y}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="y"
-                        min={-stageHeight/2}
-                        max={stageHeight/2}
-                        value={y}
-                        onChange={onChange}
-                    />
-                </Option>
-            ];
-        }
+        const {
+            display, active, stageWidth, stageHeight,
+            x, y, type, amount,
+            onChange, onReactorChange,
+        } = this.props;
 
         return (
             <Control
                 label="BLUR"
                 display={display}
                 active={active}>
-                <Option label="Type">
+                <Option>
+                    <Label text="Type" />
                     <SelectInput
                         name="type"
                         width={140}
-                        items={types}
+                        items={blurOptions}
                         value={type}
                         onChange={onChange}
                     />
                 </Option>
                 <Option
-                    label="Amount"
                     reactorName="amount"
                     onReactorChange={onReactorChange}>
+                    <Label text="Amount" />
                     <NumberInput
                         name="amount"
                         width={40}
@@ -100,14 +64,48 @@ export class BlurControl extends React.Component {
                         onChange={onChange}
                     />
                 </Option>
-                {centerOptions}
+                {
+                    type === 'Zoom' &&
+                    <Fragment>
+                        <Option>
+                            <Label text="X" />
+                            <NumberInput
+                                name="x"
+                                min={-stageWidth/2}
+                                max={stageWidth/2}
+                                value={x}
+                                onChange={onChange}
+                            />
+                            <RangeInput
+                                name="x"
+                                min={-stageWidth/2}
+                                max={stageWidth/2}
+                                value={x}
+                                onChange={onChange}
+                            />
+                        </Option>
+                        <Option>
+                            <Label text="Y" />
+                            <NumberInput
+                                name="y"
+                                min={-stageHeight/2}
+                                max={stageHeight/2}
+                                value={y}
+                                onChange={onChange}
+                            />
+                            <RangeInput
+                                name="y"
+                                min={-stageHeight/2}
+                                max={stageHeight/2}
+                                value={y}
+                                onChange={onChange}
+                            />
+                        </Option>
+                    </Fragment>
+                }
             </Control>
         );
     }
 }
-
-BlurControl.contextTypes = {
-    app: propTypes.object
-};
 
 export default DisplayControl(BlurControl);

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-
 import Menu from 'components/nav/Menu';
+import styles from './Menu.less';
 
 export default class MenuBarItem extends React.Component {
     constructor(props) {
@@ -27,17 +27,23 @@ export default class MenuBarItem extends React.Component {
     };
 
     render() {
+        const {
+            active,
+            label,
+            items,
+        } = this.props;
+
         return (
-            <div className="item">
+            <div className={styles.barItem}>
                 <div
-                    className={classNames('text', {'active': this.props.active})}
+                    className={classNames(styles.text, {[styles.active]: active})}
                     onClick={this.onClick}
                     onMouseOver={this.onMouseOver}>
-                    {this.props.label}
+                    {label}
                 </div>
                 <Menu
-                    items={this.props.items}
-                    visible={this.props.active}
+                    items={items}
+                    visible={active}
                     onMenuItemClick={this.onMenuItemClick}
                 />
             </div>

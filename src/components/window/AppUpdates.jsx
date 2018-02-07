@@ -1,30 +1,36 @@
 import React from 'react';
-import propTypes from 'prop-types';
-
+import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';
+import styles from './AppUpdates.less';
 
 export default class AppUpdates extends React.Component {
+    static contextTypes = {
+        app: PropTypes.object
+    }
+
+    state = {
+        message: null
+    }
+
     constructor(props, context) {
         super(props);
 
         this.appUpdater = context.app.updater;
-
-        this.state = {
-            message: null
-        };
     }
 
     componentDidMount() {
-        let appUpdater = this.appUpdater;
+        const {
+            checking,
+            downloading,
+            downloadComplete,
+        } = this.appUpdater;
 
-        appUpdater.on('update', this.updateStatus, this);
+        this.appUpdater.on('update', this.updateStatus, this);
 
-        if (!appUpdater.checking &&
-            !appUpdater.downloading &&
-            !appUpdater.downloadComplete) {
-            appUpdater.checkForUpdates();
+        if (!checking && !downloading && !downloadComplete) {
+            this.appUpdater.checkForUpdates();
         }
 
         this.updateStatus();
@@ -35,26 +41,34 @@ export default class AppUpdates extends React.Component {
     }
 
     updateStatus() {
-        let appUpdater = this.appUpdater;
+        const {
+            error,
+            downloading,
+            downloadComplete,
+            installing,
+            checking,
+            hasUpdate,
+            versionInfo,
+        } = this.appUpdater;
 
-        if (appUpdater.error) {
+        if (error) {
             this.setState({ message: 'Unable to check for updates.' });
         }
-        else if (appUpdater.downloading) {
+        else if (downloading) {
             this.setState({ message: 'Downloading update...' });
         }
-        else if (appUpdater.downloadComplete) {
-            let version = appUpdater.versionInfo.version;
+        else if (downloadComplete) {
+            const { version } = versionInfo;
             this.setState({ message: `A new update (${version}) is ready to install.` });
         }
-        else if (appUpdater.installing) {
+        else if (installing) {
             this.setState({ message: 'Installing update...' });
         }
-        else if (appUpdater.checking) {
+        else if (checking) {
             this.setState({ message: 'Checking for updates...' });
         }
-        else if (appUpdater.hasUpdate) {
-            let version = appUpdater.versionInfo.version;
+        else if (hasUpdate) {
+            const { version } = versionInfo;
             this.setState({ message: `A new update (${version}) is available to download and install.` });
         }
         else {
@@ -74,11 +88,22 @@ export default class AppUpdates extends React.Component {
         let icon,
             installButton,
             downloadButton,
-            closeText = 'Close',
-            { checking, installing, downloading, downloadComplete, hasUpdate } = this.appUpdater;
+            closeText = 'Close';
+
+        const {
+            checking,
+            installing,
+            downloading,
+            downloadComplete,
+            hasUpdate
+        } = this.appUpdater;
+
+        const { onClose } = this.props;
+
+        const { message } = this.state;
 
         if (checking || downloading || installing) {
-            icon = <Spinner className="icon" size={30} />;
+            icon = <Spinner className={styles.icon} size={30} />;
         }
 
         if (downloadComplete && !installing) {
@@ -91,25 +116,25 @@ export default class AppUpdates extends React.Component {
         }
 
         if (!hasUpdate && !icon) {
-            icon = <Checkmark className="icon" size={30} />;
+            icon = <Checkmark className={styles.icon} size={30} />;
         }
 
         return (
-            <div className="updates">
-                <div className="message">
+            <div>
+                <div className={styles.message}>
                     {icon}
-                    {this.state.message}
+                    {message}
                 </div>
-                <div className="buttons">
+                <div className={styles.buttons}>
                     {installButton}
                     {downloadButton}
-                    <Button text={closeText} onClick={this.props.onClose} />
+                    <Button
+                        className={styles.button}
+                        text={closeText}
+                        onClick={onClose}
+                    />
                 </div>
             </div>
         );
     }
 }
-
-AppUpdates.contextTypes = {
-    app: propTypes.object
-};

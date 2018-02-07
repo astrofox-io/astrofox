@@ -1,16 +1,20 @@
-import React from 'react';
-import propTypes from 'prop-types';
-
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { getControlComponent } from 'utils/controls';
+import styles from './ControlsPanel.less';
 
-export default class ControlsPanel extends React.PureComponent {
+export default class ControlsPanel extends PureComponent {
+    static contextTypes = {
+        app: PropTypes.object
+    }
+
+    state = {
+        displays: [],
+        activeIndex: 0,
+    }
+
     constructor(props, context) {
         super(props);
-
-        this.state = {
-            displays: [],
-            activeIndex: 0
-        };
 
         this.nodes = {};
         this.controls = {};
@@ -57,7 +61,7 @@ export default class ControlsPanel extends React.PureComponent {
                 <div
                     key={id}
                     ref={e => this.nodes[id] = e}
-                    className="control-wrapper">
+                    className={styles.wrapper}>
                     <Component
                         ref={e => this.controls[id] = e}
                         display={display}
@@ -78,15 +82,11 @@ export default class ControlsPanel extends React.PureComponent {
         let controls = this.getControls();
 
         return (
-            <div className="controls-panel" ref={e => this.nodes.panel = e}>
-                <div className="controls">
+            <div className={styles.panel} ref={e => this.nodes.panel = e}>
+                <div>
                     {controls}
                 </div>
             </div>
         );
     }
 }
-
-ControlsPanel.contextTypes = {
-    app: propTypes.object
-};

@@ -1,28 +1,23 @@
 import React from 'react';
 import classNames from 'classnames';
+import styles from './ToggleInput.less';
 
-const ToggleInput = (props) => {
-    let classes = {
-        'input': true,
-        'input-toggle': true,
-        'input-toggle-on': props.value
-    };
-
-    let onClick = () => {
-        if (props.onChange) {
-            props.onChange(props.name, !props.value);
+const ToggleInput = ({ name, value, onChange }) => (
+    <div
+        className={
+            classNames({
+                [styles.toggle]: true,
+                [styles.on]: value
+            })
         }
-    };
-
-    return (
-        <div className={classNames(classes)} onClick={onClick} />
-    );
-};
+        onClick={() => onChange(name, !value)}
+    />
+);
 
 ToggleInput.defaultProps = {
     name: 'toggle',
     value: false,
-    onChange: null
+    onChange: () => {}
 };
 
 export default ToggleInput;

@@ -1,0 +1,47 @@
+@import (reference) "~styles/index.less";
+
+.box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid lighten(@color1, 20%);
+}
+
+.center {
+    position: absolute;
+    cursor: move;
+    width: 100%;
+    height: 100%;
+}
+
+.top {
+    position: absolute;
+    cursor: ns-resize;
+    width: 100%;
+    height: 10px;
+    top: -5px;
+}
+
+.right {
+    position: absolute;
+    cursor: ew-resize;
+    width: 10px;
+    height: 100%;
+    right: -5px;
+}
+
+.bottom {
+    position: absolute;
+    cursor: ns-resize;
+    width: 100%;
+    height: 10px;
+    bottom: -5px;
+}
+
+.left {
+    position: absolute;
+    cursor: ew-resize;
+    width: 10px;
+    height: 100%;
+    left: -5px;
+}

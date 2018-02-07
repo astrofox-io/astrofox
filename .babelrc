@@ -2,14 +2,15 @@
   "presets": [
     ["env", {
       "targets": {
-        "electron": "1.7.6"
+        "electron": "1.7.11"
       }
     }],
     "react"
   ],
   "plugins": [
     ["transform-runtime", {"polyfill": false}],
-    "transform-class-properties"
+    "transform-class-properties",
+    "transform-object-rest-spread"
   ],
   "env": {
     "production": {
@@ -19,7 +20,8 @@
       ],
       "plugins": [
         ["transform-runtime", {"polyfill": false}],
-        "transform-class-properties"
+        "transform-class-properties",
+        "transform-object-rest-spread"
       ]
     }
   }

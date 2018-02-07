@@ -1,12 +1,12 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option } from 'components/controls/Control';
+import { Control, Option, Label } from 'components/controls/Control';
+import {
+    NumberInput,
+    RangeInput,
+} from 'lib/inputs';
 
-import NumberInput from 'components/inputs/NumberInput';
-import RangeInput from 'components/inputs/RangeInput';
-
-export class MirrorControl extends React.Component {
+export class MirrorControl extends PureComponent {
     constructor(props) {
         super(props);
     }
@@ -16,7 +16,8 @@ export class MirrorControl extends React.Component {
 
         return (
             <Control label="MIRROR" active={active}>
-                <Option label="Side">
+                <Option>
+                    <Label text="Side" />
                     <NumberInput
                         name="side"
                         width={40}

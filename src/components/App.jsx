@@ -1,5 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import Window from 'core/Window';
 import { events } from 'core/Global';
@@ -12,23 +12,21 @@ import Overlay from 'components/window/Overlay';
 import ControlPicker from 'components/window/ControlPicker';
 import StatusBar from 'components/window/StatusBar';
 import TitleBar from 'components/window/TitleBar';
-
 import AppSettings from 'components/settings/AppSettings';
 import CanvasSettings from 'components/settings/CanvasSettings';
 import VideoSettings from 'components/settings/VideoSettings';
-
 import ControlDock from 'components/panels/ControlDock';
-
 import MenuBar from 'components/nav/MenuBar';
-
 import Player from 'components/audio/Player';
 import ReactorControl from 'components/controls/ReactorControl';
-
 import Stage from 'components/stage/Stage';
 
 import menuConfig from 'config/menu';
 import audioExtensions from 'config/audioExtensions';
 import fontOptions from 'config/fonts.json';
+
+import styles from './App.less';
+import globalStyles from 'styles/index.less';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -72,8 +70,6 @@ export default class App extends React.Component {
 
             this.showModal(
                 <ControlPicker
-                    width={720}
-                    height={300}
                     activeIndex={types.indexOf(type)}
                     onControlPicked={callback}
                     onClose={this.hideModal}
@@ -174,7 +170,6 @@ export default class App extends React.Component {
             case 'save-video':
                 this.showModal(
                     <VideoSettings
-                        width={640}
                         onStart={this.startRender}
                         onClose={this.hideModal}
                     />,
@@ -189,7 +184,6 @@ export default class App extends React.Component {
             case 'edit-canvas':
                 this.showModal(
                     <CanvasSettings
-                        width={500}
                         onClose={this.hideModal}
                     />,
                     {title: 'CANVAS', buttons: null}
@@ -199,7 +193,6 @@ export default class App extends React.Component {
             case 'edit-settings':
                 this.showModal(
                     <AppSettings
-                        width={500}
                         onClose={this.hideModal}
                     />,
                     {title: 'SETTINGS', buttons: null}
@@ -384,7 +377,7 @@ export default class App extends React.Component {
 
         return (
             <div
-                id="container"
+                className={styles.container}
                 onClick={this.onClick}
                 onDrop={this.onDragDrop}
                 onDragOver={this.onDragDrop}>
@@ -395,8 +388,8 @@ export default class App extends React.Component {
                     items={menuConfig}
                     onMenuAction={this.onMenuAction}
                 />
-                <div id="body">
-                    <div id="viewport">
+                <div className={styles.body}>
+                    <div className={styles.viewport}>
                         <Stage
                             ref={e => this.stage = e}
                             onFileDropped={this.loadAudioFile}
@@ -423,7 +416,7 @@ export default class App extends React.Component {
 }
 
 App.childContextTypes = {
-    app: propTypes.object
+    app: PropTypes.object
 };
 
 const Preload = () => {
@@ -432,7 +425,7 @@ const Preload = () => {
     });
 
     return (
-        <div className="hidden">
+        <div className={globalStyles.hidden}>
             {fonts}
         </div>
     );
