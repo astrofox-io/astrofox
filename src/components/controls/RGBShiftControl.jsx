@@ -1,17 +1,21 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 import {
     NumberInput,
     RangeInput,
+    ReactorInput,
 } from 'lib/inputs';
 
-export class RGBShiftControl extends Component {
-
+export class RGBShiftControl extends PureComponent {
     render() {
         const {
-            display, stageWidth, active, onChange,
-            onReactorChange, offset, angle
+            display,
+            stageWidth,
+            active,
+            onChange,
+            offset,
+            angle,
         } = this.props;
 
         return (
@@ -19,51 +23,53 @@ export class RGBShiftControl extends Component {
                 label="RGB SHIFT"
                 active={active}
                 display={display}>
-                <Option
-                    reactorName="offset"
-                    reactorMax={stageWidth}
-                    onReactorChange={onReactorChange}
-                >
+                <Option>
                     <Label text="Offset" />
-                    <NumberInput
+                    <ReactorInput
                         name="offset"
-                        width={40}
-                        value={offset}
-                        min={0}
                         max={stageWidth}
-                        step={1}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="offset"
-                        min={0.0}
-                        max={stageWidth}
-                        step={1}
-                        value={offset}
-                        onChange={onChange}
-                    />
+                    >
+                        <NumberInput
+                            name="offset"
+                            width={40}
+                            value={offset}
+                            min={0}
+                            max={stageWidth}
+                            step={1}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="offset"
+                            min={0.0}
+                            max={stageWidth}
+                            step={1}
+                            value={offset}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
-                <Option
-                    reactorName="angle"
-                    reactorMax={360}
-                    onReactorChange={onReactorChange}
-                >
+                <Option>
                     <Label text="Angle" />
-                    <NumberInput
+                    <ReactorInput
                         name="angle"
-                        width={40}
-                        value={angle}
-                        min={0}
                         max={360}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="angle"
-                        min={0}
-                        max={360}
-                        value={angle}
-                        onChange={onChange}
-                    />
+                    >
+                        <NumberInput
+                            name="angle"
+                            width={40}
+                            value={angle}
+                            min={0}
+                            max={360}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="angle"
+                            min={0}
+                            max={360}
+                            value={angle}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

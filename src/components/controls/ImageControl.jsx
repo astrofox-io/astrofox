@@ -6,16 +6,15 @@ import Icon from 'components/interface/Icon';
 import {
     NumberInput,
     ImageInput,
-    RangeInput
+    RangeInput,
+    ReactorInput,
 } from 'lib/inputs';
 import iconLink from 'svg/icons/link.svg';
 import blankImage from 'images/data/blank.gif';
 import styles from './ImageControl.less';
 
 export class ImageControl extends PureComponent {
-    constructor(props) {
-        super(props);
-
+    componentDidMount() {
         this.image = document.createElement('img');
     }
 
@@ -67,20 +66,34 @@ export class ImageControl extends PureComponent {
 
     render() {
         const {
-                active, stageWidth, stageHeight, display, onReactorChange,
-                fixed, src, width, height, x, y, rotation, opacity
-            } = this.props,
-            image = this.image,
-            readOnly = !(image && image.src && image.src !== blankImage),
-            imageWidth = readOnly ? 0 : image.naturalWidth,
-            imageHeight = readOnly ? 0 : image.naturalHeight,
-            maxWidth = imageWidth * 2,
-            maxHeight = imageHeight * 2,
-            xMax = readOnly ? 0 : (imageWidth > stageWidth) ? imageWidth : stageWidth,
-            yMax = readOnly ? 0 : (imageHeight > stageHeight) ? imageHeight : stageHeight;
+            display,
+            active,
+            stageWidth,
+            stageHeight,
+            fixed,
+            src,
+            width,
+            height,
+            x,
+            y,
+            rotation,
+            opacity,
+        } = this.props;
+        const { image } = this;
+        const readOnly = !(image && image.src && image.src !== blankImage);
+        const imageWidth = readOnly ? 0 : image.naturalWidth;
+        const imageHeight = readOnly ? 0 : image.naturalHeight;
+        const maxWidth = imageWidth * 2;
+        const maxHeight = imageHeight * 2;
+        const xMax = readOnly ? 0 : imageWidth > stageWidth ? imageWidth : stageWidth;
+        const yMax = readOnly ? 0 : imageHeight > stageHeight ? imageHeight : stageHeight;
 
         return (
-            <Control label="IMAGE" active={active} display={display}>
+            <Control
+                label="IMAGE"
+                active={active}
+                display={display}
+            >
                 <Option>
                     <Label text="Image" />
                     <ImageInput
@@ -208,29 +221,29 @@ export class ImageControl extends PureComponent {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="opacity"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Opacity" />
-                    <NumberInput
-                        name="opacity"
-                        width={40}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={readOnly ? 0 : opacity}
-                        readOnly={readOnly}
-                        onChange={this.onChange}
-                    />
-                    <RangeInput
-                        name="opacity"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={readOnly ? 0 : opacity}
-                        readOnly={readOnly}
-                        onChange={this.onChange}
-                    />
+                    <ReactorInput name="opacity">
+                        <NumberInput
+                            name="opacity"
+                            width={40}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={readOnly ? 0 : opacity}
+                            readOnly={readOnly}
+                            onChange={this.onChange}
+                        />
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={readOnly ? 0 : opacity}
+                            readOnly={readOnly}
+                            onChange={this.onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

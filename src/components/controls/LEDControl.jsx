@@ -4,77 +4,95 @@ import { Control, Option, Label } from 'components/controls/Control';
 import {
     NumberInput,
     RangeInput,
+    ReactorInput,
 } from 'lib/inputs';
 
 export class LEDControl extends PureComponent {
     render() {
-        const { display, active, spacing, size, blur, onChange, onReactorChange } = this.props;
+        const {
+            display,
+            active,
+            spacing,
+            size,
+            blur,
+            onChange,
+        } = this.props;
 
         return (
-            <Control label="LED" active={active} display={display}>
-                <Option
-                    reactorName="spacing"
-                    reactorMin={1}
-                    reactorMax={100}
-                    onReactorChange={onReactorChange}>
+            <Control
+                label="LED"
+                active={active}
+                display={display}
+            >
+                <Option>
                     <Label text="Spacing" />
-                    <NumberInput
-                        name="spacing"
-                        width={40}
-                        value={spacing}
-                        min={1}
-                        max={100}
-                        onChange={onChange}
-                    />
-                    <RangeInput
+                    <ReactorInput
                         name="spacing"
                         min={1}
                         max={100}
-                        value={spacing}
-                        onChange={onChange}
-                    />
+                    >
+                        <NumberInput
+                            name="spacing"
+                            width={40}
+                            value={spacing}
+                            min={1}
+                            max={100}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="spacing"
+                            min={1}
+                            max={100}
+                            value={spacing}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
-                <Option
-                    reactorName="size"
-                    reactorMax={100}
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Size" />
-                    <NumberInput
+                    <ReactorInput
                         name="size"
-                        width={40}
-                        value={size}
-                        min={0}
                         max={100}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="size"
-                        min={0}
-                        max={100}
-                        value={size}
-                        onChange={onChange}
-                    />
+                    >
+                        <NumberInput
+                            name="size"
+                            width={40}
+                            value={size}
+                            min={0}
+                            max={100}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="size"
+                            min={0}
+                            max={100}
+                            value={size}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
-                <Option
-                    reactorName="blur"
-                    reactorMax={100}
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Blur" />
-                    <NumberInput
+                    <ReactorInput
                         name="blur"
-                        width={40}
-                        value={blur}
-                        min={0}
                         max={100}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="blur"
-                        min={0}
-                        max={100}
-                        value={blur}
-                        onChange={onChange}
-                    />
+                    >
+                        <NumberInput
+                            name="blur"
+                            width={40}
+                            value={blur}
+                            min={0}
+                            max={100}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="blur"
+                            min={0}
+                            max={100}
+                            value={blur}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

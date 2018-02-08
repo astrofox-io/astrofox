@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 import {
@@ -9,20 +8,30 @@ import {
     ToggleInput
 } from 'lib/inputs';
 
-export class SoundwaveControl extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    
+export class SoundwaveControl extends PureComponent {
     render() {
         const {
-            active, stageWidth, stageHeight, onChange,
-            color, length, lineWidth, width, height, x, y,
-            smooth, rotation, opacity
+            active,
+            stageWidth,
+            stageHeight,
+            color,
+            length,
+            lineWidth,
+            width,
+            height,
+            x,
+            y,
+            smooth,
+            rotation,
+            opacity,
+            onChange,
         } = this.props;
 
         return (
-            <Control label="SOUNDWAVE" active={active}>
+            <Control
+                label="SOUNDWAVE"
+                active={active}
+            >
                 <Option>
                     <Label text="Color" />
                     <ColorInput

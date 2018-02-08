@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 import {
@@ -8,6 +8,7 @@ import {
     SelectInput,
     TextInput,
     ToggleInput,
+    ReactorInput,
 } from 'lib/inputs';
 import fonts from 'config/fonts.json';
 
@@ -15,23 +16,36 @@ const fontOptions = fonts.map(item => (
     { name: item, value: item, style: { fontFamily: item } }
 ));
 
-export class TextControl extends Component {
+export class TextControl extends PureComponent {
     componentDidMount() {
-        const { display } = this.props;
-
-        if (display.initialized) {
-            display.text.render();
-        }
+        this.props.display.text.render();
     }
 
     render() {
         const {
-            active, stageWidth, stageHeight, onChange,
-            text, size, font, bold, italic, color, x, y, rotation, opacity
+            display,
+            active,
+            stageWidth,
+            stageHeight,
+            text,
+            size,
+            font,
+            bold,
+            italic,
+            color,
+            x,
+            y,
+            rotation,
+            opacity,
+            onChange,
         } = this.props;
 
         return (
-            <Control label="TEXT" active={active}>
+            <Control
+                label="TEXT"
+                active={active}
+                display={display}
+            >
                 <Option>
                     <Label text="Text" />
                     <TextInput
@@ -139,23 +153,25 @@ export class TextControl extends Component {
                 </Option>
                 <Option>
                     <Label text="Opacity" />
-                    <NumberInput
-                        name="opacity"
-                        width={40}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={opacity}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="opacity"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={opacity}
-                        onChange={onChange}
-                    />
+                    <ReactorInput name="opacity">
+                        <NumberInput
+                            name="opacity"
+                            width={40}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={opacity}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={opacity}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

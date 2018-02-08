@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 import {
@@ -6,9 +6,10 @@ import {
     ColorRangeInput,
     RangeInput,
     ToggleInput,
+    ReactorInput,
 } from 'lib/inputs';
 
-export class BarSpectrumControl extends Component {
+export class BarSpectrumControl extends PureComponent {
     onChange = (name, value) => {
         const { onChange } = this.props;
         const obj = {};
@@ -25,14 +26,35 @@ export class BarSpectrumControl extends Component {
 
     render() {
         const {
-            display, active, stageWidth, stageHeight, onReactorChange,
-            maxDecibels, minFrequency, maxFrequency, smoothingTimeConstant,
-            width, height, shadowHeight, barWidth, barWidthAutoSize, barSpacing, barSpacingAutoSize,
-            x, y, color, shadowColor, rotation, opacity
+            display,
+            active,
+            stageWidth,
+            stageHeight,
+            maxDecibels,
+            minFrequency,
+            maxFrequency,
+            smoothingTimeConstant,
+            width,
+            height,
+            shadowHeight,
+            barWidth,
+            barWidthAutoSize,
+            barSpacing,
+            barSpacingAutoSize,
+            x,
+            y,
+            color,
+            shadowColor,
+            rotation,
+            opacity,
         } = this.props;
 
         return (
-            <Control label="BAR SPECTRUM" active={active} display={display}>
+            <Control
+                label="BAR SPECTRUM"
+                active={active}
+                display={display}
+            >
                 <Option>
                     <Label text="Max dB" />
                     <NumberInput
@@ -200,7 +222,7 @@ export class BarSpectrumControl extends Component {
                         hidden={barSpacingAutoSize}
                         onChange={this.onChange}
                     />
-                    <span className="label">Auto-Size</span>
+                    <Label text="Auto-Size" />
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={barSpacingAutoSize}
@@ -279,27 +301,27 @@ export class BarSpectrumControl extends Component {
                         onChange={this.onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="opacity"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Opacity" />
-                    <NumberInput
-                        name="opacity"
-                        value={opacity}
-                        width={40}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        onChange={this.onChange}
-                    />
-                    <RangeInput
-                        name="opacity"
-                        value={opacity}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        onChange={this.onChange}
-                    />
+                    <ReactorInput name="opacity">
+                        <NumberInput
+                            name="opacity"
+                            value={opacity}
+                            width={40}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            onChange={this.onChange}
+                        />
+                        <RangeInput
+                            name="opacity"
+                            value={opacity}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            onChange={this.onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

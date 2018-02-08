@@ -15,7 +15,10 @@ export class MirrorControl extends PureComponent {
         const { active, side, onChange } = this.props;
 
         return (
-            <Control label="MIRROR" active={active}>
+            <Control
+                label="MIRROR"
+                active={active}
+            >
                 <Option>
                     <Label text="Side" />
                     <NumberInput

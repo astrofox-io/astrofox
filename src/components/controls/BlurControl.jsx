@@ -6,6 +6,7 @@ import {
     NumberInput,
     RangeInput,
     SelectInput,
+    ReactorInput,
 } from 'lib/inputs';
 
 const blurOptions = [
@@ -22,16 +23,23 @@ export class BlurControl extends PureComponent {
 
     render() {
         const {
-            display, active, stageWidth, stageHeight,
-            x, y, type, amount,
-            onChange, onReactorChange,
+            display,
+            active,
+            stageWidth,
+            stageHeight,
+            x,
+            y,
+            type,
+            amount,
+            onChange,
         } = this.props;
 
         return (
             <Control
                 label="BLUR"
                 display={display}
-                active={active}>
+                active={active}
+            >
                 <Option>
                     <Label text="Type" />
                     <SelectInput
@@ -42,27 +50,27 @@ export class BlurControl extends PureComponent {
                         onChange={onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="amount"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Amount" />
-                    <NumberInput
-                        name="amount"
-                        width={40}
-                        value={amount}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="amount"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={amount}
-                        onChange={onChange}
-                    />
+                    <ReactorInput name="amount">
+                        <NumberInput
+                            name="amount"
+                            width={40}
+                            value={amount}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="amount"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={amount}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
                 {
                     type === 'Zoom' &&

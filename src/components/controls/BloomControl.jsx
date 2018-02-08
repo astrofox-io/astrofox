@@ -5,6 +5,7 @@ import {
     NumberInput,
     RangeInput,
     SelectInput,
+    ReactorInput,
 } from 'lib/inputs';
 
 const blendOptions = [
@@ -15,15 +16,20 @@ const blendOptions = [
 export class BloomControl extends PureComponent {
     render() {
         const {
-            display, active, blendMode, amount, threshold,
-            onChange, onReactorChange,
+            display,
+            active,
+            blendMode,
+            amount,
+            threshold,
+            onChange,
         } = this.props;
 
         return (
             <Control
                 label="BLOOM"
                 active={active}
-                display={display}>
+                display={display}
+            >
                 <Option>
                     <Label text="Blend Mode" />
                     <SelectInput
@@ -34,49 +40,49 @@ export class BloomControl extends PureComponent {
                         onChange={onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="amount"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Amount" />
-                    <NumberInput
-                        name="amount"
-                        width={40}
-                        value={amount}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="amount"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={amount}
-                        onChange={onChange}
-                    />
+                    <ReactorInput name="amount">
+                        <NumberInput
+                            name="amount"
+                            width={40}
+                            value={amount}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="amount"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={amount}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
-                <Option
-                    reactorName="threshold"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Threshold" />
-                    <NumberInput
-                        name="threshold"
-                        width={40}
-                        value={threshold}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="threshold"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={threshold}
-                        onChange={onChange}
-                    />
+                    <ReactorInput name="threshold">
+                        <NumberInput
+                            name="threshold"
+                            width={40}
+                            value={threshold}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="threshold"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={threshold}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

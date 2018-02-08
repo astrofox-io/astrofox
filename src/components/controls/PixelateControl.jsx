@@ -5,9 +5,10 @@ import {
     NumberInput,
     RangeInput,
     SelectInput,
+    ReactorInput,
 } from 'lib/inputs';
 
-const renderModes = [
+const renderOptions = [
     'Square',
     'Hexagon'
 ];
@@ -17,42 +18,53 @@ const maxPixelSize = 240;
 
 export class PixelateControl extends PureComponent {
     render() {
-        const { display, active, type, size, onChange, onReactorChange } = this.props;
+        const {
+            display,
+            active,
+            type,
+            size,
+            onChange
+        } = this.props;
 
         return (
-            <Control label="PIXELATE" active={active} display={display}>
+            <Control
+                label="PIXELATE"
+                active={active}
+                display={display}
+            >
                 <Option>
                     <Label text="Type" />
                     <SelectInput
                         name="type"
                         width={140}
-                        items={renderModes}
+                        items={renderOptions}
                         value={type}
                         onChange={onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="size"
-                    reactorMin={minPixelSize}
-                    reactorMax={maxPixelSize}
-                    onReactorChange={onReactorChange}
-                >
+                <Option>
                     <Label text="Size" />
-                    <NumberInput
-                        name="size"
-                        width={40}
-                        value={size}
-                        min={minPixelSize}
-                        max={maxPixelSize}
-                        onChange={onChange}
-                    />
-                    <RangeInput
+                    <ReactorInput
                         name="size"
                         min={minPixelSize}
                         max={maxPixelSize}
-                        value={size}
-                        onChange={onChange}
-                    />
+                    >
+                        <NumberInput
+                            name="size"
+                            width={40}
+                            value={size}
+                            min={minPixelSize}
+                            max={maxPixelSize}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="size"
+                            min={minPixelSize}
+                            max={maxPixelSize}
+                            value={size}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

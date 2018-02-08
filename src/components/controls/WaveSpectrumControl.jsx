@@ -1,25 +1,46 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
-import NumberInput from 'components/inputs/NumberInput';
-import ColorInput from 'components/inputs/ColorInput';
-import ColorRangeInput from 'components/inputs/ColorRangeInput';
-import RangeInput from 'components/inputs/RangeInput';
-import ToggleInput from 'components/inputs/ToggleInput';
+import {
+    NumberInput,
+    ColorInput,
+    ColorRangeInput,
+    RangeInput,
+    ToggleInput,
+    ReactorInput,
+} from 'lib/inputs';
 
-export class WaveSpectrumControl extends Component {
+export class WaveSpectrumControl extends PureComponent {
     render() {
         const { 
-            display, active, stageWidth, stageHeight, onChange, onReactorChange,
-            maxDecibels, minFrequency, maxFrequency, smoothingTimeConstant, width, height,
-            stroke, color, fill, fillColor, taper, x, y, rotation, opacity
+            display,
+            active,
+            stageWidth,
+            stageHeight,
+            maxDecibels,
+            minFrequency,
+            maxFrequency,
+            smoothingTimeConstant,
+            width,
+            height,
+            stroke,
+            color,
+            fill,
+            fillColor,
+            taper,
+            x,
+            y,
+            rotation,
+            opacity,
+            onChange,
         } = this.props;
 
         return (
             <Control
                 label="WAVE SPECTRUM"
                 active={active}
-                display={display}>
+                display={display}
+            >
                 <Option>
                     <Label text="Max dB" />
                     <NumberInput
@@ -233,27 +254,27 @@ export class WaveSpectrumControl extends Component {
                         onChange={onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="opacity"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Opacity" />
-                    <NumberInput
-                        name="opacity"
-                        width={40}
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={opacity}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="opacity"
-                        min={0}
-                        max={1.0}
-                        step={0.01}
-                        value={opacity}
-                        onChange={onChange}
-                    />
+                    <ReactorInput name="opacity">
+                        <NumberInput
+                            name="opacity"
+                            width={40}
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={opacity}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1.0}
+                            step={0.01}
+                            value={opacity}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );

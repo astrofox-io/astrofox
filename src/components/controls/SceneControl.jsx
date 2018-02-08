@@ -9,7 +9,7 @@ import {
     ReactorInput,
 } from 'lib/inputs';
 
-const blendModes = [
+const blendOptions = [
     'None',
     'Normal',
     { separator: true },
@@ -40,7 +40,7 @@ const blendModes = [
     'Phoenix',
     'Glow',
     'Reflect'
-].map(item => typeof item !== 'object' ? { name: item, value: item } : item);
+];
 
 export class SceneControl extends PureComponent {
     onChange = (name, value) => {
@@ -72,7 +72,7 @@ export class SceneControl extends PureComponent {
                     <SelectInput
                         name="blendMode"
                         width={140}
-                        items={blendModes}
+                        items={blendOptions}
                         value={blendMode}
                         onChange={this.onChange}
                     />

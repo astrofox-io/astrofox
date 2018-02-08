@@ -9,18 +9,18 @@ export default function DisplayControl(ControlComponent) {
         }
 
         onChange = (name, value, data) => {
+            const { display } = this.props;
             const obj = Object.assign({[name]: value}, data);
 
             this.setState(obj);
 
-            this.props.display.update(obj);
+            display.update(obj);
         }
 
         render() {
             return (
                 <ControlComponent
                     onChange={this.onChange}
-                    onReactorChange={this.onReactorChange}
                     {...this.props}
                     {...this.state}
                 />

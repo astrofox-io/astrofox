@@ -79,23 +79,32 @@ export default class SelectInput extends Component {
                     onBlur={this.onBlur}
                     readOnly="true"
                 />
-                <div className={classNames({
-                    [styles.options]: true,
-                    [styles.hidden]: !showItems
-                })}>
+                <div
+                    className={classNames({
+                        [styles.options]: true,
+                        [styles.hidden]: !showItems
+                    })}
+                >
                     {
-                        items.map((item, index) => (
-                            <div
-                                key={index}
-                                className={classNames({
-                                    [styles.option]: true,
-                                    [styles.separator]: item.separator,
-                                })}
-                                style={item.style}
-                                onMouseDown={this.onItemClick(item[valueField])}>
-                                {item[displayField]}
-                            </div>
-                        ))
+                        items.map((item, index) => {
+                            // Convert values to object
+                            if (typeof item !== 'object') {
+                                item = { name: item, value: item };
+                            }
+                            return (
+                                <div
+                                    key={index}
+                                    className={classNames({
+                                        [styles.option]: true,
+                                        [styles.separator]: item.separator,
+                                    })}
+                                    style={item.style}
+                                    onMouseDown={this.onItemClick(item[valueField])}
+                                >
+                                    {item[displayField]}
+                                </div>
+                            );
+                        })
                     }
                 </div>
             </div>

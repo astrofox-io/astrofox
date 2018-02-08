@@ -7,6 +7,7 @@ import {
     RangeInput,
     SelectInput,
     ToggleInput,
+    ReactorInput,
 } from 'lib/inputs';
 
 const shapeOptions = [
@@ -42,16 +43,28 @@ const maxZRange = 1000;
 export class GeometryControl extends PureComponent {
     render() {
         const {
-            display, active, shape, material, shading, color,
-            wireframe, edges, edgeColor, x, y, z, opacity,
-            onChange, onReactorChange
+            display,
+            active,
+            shape,
+            material,
+            shading,
+            color,
+            wireframe,
+            edges,
+            edgeColor,
+            x,
+            y,
+            z,
+            opacity,
+            onChange,
         } = this.props;
 
         return (
             <Control
                 label="3D GEOMETRY"
                 active={active}
-                display={display}>
+                display={display}
+            >
                 <Option>
                     <Label text="Shape" />
                     <SelectInput
@@ -168,27 +181,27 @@ export class GeometryControl extends PureComponent {
                         onChange={onChange}
                     />
                 </Option>
-                <Option
-                    reactorName="opacity"
-                    onReactorChange={onReactorChange}>
+                <Option>
                     <Label text="Opacity" />
-                    <NumberInput
-                        name="opacity"
-                        width={40}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        value={opacity}
-                        onChange={onChange}
-                    />
-                    <RangeInput
-                        name="opacity"
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        value={opacity}
-                        onChange={onChange}
-                    />
+                    <ReactorInput name="opacity">
+                        <NumberInput
+                            name="opacity"
+                            width={40}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            value={opacity}
+                            onChange={onChange}
+                        />
+                        <RangeInput
+                            name="opacity"
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            value={opacity}
+                            onChange={onChange}
+                        />
+                    </ReactorInput>
                 </Option>
             </Control>
         );
