@@ -1,7 +1,6 @@
 import React, { PureComponent, Children, cloneElement } from 'react';
 import classNames from 'classnames';
 import styles from './PanelDock.less';
-import globalStyles from 'styles/index.less';
 
 export default class PanelDock extends PureComponent {
     static defaultProps = {
@@ -20,7 +19,7 @@ export default class PanelDock extends PureComponent {
                     [styles.dock]: true,
                     [styles.vertical]: direction === 'vertical',
                     [styles.horizontal]: direction !== 'vertical',
-                    [globalStyles.displayNone]: !visible
+                    [styles.hidden]: !visible
                 })}
                 style={{
                     width: width

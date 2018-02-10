@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Window from 'core/Window';
 import { events } from 'core/Global';
-
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
 import Dialog from 'components/window/Dialog';
@@ -20,15 +18,16 @@ import MenuBar from 'components/nav/MenuBar';
 import Player from 'components/audio/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
-
 import menuConfig from 'config/menu';
 import audioExtensions from 'config/audioExtensions';
 import fontOptions from 'config/fonts.json';
-
 import styles from './App.less';
-import globalStyles from 'styles/index.less';
 
 export default class App extends React.Component {
+    static childContextTypes = {
+        app: PropTypes.object
+    }
+
     constructor(props) {
         super(props);
 
@@ -415,18 +414,12 @@ export default class App extends React.Component {
     }
 }
 
-App.childContextTypes = {
-    app: PropTypes.object
-};
-
-const Preload = () => {
-    let fonts = fontOptions.map((item, index) => {
-        return <div key={index} style={{fontFamily: item}}>{item}</div>;
-    });
-
-    return (
-        <div className={globalStyles.hidden}>
-            {fonts}
-        </div>
-    );
-};
+const Preload = () => (
+    <div className={styles.preload}>
+        {
+            fontOptions.map((item, index) => (
+                <div key={index} style={{fontFamily: item}}>{item}</div>
+            ))
+        }
+    </div>
+);
