@@ -1,4 +1,9 @@
-import * as THREE from 'three';
+import {
+    SpriteMaterial,
+    Sprite,
+    Scene,
+    OrthographicCamera,
+} from 'three';
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class SpritePass extends ComposerPass {
@@ -22,17 +27,17 @@ export default class SpritePass extends ComposerPass {
 
         this.texture = texture;
 
-        this.material = new THREE.SpriteMaterial({
+        this.material = new SpriteMaterial({
             color: this.options.color,
             map: texture,
             transparent: this.options.transparent,
         });
 
-        this.sprite = new THREE.Sprite(this.material);
+        this.sprite = new Sprite(this.material);
         this.sprite.scale.set(width, height, 0);
 
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 1);
+        this.scene = new Scene();
+        this.camera = new OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 1);
 
         this.scene.add(this.sprite);
     }

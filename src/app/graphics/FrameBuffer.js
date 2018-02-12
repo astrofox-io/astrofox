@@ -1,12 +1,18 @@
-import * as THREE from 'three';
+import {
+    WebGLRenderer,
+    Texture,
+    LinearFilter,
+    Scene,
+    Camera,
+} from 'three';
 import TexturePass from 'graphics/TexturePass';
 
 class FrameBuffer {
     constructor() {
         this.canvas = document.createElement('canvas');
 
-        this.texture = new THREE.Texture(this.canvas);
-        this.texture.minFilter = THREE.LinearFilter;
+        this.texture = new Texture(this.canvas);
+        this.texture.minFilter = LinearFilter;
         this.texture.needsUpdate = true;
 
         this.pass = new TexturePass(this.texture);
@@ -36,7 +42,7 @@ export class GLBuffer extends FrameBuffer {
     constructor(width, height) {
         super();
 
-        this.renderer = new THREE.WebGLRenderer({
+        this.renderer = new WebGLRenderer({
             antialias: true,
             alpha: true,
             canvas: this.canvas,
@@ -45,7 +51,7 @@ export class GLBuffer extends FrameBuffer {
         this.renderer.autoClear = false;
 
         // Initialize renderer, required since r87
-        this.renderer.render(new THREE.Scene(), new THREE.Camera());
+        this.renderer.render(new Scene(), new Camera());
 
         this.setSize(width, height);
     }

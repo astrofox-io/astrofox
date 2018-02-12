@@ -1,17 +1,44 @@
-import * as THREE from 'three';
+import {
+    MeshNormalMaterial,
+    MeshBasicMaterial,
+    MeshPhongMaterial,
+    MeshLambertMaterial,
+    MeshDepthMaterial,
+    MeshStandardMaterial,
+    MeshPhysicalMaterial,
+    PointsMaterial,
+    Color,
+    Object3D,
+    Texture,
+    BoxBufferGeometry,
+    SphereBufferGeometry,
+    DodecahedronBufferGeometry,
+    IcosahedronBufferGeometry,
+    OctahedronBufferGeometry,
+    TetrahedronBufferGeometry,
+    TorusBufferGeometry,
+    TorusKnotBufferGeometry,
+    LineSegments,
+    EdgesGeometry,
+    LineBasicMaterial,
+    Points,
+    FrontSide,
+    DoubleSide,
+    Mesh,
+} from 'three';
 import Display from 'core/Display';
 import SpectrumParser from 'audio/SpectrumParser';
 import POINT_SPRITE from 'images/data/point.png';
 
 const materialOptions = {
-    Normal: THREE.MeshNormalMaterial,
-    Basic: THREE.MeshBasicMaterial,
-    Phong: THREE.MeshPhongMaterial,
-    Lambert: THREE.MeshLambertMaterial,
-    Depth: THREE.MeshDepthMaterial,
-    Standard: THREE.MeshStandardMaterial,
-    Physical: THREE.MeshPhysicalMaterial,
-    Points: THREE.PointsMaterial,
+    Normal: MeshNormalMaterial,
+    Basic: MeshBasicMaterial,
+    Phong: MeshPhongMaterial,
+    Lambert: MeshLambertMaterial,
+    Depth: MeshDepthMaterial,
+    Standard: MeshStandardMaterial,
+    Physical: MeshPhysicalMaterial,
+    Points: PointsMaterial,
 };
 
 const POINT_SIZE = 5.0;
@@ -71,7 +98,7 @@ export default class GeometryDisplay extends Display {
             }
             // Change color
             else if (options.color !== undefined) {
-                this.material.color = new THREE.Color().set(options.color);
+                this.material.color = new Color().set(options.color);
             }
             // Change position
             else if (options.x !== undefined || options.y !== undefined || options.z !== undefined) {
@@ -87,12 +114,12 @@ export default class GeometryDisplay extends Display {
     }
 
     addToScene(scene) {
-        this.group = new THREE.Object3D();
+        this.group = new Object3D();
 
         // Load point sprite image
         const img = document.createElement('img');
 
-        this.sprite = new THREE.Texture(img);
+        this.sprite = new Texture(img);
 
         img.onload = () => {
             this.sprite.transparent = true;
@@ -152,50 +179,50 @@ export default class GeometryDisplay extends Display {
             group.remove(mesh);
         }
 
-        mesh = new THREE.Object3D();
+        mesh = new Object3D();
 
         // Set geometry
         switch (options.shape) {
             case 'Box':
                 // width, height, depth, widthSegments:1, heightSegments:1, depthSegments:1
-                geometry = new THREE.BoxBufferGeometry(50, 50, 50);
+                geometry = new BoxBufferGeometry(50, 50, 50);
                 break;
             case 'Sphere':
                 // radius:50, widthSegments:8, heightSegments:6, phiStart:0, phiLength:PI*2, thetaStart:0, thetaLength:PI
-                geometry = new THREE.SphereBufferGeometry(40, 10, 10);
+                geometry = new SphereBufferGeometry(40, 10, 10);
                 break;
             case 'Dodecahedron':
                 // radius:1, detail:0
-                geometry = new THREE.DodecahedronBufferGeometry(40, 0);
+                geometry = new DodecahedronBufferGeometry(40, 0);
                 break;
             case 'Icosahedron':
                 // radius:1, detail:0
-                geometry = new THREE.IcosahedronBufferGeometry(40, 0);
+                geometry = new IcosahedronBufferGeometry(40, 0);
                 break;
             case 'Octahedron':
                 // radius:1, detail:0
-                geometry = new THREE.OctahedronBufferGeometry(40, 0);
+                geometry = new OctahedronBufferGeometry(40, 0);
                 break;
             case 'Tetrahedron':
                 // radius:1, detail:0
-                geometry = new THREE.TetrahedronBufferGeometry(40, 0);
+                geometry = new TetrahedronBufferGeometry(40, 0);
                 break;
             case 'Torus':
                 // radius:100, tube:40, radialSegments:8, tubularSegments:6, arc:PI*2
-                geometry = new THREE.TorusBufferGeometry(50, 20, 10, 10);
+                geometry = new TorusBufferGeometry(50, 20, 10, 10);
                 break;
             case 'Torus Knot':
                 // radius:100, tube:40, radialSegments:64, tubularSegments:8, p:2, q:3, heightScale:1
-                geometry = new THREE.TorusKnotBufferGeometry(50, 10, 20, 10);
+                geometry = new TorusKnotBufferGeometry(50, 10, 20, 10);
                 break;
         }
 
         // Add edges
         if (options.edges && options.material !== 'Points') {
-            mesh.add(new THREE.LineSegments(
-                new THREE.EdgesGeometry(geometry, 2),
-                new THREE.LineBasicMaterial({
-                    color: new THREE.Color().set(options.edgeColor),
+            mesh.add(new LineSegments(
+                new EdgesGeometry(geometry, 2),
+                new LineBasicMaterial({
+                    color: new Color().set(options.edgeColor),
                     transparent: true,
                     opacity: 0.9,
                 }),
@@ -213,24 +240,24 @@ export default class GeometryDisplay extends Display {
                 map: this.sprite,
                 transparent: true,
                 alphaTest: 0.5,
-                color: new THREE.Color().set(options.color),
+                color: new Color().set(options.color),
                 needsUpdate: true,
             });
 
-            mesh.add(new THREE.Points(geometry, material));
+            mesh.add(new Points(geometry, material));
         }
         else {
             Object.assign(material, {
                 flatShading: options.shading === 'Flat',
-                color: new THREE.Color().set(options.color),
+                color: new Color().set(options.color),
                 opacity: options.opacity,
                 wireframe: options.wireframe,
                 needsUpdate: true,
                 transparent: true,
-                side: (options.material === 'Basic') ? THREE.FrontSide : THREE.DoubleSide,
+                side: (options.material === 'Basic') ? FrontSide : DoubleSide,
             });
 
-            mesh.add(new THREE.Mesh(geometry, material));
+            mesh.add(new Mesh(geometry, material));
         }
 
         group.add(mesh);

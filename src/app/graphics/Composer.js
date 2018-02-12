@@ -1,4 +1,9 @@
-import * as THREE from 'three';
+import {
+    WebGLRenderTarget,
+    LinearFilter,
+    RGBAFormat,
+    Texture,
+} from 'three';
 import EventEmitter from 'core/EventEmitter';
 import NodeCollection from 'core/NodeCollection';
 import MultiPass from 'graphics/MultiPass';
@@ -30,13 +35,13 @@ export default class Composer extends EventEmitter {
         const width = Math.floor(renderer.context.canvas.width / pixelRatio) || 1;
         const height = Math.floor(renderer.context.canvas.height / pixelRatio) || 1;
 
-        return new THREE.WebGLRenderTarget(
+        return new WebGLRenderTarget(
             width,
             height,
             {
-                minFilter: THREE.LinearFilter,
-                magFilter: THREE.LinearFilter,
-                format: THREE.RGBAFormat,
+                minFilter: LinearFilter,
+                magFilter: LinearFilter,
+                format: RGBAFormat,
                 stencilBuffer: false,
             },
         );
@@ -132,8 +137,8 @@ export default class Composer extends EventEmitter {
     }
 
     addSpritePass(image, options) {
-        const texture = new THREE.Texture(image);
-        texture.minFilter = THREE.LinearFilter;
+        const texture = new Texture(image);
+        texture.minFilter = LinearFilter;
 
         return this.addPass(new SpritePass(texture, options));
     }

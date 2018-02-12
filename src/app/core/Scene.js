@@ -1,5 +1,8 @@
-import * as THREE from 'three';
-
+import {
+    Scene as Scene3D,
+    PerspectiveCamera,
+    PointLight,
+} from 'three';
 import NodeCollection from 'core/NodeCollection';
 import Display from 'core/Display';
 import Effect from 'core/Effect';
@@ -49,15 +52,15 @@ export default class Scene extends Display {
         this.buffer3D = stage.buffer3D;
 
         this.composer = new Composer(stage.renderer);
-        this.scene = new THREE.Scene();
+        this.scene = new Scene3D();
 
-        this.camera = new THREE.PerspectiveCamera(FOV, width / height, NEAR, FAR);
+        this.camera = new PerspectiveCamera(FOV, width / height, NEAR, FAR);
         this.camera.position.set(0, 0, CAMERA_POS_Z);
 
         this.lights = [
-            new THREE.PointLight(0xffffff, 1, 0),
-            new THREE.PointLight(0xffffff, 1, 0),
-            new THREE.PointLight(0xffffff, 1, 0),
+            new PointLight(0xffffff, 1, 0),
+            new PointLight(0xffffff, 1, 0),
+            new PointLight(0xffffff, 1, 0),
         ];
 
         this.scene.add(this.camera);

@@ -50,7 +50,7 @@ export default class AudioReactor extends Component {
         const start = floor(x1 * fft.length);
         const end = ceil(x2 * fft.length);
 
-        let output = this.result.ouput;
+        let { output } = this.result;
         let sum = 0;
 
         for (let i = start; i < end; i += 1) {

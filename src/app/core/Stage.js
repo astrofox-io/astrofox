@@ -1,5 +1,7 @@
-import * as THREE from 'three';
-
+import {
+    WebGLRenderer,
+    Color,
+} from 'three';
 import Scene from 'core/Scene';
 import Display from 'core/Display';
 import WatermarkDisplay from 'displays/WatermarkDisplay';
@@ -22,7 +24,7 @@ export default class Stage extends Display {
     init(canvas) {
         const { width, height, backgroundColor } = this.options;
 
-        this.renderer = new THREE.WebGLRenderer({
+        this.renderer = new WebGLRenderer({
             canvas,
             antialias: false,
             premultipliedAlpha: true,
@@ -37,7 +39,7 @@ export default class Stage extends Display {
         this.buffer2D = new CanvasBuffer(width, height);
         this.buffer3D = new GLBuffer(width, height);
 
-        this.backgroundColor = new THREE.Color(backgroundColor);
+        this.backgroundColor = new Color(backgroundColor);
 
         this.watermarkDisplay = new WatermarkDisplay();
         this.watermarkDisplay.setSize(width, height);

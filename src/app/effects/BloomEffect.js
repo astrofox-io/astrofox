@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+import {
+    NoBlending,
+} from 'three';
 import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
 import SavePass from 'graphics/SavePass';
@@ -41,7 +43,7 @@ export default class BloomEffect extends Effect {
         // Save current frame
         this.savePass = new SavePass(
             composer.getRenderTarget(),
-            { blending: THREE.NoBlending },
+            { blending: NoBlending },
         );
         passes.push(this.savePass);
 

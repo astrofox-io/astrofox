@@ -1,4 +1,11 @@
-import * as THREE from 'three';
+import {
+    NormalBlending,
+    MeshBasicMaterial,
+    Scene,
+    OrthographicCamera,
+    PlaneBufferGeometry,
+    Mesh,
+} from 'three';
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class TexturePass extends ComposerPass {
@@ -11,7 +18,7 @@ export default class TexturePass extends ComposerPass {
         forceClear: false,
         depthTest: false,
         depthWrite: false,
-        blending: THREE.NormalBlending,
+        blending: NormalBlending,
     }
 
     constructor(texture, options) {
@@ -23,7 +30,7 @@ export default class TexturePass extends ComposerPass {
 
         this.texture = texture;
 
-        this.material = new THREE.MeshBasicMaterial({
+        this.material = new MeshBasicMaterial({
             map: texture,
             color,
             depthTest,
@@ -32,12 +39,12 @@ export default class TexturePass extends ComposerPass {
             blending,
         });
 
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        this.scene = new Scene();
+        this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-        this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+        this.geometry = new PlaneBufferGeometry(2, 2);
 
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.mesh = new Mesh(this.geometry, this.material);
         this.mesh.frustumCulled = false;
 
         this.scene.add(this.mesh);

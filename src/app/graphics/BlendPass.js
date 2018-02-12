@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+import {
+    NormalBlending,
+} from 'three';
 import ShaderPass from 'graphics/ShaderPass';
 import BlendShader from 'shaders/BlendShader';
 import blendModes from 'config/blendModes.json';
@@ -10,7 +12,7 @@ export default class BlendPass extends ShaderPass {
         opacity: 1.0,
         blendMode: 'Normal',
         alpha: 1,
-        blending: THREE.NormalBlending,
+        blending: NormalBlending,
         baseBuffer: true,
     }
 

@@ -1,4 +1,12 @@
-import * as THREE from 'three';
+import {
+    NormalBlending,
+    UniformsUtils,
+    ShaderMaterial,
+    Scene,
+    OrthographicCamera,
+    PlaneBufferGeometry,
+    Mesh,
+} from 'three';
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class ShaderPass extends ComposerPass {
@@ -7,15 +15,15 @@ export default class ShaderPass extends ComposerPass {
         transparent: false,
         needsSwap: true,
         forceClear: false,
-        blending: THREE.NormalBlending,
+        blending: NormalBlending,
     }
 
     constructor(shader, options) {
         super(Object.assign({}, ShaderPass.defaults, options));
 
-        this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+        this.uniforms = UniformsUtils.clone(shader.uniforms);
 
-        this.material = new THREE.ShaderMaterial({
+        this.material = new ShaderMaterial({
             uniforms: this.uniforms,
             vertexShader: shader.vertexShader,
             fragmentShader: shader.fragmentShader,
@@ -24,12 +32,12 @@ export default class ShaderPass extends ComposerPass {
             blending: this.options.blending,
         });
 
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        this.scene = new Scene();
+        this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-        this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+        this.geometry = new PlaneBufferGeometry(2, 2);
 
-        this.mesh = new THREE.Mesh(this.geometry, null);
+        this.mesh = new Mesh(this.geometry, null);
         this.mesh.material = this.material;
         this.mesh.frustumCulled = false;
 
