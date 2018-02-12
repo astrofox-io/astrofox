@@ -1,5 +1,5 @@
-import vertex from 'glsl/vertex/Basic';
-import fragment from 'glsl/fragment/Blend';
+import vertex from 'glsl/vertex/Basic.glsl';
+import fragment from 'glsl/fragment/Blend.glsl';
 
 export default {
     uniforms: {
@@ -9,9 +9,9 @@ export default {
         alpha: { type: 'i', value: 0 },
         opacity: { type: 'f', value: 1.0 },
         mask: { type: 'i', value: 0 },
-        inverse: { type: 'i', value: 0 }
+        inverse: { type: 'i', value: 0 },
     },
 
     vertexShader: vertex,
-    fragmentShader: fragment
+    fragmentShader: fragment,
 };

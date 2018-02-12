@@ -18,7 +18,7 @@ const shapeOptions = [
     'Octahedron',
     'Tetrahedron',
     'Torus',
-    'Torus Knot'
+    'Torus Knot',
 ];
 
 const materialOptions = [
@@ -28,12 +28,12 @@ const materialOptions = [
     'Phong',
     'Physical',
     'Points',
-    'Standard'
+    'Standard',
 ];
 
 const shadingOptions = [
     'Smooth',
-    'Flat'
+    'Flat',
 ];
 
 const maxXRange = 500;

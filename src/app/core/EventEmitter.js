@@ -3,20 +3,21 @@ export default class EventEmitter {
         this.events = this.events || {};
         this.events[event] = this.events[event] || [];
 
-        return this.events[event].push({fn: fn, context: context});
+        return this.events[event].push({ fn, context });
     }
 
     off(event, fn) {
         if (!this.events || !this.events[event]) return;
 
-        let events = this.events[event],
-            i = events.length;
+        const events = this.events[event];
+        let i = events.length - 1;
 
         if (fn) {
-            while (i-- > 0) {
-                if (fn == events[i].fn) {
+            while (i > 0) {
+                if (fn === events[i].fn) {
                     events.splice(i, 1);
                 }
+                i -= 1;
             }
         }
         else {
@@ -24,22 +25,21 @@ export default class EventEmitter {
         }
     }
 
-    once(event, fn, context) {
-        let _fn;
-        return this.on(event, _fn = () => {
-            this.off(event, _fn);
-            return fn.apply(context, arguments);
-        }, this);
+    once(event, fn, context, ...args) {
+        const c = () => {
+            this.off(event, c);
+            return fn.apply(context, args);
+        };
+        return this.on(event, c, this);
     }
 
-    emit() {
+    emit(...args) {
         this.events = this.events || {};
 
-        let args = Array.apply([], arguments),
-            event = args.shift(),
-            events = this.events[event] || [];
+        const event = args.shift();
+        const events = this.events[event] || [];
 
-        events.forEach(e => {
+        events.forEach((e) => {
             e.fn.apply(e.context, args);
         });
     }

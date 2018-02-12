@@ -7,21 +7,19 @@ import styles from './RenderInfo.less';
 
 export default class RenderInfo extends React.Component {
     static contextTypes = {
-        app: PropTypes.object
-    }
-
-    state = {
-        complete: false,
-        fps: 0,
-        frames: 0,
-        currentFrame: 0,
-        lastFrame: 0,
-        startTime: 0,
-        elapsedTime: 0
+        app: PropTypes.object,
     }
 
     constructor(props, context) {
         super(props);
+
+        this.state = {
+            complete: false,
+            frames: 0,
+            currentFrame: 0,
+            lastFrame: 0,
+            startTime: 0,
+        };
 
         this.app = context.app;
     }
@@ -34,16 +32,16 @@ export default class RenderInfo extends React.Component {
         this.renderer.on('complete', this.setComplete, this);
     }
 
+    componentDidMount() {
+        if (this.renderer) {
+            this.renderer.start();
+        }
+    }
+
     componentWillUnmount() {
         if (this.renderer) {
             this.renderer.off('ready', this.processInfo, this);
             this.renderer.off('complete', this.setComplete, this);
-        }
-    }
-
-    componentDidMount() {
-        if (this.renderer) {
-            this.renderer.start();
         }
     }
 
@@ -57,19 +55,21 @@ export default class RenderInfo extends React.Component {
         }
     };
 
+    setComplete() {
+        this.setState({ complete: true });
+    }
+
     processInfo() {
-        let { frames, currentFrame, lastFrame, startTime } = this.renderer;
+        const {
+            frames, currentFrame, lastFrame, startTime,
+        } = this.renderer;
 
         this.setState({
             frames,
             currentFrame,
             lastFrame,
-            startTime
+            startTime,
         });
-    }
-
-    setComplete() {
-        this.setState({ complete: true });
     }
 
     render() {
@@ -78,17 +78,17 @@ export default class RenderInfo extends React.Component {
             currentFrame,
             lastFrame,
             startTime,
-            complete
+            complete,
         } = this.state;
 
         const { className } = this.props;
 
-        const elapsedTime = (window.performance.now() - startTime) / 1000,
-            frame = frames - (lastFrame - currentFrame),
-            progress = frames > 0 ? (frame/frames) * 100 : 0,
-            fps = elapsedTime > 0 ? frame / elapsedTime : 0,
-            text = complete ? 'Finished' : 'Cancel',
-            style = { width: progress + '%' };
+        const elapsedTime = (window.performance.now() - startTime) / 1000;
+        const frame = frames - (lastFrame - currentFrame);
+        const progress = frames > 0 ? (frame / frames) * 100 : 0;
+        const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
+        const text = complete ? 'Finished' : 'Cancel';
+        const style = { width: `${progress}%` };
 
         return (
             <div className={classNames(styles.renderInfo, className)}>
@@ -96,7 +96,7 @@ export default class RenderInfo extends React.Component {
                     <div className={styles.progressBar} style={style} />
                 </div>
                 <div className={styles.stats}>
-                    <Stat label="Progress" value={~~progress + '%'} />
+                    <Stat label="Progress" value={`${~~progress}%`} />
                     <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
                     <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
                     <Stat label="Progress" value={fps.toFixed(1)} />

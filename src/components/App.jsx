@@ -18,14 +18,14 @@ import MenuBar from 'components/nav/MenuBar';
 import Player from 'components/audio/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
-import menuConfig from 'config/menu';
-import audioExtensions from 'config/audioExtensions';
+import menuConfig from 'config/menu.json';
+import audioExtensions from 'config/audioExtensions.json';
 import fontOptions from 'config/fonts.json';
 import styles from './App.less';
 
 export default class App extends React.Component {
     static childContextTypes = {
-        app: PropTypes.object
+        app: PropTypes.object,
     }
 
     constructor(props) {
@@ -37,9 +37,9 @@ export default class App extends React.Component {
             reactor: null,
             showControlDock: true,
             showPlayer: true,
-            showReactor: false
+            showReactor: false,
         };
-        
+
         this.app = props.app;
     }
 
@@ -50,17 +50,15 @@ export default class App extends React.Component {
     componentWillMount() {
         this.app.init();
 
-        events.on('message', message => {
-            this.showDialog({
-                message: message
-            });
+        events.on('message', (message) => {
+            this.showDialog({ message });
         });
 
-        events.on('error', err => {
+        events.on('error', (err) => {
             this.showDialog({
                 title: 'ERROR',
                 icon: 'icon-warning',
-                message: err
+                message: err,
             });
         });
 
@@ -73,23 +71,23 @@ export default class App extends React.Component {
                     onControlPicked={callback}
                     onClose={this.hideModal}
                 />,
-                { title: 'ADD CONTROL', buttons: ['Close'] }
+                { title: 'ADD CONTROL', buttons: ['Close'] },
             );
         });
 
-        events.on('audio-tags', tags => {
-            if (tags && tags.artist) {
-                this.setState({statusBarText: tags.artist + ' - ' + tags.title});
+        events.on('audio-tags', ({ artist, title }) => {
+            if (artist) {
+                this.setState({ statusBarText: `${artist} - ${title}` });
             }
         });
 
-        events.on('menu-action', action => {
+        events.on('menu-action', (action) => {
             this.onMenuAction(action);
         });
 
         events.on('unsaved-changes', this.onUnsavedChanges);
 
-        this.app.updater.on('update', event => {
+        this.app.updater.on('update', (event) => {
             if (event === 'check-for-updates-complete' && this.app.updater.hasUpdate) {
                 this.showCheckForUpdates();
             }
@@ -119,16 +117,16 @@ export default class App extends React.Component {
 
             case 'open-project':
                 Window.showOpenDialog(
-                    files => {
+                    (files) => {
                         if (files) {
                             this.app.loadProject(files[0]);
                         }
                     },
                     {
                         filters: [
-                            {name: 'Project files', extensions: ['afx']}
-                        ]
-                    }
+                            { name: 'Project files', extensions: ['afx'] },
+                        ],
+                    },
                 );
                 break;
 
@@ -142,27 +140,27 @@ export default class App extends React.Component {
 
             case 'load-audio':
                 Window.showOpenDialog(
-                    files => {
+                    (files) => {
                         if (files) {
                             this.loadAudioFile(files[0]);
                         }
                     },
                     {
                         filters: [
-                            {name: 'Audio files', extensions: audioExtensions}
-                        ]
-                    }
+                            { name: 'Audio files', extensions: audioExtensions },
+                        ],
+                    },
                 );
                 break;
 
             case 'save-image':
                 Window.showSaveDialog(
-                    filename => {
+                    (filename) => {
                         if (filename) {
                             this.app.saveImage(filename);
                         }
                     },
-                    {defaultPath: 'image.png'}
+                    { defaultPath: 'image.png' },
                 );
                 break;
 
@@ -172,7 +170,7 @@ export default class App extends React.Component {
                         onStart={this.startRender}
                         onClose={this.hideModal}
                     />,
-                    {title: 'SAVE VIDEO', buttons: null}
+                    { title: 'SAVE VIDEO', buttons: null },
                 );
                 break;
 
@@ -185,7 +183,7 @@ export default class App extends React.Component {
                     <CanvasSettings
                         onClose={this.hideModal}
                     />,
-                    {title: 'CANVAS', buttons: null}
+                    { title: 'CANVAS', buttons: null },
                 );
                 break;
 
@@ -194,7 +192,7 @@ export default class App extends React.Component {
                     <AppSettings
                         onClose={this.hideModal}
                     />,
-                    {title: 'SETTINGS', buttons: null}
+                    { title: 'SETTINGS', buttons: null },
                 );
                 break;
 
@@ -225,7 +223,7 @@ export default class App extends React.Component {
             case 'about':
                 this.showModal(
                     <About key="about" onClose={this.hideModal} />,
-                    {title: null, buttons: null}
+                    { title: null, buttons: null },
                 );
                 break;
         }
@@ -236,21 +234,21 @@ export default class App extends React.Component {
             {
                 title: 'UNSAVED CHANGES',
                 message: 'Do you want to save project changes before closing?',
-                buttons: ['Yes', 'No', 'Cancel']
+                buttons: ['Yes', 'No', 'Cancel'],
             },
-            button => {
+            (button) => {
                 if (button === 'Yes') {
                     this.saveProject(callback);
                 }
                 else if (button === 'No') {
                     callback();
                 }
-            }
+            },
         );
     };
 
     saveProject = (callback) => {
-        let file = this.app.projectFile;
+        const file = this.app.projectFile;
 
         if (file) {
             this.app.saveProject(file);
@@ -264,60 +262,56 @@ export default class App extends React.Component {
 
     saveProjectAs = (callback) => {
         Window.showSaveDialog(
-            filename => {
+            (filename) => {
                 if (filename) {
                     this.app.saveProject(filename);
 
                     if (callback) callback();
                 }
             },
-            {defaultPath: 'project.afx'}
+            { defaultPath: 'project.afx' },
         );
     };
 
     showModal = (content, props) => {
         if (this.dialogShown) return;
 
-        let modals = this.state.modals;
-
-        // Default button
-        props = Object.assign(
-            {
-                onClose: this.hideModal,
-                buttons: ['OK']
-            },
-            props
-        );
-
-        modals.push(
-            <ModalWindow key={modals.length} {...props}>
-                {content}
-            </ModalWindow>
-        );
-
-        this.setState({modals: modals});
+        this.setState(({ modals }) => ({
+            modals: modals.concat([
+                <ModalWindow
+                    key={modals.length}
+                    onClose={this.hideModal}
+                    buttons={['OK']}
+                    {...props}
+                >
+                    {content}
+                </ModalWindow>,
+            ]),
+        }));
     };
 
     hideModal = () => {
-        let modals = this.state.modals;
-
-        modals.pop();
-
-        this.setState({modals: modals});
+        this.setState(({ modals }) => {
+            modals.pop();
+            return { modals };
+        });
     };
 
-    showDialog = (props, callback) => {
+    showDialog = ({ icon, message, ...otherProps }, callback) => {
         if (this.dialogShown) return;
 
-        props.onClose = (button) => {
-            this.hideModal();
-            this.dialogShown = false;
-            if (callback) callback(button);
+        const props = {
+            onClose: (button) => {
+                this.hideModal();
+                this.dialogShown = false;
+                if (callback) callback(button);
+            },
+            ...otherProps,
         };
 
         this.showModal(
-            <Dialog icon={props.icon} message={props.message} />,
-            props
+            <Dialog icon={icon} message={message} />,
+            props,
         );
 
         this.dialogShown = true;
@@ -326,30 +320,28 @@ export default class App extends React.Component {
     showCheckForUpdates = () => {
         if (this.updatesShown) return;
 
-        let onClose = () => {
+        const onClose = () => {
             this.hideModal();
             this.updatesShown = false;
         };
 
         this.showModal(
             <AppUpdates onClose={onClose} />,
-            {title: 'UPDATES', buttons: null}
+            { title: 'UPDATES', buttons: null },
         );
 
         this.updatesShown = true;
     };
 
     showReactor = (reactor) => {
-        this.setState(prevState => {
-            return {
-                reactor: reactor,
-                showReactor: reactor && (reactor !== prevState.reactor || !prevState.showReactor)
-            };
-        });
+        this.setState(prevState => ({
+            reactor,
+            showReactor: reactor && (reactor !== prevState.reactor || !prevState.showReactor),
+        }));
     };
 
     loadAudioFile = (file) => {
-        let showLoading = this.stage.showLoading;
+        const { showLoading } = this.stage;
 
         showLoading(true);
 
@@ -365,32 +357,36 @@ export default class App extends React.Component {
     startRender = (options) => {
         this.hideModal();
 
-        let { videoFile, audioFile } = options;
+        const { videoFile, audioFile } = options;
 
         this.app.saveVideo(videoFile, audioFile, options);
         this.stage.startRender();
     };
 
     render() {
-        let { showPlayer, showControlDock, showReactor, reactor, statusBarText, modals } = this.state;
+        const {
+            showPlayer, showControlDock, showReactor, reactor, statusBarText, modals,
+        } = this.state;
 
         return (
             <div
                 className={styles.container}
+                role="presentation"
                 onClick={this.onClick}
                 onDrop={this.onDragDrop}
-                onDragOver={this.onDragDrop}>
+                onDragOver={this.onDragDrop}
+            >
                 <Preload />
                 <TitleBar />
                 <MenuBar
-                    ref={e => this.menubar = e}
+                    ref={e => (this.menubar = e)}
                     items={menuConfig}
                     onMenuAction={this.onMenuAction}
                 />
                 <div className={styles.body}>
                     <div className={styles.viewport}>
                         <Stage
-                            ref={e => this.stage = e}
+                            ref={e => (this.stage = e)}
                             onFileDropped={this.loadAudioFile}
                         />
                         <Player
@@ -418,7 +414,7 @@ const Preload = () => (
     <div className={styles.preload}>
         {
             fontOptions.map((item, index) => (
-                <div key={index} style={{fontFamily: item}}>{item}</div>
+                <div key={index} style={{ fontFamily: item }}>{item}</div>
             ))
         }
     </div>

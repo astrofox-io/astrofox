@@ -12,7 +12,7 @@ import {
 
 export class WaveSpectrumControl extends PureComponent {
     render() {
-        const { 
+        const {
             display,
             active,
             stageWidth,

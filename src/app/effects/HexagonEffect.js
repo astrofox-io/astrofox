@@ -3,6 +3,14 @@ import ShaderPass from 'graphics/ShaderPass';
 import HexagonShader from 'shaders/HexagonShader';
 
 export default class HexagonEffect extends Effect {
+    static label = 'Hexagon';
+
+    static className = 'HexagonEffect';
+
+    static defaults = {
+        scale: 10.0,
+    }
+
     constructor(options) {
         super(HexagonEffect, options);
     }
@@ -20,11 +28,3 @@ export default class HexagonEffect extends Effect {
         this.pass = null;
     }
 }
-
-HexagonEffect.label = 'Hexagon';
-
-HexagonEffect.className = 'HexagonEffect';
-
-HexagonEffect.defaults = {
-    scale: 10.0
-};

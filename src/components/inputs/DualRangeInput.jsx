@@ -16,7 +16,7 @@ export default class DualRangeInput extends Component {
         readOnly: false,
         allowClick: true,
         onChange: () => {},
-        onInput: () => {}
+        onInput: () => {},
     }
 
     constructor(props) {
@@ -28,17 +28,25 @@ export default class DualRangeInput extends Component {
     onTrackClick = (e) => {
         e.stopPropagation();
 
-        const { name, start, end, max, min, allowClick, onChange } = this.props;
+        const {
+            name,
+            start,
+            end,
+            max,
+            min,
+            allowClick,
+            onChange,
+        } = this.props;
 
         if (!allowClick) return;
 
-        let newStart = start,
-            newEnd = end,
-            size = end - start,
-            midpoint = start + (size/2),
-            index = 0,
-            rect = e.currentTarget.getBoundingClientRect(),
-            val = ((e.clientX - rect.left) / rect.width) * (max - min);
+        const size = end - start;
+        const midpoint = start + (size / 2);
+        const rect = e.currentTarget.getBoundingClientRect();
+        const val = ((e.clientX - rect.left) / rect.width) * (max - min);
+        let newStart = start;
+        let newEnd = end;
+        let index = 0;
 
         if (val < midpoint) {
             newStart = val;
@@ -53,10 +61,12 @@ export default class DualRangeInput extends Component {
     }
 
     onChange = (key, val) => {
-        const { name, start, end, onChange } = this.props;
-        let newStart = start,
-            newEnd = end,
-            index = key === 'range-start' ? 0 : 1;
+        const {
+            name, start, end, onChange,
+        } = this.props;
+        const index = key === 'range-start' ? 0 : 1;
+        let newStart = start;
+        let newEnd = end;
 
         if (index === 0) {
             newStart = val;
@@ -70,19 +80,21 @@ export default class DualRangeInput extends Component {
 
     parseValues(start, end, index) {
         const { minRange } = this.props;
-        let range = end - start;
+        const range = end - start;
+        let newStart = start;
+        let newEnd = end;
 
         // Enforce min range
         if (minRange !== false && range < minRange) {
             if (index === 1) {
-                end = start + minRange;
+                newEnd = start + minRange;
             }
             else {
-                start = end - minRange;
+                newStart = end - minRange;
             }
         }
 
-        return { start, end };
+        return { newStart, newEnd };
     }
 
     isBuffering() {
@@ -90,22 +102,34 @@ export default class DualRangeInput extends Component {
     }
 
     render() {
-        let { min, max, step, start, end, buffered, readOnly, minRange } = this.props,
-            pct0 = val2pct(start, min, max) * 100,
-            pct1 = val2pct(end, min, max) * 100,
-            fillStyle = { width: pct1 - pct0 + '%', marginLeft: pct0 + '%' };
+        const {
+            min,
+            max,
+            step,
+            start,
+            end,
+            buffered,
+            readOnly,
+            minRange,
+        } = this.props;
+
+        const pct0 = val2pct(start, min, max) * 100;
+        const pct1 = val2pct(end, min, max) * 100;
+        const fillStyle = { width: `${pct1 - pct0}%`, marginLeft: `${pct0}%` };
 
         return (
             <div
-                ref={e => this.range = e}
+                role="presentation"
+                ref={e => (this.range = e)}
                 className={styles.input}
-                onMouseDown={this.onTrackClick}>
+                onMouseDown={this.onTrackClick}
+            >
                 <div className={styles.track} />
                 <div className={styles.fill} style={fillStyle} />
                 <RangeInput
-                    ref={e => this.range0 = e}
+                    ref={e => (this.range0 = e)}
                     className={styles.range}
-                    name='range-start'
+                    name="range-start"
                     min={min}
                     max={max}
                     step={step}
@@ -115,14 +139,14 @@ export default class DualRangeInput extends Component {
                     buffered={buffered}
                     readOnly={readOnly}
                     showTrack={false}
-                    fillStyle='none'
+                    fillStyle="none"
                     onChange={this.onChange}
                     onInput={this.onInput}
                 />
                 <RangeInput
-                    ref={e => this.range1 = e}
+                    ref={e => (this.range1 = e)}
                     className={styles.range}
-                    name='range-end'
+                    name="range-end"
                     min={min}
                     max={max}
                     step={step}
@@ -132,7 +156,7 @@ export default class DualRangeInput extends Component {
                     buffered={buffered}
                     readOnly={readOnly}
                     showTrack={false}
-                    fillStyle='none'
+                    fillStyle="none"
                     onChange={this.onChange}
                     onInput={this.onInput}
                 />

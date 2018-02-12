@@ -4,16 +4,25 @@ import RGBShiftShader from 'shaders/RGBShiftShader';
 import { deg2rad } from 'utils/math';
 
 export default class RGBShiftEffect extends Effect {
+    static label = 'RGB Shift';
+
+    static className = 'RGBShiftEffect';
+
+    static defaults = {
+        offset: 5,
+        angle: 45,
+    }
+
     constructor(options) {
         super(RGBShiftEffect, options);
     }
 
     updatePass() {
-        let { width } = this.scene.getSize();
+        const { width } = this.scene.getSize();
 
         this.pass.setUniforms({
             amount: this.options.offset / width,
-            angle: deg2rad(this.options.angle)
+            angle: deg2rad(this.options.angle),
         });
     }
 
@@ -26,12 +35,3 @@ export default class RGBShiftEffect extends Effect {
         this.pass = null;
     }
 }
-
-RGBShiftEffect.label = 'RGB Shift';
-
-RGBShiftEffect.className = 'RGBShiftEffect';
-
-RGBShiftEffect.defaults = {
-    offset: 5,
-    angle: 45
-};

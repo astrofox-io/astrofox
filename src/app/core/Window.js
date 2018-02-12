@@ -50,7 +50,7 @@ class Window {
     showMessageBox(title, message, options) {
         this.dialog.showMessageBox(
             this.win,
-            Object.assign({ title: title, message: message, buttons: [] }, options)
+            Object.assign({ title, message, buttons: [] }, options),
         );
     }
 
@@ -63,4 +63,4 @@ class Window {
     }
 }
 
-export default new Window;
+export default new Window();

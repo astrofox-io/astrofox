@@ -4,13 +4,13 @@ import Button from 'components/interface/Button';
 import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
 import {
     ColorInput,
-    NumberInput
+    NumberInput,
 } from 'lib/inputs';
 import styles from './CanvasSettings.less';
 
 export default class CanvasSettings extends React.Component {
     static contextTypes = {
-        app: PropTypes.object
+        app: PropTypes.object,
     }
 
     static defaultProps = {
@@ -25,7 +25,7 @@ export default class CanvasSettings extends React.Component {
     }
 
     onChange = (name, val) => {
-        let obj = {};
+        const obj = {};
 
         obj[name] = val;
 
@@ -46,7 +46,7 @@ export default class CanvasSettings extends React.Component {
         const {
             width,
             height,
-            backgroundColor
+            backgroundColor,
         } = this.state;
 
         return (

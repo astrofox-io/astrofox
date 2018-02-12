@@ -1,33 +1,35 @@
 import * as THREE from 'three';
 import ComposerPass from 'graphics/ComposerPass';
 
-const defaults = {
-    color: 0xffffff,
-    opacity: 1.0,
-    transparent: true,
-    needsSwap: false,
-    needsUpdate: true,
-    forceClear: false,
-    depthTest: false,
-    depthWrite: false,
-    blending: THREE.NormalBlending
-};
-
 export default class TexturePass extends ComposerPass {
-    constructor(texture, options) {
-        super(Object.assign({}, defaults, options));
+    static defaults = {
+        color: 0xffffff,
+        opacity: 1.0,
+        transparent: true,
+        needsSwap: false,
+        needsUpdate: true,
+        forceClear: false,
+        depthTest: false,
+        depthWrite: false,
+        blending: THREE.NormalBlending,
+    }
 
-        let { color, depthTest, depthWrite, transparent, blending } = this.options;
+    constructor(texture, options) {
+        super(Object.assign({}, TexturePass.defaults, options));
+
+        const {
+            color, depthTest, depthWrite, transparent, blending,
+        } = this.options;
 
         this.texture = texture;
 
         this.material = new THREE.MeshBasicMaterial({
             map: texture,
-            color: color,
-            depthTest: depthTest,
-            depthWrite: depthWrite,
-            transparent: transparent,
-            blending: blending
+            color,
+            depthTest,
+            depthWrite,
+            transparent,
+            blending,
         });
 
         this.scene = new THREE.Scene();
@@ -42,10 +44,11 @@ export default class TexturePass extends ComposerPass {
     }
 
     render(renderer, writeBuffer, readBuffer) {
-        let { needsUpdate } = this.options;
+        const { scene, camera, texture } = this;
+        const { needsUpdate } = this.options;
 
-        this.texture.needsUpdate = needsUpdate;
+        texture.needsUpdate = needsUpdate;
 
-        super.render(renderer, this.scene, this.camera, readBuffer);
+        super.render(renderer, scene, camera, readBuffer);
     }
 }

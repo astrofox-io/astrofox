@@ -13,34 +13,43 @@ export default class CanvasDisplay extends Display {
         this.renderToCanvas(
             scene.getContext('2d'),
             this.canvas.width / 2,
-            this.canvas.height / 2
+            this.canvas.height / 2,
         );
     }
 
+    /* eslint-disable no-param-reassign */
     renderToCanvas(context, dx, dy) {
-        let x, y,
-            canvas = this.canvas,
-            options = this.options,
-            halfSceneWidth = context.canvas.width / 2,
-            halfSceneHeight = context.canvas.height / 2;
+        const {
+            canvas,
+        } = this;
 
-        context.globalAlpha = options.opacity;
+        const {
+            x,
+            y,
+            opacity,
+            rotation,
+        } = this.options;
 
-        if (options.rotation % 360 !== 0) {
-            x = halfSceneWidth + options.x;
-            y = halfSceneHeight - options.y;
+        const halfSceneWidth = context.canvas.width / 2;
+        const halfSceneHeight = context.canvas.height / 2;
+
+        context.globalAlpha = opacity;
+
+        if (rotation % 360 !== 0) {
+            const cx = halfSceneWidth + x;
+            const cy = halfSceneHeight - y;
 
             context.save();
-            context.translate(x, y);
-            context.rotate(deg2rad(options.rotation));
+            context.translate(cx, cy);
+            context.rotate(deg2rad(rotation));
             context.drawImage(canvas, -dx, -dy);
             context.restore();
         }
         else {
-            x = halfSceneWidth - dx + options.x;
-            y = halfSceneHeight - dy - options.y;
+            const cx = halfSceneWidth - (dx + x);
+            const cy = halfSceneHeight - (dy - y);
 
-            context.drawImage(canvas, x, y);
+            context.drawImage(canvas, cx, cy);
         }
 
         context.globalAlpha = 1.0;

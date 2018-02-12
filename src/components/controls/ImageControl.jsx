@@ -19,10 +19,11 @@ export class ImageControl extends PureComponent {
     }
 
     onChange = (name, value) => {
-        let obj = {},
-            { src, fixed, onChange } = this.props,
-            image = this.imageInput.getImage(),
-            ratio = image.naturalWidth / image.naturalHeight;
+        const { src, fixed, onChange } = this.props;
+        const image = this.imageInput.getImage();
+        const { naturalWidth, naturalHeight } = image;
+        const ratio = naturalWidth / naturalHeight;
+        const obj = {};
 
         if (name === 'src') {
             this.image = image;
@@ -39,8 +40,8 @@ export class ImageControl extends PureComponent {
 
             // Load new image
             if (value !== src) {
-                obj.width = image.naturalWidth;
-                obj.height = image.naturalHeight;
+                obj.width = naturalWidth;
+                obj.height = naturalHeight;
                 obj.opacity = 1.0;
             }
         }
@@ -85,8 +86,8 @@ export class ImageControl extends PureComponent {
         const imageHeight = readOnly ? 0 : image.naturalHeight;
         const maxWidth = imageWidth * 2;
         const maxHeight = imageHeight * 2;
-        const xMax = readOnly ? 0 : imageWidth > stageWidth ? imageWidth : stageWidth;
-        const yMax = readOnly ? 0 : imageHeight > stageHeight ? imageHeight : stageHeight;
+        const xMax = imageWidth > stageWidth ? imageWidth : stageWidth;
+        const yMax = imageHeight > stageHeight ? imageHeight : stageHeight;
 
         return (
             <Control
@@ -98,7 +99,7 @@ export class ImageControl extends PureComponent {
                     <Label text="Image" />
                     <ImageInput
                         name="src"
-                        ref={e => this.imageInput = e}
+                        ref={e => (this.imageInput = e)}
                         value={src}
                         onChange={this.onChange}
                     />
@@ -108,7 +109,7 @@ export class ImageControl extends PureComponent {
                         <Icon
                             className={classNames({
                                 [styles.linkIcon]: true,
-                                [styles.linkIconActive]: fixed
+                                [styles.linkIconActive]: fixed,
                             })}
                             glyph={iconLink}
                             onClick={this.onLinkClick}
@@ -137,7 +138,7 @@ export class ImageControl extends PureComponent {
                         <Icon
                             className={classNames({
                                 [styles.linkIcon]: true,
-                                [styles.linkIconActive]: fixed
+                                [styles.linkIconActive]: fixed,
                             })}
                             glyph={iconLink}
                             onClick={this.onLinkClick}
@@ -166,16 +167,16 @@ export class ImageControl extends PureComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={-xMax}
-                        max={xMax}
+                        min={readOnly ? 0 : -xMax}
+                        max={readOnly ? 0 : xMax}
                         value={x}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="x"
-                        min={-xMax}
-                        max={xMax}
+                        min={readOnly ? 0 : -xMax}
+                        max={readOnly ? 0 : xMax}
                         value={x}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -186,16 +187,16 @@ export class ImageControl extends PureComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={-yMax}
-                        max={yMax}
+                        min={readOnly ? 0 : -yMax}
+                        max={readOnly ? 0 : yMax}
                         value={y}
                         readOnly={readOnly}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="y"
-                        min={-yMax}
-                        max={yMax}
+                        min={readOnly ? 0 : -yMax}
+                        max={readOnly ? 0 : yMax}
                         value={y}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -207,7 +208,7 @@ export class ImageControl extends PureComponent {
                         name="rotation"
                         width={40}
                         min={0}
-                        max={360}
+                        max={readOnly ? 0 : 360}
                         value={rotation}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -215,7 +216,7 @@ export class ImageControl extends PureComponent {
                     <RangeInput
                         name="rotation"
                         min={0}
-                        max={360}
+                        max={readOnly ? 0 : 360}
                         value={rotation}
                         readOnly={readOnly}
                         onChange={this.onChange}
@@ -228,18 +229,18 @@ export class ImageControl extends PureComponent {
                             name="opacity"
                             width={40}
                             min={0}
-                            max={1.0}
+                            max={readOnly ? 0 : 1.0}
                             step={0.01}
-                            value={readOnly ? 0 : opacity}
+                            value={opacity}
                             readOnly={readOnly}
                             onChange={this.onChange}
                         />
                         <RangeInput
                             name="opacity"
                             min={0}
-                            max={1.0}
+                            max={readOnly ? 0 : 1.0}
                             step={0.01}
-                            value={readOnly ? 0 : opacity}
+                            value={opacity}
                             readOnly={readOnly}
                             onChange={this.onChange}
                         />

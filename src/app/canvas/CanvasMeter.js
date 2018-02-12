@@ -3,6 +3,13 @@ import Component from 'core/Component';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasBars extends Component {
+    static defaults = {
+        width: 100,
+        height: 50,
+        color: '#FFFFFF',
+        origin: 'left',
+    }
+
     constructor(options, canvas) {
         super(Object.assign({}, CanvasBars.defaults, options));
 
@@ -14,9 +21,14 @@ export default class CanvasBars extends Component {
     }
 
     render(value) {
-        let canvas = this.canvas,
-            context = this.context,
-            { height, width, color, origin } = this.options;
+        const {
+            canvas,
+            context,
+        } = this;
+
+        const {
+            height, width, color, origin,
+        } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
@@ -46,10 +58,3 @@ export default class CanvasBars extends Component {
         }
     }
 }
-
-CanvasBars.defaults = {
-    width: 100,
-    height: 50,
-    color: '#FFFFFF',
-    origin: 'left'
-};

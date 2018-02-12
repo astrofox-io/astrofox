@@ -4,6 +4,32 @@ import SpectrumParser from 'audio/SpectrumParser';
 import { fftSize, sampleRate } from 'config/system.json';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
+    static label = 'Wave Spectrum';
+
+    static className = 'WaveSpectrumDisplay';
+
+    static defaults = {
+        width: 770,
+        height: 240,
+        x: 0,
+        y: 0,
+        stroke: true,
+        color: '#FFFFFF',
+        fill: true,
+        fillColor: ['#8800FF', '#8888FF'],
+        taper: true,
+        rotation: 0,
+        opacity: 1.0,
+        fftSize,
+        sampleRate,
+        smoothingTimeConstant: 0.5,
+        minDecibels: -100,
+        maxDecibels: -20,
+        minFrequency: 0,
+        maxFrequency: 2000,
+        normalize: true,
+    }
+
     constructor(options) {
         super(WaveSpectrumDisplay, options);
 
@@ -12,7 +38,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     }
 
     update(options) {
-        let changed = super.update(options);
+        const changed = super.update(options);
 
         if (changed) {
             this.wave.update(options);
@@ -23,19 +49,18 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     }
 
     getPoints(fft) {
-        let i, j, k,
-            { width } = this.options,
-            points = [];
+        const { width } = this.options;
+        const points = [];
 
-        for (i = 0, j = 0, k = 0; i < fft.length; i++) {
+        for (let i = 0, j = 0, k = 0; i < fft.length; i += 1) {
             j = fft[i];
 
-            if (i === 0 || i == fft.length - 1 || k !== (j > fft[i-1]) ? 1 : -1) {
+            if (i === 0 || i === fft.length - 1 || k !== (j > fft[i - 1]) ? 1 : -1) {
                 points.push(i * (width / fft.length));
                 points.push(j);
             }
 
-            k = (j > fft[i-1]) ? 1 : -1;
+            k = (j > fft[i - 1]) ? 1 : -1;
         }
 
         points[points.length - 2] = width;
@@ -44,40 +69,22 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     }
 
     renderToScene(scene, data) {
-        let fft = this.parser.parseFFT(data.fft);
+        const {
+            wave,
+            parser,
+            canvas: {
+                width,
+                height,
+            },
+        } = this;
+        const fft = parser.parseFFT(data.fft);
 
-        this.wave.render(this.getPoints(fft), true);
+        wave.render(this.getPoints(fft), true);
 
         this.renderToCanvas(
             scene.getContext('2d'),
-            this.canvas.width / 2,
-            this.canvas.height
+            width / 2,
+            height,
         );
     }
 }
-
-WaveSpectrumDisplay.label = 'Wave Spectrum';
-
-WaveSpectrumDisplay.className = 'WaveSpectrumDisplay';
-
-WaveSpectrumDisplay.defaults = {
-    width: 770,
-    height: 240,
-    x: 0,
-    y: 0,
-    stroke: true,
-    color: '#FFFFFF',
-    fill: true,
-    fillColor: ['#8800FF','#8888FF'],
-    taper: true,
-    rotation: 0,
-    opacity: 1.0,
-    fftSize: fftSize,
-    sampleRate: sampleRate,
-    smoothingTimeConstant: 0.5,
-    minDecibels: -100,
-    maxDecibels: -20,
-    minFrequency: 0,
-    maxFrequency: 2000,
-    normalize: true
-};

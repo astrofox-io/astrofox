@@ -6,10 +6,10 @@ import ShaderPass from 'graphics/ShaderPass';
 import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import { val2pct } from 'utils/math';
 
-const shaders = {
+const shaderOptions = {
     Box: BoxBlurShader,
     Circular: CircularBlurShader,
-    Zoom: ZoomBlurShader
+    Zoom: ZoomBlurShader,
 };
 
 const BOX_BLUR_MAX = 20;
@@ -17,13 +17,24 @@ const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
 
 export default class BlurEffect extends Effect {
+    static label = 'Blur';
+
+    static className = 'BlurEffect';
+
+    static defaults = {
+        type: 'Gaussian',
+        amount: 0.1,
+        x: 0,
+        y: 0,
+    }
+
     constructor(options) {
         super(BlurEffect, options);
     }
 
     update(options) {
-        let { type}  = this.options,
-            changed = super.update(options);
+        const { type } = this.options;
+        const changed = super.update(options);
 
         if (changed) {
             if (options.type !== undefined && options.type !== type) {
@@ -38,8 +49,10 @@ export default class BlurEffect extends Effect {
     }
 
     updatePass() {
-        let { type, amount, x, y } = this.options,
-            { width, height } = this.scene.getSize();
+        const {
+            type, amount, x, y,
+        } = this.options;
+        const { width, height } = this.scene.getSize();
 
         switch (type) {
             case 'Box':
@@ -58,9 +71,9 @@ export default class BlurEffect extends Effect {
                 this.pass.setUniforms({
                     amount: amount * ZOOM_BLUR_MAX,
                     center: [
-                        val2pct(x, -width/2, width/2),
-                        val2pct(y, -height/2, height/2)
-                    ]
+                        val2pct(x, -width / 2, width / 2),
+                        val2pct(y, -height / 2, height / 2),
+                    ],
                 });
                 break;
         }
@@ -76,8 +89,8 @@ export default class BlurEffect extends Effect {
     }
 
     getShaderPass(type) {
-        let pass,
-            { width, height } = this.scene.getSize();
+        const { width, height } = this.scene.getSize();
+        let pass;
 
         switch (type) {
             case 'Gaussian':
@@ -85,7 +98,7 @@ export default class BlurEffect extends Effect {
                 break;
 
             default:
-                pass = new ShaderPass(shaders[type]);
+                pass = new ShaderPass(shaderOptions[type]);
         }
 
         pass.setSize(width, height);
@@ -93,14 +106,3 @@ export default class BlurEffect extends Effect {
         return pass;
     }
 }
-
-BlurEffect.label = 'Blur';
-
-BlurEffect.className = 'BlurEffect';
-
-BlurEffect.defaults = {
-    type: 'Gaussian',
-    amount: 0.1,
-    x: 0,
-    y: 0
-};

@@ -7,15 +7,22 @@ const Menu = ({ items, visible, onMenuItemClick }) => (
     <div className={classNames({
         [styles.menu]: true,
         [styles.hidden]: visible === false,
-    })}>
+    })}
+    >
         {
             items.map((item, index) => {
-                const { type, label, visible, checked, disabled } = item;
+                const {
+                    type,
+                    label,
+                    visible: itemVisible,
+                    checked,
+                    disabled,
+                } = item;
 
                 if (type === 'separator') {
-                    return <div key={index} className={styles.separator}/>;
+                    return <div key={index} className={styles.separator} />;
                 }
-                else if (label && visible !== false) {
+                else if (label && itemVisible !== false) {
                     return (
                         <MenuItem
                             key={index}
@@ -26,6 +33,8 @@ const Menu = ({ items, visible, onMenuItemClick }) => (
                         />
                     );
                 }
+
+                return null;
             })
         }
     </div>
@@ -33,7 +42,7 @@ const Menu = ({ items, visible, onMenuItemClick }) => (
 
 Menu.defaultProps = {
     items: [],
-    visible: false
+    visible: false,
 };
 
 export default Menu;

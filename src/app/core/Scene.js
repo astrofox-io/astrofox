@@ -21,7 +21,7 @@ export default class Scene extends Display {
     }
 
     update(options) {
-        let changed = super.update(options);
+        const changed = super.update(options);
 
         if (changed) {
             if (this.stage) {
@@ -41,7 +41,7 @@ export default class Scene extends Display {
     }
 
     addToStage(stage) {
-        let { width, height } = stage.getSize();
+        const { width, height } = stage.getSize();
 
         this.stage = stage;
 
@@ -51,13 +51,13 @@ export default class Scene extends Display {
         this.composer = new Composer(stage.renderer);
         this.scene = new THREE.Scene();
 
-        this.camera = new THREE.PerspectiveCamera(FOV, width/height, NEAR, FAR);
+        this.camera = new THREE.PerspectiveCamera(FOV, width / height, NEAR, FAR);
         this.camera.position.set(0, 0, CAMERA_POS_Z);
 
         this.lights = [
             new THREE.PointLight(0xffffff, 1, 0),
             new THREE.PointLight(0xffffff, 1, 0),
-            new THREE.PointLight(0xffffff, 1, 0)
+            new THREE.PointLight(0xffffff, 1, 0),
         ];
 
         this.scene.add(this.camera);
@@ -65,7 +65,7 @@ export default class Scene extends Display {
         this.scene.add(this.lights[1]);
         this.scene.add(this.lights[2]);
 
-        //this.scene.fog = new THREE.Fog(0x000000, NEAR, FAR);
+        // this.scene.fog = new THREE.Fog(0x000000, NEAR, FAR);
 
         this.updatePasses();
         this.updateLights();
@@ -86,13 +86,13 @@ export default class Scene extends Display {
     }
 
     setSize(width, height) {
-        this.getDisplays().forEach(display => {
+        this.getDisplays().forEach((display) => {
             if (display.setSize) {
                 display.setSize(width, height);
             }
         });
 
-        this.getEffects().forEach(effect => {
+        this.getEffects().forEach((effect) => {
             if (effect.setSize) {
                 effect.setSize(width, height);
             }
@@ -147,6 +147,9 @@ export default class Scene extends Display {
         else if (obj instanceof Display) {
             nodes = this.displays;
         }
+        else {
+            throw new Error('Invalid element');
+        }
 
         nodes.removeNode(obj);
 
@@ -162,7 +165,7 @@ export default class Scene extends Display {
     }
 
     shiftElement(obj, i) {
-        let nodes, index;
+        let nodes;
 
         if (obj instanceof Effect) {
             nodes = this.effects;
@@ -170,8 +173,11 @@ export default class Scene extends Display {
         else if (obj instanceof Display) {
             nodes = this.displays;
         }
+        else {
+            throw new Error('Invalid element');
+        }
 
-        index = nodes.indexOf(obj);
+        const index = nodes.indexOf(obj);
 
         this.changed = nodes.swapNodes(index, index + i);
 
@@ -183,19 +189,19 @@ export default class Scene extends Display {
     }
 
     updatePasses() {
-        let composer = this.composer;
+        const { composer } = this;
 
         composer.clearPasses();
         composer.addPass(this.buffer2D.pass);
         composer.addPass(this.buffer3D.pass);
 
-        this.getDisplays().forEach(display => {
+        this.getDisplays().forEach((display) => {
             if (display.pass) {
                 composer.addPass(display.pass);
             }
         });
 
-        this.getEffects().forEach(effect => {
+        this.getEffects().forEach((effect) => {
             if (effect.pass) {
                 composer.addPass(effect.pass);
             }
@@ -203,17 +209,19 @@ export default class Scene extends Display {
     }
 
     updateLights() {
-        let lights = this.lights,
-            intensity = this.options.lightIntensity,
-            distance = this.options.lightDistance;
+        const { lights } = this;
+        const {
+            lightIntensity,
+            lightDistance,
+        } = this.options;
 
-        lights[0].intensity = intensity;
-        lights[1].intensity = intensity;
-        lights[2].intensity = intensity;
+        lights[0].intensity = lightIntensity;
+        lights[1].intensity = lightIntensity;
+        lights[2].intensity = lightIntensity;
 
-        lights[0].position.set(0, distance * 2, 0);
-        lights[1].position.set(distance, distance * 2, distance);
-        lights[2].position.set(-distance, -distance * 2, -distance);
+        lights[0].position.set(0, lightDistance * 2, 0);
+        lights[1].position.set(lightDistance, lightDistance * 2, lightDistance);
+        lights[2].position.set(-lightDistance, -lightDistance * 2, -lightDistance);
     }
 
     getDisplays() {
@@ -237,7 +245,7 @@ export default class Scene extends Display {
 
         let changes = false;
 
-        this.getDisplays().forEach(display => {
+        this.getDisplays().forEach((display) => {
             if (!changes && display.changed) {
                 changes = true;
             }
@@ -249,26 +257,22 @@ export default class Scene extends Display {
     resetChanges() {
         this.changed = false;
 
-        this.getDisplays().forEach(display => {
+        this.getDisplays().forEach((display) => {
             display.changed = false;
         });
     }
 
     toJSON() {
-        let displays = this.getDisplays().map(display => {
-            return display.toJSON();
-        });
+        const displays = this.getDisplays().map(display => display.toJSON());
 
-        let effects = this.getEffects().map(effect => {
-            return effect.toJSON();
-        });
+        const effects = this.getEffects().map(effect => effect.toJSON());
 
         return {
             name: this.name,
             options: this.options,
-            displays: displays,
-            effects: effects,
-            reactors: this.reactors
+            displays,
+            effects,
+            reactors: this.reactors,
         };
     }
 
@@ -279,16 +283,16 @@ export default class Scene extends Display {
     }
 
     render(data) {
-        let displays = this.getDisplays(),
-            effects = this.getEffects(),
-            composer = this.composer,
-            hasGeometry = false;
+        const { composer } = this;
+        const displays = this.getDisplays();
+        const effects = this.getEffects();
+        let hasGeometry = false;
 
         this.clear();
         this.updateReactors(data);
 
         if (displays.size > 0 || effects.size > 0) {
-            displays.forEach(display => {
+            displays.forEach((display) => {
                 if (display.options.enabled) {
                     display.updateReactors(data);
                     display.renderToScene(this, data);
@@ -303,7 +307,7 @@ export default class Scene extends Display {
                 this.buffer3D.renderer.render(this.scene, this.camera);
             }
 
-            effects.forEach(effect => {
+            effects.forEach((effect) => {
                 if (effect.options.enabled) {
                     effect.updateReactors(data);
                     effect.renderToScene(this, data);
@@ -329,5 +333,5 @@ Scene.defaults = {
     cameraZoom: 250,
     mask: false,
     inverse: false,
-    stencil: false
+    stencil: false,
 };

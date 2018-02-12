@@ -15,24 +15,23 @@ export default class CanvasAudio extends Component {
     }
 
     parseAudioBuffer(buffer) {
-        let i, j, c, start, end, max, val, data,
-            results = this.results,
-            size = buffer.length / results.length,
-            step = ~~(size / 10) || 1;
+        const { results } = this;
+        const size = buffer.length / results.length;
+        const step = ~~(size / 10) || 1;
 
         // Process each channel
-        for (c = 0; c < buffer.numberOfChannels; c++) {
-            data = buffer.getChannelData(c);
+        for (let c = 0; c < buffer.numberOfChannels; c += 1) {
+            const data = buffer.getChannelData(c);
 
             // Process each bar
-            for (i = 0; i < results.length; i++) {
-                start = ~~(i * size);
-                end = ~~(start + size);
-                max = 0;
+            for (let i = 0; i < results.length; i += 1) {
+                const start = ~~(i * size);
+                const end = ~~(start + size);
+                let max = 0;
 
                 // Find max value within range
-                for (j = start; j < end; j += step) {
-                    val = data[j];
+                for (let j = start; j < end; j += step) {
+                    const val = data[j];
                     if (val > max) {
                         max = val;
                     }
@@ -56,5 +55,5 @@ export default class CanvasAudio extends Component {
 }
 
 CanvasAudio.defaults = {
-    bars: 100
+    bars: 100,
 };

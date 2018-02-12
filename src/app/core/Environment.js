@@ -9,5 +9,5 @@ export const {
     FFMPEG_PATH,
     APP_CONFIG_FILE,
     LICENSE_FILE,
-    DEFAULT_PROJECT
+    DEFAULT_PROJECT,
 } = remote.getGlobal('env');

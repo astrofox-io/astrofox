@@ -1,10 +1,6 @@
 import Display from 'core/Display';
 
 export default class Effect extends Display {
-    constructor(type, options) {
-        super(type, options);
-    }
-
     update(options) {
         if (this.pass && options && options.enabled !== undefined) {
             this.pass.options.enabled = options.enabled;
@@ -15,7 +11,7 @@ export default class Effect extends Display {
 
     setPass(pass) {
         this.pass = pass;
-        pass.options.enabled = this.options.enabled;
+        this.pass.options.enabled = this.options.enabled;
 
         this.scene.updatePasses();
     }
@@ -25,7 +21,7 @@ export default class Effect extends Display {
     }
 
     setSize(width, height) {
-        let pass = this.pass;
+        const { pass } = this;
 
         if (pass) {
             pass.setSize(width, height);

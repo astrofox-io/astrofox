@@ -21,9 +21,8 @@ export default class Audio {
         else if (src instanceof AudioBuffer) {
             return this.loadBuffer(src);
         }
-        else {
-            return Promise.reject('Invalid source: ' + (typeof src));
-        }
+
+        return Promise.reject(new Error(`Invalid source: ${(typeof src)}`));
     }
 
     unload() {
@@ -37,7 +36,7 @@ export default class Audio {
     // Loads a url via AJAX
     loadUrl(src) {
         return new Promise((resolve, reject) => {
-            let request = new XMLHttpRequest();
+            const request = new XMLHttpRequest();
 
             request.open('GET', src);
             request.responseType = 'arraybuffer';
@@ -51,7 +50,7 @@ export default class Audio {
             };
 
             request.send();
-        }).then(response => {
+        }).then((response) => {
             this.loadData(response);
         });
     }
@@ -59,10 +58,10 @@ export default class Audio {
     // Decodes an ArrayBuffer into an AudioBuffer
     loadData(data) {
         return this.audioContext.decodeAudioData(data)
-            .then(buffer => {
+            .then((buffer) => {
                 this.loadBuffer(buffer);
             })
-            .catch(error => {
+            .catch((error) => {
                 throw error;
             });
     }
@@ -80,7 +79,7 @@ export default class Audio {
     }
 
     removeNode(node) {
-        let index = this.nodes.indexOf(node);
+        const index = this.nodes.indexOf(node);
 
         if (index > -1) {
             this.nodes.splice(index, 1);
@@ -88,7 +87,7 @@ export default class Audio {
     }
 
     reconnectNodes() {
-        this.nodes.forEach(node => {
+        this.nodes.forEach((node) => {
             this.source.connect(node);
         });
     }

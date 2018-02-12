@@ -4,10 +4,6 @@ import Menu from 'components/nav/Menu';
 import styles from './Menu.less';
 
 export default class MenuBarItem extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     onClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -36,9 +32,10 @@ export default class MenuBarItem extends React.Component {
         return (
             <div className={styles.barItem}>
                 <div
-                    className={classNames(styles.text, {[styles.active]: active})}
+                    className={classNames(styles.text, { [styles.active]: active })}
                     onClick={this.onClick}
-                    onMouseOver={this.onMouseOver}>
+                    onMouseOver={this.onMouseOver}
+                >
                     {label}
                 </div>
                 <Menu

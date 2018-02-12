@@ -1,21 +1,21 @@
 /* eslint-disable react/require-render-return */
 import Component from 'core/Component';
 
-const defaults = {
-    enabled: true,
-    forceClear: false,
-    needsSwap: false,
-    clearColor: false,
-    clearDepth: false,
-    clearStencil: false,
-    renderToScreen: false,
-    setClearColor: null,
-    setClearAlpha: 1.0
-};
-
 export default class ComposerPass extends Component {
+    static defaults = {
+        enabled: true,
+        forceClear: false,
+        needsSwap: false,
+        clearColor: false,
+        clearDepth: false,
+        clearStencil: false,
+        renderToScreen: false,
+        setClearColor: null,
+        setClearAlpha: 1.0,
+    }
+
     constructor(options) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, ComposerPass.defaults, options));
     }
 
     setSize(width, height) {
@@ -25,9 +25,9 @@ export default class ComposerPass extends Component {
     }
 
     setBlending(blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha) {
-        if (this.material) {
-            let material = this.material;
+        const { material } = this;
 
+        if (material) {
             material.blending = blending;
             material.blendEquation = blendEquation;
             material.blendSrc = blendSrc;
@@ -40,33 +40,40 @@ export default class ComposerPass extends Component {
     }
 
     render(renderer, scene, camera, renderTarget) {
-        let options = this.options,
-            clearColor, clearAlpha;
+        const {
+            clearColor,
+            clearDepth,
+            clearStencil,
+            setClearColor,
+            setClearAlpha,
+            forceClear,
+            renderToScreen,
+        } = this.options;
 
         // Set new values
-        if (options.setClearColor) {
-            clearColor = renderer.getClearColor();
-            clearAlpha = renderer.getClearAlpha();
-
-            renderer.setClearColor(options.setClearColor, options.setClearAlpha);
+        if (setClearColor) {
+            renderer.setClearColor(setClearColor, setClearAlpha);
         }
 
         // Clear buffers
-        if (options.clearColor || options.clearDepth || options.clearStencil) {
-            renderer.clear(options.clearColor, options.clearDepth, options.clearStencil);
+        if (clearColor || clearDepth || clearStencil) {
+            renderer.clear(clearColor, clearDepth, clearStencil);
         }
 
         // Render
-        if (options.renderToScreen) {
+        if (renderToScreen) {
             renderer.render(scene, camera);
         }
         else {
-            renderer.render(scene, camera, renderTarget, options.forceClear);
+            renderer.render(scene, camera, renderTarget, forceClear);
         }
 
         // Reset values
-        if (options.setClearColor) {
-            renderer.setClearColor(clearColor, clearAlpha);
+        if (setClearColor) {
+            renderer.setClearColor(
+                renderer.getClearColor(),
+                renderer.getClearAlpha(),
+            );
         }
     }
 }

@@ -14,11 +14,11 @@ export default class Layer extends PureComponent {
         active: false,
         enabled: true,
         onLayerClick: null,
-        onLayerUpdate: null
+        onLayerUpdate: null,
     }
 
     state = {
-        edit: false
+        edit: false,
     }
 
     onLayerClick = (e) => {
@@ -53,7 +53,7 @@ export default class Layer extends PureComponent {
             this.onCancelEdit();
         }
     }
-    
+
     onEnableEdit = () => {
         this.setState({ edit: true });
     }
@@ -64,7 +64,9 @@ export default class Layer extends PureComponent {
 
     render() {
         const { edit } = this.state;
-        const { name, control, active, enabled, icon } = this.props;
+        const {
+            name, control, active, enabled, icon,
+        } = this.props;
 
         return (
             <div
@@ -72,7 +74,7 @@ export default class Layer extends PureComponent {
                     [styles.layer]: true,
                     [styles.child]: control,
                     [styles.edit]: edit,
-                    [styles.active]: active
+                    [styles.active]: active,
                 })}
                 onClick={this.onLayerClick}
             >
@@ -82,9 +84,9 @@ export default class Layer extends PureComponent {
                         <TextInput
                             name="displayName"
                             value={name}
-                            buffered={true}
-                            autoFocus={true}
-                            autoSelect={true}
+                            buffered
+                            autoFocus
+                            autoSelect
                             onChange={this.onNameChange}
                             onCancel={this.onCancelEdit}
                         />
@@ -98,7 +100,7 @@ export default class Layer extends PureComponent {
                     <Icon
                         className={classNames({
                             [styles.optionsIcon]: true,
-                            [styles.disabled]: !enabled
+                            [styles.disabled]: !enabled,
                         })}
                         glyph={iconVisible}
                     />

@@ -4,6 +4,15 @@ import DotScreenShader from 'shaders/DotScreenShader';
 import { deg2rad } from 'utils/math';
 
 export default class DotScreenEffect extends Effect {
+    static label = 'Dot Screen';
+
+    static className = 'DotScreenEffect';
+
+    static defaults = {
+        angle: 90,
+        scale: 1.0,
+    }
+
     constructor(options) {
         super(DotScreenEffect, options);
     }
@@ -11,7 +20,7 @@ export default class DotScreenEffect extends Effect {
     updatePass() {
         this.pass.setUniforms({
             scale: this.options.scale,
-            angle: deg2rad(this.options.angle)
+            angle: deg2rad(this.options.angle),
         });
     }
 
@@ -24,12 +33,3 @@ export default class DotScreenEffect extends Effect {
         this.pass = null;
     }
 }
-
-DotScreenEffect.label = 'Dot Screen';
-
-DotScreenEffect.className = 'DotScreenEffect';
-
-DotScreenEffect.defaults = {
-    angle: 90,
-    scale: 1.0
-};

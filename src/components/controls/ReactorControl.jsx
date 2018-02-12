@@ -18,14 +18,14 @@ import iconPlus from 'svg/icons/plus.svg';
 import iconCircle from 'svg/icons/dots-three-horizontal.svg';
 import styles from './ReactorControl.less';
 
-const reactorBars = 64;
+const REACTOR_BARS = 64;
 
-const outputModes = [
+const outputOptions = [
     { title: 'Backwards', icon: iconLeft },
     { title: 'Forward', icon: iconRight },
     { title: 'Cycle Backwards', icon: iconMinus },
     { title: 'Cycle Forward', icon: iconPlus },
-    { title: 'Cycle', icon: iconCircle }
+    { title: 'Cycle', icon: iconCircle },
 ];
 
 export default class ReactorControl extends PureComponent {
@@ -34,7 +34,7 @@ export default class ReactorControl extends PureComponent {
         barHeight: 100,
         barSpacing: 1,
         reactor: null,
-        visible: false
+        visible: false,
     }
 
     componentDidMount() {
@@ -42,15 +42,15 @@ export default class ReactorControl extends PureComponent {
 
         this.spectrum = new CanvasBars(
             {
-                width: reactorBars * (barWidth + barSpacing),
+                width: REACTOR_BARS * (barWidth + barSpacing),
                 height: barHeight,
-                barWidth: barWidth,
-                barSpacing: barSpacing,
+                barWidth,
+                barSpacing,
                 shadowHeight: 0,
                 color: '#775FD8',
-                backgroundColor: '#FF0000'
+                backgroundColor: '#FF0000',
             },
-            this.spectrumCanvas
+            this.spectrumCanvas,
         );
 
         this.output = new CanvasMeter(
@@ -58,9 +58,9 @@ export default class ReactorControl extends PureComponent {
                 width: 20,
                 height: barHeight,
                 color: '#775FD8',
-                origin: 'bottom'
+                origin: 'bottom',
             },
-            this.outputCanvas
+            this.outputCanvas,
         );
 
         events.on('render', this.draw, this);
@@ -82,19 +82,26 @@ export default class ReactorControl extends PureComponent {
     }
 
     updateReactor = (name, value) => {
-        let {reactor, barWidth, barHeight, barSpacing} = this.props,
-            obj = { [name]: value };
+        const {
+            reactor,
+            barWidth,
+            barHeight,
+            barSpacing,
+        } = this.props;
+        const obj = { [name]: value };
 
         if (name === 'selection') {
-            const {x, y, width, height} = value,
-                maxWidth = reactorBars * (barWidth + barSpacing),
-                maxHeight = barHeight;
+            const {
+                x, y, width, height,
+            } = value;
+            const maxWidth = REACTOR_BARS * (barWidth + barSpacing);
+            const maxHeight = barHeight;
 
             obj.range = {
                 x1: x / maxWidth,
                 x2: (x + width) / maxWidth,
                 y1: y / maxHeight,
-                y2: (y + height) / maxHeight
+                y2: (y + height) / maxHeight,
             };
         }
 
@@ -113,15 +120,18 @@ export default class ReactorControl extends PureComponent {
     }
 
     render() {
-        const { reactor, barWidth, barHeight, barSpacing, visible } = this.props;
+        const {
+            reactor, barWidth, barHeight, barSpacing, visible,
+        } = this.props;
         const { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {});
         const { outputMode } = (reactor ? reactor.options : {});
 
         return (
             <div className={classNames({
                 [styles.reactor]: true,
-                [styles.hidden]: !visible
-            })}>
+                [styles.hidden]: !visible,
+            })}
+            >
                 <div className={styles.title}>
                     {
                         reactor &&
@@ -135,7 +145,7 @@ export default class ReactorControl extends PureComponent {
                                 <Label text="Output Mode" className={styles.label} />
                                 <ButtonGroup>
                                     {
-                                        outputModes.map((mode, index) => (
+                                        outputOptions.map((mode, index) => (
                                             <ButtonInput
                                                 key={index}
                                                 icon={mode.icon}
@@ -193,25 +203,25 @@ export default class ReactorControl extends PureComponent {
                     </div>
                     <div className={styles.spectrum}>
                         <canvas
-                            ref={e => this.spectrumCanvas = e}
-                            width={reactorBars * (barWidth + barSpacing)}
+                            ref={e => (this.spectrumCanvas = e)}
+                            width={REACTOR_BARS * (barWidth + barSpacing)}
                             height={barHeight}
                             onClick={this.onClick}
                         />
                         <BoxInput
-                            ref={e => this.box = e}
+                            ref={e => (this.box = e)}
                             name="selection"
                             value={reactor ? reactor.options.selection : {}}
                             minWidth={barWidth}
                             minHeight={barWidth}
-                            maxWidth={reactorBars * (barWidth + barSpacing)}
+                            maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
                             maxHeight={barHeight}
                             onChange={this.updateReactor}
                         />
                     </div>
                     <div className={styles.output}>
                         <canvas
-                            ref={e => this.outputCanvas = e}
+                            ref={e => (this.outputCanvas = e)}
                             width={20}
                             height={barHeight}
                         />

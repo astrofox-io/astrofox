@@ -2,7 +2,9 @@ import React from 'react';
 import { ColorInput } from 'lib/inputs';
 import styles from './ColorRangeInput.less';
 
-const ColorRangeInput = ({ name, startColor, endColor, onChange }) => (
+const ColorRangeInput = ({
+    name, startColor, endColor, onChange,
+}) => (
     <div className={styles.input}>
         <ColorInput
             name="startColor"
@@ -12,7 +14,7 @@ const ColorRangeInput = ({ name, startColor, endColor, onChange }) => (
         <div
             className={styles.range}
             style={{
-                backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`
+                backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`,
             }}
         />
         <ColorInput
@@ -26,7 +28,7 @@ const ColorRangeInput = ({ name, startColor, endColor, onChange }) => (
 ColorRangeInput.defaultProps = {
     name: 'color',
     startColor: '#ffffff',
-    endColor: '#ffffff'
+    endColor: '#ffffff',
 };
 
 export default ColorRangeInput;

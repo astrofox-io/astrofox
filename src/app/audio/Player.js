@@ -20,14 +20,13 @@ export default class Player extends EventEmitter {
         this.unload();
 
         this.audio = audio;
-
-        audio.addNode(this.volume);
+        this.audio.addNode(this.volume);
 
         this.emit('load');
     }
 
     unload() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             this.stop();
@@ -38,7 +37,7 @@ export default class Player extends EventEmitter {
     }
 
     play() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             if (audio.playing) {
@@ -60,7 +59,7 @@ export default class Player extends EventEmitter {
 
                         this.emit('tick');
                     },
-                    UPDATE_INTERVAL
+                    UPDATE_INTERVAL,
                 );
 
                 this.emit('play');
@@ -69,7 +68,7 @@ export default class Player extends EventEmitter {
     }
 
     pause() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             audio.pause();
@@ -79,7 +78,7 @@ export default class Player extends EventEmitter {
     }
 
     stop() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             audio.stop();
@@ -89,7 +88,7 @@ export default class Player extends EventEmitter {
     }
 
     seek(val) {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             audio.seek(val);
@@ -112,7 +111,7 @@ export default class Player extends EventEmitter {
     }
 
     getCurrentTime() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             return audio.getCurrentTime();
@@ -121,7 +120,7 @@ export default class Player extends EventEmitter {
     }
 
     getDuration() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             return audio.getDuration();
@@ -131,7 +130,7 @@ export default class Player extends EventEmitter {
     }
 
     getPosition() {
-        let audio = this.audio;
+        const { audio } = this;
 
         if (audio) {
             return audio.getPosition();

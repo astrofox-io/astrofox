@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import Display from 'core/Display';
 import SpectrumParser from 'audio/SpectrumParser';
+import POINT_SPRITE from 'images/data/point.png';
 
-const materials = {
+const materialOptions = {
     Normal: THREE.MeshNormalMaterial,
     Basic: THREE.MeshBasicMaterial,
     Phong: THREE.MeshPhongMaterial,
@@ -10,13 +11,34 @@ const materials = {
     Depth: THREE.MeshDepthMaterial,
     Standard: THREE.MeshStandardMaterial,
     Physical: THREE.MeshPhysicalMaterial,
-    Points: THREE.PointsMaterial
+    Points: THREE.PointsMaterial,
 };
 
-import POINT_SPRITE from 'images/data/point.png';
 const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends Display {
+    static label = 'Geometry (3D)';
+
+    static className = 'GeometryDisplay';
+
+    static defaults = {
+        shape: 'Box',
+        material: 'Standard',
+        shading: 'Smooth',
+        color: '#FFFFFF',
+        wireframe: false,
+        edges: false,
+        edgeColor: '#FFFFFF',
+        x: 0,
+        y: 0,
+        z: 0,
+        opacity: 1.0,
+        startX: 0,
+        startY: 0,
+        startZ: 0,
+        seed: 0,
+    }
+
     constructor(options) {
         super(GeometryDisplay, options);
 
@@ -25,7 +47,7 @@ export default class GeometryDisplay extends Display {
     }
 
     update(options) {
-        let changed = super.update(options);
+        const changed = super.update(options);
 
         if (changed) {
             // Create new mesh
@@ -52,7 +74,7 @@ export default class GeometryDisplay extends Display {
                 this.material.color = new THREE.Color().set(options.color);
             }
             // Change position
-            else if (options.x !== undefined|| options.y !== undefined || options.z !== undefined) {
+            else if (options.x !== undefined || options.y !== undefined || options.z !== undefined) {
                 this.mesh.position.set(this.options.x, this.options.y, this.options.z);
             }
             // Change visibility
@@ -68,7 +90,7 @@ export default class GeometryDisplay extends Display {
         this.group = new THREE.Object3D();
 
         // Load point sprite image
-        let img = document.createElement('img');
+        const img = document.createElement('img');
 
         this.sprite = new THREE.Texture(img);
 
@@ -76,7 +98,7 @@ export default class GeometryDisplay extends Display {
             this.sprite.transparent = true;
             this.sprite.needsUpdate = true;
         };
-        
+
         img.src = POINT_SPRITE;
 
         this.createMesh();
@@ -93,12 +115,16 @@ export default class GeometryDisplay extends Display {
     renderToScene(scene, data) {
         if (!data.hasUpdate) return;
 
-        let mesh = this.mesh,
-            options = this.options,
-            fft = this.parser.parseFFT(data.fft),
-            x = fft[0],
-            y = fft[3],
-            z = fft[2];
+        const {
+            mesh,
+            options,
+            parser,
+        } = this;
+
+        const fft = parser.parseFFT(data.fft);
+        const x = fft[0];
+        const y = fft[3];
+        const z = fft[2];
 
         mesh.rotation.x += 5 * x;
         mesh.rotation.y += 3 * y;
@@ -107,12 +133,19 @@ export default class GeometryDisplay extends Display {
     }
 
     createMesh() {
-        if (!this.group) return;
+        const {
+            group,
+            options,
+        } = this;
 
-        let geometry, material, rotation,
-            group = this.group,
-            mesh = this.mesh,
-            options = this.options;
+        if (!group) return;
+
+        let {
+            mesh,
+        } = this;
+
+        let geometry;
+        let rotation;
 
         if (mesh) {
             rotation = mesh.rotation.clone();
@@ -164,13 +197,13 @@ export default class GeometryDisplay extends Display {
                 new THREE.LineBasicMaterial({
                     color: new THREE.Color().set(options.edgeColor),
                     transparent: true,
-                    opacity: 0.9
-                })
+                    opacity: 0.9,
+                }),
             ));
         }
 
         // Get material
-        material = new materials[options.material]();
+        const material = new materialOptions[options.material]();
 
         // Create mesh
         if (options.material === 'Points') {
@@ -181,7 +214,7 @@ export default class GeometryDisplay extends Display {
                 transparent: true,
                 alphaTest: 0.5,
                 color: new THREE.Color().set(options.color),
-                needsUpdate: true
+                needsUpdate: true,
             });
 
             mesh.add(new THREE.Points(geometry, material));
@@ -194,7 +227,7 @@ export default class GeometryDisplay extends Display {
                 wireframe: options.wireframe,
                 needsUpdate: true,
                 transparent: true,
-                side: (options.material === 'Basic') ? THREE.FrontSide : THREE.DoubleSide
+                side: (options.material === 'Basic') ? THREE.FrontSide : THREE.DoubleSide,
             });
 
             mesh.add(new THREE.Mesh(geometry, material));
@@ -212,25 +245,3 @@ export default class GeometryDisplay extends Display {
         this.material = material;
     }
 }
-
-GeometryDisplay.label = 'Geometry (3D)';
-
-GeometryDisplay.className = 'GeometryDisplay';
-
-GeometryDisplay.defaults = {
-    shape: 'Box',
-    material: 'Standard',
-    shading: 'Smooth',
-    color: '#FFFFFF',
-    wireframe: false,
-    edges: false,
-    edgeColor: '#FFFFFF',
-    x: 0,
-    y: 0,
-    z: 0,
-    opacity: 1.0,
-    startX: 0,
-    startY: 0,
-    startZ: 0,
-    seed: 0
-};

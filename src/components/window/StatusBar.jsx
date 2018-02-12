@@ -7,7 +7,7 @@ import styles from './StatusBar.less';
 
 export default class StatusBar extends Component {
     state = {
-        fps: 0
+        fps: 0,
     }
 
     componentDidMount() {
@@ -23,7 +23,8 @@ export default class StatusBar extends Component {
     }
 
     render() {
-        let memSize, electronVersion;
+        let memSize;
+        let electronVersion;
         const { text } = this.props;
         const { fps } = this.state;
 
@@ -53,7 +54,7 @@ export default class StatusBar extends Component {
 
 class Zoom extends React.Component {
     static contextTypes = {
-        app: PropTypes.object
+        app: PropTypes.object,
     }
 
     constructor(props, context) {
@@ -76,7 +77,7 @@ class Zoom extends React.Component {
     }
 
     render() {
-        let { width, height, zoom } = this.app.stage.options;
+        const { width, height, zoom } = this.app.stage.options;
 
         return (
             <div className={styles.zoom}>

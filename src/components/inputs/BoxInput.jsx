@@ -10,12 +10,12 @@ export default class BoxInput extends PureComponent {
             x: 0,
             y: 0,
             width: 100,
-            height: 100
+            height: 100,
         },
         minWidth: 1,
         minHeight: 1,
         maxWidth: 100,
-        maxHeight: 100
+        maxHeight: 100,
     }
 
     constructor(props) {
@@ -23,7 +23,7 @@ export default class BoxInput extends PureComponent {
 
         this.state = {
             resizing: false,
-            value: props.value
+            value: props.value,
         };
     }
 
@@ -32,15 +32,15 @@ export default class BoxInput extends PureComponent {
         events.on('mousemove', this.onMouseMove);
     }
 
-    componentWillUnmount() {
-        events.off('mouseup', this.endResize);
-        events.off('mousemove', this.onMouseMove);
-    }
-
     componentWillReceiveProps({ value }) {
         if (value !== undefined) {
             this.setState({ value });
         }
+    }
+
+    componentWillUnmount() {
+        events.off('mouseup', this.endResize);
+        events.off('mousemove', this.onMouseMove);
     }
 
     onMouseMove = (e) => {
@@ -53,18 +53,25 @@ export default class BoxInput extends PureComponent {
             startWidth,
             startHeight,
             startTop,
-            startLeft
+            startLeft,
         } = this.state;
 
         if (resizing) {
-            const { minWidth, minHeight, maxWidth, maxHeight, name, onChange } = this.props;
+            const {
+                minWidth,
+                minHeight,
+                maxWidth,
+                maxHeight,
+                name,
+                onChange,
+            } = this.props;
 
-            let dx = e.pageX - startX,
-                dy = e.pageY - startY;
+            const dx = e.pageX - startX;
+            const dy = e.pageY - startY;
 
             switch (position) {
                 case 'top':
-                    value.y = clamp(startTop + dy, 0, startTop + startHeight - minHeight);
+                    value.y = clamp(startTop + dy, 0, (startTop + startHeight) - minHeight);
                     value.height = clamp(startHeight - dy, minHeight, startTop + startHeight);
                     break;
                 case 'right':
@@ -74,7 +81,7 @@ export default class BoxInput extends PureComponent {
                     value.height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
                     break;
                 case 'left':
-                    value.x = clamp(startLeft + dx, 0, startLeft + startWidth - minWidth);
+                    value.x = clamp(startLeft + dx, 0, (startLeft + startWidth) - minWidth);
                     value.width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
                     break;
                 case 'center':
@@ -93,11 +100,13 @@ export default class BoxInput extends PureComponent {
         }
     };
 
-    startResize = (pos) => (e) => {
+    startResize = pos => (e) => {
         e.stopPropagation();
         e.preventDefault();
 
-        const { x, y, width, height } = this.state.value;
+        const {
+            x, y, width, height,
+        } = this.state.value;
 
         this.setState({
             resizing: true,
@@ -107,7 +116,7 @@ export default class BoxInput extends PureComponent {
             startWidth: width,
             startHeight: height,
             startLeft: x,
-            startTop: y
+            startTop: y,
         });
     };
 
@@ -116,30 +125,39 @@ export default class BoxInput extends PureComponent {
     };
 
     render() {
-        const { x, y, width, height } = this.state.value;
+        const {
+            x, y, width, height,
+        } = this.state.value;
 
         return (
             <div
                 className={styles.box}
-                style={{width, height, top: y, left: x}}
+                style={{
+                    width, height, top: y, left: x,
+                }}
             >
                 <div
+                    role="presentation"
                     className={styles.center}
                     onMouseDown={this.startResize('center')}
                 />
                 <div
+                    role="presentation"
                     className={styles.top}
                     onMouseDown={this.startResize('top')}
                 />
                 <div
+                    role="presentation"
                     className={styles.right}
                     onMouseDown={this.startResize('right')}
                 />
                 <div
+                    role="presentation"
                     className={styles.bottom}
                     onMouseDown={this.startResize('bottom')}
                 />
                 <div
+                    role="presentation"
                     className={styles.left}
                     onMouseDown={this.startResize('left')}
                 />

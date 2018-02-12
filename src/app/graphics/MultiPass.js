@@ -1,16 +1,16 @@
 import ComposerPass from 'graphics/ComposerPass';
 import NodeCollection from 'core/NodeCollection';
 
-const defaults = {
-    needsSwap: true,
-    forceClear: true,
-    clearDepth: true
-};
-
 export default class MultiPass extends ComposerPass {
+    static defaults = {
+        needsSwap: true,
+        forceClear: true,
+        clearDepth: true,
+    }
+
     constructor(passes, options) {
-        super(Object.assign({}, defaults, options));
-    
+        super(Object.assign({}, MultiPass.defaults, options));
+
         this.passes = new NodeCollection(passes);
     }
 
@@ -29,7 +29,7 @@ export default class MultiPass extends ComposerPass {
     }
 
     setSize(width, height) {
-        this.getPasses().forEach(pass => {
+        this.getPasses().forEach((pass) => {
             pass.setSize(width, height);
         });
     }
@@ -38,12 +38,12 @@ export default class MultiPass extends ComposerPass {
         this.writeBuffer = writeBuffer;
         this.readBuffer = readBuffer;
 
-        this.getPasses().forEach(pass => {
+        this.getPasses().forEach((pass) => {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer);
 
                 if (pass.options.needsSwap) {
-                    let tmp = this.readBuffer;
+                    const tmp = this.readBuffer;
                     this.readBuffer = this.writeBuffer;
                     this.writeBuffer = tmp;
                 }

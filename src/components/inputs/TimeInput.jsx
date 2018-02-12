@@ -8,7 +8,7 @@ export default class TimeInput extends Component {
         super(props);
 
         this.state = {
-            value: props.value
+            value: props.value,
         };
     }
 
@@ -19,26 +19,30 @@ export default class TimeInput extends Component {
     }
 
     onChange = (name, val) => {
-        const { value, min, max, onChange } = this.props;
+        const {
+            value,
+            min,
+            max,
+            onChange,
+        } = this.props;
 
         const regex = /^(0?\d+:)?(0?\d+):(\d{2}(\.\d{1,3})?)$/;
 
-        let matches = val.match(regex);
+        const matches = val.match(regex);
 
         if (matches) {
-            let h = ((matches[1] !== undefined) ? Number(matches[1].replace(':','')) * 3600 : 0),
-                m = Number(matches[2]) * 60,
-                s = Number(matches[3]);
+            const h = ((matches[1] !== undefined) ? Number(matches[1].replace(':', '')) * 3600 : 0);
+            const m = Number(matches[2]) * 60;
+            const s = Number(matches[3]);
 
-            val = h + m + s;
+            let time = h + m + s;
 
             // Clamp to min/max
             if (min !== false && max !== false) {
-                val = clamp(val, min, max);
+                time = clamp(val, min, max);
             }
 
-            // Send value to parent
-            onChange(name, val);
+            onChange(name, time);
         }
         // Reset to previous value
         else {
@@ -61,7 +65,7 @@ export default class TimeInput extends Component {
                 name={name}
                 width={width}
                 size={size}
-                buffered={true}
+                buffered
                 readOnly={readOnly}
                 value={formatSeekTime(value)}
                 onChange={this.onChange}
@@ -76,5 +80,5 @@ TimeInput.defaultProps = {
     size: null,
     value: 0,
     readOnly: false,
-    onChange: () => {}
+    onChange: () => {},
 };

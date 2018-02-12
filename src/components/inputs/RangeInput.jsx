@@ -17,14 +17,14 @@ export default class RangeInput extends Component {
         fillStyle: 'left',
         showTrack: true,
         onChange: null,
-        onInput: null
+        onInput: null,
     }
 
     constructor(props) {
         super(props);
 
         this.state = {
-            value: props.value
+            value: props.value,
         };
 
         this.buffering = false;
@@ -37,15 +37,20 @@ export default class RangeInput extends Component {
     }
 
     onChange = (e) => {
-        let props = this.props;
+        const {
+            name,
+            buffered,
+            onInput,
+            onChange,
+        } = this.props;
 
-        let val = this.setValue(e.currentTarget.value, props);
+        const value = this.setValue(e.currentTarget.value, this.props);
 
-        if (props.buffered && this.buffering && props.onInput) {
-            props.onInput(props.name, val);
+        if (buffered && this.buffering && onInput) {
+            onInput(name, value);
         }
-        else if (props.onChange) {
-            props.onChange(props.name, val);
+        else if (onChange) {
+            onChange(name, value);
         }
     }
 
@@ -62,31 +67,6 @@ export default class RangeInput extends Component {
         }
     }
 
-    setValue(val, props) {
-        val = this.parseValue(val, props);
-
-        this.setState({ value: val });
-
-        return val;
-    }
-
-    parseValue(val, props) {
-        let { lowerLimit, upperLimit } = props;
-
-        if (lowerLimit !== false && val < lowerLimit) {
-            val = lowerLimit;
-        }
-        else if (upperLimit !== false && val > upperLimit) {
-            val = upperLimit;
-        }
-
-        return Number(val);
-    }
-
-    isBuffering() {
-        return this.buffering;
-    }
-
     getFillStyle() {
         const { min, max, fillStyle } = this.props;
         const { value } = this.state;
@@ -94,16 +74,49 @@ export default class RangeInput extends Component {
 
         switch (fillStyle) {
             case 'left':
-                return { width: pct + '%' };
+                return { width: `${pct}%` };
             case 'right':
-                return { width: (100 - pct) + '%', marginLeft: pct + '%' };
+                return { width: `${100 - pct}%`, marginLeft: `${pct}%` };
             default:
                 return { display: 'none' };
         }
     }
 
+    setValue(val, props) {
+        const value = this.parseValue(val, props);
+
+        this.setState({ value });
+
+        return value;
+    }
+
+    parseValue(val, props) {
+        let value = val;
+        const { lowerLimit, upperLimit } = props;
+
+        if (lowerLimit !== false && val < lowerLimit) {
+            value = lowerLimit;
+        }
+        else if (upperLimit !== false && val > upperLimit) {
+            value = upperLimit;
+        }
+
+        return Number(value);
+    }
+
+    isBuffering() {
+        return this.buffering;
+    }
+
     render() {
-        const { name, min, max, step, readOnly, showTrack } = this.props;
+        const {
+            name,
+            min,
+            max,
+            step,
+            readOnly,
+            showTrack,
+        } = this.props;
         const { value } = this.state;
 
 
@@ -112,14 +125,12 @@ export default class RangeInput extends Component {
                 <div
                     className={classNames({
                         [styles.track]: true,
-                        [styles.hidden]: !showTrack
+                        [styles.hidden]: !showTrack,
                     })}
-                    onMouseDown={e => console.log('track')}
                 />
                 <div
                     className={styles.fill}
                     style={this.getFillStyle()}
-                    onMouseDown={e => console.log('fill')}
                 />
                 <input
                     type="range"

@@ -6,27 +6,33 @@ export default class PanelDock extends PureComponent {
     static defaultProps = {
         direction: 'vertical',
         width: 320,
-        visible: true
+        visible: true,
     }
 
     render() {
-        const {width, direction, visible, children} = this.props;
+        const {
+            width,
+            direction,
+            visible,
+            children,
+        } = this.props;
 
         return (
             <div
-                ref={e => this.domElement = e}
+                ref={e => (this.domElement = e)}
                 className={classNames({
                     [styles.dock]: true,
                     [styles.vertical]: direction === 'vertical',
                     [styles.horizontal]: direction !== 'vertical',
-                    [styles.hidden]: !visible
+                    [styles.hidden]: !visible,
                 })}
                 style={{
-                    width: width
-                }}>
+                    width,
+                }}
+            >
                 {
                     Children.map(children, child => (
-                        cloneElement(child, {dock: this})
+                        cloneElement(child, { dock: this })
                     ))
                 }
             </div>

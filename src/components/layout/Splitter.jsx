@@ -8,7 +8,7 @@ import styles from './Splitter.less';
 
 export default class Splitter extends PureComponent {
     static defaultProps = {
-        type: 'horizontal'
+        type: 'horizontal',
     }
 
     state = {
@@ -30,30 +30,39 @@ export default class Splitter extends PureComponent {
     }
 
     onMouseMove = (e) => {
-        const { resizing, startY, startX, startWidth, startHeight } = this.state;
+        const {
+            resizing, startY, startX, startWidth, startHeight,
+        } = this.state;
 
         if (resizing) {
-            const { type, panel } = this.props;
-            let {
+            const {
+                type,
+                panel,
+            } = this.props;
+
+            const {
                 width,
                 height,
                 minWidth,
                 minHeight,
                 maxWidth,
-                maxHeight
+                maxHeight,
             } = panel.getSize();
+
+            let newWidth = width;
+            let newHeight = height;
 
             switch (type) {
                 case 'horizontal':
-                    height = clamp(startHeight + e.pageY - startY, minHeight, maxHeight);
+                    newHeight = clamp((startHeight + e.pageY) - startY, minHeight, maxHeight);
                     break;
 
                 case 'vertical':
-                    width = clamp(startWidth + e.pageX - startX, minWidth, maxWidth);
+                    newWidth = clamp((startWidth + e.pageX) - startX, minWidth, maxWidth);
                     break;
             }
 
-            panel.setSize(width, height);
+            panel.setSize(newWidth, newHeight);
         }
     };
 
@@ -66,7 +75,7 @@ export default class Splitter extends PureComponent {
             startX: e.pageX,
             startY: e.pageY,
             startWidth: width,
-            startHeight: height
+            startHeight: height,
         });
     };
 
@@ -85,10 +94,11 @@ export default class Splitter extends PureComponent {
                     classNames({
                         [styles.splitter]: true,
                         [styles.vertical]: type === 'vertical',
-                        [styles.horizontal]: type !== 'vertical'
+                        [styles.horizontal]: type !== 'vertical',
                     })
                 }
-                onMouseDown={this.startResize}>
+                onMouseDown={this.startResize}
+            >
                 <Icon className={styles.grip} glyph={iconDots} />
             </div>
         );

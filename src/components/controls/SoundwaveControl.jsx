@@ -5,7 +5,7 @@ import {
     NumberInput,
     ColorInput,
     RangeInput,
-    ToggleInput
+    ToggleInput,
 } from 'lib/inputs';
 
 export class SoundwaveControl extends PureComponent {

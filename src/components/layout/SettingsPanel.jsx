@@ -24,7 +24,9 @@ export const Group = ({ name, className, children }) => (
     </div>
 );
 
-export const Row = ({ label, description, className, children }) => (
+export const Row = ({
+    label, description, className, children,
+}) => (
     <div className={classNames(styles.row, className)}>
         <div className={styles.text}>
             {

@@ -17,7 +17,7 @@ export default class SelectInput extends Component {
 
         this.state = {
             value: props.value,
-            showItems: false
+            showItems: false,
         };
     }
 
@@ -34,7 +34,7 @@ export default class SelectInput extends Component {
         this.setState(({ showItems }) => ({ showItems: !showItems }));
     }
 
-    onItemClick = (value) => () => {
+    onItemClick = value => () => {
         const { name, onChange } = this.props;
 
         this.setState({ showItems: false });
@@ -52,9 +52,10 @@ export default class SelectInput extends Component {
     getDisplayText() {
         const { items, displayField, valueField } = this.props;
         const { value } = this.state;
+        const parsedItems = this.parseItems(items);
         let text = '';
 
-        items.forEach(item => {
+        parsedItems.forEach((item) => {
             if (text.length === 0 && item[valueField] === value) {
                 text = item[displayField];
             }
@@ -63,9 +64,22 @@ export default class SelectInput extends Component {
         return text;
     }
 
+    parseItems(items) {
+        return items.map((item) => {
+            if (typeof item !== 'object') {
+                const { displayField, valueField } = this.props;
+                return { [displayField]: item, [valueField]: item };
+            }
+            return item;
+        });
+    }
+
     render() {
-        const { items, name, width, className, displayField, valueField } = this.props;
+        const {
+            items, name, width, className, displayField, valueField,
+        } = this.props;
         const { showItems } = this.state;
+        const parsedItems = this.parseItems(items);
 
         return (
             <div className={styles.select}>
@@ -73,7 +87,7 @@ export default class SelectInput extends Component {
                     type="text"
                     className={classNames(styles.input, className)}
                     name={name}
-                    style={{width}}
+                    style={{ width }}
                     value={this.getDisplayText()}
                     onClick={this.onClick}
                     onBlur={this.onBlur}
@@ -82,29 +96,24 @@ export default class SelectInput extends Component {
                 <div
                     className={classNames({
                         [styles.options]: true,
-                        [styles.hidden]: !showItems
+                        [styles.hidden]: !showItems,
                     })}
                 >
                     {
-                        items.map((item, index) => {
-                            // Convert values to object
-                            if (typeof item !== 'object') {
-                                item = { name: item, value: item };
-                            }
-                            return (
-                                <div
-                                    key={index}
-                                    className={classNames({
-                                        [styles.option]: true,
-                                        [styles.separator]: item.separator,
-                                    })}
-                                    style={item.style}
-                                    onMouseDown={this.onItemClick(item[valueField])}
-                                >
-                                    {item[displayField]}
-                                </div>
-                            );
-                        })
+                        parsedItems.map((item, index) => (
+                            <div
+                                role="presentation"
+                                key={index}
+                                className={classNames({
+                                    [styles.option]: true,
+                                    [styles.separator]: item.separator,
+                                })}
+                                style={item.style}
+                                onMouseDown={this.onItemClick(item[valueField])}
+                            >
+                                {item[displayField]}
+                            </div>
+                        ))
                     }
                 </div>
             </div>

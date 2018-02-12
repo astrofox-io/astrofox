@@ -19,11 +19,11 @@ export default class ReactorInput extends PureComponent {
 
         this.meter = new CanvasMeter(
             {
-                width: width,
-                height: height,
-                color: color
+                width,
+                height,
+                color,
             },
-            this.canvas
+            this.canvas,
         );
 
         events.emit('reactor-edit', this.getReactor());
@@ -34,16 +34,23 @@ export default class ReactorInput extends PureComponent {
         events.emit('reactor-edit', null);
     }
 
+    getReactor = () => {
+        const { display, name } = this.props;
+        return display.reactors && display.reactors[name];
+    }
+
     toggleReactor = () => {
-        const { display, name, min, max } = this.props;
+        const {
+            display, name, min, max,
+        } = this.props;
 
         const reactor = display.setReactor(
             name,
             {
                 lastValue: display.options[name],
                 min: min || 0,
-                max: max || 1
-            }
+                max: max || 1,
+            },
         );
 
         if (reactor) {
@@ -59,11 +66,6 @@ export default class ReactorInput extends PureComponent {
 
     showReactorControl = () => {
         events.emit('reactor-edit', this.getReactor());
-    }
-
-    getReactor = () => {
-        const { display, name } = this.props;
-        return display.reactors && display.reactors[name];
     }
 
     draw = () => {
@@ -88,7 +90,7 @@ export default class ReactorInput extends PureComponent {
                 <Icon
                     className={classNames({
                         [styles.icon]: true,
-                        [styles.iconActive]: reactor
+                        [styles.iconActive]: reactor,
                     })}
                     glyph={iconReact}
                     title={reactor ? 'Disable Reactor' : 'Enable Reactor'}
@@ -97,12 +99,14 @@ export default class ReactorInput extends PureComponent {
                 <div className={classNames({
                     [styles.reactor]: true,
                     [styles.hidden]: !reactor,
-                })}>
+                })}
+                >
                     <div
                         className={styles.meter}
-                        onDoubleClick={this.showReactorControl}>
+                        onDoubleClick={this.showReactorControl}
+                    >
                         <canvas
-                            ref={e => this.canvas = e}
+                            ref={e => (this.canvas = e)}
                             className="canvas"
                             width={width}
                             height={height}

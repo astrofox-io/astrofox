@@ -9,7 +9,6 @@ export default class TextInput extends Component {
         size: null,
         value: '',
         spellCheck: false,
-        autoFocus: false,
         autoSelect: false,
         buffered: false,
         readOnly: false,
@@ -22,7 +21,7 @@ export default class TextInput extends Component {
         super(props);
 
         this.state = {
-            value: props.value
+            value: props.value,
         };
     }
 
@@ -39,9 +38,9 @@ export default class TextInput extends Component {
     }
 
     onChange = (e) => {
-        const value = e.target.value;
+        const { value } = e.target;
         const { name, buffered, onChange } = this.props;
-        
+
         this.setState({ value });
 
         if (!buffered) {
@@ -75,11 +74,10 @@ export default class TextInput extends Component {
             width,
             size,
             spellCheck,
-            autoFocus,
             readOnly,
             disabled,
             className,
-            inputClassName
+            inputClassName,
         } = this.props;
 
         const { value } = this.state;
@@ -87,14 +85,13 @@ export default class TextInput extends Component {
         return (
             <div className={classNames(className)}>
                 <input
-                    ref={e => this.textInput = e}
+                    ref={e => (this.textInput = e)}
                     type="text"
                     className={classNames(styles.text, inputClassName)}
-                    style={{width}}
+                    style={{ width }}
                     name={name}
                     size={size}
                     spellCheck={spellCheck}
-                    autoFocus={autoFocus}
                     value={value}
                     onChange={this.onChange}
                     onBlur={this.onValueChange}

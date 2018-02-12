@@ -1,6 +1,5 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
-
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT } from 'core/Environment';
 import { events, logger, raiseError } from 'core/Global';
 import * as IO from 'utils/io';
@@ -12,7 +11,6 @@ import Audio from 'audio/Audio';
 import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
 import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
-
 import appConfig from 'config/app.json';
 import menuConfig from 'config/menu.json';
 
@@ -23,7 +21,7 @@ export default class Application extends EventEmitter {
         super();
 
         remote.getCurrentWindow().removeAllListeners();
-    
+
         this.audioContext = new window.AudioContext();
         this.player = new Player(this.audioContext);
         this.stage = new Stage(this);
@@ -47,7 +45,7 @@ export default class Application extends EventEmitter {
             td: null,
             reactor: null,
             volume: 0,
-            playing: 0
+            playing: 0,
         };
 
         // Rendering statistics
@@ -56,7 +54,7 @@ export default class Application extends EventEmitter {
             ms: 0,
             time: 0,
             frames: 0,
-            stack: new Uint8Array(10)
+            stack: new Uint8Array(10),
         };
 
         // App events
@@ -97,7 +95,7 @@ export default class Application extends EventEmitter {
         this.render = this.render.bind(this);
     }
 
-    //region Main Methods
+    // region Main Methods
     init() {
         // Check for license
         this.license.load();
@@ -112,9 +110,9 @@ export default class Application extends EventEmitter {
             });
 
         // Create app menu
-        let menu = [];
+        const menu = [];
 
-        menuConfig.forEach(root => {
+        menuConfig.forEach((root) => {
             if (process.env.NODE_ENV !== 'production') {
                 if (root.visible !== false) {
                     menu.push(root);
@@ -125,17 +123,16 @@ export default class Application extends EventEmitter {
             }
 
             if (root.submenu) {
-                root.submenu.forEach(item => {
+                root.submenu.forEach((item) => {
                     if (item.action && !item.role) {
+                        // eslint-disable-next-line no-param-reassign
                         item.click = this.doMenuAction;
                     }
                 });
             }
         });
 
-        remote.Menu.setApplicationMenu(
-            remote.Menu.buildFromTemplate(menu)
-        );
+        remote.Menu.setApplicationMenu(remote.Menu.buildFromTemplate(menu));
 
         // Load default project
         this.newProject();
@@ -146,8 +143,8 @@ export default class Application extends EventEmitter {
     }
 
     resetAnalyzer() {
-        let analyzer = this.analyzer,
-            audio = this.player.getAudio();
+        const { analyzer } = this;
+        const audio = this.player.getAudio();
 
         if (audio && !audio.paused) {
             analyzer.clearFrequencyData();
@@ -162,9 +159,9 @@ export default class Application extends EventEmitter {
     isRendering() {
         return this.rendering;
     }
-    //endregion
+    // endregion
 
-    //region Render Methods
+    // region Render Methods
     startRender() {
         if (!this.rendering) {
             this.resetAnalyzer();
@@ -174,7 +171,7 @@ export default class Application extends EventEmitter {
     }
 
     stopRender() {
-        let id = this.frameData.id;
+        const { id } = this.frameData;
 
         if (id) {
             window.cancelAnimationFrame(id);
@@ -185,9 +182,9 @@ export default class Application extends EventEmitter {
     }
 
     render() {
-        let now = window.performance.now(),
-            playing = this.player.isPlaying(),
-            data = this.getFrameData(playing);
+        const now = window.performance.now();
+        const playing = this.player.isPlaying();
+        const data = this.getFrameData(playing);
 
         data.id = window.requestAnimationFrame(this.render);
         data.delta = now - data.time;
@@ -201,11 +198,14 @@ export default class Application extends EventEmitter {
     }
 
     renderFrame(frame, fps, callback) {
-        let data, image,
-            analyzer = this.analyzer,
-            stage = this.stage,
-            audio = this.player.getAudio(),
-            source = this.audioContext.createBufferSource();
+        const {
+            analyzer,
+            stage,
+        } = this;
+        const audio = this.player.getAudio();
+        const source = this.audioContext.createBufferSource();
+        let data;
+        let image;
 
         source.buffer = audio.buffer;
         source.connect(analyzer.analyzer);
@@ -215,7 +215,7 @@ export default class Application extends EventEmitter {
             data.delta = 1000 / fps;
 
             stage.render(data, () => {
-                stage.getImage(buffer => {
+                stage.getImage((buffer) => {
                     image = buffer;
                 });
             });
@@ -229,7 +229,7 @@ export default class Application extends EventEmitter {
     }
 
     getFrameData(update) {
-        let { frameData, analyzer, player } = this;
+        const { frameData, analyzer, player } = this;
 
         frameData.fft = analyzer.getFrequencyData(update);
         frameData.td = analyzer.getTimeData(update);
@@ -247,7 +247,7 @@ export default class Application extends EventEmitter {
     }
 
     updateFPS(now) {
-        let stats = this.stats;
+        const { stats } = this;
 
         if (!stats.time) {
             stats.time = now;
@@ -269,17 +269,17 @@ export default class Application extends EventEmitter {
 
     showWatermark(show) {
         this.stage.watermarkDisplay.update({
-            enabled: show
+            enabled: show,
         });
     }
-    //endregion
+    // endregion
 
-    //region Save/load Methods
+    // region Save/load Methods
     loadConfigFile() {
         if (IO.fileExists(APP_CONFIG_FILE)) {
             return IO.readFileCompressed(APP_CONFIG_FILE)
-                .then(data => {
-                    let config = JSON.parse(data);
+                .then((data) => {
+                    const config = JSON.parse(data);
 
                     logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
@@ -288,9 +288,8 @@ export default class Application extends EventEmitter {
                     this.emit('config-updated');
                 });
         }
-        else {
-            return this.saveConfigFile(this.config);
-        }
+
+        return this.saveConfigFile(this.config);
     }
 
     loadAudioFile(file) {
@@ -299,12 +298,8 @@ export default class Application extends EventEmitter {
         logger.time('audio-file-load');
 
         return IO.readFileAsBlob(file)
-            .then(blob => {
-                return IO.readAsArrayBuffer(blob);
-            })
-            .then(data => {
-                return this.loadAudioData(data);
-            })
+            .then(blob => IO.readAsArrayBuffer(blob))
+            .then(data => this.loadAudioData(data))
             .then(() => {
                 this.audioFile = file;
 
@@ -318,16 +313,18 @@ export default class Application extends EventEmitter {
 
                 return file;
             })
-            .catch(error => {
+            .catch((error) => {
                 raiseError('Invalid audio file.', error);
             });
     }
 
     loadAudioData(data) {
         return new Promise((resolve, reject) => {
-            let player = this.player,
-                analyzer = this.analyzer,
-                audio = new Audio(this.audioContext);
+            const {
+                player,
+                analyzer,
+            } = this;
+            const audio = new Audio(this.audioContext);
 
             audio.load(data)
                 .then(() => {
@@ -337,7 +334,7 @@ export default class Application extends EventEmitter {
 
                     resolve();
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error);
                 });
         });
@@ -345,7 +342,7 @@ export default class Application extends EventEmitter {
 
     loadAudioTags(file) {
         return IO.readFileAsBlob(file)
-            .then(data => {
+            .then((data) => {
                 id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
                     if (!err) {
                         events.emit('audio-tags', tags);
@@ -356,40 +353,42 @@ export default class Application extends EventEmitter {
 
     loadProject(file) {
         return IO.readFileCompressed(file)
-            .then(data => {
-                this.stage.loadConfig(JSON.parse(data));
-                this.resetChanges();
+            .then(
+                (data) => {
+                    this.stage.loadConfig(JSON.parse(data));
+                    this.resetChanges();
 
-                this.projectFile = file;
+                    this.projectFile = file;
 
-                events.emit('project-loaded');
-            },
-            error => {
-                if (error.message.indexOf('incorrect header check') > -1) {
-                    IO.readFile(file)
-                        .then(data => {
-                            this.stage.loadConfig(JSON.parse(data));
-                            this.resetChanges();
+                    events.emit('project-loaded');
+                },
+                (error) => {
+                    if (error.message.indexOf('incorrect header check') > -1) {
+                        IO.readFile(file)
+                            .then((data) => {
+                                this.stage.loadConfig(JSON.parse(data));
+                                this.resetChanges();
 
-                            this.projectFile = file;
+                                this.projectFile = file;
 
-                            events.emit('project-loaded');
-                        })
-                        .catch(error => {
-                            raiseError('Invalid project file.', error);
-                        });
-                }
-                else {
-                    throw error;
-                }
-            })
-            .catch(error => {
+                                events.emit('project-loaded');
+                            })
+                            .catch((err) => {
+                                raiseError('Invalid project file.', err);
+                            });
+                    }
+                    else {
+                        throw error;
+                    }
+                },
+            )
+            .catch((error) => {
                 raiseError('Invalid project file.', error);
             });
     }
 
     saveConfigFile(config) {
-        let data = JSON.stringify(config);
+        const data = JSON.stringify(config);
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data)
             .then(() => {
@@ -399,22 +398,22 @@ export default class Application extends EventEmitter {
 
                 this.emit('config-updated');
             })
-            .catch(error => {
+            .catch((error) => {
                 raiseError('Failed to save config file.', error);
             });
     }
 
     saveImage(filename) {
-        let stage = this.stage,
-            data = this.getFrameData(true);
+        const { stage } = this;
+        const data = this.getFrameData(true);
 
         stage.render(data, () => {
-            stage.getImage(buffer => {
+            stage.getImage((buffer) => {
                 IO.writeFile(filename, buffer)
                     .then(() => {
                         logger.log('Image saved:', filename);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         raiseError('Failed to save image file.', error);
                     });
             });
@@ -425,9 +424,11 @@ export default class Application extends EventEmitter {
         if (this.player.getAudio()) {
             logger.time('video-render');
 
-            let renderer = this.renderer = new VideoRenderer(videoFile, audioFile, options),
-                { showWatermark } = this.config,
-                hasLicense = this.license.check();
+            this.renderer = new VideoRenderer(videoFile, audioFile, options);
+
+            const { renderer } = this;
+            const { showWatermark } = this.config;
+            const hasLicense = this.license.check();
 
             // Setup before rendering
             this.stopRender();
@@ -436,7 +437,7 @@ export default class Application extends EventEmitter {
 
             // Handle events
             renderer.on('ready', () => {
-                this.renderFrame(renderer.currentFrame, options.fps, image => {
+                this.renderFrame(renderer.currentFrame, options.fps, (image) => {
                     renderer.processFrame(image);
                 });
             });
@@ -456,16 +457,12 @@ export default class Application extends EventEmitter {
     }
 
     saveProject(file) {
-        let data, sceneData;
+        const sceneData = this.stage.getScenes().map(scene => scene.toJSON());
 
-        sceneData = this.stage.getScenes().map(scene => {
-            return scene.toJSON();
-        });
-
-        data = JSON.stringify({
+        const data = JSON.stringify({
             version: APP_VERSION,
             stage: this.stage.toJSON(),
-            scenes: sceneData
+            scenes: sceneData,
         });
 
         return IO.writeFileCompressed(file, data)
@@ -476,7 +473,7 @@ export default class Application extends EventEmitter {
 
                 this.projectFile = file;
             })
-            .catch(error => {
+            .catch((error) => {
                 raiseError('Failed to save project file.', error);
             });
     }
@@ -497,5 +494,5 @@ export default class Application extends EventEmitter {
                 });
         }
     }
-    //endregion
+    // endregion
 }

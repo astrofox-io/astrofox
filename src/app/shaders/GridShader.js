@@ -1,11 +1,11 @@
-import vertex from 'glsl/vertex/Basic';
-import fragment from 'glsl/fragment/Grid';
+import vertex from 'glsl/vertex/Basic.glsl';
+import fragment from 'glsl/fragment/Grid.glsl';
 
 export default {
     uniforms: {
-        tDiffuse: { type: 't', value: null }
+        tDiffuse: { type: 't', value: null },
     },
 
     vertexShader: vertex,
-    fragmentShader: fragment
+    fragmentShader: fragment,
 };

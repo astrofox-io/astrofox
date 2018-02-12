@@ -40,8 +40,8 @@ export default class TitleBar extends PureComponent {
     }
 
     render() {
-        const win = Window.getWindow(),
-            icon = win.isMaximized() ? buttonRestore : buttonMaximize;
+        const win = Window.getWindow();
+        const icon = win.isMaximized() ? buttonRestore : buttonMaximize;
 
         return (
             <div
@@ -53,16 +53,16 @@ export default class TitleBar extends PureComponent {
                 }
             >
                 <Icon className={styles.icon} glyph={appIcon} />
-                <div className= {styles.title}>ASTROFOX</div>
+                <div className={styles.title}>ASTROFOX</div>
                 <div className={styles.buttons}>
                     <span className={styles.button} onClick={this.onMinimize}>
-                        <img src={buttonMinimize} />
+                        <img src={buttonMinimize} alt="" />
                     </span>
                     <span className={styles.button} onClick={this.onMaximize}>
-                        <img src={icon} />
+                        <img src={icon} alt="" />
                     </span>
                     <span className={styles.button} onClick={this.onClose}>
-                        <img src={buttonClose} />
+                        <img src={buttonClose} alt="" />
                     </span>
                 </div>
             </div>

@@ -20,16 +20,16 @@ const transitionTimeout = {
 
 export default class Stage extends React.Component {
     static contextTypes = {
-        app: PropTypes.object
-    }
-
-    state = {
-        loading: false,
-        rendering: false,
+        app: PropTypes.object,
     }
 
     constructor(props, context) {
         super(props);
+
+        this.state = {
+            loading: false,
+            rendering: false,
+        };
 
         this.app = context.app;
         this.canvas = null;
@@ -54,8 +54,8 @@ export default class Stage extends React.Component {
         e.stopPropagation();
         e.preventDefault();
 
-        const file = e.dataTransfer.files[0],
-            { onFileDropped } = this.props;
+        const { onFileDropped } = this.props;
+        const file = e.dataTransfer.files[0];
 
         if (file && onFileDropped) {
             onFileDropped(file.path);
@@ -75,12 +75,12 @@ export default class Stage extends React.Component {
     };
 
     render() {
-        let { loading, rendering } = this.state,
-            { width, height, zoom } = this.app.stage.options,
-            style = {
-                width: (width * zoom) + 'px',
-                height: (height * zoom) + 'px'
-            };
+        const { loading, rendering } = this.state;
+        const { width, height, zoom } = this.app.stage.options;
+        const style = {
+            width: `${width * zoom}px`,
+            height: `${height * zoom}px`,
+        };
 
         return (
             <div className={styles.stage}>
@@ -88,10 +88,17 @@ export default class Stage extends React.Component {
                     <div
                         className={styles.canvas}
                         onDrop={this.onDrop}
-                        onDragOver={this.onDragOver}>
-                        <canvas ref={e => this.canvas = e} style={style} />
+                        onDragOver={this.onDragOver}
+                    >
+                        <canvas
+                            ref={e => (this.canvas = e)}
+                            style={style}
+                        />
                         <Loading visible={loading} />
-                        <Rendering visible={rendering} onButtonClick={this.stopRender} />
+                        <Rendering
+                            visible={rendering}
+                            onButtonClick={this.stopRender}
+                        />
                     </div>
                 </div>
             </div>
@@ -119,7 +126,8 @@ const Rendering = ({ visible, onButtonClick }) => (
             visible &&
             <CSSTransition
                 classNames={transitionClasses}
-                timeout={transitionTimeout}>
+                timeout={transitionTimeout}
+            >
                 <RenderInfo className={styles.renderInfo} onButtonClick={onButtonClick} />
             </CSSTransition>
         }

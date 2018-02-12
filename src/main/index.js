@@ -12,7 +12,7 @@ const appUpdater = new AppUpdater();
 log('NODE_ENV', process.env.NODE_ENV);
 
 // Set global variables
-global['env'] = env;
+global.env = env;
 
 // Create temp folder for application
 function createTempFolder() {
@@ -20,7 +20,7 @@ function createTempFolder() {
         fs.mkdirSync(env.TEMP_PATH);
         log('Temp folder created:', env.TEMP_PATH);
     }
-    catch(err) {
+    catch (err) {
         if (err.code !== 'EEXIST') {
             log('ERROR:', err.message);
         }
@@ -30,19 +30,19 @@ function createTempFolder() {
 // Chrome flags
 // Hardware acceleration
 app.commandLine.appendSwitch('ignore-gpu-blacklist');
-//app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
+// app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
 
 // WebGL 2
-//app.commandLine.appendSwitch('enable-unsafe-es3-apis');
+// app.commandLine.appendSwitch('enable-unsafe-es3-apis');
 
 // GPU rasterization
-//app.commandLine.appendSwitch('enable-gpu-rasterization');
+// app.commandLine.appendSwitch('enable-gpu-rasterization');
 
 // Disable background throttling
-//app.commandLine.appendSwitch('disable-renderer-background');
+// app.commandLine.appendSwitch('disable-renderer-background');
 
 // Number of raster threads
-//app.commandLine.appendSwitch('num-raster-threads', 4);
+// app.commandLine.appendSwitch('num-raster-threads', 4);
 
 // Memory profiling
 if (process.env.NODE_ENV !== 'production') {
@@ -85,14 +85,14 @@ app.on('will-quit', () => {
 });
 
 // IPC events
-ipcMain.on('check-for-updates', event => {
-    appUpdater.checkForUpdates().then(result => {
+ipcMain.on('check-for-updates', (event) => {
+    appUpdater.checkForUpdates().then((result) => {
         event.sender.send('check-for-updates-complete', result);
     });
 });
 
-ipcMain.on('download-update', event => {
-    appUpdater.downloadUpdate().then(result => {
+ipcMain.on('download-update', (event) => {
+    appUpdater.downloadUpdate().then((result) => {
         event.sender.send('download-update-complete', result);
     });
 });

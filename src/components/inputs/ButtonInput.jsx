@@ -3,8 +3,11 @@ import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import styles from './ButtonInput.less';
 
-const ButtonInput = ({ title, icon, text, active, disabled, onClick, className }) => (
+const ButtonInput = ({
+    title, icon, text, active, disabled, onClick, className,
+}) => (
     <div
+        role="presentation"
         className={
             classNames({
                 [styles.button]: true,
@@ -13,7 +16,8 @@ const ButtonInput = ({ title, icon, text, active, disabled, onClick, className }
             }, className)
         }
         title={title}
-        onClick={disabled ? null : onClick}>
+        onClick={disabled ? null : onClick}
+    >
         {
             icon &&
             <Icon className={styles.icon} glyph={icon} />

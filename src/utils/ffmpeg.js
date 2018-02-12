@@ -4,20 +4,20 @@ export function getVersion(ffmpeg) {
     return new Promise((resolve, reject) => {
         let buffer = '';
 
-        let process = new Process(ffmpeg);
+        const process = new Process(ffmpeg);
 
-        process.on('stdout', data => {
+        process.on('stdout', (data) => {
             buffer += data.toString();
         });
 
-        process.on('error', err => {
+        process.on('error', (err) => {
             reject(err);
         });
 
         process.on('close', () => {
-            let lines = buffer.split(/\r\n|\r|\n/),
-                regex = /^ffmpeg version ([^ ]+)/,
-                match = lines[0].match(regex);
+            const lines = buffer.split(/\r\n|\r|\n/);
+            const regex = /^ffmpeg version ([^ ]+)/;
+            const match = lines[0].match(regex);
 
             if (match) {
                 resolve(match[1]);
@@ -34,29 +34,29 @@ export function getFormats(ffmpeg) {
     return new Promise((resolve, reject) => {
         let buffer = '';
 
-        let process = new Process(ffmpeg);
+        const process = new Process(ffmpeg);
 
-        process.on('stdout', data => {
+        process.on('stdout', (data) => {
             buffer += data.toString();
         });
 
-        process.on('error', err => {
+        process.on('error', (err) => {
             reject(err);
         });
 
         process.on('close', () => {
-            let formats = {},
-                lines = buffer.split(/\r\n|\r|\n/),
-                regex = /^\s*([D ])([E ]) ([^ ]+) +(.*)$/;
+            const formats = {};
+            const lines = buffer.split(/\r\n|\r|\n/);
+            const regex = /^\s*([D ])([E ]) ([^ ]+) +(.*)$/;
 
-            lines.forEach(line => {
-                let match = line.match(regex);
+            lines.forEach((line) => {
+                const match = line.match(regex);
                 if (match) {
-                    match[3].split(',').forEach(id => {
+                    match[3].split(',').forEach((id) => {
                         formats[id] = {
                             description: match[4],
                             canDemux: match[1] === 'D',
-                            canMux: match[2] === 'E'
+                            canMux: match[2] === 'E',
                         };
                     });
                 }
@@ -73,24 +73,24 @@ export function getCodecs(ffmpeg) {
     return new Promise((resolve, reject) => {
         let buffer = '';
 
-        let process = new Process(ffmpeg);
+        const process = new Process(ffmpeg);
 
-        process.on('stdout', data => {
+        process.on('stdout', (data) => {
             buffer += data.toString();
         });
 
-        process.on('error', err => {
+        process.on('error', (err) => {
             reject(err);
         });
 
         process.on('close', () => {
-            let codecs = { audio: {}, video: {}, subtitle: {}},
-                lines = buffer.split(/\r\n|\r|\n/),
-                regex = /^\s*([D.])([E.])([VAS])([I.])([L.])([S.]) ([^ ]+) +(.*)$/,
-                types = { V: 'video', A: 'audio', S: 'subtitle' };
+            const codecs = { audio: {}, video: {}, subtitle: {} };
+            const lines = buffer.split(/\r\n|\r|\n/);
+            const regex = /^\s*([D.])([E.])([VAS])([I.])([L.])([S.]) ([^ ]+) +(.*)$/;
+            const types = { V: 'video', A: 'audio', S: 'subtitle' };
 
-            lines.forEach(line => {
-                let match = line.match(regex);
+            lines.forEach((line) => {
+                const match = line.match(regex);
                 if (match && match[7] !== '=') {
                     codecs[types[match[3]]][match[7]] = {
                         description: match[8],
@@ -98,7 +98,7 @@ export function getCodecs(ffmpeg) {
                         canEncode: match[2] === 'E',
                         intraFrameOnly: match[4] === 'I',
                         isLossy: match[5] === 'L',
-                        isLossless: match[6] === 'S'
+                        isLossless: match[6] === 'S',
                     };
                 }
             });

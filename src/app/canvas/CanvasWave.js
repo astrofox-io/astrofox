@@ -14,11 +14,23 @@ export default class CanvasWave extends Component {
         this.context = this.canvas.getContext('2d');
     }
 
+    /* eslint-disable no-param-reassign */
     render(points, smooth) {
-        let i,
-            canvas = this.canvas,
-            context = this.context,
-            { width, height, color, lineWidth, stroke, fill, fillColor, taper } = this.options;
+        const {
+            canvas,
+            context,
+        } = this;
+
+        const {
+            width,
+            height,
+            color,
+            lineWidth,
+            stroke,
+            fill,
+            fillColor,
+            taper,
+        } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
@@ -35,8 +47,8 @@ export default class CanvasWave extends Component {
 
         // Draw wave
         if (smooth) {
-            for (i = 0; i < points.length; i += 2) {
-                points[i+1] = height - (points[i+1] * height);
+            for (let i = 0; i < points.length; i += 2) {
+                points[i + 1] = height - (points[i + 1] * height);
             }
 
             context.beginPath();
@@ -46,8 +58,8 @@ export default class CanvasWave extends Component {
                 points[0] = 0;
                 points[1] = height;
 
-                points[points.length-2] = width;
-                points[points.length-1] = height;
+                points[points.length - 2] = width;
+                points[points.length - 1] = height;
             }
 
             // Draw spline
@@ -78,12 +90,12 @@ export default class CanvasWave extends Component {
         else {
             context.beginPath();
 
-            for (i = 0; i < points.length; i += 2) {
+            for (let i = 0; i < points.length; i += 2) {
                 if (i === 0) {
-                    context.moveTo(points[i], height - (points[i+1] * height));
+                    context.moveTo(points[i], height - (points[i + 1] * height));
                 }
                 else {
-                    context.lineTo(points[i], height - (points[i+1] * height));
+                    context.lineTo(points[i], height - (points[i + 1] * height));
                 }
             }
 
@@ -107,5 +119,5 @@ CanvasWave.defaults = {
     stroke: true,
     fill: false,
     fillColor: null,
-    taper: false
+    taper: false,
 };

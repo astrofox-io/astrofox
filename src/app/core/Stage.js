@@ -20,13 +20,13 @@ export default class Stage extends Display {
     }
 
     init(canvas) {
-        let { width, height, backgroundColor } = this.options;
+        const { width, height, backgroundColor } = this.options;
 
         this.renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
+            canvas,
             antialias: false,
             premultipliedAlpha: true,
-            alpha: false
+            alpha: false,
         });
 
         this.renderer.setSize(width, height);
@@ -48,7 +48,7 @@ export default class Stage extends Display {
     }
 
     update(options) {
-        let changed = super.update(options);
+        const changed = super.update(options);
 
         if (changed) {
             if (options.width !== undefined || options.height !== undefined) {
@@ -63,11 +63,7 @@ export default class Stage extends Display {
         return changed;
     }
 
-    addScene(scene, index) {
-        if (typeof scene === 'undefined') {
-            scene = new Scene();
-        }
-
+    addScene(scene = new Scene(), index) {
         if (index !== undefined) {
             this.scenes.insertNode(index, scene);
         }
@@ -97,7 +93,7 @@ export default class Stage extends Display {
     }
 
     shiftScene(scene, i) {
-        let index = this.scenes.indexOf(scene);
+        const index = this.scenes.indexOf(scene);
 
         this.changed = this.scenes.swapNodes(index, index + i);
 
@@ -109,7 +105,7 @@ export default class Stage extends Display {
     }
 
     clearScenes() {
-        this.getScenes().forEach(scene => {
+        this.getScenes().forEach((scene) => {
             this.removeScene(scene);
         });
 
@@ -117,16 +113,16 @@ export default class Stage extends Display {
     }
 
     getSortedDisplays() {
-        let displays = [];
+        const displays = [];
 
-        this.getScenes().reverse().forEach(scene => {
+        this.getScenes().reverse().forEach((scene) => {
             displays.push(scene);
 
-            scene.getEffects().reverse().forEach(effect => {
+            scene.getEffects().reverse().forEach((effect) => {
                 displays.push(effect);
             });
 
-            scene.getDisplays().reverse().forEach(display => {
+            scene.getDisplays().reverse().forEach((display) => {
                 displays.push(display);
             });
         });
@@ -145,7 +141,7 @@ export default class Stage extends Display {
 
         let changes = false;
 
-        this.getScenes().forEach(scene => {
+        this.getScenes().forEach((scene) => {
             if (!changes && scene.hasChanges()) {
                 changes = true;
             }
@@ -157,15 +153,15 @@ export default class Stage extends Display {
     resetChanges() {
         this.changed = false;
 
-        this.getScenes().forEach(scene => {
+        this.getScenes().forEach((scene) => {
             scene.resetChanges();
         });
     }
 
     getImage(callback, format) {
-        let img = this.renderer.domElement.toDataURL(format || 'image/png');
-        let base64 = img.replace(/^data:image\/\w+;base64,/, '');
-        let buffer = new Buffer(base64, 'base64');
+        const img = this.renderer.domElement.toDataURL(format || 'image/png');
+        const base64 = img.replace(/^data:image\/\w+;base64,/, '');
+        const buffer = Buffer.from(base64, 'base64');
 
         if (callback) callback(buffer);
     }
@@ -179,7 +175,7 @@ export default class Stage extends Display {
     }
 
     setSize(width, height) {
-        this.getScenes().forEach(scene => {
+        this.getScenes().forEach((scene) => {
             scene.setSize(width, height);
         });
 
@@ -196,7 +192,7 @@ export default class Stage extends Display {
     }
 
     setZoom(val) {
-        let zoom = this.options.zoom;
+        const { zoom } = this.options;
 
         if (val > 0) {
             if (zoom < 1.0) {
@@ -216,25 +212,25 @@ export default class Stage extends Display {
     }
 
     loadConfig(config) {
-        let component;
+        let Component;
 
         if (typeof config === 'object') {
             this.clearScenes();
 
             if (config.scenes) {
-                config.scenes.forEach(scene => {
-                    let newScene = new Scene(scene.options);
+                config.scenes.forEach((scene) => {
+                    const newScene = new Scene(scene.options);
 
                     this.addScene(newScene);
 
                     if (scene.displays) {
-                        scene.displays.forEach(display => {
-                            component = displayLibrary[display.name];
+                        scene.displays.forEach((display) => {
+                            Component = displayLibrary[display.name];
 
-                            if (!component) component = displayLibrary[display.name + 'Display'];
+                            if (!Component) Component = displayLibrary[`${display.name}Display`];
 
-                            if (component) {
-                                newScene.addElement(new component(display.options));
+                            if (Component) {
+                                newScene.addElement(new Component(display.options));
                             }
                             else {
                                 logger.warn('Display not found:', display.name);
@@ -243,13 +239,13 @@ export default class Stage extends Display {
                     }
 
                     if (scene.effects) {
-                        scene.effects.forEach(effect => {
-                            component = effectsLibrary[effect.name];
+                        scene.effects.forEach((effect) => {
+                            Component = effectsLibrary[effect.name];
 
-                            if (!component) component = effectsLibrary[effect.name + 'Effect'];
+                            if (!Component) Component = effectsLibrary[`${effect.name}Effect`];
 
-                            if (component) {
-                                newScene.addElement(new component(effect.options));
+                            if (Component) {
+                                newScene.addElement(new Component(effect.options));
                             }
                             else {
                                 logger.warn('Effect not found:', effect.name);
@@ -272,11 +268,11 @@ export default class Stage extends Display {
     }
 
     render(data, callback) {
-        let composer = this.composer;
+        const { composer } = this;
 
         composer.clear(this.backgroundColor, 1);
 
-        this.getScenes().forEach(scene => {
+        this.getScenes().forEach((scene) => {
             if (scene.options.enabled) {
                 this.renderScene(scene, data);
             }
@@ -293,18 +289,16 @@ export default class Stage extends Display {
     }
 
     renderScene(scene, data) {
-        let options, buffer,
-            composer = this.composer;
+        const buffer = scene.render(data);
+        const options = Object.assign({}, scene.options);
 
-        buffer = scene.render(data);
-        options = Object.assign({}, scene.options);
-        composer.blendBuffer(buffer, options);
+        this.composer.blendBuffer(buffer, options);
     }
 
     toJSON() {
         return {
             name: this.name,
-            options: this.options
+            options: this.options,
         };
     }
 }
@@ -317,5 +311,5 @@ Stage.defaults = {
     width: 854,
     height: 480,
     zoom: 1.0,
-    backgroundColor: '#000000'
+    backgroundColor: '#000000',
 };

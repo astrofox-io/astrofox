@@ -8,31 +8,27 @@ import SpritePass from 'graphics/SpritePass';
 import TexturePass from 'graphics/TexturePass';
 import CopyShader from 'shaders/CopyShader';
 import BlendShader from 'shaders/BlendShader';
-import blendModes from 'config/blendModes';
+import blendModes from 'config/blendModes.json';
 
 export default class Composer extends EventEmitter {
     constructor(renderer, renderTarget) {
         super();
-        
+
         this.renderer = renderer;
         this.passes = new NodeCollection();
         this.maskActive = false;
-    
+
         this.copyPass = new ShaderPass(CopyShader, { transparent: true });
         this.blendPass = new ShaderPass(BlendShader, { transparent: true });
-    
-        if (!renderTarget) {
-            renderTarget = this.getRenderTarget();
-        }
-    
-        this.setRenderTarget(renderTarget);
+
+        this.setRenderTarget(renderTarget || this.getRenderTarget());
     }
 
     getRenderTarget() {
-        let renderer = this.renderer,
-            pixelRatio = renderer.getPixelRatio(),
-            width = Math.floor(renderer.context.canvas.width / pixelRatio) || 1,
-            height = Math.floor(renderer.context.canvas.height / pixelRatio) || 1;
+        const { renderer } = this;
+        const pixelRatio = renderer.getPixelRatio();
+        const width = Math.floor(renderer.context.canvas.width / pixelRatio) || 1;
+        const height = Math.floor(renderer.context.canvas.height / pixelRatio) || 1;
 
         return new THREE.WebGLRenderTarget(
             width,
@@ -41,8 +37,8 @@ export default class Composer extends EventEmitter {
                 minFilter: THREE.LinearFilter,
                 magFilter: THREE.LinearFilter,
                 format: THREE.RGBAFormat,
-                stencilBuffer: false
-            }
+                stencilBuffer: false,
+            },
         );
     }
 
@@ -57,7 +53,7 @@ export default class Composer extends EventEmitter {
     getSize() {
         return {
             width: this.readTarget.width,
-            height: this.readTarget.height
+            height: this.readTarget.height,
         };
     }
 
@@ -68,26 +64,22 @@ export default class Composer extends EventEmitter {
     }
 
     clearScreen(color, depth, stencil) {
-        color = color !== false;
-        depth = depth !== false;
-        stencil = stencil !== false;
-
-        this.renderer.clear(color, depth, stencil);
+        this.renderer.clear(color !== false, depth !== false, stencil !== false);
     }
 
     clearBuffer(color, depth, stencil) {
-        color = color !== false;
-        depth = depth !== false;
-        stencil = stencil !== false;
+        const c = color !== false;
+        const d = depth !== false;
+        const s = stencil !== false;
 
-        this.renderer.clearTarget(this.readTarget, color, depth, stencil);
-        this.renderer.clearTarget(this.writeTarget, color, depth, stencil);
+        this.renderer.clearTarget(this.readTarget, c, d, s);
+        this.renderer.clearTarget(this.writeTarget, c, d, s);
     }
 
     clear(color, alpha) {
-        let renderer = this.renderer,
-            clearColor = renderer.getClearColor(),
-            clearAlpha = renderer.getClearAlpha();
+        const { renderer } = this;
+        const clearColor = renderer.getClearColor();
+        const clearAlpha = renderer.getClearAlpha();
 
         if (color) {
             renderer.setClearColor(color, alpha);
@@ -108,7 +100,7 @@ export default class Composer extends EventEmitter {
     }
 
     swapBuffers() {
-        let tmp = this.readBuffer;
+        const tmp = this.readBuffer;
         this.readBuffer = this.writeBuffer;
         this.writeBuffer = tmp;
     }
@@ -136,16 +128,11 @@ export default class Composer extends EventEmitter {
     }
 
     addTexturePass(texture, options) {
-        if (typeof texture !== THREE.Texture) {
-            texture = new THREE.Texture(texture);
-            texture.minFilter = THREE.LinearFilter;
-        }
-
         return this.addPass(new TexturePass(texture, options));
     }
 
     addSpritePass(image, options) {
-        let texture = new THREE.Texture(image);
+        const texture = new THREE.Texture(image);
         texture.minFilter = THREE.LinearFilter;
 
         return this.addPass(new SpritePass(texture, options));
@@ -164,26 +151,33 @@ export default class Composer extends EventEmitter {
     }
 
     blendBuffer(buffer, options) {
-        let pass = this.blendPass,
-            { opacity, blendMode, mask, inverse } = options;
+        const {
+            renderer,
+            blendPass,
+            readBuffer,
+            writeBuffer,
+        } = this;
+        const {
+            opacity, blendMode, mask, inverse,
+        } = options;
 
-        pass.setUniforms({
-            tBase: this.readBuffer,
+        blendPass.setUniforms({
+            tBase: readBuffer,
             tBlend: buffer,
-            opacity: opacity,
+            opacity,
             mode: blendModes[blendMode],
             alpha: 1,
-            mask: mask,
-            inverse: inverse
+            mask,
+            inverse,
         });
 
-        pass.render(this.renderer, this.writeBuffer);
+        blendPass.render(renderer, writeBuffer);
 
         this.swapBuffers();
     }
 
     renderToScreen() {
-        let pass = this.copyPass;
+        const pass = this.copyPass;
 
         pass.update({ renderToScreen: true });
 
@@ -193,12 +187,12 @@ export default class Composer extends EventEmitter {
     }
 
     render() {
-        let renderer = this.renderer;
+        const { renderer } = this;
 
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
-        this.getPasses().forEach(pass => {
+        this.getPasses().forEach((pass) => {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer);
 

@@ -14,23 +14,8 @@ const timeout = {
     exit: 300,
 };
 
-const Overlay = ({ children }) => (
-    <TransitionGroup component={Component}>
-        {
-            Children.map(children, (child, index) => (
-                <CSSTransition
-                    key={index}
-                    classNames={classes}
-                    timeout={timeout}>
-                    {cloneElement(child, {className: styles.element})}
-                </CSSTransition>
-            ))
-        }
-    </TransitionGroup>
-);
-
 const Component = ({ children }) => {
-    let style = (Children.count(children) > 0) ? null : {display:'none'};
+    const style = (Children.count(children) > 0) ? null : { display: 'none' };
 
     return (
         <div className={styles.overlay} style={style}>
@@ -38,5 +23,21 @@ const Component = ({ children }) => {
         </div>
     );
 };
+
+const Overlay = ({ children }) => (
+    <TransitionGroup component={Component}>
+        {
+            Children.map(children, (child, index) => (
+                <CSSTransition
+                    key={index}
+                    classNames={classes}
+                    timeout={timeout}
+                >
+                    {cloneElement(child, { className: styles.element })}
+                </CSSTransition>
+            ))
+        }
+    </TransitionGroup>
+);
 
 export default Overlay;

@@ -5,7 +5,19 @@ import debug from 'debug';
 
 const log = debug('window');
 
-export let mainWindow = null;
+let mainWindow = null;
+
+export function getWindow() {
+    return mainWindow;
+}
+
+export function showWindow() {
+    mainWindow.show();
+
+    if (process.env.NODE_ENV !== 'production') {
+        mainWindow.webContents.openDevTools();
+    }
+}
 
 export function createWindow() {
     if (mainWindow !== null) return;
@@ -26,8 +38,8 @@ export function createWindow() {
             textAreasAreResizable: false,
             experimentalCanvasFeatures: true,
             backgroundThrottling: false,
-            devTools: process.env.NODE_ENV !== 'production'
-        }
+            devTools: process.env.NODE_ENV !== 'production',
+        },
     });
 
     // Production settings
@@ -42,7 +54,7 @@ export function createWindow() {
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'browser', 'index.html'),
         protocol: 'file',
-        slashes: true
+        slashes: true,
     }));
 
     // Show window when DOM ready
@@ -67,14 +79,6 @@ export function createWindow() {
         log('closed');
         mainWindow = null;
     });
-}
-
-export function showWindow() {
-    mainWindow.show();
-
-    if (process.env.NODE_ENV !== 'production') {
-        mainWindow.webContents.openDevTools();
-    }
 }
 
 export function disposeWindow() {

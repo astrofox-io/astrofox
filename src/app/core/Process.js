@@ -20,11 +20,11 @@ export default class Process extends EventEmitter {
         this.process = spawn(this.command, args);
 
         // Connect handlers
-        this.process.stdout.on('data', data => {
+        this.process.stdout.on('data', (data) => {
             this.emit('stdout', data);
         });
 
-        this.process.stderr.on('data', data => {
+        this.process.stderr.on('data', (data) => {
             this.emit('stderr', data);
         });
 
@@ -38,7 +38,7 @@ export default class Process extends EventEmitter {
             this.emit('exit', code, signal);
         });
 
-        this.process.on('error', err => {
+        this.process.on('error', (err) => {
             this.emit('error', err);
         });
 

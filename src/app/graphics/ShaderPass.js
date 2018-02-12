@@ -1,17 +1,17 @@
 import * as THREE from 'three';
 import ComposerPass from 'graphics/ComposerPass';
 
-const defaults = {
-    textureId: 'tDiffuse',
-    transparent: false,
-    needsSwap: true,
-    forceClear: false,
-    blending: THREE.NormalBlending
-};
-
 export default class ShaderPass extends ComposerPass {
+    static defaults = {
+        textureId: 'tDiffuse',
+        transparent: false,
+        needsSwap: true,
+        forceClear: false,
+        blending: THREE.NormalBlending,
+    }
+
     constructor(shader, options) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, ShaderPass.defaults, options));
 
         this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
@@ -21,7 +21,7 @@ export default class ShaderPass extends ComposerPass {
             fragmentShader: shader.fragmentShader,
             defines: shader.defines || {},
             transparent: this.options.transparent,
-            blending: this.options.blending
+            blending: this.options.blending,
         });
 
         this.scene = new THREE.Scene();
@@ -35,16 +35,16 @@ export default class ShaderPass extends ComposerPass {
 
         this.scene.add(this.mesh);
     }
-    
-    setUniforms(props) {
-        let uniforms = this.uniforms;
 
-        Object.keys(props).forEach(prop => {
-            if (uniforms.hasOwnProperty(prop)) {
-                let p = uniforms[prop].value;
+    setUniforms(props) {
+        const { uniforms } = this;
+
+        Object.keys(props).forEach((prop) => {
+            if (Object.prototype.hasOwnProperty.call(uniforms, prop)) {
+                const p = uniforms[prop].value;
 
                 if (p !== null && typeof p.set !== 'undefined') {
-                    p.set.apply(p, props[prop]);
+                    p.set(...props[prop]);
                 }
                 else {
                     uniforms[prop].value = props[prop];
@@ -56,12 +56,13 @@ export default class ShaderPass extends ComposerPass {
     }
 
     render(renderer, writeBuffer, readBuffer) {
-        let options = this.options;
+        const { scene, camera, material } = this;
+        const { textureId } = this.options;
 
-        if (readBuffer && this.material.uniforms[options.textureId] ) {
-            this.material.uniforms[options.textureId].value = readBuffer;
+        if (readBuffer && material.uniforms[textureId]) {
+            material.uniforms[textureId].value = readBuffer;
         }
 
-        super.render(renderer, this.scene, this.camera, writeBuffer);
+        super.render(renderer, scene, camera, writeBuffer);
     }
 }

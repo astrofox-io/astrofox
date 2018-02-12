@@ -4,6 +4,17 @@ import { setColor } from 'utils/canvas';
 import { clamp } from 'utils/math';
 
 export default class CanvasBars extends Component {
+    static defaults = {
+        width: 300,
+        height: 100,
+        minHeight: 0,
+        barWidth: -1,
+        barSpacing: -1,
+        shadowHeight: 100,
+        color: '#FFFFFF',
+        shadowColor: '#CCCCCC',
+    }
+
     constructor(options, canvas) {
         super(Object.assign({}, CanvasBars.defaults, options));
 
@@ -15,11 +26,23 @@ export default class CanvasBars extends Component {
     }
 
     render(data) {
-        let i, x, y, val, step, index, last, barSize, fullWidth,
-            bars = data.length,
-            canvas = this.canvas,
-            context = this.context,
-            { height, width, barWidth, barSpacing, color, shadowHeight, shadowColor, minHeight } = this.options;
+        const bars = data.length;
+        const {
+            canvas,
+            context,
+        } = this;
+        const {
+            height,
+            width,
+            color,
+            shadowHeight,
+            shadowColor,
+            minHeight,
+        } = this.options;
+        let {
+            barWidth,
+            barSpacing,
+        } = this.options;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height + shadowHeight) {
@@ -32,7 +55,8 @@ export default class CanvasBars extends Component {
 
         // Calculate bar widths
         if (barWidth < 0 && barSpacing < 0) {
-            barWidth = barSpacing = (width / bars) / 2;
+            barSpacing = (width / bars) / 2;
+            barWidth = barSpacing;
         }
         else if (barSpacing >= 0 && barWidth < 0) {
             barWidth = (width - (bars * barSpacing)) / bars;
@@ -44,24 +68,24 @@ export default class CanvasBars extends Component {
         }
 
         // Calculate bars to display
-        barSize = barWidth + barSpacing;
-        fullWidth = barSize * bars;
+        const barSize = barWidth + barSpacing;
+        const fullWidth = barSize * bars;
 
         // Stepping
-        step = (fullWidth > width) ? fullWidth / width : 1;
+        const step = (fullWidth > width) ? fullWidth / width : 1;
 
         // Canvas setup
         setColor(context, color, 0, 0, 0, height);
 
         // Draw bars
-        for (i = 0, x = 0, y = height, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
-            index = ~~i;
+        for (let i = 0, x = 0, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
+            const index = ~~i;
 
             if (index !== last) {
-                val = clamp(data[index] * height , minHeight, height);
+                const val = clamp(data[index] * height, minHeight, height);
                 last = index;
 
-                context.fillRect(x, y, barWidth, -val);
+                context.fillRect(x, height, barWidth, -val);
             }
         }
 
@@ -69,27 +93,16 @@ export default class CanvasBars extends Component {
         if (shadowHeight > 0) {
             setColor(context, shadowColor, 0, height, 0, height + shadowHeight);
 
-            for (i = 0, x = 0, y = height, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
-                index = ~~i;
+            for (let i = 0, x = 0, last = null; i < bars && x < fullWidth; i += step, x += barSize) {
+                const index = ~~i;
 
                 if (index !== last) {
-                    val = data[index] * shadowHeight;
+                    const val = data[index] * shadowHeight;
                     last = index;
 
-                    context.fillRect(x, y, barWidth, val);
+                    context.fillRect(x, height, barWidth, val);
                 }
             }
         }
     }
 }
-
-CanvasBars.defaults = {
-    width: 300,
-    height: 100,
-    minHeight: 0,
-    barWidth: -1,
-    barSpacing: -1,
-    shadowHeight: 100,
-    color: '#FFFFFF',
-    shadowColor: '#CCCCCC'
-};

@@ -4,10 +4,11 @@ import styles from './ToggleInput.less';
 
 const ToggleInput = ({ name, value, onChange }) => (
     <div
+        role="presentation"
         className={
             classNames({
                 [styles.toggle]: true,
-                [styles.on]: value
+                [styles.on]: value,
             })
         }
         onClick={() => onChange(name, !value)}
@@ -17,7 +18,7 @@ const ToggleInput = ({ name, value, onChange }) => (
 ToggleInput.defaultProps = {
     name: 'toggle',
     value: false,
-    onChange: () => {}
+    onChange: () => {},
 };
 
 export default ToggleInput;

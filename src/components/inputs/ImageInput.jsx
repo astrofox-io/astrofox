@@ -12,7 +12,7 @@ export default class ImageInput extends Component {
     static defaultProps = {
         name: 'image',
         value: blankImage,
-        onChange: () => {}
+        onChange: () => {},
     }
 
     onImageLoad = () => {
@@ -32,13 +32,11 @@ export default class ImageInput extends Component {
         e.stopPropagation();
         e.preventDefault();
 
-        this.loadImageFile(e.dataTransfer.files[0]);
+        this.loadImageFile(e.dataTransfer.files[0].path);
     }
 
-    onClick = (e) => {
-        e.preventDefault();
-
-        Window.showOpenDialog(files => {
+    onClick = () => {
+        Window.showOpenDialog((files) => {
             if (files) {
                 this.loadImageFile(files[0]);
             }
@@ -52,34 +50,24 @@ export default class ImageInput extends Component {
         this.loadImage(blankImage);
     }
 
+    getImage = () => this.image;
+
     loadImage = (src) => {
         if (src && this.image.src !== src) {
             this.image.src = src;
         }
     }
 
-    loadImageFile = (file) => {
-        if (file instanceof File) {
-            file = file.path;
-        }
-
-        if (typeof file === 'string') {
-            return readFileAsBlob(file).then(data => {
-                this.loadImageBlob(data);
-            });
-        }
-    }
+    loadImageFile = file => readFileAsBlob(file).then((data) => {
+        this.loadImageBlob(data);
+    });
 
     loadImageBlob = (blob) => {
         if (/^image/.test(blob.type)) {
-            readAsDataUrl(blob).then(data => {
+            readAsDataUrl(blob).then((data) => {
                 this.loadImage(data);
             });
         }
-    }
-
-    getImage = () => {
-        return this.image;
     }
 
     render() {
@@ -89,17 +77,20 @@ export default class ImageInput extends Component {
 
         return (
             <div
+                role="presentation"
                 className={styles.image}
                 onDrop={this.onDrop}
                 onDragOver={this.onDragOver}
-                onClick={hasImage ? this.onDelete : this.onClick}>
+                onClick={hasImage ? this.onDelete : this.onClick}
+            >
                 <img
-                    ref={e => this.image = e}
+                    ref={e => (this.image = e)}
                     className={classNames({
                         [styles.img]: true,
-                        [styles.hidden]: !hasImage
+                        [styles.hidden]: !hasImage,
                     })}
                     src={value || blankImage}
+                    alt=""
                     onLoad={this.onImageLoad}
                 />
                 <Icon

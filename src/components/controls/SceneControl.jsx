@@ -39,7 +39,7 @@ const blendOptions = [
     'Negation',
     'Phoenix',
     'Glow',
-    'Reflect'
+    'Reflect',
 ];
 
 export class SceneControl extends PureComponent {
@@ -50,7 +50,7 @@ export class SceneControl extends PureComponent {
         if (name === 'blendMode' && typeof value !== 'string') {
             return;
         }
-        
+
         onChange(name, value);
     }
 
@@ -58,7 +58,7 @@ export class SceneControl extends PureComponent {
         const {
             active, display, blendMode, opacity,
             lightIntensity, lightDistance, cameraZoom, mask, inverse,
-            onReactorChange
+            onReactorChange,
         } = this.props;
 
         return (

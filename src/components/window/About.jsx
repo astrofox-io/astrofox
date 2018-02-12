@@ -32,7 +32,7 @@ const About = ({ onClose }, context) => {
 };
 
 About.contextTypes = {
-    app: PropTypes.object
+    app: PropTypes.object,
 };
 
 export default About;

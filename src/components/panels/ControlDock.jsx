@@ -26,7 +26,8 @@ export default class ControlDock extends PureComponent {
                     title="LAYERS"
                     height={300}
                     minHeight={100}
-                    resizable={true}>
+                    resizable
+                >
                     <LayersPanel
                         onLayerSelected={this.onLayerSelected}
                         onLayerUpdate={this.onLayerUpdate}
@@ -35,9 +36,10 @@ export default class ControlDock extends PureComponent {
                 </Panel>
                 <Panel
                     title="CONTROLS"
-                    stretch={true}>
+                    stretch
+                >
                     <ControlsPanel
-                        ref={e => this.controls = e}
+                        ref={e => (this.controls = e)}
                     />
                 </Panel>
             </PanelDock>

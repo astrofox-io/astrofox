@@ -6,8 +6,8 @@ const Checkmark = ({ size, className }) => (
     <div
         className={classNames(styles.checkmark, className)}
         style={{
-            width: size + 'px',
-            height: size + 'px'
+            width: `${size}px`,
+            height: `${size}px`,
         }}
     >
         <svg className={styles.svg} viewBox="0 0 72 72">

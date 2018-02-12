@@ -9,7 +9,7 @@ export default class Panel extends React.PureComponent {
 
         this.state = {
             height: props.height,
-            width: props.width
+            width: props.width,
         };
     }
 
@@ -39,7 +39,7 @@ export default class Panel extends React.PureComponent {
             direction,
             stretch,
             resizable,
-            className
+            className,
         } = this.props;
 
         const { height } = this.state;
@@ -53,7 +53,7 @@ export default class Panel extends React.PureComponent {
                         [styles.panel]: true,
                         [styles.vertical]: direction === 'vertical',
                         [styles.horizontal]: direction !== 'vertical',
-                        [styles.stretch]: stretch
+                        [styles.stretch]: stretch,
                     }, className)
                 }
                 style={style}
@@ -79,5 +79,5 @@ Panel.defaultProps = {
     height: null,
     width: null,
     minHeight: 0,
-    minWidth: 0
+    minWidth: 0,
 };

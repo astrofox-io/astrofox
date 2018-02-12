@@ -31,14 +31,14 @@ export default class Player extends PureComponent {
             progressPosition: 0,
             duration: 0,
             showWaveform: true,
-            showOsc: false
+            showOsc: false,
         };
 
         this.app = context.app;
     }
 
     componentDidMount() {
-        const player = this.app.player;
+        const { player } = this.app;
 
         player.on('load', () => {
             this.setState({ duration: player.getDuration() });
@@ -50,7 +50,7 @@ export default class Player extends PureComponent {
 
         player.on('tick', () => {
             if (player.isPlaying() && !this.progressControl.isBuffering()) {
-                let pos = player.getPosition();
+                const pos = player.getPosition();
 
                 this.setState({ progressPosition: pos });
 
@@ -62,15 +62,18 @@ export default class Player extends PureComponent {
         });
 
         player.on('play', () => {
-            this.setState({ playing: true });
+            this.setState({ playing: player.isPlaying() });
         });
 
         player.on('pause', () => {
-            this.setState({ playing: false });
+            this.setState({ playing: player.isPlaying() });
         });
 
         player.on('stop', () => {
-            this.setState({ progressPosition: 0 });
+            this.setState({
+                playing: player.isPlaying(),
+                progressPosition: 0,
+            });
 
             if (this.waveform) {
                 this.waveform.position = 0;
@@ -80,10 +83,10 @@ export default class Player extends PureComponent {
         });
 
         player.on('seek', () => {
-            let pos = player.getPosition();
+            const pos = player.getPosition();
 
             this.setState({
-                progressPosition: pos
+                progressPosition: pos,
             });
 
             if (this.waveform) {
@@ -93,7 +96,7 @@ export default class Player extends PureComponent {
             }
         });
 
-        events.on('render', data => {
+        events.on('render', (data) => {
             if (this.spectrum) {
                 this.spectrum.draw(data);
             }
@@ -108,12 +111,12 @@ export default class Player extends PureComponent {
         this.app.player.play();
     };
 
-    onStopButtonClick = () =>  {
+    onStopButtonClick = () => {
         this.app.player.stop();
     };
 
     onLoopButtonClick = () => {
-        this.setState(prevState => {
+        this.setState((prevState) => {
             this.app.player.setLoop(!prevState.looping);
 
             return { looping: !prevState.looping };
@@ -145,18 +148,20 @@ export default class Player extends PureComponent {
     }
 
     render() {
-        let osc,
-            playing = this.app.player.isPlaying(),
-            { duration, progressPosition, looping, showWaveform, showOsc } = this.state;
-
-        if (showOsc) {
-            osc = <Oscilloscope ref={e => this.oscilloscope = e} />;
-        }
+        const { visible } = this.props;
+        const {
+            playing,
+            duration,
+            progressPosition,
+            looping,
+            showWaveform,
+            showOsc,
+        } = this.state;
 
         return (
-            <div className={classNames({ [styles.hidden]: !this.props.visible })}>
+            <div className={classNames({ [styles.hidden]: !visible })}>
                 <AudioWaveform
-                    ref={e => this.waveform = e}
+                    ref={e => (this.waveform = e)}
                     visible={showWaveform && duration}
                     onClick={this.onWaveformClick}
                 />
@@ -167,7 +172,7 @@ export default class Player extends PureComponent {
                     </div>
                     <VolumeControl onChange={this.onVolumeChange} />
                     <ProgressControl
-                        ref={e => this.progressControl = e}
+                        ref={e => (this.progressControl = e)}
                         value={progressPosition * progressMax}
                         onChange={this.onProgressChange}
                         onInput={this.onProgressInput}
@@ -196,18 +201,21 @@ export default class Player extends PureComponent {
                         onClick={this.onLoopButtonClick}
                     />
                 </div>
-                {osc}
+                {
+                    showOsc &&
+                    <Oscilloscope ref={e => (this.oscilloscope = e)} />
+                }
             </div>
         );
     }
 }
 
 Player.defaultProps = {
-    visible: true
+    visible: true,
 };
 
 Player.contextTypes = {
-    app: PropTypes.object
+    app: PropTypes.object,
 };
 
 class VolumeControl extends PureComponent {
@@ -216,14 +224,14 @@ class VolumeControl extends PureComponent {
 
         this.state = {
             value: 100,
-            mute: false
+            mute: false,
         };
     }
 
     onChange = (name, value) => {
         this.props.onChange(value / 100);
 
-        this.setState({ value: value, mute: false });
+        this.setState({ value, mute: false });
     }
 
     onClick = () => {
@@ -235,8 +243,8 @@ class VolumeControl extends PureComponent {
     }
 
     render() {
-        let icon,
-            { value, mute } = this.state;
+        const { value, mute } = this.state;
+        let icon;
 
         if (value < 10 || mute) {
             icon = iconVolume4;
@@ -253,7 +261,11 @@ class VolumeControl extends PureComponent {
 
         return (
             <div className={styles.volume}>
-                <div className={styles.speaker} onClick={this.onClick}>
+                <div
+                    role="presentation"
+                    className={styles.speaker}
+                    onClick={this.onClick}
+                >
                     <Icon className={styles.icon} glyph={icon} />
                 </div>
                 <div className={styles.slider}>
@@ -275,13 +287,12 @@ class ProgressControl extends PureComponent {
         super(props);
 
         this.state = {
-            value: 0
+            value: 0,
         };
     }
 
     componentWillReceiveProps(props) {
-        if (!this.isBuffering())
-        {
+        if (!this.isBuffering()) {
             this.setState({ value: props.value });
         }
     }
@@ -306,12 +317,12 @@ class ProgressControl extends PureComponent {
         return (
             <div className={styles.progress}>
                 <RangeInput
-                    ref={e => this.progressInput = e}
+                    ref={e => (this.progressInput = e)}
                     name="progress"
                     min="0"
                     max={progressMax}
                     value={this.state.value}
-                    buffered={true}
+                    buffered
                     onChange={this.onChange}
                     onInput={this.onInput}
                     readOnly={this.props.readOnly}
@@ -323,51 +334,51 @@ class ProgressControl extends PureComponent {
 
 const PlayButton = ({ playing, title, onClick }) => (
     <div
+        role="presentation"
         className={classNames({
             [styles.button]: true,
             [styles.playButton]: !playing,
-            [styles.pauseButton]: playing
+            [styles.pauseButton]: playing,
         })}
-        onClick={onClick}>
+        onClick={onClick}
+    >
         <Icon className={styles.icon} glyph={playing ? iconPause : iconPlay} title={title} />
     </div>
 );
 
-const StopButton = ({ title, onClick }) => {
-    return (
-        <div
-            className={classNames(styles.button, styles.stopButton)}
-            onClick={onClick}
-        >
-            <Icon className={styles.icon} glyph={iconStop} title={title} />
-        </div>
-    );
-};
+const StopButton = ({ title, onClick }) => (
+    <div
+        role="presentation"
+        className={classNames(styles.button, styles.stopButton)}
+        onClick={onClick}
+    >
+        <Icon className={styles.icon} glyph={iconStop} title={title} />
+    </div>
+);
 
-const ToggleButton = ({ active, title, icon, onClick }) => {
-    return (
-        <div
-            className={classNames({
-                [styles.toggleButton]: true,
-                [styles.toggleButtonActive]: active
-            })}
-            onClick={onClick}
-        >
-            <Icon className={styles.icon} glyph={icon} title={title} width={20} height={20} />
-        </div>
-    );
-};
+const ToggleButton = ({
+    active, title, icon, onClick,
+}) => (
+    <div
+        role="presentation"
+        className={classNames({
+            [styles.toggleButton]: true,
+            [styles.toggleButtonActive]: active,
+        })}
+        onClick={onClick}
+    >
+        <Icon className={styles.icon} glyph={icon} title={title} width={20} height={20} />
+    </div>
+);
 
-const TimeInfo = ({ currentTime, totalTime }) => {
-    return (
-        <div className={styles.timeInfo}>
-            <span className={classNames(styles.timePart, styles.currentTime)}>
-                {formatTime(currentTime)}
-            </span>
-            <span className={classNames(styles.timePart, styles.timeSplit)} />
-            <span className={classNames(styles.timePart, styles.totalTime)}>
-                {formatTime(totalTime)}
-            </span>
-        </div>
-    );
-};
+const TimeInfo = ({ currentTime, totalTime }) => (
+    <div className={styles.timeInfo}>
+        <span className={classNames(styles.timePart, styles.currentTime)}>
+            {formatTime(currentTime)}
+        </span>
+        <span className={classNames(styles.timePart, styles.timeSplit)} />
+        <span className={classNames(styles.timePart, styles.totalTime)}>
+            {formatTime(totalTime)}
+        </span>
+    </div>
+);

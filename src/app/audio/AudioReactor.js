@@ -13,8 +13,12 @@ export default class AudioReactor extends Component {
         lastValue: 0,
         min: 0,
         max: 1,
-        selection: { x: 0, y: 0, width: 100, height: 100 },
-        range: { x1: 0, x2: 1, y1: 0, y2: 1 }
+        selection: {
+            x: 0, y: 0, width: 100, height: 100,
+        },
+        range: {
+            x1: 0, x2: 1, y1: 0, y2: 1,
+        },
     }
 
     constructor(options) {
@@ -22,26 +26,34 @@ export default class AudioReactor extends Component {
 
         this.parser = new SpectrumParser({
             maxDecibels: -20,
-            maxFrequency: ceil(sampleRate/fftSize * REACTOR_BINS),
+            maxFrequency: ceil((sampleRate / fftSize) * REACTOR_BINS),
             normalize: true,
-            bins: REACTOR_BINS
+            bins: REACTOR_BINS,
         });
 
         this.result = { fft: null, output: 0 };
         this.direction = 1;
     }
 
+    getResult() {
+        return this.result;
+    }
+
     parse(data) {
-        let fft = this.parser.parseFFT(data.fft),
-            { output } = this.result,
-            sum = 0;
+        const fft = this.parser.parseFFT(data.fft);
+        const {
+            outputMode,
+            range: {
+                x1, y1, x2, y2,
+            },
+        } = this.options;
+        const start = floor(x1 * fft.length);
+        const end = ceil(x2 * fft.length);
 
-        const { x1, y1, x2, y2 } = this.options.range,
-            { outputMode } = this.options,
-            start = floor(x1 * fft.length),
-            end = ceil(x2 * fft.length);
+        let output = this.result.ouput;
+        let sum = 0;
 
-        for (let i = start; i < end; i++) {
+        for (let i = start; i < end; i += 1) {
             sum += val2pct(fft[i], 1 - y2, 1 - y1);
         }
 
@@ -77,19 +89,16 @@ export default class AudioReactor extends Component {
                         this.direction = -1;
                     }
                     else if (output < 0) {
-                        output = output % 1;
+                        output %= 1;
                         this.direction = 1;
                     }
                 }
+                break;
         }
 
         this.result.fft = fft;
         this.result.output = output;
 
-        return this.result;
-    }
-
-    getResult() {
         return this.result;
     }
 

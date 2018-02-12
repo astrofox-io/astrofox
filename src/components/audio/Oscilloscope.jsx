@@ -7,13 +7,13 @@ export default class Oscilloscope extends PureComponent {
     static defaultProps = {
         width: 854,
         height: 50,
-        color: '#927FFF'
+        color: '#927FFF',
     }
 
     componentDidMount() {
         this.display = new CanvasWave(
             this.props,
-            this.canvas
+            this.canvas,
         );
     }
 
@@ -29,7 +29,7 @@ export default class Oscilloscope extends PureComponent {
         return (
             <div className={styles.oscilloscope}>
                 <canvas
-                    ref={e => this.canvas = e}
+                    ref={e => (this.canvas = e)}
                     className={styles.canvas}
                     width={width}
                     height={height}

@@ -2,20 +2,35 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
 
 export default class ImageDisplay extends CanvasDisplay {
+    static label = 'Image';
+
+    static className = 'ImageDisplay';
+
+    static defaults = {
+        src: '',
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        fixed: true,
+        rotation: 0,
+        opacity: 1.0,
+    };
+
     constructor(options) {
         super(ImageDisplay, options);
 
         this.image = new CanvasImage(this.options, this.canvas);
     }
-    
+
     update(options) {
-        let changed = super.update(options);
+        const changed = super.update(options);
 
         if (changed) {
             if (this.image.update(options)) {
                 let render = false;
 
-                Object.keys(CanvasImage.defaults).forEach(prop => {
+                Object.keys(CanvasImage.defaults).forEach((prop) => {
                     if (options[prop] !== undefined) {
                         render = true;
                     }
@@ -30,18 +45,3 @@ export default class ImageDisplay extends CanvasDisplay {
         return changed;
     }
 }
-
-ImageDisplay.label = 'Image';
-
-ImageDisplay.className = 'ImageDisplay';
-
-ImageDisplay.defaults = {
-    src: '',
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    fixed: true,
-    rotation: 0,
-    opacity: 1.0
-};

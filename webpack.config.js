@@ -9,7 +9,7 @@ const vendorIds = Object.keys(require('./package.json').dependencies);
 
 const extractLess = new ExtractTextPlugin({
     filename: 'css/[name].css',
-    allChunks: true
+    allChunks: true,
 });
 
 const config = {
@@ -17,7 +17,7 @@ const config = {
     devtool: PRODUCTION ? false : 'source-map',
     entry: {
         app: path.resolve(__dirname, 'src/app/index.js'),
-        vendor: vendorIds
+        vendor: vendorIds,
     },
     output: {
         path: path.resolve(__dirname, 'app/browser'),
@@ -26,31 +26,31 @@ const config = {
         libraryTarget: 'var',
     },
     resolve: {
-        extensions: ['.js', '.json', '.jsx', '.glsl', '.svg'],
+        extensions: ['.js', '.jsx', '.json'],
         modules: [
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'src/app'),
             'node_modules',
-        ]
+        ],
     },
     resolveLoader: {
         modules: [
             'node_modules',
             path.resolve(__dirname, 'src/build/loaders'),
-        ]
+        ],
     },
     module: {
         rules: [
             {
                 test: /\.jsx?$/,
                 include: [
-                    path.resolve(__dirname, 'src')
+                    path.resolve(__dirname, 'src'),
                 ],
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        cacheDirectory: true
-                    }
+                        cacheDirectory: true,
+                    },
                 },
             },
             {
@@ -65,30 +65,30 @@ const config = {
                                 sourceMap: true,
                                 minimize: PRODUCTION,
                                 localIdentName: '[name]__[local]--[hash:base64:5]',
-                                importLoaders: 1
-                            }
+                                importLoaders: 1,
+                            },
                         },
                         {
                             loader: 'less-loader',
                             options: {
-                                sourceMap: true
-                            }
-                        }
+                                sourceMap: true,
+                            },
+                        },
                     ],
                     publicPath: '../',
-                })
+                }),
             },
             {
                 test: /\.glsl$/,
                 use: {
-                    loader: 'glsl-loader'
+                    loader: 'glsl-loader',
                 },
             },
             {
                 test: /\.(jpg|png|gif)$/,
                 include: path.resolve(__dirname, 'src/images/data'),
                 use: {
-                    loader: 'url-loader'
+                    loader: 'url-loader',
                 },
             },
             {
@@ -98,7 +98,7 @@ const config = {
                     loader: 'file-loader',
                     options: {
                         name: 'images/[path][name].[ext]',
-                        context: 'src/images/browser'
+                        context: 'src/images/browser',
                     },
                 },
             },
@@ -107,7 +107,7 @@ const config = {
                 use: {
                     loader: 'svg-sprite-loader',
                     options: {
-                        extract: true
+                        extract: true,
                     },
                 },
             },
@@ -117,7 +117,7 @@ const config = {
                     loader: 'file-loader',
                     options: {
                         name: 'fonts/[name].[ext]',
-                        publicPath: '../'
+                        publicPath: '../',
                     },
                 },
             },
@@ -126,11 +126,11 @@ const config = {
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: '[name].html'
+                        name: '[name].html',
                     },
                 },
-            }
-        ]
+            },
+        ],
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
@@ -140,19 +140,19 @@ const config = {
         }),
         extractLess,
         new SpriteLoaderPlugin(),
-    ]
+    ],
 };
 
 if (PRODUCTION) {
     config.plugins.push(
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production')
+            'process.env.NODE_ENV': JSON.stringify('production'),
         }),
         new MinifyPlugin(
             {},
             {
                 test: /\.js$/,
-                comments: false
+                comments: false,
             },
         ),
     );

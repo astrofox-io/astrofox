@@ -9,19 +9,13 @@ export default class SpectrumParser extends Component {
         this.setBinRange();
     }
 
-    update(options) {
-        let changed = super.update(options);
-
-        if (changed) {
-            this.setBinRange();
-        }
-
-        return changed;
-    }
-
     setBinRange() {
-        let { sampleRate, fftSize, minFrequency, maxFrequency } = this.options,
-            range = sampleRate / fftSize;
+        const {
+            minFrequency,
+            maxFrequency,
+        } = this.options;
+
+        const range = sampleRate / fftSize;
 
         this.minBin = ~~(minFrequency / range);
         this.maxBin = ~~(maxFrequency / range);
@@ -29,8 +23,8 @@ export default class SpectrumParser extends Component {
     }
 
     getDb(fft) {
-        let db = -100 * (1 - fft/256),
-            { minDecibels, maxDecibels, normalize } = this.options;
+        const { minDecibels, maxDecibels, normalize } = this.options;
+        const db = -100 * (1 - (fft / 256));
 
         if (normalize) {
             return val2pct(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
@@ -39,38 +33,56 @@ export default class SpectrumParser extends Component {
         return val2pct(db, -100, maxDecibels);
     }
 
-    parseFFT(fft) {
-        let i, j, k, size, step, start, end, val, max,
-            { results, buffer, minBin, maxBin, totalBins } = this,
-            { smoothingTimeConstant, bins } = this.options;
+    update(options) {
+        const changed = super.update(options);
 
-        bins = bins || totalBins;
+        if (changed) {
+            this.setBinRange();
+        }
+
+        return changed;
+    }
+
+    parseFFT(fft) {
+        let {
+            results,
+            buffer,
+        } = this;
+        const {
+            minBin,
+            maxBin,
+            totalBins,
+        } = this;
+        const { smoothingTimeConstant, bins } = this.options;
+        const n = bins || totalBins;
 
         // Resize data arrays
-        if (results === undefined || results.length !== bins) {
-            results = this.results = new Float32Array(bins);
-            buffer = this.buffer = new Float32Array(bins);
+        if (results === undefined || results.length !== n) {
+            results = new Float32Array(n);
+            buffer = new Float32Array(n);
+            this.results = results;
+            this.buffer = buffer;
         }
 
         // Convert values
-        if (bins === totalBins) {
-            for (i = minBin, k = 0; i < maxBin; i++, k++) {
+        if (n === totalBins) {
+            for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
                 results[k] = this.getDb(fft[i]);
             }
         }
         // Compress data
-        else if (bins < totalBins) {
-            size = totalBins / bins;
-            step = ~~(size / 10) || 1;
+        else if (n < totalBins) {
+            const size = totalBins / n;
+            const step = ~~(size / 10) || 1;
 
-            for (i = minBin, k = 0; i < maxBin; i++, k++) {
-                start = ~~(i * size);
-                end = ~~(start + size);
-                max = 0;
+            for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
+                const start = ~~(i * size);
+                const end = ~~(start + size);
+                let max = 0;
 
                 // Find max value within range
-                for (j = start; j < end; j += step) {
-                    val = fft[j];
+                for (let j = start; j < end; j += step) {
+                    const val = fft[j];
 
                     if (val > max) {
                         max = val;
@@ -84,15 +96,15 @@ export default class SpectrumParser extends Component {
             }
         }
         // Expand data
-        else if (bins > totalBins) {
-            size = bins / totalBins;
+        else if (n > totalBins) {
+            const size = n / totalBins;
 
-            for (i = minBin, j = 0; i < maxBin; i++, j++) {
-                val = this.getDb(fft[i]);
-                start = ~~(j * size);
-                end = start + size;
+            for (let i = minBin, j = 0; i < maxBin; i += 1, j += 1) {
+                const val = this.getDb(fft[i]);
+                const start = ~~(j * size);
+                const end = start + size;
 
-                for (k = start; k < end; k += 1) {
+                for (let k = start; k < end; k += 1) {
                     results[k] = val;
                 }
             }
@@ -100,8 +112,11 @@ export default class SpectrumParser extends Component {
 
         // Apply smoothing
         if (smoothingTimeConstant > 0) {
-            for (i = 0; i < bins; i++) {
-                results[i] = (buffer[i] * smoothingTimeConstant) + (results[i] * (1.0 - smoothingTimeConstant));
+            for (let i = 0; i < n; i += 1) {
+                results[i] = (
+                    buffer[i] * smoothingTimeConstant) +
+                    (results[i] * (1.0 - smoothingTimeConstant));
+
                 buffer[i] = results[i];
             }
         }
@@ -111,13 +126,13 @@ export default class SpectrumParser extends Component {
 }
 
 SpectrumParser.defaults = {
-    fftSize: fftSize,
-    sampleRate: sampleRate,
+    fftSize,
+    sampleRate,
     smoothingTimeConstant: 0.5,
     minDecibels: -100,
     maxDecibels: 0,
     minFrequency: 0,
     maxFrequency: sampleRate / 2,
     normalize: false,
-    bins: 0
+    bins: 0,
 };

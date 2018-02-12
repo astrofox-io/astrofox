@@ -13,14 +13,14 @@ export default class NumberInput extends Component {
         step: false,
         readOnly: false,
         hidden: false,
-        onChange: () => {}
+        onChange: () => {},
     }
 
     constructor(props) {
         super(props);
 
         this.state = {
-            value: props.value
+            value: props.value,
         };
     }
 
@@ -50,54 +50,59 @@ export default class NumberInput extends Component {
     }
 
     setValue(val, props) {
-        val = this.parseValue(val, props);
+        const value = this.parseValue(val, props);
 
-        this.setState({ value: val });
+        this.setState({ value });
 
-        return val;
+        return value;
     }
 
     parseValue(val, props) {
-        let { min, max, step } = props;
+        let value = val;
+        const { min, max, step } = props;
 
         // Clamp to min/max
         if (min !== false && max !== false) {
-            val = clamp(val, min, max);
+            value = clamp(value, min, max);
         }
 
         // Round value to nearest interval
         if (step !== false) {
-            val = roundTo(val, step);
+            value = roundTo(value, step);
         }
 
-        return Number(val);
+        return Number(value);
     }
 
     checkValue() {
-        let val = this.state.value,
-            props = this.props;
+        let { value: stateValue } = this.state;
+        const { name, value, onChange } = this.props;
 
-        if (props.value !== val) {
-            let regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
+        if (value !== stateValue) {
+            const regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
             // If valid number
-            if (regex.test(val)) {
-                val = this.setValue(val, props);
+            if (regex.test(stateValue)) {
+                stateValue = this.setValue(stateValue, this.props);
 
                 // Send new value to parent
-                if (props.onChange) {
-                    props.onChange(props.name, val);
-                }
+                onChange(name, stateValue);
             }
             // Reset to old value
             else {
-                this.setValue(props.value, props);
+                this.setValue(value, this.props);
             }
         }
     }
 
     render() {
-        const { name, width, className, readOnly } = this.props;
+        const {
+            name,
+            width,
+            className,
+            readOnly,
+        } = this.props;
+
         const { value } = this.state;
 
         return (
@@ -105,7 +110,7 @@ export default class NumberInput extends Component {
                 <input
                     type="text"
                     className={classNames(styles.input, className)}
-                    style={{width}}
+                    style={{ width }}
                     name={name}
                     value={value}
                     onChange={this.onChange}

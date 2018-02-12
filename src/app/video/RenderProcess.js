@@ -1,38 +1,33 @@
 import Process from 'core/Process';
 import { replaceExt } from 'utils/file';
 
-const codecs = {
+const codecOptions = {
     mp4: 'libx264',
-    webm: 'libvpx'
+    webm: 'libvpx',
 };
 
 export default class RenderProcess extends Process {
-    constructor(command) {
-        super(command);
-    }
-
-    start(outputFile, format, fps) {
+    start(file, format, fps) {
         return new Promise((resolve, reject) => {
-            let codec = codecs[format];
+            const codec = codecOptions[format];
+            const outputFile = replaceExt(file, `.${format}`);
 
-            outputFile = replaceExt(outputFile, '.' + format);
-
-            this.on('close', code => {
+            this.on('close', (code) => {
                 if (code !== 0) {
-                    reject('Process was terminated.');
+                    reject(new Error('Process was terminated.'));
                 }
                 resolve(outputFile);
             });
 
-            this.on('error', err => {
+            this.on('error', (err) => {
                 reject(err);
             });
 
-            this.on('stderr', data => {
+            this.on('stderr', (data) => {
                 this.emit('data', data);
             });
 
-            let args = [
+            const args = [
                 '-y',
                 '-stats',
                 '-r', fps,
@@ -51,7 +46,7 @@ export default class RenderProcess extends Process {
                     '-preset', 'slow',
                     '-crf', 18,
                     '-tune', 'animation',
-                    '-movflags', '+faststart'
+                    '-movflags', '+faststart',
                 );
             }
             else if (format === 'webm') {
@@ -61,7 +56,7 @@ export default class RenderProcess extends Process {
                     '-qmin', 0,
                     '-qmax', 50,
                     '-b:v', '20M',
-                    '-crf', 4
+                    '-crf', 4,
                 );
             }
 

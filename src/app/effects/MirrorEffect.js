@@ -3,10 +3,18 @@ import ShaderPass from 'graphics/ShaderPass';
 import MirrorShader from 'shaders/MirrorShader';
 
 export default class MirrorEffect extends Effect {
+    static label = 'Mirror';
+
+    static className = 'MirrorEffect';
+
+    static defaults = {
+        side: 1,
+    }
+
     constructor(options) {
         super(MirrorEffect, options);
     }
-    
+
     addToScene() {
         this.setPass(new ShaderPass(MirrorShader));
         this.updatePass();
@@ -16,11 +24,3 @@ export default class MirrorEffect extends Effect {
         this.pass = null;
     }
 }
-
-MirrorEffect.label = 'Mirror';
-
-MirrorEffect.className = 'MirrorEffect';
-
-MirrorEffect.defaults = {
-    side: 1
-};

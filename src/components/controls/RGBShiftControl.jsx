@@ -22,7 +22,8 @@ export class RGBShiftControl extends PureComponent {
             <Control
                 label="RGB SHIFT"
                 active={active}
-                display={display}>
+                display={display}
+            >
                 <Option>
                     <Label text="Offset" />
                     <ReactorInput

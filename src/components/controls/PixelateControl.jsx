@@ -10,20 +10,24 @@ import {
 
 const renderOptions = [
     'Square',
-    'Hexagon'
+    'Hexagon',
 ];
 
-const minPixelSize = 2;
-const maxPixelSize = 240;
-
 export class PixelateControl extends PureComponent {
+    static defaultProps = {
+        minPixelSize: 2,
+        maxPixelSize: 240,
+    }
+
     render() {
         const {
             display,
             active,
             type,
             size,
-            onChange
+            minPixelSize,
+            maxPixelSize,
+            onChange,
         } = this.props;
 
         return (

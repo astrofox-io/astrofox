@@ -12,12 +12,14 @@ export function getControlComponent(obj) {
         return SceneControl;
     }
 
-    for (let key in displays) {
-        if (displays.hasOwnProperty(key) && obj instanceof displays[key]) {
-            let name = /(\w+)(Display|Effect)/.exec(key);
-            return controlLibrary[name[1] + 'Control'];
-        }
-    }
+    let control;
 
-    return EmptyControl;
+    Object.keys(displays).forEach((key) => {
+        if (!control && Object.prototype.hasOwnProperty.call(displays, key) && obj instanceof displays[key]) {
+            const name = /(\w+)(Display|Effect)/.exec(key);
+            control = controlLibrary[`${name[1]}Control`];
+        }
+    });
+
+    return control || EmptyControl;
 }

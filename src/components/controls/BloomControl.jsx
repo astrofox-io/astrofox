@@ -10,7 +10,7 @@ import {
 
 const blendOptions = [
     'Add',
-    'Screen'
+    'Screen',
 ];
 
 export class BloomControl extends PureComponent {

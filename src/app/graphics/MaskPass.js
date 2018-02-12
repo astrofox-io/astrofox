@@ -1,23 +1,23 @@
 import ComposerPass from 'graphics/ComposerPass';
 
-const defaults = {
-    inverse: false,
-    clear: true
-};
-
 export default class MaskPass extends ComposerPass {
+    static defaults = {
+        inverse: false,
+        clear: true,
+    }
+
     constructor(scene, camera, options) {
-        super(Object.assign({}, defaults, options));
+        super(Object.assign({}, MaskPass.defaults, options));
 
         this.scene = scene;
         this.camera = camera;
     }
 
     render(renderer, writeBuffer, readBuffer) {
-        let { context, state } = renderer,
-            { clear, inverse } = this.options,
-            writeValue = (inverse) ? 0 : 1,
-            clearValue = (inverse) ? 1 : 0;
+        const { context, state } = renderer;
+        const { clear, inverse } = this.options;
+        const writeValue = (inverse) ? 0 : 1;
+        const clearValue = (inverse) ? 1 : 0;
 
         // Don't update color or depth
         state.buffers.color.setMask(false);

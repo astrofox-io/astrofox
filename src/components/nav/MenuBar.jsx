@@ -12,17 +12,17 @@ export default class MenuBar extends React.Component {
         super(props);
 
         this.state = {
-            items: props.items
+            items: props.items,
         };
     }
 
-    onClick = (index) => () => {
+    onClick = index => () => {
         const { activeIndex } = this.state;
 
         this.setActiveIndex((activeIndex === index) ? -1 : index);
     }
 
-    onMouseOver = (index) => () => {
+    onMouseOver = index => () => {
         const { activeIndex } = this.state;
 
         if (activeIndex > -1) {
@@ -46,16 +46,16 @@ export default class MenuBar extends React.Component {
 
     setActiveIndex(index) {
         if (this.state.activeIndex !== index) {
-            this.setState({activeIndex: index});
+            this.setState({ activeIndex: index });
         }
     }
 
     setCheckState(action) {
         const { items } = this.state;
 
-        items.forEach(barItem => {
+        items.forEach((barItem) => {
             if (barItem.submenu) {
-                barItem.submenu.forEach(menuItem => {
+                barItem.submenu.forEach((menuItem) => {
                     if (action === menuItem.action) {
                         menuItem.checked = !menuItem.checked;
                         this.setState({ items: [].concat(items) });
@@ -74,7 +74,7 @@ export default class MenuBar extends React.Component {
         return (
             <div className={styles.menuBar}>
                 {
-                    items.map(({hidden, label, submenu}, index) => (
+                    items.map(({ hidden, label, submenu }, index) => (
                         !hidden &&
                         <MenuBarItem
                             key={index}

@@ -6,8 +6,8 @@ const Spinner = ({ size, className }) => (
     <div
         className={classNames(styles.spinner, className)}
         style={{
-            width: size + 'px',
-            height: size + 'px'
+            width: `${size}px`,
+            height: `${size}px`,
         }}
     >
         <svg className={styles.svg} viewBox="25 25 50 50">

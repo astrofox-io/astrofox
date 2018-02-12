@@ -2,7 +2,8 @@ let id = 0;
 
 export default class Component {
     constructor(options) {
-        Object.defineProperty(this, 'id', { value: id++ });
+        id += 1;
+        Object.defineProperty(this, 'id', { value: id });
         this.options = Object.assign({}, options);
     }
 
@@ -10,8 +11,11 @@ export default class Component {
         let changed = false;
 
         if (typeof options === 'object') {
-            Object.keys(options).forEach(prop => {
-                if (this.options.hasOwnProperty(prop) && this.options[prop] !== options[prop]) {
+            Object.keys(options).forEach((prop) => {
+                if (
+                    Object.prototype.hasOwnProperty.call(this.options, prop) &&
+                    this.options[prop] !== options[prop]
+                ) {
                     this.options[prop] = options[prop];
                     changed = true;
                 }

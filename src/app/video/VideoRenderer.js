@@ -14,7 +14,7 @@ const defaults = {
     timeStart: 0,
     timeEnd: 0,
     format: 'mp4',
-    resolution: 480
+    resolution: 480,
 };
 
 export default class VideoRenderer extends EventEmitter {
@@ -38,7 +38,7 @@ export default class VideoRenderer extends EventEmitter {
         this.currentProcess = null;
         this.startTime = 0;
 
-        this.renderProcess.on('data', data => {
+        this.renderProcess.on('data', (data) => {
             logger.log(data.toString());
 
             // Start requesting frames
@@ -48,20 +48,22 @@ export default class VideoRenderer extends EventEmitter {
             }
         });
 
-        this.audioProcess.on('data', data => {
+        this.audioProcess.on('data', (data) => {
             logger.log(data.toString());
         });
 
-        this.mergeProcess.on('data', data => {
+        this.mergeProcess.on('data', (data) => {
             logger.log(data.toString());
         });
     }
 
     start() {
-        let id = uniqueId(),
-            outputVideo = path.join(TEMP_PATH, id + '.video'),
-            outputAudio = path.join(TEMP_PATH, id + '.audio'),
-            { fps, timeStart, timeEnd, format } = this.options;
+        const id = uniqueId();
+        const {
+            fps, timeStart, timeEnd, format,
+        } = this.options;
+        let outputVideo = path.join(TEMP_PATH, `${id}.video`);
+        let outputAudio = path.join(TEMP_PATH, `${id}.audio`);
 
         logger.log('Starting render', id);
 
@@ -70,12 +72,12 @@ export default class VideoRenderer extends EventEmitter {
 
         // Start rendering
         this.renderProcess.start(outputVideo, format, fps)
-            .then(file => {
+            .then((file) => {
                 outputVideo = file;
                 this.currentProcess = this.audioProcess;
                 return this.audioProcess.start(outputAudio, format, this.audio, timeStart, timeEnd);
             })
-            .then(file => {
+            .then((file) => {
                 outputAudio = file;
                 this.currentProcess = this.mergeProcess;
                 return this.mergeProcess.start(outputVideo, outputAudio, this.video);
@@ -89,7 +91,7 @@ export default class VideoRenderer extends EventEmitter {
                 this.completed = true;
                 this.emit('complete');
             })
-            .catch(err => {
+            .catch((err) => {
                 logger.error(err);
 
                 this.completed = true;
@@ -112,7 +114,7 @@ export default class VideoRenderer extends EventEmitter {
             this.renderProcess.push(image);
 
             if (this.currentFrame < this.lastFrame) {
-                this.currentFrame++;
+                this.currentFrame += 1;
                 this.emit('ready');
             }
             else {

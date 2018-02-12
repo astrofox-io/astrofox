@@ -8,9 +8,8 @@ export function FirstChild(props) {
     return children[0] || null;
 }
 
-export function styleProps(props, keys) {
-    keys = keys || defaultKeys;
-    let obj = filterByKey(keys, props);
+export function styleProps(props, keys = defaultKeys) {
+    const obj = filterByKey(keys, props);
 
     if (typeof props.style === 'object') {
         Object.assign(obj, props.style);

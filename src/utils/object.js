@@ -1,8 +1,5 @@
-const excludedFuncs = ['constructor', 'render'];
-
-export function autoBind(context, excluded) {
-    excluded = excluded || excludedFuncs;
-    Object.getOwnPropertyNames(context.constructor.prototype).forEach(function(func) {
+export function autoBind(context, excluded = ['constructor', 'render']) {
+    Object.getOwnPropertyNames(context.constructor.prototype).forEach((func) => {
         if (typeof this[func] === 'function' && !excluded.includes(func)) {
             this[func] = this[func].bind(this);
         }
@@ -10,10 +7,10 @@ export function autoBind(context, excluded) {
 }
 
 export function filterByKey(keys, source) {
-    let obj = {};
+    const obj = {};
 
-    keys.forEach(key => {
-        if (source.hasOwnProperty(key)) {
+    keys.forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
             obj[key] = source[key];
         }
     });

@@ -5,6 +5,15 @@ import GlowShader from 'shaders/GlowShader';
 const GLOW_MAX = 5;
 
 export default class GlowEffect extends Effect {
+    static label = 'Glow';
+
+    static className = 'GlowEffect';
+
+    static defaults = {
+        amount: 0.1,
+        intensity: 1,
+    }
+
     constructor(options) {
         super(GlowEffect, options);
     }
@@ -12,7 +21,7 @@ export default class GlowEffect extends Effect {
     updatePass() {
         this.pass.setUniforms({
             amount: this.options.amount * GLOW_MAX,
-            intensity: this.options.intensity
+            intensity: this.options.intensity,
         });
     }
 
@@ -25,12 +34,3 @@ export default class GlowEffect extends Effect {
         this.pass = null;
     }
 }
-
-GlowEffect.label = 'Glow';
-
-GlowEffect.className = 'GlowEffect';
-
-GlowEffect.defaults = {
-    amount: 0.1,
-    intensity: 1
-};

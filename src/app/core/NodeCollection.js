@@ -3,10 +3,10 @@ import Immutable from 'immutable';
 export default class NodeCollection {
     constructor(values) {
         this.nodes = new Immutable.List();
-    
+
         if (values) {
-            this.nodes = this.nodes.withMutations(list => {
-                values.forEach(val => {
+            this.nodes = this.nodes.withMutations((list) => {
+                values.forEach((val) => {
                     list.push(val);
                 });
             });
@@ -22,9 +22,9 @@ export default class NodeCollection {
     }
 
     removeNode(node) {
-        let nodes = this.nodes,
-            index = nodes.indexOf(node),
-            changed = false;
+        const { nodes } = this;
+        const index = nodes.indexOf(node);
+        let changed = false;
 
         if (index > -1) {
             this.nodes = nodes.delete(index);
@@ -35,13 +35,12 @@ export default class NodeCollection {
     }
 
     swapNodes(index, newIndex) {
-        let nodes = this.nodes,
-            size = nodes.size,
-            changed = false;
+        const { nodes, nodes: { size } } = this;
+        let changed = false;
 
         if (index !== newIndex && index > -1 && index < size && newIndex > -1 && newIndex < size) {
-            this.nodes = nodes.withMutations(list => {
-                let tmp = list.get(index);
+            this.nodes = nodes.withMutations((list) => {
+                const tmp = list.get(index);
                 list.set(index, list.get(newIndex));
                 list.set(newIndex, tmp);
                 changed = true;

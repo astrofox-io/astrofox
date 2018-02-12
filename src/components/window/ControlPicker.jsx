@@ -5,15 +5,11 @@ import * as effectsLibrary from 'lib/effects';
 import styles from './ControlPicker.less';
 
 export default class ControlPicker extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    onClick = (item) => () => {
+    onClick = Item => () => {
         const { onControlPicked, onClose } = this.props;
 
         if (onControlPicked) {
-            onControlPicked(new item());
+            onControlPicked(new Item());
         }
 
         if (onClose) {

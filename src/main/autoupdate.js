@@ -1,7 +1,7 @@
 import { autoUpdater } from 'electron-updater';
 import * as os from 'os';
 import debug from 'debug';
-import { mainWindow } from './window';
+import { getWindow } from './window';
 
 const log = debug('autoupdate');
 
@@ -15,7 +15,7 @@ export default class AppUpdater {
 
         autoUpdater.autoDownload = false;
 
-        autoUpdater.on('error', error => {
+        autoUpdater.on('error', (error) => {
             log('update-error');
 
             this.sendMessage('update-error', error.stack || error.message);
@@ -57,6 +57,6 @@ export default class AppUpdater {
     }
 
     sendMessage(channel, data) {
-        mainWindow.webContents.send(channel, data);
+        getWindow().webContents.send(channel, data);
     }
 }

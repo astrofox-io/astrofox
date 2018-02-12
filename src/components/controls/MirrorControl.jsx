@@ -7,10 +7,6 @@ import {
 } from 'lib/inputs';
 
 export class MirrorControl extends PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const { active, side, onChange } = this.props;
 

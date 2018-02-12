@@ -7,6 +7,16 @@ import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import LuminanceShader from 'shaders/LuminanceShader';
 
 export default class BloomEffect extends Effect {
+    static label = 'Bloom';
+
+    static className = 'BloomEffect';
+
+    static defaults = {
+        blendMode: 'Screen',
+        amount: 0.1,
+        threshold: 1.0,
+    }
+
     constructor(options) {
         super(BloomEffect, options);
     }
@@ -20,14 +30,18 @@ export default class BloomEffect extends Effect {
     }
 
     addToScene(scene) {
-        let passes = [],
-            composer = scene.composer,
-            options = this.options;
+        const {
+            options: {
+                blendMode,
+            },
+        } = this;
+        const { composer } = scene;
+        const passes = [];
 
         // Save current frame
         this.savePass = new SavePass(
             composer.getRenderTarget(),
-            { blending: THREE.NoBlending }
+            { blending: THREE.NoBlending },
         );
         passes.push(this.savePass);
 
@@ -42,7 +56,7 @@ export default class BloomEffect extends Effect {
         // Blend with original frame
         this.blendPass = new BlendPass(
             this.savePass.buffer,
-            { blendMode: options.blendMode, alpha: 1 }
+            { blendMode, alpha: 1 },
         );
         passes.push(this.blendPass);
 
@@ -55,13 +69,3 @@ export default class BloomEffect extends Effect {
         this.pass = null;
     }
 }
-
-BloomEffect.label = 'Bloom';
-
-BloomEffect.className = 'BloomEffect';
-
-BloomEffect.defaults = {
-    blendMode: 'Screen',
-    amount: 0.1,
-    threshold: 1.0
-};

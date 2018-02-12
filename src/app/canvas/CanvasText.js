@@ -2,6 +2,15 @@
 import Component from 'core/Component';
 
 export default class CanvasText extends Component {
+    static defaults = {
+        text: '',
+        size: 40,
+        font: 'Roboto',
+        italic: false,
+        bold: false,
+        color: '#FFFFFF',
+    }
+
     constructor(options, canvas) {
         super(Object.assign({}, CanvasText.defaults, options));
 
@@ -13,29 +22,32 @@ export default class CanvasText extends Component {
     }
 
     getFont() {
-        let { italic, bold, size, font } = this.options;
+        const {
+            italic, bold, size, font,
+        } = this.options;
 
         return [
             (italic) ? 'italic' : 'normal',
             (bold) ? 'bold' : 'normal',
-            size + 'px',
-            font
+            `${size}px`,
+            font,
         ].join(' ');
     }
 
     render() {
-        let width, height, length, spacing,
-            canvas = this.canvas,
-            context = this.context,
-            font = this.getFont(),
-            { text, size, color } = this.options;
+        const {
+            canvas,
+            context,
+        } = this;
+        const { text, size, color } = this.options;
+        const font = this.getFont();
 
         context.font = font;
 
-        length = Math.ceil(context.measureText(text).width);
-        spacing = Math.ceil(length / text.length);
-        width = length + spacing;
-        height = size * 2;
+        const length = Math.ceil(context.measureText(text).width);
+        const spacing = Math.ceil(length / text.length);
+        const width = length + spacing;
+        const height = size * 2;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
@@ -51,7 +63,7 @@ export default class CanvasText extends Component {
         context.fillStyle = color;
         context.textAlign = 'center';
         context.textBaseline = 'middle';
-        context.fillText(text, width/2, height/2);
+        context.fillText(text, width / 2, height / 2);
 
         // Debugging
         /*
@@ -63,12 +75,3 @@ export default class CanvasText extends Component {
          */
     }
 }
-
-CanvasText.defaults = {
-    text: '',
-    size: 40,
-    font: 'Roboto',
-    italic: false,
-    bold: false,
-    color: '#FFFFFF'
-};

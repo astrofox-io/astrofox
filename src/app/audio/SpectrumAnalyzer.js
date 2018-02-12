@@ -25,9 +25,7 @@ export default class SpectrumAnalyzer {
     }
 
     getVolume() {
-        return this.fft.reduce(function(a, b) {
-            return a + b;
-        }) / this.fft.length;
+        return this.fft.reduce((a, b) => a + b) / this.fft.length;
     }
 
     clearFrequencyData() {
@@ -38,14 +36,14 @@ export default class SpectrumAnalyzer {
         this.td.fill(0);
     }
 
-    getMaxFrequency() {
+    static getMaxFrequency() {
         return sampleRate / 2;
     }
 }
 
 SpectrumAnalyzer.defaults = {
-    fftSize: fftSize,
+    fftSize,
     minDecibels: -100,
     maxDecibels: 0,
-    smoothingTimeConstant: 0
+    smoothingTimeConstant: 0,
 };

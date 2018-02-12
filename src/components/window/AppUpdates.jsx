@@ -7,15 +7,15 @@ import styles from './AppUpdates.less';
 
 export default class AppUpdates extends React.Component {
     static contextTypes = {
-        app: PropTypes.object
-    }
-
-    state = {
-        message: null
+        app: PropTypes.object,
     }
 
     constructor(props, context) {
         super(props);
+
+        this.state = {
+            message: null,
+        };
 
         this.appUpdater = context.app.updater;
     }
@@ -85,29 +85,26 @@ export default class AppUpdates extends React.Component {
     };
 
     render() {
-        let icon,
-            installButton,
-            downloadButton,
-            closeText = 'Close';
-
+        const { onClose } = this.props;
+        const { message } = this.state;
         const {
             checking,
             installing,
             downloading,
             downloadComplete,
-            hasUpdate
+            hasUpdate,
         } = this.appUpdater;
-
-        const { onClose } = this.props;
-
-        const { message } = this.state;
+        let icon;
+        let installButton;
+        let downloadButton;
+        let closeText = 'Close';
 
         if (checking || downloading || installing) {
             icon = <Spinner className={styles.icon} size={30} />;
         }
 
         if (downloadComplete && !installing) {
-            installButton = <Button text="Restart and Install Now" onClick={this.installUpdate}/>;
+            installButton = <Button text="Restart and Install Now" onClick={this.installUpdate} />;
             closeText = 'Install Later';
         }
 

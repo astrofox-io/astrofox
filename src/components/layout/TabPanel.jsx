@@ -4,14 +4,14 @@ import styles from './TabPanel.less';
 
 export class TabPanel extends PureComponent {
     static defaultProps = {
-        tabPosition: 'top'
+        tabPosition: 'top',
     }
 
     constructor(props) {
         super(props);
 
         this.state = {
-            activeIndex: props.activeIndex
+            activeIndex: props.activeIndex,
         };
     }
 
@@ -25,7 +25,7 @@ export class TabPanel extends PureComponent {
             className,
             tabClassName,
             contentClassName,
-            children
+            children,
         } = this.props;
         const { activeIndex } = this.state;
         const tabs = [];
@@ -33,29 +33,27 @@ export class TabPanel extends PureComponent {
 
         // Generate tabs and content
         Children.map(children, (child, index) => {
-            tabs.push(
+            tabs.push((
                 <div
                     key={index}
                     className={classNames({
                         [styles.tab]: true,
-                        [styles.active]: index === activeIndex
+                        [styles.active]: index === activeIndex,
                     }, tabClassName, child.props.className)}
                     onClick={() => this.onTabClick(index)}
                 >
                     {child.props.name}
                 </div>
-            );
+            ));
 
-            content.push(
-                cloneElement(
-                    child,
-                    {
-                        key: index,
-                        className: child.props.contentClassName,
-                        visible: index === activeIndex
-                    }
-                )
-            );
+            content.push(cloneElement(
+                child,
+                {
+                    key: index,
+                    className: child.props.contentClassName,
+                    visible: index === activeIndex,
+                },
+            ));
         });
 
         return (
@@ -65,13 +63,13 @@ export class TabPanel extends PureComponent {
                     [styles.positionLeft]: tabPosition === 'left',
                     [styles.positionRight]: tabPosition === 'right',
                     [styles.positionTop]: tabPosition === 'top',
-                    [styles.positionBottom]: tabPosition === 'bottom'
+                    [styles.positionBottom]: tabPosition === 'bottom',
                 }, className)}
             >
                 <div
                     className={classNames({
                         [styles.tabs]: true,
-                        [styles.horizontal]: tabPosition === 'top' || tabPosition === 'bottom'
+                        [styles.horizontal]: tabPosition === 'top' || tabPosition === 'bottom',
                     })}
                 >
                     {tabs}
@@ -86,12 +84,9 @@ export class TabPanel extends PureComponent {
 
 export const Tab = ({ visible, className, children }) => (
     <div
-        className={classNames(
-            {
-                [styles.hidden]: !visible
-            },
-            className)
-        }
+        className={classNames({
+            [styles.hidden]: !visible,
+        }, className)}
     >
         {children}
     </div>

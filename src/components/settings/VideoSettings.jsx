@@ -17,13 +17,13 @@ import styles from './VideoSettings.less';
 
 const videoFormats = [
     'mp4',
-    'webm'
+    'webm',
 ];
 
 const resolutionOptions = [
     480,
     720,
-    1080
+    1080,
 ];
 
 export default class VideoSettings extends React.Component {
@@ -39,39 +39,31 @@ export default class VideoSettings extends React.Component {
     constructor(props, context) {
         super(props);
 
+        const audio = this.app.player.getAudio();
+
+        this.app = context.app;
         this.state = {
             videoFile: '',
-            audioFile: '',
+            audioFile: audio ? this.app.audioFile : '',
             format: 'mp4',
             resolution: 480,
             fps: 30,
             timeStart: 0,
-            timeEnd: 0
+            timeEnd: audio ? audio.getDuration() : 0,
         };
-        
-        this.app = context.app;
     }
 
     componentDidMount() {
-        let audio = this.app.player.getAudio();
-
         this.app.player.stop();
-
-        if (audio) {
-            this.setState({
-                audioFile: this.app.audioFile,
-                timeEnd: audio.getDuration()
-            });
-        }
     }
 
     onChange = (name, val) => {
-        let obj = {};
+        const obj = {};
 
         obj[name] = val;
 
         if (name === 'format' && this.state.videoFile) {
-            obj.videoFile = replaceExt(this.state.videoFile, '.' + val);
+            obj.videoFile = replaceExt(this.state.videoFile, `.${val}`);
         }
 
         this.setState(obj);
@@ -87,33 +79,33 @@ export default class VideoSettings extends React.Component {
 
     onOpenVideoFile = () => {
         Window.showSaveDialog(
-            filename => {
+            (filename) => {
                 if (filename) {
                     this.setState({ videoFile: filename });
                 }
             },
-            { defaultPath: 'video.' + this.state.format }
+            { defaultPath: `video.${this.state.format}` },
         );
     };
 
     onOpenAudioFile = () => {
-        let path = this.app.audioFile;
+        const path = this.app.audioFile;
 
         Window.showOpenDialog(
-            files => {
+            (files) => {
                 if (files) {
                     this.app.loadAudioFile(files[0]).then(() => {
-                        let audio = this.app.player.getAudio();
+                        const audio = this.app.player.getAudio();
 
                         this.setState({
                             audioFile: this.app.audioFile,
                             timeStart: 0,
-                            timeEnd: audio.getDuration()
+                            timeEnd: audio.getDuration(),
                         });
                     });
                 }
             },
-            { defaultPath: path }
+            { defaultPath: path },
         );
     };
 
@@ -141,7 +133,7 @@ export default class VideoSettings extends React.Component {
                             name="videoFile"
                             width="100%"
                             value={videoFile}
-                            readOnly={true}
+                            readOnly
                             onChange={this.onChange}
                         />
                         <ButtonInput
@@ -157,7 +149,7 @@ export default class VideoSettings extends React.Component {
                             name="audioFile"
                             width="100%"
                             value={audioFile}
-                            readOnly={true}
+                            readOnly
                             onChange={this.onChange}
                         />
                         <ButtonInput

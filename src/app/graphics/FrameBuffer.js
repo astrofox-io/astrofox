@@ -8,7 +8,7 @@ class FrameBuffer {
         this.texture = new THREE.Texture(this.canvas);
         this.texture.minFilter = THREE.LinearFilter;
         this.texture.needsUpdate = true;
-    
+
         this.pass = new TexturePass(this.texture);
     }
 }
@@ -39,7 +39,7 @@ export class GLBuffer extends FrameBuffer {
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: true,
-            canvas: this.canvas
+            canvas: this.canvas,
         });
 
         this.renderer.autoClear = false;
