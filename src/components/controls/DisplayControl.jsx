@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 export default function DisplayControl(ControlComponent) {
-    return class DisplayControlComponent extends Component {
+    return class extends Component {
         constructor(props) {
             super(props);
 

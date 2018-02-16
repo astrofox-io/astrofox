@@ -16,14 +16,16 @@
         border-right: 1px solid @color1;
         pointer-events: none;
     }
+
+    .input {
+        &:read-only {
+            color: @text-color1;
+        }
+    }
 }
 
 .input {
     composes: text from './TextInput.less';
-
-    &:read-only {
-        color: @text-color1;
-    }
 }
 
 .options {

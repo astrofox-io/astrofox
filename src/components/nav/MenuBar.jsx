@@ -19,7 +19,7 @@ export default class MenuBar extends React.Component {
     onClick = index => () => {
         const { activeIndex } = this.state;
 
-        this.setActiveIndex((activeIndex === index) ? -1 : index);
+        this.setActiveIndex(activeIndex === index ? -1 : index);
     }
 
     onMouseOver = index => () => {

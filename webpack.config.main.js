@@ -8,49 +8,49 @@ const config = {
     target: 'electron-main',
     node: {
         __dirname: false,
-        __filename: false
+        __filename: false,
     },
     entry: {
         main: path.resolve(__dirname, 'src/main/index.js'),
     },
     output: {
         path: path.resolve(__dirname, 'app'),
-        filename: 'main.js'
+        filename: 'main.js',
     },
     resolve: {
-        extensions: ['.js', '.json']
+        extensions: ['.js', '.json'],
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
                 include: [
-                    path.resolve(__dirname, 'src/js')
+                    path.resolve(__dirname, 'src/js'),
                 ],
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        cacheDirectory: true
-                    }
-                }
-            }
-        ]
+                        cacheDirectory: true,
+                    },
+                },
+            },
+        ],
     },
-    plugins: []
+    plugins: [],
 };
 
 if (PRODUCTION) {
     config.plugins.push(
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production')
+            'process.env.NODE_ENV': JSON.stringify('production'),
         }),
         new MinifyPlugin(
             {},
             {
                 test: /\.js$/,
-                comments: false
-            }
-        )
+                comments: false,
+            },
+        ),
     );
 }
 

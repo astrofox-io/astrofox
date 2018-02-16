@@ -67,19 +67,6 @@ export default class Application extends EventEmitter {
         this.player.on('pause', this.resetAnalyzer, this);
         this.player.on('stop', this.resetAnalyzer, this);
 
-        // Window events
-        window.onmousedown = (e) => {
-            events.emit('mousedown', e);
-        };
-
-        window.onmouseup = (e) => {
-            events.emit('mouseup', e);
-        };
-
-        window.onmousemove = (e) => {
-            events.emit('mousemove', e);
-        };
-
         // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
             raiseError(msg, err);

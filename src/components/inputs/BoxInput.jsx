@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import { events } from 'core/Global';
+import withMouseEvents from 'components/hocs/withMouseEvents';
 import { clamp } from 'utils/math.js';
 import styles from './BoxInput.less';
 
-export default class BoxInput extends PureComponent {
+class BoxInput extends PureComponent {
     static defaultProps = {
         name: 'box',
         value: {
@@ -16,6 +16,7 @@ export default class BoxInput extends PureComponent {
         minHeight: 1,
         maxWidth: 100,
         maxHeight: 100,
+        onChange: () => {},
     }
 
     constructor(props) {
@@ -28,8 +29,7 @@ export default class BoxInput extends PureComponent {
     }
 
     componentDidMount() {
-        events.on('mouseup', this.endResize);
-        events.on('mousemove', this.onMouseMove);
+        this.props.mouseUp(this.endResize, true);
     }
 
     componentWillReceiveProps({ value }) {
@@ -39,8 +39,10 @@ export default class BoxInput extends PureComponent {
     }
 
     componentWillUnmount() {
-        events.off('mouseup', this.endResize);
-        events.off('mousemove', this.onMouseMove);
+        const { mouseMove, mouseUp } = this.props;
+
+        mouseMove(this.onMouseMove, false);
+        mouseUp(this.endResize, false);
     }
 
     onMouseMove = (e) => {
@@ -66,37 +68,42 @@ export default class BoxInput extends PureComponent {
                 onChange,
             } = this.props;
 
+            let {
+                x,
+                y,
+                width,
+                height,
+            } = value;
+
             const dx = e.pageX - startX;
             const dy = e.pageY - startY;
 
             switch (position) {
                 case 'top':
-                    value.y = clamp(startTop + dy, 0, (startTop + startHeight) - minHeight);
-                    value.height = clamp(startHeight - dy, minHeight, startTop + startHeight);
+                    y = clamp(startTop + dy, 0, (startTop + startHeight) - minHeight);
+                    height = clamp(startHeight - dy, minHeight, startTop + startHeight);
                     break;
                 case 'right':
-                    value.width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
+                    width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
                     break;
                 case 'bottom':
-                    value.height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
+                    height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
                     break;
                 case 'left':
-                    value.x = clamp(startLeft + dx, 0, (startLeft + startWidth) - minWidth);
-                    value.width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
+                    x = clamp(startLeft + dx, 0, (startLeft + startWidth) - minWidth);
+                    width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
                     break;
                 case 'center':
-                    value.x = clamp(startLeft + dx, 0, maxWidth - startWidth);
-                    value.y = clamp(startTop + dy, 0, maxHeight - startHeight);
+                    x = clamp(startLeft + dx, 0, maxWidth - startWidth);
+                    y = clamp(startTop + dy, 0, maxHeight - startHeight);
                     break;
             }
 
-            const newValue = Object.assign({}, value);
+            const newValue = { x, y, width, height };
 
             this.setState({ value: newValue });
 
-            if (onChange) {
-                onChange(name, newValue);
-            }
+            onChange(name, newValue);
         }
     };
 
@@ -105,8 +112,13 @@ export default class BoxInput extends PureComponent {
         e.preventDefault();
 
         const {
-            x, y, width, height,
-        } = this.state.value;
+            value: {
+                x,
+                y,
+                width,
+                height,
+            },
+        } = this.state;
 
         this.setState({
             resizing: true,
@@ -118,10 +130,14 @@ export default class BoxInput extends PureComponent {
             startLeft: x,
             startTop: y,
         });
+
+        this.props.mouseMove(this.onMouseMove, true);
     };
 
     endResize = () => {
         this.setState({ resizing: false });
+
+        this.props.mouseMove(this.onMouseMove, false);
     };
 
     render() {
@@ -165,3 +181,5 @@ export default class BoxInput extends PureComponent {
         );
     }
 }
+
+export default withMouseEvents(BoxInput);

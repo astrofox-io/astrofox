@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import { events } from 'core/Global';
+import withMouseEvents from 'components/hocs/withMouseEvents';
 import { clamp } from 'utils/math';
 import iconDots from 'svg/icons/dots-three-horizontal.svg';
 import styles from './Splitter.less';
 
-export default class Splitter extends PureComponent {
+class Splitter extends PureComponent {
     static defaultProps = {
         type: 'horizontal',
     }
@@ -20,18 +20,23 @@ export default class Splitter extends PureComponent {
     }
 
     componentDidMount() {
-        events.on('mouseup', this.endResize, this);
-        events.on('mousemove', this.onMouseMove, this);
+        this.props.mouseUp(this.endResize, true);
     }
 
     componentWillUnmount() {
-        events.off('mouseup', this.endResize, this);
-        events.off('mousemove', this.onMouseMove, this);
+        const { mouseMove, mouseUp } = this.props;
+
+        mouseMove(this.onMouseMove, false);
+        mouseUp(this.endResize, false);
     }
 
     onMouseMove = (e) => {
         const {
-            resizing, startY, startX, startWidth, startHeight,
+            resizing,
+            startY,
+            startX,
+            startWidth,
+            startHeight,
         } = this.state;
 
         if (resizing) {
@@ -64,10 +69,10 @@ export default class Splitter extends PureComponent {
 
             panel.setSize(newWidth, newHeight);
         }
-    };
+    }
 
     startResize = (e) => {
-        const { panel } = this.props;
+        const { panel, mouseMove } = this.props;
         const { width, height } = panel.getSize();
 
         this.setState({
@@ -77,13 +82,15 @@ export default class Splitter extends PureComponent {
             startWidth: width,
             startHeight: height,
         });
-    };
+
+        mouseMove(this.onMouseMove, true);
+    }
 
     endResize = () => {
-        if (this.state.resizing) {
-            this.setState({ resizing: false });
-        }
-    };
+        this.setState({ resizing: false });
+
+        this.props.mouseMove(this.onMouseMove, false);
+    }
 
     render() {
         const { type } = this.props;
@@ -104,3 +111,5 @@ export default class Splitter extends PureComponent {
         );
     }
 }
+
+export default withMouseEvents(Splitter);

@@ -91,7 +91,7 @@ export default class SelectInput extends Component {
                     value={this.getDisplayText()}
                     onClick={this.onClick}
                     onBlur={this.onBlur}
-                    readOnly="true"
+                    readOnly
                 />
                 <div
                     className={classNames({

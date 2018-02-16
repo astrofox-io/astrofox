@@ -78,6 +78,12 @@
         "allowShortCircuit": true
       }
     ],
+    "object-curly-newline": [
+      "error",
+      {
+          "consistent": true
+      }
+    ],
     "one-var-declaration-per-line": [
       "error",
       "initializations"
@@ -102,6 +108,7 @@
     "react/no-multi-comp": 0,
     "react/prop-types": 0,
     "react/require-default-props": 0,
+    "react/jsx-filename-extension": 0,
     "react/jsx-indent": [
       "error",
       4

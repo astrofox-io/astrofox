@@ -47,7 +47,7 @@ export default class App extends React.Component {
         return { app: this.app };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.app.init();
 
         events.on('message', (message) => {
@@ -94,9 +94,7 @@ export default class App extends React.Component {
         });
 
         events.on('reactor-edit', this.showReactor);
-    }
 
-    componentDidMount() {
         this.app.startRender();
     }
 
