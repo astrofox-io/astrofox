@@ -1,5 +1,4 @@
 import ComposerPass from 'graphics/ComposerPass';
-import NodeCollection from 'core/NodeCollection';
 
 export default class MultiPass extends ComposerPass {
     static defaults = {
@@ -11,21 +10,21 @@ export default class MultiPass extends ComposerPass {
     constructor(passes, options) {
         super(Object.assign({}, MultiPass.defaults, options));
 
-        this.passes = new NodeCollection(passes);
+        this.passes = [];
     }
 
     getPasses() {
-        return this.passes.nodes;
+        return this.passes;
     }
 
     addPass(pass) {
-        this.passes.addNode(pass);
+        this.passes.push(pass);
 
         return pass;
     }
 
     removePass(pass) {
-        this.passes.removeNode(pass);
+        this.passes = this.passes.filter(p => p !== pass);
     }
 
     setSize(width, height) {
@@ -38,7 +37,7 @@ export default class MultiPass extends ComposerPass {
         this.writeBuffer = writeBuffer;
         this.readBuffer = readBuffer;
 
-        this.getPasses().forEach((pass) => {
+        this.passes.forEach((pass) => {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer);
 

@@ -5,7 +5,7 @@ import {
 import Scene from 'core/Scene';
 import Display from 'core/Display';
 import WatermarkDisplay from 'displays/WatermarkDisplay';
-import NodeCollection from 'core/NodeCollection';
+import List from 'core/List';
 import Composer from 'graphics/Composer';
 import { CanvasBuffer, GLBuffer } from 'graphics/FrameBuffer';
 import { logger, raiseError, events } from 'core/Global';
@@ -17,7 +17,7 @@ export default class Stage extends Display {
         super(Stage, options);
 
         this.app = app;
-        this.scenes = new NodeCollection();
+        this.scenes = new List();
         this.shouldRender = true;
     }
 
@@ -67,10 +67,10 @@ export default class Stage extends Display {
 
     addScene(scene = new Scene(), index) {
         if (index !== undefined) {
-            this.scenes.insertNode(index, scene);
+            this.scenes.insert(index, scene);
         }
         else {
-            this.scenes.addNode(scene);
+            this.scenes.add(scene);
         }
 
         scene.stage = this;
@@ -85,7 +85,7 @@ export default class Stage extends Display {
     }
 
     removeScene(scene) {
-        this.scenes.removeNode(scene);
+        this.scenes.remove(scene);
 
         scene.stage = null;
 
@@ -97,17 +97,13 @@ export default class Stage extends Display {
     shiftScene(scene, i) {
         const index = this.scenes.indexOf(scene);
 
-        this.changed = this.scenes.swapNodes(index, index + i);
+        this.changed = this.scenes.swap(index, index + i);
 
         return this.changed;
     }
 
-    getScenes() {
-        return this.scenes.nodes;
-    }
-
     clearScenes() {
-        this.getScenes().forEach((scene) => {
+        this.scenes.items.forEach((scene) => {
             this.removeScene(scene);
         });
 
@@ -117,14 +113,14 @@ export default class Stage extends Display {
     getSortedDisplays() {
         const displays = [];
 
-        this.getScenes().reverse().forEach((scene) => {
+        this.scenes.items.reverse().forEach((scene) => {
             displays.push(scene);
 
-            scene.getEffects().reverse().forEach((effect) => {
+            scene.effects.items.reverse().forEach((effect) => {
                 displays.push(effect);
             });
 
-            scene.getDisplays().reverse().forEach((display) => {
+            scene.displays.items.reverse().forEach((display) => {
                 displays.push(display);
             });
         });
@@ -133,7 +129,7 @@ export default class Stage extends Display {
     }
 
     hasScenes() {
-        return this.getScenes().size > 0;
+        return this.scenes.length > 0;
     }
 
     hasChanges() {
@@ -143,7 +139,7 @@ export default class Stage extends Display {
 
         let changes = false;
 
-        this.getScenes().forEach((scene) => {
+        this.scenes.items.forEach((scene) => {
             if (!changes && scene.hasChanges()) {
                 changes = true;
             }
@@ -155,7 +151,7 @@ export default class Stage extends Display {
     resetChanges() {
         this.changed = false;
 
-        this.getScenes().forEach((scene) => {
+        this.scenes.items.forEach((scene) => {
             scene.resetChanges();
         });
     }
@@ -177,7 +173,7 @@ export default class Stage extends Display {
     }
 
     setSize(width, height) {
-        this.getScenes().forEach((scene) => {
+        this.scenes.items.forEach((scene) => {
             scene.setSize(width, height);
         });
 
@@ -274,7 +270,7 @@ export default class Stage extends Display {
 
         composer.clear(this.backgroundColor, 1);
 
-        this.getScenes().forEach((scene) => {
+        this.scenes.items.forEach((scene) => {
             if (scene.options.enabled) {
                 this.renderScene(scene, data);
             }

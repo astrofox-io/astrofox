@@ -4,8 +4,6 @@ import {
     RGBAFormat,
     Texture,
 } from 'three';
-import EventEmitter from 'core/EventEmitter';
-import NodeCollection from 'core/NodeCollection';
 import MultiPass from 'graphics/MultiPass';
 import RenderPass from 'graphics/RenderPass';
 import ShaderPass from 'graphics/ShaderPass';
@@ -15,12 +13,10 @@ import CopyShader from 'shaders/CopyShader';
 import BlendShader from 'shaders/BlendShader';
 import blendModes from 'config/blendModes.json';
 
-export default class Composer extends EventEmitter {
+export default class Composer {
     constructor(renderer, renderTarget) {
-        super();
-
         this.renderer = renderer;
-        this.passes = new NodeCollection();
+        this.passes = [];
         this.maskActive = false;
 
         this.copyPass = new ShaderPass(CopyShader, { transparent: true });
@@ -111,17 +107,17 @@ export default class Composer extends EventEmitter {
     }
 
     getPasses() {
-        return this.passes.nodes;
+        return this.passes;
     }
 
     addPass(pass) {
-        this.passes.addNode(pass);
+        this.passes.push(pass);
 
         return pass;
     }
 
     removePass(pass) {
-        this.passes.removeNode(pass);
+        this.passes = this.passes.filter(p => p !== pass);
     }
 
     addRenderPass(scene, camera, options) {
@@ -152,7 +148,7 @@ export default class Composer extends EventEmitter {
     }
 
     clearPasses() {
-        this.passes.clear();
+        this.passes = [];
     }
 
     blendBuffer(buffer, options) {
@@ -201,7 +197,7 @@ export default class Composer extends EventEmitter {
         this.writeBuffer = this.writeTarget;
         this.readBuffer = this.readTarget;
 
-        this.getPasses().forEach((pass) => {
+        this.passes.forEach((pass) => {
             if (pass.options.enabled) {
                 pass.render(renderer, this.writeBuffer, this.readBuffer);
 

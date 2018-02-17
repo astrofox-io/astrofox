@@ -3,7 +3,7 @@ import {
     PerspectiveCamera,
     PointLight,
 } from 'three';
-import NodeCollection from 'core/NodeCollection';
+import List from 'core/List';
 import Display from 'core/Display';
 import Effect from 'core/Effect';
 import Composer from 'graphics/Composer';
@@ -18,8 +18,8 @@ export default class Scene extends Display {
         super(Scene, options);
 
         this.stage = null;
-        this.displays = new NodeCollection();
-        this.effects = new NodeCollection();
+        this.displays = new List();
+        this.effects = new List();
         this.reactors = {};
     }
 
@@ -89,13 +89,13 @@ export default class Scene extends Display {
     }
 
     setSize(width, height) {
-        this.getDisplays().forEach((display) => {
+        this.displays.items.forEach((display) => {
             if (display.setSize) {
                 display.setSize(width, height);
             }
         });
 
-        this.getEffects().forEach((effect) => {
+        this.effects.items.forEach((effect) => {
             if (effect.setSize) {
                 effect.setSize(width, height);
             }
@@ -108,20 +108,20 @@ export default class Scene extends Display {
     }
 
     addElement(obj, index) {
-        let nodes;
+        let list;
 
         if (obj instanceof Effect) {
-            nodes = this.effects;
+            list = this.effects;
         }
         else if (obj instanceof Display) {
-            nodes = this.displays;
+            list = this.displays;
         }
 
         if (index !== undefined) {
-            nodes.insertNode(index, obj);
+            list.insert(index, obj);
         }
         else {
-            nodes.addNode(obj);
+            list.add(obj);
         }
 
         obj.scene = this;
@@ -142,19 +142,19 @@ export default class Scene extends Display {
     }
 
     removeElement(obj) {
-        let nodes;
+        let list;
 
         if (obj instanceof Effect) {
-            nodes = this.effects;
+            list = this.effects;
         }
         else if (obj instanceof Display) {
-            nodes = this.displays;
+            list = this.displays;
         }
         else {
             throw new Error('Invalid element');
         }
 
-        nodes.removeNode(obj);
+        list.remove(obj);
 
         obj.scene = null;
 
@@ -168,21 +168,21 @@ export default class Scene extends Display {
     }
 
     shiftElement(obj, i) {
-        let nodes;
+        let list;
 
         if (obj instanceof Effect) {
-            nodes = this.effects;
+            list = this.effects;
         }
         else if (obj instanceof Display) {
-            nodes = this.displays;
+            list = this.displays;
         }
         else {
             throw new Error('Invalid element');
         }
 
-        const index = nodes.indexOf(obj);
+        const index = list.indexOf(obj);
 
-        this.changed = nodes.swapNodes(index, index + i);
+        this.changed = list.swap(index, index + i);
 
         if (this.changed) {
             this.updatePasses();
@@ -198,13 +198,13 @@ export default class Scene extends Display {
         composer.addPass(this.buffer2D.pass);
         composer.addPass(this.buffer3D.pass);
 
-        this.getDisplays().forEach((display) => {
+        this.displays.items.forEach((display) => {
             if (display.pass) {
                 composer.addPass(display.pass);
             }
         });
 
-        this.getEffects().forEach((effect) => {
+        this.effects.items.forEach((effect) => {
             if (effect.pass) {
                 composer.addPass(effect.pass);
             }
@@ -227,14 +227,6 @@ export default class Scene extends Display {
         lights[2].position.set(-lightDistance, -lightDistance * 2, -lightDistance);
     }
 
-    getDisplays() {
-        return this.displays.nodes;
-    }
-
-    getEffects() {
-        return this.effects.nodes;
-    }
-
     getContext(type) {
         return (type === 'webgl') ?
             this.buffer3D.context :
@@ -248,7 +240,7 @@ export default class Scene extends Display {
 
         let changes = false;
 
-        this.getDisplays().forEach((display) => {
+        this.displays.items.forEach((display) => {
             if (!changes && display.changed) {
                 changes = true;
             }
@@ -260,21 +252,17 @@ export default class Scene extends Display {
     resetChanges() {
         this.changed = false;
 
-        this.getDisplays().forEach((display) => {
+        this.displays.items.forEach((display) => {
             display.changed = false;
         });
     }
 
     toJSON() {
-        const displays = this.getDisplays().map(display => display.toJSON());
-
-        const effects = this.getEffects().map(effect => effect.toJSON());
-
         return {
             name: this.name,
             options: this.options,
-            displays,
-            effects,
+            displays: this.displays.items.map(display => display.toJSON()),
+            effects: this.effects.items.map(effect => effect.toJSON()),
             reactors: this.reactors,
         };
     }
@@ -286,16 +274,14 @@ export default class Scene extends Display {
     }
 
     render(data) {
-        const { composer } = this;
-        const displays = this.getDisplays();
-        const effects = this.getEffects();
+        const { composer, displays, effects } = this;
         let hasGeometry = false;
 
         this.clear();
         this.updateReactors(data);
 
-        if (displays.size > 0 || effects.size > 0) {
-            displays.forEach((display) => {
+        if (displays.length > 0 || effects.length > 0) {
+            displays.items.forEach((display) => {
                 if (display.options.enabled) {
                     display.updateReactors(data);
                     display.renderToScene(this, data);
@@ -310,7 +296,7 @@ export default class Scene extends Display {
                 this.buffer3D.renderer.render(this.scene, this.camera);
             }
 
-            effects.forEach((effect) => {
+            effects.items.forEach((effect) => {
                 if (effect.options.enabled) {
                     effect.updateReactors(data);
                     effect.renderToScene(this, data);

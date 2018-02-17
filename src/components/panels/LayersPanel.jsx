@@ -119,7 +119,9 @@ export default class LayersPanel extends React.PureComponent {
     };
 
     getLayers() {
-        return this.state.displays.map((display, index) => {
+        const { displays, activeIndex } = this.state;
+
+        return displays.map((display, index) => {
             let icon;
 
             if (display instanceof Scene) {
@@ -143,7 +145,7 @@ export default class LayersPanel extends React.PureComponent {
                     icon={icon}
                     control={!(display instanceof Scene)}
                     enabled={display.options.enabled}
-                    active={index === this.state.activeIndex}
+                    active={index === activeIndex}
                     onLayerClick={this.onLayerClick}
                     onLayerUpdate={this.onLayerUpdate}
                 />
@@ -243,7 +245,7 @@ export default class LayersPanel extends React.PureComponent {
                 index = displays.indexOf(obj);
             }
 
-            const state = { displays, index };
+            const state = { displays, activeIndex: index };
 
             this.props.onChange(state);
 
