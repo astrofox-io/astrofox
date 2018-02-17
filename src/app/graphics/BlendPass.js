@@ -26,8 +26,8 @@ export default class BlendPass extends ShaderPass {
         const { options } = this;
 
         this.setUniforms({
-            tBase: (options.baseBuffer) ? this.buffer : readBuffer,
-            tBlend: (options.baseBuffer) ? readBuffer : this.buffer,
+            tBase: (options.baseBuffer) ? this.buffer : readBuffer.texture,
+            tBlend: (options.baseBuffer) ? readBuffer.texture : this.buffer,
             opacity: options.opacity,
             mode: blendModes[options.blendMode],
             alpha: options.alpha,

@@ -162,13 +162,17 @@ export default class Composer extends EventEmitter {
             readBuffer,
             writeBuffer,
         } = this;
+
         const {
-            opacity, blendMode, mask, inverse,
+            opacity,
+            blendMode,
+            mask,
+            inverse,
         } = options;
 
         blendPass.setUniforms({
-            tBase: readBuffer,
-            tBlend: buffer,
+            tBase: readBuffer.texture,
+            tBlend: buffer.texture,
             opacity,
             mode: blendModes[blendMode],
             alpha: 1,

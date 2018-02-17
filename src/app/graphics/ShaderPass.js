@@ -68,7 +68,7 @@ export default class ShaderPass extends ComposerPass {
         const { textureId } = this.options;
 
         if (readBuffer && material.uniforms[textureId]) {
-            material.uniforms[textureId].value = readBuffer;
+            material.uniforms[textureId].value = readBuffer.texture;
         }
 
         super.render(renderer, scene, camera, writeBuffer);
