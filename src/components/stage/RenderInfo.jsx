@@ -53,7 +53,7 @@ export default class RenderInfo extends React.Component {
         if (this.props.onButtonClick) {
             this.props.onButtonClick();
         }
-    };
+    }
 
     setComplete() {
         this.setState({ complete: true });

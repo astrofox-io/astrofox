@@ -67,15 +67,15 @@ export default class VideoSettings extends React.Component {
         }
 
         this.setState(obj);
-    };
+    }
 
     onCancel = () => {
         this.props.onClose();
-    };
+    }
 
     onStart = () => {
         this.props.onStart(this.state);
-    };
+    }
 
     onOpenVideoFile = () => {
         Window.showSaveDialog(
@@ -86,7 +86,7 @@ export default class VideoSettings extends React.Component {
             },
             { defaultPath: `video.${this.state.format}` },
         );
-    };
+    }
 
     onOpenAudioFile = () => {
         const path = this.app.audioFile;
@@ -107,7 +107,7 @@ export default class VideoSettings extends React.Component {
             },
             { defaultPath: path },
         );
-    };
+    }
 
     render() {
         const {

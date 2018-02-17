@@ -100,12 +100,12 @@ export default class App extends React.Component {
 
     onClick = () => {
         this.menubar.setActiveIndex(-1);
-    };
+    }
 
     onDragDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
-    };
+    }
 
     onMenuAction = (action) => {
         switch (action) {
@@ -225,7 +225,7 @@ export default class App extends React.Component {
                 );
                 break;
         }
-    };
+    }
 
     onUnsavedChanges = (callback) => {
         this.showDialog(
@@ -243,7 +243,7 @@ export default class App extends React.Component {
                 }
             },
         );
-    };
+    }
 
     saveProject = (callback) => {
         const file = this.app.projectFile;
@@ -256,7 +256,7 @@ export default class App extends React.Component {
         else {
             this.saveProjectAs(callback);
         }
-    };
+    }
 
     saveProjectAs = (callback) => {
         Window.showSaveDialog(
@@ -269,7 +269,7 @@ export default class App extends React.Component {
             },
             { defaultPath: 'project.afx' },
         );
-    };
+    }
 
     showModal = (content, props) => {
         if (this.dialogShown) return;
@@ -286,14 +286,14 @@ export default class App extends React.Component {
                 </ModalWindow>,
             ]),
         }));
-    };
+    }
 
     hideModal = () => {
         this.setState(({ modals }) => {
             modals.pop();
             return { modals };
         });
-    };
+    }
 
     showDialog = ({ icon, message, ...otherProps }, callback) => {
         if (this.dialogShown) return;
@@ -313,7 +313,7 @@ export default class App extends React.Component {
         );
 
         this.dialogShown = true;
-    };
+    }
 
     showCheckForUpdates = () => {
         if (this.updatesShown) return;
@@ -329,14 +329,14 @@ export default class App extends React.Component {
         );
 
         this.updatesShown = true;
-    };
+    }
 
     showReactor = (reactor) => {
         this.setState(prevState => ({
             reactor,
             showReactor: reactor && (reactor !== prevState.reactor || !prevState.showReactor),
         }));
-    };
+    }
 
     loadAudioFile = (file) => {
         const { showLoading } = this.stage;
@@ -350,7 +350,7 @@ export default class App extends React.Component {
             .catch(() => {
                 showLoading(false);
             });
-    };
+    }
 
     startRender = (options) => {
         this.hideModal();
@@ -359,7 +359,7 @@ export default class App extends React.Component {
 
         this.app.saveVideo(videoFile, audioFile, options);
         this.stage.startRender();
-    };
+    }
 
     render() {
         const {

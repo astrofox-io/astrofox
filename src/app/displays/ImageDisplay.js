@@ -15,7 +15,7 @@ export default class ImageDisplay extends CanvasDisplay {
         fixed: true,
         rotation: 0,
         opacity: 1.0,
-    };
+    }
 
     constructor(options) {
         super(ImageDisplay, options);

@@ -109,11 +109,11 @@ export default class Player extends PureComponent {
 
     onPlayButtonClick = () => {
         this.app.player.play();
-    };
+    }
 
     onStopButtonClick = () => {
         this.app.player.stop();
-    };
+    }
 
     onLoopButtonClick = () => {
         this.setState((prevState) => {
@@ -121,11 +121,11 @@ export default class Player extends PureComponent {
 
             return { looping: !prevState.looping };
         });
-    };
+    }
 
     onWaveformClick = (val) => {
         this.app.player.seek(val);
-    };
+    }
 
     onWaveformButtonClick = () => {
         this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
@@ -301,13 +301,13 @@ class ProgressControl extends PureComponent {
         this.setState({ value: val }, () => {
             this.props.onChange(val / progressMax);
         });
-    };
+    }
 
     onInput = (name, val) => {
         this.setState({ value: val }, () => {
             this.props.onInput(val / progressMax);
         });
-    };
+    }
 
     isBuffering() {
         return this.progressInput.isBuffering();

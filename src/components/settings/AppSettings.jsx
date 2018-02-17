@@ -23,7 +23,7 @@ export default class AppSettings extends PureComponent {
 
     onChange = (name, value) => {
         this.setState({ [name]: value });
-    };
+    }
 
     onSave = () => {
         this.app.saveConfigFile(this.state)

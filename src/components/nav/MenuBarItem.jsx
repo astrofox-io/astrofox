@@ -9,18 +9,18 @@ export default class MenuBarItem extends React.Component {
         e.preventDefault();
 
         this.props.onClick();
-    };
+    }
 
     onMouseOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onMouseOver();
-    };
+    }
 
     onMenuItemClick = (item) => {
         this.props.onMenuItemClick(item.action, item.checked);
-    };
+    }
 
     render() {
         const {

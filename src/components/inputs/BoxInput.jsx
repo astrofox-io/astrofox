@@ -105,7 +105,7 @@ class BoxInput extends PureComponent {
 
             onChange(name, newValue);
         }
-    };
+    }
 
     startResize = pos => (e) => {
         e.stopPropagation();
@@ -132,13 +132,13 @@ class BoxInput extends PureComponent {
         });
 
         this.props.mouseMove(this.onMouseMove, true);
-    };
+    }
 
     endResize = () => {
         this.setState({ resizing: false });
 
         this.props.mouseMove(this.onMouseMove, false);
-    };
+    }
 
     render() {
         const {

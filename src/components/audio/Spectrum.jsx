@@ -41,13 +41,13 @@ export default class Spectrum extends PureComponent {
         this.setState(prevState => ({ normalize: !prevState.normalize }), () => {
             this.parser.update(this.state);
         });
-    };
+    }
 
     draw = (data) => {
         const fft = this.parser.parseFFT(data.fft);
 
         this.bars.render(fft);
-    };
+    }
 
     render() {
         const { width, height } = this.props;

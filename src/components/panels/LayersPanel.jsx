@@ -46,11 +46,11 @@ export default class LayersPanel extends React.PureComponent {
 
     onProjectLoaded = () => {
         this.updateState(0);
-    };
+    }
 
     onLayerClick = (index) => {
         this.setActiveLayer(index);
-    };
+    }
 
     onLayerUpdate = (index, name, val) => {
         const { displays } = this.state;
@@ -62,11 +62,11 @@ export default class LayersPanel extends React.PureComponent {
         this.setState({ displays: displays.slice(0) });
 
         this.props.onLayerUpdate(display);
-    };
+    }
 
     onAddSceneClick = () => {
         this.addLayer(new Scene());
-    };
+    }
 
     onAddDisplayClick = () => {
         const scene = this.getActiveScene();
@@ -76,7 +76,7 @@ export default class LayersPanel extends React.PureComponent {
                 this.addLayer(display, Display);
             });
         }
-    };
+    }
 
     onAddEffectClick = () => {
         const scene = this.getActiveScene();
@@ -86,7 +86,7 @@ export default class LayersPanel extends React.PureComponent {
                 this.addLayer(display, Effect);
             });
         }
-    };
+    }
 
     onRemoveClick = () => {
         const { displays, activeIndex } = this.state;
@@ -108,15 +108,15 @@ export default class LayersPanel extends React.PureComponent {
                 this.updateState();
             }
         }
-    };
+    }
 
     onMoveUpClick = () => {
         this.moveLayer(1);
-    };
+    }
 
     onMoveDownClick = () => {
         this.moveLayer(-1);
-    };
+    }
 
     getLayers() {
         const { displays, activeIndex } = this.state;

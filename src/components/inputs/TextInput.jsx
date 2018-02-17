@@ -46,14 +46,14 @@ export default class TextInput extends Component {
         if (!buffered) {
             onChange(name, value);
         }
-    };
+    }
 
     onValueChange = () => {
         const { name, onChange } = this.props;
         const { value } = this.state;
 
         onChange(name, value);
-    };
+    }
 
     onKeyUp = (e) => {
         const { value, onCancel } = this.props;
@@ -66,7 +66,7 @@ export default class TextInput extends Component {
 
             onCancel();
         }
-    };
+    }
 
     render() {
         const {

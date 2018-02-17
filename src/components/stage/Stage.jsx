@@ -48,7 +48,7 @@ export default class Stage extends React.Component {
     onDragOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
-    };
+    }
 
     onDrop = (e) => {
         e.stopPropagation();
@@ -60,19 +60,19 @@ export default class Stage extends React.Component {
         if (file && onFileDropped) {
             onFileDropped(file.path);
         }
-    };
+    }
 
     startRender = () => {
         this.setState({ rendering: true });
-    };
+    }
 
     stopRender = () => {
         this.setState({ rendering: false });
-    };
+    }
 
     showLoading = (value) => {
         this.setState({ loading: value });
-    };
+    }
 
     render() {
         const { loading, rendering } = this.state;

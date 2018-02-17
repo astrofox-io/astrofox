@@ -21,7 +21,7 @@ export default class Oscilloscope extends PureComponent {
         const { width } = this.props;
 
         this.display.render(WaveParser.parseTimeData(td, width, 0));
-    };
+    }
 
     render() {
         const { width, height } = this.props;

@@ -7,15 +7,15 @@ import LayersPanel from 'components/panels/LayersPanel';
 export default class ControlDock extends PureComponent {
     onLayerSelected = (index) => {
         this.controls.focusControl(index);
-    };
+    }
 
     onLayerUpdate = (display) => {
         this.controls.updateControl(display);
-    };
+    }
 
     updateControls = (newState) => {
         this.controls.updateState(newState);
-    };
+    }
 
     render() {
         const { visible } = this.props;

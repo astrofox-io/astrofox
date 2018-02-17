@@ -59,11 +59,11 @@ export class ImageControl extends PureComponent {
         if (onChange) {
             onChange(name, value, obj);
         }
-    };
+    }
 
     onLinkClick = () => {
         this.onChange('fixed', !this.props.fixed);
-    };
+    }
 
     render() {
         const {

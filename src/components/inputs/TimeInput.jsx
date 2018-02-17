@@ -48,7 +48,7 @@ export default class TimeInput extends Component {
         else {
             this.setState({ value });
         }
-    };
+    }
 
     render() {
         const {

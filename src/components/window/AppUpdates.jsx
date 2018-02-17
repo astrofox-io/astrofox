@@ -78,11 +78,11 @@ export default class AppUpdates extends React.Component {
 
     installUpdate = () => {
         this.appUpdater.quitAndInstall();
-    };
+    }
 
     downloadUpdate = () => {
         this.appUpdater.downloadUpdate();
-    };
+    }
 
     render() {
         const { onClose } = this.props;

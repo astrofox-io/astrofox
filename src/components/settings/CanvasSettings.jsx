@@ -30,17 +30,17 @@ export default class CanvasSettings extends React.Component {
         obj[name] = val;
 
         this.setState(obj);
-    };
+    }
 
     onCancel = () => {
         this.props.onClose();
-    };
+    }
 
     onSave = () => {
         this.app.stage.update(this.state);
 
         this.props.onClose();
-    };
+    }
 
     render() {
         const {
