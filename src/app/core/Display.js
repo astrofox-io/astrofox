@@ -60,7 +60,7 @@ export default class Display extends Component {
         }
     }
 
-    update(options) {
+    update(options = {}) {
         this.hasUpdate = super.update(options);
 
         if (!this.changed && this.hasUpdate) {

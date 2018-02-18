@@ -1,7 +1,7 @@
 import Component from 'core/Component';
 import SpectrumParser from 'audio/SpectrumParser';
 import { val2pct, floor, ceil } from 'utils/math';
-import { fftSize, sampleRate } from 'config/system.json';
+import { fftSize, sampleRate } from 'config/audio.json';
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;

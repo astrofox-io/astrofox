@@ -12,7 +12,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
         width: 854,
         height: 240,
         lineWidth: 1.0,
-        length: 0,
+        wavelength: 0,
         smooth: false,
         x: 0,
         y: 0,
@@ -24,6 +24,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
         super(SoundwaveDisplay, options);
 
         this.wave = new CanvasWave(this.options, this.canvas);
+        this.parser = new WaveParser();
     }
 
     update(options) {
@@ -39,18 +40,20 @@ export default class SoundwaveDisplay extends CanvasDisplay {
     renderToScene(scene, data) {
         const {
             wave,
+            parser,
             canvas: {
                 width,
                 height,
             },
             options: {
                 smooth,
-                length,
+                wavelength,
             },
         } = this;
-        const points = WaveParser.parseTimeData(data.td, width, length);
 
-        wave.render(points, length > 3 ? smooth : false);
+        const points = parser.parseTimeData(data.td, wavelength > 0 ? width / wavelength : width);
+
+        wave.render(points, wavelength > 3 ? smooth : false);
 
         this.renderToCanvas(
             scene.getContext('2d'),

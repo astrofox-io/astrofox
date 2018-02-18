@@ -15,7 +15,7 @@ export class SoundwaveControl extends PureComponent {
             stageWidth,
             stageHeight,
             color,
-            length,
+            wavelength,
             lineWidth,
             width,
             height,
@@ -134,20 +134,20 @@ export class SoundwaveControl extends PureComponent {
                 <Option>
                     <Label text="Wavelength" />
                     <NumberInput
-                        name="length"
+                        name="wavelength"
                         width={40}
                         min={0}
                         max={100}
                         step={1}
-                        value={length}
+                        value={wavelength}
                         onChange={onChange}
                     />
                     <RangeInput
-                        name="length"
+                        name="wavelength"
                         min={0}
                         max={100}
                         step={1}
-                        value={length}
+                        value={wavelength}
                         onChange={onChange}
                     />
                 </Option>

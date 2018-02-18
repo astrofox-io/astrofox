@@ -15,12 +15,15 @@ export default class Oscilloscope extends PureComponent {
             this.props,
             this.canvas,
         );
+
+        this.parser = new WaveParser();
     }
 
     draw = ({ td }) => {
+        const { display, parser } = this;
         const { width } = this.props;
 
-        this.display.render(WaveParser.parseTimeData(td, width, 0));
+        display.render(parser.parseTimeData(td, width));
     }
 
     render() {

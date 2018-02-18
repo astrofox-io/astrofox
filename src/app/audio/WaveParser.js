@@ -1,33 +1,21 @@
 import { val2pct } from 'utils/math';
 
 export default class WaveParser {
-    static parseTimeData(data, points, distance = 0) {
-        const results = [];
+    parseTimeData(data, points) {
+        let { output } = this;
+        const step = data.length / points;
+        const size = points * 2;
 
-        // Get points
-        if (distance > 0) {
-            const step = data.length / (points / distance);
-
-            for (let i = 0, j = 0; j < points; i += step, j += distance) {
-                results.push(~~j);
-                results.push(val2pct(data[~~i], -1, 1));
-
-                // Fix last point
-                if (j + distance >= points) {
-                    results[results.length - 2] = points;
-                    results[results.length - 1] = val2pct(data[data.length - 1], -1, 1);
-                }
-            }
-        }
-        else {
-            const step = data.length / points;
-
-            for (let i = 0, j = 0; j < points; i += step, j += 1) {
-                results.push(j);
-                results.push(val2pct(data[~~i], -1, 1));
-            }
+        if (output === undefined || output.length !== size) {
+            output = new Float32Array(size);
+            this.output = output;
         }
 
-        return results;
+        for (let i = 0, j = 0; i < size; i += 2, j += step) {
+            output[i] = ~~(i * step);
+            output[i + 1] = val2pct(data[~~j], -1, 1);
+        }
+
+        return output;
     }
 }

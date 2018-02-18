@@ -1,9 +1,12 @@
 import Display from 'core/Display';
 
 export default class Effect extends Display {
-    update(options) {
-        if (this.pass && options && options.enabled !== undefined) {
-            this.pass.options.enabled = options.enabled;
+    update(options = {}) {
+        const { pass } = this;
+        const { enabled } = options;
+
+        if (pass && enabled !== undefined) {
+            pass.options.enabled = enabled;
         }
 
         return super.update(options);

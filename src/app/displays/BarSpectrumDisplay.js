@@ -1,7 +1,7 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasBars from 'canvas/CanvasBars';
 import SpectrumParser from 'audio/SpectrumParser';
-import { fftSize, sampleRate } from 'config/system.json';
+import { fftSize, sampleRate } from 'config/audio.json';
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
     static label = 'Bar Spectrum';

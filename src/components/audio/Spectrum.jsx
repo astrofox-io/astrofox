@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
-import { fftSize, sampleRate } from 'config/system.json';
+import { fftSize, sampleRate } from 'config/audio.json';
 import styles from './Spectrum.less';
 
 export default class Spectrum extends PureComponent {

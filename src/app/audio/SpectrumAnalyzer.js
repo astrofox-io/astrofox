@@ -1,4 +1,4 @@
-import { fftSize, sampleRate } from 'config/system.json';
+import { fftSize, sampleRate } from 'config/audio.json';
 
 export default class SpectrumAnalyzer {
     constructor(context, options) {

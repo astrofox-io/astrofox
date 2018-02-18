@@ -1,8 +1,20 @@
 import Component from 'core/Component';
 import { val2pct, db2mag } from 'utils/math';
-import { fftSize, sampleRate } from 'config/system.json';
+import { fftSize, sampleRate } from 'config/audio.json';
 
 export default class SpectrumParser extends Component {
+    static defaults = {
+        fftSize,
+        sampleRate,
+        smoothingTimeConstant: 0.5,
+        minDecibels: -100,
+        maxDecibels: 0,
+        minFrequency: 0,
+        maxFrequency: sampleRate / 2,
+        normalize: false,
+        bins: 0,
+    }
+
     constructor(options) {
         super(Object.assign({}, SpectrumParser.defaults, options));
 
@@ -45,43 +57,44 @@ export default class SpectrumParser extends Component {
 
     parseFFT(fft) {
         let {
-            results,
+            output,
             buffer,
         } = this;
+
         const {
             minBin,
             maxBin,
             totalBins,
         } = this;
+
         const { smoothingTimeConstant, bins } = this.options;
-        const n = bins || totalBins;
+        const size = bins || totalBins;
 
         // Resize data arrays
-        if (results === undefined || results.length !== n) {
-            results = new Float32Array(n);
-            buffer = new Float32Array(n);
-            this.results = results;
+        if (output === undefined || output.length !== size) {
+            output = new Float32Array(size);
+            buffer = new Float32Array(size);
+            this.output = output;
             this.buffer = buffer;
         }
 
-        // Convert values
-        if (n === totalBins) {
+        // Straight conversion
+        if (size === totalBins) {
             for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
-                results[k] = this.getDb(fft[i]);
+                output[k] = this.getDb(fft[i]);
             }
         }
         // Compress data
-        else if (n < totalBins) {
-            const size = totalBins / n;
-            const step = ~~(size / 10) || 1;
+        else if (size < totalBins) {
+            const step = totalBins / size;
 
             for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
-                const start = ~~(i * size);
-                const end = ~~(start + size);
+                const start = ~~(i * step);
+                const end = ~~(start + step);
                 let max = 0;
 
                 // Find max value within range
-                for (let j = start; j < end; j += step) {
+                for (let j = start, n = ~~(step / 10) || 1; j < end; j += n) {
                     const val = fft[j];
 
                     if (val > max) {
@@ -92,47 +105,35 @@ export default class SpectrumParser extends Component {
                     }
                 }
 
-                results[k] = this.getDb(max);
+                output[k] = this.getDb(max);
             }
         }
         // Expand data
-        else if (n > totalBins) {
-            const size = n / totalBins;
+        else if (size > totalBins) {
+            const step = size / totalBins;
 
             for (let i = minBin, j = 0; i < maxBin; i += 1, j += 1) {
                 const val = this.getDb(fft[i]);
-                const start = ~~(j * size);
-                const end = start + size;
+                const start = ~~(j * step);
+                const end = start + step;
 
                 for (let k = start; k < end; k += 1) {
-                    results[k] = val;
+                    output[k] = val;
                 }
             }
         }
 
         // Apply smoothing
         if (smoothingTimeConstant > 0) {
-            for (let i = 0; i < n; i += 1) {
-                results[i] = (
+            for (let i = 0; i < size; i += 1) {
+                output[i] = (
                     buffer[i] * smoothingTimeConstant) +
-                    (results[i] * (1.0 - smoothingTimeConstant));
+                    (output[i] * (1.0 - smoothingTimeConstant));
 
-                buffer[i] = results[i];
+                buffer[i] = output[i];
             }
         }
 
-        return results;
+        return output;
     }
 }
-
-SpectrumParser.defaults = {
-    fftSize,
-    sampleRate,
-    smoothingTimeConstant: 0.5,
-    minDecibels: -100,
-    maxDecibels: 0,
-    minFrequency: 0,
-    maxFrequency: sampleRate / 2,
-    normalize: false,
-    bins: 0,
-};

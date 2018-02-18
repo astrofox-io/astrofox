@@ -1,7 +1,7 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import SpectrumParser from 'audio/SpectrumParser';
-import { fftSize, sampleRate } from 'config/system.json';
+import { fftSize, sampleRate } from 'config/audio.json';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
     static label = 'Wave Spectrum';

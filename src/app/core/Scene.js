@@ -25,18 +25,20 @@ export default class Scene extends Display {
 
     update(options) {
         const changed = super.update(options);
+        const { stage, lights, camera } = this;
+        const { lightDistance, lightIntensity, cameraZoom } = options;
 
         if (changed) {
-            if (this.stage) {
+            if (stage) {
                 this.updatePasses();
-            }
 
-            if (this.lights && (options.lightDistance !== undefined || options.lightIntensity !== undefined)) {
-                this.updateLights();
-            }
+                if (lights && (lightDistance !== undefined || lightIntensity !== undefined)) {
+                    this.updateLights();
+                }
 
-            if (this.camera && options.cameraZoom !== undefined) {
-                this.camera.position.z = options.cameraZoom;
+                if (camera && cameraZoom !== undefined) {
+                    camera.position.z = cameraZoom;
+                }
             }
         }
 
