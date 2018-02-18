@@ -1,6 +1,8 @@
 import Component from 'core/Component';
 import { val2pct, db2mag } from 'utils/math';
-import { fftSize, sampleRate } from 'config/audio.json';
+import audioConfig from 'config/audio.json';
+
+const { fftSize, sampleRate } = audioConfig;
 
 export default class SpectrumParser extends Component {
     static defaults = {

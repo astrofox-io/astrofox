@@ -23,3 +23,7 @@ export function getControlComponent(obj) {
 
     return control || EmptyControl;
 }
+
+export default {
+    getControlComponent,
+};
