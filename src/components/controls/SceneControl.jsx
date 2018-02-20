@@ -58,7 +58,6 @@ export class SceneControl extends PureComponent {
         const {
             active, display, blendMode, opacity,
             lightIntensity, lightDistance, cameraZoom, mask, inverse,
-            onReactorChange,
         } = this.props;
 
         return (
@@ -79,10 +78,7 @@ export class SceneControl extends PureComponent {
                 </Option>
                 <Option>
                     <Label text="Opacity" />
-                    <ReactorInput
-                        name="opacity"
-                        onReactorChange={onReactorChange}
-                    >
+                    <ReactorInput name="opacity">
                         <NumberInput
                             name="opacity"
                             width={40}

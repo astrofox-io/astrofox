@@ -28,15 +28,19 @@ export default class Display extends Component {
         this.reactors = {};
     }
 
-    setReactor(name, options) {
-        const reactor = this.reactors[name];
+    getReactor(name) {
+        return this.reactors[name];
+    }
 
-        if (reactor) {
-            this.update({ [name]: reactor.options.lastValue });
-            delete this.reactors[name];
-        }
-        else {
+    setReactor(name, options) {
+        // Create reactor
+        if (options) {
             this.reactors[name] = new AudioReactor(options);
+        }
+        // Remove reactor
+        else {
+            this.update({ [name]: this.reactors[name].options.lastValue });
+            delete this.reactors[name];
         }
 
         return this.reactors[name];
@@ -45,19 +49,17 @@ export default class Display extends Component {
     updateReactors(data) {
         const { reactors } = this;
 
-        if (reactors) {
-            Object.keys(reactors).forEach((name) => {
-                const reactor = reactors[name];
+        Object.keys(reactors).forEach((name) => {
+            const reactor = reactors[name];
 
-                if (reactor) {
-                    const { output } = reactor.parse(data);
-                    const { min, max } = reactor.options;
-                    const value = ((max - min) * output) + min;
+            if (reactor) {
+                const { output } = reactor.parse(data);
+                const { min, max } = reactor.options;
+                const value = ((max - min) * output) + min;
 
-                    this.update({ [name]: value });
-                }
-            });
-        }
+                this.update({ [name]: value });
+            }
+        });
     }
 
     update(options = {}) {

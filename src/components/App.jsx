@@ -332,9 +332,9 @@ export default class App extends React.Component {
     }
 
     showReactor = (reactor) => {
-        this.setState(prevState => ({
+        this.setState(() => ({
             reactor,
-            showReactor: reactor && (reactor !== prevState.reactor || !prevState.showReactor),
+            showReactor: reactor,
         }));
     }
 
@@ -363,7 +363,12 @@ export default class App extends React.Component {
 
     render() {
         const {
-            showPlayer, showControlDock, showReactor, reactor, statusBarText, modals,
+            showPlayer,
+            showControlDock,
+            showReactor,
+            reactor,
+            statusBarText,
+            modals,
         } = this.state;
 
         return (

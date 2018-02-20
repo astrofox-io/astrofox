@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
+import { raiseError } from 'core/Global';
 import Window from 'core/Window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
-import folderIcon from 'svg/icons/folder-open-empty.svg';
-import closeIcon from 'svg/icons/circle-with-cross.svg';
+import folderIcon from 'svg/icons/folder-open.svg';
+import closeIcon from 'svg/icons/times.svg';
 import blankImage from 'images/data/blank.gif';
 import styles from './ImageInput.less';
 
-export default class ImageInput extends Component {
+export default class ImageInput extends PureComponent {
     static defaultProps = {
         name: 'image',
         value: blankImage,
@@ -47,12 +48,12 @@ export default class ImageInput extends Component {
         e.stopPropagation();
         e.preventDefault();
 
-        this.loadImage(blankImage);
+        this.loadImageSrc(blankImage);
     }
 
     getImage = () => this.image;
 
-    loadImage = (src) => {
+    loadImageSrc = (src) => {
         if (src && this.image.src !== src) {
             this.image.src = src;
         }
@@ -60,13 +61,16 @@ export default class ImageInput extends Component {
 
     loadImageFile = file => readFileAsBlob(file).then((data) => {
         this.loadImageBlob(data);
-    });
+    }).catch(err => raiseError(err.message));
 
     loadImageBlob = (blob) => {
         if (/^image/.test(blob.type)) {
             readAsDataUrl(blob).then((data) => {
-                this.loadImage(data);
+                this.loadImageSrc(data);
             });
+        }
+        else {
+            throw new Error('Invalid image file.');
         }
     }
 
@@ -76,28 +80,40 @@ export default class ImageInput extends Component {
         const hasImage = (image && image.src && image.src !== blankImage) || (value && value !== blankImage);
 
         return (
-            <div
-                role="presentation"
-                className={styles.image}
-                onDrop={this.onDrop}
-                onDragOver={this.onDragOver}
-                onClick={hasImage ? this.onDelete : this.onClick}
-            >
-                <img
-                    ref={e => (this.image = e)}
+            <Fragment>
+                <div
+                    role="presentation"
+                    className={styles.image}
+                    onDrop={this.onDrop}
+                    onDragOver={this.onDragOver}
+                    onClick={this.onClick}
+                >
+                    <img
+                        ref={e => (this.image = e)}
+                        className={classNames({
+                            [styles.img]: true,
+                            [styles.hidden]: !hasImage,
+                        })}
+                        src={value || blankImage}
+                        alt=""
+                        onLoad={this.onImageLoad}
+                    />
+                    <Icon
+                        className={styles.openIcon}
+                        glyph={folderIcon}
+                        title="Open File"
+                    />
+                </div>
+                <Icon
                     className={classNames({
-                        [styles.img]: true,
+                        [styles.closeIcon]: true,
                         [styles.hidden]: !hasImage,
                     })}
-                    src={value || blankImage}
-                    alt=""
-                    onLoad={this.onImageLoad}
+                    glyph={closeIcon}
+                    title="Remove Image"
+                    onClick={this.onDelete}
                 />
-                <Icon
-                    glyph={hasImage ? closeIcon : folderIcon}
-                    className={styles.icon}
-                />
-            </div>
+            </Fragment>
         );
     }
 }

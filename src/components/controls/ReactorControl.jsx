@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import { Control, Option, Label } from 'components/controls/Control';
+import Icon from 'components/interface/Icon';
 import {
     BoxInput,
     NumberInput,
@@ -13,6 +14,7 @@ import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'core/Global';
 import iconLeft from 'svg/icons/chevron-left.svg';
 import iconRight from 'svg/icons/chevron-right.svg';
+import iconDown from 'svg/icons/chevron-down.svg';
 import iconMinus from 'svg/icons/minus.svg';
 import iconPlus from 'svg/icons/plus.svg';
 import iconCircle from 'svg/icons/dots-three-horizontal.svg';
@@ -70,6 +72,15 @@ export default class ReactorControl extends PureComponent {
         events.off('render', this.draw, this);
     }
 
+    onChange = (name, value) => {
+        if (['selection', 'outputMode'].includes(name)) {
+            this.updateReactor(name, value);
+        }
+        else {
+            this.updateParser(name, value);
+        }
+    }
+
     draw = () => {
         const { reactor } = this.props;
 
@@ -119,12 +130,14 @@ export default class ReactorControl extends PureComponent {
         }
     }
 
+    hideReactor = () => {
+        events.emit('reactor-edit', null);
+    }
+
     render() {
         const {
             reactor, barWidth, barHeight, barSpacing, visible,
         } = this.props;
-        const { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {});
-        const { outputMode } = (reactor ? reactor.options : {});
 
         return (
             <div className={classNames({
@@ -140,66 +153,10 @@ export default class ReactorControl extends PureComponent {
                 </div>
                 <div className={styles.display}>
                     <div className={styles.controls}>
-                        <Control className={styles.control}>
-                            <Option className={styles.option}>
-                                <Label text="Output Mode" className={styles.label} />
-                                <ButtonGroup>
-                                    {
-                                        outputOptions.map((mode, index) => (
-                                            <ButtonInput
-                                                key={index}
-                                                icon={mode.icon}
-                                                title={mode.title}
-                                                active={outputMode === mode.title}
-                                                onClick={() => this.updateReactor('outputMode', mode.title)}
-                                            />
-                                        ))
-                                    }
-                                </ButtonGroup>
-                            </Option>
-                            <Option className={styles.option}>
-                                <Label text="Max dB" className={styles.label} />
-                                <NumberInput
-                                    name="maxDecibels"
-                                    value={maxDecibels}
-                                    className={styles.input}
-                                    width={40}
-                                    min={-40}
-                                    max={0}
-                                    step={1}
-                                    onChange={this.updateParser}
-                                />
-                                <RangeInput
-                                    name="maxDecibels"
-                                    value={maxDecibels}
-                                    min={-40}
-                                    max={0}
-                                    step={1}
-                                    onChange={this.updateParser}
-                                />
-                            </Option>
-                            <Option className={styles.option}>
-                                <Label text="Smoothing" className={styles.label} />
-                                <NumberInput
-                                    name="smoothingTimeConstant"
-                                    value={smoothingTimeConstant}
-                                    className={styles.input}
-                                    width={40}
-                                    min={0}
-                                    max={0.99}
-                                    step={0.01}
-                                    onChange={this.updateParser}
-                                />
-                                <RangeInput
-                                    name="smoothingTimeConstant"
-                                    value={smoothingTimeConstant}
-                                    min={0}
-                                    max={0.99}
-                                    step={0.01}
-                                    onChange={this.updateParser}
-                                />
-                            </Option>
-                        </Control>
+                        <Controls
+                            reactor={reactor}
+                            onChange={this.onChange}
+                        />
                     </div>
                     <div className={styles.spectrum}>
                         <canvas
@@ -216,7 +173,7 @@ export default class ReactorControl extends PureComponent {
                             minHeight={barWidth}
                             maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
                             maxHeight={barHeight}
-                            onChange={this.updateReactor}
+                            onChange={this.onChange}
                         />
                     </div>
                     <div className={styles.output}>
@@ -227,7 +184,82 @@ export default class ReactorControl extends PureComponent {
                         />
                     </div>
                 </div>
+                <Icon
+                    className={styles.closeIcon}
+                    glyph={iconDown}
+                    title="Hide Panel"
+                    onClick={this.hideReactor}
+                />
             </div>
         );
     }
 }
+
+const Controls = ({ reactor, onChange }) => {
+    const { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {});
+    const { outputMode } = (reactor ? reactor.options : {});
+
+    return (
+        <Control className={styles.control}>
+            <Option className={styles.option}>
+                <Label text="Output Mode" className={styles.label} />
+                <ButtonGroup>
+                    {
+                        outputOptions.map((mode, index) => (
+                            <ButtonInput
+                                key={index}
+                                icon={mode.icon}
+                                title={mode.title}
+                                active={outputMode === mode.title}
+                                onClick={() => onChange('outputMode', mode.title)}
+                            />
+                        ))
+                    }
+                </ButtonGroup>
+            </Option>
+            <Option className={styles.option}>
+                <Label text="Max dB" className={styles.label} />
+                <NumberInput
+                    name="maxDecibels"
+                    value={maxDecibels}
+                    className={styles.input}
+                    width={40}
+                    min={-40}
+                    max={0}
+                    step={1}
+                    onChange={onChange}
+                />
+                <RangeInput
+                    name="maxDecibels"
+                    value={maxDecibels}
+                    min={-40}
+                    max={0}
+                    step={1}
+                    onChange={onChange}
+                />
+            </Option>
+            <Option className={styles.option}>
+                <Label text="Smoothing" className={styles.label} />
+                <NumberInput
+                    name="smoothingTimeConstant"
+                    value={smoothingTimeConstant}
+                    className={styles.input}
+                    width={40}
+                    min={0}
+                    max={0.99}
+                    step={0.01}
+                    onChange={onChange}
+                />
+                <RangeInput
+                    name="smoothingTimeConstant"
+                    value={smoothingTimeConstant}
+                    min={0}
+                    max={0.99}
+                    step={0.01}
+                    onChange={onChange}
+                />
+            </Option>
+        </Control>
+    );
+};
+

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import Button from 'components/interface/Button';
 import Icon from 'components/interface/Icon';
-import closeIcon from 'svg/icons/cross.svg';
+import closeIcon from 'svg/icons/times.svg';
 import styles from './ModalWindow.less';
 
 const ModalWindow = ({

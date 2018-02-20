@@ -8,6 +8,11 @@
     border-radius: @input-radius;
     position: relative;
     overflow: hidden;
+
+    &:hover .openIcon {
+        opacity: 1;
+        transform: scale(1,1);
+    }
 }
 
 .portrait {
@@ -26,18 +31,26 @@
     .absolute-center();
 }
 
-.icon {
+.openIcon {
     fill: @text-color1;
     height: 24px;
     width: 24px;
     opacity: 0;
     transform: scale(0.5,0.5);
     transition: all 0.25s;
+    filter: drop-shadow(0px 0px 4px #000);
     .absolute-center();
+}
 
-    &:hover {
-        opacity: 1;
-        transform: scale(1,1);
+.closeIcon {
+    svg {
+        fill: @text-color2;
+        width: 14px;
+        height: 14px;
+
+        &:hover {
+            fill: @text-color1;
+        }
     }
 }
 
@@ -56,3 +69,6 @@
     }
 }
 
+.hidden {
+    display: none;
+}
