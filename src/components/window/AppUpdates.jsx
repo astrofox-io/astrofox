@@ -30,7 +30,10 @@ export default class AppUpdates extends React.Component {
         this.appUpdater.on('update', this.updateStatus, this);
 
         if (!checking && !downloading && !downloadComplete) {
-            this.appUpdater.checkForUpdates();
+            // Let css animation complete
+            setTimeout(() => {
+                this.appUpdater.checkForUpdates();
+            }, 500);
         }
 
         this.updateStatus();
@@ -51,29 +54,30 @@ export default class AppUpdates extends React.Component {
             versionInfo,
         } = this.appUpdater;
 
+        let message = 'You have the latest version.';
+
         if (error) {
-            this.setState({ message: 'Unable to check for updates.' });
+            message = 'Unable to check for updates.';
         }
         else if (downloading) {
-            this.setState({ message: 'Downloading update...' });
+            message = 'Downloading update...';
         }
         else if (downloadComplete) {
             const { version } = versionInfo;
-            this.setState({ message: `A new update (${version}) is ready to install.` });
+            message = `A new update (${version}) is ready to install.`;
         }
         else if (installing) {
-            this.setState({ message: 'Installing update...' });
+            message = 'Installing update...';
         }
         else if (checking) {
-            this.setState({ message: 'Checking for updates...' });
+            message = 'Checking for updates...';
         }
         else if (hasUpdate) {
             const { version } = versionInfo;
-            this.setState({ message: `A new update (${version}) is available to download and install.` });
+            message = `A new update (${version}) is available to download and install.`;
         }
-        else {
-            this.setState({ message: 'You have the latest version.' });
-        }
+
+        this.setState({ message });
     }
 
     installUpdate = () => {

@@ -8,6 +8,7 @@ const platform = os.platform();
 export const APP_NAME = 'Astrofox';
 export const APP_VERSION = version;
 export const APP_PATH = app.getAppPath();
+export const USER_AGENT = `${APP_NAME}/${APP_VERSION}`;
 export const USER_DATA_PATH = app.getPath('userData');
 export const TEMP_PATH = path.join(app.getPath('temp'), APP_NAME);
 export const FFMPEG_PATH = path.join(

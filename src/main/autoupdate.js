@@ -2,6 +2,7 @@ import { autoUpdater } from 'electron-updater';
 import * as os from 'os';
 import debug from 'debug';
 import { getWindow } from './window';
+import { USER_AGENT } from './environment';
 
 const log = debug('autoupdate');
 
@@ -14,6 +15,7 @@ export default class AppUpdater {
         }
 
         autoUpdater.autoDownload = false;
+        autoUpdater.requestHeaders = { 'User-Agent': USER_AGENT };
 
         autoUpdater.on('error', (error) => {
             log('update-error');

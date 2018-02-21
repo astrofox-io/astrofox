@@ -1,4 +1,4 @@
-import { app, systemPreferences, ipcMain } from 'electron';
+import { app, systemPreferences, ipcMain, session } from 'electron';
 import fs from 'fs';
 import debug from 'debug';
 import * as env from './environment';
@@ -52,6 +52,16 @@ if (process.env.NODE_ENV !== 'production') {
 // Application events
 app.on('ready', () => {
     log('ready');
+
+    // Modify the user agent for all requests to the following urls
+    const filter = {
+        urls: ['https://*.astrofox.io/*'],
+    };
+
+    session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+        details.requestHeaders['User-Agent'] = env.USER_AGENT;
+        callback({ cancel: false, requestHeaders: details.requestHeaders });
+    });
 
     // Disable menu items on macOS
     if (process.platform === 'darwin') {
