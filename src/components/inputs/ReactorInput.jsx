@@ -54,8 +54,6 @@ export default class ReactorInput extends PureComponent {
         else {
             this.addReactor();
         }
-
-        this.forceUpdate();
     }
 
     addReactor = () => {
@@ -137,7 +135,7 @@ export default class ReactorInput extends PureComponent {
                 >
                     <div
                         className={styles.meter}
-                        onDoubleClick={this.showReactorControl}
+                        onDoubleClick={this.toggleReactor}
                     >
                         <canvas
                             ref={e => (this.canvas = e)}

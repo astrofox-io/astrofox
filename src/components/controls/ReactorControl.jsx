@@ -145,12 +145,10 @@ export default class ReactorControl extends PureComponent {
                 [styles.hidden]: !visible,
             })}
             >
-                <div className={styles.title}>
-                    {
-                        reactor &&
-                        reactor.options.displayName
-                    }
-                </div>
+                {
+                    reactor &&
+                    <Header path={reactor.options.displayName.split('/')} />
+                }
                 <div className={styles.display}>
                     <div className={styles.controls}>
                         <Controls
@@ -194,6 +192,18 @@ export default class ReactorControl extends PureComponent {
         );
     }
 }
+
+const Header = ({ path }) => (
+    <div className={styles.header}>
+        {
+            path.map((item, index) => (
+                <span key={index} className={styles.node}>
+                    {item}
+                </span>
+            ))
+        }
+    </div>
+);
 
 const Controls = ({ reactor, onChange }) => {
     const { maxDecibels, smoothingTimeConstant } = (reactor ? reactor.parser.options : {});

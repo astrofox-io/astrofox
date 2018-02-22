@@ -1,5 +1,6 @@
 import React, { Children, cloneElement } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import classNames from 'classnames';
 import styles from './Overlay.less';
 
 const classes = {
@@ -14,15 +15,15 @@ const timeout = {
     exit: 300,
 };
 
-const Component = ({ children }) => {
-    const style = (Children.count(children) > 0) ? null : { display: 'none' };
-
-    return (
-        <div className={styles.overlay} style={style}>
-            {children}
-        </div>
-    );
-};
+const Component = ({ children }) => (
+    <div className={classNames({
+        [styles.overlay]: true,
+        [styles.hidden]: Children.count(children) === 0,
+    })}
+    >
+        {children}
+    </div>
+);
 
 const Overlay = ({ children }) => (
     <TransitionGroup component={Component}>

@@ -35,7 +35,11 @@ export default class Display extends Component {
     setReactor(name, options) {
         // Create reactor
         if (options) {
-            this.reactors[name] = new AudioReactor(options);
+            const { displayName } = this.options;
+            this.reactors[name] = new AudioReactor({
+                displayName: `Reactor/${displayName}/${name}`,
+                ...options,
+            });
         }
         // Remove reactor
         else {
