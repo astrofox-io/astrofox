@@ -51,7 +51,7 @@ export class BarSpectrumControl extends PureComponent {
 
         return (
             <Control
-                label="BAR SPECTRUM"
+                label="Bar Spectrum"
                 active={active}
                 display={display}
             >

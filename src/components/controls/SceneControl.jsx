@@ -62,7 +62,7 @@ export class SceneControl extends PureComponent {
 
         return (
             <Control
-                label="SCENE"
+                label="Scene"
                 active={active}
                 display={display}
             >

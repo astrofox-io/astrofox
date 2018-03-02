@@ -32,7 +32,7 @@ export class PixelateControl extends PureComponent {
 
         return (
             <Control
-                label="PIXELATE"
+                label="Pixelate"
                 active={active}
                 display={display}
             >

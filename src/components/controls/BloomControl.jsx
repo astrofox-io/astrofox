@@ -26,7 +26,7 @@ export class BloomControl extends PureComponent {
 
         return (
             <Control
-                label="BLOOM"
+                label="Bloom"
                 active={active}
                 display={display}
             >

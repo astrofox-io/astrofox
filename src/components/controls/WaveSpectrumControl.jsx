@@ -37,7 +37,7 @@ export class WaveSpectrumControl extends PureComponent {
 
         return (
             <Control
-                label="WAVE SPECTRUM"
+                label="Wave Spectrum"
                 active={active}
                 display={display}
             >

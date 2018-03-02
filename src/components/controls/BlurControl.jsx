@@ -36,7 +36,7 @@ export class BlurControl extends PureComponent {
 
         return (
             <Control
-                label="BLUR"
+                label="Blur"
                 display={display}
                 active={active}
             >

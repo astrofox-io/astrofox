@@ -19,7 +19,7 @@ export class GlowControl extends PureComponent {
 
         return (
             <Control
-                label="GLOW"
+                label="Glow"
                 active={active}
                 display={display}
             >

@@ -42,7 +42,7 @@ export class TextControl extends PureComponent {
 
         return (
             <Control
-                label="TEXT"
+                label="Text"
                 active={active}
                 display={display}
             >

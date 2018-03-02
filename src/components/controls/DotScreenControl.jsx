@@ -19,7 +19,7 @@ export class DotScreenControl extends PureComponent {
 
         return (
             <Control
-                label="DOT SCREEN"
+                label="Dot Screen"
                 active={active}
                 display={display}
             >

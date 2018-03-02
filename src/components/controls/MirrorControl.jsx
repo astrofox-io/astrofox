@@ -12,7 +12,7 @@ export class MirrorControl extends PureComponent {
 
         return (
             <Control
-                label="MIRROR"
+                label="Mirror"
                 active={active}
             >
                 <Option>

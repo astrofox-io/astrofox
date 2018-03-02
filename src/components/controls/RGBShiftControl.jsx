@@ -20,7 +20,7 @@ export class RGBShiftControl extends PureComponent {
 
         return (
             <Control
-                label="RGB SHIFT"
+                label="RGB Shift"
                 active={active}
                 display={display}
             >

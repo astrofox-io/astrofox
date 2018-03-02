@@ -5,7 +5,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
-const vendorIds = Object.keys(require('./package.json').dependencies);
 
 const extractLess = new ExtractTextPlugin({
     filename: 'css/[name].css',
@@ -17,7 +16,6 @@ const config = {
     devtool: PRODUCTION ? false : 'source-map',
     entry: {
         app: path.resolve(__dirname, 'src/app/index.js'),
-        vendor: vendorIds,
     },
     output: {
         path: path.resolve(__dirname, 'app/browser'),
@@ -133,11 +131,6 @@ const config = {
         ],
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            filename: 'js/[name].js',
-            minChunks: Infinity,
-        }),
         extractLess,
         new SpriteLoaderPlugin(),
     ],

@@ -18,9 +18,24 @@
 .text {
     font-size: @font-small;
     color: @text-color2;
+    text-transform: uppercase;
     text-shadow: 1px 1px 0 darken(@text-color2, 50%);
     line-height: 20px;
     overflow: hidden;
+}
+
+.displayName {
+    position: absolute;
+    right: 10px;
+    width: 150px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: @font-smaller;
+    line-height: 20px;
+    color: @text-color3;
+    text-shadow: 1px 1px 0 darken(@text-color3, 50%);
 }
 
 .option {

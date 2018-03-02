@@ -30,6 +30,9 @@ export const Control = ({
                 <span className={styles.text}>
                     {label}
                 </span>
+                <span className={styles.displayName}>
+                    {display.options.displayName}
+                </span>
             </div>
         }
         {

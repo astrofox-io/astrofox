@@ -61,7 +61,7 @@ export class GeometryControl extends PureComponent {
 
         return (
             <Control
-                label="3D GEOMETRY"
+                label="3D Geometry"
                 active={active}
                 display={display}
             >

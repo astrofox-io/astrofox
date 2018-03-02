@@ -29,7 +29,7 @@ export class SoundwaveControl extends PureComponent {
 
         return (
             <Control
-                label="SOUNDWAVE"
+                label="Soundwave"
                 active={active}
             >
                 <Option>

@@ -91,7 +91,7 @@ export class ImageControl extends PureComponent {
 
         return (
             <Control
-                label="IMAGE"
+                label="Image"
                 active={active}
                 display={display}
             >
