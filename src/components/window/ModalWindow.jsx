@@ -12,11 +12,15 @@ const ModalWindow = ({
         <div className={classNames(styles.modal, className)}>
             {
                 showCloseButton !== false &&
-                    <Icon
+                    <div
                         className={styles.closeButton}
-                        glyph={closeIcon}
                         onClick={onClose}
-                    />
+                    >
+                        <Icon
+                            className={styles.closeIcon}
+                            glyph={closeIcon}
+                        />
+                    </div>
             }
             {
                 title &&

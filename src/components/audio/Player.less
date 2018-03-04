@@ -21,7 +21,7 @@
 }
 
 .button {
-    fill: @text-color1;
+    color: @text-color1;
     background-color: transparent;
     padding: 0;
     margin: 0 2px 0 0;
@@ -46,7 +46,7 @@
 }
 
 .playButton {
-    .icon svg {
+    .icon {
         width: 36px;
         height: 36px;
         margin-left: 2px;
@@ -54,7 +54,7 @@
 }
 
 .pauseButton {
-    .icon svg {
+    .icon {
         width: 24px;
         height: 24px;
         margin: 6px;
@@ -62,7 +62,7 @@
 }
 
 .stopButton {
-    .icon svg {
+    .icon {
         width: 24px;
         height: 24px;
         margin: 6px;
@@ -72,23 +72,23 @@
 .toggleButton {
     margin: 0 3px;
 
-    .icon svg {
-        fill: @bg-color1;
+    .icon {
+        color: @bg-color1;
         width: 20px;
         height: 20px;
 
         &:hover {
-            fill: lighten(@bg-color1, 10%);
+            color: lighten(@bg-color1, 10%);
         }
     }
 }
 
 .toggleButtonActive {
-    .icon svg {
-        fill: @color1;
+    .icon {
+        color: @color1;
 
         &:hover {
-            fill: @color1;
+            color: @color1;
         }
     }
 }
@@ -108,8 +108,8 @@
 .speaker {
     margin-right: 10px;
 
-    .icon svg {
-        fill: @text-color1;
+    .icon {
+        color: @text-color1;
         width: 20px;
         height: 20px;
     }
