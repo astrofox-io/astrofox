@@ -141,6 +141,8 @@ export default class Scene extends Display {
         this.updatePasses();
 
         this.changed = true;
+
+        return obj;
     }
 
     removeElement(obj) {

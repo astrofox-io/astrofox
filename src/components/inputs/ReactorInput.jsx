@@ -15,12 +15,9 @@ export default class ReactorInput extends PureComponent {
         onChange: () => {},
     }
 
-    state = {
-        reactor: null,
-    };
-
     componentDidMount() {
         const { width, height, color } = this.props;
+        const reactor = this.getReactor();
 
         this.meter = new CanvasMeter(
             {
@@ -32,6 +29,10 @@ export default class ReactorInput extends PureComponent {
         );
 
         events.emit('reactor-edit', this.getReactor());
+
+        if (reactor) {
+            events.on('render', this.draw, this);
+        }
     }
 
     componentWillUnmount() {
@@ -46,7 +47,7 @@ export default class ReactorInput extends PureComponent {
     }
 
     toggleReactor = () => {
-        const { reactor } = this.state;
+        const reactor = this.getReactor();
 
         if (reactor) {
             this.showReactorControl(reactor);
@@ -73,11 +74,11 @@ export default class ReactorInput extends PureComponent {
             },
         );
 
-        this.setState({ reactor }, () => {
-            this.showReactorControl(reactor);
+        this.showReactorControl(reactor);
 
-            events.on('render', this.draw, this);
-        });
+        events.on('render', this.draw, this);
+
+        this.forceUpdate();
     }
 
     removeReactor = () => {
@@ -88,11 +89,11 @@ export default class ReactorInput extends PureComponent {
 
         display.setReactor(name, null);
 
-        this.setState({ reactor: null }, () => {
-            this.showReactorControl(null);
+        this.showReactorControl(null);
 
-            events.off('render', this.draw, this);
-        });
+        events.off('render', this.draw, this);
+
+        this.forceUpdate();
     }
 
     showReactorControl = (reactor) => {
@@ -100,7 +101,7 @@ export default class ReactorInput extends PureComponent {
     }
 
     draw = () => {
-        const { reactor } = this.state;
+        const reactor = this.getReactor();
 
         if (reactor) {
             const { output } = reactor.getResult();
@@ -115,7 +116,7 @@ export default class ReactorInput extends PureComponent {
             children,
         } = this.props;
 
-        const { reactor } = this.state;
+        const reactor = this.getReactor();
 
         return (
             <Fragment>

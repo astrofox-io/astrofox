@@ -210,8 +210,6 @@ export default class Stage extends Display {
     }
 
     loadConfig(config) {
-        let Component;
-
         if (typeof config === 'object') {
             this.clearScenes();
 
@@ -221,34 +219,36 @@ export default class Stage extends Display {
 
                     this.addScene(newScene);
 
-                    if (scene.displays) {
-                        scene.displays.forEach((display) => {
-                            Component = displayLibrary[display.name];
-
-                            if (!Component) Component = displayLibrary[`${display.name}Display`];
-
-                            if (Component) {
-                                newScene.addElement(new Component(display.options));
-                            }
-                            else {
-                                logger.warn('Display not found:', display.name);
-                            }
+                    const loadReactors = (reactors, element) => {
+                        Object.keys(reactors).forEach((key) => {
+                            element.setReactor(key, reactors[key]);
                         });
+                    };
+
+                    const loadComponent = (lib, { name, options, reactors }) => {
+                        const Component = lib[name];
+
+                        if (Component) {
+                            const element = newScene.addElement(new Component(options));
+                            if (reactors) {
+                                loadReactors(reactors, element);
+                            }
+                        }
+                        else {
+                            logger.warn('Component not found:', name);
+                        }
+                    };
+
+                    if (scene.displays) {
+                        scene.displays.forEach(display => loadComponent(displayLibrary, display));
                     }
 
                     if (scene.effects) {
-                        scene.effects.forEach((effect) => {
-                            Component = effectsLibrary[effect.name];
+                        scene.effects.forEach(effect => loadComponent(effectsLibrary, effect));
+                    }
 
-                            if (!Component) Component = effectsLibrary[`${effect.name}Effect`];
-
-                            if (Component) {
-                                newScene.addElement(new Component(effect.options));
-                            }
-                            else {
-                                logger.warn('Effect not found:', effect.name);
-                            }
-                        });
+                    if (scene.reactors) {
+                        loadReactors(scene.reactors, newScene);
                     }
                 });
             }

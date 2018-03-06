@@ -444,7 +444,7 @@ export default class Application extends EventEmitter {
     }
 
     saveProject(file) {
-        const sceneData = this.stage.getScenes().map(scene => scene.toJSON());
+        const sceneData = this.stage.scenes.items.map(scene => scene.toJSON());
 
         const data = JSON.stringify({
             version: APP_VERSION,

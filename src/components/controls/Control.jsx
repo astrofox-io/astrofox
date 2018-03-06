@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import ReactorInput from 'components/inputs/ReactorInput';
 import styles from './Control.less';
 
-export const Option = ({ className, children, display }) => (
+const Option = ({ className, children, display }) => (
     <div className={classNames(styles.option, className)}>
         {
             Children.map(children, (child) => {
@@ -16,7 +16,7 @@ export const Option = ({ className, children, display }) => (
     </div>
 );
 
-export const Control = ({
+const Control = ({
     label, active, className, display, children,
 }) => (
     <div className={classNames({
@@ -46,9 +46,15 @@ export const Control = ({
     </div>
 );
 
-export const Label = ({ text, className, children }) => (
+const Label = ({ text, className, children }) => (
     <div className={classNames(styles.label, className)}>
         {text}
         {children && children}
     </div>
 );
+
+export {
+    Option,
+    Control,
+    Label,
+};
