@@ -1,40 +1,35 @@
-.size(@width, @height) {
-    width: @width;
-    height: @height;
-}
-
 .absolute-center() {
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     margin: auto;
-    top: 0; left: 0; bottom: 0; right: 0;
 }
 
-.absolute-left() {
+.position-center() {
     position: absolute;
-    margin: auto;
-    top: 0; left: 0; bottom: 0; right: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.absolute-right() {
+.position-left() {
     position: absolute;
-    margin: auto;
-    top: 0; left: auto; bottom: 0; right: 0;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.position-right() {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
 }
 
 .flex() {
-    flex: 1 1 0%;
-}
-
-.blur() {
-    -webkit-filter: blur(2px);
-}
-
-.center() {
-    text-align: center;
-}
-
-.display-none() {
-    display: none !important;
+    flex: 1 1 0;
 }
 
 .off-screen() {
@@ -54,11 +49,4 @@
     margin: -1px;
     clip: rect(0 0 0 0);
     z-index: -1;
-}
-
-.centered() {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
