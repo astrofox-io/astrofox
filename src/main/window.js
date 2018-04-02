@@ -1,4 +1,5 @@
-import { BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
+import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import debug from 'debug';
@@ -47,6 +48,30 @@ export function createWindow() {
         // Auto close devtools if opened
         mainWindow.webContents.on('devtools-opened', () => {
             mainWindow.webContents.closeDevTools();
+        });
+    }
+
+    // Development settings
+    if (process.env.NODE_ENV !== 'production') {
+        const dirs = {
+            win32: '/AppData/Local/Google/Chrome/User Data/Default/Extensions',
+            darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
+        };
+
+        const extensions = [
+            'fmkadmapgofadopljbjfkapdkoienihi',
+        ];
+
+        extensions.forEach((ext) => {
+            const p = path.join(app.getPath('home'), dirs[process.platform], ext);
+
+            const d = fs.readdirSync(p).filter(f => fs.statSync(path.join(p, f)).isDirectory());
+
+            if (d.length) {
+                const x = path.join(p, d[0]);
+                log('Adding extension:', x);
+                BrowserWindow.addExtension(x);
+            }
         });
     }
 
