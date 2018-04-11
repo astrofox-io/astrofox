@@ -106,10 +106,6 @@ export default class Composer {
         this.writeBuffer = tmp;
     }
 
-    getPasses() {
-        return this.passes;
-    }
-
     addPass(pass) {
         this.passes.push(pass);
 

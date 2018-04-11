@@ -23,7 +23,7 @@ export default class GaussianBlurPass extends MultiPass {
     }
 
     setAmount(amount) {
-        this.getPasses().forEach((pass, index) => {
+        this.passes.forEach((pass, index) => {
             const radius = (this.options.passes - index) * this.options.radius * amount;
 
             pass.setUniforms({ direction: (index % 2 === 0) ? [0, radius] : [radius, 0] });

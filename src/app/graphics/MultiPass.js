@@ -10,11 +10,7 @@ export default class MultiPass extends ComposerPass {
     constructor(passes, options) {
         super(Object.assign({}, MultiPass.defaults, options));
 
-        this.passes = [];
-    }
-
-    getPasses() {
-        return this.passes;
+        this.passes = passes;
     }
 
     addPass(pass) {
@@ -28,7 +24,7 @@ export default class MultiPass extends ComposerPass {
     }
 
     setSize(width, height) {
-        this.getPasses().forEach((pass) => {
+        this.passes.forEach((pass) => {
             pass.setSize(width, height);
         });
     }
