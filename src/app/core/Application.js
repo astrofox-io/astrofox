@@ -392,7 +392,7 @@ export default class Application extends EventEmitter {
 
     saveImage(filename) {
         const { stage } = this;
-        const data = this.getFrameData(true);
+        const data = this.getFrameData(false);
 
         stage.render(data, () => {
             stage.getImage((buffer) => {
