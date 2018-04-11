@@ -11,6 +11,7 @@ import {
 export class SoundwaveControl extends PureComponent {
     render() {
         const {
+            display,
             active,
             stageWidth,
             stageHeight,
@@ -31,6 +32,7 @@ export class SoundwaveControl extends PureComponent {
             <Control
                 label="Soundwave"
                 active={active}
+                display={display}
             >
                 <Option>
                     <Label text="Color" />
