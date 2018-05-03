@@ -10,18 +10,17 @@ export default class CanvasDisplay extends Display {
     }
 
     renderToScene(scene) {
+        const { width, height } = this.canvas;
+
         this.renderToCanvas(
             scene.getContext('2d'),
-            this.canvas.width / 2,
-            this.canvas.height / 2,
+            width / 2,
+            height / 2,
         );
     }
 
-    /* eslint-disable no-param-reassign */
     renderToCanvas(context, dx, dy) {
-        const {
-            canvas,
-        } = this;
+        const { canvas } = this;
 
         const {
             x,
@@ -46,8 +45,8 @@ export default class CanvasDisplay extends Display {
             context.restore();
         }
         else {
-            const cx = halfSceneWidth - (dx + x);
-            const cy = halfSceneHeight - (dy - y);
+            const cx = halfSceneWidth - (dx - x);
+            const cy = halfSceneHeight - (dy + y);
 
             context.drawImage(canvas, cx, cy);
         }
