@@ -91,9 +91,9 @@ export default class Layer extends PureComponent {
                             onCancel={this.onCancelEdit}
                         />
                     ) : (
-                        <span onDoubleClick={this.onEnableEdit}>
+                        <div className={styles.text} onDoubleClick={this.onEnableEdit}>
                             {name}
-                        </span>
+                        </div>
                     )
                 }
                 <span onClick={this.onEnableClick}>
