@@ -50,6 +50,9 @@ const config = {
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            publicPath: '../',
+                        },
                     },
                     {
                         loader: 'css-loader',
