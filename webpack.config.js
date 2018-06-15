@@ -1,17 +1,11 @@
 const path = require('path');
-const webpack = require('webpack');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
-const extractLess = new ExtractTextPlugin({
-    filename: 'css/[name].css',
-    allChunks: true,
-});
-
 const config = {
+    mode: PRODUCTION ? 'production' : 'development',
     target: 'electron-renderer',
     devtool: PRODUCTION ? false : 'source-map',
     entry: {
@@ -53,28 +47,28 @@ const config = {
             },
             {
                 test: /\.(css|less)$/,
-                use: extractLess.extract({
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                modules: true,
-                                camelCase: true,
-                                sourceMap: true,
-                                minimize: PRODUCTION,
-                                localIdentName: '[name]__[local]--[hash:base64:5]',
-                                importLoaders: 1,
-                            },
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            camelCase: true,
+                            sourceMap: true,
+                            minimize: PRODUCTION,
+                            localIdentName: '[name]__[local]--[hash:base64:5]',
+                            importLoaders: 1,
                         },
-                        {
-                            loader: 'less-loader',
-                            options: {
-                                sourceMap: true,
-                            },
+                    },
+                    {
+                        loader: 'less-loader',
+                        options: {
+                            sourceMap: true,
                         },
-                    ],
-                    publicPath: '../',
-                }),
+                    },
+                ],
             },
             {
                 test: /\.glsl$/,
@@ -131,24 +125,12 @@ const config = {
         ],
     },
     plugins: [
-        extractLess,
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css',
+            chunkFilename: '[id].css',
+        }),
         new SpriteLoaderPlugin(),
     ],
 };
-
-if (PRODUCTION) {
-    config.plugins.push(
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production'),
-        }),
-        new MinifyPlugin(
-            {},
-            {
-                test: /\.js$/,
-                comments: false,
-            },
-        ),
-    );
-}
 
 module.exports = config;

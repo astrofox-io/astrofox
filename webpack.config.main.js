@@ -1,10 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
 const config = {
+    mode: PRODUCTION ? 'production' : 'development',
+    devtool: PRODUCTION ? false : 'source-map',
     target: 'electron-main',
     node: {
         __dirname: false,
@@ -38,20 +38,5 @@ const config = {
     },
     plugins: [],
 };
-
-if (PRODUCTION) {
-    config.plugins.push(
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production'),
-        }),
-        new MinifyPlugin(
-            {},
-            {
-                test: /\.js$/,
-                comments: false,
-            },
-        ),
-    );
-}
 
 module.exports = config;
