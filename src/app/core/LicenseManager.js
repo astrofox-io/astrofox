@@ -1,21 +1,22 @@
-import NodeRSA from 'node-rsa';
-import { LICENSE_FILE } from 'core/Environment';
+import crypto from 'crypto';
+import { Map } from 'immutable';
 import { logger } from 'core/Global';
 import { readFile, writeFile } from 'utils/io';
-import KEY_DATA from 'config/key.json';
+
+const emptyLicense = new Map({});
 
 export default class LicenseManager {
-    constructor() {
-        this.license = null;
-        this.key = new NodeRSA(KEY_DATA);
+    constructor(key) {
+        this.license = emptyLicense;
+        this.key = key;
     }
 
-    load() {
-        return readFile(LICENSE_FILE)
+    load(file) {
+        return readFile(file)
             .then((data) => {
-                this.license = JSON.parse(this.key.decryptPublic(data).toString());
+                this.license = new Map(JSON.parse(crypto.publicDecrypt(this.key, data).toString()));
 
-                logger.log('License found:', this.license);
+                logger.log('License found:', this.license.toObject());
             })
             .catch((error) => {
                 if (error.message.indexOf('ENOENT') > -1) {
@@ -27,8 +28,8 @@ export default class LicenseManager {
             });
     }
 
-    save(data) {
-        return writeFile(LICENSE_FILE, data)
+    save(file, data) {
+        return writeFile(file, data)
             .then(() => {
                 logger.log('License file saved.');
             })
@@ -38,10 +39,10 @@ export default class LicenseManager {
     }
 
     info() {
-        return Object.assign({}, this.license);
+        return this.license.toObject();
     }
 
     check() {
-        return this.license !== null;
+        return this.license !== emptyLicense;
     }
 }
