@@ -29,7 +29,9 @@ export default class ControlPicker extends React.Component {
                         onClick={this.onClick(item)}
                         style={style}
                     />
-                    <div className={styles.name}>{item.label}</div>
+                    <div className={styles.name}>
+                        {item.label}
+                    </div>
                 </div>
             );
         });

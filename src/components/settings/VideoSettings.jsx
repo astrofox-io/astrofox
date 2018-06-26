@@ -58,12 +58,13 @@ export default class VideoSettings extends React.Component {
     }
 
     onChange = (name, val) => {
+        const { videoFile } = this.state;
         const obj = {};
 
         obj[name] = val;
 
-        if (name === 'format' && this.state.videoFile) {
-            obj.videoFile = replaceExt(this.state.videoFile, `.${val}`);
+        if (name === 'format' && videoFile) {
+            obj.videoFile = replaceExt(videoFile, `.${val}`);
         }
 
         this.setState(obj);

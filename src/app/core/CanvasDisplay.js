@@ -21,6 +21,7 @@ export default class CanvasDisplay extends Display {
 
     renderToCanvas(context, dx, dy) {
         const { canvas } = this;
+        const { width, height } = context.canvas;
 
         const {
             x,
@@ -29,8 +30,8 @@ export default class CanvasDisplay extends Display {
             rotation,
         } = this.options;
 
-        const halfSceneWidth = context.canvas.width / 2;
-        const halfSceneHeight = context.canvas.height / 2;
+        const halfSceneWidth = width / 2;
+        const halfSceneHeight = height / 2;
 
         context.globalAlpha = opacity;
 

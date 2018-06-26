@@ -23,7 +23,7 @@ export default class LicenseManager {
                     logger.log('License not found.');
                 }
                 else {
-                    logger.error(error.message);
+                    logger.error('Invalid license:', error.message);
                 }
             });
     }
@@ -31,6 +31,8 @@ export default class LicenseManager {
     save(file, data) {
         return writeFile(file, data)
             .then(() => {
+                this.license = new Map(data);
+
                 logger.log('License file saved.');
             })
             .catch((error) => {

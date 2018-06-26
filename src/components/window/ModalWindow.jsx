@@ -11,7 +11,7 @@ const ModalWindow = ({
     <div className={styles.overlay}>
         <div className={classNames(styles.modal, className)}>
             {
-                showCloseButton !== false &&
+                showCloseButton !== false && (
                     <div
                         className={styles.closeButton}
                         onClick={onClose}
@@ -21,18 +21,20 @@ const ModalWindow = ({
                             glyph={closeIcon}
                         />
                     </div>
+                )
             }
             {
-                title &&
+                title && (
                     <div className={styles.header}>
                         {title}
                     </div>
+                )
             }
             <div className={styles.body}>
                 {children}
             </div>
             {
-                buttons &&
+                buttons && (
                     <div className={styles.buttons}>
                         {
                             buttons.map((text, index) => (
@@ -45,6 +47,7 @@ const ModalWindow = ({
                             ))
                         }
                     </div>
+                )
             }
         </div>
     </div>

@@ -19,10 +19,11 @@ const About = ({ onClose }, context) => {
                 {'Copyright \u00A9 Mike Cao'}
             </div>
             {
-                info && info.user &&
-                <div className="license-info">
-                    {`Licensed to ${info.user}`}
-                </div>
+                info && info.user && (
+                    <div className="license-info">
+                        {`Licensed to ${info.user}`}
+                    </div>
+                )
             }
             <div className={styles.buttons}>
                 <Button text="Close" onClick={onClose} />

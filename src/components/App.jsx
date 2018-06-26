@@ -417,7 +417,9 @@ const Preload = () => (
     <div className={styles.preload}>
         {
             fontOptions.map((item, index) => (
-                <div key={index} style={{ fontFamily: item }}>{item}</div>
+                <div key={index} style={{ fontFamily: item }}>
+                    {item}
+                </div>
             ))
         }
     </div>

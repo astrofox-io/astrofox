@@ -47,4 +47,3 @@ export default class TextDisplay extends CanvasDisplay {
         return changed;
     }
 }
-

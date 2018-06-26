@@ -73,43 +73,44 @@ export class BlurControl extends PureComponent {
                     </ReactorInput>
                 </Option>
                 {
-                    type === 'Zoom' &&
-                    <Fragment>
-                        <Option>
-                            <Label text="X" />
-                            <NumberInput
-                                name="x"
-                                min={-stageWidth / 2}
-                                max={stageWidth / 2}
-                                value={x}
-                                onChange={onChange}
-                            />
-                            <RangeInput
-                                name="x"
-                                min={-stageWidth / 2}
-                                max={stageWidth / 2}
-                                value={x}
-                                onChange={onChange}
-                            />
-                        </Option>
-                        <Option>
-                            <Label text="Y" />
-                            <NumberInput
-                                name="y"
-                                min={-stageHeight / 2}
-                                max={stageHeight / 2}
-                                value={y}
-                                onChange={onChange}
-                            />
-                            <RangeInput
-                                name="y"
-                                min={-stageHeight / 2}
-                                max={stageHeight / 2}
-                                value={y}
-                                onChange={onChange}
-                            />
-                        </Option>
-                    </Fragment>
+                    type === 'Zoom' && (
+                        <Fragment>
+                            <Option>
+                                <Label text="X" />
+                                <NumberInput
+                                    name="x"
+                                    min={-stageWidth / 2}
+                                    max={stageWidth / 2}
+                                    value={x}
+                                    onChange={onChange}
+                                />
+                                <RangeInput
+                                    name="x"
+                                    min={-stageWidth / 2}
+                                    max={stageWidth / 2}
+                                    value={x}
+                                    onChange={onChange}
+                                />
+                            </Option>
+                            <Option>
+                                <Label text="Y" />
+                                <NumberInput
+                                    name="y"
+                                    min={-stageHeight / 2}
+                                    max={stageHeight / 2}
+                                    value={y}
+                                    onChange={onChange}
+                                />
+                                <RangeInput
+                                    name="y"
+                                    min={-stageHeight / 2}
+                                    max={stageHeight / 2}
+                                    value={y}
+                                    onChange={onChange}
+                                />
+                            </Option>
+                        </Fragment>
+                    )
                 }
             </Control>
         );

@@ -59,8 +59,11 @@ export default class Panel extends React.PureComponent {
                 style={style}
             >
                 {
-                    title &&
-                    <div className={styles.title}>{title}</div>
+                    title && (
+                        <div className={styles.title}>
+                            {title}
+                        </div>
+                    )
                 }
                 {children}
                 {

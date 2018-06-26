@@ -109,13 +109,14 @@ export default class Stage extends React.Component {
 const Loading = ({ visible }) => (
     <TransitionGroup component={FirstChild}>
         {
-            visible &&
-            <CSSTransition
-                classNames={transitionClasses}
-                timeout={transitionTimeout}
-            >
-                <div className={styles.loading} />
-            </CSSTransition>
+            visible && (
+                <CSSTransition
+                    classNames={transitionClasses}
+                    timeout={transitionTimeout}
+                >
+                    <div className={styles.loading} />
+                </CSSTransition>
+            )
         }
     </TransitionGroup>
 );
@@ -123,13 +124,14 @@ const Loading = ({ visible }) => (
 const Rendering = ({ visible, onButtonClick }) => (
     <TransitionGroup component={FirstChild}>
         {
-            visible &&
-            <CSSTransition
-                classNames={transitionClasses}
-                timeout={transitionTimeout}
-            >
-                <RenderInfo className={styles.renderInfo} onButtonClick={onButtonClick} />
-            </CSSTransition>
+            visible && (
+                <CSSTransition
+                    classNames={transitionClasses}
+                    timeout={transitionTimeout}
+                >
+                    <RenderInfo className={styles.renderInfo} onButtonClick={onButtonClick} />
+                </CSSTransition>
+            )
         }
     </TransitionGroup>
 );

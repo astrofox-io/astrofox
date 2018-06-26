@@ -272,4 +272,3 @@ const Controls = ({ reactor, onChange }) => {
         </Control>
     );
 };
-

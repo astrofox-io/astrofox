@@ -85,13 +85,13 @@
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
     "electron": "^2.0.0",
-    "electron-builder": "^20.15.1",
+    "electron-builder": "^20.16.0",
     "electron-updater": "^2.21.10",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.11.0",
+    "eslint": "^5.0.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.9.1",
+    "eslint-plugin-react": "^7.10.0",
     "file-loader": "^1.1.11",
     "glsl-man": "^1.1.14",
     "less": "^3.0.4",
@@ -100,7 +100,7 @@
     "style-loader": "^0.21.0",
     "svg-sprite-loader": "^3.8.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.12.0",
+    "webpack": "^4.12.1",
     "webpack-cli": "^3.0.6"
   }
 }

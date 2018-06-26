@@ -43,6 +43,14 @@ export default class AppUpdates extends React.Component {
         this.appUpdater.off('update', this.updateStatus, this);
     }
 
+    installUpdate = () => {
+        this.appUpdater.quitAndInstall();
+    }
+
+    downloadUpdate = () => {
+        this.appUpdater.downloadUpdate();
+    }
+
     updateStatus() {
         const {
             error,
@@ -78,14 +86,6 @@ export default class AppUpdates extends React.Component {
         }
 
         this.setState({ message });
-    }
-
-    installUpdate = () => {
-        this.appUpdater.quitAndInstall();
-    }
-
-    downloadUpdate = () => {
-        this.appUpdater.downloadUpdate();
     }
 
     render() {

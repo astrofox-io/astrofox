@@ -25,15 +25,16 @@ const Control = ({
     }, className)}
     >
         {
-            label &&
-            <div className={styles.header}>
-                <span className={styles.text}>
-                    {label}
-                </span>
-                <span className={styles.displayName}>
-                    {display.options.displayName}
-                </span>
-            </div>
+            label && (
+                <div className={styles.header}>
+                    <span className={styles.text}>
+                        {label}
+                    </span>
+                    <span className={styles.displayName}>
+                        {display.options.displayName}
+                    </span>
+                </div>
+            )
         }
         {
             Children.map(children, (child) => {

@@ -75,16 +75,17 @@ export default class MenuBar extends React.Component {
             <div className={styles.menuBar}>
                 {
                     items.map(({ hidden, label, submenu }, index) => (
-                        !hidden &&
-                        <MenuBarItem
-                            key={index}
-                            label={label}
-                            items={submenu}
-                            active={activeIndex === index}
-                            onClick={this.onClick(index)}
-                            onMouseOver={this.onMouseOver(index)}
-                            onMenuItemClick={this.onMenuItemClick}
-                        />
+                        !hidden && (
+                            <MenuBarItem
+                                key={index}
+                                label={label}
+                                items={submenu}
+                                active={activeIndex === index}
+                                onClick={this.onClick(index)}
+                                onMouseOver={this.onMouseOver(index)}
+                                onMenuItemClick={this.onMenuItemClick}
+                            />
+                        )
                     ))
                 }
             </div>

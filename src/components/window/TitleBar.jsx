@@ -53,7 +53,9 @@ export default class TitleBar extends PureComponent {
                 }
             >
                 <Icon className={styles.icon} glyph={appIcon} />
-                <div className={styles.title}>ASTROFOX</div>
+                <div className={styles.title}>
+                    ASTROFOX
+                </div>
                 <div className={styles.buttons}>
                     <span className={styles.button} onClick={this.onMinimize}>
                         <img src={buttonMinimize} alt="" />

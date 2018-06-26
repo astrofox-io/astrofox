@@ -19,7 +19,9 @@ export const Settings = ({ className, children }) => (
 
 export const Group = ({ name, className, children }) => (
     <div className={classNames(styles.group, className)}>
-        <div className={styles.name}>{name}</div>
+        <div className={styles.name}>
+            {name}
+        </div>
         {children}
     </div>
 );
@@ -30,12 +32,18 @@ export const Row = ({
     <div className={classNames(styles.row, className)}>
         <div className={styles.text}>
             {
-                label &&
-                <div className={styles.label}>{label}</div>
+                label && (
+                    <div className={styles.label}>
+                        {label}
+                    </div>
+                )
             }
             {
-                description &&
-                <div className={styles.description}>{description}</div>
+                description && (
+                    <div className={styles.description}>
+                        {description}
+                    </div>
+                )
             }
         </div>
         {children}
@@ -43,5 +51,7 @@ export const Row = ({
 );
 
 export const ButtonRow = ({ children }) => (
-    <div className={styles.buttons}>{children}</div>
+    <div className={styles.buttons}>
+        {children}
+    </div>
 );

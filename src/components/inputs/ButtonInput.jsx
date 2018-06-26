@@ -23,8 +23,11 @@ const ButtonInput = ({
             <Icon className={styles.icon} glyph={icon} />
         }
         {
-            text &&
-            <span className={styles.text}>{text}</span>
+            text && (
+                <span className={styles.text}>
+                    {text}
+                </span>
+            )
         }
     </div>
 );

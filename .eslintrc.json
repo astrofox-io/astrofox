@@ -13,8 +13,8 @@
   ],
   "parser": "babel-eslint",
   "parserOptions": {
+    "ecmaVersion": 6,
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
       "jsx": true
     },
     "sourceType": "module"
@@ -81,7 +81,7 @@
     "object-curly-newline": [
       "error",
       {
-          "consistent": true
+        "consistent": true
       }
     ],
     "one-var-declaration-per-line": [
@@ -103,6 +103,18 @@
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/mouse-events-have-key-events": 0,
     "jsx-a11y/no-static-element-interactions": 0,
+    "no-else-return": [
+      "error",
+      {
+        "allowElseIf": true
+      }
+    ],
+    "operator-linebreak": [
+      "error",
+      "after"
+    ],
+    "react/destructuring-assignment": 0,
+    "react/forbid-prop-types": 0,
     "react/no-array-index-key": 0,
     "react/no-multi-comp": 0,
     "react/prop-types": 0,

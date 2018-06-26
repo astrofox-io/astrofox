@@ -8,7 +8,9 @@ const Dialog = ({ icon, message }) => (
             icon &&
             <span className={classNames(styles.icon, icon)} />
         }
-        <span className={styles.message}>{message}</span>
+        <span className={styles.message}>
+            {message}
+        </span>
     </div>
 );
 

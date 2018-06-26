@@ -36,16 +36,28 @@ export default class StatusBar extends Component {
         return (
             <div className={styles.statusBar}>
                 <div className={styles.left}>
-                    <span className={styles.item}>{text}</span>
+                    <span className={styles.item}>
+                        {text}
+                    </span>
                 </div>
                 <div className={styles.center}>
                     <Zoom />
                 </div>
                 <div className={styles.right}>
-                    <span className={styles.item}>{memSize}</span>
-                    <span className={styles.item}>{electronVersion}</span>
-                    <span className={styles.item}>{fps} FPS</span>
-                    <span className={styles.item}>{APP_VERSION}</span>
+                    <span className={styles.item}>
+                        {memSize}
+                    </span>
+                    <span className={styles.item}>
+                        {electronVersion}
+                    </span>
+                    <span className={styles.item}>
+                        {fps}
+                        {' '}
+FPS
+                    </span>
+                    <span className={styles.item}>
+                        {APP_VERSION}
+                    </span>
                 </div>
             </div>
         );
@@ -81,10 +93,18 @@ class Zoom extends React.Component {
 
         return (
             <div className={styles.zoom}>
-                <span className={styles.item}>{width} x {height}</span>
-                <span className={styles.zoomButton} onClick={() => this.setZoom(-1)}>-</span>
-                <span className={styles.zoomValue}>{zoom * 100}%</span>
-                <span className={styles.zoomButton} onClick={() => this.setZoom(1)}>+</span>
+                <span className={styles.item}>
+                    {`${width} x ${height}`}
+                </span>
+                <span className={styles.zoomButton} onClick={() => this.setZoom(-1)}>
+                    -
+                </span>
+                <span className={styles.zoomValue}>
+                    {`${zoom * 100}%`}
+                </span>
+                <span className={styles.zoomButton} onClick={() => this.setZoom(1)}>
+                    +
+                </span>
             </div>
         );
     }

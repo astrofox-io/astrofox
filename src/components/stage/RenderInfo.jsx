@@ -10,6 +10,10 @@ export default class RenderInfo extends React.Component {
         app: PropTypes.object,
     }
 
+    static defaultProps = {
+        onButtonClick: () => {},
+    }
+
     constructor(props, context) {
         super(props);
 
@@ -50,9 +54,7 @@ export default class RenderInfo extends React.Component {
             this.renderer.stop();
         }
 
-        if (this.props.onButtonClick) {
-            this.props.onButtonClick();
-        }
+        this.props.onButtonClick();
     }
 
     setComplete() {
@@ -109,7 +111,9 @@ export default class RenderInfo extends React.Component {
 
 const Stat = ({ label, value }) => (
     <div className={styles.info}>
-        <span className={styles.label}>{label}</span>
+        <span className={styles.label}>
+            {label}
+        </span>
         {value}
     </div>
 );
