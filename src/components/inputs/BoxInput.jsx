@@ -6,12 +6,6 @@ import styles from './BoxInput.less';
 class BoxInput extends PureComponent {
     static defaultProps = {
         name: 'box',
-        value: {
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
-        },
         minWidth: 1,
         minHeight: 1,
         maxWidth: 100,
@@ -22,20 +16,26 @@ class BoxInput extends PureComponent {
     constructor(props) {
         super(props);
 
+        const { x = 0, y = 0, width = 100, height = 100 } = props.value;
+
         this.state = {
             resizing: false,
-            value: props.value,
+            x,
+            y,
+            width,
+            height,
         };
+    }
+
+    static getDerivedStateFromProps({ value }, state) {
+        if (value !== state.value) {
+            return { ...value };
+        }
+        return null;
     }
 
     componentDidMount() {
         this.props.mouseUp(this.endResize, true);
-    }
-
-    componentWillReceiveProps({ value }) {
-        if (value !== undefined) {
-            this.setState({ value });
-        }
     }
 
     componentWillUnmount() {
@@ -48,7 +48,6 @@ class BoxInput extends PureComponent {
     onMouseMove = (e) => {
         const {
             resizing,
-            value,
             position,
             startX,
             startY,
@@ -73,7 +72,7 @@ class BoxInput extends PureComponent {
                 y,
                 width,
                 height,
-            } = value;
+            } = this.state;
 
             const dx = e.pageX - startX;
             const dy = e.pageY - startY;
@@ -99,11 +98,11 @@ class BoxInput extends PureComponent {
                     break;
             }
 
-            const newValue = { x, y, width, height };
+            const value = { x, y, width, height };
 
-            this.setState({ value: newValue });
+            this.setState({ ...value });
 
-            onChange(name, newValue);
+            onChange(name, value);
         }
     }
 
@@ -112,12 +111,10 @@ class BoxInput extends PureComponent {
         e.preventDefault();
 
         const {
-            value: {
-                x,
-                y,
-                width,
-                height,
-            },
+            x,
+            y,
+            width,
+            height,
         } = this.state;
 
         this.setState({
@@ -142,8 +139,11 @@ class BoxInput extends PureComponent {
 
     render() {
         const {
-            x, y, width, height,
-        } = this.state.value;
+            x,
+            y,
+            width,
+            height,
+        } = this.state;
 
         return (
             <div

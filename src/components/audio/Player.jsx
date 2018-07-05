@@ -19,7 +19,7 @@ import iconVolume3 from 'svg/icons/volume3.svg';
 import iconVolume4 from 'svg/icons/volume4.svg';
 import styles from './Player.less';
 
-const progressMax = 1000;
+const PROGRESS_MAX = 1000;
 
 export default class Player extends PureComponent {
     constructor(props, context) {
@@ -29,6 +29,8 @@ export default class Player extends PureComponent {
             playing: false,
             looping: false,
             progressPosition: 0,
+            progressBuffering: false,
+            seekPosition: 0,
             duration: 0,
             showWaveform: true,
             showOsc: false,
@@ -39,25 +41,19 @@ export default class Player extends PureComponent {
 
     componentDidMount() {
         const { player } = this.app;
+        const { progressBuffering } = this.state;
 
         player.on('load', () => {
             this.setState({ duration: player.getDuration() });
 
-            if (this.waveform) {
-                this.waveform.renderBars(this.app.player.getAudio());
-            }
+            this.waveform.loadAudio(this.app.player.getAudio());
         });
 
         player.on('tick', () => {
-            if (player.isPlaying() && !this.progressControl.isBuffering()) {
+            if (player.isPlaying() && !progressBuffering) {
                 const pos = player.getPosition();
 
                 this.setState({ progressPosition: pos });
-
-                if (this.waveform) {
-                    this.waveform.position = pos;
-                    this.waveform.draw(pos);
-                }
             }
         });
 
@@ -73,27 +69,14 @@ export default class Player extends PureComponent {
             this.setState({
                 playing: player.isPlaying(),
                 progressPosition: 0,
+                seekPosition: 0,
             });
-
-            if (this.waveform) {
-                this.waveform.position = 0;
-                this.waveform.seek = 0;
-                this.waveform.draw();
-            }
         });
 
         player.on('seek', () => {
             const pos = player.getPosition();
 
-            this.setState({
-                progressPosition: pos,
-            });
-
-            if (this.waveform) {
-                this.waveform.position = pos;
-                this.waveform.seek = pos;
-                this.waveform.draw();
-            }
+            this.setState({ progressPosition: pos, seekPosition: pos });
         });
 
         events.on('render', (data) => {
@@ -123,8 +106,12 @@ export default class Player extends PureComponent {
         });
     }
 
-    onWaveformClick = (val) => {
-        this.app.player.seek(val);
+    onWaveformClick = (progressPosition) => {
+        this.app.player.seek(progressPosition);
+    }
+
+    onWaveformSeek = (seekPosition) => {
+        this.setState({ seekPosition });
     }
 
     onWaveformButtonClick = () => {
@@ -139,12 +126,14 @@ export default class Player extends PureComponent {
         this.app.player.setVolume(value);
     }
 
-    onProgressChange = (value) => {
-        this.app.player.seek(value);
+    onProgressChange = (progressPosition) => {
+        this.app.player.seek(progressPosition);
+
+        this.setState({ progressPosition, seekPosition: 0, progressBuffering: false });
     }
 
-    onProgressInput = (value) => {
-        this.setState({ progressPosition: value });
+    onProgressUpdate = (seekPosition) => {
+        this.setState({ seekPosition, progressBuffering: true });
     }
 
     render() {
@@ -153,6 +142,7 @@ export default class Player extends PureComponent {
             playing,
             duration,
             progressPosition,
+            seekPosition,
             looping,
             showWaveform,
             showOsc,
@@ -162,8 +152,11 @@ export default class Player extends PureComponent {
             <div className={classNames({ [styles.hidden]: !visible })}>
                 <AudioWaveform
                     ref={e => (this.waveform = e)}
+                    progressPosition={progressPosition}
+                    seekPosition={seekPosition}
                     visible={showWaveform && duration}
                     onClick={this.onWaveformClick}
+                    onSeek={this.onWaveformSeek}
                 />
                 <div className={styles.player}>
                     <div className={styles.buttons}>
@@ -172,14 +165,13 @@ export default class Player extends PureComponent {
                     </div>
                     <VolumeControl onChange={this.onVolumeChange} />
                     <ProgressControl
-                        ref={e => (this.progressControl = e)}
-                        value={progressPosition * progressMax}
+                        value={progressPosition * PROGRESS_MAX}
                         onChange={this.onProgressChange}
-                        onInput={this.onProgressInput}
+                        onUpdate={this.onProgressUpdate}
                         readOnly={!duration}
                     />
                     <TimeInfo
-                        currentTime={duration * progressPosition}
+                        currentTime={duration * (seekPosition || progressPosition)}
                         totalTime={duration}
                     />
                     <ToggleButton
@@ -283,49 +275,20 @@ class VolumeControl extends PureComponent {
 }
 
 class ProgressControl extends PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            value: 0,
-        };
-    }
-
-    componentWillReceiveProps(props) {
-        if (!this.isBuffering()) {
-            this.setState({ value: props.value });
-        }
-    }
-
-    onChange = (name, val) => {
-        this.setState({ value: val }, () => {
-            this.props.onChange(val / progressMax);
-        });
-    }
-
-    onInput = (name, val) => {
-        this.setState({ value: val }, () => {
-            this.props.onInput(val / progressMax);
-        });
-    }
-
-    isBuffering() {
-        return this.progressInput.isBuffering();
-    }
-
     render() {
+        const { value, readOnly, onChange, onUpdate } = this.props;
+
         return (
             <div className={styles.progress}>
                 <RangeInput
-                    ref={e => (this.progressInput = e)}
                     name="progress"
                     min="0"
-                    max={progressMax}
-                    value={this.state.value}
+                    max={PROGRESS_MAX}
+                    value={value}
                     buffered
-                    onChange={this.onChange}
-                    onInput={this.onInput}
-                    readOnly={this.props.readOnly}
+                    onChange={(name, newValue) => onChange(newValue / PROGRESS_MAX)}
+                    onUpdate={(name, newValue) => onUpdate(newValue / PROGRESS_MAX)}
+                    readOnly={readOnly}
                 />
             </div>
         );

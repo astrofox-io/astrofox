@@ -39,9 +39,10 @@ export default class VideoSettings extends React.Component {
     constructor(props, context) {
         super(props);
 
+        this.app = context.app;
+
         const audio = this.app.player.getAudio();
 
-        this.app = context.app;
         this.state = {
             videoFile: '',
             audioFile: audio ? this.app.audioFile : '',
@@ -101,7 +102,7 @@ export default class VideoSettings extends React.Component {
                         this.setState({
                             audioFile: this.app.audioFile,
                             timeStart: 0,
-                            timeEnd: audio.getDuration(),
+                            timeEnd: Math.ceil(audio.getDuration()),
                         });
                     });
                 }

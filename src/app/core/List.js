@@ -2,9 +2,7 @@ import Immutable from 'immutable';
 
 export default class List {
     constructor(values) {
-        this.list = values ?
-            Immutable.List.of(values) :
-            new Immutable.List();
+        this.list = Immutable.List(values);
     }
 
     get length() {

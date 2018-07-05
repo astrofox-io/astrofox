@@ -12,19 +12,8 @@ export default class SelectInput extends Component {
         valueField: 'value',
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            value: props.value,
-            showItems: false,
-        };
-    }
-
-    componentWillReceiveProps({ value }) {
-        if (value !== undefined) {
-            this.setState({ value });
-        }
+    state = {
+        showItems: false,
     }
 
     onClick = (e) => {
@@ -42,16 +31,12 @@ export default class SelectInput extends Component {
         onChange(name, value);
     }
 
-    onBlur = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
+    onBlur = () => {
         this.setState({ showItems: false });
     }
 
     getDisplayText() {
-        const { items, displayField, valueField } = this.props;
-        const { value } = this.state;
+        const { value, items, displayField, valueField } = this.props;
         const parsedItems = this.parseItems(items);
         let text = '';
 

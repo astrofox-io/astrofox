@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import styles from './TextInput.less';
 
-export default class TextInput extends Component {
+export default class TextInput extends PureComponent {
     static defaultProps = {
         name: 'text',
         width: 140,
@@ -14,15 +14,18 @@ export default class TextInput extends Component {
         readOnly: false,
         disabled: false,
         onChange: () => {},
-        onCancel: () => {},
     }
 
-    constructor(props) {
-        super(props);
+    state = {
+        value: this.props.value,
+        initialValue: this.props.value,
+    }
 
-        this.state = {
-            value: props.value,
-        };
+    static getDerivedStateFromProps(props, state) {
+        if (props.value !== state.initialValue) {
+            return { value: props.value, initialValue: props.value };
+        }
+        return null;
     }
 
     componentDidMount() {
@@ -31,40 +34,39 @@ export default class TextInput extends Component {
         }
     }
 
-    componentWillReceiveProps({ value }) {
-        if (value !== undefined) {
-            this.setState({ value });
-        }
-    }
-
     onChange = (e) => {
-        const { value } = e.target;
         const { name, buffered, onChange } = this.props;
+        const { value } = e.currentTarget;
 
-        this.setState({ value });
-
-        if (!buffered) {
-            onChange(name, value);
-        }
-    }
-
-    onValueChange = () => {
-        const { name, onChange } = this.props;
-        const { value } = this.state;
-
-        onChange(name, value);
+        this.setState({ value }, () => {
+            if (!buffered) {
+                onChange(name, value);
+            }
+        });
     }
 
     onKeyUp = (e) => {
-        const { value, onCancel } = this.props;
+        const { name, buffered, onChange } = this.props;
+        const { value } = this.state;
 
-        if (e.keyCode === 13) {
-            this.onValueChange(e);
+        if (buffered) {
+            // Enter key
+            if (e.keyCode === 13) {
+                onChange(name, value);
+            }
+            // Esc key
+            else if (e.keyCode === 27) {
+                this.resetValue();
+            }
         }
-        else if (e.keyCode === 27) {
-            this.setState({ value });
+    }
 
-            onCancel();
+    onBlur = () => {
+        const { name, buffered, onChange } = this.props;
+        const { value } = this.state;
+
+        if (buffered) {
+            onChange(name, value);
         }
     }
 
@@ -85,7 +87,6 @@ export default class TextInput extends Component {
         return (
             <div className={classNames(className)}>
                 <input
-                    ref={e => (this.textInput = e)}
                     type="text"
                     className={classNames(styles.text, inputClassName)}
                     style={{ width }}
@@ -94,7 +95,7 @@ export default class TextInput extends Component {
                     spellCheck={spellCheck}
                     value={value}
                     onChange={this.onChange}
-                    onBlur={this.onValueChange}
+                    onBlur={this.onBlur}
                     onKeyUp={this.onKeyUp}
                     readOnly={readOnly || disabled}
                 />

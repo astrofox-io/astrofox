@@ -16,55 +16,63 @@ export default class RangeInput extends Component {
         readOnly: false,
         fillStyle: 'left',
         showTrack: true,
-        onChange: null,
-        onInput: null,
+        onChange: () => {},
+        onUpdate: () => {},
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            value: props.value,
-        };
-
-        this.buffering = false;
+    state = {
+        value: this.props.value,
+        initialValue: this.props.value,
+        updating: false,
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== undefined) {
-            this.setValue(nextProps.value, Object.assign({}, this.props, nextProps));
+    static getDerivedStateFromProps({ value, buffered }, { initialValue, updating }) {
+        if (!(buffered && updating) && value !== initialValue) {
+            return { value, initialValue: value };
         }
+        return null;
     }
 
     onChange = (e) => {
         const {
             name,
             buffered,
-            onInput,
             onChange,
+            onUpdate,
+            upperLimit,
+            lowerLimit,
         } = this.props;
 
-        const value = this.setValue(e.currentTarget.value, this.props);
+        let { value } = e.currentTarget;
 
-        if (buffered && this.buffering && onInput) {
-            onInput(name, value);
+        if (lowerLimit !== false && value < lowerLimit) {
+            value = lowerLimit;
         }
-        else if (onChange) {
-            onChange(name, value);
+        else if (upperLimit !== false && value > upperLimit) {
+            value = upperLimit;
         }
+
+        this.setState({ value }, () => {
+            if (buffered) {
+                onUpdate(name, value);
+            }
+            else {
+                onChange(name, value);
+            }
+        });
     }
 
-    onMouseDown = () => {
-        if (this.props.buffered) {
-            this.buffering = true;
-        }
-    }
+    onMouseDown = () => this.setState({ updating: true });
 
-    onMouseUp = (e) => {
-        if (this.props.buffered) {
-            this.buffering = false;
-            this.onChange(e);
-        }
+    onMouseUp = () => {
+        const { name, buffered, onChange } = this.props;
+        const { value } = this.state;
+
+        this.setState({ updating: false }, () => {
+            if (buffered) {
+                onChange(name, value);
+            }
+        });
     }
 
     getFillStyle() {
@@ -82,32 +90,6 @@ export default class RangeInput extends Component {
         }
     }
 
-    setValue(val, props) {
-        const value = this.parseValue(val, props);
-
-        this.setState({ value });
-
-        return value;
-    }
-
-    parseValue(val, props) {
-        let value = val;
-        const { lowerLimit, upperLimit } = props;
-
-        if (lowerLimit !== false && val < lowerLimit) {
-            value = lowerLimit;
-        }
-        else if (upperLimit !== false && val > upperLimit) {
-            value = upperLimit;
-        }
-
-        return Number(value);
-    }
-
-    isBuffering() {
-        return this.buffering;
-    }
-
     render() {
         const {
             name,
@@ -117,8 +99,8 @@ export default class RangeInput extends Component {
             readOnly,
             showTrack,
         } = this.props;
-        const { value } = this.state;
 
+        const { value } = this.state;
 
         return (
             <div className={styles.range}>

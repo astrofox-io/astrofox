@@ -3,7 +3,7 @@ import { Map } from 'immutable';
 import { logger } from 'core/Global';
 import { readFile, writeFile } from 'utils/io';
 
-const emptyLicense = new Map({});
+const emptyLicense = Map({});
 
 export default class LicenseManager {
     constructor(key) {
@@ -14,7 +14,7 @@ export default class LicenseManager {
     load(file) {
         return readFile(file)
             .then((data) => {
-                this.license = new Map(JSON.parse(crypto.publicDecrypt(this.key, data).toString()));
+                this.license = Map(JSON.parse(crypto.publicDecrypt(this.key, data).toString()));
 
                 logger.log('License found:', this.license.toObject());
             })
@@ -31,7 +31,7 @@ export default class LicenseManager {
     save(file, data) {
         return writeFile(file, data)
             .then(() => {
-                this.license = new Map(data);
+                this.license = Map(data);
 
                 logger.log('License file saved.');
             })

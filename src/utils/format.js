@@ -14,7 +14,7 @@ export function parseTime(val) {
     const hours = ~~(val / 3600) - (days * 24);
     const minutes = ~~(val / 60) - (days * 1440) - (hours * 60);
     const seconds = ~~val - (days * 86400) - (hours * 3600) - (minutes * 60);
-    const ms = Math.round((val - ~~val) * 1000);
+    const ms = (val - ~~val) * 1000;
 
     return {
         days, hours, minutes, seconds, ms,
@@ -45,13 +45,28 @@ export function formatShortTime(val, formats = ['m', 'ms']) {
     return t;
 }
 
+export function parseSeekTime(val) {
+    const matches = val.match(/^(0?\d+:)?(0?\d+):(\d{2})$/);
+
+    if (matches) {
+        const h = matches[1] !== undefined ? Number(matches[1].replace(':', '')) * 3600 : 0;
+        const m = Number(matches[2]) * 60;
+        const s = Number(matches[3]);
+
+        return h + m + s;
+    }
+
+    return null;
+}
+
 export function formatSeekTime(val) {
     const {
-        hours, minutes, seconds, ms,
+        hours, minutes, seconds,
     } = parseTime(val);
 
-    return `${(hours > 0 ? `${hours < 10 ? `0${hours}` : hours}:` : '') +
-        (minutes < 10 ? `0${minutes}` : minutes)}:${
-        seconds < 10 ? `0${seconds}` : seconds}.${
-        ms === 0 ? '000' : ms}`;
+    return [
+        `${hours}`.padStart(2, '0'),
+        `${minutes}`.padStart(2, '0'),
+        `${seconds}`.padStart(2, '0'),
+    ].join(':');
 }

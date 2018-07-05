@@ -13,64 +13,68 @@ export default class AudioWaveform extends PureComponent {
         shadowHeight: 30,
         bgColor: '#333333',
         bars: 213,
+        progressPosition: 0,
+        seekPosition: 0,
+        onClick: () => {},
+        onSeek: () => {},
     }
 
     componentDidMount() {
         this.drawContext = this.canvas.getContext('2d');
-        this.position = 0;
-        this.seek = 0;
 
         // Create canvases
-        this.baseCanvas = new CanvasAudio(Object.assign({}, this.props, {
+        this.baseCanvas = new CanvasAudio({
+            ...this.props,
             color: ['#555555', '#444444'],
             shadowColor: '#333333',
-        }));
+        });
 
-        this.progressCanvas = new CanvasAudio(Object.assign({}, this.props, {
+        this.progressCanvas = new CanvasAudio({
+            ...this.props,
             color: ['#B6AAFF', '#927FFF'],
             shadowColor: '#554B96',
-        }));
+        });
 
-        this.seekCanvas = new CanvasAudio(Object.assign({}, this.props, {
+        this.seekCanvas = new CanvasAudio({
+            ...this.props,
             color: ['#8880BF', '#6C5FBF'],
             shadowColor: '#403972',
-        }));
+        });
+    }
+
+    componentDidUpdate() {
+        this.draw();
     }
 
     onClick = (e) => {
         e.stopPropagation();
-        e.preventDefault();
 
-        if (this.props.onClick) {
-            const rect = e.currentTarget.getBoundingClientRect();
+        const rect = e.currentTarget.getBoundingClientRect();
 
-            this.props.onClick((e.clientX - rect.left) / rect.width);
-        }
+        this.props.onClick((e.clientX - rect.left) / rect.width);
     }
 
     onMouseMove = (e) => {
         e.stopPropagation();
-        e.preventDefault();
 
         const rect = e.currentTarget.getBoundingClientRect();
 
-        this.seek = (e.clientX - rect.left) / rect.width;
-        this.draw();
+        this.props.onSeek((e.clientX - rect.left) / rect.width);
     }
 
     onMouseOut = (e) => {
         e.stopPropagation();
-        e.preventDefault();
 
-        this.seek = 0;
-        this.draw();
+        this.props.onSeek(0);
     }
 
     draw = () => {
         const { width, height } = this.canvas;
+        const { progressPosition, seekPosition } = this.props;
+
         const context = this.drawContext;
-        const position = this.position * width;
-        const seek = this.seek * width;
+        const position = progressPosition * width;
+        const seek = seekPosition * width;
         const sx = (seek < position) ? seek : position;
         const dx = (seek < position) ? position - seek : seek - position;
 
@@ -99,12 +103,10 @@ export default class AudioWaveform extends PureComponent {
         }
     }
 
-    renderBars = (audio) => {
-        if (audio) {
-            this.baseCanvas.render(audio.buffer);
-            this.progressCanvas.render(audio.buffer);
-            this.seekCanvas.render(audio.buffer);
-        }
+    loadAudio = ({ buffer }) => {
+        this.baseCanvas.render(buffer);
+        this.progressCanvas.render(buffer);
+        this.seekCanvas.render(buffer);
     }
 
     render() {

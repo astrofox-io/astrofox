@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
+import TextInput from 'components/inputs/TextInput';
 import { clamp, roundTo } from 'utils/math.js';
 import styles from './NumberInput.less';
 
-export default class NumberInput extends Component {
+export default class NumberInput extends PureComponent {
     static defaultProps = {
         name: 'number',
         width: 40,
@@ -12,113 +13,67 @@ export default class NumberInput extends Component {
         max: false,
         step: false,
         readOnly: false,
-        hidden: false,
         onChange: () => {},
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            value: props.value,
-        };
+    state = {
+        key: 0,
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== undefined) {
-            this.setValue(nextProps.value, Object.assign({}, this.props, nextProps));
-        }
-    }
+    onChange = (name, value) => {
+        const {
+            onChange,
+            min,
+            max,
+            step,
+        } = this.props;
 
-    onChange = (e) => {
-        this.setState({ value: e.target.value });
-    }
+        const regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
-    onKeyUp = (e) => {
-        e.stopPropagation();
+        // If valid number, send new value to parent
+        if (regex.test(value)) {
+            let newValue = value;
 
-        // Enter key
-        if (e.keyCode === 13) {
-            this.checkValue();
-        }
-    }
-
-    onBlur = (e) => {
-        e.stopPropagation();
-
-        this.checkValue();
-    }
-
-    setValue(val, props) {
-        const value = this.parseValue(val, props);
-
-        this.setState({ value });
-
-        return value;
-    }
-
-    parseValue(val, props) {
-        let value = val;
-        const { min, max, step } = props;
-
-        // Clamp to min/max
-        if (min !== false && max !== false) {
-            value = clamp(value, min, max);
-        }
-
-        // Round value to nearest interval
-        if (step !== false) {
-            value = roundTo(value, step);
-        }
-
-        return Number(value);
-    }
-
-    checkValue() {
-        let { value: stateValue } = this.state;
-        const { name, value, onChange } = this.props;
-
-        if (value !== stateValue) {
-            const regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
-
-            // If valid number
-            if (regex.test(stateValue)) {
-                stateValue = this.setValue(stateValue, this.props);
-
-                // Send new value to parent
-                onChange(name, stateValue);
+            // Clamp to min/max
+            if (min !== false && max !== false) {
+                newValue = clamp(value, min, max);
             }
-            // Reset to old value
-            else {
-                this.setValue(value, this.props);
+
+            // Round value to nearest interval
+            if (step !== false) {
+                newValue = roundTo(value, step);
             }
+
+            onChange(name, newValue);
+        }
+        // Reset to old value
+        else {
+            this.setState(({ key }) => ({ key: key + 1 }));
         }
     }
 
     render() {
         const {
             name,
+            value,
             width,
             className,
             readOnly,
         } = this.props;
 
-        const { value } = this.state;
+        const { key } = this.state;
 
         return (
-            <div>
-                <input
-                    type="text"
-                    className={classNames(styles.input, className)}
-                    style={{ width }}
-                    name={name}
-                    value={value}
-                    onChange={this.onChange}
-                    onBlur={this.onBlur}
-                    onKeyUp={this.onKeyUp}
-                    readOnly={readOnly}
-                />
-            </div>
+            <TextInput
+                key={key}
+                name={name}
+                value={value}
+                className={classNames(styles.input, className)}
+                width={width}
+                onChange={this.onChange}
+                readOnly={readOnly}
+                buffered
+            />
         );
     }
 }

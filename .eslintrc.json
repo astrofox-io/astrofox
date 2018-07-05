@@ -115,10 +115,6 @@
     ],
     "react/destructuring-assignment": 0,
     "react/forbid-prop-types": 0,
-    "react/no-array-index-key": 0,
-    "react/no-multi-comp": 0,
-    "react/prop-types": 0,
-    "react/require-default-props": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-indent": [
       "error",
@@ -127,6 +123,22 @@
     "react/jsx-indent-props": [
       "error",
       4
+    ],
+    "react/no-array-index-key": 0,
+    "react/no-multi-comp": 0,
+    "react/prop-types": 0,
+    "react/require-default-props": 0,
+    "react/sort-comp": [
+      1,
+      {
+        "order": [
+          "static-methods",
+          "lifecycle",
+          "/^on.+$/",
+          "everything-else",
+          "render"
+        ]
+      }
     ]
   }
 }

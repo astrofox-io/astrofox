@@ -18,7 +18,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
         stroke: true,
         color: '#FFFFFF',
         fill: true,
-        fillColor: ['#8800FF', '#8888FF'],
+        fillColor: ['#C0C0C0', '#000000'],
         taper: true,
         rotation: 0,
         opacity: 1.0,
