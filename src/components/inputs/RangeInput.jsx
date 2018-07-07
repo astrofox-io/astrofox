@@ -13,7 +13,7 @@ export default class RangeInput extends Component {
         lowerLimit: false,
         upperLimit: false,
         buffered: false,
-        readOnly: false,
+        disabled: false,
         fillStyle: 'left',
         showTrack: true,
         onChange: () => {},
@@ -43,7 +43,7 @@ export default class RangeInput extends Component {
             lowerLimit,
         } = this.props;
 
-        let { value } = e.currentTarget;
+        let value = +e.currentTarget.value;
 
         if (lowerLimit !== false && value < lowerLimit) {
             value = lowerLimit;
@@ -96,7 +96,7 @@ export default class RangeInput extends Component {
             min,
             max,
             step,
-            readOnly,
+            disabled,
             showTrack,
         } = this.props;
 
@@ -124,7 +124,7 @@ export default class RangeInput extends Component {
                     onChange={this.onChange}
                     onMouseDown={this.onMouseDown}
                     onMouseUp={this.onMouseUp}
-                    readOnly={readOnly}
+                    disabled={disabled}
                 />
             </div>
         );

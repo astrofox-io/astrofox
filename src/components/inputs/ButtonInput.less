@@ -2,9 +2,8 @@
 
 .button {
     color: @text-color1;
-    padding: 0 5px;
-    line-height: 20px;
-    min-width: 20px;
+    min-height: 24px;
+    min-width: 24px;
     margin-right: 5px;
     text-align: center;
     border: 1px solid @border-color;
@@ -12,6 +11,7 @@
     border-radius: @input-radius;
     display: inline-block;
     cursor: default;
+    flex-shrink: 0;
 
     &:hover {
         background-color: @color1;
@@ -23,6 +23,7 @@
     color: @text-color1;
     width: 12px;
     height: 12px;
+    line-height: 24px;
 }
 
 .active {

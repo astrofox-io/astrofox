@@ -8,30 +8,19 @@ class BoxInput extends PureComponent {
         name: 'box',
         minWidth: 1,
         minHeight: 1,
+        value: {
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 100,
+        },
         maxWidth: 100,
         maxHeight: 100,
         onChange: () => {},
     }
 
-    constructor(props) {
-        super(props);
-
-        const { x = 0, y = 0, width = 100, height = 100 } = props.value;
-
-        this.state = {
-            resizing: false,
-            x,
-            y,
-            width,
-            height,
-        };
-    }
-
-    static getDerivedStateFromProps({ value }, state) {
-        if (value !== state.value) {
-            return { ...value };
-        }
-        return null;
+    state = {
+        resizing: false,
     }
 
     componentDidMount() {
@@ -64,6 +53,7 @@ class BoxInput extends PureComponent {
                 maxWidth,
                 maxHeight,
                 name,
+                value,
                 onChange,
             } = this.props;
 
@@ -72,7 +62,7 @@ class BoxInput extends PureComponent {
                 y,
                 width,
                 height,
-            } = this.state;
+            } = value;
 
             const dx = e.pageX - startX;
             const dy = e.pageY - startY;
@@ -98,24 +88,22 @@ class BoxInput extends PureComponent {
                     break;
             }
 
-            const value = { x, y, width, height };
-
-            this.setState({ ...value });
-
-            onChange(name, value);
+            onChange(name, { x, y, width, height });
         }
     }
 
     startResize = pos => (e) => {
         e.stopPropagation();
-        e.preventDefault();
 
         const {
-            x,
-            y,
-            width,
-            height,
-        } = this.state;
+            value: {
+                x,
+                y,
+                width,
+                height,
+            },
+            mouseMove,
+        } = this.props;
 
         this.setState({
             resizing: true,
@@ -128,7 +116,7 @@ class BoxInput extends PureComponent {
             startTop: y,
         });
 
-        this.props.mouseMove(this.onMouseMove, true);
+        mouseMove(this.onMouseMove, true);
     }
 
     endResize = () => {
@@ -143,7 +131,7 @@ class BoxInput extends PureComponent {
             y,
             width,
             height,
-        } = this.state;
+        } = this.props.value;
 
         return (
             <div

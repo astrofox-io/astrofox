@@ -46,10 +46,11 @@ export default class CanvasDisplay extends Display {
             context.restore();
         }
         else {
-            const cx = halfSceneWidth - (dx - x);
-            const cy = halfSceneHeight - (dy + y);
-
-            context.drawImage(canvas, cx, cy);
+            context.drawImage(
+                canvas,
+                halfSceneWidth + x - dx,
+                halfSceneHeight - y - dy,
+            );
         }
 
         context.globalAlpha = 1.0;

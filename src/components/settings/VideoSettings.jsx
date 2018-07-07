@@ -130,7 +130,6 @@ export default class VideoSettings extends React.Component {
                 <Settings>
                     <Row label="Save Video To">
                         <TextInput
-                            className="flex"
                             inputClassName="input-normal-text"
                             name="videoFile"
                             width="100%"
@@ -146,7 +145,6 @@ export default class VideoSettings extends React.Component {
                     </Row>
                     <Row label="Audio File">
                         <TextInput
-                            className="flex"
                             inputClassName="input-normal-text"
                             name="audioFile"
                             width="100%"

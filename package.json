@@ -73,7 +73,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^7.1.5",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -83,9 +83,9 @@
     "babel-preset-minify": "^0.4.1",
     "babel-preset-react": "^6.24.1",
     "cross-env": "^5.2.0",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
     "electron": "^2.0.4",
-    "electron-builder": "^20.19.1",
+    "electron-builder": "^20.19.2",
     "electron-updater": "^2.23.3",
     "eslint": "^5.0.1",
     "eslint-config-airbnb": "^17.0.0",
@@ -94,13 +94,13 @@
     "eslint-plugin-react": "^7.10.0",
     "file-loader": "^1.1.11",
     "glsl-man": "^1.1.14",
-    "less": "^3.0.4",
+    "less": "^3.5.3",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.4.1",
     "style-loader": "^0.21.0",
     "svg-sprite-loader": "^3.8.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.15.0",
+    "webpack": "^4.15.1",
     "webpack-cli": "^3.0.6"
   }
 }

@@ -30,7 +30,7 @@ export default class TextInput extends PureComponent {
 
     componentDidMount() {
         if (this.props.autoSelect) {
-            this.textInput.select();
+            this.input.select();
         }
     }
 
@@ -79,27 +79,25 @@ export default class TextInput extends PureComponent {
             readOnly,
             disabled,
             className,
-            inputClassName,
         } = this.props;
 
         const { value } = this.state;
 
         return (
-            <div className={classNames(className)}>
-                <input
-                    type="text"
-                    className={classNames(styles.text, inputClassName)}
-                    style={{ width }}
-                    name={name}
-                    size={size}
-                    spellCheck={spellCheck}
-                    value={value}
-                    onChange={this.onChange}
-                    onBlur={this.onBlur}
-                    onKeyUp={this.onKeyUp}
-                    readOnly={readOnly || disabled}
-                />
-            </div>
+            <input
+                ref={ref => (this.input = ref)}
+                type="text"
+                className={classNames(styles.text, className)}
+                style={{ width }}
+                name={name}
+                size={size}
+                spellCheck={spellCheck}
+                value={value}
+                onChange={this.onChange}
+                onBlur={this.onBlur}
+                onKeyUp={this.onKeyUp}
+                readOnly={readOnly || disabled}
+            />
         );
     }
 }

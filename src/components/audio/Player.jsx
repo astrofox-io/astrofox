@@ -168,7 +168,7 @@ export default class Player extends PureComponent {
                         value={progressPosition * PROGRESS_MAX}
                         onChange={this.onProgressChange}
                         onUpdate={this.onProgressUpdate}
-                        readOnly={!duration}
+                        disabled={!duration}
                     />
                     <TimeInfo
                         currentTime={duration * (seekPosition || progressPosition)}
@@ -276,19 +276,19 @@ class VolumeControl extends PureComponent {
 
 class ProgressControl extends PureComponent {
     render() {
-        const { value, readOnly, onChange, onUpdate } = this.props;
+        const { value, disabled, onChange, onUpdate } = this.props;
 
         return (
             <div className={styles.progress}>
                 <RangeInput
                     name="progress"
-                    min="0"
+                    min={0}
                     max={PROGRESS_MAX}
                     value={value}
                     buffered
                     onChange={(name, newValue) => onChange(newValue / PROGRESS_MAX)}
                     onUpdate={(name, newValue) => onUpdate(newValue / PROGRESS_MAX)}
-                    readOnly={readOnly}
+                    disabled={disabled}
                 />
             </div>
         );

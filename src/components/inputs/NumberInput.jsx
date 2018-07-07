@@ -32,16 +32,16 @@ export default class NumberInput extends PureComponent {
 
         // If valid number, send new value to parent
         if (regex.test(value)) {
-            let newValue = value;
+            let newValue = +value;
 
             // Clamp to min/max
             if (min !== false && max !== false) {
-                newValue = clamp(value, min, max);
+                newValue = clamp(newValue, min, max);
             }
 
             // Round value to nearest interval
             if (step !== false) {
-                newValue = roundTo(value, step);
+                newValue = roundTo(newValue, step);
             }
 
             onChange(name, newValue);

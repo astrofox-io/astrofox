@@ -27,8 +27,8 @@ export default class CanvasText extends Component {
         } = this.options;
 
         return [
-            (italic) ? 'italic' : 'normal',
-            (bold) ? 'bold' : 'normal',
+            italic ? 'italic' : 'normal',
+            bold ? 'bold' : 'normal',
             `${size}px`,
             font,
         ].join(' ');
@@ -67,11 +67,11 @@ export default class CanvasText extends Component {
 
         // Debugging
         /*
-         context.beginPath();
-         context.rect(0, 0, canvas.width, canvas.height);
-         context.lineWidth = 2;
-         context.strokeStyle = 'red';
-         context.stroke();
-         */
+        context.beginPath();
+        context.rect(0, 0, canvas.width, canvas.height);
+        context.lineWidth = 2;
+        context.strokeStyle = 'red';
+        context.stroke();
+        */
     }
 }
