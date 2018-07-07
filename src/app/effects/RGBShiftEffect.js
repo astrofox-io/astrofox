@@ -8,7 +8,7 @@ export default class RGBShiftEffect extends Effect {
 
     static className = 'RGBShiftEffect';
 
-    static defaults = {
+    static defaultOptions = {
         offset: 5,
         angle: 45,
     }

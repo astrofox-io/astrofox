@@ -18,7 +18,7 @@ export default class AppSettings extends PureComponent {
         super(props);
 
         this.app = context.app;
-        this.state = Object.assign({}, this.app.config);
+        this.state = { ...this.app.config };
     }
 
     onChange = (name, value) => {

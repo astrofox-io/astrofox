@@ -10,7 +10,7 @@ export default function DisplayControl(ControlComponent) {
 
         onChange = (name, value, data) => {
             const { display } = this.props;
-            const obj = Object.assign({ [name]: value }, data);
+            const obj = { [name]: value, ...data };
 
             this.setState(obj);
 

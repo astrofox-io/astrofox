@@ -7,7 +7,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
 
     static className = 'SoundwaveDisplay';
 
-    static defaults = {
+    static defaultOptions = {
         color: '#FFFFFF',
         width: 854,
         height: 240,

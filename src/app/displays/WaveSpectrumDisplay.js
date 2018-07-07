@@ -10,7 +10,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
 
     static className = 'WaveSpectrumDisplay';
 
-    static defaults = {
+    static defaultOptions = {
         width: 770,
         height: 240,
         x: 0,

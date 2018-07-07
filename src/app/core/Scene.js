@@ -14,6 +14,21 @@ const FAR = 10000;
 const CAMERA_POS_Z = 250;
 
 export default class Scene extends Display {
+    static label = 'Scene';
+
+    static className = 'Scene';
+
+    static defaultOptions = {
+        blendMode: 'Normal',
+        opacity: 1.0,
+        lightIntensity: 1.0,
+        lightDistance: 500,
+        cameraZoom: 250,
+        mask: false,
+        inverse: false,
+        stencil: false,
+    }
+
     constructor(options) {
         super(Scene, options);
 
@@ -313,18 +328,3 @@ export default class Scene extends Display {
         return composer.readBuffer;
     }
 }
-
-Scene.label = 'Scene';
-
-Scene.className = 'Scene';
-
-Scene.defaults = {
-    blendMode: 'Normal',
-    opacity: 1.0,
-    lightIntensity: 1.0,
-    lightDistance: 500,
-    cameraZoom: 250,
-    mask: false,
-    inverse: false,
-    stencil: false,
-};

@@ -5,7 +5,7 @@ import audioConfig from 'config/audio.json';
 const { fftSize, sampleRate } = audioConfig;
 
 export default class SpectrumParser extends Component {
-    static defaults = {
+    static defaultOptions = {
         fftSize,
         sampleRate,
         smoothingTimeConstant: 0.5,
@@ -18,7 +18,7 @@ export default class SpectrumParser extends Component {
     }
 
     constructor(options) {
-        super(Object.assign({}, SpectrumParser.defaults, options));
+        super({ ...SpectrumParser.defaultOptions, ...options });
 
         this.setBinRange();
     }

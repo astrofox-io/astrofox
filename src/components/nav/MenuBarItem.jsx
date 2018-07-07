@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import Menu from 'components/nav/Menu';
 import styles from './Menu.less';
 
-export default class MenuBarItem extends React.Component {
+export default class MenuBarItem extends Component {
     onClick = (e) => {
         e.stopPropagation();
         e.preventDefault();

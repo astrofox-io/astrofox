@@ -3,9 +3,16 @@ import audioConfig from 'config/audio.json';
 const { fftSize, sampleRate } = audioConfig;
 
 export default class SpectrumAnalyzer {
+    static defaultOptions = {
+        fftSize,
+        minDecibels: -100,
+        maxDecibels: 0,
+        smoothingTimeConstant: 0,
+    }
+
     constructor(context, options) {
         this.audioContext = context;
-        this.analyzer = Object.assign(context.createAnalyser(), SpectrumAnalyzer.defaults, options);
+        this.analyzer = Object.assign(context.createAnalyser(), SpectrumAnalyzer.defaultOptions, options);
         this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
         this.td = new Float32Array(this.analyzer.fftSize);
     }
@@ -42,10 +49,3 @@ export default class SpectrumAnalyzer {
         return sampleRate / 2;
     }
 }
-
-SpectrumAnalyzer.defaults = {
-    fftSize,
-    minDecibels: -100,
-    maxDecibels: 0,
-    smoothingTimeConstant: 0,
-};

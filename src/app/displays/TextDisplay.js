@@ -6,7 +6,7 @@ export default class TextDisplay extends CanvasDisplay {
 
     static className = 'TextDisplay';
 
-    static defaults = {
+    static defaultOptions = {
         text: '',
         size: 40,
         font: 'Roboto',
@@ -32,7 +32,7 @@ export default class TextDisplay extends CanvasDisplay {
             if (this.text.update(options)) {
                 let render = false;
 
-                Object.keys(CanvasText.defaults).forEach((prop) => {
+                Object.keys(CanvasText.defaultOptions).forEach((prop) => {
                     if (options[prop] !== undefined) {
                         render = true;
                     }

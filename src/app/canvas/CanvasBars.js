@@ -4,7 +4,7 @@ import { setColor } from 'utils/canvas';
 import { clamp } from 'utils/math';
 
 export default class CanvasBars extends Component {
-    static defaults = {
+    static defaultOptions = {
         width: 300,
         height: 100,
         minHeight: 0,
@@ -16,7 +16,7 @@ export default class CanvasBars extends Component {
     }
 
     constructor(options, canvas) {
-        super(Object.assign({}, CanvasBars.defaults, options));
+        super({ ...CanvasBars.defaultOptions, ...options });
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;

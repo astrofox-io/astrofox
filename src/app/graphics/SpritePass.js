@@ -7,7 +7,7 @@ import {
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class SpritePass extends ComposerPass {
-    static defaults = {
+    static defaultOptions = {
         opacity: 1.0,
         transparent: true,
         needsSwap: false,
@@ -18,7 +18,7 @@ export default class SpritePass extends ComposerPass {
     }
 
     constructor(texture, options) {
-        super(Object.assign({}, SpritePass.defaults, options));
+        super({ ...pritePass.defaultOptions, ...options });
 
         const {
             height,

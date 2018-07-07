@@ -3,7 +3,7 @@ import Component from 'core/Component';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasBars extends Component {
-    static defaults = {
+    static defaultOptions = {
         width: 100,
         height: 50,
         color: '#FFFFFF',
@@ -11,7 +11,7 @@ export default class CanvasBars extends Component {
     }
 
     constructor(options, canvas) {
-        super(Object.assign({}, CanvasBars.defaults, options));
+        super({ ...CanvasBars.defaultOptions, ...options });
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;

@@ -13,7 +13,7 @@ export default class PixelateEffect extends Effect {
 
     static className = 'PixelateEffect';
 
-    static defaults = {
+    static defaultOptions = {
         type: 'Square',
         size: 10,
     }

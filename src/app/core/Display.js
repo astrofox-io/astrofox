@@ -11,14 +11,12 @@ export default class Display extends Component {
 
         displayCount[type.className] += 1;
 
-        super(Object.assign(
-            {
-                displayName: `${type.label} ${displayCount[type.className]}`,
-                enabled: true,
-            },
-            type.defaults,
-            options,
-        ));
+        super({
+            displayName: `${type.label} ${displayCount[type.className]}`,
+            enabled: true,
+            ...type.defaultOptions,
+            ...options,
+        });
 
         this.name = type.className;
         this.initialized = !!options;

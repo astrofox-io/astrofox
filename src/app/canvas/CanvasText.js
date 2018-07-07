@@ -2,7 +2,7 @@
 import Component from 'core/Component';
 
 export default class CanvasText extends Component {
-    static defaults = {
+    static defaultOptions = {
         text: '',
         size: 40,
         font: 'Roboto',
@@ -12,7 +12,7 @@ export default class CanvasText extends Component {
     }
 
     constructor(options, canvas) {
-        super(Object.assign({}, CanvasText.defaults, options));
+        super({ ...CanvasText.defaultOptions, ...options });
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;

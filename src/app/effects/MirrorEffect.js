@@ -7,7 +7,7 @@ export default class MirrorEffect extends Effect {
 
     static className = 'MirrorEffect';
 
-    static defaults = {
+    static defaultOptions = {
         side: 0,
     }
 

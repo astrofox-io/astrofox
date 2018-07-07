@@ -3,6 +3,10 @@ import Component from 'core/Component';
 import CanvasBars from 'canvas/CanvasBars';
 
 export default class CanvasAudio extends Component {
+    static defaultOptions = {
+        bars: 100,
+    }
+
     constructor(options, canvas) {
         super(options);
 
@@ -53,7 +57,3 @@ export default class CanvasAudio extends Component {
         this.bars.render(this.parseAudioBuffer(data));
     }
 }
-
-CanvasAudio.defaults = {
-    bars: 100,
-};

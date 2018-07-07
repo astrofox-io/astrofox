@@ -10,7 +10,7 @@ export default class WatermarkDisplay extends CanvasDisplay {
 
     static className = 'WatermarkDisplay';
 
-    static defaults = {
+    static defaultOptions = {
         src: WATERMARK,
         x: 0,
         y: 0,
@@ -35,7 +35,7 @@ export default class WatermarkDisplay extends CanvasDisplay {
             if (this.image.update(options)) {
                 let render = false;
 
-                Object.keys(CanvasImage.defaults).forEach((prop) => {
+                Object.keys(CanvasImage.defaultOptions).forEach((prop) => {
                     if (options[prop] !== undefined) {
                         render = true;
                     }

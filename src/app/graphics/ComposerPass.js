@@ -2,7 +2,7 @@
 import Component from 'core/Component';
 
 export default class ComposerPass extends Component {
-    static defaults = {
+    static defaultOptions = {
         enabled: true,
         forceClear: false,
         needsSwap: false,
@@ -15,7 +15,7 @@ export default class ComposerPass extends Component {
     }
 
     constructor(options) {
-        super(Object.assign({}, ComposerPass.defaults, options));
+        super({ ...ComposerPass.defaultOptions, ...options });
     }
 
     setSize(width, height) {

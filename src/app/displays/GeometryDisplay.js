@@ -48,7 +48,7 @@ export default class GeometryDisplay extends Display {
 
     static className = 'GeometryDisplay';
 
-    static defaults = {
+    static defaultOptions = {
         shape: 'Box',
         material: 'Standard',
         shading: 'Smooth',

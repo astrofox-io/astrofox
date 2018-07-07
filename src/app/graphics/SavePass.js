@@ -2,14 +2,14 @@ import ShaderPass from 'graphics/ShaderPass';
 import CopyShader from 'shaders/CopyShader';
 
 export default class SavePass extends ShaderPass {
-    static defaults = {
+    static defaultOptions = {
         transparent: true,
         needsSwap: false,
         forceClear: true,
     }
 
     constructor(buffer, options) {
-        super(CopyShader, Object.assign({}, SavePass.defaults, options));
+        super(CopyShader, { ...SavePass.defaultOptions, ...options });
 
         this.buffer = buffer;
     }

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';
 import styles from './AppUpdates.less';
 
-export default class AppUpdates extends React.Component {
+export default class AppUpdates extends Component {
     static contextTypes = {
         app: PropTypes.object,
     }

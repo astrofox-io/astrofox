@@ -13,7 +13,7 @@ export default class BloomEffect extends Effect {
 
     static className = 'BloomEffect';
 
-    static defaults = {
+    static defaultOptions = {
         blendMode: 'Screen',
         amount: 0.1,
         threshold: 1.0,

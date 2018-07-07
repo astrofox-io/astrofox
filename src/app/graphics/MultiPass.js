@@ -1,14 +1,14 @@
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class MultiPass extends ComposerPass {
-    static defaults = {
+    static defaultOptions = {
         needsSwap: true,
         forceClear: true,
         clearDepth: true,
     }
 
     constructor(passes, options) {
-        super(Object.assign({}, MultiPass.defaults, options));
+        super({ ...MultiPass.defaultOptions, ...options });
 
         this.passes = passes;
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import RenderInfo from 'components/stage/RenderInfo';
@@ -18,7 +18,7 @@ const transitionTimeout = {
     exit: 500,
 };
 
-export default class Stage extends React.Component {
+export default class Stage extends Component {
     static contextTypes = {
         app: PropTypes.object,
     }

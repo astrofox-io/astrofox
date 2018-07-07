@@ -4,8 +4,19 @@ import BezierSpline from 'drawing/BezierSpline';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Component {
+    static defaultOptions = {
+        color: '#FFFFFF',
+        width: 400,
+        height: 200,
+        lineWidth: 1.0,
+        stroke: true,
+        fill: false,
+        fillColor: null,
+        taper: false,
+    }
+
     constructor(options, canvas) {
-        super(Object.assign({}, CanvasWave.defaults, options));
+        super({ ...CanvasWave.defaultOptions, ...options });
 
         this.canvas = canvas || document.createElement('canvas');
         this.canvas.width = this.options.width;
@@ -110,14 +121,3 @@ export default class CanvasWave extends Component {
         }
     }
 }
-
-CanvasWave.defaults = {
-    color: '#FFFFFF',
-    width: 400,
-    height: 200,
-    lineWidth: 1.0,
-    stroke: true,
-    fill: false,
-    fillColor: null,
-    taper: false,
-};

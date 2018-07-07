@@ -1,5 +1,4 @@
 import path from 'path';
-
 import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
@@ -9,21 +8,21 @@ import { removeFile } from 'utils/io';
 import { TEMP_PATH, FFMPEG_PATH } from 'core/Environment';
 import { uniqueId } from 'utils/crypto';
 
-const defaults = {
-    fps: 30,
-    timeStart: 0,
-    timeEnd: 0,
-    format: 'mp4',
-    resolution: 480,
-};
-
 export default class VideoRenderer extends EventEmitter {
+    static defaultOptions = {
+        fps: 30,
+        timeStart: 0,
+        timeEnd: 0,
+        format: 'mp4',
+        resolution: 480,
+    }
+
     constructor(videoFile, audioFile, options) {
         super();
 
         this.video = videoFile;
         this.audio = audioFile;
-        this.options = Object.assign({}, defaults, options);
+        this.options = { ...VideoRenderer.defaultOptions, ...options };
 
         this.started = false;
         this.completed = false;

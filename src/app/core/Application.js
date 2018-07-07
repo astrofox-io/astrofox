@@ -35,7 +35,7 @@ export default class Application extends EventEmitter {
         this.rendering = false;
 
         // Default configuration
-        this.config = Object.assign({}, appConfig);
+        this.config = { ...appConfig };
 
         // Frame render data
         this.frameData = {
@@ -271,7 +271,7 @@ export default class Application extends EventEmitter {
 
                     logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
-                    this.config = Object.assign({}, appConfig, config);
+                    this.config = { ...appConfig, ...config };
 
                     this.emit('config-updated');
                 });

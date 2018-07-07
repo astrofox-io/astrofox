@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Window from 'core/Window';
 import Button from 'components/interface/Button';
@@ -26,7 +26,7 @@ const resolutionOptions = [
     1080,
 ];
 
-export default class VideoSettings extends React.Component {
+export default class VideoSettings extends Component {
     static contextTypes = {
         app: PropTypes.object,
     }
@@ -58,14 +58,14 @@ export default class VideoSettings extends React.Component {
         this.app.player.stop();
     }
 
-    onChange = (name, val) => {
+    onChange = (name, value) => {
         const { videoFile } = this.state;
         const obj = {};
 
-        obj[name] = val;
+        obj[name] = value;
 
         if (name === 'format' && videoFile) {
-            obj.videoFile = replaceExt(videoFile, `.${val}`);
+            obj.videoFile = replaceExt(videoFile, `.${value}`);
         }
 
         this.setState(obj);

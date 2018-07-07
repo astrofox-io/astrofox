@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { TabPanel, Tab } from 'components/layout/TabPanel';
 import * as displayLibrary from 'lib/displays';
 import * as effectsLibrary from 'lib/effects';
 import styles from './ControlPicker.less';
 
-export default class ControlPicker extends React.Component {
+export default class ControlPicker extends Component {
     onClick = Item => () => {
         const { onControlPicked, onClose } = this.props;
 

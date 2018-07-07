@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Display from 'core/Display';
 import CanvasDisplay from 'core/CanvasDisplay';
 import Scene from 'core/Scene';
 import Effect from 'core/Effect';
 import { events } from 'core/Global';
+import { ButtonInput, ButtonGroup } from 'lib/inputs';
 import Layer from 'components/panels/Layer';
-import ButtonInput from 'components/inputs/ButtonInput';
-import ButtonGroup from 'components/inputs/ButtonGroup';
 import iconScene from 'svg/icons/picture.svg';
 import iconDisplay from 'svg/icons/cube.svg';
 import iconEffect from 'svg/icons/light-up.svg';
@@ -18,7 +17,7 @@ import iconCanvasDisplay from 'svg/icons/document-landscape.svg';
 import styles from './LayersPanel.less';
 import panelStyles from '../layout/Panel.less';
 
-export default class LayersPanel extends React.PureComponent {
+export default class LayersPanel extends PureComponent {
     static contextTypes = {
         app: PropTypes.object,
     }

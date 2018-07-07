@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
 import { formatTime } from 'utils/format';
 import styles from './RenderInfo.less';
 
-export default class RenderInfo extends React.Component {
+export default class RenderInfo extends Component {
     static contextTypes = {
         app: PropTypes.object,
     }

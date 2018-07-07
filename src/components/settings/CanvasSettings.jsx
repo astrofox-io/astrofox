@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import {
+    SettingsPanel,
+    Settings,
+    Row,
+    ButtonRow,
+} from 'components/layout/SettingsPanel';
 import {
     ColorInput,
     NumberInput,
 } from 'lib/inputs';
 import styles from './CanvasSettings.less';
 
-export default class CanvasSettings extends React.Component {
+export default class CanvasSettings extends Component {
     static contextTypes = {
         app: PropTypes.object,
     }
@@ -24,12 +29,8 @@ export default class CanvasSettings extends React.Component {
         this.state = this.app.stage.options;
     }
 
-    onChange = (name, val) => {
-        const obj = {};
-
-        obj[name] = val;
-
-        this.setState(obj);
+    onChange = (name, value) => {
+        this.setState({ [name]: value });
     }
 
     onCancel = () => {

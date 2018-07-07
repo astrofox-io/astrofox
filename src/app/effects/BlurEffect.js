@@ -21,7 +21,7 @@ export default class BlurEffect extends Effect {
 
     static className = 'BlurEffect';
 
-    static defaults = {
+    static defaultOptions = {
         type: 'Gaussian',
         amount: 0.1,
         x: 0,

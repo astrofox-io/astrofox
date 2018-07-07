@@ -5,7 +5,7 @@ import * as controlLibrary from 'lib/controls';
 import SceneControl from 'components/controls/SceneControl';
 import EmptyControl from 'components/controls/EmptyControl';
 
-const displays = Object.assign({}, displayLibrary, effectsLibrary);
+const displays = { ...displayLibrary, ...effectsLibrary };
 
 export function getControlComponent(obj) {
     if (obj.constructor.className === 'Scene') {

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import MenuBarItem from 'components/nav/MenuBarItem';
 import styles from './Menu.less';
 
-export default class MenuBar extends React.Component {
+export default class MenuBar extends Component {
     static defaultProps = {
         items: [],
         activeIndex: -1,

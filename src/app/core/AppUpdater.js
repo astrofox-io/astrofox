@@ -1,5 +1,4 @@
 import { ipcRenderer } from 'electron';
-
 import EventEmitter from 'core/EventEmitter';
 import { logger } from 'core/Global';
 

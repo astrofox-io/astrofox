@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Window from 'core/Window';
 import { events } from 'core/Global';
@@ -23,7 +23,7 @@ import audioExtensions from 'config/audioExtensions.json';
 import fontOptions from 'config/fonts.json';
 import styles from './App.less';
 
-export default class App extends React.Component {
+export default class App extends Component {
     static childContextTypes = {
         app: PropTypes.object,
     }

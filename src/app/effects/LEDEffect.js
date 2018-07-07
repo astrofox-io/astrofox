@@ -7,7 +7,7 @@ export default class LEDEffect extends Effect {
 
     static className = 'LEDEffect';
 
-    static defaults = {
+    static defaultOptions = {
         spacing: 10,
         size: 4,
         blur: 4,

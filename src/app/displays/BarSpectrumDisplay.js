@@ -10,7 +10,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
 
     static className = 'BarSpectrumDisplay';
 
-    static defaults = {
+    static defaultOptions = {
         width: 770,
         height: 240,
         x: 0,
@@ -38,7 +38,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
         super(BarSpectrumDisplay, options);
 
         this.bars = new CanvasBars(this.options, this.canvas);
-        this.parser = new SpectrumParser(Object.assign(this.options, { fftSize, sampleRate }));
+        this.parser = new SpectrumParser({ ...this.options, fftSize, sampleRate });
     }
 
     update(options) {

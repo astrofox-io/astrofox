@@ -13,6 +13,17 @@ import * as displayLibrary from 'lib/displays';
 import * as effectsLibrary from 'lib/effects';
 
 export default class Stage extends Display {
+    static label = 'Stage';
+
+    static className = 'Stage';
+
+    static defaultOptions = {
+        width: 854,
+        height: 480,
+        zoom: 1.0,
+        backgroundColor: '#000000',
+    }
+
     constructor(app, options) {
         super(Stage, options);
 
@@ -257,7 +268,7 @@ export default class Stage extends Display {
                 this.update(config.stage.options);
             }
             else {
-                this.update(Stage.defaults);
+                this.update(Stage.defaultOptions);
             }
         }
         else {
@@ -288,9 +299,8 @@ export default class Stage extends Display {
 
     renderScene(scene, data) {
         const buffer = scene.render(data);
-        const options = Object.assign({}, scene.options);
 
-        this.composer.blendBuffer(buffer, options);
+        this.composer.blendBuffer(buffer, { ...scene.options });
     }
 
     toJSON() {
@@ -300,14 +310,3 @@ export default class Stage extends Display {
         };
     }
 }
-
-Stage.label = 'Stage';
-
-Stage.className = 'Stage';
-
-Stage.defaults = {
-    width: 854,
-    height: 480,
-    zoom: 1.0,
-    backgroundColor: '#000000',
-};
