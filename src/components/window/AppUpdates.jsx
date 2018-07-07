@@ -13,10 +13,6 @@ export default class AppUpdates extends React.Component {
     constructor(props, context) {
         super(props);
 
-        this.state = {
-            message: null,
-        };
-
         this.appUpdater = context.app.updater;
     }
 
@@ -25,18 +21,17 @@ export default class AppUpdates extends React.Component {
             checking,
             downloading,
             downloadComplete,
+            installing,
         } = this.appUpdater;
 
         this.appUpdater.on('update', this.updateStatus, this);
 
-        if (!checking && !downloading && !downloadComplete) {
+        if (!checking && !downloading && !downloadComplete && !installing) {
             // Let css animation complete
             setTimeout(() => {
                 this.appUpdater.checkForUpdates();
-            }, 500);
+            }, 1000);
         }
-
-        this.updateStatus();
     }
 
     componentWillUnmount() {
@@ -51,18 +46,20 @@ export default class AppUpdates extends React.Component {
         this.appUpdater.downloadUpdate();
     }
 
-    updateStatus() {
+    updateStatus = () => this.forceUpdate();
+
+    getMessage() {
         const {
             error,
             downloading,
             downloadComplete,
             installing,
-            checking,
+            checked,
             hasUpdate,
             versionInfo,
         } = this.appUpdater;
 
-        let message = 'You have the latest version.';
+        let message = 'Checking for updates...';
 
         if (error) {
             message = 'Unable to check for updates.';
@@ -77,35 +74,42 @@ export default class AppUpdates extends React.Component {
         else if (installing) {
             message = 'Installing update...';
         }
-        else if (checking) {
-            message = 'Checking for updates...';
-        }
         else if (hasUpdate) {
             const { version } = versionInfo;
             message = `A new update (${version}) is available to download and install.`;
         }
+        else if (checked) {
+            message = 'You have the latest version.';
+        }
 
-        this.setState({ message });
+        return message;
+    }
+
+    getIcon() {
+        const {
+            checked,
+            hasUpdate,
+        } = this.appUpdater;
+
+        return checked && !hasUpdate ?
+            <Checkmark className={styles.icon} size={30} /> :
+            <Spinner className={styles.icon} size={30} />;
     }
 
     render() {
-        const { onClose } = this.props;
-        const { message } = this.state;
         const {
-            checking,
+            onClose,
+        } = this.props;
+        const {
             installing,
             downloading,
             downloadComplete,
             hasUpdate,
         } = this.appUpdater;
-        let icon;
+
         let installButton;
         let downloadButton;
         let closeText = 'Close';
-
-        if (checking || downloading || installing) {
-            icon = <Spinner className={styles.icon} size={30} />;
-        }
 
         if (downloadComplete && !installing) {
             installButton = <Button text="Restart and Install Now" onClick={this.installUpdate} />;
@@ -116,15 +120,11 @@ export default class AppUpdates extends React.Component {
             downloadButton = <Button text="Download Now" onClick={this.downloadUpdate} />;
         }
 
-        if (!hasUpdate && !icon) {
-            icon = <Checkmark className={styles.icon} size={30} />;
-        }
-
         return (
             <div>
                 <div className={styles.message}>
-                    {icon}
-                    {message}
+                    {this.getIcon()}
+                    {this.getMessage()}
                 </div>
                 <div className={styles.buttons}>
                     {installButton}

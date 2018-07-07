@@ -7,6 +7,7 @@ export default class AppUpdater extends EventEmitter {
     constructor(app) {
         super();
 
+        this.checked = false;
         this.checking = false;
         this.downloading = false;
         this.downloadComplete = false;
@@ -60,6 +61,7 @@ export default class AppUpdater extends EventEmitter {
 
     checkComplete(error, data) {
         this.checking = false;
+        this.checked = true;
 
         if (error) {
             logger.error(error);
