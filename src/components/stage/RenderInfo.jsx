@@ -1,58 +1,40 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
+import withAppContext from 'components/hocs/withAppContext';
 import Button from 'components/interface/Button';
 import { formatTime } from 'utils/format';
 import styles from './RenderInfo.less';
 
-export default class RenderInfo extends Component {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
+class RenderInfo extends Component {
     static defaultProps = {
         onButtonClick: () => {},
     }
 
-    constructor(props, context) {
-        super(props);
-
-        this.state = {
-            complete: false,
-            frames: 0,
-            currentFrame: 0,
-            lastFrame: 0,
-            startTime: 0,
-        };
-
-        this.app = context.app;
-    }
-
-    componentWillMount() {
-        if (!this.app.renderer) return;
-
-        this.renderer = this.app.renderer;
-        this.renderer.on('ready', this.processInfo, this);
-        this.renderer.on('complete', this.setComplete, this);
+    state = {
+        complete: false,
+        frames: 0,
+        currentFrame: 0,
+        lastFrame: 0,
+        startTime: 0,
     }
 
     componentDidMount() {
-        if (this.renderer) {
-            this.renderer.start();
-        }
+        const { app: { renderer } } = this.props;
+
+        this.renderer = renderer;
+        this.renderer.on('ready', this.processInfo, this);
+        this.renderer.on('complete', this.setComplete, this);
+
+        this.renderer.start();
     }
 
     componentWillUnmount() {
-        if (this.renderer) {
-            this.renderer.off('ready', this.processInfo, this);
-            this.renderer.off('complete', this.setComplete, this);
-        }
+        this.renderer.off('ready', this.processInfo, this);
+        this.renderer.off('complete', this.setComplete, this);
     }
 
     onButtonClick = () => {
-        if (this.renderer) {
-            this.renderer.stop();
-        }
+        this.renderer.stop();
 
         this.props.onButtonClick();
     }
@@ -117,3 +99,5 @@ const Stat = ({ label, value }) => (
         {value}
     </div>
 );
+
+export default withAppContext(RenderInfo);

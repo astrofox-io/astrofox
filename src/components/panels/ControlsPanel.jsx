@@ -1,14 +1,10 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import withAppContext from 'components/hocs/withAppContext';
 import { getControlComponent } from 'utils/controls';
 import styles from './ControlsPanel.less';
 
-export default class ControlsPanel extends PureComponent {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
-    constructor(props, context) {
+class ControlsPanel extends PureComponent {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -18,8 +14,6 @@ export default class ControlsPanel extends PureComponent {
 
         this.nodes = {};
         this.controls = {};
-
-        this.app = context.app;
     }
 
     componentDidUpdate() {
@@ -27,8 +21,9 @@ export default class ControlsPanel extends PureComponent {
     }
 
     getControls() {
+        const { app: { stage } } = this.props;
         const { displays, activeIndex } = this.state;
-        const { width, height } = this.app.stage.getSize();
+        const { width, height } = stage.getSize();
 
         return displays.map((display, index) => {
             const { id } = display;
@@ -91,3 +86,5 @@ export default class ControlsPanel extends PureComponent {
         );
     }
 }
+
+export default withAppContext(ControlsPanel);

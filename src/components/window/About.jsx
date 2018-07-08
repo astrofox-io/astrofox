@@ -1,11 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { APP_NAME, APP_VERSION } from 'core/Environment';
 import Button from 'components/interface/Button';
+import withAppContext from 'components/hocs/withAppContext';
 import styles from './About.less';
 
-const About = ({ onClose }, context) => {
-    const info = context.app.license.info();
+const About = ({ app: { license }, onClose }) => {
+    const info = license.info();
 
     return (
         <div className={styles.about}>
@@ -32,8 +32,4 @@ const About = ({ onClose }, context) => {
     );
 };
 
-About.contextTypes = {
-    app: PropTypes.object,
-};
-
-export default About;
+export default withAppContext(About);

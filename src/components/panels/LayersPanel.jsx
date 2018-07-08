@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import Display from 'core/Display';
 import CanvasDisplay from 'core/CanvasDisplay';
 import Scene from 'core/Scene';
@@ -7,6 +6,7 @@ import Effect from 'core/Effect';
 import { events } from 'core/Global';
 import { ButtonInput, ButtonGroup } from 'lib/inputs';
 import Layer from 'components/panels/Layer';
+import withAppContext from 'components/hocs/withAppContext';
 import iconScene from 'svg/icons/picture.svg';
 import iconDisplay from 'svg/icons/cube.svg';
 import iconEffect from 'svg/icons/light-up.svg';
@@ -17,20 +17,10 @@ import iconCanvasDisplay from 'svg/icons/document-landscape.svg';
 import styles from './LayersPanel.less';
 import panelStyles from '../layout/Panel.less';
 
-export default class LayersPanel extends PureComponent {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
-    constructor(props, context) {
-        super(props);
-
-        this.state = {
-            displays: [],
-            activeIndex: 0,
-        };
-
-        this.app = context.app;
+class LayersPanel extends PureComponent {
+    state = {
+        displays: [],
+        activeIndex: 0,
     }
 
     componentDidMount() {
@@ -88,11 +78,12 @@ export default class LayersPanel extends PureComponent {
     }
 
     onRemoveClick = () => {
+        const { app: { stage } } = this.props;
         const { displays, activeIndex } = this.state;
         const display = displays[activeIndex];
         const last = displays.length - 1;
 
-        if (this.app.stage.hasScenes() && display) {
+        if (stage.hasScenes() && display) {
             if (display instanceof Scene) {
                 display.stage.removeScene(display);
             }
@@ -194,12 +185,13 @@ export default class LayersPanel extends PureComponent {
     }
 
     addScene(newScene) {
+        const { app: { stage } } = this.props;
         const { displays } = this.state;
         const scene = this.getActiveScene();
 
         const scenes = displays.filter(display => display instanceof Scene);
 
-        this.app.stage.addScene(newScene, scenes.length - scenes.indexOf(scene));
+        stage.addScene(newScene, scenes.length - scenes.indexOf(scene));
 
         this.updateState(newScene);
     }
@@ -237,7 +229,9 @@ export default class LayersPanel extends PureComponent {
 
     updateState(obj) {
         this.setState(({ activeIndex }) => {
-            const displays = this.app.stage.getSortedDisplays();
+            const { app: { stage }, onChange } = this.props;
+            const displays = stage.getSortedDisplays();
+
             let index = obj === undefined ? activeIndex : 0;
 
             if (!index && typeof obj === 'object') {
@@ -246,15 +240,16 @@ export default class LayersPanel extends PureComponent {
 
             const state = { displays, activeIndex: index };
 
-            this.props.onChange(state);
+            onChange(state);
 
             return state;
         });
     }
 
     render() {
+        const { app: { stage } } = this.props;
         const layers = this.getLayers();
-        const disabled = !this.app.stage.hasScenes();
+        const disabled = !stage.hasScenes();
 
         return (
             <div className={styles.panel}>
@@ -304,3 +299,5 @@ export default class LayersPanel extends PureComponent {
         );
     }
 }
+
+export default withAppContext(LayersPanel);

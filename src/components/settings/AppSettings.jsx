@@ -1,24 +1,17 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
+import withAppContext from 'components/hocs/withAppContext';
 import { SettingsPanel, Settings, Group, Row, ButtonRow } from 'components/layout/SettingsPanel';
 import { ToggleInput } from 'lib/inputs';
 import styles from './AppSettings.less';
 
-export default class AppSettings extends PureComponent {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
+class AppSettings extends PureComponent {
     static defaultProps = {
         onClose: () => {},
     }
 
-    constructor(props, context) {
-        super(props);
-
-        this.app = context.app;
-        this.state = { ...this.app.config };
+    state = {
+        ...this.props.app.config,
     }
 
     onChange = (name, value) => {
@@ -26,10 +19,10 @@ export default class AppSettings extends PureComponent {
     }
 
     onSave = () => {
-        this.app.saveConfigFile(this.state)
-            .then(() => {
-                this.props.onClose();
-            });
+        const { app, onClose } = this.props;
+
+        app.saveConfigFile(this.state)
+            .then(onClose);
     }
 
     onCancel = () => {
@@ -88,3 +81,5 @@ export default class AppSettings extends PureComponent {
         );
     }
 }
+
+export default withAppContext(AppSettings);

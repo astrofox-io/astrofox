@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import withAppContext from 'components/hocs/withAppContext';
 import RenderInfo from 'components/stage/RenderInfo';
 import { events } from 'core/Global';
 import { FirstChild } from 'utils/react';
@@ -18,31 +18,21 @@ const transitionTimeout = {
     exit: 500,
 };
 
-export default class Stage extends Component {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
-    constructor(props, context) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            rendering: false,
-        };
-
-        this.app = context.app;
-        this.canvas = null;
+class Stage extends Component {
+    state = {
+        loading: false,
+        rendering: false,
+        ...this.props.app.stage.options,
     }
 
     componentDidMount() {
-        this.app.stage.init(this.canvas);
+        this.props.app.stage.init(this.canvas);
 
-        events.on('zoom', this.forceUpdate, this);
+        events.on('zoom', this.updateStage, this);
     }
 
     componentWillUnmount() {
-        events.off('zoom', this.forceUpdate, this);
+        events.off('zoom', this.updateStage, this);
     }
 
     onDragOver = (e) => {
@@ -62,21 +52,17 @@ export default class Stage extends Component {
         }
     }
 
-    startRender = () => {
-        this.setState({ rendering: true });
-    }
+    startRender = () => this.setState({ rendering: true });
 
-    stopRender = () => {
-        this.setState({ rendering: false });
-    }
+    stopRender = () => this.setState({ rendering: false });
 
-    showLoading = (value) => {
-        this.setState({ loading: value });
-    }
+    showLoading = loading => this.setState({ loading });
+
+    updateStage = () => this.setState({ ...this.props.app.stage.options });
 
     render() {
-        const { loading, rendering } = this.state;
-        const { width, height, zoom } = this.app.stage.options;
+        const { loading, rendering, width, height, zoom } = this.state;
+
         const style = {
             width: `${width * zoom}px`,
             height: `${height * zoom}px`,
@@ -135,3 +121,5 @@ const Rendering = ({ visible, onButtonClick }) => (
         }
     </TransitionGroup>
 );
+
+export default withAppContext(Stage);

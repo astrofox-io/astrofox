@@ -1,28 +1,31 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import withAppContext from 'components/hocs/withAppContext';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';
 import styles from './AppUpdates.less';
 
-export default class AppUpdates extends Component {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
-    constructor(props, context) {
+class AppUpdates extends Component {
+    constructor(props) {
         super(props);
 
-        this.appUpdater = context.app.updater;
+        this.state = {
+            status: null,
+        };
+
+        this.appUpdater = this.props.app.updater;
     }
 
     componentDidMount() {
+        const { app: { updater } } = this.props;
         const {
             checking,
             downloading,
             downloadComplete,
             installing,
-        } = this.appUpdater;
+        } = updater;
+
+        this.appUpdater = updater;
 
         this.appUpdater.on('update', this.updateStatus, this);
 
@@ -46,7 +49,7 @@ export default class AppUpdates extends Component {
         this.appUpdater.downloadUpdate();
     }
 
-    updateStatus = () => this.forceUpdate();
+    updateStatus = status => this.setState({ status });
 
     getMessage() {
         const {
@@ -139,3 +142,5 @@ export default class AppUpdates extends Component {
         );
     }
 }
+
+export default withAppContext(AppUpdates);

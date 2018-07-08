@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
+
 import {
     NumberInput,
     RangeInput,
@@ -16,11 +16,7 @@ const blurOptions = [
     'Zoom',
 ];
 
-export class BlurControl extends PureComponent {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
+class BlurControl extends PureComponent {
     render() {
         const {
             display,

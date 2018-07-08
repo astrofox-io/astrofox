@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Window from 'core/Window';
 import Button from 'components/interface/Button';
+import withAppContext from 'components/hocs/withAppContext';
 import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
 import {
     ButtonInput,
@@ -26,36 +26,35 @@ const resolutionOptions = [
     1080,
 ];
 
-export default class VideoSettings extends Component {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
+class VideoSettings extends Component {
     static defaultProps = {
         onStart: () => {},
         onClose: () => {},
     }
 
-    constructor(props, context) {
-        super(props);
-
-        this.app = context.app;
-
-        const audio = this.app.player.getAudio();
-
-        this.state = {
-            videoFile: '',
-            audioFile: audio ? this.app.audioFile : '',
-            format: 'mp4',
-            resolution: 480,
-            fps: 30,
-            timeStart: 0,
-            timeEnd: audio ? audio.getDuration() : 0,
-        };
+    state = {
+        videoFile: '',
+        audioFile: '',
+        format: 'mp4',
+        resolution: 480,
+        fps: 30,
+        timeStart: 0,
+        timeEnd: 0,
     }
 
     componentDidMount() {
-        this.app.player.stop();
+        const { app: { player, audioFile } } = this.props;
+
+        player.stop();
+
+        const audio = player.getAudio();
+
+        if (audio) {
+            this.setState({
+                audioFile,
+                timeEnd: audio.getDuration(),
+            });
+        }
     }
 
     onChange = (name, value) => {
@@ -220,3 +219,5 @@ export default class VideoSettings extends Component {
         );
     }
 }
+
+export default withAppContext(VideoSettings);

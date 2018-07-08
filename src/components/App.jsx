@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Window from 'core/Window';
 import { events } from 'core/Global';
 import About from 'components/window/About';
@@ -23,11 +22,9 @@ import audioExtensions from 'config/audioExtensions.json';
 import fontOptions from 'config/fonts.json';
 import styles from './App.less';
 
-export default class App extends Component {
-    static childContextTypes = {
-        app: PropTypes.object,
-    }
+export const AppContext = React.createContext();
 
+export default class App extends Component {
     constructor(props) {
         super(props);
 
@@ -39,16 +36,12 @@ export default class App extends Component {
             showPlayer: true,
             showReactor: false,
         };
-
-        this.app = props.app;
-    }
-
-    getChildContext() {
-        return { app: this.app };
     }
 
     componentDidMount() {
-        this.app.init();
+        const { app } = this.props;
+
+        app.init();
 
         events.on('message', (message) => {
             this.showDialog({ message });
@@ -87,15 +80,15 @@ export default class App extends Component {
 
         events.on('unsaved-changes', this.onUnsavedChanges);
 
-        this.app.updater.on('update', (event) => {
-            if (event === 'check-for-updates-complete' && this.app.updater.hasUpdate) {
+        events.on('reactor-edit', this.showReactor);
+
+        app.updater.on('update', (event) => {
+            if (event === 'check-for-updates-complete' && app.updater.hasUpdate) {
                 this.showCheckForUpdates();
             }
         });
 
-        events.on('reactor-edit', this.showReactor);
-
-        this.app.startRender();
+        app.startRender();
     }
 
     onClick = () => {
@@ -108,16 +101,18 @@ export default class App extends Component {
     }
 
     onMenuAction = (action) => {
+        const { app } = this.props;
+
         switch (action) {
             case 'new-project':
-                this.app.newProject();
+                app.newProject();
                 break;
 
             case 'open-project':
                 Window.showOpenDialog(
                     (files) => {
                         if (files) {
-                            this.app.loadProject(files[0]);
+                            app.loadProject(files[0]);
                         }
                     },
                     {
@@ -155,7 +150,7 @@ export default class App extends Component {
                 Window.showSaveDialog(
                     (filename) => {
                         if (filename) {
-                            this.app.saveImage(filename);
+                            app.saveImage(filename);
                         }
                     },
                     { defaultPath: 'image.png' },
@@ -195,15 +190,15 @@ export default class App extends Component {
                 break;
 
             case 'zoom-in':
-                this.app.stage.setZoom(1);
+                app.stage.setZoom(1);
                 break;
 
             case 'zoom-out':
-                this.app.stage.setZoom(-1);
+                app.stage.setZoom(-1);
                 break;
 
             case 'zoom-reset':
-                this.app.stage.setZoom(0);
+                app.stage.setZoom(0);
                 break;
 
             case 'view-control-dock':
@@ -246,10 +241,11 @@ export default class App extends Component {
     }
 
     saveProject = (callback) => {
-        const file = this.app.projectFile;
+        const { app } = this.props;
+        const file = app.projectFile;
 
         if (file) {
-            this.app.saveProject(file);
+            app.saveProject(file);
 
             if (callback) callback();
         }
@@ -259,10 +255,12 @@ export default class App extends Component {
     }
 
     saveProjectAs = (callback) => {
+        const { app } = this.props;
+
         Window.showSaveDialog(
             (filename) => {
                 if (filename) {
-                    this.app.saveProject(filename);
+                    app.saveProject(filename);
 
                     if (callback) callback();
                 }
@@ -339,11 +337,12 @@ export default class App extends Component {
     }
 
     loadAudioFile = (file) => {
+        const { app } = this.props;
         const { showLoading } = this.stage;
 
         showLoading(true);
 
-        this.app.loadAudioFile(file)
+        app.loadAudioFile(file)
             .then(() => {
                 showLoading(false);
             })
@@ -353,15 +352,18 @@ export default class App extends Component {
     }
 
     startRender = (options) => {
+        const { app } = this.props;
+
         this.hideModal();
 
         const { videoFile, audioFile } = options;
 
-        this.app.saveVideo(videoFile, audioFile, options);
+        app.saveVideo(videoFile, audioFile, options);
         this.stage.startRender();
     }
 
     render() {
+        const { app } = this.props;
         const {
             showPlayer,
             showControlDock,
@@ -372,43 +374,45 @@ export default class App extends Component {
         } = this.state;
 
         return (
-            <div
-                className={styles.container}
-                role="presentation"
-                onClick={this.onClick}
-                onDrop={this.onDragDrop}
-                onDragOver={this.onDragDrop}
-            >
-                <Preload />
-                <TitleBar />
-                <MenuBar
-                    ref={e => (this.menubar = e)}
-                    items={menuConfig}
-                    onMenuAction={this.onMenuAction}
-                />
-                <div className={styles.body}>
-                    <div className={styles.viewport}>
-                        <Stage
-                            ref={e => (this.stage = e)}
-                            onFileDropped={this.loadAudioFile}
-                        />
-                        <Player
-                            visible={showPlayer}
-                        />
-                        <ReactorControl
-                            visible={showReactor}
-                            reactor={reactor}
+            <AppContext.Provider value={app}>
+                <div
+                    className={styles.container}
+                    role="presentation"
+                    onClick={this.onClick}
+                    onDrop={this.onDragDrop}
+                    onDragOver={this.onDragDrop}
+                >
+                    <Preload />
+                    <TitleBar />
+                    <MenuBar
+                        ref={e => (this.menubar = e)}
+                        items={menuConfig}
+                        onMenuAction={this.onMenuAction}
+                    />
+                    <div className={styles.body}>
+                        <div className={styles.viewport}>
+                            <Stage
+                                ref={e => (this.stage = e)}
+                                onFileDropped={this.loadAudioFile}
+                            />
+                            <Player
+                                visible={showPlayer}
+                            />
+                            <ReactorControl
+                                visible={showReactor}
+                                reactor={reactor}
+                            />
+                        </div>
+                        <ControlDock
+                            visible={showControlDock}
                         />
                     </div>
-                    <ControlDock
-                        visible={showControlDock}
-                    />
+                    <StatusBar text={statusBarText} />
+                    <Overlay>
+                        {modals}
+                    </Overlay>
                 </div>
-                <StatusBar text={statusBarText} />
-                <Overlay>
-                    {modals}
-                </Overlay>
-            </div>
+            </AppContext.Provider>
         );
     }
 }

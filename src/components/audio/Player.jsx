@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AudioWaveform from 'components/audio/AudioWaveform';
 import Oscilloscope from 'components/audio/Oscilloscope';
 import Icon from 'components/interface/Icon';
+import withAppContext from 'components/hocs/withAppContext';
 import { RangeInput } from 'lib/inputs';
 import { events } from 'core/Global';
 import { formatTime } from 'utils/format';
@@ -21,32 +21,30 @@ import styles from './Player.less';
 
 const PROGRESS_MAX = 1000;
 
-export default class Player extends PureComponent {
-    constructor(props, context) {
-        super(props);
+class Player extends PureComponent {
+    static defaultProps = {
+        visible: true,
+    }
 
-        this.state = {
-            playing: false,
-            looping: false,
-            progressPosition: 0,
-            progressBuffering: false,
-            seekPosition: 0,
-            duration: 0,
-            showWaveform: true,
-            showOsc: false,
-        };
-
-        this.app = context.app;
+    state = {
+        playing: false,
+        looping: false,
+        progressPosition: 0,
+        progressBuffering: false,
+        seekPosition: 0,
+        duration: 0,
+        showWaveform: true,
+        showOsc: false,
     }
 
     componentDidMount() {
-        const { player } = this.app;
+        const { player } = this.props.app;
         const { progressBuffering } = this.state;
 
         player.on('load', () => {
             this.setState({ duration: player.getDuration() });
 
-            this.waveform.loadAudio(this.app.player.getAudio());
+            this.waveform.loadAudio(player.getAudio());
         });
 
         player.on('tick', () => {
@@ -88,26 +86,28 @@ export default class Player extends PureComponent {
                 this.oscilloscope.draw(data);
             }
         });
+
+        this.player = player;
     }
 
     onPlayButtonClick = () => {
-        this.app.player.play();
+        this.player.play();
     }
 
     onStopButtonClick = () => {
-        this.app.player.stop();
+        this.player.stop();
     }
 
     onLoopButtonClick = () => {
         this.setState((prevState) => {
-            this.app.player.setLoop(!prevState.looping);
+            this.player.setLoop(!prevState.looping);
 
             return { looping: !prevState.looping };
         });
     }
 
     onWaveformClick = (progressPosition) => {
-        this.app.player.seek(progressPosition);
+        this.player.seek(progressPosition);
     }
 
     onWaveformSeek = (seekPosition) => {
@@ -123,11 +123,11 @@ export default class Player extends PureComponent {
     }
 
     onVolumeChange = (value) => {
-        this.app.player.setVolume(value);
+        this.player.setVolume(value);
     }
 
     onProgressChange = (progressPosition) => {
-        this.app.player.seek(progressPosition);
+        this.player.seek(progressPosition);
 
         this.setState({ progressPosition, seekPosition: 0, progressBuffering: false });
     }
@@ -201,14 +201,6 @@ export default class Player extends PureComponent {
         );
     }
 }
-
-Player.defaultProps = {
-    visible: true,
-};
-
-Player.contextTypes = {
-    app: PropTypes.object,
-};
 
 class VolumeControl extends PureComponent {
     constructor(props) {
@@ -345,3 +337,5 @@ const TimeInfo = ({ currentTime, totalTime }) => (
         </span>
     </div>
 );
+
+export default withAppContext(Player);

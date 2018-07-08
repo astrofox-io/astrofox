@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Button from 'components/interface/Button';
+import withAppContext from 'components/hocs/withAppContext';
 import {
     SettingsPanel,
     Settings,
@@ -13,20 +13,13 @@ import {
 } from 'lib/inputs';
 import styles from './CanvasSettings.less';
 
-export default class CanvasSettings extends Component {
-    static contextTypes = {
-        app: PropTypes.object,
-    }
-
+class CanvasSettings extends Component {
     static defaultProps = {
         onClose: () => {},
     }
 
-    constructor(props, context) {
-        super(props);
-
-        this.app = context.app;
-        this.state = this.app.stage.options;
+    state = {
+        ...this.props.app.stage.options,
     }
 
     onChange = (name, value) => {
@@ -38,9 +31,11 @@ export default class CanvasSettings extends Component {
     }
 
     onSave = () => {
-        this.app.stage.update(this.state);
+        const { app: { stage }, onClose } = this.props;
 
-        this.props.onClose();
+        stage.update(this.state);
+
+        onClose();
     }
 
     render() {
@@ -91,3 +86,5 @@ export default class CanvasSettings extends Component {
         );
     }
 }
+
+export default withAppContext(CanvasSettings);
