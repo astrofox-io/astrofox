@@ -51,9 +51,7 @@ export default class StatusBar extends Component {
                         {electronVersion}
                     </span>
                     <span className={styles.item}>
-                        {fps}
-                        {' '}
-FPS
+                        {`${fps} FPS`}
                     </span>
                     <span className={styles.item}>
                         {APP_VERSION}

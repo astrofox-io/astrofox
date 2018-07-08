@@ -10,7 +10,7 @@ const CYCLE_MODIFIER = 0.05;
 export default class AudioReactor extends Component {
     static defaultOptions = {
         displayName: 'Reactor',
-        outputMode: 'Forward',
+        outputMode: 'Add',
         lastValue: 0,
         min: 0,
         max: 1,
@@ -59,21 +59,21 @@ export default class AudioReactor extends Component {
         }
 
         switch (outputMode) {
-            case 'Forward':
+            case 'Add':
                 output = sum / (end - start);
                 break;
 
-            case 'Backwards':
+            case 'Subtract':
                 output = 1 - (sum / (end - start));
                 break;
 
-            case 'Cycle Forward':
+            case 'Forward':
                 if (data.playing) {
                     output = (output + (sum * CYCLE_MODIFIER)) % 1;
                 }
                 break;
 
-            case 'Cycle Backwards':
+            case 'Reverse':
                 if (data.playing) {
                     output -= (sum * CYCLE_MODIFIER);
                     if (output < 0) {

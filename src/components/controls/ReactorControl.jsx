@@ -12,22 +12,22 @@ import {
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'core/Global';
-import iconLeft from 'svg/icons/chevron-left.svg';
-import iconRight from 'svg/icons/chevron-right.svg';
+import iconReverse from 'svg/icons/angle-double-left.svg';
+import iconForward from 'svg/icons/angle-double-right.svg';
 import iconDown from 'svg/icons/chevron-down.svg';
-import iconMinus from 'svg/icons/minus.svg';
-import iconPlus from 'svg/icons/plus.svg';
-import iconCircle from 'svg/icons/dots-three-horizontal.svg';
+import iconSubtract from 'svg/icons/minus.svg';
+import iconAdd from 'svg/icons/plus.svg';
+import iconCycle from 'svg/icons/arrows-h.svg';
 import styles from './ReactorControl.less';
 
 const REACTOR_BARS = 64;
 
 const outputOptions = [
-    { title: 'Backwards', icon: iconLeft },
-    { title: 'Forward', icon: iconRight },
-    { title: 'Cycle Backwards', icon: iconMinus },
-    { title: 'Cycle Forward', icon: iconPlus },
-    { title: 'Cycle', icon: iconCircle },
+    { title: 'Subtract', icon: iconSubtract },
+    { title: 'Add', icon: iconAdd },
+    { title: 'Reverse', icon: iconReverse },
+    { title: 'Forward', icon: iconForward },
+    { title: 'Cycle', icon: iconCycle },
 ];
 
 export default class ReactorControl extends PureComponent {
@@ -215,13 +215,13 @@ const Controls = ({ reactor, onChange }) => {
                 <Label text="Output Mode" className={styles.label} />
                 <ButtonGroup>
                     {
-                        outputOptions.map((mode, index) => (
+                        outputOptions.map(({ icon, title }, index) => (
                             <ButtonInput
                                 key={index}
-                                icon={mode.icon}
-                                title={mode.title}
-                                active={outputMode === mode.title}
-                                onClick={() => onChange('outputMode', mode.title)}
+                                icon={icon}
+                                title={title}
+                                active={outputMode === title}
+                                onClick={() => onChange('outputMode', title)}
                             />
                         ))
                     }
@@ -232,7 +232,6 @@ const Controls = ({ reactor, onChange }) => {
                 <NumberInput
                     name="maxDecibels"
                     value={maxDecibels}
-                    className={styles.input}
                     width={40}
                     min={-40}
                     max={0}
@@ -253,7 +252,6 @@ const Controls = ({ reactor, onChange }) => {
                 <NumberInput
                     name="smoothingTimeConstant"
                     value={smoothingTimeConstant}
-                    className={styles.input}
                     width={40}
                     min={0}
                     max={0.99}
