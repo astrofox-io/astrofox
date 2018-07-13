@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import { raiseError } from 'core/Global';
+import { raiseError } from 'app/global';
 import Window from 'core/Window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
 import folderIcon from 'svg/icons/folder-open.svg';

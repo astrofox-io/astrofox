@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import classNames from 'classnames';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import Icon from 'components/interface/Icon';
 import iconClose from 'svg/icons/times.svg';
 import iconReact from 'svg/icons/flash.svg';

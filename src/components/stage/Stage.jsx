@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import withAppContext from 'components/hocs/withAppContext';
 import RenderInfo from 'components/stage/RenderInfo';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import { FirstChild } from 'utils/react';
 import styles from './Stage.less';
 

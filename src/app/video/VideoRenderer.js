@@ -3,7 +3,7 @@ import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
-import { logger } from 'core/Global';
+import { logger } from 'app/global';
 import { removeFile } from 'utils/io';
 import { TEMP_PATH, FFMPEG_PATH } from 'core/Environment';
 import { uniqueId } from 'utils/crypto';

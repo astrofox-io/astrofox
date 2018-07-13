@@ -8,7 +8,7 @@ import WatermarkDisplay from 'displays/WatermarkDisplay';
 import List from 'core/List';
 import Composer from 'graphics/Composer';
 import { CanvasBuffer, GLBuffer } from 'graphics/FrameBuffer';
-import { logger, raiseError, events } from 'core/Global';
+import { logger, raiseError, events } from 'app/global';
 import * as displayLibrary from 'lib/displays';
 import * as effectsLibrary from 'lib/effects';
 
@@ -24,10 +24,9 @@ export default class Stage extends Display {
         backgroundColor: '#000000',
     }
 
-    constructor(app, options) {
+    constructor(options) {
         super(Stage, options);
 
-        this.app = app;
         this.scenes = new List();
         this.shouldRender = true;
     }

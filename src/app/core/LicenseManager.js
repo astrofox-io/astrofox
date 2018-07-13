@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Map } from 'immutable';
-import { logger } from 'core/Global';
+import { logger } from 'app/global';
 import { readFile, writeFile } from 'utils/io';
 
 const emptyLicense = Map({});

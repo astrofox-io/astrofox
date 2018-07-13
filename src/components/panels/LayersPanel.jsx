@@ -3,7 +3,7 @@ import Display from 'core/Display';
 import CanvasDisplay from 'core/CanvasDisplay';
 import Scene from 'core/Scene';
 import Effect from 'core/Effect';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import { ButtonInput, ButtonGroup } from 'lib/inputs';
 import Layer from 'components/panels/Layer';
 import withAppContext from 'components/hocs/withAppContext';

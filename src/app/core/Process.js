@@ -2,7 +2,7 @@ import { Transform } from 'stream';
 import { spawn } from 'child_process';
 
 import EventEmitter from 'core/EventEmitter';
-import { logger } from 'core/Global';
+import { logger } from 'app/global';
 
 export default class Process extends EventEmitter {
     constructor(command) {

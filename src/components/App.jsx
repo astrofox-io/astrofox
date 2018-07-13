@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Window from 'core/Window';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
 import Dialog from 'components/window/Dialog';

@@ -90,27 +90,28 @@ class VideoSettings extends Component {
     }
 
     onOpenAudioFile = () => {
-        const path = this.app.audioFile;
+        const { app } = this.props;
 
         Window.showOpenDialog(
             (files) => {
                 if (files) {
-                    this.app.loadAudioFile(files[0]).then(() => {
-                        const audio = this.app.player.getAudio();
+                    app.loadAudioFile(files[0]).then(() => {
+                        const audio = app.player.getAudio();
 
                         this.setState({
-                            audioFile: this.app.audioFile,
+                            audioFile: app.audioFile,
                             timeStart: 0,
                             timeEnd: Math.ceil(audio.getDuration()),
                         });
                     });
                 }
             },
-            { defaultPath: path },
+            { defaultPath: app.audioFile },
         );
     }
 
     render() {
+        const { app } = this.props;
         const {
             videoFile,
             audioFile,
@@ -120,7 +121,7 @@ class VideoSettings extends Component {
             timeStart,
             timeEnd,
         } = this.state;
-        const audio = this.app.player.getAudio();
+        const audio = app.player.getAudio();
         const max = (audio) ? audio.getDuration() : 0;
         const canStart = videoFile && audioFile;
 
@@ -131,12 +132,13 @@ class VideoSettings extends Component {
                         <TextInput
                             inputClassName="input-normal-text"
                             name="videoFile"
-                            width="100%"
+                            width={250}
                             value={videoFile}
                             readOnly
                             onChange={this.onChange}
                         />
                         <ButtonInput
+                            className={styles.button}
                             icon={folderIcon}
                             title="Save File"
                             onClick={this.onOpenVideoFile}
@@ -146,12 +148,13 @@ class VideoSettings extends Component {
                         <TextInput
                             inputClassName="input-normal-text"
                             name="audioFile"
-                            width="100%"
+                            width={250}
                             value={audioFile}
                             readOnly
                             onChange={this.onChange}
                         />
                         <ButtonInput
+                            className={styles.button}
                             icon={folderIcon}
                             title="Open File"
                             onClick={this.onOpenAudioFile}

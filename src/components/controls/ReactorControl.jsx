@@ -11,7 +11,7 @@ import {
 } from 'lib/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import iconReverse from 'svg/icons/angle-double-left.svg';
 import iconForward from 'svg/icons/angle-double-right.svg';
 import iconDown from 'svg/icons/chevron-down.svg';

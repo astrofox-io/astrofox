@@ -7,7 +7,7 @@
         "action": "new-project"
       },
       {
-        "label": "Open Project",
+        "label": "Open Project...",
         "action": "open-project"
       },
       {
@@ -15,22 +15,22 @@
         "action": "save-project"
       },
       {
-        "label": "Save Project As",
+        "label": "Save Project As...",
         "action": "save-project-as"
       },
       {
         "type": "separator"
       },
       {
-        "label": "Load Audio",
+        "label": "Load Audio...",
         "action": "load-audio"
       },
       {
-        "label": "Save Image",
+        "label": "Save Image...",
         "action": "save-image"
       },
       {
-        "label": "Save Video",
+        "label": "Save Video...",
         "action": "save-video"
       },
       {

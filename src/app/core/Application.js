@@ -1,7 +1,7 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, LICENSE_FILE } from 'core/Environment';
-import { events, logger, raiseError } from 'core/Global';
+import { events, logger, raiseError } from 'app/global';
 import * as IO from 'utils/io';
 import AppUpdater from 'core/AppUpdater';
 import EventEmitter from 'core/EventEmitter';
@@ -25,8 +25,8 @@ export default class Application extends EventEmitter {
 
         this.audioContext = new window.AudioContext();
         this.player = new Player(this.audioContext);
-        this.stage = new Stage(this);
-        this.updater = new AppUpdater(this);
+        this.stage = new Stage();
+        this.updater = new AppUpdater();
         this.license = new LicenseManager(publicKey);
         this.analyzer = new SpectrumAnalyzer(this.audioContext);
 
@@ -91,8 +91,13 @@ export default class Application extends EventEmitter {
         // Load config file
         this.loadConfigFile()
             .then(() => {
+                const { checkForUpdates, autoUpdate } = this.config;
+
+                // Set update policy from config
+                this.updater.options.autoUpdate = !!autoUpdate;
+
                 // Check for app updates
-                if (this.config.checkForUpdates) {
+                if (checkForUpdates) {
                     this.updater.checkForUpdates();
                 }
             });

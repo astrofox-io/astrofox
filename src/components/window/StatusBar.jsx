@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { APP_VERSION } from 'core/Environment';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import { formatSize } from 'utils/format';
 import withAppContext from 'components/hocs/withAppContext';
 import styles from './StatusBar.less';

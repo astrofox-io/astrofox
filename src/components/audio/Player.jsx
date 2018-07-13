@@ -5,7 +5,7 @@ import Oscilloscope from 'components/audio/Oscilloscope';
 import Icon from 'components/interface/Icon';
 import withAppContext from 'components/hocs/withAppContext';
 import { RangeInput } from 'lib/inputs';
-import { events } from 'core/Global';
+import { events } from 'app/global';
 import { formatTime } from 'utils/format';
 import iconSoundBars from 'svg/icons/sound-bars.svg';
 import iconSoundWaves from 'svg/icons/sound-waves.svg';

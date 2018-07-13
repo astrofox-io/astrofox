@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
 import EventEmitter from 'core/EventEmitter';
-import { logger } from 'core/Global';
+import { logger } from 'app/global';
 
 export default class AppUpdater extends EventEmitter {
-    constructor(app) {
+    constructor(options = {}) {
         super();
 
         this.checked = false;
@@ -14,13 +14,14 @@ export default class AppUpdater extends EventEmitter {
         this.installing = false;
         this.versionInfo = null;
         this.error = null;
+        this.options = options;
 
         // New version available
         ipcRenderer.on('update-available', () => {
             this.hasUpdate = true;
 
             // Automatically download update
-            if (app.config.autoUpdate) {
+            if (this.options.autoUpdate) {
                 this.downloadUpdate();
             }
 
