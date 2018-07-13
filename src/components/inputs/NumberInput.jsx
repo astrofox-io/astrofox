@@ -13,6 +13,7 @@ export default class NumberInput extends PureComponent {
         max: false,
         step: false,
         readOnly: false,
+        disabled: false,
         onChange: () => {},
     }
 
@@ -59,6 +60,7 @@ export default class NumberInput extends PureComponent {
             width,
             className,
             readOnly,
+            disabled,
         } = this.props;
 
         const { key } = this.state;
@@ -72,6 +74,7 @@ export default class NumberInput extends PureComponent {
                 width={width}
                 onChange={this.onChange}
                 readOnly={readOnly}
+                disabled={disabled}
                 buffered
             />
         );

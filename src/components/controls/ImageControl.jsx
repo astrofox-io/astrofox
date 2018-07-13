@@ -81,9 +81,9 @@ export class ImageControl extends PureComponent {
             opacity,
         } = this.props;
         const { image } = this;
-        const readOnly = !(image && image.src && image.src !== blankImage);
-        const imageWidth = readOnly ? 0 : image.naturalWidth;
-        const imageHeight = readOnly ? 0 : image.naturalHeight;
+        const disabled = !(image && image.src && image.src !== blankImage);
+        const imageWidth = disabled ? 0 : image.naturalWidth;
+        const imageHeight = disabled ? 0 : image.naturalHeight;
         const maxWidth = imageWidth * 2;
         const maxHeight = imageHeight * 2;
         const xMax = imageWidth > stageWidth ? imageWidth : stageWidth;
@@ -121,7 +121,7 @@ export class ImageControl extends PureComponent {
                         min={0}
                         max={maxWidth}
                         value={width}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                     <RangeInput
@@ -129,7 +129,7 @@ export class ImageControl extends PureComponent {
                         min={0}
                         max={maxWidth}
                         value={width}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -150,7 +150,7 @@ export class ImageControl extends PureComponent {
                         min={0}
                         max={maxHeight}
                         value={height}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                     <RangeInput
@@ -158,7 +158,7 @@ export class ImageControl extends PureComponent {
                         min={0}
                         max={maxHeight}
                         value={height}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -167,18 +167,18 @@ export class ImageControl extends PureComponent {
                     <NumberInput
                         name="x"
                         width={40}
-                        min={readOnly ? 0 : -xMax}
-                        max={readOnly ? 0 : xMax}
+                        min={disabled ? 0 : -xMax}
+                        max={disabled ? 0 : xMax}
                         value={x}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="x"
-                        min={readOnly ? 0 : -xMax}
-                        max={readOnly ? 0 : xMax}
+                        min={disabled ? 0 : -xMax}
+                        max={disabled ? 0 : xMax}
                         value={x}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -187,18 +187,18 @@ export class ImageControl extends PureComponent {
                     <NumberInput
                         name="y"
                         width={40}
-                        min={readOnly ? 0 : -yMax}
-                        max={readOnly ? 0 : yMax}
+                        min={disabled ? 0 : -yMax}
+                        max={disabled ? 0 : yMax}
                         value={y}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="y"
-                        min={readOnly ? 0 : -yMax}
-                        max={readOnly ? 0 : yMax}
+                        min={disabled ? 0 : -yMax}
+                        max={disabled ? 0 : yMax}
                         value={y}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -208,17 +208,17 @@ export class ImageControl extends PureComponent {
                         name="rotation"
                         width={40}
                         min={0}
-                        max={readOnly ? 0 : 360}
+                        max={disabled ? 0 : 360}
                         value={rotation}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                     <RangeInput
                         name="rotation"
                         min={0}
-                        max={readOnly ? 0 : 360}
+                        max={disabled ? 0 : 360}
                         value={rotation}
-                        readOnly={readOnly}
+                        disabled={disabled}
                         onChange={this.onChange}
                     />
                 </Option>
@@ -229,19 +229,19 @@ export class ImageControl extends PureComponent {
                             name="opacity"
                             width={40}
                             min={0}
-                            max={readOnly ? 0 : 1.0}
+                            max={disabled ? 0 : 1.0}
                             step={0.01}
                             value={opacity}
-                            readOnly={readOnly}
+                            disabled={disabled}
                             onChange={this.onChange}
                         />
                         <RangeInput
                             name="opacity"
                             min={0}
-                            max={readOnly ? 0 : 1.0}
+                            max={disabled ? 0 : 1.0}
                             step={0.01}
                             value={opacity}
-                            readOnly={readOnly}
+                            disabled={disabled}
                             onChange={this.onChange}
                         />
                     </ReactorInput>

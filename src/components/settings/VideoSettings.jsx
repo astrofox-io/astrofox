@@ -195,7 +195,7 @@ class VideoSettings extends Component {
                             min={0}
                             max={timeEnd}
                             value={timeStart}
-                            readOnly={!audio}
+                            disabled={!audio}
                             onChange={this.onChange}
                         />
                     </Row>
@@ -206,7 +206,7 @@ class VideoSettings extends Component {
                             min={0}
                             max={max}
                             value={timeEnd}
-                            readOnly={!audio}
+                            disabled={!audio}
                             onChange={this.onChange}
                         />
                     </Row>

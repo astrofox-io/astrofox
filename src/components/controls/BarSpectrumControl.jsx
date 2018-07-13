@@ -199,7 +199,7 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={-1}
                         max={stageWidth}
-                        readOnly={barWidthAutoSize}
+                        disabled={barWidthAutoSize}
                         hidden={barWidthAutoSize}
                         onChange={this.onChange}
                     />
@@ -218,7 +218,7 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={-1}
                         max={stageWidth}
-                        readOnly={barSpacingAutoSize}
+                        disabled={barSpacingAutoSize}
                         hidden={barSpacingAutoSize}
                         onChange={this.onChange}
                     />

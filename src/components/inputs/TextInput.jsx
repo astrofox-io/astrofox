@@ -96,7 +96,8 @@ export default class TextInput extends PureComponent {
                 onChange={this.onChange}
                 onBlur={this.onBlur}
                 onKeyUp={this.onKeyUp}
-                readOnly={readOnly || disabled}
+                readOnly={readOnly}
+                disabled={disabled}
             />
         );
     }

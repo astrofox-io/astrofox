@@ -10,6 +10,7 @@ export default class TimeInput extends PureComponent {
         size: null,
         value: 0,
         readOnly: false,
+        disabled: false,
         onChange: () => {},
     }
 
@@ -47,6 +48,7 @@ export default class TimeInput extends PureComponent {
             width,
             size,
             readOnly,
+            disabled,
         } = this.props;
 
         const { key } = this.state;
@@ -59,6 +61,7 @@ export default class TimeInput extends PureComponent {
                 size={size}
                 buffered
                 readOnly={readOnly}
+                disabled={disabled}
                 value={formatSeekTime(value)}
                 onChange={this.onChange}
             />
