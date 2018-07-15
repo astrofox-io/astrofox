@@ -2,6 +2,7 @@ import id3 from 'id3js';
 import { remote } from 'electron';
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, LICENSE_FILE } from 'core/Environment';
 import { events, logger, raiseError } from 'app/global';
+import { uniqueId } from 'utils/crypto';
 import * as IO from 'utils/io';
 import AppUpdater from 'core/AppUpdater';
 import EventEmitter from 'core/EventEmitter';
@@ -29,6 +30,7 @@ export default class Application extends EventEmitter {
         this.updater = new AppUpdater();
         this.license = new LicenseManager(publicKey);
         this.analyzer = new SpectrumAnalyzer(this.audioContext);
+        this.renderer = null;
 
         this.audioFile = '';
         this.projectFile = '';
@@ -89,7 +91,7 @@ export default class Application extends EventEmitter {
         this.license.load(LICENSE_FILE);
 
         // Load config file
-        this.loadConfigFile()
+        this.loadConfig()
             .then(() => {
                 const { checkForUpdates, autoUpdate } = this.config;
 
@@ -268,7 +270,7 @@ export default class Application extends EventEmitter {
     // endregion
 
     // region Save/load Methods
-    loadConfigFile() {
+    loadConfig() {
         if (IO.fileExists(APP_CONFIG_FILE)) {
             return IO.readFileCompressed(APP_CONFIG_FILE)
                 .then((data) => {
@@ -276,13 +278,13 @@ export default class Application extends EventEmitter {
 
                     logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
-                    this.config = { ...appConfig, ...config };
+                    Object.assign(this.config, config);
 
                     this.emit('config-updated');
                 });
         }
 
-        return this.saveConfigFile(this.config);
+        return this.saveConfig({ uid: uniqueId(), ...this.config });
     }
 
     loadAudioFile(file) {
@@ -380,7 +382,7 @@ export default class Application extends EventEmitter {
             });
     }
 
-    saveConfigFile(config) {
+    saveConfig(config) {
         const data = JSON.stringify(config);
 
         return IO.writeFileCompressed(APP_CONFIG_FILE, data)
@@ -419,14 +421,13 @@ export default class Application extends EventEmitter {
 
             this.renderer = new VideoRenderer(videoFile, audioFile, options);
 
-            const { renderer } = this;
+            const { renderer, license } = this;
             const { showWatermark } = this.config;
-            const hasLicense = this.license.check();
 
             // Setup before rendering
             this.stopRender();
             this.player.stop();
-            this.showWatermark(showWatermark || !hasLicense);
+            this.showWatermark(showWatermark || !license.valid);
 
             // Handle events
             renderer.on('ready', () => {
@@ -439,6 +440,8 @@ export default class Application extends EventEmitter {
                 logger.timeEnd('video-render', 'Render complete.');
 
                 this.renderer = null;
+
+                // Reset watermark status
                 this.showWatermark(showWatermark);
 
                 this.startRender();

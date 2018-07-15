@@ -11,6 +11,14 @@ export default class LicenseManager {
         this.key = key;
     }
 
+    get info() {
+        return this.license.toObject();
+    }
+
+    get valid() {
+        return this.license !== emptyLicense;
+    }
+
     load(file) {
         return readFile(file)
             .then((data) => {
@@ -38,13 +46,5 @@ export default class LicenseManager {
             .catch((error) => {
                 logger.error(error.message);
             });
-    }
-
-    info() {
-        return this.license.toObject();
-    }
-
-    check() {
-        return this.license !== emptyLicense;
     }
 }

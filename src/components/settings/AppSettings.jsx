@@ -21,7 +21,7 @@ class AppSettings extends PureComponent {
     onSave = () => {
         const { app, onClose } = this.props;
 
-        app.saveConfigFile(this.state)
+        app.saveConfig(this.state)
             .then(onClose);
     }
 
@@ -30,6 +30,7 @@ class AppSettings extends PureComponent {
     }
 
     render() {
+        const { app: { license } } = this.props;
         const {
             checkForUpdates,
             autoUpdate,
@@ -55,13 +56,17 @@ class AppSettings extends PureComponent {
                                 onChange={this.onChange}
                             />
                         </Row>
-                        <Row label="Show watermark" description="Watermark will still appear in videos">
-                            <ToggleInput
-                                name="showWatermark"
-                                value={showWatermark}
-                                onChange={this.onChange}
-                            />
-                        </Row>
+                        {
+                            license.valid && (
+                                <Row label="Show watermark">
+                                    <ToggleInput
+                                        name="showWatermark"
+                                        value={showWatermark}
+                                        onChange={this.onChange}
+                                    />
+                                </Row>
+                            )
+                        }
                     </Group>
                     <Group name="Audio">
                         <Row label="Play audio on load">
