@@ -70,7 +70,10 @@ export default class App extends Component {
 
         events.on('audio-tags', ({ artist, title }) => {
             if (artist) {
-                this.setState({ statusBarText: `${artist} - ${title}` });
+                // eslint-disable-next-line
+                const trim = str => str.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+
+                this.setState({ statusBarText: `${trim(artist)} - ${trim(title)}` });
             }
         });
 

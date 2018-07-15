@@ -1,38 +1,6 @@
 import fs from 'fs';
-import zlib from 'zlib';
 import mime from 'mime';
-
-export function compress(data) {
-    return new Promise((resolve, reject) => {
-        zlib.gzip(
-            data,
-            (error, buffer) => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(buffer);
-                }
-            },
-        );
-    });
-}
-
-export function decompress(data) {
-    return new Promise((resolve, reject) => {
-        zlib.unzip(
-            data,
-            (error, buffer) => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(buffer);
-                }
-            },
-        );
-    });
-}
+import { compress, decompress } from './data';
 
 export function readFile(file) {
     return new Promise((resolve, reject) => {

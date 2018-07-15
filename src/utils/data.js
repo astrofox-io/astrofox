@@ -1,3 +1,4 @@
+import zlib from 'zlib';
 import { Buffer as NodeBuffer } from 'buffer';
 
 export function toArrayBuffer(buffer) {
@@ -20,4 +21,36 @@ export function toBuffer(ab) {
     }
 
     return buffer;
+}
+
+export function compress(data) {
+    return new Promise((resolve, reject) => {
+        zlib.gzip(
+            data,
+            (error, buffer) => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(buffer);
+                }
+            },
+        );
+    });
+}
+
+export function decompress(data) {
+    return new Promise((resolve, reject) => {
+        zlib.unzip(
+            data,
+            (error, buffer) => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(buffer);
+                }
+            },
+        );
+    });
 }
