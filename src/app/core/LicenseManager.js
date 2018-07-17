@@ -16,15 +16,24 @@ export default class LicenseManager {
     }
 
     get valid() {
-        return this.license !== emptyLicense;
+        const { license, info } = this;
+
+        return (
+            license !== emptyLicense &&
+            info && info.user
+        );
     }
 
     load(file) {
         return readFile(file)
             .then((data) => {
-                this.license = Map(JSON.parse(crypto.publicDecrypt(this.key, data).toString()));
+                const info = JSON.parse(crypto.publicDecrypt(this.key, data).toString());
 
-                logger.log('License found:', this.license.toObject());
+                if (info && info.user) {
+                    this.license = Map(info);
+
+                    logger.log('License found:', this.info);
+                }
             })
             .catch((error) => {
                 if (error.message.indexOf('ENOENT') > -1) {
