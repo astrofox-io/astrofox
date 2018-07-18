@@ -24,10 +24,14 @@ export default class LicenseManager {
         );
     }
 
+    decrypt(data) {
+        return JSON.parse(crypto.publicDecrypt(this.key, data).toString());
+    }
+
     load(file) {
         return readFile(file)
             .then((data) => {
-                const info = JSON.parse(crypto.publicDecrypt(this.key, data).toString());
+                const info = this.decrypt(data);
 
                 if (info && info.user) {
                     this.license = Map(info);
@@ -48,9 +52,16 @@ export default class LicenseManager {
     save(file, data) {
         return writeFile(file, data)
             .then(() => {
-                this.license = Map(data);
+                const info = this.decrypt(data);
 
-                logger.log('License file saved.');
+                if (info && info.user) {
+                    this.license = Map(info);
+
+                    logger.log('License file saved.');
+                }
+                else {
+                    logger.error('Invalid license data.');
+                }
             })
             .catch((error) => {
                 logger.error(error.message);
