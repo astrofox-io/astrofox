@@ -9,10 +9,6 @@ class AppUpdates extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            status: null,
-        };
-
         this.appUpdater = this.props.app.updater;
     }
 
@@ -27,7 +23,7 @@ class AppUpdates extends Component {
 
         this.appUpdater = updater;
 
-        this.appUpdater.on('update', this.updateStatus, this);
+        this.appUpdater.on('status', this.updateStatus, this);
 
         if (!checking && !downloading && !downloadComplete && !installing) {
             // Let css animation complete
@@ -38,7 +34,7 @@ class AppUpdates extends Component {
     }
 
     componentWillUnmount() {
-        this.appUpdater.off('update', this.updateStatus, this);
+        this.appUpdater.off('status', this.updateStatus, this);
     }
 
     installUpdate = () => {
@@ -49,7 +45,7 @@ class AppUpdates extends Component {
         this.appUpdater.downloadUpdate();
     }
 
-    updateStatus = status => this.setState({ status });
+    updateStatus = () => this.forceUpdate();
 
     getMessage() {
         const {

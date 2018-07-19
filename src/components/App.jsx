@@ -85,7 +85,7 @@ export default class App extends Component {
 
         events.on('reactor-edit', this.showReactor);
 
-        app.updater.on('update', (event) => {
+        app.updater.on('status', (event) => {
             if (event === 'check-for-updates-complete' && app.updater.hasUpdate) {
                 this.showCheckForUpdates();
             }

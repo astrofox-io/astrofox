@@ -25,14 +25,14 @@ export default class AppUpdater extends EventEmitter {
                 this.downloadUpdate();
             }
 
-            this.emit('update', 'update-available');
+            this.emit('status', 'update-available');
         });
 
         // Already at latest version
         ipcRenderer.on('update-not-available', () => {
             this.checking = false;
 
-            this.emit('update', 'update-not-available');
+            this.emit('status', 'update-not-available');
         });
 
         // Update downloaded successfully
@@ -40,12 +40,12 @@ export default class AppUpdater extends EventEmitter {
             this.downloading = false;
             this.downloadComplete = true;
 
-            this.emit('update', 'update-downloaded');
+            this.emit('status', 'update-downloaded');
         });
 
         // Update error
         ipcRenderer.on('update-error', (event, error) => {
-            this.checkComplete(error);
+            this.checkComplete(error, null);
         });
 
         // Check for updates response
@@ -55,7 +55,7 @@ export default class AppUpdater extends EventEmitter {
 
         // Download update response
         ipcRenderer.on('download-update-complete', (event, data) => {
-            logger.timeEnd('download-update', 'Download complete:', data);
+            this.downloadComplete(data);
         });
     }
 
@@ -74,7 +74,13 @@ export default class AppUpdater extends EventEmitter {
 
         logger.timeEnd('check-for-updates', 'Update check complete', data);
 
-        this.emit('update', 'check-for-updates-complete');
+        this.emit('status', 'check-for-updates-complete');
+    }
+
+    downloadComplete(data) {
+        logger.timeEnd('download-update', 'Download complete:', data);
+
+        this.emit('status', 'download-update-complete');
     }
 
     checkForUpdates() {
@@ -95,8 +101,6 @@ export default class AppUpdater extends EventEmitter {
             logger.time('download-update');
 
             ipcRenderer.send('download-update');
-
-            this.emit('update', 'download-update');
         }
     }
 
@@ -105,8 +109,6 @@ export default class AppUpdater extends EventEmitter {
             this.installing = true;
 
             ipcRenderer.send('quit-and-install');
-
-            this.emit('update', 'quit-and-install');
         }
     }
 }
