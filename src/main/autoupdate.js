@@ -20,42 +20,48 @@ export default class AppUpdater {
         autoUpdater.on('error', (error) => {
             log('update-error');
 
-            this.sendMessage('update-error', error.stack || error.message);
+            this.sendMessage('update-error', error.stack || error.message || error);
         });
 
         autoUpdater.on('checking-for-update', () => {
             log('checking-for-update');
         });
 
-        autoUpdater.on('update-available', () => {
+        autoUpdater.on('update-available', (info) => {
             log('update-available');
 
-            this.sendMessage('update-available');
+            this.sendMessage('update-available', info);
         });
 
-        autoUpdater.on('update-not-available', () => {
+        autoUpdater.on('update-not-available', (info) => {
             log('update-not-available');
 
-            this.sendMessage('update-not-available');
+            this.sendMessage('update-not-available', info);
         });
 
-        autoUpdater.on('update-downloaded', () => {
+        autoUpdater.on('download-progress', (progress) => {
+            log('download-progress', progress);
+
+            this.sendMessage('download-progress', progress);
+        });
+
+        autoUpdater.on('update-downloaded', (info) => {
             log('update-downloaded');
 
-            this.sendMessage('update-downloaded');
+            this.sendMessage('update-downloaded', info);
         });
     }
 
     checkForUpdates() {
-        return autoUpdater.checkForUpdates();
+        autoUpdater.checkForUpdates();
     }
 
     quitAndInstall() {
-        return autoUpdater.quitAndInstall();
+        autoUpdater.quitAndInstall();
     }
 
     downloadUpdate() {
-        return autoUpdater.downloadUpdate();
+        autoUpdater.downloadUpdate();
     }
 
     sendMessage(channel, data) {

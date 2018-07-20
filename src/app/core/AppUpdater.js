@@ -17,70 +17,47 @@ export default class AppUpdater extends EventEmitter {
         this.options = options;
 
         // New version available
-        ipcRenderer.on('update-available', () => {
+        ipcRenderer.on('update-available', (event, info) => {
+            this.checking = false;
+            this.checked = true;
             this.hasUpdate = true;
+
+            logger.timeEnd('check-for-updates', 'Update check complete', info);
+
+            this.emit('status', 'update-available');
 
             // Automatically download update
             if (this.options.autoUpdate) {
                 this.downloadUpdate();
             }
-
-            this.emit('status', 'update-available');
         });
 
         // Already at latest version
-        ipcRenderer.on('update-not-available', () => {
+        ipcRenderer.on('update-not-available', (event, info) => {
             this.checking = false;
+            this.checked = true;
+
+            logger.timeEnd('check-for-updates', 'Update check complete', info);
 
             this.emit('status', 'update-not-available');
         });
 
         // Update downloaded successfully
-        ipcRenderer.on('update-downloaded', () => {
+        ipcRenderer.on('update-downloaded', (event, info) => {
             this.downloading = false;
             this.downloadComplete = true;
+
+            logger.timeEnd('download-update', 'Download complete:', info);
 
             this.emit('status', 'update-downloaded');
         });
 
         // Update error
         ipcRenderer.on('update-error', (event, error) => {
-            this.checkComplete(error, null);
-        });
+            logger.error('Update error:', error);
 
-        // Check for updates response
-        ipcRenderer.on('check-for-updates-complete', (event, data) => {
-            this.checkComplete(null, data);
-        });
-
-        // Download update response
-        ipcRenderer.on('download-update-complete', (event, data) => {
-            this.downloadComplete(data);
-        });
-    }
-
-    checkComplete(error, data) {
-        this.checking = false;
-        this.checked = true;
-
-        if (error) {
-            logger.error(error);
             this.error = error;
-        }
-
-        if (data && data.versionInfo) {
-            this.versionInfo = data.versionInfo;
-        }
-
-        logger.timeEnd('check-for-updates', 'Update check complete', data);
-
-        this.emit('status', 'check-for-updates-complete');
-    }
-
-    downloadComplete(data) {
-        logger.timeEnd('download-update', 'Download complete:', data);
-
-        this.emit('status', 'download-update-complete');
+        });
     }
 
     checkForUpdates() {
