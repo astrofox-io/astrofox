@@ -9,19 +9,16 @@ class AppUpdates extends Component {
     constructor(props) {
         super(props);
 
-        this.appUpdater = this.props.app.updater;
+        this.appUpdater = props.app.updater;
     }
 
     componentDidMount() {
-        const { app: { updater } } = this.props;
         const {
             checking,
             downloading,
             downloadComplete,
             installing,
-        } = updater;
-
-        this.appUpdater = updater;
+        } = this.appUpdater;
 
         this.appUpdater.on('status', this.updateStatus, this);
 
@@ -55,26 +52,24 @@ class AppUpdates extends Component {
             installing,
             checked,
             hasUpdate,
-            versionInfo,
+            info: { version },
         } = this.appUpdater;
 
         let message = 'Checking for updates...';
 
         if (error) {
-            message = 'Unable to check for updates.';
+            message = 'An error has occured. Unable to check for updates.';
         }
         else if (downloading) {
             message = 'Downloading update...';
         }
-        else if (downloadComplete) {
-            const { version } = versionInfo;
-            message = `A new update (${version}) is ready to install.`;
-        }
         else if (installing) {
             message = 'Installing update...';
         }
+        else if (downloadComplete) {
+            message = `A new update (${version}) is ready to install.`;
+        }
         else if (hasUpdate) {
-            const { version } = versionInfo;
             message = `A new update (${version}) is available to download and install.`;
         }
         else if (checked) {

@@ -12,7 +12,7 @@ export default class AppUpdater extends EventEmitter {
         this.downloadComplete = false;
         this.hasUpdate = false;
         this.installing = false;
-        this.versionInfo = null;
+        this.info = {};
         this.error = null;
         this.options = options;
 
@@ -21,6 +21,7 @@ export default class AppUpdater extends EventEmitter {
             this.checking = false;
             this.checked = true;
             this.hasUpdate = true;
+            this.info = info;
 
             logger.timeEnd('check-for-updates', 'Update check complete', info);
 
@@ -36,6 +37,7 @@ export default class AppUpdater extends EventEmitter {
         ipcRenderer.on('update-not-available', (event, info) => {
             this.checking = false;
             this.checked = true;
+            this.info = info;
 
             logger.timeEnd('check-for-updates', 'Update check complete', info);
 
@@ -46,6 +48,7 @@ export default class AppUpdater extends EventEmitter {
         ipcRenderer.on('update-downloaded', (event, info) => {
             this.downloading = false;
             this.downloadComplete = true;
+            this.info = info;
 
             logger.timeEnd('download-update', 'Download complete:', info);
 
