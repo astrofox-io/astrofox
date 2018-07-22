@@ -1,14 +1,12 @@
 import React, { PureComponent } from 'react';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
-import audioConfig from 'config/audio.json';
+import { FFT_SIZE, SAMPLE_RATE, CANVAS_WIDTH } from 'app/constants';
 import styles from './Spectrum.less';
-
-const { fftSize, sampleRate } = audioConfig;
 
 export default class Spectrum extends PureComponent {
     static defaultProps = {
-        width: 854,
+        width: CANVAS_WIDTH,
         height: 50,
         barWidth: -1,
         barSpacing: 1,
@@ -19,8 +17,8 @@ export default class Spectrum extends PureComponent {
     }
 
     state = {
-        fftSize,
-        sampleRate,
+        fftSize: FFT_SIZE,
+        sampleRate: SAMPLE_RATE,
         smoothingTimeConstant: 0.5,
         minDecibels: -60,
         maxDecibels: -20,

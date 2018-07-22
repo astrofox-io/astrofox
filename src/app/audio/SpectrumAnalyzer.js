@@ -1,10 +1,8 @@
-import audioConfig from 'config/audio.json';
-
-const { fftSize, sampleRate } = audioConfig;
+import { FFT_SIZE, SAMPLE_RATE } from 'app/constants';
 
 export default class SpectrumAnalyzer {
     static defaultOptions = {
-        fftSize,
+        fftSize: FFT_SIZE,
         minDecibels: -100,
         maxDecibels: 0,
         smoothingTimeConstant: 0,
@@ -46,6 +44,6 @@ export default class SpectrumAnalyzer {
     }
 
     static getMaxFrequency() {
-        return sampleRate / 2;
+        return SAMPLE_RATE / 2;
     }
 }

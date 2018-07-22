@@ -11,6 +11,7 @@ import { CanvasBuffer, GLBuffer } from 'graphics/FrameBuffer';
 import { logger, raiseError, events } from 'app/global';
 import * as displayLibrary from 'lib/displays';
 import * as effectsLibrary from 'lib/effects';
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'app/constants';
 
 export default class Stage extends Display {
     static label = 'Stage';
@@ -18,8 +19,8 @@ export default class Stage extends Display {
     static className = 'Stage';
 
     static defaultOptions = {
-        width: 854,
-        height: 480,
+        width: CANVAS_WIDTH,
+        height: CANVAS_HEIGHT,
         zoom: 1.0,
         backgroundColor: '#000000',
     }
@@ -276,19 +277,19 @@ export default class Stage extends Display {
     }
 
     render(data, callback) {
-        const { composer } = this;
+        const { composer, scenes, watermarkScene } = this;
 
         composer.clear(this.backgroundColor, 1);
 
-        this.scenes.items.forEach((scene) => {
+        scenes.items.forEach((scene) => {
             if (scene.options.enabled) {
                 this.renderScene(scene, data);
             }
         });
 
         // Show watermark
-        if (this.watermarkScene.options.enabled) {
-            this.renderScene(this.watermarkScene, data);
+        if (watermarkScene.options.enabled) {
+            this.renderScene(watermarkScene, data);
         }
 
         composer.renderToScreen();

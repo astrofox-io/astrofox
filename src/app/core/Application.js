@@ -2,6 +2,7 @@ import id3 from 'id3js';
 import { remote } from 'electron';
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, LICENSE_FILE } from 'core/Environment';
 import { events, logger, raiseError } from 'app/global';
+import { KEY } from 'app/constants';
 import { uniqueId } from 'utils/crypto';
 import * as IO from 'utils/io';
 import AppUpdater from 'core/AppUpdater';
@@ -14,7 +15,6 @@ import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
 import appConfig from 'config/app.json';
 import menuConfig from 'config/menu.json';
-import publicKey from 'config/key.json';
 
 const FPS_POLL_INTERVAL = 500;
 
@@ -28,7 +28,7 @@ export default class Application extends EventEmitter {
         this.player = new Player(this.audioContext);
         this.stage = new Stage();
         this.updater = new AppUpdater();
-        this.license = new LicenseManager(publicKey);
+        this.license = new LicenseManager(KEY);
         this.analyzer = new SpectrumAnalyzer(this.audioContext);
         this.renderer = null;
 

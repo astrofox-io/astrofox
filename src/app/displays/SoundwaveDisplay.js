@@ -1,6 +1,7 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'app/constants';
 
 export default class SoundwaveDisplay extends CanvasDisplay {
     static label = 'Soundwave';
@@ -9,8 +10,8 @@ export default class SoundwaveDisplay extends CanvasDisplay {
 
     static defaultOptions = {
         color: '#FFFFFF',
-        width: 854,
-        height: 240,
+        width: CANVAS_WIDTH,
+        height: CANVAS_HEIGHT / 2,
         lineWidth: 1.0,
         wavelength: 0,
         smooth: false,

@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import Window from 'core/Window';
 import Button from 'components/interface/Button';
 import withAppContext from 'components/hocs/withAppContext';
-import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import {
+    SettingsPanel,
+    Settings,
+    Row,
+    ButtonRow
+} from 'components/layout/SettingsPanel';
 import {
     ButtonInput,
     NumberInput,

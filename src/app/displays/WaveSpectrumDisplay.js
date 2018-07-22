@@ -1,9 +1,7 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import SpectrumParser from 'audio/SpectrumParser';
-import audioConfig from 'config/audio.json';
-
-const { fftSize, sampleRate } = audioConfig;
+import { FFT_SIZE, SAMPLE_RATE } from 'app/constants';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
     static label = 'Wave Spectrum';
@@ -22,8 +20,8 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
         taper: true,
         rotation: 0,
         opacity: 1.0,
-        fftSize,
-        sampleRate,
+        fftSize: FFT_SIZE,
+        sampleRate: SAMPLE_RATE,
         smoothingTimeConstant: 0.5,
         minDecibels: -100,
         maxDecibels: -20,

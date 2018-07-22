@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import CanvasAudio from 'canvas/CanvasAudio';
+import { CANVAS_WIDTH } from 'app/constants';
 import styles from './AudioWaveform.less';
 
 export default class AudioWaveform extends PureComponent {
     static defaultProps = {
         visible: true,
-        width: 854,
+        width: CANVAS_WIDTH,
         height: 70,
         barWidth: 3,
         barSpacing: 1,

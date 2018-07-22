@@ -18,9 +18,16 @@ import Player from 'components/audio/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
 import menuConfig from 'config/menu.json';
-import audioExtensions from 'config/audioExtensions.json';
 import fontOptions from 'config/fonts.json';
 import styles from './App.less';
+
+const audioFormats = [
+    'aac',
+    'mp3',
+    'm4a',
+    'ogg',
+    'wav',
+];
 
 export const AppContext = React.createContext();
 
@@ -143,7 +150,7 @@ export default class App extends Component {
                     },
                     {
                         filters: [
-                            { name: 'Audio files', extensions: audioExtensions },
+                            { name: 'Audio files', extensions: audioFormats },
                         ],
                     },
                 );

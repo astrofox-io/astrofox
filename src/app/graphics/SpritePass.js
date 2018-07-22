@@ -5,6 +5,7 @@ import {
     OrthographicCamera,
 } from 'three';
 import ComposerPass from 'graphics/ComposerPass';
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'app/constants';
 
 export default class SpritePass extends ComposerPass {
     static defaultOptions = {
@@ -13,12 +14,12 @@ export default class SpritePass extends ComposerPass {
         needsSwap: false,
         needsUpdate: true,
         forceClear: true,
-        width: 854,
-        height: 480,
+        width: CANVAS_WIDTH,
+        height: CANVAS_HEIGHT,
     }
 
     constructor(texture, options) {
-        super({ ...pritePass.defaultOptions, ...options });
+        super({ ...SpritePass.defaultOptions, ...options });
 
         const {
             height,

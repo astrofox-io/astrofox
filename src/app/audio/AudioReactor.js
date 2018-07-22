@@ -1,9 +1,8 @@
 import Component from 'core/Component';
 import SpectrumParser from 'audio/SpectrumParser';
 import { val2pct, floor, ceil } from 'utils/math';
-import audioConfig from 'config/audio.json';
+import { FFT_SIZE, SAMPLE_RATE } from 'app/constants';
 
-const { fftSize, sampleRate } = audioConfig;
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
 
@@ -27,7 +26,7 @@ export default class AudioReactor extends Component {
 
         this.parser = new SpectrumParser({
             maxDecibels: -20,
-            maxFrequency: ceil((sampleRate / fftSize) * REACTOR_BINS),
+            maxFrequency: ceil((SAMPLE_RATE / FFT_SIZE) * REACTOR_BINS),
             normalize: true,
             bins: REACTOR_BINS,
         });

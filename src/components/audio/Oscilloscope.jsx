@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
+import { CANVAS_WIDTH } from 'app/constants';
 import styles from './Oscilloscope.less';
 
 export default class Oscilloscope extends PureComponent {
     static defaultProps = {
-        width: 854,
+        width: CANVAS_WIDTH,
         height: 50,
         color: '#927FFF',
     }
