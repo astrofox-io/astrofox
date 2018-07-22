@@ -4,7 +4,7 @@ export const SAMPLE_RATE = 44100;
 export const CANVAS_WIDTH = 854;
 export const CANVAS_HEIGHT = 480;
 
-export const KEY = [
+export const PUBLIC_KEY = [
     '-----BEGIN PUBLIC KEY-----',
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvL3QeOKcvs/jPPazx6hM',
     'go7FC0QElgjjNMXG8akkRKQXRoxk9sL6Sqgl4Zdd6DCw38HU9+kUvcjz+AdrlASg',

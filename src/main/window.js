@@ -34,12 +34,11 @@ export function createWindow() {
         backgroundColor: '#222222',
         titleBarStyle: 'hidden-inset',
         webPreferences: {
-            webSecurity: false,
-            webgl: true,
-            textAreasAreResizable: false,
-            experimentalCanvasFeatures: true,
             backgroundThrottling: false,
             devTools: process.env.NODE_ENV !== 'production',
+            experimentalCanvasFeatures: true,
+            textAreasAreResizable: false,
+            webgl: true,
         },
     });
 
