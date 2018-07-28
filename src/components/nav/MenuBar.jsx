@@ -8,12 +8,20 @@ export default class MenuBar extends Component {
         activeIndex: -1,
     }
 
-    constructor(props) {
-        super(props);
+    state = {
+        items: this.props.items,
+    }
 
-        this.state = {
-            items: props.items,
-        };
+    componentDidMount() {
+        window.addEventListener('click', this.onDocumentClick);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('click', this.onDocumentClick);
+    }
+
+    onDocumentClick = () => {
+        this.setActiveIndex(-1);
     }
 
     onClick = index => () => {
@@ -58,7 +66,7 @@ export default class MenuBar extends Component {
                 barItem.submenu.forEach((menuItem) => {
                     if (action === menuItem.action) {
                         menuItem.checked = !menuItem.checked;
-                        this.setState({ items: [].concat(items) });
+                        this.setState({ items: items.slice() });
                     }
                 });
             }

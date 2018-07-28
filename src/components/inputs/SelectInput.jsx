@@ -16,10 +16,7 @@ export default class SelectInput extends Component {
         showItems: false,
     }
 
-    onClick = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
+    onClick = () => {
         this.setState(({ showItems }) => ({ showItems: !showItems }));
     }
 

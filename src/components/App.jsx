@@ -32,17 +32,13 @@ const audioFormats = [
 export const AppContext = React.createContext();
 
 export default class App extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            statusBarText: '',
-            modals: [],
-            reactor: null,
-            showControlDock: true,
-            showPlayer: true,
-            showReactor: false,
-        };
+    state = {
+        statusBarText: '',
+        modals: [],
+        reactor: null,
+        showControlDock: true,
+        showPlayer: true,
+        showReactor: false,
     }
 
     componentDidMount() {
@@ -99,10 +95,6 @@ export default class App extends Component {
         });
 
         app.startRender();
-    }
-
-    onClick = () => {
-        this.menubar.setActiveIndex(-1);
     }
 
     onDragDrop = (e) => {
@@ -170,7 +162,7 @@ export default class App extends Component {
             case 'save-video':
                 this.showModal(
                     <VideoSettings
-                        onStart={this.startRender}
+                        onStart={this.startVideoRender}
                         onClose={this.hideModal}
                     />,
                     { title: 'SAVE VIDEO', buttons: null },
@@ -212,11 +204,11 @@ export default class App extends Component {
                 break;
 
             case 'view-control-dock':
-                this.setState(prevState => ({ showControlDock: !prevState.showControlDock }));
+                this.setState(({ showControlDock }) => ({ showControlDock: !showControlDock }));
                 break;
 
             case 'view-player':
-                this.setState(prevState => ({ showPlayer: !prevState.showPlayer }));
+                this.setState(({ showPlayer }) => ({ showPlayer: !showPlayer }));
                 break;
 
             case 'check-for-updates':
@@ -361,7 +353,7 @@ export default class App extends Component {
             });
     }
 
-    startRender = (options) => {
+    startVideoRender = (options) => {
         const { app } = this.props;
 
         this.hideModal();
@@ -369,6 +361,7 @@ export default class App extends Component {
         const { videoFile, audioFile } = options;
 
         app.saveVideo(videoFile, audioFile, options);
+
         this.stage.startRender();
     }
 
@@ -388,14 +381,12 @@ export default class App extends Component {
                 <div
                     className={styles.container}
                     role="presentation"
-                    onClick={this.onClick}
                     onDrop={this.onDragDrop}
                     onDragOver={this.onDragDrop}
                 >
                     <Preload />
                     <TitleBar />
                     <MenuBar
-                        ref={e => (this.menubar = e)}
                         items={menuConfig}
                         onMenuAction={this.onMenuAction}
                     />

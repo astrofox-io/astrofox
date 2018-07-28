@@ -21,22 +21,16 @@ export default class Layer extends PureComponent {
         edit: false,
     }
 
-    onLayerClick = (e) => {
+    onLayerClick = () => {
         const { index, onLayerClick } = this.props;
-
-        e.stopPropagation();
-        e.preventDefault();
 
         if (onLayerClick) {
             onLayerClick(index);
         }
     }
 
-    onEnableClick = (e) => {
+    onEnableClick = () => {
         const { index, enabled, onLayerUpdate } = this.props;
-
-        e.stopPropagation();
-        e.preventDefault();
 
         if (onLayerUpdate) {
             onLayerUpdate(index, 'enabled', !enabled);
