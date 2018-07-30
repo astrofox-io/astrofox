@@ -151,6 +151,15 @@ export default class Application {
     isRendering() {
         return this.rendering;
     }
+
+    checkUnsavedChanges(func) {
+        if (this.stage.hasChanges()) {
+            events.emit('unsaved-changes', func);
+        }
+        else {
+            func();
+        }
+    }
     // endregion
 
     // region Render Methods
@@ -284,6 +293,22 @@ export default class Application {
         return this.saveConfig({ uid: uniqueId(), ...this.config });
     }
 
+    saveConfig(config) {
+        const data = JSON.stringify(config);
+
+        return IO.writeFileCompressed(APP_CONFIG_FILE, data)
+            .then(() => {
+                logger.log('Config file saved:', APP_CONFIG_FILE, config);
+
+                Object.assign(this.config, config);
+
+                events.emit('config-updated');
+            })
+            .catch((error) => {
+                raiseError('Failed to save config file.', error);
+            });
+    }
+
     openAudioFile() {
         showOpenDialog(
             (files) => {
@@ -363,83 +388,16 @@ export default class Application {
             });
     }
 
-    openProject() {
-        showOpenDialog(
-            (files) => {
-                if (files) {
-                    this.loadProject(files[0]);
-                }
-            },
-            {
-                filters: [
-                    { name: 'Project files', extensions: ['afx'] },
-                ],
-            },
-        );
-    }
-
-    loadProject(file) {
-        return IO.readFileCompressed(file)
-            .then(
-                (data) => {
-                    this.stage.loadConfig(JSON.parse(data));
-                    this.resetChanges();
-
-                    this.projectFile = file;
-
-                    events.emit('project-loaded');
-                },
-                (error) => {
-                    if (error.message.indexOf('incorrect header check') > -1) {
-                        IO.readFile(file)
-                            .then((data) => {
-                                this.stage.loadConfig(JSON.parse(data));
-                                this.resetChanges();
-
-                                this.projectFile = file;
-
-                                events.emit('project-loaded');
-                            })
-                            .catch((err) => {
-                                raiseError('Invalid project file.', err);
-                            });
-                    }
-                    else {
-                        throw error;
-                    }
-                },
-            )
-            .catch((error) => {
-                raiseError('Invalid project file.', error);
-            });
-    }
-
-    saveConfig(config) {
-        const data = JSON.stringify(config);
-
-        return IO.writeFileCompressed(APP_CONFIG_FILE, data)
-            .then(() => {
-                logger.log('Config file saved:', APP_CONFIG_FILE, config);
-
-                Object.assign(this.config, config);
-
-                events.emit('config-updated');
-            })
-            .catch((error) => {
-                raiseError('Failed to save config file.', error);
-            });
-    }
-
-    saveImage(filename) {
-        if (filename) {
+    saveImage(file) {
+        if (file) {
             const { stage } = this;
             const data = this.getFrameData(false);
 
             stage.render(data, () => {
                 stage.getImage((buffer) => {
-                    IO.writeFile(filename, buffer)
+                    IO.writeFile(file, buffer)
                         .then(() => {
-                            logger.log('Image saved:', filename);
+                            logger.log('Image saved:', file);
                         })
                         .catch((error) => {
                             raiseError('Failed to save image file.', error);
@@ -449,9 +407,9 @@ export default class Application {
         }
         else {
             showSaveDialog(
-                (file) => {
-                    if (file) {
-                        this.saveImage(file);
+                (filename) => {
+                    if (filename) {
+                        this.saveImage(filename);
                     }
                 },
                 { defaultPath: 'image.png' },
@@ -498,7 +456,60 @@ export default class Application {
         }
     }
 
-    saveProject(file) {
+    openProject() {
+        showOpenDialog(
+            (files) => {
+                if (files) {
+                    this.checkUnsavedChanges(() => {
+                        this.loadProject(files[0]);
+                    });
+                }
+            },
+            {
+                filters: [
+                    { name: 'Project files', extensions: ['afx'] },
+                ],
+            },
+        );
+    }
+
+    loadProject(file) {
+        return IO.readFileCompressed(file)
+            .then(
+                (data) => {
+                    this.stage.loadConfig(JSON.parse(data));
+                    this.resetChanges();
+
+                    this.projectFile = file;
+
+                    events.emit('project-loaded');
+                },
+                (error) => {
+                    if (error.message.indexOf('incorrect header check') > -1) {
+                        IO.readFile(file)
+                            .then((data) => {
+                                this.stage.loadConfig(JSON.parse(data));
+                                this.resetChanges();
+
+                                this.projectFile = file;
+
+                                events.emit('project-loaded');
+                            })
+                            .catch((err) => {
+                                raiseError('Invalid project file.', err);
+                            });
+                    }
+                    else {
+                        throw error;
+                    }
+                },
+            )
+            .catch((error) => {
+                raiseError('Invalid project file.', error);
+            });
+    }
+
+    saveProject(file, callback) {
         if (file) {
             const sceneData = this.stage.scenes.items.map(scene => scene.toJSON());
 
@@ -508,48 +519,39 @@ export default class Application {
                 scenes: sceneData,
             });
 
-            return IO.writeFileCompressed(file, data)
+            IO.writeFileCompressed(file, data)
                 .then(() => {
                     logger.log('Project saved:', file);
 
                     this.resetChanges();
 
                     this.projectFile = file;
+
+                    if (callback) callback();
                 })
                 .catch((error) => {
                     raiseError('Failed to save project file.', error);
                 });
         }
-
-        return this.saveProjectAs();
-    }
-
-    saveProjectAs() {
-        showSaveDialog(
-            (filename) => {
-                if (filename) {
-                    this.saveProject(filename);
-                }
-            },
-            { defaultPath: 'project.afx' },
-        );
+        else {
+            showSaveDialog(
+                (filename) => {
+                    if (filename) {
+                        this.saveProject(filename, callback);
+                    }
+                },
+                { defaultPath: 'project.afx' },
+            );
+        }
     }
 
     newProject() {
-        if (this.stage.hasChanges()) {
-            events.emit('unsaved-changes', () => {
-                this.loadProject(DEFAULT_PROJECT)
-                    .then(() => {
-                        this.projectFile = '';
-                    });
-            });
-        }
-        else {
+        this.checkUnsavedChanges(() => {
             this.loadProject(DEFAULT_PROJECT)
                 .then(() => {
                     this.projectFile = '';
                 });
-        }
+        });
     }
     // endregion
 

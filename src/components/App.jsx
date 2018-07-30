@@ -106,7 +106,7 @@ export default class App extends Component {
                 break;
 
             case 'save-project-as':
-                app.saveProjectAs();
+                app.saveProject(null);
                 break;
 
             case 'load-audio':
@@ -183,6 +183,8 @@ export default class App extends Component {
     }
 
     handleUnsavedChanges = (callback) => {
+        const { app } = this.props;
+
         this.showDialog(
             {
                 title: 'UNSAVED CHANGES',
@@ -191,7 +193,7 @@ export default class App extends Component {
             },
             (button) => {
                 if (button === 'Yes') {
-                    this.saveProject(callback);
+                    app.saveProject(app.projectFile, callback);
                 }
                 else if (button === 'No') {
                     callback();
