@@ -29,10 +29,18 @@ class Stage extends Component {
         this.props.app.stage.init(this.canvas);
 
         events.on('zoom', this.updateStage, this);
+        events.on('audio-file-load', this.showLoading, this);
+        events.on('audio-file-loaded', this.hideLoading, this);
+        events.on('video-render-start', this.startRender, this);
+        events.on('video-render-complete', this.stopRender, this);
     }
 
     componentWillUnmount() {
-        events.off('zoom', this.updateStage, this);
+        events.off('zoom', this.updateStage);
+        events.off('audio-file-load', this.showLoading);
+        events.off('audio-file-loaded', this.hideLoading);
+        events.off('video-render-start', this.startRender);
+        events.off('video-render-complete', this.stopRender);
     }
 
     onDragOver = (e) => {
@@ -44,11 +52,13 @@ class Stage extends Component {
         e.stopPropagation();
         e.preventDefault();
 
-        const { onFileDropped } = this.props;
+        const { app } = this.props;
+        const { rendering } = this.state;
+
         const file = e.dataTransfer.files[0];
 
-        if (file && onFileDropped) {
-            onFileDropped(file.path);
+        if (file && !rendering) {
+            app.loadAudioFile(file.path);
         }
     }
 
@@ -56,12 +66,20 @@ class Stage extends Component {
 
     stopRender = () => this.setState({ rendering: false });
 
-    showLoading = loading => this.setState({ loading });
+    showLoading = () => this.setState({ loading: true });
+
+    hideLoading = () => this.setState({ loading: false });
 
     updateStage = () => this.setState({ ...this.props.app.stage.options });
 
     render() {
-        const { loading, rendering, width, height, zoom } = this.state;
+        const {
+            loading,
+            rendering,
+            width,
+            height,
+            zoom,
+        } = this.state;
 
         const style = {
             width: `${width * zoom}px`,

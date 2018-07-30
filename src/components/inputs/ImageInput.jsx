@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import { raiseError } from 'app/global';
-import Window from 'core/Window';
+import { showOpenDialog } from 'utils/window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
 import folderIcon from 'svg/icons/folder-open.svg';
 import closeIcon from 'svg/icons/times.svg';
@@ -37,7 +37,7 @@ export default class ImageInput extends PureComponent {
     }
 
     onClick = () => {
-        Window.showOpenDialog((files) => {
+        showOpenDialog((files) => {
             if (files) {
                 this.loadImageFile(files[0]);
             }

@@ -1,46 +1,26 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import Window from 'core/Window';
+import { getWindow, maximizeWindow, minimizeWindow, closeWindow } from 'utils/window';
 import appIcon from 'svg/logo.svg';
 import buttonMinimize from 'images/browser/button-minimize.gif';
 import buttonMaximize from 'images/browser/button-maximize.gif';
 import buttonClose from 'images/browser/button-close.gif';
 import buttonRestore from 'images/browser/button-restore.gif';
-
 import styles from './Titlebar.less';
 
 export default class TitleBar extends PureComponent {
     componentDidMount() {
-        Window.on('maximize', () => this.forceUpdate());
-        Window.on('unmaximize', () => this.forceUpdate());
-        Window.on('focus', () => this.forceUpdate());
-        Window.on('blur', () => this.forceUpdate());
-    }
+        const win = getWindow();
 
-    onMinimize = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        Window.minimize();
-    }
-
-    onMaximize = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        Window.maximize();
-    }
-
-    onClose = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        Window.close(true);
+        win.on('maximize', () => this.forceUpdate());
+        win.on('unmaximize', () => this.forceUpdate());
+        win.on('focus', () => this.forceUpdate());
+        win.on('blur', () => this.forceUpdate());
     }
 
     render() {
-        const win = Window.getWindow();
+        const win = getWindow();
         const icon = win.isMaximized() ? buttonRestore : buttonMaximize;
 
         return (
@@ -57,13 +37,13 @@ export default class TitleBar extends PureComponent {
                     ASTROFOX
                 </div>
                 <div className={styles.buttons}>
-                    <span className={styles.button} onClick={this.onMinimize}>
+                    <span className={styles.button} onClick={minimizeWindow}>
                         <img src={buttonMinimize} alt="" />
                     </span>
-                    <span className={styles.button} onClick={this.onMaximize}>
+                    <span className={styles.button} onClick={maximizeWindow}>
                         <img src={icon} alt="" />
                     </span>
-                    <span className={styles.button} onClick={this.onClose}>
+                    <span className={styles.button} onClick={closeWindow}>
                         <img src={buttonClose} alt="" />
                     </span>
                 </div>

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Window from 'core/Window';
+import { showOpenDialog, showSaveDialog } from 'utils/window';
 import Button from 'components/interface/Button';
 import withAppContext from 'components/hocs/withAppContext';
 import {
     SettingsPanel,
     Settings,
     Row,
-    ButtonRow
+    ButtonRow,
 } from 'components/layout/SettingsPanel';
 import {
     ButtonInput,
@@ -84,7 +84,7 @@ class VideoSettings extends Component {
     }
 
     onOpenVideoFile = () => {
-        Window.showSaveDialog(
+        showSaveDialog(
             (filename) => {
                 if (filename) {
                     this.setState({ videoFile: filename });
@@ -97,7 +97,7 @@ class VideoSettings extends Component {
     onOpenAudioFile = () => {
         const { app } = this.props;
 
-        Window.showOpenDialog(
+        showOpenDialog(
             (files) => {
                 if (files) {
                     app.loadAudioFile(files[0]).then(() => {

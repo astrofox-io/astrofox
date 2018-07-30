@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Window from 'core/Window';
 import { events } from 'app/global';
+import { ignoreEvents } from 'utils/react';
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
 import Dialog from 'components/window/Dialog';
@@ -20,14 +20,6 @@ import Stage from 'components/stage/Stage';
 import menuConfig from 'config/menu.json';
 import fontOptions from 'config/fonts.json';
 import styles from './App.less';
-
-const audioFormats = [
-    'aac',
-    'mp3',
-    'm4a',
-    'ogg',
-    'wav',
-];
 
 export const AppContext = React.createContext();
 
@@ -81,10 +73,10 @@ export default class App extends Component {
         });
 
         events.on('menu-action', (action) => {
-            this.onMenuAction(action);
+            this.handleMenuAction(action);
         });
 
-        events.on('unsaved-changes', this.onUnsavedChanges);
+        events.on('unsaved-changes', this.handleUnsavedChanges);
 
         events.on('reactor-edit', this.showReactor);
 
@@ -97,12 +89,7 @@ export default class App extends Component {
         app.startRender();
     }
 
-    onDragDrop = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    onMenuAction = (action) => {
+    handleMenuAction = (action) => {
         const { app } = this.props;
 
         switch (action) {
@@ -111,52 +98,23 @@ export default class App extends Component {
                 break;
 
             case 'open-project':
-                Window.showOpenDialog(
-                    (files) => {
-                        if (files) {
-                            app.loadProject(files[0]);
-                        }
-                    },
-                    {
-                        filters: [
-                            { name: 'Project files', extensions: ['afx'] },
-                        ],
-                    },
-                );
+                app.openProject();
                 break;
 
             case 'save-project':
-                this.saveProject();
+                app.saveProject(app.projectFile);
                 break;
 
             case 'save-project-as':
-                this.saveProjectAs();
+                app.saveProjectAs();
                 break;
 
             case 'load-audio':
-                Window.showOpenDialog(
-                    (files) => {
-                        if (files) {
-                            this.loadAudioFile(files[0]);
-                        }
-                    },
-                    {
-                        filters: [
-                            { name: 'Audio files', extensions: audioFormats },
-                        ],
-                    },
-                );
+                app.openAudioFile();
                 break;
 
             case 'save-image':
-                Window.showSaveDialog(
-                    (filename) => {
-                        if (filename) {
-                            app.saveImage(filename);
-                        }
-                    },
-                    { defaultPath: 'image.png' },
-                );
+                app.saveImage();
                 break;
 
             case 'save-video':
@@ -165,12 +123,8 @@ export default class App extends Component {
                         onStart={this.startVideoRender}
                         onClose={this.hideModal}
                     />,
-                    { title: 'SAVE VIDEO', buttons: null },
+                    { title: 'Save Video', buttons: null },
                 );
-                break;
-
-            case 'exit':
-                Window.close();
                 break;
 
             case 'edit-canvas':
@@ -178,7 +132,7 @@ export default class App extends Component {
                     <CanvasSettings
                         onClose={this.hideModal}
                     />,
-                    { title: 'CANVAS', buttons: null },
+                    { title: 'Canvas', buttons: null },
                 );
                 break;
 
@@ -187,7 +141,7 @@ export default class App extends Component {
                     <AppSettings
                         onClose={this.hideModal}
                     />,
-                    { title: 'SETTINGS', buttons: null },
+                    { title: 'Settings', buttons: null },
                 );
                 break;
 
@@ -221,10 +175,14 @@ export default class App extends Component {
                     { title: null, buttons: null },
                 );
                 break;
+
+            case 'exit':
+                app.exit();
+                break;
         }
     }
 
-    onUnsavedChanges = (callback) => {
+    handleUnsavedChanges = (callback) => {
         this.showDialog(
             {
                 title: 'UNSAVED CHANGES',
@@ -239,35 +197,6 @@ export default class App extends Component {
                     callback();
                 }
             },
-        );
-    }
-
-    saveProject = (callback) => {
-        const { app } = this.props;
-        const file = app.projectFile;
-
-        if (file) {
-            app.saveProject(file);
-
-            if (callback) callback();
-        }
-        else {
-            this.saveProjectAs(callback);
-        }
-    }
-
-    saveProjectAs = (callback) => {
-        const { app } = this.props;
-
-        Window.showSaveDialog(
-            (filename) => {
-                if (filename) {
-                    app.saveProject(filename);
-
-                    if (callback) callback();
-                }
-            },
-            { defaultPath: 'project.afx' },
         );
     }
 
@@ -338,31 +267,12 @@ export default class App extends Component {
         }));
     }
 
-    loadAudioFile = (file) => {
-        const { app } = this.props;
-        const { showLoading } = this.stage;
-
-        showLoading(true);
-
-        app.loadAudioFile(file)
-            .then(() => {
-                showLoading(false);
-            })
-            .catch(() => {
-                showLoading(false);
-            });
-    }
-
-    startVideoRender = (options) => {
+    startVideoRender = ({ videoFile, audioFile, ...options }) => {
         const { app } = this.props;
 
         this.hideModal();
 
-        const { videoFile, audioFile } = options;
-
         app.saveVideo(videoFile, audioFile, options);
-
-        this.stage.startRender();
     }
 
     render() {
@@ -381,21 +291,18 @@ export default class App extends Component {
                 <div
                     className={styles.container}
                     role="presentation"
-                    onDrop={this.onDragDrop}
-                    onDragOver={this.onDragDrop}
+                    onDrop={ignoreEvents}
+                    onDragOver={ignoreEvents}
                 >
                     <Preload />
                     <TitleBar />
                     <MenuBar
                         items={menuConfig}
-                        onMenuAction={this.onMenuAction}
+                        onMenuAction={this.handleMenuAction}
                     />
                     <div className={styles.body}>
                         <div className={styles.viewport}>
-                            <Stage
-                                ref={e => (this.stage = e)}
-                                onFileDropped={this.loadAudioFile}
-                            />
+                            <Stage />
                             <Player
                                 visible={showPlayer}
                             />

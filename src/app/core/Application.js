@@ -1,12 +1,12 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
 import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, LICENSE_FILE } from 'core/Environment';
+import { closeWindow, showOpenDialog, showSaveDialog } from 'utils/window';
 import { events, logger, raiseError } from 'app/global';
 import { PUBLIC_KEY } from 'app/constants';
 import { uniqueId } from 'utils/crypto';
 import * as IO from 'utils/io';
 import AppUpdater from 'core/AppUpdater';
-import EventEmitter from 'core/EventEmitter';
 import LicenseManager from 'core/LicenseManager';
 import Player from 'audio/Player';
 import Audio from 'audio/Audio';
@@ -18,10 +18,8 @@ import menuConfig from 'config/menu.json';
 
 const FPS_POLL_INTERVAL = 500;
 
-export default class Application extends EventEmitter {
+export default class Application {
     constructor() {
-        super();
-
         remote.getCurrentWindow().removeAllListeners();
 
         this.audioContext = new window.AudioContext();
@@ -61,7 +59,7 @@ export default class Application extends EventEmitter {
         };
 
         // App events
-        this.on('config-updated', () => {
+        events.on('config-updated', () => {
             this.showWatermark(this.config.showWatermark);
         });
 
@@ -88,14 +86,13 @@ export default class Application extends EventEmitter {
     // region Main Methods
     init() {
         // Check for license
-        this.license.load(LICENSE_FILE);
-
-        // Load config file
-        this.loadConfig()
+        this.license.load(LICENSE_FILE)
+            // Load config file
+            .then(() => this.loadConfig())
+            // Set update policy from config
             .then(() => {
                 const { checkForUpdates, autoUpdate } = this.config;
 
-                // Set update policy from config
                 this.updater.options.autoUpdate = !!autoUpdate;
 
                 // Check for app updates
@@ -121,7 +118,7 @@ export default class Application extends EventEmitter {
                 root.submenu.forEach((item) => {
                     if (item.action && !item.role) {
                         // eslint-disable-next-line no-param-reassign
-                        item.click = this.doMenuAction;
+                        item.click = this.executeAction;
                     }
                 });
             }
@@ -133,8 +130,8 @@ export default class Application extends EventEmitter {
         this.newProject();
     }
 
-    doMenuAction(menuItem) {
-        events.emit('menu-action', menuItem.action);
+    executeAction({ action }) {
+        events.emit('menu-action', action);
     }
 
     resetAnalyzer() {
@@ -280,17 +277,36 @@ export default class Application extends EventEmitter {
 
                     Object.assign(this.config, config);
 
-                    this.emit('config-updated');
+                    events.emit('config-updated');
                 });
         }
 
         return this.saveConfig({ uid: uniqueId(), ...this.config });
     }
 
+    openAudioFile() {
+        showOpenDialog(
+            (files) => {
+                if (files) {
+                    this.loadAudioFile(files[0]);
+                }
+            },
+            {
+                filters: [
+                    {
+                        name: 'Audio files',
+                        extensions: ['aac', 'mp3', 'm4a', 'ogg', 'wav'],
+                    },
+                ],
+            },
+        );
+    }
+
     loadAudioFile(file) {
         this.player.stop();
 
         logger.time('audio-file-load');
+        events.emit('audio-file-load');
 
         return IO.readFileAsBlob(file)
             .then(blob => IO.readAsArrayBuffer(blob))
@@ -305,6 +321,7 @@ export default class Application extends EventEmitter {
                 }
 
                 logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
+                events.emit('audio-file-loaded');
 
                 return file;
             })
@@ -344,6 +361,21 @@ export default class Application extends EventEmitter {
                     }
                 });
             });
+    }
+
+    openProject() {
+        showOpenDialog(
+            (files) => {
+                if (files) {
+                    this.loadProject(files[0]);
+                }
+            },
+            {
+                filters: [
+                    { name: 'Project files', extensions: ['afx'] },
+                ],
+            },
+        );
     }
 
     loadProject(file) {
@@ -391,7 +423,7 @@ export default class Application extends EventEmitter {
 
                 Object.assign(this.config, config);
 
-                this.emit('config-updated');
+                events.emit('config-updated');
             })
             .catch((error) => {
                 raiseError('Failed to save config file.', error);
@@ -399,25 +431,38 @@ export default class Application extends EventEmitter {
     }
 
     saveImage(filename) {
-        const { stage } = this;
-        const data = this.getFrameData(false);
+        if (filename) {
+            const { stage } = this;
+            const data = this.getFrameData(false);
 
-        stage.render(data, () => {
-            stage.getImage((buffer) => {
-                IO.writeFile(filename, buffer)
-                    .then(() => {
-                        logger.log('Image saved:', filename);
-                    })
-                    .catch((error) => {
-                        raiseError('Failed to save image file.', error);
-                    });
+            stage.render(data, () => {
+                stage.getImage((buffer) => {
+                    IO.writeFile(filename, buffer)
+                        .then(() => {
+                            logger.log('Image saved:', filename);
+                        })
+                        .catch((error) => {
+                            raiseError('Failed to save image file.', error);
+                        });
+                });
             });
-        });
+        }
+        else {
+            showSaveDialog(
+                (file) => {
+                    if (file) {
+                        this.saveImage(file);
+                    }
+                },
+                { defaultPath: 'image.png' },
+            );
+        }
     }
 
     saveVideo(videoFile, audioFile, options) {
         if (this.player.getAudio()) {
             logger.time('video-render');
+            events.emit('video-render-start');
 
             this.renderer = new VideoRenderer(videoFile, audioFile, options);
 
@@ -438,6 +483,7 @@ export default class Application extends EventEmitter {
 
             renderer.on('complete', () => {
                 logger.timeEnd('video-render', 'Render complete.');
+                events.emit('video-render-complete');
 
                 this.renderer = null;
 
@@ -453,25 +499,40 @@ export default class Application extends EventEmitter {
     }
 
     saveProject(file) {
-        const sceneData = this.stage.scenes.items.map(scene => scene.toJSON());
+        if (file) {
+            const sceneData = this.stage.scenes.items.map(scene => scene.toJSON());
 
-        const data = JSON.stringify({
-            version: APP_VERSION,
-            stage: this.stage.toJSON(),
-            scenes: sceneData,
-        });
-
-        return IO.writeFileCompressed(file, data)
-            .then(() => {
-                logger.log('Project saved:', file);
-
-                this.resetChanges();
-
-                this.projectFile = file;
-            })
-            .catch((error) => {
-                raiseError('Failed to save project file.', error);
+            const data = JSON.stringify({
+                version: APP_VERSION,
+                stage: this.stage.toJSON(),
+                scenes: sceneData,
             });
+
+            return IO.writeFileCompressed(file, data)
+                .then(() => {
+                    logger.log('Project saved:', file);
+
+                    this.resetChanges();
+
+                    this.projectFile = file;
+                })
+                .catch((error) => {
+                    raiseError('Failed to save project file.', error);
+                });
+        }
+
+        return this.saveProjectAs();
+    }
+
+    saveProjectAs() {
+        showSaveDialog(
+            (filename) => {
+                if (filename) {
+                    this.saveProject(filename);
+                }
+            },
+            { defaultPath: 'project.afx' },
+        );
     }
 
     newProject() {
@@ -491,4 +552,8 @@ export default class Application extends EventEmitter {
         }
     }
     // endregion
+
+    exit() {
+        closeWindow();
+    }
 }

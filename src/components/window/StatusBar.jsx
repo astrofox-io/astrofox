@@ -80,13 +80,13 @@ const Zoom = ({ width, height, value, onChange }) => (
             {`${width} x ${height}`}
         </span>
         <span className={styles.zoomButton} onClick={() => onChange(-1)}>
-            -
+            {'\uff0d'}
         </span>
         <span className={styles.zoomValue}>
             {`${value * 100}%`}
         </span>
         <span className={styles.zoomButton} onClick={() => onChange(1)}>
-            +
+            {'\uff0b'}
         </span>
     </div>
 );
