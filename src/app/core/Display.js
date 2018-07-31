@@ -1,15 +1,20 @@
 import Component from 'core/Component';
 import AudioReactor from 'audio/AudioReactor';
 
-const displayCount = {};
+let displayCount = {};
+
+export function resetCount() {
+    displayCount = {};
+}
 
 export default class Display extends Component {
     constructor(type, options) {
         if (displayCount[type.className] === undefined) {
             displayCount[type.className] = 1;
         }
-
-        displayCount[type.className] += 1;
+        else {
+            displayCount[type.className] += 1;
+        }
 
         super({
             displayName: `${type.label} ${displayCount[type.className]}`,

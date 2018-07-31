@@ -14,6 +14,10 @@ import blankImage from 'images/data/blank.gif';
 import styles from './ImageControl.less';
 
 export class ImageControl extends PureComponent {
+    static defaultProps = {
+        onChange: () => {},
+    }
+
     componentDidMount() {
         this.image = document.createElement('img');
     }
@@ -35,7 +39,7 @@ export class ImageControl extends PureComponent {
                 obj.x = 0;
                 obj.y = 0;
                 obj.rotation = 0;
-                obj.opacity = 0;
+                obj.opacity = 1.0;
             }
 
             // Load new image
@@ -45,20 +49,14 @@ export class ImageControl extends PureComponent {
                 obj.opacity = 1.0;
             }
         }
-        else if (name === 'width') {
-            if (fixed) {
-                obj.height = Math.round(value * (1 / ratio)) || 0;
-            }
+        else if (name === 'width' && fixed) {
+            obj.height = Math.round(value * (1 / ratio)) || 0;
         }
-        else if (name === 'height') {
-            if (fixed) {
-                obj.width = Math.round(value * ratio);
-            }
+        else if (name === 'height' && fixed) {
+            obj.width = Math.round(value * ratio);
         }
 
-        if (onChange) {
-            onChange(name, value, obj);
-        }
+        onChange(name, value, obj);
     }
 
     onLinkClick = () => {

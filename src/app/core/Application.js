@@ -1,6 +1,6 @@
 import id3 from 'id3js';
 import { remote } from 'electron';
-import { APP_VERSION, APP_CONFIG_FILE, DEFAULT_PROJECT, LICENSE_FILE } from 'core/Environment';
+import { APP_VERSION, APP_CONFIG_FILE, LICENSE_FILE } from 'core/Environment';
 import { closeWindow, showOpenDialog, showSaveDialog } from 'utils/window';
 import { events, logger, raiseError } from 'app/global';
 import { PUBLIC_KEY } from 'app/constants';
@@ -15,6 +15,7 @@ import Stage from 'core/Stage';
 import VideoRenderer from 'video/VideoRenderer';
 import appConfig from 'config/app.json';
 import menuConfig from 'config/menu.json';
+import * as displayLibrary from 'lib/displays';
 
 const FPS_POLL_INTERVAL = 500;
 
@@ -474,27 +475,21 @@ export default class Application {
     }
 
     loadProject(file) {
+        const loadData = (data) => {
+            this.stage.loadConfig(JSON.parse(data));
+            this.resetChanges();
+            this.projectFile = file;
+
+            events.emit('project-loaded');
+        };
+
         return IO.readFileCompressed(file)
             .then(
-                (data) => {
-                    this.stage.loadConfig(JSON.parse(data));
-                    this.resetChanges();
-
-                    this.projectFile = file;
-
-                    events.emit('project-loaded');
-                },
+                loadData,
                 (error) => {
                     if (error.message.indexOf('incorrect header check') > -1) {
                         IO.readFile(file)
-                            .then((data) => {
-                                this.stage.loadConfig(JSON.parse(data));
-                                this.resetChanges();
-
-                                this.projectFile = file;
-
-                                events.emit('project-loaded');
-                            })
+                            .then(loadData)
                             .catch((err) => {
                                 raiseError('Invalid project file.', err);
                             });
@@ -547,10 +542,21 @@ export default class Application {
 
     newProject() {
         this.checkUnsavedChanges(() => {
-            this.loadProject(DEFAULT_PROJECT)
-                .then(() => {
-                    this.projectFile = '';
-                });
+            const { stage } = this;
+
+            stage.clearScenes();
+
+            const scene = stage.addScene();
+
+            scene.addElement(new displayLibrary.ImageDisplay());
+            scene.addElement(new displayLibrary.BarSpectrumDisplay());
+            scene.addElement(new displayLibrary.TextDisplay());
+
+            stage.resetChanges();
+
+            this.projectFile = '';
+
+            events.emit('project-loaded');
         });
     }
     // endregion

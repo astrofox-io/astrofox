@@ -17,11 +17,13 @@ export default class ImageInput extends PureComponent {
     }
 
     onImageLoad = () => {
-        const { name, onChange } = this.props;
+        const { name, src, onChange } = this.props;
 
         this.forceUpdate();
 
-        onChange(name, this.image.src);
+        if (src !== this.image.src) {
+            onChange(name, this.image.src);
+        }
     }
 
     onDragOver = (e) => {
@@ -59,15 +61,20 @@ export default class ImageInput extends PureComponent {
         }
     }
 
-    loadImageFile = file => readFileAsBlob(file).then((data) => {
-        this.loadImageBlob(data);
-    }).catch(err => raiseError(err.message));
+    loadImageFile = file => readFileAsBlob(file)
+        .then((data) => {
+            this.loadImageBlob(data);
+        })
+        .catch((err) => {
+            raiseError(err.message);
+        });
 
     loadImageBlob = (blob) => {
         if (/^image/.test(blob.type)) {
-            readAsDataUrl(blob).then((data) => {
-                this.loadImageSrc(data);
-            });
+            readAsDataUrl(blob)
+                .then((data) => {
+                    this.loadImageSrc(data);
+                });
         }
         else {
             throw new Error('Invalid image file.');

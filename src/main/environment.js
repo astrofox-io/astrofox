@@ -22,4 +22,3 @@ export const APP_CONFIG_FILE = path.join(
     process.env.NODE_ENV === 'production' ? 'app.config' : 'app-dev.config',
 );
 export const LICENSE_FILE = path.join(USER_DATA_PATH, 'license.dat');
-export const DEFAULT_PROJECT = path.join(APP_PATH, 'projects', 'default.afx');

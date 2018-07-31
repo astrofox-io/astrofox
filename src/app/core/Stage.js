@@ -3,7 +3,7 @@ import {
     Color,
 } from 'three';
 import Scene from 'core/Scene';
-import Display from 'core/Display';
+import Display, { resetCount } from 'core/Display';
 import WatermarkDisplay from 'displays/WatermarkDisplay';
 import List from 'core/List';
 import Composer from 'graphics/Composer';
@@ -117,6 +117,8 @@ export default class Stage extends Display {
         this.scenes.items.forEach((scene) => {
             this.removeScene(scene);
         });
+
+        resetCount();
 
         this.changed = true;
     }
