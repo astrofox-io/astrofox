@@ -124,9 +124,7 @@ export default class Stage extends Display {
     }
 
     getSortedDisplays() {
-        const displays = [];
-
-        this.scenes.items.reverse().forEach((scene) => {
+        return this.scenes.items.reverse().reduce((displays, scene) => {
             displays.push(scene);
 
             scene.effects.items.reverse().forEach((effect) => {
@@ -136,9 +134,9 @@ export default class Stage extends Display {
             scene.displays.items.reverse().forEach((display) => {
                 displays.push(display);
             });
-        });
 
-        return displays;
+            return displays;
+        }, []);
     }
 
     hasScenes() {

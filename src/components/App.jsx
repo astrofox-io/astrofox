@@ -38,53 +38,19 @@ export default class App extends Component {
 
         app.init();
 
-        events.on('message', (message) => {
-            this.showDialog({ message });
-        });
+        events.on('error', this.showErrorDialog);
 
-        events.on('error', (err) => {
-            this.showDialog({
-                title: 'ERROR',
-                icon: 'icon-warning',
-                message: err,
-            });
-        });
+        events.on('pick-control', this.loadControlPicker);
 
-        events.on('pick-control', (type, callback) => {
-            const types = ['display', 'effect'];
+        events.on('audio-tags', this.loadAudioTags);
 
-            this.showModal(
-                <ControlPicker
-                    activeIndex={types.indexOf(type)}
-                    onControlPicked={callback}
-                    onClose={this.hideModal}
-                />,
-                { title: 'ADD CONTROL', buttons: ['Close'] },
-            );
-        });
-
-        events.on('audio-tags', ({ artist, title }) => {
-            if (artist) {
-                // eslint-disable-next-line
-                const trim = str => str.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
-
-                this.setState({ statusBarText: `${trim(artist)} - ${trim(title)}` });
-            }
-        });
-
-        events.on('menu-action', (action) => {
-            this.handleMenuAction(action);
-        });
+        events.on('menu-action', this.handleMenuAction);
 
         events.on('unsaved-changes', this.handleUnsavedChanges);
 
         events.on('reactor-edit', this.showReactor);
 
-        app.updater.on('status', (event) => {
-            if (event === 'check-for-updates-complete' && app.updater.hasUpdate) {
-                this.showCheckForUpdates();
-            }
-        });
+        events.on('has-app-update', this.showCheckForUpdates);
 
         app.startRender();
     }
@@ -246,6 +212,14 @@ export default class App extends Component {
         this.dialogShown = true;
     }
 
+    showErrorDialog = (message) => {
+        this.showDialog({
+            title: 'ERROR',
+            icon: 'icon-warning',
+            message,
+        });
+    }
+
     showCheckForUpdates = () => {
         if (this.updatesShown) return;
 
@@ -275,6 +249,26 @@ export default class App extends Component {
         this.hideModal();
 
         app.saveVideo(videoFile, audioFile, options);
+    }
+
+    loadControlPicker = (type, callback) => {
+        this.showModal(
+            <ControlPicker
+                type={type}
+                onControlPicked={callback}
+                onClose={this.hideModal}
+            />,
+            { title: 'ADD CONTROL', buttons: ['Close'] },
+        );
+    }
+
+    loadAudioTags = ({ artist, title }) => {
+        if (artist) {
+            // eslint-disable-next-line
+            const trim = str => str.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+
+            this.setState({ statusBarText: `${trim(artist)} - ${trim(title)}` });
+        }
     }
 
     render() {

@@ -4,6 +4,8 @@ import * as displayLibrary from 'lib/displays';
 import * as effectsLibrary from 'lib/effects';
 import styles from './ControlPicker.less';
 
+const types = ['display', 'effect'];
+
 export default class ControlPicker extends Component {
     onClick = Item => () => {
         const { onControlPicked, onClose } = this.props;
@@ -38,13 +40,17 @@ export default class ControlPicker extends Component {
     }
 
     render() {
-        const { activeIndex } = this.props;
+        const { type } = this.props;
         const displays = this.getItems(displayLibrary);
         const effects = this.getItems(effectsLibrary);
 
         return (
             <div>
-                <TabPanel className={styles.panel} tabPosition="left" activeIndex={activeIndex}>
+                <TabPanel
+                    className={styles.panel}
+                    tabPosition="left"
+                    activeIndex={types.indexOf(type)}
+                >
                     <Tab name="Displays" contentClassName={styles.picker}>
                         {displays}
                     </Tab>

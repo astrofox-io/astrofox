@@ -69,6 +69,13 @@ export default class Application {
         this.player.on('pause', this.resetAnalyzer, this);
         this.player.on('stop', this.resetAnalyzer, this);
 
+        // Updater events
+        this.updater.on('status', (event) => {
+            if (event === 'check-for-updates-complete' && this.updater.hasUpdate) {
+                events.emit('has-app-update');
+            }
+        });
+
         // Handle uncaught errors
         window.onerror = (msg, src, line, col, err) => {
             raiseError(msg, err);
