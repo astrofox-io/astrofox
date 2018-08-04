@@ -15,8 +15,8 @@ export default class CanvasText extends Component {
         super({ ...CanvasText.defaultOptions, ...options });
 
         this.canvas = canvas || document.createElement('canvas');
-        this.canvas.width = this.options.width;
-        this.canvas.height = this.options.height;
+        this.canvas.width = this.options.width || 1;
+        this.canvas.height = this.options.height || 1;
 
         this.context = this.canvas.getContext('2d');
     }
@@ -45,14 +45,14 @@ export default class CanvasText extends Component {
         context.font = font;
 
         const length = Math.ceil(context.measureText(text).width);
-        const spacing = Math.ceil(length / text.length);
+        const spacing = text.length ? Math.ceil(length / text.length) : 0;
         const width = length + spacing;
         const height = size * 2;
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
+            canvas.width = width || 1;
+            canvas.height = height || 1;
         }
         else {
             context.clearRect(0, 0, width, height);

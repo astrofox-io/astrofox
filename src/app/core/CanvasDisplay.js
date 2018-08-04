@@ -6,6 +6,8 @@ export default class CanvasDisplay extends Display {
         super(type, options);
 
         this.canvas = document.createElement('canvas');
+        this.canvas.width = this.options.width || 1;
+        this.canvas.height = this.options.height || 1;
         this.context = this.canvas.getContext('2d');
     }
 

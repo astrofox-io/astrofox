@@ -6,16 +6,16 @@ const MIN_RESIZE_WIDTH = 100;
 export default class CanvasImage extends Component {
     static defaultOptions = {
         src: '',
-        width: 0,
-        height: 0,
+        width: 1,
+        height: 1,
     }
 
     constructor(options, canvas) {
         super({ ...CanvasImage.defaultOptions, ...options });
 
         this.canvas = canvas || document.createElement('canvas');
-        this.canvas.width = this.options.width;
-        this.canvas.height = this.options.height;
+        this.canvas.width = this.options.width || 1;
+        this.canvas.height = this.options.height || 1;
 
         this.context = this.canvas.getContext('2d');
 
@@ -41,8 +41,8 @@ export default class CanvasImage extends Component {
 
         for (let i = 0; i < steps; i += 1) {
             const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
+            canvas.width = width || 1;
+            canvas.height = height || 1;
 
             canvas.getContext('2d').drawImage(src, 0, 0, width, height);
 
@@ -84,8 +84,8 @@ export default class CanvasImage extends Component {
 
         // Reset canvas
         if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
+            canvas.width = width || 1;
+            canvas.height = height || 1;
         }
         else {
             context.clearRect(0, 0, width, height);

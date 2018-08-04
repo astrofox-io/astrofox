@@ -34,8 +34,8 @@ export class ImageControl extends PureComponent {
 
             // Reset values
             if (value === blankImage) {
-                obj.width = 0;
-                obj.height = 0;
+                obj.width = 1;
+                obj.height = 1;
                 obj.x = 0;
                 obj.y = 0;
                 obj.rotation = 0;
@@ -44,8 +44,8 @@ export class ImageControl extends PureComponent {
 
             // Load new image
             if (value !== src) {
-                obj.width = naturalWidth;
-                obj.height = naturalHeight;
+                obj.width = naturalWidth || 1;
+                obj.height = naturalHeight || 1;
                 obj.opacity = 1.0;
             }
         }
