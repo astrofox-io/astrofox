@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children, cloneElement } from 'react';
 import classNames from 'classnames';
 import Button from 'components/interface/Button';
 import Icon from 'components/interface/Icon';
@@ -31,7 +31,11 @@ const ModalWindow = ({
                 )
             }
             <div className={styles.body}>
-                {children}
+                {
+                    Children.map(children, child => (
+                        cloneElement(child, { onClose })
+                    ))
+                }
             </div>
             {
                 buttons && (

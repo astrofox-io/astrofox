@@ -87,7 +87,6 @@ export default class App extends Component {
                 this.showModal(
                     <VideoSettings
                         onStart={this.startVideoRender}
-                        onClose={this.hideModal}
                     />,
                     { title: 'Save Video', buttons: null },
                 );
@@ -95,18 +94,14 @@ export default class App extends Component {
 
             case 'edit-canvas':
                 this.showModal(
-                    <CanvasSettings
-                        onClose={this.hideModal}
-                    />,
+                    <CanvasSettings />,
                     { title: 'Canvas', buttons: null },
                 );
                 break;
 
             case 'edit-settings':
                 this.showModal(
-                    <AppSettings
-                        onClose={this.hideModal}
-                    />,
+                    <AppSettings />,
                     { title: 'Settings', buttons: null },
                 );
                 break;
@@ -137,7 +132,7 @@ export default class App extends Component {
 
             case 'about':
                 this.showModal(
-                    <About key="about" onClose={this.hideModal} />,
+                    <About />,
                     { title: null, buttons: null },
                 );
                 break;
@@ -153,8 +148,10 @@ export default class App extends Component {
 
         this.showDialog(
             {
-                title: 'UNSAVED CHANGES',
+                title: 'Unsaved Changes',
                 message: 'Do you want to save project changes before closing?',
+            },
+            {
                 buttons: ['Yes', 'No', 'Cancel'],
             },
             (button) => {
@@ -175,7 +172,7 @@ export default class App extends Component {
             modals: modals.concat([
                 <ModalWindow
                     key={modals.length}
-                    onClose={this.hideModal}
+                    onClose={() => this.hideModal()}
                     buttons={['OK']}
                     {...props}
                 >
@@ -185,28 +182,26 @@ export default class App extends Component {
         }));
     }
 
-    hideModal = () => {
+    hideModal = (callback) => {
         this.setState(({ modals }) => {
             modals.pop();
             return { modals };
-        });
+        }, callback);
     }
 
-    showDialog = ({ icon, message, ...otherProps }, callback) => {
+    showDialog = ({ icon, message }, props, callback) => {
         if (this.dialogShown) return;
-
-        const props = {
-            onClose: (button) => {
-                this.hideModal();
-                this.dialogShown = false;
-                if (callback) callback(button);
-            },
-            ...otherProps,
-        };
 
         this.showModal(
             <Dialog icon={icon} message={message} />,
-            props,
+            {
+                onClose: (button) => {
+                    this.hideModal();
+                    this.dialogShown = false;
+                    if (callback) callback(button);
+                },
+                ...props,
+            },
         );
 
         this.dialogShown = true;
@@ -214,7 +209,7 @@ export default class App extends Component {
 
     showErrorDialog = (message) => {
         this.showDialog({
-            title: 'ERROR',
+            title: 'Error',
             icon: 'icon-warning',
             message,
         });
@@ -223,17 +218,17 @@ export default class App extends Component {
     showCheckForUpdates = () => {
         if (this.updatesShown) return;
 
+        this.updatesShown = true;
+
         const onClose = () => {
             this.hideModal();
             this.updatesShown = false;
         };
 
         this.showModal(
-            <AppUpdates onClose={onClose} />,
-            { title: 'UPDATES', buttons: null },
+            <AppUpdates />,
+            { title: 'Updates', buttons: null, onClose },
         );
-
-        this.updatesShown = true;
     }
 
     showReactor = (reactor) => {
@@ -246,9 +241,9 @@ export default class App extends Component {
     startVideoRender = ({ videoFile, audioFile, ...options }) => {
         const { app } = this.props;
 
-        this.hideModal();
-
-        app.saveVideo(videoFile, audioFile, options);
+        this.hideModal(() => {
+            app.saveVideo(videoFile, audioFile, options);
+        });
     }
 
     loadControlPicker = (type, callback) => {
@@ -256,9 +251,8 @@ export default class App extends Component {
             <ControlPicker
                 type={type}
                 onControlPicked={callback}
-                onClose={this.hideModal}
             />,
-            { title: 'ADD CONTROL', buttons: ['Close'] },
+            { title: 'Add Control', buttons: ['Close'] },
         );
     }
 
