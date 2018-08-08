@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import withAppContext from 'components/hocs/withAppContext';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';
 import styles from './AppUpdates.less';
 
-class AppUpdates extends Component {
+class AppUpdates extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -115,7 +115,7 @@ class AppUpdates extends Component {
         }
 
         return (
-            <div>
+            <Fragment>
                 <div className={styles.message}>
                     {this.getIcon()}
                     {this.getMessage()}
@@ -129,7 +129,7 @@ class AppUpdates extends Component {
                         onClick={onClose}
                     />
                 </div>
-            </div>
+            </Fragment>
         );
     }
 }

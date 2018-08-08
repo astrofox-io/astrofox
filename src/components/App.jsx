@@ -148,10 +148,10 @@ export default class App extends Component {
 
         this.showDialog(
             {
-                title: 'Unsaved Changes',
                 message: 'Do you want to save project changes before closing?',
             },
             {
+                title: 'Unsaved Changes',
                 buttons: ['Yes', 'No', 'Cancel'],
             },
             (button) => {

@@ -20,33 +20,6 @@ class ControlsPanel extends PureComponent {
         this.focusControl(this.state.activeIndex);
     }
 
-    getControls() {
-        const { app: { stage } } = this.props;
-        const { displays, activeIndex } = this.state;
-        const { width, height } = stage.getSize();
-
-        return displays.map((display, index) => {
-            const { id } = display;
-            const Component = getControlComponent(display);
-
-            return (
-                <div
-                    key={id}
-                    ref={e => (this.nodes[id] = e)}
-                    className={styles.wrapper}
-                >
-                    <Component
-                        ref={e => (this.controls[id] = e)}
-                        display={display}
-                        active={index === activeIndex}
-                        stageWidth={width}
-                        stageHeight={height}
-                    />
-                </div>
-            );
-        });
-    }
-
     updateControl(display) {
         const control = this.controls[display.id];
 
@@ -75,13 +48,37 @@ class ControlsPanel extends PureComponent {
     }
 
     render() {
-        const controls = this.getControls();
+        const { app: { stage } } = this.props;
+        const { displays, activeIndex } = this.state;
+        const { width, height } = stage.getSize();
 
         return (
-            <div className={styles.panel} ref={e => (this.nodes.panel = e)}>
-                <div>
-                    {controls}
-                </div>
+            <div
+                className={styles.panel}
+                ref={e => (this.nodes.panel = e)}
+            >
+                {
+                    displays.map((display, index) => {
+                        const { id } = display;
+                        const Component = getControlComponent(display);
+
+                        return (
+                            <div
+                                key={id}
+                                ref={e => (this.nodes[id] = e)}
+                                className={styles.control}
+                            >
+                                <Component
+                                    ref={e => (this.controls[id] = e)}
+                                    display={display}
+                                    active={index === activeIndex}
+                                    stageWidth={width}
+                                    stageHeight={height}
+                                />
+                            </div>
+                        );
+                    })
+                }
             </div>
         );
     }

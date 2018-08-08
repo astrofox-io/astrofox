@@ -23,7 +23,7 @@ export default class ControlDock extends PureComponent {
         return (
             <PanelDock visible={visible}>
                 <Panel
-                    title="LAYERS"
+                    title="Layers"
                     height={300}
                     minHeight={100}
                     resizable
@@ -35,7 +35,7 @@ export default class ControlDock extends PureComponent {
                     />
                 </Panel>
                 <Panel
-                    title="CONTROLS"
+                    title="Controls"
                     stretch
                 >
                     <ControlsPanel

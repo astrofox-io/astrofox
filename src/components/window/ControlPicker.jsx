@@ -45,20 +45,18 @@ export default class ControlPicker extends Component {
         const effects = this.getItems(effectsLibrary);
 
         return (
-            <div>
-                <TabPanel
-                    className={styles.panel}
-                    tabPosition="left"
-                    activeIndex={types.indexOf(type)}
-                >
-                    <Tab name="Displays" contentClassName={styles.picker}>
-                        {displays}
-                    </Tab>
-                    <Tab name="Effects" contentClassName={styles.picker}>
-                        {effects}
-                    </Tab>
-                </TabPanel>
-            </div>
+            <TabPanel
+                className={styles.panel}
+                tabPosition="left"
+                activeIndex={types.indexOf(type)}
+            >
+                <Tab name="Displays" contentClassName={styles.picker}>
+                    {displays}
+                </Tab>
+                <Tab name="Effects" contentClassName={styles.picker}>
+                    {effects}
+                </Tab>
+            </TabPanel>
         );
     }
 }
