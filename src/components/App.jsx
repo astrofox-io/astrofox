@@ -88,21 +88,21 @@ export default class App extends Component {
                     <VideoSettings
                         onStart={this.startVideoRender}
                     />,
-                    { title: 'Save Video', buttons: null },
+                    { title: 'Save Video', buttons: false },
                 );
                 break;
 
             case 'edit-canvas':
                 this.showModal(
                     <CanvasSettings />,
-                    { title: 'Canvas', buttons: null },
+                    { title: 'Canvas', buttons: false },
                 );
                 break;
 
             case 'edit-settings':
                 this.showModal(
                     <AppSettings />,
-                    { title: 'Settings', buttons: null },
+                    { title: 'Settings', buttons: false },
                 );
                 break;
 
@@ -133,7 +133,7 @@ export default class App extends Component {
             case 'about':
                 this.showModal(
                     <About />,
-                    { title: null, buttons: null },
+                    { title: false, buttons: false },
                 );
                 break;
 
@@ -227,7 +227,7 @@ export default class App extends Component {
 
         this.showModal(
             <AppUpdates />,
-            { title: 'Updates', buttons: null, onClose },
+            { title: 'Updates', buttons: false, onClose },
         );
     }
 
