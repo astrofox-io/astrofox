@@ -73,8 +73,10 @@ export default class Composer {
         const d = depth !== false;
         const s = stencil !== false;
 
-        this.renderer.clearTarget(this.readTarget, c, d, s);
-        this.renderer.clearTarget(this.writeTarget, c, d, s);
+        this.renderer.setRenderTarget(this.readTarget);
+        this.renderer.clear(c, d, s);
+        this.renderer.setRenderTarget(this.writeTarget);
+        this.renderer.clear(c, d, s);
     }
 
     clear(color, alpha) {

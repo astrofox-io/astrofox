@@ -1,27 +1,31 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/env", {
       "targets": {
-        "electron": "1.8.2"
+        "electron": "3.0.2"
       }
     }],
-    "react"
+    "@babel/react"
   ],
   "plugins": [
-    ["transform-runtime", {"polyfill": false}],
-    "transform-class-properties",
-    "transform-object-rest-spread"
+    "@babel/transform-runtime",
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread"
   ],
   "env": {
     "production": {
       "presets": [
-        ["es2015", {"modules": false}],
-        "react"
+        ["@babel/env", {
+          "targets": {
+            "electron": "3.0.2"
+          }
+        }],
+        "@babel/react"
       ],
       "plugins": [
-        ["transform-runtime", {"polyfill": false}],
-        "transform-class-properties",
-        "transform-object-rest-spread"
+        "@babel/transform-runtime",
+        "@babel/proposal-class-properties",
+        "@babel/proposal-object-rest-spread"
       ]
     }
   }
