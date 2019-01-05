@@ -93,6 +93,8 @@ export default class Application {
 
     // region Main Methods
     init() {
+        const { setApplicationMenu, buildFromTemplate } = remote.Menu;
+
         // Check for license
         this.license.load(LICENSE_FILE)
             // Load config file
@@ -110,20 +112,11 @@ export default class Application {
             });
 
         // Create app menu
-        const menu = [];
+        const menu = [...menuConfig];
 
-        menuConfig.forEach((root) => {
-            if (process.env.NODE_ENV !== 'production') {
-                if (root.visible !== false) {
-                    menu.push(root);
-                }
-            }
-            else {
-                menu.push(root);
-            }
-
-            if (root.submenu) {
-                root.submenu.forEach((item) => {
+        menu.forEach((menuItem) => {
+            if (menuItem.submenu) {
+                menuItem.submenu.forEach((item) => {
                     if (item.action && !item.role) {
                         // eslint-disable-next-line no-param-reassign
                         item.click = this.executeAction;
@@ -132,7 +125,7 @@ export default class Application {
             }
         });
 
-        remote.Menu.setApplicationMenu(remote.Menu.buildFromTemplate(menu));
+        setApplicationMenu(buildFromTemplate(menu));
 
         // Load default project
         this.newProject();
