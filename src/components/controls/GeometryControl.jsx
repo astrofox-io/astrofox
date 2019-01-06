@@ -86,7 +86,7 @@ export class GeometryControl extends PureComponent {
                     />
                 </Option>
                 <Option>
-                    <Label text="shading" />
+                    <Label text="Shading" />
                     <SelectInput
                         name="shading"
                         width={140}

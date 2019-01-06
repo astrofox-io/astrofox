@@ -16,7 +16,7 @@ export default class ImageInput extends PureComponent {
         onChange: () => {},
     }
 
-    onImageLoad = () => {
+    handleImageLoad = () => {
         const { name, src, onChange } = this.props;
 
         this.forceUpdate();
@@ -26,19 +26,19 @@ export default class ImageInput extends PureComponent {
         }
     }
 
-    onDragOver = (e) => {
+    handleDragOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    onDrop = (e) => {
+    handleDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.loadImageFile(e.dataTransfer.files[0].path);
     }
 
-    onClick = () => {
+    handleClick = () => {
         showOpenDialog((files) => {
             if (files) {
                 this.loadImageFile(files[0]);
@@ -46,7 +46,7 @@ export default class ImageInput extends PureComponent {
         });
     }
 
-    onDelete = (e) => {
+    handleDelete = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -91,9 +91,9 @@ export default class ImageInput extends PureComponent {
                 <div
                     role="presentation"
                     className={styles.image}
-                    onDrop={this.onDrop}
-                    onDragOver={this.onDragOver}
-                    onClick={this.onClick}
+                    onDrop={this.handleDrop}
+                    onDragOver={this.handleDragOver}
+                    onClick={this.handleClick}
                 >
                     <img
                         ref={e => (this.image = e)}
@@ -103,7 +103,7 @@ export default class ImageInput extends PureComponent {
                         })}
                         src={value || blankImage}
                         alt=""
-                        onLoad={this.onImageLoad}
+                        onLoad={this.handleImageLoad}
                     />
                     <Icon
                         className={styles.openIcon}
@@ -118,7 +118,7 @@ export default class ImageInput extends PureComponent {
                     })}
                     glyph={closeIcon}
                     title="Remove Image"
-                    onClick={this.onDelete}
+                    onClick={this.handleDelete}
                 />
             </Fragment>
         );

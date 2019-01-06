@@ -22,7 +22,7 @@ export class ImageControl extends PureComponent {
         this.image = document.createElement('img');
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         const { src, fixed, onChange } = this.props;
         const image = this.imageInput.getImage();
         const { naturalWidth, naturalHeight } = image;
@@ -59,8 +59,8 @@ export class ImageControl extends PureComponent {
         onChange(name, value, obj);
     }
 
-    onLinkClick = () => {
-        this.onChange('fixed', !this.props.fixed);
+    handleLinkClick = () => {
+        this.handleChange('fixed', !this.props.fixed);
     }
 
     render() {
@@ -99,7 +99,7 @@ export class ImageControl extends PureComponent {
                         name="src"
                         ref={e => (this.imageInput = e)}
                         value={src}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -110,7 +110,7 @@ export class ImageControl extends PureComponent {
                                 [styles.linkIconActive]: fixed,
                             })}
                             glyph={iconLink}
-                            onClick={this.onLinkClick}
+                            onClick={this.handleLinkClick}
                         />
                     </Label>
                     <NumberInput
@@ -120,7 +120,7 @@ export class ImageControl extends PureComponent {
                         max={maxWidth}
                         value={width}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="width"
@@ -128,7 +128,7 @@ export class ImageControl extends PureComponent {
                         max={maxWidth}
                         value={width}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -139,7 +139,7 @@ export class ImageControl extends PureComponent {
                                 [styles.linkIconActive]: fixed,
                             })}
                             glyph={iconLink}
-                            onClick={this.onLinkClick}
+                            onClick={this.handleLinkClick}
                         />
                     </Label>
                     <NumberInput
@@ -149,7 +149,7 @@ export class ImageControl extends PureComponent {
                         max={maxHeight}
                         value={height}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="height"
@@ -157,7 +157,7 @@ export class ImageControl extends PureComponent {
                         max={maxHeight}
                         value={height}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -169,7 +169,7 @@ export class ImageControl extends PureComponent {
                         max={disabled ? 0 : xMax}
                         value={x}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="x"
@@ -177,7 +177,7 @@ export class ImageControl extends PureComponent {
                         max={disabled ? 0 : xMax}
                         value={x}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -189,7 +189,7 @@ export class ImageControl extends PureComponent {
                         max={disabled ? 0 : yMax}
                         value={y}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="y"
@@ -197,7 +197,7 @@ export class ImageControl extends PureComponent {
                         max={disabled ? 0 : yMax}
                         value={y}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -209,7 +209,7 @@ export class ImageControl extends PureComponent {
                         max={disabled ? 0 : 360}
                         value={rotation}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="rotation"
@@ -217,7 +217,7 @@ export class ImageControl extends PureComponent {
                         max={disabled ? 0 : 360}
                         value={rotation}
                         disabled={disabled}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -231,7 +231,7 @@ export class ImageControl extends PureComponent {
                             step={0.01}
                             value={opacity}
                             disabled={disabled}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                         <RangeInput
                             name="opacity"
@@ -240,7 +240,7 @@ export class ImageControl extends PureComponent {
                             step={0.01}
                             value={opacity}
                             disabled={disabled}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </ReactorInput>
                 </Option>

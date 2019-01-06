@@ -47,7 +47,7 @@ export default class AudioWaveform extends PureComponent {
         this.draw();
     }
 
-    onClick = (e) => {
+    handleClick = (e) => {
         e.stopPropagation();
 
         const rect = e.currentTarget.getBoundingClientRect();
@@ -55,7 +55,7 @@ export default class AudioWaveform extends PureComponent {
         this.props.onClick((e.clientX - rect.left) / rect.width);
     }
 
-    onMouseMove = (e) => {
+    handleMouseMove = (e) => {
         e.stopPropagation();
 
         const rect = e.currentTarget.getBoundingClientRect();
@@ -63,7 +63,7 @@ export default class AudioWaveform extends PureComponent {
         this.props.onSeek((e.clientX - rect.left) / rect.width);
     }
 
-    onMouseOut = (e) => {
+    handleMouseOut = (e) => {
         e.stopPropagation();
 
         this.props.onSeek(0);
@@ -126,9 +126,9 @@ export default class AudioWaveform extends PureComponent {
                     className={styles.canvas}
                     width={width}
                     height={height + shadowHeight}
-                    onClick={this.onClick}
-                    onMouseMove={this.onMouseMove}
-                    onMouseOut={this.onMouseOut}
+                    onClick={this.handleClick}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseOut={this.handleMouseOut}
                 />
             </div>
         );

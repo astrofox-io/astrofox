@@ -15,10 +15,10 @@ export default class TimeInput extends PureComponent {
     }
 
     state = {
-        key : 0,
+        key: 0,
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         const {
             min,
             max,
@@ -63,7 +63,7 @@ export default class TimeInput extends PureComponent {
                 readOnly={readOnly}
                 disabled={disabled}
                 value={formatSeekTime(value)}
-                onChange={this.onChange}
+                onChange={this.handleChange}
             />
         );
     }

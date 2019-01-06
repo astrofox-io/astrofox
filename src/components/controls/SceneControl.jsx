@@ -43,7 +43,7 @@ const blendOptions = [
 ];
 
 export class SceneControl extends PureComponent {
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         const { onChange } = this.props;
 
         // Ignore separators
@@ -73,7 +73,7 @@ export class SceneControl extends PureComponent {
                         width={140}
                         items={blendOptions}
                         value={blendMode}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -86,7 +86,7 @@ export class SceneControl extends PureComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                         <RangeInput
                             name="opacity"
@@ -94,7 +94,7 @@ export class SceneControl extends PureComponent {
                             max={1.0}
                             step={0.01}
                             value={opacity}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </ReactorInput>
                 </Option>
@@ -107,7 +107,7 @@ export class SceneControl extends PureComponent {
                         max={10.0}
                         step={0.1}
                         value={lightIntensity}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="lightIntensity"
@@ -115,7 +115,7 @@ export class SceneControl extends PureComponent {
                         max={10.0}
                         step={0.1}
                         value={lightIntensity}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -126,14 +126,14 @@ export class SceneControl extends PureComponent {
                         min={-500}
                         max={500}
                         value={lightDistance}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="lightDistance"
                         min={-500}
                         max={500}
                         value={lightDistance}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -144,14 +144,14 @@ export class SceneControl extends PureComponent {
                         min={0}
                         max={1000}
                         value={cameraZoom}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="cameraZoom"
                         min={0}
                         max={1000}
                         value={cameraZoom}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -159,13 +159,13 @@ export class SceneControl extends PureComponent {
                     <ToggleInput
                         name="mask"
                         value={mask}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <Label text="Inverse" />
                     <ToggleInput
                         name="inverse"
                         value={inverse}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
             </Control>

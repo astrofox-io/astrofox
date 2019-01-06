@@ -7,7 +7,7 @@ import styles from './ControlPicker.less';
 const types = ['display', 'effect'];
 
 export default class ControlPicker extends Component {
-    onClick = Item => () => {
+    handleClick = Item => () => {
         const { onControlPicked, onClose } = this.props;
 
         if (onControlPicked) {
@@ -28,7 +28,7 @@ export default class ControlPicker extends Component {
                 <div key={index} className={styles.item}>
                     <div
                         className={styles.image}
-                        onClick={this.onClick(item)}
+                        onClick={this.handleClick(item)}
                         style={style}
                     />
                     <div className={styles.name}>

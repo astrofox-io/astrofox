@@ -14,18 +14,18 @@ class AppSettings extends PureComponent {
         ...this.props.app.config,
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         this.setState({ [name]: value });
     }
 
-    onSave = () => {
+    handleSave = () => {
         const { app, onClose } = this.props;
 
         app.saveConfig(this.state)
             .then(onClose);
     }
 
-    onCancel = () => {
+    handleCancel = () => {
         this.props.onClose();
     }
 
@@ -46,14 +46,14 @@ class AppSettings extends PureComponent {
                             <ToggleInput
                                 name="checkForUpdates"
                                 value={checkForUpdates}
-                                onChange={this.onChange}
+                                onChange={this.handleChange}
                             />
                         </Row>
                         <Row label="Automatically download and install updates">
                             <ToggleInput
                                 name="autoUpdate"
                                 value={autoUpdate}
-                                onChange={this.onChange}
+                                onChange={this.handleChange}
                             />
                         </Row>
                         {
@@ -62,7 +62,7 @@ class AppSettings extends PureComponent {
                                     <ToggleInput
                                         name="showWatermark"
                                         value={showWatermark}
-                                        onChange={this.onChange}
+                                        onChange={this.handleChange}
                                     />
                                 </Row>
                             )
@@ -73,14 +73,14 @@ class AppSettings extends PureComponent {
                             <ToggleInput
                                 name="autoPlayAudio"
                                 value={autoPlayAudio}
-                                onChange={this.onChange}
+                                onChange={this.handleChange}
                             />
                         </Row>
                     </Group>
                 </Settings>
                 <ButtonRow>
-                    <Button text="Save" onClick={this.onSave} />
-                    <Button text="Cancel" onClick={this.onCancel} />
+                    <Button text="Save" onClick={this.handleSave} />
+                    <Button text="Cancel" onClick={this.handleCancel} />
                 </ButtonRow>
             </SettingsPanel>
         );

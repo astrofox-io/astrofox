@@ -8,7 +8,7 @@ export default function DisplayControl(ControlComponent) {
             this.state = props.display.options;
         }
 
-        onChange = (name, value, data) => {
+        handleChange = (name, value, data) => {
             const { display } = this.props;
             const obj = { [name]: value, ...data };
 
@@ -20,7 +20,7 @@ export default function DisplayControl(ControlComponent) {
         render() {
             return (
                 <ControlComponent
-                    onChange={this.onChange}
+                    onChange={this.handleChange}
                     {...this.props}
                     {...this.state}
                 />

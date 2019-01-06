@@ -37,7 +37,7 @@ export default class Spectrum extends PureComponent {
         this.parser = new SpectrumParser(this.state);
     }
 
-    onClick = () => {
+    handleClick = () => {
         this.setState(prevState => ({ normalize: !prevState.normalize }), () => {
             this.parser.update(this.state);
         });
@@ -59,7 +59,7 @@ export default class Spectrum extends PureComponent {
                     className={styles.canvas}
                     width={width}
                     height={height}
-                    onClick={this.onClick}
+                    onClick={this.handleClick}
                 />
             </div>
         );

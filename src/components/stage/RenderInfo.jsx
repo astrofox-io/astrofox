@@ -33,7 +33,7 @@ class RenderInfo extends Component {
         this.renderer.off('complete', this.setComplete, this);
     }
 
-    onButtonClick = () => {
+    handleButtonClick = () => {
         this.renderer.stop();
 
         this.props.onButtonClick();
@@ -84,7 +84,7 @@ class RenderInfo extends Component {
                     <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
                     <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
                     <Stat label="Progress" value={fps.toFixed(1)} />
-                    <Button text={text} onClick={this.onButtonClick} />
+                    <Button text={text} onClick={this.handleButtonClick} />
                 </div>
             </div>
         );

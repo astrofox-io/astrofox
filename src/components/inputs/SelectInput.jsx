@@ -16,11 +16,11 @@ export default class SelectInput extends Component {
         showItems: false,
     }
 
-    onClick = () => {
+    handleClick = () => {
         this.setState(({ showItems }) => ({ showItems: !showItems }));
     }
 
-    onItemClick = value => () => {
+    handleItemClick = value => () => {
         const { name, onChange } = this.props;
 
         this.setState({ showItems: false });
@@ -28,7 +28,7 @@ export default class SelectInput extends Component {
         onChange(name, value);
     }
 
-    onBlur = () => {
+    handleBlur = () => {
         this.setState({ showItems: false });
     }
 
@@ -71,8 +71,8 @@ export default class SelectInput extends Component {
                     name={name}
                     style={{ width }}
                     value={this.getDisplayText()}
-                    onClick={this.onClick}
-                    onBlur={this.onBlur}
+                    onClick={this.handleClick}
+                    onBlur={this.handleBlur}
                     readOnly
                 />
                 <div
@@ -91,7 +91,7 @@ export default class SelectInput extends Component {
                                     [styles.separator]: item.separator,
                                 })}
                                 style={item.style}
-                                onMouseDown={this.onItemClick(item[valueField])}
+                                onMouseDown={this.handleItemClick(item[valueField])}
                             >
                                 {item[displayField]}
                             </div>

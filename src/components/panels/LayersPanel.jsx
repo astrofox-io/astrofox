@@ -24,24 +24,24 @@ class LayersPanel extends PureComponent {
     }
 
     componentDidMount() {
-        events.on('project-loaded', this.onProjectLoaded, this);
+        events.on('project-loaded', this.handleProjectLoaded, this);
 
         this.updateState();
     }
 
     componentWillUnmount() {
-        events.off('project-loaded', this.onProjectLoaded, this);
+        events.off('project-loaded', this.handleProjectLoaded, this);
     }
 
-    onProjectLoaded = () => {
+    handleProjectLoaded = () => {
         this.updateState(0);
     }
 
-    onLayerClick = (index) => {
+    handleLayerClick = (index) => {
         this.setActiveLayer(index);
     }
 
-    onLayerUpdate = (index, name, val) => {
+    handleLayerUpdate = (index, name, val) => {
         const { displays } = this.state;
         const display = displays[index];
         const obj = { [name]: val };
@@ -53,11 +53,11 @@ class LayersPanel extends PureComponent {
         this.props.onLayerUpdate(display);
     }
 
-    onAddSceneClick = () => {
+    handleAddSceneClick = () => {
         this.addLayer(new Scene());
     }
 
-    onAddDisplayClick = () => {
+    handleAddDisplayClick = () => {
         const scene = this.getActiveScene();
 
         if (scene) {
@@ -67,7 +67,7 @@ class LayersPanel extends PureComponent {
         }
     }
 
-    onAddEffectClick = () => {
+    handleAddEffectClick = () => {
         const scene = this.getActiveScene();
 
         if (scene) {
@@ -77,7 +77,7 @@ class LayersPanel extends PureComponent {
         }
     }
 
-    onRemoveClick = () => {
+    handleRemoveClick = () => {
         const { app: { stage } } = this.props;
         const { displays, activeIndex } = this.state;
         const display = displays[activeIndex];
@@ -100,11 +100,11 @@ class LayersPanel extends PureComponent {
         }
     }
 
-    onMoveUpClick = () => {
+    handleMoveUpClick = () => {
         this.moveLayer(1);
     }
 
-    onMoveDownClick = () => {
+    handleMoveDownClick = () => {
         this.moveLayer(-1);
     }
 
@@ -136,8 +136,8 @@ class LayersPanel extends PureComponent {
                     control={!(display instanceof Scene)}
                     enabled={display.options.enabled}
                     active={index === activeIndex}
-                    onLayerClick={this.onLayerClick}
-                    onLayerUpdate={this.onLayerUpdate}
+                    onLayerClick={this.handleLayerClick}
+                    onLayerUpdate={this.handleLayerUpdate}
                 />
             );
         });
@@ -260,38 +260,38 @@ class LayersPanel extends PureComponent {
                     <ButtonInput
                         icon={iconScene}
                         title="Add Scene"
-                        onClick={this.onAddSceneClick}
+                        onClick={this.handleAddSceneClick}
                     />
                     <ButtonInput
                         icon={iconDisplay}
                         title="Add Display"
-                        onClick={this.onAddDisplayClick}
+                        onClick={this.handleAddDisplayClick}
                         disabled={disabled}
                     />
                     <ButtonInput
                         icon={iconEffect}
                         title="Add Effect"
-                        onClick={this.onAddEffectClick}
+                        onClick={this.handleAddEffectClick}
                         disabled={disabled}
                     />
                     <ButtonGroup>
                         <ButtonInput
                             icon={iconMoveUp}
                             title="Move Layer Up"
-                            onClick={this.onMoveUpClick}
+                            onClick={this.handleMoveUpClick}
                             disabled={disabled}
                         />
                         <ButtonInput
                             icon={iconMoveDown}
                             title="Move Layer Down"
-                            onClick={this.onMoveDownClick}
+                            onClick={this.handleMoveDownClick}
                             disabled={disabled}
                         />
                     </ButtonGroup>
                     <ButtonInput
                         icon={iconDelete}
                         title="Delete Layer"
-                        onClick={this.onRemoveClick}
+                        onClick={this.handleRemoveClick}
                         disabled={disabled}
                     />
                 </div>

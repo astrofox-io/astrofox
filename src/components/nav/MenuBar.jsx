@@ -13,24 +13,24 @@ export default class MenuBar extends Component {
     }
 
     componentDidMount() {
-        window.addEventListener('click', this.onDocumentClick);
+        window.addEventListener('click', this.handleDocumentClick);
     }
 
     componentWillUnmount() {
-        window.removeEventListener('click', this.onDocumentClick);
+        window.removeEventListener('click', this.handleDocumentClick);
     }
 
-    onDocumentClick = () => {
+    handleDocumentClick = () => {
         this.setActiveIndex(-1);
     }
 
-    onClick = index => () => {
+    handleClick = index => () => {
         const { activeIndex } = this.state;
 
         this.setActiveIndex(activeIndex === index ? -1 : index);
     }
 
-    onMouseOver = index => () => {
+    handleMouseOver = index => () => {
         const { activeIndex } = this.state;
 
         if (activeIndex > -1) {
@@ -38,7 +38,7 @@ export default class MenuBar extends Component {
         }
     }
 
-    onMenuItemClick = (action, checked) => {
+    handleMenuItemClick = (action, checked) => {
         const { onMenuAction } = this.props;
 
         this.setActiveIndex(-1);
@@ -89,9 +89,9 @@ export default class MenuBar extends Component {
                                 label={label}
                                 items={submenu}
                                 active={activeIndex === index}
-                                onClick={this.onClick(index)}
-                                onMouseOver={this.onMouseOver(index)}
-                                onMenuItemClick={this.onMenuItemClick}
+                                onClick={this.handleClick(index)}
+                                onMouseOver={this.handleMouseOver(index)}
+                                onMenuItemClick={this.handleMenuItemClick}
                             />
                         )
                     ))

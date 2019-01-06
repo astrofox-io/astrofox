@@ -22,15 +22,15 @@ class CanvasSettings extends Component {
         ...this.props.app.stage.options,
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         this.setState({ [name]: value });
     }
 
-    onCancel = () => {
+    handleCancel = () => {
         this.props.onClose();
     }
 
-    onSave = () => {
+    handleSave = () => {
         const { app: { stage }, onClose } = this.props;
 
         stage.update(this.state);
@@ -56,7 +56,7 @@ class CanvasSettings extends Component {
                             max={1920}
                             step={2}
                             value={width}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="Height">
@@ -67,20 +67,20 @@ class CanvasSettings extends Component {
                             max={1080}
                             step={2}
                             value={height}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="Background Color">
                         <ColorInput
                             name="backgroundColor"
                             value={backgroundColor}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                 </Settings>
                 <ButtonRow>
-                    <Button onClick={this.onSave} text="OK" />
-                    <Button onClick={this.onCancel} text="Cancel" />
+                    <Button onClick={this.handleSave} text="OK" />
+                    <Button onClick={this.handleCancel} text="Cancel" />
                 </ButtonRow>
             </SettingsPanel>
         );

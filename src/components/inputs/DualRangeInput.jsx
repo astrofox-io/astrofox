@@ -16,7 +16,6 @@ export default class DualRangeInput extends Component {
         readOnly: false,
         allowClick: true,
         onChange: () => {},
-        onInput: () => {},
     }
 
     constructor(props) {
@@ -25,7 +24,7 @@ export default class DualRangeInput extends Component {
         this.buffering = false;
     }
 
-    onTrackClick = (e) => {
+    handleTrackClick = (e) => {
         e.stopPropagation();
 
         const {
@@ -60,7 +59,7 @@ export default class DualRangeInput extends Component {
         onChange(name, this.parseValues(newStart, newEnd, index));
     }
 
-    onChange = (key, val) => {
+    handleChange = (key, val) => {
         const {
             name, start, end, onChange,
         } = this.props;
@@ -122,7 +121,7 @@ export default class DualRangeInput extends Component {
                 role="presentation"
                 ref={e => (this.range = e)}
                 className={styles.input}
-                onMouseDown={this.onTrackClick}
+                onMouseDown={this.handleTrackClick}
             >
                 <div className={styles.track} />
                 <div className={styles.fill} style={fillStyle} />
@@ -140,8 +139,7 @@ export default class DualRangeInput extends Component {
                     readOnly={readOnly}
                     showTrack={false}
                     fillStyle="none"
-                    onChange={this.onChange}
-                    onInput={this.onInput}
+                    onChange={this.handleChange}
                 />
                 <RangeInput
                     ref={e => (this.range1 = e)}
@@ -157,8 +155,7 @@ export default class DualRangeInput extends Component {
                     readOnly={readOnly}
                     showTrack={false}
                     fillStyle="none"
-                    onChange={this.onChange}
-                    onInput={this.onInput}
+                    onChange={this.handleChange}
                 />
             </div>
         );

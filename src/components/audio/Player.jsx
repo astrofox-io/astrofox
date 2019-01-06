@@ -90,15 +90,15 @@ class Player extends PureComponent {
         this.player = player;
     }
 
-    onPlayButtonClick = () => {
+    handlePlayButtonClick = () => {
         this.player.play();
     }
 
-    onStopButtonClick = () => {
+    handleStopButtonClick = () => {
         this.player.stop();
     }
 
-    onLoopButtonClick = () => {
+    handleLoopButtonClick = () => {
         this.setState((prevState) => {
             this.player.setLoop(!prevState.looping);
 
@@ -106,33 +106,33 @@ class Player extends PureComponent {
         });
     }
 
-    onWaveformClick = (progressPosition) => {
+    handleWaveformClick = (progressPosition) => {
         this.player.seek(progressPosition);
     }
 
-    onWaveformSeek = (seekPosition) => {
+    handleWaveformSeek = (seekPosition) => {
         this.setState({ seekPosition });
     }
 
-    onWaveformButtonClick = () => {
+    handleWaveformButtonClick = () => {
         this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
     }
 
-    onOscButtonClick = () => {
+    handleOscButtonClick = () => {
         this.setState(prevState => ({ showOsc: !prevState.showOsc }));
     }
 
-    onVolumeChange = (value) => {
+    handleVolumeChange = (value) => {
         this.player.setVolume(value);
     }
 
-    onProgressChange = (progressPosition) => {
+    handleProgressChange = (progressPosition) => {
         this.player.seek(progressPosition);
 
         this.setState({ progressPosition, seekPosition: 0, progressBuffering: false });
     }
 
-    onProgressUpdate = (seekPosition) => {
+    handleProgressUpdate = (seekPosition) => {
         this.setState({ seekPosition, progressBuffering: true });
     }
 
@@ -155,19 +155,19 @@ class Player extends PureComponent {
                     progressPosition={progressPosition}
                     seekPosition={seekPosition}
                     visible={showWaveform && duration}
-                    onClick={this.onWaveformClick}
-                    onSeek={this.onWaveformSeek}
+                    onClick={this.handleWaveformClick}
+                    onSeek={this.handleWaveformSeek}
                 />
                 <div className={styles.player}>
                     <div className={styles.buttons}>
-                        <PlayButton playing={playing} onClick={this.onPlayButtonClick} />
-                        <StopButton onClick={this.onStopButtonClick} />
+                        <PlayButton playing={playing} onClick={this.handlePlayButtonClick} />
+                        <StopButton onClick={this.handleStopButtonClick} />
                     </div>
-                    <VolumeControl onChange={this.onVolumeChange} />
+                    <VolumeControl onChange={this.handleVolumeChange} />
                     <ProgressControl
                         value={progressPosition * PROGRESS_MAX}
-                        onChange={this.onProgressChange}
-                        onUpdate={this.onProgressUpdate}
+                        onChange={this.handleProgressChange}
+                        onUpdate={this.handleProgressUpdate}
                         disabled={!duration}
                     />
                     <TimeInfo
@@ -178,19 +178,19 @@ class Player extends PureComponent {
                         icon={iconSoundBars}
                         title="Waveform"
                         active={showWaveform}
-                        onClick={this.onWaveformButtonClick}
+                        onClick={this.handleWaveformButtonClick}
                     />
                     <ToggleButton
                         icon={iconSoundWaves}
                         title="Oscilloscope"
                         active={showOsc}
-                        onClick={this.onOscButtonClick}
+                        onClick={this.handleOscButtonClick}
                     />
                     <ToggleButton
                         icon={iconRepeat}
                         title="Repeat"
                         active={looping}
-                        onClick={this.onLoopButtonClick}
+                        onClick={this.handleLoopButtonClick}
                     />
                 </div>
                 {
@@ -212,13 +212,13 @@ class VolumeControl extends PureComponent {
         };
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         this.props.onChange(value / 100);
 
         this.setState({ value, mute: false });
     }
 
-    onClick = () => {
+    handleClick = () => {
         this.setState((prevState, props) => {
             props.onChange(prevState.mute ? prevState.value / 100 : 0);
 
@@ -248,7 +248,7 @@ class VolumeControl extends PureComponent {
                 <div
                     role="presentation"
                     className={styles.speaker}
-                    onClick={this.onClick}
+                    onClick={this.handleClick}
                 >
                     <Icon className={styles.icon} glyph={icon} />
                 </div>
@@ -258,7 +258,7 @@ class VolumeControl extends PureComponent {
                         min={0}
                         max={100}
                         value={mute ? 0 : value}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </div>
             </div>

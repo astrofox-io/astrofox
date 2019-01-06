@@ -10,7 +10,7 @@ import {
 } from 'lib/inputs';
 
 export class BarSpectrumControl extends PureComponent {
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         const { onChange } = this.props;
         const obj = {};
 
@@ -64,7 +64,7 @@ export class BarSpectrumControl extends PureComponent {
                         min={-40}
                         max={0}
                         step={1}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="maxDecibels"
@@ -72,7 +72,7 @@ export class BarSpectrumControl extends PureComponent {
                         min={-40}
                         max={0}
                         step={1}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -84,7 +84,7 @@ export class BarSpectrumControl extends PureComponent {
                         min={0}
                         max={maxFrequency}
                         step={10}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="minFrequency"
@@ -93,7 +93,7 @@ export class BarSpectrumControl extends PureComponent {
                         max={22000}
                         step={10}
                         upperLimit={maxFrequency}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -105,7 +105,7 @@ export class BarSpectrumControl extends PureComponent {
                         min={minFrequency}
                         max={22000}
                         step={10}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="maxFrequency"
@@ -114,7 +114,7 @@ export class BarSpectrumControl extends PureComponent {
                         max={22000}
                         step={10}
                         lowerLimit={minFrequency}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -126,7 +126,7 @@ export class BarSpectrumControl extends PureComponent {
                         min={0}
                         max={0.99}
                         step={0.01}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="smoothingTimeConstant"
@@ -134,7 +134,7 @@ export class BarSpectrumControl extends PureComponent {
                         min={0}
                         max={0.99}
                         step={0.01}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -145,14 +145,14 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={0}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="width"
                         value={width}
                         min={0}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -163,14 +163,14 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={0}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="height"
                         value={height}
                         min={0}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -181,14 +181,14 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={0}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="shadowHeight"
                         value={shadowHeight}
                         min={0}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -201,13 +201,13 @@ export class BarSpectrumControl extends PureComponent {
                         max={stageWidth}
                         disabled={barWidthAutoSize}
                         hidden={barWidthAutoSize}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <Label text="Auto-Size" />
                     <ToggleInput
                         name="barWidthAutoSize"
                         value={barWidthAutoSize}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -220,13 +220,13 @@ export class BarSpectrumControl extends PureComponent {
                         max={stageWidth}
                         disabled={barSpacingAutoSize}
                         hidden={barSpacingAutoSize}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <Label text="Auto-Size" />
                     <ToggleInput
                         name="barSpacingAutoSize"
                         value={barSpacingAutoSize}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -235,7 +235,7 @@ export class BarSpectrumControl extends PureComponent {
                         name="color"
                         startColor={color[0]}
                         endColor={color[1]}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -244,7 +244,7 @@ export class BarSpectrumControl extends PureComponent {
                         name="shadowColor"
                         startColor={shadowColor[0]}
                         endColor={shadowColor[1]}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -255,14 +255,14 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={-stageWidth}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="x"
                         value={x}
                         min={-stageWidth}
                         max={stageWidth}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -273,14 +273,14 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={-stageHeight}
                         max={stageHeight}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="y"
                         value={y}
                         min={-stageHeight}
                         max={stageHeight}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -291,14 +291,14 @@ export class BarSpectrumControl extends PureComponent {
                         width={40}
                         min={0}
                         max={360}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <RangeInput
                         name="rotation"
                         value={rotation}
                         min={0}
                         max={360}
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                 </Option>
                 <Option>
@@ -311,7 +311,7 @@ export class BarSpectrumControl extends PureComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                         <RangeInput
                             name="opacity"
@@ -319,7 +319,7 @@ export class BarSpectrumControl extends PureComponent {
                             min={0}
                             max={1.0}
                             step={0.01}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </ReactorInput>
                 </Option>

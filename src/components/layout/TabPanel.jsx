@@ -7,15 +7,11 @@ export class TabPanel extends PureComponent {
         tabPosition: 'top',
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            activeIndex: props.activeIndex,
-        };
+    state = {
+        activeIndex: this.props.activeIndex,
     }
 
-    onTabClick = (index) => {
+    handleTabClick = (index) => {
         this.setState({ activeIndex: index });
     }
 
@@ -40,7 +36,7 @@ export class TabPanel extends PureComponent {
                         [styles.tab]: true,
                         [styles.active]: index === activeIndex,
                     }, tabClassName, child.props.className)}
-                    onClick={() => this.onTabClick(index)}
+                    onClick={() => this.handleTabClick(index)}
                 >
                     {child.props.name}
                 </div>

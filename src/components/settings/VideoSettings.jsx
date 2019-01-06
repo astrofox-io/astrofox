@@ -62,7 +62,7 @@ class VideoSettings extends Component {
         }
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         const { videoFile } = this.state;
         const obj = {};
 
@@ -75,15 +75,15 @@ class VideoSettings extends Component {
         this.setState(obj);
     }
 
-    onCancel = () => {
+    handleCancel = () => {
         this.props.onClose();
     }
 
-    onStart = () => {
+    handleStart = () => {
         this.props.onStart(this.state);
     }
 
-    onOpenVideoFile = () => {
+    handleOpenVideoFile = () => {
         showSaveDialog(
             (filename) => {
                 if (filename) {
@@ -94,7 +94,7 @@ class VideoSettings extends Component {
         );
     }
 
-    onOpenAudioFile = () => {
+    handleOpenAudioFile = () => {
         const { app } = this.props;
 
         showOpenDialog(
@@ -140,13 +140,13 @@ class VideoSettings extends Component {
                             width={250}
                             value={videoFile}
                             readOnly
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                         <ButtonInput
                             className={styles.button}
                             icon={folderIcon}
                             title="Save File"
-                            onClick={this.onOpenVideoFile}
+                            onClick={this.handleOpenVideoFile}
                         />
                     </Row>
                     <Row label="Audio File">
@@ -156,13 +156,13 @@ class VideoSettings extends Component {
                             width={250}
                             value={audioFile}
                             readOnly
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                         <ButtonInput
                             className={styles.button}
                             icon={folderIcon}
                             title="Open File"
-                            onClick={this.onOpenAudioFile}
+                            onClick={this.handleOpenAudioFile}
                         />
                     </Row>
                     <Row label="Format">
@@ -171,7 +171,7 @@ class VideoSettings extends Component {
                             width={80}
                             items={videoFormats}
                             value={format}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="Video Resolution" className="display-none">
@@ -180,7 +180,7 @@ class VideoSettings extends Component {
                             width={80}
                             items={resolutionOptions}
                             value={resolution}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="FPS">
@@ -190,7 +190,7 @@ class VideoSettings extends Component {
                             min={24}
                             max={60}
                             value={fps}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="Start Time">
@@ -201,7 +201,7 @@ class VideoSettings extends Component {
                             max={timeEnd}
                             value={timeStart}
                             disabled={!audio}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="End Time">
@@ -212,7 +212,7 @@ class VideoSettings extends Component {
                             max={max}
                             value={timeEnd}
                             disabled={!audio}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </Row>
                     <Row label="Total Time">
@@ -220,8 +220,8 @@ class VideoSettings extends Component {
                     </Row>
                 </Settings>
                 <ButtonRow>
-                    <Button text="Start" onClick={this.onStart} disabled={!canStart} />
-                    <Button text="Cancel" onClick={this.onCancel} />
+                    <Button text="Start" onClick={this.handleStart} disabled={!canStart} />
+                    <Button text="Cancel" onClick={this.handleCancel} />
                 </ButtonRow>
             </SettingsPanel>
         );

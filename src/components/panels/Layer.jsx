@@ -21,7 +21,7 @@ export default class Layer extends PureComponent {
         edit: false,
     }
 
-    onLayerClick = () => {
+    handleLayerClick = () => {
         const { index, onLayerClick } = this.props;
 
         if (onLayerClick) {
@@ -29,7 +29,7 @@ export default class Layer extends PureComponent {
         }
     }
 
-    onEnableClick = () => {
+    handleEnableClick = () => {
         const { index, enabled, onLayerUpdate } = this.props;
 
         if (onLayerUpdate) {
@@ -37,22 +37,22 @@ export default class Layer extends PureComponent {
         }
     }
 
-    onNameChange = (name, val) => {
+    handleNameChange = (name, val) => {
         const { index, onLayerUpdate } = this.props;
 
         if (val.length > 0) {
             if (onLayerUpdate) {
                 onLayerUpdate(index, name, val);
             }
-            this.onCancelEdit();
+            this.handleCancelEdit();
         }
     }
 
-    onEnableEdit = () => {
+    handleEnableEdit = () => {
         this.setState({ edit: true });
     }
 
-    onCancelEdit = () => {
+    handleCancelEdit = () => {
         this.setState({ edit: false });
     }
 
@@ -70,7 +70,7 @@ export default class Layer extends PureComponent {
                     [styles.edit]: edit,
                     [styles.active]: active,
                 })}
-                onClick={this.onLayerClick}
+                onClick={this.handleLayerClick}
             >
                 <Icon className={styles.icon} glyph={icon} />
                 {
@@ -81,16 +81,16 @@ export default class Layer extends PureComponent {
                             buffered
                             autoFocus
                             autoSelect
-                            onChange={this.onNameChange}
-                            onCancel={this.onCancelEdit}
+                            onChange={this.handleNameChange}
+                            onCancel={this.handleCancelEdit}
                         />
                     ) : (
-                        <div className={styles.text} onDoubleClick={this.onEnableEdit}>
+                        <div className={styles.text} onDoubleClick={this.handleEnableEdit}>
                             {name}
                         </div>
                     )
                 }
-                <span onClick={this.onEnableClick}>
+                <span onClick={this.handleEnableClick}>
                     <Icon
                         className={classNames({
                             [styles.optionsIcon]: true,

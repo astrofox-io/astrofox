@@ -34,7 +34,7 @@ export default class TextInput extends PureComponent {
         }
     }
 
-    onChange = (e) => {
+    handleChange = (e) => {
         const { name, buffered, onChange } = this.props;
         const { value } = e.currentTarget;
 
@@ -45,7 +45,7 @@ export default class TextInput extends PureComponent {
         });
     }
 
-    onKeyUp = (e) => {
+    handleKeyUp = (e) => {
         const { name, buffered, onChange } = this.props;
         const { value } = this.state;
 
@@ -61,7 +61,7 @@ export default class TextInput extends PureComponent {
         }
     }
 
-    onBlur = () => {
+    handleBlur = () => {
         const { name, buffered, onChange } = this.props;
         const { value } = this.state;
 
@@ -93,9 +93,9 @@ export default class TextInput extends PureComponent {
                 size={size}
                 spellCheck={spellCheck}
                 value={value}
-                onChange={this.onChange}
-                onBlur={this.onBlur}
-                onKeyUp={this.onKeyUp}
+                onChange={this.handleChange}
+                onBlur={this.handleBlur}
+                onKeyUp={this.handleKeyUp}
                 readOnly={readOnly}
                 disabled={disabled}
             />

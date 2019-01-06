@@ -43,12 +43,12 @@ class Stage extends Component {
         events.off('video-render-complete', this.stopRender);
     }
 
-    onDragOver = (e) => {
+    handleDragOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    onDrop = (e) => {
+    handleDrop = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -91,8 +91,8 @@ class Stage extends Component {
                 <div className={styles.scroll}>
                     <div
                         className={styles.canvas}
-                        onDrop={this.onDrop}
-                        onDragOver={this.onDragOver}
+                        onDrop={this.handleDrop}
+                        onDragOver={this.handleDragOver}
                     >
                         <canvas
                             ref={e => (this.canvas = e)}

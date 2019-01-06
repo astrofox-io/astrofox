@@ -11,14 +11,14 @@ export default class MenuBarItem extends Component {
         this.props.onClick();
     }
 
-    onMouseOver = (e) => {
+    handleMouseOver = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         this.props.onMouseOver();
     }
 
-    onMenuItemClick = (item) => {
+    handleMenuItemClick = (item) => {
         this.props.onMenuItemClick(item.action, item.checked);
     }
 
@@ -33,15 +33,15 @@ export default class MenuBarItem extends Component {
             <div className={styles.barItem}>
                 <div
                     className={classNames(styles.text, { [styles.active]: active })}
-                    onClick={this.onClick}
-                    onMouseOver={this.onMouseOver}
+                    onClick={this.handleClick}
+                    onMouseOver={this.handleMouseOver}
                 >
                     {label}
                 </div>
                 <Menu
                     items={items}
                     visible={active}
-                    onMenuItemClick={this.onMenuItemClick}
+                    onMenuItemClick={this.handleMenuItemClick}
                 />
             </div>
         );

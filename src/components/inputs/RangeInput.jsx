@@ -33,7 +33,7 @@ export default class RangeInput extends Component {
         return null;
     }
 
-    onChange = (e) => {
+    handleChange = (e) => {
         const {
             name,
             buffered,
@@ -62,9 +62,9 @@ export default class RangeInput extends Component {
         });
     }
 
-    onMouseDown = () => this.setState({ updating: true });
+    handleMouseDown = () => this.setState({ updating: true });
 
-    onMouseUp = () => {
+    handleMouseUp = () => {
         const { name, buffered, onChange } = this.props;
         const { value } = this.state;
 
@@ -121,9 +121,9 @@ export default class RangeInput extends Component {
                     max={max}
                     step={step}
                     value={value}
-                    onChange={this.onChange}
-                    onMouseDown={this.onMouseDown}
-                    onMouseUp={this.onMouseUp}
+                    onChange={this.handleChange}
+                    onMouseDown={this.handleMouseDown}
+                    onMouseUp={this.handleMouseUp}
                     disabled={disabled}
                 />
             </div>

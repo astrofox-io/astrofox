@@ -21,7 +21,7 @@ export default class NumberInput extends PureComponent {
         key: 0,
     }
 
-    onChange = (name, value) => {
+    handlehange = (name, value) => {
         const {
             onChange,
             min,
@@ -72,7 +72,7 @@ export default class NumberInput extends PureComponent {
                 value={value}
                 className={classNames(styles.input, className)}
                 width={width}
-                onChange={this.onChange}
+                onChange={this.handlehange}
                 readOnly={readOnly}
                 disabled={disabled}
                 buffered

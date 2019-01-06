@@ -30,11 +30,11 @@ class BoxInput extends PureComponent {
     componentWillUnmount() {
         const { mouseMove, mouseUp } = this.props;
 
-        mouseMove(this.onMouseMove, false);
+        mouseMove(this.handleMouseMove, false);
         mouseUp(this.endResize, false);
     }
 
-    onMouseMove = (e) => {
+    handleMouseMove = (e) => {
         const {
             resizing,
             position,
@@ -116,13 +116,13 @@ class BoxInput extends PureComponent {
             startTop: y,
         });
 
-        mouseMove(this.onMouseMove, true);
+        mouseMove(this.handleMouseMove, true);
     }
 
     endResize = () => {
         this.setState({ resizing: false });
 
-        this.props.mouseMove(this.onMouseMove, false);
+        this.props.mouseMove(this.handleMouseMove, false);
     }
 
     render() {

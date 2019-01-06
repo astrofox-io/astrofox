@@ -72,7 +72,7 @@ export default class ReactorControl extends PureComponent {
         events.off('render', this.draw, this);
     }
 
-    onChange = (name, value) => {
+    handleChange = (name, value) => {
         if (['selection', 'outputMode'].includes(name)) {
             this.updateReactor(name, value);
         }
@@ -153,7 +153,7 @@ export default class ReactorControl extends PureComponent {
                     <div className={styles.controls}>
                         <Controls
                             reactor={reactor}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </div>
                     <div className={styles.spectrum}>
@@ -161,7 +161,6 @@ export default class ReactorControl extends PureComponent {
                             ref={e => (this.spectrumCanvas = e)}
                             width={REACTOR_BARS * (barWidth + barSpacing)}
                             height={barHeight}
-                            onClick={this.onClick}
                         />
                         <BoxInput
                             ref={e => (this.box = e)}
@@ -171,7 +170,7 @@ export default class ReactorControl extends PureComponent {
                             minHeight={barWidth}
                             maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
                             maxHeight={barHeight}
-                            onChange={this.onChange}
+                            onChange={this.handleChange}
                         />
                     </div>
                     <div className={styles.output}>

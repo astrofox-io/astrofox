@@ -5,11 +5,11 @@ import ControlsPanel from 'components/panels/ControlsPanel';
 import LayersPanel from 'components/panels/LayersPanel';
 
 export default class ControlDock extends PureComponent {
-    onLayerSelected = (index) => {
+    handleLayerSelected = (index) => {
         this.controls.focusControl(index);
     }
 
-    onLayerUpdate = (display) => {
+    handleLayerUpdate = (display) => {
         this.controls.updateControl(display);
     }
 
@@ -29,8 +29,8 @@ export default class ControlDock extends PureComponent {
                     resizable
                 >
                     <LayersPanel
-                        onLayerSelected={this.onLayerSelected}
-                        onLayerUpdate={this.onLayerUpdate}
+                        onLayerSelected={this.handleLayerSelected}
+                        onLayerUpdate={this.handleLayerUpdate}
                         onChange={this.updateControls}
                     />
                 </Panel>
