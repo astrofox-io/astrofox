@@ -12,6 +12,7 @@ const Icon = ({
         viewBox,
         url,
     },
+    shapeRendering,
 }) => (
     <span
         className={classNames(styles.icon, className)}
@@ -23,10 +24,15 @@ const Icon = ({
             width={width}
             height={height}
             onClick={onClick}
+            shapeRendering={shapeRendering}
         >
             <use xlinkHref={url} />
         </svg>
     </span>
 );
+
+Icon.defaultProps = {
+    shapeRendering: 'geometricPrecision',
+};
 
 export default Icon;

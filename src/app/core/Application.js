@@ -59,11 +59,6 @@ export default class Application {
             stack: new Uint8Array(10),
         };
 
-        // App events
-        events.on('config-updated', () => {
-            this.showWatermark(this.config.showWatermark);
-        });
-
         // Player events
         this.player.on('play', this.resetAnalyzer, this);
         this.player.on('pause', this.resetAnalyzer, this);
@@ -268,12 +263,6 @@ export default class Application {
             events.emit('tick', stats);
         }
     }
-
-    showWatermark(show) {
-        this.stage.watermarkDisplay.update({
-            enabled: show,
-        });
-    }
     // endregion
 
     // region Save/load Methods
@@ -425,13 +414,11 @@ export default class Application {
 
             this.renderer = new VideoRenderer(videoFile, audioFile, options);
 
-            const { renderer, license } = this;
-            const { showWatermark } = this.config;
+            const { renderer } = this;
 
             // Setup before rendering
             this.stopRender();
             this.player.stop();
-            this.showWatermark(showWatermark || !license.valid);
 
             // Handle events
             renderer.on('ready', () => {
@@ -445,9 +432,6 @@ export default class Application {
                 events.emit('video-render-complete');
 
                 this.renderer = null;
-
-                // Reset watermark status
-                this.showWatermark(showWatermark);
 
                 this.startRender();
             });

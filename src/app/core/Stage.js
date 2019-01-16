@@ -4,7 +4,6 @@ import {
 } from 'three';
 import Scene from 'core/Scene';
 import Display, { resetCount } from 'core/Display';
-import WatermarkDisplay from 'displays/WatermarkDisplay';
 import List from 'core/List';
 import Composer from 'graphics/Composer';
 import { CanvasBuffer, GLBuffer } from 'graphics/FrameBuffer';
@@ -51,13 +50,6 @@ export default class Stage extends Display {
         this.buffer3D = new GLBuffer(width, height);
 
         this.backgroundColor = new Color(backgroundColor);
-
-        this.watermarkDisplay = new WatermarkDisplay();
-        this.watermarkDisplay.setSize(width, height);
-
-        this.watermarkScene = new Scene();
-        this.watermarkScene.addToStage(this);
-        this.watermarkScene.addElement(this.watermarkDisplay);
     }
 
     update(options) {
@@ -193,10 +185,6 @@ export default class Stage extends Display {
         this.buffer2D.setSize(width, height);
         this.buffer3D.setSize(width, height);
 
-        if (this.watermarkScene.options.enabled) {
-            this.watermarkScene.setSize(width, height);
-        }
-
         events.emit('stage-resize');
     }
 
@@ -277,7 +265,7 @@ export default class Stage extends Display {
     }
 
     render(data, callback) {
-        const { composer, scenes, watermarkScene } = this;
+        const { composer, scenes } = this;
 
         composer.clear(this.backgroundColor, 1);
 
@@ -286,11 +274,6 @@ export default class Stage extends Display {
                 this.renderScene(scene, data);
             }
         });
-
-        // Show watermark
-        if (watermarkScene.options.enabled) {
-            this.renderScene(watermarkScene, data);
-        }
 
         composer.renderToScreen();
 

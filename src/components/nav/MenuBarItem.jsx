@@ -4,7 +4,7 @@ import Menu from 'components/nav/Menu';
 import styles from './Menu.less';
 
 export default class MenuBarItem extends Component {
-    onClick = (e) => {
+    handleClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
 

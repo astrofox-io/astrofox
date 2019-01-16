@@ -30,11 +30,9 @@ class AppSettings extends PureComponent {
     }
 
     render() {
-        const { app: { license } } = this.props;
         const {
             checkForUpdates,
             autoUpdate,
-            showWatermark,
             autoPlayAudio,
         } = this.state;
 
@@ -56,17 +54,6 @@ class AppSettings extends PureComponent {
                                 onChange={this.handleChange}
                             />
                         </Row>
-                        {
-                            license.valid && (
-                                <Row label="Show watermark">
-                                    <ToggleInput
-                                        name="showWatermark"
-                                        value={showWatermark}
-                                        onChange={this.handleChange}
-                                    />
-                                </Row>
-                            )
-                        }
                     </Group>
                     <Group name="Audio">
                         <Row label="Play audio on load">
