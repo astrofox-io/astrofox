@@ -25,6 +25,10 @@ export default class CanvasDisplay extends Display {
         const { canvas } = this;
         const { width, height } = context.canvas;
 
+        if (canvas.width === 0 || canvas.height === 0) {
+            return;
+        }
+
         const {
             x,
             y,
