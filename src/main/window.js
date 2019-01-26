@@ -37,6 +37,7 @@ export function createWindow() {
             backgroundThrottling: false,
             devTools: process.env.NODE_ENV !== 'production',
             experimentalCanvasFeatures: true,
+            nodeIntegration: true,
             textAreasAreResizable: false,
             webgl: true,
         },
