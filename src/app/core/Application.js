@@ -51,7 +51,7 @@ export default class Application {
         };
 
         // Rendering statistics
-        this.stats = {
+        this.frameStats = {
             fps: 0,
             ms: 0,
             time: 0,
@@ -244,23 +244,23 @@ export default class Application {
     }
 
     updateFPS(now) {
-        const { stats } = this;
+        const { frameStats } = this;
 
-        if (!stats.time) {
-            stats.time = now;
+        if (!frameStats.time) {
+            frameStats.time = now;
         }
 
-        stats.frames += 1;
+        frameStats.frames += 1;
 
-        if (now > stats.time + FPS_POLL_INTERVAL) {
-            stats.fps = Math.round(stats.frames / ((now - stats.time) / 1000));
-            stats.ms = (now - stats.time) / stats.frames;
-            stats.time = now;
-            stats.frames = 0;
-            stats.stack.copyWithin(1, 0);
-            stats.stack[0] = stats.fps;
+        if (now > frameStats.time + FPS_POLL_INTERVAL) {
+            frameStats.fps = Math.round(frameStats.frames / ((now - frameStats.time) / 1000));
+            frameStats.ms = (now - frameStats.time) / frameStats.frames;
+            frameStats.time = now;
+            frameStats.frames = 0;
+            frameStats.stack.copyWithin(1, 0);
+            frameStats.stack[0] = frameStats.fps;
 
-            events.emit('tick', stats);
+            events.emit('tick', frameStats);
         }
     }
     // endregion
