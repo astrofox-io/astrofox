@@ -2,7 +2,7 @@
   "presets": [
     ["@babel/env", {
       "targets": {
-        "electron": "3.0.2"
+        "electron": "4.0.8"
       }
     }],
     "@babel/react"
@@ -17,7 +17,7 @@
       "presets": [
         ["@babel/env", {
           "targets": {
-            "electron": "3.0.2"
+            "electron": "4.0.8"
           }
         }],
         "@babel/react"
