@@ -1,20 +1,25 @@
-# System files
+# Common
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 Thumbs.db
 *.swp
 *.log
 
-# IDE files
-.idea/
+# Environment
+.idea
+.vscode
 *.iml
 
-# App files
+# Project
 node_modules
-/bin/
-/dist/
-/build/resources/
-/app/main.js
-/app/browser/
-/app.config
+bin
+dist
+build/resources
+app/browser
+app/main.js
+app.config
 *.bat
 *.map
