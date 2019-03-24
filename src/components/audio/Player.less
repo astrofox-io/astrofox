@@ -1,153 +1,153 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .player {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    min-width: 500px;
-    overflow: hidden;
-    padding: 10px 20px;
-    background-color: @bg-color5;
-    border-top: 1px solid lighten(@bg-color5, 6%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 500px;
+  overflow: hidden;
+  padding: 10px 20px;
+  background-color: @bg-color5;
+  border-top: 1px solid lighten(@bg-color5, 6%);
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 .buttons {
-    margin-right: 20px;
-    white-space: nowrap;
+  margin-right: 20px;
+  white-space: nowrap;
 }
 
 .button {
-    color: @text-color1;
-    background-color: transparent;
-    padding: 0;
-    margin: 0 2px 0 0;
-    display: inline-block;
-    flex-wrap: nowrap;
-    border: 2px solid lighten(@bg-color2, 10%);
-    height: 40px;
-    width: 40px;
-    border-radius: 20px;
-    line-height: 36px;
-    text-align: center;
-    vertical-align: middle;
-    transition: all 0.2s;
+  color: @text-color1;
+  background-color: transparent;
+  padding: 0;
+  margin: 0 2px 0 0;
+  display: inline-block;
+  flex-wrap: nowrap;
+  border: 2px solid lighten(@bg-color2, 10%);
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  line-height: 36px;
+  text-align: center;
+  vertical-align: middle;
+  transition: all 0.2s;
 
-    &:hover {
-        border: 2px solid @color1;
-    }
+  &:hover {
+    border: 2px solid @color1;
+  }
 
-    &:active {
-        border-color: @text-color1;
-    }
+  &:active {
+    border-color: @text-color1;
+  }
 }
 
 .playButton {
-    .icon {
-        width: 36px;
-        height: 36px;
-        margin-left: 2px;
-    }
+  .icon {
+    width: 36px;
+    height: 36px;
+    margin-left: 2px;
+  }
 }
 
 .pauseButton {
-    .icon {
-        width: 24px;
-        height: 24px;
-        margin: 6px;
-    }
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin: 6px;
+  }
 }
 
 .stopButton {
-    .icon {
-        width: 24px;
-        height: 24px;
-        margin: 6px;
-    }
-}
-
-.toggleButton {
-    margin: 0 3px;
-
-    .icon {
-        color: @bg-color1;
-        width: 20px;
-        height: 20px;
-
-        &:hover {
-            color: lighten(@bg-color1, 10%);
-        }
-    }
-}
-
-.toggleButtonActive {
-    .icon {
-        color: @color1;
-
-        &:hover {
-            color: @color1;
-        }
-    }
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin: 6px;
+  }
 }
 
 .volume {
-    display: flex;
-    margin-right: 20px;
+  display: flex;
+  margin-right: 20px;
 }
 
 .slider {
-    display: flex;
-    align-items: center;
-    width: 100px;
-    margin-right: 8px;
+  display: flex;
+  align-items: center;
+  width: 100px;
+  margin-right: 8px;
 }
 
 .speaker {
-    margin-right: 10px;
+  margin-right: 10px;
 
-    .icon {
-        color: @text-color1;
-        width: 20px;
-        height: 20px;
-    }
+  .icon {
+    color: @text-color1;
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .progress {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-    flex: 1;
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  flex: 1;
 }
 
 .timeInfo {
-    line-height: 36px;
-    margin-right: 20px;
-    white-space: nowrap;
+  line-height: 36px;
+  margin-right: 20px;
+  white-space: nowrap;
 
-    &:hover {
-        cursor: default;
-    }
+  &:hover {
+    cursor: default;
+  }
 }
 
 .timePart {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .currentTime {
-    color: @text-color1;
+  color: @text-color1;
 }
 
 .totalTime {
-    color: @text-color2;
+  color: @text-color2;
 }
 
 .timeSplit {
-    display: inline-block;
-    height: 30px;
-    border-right: 1px solid @color1;
-    margin: 0 8px;
-    transform: rotate(20deg);
+  display: inline-block;
+  height: 30px;
+  border-right: 1px solid @color1;
+  margin: 0 8px;
+  transform: rotate(20deg);
+}
+
+.toggleButton {
+  margin: 0 3px;
+
+  .icon {
+    color: @bg-color1;
+    width: 20px;
+    height: 20px;
+
+    &:hover {
+      color: lighten(@bg-color1, 10%);
+    }
+  }
+}
+
+.toggleButtonActive {
+  .icon {
+    color: @color1;
+
+    &:hover {
+      color: @color1;
+    }
+  }
 }

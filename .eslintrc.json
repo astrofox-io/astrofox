@@ -5,54 +5,36 @@
     "es6": true,
     "node": true
   },
+
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 9
+  },
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:import/errors",
-    "airbnb"
+    "plugin:css-modules/recommended",
+    "airbnb",
+    "prettier",
+    "prettier/react"
   ],
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "sourceType": "module"
-  },
-  "plugins": [
-    "react"
-  ],
+  "plugins": ["prettier", "promise", "css-modules", "react"],
   "rules": {
-    "brace-style": [
-      "error",
-      "stroustrup"
-    ],
-    "class-methods-use-this": 0,
-    "default-case": 0,
-    "indent": [
-      "error",
-      4,
-      {
-        "SwitchCase": 1
-      }
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
+    "class-methods-use-this": "off",
+    "default-case": "off",
+    "linebreak-style": ["error", "unix"],
     "max-len": [
       "error",
       {
-        "code": 120,
+        "code": 100,
         "ignoreComments": true
       }
     ],
     "no-bitwise": [
       "error",
       {
-        "allow": [
-          "~"
-        ]
+        "allow": ["~"]
       }
     ],
     "no-param-reassign": [
@@ -68,10 +50,7 @@
         "allowForLoopAfterthoughts": true
       }
     ],
-    "no-return-assign": [
-      "error",
-      "except-parens"
-    ],
+    "no-return-assign": ["error", "except-parens"],
     "no-unused-expressions": [
       "error",
       {
@@ -84,60 +63,35 @@
         "consistent": true
       }
     ],
-    "one-var-declaration-per-line": [
-      "error",
-      "initializations"
-    ],
-    "quotes": [
-      "error",
-      "single"
-    ],
-    "semi": [
-      "error",
-      "always"
-    ],
-    "strict": 0,
-    "import/extensions": 0,
-    "import/no-extraneous-dependencies": 0,
-    "import/no-unresolved": 0,
-    "jsx-a11y/click-events-have-key-events": 0,
-    "jsx-a11y/mouse-events-have-key-events": 0,
-    "jsx-a11y/no-static-element-interactions": 0,
+    "one-var-declaration-per-line": ["error", "initializations"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "strict": "off",
+    "css-modules/no-unused-class": "off",
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unresolved": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/mouse-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
     "no-else-return": [
       "error",
       {
         "allowElseIf": true
       }
     ],
-    "operator-linebreak": [
-      "error",
-      "after"
-    ],
-    "react/destructuring-assignment": 0,
-    "react/forbid-prop-types": 0,
-    "react/jsx-filename-extension": 0,
-    "react/jsx-indent": [
-      "error",
-      4
-    ],
-    "react/jsx-indent-props": [
-      "error",
-      4
-    ],
-    "react/no-array-index-key": 0,
-    "react/no-multi-comp": 0,
-    "react/prop-types": 0,
-    "react/require-default-props": 0,
+    "prettier/prettier": "error",
+    "react/destructuring-assignment": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/no-array-index-key": "off",
+    "react/no-multi-comp": "off",
+    "react/prop-types": "off",
+    "react/require-default-props": "off",
     "react/sort-comp": [
       1,
       {
-        "order": [
-          "static-methods",
-          "lifecycle",
-          "/^on.+$/",
-          "everything-else",
-          "render"
-        ]
+        "order": ["static-methods", "lifecycle", "/^on.+$/", "everything-else", "render"]
       }
     ]
   }

@@ -1,68 +1,68 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .image {
-    height: 100px;
-    width: 100px;
-    background-color: @bg-color2;
-    border: 1px solid @border-color;
-    border-radius: @input-radius;
-    position: relative;
-    overflow: hidden;
+  height: 100px;
+  width: 100px;
+  background-color: @bg-color2;
+  border: 1px solid @border-color;
+  border-radius: @input-radius;
+  position: relative;
+  overflow: hidden;
 
-    &:hover .openIcon {
-        opacity: 1;
-        transform: scale(1,1);
-    }
+  &:hover .openIcon {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
 }
 
 .portrait {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .landscape {
-    width: auto;
-    height: 100%;
+  width: auto;
+  height: 100%;
 }
 
 .img {
-    width: 100%;
-    height: auto;
-    .position-center();
+  width: 100%;
+  height: auto;
+  .position-center();
 }
 
 .openIcon {
-    color: @text-color1;
-    height: 24px;
-    width: 24px;
-    opacity: 0;
-    transform: scale(0.5,0.5);
-    transition: all 0.25s;
-    filter: drop-shadow(1px 1px 1px #000);
-    .absolute-center();
+  color: @text-color1;
+  height: 24px;
+  width: 24px;
+  opacity: 0;
+  transform: scale(0.5, 0.5);
+  transition: all 0.25s;
+  filter: drop-shadow(1px 1px 1px #000);
+  .absolute-center();
 }
 
 .closeIcon {
-    color: @text-color2;
-    width: 14px;
-    height: 14px;
+  color: @text-color2;
+  width: 14px;
+  height: 14px;
 
-    &:hover {
-        color: @text-color1;
-    }
+  &:hover {
+    color: @text-color1;
+  }
 }
 
 .link {
-    color: darken(@text-color1, 50%);
-    width: 12px;
-    height: 12px;
-    margin-left: 8px;
+  color: darken(@text-color1, 50%);
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
 }
 
 .linkActive {
-    color: darken(@text-color1, 10%);
+  color: darken(@text-color1, 10%);
 }
 
 .hidden {
-    display: none;
+  display: none;
 }

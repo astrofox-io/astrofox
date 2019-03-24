@@ -16,15 +16,14 @@ global.env = env;
 
 // Create temp folder for application
 function createTempFolder() {
-    try {
-        fs.mkdirSync(env.TEMP_PATH);
-        log('Temp folder created:', env.TEMP_PATH);
+  try {
+    fs.mkdirSync(env.TEMP_PATH);
+    log('Temp folder created:', env.TEMP_PATH);
+  } catch (err) {
+    if (err.code !== 'EEXIST') {
+      log('ERROR:', err.message);
     }
-    catch (err) {
-        if (err.code !== 'EEXIST') {
-            log('ERROR:', err.message);
-        }
-    }
+  }
 }
 
 // Chrome flags
@@ -46,63 +45,63 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 
 // Memory profiling
 if (process.env.NODE_ENV !== 'production') {
-    app.commandLine.appendSwitch('enable-precise-memory-info');
+  app.commandLine.appendSwitch('enable-precise-memory-info');
 }
 
 // Application events
 app.on('ready', () => {
-    log('ready');
+  log('ready');
 
-    // Modify the user agent for all requests to the following urls
-    const filter = {
-        urls: ['https://*.astrofox.io/*'],
-    };
+  // Modify the user agent for all requests to the following urls
+  const filter = {
+    urls: ['https://*.astrofox.io/*'],
+  };
 
-    session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-        details.requestHeaders['User-Agent'] = env.USER_AGENT;
-        callback({ cancel: false, requestHeaders: details.requestHeaders });
-    });
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    details.requestHeaders['User-Agent'] = env.USER_AGENT;
+    callback({ cancel: false, requestHeaders: details.requestHeaders });
+  });
 
-    // Disable menu items on macOS
-    if (process.platform === 'darwin') {
-        systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true);
-        systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true);
-    }
+  // Disable menu items on macOS
+  if (process.platform === 'darwin') {
+    systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true);
+    systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true);
+  }
 
-    createTempFolder();
+  createTempFolder();
 
-    createWindow();
+  createWindow();
 });
 
 app.on('window-all-closed', () => {
-    log('window-all-closed');
+  log('window-all-closed');
 
-    disposeWindow();
+  disposeWindow();
 
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 app.on('activate', () => {
-    log('activate');
+  log('activate');
 
-    createWindow();
+  createWindow();
 });
 
 app.on('will-quit', () => {
-    log('will-quit');
+  log('will-quit');
 });
 
 // IPC events
 ipcMain.on('check-for-updates', () => {
-    appUpdater.checkForUpdates();
+  appUpdater.checkForUpdates();
 });
 
 ipcMain.on('download-update', () => {
-    appUpdater.downloadUpdate();
+  appUpdater.downloadUpdate();
 });
 
 ipcMain.on('quit-and-install', () => {
-    appUpdater.quitAndInstall();
+  appUpdater.quitAndInstall();
 });

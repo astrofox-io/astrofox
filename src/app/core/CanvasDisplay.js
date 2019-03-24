@@ -2,63 +2,49 @@ import Display from 'core/Display';
 import { deg2rad } from 'utils/math';
 
 export default class CanvasDisplay extends Display {
-    constructor(type, options) {
-        super(type, options);
+  constructor(type, options) {
+    super(type, options);
 
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = this.options.width;
-        this.canvas.height = this.options.height;
-        this.context = this.canvas.getContext('2d');
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = this.options.width;
+    this.canvas.height = this.options.height;
+    this.context = this.canvas.getContext('2d');
+  }
+
+  renderToScene(scene) {
+    const { width, height } = this.canvas;
+
+    this.renderToCanvas(scene.getContext('2d'), width / 2, height / 2);
+  }
+
+  renderToCanvas(context, dx, dy) {
+    const { canvas } = this;
+    const { width, height } = context.canvas;
+
+    if (canvas.width === 0 || canvas.height === 0) {
+      return;
     }
 
-    renderToScene(scene) {
-        const { width, height } = this.canvas;
+    const { x, y, opacity, rotation } = this.options;
 
-        this.renderToCanvas(
-            scene.getContext('2d'),
-            width / 2,
-            height / 2,
-        );
+    const halfSceneWidth = width / 2;
+    const halfSceneHeight = height / 2;
+
+    context.globalAlpha = opacity;
+
+    if (rotation % 360 !== 0) {
+      const cx = halfSceneWidth + x;
+      const cy = halfSceneHeight - y;
+
+      context.save();
+      context.translate(cx, cy);
+      context.rotate(deg2rad(rotation));
+      context.drawImage(canvas, -dx, -dy);
+      context.restore();
+    } else {
+      context.drawImage(canvas, halfSceneWidth + x - dx, halfSceneHeight - y - dy);
     }
 
-    renderToCanvas(context, dx, dy) {
-        const { canvas } = this;
-        const { width, height } = context.canvas;
-
-        if (canvas.width === 0 || canvas.height === 0) {
-            return;
-        }
-
-        const {
-            x,
-            y,
-            opacity,
-            rotation,
-        } = this.options;
-
-        const halfSceneWidth = width / 2;
-        const halfSceneHeight = height / 2;
-
-        context.globalAlpha = opacity;
-
-        if (rotation % 360 !== 0) {
-            const cx = halfSceneWidth + x;
-            const cy = halfSceneHeight - y;
-
-            context.save();
-            context.translate(cx, cy);
-            context.rotate(deg2rad(rotation));
-            context.drawImage(canvas, -dx, -dy);
-            context.restore();
-        }
-        else {
-            context.drawImage(
-                canvas,
-                halfSceneWidth + x - dx,
-                halfSceneHeight - y - dy,
-            );
-        }
-
-        context.globalAlpha = 1.0;
-    }
+    context.globalAlpha = 1.0;
+  }
 }

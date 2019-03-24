@@ -4,54 +4,54 @@ import PixelateShader from 'shaders/PixelateShader';
 import HexagonShader from 'shaders/HexagonShader';
 
 const shaders = {
-    Square: PixelateShader,
-    Hexagon: HexagonShader,
+  Square: PixelateShader,
+  Hexagon: HexagonShader,
 };
 
 export default class PixelateEffect extends Effect {
-    static label = 'Pixelate';
+  static label = 'Pixelate';
 
-    static className = 'PixelateEffect';
+  static className = 'PixelateEffect';
 
-    static defaultOptions = {
-        type: 'Square',
-        size: 10,
+  static defaultOptions = {
+    type: 'Square',
+    size: 10,
+  };
+
+  constructor(options) {
+    super(PixelateEffect, options);
+  }
+
+  update(options) {
+    const changed = Effect.prototype.update.call(this, options);
+
+    if (this.pass && options.type !== undefined) {
+      this.setPass(this.getShaderPass(this.options.type));
     }
 
-    constructor(options) {
-        super(PixelateEffect, options);
-    }
+    return changed;
+  }
 
-    update(options) {
-        const changed = Effect.prototype.update.call(this, options);
+  updatePass() {
+    this.pass.setUniforms({ size: this.options.size });
+  }
 
-        if (this.pass && options.type !== undefined) {
-            this.setPass(this.getShaderPass(this.options.type));
-        }
+  addToScene() {
+    this.setPass(this.getShaderPass(this.options.type));
+    this.updatePass();
+  }
 
-        return changed;
-    }
+  removeFromScene() {
+    this.pass = null;
+  }
 
-    updatePass() {
-        this.pass.setUniforms({ size: this.options.size });
-    }
+  getShaderPass(type) {
+    const pass = new ShaderPass(shaders[type]);
+    const { width, height } = this.scene.getSize();
 
-    addToScene() {
-        this.setPass(this.getShaderPass(this.options.type));
-        this.updatePass();
-    }
+    pass.setUniforms(this.options);
+    pass.setSize(width, height);
 
-    removeFromScene() {
-        this.pass = null;
-    }
-
-    getShaderPass(type) {
-        const pass = new ShaderPass(shaders[type]);
-        const { width, height } = this.scene.getSize();
-
-        pass.setUniforms(this.options);
-        pass.setSize(width, height);
-
-        return pass;
-    }
+    return pass;
+  }
 }

@@ -1,31 +1,31 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .toggle {
-    position: relative;
-    height: 17px;
-    width: 32px;
-    border-radius: 17px;
-    background-color: @bg-color2;
-    border: 1px solid @border-color;
-    transition: background-color 0.25s;
+  position: relative;
+  height: 17px;
+  width: 32px;
+  border-radius: 17px;
+  background-color: @bg-color2;
+  border: 1px solid @border-color;
+  transition: background-color 0.25s;
 
-    &:before {
-        content: "\0020";
-        width: 15px;
-        height: 15px;
-        border-radius: 15px;
-        background-color: @text-color1;
-        border: 1px solid lighten(@border-color, 20%);
-        box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-        transition: left 0.25s;
-        .position-left();
-    }
+  &:before {
+    content: '\0020';
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: @text-color1;
+    border: 1px solid lighten(@border-color, 20%);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    transition: left 0.25s;
+    .position-left();
+  }
 }
 
 .on {
-    background-color: @color1;
+  background-color: @color1;
 
-    &:before {
-        left: 15px;
-    }
+  &:before {
+    left: 15px;
+  }
 }

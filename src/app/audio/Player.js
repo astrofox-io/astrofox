@@ -3,151 +3,146 @@ import EventEmitter from 'core/EventEmitter';
 const UPDATE_INTERVAL = 200;
 
 export default class Player extends EventEmitter {
-    constructor(context) {
-        super();
+  constructor(context) {
+    super();
 
-        this.audioContext = context;
-        this.nodes = [];
-        this.audio = null;
+    this.audioContext = context;
+    this.nodes = [];
+    this.audio = null;
 
-        this.volume = this.audioContext.createGain();
-        this.volume.connect(this.audioContext.destination);
+    this.volume = this.audioContext.createGain();
+    this.volume.connect(this.audioContext.destination);
 
-        this.loop = false;
+    this.loop = false;
+  }
+
+  load(audio) {
+    this.unload();
+
+    this.audio = audio;
+    this.audio.addNode(this.volume);
+
+    this.emit('load');
+  }
+
+  unload() {
+    const { audio } = this;
+
+    if (audio) {
+      this.stop();
+      audio.unload();
+
+      this.emit('unload');
     }
+  }
 
-    load(audio) {
-        this.unload();
+  play() {
+    const { audio } = this;
 
-        this.audio = audio;
-        this.audio.addNode(this.volume);
+    if (audio) {
+      if (audio.playing) {
+        this.pause();
+      } else {
+        audio.play();
 
-        this.emit('load');
-    }
-
-    unload() {
-        const { audio } = this;
-
-        if (audio) {
-            this.stop();
-            audio.unload();
-
-            this.emit('unload');
-        }
-    }
-
-    play() {
-        const { audio } = this;
-
-        if (audio) {
-            if (audio.playing) {
-                this.pause();
+        this.timer = setInterval(() => {
+          if (!audio.repeat && audio.getPosition() >= 1.0) {
+            if (this.loop) {
+              this.seek(0);
+            } else {
+              this.stop();
             }
-            else {
-                audio.play();
+          }
 
-                this.timer = setInterval(
-                    () => {
-                        if (!audio.repeat && audio.getPosition() >= 1.0) {
-                            if (this.loop) {
-                                this.seek(0);
-                            }
-                            else {
-                                this.stop();
-                            }
-                        }
+          this.emit('tick');
+        }, UPDATE_INTERVAL);
 
-                        this.emit('tick');
-                    },
-                    UPDATE_INTERVAL,
-                );
+        this.emit('play');
+      }
+    }
+  }
 
-                this.emit('play');
-            }
-        }
+  pause() {
+    const { audio } = this;
+
+    if (audio) {
+      audio.pause();
+      clearInterval(this.timer);
+      this.emit('pause');
+    }
+  }
+
+  stop() {
+    const { audio } = this;
+
+    if (audio) {
+      audio.stop();
+      clearInterval(this.timer);
+      this.emit('stop');
+    }
+  }
+
+  seek(val) {
+    const { audio } = this;
+
+    if (audio) {
+      audio.seek(val);
+      this.emit('seek');
+    }
+  }
+
+  getAudio() {
+    return this.audio;
+  }
+
+  setVolume(val) {
+    if (this.volume) {
+      this.volume.gain.value = val;
+    }
+  }
+
+  getVolume() {
+    return this.volume.gain.value;
+  }
+
+  getCurrentTime() {
+    const { audio } = this;
+
+    if (audio) {
+      return audio.getCurrentTime();
+    }
+    return 0;
+  }
+
+  getDuration() {
+    const { audio } = this;
+
+    if (audio) {
+      return audio.getDuration();
     }
 
-    pause() {
-        const { audio } = this;
+    return 0;
+  }
 
-        if (audio) {
-            audio.pause();
-            clearInterval(this.timer);
-            this.emit('pause');
-        }
+  getPosition() {
+    const { audio } = this;
+
+    if (audio) {
+      return audio.getPosition();
     }
 
-    stop() {
-        const { audio } = this;
+    return 0;
+  }
 
-        if (audio) {
-            audio.stop();
-            clearInterval(this.timer);
-            this.emit('stop');
-        }
-    }
+  setLoop(val) {
+    this.loop = val;
+  }
 
-    seek(val) {
-        const { audio } = this;
+  isPlaying() {
+    return this.audio && this.audio.playing;
+  }
 
-        if (audio) {
-            audio.seek(val);
-            this.emit('seek');
-        }
-    }
-
-    getAudio() {
-        return this.audio;
-    }
-
-    setVolume(val) {
-        if (this.volume) {
-            this.volume.gain.value = val;
-        }
-    }
-
-    getVolume() {
-        return this.volume.gain.value;
-    }
-
-    getCurrentTime() {
-        const { audio } = this;
-
-        if (audio) {
-            return audio.getCurrentTime();
-        }
-        return 0;
-    }
-
-    getDuration() {
-        const { audio } = this;
-
-        if (audio) {
-            return audio.getDuration();
-        }
-
-        return 0;
-    }
-
-    getPosition() {
-        const { audio } = this;
-
-        if (audio) {
-            return audio.getPosition();
-        }
-
-        return 0;
-    }
-
-    setLoop(val) {
-        this.loop = val;
-    }
-
-    isPlaying() {
-        return this.audio && this.audio.playing;
-    }
-
-    isLooping() {
-        return this.loop;
-    }
+  isLooping() {
+    return this.loop;
+  }
 }

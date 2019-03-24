@@ -1,170 +1,168 @@
 export default class Audio {
-    constructor(context) {
-        this.audioContext = context;
-        this.source = null;
-        this.buffer = null;
-        this.startTime = 0;
-        this.stopTime = 0;
-        this.nodes = [];
-        this.playing = false;
-        this.paused = false;
-        this.repeat = false;
+  constructor(context) {
+    this.audioContext = context;
+    this.source = null;
+    this.buffer = null;
+    this.startTime = 0;
+    this.stopTime = 0;
+    this.nodes = [];
+    this.playing = false;
+    this.paused = false;
+    this.repeat = false;
+  }
+
+  load(src) {
+    if (typeof src === 'string') {
+      return this.loadUrl(src);
+    } else if (src instanceof ArrayBuffer) {
+      return this.loadData(src);
+    } else if (src instanceof AudioBuffer) {
+      return this.loadBuffer(src);
     }
 
-    load(src) {
-        if (typeof src === 'string') {
-            return this.loadUrl(src);
-        }
-        else if (src instanceof ArrayBuffer) {
-            return this.loadData(src);
-        }
-        else if (src instanceof AudioBuffer) {
-            return this.loadBuffer(src);
-        }
+    return Promise.reject(new Error(`Invalid source: ${typeof src}`));
+  }
 
-        return Promise.reject(new Error(`Invalid source: ${(typeof src)}`));
+  unload() {
+    if (this.source) {
+      this.stop();
+      this.source = null;
+      this.buffer = null;
+    }
+  }
+
+  // Loads a url via AJAX
+  loadUrl(src) {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+
+      request.open('GET', src);
+      request.responseType = 'arraybuffer';
+
+      request.onload = () => {
+        resolve(request.response);
+      };
+
+      request.onerror = () => {
+        reject();
+      };
+
+      request.send();
+    }).then(response => {
+      this.loadData(response);
+    });
+  }
+
+  // Decodes an ArrayBuffer into an AudioBuffer
+  loadData(data) {
+    return this.audioContext
+      .decodeAudioData(data)
+      .then(buffer => {
+        this.loadBuffer(buffer);
+      })
+      .catch(error => {
+        throw error;
+      });
+  }
+
+  // Loads an AudioBuffer
+  loadBuffer(buffer) {
+    this.buffer = buffer;
+    this.initBuffer();
+  }
+
+  addNode(node) {
+    if (this.nodes.indexOf(node) < 0) {
+      this.nodes.push(node);
+    }
+  }
+
+  removeNode(node) {
+    const index = this.nodes.indexOf(node);
+
+    if (index > -1) {
+      this.nodes.splice(index, 1);
+    }
+  }
+
+  reconnectNodes() {
+    this.nodes.forEach(node => {
+      this.source.connect(node);
+    });
+  }
+
+  disconnectNodes() {
+    this.nodes.forEach(node => {
+      node.disconnect();
+    });
+  }
+
+  initBuffer() {
+    this.source = this.audioContext.createBufferSource();
+    this.source.buffer = this.buffer;
+
+    this.reconnectNodes();
+  }
+
+  play() {
+    if (this.buffer) {
+      this.initBuffer();
+
+      this.startTime = this.audioContext.currentTime;
+      this.source.start(0, this.getCurrentTime());
+      this.playing = true;
+      this.paused = false;
+    }
+  }
+
+  pause() {
+    if (this.source) {
+      this.source.stop();
+      this.source = null;
     }
 
-    unload() {
-        if (this.source) {
-            this.stop();
-            this.source = null;
-            this.buffer = null;
-        }
+    this.stopTime += this.audioContext.currentTime - this.startTime;
+    this.playing = false;
+    this.paused = true;
+  }
+
+  stop() {
+    if (this.source) {
+      if (this.playing) this.source.stop();
+      this.source.disconnect();
+      this.source = null;
     }
 
-    // Loads a url via AJAX
-    loadUrl(src) {
-        return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
+    this.stopTime = 0;
+    this.playing = false;
+    this.paused = false;
+  }
 
-            request.open('GET', src);
-            request.responseType = 'arraybuffer';
-
-            request.onload = () => {
-                resolve(request.response);
-            };
-
-            request.onerror = () => {
-                reject();
-            };
-
-            request.send();
-        }).then((response) => {
-            this.loadData(response);
-        });
+  seek(pos) {
+    if (this.playing) {
+      this.stop();
+      this.updatePosition(pos);
+      this.play();
+    } else {
+      this.updatePosition(pos);
     }
+  }
 
-    // Decodes an ArrayBuffer into an AudioBuffer
-    loadData(data) {
-        return this.audioContext.decodeAudioData(data)
-            .then((buffer) => {
-                this.loadBuffer(buffer);
-            })
-            .catch((error) => {
-                throw error;
-            });
-    }
+  getCurrentTime() {
+    return this.playing
+      ? this.stopTime + (this.audioContext.currentTime - this.startTime)
+      : this.stopTime;
+  }
 
-    // Loads an AudioBuffer
-    loadBuffer(buffer) {
-        this.buffer = buffer;
-        this.initBuffer();
-    }
+  getDuration() {
+    return this.buffer ? this.buffer.duration : 0;
+  }
 
-    addNode(node) {
-        if (this.nodes.indexOf(node) < 0) {
-            this.nodes.push(node);
-        }
-    }
+  getPosition() {
+    return this.getCurrentTime() / this.getDuration() || 0;
+  }
 
-    removeNode(node) {
-        const index = this.nodes.indexOf(node);
-
-        if (index > -1) {
-            this.nodes.splice(index, 1);
-        }
-    }
-
-    reconnectNodes() {
-        this.nodes.forEach((node) => {
-            this.source.connect(node);
-        });
-    }
-
-    disconnectNodes() {
-        this.nodes.forEach((node) => {
-            node.disconnect();
-        });
-    }
-
-    initBuffer() {
-        this.source = this.audioContext.createBufferSource();
-        this.source.buffer = this.buffer;
-
-        this.reconnectNodes();
-    }
-
-    play() {
-        if (this.buffer) {
-            this.initBuffer();
-
-            this.startTime = this.audioContext.currentTime;
-            this.source.start(0, this.getCurrentTime());
-            this.playing = true;
-            this.paused = false;
-        }
-    }
-
-    pause() {
-        if (this.source) {
-            this.source.stop();
-            this.source = null;
-        }
-
-        this.stopTime += this.audioContext.currentTime - this.startTime;
-        this.playing = false;
-        this.paused = true;
-    }
-
-    stop() {
-        if (this.source) {
-            if (this.playing) this.source.stop();
-            this.source.disconnect();
-            this.source = null;
-        }
-
-        this.stopTime = 0;
-        this.playing = false;
-        this.paused = false;
-    }
-
-    seek(pos) {
-        if (this.playing) {
-            this.stop();
-            this.updatePosition(pos);
-            this.play();
-        }
-        else {
-            this.updatePosition(pos);
-        }
-    }
-
-    getCurrentTime() {
-        return this.playing ?
-            this.stopTime + (this.audioContext.currentTime - this.startTime) :
-            this.stopTime;
-    }
-
-    getDuration() {
-        return this.buffer ? this.buffer.duration : 0;
-    }
-
-    getPosition() {
-        return (this.getCurrentTime() / this.getDuration()) || 0;
-    }
-
-    updatePosition(pos) {
-        this.stopTime = ~~(pos * this.buffer.duration);
-    }
+  updatePosition(pos) {
+    this.stopTime = ~~(pos * this.buffer.duration);
+  }
 }

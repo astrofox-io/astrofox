@@ -1,127 +1,127 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 @keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .stage {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-    min-height: 0;
-    overflow: auto;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  position: relative;
 }
 
 .scroll {
-    margin: auto;
+  margin: auto;
 }
 
 .canvas {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    margin: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  margin: 20px;
 
-    canvas {
-        z-index: 2;
-    }
+  canvas {
+    z-index: 2;
+  }
 }
 
 .loading {
-    width: 100px;
-    height: 100px;
-    margin: -50px 0 0 -50px;
-    border: 3px solid @color1;
-    border-top-color: transparent;
-    border-left-color: transparent;
-    border-radius: 100%;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    z-index: 3;
-    animation: rotate .3s linear infinite;
+  width: 100px;
+  height: 100px;
+  margin: -50px 0 0 -50px;
+  border: 3px solid @color1;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-radius: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  animation: rotate 0.3s linear infinite;
 }
 
 .stageEnter {
-    &.loading {
-        opacity: 0;
-        width: 200px;
-        height: 200px;
-        margin: -100px 0 0 -100px;
-    }
+  &.loading {
+    opacity: 0;
+    width: 200px;
+    height: 200px;
+    margin: -100px 0 0 -100px;
+  }
 
-    &.renderInfo {
-        max-height: 0;
+  &.renderInfo {
+    max-height: 0;
 
-        &:before {
-            opacity: 0;
-        }
+    &:before {
+      opacity: 0;
     }
+  }
 }
 
 .stageEnterActive {
-    &.loading {
-        opacity: 1;
-        width: 100px;
-        height: 100px;
-        margin: -50px 0 0 -50px;
-        transition: all .3s ease-out;
-    }
+  &.loading {
+    opacity: 1;
+    width: 100px;
+    height: 100px;
+    margin: -50px 0 0 -50px;
+    transition: all 0.3s ease-out;
+  }
 
-    &.renderInfo {
-        max-height: 100px;
-        transition: max-height .5s;
+  &.renderInfo {
+    max-height: 100px;
+    transition: max-height 0.5s;
 
-        &:before {
-            opacity: 0.5;
-            transition: all .5s ease-out;
-        }
+    &:before {
+      opacity: 0.5;
+      transition: all 0.5s ease-out;
     }
+  }
 }
 
 .stageExit {
-    &.loading {
-        opacity: 1;
-        width: 100px;
-        height: 100px;
-        margin: -50px 0 0 -50px;
-    }
+  &.loading {
+    opacity: 1;
+    width: 100px;
+    height: 100px;
+    margin: -50px 0 0 -50px;
+  }
 
-    &.renderInfo {
-        max-height: 100px;
+  &.renderInfo {
+    max-height: 100px;
 
-        &:before {
-            opacity: 0.5;
-        }
+    &:before {
+      opacity: 0.5;
     }
+  }
 }
 
 .stageExitActive {
-    &.loading {
-        opacity: 0;
-        width: 200px;
-        height: 200px;
-        margin: -100px 0 0 -100px;
-        transition: all .3s ease-in;
-    }
+  &.loading {
+    opacity: 0;
+    width: 200px;
+    height: 200px;
+    margin: -100px 0 0 -100px;
+    transition: all 0.3s ease-in;
+  }
 
-    &.renderInfo {
-        max-height: 0;
-        transition: max-height .5s;
+  &.renderInfo {
+    max-height: 0;
+    transition: max-height 0.5s;
 
-        &:before {
-            opacity: 0;
-            transition: all .5s ease-in;
-        }
+    &:before {
+      opacity: 0;
+      transition: all 0.5s ease-in;
     }
+  }
 }

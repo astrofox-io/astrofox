@@ -1,67 +1,67 @@
-@import (reference) "~styles/index.less";
-
-.select {
-    display: inline-block;
-    position: relative;
-
-    &:after {
-        content: "\0020";
-        transform: rotate(135deg);
-        position: absolute;
-        top: 7px;
-        right: 7px;
-        height: 5px;
-        width: 5px;
-        border-top: 1px solid @color1;
-        border-right: 1px solid @color1;
-        pointer-events: none;
-    }
-
-    .input {
-        &:read-only {
-            color: @text-color1;
-        }
-    }
-}
+@import (reference) '~styles/index.less';
 
 .input {
-    composes: text from './TextInput.less';
-    cursor: default;
+  composes: text from './TextInput.less';
+  cursor: default;
+}
+
+.select {
+  display: inline-block;
+  position: relative;
+
+  &:after {
+    content: '\0020';
+    transform: rotate(135deg);
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    height: 5px;
+    width: 5px;
+    border-top: 1px solid @color1;
+    border-right: 1px solid @color1;
+    pointer-events: none;
+  }
+
+  .input {
+    &:read-only {
+      color: @text-color1;
+    }
+  }
 }
 
 .options {
-    position: absolute;
-    top: 22px;
-    z-index: 1;
-    list-style: none;
-    background-color: @bg-color2;
+  position: absolute;
+  top: 22px;
+  z-index: 1;
+  list-style: none;
+  background-color: @bg-color2;
 }
 
 .option {
-    font-size: @font-small;
-    padding: 5px;
-    min-width: 100px;
+  font-size: @font-small;
+  padding: 5px;
+  min-width: 100px;
 
-    &:hover {
-        cursor: default;
-        background-color: @color1;
-    }
+  &:hover {
+    cursor: default;
+    background-color: @color1;
+  }
 }
 
 .separator {
-    height: 5px;
+  height: 5px;
 
-    &:after {
-        content: "\0020";
-        border-top: 1px solid @color1;
-        display: block;
-    }
+  &:after {
+    content: '\0020';
+    border-top: 1px solid @color1;
+    display: block;
+  }
 
-    &:hover {
-        background-color: transparent;
-    }
+  &:hover {
+    background-color: transparent;
+  }
 }
 
 .hidden {
-    display: none;
+  display: none;
 }

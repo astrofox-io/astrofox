@@ -1,89 +1,89 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .control {
-    background-color: @bg-color1;
-    border-top: 1px solid @border-color-top;
-    border-bottom: 1px solid @border-color-bottom;
-    padding-bottom: 16px;
+  background-color: @bg-color1;
+  border-top: 1px solid @border-color-top;
+  border-bottom: 1px solid @border-color-bottom;
+  padding-bottom: 16px;
 }
 
 .header {
-    padding-left: 8px;
-    margin-bottom: 10px;
-    cursor: default;
-    position: relative;
+  padding-left: 8px;
+  margin-bottom: 10px;
+  cursor: default;
+  position: relative;
 }
 
 .text {
-    font-size: @font-smaller;
-    color: @text-color2;
-    text-transform: uppercase;
-    text-shadow: 1px 1px 0 darken(@text-color2, 50%);
-    line-height: 20px;
-    overflow: hidden;
+  font-size: @font-smaller;
+  color: @text-color2;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 darken(@text-color2, 50%);
+  line-height: 20px;
+  overflow: hidden;
 }
 
 .displayName {
-    position: absolute;
-    right: 10px;
-    width: 150px;
-    text-align: right;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: @font-smaller;
-    line-height: 20px;
-    color: @text-color3;
-    text-shadow: 1px 1px 0 darken(@text-color3, 50%);
+  position: absolute;
+  right: 10px;
+  width: 150px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: @font-smaller;
+  line-height: 20px;
+  color: @text-color3;
+  text-shadow: 1px 1px 0 darken(@text-color3, 50%);
 }
 
 .option {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 8px 0;
-    margin: 0 10px;
-    position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 0;
+  margin: 0 10px;
+  position: relative;
 
-    > * {
-        margin-right: 8px;
+  > * {
+    margin-right: 8px;
 
-        &:last-child {
-            margin-right: 0;
-        }
+    &:last-child {
+      margin-right: 0;
     }
+  }
 
-    &:after {
-        content: "\0020";
-        border-top: 1px solid lighten(@border-color-bottom, 6%);
-        border-bottom: 1px solid darken(@border-color-top, 8%);
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-    }
+  &:after {
+    content: '\0020';
+    border-top: 1px solid lighten(@border-color-bottom, 6%);
+    border-bottom: 1px solid darken(@border-color-top, 8%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
 }
 
 .label {
-    display: inline-block;
-    font-size: @font-small;
-    color: @text-color1;
-    line-height: 20px;
-    text-align: right;
-    cursor: default;
+  display: inline-block;
+  font-size: @font-small;
+  color: @text-color1;
+  line-height: 20px;
+  text-align: right;
+  cursor: default;
 
-    &:first-child {
-        margin-left: 20px;
-        min-width: 80px;
-    }
+  &:first-child {
+    margin-left: 20px;
+    min-width: 80px;
+  }
 }
 
 .active {
-    border-top: 1px solid @color1;
+  border-top: 1px solid @color1;
 }
 
 .unit {
-    color: @text-color2;
-    font-size: @font-small;
-    margin: 0 8px 0 -4px;
+  color: @text-color2;
+  font-size: @font-small;
+  margin: 0 8px 0 -4px;
 }

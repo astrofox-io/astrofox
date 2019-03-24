@@ -14,22 +14,19 @@ const root = {};
 
 // Development settings
 if (process.env.NODE_ENV !== 'production') {
-    root.app = app;
-    root.env = Environment;
+  root.app = app;
+  root.env = Environment;
 }
 
 // Production settings
 if (process.env.NODE_ENV === 'production') {
-    // Disable eval
-    // eslint-disable-next-line
-    window.eval = global.eval = function () {
-        throw new Error('eval() not allowed.');
-    };
+  // Disable eval
+  // eslint-disable-next-line
+  window.eval = global.eval = function() {
+    throw new Error('eval() not allowed.');
+  };
 }
 
-ReactDOM.render(
-    <App app={app} />,
-    document.getElementById('app'),
-);
+ReactDOM.render(<App app={app} />, document.getElementById('app'));
 
 export default root;

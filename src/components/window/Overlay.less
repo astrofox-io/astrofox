@@ -1,61 +1,61 @@
 .overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 50;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
 }
 
 .overlayEnter {
-    &:before {
-        opacity: 0;
-    }
+  &:before {
+    opacity: 0;
+  }
 
-    .element {
-        opacity: 0;
-        transform: perspective(800px) scale(0.7) rotateX(-90deg);
-        transform-style: preserve-3d;
-    }
+  .element {
+    opacity: 0;
+    transform: perspective(800px) scale(0.7) rotateX(-90deg);
+    transform-style: preserve-3d;
+  }
 }
 
 .overlayEnterActive {
-    &:before {
-        opacity: 0.5;
-        transition: opacity .3s ease-out;
-    }
+  &:before {
+    opacity: 0.5;
+    transition: opacity 0.3s ease-out;
+  }
 
-    .element {
-        opacity: 1;
-        transform: none;
-        transition: all .3s;
-    }
+  .element {
+    opacity: 1;
+    transform: none;
+    transition: all 0.3s;
+  }
 }
 
 .overlayExit {
-    &:before {
-        opacity: 0.5;
-    }
+  &:before {
+    opacity: 0.5;
+  }
 
-    .element {
-        opacity: 1;
-        transform: none;
-    }
+  .element {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .overlayExitActive {
-    &:before {
-        opacity: 0;
-        transition: opacity .3s ease-in;
-    }
+  &:before {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+  }
 
-    .element {
-        opacity: 0;
-        box-shadow: none;
-        transform: perspective(800px) scale(0.7) rotateX(-90deg);
-        transform-style: preserve-3d;
-        transition: all .3s;
-    }
+  .element {
+    opacity: 0;
+    box-shadow: none;
+    transform: perspective(800px) scale(0.7) rotateX(-90deg);
+    transform-style: preserve-3d;
+    transition: all 0.3s;
+  }
 }
 
 .hidden {
-    display: none;
+  display: none;
 }

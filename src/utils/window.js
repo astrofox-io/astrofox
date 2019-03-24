@@ -4,53 +4,49 @@ const win = remote.getCurrentWindow();
 const { dialog } = remote;
 
 export function getWindow() {
-    return win;
+  return win;
 }
 
 export function maximizeWindow() {
-    if (win.isMaximized()) {
-        win.unmaximize();
-    }
-    else {
-        win.maximize();
-    }
+  if (win.isMaximized()) {
+    win.unmaximize();
+  } else {
+    win.maximize();
+  }
 }
 
 export function unmaximizeWindow() {
-    win.unmaximize();
+  win.unmaximize();
 }
 
 export function minimizeWindow() {
-    win.minimize();
+  win.minimize();
 }
 
 export function reloadWindow() {
-    win.reload();
+  win.reload();
 }
 
 export function closeWindow() {
-    win.close();
+  win.close();
 }
 
 export function showOpenDialog(callback, options) {
-    dialog.showOpenDialog(win, options, callback);
+  dialog.showOpenDialog(win, options, callback);
 }
 
 export function showSaveDialog(callback, options) {
-    dialog.showSaveDialog(win, options, callback);
+  dialog.showSaveDialog(win, options, callback);
 }
 
 export function showMessageBox(title, message, options) {
-    dialog.showMessageBox(
-        win,
-        { title, message, buttons: [], ...options },
-    );
+  dialog.showMessageBox(win, { title, message, buttons: [], ...options });
 }
 
 export function showErrorBox(title, content) {
-    dialog.showErrorBox(title, content);
+  dialog.showErrorBox(title, content);
 }
 
 export function openDevTools(options) {
-    win.openDevTools({ mode: 'detach', ...options });
+  win.openDevTools({ mode: 'detach', ...options });
 }

@@ -1,35 +1,35 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .range {
-    position: relative;
-    height: 20px;
-    width: 100%;
+  position: relative;
+  height: 20px;
+  width: 100%;
 }
 
 .track {
-    pointer-events: none;
-    height: 4px;
-    width: 100%;
-    border-radius: 4px;
-    background: lighten(@bg-color2, 10%);
-    position: absolute;
-    margin: 8px 0;
+  pointer-events: none;
+  height: 4px;
+  width: 100%;
+  border-radius: 4px;
+  background: lighten(@bg-color2, 10%);
+  position: absolute;
+  margin: 8px 0;
 }
 
 .fill {
-    pointer-events: none;
-    height: 4px;
-    width: 100%;
-    border-radius: 4px;
-    background: @color1;
-    .position-left();
+  pointer-events: none;
+  height: 4px;
+  width: 100%;
+  border-radius: 4px;
+  background: @color1;
+  .position-left();
 }
 
 .bar {
-    background-color: transparent;
-    .position-center();
+  background-color: transparent;
+  .position-center();
 }
 
 .hidden {
-    display: none;
+  display: none;
 }

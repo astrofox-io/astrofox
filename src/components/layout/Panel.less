@@ -1,42 +1,42 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .panel {
-    display: flex;
-    position: relative;
+  display: flex;
+  position: relative;
 
-    &.vertical {
-        flex-direction: column;
-        flex-shrink: 0;
-    }
+  &.vertical {
+    flex-direction: column;
+    flex-shrink: 0;
+  }
 
-    &.horizontal {
-        flex-direction: row;
-        flex-shrink: 0;
-    }
+  &.horizontal {
+    flex-direction: row;
+    flex-shrink: 0;
+  }
 
-    &.stretch {
-        flex: 1;
-        overflow: hidden;
-    }
+  &.stretch {
+    flex: 1;
+    overflow: hidden;
+  }
 }
 
 .title {
-    font-size: @font-small;
-    height: 24px;
-    line-height: 24px;
-    margin-left: 10px;
-    color: @text-color2;
-    cursor: default;
-    flex-shrink: 0;
-    text-transform: uppercase;
+  font-size: @font-small;
+  height: 24px;
+  line-height: 24px;
+  margin-left: 10px;
+  color: @text-color2;
+  cursor: default;
+  flex-shrink: 0;
+  text-transform: uppercase;
 }
 
 .buttons {
-    padding: 5px;
-    width: 100%;
-    background-color: @bg-color1;
-    border-top: 1px solid @border-color-top;
-    border-bottom: 1px solid @border-color-bottom;
-    overflow: hidden;
-    display: flex;
+  padding: 5px;
+  width: 100%;
+  background-color: @bg-color1;
+  border-top: 1px solid @border-color-top;
+  border-bottom: 1px solid @border-color-bottom;
+  overflow: hidden;
+  display: flex;
 }

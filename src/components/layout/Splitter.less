@@ -1,34 +1,34 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .splitter {
-    background-color: darken(@bg-color2, 3%);
-    text-align: center;
-    position: relative;
+  background-color: darken(@bg-color2, 3%);
+  text-align: center;
+  position: relative;
 
-    &.horizontal {
-        height: 5px;
-        width: 100%;
-        cursor: ns-resize;
+  &.horizontal {
+    height: 5px;
+    width: 100%;
+    cursor: ns-resize;
 
-        >.grip {
-            display: block;
-            position: absolute;
-            margin: 0 auto;
-            top: -4px;
-            left: 0;
-            right: 0;
-        }
+    > .grip {
+      display: block;
+      position: absolute;
+      margin: 0 auto;
+      top: -4px;
+      left: 0;
+      right: 0;
     }
+  }
 
-    &.vertical {
-        width: 5px;
-        height: 100%;
-        cursor: ew-resize;
-    }
+  &.vertical {
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+  }
 }
 
 .grip {
-    color: @text-color2;
-    width: 12px;
-    height: 12px;
+  color: @text-color2;
+  width: 12px;
+  height: 12px;
 }

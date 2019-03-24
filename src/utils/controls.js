@@ -9,18 +9,18 @@ import EmptyControl from 'components/controls/EmptyControl';
 const displays = { ...displayLibrary, ...effectsLibrary };
 
 export function getControlComponent(display) {
-    if (display.constructor.className === 'Scene') {
-        return SceneControl;
+  if (display.constructor.className === 'Scene') {
+    return SceneControl;
+  }
+
+  let control = null;
+
+  Object.keys(displays).forEach(key => {
+    if (!control && displays[key] && display instanceof displays[key]) {
+      const name = /(\w+)(Display|Effect)/.exec(key);
+      control = controlLibrary[`${name[1]}Control`];
     }
+  });
 
-    let control = null;
-
-    Object.keys(displays).forEach((key) => {
-        if (!control && displays[key] && display instanceof displays[key]) {
-            const name = /(\w+)(Display|Effect)/.exec(key);
-            control = controlLibrary[`${name[1]}Control`];
-        }
-    });
-
-    return control || EmptyControl;
+  return control || EmptyControl;
 }

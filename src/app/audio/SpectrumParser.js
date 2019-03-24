@@ -3,139 +3,124 @@ import { val2pct, db2mag } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'app/constants';
 
 export default class SpectrumParser extends Component {
-    static defaultOptions = {
-        fftSize: FFT_SIZE,
-        sampleRate: SAMPLE_RATE,
-        smoothingTimeConstant: 0.5,
-        minDecibels: -100,
-        maxDecibels: 0,
-        minFrequency: 0,
-        maxFrequency: SAMPLE_RATE / 2,
-        normalize: false,
-        bins: 0,
+  static defaultOptions = {
+    fftSize: FFT_SIZE,
+    sampleRate: SAMPLE_RATE,
+    smoothingTimeConstant: 0.5,
+    minDecibels: -100,
+    maxDecibels: 0,
+    minFrequency: 0,
+    maxFrequency: SAMPLE_RATE / 2,
+    normalize: false,
+    bins: 0,
+  };
+
+  constructor(options) {
+    super({ ...SpectrumParser.defaultOptions, ...options });
+
+    this.setBinRange();
+  }
+
+  setBinRange() {
+    const { fftSize, sampleRate, minFrequency, maxFrequency } = this.options;
+
+    const range = sampleRate / fftSize;
+
+    this.minBin = ~~(minFrequency / range);
+    this.maxBin = ~~(maxFrequency / range);
+    this.totalBins = this.maxBin - this.minBin;
+  }
+
+  getDb(fft) {
+    const { minDecibels, maxDecibels, normalize } = this.options;
+    const db = -100 * (1 - fft / 256);
+
+    if (normalize) {
+      return val2pct(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
     }
 
-    constructor(options) {
-        super({ ...SpectrumParser.defaultOptions, ...options });
+    return val2pct(db, -100, maxDecibels);
+  }
 
-        this.setBinRange();
+  update(options) {
+    const changed = super.update(options);
+
+    if (changed) {
+      this.setBinRange();
     }
 
-    setBinRange() {
-        const {
-            fftSize,
-            sampleRate,
-            minFrequency,
-            maxFrequency,
-        } = this.options;
+    return changed;
+  }
 
-        const range = sampleRate / fftSize;
+  parseFFT(fft) {
+    let { output, buffer } = this;
 
-        this.minBin = ~~(minFrequency / range);
-        this.maxBin = ~~(maxFrequency / range);
-        this.totalBins = this.maxBin - this.minBin;
+    const { minBin, maxBin, totalBins } = this;
+
+    const { smoothingTimeConstant, bins } = this.options;
+    const size = bins || totalBins;
+
+    // Resize data arrays
+    if (output === undefined || output.length !== size) {
+      output = new Float32Array(size);
+      buffer = new Float32Array(size);
+      this.output = output;
+      this.buffer = buffer;
     }
 
-    getDb(fft) {
-        const { minDecibels, maxDecibels, normalize } = this.options;
-        const db = -100 * (1 - (fft / 256));
+    // Straight conversion
+    if (size === totalBins) {
+      for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
+        output[k] = this.getDb(fft[i]);
+      }
+    }
+    // Compress data
+    else if (size < totalBins) {
+      const step = totalBins / size;
 
-        if (normalize) {
-            return val2pct(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
+      for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
+        const start = ~~(i * step);
+        const end = ~~(start + step);
+        let max = 0;
+
+        // Find max value within range
+        for (let j = start, n = ~~(step / 10) || 1; j < end; j += n) {
+          const val = fft[j];
+
+          if (val > max) {
+            max = val;
+          } else if (-val > max) {
+            max = -val;
+          }
         }
 
-        return val2pct(db, -100, maxDecibels);
+        output[k] = this.getDb(max);
+      }
+    }
+    // Expand data
+    else if (size > totalBins) {
+      const step = size / totalBins;
+
+      for (let i = minBin, j = 0; i < maxBin; i += 1, j += 1) {
+        const val = this.getDb(fft[i]);
+        const start = ~~(j * step);
+        const end = start + step;
+
+        for (let k = start; k < end; k += 1) {
+          output[k] = val;
+        }
+      }
     }
 
-    update(options) {
-        const changed = super.update(options);
+    // Apply smoothing
+    if (smoothingTimeConstant > 0) {
+      for (let i = 0; i < size; i += 1) {
+        output[i] = buffer[i] * smoothingTimeConstant + output[i] * (1.0 - smoothingTimeConstant);
 
-        if (changed) {
-            this.setBinRange();
-        }
-
-        return changed;
+        buffer[i] = output[i];
+      }
     }
 
-    parseFFT(fft) {
-        let {
-            output,
-            buffer,
-        } = this;
-
-        const {
-            minBin,
-            maxBin,
-            totalBins,
-        } = this;
-
-        const { smoothingTimeConstant, bins } = this.options;
-        const size = bins || totalBins;
-
-        // Resize data arrays
-        if (output === undefined || output.length !== size) {
-            output = new Float32Array(size);
-            buffer = new Float32Array(size);
-            this.output = output;
-            this.buffer = buffer;
-        }
-
-        // Straight conversion
-        if (size === totalBins) {
-            for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
-                output[k] = this.getDb(fft[i]);
-            }
-        }
-        // Compress data
-        else if (size < totalBins) {
-            const step = totalBins / size;
-
-            for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
-                const start = ~~(i * step);
-                const end = ~~(start + step);
-                let max = 0;
-
-                // Find max value within range
-                for (let j = start, n = ~~(step / 10) || 1; j < end; j += n) {
-                    const val = fft[j];
-
-                    if (val > max) {
-                        max = val;
-                    }
-                    else if (-val > max) {
-                        max = -val;
-                    }
-                }
-
-                output[k] = this.getDb(max);
-            }
-        }
-        // Expand data
-        else if (size > totalBins) {
-            const step = size / totalBins;
-
-            for (let i = minBin, j = 0; i < maxBin; i += 1, j += 1) {
-                const val = this.getDb(fft[i]);
-                const start = ~~(j * step);
-                const end = start + step;
-
-                for (let k = start; k < end; k += 1) {
-                    output[k] = val;
-                }
-            }
-        }
-
-        // Apply smoothing
-        if (smoothingTimeConstant > 0) {
-            for (let i = 0; i < size; i += 1) {
-                output[i] = (
-                    buffer[i] * smoothingTimeConstant) +
-                    (output[i] * (1.0 - smoothingTimeConstant));
-
-                buffer[i] = output[i];
-            }
-        }
-
-        return output;
-    }
+    return output;
+  }
 }

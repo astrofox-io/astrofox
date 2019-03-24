@@ -3,14 +3,14 @@ import vertex from 'glsl/vertex/Basic.glsl';
 import fragment from 'glsl/fragment/LED.glsl';
 
 export default {
-    uniforms: {
-        tDiffuse: { type: 't', value: null },
-        spacing: { type: 'f', value: 10.0 },
-        size: { type: 'f', value: 4.0 },
-        blur: { type: 'f', value: 4.0 },
-        resolution: { type: 'v2', value: new Vector2(1, 1) },
-    },
+  uniforms: {
+    tDiffuse: { type: 't', value: null },
+    spacing: { type: 'f', value: 10.0 },
+    size: { type: 'f', value: 4.0 },
+    blur: { type: 'f', value: 4.0 },
+    resolution: { type: 'v2', value: new Vector2(1, 1) },
+  },
 
-    vertexShader: vertex,
-    fragmentShader: fragment,
+  vertexShader: vertex,
+  fragmentShader: fragment,
 };

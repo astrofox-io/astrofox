@@ -1,49 +1,53 @@
 import { FFT_SIZE, SAMPLE_RATE } from 'app/constants';
 
 export default class SpectrumAnalyzer {
-    static defaultOptions = {
-        fftSize: FFT_SIZE,
-        minDecibels: -100,
-        maxDecibels: 0,
-        smoothingTimeConstant: 0,
+  static defaultOptions = {
+    fftSize: FFT_SIZE,
+    minDecibels: -100,
+    maxDecibels: 0,
+    smoothingTimeConstant: 0,
+  };
+
+  constructor(context, options) {
+    this.audioContext = context;
+    this.analyzer = Object.assign(
+      context.createAnalyser(),
+      SpectrumAnalyzer.defaultOptions,
+      options,
+    );
+    this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
+    this.td = new Float32Array(this.analyzer.fftSize);
+  }
+
+  getFrequencyData(update) {
+    if (update) {
+      this.analyzer.getByteFrequencyData(this.fft);
     }
 
-    constructor(context, options) {
-        this.audioContext = context;
-        this.analyzer = Object.assign(context.createAnalyser(), SpectrumAnalyzer.defaultOptions, options);
-        this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
-        this.td = new Float32Array(this.analyzer.fftSize);
+    return this.fft;
+  }
+
+  getTimeData(update) {
+    if (update) {
+      this.analyzer.getFloatTimeDomainData(this.td);
     }
 
-    getFrequencyData(update) {
-        if (update) {
-            this.analyzer.getByteFrequencyData(this.fft);
-        }
+    return this.td;
+  }
 
-        return this.fft;
-    }
+  getVolume() {
+    return this.fft.reduce((a, b) => a + b) / this.fft.length;
+  }
 
-    getTimeData(update) {
-        if (update) {
-            this.analyzer.getFloatTimeDomainData(this.td);
-        }
+  clearFrequencyData() {
+    this.fft.fill(0);
+  }
 
-        return this.td;
-    }
+  clearTimeData() {
+    this.td.fill(0);
+  }
 
-    getVolume() {
-        return this.fft.reduce((a, b) => a + b) / this.fft.length;
-    }
-
-    clearFrequencyData() {
-        this.fft.fill(0);
-    }
-
-    clearTimeData() {
-        this.td.fill(0);
-    }
-
-    static getMaxFrequency() {
-        return SAMPLE_RATE / 2;
-    }
+  static getMaxFrequency() {
+    return SAMPLE_RATE / 2;
+  }
 }

@@ -1,23 +1,23 @@
-@import (reference) "~styles/index.less";
+@import (reference) '~styles/index.less';
 
 .button {
-    display: inline-block;
-    background-color: @color1;
-    padding: 8px 10px;
-    border-radius: 3px;
-    cursor: default;
-    margin-right: 10px;
+  display: inline-block;
+  background-color: @color1;
+  padding: 8px 10px;
+  border-radius: 3px;
+  cursor: default;
+  margin-right: 10px;
 
-    &:last-child {
-        margin-right: 0;
-    }
+  &:last-child {
+    margin-right: 0;
+  }
 
-    &:hover {
-        background-color: lighten(@color1, 3%);
-    }
+  &:hover {
+    background-color: lighten(@color1, 3%);
+  }
 
-    &.disabled {
-        color: @text-color2;
-        background-color: @bg-color2;
-    }
+  &.disabled {
+    color: @text-color2;
+    background-color: @bg-color2;
+  }
 }
