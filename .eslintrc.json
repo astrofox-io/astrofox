@@ -27,8 +27,7 @@
     "max-len": [
       "error",
       {
-        "code": 100,
-        "ignoreComments": true
+        "code": 100
       }
     ],
     "no-bitwise": [
@@ -37,13 +36,18 @@
         "allow": ["~"]
       }
     ],
+    "no-else-return": [
+      "error",
+      {
+        "allowElseIf": true
+      }
+    ],
     "no-param-reassign": [
       "error",
       {
         "props": false
       }
     ],
-    "no-multi-spaces": "error",
     "no-plusplus": [
       "error",
       {
@@ -74,22 +78,16 @@
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/mouse-events-have-key-events": "off",
     "jsx-a11y/no-static-element-interactions": "off",
-    "no-else-return": [
-      "error",
-      {
-        "allowElseIf": true
-      }
-    ],
     "prettier/prettier": "error",
     "react/destructuring-assignment": "off",
     "react/forbid-prop-types": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/no-array-index-key": "off",
     "react/no-multi-comp": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
     "react/sort-comp": [
-      1,
+      "error",
       {
         "order": ["static-methods", "lifecycle", "/^on.+$/", "everything-else", "render"]
       }
