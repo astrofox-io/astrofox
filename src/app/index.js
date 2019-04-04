@@ -6,9 +6,6 @@ import App from 'components/App';
 import 'styles/index.less';
 import 'html/index.html';
 
-// Copy images
-require.context('../images/browser/controls', false, /\.(jpg|png|gif)$/);
-
 const app = new Application();
 const root = {};
 

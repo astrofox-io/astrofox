@@ -2,7 +2,7 @@ const path = require('path');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
-const config = {
+module.exports = {
   mode: PRODUCTION ? 'production' : 'development',
   devtool: PRODUCTION ? false : 'source-map',
   target: 'electron-main',
@@ -36,5 +36,3 @@ const config = {
   },
   plugins: [],
 };
-
-module.exports = config;

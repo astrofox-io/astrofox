@@ -1,10 +1,11 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
-const config = {
+module.exports = {
   mode: PRODUCTION ? 'production' : 'development',
   target: 'electron-renderer',
   devtool: PRODUCTION ? false : 'source-map',
@@ -13,7 +14,7 @@ const config = {
   },
   output: {
     path: path.resolve(__dirname, 'app/browser'),
-    filename: 'js/[name].js',
+    filename: '[name].js',
     library: 'Astrofox',
     libraryTarget: 'var',
   },
@@ -41,9 +42,6 @@ const config = {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../',
-            },
           },
           {
             loader: 'css-loader',
@@ -82,8 +80,9 @@ const config = {
         use: {
           loader: 'file-loader',
           options: {
-            name: 'images/[path][name].[ext]',
-            context: 'src/images/browser',
+            name: '[name].[ext]',
+            outputPath: 'images',
+            publicPath: 'images',
           },
         },
       },
@@ -101,8 +100,9 @@ const config = {
         use: {
           loader: 'file-loader',
           options: {
-            name: 'fonts/[name].[ext]',
-            publicPath: '../',
+            name: '[name].[ext]',
+            outputPath: 'fonts',
+            publicPath: 'fonts',
           },
         },
       },
@@ -119,11 +119,15 @@ const config = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
+      filename: '[name].css',
       chunkFilename: '[id].css',
     }),
     new SpriteLoaderPlugin(),
+    new CopyPlugin([
+      {
+        from: path.resolve(__dirname, 'src/images/controls'),
+        to: path.resolve(__dirname, 'app/browser/images/controls'),
+      },
+    ]),
   ],
 };
-
-module.exports = config;
