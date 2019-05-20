@@ -77,11 +77,6 @@ export default class Application {
       return true;
     };
 
-    // Apply OS specific styles
-    window.onload = () => {
-      window.document.body.className = process.platform;
-    };
-
     // Bind context
     this.render = this.render.bind(this);
   }
@@ -155,6 +150,10 @@ export default class Application {
     } else {
       func();
     }
+  }
+
+  get platform() {
+    return process.platform;
   }
   // endregion
 

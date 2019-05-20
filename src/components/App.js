@@ -247,18 +247,14 @@ export default class App extends Component {
   render() {
     const { app } = this.props;
     const { showPlayer, showControlDock, showReactor, reactor, statusBarText, modals } = this.state;
+    const macOS = app.platform === 'darwin';
 
     return (
       <AppContext.Provider value={app}>
-        <div
-          className={styles.container}
-          role="presentation"
-          onDrop={ignoreEvents}
-          onDragOver={ignoreEvents}
-        >
+        <div className={styles.container} onDrop={ignoreEvents} onDragOver={ignoreEvents}>
           <Preload />
-          <TitleBar />
-          <MenuBar items={menuConfig} onMenuAction={this.handleMenuAction} />
+          <TitleBar macOS={macOS} />
+          {!macOS && <MenuBar items={menuConfig} onMenuAction={this.handleMenuAction} />}
           <div className={styles.body}>
             <div className={styles.viewport}>
               <Stage />
