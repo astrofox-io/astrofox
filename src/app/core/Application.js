@@ -1,5 +1,5 @@
-import id3 from 'id3js';
 import { remote } from 'electron';
+import * as id3 from 'id3js';
 import { APP_VERSION, APP_CONFIG_FILE, LICENSE_FILE } from 'core/Environment';
 import { closeWindow, showOpenDialog, showSaveDialog } from 'utils/window';
 import { events, logger, raiseError } from 'app/global';
@@ -30,7 +30,6 @@ export default class Application {
     this.license = new LicenseManager(PUBLIC_KEY);
     this.analyzer = new SpectrumAnalyzer(this.audioContext);
     this.renderer = null;
-
     this.audioFile = '';
     this.projectFile = '';
     this.rendering = false;
@@ -362,12 +361,8 @@ export default class Application {
   }
 
   loadAudioTags(file) {
-    return IO.readFileAsBlob(file).then(data => {
-      id3({ file: data, type: id3.OPEN_FILE }, (err, tags) => {
-        if (!err) {
-          events.emit('audio-tags', tags);
-        }
-      });
+    id3.fromPath(file).then(tags => {
+      events.emit('audio-tags', tags);
     });
   }
 

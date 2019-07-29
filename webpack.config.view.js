@@ -46,10 +46,11 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              camelCase: true,
+              modules: {
+                mode: 'local',
+                localIdentName: '[name]__[local]--[hash:base64:5]',
+              },
               sourceMap: true,
-              localIdentName: '[name]__[local]--[hash:base64:5]',
               importLoaders: 1,
             },
           },
