@@ -20,6 +20,7 @@ export default class TitleBar extends PureComponent {
   }
 
   render() {
+    const { macOS } = this.props;
     const win = getWindow();
     const icon = win.isMaximized() ? buttonRestore : buttonMaximize;
 
@@ -28,6 +29,7 @@ export default class TitleBar extends PureComponent {
         className={classNames({
           [styles.titlebar]: true,
           [styles.isFocused]: win.isFocused(),
+          [styles.macOS]: macOS,
         })}
       >
         <Icon className={styles.icon} glyph={appIcon} />

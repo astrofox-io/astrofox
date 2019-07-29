@@ -32,7 +32,7 @@ export function createWindow() {
     minHeight: 100,
     frame: false,
     backgroundColor: '#222222',
-    titleBarStyle: 'hidden-inset',
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       backgroundThrottling: false,
       devTools: process.env.NODE_ENV !== 'production',
