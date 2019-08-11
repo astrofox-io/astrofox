@@ -13,7 +13,7 @@ module.exports = {
     app: path.resolve(__dirname, 'src/app/index.js'),
   },
   output: {
-    path: path.resolve(__dirname, 'app/browser'),
+    path: path.resolve(__dirname, 'app/view'),
     filename: '[name].js',
     library: 'Astrofox',
     libraryTarget: 'var',
@@ -77,7 +77,7 @@ module.exports = {
       },
       {
         test: /\.(jpg|png|gif)$/,
-        include: path.resolve(__dirname, 'src/images/browser'),
+        include: path.resolve(__dirname, 'src/images/view'),
         use: {
           loader: 'file-loader',
           options: {
@@ -127,7 +127,7 @@ module.exports = {
     new CopyPlugin([
       {
         from: path.resolve(__dirname, 'src/images/controls'),
-        to: path.resolve(__dirname, 'app/browser/images/controls'),
+        to: path.resolve(__dirname, 'app/view/images/controls'),
       },
     ]),
   ],

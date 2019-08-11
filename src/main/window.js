@@ -76,7 +76,7 @@ export function createWindow() {
   // Load index page
   mainWindow.loadURL(
     url.format({
-      pathname: path.join(__dirname, 'browser', 'index.html'),
+      pathname: path.join(__dirname, 'view', 'index.html'),
       protocol: 'file',
       slashes: true,
     }),

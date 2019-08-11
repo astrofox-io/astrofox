@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import { getWindow, maximizeWindow, minimizeWindow, closeWindow } from 'utils/window';
 import appIcon from 'svg/logo.svg';
-import buttonMinimize from 'images/browser/button-minimize.gif';
-import buttonMaximize from 'images/browser/button-maximize.gif';
-import buttonClose from 'images/browser/button-close.gif';
-import buttonRestore from 'images/browser/button-restore.gif';
+import buttonMinimize from 'images/view/button-minimize.gif';
+import buttonMaximize from 'images/view/button-maximize.gif';
+import buttonClose from 'images/view/button-close.gif';
+import buttonRestore from 'images/view/button-restore.gif';
 import styles from './Titlebar.less';
 
 export default class TitleBar extends PureComponent {
