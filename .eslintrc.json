@@ -27,7 +27,8 @@
     "max-len": [
       "error",
       {
-        "code": 100
+        "code": 100,
+        "ignoreComments": true
       }
     ],
     "no-bitwise": [
@@ -82,6 +83,8 @@
     "react/destructuring-assignment": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-props-no-spreading": "off",
+    "react/static-property-placement": ["error", "static public field"],
     "react/no-array-index-key": "off",
     "react/no-multi-comp": "off",
     "react/prop-types": "off",

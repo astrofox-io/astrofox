@@ -13,10 +13,7 @@ import iconRepeat from 'svg/icons/cycle.svg';
 import iconPlay from 'svg/icons/play.svg';
 import iconStop from 'svg/icons/stop.svg';
 import iconPause from 'svg/icons/pause.svg';
-import iconVolume1 from 'svg/icons/volume.svg';
-import iconVolume2 from 'svg/icons/volume2.svg';
-import iconVolume3 from 'svg/icons/volume3.svg';
-import iconVolume4 from 'svg/icons/volume4.svg';
+import VolumeControl from './VolumeControl';
 import styles from './Player.less';
 
 const PROGRESS_MAX = 1000;
@@ -175,6 +172,12 @@ class Player extends PureComponent {
             totalTime={duration}
           />
           <ToggleButton
+            icon={iconRepeat}
+            title="Repeat"
+            active={looping}
+            onClick={this.handleLoopButtonClick}
+          />
+          <ToggleButton
             icon={iconSoundBars}
             title="Waveform"
             active={showWaveform}
@@ -186,12 +189,6 @@ class Player extends PureComponent {
             active={showOsc}
             onClick={this.handleOscButtonClick}
           />
-          <ToggleButton
-            icon={iconRepeat}
-            title="Repeat"
-            active={looping}
-            onClick={this.handleLoopButtonClick}
-          />
         </div>
         {showOsc && <Oscilloscope ref={e => (this.oscilloscope = e)} />}
       </div>
@@ -199,83 +196,20 @@ class Player extends PureComponent {
   }
 }
 
-class VolumeControl extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      value: 100,
-      mute: false,
-    };
-  }
-
-  handleChange = (name, value) => {
-    this.props.onChange(value / 100);
-
-    this.setState({ value, mute: false });
-  };
-
-  handleClick = () => {
-    this.setState((prevState, props) => {
-      props.onChange(prevState.mute ? prevState.value / 100 : 0);
-
-      return { mute: !prevState.mute };
-    });
-  };
-
-  render() {
-    const { value, mute } = this.state;
-    let icon;
-
-    if (value < 10 || mute) {
-      icon = iconVolume4;
-    } else if (value < 25) {
-      icon = iconVolume3;
-    } else if (value < 75) {
-      icon = iconVolume2;
-    } else {
-      icon = iconVolume1;
-    }
-
-    return (
-      <div className={styles.volume}>
-        <div role="presentation" className={styles.speaker} onClick={this.handleClick}>
-          <Icon className={styles.icon} glyph={icon} />
-        </div>
-        <div className={styles.slider}>
-          <RangeInput
-            name="volume"
-            min={0}
-            max={100}
-            value={mute ? 0 : value}
-            onChange={this.handleChange}
-          />
-        </div>
-      </div>
-    );
-  }
-}
-
-class ProgressControl extends PureComponent {
-  render() {
-    const { value, disabled, onChange, onUpdate } = this.props;
-
-    return (
-      <div className={styles.progress}>
-        <RangeInput
-          name="progress"
-          min={0}
-          max={PROGRESS_MAX}
-          value={value}
-          buffered
-          onChange={(name, newValue) => onChange(newValue / PROGRESS_MAX)}
-          onUpdate={(name, newValue) => onUpdate(newValue / PROGRESS_MAX)}
-          disabled={disabled}
-        />
-      </div>
-    );
-  }
-}
+const ProgressControl = ({ value, disabled, onChange, onUpdate }) => (
+  <div className={styles.progress}>
+    <RangeInput
+      name="progress"
+      min={0}
+      max={PROGRESS_MAX}
+      value={value}
+      buffered
+      onChange={(name, newValue) => onChange(newValue / PROGRESS_MAX)}
+      onUpdate={(name, newValue) => onUpdate(newValue / PROGRESS_MAX)}
+      disabled={disabled}
+    />
+  </div>
+);
 
 const PlayButton = ({ playing, title, onClick }) => (
   <div

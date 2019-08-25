@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'app/global';
@@ -103,7 +103,7 @@ export default class ReactorInput extends PureComponent {
     const reactor = this.getReactor();
 
     return (
-      <Fragment>
+      <>
         <Icon
           className={classNames({
             [styles.icon]: true,
@@ -130,7 +130,7 @@ export default class ReactorInput extends PureComponent {
           />
         </div>
         {!reactor && children}
-      </Fragment>
+      </>
     );
   }
 }

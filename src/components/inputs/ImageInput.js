@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import { raiseError } from 'app/global';
@@ -87,7 +87,7 @@ export default class ImageInput extends PureComponent {
       (image && image.src && image.src !== blankImage) || (value && value !== blankImage);
 
     return (
-      <Fragment>
+      <>
         <div
           role="presentation"
           className={styles.image}
@@ -116,7 +116,7 @@ export default class ImageInput extends PureComponent {
           title="Remove Image"
           onClick={this.handleDelete}
         />
-      </Fragment>
+      </>
     );
   }
 }

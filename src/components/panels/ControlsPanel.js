@@ -7,14 +7,14 @@ class ControlsPanel extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      displays: [],
-      activeIndex: 0,
-    };
-
     this.nodes = {};
     this.controls = {};
   }
+
+  state = {
+    displays: [],
+    activeIndex: 0,
+  };
 
   componentDidUpdate() {
     this.focusControl(this.state.activeIndex);

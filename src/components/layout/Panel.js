@@ -4,14 +4,20 @@ import Splitter from 'components/layout/Splitter';
 import styles from './Panel.less';
 
 export default class Panel extends React.PureComponent {
-  constructor(props) {
-    super(props);
+  static defaultProps = {
+    direction: 'vertical',
+    stretch: false,
+    visible: true,
+    height: null,
+    width: null,
+    minHeight: 0,
+    minWidth: 0,
+  };
 
-    this.state = {
-      height: props.height,
-      width: props.width,
-    };
-  }
+  state = {
+    height: this.props.height,
+    width: this.props.width,
+  };
 
   getSize() {
     const { width, height } = this.state;
@@ -59,13 +65,3 @@ export default class Panel extends React.PureComponent {
     );
   }
 }
-
-Panel.defaultProps = {
-  direction: 'vertical',
-  stretch: false,
-  visible: true,
-  height: null,
-  width: null,
-  minHeight: 0,
-  minWidth: 0,
-};

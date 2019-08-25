@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import withAppContext from 'components/hocs/withAppContext';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
@@ -97,7 +97,7 @@ class AppUpdates extends PureComponent {
     }
 
     return (
-      <Fragment>
+      <>
         <div className={styles.message}>
           {this.getIcon()}
           {this.getMessage()}
@@ -107,7 +107,7 @@ class AppUpdates extends PureComponent {
           {downloadButton}
           <Button className={styles.button} text={closeText} onClick={onClose} />
         </div>
-      </Fragment>
+      </>
     );
   }
 }

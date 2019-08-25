@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 
@@ -45,7 +45,7 @@ class BlurControl extends PureComponent {
           </ReactorInput>
         </Option>
         {type === 'Zoom' && (
-          <Fragment>
+          <>
             <Option>
               <Label text="X" />
               <NumberInput
@@ -80,7 +80,7 @@ class BlurControl extends PureComponent {
                 onChange={onChange}
               />
             </Option>
-          </Fragment>
+          </>
         )}
       </Control>
     );
