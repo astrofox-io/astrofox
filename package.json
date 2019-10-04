@@ -1,6 +1,6 @@
 {
   "name": "astrofox",
-  "version": "1.0.0-beta.9",
+  "version": "0.1.0",
   "main": "app/main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
@@ -49,9 +49,6 @@
     "nsis": {
       "oneClick": true
     },
-    "squirrelWindows": {
-      "iconUrl": "https://astrofox.io/icon.ico"
-    },
     "publish": {
       "provider": "generic",
       "url": "https://files.astrofox.io/download",
@@ -59,7 +56,7 @@
     }
   },
   "dependencies": {
-    "@babel/runtime": "^7.5.5",
+    "@babel/runtime": "^7.6.2",
     "classnames": "^2.2.6",
     "debug": "^4.1.1",
     "del": "^5.1.0",
@@ -69,36 +66,38 @@
     "prop-types": "^15.7.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-transition-group": "^4.2.2",
-    "three": "^0.107.0",
+    "react-transition-group": "^4.3.0",
+    "three": "^0.108.0",
     "tinycolor2": "^1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.5",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
     "copy-webpack-plugin": "^5.0.4",
-    "cross-env": "^5.2.0",
+    "cross-env": "^6.0.0",
     "css-loader": "^3.2.0",
-    "electron": "6.0.5",
+    "electron": "6.0.10",
     "electron-builder": "^21.2.0",
+    "electron-notarize": "^0.1.1",
     "electron-updater": "^4.1.2",
-    "eslint": "^6.2.2",
+    "eslint": "^6.4.0",
     "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.1.0",
+    "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-css-modules": "^2.11.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.0.1",
     "file-loader": "^4.2.0",
     "glsl-man": "^1.1.14",
     "less": "^3.10.3",
@@ -107,13 +106,13 @@
     "prettier": "^1.18.2",
     "prettier-eslint": "^9.0.0",
     "style-loader": "^1.0.0",
-    "stylelint": "^10.1.0",
-    "stylelint-config-css-modules": "^1.4.0",
-    "stylelint-config-prettier": "^5.1.0",
-    "stylelint-config-recommended": "^2.2.0",
+    "stylelint": "^11.0.0",
+    "stylelint-config-css-modules": "^1.5.0",
+    "stylelint-config-prettier": "^6.0.0",
+    "stylelint-config-recommended": "^3.0.0",
     "svg-sprite-loader": "4.1.3",
     "url-loader": "^2.1.0",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7"
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
   }
 }

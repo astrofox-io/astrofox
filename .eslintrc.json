@@ -19,7 +19,7 @@
     "prettier",
     "prettier/react"
   ],
-  "plugins": ["prettier", "promise", "css-modules", "react"],
+  "plugins": ["prettier", "promise", "css-modules", "react", "react-hooks"],
   "rules": {
     "class-methods-use-this": "off",
     "default-case": "off",

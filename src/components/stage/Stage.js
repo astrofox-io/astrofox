@@ -32,7 +32,7 @@ class Stage extends Component {
     events.on('audio-file-load', this.showLoading, this);
     events.on('audio-file-loaded', this.hideLoading, this);
     events.on('video-render-start', this.startRender, this);
-    events.on('video-render-complete', this.stopRender, this);
+    //events.on('video-render-complete', this.stopRender, this);
   }
 
   componentWillUnmount() {
@@ -40,7 +40,7 @@ class Stage extends Component {
     events.off('audio-file-load', this.showLoading);
     events.off('audio-file-loaded', this.hideLoading);
     events.off('video-render-start', this.startRender);
-    events.off('video-render-complete', this.stopRender);
+    //events.off('video-render-complete', this.stopRender);
   }
 
   handleDragOver = e => {
@@ -86,7 +86,7 @@ class Stage extends Component {
           <div className={styles.canvas} onDrop={this.handleDrop} onDragOver={this.handleDragOver}>
             <canvas ref={e => (this.canvas = e)} style={style} />
             <Loading visible={loading} />
-            <Rendering visible={rendering} onButtonClick={this.stopRender} />
+            <Rendering visible={rendering} onClose={this.stopRender} />
           </div>
         </div>
       </div>
@@ -104,11 +104,11 @@ const Loading = ({ visible }) => (
   </TransitionGroup>
 );
 
-const Rendering = ({ visible, onButtonClick }) => (
+const Rendering = ({ visible, onClose }) => (
   <TransitionGroup component={FirstChild}>
     {visible && (
       <CSSTransition classNames={transitionClasses} timeout={transitionTimeout}>
-        <RenderInfo className={styles.renderInfo} onButtonClick={onButtonClick} />
+        <RenderInfo className={styles.renderInfo} onClose={onClose} />
       </CSSTransition>
     )}
   </TransitionGroup>

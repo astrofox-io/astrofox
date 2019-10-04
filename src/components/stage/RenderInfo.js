@@ -7,7 +7,7 @@ import styles from './RenderInfo.less';
 
 class RenderInfo extends Component {
   static defaultProps = {
-    onButtonClick: () => {},
+    onClose: () => {},
   };
 
   state = {
@@ -24,28 +24,28 @@ class RenderInfo extends Component {
     } = this.props;
 
     this.renderer = renderer;
-    this.renderer.on('ready', this.processInfo, this);
+    this.renderer.on('ready', this.updateStats, this);
     this.renderer.on('complete', this.setComplete, this);
 
     this.renderer.start();
   }
 
   componentWillUnmount() {
-    this.renderer.off('ready', this.processInfo, this);
+    this.renderer.off('ready', this.updateStats, this);
     this.renderer.off('complete', this.setComplete, this);
   }
 
   handleButtonClick = () => {
     this.renderer.stop();
 
-    this.props.onButtonClick();
+    this.props.onClose();
   };
 
   setComplete() {
     this.setState({ complete: true });
   }
 
-  processInfo() {
+  updateStats() {
     const { frames, currentFrame, lastFrame, startTime } = this.renderer;
 
     this.setState({
@@ -77,7 +77,7 @@ class RenderInfo extends Component {
           <Stat label="Progress" value={`${~~progress}%`} />
           <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
           <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
-          <Stat label="Progress" value={fps.toFixed(1)} />
+          <Stat label="FPS" value={fps.toFixed(1)} />
           <Button text={text} onClick={this.handleButtonClick} />
         </div>
       </div>
