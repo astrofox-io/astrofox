@@ -11,6 +11,7 @@ Thumbs.db
 # Environment
 .idea
 .vscode
+.env
 *.iml
 
 # Project

@@ -17,10 +17,11 @@
     "lint": "eslint src || exit 0",
     "lint-fix": "eslint --fix src || exit 0",
     "lint-check": "eslint --print-config . | eslint-config-prettier-check",
+    "notarize": "node ./scripts/notarize.js",
     "stylelint": "stylelint src/components"
   },
   "build": {
-    "appId": "io.astrofox.astrofox",
+    "appId": "io.astrofox.app",
     "productName": "Astrofox",
     "asar": true,
     "files": [
@@ -35,8 +36,24 @@
         "to": "bin"
       }
     ],
+    "publish": {
+      "provider": "generic",
+      "url": "https://files.astrofox.io/download",
+      "channel": "latest"
+    },
+    "afterSign": "./scripts/notarize.js",
+    "dmg": {
+      "sign": false
+    },
+    "nsis": {
+      "oneClick": true
+    },
     "mac": {
-      "category": "public.app-category.video"
+      "category": "public.app-category.video",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "win": {
       "target": [
@@ -45,14 +62,6 @@
     },
     "linux": {
       "category": "AudioVideo"
-    },
-    "nsis": {
-      "oneClick": true
-    },
-    "publish": {
-      "provider": "generic",
-      "url": "https://files.astrofox.io/download",
-      "channel": "latest"
     }
   },
   "dependencies": {
@@ -84,9 +93,10 @@
     "copy-webpack-plugin": "^5.0.4",
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
+    "dotenv": "^8.2.0",
     "electron": "6.0.12",
     "electron-builder": "^21.2.0",
-    "electron-notarize": "^0.1.1",
+    "electron-notarize": "^0.3.0",
     "electron-updater": "^4.1.2",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
