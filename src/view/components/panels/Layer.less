@@ -1,0 +1,66 @@
+@import (reference) '~view/styles/variables';
+
+.layer {
+  display: flex;
+  flex-direction: row;
+  font-size: @font-small;
+  background-color: @bg-color3;
+  border-bottom: 1px solid @border-color;
+  padding: 5px;
+  margin: 0 5px;
+  position: relative;
+  cursor: default;
+
+  &:after {
+    content: '\00a0';
+  }
+
+  &:first-child {
+    border-top: 1px solid @border-color;
+  }
+}
+
+.text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  margin-right: 24px;
+}
+
+.active {
+  background-color: @color1;
+}
+
+.edit {
+  background-color: @bg-color3;
+}
+
+.child {
+  padding-left: 20px;
+}
+
+.fx {
+  padding-left: 30px;
+}
+
+.input {
+  display: inline-block;
+}
+
+.icon {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+}
+
+.optionsIcon {
+  position: absolute;
+  right: 8px;
+  width: 13px;
+  height: 13px;
+
+  &.disabled {
+    opacity: 0.3;
+  }
+}

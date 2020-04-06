@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -12,17 +13,26 @@ module.exports = {
   target: 'electron-renderer',
   devtool: PRODUCTION ? false : 'source-map',
   entry: {
-    app: path.resolve(__dirname, 'src/app/index.js'),
+    app: path.resolve(__dirname, 'src/view/index.js'),
+  },
+  devServer: {
+    hotOnly: true,
+    port: 3000,
+    historyApiFallback: true,
   },
   output: {
-    path: path.resolve(__dirname, 'app/view'),
+    path: path.resolve(__dirname, 'app'),
+    publicPath: '/',
     filename: '[name].js',
     library: 'Astrofox',
     libraryTarget: 'var',
   },
   resolve: {
     extensions: ['.js', '.json'],
-    modules: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'src/app'), 'node_modules'],
+    modules: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'src/view'), 'node_modules'],
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
   },
   resolveLoader: {
     modules: ['node_modules', path.resolve(__dirname, 'src/build/loaders')],
@@ -30,7 +40,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         include: [path.resolve(__dirname, 'src')],
         use: {
           loader: 'babel-loader',
@@ -44,13 +54,16 @@ module.exports = {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: !PRODUCTION,
+            },
           },
           {
             loader: 'css-loader',
             options: {
               modules: {
                 mode: 'local',
-                localIdentName: '[name]__[local]--[hash:base64:5]',
+                localIdentName: PRODUCTION ? '[hash:base64]' : '[name]__[local]--[hash:base64:5]',
               },
               sourceMap: true,
               importLoaders: 1,
@@ -65,21 +78,8 @@ module.exports = {
         ],
       },
       {
-        test: /\.glsl$/,
-        use: {
-          loader: 'glsl-loader',
-        },
-      },
-      {
         test: /\.(jpg|png|gif)$/,
-        include: path.resolve(__dirname, 'src/images/data'),
-        use: {
-          loader: 'url-loader',
-        },
-      },
-      {
-        test: /\.(jpg|png|gif)$/,
-        include: path.resolve(__dirname, 'src/images/view'),
+        include: path.resolve(__dirname, 'src/view/assets/images'),
         use: {
           loader: 'file-loader',
           options: {
@@ -100,6 +100,7 @@ module.exports = {
       },
       {
         test: /\.(eot|ttf|woff|woff2)$/,
+        include: path.resolve(__dirname, 'src/view/assets/fonts'),
         use: {
           loader: 'file-loader',
           options: {
@@ -114,8 +115,14 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            name: '[name].html',
+            name: '[name].[ext]',
           },
+        },
+      },
+      {
+        test: /\.glsl$/,
+        use: {
+          loader: 'glsl-loader',
         },
       },
     ],
@@ -125,11 +132,12 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new webpack.HotModuleReplacementPlugin(),
     new SpriteLoaderPlugin(),
     new CopyPlugin([
       {
-        from: path.resolve(__dirname, 'src/images/controls'),
-        to: path.resolve(__dirname, 'app/view/images/controls'),
+        from: path.resolve(__dirname, 'src/view/assets/images'),
+        to: path.resolve(__dirname, 'app/images'),
       },
     ]),
   ],

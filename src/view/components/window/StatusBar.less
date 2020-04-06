@@ -1,0 +1,73 @@
+@import (reference) '~view/styles/variables';
+
+.statusBar {
+  display: flex;
+  color: @text-color1;
+  background-color: @color1;
+  font-size: 11px;
+  padding: 0 20px;
+  cursor: default;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.item {
+  display: inline-block;
+  line-height: 28px;
+}
+
+.left {
+  text-align: left;
+  width: 33%;
+
+  .item {
+    margin-right: 20px;
+  }
+}
+
+.center {
+  text-align: center;
+  flex: 1;
+  width: 34%;
+
+  .item {
+    margin: 0 10px;
+  }
+}
+
+.right {
+  text-align: right;
+  width: 33%;
+
+  .item {
+    margin-left: 20px;
+  }
+}
+
+.itemButton {
+  padding: 0 8px;
+
+  &:hover {
+    background-color: lighten(@color1, 5%);
+  }
+}
+
+.zoom {
+  line-height: 28px;
+}
+
+.zoomButton {
+  display: inline-block;
+  width: 30px;
+  font-size: 12px;
+
+  &:hover {
+    background-color: lighten(@color1, 5%);
+  }
+}
+
+.zoomValue {
+  display: inline-block;
+  width: 50px;
+  text-align: center;
+}

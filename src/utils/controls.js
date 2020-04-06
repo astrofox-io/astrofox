@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-import * as displayLibrary from 'lib/displays';
-import * as effectsLibrary from 'lib/effects';
-import * as controlLibrary from 'lib/controls';
+import * as displayLibrary from 'displays';
+import * as effectsLibrary from 'effects';
+import * as controlLibrary from 'components/controls';
 
 import SceneControl from 'components/controls/SceneControl';
 import EmptyControl from 'components/controls/EmptyControl';

@@ -1,0 +1,73 @@
+@import (reference) '~view/styles/variables';
+
+.titlebar {
+  height: 40px;
+  background-color: @bg-color2;
+
+  &.isFocused {
+    .button {
+      img {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+.title {
+  font-size: @font-normal;
+  color: @text-color2;
+  line-height: 30px;
+  letter-spacing: 5px;
+  text-align: center;
+  cursor: default;
+  margin: 5px 5px 0 5px;
+  -webkit-app-region: drag;
+}
+
+.icon {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 32px;
+  height: 32px;
+}
+
+.buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0;
+  -webkit-app-region: no-drag;
+}
+
+.button {
+  display: inline-block;
+  color: @text-color1;
+  background-color: @bg-color2;
+  margin: 0;
+  padding: 0;
+  width: 45px;
+  height: 30px;
+  text-align: center;
+
+  img {
+    margin: 10px auto;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    background-color: @color1;
+  }
+}
+
+.macOS {
+  border-bottom: 2px solid @bg-color3;
+
+  .icon {
+    display: none;
+  }
+
+  .buttons {
+    display: none;
+  }
+}

@@ -1,0 +1,44 @@
+@import (reference) '~view/styles/variables';
+
+.panel {
+  width: 720px;
+  height: 300px;
+  border-bottom: 1px solid @bg-color2;
+}
+
+.picker {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 110px;
+}
+
+.image {
+  background: #000 center;
+  border: 2px solid @bg-color1;
+  border-radius: 7px;
+  height: 75px;
+  width: 75px;
+  transition: border-color 0.5s;
+
+  &:hover {
+    border-color: @color1;
+    transition: none;
+  }
+}
+
+.name {
+  font-size: @font-small;
+  text-align: center;
+  margin: 5px 0;
+}

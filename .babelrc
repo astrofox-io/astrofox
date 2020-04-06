@@ -2,12 +2,13 @@
   "presets": [
     ["@babel/env", {
       "targets": {
-        "electron": "4.0.8"
+        "electron": "8.2.0"
       }
     }],
     "@babel/react"
   ],
   "plugins": [
+    "react-hot-loader/babel",
     "@babel/transform-runtime",
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread"
@@ -17,7 +18,7 @@
       "presets": [
         ["@babel/env", {
           "targets": {
-            "electron": "4.0.8"
+            "electron": "8.2.0"
           }
         }],
         "@babel/react"

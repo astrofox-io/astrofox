@@ -1,0 +1,45 @@
+@import (reference) '~view/styles/variables';
+
+.reactor {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.meter {
+  background-color: @bg-color2;
+  border: 1px solid @border-color;
+  border-radius: @input-radius;
+  padding: 5px;
+}
+
+.icon {
+  position: absolute;
+  top: 10px;
+  color: darken(@text-color1, 50%);
+  width: 16px;
+  height: 16px;
+
+  &:hover {
+    color: @text-color1;
+  }
+}
+
+.iconActive {
+  color: @text-color1;
+}
+
+.closeIcon {
+  margin: 2px 0 0 8px;
+  color: @text-color2;
+  width: 14px;
+  height: 14px;
+
+  &:hover {
+    color: @text-color1;
+  }
+}
+
+.hidden {
+  display: none;
+}

@@ -1,4 +1,6 @@
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
@@ -34,5 +36,25 @@ module.exports = {
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new CopyPlugin([
+      {
+        from: path.resolve(__dirname, 'src/build/app'),
+        to: path.resolve(__dirname, 'app'),
+      },
+    ]),
+  ],
+  optimization: {
+    minimize: PRODUCTION,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          output: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),
+    ],
+  },
 };

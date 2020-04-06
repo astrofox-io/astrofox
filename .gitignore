@@ -13,14 +13,12 @@ Thumbs.db
 .vscode
 .env
 *.iml
+*.bat
+*.map
 
 # Project
 node_modules
 bin
 dist
-build/resources
-app/view
-app/main.js
-app.config
-*.bat
-*.map
+/app/
+/build/resources/

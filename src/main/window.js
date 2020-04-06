@@ -60,10 +60,10 @@ export function createWindow() {
 
     const extensions = ['fmkadmapgofadopljbjfkapdkoienihi'];
 
-    extensions.forEach(ext => {
+    extensions.forEach((ext) => {
       const p = path.join(app.getPath('home'), dirs[process.platform], ext);
 
-      const d = fs.readdirSync(p).filter(f => fs.statSync(path.join(p, f)).isDirectory());
+      const d = fs.readdirSync(p).filter((f) => fs.statSync(path.join(p, f)).isDirectory());
 
       if (d.length) {
         const x = path.join(p, d[0]);
@@ -75,11 +75,13 @@ export function createWindow() {
 
   // Load index page
   mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, 'view', 'index.html'),
-      protocol: 'file',
-      slashes: true,
-    }),
+    process.env.NODE_ENV === 'production'
+      ? url.format({
+          pathname: path.join(__dirname, 'index.html'),
+          protocol: 'file',
+          slashes: true,
+        })
+      : 'http://localhost:3000',
   );
 
   // Show window when DOM ready
