@@ -66,49 +66,49 @@ export default class GeometryDisplay extends Display {
     seed: 0,
   };
 
-  constructor(options) {
-    super(GeometryDisplay, options);
+  constructor(properties) {
+    super(GeometryDisplay, properties);
 
     this.parser = new SpectrumParser({ normalize: true });
     this.hasGeometry = true;
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
       // Create new mesh
       if (
-        options.shape !== undefined ||
-        options.material !== undefined ||
-        options.shading !== undefined ||
-        options.lines !== undefined ||
-        options.edges !== undefined ||
-        options.edgeColor !== undefined
+        properties.shape !== undefined ||
+        properties.material !== undefined ||
+        properties.shading !== undefined ||
+        properties.lines !== undefined ||
+        properties.edges !== undefined ||
+        properties.edgeColor !== undefined
       ) {
         this.createMesh();
       }
       // Change wireframe
-      else if (options.wireframe !== undefined) {
-        if (this.options.material !== 'Points') {
-          this.material.wireframe = options.wireframe;
+      else if (properties.wireframe !== undefined) {
+        if (this.properties.material !== 'Points') {
+          this.material.wireframe = properties.wireframe;
         }
       }
       // Change opacity
-      else if (options.opacity !== undefined) {
-        this.material.opacity = options.opacity;
+      else if (properties.opacity !== undefined) {
+        this.material.opacity = properties.opacity;
       }
       // Change color
-      else if (options.color !== undefined) {
-        this.material.color = new Color().set(options.color);
+      else if (properties.color !== undefined) {
+        this.material.color = new Color().set(properties.color);
       }
       // Change position
-      else if (options.x !== undefined || options.y !== undefined || options.z !== undefined) {
-        this.mesh.position.set(this.options.x, this.options.y, this.options.z);
+      else if (properties.x !== undefined || properties.y !== undefined || properties.z !== undefined) {
+        this.mesh.position.set(this.properties.x, this.properties.y, this.properties.z);
       }
       // Change visibility
-      else if (options.enabled !== undefined) {
-        this.group.visible = options.enabled;
+      else if (properties.enabled !== undefined) {
+        this.group.visible = properties.enabled;
       }
     }
 
@@ -144,7 +144,7 @@ export default class GeometryDisplay extends Display {
   renderToScene(scene, data) {
     if (!data.hasUpdate) return;
 
-    const { mesh, options, parser } = this;
+    const { mesh, properties, parser } = this;
 
     const fft = parser.parseFFT(data.fft);
     const x = fft[0];
@@ -154,11 +154,11 @@ export default class GeometryDisplay extends Display {
     mesh.rotation.x += 5 * x;
     mesh.rotation.y += 3 * y;
     mesh.rotation.z += 2 * z;
-    mesh.position.set(options.x, options.y, options.z);
+    mesh.position.set(properties.x, properties.y, properties.z);
   }
 
   createMesh() {
-    const { group, options } = this;
+    const { group, properties } = this;
 
     if (!group) return;
 
@@ -175,7 +175,7 @@ export default class GeometryDisplay extends Display {
     mesh = new Object3D();
 
     // Set geometry
-    switch (options.shape) {
+    switch (properties.shape) {
       case 'Box':
         // width, height, depth, widthSegments:1, heightSegments:1, depthSegments:1
         geometry = new BoxBufferGeometry(50, 50, 50);
@@ -211,12 +211,12 @@ export default class GeometryDisplay extends Display {
     }
 
     // Add edges
-    if (options.edges && options.material !== 'Points') {
+    if (properties.edges && properties.material !== 'Points') {
       mesh.add(
         new LineSegments(
           new EdgesGeometry(geometry, 2),
           new LineBasicMaterial({
-            color: new Color().set(options.edgeColor),
+            color: new Color().set(properties.edgeColor),
             transparent: true,
             opacity: 0.9,
           }),
@@ -225,30 +225,30 @@ export default class GeometryDisplay extends Display {
     }
 
     // Get material
-    const material = new materialOptions[options.material]();
+    const material = new materialOptions[properties.material]();
 
     // Create mesh
-    if (options.material === 'Points') {
+    if (properties.material === 'Points') {
       Object.assign(material, {
         size: POINT_SIZE,
         sizeAttenuation: true,
         map: this.sprite,
         transparent: true,
         alphaTest: 0.5,
-        color: new Color().set(options.color),
+        color: new Color().set(properties.color),
         needsUpdate: true,
       });
 
       mesh.add(new Points(geometry, material));
     } else {
       Object.assign(material, {
-        flatShading: options.shading === 'Flat',
-        color: new Color().set(options.color),
-        opacity: options.opacity,
-        wireframe: options.wireframe,
+        flatShading: properties.shading === 'Flat',
+        color: new Color().set(properties.color),
+        opacity: properties.opacity,
+        wireframe: properties.wireframe,
         needsUpdate: true,
         transparent: true,
-        side: options.material === 'Basic' ? FrontSide : DoubleSide,
+        side: properties.material === 'Basic' ? FrontSide : DoubleSide,
       });
 
       mesh.add(new Mesh(geometry, material));
@@ -256,7 +256,7 @@ export default class GeometryDisplay extends Display {
 
     group.add(mesh);
 
-    mesh.position.set(options.x, options.y, options.z);
+    mesh.position.set(properties.x, properties.y, properties.z);
 
     if (rotation) {
       mesh.rotation.set(rotation.x, rotation.y, rotation.z);

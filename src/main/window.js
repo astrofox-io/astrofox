@@ -58,7 +58,7 @@ export function createWindow() {
       darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
     };
 
-    const extensions = ['fmkadmapgofadopljbjfkapdkoienihi'];
+    const extensions = ['fmkadmapgofadopljbjfkapdkoienihi', 'lmhkpmbekcpmknklioeibfkpmmfibljd'];
 
     extensions.forEach((ext) => {
       const p = path.join(app.getPath('home'), dirs[process.platform], ext);

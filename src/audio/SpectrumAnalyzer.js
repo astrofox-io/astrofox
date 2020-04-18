@@ -8,12 +8,12 @@ export default class SpectrumAnalyzer {
     smoothingTimeConstant: 0,
   };
 
-  constructor(context, options) {
+  constructor(context, properties) {
     this.audioContext = context;
     this.analyzer = Object.assign(
       context.createAnalyser(),
       SpectrumAnalyzer.defaultOptions,
-      options,
+      properties,
     );
     this.fft = new Uint8Array(this.analyzer.frequencyBinCount);
     this.td = new Float32Array(this.analyzer.fftSize);

@@ -6,8 +6,8 @@ export default class MaskPass extends ComposerPass {
     clear: true,
   };
 
-  constructor(scene, camera, options) {
-    super({ ...MaskPass.defaultOptions, ...options });
+  constructor(scene, camera, properties) {
+    super({ ...MaskPass.defaultOptions, ...properties });
 
     this.scene = scene;
     this.camera = camera;
@@ -15,7 +15,7 @@ export default class MaskPass extends ComposerPass {
 
   render(renderer, writeBuffer, readBuffer) {
     const { context, state } = renderer;
-    const { clear, inverse } = this.options;
+    const { clear, inverse } = this.properties;
     const writeValue = inverse ? 0 : 1;
     const clearValue = inverse ? 1 : 0;
 

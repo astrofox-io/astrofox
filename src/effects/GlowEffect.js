@@ -14,14 +14,14 @@ export default class GlowEffect extends Effect {
     intensity: 1,
   };
 
-  constructor(options) {
-    super(GlowEffect, options);
+  constructor(properties) {
+    super(GlowEffect, properties);
   }
 
   updatePass() {
     this.pass.setUniforms({
-      amount: this.options.amount * GLOW_MAX,
-      intensity: this.options.intensity,
+      amount: this.properties.amount * GLOW_MAX,
+      intensity: this.properties.intensity,
     });
   }
 

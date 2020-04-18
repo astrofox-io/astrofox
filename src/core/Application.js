@@ -1,6 +1,6 @@
 import { remote } from 'electron';
 import * as id3 from 'id3js';
-import { APP_VERSION, APP_CONFIG_FILE, LICENSE_FILE } from 'core/Environment';
+import { APP_VERSION, APP_CONFIG_FILE, LICENSE_FILE } from 'view/global';
 import { closeWindow, showOpenDialog, showSaveDialog } from 'utils/window';
 import { events, logger, raiseError } from 'view/global';
 import { PUBLIC_KEY } from 'view/constants';
@@ -93,7 +93,7 @@ export default class Application {
       .then(() => {
         const { checkForUpdates, autoUpdate } = this.config;
 
-        this.updater.options.autoUpdate = !!autoUpdate;
+        this.updater.properties.autoUpdate = !!autoUpdate;
 
         // Check for app updates
         if (checkForUpdates) {
@@ -393,12 +393,12 @@ export default class Application {
     }
   }
 
-  saveVideo(videoFile, audioFile, options) {
+  saveVideo(videoFile, audioFile, properties) {
     if (this.player.getAudio()) {
       logger.time('video-render');
       events.emit('video-render-start');
 
-      this.renderer = new VideoRenderer(videoFile, audioFile, options);
+      this.renderer = new VideoRenderer(videoFile, audioFile, properties);
 
       const { renderer } = this;
 
@@ -408,7 +408,7 @@ export default class Application {
 
       // Handle events
       renderer.on('ready', () => {
-        this.renderFrame(renderer.currentFrame, options.fps, image => {
+        this.renderFrame(renderer.currentFrame, properties.fps, image => {
           renderer.processFrame(image);
         });
       });

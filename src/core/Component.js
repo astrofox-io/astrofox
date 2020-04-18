@@ -1,28 +1,18 @@
-let id = 0;
+import { updateExistingProps } from 'utils/object';
+import { uniqueId } from '../utils/crypto';
 
 export default class Component {
-  constructor(options = {}) {
-    id += 1;
+  constructor(properties = {}) {
+    Object.defineProperty(this, 'id', { value: uniqueId() });
 
-    Object.defineProperty(this, 'id', { value: id });
-
-    this.options = options;
+    this.properties = properties;
   }
 
-  update(options = {}) {
-    let changed = false;
-
-    Object.keys(options).forEach(key => {
-      if (
-        Object.prototype.hasOwnProperty.call(this.options, key) &&
-        this.options[key] !== options[key]
-      ) {
-        this.options[key] = options[key];
-        changed = true;
-      }
-    });
-
-    return changed;
+  update(properties = {}) {
+    if (typeof properties === 'function') {
+      return updateExistingProps(this.properties, properties(this.properties));
+    }
+    return updateExistingProps(this.properties, properties);
   }
 
   toString() {

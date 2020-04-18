@@ -58,6 +58,7 @@ export default class Player extends EventEmitter {
         }, UPDATE_INTERVAL);
 
         this.emit('play');
+        this.emit('playback-change');
       }
     }
   }
@@ -67,8 +68,11 @@ export default class Player extends EventEmitter {
 
     if (audio) {
       audio.pause();
+
       clearInterval(this.timer);
+
       this.emit('pause');
+      this.emit('playback-change');
     }
   }
 
@@ -79,6 +83,7 @@ export default class Player extends EventEmitter {
       audio.stop();
       clearInterval(this.timer);
       this.emit('stop');
+      this.emit('playback-change');
     }
   }
 

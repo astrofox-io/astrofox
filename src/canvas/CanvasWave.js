@@ -15,12 +15,12 @@ export default class CanvasWave extends Component {
     taper: false,
   };
 
-  constructor(options, canvas) {
-    super({ ...CanvasWave.defaultOptions, ...options });
+  constructor(properties, canvas) {
+    super({ ...CanvasWave.defaultOptions, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.options.width;
-    this.canvas.height = this.options.height;
+    this.canvas.width = this.properties.width;
+    this.canvas.height = this.properties.height;
 
     this.context = this.canvas.getContext('2d');
   }
@@ -29,7 +29,7 @@ export default class CanvasWave extends Component {
   render(points, smooth) {
     const { canvas, context } = this;
 
-    const { width, height, color, lineWidth, stroke, fill, fillColor, taper } = this.options;
+    const { width, height, color, lineWidth, stroke, fill, fillColor, taper } = this.properties;
 
     // Reset canvas
     if (canvas.width !== width || canvas.height !== height) {

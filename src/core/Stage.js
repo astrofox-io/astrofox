@@ -1,12 +1,12 @@
 import { WebGLRenderer, Color } from 'three';
 import Scene from 'core/Scene';
-import Display, { resetCount } from 'core/Display';
-import List from 'core/List';
+import Display, { resetDisplayCount } from 'core/Display';
 import { Composer, CanvasBuffer, GLBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
 import { logger, raiseError, events } from 'view/global';
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'view/constants';
+import { add, insert, remove } from 'utils/array';
 
 export default class Stage extends Display {
   static label = 'Stage';
@@ -20,15 +20,15 @@ export default class Stage extends Display {
     backgroundColor: '#000000',
   };
 
-  constructor(options) {
-    super(Stage, options);
+  constructor(properties) {
+    super(Stage, properties);
 
-    this.scenes = new List();
+    this.scenes = [];
     this.shouldRender = true;
   }
 
   init(canvas) {
-    const { width, height, backgroundColor } = this.options;
+    const { width, height, backgroundColor } = this.properties;
 
     this.renderer = new WebGLRenderer({
       canvas,
@@ -48,16 +48,16 @@ export default class Stage extends Display {
     this.backgroundColor = new Color(backgroundColor);
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      if (options.width !== undefined || options.height !== undefined) {
-        this.setSize(this.options.width, this.options.height);
+      if (properties.width !== undefined || properties.height !== undefined) {
+        this.setSize(this.properties.width, this.properties.height);
       }
 
-      if (options.backgroundColor !== undefined) {
-        this.backgroundColor.set(options.backgroundColor);
+      if (properties.backgroundColor !== undefined) {
+        this.backgroundColor.set(properties.backgroundColor);
       }
     }
 
@@ -66,9 +66,9 @@ export default class Stage extends Display {
 
   addScene(scene = new Scene(), index) {
     if (index !== undefined) {
-      this.scenes.insert(index, scene);
+      this.scenes = insert(this.scenes, index, scene);
     } else {
-      this.scenes.add(scene);
+      this.scenes = add(this.scenes, scene);
     }
 
     scene.stage = this;
@@ -83,7 +83,7 @@ export default class Stage extends Display {
   }
 
   removeScene(scene) {
-    this.scenes.remove(scene);
+    this.scenes = remove(this.scenes, scene);
 
     scene.stage = null;
 
@@ -95,30 +95,36 @@ export default class Stage extends Display {
   shiftScene(scene, i) {
     const index = this.scenes.indexOf(scene);
 
-    this.changed = this.scenes.swap(index, index + i);
+    this.scenes = this.scenes.swap(index, index + i);
+
+    this.changed = this.scenes.indexOf(scene) !== index;
 
     return this.changed;
   }
 
   clearScenes() {
-    this.scenes.items.forEach(scene => {
+    this.scenes.forEach(scene => {
       this.removeScene(scene);
     });
 
-    resetCount();
+    resetDisplayCount();
 
     this.changed = true;
   }
 
+  getSceneData() {
+    return this.scenes.map(scene => scene.toJSON());
+  }
+
   getSortedDisplays() {
-    return this.scenes.items.reverse().reduce((displays, scene) => {
+    return this.scenes.reverse().reduce((displays, scene) => {
       displays.push(scene);
 
-      scene.effects.items.reverse().forEach(effect => {
+      scene.effects.reverse().forEach(effect => {
         displays.push(effect);
       });
 
-      scene.displays.items.reverse().forEach(display => {
+      scene.displays.reverse().forEach(display => {
         displays.push(display);
       });
 
@@ -137,7 +143,7 @@ export default class Stage extends Display {
 
     let changes = false;
 
-    this.scenes.items.forEach(scene => {
+    this.scenes.forEach(scene => {
       if (!changes && scene.hasChanges()) {
         changes = true;
       }
@@ -149,7 +155,7 @@ export default class Stage extends Display {
   resetChanges() {
     this.changed = false;
 
-    this.scenes.items.forEach(scene => {
+    this.scenes.forEach(scene => {
       scene.resetChanges();
     });
   }
@@ -171,7 +177,7 @@ export default class Stage extends Display {
   }
 
   setSize(width, height) {
-    this.scenes.items.forEach(scene => {
+    this.scenes.forEach(scene => {
       scene.setSize(width, height);
     });
 
@@ -184,7 +190,7 @@ export default class Stage extends Display {
   }
 
   setZoom(val) {
-    const { zoom } = this.options;
+    const { zoom } = this.properties;
 
     if (val > 0) {
       if (zoom < 1.0) {
@@ -207,7 +213,7 @@ export default class Stage extends Display {
 
       if (config.scenes) {
         config.scenes.forEach(scene => {
-          const newScene = new Scene(scene.options);
+          const newScene = new Scene(scene.properties);
 
           this.addScene(newScene);
 
@@ -217,11 +223,11 @@ export default class Stage extends Display {
             });
           };
 
-          const loadComponent = (lib, { name, options, reactors }) => {
+          const loadComponent = (lib, { name, properties, reactors }) => {
             const Component = lib[name];
 
             if (Component) {
-              const element = newScene.addElement(new Component(options));
+              const element = newScene.addElement(new Component(properties));
               if (reactors) {
                 loadReactors(reactors, element);
               }
@@ -245,9 +251,9 @@ export default class Stage extends Display {
       }
 
       if (config.stage) {
-        this.update(config.stage.options);
+        this.update(config.stage.properties);
       } else {
-        this.update(Stage.defaultOptions);
+        this.update(Stage.defaultproperties);
       }
     } else {
       raiseError('Invalid project data.');
@@ -257,10 +263,10 @@ export default class Stage extends Display {
   render(data, callback) {
     const { composer, scenes } = this;
 
-    composer.clear(this.backgroundColor, 1);
+    //composer.clear(this.backgroundColor, 1);
 
-    scenes.items.forEach(scene => {
-      if (scene.options.enabled) {
+    scenes.forEach(scene => {
+      if (scene.properties.enabled) {
         this.renderScene(scene, data);
       }
     });
@@ -273,13 +279,14 @@ export default class Stage extends Display {
   renderScene(scene, data) {
     const buffer = scene.render(data);
 
-    this.composer.blendBuffer(buffer, { ...scene.options });
+    this.composer.blendBuffer(buffer, { ...scene.properties });
   }
 
   toJSON() {
     return {
+      id: this.id,
       name: this.name,
-      options: this.options,
+      properties: this.properties,
     };
   }
 }

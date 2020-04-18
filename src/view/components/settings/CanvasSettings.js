@@ -1,81 +1,62 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from 'components/interface/Button';
-import withAppContext from 'components/hocs/withAppContext';
 import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
 import { ColorInput, NumberInput } from 'components/inputs';
+import { updateStage } from 'actions/stage';
 import styles from './CanvasSettings.less';
 
-class CanvasSettings extends Component {
-  static defaultProps = {
-    onClose: () => {},
-  };
+export default function CanvasSettings({ onClose }) {
+  const dispatch = useDispatch();
+  const stageConfig = useSelector(({ stage }) => stage);
+  const [state, setState] = useState(stageConfig);
+  const { width, height, backgroundColor } = state;
 
-  state = {
-    ...this.props.app.stage.options,
-  };
-
-  handleChange = (name, value) => {
-    this.setState({ [name]: value });
-  };
-
-  handleCancel = () => {
-    this.props.onClose();
-  };
-
-  handleSave = () => {
-    const {
-      app: { stage },
-      onClose,
-    } = this.props;
-
-    stage.update(this.state);
-
-    onClose();
-  };
-
-  render() {
-    const { width, height, backgroundColor } = this.state;
-
-    return (
-      <SettingsPanel className={styles.panel}>
-        <Settings>
-          <Row label="Width">
-            <NumberInput
-              name="width"
-              width={40}
-              min={240}
-              max={1920}
-              step={2}
-              value={width}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="Height">
-            <NumberInput
-              name="height"
-              width={40}
-              min={240}
-              max={1080}
-              step={2}
-              value={height}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="Background Color">
-            <ColorInput
-              name="backgroundColor"
-              value={backgroundColor}
-              onChange={this.handleChange}
-            />
-          </Row>
-        </Settings>
-        <ButtonRow>
-          <Button onClick={this.handleSave} text="OK" />
-          <Button onClick={this.handleCancel} text="Cancel" />
-        </ButtonRow>
-      </SettingsPanel>
-    );
+  function handleChange(name, value) {
+    setState({ ...state, [name]: value });
   }
-}
 
-export default withAppContext(CanvasSettings);
+  function handleCancel() {
+    onClose();
+  }
+
+  function handleSave() {
+    dispatch(updateStage(state)).then(onClose);
+  }
+
+  return (
+    <SettingsPanel className={styles.panel}>
+      <Settings>
+        <Row label="Width">
+          <NumberInput
+            name="width"
+            width={40}
+            min={240}
+            max={1920}
+            step={2}
+            value={width}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="Height">
+          <NumberInput
+            name="height"
+            width={40}
+            min={240}
+            max={1080}
+            step={2}
+            value={height}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="Background Color">
+          <ColorInput name="backgroundColor" value={backgroundColor} onChange={handleChange} />
+        </Row>
+      </Settings>
+      <ButtonRow>
+        <Button onClick={handleSave} text="OK" />
+        <Button onClick={handleCancel} text="Cancel" />
+      </ButtonRow>
+    </SettingsPanel>
+  );
+}

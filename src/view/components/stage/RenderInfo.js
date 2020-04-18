@@ -1,54 +1,44 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import withAppContext from 'components/hocs/withAppContext';
 import Button from 'components/interface/Button';
+import { video } from 'view/global';
 import { formatTime } from 'utils/format';
 import styles from './RenderInfo.less';
 
-class RenderInfo extends Component {
-  static defaultProps = {
-    onClose: () => {},
-  };
+const defaultState = {
+  complete: false,
+  frames: 0,
+  currentFrame: 0,
+  lastFrame: 0,
+  startTime: 0,
+};
 
-  state = {
-    complete: false,
-    frames: 0,
-    currentFrame: 0,
-    lastFrame: 0,
-    startTime: 0,
-  };
+export default function RenderInfo({ className, onClose }) {
+  const [state, setState] = useState(defaultState);
+  const { frames, currentFrame, lastFrame, startTime, complete } = state;
+  const { renderer } = video;
+  const elapsedTime = (window.performance.now() - startTime) / 1000;
+  const frame = frames - (lastFrame - currentFrame);
+  const progress = frames > 0 ? (frame / frames) * 100 : 0;
+  const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
+  const text = complete ? 'Finished' : 'Cancel';
+  const style = { width: `${progress}%` };
 
-  componentDidMount() {
-    const {
-      app: { renderer },
-    } = this.props;
+  function handleButtonClick() {
+    renderer.stop();
 
-    this.renderer = renderer;
-    this.renderer.on('ready', this.updateStats, this);
-    this.renderer.on('complete', this.setComplete, this);
-
-    this.renderer.start();
+    onClose();
   }
 
-  componentWillUnmount() {
-    this.renderer.off('ready', this.updateStats, this);
-    this.renderer.off('complete', this.setComplete, this);
+  function setComplete() {
+    setState({ ...state, complete: true });
   }
 
-  handleButtonClick = () => {
-    this.renderer.stop();
+  function updateStats() {
+    const { frames, currentFrame, lastFrame, startTime } = renderer;
 
-    this.props.onClose();
-  };
-
-  setComplete() {
-    this.setState({ complete: true });
-  }
-
-  updateStats() {
-    const { frames, currentFrame, lastFrame, startTime } = this.renderer;
-
-    this.setState({
+    setState({
+      ...state,
       frames,
       currentFrame,
       lastFrame,
@@ -56,33 +46,32 @@ class RenderInfo extends Component {
     });
   }
 
-  render() {
-    const { frames, currentFrame, lastFrame, startTime, complete } = this.state;
+  useEffect(() => {
+    renderer.on('ready', updateStats, this);
+    renderer.on('complete', setComplete, this);
 
-    const { className } = this.props;
+    renderer.start();
 
-    const elapsedTime = (window.performance.now() - startTime) / 1000;
-    const frame = frames - (lastFrame - currentFrame);
-    const progress = frames > 0 ? (frame / frames) * 100 : 0;
-    const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
-    const text = complete ? 'Finished' : 'Cancel';
-    const style = { width: `${progress}%` };
+    return () => {
+      renderer.off('ready', updateStats, this);
+      renderer.off('complete', setComplete, this);
+    };
+  }, []);
 
-    return (
-      <div className={classNames(styles.renderInfo, className)}>
-        <div className={styles.progress}>
-          <div className={styles.progressBar} style={style} />
-        </div>
-        <div className={styles.stats}>
-          <Stat label="Progress" value={`${~~progress}%`} />
-          <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
-          <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
-          <Stat label="FPS" value={fps.toFixed(1)} />
-          <Button text={text} onClick={this.handleButtonClick} />
-        </div>
+  return (
+    <div className={classNames(styles.renderInfo, className)}>
+      <div className={styles.progress}>
+        <div className={styles.progressBar} style={style} />
       </div>
-    );
-  }
+      <div className={styles.stats}>
+        <Stat label="Progress" value={`${~~progress}%`} />
+        <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
+        <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
+        <Stat label="FPS" value={fps.toFixed(1)} />
+        <Button text={text} onClick={handleButtonClick} />
+      </div>
+    </div>
+  );
 }
 
 const Stat = ({ label, value }) => (
@@ -91,5 +80,3 @@ const Stat = ({ label, value }) => (
     {value}
   </div>
 );
-
-export default withAppContext(RenderInfo);

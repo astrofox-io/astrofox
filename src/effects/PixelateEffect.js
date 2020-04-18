@@ -18,26 +18,26 @@ export default class PixelateEffect extends Effect {
     size: 10,
   };
 
-  constructor(options) {
-    super(PixelateEffect, options);
+  constructor(properties) {
+    super(PixelateEffect, properties);
   }
 
-  update(options) {
-    const changed = Effect.prototype.update.call(this, options);
+  update(properties) {
+    const changed = Effect.prototype.update.call(this, properties);
 
-    if (this.pass && options.type !== undefined) {
-      this.setPass(this.getShaderPass(this.options.type));
+    if (this.pass && properties.type !== undefined) {
+      this.setPass(this.getShaderPass(this.properties.type));
     }
 
     return changed;
   }
 
   updatePass() {
-    this.pass.setUniforms({ size: this.options.size });
+    this.pass.setUniforms({ size: this.properties.size });
   }
 
   addToScene() {
-    this.setPass(this.getShaderPass(this.options.type));
+    this.setPass(this.getShaderPass(this.properties.type));
     this.updatePass();
   }
 
@@ -49,7 +49,7 @@ export default class PixelateEffect extends Effect {
     const pass = new ShaderPass(shaders[type]);
     const { width, height } = this.scene.getSize();
 
-    pass.setUniforms(this.options);
+    pass.setUniforms(this.properties);
     pass.setSize(width, height);
 
     return pass;

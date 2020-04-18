@@ -14,21 +14,21 @@ export default class BlendPass extends ShaderPass {
     baseBuffer: true,
   };
 
-  constructor(buffer, options) {
-    super(BlendShader, { ...BlendPass.defaultOptions, ...options });
+  constructor(buffer, properties) {
+    super(BlendShader, { ...BlendPass.defaultOptions, ...properties });
 
     this.buffer = buffer;
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { options } = this;
+    const { properties } = this;
 
     this.setUniforms({
-      tBase: options.baseBuffer ? this.buffer : readBuffer.texture,
-      tBlend: options.baseBuffer ? readBuffer.texture : this.buffer,
-      opacity: options.opacity,
-      mode: blendModes[options.blendMode],
-      alpha: options.alpha,
+      tBase: properties.baseBuffer ? this.buffer : readBuffer.texture,
+      tBlend: properties.baseBuffer ? readBuffer.texture : this.buffer,
+      opacity: properties.opacity,
+      mode: blendModes[properties.blendMode],
+      alpha: properties.alpha,
     });
 
     this.mesh.material = this.material;

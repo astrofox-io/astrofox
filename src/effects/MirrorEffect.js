@@ -11,8 +11,8 @@ export default class MirrorEffect extends Effect {
     side: 0,
   };
 
-  constructor(options) {
-    super(MirrorEffect, options);
+  constructor(properties) {
+    super(MirrorEffect, properties);
   }
 
   addToScene() {

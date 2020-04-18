@@ -7,11 +7,11 @@ export default class CanvasAudio extends Component {
     bars: 100,
   };
 
-  constructor(options, canvas) {
-    super(options);
+  constructor(properties, canvas) {
+    super(properties);
 
-    this.bars = new CanvasBars(options, canvas);
-    this.results = new Float32Array(this.options.bars);
+    this.bars = new CanvasBars(properties, canvas);
+    this.results = new Float32Array(this.properties.bars);
   }
 
   getCanvas() {

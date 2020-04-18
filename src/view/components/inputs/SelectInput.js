@@ -75,7 +75,7 @@ export default class SelectInput extends Component {
         />
         <div
           className={classNames({
-            [styles.options]: true,
+            [styles.properties]: true,
             [styles.hidden]: !showItems,
           })}
         >

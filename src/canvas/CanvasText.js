@@ -2,6 +2,16 @@
 import Component from 'core/Component';
 
 export default class CanvasText extends Component {
+  constructor(properties, canvas) {
+    super({ ...CanvasText.defaultOptions, ...properties });
+
+    this.canvas = canvas || document.createElement('canvas');
+    this.canvas.width = this.properties.width || 1;
+    this.canvas.height = this.properties.height || 1;
+
+    this.context = this.canvas.getContext('2d');
+  }
+
   static defaultOptions = {
     text: '',
     size: 40,
@@ -11,25 +21,15 @@ export default class CanvasText extends Component {
     color: '#FFFFFF',
   };
 
-  constructor(options, canvas) {
-    super({ ...CanvasText.defaultOptions, ...options });
-
-    this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.options.width || 1;
-    this.canvas.height = this.options.height || 1;
-
-    this.context = this.canvas.getContext('2d');
-  }
-
   getFont() {
-    const { italic, bold, size, font } = this.options;
+    const { italic, bold, size, font } = this.properties;
 
     return [italic ? 'italic' : 'normal', bold ? 'bold' : 'normal', `${size}px`, font].join(' ');
   }
 
   render() {
     const { canvas, context } = this;
-    const { text, size, color } = this.options;
+    const { text, size, color } = this.properties;
     const font = this.getFont();
 
     context.font = font;

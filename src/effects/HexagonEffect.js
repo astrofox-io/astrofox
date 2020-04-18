@@ -11,12 +11,12 @@ export default class HexagonEffect extends Effect {
     scale: 10.0,
   };
 
-  constructor(options) {
-    super(HexagonEffect, options);
+  constructor(properties) {
+    super(HexagonEffect, properties);
   }
 
   updatePass() {
-    this.pass.setUniforms({ scale: this.options.scale });
+    this.pass.setUniforms({ scale: this.properties.scale });
   }
 
   addToScene() {

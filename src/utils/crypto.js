@@ -9,5 +9,5 @@ export function sha256(s) {
 }
 
 export function uniqueId() {
-  return crypto.randomBytes(16).toString('hex');
+  return crypto.randomBytes(20).toString('hex');
 }

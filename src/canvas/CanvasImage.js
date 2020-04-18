@@ -10,12 +10,12 @@ export default class CanvasImage extends Component {
     height: 1,
   };
 
-  constructor(options, canvas) {
-    super({ ...CanvasImage.defaultOptions, ...options });
+  constructor(properties, canvas) {
+    super({ ...CanvasImage.defaultOptions, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.options.width || 1;
-    this.canvas.height = this.options.height || 1;
+    this.canvas.width = this.properties.width || 1;
+    this.canvas.height = this.properties.height || 1;
 
     this.context = this.canvas.getContext('2d');
 
@@ -24,7 +24,7 @@ export default class CanvasImage extends Component {
       this.generateMipMaps();
       this.render();
     };
-    this.image.src = this.options.src;
+    this.image.src = this.properties.src;
   }
 
   getResizeSteps(sourceWidth, targetWidth) {
@@ -56,12 +56,12 @@ export default class CanvasImage extends Component {
     this.mipmaps = mipmaps;
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      if (this.image.src !== this.options.src) {
-        this.image.src = this.options.src;
+      if (this.image.src !== this.properties.src) {
+        this.image.src = this.properties.src;
       }
     }
 
@@ -71,7 +71,7 @@ export default class CanvasImage extends Component {
   render() {
     const { canvas, context, image } = this;
 
-    const { width, height } = this.options;
+    const { width, height } = this.properties;
 
     if (!image.src) return;
 

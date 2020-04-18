@@ -22,9 +22,10 @@ export default class Composer {
 
   getRenderTarget() {
     const { renderer } = this;
+    const context = renderer.getContext();
     const pixelRatio = renderer.getPixelRatio();
-    const width = Math.floor(renderer.context.canvas.width / pixelRatio) || 1;
-    const height = Math.floor(renderer.context.canvas.height / pixelRatio) || 1;
+    const width = Math.floor(context.canvas.width / pixelRatio) || 1;
+    const height = Math.floor(context.canvas.height / pixelRatio) || 1;
 
     return new WebGLRenderTarget(width, height, {
       minFilter: LinearFilter,
@@ -55,19 +56,15 @@ export default class Composer {
     this.writeTarget.setSize(width, height);
   }
 
-  clearScreen(color, depth, stencil) {
-    this.renderer.clear(color !== false, depth !== false, stencil !== false);
+  clearScreen(color = true, depth = true, stencil = true) {
+    this.renderer.clear(color, depth, stencil);
   }
 
-  clearBuffer(color, depth, stencil) {
-    const c = color !== false;
-    const d = depth !== false;
-    const s = stencil !== false;
-
+  clearBuffer(color = true, depth = true, stencil = true) {
     this.renderer.setRenderTarget(this.readTarget);
-    this.renderer.clear(c, d, s);
+    this.renderer.clear(color, depth, stencil);
     this.renderer.setRenderTarget(this.writeTarget);
-    this.renderer.clear(c, d, s);
+    this.renderer.clear(color, depth, stencil);
   }
 
   clear(color, alpha) {
@@ -109,41 +106,41 @@ export default class Composer {
     this.passes = this.passes.filter(p => p !== pass);
   }
 
-  addRenderPass(scene, camera, options) {
-    return this.addPass(new RenderPass(scene, camera, options));
+  addRenderPass(scene, camera, properties) {
+    return this.addPass(new RenderPass(scene, camera, properties));
   }
 
-  addShaderPass(shader, options) {
-    return this.addPass(new ShaderPass(shader, options));
+  addShaderPass(shader, properties) {
+    return this.addPass(new ShaderPass(shader, properties));
   }
 
-  addTexturePass(texture, options) {
-    return this.addPass(new TexturePass(texture, options));
+  addTexturePass(texture, properties) {
+    return this.addPass(new TexturePass(texture, properties));
   }
 
-  addSpritePass(image, options) {
+  addSpritePass(image, properties) {
     const texture = new Texture(image);
     texture.minFilter = LinearFilter;
 
-    return this.addPass(new SpritePass(texture, options));
+    return this.addPass(new SpritePass(texture, properties));
   }
 
-  addCopyPass(options) {
-    return this.addShaderPass(CopyShader, options);
+  addCopyPass(properties) {
+    return this.addShaderPass(CopyShader, properties);
   }
 
-  addMultiPass(passes, options) {
-    return this.addPass(new MultiPass(passes, options));
+  addMultiPass(passes, properties) {
+    return this.addPass(new MultiPass(passes, properties));
   }
 
   clearPasses() {
     this.passes = [];
   }
 
-  blendBuffer(buffer, options) {
+  blendBuffer(buffer, properties) {
     const { renderer, blendPass, readBuffer, writeBuffer } = this;
 
-    const { opacity, blendMode, mask, inverse } = options;
+    const { opacity, blendMode, mask, inverse } = properties;
 
     blendPass.setUniforms({
       tBase: readBuffer.texture,
@@ -177,10 +174,10 @@ export default class Composer {
     this.readBuffer = this.readTarget;
 
     this.passes.forEach(pass => {
-      if (pass.options.enabled) {
+      if (pass.properties.enabled) {
         pass.render(renderer, this.writeBuffer, this.readBuffer);
 
-        if (pass.options.needsSwap) {
+        if (pass.properties.needsSwap) {
           this.swapBuffers();
         }
       }

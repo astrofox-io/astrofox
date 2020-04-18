@@ -1,20 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Application from 'core/Application';
-import * as Environment from 'core/Environment';
+import { Provider } from 'react-redux';
 import App from 'components/App';
+import * as env from './global';
+import getStore from './store';
 import 'styles/fonts.less';
 import 'styles/global.less';
 import './index.html';
 
-const app = new Application();
 const root = {};
-export const AppContext = React.createContext();
+const store = getStore();
 
 // Development settings
 if (process.env.NODE_ENV !== 'production') {
-  root.app = app;
-  root.env = Environment;
+  root.env = env;
 }
 
 // Production settings
@@ -27,9 +26,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 ReactDOM.render(
-  <AppContext.Provider value={app}>
-    <App app={app} />
-  </AppContext.Provider>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('app'),
 );
 

@@ -13,8 +13,8 @@ export default class LEDEffect extends Effect {
     blur: 4,
   };
 
-  constructor(options) {
-    super(LEDEffect, options);
+  constructor(properties) {
+    super(LEDEffect, properties);
   }
 
   addToScene() {

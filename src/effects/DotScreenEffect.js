@@ -13,14 +13,14 @@ export default class DotScreenEffect extends Effect {
     scale: 1.0,
   };
 
-  constructor(options) {
-    super(DotScreenEffect, options);
+  constructor(properties) {
+    super(DotScreenEffect, properties);
   }
 
   updatePass() {
     this.pass.setUniforms({
-      scale: this.options.scale,
-      angle: deg2rad(this.options.angle),
+      scale: this.properties.scale,
+      angle: deg2rad(this.properties.angle),
     });
   }
 

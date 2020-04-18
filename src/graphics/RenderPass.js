@@ -8,8 +8,8 @@ export default class RenderPass extends ComposerPass {
     setClearAlpha: 1.0,
   };
 
-  constructor(scene, camera, options) {
-    super({ ...RenderPass.defaultOptions, ...options });
+  constructor(scene, camera, properties) {
+    super({ ...RenderPass.defaultOptions, ...properties });
 
     this.scene = scene;
     this.camera = camera;
@@ -17,7 +17,7 @@ export default class RenderPass extends ComposerPass {
 
   render(renderer, writeBuffer, readBuffer) {
     const { scene, camera } = this;
-    const { overrideMaterial } = this.options;
+    const { overrideMaterial } = this.properties;
 
     if (overrideMaterial) {
       scene.overrideMaterial = overrideMaterial;

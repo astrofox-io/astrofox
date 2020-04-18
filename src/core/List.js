@@ -1,32 +1,23 @@
-import Immutable from 'immutable';
-
 export default class List {
-  constructor(values) {
-    this.list = Immutable.List(values);
-  }
-
-  get length() {
-    return this.list.size;
-  }
-
-  get items() {
-    return this.list;
+  constructor(items = []) {
+    this.items = items;
   }
 
   add(item) {
-    this.list = this.list.push(item);
+    this.items.push(item);
   }
 
-  insert(index, val) {
-    this.list = this.list.insert(index, val);
+  insert(index, item) {
+    this.items.splice(index, 0, item);
   }
 
   remove(item) {
-    const { list } = this;
-    const index = list.indexOf(item);
+    const { items } = this;
+    const index = items.indexOf(item);
 
     if (index > -1) {
-      this.list = list.delete(index);
+      delete items[index];
+      this.items = items.filter(n => n);
       return true;
     }
 
@@ -34,29 +25,26 @@ export default class List {
   }
 
   swap(index, newIndex) {
-    const {
-      list,
-      list: { size },
-    } = this;
+    const { items } = this;
     let changed = false;
 
-    if (index !== newIndex && index > -1 && index < size && newIndex > -1 && newIndex < size) {
-      this.list = list.withMutations(items => {
-        const tmp = items.get(index);
-        items.set(index, items.get(newIndex));
-        items.set(newIndex, tmp);
-        changed = true;
-      });
+    if (
+      index !== newIndex &&
+      index > -1 &&
+      index < items.length &&
+      newIndex > -1 &&
+      newIndex < items.length
+    ) {
+      const tmp = items[index];
+      items[index] = items[newIndex];
+      items[newIndex] = tmp;
+      changed = true;
     }
 
     return changed;
   }
 
   clear() {
-    this.list = this.list.clear();
-  }
-
-  indexOf(item) {
-    return this.list.indexOf(item);
+    this.items = [];
   }
 }

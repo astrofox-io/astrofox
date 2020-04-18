@@ -1,34 +1,28 @@
-import React, { PureComponent } from 'react';
-import withAppContext from 'components/hocs/withAppContext';
+import React, { useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { getControlComponent } from 'utils/controls';
 import styles from './ControlsPanel.less';
 
-class ControlsPanel extends PureComponent {
-  constructor(props) {
-    super(props);
+export default function ControlsPanel() {
+  const { width, height } = useSelector(({ stage }) => stage);
+  const displays = useSelector(state => state.displays);
+  const [activeIndex, setActiveIndex] = useState();
+  const panelRef = useRef();
 
-    this.nodes = {};
-    this.controls = {};
-  }
-
-  state = {
-    displays: [],
-    activeIndex: 0,
-  };
-
-  componentDidUpdate() {
+  /*
+  function componentDidUpdate() {
     this.focusControl(this.state.activeIndex);
   }
 
-  updateControl(display) {
+  function updateControl(display) {
     const control = this.controls[display.id];
 
     if (control) {
-      control.setState(display.options);
+      control.setState(display.properties);
     }
   }
 
-  focusControl(index) {
+  function focusControl(index) {
     const { displays } = this.state;
     const display = displays[index];
 
@@ -43,38 +37,28 @@ class ControlsPanel extends PureComponent {
     }
   }
 
-  updateState(state) {
+  function updateState(state) {
     this.setState(state);
   }
+  */
 
-  render() {
-    const {
-      app: { stage },
-    } = this.props;
-    const { displays, activeIndex } = this.state;
-    const { width, height } = stage.getSize();
+  return (
+    <div className={styles.panel} ref={panelRef}>
+      {displays.map((display, index) => {
+        const { id } = display;
+        const Component = getControlComponent(display);
 
-    return (
-      <div className={styles.panel} ref={e => (this.nodes.panel = e)}>
-        {displays.map((display, index) => {
-          const { id } = display;
-          const Component = getControlComponent(display);
-
-          return (
-            <div key={id} ref={e => (this.nodes[id] = e)} className={styles.control}>
-              <Component
-                ref={e => (this.controls[id] = e)}
-                display={display}
-                active={index === activeIndex}
-                stageWidth={width}
-                stageHeight={height}
-              />
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
+        return (
+          <div key={id} className={styles.control}>
+            <Component
+              display={display}
+              active={index === activeIndex}
+              stageWidth={width}
+              stageHeight={height}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
 }
-
-export default withAppContext(ControlsPanel);

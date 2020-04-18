@@ -3,6 +3,7 @@ export const SAMPLE_RATE = 44100;
 
 export const CANVAS_WIDTH = 854;
 export const CANVAS_HEIGHT = 480;
+export const BACKGROUND_COLOR = '#000000';
 
 export const PUBLIC_KEY = [
   '-----BEGIN PUBLIC KEY-----',

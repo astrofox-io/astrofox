@@ -1,54 +1,53 @@
-import React, { PureComponent } from 'react';
-import withAppContext from 'components/hocs/withAppContext';
+import React, { useState, useEffect } from 'react';
+import { updater } from 'view/global';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';
 import styles from './AppUpdates.less';
 
-class AppUpdates extends PureComponent {
-  constructor(props) {
-    super(props);
+export default function AppUpdates({ onClose }) {
+  const [status, setStatus] = useState();
+  const {
+    checking,
+    checked,
+    error,
+    installing,
+    downloading,
+    downloadComplete,
+    hasUpdate,
+  } = updater;
 
-    this.appUpdater = props.app.updater;
-  }
+  let installButton;
+  let downloadButton;
+  let closeText = 'Close';
 
-  componentDidMount() {
-    const { checking, downloading, downloadComplete, installing } = this.appUpdater;
-
-    this.appUpdater.on('status', this.updateStatus, this);
+  useEffect(() => {
+    updater.on('status', setStatus, this);
 
     if (!checking && !downloading && !downloadComplete && !installing) {
       // Let css animation complete
       setTimeout(() => {
-        this.appUpdater.checkForUpdates();
+        updater.checkForUpdates();
       }, 1000);
     }
+
+    return () => {
+      updater.off('status', setStatus, this);
+    };
+  });
+
+  function installUpdate() {
+    updater.quitAndInstall();
   }
 
-  componentWillUnmount() {
-    this.appUpdater.off('status', this.updateStatus, this);
+  function downloadUpdate() {
+    updater.downloadUpdate();
   }
 
-  installUpdate = () => {
-    this.appUpdater.quitAndInstall();
-  };
-
-  downloadUpdate = () => {
-    this.appUpdater.downloadUpdate();
-  };
-
-  updateStatus = () => this.forceUpdate();
-
-  getMessage() {
+  function getMessage() {
     const {
-      error,
-      downloading,
-      downloadComplete,
-      installing,
-      checked,
-      hasUpdate,
       info: { version },
-    } = this.appUpdater;
+    } = updater;
 
     let message = 'Checking for updates...';
 
@@ -69,47 +68,34 @@ class AppUpdates extends PureComponent {
     return message;
   }
 
-  getIcon() {
-    const { checked, hasUpdate } = this.appUpdater;
-
-    return checked && !hasUpdate ? (
+  function getIcon() {
+    return status && checked && !hasUpdate ? (
       <Checkmark className={styles.icon} size={30} />
     ) : (
       <Spinner className={styles.icon} size={30} />
     );
   }
 
-  render() {
-    const { onClose } = this.props;
-    const { installing, downloading, downloadComplete, hasUpdate } = this.appUpdater;
-
-    let installButton;
-    let downloadButton;
-    let closeText = 'Close';
-
-    if (downloadComplete && !installing) {
-      installButton = <Button text="Restart and Install Now" onClick={this.installUpdate} />;
-      closeText = 'Install Later';
-    }
-
-    if (hasUpdate && !downloading && !downloadComplete) {
-      downloadButton = <Button text="Download Now" onClick={this.downloadUpdate} />;
-    }
-
-    return (
-      <>
-        <div className={styles.message}>
-          {this.getIcon()}
-          {this.getMessage()}
-        </div>
-        <div className={styles.buttons}>
-          {installButton}
-          {downloadButton}
-          <Button className={styles.button} text={closeText} onClick={onClose} />
-        </div>
-      </>
-    );
+  if (downloadComplete && !installing) {
+    installButton = <Button text="Restart and Install Now" onClick={installUpdate} />;
+    closeText = 'Install Later';
   }
-}
 
-export default withAppContext(AppUpdates);
+  if (hasUpdate && !downloading && !downloadComplete) {
+    downloadButton = <Button text="Download Now" onClick={downloadUpdate} />;
+  }
+
+  return (
+    <>
+      <div className={styles.message}>
+        {getIcon()}
+        {getMessage()}
+      </div>
+      <div className={styles.buttons}>
+        {installButton}
+        {downloadButton}
+        <Button className={styles.button} text={closeText} onClick={onClose} />
+      </div>
+    </>
+  );
+}

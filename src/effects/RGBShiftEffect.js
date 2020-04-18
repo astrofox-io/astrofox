@@ -13,16 +13,16 @@ export default class RGBShiftEffect extends Effect {
     angle: 45,
   };
 
-  constructor(options) {
-    super(RGBShiftEffect, options);
+  constructor(properties) {
+    super(RGBShiftEffect, properties);
   }
 
   updatePass() {
     const { width } = this.scene.getSize();
 
     this.pass.setUniforms({
-      amount: this.options.offset / width,
-      angle: deg2rad(this.options.angle),
+      amount: this.properties.offset / width,
+      angle: deg2rad(this.properties.angle),
     });
   }
 

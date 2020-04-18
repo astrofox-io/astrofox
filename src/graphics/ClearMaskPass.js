@@ -1,8 +1,8 @@
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class ClearMaskPass extends ComposerPass {
-  constructor(options) {
-    super(options);
+  constructor(properties) {
+    super(properties);
 
     this.enabled = true;
   }

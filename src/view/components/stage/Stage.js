@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import withAppContext from 'components/hocs/withAppContext';
 import RenderInfo from 'components/stage/RenderInfo';
-import { events } from 'view/global';
+import { stage } from 'view/global';
 import { FirstChild } from 'utils/react';
+import { loadAudioFile } from 'actions/audio';
 import styles from './Stage.less';
 
 const transitionClasses = {
@@ -18,78 +19,65 @@ const transitionTimeout = {
   exit: 500,
 };
 
-class Stage extends Component {
-  state = {
-    loading: false,
-    rendering: false,
-    ...this.props.app.stage.options,
-  };
+export default function Stage() {
+  const dispatch = useDispatch();
+  const { loading, rendering, width, height, zoom } = useSelector(({ stage }) => stage);
+  const canvas = useRef();
 
-  componentDidMount() {
-    this.props.app.stage.init(this.canvas);
+  useEffect(() => {
+    stage.init(canvas.current);
 
+    /*
     events.on('zoom', this.updateStage, this);
     events.on('audio-file-load', this.showLoading, this);
     events.on('audio-file-loaded', this.hideLoading, this);
     events.on('video-render-start', this.startRender, this);
-  }
 
-  componentWillUnmount() {
-    events.off('zoom', this.updateStage);
-    events.off('audio-file-load', this.showLoading);
-    events.off('audio-file-loaded', this.hideLoading);
-    events.off('video-render-start', this.startRender);
-  }
+    return () => {
+      events.off('zoom', this.updateStage);
+      events.off('audio-file-load', this.showLoading);
+      events.off('audio-file-loaded', this.hideLoading);
+      events.off('video-render-start', this.startRender);
+    };
+     */
+  });
 
-  handleDragOver = e => {
+  function handleDragOver(e) {
     e.stopPropagation();
     e.preventDefault();
-  };
+  }
 
-  handleDrop = e => {
+  function handleDrop(e) {
     e.stopPropagation();
     e.preventDefault();
-
-    const { app } = this.props;
-    const { rendering } = this.state;
 
     const file = e.dataTransfer.files[0];
 
     if (file && !rendering) {
-      app.loadAudioFile(file.path);
+      dispatch(loadAudioFile(file.path));
     }
+  }
+
+  function startRender() {}
+
+  function stopRender() {}
+
+  const style = {
+    width: `${width * zoom}px`,
+    height: `${height * zoom}px`,
   };
 
-  startRender = () => this.setState({ rendering: true });
-
-  stopRender = () => this.setState({ rendering: false });
-
-  showLoading = () => this.setState({ loading: true });
-
-  hideLoading = () => this.setState({ loading: false });
-
-  updateStage = () => this.setState({ ...this.props.app.stage.options });
-
-  render() {
-    const { loading, rendering, width, height, zoom } = this.state;
-
-    const style = {
-      width: `${width * zoom}px`,
-      height: `${height * zoom}px`,
-    };
-
-    return (
-      <div className={styles.stage}>
-        <div className={styles.scroll}>
-          <div className={styles.canvas} onDrop={this.handleDrop} onDragOver={this.handleDragOver}>
-            <canvas ref={e => (this.canvas = e)} style={style} />
-            <Loading visible={loading} />
-            <Rendering visible={rendering} onClose={this.stopRender} />
-          </div>
+  return (
+    <div className={styles.stage}>
+      <div className={styles.scroll}>
+        <div className={styles.canvas} onDrop={handleDrop} onDragOver={handleDragOver}>
+          <canvas ref={canvas} style={style} />
+          <Loading visible={loading} />
+          <Rendering visible={rendering} onClose={stopRender} />
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 const Loading = ({ visible }) => (
@@ -111,5 +99,3 @@ const Rendering = ({ visible, onClose }) => (
     )}
   </TransitionGroup>
 );
-
-export default withAppContext(Stage);

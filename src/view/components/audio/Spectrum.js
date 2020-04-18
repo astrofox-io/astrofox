@@ -1,40 +1,39 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect, useRef, useImperativeHandle } from 'react';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
 import { FFT_SIZE, SAMPLE_RATE, CANVAS_WIDTH } from 'view/constants';
 import styles from './Spectrum.less';
 
-export default class Spectrum extends PureComponent {
-  static defaultProps = {
-    width: CANVAS_WIDTH,
-    height: 50,
-    barWidth: -1,
-    barSpacing: 1,
-    shadowHeight: 0,
-    minHeight: 1,
-    color: '#775FD8',
-    backgroundColor: '#FF0000',
-  };
+const spectrumProperties = {
+  width: 854,
+  height: 50,
+  barWidth : -1,
+  barSpacing: 1,
+  shadowHeight: 0,
+  minHeight: 1,
+  color: '#775FD8',
+  backgroundColor: '#FF0000',
+};
 
-  state = {
-    fftSize: FFT_SIZE,
-    sampleRate: SAMPLE_RATE,
-    smoothingTimeConstant: 0.5,
-    minDecibels: -60,
-    maxDecibels: -20,
-    minFrequency: 0,
-    maxFrequency: 10000,
-    normalize: false,
-    bins: 32,
-  };
+const parserProperties = {
+  fftSize: FFT_SIZE,
+  sampleRate: SAMPLE_RATE,
+  smoothingTimeConstant: 0.5,
+  minDecibels: -60,
+  maxDecibels: -20,
+  minFrequency: 0,
+  maxFrequency: 10000,
+  normalize: false,
+  bins: 32,
+};
 
-  componentDidMount() {
-    this.bars = new CanvasBars(this.props, this.canvas);
+export default function Spectrum({ forwardedRef }) {
+  const canvas = useRef();
+  const bars = useRef();
+  const parser = useRef();
 
-    this.parser = new SpectrumParser(this.state);
-  }
-
-  handleClick = () => {
+  function handleClick() {
+    parser.current.update({ normalize: !prevState.normalize })
     this.setState(
       prevState => ({ normalize: !prevState.normalize }),
       () => {
@@ -43,25 +42,29 @@ export default class Spectrum extends PureComponent {
     );
   };
 
-  draw = data => {
-    const fft = this.parser.parseFFT(data.fft);
+  function draw(data) {
+    const fft = parser.current.parseFFT(data.fft);
 
-    this.bars.render(fft);
+    bars.current.render(fft);
   };
 
-  render() {
-    const { width, height } = this.props;
+  useImperativeHandle(forwardedRef, () => ({ draw }));
+
+  useEffect(() => {
+    bars.current = new CanvasBars(spectrumProperties, canvas.current);
+    parser.current = new SpectrumParser(parserProperties);
+  }, [bars, parser]);
 
     return (
       <div className={styles.spectrum}>
         <canvas
-          ref={e => (this.canvas = e)}
+          ref={canvas}
           className={styles.canvas}
           width={width}
           height={height}
-          onClick={this.handleClick}
+          onClick={handleClick}
         />
       </div>
     );
-  }
+
 }

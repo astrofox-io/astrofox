@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { player } from 'view/global';
 import { showOpenDialog, showSaveDialog } from 'utils/window';
 import Button from 'components/interface/Button';
-import withAppContext from 'components/hocs/withAppContext';
 import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
 import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
 import { replaceExt } from 'utils/file';
@@ -13,41 +14,35 @@ const videoFormats = ['mp4', 'webm'];
 
 const resolutionOptions = [480, 720, 1080];
 
-class VideoSettings extends Component {
-  static defaultProps = {
-    onStart: () => {},
-    onClose: () => {},
-  };
+const defaultState = {
+  videoFile: '',
+  audioFile: '',
+  format: 'mp4',
+  resolution: 480,
+  fps: 30,
+  timeStart: 0,
+  timeEnd: 0,
+};
 
-  state = {
-    videoFile: '',
-    audioFile: '',
-    format: 'mp4',
-    resolution: 480,
-    fps: 30,
-    timeStart: 0,
-    timeEnd: 0,
-  };
+export default function VideoSettings({ onStart, onClose }) {
+  const appConfig = useSelector(({ app }) => app);
+  const [state, setState] = useState({ ...defaultState, audioFile: appConfig.audioFile });
+  const { videoFile, audioFile, format, resolution, fps, timeStart, timeEnd } = state;
 
-  componentDidMount() {
-    const {
-      app: { player, audioFile },
-    } = this.props;
-
+  useEffect(() => {
     player.stop();
 
     const audio = player.getAudio();
 
     if (audio) {
-      this.setState({
+      setState({
         audioFile,
         timeEnd: audio.getDuration(),
       });
     }
-  }
+  }, []);
 
-  handleChange = (name, value) => {
-    const { videoFile } = this.state;
+  function handleChange(name, value) {
     const obj = {};
 
     obj[name] = value;
@@ -56,36 +51,34 @@ class VideoSettings extends Component {
       obj.videoFile = replaceExt(videoFile, `.${value}`);
     }
 
-    this.setState(obj);
-  };
+    setState({ ...state, ...obj });
+  }
 
-  handleCancel = () => {
-    this.props.onClose();
-  };
+  function handleCancel() {
+    onClose();
+  }
 
-  handleStart = () => {
-    this.props.onStart(this.state);
-  };
+  function handleStart() {
+    onStart(state);
+  }
 
-  handleOpenVideoFile = () => {
+  function handleOpenVideoFile() {
     showSaveDialog(
       filename => {
         if (filename) {
-          this.setState({ videoFile: filename });
+          setState({ ...state, videoFile: filename });
         }
       },
-      { defaultPath: `video.${this.state.format}` },
+      { defaultPath: `video.${state.format}` },
     );
-  };
+  }
 
-  handleOpenAudioFile = () => {
-    const { app } = this.props;
-
+  function handleOpenAudioFile() {
     showOpenDialog(
       files => {
         if (files) {
           app.loadAudioFile(files[0]).then(() => {
-            const audio = app.player.getAudio();
+            const audio = player.getAudio();
 
             this.setState({
               audioFile: app.audioFile,
@@ -97,109 +90,103 @@ class VideoSettings extends Component {
       },
       { defaultPath: app.audioFile },
     );
-  };
-
-  render() {
-    const { app } = this.props;
-    const { videoFile, audioFile, format, resolution, fps, timeStart, timeEnd } = this.state;
-    const audio = app.player.getAudio();
-    const max = audio ? audio.getDuration() : 0;
-    const canStart = videoFile && audioFile;
-
-    return (
-      <SettingsPanel className={styles.panel}>
-        <Settings>
-          <Row label="Save Video To">
-            <TextInput
-              inputClassName="input-normal-text"
-              name="videoFile"
-              width={250}
-              value={videoFile}
-              readOnly
-              onChange={this.handleChange}
-            />
-            <ButtonInput
-              className={styles.button}
-              icon={folderIcon}
-              title="Save File"
-              onClick={this.handleOpenVideoFile}
-            />
-          </Row>
-          <Row label="Audio File">
-            <TextInput
-              inputClassName="input-normal-text"
-              name="audioFile"
-              width={250}
-              value={audioFile}
-              readOnly
-              onChange={this.handleChange}
-            />
-            <ButtonInput
-              className={styles.button}
-              icon={folderIcon}
-              title="Open File"
-              onClick={this.handleOpenAudioFile}
-            />
-          </Row>
-          <Row label="Format">
-            <SelectInput
-              name="format"
-              width={80}
-              items={videoFormats}
-              value={format}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="Video Resolution" className="display-none">
-            <SelectInput
-              name="resolution"
-              width={80}
-              items={resolutionOptions}
-              value={resolution}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="FPS">
-            <NumberInput
-              name="fps"
-              width={60}
-              min={24}
-              max={60}
-              value={fps}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="Start Time">
-            <TimeInput
-              name="timeStart"
-              width={80}
-              min={0}
-              max={timeEnd}
-              value={timeStart}
-              disabled={!audio}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="End Time">
-            <TimeInput
-              name="timeEnd"
-              width={80}
-              min={0}
-              max={max}
-              value={timeEnd}
-              disabled={!audio}
-              onChange={this.handleChange}
-            />
-          </Row>
-          <Row label="Total Time">{formatTime(timeEnd - timeStart)}</Row>
-        </Settings>
-        <ButtonRow>
-          <Button text="Start" onClick={this.handleStart} disabled={!canStart} />
-          <Button text="Cancel" onClick={this.handleCancel} />
-        </ButtonRow>
-      </SettingsPanel>
-    );
   }
-}
 
-export default withAppContext(VideoSettings);
+  const audio = player.getAudio();
+  const max = audio ? audio.getDuration() : 0;
+  const canStart = videoFile && audioFile;
+
+  return (
+    <SettingsPanel className={styles.panel}>
+      <Settings>
+        <Row label="Save Video To">
+          <TextInput
+            inputClassName="input-normal-text"
+            name="videoFile"
+            width={250}
+            value={videoFile}
+            readOnly
+            onChange={handleChange}
+          />
+          <ButtonInput
+            className={styles.button}
+            icon={folderIcon}
+            title="Save File"
+            onClick={handleOpenVideoFile}
+          />
+        </Row>
+        <Row label="Audio File">
+          <TextInput
+            inputClassName="input-normal-text"
+            name="audioFile"
+            width={250}
+            value={audioFile}
+            readOnly
+            onChange={handleChange}
+          />
+          <ButtonInput
+            className={styles.button}
+            icon={folderIcon}
+            title="Open File"
+            onClick={handleOpenAudioFile}
+          />
+        </Row>
+        <Row label="Format">
+          <SelectInput
+            name="format"
+            width={80}
+            items={videoFormats}
+            value={format}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="Video Resolution" className="display-none">
+          <SelectInput
+            name="resolution"
+            width={80}
+            items={resolutionOptions}
+            value={resolution}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="FPS">
+          <NumberInput
+            name="fps"
+            width={60}
+            min={24}
+            max={60}
+            value={fps}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="Start Time">
+          <TimeInput
+            name="timeStart"
+            width={80}
+            min={0}
+            max={timeEnd}
+            value={timeStart}
+            disabled={!audio}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="End Time">
+          <TimeInput
+            name="timeEnd"
+            width={80}
+            min={0}
+            max={max}
+            value={timeEnd}
+            disabled={!audio}
+            onChange={handleChange}
+          />
+        </Row>
+        <Row label="Total Time">{formatTime(timeEnd - timeStart)}</Row>
+      </Settings>
+      <ButtonRow>
+        <Button text="Start" onClick={handleStart} disabled={!canStart} />
+        <Button text="Cancel" onClick={handleCancel} />
+      </ButtonRow>
+    </SettingsPanel>
+  );
+}

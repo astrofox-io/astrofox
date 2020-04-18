@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react';
+import React, { useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Display from 'core/Display';
 import CanvasDisplay from 'core/CanvasDisplay';
 import Scene from 'core/Scene';
 import Effect from 'core/Effect';
-import { events } from 'view/global';
+import { events, stage } from 'view/global';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import Layer from 'components/panels/Layer';
-import withAppContext from 'components/hocs/withAppContext';
 import iconScene from 'assets/icons/picture.svg';
 import iconDisplay from 'assets/icons/cube.svg';
 import iconEffect from 'assets/icons/light-up.svg';
@@ -17,32 +17,16 @@ import iconCanvasDisplay from 'assets/icons/document-landscape.svg';
 import styles from './LayersPanel.less';
 import panelStyles from '../layout/Panel.less';
 
-class LayersPanel extends PureComponent {
-  state = {
-    displays: [],
-    activeIndex: 0,
-  };
+export default function LayersPanel({ onLayerUpdate }) {
+  const dispatch = useDispatch();
+  const displays = useSelector(state => state.displays);
+  const [activeIndex, setActiveIndex] = useState();
 
-  componentDidMount() {
-    events.on('project-loaded', this.handleProjectLoaded, this);
-
-    this.updateState();
-  }
-
-  componentWillUnmount() {
-    events.off('project-loaded', this.handleProjectLoaded, this);
-  }
-
-  handleProjectLoaded = () => {
-    this.updateState(0);
-  };
-
-  handleLayerClick = index => {
+  const handleLayerClick = index => {
     this.setActiveLayer(index);
   };
 
-  handleLayerUpdate = (index, name, val) => {
-    const { displays } = this.state;
+  const handleLayerUpdate = (index, name, val) => {
     const display = displays[index];
     const obj = { [name]: val };
 
@@ -50,38 +34,34 @@ class LayersPanel extends PureComponent {
 
     this.setState({ displays: displays.slice(0) });
 
-    this.props.onLayerUpdate(display);
+    onLayerUpdate(display);
   };
 
-  handleAddSceneClick = () => {
-    this.addLayer(new Scene());
+  const handleAddSceneClick = () => {
+    addLayer(new Scene());
   };
 
-  handleAddDisplayClick = () => {
-    const scene = this.getActiveScene();
+  const handleAddDisplayClick = () => {
+    const scene = getActiveScene();
 
     if (scene) {
       events.emit('pick-control', 'display', display => {
-        this.addLayer(display, Display);
+        addLayer(display, Display);
       });
     }
   };
 
-  handleAddEffectClick = () => {
-    const scene = this.getActiveScene();
+  const handleAddEffectClick = () => {
+    const scene = getActiveScene();
 
     if (scene) {
       events.emit('pick-control', 'effect', display => {
-        this.addLayer(display, Effect);
+        addLayer(display, Effect);
       });
     }
   };
 
-  handleRemoveClick = () => {
-    const {
-      app: { stage },
-    } = this.props;
-    const { displays, activeIndex } = this.state;
+  const handleRemoveClick = () => {
     const display = displays[activeIndex];
     const last = displays.length - 1;
 
@@ -100,17 +80,15 @@ class LayersPanel extends PureComponent {
     }
   };
 
-  handleMoveUpClick = () => {
-    this.moveLayer(1);
+  const handleMoveUpClick = () => {
+    moveLayer(1);
   };
 
-  handleMoveDownClick = () => {
-    this.moveLayer(-1);
+  const handleMoveDownClick = () => {
+    moveLayer(-1);
   };
 
-  getLayers() {
-    const { displays, activeIndex } = this.state;
-
+  function getLayers() {
     return displays.map((display, index) => {
       let icon;
 
@@ -127,11 +105,11 @@ class LayersPanel extends PureComponent {
       return (
         <Layer
           key={display.id}
-          name={display.options.displayName}
+          name={display.properties.displayName}
           index={index}
           icon={icon}
           control={!(display instanceof Scene)}
-          enabled={display.options.enabled}
+          enabled={display.properties.enabled}
           active={index === activeIndex}
           onLayerClick={this.handleLayerClick}
           onLayerUpdate={this.handleLayerUpdate}
@@ -140,13 +118,11 @@ class LayersPanel extends PureComponent {
     });
   }
 
-  getActiveLayer() {
-    const { displays, activeIndex } = this.state;
-
+  function getActiveLayer() {
     return displays[activeIndex];
   }
 
-  getActiveScene() {
+  function getActiveScene() {
     const layer = this.getActiveLayer();
 
     if (layer instanceof Scene) {
@@ -156,7 +132,7 @@ class LayersPanel extends PureComponent {
     return layer ? layer.scene : null;
   }
 
-  setActiveLayer(obj) {
+  function setActiveLayer(obj) {
     if (obj === undefined) return;
 
     const index = typeof obj === 'number' ? obj : this.state.displays.indexOf(obj);
@@ -164,15 +140,7 @@ class LayersPanel extends PureComponent {
     this.setActiveIndex(index);
   }
 
-  setActiveIndex(index) {
-    if (index !== this.state.activeIndex) {
-      this.setState({ activeIndex: index });
-    }
-
-    this.props.onLayerSelected(index);
-  }
-
-  addLayer(obj, type) {
+  function addLayer(obj, type) {
     if (obj instanceof Scene) {
       this.addScene(obj);
     } else {
@@ -180,12 +148,8 @@ class LayersPanel extends PureComponent {
     }
   }
 
-  addScene(newScene) {
-    const {
-      app: { stage },
-    } = this.props;
-    const { displays } = this.state;
-    const scene = this.getActiveScene();
+  function addScene(newScene) {
+    const scene = getActiveScene();
 
     const scenes = displays.filter(display => display instanceof Scene);
 
@@ -194,7 +158,7 @@ class LayersPanel extends PureComponent {
     this.updateState(newScene);
   }
 
-  addElement(display, type) {
+  function addElement(display, type) {
     const { displays } = this.state;
     const scene = this.getActiveScene();
     const active = this.getActiveLayer();
@@ -210,7 +174,7 @@ class LayersPanel extends PureComponent {
     }
   }
 
-  moveLayer(direction) {
+  function moveLayer(direction) {
     if (this.getActiveScene()) {
       const layer = this.getActiveLayer();
 
@@ -224,7 +188,7 @@ class LayersPanel extends PureComponent {
     }
   }
 
-  updateState(obj) {
+  function updateState(obj) {
     this.setState(({ activeIndex }) => {
       const {
         app: { stage },
@@ -246,54 +210,47 @@ class LayersPanel extends PureComponent {
     });
   }
 
-  render() {
-    const {
-      app: { stage },
-    } = this.props;
-    const layers = this.getLayers();
-    const disabled = !stage.hasScenes();
+  const layers = getLayers();
+  const disabled = !stage.hasScenes();
 
-    return (
-      <div className={styles.panel}>
-        <div className={styles.layers}>{layers}</div>
-        <div className={panelStyles.buttons}>
-          <ButtonInput icon={iconScene} title="Add Scene" onClick={this.handleAddSceneClick} />
+  return (
+    <div className={styles.panel}>
+      <div className={styles.layers}>{layers}</div>
+      <div className={panelStyles.buttons}>
+        <ButtonInput icon={iconScene} title="Add Scene" onClick={handleAddSceneClick} />
+        <ButtonInput
+          icon={iconDisplay}
+          title="Add Display"
+          onClick={handleAddDisplayClick}
+          disabled={disabled}
+        />
+        <ButtonInput
+          icon={iconEffect}
+          title="Add Effect"
+          onClick={handleAddEffectClick}
+          disabled={disabled}
+        />
+        <ButtonGroup>
           <ButtonInput
-            icon={iconDisplay}
-            title="Add Display"
-            onClick={this.handleAddDisplayClick}
+            icon={iconMoveUp}
+            title="Move Layer Up"
+            onClick={handleMoveUpClick}
             disabled={disabled}
           />
           <ButtonInput
-            icon={iconEffect}
-            title="Add Effect"
-            onClick={this.handleAddEffectClick}
+            icon={iconMoveDown}
+            title="Move Layer Down"
+            onClick={handleMoveDownClick}
             disabled={disabled}
           />
-          <ButtonGroup>
-            <ButtonInput
-              icon={iconMoveUp}
-              title="Move Layer Up"
-              onClick={this.handleMoveUpClick}
-              disabled={disabled}
-            />
-            <ButtonInput
-              icon={iconMoveDown}
-              title="Move Layer Down"
-              onClick={this.handleMoveDownClick}
-              disabled={disabled}
-            />
-          </ButtonGroup>
-          <ButtonInput
-            icon={iconDelete}
-            title="Delete Layer"
-            onClick={this.handleRemoveClick}
-            disabled={disabled}
-          />
-        </div>
+        </ButtonGroup>
+        <ButtonInput
+          icon={iconDelete}
+          title="Delete Layer"
+          onClick={handleRemoveClick}
+          disabled={disabled}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default withAppContext(LayersPanel);

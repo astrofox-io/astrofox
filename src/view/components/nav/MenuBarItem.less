@@ -1,0 +1,24 @@
+@import (reference) '~view/styles/variables';
+
+.item {
+  display: inline-block;
+  position: relative;
+}
+
+.text {
+  line-height: 20px;
+  vertical-align: middle;
+  padding: 0 8px;
+  position: relative;
+
+  &.active {
+    color: @color1;
+    background-color: darken(@bg-color3, 6%);
+  }
+
+  &:hover {
+    cursor: default;
+    color: @color1;
+  }
+}
+

@@ -14,8 +14,8 @@ export default class ComposerPass extends Component {
     setClearAlpha: 1.0,
   };
 
-  constructor(options) {
-    super({ ...ComposerPass.defaultOptions, ...options });
+  constructor(properties) {
+    super({ ...ComposerPass.defaultOptions, ...properties });
   }
 
   setSize(width, height) {
@@ -56,7 +56,7 @@ export default class ComposerPass extends Component {
       setClearAlpha,
       forceClear,
       renderToScreen,
-    } = this.options;
+    } = this.properties;
 
     // Set new values
     if (setClearColor) {

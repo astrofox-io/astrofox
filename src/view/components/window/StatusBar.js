@@ -1,72 +1,62 @@
-import React, { Component } from 'react';
-import { APP_VERSION } from 'core/Environment';
-import { events } from 'view/global';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { env, events } from 'view/global';
+import useForceUpdate from 'components/hooks/useForceUpdate';
 import { formatSize } from 'utils/format';
-import withAppContext from 'components/hocs/withAppContext';
+import { updateStage } from 'actions/stage';
 import styles from './StatusBar.less';
 
-class StatusBar extends Component {
-  state = {
-    fps: 0,
-    zoom: 1,
-  };
+const { APP_VERSION } = env;
 
-  componentDidMount() {
-    events.on('tick', this.updateStats, this);
+export default function StatusBar() {
+  const forceUpdate = useForceUpdate();
+  const [fps, setFps] = useState();
+  const { statusText } = useSelector(({ app }) => app);
+  const { width, height, zoom } = useSelector(({ stage }) => stage);
+  const dispatch = useDispatch();
+
+  let memSize;
+  let electronVersion;
+
+  if (process.env.NODE_ENV !== 'production') {
+    memSize = formatSize(window.performance.memory.usedJSHeapSize, 2);
+    electronVersion = process.versions.electron;
   }
 
-  componentWillUnmount() {
-    events.off('tick', this.updateStats, this);
+  function updateStats(frame) {
+    setFps(frame.fps);
+    forceUpdate();
   }
 
-  updateStats = ({ fps }) => this.setState({ fps });
+  useEffect(() => {
+    events.on('tick', updateStats);
 
-  setZoom = value => {
-    const {
-      app: { stage },
-    } = this.props;
+    return () => {
+      events.off('tick', updateStats);
+    };
+  });
 
-    stage.setZoom(value);
-
-    this.setState({ zoom: stage.options.zoom });
-  };
-
-  render() {
-    let memSize;
-    let electronVersion;
-    const {
-      app: { stage },
-      text,
-    } = this.props;
-    const { fps, zoom } = this.state;
-
-    if (process.env.NODE_ENV !== 'production') {
-      memSize = formatSize(window.performance.memory.usedJSHeapSize, 2);
-      electronVersion = process.versions.electron;
-    }
-
-    return (
-      <div className={styles.statusBar}>
-        <div className={styles.left}>
-          <span className={styles.item}>{text}</span>
-        </div>
-        <div className={styles.center}>
-          <Zoom
-            value={zoom}
-            width={stage.options.width}
-            height={stage.options.height}
-            onChange={this.setZoom}
-          />
-        </div>
-        <div className={styles.right}>
-          <span className={styles.item}>{memSize}</span>
-          <span className={styles.item}>{electronVersion}</span>
-          <span className={styles.item}>{`${fps} FPS`}</span>
-          <span className={styles.item}>{APP_VERSION}</span>
-        </div>
+  return (
+    <div className={styles.statusBar}>
+      <div className={styles.left}>
+        <span className={styles.item}>{statusText}</span>
       </div>
-    );
-  }
+      <div className={styles.center}>
+        <Zoom
+          value={zoom}
+          width={width}
+          height={height}
+          onChange={value => dispatch(updateStage({ zoom: value }))}
+        />
+      </div>
+      <div className={styles.right}>
+        <span className={styles.item}>{memSize}</span>
+        <span className={styles.item}>{electronVersion}</span>
+        <span className={styles.item}>{`${fps} FPS`}</span>
+        <span className={styles.item}>{APP_VERSION}</span>
+      </div>
+    </div>
+  );
 }
 
 const Zoom = ({ width, height, value, onChange }) => (
@@ -81,5 +71,3 @@ const Zoom = ({ width, height, value, onChange }) => (
     </span>
   </div>
 );
-
-export default withAppContext(StatusBar);

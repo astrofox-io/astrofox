@@ -1,41 +1,34 @@
-import React, { PureComponent } from 'react';
+import React, { useRef, useEffect, useImperativeHandle } from 'react';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
-import { CANVAS_WIDTH } from 'view/constants';
 import styles from './Oscilloscope.less';
 
-export default class Oscilloscope extends PureComponent {
-  static defaultProps = {
-    width: CANVAS_WIDTH,
-    height: 50,
-    color: '#927FFF',
-  };
+const canvasProperties = {
+  width: 854,
+  height: 50,
+  color: '#927FFF',
+};
 
-  componentDidMount() {
-    this.display = new CanvasWave(this.props, this.canvas);
+export default function Oscilloscope({ forwardedRef }) {
+  const { width, height } = canvasProperties;
+  const canvas = useRef();
+  const display = useRef();
+  const parser = useRef();
 
-    this.parser = new WaveParser();
+  function draw({ td }) {
+    display.current.render(parser.current.parseTimeData(td, width));
   }
 
-  draw = ({ td }) => {
-    const { display, parser } = this;
-    const { width } = this.props;
+  useImperativeHandle(forwardedRef, () => ({ draw }));
 
-    display.render(parser.parseTimeData(td, width));
-  };
+  useEffect(() => {
+    display.current = new CanvasWave(canvasProperties, canvas.current);
+    parser.current = new WaveParser();
+  }, []);
 
-  render() {
-    const { width, height } = this.props;
-
-    return (
-      <div className={styles.oscilloscope}>
-        <canvas
-          ref={e => (this.canvas = e)}
-          className={styles.canvas}
-          width={width}
-          height={height}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className={styles.oscilloscope}>
+      <canvas ref={canvas} className={styles.canvas} width={width} height={height} />
+    </div>
+  );
 }

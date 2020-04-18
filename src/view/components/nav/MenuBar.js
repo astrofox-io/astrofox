@@ -1,98 +1,74 @@
-import React, { Component } from 'react';
-import MenuBarItem from 'components/nav/MenuBarItem';
-import styles from './Menu.less';
+import React, { useState, useEffect } from 'react';
+import MenuBarItem from './MenuBarItem';
+import styles from './MenuBar.less';
 
-export default class MenuBar extends Component {
-  static defaultProps = {
-    items: [],
-    activeIndex: -1,
-  };
+export default function MenuBar({ items = [], onMenuAction = () => {} }) {
+  const [menuItems, setMenuItems] = useState(items);
+  const [activeIndex, setActiveIndex] = useState();
 
-  state = {
-    items: this.props.items,
-  };
-
-  componentDidMount() {
-    window.addEventListener('click', this.handleDocumentClick);
+  function handleDocumentClick() {
+    setActiveIndex(-1);
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('click', this.handleDocumentClick);
+  function handleClick(index) {
+    return () => {
+      setActiveIndex(activeIndex === index ? -1 : index);
+    };
   }
 
-  handleDocumentClick = () => {
-    this.setActiveIndex(-1);
-  };
-
-  handleClick = index => () => {
-    const { activeIndex } = this.state;
-
-    this.setActiveIndex(activeIndex === index ? -1 : index);
-  };
-
-  handleMouseOver = index => () => {
-    const { activeIndex } = this.state;
-
-    if (activeIndex > -1) {
-      this.setActiveIndex(index);
-    }
-  };
-
-  handleMenuItemClick = (action, checked) => {
-    const { onMenuAction } = this.props;
-
-    this.setActiveIndex(-1);
-
-    if (onMenuAction) {
-      onMenuAction(action, checked);
-
-      if (checked !== undefined) {
-        this.setCheckState(action);
+  function handleMouseOver(index) {
+    return () => {
+      if (activeIndex > -1) {
+        setActiveIndex(index);
       }
+    };
+  }
+
+  function handleMenuItemClick(item) {
+    const { action, checked } = item;
+
+    setActiveIndex(-1);
+
+    if (checked !== undefined) {
+      items.forEach(barItem => {
+        if (barItem.submenu) {
+          barItem.submenu.forEach(menuItem => {
+            if (action === menuItem.action) {
+              menuItem.checked = !menuItem.checked;
+              setMenuItems(items.slice());
+            }
+          });
+        }
+      });
     }
-  };
 
-  setActiveIndex(index) {
-    if (this.state.activeIndex !== index) {
-      this.setState({ activeIndex: index });
-    }
+    onMenuAction(action);
   }
 
-  setCheckState(action) {
-    const { items } = this.state;
+  useEffect(() => {
+    window.addEventListener('click', handleDocumentClick);
 
-    items.forEach(barItem => {
-      if (barItem.submenu) {
-        barItem.submenu.forEach(menuItem => {
-          if (action === menuItem.action) {
-            menuItem.checked = !menuItem.checked;
-            this.setState({ items: items.slice() });
-          }
-        });
-      }
-    });
-  }
+    return () => {
+      window.removeEventListener('click', handleDocumentClick);
+    };
+  });
 
-  render() {
-    const { items, activeIndex } = this.state;
-
-    return (
-      <div className={styles.menuBar}>
-        {items.map(
-          ({ hidden, label, submenu }, index) =>
-            !hidden && (
-              <MenuBarItem
-                key={index}
-                label={label}
-                items={submenu}
-                active={activeIndex === index}
-                onClick={this.handleClick(index)}
-                onMouseOver={this.handleMouseOver(index)}
-                onMenuItemClick={this.handleMenuItemClick}
-              />
-            ),
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className={styles.bar}>
+      {menuItems.map(
+        ({ hidden, label, submenu }, index) =>
+          !hidden && (
+            <MenuBarItem
+              key={index}
+              label={label}
+              items={submenu}
+              active={activeIndex === index}
+              onClick={handleClick(index)}
+              onMouseOver={handleMouseOver(index)}
+              onMenuItemClick={handleMenuItemClick}
+            />
+          ),
+      )}
+    </div>
+  );
 }

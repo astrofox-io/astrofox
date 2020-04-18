@@ -22,21 +22,21 @@ export default class WatermarkDisplay extends CanvasDisplay {
     enabled: false,
   };
 
-  constructor(options) {
-    super(WatermarkDisplay, options);
+  constructor(properties) {
+    super(WatermarkDisplay, properties);
 
-    this.image = new CanvasImage(this.options, this.canvas);
+    this.image = new CanvasImage(this.properties, this.canvas);
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      if (this.image.update(options)) {
+      if (this.image.update(properties)) {
         let render = false;
 
-        Object.keys(CanvasImage.defaultOptions).forEach(prop => {
-          if (options[prop] !== undefined) {
+        Object.keys(CanvasImage.defaultproperties).forEach(prop => {
+          if (properties[prop] !== undefined) {
             render = true;
           }
         });

@@ -15,14 +15,14 @@ export default class SpectrumParser extends Component {
     bins: 0,
   };
 
-  constructor(options) {
-    super({ ...SpectrumParser.defaultOptions, ...options });
+  constructor(properties) {
+    super({ ...SpectrumParser.defaultOptions, ...properties });
 
     this.setBinRange();
   }
 
   setBinRange() {
-    const { fftSize, sampleRate, minFrequency, maxFrequency } = this.options;
+    const { fftSize, sampleRate, minFrequency, maxFrequency } = this.properties;
 
     const range = sampleRate / fftSize;
 
@@ -32,7 +32,7 @@ export default class SpectrumParser extends Component {
   }
 
   getDb(fft) {
-    const { minDecibels, maxDecibels, normalize } = this.options;
+    const { minDecibels, maxDecibels, normalize } = this.properties;
     const db = -100 * (1 - fft / 256);
 
     if (normalize) {
@@ -42,8 +42,8 @@ export default class SpectrumParser extends Component {
     return val2pct(db, -100, maxDecibels);
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
       this.setBinRange();
@@ -57,7 +57,7 @@ export default class SpectrumParser extends Component {
 
     const { minBin, maxBin, totalBins } = this;
 
-    const { smoothingTimeConstant, bins } = this.options;
+    const { smoothingTimeConstant, bins } = this.properties;
     const size = bins || totalBins;
 
     // Resize data arrays

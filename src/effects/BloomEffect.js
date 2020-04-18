@@ -17,21 +17,21 @@ export default class BloomEffect extends Effect {
     threshold: 1.0,
   };
 
-  constructor(options) {
-    super(BloomEffect, options);
+  constructor(properties) {
+    super(BloomEffect, properties);
   }
 
   updatePass() {
-    this.lumPass.setUniforms({ amount: 1 - this.options.threshold });
+    this.lumPass.setUniforms({ amount: 1 - this.properties.threshold });
 
-    this.blurPass.setAmount(this.options.amount);
+    this.blurPass.setAmount(this.properties.amount);
 
-    this.blendPass.update({ blendMode: this.options.blendMode });
+    this.blendPass.update({ blendMode: this.properties.blendMode });
   }
 
   addToScene(scene) {
     const {
-      options: { blendMode },
+      properties: { blendMode },
     } = this;
     const { composer } = scene;
     const passes = [];

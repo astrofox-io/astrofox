@@ -27,7 +27,7 @@ const Control = ({ label, active, className, display, children }) => (
     {label && (
       <div className={styles.header}>
         <span className={styles.text}>{label}</span>
-        <span className={styles.displayName}>{display.options.displayName}</span>
+        <span className={styles.displayName}>{display.properties.displayName}</span>
       </div>
     )}
     {Children.map(children, child => {

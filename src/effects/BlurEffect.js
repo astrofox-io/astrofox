@@ -28,19 +28,19 @@ export default class BlurEffect extends Effect {
     y: 0,
   };
 
-  constructor(options) {
-    super(BlurEffect, options);
+  constructor(properties) {
+    super(BlurEffect, properties);
   }
 
-  update(options) {
-    const { type } = this.options;
-    const changed = super.update(options);
+  update(properties) {
+    const { type } = this.properties;
+    const changed = super.update(properties);
 
     if (changed) {
-      if (options.type !== undefined && options.type !== type) {
-        this.setPass(this.getShaderPass(options.type));
+      if (properties.type !== undefined && properties.type !== type) {
+        this.setPass(this.getShaderPass(properties.type));
       }
-      if (options.amount !== undefined || options.x !== undefined || options.y !== undefined) {
+      if (properties.amount !== undefined || properties.x !== undefined || properties.y !== undefined) {
         this.updatePass();
       }
     }
@@ -49,7 +49,7 @@ export default class BlurEffect extends Effect {
   }
 
   updatePass() {
-    const { type, amount, x, y } = this.options;
+    const { type, amount, x, y } = this.properties;
     const { width, height } = this.scene.getSize();
 
     switch (type) {
@@ -75,7 +75,7 @@ export default class BlurEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(this.getShaderPass(this.options.type));
+    this.setPass(this.getShaderPass(this.properties.type));
     this.updatePass();
   }
 

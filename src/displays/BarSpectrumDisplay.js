@@ -32,22 +32,22 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
     normalize: true,
   };
 
-  constructor(options) {
-    super(BarSpectrumDisplay, options);
+  constructor(properties) {
+    super(BarSpectrumDisplay, properties);
 
-    this.bars = new CanvasBars(this.options, this.canvas);
+    this.bars = new CanvasBars(this.properties, this.canvas);
     this.parser = new SpectrumParser({
-      ...this.options,
+      ...this.properties,
       ...{ fftSize: FFT_SIZE, sampleRate: SAMPLE_RATE },
     });
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      this.bars.update(options);
-      this.parser.update(options);
+      this.bars.update(properties);
+      this.parser.update(properties);
     }
 
     return changed;
@@ -58,6 +58,6 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
 
     this.bars.render(fft);
 
-    this.renderToCanvas(scene.getContext('2d'), this.canvas.width / 2, this.options.height);
+    this.renderToCanvas(scene.getContext('2d'), this.canvas.width / 2, this.properties.height);
   }
 }

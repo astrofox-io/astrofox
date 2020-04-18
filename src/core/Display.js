@@ -3,12 +3,12 @@ import AudioReactor from 'audio/AudioReactor';
 
 let displayCount = {};
 
-export function resetCount() {
+export function resetDisplayCount() {
   displayCount = {};
 }
 
 export default class Display extends Component {
-  constructor(type, options) {
+  constructor(type, properties) {
     if (displayCount[type.className] === undefined) {
       displayCount[type.className] = 1;
     } else {
@@ -19,11 +19,11 @@ export default class Display extends Component {
       displayName: `${type.label} ${displayCount[type.className]}`,
       enabled: true,
       ...type.defaultOptions,
-      ...options,
+      ...properties,
     });
 
     this.name = type.className;
-    this.initialized = !!options;
+    this.initialized = !!properties;
     this.scene = null;
     this.hasUpdate = false;
     this.changed = false;
@@ -34,18 +34,18 @@ export default class Display extends Component {
     return this.reactors[name];
   }
 
-  setReactor(name, options) {
+  setReactor(name, properties) {
     // Create reactor
-    if (options) {
-      const { displayName } = this.options;
+    if (properties) {
+      const { displayName } = this.properties;
       this.reactors[name] = new AudioReactor({
         displayName: `Reactor/${displayName}/${name}`,
-        ...options,
+        ...properties,
       });
     }
     // Remove reactor
     else {
-      this.update({ [name]: this.reactors[name].options.lastValue });
+      this.update({ [name]: this.reactors[name].properties.lastValue });
       delete this.reactors[name];
     }
 
@@ -60,7 +60,7 @@ export default class Display extends Component {
 
       if (reactor) {
         const { output } = reactor.parse(data);
-        const { min, max } = reactor.options;
+        const { min, max } = reactor.properties;
         const value = (max - min) * output + min;
 
         this.update({ [name]: value });
@@ -68,8 +68,8 @@ export default class Display extends Component {
     });
   }
 
-  update(options = {}) {
-    this.hasUpdate = super.update(options);
+  update(properties = {}) {
+    this.hasUpdate = super.update(properties);
 
     if (!this.changed && this.hasUpdate) {
       this.changed = true;
@@ -80,8 +80,9 @@ export default class Display extends Component {
 
   toJSON() {
     return {
+      id: this.id,
       name: this.name,
-      options: this.options,
+      properties: this.properties,
       reactors: this.reactors,
     };
   }

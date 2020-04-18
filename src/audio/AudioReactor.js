@@ -27,8 +27,8 @@ export default class AudioReactor extends Component {
     },
   };
 
-  constructor(options) {
-    super({ ...AudioReactor.defaultOptions, ...options });
+  constructor(properties) {
+    super({ ...AudioReactor.defaultOptions, ...properties });
 
     this.parser = new SpectrumParser({
       maxDecibels: -20,
@@ -50,7 +50,7 @@ export default class AudioReactor extends Component {
     const {
       outputMode,
       range: { x1, y1, x2, y2 },
-    } = this.options;
+    } = this.properties;
     const start = floor(x1 * fft.length);
     const end = ceil(x2 * fft.length);
 
@@ -106,6 +106,6 @@ export default class AudioReactor extends Component {
   }
 
   toJSON() {
-    return this.options;
+    return this.properties;
   }
 }

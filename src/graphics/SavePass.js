@@ -8,8 +8,8 @@ export default class SavePass extends ShaderPass {
     forceClear: true,
   };
 
-  constructor(buffer, options) {
-    super(CopyShader, { ...SavePass.defaultOptions, ...options });
+  constructor(buffer, properties) {
+    super(CopyShader, { ...SavePass.defaultOptions, ...properties });
 
     this.buffer = buffer;
   }

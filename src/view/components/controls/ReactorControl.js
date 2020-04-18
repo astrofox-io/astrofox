@@ -130,7 +130,7 @@ export default class ReactorControl extends PureComponent {
           [styles.hidden]: !visible,
         })}
       >
-        {reactor && <Header path={reactor.options.displayName.split('/')} />}
+        {reactor && <Header path={reactor.properties.displayName.split('/')} />}
         <div className={styles.display}>
           <div className={styles.controls}>
             <Controls reactor={reactor} onChange={this.handleChange} />
@@ -144,7 +144,7 @@ export default class ReactorControl extends PureComponent {
             <BoxInput
               ref={e => (this.box = e)}
               name="selection"
-              value={reactor ? reactor.options.selection : {}}
+              value={reactor ? reactor.properties.selection : {}}
               minWidth={barWidth}
               minHeight={barWidth}
               maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
@@ -178,8 +178,8 @@ const Header = ({ path }) => (
 );
 
 const Controls = ({ reactor, onChange }) => {
-  const { maxDecibels, smoothingTimeConstant } = reactor ? reactor.parser.options : {};
-  const { outputMode } = reactor ? reactor.options : {};
+  const { maxDecibels, smoothingTimeConstant } = reactor ? reactor.parser.properties : {};
+  const { outputMode } = reactor ? reactor.properties : {};
 
   return (
     <Control className={styles.control}>

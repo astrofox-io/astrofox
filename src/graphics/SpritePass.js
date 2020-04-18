@@ -13,17 +13,17 @@ export default class SpritePass extends ComposerPass {
     height: CANVAS_HEIGHT,
   };
 
-  constructor(texture, options) {
-    super({ ...SpritePass.defaultOptions, ...options });
+  constructor(texture, properties) {
+    super({ ...SpritePass.defaultOptions, ...properties });
 
-    const { height, width } = this.options;
+    const { height, width } = this.properties;
 
     this.texture = texture;
 
     this.material = new SpriteMaterial({
-      color: this.options.color,
+      color: this.properties.color,
       map: texture,
-      transparent: this.options.transparent,
+      transparent: this.properties.transparent,
     });
 
     this.sprite = new Sprite(this.material);
@@ -37,7 +37,7 @@ export default class SpritePass extends ComposerPass {
 
   render(renderer, writeBuffer, readBuffer) {
     const { scene, camera, texture } = this;
-    const { needsUpdate } = this.options;
+    const { needsUpdate } = this.properties;
 
     texture.needsUpdate = needsUpdate;
 

@@ -60,7 +60,7 @@ export default class ReactorInput extends PureComponent {
     const { display, name, min, max } = this.props;
 
     const reactor = display.setReactor(name, {
-      lastValue: display.options[name],
+      lastValue: display.properties[name],
       min: min || 0,
       max: max || 1,
     });

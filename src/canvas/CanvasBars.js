@@ -15,12 +15,12 @@ export default class CanvasBars extends Component {
     shadowColor: '#CCCCCC',
   };
 
-  constructor(options, canvas) {
-    super({ ...CanvasBars.defaultOptions, ...options });
+  constructor(properties, canvas) {
+    super({ ...CanvasBars.defaultOptions, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.options.width;
-    this.canvas.height = this.options.height + this.options.shadowHeight;
+    this.canvas.width = this.properties.width;
+    this.canvas.height = this.properties.height + this.properties.shadowHeight;
 
     this.context = this.canvas.getContext('2d');
   }
@@ -28,8 +28,8 @@ export default class CanvasBars extends Component {
   render(data) {
     const bars = data.length;
     const { canvas, context } = this;
-    const { height, width, color, shadowHeight, shadowColor, minHeight } = this.options;
-    let { barWidth, barSpacing } = this.options;
+    const { height, width, color, shadowHeight, shadowColor, minHeight } = this.properties;
+    let { barWidth, barSpacing } = this.properties;
 
     // Reset canvas
     if (canvas.width !== width || canvas.height !== height + shadowHeight) {

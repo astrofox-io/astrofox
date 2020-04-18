@@ -3,9 +3,8 @@ import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
-import { logger } from 'view/global';
+import { TEMP_PATH, FFMPEG_PATH, logger } from 'view/global';
 import { removeFile } from 'utils/io';
-import { TEMP_PATH, FFMPEG_PATH } from 'core/Environment';
 import { uniqueId } from 'utils/crypto';
 
 export default class VideoRenderer extends EventEmitter {
@@ -17,18 +16,18 @@ export default class VideoRenderer extends EventEmitter {
     resolution: 480,
   };
 
-  constructor(videoFile, audioFile, options) {
+  constructor(videoFile, audioFile, properties) {
     super();
 
     this.video = videoFile;
     this.audio = audioFile;
-    this.options = { ...VideoRenderer.defaultOptions, ...options };
+    this.properties = { ...VideoRenderer.defaultOptions, ...properties };
 
     this.started = false;
     this.completed = false;
 
-    this.frames = options.fps * (options.timeEnd - options.timeStart);
-    this.currentFrame = options.fps * options.timeStart;
+    this.frames = properties.fps * (properties.timeEnd - properties.timeStart);
+    this.currentFrame = properties.fps * properties.timeStart;
     this.lastFrame = this.currentFrame + this.frames;
 
     this.renderProcess = new RenderProcess(FFMPEG_PATH);
@@ -58,7 +57,7 @@ export default class VideoRenderer extends EventEmitter {
 
   start() {
     const id = uniqueId();
-    const { fps, timeStart, timeEnd, format } = this.options;
+    const { fps, timeStart, timeEnd, format } = this.properties;
     let outputVideo = path.join(TEMP_PATH, `${id}.video`);
     let outputAudio = path.join(TEMP_PATH, `${id}.audio`);
 

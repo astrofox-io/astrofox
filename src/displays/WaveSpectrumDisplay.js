@@ -30,26 +30,26 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     normalize: true,
   };
 
-  constructor(options) {
-    super(WaveSpectrumDisplay, options);
+  constructor(properties) {
+    super(WaveSpectrumDisplay, properties);
 
-    this.wave = new CanvasWave(this.options, this.canvas);
-    this.parser = new SpectrumParser(this.options);
+    this.wave = new CanvasWave(this.properties, this.canvas);
+    this.parser = new SpectrumParser(this.properties);
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      this.wave.update(options);
-      this.parser.update(options);
+      this.wave.update(properties);
+      this.parser.update(properties);
     }
 
     return changed;
   }
 
   getPoints(fft) {
-    const { width } = this.options;
+    const { width } = this.properties;
     const points = [];
 
     for (let i = 0, j = 0, k = 0; i < fft.length; i += 1) {

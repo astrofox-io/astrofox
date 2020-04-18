@@ -7,8 +7,8 @@ export default class MultiPass extends ComposerPass {
     clearDepth: true,
   };
 
-  constructor(passes, options) {
-    super({ ...MultiPass.defaultOptions, ...options });
+  constructor(passes, properties) {
+    super({ ...MultiPass.defaultOptions, ...properties });
 
     this.passes = passes;
   }
@@ -34,10 +34,10 @@ export default class MultiPass extends ComposerPass {
     this.readBuffer = readBuffer;
 
     this.passes.forEach(pass => {
-      if (pass.options.enabled) {
+      if (pass.properties.enabled) {
         pass.render(renderer, this.writeBuffer, this.readBuffer);
 
-        if (pass.options.needsSwap) {
+        if (pass.properties.needsSwap) {
           const tmp = this.readBuffer;
           this.readBuffer = this.writeBuffer;
           this.writeBuffer = tmp;

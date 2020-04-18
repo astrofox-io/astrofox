@@ -1,6 +1,7 @@
 import { hot } from 'react-hot-loader';
-import React, { Component } from 'react';
-import { events } from 'view/global';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { env, events, renderer } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import About from 'components/window/About';
 import AppUpdates from 'components/window/AppUpdates';
@@ -20,62 +21,86 @@ import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
 import menuConfig from 'config/menu.json';
 import fontOptions from 'config/fonts.json';
+import { showOpenDialog, showSaveDialog } from 'utils/window';
+import { initApp } from 'actions/app';
+import { loadAudioFile } from 'actions/audio';
+import { loadProject, saveProject, newProject } from 'actions/project';
 import styles from './App.less';
 
-class App extends Component {
-  state = {
-    statusBarText: '',
-    modals: [],
-    reactor: null,
-    showControlDock: true,
-    showPlayer: true,
-    showReactor: false,
-  };
+function App() {
+  const dispatch = useDispatch();
+  const { statusBarText, modals, reactor, showControlDock, showPlayer, showReactor } = useSelector(
+    state => state.app,
+  );
+  const project = useSelector(state => state.project);
+  const errors = useSelector(state => state.errors);
 
-  componentDidMount() {
-    const { app } = this.props;
-
-    app.init();
-
-    events.on('error', this.showErrorDialog);
-
-    events.on('pick-control', this.loadControlPicker);
-
-    events.on('audio-tags', this.loadAudioTags);
-
-    events.on('menu-action', this.handleMenuAction);
-
-    events.on('unsaved-changes', this.handleUnsavedChanges);
-
-    events.on('reactor-edit', this.showReactor);
-
-    events.on('has-app-update', this.showCheckForUpdates);
-
-    app.startRender();
+  function openProject() {
+    showOpenDialog(
+      files => {
+        if (files) {
+          dispatch(loadProject(files[0]));
+        }
+      },
+      {
+        filters: [{ name: 'Project files', extensions: ['afx'] }],
+      },
+    );
   }
 
-  handleMenuAction = action => {
-    const { app } = this.props;
+  function saveProjectFile(file) {
+    if (file) {
+      dispatch(saveProject(file));
+    } else {
+      showSaveDialog(
+        filename => {
+          if (filename) {
+            dispatch(saveProject(filename));
+          }
+        },
+        { defaultPath: 'project.afx' },
+      );
+    }
+  }
 
+  function openAudioFile() {
+    showOpenDialog(
+      files => {
+        if (files) {
+          dispatch(loadAudioFile(files[0]));
+        }
+      },
+      {
+        filters: [
+          {
+            name: 'audio files',
+            extensions: ['aac', 'mp3', 'm4a', 'ogg', 'wav'],
+          },
+        ],
+      },
+    );
+  }
+
+  function handleMenuAction(action) {
     switch (action) {
       case 'new-project':
-        app.newProject();
+        dispatch(newProject());
         break;
 
       case 'open-project':
-        app.openProject();
+        openProject();
         break;
 
       case 'save-project':
-        app.saveProject(app.projectFile);
+        saveProjectFile(project.file);
         break;
 
       case 'save-project-as':
-        app.saveProject(null);
+        saveProjectFile(null);
         break;
 
       case 'load-audio':
-        app.openAudioFile();
+        openAudioFile();
         break;
 
       case 'save-image':
@@ -129,9 +154,9 @@ class App extends Component {
         app.exit();
         break;
     }
-  };
+  }
 
-  handleUnsavedChanges = callback => {
+  const handleUnsavedChanges = callback => {
     const { app } = this.props;
 
     this.showDialog(
@@ -152,7 +177,7 @@ class App extends Component {
     );
   };
 
-  showModal = (content, props) => {
+  const showModal = (content, props) => {
     if (this.dialogShown) return;
 
     this.setState(({ modals }) => ({
@@ -169,14 +194,14 @@ class App extends Component {
     }));
   };
 
-  hideModal = callback => {
+  const hideModal = callback => {
     this.setState(({ modals }) => {
       modals.pop();
       return { modals };
     }, callback);
   };
 
-  showDialog = ({ icon, message }, props, callback) => {
+  const showDialog = ({ icon, message }, props, callback) => {
     if (this.dialogShown) return;
 
     this.showModal(<Dialog icon={icon} message={message} />, {
@@ -191,7 +216,7 @@ class App extends Component {
     this.dialogShown = true;
   };
 
-  showErrorDialog = message => {
+  const showErrorDialog = message => {
     this.showDialog({
       title: 'Error',
       icon: 'icon-warning',
@@ -199,7 +224,7 @@ class App extends Component {
     });
   };
 
-  showCheckForUpdates = () => {
+  const showCheckForUpdates = () => {
     if (this.updatesShown) return;
 
     this.updatesShown = true;
@@ -212,60 +237,61 @@ class App extends Component {
     this.showModal(<AppUpdates />, { title: 'Updates', buttons: false, onClose });
   };
 
-  showReactor = reactor => {
+  const _showReactor = reactor => {
     this.setState(() => ({
       reactor,
       showReactor: reactor,
     }));
   };
 
-  startVideoRender = ({ videoFile, audioFile, ...options }) => {
+  const startVideoRender = ({ videoFile, audioFile, ...properties }) => {
     const { app } = this.props;
 
     this.hideModal(() => {
-      app.saveVideo(videoFile, audioFile, options);
+      app.saveVideo(videoFile, audioFile, properties);
     });
   };
 
-  loadControlPicker = (type, callback) => {
+  const loadControlPicker = (type, callback) => {
     this.showModal(<ControlPicker type={type} onControlPicked={callback} />, {
       title: 'Add Control',
       buttons: ['Close'],
     });
   };
 
-  loadAudioTags = ({ artist, title }) => {
-    if (artist) {
-      // eslint-disable-next-line
-      const trim = str => str.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+  useEffect(() => {
+    /*
+    events.on('error', this.showErrorDialog);
+    events.on('pick-control', this.loadControlPicker);
+    events.on('audio-tags', this.loadAudioTags);
+    events.on('menu-action', this.handleMenuAction);
+    events.on('unsaved-changes', this.handleUnsavedChanges);
+    events.on('reactor-edit', this.showReactor);
+    events.on('has-app-update', this.showCheckForUpdates);
+    */
+    dispatch(initApp()).then(() => {
+      events.on('menu-action', handleMenuAction);
+      renderer.start();
+    });
+  }, []);
 
-      this.setState({ statusBarText: `${trim(artist)} - ${trim(title)}` });
-    }
-  };
-
-  render() {
-    const { app } = this.props;
-    const { showPlayer, showControlDock, showReactor, reactor, statusBarText, modals } = this.state;
-    const macOS = app.platform === 'darwin';
-
-    return (
-      <div className={styles.container} onDrop={ignoreEvents} onDragOver={ignoreEvents}>
-        <Preload />
-        <TitleBar macOS={macOS} />
-        {!macOS && <MenuBar items={menuConfig} onMenuAction={this.handleMenuAction} />}
-        <div className={styles.body}>
-          <div className={styles.viewport}>
-            <Stage />
-            <Player visible={showPlayer} />
-            <ReactorControl visible={showReactor} reactor={reactor} />
-          </div>
-          <ControlDock visible={showControlDock} />
+  return (
+    <div className={styles.container} onDrop={ignoreEvents} onDragOver={ignoreEvents}>
+      <Preload />
+      <TitleBar />
+      {env.IS_WINDOWS && <MenuBar items={menuConfig} onMenuAction={handleMenuAction} />}
+      <div className={styles.body}>
+        <div className={styles.viewport}>
+          <Stage />
+          <Player visible={showPlayer} />
+          <ReactorControl visible={showReactor} reactor={reactor} />
         </div>
-        <StatusBar text={statusBarText} />
-        <Overlay>{modals}</Overlay>
+        <ControlDock visible={showControlDock} />
       </div>
-    );
-  }
+      <StatusBar text={statusBarText} />
+      <Overlay>{modals}</Overlay>
+    </div>
+  );
 }
 
 const Preload = () => (

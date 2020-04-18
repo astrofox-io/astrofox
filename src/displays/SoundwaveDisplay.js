@@ -21,18 +21,18 @@ export default class SoundwaveDisplay extends CanvasDisplay {
     opacity: 1.0,
   };
 
-  constructor(options) {
-    super(SoundwaveDisplay, options);
+  constructor(properties) {
+    super(SoundwaveDisplay, properties);
 
-    this.wave = new CanvasWave(this.options, this.canvas);
+    this.wave = new CanvasWave(this.properties, this.canvas);
     this.parser = new WaveParser();
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      this.wave.update(options);
+      this.wave.update(properties);
     }
 
     return changed;
@@ -43,7 +43,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
       wave,
       parser,
       canvas: { width, height },
-      options: { smooth, wavelength },
+      properties: { smooth, wavelength },
     } = this;
 
     const points = parser.parseTimeData(data.td, wavelength > 0 ? width / wavelength : width);

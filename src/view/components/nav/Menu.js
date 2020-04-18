@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import MenuItem from 'components/nav/MenuItem';
+import MenuItem from './MenuItem';
 import styles from './Menu.less';
 
 const Menu = ({ items, visible, onMenuItemClick }) => (

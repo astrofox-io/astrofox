@@ -2,12 +2,12 @@ import Display from 'core/Display';
 import { deg2rad } from 'utils/math';
 
 export default class CanvasDisplay extends Display {
-  constructor(type, options) {
-    super(type, options);
+  constructor(type, properties) {
+    super(type, properties);
 
     this.canvas = document.createElement('canvas');
-    this.canvas.width = this.options.width;
-    this.canvas.height = this.options.height;
+    this.canvas.width = this.properties.width;
+    this.canvas.height = this.properties.height;
     this.context = this.canvas.getContext('2d');
   }
 
@@ -25,7 +25,7 @@ export default class CanvasDisplay extends Display {
       return;
     }
 
-    const { x, y, opacity, rotation } = this.options;
+    const { x, y, opacity, rotation } = this.properties;
 
     const halfSceneWidth = width / 2;
     const halfSceneHeight = height / 2;

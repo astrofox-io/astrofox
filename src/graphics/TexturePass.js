@@ -21,10 +21,10 @@ export default class TexturePass extends ComposerPass {
     blending: NormalBlending,
   };
 
-  constructor(texture, options) {
-    super({ ...TexturePass.defaultOptions, ...options });
+  constructor(texture, properties) {
+    super({ ...TexturePass.defaultOptions, ...properties });
 
-    const { color, depthTest, depthWrite, transparent, blending } = this.options;
+    const { color, depthTest, depthWrite, transparent, blending } = this.properties;
 
     this.texture = texture;
 
@@ -50,7 +50,7 @@ export default class TexturePass extends ComposerPass {
 
   render(renderer, writeBuffer, readBuffer) {
     const { scene, camera, texture } = this;
-    const { needsUpdate } = this.options;
+    const { needsUpdate } = this.properties;
 
     texture.needsUpdate = needsUpdate;
 

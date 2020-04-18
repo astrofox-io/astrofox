@@ -18,8 +18,8 @@ export default class ShaderPass extends ComposerPass {
     blending: NormalBlending,
   };
 
-  constructor(shader, options) {
-    super({ ...ShaderPass.defaultOptions, ...options });
+  constructor(shader, properties) {
+    super({ ...ShaderPass.defaultOptions, ...properties });
 
     this.uniforms = UniformsUtils.clone(shader.uniforms);
 
@@ -28,8 +28,8 @@ export default class ShaderPass extends ComposerPass {
       vertexShader: shader.vertexShader,
       fragmentShader: shader.fragmentShader,
       defines: shader.defines || {},
-      transparent: this.options.transparent,
-      blending: this.options.blending,
+      transparent: this.properties.transparent,
+      blending: this.properties.blending,
     });
 
     this.scene = new Scene();
@@ -64,7 +64,7 @@ export default class ShaderPass extends ComposerPass {
 
   render(renderer, writeBuffer, readBuffer) {
     const { scene, camera, material } = this;
-    const { textureId } = this.options;
+    const { textureId } = this.properties;
 
     if (readBuffer && material.uniforms[textureId]) {
       material.uniforms[textureId].value = readBuffer.texture;

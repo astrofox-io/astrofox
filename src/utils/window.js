@@ -31,22 +31,22 @@ export function closeWindow() {
   win.close();
 }
 
-export function showOpenDialog(callback, options) {
-  dialog.showOpenDialog(win, options, callback);
+export function showOpenDialog(callback, properties) {
+  dialog.showOpenDialog(win, properties, callback);
 }
 
-export function showSaveDialog(callback, options) {
-  dialog.showSaveDialog(win, options, callback);
+export function showSaveDialog(callback, properties) {
+  dialog.showSaveDialog(win, properties, callback);
 }
 
-export function showMessageBox(title, message, options) {
-  dialog.showMessageBox(win, { title, message, buttons: [], ...options });
+export function showMessageBox(title, message, properties) {
+  dialog.showMessageBox(win, { title, message, buttons: [], ...properties });
 }
 
 export function showErrorBox(title, content) {
   dialog.showErrorBox(title, content);
 }
 
-export function openDevTools(options) {
-  win.openDevTools({ mode: 'detach', ...options });
+export function openDevTools(properties) {
+  win.openDevTools({ mode: 'detach', ...properties });
 }

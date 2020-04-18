@@ -89,7 +89,7 @@ export default class Layer extends PureComponent {
         <span onClick={this.handleEnableClick}>
           <Icon
             className={classNames({
-              [styles.optionsIcon]: true,
+              [styles.propertiesIcon]: true,
               [styles.disabled]: !enabled,
             })}
             glyph={iconVisible}

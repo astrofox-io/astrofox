@@ -19,21 +19,22 @@ export default class TextDisplay extends CanvasDisplay {
     opacity: 1.0,
   };
 
-  constructor(options) {
-    super(TextDisplay, options);
+  constructor(properties) {
+    super(TextDisplay, properties);
 
-    this.text = new CanvasText(this.options, this.canvas);
+    this.text = new CanvasText(this.properties, this.canvas);
+    this.text.render();
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      if (this.text.update(options)) {
+      if (this.text.update(properties)) {
         let render = false;
 
-        Object.keys(CanvasText.defaultOptions).forEach(prop => {
-          if (options[prop] !== undefined) {
+        Object.keys(CanvasText.defaultproperties).forEach(prop => {
+          if (properties[prop] !== undefined) {
             render = true;
           }
         });

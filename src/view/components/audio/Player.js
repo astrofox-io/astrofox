@@ -1,11 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import AudioWaveform from 'components/audio/AudioWaveform';
-import Oscilloscope from 'components/audio/Oscilloscope';
+import useMergeState from 'components/hooks/useMergeState';
 import Icon from 'components/interface/Icon';
-import withAppContext from 'components/hocs/withAppContext';
 import { RangeInput } from 'components/inputs';
-import { events } from 'view/global';
+import { events, player } from 'view/global';
 import { formatTime } from 'utils/format';
 import iconSoundBars from 'assets/icons/sound-bars.svg';
 import iconSoundWaves from 'assets/icons/sound-waves.svg';
@@ -13,187 +11,173 @@ import iconRepeat from 'assets/icons/cycle.svg';
 import iconPlay from 'assets/icons/play.svg';
 import iconStop from 'assets/icons/stop.svg';
 import iconPause from 'assets/icons/pause.svg';
+import AudioWaveform from './AudioWaveform';
+import Oscilloscope from './Oscilloscope';
+
 import VolumeControl from './VolumeControl';
 import styles from './Player.less';
 
 const PROGRESS_MAX = 1000;
+const defaultState = {
+  playing: false,
+  looping: false,
+  progressPosition: 0,
+  progressBuffering: false,
+  seekPosition: 0,
+  duration: 0,
+  showWaveform: true,
+  showOsc: false,
+};
 
-class Player extends PureComponent {
-  static defaultProps = {
-    visible: true,
-  };
+export default function Player({ visible = true }) {
+  const [state, setState] = useMergeState(defaultState);
+  const {
+    playing,
+    duration,
+    progressPosition,
+    seekPosition,
+    looping,
+    showWaveform,
+    showOsc,
+    progressBuffering,
+  } = state;
+  const waveform = useRef();
+  const oscilloscope = useRef();
 
-  state = {
-    playing: false,
-    looping: false,
-    progressPosition: 0,
-    progressBuffering: false,
-    seekPosition: 0,
-    duration: 0,
-    showWaveform: true,
-    showOsc: false,
-  };
-
-  componentDidMount() {
-    const { player } = this.props.app;
-    const { progressBuffering } = this.state;
-
-    player.on('load', () => {
-      this.setState({ duration: player.getDuration() });
-
-      this.waveform.loadAudio(player.getAudio());
-    });
-
-    player.on('tick', () => {
-      if (player.isPlaying() && !progressBuffering) {
-        const pos = player.getPosition();
-
-        this.setState({ progressPosition: pos });
-      }
-    });
-
-    player.on('play', () => {
-      this.setState({ playing: player.isPlaying() });
-    });
-
-    player.on('pause', () => {
-      this.setState({ playing: player.isPlaying() });
-    });
-
-    player.on('stop', () => {
-      this.setState({
-        playing: player.isPlaying(),
-        progressPosition: 0,
-        seekPosition: 0,
-      });
-    });
-
-    player.on('seek', () => {
-      const pos = player.getPosition();
-
-      this.setState({ progressPosition: pos, seekPosition: pos });
-    });
-
-    events.on('render', data => {
-      if (this.spectrum) {
-        this.spectrum.draw(data);
-      }
-
-      if (this.oscilloscope) {
-        this.oscilloscope.draw(data);
-      }
-    });
-
-    this.player = player;
+  function handlePlayButtonClick() {
+    player.play();
   }
 
-  handlePlayButtonClick = () => {
-    this.player.play();
-  };
+  function handleStopButtonClick() {
+    player.stop();
+  }
 
-  handleStopButtonClick = () => {
-    this.player.stop();
-  };
-
-  handleLoopButtonClick = () => {
-    this.setState(prevState => {
-      this.player.setLoop(!prevState.looping);
-
-      return { looping: !prevState.looping };
+  function handleLoopButtonClick() {
+    setState(state => {
+      player.setLoop(!state.looping);
+      return { looping: player.isLooping() };
     });
-  };
+  }
 
-  handleWaveformClick = progressPosition => {
-    this.player.seek(progressPosition);
-  };
+  function handleWaveformClick(pos) {
+    player.seek(pos);
+  }
 
-  handleWaveformSeek = seekPosition => {
-    this.setState({ seekPosition });
-  };
+  function handleWaveformSeek(pos) {
+    setState({ seekPosition: pos });
+  }
 
-  handleWaveformButtonClick = () => {
-    this.setState(prevState => ({ showWaveform: !prevState.showWaveform }));
-  };
+  function handleWaveformButtonClick() {
+    setState(state => ({ showWaveform: !state.showWaveform }));
+  }
 
-  handleOscButtonClick = () => {
-    this.setState(prevState => ({ showOsc: !prevState.showOsc }));
-  };
+  function handleOscButtonClick() {
+    setState(state => ({ showOsc: !state.showOsc }));
+  }
 
-  handleVolumeChange = value => {
-    this.player.setVolume(value);
-  };
+  function handleVolumeChange(value) {
+    player.setVolume(value);
+  }
 
-  handleProgressChange = progressPosition => {
-    this.player.seek(progressPosition);
+  function handleProgressChange(pos) {
+    player.seek(pos);
+    setState({ progressPosition: player.getPosition(), seekPosition: 0, progressBuffering: false });
+  }
 
-    this.setState({ progressPosition, seekPosition: 0, progressBuffering: false });
-  };
+  function handleProgressUpdate(pos) {
+    setState({ seekPosition: pos, progressBuffering: true });
+  }
 
-  handleProgressUpdate = seekPosition => {
-    this.setState({ seekPosition, progressBuffering: true });
-  };
+  function handleAudioLoad() {
+    setState({ duration: player.getDuration() });
 
-  render() {
-    const { visible } = this.props;
-    const {
-      playing,
-      duration,
-      progressPosition,
-      seekPosition,
-      looping,
-      showWaveform,
-      showOsc,
-    } = this.state;
+    waveform.current.loadAudio(player.getAudio());
+  }
 
-    return (
-      <div className={classNames({ [styles.hidden]: !visible })}>
-        <AudioWaveform
-          ref={e => (this.waveform = e)}
-          progressPosition={progressPosition}
-          seekPosition={seekPosition}
-          visible={showWaveform && duration}
-          onClick={this.handleWaveformClick}
-          onSeek={this.handleWaveformSeek}
-        />
-        <div className={styles.player}>
-          <div className={styles.buttons}>
-            <PlayButton playing={playing} onClick={this.handlePlayButtonClick} />
-            <StopButton onClick={this.handleStopButtonClick} />
-          </div>
-          <VolumeControl onChange={this.handleVolumeChange} />
-          <ProgressControl
-            value={progressPosition * PROGRESS_MAX}
-            onChange={this.handleProgressChange}
-            onUpdate={this.handleProgressUpdate}
-            disabled={!duration}
-          />
-          <TimeInfo
-            currentTime={duration * (seekPosition || progressPosition)}
-            totalTime={duration}
-          />
-          <ToggleButton
-            icon={iconRepeat}
-            title="Repeat"
-            active={looping}
-            onClick={this.handleLoopButtonClick}
-          />
-          <ToggleButton
-            icon={iconSoundBars}
-            title="Waveform"
-            active={showWaveform}
-            onClick={this.handleWaveformButtonClick}
-          />
-          <ToggleButton
-            icon={iconSoundWaves}
-            title="Oscilloscope"
-            active={showOsc}
-            onClick={this.handleOscButtonClick}
-          />
+  function handlePlayerPlay() {
+    setState({ playing: player.isPlaying() });
+  }
+
+  function handlePlayerStop() {
+    setState({ playing: player.isPlaying(), progressPosition: 0, seekPosition: 0 });
+  }
+
+  function handlePlayerUpdate() {
+    if (player.isPlaying() && !progressBuffering) {
+      setState({ progressPosition: player.getPosition() });
+    }
+  }
+
+  function handlePlayerSeek() {
+    const pos = player.getPosition();
+
+    setState({ progressPosition: pos, seekPosition: pos });
+  }
+
+  function draw(data) {
+    if (oscilloscope.current) {
+      oscilloscope.current.draw(data);
+    }
+  }
+
+  useEffect(() => {
+    player.on('play', handlePlayerPlay);
+    player.on('pause', handlePlayerPlay);
+    player.on('stop', handlePlayerStop);
+    player.on('load', handleAudioLoad);
+    player.on('tick', handlePlayerUpdate);
+    player.on('seek', handlePlayerSeek);
+    events.on('render', draw);
+  }, []);
+
+  return (
+    <div className={classNames({ [styles.hidden]: !visible })}>
+      <AudioWaveform
+        forwardedRef={waveform}
+        progressPosition={progressPosition}
+        seekPosition={seekPosition}
+        visible={showWaveform && duration}
+        onClick={handleWaveformClick}
+        onSeek={handleWaveformSeek}
+      />
+      <div className={styles.player}>
+        <div className={styles.buttons}>
+          <PlayButton playing={playing} onClick={handlePlayButtonClick} />
+          <StopButton onClick={handleStopButtonClick} />
         </div>
-        {showOsc && <Oscilloscope ref={e => (this.oscilloscope = e)} />}
+        <VolumeControl onChange={handleVolumeChange} />
+        <ProgressControl
+          value={progressPosition * PROGRESS_MAX}
+          onChange={handleProgressChange}
+          onUpdate={handleProgressUpdate}
+          disabled={!duration}
+        />
+        <TimeInfo
+          currentTime={duration * (seekPosition || progressPosition)}
+          totalTime={duration}
+        />
+        <ToggleButton
+          icon={iconRepeat}
+          title="Repeat"
+          active={looping}
+          onClick={handleLoopButtonClick}
+        />
+        <ToggleButton
+          icon={iconSoundBars}
+          title="Waveform"
+          active={showWaveform}
+          onClick={handleWaveformButtonClick}
+        />
+        <ToggleButton
+          icon={iconSoundWaves}
+          title="Oscilloscope"
+          active={showOsc}
+          onClick={handleOscButtonClick}
+        />
       </div>
-    );
-  }
+      {showOsc && <Oscilloscope forwardedRef={oscilloscope} />}
+    </div>
+  );
 }
 
 const ProgressControl = ({ value, disabled, onChange, onUpdate }) => (
@@ -257,5 +241,3 @@ const TimeInfo = ({ currentTime, totalTime }) => (
     <span className={classNames(styles.timePart, styles.totalTime)}>{formatTime(totalTime)}</span>
   </div>
 );
-
-export default withAppContext(Player);

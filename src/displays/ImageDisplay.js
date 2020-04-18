@@ -18,21 +18,21 @@ export default class ImageDisplay extends CanvasDisplay {
     opacity: 1.0,
   };
 
-  constructor(options) {
-    super(ImageDisplay, options);
+  constructor(properties) {
+    super(ImageDisplay, properties);
 
-    this.image = new CanvasImage(this.options, this.canvas);
+    this.image = new CanvasImage(this.properties, this.canvas);
   }
 
-  update(options) {
-    const changed = super.update(options);
+  update(properties) {
+    const changed = super.update(properties);
 
     if (changed) {
-      if (this.image.update(options)) {
+      if (this.image.update(properties)) {
         let render = false;
 
-        Object.keys(CanvasImage.defaultOptions).forEach(prop => {
-          if (options[prop] !== undefined) {
+        Object.keys(CanvasImage.defaultproperties).forEach(prop => {
+          if (properties[prop] !== undefined) {
             render = true;
           }
         });

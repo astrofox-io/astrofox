@@ -1,0 +1,38 @@
+@import (reference) '~view/styles/variables';
+
+.item {
+  position: relative;
+  display: block;
+  font-size: @font-small;
+  padding: 5px 5px 5px 20px;
+  min-width: 140px;
+
+  &:hover {
+    color: @text-color1;
+    background-color: @color1;
+    cursor: default;
+  }
+}
+
+.checked {
+  &:before {
+    content: '\2713';
+    color: @color1;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+
+  &:hover:before {
+    color: @text-color1;
+  }
+}
+
+.disabled {
+  color: @text-color3;
+
+  &:hover {
+    color: @text-color3;
+    background-color: transparent;
+  }
+}

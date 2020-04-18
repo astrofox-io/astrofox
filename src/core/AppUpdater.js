@@ -3,7 +3,7 @@ import EventEmitter from 'core/EventEmitter';
 import { logger } from 'view/global';
 
 export default class AppUpdater extends EventEmitter {
-  constructor(options = {}) {
+  constructor(properties = {}) {
     super();
 
     this.checked = false;
@@ -14,7 +14,7 @@ export default class AppUpdater extends EventEmitter {
     this.installing = false;
     this.info = {};
     this.error = null;
-    this.options = options;
+    this.properties = properties;
 
     // New version available
     ipcRenderer.on('update-available', (event, info) => {
@@ -28,7 +28,7 @@ export default class AppUpdater extends EventEmitter {
       this.emit('status', 'update-available');
 
       // Automatically download update
-      if (this.options.autoUpdate) {
+      if (this.properties.autoUpdate) {
         this.downloadUpdate();
       }
     });
