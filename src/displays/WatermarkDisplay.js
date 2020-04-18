@@ -10,7 +10,7 @@ export default class WatermarkDisplay extends CanvasDisplay {
 
   static className = 'WatermarkDisplay';
 
-  static defaultOptions = {
+  static defaultProperties = {
     src: WATERMARK,
     x: 0,
     y: 0,

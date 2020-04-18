@@ -1,13 +1,13 @@
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class MaskPass extends ComposerPass {
-  static defaultOptions = {
+  static defaultProperties = {
     inverse: false,
     clear: true,
   };
 
   constructor(scene, camera, properties) {
-    super({ ...MaskPass.defaultOptions, ...properties });
+    super({ ...MaskPass.defaultProperties, ...properties });
 
     this.scene = scene;
     this.camera = camera;

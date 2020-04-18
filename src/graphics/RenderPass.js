@@ -1,7 +1,7 @@
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class RenderPass extends ComposerPass {
-  static defaultOptions = {
+  static defaultProperties = {
     forceClear: true,
     overrideMaterial: null,
     setClearColor: null,
@@ -9,7 +9,7 @@ export default class RenderPass extends ComposerPass {
   };
 
   constructor(scene, camera, properties) {
-    super({ ...RenderPass.defaultOptions, ...properties });
+    super({ ...RenderPass.defaultProperties, ...properties });
 
     this.scene = scene;
     this.camera = camera;

@@ -3,7 +3,7 @@ import Component from 'core/Component';
 
 export default class CanvasText extends Component {
   constructor(properties, canvas) {
-    super({ ...CanvasText.defaultOptions, ...properties });
+    super({ ...CanvasText.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;
@@ -12,7 +12,7 @@ export default class CanvasText extends Component {
     this.context = this.canvas.getContext('2d');
   }
 
-  static defaultOptions = {
+  static defaultProperties = {
     text: '',
     size: 40,
     font: 'Roboto',

@@ -9,7 +9,7 @@ export default class GlowEffect extends Effect {
 
   static className = 'GlowEffect';
 
-  static defaultOptions = {
+  static defaultProperties = {
     amount: 0.1,
     intensity: 1,
   };

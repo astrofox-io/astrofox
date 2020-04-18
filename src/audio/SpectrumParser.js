@@ -3,7 +3,7 @@ import { val2pct, db2mag } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class SpectrumParser extends Component {
-  static defaultOptions = {
+  static defaultProperties = {
     fftSize: FFT_SIZE,
     sampleRate: SAMPLE_RATE,
     smoothingTimeConstant: 0.5,
@@ -16,7 +16,7 @@ export default class SpectrumParser extends Component {
   };
 
   constructor(properties) {
-    super({ ...SpectrumParser.defaultOptions, ...properties });
+    super({ ...SpectrumParser.defaultProperties, ...properties });
 
     this.setBinRange();
   }

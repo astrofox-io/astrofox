@@ -18,7 +18,7 @@ export default class Display extends Component {
     super({
       displayName: `${type.label} ${displayCount[type.className]}`,
       enabled: true,
-      ...type.defaultOptions,
+      ...type.defaultProperties,
       ...properties,
     });
 

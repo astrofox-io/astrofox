@@ -14,7 +14,7 @@ export default class Scene extends Display {
 
   static className = 'Scene';
 
-  static defaultOptions = {
+  static defaultProperties = {
     blendMode: 'Normal',
     opacity: 1.0,
     lightIntensity: 1.0,

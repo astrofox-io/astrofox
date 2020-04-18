@@ -10,7 +10,7 @@ import {
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class ShaderPass extends ComposerPass {
-  static defaultOptions = {
+  static defaultProperties = {
     textureId: 'tDiffuse',
     transparent: false,
     needsSwap: true,
@@ -19,7 +19,7 @@ export default class ShaderPass extends ComposerPass {
   };
 
   constructor(shader, properties) {
-    super({ ...ShaderPass.defaultOptions, ...properties });
+    super({ ...ShaderPass.defaultProperties, ...properties });
 
     this.uniforms = UniformsUtils.clone(shader.uniforms);
 

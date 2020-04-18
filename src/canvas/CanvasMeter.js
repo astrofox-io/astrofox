@@ -4,7 +4,7 @@ import { setColor } from 'utils/canvas';
 
 export default class CanvasBars extends Component {
   constructor(properties, canvas) {
-    super({ ...CanvasBars.defaultOptions, ...properties });
+    super({ ...CanvasBars.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;
@@ -46,7 +46,7 @@ export default class CanvasBars extends Component {
   }
 }
 
-CanvasBars.defaultOptions = {
+CanvasBars.defaultProperties = {
   width: 100,
   height: 50,
   color: '#FFFFFF',

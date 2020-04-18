@@ -4,14 +4,14 @@ import Component from 'core/Component';
 const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Component {
-  static defaultOptions = {
+  static defaultProperties = {
     src: '',
     width: 1,
     height: 1,
   };
 
   constructor(properties, canvas) {
-    super({ ...CanvasImage.defaultOptions, ...properties });
+    super({ ...CanvasImage.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;

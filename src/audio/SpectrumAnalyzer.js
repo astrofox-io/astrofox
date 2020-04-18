@@ -1,7 +1,7 @@
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class SpectrumAnalyzer {
-  static defaultOptions = {
+  static defaultProperties = {
     fftSize: FFT_SIZE,
     minDecibels: -100,
     maxDecibels: 0,
@@ -12,7 +12,7 @@ export default class SpectrumAnalyzer {
     this.audioContext = context;
     this.analyzer = Object.assign(
       context.createAnalyser(),
-      SpectrumAnalyzer.defaultOptions,
+      SpectrumAnalyzer.defaultProperties,
       properties,
     );
     this.fft = new Uint8Array(this.analyzer.frequencyBinCount);

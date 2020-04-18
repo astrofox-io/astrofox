@@ -3,7 +3,7 @@ import MultiPass from 'graphics/MultiPass';
 import GaussianBlurShader from 'shaders/GaussianBlurShader';
 
 export default class GaussianBlurPass extends MultiPass {
-  static defaultOptions = {
+  static defaultProperties = {
     amount: 1.0,
     passes: 8,
     radius: 3,
@@ -11,7 +11,7 @@ export default class GaussianBlurPass extends MultiPass {
 
   constructor(properties) {
     const passes = [];
-    const opts = { ...GaussianBlurPass.defaultOptions, ...properties };
+    const opts = { ...GaussianBlurPass.defaultProperties, ...properties };
 
     for (let i = 0; i < opts.passes; i++) {
       passes.push(new ShaderPass(GaussianBlurShader));

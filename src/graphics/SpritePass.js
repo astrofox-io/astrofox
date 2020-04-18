@@ -3,7 +3,7 @@ import ComposerPass from 'graphics/ComposerPass';
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'view/constants';
 
 export default class SpritePass extends ComposerPass {
-  static defaultOptions = {
+  static defaultProperties = {
     opacity: 1.0,
     transparent: true,
     needsSwap: false,
@@ -14,7 +14,7 @@ export default class SpritePass extends ComposerPass {
   };
 
   constructor(texture, properties) {
-    super({ ...SpritePass.defaultOptions, ...properties });
+    super({ ...SpritePass.defaultProperties, ...properties });
 
     const { height, width } = this.properties;
 

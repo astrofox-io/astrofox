@@ -9,7 +9,7 @@ import {
 import ComposerPass from 'graphics/ComposerPass';
 
 export default class TexturePass extends ComposerPass {
-  static defaultOptions = {
+  static defaultProperties = {
     color: 0xffffff,
     opacity: 1.0,
     transparent: true,
@@ -22,7 +22,7 @@ export default class TexturePass extends ComposerPass {
   };
 
   constructor(texture, properties) {
-    super({ ...TexturePass.defaultOptions, ...properties });
+    super({ ...TexturePass.defaultProperties, ...properties });
 
     const { color, depthTest, depthWrite, transparent, blending } = this.properties;
 

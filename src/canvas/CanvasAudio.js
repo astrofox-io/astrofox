@@ -3,7 +3,7 @@ import Component from 'core/Component';
 import CanvasBars from 'canvas/CanvasBars';
 
 export default class CanvasAudio extends Component {
-  static defaultOptions = {
+  static defaultProperties = {
     bars: 100,
   };
 

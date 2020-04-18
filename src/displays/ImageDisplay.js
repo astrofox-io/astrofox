@@ -7,7 +7,7 @@ export default class ImageDisplay extends CanvasDisplay {
 
   static className = 'ImageDisplay';
 
-  static defaultOptions = {
+  static defaultProperties = {
     src: blankImage,
     x: 0,
     y: 0,

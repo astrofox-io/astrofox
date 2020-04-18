@@ -8,7 +8,7 @@ export default class DotScreenEffect extends Effect {
 
   static className = 'DotScreenEffect';
 
-  static defaultOptions = {
+  static defaultProperties = {
     angle: 90,
     scale: 1.0,
   };

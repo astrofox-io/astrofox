@@ -7,7 +7,7 @@ export default class HexagonEffect extends Effect {
 
   static className = 'HexagonEffect';
 
-  static defaultOptions = {
+  static defaultProperties = {
     scale: 10.0,
   };
 

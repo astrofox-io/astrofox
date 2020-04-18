@@ -7,7 +7,7 @@ const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
 
 export default class AudioReactor extends Component {
-  static defaultOptions = {
+  static defaultProperties = {
     displayName: 'Reactor',
     outputMode: 'Add',
     lastValue: 0,
@@ -28,7 +28,7 @@ export default class AudioReactor extends Component {
   };
 
   constructor(properties) {
-    super({ ...AudioReactor.defaultOptions, ...properties });
+    super({ ...AudioReactor.defaultProperties, ...properties });
 
     this.parser = new SpectrumParser({
       maxDecibels: -20,

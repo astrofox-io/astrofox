@@ -8,7 +8,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
 
   static className = 'BarSpectrumDisplay';
 
-  static defaultOptions = {
+  static defaultProperties = {
     width: 770,
     height: 240,
     x: 0,

@@ -6,7 +6,7 @@ export default class TextDisplay extends CanvasDisplay {
 
   static className = 'TextDisplay';
 
-  static defaultOptions = {
+  static defaultProperties = {
     text: '',
     size: 40,
     font: 'Roboto',

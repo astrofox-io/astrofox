@@ -13,7 +13,7 @@ export default class Stage extends Display {
 
   static className = 'Stage';
 
-  static defaultOptions = {
+  static defaultProperties = {
     width: CANVAS_WIDTH,
     height: CANVAS_HEIGHT,
     zoom: 1.0,

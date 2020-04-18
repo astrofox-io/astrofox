@@ -8,7 +8,7 @@ import { removeFile } from 'utils/io';
 import { uniqueId } from 'utils/crypto';
 
 export default class VideoRenderer extends EventEmitter {
-  static defaultOptions = {
+  static defaultProperties = {
     fps: 30,
     timeStart: 0,
     timeEnd: 0,
@@ -21,7 +21,7 @@ export default class VideoRenderer extends EventEmitter {
 
     this.video = videoFile;
     this.audio = audioFile;
-    this.properties = { ...VideoRenderer.defaultOptions, ...properties };
+    this.properties = { ...VideoRenderer.defaultProperties, ...properties };
 
     this.started = false;
     this.completed = false;
