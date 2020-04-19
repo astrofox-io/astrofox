@@ -103,7 +103,11 @@ export default class GeometryDisplay extends WebglDisplay {
         this.material.color = new Color().set(properties.color);
       }
       // Change position
-      else if (properties.x !== undefined || properties.y !== undefined || properties.z !== undefined) {
+      else if (
+        properties.x !== undefined ||
+        properties.y !== undefined ||
+        properties.z !== undefined
+      ) {
         this.mesh.position.set(this.properties.x, this.properties.y, this.properties.z);
       }
       // Change visibility

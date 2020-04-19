@@ -32,7 +32,7 @@ export default class Renderer {
     this.render = this.render.bind(this);
 
     // Events
-    player.on('playback-change', this.resetAnalyzer(), this);
+    player.on('playback-change', this.resetAnalyzer, this);
   }
 
   resetAnalyzer() {

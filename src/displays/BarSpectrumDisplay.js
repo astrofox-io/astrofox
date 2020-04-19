@@ -38,7 +38,8 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
     this.bars = new CanvasBars(this.properties, this.canvas);
     this.parser = new SpectrumParser({
       ...this.properties,
-      ...{ fftSize: FFT_SIZE, sampleRate: SAMPLE_RATE },
+      fftSize: FFT_SIZE,
+      sampleRate: SAMPLE_RATE,
     });
   }
 

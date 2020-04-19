@@ -79,12 +79,14 @@ export default class Display extends Component {
   }
 
   toJSON() {
+    const { id, name, type, properties, reactors } = this;
+
     return {
-      id: this.id,
-      name: this.name,
-      type: this.type,
-      properties: this.properties,
-      reactors: this.reactors,
+      id,
+      name,
+      type,
+      properties: { ...properties },
+      reactors,
     };
   }
 }

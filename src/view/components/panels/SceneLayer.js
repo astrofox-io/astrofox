@@ -21,7 +21,7 @@ export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUp
   } = scene;
 
   const mapLayers = elements =>
-    [].concat(elements.map(element => ({ ...element, sceneId: scene.id }))).reverse();
+    [...elements].map(element => ({ ...element, sceneId: scene.id })).reverse();
 
   const displays = useMemo(() => mapLayers(scene.displays), [scene.displays]);
   const effects = useMemo(() => mapLayers(scene.effects), [scene.effects]);

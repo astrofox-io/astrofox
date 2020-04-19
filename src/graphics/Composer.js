@@ -40,6 +40,12 @@ export default class Composer {
     });
   }
 
+  async getImage(format) {
+    const img = this.renderer.domElement.toDataURL(format || 'image/png');
+    const data = img.replace(/^data:image\/\w+;base64,/, '');
+    return Buffer.from(data, 'base64');
+  }
+
   getSize() {
     return {
       width: this.readTarget.width,

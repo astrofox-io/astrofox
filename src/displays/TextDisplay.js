@@ -33,7 +33,7 @@ export default class TextDisplay extends CanvasDisplay {
       if (this.text.update(properties)) {
         let render = false;
 
-        Object.keys(CanvasText.defaultproperties).forEach(prop => {
+        Object.keys(CanvasText.defaultProperties).forEach(prop => {
           if (properties[prop] !== undefined) {
             render = true;
           }

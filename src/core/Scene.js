@@ -32,6 +32,8 @@ export default class Scene extends Display {
     this.displays = [];
     this.effects = [];
     this.reactors = {};
+
+    Object.defineProperty(this, 'type', { value: 'scene' });
   }
 
   update(properties) {
@@ -92,10 +94,6 @@ export default class Scene extends Display {
     this.composer = null;
   }
 
-  getElement(id) {
-    return this.displays.find(n => n.id === id) || this.effects.find(n => n.id === id);
-  }
-
   getSize() {
     return this.composer.getSize();
   }
@@ -121,6 +119,14 @@ export default class Scene extends Display {
 
   getType(obj) {
     return obj instanceof Effect ? 'effects' : 'displays';
+  }
+
+  getElementById(id) {
+    return this.displays.find(n => n.id === id) || this.effects.find(n => n.id === id);
+  }
+
+  hasElement(obj) {
+    return !!this.getElementById(obj.id);
   }
 
   addElement(obj, index) {
@@ -152,6 +158,10 @@ export default class Scene extends Display {
   }
 
   removeElement(obj) {
+    if (!this.hasElement(obj)) {
+      return false;
+    }
+
     const type = this.getType(obj);
 
     remove(this[type], obj);
@@ -165,9 +175,15 @@ export default class Scene extends Display {
     this.updatePasses();
 
     this.changed = true;
+
+    return true;
   }
 
   shiftElement(obj, i) {
+    if (!this.hasElement(obj)) {
+      return false;
+    }
+
     const type = this.getType(obj);
     const index = this[type].indexOf(obj);
 
@@ -187,12 +203,12 @@ export default class Scene extends Display {
       composer,
       displays,
       effects,
-      stage: { buffer2D, buffer3D },
+      stage: { canvasBuffer, glBuffer },
     } = this;
 
     composer.clearPasses();
-    composer.addPass(buffer2D.pass);
-    composer.addPass(buffer3D.pass);
+    composer.addPass(canvasBuffer.pass);
+    composer.addPass(glBuffer.pass);
 
     displays.forEach(display => {
       if (display.pass) {
@@ -222,9 +238,9 @@ export default class Scene extends Display {
 
   getContext(type) {
     const {
-      stage: { buffer2D, buffer3D },
+      stage: { canvasBuffer, glBuffer },
     } = this;
-    return type === 'webgl' ? buffer3D.context : buffer2D.context;
+    return type === 'webgl' ? glBuffer.context : canvasBuffer.context;
   }
 
   hasChanges() {
@@ -252,24 +268,26 @@ export default class Scene extends Display {
   }
 
   toJSON() {
+    const { id, name, properties, displays, effects, reactors } = this;
+
     return {
-      id: this.id,
-      name: this.name,
-      properties: this.properties,
-      displays: this.displays.map(display => display.toJSON()),
-      effects: this.effects.map(effect => effect.toJSON()),
-      reactors: this.reactors,
+      id,
+      name,
+      properties: { ...properties },
+      displays: displays.map(display => display.toJSON()),
+      effects: effects.map(effect => effect.toJSON()),
+      reactors,
     };
   }
 
   clear() {
     const {
       composer,
-      stage: { buffer2D, buffer3D },
+      stage: { canvasBuffer, glBuffer },
     } = this;
 
-    buffer2D.clear();
-    buffer3D.clear();
+    canvasBuffer.clear();
+    glBuffer.clear();
     composer.clearBuffer();
   }
 
@@ -280,7 +298,7 @@ export default class Scene extends Display {
       composer,
       displays,
       effects,
-      stage: { buffer3D },
+      stage: { glBuffer },
     } = this;
     let hasGeometry = false;
 
@@ -300,7 +318,7 @@ export default class Scene extends Display {
       });
 
       if (hasGeometry) {
-        buffer3D.renderer.render(scene, camera);
+        glBuffer.renderer.render(scene, camera);
       }
 
       effects.forEach(effect => {

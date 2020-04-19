@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { stage } from 'view/global';
 import SceneLayer from 'components/panels/SceneLayer';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
-import { updateSceneElement } from 'actions/scenes';
+import { addScene, removeElement, updateElement } from 'actions/scenes';
 import iconScene from 'assets/icons/picture.svg';
 import iconDisplay from 'assets/icons/cube.svg';
 import iconEffect from 'assets/icons/light-up.svg';
@@ -19,25 +19,35 @@ export default function LayersPanel() {
   const [activeLayer, setActiveLayer] = useState();
   const disabled = !stage.hasScenes();
 
+  const sortedScenes = useMemo(() => [...scenes].reverse(), [scenes]);
+
   function handleLayerClick(id) {
     setActiveLayer(id);
   }
 
   function handleLayerUpdate(id, prop, value) {
-    dispatch(updateSceneElement(id, prop, value));
+    dispatch(updateElement(id, prop, value));
   }
 
-  function handleAddScene() {}
+  function handleAddScene() {
+    dispatch(addScene());
+  }
+
   function handleAddDisplay() {}
   function handleAddEffect() {}
   function handleMoveUp() {}
   function handleMoveDown() {}
-  function handleRemove() {}
+
+  function handleRemove() {
+    if (activeLayer) {
+      dispatch(removeElement(activeLayer));
+    }
+  }
 
   return (
     <div className={styles.panel}>
       <div className={styles.layers}>
-        {scenes.map(scene => (
+        {sortedScenes.map(scene => (
           <SceneLayer
             key={scene.id}
             scene={scene}

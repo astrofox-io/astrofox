@@ -30,6 +30,6 @@ export function raiseError(message, error) {
       logger.error(`${message}\n`, error);
     }
 
-    return dispatch(setError({ message, error }));
+    return dispatch(setError({ message, error: error.toString() }));
   };
 }

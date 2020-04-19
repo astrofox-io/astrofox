@@ -24,7 +24,6 @@ export default class Stage extends Display {
     super(Stage, properties);
 
     this.scenes = [];
-    this.shouldRender = true;
     this.initialized = false;
   }
 
@@ -47,8 +46,8 @@ export default class Stage extends Display {
 
     this.composer = new Composer(this.renderer);
 
-    this.buffer2D = new CanvasBuffer(width, height);
-    this.buffer3D = new GLBuffer(width, height);
+    this.canvasBuffer = new CanvasBuffer(width, height);
+    this.glBuffer = new GLBuffer(width, height);
 
     this.backgroundColor = new Color(backgroundColor);
 
@@ -69,6 +68,56 @@ export default class Stage extends Display {
     }
 
     return changed;
+  }
+
+  getScene(id) {
+    return this.scenes.find(n => n.id === id);
+  }
+
+  getElementById(id) {
+    return this.scenes.reduce((element, scene) => {
+      if (!element) {
+        element = scene.getElementById(id);
+      }
+      return element;
+    }, this.getScene(id));
+  }
+
+  removeElement(obj) {
+    if (obj instanceof Scene) {
+      this.removeScene(obj);
+    } else {
+      this.scenes.forEach(scene => scene.removeElement(obj));
+    }
+  }
+
+  getImage(callback, format) {
+    const img = this.renderer.domElement.toDataURL(format || 'image/png');
+    const base64 = img.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64, 'base64');
+
+    if (callback) callback(buffer);
+  }
+
+  getSize() {
+    if (this.composer) {
+      return this.composer.getSize();
+    }
+
+    return { width: 0, height: 0 };
+  }
+
+  setSize(width, height) {
+    this.scenes.forEach(scene => {
+      scene.setSize(width, height);
+    });
+
+    this.composer.setSize(width, height);
+
+    this.canvasBuffer.setSize(width, height);
+    this.glBuffer.setSize(width, height);
+
+    events.emit('stage-resize');
   }
 
   addScene(scene = new Scene(), index) {
@@ -151,44 +200,6 @@ export default class Stage extends Display {
     });
   }
 
-  getElement(id) {
-    return this.scenes.reduce((element, scene) => {
-      if (!element) {
-        element = scene.getElement(id);
-      }
-      return element;
-    }, undefined);
-  }
-
-  getImage(callback, format) {
-    const img = this.renderer.domElement.toDataURL(format || 'image/png');
-    const base64 = img.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(base64, 'base64');
-
-    if (callback) callback(buffer);
-  }
-
-  getSize() {
-    if (this.composer) {
-      return this.composer.getSize();
-    }
-
-    return { width: 0, height: 0 };
-  }
-
-  setSize(width, height) {
-    this.scenes.forEach(scene => {
-      scene.setSize(width, height);
-    });
-
-    this.composer.setSize(width, height);
-
-    this.buffer2D.setSize(width, height);
-    this.buffer3D.setSize(width, height);
-
-    events.emit('stage-resize');
-  }
-
   setZoom(val) {
     const { zoom } = this.properties;
 
@@ -253,14 +264,31 @@ export default class Stage extends Display {
       if (config.stage) {
         this.update(config.stage.properties);
       } else {
-        this.update(Stage.defaultproperties);
+        this.update(Stage.defaultProperties);
       }
     } else {
       raiseError('Invalid project data.');
     }
   }
 
-  render(data, callback) {
+  toJSON() {
+    const { id, name, type, properties } = this;
+
+    return {
+      id,
+      name,
+      type,
+      properties: { ...properties },
+    };
+  }
+
+  renderScene(scene, data) {
+    const buffer = scene.render(data);
+
+    this.composer.blendBuffer(buffer, { ...scene.properties });
+  }
+
+  render(data) {
     const { composer, scenes } = this;
 
     composer.clear(this.backgroundColor, 1);
@@ -272,21 +300,5 @@ export default class Stage extends Display {
     });
 
     composer.renderToScreen();
-
-    if (callback) callback();
-  }
-
-  renderScene(scene, data) {
-    const buffer = scene.render(data);
-
-    this.composer.blendBuffer(buffer, { ...scene.properties });
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      properties: this.properties,
-    };
   }
 }

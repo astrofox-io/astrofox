@@ -35,7 +35,7 @@ export default class WatermarkDisplay extends CanvasDisplay {
       if (this.image.update(properties)) {
         let render = false;
 
-        Object.keys(CanvasImage.defaultproperties).forEach(prop => {
+        Object.keys(CanvasImage.defaultProperties).forEach(prop => {
           if (properties[prop] !== undefined) {
             render = true;
           }
