@@ -14,3 +14,13 @@ const displayStore = createSlice({
 export const { setDisplays } = displayStore.actions;
 
 export default displayStore.reducer;
+
+export function loadDisplays(scenes = []) {
+  return dispatch => {
+    const displays = scenes.reduce((arr, scene) => {
+      return arr.concat([].concat(scene.displays).reverse());
+    }, []);
+
+    dispatch(setDisplays(displays));
+  };
+}

@@ -9,6 +9,8 @@ export default class CanvasDisplay extends Display {
     this.canvas.width = this.properties.width;
     this.canvas.height = this.properties.height;
     this.context = this.canvas.getContext('2d');
+
+    Object.defineProperty(this, 'type', { value: '2d' });
   }
 
   renderToScene(scene) {

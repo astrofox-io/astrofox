@@ -1,101 +1,79 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import TextInput from 'components/inputs/TextInput';
 import Icon from 'components/interface/Icon';
 import iconVisible from 'assets/icons/eye.svg';
 import styles from './Layer.less';
 
-export default class Layer extends PureComponent {
-  static defaultProps = {
-    name: '',
-    index: -1,
-    icon: null,
-    control: false,
-    active: false,
-    enabled: true,
-    onLayerClick: null,
-    onLayerUpdate: null,
-  };
+export default function Layer({
+  id,
+  name = '',
+  icon = null,
+  className = null,
+  active = false,
+  enabled = true,
+  onLayerClick = () => {},
+  onLayerUpdate = () => {},
+}) {
+  const [edit, setEdit] = useState(false);
 
-  state = {
-    edit: false,
-  };
-
-  handleLayerClick = () => {
-    const { index, onLayerClick } = this.props;
-
-    if (onLayerClick) {
-      onLayerClick(index);
-    }
-  };
-
-  handleEnableClick = () => {
-    const { index, enabled, onLayerUpdate } = this.props;
-
-    if (onLayerUpdate) {
-      onLayerUpdate(index, 'enabled', !enabled);
-    }
-  };
-
-  handleNameChange = (name, val) => {
-    const { index, onLayerUpdate } = this.props;
-
-    if (val.length > 0) {
-      if (onLayerUpdate) {
-        onLayerUpdate(index, name, val);
-      }
-      this.handleCancelEdit();
-    }
-  };
-
-  handleEnableEdit = () => {
-    this.setState({ edit: true });
-  };
-
-  handleCancelEdit = () => {
-    this.setState({ edit: false });
-  };
-
-  render() {
-    const { edit } = this.state;
-    const { name, control, active, enabled, icon } = this.props;
-
-    return (
-      <div
-        className={classNames({
-          [styles.layer]: true,
-          [styles.child]: control,
-          [styles.edit]: edit,
-          [styles.active]: active,
-        })}
-        onClick={this.handleLayerClick}
-      >
-        <Icon className={styles.icon} glyph={icon} />
-        {edit ? (
-          <TextInput
-            name="displayName"
-            value={name}
-            buffered
-            autoFocus
-            autoSelect
-            onChange={this.handleNameChange}
-            onCancel={this.handleCancelEdit}
-          />
-        ) : (
-          <div className={styles.text} onDoubleClick={this.handleEnableEdit}>
-            {name}
-          </div>
-        )}
-        <span onClick={this.handleEnableClick}>
-          <Icon
-            className={classNames({
-              [styles.propertiesIcon]: true,
-              [styles.disabled]: !enabled,
-            })}
-            glyph={iconVisible}
-          />
-        </span>
-      </div>
-    );
+  function handleLayerClick() {
+    onLayerClick(id);
   }
+
+  function handleEnableClick() {
+    onLayerUpdate(id, 'enabled', !enabled);
+  }
+
+  function handleNameChange(name, val) {
+    if (val.length > 0) {
+      onLayerUpdate(id, name, val);
+    }
+    setEdit(false);
+  }
+
+  function handleEnableEdit(e) {
+    e.stopPropagation();
+    setEdit(true);
+  }
+
+  function handleCancelEdit() {
+    setEdit(false);
+  }
+
+  return (
+    <div
+      className={classNames(styles.layer, className, {
+        [styles.edit]: edit,
+        [styles.active]: active,
+      })}
+      onClick={handleLayerClick}
+    >
+      {icon && <Icon className={styles.icon} glyph={icon} />}
+      {edit ? (
+        <TextInput
+          name="displayName"
+          value={name}
+          buffered
+          autoFocus
+          autoSelect
+          onChange={handleNameChange}
+          onCancel={handleCancelEdit}
+        />
+      ) : (
+        <div className={styles.text} onDoubleClick={handleEnableEdit}>
+          {name}
+        </div>
+      )}
+      <span onClick={handleEnableClick}>
+        <Icon
+          className={classNames({
+            [styles.propertiesIcon]: true,
+            [styles.disabled]: !enabled,
+          })}
+          glyph={iconVisible}
+        />
+      </span>
+    </div>
+  );
 }

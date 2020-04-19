@@ -1,6 +1,12 @@
 import Display from 'core/Display';
 
 export default class Effect extends Display {
+  constructor(type, properties) {
+    super(type, properties);
+
+    Object.defineProperty(this, 'type', { value: 'fx' });
+  }
+
   update(properties = {}) {
     const { pass } = this;
     const { enabled } = properties;

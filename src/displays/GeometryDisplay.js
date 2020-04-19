@@ -26,7 +26,7 @@ import {
   DoubleSide,
   Mesh,
 } from 'three';
-import Display from 'core/Display';
+import WebglDisplay from 'core/WebglDisplay';
 import SpectrumParser from 'audio/SpectrumParser';
 import POINT_SPRITE from 'assets/images/point.png';
 
@@ -43,7 +43,7 @@ const materialOptions = {
 
 const POINT_SIZE = 5.0;
 
-export default class GeometryDisplay extends Display {
+export default class GeometryDisplay extends WebglDisplay {
   static label = 'Geometry (3D)';
 
   static className = 'GeometryDisplay';

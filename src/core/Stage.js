@@ -6,7 +6,7 @@ import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
 import { logger, raiseError, events } from 'view/global';
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'view/constants';
-import { add, insert, remove, swap } from 'utils/array';
+import { insert, remove, swap } from 'utils/array';
 
 export default class Stage extends Display {
   static label = 'Stage';
@@ -73,9 +73,9 @@ export default class Stage extends Display {
 
   addScene(scene = new Scene(), index) {
     if (index !== undefined) {
-      this.scenes = insert(this.scenes, index, scene);
+      insert(this.scenes, index, scene);
     } else {
-      this.scenes = add(this.scenes, scene);
+      this.scenes.push(scene);
     }
 
     scene.stage = this;
@@ -90,7 +90,7 @@ export default class Stage extends Display {
   }
 
   removeScene(scene) {
-    this.scenes = remove(this.scenes, scene);
+    remove(this.scenes, scene);
 
     scene.stage = null;
 
@@ -102,7 +102,7 @@ export default class Stage extends Display {
   shiftScene(scene, i) {
     const index = this.scenes.indexOf(scene);
 
-    this.scenes = swap(this.scenes, index, index + i);
+    swap(this.scenes, index, index + i);
 
     this.changed = this.scenes.indexOf(scene) !== index;
 
@@ -121,22 +121,6 @@ export default class Stage extends Display {
 
   getSceneData() {
     return this.scenes.map(scene => scene.toJSON());
-  }
-
-  getSortedDisplays() {
-    return this.scenes.reverse().reduce((displays, scene) => {
-      displays.push(scene);
-
-      scene.effects.reverse().forEach(effect => {
-        displays.push(effect);
-      });
-
-      scene.displays.reverse().forEach(display => {
-        displays.push(display);
-      });
-
-      return displays;
-    }, []);
   }
 
   hasScenes() {
@@ -165,6 +149,15 @@ export default class Stage extends Display {
     this.scenes.forEach(scene => {
       scene.resetChanges();
     });
+  }
+
+  getElement(id) {
+    return this.scenes.reduce((element, scene) => {
+      if (!element) {
+        element = scene.getElement(id);
+      }
+      return element;
+    }, undefined);
   }
 
   getImage(callback, format) {

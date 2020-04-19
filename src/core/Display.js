@@ -82,6 +82,7 @@ export default class Display extends Component {
     return {
       id: this.id,
       name: this.name,
+      type: this.type,
       properties: this.properties,
       reactors: this.reactors,
     };

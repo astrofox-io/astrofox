@@ -2,7 +2,7 @@ import { Scene as Scene3D, PerspectiveCamera, PointLight } from 'three';
 import Display from 'core/Display';
 import Effect from 'core/Effect';
 import Composer from 'graphics/Composer';
-import { add, remove, insert, swap } from 'utils/array';
+import { remove, insert, swap } from 'utils/array';
 
 const FOV = 45;
 const NEAR = 1;
@@ -92,6 +92,10 @@ export default class Scene extends Display {
     this.composer = null;
   }
 
+  getElement(id) {
+    return this.displays.find(n => n.id === id) || this.effects.find(n => n.id === id);
+  }
+
   getSize() {
     return this.composer.getSize();
   }
@@ -123,9 +127,9 @@ export default class Scene extends Display {
     const type = this.getType(obj);
 
     if (index !== undefined) {
-      this[type] = insert(this[type], index, obj);
+      insert(this[type], index, obj);
     } else {
-      this[type] = add(this[type], obj);
+      this[type].push(obj);
     }
 
     obj.scene = this;
@@ -150,7 +154,7 @@ export default class Scene extends Display {
   removeElement(obj) {
     const type = this.getType(obj);
 
-    this[type] = remove(this[type], obj);
+    remove(this[type], obj);
 
     obj.scene = null;
 
@@ -165,9 +169,9 @@ export default class Scene extends Display {
 
   shiftElement(obj, i) {
     const type = this.getType(obj);
-
     const index = this[type].indexOf(obj);
-    this[type] = swap(this[type], index, index + i);
+
+    swap(this[type], index, index + i);
 
     this.changed = this[type].indexOf(obj) !== index;
 
