@@ -6,7 +6,7 @@ import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
 import { logger, raiseError, events } from 'view/global';
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'view/constants';
-import { add, insert, remove } from 'utils/array';
+import { add, insert, remove, swap } from 'utils/array';
 
 export default class Stage extends Display {
   static label = 'Stage';
@@ -25,9 +25,14 @@ export default class Stage extends Display {
 
     this.scenes = [];
     this.shouldRender = true;
+    this.initialized = false;
   }
 
   init(canvas) {
+    if (this.initialized) {
+      return;
+    }
+
     const { width, height, backgroundColor } = this.properties;
 
     this.renderer = new WebGLRenderer({
@@ -46,6 +51,8 @@ export default class Stage extends Display {
     this.buffer3D = new GLBuffer(width, height);
 
     this.backgroundColor = new Color(backgroundColor);
+
+    this.initialized = true;
   }
 
   update(properties) {
@@ -95,7 +102,7 @@ export default class Stage extends Display {
   shiftScene(scene, i) {
     const index = this.scenes.indexOf(scene);
 
-    this.scenes = this.scenes.swap(index, index + i);
+    this.scenes = swap(this.scenes, index, index + i);
 
     this.changed = this.scenes.indexOf(scene) !== index;
 
@@ -263,7 +270,7 @@ export default class Stage extends Display {
   render(data, callback) {
     const { composer, scenes } = this;
 
-    //composer.clear(this.backgroundColor, 1);
+    composer.clear(this.backgroundColor, 1);
 
     scenes.forEach(scene => {
       if (scene.properties.enabled) {

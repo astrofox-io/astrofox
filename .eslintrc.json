@@ -89,11 +89,6 @@
     "react/no-multi-comp": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "react/sort-comp": [
-      "error",
-      {
-        "order": ["static-methods", "lifecycle", "/^on.+$/", "everything-else", "render"]
-      }
-    ]
+    "react/sort-comp": "off"
   }
 }

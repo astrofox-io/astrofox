@@ -17,11 +17,16 @@ export default class Composer {
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    this.setRenderTarget(renderTarget || this.getRenderTarget());
+    const target = renderTarget || this.createRenderTarget(renderer);
+
+    this.readTarget = target;
+    this.writeTarget = target.clone();
+
+    this.readBuffer = this.readTarget;
+    this.writeBuffer = this.writeTarget;
   }
 
-  getRenderTarget() {
-    const { renderer } = this;
+  createRenderTarget(renderer) {
     const context = renderer.getContext();
     const pixelRatio = renderer.getPixelRatio();
     const width = Math.floor(context.canvas.width / pixelRatio) || 1;
@@ -33,14 +38,6 @@ export default class Composer {
       format: RGBAFormat,
       stencilBuffer: false,
     });
-  }
-
-  setRenderTarget(renderTarget) {
-    this.readTarget = renderTarget;
-    this.writeTarget = renderTarget.clone();
-
-    this.readBuffer = this.readTarget;
-    this.writeBuffer = this.writeTarget;
   }
 
   getSize() {

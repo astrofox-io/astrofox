@@ -26,21 +26,7 @@ export default function Stage() {
 
   useEffect(() => {
     stage.init(canvas.current);
-
-    /*
-    events.on('zoom', this.updateStage, this);
-    events.on('audio-file-load', this.showLoading, this);
-    events.on('audio-file-loaded', this.hideLoading, this);
-    events.on('video-render-start', this.startRender, this);
-
-    return () => {
-      events.off('zoom', this.updateStage);
-      events.off('audio-file-load', this.showLoading);
-      events.off('audio-file-loaded', this.hideLoading);
-      events.off('video-render-start', this.startRender);
-    };
-     */
-  });
+  }, []);
 
   function handleDragOver(e) {
     e.stopPropagation();

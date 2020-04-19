@@ -13,7 +13,7 @@ const store = getStore();
 
 // Development settings
 if (process.env.NODE_ENV !== 'production') {
-  root.env = env;
+  Object.assign(root, env);
 }
 
 // Production settings

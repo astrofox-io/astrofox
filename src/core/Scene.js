@@ -61,9 +61,6 @@ export default class Scene extends Display {
 
     this.stage = stage;
 
-    this.buffer2D = stage.buffer2D;
-    this.buffer3D = stage.buffer3D;
-
     this.composer = new Composer(stage.renderer);
     this.scene = new Scene3D();
 
@@ -182,19 +179,24 @@ export default class Scene extends Display {
   }
 
   updatePasses() {
-    const { composer } = this;
+    const {
+      composer,
+      displays,
+      effects,
+      stage: { buffer2D, buffer3D },
+    } = this;
 
     composer.clearPasses();
-    composer.addPass(this.buffer2D.pass);
-    composer.addPass(this.buffer3D.pass);
+    composer.addPass(buffer2D.pass);
+    composer.addPass(buffer3D.pass);
 
-    this.displays.forEach(display => {
+    displays.forEach(display => {
       if (display.pass) {
         composer.addPass(display.pass);
       }
     });
 
-    this.effects.forEach(effect => {
+    effects.forEach(effect => {
       if (effect.pass) {
         composer.addPass(effect.pass);
       }
@@ -215,7 +217,10 @@ export default class Scene extends Display {
   }
 
   getContext(type) {
-    return type === 'webgl' ? this.buffer3D.context : this.buffer2D.context;
+    const {
+      stage: { buffer2D, buffer3D },
+    } = this;
+    return type === 'webgl' ? buffer3D.context : buffer2D.context;
   }
 
   hasChanges() {
@@ -254,13 +259,25 @@ export default class Scene extends Display {
   }
 
   clear() {
-    this.buffer2D.clear();
-    this.buffer3D.clear();
-    //this.composer.clearBuffer();
+    const {
+      composer,
+      stage: { buffer2D, buffer3D },
+    } = this;
+
+    buffer2D.clear();
+    buffer3D.clear();
+    composer.clearBuffer();
   }
 
   render(data) {
-    const { composer, displays, effects } = this;
+    const {
+      scene,
+      camera,
+      composer,
+      displays,
+      effects,
+      stage: { buffer3D },
+    } = this;
     let hasGeometry = false;
 
     this.clear();
@@ -279,7 +296,7 @@ export default class Scene extends Display {
       });
 
       if (hasGeometry) {
-        this.buffer3D.renderer.render(this.scene, this.camera);
+        buffer3D.renderer.render(scene, camera);
       }
 
       effects.forEach(effect => {
