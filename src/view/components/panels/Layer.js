@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import TextInput from 'components/inputs/TextInput';
 import Icon from 'components/interface/Icon';
-import iconVisible from 'assets/icons/eye.svg';
+import { Eye } from 'view/icons';
 import styles from './Layer.less';
 
 export default function Layer({
@@ -71,7 +71,7 @@ export default function Layer({
             [styles.propertiesIcon]: true,
             [styles.disabled]: !enabled,
           })}
-          glyph={iconVisible}
+          glyph={Eye}
         />
       </span>
     </div>

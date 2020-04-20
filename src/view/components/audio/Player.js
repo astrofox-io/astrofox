@@ -5,12 +5,7 @@ import Icon from 'components/interface/Icon';
 import { RangeInput } from 'components/inputs';
 import { events, player } from 'view/global';
 import { formatTime } from 'utils/format';
-import iconSoundBars from 'assets/icons/sound-bars.svg';
-import iconSoundWaves from 'assets/icons/sound-waves.svg';
-import iconRepeat from 'assets/icons/cycle.svg';
-import iconPlay from 'assets/icons/play.svg';
-import iconStop from 'assets/icons/stop.svg';
-import iconPause from 'assets/icons/pause.svg';
+import { Play, Pause, Stop, SoundBars, SoundWaves, Cycle } from 'view/icons';
 import AudioWaveform from './AudioWaveform';
 import Oscilloscope from './Oscilloscope';
 
@@ -157,19 +152,19 @@ export default function Player({ visible = true }) {
           totalTime={duration}
         />
         <ToggleButton
-          icon={iconRepeat}
+          icon={Cycle}
           title="Repeat"
           active={looping}
           onClick={handleLoopButtonClick}
         />
         <ToggleButton
-          icon={iconSoundBars}
+          icon={SoundBars}
           title="Waveform"
           active={showWaveform}
           onClick={handleWaveformButtonClick}
         />
         <ToggleButton
-          icon={iconSoundWaves}
+          icon={SoundWaves}
           title="Oscilloscope"
           active={showOsc}
           onClick={handleOscButtonClick}
@@ -205,7 +200,7 @@ const PlayButton = ({ playing, title, onClick }) => (
     })}
     onClick={onClick}
   >
-    <Icon className={styles.icon} glyph={playing ? iconPause : iconPlay} title={title} />
+    <Icon className={styles.icon} glyph={playing ? Pause : Play} title={title} />
   </div>
 );
 
@@ -215,7 +210,7 @@ const StopButton = ({ title, onClick }) => (
     className={classNames(styles.button, styles.stopButton)}
     onClick={onClick}
   >
-    <Icon className={styles.icon} glyph={iconStop} title={title} />
+    <Icon className={styles.icon} glyph={Stop} title={title} />
   </div>
 );
 

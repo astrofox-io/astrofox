@@ -7,7 +7,7 @@ import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/Setti
 import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
 import { replaceExt } from 'utils/file';
 import { formatTime } from 'utils/format';
-import folderIcon from 'assets/icons/folder-open-empty.svg';
+import { FolderOpen } from 'view/icons';
 import styles from './VideoSettings.less';
 
 const videoFormats = ['mp4', 'webm'];
@@ -110,7 +110,7 @@ export default function VideoSettings({ onStart, onClose }) {
           />
           <ButtonInput
             className={styles.button}
-            icon={folderIcon}
+            icon={FolderOpen}
             title="Save File"
             onClick={handleOpenVideoFile}
           />

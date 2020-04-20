@@ -4,7 +4,7 @@ import DisplayControl from 'components/controls/DisplayControl';
 import { Control, Option, Label } from 'components/controls/Control';
 import Icon from 'components/interface/Icon';
 import { NumberInput, ImageInput, RangeInput, ReactorInput } from 'components/inputs';
-import iconLink from 'assets/icons/link.svg';
+import { Link } from 'view/icons';
 import blankImage from 'assets/images/blank.gif';
 import styles from './ImageControl.less';
 
@@ -98,7 +98,7 @@ export class ImageControl extends PureComponent {
                 [styles.linkIcon]: true,
                 [styles.linkIconActive]: fixed,
               })}
-              glyph={iconLink}
+              glyph={Link}
               onClick={this.handleLinkClick}
             />
           </Label>
@@ -127,7 +127,7 @@ export class ImageControl extends PureComponent {
                 [styles.linkIcon]: true,
                 [styles.linkIconActive]: fixed,
               })}
-              glyph={iconLink}
+              glyph={Link}
               onClick={this.handleLinkClick}
             />
           </Label>

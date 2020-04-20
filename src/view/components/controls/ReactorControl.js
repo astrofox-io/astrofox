@@ -6,22 +6,24 @@ import { BoxInput, NumberInput, RangeInput, ButtonInput, ButtonGroup } from 'com
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'view/global';
-import iconReverse from 'assets/icons/angle-double-left.svg';
-import iconForward from 'assets/icons/angle-double-right.svg';
-import iconDown from 'assets/icons/chevron-down.svg';
-import iconSubtract from 'assets/icons/minus.svg';
-import iconAdd from 'assets/icons/plus.svg';
-import iconCycle from 'assets/icons/arrows-h.svg';
+import {
+  AngleDoubleLeft,
+  AngleDoubleRight,
+  ChevronDown,
+  Minus,
+  Plus,
+  ArrowsHorizontal,
+} from 'view/icons';
 import styles from './ReactorControl.less';
 
 const REACTOR_BARS = 64;
 
 const outputOptions = [
-  { title: 'Subtract', icon: iconSubtract },
-  { title: 'Add', icon: iconAdd },
-  { title: 'Reverse', icon: iconReverse },
-  { title: 'Forward', icon: iconForward },
-  { title: 'Cycle', icon: iconCycle },
+  { title: 'Subtract', icon: Minus },
+  { title: 'Add', icon: Plus },
+  { title: 'Reverse', icon: AngleDoubleLeft },
+  { title: 'Forward', icon: AngleDoubleRight },
+  { title: 'Cycle', icon: ArrowsHorizontal },
 ];
 
 export default class ReactorControl extends PureComponent {
@@ -158,7 +160,7 @@ export default class ReactorControl extends PureComponent {
         </div>
         <Icon
           className={styles.closeIcon}
-          glyph={iconDown}
+          glyph={ChevronDown}
           title="Hide Panel"
           onClick={this.hideReactor}
         />

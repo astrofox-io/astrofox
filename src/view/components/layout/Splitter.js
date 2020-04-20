@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import withMouseEvents from 'components/hocs/withMouseEvents';
 import { clamp } from 'utils/math';
-import iconDots from 'assets/icons/dots-three-horizontal.svg';
+import { DotsHorizontal } from 'view/icons';
 import styles from './Splitter.less';
 
 class Splitter extends PureComponent {
@@ -88,7 +88,7 @@ class Splitter extends PureComponent {
         })}
         onMouseDown={this.startResize}
       >
-        <Icon className={styles.grip} glyph={iconDots} />
+        <Icon className={styles.grip} glyph={DotsHorizontal} />
       </div>
     );
   }

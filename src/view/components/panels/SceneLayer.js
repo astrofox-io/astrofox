@@ -1,16 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 import Layer from 'components/panels/Layer';
-import iconScene from 'assets/icons/picture.svg';
-import iconDisplay from 'assets/icons/cube.svg';
-import iconEffect from 'assets/icons/light-up.svg';
-import iconCanvasDisplay from 'assets/icons/document-landscape.svg';
+import { DISPLAY_TYPE_CANVAS, DISPLAY_TYPE_EFFECT, DISPLAY_TYPE_WEBGL } from 'view/constants';
+import { Picture, Cube, LightUp, DocumentLandscape } from 'view/icons';
 import styles from './SceneLayer.less';
 
 const icons = {
-  '2d': iconCanvasDisplay,
-  webgl: iconDisplay,
-  fx: iconEffect,
+  [DISPLAY_TYPE_CANVAS]: DocumentLandscape,
+  [DISPLAY_TYPE_WEBGL]: Cube,
+  [DISPLAY_TYPE_EFFECT]: LightUp,
 };
 
 export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUpdate }) {
@@ -50,7 +48,7 @@ export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUp
         key={id}
         id={id}
         name={displayName}
-        icon={iconScene}
+        icon={Picture}
         enabled={enabled}
         active={activeLayer === id}
         onLayerClick={onLayerClick}

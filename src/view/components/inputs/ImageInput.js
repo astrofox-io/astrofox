@@ -4,8 +4,7 @@ import Icon from 'components/interface/Icon';
 import { raiseError } from 'view/global';
 import { showOpenDialog } from 'utils/window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
-import folderIcon from 'assets/icons/folder-open.svg';
-import closeIcon from 'assets/icons/times.svg';
+import { FolderOpen, Times } from 'view/icons';
 import blankImage from 'assets/images/blank.gif';
 import styles from './ImageInput.less';
 
@@ -105,14 +104,14 @@ export default class ImageInput extends PureComponent {
             alt=""
             onLoad={this.handleImageLoad}
           />
-          <Icon className={styles.openIcon} glyph={folderIcon} title="Open File" />
+          <Icon className={styles.openIcon} glyph={FolderOpen} title="Open File" />
         </div>
         <Icon
           className={classNames({
             [styles.closeIcon]: true,
             [styles.hidden]: !hasImage,
           })}
-          glyph={closeIcon}
+          glyph={Times}
           title="Remove Image"
           onClick={this.handleDelete}
         />

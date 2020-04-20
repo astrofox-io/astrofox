@@ -1,10 +1,11 @@
 import Display from 'core/Display';
+import { DISPLAY_TYPE_EFFECT } from 'view/constants';
 
 export default class Effect extends Display {
   constructor(type, properties) {
     super(type, properties);
 
-    Object.defineProperty(this, 'type', { value: 'fx' });
+    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_EFFECT });
   }
 
   update(properties = {}) {

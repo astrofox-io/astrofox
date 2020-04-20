@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { events } from 'view/global';
 import Icon from 'components/interface/Icon';
-import iconClose from 'assets/icons/times.svg';
-import iconReact from 'assets/icons/flash.svg';
+import { Flash, Times } from 'view/icons';
 import styles from './ReactorInput.less';
 
 export default class ReactorInput extends PureComponent {
@@ -109,7 +108,7 @@ export default class ReactorInput extends PureComponent {
             [styles.icon]: true,
             [styles.iconActive]: reactor,
           })}
-          glyph={iconReact}
+          glyph={Flash}
           title={reactor ? 'Show Reactor' : 'Enable Reactor'}
           onClick={this.toggleReactor}
         />
@@ -124,7 +123,7 @@ export default class ReactorInput extends PureComponent {
           </div>
           <Icon
             className={styles.closeIcon}
-            glyph={iconClose}
+            glyph={Times}
             title="Disable Reactor"
             onClick={this.removeReactor}
           />

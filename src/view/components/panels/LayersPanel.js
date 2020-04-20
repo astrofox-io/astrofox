@@ -3,12 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import SceneLayer from 'components/panels/SceneLayer';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import { addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
-import iconScene from 'assets/icons/picture.svg';
-import iconDisplay from 'assets/icons/cube.svg';
-import iconEffect from 'assets/icons/light-up.svg';
-import iconMoveUp from 'assets/icons/chevron-up.svg';
-import iconMoveDown from 'assets/icons/chevron-down.svg';
-import iconDelete from 'assets/icons/trash-empty.svg';
+import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
 import styles from './LayersPanel.less';
 import panelStyles from '../layout/Panel.less';
 
@@ -62,35 +57,35 @@ export default function LayersPanel() {
         ))}
       </div>
       <div className={panelStyles.buttons}>
-        <ButtonInput icon={iconScene} title="Add Scene" onClick={handleAddScene} />
+        <ButtonInput icon={Picture} title="Add Scene" onClick={handleAddScene} />
         <ButtonInput
-          icon={iconDisplay}
+          icon={Cube}
           title="Add Display"
           onClick={handleAddDisplay}
           disabled={!hasScenes}
         />
         <ButtonInput
-          icon={iconEffect}
+          icon={LightUp}
           title="Add Effect"
           onClick={handleAddEffect}
           disabled={!hasScenes}
         />
         <ButtonGroup>
           <ButtonInput
-            icon={iconMoveUp}
+            icon={ChevronUp}
             title="Move Layer Up"
             onClick={handleMoveUp}
             disabled={!hasScenes}
           />
           <ButtonInput
-            icon={iconMoveDown}
+            icon={ChevronDown}
             title="Move Layer Down"
             onClick={handleMoveDown}
             disabled={!hasScenes}
           />
         </ButtonGroup>
         <ButtonInput
-          icon={iconDelete}
+          icon={TrashEmpty}
           title="Delete Layer"
           onClick={handleRemove}
           disabled={!hasScenes || !activeId}

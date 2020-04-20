@@ -1,61 +1,61 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { RangeInput } from 'components/inputs';
 import Icon from 'components/interface/Icon';
-import iconVolume1 from 'assets/icons/volume.svg';
-import iconVolume2 from 'assets/icons/volume2.svg';
-import iconVolume3 from 'assets/icons/volume3.svg';
-import iconVolume4 from 'assets/icons/volume4.svg';
+import { Volume, Volume2, Volume3, Volume4 } from 'view/icons';
 import styles from './VolumeControl.less';
 
-export default class VolumeControl extends PureComponent {
-  state = {
-    value: 100,
-    mute: false,
-  };
+const defaultState = {
+  value: 100,
+  mute: false,
+};
 
-  handleChange = (name, value) => {
-    this.props.onChange(value / 100);
+export default function VolumeControl({ onChange }) {
+  const [state, setState] = useState(defaultState);
+  const { value, mute } = state;
 
-    this.setState({ value, mute: false });
-  };
+  function handleChange(name, value) {
+    setState({ value, mute: false });
+    onChange(value / 100);
+  }
 
-  handleClick = () => {
-    this.setState((prevState, props) => {
-      props.onChange(prevState.mute ? prevState.value / 100 : 0);
+  function handleClick() {
+    setState(prevState => {
+      onChange(prevState.mute ? prevState.value / 100 : 0);
 
-      return { mute: !prevState.mute };
+      return { ...prevState, mute: !prevState.mute };
     });
-  };
+  }
 
-  render() {
-    const { value, mute } = this.state;
-    let icon;
+  function getIcon() {
+    let icon = null;
 
     if (value < 10 || mute) {
-      icon = iconVolume4;
+      icon = Volume4;
     } else if (value < 25) {
-      icon = iconVolume3;
+      icon = Volume3;
     } else if (value < 75) {
-      icon = iconVolume2;
+      icon = Volume2;
     } else {
-      icon = iconVolume1;
+      icon = Volume;
     }
 
-    return (
-      <div className={styles.volume}>
-        <div role="presentation" className={styles.speaker} onClick={this.handleClick}>
-          <Icon className={styles.icon} glyph={icon} />
-        </div>
-        <div className={styles.slider}>
-          <RangeInput
-            name="volume"
-            min={0}
-            max={100}
-            value={mute ? 0 : value}
-            onChange={this.handleChange}
-          />
-        </div>
-      </div>
-    );
+    return icon;
   }
+
+  return (
+    <div className={styles.volume}>
+      <div role="presentation" className={styles.speaker} onClick={handleClick}>
+        <Icon className={styles.icon} glyph={getIcon()} />
+      </div>
+      <div className={styles.slider}>
+        <RangeInput
+          name="volume"
+          min={0}
+          max={100}
+          value={mute ? 0 : value}
+          onChange={handleChange}
+        />
+      </div>
+    </div>
+  );
 }
