@@ -5,7 +5,7 @@ import { Composer, CanvasBuffer, GLBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
 import { logger, raiseError, events } from 'view/global';
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'view/constants';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, DISPLAY_TYPE_STAGE } from 'view/constants';
 import { insert, remove, swap } from 'utils/array';
 
 export default class Stage extends Display {
@@ -25,6 +25,8 @@ export default class Stage extends Display {
 
     this.scenes = [];
     this.initialized = false;
+
+    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_STAGE });
   }
 
   init(canvas) {
@@ -87,7 +89,10 @@ export default class Stage extends Display {
     if (obj instanceof Scene) {
       this.removeScene(obj);
     } else {
-      this.scenes.forEach(scene => scene.removeElement(obj));
+      const scene = this.getScene(obj.scene.id);
+      if (scene) {
+        scene.removeElement(obj);
+      }
     }
   }
 
@@ -159,9 +164,7 @@ export default class Stage extends Display {
   }
 
   clearScenes() {
-    this.scenes.forEach(scene => {
-      this.removeScene(scene);
-    });
+    [...this.scenes].forEach(scene => this.removeScene(scene));
 
     resetDisplayCount();
 

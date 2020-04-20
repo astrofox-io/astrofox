@@ -1,3 +1,8 @@
+export const DISPLAY_TYPE_CANVAS = 'canvas';
+export const DISPLAY_TYPE_WEBGL = 'webgl';
+export const DISPLAY_TYPE_SCENE = 'scene';
+export const DISPLAY_TYPE_STAGE = 'stage';
+
 export const FFT_SIZE = 1024;
 export const SAMPLE_RATE = 44100;
 

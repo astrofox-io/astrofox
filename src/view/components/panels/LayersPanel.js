@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { stage } from 'view/global';
 import SceneLayer from 'components/panels/SceneLayer';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
-import { addScene, removeElement, updateElement } from 'actions/scenes';
+import { addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
 import iconScene from 'assets/icons/picture.svg';
 import iconDisplay from 'assets/icons/cube.svg';
 import iconEffect from 'assets/icons/light-up.svg';
@@ -16,13 +15,13 @@ import panelStyles from '../layout/Panel.less';
 export default function LayersPanel() {
   const dispatch = useDispatch();
   const scenes = useSelector(state => state.scenes);
-  const [activeLayer, setActiveLayer] = useState();
-  const disabled = !stage.hasScenes();
+  const [activeId, setActiveId] = useState();
+  const hasScenes = !!scenes.length;
 
   const sortedScenes = useMemo(() => [...scenes].reverse(), [scenes]);
 
   function handleLayerClick(id) {
-    setActiveLayer(id);
+    setActiveId(id);
   }
 
   function handleLayerUpdate(id, prop, value) {
@@ -35,12 +34,17 @@ export default function LayersPanel() {
 
   function handleAddDisplay() {}
   function handleAddEffect() {}
-  function handleMoveUp() {}
-  function handleMoveDown() {}
+
+  function handleMoveUp() {
+    dispatch(moveElement(activeId, 1));
+  }
+  function handleMoveDown() {
+    dispatch(moveElement(activeId, -1));
+  }
 
   function handleRemove() {
-    if (activeLayer) {
-      dispatch(removeElement(activeLayer));
+    if (activeId) {
+      dispatch(removeElement(activeId));
     }
   }
 
@@ -51,7 +55,7 @@ export default function LayersPanel() {
           <SceneLayer
             key={scene.id}
             scene={scene}
-            activeLayer={activeLayer}
+            activeLayer={activeId}
             onLayerClick={handleLayerClick}
             onLayerUpdate={handleLayerUpdate}
           />
@@ -63,33 +67,33 @@ export default function LayersPanel() {
           icon={iconDisplay}
           title="Add Display"
           onClick={handleAddDisplay}
-          disabled={disabled}
+          disabled={!hasScenes}
         />
         <ButtonInput
           icon={iconEffect}
           title="Add Effect"
           onClick={handleAddEffect}
-          disabled={disabled}
+          disabled={!hasScenes}
         />
         <ButtonGroup>
           <ButtonInput
             icon={iconMoveUp}
             title="Move Layer Up"
             onClick={handleMoveUp}
-            disabled={disabled}
+            disabled={!hasScenes}
           />
           <ButtonInput
             icon={iconMoveDown}
             title="Move Layer Down"
             onClick={handleMoveDown}
-            disabled={disabled}
+            disabled={!hasScenes}
           />
         </ButtonGroup>
         <ButtonInput
           icon={iconDelete}
           title="Delete Layer"
           onClick={handleRemove}
-          disabled={disabled}
+          disabled={!hasScenes || !activeId}
         />
       </div>
     </div>

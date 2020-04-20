@@ -83,7 +83,7 @@ export function newProject() {
 
     stage.resetChanges();
 
-    await dispatch(loadScenes(stage.getSceneData()));
+    await dispatch(loadScenes());
 
     return dispatch(updateProject({ file: '' }));
   };

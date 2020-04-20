@@ -1,5 +1,6 @@
 import Display from 'core/Display';
 import { deg2rad } from 'utils/math';
+import { DISPLAY_TYPE_CANVAS } from 'view/constants';
 
 export default class CanvasDisplay extends Display {
   constructor(type, properties) {
@@ -10,7 +11,7 @@ export default class CanvasDisplay extends Display {
     this.canvas.height = this.properties.height;
     this.context = this.canvas.getContext('2d');
 
-    Object.defineProperty(this, 'type', { value: '2d' });
+    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_CANVAS });
   }
 
   renderToScene(scene) {
