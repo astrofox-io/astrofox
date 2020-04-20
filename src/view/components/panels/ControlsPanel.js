@@ -1,13 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { getControlComponent } from 'utils/controls';
+import { stage } from 'view/global';
 import styles from './ControlsPanel.less';
 
 export default function ControlsPanel() {
   const { width, height } = useSelector(({ stage }) => stage);
-  const displays = useSelector(state => state.displays);
+  const scenes = useSelector(state => state.scenes);
   const [activeIndex, setActiveIndex] = useState();
   const panelRef = useRef();
+
+  const displays = useMemo(() => {
+    return [...stage.scenes].reverse().reduce((arr, scene) => {
+      arr.push(scene);
+      return arr.concat([...scene.effects].reverse()).concat([...scene.displays].reverse());
+    }, []);
+  }, [scenes]);
 
   /*
   function componentDidUpdate() {

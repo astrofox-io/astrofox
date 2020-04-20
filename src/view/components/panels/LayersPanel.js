@@ -4,8 +4,8 @@ import SceneLayer from 'components/panels/SceneLayer';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import { addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
+import panelStyles from 'components/layout/Panel.less';
 import styles from './LayersPanel.less';
-import panelStyles from '../layout/Panel.less';
 
 export default function LayersPanel() {
   const dispatch = useDispatch();

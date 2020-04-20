@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { env, events, renderer } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import About from 'components/window/About';
@@ -31,6 +31,7 @@ function App() {
   const dispatch = useDispatch();
   const { statusBarText, modals, reactor, showControlDock, showPlayer, showReactor } = useSelector(
     state => state.app,
+    shallowEqual,
   );
   const project = useSelector(state => state.project);
   const errors = useSelector(state => state.errors);
