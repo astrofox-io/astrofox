@@ -70,3 +70,10 @@ export function initApp() {
     }
   };
 }
+
+export function toggleState(prop) {
+  return (dispatch, getState) => {
+    const { app } = getState();
+    dispatch(updateApp({ [prop]: !app[prop] }));
+  };
+}

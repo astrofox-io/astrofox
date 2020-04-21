@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import useMergeState from 'components/hooks/useMergeState';
 import Icon from 'components/interface/Icon';
@@ -8,9 +9,9 @@ import { formatTime } from 'utils/format';
 import { Play, Pause, Stop, SoundBars, SoundWaves, Cycle } from 'view/icons';
 import AudioWaveform from './AudioWaveform';
 import Oscilloscope from './Oscilloscope';
-
 import VolumeControl from './VolumeControl';
 import styles from './Player.less';
+
 
 const PROGRESS_MAX = 1000;
 const defaultState = {
@@ -24,8 +25,9 @@ const defaultState = {
   showOsc: false,
 };
 
-export default function Player({ visible = true }) {
+export default function Player() {
   const [state, setState] = useMergeState(defaultState);
+  const showPlayer = useSelector(state => state.app.showPlayer);
   const {
     playing,
     duration,
@@ -126,7 +128,7 @@ export default function Player({ visible = true }) {
   }, []);
 
   return (
-    <div className={classNames({ [styles.hidden]: !visible })}>
+    <div className={classNames({ [styles.hidden]: !showPlayer })}>
       <AudioWaveform
         forwardedRef={waveform}
         progressPosition={progressPosition}

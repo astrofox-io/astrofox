@@ -7,9 +7,9 @@ export const DISPLAY_TYPE_EFFECT = 'effect';
 export const FFT_SIZE = 1024;
 export const SAMPLE_RATE = 44100;
 
-export const CANVAS_WIDTH = 854;
-export const CANVAS_HEIGHT = 480;
-export const BACKGROUND_COLOR = '#000000';
+export const DEFAULT_CANVAS_WIDTH = 854;
+export const DEFAULT_CANVAS_HEIGHT = 480;
+export const DEFAULT_BACKGROUND_COLOR = '#000000';
 
 export const PUBLIC_KEY = [
   '-----BEGIN PUBLIC KEY-----',

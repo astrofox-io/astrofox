@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useImperativeHandle } from 'react';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
-import { FFT_SIZE, SAMPLE_RATE, CANVAS_WIDTH } from 'view/constants';
+import { FFT_SIZE, SAMPLE_RATE, DEFAULT_CANVAS_WIDTH } from 'view/constants';
 import styles from './Spectrum.less';
 
 const spectrumProperties = {

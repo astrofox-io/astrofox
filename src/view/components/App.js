@@ -22,17 +22,13 @@ import Stage from 'components/stage/Stage';
 import menuConfig from 'config/menu.json';
 import fontOptions from 'config/fonts.json';
 import { showOpenDialog, showSaveDialog } from 'utils/window';
-import { initApp } from 'actions/app';
+import { initApp, updateApp, toggleState } from 'actions/app';
 import { loadAudioFile } from 'actions/audio';
 import { loadProject, saveProject, newProject } from 'actions/project';
 import styles from './App.less';
 
 function App() {
   const dispatch = useDispatch();
-  const { statusBarText, modals, reactor, showControlDock, showPlayer, showReactor } = useSelector(
-    state => state.app,
-    shallowEqual,
-  );
   const project = useSelector(state => state.project);
   const errors = useSelector(state => state.errors);
 
@@ -136,11 +132,11 @@ function App() {
         break;
 
       case 'view-control-dock':
-        this.setState(({ showControlDock }) => ({ showControlDock: !showControlDock }));
+        dispatch(toggleState('showControlDock'));
         break;
 
       case 'view-player':
-        this.setState(({ showPlayer }) => ({ showPlayer: !showPlayer }));
+        dispatch(toggleState('showPlayer'));
         break;
 
       case 'check-for-updates':
@@ -284,13 +280,13 @@ function App() {
       <div className={styles.body}>
         <div className={styles.viewport}>
           <Stage />
-          <Player visible={showPlayer} />
-          <ReactorControl visible={showReactor} reactor={reactor} />
+          <Player />
+          <ReactorControl />
         </div>
-        <ControlDock visible={showControlDock} />
+        <ControlDock />
       </div>
-      <StatusBar text={statusBarText} />
-      <Overlay>{modals}</Overlay>
+      <StatusBar />
+      <Overlay></Overlay>
     </div>
   );
 }

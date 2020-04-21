@@ -26,7 +26,7 @@ export default function Stage() {
 
   useEffect(() => {
     stage.init(canvas.current);
-  }, []);
+  }, [stage]);
 
   function handleDragOver(e) {
     e.stopPropagation();
@@ -49,8 +49,8 @@ export default function Stage() {
   function stopRender() {}
 
   const style = {
-    width: `${width * zoom}px`,
-    height: `${height * zoom}px`,
+    width: `${width * (zoom / 100)}px`,
+    height: `${height * (zoom / 100)}px`,
   };
 
   return (

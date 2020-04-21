@@ -1,6 +1,6 @@
 import { SpriteMaterial, Sprite, Scene, OrthographicCamera } from 'three';
 import ComposerPass from 'graphics/ComposerPass';
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from 'view/constants';
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
 
 export default class SpritePass extends ComposerPass {
   static defaultProperties = {
@@ -9,8 +9,8 @@ export default class SpritePass extends ComposerPass {
     needsSwap: false,
     needsUpdate: true,
     forceClear: true,
-    width: CANVAS_WIDTH,
-    height: CANVAS_HEIGHT,
+    width: DEFAULT_CANVAS_WIDTH,
+    height: DEFAULT_CANVAS_HEIGHT,
   };
 
   constructor(texture, properties) {

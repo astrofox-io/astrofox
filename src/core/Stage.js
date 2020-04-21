@@ -5,7 +5,12 @@ import { Composer, CanvasBuffer, GLBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
 import { logger, raiseError, events } from 'view/global';
-import { CANVAS_WIDTH, CANVAS_HEIGHT, DISPLAY_TYPE_STAGE } from 'view/constants';
+import {
+  DEFAULT_CANVAS_WIDTH,
+  DEFAULT_CANVAS_HEIGHT,
+  DISPLAY_TYPE_STAGE,
+  DEFAULT_BACKGROUND_COLOR,
+} from 'view/constants';
 import { insert, remove, swap } from 'utils/array';
 
 export default class Stage extends Display {
@@ -14,10 +19,10 @@ export default class Stage extends Display {
   static className = 'Stage';
 
   static defaultProperties = {
-    width: CANVAS_WIDTH,
-    height: CANVAS_HEIGHT,
-    zoom: 1.0,
-    backgroundColor: '#000000',
+    width: DEFAULT_CANVAS_WIDTH,
+    height: DEFAULT_CANVAS_HEIGHT,
+    backgroundColor: DEFAULT_BACKGROUND_COLOR,
+    zoom: 100,
   };
 
   constructor(properties) {

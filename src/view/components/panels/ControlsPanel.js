@@ -1,13 +1,13 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getControlComponent } from 'utils/controls';
 import { stage } from 'view/global';
 import styles from './ControlsPanel.less';
 
 export default function ControlsPanel() {
-  const { width, height } = useSelector(({ stage }) => stage);
+  const activeId = useSelector(state => state.app.activeId);
+  const { width, height } = useSelector(state => state.stage);
   const scenes = useSelector(state => state.scenes);
-  const [activeIndex, setActiveIndex] = useState();
   const panelRef = useRef();
 
   const displays = useMemo(() => {
@@ -17,50 +17,24 @@ export default function ControlsPanel() {
     }, []);
   }, [scenes]);
 
-  /*
-  function componentDidUpdate() {
-    this.focusControl(this.state.activeIndex);
-  }
-
-  function updateControl(display) {
-    const control = this.controls[display.id];
-
-    if (control) {
-      control.setState(display.properties);
+  useEffect(() => {
+    const node = document.getElementById(`control-${activeId}`);
+    if (node) {
+      panelRef.current.scrollTop = node.offsetTop;
     }
-  }
-
-  function focusControl(index) {
-    const { displays } = this.state;
-    const display = displays[index];
-
-    if (display) {
-      const node = this.nodes[display.id];
-
-      if (node) {
-        this.nodes.panel.scrollTop = node.offsetTop;
-
-        this.setState({ activeIndex: index });
-      }
-    }
-  }
-
-  function updateState(state) {
-    this.setState(state);
-  }
-  */
+  }, [activeId]);
 
   return (
     <div className={styles.panel} ref={panelRef}>
-      {displays.map((display, index) => {
+      {displays.map(display => {
         const { id } = display;
         const Component = getControlComponent(display);
 
         return (
-          <div key={id} className={styles.control}>
+          <div id={`control-${id}`} key={id} className={styles.control}>
             <Component
               display={display}
-              active={index === activeIndex}
+              active={id === activeId}
               stageWidth={width}
               stageHeight={height}
             />

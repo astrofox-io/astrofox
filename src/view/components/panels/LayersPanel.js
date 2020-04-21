@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import SceneLayer from 'components/panels/SceneLayer';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import { addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
+import { updateApp } from 'actions/app';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
 import panelStyles from 'components/layout/Panel.less';
 import styles from './LayersPanel.less';
@@ -17,6 +18,7 @@ export default function LayersPanel() {
 
   function handleLayerClick(id) {
     setActiveId(id);
+    dispatch(updateApp({ activeId: id }));
   }
 
   function handleLayerUpdate(id, prop, value) {
