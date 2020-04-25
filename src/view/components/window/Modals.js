@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Overlay from 'components/window/Overlay';
 import ModalWindow from 'components/window/ModalWindow';
 import * as modalComponents from 'components/modals';
-import { closeModal } from 'actions/app';
+import { closeModal } from 'actions/modals';
 
 export default function Modals() {
   const dispatch = useDispatch();
-  const modals = useSelector(state => state.app.modals);
+  const modals = useSelector(state => state.modals);
 
   function handleClose() {
     dispatch(closeModal());

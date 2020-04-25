@@ -3,9 +3,9 @@ import { env, logger, stage } from 'view/global';
 import * as displayLibrary from 'displays';
 import { loadScenes } from 'actions/scenes';
 import { raiseError } from 'actions/errors';
+import { showModal } from 'actions/modals';
 import { readFile, readFileCompressed, writeFileCompressed } from 'utils/io';
 import { showOpenDialog, showSaveDialog } from 'utils/window';
-import { showModal } from './app';
 
 export const projectStore = createSlice({
   name: 'project',

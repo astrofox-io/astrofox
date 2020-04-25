@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { logger } from 'view/global';
-import { showModal } from 'actions/app';
+import { showModal } from 'actions/modals';
 
 const initialState = {
   error: null,
@@ -33,6 +33,6 @@ export function raiseError(message, error) {
 
     await dispatch(setError({ message, error: error.toString() }));
 
-    dispatch(showModal('Error', { title: 'Error' }, { message }));
+    dispatch(showModal('ErrorDialog', { title: 'Error' }));
   };
 }

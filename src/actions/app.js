@@ -9,11 +9,10 @@ import { closeWindow, showSaveDialog } from 'utils/window';
 import { writeFile } from 'utils/io';
 
 const initialState = {
-  modals: [],
-  reactor: null,
   showControlDock: true,
   showPlayer: true,
   showReactor: false,
+  reactor: null,
 };
 
 const appStore = createSlice({
@@ -73,28 +72,6 @@ export function toggleState(prop) {
   return (dispatch, getState) => {
     const { app } = getState();
     dispatch(updateApp({ [prop]: !app[prop] }));
-  };
-}
-
-export function showModal(component, modalProps, componentProps) {
-  return (dispatch, getState) => {
-    const {
-      app: { modals },
-    } = getState();
-
-    dispatch(updateApp({ modals: modals.concat({ component, modalProps, componentProps }) }));
-  };
-}
-
-export function closeModal() {
-  return (dispatch, getState) => {
-    const {
-      app: { modals },
-    } = getState();
-
-    if (modals.length) {
-      dispatch(updateApp({ modals: modals.slice(0, modals.length - 1) }));
-    }
   };
 }
 

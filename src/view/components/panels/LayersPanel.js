@@ -5,7 +5,8 @@ import Layout from 'components/layout/Layout';
 import ButtonPanel from 'components/layout/ButtonPanel';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import { addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
-import { showModal, updateApp } from 'actions/app';
+import { updateApp } from 'actions/app';
+import { showModal } from 'actions/modals';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
 import styles from './LayersPanel.less';
 
