@@ -19,14 +19,26 @@ export default sceneStore.reducer;
 
 export function loadScenes() {
   return dispatch => {
-    return dispatch(setScenes(stage.getSceneData()));
+    dispatch(setScenes(stage.getSceneData()));
   };
 }
 
 export function addScene() {
   return dispatch => {
     stage.addScene();
-    return dispatch(loadScenes());
+    dispatch(loadScenes());
+  };
+}
+
+export function addElement(element, sceneId) {
+  return dispatch => {
+    const scene = sceneId ? stage.getSceneById(sceneId) : stage.scenes[0];
+
+    if (scene) {
+      scene.addElement(element);
+    }
+
+    dispatch(loadScenes());
   };
 }
 
@@ -36,7 +48,7 @@ export function updateElement(id, prop, value) {
 
     if (element) {
       element.update({ [prop]: value });
-      return dispatch(loadScenes());
+      dispatch(loadScenes());
     }
   };
 }
@@ -49,7 +61,7 @@ export function removeElement(id) {
       stage.removeElement(element);
     }
 
-    return dispatch(loadScenes());
+    dispatch(loadScenes());
   };
 }
 
@@ -59,13 +71,13 @@ export function moveElement(id, direction) {
 
     if (element) {
       if (element.type === DISPLAY_TYPE_SCENE && stage.shiftScene(element, direction)) {
-        return dispatch(loadScenes());
+        dispatch(loadScenes());
       }
 
       const scene = stage.getElementById(element.scene.id);
 
       if (scene && scene.shiftElement(element, direction)) {
-        return dispatch(loadScenes());
+        dispatch(loadScenes());
       }
     }
   };

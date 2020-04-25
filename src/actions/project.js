@@ -1,14 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { env, logger, stage, raiseError } from 'view/global';
+import { env, logger, stage } from 'view/global';
+import * as displayLibrary from 'displays';
+import { loadScenes } from 'actions/scenes';
+import { raiseError } from 'actions/errors';
 import { readFile, readFileCompressed, writeFileCompressed } from 'utils/io';
-import * as displayLibrary from '../displays';
-import { loadScenes } from './scenes';
+import { showOpenDialog, showSaveDialog } from 'utils/window';
+import { showModal } from './app';
 
 export const projectStore = createSlice({
   name: 'project',
   initialState: {
     file: '',
-    changed: false,
   },
   reducers: {
     updateProject(state, action) {
@@ -21,70 +23,99 @@ export const { updateProject } = projectStore.actions;
 
 export default projectStore.reducer;
 
+export function checkUnsavedChanges(menuAction, action) {
+  return dispatch => {
+    if (stage.hasChanges()) {
+      dispatch(
+        showModal('UnsavedChangesDialog', { showCloseButton: false }, { action: menuAction }),
+      );
+    } else {
+      dispatch(action);
+    }
+  };
+}
+
 export function loadProject(file) {
   return dispatch => {
-    const loadData = data => {
+    function loadData(data) {
       stage.loadConfig(JSON.parse(data));
       stage.resetChanges();
-      return dispatch(updateProject({ file, changed: false }));
-    };
+
+      dispatch(loadScenes());
+      dispatch(updateProject({ file }));
+    }
+
+    function handleError(error) {
+      dispatch(raiseError('Invalid project file.', error));
+    }
 
     return readFileCompressed(file)
       .then(loadData, error => {
         if (error.message.indexOf('incorrect header check') > -1) {
-          readFile(file)
-            .then(loadData)
-            .catch(error => {
-              return dispatch(raiseError('Invalid project file.', error));
-            });
+          readFile(file).then(loadData).catch(handleError);
         } else {
           throw error;
         }
       })
-      .catch(error => {
-        return dispatch(raiseError('Invalid project file.', error));
-      });
+      .catch(handleError);
   };
 }
 
 export function saveProject(file) {
   return dispatch => {
-    const sceneData = stage.scenes.map(scene => scene.toJSON());
-
-    const data = JSON.stringify({
-      version: env.APP_VERSION,
-      stage: stage.toJSON(),
-      scenes: sceneData,
-    });
-
-    return writeFileCompressed(file, data)
-      .then(() => {
-        logger.log('Project saved:', file);
-
-        stage.resetChanges();
-
-        return dispatch(updateProject({ file, changed: false }));
-      })
-      .catch(error => {
-        return dispatch(raiseError('Failed to save project file.', error));
+    if (file) {
+      const data = JSON.stringify({
+        version: env.APP_VERSION,
+        stage: stage.toJSON(),
+        scenes: stage.getSceneData(),
       });
+
+      writeFileCompressed(file, data)
+        .then(() => {
+          logger.log('Project saved:', file);
+
+          stage.resetChanges();
+
+          dispatch(updateProject({ file, changed: false }));
+        })
+        .catch(error => {
+          dispatch(raiseError('Failed to save project file.', error));
+        });
+    } else {
+      showSaveDialog({ defaultPath: 'project.afx' }).then(({ filePath, canceled }) => {
+        if (!canceled) {
+          dispatch(saveProject(filePath));
+        }
+      });
+    }
+  };
+}
+
+export function openProject() {
+  return dispatch => {
+    showOpenDialog({
+      filters: [{ name: 'Project files', extensions: ['afx'] }],
+    }).then(({ filePaths }) => {
+      if (filePaths) {
+        dispatch(loadProject(filePaths[0]));
+      }
+    });
   };
 }
 
 export function newProject() {
-  return async dispatch => {
+  return dispatch => {
     stage.clearScenes();
 
     const scene = stage.addScene();
 
-    scene.addElement(new displayLibrary.ImageDisplay());
+    // scene.addElement(new displayLibrary.ImageDisplay());
     scene.addElement(new displayLibrary.BarSpectrumDisplay());
     scene.addElement(new displayLibrary.TextDisplay({ text: 'hello.' }));
 
     stage.resetChanges();
 
-    await dispatch(loadScenes());
-
-    return dispatch(updateProject({ file: '' }));
+    dispatch(loadScenes());
+    dispatch(updateProject({ file: '' }));
   };
 }

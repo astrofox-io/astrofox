@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { updater } from 'view/global';
+import { updater } from 'global';
 import Button from 'components/interface/Button';
 import Checkmark from 'components/interface/Checkmark';
 import Spinner from 'components/interface/Spinner';

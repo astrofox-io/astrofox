@@ -4,6 +4,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import RenderInfo from 'components/stage/RenderInfo';
 import { stage } from 'view/global';
 import { FirstChild } from 'utils/react';
+import { updateStage } from 'actions/stage';
 import { loadAudioFile } from 'actions/audio';
 import styles from './Stage.less';
 
@@ -33,14 +34,16 @@ export default function Stage() {
     e.preventDefault();
   }
 
-  function handleDrop(e) {
+  async function handleDrop(e) {
     e.stopPropagation();
     e.preventDefault();
 
     const file = e.dataTransfer.files[0];
 
     if (file && !rendering) {
-      dispatch(loadAudioFile(file.path));
+      await dispatch(updateStage({ loading: true }));
+      await dispatch(loadAudioFile(file.path));
+      await dispatch(updateStage({ loading: false }));
     }
   }
 

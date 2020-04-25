@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
+import ButtonRow from 'components/layout/ButtonRow';
 import { ColorInput, NumberInput } from 'components/inputs';
-import { updateStage } from 'actions/stage';
+import { updateCanvas } from 'actions/stage';
 import styles from './CanvasSettings.less';
 
 export default function CanvasSettings({ onClose }) {
@@ -20,8 +21,9 @@ export default function CanvasSettings({ onClose }) {
     onClose();
   }
 
-  function handleSave() {
-    dispatch(updateStage(state)).then(onClose);
+  async function handleSave() {
+    await dispatch(updateCanvas(width, height, backgroundColor));
+    onClose();
   }
 
   return (

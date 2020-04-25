@@ -26,11 +26,11 @@ export function saveConfig(config) {
   return dispatch => {
     const data = JSON.stringify(config);
 
-    return writeFileCompressed(APP_CONFIG_FILE, data)
+    writeFileCompressed(APP_CONFIG_FILE, data)
       .then(() => {
         logger.log('Config file saved:', APP_CONFIG_FILE, config);
 
-        return dispatch(setConfig(config));
+        dispatch(setConfig(config));
       })
       .catch(error => {
         dispatch(raiseError('Failed to save config file.', error));
@@ -41,19 +41,19 @@ export function saveConfig(config) {
 export function loadConfig() {
   return dispatch => {
     if (fileExists(APP_CONFIG_FILE)) {
-      return readFileCompressed(APP_CONFIG_FILE)
+      readFileCompressed(APP_CONFIG_FILE)
         .then(data => {
           const config = JSON.parse(data);
 
           logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
-          return dispatch(setConfig(config));
+          dispatch(setConfig(config));
         })
         .catch(error => {
           dispatch(raiseError('Failed to load config file.', error));
         });
     }
 
-    return dispatch(setConfig({ ...defaultAppConfig, uid: uniqueId() }));
+    dispatch(setConfig({ ...defaultAppConfig, uid: uniqueId() }));
   };
 }

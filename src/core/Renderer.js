@@ -85,7 +85,7 @@ export default class Renderer {
     frameData.fft = analyzer.getFrequencyData(update);
     frameData.td = analyzer.getTimeData(update);
     frameData.volume = analyzer.getVolume();
-    frameData.hasUpdate = update;
+    frameData.hasUpdate = !!update;
     frameData.playing = player.isPlaying();
 
     // Rendering single frame

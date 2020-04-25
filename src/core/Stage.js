@@ -4,7 +4,7 @@ import Display, { resetDisplayCount } from 'core/Display';
 import { Composer, CanvasBuffer, GLBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
-import { logger, raiseError, events } from 'view/global';
+import { logger, events } from 'view/global';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
@@ -77,7 +77,7 @@ export default class Stage extends Display {
     return changed;
   }
 
-  getScene(id) {
+  getSceneById(id) {
     return this.scenes.find(n => n.id === id);
   }
 
@@ -87,26 +87,22 @@ export default class Stage extends Display {
         element = scene.getElementById(id);
       }
       return element;
-    }, this.getScene(id));
+    }, this.getSceneById(id));
   }
 
   removeElement(obj) {
     if (obj instanceof Scene) {
       this.removeScene(obj);
     } else {
-      const scene = this.getScene(obj.scene.id);
+      const scene = this.getSceneById(obj.scene.id);
       if (scene) {
         scene.removeElement(obj);
       }
     }
   }
 
-  getImage(callback, format) {
-    const img = this.renderer.domElement.toDataURL(format || 'image/png');
-    const base64 = img.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(base64, 'base64');
-
-    if (callback) callback(buffer);
+  getImage(format) {
+    return this.composer.getImage(format);
   }
 
   getSize() {
@@ -189,15 +185,7 @@ export default class Stage extends Display {
       return true;
     }
 
-    let changes = false;
-
-    this.scenes.forEach(scene => {
-      if (!changes && scene.hasChanges()) {
-        changes = true;
-      }
-    });
-
-    return changes;
+    return !!this.scenes.find(scene => scene.hasChanges());
   }
 
   resetChanges() {
@@ -206,24 +194,6 @@ export default class Stage extends Display {
     this.scenes.forEach(scene => {
       scene.resetChanges();
     });
-  }
-
-  setZoom(val) {
-    const { zoom } = this.properties;
-
-    if (val > 0) {
-      if (zoom < 1.0) {
-        this.update({ zoom: zoom + 0.25 });
-      }
-    } else if (val < 0) {
-      if (zoom > 0.25) {
-        this.update({ zoom: zoom - 0.25 });
-      }
-    } else {
-      this.update({ zoom: 1.0 });
-    }
-
-    events.emit('zoom');
   }
 
   loadConfig(config) {

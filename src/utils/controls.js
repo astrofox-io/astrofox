@@ -1,12 +1,11 @@
-/* eslint-disable import/prefer-default-export */
-import * as displayLibrary from 'displays';
-import * as effectsLibrary from 'effects';
-import * as controlLibrary from 'components/controls';
+import * as displayComponents from 'displays';
+import * as effectComponents from 'effects';
+import * as controlComponents from 'components/controls';
 
 import SceneControl from 'components/controls/SceneControl';
 import EmptyControl from 'components/controls/EmptyControl';
 
-const displays = { ...displayLibrary, ...effectsLibrary };
+const displays = { ...displayComponents, ...effectComponents };
 
 export function getControlComponent(display) {
   if (display.constructor.className === 'Scene') {
@@ -18,7 +17,7 @@ export function getControlComponent(display) {
   Object.keys(displays).forEach(key => {
     if (!control && displays[key] && display instanceof displays[key]) {
       const name = /(\w+)(Display|Effect)/.exec(key);
-      control = controlLibrary[`${name[1]}Control`];
+      control = controlComponents[`${name[1]}Control`];
     }
   });
 

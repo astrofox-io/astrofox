@@ -19,13 +19,4 @@ export const updater = new AppUpdater();
 export const license = new LicenseManager(PUBLIC_KEY);
 export const renderer = new Renderer();
 export const video = {};
-
 export const env = remote.getGlobal('env');
-
-export function raiseError(msg, err) {
-  if (err) {
-    logger.error(`${msg}\n`, err);
-  }
-
-  events.emit('error', msg, err);
-}

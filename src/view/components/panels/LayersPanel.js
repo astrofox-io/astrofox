@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import SceneLayer from 'components/panels/SceneLayer';
+import Layout from 'components/layout/Layout';
+import ButtonPanel from 'components/layout/ButtonPanel';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import { addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
-import { updateApp } from 'actions/app';
+import { showModal, updateApp } from 'actions/app';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
-import panelStyles from 'components/layout/Panel.less';
 import styles from './LayersPanel.less';
 
 export default function LayersPanel() {
@@ -15,6 +16,21 @@ export default function LayersPanel() {
   const hasScenes = !!scenes.length;
 
   const sortedScenes = useMemo(() => [...scenes].reverse(), [scenes]);
+
+  const activeSceneId = useMemo(() => {
+    return scenes.reduce((memo, scene) => {
+      if (!memo) {
+        if (scene.id === activeId) {
+          memo = activeId;
+        } else if (
+          scene.displays.find(e => e.id === activeId || scene.effects.find(e => e.id === activeId))
+        ) {
+          memo = scene.id;
+        }
+      }
+      return memo;
+    }, undefined);
+  }, [scenes, activeId]);
 
   function handleLayerClick(id) {
     setActiveId(id);
@@ -29,8 +45,25 @@ export default function LayersPanel() {
     dispatch(addScene());
   }
 
-  function handleAddDisplay() {}
-  function handleAddEffect() {}
+  function handleAddDisplay() {
+    dispatch(
+      showModal(
+        'ControlPicker',
+        { title: 'Controls' },
+        { type: 'displays', sceneId: activeSceneId },
+      ),
+    );
+  }
+
+  function handleAddEffect() {
+    dispatch(
+      showModal(
+        'ControlPicker',
+        { title: 'Controls' },
+        { type: 'effects', sceneId: activeSceneId },
+      ),
+    );
+  }
 
   function handleMoveUp() {
     dispatch(moveElement(activeId, 1));
@@ -46,7 +79,7 @@ export default function LayersPanel() {
   }
 
   return (
-    <div className={styles.panel}>
+    <Layout className={styles.panel}>
       <div className={styles.layers}>
         {sortedScenes.map(scene => (
           <SceneLayer
@@ -58,7 +91,7 @@ export default function LayersPanel() {
           />
         ))}
       </div>
-      <div className={panelStyles.buttons}>
+      <ButtonPanel>
         <ButtonInput icon={Picture} title="Add Scene" onClick={handleAddScene} />
         <ButtonInput
           icon={Cube}
@@ -92,7 +125,7 @@ export default function LayersPanel() {
           onClick={handleRemove}
           disabled={!hasScenes || !activeId}
         />
-      </div>
-    </div>
+      </ButtonPanel>
+    </Layout>
   );
 }

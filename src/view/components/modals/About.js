@@ -1,5 +1,5 @@
 import React from 'react';
-import { env, license } from 'view/global';
+import { env, license } from 'global';
 import Button from 'components/interface/Button';
 import styles from './About.less';
 
@@ -7,6 +7,7 @@ const { APP_NAME, APP_VERSION } = env;
 
 export default function About({ onClose }) {
   const { info } = license;
+
   return (
     <div className={styles.about}>
       <div className={styles.name}>{APP_NAME}</div>

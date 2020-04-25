@@ -1,16 +1,14 @@
 import { remote } from 'electron';
 import { createSlice } from '@reduxjs/toolkit';
-import { env, events, updater, license } from 'view/global';
+import { env, events, updater, license, renderer, stage, logger } from 'view/global';
 import menuConfig from 'view/config/menu';
-import { closeWindow } from 'utils/window';
-import { loadConfig } from './config';
-import { newProject } from './project';
+import { loadConfig } from 'actions/config';
+import { newProject } from 'actions/project';
+import { raiseError } from 'actions/errors';
+import { closeWindow, showSaveDialog } from 'utils/window';
+import { writeFile } from 'utils/io';
 
 const initialState = {
-  audioFile: '',
-  videoFile: '',
-  projectFile: '',
-  statusText: '',
   modals: [],
   reactor: null,
   showControlDock: true,
@@ -32,7 +30,7 @@ export const { updateApp } = appStore.actions;
 
 export default appStore.reducer;
 
-async function loadMenu() {
+function loadMenu() {
   const { setApplicationMenu, buildFromTemplate } = remote.Menu;
   const menu = [...menuConfig];
 
@@ -53,7 +51,7 @@ async function loadMenu() {
   setApplicationMenu(buildFromTemplate(menu));
 }
 
-export function exit() {
+export function exitApp() {
   closeWindow();
 }
 
@@ -75,5 +73,49 @@ export function toggleState(prop) {
   return (dispatch, getState) => {
     const { app } = getState();
     dispatch(updateApp({ [prop]: !app[prop] }));
+  };
+}
+
+export function showModal(component, modalProps, componentProps) {
+  return (dispatch, getState) => {
+    const {
+      app: { modals },
+    } = getState();
+
+    dispatch(updateApp({ modals: modals.concat({ component, modalProps, componentProps }) }));
+  };
+}
+
+export function closeModal() {
+  return (dispatch, getState) => {
+    const {
+      app: { modals },
+    } = getState();
+
+    if (modals.length) {
+      dispatch(updateApp({ modals: modals.slice(0, modals.length - 1) }));
+    }
+  };
+}
+
+export function saveImage(file) {
+  return dispatch => {
+    showSaveDialog({ defaultPath: `image-${Date.now()}.png` }).then(({ filePath, canceled }) => {
+      if (!canceled) {
+        const data = renderer.getFrameData(false);
+
+        stage.render(data);
+
+        const buffer = stage.getImage();
+
+        writeFile(file, buffer)
+          .then(() => {
+            logger.log('Image saved:', filePath);
+          })
+          .catch(error => {
+            dispatch(raiseError('Failed to save image file.', error));
+          });
+      }
+    });
   };
 }

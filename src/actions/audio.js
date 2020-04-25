@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { analyzer, logger, player, raiseError } from 'view/global';
+import { analyzer, logger, player } from 'view/global';
+import { updateApp } from 'actions/app';
+import { raiseError } from 'actions/errors';
 import { readAsArrayBuffer, readFileAsBlob } from 'utils/io';
 import { loadAudioData, loadAudioTags } from 'utils/audio';
 import { trimChars } from 'utils/string';
-import { updateApp } from './app';
+import { showOpenDialog } from 'utils/window';
 
 const initialState = {
   file: '',
@@ -44,7 +46,7 @@ export function loadAudioFile(file) {
           player.play();
         }
 
-        logger.timeEnd('audio-file-load', 'audio file loaded:', file);
+        logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
 
         return file;
       })
@@ -56,10 +58,27 @@ export function loadAudioFile(file) {
           await dispatch(updateApp({ statusText: trimChars(`${artist} - ${title}`) }));
         }
 
-        return dispatch(updateAudio({ tags }));
+        dispatch(updateAudio({ tags }));
       })
       .catch(error => {
-        return dispatch(raiseError('Invalid audio file.', error));
+        dispatch(raiseError('Invalid audio file.', error));
       });
+  };
+}
+
+export function openAudioFile() {
+  return dispatch => {
+    showOpenDialog({
+      filters: [
+        {
+          name: 'audio files',
+          extensions: ['aac', 'mp3', 'm4a', 'ogg', 'wav'],
+        },
+      ],
+    }).then(({ filePaths, canceled }) => {
+      if (!canceled) {
+        dispatch(loadAudioFile(filePaths[0]));
+      }
+    });
   };
 }

@@ -28,5 +28,3 @@ export const Row = ({ label, description, className, children }) => (
     {children}
   </div>
 );
-
-export const ButtonRow = ({ children }) => <div className={styles.buttons}>{children}</div>;

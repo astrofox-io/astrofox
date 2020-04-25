@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Group, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import { SettingsPanel, Settings, Group, Row } from 'components/layout/SettingsPanel';
+import ButtonRow from 'components/layout/ButtonRow';
 import { ToggleInput } from 'components/inputs';
 import { saveConfig } from 'actions/config';
 import styles from './AppSettings.less';
 
 export default function AppSettings({ onClose }) {
   const dispatch = useDispatch();
-  const appConfig = useSelector(({ config }) => config);
+  const appConfig = useSelector(state => state.config);
   const [state, setState] = useState(appConfig);
   const { checkForUpdates, autoUpdate, autoPlayAudio } = state;
 
@@ -16,11 +17,8 @@ export default function AppSettings({ onClose }) {
     setState({ ...state, [name]: value });
   }
 
-  function handleSave() {
-    dispatch(saveConfig(state)).then(onClose);
-  }
-
-  function handleCancel() {
+  async function handleSave() {
+    await dispatch(saveConfig(state));
     onClose();
   }
 
@@ -43,7 +41,7 @@ export default function AppSettings({ onClose }) {
       </Settings>
       <ButtonRow>
         <Button text="Save" onClick={handleSave} />
-        <Button text="Cancel" onClick={handleCancel} />
+        <Button text="Cancel" onClick={onClose} />
       </ButtonRow>
     </SettingsPanel>
   );

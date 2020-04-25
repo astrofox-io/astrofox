@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { player } from 'view/global';
-import { showOpenDialog, showSaveDialog } from 'utils/window';
+import { player } from 'global';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Row, ButtonRow } from 'components/layout/SettingsPanel';
+import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
+import ButtonRow from 'components/layout/ButtonRow';
 import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
+import { showOpenDialog, showSaveDialog } from 'utils/window';
 import { replaceExt } from 'utils/file';
 import { formatTime } from 'utils/format';
-import { FolderOpen } from 'view/icons';
+import { FolderOpen } from 'icons';
 import styles from './VideoSettings.less';
 
 const videoFormats = ['mp4', 'webm'];
@@ -126,7 +127,7 @@ export default function VideoSettings({ onStart, onClose }) {
           />
           <ButtonInput
             className={styles.button}
-            icon={folderIcon}
+            icon={FolderOpen}
             title="Open File"
             onClick={handleOpenAudioFile}
           />

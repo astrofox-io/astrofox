@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { logger } from 'view/global';
+import { showModal } from 'actions/app';
 
 const initialState = {
   error: null,
@@ -25,11 +26,13 @@ export const { setError, clearError } = errorStore.actions;
 export default errorStore.reducer;
 
 export function raiseError(message, error) {
-  return dispatch => {
+  return async dispatch => {
     if (error) {
       logger.error(`${message}\n`, error);
     }
 
-    return dispatch(setError({ message, error: error.toString() }));
+    await dispatch(setError({ message, error: error.toString() }));
+
+    dispatch(showModal('Error', { title: 'Error' }, { message }));
   };
 }

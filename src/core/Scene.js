@@ -130,6 +130,10 @@ export default class Scene extends Display {
   }
 
   addElement(obj, index) {
+    if (!obj) {
+      return;
+    }
+
     const type = this.getType(obj);
 
     if (index !== undefined) {
@@ -248,15 +252,7 @@ export default class Scene extends Display {
       return true;
     }
 
-    let changes = false;
-
-    this.displays.forEach(display => {
-      if (!changes && display.changed) {
-        changes = true;
-      }
-    });
-
-    return changes;
+    return !!this.displays.find(e => e.changed);
   }
 
   resetChanges() {

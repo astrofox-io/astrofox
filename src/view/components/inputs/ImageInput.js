@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import { raiseError } from 'view/global';
 import { showOpenDialog } from 'utils/window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
 import { FolderOpen, Times } from 'view/icons';

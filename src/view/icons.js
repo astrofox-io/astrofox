@@ -28,3 +28,4 @@ export { default as Volume } from 'assets/icons/volume.svg';
 export { default as Volume2 } from 'assets/icons/volume2.svg';
 export { default as Volume3 } from 'assets/icons/volume3.svg';
 export { default as Volume4 } from 'assets/icons/volume4.svg';
+export { default as Warning } from 'assets/icons/warning.svg';
