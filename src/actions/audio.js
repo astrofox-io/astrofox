@@ -27,58 +27,54 @@ export const { updateAudio } = audioStore.actions;
 export default audioStore.reducer;
 
 export function loadAudioFile(file) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     player.stop();
 
     logger.time('audio-file-load');
 
-    return readFileAsBlob(file)
-      .then(blob => readAsArrayBuffer(blob))
-      .then(data => loadAudioData(data))
-      .then(audio => {
-        player.load(audio);
-        audio.addNode(analyzer.analyzer);
-      })
-      .then(async () => {
-        await dispatch(updateAudio({ file }));
+    try {
+      const blob = await readFileAsBlob(file);
+      const data = await readAsArrayBuffer(blob);
+      const audio = await loadAudioData(data);
 
-        if (getState().config.autoPlayAudio) {
-          player.play();
-        }
+      player.load(audio);
+      audio.addNode(analyzer.analyzer);
 
-        logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
+      await dispatch(updateAudio({ file }));
 
-        return file;
-      })
-      .then(async file => {
-        const tags = await loadAudioTags(file);
-        const { artist, title } = tags;
+      if (getState().config.autoPlayAudio) {
+        player.play();
+      }
 
-        if (artist) {
-          await dispatch(updateApp({ statusText: trimChars(`${artist} - ${title}`) }));
-        }
+      logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
 
-        dispatch(updateAudio({ tags }));
-      })
-      .catch(error => {
-        dispatch(raiseError('Invalid audio file.', error));
-      });
+      const tags = await loadAudioTags(file);
+      const { artist, title } = tags;
+
+      if (artist) {
+        await dispatch(updateApp({ statusText: trimChars(`${artist} - ${title}`) }));
+      }
+
+      dispatch(updateAudio({ tags }));
+    } catch (error) {
+      dispatch(raiseError('Invalid audio file.', error));
+    }
   };
 }
 
 export function openAudioFile() {
-  return dispatch => {
-    showOpenDialog({
+  return async dispatch => {
+    const { filePaths, canceled } = showOpenDialog({
       filters: [
         {
           name: 'audio files',
           extensions: ['aac', 'mp3', 'm4a', 'ogg', 'wav'],
         },
       ],
-    }).then(({ filePaths, canceled }) => {
-      if (!canceled) {
-        dispatch(loadAudioFile(filePaths[0]));
-      }
     });
+
+    if (!canceled) {
+      dispatch(loadAudioFile(filePaths[0]));
+    }
   };
 }

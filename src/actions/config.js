@@ -23,37 +23,36 @@ export const { setConfig } = configStore.actions;
 export default configStore.reducer;
 
 export function saveConfig(config) {
-  return dispatch => {
-    const data = JSON.stringify(config);
+  return async dispatch => {
+    try {
+      const data = JSON.stringify(config);
 
-    writeFileCompressed(APP_CONFIG_FILE, data)
-      .then(() => {
-        logger.log('Config file saved:', APP_CONFIG_FILE, config);
+      await writeFileCompressed(APP_CONFIG_FILE, data);
 
-        dispatch(setConfig(config));
-      })
-      .catch(error => {
-        dispatch(raiseError('Failed to save config file.', error));
-      });
+      logger.log('Config file saved:', APP_CONFIG_FILE, config);
+
+      dispatch(setConfig(config));
+    } catch (error) {
+      dispatch(raiseError('Failed to save config file.', error));
+    }
   };
 }
 
 export function loadConfig() {
-  return dispatch => {
+  return async dispatch => {
     if (fileExists(APP_CONFIG_FILE)) {
-      readFileCompressed(APP_CONFIG_FILE)
-        .then(data => {
-          const config = JSON.parse(data);
+      try {
+        const data = await readFileCompressed(APP_CONFIG_FILE);
+        const config = JSON.parse(data);
 
-          logger.log('Config file loaded:', APP_CONFIG_FILE, config);
+        logger.log('Config file loaded:', APP_CONFIG_FILE, config);
 
-          dispatch(setConfig(config));
-        })
-        .catch(error => {
-          dispatch(raiseError('Failed to load config file.', error));
-        });
+        dispatch(setConfig(config));
+      } catch (error) {
+        dispatch(raiseError('Failed to load config file.', error));
+      }
+    } else {
+      dispatch(setConfig({ ...defaultAppConfig, uid: uniqueId() }));
     }
-
-    dispatch(setConfig({ ...defaultAppConfig, uid: uniqueId() }));
   };
 }

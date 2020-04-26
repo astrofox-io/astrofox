@@ -20,7 +20,7 @@ export default class Audio {
       return this.loadBuffer(src);
     }
 
-    return Promise.reject(new Error(`Invalid source: ${typeof src}`));
+    throw new Error(`Invalid source: ${typeof src}`);
   }
 
   unload() {
@@ -32,37 +32,15 @@ export default class Audio {
   }
 
   // Loads a url via AJAX
-  loadUrl(src) {
-    return new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-
-      request.open('GET', src);
-      request.responseType = 'arraybuffer';
-
-      request.onload = () => {
-        resolve(request.response);
-      };
-
-      request.onerror = () => {
-        reject();
-      };
-
-      request.send();
-    }).then(response => {
-      this.loadData(response);
-    });
+  async loadUrl(url) {
+    const response = await fetch(url);
+    return this.loadData(response);
   }
 
   // Decodes an ArrayBuffer into an AudioBuffer
-  loadData(data) {
-    return this.audioContext
-      .decodeAudioData(data)
-      .then(buffer => {
-        this.loadBuffer(buffer);
-      })
-      .catch(error => {
-        throw error;
-      });
+  async loadData(data) {
+    const buffer = await this.audioContext.decodeAudioData(data);
+    return this.loadBuffer(buffer);
   }
 
   // Loads an AudioBuffer

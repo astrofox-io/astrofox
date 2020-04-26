@@ -12,14 +12,14 @@ export function readFile(file) {
   });
 }
 
-export function readFileCompressed(file) {
-  return readFile(file).then(data => decompress(data));
+export async function readFileCompressed(file) {
+  const data = await readFile(file);
+  return decompress(data);
 }
 
-export function readFileAsBlob(file) {
-  return readFile(file).then(data =>
-    Promise.resolve(new Blob([new Uint8Array(data).buffer], { type: mime.getType(file) })),
-  );
+export async function readFileAsBlob(file) {
+  const data = await readFile(file);
+  return new Blob([new Uint8Array(data).buffer], { type: mime.getType(file) });
 }
 
 export function readAsArrayBuffer(blob) {
@@ -34,7 +34,7 @@ export function readAsArrayBuffer(blob) {
       reject(e.target.error);
     };
 
-    reader.readAsArrayBuffer(blob);
+    return reader.readAsArrayBuffer(blob);
   });
 }
 
@@ -64,8 +64,9 @@ export function writeFile(file, data) {
   });
 }
 
-export function writeFileCompressed(file, data) {
-  return compress(data).then(buffer => writeFile(file, buffer));
+export async function writeFileCompressed(file, data) {
+  const buffer = await compress(data);
+  return writeFile(file, buffer);
 }
 
 export function removeFile(file) {

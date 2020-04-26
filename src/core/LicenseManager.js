@@ -25,41 +25,41 @@ export default class LicenseManager {
     return JSON.parse(crypto.publicDecrypt(this.key, data).toString());
   }
 
-  load(file) {
-    return readFile(file)
-      .then(data => {
-        const info = this.decrypt(data);
+  async load(file) {
+    try {
+      const data = await readFile(file);
 
-        if (info && info.user) {
-          this.license = Map(info);
+      const info = this.decrypt(data);
 
-          logger.log('License found:', this.info);
-        }
-      })
-      .catch(error => {
-        if (error.message.indexOf('ENOENT') > -1) {
-          logger.log('License not found.');
-        } else {
-          logger.error('Invalid license:', error.message);
-        }
-      });
+      if (info && info.user) {
+        this.license = Map(info);
+
+        logger.log('License found:', this.info);
+      }
+    } catch (error) {
+      if (error.message.indexOf('ENOENT') > -1) {
+        logger.log('License not found.');
+      } else {
+        logger.error('Invalid license:', error.message);
+      }
+    }
   }
 
-  save(file, data) {
-    return writeFile(file, data)
-      .then(() => {
-        const info = this.decrypt(data);
+  async save(file, data) {
+    try {
+      await writeFile(file, data);
 
-        if (info && info.user) {
-          this.license = Map(info);
+      const info = this.decrypt(data);
 
-          logger.log('License file saved.');
-        } else {
-          logger.error('Invalid license data.');
-        }
-      })
-      .catch(error => {
-        logger.error(error.message);
-      });
+      if (info && info.user) {
+        this.license = Map(info);
+
+        logger.log('License file saved.');
+      } else {
+        logger.error('Invalid license data.');
+      }
+    } catch (error) {
+      logger.error(error.message);
+    }
   }
 }

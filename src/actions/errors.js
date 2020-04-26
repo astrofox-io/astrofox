@@ -26,13 +26,12 @@ export const { setError, clearError } = errorStore.actions;
 export default errorStore.reducer;
 
 export function raiseError(message, error) {
-  return async dispatch => {
+  return dispatch => {
     if (error) {
       logger.error(`${message}\n`, error);
     }
 
-    await dispatch(setError({ message, error: error.toString() }));
-
+    dispatch(setError({ message, error: error.toString() }));
     dispatch(showModal('ErrorDialog', { title: 'Error' }));
   };
 }

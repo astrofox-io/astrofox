@@ -76,23 +76,23 @@ export function toggleState(prop) {
 }
 
 export function saveImage(file) {
-  return dispatch => {
-    showSaveDialog({ defaultPath: `image-${Date.now()}.png` }).then(({ filePath, canceled }) => {
-      if (!canceled) {
+  return async dispatch => {
+    const { filePath, canceled } = await showSaveDialog({ defaultPath: `image-${Date.now()}.png` });
+
+    if (!canceled) {
+      try {
         const data = renderer.getFrameData(false);
 
         stage.render(data);
 
         const buffer = stage.getImage();
 
-        writeFile(file, buffer)
-          .then(() => {
-            logger.log('Image saved:', filePath);
-          })
-          .catch(error => {
-            dispatch(raiseError('Failed to save image file.', error));
-          });
+        await writeFile(file, buffer);
+
+        logger.log('Image saved:', filePath);
+      } catch (error) {
+        dispatch(raiseError('Failed to save image file.', error));
       }
-    });
+    }
   };
 }

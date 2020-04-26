@@ -14,7 +14,7 @@ export default function Dialog({ icon, message, buttons, onConfirm }) {
       {buttons && (
         <ButtonRow>
           {buttons.map(button => (
-            <Button text={button} onClick={() => onConfirm(button)} />
+            <Button key={button} text={button} onClick={() => onConfirm(button)} />
           ))}
         </ButtonRow>
       )}

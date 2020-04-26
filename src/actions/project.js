@@ -36,7 +36,7 @@ export function checkUnsavedChanges(menuAction, action) {
 }
 
 export function loadProject(file) {
-  return dispatch => {
+  return async dispatch => {
     function loadData(data) {
       stage.loadConfig(JSON.parse(data));
       stage.resetChanges();
@@ -49,20 +49,24 @@ export function loadProject(file) {
       dispatch(raiseError('Invalid project file.', error));
     }
 
-    return readFileCompressed(file)
-      .then(loadData, error => {
-        if (error.message.indexOf('incorrect header check') > -1) {
-          readFile(file).then(loadData).catch(handleError);
-        } else {
-          throw error;
-        }
-      })
-      .catch(handleError);
+    try {
+      const data = await readFileCompressed(file);
+
+      loadData(data);
+    } catch (error) {
+      if (error.message.indexOf('incorrect header check') > -1) {
+        const data = await readFile(file);
+
+        loadData(data).catch(handleError);
+      } else {
+        handleError(error);
+      }
+    }
   };
 }
 
 export function saveProject(file) {
-  return dispatch => {
+  return async dispatch => {
     if (file) {
       const data = JSON.stringify({
         version: env.APP_VERSION,
@@ -70,36 +74,36 @@ export function saveProject(file) {
         scenes: stage.getSceneData(),
       });
 
-      writeFileCompressed(file, data)
-        .then(() => {
-          logger.log('Project saved:', file);
+      try {
+        await writeFileCompressed(file, data);
 
-          stage.resetChanges();
+        logger.log('Project saved:', file);
 
-          dispatch(updateProject({ file, changed: false }));
-        })
-        .catch(error => {
-          dispatch(raiseError('Failed to save project file.', error));
-        });
+        stage.resetChanges();
+
+        dispatch(updateProject({ file, changed: false }));
+      } catch (error) {
+        dispatch(raiseError('Failed to save project file.', error));
+      }
     } else {
-      showSaveDialog({ defaultPath: 'project.afx' }).then(({ filePath, canceled }) => {
-        if (!canceled) {
-          dispatch(saveProject(filePath));
-        }
-      });
+      const { filePath, canceled } = await showSaveDialog({ defaultPath: 'project.afx' });
+
+      if (!canceled) {
+        dispatch(saveProject(filePath));
+      }
     }
   };
 }
 
 export function openProject() {
-  return dispatch => {
-    showOpenDialog({
+  return async dispatch => {
+    const { filePaths, canceled } = await showOpenDialog({
       filters: [{ name: 'Project files', extensions: ['afx'] }],
-    }).then(({ filePaths }) => {
-      if (filePaths) {
-        dispatch(loadProject(filePaths[0]));
-      }
     });
+
+    if (!canceled) {
+      dispatch(loadProject(filePaths[0]));
+    }
   };
 }
 
