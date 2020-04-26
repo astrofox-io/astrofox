@@ -1,20 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import useForceUpdate from 'components/hooks/useForceUpdate';
 
 export default function DisplayControl(ControlComponent) {
-  return class DisplayControlComponent extends Component {
-    state = this.props.display.properties;
+  return function DisplayControlHOC({ display, ...props }) {
+    const forceUpdate = useForceUpdate();
 
-    handleChange = (name, value, data) => {
-      const { display } = this.props;
-      const obj = { [name]: value, ...data };
-
-      this.setState(obj);
-
-      display.update(obj);
-    };
-
-    render() {
-      return <ControlComponent onChange={this.handleChange} {...this.props} {...this.state} />;
+    function handleChange(name, value, otherProps) {
+      if (display.update({ [name]: value, ...otherProps })) {
+        forceUpdate();
+      }
     }
+
+    return <ControlComponent {...props} {...display.properties} onChange={handleChange} />;
   };
 }

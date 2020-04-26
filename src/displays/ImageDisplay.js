@@ -1,6 +1,6 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
-import blankImage from 'view/assets/images/blank.gif';
+import { BLANK_IMAGE } from 'view/constants';
 
 export default class ImageDisplay extends CanvasDisplay {
   static label = 'Image';
@@ -8,7 +8,7 @@ export default class ImageDisplay extends CanvasDisplay {
   static className = 'ImageDisplay';
 
   static defaultProperties = {
-    src: blankImage,
+    src: BLANK_IMAGE,
     x: 0,
     y: 0,
     width: 1,

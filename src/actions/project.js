@@ -113,7 +113,7 @@ export function newProject() {
 
     const scene = stage.addScene();
 
-    // scene.addElement(new displayLibrary.ImageDisplay());
+    scene.addElement(new displayLibrary.ImageDisplay());
     scene.addElement(new displayLibrary.BarSpectrumDisplay());
     scene.addElement(new displayLibrary.TextDisplay({ text: 'hello.' }));
 

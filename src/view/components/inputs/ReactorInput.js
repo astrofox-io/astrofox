@@ -42,7 +42,7 @@ export default class ReactorInput extends PureComponent {
   getReactor = () => {
     const { display, name } = this.props;
 
-    return display.getReactor(name);
+    return null; // display.getReactor(name);
   };
 
   toggleReactor = () => {
@@ -88,7 +88,7 @@ export default class ReactorInput extends PureComponent {
   };
 
   draw = () => {
-    const reactor = this.getReactor();
+    const reactor = null; // this.getReactor();
 
     if (reactor) {
       const { output } = reactor.getResult();
@@ -99,7 +99,7 @@ export default class ReactorInput extends PureComponent {
   render() {
     const { width, height, children } = this.props;
 
-    const reactor = this.getReactor();
+    const reactor = null; // this.getReactor();
 
     return (
       <>

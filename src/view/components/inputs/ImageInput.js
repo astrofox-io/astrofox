@@ -1,120 +1,105 @@
-import React, { PureComponent } from 'react';
+import React, { forwardRef, useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
+import Spinner from 'components/interface/Spinner';
+import useCombinedRefs from 'components/hooks/useCombinedRefs';
+import { raiseError } from 'actions/errors';
 import { showOpenDialog } from 'utils/window';
 import { readFileAsBlob, readAsDataUrl } from 'utils/io';
+import { ignoreEvents } from 'utils/react';
 import { FolderOpen, Times } from 'view/icons';
-import blankImage from 'assets/images/blank.gif';
+import { BLANK_IMAGE } from 'view/constants';
 import styles from './ImageInput.less';
 
-export default class ImageInput extends PureComponent {
-  static defaultProps = {
-    name: 'image',
-    value: blankImage,
-    onChange: () => {},
-  };
+const ImageInput = forwardRef(({ name, value, onChange }, ref) => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const image = useRef();
+  const combinedRef = useCombinedRefs(ref, image);
+  const hasImage = image.current && value;
 
-  handleImageLoad = () => {
-    const { name, src, onChange } = this.props;
+  function handleImageLoad() {
+    setLoading(false);
+    onChange(name, image.current.src);
+  }
 
-    this.forceUpdate();
-
-    if (src !== this.image.src) {
-      onChange(name, this.image.src);
+  function loadImageSrc(src) {
+    if (image.current.src !== src) {
+      image.current.src = src;
     }
-  };
+  }
 
-  handleDragOver = e => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
+  async function loadImageFile(file) {
+    try {
+      setLoading(true);
+      const blob = await readFileAsBlob(file);
 
-  handleDrop = e => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    this.loadImageFile(e.dataTransfer.files[0].path);
-  };
-
-  handleClick = () => {
-    showOpenDialog(files => {
-      if (files) {
-        this.loadImageFile(files[0]);
+      if (!/^image/.test(blob.type)) {
+        throw new Error('Invalid image file.');
       }
-    });
-  };
 
-  handleDelete = e => {
-    e.stopPropagation();
+      const data = await readAsDataUrl(blob);
+      return loadImageSrc(data);
+    } catch (error) {
+      setLoading(false);
+      dispatch(raiseError('Invalid image file.', error));
+    }
+  }
+
+  async function handleDrop(e) {
     e.preventDefault();
 
-    this.loadImageSrc(blankImage);
-  };
+    await loadImageFile(e.dataTransfer.files[0].path);
+    setLoading(false);
+  }
 
-  getImage = () => this.image;
+  async function handleClick() {
+    const { filePaths, canceled } = await showOpenDialog();
 
-  loadImageSrc = src => {
-    if (src && this.image.src !== src) {
-      this.image.src = src;
+    if (!canceled) {
+      await loadImageFile(filePaths[0]);
+      setLoading(false);
     }
-  };
+  }
 
-  loadImageFile = file =>
-    readFileAsBlob(file)
-      .then(data => {
-        this.loadImageBlob(data);
-      })
-      .catch(err => {
-        raiseError(err.message);
-      });
+  function handleDelete() {
+    loadImageSrc(BLANK_IMAGE);
+  }
 
-  loadImageBlob = blob => {
-    if (/^image/.test(blob.type)) {
-      readAsDataUrl(blob).then(data => {
-        this.loadImageSrc(data);
-      });
-    } else {
-      throw new Error('Invalid image file.');
-    }
-  };
-
-  render() {
-    const { image } = this;
-    const { value } = this.props;
-    const hasImage =
-      (image && image.src && image.src !== blankImage) || (value && value !== blankImage);
-
-    return (
-      <>
-        <div
-          role="presentation"
-          className={styles.image}
-          onDrop={this.handleDrop}
-          onDragOver={this.handleDragOver}
-          onClick={this.handleClick}
-        >
-          <img
-            ref={e => (this.image = e)}
-            className={classNames({
-              [styles.img]: true,
-              [styles.hidden]: !hasImage,
-            })}
-            src={value || blankImage}
-            alt=""
-            onLoad={this.handleImageLoad}
-          />
-          <Icon className={styles.openIcon} glyph={FolderOpen} title="Open File" />
-        </div>
-        <Icon
+  return (
+    <>
+      <div
+        role="presentation"
+        className={styles.image}
+        onDrop={handleDrop}
+        onDragOver={ignoreEvents}
+        onClick={handleClick}
+      >
+        <img
+          ref={combinedRef}
           className={classNames({
-            [styles.closeIcon]: true,
+            [styles.img]: true,
             [styles.hidden]: !hasImage,
           })}
-          glyph={Times}
-          title="Remove Image"
-          onClick={this.handleDelete}
+          src={value}
+          alt=""
+          onLoad={handleImageLoad}
         />
-      </>
-    );
-  }
-}
+        {loading && <Spinner size={20} />}
+        <Icon className={styles.openIcon} glyph={FolderOpen} title="Open File" />
+      </div>
+      <Icon
+        className={classNames({
+          [styles.closeIcon]: true,
+          [styles.hidden]: !hasImage,
+        })}
+        glyph={Times}
+        title="Remove Image"
+        onClick={handleDelete}
+      />
+    </>
+  );
+});
+
+export default ImageInput;

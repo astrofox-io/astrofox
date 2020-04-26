@@ -29,6 +29,10 @@ export const { updateApp } = appStore.actions;
 
 export default appStore.reducer;
 
+async function loadLicense() {
+  await license.load(env.LICENSE_FILE);
+}
+
 function loadMenu() {
   const { setApplicationMenu, buildFromTemplate } = remote.Menu;
   const menu = [...menuConfig];
@@ -56,7 +60,7 @@ export function exitApp() {
 
 export function initApp() {
   return async (dispatch, getState) => {
-    await license.load(env.LICENSE_FILE);
+    await loadLicense();
     await loadMenu();
     await dispatch(loadConfig());
     await dispatch(newProject());
