@@ -17,7 +17,7 @@ export default class Composer {
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    const target = renderTarget || this.createRenderTarget(renderer);
+    const target = renderTarget || this.createRenderTarget();
 
     this.readTarget = target;
     this.writeTarget = target.clone();
@@ -26,7 +26,8 @@ export default class Composer {
     this.writeBuffer = this.writeTarget;
   }
 
-  createRenderTarget(renderer) {
+  createRenderTarget() {
+    const { renderer } = this;
     const context = renderer.getContext();
     const pixelRatio = renderer.getPixelRatio();
     const width = Math.floor(context.canvas.width / pixelRatio) || 1;

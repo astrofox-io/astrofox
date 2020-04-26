@@ -37,7 +37,7 @@ export default class BloomEffect extends Effect {
     const passes = [];
 
     // Save current frame
-    this.savePass = new SavePass(composer.getRenderTarget(), { blending: NoBlending });
+    this.savePass = new SavePass(composer.createRenderTarget(), { blending: NoBlending });
     passes.push(this.savePass);
 
     // Apply luminance threshold
