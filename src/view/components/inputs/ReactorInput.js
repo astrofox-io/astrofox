@@ -1,135 +1,108 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { events } from 'view/global';
+import AudioReactor from 'audio/AudioReactor';
 import Icon from 'components/interface/Icon';
+import { showActiveReactor, hideActiveReactor } from 'actions/app';
+import { addReactor, removeReactor } from 'actions/reactors';
+import { events, stage } from 'view/global';
 import { Flash, Times } from 'view/icons';
+import { PRIMARY_COLOR } from 'view/constants';
 import styles from './ReactorInput.less';
 
-export default class ReactorInput extends PureComponent {
-  static defaultProps = {
-    width: 100,
-    height: 10,
-    color: '#775fd8',
-    onChange: () => {},
-  };
+export default function ReactorInput({
+  displayId,
+  name,
+  value,
+  width = 100,
+  height = 10,
+  color = PRIMARY_COLOR,
+  min = 0,
+  max = 1,
+  children,
+}) {
+  const dispatch = useDispatch();
+  const [reactor, setReactor] = useState();
+  const canvas = useRef();
+  const meter = useRef();
+  const display = useMemo(() => stage.getElementById(displayId), [displayId]);
 
-  componentDidMount() {
-    const { width, height, color } = this.props;
-    const reactor = this.getReactor();
+  async function enableReactor() {
+    if (!reactor) {
+      const newReactor = await dispatch(
+        addReactor(new AudioReactor({ min, max, lastValue: value })),
+      );
+      setReactor(newReactor);
+    }
+  }
 
-    this.meter = new CanvasMeter(
+  function disableReactor() {
+    if (reactor) {
+      dispatch(removeReactor(reactor));
+      dispatch(hideActiveReactor());
+    }
+  }
+
+  function toggleReactor() {
+    if (reactor) {
+      dispatch(showActiveReactor(reactor.id));
+    }
+  }
+
+  function draw() {
+    if (reactor) {
+      const { output } = reactor.getResult();
+
+      meter.current.render(output);
+    }
+  }
+
+  useEffect(() => {
+    meter.current = new CanvasMeter(
       {
         width,
         height,
         color,
       },
-      this.canvas,
+      canvas.current,
     );
 
-    events.emit('reactor-edit', this.getReactor());
+    events.on('render', draw);
 
-    if (reactor) {
-      events.on('render', this.draw, this);
-    }
-  }
+    return () => {
+      events.off('render', draw);
+    };
+  });
 
-  componentWillUnmount() {
-    events.off('render', this.draw, this);
-    events.emit('reactor-edit', null);
-  }
-
-  getReactor = () => {
-    const { display, name } = this.props;
-
-    return null; // display.getReactor(name);
-  };
-
-  toggleReactor = () => {
-    const reactor = this.getReactor();
-
-    if (reactor) {
-      this.showReactorControl(reactor);
-    } else {
-      this.addReactor();
-    }
-  };
-
-  addReactor = () => {
-    const { display, name, min, max } = this.props;
-
-    const reactor = display.setReactor(name, {
-      lastValue: display.properties[name],
-      min: min || 0,
-      max: max || 1,
-    });
-
-    this.showReactorControl(reactor);
-
-    events.on('render', this.draw, this);
-
-    this.forceUpdate();
-  };
-
-  removeReactor = () => {
-    const { display, name } = this.props;
-
-    display.setReactor(name, null);
-
-    this.showReactorControl(null);
-
-    events.off('render', this.draw, this);
-
-    this.forceUpdate();
-  };
-
-  showReactorControl = reactor => {
-    events.emit('reactor-edit', reactor);
-  };
-
-  draw = () => {
-    const reactor = null; // this.getReactor();
-
-    if (reactor) {
-      const { output } = reactor.getResult();
-      this.meter.render(output);
-    }
-  };
-
-  render() {
-    const { width, height, children } = this.props;
-
-    const reactor = null; // this.getReactor();
-
-    return (
-      <>
-        <Icon
-          className={classNames({
-            [styles.icon]: true,
-            [styles.iconActive]: reactor,
-          })}
-          glyph={Flash}
-          title={reactor ? 'Show Reactor' : 'Enable Reactor'}
-          onClick={this.toggleReactor}
-        />
-        <div
-          className={classNames({
-            [styles.reactor]: true,
-            [styles.hidden]: !reactor,
-          })}
-        >
-          <div className={styles.meter} onDoubleClick={this.toggleReactor}>
-            <canvas ref={e => (this.canvas = e)} className="canvas" width={width} height={height} />
-          </div>
-          <Icon
-            className={styles.closeIcon}
-            glyph={Times}
-            title="Disable Reactor"
-            onClick={this.removeReactor}
-          />
+  return (
+    <>
+      <Icon
+        className={classNames({
+          [styles.icon]: true,
+          [styles.iconActive]: reactor,
+        })}
+        glyph={Flash}
+        title={reactor ? 'Show Reactor' : 'Enable Reactor'}
+        onClick={enableReactor}
+      />
+      <div
+        className={classNames({
+          [styles.reactor]: true,
+          [styles.hidden]: !reactor,
+        })}
+      >
+        <div className={styles.meter} onDoubleClick={toggleReactor}>
+          <canvas ref={canvas} className="canvas" width={width} height={height} />
         </div>
-        {!reactor && children}
-      </>
-    );
-  }
+        <Icon
+          className={styles.closeIcon}
+          glyph={Times}
+          title="Disable Reactor"
+          onClick={disableReactor}
+        />
+      </div>
+      {!reactor && children}
+    </>
+  );
 }

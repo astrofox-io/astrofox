@@ -1,49 +1,25 @@
 import React from 'react';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import { NumberInput, RangeInput, ReactorInput } from 'components/inputs';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 
-function RGBShiftControl({ displayName, stageWidth, active, onChange, offset, angle }) {
+function RGBShiftControl({ display, stageWidth, active, onChange }) {
+  const { offset, angle } = display.properties;
+
   return (
-    <Control label="RGB Shift" active={active} displayName={displayName}>
-      <Option>
-        <Label text="Offset" />
-        <ReactorInput name="offset" max={stageWidth}>
-          <NumberInput
-            name="offset"
-            width={40}
-            value={offset}
-            min={0}
-            max={stageWidth}
-            step={1}
-            onChange={onChange}
-          />
-          <RangeInput
-            name="offset"
-            min={0.0}
-            max={stageWidth}
-            step={1}
-            value={offset}
-            onChange={onChange}
-          />
-        </ReactorInput>
-      </Option>
-      <Option>
-        <Label text="Angle" />
-        <ReactorInput name="angle" max={360}>
-          <NumberInput
-            name="angle"
-            width={40}
-            value={angle}
-            min={0}
-            max={360}
-            onChange={onChange}
-          />
-          <RangeInput name="angle" min={0} max={360} value={angle} onChange={onChange} />
-        </ReactorInput>
-      </Option>
+    <Control label="RGB Shift" active={active} display={display} onChange={onChange}>
+      <Option
+        label="Offset"
+        type="number"
+        name="offset"
+        value={offset}
+        min={0}
+        max={stageWidth}
+        step={1}
+        withRange
+      />
+      <Option label="Angle" type="number" name="angle" value={angle} min={0} max={360} withRange />
     </Control>
   );
 }
 
-export default DisplayControl(RGBShiftControl);
+export default withDisplay(RGBShiftControl);

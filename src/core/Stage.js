@@ -244,8 +244,6 @@ export default class Stage extends Display {
       } else {
         this.update(Stage.defaultProperties);
       }
-    } else {
-      raiseError('Invalid project data.');
     }
   }
 

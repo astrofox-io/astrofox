@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { env, logger, stage } from 'view/global';
+import { env, logger, renderer, stage } from 'view/global';
 import * as displayLibrary from 'displays';
 import { loadScenes } from 'actions/scenes';
 import { raiseError } from 'actions/errors';
@@ -72,6 +72,7 @@ export function saveProject(file) {
         version: env.APP_VERSION,
         stage: stage.toJSON(),
         scenes: stage.getSceneData(),
+        reactors: renderer.getReactorData(),
       });
 
       try {

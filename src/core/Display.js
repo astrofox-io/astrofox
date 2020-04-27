@@ -1,5 +1,4 @@
 import Component from 'core/Component';
-import AudioReactor from 'audio/AudioReactor';
 
 let displayCount = {};
 
@@ -22,8 +21,8 @@ export default class Display extends Component {
       ...properties,
     });
 
-    this.name = type.className;
-    this.initialized = !!properties;
+    Object.defineProperty(this, 'name', { value: type.className });
+
     this.scene = null;
     this.hasUpdate = false;
     this.changed = false;
@@ -34,38 +33,30 @@ export default class Display extends Component {
     return this.reactors[name];
   }
 
-  setReactor(name, properties) {
-    // Create reactor
-    if (properties) {
-      const { displayName } = this.properties;
-      this.reactors[name] = new AudioReactor({
-        displayName: `Reactor/${displayName}/${name}`,
-        ...properties,
-      });
-    }
-    // Remove reactor
-    else {
-      this.update({ [name]: this.reactors[name].properties.lastValue });
-      delete this.reactors[name];
-    }
+  setReactor(name, reactor) {
+    this.reactors[name] = reactor;
+    this.changed = true;
+  }
 
-    return this.reactors[name];
+  removeReactor(name) {
+    delete this.reactors[name];
+    this.changed = true;
   }
 
   updateReactors(data) {
-    const { reactors } = this;
+    const { reactors, changed } = this;
 
     Object.keys(reactors).forEach(name => {
       const reactor = reactors[name];
 
-      if (reactor) {
-        const { output } = reactor.parse(data);
-        const { min, max } = reactor.properties;
-        const value = (max - min) * output + min;
+      const { output } = reactor.parse(data);
+      const { min, max } = reactor.properties;
+      const value = (max - min) * output + min;
 
-        this.update({ [name]: value });
-      }
+      this.update({ [name]: value });
     });
+
+    this.changed = changed;
   }
 
   update(properties = {}) {
@@ -81,12 +72,18 @@ export default class Display extends Component {
   toJSON() {
     const { id, name, type, properties, reactors } = this;
 
+    const reactorData = Object.keys(reactors).reduce((obj, key) => {
+      const reactor = reactors[key];
+      obj[key] = reactor.id;
+      return obj;
+    }, {});
+
     return {
       id,
       name,
       type,
       properties: { ...properties },
-      reactors,
+      reactors: reactorData,
     };
   }
 }

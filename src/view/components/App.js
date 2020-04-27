@@ -23,6 +23,7 @@ import Modals from './window/Modals';
 function App() {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project);
+  const reactor = null;
 
   function handleMenuAction(action) {
     switch (action) {
@@ -112,7 +113,7 @@ function App() {
         <div className={styles.viewport}>
           <Stage />
           <Player />
-          <ReactorControl />
+          {reactor && <ReactorControl reactor={reactor} />}
         </div>
         <ControlDock />
       </div>

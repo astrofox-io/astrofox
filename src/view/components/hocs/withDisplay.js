@@ -1,7 +1,7 @@
 import React from 'react';
 import useForceUpdate from 'components/hooks/useForceUpdate';
 
-export default function DisplayControl(ControlComponent) {
+export default function withDisplay(Component) {
   return function DisplayControlHOC({ display, ...props }) {
     const forceUpdate = useForceUpdate();
 
@@ -11,6 +11,6 @@ export default function DisplayControl(ControlComponent) {
       }
     }
 
-    return <ControlComponent {...props} {...display.properties} onChange={handleChange} />;
+    return <Component {...props} display={display} onChange={handleChange} />;
   };
 }

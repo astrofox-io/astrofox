@@ -1,89 +1,49 @@
 import React from 'react';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import { NumberInput, RangeInput, SelectInput, ReactorInput } from 'components/inputs';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 
 const blurOptions = ['Box', 'Circular', 'Gaussian', 'Zoom'];
 
-function BlurControl({
-  displayName,
-  active,
-  stageWidth,
-  stageHeight,
-  x,
-  y,
-  type,
-  amount,
-  onChange,
-}) {
+function BlurControl({ display, active, stageWidth, stageHeight, onChange }) {
+  const { x, y, type, amount } = display.properties;
+
   return (
-    <Control label="Blur" active={active} displayName={displayName}>
-      <Option>
-        <Label text="Type" />
-        <SelectInput name="type" width={140} items={blurOptions} value={type} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Amount" />
-        <ReactorInput name="amount">
-          <NumberInput
-            name="amount"
-            width={40}
-            value={amount}
-            min={0}
-            max={1.0}
-            step={0.01}
-            onChange={onChange}
-          />
-          <RangeInput
-            name="amount"
-            min={0}
-            max={1.0}
-            step={0.01}
-            value={amount}
-            onChange={onChange}
-          />
-        </ReactorInput>
-      </Option>
+    <Control label="Blur" active={active} display={display} onChange={onChange}>
+      <Option label="Type" type="select" name="type" items={blurOptions} value={type} />
+      <Option
+        label="Amount"
+        type="number"
+        name="amount"
+        value={amount}
+        min={0}
+        max={1.0}
+        step={0.01}
+        withRange
+      />
       {type === 'Zoom' && (
         <>
-          <Option>
-            <Label text="X" />
-            <NumberInput
-              name="x"
-              min={-stageWidth / 2}
-              max={stageWidth / 2}
-              value={x}
-              onChange={onChange}
-            />
-            <RangeInput
-              name="x"
-              min={-stageWidth / 2}
-              max={stageWidth / 2}
-              value={x}
-              onChange={onChange}
-            />
-          </Option>
-          <Option>
-            <Label text="Y" />
-            <NumberInput
-              name="y"
-              min={-stageHeight / 2}
-              max={stageHeight / 2}
-              value={y}
-              onChange={onChange}
-            />
-            <RangeInput
-              name="y"
-              min={-stageHeight / 2}
-              max={stageHeight / 2}
-              value={y}
-              onChange={onChange}
-            />
-          </Option>
+          <Option
+            label="X"
+            type="number"
+            name="x"
+            value={x}
+            min={-stageWidth / 2}
+            max={stageWidth / 2}
+            withRange
+          />
+          <Option
+            label="Y"
+            type="number"
+            name="y"
+            value={y}
+            min={-stageHeight / 2}
+            max={stageHeight / 2}
+            withRange
+          />
         </>
       )}
     </Control>
   );
 }
 
-export default DisplayControl(BlurControl);
+export default withDisplay(BlurControl);

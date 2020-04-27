@@ -12,7 +12,7 @@ const initialState = {
   showControlDock: true,
   showPlayer: true,
   showReactor: false,
-  reactor: null,
+  activeReactorId: null,
 };
 
 const appStore = createSlice({
@@ -98,5 +98,17 @@ export function saveImage(file) {
         dispatch(raiseError('Failed to save image file.', error));
       }
     }
+  };
+}
+
+export function showActiveReactor(activeReactorId) {
+  return dispatch => {
+    dispatch(updateApp({ activeReactorId }));
+  };
+}
+
+export function hideActiveReactor() {
+  return dispatch => {
+    dispatch(updateApp({ activeReactorId: null }));
   };
 }

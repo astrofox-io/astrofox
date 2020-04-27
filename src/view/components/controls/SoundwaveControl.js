@@ -1,156 +1,101 @@
 import React from 'react';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import { NumberInput, ColorInput, RangeInput, ToggleInput } from 'components/inputs';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 
-function SoundwaveControl({
-  displayName,
-  active,
-  stageWidth,
-  stageHeight,
-  color,
-  wavelength,
-  lineWidth,
-  width,
-  height,
-  x,
-  y,
-  smooth,
-  rotation,
-  opacity,
-  onChange,
-}) {
+function SoundwaveControl({ display, active, stageWidth, stageHeight, onChange }) {
+  const {
+    color,
+    wavelength,
+    lineWidth,
+    width,
+    height,
+    x,
+    y,
+    smooth,
+    rotation,
+    opacity,
+  } = display.properties;
+
   return (
-    <Control label="Soundwave" active={active} displayName={displayName}>
-      <Option>
-        <Label text="Color" />
-        <ColorInput name="color" value={color} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Line Width" />
-        <NumberInput
-          name="lineWidth"
-          width={40}
-          value={lineWidth}
-          min={0}
-          max={10}
-          onChange={onChange}
-        />
-        <RangeInput
-          name="lineWidth"
-          min={0.01}
-          max={10}
-          step={0.01}
-          value={lineWidth}
-          onChange={onChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Width" />
-        <NumberInput
-          name="width"
-          width={40}
-          value={width}
-          min={0}
-          max={stageWidth}
-          onChange={onChange}
-        />
-        <RangeInput name="width" min={0} max={stageWidth} value={width} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Height" />
-        <NumberInput
-          name="height"
-          width={40}
-          min={0}
-          max={stageWidth}
-          value={height}
-          onChange={onChange}
-        />
-        <RangeInput name="height" min={0} max={stageWidth} value={height} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="X" />
-        <NumberInput
-          name="x"
-          width={40}
-          min={-stageWidth}
-          max={stageWidth}
-          value={x}
-          onChange={onChange}
-        />
-        <RangeInput name="x" min={-stageWidth} max={stageWidth} value={x} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Y" />
-        <NumberInput
-          name="y"
-          width={40}
-          min={-stageHeight}
-          max={stageHeight}
-          value={y}
-          onChange={onChange}
-        />
-        <RangeInput name="y" min={-stageHeight} max={stageHeight} value={y} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Wavelength" />
-        <NumberInput
-          name="wavelength"
-          width={40}
-          min={0}
-          max={100}
-          step={1}
-          value={wavelength}
-          onChange={onChange}
-        />
-        <RangeInput
-          name="wavelength"
-          min={0}
-          max={100}
-          step={1}
-          value={wavelength}
-          onChange={onChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Smooth" />
-        <ToggleInput name="smooth" value={smooth} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Rotation" />
-        <NumberInput
-          name="rotation"
-          width={40}
-          min={0}
-          max={360}
-          value={rotation}
-          onChange={onChange}
-        />
-        <RangeInput name="rotation" min={0} max={360} value={rotation} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Opacity" />
-        <NumberInput
-          name="opacity"
-          width={40}
-          min={0}
-          max={1.0}
-          step={0.01}
-          value={opacity}
-          onChange={onChange}
-        />
-        <RangeInput
-          name="opacity"
-          min={0}
-          max={1.0}
-          step={0.01}
-          value={opacity}
-          onChange={onChange}
-        />
-      </Option>
+    <Control label="Soundwave" active={active} display={display} onChange={onChange}>
+      <Option label="Color" type="color" name="color" value={color} />
+      <Option
+        label="Line Width"
+        type="number"
+        name="lineWidth"
+        value={lineWidth}
+        min={0}
+        max={10}
+        withRange
+      />
+      <Option
+        label="Width"
+        type="number"
+        name="width"
+        value={width}
+        min={0}
+        max={stageWidth}
+        withRange
+      />
+      <Option
+        label="Height"
+        type="number"
+        name="height"
+        value={height}
+        min={0}
+        max={stageHeight}
+        withRange
+      />
+      <Option
+        label="X"
+        type="number"
+        name="x"
+        value={x}
+        min={-stageWidth}
+        max={stageWidth}
+        withRange
+      />
+      <Option
+        label="Y"
+        type="number"
+        name="y"
+        value={y}
+        min={-stageHeight}
+        max={stageHeight}
+        withRange
+      />
+      <Option
+        label="Wavelength"
+        type="number"
+        name="wavelength"
+        value={wavelength}
+        min={0}
+        max={100}
+        step={1}
+        withRange
+      />
+      <Option label="Smooth" type="toggle" name="smooth" value={smooth} />
+      <Option
+        label="Rotation"
+        type="number"
+        name="rotation"
+        value={rotation}
+        min={0}
+        max={360}
+        withRange
+      />
+      <Option
+        label="Opacity"
+        type="number"
+        name="opacity"
+        value={opacity}
+        min={0}
+        max={1.0}
+        step={0.01}
+        withRange
+      />
     </Control>
   );
 }
 
-export default DisplayControl(SoundwaveControl);
+export default withDisplay(SoundwaveControl);

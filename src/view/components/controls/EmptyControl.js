@@ -1,11 +1,9 @@
 import React from 'react';
-import { Control, Option, Label } from 'components/controls/Control';
+import { Control, Option } from 'components/editing';
 
 const EmptyControl = () => (
   <Control>
-    <Option>
-      <Label text="Empty" />
-    </Option>
+    <Option label="Empty" />
   </Control>
 );
 

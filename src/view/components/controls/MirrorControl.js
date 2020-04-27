@@ -1,7 +1,6 @@
 import React from 'react';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import { SelectInput } from 'components/inputs';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 
 const mirrorOptions = [
   { name: 'Left', value: 0 },
@@ -10,21 +9,14 @@ const mirrorOptions = [
   { name: 'Bottom', value: 3 },
 ];
 
-function MirrorControl({ displayName, active, side, onChange }) {
+function MirrorControl({ display, active, onChange }) {
+  const { side } = display.properties;
+
   return (
-    <Control label="Mirror" active={active} displayName={displayName}>
-      <Option>
-        <Label text="Side" />
-        <SelectInput
-          name="side"
-          width={140}
-          items={mirrorOptions}
-          value={side}
-          onChange={onChange}
-        />
-      </Option>
+    <Control label="Mirror" active={active} display={display} onChange={onChange}>
+      <Option label="Side" type="select" name="side" items={mirrorOptions} value={side} />
     </Control>
   );
 }
 
-export default DisplayControl(MirrorControl);
+export default withDisplay(MirrorControl);

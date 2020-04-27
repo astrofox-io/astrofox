@@ -1,28 +1,10 @@
 import React, { useRef } from 'react';
-import classNames from 'classnames';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import Icon from 'components/interface/Icon';
-import { NumberInput, ImageInput, RangeInput, ReactorInput } from 'components/inputs';
-import { Link } from 'view/icons';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 import { BLANK_IMAGE } from 'view/constants';
-import styles from './ImageControl.less';
 
-function ImageControl({
-  display,
-  active,
-  stageWidth,
-  stageHeight,
-  fixed,
-  src,
-  width,
-  height,
-  x,
-  y,
-  rotation,
-  opacity,
-  onChange,
-}) {
+function ImageControl({ display, active, stageWidth, stageHeight, onChange }) {
+  const { fixed, src, width, height, x, y, rotation, opacity } = display.properties;
   const image = useRef();
   const disabled = !(image.current && image.current.src !== BLANK_IMAGE);
   const imageWidth = disabled ? 0 : image.current.naturalWidth;
@@ -68,155 +50,77 @@ function ImageControl({
   }
 
   return (
-    <Control label="Image" active={active} display={display}>
-      <Option>
-        <Label text="Image" />
-        <ImageInput name="src" ref={image} value={src} onChange={handleChange} />
-      </Option>
-      <Option>
-        <Label text="Width">
-          <Icon
-            className={classNames({
-              [styles.linkIcon]: true,
-              [styles.linkIconActive]: fixed,
-            })}
-            glyph={Link}
-            onClick={handleLinkClick}
-          />
-        </Label>
-        <NumberInput
-          name="width"
-          width={40}
-          min={0}
-          max={maxWidth}
-          value={width}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-        <RangeInput
-          name="width"
-          min={0}
-          max={maxWidth}
-          value={width}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Height">
-          <Icon
-            className={classNames({
-              [styles.linkIcon]: true,
-              [styles.linkIconActive]: fixed,
-            })}
-            glyph={Link}
-            onClick={handleLinkClick}
-          />
-        </Label>
-        <NumberInput
-          name="height"
-          width={40}
-          min={0}
-          max={maxHeight}
-          value={height}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-        <RangeInput
-          name="height"
-          min={0}
-          max={maxHeight}
-          value={height}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-      </Option>
-      <Option>
-        <Label text="X" />
-        <NumberInput
-          name="x"
-          width={40}
-          min={disabled ? 0 : -xMax}
-          max={disabled ? 0 : xMax}
-          value={x}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-        <RangeInput
-          name="x"
-          min={disabled ? 0 : -xMax}
-          max={disabled ? 0 : xMax}
-          value={x}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Y" />
-        <NumberInput
-          name="y"
-          width={40}
-          min={disabled ? 0 : -yMax}
-          max={disabled ? 0 : yMax}
-          value={y}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-        <RangeInput
-          name="y"
-          min={disabled ? 0 : -yMax}
-          max={disabled ? 0 : yMax}
-          value={y}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Rotation" />
-        <NumberInput
-          name="rotation"
-          width={40}
-          min={0}
-          max={disabled ? 0 : 360}
-          value={rotation}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-        <RangeInput
-          name="rotation"
-          min={0}
-          max={disabled ? 0 : 360}
-          value={rotation}
-          disabled={disabled}
-          onChange={handleChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Opacity" />
-        <ReactorInput name="opacity">
-          <NumberInput
-            name="opacity"
-            width={40}
-            min={0}
-            max={disabled ? 0 : 1.0}
-            step={0.01}
-            value={opacity}
-            disabled={disabled}
-            onChange={handleChange}
-          />
-          <RangeInput
-            name="opacity"
-            min={0}
-            max={disabled ? 0 : 1.0}
-            step={0.01}
-            value={opacity}
-            disabled={disabled}
-            onChange={handleChange}
-          />
-        </ReactorInput>
-      </Option>
+    <Control label="Image" active={active} display={display} onChange={handleChange}>
+      <Option label="Image" type="image" name="src" forwardRef={image} value={src} />
+      <Option
+        label="Width"
+        type="number"
+        name="width"
+        value={width}
+        min={0}
+        max={maxWidth}
+        disabled={disabled}
+        withLink
+        linkActive={fixed}
+        onLinkClick={handleLinkClick}
+        withRange
+      />
+      <Option
+        label="Height"
+        type="number"
+        name="height"
+        value={height}
+        min={0}
+        max={maxHeight}
+        disabled={disabled}
+        withLink
+        linkActive={fixed}
+        onLinkClick={handleLinkClick}
+        withRange
+      />
+      <Option
+        label="X"
+        type="number"
+        name="x"
+        value={x}
+        min={disabled ? 0 : -xMax}
+        max={disabled ? 0 : xMax}
+        disabled={disabled}
+        withRange
+      />
+      <Option
+        label="Y"
+        type="number"
+        name="y"
+        value={y}
+        min={disabled ? 0 : -yMax}
+        max={disabled ? 0 : yMax}
+        disabled={disabled}
+        withRange
+      />
+      <Option
+        label="Rotation"
+        type="number"
+        name="rotation"
+        value={rotation}
+        min={0}
+        max={disabled ? 0 : 360}
+        disabled={disabled}
+        withRange
+      />
+      <Option
+        label="Opacity"
+        type="number"
+        name="opacity"
+        value={opacity}
+        min={0}
+        max={disabled ? 0 : 1.0}
+        step={0.01}
+        disabled={disabled}
+        withRange
+      />
     </Control>
   );
 }
 
-export default DisplayControl(ImageControl);
+export default withDisplay(ImageControl);

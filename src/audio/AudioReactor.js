@@ -6,9 +6,15 @@ import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
 
+let reactorCount = 0;
+
+export function resetReactorCount() {
+  reactorCount = 0;
+}
+
 export default class AudioReactor extends Component {
   static defaultProperties = {
-    displayName: 'Reactor',
+    enabled: true,
     outputMode: 'Add',
     lastValue: 0,
     min: 0,
@@ -28,7 +34,14 @@ export default class AudioReactor extends Component {
   };
 
   constructor(properties) {
-    super({ ...AudioReactor.defaultProperties, ...properties });
+    reactorCount += 1;
+    super({
+      displayName: `Reactor ${reactorCount}`,
+      ...AudioReactor.defaultProperties,
+      ...properties,
+    });
+
+    Object.defineProperty(this, 'name', { value: 'AudioReactor' });
 
     this.parser = new SpectrumParser({
       maxDecibels: -20,
@@ -106,6 +119,12 @@ export default class AudioReactor extends Component {
   }
 
   toJSON() {
-    return this.properties;
+    const { id, name, properties } = this;
+
+    return {
+      id,
+      name,
+      properties: { ...properties },
+    };
   }
 }

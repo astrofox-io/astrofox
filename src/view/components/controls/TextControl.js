@@ -1,120 +1,60 @@
 import React from 'react';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import {
-  ColorInput,
-  NumberInput,
-  RangeInput,
-  SelectInput,
-  TextInput,
-  ToggleInput,
-  ReactorInput,
-} from 'components/inputs';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 import fonts from 'config/fonts.json';
 
 const fontOptions = fonts.map(item => ({ name: item, value: item, style: { fontFamily: item } }));
 
-function TextControl({
-  displayName,
-  active,
-  stageWidth,
-  stageHeight,
-  text,
-  size,
-  font,
-  bold,
-  italic,
-  color,
-  x,
-  y,
-  rotation,
-  opacity,
-  onChange,
-}) {
+function TextControl({ display, active, stageWidth, stageHeight, onChange }) {
+  const { text, size, font, bold, italic, color, x, y, rotation, opacity } = display.properties;
+
   return (
-    <Control label="Text" active={active} displayName={displayName}>
-      <Option>
-        <Label text="Text" />
-        <TextInput name="text" width={140} value={text} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Font" />
-        <SelectInput name="font" width={140} items={fontOptions} value={font} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Size" />
-        <NumberInput name="size" width={40} min={0} value={size} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Bold" />
-        <ToggleInput name="bold" value={bold} onChange={onChange} />
-        <Label text="Italic" />
-        <ToggleInput name="italic" value={italic} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Color" />
-        <ColorInput name="color" value={color} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="X" />
-        <NumberInput
-          name="x"
-          width={40}
-          min={-stageWidth}
-          max={stageWidth}
-          value={x}
-          onChange={onChange}
-        />
-        <RangeInput name="x" min={-stageWidth} max={stageWidth} value={x} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Y" />
-        <NumberInput
-          name="y"
-          width={40}
-          min={-stageHeight}
-          max={stageHeight}
-          value={y}
-          onChange={onChange}
-        />
-        <RangeInput name="y" min={-stageHeight} max={stageHeight} value={y} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Rotation" />
-        <NumberInput
-          name="rotation"
-          width={40}
-          min={0}
-          max={360}
-          value={rotation}
-          onChange={onChange}
-        />
-        <RangeInput name="rotation" min={0} max={360} value={rotation} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Opacity" />
-        <ReactorInput name="opacity">
-          <NumberInput
-            name="opacity"
-            width={40}
-            min={0}
-            max={1.0}
-            step={0.01}
-            value={opacity}
-            onChange={onChange}
-          />
-          <RangeInput
-            name="opacity"
-            min={0}
-            max={1.0}
-            step={0.01}
-            value={opacity}
-            onChange={onChange}
-          />
-        </ReactorInput>
-      </Option>
+    <Control label="Text" active={active} display={display} onChange={onChange}>
+      <Option label="Text" type="text" name="text" value={text} />
+      <Option label="Font" type="select" name="font" items={fontOptions} value={font} />
+      <Option label="Size" type="number" name="size" min={0} value={size} />
+      <Option label="Bold" type="toggle" name="bold" value={bold} />
+      <Option label="Italic" type="toggle" name="italic" value={italic} />
+      <Option label="Color" type="color" name="color" value={color} />
+      <Option
+        label="X"
+        type="number"
+        name="x"
+        min={-stageWidth}
+        max={stageWidth}
+        value={x}
+        withRange
+      />
+      <Option
+        label="Y"
+        type="number"
+        name="y"
+        min={-stageHeight}
+        max={stageHeight}
+        value={y}
+        withRange
+      />
+      <Option
+        label="Rotation"
+        type="number"
+        name="rotation"
+        min={0}
+        max={360}
+        value={rotation}
+        withRange
+      />
+      <Option
+        label="Opacity"
+        type="number"
+        name="opacity"
+        value={opacity}
+        min={0}
+        max={1.0}
+        step={0.01}
+        withRange
+      />
     </Control>
   );
 }
 
-export default DisplayControl(TextControl);
+export default withDisplay(TextControl);

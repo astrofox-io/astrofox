@@ -1,14 +1,6 @@
 import React from 'react';
-import DisplayControl from 'components/controls/DisplayControl';
-import { Control, Option, Label } from 'components/controls/Control';
-import {
-  ColorInput,
-  NumberInput,
-  RangeInput,
-  SelectInput,
-  ToggleInput,
-  ReactorInput,
-} from 'components/inputs';
+import withDisplay from 'components/hocs/withDisplay';
+import { Control, Option } from 'components/editing';
 
 const shapeOptions = [
   'Box',
@@ -29,130 +21,76 @@ const maxXRange = 500;
 const maxYRange = 500;
 const maxZRange = 1000;
 
-function GeometryControl({
-  displayName,
-  active,
-  shape,
-  material,
-  shading,
-  color,
-  wireframe,
-  edges,
-  edgeColor,
-  x,
-  y,
-  z,
-  opacity,
-  onChange,
-}) {
+function GeometryControl({ display, active, onChange }) {
+  const {
+    shape,
+    material,
+    shading,
+    color,
+    wireframe,
+    edges,
+    edgeColor,
+    x,
+    y,
+    z,
+    opacity,
+  } = display.properties;
+
   return (
-    <Control label="3D Geometry" active={active} displayName={displayName}>
-      <Option>
-        <Label text="Shape" />
-        <SelectInput
-          name="shape"
-          width={140}
-          items={shapeOptions}
-          value={shape}
-          onChange={onChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Material" />
-        <SelectInput
-          name="material"
-          width={140}
-          items={materialOptions}
-          value={material}
-          onChange={onChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Shading" />
-        <SelectInput
-          name="shading"
-          width={140}
-          items={shadingOptions}
-          value={shading}
-          onChange={onChange}
-        />
-      </Option>
-      <Option>
-        <Label text="Color" />
-        <ColorInput name="color" value={color} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Wireframe" />
-        <ToggleInput name="wireframe" value={wireframe} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Edges" />
-        <ToggleInput name="edges" value={edges} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Edge Color" />
-        <ColorInput name="edgeColor" value={edgeColor} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="X" />
-        <NumberInput
-          name="x"
-          width={40}
-          min={-maxXRange}
-          max={maxXRange}
-          value={x}
-          onChange={onChange}
-        />
-        <RangeInput name="x" min={-maxXRange} max={maxXRange} value={x} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Y" />
-        <NumberInput
-          name="y"
-          width={40}
-          min={-maxYRange}
-          max={maxYRange}
-          value={y}
-          onChange={onChange}
-        />
-        <RangeInput name="y" min={-maxYRange} max={maxYRange} value={y} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Z" />
-        <NumberInput
-          name="z"
-          width={40}
-          min={-maxZRange}
-          max={maxZRange}
-          value={z}
-          onChange={onChange}
-        />
-        <RangeInput name="z" min={-maxZRange} max={maxZRange} value={z} onChange={onChange} />
-      </Option>
-      <Option>
-        <Label text="Opacity" />
-        <ReactorInput name="opacity">
-          <NumberInput
-            name="opacity"
-            width={40}
-            min={0}
-            max={1}
-            step={0.01}
-            value={opacity}
-            onChange={onChange}
-          />
-          <RangeInput
-            name="opacity"
-            min={0}
-            max={1}
-            step={0.01}
-            value={opacity}
-            onChange={onChange}
-          />
-        </ReactorInput>
-      </Option>
+    <Control label="3D Geometry" active={active} display={display} onChange={onChange}>
+      <Option label="Shape" type="select" name="shape" items={shapeOptions} value={shape} />
+      <Option
+        label="Material"
+        type="select"
+        name="material"
+        items={materialOptions}
+        value={material}
+      />
+      <Option label="Shading" type="select" name="shading" items={shadingOptions} value={shading} />
+      <Option label="Color" type="color" name="color" value={color} />
+      <Option label="Wireframe" type="toggle" name="wireframe" value={wireframe} />
+      <Option label="Edges" type="toggle" name="edges" value={edges} />
+      <Option label="Edge Color" type="color" name="edgeColor" value={edgeColor} />
+      <Option
+        label="X"
+        type="number"
+        name="x"
+        value={x}
+        min={-maxXRange}
+        max={maxXRange}
+        withRange
+      />
+      <Option
+        label="Y"
+        type="number"
+        name="y"
+        value={y}
+        min={-maxYRange}
+        max={maxYRange}
+        withRange
+      />
+      <Option
+        label="Z"
+        type="number"
+        name="z"
+        value={z}
+        min={-maxZRange}
+        max={maxZRange}
+        withRange
+      />
+
+      <Option
+        label="Opacity"
+        type="number"
+        name="opacity"
+        value={opacity}
+        min={0}
+        max={1}
+        step={0.01}
+        withRange
+      />
     </Control>
   );
 }
 
-export default DisplayControl(GeometryControl);
+export default withDisplay(GeometryControl);

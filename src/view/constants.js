@@ -11,6 +11,8 @@ export const DEFAULT_CANVAS_WIDTH = 854;
 export const DEFAULT_CANVAS_HEIGHT = 480;
 export const DEFAULT_BACKGROUND_COLOR = '#000000';
 
+export const PRIMARY_COLOR = '#775fd8';
+
 export const BLANK_IMAGE =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 

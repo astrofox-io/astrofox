@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
@@ -12,11 +12,11 @@ import { FolderOpen, Times } from 'view/icons';
 import { BLANK_IMAGE } from 'view/constants';
 import styles from './ImageInput.less';
 
-const ImageInput = forwardRef(({ name, value, onChange }, ref) => {
+export default function ImageInput({ name, value, forwardRef, onChange }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const image = useRef();
-  const combinedRef = useCombinedRefs(ref, image);
+  const combinedRef = useCombinedRefs(forwardRef, image);
   const hasImage = image.current && value;
 
   function handleImageLoad() {
@@ -100,6 +100,4 @@ const ImageInput = forwardRef(({ name, value, onChange }, ref) => {
       />
     </>
   );
-});
-
-export default ImageInput;
+}

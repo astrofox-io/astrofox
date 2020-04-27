@@ -2,21 +2,25 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './ToggleInput.less';
 
-const ToggleInput = ({ name, value, onChange }) => (
-  <div
-    role="presentation"
-    className={classNames({
-      [styles.toggle]: true,
-      [styles.on]: value,
-    })}
-    onClick={() => onChange(name, !value)}
-  />
-);
-
-ToggleInput.defaultProps = {
-  name: 'toggle',
-  value: false,
-  onChange: () => {},
-};
-
-export default ToggleInput;
+export default function ToggleInput({ name, value, label, position = 'left', onChange }) {
+  return (
+    <div className={styles.toggle}>
+      <div
+        className={classNames(styles.input, {
+          [styles.on]: value,
+        })}
+        onClick={() => onChange(name, !value)}
+      />
+      {label && (
+        <div
+          className={classNames(styles.label, {
+            [styles.left]: position === 'left',
+            [styles.right]: position === 'right',
+          })}
+        >
+          {label}
+        </div>
+      )}
+    </div>
+  );
+}

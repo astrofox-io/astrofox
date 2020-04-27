@@ -2,6 +2,10 @@
 @import (reference) '~view/styles/mixins';
 
 .toggle {
+  display: flex;
+}
+
+.input {
   position: relative;
   height: 17px;
   width: 32px;
@@ -9,6 +13,7 @@
   background-color: @bg-color2;
   border: 1px solid @border-color;
   transition: background-color 0.25s;
+  order: 1;
 
   &:before {
     content: '\0020';
@@ -21,6 +26,20 @@
     transition: left 0.25s;
     .position-left();
   }
+}
+
+.label {
+  display: inline-block;
+}
+
+.left {
+  order: 0;
+  margin-right: 8px;
+}
+
+.right {
+  order: 2;
+  margin-left: 8px;
 }
 
 .on {
