@@ -1,7 +1,7 @@
 import { WebGLRenderer, Color } from 'three';
 import Scene from 'core/Scene';
 import Display, { resetDisplayCount } from 'core/Display';
-import { Composer, CanvasBuffer, GLBuffer } from 'graphics';
+import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
 import { logger, events } from 'view/global';
@@ -54,7 +54,7 @@ export default class Stage extends Display {
     this.composer = new Composer(this.renderer);
 
     this.canvasBuffer = new CanvasBuffer(width, height);
-    this.glBuffer = new GLBuffer(width, height);
+    this.webglBuffer = new WebglBuffer(width, height);
 
     this.backgroundColor = new Color(backgroundColor);
 
@@ -121,7 +121,7 @@ export default class Stage extends Display {
     this.composer.setSize(width, height);
 
     this.canvasBuffer.setSize(width, height);
-    this.glBuffer.setSize(width, height);
+    this.webglBuffer.setSize(width, height);
 
     events.emit('stage-resize');
   }

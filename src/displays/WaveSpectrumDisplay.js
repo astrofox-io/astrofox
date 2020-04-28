@@ -78,6 +78,6 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
 
     wave.render(this.getPoints(fft), true);
 
-    this.renderToCanvas(scene.getContext('2d'), width / 2, height);
+    this.renderToCanvas(scene.getCanvasConext(), width / 2, height);
   }
 }

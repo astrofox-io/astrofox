@@ -1,4 +1,8 @@
 import {
+  Scene,
+  Mesh,
+  PerspectiveCamera,
+  PointLight,
   MeshNormalMaterial,
   MeshBasicMaterial,
   MeshPhongMaterial,
@@ -24,11 +28,12 @@ import {
   Points,
   FrontSide,
   DoubleSide,
-  Mesh,
+  TextureLoader,
 } from 'three';
 import WebglDisplay from 'core/WebglDisplay';
 import SpectrumParser from 'audio/SpectrumParser';
 import POINT_SPRITE from 'assets/images/point.png';
+import { hasDefined } from 'utils/array';
 
 const materialOptions = {
   Normal: MeshNormalMaterial,
@@ -41,6 +46,10 @@ const materialOptions = {
   Points: PointsMaterial,
 };
 
+const FOV = 45;
+const NEAR = 1;
+const FAR = 10000;
+const CAMERA_POS_Z = 250;
 const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends WebglDisplay {
@@ -64,55 +73,73 @@ export default class GeometryDisplay extends WebglDisplay {
     startY: 0,
     startZ: 0,
     seed: 0,
+    lightIntensity: 1.0,
+    lightDistance: 500,
+    cameraZoom: 250,
   };
 
   constructor(properties) {
     super(GeometryDisplay, properties);
 
     this.parser = new SpectrumParser({ normalize: true });
-    this.hasGeometry = true;
   }
 
   update(properties) {
     const changed = super.update(properties);
+    const { lights, camera } = this;
+    const {
+      shape,
+      material,
+      shading,
+      lines,
+      edges,
+      edgeColor,
+      wireframe,
+      opacity,
+      color,
+      x,
+      y,
+      z,
+      enabled,
+      lightDistance,
+      lightIntensity,
+      cameraZoom,
+    } = properties;
 
     if (changed) {
       // Create new mesh
-      if (
-        properties.shape !== undefined ||
-        properties.material !== undefined ||
-        properties.shading !== undefined ||
-        properties.lines !== undefined ||
-        properties.edges !== undefined ||
-        properties.edgeColor !== undefined
-      ) {
+      if (hasDefined(shape, material, shading, lines, edges, edgeColor)) {
         this.createMesh();
       }
       // Change wireframe
-      else if (properties.wireframe !== undefined) {
+      else if (wireframe !== undefined) {
         if (this.properties.material !== 'Points') {
-          this.material.wireframe = properties.wireframe;
+          this.material.wireframe = wireframe;
         }
       }
       // Change opacity
-      else if (properties.opacity !== undefined) {
-        this.material.opacity = properties.opacity;
+      else if (opacity !== undefined) {
+        this.material.opacity = opacity;
       }
       // Change color
-      else if (properties.color !== undefined) {
-        this.material.color = new Color().set(properties.color);
+      else if (color !== undefined) {
+        this.material.color = new Color().set(color);
       }
       // Change position
-      else if (
-        properties.x !== undefined ||
-        properties.y !== undefined ||
-        properties.z !== undefined
-      ) {
-        this.mesh.position.set(this.properties.x, this.properties.y, this.properties.z);
+      else if (hasDefined(x, y, z)) {
+        this.mesh.position.set(x, y, z);
       }
       // Change visibility
-      else if (properties.enabled !== undefined) {
-        this.group.visible = properties.enabled;
+      else if (enabled !== undefined) {
+        this.group.visible = enabled;
+      }
+      // Change lights
+      else if (lights && hasDefined(lightDistance, lightIntensity)) {
+        this.updateLights();
+      }
+      // Change camera
+      else if (camera && cameraZoom !== undefined) {
+        camera.position.z = cameraZoom;
       }
     }
 
@@ -120,45 +147,71 @@ export default class GeometryDisplay extends WebglDisplay {
   }
 
   addToScene(scene) {
-    this.group = new Object3D();
+    const { width, height } = scene.getSize();
 
-    // Load point sprite image
-    const img = document.createElement('img');
+    const scene3d = new Scene();
+    const camera = new PerspectiveCamera(FOV, width / height, NEAR, FAR);
+    const lights = [
+      new PointLight(0xffffff, 1, 0),
+      new PointLight(0xffffff, 1, 0),
+      new PointLight(0xffffff, 1, 0),
+    ];
+    const group = new Object3D();
+    const sprite = new TextureLoader().load(POINT_SPRITE);
 
-    this.sprite = new Texture(img);
+    camera.position.set(0, 0, CAMERA_POS_Z);
 
-    img.onload = () => {
-      this.sprite.transparent = true;
-      this.sprite.needsUpdate = true;
-    };
+    scene3d.add(camera);
+    scene3d.add(lights[0]);
+    scene3d.add(lights[1]);
+    scene3d.add(lights[2]);
+    scene3d.add(group);
 
-    img.src = POINT_SPRITE;
+    this.scene3d = scene3d;
+    this.camera = camera;
+    this.lights = lights;
+    this.group = group;
+    this.sprite = sprite;
 
+    this.updateLights();
     this.createMesh();
-
-    scene.scene.add(this.group);
-  }
-
-  removeFromScene(scene) {
-    if (this.group) {
-      scene.scene.remove(this.group);
-    }
   }
 
   renderToScene(scene, data) {
-    if (!data.hasUpdate) return;
+    const { scene3d, camera, mesh, properties, parser } = this;
+    const renderer = scene.getRenderer();
 
-    const { mesh, properties, parser } = this;
+    if (data.hasUpdate) {
+      const fft = parser.parseFFT(data.fft);
+      const x = fft[0];
+      const y = fft[3];
+      const z = fft[2];
 
-    const fft = parser.parseFFT(data.fft);
-    const x = fft[0];
-    const y = fft[3];
-    const z = fft[2];
+      mesh.rotation.x += 5 * x;
+      mesh.rotation.y += 3 * y;
+      mesh.rotation.z += 2 * z;
+      mesh.position.set(properties.x, properties.y, properties.z);
+    }
 
-    mesh.rotation.x += 5 * x;
-    mesh.rotation.y += 3 * y;
-    mesh.rotation.z += 2 * z;
-    mesh.position.set(properties.x, properties.y, properties.z);
+    renderer.render(scene3d, camera);
+  }
+
+  setSize(width, height) {
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+  }
+
+  updateLights() {
+    const { lights } = this;
+    const { lightIntensity, lightDistance } = this.properties;
+
+    lights[0].intensity = lightIntensity;
+    lights[1].intensity = lightIntensity;
+    lights[2].intensity = lightIntensity;
+
+    lights[0].position.set(0, lightDistance * 2, 0);
+    lights[1].position.set(lightDistance, lightDistance * 2, lightDistance);
+    lights[2].position.set(-lightDistance, -lightDistance * 2, -lightDistance);
   }
 
   createMesh() {
@@ -166,17 +219,16 @@ export default class GeometryDisplay extends WebglDisplay {
 
     if (!group) return;
 
-    let { mesh } = this;
-
     let geometry;
     let rotation;
 
-    if (mesh) {
-      rotation = mesh.rotation.clone();
-      group.remove(mesh);
+    // Remove existing mesh
+    if (this.mesh) {
+      rotation = this.mesh.rotation.clone();
+      group.remove(this.mesh);
     }
 
-    mesh = new Object3D();
+    const mesh = new Object3D();
 
     // Set geometry
     switch (properties.shape) {

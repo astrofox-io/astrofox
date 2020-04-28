@@ -17,7 +17,7 @@ export default class CanvasDisplay extends Display {
   renderToScene(scene) {
     const { width, height } = this.canvas;
 
-    this.renderToCanvas(scene.getContext('2d'), width / 2, height / 2);
+    this.renderToCanvas(scene.getCanvasConext(), width / 2, height / 2);
   }
 
   renderToCanvas(context, dx, dy) {

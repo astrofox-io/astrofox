@@ -19,3 +19,7 @@ export function swap(arr, index, newIndex) {
     arr[newIndex] = tmp;
   }
 }
+
+export function hasDefined(...arr) {
+  return arr.filter(e => e !== undefined).length > 0;
+}

@@ -16,7 +16,13 @@ export default class Effect extends Display {
       pass.properties.enabled = enabled;
     }
 
-    return super.update(properties);
+    const changed = super.update(properties);
+
+    if (changed) {
+      this.updatePass();
+    }
+
+    return changed;
   }
 
   setPass(pass) {
@@ -27,7 +33,9 @@ export default class Effect extends Display {
   }
 
   updatePass() {
-    this.pass.setUniforms(this.properties);
+    if (this.pass.setUniforms) {
+      this.pass.setUniforms(this.properties);
+    }
   }
 
   setSize(width, height) {
@@ -38,11 +46,5 @@ export default class Effect extends Display {
     }
   }
 
-  renderToScene() {
-    if (this.hasUpdate) {
-      this.updatePass();
-
-      this.hasUpdate = false;
-    }
-  }
+  renderToScene() {}
 }

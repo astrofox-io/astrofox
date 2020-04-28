@@ -59,6 +59,6 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
 
     this.bars.render(fft);
 
-    this.renderToCanvas(scene.getContext('2d'), this.canvas.width / 2, this.properties.height);
+    this.renderToCanvas(scene.getCanvasConext(), this.canvas.width / 2, this.properties.height);
   }
 }

@@ -50,6 +50,6 @@ export default class SoundwaveDisplay extends CanvasDisplay {
 
     wave.render(points, wavelength > 3 ? smooth : false);
 
-    this.renderToCanvas(scene.getContext('2d'), width / 2, height / 2);
+    this.renderToCanvas(scene.getCanvasConext(), width / 2, height / 2);
   }
 }

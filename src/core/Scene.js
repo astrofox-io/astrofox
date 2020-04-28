@@ -1,13 +1,7 @@
-import { Scene as Scene3D, PerspectiveCamera, PointLight } from 'three';
 import Display from 'core/Display';
 import Effect from 'core/Effect';
 import Composer from 'graphics/Composer';
 import { remove, insert, swap } from 'utils/array';
-
-const FOV = 45;
-const NEAR = 1;
-const FAR = 10000;
-const CAMERA_POS_Z = 250;
 
 export default class Scene extends Display {
   static label = 'Scene';
@@ -17,9 +11,6 @@ export default class Scene extends Display {
   static defaultProperties = {
     blendMode: 'Normal',
     opacity: 1.0,
-    lightIntensity: 1.0,
-    lightDistance: 500,
-    cameraZoom: 250,
     mask: false,
     inverse: false,
     stencil: false,
@@ -38,52 +29,21 @@ export default class Scene extends Display {
 
   update(properties) {
     const changed = super.update(properties);
-    const { stage, lights, camera } = this;
-    const { lightDistance, lightIntensity, cameraZoom } = properties;
+    const { stage } = this;
 
-    if (changed) {
-      if (stage) {
-        this.updatePasses();
-
-        if (lights && (lightDistance !== undefined || lightIntensity !== undefined)) {
-          this.updateLights();
-        }
-
-        if (camera && cameraZoom !== undefined) {
-          camera.position.z = cameraZoom;
-        }
-      }
+    if (changed && stage) {
+      this.updatePasses();
     }
 
     return changed;
   }
 
   addToStage(stage) {
-    const { width, height } = stage.getSize();
-
     this.stage = stage;
 
     this.composer = new Composer(stage.renderer);
-    this.scene = new Scene3D();
-
-    this.camera = new PerspectiveCamera(FOV, width / height, NEAR, FAR);
-    this.camera.position.set(0, 0, CAMERA_POS_Z);
-
-    this.lights = [
-      new PointLight(0xffffff, 1, 0),
-      new PointLight(0xffffff, 1, 0),
-      new PointLight(0xffffff, 1, 0),
-    ];
-
-    this.scene.add(this.camera);
-    this.scene.add(this.lights[0]);
-    this.scene.add(this.lights[1]);
-    this.scene.add(this.lights[2]);
-
-    // this.scene.fog = new THREE.Fog(0x000000, NEAR, FAR);
 
     this.updatePasses();
-    this.updateLights();
   }
 
   removeFromStage() {
@@ -110,9 +70,6 @@ export default class Scene extends Display {
         effect.setSize(width, height);
       }
     });
-
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
 
     this.composer.setSize(width, height);
   }
@@ -142,7 +99,7 @@ export default class Scene extends Display {
       this[type].push(obj);
     }
 
-    obj.scene = this;
+    Object.defineProperty(obj, 'scene', { value: this });
 
     if (obj.addToScene) {
       obj.addToScene(this);
@@ -207,12 +164,12 @@ export default class Scene extends Display {
       composer,
       displays,
       effects,
-      stage: { canvasBuffer, glBuffer },
+      stage: { canvasBuffer, webglBuffer },
     } = this;
 
     composer.clearPasses();
     composer.addPass(canvasBuffer.pass);
-    composer.addPass(glBuffer.pass);
+    composer.addPass(webglBuffer.pass);
 
     displays.forEach(display => {
       if (display.pass) {
@@ -227,24 +184,12 @@ export default class Scene extends Display {
     });
   }
 
-  updateLights() {
-    const { lights } = this;
-    const { lightIntensity, lightDistance } = this.properties;
-
-    lights[0].intensity = lightIntensity;
-    lights[1].intensity = lightIntensity;
-    lights[2].intensity = lightIntensity;
-
-    lights[0].position.set(0, lightDistance * 2, 0);
-    lights[1].position.set(lightDistance, lightDistance * 2, lightDistance);
-    lights[2].position.set(-lightDistance, -lightDistance * 2, -lightDistance);
+  getCanvasConext() {
+    return this.stage.canvasBuffer.context;
   }
 
-  getContext(type) {
-    const {
-      stage: { canvasBuffer, glBuffer },
-    } = this;
-    return type === 'webgl' ? glBuffer.context : canvasBuffer.context;
+  getRenderer() {
+    return this.stage.webglBuffer.renderer;
   }
 
   hasChanges() {
@@ -279,24 +224,16 @@ export default class Scene extends Display {
   clear() {
     const {
       composer,
-      stage: { canvasBuffer, glBuffer },
+      stage: { canvasBuffer, webglBuffer },
     } = this;
 
     canvasBuffer.clear();
-    glBuffer.clear();
+    webglBuffer.clear();
     composer.clearBuffer();
   }
 
   render(data) {
-    const {
-      scene,
-      camera,
-      composer,
-      displays,
-      effects,
-      stage: { glBuffer },
-    } = this;
-    let hasGeometry = false;
+    const { composer, displays, effects } = this;
 
     this.clear();
     this.updateReactors(data);
@@ -306,16 +243,8 @@ export default class Scene extends Display {
         if (display.properties.enabled) {
           display.updateReactors(data);
           display.renderToScene(this, data);
-
-          if (!hasGeometry && display.hasGeometry) {
-            hasGeometry = true;
-          }
         }
       });
-
-      if (hasGeometry) {
-        glBuffer.renderer.render(scene, camera);
-      }
 
       effects.forEach(effect => {
         if (effect.properties.enabled) {

@@ -1,7 +1,7 @@
 import { Camera, Scene, WebGLRenderer } from 'three';
 import FrameBuffer from './FrameBuffer';
 
-export default class GLBuffer extends FrameBuffer {
+export default class WebglBuffer extends FrameBuffer {
   constructor(width, height) {
     super();
 

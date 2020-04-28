@@ -24,9 +24,14 @@ export default class Display extends Component {
     Object.defineProperty(this, 'name', { value: type.className });
 
     this.scene = null;
-    this.hasUpdate = false;
     this.changed = false;
     this.reactors = {};
+  }
+
+  update(properties = {}) {
+    this.changed = super.update(properties);
+
+    return this.changed;
   }
 
   getReactor(name) {
@@ -57,16 +62,6 @@ export default class Display extends Component {
     });
 
     this.changed = changed;
-  }
-
-  update(properties = {}) {
-    this.hasUpdate = super.update(properties);
-
-    if (!this.changed && this.hasUpdate) {
-      this.changed = true;
-    }
-
-    return this.hasUpdate;
   }
 
   toJSON() {
