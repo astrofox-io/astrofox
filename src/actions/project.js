@@ -71,7 +71,7 @@ export function saveProject(file) {
       const data = JSON.stringify({
         version: env.APP_VERSION,
         stage: stage.toJSON(),
-        scenes: stage.getSceneData(),
+        scenes: stage.getSceneJSON(),
         reactors: renderer.getReactorData(),
       });
 

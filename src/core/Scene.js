@@ -1,7 +1,7 @@
 import Display from 'core/Display';
 import Effect from 'core/Effect';
+import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
-import { remove, insert, swap } from 'utils/array';
 
 export default class Scene extends Display {
   static label = 'Scene';
@@ -20,8 +20,8 @@ export default class Scene extends Display {
     super(Scene, properties);
 
     this.stage = null;
-    this.displays = [];
-    this.effects = [];
+    this.displays = new EntityList();
+    this.effects = new EntityList();
     this.reactors = {};
 
     Object.defineProperty(this, 'type', { value: 'scene' });
@@ -79,7 +79,7 @@ export default class Scene extends Display {
   }
 
   getElementById(id) {
-    return this.displays.find(e => e.id === id) || this.effects.find(e => e.id === id);
+    return this.displays.getElementById(id) || this.effects.getElementById(id);
   }
 
   hasElement(obj) {
@@ -93,11 +93,7 @@ export default class Scene extends Display {
 
     const target = this.getTarget(obj);
 
-    if (index !== undefined) {
-      insert(target, index, obj);
-    } else {
-      target.push(obj);
-    }
+    target.addElement(obj, index);
 
     Object.defineProperty(obj, 'scene', { value: this });
 
@@ -125,7 +121,7 @@ export default class Scene extends Display {
 
     const target = this.getTarget(obj);
 
-    remove(target, obj);
+    target.removeElement(obj);
 
     delete obj.scene;
 
@@ -140,17 +136,14 @@ export default class Scene extends Display {
     return true;
   }
 
-  shiftElement(obj, i) {
+  shiftElement(obj, spaces) {
     if (!this.hasElement(obj)) {
       return false;
     }
 
     const target = this.getTarget(obj);
-    const index = target.indexOf(obj);
 
-    swap(target, index, index + i);
-
-    this.changed = target.indexOf(obj) !== index;
+    this.changed = target.shiftElement(obj, spaces);
 
     if (this.changed) {
       this.updatePasses();

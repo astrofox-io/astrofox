@@ -6,6 +6,12 @@ import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
 
+let reactorCount = 0;
+
+export function resetReactorCount() {
+  reactorCount = 0;
+}
+
 export default class AudioReactor extends Entity {
   static defaultProperties = {
     enabled: true,
@@ -31,7 +37,10 @@ export default class AudioReactor extends Entity {
   };
 
   constructor(properties) {
+    reactorCount += 1;
+
     super({
+      displayName: `Reactor ${reactorCount}`,
       ...AudioReactor.defaultProperties,
       ...properties,
     });

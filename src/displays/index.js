@@ -1,6 +1,6 @@
-export { default as BarSpectrumDisplay } from './BarSpectrumDisplay';
-export { default as GeometryDisplay } from './GeometryDisplay';
-export { default as ImageDisplay } from './ImageDisplay';
-export { default as SoundwaveDisplay } from './SoundwaveDisplay';
-export { default as TextDisplay } from './TextDisplay';
-export { default as WaveSpectrumDisplay } from './WaveSpectrumDisplay';
+export BarSpectrumDisplay from './BarSpectrumDisplay';
+export GeometryDisplay from './GeometryDisplay';
+export ImageDisplay from './ImageDisplay';
+export SoundwaveDisplay from './SoundwaveDisplay';
+export TextDisplay from './TextDisplay';
+export WaveSpectrumDisplay from './WaveSpectrumDisplay';

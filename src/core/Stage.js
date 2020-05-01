@@ -2,6 +2,7 @@ import { WebGLRenderer, Color } from 'three';
 import cloneDeep from 'lodash/cloneDeep';
 import Scene from 'core/Scene';
 import Entity from 'core/Entity';
+import EntityList from 'core/EntityList';
 import { resetDisplayCount } from 'core/Display';
 import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
@@ -13,7 +14,7 @@ import {
   DISPLAY_TYPE_STAGE,
   DEFAULT_BACKGROUND_COLOR,
 } from 'view/constants';
-import { isDefined, insert, remove, swap } from 'utils/array';
+import { isDefined } from 'utils/array';
 
 export default class Stage extends Entity {
   static label = 'Stage';
@@ -30,7 +31,7 @@ export default class Stage extends Entity {
   constructor(properties) {
     super({ ...Stage.defaultProperties, ...properties });
 
-    this.scenes = [];
+    this.scenes = new EntityList();
     this.initialized = false;
 
     Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_STAGE });
@@ -80,30 +81,6 @@ export default class Stage extends Entity {
     return changed;
   }
 
-  getSceneById(id) {
-    return this.scenes.find(e => e.id === id);
-  }
-
-  getSceneElementById(id) {
-    return this.scenes.reduce((element, scene) => {
-      if (!element) {
-        element = scene.getElementById(id);
-      }
-      return element;
-    }, undefined);
-  }
-
-  removeSceneElement(obj) {
-    if (obj instanceof Scene) {
-      this.removeScene(obj);
-    } else {
-      const scene = this.getSceneById(obj.scene.id);
-      if (scene) {
-        scene.removeElement(obj);
-      }
-    }
-  }
-
   getImage(format) {
     return this.composer.getImage(format);
   }
@@ -129,14 +106,45 @@ export default class Stage extends Entity {
     events.emit('stage-resize');
   }
 
-  addScene(scene = new Scene(), index) {
-    if (index !== undefined) {
-      insert(this.scenes, index, scene);
-    } else {
-      this.scenes.push(scene);
-    }
+  getSceneById(id) {
+    return this.scenes.getElementById(id);
+  }
 
-    scene.stage = this;
+  getStageElementById(id) {
+    return this.scenes.reduce((element, scene) => {
+      if (!element) {
+        element = scene.getElementById(id);
+      }
+      return element;
+    }, this.getSceneById(id));
+  }
+
+  removeStageElement(obj) {
+    if (obj instanceof Scene) {
+      this.removeScene(obj);
+    } else {
+      const scene = this.getSceneById(obj.scene.id);
+      if (scene) {
+        scene.removeElement(obj);
+      }
+    }
+  }
+
+  shiftStageElement(obj, spaces) {
+    if (obj instanceof Scene) {
+      return this.scenes.shiftElement(obj, spaces);
+    } else {
+      const scene = this.getSceneById(obj.scene.id);
+      if (scene) {
+        scene.shiftElement(obj, spaces);
+      }
+    }
+  }
+
+  addScene(scene = new Scene(), index) {
+    this.scenes.addElement(scene, index);
+
+    Object.defineProperty(scene, 'stage', { value: this });
 
     if (scene.addToStage) {
       scene.addToStage(this);
@@ -148,23 +156,13 @@ export default class Stage extends Entity {
   }
 
   removeScene(scene) {
-    remove(this.scenes, scene);
+    this.scenes.removeElement(scene);
 
-    scene.stage = null;
+    delete scene.stage;
 
     scene.removeFromStage(this);
 
     this.changed = true;
-  }
-
-  shiftScene(scene, i) {
-    const index = this.scenes.indexOf(scene);
-
-    swap(this.scenes, index, index + i);
-
-    this.changed = this.scenes.indexOf(scene) !== index;
-
-    return this.changed;
   }
 
   clearScenes() {
@@ -175,12 +173,12 @@ export default class Stage extends Entity {
     this.changed = true;
   }
 
-  getSceneData() {
-    return this.scenes.map(scene => scene.toJSON());
+  getSceneJSON() {
+    return this.scenes.toJSON();
   }
 
   hasScenes() {
-    return this.scenes.length > 0;
+    return !this.scenes.isEmpty();
   }
 
   hasChanges() {

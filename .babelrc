@@ -12,7 +12,9 @@
     "@babel/transform-runtime",
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",
-    "@babel/proposal-optional-chaining"
+    "@babel/proposal-optional-chaining",
+    "@babel/proposal-nullish-coalescing-operator",
+    "@babel/proposal-export-default-from"
   ],
   "env": {
     "production": {
@@ -28,7 +30,9 @@
         "@babel/transform-runtime",
         "@babel/proposal-class-properties",
         "@babel/proposal-object-rest-spread",
-        "@babel/proposal-optional-chaining"
+        "@babel/proposal-optional-chaining",
+        "@babel/proposal-nullish-coalescing-operator",
+        "@babel/proposal-export-default-from"
       ]
     }
   }

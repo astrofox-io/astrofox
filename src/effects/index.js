@@ -1,8 +1,8 @@
-export { default as BloomEffect } from './BloomEffect';
-export { default as BlurEffect } from './BlurEffect';
-export { default as DotScreenEffect } from './DotScreenEffect';
-export { default as GlowEffect } from './GlowEffect';
-export { default as LEDEffect } from './LEDEffect';
-export { default as MirrorEffect } from './MirrorEffect';
-export { default as PixelateEffect } from './PixelateEffect';
-export { default as RGBShiftEffect } from './RGBShiftEffect';
+export BloomEffect from './BloomEffect';
+export BlurEffect from './BlurEffect';
+export DotScreenEffect from './DotScreenEffect';
+export GlowEffect from './GlowEffect';
+export LEDEffect from './LEDEffect';
+export MirrorEffect from './MirrorEffect';
+export PixelateEffect from './PixelateEffect';
+export RGBShiftEffect from './RGBShiftEffect';

@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { stage } from 'view/global';
-import { DISPLAY_TYPE_SCENE } from 'view/constants';
 
 const sceneStore = createSlice({
   name: 'scenes',
@@ -19,7 +18,7 @@ export default sceneStore.reducer;
 
 export function loadScenes() {
   return dispatch => {
-    dispatch(setScenes(stage.getSceneData()));
+    dispatch(setScenes(stage.getSceneJSON()));
   };
 }
 
@@ -44,7 +43,7 @@ export function addElement(element, sceneId) {
 
 export function updateElement(id, prop, value) {
   return dispatch => {
-    const element = stage.getSceneElementById(id);
+    const element = stage.getStageElementById(id);
 
     if (element) {
       element.update({ [prop]: value });
@@ -55,33 +54,22 @@ export function updateElement(id, prop, value) {
 
 export function removeElement(id) {
   return dispatch => {
-    const element = stage.getSceneElementById(id);
+    const element = stage.getStageElementById(id);
 
     if (element) {
-      stage.removeSceneElement(element);
+      stage.removeStageElement(element);
+      dispatch(loadScenes());
     }
-
-    dispatch(loadScenes());
   };
 }
 
-export function moveElement(id, direction) {
+export function moveElement(id, spaces) {
   return dispatch => {
-    const scene = stage.getSceneById(id);
+    const element = stage.getStageElementById(id);
 
-    if (scene) {
-      stage.shiftScene(scene, direction);
+    if (element) {
+      stage.shiftStageElement(element, spaces);
       dispatch(loadScenes());
-    } else {
-      const element = stage.getSceneElementById(id);
-
-      if (element) {
-        const scene = stage.getSceneById(element.scene.id);
-
-        if (scene && scene.shiftElement(element, direction)) {
-          dispatch(loadScenes());
-        }
-      }
     }
   };
 }
