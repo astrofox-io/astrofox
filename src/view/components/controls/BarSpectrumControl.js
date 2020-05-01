@@ -139,20 +139,8 @@ function BarSpectrumControl({ display, active, stageWidth, stageHeight, onChange
           onChange={handleChange}
         />
       </Option>
-      <Option
-        label="Bar Color"
-        type="colorrange"
-        name="color"
-        startColor={color[0]}
-        endColor={color[1]}
-      />
-      <Option
-        label="Shadow Color"
-        type="colorrange"
-        name="shadowColor"
-        startColor={shadowColor[0]}
-        endColor={shadowColor[1]}
-      />
+      <Option label="Bar Color" type="colorrange" name="color" value={color} />
+      <Option label="Shadow Color" type="colorrange" name="shadowColor" value={shadowColor} />
       <Option
         label="X"
         type="number"

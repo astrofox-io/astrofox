@@ -1,9 +1,9 @@
 /* eslint-disable react/require-render-return */
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 
 const MIN_RESIZE_WIDTH = 100;
 
-export default class CanvasImage extends Component {
+export default class CanvasImage extends Entity {
   static defaultProperties = {
     src: '',
     width: 1,

@@ -1,4 +1,5 @@
-import Component from 'core/Component';
+import Entity from 'core/Entity';
+import cloneDeep from 'lodash/cloneDeep';
 
 let displayCount = {};
 
@@ -6,7 +7,7 @@ export function resetDisplayCount() {
   displayCount = {};
 }
 
-export default class Display extends Component {
+export default class Display extends Entity {
   constructor(type, properties) {
     if (displayCount[type.className] === undefined) {
       displayCount[type.className] = 1;
@@ -38,17 +39,21 @@ export default class Display extends Component {
     return this.reactors[name];
   }
 
-  setReactor(name, reactor) {
-    this.reactors[name] = reactor;
-    this.changed = true;
+  setReactor(reactor, name, min = 0, max = 1) {
+    this.reactors[name] = { id: reactor.id, min, max };
   }
 
   removeReactor(name) {
     delete this.reactors[name];
-    this.changed = true;
+  }
+
+  clearReactors() {
+    this.reactors = {};
   }
 
   updateReactors(data) {
+    return;
+    /*
     const { reactors, changed } = this;
 
     Object.keys(reactors).forEach(name => {
@@ -62,23 +67,18 @@ export default class Display extends Component {
     });
 
     this.changed = changed;
+     */
   }
 
   toJSON() {
     const { id, name, type, properties, reactors } = this;
 
-    const reactorData = Object.keys(reactors).reduce((obj, key) => {
-      const reactor = reactors[key];
-      obj[key] = reactor.id;
-      return obj;
-    }, {});
-
     return {
       id,
       name,
       type,
-      properties: { ...properties },
-      reactors: reactorData,
+      properties: cloneDeep(properties),
+      reactors: cloneDeep(reactors),
     };
   }
 }

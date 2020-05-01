@@ -1,6 +1,4 @@
-import { events, stage, player, analyzer } from 'view/global';
-import AudioReactor, { resetReactorCount } from 'audio/AudioReactor';
-import { remove } from 'utils/array';
+import { events, stage, player, analyzer, reactors } from 'view/global';
 
 const FPS_POLL_INTERVAL = 500;
 
@@ -8,7 +6,6 @@ export default class Renderer {
   constructor() {
     this.rendering = false;
     this.frames = 0;
-    this.reactors = [];
 
     // Frame render data
     this.frameData = {
@@ -17,7 +14,6 @@ export default class Renderer {
       delta: 0,
       fft: null,
       td: null,
-      reactor: null,
       volume: 0,
       playing: 0,
     };
@@ -105,36 +101,6 @@ export default class Renderer {
     }
   }
 
-  getReactorById(id) {
-    return this.reactors.find(e => e.id === id);
-  }
-
-  addReactor(reactor = new AudioReactor()) {
-    this.reactors.push(reactor);
-
-    this.changed = true;
-
-    return reactor;
-  }
-
-  removeReactor(reactor) {
-    remove(this.reactors, reactor);
-
-    this.changed = true;
-  }
-
-  clearReactors() {
-    this.reactors = [];
-
-    resetReactorCount();
-
-    this.changed = true;
-  }
-
-  getReactorData() {
-    return this.reactors.map(reactor => reactor.toJSON());
-  }
-
   render() {
     const now = window.performance.now();
     const playing = player.isPlaying();
@@ -143,6 +109,8 @@ export default class Renderer {
     data.id = window.requestAnimationFrame(this.render);
     data.delta = now - data.time;
     data.time = now;
+
+    reactors.updateReactors(data);
 
     stage.render(data);
 

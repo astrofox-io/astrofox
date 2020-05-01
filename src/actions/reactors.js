@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { renderer } from 'view/global';
+import { reactors } from 'view/global';
 
 const reactorStore = createSlice({
   name: 'reactors',
@@ -18,13 +18,13 @@ export default reactorStore.reducer;
 
 export function loadReactors() {
   return dispatch => {
-    dispatch(setReactors(renderer.reactors.map(e => e.toJSON())));
+    dispatch(setReactors(reactors.toJSON()));
   };
 }
 
 export function addReactor(reactor) {
   return dispatch => {
-    const newReactor = renderer.addReactor(reactor);
+    const newReactor = reactors.addReactor(reactor);
 
     dispatch(loadReactors());
 
@@ -34,7 +34,7 @@ export function addReactor(reactor) {
 
 export function removeReactor(reactor) {
   return dispatch => {
-    renderer.removeReactor(reactor);
+    reactors.removeReactor(reactor);
 
     dispatch(loadReactors());
   };
@@ -42,7 +42,7 @@ export function removeReactor(reactor) {
 
 export function clearReactors() {
   return dispatch => {
-    renderer.clearReactors();
+    reactors.clearReactors();
 
     dispatch(loadReactors());
   };

@@ -44,7 +44,7 @@ export function addElement(element, sceneId) {
 
 export function updateElement(id, prop, value) {
   return dispatch => {
-    const element = stage.getElementById(id);
+    const element = stage.getSceneElementById(id);
 
     if (element) {
       element.update({ [prop]: value });
@@ -55,10 +55,10 @@ export function updateElement(id, prop, value) {
 
 export function removeElement(id) {
   return dispatch => {
-    const element = stage.getElementById(id);
+    const element = stage.getSceneElementById(id);
 
     if (element) {
-      stage.removeElement(element);
+      stage.removeSceneElement(element);
     }
 
     dispatch(loadScenes());
@@ -67,17 +67,20 @@ export function removeElement(id) {
 
 export function moveElement(id, direction) {
   return dispatch => {
-    const element = stage.getElementById(id);
+    const scene = stage.getSceneById(id);
 
-    if (element) {
-      if (element.type === DISPLAY_TYPE_SCENE && stage.shiftScene(element, direction)) {
-        dispatch(loadScenes());
-      }
+    if (scene) {
+      stage.shiftScene(scene, direction);
+      dispatch(loadScenes());
+    } else {
+      const element = stage.getSceneElementById(id);
 
-      const scene = stage.getElementById(element.scene.id);
+      if (element) {
+        const scene = stage.getSceneById(element.scene.id);
 
-      if (scene && scene.shiftElement(element, direction)) {
-        dispatch(loadScenes());
+        if (scene && scene.shiftElement(element, direction)) {
+          dispatch(loadScenes());
+        }
       }
     }
   };

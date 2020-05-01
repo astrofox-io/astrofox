@@ -1,53 +1,40 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { Control, Option } from 'components/editing';
 import Icon from 'components/interface/Icon';
 import { BoxInput } from 'components/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { events } from 'view/global';
 import { hideActiveReactor } from 'actions/app';
+import { events, reactors } from 'view/global';
 import { ChevronDown } from 'view/icons';
 import styles from './ReactorControl.less';
 
 const REACTOR_BARS = 64;
+const BAR_WIDTH = 8;
+const BAR_HEIGHT = 100;
+const BAR_SPACING = 1;
 
 const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
 
-export default function ReactorControl({ reactor, barWidth = 8, barHeight = 100, barSpacing = 1 }) {
+export default function ReactorControl({ reactorId }) {
   const dispatch = useDispatch();
   const spectrum = useRef();
   const meter = useRef();
   const box = useRef();
   const spectrumCanvas = useRef();
   const outputCanvas = useRef();
-
-  function handleChange(name, value) {
-    if (['selection', 'outputMode'].includes(name)) {
-      this.updateReactor(name, value);
-    } else {
-      this.updateParser(name, value);
-    }
-  }
-
-  function draw() {
-    if (reactor) {
-      const { fft, output } = reactor.getResult();
-
-      spectrum.current.render(fft);
-      meter.current.render(output);
-    }
-  }
+  const reactor = useMemo(() => reactors.getReactorById(reactorId), [reactorId]);
 
   function updateReactor(name, value) {
-    const obj = { [name]: value };
+    const props = { [name]: value };
 
     if (name === 'selection') {
       const { x, y, width, height } = value;
-      const maxWidth = REACTOR_BARS * (barWidth + barSpacing);
-      const maxHeight = barHeight;
+      const maxWidth = REACTOR_BARS * (BAR_WIDTH + BAR_SPACING);
+      const maxHeight = BAR_HEIGHT;
 
-      obj.range = {
+      props.range = {
         x1: x / maxWidth,
         x2: (x + width) / maxWidth,
         y1: y / maxHeight,
@@ -55,24 +42,39 @@ export default function ReactorControl({ reactor, barWidth = 8, barHeight = 100,
       };
     }
 
-    reactor.update(obj);
+    reactor.update(props);
   }
 
   function updateParser(name, value) {
     reactor.parser.update({ [name]: value });
   }
 
+  function handleChange(name, value) {
+    if (['selection', 'outputMode'].includes(name)) {
+      updateReactor(name, value);
+    } else {
+      updateParser(name, value);
+    }
+  }
+
   function hideReactor() {
     dispatch(hideActiveReactor());
+  }
+
+  function draw() {
+    const { fft, output } = reactor.getResult();
+
+    spectrum.current.render(fft);
+    meter.current.render(output);
   }
 
   useEffect(() => {
     spectrum.current = new CanvasBars(
       {
-        width: REACTOR_BARS * (barWidth + barSpacing),
-        height: barHeight,
-        barWidth,
-        barSpacing,
+        width: REACTOR_BARS * (BAR_WIDTH + BAR_SPACING),
+        height: BAR_HEIGHT,
+        BAR_WIDTH,
+        BAR_SPACING,
         shadowHeight: 0,
         color: '#775FD8',
         backgroundColor: '#FF0000',
@@ -83,7 +85,7 @@ export default function ReactorControl({ reactor, barWidth = 8, barHeight = 100,
     meter.current = new CanvasMeter(
       {
         width: 20,
-        height: barHeight,
+        height: BAR_HEIGHT,
         color: '#775FD8',
         origin: 'bottom',
       },
@@ -107,22 +109,22 @@ export default function ReactorControl({ reactor, barWidth = 8, barHeight = 100,
         <div className={styles.spectrum}>
           <canvas
             ref={spectrumCanvas}
-            width={REACTOR_BARS * (barWidth + barSpacing)}
-            height={barHeight}
+            width={REACTOR_BARS * (BAR_WIDTH + BAR_SPACING)}
+            height={BAR_HEIGHT}
           />
           <BoxInput
             ref={box}
             name="selection"
             value={reactor ? reactor.properties.selection : {}}
-            minWidth={barWidth}
-            minHeight={barWidth}
-            maxWidth={REACTOR_BARS * (barWidth + barSpacing)}
-            maxHeight={barHeight}
+            minWidth={BAR_WIDTH}
+            minHeight={BAR_WIDTH}
+            maxWidth={REACTOR_BARS * (BAR_WIDTH + BAR_SPACING)}
+            maxHeight={BAR_HEIGHT}
             onChange={handleChange}
           />
         </div>
         <div className={styles.output}>
-          <canvas ref={outputCanvas} width={20} height={barHeight} />
+          <canvas ref={outputCanvas} width={20} height={BAR_HEIGHT} />
         </div>
       </div>
       <Icon
@@ -169,6 +171,7 @@ const Controls = ({ reactor, onChange }) => {
       />
       <Option
         label="Smoothing"
+        type="number"
         name="smoothingTimeConstant"
         value={smoothingTimeConstant}
         min={0}

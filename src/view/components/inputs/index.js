@@ -7,6 +7,7 @@ export { default as DualRangeInput } from './DualRangeInput';
 export { default as ImageInput } from './ImageInput';
 export { default as NumberInput } from './NumberInput';
 export { default as RangeInput } from './RangeInput';
+export { default as ReactorButton } from './ReactorButton';
 export { default as ReactorInput } from './ReactorInput';
 export { default as SelectInput } from './SelectInput';
 export { default as TextInput } from './TextInput';

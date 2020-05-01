@@ -1,8 +1,8 @@
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 import { val2pct, db2mag } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
-export default class SpectrumParser extends Component {
+export default class SpectrumParser extends Entity {
   static defaultProperties = {
     fftSize: FFT_SIZE,
     sampleRate: SAMPLE_RATE,

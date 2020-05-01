@@ -1,8 +1,8 @@
 /* eslint-disable react/require-render-return */
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 import CanvasBars from 'canvas/CanvasBars';
 
-export default class CanvasAudio extends Component {
+export default class CanvasAudio extends Entity {
   static defaultProperties = {
     bars: 100,
   };

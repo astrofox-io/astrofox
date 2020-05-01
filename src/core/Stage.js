@@ -1,6 +1,8 @@
 import { WebGLRenderer, Color } from 'three';
+import cloneDeep from 'lodash/cloneDeep';
 import Scene from 'core/Scene';
-import Display, { resetDisplayCount } from 'core/Display';
+import Entity from 'core/Entity';
+import { resetDisplayCount } from 'core/Display';
 import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
 import * as displayLibrary from 'displays';
 import * as effectsLibrary from 'effects';
@@ -11,9 +13,9 @@ import {
   DISPLAY_TYPE_STAGE,
   DEFAULT_BACKGROUND_COLOR,
 } from 'view/constants';
-import { insert, remove, swap } from 'utils/array';
+import { isDefined, insert, remove, swap } from 'utils/array';
 
-export default class Stage extends Display {
+export default class Stage extends Entity {
   static label = 'Stage';
 
   static className = 'Stage';
@@ -26,7 +28,7 @@ export default class Stage extends Display {
   };
 
   constructor(properties) {
-    super(Stage, properties);
+    super({ ...Stage.defaultProperties, ...properties });
 
     this.scenes = [];
     this.initialized = false;
@@ -62,15 +64,16 @@ export default class Stage extends Display {
   }
 
   update(properties) {
+    const { width, height, backgroundColor } = properties;
     const changed = super.update(properties);
 
     if (changed) {
-      if (properties.width !== undefined || properties.height !== undefined) {
-        this.setSize(this.properties.width, this.properties.height);
+      if (isDefined(width, height)) {
+        this.setSize(width, height);
       }
 
-      if (properties.backgroundColor !== undefined) {
-        this.backgroundColor.set(properties.backgroundColor);
+      if (backgroundColor !== undefined) {
+        this.backgroundColor.set(backgroundColor);
       }
     }
 
@@ -78,19 +81,19 @@ export default class Stage extends Display {
   }
 
   getSceneById(id) {
-    return this.scenes.find(n => n.id === id);
+    return this.scenes.find(e => e.id === id);
   }
 
-  getElementById(id) {
+  getSceneElementById(id) {
     return this.scenes.reduce((element, scene) => {
       if (!element) {
         element = scene.getElementById(id);
       }
       return element;
-    }, this.getSceneById(id));
+    }, undefined);
   }
 
-  removeElement(obj) {
+  removeSceneElement(obj) {
     if (obj instanceof Scene) {
       this.removeScene(obj);
     } else {
@@ -254,7 +257,7 @@ export default class Stage extends Display {
       id,
       name,
       type,
-      properties: { ...properties },
+      properties: cloneDeep(properties),
     };
   }
 

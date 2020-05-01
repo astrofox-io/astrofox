@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 
-export default class CanvasText extends Component {
+export default class CanvasText extends Entity {
   constructor(properties, canvas) {
     super({ ...CanvasText.defaultProperties, ...properties });
 

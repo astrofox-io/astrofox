@@ -9,6 +9,8 @@ import {
   RangeInput,
   SelectInput,
   ImageInput,
+  ReactorButton,
+  ReactorInput,
 } from 'components/inputs';
 import Icon from 'components/interface/Icon';
 import { Link } from 'view/icons';
@@ -29,6 +31,8 @@ export default function Option({
   display,
   label,
   type,
+  name,
+  value,
   className,
   onChange,
   withReactor,
@@ -40,9 +44,13 @@ export default function Option({
   ...otherProps
 }) {
   const [InputCompnent, inputProps] = inputComponents[type];
+  const reactor = display.getReactor?.(name);
+  const showReactor = withReactor && reactor;
+  const { min, max } = otherProps;
 
   return (
     <div className={classNames(styles.option, className)}>
+      {withReactor && <ReactorButton display={display} name={name} min={min} max={max} />}
       <div className={styles.label}>
         {label}
         {withLink && (
@@ -55,9 +63,26 @@ export default function Option({
           />
         )}
       </div>
-      {InputCompnent && <InputCompnent {...inputProps} {...otherProps} onChange={onChange} />}
-      {withRange && <RangeInput {...otherProps} onChange={onChange} />}
-      {children}
+      {showReactor && (
+        <ReactorInput reactorId={reactor.id} display={display} name={name} value={value} />
+      )}
+      {!showReactor && (
+        <>
+          {InputCompnent && (
+            <InputCompnent
+              {...inputProps}
+              {...otherProps}
+              name={name}
+              value={value}
+              onChange={onChange}
+            />
+          )}
+          {withRange && (
+            <RangeInput {...otherProps} name={name} value={value} onChange={onChange} />
+          )}
+          {children}
+        </>
+      )}
     </div>
   );
 }

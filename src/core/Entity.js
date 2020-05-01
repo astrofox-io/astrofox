@@ -1,7 +1,7 @@
 import { updateExistingProps } from 'utils/object';
-import { uniqueId } from '../utils/crypto';
+import { uniqueId } from 'utils/crypto';
 
-export default class Component {
+export default class Entity {
   constructor(properties = {}) {
     Object.defineProperty(this, 'id', { value: uniqueId() });
 

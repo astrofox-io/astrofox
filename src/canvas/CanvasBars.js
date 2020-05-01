@@ -1,9 +1,9 @@
 /* eslint-disable react/require-render-return */
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 import { setColor } from 'utils/canvas';
 import { clamp } from 'utils/math';
 
-export default class CanvasBars extends Component {
+export default class CanvasBars extends Entity {
   static defaultProperties = {
     width: 300,
     height: 100,

@@ -51,7 +51,7 @@ export default class ShaderPass extends ComposerPass {
       if (Object.prototype.hasOwnProperty.call(uniforms, prop)) {
         const p = uniforms[prop].value;
 
-        if (p !== null && typeof p.set !== 'undefined') {
+        if (p !== null && p.set) {
           p.set(...props[prop]);
         } else {
           uniforms[prop].value = props[prop];

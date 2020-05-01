@@ -1,7 +1,7 @@
 /* eslint-disable react/require-render-return */
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 
-export default class ComposerPass extends Component {
+export default class ComposerPass extends Entity {
   static defaultProperties = {
     enabled: true,
     forceClear: false,

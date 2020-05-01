@@ -1,4 +1,4 @@
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 import SpectrumParser from 'audio/SpectrumParser';
 import { val2pct, floor, ceil } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
@@ -6,19 +6,10 @@ import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
 
-let reactorCount = 0;
-
-export function resetReactorCount() {
-  reactorCount = 0;
-}
-
-export default class AudioReactor extends Component {
+export default class AudioReactor extends Entity {
   static defaultProperties = {
     enabled: true,
     outputMode: 'Add',
-    lastValue: 0,
-    min: 0,
-    max: 1,
     selection: {
       x: 0,
       y: 0,
@@ -31,26 +22,25 @@ export default class AudioReactor extends Component {
       y1: 0,
       y2: 1,
     },
+    spectrum: {
+      maxDecibels: -20,
+      maxFrequency: ceil((SAMPLE_RATE / FFT_SIZE) * REACTOR_BINS),
+      normalize: true,
+      bins: REACTOR_BINS,
+    },
   };
 
   constructor(properties) {
-    reactorCount += 1;
     super({
-      displayName: `Reactor ${reactorCount}`,
       ...AudioReactor.defaultProperties,
       ...properties,
     });
 
     Object.defineProperty(this, 'name', { value: 'AudioReactor' });
 
-    this.parser = new SpectrumParser({
-      maxDecibels: -20,
-      maxFrequency: ceil((SAMPLE_RATE / FFT_SIZE) * REACTOR_BINS),
-      normalize: true,
-      bins: REACTOR_BINS,
-    });
+    this.parser = new SpectrumParser({ ...AudioReactor.defaultProperties.spectrum });
 
-    this.result = { fft: null, output: 0 };
+    this.result = { fft: [], output: 0 };
     this.direction = 1;
   }
 

@@ -1,8 +1,10 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { env, events, renderer } from 'view/global';
+import { createSelector } from '@reduxjs/toolkit';
+import { env, events, renderer, reactors } from 'view/global';
 import { ignoreEvents } from 'utils/react';
+import Modals from 'components/window/Modals';
 import StatusBar from 'components/window/StatusBar';
 import TitleBar from 'components/window/TitleBar';
 import ControlDock from 'components/panels/ControlDock';
@@ -18,12 +20,11 @@ import { updateZoom } from 'actions/stage';
 import { openAudioFile } from 'actions/audio';
 import { openProject, saveProject, newProject, checkUnsavedChanges } from 'actions/project';
 import styles from './App.less';
-import Modals from './window/Modals';
 
 function App() {
   const dispatch = useDispatch();
-  const project = useSelector(state => state.project);
-  const reactor = null;
+  const projectFile = useSelector(state => state.project.file);
+  const activeReactorId = useSelector(state => state.app.activeReactorId);
 
   function handleMenuAction(action) {
     switch (action) {
@@ -36,7 +37,7 @@ function App() {
         break;
 
       case 'save-project':
-        dispatch(saveProject(project.file));
+        dispatch(saveProject(projectFile));
         break;
 
       case 'save-project-as':
@@ -113,7 +114,7 @@ function App() {
         <div className={styles.viewport}>
           <Stage />
           <Player />
-          {reactor && <ReactorControl reactor={reactor} />}
+          {activeReactorId && <ReactorControl reactorId={activeReactorId} />}
         </div>
         <ControlDock />
       </div>

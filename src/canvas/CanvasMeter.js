@@ -1,8 +1,8 @@
 /* eslint-disable react/require-render-return */
-import Component from 'core/Component';
+import Entity from 'core/Entity';
 import { setColor } from 'utils/canvas';
 
-export default class CanvasBars extends Component {
+export default class CanvasBars extends Entity {
   constructor(properties, canvas) {
     super({ ...CanvasBars.defaultProperties, ...properties });
 

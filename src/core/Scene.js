@@ -74,12 +74,12 @@ export default class Scene extends Display {
     this.composer.setSize(width, height);
   }
 
-  getType(obj) {
-    return obj instanceof Effect ? 'effects' : 'displays';
+  getTarget(obj) {
+    return obj instanceof Effect ? this.effects : this.displays;
   }
 
   getElementById(id) {
-    return this.displays.find(n => n.id === id) || this.effects.find(n => n.id === id);
+    return this.displays.find(e => e.id === id) || this.effects.find(e => e.id === id);
   }
 
   hasElement(obj) {
@@ -91,12 +91,12 @@ export default class Scene extends Display {
       return;
     }
 
-    const type = this.getType(obj);
+    const target = this.getTarget(obj);
 
     if (index !== undefined) {
-      insert(this[type], index, obj);
+      insert(target, index, obj);
     } else {
-      this[type].push(obj);
+      target.push(obj);
     }
 
     Object.defineProperty(obj, 'scene', { value: this });
@@ -123,11 +123,11 @@ export default class Scene extends Display {
       return false;
     }
 
-    const type = this.getType(obj);
+    const target = this.getTarget(obj);
 
-    remove(this[type], obj);
+    remove(target, obj);
 
-    obj.scene = null;
+    delete obj.scene;
 
     if (obj.removeFromScene) {
       obj.removeFromScene(this);
@@ -145,12 +145,12 @@ export default class Scene extends Display {
       return false;
     }
 
-    const type = this.getType(obj);
-    const index = this[type].indexOf(obj);
+    const target = this.getTarget(obj);
+    const index = target.indexOf(obj);
 
-    swap(this[type], index, index + i);
+    swap(target, index, index + i);
 
-    this.changed = this[type].indexOf(obj) !== index;
+    this.changed = target.indexOf(obj) !== index;
 
     if (this.changed) {
       this.updatePasses();
@@ -206,18 +206,20 @@ export default class Scene extends Display {
     this.displays.forEach(display => {
       display.changed = false;
     });
+
+    this.effects.forEach(effect => {
+      effect.changed = false;
+    });
   }
 
   toJSON() {
-    const { id, name, properties, displays, effects, reactors } = this;
+    const json = super.toJSON();
+    const { displays, effects } = this;
 
     return {
-      id,
-      name,
-      properties: { ...properties },
+      ...json,
       displays: displays.map(display => display.toJSON()),
       effects: effects.map(effect => effect.toJSON()),
-      reactors,
     };
   }
 
@@ -236,7 +238,7 @@ export default class Scene extends Display {
     const { composer, displays, effects } = this;
 
     this.clear();
-    this.updateReactors(data);
+    //this.updateReactors(data);
 
     if (displays.length > 0 || effects.length > 0) {
       displays.forEach(display => {

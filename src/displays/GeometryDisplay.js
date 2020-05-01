@@ -33,7 +33,7 @@ import {
 import WebglDisplay from 'core/WebglDisplay';
 import SpectrumParser from 'audio/SpectrumParser';
 import POINT_SPRITE from 'assets/images/point.png';
-import { hasDefined } from 'utils/array';
+import { isDefined } from 'utils/array';
 
 const materialOptions = {
   Normal: MeshNormalMaterial,
@@ -108,7 +108,7 @@ export default class GeometryDisplay extends WebglDisplay {
 
     if (changed) {
       // Create new mesh
-      if (hasDefined(shape, material, shading, lines, edges, edgeColor)) {
+      if (isDefined(shape, material, shading, lines, edges, edgeColor)) {
         this.createMesh();
       }
       // Change wireframe
@@ -126,7 +126,7 @@ export default class GeometryDisplay extends WebglDisplay {
         this.material.color = new Color().set(color);
       }
       // Change position
-      else if (hasDefined(x, y, z)) {
+      else if (isDefined(x, y, z)) {
         this.mesh.position.set(x, y, z);
       }
       // Change visibility
@@ -134,7 +134,7 @@ export default class GeometryDisplay extends WebglDisplay {
         this.group.visible = enabled;
       }
       // Change lights
-      else if (lights && hasDefined(lightDistance, lightIntensity)) {
+      else if (lights && isDefined(lightDistance, lightIntensity)) {
         this.updateLights();
       }
       // Change camera

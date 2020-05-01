@@ -20,6 +20,6 @@ export function swap(arr, index, newIndex) {
   }
 }
 
-export function hasDefined(...arr) {
+export function isDefined(...arr) {
   return arr.filter(e => e !== undefined).length > 0;
 }

@@ -85,13 +85,7 @@ function WaveSpectrumControl({ display, active, stageWidth, stageHeight, onChang
       <Option label="Stroke" type="toggle" name="stroke" value={stroke} />
       <Option label="Stroke Color" type="color" name="color" value={color} />
       <Option label="Fill" type="toggle" name="fill" value={fill} />
-      <Option
-        label="Fill Color"
-        type="colorrange"
-        name="fillColor"
-        startColor={fillColor[0]}
-        endColor={fillColor[1]}
-      />
+      <Option label="Fill Color" type="colorrange" name="fillColor" value={fillColor} />
       <Option label="Taper Edges" type="toggle" name="taper" value={taper} />
       <Option
         label="X"

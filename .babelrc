@@ -11,7 +11,8 @@
     "react-hot-loader/babel",
     "@babel/transform-runtime",
     "@babel/proposal-class-properties",
-    "@babel/proposal-object-rest-spread"
+    "@babel/proposal-object-rest-spread",
+    "@babel/proposal-optional-chaining"
   ],
   "env": {
     "production": {
@@ -26,7 +27,8 @@
       "plugins": [
         "@babel/transform-runtime",
         "@babel/proposal-class-properties",
-        "@babel/proposal-object-rest-spread"
+        "@babel/proposal-object-rest-spread",
+        "@babel/proposal-optional-chaining"
       ]
     }
   }

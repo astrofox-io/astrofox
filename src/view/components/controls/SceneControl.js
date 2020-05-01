@@ -65,6 +65,7 @@ function SceneControl({ display, active, onChange }) {
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
       <Option label="Mask" type="toggle" name="mask" value={mask} />
       <Option label="Inverse" type="toggle" name="inverse" value={inverse} />
