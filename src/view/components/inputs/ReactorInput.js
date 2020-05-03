@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import CanvasMeter from 'canvas/CanvasMeter';
 import Icon from 'components/interface/Icon';
@@ -11,7 +11,6 @@ import { PRIMARY_COLOR } from 'view/constants';
 import styles from './ReactorInput.less';
 
 export default function ReactorInput({
-  reactorId,
   display,
   name,
   value,
@@ -23,7 +22,7 @@ export default function ReactorInput({
   const canvas = useRef();
   const meter = useRef();
   const lastValue = useRef(value);
-  const reactor = reactors.getReactorById(reactorId);
+  const reactor = useMemo(() => reactors.getElementById(display.getReactor(name).id), [display]);
 
   function disableReactor() {
     display.removeReactor(name);

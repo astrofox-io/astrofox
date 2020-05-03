@@ -18,7 +18,7 @@ export default sceneStore.reducer;
 
 export function loadScenes() {
   return dispatch => {
-    dispatch(setScenes(stage.getSceneJSON()));
+    dispatch(setScenes(stage.scenes.toJSON()));
   };
 }
 

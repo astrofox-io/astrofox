@@ -1,9 +1,10 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
-function RGBShiftControl({ display, stageWidth, active, onChange }) {
+export default function RGBShiftControl({ display, stageWidth, active }) {
   const { offset, angle } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="RGB Shift" active={active} display={display} onChange={onChange}>
@@ -21,5 +22,3 @@ function RGBShiftControl({ display, stageWidth, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(RGBShiftControl);

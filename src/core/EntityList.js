@@ -19,6 +19,8 @@ export default class EntityList extends ArrayList {
     } else {
       this.push(obj);
     }
+
+    return obj;
   }
 
   removeElement(obj) {

@@ -11,7 +11,6 @@ import { logger, events } from 'view/global';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
-  DISPLAY_TYPE_STAGE,
   DEFAULT_BACKGROUND_COLOR,
 } from 'view/constants';
 import { isDefined } from 'utils/array';
@@ -33,8 +32,6 @@ export default class Stage extends Entity {
 
     this.scenes = new EntityList();
     this.initialized = false;
-
-    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_STAGE });
   }
 
   init(canvas) {
@@ -173,10 +170,6 @@ export default class Stage extends Entity {
     this.changed = true;
   }
 
-  getSceneJSON() {
-    return this.scenes.toJSON();
-  }
-
   hasScenes() {
     return !this.scenes.isEmpty();
   }
@@ -266,9 +259,9 @@ export default class Stage extends Entity {
   }
 
   render(data) {
-    const { composer, scenes } = this;
+    const { composer, scenes, backgroundColor } = this;
 
-    composer.clear(this.backgroundColor, 1);
+    composer.clear(backgroundColor, 1);
 
     scenes.forEach(scene => {
       if (scene.properties.enabled) {

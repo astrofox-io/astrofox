@@ -2,6 +2,7 @@ import Display from 'core/Display';
 import Effect from 'core/Effect';
 import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
+import { DISPLAY_TYPE_SCENE } from 'view/constants';
 
 export default class Scene extends Display {
   static label = 'Scene';
@@ -19,12 +20,11 @@ export default class Scene extends Display {
   constructor(properties) {
     super(Scene, properties);
 
-    this.stage = null;
     this.displays = new EntityList();
     this.effects = new EntityList();
     this.reactors = {};
 
-    Object.defineProperty(this, 'type', { value: 'scene' });
+    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_SCENE });
   }
 
   update(properties) {
@@ -39,7 +39,7 @@ export default class Scene extends Display {
   }
 
   addToStage(stage) {
-    this.stage = stage;
+    Object.defineProperty(this, 'stage', { value: stage });
 
     this.composer = new Composer(stage.renderer);
 
@@ -47,11 +47,11 @@ export default class Scene extends Display {
   }
 
   removeFromStage() {
-    this.stage = null;
-    this.displays = null;
-    this.effects = null;
+    delete this.stage;
+
+    this.displays.clear();
+    this.effects.clear();
     this.composer.dispose();
-    this.composer = null;
   }
 
   getSize() {
@@ -231,7 +231,7 @@ export default class Scene extends Display {
     const { composer, displays, effects } = this;
 
     this.clear();
-    //this.updateReactors(data);
+    this.updateReactors(data);
 
     if (displays.length > 0 || effects.length > 0) {
       displays.forEach(display => {

@@ -1,6 +1,6 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from '../hooks/useEntity';
 
 const mirrorOptions = [
   { name: 'Left', value: 0 },
@@ -9,8 +9,9 @@ const mirrorOptions = [
   { name: 'Bottom', value: 3 },
 ];
 
-function MirrorControl({ display, active, onChange }) {
+export default function MirrorControl({ display, active }) {
   const { side } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Mirror" active={active} display={display} onChange={onChange}>
@@ -18,5 +19,3 @@ function MirrorControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(MirrorControl);

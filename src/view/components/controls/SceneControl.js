@@ -1,21 +1,22 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
+import { SEPARATOR } from 'components/inputs/SelectInput';
 
 const blendOptions = [
   'None',
   'Normal',
-  { separator: true },
+  SEPARATOR,
   'Darken',
   'Multiply',
   'Color Burn',
   'Linear Burn',
-  { separator: true },
+  SEPARATOR,
   'Lighten',
   'Screen',
   'Color Dodge',
   'Linear Dodge',
-  { separator: true },
+  SEPARATOR,
   'Overlay',
   'Soft Light',
   'Hard Light',
@@ -23,28 +24,29 @@ const blendOptions = [
   'Linear Light',
   'Pin Light',
   'Hard Mix',
-  { separator: true },
+  SEPARATOR,
   'Difference',
   'Exclusion',
   'Subtract',
   'Divide',
-  { separator: true },
+  SEPARATOR,
   'Negation',
   'Phoenix',
   'Glow',
   'Reflect',
 ];
 
-function SceneControl({ display, active, onChange }) {
+export default function SceneControl({ display, active }) {
   const { blendMode, opacity, mask, inverse } = display.properties;
+  const onChange = useEntity(display);
 
-  function handleChange(name, value) {
+  function handleChange(props) {
     // Ignore separators
-    if (name === 'blendMode' && typeof value !== 'string') {
+    if (props.blendMode === null) {
       return;
     }
 
-    onChange(name, value);
+    onChange(props);
   }
 
   return (
@@ -72,5 +74,3 @@ function SceneControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(SceneControl);

@@ -1,13 +1,14 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
 const renderOptions = ['Square', 'Hexagon'];
 const minPixelSize = 2;
 const maxPixelSize = 240;
 
-function PixelateControl({ display, active, onChange }) {
+export default function PixelateControl({ display, active }) {
   const { type, size } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Pixelate" active={active} display={display} onChange={onChange}>
@@ -24,5 +25,3 @@ function PixelateControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(PixelateControl);

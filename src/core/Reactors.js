@@ -17,6 +17,9 @@ export default class Reactors extends EntityList {
   }
 
   updateReactors(data) {
-    this.forEach(reactor => reactor.parse(data));
+    return this.reduce((memo, reactor) => {
+      memo[reactor.id] = reactor.parse(data).output;
+      return memo;
+    }, {});
   }
 }

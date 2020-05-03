@@ -1,8 +1,8 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
-function WaveSpectrumControl({ display, active, stageWidth, stageHeight, onChange }) {
+export default function WaveSpectrumControl({ display, active, stageWidth, stageHeight }) {
   const {
     maxDecibels,
     minFrequency,
@@ -20,6 +20,7 @@ function WaveSpectrumControl({ display, active, stageWidth, stageHeight, onChang
     rotation,
     opacity,
   } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Wave Spectrum" active={active} display={display} onChange={onChange}>
@@ -127,5 +128,3 @@ function WaveSpectrumControl({ display, active, stageWidth, stageHeight, onChang
     </Control>
   );
 }
-
-export default withDisplay(WaveSpectrumControl);

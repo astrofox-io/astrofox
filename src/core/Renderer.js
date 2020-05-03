@@ -109,8 +109,7 @@ export default class Renderer {
     data.id = window.requestAnimationFrame(this.render);
     data.delta = now - data.time;
     data.time = now;
-
-    reactors.updateReactors(data);
+    data.reactors = reactors.updateReactors(data);
 
     stage.render(data);
 

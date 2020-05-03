@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
 import { BLANK_IMAGE } from 'view/constants';
+import useEntity from 'components/hooks/useEntity';
 
-function ImageControl({ display, active, stageWidth, stageHeight, onChange }) {
+export default function ImageControl({ display, active, stageWidth, stageHeight }) {
   const { fixed, src, width, height, x, y, rotation, opacity } = display.properties;
   const image = useRef();
   const disabled = !(image.current && image.current.src !== BLANK_IMAGE);
@@ -13,40 +13,40 @@ function ImageControl({ display, active, stageWidth, stageHeight, onChange }) {
   const maxHeight = imageHeight * 2;
   const xMax = imageWidth > stageWidth ? imageWidth : stageWidth;
   const yMax = imageHeight > stageHeight ? imageHeight : stageHeight;
+  const onChange = useEntity(display);
 
-  function handleChange(name, value) {
+  function handleChange(props) {
     const { naturalWidth, naturalHeight } = image.current;
     const ratio = naturalWidth / naturalHeight;
-    const obj = {};
 
-    if (name === 'src') {
+    if (props.src !== undefined) {
       // Reset values
-      if (value === BLANK_IMAGE) {
-        obj.width = 1;
-        obj.height = 1;
-        obj.x = 0;
-        obj.y = 0;
-        obj.rotation = 0;
-        obj.opacity = 1.0;
+      if (props.src === BLANK_IMAGE) {
+        props.width = 1;
+        props.height = 1;
+        props.x = 0;
+        props.y = 0;
+        props.rotation = 0;
+        props.opacity = 1.0;
       }
 
       // Load new image
-      if (value !== src) {
-        obj.width = naturalWidth || 1;
-        obj.height = naturalHeight || 1;
-        obj.opacity = 1.0;
+      if (props.src !== src) {
+        props.width = naturalWidth || 1;
+        props.height = naturalHeight || 1;
+        props.opacity = 1.0;
       }
-    } else if (name === 'width' && fixed) {
-      obj.height = Math.round(value * (1 / ratio)) || 0;
-    } else if (name === 'height' && fixed) {
-      obj.width = Math.round(value * ratio);
+    } else if (props.width && fixed) {
+      props.height = Math.round(props.width * (1 / ratio)) || 0;
+    } else if (props.height && fixed) {
+      props.width = Math.round(props.height * ratio);
     }
 
-    onChange(name, value, obj);
+    onChange(props);
   }
 
   function handleLinkClick() {
-    handleChange('fixed', !fixed);
+    handleChange({ fixed: !fixed });
   }
 
   return (
@@ -123,4 +123,3 @@ function ImageControl({ display, active, stageWidth, stageHeight, onChange }) {
   );
 }
 
-export default withDisplay(ImageControl);

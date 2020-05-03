@@ -1,12 +1,13 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 import fonts from 'config/fonts.json';
 
 const fontOptions = fonts.map(item => ({ name: item, value: item, style: { fontFamily: item } }));
 
-function TextControl({ display, active, stageWidth, stageHeight, onChange }) {
+export default function TextControl({ display, active, stageWidth, stageHeight }) {
   const { text, size, font, bold, italic, color, x, y, rotation, opacity } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Text" active={active} display={display} onChange={onChange}>
@@ -56,5 +57,3 @@ function TextControl({ display, active, stageWidth, stageHeight, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(TextControl);

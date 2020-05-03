@@ -1,11 +1,12 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
 const blendOptions = ['Add', 'Screen'];
 
-function BloomControl({ display, active, onChange }) {
+export default function BloomControl({ display, active }) {
   const { blendMode, amount, threshold } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Bloom" active={active} display={display} onChange={onChange}>
@@ -39,5 +40,3 @@ function BloomControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(BloomControl);

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Control, Option } from 'components/editing';
 import { ToggleInput } from 'components/inputs';
-import withDisplay from 'components/hocs/withDisplay';
+import useEntity from 'components/hooks/useEntity';
+import { inputToProps } from 'utils/react';
 
-function BarSpectrumControl({ display, active, stageWidth, stageHeight, onChange }) {
+export default function BarSpectrumControl({ display, active, stageWidth, stageHeight }) {
   const {
     maxDecibels,
     minFrequency,
@@ -24,16 +25,16 @@ function BarSpectrumControl({ display, active, stageWidth, stageHeight, onChange
     opacity,
   } = display.properties;
 
-  function handleChange(name, value) {
-    const obj = {};
+  const onChange = useEntity(display);
 
-    if (name === 'barWidthAutoSize') {
-      obj.barWidth = value ? -1 : 1;
-    } else if (name === 'barSpacingAutoSize') {
-      obj.barSpacing = value ? -1 : 1;
+  function handleChange(props) {
+    if (props.barWidthAutoSize !== undefined) {
+      props.barWidth = props.barWidthAutoSize ? -1 : 1;
+    } else if (props.barSpacingAutoSize !== undefined) {
+      props.barSpacing = props.barSpacingAutoSize ? -1 : 1;
     }
 
-    onChange(name, value, obj);
+    onChange(props);
   }
 
   return (
@@ -119,7 +120,7 @@ function BarSpectrumControl({ display, active, stageWidth, stageHeight, onChange
           label="Auto-size"
           name="barWidthAutoSize"
           value={barWidthAutoSize}
-          onChange={handleChange}
+          onChange={inputToProps(handleChange)}
         />
       </Option>
       <Option
@@ -136,7 +137,7 @@ function BarSpectrumControl({ display, active, stageWidth, stageHeight, onChange
           label="Auto-size"
           name="barSpacingAutoSize"
           value={barSpacingAutoSize}
-          onChange={handleChange}
+          onChange={inputToProps(handleChange)}
         />
       </Option>
       <Option label="Bar Color" type="colorrange" name="color" value={color} />
@@ -181,5 +182,3 @@ function BarSpectrumControl({ display, active, stageWidth, stageHeight, onChange
     </Control>
   );
 }
-
-export default withDisplay(BarSpectrumControl);

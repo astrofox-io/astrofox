@@ -1,9 +1,10 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
-function DotScreenControl({ display, active, onChange }) {
+export default function DotScreenControl({ display, active }) {
   const { scale, angle } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Dot Screen" active={active} display={display} onChange={onChange}>
@@ -21,5 +22,3 @@ function DotScreenControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(DotScreenControl);

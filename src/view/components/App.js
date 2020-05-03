@@ -21,10 +21,15 @@ import { openAudioFile } from 'actions/audio';
 import { openProject, saveProject, newProject, checkUnsavedChanges } from 'actions/project';
 import styles from './App.less';
 
+const getActiveReactor = createSelector(
+  state => state.app.activeReactorId,
+  reactorId => reactors.getElementById(reactorId),
+);
+
 function App() {
   const dispatch = useDispatch();
   const projectFile = useSelector(state => state.project.file);
-  const activeReactorId = useSelector(state => state.app.activeReactorId);
+  const reactor = useSelector(getActiveReactor);
 
   function handleMenuAction(action) {
     switch (action) {
@@ -114,7 +119,7 @@ function App() {
         <div className={styles.viewport}>
           <Stage />
           <Player />
-          {activeReactorId && <ReactorControl reactorId={activeReactorId} />}
+          {reactor && <ReactorControl reactor={reactor} />}
         </div>
         <ControlDock />
       </div>

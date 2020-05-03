@@ -35,16 +35,16 @@ export default class Display extends Entity {
     return this.changed;
   }
 
-  getReactor(name) {
-    return this.reactors[name];
+  getReactor(prop) {
+    return this.reactors[prop];
   }
 
-  setReactor(reactor, name, min = 0, max = 1) {
-    this.reactors[name] = { id: reactor.id, min, max };
+  setReactor(reactor, prop, min = 0, max = 1) {
+    this.reactors[prop] = { id: reactor.id, min, max };
   }
 
-  removeReactor(name) {
-    delete this.reactors[name];
+  removeReactor(prop) {
+    delete this.reactors[prop];
   }
 
   clearReactors() {
@@ -52,22 +52,21 @@ export default class Display extends Entity {
   }
 
   updateReactors(data) {
-    return;
-    /*
     const { reactors, changed } = this;
 
-    Object.keys(reactors).forEach(name => {
-      const reactor = reactors[name];
+    Object.keys(reactors).forEach(prop => {
+      const reactor = reactors[prop];
+      const output = data.reactors[reactor.id];
 
-      const { output } = reactor.parse(data);
-      const { min, max } = reactor.properties;
-      const value = (max - min) * output + min;
+      if (output !== undefined) {
+        const { min, max } = reactor;
+        const value = (max - min) * output + min;
 
-      this.update({ [name]: value });
+        this.update({ [prop]: value });
+      }
     });
 
     this.changed = changed;
-     */
   }
 
   toJSON() {

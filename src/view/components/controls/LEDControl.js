@@ -1,9 +1,10 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from '../hooks/useEntity';
 
-function LEDControl({ display, active, onChange }) {
+export default function LEDControl({ display, active }) {
   const { spacing, size, blur } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="LED" active={active} display={display} onChange={onChange}>
@@ -21,5 +22,3 @@ function LEDControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(LEDControl);

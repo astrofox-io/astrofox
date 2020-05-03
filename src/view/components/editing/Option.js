@@ -64,7 +64,7 @@ export default function Option({
         )}
       </div>
       {showReactor && (
-        <ReactorInput reactorId={reactor.id} display={display} name={name} value={value} />
+        <ReactorInput display={display} name={name} value={value} />
       )}
       {!showReactor && (
         <>

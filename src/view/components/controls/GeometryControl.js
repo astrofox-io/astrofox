@@ -1,6 +1,6 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
 const shapeOptions = [
   'Box',
@@ -21,7 +21,7 @@ const maxXRange = 500;
 const maxYRange = 500;
 const maxZRange = 1000;
 
-function GeometryControl({ display, active, onChange }) {
+export default function GeometryControl({ display, active }) {
   const {
     shape,
     material,
@@ -35,6 +35,7 @@ function GeometryControl({ display, active, onChange }) {
     z,
     opacity,
   } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="3D Geometry" active={active} display={display} onChange={onChange}>
@@ -93,4 +94,3 @@ function GeometryControl({ display, active, onChange }) {
   );
 }
 
-export default withDisplay(GeometryControl);

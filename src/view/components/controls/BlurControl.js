@@ -1,11 +1,12 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
 const blurOptions = ['Box', 'Circular', 'Gaussian', 'Zoom'];
 
-function BlurControl({ display, active, stageWidth, stageHeight, onChange }) {
+export default function BlurControl({ display, active, stageWidth, stageHeight }) {
   const { x, y, type, amount } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Blur" active={active} display={display} onChange={onChange}>
@@ -45,5 +46,3 @@ function BlurControl({ display, active, stageWidth, stageHeight, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(BlurControl);

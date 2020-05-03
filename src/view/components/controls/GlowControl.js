@@ -1,9 +1,10 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
-function GlowControl({ display, active, onChange }) {
+export default function GlowControl({ display, active }) {
   const { amount, intensity } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Glow" active={active} display={display} onChange={onChange}>
@@ -30,5 +31,3 @@ function GlowControl({ display, active, onChange }) {
     </Control>
   );
 }
-
-export default withDisplay(GlowControl);

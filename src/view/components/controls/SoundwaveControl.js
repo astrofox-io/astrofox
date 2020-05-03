@@ -1,8 +1,8 @@
 import React from 'react';
-import withDisplay from 'components/hocs/withDisplay';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 
-function SoundwaveControl({ display, active, stageWidth, stageHeight, onChange }) {
+export default function SoundwaveControl({ display, active, stageWidth, stageHeight }) {
   const {
     color,
     wavelength,
@@ -15,6 +15,7 @@ function SoundwaveControl({ display, active, stageWidth, stageHeight, onChange }
     rotation,
     opacity,
   } = display.properties;
+  const onChange = useEntity(display);
 
   return (
     <Control label="Soundwave" active={active} display={display} onChange={onChange}>
@@ -97,5 +98,3 @@ function SoundwaveControl({ display, active, stageWidth, stageHeight, onChange }
     </Control>
   );
 }
-
-export default withDisplay(SoundwaveControl);

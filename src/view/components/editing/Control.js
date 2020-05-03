@@ -1,23 +1,18 @@
-import React, { Children, Fragment, cloneElement } from 'react';
+import React from 'react';
 import Option from 'components/editing/Option';
 import classNames from 'classnames';
+import { inputToProps, mapChildren } from 'utils/react';
 import styles from './Control.less';
-
-function mapChildren(children, props) {
-  return Children.map(children, child => {
-    if (child) {
-      if (child.type === Option) {
-        return cloneElement(child, props);
-      } else if (child.type === Fragment) {
-        return mapChildren(child.props.children, props);
-      }
-    }
-    return child;
-  });
-}
 
 export default function Control({ display, label, active, className, children, onChange }) {
   const { displayName } = display;
+
+  function handleClone(child, props) {
+    if (child.type === Option) {
+      return [child, props];
+    }
+    return [child];
+  }
 
   return (
     <div
@@ -31,7 +26,7 @@ export default function Control({ display, label, active, className, children, o
           <span className={styles.displayName}>{displayName}</span>
         </div>
       )}
-      {mapChildren(children, { display, onChange })}
+      {mapChildren(children, { display, onChange: inputToProps(onChange) }, handleClone)}
     </div>
   );
 }

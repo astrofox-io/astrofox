@@ -1,13 +1,17 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Control, Option } from 'components/editing';
+import useEntity from 'components/hooks/useEntity';
 import Icon from 'components/interface/Icon';
 import { BoxInput } from 'components/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import { hideActiveReactor } from 'actions/app';
-import { events, reactors } from 'view/global';
+import { events } from 'view/global';
 import { ChevronDown } from 'view/icons';
+import { PRIMARY_COLOR } from 'view/constants';
+import { contains } from 'utils/array';
+import { inputToProps } from 'utils/react';
 import styles from './ReactorControl.less';
 
 const REACTOR_BARS = 64;
@@ -17,43 +21,37 @@ const BAR_SPACING = 1;
 
 const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
 
-export default function ReactorControl({ reactorId }) {
+export default function ReactorControl({ reactor }) {
   const dispatch = useDispatch();
   const spectrum = useRef();
   const meter = useRef();
-  const box = useRef();
   const spectrumCanvas = useRef();
   const outputCanvas = useRef();
-  const reactor = useMemo(() => reactors.getReactorById(reactorId), [reactorId]);
+  const onChange = useEntity(reactor);
+  const onParserChange = useEntity(reactor.parser);
+  const { selection } = reactor.properties;
 
-  function updateReactor(name, value) {
-    const props = { [name]: value };
+  function handleChange(props) {
+    const keys = Object.keys(props);
 
-    if (name === 'selection') {
-      const { x, y, width, height } = value;
-      const maxWidth = REACTOR_BARS * (BAR_WIDTH + BAR_SPACING);
-      const maxHeight = BAR_HEIGHT;
+    if (contains(keys, ['selection', 'outputMode'])) {
+      const { selection } = props;
+      if (selection) {
+        const { x, y, width, height } = selection;
+        const maxWidth = REACTOR_BARS * (BAR_WIDTH + BAR_SPACING);
+        const maxHeight = BAR_HEIGHT;
 
-      props.range = {
-        x1: x / maxWidth,
-        x2: (x + width) / maxWidth,
-        y1: y / maxHeight,
-        y2: (y + height) / maxHeight,
-      };
-    }
+        props.range = {
+          x1: x / maxWidth,
+          x2: (x + width) / maxWidth,
+          y1: y / maxHeight,
+          y2: (y + height) / maxHeight,
+        };
+      }
 
-    reactor.update(props);
-  }
-
-  function updateParser(name, value) {
-    reactor.parser.update({ [name]: value });
-  }
-
-  function handleChange(name, value) {
-    if (['selection', 'outputMode'].includes(name)) {
-      updateReactor(name, value);
+      onChange(props);
     } else {
-      updateParser(name, value);
+      onParserChange(props);
     }
   }
 
@@ -86,7 +84,7 @@ export default function ReactorControl({ reactorId }) {
       {
         width: 20,
         height: BAR_HEIGHT,
-        color: '#775FD8',
+        color: PRIMARY_COLOR,
         origin: 'bottom',
       },
       outputCanvas.current,
@@ -113,14 +111,13 @@ export default function ReactorControl({ reactorId }) {
             height={BAR_HEIGHT}
           />
           <BoxInput
-            ref={box}
             name="selection"
-            value={reactor ? reactor.properties.selection : {}}
+            value={selection}
             minWidth={BAR_WIDTH}
             minHeight={BAR_WIDTH}
             maxWidth={REACTOR_BARS * (BAR_WIDTH + BAR_SPACING)}
             maxHeight={BAR_HEIGHT}
-            onChange={handleChange}
+            onChange={inputToProps(handleChange)}
           />
         </div>
         <div className={styles.output}>
@@ -168,6 +165,7 @@ const Controls = ({ reactor, onChange }) => {
         min={-40}
         max={0}
         step={1}
+        withRange
       />
       <Option
         label="Smoothing"
@@ -177,6 +175,7 @@ const Controls = ({ reactor, onChange }) => {
         min={0}
         max={0.99}
         step={0.01}
+        withRange
       />
     </Control>
   );
