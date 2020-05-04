@@ -109,8 +109,6 @@ export default class Scene extends Display {
 
     this.updatePasses();
 
-    this.changed = true;
-
     return obj;
   }
 
@@ -131,8 +129,6 @@ export default class Scene extends Display {
 
     this.updatePasses();
 
-    this.changed = true;
-
     return true;
   }
 
@@ -143,13 +139,13 @@ export default class Scene extends Display {
 
     const target = this.getTarget(obj);
 
-    this.changed = target.shiftElement(obj, spaces);
+    const changed = target.shiftElement(obj, spaces);
 
-    if (this.changed) {
+    if (changed) {
       this.updatePasses();
     }
 
-    return this.changed;
+    return changed;
   }
 
   updatePasses() {
@@ -183,26 +179,6 @@ export default class Scene extends Display {
 
   getRenderer() {
     return this.stage.webglBuffer.renderer;
-  }
-
-  hasChanges() {
-    if (this.changed) {
-      return true;
-    }
-
-    return !!this.displays.find(e => e.changed);
-  }
-
-  resetChanges() {
-    this.changed = false;
-
-    this.displays.forEach(display => {
-      display.changed = false;
-    });
-
-    this.effects.forEach(effect => {
-      effect.changed = false;
-    });
   }
 
   toJSON() {

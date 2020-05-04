@@ -147,8 +147,6 @@ export default class Stage extends Entity {
       scene.addToStage(this);
     }
 
-    this.changed = true;
-
     return scene;
   }
 
@@ -158,36 +156,16 @@ export default class Stage extends Entity {
     delete scene.stage;
 
     scene.removeFromStage(this);
-
-    this.changed = true;
   }
 
   clearScenes() {
     [...this.scenes].forEach(scene => this.removeScene(scene));
 
     resetDisplayCount();
-
-    this.changed = true;
   }
 
   hasScenes() {
     return !this.scenes.isEmpty();
-  }
-
-  hasChanges() {
-    if (this.changed) {
-      return true;
-    }
-
-    return !!this.scenes.find(scene => scene.hasChanges());
-  }
-
-  resetChanges() {
-    this.changed = false;
-
-    this.scenes.forEach(scene => {
-      scene.resetChanges();
-    });
   }
 
   loadConfig(config) {

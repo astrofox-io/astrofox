@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { stage } from 'view/global';
+import { touchProject } from 'actions/project';
 
 const sceneStore = createSlice({
   name: 'scenes',

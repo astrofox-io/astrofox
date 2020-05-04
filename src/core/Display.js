@@ -25,14 +25,11 @@ export default class Display extends Entity {
     Object.defineProperty(this, 'name', { value: type.className });
 
     this.scene = null;
-    this.changed = false;
     this.reactors = {};
   }
 
   update(properties = {}) {
-    this.changed = super.update(properties);
-
-    return this.changed;
+    return super.update(properties);
   }
 
   getReactor(prop) {
@@ -52,7 +49,7 @@ export default class Display extends Entity {
   }
 
   updateReactors(data) {
-    const { reactors, changed } = this;
+    const { reactors } = this;
 
     Object.keys(reactors).forEach(prop => {
       const reactor = reactors[prop];
@@ -65,8 +62,6 @@ export default class Display extends Entity {
         this.update({ [prop]: value });
       }
     });
-
-    this.changed = changed;
   }
 
   toJSON() {

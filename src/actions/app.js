@@ -30,36 +30,36 @@ export const { updateApp } = appStore.actions;
 
 export default appStore.reducer;
 
-async function loadLicense() {
-  await license.load(env.LICENSE_FILE);
-}
-
-function loadMenu() {
-  const { setApplicationMenu, buildFromTemplate } = remote.Menu;
-  const menu = [...menuConfig];
-
-  function executeAction({ action }) {
-    events.emit('menu-action', action);
-  }
-
-  menu.forEach(menuItem => {
-    if (menuItem.submenu) {
-      menuItem.submenu.forEach(item => {
-        if (item.action && !item.role) {
-          item.click = executeAction;
-        }
-      });
-    }
-  });
-
-  setApplicationMenu(buildFromTemplate(menu));
-}
-
 export function exitApp() {
   closeWindow();
 }
 
 export function initApp() {
+  function loadLicense() {
+    return license.load(env.LICENSE_FILE);
+  }
+
+  function loadMenu() {
+    const { setApplicationMenu, buildFromTemplate } = remote.Menu;
+    const menu = [...menuConfig];
+
+    function executeAction({ action }) {
+      events.emit('menu-action', action);
+    }
+
+    menu.forEach(menuItem => {
+      if (menuItem.submenu) {
+        menuItem.submenu.forEach(item => {
+          if (item.action && !item.role) {
+            item.click = executeAction;
+          }
+        });
+      }
+    });
+
+    setApplicationMenu(buildFromTemplate(menu));
+  }
+
   return async (dispatch, getState) => {
     await loadLicense();
     await loadMenu();
@@ -67,6 +67,7 @@ export function initApp() {
     await dispatch(newProject());
 
     const { checkForUpdates } = getState().config;
+
     if (checkForUpdates) {
       updater.checkForUpdates();
     }

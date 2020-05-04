@@ -6,31 +6,23 @@ const modalStore = createSlice({
   name: 'modals',
   initialState,
   reducers: {
-    setModals(state, action) {
-      state = action.payload;
+    showModal: {
+      reducer: (state, action) => {
+        return state.concat(action.payload);
+      },
+      prepare: (component, modalProps, componentProps) => {
+        return { payload: { component, modalProps, componentProps } };
+      },
+    },
+    closeModal: state => {
+      if (state.length > 0) {
+        return state.slice(0, state.length - 1);
+      }
       return state;
     },
   },
 });
 
-export const { setModals } = modalStore.actions;
+export const { showModal, closeModal } = modalStore.actions;
 
 export default modalStore.reducer;
-
-export function showModal(component, modalProps, componentProps) {
-  return (dispatch, getState) => {
-    const { modals } = getState();
-
-    dispatch(setModals(modals.concat({ component, modalProps, componentProps })));
-  };
-}
-
-export function closeModal() {
-  return (dispatch, getState) => {
-    const { modals } = getState();
-
-    if (modals.length) {
-      dispatch(setModals(modals.slice(0, modals.length - 1)));
-    }
-  };
-}

@@ -6,26 +6,53 @@ import { raiseError } from 'actions/errors';
 import { showModal } from 'actions/modals';
 import { readFile, readFileCompressed, writeFileCompressed } from 'utils/io';
 import { showOpenDialog, showSaveDialog } from 'utils/window';
+import { contains } from 'utils/array';
+
+const initialState = {
+  file: '',
+  opened: 0,
+  lastModified: 0,
+};
 
 export const projectStore = createSlice({
   name: 'project',
-  initialState: {
-    file: '',
-  },
+  initialState,
   reducers: {
     updateProject(state, action) {
       return { ...state, ...action.payload };
     },
+    touchProject(state) {
+      state.lastModified = Date.now();
+      return state;
+    },
+    resetProject() {
+      return initialState;
+    },
+  },
+  extraReducers: {
+    'scenes/setScenes': state => {
+      state.lastModified = Date.now();
+      return state;
+    },
+    'stage/updateStage': (state, action) => {
+      const keys = Object.keys(action.payload);
+      if (contains(keys, ['width', 'height', 'backgroundColor'])) {
+        state.lastModified = Date.now();
+      }
+      return state;
+    },
   },
 });
 
-export const { updateProject } = projectStore.actions;
+export const { updateProject, touchProject, resetProject } = projectStore.actions;
 
 export default projectStore.reducer;
 
 export function checkUnsavedChanges(menuAction, action) {
-  return dispatch => {
-    if (stage.hasChanges()) {
+  return (dispatch, getState) => {
+    const { opened, lastModified } = getState().project;
+
+    if (lastModified > opened) {
       dispatch(
         showModal('UnsavedChangesDialog', { showCloseButton: false }, { action: menuAction }),
       );
@@ -39,10 +66,9 @@ export function loadProject(file) {
   return async dispatch => {
     function loadData(data) {
       stage.loadConfig(JSON.parse(data));
-      stage.resetChanges();
 
       dispatch(loadScenes());
-      dispatch(updateProject({ file }));
+      dispatch(updateProject({ file, opened: Date.now(), lastModified: 0 }));
     }
 
     function handleError(error) {
@@ -80,9 +106,7 @@ export function saveProject(file) {
 
         logger.log('Project saved:', file);
 
-        stage.resetChanges();
-
-        dispatch(updateProject({ file, changed: false }));
+        dispatch(updateProject({ file, lastModified: 0 }));
       } catch (error) {
         dispatch(raiseError('Failed to save project file.', error));
       }
@@ -118,9 +142,7 @@ export function newProject() {
     scene.addElement(new displayLibrary.BarSpectrumDisplay());
     scene.addElement(new displayLibrary.TextDisplay({ text: 'hello.' }));
 
-    stage.resetChanges();
-
     dispatch(loadScenes());
-    dispatch(updateProject({ file: '' }));
+    dispatch(resetProject());
   };
 }
