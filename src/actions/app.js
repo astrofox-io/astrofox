@@ -12,6 +12,7 @@ const initialState = {
   showControlDock: true,
   showPlayer: true,
   showReactor: false,
+  activeEntityId: null,
   activeReactorId: null,
 };
 

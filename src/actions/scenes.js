@@ -24,8 +24,11 @@ export function loadScenes() {
 
 export function addScene() {
   return dispatch => {
-    stage.addScene();
+    const scene = stage.addScene();
+
     dispatch(loadScenes());
+
+    return scene;
   };
 }
 

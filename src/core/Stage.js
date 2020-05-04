@@ -141,7 +141,7 @@ export default class Stage extends Entity {
   addScene(scene = new Scene(), index) {
     this.scenes.addElement(scene, index);
 
-    Object.defineProperty(scene, 'stage', { value: this });
+    Object.defineProperty(scene, 'stage', { value: this, configurable: true });
 
     if (scene.addToStage) {
       scene.addToStage(this);

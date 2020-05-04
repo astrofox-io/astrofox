@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import Layer from 'components/panels/Layer';
 import { DISPLAY_TYPE_CANVAS, DISPLAY_TYPE_EFFECT, DISPLAY_TYPE_WEBGL } from 'view/constants';
 import { Picture, Cube, LightUp, DocumentLandscape } from 'view/icons';
+import { reverse } from 'utils/array';
 import styles from './SceneLayer.less';
 
 const icons = {
@@ -18,11 +19,8 @@ export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUp
     properties: { displayName, enabled },
   } = scene;
 
-  const mapLayers = elements =>
-    [...elements].map(element => ({ ...element, sceneId: scene.id })).reverse();
-
-  const displays = useMemo(() => mapLayers(scene.displays), [scene.displays]);
-  const effects = useMemo(() => mapLayers(scene.effects), [scene.effects]);
+  const displays = useMemo(() => reverse(scene.displays), [scene.displays]);
+  const effects = useMemo(() => reverse(scene.effects), [scene.effects]);
 
   const renderLayer = ({ id, type, properties: { displayName, enabled } }) => (
     <Layer

@@ -5,7 +5,7 @@ import { stage } from 'view/global';
 import styles from './ControlsPanel.less';
 
 export default function ControlsPanel() {
-  const activeId = useSelector(state => state.app.activeId);
+  const activeEntityId = useSelector(state => state.app.activeEntityId);
   const { width, height } = useSelector(state => state.stage);
   const scenes = useSelector(state => state.scenes);
   const panelRef = useRef();
@@ -18,11 +18,11 @@ export default function ControlsPanel() {
   }, [scenes]);
 
   useEffect(() => {
-    const node = document.getElementById(`control-${activeId}`);
+    const node = document.getElementById(`control-${activeEntityId}`);
     if (node) {
       panelRef.current.scrollTop = node.offsetTop;
     }
-  }, [activeId]);
+  }, [activeEntityId]);
 
   return (
     <div className={styles.panel} ref={panelRef}>
@@ -34,7 +34,7 @@ export default function ControlsPanel() {
           <div id={`control-${id}`} key={id} className={styles.control}>
             <Component
               display={display}
-              active={id === activeId}
+              active={id === activeEntityId}
               stageWidth={width}
               stageHeight={height}
             />

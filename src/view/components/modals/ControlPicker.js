@@ -1,18 +1,14 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { TabPanel, Tab } from 'components/layout/TabPanel';
-import { addElement } from 'actions/scenes';
 import * as displays from 'displays';
 import * as effects from 'effects';
 import styles from './ControlPicker.less';
 
 const types = ['displays', 'effects'];
 
-export default function ControlPicker({ type, sceneId, onClose }) {
-  const dispatch = useDispatch();
-
-  function handleClick(Item) {
-    dispatch(addElement(new Item(), sceneId));
+export default function ControlPicker({ type, onSelect, onClose }) {
+  function handleClick(item) {
+    onSelect(item);
     onClose();
   }
 

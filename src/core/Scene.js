@@ -39,7 +39,7 @@ export default class Scene extends Display {
   }
 
   addToStage(stage) {
-    Object.defineProperty(this, 'stage', { value: stage });
+    Object.defineProperty(this, 'stage', { value: stage, configurable: true });
 
     this.composer = new Composer(stage.renderer);
 
