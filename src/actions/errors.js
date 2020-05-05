@@ -21,7 +21,9 @@ const errorStore = createSlice({
   },
 });
 
-export const { setError, clearError } = errorStore.actions;
+const { setError, clearError } = errorStore.actions;
+
+export { clearError };
 
 export default errorStore.reducer;
 

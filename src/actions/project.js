@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { env, logger, reactors, stage } from 'view/global';
 import * as displayLibrary from 'displays';
-import { loadScenes } from 'actions/scenes';
+import { loadScenes, resetScenes } from 'actions/scenes';
+import { loadReactors, resetReactors } from 'actions/reactors';
 import { raiseError } from 'actions/errors';
 import { showModal } from 'actions/modals';
 import { readFile, readFileCompressed, writeFileCompressed } from 'utils/io';
@@ -44,7 +45,9 @@ export const projectStore = createSlice({
   },
 });
 
-export const { updateProject, touchProject, resetProject } = projectStore.actions;
+const { updateProject, touchProject, resetProject } = projectStore.actions;
+
+export { touchProject, resetProject };
 
 export default projectStore.reducer;
 
@@ -133,8 +136,9 @@ export function openProject() {
 }
 
 export function newProject() {
-  return dispatch => {
-    stage.clearScenes();
+  return async dispatch => {
+    await dispatch(resetScenes());
+    await dispatch(resetReactors());
 
     const scene = stage.addScene();
 
@@ -143,6 +147,7 @@ export function newProject() {
     scene.addElement(new displayLibrary.TextDisplay({ text: 'hello.' }));
 
     dispatch(loadScenes());
+    dispatch(loadReactors());
     dispatch(resetProject());
   };
 }

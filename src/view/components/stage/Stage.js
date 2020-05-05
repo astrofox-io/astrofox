@@ -4,7 +4,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import RenderInfo from 'components/stage/RenderInfo';
 import { stage } from 'view/global';
 import { FirstChild } from 'utils/react';
-import { updateStage } from 'actions/stage';
+import { setLoading } from 'actions/stage';
 import { loadAudioFile } from 'actions/audio';
 import styles from './Stage.less';
 
@@ -41,9 +41,9 @@ export default function Stage() {
     const file = e.dataTransfer.files[0];
 
     if (file && !rendering) {
-      await dispatch(updateStage({ loading: true }));
+      await dispatch(setLoading(true));
       await dispatch(loadAudioFile(file.path));
-      await dispatch(updateStage({ loading: false }));
+      await dispatch(setLoading(false));
     }
   }
 

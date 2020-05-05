@@ -23,26 +23,38 @@ const stageStore = createSlice({
     updateStage(state, action) {
       return { ...state, ...action.payload };
     },
+    setZoom(state, action) {
+      state.zoom = action.payload;
+      return state;
+    },
+    setLoading(state, action) {
+      state.loading = action.payload;
+      return state;
+    },
   },
 });
 
-export const { updateStage } = stageStore.actions;
+const { updateStage, setZoom, setLoading } = stageStore.actions;
+
+export { setZoom, setLoading };
 
 export default stageStore.reducer;
 
 export function updateZoom(value) {
   return (dispatch, getState) => {
-    const {
-      stage: { zoom },
-    } = getState();
+    const { zoom } = getState().stage;
+    const newValue = value === 0 ? 100 : clamp(zoom + value * 10, 10, 100);
 
-    dispatch(updateStage({ zoom: value === 0 ? 100 : clamp(zoom + value * 10, 10, 100) }));
+    if (newValue !== zoom) {
+      dispatch(setZoom(newValue));
+    }
   };
 }
 
 export function updateCanvas(width, height, backgroundColor) {
   return dispatch => {
-    stage.setSize(width, height);
+    stage.update({ width, height, backgroundColor });
+
     dispatch(updateStage({ width, height, backgroundColor }));
   };
 }

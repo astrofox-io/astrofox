@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { reactors } from 'view/global';
+import { setActiveReactorId } from './app';
 
 const reactorStore = createSlice({
   name: 'reactors',
@@ -12,13 +13,21 @@ const reactorStore = createSlice({
   },
 });
 
-export const { setReactors } = reactorStore.actions;
+const { setReactors } = reactorStore.actions;
 
 export default reactorStore.reducer;
 
 export function loadReactors() {
   return dispatch => {
     dispatch(setReactors(reactors.toJSON()));
+  };
+}
+
+export function resetReactors() {
+  return dispatch => {
+    reactors.clearReactors();
+
+    dispatch(setActiveReactorId(null));
   };
 }
 

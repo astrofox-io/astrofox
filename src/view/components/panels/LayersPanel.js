@@ -5,7 +5,7 @@ import Layout from 'components/layout/Layout';
 import ButtonPanel from 'components/layout/ButtonPanel';
 import { ButtonInput, ButtonGroup } from 'components/inputs';
 import { addElement, addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
-import { updateApp } from 'actions/app';
+import { setActiveEntityId } from 'actions/app';
 import { showModal } from 'actions/modals';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
 import { reverse } from 'utils/array';
@@ -42,12 +42,12 @@ export default function LayersPanel() {
     setActiveId(id);
 
     dispatch(addElement(entity, activeSceneId));
-    dispatch(updateApp({ activeEntityId: id }));
+    dispatch(setActiveEntityId(id));
   }
 
   function handleLayerClick(id) {
     setActiveId(id);
-    dispatch(updateApp({ activeEntityId: id }));
+    dispatch(setActiveEntityId(id));
   }
 
   function handleLayerUpdate(id, prop, value) {

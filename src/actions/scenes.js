@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { stage } from 'view/global';
-import { touchProject } from 'actions/project';
+import { setActiveEntityId } from './app';
 
 const sceneStore = createSlice({
   name: 'scenes',
@@ -13,13 +13,21 @@ const sceneStore = createSlice({
   },
 });
 
-export const { setScenes } = sceneStore.actions;
+const { setScenes } = sceneStore.actions;
 
 export default sceneStore.reducer;
 
 export function loadScenes() {
   return dispatch => {
     dispatch(setScenes(stage.scenes.toJSON()));
+  };
+}
+
+export function resetScenes() {
+  return dispatch => {
+    stage.clearScenes();
+
+    dispatch(setActiveEntityId(null));
   };
 }
 

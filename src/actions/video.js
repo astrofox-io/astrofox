@@ -10,6 +10,6 @@ const videoStore = createSlice({
   },
 });
 
-export const { updateVideo } = videoStore.actions;
+const { updateVideo } = videoStore.actions;
 
 export default videoStore.reducer;

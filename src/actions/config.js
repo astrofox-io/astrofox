@@ -18,7 +18,7 @@ const configStore = createSlice({
   },
 });
 
-export const { setConfig } = configStore.actions;
+const { setConfig } = configStore.actions;
 
 export default configStore.reducer;
 

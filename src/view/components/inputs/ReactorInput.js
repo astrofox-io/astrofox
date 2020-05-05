@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import CanvasMeter from 'canvas/CanvasMeter';
 import Icon from 'components/interface/Icon';
-import { showActiveReactor, hideActiveReactor } from 'actions/app';
+import { setActiveReactorId } from 'actions/app';
 import { removeReactor } from 'actions/reactors';
 import { loadScenes } from 'actions/scenes';
 import { events, reactors } from 'view/global';
@@ -29,13 +29,13 @@ export default function ReactorInput({
     display.update({ [name]: lastValue.current });
 
     dispatch(removeReactor(reactor));
-    dispatch(hideActiveReactor());
+    dispatch(setActiveReactorId(null));
 
     dispatch(loadScenes());
   }
 
   function toggleReactor() {
-    dispatch(showActiveReactor(reactor.id));
+    dispatch(setActiveReactorId(reactor.id));
   }
 
   function draw() {

@@ -9,6 +9,7 @@ import { closeWindow, showSaveDialog } from 'utils/window';
 import { writeFile } from 'utils/io';
 
 const initialState = {
+  statusText: '',
   showControlDock: true,
   showPlayer: true,
   showReactor: false,
@@ -23,10 +24,24 @@ const appStore = createSlice({
     updateApp(state, action) {
       return { ...state, ...action.payload };
     },
+    setStatusText(state, action) {
+      state.statusText = action.payload;
+      return state;
+    },
+    setActiveEntityId(state, action) {
+      state.activeEntityId = action.payload;
+      return state;
+    },
+    setActiveReactorId(state, action) {
+      state.activeReactorId = action.payload;
+      return state;
+    },
   },
 });
 
-export const { updateApp } = appStore.actions;
+const { updateApp, setStatusText, setActiveEntityId, setActiveReactorId } = appStore.actions;
+
+export { setStatusText, setActiveEntityId, setActiveReactorId };
 
 export default appStore.reducer;
 
@@ -100,17 +115,5 @@ export function saveImage(file) {
         dispatch(raiseError('Failed to save image file.', error));
       }
     }
-  };
-}
-
-export function showActiveReactor(activeReactorId) {
-  return dispatch => {
-    dispatch(updateApp({ activeReactorId }));
-  };
-}
-
-export function hideActiveReactor() {
-  return dispatch => {
-    dispatch(updateApp({ activeReactorId: null }));
   };
 }

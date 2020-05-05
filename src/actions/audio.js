@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { analyzer, logger, player } from 'view/global';
-import { updateApp } from 'actions/app';
+import { setStatusText } from 'actions/app';
 import { raiseError } from 'actions/errors';
 import { readAsArrayBuffer, readFileAsBlob } from 'utils/io';
 import { loadAudioData, loadAudioTags } from 'utils/audio';
@@ -22,7 +22,7 @@ const audioStore = createSlice({
   },
 });
 
-export const { updateAudio } = audioStore.actions;
+const { updateAudio } = audioStore.actions;
 
 export default audioStore.reducer;
 
@@ -40,8 +40,6 @@ export function loadAudioFile(file) {
       player.load(audio);
       audio.addNode(analyzer.analyzer);
 
-      await dispatch(updateAudio({ file }));
-
       if (getState().config.autoPlayAudio) {
         player.play();
       }
@@ -52,10 +50,10 @@ export function loadAudioFile(file) {
       const { artist, title } = tags;
 
       if (artist) {
-        await dispatch(updateApp({ statusText: trimChars(`${artist} - ${title}`) }));
+        await dispatch(setStatusText(trimChars(`${artist} - ${title}`)));
       }
 
-      dispatch(updateAudio({ tags }));
+      dispatch(updateAudio({ file, tags }));
     } catch (error) {
       dispatch(raiseError('Invalid audio file.', error));
     }
@@ -64,7 +62,7 @@ export function loadAudioFile(file) {
 
 export function openAudioFile() {
   return async dispatch => {
-    const { filePaths, canceled } = showOpenDialog({
+    const { filePaths, canceled } = await showOpenDialog({
       filters: [
         {
           name: 'audio files',
