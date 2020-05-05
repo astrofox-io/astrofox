@@ -1,97 +1,49 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import withMouseEvents from 'components/hocs/withMouseEvents';
 import { clamp } from 'utils/math';
 import { DotsHorizontal } from 'view/icons';
 import styles from './Splitter.less';
+import useMouseDrag from '../hooks/useMouseDrag';
 
-class Splitter extends PureComponent {
-  static defaultProps = {
-    type: 'horizontal',
-  };
+export default function Splitter({ panel, type = 'horizontal' }) {
+  const startDrag = useMouseDrag();
 
-  state = {
-    resizing: false,
-    startY: 0,
-    startX: 0,
-    startWidth: 0,
-    startHeight: 0,
-  };
+  function handleDrag({ x, y, startWidth, startHeight }) {
+    const { width, height, minWidth, minHeight, maxWidth, maxHeight } = panel.getSize();
 
-  componentDidMount() {
-    this.props.mouseUp(this.endResize, true);
-  }
+    let newWidth = width;
+    let newHeight = height;
 
-  componentWillUnmount() {
-    const { mouseMove, mouseUp } = this.props;
+    switch (type) {
+      case 'horizontal':
+        newHeight = clamp(startHeight + y, minHeight, maxHeight);
+        break;
 
-    mouseMove(this.handleMouseMove, false);
-    mouseUp(this.endResize, false);
-  }
-
-  handleMouseMove = e => {
-    const { resizing, startY, startX, startWidth, startHeight } = this.state;
-
-    if (resizing) {
-      const { type, panel } = this.props;
-
-      const { width, height, minWidth, minHeight, maxWidth, maxHeight } = panel.getSize();
-
-      let newWidth = width;
-      let newHeight = height;
-
-      switch (type) {
-        case 'horizontal':
-          newHeight = clamp(startHeight + e.pageY - startY, minHeight, maxHeight);
-          break;
-
-        case 'vertical':
-          newWidth = clamp(startWidth + e.pageX - startX, minWidth, maxWidth);
-          break;
-      }
-
-      panel.setSize(newWidth, newHeight);
+      case 'vertical':
+        newWidth = clamp(startWidth + x, minWidth, maxWidth);
+        break;
     }
-  };
 
-  startResize = e => {
-    const { panel, mouseMove } = this.props;
+    panel.setSize(newWidth, newHeight);
+  }
+
+  function handleDragStart(e) {
     const { width, height } = panel.getSize();
 
-    this.setState({
-      resizing: true,
-      startX: e.pageX,
-      startY: e.pageY,
-      startWidth: width,
-      startHeight: height,
-    });
-
-    mouseMove(this.handleMouseMove, true);
-  };
-
-  endResize = () => {
-    this.setState({ resizing: false });
-
-    this.props.mouseMove(this.handleMouseMove, false);
-  };
-
-  render() {
-    const { type } = this.props;
-
-    return (
-      <div
-        className={classNames({
-          [styles.splitter]: true,
-          [styles.vertical]: type === 'vertical',
-          [styles.horizontal]: type !== 'vertical',
-        })}
-        onMouseDown={this.startResize}
-      >
-        <Icon className={styles.grip} glyph={DotsHorizontal} />
-      </div>
-    );
+    startDrag(e, { onDrag: handleDrag, startWidth: width, startHeight: height });
   }
-}
 
-export default withMouseEvents(Splitter);
+  return (
+    <div
+      className={classNames({
+        [styles.splitter]: true,
+        [styles.vertical]: type === 'vertical',
+        [styles.horizontal]: type !== 'vertical',
+      })}
+      onMouseDown={handleDragStart}
+    >
+      <Icon className={styles.grip} glyph={DotsHorizontal} />
+    </div>
+  );
+}

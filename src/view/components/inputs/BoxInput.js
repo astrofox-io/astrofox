@@ -1,141 +1,73 @@
-import React, { PureComponent } from 'react';
-import withMouseEvents from 'components/hocs/withMouseEvents';
+import React, { useRef } from 'react';
+import useMouseDrag from 'components/hooks/useMouseDrag';
 import { clamp } from 'utils/math.js';
 import styles from './BoxInput.less';
 
-class BoxInput extends PureComponent {
-  static defaultProps = {
-    name: 'box',
-    minWidth: 1,
-    minHeight: 1,
-    value: {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-    },
-    maxWidth: 100,
-    maxHeight: 100,
-    onChange: () => {},
-  };
+export default function BoxInput({
+  name = 'box',
+  value,
+  minWidth = 1,
+  minHeight = 1,
+  maxWidth = 100,
+  maxHeight = 100,
+  onChange = () => {},
+}) {
+  const startDrag = useMouseDrag();
+  const { x, y, width, height } = value;
 
-  state = {
-    resizing: false,
-  };
+  function handleDrag({ x: dx, y: dy, position, startTop, startLeft, startWidth, startHeight }) {
+    const value = { x, y, width, height };
 
-  componentDidMount() {
-    this.props.mouseUp(this.endResize, true);
-  }
-
-  componentWillUnmount() {
-    const { mouseMove, mouseUp } = this.props;
-
-    mouseMove(this.handleMouseMove, false);
-    mouseUp(this.endResize, false);
-  }
-
-  handleMouseMove = e => {
-    const {
-      resizing,
-      position,
-      startX,
-      startY,
-      startWidth,
-      startHeight,
-      startTop,
-      startLeft,
-    } = this.state;
-
-    if (resizing) {
-      const { minWidth, minHeight, maxWidth, maxHeight, name, value, onChange } = this.props;
-
-      let { x, y, width, height } = value;
-
-      const dx = e.pageX - startX;
-      const dy = e.pageY - startY;
-
-      switch (position) {
-        case 'top':
-          y = clamp(startTop + dy, 0, startTop + startHeight - minHeight);
-          height = clamp(startHeight - dy, minHeight, startTop + startHeight);
-          break;
-        case 'right':
-          width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
-          break;
-        case 'bottom':
-          height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
-          break;
-        case 'left':
-          x = clamp(startLeft + dx, 0, startLeft + startWidth - minWidth);
-          width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
-          break;
-        case 'center':
-          x = clamp(startLeft + dx, 0, maxWidth - startWidth);
-          y = clamp(startTop + dy, 0, maxHeight - startHeight);
-          break;
-      }
-
-      onChange(name, { x, y, width, height });
+    switch (position) {
+      case 'top':
+        value.y = clamp(startTop + dy, 0, startTop + startHeight - minHeight);
+        value.height = clamp(startHeight - dy, minHeight, startTop + startHeight);
+        break;
+      case 'right':
+        value.width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
+        break;
+      case 'bottom':
+        value.height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
+        break;
+      case 'left':
+        value.x = clamp(startLeft + dx, 0, startLeft + startWidth - minWidth);
+        value.width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
+        break;
+      case 'center':
+        value.x = clamp(startLeft + dx, 0, maxWidth - startWidth);
+        value.y = clamp(startTop + dy, 0, maxHeight - startHeight);
+        break;
     }
-  };
 
-  startResize = pos => e => {
-    e.stopPropagation();
+    onChange(name, value);
+  }
 
-    const {
-      value: { x, y, width, height },
-      mouseMove,
-    } = this.props;
-
-    this.setState({
-      resizing: true,
-      position: pos,
-      startX: e.pageX,
-      startY: e.pageY,
+  const handleDragStart = position => e => {
+    startDrag(e, {
+      onDrag: handleDrag,
+      position,
       startWidth: width,
       startHeight: height,
       startLeft: x,
       startTop: y,
     });
-
-    mouseMove(this.handleMouseMove, true);
   };
 
-  endResize = () => {
-    this.setState({ resizing: false });
-
-    this.props.mouseMove(this.handleMouseMove, false);
-  };
-
-  render() {
-    const { x, y, width, height } = this.props.value;
-
-    return (
-      <div
-        className={styles.box}
-        style={{
-          width,
-          height,
-          top: y,
-          left: x,
-        }}
-      >
-        <div
-          role="presentation"
-          className={styles.center}
-          onMouseDown={this.startResize('center')}
-        />
-        <div role="presentation" className={styles.top} onMouseDown={this.startResize('top')} />
-        <div role="presentation" className={styles.right} onMouseDown={this.startResize('right')} />
-        <div
-          role="presentation"
-          className={styles.bottom}
-          onMouseDown={this.startResize('bottom')}
-        />
-        <div role="presentation" className={styles.left} onMouseDown={this.startResize('left')} />
-      </div>
-    );
-  }
+  return (
+    <div
+      className={styles.box}
+      style={{
+        width,
+        height,
+        top: y,
+        left: x,
+      }}
+    >
+      <div className={styles.center} onMouseDown={handleDragStart('center')} />
+      <div className={styles.top} onMouseDown={handleDragStart('top')} />
+      <div className={styles.right} onMouseDown={handleDragStart('right')} />
+      <div className={styles.bottom} onMouseDown={handleDragStart('bottom')} />
+      <div className={styles.left} onMouseDown={handleDragStart('left')} />
+    </div>
+  );
 }
-
-export default withMouseEvents(BoxInput);

@@ -29,7 +29,8 @@ export default function ReactorControl({ reactor }) {
   const outputCanvas = useRef();
   const onChange = useEntity(reactor);
   const onParserChange = useEntity(reactor.parser);
-  const { selection } = reactor.properties;
+  const selection = { ...reactor.properties.selection };
+  console.log('selection', selection);
 
   function handleChange(props) {
     const keys = Object.keys(props);
