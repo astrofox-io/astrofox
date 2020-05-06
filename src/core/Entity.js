@@ -1,9 +1,11 @@
 import { updateExistingProps } from 'utils/object';
 import { uniqueId } from 'utils/crypto';
+import cloneDeep from 'lodash/cloneDeep';
 
 export default class Entity {
-  constructor(properties = {}) {
+  constructor(name, properties = {}) {
     Object.defineProperty(this, 'id', { value: uniqueId() });
+    Object.defineProperty(this, 'name', { value: name });
 
     this.properties = properties;
   }
@@ -16,6 +18,16 @@ export default class Entity {
   }
 
   toString() {
-    return this.id.toString();
+    return `[${this.name} ${this.id}]`;
+  }
+
+  toJSON() {
+    const { id, name, properties } = this;
+
+    return {
+      id,
+      name,
+      properties: cloneDeep(properties),
+    };
   }
 }

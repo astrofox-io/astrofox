@@ -12,6 +12,11 @@ export const DEFAULT_BACKGROUND_COLOR = '#000000';
 
 export const PRIMARY_COLOR = '#775fd8';
 
+export const REACTOR_BARS = 64;
+export const REACTOR_BAR_WIDTH = 8;
+export const REACTOR_BAR_HEIGHT = 100;
+export const REACTOR_BAR_SPACING = 1;
+
 export const BLANK_IMAGE =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 

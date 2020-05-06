@@ -15,14 +15,12 @@ export default class Display extends Entity {
       displayCount[type.className] += 1;
     }
 
-    super({
-      displayName: `${type.label} ${displayCount[type.className]}`,
+    super(type.className, {
+      displayName: `${type.label || type.className} ${displayCount[type.className]}`,
       enabled: true,
       ...type.defaultProperties,
       ...properties,
     });
-
-    Object.defineProperty(this, 'name', { value: type.className });
 
     this.scene = null;
     this.reactors = {};

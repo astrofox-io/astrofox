@@ -1,14 +1,15 @@
-/* eslint-disable react/require-render-return */
 import Entity from 'core/Entity';
 import CanvasBars from 'canvas/CanvasBars';
 
 export default class CanvasAudio extends Entity {
+  static className = 'CanvasAudio';
+
   static defaultProperties = {
     bars: 100,
   };
 
   constructor(properties, canvas) {
-    super(properties);
+    super(CanvasAudio.className, { ...CanvasAudio.defaultProperties, ...properties });
 
     this.bars = new CanvasBars(properties, canvas);
     this.results = new Float32Array(this.properties.bars);

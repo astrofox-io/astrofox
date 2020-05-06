@@ -9,17 +9,20 @@ import CanvasMeter from 'canvas/CanvasMeter';
 import { setActiveReactorId } from 'actions/app';
 import { events } from 'view/global';
 import { ChevronDown } from 'view/icons';
-import { PRIMARY_COLOR } from 'view/constants';
-import { contains } from 'utils/array';
+import {
+  PRIMARY_COLOR,
+  REACTOR_BARS,
+  REACTOR_BAR_WIDTH,
+  REACTOR_BAR_HEIGHT,
+  REACTOR_BAR_SPACING,
+} from 'view/constants';
 import { inputToProps } from 'utils/react';
 import styles from './ReactorControl.less';
 
-const REACTOR_BARS = 64;
-const BAR_WIDTH = 8;
-const BAR_HEIGHT = 100;
-const BAR_SPACING = 1;
-
 const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
+
+const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
+const METER_WIDTH = 20;
 
 export default function ReactorControl({ reactor }) {
   const dispatch = useDispatch();
@@ -28,32 +31,10 @@ export default function ReactorControl({ reactor }) {
   const spectrumCanvas = useRef();
   const outputCanvas = useRef();
   const onChange = useEntity(reactor);
-  const onParserChange = useEntity(reactor.parser);
-  const selection = { ...reactor.properties.selection };
-  console.log('selection', selection);
+  const { selection } = reactor.properties;
 
   function handleChange(props) {
-    const keys = Object.keys(props);
-
-    if (contains(keys, ['selection', 'outputMode'])) {
-      const { selection } = props;
-      if (selection) {
-        const { x, y, width, height } = selection;
-        const maxWidth = REACTOR_BARS * (BAR_WIDTH + BAR_SPACING);
-        const maxHeight = BAR_HEIGHT;
-
-        props.range = {
-          x1: x / maxWidth,
-          x2: (x + width) / maxWidth,
-          y1: y / maxHeight,
-          y2: (y + height) / maxHeight,
-        };
-      }
-
-      onChange(props);
-    } else {
-      onParserChange(props);
-    }
+    onChange(props);
   }
 
   function hideReactor() {
@@ -70,10 +51,10 @@ export default function ReactorControl({ reactor }) {
   useEffect(() => {
     spectrum.current = new CanvasBars(
       {
-        width: REACTOR_BARS * (BAR_WIDTH + BAR_SPACING),
-        height: BAR_HEIGHT,
-        BAR_WIDTH,
-        BAR_SPACING,
+        width: SPECTRUM_WIDTH,
+        height: REACTOR_BAR_HEIGHT,
+        barWidth: REACTOR_BAR_WIDTH,
+        barSpacing: REACTOR_BAR_SPACING,
         shadowHeight: 0,
         color: '#775FD8',
         backgroundColor: '#FF0000',
@@ -83,8 +64,8 @@ export default function ReactorControl({ reactor }) {
 
     meter.current = new CanvasMeter(
       {
-        width: 20,
-        height: BAR_HEIGHT,
+        width: METER_WIDTH,
+        height: REACTOR_BAR_HEIGHT,
         color: PRIMARY_COLOR,
         origin: 'bottom',
       },
@@ -106,23 +87,19 @@ export default function ReactorControl({ reactor }) {
           <Controls reactor={reactor} onChange={handleChange} />
         </div>
         <div className={styles.spectrum}>
-          <canvas
-            ref={spectrumCanvas}
-            width={REACTOR_BARS * (BAR_WIDTH + BAR_SPACING)}
-            height={BAR_HEIGHT}
-          />
+          <canvas ref={spectrumCanvas} width={SPECTRUM_WIDTH} height={REACTOR_BAR_HEIGHT} />
           <BoxInput
             name="selection"
             value={selection}
-            minWidth={BAR_WIDTH}
-            minHeight={BAR_WIDTH}
-            maxWidth={REACTOR_BARS * (BAR_WIDTH + BAR_SPACING)}
-            maxHeight={BAR_HEIGHT}
+            minWidth={REACTOR_BAR_WIDTH}
+            minHeight={REACTOR_BAR_WIDTH}
+            maxWidth={SPECTRUM_WIDTH}
+            maxHeight={REACTOR_BAR_HEIGHT}
             onChange={inputToProps(handleChange)}
           />
         </div>
         <div className={styles.output}>
-          <canvas ref={outputCanvas} width={20} height={BAR_HEIGHT} />
+          <canvas ref={outputCanvas} width={METER_WIDTH} height={REACTOR_BAR_HEIGHT} />
         </div>
       </div>
       <Icon

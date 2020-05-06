@@ -1,7 +1,8 @@
-/* eslint-disable react/require-render-return */
 import Entity from 'core/Entity';
 
 export default class ComposerPass extends Entity {
+  static className = 'ComposerPass';
+
   static defaultProperties = {
     enabled: true,
     forceClear: false,
@@ -15,7 +16,7 @@ export default class ComposerPass extends Entity {
   };
 
   constructor(properties) {
-    super({ ...ComposerPass.defaultProperties, ...properties });
+    super(ComposerPass.className, { ...ComposerPass.defaultProperties, ...properties });
   }
 
   setSize(width, height) {

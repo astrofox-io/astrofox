@@ -9,7 +9,7 @@ import useMouseDrag from '../hooks/useMouseDrag';
 export default function Splitter({ panel, type = 'horizontal' }) {
   const startDrag = useMouseDrag();
 
-  function handleDrag({ x, y, startWidth, startHeight }) {
+  function handleDrag({ deltaX, deltaY, startWidth, startHeight }) {
     const { width, height, minWidth, minHeight, maxWidth, maxHeight } = panel.getSize();
 
     let newWidth = width;
@@ -17,11 +17,11 @@ export default function Splitter({ panel, type = 'horizontal' }) {
 
     switch (type) {
       case 'horizontal':
-        newHeight = clamp(startHeight + y, minHeight, maxHeight);
+        newHeight = clamp(startHeight + deltaY, minHeight, maxHeight);
         break;
 
       case 'vertical':
-        newWidth = clamp(startWidth + x, minWidth, maxWidth);
+        newWidth = clamp(startWidth + deltaX, minWidth, maxWidth);
         break;
     }
 

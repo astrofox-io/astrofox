@@ -28,7 +28,7 @@ export default class Stage extends Entity {
   };
 
   constructor(properties) {
-    super({ ...Stage.defaultProperties, ...properties });
+    super(Stage.className, { ...Stage.defaultProperties, ...properties });
 
     this.scenes = new EntityList();
     this.initialized = false;

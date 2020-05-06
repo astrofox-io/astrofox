@@ -9,7 +9,7 @@ export default function useMouseDrag() {
     const { onDrag, ...otherProps } = eventProps.current;
 
     if (onDrag) {
-      onDrag({ x: e.pageX - pageX, y: e.pageY - pageY, ...otherProps }, e);
+      onDrag({ deltaX: e.pageX - pageX, deltaY: e.pageY - pageY, ...otherProps }, e);
     }
   }, []);
 

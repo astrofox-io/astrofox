@@ -1,16 +1,7 @@
-/* eslint-disable react/require-render-return */
 import Entity from 'core/Entity';
 
 export default class CanvasText extends Entity {
-  constructor(properties, canvas) {
-    super({ ...CanvasText.defaultProperties, ...properties });
-
-    this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.properties.width || 1;
-    this.canvas.height = this.properties.height || 1;
-
-    this.context = this.canvas.getContext('2d');
-  }
+  static className = 'CanvasText';
 
   static defaultProperties = {
     text: '',
@@ -20,6 +11,16 @@ export default class CanvasText extends Entity {
     bold: false,
     color: '#FFFFFF',
   };
+
+  constructor(properties, canvas) {
+    super(CanvasText.className, { ...CanvasText.defaultProperties, ...properties });
+
+    this.canvas = canvas || document.createElement('canvas');
+    this.canvas.width = this.properties.width || 1;
+    this.canvas.height = this.properties.height || 1;
+
+    this.context = this.canvas.getContext('2d');
+  }
 
   getFont() {
     const { italic, bold, size, font } = this.properties;
@@ -56,11 +57,11 @@ export default class CanvasText extends Entity {
 
     // Debugging
     /*
-        context.beginPath();
-        context.rect(0, 0, canvas.width, canvas.height);
-        context.lineWidth = 2;
-        context.strokeStyle = 'red';
-        context.stroke();
-        */
+    context.beginPath();
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.lineWidth = 2;
+    context.strokeStyle = 'red';
+    context.stroke();
+    */
   }
 }

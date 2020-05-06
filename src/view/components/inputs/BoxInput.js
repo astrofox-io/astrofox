@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import useMouseDrag from 'components/hooks/useMouseDrag';
 import { clamp } from 'utils/math.js';
 import styles from './BoxInput.less';
@@ -15,27 +15,27 @@ export default function BoxInput({
   const startDrag = useMouseDrag();
   const { x, y, width, height } = value;
 
-  function handleDrag({ x: dx, y: dy, position, startTop, startLeft, startWidth, startHeight }) {
+  function handleDrag({ deltaX, deltaY, position, startTop, startLeft, startWidth, startHeight }) {
     const value = { x, y, width, height };
 
     switch (position) {
       case 'top':
-        value.y = clamp(startTop + dy, 0, startTop + startHeight - minHeight);
-        value.height = clamp(startHeight - dy, minHeight, startTop + startHeight);
+        value.y = clamp(startTop + deltaY, 0, startTop + startHeight - minHeight);
+        value.height = clamp(startHeight - deltaY, minHeight, startTop + startHeight);
         break;
       case 'right':
-        value.width = clamp(startWidth + dx, minWidth, maxWidth - startLeft);
+        value.width = clamp(startWidth + deltaX, minWidth, maxWidth - startLeft);
         break;
       case 'bottom':
-        value.height = clamp(startHeight + dy, minHeight, maxHeight - startTop);
+        value.height = clamp(startHeight + deltaY, minHeight, maxHeight - startTop);
         break;
       case 'left':
-        value.x = clamp(startLeft + dx, 0, startLeft + startWidth - minWidth);
-        value.width = clamp(startWidth - dx, minWidth, startLeft + startWidth);
+        value.x = clamp(startLeft + deltaX, 0, startLeft + startWidth - minWidth);
+        value.width = clamp(startWidth - deltaX, minWidth, startLeft + startWidth);
         break;
       case 'center':
-        value.x = clamp(startLeft + dx, 0, maxWidth - startWidth);
-        value.y = clamp(startTop + dy, 0, maxHeight - startHeight);
+        value.x = clamp(startLeft + deltaX, 0, maxWidth - startWidth);
+        value.y = clamp(startTop + deltaY, 0, maxHeight - startHeight);
         break;
     }
 

@@ -1,7 +1,15 @@
 import Entity from 'core/Entity';
 import SpectrumParser from 'audio/SpectrumParser';
 import { val2pct, floor, ceil } from 'utils/math';
-import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
+import {
+  FFT_SIZE,
+  SAMPLE_RATE,
+  REACTOR_BARS,
+  REACTOR_BAR_WIDTH,
+  REACTOR_BAR_HEIGHT,
+  REACTOR_BAR_SPACING,
+} from 'view/constants';
+import { contains } from '../utils/array';
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.05;
@@ -13,6 +21,8 @@ export function resetReactorCount() {
 }
 
 export default class AudioReactor extends Entity {
+  static className = 'AudioReactor';
+
   static defaultProperties = {
     enabled: true,
     outputMode: 'Add',
@@ -39,7 +49,7 @@ export default class AudioReactor extends Entity {
   constructor(properties) {
     reactorCount += 1;
 
-    super({
+    super(AudioReactor.className, {
       displayName: `Reactor ${reactorCount}`,
       ...AudioReactor.defaultProperties,
       ...properties,
@@ -51,6 +61,30 @@ export default class AudioReactor extends Entity {
 
     this.result = { fft: [], output: 0 };
     this.direction = 1;
+  }
+
+  update(properties) {
+    const keys = Object.keys(properties);
+
+    if (contains(keys, ['selection', 'outputMode'])) {
+      const { selection } = properties;
+      if (selection) {
+        const { x, y, width, height } = selection;
+        const maxWidth = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
+        const maxHeight = REACTOR_BAR_HEIGHT;
+
+        properties.range = {
+          x1: x / maxWidth,
+          x2: (x + width) / maxWidth,
+          y1: y / maxHeight,
+          y2: (y + height) / maxHeight,
+        };
+      }
+
+      return super.update(properties);
+    }
+
+    return this.parser.update(properties);
   }
 
   getResult() {

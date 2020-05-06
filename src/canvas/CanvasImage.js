@@ -1,9 +1,10 @@
-/* eslint-disable react/require-render-return */
 import Entity from 'core/Entity';
 
 const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Entity {
+  static className = 'CanvasImage';
+
   static defaultProperties = {
     src: '',
     width: 1,
@@ -11,7 +12,7 @@ export default class CanvasImage extends Entity {
   };
 
   constructor(properties, canvas) {
-    super({ ...CanvasImage.defaultProperties, ...properties });
+    super(CanvasImage.className, { ...CanvasImage.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;

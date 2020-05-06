@@ -1,9 +1,10 @@
-/* eslint-disable react/require-render-return */
 import Entity from 'core/Entity';
 import BezierSpline from 'drawing/BezierSpline';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
+  static className = 'CanvasWave';
+
   static defaultProperties = {
     color: '#FFFFFF',
     width: 400,
@@ -16,7 +17,7 @@ export default class CanvasWave extends Entity {
   };
 
   constructor(properties, canvas) {
-    super({ ...CanvasWave.defaultProperties, ...properties });
+    super(CanvasWave.className, { ...CanvasWave.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

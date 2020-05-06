@@ -1,10 +1,18 @@
-/* eslint-disable react/require-render-return */
 import Entity from 'core/Entity';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasBars extends Entity {
+  static className = 'CanvasBars';
+
+  static defaultProperties = {
+    width: 100,
+    height: 50,
+    color: '#FFFFFF',
+    origin: 'left',
+  };
+
   constructor(properties, canvas) {
-    super({ ...CanvasBars.defaultProperties, ...properties });
+    super(CanvasBars.className, { ...CanvasBars.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;
@@ -45,10 +53,3 @@ export default class CanvasBars extends Entity {
     }
   }
 }
-
-CanvasBars.defaultProperties = {
-  width: 100,
-  height: 50,
-  color: '#FFFFFF',
-  origin: 'left',
-};

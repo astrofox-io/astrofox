@@ -3,6 +3,8 @@ import { val2pct, db2mag } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class SpectrumParser extends Entity {
+  static className = 'SpectrumParser';
+
   static defaultProperties = {
     fftSize: FFT_SIZE,
     sampleRate: SAMPLE_RATE,
@@ -16,7 +18,7 @@ export default class SpectrumParser extends Entity {
   };
 
   constructor(properties) {
-    super({ ...SpectrumParser.defaultProperties, ...properties });
+    super(SpectrumParser.className, { ...SpectrumParser.defaultProperties, ...properties });
 
     this.setBinRange();
   }
