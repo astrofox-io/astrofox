@@ -83,15 +83,14 @@ export default class RangeInput extends Component {
   }
 
   render() {
-    const { name, min, max, step, disabled, showTrack } = this.props;
+    const { name, min, max, step, disabled, showTrack, className } = this.props;
 
     const { value } = this.state;
 
     return (
-      <div className={styles.range}>
+      <div className={classNames(styles.range, className)}>
         <div
-          className={classNames({
-            [styles.track]: true,
+          className={classNames(styles.track, {
             [styles.hidden]: !showTrack,
           })}
         />

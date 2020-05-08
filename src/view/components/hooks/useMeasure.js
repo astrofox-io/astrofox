@@ -5,6 +5,7 @@ export default function useMeasure() {
   const [node, setNode] = useState(null);
 
   const ref = useCallback(node => setNode(node), []);
+
   const measure = useCallback(() => {
     window.requestAnimationFrame(() => {
       if (node) {

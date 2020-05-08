@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
+import { player } from 'view/global';
 import { RangeInput } from 'components/inputs';
 import Icon from 'components/interface/Icon';
 import { Volume, Volume2, Volume3, Volume4 } from 'view/icons';
@@ -9,18 +11,18 @@ const defaultState = {
   mute: false,
 };
 
-export default function VolumeControl({ onChange }) {
+export default function VolumeControl() {
   const [state, setState] = useState(defaultState);
   const { value, mute } = state;
 
   function handleChange(name, value) {
     setState({ value, mute: false });
-    onChange(value / 100);
+    player.setVolume(value / 100);
   }
 
   function handleClick() {
     setState(prevState => {
-      onChange(prevState.mute ? prevState.value / 100 : 0);
+      player.setVolume(prevState.mute ? prevState.value / 100 : 0);
 
       return { ...prevState, mute: !prevState.mute };
     });
@@ -44,7 +46,7 @@ export default function VolumeControl({ onChange }) {
 
   return (
     <div className={styles.volume}>
-      <div role="presentation" className={styles.speaker} onClick={handleClick}>
+      <div className={classNames(styles.speaker, { [styles.mute]: mute })} onClick={handleClick}>
         <Icon className={styles.icon} glyph={getIcon()} />
       </div>
       <div className={styles.slider}>

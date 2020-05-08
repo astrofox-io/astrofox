@@ -1,6 +1,8 @@
-import React, { useRef, useMemo, useLayoutEffect, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import classNames from 'classnames';
+import { player } from 'view/global';
 import CanvasAudio from 'canvas/CanvasAudio';
+import useSharedState from 'components/hooks/useSharedState';
 import styles from './AudioWaveform.less';
 
 const canvasProperties = {
@@ -13,16 +15,11 @@ const canvasProperties = {
   bars: 213,
 };
 
-export default function AudioWaveform({
-  visible = true,
-  progressPosition = 0,
-  seekPosition = 0,
-  onClick = () => {},
-  onSeek = () => {},
-  forwardedRef,
-}) {
-  const canvas = useRef();
+export default function AudioWaveform({ visible = true }) {
+  const [state, setState] = useSharedState();
+  const { progressPosition, seekPosition } = state;
   const { width, height, shadowHeight } = canvasProperties;
+  const canvas = useRef();
 
   const [baseCanvas, progressCanvas, seekCanvas] = useMemo(
     () => [
@@ -46,25 +43,25 @@ export default function AudioWaveform({
   );
 
   function handleClick(e) {
-    e.stopPropagation();
-
     const rect = e.currentTarget.getBoundingClientRect();
+    const progressPosition = (e.clientX - rect.left) / rect.width;
 
-    onClick((e.clientX - rect.left) / rect.width);
+    player.seek(progressPosition);
+
+    setState({ progressPosition, seekPosition: 0 });
   }
 
   function handleMouseMove(e) {
     e.stopPropagation();
 
     const rect = e.currentTarget.getBoundingClientRect();
+    const seekPosition = (e.clientX - rect.left) / rect.width;
 
-    onSeek((e.clientX - rect.left) / rect.width);
+    setState({ seekPosition });
   }
 
-  function handleMouseOut(e) {
-    e.stopPropagation();
-
-    onSeek(0);
+  function handleMouseOut() {
+    setState({ seekPosition: 0 });
   }
 
   function draw() {
@@ -98,16 +95,23 @@ export default function AudioWaveform({
     }
   }
 
-  function loadAudio({ buffer }) {
+  function loadAudio() {
+    const { buffer } = player.getAudio();
+
     baseCanvas.render(buffer);
     progressCanvas.render(buffer);
     seekCanvas.render(buffer);
   }
 
-  useImperativeHandle(forwardedRef, () => ({
-    draw,
-    loadAudio,
-  }));
+  useEffect(() => {
+    player.on('tick', draw);
+    player.on('audio-load', loadAudio);
+
+    return () => {
+      player.off('tick', draw);
+      player.off('audio-load', loadAudio);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     draw();

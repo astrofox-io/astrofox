@@ -9,7 +9,7 @@ import StatusBar from 'components/window/StatusBar';
 import TitleBar from 'components/window/TitleBar';
 import ControlDock from 'components/panels/ControlDock';
 import MenuBar from 'components/nav/MenuBar';
-import Player from 'components/audio/Player';
+import Player from 'components/player/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
 import menuConfig from 'config/menu.json';

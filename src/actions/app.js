@@ -13,6 +13,8 @@ const initialState = {
   showControlDock: true,
   showPlayer: true,
   showReactor: false,
+  showWaveform: true,
+  showOsc: false,
   activeEntityId: null,
   activeReactorId: null,
 };
@@ -36,12 +38,23 @@ const appStore = createSlice({
       state.activeReactorId = action.payload;
       return state;
     },
+    toggleState(state, action) {
+      const prop = action.payload;
+      state[prop] = !state[prop];
+      return state;
+    },
   },
 });
 
-const { updateApp, setStatusText, setActiveEntityId, setActiveReactorId } = appStore.actions;
+const {
+  updateApp,
+  setStatusText,
+  setActiveEntityId,
+  setActiveReactorId,
+  toggleState,
+} = appStore.actions;
 
-export { setStatusText, setActiveEntityId, setActiveReactorId };
+export { setStatusText, setActiveEntityId, setActiveReactorId, toggleState };
 
 export default appStore.reducer;
 
@@ -86,13 +99,6 @@ export function initApp() {
     if (checkForUpdates) {
       updater.checkForUpdates();
     }
-  };
-}
-
-export function toggleState(prop) {
-  return (dispatch, getState) => {
-    const { app } = getState();
-    dispatch(updateApp({ [prop]: !app[prop] }));
   };
 }
 

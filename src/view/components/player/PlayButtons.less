@@ -1,0 +1,58 @@
+@import (reference) 'view/styles/variables';
+
+.buttons {
+  white-space: nowrap;
+}
+
+.button {
+  color: @text-color1;
+  background-color: transparent;
+  padding: 0;
+  margin-right: 4px;
+  display: inline-block;
+  flex-wrap: nowrap;
+  border: 2px solid lighten(@bg-color2, 10%);
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  line-height: 36px;
+  text-align: center;
+  vertical-align: middle;
+  transition: all 0.2s;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:hover {
+    border: 2px solid @color1;
+  }
+
+  &:active {
+    border-color: @text-color1;
+  }
+}
+
+.playButton {
+  .icon {
+    width: 36px;
+    height: 36px;
+    margin-left: 2px;
+  }
+}
+
+.pauseButton {
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin: 6px;
+  }
+}
+
+.stopButton {
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin: 6px;
+  }
+}

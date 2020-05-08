@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useImperativeHandle } from 'react';
 import SpectrumParser from 'audio/SpectrumParser';
 import CanvasBars from 'canvas/CanvasBars';
-import { FFT_SIZE, SAMPLE_RATE, DEFAULT_CANVAS_WIDTH } from 'view/constants';
+import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import styles from './Spectrum.less';
 
 const spectrumProperties = {
   width: 854,
   height: 50,
-  barWidth : -1,
+  barWidth: -1,
   barSpacing: 1,
   shadowHeight: 0,
   minHeight: 1,
@@ -31,22 +31,18 @@ export default function Spectrum({ forwardedRef }) {
   const canvas = useRef();
   const bars = useRef();
   const parser = useRef();
+  const { width, height } = spectrumProperties;
 
   function handleClick() {
-    parser.current.update({ normalize: !prevState.normalize })
-    this.setState(
-      prevState => ({ normalize: !prevState.normalize }),
-      () => {
-        this.parser.update(this.state);
-      },
-    );
-  };
+    const { normalize } = parser.current.properties;
+    parser.current.update({ normalize: !normalize });
+  }
 
   function draw(data) {
     const fft = parser.current.parseFFT(data.fft);
 
     bars.current.render(fft);
-  };
+  }
 
   useImperativeHandle(forwardedRef, () => ({ draw }));
 
@@ -55,16 +51,15 @@ export default function Spectrum({ forwardedRef }) {
     parser.current = new SpectrumParser(parserProperties);
   }, [bars, parser]);
 
-    return (
-      <div className={styles.spectrum}>
-        <canvas
-          ref={canvas}
-          className={styles.canvas}
-          width={width}
-          height={height}
-          onClick={handleClick}
-        />
-      </div>
-    );
-
+  return (
+    <div className={styles.spectrum}>
+      <canvas
+        ref={canvas}
+        className={styles.canvas}
+        width={width}
+        height={height}
+        onClick={handleClick}
+      />
+    </div>
+  );
 }

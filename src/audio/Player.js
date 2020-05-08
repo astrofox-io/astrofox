@@ -22,7 +22,7 @@ export default class Player extends EventEmitter {
     this.audio = audio;
     this.audio.addNode(this.volume);
 
-    this.emit('load');
+    this.emit('audio-load');
   }
 
   unload() {
@@ -32,7 +32,7 @@ export default class Player extends EventEmitter {
       this.stop();
       audio.unload();
 
-      this.emit('unload');
+      this.emit('audio-unload');
     }
   }
 
@@ -100,6 +100,10 @@ export default class Player extends EventEmitter {
     return this.audio;
   }
 
+  hasAudio() {
+    return !!this.getAudio();
+  }
+
   setVolume(val) {
     if (this.volume) {
       this.volume.gain.value = val;
@@ -144,10 +148,10 @@ export default class Player extends EventEmitter {
   }
 
   isPlaying() {
-    return this.audio && this.audio.playing;
+    return !!(this.audio && this.audio.playing);
   }
 
   isLooping() {
-    return this.loop;
+    return !!this.loop;
   }
 }

@@ -1,15 +1,17 @@
-import React, { useRef, useEffect, useImperativeHandle } from 'react';
+import React, { useRef, useEffect } from 'react';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
+import { events } from 'view/global';
+import { PRIMARY_COLOR } from 'view/constants';
 import styles from './Oscilloscope.less';
 
 const canvasProperties = {
   width: 854,
   height: 50,
-  color: '#927FFF',
+  color: PRIMARY_COLOR,
 };
 
-export default function Oscilloscope({ forwardedRef }) {
+export default function Oscilloscope() {
   const { width, height } = canvasProperties;
   const canvas = useRef();
   const display = useRef();
@@ -19,12 +21,15 @@ export default function Oscilloscope({ forwardedRef }) {
     display.current.render(parser.current.parseTimeData(td, width));
   }
 
-  useImperativeHandle(forwardedRef, () => ({ draw }));
-
   useEffect(() => {
+    events.on('render', draw);
     display.current = new CanvasWave(canvasProperties, canvas.current);
     parser.current = new WaveParser();
-  }, []);
+
+    return () => {
+      events.off('render', draw);
+    };
+  });
 
   return (
     <div className={styles.oscilloscope}>

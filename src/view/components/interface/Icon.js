@@ -13,7 +13,6 @@ const Icon = ({
 }) => (
   <span className={classNames(styles.icon, className)} title={title}>
     <svg
-      role="img"
       viewBox={viewBox}
       width={width}
       height={height}

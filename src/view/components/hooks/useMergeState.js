@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
-export default function useMergeState(defaultState) {
-  const [state, setState] = useState(defaultState);
+export default function useMergeState(initialState) {
+  const [state, setState] = useState(initialState);
 
   const callback = useCallback(
     props => {

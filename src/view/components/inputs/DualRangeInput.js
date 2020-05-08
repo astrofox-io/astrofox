@@ -95,12 +95,7 @@ export default class DualRangeInput extends Component {
     const fillStyle = { width: `${pct1 - pct0}%`, marginLeft: `${pct0}%` };
 
     return (
-      <div
-        role="presentation"
-        ref={e => (this.range = e)}
-        className={styles.input}
-        onMouseDown={this.handleTrackClick}
-      >
+      <div ref={e => (this.range = e)} className={styles.input} onMouseDown={this.handleTrackClick}>
         <div className={styles.track} />
         <div className={styles.fill} style={fillStyle} />
         <RangeInput

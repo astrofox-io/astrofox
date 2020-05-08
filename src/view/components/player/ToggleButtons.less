@@ -1,0 +1,33 @@
+@import (reference) 'view/styles/variables';
+
+.buttons {
+  display: flex;
+}
+
+.button {
+  margin-right: 8px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  .icon {
+    color: @bg-color1;
+    width: 20px;
+    height: 20px;
+
+    &:hover {
+      color: lighten(@bg-color1, 10%);
+    }
+  }
+}
+
+.enabled {
+  .icon {
+    color: @color1;
+
+    &:hover {
+      color: @color1;
+    }
+  }
+}

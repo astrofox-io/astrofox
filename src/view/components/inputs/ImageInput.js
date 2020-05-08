@@ -70,7 +70,6 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
   return (
     <>
       <div
-        role="presentation"
         className={styles.image}
         onDrop={handleDrop}
         onDragOver={ignoreEvents}

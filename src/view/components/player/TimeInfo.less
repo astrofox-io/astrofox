@@ -1,0 +1,28 @@
+@import (reference) 'view/styles/variables';
+
+.timeInfo {
+  display: flex;
+  align-items: center;
+  line-height: 36px;
+  white-space: nowrap;
+
+  &:hover {
+    cursor: default;
+  }
+}
+
+.currentTime {
+  color: @text-color1;
+}
+
+.totalTime {
+  color: @text-color2;
+}
+
+.splitter {
+  display: inline-flex;
+  height: 30px;
+  border-right: 1px solid @color1;
+  margin: 0 8px;
+  transform: rotate(20deg);
+}
