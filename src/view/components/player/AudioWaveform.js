@@ -104,11 +104,9 @@ export default function AudioWaveform({ visible = true }) {
   }
 
   useEffect(() => {
-    player.on('tick', draw);
     player.on('audio-load', loadAudio);
 
     return () => {
-      player.off('tick', draw);
       player.off('audio-load', loadAudio);
     };
   }, []);

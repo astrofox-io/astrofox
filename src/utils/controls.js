@@ -1,25 +1,39 @@
-import * as displayComponents from 'displays';
-import * as effectComponents from 'effects';
-import * as controlComponents from 'components/controls';
-
+import Entity from 'core/Entity';
 import SceneControl from 'components/controls/SceneControl';
 import EmptyControl from 'components/controls/EmptyControl';
+import * as controlComponents from 'components/controls';
+import * as displays from 'displays';
+import * as effects from 'effects';
 
-const displays = { ...displayComponents, ...effectComponents };
+const library = { ...displays, ...effects };
 
 export function getControlComponent(display) {
-  if (display.constructor.className === 'Scene') {
+  const { className } = display.constructor;
+
+  if (className === 'Scene') {
     return SceneControl;
   }
 
   let control = null;
 
-  Object.keys(displays).forEach(key => {
-    if (!control && displays[key] && display instanceof displays[key]) {
+  Object.keys(library).forEach(key => {
+    if (!control && key === className) {
       const name = /(\w+)(Display|Effect)/.exec(key);
+
       control = controlComponents[`${name[1]}Control`];
     }
   });
 
   return control || EmptyControl;
+}
+
+export function getDisplayEntity(config) {
+  const { name } = config;
+  const Component = displays[name] || effects[name];
+
+  if (Component) {
+    return Entity.create(Component, config);
+  }
+
+  return null;
 }

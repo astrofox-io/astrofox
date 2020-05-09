@@ -18,7 +18,7 @@ import { initApp, exitApp, toggleState, saveImage } from 'actions/app';
 import { showModal } from 'actions/modals';
 import { updateZoom } from 'actions/stage';
 import { openAudioFile } from 'actions/audio';
-import { openProject, saveProject, newProject, checkUnsavedChanges } from 'actions/project';
+import { openProjectFile, saveProjectFile, newProject, checkUnsavedChanges } from 'actions/project';
 import styles from './App.less';
 
 const getActiveReactor = createSelector(
@@ -38,15 +38,15 @@ function App() {
         break;
 
       case 'open-project':
-        dispatch(checkUnsavedChanges(action, openProject()));
+        dispatch(checkUnsavedChanges(action, openProjectFile()));
         break;
 
       case 'save-project':
-        dispatch(saveProject(projectFile));
+        dispatch(saveProjectFile(projectFile));
         break;
 
       case 'save-project-as':
-        dispatch(saveProject());
+        dispatch(saveProjectFile());
         break;
 
       case 'load-audio':

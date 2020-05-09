@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { env, logger, reactors, stage } from 'view/global';
-import * as displayLibrary from 'displays';
 import { loadScenes, resetScenes } from 'actions/scenes';
 import { loadReactors, resetReactors } from 'actions/reactors';
 import { raiseError } from 'actions/errors';
@@ -8,6 +7,13 @@ import { showModal } from 'actions/modals';
 import { readFile, readFileCompressed, writeFileCompressed } from 'utils/io';
 import { showOpenDialog, showSaveDialog } from 'utils/window';
 import { contains } from 'utils/array';
+import Entity from 'core/Entity';
+import Stage from 'core/Stage';
+import Scene from 'core/Scene';
+import Display from 'core/Display';
+import AudioReactor from 'audio/AudioReactor';
+import * as displays from 'displays';
+import * as effects from 'effects';
 
 const initialState = {
   file: '',
@@ -51,6 +57,75 @@ export { touchProject, resetProject };
 
 export default projectStore.reducer;
 
+export function loadProject(data) {
+  function loadElement(scene, config) {
+    const { name } = config;
+    const type = displays[name] || effects[name];
+
+    if (type) {
+      const entity = Display.create(type, config);
+
+      scene.addElement(entity);
+    } else {
+      logger.warn('Component not found:', name);
+    }
+  }
+
+  return () => {
+    logger.log('Loaded project:', data);
+
+    stage.clearScenes();
+    reactors.clearReactors();
+
+    if (data.reactors) {
+      data.reactors.forEach(config => {
+        const reactor = Entity.create(AudioReactor, config);
+
+        reactors.addReactor(reactor);
+      });
+    }
+
+    if (data.scenes) {
+      data.scenes.forEach(config => {
+        const scene = Display.create(Scene, config);
+
+        stage.addScene(scene);
+
+        if (config.displays) {
+          config.displays.forEach(display => loadElement(scene, display));
+        }
+
+        if (config.effects) {
+          config.effects.forEach(effect => loadElement(scene, effect));
+        }
+      });
+    }
+
+    if (data.stage) {
+      stage.update(data.stage.properties);
+    } else {
+      stage.update(Stage.defaultProperties);
+    }
+  };
+}
+
+export function newProject() {
+  return async dispatch => {
+    await dispatch(resetScenes());
+    await dispatch(resetReactors());
+
+    const scene = stage.addScene();
+
+    scene.addElement(new displays.ImageDisplay());
+    scene.addElement(new displays.BarSpectrumDisplay());
+    scene.addElement(new displays.TextDisplay({ text: 'hello.' }));
+
+    dispatch(loadScenes());
+    dispatch(loadReactors());
+    dispatch(resetProject());
+  };
+}
+
 export function checkUnsavedChanges(menuAction, action) {
   return (dispatch, getState) => {
     const { opened, lastModified } = getState().project;
@@ -65,12 +140,13 @@ export function checkUnsavedChanges(menuAction, action) {
   };
 }
 
-export function loadProject(file) {
+export function loadProjectFile(file) {
   return async dispatch => {
     function loadData(data) {
-      stage.loadConfig(JSON.parse(data));
+      dispatch(loadProject(JSON.parse(data)));
 
       dispatch(loadScenes());
+
       dispatch(updateProject({ file, opened: Date.now(), lastModified: 0 }));
     }
 
@@ -94,20 +170,20 @@ export function loadProject(file) {
   };
 }
 
-export function saveProject(file) {
+export function saveProjectFile(file) {
   return async dispatch => {
     if (file) {
-      const data = JSON.stringify({
+      const data = {
         version: env.APP_VERSION,
         stage: stage.toJSON(),
         scenes: stage.scenes.toJSON(),
         reactors: reactors.toJSON(),
-      });
+      };
 
       try {
-        await writeFileCompressed(file, data);
+        await writeFileCompressed(file, JSON.stringify(data));
 
-        logger.log('Project saved:', file);
+        logger.log('Project saved:', file, data);
 
         dispatch(updateProject({ file, lastModified: 0 }));
       } catch (error) {
@@ -117,37 +193,20 @@ export function saveProject(file) {
       const { filePath, canceled } = await showSaveDialog({ defaultPath: 'project.afx' });
 
       if (!canceled) {
-        dispatch(saveProject(filePath));
+        dispatch(saveProjectFile(filePath));
       }
     }
   };
 }
 
-export function openProject() {
+export function openProjectFile() {
   return async dispatch => {
     const { filePaths, canceled } = await showOpenDialog({
       filters: [{ name: 'Project files', extensions: ['afx'] }],
     });
 
     if (!canceled) {
-      dispatch(loadProject(filePaths[0]));
+      dispatch(loadProjectFile(filePaths[0]));
     }
-  };
-}
-
-export function newProject() {
-  return async dispatch => {
-    await dispatch(resetScenes());
-    await dispatch(resetReactors());
-
-    const scene = stage.addScene();
-
-    scene.addElement(new displayLibrary.ImageDisplay());
-    scene.addElement(new displayLibrary.BarSpectrumDisplay());
-    scene.addElement(new displayLibrary.TextDisplay({ text: 'hello.' }));
-
-    dispatch(loadScenes());
-    dispatch(loadReactors());
-    dispatch(resetProject());
   };
 }

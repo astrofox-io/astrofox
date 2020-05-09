@@ -8,18 +8,37 @@ export function resetDisplayCount() {
 }
 
 export default class Display extends Entity {
-  constructor(type, properties) {
-    if (displayCount[type.className] === undefined) {
-      displayCount[type.className] = 1;
-    } else {
-      displayCount[type.className] += 1;
+  static create = (Type, config) => {
+    const { reactors = {} } = config;
+    const entity = Entity.create(Type, config);
+
+    Object.keys(reactors).forEach(key => {
+      const config = reactors[key];
+      entity.setReactor(key, config);
+    });
+
+    return entity;
+  };
+
+  constructor(Type, properties = {}) {
+    const { className, label, defaultProperties } = Type;
+    let { displayName } = properties;
+
+    if (!displayName) {
+      if (displayCount[className] === undefined) {
+        displayCount[className] = 1;
+      } else {
+        displayCount[className] += 1;
+      }
+
+      displayName = `${label || className} ${displayCount[className]}`;
     }
 
-    super(type.className, {
-      displayName: `${type.label || type.className} ${displayCount[type.className]}`,
+    super(Type.className, {
       enabled: true,
-      ...type.defaultProperties,
+      ...defaultProperties,
       ...properties,
+      displayName,
     });
 
     this.scene = null;
@@ -34,8 +53,8 @@ export default class Display extends Entity {
     return this.reactors[prop];
   }
 
-  setReactor(reactor, prop, min = 0, max = 1) {
-    this.reactors[prop] = { id: reactor.id, min, max };
+  setReactor(prop, config) {
+    this.reactors[prop] = config;
   }
 
   removeReactor(prop) {

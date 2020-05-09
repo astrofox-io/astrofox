@@ -11,10 +11,11 @@ function setState(newState) {
 }
 
 export default function useSharedState(initialState) {
+  const [, newListener] = useState();
+
   if (initialState && Object.keys(state).length === 0) {
     state = initialState;
   }
-  const [, newListener] = useState(initialState);
 
   useEffect(() => {
     listeners.push(newListener);

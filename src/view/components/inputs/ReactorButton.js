@@ -8,7 +8,7 @@ import { setActiveReactorId } from 'actions/app';
 import { loadScenes } from 'actions/scenes';
 import styles from './ReactorButton.less';
 
-export default function ReactorButton({ display, name, min, max }) {
+export default function ReactorButton({ display, name, min = 0, max = 1 }) {
   const dispatch = useDispatch();
   const reactor = display.getReactor(name);
 
@@ -18,7 +18,7 @@ export default function ReactorButton({ display, name, min, max }) {
     } else {
       const newReactor = await dispatch(addReactor());
 
-      display.setReactor(newReactor, name, min, max);
+      display.setReactor(name, { id: newReactor.id, min, max });
 
       dispatch(setActiveReactorId(newReactor.id));
       dispatch(loadScenes());

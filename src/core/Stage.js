@@ -5,9 +5,6 @@ import Entity from 'core/Entity';
 import EntityList from 'core/EntityList';
 import { resetDisplayCount } from 'core/Display';
 import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
-import * as displayLibrary from 'displays';
-import * as effectsLibrary from 'effects';
-import { logger, events } from 'view/global';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
@@ -16,8 +13,6 @@ import {
 import { isDefined } from 'utils/array';
 
 export default class Stage extends Entity {
-  static label = 'Stage';
-
   static className = 'Stage';
 
   static defaultProperties = {
@@ -99,8 +94,6 @@ export default class Stage extends Entity {
 
     this.canvasBuffer.setSize(width, height);
     this.webglBuffer.setSize(width, height);
-
-    events.emit('stage-resize');
   }
 
   getSceneById(id) {
@@ -133,9 +126,10 @@ export default class Stage extends Entity {
     } else {
       const scene = this.getSceneById(obj.scene.id);
       if (scene) {
-        scene.shiftElement(obj, spaces);
+        return scene.shiftElement(obj, spaces);
       }
     }
+    return false;
   }
 
   addScene(scene = new Scene(), index) {
@@ -166,57 +160,6 @@ export default class Stage extends Entity {
 
   hasScenes() {
     return !this.scenes.isEmpty();
-  }
-
-  loadConfig(config) {
-    if (typeof config === 'object') {
-      this.clearScenes();
-
-      if (config.scenes) {
-        config.scenes.forEach(scene => {
-          const newScene = new Scene(scene.properties);
-
-          this.addScene(newScene);
-
-          const loadReactors = (reactors, element) => {
-            Object.keys(reactors).forEach(key => {
-              element.setReactor(key, reactors[key]);
-            });
-          };
-
-          const loadComponent = (lib, { name, properties, reactors }) => {
-            const Component = lib[name];
-
-            if (Component) {
-              const element = newScene.addElement(new Component(properties));
-              if (reactors) {
-                loadReactors(reactors, element);
-              }
-            } else {
-              logger.warn('Component not found:', name);
-            }
-          };
-
-          if (scene.displays) {
-            scene.displays.forEach(display => loadComponent(displayLibrary, display));
-          }
-
-          if (scene.effects) {
-            scene.effects.forEach(effect => loadComponent(effectsLibrary, effect));
-          }
-
-          if (scene.reactors) {
-            loadReactors(scene.reactors, newScene);
-          }
-        });
-      }
-
-      if (config.stage) {
-        this.update(config.stage.properties);
-      } else {
-        this.update(Stage.defaultProperties);
-      }
-    }
   }
 
   toJSON() {

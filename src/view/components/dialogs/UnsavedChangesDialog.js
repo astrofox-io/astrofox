@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Dialog from 'components/window/Dialog';
-import { newProject, openProject, saveProject } from 'actions/project';
+import { newProject, openProjectFile, saveProjectFile } from 'actions/project';
 
 export default function UnsavedChangesDialog({ action, onClose }) {
   const dispatch = useDispatch();
@@ -11,13 +11,13 @@ export default function UnsavedChangesDialog({ action, onClose }) {
     if (action === 'new-project') {
       dispatch(newProject());
     } else if (action === 'open-project') {
-      dispatch(openProject());
+      dispatch(openProjectFile());
     }
   }
 
   async function handleConfirm(button) {
     if (button === 'Yes') {
-      await dispatch(saveProject(project.file));
+      await dispatch(saveProjectFile(project.file));
       await handleAction(action);
     } else if (button === 'No') {
       await handleAction(action);

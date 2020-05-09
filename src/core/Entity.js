@@ -3,8 +3,20 @@ import { uniqueId } from 'utils/crypto';
 import cloneDeep from 'lodash/cloneDeep';
 
 export default class Entity {
+  static create = (Type, config) => {
+    const { id, properties } = config;
+
+    const entity = new Type(properties);
+
+    delete entity.id;
+
+    Object.defineProperty(entity, 'id', { value: id, configurable: true });
+
+    return entity;
+  };
+
   constructor(name, properties = {}) {
-    Object.defineProperty(this, 'id', { value: uniqueId() });
+    Object.defineProperty(this, 'id', { value: uniqueId(), configurable: true });
     Object.defineProperty(this, 'name', { value: name });
 
     this.properties = properties;

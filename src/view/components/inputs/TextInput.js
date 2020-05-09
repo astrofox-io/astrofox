@@ -1,96 +1,73 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import styles from './TextInput.less';
 
-export default class TextInput extends PureComponent {
-  static defaultProps = {
-    name: 'text',
-    width: 140,
-    size: null,
-    value: '',
-    spellCheck: false,
-    autoSelect: false,
-    buffered: false,
-    readOnly: false,
-    disabled: false,
-    onChange: () => {},
-  };
+export default function TextInput({
+  name = 'text',
+  width = 140,
+  size = null,
+  value = '',
+  spellCheck = false,
+  autoSelect = false,
+  buffered = false,
+  readOnly = false,
+  disabled = false,
+  className,
+  onChange,
+}) {
+  const [savedValue, setSavedValue] = useState(value);
+  const input = useRef();
 
-  state = {
-    value: this.props.value,
-    initialValue: this.props.value,
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.value !== state.initialValue) {
-      return { value: props.value, initialValue: props.value };
+  useEffect(() => {
+    if (autoSelect) {
+      input.current.select();
     }
-    return null;
-  }
+  }, []);
 
-  componentDidMount() {
-    if (this.props.autoSelect) {
-      this.input.select();
-    }
-  }
-
-  handleChange = e => {
-    const { name, buffered, onChange } = this.props;
+  function handleChange(e) {
     const { value } = e.currentTarget;
 
-    this.setState({ value }, () => {
-      if (!buffered) {
-        onChange(name, value);
-      }
-    });
-  };
+    setSavedValue(value);
 
-  handleKeyUp = e => {
-    const { name, buffered, onChange } = this.props;
-    const { value } = this.state;
+    if (!buffered) {
+      onChange(name, value);
+    }
+  }
 
+  function handleKeyUp(e) {
     if (buffered) {
       // Enter key
       if (e.keyCode === 13) {
-        onChange(name, value);
+        onChange(name, savedValue);
       }
       // Esc key
       else if (e.keyCode === 27) {
-        this.resetValue();
+        onChange(name, value);
       }
     }
-  };
-
-  handleBlur = () => {
-    const { name, buffered, onChange } = this.props;
-    const { value } = this.state;
-
-    if (buffered) {
-      onChange(name, value);
-    }
-  };
-
-  render() {
-    const { name, width, size, spellCheck, readOnly, disabled, className } = this.props;
-
-    const { value } = this.state;
-
-    return (
-      <input
-        ref={ref => (this.input = ref)}
-        type="text"
-        className={classNames(styles.text, className)}
-        style={{ width }}
-        name={name}
-        size={size}
-        spellCheck={spellCheck}
-        value={value}
-        onChange={this.handleChange}
-        onBlur={this.handleBlur}
-        onKeyUp={this.handleKeyUp}
-        readOnly={readOnly}
-        disabled={disabled}
-      />
-    );
   }
+
+  function handleBlur() {
+    if (buffered) {
+      onChange(name, savedValue);
+    }
+  }
+
+  return (
+    <input
+      ref={input}
+      type="text"
+      className={classNames(styles.text, className)}
+      style={{ width }}
+      name={name}
+      size={size}
+      spellCheck={spellCheck}
+      value={savedValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      onKeyUp={handleKeyUp}
+      readOnly={readOnly}
+      disabled={disabled}
+    />
+  );
 }
