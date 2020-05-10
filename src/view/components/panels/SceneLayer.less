@@ -1,6 +1,12 @@
+@import (reference) 'view/styles/variables';
+
 .contaainer {
   display: flex;
   flex-direction: column;
+
+  &:first-child {
+    border-top: 1px solid @border-color;
+  }
 }
 
 .children {

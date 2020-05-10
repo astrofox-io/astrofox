@@ -34,8 +34,18 @@ export default function ProgressControl() {
     }
   }
 
+  function handlePlayerStop() {
+    setState({ progressPosition: 0 });
+  }
+
   useEffect(() => {
     player.on('tick', handlePlayerUpdate);
+    player.on('stop', handlePlayerStop);
+
+    return () => {
+      player.off('tick', handlePlayerUpdate);
+      player.off('stop', handlePlayerStop);
+    };
   }, []);
 
   return (

@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { player } from 'global';
 import Button from 'components/interface/Button';
 import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
 import ButtonRow from 'components/layout/ButtonRow';
 import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
-import useMergeState from 'components/hooks/useMergeState';
 import { showSaveDialog } from 'utils/window';
 import { replaceExt } from 'utils/file';
 import { formatTime } from 'utils/format';
@@ -27,17 +26,18 @@ const initialState = {
 export default function VideoSettings({ onClose }) {
   const dispatch = useDispatch();
   const { file: audioFile, duration } = useSelector(state => state.audio);
-  const [state, setState] = useMergeState(initialState);
+  const [state, setState] = useState(initialState);
   const { videoFile, format, fps, timeStart, timeEnd } = state;
   const canStart = videoFile && audioFile && timeEnd - timeStart > 0;
 
   useEffect(() => {
     player.stop();
 
-    setState({
+    setState(state => ({
+      ...state,
       audioFile,
       timeEnd: duration,
-    });
+    }));
   }, []);
 
   function handleChange(name, value) {
@@ -47,7 +47,7 @@ export default function VideoSettings({ onClose }) {
       props.videoFile = replaceExt(videoFile, `.${value}`);
     }
 
-    setState(props);
+    setState(state => ({ ...state, ...props }));
   }
 
   function handleCancel() {
@@ -63,7 +63,7 @@ export default function VideoSettings({ onClose }) {
     const { filePath, canceled } = await showSaveDialog({ defaultPath: `video.${format}` });
 
     if (!canceled) {
-      setState({ videoFile: replaceExt(filePath, `.${format}`) });
+      setState(state => ({ ...state, videoFile: replaceExt(filePath, `.${format}`) }));
     }
   }
 
@@ -72,10 +72,11 @@ export default function VideoSettings({ onClose }) {
 
     const duration = player.getDuration();
 
-    setState({
+    setState(state => ({
+      ...state,
       timeStart: 0,
       timeEnd: Math.ceil(duration),
-    });
+    }));
   }
 
   return (

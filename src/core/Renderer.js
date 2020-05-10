@@ -10,7 +10,7 @@ export default class Renderer {
     // Frame render data
     this.frameData = {
       id: 0,
-      timestamp: 0,
+      time: 0,
       delta: 0,
       fft: null,
       td: null,
