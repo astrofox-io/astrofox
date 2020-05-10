@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { uniqueId } from 'utils/crypto';
 
 const initialState = [];
 
@@ -11,7 +12,7 @@ const modalStore = createSlice({
         return state.concat(action.payload);
       },
       prepare: (component, modalProps, componentProps) => {
-        return { payload: { component, modalProps, componentProps } };
+        return { payload: { id: uniqueId(), component, modalProps, componentProps } };
       },
     },
     closeModal: state => {

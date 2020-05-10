@@ -1,39 +1,18 @@
-import React, { Children, cloneElement } from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import classNames from 'classnames';
+import React from 'react';
+import { animated, useTransition } from 'react-spring';
+import { easeInQuad } from 'utils/easing';
 import styles from './Overlay.less';
 
-const classes = {
-  enter: styles.overlayEnter,
-  enterActive: styles.overlayEnterActive,
-  exit: styles.overlayExit,
-  exitActive: styles.overlayExitActive,
-};
+export default function Overlay({ show, duration = 300, opacity = 0.5, easing = easeInQuad }) {
+  const transitions = useTransition(show, null, {
+    from: { opacity: 0 },
+    enter: { opacity },
+    leave: { opacity: 0 },
+    config: { duration, easing },
+  });
 
-const timeout = {
-  enter: 300,
-  exit: 300,
-};
-
-const Component = ({ children }) => (
-  <div
-    className={classNames({
-      [styles.overlay]: true,
-      [styles.hidden]: Children.count(children) === 0,
-    })}
-  >
-    {children}
-  </div>
-);
-
-const Overlay = ({ children }) => (
-  <TransitionGroup component={Component}>
-    {Children.map(children, (child, index) => (
-      <CSSTransition key={index} classNames={classes} timeout={timeout}>
-        {cloneElement(child, { className: styles.element })}
-      </CSSTransition>
-    ))}
-  </TransitionGroup>
-);
-
-export default Overlay;
+  return transitions.map(
+    ({ item, key, props }) =>
+      item && <animated.div key={key} className={styles.overlay} style={props} />,
+  );
+}

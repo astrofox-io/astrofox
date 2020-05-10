@@ -15,8 +15,8 @@ export default function TextInput({
   className,
   onChange,
 }) {
-  const [savedValue, setSavedValue] = useState(value);
-  const input = useRef();
+  const [bufferedValue, setBufferedValue] = useState(value);
+  const input = useRef(null);
 
   useEffect(() => {
     if (autoSelect) {
@@ -24,10 +24,14 @@ export default function TextInput({
     }
   }, []);
 
+  useEffect(() => {
+    setBufferedValue(value);
+  }, [value]);
+
   function handleChange(e) {
     const { value } = e.currentTarget;
 
-    setSavedValue(value);
+    setBufferedValue(value);
 
     if (!buffered) {
       onChange(name, value);
@@ -38,7 +42,7 @@ export default function TextInput({
     if (buffered) {
       // Enter key
       if (e.keyCode === 13) {
-        onChange(name, savedValue);
+        onChange(name, bufferedValue);
       }
       // Esc key
       else if (e.keyCode === 27) {
@@ -49,7 +53,7 @@ export default function TextInput({
 
   function handleBlur() {
     if (buffered) {
-      onChange(name, savedValue);
+      onChange(name, bufferedValue);
     }
   }
 
@@ -62,7 +66,7 @@ export default function TextInput({
       name={name}
       size={size}
       spellCheck={spellCheck}
-      value={savedValue}
+      value={buffered ? bufferedValue : value}
       onChange={handleChange}
       onBlur={handleBlur}
       onKeyUp={handleKeyUp}

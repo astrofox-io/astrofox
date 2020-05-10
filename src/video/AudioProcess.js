@@ -14,7 +14,7 @@ const extOptions = {
 };
 
 export default class AudioProcess extends Process {
-  start(file, format, audioFile, timeStart, timeEnd) {
+  start(audioFile, file, format, timeStart, timeEnd) {
     return new Promise((resolve, reject) => {
       const ext = path.extname(audioFile);
       const duration = timeEnd - timeStart;

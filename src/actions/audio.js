@@ -9,6 +9,7 @@ import { showOpenDialog } from 'utils/window';
 
 const initialState = {
   file: '',
+  duration: 0,
   tags: null,
 };
 
@@ -26,7 +27,7 @@ const { updateAudio } = audioStore.actions;
 
 export default audioStore.reducer;
 
-export function loadAudioFile(file) {
+export function loadAudioFile(file, play) {
   return async (dispatch, getState) => {
     player.stop();
 
@@ -36,11 +37,16 @@ export function loadAudioFile(file) {
       const blob = await readFileAsBlob(file);
       const data = await readAsArrayBuffer(blob);
       const audio = await loadAudioData(data);
+      const duration = audio.getDuration();
 
       player.load(audio);
       audio.addNode(analyzer.analyzer);
 
-      if (getState().config.autoPlayAudio) {
+      if (play === undefined) {
+        play = getState().config.autoPlayAudio;
+      }
+
+      if (play) {
         player.play();
       }
 
@@ -53,15 +59,15 @@ export function loadAudioFile(file) {
         await dispatch(setStatusText(trimChars(`${artist} - ${title}`)));
       }
 
-      dispatch(updateAudio({ file, tags }));
+      dispatch(updateAudio({ file, duration, tags }));
     } catch (error) {
       dispatch(raiseError('Invalid audio file.', error));
     }
   };
 }
 
-export function openAudioFile() {
-  return async dispatch => {
+export function openAudioFile(play) {
+  return async (dispatch, getState) => {
     const { filePaths, canceled } = await showOpenDialog({
       filters: [
         {
@@ -72,7 +78,10 @@ export function openAudioFile() {
     });
 
     if (!canceled) {
-      dispatch(loadAudioFile(filePaths[0]));
+      if (play === undefined) {
+        play = getState().config.autoPlayAudio;
+      }
+      dispatch(loadAudioFile(filePaths[0], play));
     }
   };
 }

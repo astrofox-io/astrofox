@@ -1,58 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { player } from 'global';
 import Button from 'components/interface/Button';
 import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
 import ButtonRow from 'components/layout/ButtonRow';
 import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
-import { showOpenDialog, showSaveDialog } from 'utils/window';
+import useMergeState from 'components/hooks/useMergeState';
+import { showSaveDialog } from 'utils/window';
 import { replaceExt } from 'utils/file';
 import { formatTime } from 'utils/format';
-import { FolderOpen } from 'icons';
+import { FolderOpen } from 'view/icons';
+import { openAudioFile } from 'actions/audio';
+import { startRender } from 'actions/video';
 import styles from './VideoSettings.less';
 
 const videoFormats = ['mp4', 'webm'];
 
-const resolutionOptions = [480, 720, 1080];
-
-const defaultState = {
+const initialState = {
   videoFile: '',
-  audioFile: '',
   format: 'mp4',
-  resolution: 480,
   fps: 30,
   timeStart: 0,
   timeEnd: 0,
 };
 
-export default function VideoSettings({ onStart, onClose }) {
-  const appConfig = useSelector(({ app }) => app);
-  const [state, setState] = useState({ ...defaultState, audioFile: appConfig.audioFile });
-  const { videoFile, audioFile, format, resolution, fps, timeStart, timeEnd } = state;
+export default function VideoSettings({ onClose }) {
+  const dispatch = useDispatch();
+  const { file: audioFile, duration } = useSelector(state => state.audio);
+  const [state, setState] = useMergeState(initialState);
+  const { videoFile, format, fps, timeStart, timeEnd } = state;
+  const canStart = videoFile && audioFile && timeEnd - timeStart > 0;
 
   useEffect(() => {
     player.stop();
 
-    const audio = player.getAudio();
-
-    if (audio) {
-      setState({
-        audioFile,
-        timeEnd: audio.getDuration(),
-      });
-    }
+    setState({
+      audioFile,
+      timeEnd: duration,
+    });
   }, []);
 
   function handleChange(name, value) {
-    const obj = {};
-
-    obj[name] = value;
+    const props = { [name]: value };
 
     if (name === 'format' && videoFile) {
-      obj.videoFile = replaceExt(videoFile, `.${value}`);
+      props.videoFile = replaceExt(videoFile, `.${value}`);
     }
 
-    setState({ ...state, ...obj });
+    setState(props);
   }
 
   function handleCancel() {
@@ -60,49 +55,34 @@ export default function VideoSettings({ onStart, onClose }) {
   }
 
   function handleStart() {
-    onStart(state);
+    dispatch(startRender({ ...state, audioFile }));
+    onClose();
   }
 
-  function handleOpenVideoFile() {
-    showSaveDialog(
-      filename => {
-        if (filename) {
-          setState({ ...state, videoFile: filename });
-        }
-      },
-      { defaultPath: `video.${state.format}` },
-    );
+  async function handleOpenVideoFile() {
+    const { filePath, canceled } = await showSaveDialog({ defaultPath: `video.${format}` });
+
+    if (!canceled) {
+      setState({ videoFile: replaceExt(filePath, `.${format}`) });
+    }
   }
 
-  function handleOpenAudioFile() {
-    showOpenDialog(
-      files => {
-        if (files) {
-          app.loadAudioFile(files[0]).then(() => {
-            const audio = player.getAudio();
+  async function handleOpenAudioFile() {
+    await dispatch(openAudioFile(false));
 
-            this.setState({
-              audioFile: app.audioFile,
-              timeStart: 0,
-              timeEnd: Math.ceil(audio.getDuration()),
-            });
-          });
-        }
-      },
-      { defaultPath: app.audioFile },
-    );
+    const duration = player.getDuration();
+
+    setState({
+      timeStart: 0,
+      timeEnd: Math.ceil(duration),
+    });
   }
-
-  const audio = player.getAudio();
-  const max = audio ? audio.getDuration() : 0;
-  const canStart = videoFile && audioFile;
 
   return (
     <SettingsPanel className={styles.panel}>
       <Settings>
         <Row label="Save Video To">
           <TextInput
-            inputClassName="input-normal-text"
             name="videoFile"
             width={250}
             value={videoFile}
@@ -118,7 +98,6 @@ export default function VideoSettings({ onStart, onClose }) {
         </Row>
         <Row label="Audio File">
           <TextInput
-            inputClassName="input-normal-text"
             name="audioFile"
             width={250}
             value={audioFile}
@@ -141,15 +120,6 @@ export default function VideoSettings({ onStart, onClose }) {
             onChange={handleChange}
           />
         </Row>
-        <Row label="Video Resolution" className="display-none">
-          <SelectInput
-            name="resolution"
-            width={80}
-            items={resolutionOptions}
-            value={resolution}
-            onChange={handleChange}
-          />
-        </Row>
         <Row label="FPS">
           <NumberInput
             name="fps"
@@ -167,7 +137,7 @@ export default function VideoSettings({ onStart, onClose }) {
             min={0}
             max={timeEnd}
             value={timeStart}
-            disabled={!audio}
+            disabled={!audioFile}
             onChange={handleChange}
           />
         </Row>
@@ -176,13 +146,15 @@ export default function VideoSettings({ onStart, onClose }) {
             name="timeEnd"
             width={80}
             min={0}
-            max={max}
+            max={duration}
             value={timeEnd}
-            disabled={!audio}
+            disabled={!audioFile}
             onChange={handleChange}
           />
         </Row>
-        <Row label="Total Time">{formatTime(timeEnd - timeStart)}</Row>
+        <Row label="Total Time">
+          {formatTime(timeEnd - timeStart)} / {formatTime(duration)}
+        </Row>
       </Settings>
       <ButtonRow>
         <Button text="Start" onClick={handleStart} disabled={!canStart} />

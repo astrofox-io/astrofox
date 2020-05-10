@@ -14,25 +14,23 @@ export default function ModalWindow({
   children,
 }) {
   return (
-    <div className={styles.overlay}>
-      <div className={classNames(styles.modal, className)}>
-        {showCloseButton && (
-          <div className={styles.closeButton} onClick={onClose}>
-            <Icon className={styles.closeIcon} glyph={Times} />
-          </div>
-        )}
-        {title && <div className={styles.header}>{title}</div>}
-        <div className={styles.body}>
-          {Children.map(children, child => cloneElement(child, { onClose }))}
+    <div className={classNames(styles.modal, className)}>
+      {showCloseButton && (
+        <div className={styles.closeButton} onClick={onClose}>
+          <Icon className={styles.closeIcon} glyph={Times} />
         </div>
-        {buttons && (
-          <div className={styles.buttons}>
-            {buttons.map((text, index) => (
-              <Button key={index} text={text} onClick={() => onClose(text)} />
-            ))}
-          </div>
-        )}
+      )}
+      {title && <div className={styles.header}>{title}</div>}
+      <div className={styles.body}>
+        {Children.map(children, child => cloneElement(child, { onClose }))}
       </div>
+      {buttons && (
+        <div className={styles.buttons}>
+          {buttons.map((text, index) => (
+            <Button key={index} text={text} onClick={() => onClose(text)} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

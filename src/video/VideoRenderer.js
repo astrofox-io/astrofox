@@ -3,38 +3,20 @@ import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
-import { TEMP_PATH, FFMPEG_PATH, logger } from 'view/global';
+import { logger, getEnvironment } from 'view/global';
 import { removeFile } from 'utils/io';
 import { uniqueId } from 'utils/crypto';
 
 export default class VideoRenderer extends EventEmitter {
-  static defaultProperties = {
-    fps: 30,
-    timeStart: 0,
-    timeEnd: 0,
-    format: 'mp4',
-    resolution: 480,
-  };
-
-  constructor(videoFile, audioFile, properties) {
+  constructor(renderer) {
     super();
 
-    this.video = videoFile;
-    this.audio = audioFile;
-    this.properties = { ...VideoRenderer.defaultProperties, ...properties };
+    const { FFMPEG_PATH } = getEnvironment();
 
-    this.started = false;
-    this.completed = false;
-
-    this.frames = properties.fps * (properties.timeEnd - properties.timeStart);
-    this.currentFrame = properties.fps * properties.timeStart;
-    this.lastFrame = this.currentFrame + this.frames;
-
+    this.renderer = renderer;
     this.renderProcess = new RenderProcess(FFMPEG_PATH);
     this.audioProcess = new AudioProcess(FFMPEG_PATH);
     this.mergeProcess = new MergeProcess(FFMPEG_PATH);
-    this.currentProcess = null;
-    this.startTime = 0;
 
     this.renderProcess.on('data', data => {
       logger.log(data.toString());
@@ -55,67 +37,109 @@ export default class VideoRenderer extends EventEmitter {
     });
   }
 
-  start() {
-    const id = uniqueId();
-    const { fps, timeStart, timeEnd, format } = this.properties;
-    let outputVideo = path.join(TEMP_PATH, `${id}.video`);
-    let outputAudio = path.join(TEMP_PATH, `${id}.audio`);
+  init(properties) {
+    const { videoFile, audioFile, ...config } = properties;
 
-    logger.log('Starting render', id);
+    this.videoFile = videoFile;
+    this.audioFile = audioFile;
+    this.config = config;
 
-    this.startTime = window.performance.now();
-    this.currentProcess = this.renderProcess;
+    const { fps, timeStart, timeEnd } = config;
 
-    // Start rendering
-    this.renderProcess
-      .start(outputVideo, format, fps)
-      .then(file => {
-        outputVideo = file;
-        this.currentProcess = this.audioProcess;
-        return this.audioProcess.start(outputAudio, format, this.audio, timeStart, timeEnd);
-      })
-      .then(file => {
-        outputAudio = file;
-        this.currentProcess = this.mergeProcess;
-        return this.mergeProcess.start(outputVideo, outputAudio, this.video);
-      })
-      .then(() => {
-        if (process.env.NODE_ENV === 'production') {
-          removeFile(outputVideo);
-          removeFile(outputAudio);
-        }
+    this.started = false;
+    this.finished = false;
+    this.currentProcess = null;
+    this.startTime = 0;
 
-        this.completed = true;
-        this.emit('complete');
-      })
-      .catch(err => {
-        logger.error(err);
+    this.frames = fps * (timeEnd - timeStart);
+    this.currentFrame = fps * timeStart;
+    this.lastFrame = this.currentFrame + this.frames;
+  }
 
-        this.completed = true;
-        this.emit('complete');
-      });
+  async start() {
+    try {
+      this.renderer.stop();
+      this.startTime = window.performance.now();
 
-    this.emit('start');
+      const id = uniqueId();
+      const { audioFile, videoFile, renderProcess, audioProcess, mergeProcess } = this;
+      const { fps, timeStart, timeEnd, format } = this.config;
+      const { TEMP_PATH } = getEnvironment();
+      const tempVideoFile = path.join(TEMP_PATH, `${id}.video`);
+      const tempAudioFile = path.join(TEMP_PATH, `${id}.audio`);
+
+      logger.log('Starting video render', id);
+
+      this.on(
+        'ready',
+        async () => {
+          const image = await this.renderer.renderFrame(this.currentFrame, fps);
+          this.processFrame(image);
+        },
+        this,
+      );
+
+      // Render video
+      this.currentProcess = renderProcess;
+      const outputVideoFile = await renderProcess.start(tempVideoFile, format, fps);
+
+      // Render audio
+      this.currentProcess = audioProcess;
+      const outputAudioFile = await audioProcess.start(
+        audioFile,
+        tempAudioFile,
+        format,
+        timeStart,
+        timeEnd,
+      );
+
+      // Merge audio and video
+      this.currentProcess = mergeProcess;
+      await mergeProcess.start(outputVideoFile, outputAudioFile, videoFile);
+
+      // Remove temp files
+      if (process.env.NODE_ENV === 'production') {
+        await removeFile(outputVideoFile);
+        await removeFile(outputAudioFile);
+      }
+    } catch (error) {
+      logger.error(error);
+
+      throw error;
+    } finally {
+      this.finished = true;
+
+      this.emit('finished');
+      this.off('ready');
+
+      this.renderer.start();
+    }
   }
 
   stop() {
-    if (!this.completed && this.currentProcess) {
+    if (!this.finished && this.currentProcess) {
       this.currentProcess.stop();
+
+      logger.log('Video rendering stopped.');
     }
   }
 
   processFrame(image) {
-    if (this.completed) return;
+    if (this.finished) return;
+
+    const { renderProcess, frames, currentFrame, lastFrame, startTime } = this;
 
     try {
-      this.renderProcess.push(image);
+      renderProcess.push(image);
 
-      if (this.currentFrame < this.lastFrame) {
+      if (currentFrame < lastFrame) {
         this.currentFrame += 1;
         this.emit('ready');
       } else {
-        this.renderProcess.push(null);
+        renderProcess.push(null);
       }
+
+      this.emit('stats', { frames, currentFrame, lastFrame, startTime });
     } catch (error) {
       if (error.message.indexOf('write EPIPE') < 0) {
         throw error;

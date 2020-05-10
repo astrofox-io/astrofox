@@ -7,14 +7,14 @@ import styles from './ProgressControl.less';
 
 const PROGRESS_MAX = 1000;
 
-const defaultState = {
+const initialState = {
   progressPosition: 0,
   seekPosition: 0,
   buffering: false,
 };
 
 export default function ProgressControl() {
-  const [state, setState] = useSharedState(defaultState);
+  const [state, setState] = useSharedState(initialState);
   const { progressPosition, seekPosition, buffering } = state;
   const duration = player.getDuration();
   const disabled = !player.hasAudio();

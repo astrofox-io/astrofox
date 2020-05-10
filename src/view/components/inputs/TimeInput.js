@@ -1,31 +1,30 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import TextInput from 'components/inputs/TextInput';
 import { formatSeekTime, parseSeekTime } from 'utils/format';
 import { clamp } from 'utils/math.js';
 
-export default class TimeInput extends PureComponent {
-  static defaultProps = {
-    name: 'time',
-    width: 140,
-    size: null,
-    value: 0,
-    readOnly: false,
-    disabled: false,
-    onChange: () => {},
-  };
+export default function TimeInput({
+  name = 'time',
+  value = 0,
+  width = 140,
+  size,
+  min,
+  max,
+  readOnly = false,
+  disabled = false,
+  onChange = () => {},
+}) {
+  const [key, setKey] = useState(0);
 
-  state = {
-    key: 0,
-  };
-
-  handleChange = (name, value) => {
-    const { min, max, onChange } = this.props;
-
+  function handleChange(name, value) {
     let time = parseSeekTime(value);
 
     if (time !== null) {
       // Clamp to min/max
-      if (min !== false && max !== false) {
+      if (min !== undefined && max !== undefined) {
+        if (time < min || time > max) {
+          setKey(key + 1);
+        }
         time = clamp(time, min, max);
       }
 
@@ -33,27 +32,21 @@ export default class TimeInput extends PureComponent {
     }
     // Reset to previous value
     else {
-      this.setState(({ key }) => ({ key: key + 1 }));
+      setKey(key + 1);
     }
-  };
-
-  render() {
-    const { name, value, width, size, readOnly, disabled } = this.props;
-
-    const { key } = this.state;
-
-    return (
-      <TextInput
-        key={key}
-        name={name}
-        width={width}
-        size={size}
-        buffered
-        readOnly={readOnly}
-        disabled={disabled}
-        value={formatSeekTime(value)}
-        onChange={this.handleChange}
-      />
-    );
   }
+
+  return (
+    <TextInput
+      key={key}
+      name={name}
+      width={width}
+      size={size}
+      buffered
+      readOnly={readOnly}
+      disabled={disabled}
+      value={formatSeekTime(value)}
+      onChange={handleChange}
+    />
+  );
 }

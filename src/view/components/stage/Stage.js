@@ -1,42 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import RenderInfo from 'components/stage/RenderInfo';
+import { useTransition, animated } from 'react-spring';
+import RenderPanel from 'components/panels/RenderPanel';
+import Overlay from 'components/window/Overlay';
 import { stage } from 'view/global';
-import { FirstChild } from 'utils/react';
+import { ignoreEvents } from 'utils/react';
 import { setLoading } from 'actions/stage';
 import { loadAudioFile } from 'actions/audio';
+import { stopRender } from 'actions/video';
 import styles from './Stage.less';
-
-const transitionClasses = {
-  enter: styles.stageEnter,
-  enterActive: styles.stageEnterActive,
-  exit: styles.stageExit,
-  exitActive: styles.stageExitActive,
-};
-
-const transitionTimeout = {
-  enter: 500,
-  exit: 500,
-};
 
 export default function Stage() {
   const dispatch = useDispatch();
-  const { loading, rendering, width, height, zoom } = useSelector(({ stage }) => stage);
-  const canvas = useRef();
+  const { loading, width, height, zoom } = useSelector(state => state.stage);
+  const { rendering } = useSelector(state => state.video);
+  const canvas = useRef(null);
 
   useEffect(() => {
     stage.init(canvas.current);
   }, [stage]);
 
-  function handleDragOver(e) {
-    e.stopPropagation();
-    e.preventDefault();
-  }
-
   async function handleDrop(e) {
-    e.stopPropagation();
-    e.preventDefault();
+    ignoreEvents(e);
 
     const file = e.dataTransfer.files[0];
 
@@ -47,9 +32,9 @@ export default function Stage() {
     }
   }
 
-  function startRender() {}
-
-  function stopRender() {}
+  function handleRenderClose() {
+    dispatch(stopRender());
+  }
 
   const style = {
     width: `${width * (zoom / 100)}px`,
@@ -58,33 +43,44 @@ export default function Stage() {
 
   return (
     <div className={styles.stage}>
+      <Overlay show={rendering} />
       <div className={styles.scroll}>
-        <div className={styles.canvas} onDrop={handleDrop} onDragOver={handleDragOver}>
+        <div className={styles.canvas} onDrop={handleDrop} onDragOver={ignoreEvents}>
           <canvas ref={canvas} style={style} />
-          <Loading visible={loading} />
-          <Rendering visible={rendering} onClose={stopRender} />
+          <Loading show={loading} />
+          <RenderInfo show={rendering} onClose={handleRenderClose} />
         </div>
       </div>
     </div>
   );
 }
 
-const Loading = ({ visible }) => (
-  <TransitionGroup component={FirstChild}>
-    {visible && (
-      <CSSTransition classNames={transitionClasses} timeout={transitionTimeout}>
-        <div className={styles.loading} />
-      </CSSTransition>
-    )}
-  </TransitionGroup>
-);
+const Loading = ({ show }) => {
+  const transitions = useTransition(show, 0, {
+    from: { opacity: 0, width: '200px', height: '200px', margin: '-100px 0 0 -100px' },
+    enter: { opacity: 1, width: '100px', height: '100px', margin: '-50px 0 0 -50px' },
+    leave: { opacity: 0, width: '200px', height: '200px', margin: '-100px 0 0 -100px' },
+  });
 
-const Rendering = ({ visible, onClose }) => (
-  <TransitionGroup component={FirstChild}>
-    {visible && (
-      <CSSTransition classNames={transitionClasses} timeout={transitionTimeout}>
-        <RenderInfo className={styles.renderInfo} onClose={onClose} />
-      </CSSTransition>
-    )}
-  </TransitionGroup>
-);
+  return transitions.map(
+    ({ item, key, props }) =>
+      item && <animated.div key={key} className={styles.loading} style={props} />,
+  );
+};
+
+const RenderInfo = ({ show, onClose }) => {
+  const transitions = useTransition(show, 0, {
+    from: { opacity: 0, maxHeight: 0 },
+    enter: { opacity: 1, maxHeight: 100 },
+    leave: { opacity: 0, maxHeight: 0 },
+  });
+
+  return transitions.map(
+    ({ item, key, props }) =>
+      item && (
+        <animated.div key={key} className={styles.renderInfo} style={props}>
+          <RenderPanel onClose={onClose} />
+        </animated.div>
+      ),
+  );
+};

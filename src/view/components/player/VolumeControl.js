@@ -6,13 +6,13 @@ import Icon from 'components/interface/Icon';
 import { Volume, Volume2, Volume3, Volume4 } from 'view/icons';
 import styles from './VolumeControl.less';
 
-const defaultState = {
+const initialState = {
   value: 100,
   mute: false,
 };
 
 export default function VolumeControl() {
-  const [state, setState] = useState(defaultState);
+  const [state, setState] = useState(initialState);
   const { value, mute } = state;
 
   function handleChange(name, value) {

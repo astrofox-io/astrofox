@@ -26,6 +26,7 @@
     "default-case": "off",
     "linebreak-style": ["error", "unix"],
     "no-param-reassign": "off",
+    "no-plusplus": "off",
     "no-shadow": "off",
     "no-underscore-dangle": "off",
     "one-var-declaration-per-line": ["error", "initializations"],
@@ -49,12 +50,6 @@
       "error",
       {
         "allowElseIf": true
-      }
-    ],
-    "no-plusplus": [
-      "error",
-      {
-        "allowForLoopAfterthoughts": true
       }
     ],
     "no-return-assign": ["error", "except-parens"],

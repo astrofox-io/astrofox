@@ -13,7 +13,6 @@ const initialState = {
   backgroundColor: DEFAULT_BACKGROUND_COLOR,
   zoom: 100,
   loading: false,
-  rendering: false,
 };
 
 const stageStore = createSlice({

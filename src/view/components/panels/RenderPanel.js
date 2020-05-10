@@ -1,65 +1,64 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Button from 'components/interface/Button';
-import { video } from 'view/global';
+import { videoRenderer } from 'view/global';
 import { formatTime } from 'utils/format';
-import styles from './RenderInfo.less';
+import { stopRender } from 'actions/video';
+import styles from './RenderPanel.less';
 
-const defaultState = {
-  complete: false,
+const initialState = {
+  finished: false,
   frames: 0,
   currentFrame: 0,
   lastFrame: 0,
   startTime: 0,
 };
 
-export default function RenderInfo({ className, onClose }) {
-  const [state, setState] = useState(defaultState);
-  const { frames, currentFrame, lastFrame, startTime, complete } = state;
-  const { renderer } = video;
+export default function RenderPanel({ onClose }) {
+  const dispatch = useDispatch();
+  const [state, setState] = useState(initialState);
+  const { frames, currentFrame, lastFrame, startTime, finished } = state;
   const elapsedTime = (window.performance.now() - startTime) / 1000;
   const frame = frames - (lastFrame - currentFrame);
   const progress = frames > 0 ? (frame / frames) * 100 : 0;
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
-  const text = complete ? 'Finished' : 'Cancel';
+  const text = finished ? 'Finished' : 'Cancel';
   const style = { width: `${progress}%` };
 
   function handleButtonClick() {
-    renderer.stop();
+    dispatch(stopRender());
 
     onClose();
   }
 
-  function setComplete() {
-    setState({ ...state, complete: true });
+  function setFinished() {
+    setState(state => ({ ...state, finished: true }));
   }
 
-  function updateStats() {
-    const { frames, currentFrame, lastFrame, startTime } = renderer;
-
-    setState({
-      ...state,
-      frames,
-      currentFrame,
-      lastFrame,
-      startTime,
-    });
+  function updateStats(stats) {
+    if (stats && stats.currentFrame > currentFrame) {
+      setState(state => ({
+        ...state,
+        ...stats,
+      }));
+    }
   }
 
   useEffect(() => {
-    renderer.on('ready', updateStats, this);
-    renderer.on('complete', setComplete, this);
-
-    renderer.start();
+    videoRenderer.on('stats', updateStats);
+    videoRenderer.on('finished', setFinished);
 
     return () => {
-      renderer.off('ready', updateStats, this);
-      renderer.off('complete', setComplete, this);
+      videoRenderer.off('stats', updateStats);
+      videoRenderer.off('finished', setFinished);
+
+      dispatch(stopRender());
     };
   }, []);
 
   return (
-    <div className={classNames(styles.renderInfo, className)}>
+    <div className={classNames(styles.panel)}>
       <div className={styles.progress}>
         <div className={styles.progressBar} style={style} />
       </div>

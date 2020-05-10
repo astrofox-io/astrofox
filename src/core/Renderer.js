@@ -1,4 +1,4 @@
-import { events, stage, player, analyzer, reactors } from 'view/global';
+import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
 
 const FPS_POLL_INTERVAL = 500;
 
@@ -10,12 +10,12 @@ export default class Renderer {
     // Frame render data
     this.frameData = {
       id: 0,
-      time: 0,
+      timestamp: 0,
       delta: 0,
       fft: null,
       td: null,
       volume: 0,
-      playing: 0,
+      audioPlaying: false,
     };
 
     // Rendering statistics
@@ -59,23 +59,30 @@ export default class Renderer {
     }
 
     this.frameData.id = 0;
+    this.frameData.time = 0;
     this.rendering = false;
   }
 
-  getFrameData(update) {
+  getFrameData(id) {
     const { frameData } = this;
+    const isPlaying = player.isPlaying();
+    const requestUpdate = isPlaying || id === 0;
 
-    frameData.fft = analyzer.getFrequencyData(update);
-    frameData.td = analyzer.getTimeData(update);
+    frameData.id = id;
+    frameData.fft = analyzer.getFrequencyData(requestUpdate);
+    frameData.td = analyzer.getTimeData(requestUpdate);
     frameData.volume = analyzer.getVolume();
-    frameData.hasUpdate = !!update;
-    frameData.playing = player.isPlaying();
+    frameData.hasUpdate = !!requestUpdate;
+    frameData.audioPlaying = isPlaying;
+    frameData.volume = player.getVolume();
 
     // Rendering single frame
     if (frameData.id === 0) {
       // Fix time data display bug
       frameData.td = frameData.td.subarray(0, ~~(frameData.td.length * 0.93));
     }
+
+    frameData.reactors = reactors.updateReactors(frameData);
 
     return frameData;
   }
@@ -101,15 +108,43 @@ export default class Renderer {
     }
   }
 
+  renderFrame(frame, fps) {
+    return new Promise((resolve, reject) => {
+      try {
+        const audio = player.getAudio();
+        const bufferSource = audioContext.createBufferSource();
+
+        bufferSource.buffer = audio.buffer;
+        bufferSource.connect(analyzer.analyzer);
+
+        bufferSource.onended = () => {
+          const data = this.getFrameData(0);
+
+          data.delta = 1000 / fps;
+
+          stage.render(data);
+
+          const buffer = stage.getImage();
+
+          bufferSource.disconnect();
+
+          resolve(buffer);
+        };
+
+        bufferSource.start(0, frame / fps, 1 / fps);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
   render() {
     const now = window.performance.now();
-    const playing = player.isPlaying();
-    const data = this.getFrameData(playing);
+    const id = window.requestAnimationFrame(this.render);
+    const data = this.getFrameData(id);
 
-    data.id = window.requestAnimationFrame(this.render);
     data.delta = now - data.time;
     data.time = now;
-    data.reactors = reactors.updateReactors(data);
 
     stage.render(data);
 
