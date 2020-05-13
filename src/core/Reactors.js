@@ -2,6 +2,12 @@ import AudioReactor, { resetReactorCount } from 'audio/AudioReactor';
 import EntityList from 'core/EntityList';
 
 export default class Reactors extends EntityList {
+  constructor() {
+    super();
+
+    this.results = {};
+  }
+
   addReactor(reactor) {
     return this.addElement(reactor ?? new AudioReactor());
   }
@@ -16,10 +22,13 @@ export default class Reactors extends EntityList {
     resetReactorCount();
   }
 
-  updateReactors(data) {
-    return this.reduce((memo, reactor) => {
-      memo[reactor.id] = reactor.parse(data).output;
-      return memo;
-    }, {});
+  getResults(data) {
+    if (data.hasUpdate) {
+      this.results = this.reduce((memo, reactor) => {
+        memo[reactor.id] = reactor.parse(data).output;
+        return memo;
+      }, {});
+    }
+    return this.results;
   }
 }

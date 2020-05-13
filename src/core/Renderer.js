@@ -16,6 +16,8 @@ export default class Renderer {
       td: null,
       volume: 0,
       audioPlaying: false,
+      hasUpdate: false,
+      reactors: {},
     };
 
     // Rendering statistics
@@ -72,9 +74,9 @@ export default class Renderer {
     frameData.fft = analyzer.getFrequencyData(requestUpdate);
     frameData.td = analyzer.getTimeData(requestUpdate);
     frameData.volume = analyzer.getVolume();
-    frameData.hasUpdate = !!requestUpdate;
-    frameData.audioPlaying = isPlaying;
     frameData.volume = player.getVolume();
+    frameData.audioPlaying = isPlaying;
+    frameData.hasUpdate = !!requestUpdate;
 
     // Rendering single frame
     if (frameData.id === 0) {
@@ -82,7 +84,7 @@ export default class Renderer {
       frameData.td = frameData.td.subarray(0, ~~(frameData.td.length * 0.93));
     }
 
-    frameData.reactors = reactors.updateReactors(frameData);
+    frameData.reactors = reactors.getResults(frameData);
 
     return frameData;
   }
@@ -139,7 +141,7 @@ export default class Renderer {
   }
 
   render() {
-    const now = window.performance.now();
+    const now = Date.now();
     const id = window.requestAnimationFrame(this.render);
     const data = this.getFrameData(id);
 

@@ -19,7 +19,7 @@ export default function RenderPanel({ onClose }) {
   const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
   const { frames, currentFrame, lastFrame, startTime, finished } = state;
-  const elapsedTime = (window.performance.now() - startTime) / 1000;
+  const elapsedTime = (Date.now() - startTime) / 1000;
   const frame = frames - (lastFrame - currentFrame);
   const progress = frames > 0 ? (frame / frames) * 100 : 0;
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;

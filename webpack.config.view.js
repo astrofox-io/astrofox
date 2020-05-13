@@ -50,7 +50,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(css|less)$/,
+        test: /\.less$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -99,19 +99,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(eot|ttf|woff|woff2)$/,
-        include: path.resolve(__dirname, 'src/view/assets/fonts'),
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'fonts',
-            publicPath: 'fonts',
-          },
-        },
-      },
-      {
-        test: /\.html$/,
+        test: /\.(html|css)$/,
         use: {
           loader: 'file-loader',
           options: {
@@ -138,6 +126,10 @@ module.exports = {
       {
         from: path.resolve(__dirname, 'src/view/assets/images'),
         to: path.resolve(__dirname, 'app/images'),
+      },
+      {
+        from: path.resolve(__dirname, 'src/view/assets/fonts'),
+        to: path.resolve(__dirname, 'app/fonts'),
       },
     ]),
   ],

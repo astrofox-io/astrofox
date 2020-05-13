@@ -59,7 +59,7 @@ export default class VideoRenderer extends EventEmitter {
   async start() {
     try {
       this.renderer.stop();
-      this.startTime = window.performance.now();
+      this.startTime = Date.now();
 
       const id = uniqueId();
       const { audioFile, videoFile, renderProcess, audioProcess, mergeProcess } = this;

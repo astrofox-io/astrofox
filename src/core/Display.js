@@ -66,6 +66,10 @@ export default class Display extends Entity {
   }
 
   updateReactors(data) {
+    if (!data.hasUpdate) {
+      return;
+    }
+
     const { reactors } = this;
 
     Object.keys(reactors).forEach(prop => {

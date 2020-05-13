@@ -13,7 +13,6 @@ import Player from 'components/player/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
 import menuConfig from 'config/menu.json';
-import fontOptions from 'config/fonts.json';
 import { initApp, exitApp, toggleState, saveImage } from 'actions/app';
 import { showModal } from 'actions/modals';
 import { updateZoom } from 'actions/stage';
@@ -112,7 +111,6 @@ function App() {
 
   return (
     <div className={styles.container} onDrop={ignoreEvents} onDragOver={ignoreEvents}>
-      <Preload />
       <TitleBar />
       {env.IS_WINDOWS && <MenuBar items={menuConfig} onMenuAction={handleMenuAction} />}
       <div className={styles.body}>
@@ -128,15 +126,5 @@ function App() {
     </div>
   );
 }
-
-const Preload = () => (
-  <div className={styles.preload}>
-    {fontOptions.map((item, index) => (
-      <div key={index} style={{ fontFamily: item }}>
-        {item}
-      </div>
-    ))}
-  </div>
-);
 
 export default hot(module)(App);
