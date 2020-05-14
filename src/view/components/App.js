@@ -18,7 +18,7 @@ import { showModal } from 'actions/modals';
 import { updateZoom } from 'actions/stage';
 import { openAudioFile } from 'actions/audio';
 import { openProjectFile, saveProjectFile, newProject, checkUnsavedChanges } from 'actions/project';
-import styles from './App.less';
+import Layout from './layout/Layout';
 
 const getActiveReactor = createSelector(
   state => state.app.activeReactorId,
@@ -110,20 +110,20 @@ function App() {
   }, []);
 
   return (
-    <div className={styles.container} onDrop={ignoreEvents} onDragOver={ignoreEvents}>
+    <Layout direction="column" onDrop={ignoreEvents} onDragOver={ignoreEvents} full>
       <TitleBar />
       {env.IS_WINDOWS && <MenuBar items={menuConfig} onMenuAction={handleMenuAction} />}
-      <div className={styles.body}>
-        <div className={styles.viewport}>
+      <Layout direction="row">
+        <Layout direction="column">
           <Stage />
           <Player />
           {reactor && <ReactorControl reactor={reactor} />}
-        </div>
+        </Layout>
         <ControlDock />
-      </div>
+      </Layout>
       <StatusBar />
       <Modals />
-    </div>
+    </Layout>
   );
 }
 

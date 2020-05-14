@@ -1,8 +1,4 @@
-import React, { Children, Fragment, cloneElement } from 'react';
-
-export function FirstChild({ children }) {
-  return React.Children.toArray(children)[0] || null;
-}
+import { Children, Fragment, cloneElement } from 'react';
 
 export function ignoreEvents(e) {
   e.stopPropagation();
@@ -14,13 +10,13 @@ export function inputToProps(callback) {
 }
 
 export function mapChildren(children, props, callback) {
-  return Children.map(children, child => {
+  return Children.map(children, (child, index) => {
     if (child) {
       if (child.type === Fragment) {
         return mapChildren(child.props.children, props);
       }
 
-      const args = callback ? callback(child, props) : [child, props];
+      const args = callback ? callback(child, props, index) : [child, props];
 
       return cloneElement(...args);
     }

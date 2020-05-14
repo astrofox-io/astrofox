@@ -6,12 +6,19 @@ import { DotsHorizontal } from 'view/icons';
 import styles from './Splitter.less';
 import useMouseDrag from '../hooks/useMouseDrag';
 
-export default function Splitter({ panel, type = 'horizontal' }) {
+export default function Splitter({
+  type = 'horizontal',
+  width,
+  height,
+  minWidth,
+  minHeight,
+  maxWidth,
+  maxHeight,
+  onResize,
+}) {
   const startDrag = useMouseDrag();
 
   function handleDrag({ deltaX, deltaY, startWidth, startHeight }) {
-    const { width, height, minWidth, minHeight, maxWidth, maxHeight } = panel.getSize();
-
     let newWidth = width;
     let newHeight = height;
 
@@ -25,12 +32,10 @@ export default function Splitter({ panel, type = 'horizontal' }) {
         break;
     }
 
-    panel.setSize(newWidth, newHeight);
+    onResize(newWidth, newHeight);
   }
 
   function handleDragStart(e) {
-    const { width, height } = panel.getSize();
-
     startDrag(e, { onDrag: handleDrag, startWidth: width, startHeight: height });
   }
 

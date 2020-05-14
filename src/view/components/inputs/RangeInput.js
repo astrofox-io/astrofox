@@ -1,76 +1,64 @@
-/* eslint-disable react/no-unused-state */
-import React, { Component } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { val2pct } from 'utils/math';
 import styles from './RangeInput.less';
 
-export default class RangeInput extends Component {
-  static defaultProps = {
-    name: 'range',
-    min: 0,
-    max: 1,
-    value: 0,
-    step: 1,
-    lowerLimit: false,
-    upperLimit: false,
-    buffered: false,
-    disabled: false,
-    fillStyle: 'left',
-    showTrack: true,
-    onChange: () => {},
-    onUpdate: () => {},
-  };
+export default function RangeInput({
+  name = 'range',
+  value = 0,
+  min = 0,
+  max = 1,
+  step = 1,
+  lowerLimit = false,
+  upperLimit = false,
+  buffered = false,
+  disabled = false,
+  fillStyle = 'left',
+  showTrack = true,
+  className,
+  onChange = () => {},
+  onUpdate = () => {},
+}) {
+  const [bufferedValue, setBufferedValue] = useState(value);
+  const buffering = useRef(false);
 
-  state = {
-    value: this.props.value,
-    initialValue: this.props.value,
-    updating: false,
-  };
-
-  static getDerivedStateFromProps({ value, buffered }, { initialValue, updating }) {
-    if (!(buffered && updating) && value !== initialValue) {
-      return { value, initialValue: value };
+  useEffect(() => {
+    if (!buffering.current) {
+      setBufferedValue(value);
     }
-    return null;
+  }, [value]);
+
+  function handleChange(e) {
+    let newValue = +e.currentTarget.value;
+
+    if (lowerLimit !== false && newValue < lowerLimit) {
+      newValue = lowerLimit;
+    } else if (upperLimit !== false && newValue > upperLimit) {
+      newValue = upperLimit;
+    }
+
+    if (buffered) {
+      setBufferedValue(newValue);
+      onUpdate(name, newValue);
+    } else {
+      onChange(name, newValue);
+    }
   }
 
-  handleChange = e => {
-    const { name, buffered, onChange, onUpdate, upperLimit, lowerLimit } = this.props;
+  function handleMouseDown() {
+    buffering.current = true;
+  }
 
-    let value = +e.currentTarget.value;
+  function handleMouseUp() {
+    buffering.current = false;
 
-    if (lowerLimit !== false && value < lowerLimit) {
-      value = lowerLimit;
-    } else if (upperLimit !== false && value > upperLimit) {
-      value = upperLimit;
+    if (buffered) {
+      onChange(name, bufferedValue);
     }
+  }
 
-    this.setState({ value }, () => {
-      if (buffered) {
-        onUpdate(name, value);
-      } else {
-        onChange(name, value);
-      }
-    });
-  };
-
-  handleMouseDown = () => this.setState({ updating: true });
-
-  handleMouseUp = () => {
-    const { name, buffered, onChange } = this.props;
-    const { value } = this.state;
-
-    this.setState({ updating: false }, () => {
-      if (buffered) {
-        onChange(name, value);
-      }
-    });
-  };
-
-  getFillStyle() {
-    const { min, max, fillStyle } = this.props;
-    const { value } = this.state;
-    const pct = val2pct(value, min, max) * 100;
+  function getFillStyle() {
+    const pct = val2pct(buffered ? bufferedValue : value, min, max) * 100;
 
     switch (fillStyle) {
       case 'left':
@@ -82,32 +70,26 @@ export default class RangeInput extends Component {
     }
   }
 
-  render() {
-    const { name, min, max, step, disabled, showTrack, className } = this.props;
-
-    const { value } = this.state;
-
-    return (
-      <div className={classNames(styles.range, className)}>
-        <div
-          className={classNames(styles.track, {
-            [styles.hidden]: !showTrack,
-          })}
-        />
-        <div className={styles.fill} style={this.getFillStyle()} />
-        <input
-          type="range"
-          name={name}
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={this.handleChange}
-          onMouseDown={this.handleMouseDown}
-          onMouseUp={this.handleMouseUp}
-          disabled={disabled}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className={classNames(styles.range, className)}>
+      <div
+        className={classNames(styles.track, {
+          [styles.hidden]: !showTrack,
+        })}
+      />
+      <div className={styles.fill} style={getFillStyle()} />
+      <input
+        type="range"
+        name={name}
+        min={min}
+        max={max}
+        step={step}
+        value={buffered ? bufferedValue : value}
+        onChange={handleChange}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        disabled={disabled}
+      />
+    </div>
+  );
 }

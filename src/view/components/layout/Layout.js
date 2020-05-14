@@ -1,20 +1,26 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import styles from './Layout.less';
 
-const Layout = forwardRef(({ className, children, direction = 'column', fill = true }, ref) => {
+export default function Layout({
+  className,
+  children,
+  direction = 'column',
+  grow = true,
+  full = false,
+  ...props
+}) {
   return (
     <div
+      {...props}
       className={classNames(styles.container, className, {
         [styles.row]: direction === 'row',
         [styles.column]: direction === 'column',
-        [styles.fill]: fill,
+        [styles.grow]: grow,
+        [styles.full]: full,
       })}
-      ref={ref}
     >
       {children}
     </div>
   );
-});
-
-export default Layout;
+}

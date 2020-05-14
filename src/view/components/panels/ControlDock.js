@@ -8,7 +8,7 @@ import LayersPanel from 'components/panels/LayersPanel';
 export default function ControlDock() {
   const showControlDock = useSelector(state => state.app.showControlDock);
   return (
-    <PanelDock visible={showControlDock}>
+    <PanelDock width={320} visible={showControlDock}>
       <Panel title="Layers" height={300} minHeight={100} resizable>
         <LayersPanel />
       </Panel>

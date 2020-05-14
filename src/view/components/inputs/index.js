@@ -3,7 +3,6 @@ export ButtonGroup from './ButtonGroup';
 export ButtonInput from './ButtonInput';
 export ColorInput from './ColorInput';
 export ColorRangeInput from './ColorRangeInput';
-export DualRangeInput from './DualRangeInput';
 export ImageInput from './ImageInput';
 export NumberInput from './NumberInput';
 export RangeInput from './RangeInput';

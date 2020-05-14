@@ -1,32 +1,40 @@
-import React, { PureComponent, Children, cloneElement } from 'react';
+import React from 'react';
 import classNames from 'classnames';
+import Panel from 'components/layout/Panel';
+import { mapChildren } from 'utils/react';
 import styles from './PanelDock.less';
+import useMeasure from '../hooks/useMeasure';
 
-export default class PanelDock extends PureComponent {
-  static defaultProps = {
-    direction: 'vertical',
-    width: 320,
-    visible: true,
-  };
+export default function PanelDock({
+  direction = 'vertical',
+  width,
+  height,
+  visible = true,
+  children,
+}) {
+  const [ref, { width: maxWidth, height: maxHeight }] = useMeasure();
 
-  render() {
-    const { width, direction, visible, children } = this.props;
-
-    return (
-      <div
-        ref={e => (this.domElement = e)}
-        className={classNames({
-          [styles.dock]: true,
-          [styles.vertical]: direction === 'vertical',
-          [styles.horizontal]: direction !== 'vertical',
-          [styles.hidden]: !visible,
-        })}
-        style={{
-          width,
-        }}
-      >
-        {Children.map(children, child => cloneElement(child, { dock: this }))}
-      </div>
-    );
+  function handleClone(child, props) {
+    if (child.type === Panel) {
+      return [child, { ...props }];
+    }
+    return null;
   }
+
+  return (
+    <div
+      ref={ref}
+      className={classNames(styles.dock, {
+        [styles.vertical]: direction === 'vertical',
+        [styles.horizontal]: direction !== 'vertical',
+        [styles.hidden]: !visible,
+      })}
+      style={{
+        width,
+        height,
+      }}
+    >
+      {mapChildren(children, { maxWidth, maxHeight }, handleClone)}
+    </div>
+  );
 }
