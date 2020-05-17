@@ -122,16 +122,18 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new SpriteLoaderPlugin(),
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, 'src/view/assets/images'),
-        to: path.resolve(__dirname, 'app/images'),
-      },
-      {
-        from: path.resolve(__dirname, 'src/view/assets/fonts'),
-        to: path.resolve(__dirname, 'app/fonts'),
-      },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/view/assets/images'),
+          to: path.resolve(__dirname, 'app/images'),
+        },
+        {
+          from: path.resolve(__dirname, 'src/view/assets/fonts'),
+          to: path.resolve(__dirname, 'app/fonts'),
+        },
+      ],
+    }),
   ],
   optimization: {
     minimize: PRODUCTION,

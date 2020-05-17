@@ -73,14 +73,11 @@ export default class Display extends Entity {
     const { reactors } = this;
 
     Object.keys(reactors).forEach(prop => {
-      const reactor = reactors[prop];
-      const output = data.reactors[reactor.id];
+      const { id, min, max } = reactors[prop];
+      const output = data.reactors[id];
 
       if (output !== undefined) {
-        const { min, max } = reactor;
-        const value = (max - min) * output + min;
-
-        this.update({ [prop]: value });
+        this.properties[prop] = (max - min) * output + min;
       }
     });
   }
