@@ -37,7 +37,11 @@ export default function Panel({
       )}
       style={{ width, height }}
     >
-      {title && <div className={styles.title}>{title}</div>}
+      {title && (
+        <div className={styles.header}>
+          <div className={styles.title}>{title}</div>{' '}
+        </div>
+      )}
       {children}
       {resizable && (
         <Splitter

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import SceneLayer from 'components/panels/SceneLayer';
 import Layout from 'components/layout/Layout';
 import ButtonPanel from 'components/layout/ButtonPanel';
-import { ButtonInput, ButtonGroup } from 'components/inputs';
+import { ButtonInput } from 'components/inputs';
 import { addElement, addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
 import { setActiveEntityId } from 'actions/app';
 import { showModal } from 'actions/modals';
@@ -139,20 +139,18 @@ export default function LayersPanel() {
           onClick={handleAddEffect}
           disabled={!hasScenes}
         />
-        <ButtonGroup>
-          <ButtonInput
-            icon={ChevronUp}
-            title="Move Layer Up"
-            onClick={handleMoveUp}
-            disabled={!layerSelected}
-          />
-          <ButtonInput
-            icon={ChevronDown}
-            title="Move Layer Down"
-            onClick={handleMoveDown}
-            disabled={!layerSelected}
-          />
-        </ButtonGroup>
+        <ButtonInput
+          icon={ChevronUp}
+          title="Move Layer Up"
+          onClick={handleMoveUp}
+          disabled={!layerSelected}
+        />
+        <ButtonInput
+          icon={ChevronDown}
+          title="Move Layer Down"
+          onClick={handleMoveDown}
+          disabled={!layerSelected}
+        />
         <ButtonInput
           icon={TrashEmpty}
           title="Delete Layer"

@@ -8,7 +8,7 @@ import { setActiveReactorId } from 'actions/app';
 import { loadScenes } from 'actions/scenes';
 import styles from './ReactorButton.less';
 
-export default function ReactorButton({ display, name, min = 0, max = 1 }) {
+export default function ReactorButton({ display, name, min = 0, max = 1, className }) {
   const dispatch = useDispatch();
   const reactor = display.getReactor(name);
 
@@ -27,7 +27,7 @@ export default function ReactorButton({ display, name, min = 0, max = 1 }) {
 
   return (
     <Icon
-      className={classNames(styles.icon, {
+      className={classNames(styles.icon, className, {
         [styles.iconActive]: reactor,
       })}
       glyph={Flash}

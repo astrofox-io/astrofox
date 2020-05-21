@@ -1,7 +1,19 @@
-.input {
-  composes: text from 'TextInput.less';
+@import (reference) 'view/styles/variables';
 
-  &::-webkit-color-swatch {
-    border: 0;
-  }
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  border: 1px solid @input-border-color;
+  background-color: @input-bg-color;
+}
+
+.input {
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  border: 0;
 }

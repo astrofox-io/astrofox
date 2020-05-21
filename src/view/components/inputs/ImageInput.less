@@ -4,9 +4,9 @@
 .image {
   height: 100px;
   width: 100px;
-  background-color: @bg-color2;
-  border: 1px solid @border-color;
-  border-radius: @input-radius;
+  background-color: @input-bg-color;
+  border: 1px solid @input-border-color;
+  border-radius: 2px;
   position: relative;
   overflow: hidden;
 
@@ -33,7 +33,7 @@
 }
 
 .openIcon {
-  color: @text-color1;
+  color: @color-text100;
   height: 24px;
   width: 24px;
   opacity: 0;
@@ -44,24 +44,24 @@
 }
 
 .closeIcon {
-  color: @text-color2;
+  color: @color-text200;
   width: 14px;
   height: 14px;
 
   &:hover {
-    color: @text-color1;
+    color: @color-text100;
   }
 }
 
 .link {
-  color: darken(@text-color1, 50%);
+  color: darken(@color-text100, 50%);
   width: 12px;
   height: 12px;
   margin-left: 8px;
 }
 
 .linkActive {
-  color: darken(@text-color1, 10%);
+  color: darken(@color-text100, 10%);
 }
 
 .hidden {

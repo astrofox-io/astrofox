@@ -21,6 +21,7 @@ export Play from 'assets/icons/play.svg';
 export Plus from 'assets/icons/plus.svg';
 export SoundBars from 'assets/icons/sound-bars.svg';
 export SoundWaves from 'assets/icons/sound-waves.svg';
+export Square from 'assets/icons/square.svg';
 export Stop from 'assets/icons/stop.svg';
 export Times from 'assets/icons/times.svg';
 export TrashEmpty from 'assets/icons/trash-empty.svg';

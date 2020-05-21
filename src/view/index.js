@@ -6,7 +6,7 @@ import * as env from './global';
 import getStore from './store';
 import 'assets/index.html';
 import 'assets/fonts.css';
-import 'styles/global.less';
+import 'styles/index.less';
 
 const root = {};
 const store = getStore();

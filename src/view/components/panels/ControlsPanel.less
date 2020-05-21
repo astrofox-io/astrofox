@@ -1,14 +1,21 @@
+@import (reference) 'view/styles/variables';
+
 .panel {
   flex: 1;
   overflow: auto;
   position: relative;
+  padding: 0 5px;
   margin-bottom: 6px;
-
-  .control:last-child {
-    margin-bottom: 0;
-  }
 }
 
 .control {
-  margin: 0 5px 5px 5px;
+  background-color: @color-gray200;
+  border-top: 1px solid @color-gray400;
+  border-left: 1px solid @color-gray300;
+  border-bottom: 1px solid @color-gray50;
+  margin-bottom: 6px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }

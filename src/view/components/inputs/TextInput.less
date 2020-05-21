@@ -1,25 +1,25 @@
 @import (reference) 'view/styles/variables';
 
 .text {
-  font-size: @font-small;
-  color: @text-color1;
-  line-height: 20px;
-  background-color: @bg-color2;
-  border: 1px solid @border-color;
-  border-radius: @input-radius;
-  padding: 0 3px;
+  font-size: @font-size-small;
+  color: @input-text-color;
+  background-color: @input-bg-color;
+  border: 1px solid @input-border-color;
+  border-radius: 2px;
+  line-height: 24px;
+  padding: 0 6px;
   outline: none;
 
   &:focus {
-    border: 1px solid @color1;
+    border: 1px solid @color-primary100;
   }
 
   &:read-only {
-    border-color: @border-color;
+    border-color: @input-border-color;
   }
 
   &:disabled {
-    border-color: @border-color;
-    color: darken(@text-color1, 60%);
+    color: @color-text400;
+    border-color: @input-border-color;
   }
 }

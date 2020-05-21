@@ -17,7 +17,7 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
   const [loading, setLoading] = useState(true);
   const image = useRef();
   const combinedRef = useCombinedRefs(forwardRef, image);
-  const hasImage = image.current && value;
+  const hasImage = image.current && value !== BLANK_IMAGE;
 
   function handleImageLoad() {
     setLoading(false);
@@ -88,15 +88,17 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
         {loading && <Spinner size={20} />}
         <Icon className={styles.openIcon} glyph={FolderOpen} title="Open File" />
       </div>
-      <Icon
-        className={classNames({
-          [styles.closeIcon]: true,
-          [styles.hidden]: !hasImage,
-        })}
-        glyph={Times}
-        title="Remove Image"
-        onClick={handleDelete}
-      />
+      {hasImage && (
+        <Icon
+          className={classNames({
+            [styles.closeIcon]: true,
+            [styles.hidden]: !hasImage,
+          })}
+          glyph={Times}
+          title="Remove Image"
+          onClick={handleDelete}
+        />
+      )}
     </>
   );
 }

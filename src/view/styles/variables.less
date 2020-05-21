@@ -1,25 +1,4 @@
-// Fonts
-@font-family: 'Roboto', sans-serif;
-@font-smaller: 10px;
-@font-small: 11px;
-@font-normal: 12px;
-@font-large: 16px;
-
-// Colors
-@color1: #704dd8; //775fd8; //#6F58C9; //#7A5FE4; //#8970FF; //#7B66FF; //#927FFF;
-
-@color-primary100: #9256D9;
-@color-primary200: #864CCC;
-@color-primary300: #7A42BF;
-@color-primary400: #6F38B1;
-
-@bg-color1: #434343;
-@bg-color2: darken(@bg-color1, 4%); // #393939
-@bg-color3: darken(@bg-color1, 8%); // #2f2f2f
-@bg-color4: darken(@bg-color1, 12%); // #242424
-@bg-color5: darken(@bg-color1, 16%); // #1a1a1a
-@bg-color6: darken(@bg-color1, 20%); // #101010
-
+// Base colors
 @color-gray50: #080808;
 @color-gray75: #1a1a1a;
 @color-gray100: #1e1e1e;
@@ -32,13 +11,29 @@
 @color-gray800: #c8c8c8;
 @color-gray900: #efefef;
 
-@text-color1: #f0f0f0;
-@text-color2: darken(@text-color1, 30%); // #a3a3a3
-@text-color3: darken(@text-color1, 50%); // #717171
+@color-primary100: #704dd8; //775fd8; //#6F58C9; //#7A5FE4; //#8970FF; //#7B66FF; //#927FFF;
+@color-primary200: lighten(@color-primary100, 4%);
+@color-primary300: lighten(@color-primary100, 8%);
+@color-primary400: lighten(@color-primary100, 12%);
+@color-primary500: lighten(@color-primary100, 16%);
 
-@border-color: #222;
-@border-color-top: lighten(@bg-color1, 16%); // #6c6c6c
-@border-color-bottom: darken(@bg-color1, 12%); // #242424
+@color-text100: @color-gray900;
+@color-text200: @color-gray800;
+@color-text300: @color-gray700;
+@color-text400: @color-gray600;
+@color-text500: @color-gray500;
 
-// Elements
-@input-radius: 2px;
+// Fonts
+@font-family: 'Roboto', sans-serif;
+@font-size-xsmall: 10px;
+@font-size-small: 11px;
+@font-size-normal: 12px;
+@font-size-large: 16px;
+@font-size-xlarge: 20px;
+
+@input-text-color: @color-text200;
+@input-border-color: @color-gray400;
+@input-bg-color: @color-gray75;
+
+@scrollbar-selection-color: @color-primary100;
+@scrollbar-bg-color: @color-gray75;

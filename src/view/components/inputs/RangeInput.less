@@ -8,29 +8,27 @@
 }
 
 .track {
-  pointer-events: none;
+  .position-center();
   height: 4px;
   width: 100%;
   border-radius: 4px;
-  background: lighten(@bg-color2, 10%);
-  position: absolute;
-  margin: 8px 0;
+  background-color: @color-gray300;
+  pointer-events: none;
 }
 
 .fill {
-  pointer-events: none;
+  .position-center-left();
   height: 4px;
   width: 100%;
   border-radius: 4px;
-  background: @color1;
-  .position-left();
+  background-color: @color-primary100;
+  pointer-events: none;
 }
 
-.bar {
-  background-color: transparent;
-  .position-center();
+.hideThumb::-webkit-slider-thumb {
+  visibility: hidden;
 }
 
-.hidden {
-  display: none;
+.showThumbOnHover:hover::-webkit-slider-thumb {
+  visibility: visible;
 }

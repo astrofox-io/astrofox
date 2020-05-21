@@ -14,7 +14,9 @@ export default function RangeInput({
   buffered = false,
   disabled = false,
   fillStyle = 'left',
-  showTrack = true,
+  hideFill = false,
+  hideThumb = false,
+  showThumbOnHover = false,
   className,
   onChange = () => {},
   onUpdate = () => {},
@@ -72,13 +74,13 @@ export default function RangeInput({
 
   return (
     <div className={classNames(styles.range, className)}>
-      <div
-        className={classNames(styles.track, {
-          [styles.hidden]: !showTrack,
-        })}
-      />
-      <div className={styles.fill} style={getFillStyle()} />
+      <div className={styles.track} />
+      {!hideFill && <div className={styles.fill} style={getFillStyle()} />}
       <input
+        className={classNames({
+          [styles.hideThumb]: hideThumb,
+          [styles.showThumbOnHover]: hideThumb && showThumbOnHover,
+        })}
         type="range"
         name={name}
         min={min}

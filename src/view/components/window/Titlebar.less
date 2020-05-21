@@ -2,20 +2,18 @@
 
 .titlebar {
   height: 40px;
-  background-color: @bg-color2;
+  background-color: @color-gray200;
 
   &.isFocused {
     .button {
-      img {
-        opacity: 0.8;
-      }
+      opacity: 1;
     }
   }
 }
 
 .title {
-  font-size: @font-normal;
-  color: @text-color2;
+  font-size: @font-size-normal;
+  color: @color-text200;
   line-height: 30px;
   letter-spacing: 5px;
   text-align: center;
@@ -34,35 +32,102 @@
 }
 
 .buttons {
+  display: flex;
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 0;
   -webkit-app-region: no-drag;
 }
 
 .button {
-  display: inline-block;
-  color: @text-color1;
-  background-color: @bg-color2;
-  margin: 0;
-  padding: 0;
+  position: relative;
   width: 45px;
   height: 30px;
   text-align: center;
-
-  img {
-    margin: 10px auto;
-    opacity: 0.5;
-  }
+  opacity: 0.7;
 
   &:hover {
-    background-color: @color1;
+    background-color: @color-primary100;
+  }
+}
+
+.minimize {
+  &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 1px;
+    background-color: @color-gray800;
+  }
+}
+
+.maximize {
+  &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border: 1px solid @color-gray800;
+  }
+}
+
+.restore {
+  &:before {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: 20px;
+    width: 10px;
+    height: 10px;
+    border: 1px solid @color-gray800;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    width: 10px;
+    height: 10px;
+    border: 1px solid @color-gray800;
+    background-color: @color-gray200;
+  }
+
+  &:hover:after {
+    background-color: @color-primary100;
+  }
+}
+
+.close {
+  &:before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: rotate(-45deg) translate(-50%);
+    width: 14px;
+    height: 1px;
+    background-color: @color-gray800;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: rotate(45deg) translate(-50%);
+    width: 14px;
+    height: 1px;
+    background-color: @color-gray800;
   }
 }
 
 .macOS {
-  border-bottom: 2px solid @bg-color3;
+  border-bottom: 2px solid @color-gray100;
 
   .icon {
     display: none;

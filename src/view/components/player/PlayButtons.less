@@ -5,13 +5,13 @@
 }
 
 .button {
-  color: @text-color1;
+  color: @color-text100;
   background-color: transparent;
   padding: 0;
   margin-right: 4px;
   display: inline-block;
   flex-wrap: nowrap;
-  border: 2px solid lighten(@bg-color2, 10%);
+  border: 2px solid @color-gray300;
   height: 40px;
   width: 40px;
   border-radius: 20px;
@@ -25,11 +25,11 @@
   }
 
   &:hover {
-    border: 2px solid @color1;
+    border: 2px solid @color-primary100;
   }
 
   &:active {
-    border-color: @text-color1;
+    border-color: @color-text100;
   }
 }
 

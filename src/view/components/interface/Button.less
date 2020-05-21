@@ -2,7 +2,7 @@
 
 .button {
   display: inline-block;
-  background-color: @color1;
+  background-color: @color-primary100;
   padding: 8px 10px;
   border-radius: 3px;
   cursor: default;
@@ -13,11 +13,11 @@
   }
 
   &:hover {
-    background-color: lighten(@color1, 3%);
+    background-color: @color-primary100;
   }
 
   &.disabled {
-    color: @text-color2;
-    background-color: @bg-color2;
+    color: @color-text200;
+    background-color: @color-gray400;
   }
 }

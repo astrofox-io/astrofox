@@ -1,4 +1,5 @@
 @import (reference) 'view/styles/variables';
+@import (reference) 'view/styles/mixins';
 
 .input {
   composes: text from 'TextInput.less';
@@ -10,41 +11,47 @@
   position: relative;
 
   &:after {
-    content: '\0020';
-    transform: rotate(135deg);
+    content: '';
     position: absolute;
-    top: 7px;
-    right: 7px;
-    height: 5px;
-    width: 5px;
-    border-top: 1px solid @color1;
-    border-right: 1px solid @color1;
+    transform: rotate(135deg);
+    height: 6px;
+    width: 6px;
+    right: 10px;
+    bottom: 12px;
+    border-top: 1px solid @input-text-color;
+    border-right: 1px solid @input-text-color;
     pointer-events: none;
   }
 
   .input {
-    &:read-only {
-      color: @text-color1;
+    &.active {
+      border-color: @color-primary100;
     }
   }
 }
 
 .properties {
   position: absolute;
-  top: 22px;
+  top: 100%;
   z-index: 1;
   list-style: none;
-  background-color: @bg-color2;
+  background-color: @input-bg-color;
+
+  &.hidden {
+    display: none;
+  }
 }
 
 .option {
-  font-size: @font-small;
+  color: @input-text-color;
+  font-size: @font-size-small;
   padding: 5px;
   min-width: 100px;
 
   &:hover {
     cursor: default;
-    background-color: @color1;
+    color: @color-text100;
+    background-color: @color-primary100;
   }
 }
 
@@ -52,16 +59,12 @@
   height: 5px;
 
   &:after {
-    content: '\0020';
-    border-top: 1px solid @color1;
+    content: '';
+    border-top: 1px solid @color-primary100;
     display: block;
   }
 
   &:hover {
     background-color: transparent;
   }
-}
-
-.hidden {
-  display: none;
 }

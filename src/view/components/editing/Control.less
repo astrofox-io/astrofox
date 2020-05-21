@@ -1,42 +1,47 @@
 @import (reference) 'view/styles/variables';
 
 .control {
-  background-color: @bg-color1;
-  border-top: 1px solid @border-color-top;
-  border-bottom: 1px solid @border-color-bottom;
   padding-bottom: 16px;
 }
 
 .header {
-  padding-left: 8px;
-  margin-bottom: 10px;
-  cursor: default;
   position: relative;
+  padding: 0 10px;
+  height: 30px;
+  cursor: default;
 }
 
-.text {
-  font-size: @font-smaller;
-  color: @text-color2;
-  text-transform: uppercase;
-  text-shadow: 1px 1px 0 darken(@text-color2, 50%);
-  line-height: 20px;
+.title {
+  display: flex;
+  justify-content: center;
+  font-size: @font-size-xsmall;
+  color: @color-text100;
+  line-height: 30px;
   overflow: hidden;
+}
+
+.label {
+  position: relative;
+  text-transform: uppercase;
+  padding-right: 20px;
+
+  &:after {
+    content: '\2022';
+    position: absolute;
+    right: 7px;
+    color: @color-text300;
+  }
 }
 
 .displayName {
-  position: absolute;
-  right: 10px;
-  width: 150px;
-  text-align: right;
-  white-space: nowrap;
+  color: @color-text200;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: @font-smaller;
-  line-height: 20px;
-  color: @text-color3;
-  text-shadow: 1px 1px 0 darken(@text-color3, 50%);
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100px;
 }
 
 .active {
-  border-top: 1px solid @color1;
+  //border-top: 1px solid @color-primary100;
 }

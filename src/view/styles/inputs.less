@@ -1,0 +1,45 @@
+@import (reference) 'view/styles/variables';
+
+input[type='range'] {
+  -webkit-appearance: none;
+  width: 100%;
+  outline: none;
+  background-color: transparent;
+
+  &:disabled {
+    &::-webkit-slider-thumb {
+      display: none;
+    }
+  }
+}
+
+::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 100%;
+  background-color: @color-text100;
+  border: 1px solid @color-gray400;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 15px;
+  border: 0;
+  background-color: transparent;
+}
+
+input[type='color'] {
+  -webkit-appearance: none;
+  outline: none;
+}
+
+::-webkit-color-swatch-wrapper {
+  display: none;
+}
+
+::-webkit-color-swatch {
+  display: none;
+}

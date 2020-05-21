@@ -5,8 +5,7 @@
   top: 20px;
   left: 0;
   list-style: none;
-  background-color: darken(@bg-color3, 6%);
-  border: 1px solid darken(@border-color, 6%);
+  background-color: @input-bg-color;
   overflow: hidden;
   z-index: 100;
 }
@@ -15,8 +14,8 @@
   padding: 5px;
 
   &:after {
-    content: '\0020';
-    border-top: 1px solid @color1;
+    content: '';
+    border-top: 1px solid @color-primary100;
     display: block;
   }
 

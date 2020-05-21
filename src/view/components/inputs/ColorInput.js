@@ -1,22 +1,17 @@
 import React from 'react';
 import styles from './ColorInput.less';
 
-const ColorInput = ({ name, value, width, onChange }) => (
-  <input
-    type="color"
-    className={styles.input}
-    style={{ width }}
-    name={name}
-    value={value}
-    onChange={e => onChange(name, e.target.value)}
-  />
-);
-
-ColorInput.defaultProps = {
-  name: 'color',
-  value: '#ffffff',
-  width: 40,
-  onChange: () => {},
-};
-
-export default ColorInput;
+export default function ColorInput({ name = 'color', value = '#ffffff', onChange = () => {} }) {
+  return (
+    <div className={styles.wrapper}>
+      <input
+        type="color"
+        className={styles.input}
+        name={name}
+        value={value}
+        style={{ backgroundColor: value }}
+        onChange={e => onChange(name, e.target.value)}
+      />
+    </div>
+  );
+}

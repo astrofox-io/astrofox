@@ -2,7 +2,7 @@
 
 .group {
   margin-right: 5px;
-  border-color: @border-color;
+  border-color: @input-border-color;
 
   .button {
     margin-right: 0;
@@ -11,14 +11,13 @@
     border-color: inherit;
 
     &:first-child {
-      border-top-left-radius: @input-radius;
-      border-bottom-left-radius: @input-radius;
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
     }
 
     &:last-child {
-      border-top-right-radius: @input-radius;
-      border-bottom-right-radius: @input-radius;
-      border-right: 1px solid @border-color;
+      border-top-right-radius: 2px;
+      border-bottom-right-radius: 2px;
     }
   }
 }

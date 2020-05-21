@@ -50,7 +50,15 @@ export default function Option({
 
   return (
     <div className={classNames(styles.option, className)}>
-      {withReactor && <ReactorButton display={display} name={name} min={min} max={max} />}
+      {withReactor && (
+        <ReactorButton
+          className={styles.reactorIcon}
+          display={display}
+          name={name}
+          min={min}
+          max={max}
+        />
+      )}
       <div className={styles.label}>
         {label}
         {withLink && (
@@ -63,9 +71,7 @@ export default function Option({
           />
         )}
       </div>
-      {showReactor && (
-        <ReactorInput display={display} name={name} value={value} />
-      )}
+      {showReactor && <ReactorInput display={display} name={name} value={value} />}
       {!showReactor && (
         <>
           {InputCompnent && (
@@ -78,7 +84,14 @@ export default function Option({
             />
           )}
           {withRange && (
-            <RangeInput {...otherProps} name={name} value={value} onChange={onChange} />
+            <RangeInput
+              {...otherProps}
+              name={name}
+              value={value}
+              onChange={onChange}
+              hideThumb
+              showThumbOnHover
+            />
           )}
           {children}
         </>

@@ -56,7 +56,7 @@ export default function SelectInput({
     <div className={styles.select}>
       <input
         type="text"
-        className={classNames(styles.input, className)}
+        className={classNames(styles.input, className, { [styles.active]: showItems })}
         name={name}
         style={{ width }}
         value={getDisplayText()}
@@ -65,8 +65,7 @@ export default function SelectInput({
         readOnly
       />
       <div
-        className={classNames({
-          [styles.properties]: true,
+        className={classNames(styles.properties, {
           [styles.hidden]: !showItems,
         })}
       >
