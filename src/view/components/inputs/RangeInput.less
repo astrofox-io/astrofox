@@ -1,5 +1,4 @@
 @import (reference) 'view/styles/variables';
-@import (reference) 'view/styles/mixins';
 
 .range {
   position: relative;
@@ -8,7 +7,9 @@
 }
 
 .track {
-  .position-center();
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   height: 4px;
   width: 100%;
   border-radius: 4px;
@@ -17,7 +18,9 @@
 }
 
 .fill {
-  .position-center-left();
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   height: 4px;
   width: 100%;
   border-radius: 4px;
@@ -31,4 +34,9 @@
 
 .showThumbOnHover:hover::-webkit-slider-thumb {
   visibility: visible;
+}
+
+.smallThumb::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
 }

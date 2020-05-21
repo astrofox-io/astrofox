@@ -25,8 +25,8 @@ export function TabPanel({
       <div
         key={index}
         className={classNames(
+          styles.tab,
           {
-            [styles.tab]: true,
             [styles.active]: index === activeIndex,
           },
           tabClassName,

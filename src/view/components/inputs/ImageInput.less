@@ -1,5 +1,4 @@
 @import (reference) 'view/styles/variables';
-@import (reference) 'view/styles/mixins';
 
 .image {
   height: 100px;
@@ -27,20 +26,27 @@
 }
 
 .img {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 100%;
   height: auto;
-  .position-center();
 }
 
 .openIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  transform: scale(0.5, 0.5);
   color: @color-text100;
   height: 24px;
   width: 24px;
   opacity: 0;
-  transform: scale(0.5, 0.5);
   transition: all 0.25s;
   filter: drop-shadow(1px 1px 1px #000);
-  .absolute-center();
 }
 
 .closeIcon {

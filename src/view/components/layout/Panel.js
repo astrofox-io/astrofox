@@ -27,8 +27,8 @@ export default function Panel({
   return (
     <div
       className={classNames(
+        styles.panel,
         {
-          [styles.panel]: true,
           [styles.vertical]: direction === 'vertical',
           [styles.horizontal]: direction !== 'vertical',
           [styles.stretch]: stretch,

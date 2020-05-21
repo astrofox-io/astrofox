@@ -41,8 +41,7 @@ export default function Splitter({
 
   return (
     <div
-      className={classNames({
-        [styles.splitter]: true,
+      className={classNames(styles.splitter, {
         [styles.vertical]: type === 'vertical',
         [styles.horizontal]: type !== 'vertical',
       })}

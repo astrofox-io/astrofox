@@ -1,5 +1,4 @@
 @import (reference) 'view/styles/variables';
-@import (reference) 'view/styles/mixins';
 
 .toggle {
   display: flex;
@@ -16,7 +15,10 @@
   order: 1;
 
   &:before {
-    .position-center-left();
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
     content: '';
     width: 15px;
     height: 15px;

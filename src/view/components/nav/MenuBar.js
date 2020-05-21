@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
+import useWindowState from 'components/hooks/useWindowState';
 import MenuBarItem from './MenuBarItem';
 import styles from './MenuBar.less';
 
 export default function MenuBar({ items = [], onMenuAction = () => {} }) {
   const [menuItems, setMenuItems] = useState(items);
   const [activeIndex, setActiveIndex] = useState();
+  const { focused } = useWindowState();
 
   function handleDocumentClick() {
     setActiveIndex(-1);
@@ -54,7 +57,7 @@ export default function MenuBar({ items = [], onMenuAction = () => {} }) {
   });
 
   return (
-    <div className={styles.bar}>
+    <div className={classNames(styles.bar, { [styles.focused]: focused })}>
       {menuItems.map(
         ({ hidden, label, submenu }, index) =>
           !hidden && (

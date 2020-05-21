@@ -2,32 +2,38 @@
 
 .buttons {
   display: flex;
+
+  &.isFocused {
+    .button {
+      opacity: 1;
+    }
+  }
 }
 
 .button {
-  margin-right: 8px;
+  margin-right: 10px;
 
   &:last-child {
     margin-right: 0;
   }
 
   .icon {
-    color: @color-gray300;
-    width: 20px;
-    height: 20px;
+    color: @color-text500;
+    width: 16px;
+    height: 16px;
 
     &:hover {
-      color: @color-gray400;
+      color: @color-text300;
     }
   }
 }
 
 .enabled {
   .icon {
-    color: @color-primary100;
+    color: @color-text100;
 
     &:hover {
-      color: @color-primary100;
+      color: @color-text100;
     }
   }
 }

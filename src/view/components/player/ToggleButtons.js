@@ -41,8 +41,7 @@ export default function ToggleButtons() {
 
 const ToggleButton = ({ enabled, title, icon, onClick }) => (
   <div
-    className={classNames({
-      [styles.button]: true,
+    className={classNames(styles.button, {
       [styles.enabled]: enabled,
     })}
     onClick={onClick}

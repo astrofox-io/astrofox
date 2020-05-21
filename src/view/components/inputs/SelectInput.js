@@ -72,8 +72,7 @@ export default function SelectInput({
         {parsedItems.map((item, index) => (
           <div
             key={index}
-            className={classNames({
-              [styles.option]: true,
+            className={classNames(styles.option, {
               [styles.separator]: item === SEPARATOR,
             })}
             style={item.style}

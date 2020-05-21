@@ -84,14 +84,7 @@ export default function Option({
             />
           )}
           {withRange && (
-            <RangeInput
-              {...otherProps}
-              name={name}
-              value={value}
-              onChange={onChange}
-              hideThumb
-              showThumbOnHover
-            />
+            <RangeInput {...otherProps} name={name} value={value} onChange={onChange} smallThumb />
           )}
           {children}
         </>

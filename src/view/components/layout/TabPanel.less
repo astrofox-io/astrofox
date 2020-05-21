@@ -5,6 +5,10 @@
   flex: 1;
 }
 
+.tabs {
+  background-color: @color-gray75;
+}
+
 .tab {
   text-align: center;
   list-style: none;
@@ -32,10 +36,6 @@
 
 .positionTop {
   flex-direction: column;
-
-  .tabs {
-    border-bottom: 1px solid @color-gray400;
-  }
 }
 
 .positionBottom {
@@ -43,7 +43,6 @@
 
   .tabs {
     order: 99;
-    border-top: 1px solid @color-gray400;
   }
 }
 
@@ -52,7 +51,6 @@
 
   .tabs {
     width: 160px;
-    border-right: 1px solid @color-gray400;
   }
 }
 
@@ -62,6 +60,5 @@
   .tabs {
     order: 99;
     width: 160px;
-    border-left: 1px solid @color-gray400;
   }
 }

@@ -1,10 +1,14 @@
 @import (reference) 'view/styles/variables';
 
 .bar {
-  font-size: @font-size-normal;
-  color: @color-text200;
-  background-color: @color-gray75;
-  padding-left: 20px;
-  height: 20px;
   position: relative;
+  font-size: @font-size-normal;
+  color: @color-text500;
+  background-color: @color-gray75;
+  padding: 0 20px;
+  -webkit-app-region: no-drag;
+}
+
+.focused {
+  color: @color-text300;
 }

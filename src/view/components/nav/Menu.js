@@ -5,8 +5,7 @@ import styles from './Menu.less';
 
 const Menu = ({ items, visible, onMenuItemClick }) => (
   <div
-    className={classNames({
-      [styles.menu]: true,
+    className={classNames(styles.menu, {
       [styles.hidden]: visible === false,
     })}
   >

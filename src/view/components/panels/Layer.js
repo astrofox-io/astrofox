@@ -67,8 +67,7 @@ export default function Layer({
       )}
       <span onClick={handleEnableClick}>
         <Icon
-          className={classNames({
-            [styles.propertiesIcon]: true,
+          className={classNames(styles.propertiesIcon, {
             [styles.disabled]: !enabled,
           })}
           glyph={Eye}

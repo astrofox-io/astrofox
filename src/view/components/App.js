@@ -2,17 +2,15 @@ import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { env, events, renderer, reactors } from 'view/global';
+import { events, renderer, reactors } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Modals from 'components/window/Modals';
 import StatusBar from 'components/window/StatusBar';
 import TitleBar from 'components/window/TitleBar';
 import ControlDock from 'components/panels/ControlDock';
-import MenuBar from 'components/nav/MenuBar';
 import Player from 'components/player/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
-import menuConfig from 'config/menu.json';
 import { initApp, exitApp, toggleState, saveImage } from 'actions/app';
 import { showModal } from 'actions/modals';
 import { updateZoom } from 'actions/stage';
@@ -111,8 +109,7 @@ function App() {
 
   return (
     <Layout direction="column" onDrop={ignoreEvents} onDragOver={ignoreEvents} full>
-      <TitleBar />
-      {env.IS_WINDOWS && <MenuBar items={menuConfig} onMenuAction={handleMenuAction} />}
+      <TitleBar onMenuAction={handleMenuAction} />
       <Layout direction="row">
         <Layout direction="column">
           <Stage />

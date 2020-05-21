@@ -6,8 +6,8 @@ import styles from './ButtonInput.less';
 const ButtonInput = ({ title, icon, text, active, disabled, onClick, className }) => (
   <div
     className={classNames(
+      styles.button,
       {
-        [styles.button]: true,
         [styles.active]: active,
         [styles.disabled]: disabled,
       },

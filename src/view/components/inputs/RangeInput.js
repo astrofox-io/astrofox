@@ -17,6 +17,7 @@ export default function RangeInput({
   hideFill = false,
   hideThumb = false,
   showThumbOnHover = false,
+  smallThumb = false,
   className,
   onChange = () => {},
   onUpdate = () => {},
@@ -80,6 +81,7 @@ export default function RangeInput({
         className={classNames({
           [styles.hideThumb]: hideThumb,
           [styles.showThumbOnHover]: hideThumb && showThumbOnHover,
+          [styles.smallThumb]: smallThumb,
         })}
         type="range"
         name={name}

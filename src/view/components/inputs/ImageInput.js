@@ -77,8 +77,7 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
       >
         <img
           ref={combinedRef}
-          className={classNames({
-            [styles.img]: true,
+          className={classNames(styles.img, {
             [styles.hidden]: !hasImage,
           })}
           src={value}
