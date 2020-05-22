@@ -37,12 +37,14 @@ module.exports = {
     ],
   },
   plugins: [
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, 'src/build/app'),
-        to: path.resolve(__dirname, 'app'),
-      },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/build/app'),
+          to: path.resolve(__dirname, 'app'),
+        },
+      ],
+    }),
   ],
   optimization: {
     minimize: PRODUCTION,

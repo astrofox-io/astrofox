@@ -10,7 +10,7 @@ import menuConfig from 'config/menu.json';
 import styles from './Titlebar.less';
 
 export default function TitleBar({ onMenuAction }) {
-  const { focused } = useWindowState();
+  const { focused, maximized } = useWindowState();
 
   return (
     <div
@@ -22,8 +22,8 @@ export default function TitleBar({ onMenuAction }) {
       {env.IS_WINDOWS && (
         <>
           <Icon className={styles.icon} glyph={appIcon} />
-          <MenuBar items={menuConfig} onMenuAction={onMenuAction} />
-          <WindowButtons />
+          <MenuBar items={menuConfig} onMenuAction={onMenuAction} focused={focused} />
+          <WindowButtons focused={focused} maximized={maximized} />
         </>
       )}
     </div>

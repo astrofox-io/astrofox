@@ -43,11 +43,13 @@ export function createWindow() {
     },
   });
 
+  const { webContents } = mainWindow;
+
   // Production settings
   if (process.env.NODE_ENV === 'production') {
     // Auto close devtools if opened
-    mainWindow.webContents.on('devtools-opened', () => {
-      mainWindow.webContents.closeDevTools();
+    webContents.on('devtools-opened', () => {
+      webContents.closeDevTools();
     });
   }
 
@@ -58,17 +60,21 @@ export function createWindow() {
       darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
     };
 
+    const { session } = webContents;
+
     const extensions = ['fmkadmapgofadopljbjfkapdkoienihi', 'lmhkpmbekcpmknklioeibfkpmmfibljd'];
 
-    extensions.forEach((ext) => {
-      const p = path.join(app.getPath('home'), dirs[process.platform], ext);
+    extensions.forEach(ext => {
+      const fullPath = path.join(app.getPath('home'), dirs[process.platform], ext);
 
-      const d = fs.readdirSync(p).filter((f) => fs.statSync(path.join(p, f)).isDirectory());
+      const dir = fs
+        .readdirSync(fullPath)
+        .filter(f => fs.statSync(path.join(fullPath, f)).isDirectory());
 
-      if (d.length) {
-        const x = path.join(p, d[0]);
-        log('Adding extension:', x);
-        BrowserWindow.addExtension(x);
+      if (dir.length) {
+        const extPath = path.join(fullPath, dir[0]);
+        log('Adding extension:', extPath);
+        session.loadExtension(extPath);
       }
     });
   }
@@ -85,7 +91,7 @@ export function createWindow() {
   );
 
   // Show window when DOM ready
-  mainWindow.webContents.on('dom-ready', () => {
+  webContents.on('dom-ready', () => {
     log('dom-ready');
     showWindow();
   });
