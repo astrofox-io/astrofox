@@ -1,14 +1,40 @@
 @import (reference) 'view/styles/variables';
 
+@scrollbar-color: @color-gray400;
+@scrollbar-selection-color: @color-primary100;
+@scrollbar-bg-color: @color-gray75;
+@scrollbar-width: 2px;
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
-  background: @scrollbar-bg-color;
+
+  border-right: @scrollbar-width solid @color-gray300;
+
+  &:horizontal {
+    border-right: 0;
+    border-bottom: @scrollbar-width solid @color-gray700;
+  }
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: @color-gray600;
+  background-color: transparent;
+  transition: all 3s;
+
+  border-right: @scrollbar-width solid @color-gray700;
+
+  &:horizontal {
+    border-right: 0;
+    border-bottom: @scrollbar-width solid @color-gray700;
+  }
+
+  &:hover {
+    border-width: 9px;
+  }
+
+  &:active {
+    border-color: @color-gray800;
+  }
 }
 
 ::-webkit-scrollbar-button {
