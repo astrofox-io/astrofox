@@ -6,7 +6,18 @@
   height: 40px;
   background-color: @color-gray75;
   border-bottom: 1px solid @color-gray300;
-  -webkit-app-region: drag;
+  -webkit-app-region: no-drag;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 0;
+    margin: auto;
+    -webkit-app-region: drag;
+  }
 
   &.focused {
     .title {
