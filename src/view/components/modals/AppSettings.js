@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Group, Row } from 'components/layout/SettingsPanel';
 import ButtonRow from 'components/layout/ButtonRow';
-import { ToggleInput } from 'components/inputs';
+import Layout from 'components/layout/Layout';
+import { Settings, Setting } from 'components/editing';
 import { saveConfig } from 'actions/config';
-import styles from './AppSettings.less';
 
 export default function AppSettings({ onClose }) {
   const dispatch = useDispatch();
@@ -13,8 +12,8 @@ export default function AppSettings({ onClose }) {
   const [state, setState] = useState(appConfig);
   const { checkForUpdates, autoUpdate, autoPlayAudio } = state;
 
-  function handleChange(name, value) {
-    setState({ ...state, [name]: value });
+  function handleChange(props) {
+    setState(state => ({ ...state, ...props }));
   }
 
   async function handleSave() {
@@ -23,26 +22,33 @@ export default function AppSettings({ onClose }) {
   }
 
   return (
-    <SettingsPanel className={styles.panel}>
-      <Settings>
-        <Group name="General">
-          <Row label="Check for updates on start up">
-            <ToggleInput name="checkForUpdates" value={checkForUpdates} onChange={handleChange} />
-          </Row>
-          <Row label="Automatically download and install updates">
-            <ToggleInput name="autoUpdate" value={autoUpdate} onChange={handleChange} />
-          </Row>
-        </Group>
-        <Group name="Audio">
-          <Row label="Play audio on load">
-            <ToggleInput name="autoPlayAudio" value={autoPlayAudio} onChange={handleChange} />
-          </Row>
-        </Group>
+    <Layout width={500}>
+      <Settings label="General" onChange={handleChange}>
+        <Setting
+          label="Check for updates on start up"
+          type="checkbox"
+          name="checkForUpdates"
+          value={checkForUpdates}
+        />
+        <Setting
+          label="Automatically download and install updates"
+          type="checkbox"
+          name="autoUpdate"
+          value={autoUpdate}
+        />
+      </Settings>
+      <Settings label="Audio" onChange={handleChange}>
+        <Setting
+          label="Play audio on load"
+          type="checkbox"
+          name="autoPlayAudio"
+          value={autoPlayAudio}
+        />
       </Settings>
       <ButtonRow>
         <Button text="Save" onClick={handleSave} />
         <Button text="Cancel" onClick={onClose} />
       </ButtonRow>
-    </SettingsPanel>
+    </Layout>
   );
 }

@@ -1,6 +1,7 @@
 export BoxInput from './BoxInput';
 export ButtonGroup from './ButtonGroup';
 export ButtonInput from './ButtonInput';
+export CheckboxInput from './CheckboxInput';
 export ColorInput from './ColorInput';
 export ColorRangeInput from './ColorRangeInput';
 export ImageInput from './ImageInput';

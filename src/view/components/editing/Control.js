@@ -1,7 +1,7 @@
 import React from 'react';
 import Option from 'components/editing/Option';
 import classNames from 'classnames';
-import { inputToProps, mapChildren } from 'utils/react';
+import { inputValueToProps, mapChildren } from 'utils/react';
 import styles from './Control.less';
 
 export default function Control({ display, label, active, className, children, onChange }) {
@@ -28,7 +28,7 @@ export default function Control({ display, label, active, className, children, o
           </div>
         </div>
       )}
-      {mapChildren(children, { display, onChange: inputToProps(onChange) }, handleClone)}
+      {mapChildren(children, { display, onChange: inputValueToProps(onChange) }, handleClone)}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { player } from 'global';
+import { Settings, Setting } from 'components/editing';
+import Layout from 'components/layout/Layout';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
 import ButtonRow from 'components/layout/ButtonRow';
 import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
 import { showSaveDialog } from 'utils/window';
@@ -11,7 +12,6 @@ import { formatTime } from 'utils/format';
 import { FolderOpen } from 'view/icons';
 import { openAudioFile } from 'actions/audio';
 import { startRender } from 'actions/video';
-import styles from './VideoSettings.less';
 
 const videoFormats = ['mp4', 'webm'];
 
@@ -80,87 +80,60 @@ export default function VideoSettings({ onClose }) {
   }
 
   return (
-    <SettingsPanel className={styles.panel}>
-      <Settings>
-        <Row label="Save Video To">
-          <TextInput
-            name="videoFile"
-            width={250}
-            value={videoFile}
-            readOnly
-            onChange={handleChange}
-          />
-          <ButtonInput
-            className={styles.button}
-            icon={FolderOpen}
-            title="Save File"
-            onClick={handleOpenVideoFile}
-          />
-        </Row>
-        <Row label="Audio File">
-          <TextInput
-            name="audioFile"
-            width={250}
-            value={audioFile}
-            readOnly
-            onChange={handleChange}
-          />
-          <ButtonInput
-            className={styles.button}
-            icon={FolderOpen}
-            title="Open File"
-            onClick={handleOpenAudioFile}
-          />
-        </Row>
-        <Row label="Format">
-          <SelectInput
-            name="format"
-            width={80}
-            items={videoFormats}
-            value={format}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row label="FPS">
-          <NumberInput
-            name="fps"
-            width={60}
-            min={24}
-            max={60}
-            value={fps}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row label="Start Time">
-          <TimeInput
-            name="timeStart"
-            width={80}
-            min={0}
-            max={timeEnd}
-            value={timeStart}
-            disabled={!audioFile}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row label="End Time">
-          <TimeInput
-            name="timeEnd"
-            width={80}
-            min={0}
-            max={duration}
-            value={timeEnd}
-            disabled={!audioFile}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row label="Total Time">
-          {formatTime(timeEnd - timeStart)} / {formatTime(duration)}
-        </Row>
+    <Layout width={600}>
+      <Settings labelWidth="40%" onChange={handleChange}>
+        <Setting
+          label="Save Video To"
+          type="text"
+          name="videoFile"
+          width={250}
+          value={videoFile}
+          readOnly
+        >
+          <ButtonInput icon={FolderOpen} title="Save File" onClick={handleOpenVideoFile} />
+        </Setting>
+        <Setting
+          label="Audio File"
+          type="text"
+          name="audioFile"
+          width={250}
+          value={audioFile}
+          readOnly
+        >
+          <ButtonInput icon={FolderOpen} title="Open File" onClick={handleOpenAudioFile} />
+        </Setting>
+        <Setting label="Format" type="select" name="format" items={videoFormats} value={format} />
+        <Setting label="FPS" type="number" name="fps" min={1} max={60} value={fps} />
+        <Setting
+          label="Start Time"
+          type="time"
+          name="timeStart"
+          width={80}
+          min={0}
+          max={timeEnd}
+          value={timeStart}
+          disabled={!audioFile}
+        />
+        <Setting
+          label="End Time"
+          type="time"
+          name="timeEnd"
+          width={80}
+          min={0}
+          max={duration}
+          value={timeEnd}
+          disabled={!audioFile}
+        />
+        <Setting label="Total Time">
+          <div>
+            {formatTime(timeEnd - timeStart)} / {formatTime(duration)}
+          </div>
+        </Setting>
       </Settings>
       <ButtonRow>
         <Button text="Start" onClick={handleStart} disabled={!canStart} />
         <Button text="Cancel" onClick={handleCancel} />
       </ButtonRow>
-    </SettingsPanel>
+    </Layout>
   );
 }

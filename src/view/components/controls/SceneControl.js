@@ -70,7 +70,7 @@ export default function SceneControl({ display, active }) {
         withReactor
       />
       <Option label="Mask" type="toggle" name="mask" value={mask} />
-      <Option label="Inverse" type="toggle" name="inverse" value={inverse} />
+      <Option label="Inverse" type="toggle" name="inverse" value={inverse} hidden={!mask} />
     </Control>
   );
 }

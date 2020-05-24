@@ -11,7 +11,9 @@ export default function SelectInput({
   displayField = 'name',
   valueField = 'value',
   width = 140,
+  optionsWidth = 'auto',
   className,
+  optionsClassName,
   onChange = () => {},
 }) {
   const [showItems, setShowItems] = useState(false);
@@ -53,10 +55,10 @@ export default function SelectInput({
   }
 
   return (
-    <div className={styles.select}>
+    <div className={classNames(styles.select, className)}>
       <input
         type="text"
-        className={classNames(styles.input, className, { [styles.active]: showItems })}
+        className={classNames(styles.input, { [styles.active]: showItems })}
         name={name}
         style={{ width }}
         value={getDisplayText()}
@@ -65,9 +67,10 @@ export default function SelectInput({
         readOnly
       />
       <div
-        className={classNames(styles.properties, {
+        className={classNames(styles.options, optionsClassName, {
           [styles.hidden]: !showItems,
         })}
+        style={{ width: optionsWidth }}
       >
         {parsedItems.map((item, index) => (
           <div

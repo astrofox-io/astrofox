@@ -2,7 +2,7 @@ import React from 'react';
 import { Control, Option } from 'components/editing';
 import { ToggleInput } from 'components/inputs';
 import useEntity from 'components/hooks/useEntity';
-import { inputToProps } from 'utils/react';
+import { inputValueToProps } from 'utils/react';
 
 export default function BarSpectrumControl({ display, active, stageWidth, stageHeight }) {
   const {
@@ -108,36 +108,34 @@ export default function BarSpectrumControl({ display, active, stageWidth, stageH
       />
       <Option
         label="Bar Width"
-        type="number"
+        type={barWidthAutoSize ? null : 'number'}
         name="barWidth"
         value={barWidth}
         min={-1}
         max={stageWidth}
         disabled={barWidthAutoSize}
-        hidden={barWidthAutoSize}
       >
         <ToggleInput
           label="Auto-size"
           name="barWidthAutoSize"
           value={barWidthAutoSize}
-          onChange={inputToProps(handleChange)}
+          onChange={inputValueToProps(handleChange)}
         />
       </Option>
       <Option
         label="Bar Spacing"
-        type="number"
+        type={barSpacingAutoSize ? null : 'number'}
         name="barSpacing"
         value={barSpacing}
         min={-1}
         max={stageWidth}
         disabled={barSpacingAutoSize}
-        hidden={barSpacingAutoSize}
       >
         <ToggleInput
           label="Auto-size"
           name="barSpacingAutoSize"
           value={barSpacingAutoSize}
-          onChange={inputToProps(handleChange)}
+          onChange={inputValueToProps(handleChange)}
         />
       </Option>
       <Option label="Bar Color" type="colorrange" name="color" value={color} />

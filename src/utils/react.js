@@ -5,7 +5,7 @@ export function ignoreEvents(e) {
   e.preventDefault();
 }
 
-export function inputToProps(callback) {
+export function inputValueToProps(callback) {
   return (name, value) => callback({ [name]: value });
 }
 

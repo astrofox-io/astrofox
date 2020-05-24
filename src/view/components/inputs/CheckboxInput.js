@@ -1,19 +1,19 @@
 import React from 'react';
 import classNames from 'classnames';
-import styles from './ToggleInput.less';
+import styles from './CheckboxInput.less';
 
-export default function ToggleInput({
-  name = 'toggle',
+export default function CheckboxInput({
+  name = 'checkbox',
   value = false,
   label,
   labelPosition = 'right',
   onChange,
 }) {
   return (
-    <div className={styles.toggle}>
+    <div className={styles.checkbox}>
       <div
         className={classNames(styles.input, {
-          [styles.on]: value,
+          [styles.checked]: value,
         })}
         onClick={() => onChange(name, !value)}
       />

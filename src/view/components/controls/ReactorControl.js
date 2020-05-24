@@ -16,7 +16,7 @@ import {
   REACTOR_BAR_HEIGHT,
   REACTOR_BAR_SPACING,
 } from 'view/constants';
-import { inputToProps } from 'utils/react';
+import { inputValueToProps } from 'utils/react';
 import styles from './ReactorControl.less';
 
 const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
@@ -95,7 +95,7 @@ export default function ReactorControl({ reactor }) {
             minHeight={REACTOR_BAR_WIDTH}
             maxWidth={SPECTRUM_WIDTH}
             maxHeight={REACTOR_BAR_HEIGHT}
-            onChange={inputToProps(handleChange)}
+            onChange={inputValueToProps(handleChange)}
           />
         </div>
         <div className={styles.output}>

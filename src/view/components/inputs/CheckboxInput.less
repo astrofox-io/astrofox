@@ -1,0 +1,54 @@
+@import (reference) 'view/styles/variables';
+
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  order: 1;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  background-color: @input-bg-color;
+  border: 1px solid @input-border-color;
+  border-radius: @input-border-radius;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    color: @color-text100;
+    background-color: @input-bg-color;
+    font-size: @font-size-xsmall;
+    text-align: center;
+    transform: scale(0.5);
+    transition: all 0.3s;
+  }
+
+  &.checked {
+    &:before {
+      content: '\2713';
+      background-color: @color-primary400;
+      transform: scale(1);
+    }
+  }
+}
+
+.label {
+  display: inline-block;
+}
+
+.left {
+  order: 0;
+  margin-right: 8px;
+}
+
+.right {
+  order: 2;
+  margin-left: 8px;
+}

@@ -1,7 +1,7 @@
 @import (reference) 'view/styles/variables';
 
 .input {
-  composes: text from 'TextInput.less';
+  composes: input from 'TextInput.less';
   cursor: default;
 }
 
@@ -29,12 +29,14 @@
   }
 }
 
-.properties {
+.options {
   position: absolute;
   top: 100%;
   z-index: 1;
   list-style: none;
   background-color: @input-bg-color;
+  overflow: hidden;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 
   &.hidden {
     display: none;
@@ -44,8 +46,12 @@
 .option {
   color: @input-text-color;
   font-size: @font-size-small;
-  padding: 5px;
+  line-height: 24px;
+  padding: 0 6px;
   min-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:hover {
     cursor: default;
@@ -55,12 +61,20 @@
 }
 
 .separator {
-  height: 5px;
+  position: relative;
+  height: 10px;
 
   &:after {
     content: '';
-    border-top: 1px solid @color-primary100;
     display: block;
+    position: absolute;
+    top: 0;
+    left: 6px;
+    right: 6px;
+    bottom: 0;
+    margin: auto;
+    height: 1px;
+    background-color: @color-primary100;
   }
 
   &:hover {

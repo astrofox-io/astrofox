@@ -61,7 +61,7 @@ export default function TextInput({
     <input
       ref={input}
       type="text"
-      className={classNames(styles.text, className)}
+      className={classNames(styles.input, className)}
       style={{ width }}
       name={name}
       size={size}

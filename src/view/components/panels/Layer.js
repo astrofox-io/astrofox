@@ -50,29 +50,28 @@ export default function Layer({
       onClick={handleLayerClick}
     >
       {icon && <Icon className={styles.icon} glyph={icon} />}
-      {edit ? (
-        <TextInput
-          name="displayName"
-          value={name}
-          buffered
-          autoFocus
-          autoSelect
-          onChange={handleNameChange}
-          onCancel={handleCancelEdit}
-        />
-      ) : (
-        <div className={styles.text} onDoubleClick={handleEnableEdit}>
-          {name}
-        </div>
-      )}
-      <span onClick={handleEnableClick}>
-        <Icon
-          className={classNames(styles.propertiesIcon, {
-            [styles.disabled]: !enabled,
-          })}
-          glyph={Eye}
-        />
-      </span>
+      <div className={styles.text} onDoubleClick={handleEnableEdit}>
+        {edit ? (
+          <TextInput
+            name="displayName"
+            value={name}
+            buffered
+            autoFocus
+            autoSelect
+            onChange={handleNameChange}
+            onCancel={handleCancelEdit}
+          />
+        ) : (
+          name
+        )}
+      </div>
+      <Icon
+        className={classNames(styles.enableIcon, {
+          [styles.disabled]: !enabled,
+        })}
+        glyph={Eye}
+        onClick={handleEnableClick}
+      />
     </div>
   );
 }

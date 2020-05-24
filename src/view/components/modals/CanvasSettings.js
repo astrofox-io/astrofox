@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from 'components/interface/Button';
-import { SettingsPanel, Settings, Row } from 'components/layout/SettingsPanel';
+import { Settings, Setting } from 'components/editing';
+import Layout from 'components/layout/Layout';
 import ButtonRow from 'components/layout/ButtonRow';
-import { ColorInput, NumberInput } from 'components/inputs';
 import { updateCanvas } from 'actions/stage';
-import styles from './CanvasSettings.less';
 
 export default function CanvasSettings({ onClose }) {
   const dispatch = useDispatch();
@@ -13,8 +12,8 @@ export default function CanvasSettings({ onClose }) {
   const [state, setState] = useState(stageConfig);
   const { width, height, backgroundColor } = state;
 
-  function handleChange(name, value) {
-    setState({ ...state, [name]: value });
+  function handleChange(props) {
+    setState({ ...state, ...props });
   }
 
   function handleCancel() {
@@ -27,38 +26,37 @@ export default function CanvasSettings({ onClose }) {
   }
 
   return (
-    <SettingsPanel className={styles.panel}>
-      <Settings>
-        <Row label="Width">
-          <NumberInput
-            name="width"
-            width={40}
-            min={240}
-            max={1920}
-            step={2}
-            value={width}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row label="Height">
-          <NumberInput
-            name="height"
-            width={40}
-            min={240}
-            max={1080}
-            step={2}
-            value={height}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row label="Background Color">
-          <ColorInput name="backgroundColor" value={backgroundColor} onChange={handleChange} />
-        </Row>
+    <Layout width={500}>
+      <Settings onChange={handleChange}>
+        <Setting
+          label="Width"
+          type="number"
+          name="width"
+          value={width}
+          min={240}
+          max={1920}
+          step={2}
+        />
+        <Setting
+          label="Height"
+          type="number"
+          name="height"
+          value={height}
+          min={240}
+          max={1080}
+          step={2}
+        />
+        <Setting
+          label="Background Color"
+          type="color"
+          name="backgroundColor"
+          value={backgroundColor}
+        />
       </Settings>
       <ButtonRow>
         <Button onClick={handleSave} text="OK" />
         <Button onClick={handleCancel} text="Cancel" />
       </ButtonRow>
-    </SettingsPanel>
+    </Layout>
   );
 }

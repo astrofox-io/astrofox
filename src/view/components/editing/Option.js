@@ -1,40 +1,20 @@
 import React from 'react';
 import classNames from 'classnames';
-import {
-  TextInput,
-  NumberInput,
-  ToggleInput,
-  ColorInput,
-  ColorRangeInput,
-  RangeInput,
-  SelectInput,
-  ImageInput,
-  ReactorButton,
-  ReactorInput,
-} from 'components/inputs';
+import { RangeInput, ReactorButton, ReactorInput } from 'components/inputs';
+import inputComponents from 'components/editing/inputComponents';
 import Icon from 'components/interface/Icon';
 import { Link } from 'view/icons';
 import styles from './Option.less';
 
-const inputComponents = {
-  text: [TextInput, { width: 140 }],
-  number: [NumberInput, { width: 40 }],
-  toggle: [ToggleInput],
-  color: [ColorInput],
-  colorrange: [ColorRangeInput],
-  range: [RangeInput],
-  select: [SelectInput, { width: 140 }],
-  image: [ImageInput],
-};
-
 export default function Option({
   display,
   label,
-  type,
+  type = null,
   name,
   value,
   className,
   onChange,
+  hidden,
   withReactor,
   withRange,
   withLink,
@@ -49,7 +29,7 @@ export default function Option({
   const { min, max } = otherProps;
 
   return (
-    <div className={classNames(styles.option, className)}>
+    <div className={classNames(styles.option, className, { [styles.hidden]: hidden })}>
       {withReactor && (
         <ReactorButton
           className={styles.reactorIcon}

@@ -14,7 +14,7 @@ export default function NumberInput({
   className,
   onChange = () => {},
 }) {
-  const [key, setKey] = useState();
+  const [key, setKey] = useState(0);
 
   function handleChange(name, value) {
     const regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
@@ -31,6 +31,11 @@ export default function NumberInput({
       // Round value to nearest interval
       if (step !== false) {
         newValue = roundTo(newValue, step);
+      }
+
+      // Force value to update
+      if (newValue !== +value) {
+        setKey(key + 1);
       }
 
       onChange(name, newValue);

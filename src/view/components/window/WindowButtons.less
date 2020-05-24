@@ -9,7 +9,11 @@
 
   &.focused {
     .button {
-      opacity: 1;
+      color: @color-gray700;
+
+      &:hover {
+        color: @color-gray900;
+      }
     }
   }
 }
@@ -19,9 +23,10 @@
   width: 45px;
   height: 30px;
   text-align: center;
-  opacity: 0.7;
+  color: @color-gray600;
 
   &:hover {
+    color: @color-gray900;
     background-color: @color-primary100;
   }
 }
@@ -35,7 +40,7 @@
     transform: translate(-50%, -50%);
     width: 10px;
     height: 1px;
-    background-color: @color-gray800;
+    background-color: currentColor;
   }
 }
 
@@ -48,7 +53,7 @@
     transform: translate(-50%, -50%);
     width: 10px;
     height: 10px;
-    border: 1px solid @color-gray800;
+    border: 1px solid currentColor;
   }
 }
 
@@ -60,7 +65,7 @@
     left: 20px;
     width: 10px;
     height: 10px;
-    border: 1px solid @color-gray800;
+    border: 1px solid currentColor;
   }
   &:after {
     content: '';
@@ -69,7 +74,7 @@
     left: 16px;
     width: 10px;
     height: 10px;
-    border: 1px solid @color-gray800;
+    border: 1px solid currentColor;
     background-color: @color-gray200;
   }
 
@@ -79,24 +84,28 @@
 }
 
 .close {
+  &:hover {
+    background-color: @color-red400;
+  }
+
   &:before {
     content: '';
     position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: rotate(-45deg) translate(-50%);
+    top: 14px;
+    left: 16px;
+    transform: rotate(-45deg);
     width: 14px;
     height: 1px;
-    background-color: @color-gray800;
+    background-color: currentColor;
   }
   &:after {
     content: '';
     position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: rotate(45deg) translate(-50%);
+    top: 14px;
+    left: 16px;
+    transform: rotate(45deg);
     width: 14px;
     height: 1px;
-    background-color: @color-gray800;
+    background-color: currentColor;
   }
 }

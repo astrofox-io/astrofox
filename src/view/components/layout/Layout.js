@@ -8,6 +8,10 @@ export default function Layout({
   direction = 'column',
   grow = true,
   full = false,
+  width,
+  height,
+  padding,
+  margin,
   ...props
 }) {
   return (
@@ -19,6 +23,7 @@ export default function Layout({
         [styles.grow]: grow,
         [styles.full]: full,
       })}
+      style={{ width, height, padding, margin }}
     >
       {children}
     </div>

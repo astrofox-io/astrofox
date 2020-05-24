@@ -6,10 +6,10 @@ const Icon = ({
   className,
   width,
   height,
-  onClick,
   title,
   glyph: { viewBox, url },
   shapeRendering,
+  onClick,
 }) => (
   <span className={classNames(styles.icon, className)} title={title}>
     <svg
