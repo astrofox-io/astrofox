@@ -5,10 +5,10 @@ import { Settings, Setting } from 'components/editing';
 import Layout from 'components/layout/Layout';
 import Button from 'components/interface/Button';
 import ButtonRow from 'components/layout/ButtonRow';
-import { ButtonInput, NumberInput, TimeInput, SelectInput, TextInput } from 'components/inputs';
+import TimeInfo from 'components/player/TimeInfo';
+import { ButtonInput } from 'components/inputs';
 import { showSaveDialog } from 'utils/window';
 import { replaceExt } from 'utils/file';
-import { formatTime } from 'utils/format';
 import { FolderOpen } from 'view/icons';
 import { openAudioFile } from 'actions/audio';
 import { startRender } from 'actions/video';
@@ -80,13 +80,13 @@ export default function VideoSettings({ onClose }) {
   }
 
   return (
-    <Layout width={600}>
+    <Layout width={700}>
       <Settings labelWidth="40%" onChange={handleChange}>
         <Setting
           label="Save Video To"
           type="text"
           name="videoFile"
-          width={250}
+          width={300}
           value={videoFile}
           readOnly
         >
@@ -96,7 +96,7 @@ export default function VideoSettings({ onClose }) {
           label="Audio File"
           type="text"
           name="audioFile"
-          width={250}
+          width={300}
           value={audioFile}
           readOnly
         >
@@ -125,9 +125,7 @@ export default function VideoSettings({ onClose }) {
           disabled={!audioFile}
         />
         <Setting label="Total Time">
-          <div>
-            {formatTime(timeEnd - timeStart)} / {formatTime(duration)}
-          </div>
+          <TimeInfo currentTime={timeEnd - timeStart} totalTime={duration} />
         </Setting>
       </Settings>
       <ButtonRow>

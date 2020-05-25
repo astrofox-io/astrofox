@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { env, logger, reactors, stage } from 'view/global';
+import { updateCanvas } from 'actions/stage';
 import { loadScenes, resetScenes } from 'actions/scenes';
 import { loadReactors, resetReactors } from 'actions/reactors';
 import { raiseError } from 'actions/errors';
@@ -14,6 +15,11 @@ import Display from 'core/Display';
 import AudioReactor from 'audio/AudioReactor';
 import * as displays from 'displays';
 import * as effects from 'effects';
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_CANVAS_HEIGHT,
+  DEFAULT_CANVAS_WIDTH,
+} from 'view/constants';
 
 const initialState = {
   file: '',
@@ -113,6 +119,9 @@ export function newProject() {
   return async dispatch => {
     await dispatch(resetScenes());
     await dispatch(resetReactors());
+    await dispatch(
+      updateCanvas(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, DEFAULT_BACKGROUND_COLOR),
+    );
 
     const scene = stage.addScene();
 

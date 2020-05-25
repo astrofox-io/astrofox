@@ -9,7 +9,7 @@ export default function Setting({
   name,
   value,
   className,
-  labelWidth = '60%',
+  labelWidth = '50%',
   onChange,
   hidden,
   children,

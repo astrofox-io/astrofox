@@ -23,7 +23,7 @@ export default function AppSettings({ onClose }) {
 
   return (
     <Layout width={500}>
-      <Settings label="General" onChange={handleChange}>
+      <Settings label="General" labelWidth="60%" onChange={handleChange}>
         <Setting
           label="Check for updates on start up"
           type="checkbox"
@@ -37,7 +37,7 @@ export default function AppSettings({ onClose }) {
           value={autoUpdate}
         />
       </Settings>
-      <Settings label="Audio" onChange={handleChange}>
+      <Settings label="Audio" labelWidth="60%" onChange={handleChange}>
         <Setting
           label="Play audio on load"
           type="checkbox"
