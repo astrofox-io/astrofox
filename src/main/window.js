@@ -60,7 +60,8 @@ export function createWindow() {
       darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
     };
 
-    const { session } = webContents;
+    // Electron 9.0
+    // const { session } = webContents;
 
     const extensions = ['fmkadmapgofadopljbjfkapdkoienihi', 'lmhkpmbekcpmknklioeibfkpmmfibljd'];
 
@@ -74,7 +75,8 @@ export function createWindow() {
       if (dir.length) {
         const extPath = path.join(fullPath, dir[0]);
         log('Adding extension:', extPath);
-        session.loadExtension(extPath);
+        // session.loadExtension(extPath);
+        BrowserWindow.addExtension(extPath);
       }
     });
   }

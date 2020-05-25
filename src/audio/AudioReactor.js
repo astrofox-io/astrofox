@@ -12,7 +12,7 @@ import {
 import { contains } from '../utils/array';
 
 const REACTOR_BINS = 64;
-const CYCLE_MODIFIER = 0.05;
+const CYCLE_MODIFIER = 0.1;
 
 let reactorCount = 0;
 
@@ -92,7 +92,8 @@ export default class AudioReactor extends Entity {
   }
 
   parse(data) {
-    const fft = this.parser.parseFFT(data.fft);
+    const { audioPlaying, fft: inputFft } = data;
+    const fft = this.parser.parseFFT(inputFft);
     const {
       outputMode,
       range: { x1, y1, x2, y2 },
@@ -107,24 +108,29 @@ export default class AudioReactor extends Entity {
       sum += val2pct(fft[i], 1 - y2, 1 - y1);
     }
 
+    const avg = sum / (end - start);
+
     switch (outputMode) {
       case 'Add':
-        output = sum / (end - start);
+        output = avg;
         break;
 
       case 'Subtract':
-        output = 1 - sum / (end - start);
+        output = 1 - avg;
         break;
 
       case 'Forward':
-        if (data.playing) {
-          output = (output + sum * CYCLE_MODIFIER) % 1;
+        if (audioPlaying) {
+          output += avg * CYCLE_MODIFIER;
+          if (output > 1) {
+            output = 1 - output;
+          }
         }
         break;
 
       case 'Reverse':
-        if (data.playing) {
-          output -= sum * CYCLE_MODIFIER;
+        if (audioPlaying) {
+          output -= avg * CYCLE_MODIFIER;
           if (output < 0) {
             output = 1 - output;
           }
@@ -132,14 +138,17 @@ export default class AudioReactor extends Entity {
         break;
 
       case 'Cycle':
-        if (data.playing) {
-          output += sum * CYCLE_MODIFIER * this.direction;
-          if (output > 1) {
-            output = 1 - (output % 1);
-            this.direction = -1;
-          } else if (output < 0) {
-            output %= 1;
-            this.direction = 1;
+        if (audioPlaying) {
+          if (this.direction > 0) {
+            output += avg * CYCLE_MODIFIER;
+            if (output > 1) {
+              this.direction = -1;
+            }
+          } else {
+            output -= avg * CYCLE_MODIFIER;
+            if (output < 0) {
+              this.direction = 1;
+            }
           }
         }
         break;
