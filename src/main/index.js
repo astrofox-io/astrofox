@@ -29,19 +29,6 @@ function createTempFolder() {
 // Chrome flags
 // Hardware acceleration
 app.commandLine.appendSwitch('ignore-gpu-blacklist');
-// app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
-
-// WebGL 2
-// app.commandLine.appendSwitch('enable-unsafe-es3-apis');
-
-// GPU rasterization
-// app.commandLine.appendSwitch('enable-gpu-rasterization');
-
-// Disable background throttling
-// app.commandLine.appendSwitch('disable-renderer-background');
-
-// Number of raster threads
-// app.commandLine.appendSwitch('num-raster-threads', 4);
 
 // Memory profiling
 if (process.env.NODE_ENV !== 'production') {

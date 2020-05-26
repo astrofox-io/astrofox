@@ -1,4 +1,3 @@
-import { remote } from 'electron';
 import EventEmitter from 'core/EventEmitter';
 import Logger from 'core/Logger';
 import Renderer from 'core/Renderer';
@@ -12,7 +11,7 @@ import VideoRenderer from 'video/VideoRenderer';
 import { PUBLIC_KEY } from 'view/constants';
 
 export function getEnvironment() {
-  return remote.getGlobal('env');
+  return window.astrofox.getEnvironment();
 }
 
 export const audioContext = new window.AudioContext();

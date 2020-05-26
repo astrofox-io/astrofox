@@ -1,13 +1,19 @@
-import crypto from 'crypto';
+const byteToHex = [];
 
-export function sha1(s) {
-  return crypto.createHash('sha1').update(s).digest('hex');
+for (let n = 0; n <= 0xff; ++n) {
+  byteToHex.push(n.toString(16).padStart(2, '0'));
 }
 
-export function sha256(s) {
-  return crypto.createHash('sha256').update(s).digest('hex');
+function toHexString(buffer) {
+  const hexOctets = new Array(buffer.length);
+
+  for (let i = 0; i < buffer.length; ++i) {
+    hexOctets[i] = byteToHex[buffer[i]];
+  }
+
+  return hexOctets.join('');
 }
 
 export function uniqueId() {
-  return crypto.randomBytes(20).toString('hex');
+  return toHexString(window.crypto.getRandomValues(new Uint8Array(20)));
 }

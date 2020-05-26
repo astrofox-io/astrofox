@@ -14,10 +14,11 @@ module.exports = {
   },
   entry: {
     main: path.resolve(__dirname, 'src/main/index.js'),
+    preload: path.resolve(__dirname, 'src/main/preload.js'),
   },
   output: {
     path: path.resolve(__dirname, 'app'),
-    filename: 'main.js',
+    filename: '[name].js',
   },
   resolve: {
     extensions: ['.js', '.json'],

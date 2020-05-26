@@ -15,7 +15,9 @@ export default function getStore(preloadedState) {
     });
   }
 
-  window._redux = store;
+  if (process.env.NODE_ENV !== 'production') {
+    window._redux = store;
+  }
 
   return store;
 }

@@ -2,18 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from 'components/App';
-import * as env from './global';
+import * as globals from './global';
 import getStore from './store';
 import 'assets/index.html';
 import 'assets/fonts.css';
 import 'styles/index.less';
 
-const root = {};
 const store = getStore();
 
 // Development settings
 if (process.env.NODE_ENV !== 'production') {
-  Object.assign(root, env);
+  window._astrofox = globals;
 }
 
 // Production settings
@@ -31,5 +30,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app'),
 );
-
-export default root;

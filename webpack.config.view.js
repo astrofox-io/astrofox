@@ -24,8 +24,6 @@ module.exports = {
     path: path.resolve(__dirname, 'app'),
     publicPath: '/',
     filename: '[name].js',
-    library: 'Astrofox',
-    libraryTarget: 'var',
   },
   resolve: {
     extensions: ['.js', '.json'],
