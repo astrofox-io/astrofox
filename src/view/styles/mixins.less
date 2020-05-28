@@ -1,3 +1,5 @@
+@import (reference) 'view/styles/variables';
+
 .absolute-center() {
   position: absolute;
   top: 0;
@@ -8,20 +10,11 @@
 }
 
 .off-screen() {
-  position: absolute;
+  position: fixed;
   left: 100%;
   bottom: -100%;
-  z-index: -1;
-}
-
-.hidden() {
-  position: absolute;
-  overflow: hidden;
-  padding: 0;
-  border: 0;
   height: 1px;
   width: 1px;
-  margin: -1px;
-  clip: rect(0 0 0 0);
-  z-index: -1;
+  overflow: hidden;
+  z-index: @z-index-hidden;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import { clamp } from 'utils/math';
@@ -17,8 +17,12 @@ export default function Splitter({
   onResize,
 }) {
   const startDrag = useMouseDrag();
+  const startValues = useRef();
 
-  function handleDrag({ deltaX, deltaY, startWidth, startHeight }) {
+  function handleDrag(e) {
+    const { startWidth, startHeight, startX, startY } = startValues.current;
+    const deltaX = e.pageX - startX;
+    const deltaY = e.pageY - startY;
     let newWidth = width;
     let newHeight = height;
 
@@ -36,7 +40,13 @@ export default function Splitter({
   }
 
   function handleDragStart(e) {
-    startDrag(e, { onDrag: handleDrag, startWidth: width, startHeight: height });
+    startValues.current = {
+      startWidth: width,
+      startHeight: height,
+      startX: e.pageX,
+      startY: e.pageY,
+    };
+    startDrag(e, { onDrag: handleDrag });
   }
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import useMouseDrag from 'components/hooks/useMouseDrag';
 import { clamp } from 'utils/math.js';
 import styles from './BoxInput.less';
@@ -14,8 +14,20 @@ export default function BoxInput({
 }) {
   const startDrag = useMouseDrag();
   const { x, y, width, height } = value;
+  const startValues = useRef();
 
-  function handleDrag({ deltaX, deltaY, position, startTop, startLeft, startWidth, startHeight }) {
+  function handleDrag(e) {
+    const {
+      startWidth,
+      startHeight,
+      startX,
+      startY,
+      position,
+      startTop,
+      startLeft,
+    } = startValues.current;
+    const deltaX = e.pageX - startX;
+    const deltaY = e.pageY - startY;
     const value = { x, y, width, height };
 
     switch (position) {
@@ -43,13 +55,17 @@ export default function BoxInput({
   }
 
   const handleDragStart = position => e => {
-    startDrag(e, {
-      onDrag: handleDrag,
+    startValues.current = {
       position,
+      startX: e.pageX,
+      startY: e.pageY,
       startWidth: width,
       startHeight: height,
       startLeft: x,
       startTop: y,
+    };
+    startDrag(e, {
+      onDrag: handleDrag,
     });
   };
 

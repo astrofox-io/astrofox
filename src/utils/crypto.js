@@ -1,13 +1,13 @@
 const byteToHex = [];
 
-for (let n = 0; n <= 0xff; ++n) {
+for (let n = 0; n <= 0xff; n++) {
   byteToHex.push(n.toString(16).padStart(2, '0'));
 }
 
 function toHexString(buffer) {
   const hexOctets = new Array(buffer.length);
 
-  for (let i = 0; i < buffer.length; ++i) {
+  for (let i = 0; i < buffer.length; i++) {
     hexOctets[i] = byteToHex[buffer[i]];
   }
 

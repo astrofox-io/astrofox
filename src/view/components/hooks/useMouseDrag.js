@@ -1,20 +1,18 @@
 import { useRef, useCallback } from 'react';
 
 export default function useMouseDrag() {
-  const startEvent = useRef();
-  const eventProps = useRef();
+  const eventHandlers = useRef();
 
   const handleMouseMove = useCallback(e => {
-    const { pageX, pageY } = startEvent.current;
-    const { onDrag, ...otherProps } = eventProps.current;
+    const { onDrag } = eventHandlers.current;
 
     if (onDrag) {
-      onDrag({ deltaX: e.pageX - pageX, deltaY: e.pageY - pageY, ...otherProps }, e);
+      onDrag(e);
     }
   }, []);
 
   const handleMouseUp = useCallback(e => {
-    const { onDragEnd } = eventProps.current;
+    const { onDragEnd } = eventHandlers.current;
 
     window.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('mousemove', handleMouseUp);
@@ -26,11 +24,17 @@ export default function useMouseDrag() {
 
   function startDrag(e, props = {}) {
     e.persist();
-    startEvent.current = e;
-    eventProps.current = props;
+
+    const { onDrag, onDragStart, onDragEnd } = props;
+
+    eventHandlers.current = { onDrag, onDragStart, onDragEnd };
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+
+    if (onDragStart) {
+      onDragStart(e);
+    }
   }
 
   return startDrag;
