@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import path from 'path';
 
 export function replaceExt(file, ext) {

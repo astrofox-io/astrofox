@@ -19,9 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 if (process.env.NODE_ENV === 'production') {
   // Disable eval
   // eslint-disable-next-line
-  window.eval = global.eval = function () {
-    throw new Error('eval() not allowed.');
-  };
+  window.eval = global.eval = undefined;
 }
 
 ReactDOM.render(

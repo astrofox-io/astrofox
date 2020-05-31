@@ -1,9 +1,4 @@
-import { remote } from 'electron';
+import { contextBridge } from 'electron';
+import * as api from 'main/api';
 
-const env = remote.getGlobal('env');
-
-window.astrofox = {
-  getEnvironment() {
-    return env;
-  },
-};
+contextBridge.exposeInMainWorld('__ASTROFOX__', api);

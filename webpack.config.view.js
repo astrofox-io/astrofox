@@ -10,7 +10,7 @@ const PRODUCTION = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: PRODUCTION ? 'production' : 'development',
-  target: 'electron-renderer',
+  target: 'web',
   devtool: PRODUCTION ? false : 'source-map',
   entry: {
     app: path.resolve(__dirname, 'src/view/index.js'),

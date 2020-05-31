@@ -1,48 +1,37 @@
-import zlib from 'zlib';
-import { Buffer as NodeBuffer } from 'buffer';
+import mime from 'mime';
 
-export function toArrayBuffer(buffer) {
-  const ab = new ArrayBuffer(buffer.length);
-  const b = new Uint8Array(ab);
-
-  for (let i = 0; i < buffer.length; ++i) {
-    b[i] = buffer[i];
-  }
-
-  return ab;
-}
-
-export function toBuffer(ab) {
-  const buffer = new NodeBuffer(ab.byteLength);
-  const view = new Uint8Array(ab);
-
-  for (let i = 0; i < buffer.length; ++i) {
-    buffer[i] = view[i];
-  }
-
-  return buffer;
-}
-
-export function compress(data) {
+export function blobToDataUrl(blob) {
   return new Promise((resolve, reject) => {
-    zlib.gzip(data, (error, buffer) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(buffer);
-      }
-    });
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+
+    reader.onerror = e => {
+      reject(e.target.error);
+    };
+
+    reader.readAsDataURL(blob);
   });
 }
 
-export function decompress(data) {
+export function blobToArrayBuffer(blob) {
   return new Promise((resolve, reject) => {
-    zlib.unzip(data, (error, buffer) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(buffer);
-      }
-    });
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+
+    reader.onerror = e => {
+      reject(e.target.error);
+    };
+
+    return reader.readAsArrayBuffer(blob);
   });
+}
+
+export async function dataToBlob(data, ext) {
+  return new Blob([new Uint8Array(data).buffer], { type: mime.getType(ext) });
 }

@@ -6,25 +6,25 @@ import debug from 'debug';
 
 const log = debug('window');
 
-let mainWindow = null;
+let win = null;
 
 export function getWindow() {
-  return mainWindow;
+  return win;
 }
 
 export function showWindow() {
-  mainWindow.show();
+  win.show();
 
   if (process.env.NODE_ENV !== 'production') {
-    mainWindow.webContents.openDevTools();
+    win.webContents.openDevTools();
   }
 }
 
 export function createWindow() {
-  if (mainWindow !== null) return;
+  if (win !== null) return;
 
   // Create window
-  mainWindow = new BrowserWindow({
+  win = new BrowserWindow({
     show: false,
     width: 1320,
     height: 1200,
@@ -35,8 +35,8 @@ export function createWindow() {
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
       devTools: process.env.NODE_ENV !== 'production',
       backgroundThrottling: false,
       textAreasAreResizable: false,
@@ -44,7 +44,7 @@ export function createWindow() {
     },
   });
 
-  const { webContents } = mainWindow;
+  const { webContents } = win;
 
   // Production settings
   if (process.env.NODE_ENV === 'production') {
@@ -83,7 +83,7 @@ export function createWindow() {
   }
 
   // Load index page
-  mainWindow.loadURL(
+  win.loadURL(
     process.env.NODE_ENV === 'production'
       ? url.format({
           pathname: path.join(__dirname, 'index.html'),
@@ -100,23 +100,27 @@ export function createWindow() {
   });
 
   // Show window only when ready
-  mainWindow.on('ready-to-show', () => {
+  win.on('ready-to-show', () => {
     log('ready-to-show');
     showWindow();
   });
 
   // Window close
-  mainWindow.on('close', () => {
+  win.on('close', () => {
     log('close');
-    mainWindow = null;
+    win = null;
   });
 
-  mainWindow.on('closed', () => {
+  win.on('closed', () => {
     log('closed');
-    mainWindow = null;
+    win = null;
   });
 }
 
 export function disposeWindow() {
-  mainWindow = null;
+  win = null;
+}
+
+export function sendMessage(channel, data) {
+  win.webContents.send(channel, data);
 }

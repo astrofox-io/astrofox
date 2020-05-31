@@ -1,12 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { env, logger, reactors, stage } from 'view/global';
+import { api, env, logger, reactors, stage } from 'view/global';
 import { updateCanvas } from 'actions/stage';
 import { loadScenes, resetScenes } from 'actions/scenes';
 import { loadReactors, resetReactors } from 'actions/reactors';
 import { raiseError } from 'actions/errors';
 import { showModal } from 'actions/modals';
-import { readFile, readFileCompressed, writeFileCompressed } from 'utils/io';
-import { showOpenDialog, showSaveDialog } from 'utils/window';
 import { contains } from 'utils/array';
 import Entity from 'core/Entity';
 import Stage from 'core/Stage';
@@ -164,12 +162,12 @@ export function loadProjectFile(file) {
     }
 
     try {
-      const data = await readFileCompressed(file);
+      const data = await api.readFileCompressed(file);
 
       loadData(data);
     } catch (error) {
       if (error.message.indexOf('incorrect header check') > -1) {
-        const data = await readFile(file);
+        const data = await api.readFile(file);
 
         loadData(data).catch(handleError);
       } else {
@@ -190,7 +188,7 @@ export function saveProjectFile(file) {
       };
 
       try {
-        await writeFileCompressed(file, JSON.stringify(data));
+        await api.writeFileCompressed(file, JSON.stringify(data));
 
         logger.log('Project saved:', file, data);
 
@@ -199,7 +197,7 @@ export function saveProjectFile(file) {
         dispatch(raiseError('Failed to save project file.', error));
       }
     } else {
-      const { filePath, canceled } = await showSaveDialog({ defaultPath: 'project.afx' });
+      const { filePath, canceled } = await api.showSaveDialog({ defaultPath: 'project.afx' });
 
       if (!canceled) {
         dispatch(saveProjectFile(filePath));
@@ -210,7 +208,7 @@ export function saveProjectFile(file) {
 
 export function openProjectFile() {
   return async dispatch => {
-    const { filePaths, canceled } = await showOpenDialog({
+    const { filePaths, canceled } = await api.showOpenDialog({
       filters: [{ name: 'Project files', extensions: ['afx'] }],
     });
 

@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { analyzer, logger, player } from 'view/global';
+import path from 'path';
+import { api, analyzer, logger, player } from 'view/global';
 import { setStatusText } from 'actions/app';
 import { raiseError } from 'actions/errors';
-import { readAsArrayBuffer, readFileAsBlob } from 'utils/io';
-import { loadAudioData, loadAudioTags } from 'utils/audio';
+import { blobToArrayBuffer, dataToBlob } from 'utils/data';
+import { loadAudioData } from 'utils/audio';
 import { trimChars } from 'utils/string';
-import { showOpenDialog } from 'utils/window';
 
 const initialState = {
   file: '',
@@ -34,9 +34,10 @@ export function loadAudioFile(file, play) {
     logger.time('audio-file-load');
 
     try {
-      const blob = await readFileAsBlob(file);
-      const data = await readAsArrayBuffer(blob);
-      const audio = await loadAudioData(data);
+      const fileData = await api.readFile(file);
+      const blob = await dataToBlob(fileData, path.extname(file));
+      const arrayBuffer = await blobToArrayBuffer(blob);
+      const audio = await loadAudioData(arrayBuffer);
       const duration = audio.getDuration();
 
       player.load(audio);
@@ -52,7 +53,7 @@ export function loadAudioFile(file, play) {
 
       logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
 
-      const tags = await loadAudioTags(file);
+      const tags = await api.loadAudioTags(file);
       const { artist, title } = tags;
 
       if (artist) {
@@ -68,7 +69,7 @@ export function loadAudioFile(file, play) {
 
 export function openAudioFile(play) {
   return async (dispatch, getState) => {
-    const { filePaths, canceled } = await showOpenDialog({
+    const { filePaths, canceled } = await api.showOpenDialog({
       filters: [
         {
           name: 'audio files',

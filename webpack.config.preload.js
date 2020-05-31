@@ -1,5 +1,4 @@
 const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
@@ -7,13 +6,13 @@ const PRODUCTION = process.env.NODE_ENV === 'production';
 module.exports = {
   mode: PRODUCTION ? 'production' : 'development',
   devtool: PRODUCTION ? false : 'source-map',
-  target: 'electron-main',
+  target: 'electron-preload',
   node: {
     __dirname: false,
     __filename: false,
   },
   entry: {
-    main: path.resolve(__dirname, 'src/main/index.js'),
+    preload: path.resolve(__dirname, 'src/main/preload.js'),
   },
   output: {
     path: path.resolve(__dirname, 'app'),
@@ -37,16 +36,6 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve(__dirname, 'src/build/app'),
-          to: path.resolve(__dirname, 'app'),
-        },
-      ],
-    }),
-  ],
   optimization: {
     minimize: PRODUCTION,
     minimizer: [

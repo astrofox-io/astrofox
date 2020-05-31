@@ -1,4 +1,3 @@
-import * as id3 from 'id3js';
 import Audio from 'audio/Audio';
 import { audioContext } from 'view/global';
 
@@ -15,8 +14,4 @@ export function loadAudioData(data) {
         reject(error);
       });
   });
-}
-
-export function loadAudioTags(file) {
-  return id3.fromPath(file);
 }

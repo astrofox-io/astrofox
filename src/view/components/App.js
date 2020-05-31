@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { events, renderer, reactors } from 'view/global';
+import { api, renderer, reactors } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Modals from 'components/window/Modals';
 import StatusBar from 'components/window/StatusBar';
@@ -102,7 +102,7 @@ function App() {
 
   useEffect(() => {
     dispatch(initApp()).then(() => {
-      events.on('menu-action', handleMenuAction);
+      api.on('menu-action', handleMenuAction);
       renderer.start();
     });
   }, []);

@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { raiseError } from 'actions/errors';
-import { env, logger } from 'view/global';
-import { fileExists, readFileCompressed, writeFileCompressed } from 'utils/io';
+import { api, env, logger } from 'view/global';
 import { uniqueId } from 'utils/crypto';
 import defaultAppConfig from 'config/app.json';
 
@@ -25,9 +24,7 @@ export default configStore.reducer;
 export function saveConfig(config) {
   return async dispatch => {
     try {
-      const data = JSON.stringify(config);
-
-      await writeFileCompressed(APP_CONFIG_FILE, data);
+      await api.saveConfig(config);
 
       logger.log('Config file saved:', APP_CONFIG_FILE, config);
 
@@ -40,19 +37,18 @@ export function saveConfig(config) {
 
 export function loadConfig() {
   return async dispatch => {
-    if (fileExists(APP_CONFIG_FILE)) {
-      try {
-        const data = await readFileCompressed(APP_CONFIG_FILE);
-        const config = JSON.parse(data);
+    try {
+      const config = await api.loadConfig();
 
-        logger.log('Config file loaded:', APP_CONFIG_FILE, config);
-
-        dispatch(setConfig(config));
-      } catch (error) {
-        dispatch(raiseError('Failed to load config file.', error));
+      if (config === null) {
+        return dispatch(setConfig({ ...defaultAppConfig, uid: uniqueId() }));
       }
-    } else {
-      dispatch(setConfig({ ...defaultAppConfig, uid: uniqueId() }));
+
+      logger.log('Config file loaded:', APP_CONFIG_FILE, config);
+
+      dispatch(setConfig(config));
+    } catch (error) {
+      dispatch(raiseError('Failed to load config file.', error));
     }
   };
 }

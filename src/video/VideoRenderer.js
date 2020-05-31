@@ -3,15 +3,14 @@ import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
-import { logger, getEnvironment } from 'view/global';
-import { removeFile } from 'utils/io';
+import { api, logger } from 'view/global';
 import { uniqueId } from 'utils/crypto';
 
 export default class VideoRenderer extends EventEmitter {
   constructor(renderer) {
     super();
 
-    const { FFMPEG_PATH } = getEnvironment();
+    const { FFMPEG_PATH } = api.getEnvironment();
 
     this.renderer = renderer;
     this.renderProcess = new RenderProcess(FFMPEG_PATH);
@@ -64,7 +63,7 @@ export default class VideoRenderer extends EventEmitter {
       const id = uniqueId();
       const { audioFile, videoFile, renderProcess, audioProcess, mergeProcess } = this;
       const { fps, timeStart, timeEnd, format } = this.config;
-      const { TEMP_PATH } = getEnvironment();
+      const { TEMP_PATH } = api.getEnvironment();
       const tempVideoFile = path.join(TEMP_PATH, `${id}.video`);
       const tempAudioFile = path.join(TEMP_PATH, `${id}.audio`);
 
@@ -99,8 +98,8 @@ export default class VideoRenderer extends EventEmitter {
 
       // Remove temp files
       if (process.env.NODE_ENV === 'production') {
-        await removeFile(outputVideoFile);
-        await removeFile(outputAudioFile);
+        await api.removeFile(outputVideoFile);
+        await api.removeFile(outputAudioFile);
       }
     } catch (error) {
       logger.error(error);

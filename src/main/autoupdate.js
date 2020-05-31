@@ -1,70 +1,58 @@
+import { ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import * as os from 'os';
 import debug from 'debug';
-import { getWindow } from './window';
+import { sendMessage } from './window';
 import { USER_AGENT } from './environment';
 
 const log = debug('autoupdate');
 
-export default class AppUpdater {
-  constructor() {
-    const platform = os.platform();
+export default function init() {
+  autoUpdater.autoDownload = false;
+  autoUpdater.requestHeaders = { 'User-Agent': USER_AGENT };
 
-    if (platform === 'linux') {
-      return;
-    }
+  autoUpdater.on('error', error => {
+    log('update-error');
 
-    autoUpdater.autoDownload = false;
-    autoUpdater.requestHeaders = { 'User-Agent': USER_AGENT };
+    sendMessage('update-error', error.stack || error.message || error);
+  });
 
-    autoUpdater.on('error', error => {
-      log('update-error');
+  autoUpdater.on('checking-for-update', () => {
+    log('checking-for-update');
+  });
 
-      this.sendMessage('update-error', error.stack || error.message || error);
-    });
+  autoUpdater.on('update-available', info => {
+    log('update-available');
 
-    autoUpdater.on('checking-for-update', () => {
-      log('checking-for-update');
-    });
+    sendMessage('update-available', info);
+  });
 
-    autoUpdater.on('update-available', info => {
-      log('update-available');
+  autoUpdater.on('update-not-available', info => {
+    log('update-not-available');
 
-      this.sendMessage('update-available', info);
-    });
+    sendMessage('update-not-available', info);
+  });
 
-    autoUpdater.on('update-not-available', info => {
-      log('update-not-available');
+  autoUpdater.on('download-progress', progress => {
+    log('download-progress', progress);
 
-      this.sendMessage('update-not-available', info);
-    });
+    sendMessage('download-progress', progress);
+  });
 
-    autoUpdater.on('download-progress', progress => {
-      log('download-progress', progress);
+  autoUpdater.on('update-downloaded', info => {
+    log('update-downloaded');
 
-      this.sendMessage('download-progress', progress);
-    });
+    sendMessage('update-downloaded', info);
+  });
 
-    autoUpdater.on('update-downloaded', info => {
-      log('update-downloaded');
+  ipcMain.handle('check-for-updates', () => {
+    return autoUpdater.checkForUpdates();
+  });
 
-      this.sendMessage('update-downloaded', info);
-    });
-  }
+  ipcMain.handle('download-update', () => {
+    return autoUpdater.downloadUpdate();
+  });
 
-  checkForUpdates() {
-    autoUpdater.checkForUpdates();
-  }
-
-  quitAndInstall() {
-    autoUpdater.quitAndInstall();
-  }
-
-  downloadUpdate() {
-    autoUpdater.downloadUpdate();
-  }
-
-  sendMessage(channel, data) {
-    getWindow().webContents.send(channel, data);
-  }
+  ipcMain.handle('quit-and-install', () => {
+    return autoUpdater.quitAndInstall();
+  });
 }

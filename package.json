@@ -10,10 +10,11 @@
   "scripts": {
     "start": "electron ./app",
     "dev": "webpack-dev-server --progress --colors --config webpack.config.view.js",
-    "dev-main": "webpack --progress --watch --config webpack.config.main.js",
+    "dev-electron": "webpack --progress --watch --config webpack.config.electron.js",
     "build-dev": "webpack --progress --config webpack.config.js",
     "build-prod": "cross-env NODE_ENV=production webpack --progress --config webpack.config.js",
     "build-main": "webpack --config webpack.config.main.js",
+    "build-preload": "webpack --config webpack.config.preload.js",
     "build-win": "electron-builder --x64 --win",
     "build-mac": "electron-builder --x64 --mac",
     "lint": "eslint src || exit 0",

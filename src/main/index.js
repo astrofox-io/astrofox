@@ -1,12 +1,12 @@
-import { app, systemPreferences, ipcMain, session } from 'electron';
+import { app, systemPreferences, session, BrowserWindow } from 'electron';
 import fs from 'fs';
 import debug from 'debug';
 import * as env from './environment';
-import AppUpdater from './autoupdate';
+import initMenu from './menu';
+import initAutoUpdate from './autoupdate';
 import { createWindow, disposeWindow } from './window';
 
 const log = debug('main');
-const appUpdater = new AppUpdater();
 
 // Show environment
 log('NODE_ENV', process.env.NODE_ENV);
@@ -38,6 +38,9 @@ if (process.env.NODE_ENV !== 'production') {
 // Application events
 app.on('ready', () => {
   log('ready');
+
+  initMenu();
+  initAutoUpdate();
 
   // Modify the user agent for all requests to the following urls
   const filter = {
@@ -73,22 +76,11 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   log('activate');
 
-  createWindow();
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });
 
 app.on('will-quit', () => {
   log('will-quit');
-});
-
-// IPC events
-ipcMain.on('check-for-updates', () => {
-  appUpdater.checkForUpdates();
-});
-
-ipcMain.on('download-update', () => {
-  appUpdater.downloadUpdate();
-});
-
-ipcMain.on('quit-and-install', () => {
-  appUpdater.quitAndInstall();
 });

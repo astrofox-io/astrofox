@@ -1,13 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
+import path from 'path';
 import Icon from 'components/interface/Icon';
 import Spinner from 'components/interface/Spinner';
 import useCombinedRefs from 'components/hooks/useCombinedRefs';
 import { raiseError } from 'actions/errors';
-import { showOpenDialog } from 'utils/window';
-import { readFileAsBlob, readAsDataUrl } from 'utils/io';
+import { blobToDataUrl, dataToBlob } from 'utils/data';
 import { ignoreEvents } from 'utils/react';
+import { api } from 'view/global';
 import { FolderOpen, Times } from 'view/icons';
 import { BLANK_IMAGE } from 'view/constants';
 import styles from './ImageInput.less';
@@ -33,17 +34,21 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
   async function loadImageFile(file) {
     try {
       setLoading(true);
-      const blob = await readFileAsBlob(file);
+
+      const fileData = await api.readFile(file);
+      const blob = await dataToBlob(fileData, path.extname(file));
 
       if (!/^image/.test(blob.type)) {
         throw new Error('Invalid image file.');
       }
 
-      const data = await readAsDataUrl(blob);
-      return loadImageSrc(data);
+      const dataUrl = await blobToDataUrl(blob);
+
+      return loadImageSrc(dataUrl);
     } catch (error) {
-      setLoading(false);
       dispatch(raiseError('Invalid image file.', error));
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -55,7 +60,7 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
   }
 
   async function handleClick() {
-    const { filePaths, canceled } = await showOpenDialog();
+    const { filePaths, canceled } = await api.showOpenDialog();
 
     if (!canceled) {
       await loadImageFile(filePaths[0]);

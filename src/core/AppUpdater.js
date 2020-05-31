@@ -1,6 +1,5 @@
-import { ipcRenderer } from 'electron';
 import EventEmitter from 'core/EventEmitter';
-import { logger } from 'view/global';
+import { api, logger } from 'view/global';
 
 export default class AppUpdater extends EventEmitter {
   constructor(properties = {}) {
@@ -17,7 +16,7 @@ export default class AppUpdater extends EventEmitter {
     this.properties = properties;
 
     // New version available
-    ipcRenderer.on('update-available', (event, info) => {
+    api.on('update-available', info => {
       this.checking = false;
       this.checked = true;
       this.hasUpdate = true;
@@ -34,7 +33,7 @@ export default class AppUpdater extends EventEmitter {
     });
 
     // Already at latest version
-    ipcRenderer.on('update-not-available', (event, info) => {
+    api.on('update-not-available', info => {
       this.checking = false;
       this.checked = true;
       this.info = info;
@@ -45,7 +44,7 @@ export default class AppUpdater extends EventEmitter {
     });
 
     // Update downloaded successfully
-    ipcRenderer.on('update-downloaded', (event, info) => {
+    api.on('update-downloaded', info => {
       this.downloading = false;
       this.downloadComplete = true;
       this.info = info;
@@ -56,7 +55,7 @@ export default class AppUpdater extends EventEmitter {
     });
 
     // Update error
-    ipcRenderer.on('update-error', (event, error) => {
+    api.on('update-error', error => {
       logger.error('Update error:', error);
 
       this.error = error;
@@ -70,7 +69,7 @@ export default class AppUpdater extends EventEmitter {
 
       logger.time('check-for-updates');
 
-      ipcRenderer.send('check-for-updates');
+      api.send('check-for-updates');
     }
   }
 
@@ -80,7 +79,7 @@ export default class AppUpdater extends EventEmitter {
 
       logger.time('download-update');
 
-      ipcRenderer.send('download-update');
+      api.send('download-update');
     }
   }
 
@@ -88,7 +87,7 @@ export default class AppUpdater extends EventEmitter {
     if (!this.installing) {
       this.installing = true;
 
-      ipcRenderer.send('quit-and-install');
+      api.send('quit-and-install');
     }
   }
 }

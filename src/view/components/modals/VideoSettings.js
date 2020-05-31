@@ -7,7 +7,6 @@ import Button from 'components/interface/Button';
 import ButtonRow from 'components/layout/ButtonRow';
 import TimeInfo from 'components/player/TimeInfo';
 import { ButtonInput } from 'components/inputs';
-import { showSaveDialog } from 'utils/window';
 import { replaceExt } from 'utils/file';
 import { FolderOpen } from 'view/icons';
 import { openAudioFile } from 'actions/audio';
@@ -60,7 +59,7 @@ export default function VideoSettings({ onClose }) {
   }
 
   async function handleOpenVideoFile() {
-    const { filePath, canceled } = await showSaveDialog({ defaultPath: `video.${format}` });
+    const { filePath, canceled } = await api.showSaveDialog({ defaultPath: `video.${format}` });
 
     if (!canceled) {
       setState(state => ({ ...state, videoFile: replaceExt(filePath, `.${format}`) }));
