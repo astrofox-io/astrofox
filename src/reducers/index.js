@@ -8,6 +8,7 @@ import project from 'actions/project';
 import reactors from 'actions/reactors';
 import scenes from 'actions/scenes';
 import stage from 'actions/stage';
+import updates from 'actions/updates';
 import video from 'actions/video';
 
 export default combineReducers({
@@ -20,5 +21,6 @@ export default combineReducers({
   reactors,
   scenes,
   stage,
+  updates,
   video,
 });

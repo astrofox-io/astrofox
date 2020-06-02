@@ -1,5 +1,6 @@
 import path from 'path';
 import { app } from 'electron';
+import { machineIdSync } from 'node-machine-id';
 import os from 'os';
 
 const version = app.getVersion();
@@ -20,3 +21,4 @@ export const APP_CONFIG_FILE = path.join(
 );
 export const LICENSE_FILE = path.join(USER_DATA_PATH, 'license.dat');
 export const ELECTRON_VERSION = process.versions.electron;
+export const MACHINE_ID = machineIdSync();

@@ -1,89 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { updater } from 'global';
-import Button from 'components/interface/Button';
-import Checkmark from 'components/interface/Checkmark';
-import Spinner from 'components/interface/Spinner';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Icon, Spinner, Checkmark } from 'components/interface';
+import { Warning } from 'view/icons';
+import { checkForUpdates, downloadUpdate, quitAndInstall } from 'actions/updates';
 import styles from './AppUpdates.less';
 
 export default function AppUpdates({ onClose }) {
-  const [status, setStatus] = useState();
+  const dispatch = useDispatch();
+  const updates = useSelector(state => state.updates);
   const {
-    checking,
+    status,
     checked,
-    error,
-    installing,
-    downloading,
-    downloadComplete,
     hasUpdate,
-  } = updater;
+    downloadComplete,
+    downloadProgress,
+    error,
+    updateInfo,
+  } = updates;
 
-  let installButton;
-  let downloadButton;
-  let closeText = 'Close';
-
-  useEffect(() => {
-    updater.on('status', setStatus, this);
-
-    if (!checking && !downloading && !downloadComplete && !installing) {
-      // Let css animation complete
-      setTimeout(() => {
-        updater.checkForUpdates();
-      }, 1000);
-    }
-
-    return () => {
-      updater.off('status', setStatus, this);
-    };
-  });
-
-  function installUpdate() {
-    updater.quitAndInstall();
+  function handleInstall() {
+    dispatch(quitAndInstall());
   }
 
-  function downloadUpdate() {
-    updater.downloadUpdate();
+  function handleDownload() {
+    dispatch(downloadUpdate());
   }
 
   function getMessage() {
-    const {
-      info: { version },
-    } = updater;
-
-    let message = 'Checking for updates...';
-
     if (error) {
-      message = 'An error has occured. Unable to check for updates.';
-    } else if (downloading) {
-      message = 'Downloading update...';
-    } else if (installing) {
-      message = 'Installing update...';
+      return 'An error has occured. Unable to check for updates.';
+    } else if (status === 'downloading') {
+      return `Downloading update... ${~~downloadProgress}%`;
     } else if (downloadComplete) {
-      message = `A new update (${version}) is ready to install.`;
+      return `A new update (${updateInfo.version}) is ready to install.`;
     } else if (hasUpdate) {
-      message = `A new update (${version}) is available to download and install.`;
+      return `A new update (${updateInfo.version}) is available to download and install.`;
     } else if (checked) {
-      message = 'You have the latest version.';
+      return 'You have the latest version.';
     }
-
-    return message;
+    return 'Checking for updates...';
   }
 
   function getIcon() {
-    return status && checked && !hasUpdate ? (
-      <Checkmark className={styles.icon} size={30} />
-    ) : (
-      <Spinner className={styles.icon} size={30} />
-    );
+    if (error) {
+      return <Icon className={styles.icon} glyph={Warning} />;
+    } else if (checked && status === null) {
+      return <Checkmark className={styles.icon} size={30} />;
+    }
+
+    return <Spinner className={styles.icon} size={30} />;
   }
 
-  if (downloadComplete && !installing) {
-    installButton = <Button text="Restart and Install Now" onClick={installUpdate} />;
-    closeText = 'Install Later';
-  }
-
-  if (hasUpdate && !downloading && !downloadComplete) {
-    downloadButton = <Button text="Download Now" onClick={downloadUpdate} />;
-  }
+  useEffect(() => {
+    if (!checked) {
+      setTimeout(() => dispatch(checkForUpdates()), 1000);
+    }
+  }, []);
 
   return (
     <>
@@ -92,9 +64,15 @@ export default function AppUpdates({ onClose }) {
         {getMessage()}
       </div>
       <div className={styles.buttons}>
-        {installButton}
-        {downloadButton}
-        <Button className={styles.button} text={closeText} onClick={onClose} />
+        {hasUpdate && !downloadComplete && status !== 'downloading' && (
+          <Button text="Download update" onClick={handleDownload} />
+        )}
+        {downloadComplete && <Button text="Restart and install update" onClick={handleInstall} />}
+        <Button
+          className={styles.button}
+          text={downloadComplete ? 'Restart later' : 'Close'}
+          onClick={onClose}
+        />
       </div>
     </>
   );

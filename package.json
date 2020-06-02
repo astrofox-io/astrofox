@@ -92,6 +92,7 @@
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.15",
     "mime": "^2.4.5",
+    "node-machine-id": "^1.1.12",
     "prop-types": "^15.7.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -101,6 +102,7 @@
     "react-window": "^1.8.5",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "semver": "^7.3.2",
     "three": "^0.116.1",
     "tinycolor2": "^1.4.1"
   },

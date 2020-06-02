@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { api, events, updater, renderer, stage, logger } from 'view/global';
-import menuConfig from 'view/config/menu';
+import { api, renderer, stage, logger } from 'view/global';
 import { loadConfig } from 'actions/config';
 import { newProject } from 'actions/project';
+import { checkForUpdates, updateDownloadProgress } from 'actions/updates';
 import { raiseError } from 'actions/errors';
+import { showModal } from './modals';
 
 const initialState = {
   statusText: '',
@@ -58,10 +59,20 @@ export function initApp() {
     await dispatch(loadConfig());
     await dispatch(newProject());
 
-    const { checkForUpdates } = getState().config;
+    const { config } = getState();
 
-    if (checkForUpdates) {
-      updater.checkForUpdates();
+    api.on('download-progress', info => {
+      dispatch(updateDownloadProgress(info));
+    });
+
+    if (config.checkForUpdates) {
+      await dispatch(checkForUpdates());
+
+      const { hasUpdate } = getState().updates;
+
+      if (hasUpdate) {
+        dispatch(showModal('AppUpdates', { title: 'Updates' }));
+      }
     }
   };
 }

@@ -4,8 +4,6 @@ export { send, on, once, off, invoke } from 'main/api/ipc';
 export { spawnProcess } from 'main/api/process';
 export { getEnvironment } from 'main/api/remote';
 export {
-  getCurrentWindow,
-  getDialog,
   maximizeWindow,
   minimizeWindow,
   unmaximizeWindow,

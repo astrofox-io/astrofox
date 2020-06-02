@@ -3,14 +3,6 @@ import { remote } from 'electron';
 const win = remote.getCurrentWindow();
 const { dialog } = remote;
 
-export function getCurrentWindow() {
-  return win;
-}
-
-export function getDialog() {
-  return dialog;
-}
-
 export function maximizeWindow() {
   if (win.isMaximized()) {
     win.unmaximize();

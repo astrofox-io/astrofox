@@ -13,7 +13,7 @@ export default function init() {
   autoUpdater.on('error', error => {
     log('update-error');
 
-    sendMessage('update-error', error.stack || error.message || error);
+    sendMessage('update-error', error);
   });
 
   autoUpdater.on('checking-for-update', () => {
