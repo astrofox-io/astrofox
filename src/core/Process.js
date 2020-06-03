@@ -13,10 +13,10 @@ export default class Process extends EventEmitter {
 
     const handlers = {
       onStdOut: data => {
-        this.emit('data', data);
+        this.emit('stdout', data);
       },
       onStdErr: data => {
-        this.emit('data', data);
+        this.emit('stderr', data);
       },
       onClose: (code, signal) => {
         logger.log('Process ended with code', code, 'and signal', signal);

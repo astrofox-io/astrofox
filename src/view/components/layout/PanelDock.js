@@ -7,6 +7,7 @@ import useMeasure from '../hooks/useMeasure';
 
 export default function PanelDock({
   direction = 'vertical',
+  side = 'right',
   width,
   height,
   visible = true,
@@ -27,6 +28,10 @@ export default function PanelDock({
       className={classNames(styles.dock, {
         [styles.vertical]: direction === 'vertical',
         [styles.horizontal]: direction !== 'vertical',
+        [styles.top]: side === 'top',
+        [styles.right]: side === 'right',
+        [styles.bottom]: side === 'bottom',
+        [styles.left]: side === 'left',
         [styles.hidden]: !visible,
       })}
       style={{

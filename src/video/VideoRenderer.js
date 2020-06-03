@@ -17,8 +17,8 @@ export default class VideoRenderer extends EventEmitter {
     this.audioProcess = new AudioProcess(FFMPEG_PATH);
     this.mergeProcess = new MergeProcess(FFMPEG_PATH);
 
-    this.renderProcess.on('data', data => {
-      logger.log(data.toString());
+    this.renderProcess.on('output', data => {
+      logger.log(data);
 
       // Start requesting frames
       if (!this.started) {
@@ -27,12 +27,12 @@ export default class VideoRenderer extends EventEmitter {
       }
     });
 
-    this.audioProcess.on('data', data => {
-      logger.log(data.toString());
+    this.audioProcess.on('output', data => {
+      logger.log(data);
     });
 
-    this.mergeProcess.on('data', data => {
-      logger.log(data.toString());
+    this.mergeProcess.on('output', data => {
+      logger.log(data);
     });
   }
 
@@ -95,12 +95,6 @@ export default class VideoRenderer extends EventEmitter {
       // Merge audio and video
       this.currentProcess = mergeProcess;
       await mergeProcess.start(outputVideoFile, outputAudioFile, videoFile);
-
-      // Remove temp files
-      if (process.env.NODE_ENV === 'production') {
-        await api.removeFile(outputVideoFile);
-        await api.removeFile(outputAudioFile);
-      }
     } catch (error) {
       logger.error(error);
 

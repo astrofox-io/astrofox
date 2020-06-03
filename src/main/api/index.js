@@ -1,5 +1,12 @@
 export { loadAudioTags } from 'main/api/audio';
 export { loadConfig, saveConfig } from 'main/api/config';
+export {
+  loadProjectFile,
+  saveProjectFile,
+  readImageFile,
+  saveImageFile,
+  readAudioFile,
+} from 'main/api/files';
 export { send, on, once, off, invoke } from 'main/api/ipc';
 export { spawnProcess } from 'main/api/process';
 export { getEnvironment } from 'main/api/remote';
@@ -12,4 +19,3 @@ export {
   showOpenDialog,
   showSaveDialog,
 } from 'main/api/window';
-export { readFile, readFileCompressed, writeFile, writeFileCompressed, removeFile } from 'utils/io';

@@ -1,12 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
-import path from 'path';
 import Icon from 'components/interface/Icon';
 import Spinner from 'components/interface/Spinner';
 import useCombinedRefs from 'components/hooks/useCombinedRefs';
 import { raiseError } from 'actions/errors';
-import { blobToDataUrl, dataToBlob } from 'utils/data';
 import { ignoreEvents } from 'utils/react';
 import { api } from 'view/global';
 import { FolderOpen, Times } from 'view/icons';
@@ -35,14 +33,7 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
     try {
       setLoading(true);
 
-      const fileData = await api.readFile(file);
-      const blob = await dataToBlob(fileData, path.extname(file));
-
-      if (!/^image/.test(blob.type)) {
-        throw new Error('Invalid image file.');
-      }
-
-      const dataUrl = await blobToDataUrl(blob);
+      const dataUrl = await api.readImageFile(file);
 
       return loadImageSrc(dataUrl);
     } catch (error) {

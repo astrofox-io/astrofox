@@ -77,7 +77,7 @@ export function initApp() {
   };
 }
 
-export function saveImage(file) {
+export function saveImage() {
   return async dispatch => {
     const { filePath, canceled } = await api.showSaveDialog({
       defaultPath: `image-${Date.now()}.png`,
@@ -91,7 +91,7 @@ export function saveImage(file) {
 
         const buffer = stage.getImage();
 
-        await api.writeFile(file, buffer);
+        await api.saveImageFile(filePath, buffer);
 
         logger.log('Image saved:', filePath);
       } catch (error) {

@@ -149,30 +149,14 @@ export function checkUnsavedChanges(menuAction, action) {
 
 export function loadProjectFile(file) {
   return async dispatch => {
-    function loadData(data) {
-      dispatch(loadProject(JSON.parse(data)));
-
-      dispatch(loadScenes());
-
-      dispatch(updateProject({ file, opened: Date.now(), lastModified: 0 }));
-    }
-
-    function handleError(error) {
-      dispatch(raiseError('Invalid project file.', error));
-    }
-
     try {
-      const data = await api.readFileCompressed(file);
+      const data = await api.loadProjectFile(file);
 
-      loadData(data);
-    } catch (error) {
-      if (error.message.indexOf('incorrect header check') > -1) {
-        const data = await api.readFile(file);
-
-        loadData(data).catch(handleError);
-      } else {
-        handleError(error);
-      }
+      await dispatch(loadProject(data));
+      await dispatch(loadScenes());
+      await dispatch(updateProject({ file, opened: Date.now(), lastModified: 0 }));
+    } catch (e) {
+      return dispatch(raiseError('Invalid project file.', e));
     }
   };
 }
@@ -188,7 +172,7 @@ export function saveProjectFile(file) {
       };
 
       try {
-        await api.writeFileCompressed(file, JSON.stringify(data));
+        await api.saveProjectFile(file, data);
 
         logger.log('Project saved:', file, data);
 

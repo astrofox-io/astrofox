@@ -9,7 +9,7 @@
     "selector-pseudo-class-no-unknown": [
       true,
       {
-        "ignorePseudoClasses": ["horizontal", "vertical"]
+        "ignorePseudoClasses": ["global", "horizontal", "vertical"]
       }
     ]
   },

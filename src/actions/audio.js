@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import path from 'path';
 import { api, analyzer, logger, player } from 'view/global';
 import { setStatusText } from 'actions/app';
 import { raiseError } from 'actions/errors';
-import { blobToArrayBuffer, dataToBlob } from 'utils/data';
 import { loadAudioData } from 'utils/audio';
 import { trimChars } from 'utils/string';
 
@@ -34,10 +32,8 @@ export function loadAudioFile(file, play) {
     logger.time('audio-file-load');
 
     try {
-      const fileData = await api.readFile(file);
-      const blob = await dataToBlob(fileData, path.extname(file));
-      const arrayBuffer = await blobToArrayBuffer(blob);
-      const audio = await loadAudioData(arrayBuffer);
+      const data = await api.readAudioFile(file);
+      const audio = await loadAudioData(data);
       const duration = audio.getDuration();
 
       player.load(audio);

@@ -44,7 +44,7 @@ export default class AudioProcess extends Process {
       });
 
       this.on('stderr', data => {
-        this.emit('data', data);
+        this.emit('output', data);
       });
 
       const args = ['-y', '-i', audioFile, '-ss', timeStart, '-t', duration, '-c:a', codec];

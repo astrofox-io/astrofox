@@ -24,7 +24,7 @@ export default class RenderProcess extends Process {
       });
 
       this.on('stderr', data => {
-        this.emit('data', data);
+        this.emit('output', data);
       });
 
       const args = [
