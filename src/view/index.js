@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import App from 'components/App';
 import * as globals from './global';
 import getStore from './store';
-import 'assets/index.html';
-import 'assets/fonts.css';
 import 'styles/index.less';
+import './fonts.css';
+import './index.html';
 
 const store = getStore();
 

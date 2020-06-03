@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { player } from 'global';
+import { api, player } from 'global';
 import { Settings, Setting } from 'components/editing';
 import Layout from 'components/layout/Layout';
 import Button from 'components/interface/Button';
@@ -39,11 +39,9 @@ export default function VideoSettings({ onClose }) {
     }));
   }, []);
 
-  function handleChange(name, value) {
-    const props = { [name]: value };
-
-    if (name === 'format' && videoFile) {
-      props.videoFile = replaceExt(videoFile, `.${value}`);
+  function handleChange(props) {
+    if (props.format && videoFile) {
+      props.videoFile = replaceExt(videoFile, `.${props.format}`);
     }
 
     setState(state => ({ ...state, ...props }));

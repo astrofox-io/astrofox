@@ -11,33 +11,29 @@ export default class Process extends EventEmitter {
   start(args) {
     logger.log('Starting process:', this.command, (args || []).join(' '));
 
+    const handlers = {
+      onStdOut: data => {
+        this.emit('data', data);
+      },
+      onStdErr: data => {
+        this.emit('data', data);
+      },
+      onClose: (code, signal) => {
+        logger.log('Process ended with code', code, 'and signal', signal);
+
+        this.emit('close', code, signal);
+      },
+      onExit: (code, signal) => {
+        this.emit('exit', code, signal);
+      },
+      onError: err => {
+        this.emit('error', err);
+      },
+    };
+
     // Spawn process
-    const { process, stop, push } = api.spawnProcess(this.command, args);
+    const { stop, push } = api.spawnProcess(this.command, args, handlers);
 
-    // Connect handlers
-    process.stdout.on('data', data => {
-      this.emit('stdout', data);
-    });
-
-    process.stderr.on('data', data => {
-      this.emit('stderr', data);
-    });
-
-    process.on('close', (code, signal) => {
-      logger.log('Process ended with code', code, 'and signal', signal);
-
-      this.emit('close', code, signal);
-    });
-
-    process.on('exit', (code, signal) => {
-      this.emit('exit', code, signal);
-    });
-
-    process.on('error', err => {
-      this.emit('error', err);
-    });
-
-    this.process = process;
     this.stop = stop;
     this.push = push;
 
