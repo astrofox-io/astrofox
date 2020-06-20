@@ -2,21 +2,13 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Icon, Spinner, Checkmark } from 'components/interface';
 import { Warning } from 'view/icons';
-import { checkForUpdates, downloadUpdate, quitAndInstall } from 'actions/updates';
+import { checkForUpdates, downloadUpdate, quitAndInstall, resetUpdates } from 'actions/updates';
 import styles from './AppUpdates.less';
 
 export default function AppUpdates({ onClose }) {
   const dispatch = useDispatch();
   const updates = useSelector(state => state.updates);
-  const {
-    status,
-    checked,
-    hasUpdate,
-    downloadComplete,
-    downloadProgress,
-    error,
-    updateInfo,
-  } = updates;
+  const { status, checked, hasUpdate, downloadComplete, downloadProgress, updateInfo } = updates;
 
   function handleInstall() {
     dispatch(quitAndInstall());
@@ -27,7 +19,7 @@ export default function AppUpdates({ onClose }) {
   }
 
   function getMessage() {
-    if (error) {
+    if (status === 'error') {
       return 'An error has occured. Unable to check for updates.';
     } else if (status === 'downloading') {
       return `Downloading update... ${~~downloadProgress}%`;
@@ -42,7 +34,7 @@ export default function AppUpdates({ onClose }) {
   }
 
   function getIcon() {
-    if (error) {
+    if (status === 'error') {
       return <Icon className={styles.icon} glyph={Warning} />;
     } else if (checked && status === null) {
       return <Checkmark className={styles.icon} size={30} />;
@@ -55,6 +47,10 @@ export default function AppUpdates({ onClose }) {
     if (!checked) {
       setTimeout(() => dispatch(checkForUpdates()), 1000);
     }
+
+    return () => {
+      dispatch(resetUpdates());
+    };
   }, []);
 
   return (

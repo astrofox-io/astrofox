@@ -5,6 +5,7 @@ import ZoomBlurShader from 'shaders/ZoomBlurShader';
 import ShaderPass from 'graphics/ShaderPass';
 import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import { val2pct } from 'utils/math';
+import { isDefined } from 'utils/array';
 
 const shaderOptions = {
   Box: BoxBlurShader,
@@ -33,19 +34,12 @@ export default class BlurEffect extends Effect {
   }
 
   update(properties) {
-    const { type } = this.properties;
-    const changed = super.update(properties);
-
-    if (changed) {
-      if (properties.type !== undefined && properties.type !== type) {
-        this.setPass(this.getShaderPass(properties.type));
-      }
-      if (properties.amount !== undefined || properties.x !== undefined || properties.y !== undefined) {
-        this.updatePass();
-      }
+    const { type } = properties;
+    if (type !== undefined && type !== this.properties.type) {
+      this.setPass(this.getShaderPass(type));
     }
 
-    return changed;
+    return super.update(properties);
   }
 
   updatePass() {

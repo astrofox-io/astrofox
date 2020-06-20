@@ -8,7 +8,7 @@ import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
-  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_CANVAS_BGCOLOR,
 } from 'view/constants';
 import { isDefined } from 'utils/array';
 
@@ -18,7 +18,7 @@ export default class Stage extends Entity {
   static defaultProperties = {
     width: DEFAULT_CANVAS_WIDTH,
     height: DEFAULT_CANVAS_HEIGHT,
-    backgroundColor: DEFAULT_BACKGROUND_COLOR,
+    backgroundColor: DEFAULT_CANVAS_BGCOLOR,
     zoom: 100,
   };
 

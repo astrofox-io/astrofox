@@ -3,14 +3,14 @@ import { stage } from 'view/global';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
-  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_CANVAS_BGCOLOR,
 } from 'view/constants';
 import { clamp } from 'utils/math';
 
 const initialState = {
   width: DEFAULT_CANVAS_WIDTH,
   height: DEFAULT_CANVAS_HEIGHT,
-  backgroundColor: DEFAULT_BACKGROUND_COLOR,
+  backgroundColor: DEFAULT_CANVAS_BGCOLOR,
   zoom: 100,
   loading: false,
 };

@@ -56,20 +56,32 @@ export function quitAndInstall() {
 
 export function checkForUpdates() {
   return async (dispatch, getState) => {
-    await dispatch(updateState({ status: 'checking', lastCheck: Date.now() }));
+    await dispatch(updateState({ status: 'checking', error: null, lastCheck: Date.now() }));
 
-    const { updateInfo } = await api.invoke('check-for-updates');
+    try {
+      const { updateInfo } = await api.invoke('check-for-updates');
 
-    const hasUpdate = semver.gt(updateInfo.version, env.APP_VERSION);
-    const { config } = getState();
-    const status = config.autoUpdate && hasUpdate ? 'downloading' : null;
+      const hasUpdate = semver.gt(updateInfo.version, env.APP_VERSION);
+      const { config } = getState();
+      const status = config.autoUpdate && hasUpdate ? 'downloading' : null;
 
-    logger.log('Update check complete:', updateInfo);
+      logger.log('Update check complete:', updateInfo);
 
-    await dispatch(updateState({ checked: true, status, updateInfo, hasUpdate }));
+      await dispatch(updateState({ checked: true, status, updateInfo, hasUpdate }));
 
-    if (config.autoUpdate && hasUpdate) {
-      dispatch(downloadUpdate());
+      if (config.autoUpdate && hasUpdate) {
+        dispatch(downloadUpdate());
+      }
+    } catch (e) {
+      dispatch(updateState({ status: 'error' }));
+
+      logger.error('Update check failed:', e);
     }
+  };
+}
+
+export function resetUpdates() {
+  return dispatch => {
+    dispatch(updateState({ status: null, error: null }));
   };
 }

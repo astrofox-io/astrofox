@@ -14,7 +14,7 @@ import AudioReactor from 'audio/AudioReactor';
 import * as displays from 'displays';
 import * as effects from 'effects';
 import {
-  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_CANVAS_BGCOLOR,
   DEFAULT_CANVAS_HEIGHT,
   DEFAULT_CANVAS_WIDTH,
 } from 'view/constants';
@@ -118,14 +118,14 @@ export function newProject() {
     await dispatch(resetScenes());
     await dispatch(resetReactors());
     await dispatch(
-      updateCanvas(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, DEFAULT_BACKGROUND_COLOR),
+      updateCanvas(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_BGCOLOR),
     );
 
     const scene = stage.addScene();
 
     scene.addElement(new displays.ImageDisplay());
     scene.addElement(new displays.BarSpectrumDisplay());
-    scene.addElement(new displays.TextDisplay({ text: 'hello.' }));
+    scene.addElement(new displays.TextDisplay());
 
     dispatch(loadScenes());
     dispatch(loadReactors());
