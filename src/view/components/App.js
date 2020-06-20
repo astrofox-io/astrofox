@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { api, renderer, reactors } from 'view/global';
-import { WEB_URL } from 'view/constants';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
 import Modals from 'components/window/Modals';
@@ -121,12 +120,6 @@ function App() {
       </Layout>
       <StatusBar />
       <Modals />
-      <iframe
-        src={WEB_URL}
-        width={0}
-        height={0}
-        style={{ display: 'none', visibility: 'hidden' }}
-      />
     </Layout>
   );
 }

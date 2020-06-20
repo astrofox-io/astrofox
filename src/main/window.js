@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, BrowserView } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import url from 'url';
@@ -81,6 +81,12 @@ export function createWindow() {
       }
     });
   }
+
+  // Create view
+  const view = new BrowserView();
+  win.setBrowserView(view);
+  view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+  view.webContents.loadURL('https://astrofox.io/hello');
 
   // Load index page
   win.loadURL(

@@ -56,7 +56,7 @@ export function quitAndInstall() {
 
 export function checkForUpdates() {
   return async (dispatch, getState) => {
-    await dispatch(updateState({ status: 'checking', error: null, lastCheck: Date.now() }));
+    await dispatch(updateState({ status: 'checking', lastCheck: Date.now() }));
 
     try {
       const { updateInfo } = await api.invoke('check-for-updates');
@@ -82,6 +82,6 @@ export function checkForUpdates() {
 
 export function resetUpdates() {
   return dispatch => {
-    dispatch(updateState({ status: null, error: null }));
+    dispatch(updateState({ status: null }));
   };
 }
