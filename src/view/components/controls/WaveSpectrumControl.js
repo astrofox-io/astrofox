@@ -114,6 +114,7 @@ export default function WaveSpectrumControl({ display, active, stageWidth, stage
         min={0}
         max={360}
         withRange
+        withReactor
       />
       <Option
         label="Opacity"
@@ -124,6 +125,7 @@ export default function WaveSpectrumControl({ display, active, stageWidth, stage
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
     </Control>
   );

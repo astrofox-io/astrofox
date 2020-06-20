@@ -77,7 +77,7 @@ export default class Display extends Entity {
       const output = data.reactors[id];
 
       if (output !== undefined) {
-        this.properties[prop] = (max - min) * output + min;
+        this.update({ [prop]: (max - min) * output + min });
       }
     });
   }

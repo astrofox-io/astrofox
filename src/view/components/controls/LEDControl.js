@@ -16,9 +16,28 @@ export default function LEDControl({ display, active }) {
         min={1}
         max={100}
         withRange
+        withReactor
       />
-      <Option label="Size" type="number" name="size" value={size} min={0} max={100} withRange />
-      <Option label="Blur" type="number" name="blur" value={blur} min={0} max={100} withRange />
+      <Option
+        label="Size"
+        type="number"
+        name="size"
+        value={size}
+        min={0}
+        max={100}
+        withRange
+        withReactor
+      />
+      <Option
+        label="Blur"
+        type="number"
+        name="blur"
+        value={blur}
+        min={0}
+        max={100}
+        withRange
+        withReactor
+      />
     </Control>
   );
 }

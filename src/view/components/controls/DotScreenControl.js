@@ -17,8 +17,18 @@ export default function DotScreenControl({ display, active }) {
         max={2.0}
         step={0.01}
         withRange
+        withReactor
       />
-      <Option label="Angle" type="number" name="angle" value={angle} min={0} max={360} withRange />
+      <Option
+        label="Angle"
+        type="number"
+        name="angle"
+        value={angle}
+        min={0}
+        max={360}
+        withRange
+        withReactor
+      />
     </Control>
   );
 }

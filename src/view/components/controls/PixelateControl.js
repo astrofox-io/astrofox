@@ -21,6 +21,7 @@ export default function PixelateControl({ display, active }) {
         min={minPixelSize}
         max={maxPixelSize}
         withRange
+        withReactor
       />
     </Control>
   );

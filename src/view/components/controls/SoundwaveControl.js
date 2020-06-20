@@ -35,7 +35,7 @@ export default function SoundwaveControl({ display, active, stageWidth, stageHei
         name="width"
         value={width}
         min={0}
-        max={stageWidth}
+        max={stageWidth * 2}
         withRange
       />
       <Option
@@ -84,6 +84,7 @@ export default function SoundwaveControl({ display, active, stageWidth, stageHei
         min={0}
         max={360}
         withRange
+        withReactor
       />
       <Option
         label="Opacity"
@@ -94,6 +95,7 @@ export default function SoundwaveControl({ display, active, stageWidth, stageHei
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
     </Control>
   );

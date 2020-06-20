@@ -17,8 +17,18 @@ export default function RGBShiftControl({ display, stageWidth, active }) {
         max={stageWidth}
         step={1}
         withRange
+        withReactor
       />
-      <Option label="Angle" type="number" name="angle" value={angle} min={0} max={360} withRange />
+      <Option
+        label="Angle"
+        type="number"
+        name="angle"
+        value={angle}
+        min={0}
+        max={360}
+        withRange
+        withReactor
+      />
     </Control>
   );
 }

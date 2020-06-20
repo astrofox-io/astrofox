@@ -89,8 +89,8 @@ export default function GeometryControl({ display, active }) {
         max={1}
         step={0.01}
         withRange
+        withReactor
       />
     </Control>
   );
 }
-

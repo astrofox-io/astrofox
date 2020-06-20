@@ -166,6 +166,7 @@ export default function BarSpectrumControl({ display, active, stageWidth, stageH
         min={0}
         max={360}
         withRange
+        withReactor
       />
       <Option
         label="Opacity"
@@ -176,6 +177,7 @@ export default function BarSpectrumControl({ display, active, stageWidth, stageH
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
     </Control>
   );

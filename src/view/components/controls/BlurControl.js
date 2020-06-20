@@ -20,6 +20,7 @@ export default function BlurControl({ display, active, stageWidth, stageHeight }
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
       {type === 'Zoom' && (
         <>

@@ -107,6 +107,7 @@ export default function ImageControl({ display, active, stageWidth, stageHeight 
         max={disabled ? 0 : 360}
         disabled={disabled}
         withRange
+        withReactor
       />
       <Option
         label="Opacity"
@@ -118,8 +119,8 @@ export default function ImageControl({ display, active, stageWidth, stageHeight 
         step={0.01}
         disabled={disabled}
         withRange
+        withReactor
       />
     </Control>
   );
 }
-

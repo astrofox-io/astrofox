@@ -26,6 +26,7 @@ export default function BloomControl({ display, active }) {
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
       <Option
         label="Threshold"
@@ -36,6 +37,7 @@ export default function BloomControl({ display, active }) {
         max={1.0}
         step={0.01}
         withRange
+        withReactor
       />
     </Control>
   );

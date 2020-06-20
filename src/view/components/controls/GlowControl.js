@@ -17,6 +17,7 @@ export default function GlowControl({ display, active }) {
         step={0.01}
         max={1}
         withRange
+        withReactor
       />
       <Option
         label="Intensity"
@@ -27,6 +28,7 @@ export default function GlowControl({ display, active }) {
         step={0.01}
         max={3}
         withRange
+        withReactor
       />
     </Control>
   );
