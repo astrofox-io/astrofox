@@ -1,10 +1,14 @@
 import { Menu } from 'electron';
 import { sendMessage } from 'main/window';
-import menuConfig from 'view/config/menu.json';
+import menuConfig from 'config/menu.json';
 
 export default function init() {
   const { setApplicationMenu, buildFromTemplate } = Menu;
-  const menu = [...menuConfig];
+  let menu = [...menuConfig];
+
+  if (process.env.NODE_ENV === 'production') {
+    menu = menu.filter(item => !item.hidden);
+  }
 
   function executeAction({ action }) {
     sendMessage('menu-action', action);

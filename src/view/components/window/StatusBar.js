@@ -46,7 +46,7 @@ function MemoryInfo() {
 }
 
 function FrameRate() {
-  const [fps, setFps] = useState();
+  const [fps, setFps] = useState(0);
 
   function updateStats(frame) {
     setFps(frame.fps);
