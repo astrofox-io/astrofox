@@ -5,7 +5,7 @@
   "productName": "Astrofox",
   "description": "Astrofox",
   "author": "Mike Cao <mike@mikecao.com>",
-  "homepage": "http://astrofox.io",
+  "homepage": "https://astrofox.io",
   "private": true,
   "dependencies": {}
 }

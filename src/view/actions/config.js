@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { raiseError } from 'actions/errors';
-import { api, env, logger } from 'view/global';
+import { api, env, logger } from 'global';
 import { uniqueId } from 'utils/crypto';
 import defaultAppConfig from 'config/app.json';
 

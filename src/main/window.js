@@ -71,7 +71,7 @@ export function createWindow() {
 
       const dir = fs
         .readdirSync(fullPath)
-        .filter(f => fs.statSync(path.join(fullPath, f)).isDirectory());
+        .filter(file => fs.statSync(path.join(fullPath, file)).isDirectory());
 
       if (dir.length) {
         const extPath = path.join(fullPath, dir[0]);
@@ -96,7 +96,7 @@ export function createWindow() {
           protocol: 'file',
           slashes: true,
         })
-      : 'http://localhost:3000',
+      : `http://localhost:${process.env.PORT}`,
   );
 
   // Show window when DOM ready

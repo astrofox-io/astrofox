@@ -5,7 +5,6 @@ import ZoomBlurShader from 'shaders/ZoomBlurShader';
 import ShaderPass from 'graphics/ShaderPass';
 import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import { val2pct } from 'utils/math';
-import { isDefined } from 'utils/array';
 
 const shaderOptions = {
   Box: BoxBlurShader,

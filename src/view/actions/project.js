@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { api, env, logger, reactors, stage } from 'view/global';
+import { api, env, logger, reactors, stage } from 'global';
 import { updateCanvas } from 'actions/stage';
 import { loadScenes, resetScenes } from 'actions/scenes';
 import { loadReactors, resetReactors } from 'actions/reactors';

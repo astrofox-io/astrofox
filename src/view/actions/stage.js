@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { stage } from 'view/global';
+import { stage } from 'global';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
