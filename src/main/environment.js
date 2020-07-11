@@ -1,7 +1,6 @@
 import path from 'path';
 import os from 'os';
 import { app } from 'electron';
-import { machineIdSync } from 'node-machine-id';
 
 const version = app.getVersion();
 
@@ -23,7 +22,6 @@ export const ELECTRON_VERSION = process.versions.electron;
 export const CHROME_VERSION = process.versions.chrome;
 export const V8_VERSION = process.versions.v8;
 export const NODE_VERSION = process.versions.node;
-export const MACHINE_ID = machineIdSync();
 export const USER_AGENT = [
   `${APP_NAME}/${APP_VERSION} (${OS_PLATFORM})`,
   `Chrome/${CHROME_VERSION}`,
