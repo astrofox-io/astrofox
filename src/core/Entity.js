@@ -23,10 +23,10 @@ export default class Entity {
   }
 
   update(properties = {}) {
-    if (typeof properties === 'function') {
-      return updateExistingProps(this.properties, properties(this.properties));
-    }
-    return updateExistingProps(this.properties, properties);
+    return updateExistingProps(
+      this.properties,
+      typeof properties === 'function' ? properties(this.properties) : properties,
+    );
   }
 
   toString() {

@@ -3,6 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import debug from 'debug';
+import {
+  BROWSER_VIEW_URL,
+  WINDOW_WIDTH,
+  WINDOW_HEIGHT,
+  WINDOW_MINWIDTH,
+  WINDOW_MINHEIGHT,
+  WINDOW_BGCOLOR,
+} from './constants';
 
 const log = debug('window');
 
@@ -20,18 +28,26 @@ export function showWindow() {
   }
 }
 
+export function disposeWindow() {
+  win = null;
+}
+
+export function sendMessage(channel, data) {
+  win.webContents.send(channel, data);
+}
+
 export function createWindow() {
   if (win !== null) return;
 
   // Create window
   win = new BrowserWindow({
+    width: WINDOW_WIDTH,
+    height: WINDOW_HEIGHT,
+    minWidth: WINDOW_MINWIDTH,
+    minHeight: WINDOW_MINHEIGHT,
+    backgroundColor: WINDOW_BGCOLOR,
     show: false,
-    width: 1320,
-    height: 1200,
-    minWidth: 200,
-    minHeight: 100,
     frame: false,
-    backgroundColor: '#222222',
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -71,11 +87,12 @@ export function createWindow() {
 
       const dir = fs
         .readdirSync(fullPath)
-        .filter(f => fs.statSync(path.join(fullPath, f)).isDirectory());
+        .filter(file => fs.statSync(path.join(fullPath, file)).isDirectory());
 
       if (dir.length) {
         const extPath = path.join(fullPath, dir[0]);
         log('Adding extension:', extPath);
+        // Electron 9.0
         // session.loadExtension(extPath);
         BrowserWindow.addExtension(extPath);
       }
@@ -86,7 +103,7 @@ export function createWindow() {
   const view = new BrowserView();
   win.setBrowserView(view);
   view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-  view.webContents.loadURL('https://astrofox.io/hello');
+  view.webContents.loadURL(BROWSER_VIEW_URL);
 
   // Load index page
   win.loadURL(
@@ -96,14 +113,8 @@ export function createWindow() {
           protocol: 'file',
           slashes: true,
         })
-      : 'http://localhost:3000',
+      : `http://localhost:${process.env.PORT}`,
   );
-
-  // Show window when DOM ready
-  webContents.on('dom-ready', () => {
-    log('dom-ready');
-    showWindow();
-  });
 
   // Show window only when ready
   win.on('ready-to-show', () => {
@@ -114,19 +125,9 @@ export function createWindow() {
   // Window close
   win.on('close', () => {
     log('close');
-    win = null;
   });
 
   win.on('closed', () => {
     log('closed');
-    win = null;
   });
-}
-
-export function disposeWindow() {
-  win = null;
-}
-
-export function sendMessage(channel, data) {
-  win.webContents.send(channel, data);
 }

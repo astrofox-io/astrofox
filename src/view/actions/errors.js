@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { logger } from 'view/global';
+import { logger } from 'global';
 import { showModal } from 'actions/modals';
 
 const initialState = {

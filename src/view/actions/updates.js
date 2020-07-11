@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import semver from 'semver';
-import { api, env, logger } from 'view/global';
+import { api, env, logger } from 'global';
 
 const initialState = {
   status: null,

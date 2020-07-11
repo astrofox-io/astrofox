@@ -123,12 +123,14 @@ export default class Stage extends Entity {
   shiftStageElement(obj, spaces) {
     if (obj instanceof Scene) {
       return this.scenes.shiftElement(obj, spaces);
-    } else {
-      const scene = this.getSceneById(obj.scene.id);
-      if (scene) {
-        return scene.shiftElement(obj, spaces);
-      }
     }
+
+    const scene = this.getSceneById(obj.scene.id);
+
+    if (scene) {
+      return scene.shiftElement(obj, spaces);
+    }
+
     return false;
   }
 

@@ -13,7 +13,6 @@ import {
   PointsMaterial,
   Color,
   Object3D,
-  Texture,
   BoxBufferGeometry,
   SphereBufferGeometry,
   DodecahedronBufferGeometry,

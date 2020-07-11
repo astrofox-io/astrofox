@@ -1,7 +1,7 @@
 import path from 'path';
+import os from 'os';
 import { app } from 'electron';
 import { machineIdSync } from 'node-machine-id';
-import os from 'os';
 
 const version = app.getVersion();
 

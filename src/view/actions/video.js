@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { videoRenderer, player } from 'view/global';
+import { videoRenderer, player } from 'global';
 
 const initialState = {
   rendering: false,

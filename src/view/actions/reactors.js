@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { reactors } from 'view/global';
+import { reactors } from 'global';
 import { setActiveReactorId } from './app';
 
 const reactorStore = createSlice({

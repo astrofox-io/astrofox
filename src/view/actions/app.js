@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { api, renderer, stage, logger } from 'view/global';
+import { api, renderer, stage, logger } from 'global';
 import { loadConfig } from 'actions/config';
 import { newProject } from 'actions/project';
 import { checkForUpdates, updateDownloadProgress } from 'actions/updates';

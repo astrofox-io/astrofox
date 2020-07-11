@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Button from 'components/interface/Button';
 import { videoRenderer } from 'view/global';

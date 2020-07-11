@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { stage } from 'view/global';
+import { stage } from 'global';
 import { setActiveEntityId } from './app';
 
 const sceneStore = createSlice({

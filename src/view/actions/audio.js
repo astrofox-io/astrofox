@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { api, analyzer, logger, player } from 'view/global';
+import { api, analyzer, logger, player } from 'global';
 import { setStatusText } from 'actions/app';
 import { raiseError } from 'actions/errors';
 import { loadAudioData } from 'utils/audio';

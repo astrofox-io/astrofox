@@ -15,7 +15,8 @@
     "plugin:react/recommended",
     "plugin:import/errors",
     "plugin:css-modules/recommended",
-    "airbnb",
+    "airbnb-base",
+    "airbnb/rules/react",
     "prettier",
     "prettier/react"
   ],
