@@ -19,17 +19,3 @@ export const REACTOR_BAR_SPACING = 1;
 
 export const BLANK_IMAGE =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-
-export const WEB_URL = 'https://astrofox.io';
-
-export const PUBLIC_KEY = [
-  '-----BEGIN PUBLIC KEY-----',
-  'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvL3QeOKcvs/jPPazx6hM',
-  'go7FC0QElgjjNMXG8akkRKQXRoxk9sL6Sqgl4Zdd6DCw38HU9+kUvcjz+AdrlASg',
-  'Kp5Lwgow0+SA7NmYWm4FcVwXwazrKy4pewbpyglBxBh1EUmYCn00rSPJ3EyUFaaz',
-  'lRphcaS97OC3Zpn1vh5C2W3OXYWNNes/r5tVspknyB1RImaif6O73dwd6k4sh5K9',
-  'qZm8s0MpSzsaY62150SYxLl8ArmWlPwTyEL8QhHR/DCy3QBVMmmTNtjSObJoxqlY',
-  'vw0bT00QKPQnkNSOBZY5ardTafnE5NNrJkMgTuJ59ayj59/29NxPpy5/tLIqBFIf',
-  'SwIDAQAB',
-  '-----END PUBLIC KEY-----',
-].join('\n');

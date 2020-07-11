@@ -1,6 +1,6 @@
 {
   "name": "astrofox",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "app/main.js",
   "productName": "Astrofox",
   "description": "Astrofox",
@@ -35,7 +35,7 @@
     ],
     "extraResources": [
       {
-        "from": "build/resources/ffmpeg/${os}/${arch}",
+        "from": "resources/ffmpeg/${os}/${arch}",
         "to": "bin"
       }
     ],

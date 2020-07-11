@@ -116,12 +116,6 @@ export function createWindow() {
       : `http://localhost:${process.env.PORT}`,
   );
 
-  // Show window when DOM ready
-  webContents.on('dom-ready', () => {
-    log('dom-ready');
-    showWindow();
-  });
-
   // Show window only when ready
   win.on('ready-to-show', () => {
     log('ready-to-show');
@@ -131,11 +125,9 @@ export function createWindow() {
   // Window close
   win.on('close', () => {
     log('close');
-    win = null;
   });
 
   win.on('closed', () => {
     log('closed');
-    win = null;
   });
 }

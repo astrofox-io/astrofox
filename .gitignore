@@ -21,4 +21,4 @@ node_modules
 bin
 dist
 /app/
-/build/resources/
+/resources/

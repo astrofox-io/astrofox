@@ -10,7 +10,7 @@ export default function getStore(preloadedState) {
   });
 
   if (module.hot) {
-    module.hot.accept('../reducers', () => {
+    module.hot.accept('./reducers', () => {
       store.replaceReducer(rootReducer);
     });
   }

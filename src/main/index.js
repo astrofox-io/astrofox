@@ -30,6 +30,14 @@ app.on('ready', async () => {
   createWindow();
 });
 
+app.on('activate', () => {
+  log('activate');
+
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
 app.on('window-all-closed', () => {
   log('window-all-closed');
 
@@ -37,14 +45,6 @@ app.on('window-all-closed', () => {
 
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('activate', () => {
-  log('activate');
-
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
   }
 });
 
