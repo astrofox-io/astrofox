@@ -126,7 +126,7 @@
     "dotenv": "^8.2.0",
     "electron": "^8.3.0",
     "electron-builder": "^22.6.1",
-    "electron-notarize": "^0.3.0",
+    "electron-notarize": "^1.0.0",
     "electron-updater": "^4.3.1",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.11.0",
