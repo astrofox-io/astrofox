@@ -13,11 +13,13 @@ import { openAudioFile } from 'actions/audio';
 import { startRender } from 'actions/video';
 
 const videoFormats = ['mp4', 'webm'];
+const qualitySettings = ['Low', 'Medium', 'High'];
 
 const initialState = {
   videoFile: '',
   format: 'mp4',
   fps: 60,
+  quality: 'High',
   timeStart: 0,
   timeEnd: 0,
 };
@@ -26,7 +28,7 @@ export default function VideoSettings({ onClose }) {
   const dispatch = useDispatch();
   const { file: audioFile, duration } = useSelector(state => state.audio);
   const [state, setState] = useState(initialState);
-  const { videoFile, format, fps, timeStart, timeEnd } = state;
+  const { videoFile, format, fps, quality, timeStart, timeEnd } = state;
   const canStart = videoFile && audioFile && timeEnd - timeStart > 0;
 
   useEffect(() => {
@@ -100,6 +102,13 @@ export default function VideoSettings({ onClose }) {
           <ButtonInput icon={FolderOpen} title="Open File" onClick={handleOpenAudioFile} />
         </Setting>
         <Setting label="Format" type="select" name="format" items={videoFormats} value={format} />
+        <Setting
+          label="Quality"
+          type="select"
+          name="quality"
+          items={qualitySettings}
+          value={quality}
+        />
         <Setting label="FPS" type="number" name="fps" min={1} max={60} value={fps} />
         <Setting
           label="Start Time"

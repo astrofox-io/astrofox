@@ -6,8 +6,20 @@ const codecOptions = {
   webm: 'libvpx',
 };
 
+const ffmpegQualityOptions = {
+  Low: ['-preset', 'veryfast', '-crf', 23],
+  Medium: ['-preset', 'medium', '-crf', 20],
+  High: ['-preset', 'slow', '-crf', 18],
+};
+
+const webmQualityOptions = {
+  Low: ['-crf', 10],
+  Medium: ['-crf', 5],
+  High: ['-crf', 4],
+};
+
 export default class RenderProcess extends Process {
-  start(file, format, fps) {
+  start(file, format, fps, quality) {
     return new Promise((resolve, reject) => {
       const codec = codecOptions[format];
       const outputFile = replaceExt(file, `.${format}`);
@@ -27,7 +39,7 @@ export default class RenderProcess extends Process {
         this.emit('output', data);
       });
 
-      const args = [
+      let args = [
         '-y',
         '-stats',
         '-r',
@@ -48,20 +60,19 @@ export default class RenderProcess extends Process {
 
       // Encoding options
       if (format === 'mp4') {
-        args.push(
+        args = [
+          ...args,
+          ...ffmpegQualityOptions[quality],
           '-profile:v',
           'high',
-          '-preset',
-          'slow',
-          '-crf',
-          18,
           '-tune',
           'animation',
           '-movflags',
           '+faststart',
-        );
+        ];
       } else if (format === 'webm') {
-        args.push(
+        args = [
+          ...args,
           '-quality',
           'good',
           '-cpu-used',
@@ -72,9 +83,8 @@ export default class RenderProcess extends Process {
           50,
           '-b:v',
           '20M',
-          '-crf',
-          4,
-        );
+          ...webmQualityOptions[quality],
+        ];
       }
 
       // Output file

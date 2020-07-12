@@ -62,7 +62,7 @@ export default class VideoRenderer extends EventEmitter {
 
       const id = uniqueId();
       const { audioFile, videoFile, renderProcess, audioProcess, mergeProcess } = this;
-      const { fps, timeStart, timeEnd, format } = this.config;
+      const { fps, quality, timeStart, timeEnd, format } = this.config;
       const { TEMP_PATH } = api.getEnvironment();
       const tempVideoFile = path.join(TEMP_PATH, `${id}.video`);
       const tempAudioFile = path.join(TEMP_PATH, `${id}.audio`);
@@ -80,7 +80,7 @@ export default class VideoRenderer extends EventEmitter {
 
       // Render video
       this.currentProcess = renderProcess;
-      const outputVideoFile = await renderProcess.start(tempVideoFile, format, fps);
+      const outputVideoFile = await renderProcess.start(tempVideoFile, format, fps, quality);
 
       // Render audio
       this.currentProcess = audioProcess;

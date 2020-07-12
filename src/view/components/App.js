@@ -6,6 +6,7 @@ import { api, renderer, reactors } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
 import Modals from 'components/window/Modals';
+import Preload from 'components/window/Preload';
 import StatusBar from 'components/window/StatusBar';
 import TitleBar from 'components/window/TitleBar';
 import ControlDock from 'components/panels/ControlDock';
@@ -109,6 +110,7 @@ function App() {
 
   return (
     <Layout direction="column" onDrop={ignoreEvents} onDragOver={ignoreEvents} full>
+      <Preload />
       <TitleBar onMenuAction={handleMenuAction} />
       <Layout direction="row">
         <Layout direction="column">

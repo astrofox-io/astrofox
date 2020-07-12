@@ -1,7 +1,8 @@
 import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
 
 const FPS_POLL_INTERVAL = 500;
-const VIDEO_RENDERING = 0;
+const STOP_RENDERING = 0;
+const VIDEO_RENDERING = -1;
 
 export default class Renderer {
   constructor() {
@@ -61,7 +62,7 @@ export default class Renderer {
       window.cancelAnimationFrame(id);
     }
 
-    this.frameData.id = 0;
+    this.frameData.id = STOP_RENDERING;
     this.frameData.time = 0;
     this.rendering = false;
   }
