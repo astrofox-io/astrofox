@@ -79,10 +79,12 @@ export default class VideoRenderer extends EventEmitter {
       );
 
       // Render video
+      this.emit('status', 'Rendering video');
       this.currentProcess = renderProcess;
       const outputVideoFile = await renderProcess.start(tempVideoFile, format, fps, quality);
 
       // Render audio
+      this.emit('status', 'Rendering audio');
       this.currentProcess = audioProcess;
       const outputAudioFile = await audioProcess.start(
         audioFile,
@@ -93,6 +95,7 @@ export default class VideoRenderer extends EventEmitter {
       );
 
       // Merge audio and video
+      this.emit('status', 'Merging audio and video');
       this.currentProcess = mergeProcess;
       await mergeProcess.start(outputVideoFile, outputAudioFile, videoFile);
     } catch (error) {
@@ -102,6 +105,7 @@ export default class VideoRenderer extends EventEmitter {
     } finally {
       this.finished = true;
 
+      this.emit('status', 'Finished');
       this.emit('finished');
       this.off('ready');
 

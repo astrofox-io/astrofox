@@ -15,7 +15,10 @@ const videoStore = createSlice({
     startRender(state, action) {
       player.stop();
       videoRenderer.init(action.payload);
-      videoRenderer.start();
+
+      setTimeout(() => {
+        videoRenderer.start();
+      }, 500);
 
       return { ...action.payload, rendering: true };
     },

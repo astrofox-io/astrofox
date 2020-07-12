@@ -18,12 +18,12 @@ const initialState = {
 export default function RenderPanel({ onClose }) {
   const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
-  const { frames, currentFrame, lastFrame, startTime, finished } = state;
+  const { status, frames, currentFrame, lastFrame, startTime, finished } = state;
   const elapsedTime = (Date.now() - startTime) / 1000;
   const frame = frames - (lastFrame - currentFrame);
   const progress = frames > 0 ? (frame / frames) * 100 : 0;
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
-  const text = finished ? 'Finished' : 'Cancel';
+  const text = finished ? 'Close' : 'Cancel';
   const style = { width: `${progress}%` };
 
   function handleButtonClick() {
@@ -36,6 +36,10 @@ export default function RenderPanel({ onClose }) {
     setState(state => ({ ...state, finished: true }));
   }
 
+  function updateStatus(status) {
+    setState(state => ({ ...state, status }));
+  }
+
   function updateStats(stats) {
     if (stats && stats.currentFrame > currentFrame) {
       setState(state => ({
@@ -46,10 +50,12 @@ export default function RenderPanel({ onClose }) {
   }
 
   useEffect(() => {
+    videoRenderer.on('status', updateStatus);
     videoRenderer.on('stats', updateStats);
     videoRenderer.on('finished', setFinished);
 
     return () => {
+      videoRenderer.off('status', updateStatus);
       videoRenderer.off('stats', updateStats);
       videoRenderer.off('finished', setFinished);
 
@@ -63,11 +69,16 @@ export default function RenderPanel({ onClose }) {
         <div className={styles.progressBar} style={style} />
       </div>
       <div className={styles.stats}>
-        <Stat label="Progress" value={`${~~progress}%`} />
-        <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
-        <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
-        <Stat label="FPS" value={fps.toFixed(1)} />
-        <Button text={text} onClick={handleButtonClick} />
+        <div className={styles.row}>
+          <Stat label="Progress" value={`${~~progress}%`} />
+          <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
+          <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
+          <Stat label="FPS" value={fps.toFixed(1)} />
+          <Button text={text} onClick={handleButtonClick} />
+        </div>
+        <div className={styles.row}>
+          <Stat label="Status" value={status} />
+        </div>
       </div>
     </div>
   );
