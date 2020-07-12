@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "main": "app/main.js",
   "productName": "Astrofox",
-  "description": "Astrofox",
+  "description": "Turn music visualizations into videos",
   "author": "Mike Cao <mike@mikecao.com>",
   "homepage": "https://astrofox.io",
   "private": true,
@@ -17,6 +17,7 @@
     "build-preload": "webpack --config webpack.config.preload.js",
     "build-win": "electron-builder --x64 --win",
     "build-mac": "electron-builder --x64 --mac",
+    "build-linux": "electron-builder --x64 --linux",
     "lint": "eslint src || exit 0",
     "lint-fix": "eslint --fix src || exit 0",
     "lint-check": "eslint --print-config . | eslint-config-prettier-check",
@@ -63,6 +64,9 @@
       ]
     },
     "linux": {
+      "target": [
+        "AppImage"
+      ],
       "category": "AudioVideo"
     }
   },

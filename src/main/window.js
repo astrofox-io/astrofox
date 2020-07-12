@@ -75,6 +75,7 @@ export function createWindow() {
     const dirs = {
       win32: '/AppData/Local/Google/Chrome/User Data/Default/Extensions',
       darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
+      linux: '/.config/google-chrome/Default/Extensions',
     };
 
     // Electron 9.0
@@ -85,16 +86,16 @@ export function createWindow() {
     extensions.forEach(ext => {
       const fullPath = path.join(app.getPath('home'), dirs[process.platform], ext);
 
-      const dir = fs
-        .readdirSync(fullPath)
-        .filter(file => fs.statSync(path.join(fullPath, file)).isDirectory());
+      if (fs.existsSync()) {
+        const versions = fs.readdirSync(fullPath).reverse();
 
-      if (dir.length) {
-        const extPath = path.join(fullPath, dir[0]);
-        log('Adding extension:', extPath);
-        // Electron 9.0
-        // session.loadExtension(extPath);
-        BrowserWindow.addExtension(extPath);
+        if (versions.length) {
+          const extPath = path.join(fullPath, versions[0]);
+          log('Adding extension:', extPath);
+          // Electron 9.0
+          // session.loadExtension(extPath);
+          BrowserWindow.addExtension(extPath);
+        }
       }
     });
   }
