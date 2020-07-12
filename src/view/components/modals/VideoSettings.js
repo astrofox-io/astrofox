@@ -17,7 +17,7 @@ const videoFormats = ['mp4', 'webm'];
 const initialState = {
   videoFile: '',
   format: 'mp4',
-  fps: 30,
+  fps: 60,
   timeStart: 0,
   timeEnd: 0,
 };

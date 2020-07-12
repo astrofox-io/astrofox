@@ -1,6 +1,7 @@
 import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
 
 const FPS_POLL_INTERVAL = 500;
+const VIDEO_RENDERING = 0;
 
 export default class Renderer {
   constructor() {
@@ -68,7 +69,7 @@ export default class Renderer {
   getFrameData(id) {
     const { frameData } = this;
     const isPlaying = player.isPlaying();
-    const requestUpdate = isPlaying || id === 0;
+    const requestUpdate = isPlaying || id === VIDEO_RENDERING;
 
     frameData.id = id;
     frameData.fft = analyzer.getFrequencyData(requestUpdate);
@@ -120,7 +121,7 @@ export default class Renderer {
         bufferSource.connect(analyzer.analyzer);
 
         bufferSource.onended = () => {
-          const data = this.getFrameData(0);
+          const data = this.getFrameData(VIDEO_RENDERING);
 
           data.delta = 1000 / fps;
 

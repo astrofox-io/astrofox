@@ -1,0 +1,52 @@
+@import (reference) 'view/styles/variables';
+
+.titlebar {
+  display: flex;
+  position: relative;
+  height: 40px;
+  background-color: @color-gray75;
+  border-bottom: 1px solid @color-gray300;
+  -webkit-app-region: no-drag;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 0;
+    margin: auto;
+    -webkit-app-region: drag;
+  }
+
+  &.focused {
+    .title {
+      color: @color-text300;
+    }
+  }
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: @font-size-normal;
+  color: @color-text400;
+  line-height: 40px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  cursor: default;
+}
+
+@media only screen and (max-width: 700px) {
+  .title {
+    display: none;
+  }
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  top: 4px;
+  left: 4px;
+}

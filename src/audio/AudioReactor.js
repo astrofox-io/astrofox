@@ -92,7 +92,7 @@ export default class AudioReactor extends Entity {
   }
 
   parse(data) {
-    const { audioPlaying, fft: inputFft } = data;
+    const { hasUpdate, fft: inputFft } = data;
     const fft = this.parser.parseFFT(inputFft);
     const {
       outputMode,
@@ -120,7 +120,7 @@ export default class AudioReactor extends Entity {
         break;
 
       case 'Forward':
-        if (audioPlaying) {
+        if (hasUpdate) {
           output += avg * CYCLE_MODIFIER;
           if (output > 1) {
             output = 1 - output;
@@ -129,7 +129,7 @@ export default class AudioReactor extends Entity {
         break;
 
       case 'Reverse':
-        if (audioPlaying) {
+        if (hasUpdate) {
           output -= avg * CYCLE_MODIFIER;
           if (output < 0) {
             output = 1 - output;
@@ -138,7 +138,7 @@ export default class AudioReactor extends Entity {
         break;
 
       case 'Cycle':
-        if (audioPlaying) {
+        if (hasUpdate) {
           if (this.direction > 0) {
             output += avg * CYCLE_MODIFIER;
             if (output > 1) {

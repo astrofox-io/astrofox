@@ -86,7 +86,7 @@ export function createWindow() {
     extensions.forEach(ext => {
       const fullPath = path.join(app.getPath('home'), dirs[process.platform], ext);
 
-      if (fs.existsSync()) {
+      if (fs.existsSync(fullPath)) {
         const versions = fs.readdirSync(fullPath).reverse();
 
         if (versions.length) {
