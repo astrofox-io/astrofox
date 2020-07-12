@@ -1,6 +1,6 @@
 {
   "name": "astrofox",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "app/main.js",
   "productName": "Astrofox",
   "description": "Turn music visualizations into videos",

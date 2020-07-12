@@ -19,7 +19,7 @@ export default function TitleBar({ onMenuAction }) {
       })}
     >
       <div className={styles.title}>{env.APP_NAME}</div>
-      {!env.IS_MAC && (
+      {!env.IS_MACOS && (
         <>
           <Icon className={styles.icon} glyph={appIcon} />
           <MenuBar items={menuConfig} onMenuAction={onMenuAction} focused={focused} />

@@ -9,6 +9,7 @@ export Cube from 'assets/icons/cube.svg';
 export Cycle from 'assets/icons/cycle.svg';
 export DocumentLandscape from 'assets/icons/document-landscape.svg';
 export DotsHorizontal from 'assets/icons/dots-three-horizontal.svg';
+export Expand from 'assets/icons/expand.svg';
 export Eye from 'assets/icons/eye.svg';
 export FolderOpen from 'assets/icons/folder-open.svg';
 export Flash from 'assets/icons/flash.svg';
