@@ -50,10 +50,15 @@ export function loadAudioFile(file, play) {
       logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
 
       const tags = await api.loadAudioTags(file);
-      const { artist, title } = tags;
 
-      if (artist) {
-        await dispatch(setStatusText(trimChars(`${artist} - ${title}`)));
+      if (tags) {
+        const { artist, title } = tags;
+
+        if (artist) {
+          await dispatch(setStatusText(trimChars(`${artist} - ${title}`)));
+        }
+      } else {
+        await dispatch(setStatusText(trimChars(file)));
       }
 
       dispatch(updateAudio({ file, duration, tags }));
