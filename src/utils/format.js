@@ -34,14 +34,18 @@ export function formatTime(val) {
   return `${h}${m}:${s}`;
 }
 
-export function formatShortTime(val, formats = ['m', 'ms']) {
+export function formatShortTime(val, formats = ['m', 's'], space = '') {
+  if (val === 0) {
+    return `0${formats[formats.length - 1]}`;
+  }
+
   const { days, hours, minutes, seconds, ms } = parseTime(val);
   let t = '';
 
-  if (days > 0 && formats.indexOf('d') !== -1) t += `${days}d`;
-  if (hours > 0 && formats.indexOf('h') !== -1) t += `${hours}h`;
-  if (minutes > 0 && formats.indexOf('m') !== -1) t += `${minutes}m`;
-  if (seconds > 0 && formats.indexOf('s') !== -1) t += `${seconds}s`;
+  if (days > 0 && formats.indexOf('d') !== -1) t += `${days}d${space}`;
+  if (hours > 0 && formats.indexOf('h') !== -1) t += `${hours}h${space}`;
+  if (minutes > 0 && formats.indexOf('m') !== -1) t += `${minutes}m${space}`;
+  if (seconds > 0 && formats.indexOf('s') !== -1) t += `${seconds}s${space}`;
   if (ms > 0 && formats.indexOf('ms') !== -1) t += `${ms}ms`;
 
   return t;

@@ -3,15 +3,15 @@ const { notarize } = require('electron-notarize');
 
 const { APPLEID, APPLEIDPASS } = process.env;
 
-(async function notarizing() {
+(async () => {
   console.log('Staring notarize...');
 
-  const result = await notarize({
+  await notarize({
     appBundleId: 'io.astrofox.app',
     appPath: 'dist/mac/Astrofox.app',
     appleId: APPLEID,
     appleIdPassword: APPLEIDPASS,
   });
 
-  console.log('Notarization complete.', result);
+  console.log('Notarization complete.');
 })();

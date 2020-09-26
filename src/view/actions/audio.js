@@ -54,9 +54,7 @@ export function loadAudioFile(file, play) {
       if (tags) {
         const { artist, title } = tags;
 
-        if (artist) {
-          await dispatch(setStatusText(trimChars(`${artist} - ${title}`)));
-        }
+        await dispatch(setStatusText(trimChars(`${artist} - ${title}`)));
       } else {
         await dispatch(setStatusText(trimChars(file)));
       }
