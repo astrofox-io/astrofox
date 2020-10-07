@@ -7,6 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
+const PORT = process.env.PORT || 3000;
 
 module.exports = {
   mode: PRODUCTION ? 'production' : 'development',
@@ -16,6 +17,7 @@ module.exports = {
     app: path.resolve(__dirname, 'src/view/index.js'),
   },
   devServer: {
+    port: PORT,
     hotOnly: true,
     historyApiFallback: true,
   },

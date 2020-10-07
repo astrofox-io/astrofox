@@ -12,6 +12,7 @@ import {
   WINDOW_BGCOLOR,
 } from './constants';
 
+const PORT = process.env.PORT || 3000;
 const log = debug('window');
 
 let win = null;
@@ -114,7 +115,7 @@ export function createWindow() {
           protocol: 'file',
           slashes: true,
         })
-      : `http://localhost:${process.env.PORT}`,
+      : `http://localhost:${PORT}`,
   );
 
   // Show window only when ready

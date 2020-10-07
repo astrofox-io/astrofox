@@ -1,23 +1,27 @@
 {
   "name": "astrofox",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "app/main.js",
   "productName": "Astrofox",
-  "description": "Turn music visualizations into videos",
+  "description": "Audio reactive motion graphics program",
   "author": "Mike Cao <mike@mikecao.com>",
   "homepage": "https://astrofox.io",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/astrofox-io/astrofox"
+  },
   "scripts": {
-    "start": "cross-env PORT=3000 electron ./app",
-    "dev": "webpack-dev-server --port 3000 --progress --colors --config webpack.config.view.js",
-    "dev-electron": "webpack --progress --watch --config webpack.config.electron.js",
+    "start": "dotenv electron ./app",
+    "dev": "npm-run-all dev-electron dev-view",
+    "dev-view": "dotenv webpack-dev-server --progress --colors --config webpack.config.view.js",
+    "dev-electron": "dotenv webpack --progress --watch --config webpack.config.electron.js",
     "build-dev": "webpack --progress --config webpack.config.js",
     "build-prod": "cross-env NODE_ENV=production webpack --progress --config webpack.config.js",
     "build-main": "webpack --config webpack.config.main.js",
     "build-preload": "webpack --config webpack.config.preload.js",
-    "build-win": "electron-builder --x64 --win",
-    "build-mac": "electron-builder --x64 --mac",
-    "build-linux": "electron-builder --x64 --linux",
+    "build-win": "dotenv electron-builder --x64 --win",
+    "build-mac": "dotenv electron-builder --x64 --mac",
+    "build-linux": "dotenv electron-builder --x64 --linux",
     "lint": "eslint src || exit 0",
     "lint-fix": "eslint --fix src || exit 0",
     "lint-check": "eslint --print-config . | eslint-config-prettier-check",
@@ -36,7 +40,7 @@
     ],
     "extraResources": [
       {
-        "from": "resources/ffmpeg/${os}/${arch}",
+        "from": "resources/ffmpeg/${os}",
         "to": "bin"
       }
     ],
@@ -127,6 +131,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
     "dotenv": "^8.2.0",
+    "dotenv-cli": "^4.0.0",
     "electron": "^8.3.0",
     "electron-builder": "^22.6.1",
     "electron-notarize": "^1.0.0",
@@ -148,6 +153,7 @@
     "less-loader": "^6.1.0",
     "lint-staged": "^10.2.4",
     "mini-css-extract-plugin": "^0.9.0",
+    "npm-run-all": "^4.1.5",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^2.0.5",
     "prettier-eslint": "^10.1.0",
