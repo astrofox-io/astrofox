@@ -4,6 +4,8 @@
 
 Astrofox is a motion graphics program that lets you create music visualizations and turn them into videos.
 
+<img src="https://astrofox.io/images/screenshot.jpg" width="600" />
+
 ## Quick links
 
 - Website: https://astrofox.io
