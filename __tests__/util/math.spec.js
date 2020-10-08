@@ -63,5 +63,5 @@ test('convert radians to degrees properly', () => {
 });
 
 test('find hash code of a string properly', () => {
-    expect(hash("astrofox")).toBe(-332709840);
+  expect(hash("astrofox")).toBe(-332709840);
 });
