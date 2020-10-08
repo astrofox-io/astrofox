@@ -25,6 +25,7 @@ export default function RenderPanel({ onClose }) {
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
   const text = finished ? 'Close' : 'Cancel';
   const style = { width: `${progress}%` };
+  const timeRemaining = (frames * elapsedTime) / frame - elapsedTime;
 
   function handleButtonClick() {
     dispatch(stopRender());
@@ -72,6 +73,7 @@ export default function RenderPanel({ onClose }) {
         <div className={styles.row}>
           <Stat label="Progress" value={`${~~progress}%`} />
           <Stat label="Elapsed Time" value={formatTime(elapsedTime)} />
+          <Stat label="Time Remaining" value={formatTime(timeRemaining)} />
           <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
           <Stat label="FPS" value={fps.toFixed(1)} />
           <Button text={text} onClick={handleButtonClick} />
