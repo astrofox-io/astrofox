@@ -19,6 +19,7 @@ Thumbs.db
 # Project
 node_modules
 bin
+coverage
 dist
 /app/
 /resources/

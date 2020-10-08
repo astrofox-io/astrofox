@@ -15,7 +15,7 @@
     "dev": "npm-run-all dev-electron dev-view",
     "dev-view": "dotenv webpack-dev-server --progress --colors --config webpack.config.view.js",
     "dev-electron": "dotenv webpack --progress --watch --config webpack.config.electron.js",
-    "test": "jest",
+    "test": "jest --coverage",
     "build-dev": "webpack --progress --config webpack.config.js",
     "build-prod": "cross-env NODE_ENV=production webpack --progress --config webpack.config.js",
     "build-main": "webpack --config webpack.config.main.js",
