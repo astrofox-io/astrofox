@@ -1,4 +1,4 @@
-import { isDefined, contains, reverse } from '../../src/utils/array';
+import { isDefined, contains, reverse } from 'utils/array';
 
 test('check if array is defined', () => {
   expect(isDefined([1, 2, 3])).toBe(true);

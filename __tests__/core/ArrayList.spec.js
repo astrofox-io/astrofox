@@ -1,4 +1,4 @@
-import ArrayList from '../../src/core/ArrayList';
+import ArrayList from 'core/ArrayList';
 
 let a;
 

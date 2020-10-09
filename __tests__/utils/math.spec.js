@@ -12,7 +12,7 @@ import {
   deg2rad,
   rad2deg,
   hash,
-} from '../../src/utils/math';
+} from 'utils/math';
 
 test('rounding number properly', () => {
   expect(round(5.1)).toBe(5);
