@@ -25,7 +25,13 @@ export default function RenderPanel({ onClose }) {
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
   const text = finished ? 'Close' : 'Cancel';
   const style = { width: `${progress}%` };
-  const totalTime = frame ? (frames * elapsedTime) / frame : null;
+
+  const totalTime = frame > 0 ? (frames * elapsedTime) / frame : null;
+  const estimatedTotalTimeThreshold = 0.1;
+  const estimatedTotalTime =
+    frame > 0 && frame / frames >= 0.15
+      ? estimatedTotalTimeThreshold && formatTime(totalTime)
+      : '--:-';
 
   function handleButtonClick() {
     dispatch(stopRender());
@@ -72,10 +78,7 @@ export default function RenderPanel({ onClose }) {
       <div className={styles.stats}>
         <div className={styles.row}>
           <Stat label="Progress" value={`${~~progress}%`} />
-          <Stat
-            label="Elapsed Time"
-            value={`${formatTime(elapsedTime)} / ${totalTime && formatTime(totalTime)}`}
-          />
+          <Stat label="Elapsed Time" value={`${formatTime(elapsedTime)} / ${estimatedTotalTime}`} />
           <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
           <Stat label="FPS" value={fps.toFixed(1)} />
           <Button text={text} onClick={handleButtonClick} />
