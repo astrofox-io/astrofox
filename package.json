@@ -90,6 +90,12 @@
       "pre-commit": "lint-staged"
     }
   },
+  "jest": {
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ]
+  },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
     "@reduxjs/toolkit": "^1.3.6",

@@ -12,7 +12,7 @@ import {
   easeInQuint,
   easeOutQuint,
   easeInOutQuint,
-} from '../../src/utils/easing';
+} from 'utils/easing';
 
 test('linear constant', () => {
   expect(linear(10)).toBe(10);
