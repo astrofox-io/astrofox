@@ -26,9 +26,9 @@ export function parseTime(val) {
 }
 
 export function formatTime(val) {
-  const { hour, minutes, seconds } = parseTime(val);
-  const h = hour > 0 ? `${hour}:` : '';
-  const m = hour > 0 ? minutes.toString().padStart(2, '0') : minutes;
+  const { hours, minutes, seconds } = parseTime(val);
+  const h = hours > 0 ? `${hours}:` : '';
+  const m = hours > 0 ? minutes.toString().padStart(2, '0') : minutes;
   const s = seconds.toString().padStart(2, '0');
 
   return `${h}${m}:${s}`;
