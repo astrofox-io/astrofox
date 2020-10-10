@@ -5,7 +5,7 @@ import useEntity from '../hooks/useEntity';
 const mirrorOptions = [
   { name: 'Left 🠖 Right', value: 0 },
   { name: 'Right 🠖 Left', value: 1 },
-  { name: 'Top 🠖 Botom', value: 2 },
+  { name: 'Top 🠖 Bottom', value: 2 },
   { name: 'Bottom 🠖 Top', value: 3 },
 ];
 
