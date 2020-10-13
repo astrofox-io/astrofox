@@ -31,6 +31,10 @@ export function getWindowState() {
   };
 }
 
+export function openDevTools() {
+  win.webContents.openDevTools();
+}
+
 export function showOpenDialog(props) {
   return dialog.showOpenDialog(win, props);
 }

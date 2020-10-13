@@ -54,22 +54,12 @@ export function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
-      devTools: process.env.NODE_ENV !== 'production',
+      devTools: true,
       backgroundThrottling: false,
       textAreasAreResizable: false,
       webgl: true,
     },
   });
-
-  const { webContents } = win;
-
-  // Production settings
-  if (process.env.NODE_ENV === 'production') {
-    // Auto close devtools if opened
-    webContents.on('devtools-opened', () => {
-      webContents.closeDevTools();
-    });
-  }
 
   // Development settings
   if (process.env.NODE_ENV !== 'production') {

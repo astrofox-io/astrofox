@@ -10,11 +10,11 @@ const Menu = ({ items, visible, onMenuItemClick }) => (
     })}
   >
     {items.map((item, index) => {
-      const { type, label, visible: itemVisible, checked, disabled } = item;
+      const { type, label, hidden, checked, disabled } = item;
 
       if (type === 'separator') {
         return <div key={index} className={styles.separator} />;
-      } else if (label && itemVisible !== false) {
+      } else if (label && !hidden) {
         return (
           <MenuItem
             key={index}

@@ -18,4 +18,5 @@ export {
   getWindowState,
   showOpenDialog,
   showSaveDialog,
+  openDevTools,
 } from 'main/api/window';

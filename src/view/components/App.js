@@ -91,6 +91,10 @@ function App() {
         dispatch(showModal('AppUpdates', { title: 'Updates' }));
         break;
 
+      case 'open-dev-tools':
+        api.openDevTools();
+        break;
+
       case 'about':
         dispatch(showModal('About'));
         break;

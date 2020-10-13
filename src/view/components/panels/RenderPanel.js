@@ -30,8 +30,8 @@ export default function RenderPanel({ onClose }) {
   const estimatedTotalTimeThreshold = 0.1;
   const estimatedTotalTime =
     frame > 0 && frame / frames >= 0.15
-      ? estimatedTotalTimeThreshold && formatTime(totalTime)
-      : '--:-';
+      ? ` / ${estimatedTotalTimeThreshold && formatTime(totalTime)}`
+      : '';
 
   function handleButtonClick() {
     dispatch(stopRender());
@@ -78,7 +78,7 @@ export default function RenderPanel({ onClose }) {
       <div className={styles.stats}>
         <div className={styles.row}>
           <Stat label="Progress" value={`${~~progress}%`} />
-          <Stat label="Elapsed Time" value={`${formatTime(elapsedTime)} / ${estimatedTotalTime}`} />
+          <Stat label="Elapsed Time" value={`${formatTime(elapsedTime)}${estimatedTotalTime}`} />
           <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
           <Stat label="FPS" value={fps.toFixed(1)} />
           <Button text={text} onClick={handleButtonClick} />

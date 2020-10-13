@@ -96,11 +96,6 @@
         "label": "Reload",
         "role": "reload",
         "accelerator": "CmdOrCtrl+R"
-      },
-      {
-        "label": "Developer tools",
-        "role": "toggledevtools",
-        "accelerator": "CmdOrCtrl+Shift+I"
       }
     ]
   },
@@ -110,6 +105,12 @@
       {
         "label": "Check For Updates...",
         "action": "check-for-updates"
+      },
+      {
+        "label": "Developer tools",
+        "action": "open-dev-tools",
+        "role": "toggledevtools",
+        "accelerator": "CmdOrCtrl+Shift+I"
       },
       {
         "label": "About",
