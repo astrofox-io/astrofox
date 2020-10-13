@@ -41,7 +41,7 @@
     ],
     "extraResources": [
       {
-        "from": "resources/ffmpeg/${os}",
+        "from": "bin",
         "to": "bin"
       }
     ],
