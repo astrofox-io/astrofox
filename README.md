@@ -2,7 +2,7 @@
 
 ## What is it?
 
-Astrofox is a motion graphics program that lets you create music visualizations and turn them into videos.
+Astrofox is a motion graphics program that lets turn audio into amazing videos.
 
 <img src="https://astrofox.io/images/screenshot.jpg" width="600" />
 
@@ -21,15 +21,16 @@ Astrofox is a motion graphics program that lets you create music visualizations 
 git clone https://github.com/astrofox-io/astrofox.git
 ```
 
-### Install FFmpeg
-
-Create a `bin` folder in the project and place a copy of the [ffmpeg](https://ffmpeg.org/) binary for your OS.
-
-
 ### Install dependencies
 
 ```
 yarn install
+```
+
+### Install FFmpeg
+
+```
+yarn install-ffmpeg
 ```
 
 ### Start development server
@@ -39,6 +40,8 @@ yarn dev
 ```
 
 ### Start Electron
+
+In a separate console window:
 ```
 yarn start
 ```

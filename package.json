@@ -1,21 +1,23 @@
 {
   "name": "astrofox",
-  "version": "0.1.7",
-  "main": "app/main.js",
+  "version": "0.1.8",
   "productName": "Astrofox",
   "description": "Audio reactive motion graphics program",
   "author": "Mike Cao <mike@mikecao.com>",
+  "license": "MIT",
   "homepage": "https://astrofox.io",
   "repository": {
     "type": "git",
     "url": "https://github.com/astrofox-io/astrofox"
   },
+  "main": "app/main.js",
   "scripts": {
     "start": "dotenv electron ./app",
-    "dev": "npm-run-all dev-electron dev-view",
+    "dev": "npm-run-all init-app dev-electron dev-view",
+    "build":  "npm-run-all init-app build-prod",
+    "test": "jest --coverage",
     "dev-view": "dotenv webpack-dev-server --progress --colors --config webpack.config.view.js",
     "dev-electron": "dotenv webpack --progress --watch --config webpack.config.electron.js",
-    "test": "jest --coverage",
     "build-dev": "webpack --progress --config webpack.config.js",
     "build-prod": "cross-env NODE_ENV=production webpack --progress --config webpack.config.js",
     "build-main": "webpack --config webpack.config.main.js",
@@ -26,8 +28,10 @@
     "lint": "eslint src || exit 0",
     "lint-fix": "eslint --fix src || exit 0",
     "lint-check": "eslint --print-config . | eslint-config-prettier-check",
+    "stylelint": "stylelint src/view/components",
     "notarize": "node ./scripts/notarize.js",
-    "stylelint": "stylelint src/view/components"
+    "init-app": "node scripts/init-app.js",
+    "install-ffmpeg": "node scripts/install-ffmpeg.js"
   },
   "build": {
     "appId": "io.astrofox.app",
@@ -35,7 +39,6 @@
     "asar": true,
     "files": [
       "**/*",
-      "!**/*.map",
       "!*.yml",
       "!*.lock"
     ],
