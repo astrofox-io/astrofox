@@ -1,55 +1,33 @@
-import { remote } from 'electron';
-
-const win = remote.getCurrentWindow();
-const { dialog } = remote;
+import { invoke } from './ipc';
 
 export function maximizeWindow() {
-  if (win.isMaximized()) {
-    win.unmaximize();
-  } else {
-    win.maximize();
-  }
+  return invoke('maximize-window');
 }
 
 export function unmaximizeWindow() {
-  win.unmaximize();
+  return invoke('unmaximize-window');
 }
 
 export function minimizeWindow() {
-  win.minimize();
+  return invoke('minimize-window');
 }
 
 export function closeWindow() {
-  win.close();
-}
-
-export function getWindowState() {
-  return {
-    focused: win.isFocused(),
-    maximized: win.isMaximized(),
-    minimized: win.isMinimized(),
-  };
+  return invoke('close-window');
 }
 
 export function openDevTools() {
-  win.webContents.openDevTools();
+  return invoke('open-dev-tools');
 }
 
-export function showOpenDialog(props) {
-  return dialog.showOpenDialog(win, props);
+export async function showOpenDialog(props) {
+  return invoke('show-open-dialog', props);
 }
 
-export function showSaveDialog(props) {
-  return dialog.showSaveDialog(win, props);
+export async function showSaveDialog(props) {
+  return invoke('show-save-dialog', props);
 }
 
-function updateWindowState() {
-  win.webContents.send('window-state-changed', getWindowState());
+export async function getWindowState() {
+  return invoke('get-window-state');
 }
-
-// Events
-win.on('minimize', updateWindowState);
-win.on('maximize', updateWindowState);
-win.on('unmaximize', updateWindowState);
-win.on('focus', updateWindowState);
-win.on('blur', updateWindowState);

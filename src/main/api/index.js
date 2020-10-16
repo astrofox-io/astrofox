@@ -7,9 +7,8 @@ export {
   saveImageFile,
   readAudioFile,
 } from 'main/api/files';
-export { send, on, once, off, invoke } from 'main/api/ipc';
+export { send, on, once, off, invoke, log, getGlobal } from 'main/api/ipc';
 export { spawnProcess } from 'main/api/process';
-export { getEnvironment } from 'main/api/remote';
 export {
   maximizeWindow,
   minimizeWindow,

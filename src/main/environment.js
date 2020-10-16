@@ -15,7 +15,7 @@ export const TEMP_PATH = path.join(app.getPath('temp'), APP_NAME);
 export const FFMPEG_PATH = path.join(APP_PATH, '..', 'bin', IS_WINDOWS ? 'ffmpeg.exe' : 'ffmpeg');
 export const APP_CONFIG_FILE = path.join(
   USER_DATA_PATH,
-  process.env.NODE_ENV === 'production' ? 'app.config' : 'app-dev.config',
+  process.env.NODE_ENV === 'production' ? 'app.config' : 'app.dev.config',
 );
 export const LICENSE_FILE = path.join(USER_DATA_PATH, 'license.dat');
 export const ELECTRON_VERSION = process.versions.electron;

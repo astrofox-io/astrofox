@@ -72,7 +72,7 @@ export function openAudioFile(play) {
       filters: [
         {
           name: 'audio files',
-          extensions: ['aac', 'flac', 'mp3', 'm4a', 'ogg', 'wav'],
+          extensions: ['aac', 'flac', 'mp3', 'm4a', 'opus', 'ogg', 'wav'],
         },
       ],
     });

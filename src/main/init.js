@@ -6,6 +6,7 @@ import { removeFile, createFolder } from 'utils/io';
 import * as env from './environment';
 import initMenu from './menu';
 import initAutoUpdate from './autoupdate';
+import initEvents from './events';
 
 const log = debug('init');
 
@@ -22,6 +23,7 @@ export default async function init() {
   await removeTempFiles();
 
   initMenu();
+  initEvents();
   initAutoUpdate();
 
   // Modify the user agent for all requests to the following urls

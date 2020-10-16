@@ -37,6 +37,18 @@ export function sendMessage(channel, data) {
   win.webContents.send(channel, data);
 }
 
+export function getWindowState() {
+  return {
+    focused: win.isFocused(),
+    maximized: win.isMaximized(),
+    minimized: win.isMinimized(),
+  };
+}
+
+export function updateWindowState() {
+  sendMessage('window-state-changed', getWindowState());
+}
+
 export function createWindow() {
   if (win !== null) return;
 
@@ -54,9 +66,10 @@ export function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
-      devTools: true,
+      enableRemoteModule: false,
       backgroundThrottling: false,
       textAreasAreResizable: false,
+      devTools: true,
       webgl: true,
     },
   });
@@ -122,4 +135,11 @@ export function createWindow() {
   win.on('closed', () => {
     log('closed');
   });
+
+  // State events
+  win.on('minimize', updateWindowState);
+  win.on('maximize', updateWindowState);
+  win.on('unmaximize', updateWindowState);
+  win.on('focus', updateWindowState);
+  win.on('blur', updateWindowState);
 }

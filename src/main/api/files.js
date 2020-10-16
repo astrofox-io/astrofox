@@ -43,8 +43,15 @@ export async function readAudioFile(file) {
   const fileData = await readFile(file);
   const blob = await dataToBlob(fileData, path.extname(file));
 
-  if (!/^audio/.test(blob.type)) {
-    throw new Error('Invalid audio file.');
+  let { type } = blob;
+
+  // mime module does not recognize opus
+  if (file.endsWith('.opus')) {
+    type = 'audio/opus';
+  }
+
+  if (!/^audio/.test(type)) {
+    throw new Error(`Unrecognized audio type: ${type}`);
   }
 
   return blobToArrayBuffer(blob);

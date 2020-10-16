@@ -23,3 +23,11 @@ export function off(channel, callback) {
 export async function invoke(channel, data) {
   return ipcRenderer.invoke(channel, data);
 }
+
+export function log(data) {
+  return invoke('log', data);
+}
+
+export async function getGlobal(key) {
+  return invoke('get-global', key);
+}

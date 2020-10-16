@@ -2,7 +2,7 @@ import { api } from 'view/global';
 import { useEffect, useCallback, useState } from 'react';
 
 export default function useWindowState() {
-  const [state, setState] = useState(api.getWindowState());
+  const [state, setState] = useState({});
 
   const updateState = useCallback(
     newState => {
