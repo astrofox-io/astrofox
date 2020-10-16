@@ -21,16 +21,16 @@ Astrofox is a motion graphics program that lets turn audio into amazing videos.
 git clone https://github.com/astrofox-io/astrofox.git
 ```
 
-### Install dependencies
-
-```
-yarn install
-```
-
 ### Install FFmpeg
 
 ```
 yarn install-ffmpeg
+```
+
+### Install dependencies
+
+```
+yarn install
 ```
 
 ### Start development server
@@ -39,7 +39,7 @@ yarn install-ffmpeg
 yarn dev
 ```
 
-### Start Electron
+### Start application
 
 In a separate console window:
 ```
