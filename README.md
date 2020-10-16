@@ -8,6 +8,7 @@ Astrofox is a motion graphics program that lets turn audio into amazing videos.
 
 ## Quick links
 
+- Demo video: https://www.youtube.com/watch?v=IbvuniqNPPw
 - Website: https://astrofox.io
 - Discord chat: https://discord.gg/wJ6pyMZ
 - Reddit forum: https://www.reddit.com/r/astrofox/
