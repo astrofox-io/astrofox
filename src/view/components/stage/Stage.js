@@ -5,16 +5,18 @@ import RenderPanel from 'components/panels/RenderPanel';
 import Overlay from 'components/window/Overlay';
 import { stage } from 'view/global';
 import { ignoreEvents } from 'utils/react';
-import { setLoading } from 'actions/stage';
-import { loadAudioFile } from 'actions/audio';
 import { stopRender } from 'actions/video';
 import styles from './Stage.less';
+import useAudioStore, { loadAudioFile } from '../../stores/audio';
 
 export default function Stage() {
   const dispatch = useDispatch();
-  const { loading, width, height, zoom } = useSelector(state => state.stage);
+  const { width, height, zoom } = useSelector(state => state.stage);
   const { rendering } = useSelector(state => state.video);
   const canvas = useRef(null);
+  const loading = useAudioStore(state => state.loading);
+
+  console.log({ loading });
 
   useEffect(() => {
     stage.init(canvas.current);
@@ -26,9 +28,7 @@ export default function Stage() {
     const file = e.dataTransfer.files[0];
 
     if (file && !rendering) {
-      await dispatch(setLoading(true));
-      await dispatch(loadAudioFile(file.path));
-      await dispatch(setLoading(false));
+      await loadAudioFile(file.path);
     }
   }
 

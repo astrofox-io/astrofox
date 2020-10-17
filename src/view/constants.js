@@ -9,6 +9,7 @@ export const SAMPLE_RATE = 44100;
 export const DEFAULT_CANVAS_WIDTH = 854;
 export const DEFAULT_CANVAS_HEIGHT = 480;
 export const DEFAULT_CANVAS_BGCOLOR = '#000000';
+export const DEFAULT_ZOOM = 100;
 
 export const PRIMARY_COLOR = '#704dd8';
 

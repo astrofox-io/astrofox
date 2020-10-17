@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import Button from 'components/interface/Button';
 import { videoRenderer } from 'view/global';
 import { formatTime } from 'utils/format';
-import { stopRender } from 'actions/video';
+import { stopRender } from 'stores/video';
 import styles from './RenderPanel.less';
 
 const initialState = {

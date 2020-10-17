@@ -21,6 +21,9 @@ if (process.env.NODE_ENV !== 'production') {
   app.commandLine.appendSwitch('enable-precise-memory-info');
 }
 
+// Electron bug: https://github.com/electron/electron/issues/22119
+app.allowRendererProcessReuse = false;
+
 // Application events
 app.on('ready', async () => {
   log('ready');

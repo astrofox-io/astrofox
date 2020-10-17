@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { env, events } from 'view/global';
+import useAppStore from 'view/stores/app';
 import { formatSize } from 'utils/format';
 import ZoomControl from 'components/window/ZoomControl';
 import styles from './StatusBar.less';
@@ -8,7 +8,7 @@ import styles from './StatusBar.less';
 const { APP_VERSION } = env;
 
 export default function StatusBar() {
-  const statusText = useSelector(state => state.app.statusText);
+  const statusText = useAppStore(state => state.statusText);
 
   return (
     <div className={styles.statusBar}>
