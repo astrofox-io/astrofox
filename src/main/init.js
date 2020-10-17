@@ -1,4 +1,5 @@
-import { session, systemPreferences } from 'electron';
+import { app, session, systemPreferences } from 'electron';
+import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
 import debug from 'debug';
@@ -12,8 +13,38 @@ const log = debug('init');
 
 async function removeTempFiles() {
   const files = glob.sync('*.*', { cwd: env.TEMP_PATH });
+  const promises = [];
 
-  files.forEach(file => removeFile(path.join(env.TEMP_PATH, file)));
+  files.forEach(file => promises.push(removeFile(path.join(env.TEMP_PATH, file))));
+
+  return Promise.all(promises);
+}
+
+function loadExtensions(session) {
+  const dirs = {
+    win32: '/AppData/Local/Google/Chrome/User Data/Default/Extensions',
+    darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
+    linux: '/.config/google-chrome/Default/Extensions',
+  };
+
+  const extensions = ['fmkadmapgofadopljbjfkapdkoienihi', 'lmhkpmbekcpmknklioeibfkpmmfibljd'];
+  const promises = [];
+
+  for (const ext of extensions) {
+    const fullPath = path.join(app.getPath('home'), dirs[process.platform], ext);
+
+    const dir = fs
+      .readdirSync(fullPath)
+      .filter(file => fs.statSync(path.join(fullPath, file)).isDirectory());
+
+    if (dir.length) {
+      log('Adding extension:', ext);
+      const extPath = path.join(fullPath, dir[0]);
+      promises.push(session.loadExtension(extPath));
+    }
+  }
+
+  return Promise.all(promises);
 }
 
 export default async function init() {
@@ -21,6 +52,10 @@ export default async function init() {
 
   await createFolder(env.TEMP_PATH);
   await removeTempFiles();
+
+  if (process.env !== 'production') {
+    await loadExtensions(session.defaultSession);
+  }
 
   initMenu();
   initEvents();

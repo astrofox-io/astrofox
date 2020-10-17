@@ -1,10 +1,8 @@
-import { app, BrowserWindow, BrowserView } from 'electron';
-import fs from 'fs';
+import { BrowserWindow, BrowserView } from 'electron';
 import path from 'path';
 import url from 'url';
 import debug from 'debug';
 import {
-  BROWSER_VIEW_URL,
   WINDOW_WIDTH,
   WINDOW_HEIGHT,
   WINDOW_MINWIDTH,
@@ -74,41 +72,16 @@ export function createWindow() {
     },
   });
 
-  // Development settings
-  if (process.env.NODE_ENV !== 'production') {
-    const dirs = {
-      win32: '/AppData/Local/Google/Chrome/User Data/Default/Extensions',
-      darwin: '/Library/Application Support/Google/Chrome/Default/Extensions',
-      linux: '/.config/google-chrome/Default/Extensions',
-    };
-
-    // Electron 9.0
-    // const { session } = webContents;
-
-    const extensions = ['fmkadmapgofadopljbjfkapdkoienihi', 'lmhkpmbekcpmknklioeibfkpmmfibljd'];
-
-    extensions.forEach(ext => {
-      const fullPath = path.join(app.getPath('home'), dirs[process.platform], ext);
-
-      if (fs.existsSync(fullPath)) {
-        const versions = fs.readdirSync(fullPath).reverse();
-
-        if (versions.length) {
-          const extPath = path.join(fullPath, versions[0]);
-          log('Adding extension:', extPath);
-          // Electron 9.0
-          // session.loadExtension(extPath);
-          BrowserWindow.addExtension(extPath);
-        }
-      }
+  if (process.env === 'production') {
+    const view = new BrowserView();
+    win.setBrowserView(view);
+    view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+    view.webContents.on('did-finish-load', () => {
+      view.destroy();
     });
-  }
 
-  // Create view
-  const view = new BrowserView();
-  win.setBrowserView(view);
-  view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-  view.webContents.loadURL(BROWSER_VIEW_URL);
+    view.webContents.loadURL('https://astrofox.io/hello');
+  }
 
   // Load index page
   win.loadURL(

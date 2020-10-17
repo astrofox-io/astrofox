@@ -2,14 +2,13 @@
   "presets": [
     ["@babel/env", {
       "targets": {
-        "electron": "8.2.0"
+        "electron": "10.1.3"
       }
     }],
     "@babel/react"
   ],
   "plugins": [
     "react-hot-loader/babel",
-    "@babel/transform-runtime",
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",
     "@babel/proposal-optional-chaining",
@@ -21,13 +20,12 @@
       "presets": [
         ["@babel/env", {
           "targets": {
-            "electron": "8.2.0"
+            "electron": "10.1.3"
           }
         }],
         "@babel/react"
       ],
       "plugins": [
-        "@babel/transform-runtime",
         "@babel/proposal-class-properties",
         "@babel/proposal-object-rest-spread",
         "@babel/proposal-optional-chaining",
