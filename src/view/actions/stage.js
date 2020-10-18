@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { stage } from 'view/global';
 import {
   DEFAULT_CANVAS_BGCOLOR,
   DEFAULT_CANVAS_HEIGHT,
@@ -19,14 +20,20 @@ const stageStore = create(() => ({
   ...initialState,
 }));
 
+export function updateStage(props) {
+  stageStore.setState(props);
+
+  stage.update(props);
+}
+
 export function updateCanvas(width, height, backgroundColor) {
-  stageStore.setState({ width, height, backgroundColor });
+  updateStage({ width, height, backgroundColor });
 
   touchProject();
 }
 
 export function setZoom(zoom) {
-  stageStore.setState({ zoom });
+  updateStage({ zoom });
 }
 
 export default stageStore;

@@ -4,7 +4,7 @@ import { Warning } from 'view/icons';
 import useError, { clearError } from 'actions/error';
 
 export default function ErrorDialog({ onClose }) {
-  const message = useError(state => state.errors.message);
+  const message = useError(state => state.message);
 
   function handleConfirm() {
     clearError();
