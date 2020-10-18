@@ -6,6 +6,7 @@ import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_ZOOM,
 } from 'view/constants';
+import { clamp } from 'utils/math';
 import { touchProject } from './project';
 
 const initialState = {
@@ -32,8 +33,12 @@ export function updateCanvas(width, height, backgroundColor) {
   touchProject();
 }
 
-export function setZoom(zoom) {
-  updateStage({ zoom });
+export function setZoom(value) {
+  const { zoom } = stageStore.getState();
+
+  const newValue = value === 0 ? 100 : clamp(zoom + value * 10, 10, 100);
+
+  updateStage({ zoom: newValue });
 }
 
 export default stageStore;

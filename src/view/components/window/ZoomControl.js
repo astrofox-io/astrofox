@@ -7,7 +7,7 @@ export default function Zoom() {
 
   return (
     <div className={styles.zoom}>
-      <span className={styles.label}>{`${width} x ${height}`}</span>
+      <span className={styles.label} onClick={() => setZoom(0)}>{`${width} x ${height}`}</span>
       <span className={styles.button} onClick={() => setZoom(-1)}>
         {'\uff0d'}
       </span>

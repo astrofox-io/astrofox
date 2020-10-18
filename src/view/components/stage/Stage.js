@@ -11,7 +11,7 @@ import useAudioStore, { loadAudioFile } from 'actions/audio';
 import styles from './Stage.less';
 
 export default function Stage() {
-  const [width, height, zoom] = useStage(state => [state.height, state.width, state.zoom], shallow);
+  const [width, height, zoom] = useStage(state => [state.width, state.height, state.zoom], shallow);
   const rendering = useVideo(state => state.rendering);
   const canvas = useRef(null);
   const loading = useAudioStore(state => state.loading);
@@ -33,6 +33,8 @@ export default function Stage() {
   async function handleRenderClose() {
     await stopRender();
   }
+
+  console.log({ width, height, zoom });
 
   const style = {
     width: `${width * (zoom / 100)}px`,
