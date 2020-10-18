@@ -2,7 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import { Flash } from 'view/icons';
-import { addReactor, setActiveReactor } from 'actions/reactors';
+import { setActiveReactorId } from 'actions/app';
+import { addReactor } from 'actions/reactors';
 import { loadScenes } from 'actions/scenes';
 import styles from './ReactorButton.less';
 
@@ -11,13 +12,13 @@ export default function ReactorButton({ display, name, min = 0, max = 1, classNa
 
   async function enableReactor() {
     if (reactor) {
-      setActiveReactor(reactor);
+      setActiveReactorId(reactor?.id);
     } else {
       const newReactor = await addReactor();
 
       display.setReactor(name, { id: newReactor.id, min, max });
 
-      setActiveReactor(newReactor);
+      setActiveReactorId(newReactor?.id);
       loadScenes();
     }
   }

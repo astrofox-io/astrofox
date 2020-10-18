@@ -1,27 +1,25 @@
 import create from 'zustand';
 import { reactors } from 'global';
+import { setActiveReactorId } from './app';
 
 const initialState = {
   reactors: [],
-  activeReactor: null,
 };
 
 const reactorStore = create(() => ({
   ...initialState,
 }));
 
-export function setActiveReactor(reactor) {
-  reactorStore.setState({ activeReactor: reactor });
-}
-
 export function loadReactors() {
   reactorStore.setState({ reactors: reactors.toJSON() });
 }
 
 export function resetReactors() {
+  reactorStore.setState({ ...initialState });
+
   reactors.clearReactors();
 
-  setActiveReactor(null);
+  setActiveReactorId(null);
 }
 
 export function addReactor(reactor) {

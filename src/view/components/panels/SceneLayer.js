@@ -12,7 +12,7 @@ const icons = {
   [DISPLAY_TYPE_EFFECT]: LightUp,
 };
 
-export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUpdate }) {
+export default function SceneLayer({ scene, activeElementId, onLayerClick, onLayerUpdate }) {
   const [expanded, setExpanded] = useState(true);
   const {
     id,
@@ -30,7 +30,7 @@ export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUp
       icon={icons[type]}
       className={styles.child}
       enabled={enabled}
-      active={activeLayer === id}
+      active={id === activeElementId}
       onLayerClick={onLayerClick}
       onLayerUpdate={onLayerUpdate}
     />
@@ -48,7 +48,7 @@ export default function SceneLayer({ scene, activeLayer, onLayerClick, onLayerUp
         name={displayName}
         icon={Picture}
         enabled={enabled}
-        active={activeLayer === id}
+        active={id === activeElementId}
         onLayerClick={onLayerClick}
         onLayerUpdate={onLayerUpdate}
       />

@@ -4,27 +4,28 @@ import { touchProject } from './project';
 
 const initialState = {
   scenes: [],
-  activeElement: null,
 };
 
 const sceneStore = create(() => ({
   ...initialState,
 }));
 
-export function setActiveElement(element) {
-  sceneStore.setState({ activeElement: element });
-}
-
-export function loadScenes() {
+export function loadScenes(touch = true) {
   sceneStore.setState({ scenes: stage.scenes.toJSON() });
 
-  touchProject();
+  if (touch) {
+    touchProject();
+  }
 }
 
-export function resetScenes() {
+export function resetScenes(touch = true) {
+  sceneStore.setState({ ...initialState });
+
   stage.clearScenes();
 
-  touchProject();
+  if (touch) {
+    touchProject();
+  }
 }
 
 export function addScene() {
@@ -35,7 +36,9 @@ export function addScene() {
   return scene;
 }
 
-export function addElement(element, scene = stage.scenes[0]) {
+export function addElement(element, sceneId) {
+  const scene = sceneId ? stage.getSceneById(sceneId) : stage.scenes[0];
+
   if (scene) {
     scene.addElement(element);
   }

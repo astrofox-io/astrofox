@@ -5,7 +5,7 @@ import Icon from 'components/interface/Icon';
 import { BoxInput } from 'components/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { setActiveReactor } from 'actions/reactors';
+import { setActiveReactorId } from 'actions/app';
 import { events } from 'view/global';
 import { ChevronDown } from 'view/icons';
 import {
@@ -36,7 +36,7 @@ export default function ReactorControl({ reactor }) {
   }
 
   function hideReactor() {
-    setActiveReactor(null);
+    setActiveReactorId(null);
   }
 
   function draw() {

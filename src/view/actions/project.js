@@ -52,8 +52,8 @@ function loadElement(scene, config) {
 export function loadProject(data) {
   logger.log('Loaded project:', data);
 
-  stage.clearScenes();
-  reactors.clearReactors();
+  resetScenes(false);
+  resetReactors();
 
   if (data.reactors) {
     data.reactors.forEach(config => {

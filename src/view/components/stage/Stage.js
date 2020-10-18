@@ -34,8 +34,6 @@ export default function Stage() {
     await stopRender();
   }
 
-  console.log({ width, height, zoom });
-
   const style = {
     width: `${width * (zoom / 100)}px`,
     height: `${height * (zoom / 100)}px`,

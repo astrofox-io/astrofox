@@ -4,7 +4,8 @@ import Icon from 'components/interface/Icon';
 import { events, reactors } from 'view/global';
 import { Times } from 'view/icons';
 import { PRIMARY_COLOR } from 'view/constants';
-import { setActiveReactor, removeReactor } from 'actions/reactors';
+import { setActiveReactorId } from 'actions/app';
+import { removeReactor } from 'actions/reactors';
 import { loadScenes } from 'actions/scenes';
 import styles from './ReactorInput.less';
 
@@ -26,13 +27,13 @@ export default function ReactorInput({
     display.update({ [name]: lastValue.current });
 
     removeReactor(reactor);
-    setActiveReactor(null);
+    setActiveReactorId(null);
 
     loadScenes();
   }
 
   function toggleReactor() {
-    setActiveReactor(reactor);
+    setActiveReactorId(reactor?.id);
   }
 
   function draw() {

@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader';
-import React, { useEffect } from 'react';
-import { api, renderer } from 'view/global';
+import React, { useEffect, useMemo } from 'react';
+import { api, renderer, reactors } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
 import Modals from 'components/window/Modals';
@@ -24,7 +24,8 @@ import useProject, {
 
 function App() {
   const projectFile = useProject(state => state.file);
-  const reactor = useApp(state => state.activeReactor);
+  const activeReactorId = useApp(state => state.activeReactorId);
+  const reactor = useMemo(() => reactors.getElementById(activeReactorId), [activeReactorId]);
 
   async function handleMenuAction(action) {
     switch (action) {

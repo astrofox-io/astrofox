@@ -13,6 +13,8 @@ const initialState = {
   showReactor: false,
   showWaveform: true,
   showOsc: false,
+  activeReactorId: null,
+  activeElementId: null,
 };
 
 const appStore = create(() => ({
@@ -68,6 +70,14 @@ export async function saveImage() {
       raiseError('Failed to save image file.', error);
     }
   }
+}
+
+export function setActiveReactorId(reactorId) {
+  appStore.setState({ activeReactorId: reactorId || null });
+}
+
+export function setActiveElementId(elementId) {
+  appStore.setState({ activeElementId: elementId || null });
 }
 
 export default appStore;

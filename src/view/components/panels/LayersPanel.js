@@ -3,13 +3,13 @@ import SceneLayer from 'components/panels/SceneLayer';
 import Layout from 'components/layout/Layout';
 import ButtonPanel from 'components/layout/ButtonPanel';
 import { ButtonInput } from 'components/inputs';
+import useApp, { setActiveElementId } from 'actions/app';
 import useScenes, {
   addElement,
   addScene,
   moveElement,
   removeElement,
   updateElement,
-  setActiveElement,
 } from 'actions/scenes';
 import { showModal } from 'actions/modals';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
@@ -18,38 +18,37 @@ import styles from './LayersPanel.less';
 
 export default function LayersPanel() {
   const scenes = useScenes(state => state.scenes);
-  const activeElement = useScenes(state => state.activeElement);
+  const activeElementId = useApp(state => state.activeElementId);
   const hasScenes = scenes.length > 0;
-  const layerSelected = hasScenes && activeElement;
+  const layerSelected = hasScenes && activeElementId;
 
   const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
 
   const activeScene = useMemo(() => {
     return scenes.reduce((memo, scene) => {
       if (!memo) {
-        if (scene === activeElement) {
-          memo = activeElement;
-        } else if (
-          scene.displays.find(e => e === activeElement) ||
-          scene.effects.find(e => e === activeElement)
+        if (
+          scene?.id === activeElementId ||
+          scene?.displays.find(e => e.id === activeElementId) ||
+          scene?.effects.find(e => e.id === activeElementId)
         ) {
           memo = scene;
         }
       }
       return memo;
     }, undefined);
-  }, [scenes, activeElement]);
+  }, [scenes, activeElementId]);
 
   function handleAddControl(Entity) {
     const entity = new Entity();
 
-    setActiveElement(entity);
+    setActiveElementId(entity?.id);
 
-    addElement(entity, activeScene);
+    addElement(entity, activeScene?.id);
   }
 
-  function handleLayerClick(element) {
-    setActiveElement(element);
+  function handleLayerClick(id) {
+    setActiveElementId(id);
   }
 
   function handleLayerUpdate(id, prop, value) {
@@ -59,7 +58,7 @@ export default function LayersPanel() {
   async function handleAddScene() {
     const scene = await addScene();
 
-    setActiveElement(scene);
+    setActiveElementId(scene?.id);
   }
 
   function handleAddDisplay() {
@@ -79,36 +78,36 @@ export default function LayersPanel() {
   }
 
   function handleMoveUp() {
-    moveElement(activeElement, 1);
+    moveElement(activeElementId, 1);
   }
   function handleMoveDown() {
-    moveElement(activeElement, -1);
+    moveElement(activeElementId, -1);
   }
 
   function handleRemove() {
-    if (activeElement) {
-      if (activeElement === activeScene) {
+    if (activeElementId) {
+      if (activeElementId === activeScene?.id) {
         const newScene = sortedScenes.find(e => e !== activeScene);
 
-        setActiveElement(newScene);
+        setActiveElementId(newScene?.id);
       } else {
         const scene = sortedScenes.find(e => e === activeScene);
 
         if (scene) {
           const { displays, effects } = scene;
           const element =
-            reverse(displays).find(e => e !== activeElement) ||
-            reverse(effects).find(e => e !== activeElement);
+            reverse(displays).find(e => e !== activeElementId) ||
+            reverse(effects).find(e => e !== activeElementId);
 
           if (element) {
-            setActiveElement(element);
+            setActiveElementId(element?.id);
           } else {
-            setActiveElement(activeScene);
+            setActiveElementId(activeScene?.id);
           }
         }
       }
 
-      removeElement(activeElement);
+      removeElement(activeElementId);
     }
   }
 
@@ -119,7 +118,7 @@ export default function LayersPanel() {
           <SceneLayer
             key={scene.id}
             scene={scene}
-            activeLayer={activeElement}
+            activeElementId={activeElementId}
             onLayerClick={handleLayerClick}
             onLayerUpdate={handleLayerUpdate}
           />
