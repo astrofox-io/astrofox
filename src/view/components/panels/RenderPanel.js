@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Button from 'components/interface/Button';
 import { videoRenderer } from 'view/global';
 import { formatTime } from 'utils/format';
-import { stopRender } from 'stores/video';
+import { stopRender } from 'actions/video';
 import styles from './RenderPanel.less';
 
 const initialState = {
@@ -16,7 +15,6 @@ const initialState = {
 };
 
 export default function RenderPanel({ onClose }) {
-  const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
   const { status, frames, currentFrame, lastFrame, startTime, finished } = state;
   const elapsedTime = (Date.now() - startTime) / 1000;
@@ -34,7 +32,7 @@ export default function RenderPanel({ onClose }) {
       : '';
 
   function handleButtonClick() {
-    dispatch(stopRender());
+    stopRender();
 
     onClose();
   }
@@ -66,7 +64,7 @@ export default function RenderPanel({ onClose }) {
       videoRenderer.off('stats', updateStats);
       videoRenderer.off('finished', setFinished);
 
-      dispatch(stopRender());
+      stopRender();
     };
   }, []);
 

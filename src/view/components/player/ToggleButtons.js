@@ -1,17 +1,15 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import shallow from 'zustand/shallow';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import useForceUpdate from 'components/hooks/useForceUpdate';
+import useForceUpdate from 'hooks/useForceUpdate';
 import { player } from 'view/global';
 import { Cycle, SoundBars, SoundWaves } from 'view/icons';
-import { toggleState } from 'actions/app';
+import useApp, { toggleState } from 'actions/app';
 import styles from './ToggleButtons.less';
 
 export default function ToggleButtons() {
-  const dispatch = useDispatch();
-  const showWaveform = useSelector(state => state.app.showWaveform);
-  const showOsc = useSelector(state => state.app.showOsc);
+  const [showWaveform, showOsc] = useApp(state => [state.showWaveform, state.showOsc], shallow);
   const forceUpdate = useForceUpdate();
   const looping = player.isLooping();
 
@@ -27,13 +25,13 @@ export default function ToggleButtons() {
         icon={SoundBars}
         title="Waveform"
         enabled={showWaveform}
-        onClick={() => dispatch(toggleState('showWaveform'))}
+        onClick={() => toggleState('showWaveform')}
       />
       <ToggleButton
         icon={SoundWaves}
         title="Oscilloscope"
         enabled={showOsc}
-        onClick={() => dispatch(toggleState('showOsc'))}
+        onClick={() => toggleState('showOsc')}
       />
     </div>
   );

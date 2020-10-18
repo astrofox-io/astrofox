@@ -1,6 +1,6 @@
 import React from 'react';
 import { Control, Option } from 'components/editing';
-import useEntity from 'components/hooks/useEntity';
+import useEntity from 'hooks/useEntity';
 import fonts from 'config/fonts.json';
 
 const fontOptions = fonts.map(item => ({ name: item, value: item, style: { fontFamily: item } }));

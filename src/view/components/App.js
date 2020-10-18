@@ -1,8 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { createSelector } from '@reduxjs/toolkit';
-import { api, renderer, reactors } from 'view/global';
+import { api, renderer } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
 import Modals from 'components/window/Modals';
@@ -13,82 +11,81 @@ import ControlDock from 'components/panels/ControlDock';
 import Player from 'components/player/Player';
 import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
-import { initApp, exitApp, toggleState, saveImage } from 'actions/app';
+import useApp, { initApp, exitApp, toggleState, saveImage } from 'actions/app';
 import { showModal } from 'actions/modals';
-import { updateZoom } from 'actions/stage';
+import { setZoom } from 'actions/stage';
 import { openAudioFile } from 'actions/audio';
-import { openProjectFile, saveProjectFile, newProject, checkUnsavedChanges } from 'actions/project';
-
-const getActiveReactor = createSelector(
-  state => state.app.activeReactorId,
-  reactorId => reactors.getElementById(reactorId),
-);
+import useProject, {
+  openProjectFile,
+  saveProjectFile,
+  newProject,
+  checkUnsavedChanges,
+} from 'actions/project';
 
 function App() {
-  const dispatch = useDispatch();
-  const projectFile = useSelector(state => state.project.file);
-  const reactor = useSelector(getActiveReactor);
+  const projectFile = useProject(state => state.file);
+  const reactor = useApp(state => state.activeReactor);
 
-  function handleMenuAction(action) {
+  async function handleMenuAction(action) {
     switch (action) {
       case 'new-project':
-        dispatch(checkUnsavedChanges(action, newProject()));
+        await checkUnsavedChanges(action, newProject);
         break;
 
       case 'open-project':
-        dispatch(checkUnsavedChanges(action, openProjectFile()));
+        await checkUnsavedChanges(action, openProjectFile);
         break;
 
       case 'save-project':
-        dispatch(saveProjectFile(projectFile));
+        await saveProjectFile(projectFile);
         break;
 
       case 'save-project-as':
-        dispatch(saveProjectFile());
+        await saveProjectFile();
         break;
 
       case 'load-audio':
-        dispatch(openAudioFile());
+        await openAudioFile();
         break;
 
       case 'save-image':
-        dispatch(saveImage());
+        await saveImage();
         break;
 
       case 'save-video':
-        dispatch(showModal('VideoSettings', { title: 'Save Video' }));
+        await showModal('VideoSettings', { title: 'Save Video' });
         break;
 
       case 'edit-canvas':
-        dispatch(showModal('CanvasSettings', { title: 'Canvas' }));
+        await showModal('CanvasSettings', { title: 'Canvas' });
         break;
 
       case 'edit-settings':
-        dispatch(showModal('AppSettings', { title: 'Settings' }));
+        await showModal('AppSettings', { title: 'Settings' });
         break;
 
       case 'zoom-in':
-        dispatch(updateZoom(1));
+        await setZoom(1);
         break;
 
       case 'zoom-out':
-        dispatch(updateZoom(-1));
+        await setZoom(-1);
         break;
 
       case 'zoom-reset':
-        dispatch(updateZoom(0));
+        await setZoom(0);
         break;
 
       case 'view-control-dock':
-        dispatch(toggleState('showControlDock'));
+        await toggleState('showControlDock');
         break;
 
       case 'view-player':
-        dispatch(toggleState('showPlayer'));
+        await toggleState('showPlayer');
         break;
 
       case 'check-for-updates':
-        dispatch(showModal('AppUpdates', { title: 'Updates' }));
+        await showModal('AppUpdates', { title: 'Updates' });
         break;
 
       case 'open-dev-tools':
@@ -96,20 +93,23 @@ function App() {
         break;
 
       case 'about':
-        dispatch(showModal('About'));
+        await showModal('About');
         break;
 
       case 'exit':
-        dispatch(exitApp());
+        await exitApp();
         break;
     }
   }
 
+  async function init() {
+    await initApp();
+    api.on('menu-action', handleMenuAction);
+    renderer.start();
+  }
+
   useEffect(() => {
-    dispatch(initApp()).then(() => {
-      api.on('menu-action', handleMenuAction);
-      renderer.start();
-    });
+    init();
   }, []);
 
   return (

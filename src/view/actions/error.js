@@ -11,7 +11,7 @@ const useErrorStore = create(() => ({
   ...initialState,
 }));
 
-export function clearErrors() {
+export function clearError() {
   useErrorStore.setState({ ...initialState });
 }
 

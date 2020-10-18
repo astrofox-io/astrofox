@@ -4,7 +4,7 @@ import { player } from 'view/global';
 import Icon from 'components/interface/Icon';
 import { Pause, Play, Stop } from 'view/icons';
 import styles from './PlayButtons.less';
-import useForceUpdate from '../hooks/useForceUpdate';
+import useForceUpdate from '../../hooks/useForceUpdate';
 
 export default function PlayButtons() {
   const forceUpdate = useForceUpdate();

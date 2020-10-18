@@ -1,21 +1,25 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Icon, Spinner, Checkmark } from 'components/interface';
 import { Warning } from 'view/icons';
-import { checkForUpdates, downloadUpdate, quitAndInstall, resetUpdates } from 'actions/updates';
+import useUpdates, {
+  checkForUpdates,
+  downloadUpdate,
+  quitAndInstall,
+  resetUpdates,
+} from 'actions/updates';
 import styles from './AppUpdates.less';
 
 export default function AppUpdates({ onClose }) {
-  const dispatch = useDispatch();
-  const updates = useSelector(state => state.updates);
-  const { status, checked, hasUpdate, downloadComplete, downloadProgress, updateInfo } = updates;
+  const { status, checked, hasUpdate, downloadComplete, downloadProgress, updateInfo } = useUpdates(
+    state => state,
+  );
 
   function handleInstall() {
-    dispatch(quitAndInstall());
+    quitAndInstall();
   }
 
   function handleDownload() {
-    dispatch(downloadUpdate());
+    downloadUpdate();
   }
 
   function getMessage() {
@@ -45,11 +49,11 @@ export default function AppUpdates({ onClose }) {
 
   useEffect(() => {
     if (!checked) {
-      setTimeout(() => dispatch(checkForUpdates()), 1000);
+      setTimeout(() => checkForUpdates, 1000);
     }
 
     return () => {
-      dispatch(resetUpdates());
+      resetUpdates();
     };
   }, []);
 

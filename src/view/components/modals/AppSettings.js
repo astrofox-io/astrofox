@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import Button from 'components/interface/Button';
 import ButtonRow from 'components/layout/ButtonRow';
 import Layout from 'components/layout/Layout';
 import { Settings, Setting } from 'components/editing';
-import { saveConfig } from 'actions/config';
+import useConfig, { saveConfig } from 'actions/config';
 
 export default function AppSettings({ onClose }) {
-  const dispatch = useDispatch();
-  const appConfig = useSelector(state => state.config);
+  const appConfig = useConfig(state => state);
   const [state, setState] = useState(appConfig);
   const { checkForUpdates, autoUpdate, autoPlayAudio } = state;
 
@@ -17,7 +15,7 @@ export default function AppSettings({ onClose }) {
   }
 
   async function handleSave() {
-    await dispatch(saveConfig(state));
+    await saveConfig(state);
     onClose();
   }
 

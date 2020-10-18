@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import classNames from 'classnames';
 import { player } from 'view/global';
 import CanvasAudio from 'canvas/CanvasAudio';
-import useSharedState from 'components/hooks/useSharedState';
+import useSharedState from 'hooks/useSharedState';
 import styles from './AudioWaveform.less';
 
 const canvasProperties = {

@@ -101,7 +101,6 @@
     ]
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.4.0",
     "classnames": "^2.2.6",
     "debug": "^4.2.0",
     "del": "^6.0.0",
@@ -115,11 +114,11 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-hot-loader": "^4.13.0",
-    "react-redux": "^7.2.1",
     "react-spring": "^8.0.27",
     "react-window": "^1.8.5",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "semver": "^7.3.2",
     "three": "^0.121.1",
     "tinycolor2": "^1.4.2",

@@ -1,35 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
+import create from 'zustand';
 import { videoRenderer, player } from 'global';
 
 const initialState = {
   rendering: false,
 };
 
-const videoStore = createSlice({
-  name: 'video',
-  initialState,
-  reducers: {
-    updateVideo(state, action) {
-      return { ...state, ...action.payload };
-    },
-    startRender(state, action) {
-      player.stop();
-      videoRenderer.init(action.payload);
+const videoStore = create(() => ({ ...initialState }));
 
-      setTimeout(() => {
-        videoRenderer.start();
-      }, 500);
+export function startRender(props) {
+  player.stop();
+  videoRenderer.init(props);
 
-      return { ...action.payload, rendering: true };
-    },
-    stopRender(state) {
-      videoRenderer.stop();
+  setTimeout(() => {
+    videoRenderer.start();
+  }, 500);
 
-      return { ...state, rendering: false };
-    },
-  },
-});
+  videoStore.setState({ ...props, rendering: true });
+}
 
-export const { startRender, stopRender } = videoStore.actions;
+export function stopRender(props) {
+  videoRenderer.stop();
 
-export default videoStore.reducer;
+  videoStore.setState({ ...props, rendering: false });
+}
+
+export default videoStore;

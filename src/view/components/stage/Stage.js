@@ -1,22 +1,20 @@
+import shallow from 'zustand/shallow';
 import React, { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import RenderPanel from 'components/panels/RenderPanel';
 import Overlay from 'components/window/Overlay';
 import { stage } from 'view/global';
 import { ignoreEvents } from 'utils/react';
-import { stopRender } from 'actions/video';
+import useStage from 'actions/stage';
+import useVideo, { stopRender } from 'actions/video';
+import useAudioStore, { loadAudioFile } from 'actions/audio';
 import styles from './Stage.less';
-import useAudioStore, { loadAudioFile } from '../../stores/audio';
 
 export default function Stage() {
-  const dispatch = useDispatch();
-  const { width, height, zoom } = useSelector(state => state.stage);
-  const { rendering } = useSelector(state => state.video);
+  const [width, height, zoom] = useStage(state => [state.height, state.width, state.zoom], shallow);
+  const rendering = useVideo(state => state.rendering);
   const canvas = useRef(null);
   const loading = useAudioStore(state => state.loading);
-
-  console.log({ loading });
 
   useEffect(() => {
     stage.init(canvas.current);
@@ -32,8 +30,8 @@ export default function Stage() {
     }
   }
 
-  function handleRenderClose() {
-    dispatch(stopRender());
+  async function handleRenderClose() {
+    await stopRender();
   }
 
   const style = {

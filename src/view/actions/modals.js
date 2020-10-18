@@ -1,29 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
+import create from 'zustand';
 import { uniqueId } from 'utils/crypto';
 
-const initialState = [];
+const initialState = {
+  modals: [],
+};
 
-const modalStore = createSlice({
-  name: 'modals',
-  initialState,
-  reducers: {
-    showModal: {
-      reducer: (state, action) => {
-        return state.concat(action.payload);
-      },
-      prepare: (component, modalProps, componentProps) => {
-        return { payload: { id: uniqueId(), component, modalProps, componentProps } };
-      },
-    },
-    closeModal: state => {
-      if (state.length > 0) {
-        return state.slice(0, state.length - 1);
-      }
-      return state;
-    },
-  },
-});
+const modalStore = create(() => ({
+  ...initialState,
+}));
 
-export const { showModal, closeModal } = modalStore.actions;
+export function showModal(component, modalProps, componentProps) {
+  modalStore.setState(state => ({
+    modals: state.modals.concat({ id: uniqueId(), component, modalProps, componentProps }),
+  }));
+}
 
-export default modalStore.reducer;
+export function closeModal() {
+  modalStore.setState(state => ({ modals: state.modals.slice(0, state.length - 1) }));
+}
+
+export default modalStore;

@@ -1,13 +1,16 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import shallow from 'zustand/shallow';
 import { getControlComponent } from 'utils/controls';
 import { stage } from 'view/global';
+import useApp from 'actions/app';
+import useStage from 'actions/stage';
+import useScenes from 'actions/scenes';
 import styles from './ControlsPanel.less';
 
 export default function ControlsPanel() {
-  const activeEntityId = useSelector(state => state.app.activeEntityId);
-  const { width, height } = useSelector(state => state.stage);
-  const scenes = useSelector(state => state.scenes);
+  const activeElement = useApp(state => state.activeElement);
+  const [width, height] = useStage(state => [state.width, state.height], shallow);
+  const scenes = useScenes(state => state.scenes);
   const panelRef = useRef();
 
   const displays = useMemo(() => {
@@ -18,11 +21,11 @@ export default function ControlsPanel() {
   }, [scenes]);
 
   useEffect(() => {
-    const node = document.getElementById(`control-${activeEntityId}`);
+    const node = document.getElementById(`control-${activeElement?.id}`);
     if (node) {
       panelRef.current.scrollTop = node.offsetTop;
     }
-  }, [activeEntityId]);
+  }, [activeElement]);
 
   return (
     <div className={styles.panel} ref={panelRef}>
@@ -34,7 +37,7 @@ export default function ControlsPanel() {
           <div id={`control-${id}`} key={id} className={styles.control}>
             <Component
               display={display}
-              active={id === activeEntityId}
+              active={id === activeElement?.id}
               stageWidth={width}
               stageHeight={height}
             />

@@ -1,13 +1,11 @@
 import React, { useRef, useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import CanvasMeter from 'canvas/CanvasMeter';
 import Icon from 'components/interface/Icon';
-import { setActiveReactorId } from 'actions/app';
-import { removeReactor } from 'actions/reactors';
-import { loadScenes } from 'actions/scenes';
 import { events, reactors } from 'view/global';
 import { Times } from 'view/icons';
 import { PRIMARY_COLOR } from 'view/constants';
+import { setActiveReactor, removeReactor } from 'actions/reactors';
+import { loadScenes } from 'actions/scenes';
 import styles from './ReactorInput.less';
 
 export default function ReactorInput({
@@ -18,7 +16,6 @@ export default function ReactorInput({
   height = 10,
   color = PRIMARY_COLOR,
 }) {
-  const dispatch = useDispatch();
   const canvas = useRef();
   const meter = useRef();
   const lastValue = useRef(value);
@@ -28,14 +25,14 @@ export default function ReactorInput({
     display.removeReactor(name);
     display.update({ [name]: lastValue.current });
 
-    dispatch(removeReactor(reactor));
-    dispatch(setActiveReactorId(null));
+    removeReactor(reactor);
+    setActiveReactor(null);
 
-    dispatch(loadScenes());
+    loadScenes();
   }
 
   function toggleReactor() {
-    dispatch(setActiveReactorId(reactor.id));
+    setActiveReactor(reactor);
   }
 
   function draw() {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { player } from 'view/global';
 import TimeInfo from 'components/player/TimeInfo';
 import { RangeInput } from 'components/inputs';
-import useSharedState from 'components/hooks/useSharedState';
+import useSharedState from 'hooks/useSharedState';
 import styles from './ProgressControl.less';
 
 const PROGRESS_MAX = 1000;

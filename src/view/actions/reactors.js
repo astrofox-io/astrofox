@@ -1,58 +1,47 @@
-import { createSlice } from '@reduxjs/toolkit';
+import create from 'zustand';
 import { reactors } from 'global';
-import { setActiveReactorId } from './app';
 
-const reactorStore = createSlice({
-  name: 'reactors',
-  initialState: [],
-  reducers: {
-    setReactors(state, action) {
-      state = action.payload;
-      return state;
-    },
-  },
-});
+const initialState = {
+  reactors: [],
+  activeReactor: null,
+};
 
-const { setReactors } = reactorStore.actions;
+const reactorStore = create(() => ({
+  ...initialState,
+}));
 
-export default reactorStore.reducer;
+export function setActiveReactor(reactor) {
+  reactorStore.setState({ activeReactor: reactor });
+}
 
 export function loadReactors() {
-  return dispatch => {
-    dispatch(setReactors(reactors.toJSON()));
-  };
+  reactorStore.setState({ reactors: reactors.toJSON() });
 }
 
 export function resetReactors() {
-  return dispatch => {
-    reactors.clearReactors();
+  reactors.clearReactors();
 
-    dispatch(setActiveReactorId(null));
-  };
+  setActiveReactor(null);
 }
 
 export function addReactor(reactor) {
-  return dispatch => {
-    const newReactor = reactors.addReactor(reactor);
+  const newReactor = reactors.addReactor(reactor);
 
-    dispatch(loadReactors());
+  loadReactors();
 
-    return newReactor;
-  };
+  return newReactor;
 }
 
 export function removeReactor(reactor) {
-  return dispatch => {
-    reactors.removeReactor(reactor);
+  reactors.removeReactor(reactor);
 
-    dispatch(loadReactors());
-  };
+  loadReactors();
 }
 
 export function clearReactors() {
-  return dispatch => {
-    reactors.clearReactors();
+  reactors.clearReactors();
 
-    dispatch(loadReactors());
-  };
+  loadReactors();
 }
+
+export default reactorStore;

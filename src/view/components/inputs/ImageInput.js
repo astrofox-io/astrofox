@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import Spinner from 'components/interface/Spinner';
-import useCombinedRefs from 'components/hooks/useCombinedRefs';
-import { raiseError } from 'actions/errors';
+import useCombinedRefs from 'hooks/useCombinedRefs';
+import { raiseError } from 'actions/error';
 import { ignoreEvents } from 'utils/react';
 import { api } from 'view/global';
 import { FolderOpen, Times } from 'view/icons';
@@ -12,7 +11,6 @@ import { BLANK_IMAGE } from 'view/constants';
 import styles from './ImageInput.less';
 
 export default function ImageInput({ name, value, forwardRef, onChange }) {
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const image = useRef();
   const combinedRef = useCombinedRefs(forwardRef, image);
@@ -37,7 +35,7 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
 
       return loadImageSrc(dataUrl);
     } catch (error) {
-      dispatch(raiseError('Invalid image file.', error));
+      raiseError('Invalid image file.', error);
     } finally {
       setLoading(false);
     }

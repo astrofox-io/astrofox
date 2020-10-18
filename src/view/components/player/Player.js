@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import shallow from 'zustand/shallow';
 import classNames from 'classnames';
 import { player } from 'view/global';
+import useApp from 'actions/app';
 import AudioWaveform from './AudioWaveform';
 import Oscilloscope from './Oscilloscope';
 import VolumeControl from './VolumeControl';
@@ -12,9 +13,10 @@ import ToggleButtons from './ToggleButtons';
 
 export default function Player() {
   const [hasAudio, setHasAudio] = useState(false);
-  const showPlayer = useSelector(state => state.app.showPlayer);
-  const showWaveform = useSelector(state => state.app.showWaveform);
-  const showOsc = useSelector(state => state.app.showOsc);
+  const [showPlayer, showWaveform, showOsc] = useApp(
+    state => [state.showPlayer, state.showWaveform, state.showOsc],
+    shallow,
+  );
 
   function handleAudioLoad() {
     setHasAudio(player.hasAudio());

@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Button from 'components/interface/Button';
 import { Settings, Setting } from 'components/editing';
 import Layout from 'components/layout/Layout';
 import ButtonRow from 'components/layout/ButtonRow';
-import { updateCanvas } from 'actions/stage';
+import useStage, { updateCanvas } from 'actions/stage';
 
 export default function CanvasSettings({ onClose }) {
-  const dispatch = useDispatch();
-  const stageConfig = useSelector(({ stage }) => stage);
+  const stageConfig = useStage(state => state);
   const [state, setState] = useState(stageConfig);
   const { width, height, backgroundColor } = state;
 
@@ -21,7 +19,7 @@ export default function CanvasSettings({ onClose }) {
   }
 
   async function handleSave() {
-    await dispatch(updateCanvas(width, height, backgroundColor));
+    await updateCanvas(width, height, backgroundColor);
     onClose();
   }
 

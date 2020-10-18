@@ -1,4 +1,4 @@
-import { api } from 'view/global';
+import { api } from 'global';
 import { useEffect, useCallback, useState } from 'react';
 
 export default function useWindowState() {

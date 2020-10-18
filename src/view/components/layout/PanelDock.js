@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Panel from 'components/layout/Panel';
 import { mapChildren } from 'utils/react';
 import styles from './PanelDock.less';
-import useMeasure from '../hooks/useMeasure';
+import useMeasure from '../../hooks/useMeasure';
 
 export default function PanelDock({
   direction = 'vertical',

@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import create from 'zustand';
 import semver from 'semver';
 import { api, env, logger } from 'global';
+import configStore from './config';
 
 const initialState = {
   status: null,
@@ -12,76 +13,58 @@ const initialState = {
   updateInfo: null,
 };
 
-const appUpdateStore = createSlice({
-  name: 'updates',
-  initialState,
-  reducers: {
-    updateState(state, action) {
-      return { ...state, ...action.payload };
-    },
-  },
-});
-
-const { updateState } = appUpdateStore.actions;
-
-export default appUpdateStore.reducer;
+const updateStore = create(() => ({
+  ...initialState,
+}));
 
 export function updateDownloadProgress(info) {
-  return dispatch => {
-    dispatch(updateState({ downloadProgress: info.percent }));
-  };
+  updateStore.setState({ downloadProgress: info.percent });
 }
 
-export function downloadUpdate() {
-  return async dispatch => {
-    await dispatch(updateState({ status: 'downloading' }));
+export async function downloadUpdate() {
+  updateStore.setState({ status: 'downloading' });
 
-    const result = await api.invoke('download-update');
+  const result = await api.invoke('download-update');
 
-    logger.log('Update downloaded:', result);
+  logger.log('Update downloaded:', result);
 
-    await dispatch(updateState({ downloadComplete: true, status: null }));
-  };
+  updateStore.setState({ downloadComplete: true, status: null });
 }
 
-export function quitAndInstall() {
-  return async (dispatch, getState) => {
-    const { downloadComplete } = getState().updates;
+export async function quitAndInstall() {
+  const { downloadComplete } = updateStore.getState();
 
-    if (downloadComplete) {
-      await api.invoke('quit-and-install');
+  if (downloadComplete) {
+    await api.invoke('quit-and-install');
+  }
+}
+
+export async function checkForUpdates() {
+  updateStore.setState({ status: 'checking', lastCheck: Date.now() });
+
+  try {
+    const { updateInfo } = await api.invoke('check-for-updates');
+
+    const hasUpdate = semver.gt(updateInfo.version, env.APP_VERSION);
+    const { autoUpdate } = configStore.getState();
+    const status = autoUpdate && hasUpdate ? 'downloading' : null;
+
+    logger.log('Update check complete:', updateInfo);
+
+    updateStore.setState({ checked: true, status, updateInfo, hasUpdate });
+
+    if (autoUpdate && hasUpdate) {
+      await downloadUpdate();
     }
-  };
-}
+  } catch (e) {
+    updateStore.setState({ status: 'error' });
 
-export function checkForUpdates() {
-  return async (dispatch, getState) => {
-    await dispatch(updateState({ status: 'checking', lastCheck: Date.now() }));
-
-    try {
-      const { updateInfo } = await api.invoke('check-for-updates');
-
-      const hasUpdate = semver.gt(updateInfo.version, env.APP_VERSION);
-      const { config } = getState();
-      const status = config.autoUpdate && hasUpdate ? 'downloading' : null;
-
-      logger.log('Update check complete:', updateInfo);
-
-      await dispatch(updateState({ checked: true, status, updateInfo, hasUpdate }));
-
-      if (config.autoUpdate && hasUpdate) {
-        dispatch(downloadUpdate());
-      }
-    } catch (e) {
-      dispatch(updateState({ status: 'error' }));
-
-      logger.error('Update check failed:', e);
-    }
-  };
+    logger.error('Update check failed:', e);
+  }
 }
 
 export function resetUpdates() {
-  return dispatch => {
-    dispatch(updateState({ status: null }));
-  };
+  updateStore.setState({ status: null });
 }
+
+export default updateStore;

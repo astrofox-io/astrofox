@@ -1,15 +1,13 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Dialog from 'components/window/Dialog';
 import { Warning } from 'view/icons';
-import { clearError } from 'actions/errors';
+import useError, { clearError } from 'actions/error';
 
 export default function ErrorDialog({ onClose }) {
-  const dispatch = useDispatch();
-  const message = useSelector(state => state.errors.message);
+  const message = useError(state => state.errors.message);
 
   function handleConfirm() {
-    dispatch(clearError());
+    clearError();
     onClose();
   }
 

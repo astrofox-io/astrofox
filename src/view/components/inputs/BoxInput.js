@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import useMouseDrag from 'components/hooks/useMouseDrag';
+import useMouseDrag from 'hooks/useMouseDrag';
 import { clamp } from 'utils/math.js';
 import styles from './BoxInput.less';
 

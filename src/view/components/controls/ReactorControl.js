@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { Control, Option } from 'components/editing';
-import useEntity from 'components/hooks/useEntity';
+import useEntity from 'hooks/useEntity';
 import Icon from 'components/interface/Icon';
 import { BoxInput } from 'components/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { setActiveReactorId } from 'actions/app';
+import { setActiveReactor } from 'actions/reactors';
 import { events } from 'view/global';
 import { ChevronDown } from 'view/icons';
 import {
@@ -25,7 +24,6 @@ const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 const METER_WIDTH = 20;
 
 export default function ReactorControl({ reactor }) {
-  const dispatch = useDispatch();
   const spectrum = useRef();
   const meter = useRef();
   const spectrumCanvas = useRef();
@@ -38,7 +36,7 @@ export default function ReactorControl({ reactor }) {
   }
 
   function hideReactor() {
-    dispatch(setActiveReactorId(null));
+    setActiveReactor(null);
   }
 
   function draw() {

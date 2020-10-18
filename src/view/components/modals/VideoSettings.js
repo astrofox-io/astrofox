@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import shallow from 'zustand/shallow';
 import { api, player } from 'global';
 import { Settings, Setting } from 'components/editing';
 import Layout from 'components/layout/Layout';
@@ -9,7 +9,7 @@ import TimeInfo from 'components/player/TimeInfo';
 import { ButtonInput } from 'components/inputs';
 import { replaceExt } from 'utils/file';
 import { FolderOpen } from 'view/icons';
-import { openAudioFile } from 'actions/audio';
+import useAudio, { openAudioFile } from 'actions/audio';
 import { startRender } from 'actions/video';
 
 const videoFormats = ['mp4', 'webm'];
@@ -25,8 +25,7 @@ const initialState = {
 };
 
 export default function VideoSettings({ onClose }) {
-  const dispatch = useDispatch();
-  const { file: audioFile, duration } = useSelector(state => state.audio);
+  const [audioFile, duration] = useAudio(state => [state.file, state.duration], shallow);
   const [state, setState] = useState(initialState);
   const { videoFile, format, fps, quality, timeStart, timeEnd } = state;
   const canStart = videoFile && audioFile && timeEnd - timeStart > 0;
@@ -54,7 +53,7 @@ export default function VideoSettings({ onClose }) {
   }
 
   function handleStart() {
-    dispatch(startRender({ ...state, audioFile }));
+    startRender({ ...state, audioFile });
     onClose();
   }
 
@@ -67,7 +66,7 @@ export default function VideoSettings({ onClose }) {
   }
 
   async function handleOpenAudioFile() {
-    await dispatch(openAudioFile(false));
+    await openAudioFile(false);
 
     const duration = player.getDuration();
 

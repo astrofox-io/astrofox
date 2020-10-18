@@ -1,114 +1,114 @@
-import React, { useState, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useMemo } from 'react';
 import SceneLayer from 'components/panels/SceneLayer';
 import Layout from 'components/layout/Layout';
 import ButtonPanel from 'components/layout/ButtonPanel';
 import { ButtonInput } from 'components/inputs';
-import { addElement, addScene, moveElement, removeElement, updateElement } from 'actions/scenes';
-import { setActiveEntityId } from 'actions/app';
+import useScenes, {
+  addElement,
+  addScene,
+  moveElement,
+  removeElement,
+  updateElement,
+  setActiveElement,
+} from 'actions/scenes';
 import { showModal } from 'actions/modals';
 import { Picture, Cube, LightUp, ChevronUp, ChevronDown, TrashEmpty } from 'view/icons';
 import { reverse } from 'utils/array';
 import styles from './LayersPanel.less';
 
 export default function LayersPanel() {
-  const dispatch = useDispatch();
-  const scenes = useSelector(state => state.scenes);
-  const [activeId, setActiveId] = useState();
+  const scenes = useScenes(state => state.scenes);
+  const activeElement = useScenes(state => state.activeElement);
   const hasScenes = scenes.length > 0;
-  const layerSelected = hasScenes && activeId;
+  const layerSelected = hasScenes && activeElement;
 
   const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
 
-  const activeSceneId = useMemo(() => {
+  const activeScene = useMemo(() => {
     return scenes.reduce((memo, scene) => {
       if (!memo) {
-        if (scene.id === activeId) {
-          memo = activeId;
+        if (scene === activeElement) {
+          memo = activeElement;
         } else if (
-          scene.displays.find(e => e.id === activeId || scene.effects.find(e => e.id === activeId))
+          scene.displays.find(e => e === activeElement) ||
+          scene.effects.find(e => e === activeElement)
         ) {
-          memo = scene.id;
+          memo = scene;
         }
       }
       return memo;
     }, undefined);
-  }, [scenes, activeId]);
+  }, [scenes, activeElement]);
 
   function handleAddControl(Entity) {
     const entity = new Entity();
-    const { id } = entity;
 
-    setActiveId(id);
+    setActiveElement(entity);
 
-    dispatch(addElement(entity, activeSceneId));
-    dispatch(setActiveEntityId(id));
+    addElement(entity, activeScene);
   }
 
-  function handleLayerClick(id) {
-    setActiveId(id);
-    dispatch(setActiveEntityId(id));
+  function handleLayerClick(element) {
+    setActiveElement(element);
   }
 
   function handleLayerUpdate(id, prop, value) {
-    dispatch(updateElement(id, prop, value));
+    updateElement(id, prop, value);
   }
 
   async function handleAddScene() {
-    const scene = await dispatch(addScene());
-    setActiveId(scene.id);
+    const scene = await addScene();
+
+    setActiveElement(scene);
   }
 
   function handleAddDisplay() {
-    dispatch(
-      showModal(
-        'ControlPicker',
-        { title: 'Controls' },
-        { type: 'displays', onSelect: handleAddControl },
-      ),
+    showModal(
+      'ControlPicker',
+      { title: 'Controls' },
+      { type: 'displays', onSelect: handleAddControl },
     );
   }
 
   function handleAddEffect() {
-    dispatch(
-      showModal(
-        'ControlPicker',
-        { title: 'Controls' },
-        { type: 'effects', onSelect: handleAddControl },
-      ),
+    showModal(
+      'ControlPicker',
+      { title: 'Controls' },
+      { type: 'effects', onSelect: handleAddControl },
     );
   }
 
   function handleMoveUp() {
-    dispatch(moveElement(activeId, 1));
+    moveElement(activeElement, 1);
   }
   function handleMoveDown() {
-    dispatch(moveElement(activeId, -1));
+    moveElement(activeElement, -1);
   }
 
   function handleRemove() {
-    if (activeId) {
-      if (activeId === activeSceneId) {
-        const newScene = sortedScenes.find(e => e.id !== activeSceneId);
+    if (activeElement) {
+      if (activeElement === activeScene) {
+        const newScene = sortedScenes.find(e => e !== activeScene);
 
-        setActiveId(newScene?.id);
+        setActiveElement(newScene);
       } else {
-        const scene = sortedScenes.find(e => e.id === activeSceneId);
+        const scene = sortedScenes.find(e => e === activeScene);
+
         if (scene) {
           const { displays, effects } = scene;
           const element =
-            reverse(displays).find(e => e.id !== activeId) ||
-            reverse(effects).find(e => e.id !== activeId);
+            reverse(displays).find(e => e !== activeElement) ||
+            reverse(effects).find(e => e !== activeElement);
 
           if (element) {
-            setActiveId(element.id);
+            setActiveElement(element);
           } else {
-            setActiveId(activeSceneId);
+            setActiveElement(activeScene);
           }
         }
       }
 
-      dispatch(removeElement(activeId));
+      removeElement(activeElement);
     }
   }
 
@@ -119,7 +119,7 @@ export default function LayersPanel() {
           <SceneLayer
             key={scene.id}
             scene={scene}
-            activeLayer={activeId}
+            activeLayer={activeElement}
             onLayerClick={handleLayerClick}
             onLayerUpdate={handleLayerUpdate}
           />

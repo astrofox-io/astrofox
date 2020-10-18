@@ -1,7 +1,7 @@
 import React from 'react';
 import { Control, Option } from 'components/editing';
 import { ToggleInput } from 'components/inputs';
-import useEntity from 'components/hooks/useEntity';
+import useEntity from 'hooks/useEntity';
 import { inputValueToProps } from 'utils/react';
 
 export default function BarSpectrumControl({ display, active, stageWidth, stageHeight }) {

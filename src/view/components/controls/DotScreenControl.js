@@ -1,6 +1,6 @@
 import React from 'react';
 import { Control, Option } from 'components/editing';
-import useEntity from 'components/hooks/useEntity';
+import useEntity from 'hooks/useEntity';
 
 export default function DotScreenControl({ display, active }) {
   const { scale, angle } = display.properties;

@@ -1,10 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { api, renderer, stage, logger } from 'global';
-import { loadConfig } from 'actions/config';
+import create from 'zustand';
+import { api, logger, renderer, stage } from 'view/global';
+import configStore, { loadConfig } from 'actions/config';
+import updateStore, { checkForUpdates, updateDownloadProgress } from 'actions/updates';
 import { newProject } from 'actions/project';
-import { checkForUpdates, updateDownloadProgress } from 'actions/updates';
-import { raiseError } from 'actions/errors';
-import { showModal } from './modals';
+import { showModal } from 'actions/modals';
+import { raiseError } from 'actions/error';
 
 const initialState = {
   statusText: '',
@@ -13,90 +13,61 @@ const initialState = {
   showReactor: false,
   showWaveform: true,
   showOsc: false,
-  activeEntityId: null,
-  activeReactorId: null,
 };
 
-const appStore = createSlice({
-  name: 'app',
-  initialState,
-  reducers: {
-    updateApp(state, action) {
-      return { ...state, ...action.payload };
-    },
-    setStatusText(state, action) {
-      state.statusText = action.payload;
-      return state;
-    },
-    setActiveEntityId(state, action) {
-      state.activeEntityId = action.payload;
-      return state;
-    },
-    setActiveReactorId(state, action) {
-      state.activeReactorId = action.payload;
-      return state;
-    },
-    toggleState(state, action) {
-      const prop = action.payload;
-      state[prop] = !state[prop];
-      return state;
-    },
-  },
-});
+const appStore = create(() => ({
+  ...initialState,
+}));
 
-const { setStatusText, setActiveEntityId, setActiveReactorId, toggleState } = appStore.actions;
-
-export { setStatusText, setActiveEntityId, setActiveReactorId, toggleState };
-
-export default appStore.reducer;
+export function toggleState(key) {
+  appStore.setState(state => ({ [key]: !state[key] }));
+}
 
 export function exitApp() {
   api.closeWindow();
 }
 
-export function initApp() {
-  return async (dispatch, getState) => {
-    await dispatch(loadConfig());
-    await dispatch(newProject());
+export async function initApp() {
+  await loadConfig();
+  await newProject();
 
-    const { config } = getState();
+  const config = configStore.getState();
 
-    api.on('download-progress', info => {
-      dispatch(updateDownloadProgress(info));
-    });
+  api.on('download-progress', info => {
+    updateDownloadProgress(info);
+  });
 
-    if (config.checkForUpdates) {
-      await dispatch(checkForUpdates());
+  if (config.checkForUpdates) {
+    await checkForUpdates();
 
-      const { hasUpdate } = getState().updates;
+    const { hasUpdate } = updateStore.getState();
 
-      if (hasUpdate) {
-        dispatch(showModal('AppUpdates', { title: 'Updates' }));
-      }
+    if (hasUpdate) {
+      showModal('AppUpdates', { title: 'Updates' });
     }
-  };
+  }
 }
 
-export function saveImage() {
-  return async dispatch => {
-    const { filePath, canceled } = await api.showSaveDialog({
-      defaultPath: `image-${Date.now()}.png`,
-    });
+export async function saveImage() {
+  const { filePath, canceled } = await api.showSaveDialog({
+    defaultPath: `image-${Date.now()}.png`,
+  });
 
-    if (!canceled) {
-      try {
-        const data = renderer.getFrameData(false);
+  if (!canceled) {
+    try {
+      const data = renderer.getFrameData(false);
 
-        stage.render(data);
+      stage.render(data);
 
-        const buffer = stage.getImage();
+      const buffer = stage.getImage();
 
-        await api.saveImageFile(filePath, buffer);
+      await api.saveImageFile(filePath, buffer);
 
-        logger.log('Image saved:', filePath);
-      } catch (error) {
-        dispatch(raiseError('Failed to save image file.', error));
-      }
+      logger.log('Image saved:', filePath);
+    } catch (error) {
+      raiseError('Failed to save image file.', error);
     }
-  };
+  }
 }
+
+export default appStore;

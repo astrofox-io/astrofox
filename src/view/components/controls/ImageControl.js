@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Control, Option } from 'components/editing';
 import { BLANK_IMAGE } from 'view/constants';
-import useEntity from 'components/hooks/useEntity';
+import useEntity from 'hooks/useEntity';
 
 export default function ImageControl({ display, active, stageWidth, stageHeight }) {
   const { fixed, src, width, height, x, y, rotation, opacity } = display.properties;

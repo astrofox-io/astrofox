@@ -1,16 +1,14 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import ModalWindow from 'components/window/ModalWindow';
 import * as modalComponents from 'components/modals';
 import Overlay from 'components/window/Overlay';
 import { easeInOutQuad } from 'utils/easing';
-import { closeModal } from 'actions/modals';
+import useModals, { closeModal } from 'actions/modals';
 import styles from './Modals.less';
 
 export default function Modals() {
-  const dispatch = useDispatch();
-  const modals = useSelector(state => state.modals);
+  const modals = useModals(state => state.modals);
 
   const transitions = useTransition(modals, modal => modal.id, {
     from: { opacity: 0, transform: 'scale(0.7) rotateX(-90deg)' },
@@ -20,7 +18,7 @@ export default function Modals() {
   });
 
   function handleClose() {
-    dispatch(closeModal());
+    closeModal();
   }
 
   return transitions.map(({ item, key, props }) => {
