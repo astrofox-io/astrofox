@@ -76,6 +76,7 @@
       "target": [
         "AppImage"
       ],
+      "icon": "build/icons/512x512.png",
       "category": "AudioVideo"
     }
   },
