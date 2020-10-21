@@ -53,7 +53,7 @@ export default async function init() {
   await createFolder(env.TEMP_PATH);
   await removeTempFiles();
 
-  if (process.env !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     await loadExtensions(session.defaultSession);
   }
 
