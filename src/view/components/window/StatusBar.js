@@ -40,7 +40,7 @@ function MemoryInfo() {
     return () => {
       events.off('tick', updateStats);
     };
-  });
+  }, []);
 
   return <span className={styles.item}>{mem}</span>;
 }
@@ -58,7 +58,7 @@ function FrameRate() {
     return () => {
       events.off('tick', updateStats);
     };
-  });
+  }, []);
 
   return <span className={styles.item}>{`${fps} FPS`}</span>;
 }

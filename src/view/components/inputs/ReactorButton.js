@@ -12,13 +12,13 @@ export default function ReactorButton({ display, name, min = 0, max = 1, classNa
 
   async function enableReactor() {
     if (reactor) {
-      setActiveReactorId(reactor?.id);
+      setActiveReactorId(reactor?.id ?? null);
     } else {
       const newReactor = await addReactor();
 
       display.setReactor(name, { id: newReactor.id, min, max });
 
-      setActiveReactorId(newReactor?.id);
+      setActiveReactorId(newReactor?.id ?? null);
       loadScenes();
     }
   }

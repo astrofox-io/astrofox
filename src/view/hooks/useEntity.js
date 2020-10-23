@@ -9,7 +9,7 @@ export default function useEntity(entity, touchTimeout = 1000) {
 
   return useCallback(
     props => {
-      if (entity.update(props)) {
+      if (entity?.update(props)) {
         if (touchTimeout) {
           touch();
         }

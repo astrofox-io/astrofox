@@ -5,8 +5,8 @@ import Icon from 'components/interface/Icon';
 import { BoxInput } from 'components/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
-import { setActiveReactorId } from 'actions/app';
-import { events } from 'view/global';
+import useApp, { setActiveReactorId } from 'actions/app';
+import { events, reactors } from 'view/global';
 import { ChevronDown } from 'view/icons';
 import {
   PRIMARY_COLOR,
@@ -23,13 +23,23 @@ const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 const METER_WIDTH = 20;
 
-export default function ReactorControl({ reactor }) {
+export default function ReactorControl() {
+  const activeReactorId = useApp(state => state.activeReactorId);
+  const reactor = reactors.getElementById(activeReactorId);
+
+  if (!reactor) {
+    return null;
+  }
+
+  return <ReactorPanel reactor={reactor} />;
+}
+
+const ReactorPanel = ({ reactor }) => {
   const spectrum = useRef();
   const meter = useRef();
   const spectrumCanvas = useRef();
   const outputCanvas = useRef();
   const onChange = useEntity(reactor);
-  const { selection } = reactor.properties;
 
   function handleChange(props) {
     onChange(props);
@@ -75,7 +85,7 @@ export default function ReactorControl({ reactor }) {
     return () => {
       events.off('render', draw);
     };
-  });
+  }, []);
 
   return (
     <div className={styles.reactor}>
@@ -88,7 +98,7 @@ export default function ReactorControl({ reactor }) {
           <canvas ref={spectrumCanvas} width={SPECTRUM_WIDTH} height={REACTOR_BAR_HEIGHT} />
           <BoxInput
             name="selection"
-            value={selection}
+            value={reactor.properties.selection}
             minWidth={REACTOR_BAR_WIDTH}
             minHeight={REACTOR_BAR_WIDTH}
             maxWidth={SPECTRUM_WIDTH}
@@ -108,7 +118,7 @@ export default function ReactorControl({ reactor }) {
       />
     </div>
   );
-}
+};
 
 const Header = ({ path }) => (
   <div className={styles.header}>

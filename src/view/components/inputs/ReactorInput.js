@@ -26,14 +26,14 @@ export default function ReactorInput({
     display.removeReactor(name);
     display.update({ [name]: lastValue.current });
 
-    removeReactor(reactor);
     setActiveReactorId(null);
+    removeReactor(reactor);
 
     loadScenes();
   }
 
   function toggleReactor() {
-    setActiveReactorId(reactor?.id);
+    setActiveReactorId(reactor?.id ?? null);
   }
 
   function draw() {
@@ -57,7 +57,7 @@ export default function ReactorInput({
     return () => {
       events.off('render', draw);
     };
-  });
+  }, []);
 
   return (
     <div className={styles.reactor}>
