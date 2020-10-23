@@ -24,8 +24,8 @@ export async function invoke(channel, data) {
   return ipcRenderer.invoke(channel, data);
 }
 
-export function log(data) {
-  return invoke('log', data);
+export function log(...args) {
+  return invoke('log', args.join(' '));
 }
 
 export async function getGlobal(key) {

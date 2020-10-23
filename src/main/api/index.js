@@ -1,14 +1,10 @@
-export { loadAudioTags } from 'main/api/audio';
-export { loadConfig, saveConfig } from 'main/api/config';
-export {
-  loadProjectFile,
-  saveProjectFile,
-  readImageFile,
-  saveImageFile,
-  readAudioFile,
-} from 'main/api/files';
-export { send, on, once, off, invoke, log, getGlobal } from 'main/api/ipc';
-export { spawnProcess } from 'main/api/process';
+export { loadAudioTags, readAudioFile } from './audio';
+export { loadConfig, saveConfig } from './config';
+export { readImageFile, saveImageFile } from './image';
+export { loadProjectFile, saveProjectFile } from './project';
+export { send, on, once, off, invoke, log, getGlobal } from './ipc';
+export { loadPlugins, getPlugins } from './plugin';
+export { spawnProcess } from './process';
 export {
   maximizeWindow,
   minimizeWindow,
@@ -18,4 +14,4 @@ export {
   showOpenDialog,
   showSaveDialog,
   openDevTools,
-} from 'main/api/window';
+} from './window';

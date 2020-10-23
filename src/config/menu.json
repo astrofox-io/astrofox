@@ -107,7 +107,7 @@
         "action": "check-for-updates"
       },
       {
-        "label": "Developer tools",
+        "label": "Developer Tools",
         "action": "open-dev-tools",
         "role": "toggledevtools",
         "accelerator": "CmdOrCtrl+Shift+I"

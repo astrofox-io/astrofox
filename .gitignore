@@ -22,4 +22,5 @@ bin
 coverage
 dist
 /app/
+/plugins/
 /resources/

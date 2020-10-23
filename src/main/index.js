@@ -11,6 +11,7 @@ log('NODE_ENV', process.env.NODE_ENV);
 
 // Set global variables
 global.env = env;
+global.plugins = {};
 
 // Chrome flags
 // Hardware acceleration

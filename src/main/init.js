@@ -33,14 +33,16 @@ function loadExtensions(session) {
   for (const ext of extensions) {
     const fullPath = path.join(app.getPath('home'), dirs[process.platform], ext);
 
-    const dir = fs
-      .readdirSync(fullPath)
-      .filter(file => fs.statSync(path.join(fullPath, file)).isDirectory());
+    if (fs.existsSync(fullPath)) {
+      const dir = fs
+        .readdirSync(fullPath)
+        .filter(file => fs.statSync(path.join(fullPath, file)).isDirectory());
 
-    if (dir.length) {
-      log('Adding extension:', ext);
-      const extPath = path.join(fullPath, dir[0]);
-      promises.push(session.loadExtension(extPath));
+      if (dir.length) {
+        log('Adding extension:', ext);
+        const extPath = path.join(fullPath, dir[0]);
+        promises.push(session.loadExtension(extPath));
+      }
     }
   }
 
