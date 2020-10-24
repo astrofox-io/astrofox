@@ -34,7 +34,7 @@ export default class Display extends Entity {
       displayName = `${label || className} ${displayCount[className]}`;
     }
 
-    super(Type.className, {
+    super(className, {
       enabled: true,
       ...defaultProperties,
       ...properties,
@@ -43,10 +43,6 @@ export default class Display extends Entity {
 
     this.scene = null;
     this.reactors = {};
-  }
-
-  update(properties = {}) {
-    return super.update(properties);
   }
 
   getReactor(prop) {

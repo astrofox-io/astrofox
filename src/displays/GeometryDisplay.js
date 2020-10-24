@@ -176,7 +176,7 @@ export default class GeometryDisplay extends WebglDisplay {
     this.createMesh();
   }
 
-  renderToScene(scene, data) {
+  render(scene, data) {
     const { scene3d, camera, mesh, properties, parser } = this;
     const renderer = scene.getRenderer();
 

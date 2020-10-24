@@ -2,6 +2,7 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import SpectrumParser from 'audio/SpectrumParser';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
+import { renderToCanvas } from 'utils/canvas';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
   static label = 'Wave Spectrum';
@@ -68,7 +69,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     return points;
   }
 
-  renderToScene(scene, data) {
+  render(scene, data) {
     const {
       wave,
       parser,
@@ -78,6 +79,11 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
 
     wave.render(this.getPoints(fft), true);
 
-    this.renderToCanvas(scene.getCanvasConext(), width / 2, height);
+    const origin = {
+      x: width / 2,
+      y: height,
+    };
+
+    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
   }
 }

@@ -22,7 +22,6 @@ export default class Scene extends Display {
 
     this.displays = new EntityList();
     this.effects = new EntityList();
-    this.reactors = {};
 
     Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_SCENE });
   }
@@ -213,14 +212,14 @@ export default class Scene extends Display {
       displays.forEach(display => {
         if (display.properties.enabled) {
           display.updateReactors(data);
-          display.renderToScene(this, data);
+          display.render(this, data);
         }
       });
 
       effects.forEach(effect => {
         if (effect.properties.enabled) {
           effect.updateReactors(data);
-          effect.renderToScene(this, data);
+          effect.render(this, data);
         }
       });
 

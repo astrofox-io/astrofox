@@ -1,53 +1,33 @@
 import Display from 'core/Display';
-import { deg2rad } from 'utils/math';
 import { DISPLAY_TYPE_CANVAS } from 'view/constants';
+import { renderToCanvas } from 'utils/canvas';
 
 export default class CanvasDisplay extends Display {
   constructor(type, properties) {
     super(type, properties);
 
+    const { width, height } = this.properties;
+
     this.canvas = document.createElement('canvas');
-    this.canvas.width = this.properties.width;
-    this.canvas.height = this.properties.height;
+    this.canvas.width = width;
+    this.canvas.height = height;
     this.context = this.canvas.getContext('2d');
 
     Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_CANVAS });
   }
 
-  renderToScene(scene) {
+  render(scene) {
     const { width, height } = this.canvas;
 
-    this.renderToCanvas(scene.getCanvasConext(), width / 2, height / 2);
-  }
-
-  renderToCanvas(context, dx, dy) {
-    const { canvas } = this;
-    const { width, height } = context.canvas;
-
-    if (canvas.width === 0 || canvas.height === 0) {
+    if (width === 0 || height === 0) {
       return;
     }
 
-    const { x, y, opacity, rotation } = this.properties;
+    const origin = {
+      x: width / 2,
+      y: height / 2,
+    };
 
-    const halfSceneWidth = width / 2;
-    const halfSceneHeight = height / 2;
-
-    context.globalAlpha = opacity;
-
-    if (rotation % 360 !== 0) {
-      const cx = halfSceneWidth + x;
-      const cy = halfSceneHeight - y;
-
-      context.save();
-      context.translate(cx, cy);
-      context.rotate(deg2rad(rotation));
-      context.drawImage(canvas, -dx, -dy);
-      context.restore();
-    } else {
-      context.drawImage(canvas, halfSceneWidth + x - dx, halfSceneHeight - y - dy);
-    }
-
-    context.globalAlpha = 1.0;
+    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
   }
 }

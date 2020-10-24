@@ -1,3 +1,5 @@
+import { deg2rad } from './math';
+
 export function getColor(start, end, pct) {
   const startColor = {
     r: parseInt(start.substring(1, 3), 16),
@@ -32,4 +34,26 @@ export function setColor(context, color, x1, y1, x2, y2) {
   } else {
     context.fillStyle = color;
   }
+}
+
+export function renderToCanvas(context, image, props = { x: 0, y: 0 }, origin = { x: 0, y: 0 }) {
+  const { width, height } = context.canvas;
+  const { x, y, opacity, rotation } = props;
+
+  const halfSceneWidth = width / 2;
+  const halfSceneHeight = height / 2;
+
+  context.globalAlpha = opacity;
+
+  if (rotation && rotation % 360 !== 0) {
+    context.save();
+    context.translate(halfSceneWidth + x, halfSceneHeight - y);
+    context.rotate(deg2rad(rotation));
+    context.drawImage(image, -origin.x, -origin.y);
+    context.restore();
+  } else {
+    context.drawImage(image, halfSceneWidth + x - origin.x, halfSceneHeight - y - origin.y);
+  }
+
+  context.globalAlpha = 1.0;
 }

@@ -2,6 +2,7 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasBars from 'canvas/CanvasBars';
 import SpectrumParser from 'audio/SpectrumParser';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
+import { renderToCanvas } from 'utils/canvas';
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
   static label = 'Bar Spectrum';
@@ -54,11 +55,16 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
     return changed;
   }
 
-  renderToScene(scene, data) {
+  render(scene, data) {
     const fft = this.parser.parseFFT(data.fft);
 
     this.bars.render(fft);
 
-    this.renderToCanvas(scene.getCanvasConext(), this.canvas.width / 2, this.properties.height);
+    const origin = {
+      x: this.canvas.width / 2,
+      y: this.properties.height,
+    };
+
+    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
   }
 }

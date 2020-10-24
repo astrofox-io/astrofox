@@ -19,6 +19,43 @@ export default class TextDisplay extends CanvasDisplay {
     opacity: 1.0,
   };
 
+  static controlProperties = {
+    text: {
+      type: 'string',
+    },
+    size: {
+      type: 'integer',
+    },
+    font: {
+      type: 'string',
+    },
+    italic: {
+      type: 'boolean',
+    },
+    bold: {
+      type: 'boolean',
+    },
+    x: {
+      type: 'integer',
+    },
+    y: {
+      type: 'integer',
+    },
+    color: {
+      type: 'color',
+    },
+    rotation: {
+      type: 'integer',
+      min: 0,
+      max: 360,
+    },
+    opacity: {
+      type: 'float',
+      min: 0,
+      max: 1.0,
+    },
+  };
+
   constructor(properties) {
     super(TextDisplay, properties);
 

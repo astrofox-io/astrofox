@@ -2,6 +2,7 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
+import { renderToCanvas } from 'utils/canvas';
 
 export default class SoundwaveDisplay extends CanvasDisplay {
   static label = 'Soundwave';
@@ -38,7 +39,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
     return changed;
   }
 
-  renderToScene(scene, data) {
+  render(scene, data) {
     const {
       wave,
       parser,
@@ -50,6 +51,11 @@ export default class SoundwaveDisplay extends CanvasDisplay {
 
     wave.render(points, wavelength > 3 ? smooth : false);
 
-    this.renderToCanvas(scene.getCanvasConext(), width / 2, height / 2);
+    const origin = {
+      x: width / 2,
+      y: height / 2,
+    };
+
+    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
   }
 }

@@ -45,6 +45,4 @@ export default class Effect extends Display {
       pass.setSize(width, height);
     }
   }
-
-  renderToScene() {}
 }
