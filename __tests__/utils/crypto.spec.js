@@ -1,11 +1,4 @@
-import crypto from 'crypto';
-
-Object.defineProperty(global.self, 'crypto', {
-  value: {
-    getRandomValues: arr => crypto.randomBytes(arr.length),
-  },
-});
-
+import '../crypto.mock';
 import { uniqueId } from 'utils/crypto';
 
 test('uniqueId functions exists', () => {
