@@ -26,6 +26,22 @@
     "consistent-return": "off",
     "default-case": "off",
     "linebreak-style": ["error", "unix"],
+    "max-len": [
+      "error",
+      {
+        "code": 100,
+        "ignoreComments": true
+      }
+    ],
+    "no-await-in-loop": "off",
+    "no-bitwise": "off",
+    "no-return-assign": ["error", "except-parens"],
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true
+      }
+    ],
     "no-param-reassign": "off",
     "no-plusplus": "off",
     "no-shadow": "off",
@@ -34,38 +50,6 @@
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "strict": "off",
-    "max-len": [
-      "error",
-      {
-        "code": 100,
-        "ignoreComments": true
-      }
-    ],
-    "no-bitwise": [
-      "error",
-      {
-        "allow": ["~"]
-      }
-    ],
-    "no-else-return": [
-      "error",
-      {
-        "allowElseIf": true
-      }
-    ],
-    "no-return-assign": ["error", "except-parens"],
-    "no-unused-expressions": [
-      "error",
-      {
-        "allowShortCircuit": true
-      }
-    ],
-    "object-curly-newline": [
-      "error",
-      {
-        "consistent": true
-      }
-    ],
     "css-modules/no-unused-class": "off",
     "import/extensions": "off",
     "import/no-extraneous-dependencies": "off",

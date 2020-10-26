@@ -1,5 +1,6 @@
 import create from 'zustand';
-import { api, logger, renderer, stage } from 'view/global';
+import Plugin from 'core/Plugin';
+import { api, logger, renderer, stage, plugins } from 'view/global';
 import configStore, { loadConfig } from 'actions/config';
 import updateStore, { checkForUpdates, updateDownloadProgress } from 'actions/updates';
 import projectStore, {
@@ -144,9 +145,26 @@ export async function handleMenuAction(action) {
   }
 }
 
+export async function loadPlugins() {
+  for (const [key, plugin] of Object.entries(api.getPlugins())) {
+    try {
+      const module = await import(/* webpackIgnore: true */ plugin.src);
+
+      plugins.set(key, {
+        ...plugin,
+        module: Plugin.create(module.default, plugin?.info?.properties?.type),
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  console.log(plugins);
+}
+
 export async function initApp() {
   await loadConfig();
   await newProject();
+  await loadPlugins();
 
   const config = configStore.getState();
 

@@ -10,12 +10,12 @@ export default class VideoRenderer extends EventEmitter {
   constructor(renderer) {
     super();
 
-    const { FFMPEG_PATH } = api.getEnvironment();
+    const { FFMPEG_BINARY } = api.getEnvironment();
 
     this.renderer = renderer;
-    this.renderProcess = new RenderProcess(FFMPEG_PATH);
-    this.audioProcess = new AudioProcess(FFMPEG_PATH);
-    this.mergeProcess = new MergeProcess(FFMPEG_PATH);
+    this.renderProcess = new RenderProcess(FFMPEG_BINARY);
+    this.audioProcess = new AudioProcess(FFMPEG_BINARY);
+    this.mergeProcess = new MergeProcess(FFMPEG_BINARY);
 
     this.renderProcess.on('output', data => {
       logger.log(data);

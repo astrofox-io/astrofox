@@ -18,7 +18,4 @@ export const analyzer = new SpectrumAnalyzer(audioContext);
 export const reactors = new Reactors();
 export const renderer = new Renderer();
 export const videoRenderer = new VideoRenderer(renderer);
-
-export function getEnvironment() {
-  return api.getEnvironment();
-}
+export const plugins = new Map();

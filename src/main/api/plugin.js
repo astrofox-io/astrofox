@@ -18,13 +18,23 @@ function getPluginId(file) {
 function loadModule(id, data) {
   initPlugin(id);
 
-  plugins[id].src = `data:text/javascript,${data}`;
+  const blob = new Blob([data], { type: 'text/javascript' });
+
+  plugins[id].src = URL.createObjectURL(blob);
 }
 
 function loadInfo(id, data) {
   initPlugin(id);
 
   plugins[id].info = JSON.parse(data);
+}
+
+function loadIcon(id, data) {
+  initPlugin(id);
+
+  const blob = new Blob([Uint8Array.from(data).buffer], { type: 'image/png' });
+
+  plugins[id].icon = URL.createObjectURL(blob);
 }
 
 function loadPluginFile(dir, file) {
@@ -41,6 +51,9 @@ function loadPluginFile(dir, file) {
   } else if (file === 'package.json') {
     const info = fs.readFileSync(filename, 'utf-8');
     loadInfo(id, info);
+  } else if (file === 'icon.png') {
+    const icon = fs.readFileSync(filename);
+    loadIcon(id, icon);
   }
 }
 

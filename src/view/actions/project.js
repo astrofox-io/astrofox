@@ -36,21 +36,21 @@ export function resetProject() {
   projectStore.setState({ ...initialState });
 }
 
-function loadElement(scene, config) {
-  const { name } = config;
-  const type = displays[name] || effects[name];
-
-  if (type) {
-    const entity = Display.create(type, config);
-
-    scene.addElement(entity);
-  } else {
-    logger.warn('Component not found:', name);
-  }
-}
-
 export function loadProject(data) {
   logger.log('Loaded project:', data);
+
+  const loadElement = (scene, config) => {
+    const { name } = config;
+    const type = displays[name] || effects[name];
+
+    if (type) {
+      const entity = Display.create(type, config);
+
+      scene.addElement(entity);
+    } else {
+      logger.warn('Component not found:', name);
+    }
+  };
 
   resetScenes(false);
   resetReactors();
