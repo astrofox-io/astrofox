@@ -6,7 +6,7 @@ export default class EntityList extends ArrayList {
   }
 
   hasElement(obj) {
-    return !!this.getElementById(obj.id);
+    return this.indexOf(obj) > -1;
   }
 
   addElement(obj, index) {
