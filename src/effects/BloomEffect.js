@@ -7,9 +7,12 @@ import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import LuminanceShader from 'shaders/LuminanceShader';
 
 export default class BloomEffect extends Effect {
-  static label = 'Bloom';
-
-  static className = 'BloomEffect';
+  static info = {
+    name: 'astrofox-effect-bloom',
+    description: 'Bloom effect.',
+    type: 'effect',
+    label: 'Bloom',
+  };
 
   static defaultProperties = {
     blendMode: 'Screen',

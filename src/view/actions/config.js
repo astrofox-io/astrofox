@@ -14,7 +14,7 @@ export async function saveConfig(config) {
   try {
     await api.saveConfig(config);
 
-    logger.log('Config file saved:', APP_CONFIG_FILE, config);
+    logger.log('Saved config file', APP_CONFIG_FILE, config);
 
     configStore.setState(config);
   } catch (error) {
@@ -30,7 +30,7 @@ export async function loadConfig() {
       return configStore.setState({ ...defaultAppConfig, uid: uniqueId() });
     }
 
-    logger.log('Config file loaded:', APP_CONFIG_FILE, config);
+    logger.log('Loaded config file', APP_CONFIG_FILE, config);
 
     configStore.setState(config);
   } catch (error) {

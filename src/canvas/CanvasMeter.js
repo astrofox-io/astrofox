@@ -1,8 +1,12 @@
 import Entity from 'core/Entity';
 import { setColor } from 'utils/canvas';
 
-export default class CanvasBars extends Entity {
-  static className = 'CanvasBars';
+export default class CanvasMeter extends Entity {
+  static info = {
+    name: 'astrofox-canvas-meter',
+    description: 'Canvas meter.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     width: 100,
@@ -12,7 +16,7 @@ export default class CanvasBars extends Entity {
   };
 
   constructor(properties, canvas) {
-    super(CanvasBars.className, { ...CanvasBars.defaultProperties, ...properties });
+    super(CanvasMeter, { ...CanvasMeter.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

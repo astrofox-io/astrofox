@@ -1,10 +1,9 @@
 import Display from 'core/Display';
-import { DISPLAY_TYPE_CANVAS } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 
 export default class CanvasDisplay extends Display {
-  constructor(type, properties) {
-    super(type, properties);
+  constructor(Type, properties) {
+    super(Type, properties);
 
     const { width, height } = this.properties;
 
@@ -12,8 +11,6 @@ export default class CanvasDisplay extends Display {
     this.canvas.width = width;
     this.canvas.height = height;
     this.context = this.canvas.getContext('2d');
-
-    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_CANVAS });
   }
 
   render(scene) {

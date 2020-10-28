@@ -5,9 +5,12 @@ import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
-  static label = 'Bar Spectrum';
-
-  static className = 'BarSpectrumDisplay';
+  static info = {
+    name: 'astrofox-display-barspectrum',
+    description: 'Displays an audio bar spectrum.',
+    type: 'display',
+    label: 'Bar Spectrum',
+  };
 
   static defaultProperties = {
     width: 770,

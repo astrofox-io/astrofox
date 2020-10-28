@@ -13,7 +13,7 @@
   "main": "app/main.js",
   "scripts": {
     "start": "dotenv electron ./app",
-    "dev": "npm-run-all build-electron dev-view",
+    "dev": "npm-run-all --parallel dev-electron dev-view",
     "build": "npm-run-all init-app build-prod",
     "test": "jest --coverage",
     "dev-view": "dotenv webpack-dev-server --progress --colors --config webpack.config.view.js",

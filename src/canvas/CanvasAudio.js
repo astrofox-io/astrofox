@@ -2,14 +2,18 @@ import Entity from 'core/Entity';
 import CanvasBars from 'canvas/CanvasBars';
 
 export default class CanvasAudio extends Entity {
-  static className = 'CanvasAudio';
+  static info = {
+    name: 'astrofox-canvas-audio',
+    description: 'Canvas audio.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     bars: 100,
   };
 
   constructor(properties, canvas) {
-    super(CanvasAudio.className, { ...CanvasAudio.defaultProperties, ...properties });
+    super(CanvasAudio, { ...CanvasAudio.defaultProperties, ...properties });
 
     this.bars = new CanvasBars(properties, canvas);
     this.results = new Float32Array(this.properties.bars);

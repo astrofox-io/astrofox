@@ -21,7 +21,11 @@ export function resetReactorCount() {
 }
 
 export default class AudioReactor extends Entity {
-  static className = 'AudioReactor';
+  static info = {
+    name: 'astrofox-reactor-audio',
+    description: 'Audio reactor.',
+    type: 'reactor',
+  };
 
   static defaultProperties = {
     enabled: true,
@@ -49,13 +53,11 @@ export default class AudioReactor extends Entity {
   constructor(properties) {
     reactorCount += 1;
 
-    super(AudioReactor.className, {
+    super(AudioReactor, {
       displayName: `Reactor ${reactorCount}`,
       ...AudioReactor.defaultProperties,
       ...properties,
     });
-
-    Object.defineProperty(this, 'name', { value: 'AudioReactor' });
 
     this.parser = new SpectrumParser({ ...AudioReactor.defaultProperties.spectrum });
 

@@ -2,9 +2,12 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasText from 'canvas/CanvasText';
 
 export default class TextDisplay extends CanvasDisplay {
-  static label = 'Text';
-
-  static className = 'TextDisplay';
+  static info = {
+    name: 'astrofox-display-text',
+    description: 'Displays text.',
+    type: 'display',
+    label: 'Text',
+  };
 
   static defaultProperties = {
     text: '',

@@ -9,9 +9,12 @@ const shaders = {
 };
 
 export default class PixelateEffect extends Effect {
-  static label = 'Pixelate';
-
-  static className = 'PixelateEffect';
+  static info = {
+    name: 'astrofox-effect-pixelate',
+    description: 'Pixelate effect.',
+    type: 'effect',
+    label: 'Pixelate',
+  };
 
   static defaultProperties = {
     type: 'Square',

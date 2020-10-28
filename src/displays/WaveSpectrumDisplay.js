@@ -5,9 +5,12 @@ import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
-  static label = 'Wave Spectrum';
-
-  static className = 'WaveSpectrumDisplay';
+  static info = {
+    name: 'astrofox-display-wavespectrum',
+    description: 'Displays an audio wave spectrum.',
+    type: 'display',
+    label: 'Wave Spectrum',
+  };
 
   static defaultProperties = {
     width: 770,

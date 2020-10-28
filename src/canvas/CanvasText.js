@@ -1,7 +1,11 @@
 import Entity from 'core/Entity';
 
 export default class CanvasText extends Entity {
-  static className = 'CanvasText';
+  static info = {
+    name: 'astrofox-canvas-text',
+    description: 'Canvas text.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     text: '',
@@ -13,7 +17,7 @@ export default class CanvasText extends Entity {
   };
 
   constructor(properties, canvas) {
-    super(CanvasText.className, { ...CanvasText.defaultProperties, ...properties });
+    super(CanvasText, { ...CanvasText.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;

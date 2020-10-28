@@ -3,9 +3,12 @@ import ShaderPass from 'graphics/ShaderPass';
 import LEDShader from 'shaders/LEDShader';
 
 export default class LEDEffect extends Effect {
-  static label = 'LED';
-
-  static className = 'LEDEffect';
+  static info = {
+    name: 'astrofox-effect-led',
+    description: 'LED effect.',
+    type: 'effect',
+    label: 'LED',
+  };
 
   static defaultProperties = {
     spacing: 10,

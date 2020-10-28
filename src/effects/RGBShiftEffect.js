@@ -4,9 +4,12 @@ import RGBShiftShader from 'shaders/RGBShiftShader';
 import { deg2rad } from 'utils/math';
 
 export default class RGBShiftEffect extends Effect {
-  static label = 'RGB Shift';
-
-  static className = 'RGBShiftEffect';
+  static info = {
+    name: 'astrofox-effect-rgbshift',
+    description: 'RGB shift effect.',
+    type: 'effect',
+    label: 'RGB Shift',
+  };
 
   static defaultProperties = {
     offset: 5,

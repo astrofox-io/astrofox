@@ -4,9 +4,12 @@ import DotScreenShader from 'shaders/DotScreenShader';
 import { deg2rad } from 'utils/math';
 
 export default class DotScreenEffect extends Effect {
-  static label = 'Dot Screen';
-
-  static className = 'DotScreenEffect';
+  static info = {
+    name: 'astrofox-effect-dotscreen',
+    description: 'dor screen effect.',
+    type: 'effect',
+    label: 'Dot Screen',
+  };
 
   static defaultProperties = {
     angle: 90,

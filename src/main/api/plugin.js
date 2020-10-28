@@ -105,6 +105,10 @@ async function loadDirectory(dir) {
 }
 
 export async function loadPlugins(dir) {
+  if (!fs.existsSync(dir)) {
+    return;
+  }
+
   const files = fs.readdirSync(dir);
   const promises = [];
 

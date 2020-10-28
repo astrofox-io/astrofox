@@ -3,7 +3,11 @@ import BezierSpline from 'drawing/BezierSpline';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
-  static className = 'CanvasWave';
+  static info = {
+    name: 'astrofox-canvas-wave',
+    description: 'Canvas wave.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     color: '#FFFFFF',
@@ -17,7 +21,7 @@ export default class CanvasWave extends Entity {
   };
 
   constructor(properties, canvas) {
-    super(CanvasWave.className, { ...CanvasWave.defaultProperties, ...properties });
+    super(CanvasWave, { ...CanvasWave.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

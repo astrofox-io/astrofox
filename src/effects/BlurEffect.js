@@ -17,9 +17,12 @@ const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
 
 export default class BlurEffect extends Effect {
-  static label = 'Blur';
-
-  static className = 'BlurEffect';
+  static info = {
+    name: 'astrofox-effect-blur',
+    description: 'Blur effect.',
+    type: 'effect',
+    label: 'Blur',
+  };
 
   static defaultProperties = {
     type: 'Gaussian',

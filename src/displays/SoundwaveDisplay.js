@@ -5,9 +5,12 @@ import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 
 export default class SoundwaveDisplay extends CanvasDisplay {
-  static label = 'Soundwave';
-
-  static className = 'SoundwaveDisplay';
+  static info = {
+    name: 'astrofox-display-soundwave',
+    description: 'Displays an audio soundwave.',
+    type: 'display',
+    label: 'Soundwave',
+  };
 
   static defaultProperties = {
     color: '#FFFFFF',

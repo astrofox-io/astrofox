@@ -52,9 +52,12 @@ const CAMERA_POS_Z = 250;
 const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends WebglDisplay {
-  static label = 'Geometry (3D)';
-
-  static className = 'GeometryDisplay';
+  static info = {
+    name: 'astrofox-display-geometry',
+    description: 'Displays 3D geometry.',
+    type: 'display',
+    label: 'Geometry (3D)',
+  };
 
   static defaultProperties = {
     shape: 'Box',

@@ -10,3 +10,12 @@ export function updateExistingProps(obj, props) {
 
   return changed;
 }
+
+export function getProperties(src, filter = []) {
+  return Object.getOwnPropertyNames(src).reduce((obj, name) => {
+    if (!filter.includes(name)) {
+      obj[name] = src[name];
+    }
+    return obj;
+  }, {});
+}

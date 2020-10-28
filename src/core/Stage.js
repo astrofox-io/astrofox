@@ -13,7 +13,11 @@ import {
 import { isDefined } from 'utils/array';
 
 export default class Stage extends Entity {
-  static className = 'Stage';
+  static info = {
+    name: 'astrofox-stage',
+    description: 'The stage.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     width: DEFAULT_CANVAS_WIDTH,
@@ -23,7 +27,7 @@ export default class Stage extends Entity {
   };
 
   constructor(properties) {
-    super(Stage.className, { ...Stage.defaultProperties, ...properties });
+    super(Stage, { ...Stage.defaultProperties, ...properties });
 
     this.scenes = new EntityList();
     this.initialized = false;

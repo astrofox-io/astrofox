@@ -1,7 +1,11 @@
 import Entity from 'core/Entity';
 
 export default class ComposerPass extends Entity {
-  static className = 'ComposerPass';
+  static info = {
+    name: 'astrofox-composer-pass',
+    description: 'Composer pass.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     enabled: true,
@@ -16,7 +20,7 @@ export default class ComposerPass extends Entity {
   };
 
   constructor(properties) {
-    super(ComposerPass.className, { ...ComposerPass.defaultProperties, ...properties });
+    super(ComposerPass, { ...ComposerPass.defaultProperties, ...properties });
   }
 
   setSize(width, height) {

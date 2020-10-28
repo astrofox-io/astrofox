@@ -17,7 +17,7 @@ export default class Entity {
 
   constructor(name, properties = {}) {
     Object.defineProperty(this, 'id', { value: uniqueId(), configurable: true });
-    Object.defineProperty(this, 'name', { value: name });
+    Object.defineProperty(this, 'name', { value: name?.info?.name });
 
     this.properties = properties;
   }

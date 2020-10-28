@@ -21,24 +21,27 @@ export default class Display extends Entity {
   };
 
   constructor(Type, properties = {}) {
-    const { className, label, defaultProperties } = Type;
+    const {
+      info: { name, label },
+      defaultProperties,
+    } = Type;
     let { displayName } = properties;
 
     if (!displayName) {
-      if (displayCount[className] === undefined) {
-        displayCount[className] = 1;
+      if (displayCount[name] === undefined) {
+        displayCount[name] = 1;
       } else {
-        displayCount[className] += 1;
+        displayCount[name] += 1;
       }
 
-      displayName = `${label || className} ${displayCount[className]}`;
+      displayName = `${label || name} ${displayCount[name]}`;
     }
 
-    super(className, {
+    super(name, {
       enabled: true,
+      displayName,
       ...defaultProperties,
       ...properties,
-      displayName,
     });
 
     this.scene = null;

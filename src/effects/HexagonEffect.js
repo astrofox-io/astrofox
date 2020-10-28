@@ -3,9 +3,12 @@ import ShaderPass from 'graphics/ShaderPass';
 import HexagonShader from 'shaders/HexagonShader';
 
 export default class HexagonEffect extends Effect {
-  static label = 'Hexagon';
-
-  static className = 'HexagonEffect';
+  static info = {
+    name: 'astrofox-effect-hexagon',
+    description: 'Hexagon effect.',
+    type: 'effect',
+    label: 'Hexagon',
+  };
 
   static defaultProperties = {
     scale: 10.0,

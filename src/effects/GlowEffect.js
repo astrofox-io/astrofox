@@ -5,9 +5,12 @@ import GlowShader from 'shaders/GlowShader';
 const GLOW_MAX = 5;
 
 export default class GlowEffect extends Effect {
-  static label = 'Glow';
-
-  static className = 'GlowEffect';
+  static info = {
+    name: 'astrofox-effect-glow',
+    description: 'Glow effect.',
+    type: 'effect',
+    label: 'Glow',
+  };
 
   static defaultProperties = {
     amount: 0.1,

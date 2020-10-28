@@ -3,9 +3,12 @@ import CanvasImage from 'canvas/CanvasImage';
 import { BLANK_IMAGE } from 'view/constants';
 
 export default class ImageDisplay extends CanvasDisplay {
-  static label = 'Image';
-
-  static className = 'ImageDisplay';
+  static info = {
+    name: 'astrofox-display-image',
+    description: 'Displays an image.',
+    type: 'display',
+    label: 'Image',
+  };
 
   static defaultProperties = {
     src: BLANK_IMAGE,

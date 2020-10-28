@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
-import { renderer } from 'view/global';
+import * as global from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
 import Modals from 'components/window/Modals';
@@ -17,11 +17,12 @@ function App() {
   async function init() {
     await initApp();
 
-    renderer.start();
+    global.renderer.start();
   }
 
   useEffect(() => {
     init();
+    window.global = global;
   }, []);
 
   return (

@@ -3,7 +3,11 @@ import { val2pct, db2mag } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class SpectrumParser extends Entity {
-  static className = 'SpectrumParser';
+  static info = {
+    name: 'astrofox-parser-spectrum',
+    description: 'Spectrum parser.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     fftSize: FFT_SIZE,
@@ -18,7 +22,7 @@ export default class SpectrumParser extends Entity {
   };
 
   constructor(properties) {
-    super(SpectrumParser.className, { ...SpectrumParser.defaultProperties, ...properties });
+    super(SpectrumParser, { ...SpectrumParser.defaultProperties, ...properties });
 
     this.setBinRange();
   }

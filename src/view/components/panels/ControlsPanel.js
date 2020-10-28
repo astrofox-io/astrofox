@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import shallow from 'zustand/shallow';
 import { getControlComponent } from 'utils/controls';
-import { stage } from 'view/global';
+import { stage } from 'global';
 import useApp from 'actions/app';
 import useStage from 'actions/stage';
 import useScenes from 'actions/scenes';

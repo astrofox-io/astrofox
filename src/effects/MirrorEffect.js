@@ -3,9 +3,12 @@ import ShaderPass from 'graphics/ShaderPass';
 import MirrorShader from 'shaders/MirrorShader';
 
 export default class MirrorEffect extends Effect {
-  static label = 'Mirror';
-
-  static className = 'MirrorEffect';
+  static info = {
+    name: 'astrofox-effect-mirror',
+    description: 'Mirror effect.',
+    type: 'effect',
+    label: 'Mirror',
+  };
 
   static defaultProperties = {
     side: 0,

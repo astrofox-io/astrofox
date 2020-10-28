@@ -2,12 +2,14 @@ import Display from 'core/Display';
 import Effect from 'core/Effect';
 import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
-import { DISPLAY_TYPE_SCENE } from 'view/constants';
 
 export default class Scene extends Display {
-  static label = 'Scene';
-
-  static className = 'Scene';
+  static info = {
+    name: 'astrofox-display-scene',
+    description: 'Scene display.',
+    type: 'display',
+    label: 'Scene',
+  };
 
   static defaultProperties = {
     blendMode: 'Normal',
@@ -22,8 +24,6 @@ export default class Scene extends Display {
 
     this.displays = new EntityList();
     this.effects = new EntityList();
-
-    Object.defineProperty(this, 'type', { value: DISPLAY_TYPE_SCENE });
   }
 
   update(properties) {

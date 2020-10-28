@@ -3,7 +3,11 @@ import { setColor } from 'utils/canvas';
 import { clamp } from 'utils/math';
 
 export default class CanvasBars extends Entity {
-  static className = 'CanvasBars';
+  static info = {
+    name: 'astrofox-canvas-bars',
+    description: 'Canvas bars.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     width: 300,
@@ -17,7 +21,7 @@ export default class CanvasBars extends Entity {
   };
 
   constructor(properties, canvas) {
-    super(CanvasBars.className, { ...CanvasBars.defaultProperties, ...properties });
+    super(CanvasBars, { ...CanvasBars.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

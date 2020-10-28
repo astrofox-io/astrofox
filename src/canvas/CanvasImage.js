@@ -3,7 +3,11 @@ import Entity from 'core/Entity';
 const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Entity {
-  static className = 'CanvasImage';
+  static info = {
+    name: 'astrofox-canvas-image',
+    description: 'Canvas image.',
+    type: 'entity',
+  };
 
   static defaultProperties = {
     src: '',
@@ -12,7 +16,7 @@ export default class CanvasImage extends Entity {
   };
 
   constructor(properties, canvas) {
-    super(CanvasImage.className, { ...CanvasImage.defaultProperties, ...properties });
+    super(CanvasImage, { ...CanvasImage.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;
