@@ -3,7 +3,8 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
 
   "parser": "babel-eslint",
@@ -20,7 +21,7 @@
     "prettier",
     "prettier/react"
   ],
-  "plugins": ["prettier", "promise", "css-modules", "react", "react-hooks"],
+  "plugins": ["prettier", "promise", "css-modules", "react", "react-hooks", "jest"],
   "rules": {
     "class-methods-use-this": "off",
     "consistent-return": "off",
