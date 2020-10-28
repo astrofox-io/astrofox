@@ -1,12 +1,18 @@
 import Display from 'core/Display';
 
 export default class Effect extends Display {
+  constructor(info, properties) {
+    super(info, properties);
+
+    this.type = 'effect';
+  }
+
   update(properties = {}) {
     const { pass } = this;
     const { enabled } = properties;
 
     if (pass && enabled !== undefined) {
-      pass.properties.enabled = enabled;
+      pass.enabled = enabled;
     }
 
     const changed = super.update(properties);
@@ -20,7 +26,7 @@ export default class Effect extends Display {
 
   setPass(pass) {
     this.pass = pass;
-    this.pass.properties.enabled = this.properties.enabled;
+    this.pass.enabled = this.enabled;
 
     this.scene.updatePasses();
   }

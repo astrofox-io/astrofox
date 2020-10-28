@@ -50,6 +50,16 @@ export function updateElement(id, prop, value) {
   const element = stage.getStageElementById(id);
 
   if (element) {
+    element[prop] = value;
+
+    loadScenes();
+  }
+}
+
+export function updateElementProperty(id, prop, value) {
+  const element = stage.getStageElementById(id);
+
+  if (element) {
     element.update({ [prop]: value });
 
     loadScenes();

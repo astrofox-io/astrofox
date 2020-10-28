@@ -6,7 +6,7 @@ const GLOW_MAX = 5;
 
 export default class GlowEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-glow',
+    name: 'GlowEffect',
     description: 'Glow effect.',
     type: 'effect',
     label: 'Glow',
@@ -18,7 +18,7 @@ export default class GlowEffect extends Effect {
   };
 
   constructor(properties) {
-    super(GlowEffect, properties);
+    super(GlowEffect.info, { ...GlowEffect.defaultProperties, ...properties });
   }
 
   updatePass() {

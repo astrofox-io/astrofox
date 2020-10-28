@@ -8,7 +8,7 @@ import LuminanceShader from 'shaders/LuminanceShader';
 
 export default class BloomEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-bloom',
+    name: 'BloomEffect',
     description: 'Bloom effect.',
     type: 'effect',
     label: 'Bloom',
@@ -21,7 +21,7 @@ export default class BloomEffect extends Effect {
   };
 
   constructor(properties) {
-    super(BloomEffect, properties);
+    super(BloomEffect.info, { ...BloomEffect.defaultProperties, ...properties });
   }
 
   updatePass() {

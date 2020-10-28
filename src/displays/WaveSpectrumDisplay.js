@@ -6,7 +6,7 @@ import { renderToCanvas } from 'utils/canvas';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
   static info = {
-    name: 'astrofox-display-wavespectrum',
+    name: 'WaveSpectrumDisplay',
     description: 'Displays an audio wave spectrum.',
     type: 'display',
     label: 'Wave Spectrum',
@@ -35,7 +35,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(WaveSpectrumDisplay, properties);
+    super(WaveSpectrumDisplay.info, { ...WaveSpectrumDisplay.defaultProperties, ...properties });
 
     this.wave = new CanvasWave(this.properties, this.canvas);
     this.parser = new SpectrumParser(this.properties);

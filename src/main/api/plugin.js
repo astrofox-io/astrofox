@@ -23,12 +23,6 @@ function loadModule(id, data) {
   plugins[id].src = URL.createObjectURL(blob);
 }
 
-function loadInfo(id, data) {
-  initPlugin(id);
-
-  plugins[id].info = JSON.parse(data);
-}
-
 function loadIcon(id, data) {
   initPlugin(id);
 
@@ -48,9 +42,6 @@ function loadPluginFile(dir, file) {
   if (file === 'index.js') {
     const plugin = fs.readFileSync(filename, 'utf-8');
     loadModule(id, plugin);
-  } else if (file === 'package.json') {
-    const info = fs.readFileSync(filename, 'utf-8');
-    loadInfo(id, info);
   } else if (file === 'icon.png') {
     const icon = fs.readFileSync(filename);
     loadIcon(id, icon);
@@ -82,8 +73,8 @@ async function loadZipFile(file) {
 
             if (entry.fileName === 'index.js') {
               loadModule(id, data.toString('utf-8'));
-            } else if (entry.fileName === 'package.json') {
-              loadInfo(id, data.toString('utf-8'));
+            } else if (entry.fileName === 'icon.png') {
+              loadIcon(id, data);
             }
           });
         }

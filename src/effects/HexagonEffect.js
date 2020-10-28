@@ -4,7 +4,7 @@ import HexagonShader from 'shaders/HexagonShader';
 
 export default class HexagonEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-hexagon',
+    name: 'HexagonEffect',
     description: 'Hexagon effect.',
     type: 'effect',
     label: 'Hexagon',
@@ -15,7 +15,7 @@ export default class HexagonEffect extends Effect {
   };
 
   constructor(properties) {
-    super(HexagonEffect, properties);
+    super(HexagonEffect.info, { ...HexagonEffect.defaultProperties, ...properties });
   }
 
   updatePass() {

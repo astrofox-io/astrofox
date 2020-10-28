@@ -1,28 +1,24 @@
 import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 import Layer from 'components/panels/Layer';
-import { DISPLAY_TYPE_CANVAS, DISPLAY_TYPE_EFFECT, DISPLAY_TYPE_WEBGL } from 'view/constants';
 import { Picture, Cube, LightUp, DocumentLandscape } from 'view/icons';
 import { reverse } from 'utils/array';
 import styles from './SceneLayer.less';
 
 const icons = {
-  [DISPLAY_TYPE_CANVAS]: DocumentLandscape,
-  [DISPLAY_TYPE_WEBGL]: Cube,
-  [DISPLAY_TYPE_EFFECT]: LightUp,
+  display: DocumentLandscape,
+  effect: LightUp,
+  webgl: Cube,
 };
 
 export default function SceneLayer({ scene, activeElementId, onLayerClick, onLayerUpdate }) {
   const [expanded, setExpanded] = useState(true);
-  const {
-    id,
-    properties: { displayName, enabled },
-  } = scene;
+  const { id, displayName, enabled } = scene;
 
   const displays = useMemo(() => reverse(scene.displays), [scene.displays]);
   const effects = useMemo(() => reverse(scene.effects), [scene.effects]);
 
-  const renderLayer = ({ id, type, properties: { displayName, enabled } }) => (
+  const renderLayer = ({ id, type, displayName, enabled }) => (
     <Layer
       key={id}
       id={id}

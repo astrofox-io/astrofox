@@ -10,7 +10,7 @@ const shaders = {
 
 export default class PixelateEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-pixelate',
+    name: 'PixelateEffect',
     description: 'Pixelate effect.',
     type: 'effect',
     label: 'Pixelate',
@@ -22,7 +22,7 @@ export default class PixelateEffect extends Effect {
   };
 
   constructor(properties) {
-    super(PixelateEffect, properties);
+    super(PixelateEffect.info, { ...PixelateEffect.defaultProperties, ...properties });
   }
 
   update(properties) {

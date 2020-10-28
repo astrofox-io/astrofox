@@ -53,7 +53,7 @@ const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends WebglDisplay {
   static info = {
-    name: 'astrofox-display-geometry',
+    name: 'GeometryDisplay',
     description: 'Displays 3D geometry.',
     type: 'display',
     label: 'Geometry (3D)',
@@ -81,7 +81,7 @@ export default class GeometryDisplay extends WebglDisplay {
   };
 
   constructor(properties) {
-    super(GeometryDisplay, properties);
+    super(GeometryDisplay.info, { ...GeometryDisplay.defaultProperties, ...properties });
 
     this.parser = new SpectrumParser({ normalize: true });
   }

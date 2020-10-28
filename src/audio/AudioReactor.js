@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash/cloneDeep';
 import Entity from 'core/Entity';
 import SpectrumParser from 'audio/SpectrumParser';
 import { val2pct, floor, ceil } from 'utils/math';
@@ -22,13 +23,12 @@ export function resetReactorCount() {
 
 export default class AudioReactor extends Entity {
   static info = {
-    name: 'astrofox-reactor-audio',
+    name: 'AudioReactor',
     description: 'Audio reactor.',
     type: 'reactor',
   };
 
   static defaultProperties = {
-    enabled: true,
     outputMode: 'Add',
     selection: {
       x: 0,
@@ -53,11 +53,9 @@ export default class AudioReactor extends Entity {
   constructor(properties) {
     reactorCount += 1;
 
-    super(AudioReactor, {
-      displayName: `Reactor ${reactorCount}`,
-      ...AudioReactor.defaultProperties,
-      ...properties,
-    });
+    super(AudioReactor.info.name, { ...AudioReactor.defaultProperties, ...properties });
+
+    this.displayName = `Reactor ${reactorCount}`;
 
     this.parser = new SpectrumParser({ ...AudioReactor.defaultProperties.spectrum });
 
@@ -163,12 +161,14 @@ export default class AudioReactor extends Entity {
   }
 
   toJSON() {
-    const { id, name, properties } = this;
+    const { id, name, type, displayName, properties } = this;
 
     return {
       id,
       name,
-      properties: { ...properties },
+      type,
+      displayName,
+      properties: cloneDeep(properties),
     };
   }
 }

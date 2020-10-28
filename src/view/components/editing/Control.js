@@ -5,7 +5,7 @@ import { inputValueToProps, mapChildren } from 'utils/react';
 import styles from './Control.less';
 
 export default function Control({ display, label, active, className, children, onChange }) {
-  const { displayName } = display.properties;
+  const { displayName } = display;
 
   function handleClone(child, props) {
     if (child.type === Option) {

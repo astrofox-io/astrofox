@@ -18,7 +18,7 @@ const ZOOM_BLUR_MAX = 1;
 
 export default class BlurEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-blur',
+    name: 'BlurEffect',
     description: 'Blur effect.',
     type: 'effect',
     label: 'Blur',
@@ -32,7 +32,7 @@ export default class BlurEffect extends Effect {
   };
 
   constructor(properties) {
-    super(BlurEffect, properties);
+    super(BlurEffect.info, { ...BlurEffect.defaultProperties, ...properties });
   }
 
   update(properties) {

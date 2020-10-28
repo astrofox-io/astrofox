@@ -154,17 +154,12 @@ export async function loadPlugins() {
   for (const [key, plugin] of Object.entries(api.getPlugins())) {
     try {
       const module = await import(/* webpackIgnore: true */ plugin.src);
-      const { type, label } = plugin?.info?.properties;
-
-      const info = {
-        ...plugin.info,
-        type,
-        label,
-      };
 
       plugins.set(key, {
-        info,
-        module: Plugin.create(module.default, info),
+        info: module.info,
+        controls: module.controls,
+        icon: plugin.icon,
+        module: Plugin.create(module),
       });
     } catch (e) {
       logger.error(e);
@@ -175,35 +170,30 @@ export async function loadPlugins() {
 
 export async function loadLibrary() {
   const coreDisplays = {};
-  for (const [key, value] of Object.entries(displays)) {
-    const props = getProperties(value);
+  for (const [key, display] of Object.entries(displays)) {
+    const props = getProperties(display);
     coreDisplays[key] = {
       info: {
         ...props.info,
         version: env.APP_VERSION,
       },
-      module: value,
+      module: display,
     };
   }
 
   const coreEffects = {};
-  for (const [key, value] of Object.entries(effects)) {
-    const props = getProperties(value);
+  for (const [key, effect] of Object.entries(effects)) {
+    const props = getProperties(effect);
     coreEffects[key] = {
       info: {
         ...props.info,
         version: env.APP_VERSION,
       },
-      module: value,
+      module: effect,
     };
   }
 
-  const pluginDisplays = Array.from(plugins).reduce((obj, [key, value]) => {
-    obj[key] = value;
-    return obj;
-  }, {});
-
-  library.set('displays', { ...pluginDisplays, ...coreDisplays });
+  library.set('displays', { ...Object.fromEntries(plugins), ...coreDisplays });
   library.set('effects', coreEffects);
 
   logger.log('Loaded library', library);

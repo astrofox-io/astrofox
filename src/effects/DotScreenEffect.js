@@ -5,7 +5,7 @@ import { deg2rad } from 'utils/math';
 
 export default class DotScreenEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-dotscreen',
+    name: 'DotScreenEffect',
     description: 'dor screen effect.',
     type: 'effect',
     label: 'Dot Screen',
@@ -17,7 +17,7 @@ export default class DotScreenEffect extends Effect {
   };
 
   constructor(properties) {
-    super(DotScreenEffect, properties);
+    super(DotScreenEffect.info, { ...DotScreenEffect.defaultProperties, ...properties });
   }
 
   updatePass() {

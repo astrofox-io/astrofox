@@ -3,25 +3,25 @@ import Display from './Display';
 import Effect from './Effect';
 
 export default class Plugin {
-  static create(module, info) {
+  static create(module) {
+    const { info, defaultProperties, controls } = module;
     const Type = info.type === 'effect' ? Effect : Display;
 
     class PluginClass extends Type {
       constructor() {
-        super(PluginClass);
-
-        Object.defineProperty(this, 'type', { value: 'canvas' });
+        super(info, { ...defaultProperties });
       }
     }
 
     // Add static properties
     PluginClass.info = info;
-    PluginClass.defaultProperties = module.defaultProperties;
+    PluginClass.controls = controls;
+    PluginClass.defaultProperties = defaultProperties;
 
     // Add methods
-    Object.getOwnPropertyNames(module.prototype).forEach(name => {
+    Object.getOwnPropertyNames(module.default.prototype).forEach(name => {
       if (name !== 'constructor') {
-        PluginClass.prototype[name] = module.prototype[name];
+        PluginClass.prototype[name] = module.default.prototype[name];
       }
     });
 

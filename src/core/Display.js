@@ -13,37 +13,25 @@ export default class Display extends Entity {
     const entity = Entity.create(Type, config);
 
     Object.keys(reactors).forEach(key => {
-      const config = reactors[key];
-      entity.setReactor(key, config);
+      const reactorConfig = reactors[key];
+      entity.setReactor(key, reactorConfig);
     });
 
     return entity;
   };
 
-  constructor(Type, properties = {}) {
-    const {
-      info: { name, label },
-      defaultProperties,
-    } = Type;
-    let { displayName } = properties;
+  constructor({ name, label }, properties = {}) {
+    super(name, properties);
 
-    if (!displayName) {
-      if (displayCount[name] === undefined) {
-        displayCount[name] = 1;
-      } else {
-        displayCount[name] += 1;
-      }
-
-      displayName = `${label || name} ${displayCount[name]}`;
+    if (displayCount[name] === undefined) {
+      displayCount[name] = 1;
+    } else {
+      displayCount[name] += 1;
     }
 
-    super(name, {
-      enabled: true,
-      displayName,
-      ...defaultProperties,
-      ...properties,
-    });
-
+    this.displayName = `${label || name} ${displayCount[name]}`;
+    this.enabled = true;
+    this.type = 'display';
     this.scene = null;
     this.reactors = {};
   }
@@ -82,12 +70,14 @@ export default class Display extends Entity {
   }
 
   toJSON() {
-    const { id, name, type, properties, reactors } = this;
+    const { id, name, type, enabled, displayName, properties, reactors } = this;
 
     return {
       id,
       name,
       type,
+      enabled,
+      displayName,
       properties: cloneDeep(properties),
       reactors: cloneDeep(reactors),
     };

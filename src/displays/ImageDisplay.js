@@ -4,7 +4,7 @@ import { BLANK_IMAGE } from 'view/constants';
 
 export default class ImageDisplay extends CanvasDisplay {
   static info = {
-    name: 'astrofox-display-image',
+    name: 'ImageDisplay',
     description: 'Displays an image.',
     type: 'display',
     label: 'Image',
@@ -22,7 +22,7 @@ export default class ImageDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(ImageDisplay, properties);
+    super(ImageDisplay.info, { ...ImageDisplay.defaultProperties, ...properties });
 
     this.image = new CanvasImage(this.properties, this.canvas);
   }

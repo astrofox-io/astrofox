@@ -34,7 +34,7 @@ export default class MultiPass extends ComposerPass {
     this.readBuffer = readBuffer;
 
     this.passes.forEach(pass => {
-      if (pass.properties.enabled) {
+      if (pass.enabled) {
         pass.render(renderer, this.writeBuffer, this.readBuffer);
 
         if (pass.properties.needsSwap) {

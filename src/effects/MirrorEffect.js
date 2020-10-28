@@ -4,7 +4,7 @@ import MirrorShader from 'shaders/MirrorShader';
 
 export default class MirrorEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-mirror',
+    name: 'MirrorEffect',
     description: 'Mirror effect.',
     type: 'effect',
     label: 'Mirror',
@@ -15,7 +15,7 @@ export default class MirrorEffect extends Effect {
   };
 
   constructor(properties) {
-    super(MirrorEffect, properties);
+    super(MirrorEffect.info, { ...MirrorEffect.defaultProperties, ...properties });
   }
 
   addToScene() {

@@ -6,7 +6,7 @@ import { renderToCanvas } from 'utils/canvas';
 
 export default class SoundwaveDisplay extends CanvasDisplay {
   static info = {
-    name: 'astrofox-display-soundwave',
+    name: 'SoundwaveDisplay',
     description: 'Displays an audio soundwave.',
     type: 'display',
     label: 'Soundwave',
@@ -26,7 +26,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(SoundwaveDisplay, properties);
+    super(SoundwaveDisplay.info, { ...SoundwaveDisplay.defaultProperties, ...properties });
 
     this.wave = new CanvasWave(this.properties, this.canvas);
     this.parser = new WaveParser();

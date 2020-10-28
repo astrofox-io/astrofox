@@ -5,7 +5,7 @@ import { deg2rad } from 'utils/math';
 
 export default class RGBShiftEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-rgbshift',
+    name: 'RGBShiftEffect',
     description: 'RGB shift effect.',
     type: 'effect',
     label: 'RGB Shift',
@@ -17,7 +17,7 @@ export default class RGBShiftEffect extends Effect {
   };
 
   constructor(properties) {
-    super(RGBShiftEffect, properties);
+    super(RGBShiftEffect.info, { ...RGBShiftEffect.defaultProperties, ...properties });
   }
 
   updatePass() {

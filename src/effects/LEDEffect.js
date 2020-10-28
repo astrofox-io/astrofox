@@ -4,7 +4,7 @@ import LEDShader from 'shaders/LEDShader';
 
 export default class LEDEffect extends Effect {
   static info = {
-    name: 'astrofox-effect-led',
+    name: 'LEDEffect',
     description: 'LED effect.',
     type: 'effect',
     label: 'LED',
@@ -17,7 +17,7 @@ export default class LEDEffect extends Effect {
   };
 
   constructor(properties) {
-    super(LEDEffect, properties);
+    super(LEDEffect.info, { ...LEDEffect.defaultProperties, ...properties });
   }
 
   addToScene() {

@@ -17,7 +17,7 @@ export default class Entity {
 
   constructor(name, properties = {}) {
     Object.defineProperty(this, 'id', { value: uniqueId(), configurable: true });
-    Object.defineProperty(this, 'name', { value: name?.info?.name });
+    Object.defineProperty(this, 'name', { value: name });
 
     this.properties = properties;
   }
@@ -34,11 +34,13 @@ export default class Entity {
   }
 
   toJSON() {
-    const { id, name, properties } = this;
+    const { id, name, type, enabled, properties } = this;
 
     return {
       id,
       name,
+      type,
+      enabled,
       properties: cloneDeep(properties),
     };
   }

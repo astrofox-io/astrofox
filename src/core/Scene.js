@@ -5,7 +5,7 @@ import Composer from 'graphics/Composer';
 
 export default class Scene extends Display {
   static info = {
-    name: 'astrofox-display-scene',
+    name: 'Scene',
     description: 'Scene display.',
     type: 'display',
     label: 'Scene',
@@ -20,7 +20,7 @@ export default class Scene extends Display {
   };
 
   constructor(properties) {
-    super(Scene, properties);
+    super(Scene.info, { ...Scene.defaultProperties, ...properties });
 
     this.displays = new EntityList();
     this.effects = new EntityList();
@@ -210,14 +210,14 @@ export default class Scene extends Display {
 
     if (displays.length > 0 || effects.length > 0) {
       displays.forEach(display => {
-        if (display.properties.enabled) {
+        if (display.enabled) {
           display.updateReactors(data);
           display.render(this, data);
         }
       });
 
       effects.forEach(effect => {
-        if (effect.properties.enabled) {
+        if (effect.enabled) {
           effect.updateReactors(data);
           effect.render(this, data);
         }

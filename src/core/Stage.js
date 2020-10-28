@@ -14,7 +14,7 @@ import { isDefined } from 'utils/array';
 
 export default class Stage extends Entity {
   static info = {
-    name: 'astrofox-stage',
+    name: 'Stage',
     description: 'The stage.',
     type: 'entity',
   };
@@ -27,7 +27,7 @@ export default class Stage extends Entity {
   };
 
   constructor(properties) {
-    super(Stage, { ...Stage.defaultProperties, ...properties });
+    super(Stage.info.name, { ...Stage.defaultProperties, ...properties });
 
     this.scenes = new EntityList();
     this.initialized = false;
@@ -191,7 +191,7 @@ export default class Stage extends Entity {
     composer.clear(backgroundColor, 1);
 
     scenes.forEach(scene => {
-      if (scene.properties.enabled) {
+      if (scene.enabled) {
         this.renderScene(scene, data);
       }
     });

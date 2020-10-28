@@ -89,7 +89,7 @@ const ReactorPanel = ({ reactor }) => {
 
   return (
     <div className={styles.reactor}>
-      <Header path={reactor.properties.displayName.split('/')} />
+      <Header path={reactor.displayName.split('/')} />
       <div className={styles.display}>
         <div className={styles.controls}>
           <Controls reactor={reactor} onChange={handleChange} />

@@ -3,7 +3,7 @@ import CanvasText from 'canvas/CanvasText';
 
 export default class TextDisplay extends CanvasDisplay {
   static info = {
-    name: 'astrofox-display-text',
+    name: 'TextDisplay',
     description: 'Displays text.',
     type: 'display',
     label: 'Text',
@@ -60,7 +60,7 @@ export default class TextDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(TextDisplay, properties);
+    super(TextDisplay.info, { ...TextDisplay.defaultProperties, ...properties });
 
     this.text = new CanvasText(this.properties, this.canvas);
     this.text.render();

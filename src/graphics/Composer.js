@@ -178,7 +178,7 @@ export default class Composer {
     this.readBuffer = this.readTarget;
 
     this.passes.forEach(pass => {
-      if (pass.properties.enabled) {
+      if (pass.enabled) {
         pass.render(renderer, this.writeBuffer, this.readBuffer);
 
         if (pass.properties.needsSwap) {

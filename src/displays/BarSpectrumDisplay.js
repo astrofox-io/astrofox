@@ -6,7 +6,7 @@ import { renderToCanvas } from 'utils/canvas';
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
   static info = {
-    name: 'astrofox-display-barspectrum',
+    name: 'BarSpectrumDisplay',
     description: 'Displays an audio bar spectrum.',
     type: 'display',
     label: 'Bar Spectrum',
@@ -37,7 +37,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(BarSpectrumDisplay, properties);
+    super(BarSpectrumDisplay.info, { ...BarSpectrumDisplay.defaultProperties, ...properties });
 
     this.bars = new CanvasBars(this.properties, this.canvas);
     this.parser = new SpectrumParser({

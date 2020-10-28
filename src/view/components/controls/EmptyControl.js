@@ -1,9 +1,9 @@
 import React from 'react';
 import { Control, Option } from 'components/editing';
 
-const EmptyControl = () => (
-  <Control display={{ properties: {} }}>
-    <Option label="Empty" />
+const EmptyControl = ({ display }) => (
+  <Control display={display} label={display.constructor.info.label}>
+    <Option label="No controls" />
   </Control>
 );
 
