@@ -21,10 +21,8 @@ export function spawnProcess(command, args, props = {}) {
   }
 
   const stop = signal => process.kill(signal);
-  const push = data => {
-    process.stdin.write(data);
-  };
-  const end = () => process.stdin.end();
+  const push = data => process.stdin.write(data);
+  const end = () => process.stdin.destroy();
 
   return { stop, push, end };
 }
