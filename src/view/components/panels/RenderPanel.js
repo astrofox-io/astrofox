@@ -27,9 +27,7 @@ export default function RenderPanel({ onClose }) {
   const totalTime = frame > 0 ? (frames * elapsedTime) / frame : null;
   const estimatedTotalTimeThreshold = 0.1;
   const estimatedTotalTime =
-    frame > 0 && frame / frames >= 0.15
-      ? ` / ${estimatedTotalTimeThreshold && formatTime(totalTime)}`
-      : '';
+    progress > 5 ? ` / ${estimatedTotalTimeThreshold && formatTime(totalTime)}` : '';
 
   function handleButtonClick() {
     stopRender();

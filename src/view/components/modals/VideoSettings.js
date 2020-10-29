@@ -58,7 +58,9 @@ export default function VideoSettings({ onClose }) {
   }
 
   async function handleOpenVideoFile() {
-    const { filePath, canceled } = await api.showSaveDialog({ defaultPath: `video.${format}` });
+    const { filePath, canceled } = await api.showSaveDialog({
+      defaultPath: `video-${Date.now()}.${format}`,
+    });
 
     if (!canceled) {
       setState(state => ({ ...state, videoFile: replaceExt(filePath, `.${format}`) }));

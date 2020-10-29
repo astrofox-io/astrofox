@@ -19,9 +19,11 @@ export function startRender(props) {
 }
 
 export function stopRender(props) {
-  videoRenderer.stop();
+  if (videoStore.getState().rendering) {
+    videoRenderer.stop();
 
-  videoStore.setState({ ...props, rendering: false });
+    videoStore.setState({ ...props, rendering: false });
+  }
 }
 
 export default videoStore;

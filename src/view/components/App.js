@@ -1,4 +1,4 @@
-import { hot } from 'react-hot-loader';
+import { hot } from 'react-hot-loader/root';
 import React, { useEffect } from 'react';
 import * as global from 'view/global';
 import { ignoreEvents } from 'utils/react';
@@ -43,4 +43,4 @@ function App() {
   );
 }
 
-export default hot(module)(App);
+export default hot(App);

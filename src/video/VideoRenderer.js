@@ -22,8 +22,11 @@ export default class VideoRenderer extends EventEmitter {
 
       // Start requesting frames
       if (!this.started) {
-        this.started = true;
-        this.emit('ready');
+        setTimeout(() => {
+          this.started = true;
+
+          this.emit('ready');
+        }, 1000);
       }
     });
 
@@ -69,14 +72,9 @@ export default class VideoRenderer extends EventEmitter {
 
       logger.log('Starting video render', id);
 
-      this.on(
-        'ready',
-        async () => {
-          const image = await this.renderer.renderFrame(this.currentFrame, fps);
-          this.processFrame(image);
-        },
-        this,
-      );
+      this.on('ready', () => {
+        this.processFrame();
+      });
 
       // Render video
       this.emit('status', 'Rendering video');
@@ -114,17 +112,26 @@ export default class VideoRenderer extends EventEmitter {
   }
 
   stop() {
-    if (!this.finished && this.currentProcess) {
-      this.currentProcess.stop();
+    if (!this.finished) {
+      this.currentProcess?.stop();
 
       logger.log('Video rendering stopped.');
     }
   }
 
-  processFrame(image) {
+  async processFrame() {
     if (this.finished) return;
 
-    const { renderProcess, frames, currentFrame, lastFrame, startTime } = this;
+    const {
+      renderProcess,
+      frames,
+      currentFrame,
+      lastFrame,
+      startTime,
+      config: { fps },
+    } = this;
+
+    const image = await this.renderer.renderFrame(this.currentFrame, fps);
 
     try {
       renderProcess.push(image);
@@ -133,7 +140,7 @@ export default class VideoRenderer extends EventEmitter {
         this.currentFrame += 1;
         this.emit('ready');
       } else {
-        renderProcess.push(null);
+        renderProcess.end();
       }
 
       this.emit('stats', { frames, currentFrame, lastFrame, startTime });

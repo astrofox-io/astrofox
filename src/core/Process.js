@@ -32,10 +32,11 @@ export default class Process extends EventEmitter {
     };
 
     // Spawn process
-    const { stop, push } = api.spawnProcess(this.command, args, handlers);
+    const { stop, push, end } = api.spawnProcess(this.command, args, handlers);
 
     this.stop = stop;
     this.push = push;
+    this.end = end;
 
     this.emit('start');
   }

@@ -19,7 +19,8 @@
     "airbnb-base",
     "airbnb/rules/react",
     "prettier",
-    "prettier/react"
+    "prettier/react",
+    "plugin:jest/recommended"
   ],
   "plugins": ["prettier", "promise", "css-modules", "react", "react-hooks", "jest"],
   "rules": {
@@ -60,7 +61,7 @@
     "prettier/prettier": "error",
     "react/destructuring-assignment": "off",
     "react/forbid-prop-types": "off",
-    "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": "off",
     "react/jsx-props-no-spreading": "off",
     "react/state-in-constructor": "off",
     "react/static-property-placement": ["error", "static public field"],

@@ -1,8 +1,6 @@
-import { Transform } from 'stream';
 import { spawn } from 'child_process';
 
 export function spawnProcess(command, args, props = {}) {
-  const stream = new Transform();
   const process = spawn(command, args);
   const { onStdOut, onStdErr, onClose, onExit, onError } = props;
 
@@ -22,10 +20,11 @@ export function spawnProcess(command, args, props = {}) {
     process.on('error', onError);
   }
 
-  stream.pipe(process.stdin);
-
   const stop = signal => process.kill(signal);
-  const push = data => stream.push(data);
+  const push = data => {
+    process.stdin.write(data);
+  };
+  const end = () => process.stdin.end();
 
-  return { stop, push };
+  return { stop, push, end };
 }
