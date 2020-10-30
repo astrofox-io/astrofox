@@ -34,18 +34,24 @@ yarn install-ffmpeg
 yarn install
 ```
 
-### Start development server
+### Build the application
 
 ```
-yarn dev
+yarn build
 ```
 
-### Start application
+### Start the application
 
-In a separate console window:
 ```
 yarn start
 ```
+
+## Running for development
+
+Instead of `yarn build` above, run `yarn dev`. This will start up a development server
+in the current console window.
+
+Then, in a separate console window, run `yarn start`.
 
 ## License
 
