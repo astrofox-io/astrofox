@@ -9,7 +9,7 @@ import styles from './Option.less';
 export default function Option({
   display,
   label,
-  type = null,
+  type,
   name,
   value,
   className,
@@ -18,18 +18,47 @@ export default function Option({
   withReactor,
   withRange,
   withLink,
-  children,
+  inputProps,
   ...otherProps
 }) {
-  const [InputCompnent, inputProps] = inputComponents[type];
-  const reactor = display.getReactor?.(name);
-  const showReactor = withReactor && reactor;
+  const [InputCompnent, defaultProps] = inputComponents[type] ?? [];
+  const showReactor = withReactor && display.getReactor?.(name);
   const { min, max } = otherProps;
+  const inputs = [];
+
+  if (showReactor) {
+    inputs.push(<ReactorInput key="reactor" display={display} name={name} value={value} />);
+  } else if (InputCompnent) {
+    inputs.push(
+      <InputCompnent
+        key="input"
+        {...defaultProps}
+        {...inputProps}
+        {...otherProps}
+        name={name}
+        value={value}
+        onChange={onChange}
+      />,
+    );
+
+    if (withRange) {
+      inputs.push(
+        <RangeInput
+          key="range"
+          {...otherProps}
+          name={name}
+          value={value}
+          onChange={onChange}
+          smallThumb
+        />,
+      );
+    }
+  }
 
   return (
     <div
       className={classNames(styles.option, className, {
-        [styles.hidden]: hidden,
+        [styles.hidden]: hidden || inputs.length === 0,
       })}
     >
       {withReactor && (
@@ -53,24 +82,7 @@ export default function Option({
           />
         )}
       </div>
-      {showReactor && <ReactorInput display={display} name={name} value={value} />}
-      {!showReactor && (
-        <>
-          {InputCompnent && (
-            <InputCompnent
-              {...inputProps}
-              {...otherProps}
-              name={name}
-              value={value}
-              onChange={onChange}
-            />
-          )}
-          {withRange && (
-            <RangeInput {...otherProps} name={name} value={value} onChange={onChange} smallThumb />
-          )}
-          {children}
-        </>
-      )}
+      {inputs}
     </div>
   );
 }

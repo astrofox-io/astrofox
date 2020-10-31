@@ -6,8 +6,8 @@ import { BoxInput } from 'components/inputs';
 import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import useApp, { setActiveReactorId } from 'actions/app';
-import { events, reactors } from 'view/global';
-import { ChevronDown } from 'view/icons';
+import { events, reactors } from 'global';
+import { ChevronDown } from 'icons';
 import {
   PRIMARY_COLOR,
   REACTOR_BARS,
@@ -16,12 +16,12 @@ import {
   REACTOR_BAR_SPACING,
 } from 'view/constants';
 import { inputValueToProps } from 'utils/react';
-import styles from './ReactorControl.less';
+import styles from './ReactorPanel.less';
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 const METER_WIDTH = 20;
 
-export default function ReactorControl() {
+export default function ReactorPanel() {
   const activeReactorId = useApp(state => state.activeReactorId);
   const reactor = reactors.getElementById(activeReactorId);
 
@@ -29,10 +29,10 @@ export default function ReactorControl() {
     return null;
   }
 
-  return <ReactorPanel reactor={reactor} />;
+  return <ReactorControl reactor={reactor} />;
 }
 
-const ReactorPanel = ({ reactor }) => {
+const ReactorControl = ({ reactor }) => {
   const spectrum = useRef();
   const meter = useRef();
   const spectrumCanvas = useRef();

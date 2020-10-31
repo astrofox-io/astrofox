@@ -1,6 +1,5 @@
 import { hot } from 'react-hot-loader/root';
 import React, { useEffect } from 'react';
-import * as global from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
 import Modals from 'components/window/Modals';
@@ -8,16 +7,14 @@ import Preload from 'components/window/Preload';
 import StatusBar from 'components/window/StatusBar';
 import TitleBar from 'components/window/TitleBar';
 import ControlDock from 'components/panels/ControlDock';
+import ReactorPanel from 'components/panels/ReactorPanel';
 import Player from 'components/player/Player';
-import ReactorControl from 'components/controls/ReactorControl';
 import Stage from 'components/stage/Stage';
 import { initApp } from 'actions/app';
 
 function App() {
   async function init() {
     await initApp();
-
-    global.renderer.start();
   }
 
   useEffect(() => {
@@ -32,7 +29,7 @@ function App() {
         <Layout direction="column">
           <Stage />
           <Player />
-          <ReactorControl />
+          <ReactorPanel />
         </Layout>
         <ControlDock />
       </Layout>

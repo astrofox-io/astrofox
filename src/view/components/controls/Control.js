@@ -17,6 +17,25 @@ export default function Control({ display, className }) {
 
   const onChange = useEntity(display);
 
+  function mapOption(name, option) {
+    const props = {};
+
+    for (const [name, value] of Object.entries(option)) {
+      props[name] = resolve(value, [display]);
+    }
+
+    return (
+      <Option
+        key={name}
+        display={display}
+        name={name}
+        value={display.properties[name]}
+        onChange={inputValueToProps(onChange)}
+        {...props}
+      />
+    );
+  }
+
   return (
     <div className={classNames(styles.control, className)}>
       {label && (
@@ -27,25 +46,7 @@ export default function Control({ display, className }) {
           </div>
         </div>
       )}
-      {Object.keys(controls).map(key => {
-        const props = {};
-        const option = controls[key];
-
-        for (const [name, value] of Object.entries(option)) {
-          props[name] = resolve(value, [display]);
-        }
-
-        return (
-          <Option
-            key={key}
-            display={display}
-            name={key}
-            value={display.properties[key]}
-            onChange={inputValueToProps(onChange)}
-            {...props}
-          />
-        );
-      })}
+      {Object.keys(controls).map(key => mapOption(key, controls[key]))}
     </div>
   );
 }

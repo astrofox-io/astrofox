@@ -22,7 +22,6 @@ const inputComponents = {
   select: [SelectInput, { width: 140 }],
   image: [ImageInput],
   time: [TimeInput],
-  null: [],
 };
 
 export default inputComponents;

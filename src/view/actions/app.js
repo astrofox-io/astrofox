@@ -222,6 +222,8 @@ export async function initApp() {
   }
 
   api.on('menu-action', handleMenuAction);
+
+  renderer.start();
 }
 
 export default appStore;

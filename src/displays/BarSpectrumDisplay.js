@@ -74,34 +74,50 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
       label: 'Width',
       type: 'number',
       min: 0,
-      max: stageWidth,
+      max: stageWidth(),
       withRange: true,
     },
     height: {
       label: 'Height',
       type: 'number',
       min: 0,
-      max: stageHeight,
+      max: stageHeight(),
       withRange: true,
     },
     shadowHeight: {
       label: 'Shadow Height',
       type: 'number',
       min: 0,
-      max: stageWidth,
+      max: stageWidth(),
       withRange: true,
     },
-    barWidth: {
+    barWidthAutoSize: {
       label: 'Bar Width',
+      type: 'toggle',
+      inputProps: {
+        label: 'Auto-size',
+      },
+    },
+    barWidth: {
       type: 'number',
-      min: -1,
-      max: stageWidth,
+      min: property('barWidthAutoSize', n => (n ? -1 : 1)),
+      max: stageWidth(),
+      hidden: property('barWidthAutoSize'),
+      withRange: true,
+    },
+    barSpacingAutoSize: {
+      label: 'Bar Spacing',
+      type: 'toggle',
+      inputProps: {
+        label: 'Auto-size',
+      },
     },
     barSpacing: {
-      label: 'Bar Spacing',
       type: 'number',
-      min: -1,
-      max: stageWidth,
+      min: property('barSpacingAutoSize', n => (n ? -1 : 1)),
+      max: stageWidth(),
+      hidden: property('barSpacingAutoSize'),
+      withRange: true,
     },
     barColor: {
       label: 'Bar Color',
@@ -114,15 +130,15 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
     x: {
       label: 'X',
       type: 'number',
-      min: display => -1 * stageWidth(display),
-      max: stageWidth,
+      min: stageWidth(n => -n),
+      max: stageWidth(),
       withRange: true,
     },
     y: {
       label: 'Y',
       type: 'number',
-      min: display => -1 * stageHeight(display),
-      max: stageWidth,
+      min: stageWidth(n => -n),
+      max: stageWidth(),
       withRange: true,
     },
     rotation: {
@@ -156,6 +172,15 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
   }
 
   update(properties) {
+    const { barWidthAutoSize, barSpacingAutoSize } = properties;
+
+    if (barWidthAutoSize !== undefined) {
+      properties.barWidth = barWidthAutoSize ? -1 : 1;
+    }
+    if (barSpacingAutoSize !== undefined) {
+      properties.barSpacing = barSpacingAutoSize ? -1 : 1;
+    }
+
     const changed = super.update(properties);
 
     if (changed) {

@@ -72,14 +72,14 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
       label: 'Width',
       type: 'number',
       min: 0,
-      max: stageWidth,
+      max: stageWidth(),
       withRange: true,
     },
     height: {
       label: 'Height',
       type: 'number',
       min: 0,
-      max: stageHeight,
+      max: stageHeight(),
       withRange: true,
     },
     stroke: {
@@ -105,15 +105,15 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     x: {
       label: 'X',
       type: 'number',
-      min: display => -1 * stageWidth(display),
-      max: stageWidth,
+      min: stageWidth(n => -n),
+      max: stageWidth(),
       withRange: true,
     },
     y: {
       label: 'Y',
       type: 'number',
-      min: display => -1 * stageHeight(display),
-      max: stageWidth,
+      min: stageHeight(n => -n),
+      max: stageWidth(),
       withRange: true,
     },
     rotation: {

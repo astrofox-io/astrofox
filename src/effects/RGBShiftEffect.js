@@ -22,7 +22,7 @@ export default class RGBShiftEffect extends Effect {
       label: 'Offset',
       type: 'number',
       min: 0,
-      max: stageWidth,
+      max: stageWidth(),
       withRange: true,
       withReactor: true,
     },

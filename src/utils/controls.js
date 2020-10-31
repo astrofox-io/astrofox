@@ -5,10 +5,16 @@ export function property(name, compare) {
   };
 }
 
-export function stageWidth(display) {
-  return display.scene.getSize().width;
+export function stageWidth(transform) {
+  return display => {
+    const value = display.scene.getSize().width;
+    return transform ? transform(value) : value;
+  };
 }
 
-export function stageHeight(display) {
-  return display.scene.getSize().height;
+export function stageHeight(transform) {
+  return display => {
+    const value = display.scene.getSize().height;
+    return transform ? transform(value) : value;
+  };
 }
