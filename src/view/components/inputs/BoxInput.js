@@ -10,7 +10,7 @@ export default function BoxInput({
   minHeight = 1,
   maxWidth = 100,
   maxHeight = 100,
-  onChange = () => {},
+  onChange,
 }) {
   const startDrag = useMouseDrag();
   const { x, y, width, height } = value;

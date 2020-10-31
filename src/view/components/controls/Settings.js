@@ -1,5 +1,5 @@
 import React from 'react';
-import Setting from 'components/editing/Setting';
+import Setting from 'components/controls/Setting';
 import classNames from 'classnames';
 import { inputValueToProps, mapChildren } from 'utils/react';
 import styles from './Settings.less';

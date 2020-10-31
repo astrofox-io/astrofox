@@ -4,7 +4,7 @@ import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class SpectrumParser extends Entity {
   static info = {
-    name: 'astrofox-parser-spectrum',
+    name: 'SpectrumParser',
     description: 'Spectrum parser.',
     type: 'entity',
   };

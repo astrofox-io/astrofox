@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'components/interface/Button';
-import { Settings, Setting } from 'components/editing';
+import { Settings, Setting } from 'components/controls';
 import Layout from 'components/layout/Layout';
 import ButtonRow from 'components/layout/ButtonRow';
 import useStage, { updateCanvas } from 'actions/stage';

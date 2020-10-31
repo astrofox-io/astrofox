@@ -16,6 +16,33 @@ export default class LEDEffect extends Effect {
     blur: 4,
   };
 
+  static controls = {
+    spacing: {
+      label: 'Spacing',
+      type: 'number',
+      min: 1,
+      max: 100,
+      withRange: true,
+      withReactor: true,
+    },
+    size: {
+      label: 'Size',
+      type: 'number',
+      min: 0,
+      max: 100,
+      withRange: true,
+      withReactor: true,
+    },
+    blur: {
+      label: 'Blur',
+      type: 'number',
+      min: 0,
+      max: 100,
+      withRange: true,
+      withReactor: true,
+    },
+  };
+
   constructor(properties) {
     super(LEDEffect.info, { ...LEDEffect.defaultProperties, ...properties });
   }

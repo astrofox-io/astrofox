@@ -3,7 +3,7 @@ import CanvasBars from 'canvas/CanvasBars';
 
 export default class CanvasAudio extends Entity {
   static info = {
-    name: 'astrofox-canvas-audio',
+    name: 'CanvasAudio',
     description: 'Canvas audio.',
     type: 'entity',
   };

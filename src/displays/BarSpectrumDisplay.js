@@ -3,6 +3,7 @@ import CanvasBars from 'canvas/CanvasBars';
 import SpectrumParser from 'audio/SpectrumParser';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
+import { property, stageWidth, stageHeight } from 'utils/controls';
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
   static info = {
@@ -34,6 +35,113 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
     minFrequency: 0,
     maxFrequency: 6000,
     normalize: true,
+  };
+
+  static controls = {
+    maxDecibels: {
+      label: 'Max dB',
+      type: 'number',
+      min: -40,
+      max: 0,
+      step: 1,
+      withRange: true,
+    },
+    minFrequency: {
+      label: 'Min Frequency',
+      type: 'number',
+      min: 0,
+      max: property('maxFrequency'),
+      step: 10,
+      withRange: true,
+    },
+    maxFrequency: {
+      label: 'Max Frequency',
+      type: 'number',
+      min: property('minFrequency'),
+      max: 22000,
+      step: 10,
+      withRange: true,
+    },
+    smoothingTimeConstant: {
+      label: 'Smoothing',
+      type: 'number',
+      min: 0,
+      max: 0.99,
+      step: 0.01,
+      withRange: true,
+    },
+    width: {
+      label: 'Width',
+      type: 'number',
+      min: 0,
+      max: stageWidth,
+      withRange: true,
+    },
+    height: {
+      label: 'Height',
+      type: 'number',
+      min: 0,
+      max: stageHeight,
+      withRange: true,
+    },
+    shadowHeight: {
+      label: 'Shadow Height',
+      type: 'number',
+      min: 0,
+      max: stageWidth,
+      withRange: true,
+    },
+    barWidth: {
+      label: 'Bar Width',
+      type: 'number',
+      min: -1,
+      max: stageWidth,
+    },
+    barSpacing: {
+      label: 'Bar Spacing',
+      type: 'number',
+      min: -1,
+      max: stageWidth,
+    },
+    barColor: {
+      label: 'Bar Color',
+      type: 'colorrange',
+    },
+    shadowColor: {
+      label: 'Shadow Color',
+      type: 'colorrange',
+    },
+    x: {
+      label: 'X',
+      type: 'number',
+      min: display => -1 * stageWidth(display),
+      max: stageWidth,
+      withRange: true,
+    },
+    y: {
+      label: 'Y',
+      type: 'number',
+      min: display => -1 * stageHeight(display),
+      max: stageWidth,
+      withRange: true,
+    },
+    rotation: {
+      label: 'Rotation',
+      type: 'number',
+      min: 0,
+      max: 360,
+      withRange: true,
+      withReactor: true,
+    },
+    opacity: {
+      label: 'Opacity',
+      type: 'number',
+      min: 0,
+      max: 1.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
   };
 
   constructor(properties) {

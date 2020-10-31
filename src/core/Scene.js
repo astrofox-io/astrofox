@@ -3,6 +3,39 @@ import Effect from 'core/Effect';
 import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
 
+const blendOptions = [
+  'None',
+  'Normal',
+  null,
+  'Darken',
+  'Multiply',
+  'Color Burn',
+  'Linear Burn',
+  null,
+  'Lighten',
+  'Screen',
+  'Color Dodge',
+  'Linear Dodge',
+  null,
+  'Overlay',
+  'Soft Light',
+  'Hard Light',
+  'Vivid Light',
+  'Linear Light',
+  'Pin Light',
+  'Hard Mix',
+  null,
+  'Difference',
+  'Exclusion',
+  'Subtract',
+  'Divide',
+  null,
+  'Negation',
+  'Phoenix',
+  'Glow',
+  'Reflect',
+];
+
 export default class Scene extends Display {
   static info = {
     name: 'Scene',
@@ -17,6 +50,32 @@ export default class Scene extends Display {
     mask: false,
     inverse: false,
     stencil: false,
+  };
+
+  static controls = {
+    blendMode: {
+      label: 'Blending',
+      type: 'select',
+      items: blendOptions,
+    },
+    opacity: {
+      label: 'Opacity',
+      type: 'number',
+      min: 0,
+      max: 1.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
+    mask: {
+      label: 'Mask',
+      type: 'toggle',
+    },
+    inverse: {
+      label: 'Inverse',
+      type: 'toggle',
+      hidden: display => !display.properties.mask,
+    },
   };
 
   constructor(properties) {

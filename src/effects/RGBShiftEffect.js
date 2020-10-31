@@ -2,6 +2,7 @@ import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
 import RGBShiftShader from 'shaders/RGBShiftShader';
 import { deg2rad } from 'utils/math';
+import { stageWidth } from 'utils/controls';
 
 export default class RGBShiftEffect extends Effect {
   static info = {
@@ -14,6 +15,25 @@ export default class RGBShiftEffect extends Effect {
   static defaultProperties = {
     offset: 5,
     angle: 45,
+  };
+
+  static controls = {
+    offset: {
+      label: 'Offset',
+      type: 'number',
+      min: 0,
+      max: stageWidth,
+      withRange: true,
+      withReactor: true,
+    },
+    angle: {
+      label: 'Angle',
+      type: 'number',
+      min: 0,
+      max: 360,
+      withRange: true,
+      withReactor: true,
+    },
   };
 
   constructor(properties) {

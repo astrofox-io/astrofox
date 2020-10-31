@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { RangeInput, ReactorButton, ReactorInput } from 'components/inputs';
-import inputComponents from 'components/editing/inputComponents';
+import inputComponents from 'components/controls/inputComponents';
 import Icon from 'components/interface/Icon';
 import { Link } from 'view/icons';
 import styles from './Option.less';
@@ -18,8 +18,6 @@ export default function Option({
   withReactor,
   withRange,
   withLink,
-  linkActive,
-  onLinkClick,
   children,
   ...otherProps
 }) {
@@ -29,7 +27,11 @@ export default function Option({
   const { min, max } = otherProps;
 
   return (
-    <div className={classNames(styles.option, className, { [styles.hidden]: hidden })}>
+    <div
+      className={classNames(styles.option, className, {
+        [styles.hidden]: hidden,
+      })}
+    >
       {withReactor && (
         <ReactorButton
           className={styles.reactorIcon}
@@ -40,14 +42,14 @@ export default function Option({
         />
       )}
       <div className={styles.label}>
-        {label}
+        <div className={styles.text}>{label}</div>
         {withLink && (
           <Icon
             className={classNames(styles.linkIcon, {
-              [styles.linkIconActive]: linkActive,
+              [styles.linkIconActive]: withLink && display.properties[withLink],
             })}
             glyph={Link}
-            onClick={onLinkClick}
+            onClick={() => onChange(withLink, !display.properties[withLink])}
           />
         )}
       </div>

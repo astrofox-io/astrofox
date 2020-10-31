@@ -1,5 +1,8 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasText from 'canvas/CanvasText';
+import fonts from 'config/fonts.json';
+
+const fontOptions = fonts.map(item => ({ label: item, value: item, style: { fontFamily: item } }));
 
 export default class TextDisplay extends CanvasDisplay {
   static info = {
@@ -22,46 +25,66 @@ export default class TextDisplay extends CanvasDisplay {
     opacity: 1.0,
   };
 
-  static controlProperties = {
+  static controls = {
     text: {
-      type: 'string',
+      label: 'Text',
+      type: 'text',
     },
     size: {
-      type: 'integer',
+      label: 'Size',
+      type: 'number',
     },
     font: {
-      type: 'string',
+      label: 'Font',
+      type: 'select',
+      items: fontOptions,
     },
     italic: {
-      type: 'boolean',
+      label: 'Italic',
+      type: 'toggle',
     },
     bold: {
-      type: 'boolean',
+      label: 'Bold',
+      type: 'toggle',
     },
     x: {
-      type: 'integer',
+      label: 'X',
+      type: 'number',
+      withRange: true,
     },
     y: {
-      type: 'integer',
+      label: 'Y',
+      type: 'number',
+      withRange: true,
     },
     color: {
+      label: 'Color',
       type: 'color',
     },
     rotation: {
-      type: 'integer',
+      label: 'Rotation',
+      type: 'number',
       min: 0,
       max: 360,
+      withRange: true,
+      withReactor: true,
     },
     opacity: {
-      type: 'float',
+      label: 'Opacity',
+      type: 'number',
       min: 0,
       max: 1.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
     },
   };
 
   constructor(properties) {
     super(TextDisplay.info, { ...TextDisplay.defaultProperties, ...properties });
+  }
 
+  addToScene() {
     this.text = new CanvasText(this.properties, this.canvas);
     this.text.render();
   }

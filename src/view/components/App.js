@@ -22,7 +22,6 @@ function App() {
 
   useEffect(() => {
     init();
-    window.global = global;
   }, []);
 
   return (

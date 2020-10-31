@@ -5,6 +5,9 @@ import ZoomBlurShader from 'shaders/ZoomBlurShader';
 import ShaderPass from 'graphics/ShaderPass';
 import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import { val2pct } from 'utils/math';
+import { stageWidth, stageHeight, property } from 'utils/controls';
+
+const blurOptions = ['Box', 'Circular', 'Gaussian', 'Zoom'];
 
 const shaderOptions = {
   Box: BoxBlurShader,
@@ -15,6 +18,8 @@ const shaderOptions = {
 const BOX_BLUR_MAX = 20;
 const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
+
+const showZoomOption = property('type', value => value !== 'Zoom');
 
 export default class BlurEffect extends Effect {
   static info = {
@@ -29,6 +34,39 @@ export default class BlurEffect extends Effect {
     amount: 0.1,
     x: 0,
     y: 0,
+  };
+
+  static controls = {
+    type: {
+      label: 'Type',
+      type: 'select',
+      items: blurOptions,
+    },
+    amount: {
+      label: 'Amount',
+      type: 'number',
+      min: 0,
+      max: 1.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
+    x: {
+      label: 'X',
+      type: 'number',
+      min: display => -stageWidth(display) / 2,
+      max: display => stageWidth(display) / 2,
+      hidden: showZoomOption,
+      withRange: true,
+    },
+    y: {
+      label: 'Y',
+      type: 'number',
+      min: display => -stageHeight(display) / 2,
+      max: display => stageHeight(display) / 2,
+      hidden: showZoomOption,
+      withRange: true,
+    },
   };
 
   constructor(properties) {

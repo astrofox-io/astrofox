@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import Spinner from 'components/interface/Spinner';
-import useCombinedRefs from 'hooks/useCombinedRefs';
 import { raiseError } from 'actions/error';
 import { ignoreEvents } from 'utils/react';
 import { api } from 'view/global';
@@ -10,15 +9,14 @@ import { FolderOpen, Times } from 'view/icons';
 import { BLANK_IMAGE } from 'view/constants';
 import styles from './ImageInput.less';
 
-export default function ImageInput({ name, value, forwardRef, onChange }) {
+export default function ImageInput({ name, value, onChange }) {
   const [loading, setLoading] = useState(true);
   const image = useRef();
-  const combinedRef = useCombinedRefs(forwardRef, image);
   const hasImage = image.current && value !== BLANK_IMAGE;
 
   function handleImageLoad() {
     setLoading(false);
-    onChange(name, image.current.src);
+    onChange(name, image.current);
   }
 
   function loadImageSrc(src) {
@@ -70,7 +68,7 @@ export default function ImageInput({ name, value, forwardRef, onChange }) {
         onClick={handleClick}
       >
         <img
-          ref={combinedRef}
+          ref={image}
           className={classNames(styles.img, {
             [styles.hidden]: !hasImage,
           })}

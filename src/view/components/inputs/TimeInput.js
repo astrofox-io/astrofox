@@ -12,7 +12,7 @@ export default function TimeInput({
   max,
   readOnly = false,
   disabled = false,
-  onChange = () => {},
+  onChange,
 }) {
   const [key, setKey] = useState(0);
 

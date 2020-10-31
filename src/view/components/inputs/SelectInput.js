@@ -2,19 +2,17 @@ import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 import styles from './SelectInput.less';
 
-export const SEPARATOR = {};
-
 export default function SelectInput({
   name = 'select',
   value = '',
   items = [],
-  displayField = 'name',
+  displayField = 'label',
   valueField = 'value',
   width = 140,
   optionsWidth = 'auto',
   className,
   optionsClassName,
-  onChange = () => {},
+  onChange,
 }) {
   const [showItems, setShowItems] = useState(false);
   const parsedItems = useMemo(() => {
@@ -46,7 +44,7 @@ export default function SelectInput({
     let text = '';
 
     parsedItems.forEach(item => {
-      if (text.length === 0 && item[valueField] === value) {
+      if (text.length === 0 && item?.[valueField] === value) {
         text = item[displayField];
       }
     });
@@ -76,12 +74,12 @@ export default function SelectInput({
           <div
             key={index}
             className={classNames(styles.option, {
-              [styles.separator]: item === SEPARATOR,
+              [styles.separator]: !item,
             })}
-            style={item.style}
-            onMouseDown={handleItemClick(item === SEPARATOR ? null : item[valueField])}
+            style={item?.style}
+            onMouseDown={item ? handleItemClick(item[valueField]) : null}
           >
-            {item[displayField]}
+            {item?.[displayField]}
           </div>
         ))}
       </div>

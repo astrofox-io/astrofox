@@ -19,3 +19,7 @@ export function getProperties(src, filter = []) {
     return obj;
   }, {});
 }
+
+export function resolve(value, args = []) {
+  return typeof value === 'function' ? value(...args) : value;
+}

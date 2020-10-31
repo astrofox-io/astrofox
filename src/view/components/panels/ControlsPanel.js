@@ -1,16 +1,12 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import shallow from 'zustand/shallow';
 import { stage } from 'global';
 import useApp from 'actions/app';
-import useStage from 'actions/stage';
 import useScenes from 'actions/scenes';
-import * as controlComponents from 'components/controls';
-import EmptyControl from 'components/controls/EmptyControl';
 import styles from './ControlsPanel.less';
+import Control from '../controls/Control';
 
 export default function ControlsPanel() {
   const activeElementId = useApp(state => state.activeElementId);
-  const [width, height] = useStage(state => [state.width, state.height], shallow);
   const scenes = useScenes(state => state.scenes);
   const panelRef = useRef();
 
@@ -33,19 +29,9 @@ export default function ControlsPanel() {
       {displays.map(display => {
         const { id } = display;
 
-        const Component =
-          controlComponents[
-            `${display.constructor.info.name.replace(/Display|Effect/, '')}Control`
-          ] || EmptyControl;
-
         return (
           <div id={`control-${id}`} key={id} className={styles.control}>
-            <Component
-              display={display}
-              active={id === activeElementId?.id}
-              stageWidth={width}
-              stageHeight={height}
-            />
+            <Control display={display} />
           </div>
         );
       })}

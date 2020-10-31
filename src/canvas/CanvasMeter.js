@@ -3,7 +3,7 @@ import { setColor } from 'utils/canvas';
 
 export default class CanvasMeter extends Entity {
   static info = {
-    name: 'astrofox-canvas-meter',
+    name: 'CanvasMeter',
     description: 'Canvas meter.',
     type: 'entity',
   };

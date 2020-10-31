@@ -19,7 +19,7 @@ export default function RangeInput({
   showThumbOnHover = false,
   smallThumb = false,
   className,
-  onChange = () => {},
+  onChange,
   onUpdate = () => {},
 }) {
   const [bufferedValue, setBufferedValue] = useState(value);

@@ -4,7 +4,7 @@ const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Entity {
   static info = {
-    name: 'astrofox-canvas-image',
+    name: 'CanvasImage',
     description: 'Canvas image.',
     type: 'entity',
   };

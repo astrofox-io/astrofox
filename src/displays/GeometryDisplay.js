@@ -34,7 +34,22 @@ import SpectrumParser from 'audio/SpectrumParser';
 import POINT_SPRITE from 'assets/images/point.png';
 import { isDefined } from 'utils/array';
 
-const materialOptions = {
+const shapeOptions = [
+  'Box',
+  'Sphere',
+  'Dodecahedron',
+  'Icosahedron',
+  'Octahedron',
+  'Tetrahedron',
+  'Torus',
+  'Torus Knot',
+];
+
+const materialOptions = ['Basic', 'Lambert', 'Normal', 'Phong', 'Physical', 'Points', 'Standard'];
+
+const shadingOptions = ['Smooth', 'Flat'];
+
+const materials = {
   Normal: MeshNormalMaterial,
   Basic: MeshBasicMaterial,
   Phong: MeshPhongMaterial,
@@ -78,6 +93,66 @@ export default class GeometryDisplay extends WebglDisplay {
     lightIntensity: 1.0,
     lightDistance: 500,
     cameraZoom: 250,
+  };
+
+  static controls = {
+    shape: {
+      label: 'Shape',
+      type: 'select',
+      items: shapeOptions,
+    },
+    material: {
+      label: 'Material',
+      type: 'select',
+      items: materialOptions,
+    },
+    shading: {
+      label: 'Shading',
+      type: 'select',
+      items: shadingOptions,
+    },
+    wireframe: {
+      label: 'Wireframe',
+      type: 'toggle',
+    },
+    edges: {
+      label: 'Edges',
+      type: 'toggle',
+    },
+    edgeColor: {
+      label: 'Edge Color',
+      type: 'color',
+    },
+    x: {
+      label: 'X',
+      type: 'number',
+      min: -500,
+      max: 500,
+      withRange: true,
+    },
+    y: {
+      label: 'Y',
+      type: 'number',
+      min: -500,
+      max: 500,
+      withRange: true,
+    },
+    z: {
+      label: 'Z',
+      type: 'number',
+      min: -1000,
+      max: 1000,
+      withRange: true,
+    },
+    opacity: {
+      label: 'Opacity',
+      type: 'number',
+      min: 0,
+      max: 1.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
   };
 
   constructor(properties) {
@@ -129,7 +204,11 @@ export default class GeometryDisplay extends WebglDisplay {
       }
       // Change position
       else if (isDefined(x, y, z)) {
-        this.mesh.position.set(x, y, z);
+        this.mesh.position.set(
+          x ?? this.properties.x,
+          y ?? this.properties.y,
+          z ?? this.properties.z,
+        );
       }
       // Change visibility
       else if (enabled !== undefined) {
@@ -283,7 +362,7 @@ export default class GeometryDisplay extends WebglDisplay {
     }
 
     // Get material
-    const material = new materialOptions[properties.material]();
+    const material = new materials[properties.material]();
 
     // Create mesh
     if (properties.material === 'Points') {

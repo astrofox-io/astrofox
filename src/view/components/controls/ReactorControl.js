@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Control, Option } from 'components/editing';
+import { Control } from 'components/controls';
 import useEntity from 'hooks/useEntity';
 import Icon from 'components/interface/Icon';
 import { BoxInput } from 'components/inputs';
@@ -17,8 +17,6 @@ import {
 } from 'view/constants';
 import { inputValueToProps } from 'utils/react';
 import styles from './ReactorControl.less';
-
-const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 const METER_WIDTH = 20;
@@ -92,7 +90,7 @@ const ReactorPanel = ({ reactor }) => {
       <Header path={reactor.displayName.split('/')} />
       <div className={styles.display}>
         <div className={styles.controls}>
-          <Controls reactor={reactor} onChange={handleChange} />
+          <Control display={reactor} />
         </div>
         <div className={styles.spectrum}>
           <canvas ref={spectrumCanvas} width={SPECTRUM_WIDTH} height={REACTOR_BAR_HEIGHT} />
@@ -129,40 +127,3 @@ const Header = ({ path }) => (
     ))}
   </div>
 );
-
-const Controls = ({ reactor, onChange }) => {
-  const { maxDecibels, smoothingTimeConstant } = reactor.parser.properties;
-  const { outputMode } = reactor.properties;
-
-  return (
-    <Control display={reactor} onChange={onChange}>
-      <Option
-        label="Output Mode"
-        type="select"
-        items={outputOptions}
-        name="outputMode"
-        value={outputMode}
-      />
-      <Option
-        label="Max dB"
-        type="number"
-        name="maxDecibels"
-        value={maxDecibels}
-        min={-40}
-        max={0}
-        step={1}
-        withRange
-      />
-      <Option
-        label="Smoothing"
-        type="number"
-        name="smoothingTimeConstant"
-        value={smoothingTimeConstant}
-        min={0}
-        max={0.99}
-        step={0.01}
-        withRange
-      />
-    </Control>
-  );
-};

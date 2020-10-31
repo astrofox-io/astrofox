@@ -3,6 +3,8 @@ import ShaderPass from 'graphics/ShaderPass';
 import PixelateShader from 'shaders/PixelateShader';
 import HexagonShader from 'shaders/HexagonShader';
 
+const renderOptions = ['Square', 'Hexagon'];
+
 const shaders = {
   Square: PixelateShader,
   Hexagon: HexagonShader,
@@ -19,6 +21,22 @@ export default class PixelateEffect extends Effect {
   static defaultProperties = {
     type: 'Square',
     size: 10,
+  };
+
+  static controls = {
+    type: {
+      label: 'Type',
+      type: 'select',
+      items: renderOptions,
+    },
+    size: {
+      label: 'Size',
+      type: 'number',
+      min: 2,
+      max: 240,
+      withRange: true,
+      withReactor: true,
+    },
   };
 
   constructor(properties) {

@@ -17,6 +17,27 @@ export default class GlowEffect extends Effect {
     intensity: 1,
   };
 
+  static controls = {
+    amount: {
+      label: 'Amount',
+      type: 'number',
+      min: 0,
+      max: 1.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
+    intensity: {
+      label: 'Intensity',
+      type: 'number',
+      min: 1,
+      max: 3,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
+  };
+
   constructor(properties) {
     super(GlowEffect.info, { ...GlowEffect.defaultProperties, ...properties });
   }

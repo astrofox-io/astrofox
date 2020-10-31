@@ -4,7 +4,7 @@ import { clamp } from 'utils/math';
 
 export default class CanvasBars extends Entity {
   static info = {
-    name: 'astrofox-canvas-bars',
+    name: 'CanvasBars',
     description: 'Canvas bars.',
     type: 'entity',
   };

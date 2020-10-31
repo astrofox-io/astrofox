@@ -1,4 +1,4 @@
-import { updateExistingProps } from 'utils/object';
+import { updateExistingProps, resolve } from 'utils/object';
 import { uniqueId } from 'utils/crypto';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -23,10 +23,7 @@ export default class Entity {
   }
 
   update(properties = {}) {
-    return updateExistingProps(
-      this.properties,
-      typeof properties === 'function' ? properties(this.properties) : properties,
-    );
+    return updateExistingProps(this.properties, resolve(properties, [this.properties]));
   }
 
   toString() {

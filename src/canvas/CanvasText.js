@@ -2,7 +2,7 @@ import Entity from 'core/Entity';
 
 export default class CanvasText extends Entity {
   static info = {
-    name: 'astrofox-canvas-text',
+    name: 'CanvasText',
     description: 'Canvas text.',
     type: 'entity',
   };

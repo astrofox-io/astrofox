@@ -21,14 +21,21 @@
 }
 
 .label {
-  display: inline-block;
+  display: flex;
   margin-left: 20px;
   cursor: default;
   min-width: 100px;
 }
 
+.text {
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-right: 8px;
+}
+
 .linkIcon {
-  margin-left: 8px;
   color: @color-text500;
   width: 12px;
   height: 12px;

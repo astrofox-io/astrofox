@@ -12,7 +12,7 @@ export default function NumberInput({
   readOnly = false,
   disabled = false,
   className,
-  onChange = () => {},
+  onChange,
 }) {
   const [key, setKey] = useState(0);
 

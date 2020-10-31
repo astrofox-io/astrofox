@@ -10,12 +10,22 @@ import {
   REACTOR_BAR_HEIGHT,
   REACTOR_BAR_SPACING,
 } from 'view/constants';
-import { contains } from '../utils/array';
+import { isDefined } from 'utils/array';
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.1;
 
 let reactorCount = 0;
+
+const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
+
+const spectrumProperties = {
+  maxDecibels: -20,
+  smoothingTimeConstant: 0.5,
+  maxFrequency: ceil((SAMPLE_RATE / FFT_SIZE) * REACTOR_BINS),
+  normalize: true,
+  bins: REACTOR_BINS,
+};
 
 export function resetReactorCount() {
   reactorCount = 0;
@@ -42,11 +52,30 @@ export default class AudioReactor extends Entity {
       y1: 0,
       y2: 1,
     },
-    spectrum: {
-      maxDecibels: -20,
-      maxFrequency: ceil((SAMPLE_RATE / FFT_SIZE) * REACTOR_BINS),
-      normalize: true,
-      bins: REACTOR_BINS,
+    maxDecibels: -20,
+    smoothingTimeConstant: 0.5,
+  };
+
+  static controls = {
+    outputMode: {
+      label: 'Output Mode',
+      type: 'select',
+      items: outputOptions,
+    },
+    maxDecibels: {
+      label: 'Max dB',
+      type: 'number',
+      min: -40,
+      max: 0,
+      withRange: true,
+    },
+    smoothingTimeConstant: {
+      label: 'Smoothing',
+      type: 'number',
+      min: 0,
+      max: 0.99,
+      step: 0.01,
+      withRange: true,
     },
   };
 
@@ -55,36 +84,36 @@ export default class AudioReactor extends Entity {
 
     super(AudioReactor.info.name, { ...AudioReactor.defaultProperties, ...properties });
 
+    this.parser = new SpectrumParser({ ...spectrumProperties, ...properties });
+
     this.displayName = `Reactor ${reactorCount}`;
-
-    this.parser = new SpectrumParser({ ...AudioReactor.defaultProperties.spectrum });
-
+    this.enabled = true;
+    this.type = 'reactor';
     this.result = { fft: [], output: 0 };
     this.direction = 1;
   }
 
-  update(properties) {
-    const keys = Object.keys(properties);
+  update(properties = {}) {
+    const { selection, maxDecibels, smoothingTimeConstant } = properties;
 
-    if (contains(keys, ['selection', 'outputMode'])) {
-      const { selection } = properties;
-      if (selection) {
-        const { x, y, width, height } = selection;
-        const maxWidth = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
-        const maxHeight = REACTOR_BAR_HEIGHT;
-
-        properties.range = {
-          x1: x / maxWidth,
-          x2: (x + width) / maxWidth,
-          y1: y / maxHeight,
-          y2: (y + height) / maxHeight,
-        };
-      }
-
-      return super.update(properties);
+    if (isDefined(maxDecibels, smoothingTimeConstant)) {
+      this.parser.update(properties);
     }
 
-    return this.parser.update(properties);
+    if (selection) {
+      const { x, y, width, height } = selection;
+      const maxWidth = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
+      const maxHeight = REACTOR_BAR_HEIGHT;
+
+      properties.range = {
+        x1: x / maxWidth,
+        x2: (x + width) / maxWidth,
+        y1: y / maxHeight,
+        y2: (y + height) / maxHeight,
+      };
+    }
+
+    return super.update(properties);
   }
 
   getResult() {
@@ -161,13 +190,14 @@ export default class AudioReactor extends Entity {
   }
 
   toJSON() {
-    const { id, name, type, displayName, properties } = this;
+    const { id, name, type, displayName, enabled, properties } = this;
 
     return {
       id,
       name,
       type,
       displayName,
+      enabled,
       properties: cloneDeep(properties),
     };
   }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from 'components/interface/Button';
 import ButtonRow from 'components/layout/ButtonRow';
 import Layout from 'components/layout/Layout';
-import { Settings, Setting } from 'components/editing';
+import { Settings, Setting } from 'components/controls';
 import useConfig, { saveConfig } from 'actions/config';
 
 export default function AppSettings({ onClose }) {

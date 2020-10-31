@@ -4,13 +4,13 @@ import { setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
   static info = {
-    name: 'astrofox-canvas-wave',
+    name: 'CanvasWave',
     description: 'Canvas wave.',
     type: 'entity',
   };
 
   static defaultProperties = {
-    color: '#FFFFFF',
+    strokeColor: '#FFFFFF',
     width: 400,
     height: 200,
     lineWidth: 1.0,
@@ -34,7 +34,16 @@ export default class CanvasWave extends Entity {
   render(points, smooth) {
     const { canvas, context } = this;
 
-    const { width, height, color, lineWidth, stroke, fill, fillColor, taper } = this.properties;
+    const {
+      width,
+      height,
+      strokeColor,
+      lineWidth,
+      stroke,
+      fill,
+      fillColor,
+      taper,
+    } = this.properties;
 
     // Reset canvas
     if (canvas.width !== width || canvas.height !== height) {
@@ -46,7 +55,7 @@ export default class CanvasWave extends Entity {
 
     // Canvas setup
     context.lineWidth = lineWidth;
-    context.strokeStyle = color;
+    context.strokeStyle = strokeColor;
 
     // Draw wave
     if (smooth) {

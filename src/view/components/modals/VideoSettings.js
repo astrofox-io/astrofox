@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import shallow from 'zustand/shallow';
 import { api, player } from 'global';
-import { Settings, Setting } from 'components/editing';
+import { Settings, Setting } from 'components/controls';
 import Layout from 'components/layout/Layout';
 import Button from 'components/interface/Button';
 import ButtonRow from 'components/layout/ButtonRow';

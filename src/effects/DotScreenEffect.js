@@ -16,6 +16,26 @@ export default class DotScreenEffect extends Effect {
     scale: 1.0,
   };
 
+  static controls = {
+    scale: {
+      label: 'Amount',
+      type: 'number',
+      min: 0,
+      max: 2.0,
+      step: 0.01,
+      withRange: true,
+      withReactor: true,
+    },
+    angle: {
+      label: 'Angle',
+      type: 'number',
+      min: 0,
+      max: 360,
+      withRange: true,
+      withReactor: true,
+    },
+  };
+
   constructor(properties) {
     super(DotScreenEffect.info, { ...DotScreenEffect.defaultProperties, ...properties });
   }
