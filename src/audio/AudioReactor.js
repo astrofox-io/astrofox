@@ -75,9 +75,12 @@ export default class AudioReactor extends Entity {
   };
 
   constructor(properties) {
-    super(AudioReactor, properties);
+    const {
+      info: { name, label },
+      defaultProperties,
+    } = AudioReactor;
 
-    const { label } = AudioReactor.info;
+    super(name, { ...defaultProperties, ...properties });
 
     this.parser = new SpectrumParser({ ...spectrumProperties, ...properties });
 
