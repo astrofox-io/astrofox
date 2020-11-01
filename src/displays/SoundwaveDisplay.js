@@ -97,7 +97,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(SoundwaveDisplay.info, { ...SoundwaveDisplay.defaultProperties, ...properties });
+    super(SoundwaveDisplay, properties);
 
     this.wave = new CanvasWave(this.properties, this.canvas);
     this.parser = new WaveParser();

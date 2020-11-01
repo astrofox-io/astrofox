@@ -136,7 +136,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(WaveSpectrumDisplay.info, { ...WaveSpectrumDisplay.defaultProperties, ...properties });
+    super(WaveSpectrumDisplay, properties);
 
     this.wave = new CanvasWave(this.properties, this.canvas);
     this.parser = new SpectrumParser(this.properties);

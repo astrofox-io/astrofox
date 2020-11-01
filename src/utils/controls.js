@@ -1,3 +1,19 @@
+let labelCount = {};
+
+export function resetLabelCount() {
+  labelCount = {};
+}
+
+export function getDisplayName(label) {
+  if (labelCount[label] === undefined) {
+    labelCount[label] = 1;
+  } else {
+    labelCount[label] += 1;
+  }
+
+  return `${label} ${labelCount[label]}`;
+}
+
 export function property(name, compare) {
   return display => {
     const value = display.properties[name];

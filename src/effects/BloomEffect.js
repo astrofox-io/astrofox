@@ -49,7 +49,7 @@ export default class BloomEffect extends Effect {
   };
 
   constructor(properties) {
-    super(BloomEffect.info, { ...BloomEffect.defaultProperties, ...properties });
+    super(BloomEffect, properties);
   }
 
   updatePass() {

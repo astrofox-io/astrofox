@@ -156,7 +156,7 @@ export default class GeometryDisplay extends WebglDisplay {
   };
 
   constructor(properties) {
-    super(GeometryDisplay.info, { ...GeometryDisplay.defaultProperties, ...properties });
+    super(GeometryDisplay, properties);
 
     this.parser = new SpectrumParser({ normalize: true });
   }

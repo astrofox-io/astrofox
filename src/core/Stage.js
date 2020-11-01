@@ -3,7 +3,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import Scene from 'core/Scene';
 import Entity from 'core/Entity';
 import EntityList from 'core/EntityList';
-import { resetDisplayCount } from 'core/Display';
 import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
 import {
   DEFAULT_CANVAS_WIDTH,
@@ -160,8 +159,6 @@ export default class Stage extends Entity {
 
   clearScenes() {
     [...this.scenes].forEach(scene => this.removeScene(scene));
-
-    resetDisplayCount();
   }
 
   hasScenes() {

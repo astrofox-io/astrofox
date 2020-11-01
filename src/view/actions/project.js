@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { api, env, logger, reactors, stage } from 'global';
+import { api, env, logger, reactors, stage, library } from 'global';
 import { updateCanvas } from 'actions/stage';
 import { loadScenes, resetScenes } from 'actions/scenes';
 import { loadReactors, resetReactors } from 'actions/reactors';
@@ -10,13 +10,12 @@ import Stage from 'core/Stage';
 import Scene from 'core/Scene';
 import Display from 'core/Display';
 import AudioReactor from 'audio/AudioReactor';
-import * as displays from 'displays';
-import * as effects from 'effects';
 import {
   DEFAULT_CANVAS_BGCOLOR,
   DEFAULT_CANVAS_HEIGHT,
   DEFAULT_CANVAS_WIDTH,
 } from 'view/constants';
+import { resetLabelCount } from 'utils/controls';
 
 const initialState = {
   file: '',
@@ -38,13 +37,16 @@ export function resetProject() {
 
 export function loadProject(data) {
   logger.log('Loaded project:', data);
+  const displays = library.get('displays');
+  const effects = library.get('effects');
 
   const loadElement = (scene, config) => {
     const { name } = config;
-    const type = displays[name] || effects[name];
+    console.log({ config });
+    const module = displays[name] || effects[name];
 
-    if (type) {
-      const entity = Display.create(type, config);
+    if (module) {
+      const entity = Display.create(module, config);
 
       scene.addElement(entity);
     } else {
@@ -54,6 +56,7 @@ export function loadProject(data) {
 
   resetScenes(false);
   resetReactors();
+  resetLabelCount();
 
   if (data.reactors) {
     data.reactors.forEach(config => {
@@ -87,11 +90,13 @@ export function loadProject(data) {
 }
 
 export async function newProject() {
+  resetLabelCount();
   await resetScenes();
   await resetReactors();
   await updateCanvas(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_BGCOLOR);
 
   const scene = stage.addScene();
+  const displays = library.get('displays');
 
   scene.addElement(new displays.ImageDisplay());
   scene.addElement(new displays.BarSpectrumDisplay());

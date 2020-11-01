@@ -1,8 +1,8 @@
 import Display from 'core/Display';
 
 export default class Effect extends Display {
-  constructor(info, properties) {
-    super(info, properties);
+  constructor(Type, properties) {
+    super(Type, properties);
 
     this.type = 'effect';
   }

@@ -1,4 +1,4 @@
-import AudioReactor, { resetReactorCount } from 'audio/AudioReactor';
+import AudioReactor from 'audio/AudioReactor';
 import EntityList from 'core/EntityList';
 
 export default class Reactors extends EntityList {
@@ -18,8 +18,6 @@ export default class Reactors extends EntityList {
 
   clearReactors() {
     this.clear();
-
-    resetReactorCount();
   }
 
   getResults(data) {

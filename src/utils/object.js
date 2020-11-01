@@ -23,3 +23,22 @@ export function getProperties(src, filter = []) {
 export function resolve(value, args = []) {
   return typeof value === 'function' ? value(...args) : value;
 }
+
+export function deepFreeze(obj) {
+  Object.freeze(obj);
+  if (obj === undefined) {
+    return obj;
+  }
+
+  Object.getOwnPropertyNames(obj).forEach(prop => {
+    if (
+      obj[prop] !== null &&
+      (typeof obj[prop] === 'object' || typeof obj[prop] === 'function') &&
+      !Object.isFrozen(obj[prop])
+    ) {
+      deepFreeze(obj[prop]);
+    }
+  });
+
+  return obj;
+}

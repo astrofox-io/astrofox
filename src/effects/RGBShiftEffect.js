@@ -37,7 +37,7 @@ export default class RGBShiftEffect extends Effect {
   };
 
   constructor(properties) {
-    super(RGBShiftEffect.info, { ...RGBShiftEffect.defaultProperties, ...properties });
+    super(RGBShiftEffect, properties);
   }
 
   updatePass() {

@@ -1,11 +1,6 @@
 import Entity from 'core/Entity';
 import cloneDeep from 'lodash/cloneDeep';
-
-let displayCount = {};
-
-export function resetDisplayCount() {
-  displayCount = {};
-}
+import { getDisplayName } from '../utils/controls';
 
 export default class Display extends Entity {
   static create = (Type, config) => {
@@ -20,18 +15,17 @@ export default class Display extends Entity {
     return entity;
   };
 
-  constructor({ name, label }, properties = {}) {
-    super(name, properties);
+  constructor(Type, properties) {
+    const {
+      info: { name, label },
+      defaultProperties,
+    } = Type;
 
-    if (displayCount[name] === undefined) {
-      displayCount[name] = 1;
-    } else {
-      displayCount[name] += 1;
-    }
+    super(name, { ...defaultProperties, ...properties });
 
-    this.displayName = `${label || name} ${displayCount[name]}`;
-    this.enabled = true;
     this.type = 'display';
+    this.displayName = getDisplayName(label);
+    this.enabled = true;
     this.scene = null;
     this.reactors = {};
   }

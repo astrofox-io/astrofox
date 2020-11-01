@@ -30,7 +30,7 @@ export default class MirrorEffect extends Effect {
   };
 
   constructor(properties) {
-    super(MirrorEffect.info, { ...MirrorEffect.defaultProperties, ...properties });
+    super(MirrorEffect, properties);
   }
 
   addToScene() {

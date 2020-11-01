@@ -99,7 +99,7 @@ export default class ImageDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(ImageDisplay.info, { ...ImageDisplay.defaultProperties, ...properties });
+    super(ImageDisplay, properties);
 
     this.image = new CanvasImage(this.properties, this.canvas);
   }

@@ -39,7 +39,7 @@ export default class GlowEffect extends Effect {
   };
 
   constructor(properties) {
-    super(GlowEffect.info, { ...GlowEffect.defaultProperties, ...properties });
+    super(GlowEffect, properties);
   }
 
   updatePass() {

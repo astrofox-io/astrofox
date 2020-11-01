@@ -4,11 +4,17 @@ import cloneDeep from 'lodash/cloneDeep';
 
 export default class Entity {
   static create = (Type, config) => {
-    const { id, properties } = config;
-
+    const { id, name, properties, displays, effects, ...props } = config;
+    console.log({ Type });
     const entity = new Type(properties);
 
     delete entity.id;
+
+    console.log({ config, entity });
+
+    for (const [key, value] of Object.entries(props)) {
+      entity[key] = value;
+    }
 
     Object.defineProperty(entity, 'id', { value: id, configurable: true });
 

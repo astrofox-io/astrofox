@@ -79,7 +79,7 @@ export default class Scene extends Display {
   };
 
   constructor(properties) {
-    super(Scene.info, { ...Scene.defaultProperties, ...properties });
+    super(Scene, { ...Scene.defaultProperties, ...properties });
 
     this.displays = new EntityList();
     this.effects = new EntityList();

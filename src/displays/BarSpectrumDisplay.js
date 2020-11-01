@@ -161,7 +161,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(BarSpectrumDisplay.info, { ...BarSpectrumDisplay.defaultProperties, ...properties });
+    super(BarSpectrumDisplay, properties);
 
     this.bars = new CanvasBars(this.properties, this.canvas);
     this.parser = new SpectrumParser({

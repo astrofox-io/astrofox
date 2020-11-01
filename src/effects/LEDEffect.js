@@ -44,7 +44,7 @@ export default class LEDEffect extends Effect {
   };
 
   constructor(properties) {
-    super(LEDEffect.info, { ...LEDEffect.defaultProperties, ...properties });
+    super(LEDEffect, properties);
   }
 
   addToScene() {

@@ -40,7 +40,7 @@ export default class PixelateEffect extends Effect {
   };
 
   constructor(properties) {
-    super(PixelateEffect.info, { ...PixelateEffect.defaultProperties, ...properties });
+    super(PixelateEffect, properties);
   }
 
   update(properties) {

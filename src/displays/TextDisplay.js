@@ -81,7 +81,7 @@ export default class TextDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(TextDisplay.info, { ...TextDisplay.defaultProperties, ...properties });
+    super(TextDisplay, properties);
   }
 
   addToScene() {

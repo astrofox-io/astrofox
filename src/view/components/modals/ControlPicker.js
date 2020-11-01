@@ -17,7 +17,9 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 
       return (
         <div key={index} className={styles.item}>
-          <div className={styles.image} onClick={() => handleClick(item.module)} />
+          <div className={styles.image} onClick={() => handleClick(item)}>
+            <img src={item.info.icon} />
+          </div>
           <div className={styles.name}>{item.info.label}</div>
         </div>
       );

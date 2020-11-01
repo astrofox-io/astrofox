@@ -11,11 +11,10 @@ import {
   REACTOR_BAR_SPACING,
 } from 'view/constants';
 import { isDefined } from 'utils/array';
+import { getDisplayName } from '../utils/controls';
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.1;
-
-let reactorCount = 0;
 
 const outputOptions = ['Subtract', 'Add', 'Reverse', 'Forward', 'Cycle'];
 
@@ -26,10 +25,6 @@ const spectrumProperties = {
   normalize: true,
   bins: REACTOR_BINS,
 };
-
-export function resetReactorCount() {
-  reactorCount = 0;
-}
 
 export default class AudioReactor extends Entity {
   static info = {
@@ -80,15 +75,15 @@ export default class AudioReactor extends Entity {
   };
 
   constructor(properties) {
-    reactorCount += 1;
+    super(AudioReactor, properties);
 
-    super(AudioReactor.info.name, { ...AudioReactor.defaultProperties, ...properties });
+    const { label } = AudioReactor.info;
 
     this.parser = new SpectrumParser({ ...spectrumProperties, ...properties });
 
-    this.displayName = `Reactor ${reactorCount}`;
-    this.enabled = true;
     this.type = 'reactor';
+    this.displayName = getDisplayName(label);
+    this.enabled = true;
     this.result = { fft: [], output: 0 };
     this.direction = 1;
   }

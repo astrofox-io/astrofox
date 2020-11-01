@@ -54,23 +54,23 @@ export default class BlurEffect extends Effect {
     x: {
       label: 'X',
       type: 'number',
-      min: display => -stageWidth(display) / 2,
-      max: display => stageWidth(display) / 2,
+      min: stageWidth(n => -n / 2),
+      max: stageWidth(n => n / 2),
       hidden: showZoomOption,
       withRange: true,
     },
     y: {
       label: 'Y',
       type: 'number',
-      min: display => -stageHeight(display) / 2,
-      max: display => stageHeight(display) / 2,
+      min: stageHeight(n => -n / 2),
+      max: stageHeight(n => n / 2),
       hidden: showZoomOption,
       withRange: true,
     },
   };
 
   constructor(properties) {
-    super(BlurEffect.info, { ...BlurEffect.defaultProperties, ...properties });
+    super(BlurEffect, properties);
   }
 
   update(properties) {

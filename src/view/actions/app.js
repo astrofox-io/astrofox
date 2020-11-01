@@ -1,6 +1,6 @@
 import create from 'zustand';
 import Plugin from 'core/Plugin';
-import { api, env, logger, renderer, stage, plugins, library } from 'view/global';
+import { api, env, logger, renderer, stage, library } from 'view/global';
 import configStore, { loadConfig } from 'actions/config';
 import updateStore, { checkForUpdates, updateDownloadProgress } from 'actions/updates';
 import projectStore, {
@@ -15,7 +15,6 @@ import { openAudioFile } from 'actions/audio';
 import { setZoom } from 'actions/stage';
 import * as displays from 'displays';
 import * as effects from 'effects';
-import { getProperties } from 'utils/object';
 
 const initialState = {
   statusText: '',
@@ -151,49 +150,59 @@ export async function handleMenuAction(action) {
 export async function loadPlugins() {
   logger.time('plugins');
 
+  const plugins = {};
+
   for (const [key, plugin] of Object.entries(api.getPlugins())) {
     try {
       const module = await import(/* webpackIgnore: true */ plugin.src);
 
-      plugins.set(key, {
-        info: module.info,
-        controls: module.controls,
-        icon: plugin.icon,
-        module: Plugin.create(module),
-      });
+      module.default.info.icon = plugin.icon;
+
+      plugins[key] = Plugin.create(module.default);
     } catch (e) {
       logger.error(e);
     }
   }
+
+  library.set('plugins', plugins);
+
   logger.timeEnd('plugins', 'Loaded plugins', plugins);
 }
 
 export async function loadLibrary() {
+  const plugins = library.get('plugins');
+
   const coreDisplays = {};
   for (const [key, display] of Object.entries(displays)) {
-    const props = getProperties(display);
-    coreDisplays[key] = {
-      info: {
-        ...props.info,
-        version: env.APP_VERSION,
-      },
-      module: display,
+    display.info = {
+      ...display.info,
+      version: env.APP_VERSION,
+      icon: `/images/controls/${key}.png`,
     };
+
+    coreDisplays[key] = display;
   }
 
   const coreEffects = {};
   for (const [key, effect] of Object.entries(effects)) {
-    const props = getProperties(effect);
-    coreEffects[key] = {
-      info: {
-        ...props.info,
-        version: env.APP_VERSION,
-      },
-      module: effect,
+    effect.info = {
+      ...effect.info,
+      version: env.APP_VERSION,
+      icon: `/images/controls/${key}.png`,
     };
+
+    coreEffects[key] = effect;
   }
 
-  library.set('displays', { ...Object.fromEntries(plugins), ...coreDisplays });
+  for (const [key, plugin] of Object.entries(plugins)) {
+    if (plugin.info.type === 'display') {
+      coreDisplays[key] = plugin;
+    } else if (plugin.info.type === 'effect') {
+      coreEffects[key] = plugin;
+    }
+  }
+
+  library.set('displays', coreDisplays);
   library.set('effects', coreEffects);
 
   logger.log('Loaded library', library);

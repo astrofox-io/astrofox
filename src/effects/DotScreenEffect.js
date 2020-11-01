@@ -37,7 +37,7 @@ export default class DotScreenEffect extends Effect {
   };
 
   constructor(properties) {
-    super(DotScreenEffect.info, { ...DotScreenEffect.defaultProperties, ...properties });
+    super(DotScreenEffect, properties);
   }
 
   updatePass() {

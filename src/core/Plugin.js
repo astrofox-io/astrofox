@@ -4,24 +4,25 @@ import Effect from './Effect';
 
 export default class Plugin {
   static create(module) {
-    const { info, defaultProperties, controls } = module;
-    const Type = info.type === 'effect' ? Effect : Display;
+    const Type = module.info.type === 'effect' ? Effect : Display;
 
     class PluginClass extends Type {
-      constructor() {
-        super(info, { ...defaultProperties });
+      constructor(properties) {
+        super(module, properties);
       }
     }
 
     // Add static properties
-    PluginClass.info = info;
-    PluginClass.controls = controls;
-    PluginClass.defaultProperties = defaultProperties;
+    Object.getOwnPropertyNames(module).forEach(name => {
+      if (['info', 'defaultProperties', 'controls'].includes(name)) {
+        PluginClass[name] = module[name];
+      }
+    });
 
     // Add methods
-    Object.getOwnPropertyNames(module.default.prototype).forEach(name => {
+    Object.getOwnPropertyNames(module.prototype).forEach(name => {
       if (name !== 'constructor') {
-        PluginClass.prototype[name] = module.default.prototype[name];
+        PluginClass.prototype[name] = module.prototype[name];
       }
     });
 
