@@ -70,7 +70,7 @@ export function setActiveElementId(elementId) {
 }
 
 export async function handleMenuAction(action) {
-  const { projectFile } = projectStore.getState();
+  const { file } = projectStore.getState();
 
   switch (action) {
     case 'new-project':
@@ -82,7 +82,7 @@ export async function handleMenuAction(action) {
       break;
 
     case 'save-project':
-      await saveProjectFile(projectFile);
+      await saveProjectFile(file);
       break;
 
     case 'save-project-as':

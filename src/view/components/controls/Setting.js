@@ -5,7 +5,7 @@ import styles from './Setting.less';
 
 export default function Setting({
   label,
-  type = null,
+  type,
   name,
   value,
   className,
@@ -15,7 +15,7 @@ export default function Setting({
   children,
   ...otherProps
 }) {
-  const [InputCompnent, inputProps] = inputComponents[type];
+  const [InputCompnent, inputProps] = inputComponents[type] ?? [];
 
   return (
     <div className={classNames(styles.setting, className, { [styles.hidden]: hidden })}>

@@ -42,7 +42,7 @@ export function loadProject(data) {
 
   const loadElement = (scene, config) => {
     const { name } = config;
-    console.log({ config });
+
     const module = displays[name] || effects[name];
 
     if (module) {
