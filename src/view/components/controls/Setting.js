@@ -9,7 +9,8 @@ export default function Setting({
   name,
   value,
   className,
-  labelWidth = '50%',
+  labelWidth,
+  inputWidth,
   onChange,
   hidden,
   children,
@@ -23,15 +24,17 @@ export default function Setting({
         {label}
       </div>
       {InputCompnent && (
-        <InputCompnent
-          {...inputProps}
-          {...otherProps}
-          name={name}
-          value={value}
-          onChange={onChange}
-        />
+        <div style={{ width: inputWidth }}>
+          <InputCompnent
+            {...inputProps}
+            {...otherProps}
+            name={name}
+            value={value}
+            onChange={onChange}
+          />
+          {children}
+        </div>
       )}
-      {children}
     </div>
   );
 }

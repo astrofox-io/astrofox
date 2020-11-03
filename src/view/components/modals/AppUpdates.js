@@ -25,13 +25,17 @@ export default function AppUpdates({ onClose }) {
   function getMessage() {
     if (status === 'error') {
       return 'An error has occured. Unable to check for updates.';
-    } else if (status === 'downloading') {
+    }
+    if (status === 'downloading') {
       return `Downloading update... ${~~downloadProgress}%`;
-    } else if (downloadComplete) {
+    }
+    if (downloadComplete) {
       return `A new update (${updateInfo.version}) is ready to install.`;
-    } else if (hasUpdate) {
+    }
+    if (hasUpdate) {
       return `A new update (${updateInfo.version}) is available to download and install.`;
-    } else if (checked) {
+    }
+    if (checked) {
       return 'You have the latest version.';
     }
     return 'Checking for updates...';
@@ -40,7 +44,8 @@ export default function AppUpdates({ onClose }) {
   function getIcon() {
     if (status === 'error') {
       return <Icon className={styles.icon} glyph={Warning} />;
-    } else if (checked && status === null) {
+    }
+    if (checked && status === null) {
       return <Checkmark className={styles.icon} size={30} />;
     }
 
@@ -49,7 +54,7 @@ export default function AppUpdates({ onClose }) {
 
   useEffect(() => {
     if (!checked) {
-      setTimeout(() => checkForUpdates, 1000);
+      setTimeout(() => checkForUpdates(), 1000);
     }
 
     return () => {

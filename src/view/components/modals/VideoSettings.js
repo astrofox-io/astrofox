@@ -11,6 +11,7 @@ import { replaceExt } from 'utils/file';
 import { FolderOpen } from 'view/icons';
 import useAudio, { openAudioFile } from 'actions/audio';
 import { startRender } from 'actions/video';
+import styles from './VideoSettings.less';
 
 const videoFormats = ['mp4', 'webm'];
 const qualitySettings = ['Low', 'Medium', 'High'];
@@ -81,7 +82,7 @@ export default function VideoSettings({ onClose }) {
 
   return (
     <Layout width={700}>
-      <Settings labelWidth="40%" onChange={handleChange}>
+      <Settings columns={['40%', '60%']} onChange={handleChange}>
         <Setting
           label="Save Video To"
           type="text"
@@ -90,7 +91,12 @@ export default function VideoSettings({ onClose }) {
           value={videoFile}
           readOnly
         >
-          <ButtonInput icon={FolderOpen} title="Save File" onClick={handleOpenVideoFile} />
+          <ButtonInput
+            className={styles.button}
+            icon={FolderOpen}
+            title="Save File"
+            onClick={handleOpenVideoFile}
+          />
         </Setting>
         <Setting
           label="Audio File"
@@ -100,7 +106,12 @@ export default function VideoSettings({ onClose }) {
           value={audioFile}
           readOnly
         >
-          <ButtonInput icon={FolderOpen} title="Open File" onClick={handleOpenAudioFile} />
+          <ButtonInput
+            className={styles.button}
+            icon={FolderOpen}
+            title="Open File"
+            onClick={handleOpenAudioFile}
+          />
         </Setting>
         <Setting label="Format" type="select" name="format" items={videoFormats} value={format} />
         <Setting

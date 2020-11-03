@@ -16,7 +16,8 @@ export async function loadProjectFile(file) {
 }
 
 export async function saveProjectFile(file, data) {
-  if (path.extname(file) === '.afx') {
-    return writeFileCompressed(file, JSON.stringify(data));
+  if (path.extname(file) !== '.afx') {
+    file = `${file}.afx`;
   }
+  return writeFileCompressed(file, JSON.stringify(data));
 }

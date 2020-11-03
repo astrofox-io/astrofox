@@ -4,7 +4,9 @@ import classNames from 'classnames';
 import { inputValueToProps, mapChildren } from 'utils/react';
 import styles from './Settings.less';
 
-export default function Settings({ label, labelWidth, className, children, onChange }) {
+export default function Settings({ label, columns = [], className, children, onChange }) {
+  const [labelWidth, inputWidth] = columns;
+
   function handleClone(child, props) {
     if (child.type === Setting) {
       return [child, props];
@@ -15,7 +17,11 @@ export default function Settings({ label, labelWidth, className, children, onCha
   return (
     <div className={classNames(styles.settings, className)}>
       {label && <div className={styles.label}>{label}</div>}
-      {mapChildren(children, { labelWidth, onChange: inputValueToProps(onChange) }, handleClone)}
+      {mapChildren(
+        children,
+        { labelWidth, inputWidth, onChange: inputValueToProps(onChange) },
+        handleClone,
+      )}
     </div>
   );
 }

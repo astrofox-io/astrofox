@@ -25,7 +25,7 @@ export default function CanvasSettings({ onClose }) {
 
   return (
     <Layout width={500}>
-      <Settings onChange={handleChange}>
+      <Settings columns={['50%', '50%']} onChange={handleChange}>
         <Setting
           label="Width"
           type="number"

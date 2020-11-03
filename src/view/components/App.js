@@ -1,4 +1,3 @@
-import { hot } from 'react-hot-loader/root';
 import React, { useEffect } from 'react';
 import { ignoreEvents } from 'utils/react';
 import Layout from 'components/layout/Layout';
@@ -39,4 +38,4 @@ function App() {
   );
 }
 
-export default hot(App);
+export default App;

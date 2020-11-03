@@ -2,13 +2,13 @@
   "presets": [
     ["@babel/env", {
       "targets": {
-        "electron": "10.1.3"
+        "electron": "10.1.5"
       }
     }],
     "@babel/react"
   ],
   "plugins": [
-    "react-hot-loader/babel",
+    "react-refresh/babel",
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",
     "@babel/proposal-optional-chaining",
@@ -20,7 +20,7 @@
       "presets": [
         ["@babel/env", {
           "targets": {
-            "electron": "10.1.3"
+            "electron": "10.1.5"
           }
         }],
         "@babel/react"

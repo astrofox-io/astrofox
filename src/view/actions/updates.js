@@ -49,7 +49,7 @@ export async function checkForUpdates() {
     const { autoUpdate } = configStore.getState();
     const status = autoUpdate && hasUpdate ? 'downloading' : null;
 
-    logger.log('Update check complete:', updateInfo);
+    logger.log('Update check complete', updateInfo);
 
     updateStore.setState({ checked: true, status, updateInfo, hasUpdate });
 

@@ -42,6 +42,10 @@ export function exitApp() {
 export async function saveImage() {
   const { filePath, canceled } = await api.showSaveDialog({
     defaultPath: `image-${Date.now()}.png`,
+    filters: [
+      { name: 'PNG', extensions: ['png'] },
+      { name: 'JPEG', extensions: ['jpg'] },
+    ],
   });
 
   if (!canceled) {
@@ -50,7 +54,7 @@ export async function saveImage() {
 
       stage.render(data);
 
-      const buffer = stage.getImage();
+      const buffer = stage.getImage(/jpe?g$/.test(filePath) ? 'image/jpeg' : 'image/png');
 
       await api.saveImageFile(filePath, buffer);
 

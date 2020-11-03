@@ -4,6 +4,7 @@ const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const PORT = process.env.PORT || 3000;
@@ -132,7 +133,8 @@ module.exports = {
         },
       ],
     }),
-  ],
+    !PRODUCTION && new ReactRefreshWebpackPlugin(),
+  ].filter(Boolean),
   optimization: {
     minimize: PRODUCTION,
     minimizer: [

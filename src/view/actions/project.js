@@ -150,7 +150,10 @@ export async function saveProjectFile(file) {
       raiseError('Failed to save project file.', error);
     }
   } else {
-    const { filePath, canceled } = await api.showSaveDialog({ defaultPath: 'project.afx' });
+    const { filePath, canceled } = await api.showSaveDialog({
+      defaultPath: 'project.afx',
+      filters: [{ name: 'Project files', extensions: ['afx'] }],
+    });
 
     if (!canceled) {
       await saveProjectFile(filePath);
