@@ -24,6 +24,7 @@ const METER_WIDTH = 20;
 export default function ReactorPanel() {
   const activeReactorId = useApp(state => state.activeReactorId);
   const reactor = reactors.getElementById(activeReactorId);
+  console.log('new reactor', activeReactorId);
 
   if (!reactor) {
     return null;
@@ -82,8 +83,10 @@ const ReactorControl = ({ reactor }) => {
 
     return () => {
       events.off('render', draw);
+      spectrum.current = null;
+      meter.current = null;
     };
-  }, []);
+  }, [reactor]);
 
   return (
     <div className={styles.reactor}>

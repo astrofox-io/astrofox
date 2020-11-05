@@ -85,23 +85,10 @@ export default class Scene extends Display {
     this.effects = new EntityList();
   }
 
-  update(properties) {
-    const changed = super.update(properties);
-    const { stage } = this;
-
-    if (changed && stage) {
-      this.updatePasses();
-    }
-
-    return changed;
-  }
-
   addToStage(stage) {
     Object.defineProperty(this, 'stage', { value: stage, configurable: true });
 
     this.composer = new Composer(stage.renderer);
-
-    this.updatePasses();
   }
 
   removeFromStage() {
@@ -165,8 +152,6 @@ export default class Scene extends Display {
       obj.setSize(width, height);
     }
 
-    this.updatePasses();
-
     return obj;
   }
 
@@ -185,8 +170,6 @@ export default class Scene extends Display {
       obj.removeFromScene(this);
     }
 
-    this.updatePasses();
-
     return true;
   }
 
@@ -199,36 +182,7 @@ export default class Scene extends Display {
 
     const changed = target.shiftElement(obj, spaces);
 
-    if (changed) {
-      this.updatePasses();
-    }
-
     return changed;
-  }
-
-  updatePasses() {
-    const {
-      composer,
-      displays,
-      effects,
-      stage: { canvasBuffer, webglBuffer },
-    } = this;
-
-    composer.clearPasses();
-    composer.addPass(canvasBuffer.pass);
-    composer.addPass(webglBuffer.pass);
-
-    displays.forEach(display => {
-      if (display.pass) {
-        composer.addPass(display.pass);
-      }
-    });
-
-    effects.forEach(effect => {
-      if (effect.pass) {
-        composer.addPass(effect.pass);
-      }
-    });
   }
 
   getCanvasConext() {
@@ -262,16 +216,26 @@ export default class Scene extends Display {
   }
 
   render(data) {
-    const { composer, displays, effects } = this;
+    const {
+      composer,
+      displays,
+      effects,
+      stage: { canvasBuffer, webglBuffer },
+    } = this;
 
     this.clear();
     this.updateReactors(data);
+    const passes = [canvasBuffer.pass, webglBuffer.pass];
 
     if (displays.length > 0 || effects.length > 0) {
       displays.forEach(display => {
         if (display.enabled) {
           display.updateReactors(data);
           display.render(this, data);
+
+          if (display.pass) {
+            passes.push(display.pass);
+          }
         }
       });
 
@@ -279,10 +243,14 @@ export default class Scene extends Display {
         if (effect.enabled) {
           effect.updateReactors(data);
           effect.render(this, data);
+
+          if (effect.pass) {
+            passes.push(effect.pass);
+          }
         }
       });
 
-      composer.render();
+      composer.render(passes);
     }
 
     return composer.readBuffer;

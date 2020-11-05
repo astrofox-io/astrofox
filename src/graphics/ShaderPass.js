@@ -1,11 +1,11 @@
 import {
   NormalBlending,
-  UniformsUtils,
   ShaderMaterial,
   Scene,
   OrthographicCamera,
   PlaneBufferGeometry,
   Mesh,
+  UniformsUtils,
 } from 'three';
 import ComposerPass from 'graphics/ComposerPass';
 
@@ -21,15 +21,18 @@ export default class ShaderPass extends ComposerPass {
   constructor(shader, properties) {
     super({ ...ShaderPass.defaultProperties, ...properties });
 
-    this.uniforms = UniformsUtils.clone(shader.uniforms);
+    const { uniforms = {}, defines = {}, vertexShader, fragmentShader } = shader;
+    const { transparent, blending } = this.properties;
+
+    this.uniforms = UniformsUtils.clone(uniforms);
 
     this.material = new ShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: shader.vertexShader,
-      fragmentShader: shader.fragmentShader,
-      defines: shader.defines || {},
-      transparent: this.properties.transparent,
-      blending: this.properties.blending,
+      defines: { ...defines },
+      vertexShader,
+      fragmentShader,
+      transparent,
+      blending,
     });
 
     this.scene = new Scene();
@@ -44,17 +47,17 @@ export default class ShaderPass extends ComposerPass {
     this.scene.add(this.mesh);
   }
 
-  setUniforms(props) {
+  setUniforms(properties) {
     const { uniforms } = this;
 
-    Object.keys(props).forEach(prop => {
+    Object.keys(properties).forEach(prop => {
       if (Object.prototype.hasOwnProperty.call(uniforms, prop)) {
         const p = uniforms[prop].value;
 
         if (p !== null && p.set) {
-          p.set(...props[prop]);
+          p.set(...properties[prop]);
         } else {
-          uniforms[prop].value = props[prop];
+          uniforms[prop].value = properties[prop];
         }
       }
     });

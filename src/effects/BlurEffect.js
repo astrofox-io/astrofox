@@ -31,7 +31,7 @@ export default class BlurEffect extends Effect {
 
   static defaultProperties = {
     type: 'Gaussian',
-    amount: 0.1,
+    amount: 0.3,
     x: 0,
     y: 0,
   };
@@ -75,8 +75,10 @@ export default class BlurEffect extends Effect {
 
   update(properties) {
     const { type } = properties;
-    if (type !== undefined && type !== this.properties.type) {
-      this.setPass(this.getShaderPass(type));
+    const { type: currentType } = this.properties;
+
+    if (type !== undefined && type !== currentType) {
+      this.pass = this.getShaderPass(type);
     }
 
     return super.update(properties);
@@ -109,7 +111,8 @@ export default class BlurEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(this.getShaderPass(this.properties.type));
+    this.pass = this.getShaderPass(this.properties.type);
+
     this.updatePass();
   }
 

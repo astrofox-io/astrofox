@@ -1,9 +1,5 @@
-import { WebGLRenderTarget, LinearFilter, RGBAFormat, Texture } from 'three';
-import MultiPass from 'graphics/MultiPass';
-import RenderPass from 'graphics/RenderPass';
+import { WebGLRenderTarget, LinearFilter, RGBAFormat } from 'three';
 import ShaderPass from 'graphics/ShaderPass';
-import SpritePass from 'graphics/SpritePass';
-import TexturePass from 'graphics/TexturePass';
 import CopyShader from 'shaders/CopyShader';
 import BlendShader from 'shaders/BlendShader';
 import blendModes from 'config/blendModes.json';
@@ -89,7 +85,6 @@ export default class Composer {
   }
 
   dispose() {
-    this.clearPasses();
     this.readTarget.dispose();
     this.writeTarget.dispose();
   }
@@ -98,47 +93,6 @@ export default class Composer {
     const tmp = this.readBuffer;
     this.readBuffer = this.writeBuffer;
     this.writeBuffer = tmp;
-  }
-
-  addPass(pass) {
-    this.passes.push(pass);
-
-    return pass;
-  }
-
-  removePass(pass) {
-    this.passes = this.passes.filter(p => p !== pass);
-  }
-
-  addRenderPass(scene, camera, properties) {
-    return this.addPass(new RenderPass(scene, camera, properties));
-  }
-
-  addShaderPass(shader, properties) {
-    return this.addPass(new ShaderPass(shader, properties));
-  }
-
-  addTexturePass(texture, properties) {
-    return this.addPass(new TexturePass(texture, properties));
-  }
-
-  addSpritePass(image, properties) {
-    const texture = new Texture(image);
-    texture.minFilter = LinearFilter;
-
-    return this.addPass(new SpritePass(texture, properties));
-  }
-
-  addCopyPass(properties) {
-    return this.addShaderPass(CopyShader, properties);
-  }
-
-  addMultiPass(passes, properties) {
-    return this.addPass(new MultiPass(passes, properties));
-  }
-
-  clearPasses() {
-    this.passes = [];
   }
 
   blendBuffer(buffer, properties) {
@@ -171,19 +125,17 @@ export default class Composer {
     pass.update({ renderToScreen: false });
   }
 
-  render() {
+  render(passes = []) {
     const { renderer } = this;
 
     this.writeBuffer = this.writeTarget;
     this.readBuffer = this.readTarget;
 
-    this.passes.forEach(pass => {
-      if (pass.enabled) {
-        pass.render(renderer, this.writeBuffer, this.readBuffer);
+    passes.forEach(pass => {
+      pass.render(renderer, this.writeBuffer, this.readBuffer);
 
-        if (pass.properties.needsSwap) {
-          this.swapBuffers();
-        }
+      if (pass.properties.needsSwap) {
+        this.swapBuffers();
       }
     });
   }

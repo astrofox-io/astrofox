@@ -5,6 +5,7 @@ import SavePass from 'graphics/SavePass';
 import BlendPass from 'graphics/BlendPass';
 import GaussianBlurPass from 'graphics/GaussianBlurPass';
 import LuminanceShader from 'shaders/LuminanceShader';
+import MultiPass from '../graphics/MultiPass';
 
 const blendOptions = ['Add', 'Screen'];
 
@@ -84,8 +85,7 @@ export default class BloomEffect extends Effect {
     passes.push(this.blendPass);
 
     // Set render pass
-    this.setPass(composer.addMultiPass(passes));
-    this.updatePass();
+    this.pass = new MultiPass(passes);
   }
 
   removeFromScene() {

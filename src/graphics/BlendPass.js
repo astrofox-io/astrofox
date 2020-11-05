@@ -4,6 +4,11 @@ import BlendShader from 'shaders/BlendShader';
 import blendModes from 'config/blendModes.json';
 
 export default class BlendPass extends ShaderPass {
+  static info = {
+    name: 'BlendPass',
+    type: 'shader',
+  };
+
   static defaultProperties = {
     transparent: true,
     needsSwap: true,
@@ -21,14 +26,14 @@ export default class BlendPass extends ShaderPass {
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { properties } = this;
+    const { baseBuffer, opacity, blendMode, alpha } = this.properties;
 
     this.setUniforms({
-      tBase: properties.baseBuffer ? this.buffer : readBuffer.texture,
-      tBlend: properties.baseBuffer ? readBuffer.texture : this.buffer,
-      opacity: properties.opacity,
-      mode: blendModes[properties.blendMode],
-      alpha: properties.alpha,
+      tBase: baseBuffer ? this.buffer : readBuffer.texture,
+      tBlend: baseBuffer ? readBuffer.texture : this.buffer,
+      mode: blendModes[blendMode],
+      alpha,
+      opacity,
     });
 
     this.mesh.material = this.material;

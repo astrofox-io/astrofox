@@ -47,7 +47,7 @@ export default class PixelateEffect extends Effect {
     const changed = Effect.prototype.update.call(this, properties);
 
     if (this.pass && properties.type !== undefined) {
-      this.setPass(this.getShaderPass(this.properties.type));
+      this.pass = this.getShaderPass(this.properties.type);
     }
 
     return changed;
@@ -58,8 +58,8 @@ export default class PixelateEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(this.getShaderPass(this.properties.type));
-    this.updatePass();
+    this.pass = this.getShaderPass(this.properties.type);
+    this.pass.enabled = this.enabled;
   }
 
   removeFromScene() {

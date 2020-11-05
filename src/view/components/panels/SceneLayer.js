@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import Layer from 'components/panels/Layer';
 import { Picture, Cube, LightUp, DocumentLandscape } from 'view/icons';
@@ -12,7 +12,6 @@ const icons = {
 };
 
 export default function SceneLayer({ scene, activeElementId, onLayerClick, onLayerUpdate }) {
-  const [expanded, setExpanded] = useState(true);
   const { id, displayName, enabled } = scene;
 
   const displays = useMemo(() => reverse(scene.displays), [scene.displays]);
@@ -32,12 +31,8 @@ export default function SceneLayer({ scene, activeElementId, onLayerClick, onLay
     />
   );
 
-  function handleExpand() {
-    setExpanded(expanded => !expanded);
-  }
-
   return (
-    <div className={styles.contaainer} onDoubleClick={handleExpand}>
+    <div className={styles.contaainer}>
       <Layer
         key={id}
         id={id}
@@ -48,7 +43,7 @@ export default function SceneLayer({ scene, activeElementId, onLayerClick, onLay
         onLayerClick={onLayerClick}
         onLayerUpdate={onLayerUpdate}
       />
-      <div className={classNames(styles.children, { [styles.hidden]: !expanded })}>
+      <div className={classNames(styles.children)}>
         {effects.map(effect => renderLayer(effect))}
         {displays.map(display => renderLayer(display))}
       </div>

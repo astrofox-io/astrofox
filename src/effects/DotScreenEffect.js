@@ -48,7 +48,8 @@ export default class DotScreenEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(new ShaderPass(DotScreenShader));
+    this.pass = new ShaderPass(DotScreenShader);
+
     this.updatePass();
   }
 

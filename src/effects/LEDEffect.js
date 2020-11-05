@@ -48,8 +48,7 @@ export default class LEDEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(new ShaderPass(LEDShader));
-    this.updatePass();
+    this.pass = new ShaderPass(LEDShader);
   }
 
   removeFromScene() {

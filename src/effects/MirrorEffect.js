@@ -34,8 +34,7 @@ export default class MirrorEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(new ShaderPass(MirrorShader));
-    this.updatePass();
+    this.pass = new ShaderPass(MirrorShader);
   }
 
   removeFromScene() {

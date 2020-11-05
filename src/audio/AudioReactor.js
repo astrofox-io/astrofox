@@ -31,6 +31,7 @@ export default class AudioReactor extends Entity {
     name: 'AudioReactor',
     description: 'Audio reactor.',
     type: 'reactor',
+    label: 'Reactor',
   };
 
   static defaultProperties = {

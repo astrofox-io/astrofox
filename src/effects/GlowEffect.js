@@ -50,7 +50,8 @@ export default class GlowEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(new ShaderPass(GlowShader));
+    this.pass = new ShaderPass(GlowShader);
+
     this.updatePass();
   }
 

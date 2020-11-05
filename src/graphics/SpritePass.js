@@ -16,14 +16,14 @@ export default class SpritePass extends ComposerPass {
   constructor(texture, properties) {
     super({ ...SpritePass.defaultProperties, ...properties });
 
-    const { height, width } = this.properties;
+    const { height, width, color, transparent } = this.properties;
 
     this.texture = texture;
 
     this.material = new SpriteMaterial({
-      color: this.properties.color,
       map: texture,
-      transparent: this.properties.transparent,
+      color,
+      transparent,
     });
 
     this.sprite = new Sprite(this.material);

@@ -1,4 +1,5 @@
 /* eslint-disable max-classes-per-file */
+import ShaderPass from 'graphics/ShaderPass';
 import Display from './Display';
 import Effect from './Effect';
 
@@ -9,6 +10,10 @@ export default class Plugin {
     class PluginClass extends Type {
       constructor(properties) {
         super(module, properties);
+
+        if (module.shader) {
+          this.pass = new ShaderPass(module.shader, properties);
+        }
       }
     }
 

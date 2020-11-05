@@ -8,13 +8,6 @@ export default class Effect extends Display {
   }
 
   update(properties = {}) {
-    const { pass } = this;
-    const { enabled } = properties;
-
-    if (pass && enabled !== undefined) {
-      pass.enabled = enabled;
-    }
-
     const changed = super.update(properties);
 
     if (changed) {
@@ -24,16 +17,11 @@ export default class Effect extends Display {
     return changed;
   }
 
-  setPass(pass) {
-    this.pass = pass;
-    this.pass.enabled = this.enabled;
-
-    this.scene.updatePasses();
-  }
-
   updatePass() {
-    if (this.pass.setUniforms) {
-      this.pass.setUniforms(this.properties);
+    const { pass } = this;
+
+    if (pass.setUniforms) {
+      pass.setUniforms(this.properties);
     }
   }
 

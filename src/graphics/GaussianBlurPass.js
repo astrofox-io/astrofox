@@ -11,22 +11,24 @@ export default class GaussianBlurPass extends MultiPass {
 
   constructor(properties) {
     const passes = [];
-    const opts = { ...GaussianBlurPass.defaultProperties, ...properties };
+    const props = { ...GaussianBlurPass.defaultProperties, ...properties };
 
-    for (let i = 0; i < opts.passes; i++) {
+    for (let i = 0; i < props.passes; i++) {
       passes.push(new ShaderPass(GaussianBlurShader));
     }
 
-    super(passes, opts);
+    super(passes, props);
 
-    this.setAmount(opts.amount);
+    this.setAmount(props.amount);
   }
 
   setAmount(amount) {
-    this.passes.forEach((pass, index) => {
-      const radius = (this.properties.passes - index) * this.properties.radius * amount;
+    const { passes, radius } = this.properties;
 
-      pass.setUniforms({ direction: index % 2 === 0 ? [0, radius] : [radius, 0] });
+    this.passes.forEach((pass, index) => {
+      const r = (passes - index) * radius * amount;
+
+      pass.setUniforms({ direction: index % 2 === 0 ? [0, r] : [r, 0] });
     });
   }
 }

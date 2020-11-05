@@ -50,8 +50,8 @@ export default class RGBShiftEffect extends Effect {
   }
 
   addToScene() {
-    this.setPass(new ShaderPass(RGBShiftShader));
-    this.updatePass();
+    this.pass = new ShaderPass(RGBShiftShader);
+    this.pass.enabled = this.enabled;
   }
 
   removeFromScene() {
