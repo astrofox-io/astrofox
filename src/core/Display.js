@@ -22,13 +22,11 @@ export default class Display extends Entity {
 
     super(name, { ...defaultProperties, ...properties });
 
-    Object.defineProperties(this, {
-      type: { value: 'display', configurable: true },
-      displayName: { value: getDisplayName(label), writable: true },
-      enabled: { value: true, writable: true },
-      scene: { value: null, writable: true },
-      reactors: { value: {}, writable: true },
-    });
+    this.type = 'display';
+    this.displayName = getDisplayName(label);
+    this.enabled = true;
+    this.scene = null;
+    this.reactors = {};
   }
 
   getReactor(prop) {
@@ -77,4 +75,6 @@ export default class Display extends Entity {
       reactors: cloneDeep(reactors),
     };
   }
+
+  render() {}
 }

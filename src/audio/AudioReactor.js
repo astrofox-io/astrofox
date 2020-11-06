@@ -80,14 +80,12 @@ export default class AudioReactor extends Entity {
 
     super(name, { ...defaultProperties, ...properties });
 
-    Object.defineProperties(this, {
-      parser: { value: new SpectrumParser({ ...spectrumProperties, ...properties }) },
-      type: { value: 'reactor' },
-      displayName: { value: getDisplayName(label), writable: true },
-      enabled: { value: true, writable: true },
-      result: { value: { fft: [], output: 0 } },
-      direction: { value: 1, writable: true },
-    });
+    this.parser = new SpectrumParser({ ...spectrumProperties, ...properties });
+    this.type = 'reactor';
+    this.displayName = getDisplayName(label);
+    this.enabled = true;
+    this.result = { fft: [], output: 0 };
+    this.direction = 1;
   }
 
   update(properties = {}) {

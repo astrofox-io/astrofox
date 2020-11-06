@@ -4,7 +4,7 @@ export default class Effect extends Display {
   constructor(Type, properties) {
     super(Type, properties);
 
-    Object.defineProperty(this, 'type', { value: 'effect', configurable: true });
+    this.type = 'effect';
   }
 
   update(properties = {}) {

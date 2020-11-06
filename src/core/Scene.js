@@ -80,11 +80,9 @@ export default class Scene extends Display {
   constructor(properties) {
     super(Scene, properties);
 
-    Object.defineProperties(this, {
-      stage: { value: null, writable: true },
-      displays: { value: new EntityList() },
-      effects: { value: new EntityList() },
-    });
+    this.stage = null;
+    this.displays = new EntityList();
+    this.effects = new EntityList();
   }
 
   addToStage(stage) {

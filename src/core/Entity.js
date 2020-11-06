@@ -8,23 +8,19 @@ export default class Entity {
 
     const entity = new Type(properties);
 
-    delete entity.id;
-
     for (const [key, value] of Object.entries(props)) {
       entity[key] = value;
     }
 
-    Object.defineProperty(entity, 'id', { value: id, configurable: true });
+    entity.id = id;
 
     return entity;
   };
 
   constructor(name, properties = {}) {
-    Object.defineProperties(this, {
-      id: { value: uniqueId(), configurable: true },
-      name: { value: name },
-      properties: { value: properties },
-    });
+    this.id = uniqueId();
+    this.name = name;
+    this.properties = properties;
   }
 
   update(properties = {}) {

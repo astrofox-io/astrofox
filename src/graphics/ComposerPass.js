@@ -11,16 +11,9 @@ export default class ComposerPass {
   };
 
   constructor(properties = {}) {
-    Object.defineProperties(
-      this,
-      Object.entries({ ...ComposerPass.defaultProperties, ...properties }).reduce(
-        (obj, [key, value]) => {
-          obj[key] = { value, writable: true };
-          return obj;
-        },
-        {},
-      ),
-    );
+    for (const [key, value] of Object.entries(properties)) {
+      this[key] = value;
+    }
   }
 
   setSize(width, height) {
