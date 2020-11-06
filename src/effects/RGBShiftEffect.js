@@ -5,34 +5,32 @@ import { deg2rad } from 'utils/math';
 import { stageWidth } from 'utils/controls';
 
 export default class RGBShiftEffect extends Effect {
-  static info = {
+  static config = {
     name: 'RGBShiftEffect',
     description: 'RGB shift effect.',
     type: 'effect',
     label: 'RGB Shift',
-  };
-
-  static defaultProperties = {
-    offset: 5,
-    angle: 45,
-  };
-
-  static controls = {
-    offset: {
-      label: 'Offset',
-      type: 'number',
-      min: 0,
-      max: stageWidth(),
-      withRange: true,
-      withReactor: true,
+    defaultProperties: {
+      offset: 5,
+      angle: 45,
     },
-    angle: {
-      label: 'Angle',
-      type: 'number',
-      min: 0,
-      max: 360,
-      withRange: true,
-      withReactor: true,
+    controls: {
+      offset: {
+        label: 'Offset',
+        type: 'number',
+        min: 0,
+        max: stageWidth(),
+        withRange: true,
+        withReactor: true,
+      },
+      angle: {
+        label: 'Angle',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
     },
   };
 

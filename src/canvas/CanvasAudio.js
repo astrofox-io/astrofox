@@ -2,18 +2,21 @@ import Entity from 'core/Entity';
 import CanvasBars from 'canvas/CanvasBars';
 
 export default class CanvasAudio extends Entity {
-  static info = {
+  static config = {
     name: 'CanvasAudio',
     description: 'Canvas audio.',
     type: 'entity',
-  };
-
-  static defaultProperties = {
-    bars: 100,
+    defaultProperties: {
+      bars: 100,
+    },
   };
 
   constructor(properties, canvas) {
-    super(CanvasAudio, { ...CanvasAudio.defaultProperties, ...properties });
+    const {
+      config: { name, defaultProperties },
+    } = CanvasAudio;
+
+    super(name, { ...defaultProperties, ...properties });
 
     this.bars = new CanvasBars(properties, canvas);
     this.results = new Float32Array(this.properties.bars);

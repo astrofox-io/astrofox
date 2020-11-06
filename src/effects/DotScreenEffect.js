@@ -4,35 +4,33 @@ import DotScreenShader from 'shaders/DotScreenShader';
 import { deg2rad } from 'utils/math';
 
 export default class DotScreenEffect extends Effect {
-  static info = {
+  static config = {
     name: 'DotScreenEffect',
     description: 'dor screen effect.',
     type: 'effect',
     label: 'Dot Screen',
-  };
-
-  static defaultProperties = {
-    angle: 90,
-    scale: 1.0,
-  };
-
-  static controls = {
-    scale: {
-      label: 'Amount',
-      type: 'number',
-      min: 0,
-      max: 2.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
+    defaultProperties: {
+      angle: 90,
+      scale: 1.0,
     },
-    angle: {
-      label: 'Angle',
-      type: 'number',
-      min: 0,
-      max: 360,
-      withRange: true,
-      withReactor: true,
+    controls: {
+      scale: {
+        label: 'Amount',
+        type: 'number',
+        min: 0,
+        max: 2.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
+      angle: {
+        label: 'Angle',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
     },
   };
 

@@ -10,22 +10,20 @@ const mirrorOptions = [
 ];
 
 export default class MirrorEffect extends Effect {
-  static info = {
+  static config = {
     name: 'MirrorEffect',
     description: 'Mirror effect.',
     type: 'effect',
     label: 'Mirror',
-  };
-
-  static defaultProperties = {
-    side: 0,
-  };
-
-  static controls = {
-    side: {
-      label: 'Side',
-      type: 'select',
-      items: mirrorOptions,
+    defaultProperties: {
+      side: 0,
+    },
+    controls: {
+      side: {
+        label: 'Side',
+        type: 'select',
+        items: mirrorOptions,
+      },
     },
   };
 

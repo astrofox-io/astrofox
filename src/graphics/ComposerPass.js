@@ -1,12 +1,4 @@
-import Entity from 'core/Entity';
-
-export default class ComposerPass extends Entity {
-  static info = {
-    name: 'ComposerPass',
-    description: 'Composer pass.',
-    type: 'entity',
-  };
-
+export default class ComposerPass {
   static defaultProperties = {
     forceClear: false,
     needsSwap: false,
@@ -18,10 +10,17 @@ export default class ComposerPass extends Entity {
     setClearAlpha: 1.0,
   };
 
-  constructor(properties) {
-    super(ComposerPass.info.name, { ...ComposerPass.defaultProperties, ...properties });
-
-    this.enabled = true;
+  constructor(properties = {}) {
+    Object.defineProperties(
+      this,
+      Object.entries({ ...ComposerPass.defaultProperties, ...properties }).reduce(
+        (obj, [key, value]) => {
+          obj[key] = { value, writable: true };
+          return obj;
+        },
+        {},
+      ),
+    );
   }
 
   setSize(width, height) {
@@ -53,6 +52,12 @@ export default class ComposerPass extends Entity {
     }
   }
 
+  update(properties = {}) {
+    for (const [key, value] of Object.entries(properties)) {
+      this[key] = value;
+    }
+  }
+
   render(renderer, scene, camera, renderTarget) {
     const {
       clearColor,
@@ -62,7 +67,7 @@ export default class ComposerPass extends Entity {
       setClearAlpha,
       forceClear,
       renderToScreen,
-    } = this.properties;
+    } = this;
 
     // Set new values
     if (setClearColor) {

@@ -24,7 +24,6 @@ const METER_WIDTH = 20;
 export default function ReactorPanel() {
   const activeReactorId = useApp(state => state.activeReactorId);
   const reactor = reactors.getElementById(activeReactorId);
-  console.log('new reactor', activeReactorId);
 
   if (!reactor) {
     return null;
@@ -93,7 +92,7 @@ const ReactorControl = ({ reactor }) => {
       <Header path={reactor.displayName.split('/')} />
       <div className={styles.display}>
         <div className={styles.controls}>
-          <Control display={reactor} />
+          <Control display={reactor} showHeader={false} />
         </div>
         <div className={styles.spectrum}>
           <canvas ref={spectrumCanvas} width={SPECTRUM_WIDTH} height={REACTOR_BAR_HEIGHT} />

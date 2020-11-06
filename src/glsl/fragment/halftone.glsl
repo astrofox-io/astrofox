@@ -1,4 +1,4 @@
-uniform sampler2D tDiffuse;
+uniform sampler2D inputBuffer;
 uniform vec2 center;
 uniform float angle;
 uniform float scale;
@@ -16,7 +16,7 @@ float pattern(float angle) {
 }
 
 void main() {
-    vec4 color = texture2D(tDiffuse, vUv);
+    vec4 color = texture2D(inputBuffer, vUv);
     vec3 cmy = 1.0 - color.rgb;
     float k = min(cmy.x, min(cmy.y, cmy.z));
 

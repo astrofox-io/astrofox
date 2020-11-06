@@ -16,7 +16,7 @@ export default class SpritePass extends ComposerPass {
   constructor(texture, properties) {
     super({ ...SpritePass.defaultProperties, ...properties });
 
-    const { height, width, color, transparent } = this.properties;
+    const { height, width, color, transparent } = this;
 
     this.texture = texture;
 

@@ -20,10 +20,11 @@ export default class Entity {
   };
 
   constructor(name, properties = {}) {
-    Object.defineProperty(this, 'id', { value: uniqueId(), configurable: true });
-    Object.defineProperty(this, 'name', { value: name });
-
-    this.properties = properties;
+    Object.defineProperties(this, {
+      id: { value: uniqueId(), configurable: true },
+      name: { value: name },
+      properties: { value: properties },
+    });
   }
 
   update(properties = {}) {

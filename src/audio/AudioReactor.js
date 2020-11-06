@@ -27,69 +27,67 @@ const spectrumProperties = {
 };
 
 export default class AudioReactor extends Entity {
-  static info = {
+  static config = {
     name: 'AudioReactor',
     description: 'Audio reactor.',
     type: 'reactor',
     label: 'Reactor',
-  };
-
-  static defaultProperties = {
-    outputMode: 'Add',
-    selection: {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
+    defaultProperties: {
+      outputMode: 'Add',
+      selection: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+      },
+      range: {
+        x1: 0,
+        x2: 1,
+        y1: 0,
+        y2: 1,
+      },
+      maxDecibels: -20,
+      smoothingTimeConstant: 0.5,
     },
-    range: {
-      x1: 0,
-      x2: 1,
-      y1: 0,
-      y2: 1,
-    },
-    maxDecibels: -20,
-    smoothingTimeConstant: 0.5,
-  };
-
-  static controls = {
-    outputMode: {
-      label: 'Output Mode',
-      type: 'select',
-      items: outputOptions,
-    },
-    maxDecibels: {
-      label: 'Max dB',
-      type: 'number',
-      min: -40,
-      max: 0,
-      withRange: true,
-    },
-    smoothingTimeConstant: {
-      label: 'Smoothing',
-      type: 'number',
-      min: 0,
-      max: 0.99,
-      step: 0.01,
-      withRange: true,
+    controls: {
+      outputMode: {
+        label: 'Output Mode',
+        type: 'select',
+        items: outputOptions,
+      },
+      maxDecibels: {
+        label: 'Max dB',
+        type: 'number',
+        min: -40,
+        max: 0,
+        withRange: true,
+      },
+      smoothingTimeConstant: {
+        label: 'Smoothing',
+        type: 'number',
+        min: 0,
+        max: 0.99,
+        step: 0.01,
+        withRange: true,
+      },
     },
   };
 
   constructor(properties) {
     const {
-      info: { name, label },
-      defaultProperties,
+      config: { name, label, defaultProperties },
     } = AudioReactor;
 
     super(name, { ...defaultProperties, ...properties });
 
-    this.parser = new SpectrumParser({ ...spectrumProperties, ...properties });
-
-    this.type = 'reactor';
-    this.displayName = getDisplayName(label);
-    this.enabled = true;
-    this.result = { fft: [], output: 0 };
-    this.direction = 1;
+    Object.defineProperties(this, {
+      parser: { value: new SpectrumParser({ ...spectrumProperties, ...properties }) },
+      type: { value: 'reactor' },
+      displayName: { value: getDisplayName(label), writable: true },
+      enabled: { value: true, writable: true },
+      result: { value: { fft: [], output: 0 } },
+      direction: { value: 1, writable: true },
+    });
   }
 
   update(properties = {}) {

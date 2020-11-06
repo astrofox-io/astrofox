@@ -12,21 +12,22 @@ import {
 import { isDefined } from 'utils/array';
 
 export default class Stage extends Entity {
-  static info = {
+  static config = {
     name: 'Stage',
     description: 'The stage.',
     type: 'entity',
-  };
-
-  static defaultProperties = {
-    width: DEFAULT_CANVAS_WIDTH,
-    height: DEFAULT_CANVAS_HEIGHT,
-    backgroundColor: DEFAULT_CANVAS_BGCOLOR,
-    zoom: 100,
+    defaultProperties: {
+      width: DEFAULT_CANVAS_WIDTH,
+      height: DEFAULT_CANVAS_HEIGHT,
+      backgroundColor: DEFAULT_CANVAS_BGCOLOR,
+      zoom: 100,
+    },
   };
 
   constructor(properties) {
-    super(Stage.info.name, { ...Stage.defaultProperties, ...properties });
+    const { name, defaultProperties } = Stage.config;
+
+    super(name, { ...defaultProperties, ...properties });
 
     this.scenes = new EntityList();
     this.initialized = false;
@@ -140,7 +141,7 @@ export default class Stage extends Entity {
   addScene(scene = new Scene(), index) {
     this.scenes.addElement(scene, index);
 
-    Object.defineProperty(scene, 'stage', { value: this, configurable: true });
+    scene.stage = this;
 
     if (scene.addToStage) {
       scene.addToStage(this);
@@ -152,7 +153,7 @@ export default class Stage extends Entity {
   removeScene(scene) {
     this.scenes.removeElement(scene);
 
-    delete scene.stage;
+    scene.stage = null;
 
     scene.removeFromStage(this);
   }

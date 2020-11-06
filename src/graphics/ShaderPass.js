@@ -11,7 +11,7 @@ import ComposerPass from 'graphics/ComposerPass';
 
 export default class ShaderPass extends ComposerPass {
   static defaultProperties = {
-    textureId: 'tDiffuse',
+    textureId: 'inputBuffer',
     transparent: false,
     needsSwap: true,
     forceClear: false,
@@ -22,7 +22,7 @@ export default class ShaderPass extends ComposerPass {
     super({ ...ShaderPass.defaultProperties, ...properties });
 
     const { uniforms = {}, defines = {}, vertexShader, fragmentShader } = shader;
-    const { transparent, blending } = this.properties;
+    const { transparent, blending } = this;
 
     this.uniforms = UniformsUtils.clone(uniforms);
 
@@ -66,8 +66,7 @@ export default class ShaderPass extends ComposerPass {
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { scene, camera, material } = this;
-    const { textureId } = this.properties;
+    const { scene, camera, material, textureId } = this;
 
     if (readBuffer && material.uniforms[textureId]) {
       material.uniforms[textureId].value = readBuffer.texture;

@@ -101,11 +101,11 @@ export default class Composer {
     const { opacity, blendMode, mask, inverse } = properties;
 
     blendPass.setUniforms({
-      tBase: readBuffer.texture,
-      tBlend: buffer.texture,
-      opacity,
+      baseBuffer: readBuffer.texture,
+      blendBuffer: buffer.texture,
       mode: blendModes[blendMode],
       alpha: 1,
+      opacity,
       mask,
       inverse,
     });
@@ -118,11 +118,11 @@ export default class Composer {
   renderToScreen() {
     const pass = this.copyPass;
 
-    pass.update({ renderToScreen: true });
+    pass.renderToScreen = true;
 
     pass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
-    pass.update({ renderToScreen: false });
+    pass.renderToScreen = false;
   }
 
   render(passes = []) {
@@ -134,7 +134,7 @@ export default class Composer {
     passes.forEach(pass => {
       pass.render(renderer, this.writeBuffer, this.readBuffer);
 
-      if (pass.properties.needsSwap) {
+      if (pass.needsSwap) {
         this.swapBuffers();
       }
     });

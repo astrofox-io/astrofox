@@ -3,7 +3,7 @@ uniform float angle;
 uniform float scale;
 uniform vec2 tSize;
 
-uniform sampler2D tDiffuse;
+uniform sampler2D inputBuffer;
 
 varying vec2 vUv;
 
@@ -19,7 +19,7 @@ float pattern() {
 }
 
 void main() {
-    vec4 color = texture2D(tDiffuse, vUv);
+    vec4 color = texture2D(inputBuffer, vUv);
 
     float average = (color.r + color.g + color.b) / 3.0;
 

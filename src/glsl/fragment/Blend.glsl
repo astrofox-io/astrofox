@@ -1,5 +1,5 @@
-uniform sampler2D tBase;
-uniform sampler2D tBlend;
+uniform sampler2D baseBuffer;
+uniform sampler2D blendBuffer;
 uniform int mode;
 uniform int alpha;
 uniform float opacity;
@@ -301,8 +301,8 @@ vec3 blendColor(int mode, vec3 base, vec3 blend) {
 }
 
 void main() {
-    vec4 base = texture2D(tBase, vUv);
-    vec4 blend = texture2D(tBlend, vUv) * opacity;
+    vec4 base = texture2D(baseBuffer, vUv);
+    vec4 blend = texture2D(blendBuffer, vUv) * opacity;
     float luma = dot(vLuma, blend.rgb);
     float a = inverse == 1 ? 1.0 - luma : luma;
 

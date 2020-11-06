@@ -6,12 +6,11 @@ import { inputValueToProps } from 'utils/react';
 import { resolve } from 'utils/object';
 import styles from './Control.less';
 
-export default function Control({ display, className }) {
+export default function Control({ display, className, showHeader = true }) {
   const {
     displayName,
     constructor: {
-      info: { label },
-      controls = {},
+      config: { label, controls = {} },
     },
   } = display;
 
@@ -38,7 +37,7 @@ export default function Control({ display, className }) {
 
   return (
     <div className={classNames(styles.control, className)}>
-      {label && (
+      {showHeader && (
         <div className={styles.header}>
           <div className={styles.title}>
             <div className={styles.label}>{label}</div>

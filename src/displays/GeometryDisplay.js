@@ -67,91 +67,89 @@ const CAMERA_POS_Z = 250;
 const POINT_SIZE = 5.0;
 
 export default class GeometryDisplay extends WebglDisplay {
-  static info = {
+  static config = {
     name: 'GeometryDisplay',
     description: 'Displays 3D geometry.',
     type: 'display',
     label: 'Geometry (3D)',
-  };
-
-  static defaultProperties = {
-    shape: 'Box',
-    material: 'Standard',
-    shading: 'Smooth',
-    color: '#FFFFFF',
-    wireframe: false,
-    edges: false,
-    edgeColor: '#FFFFFF',
-    x: 0,
-    y: 0,
-    z: 0,
-    opacity: 1.0,
-    startX: 0,
-    startY: 0,
-    startZ: 0,
-    seed: 0,
-    lightIntensity: 1.0,
-    lightDistance: 500,
-    cameraZoom: 250,
-  };
-
-  static controls = {
-    shape: {
-      label: 'Shape',
-      type: 'select',
-      items: shapeOptions,
+    defaultProperties: {
+      shape: 'Box',
+      material: 'Standard',
+      shading: 'Smooth',
+      color: '#FFFFFF',
+      wireframe: false,
+      edges: false,
+      edgeColor: '#FFFFFF',
+      x: 0,
+      y: 0,
+      z: 0,
+      opacity: 1.0,
+      startX: 0,
+      startY: 0,
+      startZ: 0,
+      seed: 0,
+      lightIntensity: 1.0,
+      lightDistance: 500,
+      cameraZoom: 250,
     },
-    material: {
-      label: 'Material',
-      type: 'select',
-      items: materialOptions,
-    },
-    shading: {
-      label: 'Shading',
-      type: 'select',
-      items: shadingOptions,
-    },
-    wireframe: {
-      label: 'Wireframe',
-      type: 'toggle',
-    },
-    edges: {
-      label: 'Edges',
-      type: 'toggle',
-    },
-    edgeColor: {
-      label: 'Edge Color',
-      type: 'color',
-    },
-    x: {
-      label: 'X',
-      type: 'number',
-      min: -500,
-      max: 500,
-      withRange: true,
-    },
-    y: {
-      label: 'Y',
-      type: 'number',
-      min: -500,
-      max: 500,
-      withRange: true,
-    },
-    z: {
-      label: 'Z',
-      type: 'number',
-      min: -1000,
-      max: 1000,
-      withRange: true,
-    },
-    opacity: {
-      label: 'Opacity',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
+    controls: {
+      shape: {
+        label: 'Shape',
+        type: 'select',
+        items: shapeOptions,
+      },
+      material: {
+        label: 'Material',
+        type: 'select',
+        items: materialOptions,
+      },
+      shading: {
+        label: 'Shading',
+        type: 'select',
+        items: shadingOptions,
+      },
+      wireframe: {
+        label: 'Wireframe',
+        type: 'toggle',
+      },
+      edges: {
+        label: 'Edges',
+        type: 'toggle',
+      },
+      edgeColor: {
+        label: 'Edge Color',
+        type: 'color',
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+      },
+      z: {
+        label: 'Z',
+        type: 'number',
+        min: -1000,
+        max: 1000,
+        withRange: true,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
     },
   };
 

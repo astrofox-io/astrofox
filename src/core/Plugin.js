@@ -5,7 +5,7 @@ import Effect from './Effect';
 
 export default class Plugin {
   static create(module) {
-    const Type = module.info.type === 'effect' ? Effect : Display;
+    const Type = module.config.type === 'effect' ? Effect : Display;
 
     class PluginClass extends Type {
       constructor(properties) {
@@ -19,7 +19,7 @@ export default class Plugin {
 
     // Add static properties
     Object.getOwnPropertyNames(module).forEach(name => {
-      if (['info', 'defaultProperties', 'controls'].includes(name)) {
+      if (PluginClass[name] === undefined) {
         PluginClass[name] = module[name];
       }
     });

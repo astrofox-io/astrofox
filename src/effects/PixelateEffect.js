@@ -11,31 +11,29 @@ const shaders = {
 };
 
 export default class PixelateEffect extends Effect {
-  static info = {
+  static config = {
     name: 'PixelateEffect',
     description: 'Pixelate effect.',
     type: 'effect',
     label: 'Pixelate',
-  };
-
-  static defaultProperties = {
-    type: 'Square',
-    size: 10,
-  };
-
-  static controls = {
-    type: {
-      label: 'Type',
-      type: 'select',
-      items: renderOptions,
+    defaultProperties: {
+      type: 'Square',
+      size: 10,
     },
-    size: {
-      label: 'Size',
-      type: 'number',
-      min: 2,
-      max: 240,
-      withRange: true,
-      withReactor: true,
+    controls: {
+      type: {
+        label: 'Type',
+        type: 'select',
+        items: renderOptions,
+      },
+      size: {
+        label: 'Size',
+        type: 'number',
+        min: 2,
+        max: 240,
+        withRange: true,
+        withReactor: true,
+      },
     },
   };
 

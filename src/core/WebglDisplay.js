@@ -4,6 +4,6 @@ export default class WebglDisplay extends Display {
   constructor(info, properties) {
     super(info, properties);
 
-    this.type = 'webgl';
+    Object.defineProperty(this, 'type', { value: 'webgl', configurable: true });
   }
 }

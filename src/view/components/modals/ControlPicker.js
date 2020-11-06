@@ -14,13 +14,16 @@ export default function ControlPicker({ type, onSelect, onClose }) {
   const Catalog = ({ items }) => {
     return Object.keys(items).map((key, index) => {
       const item = items[key];
+      const {
+        config: { icon, label },
+      } = item;
 
       return (
         <div key={index} className={styles.item}>
           <div className={styles.image} onClick={() => handleClick(item)}>
-            <img src={item.info.icon} />
+            <img src={icon} />
           </div>
-          <div className={styles.name}>{item.info.label}</div>
+          <div className={styles.name}>{label}</div>
         </div>
       );
     });

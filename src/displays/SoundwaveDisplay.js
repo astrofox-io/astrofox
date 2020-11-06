@@ -6,93 +6,91 @@ import { renderToCanvas } from 'utils/canvas';
 import { stageWidth, stageHeight } from 'utils/controls';
 
 export default class SoundwaveDisplay extends CanvasDisplay {
-  static info = {
+  static config = {
     name: 'SoundwaveDisplay',
     description: 'Displays an audio soundwave.',
     type: 'display',
     label: 'Soundwave',
-  };
-
-  static defaultProperties = {
-    color: '#FFFFFF',
-    width: DEFAULT_CANVAS_WIDTH,
-    height: DEFAULT_CANVAS_HEIGHT / 2,
-    lineWidth: 1.0,
-    wavelength: 0,
-    smooth: false,
-    x: 0,
-    y: 0,
-    rotation: 0,
-    opacity: 1.0,
-  };
-
-  static controls = {
-    color: {
-      label: 'Color',
-      type: 'color',
+    defaultProperties: {
+      color: '#FFFFFF',
+      width: DEFAULT_CANVAS_WIDTH,
+      height: DEFAULT_CANVAS_HEIGHT / 2,
+      lineWidth: 1.0,
+      wavelength: 0,
+      smooth: false,
+      x: 0,
+      y: 0,
+      rotation: 0,
+      opacity: 1.0,
     },
-    lineWidth: {
-      label: 'Line Width',
-      type: 'number',
-      min: 0,
-      max: 10,
-      withRange: true,
-    },
-    width: {
-      label: 'Width',
-      type: 'number',
-      min: 0,
-      max: stageWidth(n => n * 2),
-      withRange: true,
-    },
-    height: {
-      label: 'Height',
-      type: 'number',
-      min: 0,
-      max: stageHeight(n => n * 2),
-      withRange: true,
-    },
-    x: {
-      label: 'X',
-      type: 'number',
-      min: stageWidth(n => -n),
-      max: stageWidth(),
-      withRange: true,
-    },
-    y: {
-      label: 'Y',
-      type: 'number',
-      min: stageHeight(n => -n),
-      max: stageHeight(),
-      withRange: true,
-    },
-    wavelength: {
-      label: 'Wavelength',
-      type: 'number',
-      min: 0,
-      max: 100,
-      withRange: true,
-    },
-    smooth: {
-      label: 'Smooth',
-      type: 'toggle',
-    },
-    rotation: {
-      label: 'Rotation',
-      type: 'number',
-      min: 0,
-      max: 360,
-      withRange: true,
-      withReactor: true,
-    },
-    opacity: {
-      label: 'Opacity',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
+    controls: {
+      color: {
+        label: 'Color',
+        type: 'color',
+      },
+      lineWidth: {
+        label: 'Line Width',
+        type: 'number',
+        min: 0,
+        max: 10,
+        withRange: true,
+      },
+      width: {
+        label: 'Width',
+        type: 'number',
+        min: 0,
+        max: stageWidth(n => n * 2),
+        withRange: true,
+      },
+      height: {
+        label: 'Height',
+        type: 'number',
+        min: 0,
+        max: stageHeight(n => n * 2),
+        withRange: true,
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: stageWidth(n => -n),
+        max: stageWidth(),
+        withRange: true,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: stageHeight(n => -n),
+        max: stageHeight(),
+        withRange: true,
+      },
+      wavelength: {
+        label: 'Wavelength',
+        type: 'number',
+        min: 0,
+        max: 100,
+        withRange: true,
+      },
+      smooth: {
+        label: 'Smooth',
+        type: 'toggle',
+      },
+      rotation: {
+        label: 'Rotation',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
     },
   };
 

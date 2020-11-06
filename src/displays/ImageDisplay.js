@@ -20,81 +20,79 @@ const maxX = display => (disabled(display) ? 0 : maxWidth(display));
 const maxY = display => (disabled(display) ? 0 : maxHeight(display));
 
 export default class ImageDisplay extends CanvasDisplay {
-  static info = {
+  static config = {
     name: 'ImageDisplay',
     description: 'Displays an image.',
     type: 'display',
     label: 'Image',
-  };
-
-  static defaultProperties = {
-    src: BLANK_IMAGE,
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    fixed: true,
-    rotation: 0,
-    opacity: 0,
-  };
-
-  static controls = {
-    src: {
-      label: 'image',
-      type: 'image',
+    defaultProperties: {
+      src: BLANK_IMAGE,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      fixed: true,
+      rotation: 0,
+      opacity: 0,
     },
-    width: {
-      label: 'Width',
-      type: 'number',
-      min: 0,
-      max: maxWidth,
-      withRange: true,
-      withLink: 'fixed',
-      disabled,
-    },
-    height: {
-      label: 'Height',
-      type: 'number',
-      min: 0,
-      max: maxHeight,
-      withRange: true,
-      withLink: 'fixed',
-      disabled,
-    },
-    x: {
-      label: 'X',
-      type: 'number',
-      min: display => -1 * maxX(display),
-      max: display => maxX(display),
-      withRange: true,
-      disabled,
-    },
-    y: {
-      label: 'Y',
-      type: 'number',
-      min: display => -1 * maxY(display),
-      max: display => maxY(display),
-      withRange: true,
-      disabled,
-    },
-    rotation: {
-      label: 'Rotation',
-      type: 'number',
-      min: 0,
-      max: 360,
-      withRange: true,
-      withReactor: true,
-      disabled,
-    },
-    opacity: {
-      label: 'Opacity',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
-      disabled,
+    controls: {
+      src: {
+        label: 'image',
+        type: 'image',
+      },
+      width: {
+        label: 'Width',
+        type: 'number',
+        min: 0,
+        max: maxWidth,
+        withRange: true,
+        withLink: 'fixed',
+        disabled,
+      },
+      height: {
+        label: 'Height',
+        type: 'number',
+        min: 0,
+        max: maxHeight,
+        withRange: true,
+        withLink: 'fixed',
+        disabled,
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: display => -1 * maxX(display),
+        max: display => maxX(display),
+        withRange: true,
+        disabled,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: display => -1 * maxY(display),
+        max: display => maxY(display),
+        withRange: true,
+        disabled,
+      },
+      rotation: {
+        label: 'Rotation',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
     },
   };
 

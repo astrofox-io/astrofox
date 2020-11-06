@@ -3,25 +3,28 @@ import BezierSpline from 'drawing/BezierSpline';
 import { setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
-  static info = {
+  static config = {
     name: 'CanvasWave',
     description: 'Canvas wave.',
     type: 'entity',
-  };
-
-  static defaultProperties = {
-    strokeColor: '#FFFFFF',
-    width: 400,
-    height: 200,
-    lineWidth: 1.0,
-    stroke: true,
-    fill: false,
-    fillColor: null,
-    taper: false,
+    defaultProperties: {
+      strokeColor: '#FFFFFF',
+      width: 400,
+      height: 200,
+      lineWidth: 1.0,
+      stroke: true,
+      fill: false,
+      fillColor: null,
+      taper: false,
+    },
   };
 
   constructor(properties, canvas) {
-    super(CanvasWave, { ...CanvasWave.defaultProperties, ...properties });
+    const {
+      config: { name, defaultProperties },
+    } = CanvasWave;
+
+    super(name, { ...defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

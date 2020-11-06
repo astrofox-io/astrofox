@@ -17,17 +17,18 @@ export default class Display extends Entity {
 
   constructor(Type, properties) {
     const {
-      info: { name, label },
-      defaultProperties,
+      config: { name, label, defaultProperties },
     } = Type;
 
     super(name, { ...defaultProperties, ...properties });
 
-    this.type = 'display';
-    this.displayName = getDisplayName(label);
-    this.enabled = true;
-    this.scene = null;
-    this.reactors = {};
+    Object.defineProperties(this, {
+      type: { value: 'display', configurable: true },
+      displayName: { value: getDisplayName(label), writable: true },
+      enabled: { value: true, writable: true },
+      scene: { value: null, writable: true },
+      reactors: { value: {}, writable: true },
+    });
   }
 
   getReactor(prop) {

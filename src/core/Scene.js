@@ -37,63 +37,61 @@ const blendOptions = [
 ];
 
 export default class Scene extends Display {
-  static info = {
+  static config = {
     name: 'Scene',
     description: 'Scene display.',
     type: 'display',
     label: 'Scene',
-  };
 
-  static defaultProperties = {
-    blendMode: 'Normal',
-    opacity: 1.0,
-    mask: false,
-    inverse: false,
-    stencil: false,
-  };
-
-  static controls = {
-    blendMode: {
-      label: 'Blending',
-      type: 'select',
-      items: blendOptions,
+    defaultProperties: {
+      blendMode: 'Normal',
+      opacity: 1.0,
+      mask: false,
+      inverse: false,
+      stencil: false,
     },
-    opacity: {
-      label: 'Opacity',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
-    },
-    mask: {
-      label: 'Mask',
-      type: 'toggle',
-    },
-    inverse: {
-      label: 'Inverse',
-      type: 'toggle',
-      hidden: display => !display.properties.mask,
+    controls: {
+      blendMode: {
+        label: 'Blending',
+        type: 'select',
+        items: blendOptions,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
+      mask: {
+        label: 'Mask',
+        type: 'toggle',
+      },
+      inverse: {
+        label: 'Inverse',
+        type: 'toggle',
+        hidden: display => !display.properties.mask,
+      },
     },
   };
 
   constructor(properties) {
-    super(Scene, { ...Scene.defaultProperties, ...properties });
+    super(Scene, properties);
 
-    this.displays = new EntityList();
-    this.effects = new EntityList();
+    Object.defineProperties(this, {
+      stage: { value: null, writable: true },
+      displays: { value: new EntityList() },
+      effects: { value: new EntityList() },
+    });
   }
 
   addToStage(stage) {
-    Object.defineProperty(this, 'stage', { value: stage, configurable: true });
-
     this.composer = new Composer(stage.renderer);
   }
 
   removeFromStage() {
-    delete this.stage;
-
     this.displays.clear();
     this.effects.clear();
     this.composer.dispose();
@@ -140,7 +138,7 @@ export default class Scene extends Display {
 
     target.addElement(obj, index);
 
-    Object.defineProperty(obj, 'scene', { value: this });
+    obj.scene = this;
 
     if (obj.addToScene) {
       obj.addToScene(this);
@@ -164,7 +162,7 @@ export default class Scene extends Display {
 
     target.removeElement(obj);
 
-    delete obj.scene;
+    obj.scene = null;
 
     if (obj.removeFromScene) {
       obj.removeFromScene(this);
@@ -180,9 +178,7 @@ export default class Scene extends Display {
 
     const target = this.getTarget(obj);
 
-    const changed = target.shiftElement(obj, spaces);
-
-    return changed;
+    return target.shiftElement(obj, spaces);
   }
 
   getCanvasConext() {

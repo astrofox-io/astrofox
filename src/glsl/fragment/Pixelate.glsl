@@ -1,4 +1,4 @@
-uniform sampler2D tDiffuse;
+uniform sampler2D inputBuffer;
 uniform float size;
 uniform vec2 resolution;
 
@@ -11,5 +11,5 @@ void main() {
 	d = size / resolution.y;
 	float v = floor(vUv.y / d) * d;
 
-	gl_FragColor = texture2D(tDiffuse, vec2(u, v));
+	gl_FragColor = texture2D(inputBuffer, vec2(u, v));
 }

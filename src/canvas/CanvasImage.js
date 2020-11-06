@@ -3,20 +3,23 @@ import Entity from 'core/Entity';
 const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Entity {
-  static info = {
+  static config = {
     name: 'CanvasImage',
     description: 'Canvas image.',
     type: 'entity',
-  };
-
-  static defaultProperties = {
-    src: '',
-    width: 1,
-    height: 1,
+    defaultProperties: {
+      src: '',
+      width: 1,
+      height: 1,
+    },
   };
 
   constructor(properties, canvas) {
-    super(CanvasImage, { ...CanvasImage.defaultProperties, ...properties });
+    const {
+      config: { name, defaultProperties },
+    } = CanvasImage;
+
+    super(name, { ...defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;

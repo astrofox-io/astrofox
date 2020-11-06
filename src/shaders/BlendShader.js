@@ -1,10 +1,10 @@
-import vertex from 'glsl/vertex/basic.glsl';
-import fragment from 'glsl/fragment/Blend.glsl';
+import vertexShader from 'glsl/vertex/basic.glsl';
+import fragmentShader from 'glsl/fragment/Blend.glsl';
 
 export default {
   uniforms: {
-    tBase: { type: 't', value: null },
-    tBlend: { type: 't', value: null },
+    baseBuffer: { type: 't', value: null },
+    blendBuffer: { type: 't', value: null },
     mode: { type: 'i', value: 0 },
     alpha: { type: 'i', value: 0 },
     opacity: { type: 'f', value: 1.0 },
@@ -12,6 +12,6 @@ export default {
     inverse: { type: 'i', value: 0 },
   },
 
-  vertexShader: vertex,
-  fragmentShader: fragment,
+  vertexShader,
+  fragmentShader,
 };

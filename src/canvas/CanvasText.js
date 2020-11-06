@@ -1,23 +1,26 @@
 import Entity from 'core/Entity';
 
 export default class CanvasText extends Entity {
-  static info = {
+  static config = {
     name: 'CanvasText',
     description: 'Canvas text.',
     type: 'entity',
-  };
-
-  static defaultProperties = {
-    text: '',
-    size: 40,
-    font: 'Roboto',
-    italic: false,
-    bold: false,
-    color: '#FFFFFF',
+    defaultProperties: {
+      text: '',
+      size: 40,
+      font: 'Roboto',
+      italic: false,
+      bold: false,
+      color: '#FFFFFF',
+    },
   };
 
   constructor(properties, canvas) {
-    super(CanvasText, { ...CanvasText.defaultProperties, ...properties });
+    const {
+      config: { name, defaultProperties },
+    } = CanvasText;
+
+    super(name, { ...defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;

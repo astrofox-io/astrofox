@@ -1,6 +1,6 @@
 import create from 'zustand';
 import Plugin from 'core/Plugin';
-import { api, env, logger, renderer, stage, library } from 'view/global';
+import { api, logger, renderer, stage, library } from 'view/global';
 import configStore, { loadConfig } from 'actions/config';
 import updateStore, { checkForUpdates, updateDownloadProgress } from 'actions/updates';
 import projectStore, {
@@ -160,7 +160,7 @@ export async function loadPlugins() {
     try {
       const module = await import(/* webpackIgnore: true */ plugin.src);
 
-      module.default.info.icon = plugin.icon;
+      module.default.config.icon = plugin.icon;
 
       plugins[key] = Plugin.create(module.default);
     } catch (e) {
@@ -178,30 +178,24 @@ export async function loadLibrary() {
 
   const coreDisplays = {};
   for (const [key, display] of Object.entries(displays)) {
-    display.info = {
-      ...display.info,
-      version: env.APP_VERSION,
-      icon: `/images/controls/${key}.png`,
-    };
+    display.config.icon = `/images/controls/${key}.png`;
 
     coreDisplays[key] = display;
   }
 
   const coreEffects = {};
   for (const [key, effect] of Object.entries(effects)) {
-    effect.info = {
-      ...effect.info,
-      version: env.APP_VERSION,
-      icon: `/images/controls/${key}.png`,
-    };
+    effect.config.icon = `/images/controls/${key}.png`;
 
     coreEffects[key] = effect;
   }
 
   for (const [key, plugin] of Object.entries(plugins)) {
-    if (plugin.info.type === 'display') {
+    const { type } = plugin.config;
+
+    if (type === 'display') {
       coreDisplays[key] = plugin;
-    } else if (plugin.info.type === 'effect') {
+    } else if (type === 'effect') {
       coreEffects[key] = plugin;
     }
   }

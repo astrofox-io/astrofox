@@ -10,42 +10,40 @@ import MultiPass from '../graphics/MultiPass';
 const blendOptions = ['Add', 'Screen'];
 
 export default class BloomEffect extends Effect {
-  static info = {
+  static config = {
     name: 'BloomEffect',
     description: 'Bloom effect.',
     type: 'effect',
     label: 'Bloom',
-  };
-
-  static defaultProperties = {
-    blendMode: 'Screen',
-    amount: 0.1,
-    threshold: 1.0,
-  };
-
-  static controls = {
-    blendMode: {
-      label: 'Blend Mode',
-      type: 'select',
-      items: blendOptions,
+    defaultProperties: {
+      blendMode: 'Screen',
+      amount: 0.1,
+      threshold: 1.0,
     },
-    amount: {
-      label: 'Amount',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
-    },
-    threshold: {
-      label: 'Threshold',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
+    controls: {
+      blendMode: {
+        label: 'Blend Mode',
+        type: 'select',
+        items: blendOptions,
+      },
+      amount: {
+        label: 'Amount',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
+      threshold: {
+        label: 'Threshold',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
     },
   };
 
@@ -54,11 +52,13 @@ export default class BloomEffect extends Effect {
   }
 
   updatePass() {
-    this.lumPass.setUniforms({ amount: 1 - this.properties.threshold });
+    const { amount, threshold, blendMode } = this.properties;
 
-    this.blurPass.setAmount(this.properties.amount);
+    this.lumPass.setUniforms({ amount: 1 - threshold });
 
-    this.blendPass.update({ blendMode: this.properties.blendMode });
+    this.blurPass.setUniforms({ amount });
+
+    this.blendPass.update({ blendMode });
   }
 
   addToScene(scene) {

@@ -1,4 +1,4 @@
-uniform sampler2D tDiffuse;
+uniform sampler2D inputBuffer;
 uniform float amount;
 
 varying vec2 vUv;
@@ -6,7 +6,7 @@ varying vec2 vUv;
 const vec3 vLuma = vec3(0.2126, 0.7152, 0.0722);
 
 void main(void) {
-    vec4 src = texture2D(tDiffuse, vUv);
+    vec4 src = texture2D(inputBuffer, vUv);
     float luma = dot(vLuma, src.rgb);
 
     luma = max(0.0, luma - amount);

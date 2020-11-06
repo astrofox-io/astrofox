@@ -22,50 +22,48 @@ const ZOOM_BLUR_MAX = 1;
 const showZoomOption = property('type', value => value !== 'Zoom');
 
 export default class BlurEffect extends Effect {
-  static info = {
+  static config = {
     name: 'BlurEffect',
     description: 'Blur effect.',
     type: 'effect',
     label: 'Blur',
-  };
-
-  static defaultProperties = {
-    type: 'Gaussian',
-    amount: 0.3,
-    x: 0,
-    y: 0,
-  };
-
-  static controls = {
-    type: {
-      label: 'Type',
-      type: 'select',
-      items: blurOptions,
+    defaultProperties: {
+      type: 'Gaussian',
+      amount: 0.3,
+      x: 0,
+      y: 0,
     },
-    amount: {
-      label: 'Amount',
-      type: 'number',
-      min: 0,
-      max: 1.0,
-      step: 0.01,
-      withRange: true,
-      withReactor: true,
-    },
-    x: {
-      label: 'X',
-      type: 'number',
-      min: stageWidth(n => -n / 2),
-      max: stageWidth(n => n / 2),
-      hidden: showZoomOption,
-      withRange: true,
-    },
-    y: {
-      label: 'Y',
-      type: 'number',
-      min: stageHeight(n => -n / 2),
-      max: stageHeight(n => n / 2),
-      hidden: showZoomOption,
-      withRange: true,
+    controls: {
+      type: {
+        label: 'Type',
+        type: 'select',
+        items: blurOptions,
+      },
+      amount: {
+        label: 'Amount',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: stageWidth(n => -n / 2),
+        max: stageWidth(n => n / 2),
+        hidden: showZoomOption,
+        withRange: true,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: stageHeight(n => -n / 2),
+        max: stageHeight(n => n / 2),
+        hidden: showZoomOption,
+        withRange: true,
+      },
     },
   };
 
@@ -98,7 +96,7 @@ export default class BlurEffect extends Effect {
         break;
 
       case 'Gaussian':
-        this.pass.setAmount(amount);
+        this.pass.setUniforms({ amount });
         break;
 
       case 'Zoom':
