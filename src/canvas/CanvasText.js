@@ -1,4 +1,5 @@
 import Entity from 'core/Entity';
+import { resetCanvas } from 'utils/canvas';
 
 export default class CanvasText extends Entity {
   static config = {
@@ -48,12 +49,7 @@ export default class CanvasText extends Entity {
     const height = size * 2;
 
     // Reset canvas
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width || 1;
-      canvas.height = height || 1;
-    } else {
-      context.clearRect(0, 0, width, height);
-    }
+    resetCanvas(canvas, width, height);
 
     // Draw text
     context.font = font;

@@ -138,6 +138,8 @@ export async function saveProjectFile(file) {
       reactors: reactors.toJSON(),
     };
 
+    logger.debug('Save data', data);
+
     try {
       await api.saveProjectFile(file, data);
 

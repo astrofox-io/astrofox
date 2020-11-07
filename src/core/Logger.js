@@ -14,7 +14,7 @@ export default class Logger {
     // If format specifiers are defined, merge with label
     if (args.length && typeof args[0] === 'string' && /%[sidfoOc]/.test(args[0])) {
       label[0] += ` ${args[0]}`;
-      // eslint-disable-next-line no-param-reassign
+
       args = args.slice(1);
     }
 
@@ -39,6 +39,12 @@ export default class Logger {
 
   trace(...args) {
     this.output(console.trace, args);
+  }
+
+  debug(...args) {
+    if (process.env.NODE_ENV !== 'production') {
+      this.output(console.log, args);
+    }
   }
 
   time(id) {

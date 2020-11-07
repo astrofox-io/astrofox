@@ -47,20 +47,20 @@ export default class ShaderPass extends ComposerPass {
     this.scene.add(this.mesh);
   }
 
-  setUniforms(properties) {
+  setUniforms(properties = {}) {
     const { uniforms } = this;
 
-    Object.keys(properties).forEach(prop => {
-      if (Object.prototype.hasOwnProperty.call(uniforms, prop)) {
-        const p = uniforms[prop].value;
+    for (const [key, value] of Object.entries(properties)) {
+      if (uniforms[key] !== undefined) {
+        const item = uniforms[key].value;
 
-        if (p !== null && p.set) {
-          p.set(...properties[prop]);
+        if (item?.set) {
+          item.set(...value);
         } else {
-          uniforms[prop].value = properties[prop];
+          uniforms[key].value = value;
         }
       }
-    });
+    }
 
     this.material.needsUpdate = true;
   }

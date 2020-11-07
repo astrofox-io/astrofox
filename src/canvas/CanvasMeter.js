@@ -1,5 +1,5 @@
 import Entity from 'core/Entity';
-import { setColor } from 'utils/canvas';
+import { resetCanvas, setColor } from 'utils/canvas';
 
 export default class CanvasMeter extends Entity {
   static config = {
@@ -34,12 +34,7 @@ export default class CanvasMeter extends Entity {
     const { height, width, color, origin } = this.properties;
 
     // Reset canvas
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width;
-      canvas.height = height;
-    } else {
-      context.clearRect(0, 0, width, height);
-    }
+    resetCanvas(canvas, width, height);
 
     // Canvas setup
     setColor(context, color, 0, 0, 0, height);

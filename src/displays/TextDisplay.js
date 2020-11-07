@@ -88,24 +88,10 @@ export default class TextDisplay extends CanvasDisplay {
   }
 
   update(properties) {
-    const changed = super.update(properties);
-
-    if (changed) {
-      if (this.text.update(properties)) {
-        let render = false;
-
-        Object.keys(CanvasText.config.defaultProperties).forEach(prop => {
-          if (properties[prop] !== undefined) {
-            render = true;
-          }
-        });
-
-        if (render) {
-          this.text.render();
-        }
-      }
+    if (this.text.update(properties)) {
+      this.text.render();
     }
 
-    return changed;
+    return super.update(properties);
   }
 }

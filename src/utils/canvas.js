@@ -36,6 +36,15 @@ export function setColor(context, color, x1, y1, x2, y2) {
   }
 }
 
+export function resetCanvas(canvas, width = 1, height = 1) {
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  } else {
+    canvas.getContext('2d').clearRect(0, 0, width, height);
+  }
+}
+
 export function renderToCanvas(context, image, props = { x: 0, y: 0 }, origin = { x: 0, y: 0 }) {
   const { width, height } = context.canvas;
   const { x, y, opacity, rotation } = props;

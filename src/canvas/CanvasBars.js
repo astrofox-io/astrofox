@@ -1,5 +1,5 @@
 import Entity from 'core/Entity';
-import { setColor } from 'utils/canvas';
+import { resetCanvas, setColor } from 'utils/canvas';
 import { clamp } from 'utils/math';
 
 export default class CanvasBars extends Entity {
@@ -41,12 +41,7 @@ export default class CanvasBars extends Entity {
     let { barWidth, barSpacing } = this.properties;
 
     // Reset canvas
-    if (canvas.width !== width || canvas.height !== height + shadowHeight) {
-      canvas.width = width;
-      canvas.height = height + shadowHeight;
-    } else {
-      context.clearRect(0, 0, width, height + shadowHeight);
-    }
+    resetCanvas(canvas, width, height + shadowHeight);
 
     // Calculate bar widths
     if (barWidth < 0 && barSpacing < 0) {

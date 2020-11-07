@@ -7,10 +7,9 @@ export default class Display extends Entity {
     const { reactors = {} } = config;
     const entity = Entity.create(Type, config);
 
-    Object.keys(reactors).forEach(key => {
-      const reactorConfig = reactors[key];
-      entity.setReactor(key, reactorConfig);
-    });
+    for (const [key, value] of Object.entries(reactors)) {
+      entity.setRange(key, value);
+    }
 
     return entity;
   };
@@ -51,15 +50,18 @@ export default class Display extends Entity {
     }
 
     const { reactors } = this;
+    const properties = {};
 
-    Object.keys(reactors).forEach(prop => {
-      const { id, min, max } = reactors[prop];
+    for (const [key, value] of Object.entries(reactors)) {
+      const { id, min, max } = value;
       const output = data.reactors[id];
 
       if (output !== undefined) {
-        this.update({ [prop]: (max - min) * output + min });
+        properties[key] = (max - min) * output + min;
       }
-    });
+    }
+
+    this.update(properties);
   }
 
   toJSON() {

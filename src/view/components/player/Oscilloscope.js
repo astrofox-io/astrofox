@@ -8,7 +8,7 @@ import styles from './Oscilloscope.less';
 const canvasProperties = {
   width: 854,
   height: 50,
-  color: PRIMARY_COLOR,
+  strokeColor: PRIMARY_COLOR,
 };
 
 export default function Oscilloscope() {

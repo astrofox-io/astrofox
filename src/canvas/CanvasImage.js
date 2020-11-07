@@ -1,4 +1,5 @@
 import Entity from 'core/Entity';
+import { resetCanvas } from 'utils/canvas';
 
 const MIN_RESIZE_WIDTH = 100;
 
@@ -84,12 +85,7 @@ export default class CanvasImage extends Entity {
     if (!image.src) return;
 
     // Reset canvas
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width || 1;
-      canvas.height = height || 1;
-    } else {
-      context.clearRect(0, 0, width, height);
-    }
+    resetCanvas(canvas, width, height);
 
     // Resize smaller
     if (width < image.naturalWidth && height < image.naturalHeight) {

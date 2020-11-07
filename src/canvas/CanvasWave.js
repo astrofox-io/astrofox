@@ -1,6 +1,6 @@
 import Entity from 'core/Entity';
 import BezierSpline from 'drawing/BezierSpline';
-import { setColor } from 'utils/canvas';
+import { resetCanvas, setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
   static config = {
@@ -49,12 +49,7 @@ export default class CanvasWave extends Entity {
     } = this.properties;
 
     // Reset canvas
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width;
-      canvas.height = height;
-    } else {
-      context.clearRect(0, 0, width, height);
-    }
+    resetCanvas(canvas, width, height);
 
     // Canvas setup
     context.lineWidth = lineWidth;

@@ -30,14 +30,9 @@ export default class Stage extends Entity {
     super(name, { ...defaultProperties, ...properties });
 
     this.scenes = new EntityList();
-    this.initialized = false;
   }
 
   init(canvas) {
-    if (this.initialized) {
-      return;
-    }
-
     const { width, height, backgroundColor } = this.properties;
 
     this.renderer = new WebGLRenderer({
@@ -56,8 +51,6 @@ export default class Stage extends Entity {
     this.webglBuffer = new WebglBuffer(width, height);
 
     this.backgroundColor = new Color(backgroundColor);
-
-    this.initialized = true;
   }
 
   update(properties) {
