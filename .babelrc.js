@@ -1,7 +1,7 @@
 module.exports = function (api) { // Using .babelrc JS example from https://babeljs.io/docs/en/configuration#babelconfigjson
   api.cache(true);
 
-  const PRODUCTION = (process.env.BABEL_ENV || process.env.NODE_ENV) === 'production'; // Adapted from https://github.com/babel/babel/issues/5276
+  const ENV = process.env.BABEL_ENV || process.env.NODE_ENV;
 
   const presets = [
     ["@babel/env", {
@@ -20,8 +20,10 @@ module.exports = function (api) { // Using .babelrc JS example from https://babe
     "@babel/proposal-export-default-from"
   ];
 
-  // Workaround Error: [BABEL] React Refresh Babel transform should only be enabled in development environment.
-  if (!PRODUCTION) { plugins.push("react-refresh/babel"); }
+  if (ENV === 'development') {
+    // React Refresh Babel transform should only be enabled in development environment. Will not work in any other
+    plugins.push("react-refresh/babel");
+  }
 
   return {
     presets,
