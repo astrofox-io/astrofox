@@ -1,9 +1,10 @@
 export function updateExistingProps(obj, props) {
   let changed = false;
 
-  for (const [key, value] of Object.entries(props)) {
+  for (let keys = Object.keys(props), len = keys.length, i = 0; i < len; ++i) {
+    const key = keys[i];
     if (obj[key] !== undefined) {
-      obj[key] = value;
+      obj[key] = props[key];
       changed = true;
     }
   }
