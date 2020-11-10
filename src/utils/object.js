@@ -3,9 +3,12 @@ export function updateExistingProps(obj, props) {
 
   for (let keys = Object.keys(props), len = keys.length, i = 0; i < len; ++i) {
     const key = keys[i];
-    if (obj[key] !== undefined) {
-      obj[key] = props[key];
-      changed = true;
+    if (key in obj) {
+      const value = props[key];
+      if (value !== obj[key]) {
+        obj[key] = value;
+        changed = true;
+      }
     }
   }
 
