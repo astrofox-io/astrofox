@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug: yarn build",
+      "name": "Build: yarn build",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -10,7 +10,7 @@
       "runtimeArgs": [ "run", "build" ],
     },
     {
-      "name": "Debug: yarn dev",
+      "name": "Build: yarn dev",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -18,7 +18,7 @@
       "runtimeArgs": [ "run", "dev" ],
     },
     {
-      "name": "Debug: yarn test",
+      "name": "Build: yarn test",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
