@@ -37,7 +37,7 @@ export default class ImageDisplay extends CanvasDisplay {
     },
     controls: {
       src: {
-        label: 'image',
+        label: 'Image',
         type: 'image',
       },
       width: {
@@ -99,6 +99,8 @@ export default class ImageDisplay extends CanvasDisplay {
   constructor(properties) {
     super(ImageDisplay, properties);
 
+    console.log('new image', properties);
+
     this.image = new CanvasImage(this.properties, this.canvas);
   }
 
@@ -107,19 +109,23 @@ export default class ImageDisplay extends CanvasDisplay {
   }
 
   update(properties) {
-    const { src: image, width, height } = properties;
-    const { fixed } = this.properties;
+    const { src: newImage, width, height } = properties;
+    const { src, fixed } = this.properties;
 
-    if (image) {
-      if (image?.src === BLANK_IMAGE) {
+    if (typeof newImage === 'object') {
+      if (newImage.src === BLANK_IMAGE) {
+        // Image reset
         properties = { ...ImageDisplay.defaultProperties };
-      } else {
+      } else if (newImage.src !== src) {
+        // New image
         properties = {
-          src: image.src,
-          width: image.naturalWidth,
-          height: image.naturalHeight,
+          src: newImage.src,
+          width: newImage.naturalWidth,
+          height: newImage.naturalHeight,
           opacity: 1.0,
         };
+      } else {
+        properties.src = newImage.src;
       }
     }
 

@@ -37,6 +37,7 @@ export function resetProject() {
 
 export function loadProject(data) {
   logger.log('Loaded project:', data);
+
   const displays = library.get('displays');
   const effects = library.get('effects');
 
@@ -57,6 +58,13 @@ export function loadProject(data) {
   resetScenes(false);
   resetReactors();
   resetLabelCount();
+
+  if (data.stage) {
+    stage.update(data.stage.properties);
+    updateStage(data.stage.properties);
+  } else {
+    stage.update(Stage.defaultProperties);
+  }
 
   if (data.reactors) {
     data.reactors.forEach(config => {
@@ -80,13 +88,6 @@ export function loadProject(data) {
         config.effects.forEach(effect => loadElement(scene, effect));
       }
     });
-  }
-
-  if (data.stage) {
-    stage.update(data.stage.properties);
-    updateStage(data.stage.properties);
-  } else {
-    stage.update(Stage.defaultProperties);
   }
 }
 
