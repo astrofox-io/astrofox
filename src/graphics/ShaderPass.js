@@ -7,9 +7,9 @@ import {
   Mesh,
   UniformsUtils,
 } from 'three';
-import ComposerPass from 'graphics/ComposerPass';
+import Pass from './Pass';
 
-export default class ShaderPass extends ComposerPass {
+export default class ShaderPass extends Pass {
   static defaultProperties = {
     textureId: 'inputBuffer',
     transparent: false,

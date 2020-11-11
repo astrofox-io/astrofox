@@ -1,8 +1,8 @@
 import { SpriteMaterial, Sprite, Scene, OrthographicCamera } from 'three';
-import ComposerPass from 'graphics/ComposerPass';
+import Pass from 'src/graphics/Pass';
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
 
-export default class SpritePass extends ComposerPass {
+export default class SpritePass extends Pass {
   static defaultProperties = {
     opacity: 1.0,
     transparent: true,

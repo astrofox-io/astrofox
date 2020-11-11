@@ -6,9 +6,9 @@ import {
   PlaneBufferGeometry,
   Mesh,
 } from 'three';
-import ComposerPass from 'graphics/ComposerPass';
+import Pass from './Pass';
 
-export default class TexturePass extends ComposerPass {
+export default class TexturePass extends Pass {
   static defaultProperties = {
     color: 0xffffff,
     opacity: 1.0,

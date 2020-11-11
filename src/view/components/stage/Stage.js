@@ -17,7 +17,6 @@ export default function Stage() {
   const loading = useAudioStore(state => state.loading);
 
   useEffect(() => {
-    console.log('STAGE INIT');
     stage.init(canvas.current);
   }, []);
 

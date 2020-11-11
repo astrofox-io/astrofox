@@ -1,6 +1,6 @@
-import ComposerPass from 'graphics/ComposerPass';
+import Pass from 'src/graphics/Pass';
 
-export default class RenderPass extends ComposerPass {
+export default class RenderPass extends Pass {
   static defaultProperties = {
     forceClear: true,
     overrideMaterial: null,
@@ -16,8 +16,7 @@ export default class RenderPass extends ComposerPass {
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { scene, camera } = this;
-    const { overrideMaterial } = this.properties;
+    const { scene, camera, overrideMaterial } = this;
 
     if (overrideMaterial) {
       scene.overrideMaterial = overrideMaterial;

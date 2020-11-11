@@ -8,7 +8,7 @@ export default class Display extends Entity {
     const entity = Entity.create(Type, config);
 
     for (const [key, value] of Object.entries(reactors)) {
-      entity.setRange(key, value);
+      entity.setReactor(key, value);
     }
 
     return entity;

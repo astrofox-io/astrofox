@@ -1,6 +1,6 @@
 import create from 'zustand';
 import { api, env, logger, reactors, stage, library } from 'global';
-import { updateCanvas } from 'actions/stage';
+import { updateCanvas, updateStage } from 'actions/stage';
 import { loadScenes, resetScenes } from 'actions/scenes';
 import { loadReactors, resetReactors } from 'actions/reactors';
 import { raiseError } from 'actions/error';
@@ -84,6 +84,7 @@ export function loadProject(data) {
 
   if (data.stage) {
     stage.update(data.stage.properties);
+    updateStage(data.stage.properties);
   } else {
     stage.update(Stage.defaultProperties);
   }

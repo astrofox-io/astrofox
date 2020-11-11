@@ -1,6 +1,6 @@
-import ComposerPass from 'graphics/ComposerPass';
+import Pass from 'src/graphics/Pass';
 
-export default class MaskPass extends ComposerPass {
+export default class MaskPass extends Pass {
   static defaultProperties = {
     inverse: false,
     clear: true,

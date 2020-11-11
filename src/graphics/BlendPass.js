@@ -4,22 +4,18 @@ import BlendShader from 'shaders/BlendShader';
 import blendModes from 'config/blendModes.json';
 
 export default class BlendPass extends ShaderPass {
-  static config = {
-    name: 'BlendPass',
-    type: 'shader',
-    defaultProperties: {
-      transparent: true,
-      needsSwap: true,
-      opacity: 1.0,
-      blendMode: 'Normal',
-      alpha: 1,
-      blending: NormalBlending,
-      baseBuffer: true,
-    },
+  static defaultProperties = {
+    transparent: true,
+    needsSwap: true,
+    opacity: 1.0,
+    blendMode: 'Normal',
+    alpha: 1,
+    blending: NormalBlending,
+    baseBuffer: true,
   };
 
   constructor(buffer, properties) {
-    super(BlendShader, { ...BlendPass.config.defaultProperties, ...properties });
+    super(BlendShader, { ...BlendPass.defaultProperties, ...properties });
 
     this.buffer = buffer;
   }

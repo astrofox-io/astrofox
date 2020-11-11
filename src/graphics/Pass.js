@@ -1,4 +1,4 @@
-export default class ComposerPass {
+export default class Pass {
   static defaultProperties = {
     forceClear: false,
     needsSwap: false,
