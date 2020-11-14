@@ -6,7 +6,6 @@ import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
 import CanvasBuffer from 'graphics/CanvasBuffer';
 import WebglBuffer from 'graphics/WebglBuffer';
-import RenderPass from 'graphics/RenderPass';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
@@ -51,8 +50,7 @@ export default class Stage extends Entity {
     this.composer = new Composer(this.renderer);
 
     this.canvasBuffer = new CanvasBuffer(width, height);
-    this.webglBuffer = new WebglBuffer(this.renderer, width, height);
-    this.renderPass = new RenderPass(this.renderer);
+    this.webglBuffer = new WebglBuffer(this.renderer);
 
     this.backgroundColor = new Color(backgroundColor);
   }

@@ -35,6 +35,7 @@ export default class WebglBuffer {
     const { renderer, buffer, scene, camera } = this;
 
     renderer.setRenderTarget(buffer);
+    renderer.clear();
 
     // HACK: Renderer clear does not work with multi-sample render target
     renderer.render(scene, camera);

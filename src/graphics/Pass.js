@@ -17,35 +17,6 @@ export default class Pass {
     }
   }
 
-  setSize(width, height) {
-    if (this.setUniforms) {
-      this.setUniforms({ resolution: [width, height] });
-    }
-  }
-
-  setBlending(
-    blending,
-    blendEquation,
-    blendSrc,
-    blendDst,
-    blendEquationAlpha,
-    blendSrcAlpha,
-    blendDstAlpha,
-  ) {
-    const { material } = this;
-
-    if (material) {
-      material.blending = blending;
-      material.blendEquation = blendEquation;
-      material.blendSrc = blendSrc;
-      material.blendDst = blendDst;
-
-      material.blendEquationAlpha = blendEquationAlpha || null;
-      material.blendSrcAlpha = blendSrcAlpha || null;
-      material.blendDstAlpha = blendDstAlpha || null;
-    }
-  }
-
   setFullscreen(material) {
     this.scene = new Scene();
     this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

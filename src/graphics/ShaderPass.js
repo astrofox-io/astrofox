@@ -47,6 +47,10 @@ export default class ShaderPass extends Pass {
     this.material.needsUpdate = true;
   }
 
+  setSize(width, height) {
+    this.setUniforms({ resolution: [width, height] });
+  }
+
   render(renderer, writeBuffer, readBuffer) {
     const { scene, camera, material, textureId } = this;
 
