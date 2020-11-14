@@ -1,12 +1,4 @@
-import {
-  NormalBlending,
-  ShaderMaterial,
-  Scene,
-  OrthographicCamera,
-  PlaneBufferGeometry,
-  Mesh,
-  UniformsUtils,
-} from 'three';
+import { NormalBlending, ShaderMaterial, UniformsUtils } from 'three';
 import Pass from './Pass';
 
 export default class ShaderPass extends Pass {
@@ -14,7 +6,6 @@ export default class ShaderPass extends Pass {
     textureId: 'inputBuffer',
     transparent: false,
     needsSwap: true,
-    forceClear: false,
     blending: NormalBlending,
   };
 
@@ -35,16 +26,7 @@ export default class ShaderPass extends Pass {
       blending,
     });
 
-    this.scene = new Scene();
-    this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-    this.geometry = new PlaneBufferGeometry(2, 2);
-
-    this.mesh = new Mesh(this.geometry, null);
-    this.mesh.material = this.material;
-    this.mesh.frustumCulled = false;
-
-    this.scene.add(this.mesh);
+    this.setFullscreen(this.material);
   }
 
   setUniforms(properties = {}) {

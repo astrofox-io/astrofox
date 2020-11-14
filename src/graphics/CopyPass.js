@@ -1,20 +1,22 @@
 import ShaderPass from 'graphics/ShaderPass';
 import CopyShader from 'shaders/CopyShader';
 
-export default class SavePass extends ShaderPass {
+export default class CopyPass extends ShaderPass {
   static defaultProperties = {
     transparent: true,
     needsSwap: false,
-    forceClear: true,
+    copyToBuffer: true,
   };
 
   constructor(buffer, properties) {
-    super(CopyShader, { ...SavePass.defaultProperties, ...properties });
+    super(CopyShader, { ...CopyPass.defaultProperties, ...properties });
 
     this.buffer = buffer;
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    super.render(renderer, this.buffer, readBuffer);
+    const { copyToBuffer, buffer } = this;
+
+    super.render(renderer, copyToBuffer ? buffer : readBuffer, copyToBuffer ? readBuffer : buffer);
   }
 }

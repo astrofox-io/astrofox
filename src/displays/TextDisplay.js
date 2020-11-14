@@ -1,6 +1,7 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasText from 'canvas/CanvasText';
 import fonts from 'config/fonts.json';
+import { stageHeight, stageWidth } from 'utils/controls';
 
 const fontOptions = fonts.map(item => ({ label: item, value: item, style: { fontFamily: item } }));
 
@@ -47,11 +48,15 @@ export default class TextDisplay extends CanvasDisplay {
       x: {
         label: 'X',
         type: 'number',
+        min: stageWidth(n => -n),
+        max: stageWidth(),
         withRange: true,
       },
       y: {
         label: 'Y',
         type: 'number',
+        min: stageHeight(n => -n),
+        max: stageHeight(),
         withRange: true,
       },
       color: {

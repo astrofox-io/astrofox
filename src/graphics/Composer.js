@@ -5,25 +5,23 @@ import BlendShader from 'shaders/BlendShader';
 import blendModes from 'config/blendModes.json';
 
 export default class Composer {
-  constructor(renderer, renderTarget) {
+  constructor(renderer) {
     this.renderer = renderer;
     this.passes = [];
-    this.maskActive = false;
 
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    const target = renderTarget || this.createRenderTarget();
+    const target = this.createRenderTarget(renderer);
 
-    this.readTarget = target;
-    this.writeTarget = target.clone();
+    this.bufferA = target;
+    this.bufferB = target.clone();
 
-    this.readBuffer = this.readTarget;
-    this.writeBuffer = this.writeTarget;
+    this.readBuffer = this.bufferA;
+    this.writeBuffer = this.bufferB;
   }
 
-  createRenderTarget() {
-    const { renderer } = this;
+  createRenderTarget(renderer) {
     const context = renderer.getContext();
     const pixelRatio = renderer.getPixelRatio();
     const width = Math.floor(context.canvas.width / pixelRatio) || 1;
@@ -45,15 +43,15 @@ export default class Composer {
 
   getSize() {
     return {
-      width: this.readTarget.width,
-      height: this.readTarget.height,
+      width: this.bufferA.width,
+      height: this.bufferA.height,
     };
   }
 
   setSize(width, height) {
     this.renderer.setSize(width, height, true);
-    this.readTarget.setSize(width, height);
-    this.writeTarget.setSize(width, height);
+    this.bufferA.setSize(width, height);
+    this.bufferB.setSize(width, height);
   }
 
   clearScreen(color = true, depth = true, stencil = true) {
@@ -61,9 +59,9 @@ export default class Composer {
   }
 
   clearBuffer(color = true, depth = true, stencil = true) {
-    this.renderer.setRenderTarget(this.readTarget);
+    this.renderer.setRenderTarget(this.bufferA);
     this.renderer.clear(color, depth, stencil);
-    this.renderer.setRenderTarget(this.writeTarget);
+    this.renderer.setRenderTarget(this.bufferB);
     this.renderer.clear(color, depth, stencil);
   }
 
@@ -85,8 +83,8 @@ export default class Composer {
   }
 
   dispose() {
-    this.readTarget.dispose();
-    this.writeTarget.dispose();
+    this.bufferA.dispose();
+    this.bufferB.dispose();
   }
 
   swapBuffers() {
@@ -128,8 +126,8 @@ export default class Composer {
   render(passes = []) {
     const { renderer } = this;
 
-    this.writeBuffer = this.writeTarget;
-    this.readBuffer = this.readTarget;
+    this.writeBuffer = this.bufferB;
+    this.readBuffer = this.bufferA;
 
     passes.forEach(pass => {
       pass.render(renderer, this.writeBuffer, this.readBuffer);

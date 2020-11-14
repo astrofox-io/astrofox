@@ -108,6 +108,10 @@ export default class GeometryDisplay extends WebglDisplay {
         type: 'select',
         items: shadingOptions,
       },
+      color: {
+        label: 'Color',
+        type: 'color',
+      },
       wireframe: {
         label: 'Wireframe',
         type: 'toggle',
@@ -256,25 +260,6 @@ export default class GeometryDisplay extends WebglDisplay {
     this.createMesh();
   }
 
-  render(scene, data) {
-    const { scene3d, camera, mesh, properties, parser } = this;
-    const renderer = scene.getRenderer();
-
-    if (data.hasUpdate) {
-      const fft = parser.parseFFT(data.fft);
-      const x = fft[0];
-      const y = fft[3];
-      const z = fft[2];
-
-      mesh.rotation.x += 5 * x;
-      mesh.rotation.y += 3 * y;
-      mesh.rotation.z += 2 * z;
-      mesh.position.set(properties.x, properties.y, properties.z);
-    }
-
-    renderer.render(scene3d, camera);
-  }
-
   setSize(width, height) {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -399,5 +384,23 @@ export default class GeometryDisplay extends WebglDisplay {
 
     this.mesh = mesh;
     this.material = material;
+  }
+
+  render(scene, data) {
+    const { scene3d, camera, mesh, properties, parser } = this;
+
+    if (data.hasUpdate) {
+      const fft = parser.parseFFT(data.fft);
+      const x = fft[0];
+      const y = fft[3];
+      const z = fft[2];
+
+      mesh.rotation.x += 5 * x;
+      mesh.rotation.y += 3 * y;
+      mesh.rotation.z += 2 * z;
+      mesh.position.set(properties.x, properties.y, properties.z);
+    }
+
+    scene.renderToBuffer(scene3d, camera);
   }
 }

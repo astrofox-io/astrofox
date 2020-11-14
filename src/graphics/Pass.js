@@ -1,6 +1,7 @@
+import { Mesh, OrthographicCamera, PlaneBufferGeometry, Scene } from 'three';
+
 export default class Pass {
   static defaultProperties = {
-    forceClear: false,
     needsSwap: false,
     clearColor: false,
     clearDepth: false,
@@ -45,6 +46,18 @@ export default class Pass {
     }
   }
 
+  setFullscreen(material) {
+    this.scene = new Scene();
+    this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    this.geometry = new PlaneBufferGeometry(2, 2);
+
+    this.mesh = new Mesh(this.geometry, null);
+    this.mesh.material = material;
+    this.mesh.frustumCulled = false;
+
+    this.scene.add(this.mesh);
+  }
+
   update(properties = {}) {
     for (const [key, value] of Object.entries(properties)) {
       this[key] = value;
@@ -58,7 +71,6 @@ export default class Pass {
       clearStencil,
       setClearColor,
       setClearAlpha,
-      forceClear,
       renderToScreen,
     } = this;
 
@@ -73,14 +85,9 @@ export default class Pass {
     }
 
     // Render
-    if (renderToScreen) {
-      renderer.setRenderTarget(null);
-      renderer.render(scene, camera);
-    } else {
-      renderer.setRenderTarget(renderTarget);
-      if (forceClear) renderer.clear();
-      renderer.render(scene, camera);
-    }
+    renderer.setRenderTarget(renderToScreen ? null : renderTarget);
+
+    renderer.render(scene, camera);
 
     // Reset values
     if (setClearColor) {

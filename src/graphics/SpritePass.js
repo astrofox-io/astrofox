@@ -8,7 +8,6 @@ export default class SpritePass extends Pass {
     transparent: true,
     needsSwap: false,
     needsUpdate: true,
-    forceClear: true,
     width: DEFAULT_CANVAS_WIDTH,
     height: DEFAULT_CANVAS_HEIGHT,
   };

@@ -184,7 +184,11 @@ export default class Scene extends Display {
   }
 
   getRenderer() {
-    return this.stage.webglBuffer.renderer;
+    return this.stage.renderer;
+  }
+
+  renderToBuffer(scene, camera) {
+    this.stage.webglBuffer.render(scene, camera);
   }
 
   toJSON() {
@@ -219,7 +223,7 @@ export default class Scene extends Display {
 
     this.clear();
     this.updateReactors(data);
-    const passes = [canvasBuffer.pass, webglBuffer.pass];
+    const passes = [webglBuffer.pass, canvasBuffer.pass];
 
     if (displays.length > 0 || effects.length > 0) {
       displays.forEach(display => {

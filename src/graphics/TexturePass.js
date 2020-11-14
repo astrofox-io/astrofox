@@ -1,11 +1,4 @@
-import {
-  NormalBlending,
-  MeshBasicMaterial,
-  Scene,
-  OrthographicCamera,
-  PlaneBufferGeometry,
-  Mesh,
-} from 'three';
+import { NormalBlending, MeshBasicMaterial } from 'three';
 import Pass from './Pass';
 
 export default class TexturePass extends Pass {
@@ -15,7 +8,6 @@ export default class TexturePass extends Pass {
     transparent: true,
     needsSwap: false,
     needsUpdate: true,
-    forceClear: false,
     depthTest: false,
     depthWrite: false,
     blending: NormalBlending,
@@ -37,15 +29,7 @@ export default class TexturePass extends Pass {
       blending,
     });
 
-    this.scene = new Scene();
-    this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-    this.geometry = new PlaneBufferGeometry(2, 2);
-
-    this.mesh = new Mesh(this.geometry, this.material);
-    this.mesh.frustumCulled = false;
-
-    this.scene.add(this.mesh);
+    this.setFullscreen(this.material);
   }
 
   render(renderer, writeBuffer, readBuffer) {

@@ -3,7 +3,6 @@ import Pass from './Pass';
 export default class MultiPass extends Pass {
   static defaultProperties = {
     needsSwap: true,
-    forceClear: true,
     clearDepth: true,
   };
 

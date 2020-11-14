@@ -1,11 +1,11 @@
 import { NoBlending } from 'three';
 import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
-import SavePass from 'graphics/SavePass';
+import CopyPass from 'graphics/CopyPass';
 import BlendPass from 'graphics/BlendPass';
 import GaussianBlurPass from 'graphics/GaussianBlurPass';
+import MultiPass from 'graphics/MultiPass';
 import LuminanceShader from 'shaders/LuminanceShader';
-import MultiPass from '../graphics/MultiPass';
 
 const blendOptions = ['Add', 'Screen'];
 
@@ -68,9 +68,9 @@ export default class BloomEffect extends Effect {
     const { composer } = scene;
     const passes = [];
 
-    // Save current frame
-    this.savePass = new SavePass(composer.createRenderTarget(), { blending: NoBlending });
-    passes.push(this.savePass);
+    // Copy current frame
+    this.copyPass = new CopyPass(composer.createRenderTarget(), { blending: NoBlending });
+    passes.push(this.copyPass);
 
     // Apply luminance threshold
     this.lumPass = new ShaderPass(LuminanceShader);
@@ -81,7 +81,7 @@ export default class BloomEffect extends Effect {
     passes.push(this.blurPass);
 
     // Blend with original frame
-    this.blendPass = new BlendPass(this.savePass.buffer, { blendMode, alpha: 1 });
+    this.blendPass = new BlendPass(this.copyPass.buffer, { blendMode, alpha: 1 });
     passes.push(this.blendPass);
 
     // Set render pass

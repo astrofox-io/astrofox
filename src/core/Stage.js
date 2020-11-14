@@ -3,7 +3,10 @@ import cloneDeep from 'lodash/cloneDeep';
 import Scene from 'core/Scene';
 import Entity from 'core/Entity';
 import EntityList from 'core/EntityList';
-import { Composer, CanvasBuffer, WebglBuffer } from 'graphics';
+import Composer from 'graphics/Composer';
+import CanvasBuffer from 'graphics/CanvasBuffer';
+import WebglBuffer from 'graphics/WebglBuffer';
+import RenderPass from 'graphics/RenderPass';
 import {
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
@@ -15,7 +18,7 @@ export default class Stage extends Entity {
   static config = {
     name: 'Stage',
     description: 'The stage.',
-    type: 'entity',
+    type: 'stage',
     defaultProperties: {
       width: DEFAULT_CANVAS_WIDTH,
       height: DEFAULT_CANVAS_HEIGHT,
@@ -48,7 +51,8 @@ export default class Stage extends Entity {
     this.composer = new Composer(this.renderer);
 
     this.canvasBuffer = new CanvasBuffer(width, height);
-    this.webglBuffer = new WebglBuffer(width, height);
+    this.webglBuffer = new WebglBuffer(this.renderer, width, height);
+    this.renderPass = new RenderPass(this.renderer);
 
     this.backgroundColor = new Color(backgroundColor);
   }
@@ -171,9 +175,11 @@ export default class Stage extends Entity {
   }
 
   renderScene(scene, data) {
+    const { composer } = this;
+
     const buffer = scene.render(data);
 
-    this.composer.blendBuffer(buffer, { ...scene.properties });
+    composer.blendBuffer(buffer, scene.properties);
   }
 
   render(data) {

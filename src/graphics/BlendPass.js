@@ -11,7 +11,6 @@ export default class BlendPass extends ShaderPass {
     blendMode: 'Normal',
     alpha: 1,
     blending: NormalBlending,
-    baseBuffer: true,
   };
 
   constructor(buffer, properties) {
@@ -21,11 +20,11 @@ export default class BlendPass extends ShaderPass {
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { baseBuffer, opacity, blendMode, alpha } = this;
+    const { opacity, blendMode, alpha } = this;
 
     this.setUniforms({
-      baseBuffer: baseBuffer ? this.buffer : readBuffer.texture,
-      blendBuffer: baseBuffer ? readBuffer.texture : this.buffer,
+      baseBuffer: this.buffer,
+      blendBuffer: readBuffer.texture,
       mode: blendModes[blendMode],
       alpha,
       opacity,

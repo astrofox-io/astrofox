@@ -1,8 +1,13 @@
-import FrameBuffer from './FrameBuffer';
+import { Texture } from 'three';
+import TexturePass from './TexturePass';
 
-export default class CanvasBuffer extends FrameBuffer {
+export default class CanvasBuffer {
   constructor(width, height) {
-    super();
+    this.canvas = document.createElement('canvas');
+
+    this.texture = new Texture(this.canvas);
+
+    this.pass = new TexturePass(this.texture);
 
     this.context = this.canvas.getContext('2d');
 
