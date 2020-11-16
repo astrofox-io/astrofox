@@ -5,7 +5,7 @@ export default class WebglBuffer {
   constructor(renderer) {
     this.renderer = renderer;
 
-    this.buffer = this.createRenderTarget(renderer);
+    this.buffer = this.createRenderTarget();
 
     this.pass = new CopyPass(this.buffer, { copyToBuffer: false });
 
@@ -13,7 +13,8 @@ export default class WebglBuffer {
     this.camera = new Camera();
   }
 
-  createRenderTarget(renderer) {
+  createRenderTarget() {
+    const { renderer } = this;
     const context = renderer.getContext();
     const pixelRatio = renderer.getPixelRatio();
     const width = Math.floor(context.canvas.width / pixelRatio) || 1;
@@ -29,6 +30,10 @@ export default class WebglBuffer {
 
   setSize(width, height) {
     this.buffer.setSize(width, height);
+  }
+
+  dispose() {
+    this.buffer.dispose();
   }
 
   clear() {

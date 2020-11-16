@@ -1,4 +1,4 @@
-import { WebGLRenderTarget, LinearFilter, RGBAFormat } from 'three';
+import { WebGLRenderTarget } from 'three';
 import ShaderPass from 'graphics/ShaderPass';
 import CopyShader from 'shaders/CopyShader';
 import BlendShader from 'shaders/BlendShader';
@@ -12,7 +12,7 @@ export default class Composer {
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    const target = this.createRenderTarget(renderer);
+    const target = this.createRenderTarget();
 
     this.bufferA = target;
     this.bufferB = target.clone();
@@ -21,18 +21,14 @@ export default class Composer {
     this.writeBuffer = this.bufferB;
   }
 
-  createRenderTarget(renderer) {
+  createRenderTarget() {
+    const { renderer } = this;
     const context = renderer.getContext();
     const pixelRatio = renderer.getPixelRatio();
     const width = Math.floor(context.canvas.width / pixelRatio) || 1;
     const height = Math.floor(context.canvas.height / pixelRatio) || 1;
 
-    return new WebGLRenderTarget(width, height, {
-      minFilter: LinearFilter,
-      magFilter: LinearFilter,
-      format: RGBAFormat,
-      stencilBuffer: false,
-    });
+    return new WebGLRenderTarget(width, height);
   }
 
   getImage(format = 'image/png') {

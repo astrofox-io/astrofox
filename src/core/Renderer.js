@@ -77,7 +77,6 @@ export default class Renderer {
     frameData.fft = analyzer.getFrequencyData(requestUpdate);
     frameData.td = analyzer.getTimeData(requestUpdate);
     frameData.volume = analyzer.getVolume();
-    frameData.volume = player.getVolume();
     frameData.audioPlaying = isPlaying;
     frameData.hasUpdate = !!requestUpdate;
 

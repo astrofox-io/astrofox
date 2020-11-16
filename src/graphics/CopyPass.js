@@ -14,6 +14,10 @@ export default class CopyPass extends ShaderPass {
     this.buffer = buffer;
   }
 
+  dispose() {
+    this.buffer.dispose();
+  }
+
   render(renderer, writeBuffer, readBuffer) {
     const { copyToBuffer, buffer } = this;
 

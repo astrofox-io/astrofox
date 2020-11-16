@@ -62,9 +62,7 @@ export default class BloomEffect extends Effect {
   }
 
   addToScene(scene) {
-    const {
-      properties: { blendMode },
-    } = this;
+    const { blendMode } = this.properties;
     const { composer } = scene;
     const passes = [];
 
@@ -86,6 +84,8 @@ export default class BloomEffect extends Effect {
 
     // Set render pass
     this.pass = new MultiPass(passes);
+
+    this.updatePass();
   }
 
   removeFromScene() {
