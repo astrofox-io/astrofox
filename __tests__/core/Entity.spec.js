@@ -1,4 +1,3 @@
-import '../crypto.mock';
 import Entity from 'core/Entity';
 
 let e;

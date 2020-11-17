@@ -1,4 +1,3 @@
-import '../crypto.mock';
 import { uniqueId } from 'utils/crypto';
 
 test('uniqueId functions exists', () => {
