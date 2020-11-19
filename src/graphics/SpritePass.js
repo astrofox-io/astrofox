@@ -1,5 +1,5 @@
 import { SpriteMaterial, Sprite, Scene, OrthographicCamera } from 'three';
-import Pass from 'src/graphics/Pass';
+import Pass from 'graphics/Pass';
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
 
 export default class SpritePass extends Pass {

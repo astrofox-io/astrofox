@@ -1,6 +1,6 @@
 import { Vector2 } from 'three';
-import vertexShader from 'glsl/vertex/basic.glsl';
-import fragmentShader from 'glsl/fragment/Pixelate.glsl';
+import vertexShader from 'shaders/glsl/vertex/basic.glsl';
+import fragmentShader from 'shaders/glsl/fragment/pixelate.glsl';
 
 export default {
   uniforms: {

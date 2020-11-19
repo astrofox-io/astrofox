@@ -1,6 +1,6 @@
 import { Color } from 'three';
-import vertexShader from 'glsl/vertex/Point.glsl';
-import fragmentShader from 'glsl/fragment/Point.glsl';
+import vertexShader from 'shaders/glsl/vertex/point.glsl';
+import fragmentShader from 'shaders/glsl/fragment/point.glsl';
 
 export default {
   uniforms: {

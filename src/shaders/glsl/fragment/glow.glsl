@@ -34,6 +34,4 @@ void main() {
     sum += texture2D(inputBuffer, vec2(vUv.x, vUv.y + 4.0 * v)) * 0.051;
 
     gl_FragColor = vec4(mix(src.rgb, sum.rgb, 0.6) * intensity, sum.a);
-    //gl_FragColor = vec4(mix(src, sum, 0.6) * intensity);
-    //gl_FragColor = sum * intensity;
 }

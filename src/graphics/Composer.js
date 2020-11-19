@@ -7,7 +7,6 @@ import blendModes from 'config/blendModes.json';
 export default class Composer {
   constructor(renderer) {
     this.renderer = renderer;
-    this.passes = [];
 
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });

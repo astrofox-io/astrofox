@@ -1,4 +1,4 @@
-import Pass from 'src/graphics/Pass';
+import Pass from 'graphics/Pass';
 
 export default class MaskPass extends Pass {
   static defaultProperties = {

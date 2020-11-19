@@ -1,6 +1,6 @@
 import { Vector2 } from 'three';
-import vertexShader from 'glsl/vertex/basic.glsl';
-import fragmentShader from 'glsl/fragment/BarrelBlur.glsl';
+import vertexShader from 'shaders/glsl/vertex/basic.glsl';
+import fragmentShader from 'shaders/glsl/fragment/barrel-blur.glsl';
 
 export default {
   uniforms: {
