@@ -5,7 +5,6 @@ export default {
   uniforms: {
     inputBuffer: { type: 't', value: null },
   },
-
   vertexShader,
   fragmentShader,
 };

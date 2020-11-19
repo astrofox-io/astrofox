@@ -1,14 +1,12 @@
 import { Vector2 } from 'three';
 import vertexShader from 'shaders/glsl/vertex/basic.glsl';
-import fragmentShader from 'shaders/glsl/fragment/box-blur.glsl';
+import fragmentShader from 'shaders/glsl/fragment/triangle-blur.glsl';
 
 export default {
   uniforms: {
     inputBuffer: { type: 't', value: null },
-    amount: { type: 'f', value: 1.0 },
-    resolution: { type: 'v2', value: new Vector2(1, 1) },
+    delta: { type: 'v2', value: new Vector2(1, 1) },
   },
-
   vertexShader,
   fragmentShader,
 };

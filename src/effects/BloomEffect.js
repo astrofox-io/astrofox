@@ -3,7 +3,7 @@ import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
 import CopyPass from 'graphics/CopyPass';
 import BlendPass from 'graphics/BlendPass';
-import GaussianBlurPass from 'graphics/GaussianBlurPass';
+import GaussianBlurPass from 'effects/passes/GaussianBlurPass';
 import MultiPass from 'graphics/MultiPass';
 import LuminanceShader from 'shaders/LuminanceShader';
 

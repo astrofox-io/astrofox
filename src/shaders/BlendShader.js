@@ -11,7 +11,6 @@ export default {
     mask: { type: 'i', value: 0 },
     inverse: { type: 'i', value: 0 },
   },
-
   vertexShader,
   fragmentShader,
 };

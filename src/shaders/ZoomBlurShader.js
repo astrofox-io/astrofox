@@ -9,7 +9,6 @@ export default {
     amount: { type: 'f', value: 1.0 },
     resolution: { type: 'v2', value: new Vector2(1, 1) },
   },
-
   vertexShader,
   fragmentShader,
 };

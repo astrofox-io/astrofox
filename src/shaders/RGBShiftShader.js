@@ -7,7 +7,6 @@ export default {
     amount: { type: 'f', value: 0.005 },
     angle: { type: 'f', value: 0.0 },
   },
-
   vertexShader,
   fragmentShader,
 };

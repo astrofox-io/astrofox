@@ -8,7 +8,6 @@ export default {
     opacity: { type: 'f', value: 1.0 },
     color: { type: 'c', value: new Color(0xffffff) },
   },
-
   vertexShader,
   fragmentShader,
   alphaTest: 0.9,

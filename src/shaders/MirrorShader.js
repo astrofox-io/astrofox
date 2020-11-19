@@ -6,7 +6,6 @@ export default {
     inputBuffer: { type: 't', value: null },
     side: { type: 'i', value: 1 },
   },
-
   vertexShader,
   fragmentShader,
 };

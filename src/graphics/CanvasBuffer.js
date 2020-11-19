@@ -14,6 +14,10 @@ export default class CanvasBuffer {
     this.setSize(width, height);
   }
 
+  getContext() {
+    return this.context;
+  }
+
   setSize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;

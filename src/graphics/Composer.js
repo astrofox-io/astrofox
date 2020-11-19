@@ -121,8 +121,8 @@ export default class Composer {
   render(passes = []) {
     const { renderer } = this;
 
-    this.writeBuffer = this.bufferB;
     this.readBuffer = this.bufferA;
+    this.writeBuffer = this.bufferB;
 
     passes.forEach(pass => {
       pass.render(renderer, this.writeBuffer, this.readBuffer);

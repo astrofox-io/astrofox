@@ -5,16 +5,14 @@ uniform vec2 resolution;
 
 varying vec2 vUv;
 
-float random(vec3 scale, float seed) {
-    return fract(sin(dot(gl_FragCoord.xyz + seed, scale)) * 43758.5453 + seed);
-}
+#include "../func/random.glsl"
 
 void main() {
     vec4 color = vec4(0.0);
     float total = 0.0;
     vec2 c = center * resolution;
     vec2 toCenter = c - vUv * resolution;
-    float offset = random(vec3(12.9898,78.233,151.7182), 0.0);
+    float offset = random(vUv);
 
     for (float t = 0.0; t <= 40.0; t++) {
         float percent = (t) / 40.0;

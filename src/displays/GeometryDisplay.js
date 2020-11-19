@@ -401,6 +401,6 @@ export default class GeometryDisplay extends WebglDisplay {
       mesh.position.set(properties.x, properties.y, properties.z);
     }
 
-    scene.renderToBuffer(scene3d, camera);
+    scene.renderToScene(scene3d, camera);
   }
 }

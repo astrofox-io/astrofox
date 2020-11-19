@@ -8,7 +8,6 @@ export default {
     direction: { type: 'v2', value: new Vector2(0, 1) },
     resolution: { type: 'v2', value: new Vector2(1, 1) },
   },
-
   vertexShader,
   fragmentShader,
 };

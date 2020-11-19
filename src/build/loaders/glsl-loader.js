@@ -9,8 +9,6 @@ function minify(code) {
 }
 
 module.exports = function glslLoader(content) {
-  this.cacheable && this.cacheable();
-
   const source = content.replace(regex, match => {
     const [, file] = match.split('"');
 

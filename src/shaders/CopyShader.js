@@ -7,7 +7,6 @@ export default {
     opacity: { type: 'f', value: 1.0 },
     alpha: { type: 'i', value: 0 },
   },
-
   vertexShader,
   fragmentShader,
 };

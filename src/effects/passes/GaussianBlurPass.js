@@ -23,10 +23,10 @@ export default class GaussianBlurPass extends MultiPass {
   }
 
   setUniforms({ amount }) {
-    const { passes, rounds, radius } = this;
+    const { passes, rounds } = this;
 
     passes.forEach((pass, index) => {
-      const r = (rounds - index) * radius * amount;
+      const r = (rounds - index) * amount;
 
       pass.setUniforms({ direction: index % 2 === 0 ? [0, r] : [r, 0] });
     });

@@ -180,10 +180,10 @@ export default class Scene extends Display {
   }
 
   getCanvasConext() {
-    return this.stage.canvasBuffer.context;
+    return this.stage.canvasBuffer.getContext();
   }
 
-  renderToBuffer(scene, camera) {
+  renderToScene(scene, camera) {
     this.stage.webglBuffer.render(scene, camera);
   }
 

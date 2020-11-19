@@ -10,7 +10,6 @@ export default {
     angle: { type: 'f', value: 1.57 },
     scale: { type: 'f', value: 1.0 },
   },
-
   vertexShader,
   fragmentShader,
 };

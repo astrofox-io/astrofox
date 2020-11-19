@@ -5,7 +5,6 @@ export default {
   uniforms: {
     time: { type: 'f', value: 1.0 },
   },
-
   vertexShader,
   fragmentShader,
 };
