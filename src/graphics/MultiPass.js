@@ -36,12 +36,12 @@ export default class MultiPass extends Pass {
     }
   }
 
-  render(renderer, writeBuffer, readBuffer) {
+  render(renderer, readBuffer, writeBuffer) {
     this.writeBuffer = writeBuffer;
     this.readBuffer = readBuffer;
 
     this.passes.forEach(pass => {
-      pass.render(renderer, this.writeBuffer, this.readBuffer);
+      pass.render(renderer, this.readBuffer, this.writeBuffer);
 
       if (pass.needsSwap) {
         const tmp = this.readBuffer;

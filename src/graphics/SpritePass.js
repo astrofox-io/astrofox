@@ -33,12 +33,12 @@ export default class SpritePass extends Pass {
     this.scene.add(this.sprite);
   }
 
-  render(renderer, writeBuffer, readBuffer) {
+  render(renderer, inputBuffer) {
     const { scene, camera, texture } = this;
     const { needsUpdate } = this.properties;
 
     texture.needsUpdate = needsUpdate;
 
-    super.render(renderer, scene, camera, readBuffer);
+    super.render(renderer, scene, camera, inputBuffer);
   }
 }

@@ -30,11 +30,11 @@ export default class TexturePass extends Pass {
     this.setFullscreenMaterial(this.material);
   }
 
-  render(renderer, writeBuffer, readBuffer) {
+  render(renderer, inputBuffer) {
     const { scene, camera, texture, needsUpdate } = this;
 
     texture.needsUpdate = needsUpdate;
 
-    super.render(renderer, scene, camera, readBuffer);
+    super.render(renderer, scene, camera, inputBuffer);
   }
 }

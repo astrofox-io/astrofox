@@ -1,17 +1,16 @@
 import Effect from 'core/Effect';
 import CircularBlurShader from 'shaders/CircularBlurShader';
 import ZoomBlurShader from 'shaders/ZoomBlurShader';
-import TriangleBlurShader from 'shaders/TriangleBlurShader';
 import ShaderPass from 'graphics/ShaderPass';
 import GaussianBlurPass from 'effects/passes/GaussianBlurPass';
 import TriangleBlurPass from 'effects/passes/TriangleBlurPass';
+import LensBlurPass from 'effects/passes/LensBlurPass';
 import { val2pct } from 'utils/math';
 import { stageWidth, stageHeight, property } from 'utils/controls';
 
 const blurOptions = ['Circular', 'Gaussian', 'Triangle', 'Zoom'];
 
 const shaderOptions = {
-  Triangle: TriangleBlurShader,
   Circular: CircularBlurShader,
   Zoom: ZoomBlurShader,
 };
@@ -21,6 +20,7 @@ const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
 
 const showZoomOption = property('type', value => value !== 'Zoom');
+const showLensOption = property('type', value => value !== 'Lens');
 
 export default class BlurEffect extends Effect {
   static config = {
@@ -33,6 +33,9 @@ export default class BlurEffect extends Effect {
       amount: 0.3,
       x: 0,
       y: 0,
+      radius: 10,
+      brightness: 0.75,
+      angle: 0,
     },
     controls: {
       type: {
@@ -65,6 +68,31 @@ export default class BlurEffect extends Effect {
         hidden: showZoomOption,
         withRange: true,
       },
+      radius: {
+        label: 'Radius',
+        type: 'number',
+        min: 0,
+        max: 50,
+        hidden: showLensOption,
+        withRange: true,
+      },
+      brightness: {
+        label: 'Brightness',
+        type: 'number',
+        min: -1,
+        max: 1,
+        step: 0.01,
+        hidden: showLensOption,
+        withRange: true,
+      },
+      angle: {
+        label: 'Angle',
+        type: 'number',
+        min: -180,
+        max: 180,
+        hidden: showLensOption,
+        withRange: true,
+      },
     },
   };
 
@@ -84,7 +112,7 @@ export default class BlurEffect extends Effect {
   }
 
   updatePass() {
-    const { type, amount, x, y } = this.properties;
+    const { type, amount, x, y, radius, brightness, angle } = this.properties;
     const { width, height } = this.scene.getSize();
 
     switch (type) {
@@ -98,6 +126,10 @@ export default class BlurEffect extends Effect {
 
       case 'Gaussian':
         this.pass.setUniforms({ amount });
+        break;
+
+      case 'Lens':
+        this.pass.setUniforms({ radius, brightness, angle, width, height });
         break;
 
       case 'Zoom':
@@ -130,6 +162,10 @@ export default class BlurEffect extends Effect {
 
       case 'Triangle':
         pass = new TriangleBlurPass();
+        break;
+
+      case 'Lens':
+        pass = new LensBlurPass();
         break;
 
       default:

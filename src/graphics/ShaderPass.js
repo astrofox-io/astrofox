@@ -4,13 +4,14 @@ import Pass from './Pass';
 export default class ShaderPass extends Pass {
   static defaultProperties = {
     needsSwap: true,
+    transparent: false,
   };
 
   constructor(shader, properties) {
     super({ ...ShaderPass.defaultProperties, ...properties });
 
     const { uniforms = {}, defines = {}, vertexShader, fragmentShader } = shader;
-    const { transparent, blending } = this;
+    const { transparent } = this;
 
     this.material = new ShaderMaterial({
       uniforms: UniformsUtils.clone(uniforms),
@@ -18,7 +19,6 @@ export default class ShaderPass extends Pass {
       vertexShader,
       fragmentShader,
       transparent,
-      blending,
     });
 
     this.setFullscreenMaterial(this.material);
@@ -44,13 +44,13 @@ export default class ShaderPass extends Pass {
     this.setUniforms({ resolution: [width, height] });
   }
 
-  render(renderer, writeBuffer, readBuffer) {
+  render(renderer, inputBuffer, outputBuffer) {
     const { scene, camera, material } = this;
 
-    if (readBuffer && material.uniforms.inputBuffer) {
-      material.uniforms.inputBuffer.value = readBuffer.texture;
+    if (inputBuffer && material.uniforms.inputBuffer) {
+      material.uniforms.inputBuffer.value = inputBuffer.texture;
     }
 
-    super.render(renderer, scene, camera, writeBuffer);
+    super.render(renderer, scene, camera, outputBuffer);
   }
 }

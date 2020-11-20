@@ -1,5 +1,5 @@
 import { Mesh, OrthographicCamera, Scene } from 'three';
-import { getFullscreenGeometry } from './utils';
+import { getFullscreenGeometry } from './common';
 
 export default class Pass {
   static defaultProperties = {

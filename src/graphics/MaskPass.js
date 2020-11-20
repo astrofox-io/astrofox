@@ -13,7 +13,7 @@ export default class MaskPass extends Pass {
     this.camera = camera;
   }
 
-  render(renderer, writeBuffer, readBuffer) {
+  render(renderer, inputBuffer, outputBuffer) {
     const { context, state } = renderer;
     const { clear, inverse } = this.properties;
     const writeValue = inverse ? 0 : 1;
@@ -34,8 +34,8 @@ export default class MaskPass extends Pass {
     state.buffers.stencil.setClear(clearValue);
 
     // Draw into the stencil buffer
-    renderer.render(this.scene, this.camera, readBuffer, clear);
-    renderer.render(this.scene, this.camera, writeBuffer, clear);
+    renderer.render(this.scene, this.camera, inputBuffer, clear);
+    renderer.render(this.scene, this.camera, outputBuffer, clear);
 
     // Unlock color and depth buffer for subsequent rendering
     state.buffers.color.setLocked(false);

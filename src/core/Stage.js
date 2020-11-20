@@ -1,4 +1,4 @@
-import { WebGLRenderer, Color } from 'three';
+import { Color } from 'three';
 import cloneDeep from 'lodash/cloneDeep';
 import Scene from 'core/Scene';
 import Entity from 'core/Entity';
@@ -12,6 +12,7 @@ import {
   DEFAULT_CANVAS_BGCOLOR,
 } from 'view/constants';
 import { isDefined } from 'utils/array';
+import { getRenderer } from 'graphics/common';
 
 export default class Stage extends Entity {
   static config = {
@@ -37,15 +38,8 @@ export default class Stage extends Entity {
   init(canvas) {
     const { width, height, backgroundColor } = this.properties;
 
-    this.renderer = new WebGLRenderer({
-      canvas,
-      antialias: false,
-      premultipliedAlpha: true,
-      alpha: false,
-    });
-
+    this.renderer = getRenderer(canvas);
     this.renderer.setSize(width, height);
-    this.renderer.autoClear = false;
 
     this.composer = new Composer(this.renderer);
 

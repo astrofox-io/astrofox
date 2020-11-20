@@ -8,12 +8,27 @@ function minify(code) {
   return glslman.string(glslman.parse(code), { tab: '', space: '', newline: '' });
 }
 
-module.exports = function glslLoader(content) {
-  const source = content.replace(regex, match => {
-    const [, file] = match.split('"');
+function parseInclude(match, context, imports) {
+  const [, file] = match.split('"');
 
-    return fs.readFileSync(path.resolve(this.context, file));
-  });
+  const filePath = path.resolve(context, file);
+
+  if (!imports[filePath]) {
+    imports[filePath] = fs.readFileSync(filePath, 'utf-8');
+
+    // eslint-disable-next-line no-use-before-define
+    return parseContent(imports[filePath], path.dirname(filePath), imports);
+  }
+
+  return imports[filePath];
+}
+
+function parseContent(content, context) {
+  return content.replace(regex, match => parseInclude(match, context));
+}
+
+module.exports = function glslLoader(content) {
+  const source = parseContent(content, this.context, {});
 
   return `module.exports = ${JSON.stringify(minify(source))}`;
 };

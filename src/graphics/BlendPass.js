@@ -16,16 +16,16 @@ export default class BlendPass extends ShaderPass {
     this.buffer = buffer;
   }
 
-  render(renderer, writeBuffer, readBuffer) {
+  render(renderer, inputBuffer, outputBuffer) {
     const { opacity, blendMode } = this;
 
     this.setUniforms({
       baseBuffer: this.buffer,
-      blendBuffer: readBuffer.texture,
+      blendBuffer: inputBuffer.texture,
       mode: blendModes[blendMode],
       opacity,
     });
 
-    super.render(renderer, writeBuffer, readBuffer);
+    super.render(renderer, inputBuffer, outputBuffer);
   }
 }

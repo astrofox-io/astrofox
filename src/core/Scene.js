@@ -247,6 +247,6 @@ export default class Scene extends Display {
       composer.render(passes);
     }
 
-    return composer.readBuffer;
+    return composer.inputBuffer;
   }
 }

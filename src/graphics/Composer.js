@@ -2,7 +2,7 @@ import ShaderPass from 'graphics/ShaderPass';
 import CopyShader from 'shaders/CopyShader';
 import BlendShader from 'shaders/BlendShader';
 import blendModes from 'graphics/blendModes';
-import { createRenderTarget } from './utils';
+import { createRenderTarget } from './common';
 
 export default class Composer {
   constructor(renderer) {
@@ -11,17 +11,14 @@ export default class Composer {
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    this.bufferA = createRenderTarget(renderer);
-    this.bufferB = this.bufferA.clone();
-
-    this.readBuffer = this.bufferA;
-    this.writeBuffer = this.bufferB;
+    this.inputBuffer = createRenderTarget();
+    this.outputBuffer = this.inputBuffer.clone();
   }
 
   getSize() {
     return {
-      width: this.bufferA.width,
-      height: this.bufferA.height,
+      width: this.inputBuffer.width,
+      height: this.inputBuffer.height,
     };
   }
 
@@ -33,8 +30,8 @@ export default class Composer {
 
   setSize(width, height) {
     this.renderer.setSize(width, height, true);
-    this.bufferA.setSize(width, height);
-    this.bufferB.setSize(width, height);
+    this.inputBuffer.setSize(width, height);
+    this.outputBuffer.setSize(width, height);
   }
 
   clearScreen(color = true, depth = true, stencil = true) {
@@ -42,9 +39,9 @@ export default class Composer {
   }
 
   clearBuffer(color = true, depth = true, stencil = true) {
-    this.renderer.setRenderTarget(this.bufferA);
+    this.renderer.setRenderTarget(this.inputBuffer);
     this.renderer.clear(color, depth, stencil);
-    this.renderer.setRenderTarget(this.bufferB);
+    this.renderer.setRenderTarget(this.outputBuffer);
     this.renderer.clear(color, depth, stencil);
   }
 
@@ -66,23 +63,23 @@ export default class Composer {
   }
 
   dispose() {
-    this.bufferA.dispose();
-    this.bufferB.dispose();
+    this.inputBuffer.dispose();
+    this.outputBuffer.dispose();
   }
 
   swapBuffers() {
-    const tmp = this.readBuffer;
-    this.readBuffer = this.writeBuffer;
-    this.writeBuffer = tmp;
+    const tmp = this.inputBuffer;
+    this.inputBuffer = this.outputBuffer;
+    this.outputBuffer = tmp;
   }
 
   blendBuffer(buffer, properties) {
-    const { renderer, blendPass, readBuffer, writeBuffer } = this;
+    const { renderer, blendPass, inputBuffer, outputBuffer } = this;
 
     const { opacity, blendMode, mask, inverse } = properties;
 
     blendPass.setUniforms({
-      baseBuffer: readBuffer.texture,
+      baseBuffer: inputBuffer.texture,
       blendBuffer: buffer.texture,
       mode: blendModes[blendMode],
       alpha: 1,
@@ -91,29 +88,26 @@ export default class Composer {
       inverse,
     });
 
-    blendPass.render(renderer, writeBuffer);
+    blendPass.render(renderer, inputBuffer, outputBuffer);
 
     this.swapBuffers();
   }
 
   renderToScreen() {
-    const pass = this.copyPass;
+    const { renderer, inputBuffer, outputBuffer, copyPass } = this;
 
-    pass.renderToScreen = true;
+    copyPass.renderToScreen = true;
 
-    pass.render(this.renderer, this.writeBuffer, this.readBuffer);
+    copyPass.render(renderer, inputBuffer, outputBuffer);
 
-    pass.renderToScreen = false;
+    copyPass.renderToScreen = false;
   }
 
   render(passes = []) {
     const { renderer } = this;
 
-    this.readBuffer = this.bufferA;
-    this.writeBuffer = this.bufferB;
-
     passes.forEach(pass => {
-      pass.render(renderer, this.writeBuffer, this.readBuffer);
+      pass.render(renderer, this.inputBuffer, this.outputBuffer);
 
       if (pass.needsSwap) {
         this.swapBuffers();

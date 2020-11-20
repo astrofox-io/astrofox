@@ -1,12 +1,12 @@
 import { Scene, Camera } from 'three';
 import CopyPass from './CopyPass';
-import { createRenderTarget } from './utils';
+import { createRenderTarget } from './common';
 
 export default class WebglBuffer {
   constructor(renderer) {
     this.renderer = renderer;
 
-    this.buffer = createRenderTarget(renderer, { multisample: true });
+    this.buffer = createRenderTarget({ multisample: true });
 
     this.pass = new CopyPass(this.buffer, { copyToBuffer: false });
 
