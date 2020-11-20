@@ -1,12 +1,9 @@
-import { NormalBlending, ShaderMaterial, UniformsUtils } from 'three';
+import { ShaderMaterial, UniformsUtils } from 'three';
 import Pass from './Pass';
 
 export default class ShaderPass extends Pass {
   static defaultProperties = {
-    textureId: 'inputBuffer',
-    transparent: false,
     needsSwap: true,
-    blending: NormalBlending,
   };
 
   constructor(shader, properties) {
@@ -15,10 +12,8 @@ export default class ShaderPass extends Pass {
     const { uniforms = {}, defines = {}, vertexShader, fragmentShader } = shader;
     const { transparent, blending } = this;
 
-    this.uniforms = UniformsUtils.clone(uniforms);
-
     this.material = new ShaderMaterial({
-      uniforms: this.uniforms,
+      uniforms: UniformsUtils.clone(uniforms),
       defines: { ...defines },
       vertexShader,
       fragmentShader,
@@ -26,11 +21,11 @@ export default class ShaderPass extends Pass {
       blending,
     });
 
-    this.setFullscreen(this.material);
+    this.setFullscreenMaterial(this.material);
   }
 
   setUniforms(properties = {}) {
-    const { uniforms } = this;
+    const { uniforms } = this.material;
 
     for (const [key, value] of Object.entries(properties)) {
       if (uniforms[key] !== undefined) {
@@ -43,8 +38,6 @@ export default class ShaderPass extends Pass {
         }
       }
     }
-
-    this.material.needsUpdate = true;
   }
 
   setSize(width, height) {
@@ -52,10 +45,10 @@ export default class ShaderPass extends Pass {
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { scene, camera, material, textureId } = this;
+    const { scene, camera, material } = this;
 
-    if (readBuffer && material.uniforms[textureId]) {
-      material.uniforms[textureId].value = readBuffer.texture;
+    if (readBuffer && material.uniforms.inputBuffer) {
+      material.uniforms.inputBuffer.value = readBuffer.texture;
     }
 
     super.render(renderer, scene, camera, writeBuffer);

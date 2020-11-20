@@ -1,31 +1,17 @@
-import { LinearFilter, RGBAFormat, WebGLMultisampleRenderTarget, Scene, Camera } from 'three';
+import { Scene, Camera } from 'three';
 import CopyPass from './CopyPass';
+import { createRenderTarget } from './utils';
 
 export default class WebglBuffer {
   constructor(renderer) {
     this.renderer = renderer;
 
-    this.buffer = this.createRenderTarget();
+    this.buffer = createRenderTarget(renderer, { multisample: true });
 
     this.pass = new CopyPass(this.buffer, { copyToBuffer: false });
 
     this.scene = new Scene();
     this.camera = new Camera();
-  }
-
-  createRenderTarget() {
-    const { renderer } = this;
-    const context = renderer.getContext();
-    const pixelRatio = renderer.getPixelRatio();
-    const width = Math.floor(context.canvas.width / pixelRatio) || 1;
-    const height = Math.floor(context.canvas.height / pixelRatio) || 1;
-
-    return new WebGLMultisampleRenderTarget(width, height, {
-      minFilter: LinearFilter,
-      magFilter: LinearFilter,
-      format: RGBAFormat,
-      stencilBuffer: false,
-    });
   }
 
   setSize(width, height) {

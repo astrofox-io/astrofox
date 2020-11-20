@@ -1,4 +1,4 @@
-import { NormalBlending, MeshBasicMaterial } from 'three';
+import { MeshBasicMaterial } from 'three';
 import Pass from './Pass';
 
 export default class TexturePass extends Pass {
@@ -10,13 +10,12 @@ export default class TexturePass extends Pass {
     needsUpdate: true,
     depthTest: false,
     depthWrite: false,
-    blending: NormalBlending,
   };
 
   constructor(texture, properties) {
     super({ ...TexturePass.defaultProperties, ...properties });
 
-    const { color, depthTest, depthWrite, transparent, blending } = this;
+    const { color, depthTest, depthWrite, transparent } = this;
 
     this.texture = texture;
 
@@ -26,10 +25,9 @@ export default class TexturePass extends Pass {
       depthTest,
       depthWrite,
       transparent,
-      blending,
     });
 
-    this.setFullscreen(this.material);
+    this.setFullscreenMaterial(this.material);
   }
 
   render(renderer, writeBuffer, readBuffer) {

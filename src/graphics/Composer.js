@@ -1,8 +1,8 @@
-import { WebGLRenderTarget } from 'three';
 import ShaderPass from 'graphics/ShaderPass';
 import CopyShader from 'shaders/CopyShader';
 import BlendShader from 'shaders/BlendShader';
-import blendModes from 'config/blendModes.json';
+import blendModes from 'graphics/blendModes';
+import { createRenderTarget } from './utils';
 
 export default class Composer {
   constructor(renderer) {
@@ -11,29 +11,11 @@ export default class Composer {
     this.copyPass = new ShaderPass(CopyShader, { transparent: true });
     this.blendPass = new ShaderPass(BlendShader, { transparent: true });
 
-    const target = this.createRenderTarget();
-
-    this.bufferA = target;
-    this.bufferB = target.clone();
+    this.bufferA = createRenderTarget(renderer);
+    this.bufferB = this.bufferA.clone();
 
     this.readBuffer = this.bufferA;
     this.writeBuffer = this.bufferB;
-  }
-
-  createRenderTarget() {
-    const { renderer } = this;
-    const context = renderer.getContext();
-    const pixelRatio = renderer.getPixelRatio();
-    const width = Math.floor(context.canvas.width / pixelRatio) || 1;
-    const height = Math.floor(context.canvas.height / pixelRatio) || 1;
-
-    return new WebGLRenderTarget(width, height);
-  }
-
-  getImage(format = 'image/png') {
-    const img = this.renderer.domElement.toDataURL(format);
-    const data = img.replace(/^data:image\/\w+;base64,/, '');
-    return Buffer.from(data, 'base64');
   }
 
   getSize() {
@@ -41,6 +23,12 @@ export default class Composer {
       width: this.bufferA.width,
       height: this.bufferA.height,
     };
+  }
+
+  getImage(format = 'image/png') {
+    const img = this.renderer.domElement.toDataURL(format);
+    const data = img.replace(/^data:image\/\w+;base64,/, '');
+    return Buffer.from(data, 'base64');
   }
 
   setSize(width, height) {

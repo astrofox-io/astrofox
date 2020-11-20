@@ -1,4 +1,5 @@
-import { Mesh, OrthographicCamera, PlaneBufferGeometry, Scene } from 'three';
+import { Mesh, OrthographicCamera, Scene } from 'three';
+import { getFullscreenGeometry } from './utils';
 
 export default class Pass {
   static defaultProperties = {
@@ -17,13 +18,12 @@ export default class Pass {
     }
   }
 
-  setFullscreen(material) {
+  setFullscreenMaterial(material) {
     this.scene = new Scene();
     this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.geometry = new PlaneBufferGeometry(2, 2);
+    this.geometry = getFullscreenGeometry();
 
-    this.mesh = new Mesh(this.geometry, null);
-    this.mesh.material = material;
+    this.mesh = new Mesh(this.geometry, material);
     this.mesh.frustumCulled = false;
 
     this.scene.add(this.mesh);

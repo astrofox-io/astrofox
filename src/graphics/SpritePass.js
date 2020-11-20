@@ -6,7 +6,6 @@ export default class SpritePass extends Pass {
   static defaultProperties = {
     opacity: 1.0,
     transparent: true,
-    needsSwap: false,
     needsUpdate: true,
     width: DEFAULT_CANVAS_WIDTH,
     height: DEFAULT_CANVAS_HEIGHT,

@@ -1,16 +1,13 @@
-import { NormalBlending } from 'three';
 import ShaderPass from 'graphics/ShaderPass';
 import BlendShader from 'shaders/BlendShader';
-import blendModes from 'config/blendModes.json';
+import blendModes from 'graphics/blendModes';
 
 export default class BlendPass extends ShaderPass {
   static defaultProperties = {
     transparent: true,
     needsSwap: true,
-    opacity: 1.0,
     blendMode: 'Normal',
-    alpha: 1,
-    blending: NormalBlending,
+    opacity: 1.0,
   };
 
   constructor(buffer, properties) {
@@ -20,17 +17,14 @@ export default class BlendPass extends ShaderPass {
   }
 
   render(renderer, writeBuffer, readBuffer) {
-    const { opacity, blendMode, alpha } = this;
+    const { opacity, blendMode } = this;
 
     this.setUniforms({
       baseBuffer: this.buffer,
       blendBuffer: readBuffer.texture,
       mode: blendModes[blendMode],
-      alpha,
       opacity,
     });
-
-    this.mesh.material = this.material;
 
     super.render(renderer, writeBuffer, readBuffer);
   }
