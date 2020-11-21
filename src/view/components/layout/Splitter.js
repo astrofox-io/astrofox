@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
 import { clamp } from 'utils/math';
 import { DotsHorizontal } from 'view/icons';
+import useMouseDrag from 'hooks/useMouseDrag';
 import styles from './Splitter.less';
-import useMouseDrag from '../../hooks/useMouseDrag';
 
 export default function Splitter({
   type = 'horizontal',

@@ -1,6 +1,6 @@
 import Entity from 'core/Entity';
-import { resetCanvas } from '../utils/canvas';
-import { deg2rad } from '../utils/math';
+import { resetCanvas } from 'utils/canvas';
+import { deg2rad } from 'utils/math';
 
 const TRIANGLE_ANGLE = (2 * Math.PI) / 3;
 

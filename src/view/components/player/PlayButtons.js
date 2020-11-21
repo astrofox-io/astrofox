@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import { player } from 'view/global';
 import Icon from 'components/interface/Icon';
 import { Pause, Play, Stop } from 'view/icons';
+import useForceUpdate from 'hooks/useForceUpdate';
 import styles from './PlayButtons.less';
-import useForceUpdate from '../../hooks/useForceUpdate';
 
 export default function PlayButtons() {
   const forceUpdate = useForceUpdate();

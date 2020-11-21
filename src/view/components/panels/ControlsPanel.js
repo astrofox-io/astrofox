@@ -1,9 +1,9 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { stage } from 'global';
+import Control from 'components/controls/Control';
 import useApp from 'actions/app';
 import useScenes from 'actions/scenes';
 import styles from './ControlsPanel.less';
-import Control from '../controls/Control';
 
 export default function ControlsPanel() {
   const activeElementId = useApp(state => state.activeElementId);

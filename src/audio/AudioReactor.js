@@ -11,7 +11,7 @@ import {
   REACTOR_BAR_SPACING,
 } from 'view/constants';
 import { isDefined } from 'utils/array';
-import { getDisplayName } from '../utils/controls';
+import { getDisplayName } from 'utils/controls';
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.1;

@@ -10,9 +10,9 @@ export default class RenderPass extends Pass {
     super({ ...RenderPass.defaultProperties, ...properties });
   }
 
-  render(renderer, inputBuffer, outputBuffer) {
+  render(renderer, inputBuffer) {
     const { scene, camera } = this;
 
-    super.render(renderer, scene, camera, outputBuffer);
+    super.render(renderer, scene, camera, inputBuffer);
   }
 }

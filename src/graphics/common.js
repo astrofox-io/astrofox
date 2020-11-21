@@ -10,7 +10,7 @@ let renderer = null;
 let geometry = null;
 
 export function getRenderer(canvas) {
-  if (!renderer) {
+  if (!renderer || (canvas && renderer.domElement !== canvas)) {
     renderer = new WebGLRenderer({
       canvas,
       antialias: false,

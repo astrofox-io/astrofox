@@ -1,8 +1,8 @@
 import path from 'path';
 import * as id3 from 'id3js';
+import { readFile } from 'utils/io';
+import { blobToArrayBuffer, dataToBlob } from 'utils/data';
 import { log } from './ipc';
-import { readFile } from '../../utils/io';
-import { blobToArrayBuffer, dataToBlob } from '../../utils/data';
 
 export async function readAudioFile(file) {
   const fileData = await readFile(file);

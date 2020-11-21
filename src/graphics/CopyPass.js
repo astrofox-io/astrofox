@@ -23,8 +23,8 @@ export default class CopyPass extends ShaderPass {
 
     super.render(
       renderer,
-      copyToBuffer ? buffer : inputBuffer,
       copyToBuffer ? inputBuffer : buffer,
+      copyToBuffer ? buffer : inputBuffer,
     );
   }
 }

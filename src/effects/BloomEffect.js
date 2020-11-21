@@ -6,7 +6,7 @@ import BlendPass from 'graphics/BlendPass';
 import GaussianBlurPass from 'effects/passes/GaussianBlurPass';
 import MultiPass from 'graphics/MultiPass';
 import LuminanceShader from 'shaders/LuminanceShader';
-import { createRenderTarget } from '../graphics/common';
+import { createRenderTarget } from 'graphics/common';
 
 const blendOptions = ['Add', 'Screen'];
 

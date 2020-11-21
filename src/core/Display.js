@@ -1,6 +1,6 @@
 import Entity from 'core/Entity';
 import cloneDeep from 'lodash/cloneDeep';
-import { getDisplayName } from '../utils/controls';
+import { getDisplayName } from 'utils/controls';
 
 export default class Display extends Entity {
   static create = (Type, config) => {
