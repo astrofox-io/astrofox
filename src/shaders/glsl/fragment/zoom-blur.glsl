@@ -2,7 +2,6 @@ uniform sampler2D inputBuffer;
 uniform vec2 center;
 uniform float amount;
 uniform vec2 resolution;
-
 varying vec2 vUv;
 
 #include "../func/random.glsl"

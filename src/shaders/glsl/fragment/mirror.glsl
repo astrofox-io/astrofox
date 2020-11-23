@@ -1,6 +1,5 @@
 uniform sampler2D inputBuffer;
 uniform int side;
-
 varying vec2 vUv;
 
 void main() {

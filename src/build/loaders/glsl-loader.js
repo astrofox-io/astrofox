@@ -23,8 +23,8 @@ function parseInclude(match, context, imports) {
   return imports[filePath];
 }
 
-function parseContent(content, context) {
-  return content.replace(regex, match => parseInclude(match, context));
+function parseContent(content, context, imports) {
+  return content.replace(regex, match => parseInclude(match, context, imports));
 }
 
 module.exports = function glslLoader(content) {

@@ -1,7 +1,6 @@
 uniform sampler2D inputBuffer;
 uniform float size;
 uniform vec2 resolution;
-
 varying vec2 vUv;
 
 void main() {

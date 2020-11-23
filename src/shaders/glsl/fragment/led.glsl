@@ -3,7 +3,6 @@ uniform float spacing;
 uniform float size;
 uniform float blur;
 uniform vec2 resolution;
-
 varying vec2 vUv;
 
 void main() {

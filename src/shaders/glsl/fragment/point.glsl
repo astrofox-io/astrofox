@@ -1,7 +1,6 @@
 uniform vec3 color;
 uniform sampler2D inputBuffer;
 uniform float opacity;
-
 varying vec3 vColor;
 
 void main() {

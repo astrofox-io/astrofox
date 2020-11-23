@@ -1,7 +1,6 @@
 uniform sampler2D inputBuffer;
 uniform float opacity;
 uniform int alpha;
-
 varying vec2 vUv;
 
 void main() {

@@ -1,10 +1,8 @@
+uniform sampler2D inputBuffer;
 uniform vec2 center;
 uniform float angle;
 uniform float scale;
 uniform vec2 tSize;
-
-uniform sampler2D inputBuffer;
-
 varying vec2 vUv;
 
 float pattern() {

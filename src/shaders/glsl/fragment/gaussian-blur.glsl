@@ -1,7 +1,6 @@
 uniform sampler2D inputBuffer;
 uniform vec2 resolution;
 uniform vec2 direction;
-
 varying vec2 vUv;
 
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {

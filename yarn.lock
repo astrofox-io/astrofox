@@ -5248,6 +5248,11 @@ glsl-man@^1.1.14:
     cssauron "^1.4.0"
     tree-traversal "^1.1.1"
 
+glslx@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/glslx/-/glslx-0.2.1.tgz#51b9ced3c28f18801f47e4bfe1c22abea1eb662f"
+  integrity sha512-Vxs9/IMBXmHBofCxuyta9Q7spSlRQ4fb85GTGmLSmOMdn7d9/5r6/MAcvo6pB2yWWZB6Rw4szLSLeKI/voPM/Q==
+
 gonzales-pe@^4.0.3, gonzales-pe@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/gonzales-pe/-/gonzales-pe-4.3.0.tgz#fe9dec5f3c557eead09ff868c65826be54d067b3"

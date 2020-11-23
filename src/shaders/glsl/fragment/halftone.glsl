@@ -3,7 +3,6 @@ uniform vec2 center;
 uniform float angle;
 uniform float scale;
 uniform vec2 resolution;
-
 varying vec2 vUv;
 
 float pattern(float angle) {

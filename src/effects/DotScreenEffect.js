@@ -6,7 +6,7 @@ import { deg2rad } from 'utils/math';
 export default class DotScreenEffect extends Effect {
   static config = {
     name: 'DotScreenEffect',
-    description: 'dor screen effect.',
+    description: 'Dot screen effect.',
     type: 'effect',
     label: 'Dot Screen',
     defaultProperties: {

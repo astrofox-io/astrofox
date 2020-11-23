@@ -5,7 +5,6 @@ uniform int alpha;
 uniform float opacity;
 uniform int mask;
 uniform int inverse;
-
 varying vec2 vUv;
 
 const vec3 vLuma = vec3(0.2126, 0.7152, 0.0722);
