@@ -9,7 +9,7 @@ void main() {
     float total = 0.0;
     float offset = random(vUv);
 
-    for (float t = -30.0; t <= 30.0; t ++) {
+    for (float t = -30.0; t <= 30.0; t++) {
         float percent = (t + offset - 0.5) / 30.0;
         float weight = 1.0 - abs(percent);
 

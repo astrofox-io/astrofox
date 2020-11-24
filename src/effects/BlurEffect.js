@@ -1,4 +1,5 @@
 import Effect from 'core/Effect';
+import BoxBlurShader from 'shaders/BoxBlurShader';
 import CircularBlurShader from 'shaders/CircularBlurShader';
 import ZoomBlurShader from 'shaders/ZoomBlurShader';
 import ShaderPass from 'graphics/ShaderPass';
@@ -8,13 +9,15 @@ import LensBlurPass from 'effects/passes/LensBlurPass';
 import { val2pct } from 'utils/math';
 import { stageWidth, stageHeight, property } from 'utils/controls';
 
-const blurOptions = ['Circular', 'Gaussian', 'Triangle', 'Zoom'];
+const blurOptions = ['Box', 'Circular', 'Gaussian', 'Triangle', 'Zoom'];
 
 const shaderOptions = {
+  Box: BoxBlurShader,
   Circular: CircularBlurShader,
   Zoom: ZoomBlurShader,
 };
 
+const BOX_BLUR_MAX = 10;
 const TRIANGLE_BLUR_MAX = 200;
 const CIRCULAR_BLUR_MAX = 10;
 const ZOOM_BLUR_MAX = 1;
@@ -116,6 +119,10 @@ export default class BlurEffect extends Effect {
     const { width, height } = this.scene.getSize();
 
     switch (type) {
+      case 'Box':
+        this.pass.setUniforms({ amount: amount * BOX_BLUR_MAX });
+        break;
+
       case 'Triangle':
         this.pass.setUniforms({ amount: amount * TRIANGLE_BLUR_MAX, width, height });
         break;
