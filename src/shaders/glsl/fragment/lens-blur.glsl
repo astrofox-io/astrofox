@@ -1,4 +1,4 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform sampler2D extraBuffer;
 uniform vec2 delta0;
 uniform vec2 delta1;
@@ -15,7 +15,7 @@ vec4 blur(vec2 delta) {
 
     for (float t = 0.0; t <= 30.0; t++) {
         float percent = (t + offset) / 30.0;
-        color += texture2D(inputBuffer, vUv + delta * percent);
+        color += texture2D(inputTexture, vUv + delta * percent);
         total += 1.0;
     }
 
@@ -24,7 +24,7 @@ vec4 blur(vec2 delta) {
 
 void main() {
     if (pass == 0) {
-        vec4 color = texture2D(inputBuffer, vUv);
+        vec4 color = texture2D(inputTexture, vUv);
         gl_FragColor = pow(color, vec4(power));
     }
 

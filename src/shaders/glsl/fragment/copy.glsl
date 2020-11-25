@@ -1,10 +1,10 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform float opacity;
 uniform int alpha;
 varying vec2 vUv;
 
 void main() {
-    vec4 texture = texture2D(inputBuffer, vUv);
+    vec4 texture = texture2D(inputTexture, vUv);
 
     gl_FragColor = opacity * texture;
 

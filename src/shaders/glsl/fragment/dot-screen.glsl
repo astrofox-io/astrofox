@@ -1,4 +1,4 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform vec2 center;
 uniform float angle;
 uniform float scale;
@@ -17,7 +17,7 @@ float pattern() {
 }
 
 void main() {
-    vec4 color = texture2D(inputBuffer, vUv);
+    vec4 color = texture2D(inputTexture, vUv);
 
     float average = (color.r + color.g + color.b) / 3.0;
 

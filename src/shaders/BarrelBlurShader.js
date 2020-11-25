@@ -4,7 +4,7 @@ import fragmentShader from 'shaders/glsl/fragment/barrel-blur.glsl';
 
 export default {
   uniforms: {
-    inputBuffer: { type: 't', value: null },
+    inputTexture: { type: 't', value: null },
     resolution: { type: 'v2', value: new Vector2(1, 1) },
   },
   vertexShader,

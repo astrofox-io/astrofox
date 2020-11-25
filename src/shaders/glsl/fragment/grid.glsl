@@ -4,7 +4,7 @@
 #extension GL_OES_standard_derivatives : enable
 
 varying vec3 vPos;
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 varying vec2 vUv;
 
 vec4 grid_y() {

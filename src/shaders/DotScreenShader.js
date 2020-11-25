@@ -4,7 +4,7 @@ import fragmentShader from 'shaders/glsl/fragment/dot-screen.glsl';
 
 export default {
   uniforms: {
-    inputBuffer: { type: 't', value: null },
+    inputTexture: { type: 't', value: null },
     tSize: { type: 'v2', value: new Vector2(256, 256) },
     center: { type: 'v2', value: new Vector2(0.5, 0.5) },
     angle: { type: 'f', value: 1.57 },

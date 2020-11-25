@@ -1,4 +1,4 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform vec2 resolution;
 uniform vec2 direction;
 varying vec2 vUv;
@@ -42,5 +42,5 @@ vec4 blur5(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {
 void main() {
     vec2 uv = vec2(gl_FragCoord.xy / resolution.xy);
 
-    gl_FragColor = blur9(inputBuffer, uv, resolution.xy, direction);
+    gl_FragColor = blur9(inputTexture, uv, resolution.xy, direction);
 }

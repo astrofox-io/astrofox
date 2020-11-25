@@ -1,4 +1,4 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform vec2 center;
 uniform float amount;
 uniform vec2 resolution;
@@ -16,7 +16,7 @@ void main() {
     for (float t = 0.0; t <= 40.0; t++) {
         float percent = (t) / 40.0;
         float weight = 4.0 * (percent - percent * percent);
-        vec4 s = texture2D(inputBuffer, vUv + toCenter * percent * amount / resolution);
+        vec4 s = texture2D(inputTexture, vUv + toCenter * percent * amount / resolution);
         color += s * weight;
         total += weight;
     }

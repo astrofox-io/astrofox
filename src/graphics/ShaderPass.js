@@ -47,8 +47,8 @@ export default class ShaderPass extends Pass {
   render(renderer, inputBuffer, outputBuffer) {
     const { scene, camera, material } = this;
 
-    if (inputBuffer && material.uniforms.inputBuffer) {
-      material.uniforms.inputBuffer.value = inputBuffer.texture;
+    if (inputBuffer && material.uniforms.inputTexture) {
+      material.uniforms.inputTexture.value = inputBuffer.texture;
     }
 
     super.render(renderer, scene, camera, outputBuffer);

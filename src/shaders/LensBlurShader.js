@@ -4,7 +4,7 @@ import fragmentShader from 'shaders/glsl/fragment/lens-blur.glsl';
 
 export default {
   uniforms: {
-    inputBuffer: { type: 't', value: null },
+    inputTexture: { type: 't', value: null },
     extraBuffer: { type: 't', value: null },
     delta0: { type: 'v2', value: new Vector2(1, 1) },
     delta1: { type: 'v2', value: new Vector2(1, 1) },

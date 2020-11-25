@@ -1,4 +1,4 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform vec2 delta;
 varying vec2 vUv;
 
@@ -13,7 +13,7 @@ void main() {
         float percent = (t + offset - 0.5) / 30.0;
         float weight = 1.0 - abs(percent);
 
-        color += texture2D(inputBuffer, vUv + delta * percent) * weight;
+        color += texture2D(inputTexture, vUv + delta * percent) * weight;
         total += weight;
     }
 

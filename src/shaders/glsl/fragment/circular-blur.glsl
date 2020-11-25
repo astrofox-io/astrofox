@@ -1,4 +1,4 @@
-uniform sampler2D inputBuffer;
+uniform sampler2D inputTexture;
 uniform vec2 resolution;
 uniform float amount;
 varying vec2 vUv;
@@ -14,7 +14,7 @@ vec2 rot2d(vec2 p, float a) {
 
 void main() {
 	vec2 uv = gl_FragCoord.xy / resolution.xy;
-	vec4 src = texture2D(inputBuffer, vUv);
+	vec4 src = texture2D(inputTexture, vUv);
 
 	float maxofs = 12.0 * amount;
 	const int NUM_SAMPLES = 16;
@@ -37,11 +37,11 @@ void main() {
 	vec4 sum = vec4(0.0);
 
 	for (int i = 0; i < NUM_SAMPLES2; ++i) {
-		sum += texture2D(inputBuffer, vec2(uv.x, uv.y) + ofs[i], MIPBIAS);
+		sum += texture2D(inputTexture, vec2(uv.x, uv.y) + ofs[i], MIPBIAS);
     }
 
 	for (int i = 0; i < NUM_SAMPLES2; ++i) {
-		sum += texture2D(inputBuffer, vec2(uv.x, uv.y) - ofs[i], MIPBIAS);
+		sum += texture2D(inputTexture, vec2(uv.x, uv.y) - ofs[i], MIPBIAS);
     }
 
 	//gl_FragColor.rgb = sum.rgb / NUM_SAMPLES_F;

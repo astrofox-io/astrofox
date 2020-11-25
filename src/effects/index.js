@@ -2,6 +2,7 @@ export BloomEffect from './BloomEffect';
 export BlurEffect from './BlurEffect';
 export DistortionEffect from './DistortionEffect';
 export DotScreenEffect from './DotScreenEffect';
+export GlitchEffect from './GlitchEffect';
 export GlowEffect from './GlowEffect';
 export LEDEffect from './LEDEffect';
 export MirrorEffect from './MirrorEffect';
