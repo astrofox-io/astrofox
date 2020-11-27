@@ -11,7 +11,6 @@ export default class ShaderPass extends Pass {
       ...props,
       uniforms: UniformsUtils.clone(uniforms),
       defines: { ...defines },
-      transparent: true,
     });
 
     this.setFullscreenMaterial(this.material);
