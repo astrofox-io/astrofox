@@ -1,13 +1,8 @@
 import Pass from 'graphics/Pass';
 
 export default class MaskPass extends Pass {
-  static defaultProperties = {
-    inverse: false,
-    clear: true,
-  };
-
-  constructor(scene, camera, properties) {
-    super({ ...MaskPass.defaultProperties, ...properties });
+  constructor(scene, camera) {
+    super();
 
     this.scene = scene;
     this.camera = camera;

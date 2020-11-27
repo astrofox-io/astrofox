@@ -2,21 +2,17 @@ import ShaderPass from 'graphics/ShaderPass';
 import MultiPass from 'graphics/MultiPass';
 import TriangleBlurShader from 'shaders/TriangleBlurShader';
 
+const BLUR_PASSES = 4;
+
 export default class TriangleBlurPass extends MultiPass {
-  static defaultProperties = {
-    amount: 0.3,
-    rounds: 4,
-  };
-
-  constructor(properties) {
+  constructor() {
     const passes = [];
-    const props = { ...TriangleBlurPass.defaultProperties, ...properties };
 
-    for (let i = 0; i < props.rounds; i++) {
+    for (let i = 0; i < BLUR_PASSES; i++) {
       passes.push(new ShaderPass(TriangleBlurShader));
     }
 
-    super(passes, props);
+    super(passes);
   }
 
   setUniforms({ amount, width, height }) {

@@ -1,13 +1,11 @@
 import Pass from 'graphics/Pass';
 
 export default class RenderPass extends Pass {
-  static defaultProperties = {
-    setClearColor: null,
-    setClearAlpha: 1.0,
-  };
+  constructor(scene, camera) {
+    super();
 
-  constructor(properties) {
-    super({ ...RenderPass.defaultProperties, ...properties });
+    this.scene = scene;
+    this.camera = camera;
   }
 
   render(renderer, inputBuffer) {

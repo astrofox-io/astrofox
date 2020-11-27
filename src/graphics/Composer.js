@@ -8,8 +8,8 @@ export default class Composer {
   constructor(renderer) {
     this.renderer = renderer;
 
-    this.copyPass = new ShaderPass(CopyShader, { transparent: true });
-    this.blendPass = new ShaderPass(BlendShader, { transparent: true });
+    this.copyPass = new ShaderPass(CopyShader);
+    this.blendPass = new ShaderPass(BlendShader);
 
     this.inputBuffer = createRenderTarget();
     this.outputBuffer = this.inputBuffer.clone();

@@ -166,14 +166,6 @@ export default class Stage extends Entity {
     };
   }
 
-  renderScene(scene, data) {
-    const { composer } = this;
-
-    const buffer = scene.render(data);
-
-    composer.blendBuffer(buffer, scene.properties);
-  }
-
   render(data) {
     const { composer, scenes, backgroundColor } = this;
 
@@ -181,7 +173,9 @@ export default class Stage extends Entity {
 
     scenes.forEach(scene => {
       if (scene.enabled) {
-        this.renderScene(scene, data);
+        const buffer = scene.render(data);
+
+        composer.blendBuffer(buffer, scene.properties);
       }
     });
 

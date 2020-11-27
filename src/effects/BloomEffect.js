@@ -1,4 +1,3 @@
-import { NoBlending } from 'three';
 import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
 import CopyPass from 'graphics/CopyPass';
@@ -54,33 +53,30 @@ export default class BloomEffect extends Effect {
 
   updatePass() {
     const { amount, threshold, blendMode } = this.properties;
+    const [, lumPass, blurPass, blendPass] = this.pass.passes;
 
-    this.lumPass.setUniforms({ amount: 1 - threshold });
+    lumPass.setUniforms({ amount: 1 - threshold });
 
-    this.blurPass.setUniforms({ amount });
+    blurPass.setUniforms({ amount });
 
-    this.blendPass.update({ blendMode });
+    blendPass.update({ blendMode });
   }
 
   addToScene() {
-    const { blendMode } = this.properties;
     const passes = [];
 
     // Copy current frame
-    this.copyPass = new CopyPass(createRenderTarget(), { blending: NoBlending });
-    passes.push(this.copyPass);
+    const copyPass = new CopyPass(createRenderTarget());
+    passes.push(copyPass);
 
     // Apply luminance threshold
-    this.lumPass = new ShaderPass(LuminanceShader);
-    passes.push(this.lumPass);
+    passes.push(new ShaderPass(LuminanceShader));
 
     // Apply blur
-    this.blurPass = new GaussianBlurPass();
-    passes.push(this.blurPass);
+    passes.push(new GaussianBlurPass());
 
     // Blend with original frame
-    this.blendPass = new BlendPass(this.copyPass.buffer, { blendMode, alpha: 1 });
-    passes.push(this.blendPass);
+    passes.push(new BlendPass(copyPass.buffer));
 
     // Set render pass
     this.pass = new MultiPass(passes);

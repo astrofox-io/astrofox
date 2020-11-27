@@ -2,20 +2,14 @@ import { Mesh, OrthographicCamera, Scene } from 'three';
 import { getFullscreenGeometry } from './common';
 
 export default class Pass {
-  static defaultProperties = {
-    needsSwap: false,
-    clearColor: false,
-    clearDepth: false,
-    clearStencil: false,
-    renderToScreen: false,
-    setClearColor: null,
-    setClearAlpha: 1.0,
-  };
-
-  constructor(properties = {}) {
-    for (const [key, value] of Object.entries(properties)) {
-      this[key] = value;
-    }
+  constructor() {
+    this.needsSwap = false;
+    this.clearColor = false;
+    this.clearDepth = false;
+    this.clearStencil = false;
+    this.renderToScreen = false;
+    this.setClearColor = null;
+    this.setClearAlpha = 1.0;
   }
 
   setFullscreenMaterial(material) {

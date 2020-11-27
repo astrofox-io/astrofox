@@ -2,32 +2,21 @@ import { MeshBasicMaterial } from 'three';
 import Pass from './Pass';
 
 export default class TexturePass extends Pass {
-  static defaultProperties = {
-    color: 0xffffff,
-    opacity: 1.0,
-    transparent: true,
-    needsSwap: false,
-    needsUpdate: true,
-    depthTest: false,
-    depthWrite: false,
-  };
-
-  constructor(texture, properties) {
-    super({ ...TexturePass.defaultProperties, ...properties });
-
-    const { color, depthTest, depthWrite, transparent } = this;
+  constructor(texture) {
+    super();
 
     this.texture = texture;
 
     this.material = new MeshBasicMaterial({
       map: texture,
-      color,
-      depthTest,
-      depthWrite,
-      transparent,
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
     });
 
     this.setFullscreenMaterial(this.material);
+
+    this.needsUpdate = true;
   }
 
   render(renderer, inputBuffer) {

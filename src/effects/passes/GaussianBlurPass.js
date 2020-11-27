@@ -2,33 +2,26 @@ import ShaderPass from 'graphics/ShaderPass';
 import MultiPass from 'graphics/MultiPass';
 import GaussianBlurShader from 'shaders/GaussianBlurShader';
 
+const BLUR_PASSES = 8;
+
 export default class GaussianBlurPass extends MultiPass {
-  static defaultProperties = {
-    amount: 1.0,
-    rounds: 8,
-    radius: 3,
-  };
-
-  constructor(properties) {
+  constructor() {
     const passes = [];
-    const props = { ...GaussianBlurPass.defaultProperties, ...properties };
 
-    for (let i = 0; i < props.rounds; i++) {
+    for (let i = 0; i < BLUR_PASSES; i++) {
       passes.push(new ShaderPass(GaussianBlurShader));
     }
 
-    super(passes, props);
+    super(passes);
 
-    this.setUniforms({ amount: props.amount });
+    this.setUniforms({ amount: 1.0 });
   }
 
   setUniforms({ amount }) {
-    const { passes, rounds } = this;
+    this.passes.forEach((pass, index) => {
+      const radius = (BLUR_PASSES - index) * amount;
 
-    passes.forEach((pass, index) => {
-      const r = (rounds - index) * amount;
-
-      pass.setUniforms({ direction: index % 2 === 0 ? [0, r] : [r, 0] });
+      pass.setUniforms({ direction: index % 2 === 0 ? [0, radius] : [radius, 0] });
     });
   }
 }

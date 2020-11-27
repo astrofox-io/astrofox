@@ -2,26 +2,20 @@ import { ShaderMaterial, UniformsUtils } from 'three';
 import Pass from './Pass';
 
 export default class ShaderPass extends Pass {
-  static defaultProperties = {
-    needsSwap: true,
-    transparent: false,
-  };
+  constructor(shader) {
+    super();
 
-  constructor(shader, properties) {
-    super({ ...ShaderPass.defaultProperties, ...properties });
-
-    const { uniforms = {}, defines = {}, vertexShader, fragmentShader } = shader;
-    const { transparent } = this;
+    const { uniforms = {}, defines = {}, ...props } = shader;
 
     this.material = new ShaderMaterial({
+      ...props,
       uniforms: UniformsUtils.clone(uniforms),
       defines: { ...defines },
-      vertexShader,
-      fragmentShader,
-      transparent,
     });
 
     this.setFullscreenMaterial(this.material);
+
+    this.needsSwap = true;
   }
 
   setUniforms(properties = {}) {

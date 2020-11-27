@@ -1,15 +1,11 @@
 import Pass from './Pass';
 
 export default class MultiPass extends Pass {
-  static defaultProperties = {
-    needsSwap: true,
-    clearDepth: true,
-  };
-
-  constructor(passes = [], properties) {
-    super({ ...MultiPass.defaultProperties, ...properties });
+  constructor(passes = []) {
+    super();
 
     this.passes = passes;
+    this.needsSwap = true;
   }
 
   addPass(pass) {
