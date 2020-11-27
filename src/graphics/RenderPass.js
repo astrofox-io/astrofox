@@ -8,9 +8,9 @@ export default class RenderPass extends Pass {
     this.camera = camera;
   }
 
-  render(renderer, inputBuffer) {
+  render(renderer, inputBuffer, outputBuffer) {
     const { scene, camera } = this;
 
-    super.render(renderer, scene, camera, inputBuffer);
+    super.render(renderer, scene, camera, outputBuffer);
   }
 }

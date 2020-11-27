@@ -8,7 +8,8 @@ export default class WebglBuffer {
 
     this.buffer = createRenderTarget({ multisample: true });
 
-    this.pass = new CopyPass(this.buffer, { copyToBuffer: false });
+    this.pass = new CopyPass(this.buffer);
+    this.pass.copyFromBuffer = true;
 
     this.scene = new Scene();
     this.camera = new Camera();

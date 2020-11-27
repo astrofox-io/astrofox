@@ -67,6 +67,8 @@ export default class BloomEffect extends Effect {
 
     // Copy current frame
     const copyPass = new CopyPass(createRenderTarget());
+    copyPass.clearBuffer = true;
+
     passes.push(copyPass);
 
     // Apply luminance threshold

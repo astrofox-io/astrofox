@@ -7,7 +7,8 @@ export default class CopyPass extends ShaderPass {
 
     this.buffer = buffer;
     this.needsSwap = false;
-    this.copyToBuffer = true;
+    this.copyFromBuffer = false;
+    this.clearBuffer = false;
   }
 
   dispose() {
@@ -15,12 +16,17 @@ export default class CopyPass extends ShaderPass {
   }
 
   render(renderer, inputBuffer) {
-    const { copyToBuffer, buffer } = this;
+    const { buffer, copyFromBuffer, clearBuffer } = this;
+
+    if (clearBuffer) {
+      renderer.setRenderTarget(buffer);
+      renderer.clear();
+    }
 
     super.render(
       renderer,
-      copyToBuffer ? inputBuffer : buffer,
-      copyToBuffer ? buffer : inputBuffer,
+      copyFromBuffer ? buffer : inputBuffer,
+      copyFromBuffer ? inputBuffer : buffer,
     );
   }
 }

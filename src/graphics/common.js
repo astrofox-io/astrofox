@@ -49,3 +49,8 @@ export function createRenderTarget(options = {}) {
     ? new WebGLMultisampleRenderTarget(width, height, options)
     : new WebGLRenderTarget(width, height, options);
 }
+
+export function clearRenderTarget(target) {
+  renderer.setRenderTarget(target);
+  renderer.clear();
+}
