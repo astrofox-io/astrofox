@@ -94,7 +94,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
       },
       fillColor: {
         label: 'Fill Color',
-        type: 'color',
+        type: 'colorrange',
       },
       taper: {
         label: 'Taper Edges',
