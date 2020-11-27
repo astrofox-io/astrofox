@@ -178,14 +178,14 @@ export async function loadLibrary() {
 
   const coreDisplays = {};
   for (const [key, display] of Object.entries(displays)) {
-    display.config.icon = `/images/controls/${key}.png`;
+    display.config.icon = `images/controls/${key}.png`;
 
     coreDisplays[key] = display;
   }
 
   const coreEffects = {};
   for (const [key, effect] of Object.entries(effects)) {
-    effect.config.icon = `/images/controls/${key}.png`;
+    effect.config.icon = `images/controls/${key}.png`;
 
     coreEffects[key] = effect;
   }
