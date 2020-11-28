@@ -51,6 +51,7 @@ export default class Display extends Entity {
 
     const { reactors } = this;
     const properties = {};
+    let hasUpdate = false;
 
     for (const [key, value] of Object.entries(reactors)) {
       const { id, min, max } = value;
@@ -58,10 +59,13 @@ export default class Display extends Entity {
 
       if (output !== undefined) {
         properties[key] = (max - min) * output + min;
+        hasUpdate = true;
       }
     }
 
-    this.update(properties);
+    if (hasUpdate) {
+      this.update(properties);
+    }
   }
 
   toJSON() {

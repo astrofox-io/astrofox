@@ -114,7 +114,6 @@ export default class SpectrumParser extends Entity {
     if (smoothingTimeConstant > 0) {
       for (let i = 0; i < size; i += 1) {
         output[i] = buffer[i] * smoothingTimeConstant + output[i] * (1.0 - smoothingTimeConstant);
-
         buffer[i] = output[i];
       }
     }
