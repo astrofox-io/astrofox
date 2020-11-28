@@ -3,12 +3,6 @@ import { resetCanvas, setColor } from 'utils/canvas';
 import { clamp } from 'utils/math';
 
 export default class CanvasBars extends Entity {
-  static config = {
-    name: 'CanvasBars',
-    description: 'Canvas bars.',
-    type: 'entity',
-  };
-
   static defaultProperties = {
     width: 300,
     height: 100,
@@ -21,11 +15,7 @@ export default class CanvasBars extends Entity {
   };
 
   constructor(properties, canvas) {
-    const {
-      config: { name, defaultProperties },
-    } = CanvasBars;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('CanvasBars', { ...CanvasBars.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

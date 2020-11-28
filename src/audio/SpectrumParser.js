@@ -3,29 +3,20 @@ import { val2pct, db2mag } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class SpectrumParser extends Entity {
-  static config = {
-    name: 'SpectrumParser',
-    description: 'Spectrum parser.',
-    type: 'entity',
-    defaultProperties: {
-      fftSize: FFT_SIZE,
-      sampleRate: SAMPLE_RATE,
-      smoothingTimeConstant: 0.5,
-      minDecibels: -100,
-      maxDecibels: 0,
-      minFrequency: 0,
-      maxFrequency: SAMPLE_RATE / 2,
-      normalize: false,
-      bins: 0,
-    },
+  static defaultProperties = {
+    fftSize: FFT_SIZE,
+    sampleRate: SAMPLE_RATE,
+    smoothingTimeConstant: 0.5,
+    minDecibels: -100,
+    maxDecibels: 0,
+    minFrequency: 0,
+    maxFrequency: SAMPLE_RATE / 2,
+    normalize: false,
+    bins: 0,
   };
 
   constructor(properties) {
-    const {
-      config: { name, defaultProperties },
-    } = SpectrumParser;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('SpectrumParser', { ...SpectrumParser.defaultProperties, ...properties });
 
     this.setBinRange();
   }
@@ -63,9 +54,7 @@ export default class SpectrumParser extends Entity {
 
   parseFFT(fft) {
     let { output, buffer } = this;
-
     const { minBin, maxBin, totalBins } = this;
-
     const { smoothingTimeConstant, bins } = this.properties;
     const size = bins || totalBins;
 

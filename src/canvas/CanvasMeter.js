@@ -2,24 +2,15 @@ import Entity from 'core/Entity';
 import { resetCanvas, setColor } from 'utils/canvas';
 
 export default class CanvasMeter extends Entity {
-  static config = {
-    name: 'CanvasMeter',
-    description: 'Canvas meter.',
-    type: 'entity',
-    defaultProperties: {
-      width: 100,
-      height: 50,
-      color: '#FFFFFF',
-      origin: 'left',
-    },
+  static defaultProperties = {
+    width: 100,
+    height: 50,
+    color: '#FFFFFF',
+    origin: 'left',
   };
 
   constructor(properties, canvas) {
-    const {
-      config: { name, defaultProperties },
-    } = CanvasMeter;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('CanvasMeter', { ...CanvasMeter.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;

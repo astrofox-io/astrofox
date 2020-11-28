@@ -1,30 +1,19 @@
 import Entity from 'core/Entity';
-import BezierSpline from 'drawing/BezierSpline';
-import { resetCanvas, setColor } from 'utils/canvas';
+import { drawPath } from 'drawing/bezierSpline';
+import { resetCanvas } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
-  static config = {
-    name: 'CanvasWave',
-    description: 'Canvas wave.',
-    type: 'entity',
-    defaultProperties: {
-      strokeColor: '#FFFFFF',
-      width: 400,
-      height: 200,
-      lineWidth: 1.0,
-      stroke: true,
-      fill: false,
-      fillColor: null,
-      taper: false,
-    },
+  static defaultProperties = {
+    color: '#FFFFFF',
+    width: 400,
+    height: 200,
+    lineWidth: 1.0,
+    fill: false,
+    taper: false,
   };
 
   constructor(properties, canvas) {
-    const {
-      config: { name, defaultProperties },
-    } = CanvasWave;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('CanvasWave', { ...CanvasWave.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width;
@@ -33,85 +22,64 @@ export default class CanvasWave extends Entity {
     this.context = this.canvas.getContext('2d');
   }
 
-  /* eslint-disable no-param-reassign */
   render(points, smooth) {
     const { canvas, context } = this;
-
-    const {
-      width,
-      height,
-      strokeColor,
-      lineWidth,
-      stroke,
-      fill,
-      fillColor,
-      taper,
-    } = this.properties;
+    const { width, height, color, lineWidth, fill, taper } = this.properties;
+    const step = width / (points.length - 1);
 
     // Reset canvas
     resetCanvas(canvas, width, height);
 
     // Canvas setup
     context.lineWidth = lineWidth;
-    context.strokeStyle = strokeColor;
+    context.strokeStyle = color;
+    context.fillStyle = color;
+
+    // Normalize points
+    for (let i = 0; i < points.length; i++) {
+      points[i] = height - points[i] * height;
+    }
+
+    // Taper edges
+    if (taper) {
+      points[0] = height / 2;
+      points[points.length - 1] = height / 2;
+    }
 
     // Draw wave
     if (smooth) {
-      for (let i = 0; i < points.length; i += 2) {
-        points[i + 1] = height - points[i + 1] * height;
-      }
-
       context.beginPath();
 
-      // Taper edges
-      if (taper) {
-        points[0] = 0;
-        points[1] = height;
+      // Remap
+      points = Array.from(points).flatMap((p, i) => [i * step, p]);
 
-        points[points.length - 2] = width;
-        points[points.length - 1] = height;
-      }
+      // Draw bezier spline
+      drawPath(context, points);
 
-      // Draw spline
-      BezierSpline.drawPath(context, points);
-
-      if (fill && fillColor) {
-        setColor(context, fillColor, 0, 0, 0, height);
-
-        // Close loop
-        if (taper) {
-          context.moveTo(width, height);
-          context.lineTo(0, height);
-        } else {
-          context.moveTo(width, points[points.length - 1]);
-          context.lineTo(width, height);
-          context.lineTo(0, height);
-          context.lineTo(0, points[1]);
-        }
-
+      if (fill) {
+        context.moveTo(width, height / 2);
+        context.lineTo(0, height / 2);
+        context.closePath();
         context.fill();
-      }
-
-      if (stroke) {
+      } else {
         context.stroke();
       }
     } else {
       context.beginPath();
 
-      for (let i = 0; i < points.length; i += 2) {
-        if (i === 0) {
-          context.moveTo(points[i], height - points[i + 1] * height);
-        } else {
-          context.lineTo(points[i], height - points[i + 1] * height);
-        }
+      if (fill) {
+        context.moveTo(0, height / 2);
       }
 
-      if (fill && fillColor) {
+      for (let i = 0; i < points.length; i++) {
+        context.lineTo(i * step, points[i]);
+      }
+
+      if (fill) {
+        context.lineTo(width, height / 2);
         context.closePath();
         context.fill();
-      }
-
-      if (stroke) {
+      } else {
         context.stroke();
       }
     }

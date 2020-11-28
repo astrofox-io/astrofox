@@ -4,23 +4,14 @@ import { resetCanvas } from 'utils/canvas';
 const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Entity {
-  static config = {
-    name: 'CanvasImage',
-    description: 'Canvas image.',
-    type: 'entity',
-    defaultProperties: {
-      src: '',
-      width: 1,
-      height: 1,
-    },
+  static defaultProperties = {
+    src: '',
+    width: 1,
+    height: 1,
   };
 
   constructor(properties, canvas) {
-    const {
-      config: { name, defaultProperties },
-    } = CanvasImage;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('CanvasImage', { ...CanvasImage.defaultProperties, ...properties });
 
     this.canvas = canvas || document.createElement('canvas');
     this.canvas.width = this.properties.width || 1;

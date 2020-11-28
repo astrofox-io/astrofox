@@ -15,22 +15,15 @@ import { isDefined } from 'utils/array';
 import { getRenderer } from 'graphics/common';
 
 export default class Stage extends Entity {
-  static config = {
-    name: 'Stage',
-    description: 'The stage.',
-    type: 'stage',
-    defaultProperties: {
-      width: DEFAULT_CANVAS_WIDTH,
-      height: DEFAULT_CANVAS_HEIGHT,
-      backgroundColor: DEFAULT_CANVAS_BGCOLOR,
-      zoom: 100,
-    },
+  static defaultProperties = {
+    width: DEFAULT_CANVAS_WIDTH,
+    height: DEFAULT_CANVAS_HEIGHT,
+    backgroundColor: DEFAULT_CANVAS_BGCOLOR,
+    zoom: 100,
   };
 
   constructor(properties) {
-    const { name, defaultProperties } = Stage.config;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('Stage', { ...Stage.defaultProperties, ...properties });
 
     this.scenes = new EntityList();
   }

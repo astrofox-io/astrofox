@@ -5,27 +5,18 @@ import { deg2rad } from 'utils/math';
 const TRIANGLE_ANGLE = (2 * Math.PI) / 3;
 
 export default class CanvasShape extends Entity {
-  static config = {
-    name: 'CanvasText',
-    description: 'Canvas text.',
-    type: 'entity',
-    defaultProperties: {
-      shape: 'Circle',
-      width: 100,
-      height: 100,
-      color: '#FFFFFF',
-      strokeColor: '#FFFFFF',
-      strokeWidth: 0,
-      fill: true,
-    },
+  static defaultProperties = {
+    shape: 'Circle',
+    width: 100,
+    height: 100,
+    color: '#FFFFFF',
+    strokeColor: '#FFFFFF',
+    strokeWidth: 0,
+    fill: true,
   };
 
   constructor(properties, canvas) {
-    const {
-      config: { name, defaultProperties },
-    } = CanvasShape;
-
-    super(name, { ...defaultProperties, ...properties });
+    super('CanvasShape', { ...CanvasShape.defaultProperties, ...properties });
 
     const { width, height, strokeWidth } = this.properties;
 

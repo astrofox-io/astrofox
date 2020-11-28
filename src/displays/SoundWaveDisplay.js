@@ -5,19 +5,22 @@ import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 import { stageWidth, stageHeight } from 'utils/controls';
 
-export default class SoundwaveDisplay extends CanvasDisplay {
+const WAVELENGTH_MAX = 0.25;
+
+export default class SoundWaveDisplay extends CanvasDisplay {
   static config = {
-    name: 'SoundwaveDisplay',
-    description: 'Displays an audio soundwave.',
+    name: 'SoundWaveDisplay',
+    description: 'Displays a sound wave.',
     type: 'display',
-    label: 'Soundwave',
+    label: 'Sound Wave',
     defaultProperties: {
       color: '#FFFFFF',
       width: DEFAULT_CANVAS_WIDTH,
       height: DEFAULT_CANVAS_HEIGHT / 2,
       lineWidth: 1.0,
       wavelength: 0,
-      smooth: false,
+      fill: false,
+      taper: false,
       x: 0,
       y: 0,
       rotation: 0,
@@ -31,21 +34,37 @@ export default class SoundwaveDisplay extends CanvasDisplay {
       lineWidth: {
         label: 'Line Width',
         type: 'number',
-        min: 0,
+        min: 1,
         max: 10,
         withRange: true,
+      },
+      wavelength: {
+        label: 'Wavelength',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+      },
+      fill: {
+        label: 'Fill',
+        type: 'toggle',
+      },
+      taper: {
+        label: 'Taper Edges',
+        type: 'toggle',
       },
       width: {
         label: 'Width',
         type: 'number',
-        min: 0,
+        min: 1,
         max: stageWidth(n => n * 2),
         withRange: true,
       },
       height: {
         label: 'Height',
         type: 'number',
-        min: 0,
+        min: 1,
         max: stageHeight(n => n * 2),
         withRange: true,
       },
@@ -62,17 +81,6 @@ export default class SoundwaveDisplay extends CanvasDisplay {
         min: stageHeight(n => -n),
         max: stageHeight(),
         withRange: true,
-      },
-      wavelength: {
-        label: 'Wavelength',
-        type: 'number',
-        min: 0,
-        max: 100,
-        withRange: true,
-      },
-      smooth: {
-        label: 'Smooth',
-        type: 'toggle',
       },
       rotation: {
         label: 'Rotation',
@@ -95,7 +103,7 @@ export default class SoundwaveDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(SoundwaveDisplay, properties);
+    super(SoundWaveDisplay, properties);
 
     this.wave = new CanvasWave(this.properties, this.canvas);
     this.parser = new WaveParser();
@@ -116,12 +124,15 @@ export default class SoundwaveDisplay extends CanvasDisplay {
       wave,
       parser,
       canvas: { width, height },
-      properties: { smooth, wavelength },
+      properties: { wavelength },
     } = this;
 
-    const points = parser.parseTimeData(data.td, wavelength > 0 ? width / wavelength : width);
+    const points = parser.parseTimeData(
+      data.td,
+      wavelength > 0 ? ~~(width / (wavelength * WAVELENGTH_MAX * width)) : width,
+    );
 
-    wave.render(points, wavelength > 3 ? smooth : false);
+    wave.render(points, wavelength > 0.25);
 
     const origin = {
       x: width / 2,
