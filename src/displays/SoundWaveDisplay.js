@@ -19,6 +19,7 @@ export default class SoundWaveDisplay extends CanvasDisplay {
       height: DEFAULT_CANVAS_HEIGHT / 2,
       lineWidth: 1.0,
       wavelength: 0,
+      smoothingTimeConstant: 0,
       fill: false,
       taper: false,
       x: 0,
@@ -43,6 +44,14 @@ export default class SoundWaveDisplay extends CanvasDisplay {
         type: 'number',
         min: 0,
         max: 1.0,
+        step: 0.01,
+        withRange: true,
+      },
+      smoothingTimeConstant: {
+        label: 'Smoothing',
+        type: 'number',
+        min: 0,
+        max: 0.99,
         step: 0.01,
         withRange: true,
       },
@@ -114,6 +123,7 @@ export default class SoundWaveDisplay extends CanvasDisplay {
 
     if (changed) {
       this.wave.update(properties);
+      this.parser.update(properties);
     }
 
     return changed;
@@ -132,7 +142,7 @@ export default class SoundWaveDisplay extends CanvasDisplay {
       wavelength > 0 ? ~~(width / (wavelength * WAVELENGTH_MAX * width)) : width,
     );
 
-    wave.render(points, wavelength > 0.25);
+    wave.render(points, wavelength > 0.02);
 
     const origin = {
       x: width / 2,
