@@ -14,24 +14,23 @@ export default class SoundWaveDisplay extends CanvasDisplay {
     type: 'display',
     label: 'Sound Wave',
     defaultProperties: {
-      color: '#FFFFFF',
+      stroke: true,
+      strokeColor: '#FFFFFF',
+      fill: false,
+      fillColor: '#FFFFFF',
+      taper: false,
       width: DEFAULT_CANVAS_WIDTH,
       height: DEFAULT_CANVAS_HEIGHT / 2,
+      midpoint: DEFAULT_CANVAS_HEIGHT / 4,
       lineWidth: 1.0,
       wavelength: 0,
       smoothingTimeConstant: 0,
-      fill: false,
-      taper: false,
       x: 0,
       y: 0,
       rotation: 0,
       opacity: 1.0,
     },
     controls: {
-      color: {
-        label: 'Color',
-        type: 'color',
-      },
       lineWidth: {
         label: 'Line Width',
         type: 'number',
@@ -55,9 +54,21 @@ export default class SoundWaveDisplay extends CanvasDisplay {
         step: 0.01,
         withRange: true,
       },
+      stroke: {
+        label: 'Stroke',
+        type: 'toggle',
+      },
+      strokeColor: {
+        label: 'Stroke Color',
+        type: 'color',
+      },
       fill: {
         label: 'Fill',
         type: 'toggle',
+      },
+      fillColor: {
+        label: 'Fill Color',
+        type: 'color',
       },
       taper: {
         label: 'Taper Edges',
@@ -122,11 +133,23 @@ export default class SoundWaveDisplay extends CanvasDisplay {
     const changed = super.update(properties);
 
     if (changed) {
+      const { height } = properties;
+
+      if (height !== undefined) {
+        properties.midpoint = height / 2;
+      }
+
       this.wave.update(properties);
       this.parser.update(properties);
     }
 
     return changed;
+  }
+
+  getPoints(data, width) {
+    const step = width / (data.length - 1);
+
+    return Array.from(data).flatMap((n, i) => [i * step, n]);
   }
 
   render(scene, data) {
@@ -137,12 +160,12 @@ export default class SoundWaveDisplay extends CanvasDisplay {
       properties: { wavelength },
     } = this;
 
-    const points = parser.parseTimeData(
+    const values = parser.parseTimeData(
       data.td,
       wavelength > 0 ? ~~(width / (wavelength * WAVELENGTH_MAX * width)) : width,
     );
 
-    wave.render(points, wavelength > 0.02);
+    wave.render(this.getPoints(values, width), wavelength > 0.02);
 
     const origin = {
       x: width / 2,

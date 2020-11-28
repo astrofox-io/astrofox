@@ -1,15 +1,18 @@
 import Entity from 'core/Entity';
 import { drawPath } from 'drawing/bezierSpline';
-import { resetCanvas } from 'utils/canvas';
+import { resetCanvas, setColor } from 'utils/canvas';
 
 export default class CanvasWave extends Entity {
   static defaultProperties = {
-    color: '#FFFFFF',
+    stroke: true,
+    strokeColor: '#FFFFFF',
+    fill: false,
+    fillColor: '#FFFFFF',
+    taper: false,
     width: 400,
     height: 200,
+    midpoint: 100,
     lineWidth: 1.0,
-    fill: false,
-    taper: false,
   };
 
   constructor(properties, canvas) {
@@ -24,63 +27,73 @@ export default class CanvasWave extends Entity {
 
   render(points, smooth) {
     const { canvas, context } = this;
-    const { width, height, color, lineWidth, fill, taper } = this.properties;
-    const step = width / (points.length - 1);
+    const {
+      width,
+      height,
+      midpoint,
+      stroke,
+      strokeColor,
+      fill,
+      fillColor,
+      lineWidth,
+      taper,
+    } = this.properties;
 
     // Reset canvas
     resetCanvas(canvas, width, height);
 
     // Canvas setup
     context.lineWidth = lineWidth;
-    context.strokeStyle = color;
-    context.fillStyle = color;
+    context.strokeStyle = strokeColor;
+    setColor(context, fillColor, 0, 0, 0, height);
 
     // Normalize points
-    for (let i = 0; i < points.length; i++) {
-      points[i] = height - points[i] * height;
+    for (let i = 0; i < points.length; i += 2) {
+      points[i + 1] = height - points[i + 1] * height;
     }
 
     // Taper edges
     if (taper) {
-      points[0] = height / 2;
-      points[points.length - 1] = height / 2;
+      points[1] = midpoint;
+      points[points.length - 1] = midpoint;
     }
 
     // Draw wave
     if (smooth) {
       context.beginPath();
 
-      // Remap
-      points = Array.from(points).flatMap((p, i) => [i * step, p]);
-
       // Draw bezier spline
       drawPath(context, points);
 
+      if (stroke) {
+        context.stroke();
+      }
+
       if (fill) {
-        context.moveTo(width, height / 2);
-        context.lineTo(0, height / 2);
+        context.lineTo(width, midpoint);
+        context.lineTo(0, midpoint);
         context.closePath();
         context.fill();
-      } else {
-        context.stroke();
       }
     } else {
       context.beginPath();
 
       if (fill) {
-        context.moveTo(0, height / 2);
+        context.moveTo(0, midpoint);
       }
 
-      for (let i = 0; i < points.length; i++) {
-        context.lineTo(i * step, points[i]);
+      for (let i = 0; i < points.length; i += 2) {
+        context.lineTo(points[i], points[i + 1]);
+      }
+
+      if (stroke) {
+        context.stroke();
       }
 
       if (fill) {
-        context.lineTo(width, height / 2);
+        context.lineTo(width, midpoint);
         context.closePath();
         context.fill();
-      } else {
-        context.stroke();
       }
     }
   }

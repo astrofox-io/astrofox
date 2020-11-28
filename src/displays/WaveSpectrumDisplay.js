@@ -14,12 +14,13 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     defaultProperties: {
       width: 770,
       height: 240,
+      midpoint: 240,
       x: 0,
       y: 0,
       stroke: true,
       strokeColor: '#FFFFFF',
       fill: true,
-      fillColor: ['#C0C0C0', '#000000'],
+      fillColor: ['#C0C0C0', '#FFFFFF'],
       taper: true,
       rotation: 0,
       opacity: 1.0,
@@ -27,7 +28,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
       sampleRate: SAMPLE_RATE,
       smoothingTimeConstant: 0.5,
       minDecibels: -100,
-      maxDecibels: -20,
+      maxDecibels: -14,
       minFrequency: 0,
       maxFrequency: 2000,
       normalize: true,
@@ -69,14 +70,14 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
       width: {
         label: 'Width',
         type: 'number',
-        min: 0,
+        min: 1,
         max: stageWidth(),
         withRange: true,
       },
       height: {
         label: 'Height',
         type: 'number',
-        min: 0,
+        min: 1,
         max: stageHeight(),
         withRange: true,
       },
@@ -145,6 +146,12 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     const changed = super.update(properties);
 
     if (changed) {
+      const { height } = properties;
+
+      if (height !== undefined) {
+        properties.midpoint = height;
+      }
+
       this.wave.update(properties);
       this.parser.update(properties);
     }
@@ -152,8 +159,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     return changed;
   }
 
-  getPoints(fft) {
-    const { width } = this.properties;
+  getPoints(fft, width) {
     const points = [];
 
     for (let i = 0, j = 0, k = 0; i < fft.length; i += 1) {
@@ -180,7 +186,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     } = this;
     const fft = parser.parseFFT(data.fft);
 
-    wave.render(this.getPoints(fft), true);
+    wave.render(this.getPoints(fft, width), true);
 
     const origin = {
       x: width / 2,
