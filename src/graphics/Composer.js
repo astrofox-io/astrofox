@@ -9,6 +9,8 @@ export default class Composer {
     this.renderer = renderer;
 
     this.blendPass = new ShaderPass(BlendShader);
+    this.blendPass.material.transparent = true;
+
     this.renderPass = new RenderPass(this.blendPass.scene, this.blendPass.camera);
     this.renderPass.renderToScreen = true;
 
