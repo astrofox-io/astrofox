@@ -4,6 +4,7 @@ export DistortionEffect from './DistortionEffect';
 export DotScreenEffect from './DotScreenEffect';
 export GlitchEffect from './GlitchEffect';
 export GlowEffect from './GlowEffect';
+export KaleidoscopeEffect from './KaleidoscopeEffect';
 export LEDEffect from './LEDEffect';
 export MirrorEffect from './MirrorEffect';
 export PixelateEffect from './PixelateEffect';
