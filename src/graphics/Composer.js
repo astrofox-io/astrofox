@@ -1,8 +1,8 @@
 import ShaderPass from 'graphics/ShaderPass';
 import BlendShader from 'shaders/BlendShader';
+import CopyShader from 'shaders/CopyShader';
 import blendModes from 'graphics/blendModes';
 import { createRenderTarget } from './common';
-import RenderPass from './RenderPass';
 
 export default class Composer {
   constructor(renderer) {
@@ -11,8 +11,9 @@ export default class Composer {
     this.blendPass = new ShaderPass(BlendShader);
     this.blendPass.material.transparent = true;
 
-    this.renderPass = new RenderPass(this.blendPass.scene, this.blendPass.camera);
-    this.renderPass.renderToScreen = true;
+    this.copyPass = new ShaderPass(CopyShader);
+    this.copyPass.material.transparent = true;
+    this.copyPass.renderToScreen = true;
 
     this.inputBuffer = createRenderTarget();
     this.outputBuffer = this.inputBuffer.clone();
@@ -97,9 +98,9 @@ export default class Composer {
   }
 
   renderToScreen() {
-    const { renderer, inputBuffer, outputBuffer, renderPass } = this;
+    const { renderer, inputBuffer, outputBuffer, copyPass } = this;
 
-    renderPass.render(renderer, inputBuffer, outputBuffer);
+    copyPass.render(renderer, inputBuffer, outputBuffer);
   }
 
   render(passes = []) {
