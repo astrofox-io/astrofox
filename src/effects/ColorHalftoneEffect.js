@@ -8,7 +8,7 @@ export default class ColorHalftoneEffect extends Effect {
     name: 'ColorHalftoneEffect',
     description: 'Color halftone effect.',
     type: 'effect',
-    label: 'ColorHalftone',
+    label: 'Color Halftone',
     defaultProperties: {
       scale: 0.5,
       angle: 0,
