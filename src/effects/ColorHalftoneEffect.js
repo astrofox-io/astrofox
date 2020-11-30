@@ -1,17 +1,17 @@
 import Effect from 'core/Effect';
 import ShaderPass from 'graphics/ShaderPass';
-import DotScreenShader from 'shaders/DotScreenShader';
-import { deg2rad } from 'utils/math';
+import ColorHalftoneShader from 'shaders/ColorHalftoneShader';
+import { deg2rad } from '../utils/math';
 
-export default class DotScreenEffect extends Effect {
+export default class ColorHalftoneEffect extends Effect {
   static config = {
-    name: 'DotScreenEffect',
-    description: 'Dot screen effect.',
+    name: 'ColorHalftoneEffect',
+    description: 'Color halftone effect.',
     type: 'effect',
-    label: 'Dot Screen',
+    label: 'ColorHalftone',
     defaultProperties: {
-      angle: 90,
       scale: 0.5,
+      angle: 0,
     },
     controls: {
       scale: {
@@ -35,20 +35,20 @@ export default class DotScreenEffect extends Effect {
   };
 
   constructor(properties) {
-    super(DotScreenEffect, properties);
+    super(ColorHalftoneEffect, properties);
   }
 
   updatePass() {
     const { scale, angle } = this.properties;
 
     this.pass.setUniforms({
-      scale: 2 - scale * 2,
+      scale: 1 - scale,
       angle: deg2rad(angle),
     });
   }
 
   addToScene() {
-    this.pass = new ShaderPass(DotScreenShader);
+    this.pass = new ShaderPass(ColorHalftoneShader);
 
     this.updatePass();
   }

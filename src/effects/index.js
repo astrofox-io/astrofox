@@ -1,5 +1,6 @@
 export BloomEffect from './BloomEffect';
 export BlurEffect from './BlurEffect';
+export ColorHalftoneEffect from './ColorHalftoneEffect';
 export DistortionEffect from './DistortionEffect';
 export DotScreenEffect from './DotScreenEffect';
 export GlitchEffect from './GlitchEffect';

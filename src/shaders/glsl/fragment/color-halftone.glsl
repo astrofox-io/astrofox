@@ -1,5 +1,4 @@
 uniform sampler2D inputTexture;
-uniform vec2 center;
 uniform float angle;
 uniform float scale;
 uniform vec2 resolution;
@@ -7,11 +6,11 @@ varying vec2 vUv;
 
 float pattern(float angle) {
     float s = sin(angle), c = cos(angle);
+    vec2 center = vec2(resolution.x * 0.5, resolution.y * 0.5);
     vec2 tex = vUv * resolution - center;
     vec2 point = vec2(c * tex.x - s * tex.y, s * tex.x + c * tex.y) * scale;
-    float r = (sin(point.x) * sin(point.y)) * 4.0;
 
-    return r;
+    return (sin(point.x) * sin(point.y)) * 4.0;
 }
 
 void main() {
