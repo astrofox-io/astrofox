@@ -113,7 +113,7 @@ export default class ImageDisplay extends CanvasDisplay {
     if (typeof newImage === 'object') {
       if (newImage.src === BLANK_IMAGE) {
         // Image reset
-        properties = { ...ImageDisplay.defaultProperties };
+        properties = { ...ImageDisplay.config.defaultProperties };
       } else if (newImage.src !== src) {
         // New image
         properties = {
