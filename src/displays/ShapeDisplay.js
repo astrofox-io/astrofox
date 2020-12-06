@@ -1,9 +1,9 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasShape from 'canvas/CanvasShape';
+import { property, stageWidth, stageHeight, maxSize } from 'utils/controls';
 
 const shapeOptions = ['Circle', 'Triangle', 'Square', 'Rectangle'];
 
-const stageSize = display => display.scene.getSize();
 const isRectangle = display => display.properties.shape === 'Rectangle';
 
 export default class ShapeDisplay extends CanvasDisplay {
@@ -19,12 +19,13 @@ export default class ShapeDisplay extends CanvasDisplay {
       height: 100,
       x: 0,
       y: 0,
+      fill: true,
       color: '#ffffff',
-      strokeColor: '#a5a5a5',
-      strokeWidth: 0,
+      stroke: false,
+      strokeColor: '#ff0000',
+      strokeWidth: 5,
       rotation: 0,
       opacity: 1.0,
-      fill: true,
     },
     controls: {
       shape: {
@@ -36,7 +37,7 @@ export default class ShapeDisplay extends CanvasDisplay {
         label: display => (isRectangle(display) ? 'Width' : 'Size'),
         type: 'number',
         min: 1,
-        max: 500,
+        max: maxSize(),
         withRange: true,
         withReactor: true,
       },
@@ -44,7 +45,7 @@ export default class ShapeDisplay extends CanvasDisplay {
         label: 'Height',
         type: 'number',
         min: 1,
-        max: 500,
+        max: maxSize(),
         withRange: true,
         withReactor: true,
         hidden: display => !isRectangle(display),
@@ -52,20 +53,28 @@ export default class ShapeDisplay extends CanvasDisplay {
       x: {
         label: 'X',
         type: 'number',
-        min: display => -stageSize(display).width,
-        max: display => stageSize(display).width,
+        min: stageWidth(n => -n),
+        max: stageWidth(),
         withRange: true,
       },
       y: {
         label: 'Y',
         type: 'number',
-        min: display => -stageSize(display).height,
-        max: display => stageSize(display).height,
+        min: stageHeight(n => -n),
+        max: stageHeight(),
         withRange: true,
       },
+      fill: {
+        label: 'Fill',
+        type: 'toggle',
+      },
       color: {
-        label: 'Color',
+        label: 'Fill Color',
         type: 'color',
+      },
+      stroke: {
+        label: 'Stroke',
+        type: 'toggle',
       },
       strokeColor: {
         label: 'Stroke Color',
@@ -74,14 +83,11 @@ export default class ShapeDisplay extends CanvasDisplay {
       strokeWidth: {
         label: 'Stroke Width',
         type: 'number',
-        min: 0,
+        min: 1,
         max: 100,
         withRange: true,
         withReactor: true,
-      },
-      fill: {
-        label: 'Fill',
-        type: 'toggle',
+        hidden: property('stroke', false),
       },
       rotation: {
         label: 'Rotation',

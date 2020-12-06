@@ -8,6 +8,7 @@ import styles from './Oscilloscope.less';
 const canvasProperties = {
   width: 854,
   height: 50,
+  midpoint: 25,
   strokeColor: PRIMARY_COLOR,
 };
 
@@ -18,7 +19,8 @@ export default function Oscilloscope() {
   const parser = useRef();
 
   function draw({ td }) {
-    display.current.render(parser.current.parseTimeData(td, width));
+    const data = parser.current.parseTimeData(td, width);
+    display.current.render(Array.from(data).flatMap((n, i) => [i, n]));
   }
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function Oscilloscope() {
     return () => {
       events.off('render', draw);
     };
-  });
+  }, []);
 
   return (
     <div className={styles.oscilloscope}>

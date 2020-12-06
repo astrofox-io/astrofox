@@ -17,7 +17,10 @@ export function getDisplayName(label) {
 export function property(name, compare) {
   return display => {
     const value = display.properties[name];
-    return compare ? compare(value) : value;
+    if (compare !== undefined) {
+      return typeof compare === 'function' ? compare(value) : value === compare;
+    }
+    return value;
   };
 }
 
@@ -32,5 +35,12 @@ export function stageHeight(transform) {
   return display => {
     const value = display.scene.getSize().height;
     return transform ? transform(value) : value;
+  };
+}
+
+export function maxSize() {
+  return display => {
+    const { width, height } = display.scene.getSize();
+    return Math.max(width, height);
   };
 }

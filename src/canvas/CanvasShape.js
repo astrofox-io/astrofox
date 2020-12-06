@@ -9,10 +9,11 @@ export default class CanvasShape extends Entity {
     shape: 'Circle',
     width: 100,
     height: 100,
+    fill: true,
     color: '#FFFFFF',
+    stroke: false,
     strokeColor: '#FFFFFF',
     strokeWidth: 0,
-    fill: true,
   };
 
   constructor(properties, canvas) {
@@ -29,7 +30,7 @@ export default class CanvasShape extends Entity {
 
   render() {
     const { canvas, context } = this;
-    const { shape, color, strokeColor, width, height, fill, strokeWidth } = this.properties;
+    const { shape, width, height, fill, color, stroke, strokeColor, strokeWidth } = this.properties;
     const w = width + strokeWidth * 2;
     const h = height + strokeWidth * 2;
     const x = w / 2;
@@ -76,7 +77,7 @@ export default class CanvasShape extends Entity {
       context.fill();
     }
 
-    if (strokeWidth > 0) {
+    if (stroke && strokeWidth > 0) {
       context.save();
       context.clip();
       context.stroke();
