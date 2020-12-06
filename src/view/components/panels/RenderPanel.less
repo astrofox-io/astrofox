@@ -1,13 +1,11 @@
-@import (reference) 'view/styles/variables';
-
 .panel {
-  background-color: @color-gray75;
+  background-color: var(--gray75);
   overflow: hidden;
-  z-index: @z-index-render-panel;
+  z-index: var(--z-index-render-panel);
 }
 
 .progress {
-  background-color: @color-gray200;
+  background-color: var(--gray200);
   display: flex;
 }
 
@@ -32,11 +30,11 @@
 }
 
 .label {
-  color: @color-text200;
+  color: var(--text200);
   margin-right: 8px;
 }
 
 .info {
   display: flex;
-  color: @color-text100;
+  color: var(--text100);
 }

@@ -116,7 +116,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
         hidden: property('barSpacingAutoSize'),
         withRange: true,
       },
-      barColor: {
+      color: {
         label: 'Bar Color',
         type: 'colorrange',
       },

@@ -1,10 +1,8 @@
-@import (reference) 'view/styles/variables';
-
 .dock {
   display: flex;
   position: relative;
   overflow: hidden;
-  background-color: @color-gray100;
+  background-color: var(--gray100);
 
   &.vertical {
     flex-direction: column;
@@ -17,19 +15,19 @@
   }
 
   &.left {
-    border-right: 1px solid @color-gray75;
+    border-right: 1px solid var(--gray75);
   }
 
   &.right {
-    border-left: 1px solid @color-gray75;
+    border-left: 1px solid var(--gray75);
   }
 
   &.top {
-    border-bottom: 1px solid @color-gray75;
+    border-bottom: 1px solid var(--gray75);
   }
 
   &.bottom {
-    border-top: 1px solid @color-gray75;
+    border-top: 1px solid var(--gray75);
   }
 }
 

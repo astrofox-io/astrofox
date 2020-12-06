@@ -1,15 +1,13 @@
-@import (reference) 'view/styles/variables';
-
 .item {
   position: relative;
   display: block;
-  font-size: @font-size-small;
+  font-size: var(--font-size-small);
   padding: 5px 5px 5px 20px;
   min-width: 140px;
 
   &:hover {
-    color: @color-text100;
-    background-color: @color-primary100;
+    color: var(--text100);
+    background-color: var(--primary100);
     cursor: default;
   }
 }
@@ -17,22 +15,22 @@
 .checked {
   &:before {
     content: '\2713';
-    color: @color-text100;
+    color: var(--text100);
     position: absolute;
     top: 5px;
     left: 5px;
   }
 
   &:hover:before {
-    color: @color-text100;
+    color: var(--text100);
   }
 }
 
 .disabled {
-  color: @color-text300;
+  color: var(--text300);
 
   &:hover {
-    color: @color-text300;
+    color: var(--text300);
     background-color: transparent;
   }
 }

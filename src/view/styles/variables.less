@@ -1,55 +1,57 @@
-// Base colors
-@color-gray50: #080808;
-@color-gray75: #1a1a1a;
-@color-gray100: #1e1e1e;
-@color-gray200: #2c2c2c;
-@color-gray300: #393939;
-@color-gray400: #494949;
-@color-gray500: #5c5c5c;
-@color-gray600: #7c7c7c;
-@color-gray700: #a2a2a2;
-@color-gray800: #c8c8c8;
-@color-gray900: #efefef;
+:root {
+  // Base colors
+  --gray50: #080808;
+  --gray75: #1a1a1a;
+  --gray100: #1e1e1e;
+  --gray200: #2c2c2c;
+  --gray300: #393939;
+  --gray400: #494949;
+  --gray500: #5c5c5c;
+  --gray600: #7c7c7c;
+  --gray700: #a2a2a2;
+  --gray800: #c8c8c8;
+  --gray900: #efefef;
 
-@color-red400: #d7373f;
-@color-blue400: #1473e6;
-@color-green400: #268e6c;
-@color-orange400: #da7b11;
-@color-yellow400: #dfbf00;
-@color-purple400: #9256d9;
+  --red400: #d7373f;
+  --blue400: #1473e6;
+  --green400: #268e6c;
+  --orange400: #da7b11;
+  --yellow400: #dfbf00;
+  --purple400: #9256d9;
 
-@color-primary100: #704dd8;
-@color-primary200: lighten(@color-primary100, 4%);
-@color-primary300: lighten(@color-primary100, 8%);
-@color-primary400: lighten(@color-primary100, 12%);
-@color-primary500: lighten(@color-primary100, 16%);
+  --primary100: #704dd8;
+  --primary200: lighten(#704dd8, 4%);
+  --primary300: lighten(#704dd8, 8%);
+  --primary400: lighten(#704dd8, 12%);
+  --primary500: lighten(#704dd8, 16%);
 
-@color-text100: @color-gray900;
-@color-text200: @color-gray800;
-@color-text300: @color-gray700;
-@color-text400: @color-gray600;
-@color-text500: @color-gray500;
+  --text100: var(--gray900);
+  --text200: var(--gray800);
+  --text300: var(--gray700);
+  --text400: var(--gray600);
+  --text500: var(--gray500);
 
-@background-color: #202020;
+  --background-color: #202020;
 
-// Fonts
-@font-family: 'Roboto', sans-serif;
-@font-size-xsmall: 10px;
-@font-size-small: 11px;
-@font-size-normal: 12px;
-@font-size-large: 16px;
-@font-size-xlarge: 20px;
+  // Fonts
+  --font-family: 'Roboto', sans-serif;
+  --font-size-xsmall: 10px;
+  --font-size-small: 11px;
+  --font-size-normal: 12px;
+  --font-size-large: 16px;
+  --font-size-xlarge: 20px;
 
-@input-text-color: @color-text200;
-@input-border-color: @color-gray400;
-@input-bg-color: @color-gray75;
-@input-border-radius: 2px;
+  --input-text-color: var(--text200);
+  --input-border-color: var(--gray400);
+  --input-bg-color: var(--gray75);
+  --input-border-radius: 2px;
 
-@z-index-hidden: -1;
-@z-index-above: 1;
-@z-index-overlay: 2;
-@z-index-canvas: 3;
-@z-index-render-panel: 4;
-@z-index-modal-overlay: 5;
-@z-index-modal-window: 6;
-@z-index-menu: 7;
+  --z-index-hidden: -1;
+  --z-index-above: 1;
+  --z-index-overlay: 2;
+  --z-index-canvas: 3;
+  --z-index-render-panel: 4;
+  --z-index-modal-overlay: 5;
+  --z-index-modal-window: 6;
+  --z-index-menu: 7;
+}

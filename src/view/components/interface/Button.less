@@ -1,8 +1,6 @@
-@import (reference) 'view/styles/variables';
-
 .button {
   display: inline-block;
-  background-color: @color-primary100;
+  background-color: var(--primary100);
   padding: 8px 10px;
   border-radius: 3px;
   cursor: default;
@@ -13,11 +11,11 @@
   }
 
   &:hover {
-    background-color: @color-primary200;
+    background-color: var(--primary200);
   }
 
   &.disabled {
-    color: @color-text200;
-    background-color: @color-gray400;
+    color: var(--text200);
+    background-color: var(--gray400);
   }
 }

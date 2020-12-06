@@ -1,11 +1,9 @@
-@import (reference) 'view/styles/variables';
-
 .image {
   height: 100px;
   width: 100px;
-  background-color: @input-bg-color;
-  border: 1px solid @input-border-color;
-  border-radius: @input-border-radius;
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--input-border-radius);
   position: relative;
   overflow: hidden;
 
@@ -41,7 +39,7 @@
   bottom: 0;
   margin: auto;
   transform: scale(0.5, 0.5);
-  color: @color-text100;
+  color: var(--text100);
   height: 24px;
   width: 24px;
   opacity: 0;
@@ -50,24 +48,24 @@
 }
 
 .closeIcon {
-  color: @color-text200;
+  color: var(--text200);
   width: 14px;
   height: 14px;
 
   &:hover {
-    color: @color-text100;
+    color: var(--text100);
   }
 }
 
 .link {
-  color: darken(@color-text100, 50%);
+  color: var(--text100);
   width: 12px;
   height: 12px;
   margin-left: 8px;
 }
 
 .linkActive {
-  color: darken(@color-text100, 10%);
+  color: var(--text100);
 }
 
 .hidden {

@@ -1,5 +1,3 @@
-@import (reference) 'view/styles/variables';
-
 .buttons {
   display: flex;
   position: absolute;
@@ -9,10 +7,10 @@
 
   &.focused {
     .button {
-      color: @color-gray700;
+      color: var(--gray700);
 
       &:hover {
-        color: @color-gray900;
+        color: var(--gray900);
       }
     }
   }
@@ -23,11 +21,11 @@
   width: 45px;
   height: 30px;
   text-align: center;
-  color: @color-gray600;
+  color: var(--gray600);
 
   &:hover {
-    color: @color-gray900;
-    background-color: @color-primary100;
+    color: var(--gray900);
+    background-color: var(--primary100);
   }
 }
 
@@ -75,17 +73,17 @@
     width: 10px;
     height: 10px;
     border: 1px solid currentColor;
-    background-color: @color-gray200;
+    background-color: var(--gray200);
   }
 
   &:hover:after {
-    background-color: @color-primary100;
+    background-color: var(--primary100);
   }
 }
 
 .close {
   &:hover {
-    background-color: @color-red400;
+    background-color: var(--red400);
   }
 
   &:before {

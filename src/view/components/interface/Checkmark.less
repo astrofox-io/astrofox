@@ -1,5 +1,3 @@
-@import (reference) 'view/styles/variables';
-
 @keyframes checkmark {
   0% {
     stroke-dashoffset: 50px;
@@ -28,7 +26,7 @@
 }
 
 .circle {
-  stroke: @color-primary100;
+  stroke: var(--primary100);
   stroke-width: 2;
   fill: none;
   stroke-dasharray: 240px, 240px;
@@ -37,7 +35,7 @@
 }
 
 .path {
-  stroke: @color-primary100;
+  stroke: var(--primary100);
   stroke-width: 2;
   fill: none;
   stroke-dasharray: 50px, 50px;

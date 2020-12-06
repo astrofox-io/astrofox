@@ -1,12 +1,10 @@
-@import (reference) 'view/styles/variables';
-
 .panel {
   display: flex;
   flex: 1;
 }
 
 .tabs {
-  background-color: @color-gray75;
+  background-color: var(--gray75);
 }
 
 .tab {
@@ -16,7 +14,7 @@
   cursor: default;
 
   &.active {
-    background-color: @color-primary100;
+    background-color: var(--primary100);
   }
 }
 

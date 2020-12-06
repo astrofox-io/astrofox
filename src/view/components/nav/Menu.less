@@ -1,14 +1,12 @@
-@import (reference) 'view/styles/variables';
-
 .menu {
   position: absolute;
   top: 100%;
   left: 0;
   list-style: none;
-  background-color: @color-gray100;
+  background-color: var(--gray100);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
   overflow: hidden;
-  z-index: @z-index-menu;
+  z-index: var(--z-index-menu);
 }
 
 .separator {
@@ -16,7 +14,7 @@
 
   &:after {
     content: '';
-    border-top: 1px solid @color-primary100;
+    border-top: 1px solid var(--primary100);
     display: block;
   }
 

@@ -1,5 +1,3 @@
-@import (reference) 'view/styles/variables';
-
 .container {
   position: absolute;
   width: 100%;
@@ -8,14 +6,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: @z-index-modal-overlay;
+  z-index: var(--z-index-modal-overlay);
   perspective: 800px;
 }
 
 .modal {
   display: flex;
   transform-style: preserve-3d;
-  z-index: @z-index-modal-window;
+  z-index: var(--z-index-modal-window);
 }
 
 .hidden {

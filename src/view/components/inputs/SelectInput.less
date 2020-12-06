@@ -1,5 +1,3 @@
-@import (reference) 'view/styles/variables';
-
 .input {
   composes: input from 'TextInput.less';
   cursor: default;
@@ -17,14 +15,14 @@
     width: 6px;
     right: 10px;
     bottom: 12px;
-    border-top: 1px solid @input-text-color;
-    border-right: 1px solid @input-text-color;
+    border-top: 1px solid var(--input-text-color);
+    border-right: 1px solid var(--input-text-color);
     pointer-events: none;
   }
 
   .input {
     &.active {
-      border-color: @color-primary100;
+      border-color: var(--primary100);
     }
   }
 }
@@ -32,9 +30,9 @@
 .options {
   position: absolute;
   top: 100%;
-  z-index: @z-index-above;
+  z-index: var(--z-index-above);
   list-style: none;
-  background-color: @input-bg-color;
+  background-color: var(--input-bg-color);
   overflow: hidden;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 
@@ -44,8 +42,8 @@
 }
 
 .option {
-  color: @input-text-color;
-  font-size: @font-size-small;
+  color: var(--input-text-color);
+  font-size: var(--font-size-small);
   line-height: 24px;
   padding: 0 6px;
   min-width: 100px;
@@ -55,8 +53,8 @@
 
   &:hover {
     cursor: default;
-    color: @color-text100;
-    background-color: @color-primary100;
+    color: var(--text100);
+    background-color: var(--primary100);
   }
 }
 
@@ -74,7 +72,7 @@
     bottom: 0;
     margin: auto;
     height: 1px;
-    background-color: @color-primary100;
+    background-color: var(--primary100);
   }
 
   &:hover {

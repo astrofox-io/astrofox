@@ -1,8 +1,6 @@
-@import (reference) 'view/styles/variables';
-
 .button {
-  color: @color-text100;
-  background-color: @input-bg-color;
+  color: var(--text100);
+  background-color: var(--input-bg-color);
   min-height: 24px;
   min-width: 24px;
   text-align: center;
@@ -14,31 +12,31 @@
   flex-shrink: 0;
 
   &:hover {
-    background-color: @color-primary100;
+    background-color: var(--primary100);
   }
 }
 
 .icon {
-  color: @color-text100;
+  color: var(--text100);
   width: 12px;
   height: 12px;
 }
 
 .text {
-  font-size: @font-size-small;
+  font-size: var(--font-size-small);
 }
 
 .active {
-  background-color: @color-primary100;
+  background-color: var(--primary100);
 }
 
 .disabled {
   svg {
-    color: @color-gray500;
+    color: var(--gray500);
   }
 
   &:hover {
-    background-color: @input-bg-color;
+    background-color: var(--input-bg-color);
   }
 }
 

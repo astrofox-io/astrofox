@@ -1,14 +1,12 @@
-@import (reference) 'view/styles/variables';
-
 .statusBar {
   display: flex;
-  color: @color-text100;
-  background-color: @color-primary100;
+  color: var(--text100);
+  background-color: var(--primary100);
   font-size: 11px;
   padding: 0 20px;
   cursor: default;
   white-space: nowrap;
-  z-index: @z-index-above;
+  z-index: var(--z-index-above);
 }
 
 .item {
@@ -48,6 +46,6 @@
   padding: 0 8px;
 
   &:hover {
-    background-color: @color-primary200;
+    background-color: var(--primary200);
   }
 }

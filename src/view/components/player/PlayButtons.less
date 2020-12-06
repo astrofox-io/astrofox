@@ -1,17 +1,15 @@
-@import (reference) 'view/styles/variables';
-
 .buttons {
   white-space: nowrap;
 }
 
 .button {
-  color: @color-text100;
+  color: var(--text100);
   background-color: transparent;
   padding: 0;
   margin-right: 4px;
   display: inline-block;
   flex-wrap: nowrap;
-  border: 2px solid @color-gray300;
+  border: 2px solid var(--gray300);
   height: 40px;
   width: 40px;
   border-radius: 20px;
@@ -25,11 +23,11 @@
   }
 
   &:hover {
-    border: 2px solid @color-primary100;
+    border: 2px solid var(--primary100);
   }
 
   &:active {
-    border-color: @color-text100;
+    border-color: var(--text100);
   }
 }
 

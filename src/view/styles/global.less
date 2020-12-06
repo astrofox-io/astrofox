@@ -1,12 +1,10 @@
-@import (reference) 'view/styles/variables';
-
 :global {
   html,
   body {
-    font-family: @font-family;
-    font-size: @font-size-normal;
-    color: @color-text100;
-    background-color: @background-color;
+    font-family: var(--font-family);
+    font-size: var(--font-size-normal);
+    color: var(--text100);
+    background-color: var(--background-color);
     height: 100%;
     width: 100%;
     margin: 0;
@@ -26,8 +24,8 @@
   }
 
   ::selection {
-    color: @color-text100;
-    background-color: @color-primary100;
+    color: var(--text100);
+    background-color: var(--primary100);
   }
 
   #app {

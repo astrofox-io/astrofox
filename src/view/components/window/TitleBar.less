@@ -1,11 +1,9 @@
-@import (reference) 'view/styles/variables';
-
 .titlebar {
   display: flex;
   position: relative;
   height: 40px;
-  background-color: @color-gray75;
-  border-bottom: 1px solid @color-gray300;
+  background-color: var(--gray75);
+  border-bottom: 1px solid var(--gray300);
   -webkit-app-region: no-drag;
 
   &:before {
@@ -21,7 +19,7 @@
 
   &.focused {
     .title {
-      color: @color-text300;
+      color: var(--text300);
     }
   }
 }
@@ -30,8 +28,8 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: @font-size-normal;
-  color: @color-text400;
+  font-size: var(--font-size-normal);
+  color: var(--text400);
   line-height: 40px;
   letter-spacing: 5px;
   text-transform: uppercase;

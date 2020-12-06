@@ -1,12 +1,10 @@
-@import (reference) 'view/styles/variables';
-
 .layer {
   display: flex;
   flex-direction: row;
-  font-size: @font-size-small;
-  color: @color-text100;
-  background-color: @color-gray200;
-  border-bottom: 1px solid @color-gray75;
+  font-size: var(--font-size-small);
+  color: var(--text100);
+  background-color: var(--gray200);
+  border-bottom: 1px solid var(--gray75);
   padding: 5px;
   margin: 0 5px;
   position: relative;
@@ -34,11 +32,11 @@
 }
 
 .active {
-  background-color: @color-primary100;
+  background-color: var(--primary100);
 }
 
 .edit {
-  background-color: @color-gray100;
+  background-color: var(--gray100);
 }
 
 .text {
