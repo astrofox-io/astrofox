@@ -8,11 +8,11 @@ module.exports = function (api) {
       '@babel/env',
       {
         targets: {
-          electron: '10.1.5',
+          electron: '11.1.1',
         },
       },
     ],
-    '@babel/preset-react',
+    '@babel/react',
   ];
 
   const plugins = [

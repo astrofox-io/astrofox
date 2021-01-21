@@ -1,3 +1,4 @@
+import { Color } from 'three';
 import ShaderPass from 'graphics/ShaderPass';
 import BlendShader from 'shaders/BlendShader';
 import CopyShader from 'shaders/CopyShader';
@@ -51,7 +52,8 @@ export default class Composer {
 
   clear(color, alpha) {
     const { renderer } = this;
-    const clearColor = renderer.getClearColor();
+    const clearColor = new Color();
+    renderer.getClearColor(clearColor);
     const clearAlpha = renderer.getClearAlpha();
 
     if (color) {

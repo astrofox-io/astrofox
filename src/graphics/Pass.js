@@ -1,4 +1,4 @@
-import { Mesh, OrthographicCamera, Scene } from 'three';
+import { Mesh, OrthographicCamera, Scene, Color } from 'three';
 import { getFullscreenGeometry } from './common';
 
 export default class Pass {
@@ -39,8 +39,11 @@ export default class Pass {
       renderToScreen,
     } = this;
 
+    const oldColor = new Color();
+
     // Set new values
     if (setClearColor) {
+      renderer.getClearColor(oldColor);
       renderer.setClearColor(setClearColor, setClearAlpha);
     }
 
@@ -56,7 +59,7 @@ export default class Pass {
 
     // Reset values
     if (setClearColor) {
-      renderer.setClearColor(renderer.getClearColor(), renderer.getClearAlpha());
+      renderer.setClearColor(oldColor, renderer.getClearAlpha());
     }
   }
 }
