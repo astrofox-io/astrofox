@@ -103,7 +103,7 @@
     "electron-localshortcut": "^3.2.1",
     "glob": "^7.1.6",
     "id3js": "2.1.1",
-    "immer": "^8.0.0",
+    "immer": "^8.0.1",
     "lodash": "^4.17.20",
     "mime": "^2.4.7",
     "path-browserify": "^1.0.1",
