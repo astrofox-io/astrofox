@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path-browserify';
 import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';

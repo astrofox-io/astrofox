@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path-browserify';
 
 import Process from 'core/Process';
 import { replaceExt } from 'utils/file';
