@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import yauzl from 'yauzl';
-import { streamToBuffer } from 'utils/data';
 
 const plugins = {};
 
@@ -13,6 +12,16 @@ function initPlugin(id) {
 
 function getPluginId(file) {
   return path.parse(file).base;
+}
+
+function streamToBuffer(stream) {
+  const chunks = [];
+
+  return new Promise((resolve, reject) => {
+    stream.on('data', chunk => chunks.push(chunk));
+    stream.on('error', reject);
+    stream.on('end', () => resolve(Buffer.concat(chunks)));
+  });
 }
 
 function loadModule(id, data) {

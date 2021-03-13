@@ -36,12 +36,12 @@ export async function dataToBlob(data, ext) {
   return new Blob([new Uint8Array(data).buffer], { type: mime.getType(ext) });
 }
 
-export function streamToBuffer(stream) {
-  const chunks = [];
-
-  return new Promise((resolve, reject) => {
-    stream.on('data', chunk => chunks.push(chunk));
-    stream.on('error', reject);
-    stream.on('end', () => resolve(Buffer.concat(chunks)));
-  });
+export function base64ToBytes(base64) {
+  const str = atob(base64);
+  const len = str.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = str.charCodeAt(i);
+  }
+  return bytes;
 }

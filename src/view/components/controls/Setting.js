@@ -23,8 +23,8 @@ export default function Setting({
       <div className={styles.label} style={{ width: labelWidth }}>
         {label}
       </div>
-      {InputCompnent && (
-        <div style={{ width: inputWidth }}>
+      <div style={{ width: inputWidth }}>
+        {InputCompnent && (
           <InputCompnent
             {...inputProps}
             {...otherProps}
@@ -32,9 +32,9 @@ export default function Setting({
             value={value}
             onChange={onChange}
           />
-          {children}
-        </div>
-      )}
+        )}
+        {children}
+      </div>
     </div>
   );
 }

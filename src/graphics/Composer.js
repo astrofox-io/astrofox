@@ -3,6 +3,7 @@ import ShaderPass from 'graphics/ShaderPass';
 import BlendShader from 'shaders/BlendShader';
 import CopyShader from 'shaders/CopyShader';
 import blendModes from 'graphics/blendModes';
+import { base64ToBytes } from 'utils/data';
 import { createRenderTarget } from './common';
 
 export default class Composer {
@@ -30,7 +31,7 @@ export default class Composer {
   getImage(format = 'image/png') {
     const img = this.renderer.domElement.toDataURL(format);
     const data = img.replace(/^data:image\/\w+;base64,/, '');
-    return Buffer.from(data, 'base64');
+    return base64ToBytes(data);
   }
 
   setSize(width, height) {

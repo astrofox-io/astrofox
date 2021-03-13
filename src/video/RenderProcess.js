@@ -56,6 +56,10 @@ export default class RenderProcess extends Process {
         'yuv420p',
         '-f',
         format,
+        '-analyzeduration',
+        2147483647,
+        '-probesize',
+        2147483647,
       ];
 
       // Encoding options
