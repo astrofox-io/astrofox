@@ -19,7 +19,6 @@
     "airbnb-base",
     "airbnb/rules/react",
     "prettier",
-    "prettier/react",
     "plugin:jest/recommended"
   ],
   "plugins": ["prettier", "promise", "css-modules", "react", "react-hooks", "jest"],
