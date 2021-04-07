@@ -10,7 +10,8 @@ import styles from './Modals.less';
 export default function Modals() {
   const modals = useModals(state => state.modals);
 
-  const transitions = useTransition(modals, modal => modal.id, {
+  const transitions = useTransition(modals, {
+    keys: item => item.id,
     from: { opacity: 0, transform: 'scale(0.7) rotateX(-90deg)' },
     enter: { opacity: 1, transform: 'scale(1.0) rotateX(0deg)' },
     leave: { opacity: 0, transform: 'scale(0.7) rotateX(-90deg)' },
@@ -21,13 +22,13 @@ export default function Modals() {
     closeModal();
   }
 
-  return transitions.map(({ item, key, props }) => {
+  return transitions((style, item) => {
     const { component, modalProps, componentProps } = item;
     const Component = modalComponents[component];
     return (
       <div className={styles.container} key={component}>
         <Overlay show={!!modals.length} />
-        <animated.div key={key} className={styles.modal} style={props}>
+        <animated.div className={styles.modal} style={style}>
           <ModalWindow {...modalProps} onClose={handleClose}>
             {Component && <Component {...componentProps} onClose={handleClose} />}
           </ModalWindow>
