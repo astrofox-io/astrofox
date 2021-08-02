@@ -2,7 +2,7 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasShape from 'canvas/CanvasShape';
 import { property, stageWidth, stageHeight, maxSize } from 'utils/controls';
 
-const shapeOptions = ['Circle', 'Triangle', 'Square', 'Rectangle'];
+const shapeOptions = ['Circle', 'Triangle', 'Square', 'Rectangle', 'Hexagon'];
 
 const isRectangle = display => display.properties.shape === 'Rectangle';
 

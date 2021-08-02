@@ -3,6 +3,7 @@ import { resetCanvas } from 'utils/canvas';
 import { deg2rad } from 'utils/math';
 
 const TRIANGLE_ANGLE = (2 * Math.PI) / 3;
+const HEXAGON_ANGLE = (2 * Math.PI) / 6;
 
 export default class CanvasShape extends Entity {
   static defaultProperties = {
@@ -62,6 +63,22 @@ export default class CanvasShape extends Entity {
       context.moveTo(points[0].x, points[0].y);
       for (let i = 1; i < points.length; i++) {
         context.lineTo(points[i].x, points[i].y);
+      }
+      context.closePath();
+    } else if (shape === 'Hexagon') {
+      const hexPoints = [];
+
+      for (let i = 0; i < 6; i++) {
+        hexPoints.push({
+          x: x + r * Math.cos(i * HEXAGON_ANGLE),
+          y: y + r * Math.sin(i * HEXAGON_ANGLE),
+        });
+      }
+
+      context.beginPath();
+      context.moveTo(hexPoints[0].x, hexPoints[0].y);
+      for (let i = 1; i < hexPoints.length; i++) {
+        context.lineTo(hexPoints[i].x, hexPoints[i].y);
       }
       context.closePath();
     } else {
