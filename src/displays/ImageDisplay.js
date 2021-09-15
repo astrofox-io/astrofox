@@ -2,6 +2,7 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
 import { BLANK_IMAGE } from 'view/constants';
 import { isDefined } from 'utils/array';
+import { maxSize } from 'utils/controls';
 
 const disabled = display => !display.hasImage;
 const maxWidth = display => {
@@ -30,8 +31,10 @@ export default class ImageDisplay extends CanvasDisplay {
       x: 0,
       y: 0,
       width: 0,
+      size : 100,
       height: 0,
       fixed: true,
+      bounce: false,
       rotation: 0,
       opacity: 0,
     },
@@ -56,6 +59,20 @@ export default class ImageDisplay extends CanvasDisplay {
         max: maxHeight,
         withRange: true,
         withLink: 'fixed',
+        disabled,
+      },
+      size: {
+        label: 'Size',
+        type: 'number',
+        min: 1,
+        max: 100,
+        withRange: true,
+        disabled,
+      },
+      bounce: {
+        label: 'Bounce',
+        type: 'checkbox',
+        withReactor: true,
         disabled,
       },
       x: {
@@ -107,8 +124,8 @@ export default class ImageDisplay extends CanvasDisplay {
   }
 
   update(properties) {
-    const { src: newImage, width, height } = properties;
-    const { src, fixed } = this.properties;
+    const { src: newImage, width, height ,size } = properties;
+    const { src, fixed ,bounce } = this.properties;
 
     if (typeof newImage === 'object') {
       if (newImage.src === BLANK_IMAGE) {
@@ -127,7 +144,7 @@ export default class ImageDisplay extends CanvasDisplay {
       }
     }
 
-    if (fixed && isDefined(width, height)) {
+    if (fixed && isDefined(width, height,size,bounce)) {
       const { naturalWidth, naturalHeight } = this.image.image;
       const ratio = naturalWidth / naturalHeight;
 
@@ -136,6 +153,16 @@ export default class ImageDisplay extends CanvasDisplay {
       }
       if (height) {
         properties.width = Math.round(height * ratio);
+      }
+      if (size) {
+        properties.size = size
+        properties.height = Math.round(naturalHeight/100)*size
+        properties.width = Math.round(naturalWidth/100)*size
+      }
+      if (bounce) {
+        var calculatedChange = this.properties.size + Math.round((bounce*100))
+        properties.height = Math.round(naturalHeight/100)*calculatedChange
+        properties.width = Math.round(naturalWidth/100)*calculatedChange
       }
     }
 
