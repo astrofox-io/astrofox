@@ -2,7 +2,6 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
 import { BLANK_IMAGE } from 'view/constants';
 import { isDefined } from 'utils/array';
-import { maxSize } from 'utils/controls';
 
 const disabled = display => !display.hasImage;
 const maxWidth = display => {
@@ -65,7 +64,7 @@ export default class ImageDisplay extends CanvasDisplay {
         label: 'Size',
         type: 'number',
         min: 1,
-        max: 100,
+        max: 400,
         withRange: true,
         disabled,
       },
@@ -170,7 +169,7 @@ export default class ImageDisplay extends CanvasDisplay {
 
     if (changed) {
       if (this.image.update(properties)) {
-        this.image.render();
+        this.image.render(); 
       }
     }
 
