@@ -19,7 +19,7 @@ const initialState = {
 export default function RenderPanel({ onClose }) {
   const [state, setState] = useState(initialState);
   const { status, frames, currentFrame, lastFrame, startTime, finished } = state;
-  const elapsedTime = (Date.now() - startTime) / 1000;
+  const elapsedTime = startTime ? (Date.now() - startTime) / 1000 : 0;
   const frame = frames - (lastFrame - currentFrame);
   const progress = frames > 0 ? frame / frames : 0;
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
@@ -30,6 +30,7 @@ export default function RenderPanel({ onClose }) {
   const estimatedTotalTimeThreshold = 0.1;
   const estimatedTotalTime =
     progress > 0.05 ? ` / ${estimatedTotalTimeThreshold && formatTime(totalTime)}` : '';
+  const currentTotalTime = formatTime(elapsedTime);
 
   function handleButtonClick() {
     stopRender();
@@ -93,7 +94,7 @@ export default function RenderPanel({ onClose }) {
       <div className={styles.stats}>
         <div className={styles.row}>
           <Stat label="Progress" value={`${~~(progress * 100)}%`} />
-          <Stat label="Elapsed Time" value={`${formatTime(elapsedTime)}${estimatedTotalTime}`} />
+          <Stat label="Elapsed Time" value={`${currentTotalTime}${estimatedTotalTime}`} />
           <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
           <Stat label="FPS" value={fps.toFixed(1)} />
           <Button text={finished ? 'Close' : 'Cancel'} onClick={handleButtonClick} />
