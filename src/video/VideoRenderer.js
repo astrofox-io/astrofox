@@ -21,12 +21,12 @@ export default class VideoRenderer extends EventEmitter {
       logger.log(data);
 
       // Start requesting frames
-      if (!this.started) {
+      if (!this.running) {
         setTimeout(() => {
-          this.started = true;
+          this.running = true;
 
-          this.emit('ready');
-        }, 1000);
+          this.renderFrames();
+        }, 500);
       }
     });
 
@@ -48,7 +48,7 @@ export default class VideoRenderer extends EventEmitter {
 
     const { fps, timeStart, timeEnd } = config;
 
-    this.started = false;
+    this.running = false;
     this.finished = false;
     this.currentProcess = null;
     this.startTime = 0;
@@ -72,10 +72,6 @@ export default class VideoRenderer extends EventEmitter {
 
       logger.log('Starting video render', id);
 
-      this.on('ready', () => {
-        this.processFrame();
-      });
-
       // Render video
       this.emit('status', 'Rendering video');
       this.currentProcess = renderProcess;
@@ -98,14 +94,12 @@ export default class VideoRenderer extends EventEmitter {
       await mergeProcess.start(outputVideoFile, outputAudioFile, videoFile);
     } catch (error) {
       logger.error(error);
-
-      throw error;
     } finally {
+      this.running = false;
       this.finished = true;
 
       this.emit('status', 'Finished');
       this.emit('finished');
-      this.off('ready');
 
       this.renderer.start();
     }
@@ -114,40 +108,42 @@ export default class VideoRenderer extends EventEmitter {
   stop() {
     if (!this.finished) {
       this.currentProcess?.stop();
+      this.running = false;
 
       logger.log('Video rendering stopped.');
     }
   }
 
-  async processFrame() {
-    if (this.finished) return;
-
+  async renderFrames() {
     const {
+      renderer,
       renderProcess,
       frames,
-      currentFrame,
-      lastFrame,
       startTime,
       config: { fps },
     } = this;
 
-    const image = await this.renderer.renderFrame(this.currentFrame, fps);
-
     try {
-      renderProcess.push(image);
+      while (this.currentFrame < this.lastFrame && this.running) {
+        const image = await renderer.renderFrame(this.currentFrame, fps);
 
-      if (currentFrame < lastFrame) {
+        renderProcess.push(image);
+
         this.currentFrame += 1;
-        this.emit('ready');
-      } else {
-        renderProcess.end();
-      }
 
-      this.emit('stats', { frames, currentFrame, lastFrame, startTime });
+        this.emit('stats', {
+          frames,
+          currentFrame: this.currentFrame,
+          lastFrame: this.lastFrame,
+          startTime,
+        });
+      }
     } catch (error) {
       if (error.message.indexOf('write EPIPE') < 0) {
         throw error;
       }
+    } finally {
+      renderProcess.end();
     }
   }
 }

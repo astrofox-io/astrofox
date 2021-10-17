@@ -81,9 +81,9 @@ export default class Renderer {
     frameData.hasUpdate = !!requestUpdate;
 
     // Rendering single frame
-    if (frameData.id === 0) {
+    if (frameData.id === VIDEO_RENDERING) {
       // Fix time data display bug
-      frameData.td = frameData.td.subarray(0, ~~(frameData.td.length * 0.93));
+      frameData.td = Float32Array.from(frameData.td.filter(n => n !== 0));
     }
 
     frameData.reactors = reactors.getResults(frameData);
@@ -128,11 +128,9 @@ export default class Renderer {
 
           stage.render(data);
 
-          const buffer = stage.getImage();
-
           bufferSource.disconnect();
 
-          resolve(buffer);
+          resolve(stage.getImage());
         };
 
         bufferSource.start(0, frame / fps, 1 / fps);

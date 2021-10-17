@@ -39,5 +39,7 @@ export default class Process extends EventEmitter {
     this.end = end;
 
     this.emit('start');
+
+    return null;
   }
 }
