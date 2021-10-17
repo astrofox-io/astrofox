@@ -12,15 +12,24 @@ import { FolderOpen } from 'view/icons';
 import useAudio, { openAudioFile } from 'actions/audio';
 import { startRender } from 'actions/video';
 import styles from './VideoSettings.less';
+import videoConfig from 'config/video.json';
 
-const videoFormats = ['mp4', 'webm'];
-const qualitySettings = ['Low', 'Medium', 'High'];
+const qualitySettings = [
+  { label: 'Low', value: 'low' },
+  { label: 'Medium', value: 'medium' },
+  { label: 'High', value: 'high' },
+];
+
+const videoCodecs = Object.keys(videoConfig.codecs).map(key => ({
+  label: videoConfig.codecs[key].label,
+  value: key,
+}));
 
 const initialState = {
   videoFile: '',
-  format: 'mp4',
+  codec: 'x264',
   fps: 60,
-  quality: 'High',
+  quality: 'high',
   timeStart: 0,
   timeEnd: 0,
 };
@@ -28,8 +37,9 @@ const initialState = {
 export default function VideoSettings({ onClose }) {
   const [audioFile, duration] = useAudio(state => [state.file, state.duration], shallow);
   const [state, setState] = useState(initialState);
-  const { videoFile, format, fps, quality, timeStart, timeEnd } = state;
+  const { videoFile, codec, fps, quality, timeStart, timeEnd } = state;
   const canStart = videoFile && audioFile && timeEnd - timeStart > 0;
+  const { extension } = videoConfig.codecs[codec].video;
 
   useEffect(() => {
     player.stop();
@@ -60,11 +70,11 @@ export default function VideoSettings({ onClose }) {
 
   async function handleOpenVideoFile() {
     const { filePath, canceled } = await api.showSaveDialog({
-      defaultPath: `video-${Date.now()}.${format}`,
+      defaultPath: `video-${Date.now()}.${extension}`,
     });
 
     if (!canceled) {
-      setState(state => ({ ...state, videoFile: replaceExt(filePath, `.${format}`) }));
+      setState(state => ({ ...state, videoFile: replaceExt(filePath, `.${extension}`) }));
     }
   }
 
@@ -113,7 +123,7 @@ export default function VideoSettings({ onClose }) {
             onClick={handleOpenAudioFile}
           />
         </Setting>
-        <Setting label="Format" type="select" name="format" items={videoFormats} value={format} />
+        <Setting label="Codec" type="select" name="codec" items={videoCodecs} value={codec} />
         <Setting
           label="Quality"
           type="select"

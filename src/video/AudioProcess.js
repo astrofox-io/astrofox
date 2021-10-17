@@ -1,36 +1,24 @@
 import path from 'path-browserify';
-
 import Process from 'core/Process';
 import { replaceExt } from 'utils/file';
-
-const codecOptions = {
-  mp4: 'aac',
-  webm: 'libvorbis',
-};
-
-const extOptions = {
-  mp4: '.aac',
-  webm: '.ogg',
-};
+import videoConfig from 'config/video.json';
 
 export default class AudioProcess extends Process {
-  start(audioFile, file, format, timeStart, timeEnd) {
+  start(audioFile, file, codec, timeStart, timeEnd) {
     return new Promise((resolve, reject) => {
       const ext = path.extname(audioFile);
       const duration = timeEnd - timeStart;
-      let codec = codecOptions[format];
-      let outputExt = extOptions[format];
+      const { encoder, extension, settings } = videoConfig.codecs[codec].audio;
 
       // If source is already in correct format, just copy
       if (
-        (format === 'mp4' && ['.m4a', '.aac'].indexOf(ext) >= 0) ||
-        (format === 'webm' && ext === '.ogg')
+        (/x264|nvenc/.test(codec) && /\.(mp4|aac)/.test(ext)) ||
+        (codec === 'webm' && ext === '.ogg')
       ) {
         codec = 'copy';
-        outputExt = ext;
       }
 
-      const outputFile = replaceExt(file, outputExt);
+      const outputFile = replaceExt(file, `.${extension}`);
 
       this.on('close', code => {
         if (code !== 0) {
@@ -47,17 +35,20 @@ export default class AudioProcess extends Process {
         this.emit('output', data);
       });
 
-      const args = ['-y', '-i', audioFile, '-ss', timeStart, '-t', duration, '-c:a', codec];
-
       // Encoding options
-      if (codec === 'aac') {
-        args.push('-b:a', '192k');
-      } else if (codec === 'libvorbis') {
-        args.push('-qscale:a', 6);
-      }
-
-      // Output file
-      args.push(outputFile);
+      const args = [
+        '-y',
+        '-i',
+        audioFile,
+        '-ss',
+        timeStart,
+        '-t',
+        duration,
+        '-c:a',
+        encoder,
+        ...settings,
+        outputFile,
+      ];
 
       super.start(args);
     });

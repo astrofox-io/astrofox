@@ -1,28 +1,12 @@
 import Process from 'core/Process';
 import { replaceExt } from 'utils/file';
-
-const codecOptions = {
-  mp4: 'libx264',
-  webm: 'libvpx',
-};
-
-const ffmpegQualityOptions = {
-  Low: ['-preset', 'veryfast', '-crf', 23],
-  Medium: ['-preset', 'medium', '-crf', 20],
-  High: ['-preset', 'slow', '-crf', 18],
-};
-
-const webmQualityOptions = {
-  Low: ['-crf', 10],
-  Medium: ['-crf', 5],
-  High: ['-crf', 4],
-};
+import videoConfig from 'config/video.json';
 
 export default class RenderProcess extends Process {
-  start(file, format, fps, quality) {
+  start(file, codec, fps, quality) {
     return new Promise((resolve, reject) => {
-      const codec = codecOptions[format];
-      const outputFile = replaceExt(file, `.${format}`);
+      const { extension, settings, encoder } = videoConfig.codecs[codec].video;
+      const outputFile = replaceExt(file, `.${extension}`);
 
       this.on('close', code => {
         if (code !== 0) {
@@ -39,7 +23,8 @@ export default class RenderProcess extends Process {
         this.emit('output', data);
       });
 
-      let args = [
+      // Encoding options
+      const args = [
         '-y',
         '-stats',
         '-r',
@@ -51,48 +36,19 @@ export default class RenderProcess extends Process {
         '-i',
         'pipe:0',
         '-c:v',
-        codec,
+        encoder,
         '-pix_fmt',
         'yuv420p',
         '-f',
-        format,
+        extension,
         '-analyzeduration',
         2147483647,
         '-probesize',
         2147483647,
+        ...settings.default,
+        ...settings[quality],
+        outputFile
       ];
-
-      // Encoding options
-      if (format === 'mp4') {
-        args = [
-          ...args,
-          ...ffmpegQualityOptions[quality],
-          '-profile:v',
-          'high',
-          '-tune',
-          'animation',
-          '-movflags',
-          '+faststart',
-        ];
-      } else if (format === 'webm') {
-        args = [
-          ...args,
-          '-quality',
-          'good',
-          '-cpu-used',
-          0,
-          '-qmin',
-          0,
-          '-qmax',
-          50,
-          '-b:v',
-          '20M',
-          ...webmQualityOptions[quality],
-        ];
-      }
-
-      // Output file
-      args.push(outputFile);
 
       super.start(args);
     });

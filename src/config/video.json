@@ -1,0 +1,59 @@
+{
+  "codecs": {
+    "x264": {
+      "label": "x264",
+      "video": {
+        "encoder": "libx264",
+        "extension": "mp4",
+        "settings": {
+          "default": ["-profile:v", "high", "-tune", "animation", "-movflags", "+faststart"],
+          "low": ["-preset", "veryfast", "-crf", 23],
+          "medium": ["-preset", "medium", "-crf", 20],
+          "high": ["-preset", "slow", "-crf", 18]
+        }
+      },
+      "audio": {
+        "encoder": "aac",
+        "extension": "aac",
+        "settings": ["-b:a", "192k"]
+      }
+    },
+    "webm": {
+      "label": "WebM",
+      "video": {
+        "encoder": "libvpx",
+        "extension": "webm",
+        "settings": {
+          "default": ["-quality", "good", "-cpu-used", 0, "-qmin", 0, "-qmax", 50, "-b:v", "20M"],
+          "low": ["-crf", 10],
+          "medium": ["-crf", 5],
+          "high": ["-crf", 4]
+        }
+      },
+      "audio": {
+        "encoder": "ogg",
+        "extension": "ogg",
+        "settings": ["-qscale:a", 6]
+      }
+    },
+    "nvenc": {
+      "label": "NVEnc",
+      "extension": "mp4",
+      "video": {
+        "encoder": "h264_nvenc",
+        "extension": "mp4",
+        "settings": {
+          "default": ["-profile:v", "high", "-tune", "animation", "-movflags", "+faststart"],
+          "low": ["-preset", "veryfast", "-crf", 23],
+          "medium": ["-preset", "medium", "-crf", 20],
+          "high": ["-preset", "slow", "-crf", 18]
+        }
+      },
+      "audio": {
+        "encoder": "aac",
+        "extension": "aac",
+        "settings": ["-b:a", "192k"]
+      }
+    }
+  }
+}
