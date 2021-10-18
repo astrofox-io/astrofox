@@ -6,7 +6,8 @@
         "encoder": "libx264",
         "extension": "mp4",
         "settings": {
-          "default": ["-profile:v", "high", "-tune", "animation", "-movflags", "+faststart"],
+          "input": [],
+          "output": ["-profile:v", "high", "-tune", "animation", "-movflags", "+faststart"],
           "low": ["-preset", "veryfast", "-crf", 23],
           "medium": ["-preset", "medium", "-crf", 20],
           "high": ["-preset", "slow", "-crf", 18]
@@ -24,7 +25,8 @@
         "encoder": "libvpx",
         "extension": "webm",
         "settings": {
-          "default": ["-quality", "good", "-cpu-used", 0, "-qmin", 0, "-qmax", 50, "-b:v", "20M"],
+          "input": [],
+          "output": ["-quality", "good", "-cpu-used", 0, "-qmin", 0, "-qmax", 50, "-b:v", "20M"],
           "low": ["-crf", 10],
           "medium": ["-crf", 5],
           "high": ["-crf", 4]
@@ -38,12 +40,36 @@
     },
     "nvenc": {
       "label": "NVEnc",
-      "extension": "mp4",
       "video": {
         "encoder": "h264_nvenc",
         "extension": "mp4",
         "settings": {
-          "default": ["-profile:v", "high", "-tune", "animation", "-movflags", "+faststart"],
+          "input": [
+            "-threads",
+            1,
+            "-hwaccel",
+            "nvdec",
+            "-hwaccel_device",
+            0,
+            "-hwaccel_output_format",
+            "cuda"
+          ],
+          "output": [
+            "-cq:v",
+            21,
+            "-rc:v",
+            "vbr",
+            "-tune:v",
+            "ll",
+            "-preset:v",
+            "p1",
+            "-maxrate:v",
+            "5000K",
+            "-bufsize:v",
+            "5000K",
+            "-movflags",
+            "+faststart"
+          ],
           "low": ["-preset", "veryfast", "-crf", 23],
           "medium": ["-preset", "medium", "-crf", 20],
           "high": ["-preset", "slow", "-crf", 18]

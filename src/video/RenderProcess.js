@@ -25,6 +25,8 @@ export default class RenderProcess extends Process {
 
       // Encoding options
       const args = [
+        '-loglevel',
+        'debug',
         '-y',
         '-stats',
         '-r',
@@ -33,6 +35,7 @@ export default class RenderProcess extends Process {
         'image2pipe',
         '-c:v',
         'png',
+        ...settings.input,
         '-i',
         'pipe:0',
         '-c:v',
@@ -45,7 +48,7 @@ export default class RenderProcess extends Process {
         2147483647,
         '-probesize',
         2147483647,
-        ...settings.default,
+        ...settings.output,
         ...settings[quality],
         outputFile
       ];
