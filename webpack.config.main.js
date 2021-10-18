@@ -28,12 +28,12 @@ module.exports = {
       {
         test: /\.js$/,
         include: [path.resolve(__dirname, 'src/js')],
-        use: {
+        use: [{
           loader: 'babel-loader',
           options: {
             cacheDirectory: true,
           },
-        },
+        }],
       },
     ],
   },

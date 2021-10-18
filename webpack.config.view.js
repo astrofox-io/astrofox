@@ -18,7 +18,7 @@ module.exports = {
   },
   devServer: {
     port: PORT,
-    hotOnly: true,
+    hot: 'only',
     historyApiFallback: true,
   },
   output: {
@@ -38,12 +38,12 @@ module.exports = {
       {
         test: /\.js$/,
         include: [path.resolve(__dirname, 'src')],
-        use: {
+        use: [{
           loader: 'babel-loader',
           options: {
             cacheDirectory: true,
           },
-        },
+        }],
       },
       {
         test: /\.less$/,
@@ -73,39 +73,39 @@ module.exports = {
       {
         test: /\.(jpg|png|gif)$/,
         include: path.resolve(__dirname, 'src/view/assets/images'),
-        use: {
+        use: [{
           loader: 'file-loader',
           options: {
             name: '[name].[ext]',
             outputPath: 'images',
             publicPath: 'images',
           },
-        },
+        }],
       },
       {
         test: /\.svg$/,
-        use: {
+        use: [{
           loader: 'svg-sprite-loader',
           options: {
             extract: true,
             publicPath: './',
           },
-        },
+        }],
       },
       {
         test: /\.(html|css)$/,
-        use: {
+        use: [{
           loader: 'file-loader',
           options: {
             name: '[name].[ext]',
           },
-        },
+        }],
       },
       {
         test: /\.glsl$/,
-        use: {
+        use: [{
           loader: 'glsl-loader',
-        },
+        }],
       },
     ],
   },
