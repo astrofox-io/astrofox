@@ -123,7 +123,7 @@ export default function VideoSettings({ onClose }) {
             onClick={handleOpenAudioFile}
           />
         </Setting>
-        <Setting label="Codec" type="select" name="codec" items={videoCodecs} value={codec} />
+        <Setting label="Encoder" type="select" name="codec" items={videoCodecs} value={codec} />
         <Setting
           label="Quality"
           type="select"
