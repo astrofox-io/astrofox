@@ -6,13 +6,13 @@ import Overlay from 'components/window/Overlay';
 import { stage } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import useStage from 'actions/stage';
-import useVideo, { stopRender } from 'actions/video';
+import useVideo from 'actions/video';
 import useAudioStore, { loadAudioFile } from 'actions/audio';
 import styles from './Stage.less';
 
 export default function Stage() {
   const [width, height, zoom] = useStage(state => [state.width, state.height, state.zoom], shallow);
-  const rendering = useVideo(state => state.rendering);
+  const active = useVideo(state => state.active);
   const canvas = useRef(null);
   const loading = useAudioStore(state => state.loading);
 
@@ -23,15 +23,13 @@ export default function Stage() {
   async function handleDrop(e) {
     ignoreEvents(e);
 
+    if (active) return;
+
     const file = e.dataTransfer.files[0];
 
-    if (file && !rendering) {
+    if (file) {
       await loadAudioFile(file.path);
     }
-  }
-
-  async function handleRenderClose() {
-    await stopRender();
   }
 
   const style = {
@@ -41,12 +39,12 @@ export default function Stage() {
 
   return (
     <div className={styles.stage}>
-      <Overlay show={rendering} />
+      <Overlay show={active} />
       <div className={styles.scroll}>
         <div className={styles.canvas} onDrop={handleDrop} onDragOver={ignoreEvents}>
           <canvas ref={canvas} style={style} />
           <Loading show={loading} />
-          <RenderInfo show={rendering} onClose={handleRenderClose} />
+          <RenderInfo show={active} />
         </div>
       </div>
     </div>

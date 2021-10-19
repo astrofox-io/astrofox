@@ -1,58 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import CanvasMeter from 'canvas/CanvasMeter';
 import Button from 'components/interface/Button';
-import { videoRenderer } from 'view/global';
 import { formatTime } from 'utils/format';
-import { stopRender } from 'actions/video';
+import useVideo, { stopRender } from 'actions/video';
 import { PRIMARY_COLOR } from 'view/constants';
 import styles from './RenderPanel.less';
 
-const initialState = {
-  finished: false,
-  frames: 0,
-  currentFrame: 0,
-  lastFrame: 0,
-  startTime: 0,
-};
+const PROGRESS_MIN = 0.05;
+const PROGRESS_THRESHHOLD = 0.1;
 
-export default function RenderPanel({ onClose }) {
-  const [state, setState] = useState(initialState);
-  const { status, frames, currentFrame, lastFrame, startTime, finished } = state;
+export default function RenderPanel({ onClose = () => {} }) {
+  const { active, finished, status, frames, currentFrame, lastFrame, startTime } = useVideo();
   const elapsedTime = startTime ? (Date.now() - startTime) / 1000 : 0;
   const frame = frames - (lastFrame - currentFrame);
   const progress = frames > 0 ? frame / frames : 0;
   const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
+  const totalTime = frame > 0 ? (frames * elapsedTime) / frame : null;
+  const estimatedTotalTime =
+    progress > PROGRESS_MIN ? ` / ${PROGRESS_THRESHHOLD && formatTime(totalTime)}` : '';
+  const currentTotalTime = formatTime(elapsedTime);
   const canvas = useRef();
   const progressBar = useRef();
 
-  const totalTime = frame > 0 ? (frames * elapsedTime) / frame : null;
-  const estimatedTotalTimeThreshold = 0.1;
-  const estimatedTotalTime =
-    progress > 0.05 ? ` / ${estimatedTotalTimeThreshold && formatTime(totalTime)}` : '';
-  const currentTotalTime = formatTime(elapsedTime);
-
-  function handleButtonClick() {
+  function handleClose() {
     stopRender();
-
     onClose();
-  }
-
-  function setFinished() {
-    setState(state => ({ ...state, finished: true }));
-  }
-
-  function updateStatus(status) {
-    setState(state => ({ ...state, status }));
-  }
-
-  function updateStats(stats) {
-    if (stats && stats.currentFrame > currentFrame) {
-      setState(state => ({
-        ...state,
-        ...stats,
-      }));
-    }
   }
 
   function draw() {
@@ -68,18 +41,6 @@ export default function RenderPanel({ onClose }) {
       },
       canvas.current,
     );
-
-    videoRenderer.on('status', updateStatus);
-    videoRenderer.on('stats', updateStats);
-    videoRenderer.on('finished', setFinished);
-
-    return () => {
-      videoRenderer.off('status', updateStatus);
-      videoRenderer.off('stats', updateStats);
-      videoRenderer.off('finished', setFinished);
-
-      stopRender();
-    };
   }, []);
 
   useEffect(() => {
@@ -97,7 +58,7 @@ export default function RenderPanel({ onClose }) {
           <Stat label="Elapsed Time" value={`${currentTotalTime}${estimatedTotalTime}`} />
           <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
           <Stat label="FPS" value={fps.toFixed(1)} />
-          <Button text={finished ? 'Close' : 'Cancel'} onClick={handleButtonClick} />
+          <Button text={finished ? 'Close' : 'Cancel'} onClick={handleClose} />
         </div>
         <div className={styles.row}>
           <Stat label="Status" value={status} />

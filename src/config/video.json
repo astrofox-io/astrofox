@@ -7,7 +7,7 @@
         "extension": "mp4",
         "settings": {
           "input": [],
-          "output": ["-profile:v", "high", "-tune", "animation", "-movflags", "+faststart"],
+          "output": ["-profile", "high", "-tune", "animation", "-movflags", "+faststart"],
           "low": ["-preset", "veryfast", "-crf", 23],
           "medium": ["-preset", "medium", "-crf", 20],
           "high": ["-preset", "slow", "-crf", 18]
@@ -55,24 +55,45 @@
             "cuda"
           ],
           "output": [
-            "-cq:v",
-            21,
-            "-rc:v",
-            "vbr",
-            "-tune:v",
-            "ll",
-            "-preset:v",
-            "p1",
-            "-maxrate:v",
-            "5000K",
-            "-bufsize:v",
-            "5000K",
             "-movflags",
             "+faststart"
           ],
-          "low": ["-preset", "veryfast", "-crf", 23],
-          "medium": ["-preset", "medium", "-crf", 20],
-          "high": ["-preset", "slow", "-crf", 18]
+          "low": [
+            "-tune",
+            "ll",
+            "-preset",
+            "p3",
+            "-profile",
+            "high",
+            "-rc",
+            "constqp",
+            "-qp",
+            23
+          ],
+          "medium": [
+            "-tune",
+            "hq",
+            "-preset",
+            "p4",
+            "-profile",
+            "high",
+            "-rc",
+            "constqp",
+            "-qp",
+            20
+          ],
+          "high": [
+            "-tune",
+            "hq",
+            "-preset",
+            "p6",
+            "-profile",
+            "high",
+            "-rc",
+            "constqp",
+            "-qp",
+            18
+          ]
         }
       },
       "audio": {

@@ -1,15 +1,13 @@
 import path from 'path-browserify';
-import EventEmitter from 'core/EventEmitter';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
 import { api, logger } from 'view/global';
+import { stopRender, updateState } from 'actions/video';
 import { uniqueId } from 'utils/crypto';
 
-export default class VideoRenderer extends EventEmitter {
+export default class VideoRenderer {
   constructor(renderer) {
-    super();
-
     const { FFMPEG_BINARY } = api.getEnvironment();
 
     this.renderer = renderer;
@@ -20,7 +18,7 @@ export default class VideoRenderer extends EventEmitter {
     this.renderProcess.on('output', data => {
       logger.log(data);
 
-      // Start requesting frames
+      // Start rendering frame when ffmpeg is ready
       if (!this.running) {
         setTimeout(() => {
           this.running = true;
@@ -73,12 +71,12 @@ export default class VideoRenderer extends EventEmitter {
       logger.log('Starting video render', id);
 
       // Render video
-      this.emit('status', 'Rendering video');
+      updateState({ status: 'Rendering video' });
       this.currentProcess = renderProcess;
       const outputVideoFile = await renderProcess.start(tempVideoFile, codec, fps, quality);
 
       // Render audio
-      this.emit('status', 'Rendering audio');
+      updateState({ status: 'Rendering audio' });
       this.currentProcess = audioProcess;
       const outputAudioFile = await audioProcess.start(
         audioFile,
@@ -89,17 +87,19 @@ export default class VideoRenderer extends EventEmitter {
       );
 
       // Merge audio and video
-      this.emit('status', 'Merging audio and video');
+      updateState({ status: 'Merging audio and video' });
       this.currentProcess = mergeProcess;
       await mergeProcess.start(outputVideoFile, outputAudioFile, videoFile);
-    } catch (error) {
-      logger.error(error);
-    } finally {
-      this.running = false;
+
       this.finished = true;
 
-      this.emit('status', 'Finished');
-      this.emit('finished');
+      updateState({ status: 'Finished', finished: true });
+    } catch (error) {
+      logger.error(error);
+
+      updateState({ status: 'Error' });
+    } finally {
+      this.running = false;
 
       this.renderer.start();
     }
@@ -131,7 +131,7 @@ export default class VideoRenderer extends EventEmitter {
 
         this.currentFrame += 1;
 
-        this.emit('stats', {
+        updateState({
           frames,
           currentFrame: this.currentFrame,
           lastFrame: this.lastFrame,
