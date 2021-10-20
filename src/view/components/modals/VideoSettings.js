@@ -39,7 +39,6 @@ export default function VideoSettings({ onClose }) {
   const [state, setState] = useState(initialState);
   const { videoFile, codec, fps, quality, timeStart, timeEnd } = state;
   const canStart = videoFile && audioFile && timeEnd - timeStart > 0;
-  const { extension } = videoConfig.codecs[codec].video;
 
   useEffect(() => {
     player.stop();
@@ -52,8 +51,10 @@ export default function VideoSettings({ onClose }) {
   }, []);
 
   function handleChange(props) {
-    if (props.format && videoFile) {
-      props.videoFile = replaceExt(videoFile, `.${props.format}`);
+    if (props.codec && videoFile) {
+      const { extension } = videoConfig.codecs[props.codec].video;
+
+      props.videoFile = replaceExt(videoFile, `.${extension}`);
     }
 
     setState(state => ({ ...state, ...props }));
@@ -69,6 +70,8 @@ export default function VideoSettings({ onClose }) {
   }
 
   async function handleOpenVideoFile() {
+    const { extension } = videoConfig.codecs[codec].video;
+
     const { filePath, canceled } = await api.showSaveDialog({
       defaultPath: `video-${Date.now()}.${extension}`,
     });

@@ -33,7 +33,7 @@
         }
       },
       "audio": {
-        "encoder": "ogg",
+        "encoder": "libvorbis",
         "extension": "ogg",
         "settings": ["-qscale:a", 6]
       }
@@ -68,7 +68,7 @@
             "-rc",
             "constqp",
             "-qp",
-            23
+            27
           ],
           "medium": [
             "-tune",
@@ -80,7 +80,7 @@
             "-rc",
             "constqp",
             "-qp",
-            20
+            23
           ],
           "high": [
             "-tune",
@@ -92,7 +92,7 @@
             "-rc",
             "constqp",
             "-qp",
-            18
+            20
           ]
         }
       },

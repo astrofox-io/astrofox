@@ -10,7 +10,7 @@ export default class RenderProcess extends Process {
 
       this.on('close', code => {
         if (code !== 0) {
-          reject(new Error('Process was terminated.'));
+          reject(new Error('Process terminated.'));
         }
         resolve(outputFile);
       });

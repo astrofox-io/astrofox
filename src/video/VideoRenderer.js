@@ -5,6 +5,7 @@ import MergeProcess from 'video/MergeProcess';
 import { api, logger } from 'view/global';
 import { stopRender, updateState } from 'actions/video';
 import { uniqueId } from 'utils/crypto';
+import { raiseError } from '../view/actions/error';
 
 export default class VideoRenderer {
   constructor(renderer) {
@@ -18,7 +19,7 @@ export default class VideoRenderer {
     this.renderProcess.on('output', data => {
       logger.log(data);
 
-      // Start rendering frame when ffmpeg is ready
+      // Start rendering frames when ffmpeg is ready
       if (!this.running) {
         setTimeout(() => {
           this.running = true;
@@ -95,9 +96,13 @@ export default class VideoRenderer {
 
       updateState({ status: 'Finished', finished: true });
     } catch (error) {
-      logger.error(error);
+      if (error.message.indexOf('Process terminated') < 0) {
+        updateState({ status: 'Error' });
 
-      updateState({ status: 'Error' });
+        raiseError('Video rendering failed.', error);
+
+        this.stop();
+      }
     } finally {
       this.running = false;
 
@@ -140,7 +145,9 @@ export default class VideoRenderer {
       }
     } catch (error) {
       if (error.message.indexOf('write EPIPE') < 0) {
-        throw error;
+        raiseError('Frame rendering failed.');
+
+        this.stop();
       }
     } finally {
       renderProcess.end();

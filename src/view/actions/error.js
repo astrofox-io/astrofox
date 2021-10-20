@@ -7,12 +7,12 @@ const initialState = {
   message: null,
 };
 
-const useErrorStore = create(() => ({
+const errorStore = create(() => ({
   ...initialState,
 }));
 
 export function clearError() {
-  useErrorStore.setState({ ...initialState });
+  errorStore.setState({ ...initialState });
 }
 
 export function raiseError(message, error) {
@@ -20,9 +20,9 @@ export function raiseError(message, error) {
     logger.error(`${message}\n`, error);
   }
 
-  useErrorStore.setState({ message, error: error.toString() });
+  errorStore.setState({ message, error: error.toString() });
 
   showModal('ErrorDialog', { title: 'Error' });
 }
 
-export default useErrorStore;
+export default errorStore;

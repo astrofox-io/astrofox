@@ -5,7 +5,7 @@ export default class MergeProcess extends Process {
     return new Promise((resolve, reject) => {
       this.on('close', code => {
         if (code !== 0) {
-          reject(new Error('Process was terminated.'));
+          reject(new Error('Process terminated.'));
         }
         resolve();
       });
