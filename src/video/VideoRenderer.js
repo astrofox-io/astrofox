@@ -122,17 +122,17 @@ export default class VideoRenderer {
     const { renderer, renderProcess, startTime, startFrame, endFrame, totalFrames, fps } = this;
 
     try {
-      this.currentFrame = startFrame;
+      this.frame = startFrame;
 
-      while (this.currentFrame < endFrame && this.running) {
-        const image = await renderer.renderFrame(this.currentFrame, fps);
+      while (this.frame < endFrame && this.running) {
+        const image = await renderer.renderFrame(this.frame, fps);
 
         renderProcess.push(image);
 
-        this.currentFrame += 1;
+        this.frame += 1;
 
         updateState({
-          currentFrame: this.currentFrame,
+          currentFrame: totalFrames - (endFrame - this.frame) ,
           totalFrames,
           startTime,
         });
