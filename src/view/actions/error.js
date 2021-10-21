@@ -20,7 +20,7 @@ export function raiseError(message, error) {
     logger.error(`${message}\n`, error);
   }
 
-  errorStore.setState({ message, error: error.toString() });
+  errorStore.setState({ message, error });
 
   showModal('ErrorDialog', { title: 'Error' });
 }

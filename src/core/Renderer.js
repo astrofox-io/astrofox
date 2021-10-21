@@ -1,4 +1,5 @@
 import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
+import { clamp } from 'utils/math';
 
 const FPS_POLL_INTERVAL = 500;
 const STOP_RENDERING = 0;
@@ -7,12 +8,11 @@ const VIDEO_RENDERING = -1;
 export default class Renderer {
   constructor() {
     this.rendering = false;
-    this.frames = 0;
+    this.time = 0;
 
     // Frame render data
     this.frameData = {
       id: 0,
-      time: 0,
       delta: 0,
       fft: null,
       td: null,
@@ -25,10 +25,7 @@ export default class Renderer {
     // Rendering statistics
     this.frameStats = {
       fps: 0,
-      ms: 0,
-      time: 0,
       frames: 0,
-      stack: new Uint8Array(10),
     };
 
     // Bind context
@@ -50,9 +47,11 @@ export default class Renderer {
 
   start() {
     if (!this.rendering) {
+      this.time = Date.now();
+      this.rendering = true;
+
       this.resetAnalyzer();
       this.render();
-      this.rendering = true;
     }
   }
 
@@ -64,7 +63,6 @@ export default class Renderer {
     }
 
     this.frameData.id = STOP_RENDERING;
-    this.frameData.time = 0;
     this.rendering = false;
   }
 
@@ -101,12 +99,9 @@ export default class Renderer {
     frameStats.frames += 1;
 
     if (now > frameStats.time + FPS_POLL_INTERVAL) {
-      frameStats.fps = Math.round(frameStats.frames / ((now - frameStats.time) / 1000));
-      frameStats.ms = (now - frameStats.time) / frameStats.frames;
+      frameStats.fps = clamp(Math.round(frameStats.frames / ((now - frameStats.time) / 1000)), 0, 60);
       frameStats.time = now;
       frameStats.frames = 0;
-      frameStats.stack.copyWithin(1, 0);
-      frameStats.stack[0] = frameStats.fps;
 
       events.emit('tick', frameStats);
     }
@@ -130,7 +125,7 @@ export default class Renderer {
 
           bufferSource.disconnect();
 
-          resolve(stage.getImage());
+          resolve(stage.getPixels());
         };
 
         bufferSource.start(0, frame / fps, 1 / fps);
@@ -145,13 +140,15 @@ export default class Renderer {
     const id = window.requestAnimationFrame(this.render);
     const data = this.getFrameData(id);
 
-    data.delta = now - data.time;
-    data.time = now;
+    data.delta = now - this.time;
 
     stage.render(data);
 
     events.emit('render', data);
 
+    this.time = now;
+
     this.updateFPS(now);
+
   }
 }

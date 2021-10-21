@@ -63,6 +63,10 @@ export default class Stage extends Entity {
     return this.composer.getImage(format);
   }
 
+  getPixels() {
+    return this.composer.getPixels();
+  }
+
   getSize() {
     if (this.composer) {
       return this.composer.getSize();

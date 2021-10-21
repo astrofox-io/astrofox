@@ -5,7 +5,7 @@ const initialState = {
   active: false,
   finished: false,
   status: '',
-  frames: 0,
+  totalFrames: 0,
   currentFrame: 0,
   lastFrame: 0,
   startTime: 0,
@@ -15,10 +15,9 @@ const videoStore = create(() => ({ ...initialState }));
 
 export function startRender(props) {
   player.stop();
-  videoRenderer.init(props);
 
   setTimeout(() => {
-    videoRenderer.start();
+    videoRenderer.start(props);
   }, 500);
 
   videoStore.setState({ ...initialState, active: true });

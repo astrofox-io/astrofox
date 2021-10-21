@@ -2,8 +2,8 @@ import path from 'path-browserify';
 import RenderProcess from 'video/RenderProcess';
 import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
-import { api, logger } from 'view/global';
-import { stopRender, updateState } from 'actions/video';
+import { api, logger, stage } from 'view/global';
+import { updateState } from 'actions/video';
 import { uniqueId } from 'utils/crypto';
 import { raiseError } from '../view/actions/error';
 
@@ -38,33 +38,21 @@ export default class VideoRenderer {
     });
   }
 
-  init(properties) {
-    const { videoFile, audioFile, ...config } = properties;
-
-    this.videoFile = videoFile;
-    this.audioFile = audioFile;
-    this.config = config;
-
-    const { fps, timeStart, timeEnd } = config;
-
-    this.running = false;
-    this.finished = false;
-    this.currentProcess = null;
-    this.startTime = 0;
-
-    this.frames = fps * (timeEnd - timeStart);
-    this.currentFrame = fps * timeStart;
-    this.lastFrame = this.currentFrame + this.frames;
-  }
-
-  async start() {
+  async start({ videoFile, audioFile, fps, quality, codec, timeStart, timeEnd }) {
     try {
       this.renderer.stop();
       this.startTime = Date.now();
+      this.running = false;
+      this.finished = false;
+      this.currentProcess = null;
+      this.fps = fps;
+      this.totalFrames = fps * (timeEnd - timeStart);
+      this.startFrame = fps * timeStart;
+      this.endFrame = this.startFrame + this.totalFrames;
+
+      const { renderProcess, audioProcess, mergeProcess } = this;
 
       const id = uniqueId();
-      const { audioFile, videoFile, renderProcess, audioProcess, mergeProcess } = this;
-      const { fps, quality, timeStart, timeEnd, codec } = this.config;
       const { TEMP_PATH } = api.getEnvironment();
       const tempVideoFile = path.join(TEMP_PATH, `${id}.video`);
       const tempAudioFile = path.join(TEMP_PATH, `${id}.audio`);
@@ -74,23 +62,34 @@ export default class VideoRenderer {
       // Render video
       updateState({ status: 'Rendering video' });
       this.currentProcess = renderProcess;
-      const outputVideoFile = await renderProcess.start(tempVideoFile, codec, fps, quality);
+      const { width, height } = stage.getSize();
+      const outputVideoFile = await renderProcess.start({
+        outputFile: tempVideoFile,
+        codec,
+        fps,
+        quality,
+        width,
+        height,
+      });
 
       // Render audio
       updateState({ status: 'Rendering audio' });
       this.currentProcess = audioProcess;
-      const outputAudioFile = await audioProcess.start(
+      const outputAudioFile = await audioProcess.start({
         audioFile,
-        tempAudioFile,
+        outputFile: tempAudioFile,
         codec,
         timeStart,
         timeEnd,
-      );
+      });
 
       // Merge audio and video
       updateState({ status: 'Merging audio and video' });
       this.currentProcess = mergeProcess;
-      await mergeProcess.start(outputVideoFile, outputAudioFile, videoFile);
+      await mergeProcess.start({
+        inputFiles: [outputVideoFile, outputAudioFile],
+        outputFile: videoFile,
+      });
 
       this.finished = true;
 
@@ -120,16 +119,12 @@ export default class VideoRenderer {
   }
 
   async renderFrames() {
-    const {
-      renderer,
-      renderProcess,
-      frames,
-      startTime,
-      config: { fps },
-    } = this;
+    const { renderer, renderProcess, startTime, startFrame, endFrame, totalFrames, fps } = this;
 
     try {
-      while (this.currentFrame < this.lastFrame && this.running) {
+      this.currentFrame = startFrame;
+
+      while (this.currentFrame < endFrame && this.running) {
         const image = await renderer.renderFrame(this.currentFrame, fps);
 
         renderProcess.push(image);
@@ -137,9 +132,8 @@ export default class VideoRenderer {
         this.currentFrame += 1;
 
         updateState({
-          frames,
           currentFrame: this.currentFrame,
-          lastFrame: this.lastFrame,
+          totalFrames,
           startTime,
         });
       }

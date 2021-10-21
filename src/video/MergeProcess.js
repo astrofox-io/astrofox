@@ -1,8 +1,10 @@
 import Process from 'core/Process';
 
 export default class MergeProcess extends Process {
-  start(videoFile, audioFile, outputFile) {
+  start({ inputFiles, outputFile }) {
     return new Promise((resolve, reject) => {
+      const inputs = inputFiles.flatMap(file => ['-i', file]);
+
       this.on('close', code => {
         if (code !== 0) {
           reject(new Error('Process terminated.'));
@@ -20,10 +22,7 @@ export default class MergeProcess extends Process {
 
       super.start([
         '-y',
-        '-i',
-        videoFile,
-        '-i',
-        audioFile,
+        ...inputs,
         '-codec',
         'copy',
         '-shortest',

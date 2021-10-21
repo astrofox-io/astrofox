@@ -11,12 +11,11 @@ const PROGRESS_MIN = 0.05;
 const PROGRESS_THRESHHOLD = 0.1;
 
 export default function RenderPanel({ onClose = () => {} }) {
-  const { active, finished, status, frames, currentFrame, lastFrame, startTime } = useVideo();
+  const { finished, status, currentFrame, totalFrames, startTime } = useVideo();
   const elapsedTime = startTime ? (Date.now() - startTime) / 1000 : 0;
-  const frame = frames - (lastFrame - currentFrame);
-  const progress = frames > 0 ? frame / frames : 0;
-  const fps = elapsedTime > 0 ? frame / elapsedTime : 0;
-  const totalTime = frame > 0 ? (frames * elapsedTime) / frame : null;
+  const fps = elapsedTime > 0 ? currentFrame / elapsedTime : 0;
+  const progress = totalFrames > 0 ? currentFrame / totalFrames : 0;
+  const totalTime = currentFrame > 0 ? (totalFrames * elapsedTime) / currentFrame : null;
   const estimatedTotalTime =
     progress > PROGRESS_MIN ? ` / ${PROGRESS_THRESHHOLD && formatTime(totalTime)}` : '';
   const currentTotalTime = formatTime(elapsedTime);
@@ -56,7 +55,7 @@ export default function RenderPanel({ onClose = () => {} }) {
         <div className={styles.row}>
           <Stat label="Progress" value={`${~~(progress * 100)}%`} />
           <Stat label="Elapsed Time" value={`${currentTotalTime}${estimatedTotalTime}`} />
-          <Stat label="Frames" value={`${~~frame} / ${~~frames}`} />
+          <Stat label="Frames" value={`${~~currentFrame} / ${~~totalFrames}`} />
           <Stat label="FPS" value={fps.toFixed(1)} />
           <Button text={finished ? 'Close' : 'Cancel'} onClick={handleClose} />
         </div>

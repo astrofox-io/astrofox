@@ -31,7 +31,17 @@ export default class Composer {
   getImage(format = 'image/png') {
     const img = this.renderer.domElement.toDataURL(format);
     const data = img.replace(/^data:image\/\w+;base64,/, '');
+
     return base64ToBytes(data);
+  }
+
+  getPixels() {
+    const canvas = this.renderer.domElement;
+    const buffer = new Uint8Array(canvas.width * canvas.height * 4);
+
+    this.renderer.readRenderTargetPixels(this.inputBuffer, 0, 0, canvas.width, canvas.height, buffer);
+
+    return buffer;
   }
 
   setSize(width, height) {

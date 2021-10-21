@@ -32,16 +32,16 @@ export default class CanvasMeter extends Entity {
 
     switch (origin) {
       case 'left':
-        context.fillRect(0, 0, value * width, height);
+        context.fillRect(0, 0, ~~(value * width), height);
         break;
       case 'bottom':
-        context.fillRect(0, height, width, -value * height);
+        context.fillRect(0, height, width, ~~(-value * height));
         break;
       case 'right':
-        context.fillRect(width, 0, -value * width, height);
+        context.fillRect(width, 0, ~~(-value * width), height);
         break;
       case 'top':
-        context.fillRect(0, 0, width, -value * height);
+        context.fillRect(0, 0, width, ~~(-value * height));
         break;
     }
   }

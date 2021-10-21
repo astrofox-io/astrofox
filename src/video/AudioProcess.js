@@ -4,11 +4,12 @@ import { replaceExt } from 'utils/file';
 import videoConfig from 'config/video.json';
 
 export default class AudioProcess extends Process {
-  start(audioFile, file, codec, timeStart, timeEnd) {
+  start({ audioFile, outputFile, codec, timeStart, timeEnd }) {
     return new Promise((resolve, reject) => {
       const ext = path.extname(audioFile);
       const duration = timeEnd - timeStart;
       const { encoder, extension, settings } = videoConfig.codecs[codec].audio;
+      const output = replaceExt(outputFile, `.${extension}`);
 
       // If source is already in correct format, just copy
       if (
@@ -18,13 +19,11 @@ export default class AudioProcess extends Process {
         codec = 'copy';
       }
 
-      const outputFile = replaceExt(file, `.${extension}`);
-
       this.on('close', code => {
         if (code !== 0) {
           reject(new Error('Process terminated.'));
         }
-        resolve(outputFile);
+        resolve(output);
       });
 
       this.on('error', err => {
@@ -47,7 +46,7 @@ export default class AudioProcess extends Process {
         '-c:a',
         encoder,
         ...settings,
-        outputFile,
+        output,
       ];
 
       super.start(args);

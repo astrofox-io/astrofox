@@ -3,16 +3,16 @@ import { replaceExt } from 'utils/file';
 import videoConfig from 'config/video.json';
 
 export default class RenderProcess extends Process {
-  start(file, codec, fps, quality) {
+  start({ outputFile, codec, fps, quality, width, height }) {
     return new Promise((resolve, reject) => {
       const { extension, settings, encoder } = videoConfig.codecs[codec].video;
-      const outputFile = replaceExt(file, `.${extension}`);
+      const output = replaceExt(outputFile, `.${extension}`);
 
       this.on('close', code => {
         if (code !== 0) {
           reject(new Error('Process terminated.'));
         }
-        resolve(outputFile);
+        resolve(output);
       });
 
       this.on('error', err => {
@@ -29,14 +29,14 @@ export default class RenderProcess extends Process {
         'debug',
         '-y',
         '-stats',
-        '-analyzeduration',
-        2147483647,
-        '-probesize',
-        2147483647,
         '-f',
-        'image2pipe',
+        'rawvideo',
         '-c:v',
-        'png',
+        'rawvideo',
+        '-pix_fmt',
+        'rgba',
+        '-s',
+        `${width}x${height}`,
         '-r',
         fps,
         ...settings.input,
@@ -44,13 +44,15 @@ export default class RenderProcess extends Process {
         'pipe:0',
         '-c:v',
         encoder,
-        '-pix_fmt',
-        'yuv420p',
         '-f',
         extension,
+        '-pix_fmt',
+        'yuv420p',
+        '-vf',
+        'vflip',
         ...settings.output,
         ...settings[quality],
-        outputFile
+        output
       ];
 
       super.start(args);
