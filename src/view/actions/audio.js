@@ -56,6 +56,8 @@ export async function loadAudioFile(file, play) {
     audioStore.setState({ file, duration, tags, loading: false });
   } catch (error) {
     raiseError('Invalid audio file.', error);
+
+    audioStore.setState({ loading: false });
   }
 }
 

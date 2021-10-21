@@ -19,6 +19,8 @@ export default class Composer {
 
     this.inputBuffer = createRenderTarget();
     this.outputBuffer = this.inputBuffer.clone();
+
+    this.dataBuffer = new Uint8Array(this.inputBuffer.width * this.inputBuffer.height * 4);
   }
 
   getSize() {
@@ -36,18 +38,23 @@ export default class Composer {
   }
 
   getPixels() {
-    const canvas = this.renderer.domElement;
-    const buffer = new Uint8Array(canvas.width * canvas.height * 4);
+    this.renderer.readRenderTargetPixels(
+      this.inputBuffer,
+      0,
+      0,
+      this.inputBuffer.width,
+      this.inputBuffer.height,
+      this.dataBuffer,
+    );
 
-    this.renderer.readRenderTargetPixels(this.inputBuffer, 0, 0, canvas.width, canvas.height, buffer);
-
-    return buffer;
+    return this.dataBuffer;
   }
 
   setSize(width, height) {
     this.renderer.setSize(width, height, true);
     this.inputBuffer.setSize(width, height);
     this.outputBuffer.setSize(width, height);
+    this.dataBuffer = new Uint8Array(this.inputBuffer.width * this.inputBuffer.height * 4);
   }
 
   clearScreen(color = true, depth = true, stencil = true) {
