@@ -1,6 +1,6 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasBars from 'canvas/CanvasBars';
-import SpectrumParser from 'audio/SpectrumParser';
+import FFTParser from 'audio/FFTParser';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 import { property, stageWidth, stageHeight } from 'utils/controls';
@@ -162,7 +162,7 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
     super(BarSpectrumDisplay, properties);
 
     this.bars = new CanvasBars(this.properties, this.canvas);
-    this.parser = new SpectrumParser({
+    this.parser = new FFTParser({
       ...this.properties,
       fftSize: FFT_SIZE,
       sampleRate: SAMPLE_RATE,

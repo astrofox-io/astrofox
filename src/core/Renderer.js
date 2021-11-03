@@ -69,22 +69,14 @@ export default class Renderer {
   getFrameData(id) {
     const { frameData } = this;
     const isPlaying = player.isPlaying();
-    const requestUpdate = isPlaying || id === VIDEO_RENDERING;
 
     frameData.id = id;
-    frameData.fft = analyzer.getFrequencyData(requestUpdate);
-    frameData.td = analyzer.getTimeData(requestUpdate);
+    frameData.fft = analyzer.getFrequencyData();
+    frameData.td = analyzer.getTimeData();
     frameData.volume = analyzer.getVolume();
-    frameData.audioPlaying = isPlaying;
-    frameData.hasUpdate = !!requestUpdate;
-
-    // Rendering single frame
-    if (frameData.id === VIDEO_RENDERING) {
-      // Fix time data display bug
-      frameData.td = Float32Array.from(frameData.td.filter(n => n !== 0));
-    }
-
     frameData.reactors = reactors.getResults(frameData);
+    frameData.audioPlaying = isPlaying;
+    frameData.hasUpdate = isPlaying || id === VIDEO_RENDERING;
 
     return frameData;
   }
@@ -117,6 +109,8 @@ export default class Renderer {
         bufferSource.connect(analyzer.analyzer);
 
         bufferSource.onended = () => {
+          analyzer.update(VIDEO_RENDERING);
+
           const data = this.getFrameData(VIDEO_RENDERING);
 
           data.delta = 1000 / fps;
@@ -136,6 +130,8 @@ export default class Renderer {
   }
 
   render() {
+    analyzer.update();
+
     const now = Date.now();
     const id = window.requestAnimationFrame(this.render);
     const data = this.getFrameData(id);

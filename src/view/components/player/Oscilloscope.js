@@ -20,6 +20,7 @@ export default function Oscilloscope() {
 
   function draw({ td }) {
     const data = parser.current.parseTimeData(td, width);
+
     display.current.render(Array.from(data).flatMap((n, i) => [i, n]));
   }
 

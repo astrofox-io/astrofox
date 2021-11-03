@@ -17,7 +17,7 @@ export function clearError() {
 
 export function raiseError(message, error) {
   if (error) {
-    logger.error(`${message}\n`, error);
+    logger.error(`${message}\n`, error.toString());
   }
 
   errorStore.setState({ message, error });

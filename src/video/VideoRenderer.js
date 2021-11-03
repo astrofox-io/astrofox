@@ -139,7 +139,7 @@ export default class VideoRenderer {
       }
     } catch (error) {
       if (error.message.indexOf('write EPIPE') < 0) {
-        raiseError('Frame rendering failed.');
+        raiseError('Frame rendering failed.', error);
 
         this.stop();
       }

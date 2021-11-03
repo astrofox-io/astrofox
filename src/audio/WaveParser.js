@@ -9,8 +9,8 @@ export default class WaveParser extends Entity {
   constructor(properties) {
     super('WaveParser', { ...WaveParser.defaultProperties, ...properties });
 
-    this.output = new Float32Array(0);
-    this.buffer = new Float32Array(0);
+    this.output = new Float32Array();
+    this.buffer = new Float32Array();
   }
 
   parseTimeData(data, size) {

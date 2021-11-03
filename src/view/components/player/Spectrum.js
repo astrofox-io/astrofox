@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useImperativeHandle } from 'react';
-import SpectrumParser from 'audio/SpectrumParser';
+import FFTParser from 'audio/FFTParser';
 import CanvasBars from 'canvas/CanvasBars';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import styles from './Spectrum.less';
@@ -48,7 +48,7 @@ export default function Spectrum({ forwardedRef }) {
 
   useEffect(() => {
     bars.current = new CanvasBars(spectrumProperties, canvas.current);
-    parser.current = new SpectrumParser(parserProperties);
+    parser.current = new FFTParser(parserProperties);
   }, [bars, parser]);
 
   return (

@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import Entity from 'core/Entity';
-import SpectrumParser from 'audio/SpectrumParser';
+import FFTParser from 'audio/FFTParser';
 import { val2pct, floor, ceil } from 'utils/math';
 import {
   FFT_SIZE,
@@ -80,7 +80,7 @@ export default class AudioReactor extends Entity {
 
     super(name, { ...defaultProperties, ...properties });
 
-    this.parser = new SpectrumParser({ ...spectrumProperties, ...properties });
+    this.parser = new FFTParser({ ...spectrumProperties, ...properties });
     this.type = 'reactor';
     this.displayName = getDisplayName(label);
     this.enabled = true;

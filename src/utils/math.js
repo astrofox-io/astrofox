@@ -62,6 +62,11 @@ export function mag2db(val) {
   return 20 * log10(val);
 }
 
+// Gets normalized value from decibels
+export function normalize(db, min, max) {
+  return val2pct(db2mag(db), db2mag(min), db2mag(max));
+}
+
 // Degrees to radians
 export function deg2rad(val) {
   return val * 0.017453292519943295;

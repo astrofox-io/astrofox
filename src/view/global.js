@@ -6,10 +6,11 @@ import Stage from 'core/Stage';
 import Player from 'audio/Player';
 import SpectrumAnalyzer from 'audio/SpectrumAnalyzer';
 import VideoRenderer from 'video/VideoRenderer';
+import { SAMPLE_RATE } from './constants';
 
 export const api = window.__ASTROFOX__;
 export const env = api.getEnvironment();
-export const audioContext = new window.AudioContext();
+export const audioContext = new window.AudioContext({ sampleRate: SAMPLE_RATE});
 export const logger = new Logger('astrofox');
 export const events = new EventEmitter();
 export const stage = new Stage();

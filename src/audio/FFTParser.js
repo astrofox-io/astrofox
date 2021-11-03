@@ -1,8 +1,8 @@
 import Entity from 'core/Entity';
-import { val2pct, db2mag } from 'utils/math';
+import { floor, normalize } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
-export default class SpectrumParser extends Entity {
+export default class FFTParser extends Entity {
   static defaultProperties = {
     fftSize: FFT_SIZE,
     sampleRate: SAMPLE_RATE,
@@ -11,55 +11,49 @@ export default class SpectrumParser extends Entity {
     maxDecibels: 0,
     minFrequency: 0,
     maxFrequency: SAMPLE_RATE / 2,
-    normalize: false,
-    bins: 0,
   };
 
   constructor(properties) {
-    super('SpectrumParser', { ...SpectrumParser.defaultProperties, ...properties });
+    super('FFTParser', { ...FFTParser.defaultProperties, ...properties });
 
-    this.setBinRange();
+    this.init();
   }
 
-  setBinRange() {
+  init() {
     const { fftSize, sampleRate, minFrequency, maxFrequency } = this.properties;
 
     const range = sampleRate / fftSize;
 
-    this.minBin = ~~(minFrequency / range);
-    this.maxBin = ~~(maxFrequency / range);
+    this.minBin = floor(minFrequency / range);
+    this.maxBin = floor(maxFrequency / range);
     this.totalBins = this.maxBin - this.minBin;
-  }
-
-  getDb(fft) {
-    const { minDecibels, maxDecibels, normalize } = this.properties;
-    const db = -100 * (1 - fft / 256);
-
-    if (normalize) {
-      return val2pct(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
-    }
-
-    return val2pct(db, -100, maxDecibels);
   }
 
   update(properties) {
     const changed = super.update(properties);
 
     if (changed) {
-      this.setBinRange();
+      this.init();
     }
 
     return changed;
   }
 
-  parseFFT(fft) {
+  getValue(fft) {
+    const { minDecibels, maxDecibels } = this.properties;
+    const db = minDecibels * (1 - fft / 256);
+
+    return normalize(db, minDecibels, maxDecibels);
+  }
+
+  parseFFT(fft, bins) {
     let { output, buffer } = this;
     const { minBin, maxBin, totalBins } = this;
-    const { smoothingTimeConstant, bins } = this.properties;
+    const { smoothingTimeConstant } = this.properties;
     const size = bins || totalBins;
 
     // Resize data arrays
-    if (output === undefined || output.length !== size) {
+    if (output?.length !== size) {
       output = new Float32Array(size);
       buffer = new Float32Array(size);
       this.output = output;
@@ -69,7 +63,7 @@ export default class SpectrumParser extends Entity {
     // Straight conversion
     if (size === totalBins) {
       for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
-        output[k] = this.getDb(fft[i]);
+        output[k] = this.getValue(fft[i]);
       }
     }
     // Compress data
@@ -92,7 +86,7 @@ export default class SpectrumParser extends Entity {
           }
         }
 
-        output[k] = this.getDb(max);
+        output[k] = this.getValue(max);
       }
     }
     // Expand data
@@ -100,7 +94,7 @@ export default class SpectrumParser extends Entity {
       const step = size / totalBins;
 
       for (let i = minBin, j = 0; i < maxBin; i += 1, j += 1) {
-        const val = this.getDb(fft[i]);
+        const val = this.getValue(fft[i]);
         const start = ~~(j * step);
         const end = start + step;
 

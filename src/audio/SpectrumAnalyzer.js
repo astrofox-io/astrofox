@@ -1,4 +1,4 @@
-import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
+import { FFT_SIZE } from 'view/constants';
 
 export default class SpectrumAnalyzer {
   static defaultProperties = {
@@ -19,24 +19,29 @@ export default class SpectrumAnalyzer {
     this.td = new Float32Array(this.analyzer.fftSize);
   }
 
-  getFrequencyData(update) {
-    if (update) {
-      this.analyzer.getByteFrequencyData(this.fft);
-    }
-
+  getFrequencyData() {
     return this.fft;
   }
 
-  getTimeData(update) {
-    if (update) {
-      this.analyzer.getFloatTimeDomainData(this.td);
-    }
-
+  getTimeData() {
     return this.td;
   }
 
   getVolume() {
     return this.fft.reduce((a, b) => a + b) / this.fft.length;
+  }
+
+  update() {
+    this.updateTimeData();
+    this.updateFrequencyData();
+  }
+
+  updateFrequencyData() {
+    this.analyzer.getByteFrequencyData(this.fft);
+  }
+
+  updateTimeData() {
+    this.analyzer.getFloatTimeDomainData(this.td);
   }
 
   clearFrequencyData() {
@@ -48,6 +53,6 @@ export default class SpectrumAnalyzer {
   }
 
   static getMaxFrequency() {
-    return SAMPLE_RATE / 2;
+    return this.audioContext.sampleRate / 2;
   }
 }

@@ -30,7 +30,7 @@ import {
   TextureLoader,
 } from 'three';
 import WebglDisplay from 'core/WebglDisplay';
-import SpectrumParser from 'audio/SpectrumParser';
+import FFTParser from 'audio/FFTParser';
 import POINT_SPRITE from 'assets/images/point.png';
 import { isDefined } from 'utils/array';
 
@@ -160,7 +160,7 @@ export default class GeometryDisplay extends WebglDisplay {
   constructor(properties) {
     super(GeometryDisplay, properties);
 
-    this.parser = new SpectrumParser({ normalize: true });
+    this.parser = new FFTParser({ normalize: true });
   }
 
   update(properties) {

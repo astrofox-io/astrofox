@@ -1,6 +1,6 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
-import SpectrumParser from 'audio/SpectrumParser';
+import FFTParser from 'audio/FFTParser';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 import { renderToCanvas } from 'utils/canvas';
 import { property, stageHeight, stageWidth } from 'utils/controls';
@@ -139,7 +139,7 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
     super(WaveSpectrumDisplay, properties);
 
     this.wave = new CanvasWave(this.properties, this.canvas);
-    this.parser = new SpectrumParser(this.properties);
+    this.parser = new FFTParser(this.properties);
   }
 
   update(properties) {
