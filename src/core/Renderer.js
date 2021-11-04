@@ -40,7 +40,7 @@ export default class Renderer {
     const audio = player.getAudio();
 
     if (audio && !audio.paused) {
-      analyzer.clear();
+      analyzer.reset();
     }
   }
 

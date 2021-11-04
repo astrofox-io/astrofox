@@ -123,16 +123,8 @@ export default class SpectrumAnalyzer {
     }
   }
 
-  clear() {
-    this.clearFrequencyData();
-    this.clearTimeData();
-  }
-
-  clearFrequencyData() {
+  reset() {
     this.fft.fill(0);
-  }
-
-  clearTimeData() {
     this.td.fill(0);
   }
 }
