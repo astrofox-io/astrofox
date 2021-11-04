@@ -1,5 +1,5 @@
 import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
-import { clamp } from 'utils/math';
+import { clamp, floor } from 'utils/math';
 import { MAX_FFT_SIZE, SAMPLE_RATE } from '../view/constants';
 
 const FPS_POLL_INTERVAL = 500;
@@ -67,15 +67,15 @@ export default class Renderer {
 
   getFrameData(id) {
     const { frameData } = this;
-    const isPlaying = player.isPlaying();
+    const playing = player.isPlaying();
 
     frameData.id = id;
-    frameData.fft = analyzer.getFrequencyData();
-    frameData.td = analyzer.getTimeData();
-    frameData.gain = analyzer.getGain();
+    frameData.hasUpdate = playing || id === VIDEO_RENDERING;
+    frameData.audioPlaying = playing;
+    frameData.gain = analyzer.gain;
+    frameData.fft = analyzer.fft;
+    frameData.td = analyzer.td;
     frameData.reactors = reactors.getResults(frameData);
-    frameData.audioPlaying = isPlaying;
-    frameData.hasUpdate = isPlaying || id === VIDEO_RENDERING;
 
     return frameData;
   }
@@ -102,30 +102,27 @@ export default class Renderer {
     }
   }
 
+  getAudioSample(time) {
+    const { fftSize } = analyzer.analyzer;
+    const audio = player.getAudio();
+    const pos = audio.getSamplePosition(time);
+    const start = pos - fftSize / 2;
+    const end = pos + fftSize / 2;
+
+    return audio.getAudioSlice(start, end);
+  }
+
   renderFrame(frame, fps) {
     return new Promise((resolve, reject) => {
       try {
-        const audio = player.getAudio();
-        const bufferSource = audioContext.createBufferSource();
+        analyzer.update(this.getAudioSample(frame / fps));
 
-        bufferSource.buffer = audio.buffer;
-        bufferSource.connect(analyzer.analyzer);
+        const frameData = this.getFrameData(VIDEO_RENDERING);
+        frameData.delta = 1000 / fps;
 
-        bufferSource.onended = () => {
-          analyzer.update(VIDEO_RENDERING);
+        stage.render(frameData);
 
-          const data = this.getFrameData(VIDEO_RENDERING);
-
-          data.delta = 1000 / fps;
-
-          stage.render(data);
-
-          bufferSource.disconnect();
-
-          resolve(stage.getPixels());
-        };
-
-        bufferSource.start(0, frame / fps, 1 / fps);
+        resolve(stage.getPixels());
       } catch (e) {
         reject(e);
       }
@@ -138,20 +135,7 @@ export default class Renderer {
     const now = Date.now();
 
     if (player.isPlaying()) {
-      const { buffer } = player.getAudio();
-      const pos = player.getPosition() * buffer.length;
-
-      const diff = (now - this.time) / 1000;
-      let length = (diff / buffer.duration) * buffer.length;
-
-      if (length > analyzer.fftSize / 2) length = analyzer.fftSize / 2;
-
-      const channelData1 = buffer.getChannelData(0).slice(pos - length, pos + length);
-      const channelData2 = buffer.getChannelData(1).slice(pos - length, pos + length);
-
-      const data = channelData1.map((n, i) => (n + channelData2[i]) / 2);
-
-      analyzer.update(data);
+      analyzer.update(this.getAudioSample());
     }
 
     const data = this.getFrameData(id);

@@ -1,7 +1,8 @@
 import fft from 'fourier-transform';
 import blackman from 'window-function/blackman';
-import { FFT_SIZE, MAX_FFT_SIZE } from 'view/constants';
-import { mag2db, val2pct, normalize } from 'utils/math';
+import { FFT_SIZE } from 'view/constants';
+import { mag2db, val2pct } from 'utils/math';
+import { downmix } from 'utils/audio';
 
 export default class SpectrumAnalyzer {
   static defaultProperties = {
@@ -31,134 +32,91 @@ export default class SpectrumAnalyzer {
       this.blackmanTable[i] = blackman(i, fftSize);
     }
 
-    this.buffer = context.createBuffer(1, MAX_FFT_SIZE, context.sampleRate);
-    this.bufferOffset = 0;
+    this.buffer = context.createBuffer(1, fftSize, context.sampleRate);
 
     this.smoothing = new Float32Array(fftSize / 2);
   }
 
+  get gain() {
+    const { fft } = this;
+    return fft.reduce((a, b) => a + b) / fft.length;
+  }
+
   getFloatTimeDomainData(array) {
-    const {
-      bufferOffset,
-      buffer,
-      analyzer: { fftSize },
-    } = this;
-    const i0 = (bufferOffset - fftSize + MAX_FFT_SIZE) % MAX_FFT_SIZE;
-    const i1 = Math.min(i0 + fftSize, MAX_FFT_SIZE);
-    const copied = i1 - i0;
-    const busData = buffer.getChannelData(0);
-
-    array.set(busData.subarray(i0, i1));
-
-    if (copied !== fftSize) {
-      const remain = fftSize - copied;
-      const subarray2 = busData.subarray(0, remain);
-
-      array.set(subarray2, copied);
-    }
+    array.set(this.buffer.getChannelData(0));
   }
 
   getFloatFrequencyData(array) {
-    const {
-      analyzer: { fftSize, smoothingTimeConstant },
-    } = this;
+    const { fftSize, smoothingTimeConstant } = this.analyzer;
     const waveform = new Float32Array(fftSize);
-    const length = Math.min(array.length, fftSize / 2);
 
-    // 1. down-mix
+    // Get waveform from buffer
     this.getFloatTimeDomainData(waveform);
 
-    // 2. Apply Blackman window
+    // Apply blackman function
     for (let i = 0; i < fftSize; i++) {
       waveform[i] = waveform[i] * this.blackmanTable[i] || 0;
     }
 
-    // 3. FFT
+    // Get FFT
     const spectrum = fft(waveform);
 
-    // re-size to frequencyBinCount, then do more processing
-    for (let i = 0; i < length; i++) {
-      const v0 = spectrum[i];
+    for (let i = 0, n = fftSize / 2; i < n; i++) {
+      let db = mag2db(spectrum[i]);
 
-      // 4. Smooth over data
-      this.smoothing[i] =
-        smoothingTimeConstant * this.smoothing[i] + (1 - smoothingTimeConstant) * v0;
+      if (smoothingTimeConstant) {
+        this.smoothing[i] =
+          spectrum[i] * smoothingTimeConstant * this.smoothing[i] + (1 - smoothingTimeConstant);
 
-      // 5. Convert to dB
-      const v1 = mag2db(this.smoothing[i]);
-      // store in array
-      array[i] = Number.isFinite(v1) ? v1 : -Infinity;
+        db = mag2db(this.smoothing[i]);
+      }
+
+      array[i] = Number.isFinite(db) ? db : -Infinity;
     }
   }
 
   getByteTimeDomainData(array) {
     const { fftSize } = this.analyzer;
-    const length = Math.min(array.length, fftSize);
-    const waveform = new Float32Array(length);
+    const waveform = new Float32Array(fftSize);
 
     this.getFloatTimeDomainData(waveform);
 
-    for (let i = 0; i < length; i++) {
+    for (let i = 0, n = waveform.length; i < n; i++) {
       array[i] = Math.round(val2pct(waveform[i], -1, 1) * 255);
     }
   }
 
   getByteFrequencyData(array) {
-    const {
-      analyzer: { fftSize, minDecibels, maxDecibels },
-    } = this;
-    const length = Math.min(array.length, fftSize / 2);
-    const spectrum = new Float32Array(length);
+    const { minDecibels, maxDecibels, frequencyBinCount } = this.analyzer;
+    const spectrum = new Float32Array(frequencyBinCount);
 
     this.getFloatFrequencyData(spectrum);
 
-    for (let i = 0; i < length; i++) {
-      const db = spectrum[i];
-      const n = val2pct(db, minDecibels, maxDecibels);
-      array[i] = Math.round(n * 255);
+    for (let i = 0, n = spectrum.length; i < n; i++) {
+      array[i] = Math.round(val2pct(spectrum[i], minDecibels, maxDecibels) * 255);
     }
   }
 
-  getFrequencyData() {
-    return this.fft;
-  }
-
-  getTimeData() {
-    return this.td;
-  }
-
-  getGain() {
-    return this.fft.reduce((a, b) => a + b) / this.fft.length;
-  }
-
-  update(data) {
-    const { buffer, bufferOffset } = this;
-    data = null;
-
-    if (data) {
-      buffer.copyToChannel(data, 0, bufferOffset);
-      //const d = buffer.getChannelData(0).slice(data.length).concat(data);
-
-      this.bufferOffset += data.length;
-      if (this.bufferOffset >= MAX_FFT_SIZE) {
-        this.bufferOffset = 0;
-      }
+  update(input) {
+    if (input) {
+      const data = downmix(input);
+      this.buffer.copyToChannel(data, 0);
     }
 
-    this.updateTimeData(data);
-    this.updateFrequencyData(data);
+    this.updateTimeData(input);
+    this.updateFrequencyData(input);
   }
 
-  updateFrequencyData(data) {
-    if (data) {
+  updateFrequencyData(input) {
+    if (input) {
       this.getByteFrequencyData(this.fft);
     } else {
       this.analyzer.getByteFrequencyData(this.fft);
     }
   }
 
-  updateTimeData(data) {
-    if (data) {
+  updateTimeData(input) {
+    if (input) {
       this.getFloatTimeDomainData(this.td);
     } else {
       this.analyzer.getFloatTimeDomainData(this.td);

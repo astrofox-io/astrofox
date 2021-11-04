@@ -136,8 +136,34 @@ export default class Audio {
     return this.buffer ? this.buffer.duration : 0;
   }
 
+  getBufferLength() {
+    return this.buffer ? this.buffer.length : 0;
+  }
+
   getPosition() {
     return this.getCurrentTime() / this.getDuration() || 0;
+  }
+
+  getSamplePosition(time) {
+    const position = time ? time / this.getDuration() : this.getPosition();
+    return ~~(position * this.buffer.length);
+  }
+
+  getAudioSlice(start, end) {
+    const channels = this.buffer.numberOfChannels;
+    const length = end - start;
+    const output = this.audioContext.createBuffer(channels, length, this.audioContext.sampleRate);
+
+    for (let i = 0; i < channels; i++) {
+      const ch = output.getChannelData(i);
+      const buffer = this.buffer.getChannelData(i);
+
+      for (let j = start; j < end; j++) {
+        ch[j - start] = buffer[j];
+      }
+    }
+
+    return output;
   }
 
   updatePosition(pos) {

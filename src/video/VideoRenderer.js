@@ -4,8 +4,9 @@ import AudioProcess from 'video/AudioProcess';
 import MergeProcess from 'video/MergeProcess';
 import { api, logger, stage } from 'view/global';
 import { updateState } from 'actions/video';
+import { raiseError } from 'actions/error';
 import { uniqueId } from 'utils/crypto';
-import { raiseError } from '../view/actions/error';
+import { sleep } from 'utils/work';
 
 export default class VideoRenderer {
   constructor(renderer) {
@@ -127,6 +128,9 @@ export default class VideoRenderer {
       while (this.frame < endFrame && this.running) {
         const image = await renderer.renderFrame(this.frame, fps);
 
+        // This is required for the UI to respond
+        await sleep(20);
+
         renderProcess.push(image);
 
         this.frame += 1;
@@ -148,3 +152,4 @@ export default class VideoRenderer {
     }
   }
 }
+
