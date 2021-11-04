@@ -1,5 +1,6 @@
 import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
 import { clamp } from 'utils/math';
+import { MAX_FFT_SIZE, SAMPLE_RATE } from '../view/constants';
 
 const FPS_POLL_INTERVAL = 500;
 const STOP_RENDERING = 0;
@@ -30,7 +31,6 @@ export default class Renderer {
 
     // Bind context
     this.render = this.render.bind(this);
-    this.resetAnalyzer = this.resetAnalyzer.bind(this);
 
     // Events
     player.on('playback-change', this.resetAnalyzer);
@@ -40,8 +40,7 @@ export default class Renderer {
     const audio = player.getAudio();
 
     if (audio && !audio.paused) {
-      analyzer.clearFrequencyData();
-      analyzer.clearTimeData();
+      analyzer.clear();
     }
   }
 
@@ -73,7 +72,7 @@ export default class Renderer {
     frameData.id = id;
     frameData.fft = analyzer.getFrequencyData();
     frameData.td = analyzer.getTimeData();
-    frameData.volume = analyzer.getVolume();
+    frameData.gain = analyzer.getGain();
     frameData.reactors = reactors.getResults(frameData);
     frameData.audioPlaying = isPlaying;
     frameData.hasUpdate = isPlaying || id === VIDEO_RENDERING;
@@ -91,7 +90,11 @@ export default class Renderer {
     frameStats.frames += 1;
 
     if (now > frameStats.time + FPS_POLL_INTERVAL) {
-      frameStats.fps = clamp(Math.round(frameStats.frames / ((now - frameStats.time) / 1000)), 0, 60);
+      frameStats.fps = clamp(
+        Math.round(frameStats.frames / ((now - frameStats.time) / 1000)),
+        0,
+        60,
+      );
       frameStats.time = now;
       frameStats.frames = 0;
 
@@ -130,10 +133,27 @@ export default class Renderer {
   }
 
   render() {
-    analyzer.update();
+    const id = window.requestAnimationFrame(this.render);
 
     const now = Date.now();
-    const id = window.requestAnimationFrame(this.render);
+
+    if (player.isPlaying()) {
+      const { buffer } = player.getAudio();
+      const pos = player.getPosition() * buffer.length;
+
+      const diff = (now - this.time) / 1000;
+      let length = (diff / buffer.duration) * buffer.length;
+
+      if (length > analyzer.fftSize / 2) length = analyzer.fftSize / 2;
+
+      const channelData1 = buffer.getChannelData(0).slice(pos - length, pos + length);
+      const channelData2 = buffer.getChannelData(1).slice(pos - length, pos + length);
+
+      const data = channelData1.map((n, i) => (n + channelData2[i]) / 2);
+
+      analyzer.update(data);
+    }
+
     const data = this.getFrameData(id);
 
     data.delta = now - this.time;
@@ -145,6 +165,5 @@ export default class Renderer {
     this.time = now;
 
     this.updateFPS(now);
-
   }
 }

@@ -22,9 +22,7 @@ const parserProperties = {
   minDecibels: -60,
   maxDecibels: -20,
   minFrequency: 0,
-  maxFrequency: 10000,
-  normalize: false,
-  bins: 32,
+  maxFrequency: 10000
 };
 
 export default function Spectrum({ forwardedRef }) {
@@ -39,7 +37,7 @@ export default function Spectrum({ forwardedRef }) {
   }
 
   function draw(data) {
-    const fft = parser.current.parseFFT(data.fft);
+    const fft = parser.current.parseFFT(data.fft, 32);
 
     bars.current.render(fft);
   }

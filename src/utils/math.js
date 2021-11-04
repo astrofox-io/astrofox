@@ -38,13 +38,9 @@ export function roundTo(num, step) {
 
 // Percent value of a number in a range
 export function val2pct(val, min, max) {
-  if (min === max) return max;
-  let value = val;
+  const n = (val - min) / (max - min);
 
-  if (val > max) value = max;
-  else if (val < min) value = min;
-
-  return (value - min) / (max - min);
+  return clamp(n, 0, 1);
 }
 
 // Log base 10

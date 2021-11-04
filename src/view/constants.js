@@ -5,6 +5,7 @@ export const DISPLAY_TYPE_EFFECT = 'effect';
 
 export const FFT_SIZE = 1024;
 export const SAMPLE_RATE = 44100;
+export const MAX_FFT_SIZE = 32768;
 
 export const DEFAULT_CANVAS_WIDTH = 854;
 export const DEFAULT_CANVAS_HEIGHT = 480;

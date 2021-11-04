@@ -4818,6 +4818,11 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
+fourier-transform@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/fourier-transform/-/fourier-transform-1.1.2.tgz#53927cefa86958eb1fd2148af46c6d3fc5e79b64"
+  integrity sha1-U5J876hpWOsf0hSK9GxtP8Xnm2Q=
+
 fragment-cache@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/fragment-cache/-/fragment-cache-0.2.1.tgz#4290fad27f13e89be7f33799c6bc5a0abfff0d19"
@@ -10545,6 +10550,11 @@ wildcard@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/wildcard/-/wildcard-2.0.0.tgz#a77d20e5200c6faaac979e4b3aadc7b3dd7f8fec"
   integrity sha512-JcKqAHLPxcdb9KM49dufGXn2x3ssnfjbcaQdLlfZsL9rH9wgDQjUtDxbo8NE0F6SFvydeu1VhZe7hZuHsB2/pw==
+
+window-function@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/window-function/-/window-function-2.1.0.tgz#bfa9e222ea673237c3ce0bcb031f5df05fbf774f"
+  integrity sha512-xbu6m4gHianmhRg1W4nesoSRYZ4tDxRU0bQ76j7Rzt//8+OioCPwH6FmIIW5QdFpioD6yCWBYUpXW64WjyDh4Q==
 
 word-wrap@^1.2.3, word-wrap@~1.2.3:
   version "1.2.3"

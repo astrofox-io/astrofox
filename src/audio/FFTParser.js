@@ -24,9 +24,9 @@ export default class FFTParser extends Entity {
 
     const range = sampleRate / fftSize;
 
-    this.minBin = floor(minFrequency / range);
-    this.maxBin = floor(maxFrequency / range);
-    this.totalBins = this.maxBin - this.minBin;
+    this.startBin = floor(minFrequency / range);
+    this.endBin = floor(maxFrequency / range);
+    this.totalBins = this.endBin - this.startBin;
   }
 
   update(properties) {
@@ -48,7 +48,7 @@ export default class FFTParser extends Entity {
 
   parseFFT(fft, bins) {
     let { output, buffer } = this;
-    const { minBin, maxBin, totalBins } = this;
+    const { startBin, endBin, totalBins } = this;
     const { smoothingTimeConstant } = this.properties;
     const size = bins || totalBins;
 
@@ -62,7 +62,7 @@ export default class FFTParser extends Entity {
 
     // Straight conversion
     if (size === totalBins) {
-      for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
+      for (let i = startBin, k = 0; i < endBin; i += 1, k += 1) {
         output[k] = this.getValue(fft[i]);
       }
     }
@@ -70,7 +70,7 @@ export default class FFTParser extends Entity {
     else if (size < totalBins) {
       const step = totalBins / size;
 
-      for (let i = minBin, k = 0; i < maxBin; i += 1, k += 1) {
+      for (let i = startBin, k = 0; i < endBin; i += 1, k += 1) {
         const start = ~~(i * step);
         const end = ~~(start + step);
         let max = 0;
@@ -93,7 +93,7 @@ export default class FFTParser extends Entity {
     else if (size > totalBins) {
       const step = size / totalBins;
 
-      for (let i = minBin, j = 0; i < maxBin; i += 1, j += 1) {
+      for (let i = startBin, j = 0; i < endBin; i += 1, j += 1) {
         const val = this.getValue(fft[i]);
         const start = ~~(j * step);
         const end = start + step;

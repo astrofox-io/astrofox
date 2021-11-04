@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTransition, animated } from 'react-spring';
 import RenderPanel from 'components/panels/RenderPanel';
 import Overlay from 'components/window/Overlay';
-import { stage } from 'view/global';
+import { stage, analyzer } from 'view/global';
 import { ignoreEvents } from 'utils/react';
 import useStage from 'actions/stage';
 import useVideo from 'actions/video';
@@ -41,7 +41,7 @@ export default function Stage() {
     <div className={styles.stage}>
       <Overlay show={active} />
       <div className={styles.scroll}>
-        <div className={styles.canvas} onDrop={handleDrop} onDragOver={ignoreEvents}>
+        <div className={styles.canvas} onDrop={handleDrop} onDragOver={ignoreEvents} onDoubleClick={() => console.log(analyzer)}>
           <canvas ref={canvas} style={style} />
           <Loading show={loading} />
           <RenderInfo show={active} />
