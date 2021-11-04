@@ -21,7 +21,7 @@ export default class VideoRenderer {
       logger.log(data);
 
       // Start rendering frames when ffmpeg is ready
-      if (/^ffmpeg version/.test(data)) {
+      if (!this.running && /^ffmpeg version/.test(data)) {
         setTimeout(() => {
           this.running = true;
 

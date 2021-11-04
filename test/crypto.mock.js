@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-Object.defineProperty(global.self, 'crypto', {
+Object.defineProperty(global, 'crypto', {
   value: {
     getRandomValues: arr => crypto.randomBytes(arr.length),
   },

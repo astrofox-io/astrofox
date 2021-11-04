@@ -1,10 +1,12 @@
+import Entity from 'core/Entity';
 import fft from 'fourier-transform';
 import blackman from 'window-function/blackman';
 import { FFT_SIZE } from 'view/constants';
 import { mag2db, val2pct } from 'utils/math';
 import { downmix } from 'utils/audio';
+import { updateExistingProps } from '../utils/object';
 
-export default class SpectrumAnalyzer {
+export default class SpectrumAnalyzer extends Entity {
   static defaultProperties = {
     fftSize: FFT_SIZE,
     minDecibels: -100,
@@ -13,17 +15,35 @@ export default class SpectrumAnalyzer {
   };
 
   constructor(context, properties) {
+    super('SpectrumAnalyzer', { ...SpectrumAnalyzer.defaultProperties, ...properties });
+
     this.audioContext = context;
 
-    this.analyzer = Object.assign(
-      context.createAnalyser(),
-      SpectrumAnalyzer.defaultProperties,
-      properties,
-    );
+    this.analyzer = Object.assign(context.createAnalyser(), this.properties);
 
-    const { fftSize, frequencyBinCount } = this.analyzer;
+    this.init();
+  }
 
-    this.fft = new Uint8Array(frequencyBinCount);
+  update(properties) {
+    const changed = super.update(properties);
+
+    const { fftSize } = properties;
+
+    if (changed) {
+      updateExistingProps(this.analyzer, properties);
+
+      if (fftSize !== undefined) {
+        this.init();
+      }
+    }
+
+    return changed;
+  }
+
+  init() {
+    const { audioContext, analyzer: { fftSize } } = this;
+
+    this.fft = new Uint8Array(fftSize / 2);
     this.td = new Float32Array(fftSize);
 
     this.blackmanTable = new Float32Array(fftSize);
@@ -32,7 +52,7 @@ export default class SpectrumAnalyzer {
       this.blackmanTable[i] = blackman(i, fftSize);
     }
 
-    this.buffer = context.createBuffer(1, fftSize, context.sampleRate);
+    this.buffer = audioContext.createBuffer(1, fftSize, audioContext.sampleRate);
 
     this.smoothing = new Float32Array(fftSize / 2);
   }
@@ -97,7 +117,7 @@ export default class SpectrumAnalyzer {
     }
   }
 
-  update(input) {
+  process(input) {
     if (input) {
       const data = downmix(input);
       this.buffer.copyToChannel(data, 0);
@@ -126,5 +146,6 @@ export default class SpectrumAnalyzer {
   reset() {
     this.fft.fill(0);
     this.td.fill(0);
+    this.smoothing.fill(0);
   }
 }

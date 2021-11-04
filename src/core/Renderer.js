@@ -1,6 +1,5 @@
-import { events, stage, player, analyzer, reactors, audioContext } from 'view/global';
-import { clamp, floor } from 'utils/math';
-import { MAX_FFT_SIZE, SAMPLE_RATE } from '../view/constants';
+import { events, stage, player, analyzer, reactors } from 'view/global';
+import { clamp } from 'utils/math';
 
 const FPS_POLL_INTERVAL = 500;
 const STOP_RENDERING = 0;
@@ -105,7 +104,7 @@ export default class Renderer {
   getAudioSample(time) {
     const { fftSize } = analyzer.analyzer;
     const audio = player.getAudio();
-    const pos = audio.getSamplePosition(time);
+    const pos = audio.getBufferPosition(time);
     const start = pos - fftSize / 2;
     const end = pos + fftSize / 2;
 
@@ -115,7 +114,7 @@ export default class Renderer {
   renderFrame(frame, fps) {
     return new Promise((resolve, reject) => {
       try {
-        analyzer.update(this.getAudioSample(frame / fps));
+        analyzer.process(this.getAudioSample(frame / fps));
 
         const frameData = this.getFrameData(VIDEO_RENDERING);
         frameData.delta = 1000 / fps;
@@ -135,7 +134,8 @@ export default class Renderer {
     const now = Date.now();
 
     if (player.isPlaying()) {
-      analyzer.update(this.getAudioSample());
+      analyzer.process(this.getAudioSample());
+      //analyzer.process();
     }
 
     const data = this.getFrameData(id);

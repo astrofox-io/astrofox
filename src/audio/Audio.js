@@ -46,7 +46,6 @@ export default class Audio {
   // Loads an AudioBuffer
   loadBuffer(buffer) {
     this.buffer = buffer;
-    this.initBuffer();
   }
 
   addNode(node) {
@@ -144,7 +143,7 @@ export default class Audio {
     return this.getCurrentTime() / this.getDuration() || 0;
   }
 
-  getSamplePosition(time) {
+  getBufferPosition(time) {
     const position = time ? time / this.getDuration() : this.getPosition();
     return ~~(position * this.buffer.length);
   }
