@@ -8,7 +8,7 @@ module.exports = function (api) {
       '@babel/env',
       {
         targets: {
-          electron: '11.1.1',
+          electron: '15.3.0',
         },
       },
     ],
