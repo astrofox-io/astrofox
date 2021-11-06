@@ -2,6 +2,7 @@ import Display from 'core/Display';
 import Effect from 'core/Effect';
 import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
+import { renderToCanvas } from '../utils/canvas';
 
 const blendOptions = [
   'None',
@@ -83,6 +84,10 @@ export default class Scene extends Display {
     this.stage = null;
     this.displays = new EntityList();
     this.effects = new EntityList();
+
+    this.renderToCanvas = this.renderToCanvas.bind(this);
+    this.renderToScene = this.renderToScene.bind(this);
+    this.getSize = this.getSize.bind(this);
   }
 
   addToStage(stage) {
@@ -183,6 +188,10 @@ export default class Scene extends Display {
     return this.stage.canvasBuffer.getContext();
   }
 
+  renderToCanvas(image, props, origin) {
+    renderToCanvas(this.getCanvasConext(), image, props, origin);
+  }
+
   renderToScene(scene, camera) {
     this.stage.webglBuffer.render(scene, camera);
   }
@@ -215,17 +224,22 @@ export default class Scene extends Display {
       displays,
       effects,
       stage: { canvasBuffer, webglBuffer },
+      renderToScene,
+      renderToCanvas,
+      getSize,
     } = this;
 
     this.clear();
     this.updateReactors(data);
+
+    const scene = { renderToScene, renderToCanvas, getSize };
     const passes = [webglBuffer.pass, canvasBuffer.pass];
 
     if (displays.length > 0 || effects.length > 0) {
       displays.forEach(display => {
         if (display.enabled) {
           display.updateReactors(data);
-          display.render(this, data);
+          display.render(scene, data);
 
           if (display.pass) {
             passes.push(display.pass);
@@ -236,7 +250,7 @@ export default class Scene extends Display {
       effects.forEach(effect => {
         if (effect.enabled) {
           effect.updateReactors(data);
-          effect.render(this, data);
+          effect.render(scene, data);
 
           if (effect.pass) {
             passes.push(effect.pass);

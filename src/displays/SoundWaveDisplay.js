@@ -172,6 +172,6 @@ export default class SoundWaveDisplay extends CanvasDisplay {
       y: height / 2,
     };
 
-    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
+    scene.renderToCanvas(this.canvas, this.properties, origin);
   }
 }

@@ -160,7 +160,7 @@ export default class GeometryDisplay extends WebglDisplay {
   constructor(properties) {
     super(GeometryDisplay, properties);
 
-    this.parser = new FFTParser({ normalize: true });
+    this.parser = new FFTParser();
   }
 
   update(properties) {
@@ -229,10 +229,10 @@ export default class GeometryDisplay extends WebglDisplay {
     return changed;
   }
 
-  addToScene(scene) {
-    const { width, height } = scene.getSize();
+  addToScene({ getSize }) {
+    const { width, height } = getSize();
 
-    const scene3d = new Scene();
+    const scene = new Scene();
     const camera = new PerspectiveCamera(FOV, width / height, NEAR, FAR);
     const lights = [
       new PointLight(0xffffff, 1, 0),
@@ -244,13 +244,13 @@ export default class GeometryDisplay extends WebglDisplay {
 
     camera.position.set(0, 0, CAMERA_POS_Z);
 
-    scene3d.add(camera);
-    scene3d.add(lights[0]);
-    scene3d.add(lights[1]);
-    scene3d.add(lights[2]);
-    scene3d.add(group);
+    scene.add(camera);
+    scene.add(lights[0]);
+    scene.add(lights[1]);
+    scene.add(lights[2]);
+    scene.add(group);
 
-    this.scene3d = scene3d;
+    this._scene = scene;
     this.camera = camera;
     this.lights = lights;
     this.group = group;
@@ -387,7 +387,7 @@ export default class GeometryDisplay extends WebglDisplay {
   }
 
   render(scene, data) {
-    const { scene3d, camera, mesh, properties, parser } = this;
+    const { _scene, camera, mesh, properties, parser } = this;
 
     if (data.hasUpdate) {
       const fft = parser.parseFFT(data.fft);
@@ -401,6 +401,6 @@ export default class GeometryDisplay extends WebglDisplay {
       mesh.position.set(properties.x, properties.y, properties.z);
     }
 
-    scene.renderToScene(scene3d, camera);
+    scene.renderToScene(_scene, camera);
   }
 }

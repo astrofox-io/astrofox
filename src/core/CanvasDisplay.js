@@ -1,5 +1,4 @@
 import Display from 'core/Display';
-import { renderToCanvas } from 'utils/canvas';
 
 export default class CanvasDisplay extends Display {
   constructor(Type, properties) {
@@ -25,6 +24,6 @@ export default class CanvasDisplay extends Display {
       y: height / 2,
     };
 
-    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
+    scene.renderToCanvas(this.canvas, this.properties, origin);
   }
 }

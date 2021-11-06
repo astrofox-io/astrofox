@@ -169,7 +169,7 @@ export default class ImageDisplay extends CanvasDisplay {
 
     if (changed) {
       if (this.image.update(properties)) {
-        this.image.render(); 
+        this.image.render();
       }
     }
 

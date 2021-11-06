@@ -18,9 +18,20 @@ export default class Entity {
   };
 
   constructor(name, properties = {}) {
-    this.id = uniqueId();
-    this.name = name;
-    this.properties = properties;
+    Object.defineProperties(this, {
+      id: {
+        value: uniqueId(),
+        enumerable: true,
+      },
+      name: {
+        value: name,
+        enumerable: true,
+      },
+      properties: {
+        value: properties,
+        enumerable: true,
+      },
+    });
   }
 
   update(properties = {}) {

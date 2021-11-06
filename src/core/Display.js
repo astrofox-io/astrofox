@@ -21,11 +21,13 @@ export default class Display extends Entity {
 
     super(name, { ...defaultProperties, ...properties });
 
-    this.type = 'display';
-    this.displayName = getDisplayName(label);
-    this.enabled = true;
-    this.scene = null;
-    this.reactors = {};
+    Object.defineProperties(this, {
+      type: { value: 'display', writable: true, enumerable: true },
+      displayName: { value: getDisplayName(label), writable: true, enumerable: true },
+      enabled: { value: true, writable: true, enumerable: true },
+      scene: { value: null, writable: true, enumerable: true },
+      reactors: { value: {}, enumerable: true },
+    });
   }
 
   getReactor(prop) {

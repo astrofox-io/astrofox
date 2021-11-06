@@ -199,6 +199,6 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
       y: this.properties.height,
     };
 
-    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
+    scene.renderToCanvas(this.canvas, this.properties, origin);
   }
 }

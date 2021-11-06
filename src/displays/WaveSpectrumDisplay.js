@@ -2,7 +2,6 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import FFTParser from 'audio/FFTParser';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
-import { renderToCanvas } from 'utils/canvas';
 import { property, stageHeight, stageWidth } from 'utils/controls';
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
@@ -193,6 +192,6 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
       y: height,
     };
 
-    renderToCanvas(scene.getCanvasConext(), this.canvas, this.properties, origin);
+    scene.renderToCanvas(this.canvas, this.properties, origin);
   }
 }
