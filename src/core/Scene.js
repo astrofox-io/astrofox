@@ -2,7 +2,7 @@ import Display from 'core/Display';
 import Effect from 'core/Effect';
 import EntityList from 'core/EntityList';
 import Composer from 'graphics/Composer';
-import { renderToCanvas } from '../utils/canvas';
+import { renderImageToCanvas } from '../utils/canvas';
 
 const blendOptions = [
   'None',
@@ -137,6 +137,9 @@ export default class Scene extends Display {
       return;
     }
 
+    const { renderToScene, renderToCanvas, getSize } = this;
+    const scene = { renderToScene, renderToCanvas, getSize };
+
     const target = this.getTarget(obj);
 
     target.addElement(obj, index);
@@ -144,7 +147,7 @@ export default class Scene extends Display {
     obj.scene = this;
 
     if (obj.addToScene) {
-      obj.addToScene(this);
+      obj.addToScene(scene);
     }
 
     if (obj.setSize) {
@@ -184,12 +187,8 @@ export default class Scene extends Display {
     return target.shiftElement(obj, spaces);
   }
 
-  getCanvasConext() {
-    return this.stage.canvasBuffer.getContext();
-  }
-
   renderToCanvas(image, props, origin) {
-    renderToCanvas(this.getCanvasConext(), image, props, origin);
+    renderImageToCanvas(this.stage.canvasBuffer.getContext(), image, props, origin);
   }
 
   renderToScene(scene, camera) {

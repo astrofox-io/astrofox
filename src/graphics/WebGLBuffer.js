@@ -2,7 +2,7 @@ import { Scene, Camera } from 'three';
 import CopyPass from './CopyPass';
 import { createRenderTarget } from './common';
 
-export default class WebglBuffer {
+export default class WebGLBuffer {
   constructor(renderer) {
     this.renderer = renderer;
 

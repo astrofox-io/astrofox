@@ -13,7 +13,8 @@ export default class CanvasDisplay extends Display {
   }
 
   render(scene) {
-    const { width, height } = this.canvas;
+    const { canvas, properties } = this;
+    const { width, height } = canvas;
 
     if (width === 0 || height === 0) {
       return;
@@ -24,6 +25,6 @@ export default class CanvasDisplay extends Display {
       y: height / 2,
     };
 
-    scene.renderToCanvas(this.canvas, this.properties, origin);
+    scene.renderToCanvas(canvas, properties, origin);
   }
 }

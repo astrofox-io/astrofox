@@ -29,7 +29,7 @@ import {
   DoubleSide,
   TextureLoader,
 } from 'three';
-import WebglDisplay from 'core/WebglDisplay';
+import WebGLDisplay from 'core/WebGLDisplay';
 import FFTParser from 'audio/FFTParser';
 import POINT_SPRITE from 'assets/images/point.png';
 import { isDefined } from 'utils/array';
@@ -66,7 +66,7 @@ const FAR = 10000;
 const CAMERA_POS_Z = 250;
 const POINT_SIZE = 5.0;
 
-export default class GeometryDisplay extends WebglDisplay {
+export default class GeometryDisplay extends WebGLDisplay {
   static config = {
     name: 'GeometryDisplay',
     description: 'Displays 3D geometry.',

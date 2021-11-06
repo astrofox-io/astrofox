@@ -2,7 +2,7 @@ import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasWave from 'canvas/CanvasWave';
 import WaveParser from 'audio/WaveParser';
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from 'view/constants';
-import { renderToCanvas } from 'utils/canvas';
+import { renderImageToCanvas } from 'utils/canvas';
 import { stageWidth, stageHeight } from 'utils/controls';
 
 const WAVELENGTH_MAX = 0.25;

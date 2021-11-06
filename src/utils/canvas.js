@@ -45,7 +45,7 @@ export function resetCanvas(canvas, width = 1, height = 1) {
   }
 }
 
-export function renderToCanvas(context, image, props = { x: 0, y: 0 }, origin = { x: 0, y: 0 }) {
+export function renderImageToCanvas(context, image, props = { x: 0, y: 0 }, origin = { x: 0, y: 0 }) {
   const { width, height } = context.canvas;
   const { x, y, opacity, rotation } = props;
 

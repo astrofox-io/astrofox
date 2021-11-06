@@ -1,17 +1,19 @@
 import CanvasDisplay from 'core/CanvasDisplay';
 import CanvasImage from 'canvas/CanvasImage';
+import WebGLDisplay from 'core/WebGLDisplay';
 import { BLANK_IMAGE } from 'view/constants';
-import { isDefined } from 'utils/array';
+import { Object3D, OrthographicCamera, PerspectiveCamera, Scene, Texture } from 'three';
+import TexturePass from '../graphics/TexturePass';
 
 const disabled = display => !display.hasImage;
 const maxWidth = display => {
-  const { naturalWidth } = display.image.image;
+  const { naturalWidth } = display.image;
   const { width } = display.scene.getSize();
 
   return naturalWidth > width ? naturalWidth * 2 : width;
 };
 const maxHeight = display => {
-  const { naturalHeight } = display.image.image;
+  const { naturalHeight } = display.image;
   const { height } = display.scene.getSize();
 
   return naturalHeight > height ? naturalHeight * 2 : height;
@@ -19,12 +21,12 @@ const maxHeight = display => {
 const maxX = display => (disabled(display) ? 0 : maxWidth(display));
 const maxY = display => (disabled(display) ? 0 : maxHeight(display));
 
-export default class ImageDisplay extends CanvasDisplay {
+export default class SpriteDisplay extends WebGLDisplay {
   static config = {
-    name: 'ImageDisplay',
-    description: 'Displays an image.',
+    name: 'SpriteDisplay',
+    description: 'Displays a sprite.',
     type: 'display',
-    label: 'Image',
+    label: 'Sprite',
     defaultProperties: {
       src: BLANK_IMAGE,
       x: 0,
@@ -33,6 +35,7 @@ export default class ImageDisplay extends CanvasDisplay {
       size: 100,
       height: 0,
       fixed: true,
+      bounce: false,
       rotation: 0,
       opacity: 0,
     },
@@ -65,6 +68,12 @@ export default class ImageDisplay extends CanvasDisplay {
         min: 1,
         max: 400,
         withRange: true,
+        disabled,
+      },
+      bounce: {
+        label: 'Bounce',
+        type: 'checkbox',
+        withReactor: true,
         disabled,
       },
       x: {
@@ -106,23 +115,27 @@ export default class ImageDisplay extends CanvasDisplay {
   };
 
   constructor(properties) {
-    super(ImageDisplay, properties);
+    super(SpriteDisplay, properties);
 
-    this.image = new CanvasImage(this.properties, this.canvas);
+    this.image = new Image();
   }
 
   get hasImage() {
-    return this.image.image.src !== BLANK_IMAGE;
+    return this.image.src !== BLANK_IMAGE;
   }
 
   update(properties) {
-    const { src: newImage, width, height, size } = properties;
-    const { src, fixed } = this.properties;
+    const { src: newImage, width, height } = properties;
+
+    const {
+      texture,
+      properties: { src },
+    } = this;
 
     if (typeof newImage === 'object') {
       if (newImage.src === BLANK_IMAGE) {
         // Image reset
-        properties = { ...ImageDisplay.config.defaultProperties };
+        properties = { ...SpriteDisplay.config.defaultProperties };
       } else if (newImage.src !== src) {
         // New image
         properties = {
@@ -136,31 +149,31 @@ export default class ImageDisplay extends CanvasDisplay {
       }
     }
 
-    if (fixed && isDefined(width, height, size)) {
-      const { naturalWidth, naturalHeight } = this.image.image;
-      const ratio = naturalWidth / naturalHeight;
-
-      if (width) {
-        properties.height = Math.round(width * (1 / ratio)) || 0;
-      }
-      if (height) {
-        properties.width = Math.round(height * ratio);
-      }
-      if (size) {
-        properties.size = size;
-        properties.height = Math.round(naturalHeight / 100) * size;
-        properties.width = Math.round(naturalWidth / 100) * size;
-      }
-    }
-
     const changed = super.update(properties);
 
     if (changed) {
-      if (this.image.update(properties)) {
-        this.image.render();
+      if (newImage && texture) {
+        this.image = newImage;
+        this.texture = new Texture(this.image);
+        this.pass.material.map = this.texture;
+        this.texture.needsUpdate = true;
       }
     }
 
     return changed;
+  }
+
+  addToScene({ getSize }) {
+    const { width, height } = getSize();
+
+    this.texture = new Texture(this.image);
+    this.pass = new TexturePass(this.texture);
+
+    this.setSize(width, height);
+  }
+
+  setSize(width, height) {
+    this.pass.camera.aspect = width / height;
+    this.pass.camera.updateProjectionMatrix();
   }
 }
