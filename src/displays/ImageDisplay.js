@@ -8,13 +8,13 @@ const maxWidth = display => {
   const { naturalWidth } = display.image.image;
   const { width } = display.scene.getSize();
 
-  return naturalWidth > width ? naturalWidth * 2 : width;
+  return naturalWidth > width ? naturalWidth : width;
 };
 const maxHeight = display => {
   const { naturalHeight } = display.image.image;
   const { height } = display.scene.getSize();
 
-  return naturalHeight > height ? naturalHeight * 2 : height;
+  return naturalHeight > height ? naturalHeight : height;
 };
 const maxX = display => (disabled(display) ? 0 : maxWidth(display));
 const maxY = display => (disabled(display) ? 0 : maxHeight(display));
@@ -30,7 +30,7 @@ export default class ImageDisplay extends CanvasDisplay {
       x: 0,
       y: 0,
       width: 0,
-      size: 100,
+      zoom: 1,
       height: 0,
       fixed: true,
       rotation: 0,
@@ -59,14 +59,6 @@ export default class ImageDisplay extends CanvasDisplay {
         withLink: 'fixed',
         disabled,
       },
-      size: {
-        label: 'Size',
-        type: 'number',
-        min: 1,
-        max: 400,
-        withRange: true,
-        disabled,
-      },
       x: {
         label: 'X',
         type: 'number',
@@ -81,6 +73,16 @@ export default class ImageDisplay extends CanvasDisplay {
         min: display => -1 * maxY(display),
         max: display => maxY(display),
         withRange: true,
+        disabled,
+      },
+      zoom: {
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
         disabled,
       },
       rotation: {
@@ -116,7 +118,7 @@ export default class ImageDisplay extends CanvasDisplay {
   }
 
   update(properties) {
-    const { src: newImage, width, height, size } = properties;
+    const { src: newImage, width, height, zoom } = properties;
     const { src, fixed } = this.properties;
 
     if (typeof newImage === 'object') {
@@ -136,26 +138,27 @@ export default class ImageDisplay extends CanvasDisplay {
       }
     }
 
-    if (fixed && isDefined(width, height, size)) {
-      const { naturalWidth, naturalHeight } = this.image.image;
-      const ratio = naturalWidth / naturalHeight;
+    const { naturalWidth, naturalHeight } = this.image.image;
+    const ratio = naturalWidth / naturalHeight;
 
+    // Sync width/height values
+    if (fixed && isDefined(width, height)) {
       if (width) {
         properties.height = Math.round(width * (1 / ratio)) || 0;
       }
       if (height) {
         properties.width = Math.round(height * ratio);
       }
-      if (size) {
-        properties.size = size;
-        properties.height = Math.round(naturalHeight / 100) * size;
-        properties.width = Math.round(naturalWidth / 100) * size;
-      }
     }
 
     const changed = super.update(properties);
 
     if (changed) {
+      if (zoom) {
+        properties.height = naturalHeight * zoom * (this.properties.height / naturalHeight);
+        properties.width = naturalWidth * zoom * (this.properties.width / naturalWidth);
+      }
+
       if (this.image.update(properties)) {
         this.image.render();
       }
