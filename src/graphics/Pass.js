@@ -12,12 +12,13 @@ export default class Pass {
     this.setClearAlpha = 1.0;
   }
 
-  setFullscreenMaterial(material) {
+  setFullscreen(material, geometry, camera) {
     this.scene = new Scene();
-    this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.geometry = getFullscreenGeometry();
+    this.camera = camera || new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    this.geometry = geometry || getFullscreenGeometry();
+    this.material = material;
 
-    this.mesh = new Mesh(this.geometry, material);
+    this.mesh = new Mesh(this.geometry, this.material);
     this.mesh.frustumCulled = false;
 
     this.scene.add(this.mesh);

@@ -14,7 +14,7 @@ export default class TexturePass extends Pass {
       transparent: true,
     });
 
-    this.setFullscreenMaterial(this.material);
+    this.setFullscreen(this.material);
 
     this.needsUpdate = true;
   }

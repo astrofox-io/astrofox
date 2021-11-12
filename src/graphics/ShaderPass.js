@@ -13,7 +13,7 @@ export default class ShaderPass extends Pass {
       defines: { ...defines },
     });
 
-    this.setFullscreenMaterial(this.material);
+    this.setFullscreen(this.material);
 
     this.needsSwap = true;
   }
