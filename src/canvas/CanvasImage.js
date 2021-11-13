@@ -13,9 +13,11 @@ export default class CanvasImage extends Entity {
   constructor(properties, canvas) {
     super('CanvasImage', { ...CanvasImage.defaultProperties, ...properties });
 
+    const { width, height, src } = this.properties;
+
     this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.properties.width || 1;
-    this.canvas.height = this.properties.height || 1;
+    this.canvas.width = width || 1;
+    this.canvas.height = height || 1;
 
     this.context = this.canvas.getContext('2d');
 
@@ -24,7 +26,7 @@ export default class CanvasImage extends Entity {
       this.generateMipMaps();
       this.render();
     };
-    this.image.src = this.properties.src;
+    this.image.src = src;
   }
 
   getResizeSteps(sourceWidth, targetWidth) {
@@ -69,9 +71,12 @@ export default class CanvasImage extends Entity {
   }
 
   render() {
-    const { canvas, context, image } = this;
-
-    const { width, height } = this.properties;
+    const {
+      canvas,
+      context,
+      image,
+      properties: { width, height },
+    } = this;
 
     if (!image.src) return;
 

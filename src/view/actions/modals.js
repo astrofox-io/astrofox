@@ -10,13 +10,13 @@ const modalStore = create(() => ({
 }));
 
 export function showModal(component, modalProps, componentProps) {
-  modalStore.setState(state => ({
-    modals: state.modals.concat({ id: uniqueId(), component, modalProps, componentProps }),
+  modalStore.setState(({ modals }) => ({
+    modals: modals.concat({ id: uniqueId(), component, modalProps, componentProps }),
   }));
 }
 
 export function closeModal() {
-  modalStore.setState(state => ({ modals: state.modals.slice(0, state.length - 1) }));
+  modalStore.setState(({ modals }) => ({ modals: modals.slice(0, -1) }));
 }
 
 export default modalStore;
