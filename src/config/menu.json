@@ -3,34 +3,34 @@
     "label": "File",
     "submenu": [
       {
-        "label": "New Project",
+        "label": "New project",
         "action": "new-project"
       },
       {
-        "label": "Open Project...",
+        "label": "Open project...",
         "action": "open-project"
       },
       {
-        "label": "Save Project",
+        "label": "Save project",
         "action": "save-project"
       },
       {
-        "label": "Save Project As...",
+        "label": "Save project as...",
         "action": "save-project-as"
       },
       {
         "type": "separator"
       },
       {
-        "label": "Load Audio...",
+        "label": "Load audio...",
         "action": "load-audio"
       },
       {
-        "label": "Save Image...",
+        "label": "Save image...",
         "action": "save-image"
       },
       {
-        "label": "Save Video...",
+        "label": "Save video...",
         "action": "save-video"
       },
       {
@@ -60,22 +60,26 @@
     "label": "View",
     "submenu": [
       {
-        "label": "Zoom In",
+        "label": "Zoom in",
         "action": "zoom-in"
       },
       {
-        "label": "Zoom Out",
+        "label": "Zoom out",
         "action": "zoom-out"
       },
       {
-        "label": "Actual Size",
+        "label": "Actual size",
         "action": "zoom-reset"
+      },
+      {
+        "label": "Fit to screen",
+        "action": "zoom-fit"
       },
       {
         "type": "separator"
       },
       {
-        "label": "Control Dock",
+        "label": "Control dock",
         "type": "checkbox",
         "checked": true,
         "action": "view-control-dock"
@@ -103,11 +107,11 @@
     "label": "Help",
     "submenu": [
       {
-        "label": "Check For Updates...",
+        "label": "Check for updates...",
         "action": "check-for-updates"
       },
       {
-        "label": "Developer Tools",
+        "label": "Developer tools",
         "action": "open-dev-tools",
         "role": "toggledevtools",
         "accelerator": "CmdOrCtrl+Shift+I"

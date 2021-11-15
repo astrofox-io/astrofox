@@ -60,6 +60,7 @@ export default function ProgressControl() {
         onChange={(name, newValue) => handleProgressChange(newValue / PROGRESS_MAX)}
         onUpdate={(name, newValue) => handleProgressUpdate(newValue / PROGRESS_MAX)}
         disabled={disabled}
+        hideThumb={disabled}
       />
       <TimeInfo currentTime={duration * (seekPosition || progressPosition)} totalTime={duration} />
     </div>

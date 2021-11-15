@@ -25,7 +25,7 @@ function App() {
       <Preload />
       <TitleBar />
       <Layout direction="row">
-        <Layout direction="column">
+        <Layout id="viewport" direction="column">
           <Stage />
           <Player />
           <ReactorPanel />

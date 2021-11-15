@@ -10,7 +10,11 @@ export const MAX_FFT_SIZE = 32768;
 export const DEFAULT_CANVAS_WIDTH = 854;
 export const DEFAULT_CANVAS_HEIGHT = 480;
 export const DEFAULT_CANVAS_BGCOLOR = '#000000';
-export const DEFAULT_ZOOM = 100;
+export const DEFAULT_ZOOM = 1.0;
+export const MIN_CANVAS_WIDTH = 240;
+export const MIN_CANVAS_HEIGHT = 240;
+export const MAX_CANVAS_WIDTH = 3840;
+export const MAX_CANVAS_HEIGHT = 2160;
 
 export const PRIMARY_COLOR = '#704dd8';
 

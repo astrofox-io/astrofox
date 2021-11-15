@@ -78,7 +78,7 @@ export default function RangeInput({
       <div className={styles.track} />
       {!hideFill && <div className={styles.fill} style={getFillStyle()} />}
       <input
-        className={classNames({
+        className={classNames(styles.input, {
           [styles.hideThumb]: hideThumb,
           [styles.showThumbOnHover]: hideThumb && showThumbOnHover,
           [styles.smallThumb]: smallThumb,

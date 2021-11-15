@@ -12,7 +12,7 @@ import projectStore, {
 import { showModal } from 'actions/modals';
 import { raiseError } from 'actions/error';
 import { openAudioFile } from 'actions/audio';
-import { setZoom } from 'actions/stage';
+import { setZoom, zoomIn, zoomOut, fitToScreen } from 'actions/stage';
 import * as displays from 'displays';
 import * as effects from 'effects';
 
@@ -114,15 +114,19 @@ export async function handleMenuAction(action) {
       break;
 
     case 'zoom-in':
-      await setZoom(1);
+      await zoomIn();
       break;
 
     case 'zoom-out':
-      await setZoom(-1);
+      await zoomOut();
       break;
 
     case 'zoom-reset':
-      await setZoom(0);
+      await setZoom(1);
+      break;
+
+    case 'zoom-fit':
+      await fitToScreen();
       break;
 
     case 'view-control-dock':

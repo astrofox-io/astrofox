@@ -10,6 +10,7 @@ import { ButtonInput } from 'components/inputs';
 import { replaceExt } from 'utils/file';
 import { FolderOpen } from 'view/icons';
 import useAudio, { openAudioFile } from 'actions/audio';
+import { fitToScreen } from 'actions/stage';
 import { startRender } from 'actions/video';
 import styles from './VideoSettings.less';
 import videoConfig from 'config/video.json';
@@ -66,6 +67,7 @@ export default function VideoSettings({ onClose }) {
 
   function handleStart() {
     startRender({ ...state, audioFile });
+    fitToScreen();
     onClose();
   }
 

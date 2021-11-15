@@ -34,11 +34,33 @@ export function updateCanvas(width, height, backgroundColor) {
 }
 
 export function setZoom(value) {
+  updateStage({ zoom: value });
+}
+
+export function zoomIn() {
   const { zoom } = stageStore.getState();
 
-  const newValue = value === 0 ? 100 : clamp(zoom + value * 10, 10, 100);
+  const newValue = clamp(zoom - 0.1, 0.1, 1);
 
   updateStage({ zoom: newValue });
+}
+
+export function zoomOut() {
+  const { zoom } = stageStore.getState();
+
+  const newValue = clamp(zoom + 0.1, 0.1, 1.0);
+
+  updateStage({ zoom: newValue });
+}
+
+export function fitToScreen() {
+  const viewport = document.getElementById('viewport');
+  const { width, height, zoom } = stageStore.getState();
+
+  const newWidth = clamp((viewport.clientWidth * 0.8) / width, 0.1, 1);
+  const newHeight = clamp((viewport.clientHeight * 0.8) / height, 0.1, 1);
+  console.log({ newWidth, newHeight });
+  updateStage({ zoom: Math.min(newWidth, newHeight) });
 }
 
 export default stageStore;

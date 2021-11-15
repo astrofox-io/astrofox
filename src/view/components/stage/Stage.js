@@ -33,8 +33,8 @@ export default function Stage() {
   }
 
   const style = {
-    width: `${width * (zoom / 100)}px`,
-    height: `${height * (zoom / 100)}px`,
+    width: `${width * zoom}px`,
+    height: `${height * zoom}px`,
   };
 
   return (

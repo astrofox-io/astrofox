@@ -4,6 +4,12 @@ import { Settings, Setting } from 'components/controls';
 import Layout from 'components/layout/Layout';
 import ButtonRow from 'components/layout/ButtonRow';
 import useStage, { updateCanvas } from 'actions/stage';
+import {
+  MAX_CANVAS_WIDTH,
+  MAX_CANVAS_HEIGHT,
+  MIN_CANVAS_WIDTH,
+  MIN_CANVAS_HEIGHT,
+} from 'view/constants';
 
 export default function CanvasSettings({ onClose }) {
   const stageConfig = useStage(state => state);
@@ -31,8 +37,8 @@ export default function CanvasSettings({ onClose }) {
           type="number"
           name="width"
           value={width}
-          min={240}
-          max={1920}
+          min={MIN_CANVAS_WIDTH}
+          max={MAX_CANVAS_WIDTH}
           step={2}
         />
         <Setting
@@ -40,8 +46,8 @@ export default function CanvasSettings({ onClose }) {
           type="number"
           name="height"
           value={height}
-          min={240}
-          max={1080}
+          min={MIN_CANVAS_HEIGHT}
+          max={MAX_CANVAS_HEIGHT}
           step={2}
         />
         <Setting
