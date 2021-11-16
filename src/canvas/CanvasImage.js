@@ -13,12 +13,9 @@ export default class CanvasImage extends Entity {
   constructor(properties, canvas) {
     super('CanvasImage', { ...CanvasImage.defaultProperties, ...properties });
 
-    const { width, height, src } = this.properties;
+    const { src } = this.properties;
 
-    this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = width || 1;
-    this.canvas.height = height || 1;
-
+    this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
 
     this.image = new Image();

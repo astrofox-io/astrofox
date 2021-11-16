@@ -22,7 +22,7 @@ export default class CanvasShape extends Entity {
 
     const { width, height, strokeWidth } = this.properties;
 
-    this.canvas = canvas || document.createElement('canvas');
+    this.canvas = canvas;
     this.canvas.width = width + strokeWidth;
     this.canvas.height = height + strokeWidth;
 

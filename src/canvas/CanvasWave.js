@@ -18,10 +18,7 @@ export default class CanvasWave extends Entity {
   constructor(properties, canvas) {
     super('CanvasWave', { ...CanvasWave.defaultProperties, ...properties });
 
-    this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.properties.width;
-    this.canvas.height = this.properties.height;
-
+    this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
   }
 

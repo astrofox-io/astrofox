@@ -4,11 +4,9 @@ export default class CanvasDisplay extends Display {
   constructor(Type, properties) {
     super(Type, properties);
 
-    const { width, height } = this.properties;
+    const { width = 1, height = 1 } = this.properties;
 
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas = new OffscreenCanvas(width, height);
     this.context = this.canvas.getContext('2d');
   }
 
