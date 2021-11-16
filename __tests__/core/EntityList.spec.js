@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import EntityList from 'core/EntityList';
 import Entity from 'core/Entity';
 

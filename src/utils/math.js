@@ -23,7 +23,7 @@ export function clamp(num, min, max) {
 // Decimal places in a number
 export function decimals(num) {
   if (num % 1 !== 0) {
-    return num.toString().split('.')[1].length;
+    return +num.toString().split('.')[1].length;
   }
   return 0;
 }
@@ -33,7 +33,7 @@ export function roundTo(num, step) {
   const d = decimals(step);
   const n = ceil(num / step) * step;
 
-  return d > 0 ? n.toFixed(d) : n;
+  return d > 0 ? +n.toFixed(d) : n;
 }
 
 // Normalize value over a given range

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { updateExistingProps } from 'utils/object';
 import cloneDeep from 'lodash/cloneDeep';
 

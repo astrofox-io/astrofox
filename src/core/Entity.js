@@ -22,6 +22,7 @@ export default class Entity {
       id: {
         value: uniqueId(),
         enumerable: true,
+        writable: true
       },
       name: {
         value: name,

@@ -42,11 +42,11 @@ test('count decimal places in a number properly', () => {
 test('round to nearest given interval properly', () => {
   expect(roundTo(5.6, 10)).toBe(10);
   expect(roundTo(11, -5)).toBe(5);
-  expect(roundTo(10, 5.55)).toContain(11.0);
+  expect(roundTo(10, 5.55)).toBe(11.1);
 });
 
 test('find percent value of a number in a range properly', () => {
-  expect(normalize(50, 20, 20)).toBe(20);
+  expect(normalize(50, 20, 20)).toBe(1);
   expect(normalize(500, 20, 30)).toBe(1);
   expect(normalize(0, 20, 30)).toBe(0);
   expect(normalize(50, 20, 80)).toBe(0.5);

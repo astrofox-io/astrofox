@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import Entity from 'core/Entity';
 
 let e;
@@ -30,7 +33,7 @@ describe('update works properly', () => {
   test('no properties provided', () => {
     expect(e.update()).toBe(false);
   });
-  
+
   test('properties is typeof function', () => {
     const speedUp = props => {
       return { ...props, speed: '200' };
