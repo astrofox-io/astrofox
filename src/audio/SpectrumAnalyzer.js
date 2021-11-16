@@ -2,7 +2,7 @@ import Entity from 'core/Entity';
 import fft from 'fourier-transform';
 import blackman from 'window-function/blackman';
 import { FFT_SIZE } from 'view/constants';
-import { mag2db, val2pct } from 'utils/math';
+import { mag2db, normalize } from 'utils/math';
 import { downmix } from 'utils/audio';
 import { updateExistingProps } from '../utils/object';
 
@@ -102,7 +102,7 @@ export default class SpectrumAnalyzer extends Entity {
     this.getFloatTimeDomainData(waveform);
 
     for (let i = 0, n = waveform.length; i < n; i++) {
-      array[i] = Math.round(val2pct(waveform[i], -1, 1) * 255);
+      array[i] = Math.round(normalize(waveform[i], -1, 1) * 255);
     }
   }
 
@@ -113,7 +113,7 @@ export default class SpectrumAnalyzer extends Entity {
     this.getFloatFrequencyData(spectrum);
 
     for (let i = 0, n = spectrum.length; i < n; i++) {
-      array[i] = Math.round(val2pct(spectrum[i], minDecibels, maxDecibels) * 255);
+      array[i] = Math.round(normalize(spectrum[i], minDecibels, maxDecibels) * 255);
     }
   }
 

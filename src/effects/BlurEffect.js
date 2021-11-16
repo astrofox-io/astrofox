@@ -6,7 +6,7 @@ import ShaderPass from 'graphics/ShaderPass';
 import GaussianBlurPass from 'effects/passes/GaussianBlurPass';
 import TriangleBlurPass from 'effects/passes/TriangleBlurPass';
 import LensBlurPass from 'effects/passes/LensBlurPass';
-import { val2pct } from 'utils/math';
+import { normalize } from 'utils/math';
 import { stageWidth, stageHeight, property } from 'utils/controls';
 
 const blurOptions = ['Box', 'Circular', 'Gaussian', 'Triangle', 'Zoom'];
@@ -142,7 +142,7 @@ export default class BlurEffect extends Effect {
       case 'Zoom':
         this.pass.setUniforms({
           amount: amount * ZOOM_BLUR_MAX,
-          center: [val2pct(x, -width / 2, width / 2), val2pct(y, -height / 2, height / 2)],
+          center: [normalize(x, -width / 2, width / 2), normalize(y, -height / 2, height / 2)],
         });
         break;
     }

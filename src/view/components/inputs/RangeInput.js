@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import { val2pct } from 'utils/math';
+import { normalize } from 'utils/math';
 import styles from './RangeInput.less';
 
 export default function RangeInput({
@@ -61,7 +61,7 @@ export default function RangeInput({
   }
 
   function getFillStyle() {
-    const pct = val2pct(buffered ? bufferedValue : value, min, max) * 100;
+    const pct = normalize(buffered ? bufferedValue : value, min, max) * 100;
 
     switch (fillStyle) {
       case 'left':

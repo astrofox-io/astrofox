@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import Entity from 'core/Entity';
 import FFTParser from 'audio/FFTParser';
-import { val2pct, floor, ceil } from 'utils/math';
+import { normalize, floor, ceil } from 'utils/math';
 import {
   FFT_SIZE,
   SAMPLE_RATE,
@@ -129,7 +129,7 @@ export default class AudioReactor extends Entity {
     let sum = 0;
 
     for (let i = start; i < end; i += 1) {
-      sum += val2pct(fft[i], 1 - y2, 1 - y1);
+      sum += normalize(fft[i], 1 - y2, 1 - y1);
     }
 
     const avg = sum / (end - start);

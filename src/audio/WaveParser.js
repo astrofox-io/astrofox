@@ -1,5 +1,5 @@
 import Entity from 'core/Entity';
-import { val2pct } from 'utils/math';
+import { normalize } from 'utils/math';
 
 export default class WaveParser extends Entity {
   static defaultProperties = {
@@ -27,7 +27,7 @@ export default class WaveParser extends Entity {
     }
 
     for (let i = 0, j = 0; i < size; i += 1, j += step) {
-      output[i] = val2pct(data[~~j], -1, 1);
+      output[i] = normalize(data[~~j], -1, 1);
     }
 
     // Apply smoothing

@@ -1,5 +1,5 @@
 import Entity from 'core/Entity';
-import { floor, normalize } from 'utils/math';
+import { db2mag, floor, normalize } from 'utils/math';
 import { FFT_SIZE, SAMPLE_RATE } from 'view/constants';
 
 export default class FFTParser extends Entity {
@@ -43,7 +43,7 @@ export default class FFTParser extends Entity {
     const { minDecibels, maxDecibels } = this.properties;
     const db = minDecibels * (1 - fft / 256);
 
-    return normalize(db, minDecibels, maxDecibels);
+    return normalize(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
   }
 
   parseFFT(fft, bins) {

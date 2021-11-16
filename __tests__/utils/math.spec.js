@@ -5,7 +5,7 @@ import {
   clamp,
   decimals,
   roundTo,
-  val2pct,
+  normalize,
   log10,
   db2mag,
   mag2db,
@@ -46,10 +46,10 @@ test('round to nearest given interval properly', () => {
 });
 
 test('find percent value of a number in a range properly', () => {
-  expect(val2pct(50, 20, 20)).toBe(20);
-  expect(val2pct(500, 20, 30)).toBe(1);
-  expect(val2pct(0, 20, 30)).toBe(0);
-  expect(val2pct(50, 20, 80)).toBe(0.5);
+  expect(normalize(50, 20, 20)).toBe(20);
+  expect(normalize(500, 20, 30)).toBe(1);
+  expect(normalize(0, 20, 30)).toBe(0);
+  expect(normalize(50, 20, 80)).toBe(0.5);
 });
 
 test('calculate log base 10 properly', () => {

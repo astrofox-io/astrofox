@@ -36,8 +36,8 @@ export function roundTo(num, step) {
   return d > 0 ? n.toFixed(d) : n;
 }
 
-// Percent value of a number in a range
-export function val2pct(val, min, max) {
+// Normalize value over a given range
+export function normalize(val, min, max) {
   const n = (val - min) / (max - min);
 
   return clamp(n, 0, 1);
@@ -56,11 +56,6 @@ export function db2mag(val) {
 // Magnitude to decibels: 20 * log10(db)
 export function mag2db(val) {
   return 20 * log10(val);
-}
-
-// Gets normalized value from decibels
-export function normalize(db, min, max) {
-  return val2pct(db2mag(db), db2mag(min), db2mag(max));
 }
 
 // Degrees to radians
