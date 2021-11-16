@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { env, events } from 'view/global';
+import { env, renderer } from 'view/global';
 import useAppStore from 'actions/app';
 import { formatSize } from 'utils/format';
 import ZoomControl from 'components/window/ZoomControl';
@@ -9,56 +9,39 @@ const { APP_VERSION } = env;
 
 export default function StatusBar() {
   const statusText = useAppStore(state => state.statusText);
+  const [{ mem, fps }, setState] = useState({});
+
+  function updateStats() {
+    setState({
+      fps: `${renderer.getFPS()} FPS`,
+      mem: formatSize(window.performance.memory.usedJSHeapSize, 2) });
+  }
+
+  useEffect(() => {
+    const id = window.setInterval(updateStats, 500);
+
+    return () => {
+      window.clearInterval(id);
+    };
+  }, []);
 
   return (
     <div className={styles.statusBar}>
       <div className={styles.left}>
-        <span className={styles.item}>{statusText}</span>
+        <InfoItem value={statusText} />
       </div>
       <div className={styles.center}>
         <ZoomControl />
       </div>
       <div className={styles.right}>
-        {process.env.NODE_ENV !== 'production' && <MemoryInfo />}
-        <FrameRate />
-        <span className={styles.item}>{APP_VERSION}</span>
+        {process.env.NODE_ENV !== 'production' && <InfoItem value={mem} />}
+        <InfoItem value={fps} />
+        <InfoItem value={APP_VERSION} />
       </div>
     </div>
   );
 }
 
-function MemoryInfo() {
-  const [mem, setMem] = useState();
-
-  function updateStats() {
-    setMem(formatSize(window.performance.memory.usedJSHeapSize, 2));
-  }
-
-  useEffect(() => {
-    events.on('tick', updateStats);
-
-    return () => {
-      events.off('tick', updateStats);
-    };
-  }, []);
-
-  return <span className={styles.item}>{mem}</span>;
-}
-
-function FrameRate() {
-  const [fps, setFps] = useState(0);
-
-  function updateStats(frame) {
-    setFps(frame.fps);
-  }
-
-  useEffect(() => {
-    events.on('tick', updateStats);
-
-    return () => {
-      events.off('tick', updateStats);
-    };
-  }, []);
-
-  return <span className={styles.item}>{`${fps} FPS`}</span>;
+function InfoItem({ value }) {
+  return <span className={styles.item}>{value}</span>
 }

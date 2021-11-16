@@ -1,14 +1,14 @@
 import { events, stage, player, analyzer, reactors } from 'view/global';
 import { clamp } from 'utils/math';
+import Clock from './Clock';
 
-const FPS_POLL_INTERVAL = 500;
 const STOP_RENDERING = 0;
 const VIDEO_RENDERING = -1;
 
 export default class Renderer {
   constructor() {
     this.rendering = false;
-    this.time = 0;
+    this.clock = new Clock();
 
     // Frame render data
     this.frameData = {
@@ -20,12 +20,6 @@ export default class Renderer {
       audioPlaying: false,
       hasUpdate: false,
       reactors: {},
-    };
-
-    // Rendering statistics
-    this.frameStats = {
-      fps: 0,
-      frames: 0,
     };
 
     // Bind context
@@ -65,7 +59,7 @@ export default class Renderer {
   }
 
   getFrameData(id) {
-    const { frameData } = this;
+    const { frameData, clock: { delta } } = this;
     const playing = player.isPlaying();
 
     frameData.id = id;
@@ -75,30 +69,9 @@ export default class Renderer {
     frameData.fft = analyzer.fft;
     frameData.td = analyzer.td;
     frameData.reactors = reactors.getResults(frameData);
+    frameData.delta = delta;
 
     return frameData;
-  }
-
-  updateFPS(now) {
-    const { frameStats } = this;
-
-    if (!frameStats.time) {
-      frameStats.time = now;
-    }
-
-    frameStats.frames += 1;
-
-    if (now > frameStats.time + FPS_POLL_INTERVAL) {
-      frameStats.fps = clamp(
-        Math.round(frameStats.frames / ((now - frameStats.time) / 1000)),
-        0,
-        60,
-      );
-      frameStats.time = now;
-      frameStats.frames = 0;
-
-      events.emit('tick', frameStats);
-    }
   }
 
   getAudioSample(time) {
@@ -109,6 +82,10 @@ export default class Renderer {
     const end = pos + fftSize / 2;
 
     return audio.getAudioSlice(start, end);
+  }
+
+  getFPS() {
+    return this.clock.getFPS();
   }
 
   renderFrame(frame, fps) {
@@ -131,7 +108,7 @@ export default class Renderer {
   render() {
     const id = window.requestAnimationFrame(this.render);
 
-    const now = Date.now();
+    this.clock.update();
 
     if (player.isPlaying()) {
       analyzer.process(this.getAudioSample());
@@ -140,14 +117,8 @@ export default class Renderer {
 
     const data = this.getFrameData(id);
 
-    data.delta = now - this.time;
-
     stage.render(data);
 
     events.emit('render', data);
-
-    this.time = now;
-
-    this.updateFPS(now);
   }
 }
