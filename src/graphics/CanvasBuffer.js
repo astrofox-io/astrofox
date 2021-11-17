@@ -3,7 +3,7 @@ import TexturePass from './TexturePass';
 
 export default class CanvasBuffer {
   constructor(width, height) {
-    this.canvas = document.createElement('canvas');
+    this.canvas = new OffscreenCanvas(width, height);
 
     this.texture = new Texture(this.canvas);
 

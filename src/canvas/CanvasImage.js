@@ -39,9 +39,7 @@ export default class CanvasImage extends Entity {
     let height = image.naturalHeight / 2;
 
     for (let i = 0; i < steps; i += 1) {
-      const canvas = document.createElement('canvas');
-      canvas.width = width || 1;
-      canvas.height = height || 1;
+      const canvas = new OffscreenCanvas(width, height);
 
       canvas.getContext('2d').drawImage(src, 0, 0, width, height);
 
@@ -81,7 +79,7 @@ export default class CanvasImage extends Entity {
     resetCanvas(canvas, width, height);
 
     // Resize smaller
-    if (width < image.naturalWidth && height < image.naturalHeight) {
+    if (width < image.naturalWidth || height < image.naturalHeight) {
       let src = image;
 
       this.mipmaps.forEach(map => {

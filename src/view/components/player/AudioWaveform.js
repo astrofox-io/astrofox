@@ -27,17 +27,17 @@ export default function AudioWaveform({ visible = true }) {
         ...canvasProperties,
         color: ['#555555', '#444444'],
         shadowColor: '#333333',
-      }),
+      }, new OffscreenCanvas(width, height)),
       new CanvasAudio({
         ...canvasProperties,
         color: ['#B6AAFF', '#927FFF'],
         shadowColor: '#554B96',
-      }),
+      }, new OffscreenCanvas(width, height)),
       new CanvasAudio({
         ...canvasProperties,
         color: ['#8880BF', '#6C5FBF'],
         shadowColor: '#403972',
-      }),
+      }, new OffscreenCanvas(width, height)),
     ],
     [],
   );

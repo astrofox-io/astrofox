@@ -30,7 +30,8 @@ export default class Clock {
       return 0;
     }
 
-    const fps = clamp(round(frames / (elapsedTime / 1000)), 0, 60);
+    const seconds = elapsedTime / 1000;
+    const fps = clamp(round(frames / seconds), 0, 60);
 
     this.frames = 0;
     this.elapsedTime = 0;

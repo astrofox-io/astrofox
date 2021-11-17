@@ -17,10 +17,7 @@ export default class CanvasBars extends Entity {
   constructor(properties, canvas) {
     super('CanvasBars', { ...CanvasBars.defaultProperties, ...properties });
 
-    this.canvas = canvas || document.createElement('canvas');
-    this.canvas.width = this.properties.width;
-    this.canvas.height = this.properties.height + this.properties.shadowHeight;
-
+    this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
   }
 
