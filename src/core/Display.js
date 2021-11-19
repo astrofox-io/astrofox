@@ -26,7 +26,7 @@ export default class Display extends Entity {
       displayName: { value: getDisplayName(label), writable: true, enumerable: true },
       enabled: { value: true, writable: true, enumerable: true },
       scene: { value: null, writable: true, enumerable: true },
-      reactors: { value: {}, enumerable: true },
+      reactors: { value: {}, writable: true, enumerable: true },
     });
   }
 

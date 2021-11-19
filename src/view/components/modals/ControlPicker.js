@@ -11,6 +11,10 @@ export default function ControlPicker({ type, onSelect, onClose }) {
     onClose();
   }
 
+  function hideImage(e) {
+    e.target.style.display = 'none';
+  }
+
   const Catalog = ({ items }) => {
     return Object.keys(items).map((key, index) => {
       const item = items[key];
@@ -21,7 +25,11 @@ export default function ControlPicker({ type, onSelect, onClose }) {
       return (
         <div key={index} className={styles.item}>
           <div className={styles.image} onClick={() => handleClick(item)}>
-            <img src={icon || 'images/controls/Plugin.png'} />
+            <img
+              src={icon || 'images/controls/Plugin.png'}
+              alt={label}
+              onError={hideImage}
+            />
           </div>
           <div className={styles.name}>{label}</div>
         </div>

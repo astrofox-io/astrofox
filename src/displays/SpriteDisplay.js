@@ -1,23 +1,10 @@
-import CanvasDisplay from 'core/CanvasDisplay';
-import CanvasImage from 'canvas/CanvasImage';
 import WebGLDisplay from 'core/WebGLDisplay';
 import { BLANK_IMAGE } from 'view/constants';
 import {
-  Object3D,
-  OrthographicCamera,
-  PerspectiveCamera,
-  Scene,
   Texture,
-  Vector2,
-  Raycaster,
-  ClampToEdgeWrapping,
-  RepeatWrapping,
-  PlaneBufferGeometry,
-  Mesh,
 } from 'three';
-import TexturePass from '../graphics/TexturePass';
-import SpritePass from '../graphics/SpritePass';
-import { deg2rad } from '../utils/math';
+import SpritePass from 'graphics/SpritePass';
+import { deg2rad } from 'utils/math';
 
 const disabled = display => !display.hasImage;
 const maxWidth = display => {
@@ -126,7 +113,7 @@ export default class SpriteDisplay extends WebGLDisplay {
   constructor(properties) {
     super(SpriteDisplay, properties);
 
-    this.image = new Image(100, 100);
+    this.image = new Image(64, 64);
   }
 
   get hasImage() {
@@ -162,61 +149,21 @@ export default class SpriteDisplay extends WebGLDisplay {
 
       if (newImage) {
         this.image = newImage;
+
         const texture = new Texture(this.image);
-        //texture.wrapS = ClampToEdgeWrapping;
-        //texture.wrapST = RepeatWrapping;
+        texture.needsUpdate = true;
+
         this.pass = new SpritePass(texture, this.scene.getSize());
-
-        //const repeatX = this.size.width * this.image.width / (this.size.height * this.image.height);
-        //const repeatY = 1;
-
-        //this.texture.repeat.set(repeatX, repeatY);
-        //this.texture.offset.x = (repeatX - 1) / 2 * -1;
-
-        /*
-        const planeAspect = this.size.width / this.size.height;
-        const imageAspect = texture.image.width / texture.image.height;
-        const aspect = imageAspect / planeAspect;
-
-        texture.offset.x = aspect > 1 ? (1 - 1 / aspect) / 2 : 0;
-        texture.repeat.x = aspect > 1 ? 1 / aspect : 1;
-
-        texture.offset.y = aspect > 1 ? 0 : (1 - aspect) / 2;
-        texture.repeat.y = aspect > 1 ? 1 : aspect;
-
-        this.pass = new SpritePass(texture, this.size);
-         */
-
-        //this.pass.material.map = texture;
-        //texture.needsUpdate = true;
 
         this.pass.camera.updateProjectionMatrix();
       }
       if (zoom !== undefined) {
         const camera = this.pass.camera;
-        /*
-        const aspect = this.pass.camera.aspect;
-
-        // center camera on the object (ellipse in this case)
-        var boundingSphere = ellipse.geometry.boundingSphere;
-
-        // aspect equals window.innerWidth / window.innerHeight
-        if (aspect > 1.0) {
-          // if view is wider than it is tall, zoom to fit height
-          camera.zoom = viewHeight / (boundingSphere.radius * 2);
-        } else {
-          // if view is taller than it is wide, zoom to fit width
-          camera.zoom = viewWidth / (boundingSphere.radius * 2);
-        }
-
-        // Don't forget this
-         */
 
         camera.zoom = zoom;
         camera.updateProjectionMatrix();
       }
       if (width) {
-        const ratio = width / this.size.width;
         this.pass.mesh.scale.x = width / this.image.naturalWidth;
       }
       if (height) {
@@ -226,10 +173,10 @@ export default class SpriteDisplay extends WebGLDisplay {
         this.pass.material.opacity = opacity;
       }
       if (x !== undefined) {
-        this.pass.mesh.position.x = x / 2;
+        this.pass.mesh.position.x = x;
       }
       if (y !== undefined) {
-        this.pass.mesh.position.y = y / 2;
+        this.pass.mesh.position.y = y;
       }
       if (rotation !== undefined) {
         this.pass.mesh.rotation.z = deg2rad(-rotation);
@@ -243,16 +190,14 @@ export default class SpriteDisplay extends WebGLDisplay {
     const { width, height } = getSize();
     this.size = { width, height};
 
-    console.log('ADD 2 SCENE', { width, height, image: this.image});
+    const texture = new Texture(this.image);
 
-    this.texture = new Texture(this.image);
-    this.pass = new SpritePass(this.texture, { width, height });
+    this.pass = new SpritePass(texture, { width, height });
 
     this.setSize(width, height);
   }
 
   setSize(width, height) {
-    console.log('resize', {width, height});
     this.pass.camera.aspect = width / height;
     this.pass.camera.updateProjectionMatrix();
   }
