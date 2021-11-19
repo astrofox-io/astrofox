@@ -15,8 +15,6 @@ export default class TexturePass extends Pass {
     });
 
     this.setFullscreen(this.material);
-
-    this.needsUpdate = true;
   }
 
   render(renderer, inputBuffer) {
