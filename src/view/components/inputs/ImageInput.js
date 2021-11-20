@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import classNames from 'classnames';
 import Icon from 'components/interface/Icon';
-import Spinner from 'components/interface/Spinner';
 import { raiseError } from 'actions/error';
 import { ignoreEvents } from 'utils/react';
 import { api } from 'view/global';
@@ -10,12 +9,10 @@ import { BLANK_IMAGE } from 'view/constants';
 import styles from './ImageInput.less';
 
 export default function ImageInput({ name, value, onChange }) {
-  const [loading, setLoading] = useState(true);
   const image = useRef();
   const hasImage = image.current && value !== BLANK_IMAGE;
 
   function handleImageLoad() {
-    setLoading(false);
     onChange(name, image.current);
   }
 
@@ -27,15 +24,11 @@ export default function ImageInput({ name, value, onChange }) {
 
   async function loadImageFile(file) {
     try {
-      setLoading(true);
-
       const dataUrl = await api.readImageFile(file);
 
       return loadImageSrc(dataUrl);
     } catch (error) {
       raiseError('Invalid image file.', error);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -43,7 +36,6 @@ export default function ImageInput({ name, value, onChange }) {
     e.preventDefault();
 
     await loadImageFile(e.dataTransfer.files[0].path);
-    setLoading(false);
   }
 
   async function handleClick() {
@@ -51,7 +43,6 @@ export default function ImageInput({ name, value, onChange }) {
 
     if (!canceled) {
       await loadImageFile(filePaths[0]);
-      setLoading(false);
     }
   }
 
@@ -76,7 +67,6 @@ export default function ImageInput({ name, value, onChange }) {
           alt=""
           onLoad={handleImageLoad}
         />
-        {loading && <Spinner size={20} />}
         <Icon className={styles.openIcon} glyph={FolderOpen} title="Open File" />
       </div>
       {hasImage && (
