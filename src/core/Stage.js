@@ -19,7 +19,7 @@ export default class Stage extends Entity {
     width: DEFAULT_CANVAS_WIDTH,
     height: DEFAULT_CANVAS_HEIGHT,
     backgroundColor: DEFAULT_CANVAS_BGCOLOR,
-    zoom: 100,
+    zoom: 1,
   };
 
   constructor(properties) {

@@ -10,7 +10,7 @@ import styles from './ImageInput.less';
 
 export default function ImageInput({ name, value, onChange }) {
   const image = useRef();
-  const hasImage = image.current && value !== BLANK_IMAGE;
+  const hasImage = value !== BLANK_IMAGE;
 
   function handleImageLoad() {
     onChange(name, image.current);
@@ -73,7 +73,6 @@ export default function ImageInput({ name, value, onChange }) {
         <Icon
           className={classNames({
             [styles.closeIcon]: true,
-            [styles.hidden]: !hasImage,
           })}
           glyph={Times}
           title="Remove Image"

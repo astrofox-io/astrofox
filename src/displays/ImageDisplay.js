@@ -1,4 +1,4 @@
-import { Texture } from 'three';
+import { Texture, TextureLoader } from 'three';
 import WebGLDisplay from 'core/WebGLDisplay';
 import { BLANK_IMAGE } from 'view/constants';
 import ImagePass from 'graphics/ImagePass';
@@ -39,7 +39,7 @@ export default class ImageDisplay extends WebGLDisplay {
       opacity: 0,
     },
     controls: {
-      image: {
+      src: {
         label: 'Image',
         type: 'image',
       },
@@ -112,18 +112,22 @@ export default class ImageDisplay extends WebGLDisplay {
   constructor(properties) {
     super(ImageDisplay, properties);
 
-    this.image = new Image(1, 1);
+    this.image = new Image();
+    this.image.src = this.properties.src;
   }
 
   get hasImage() {
-    return this.image.src !== BLANK_IMAGE;
+    return this.properties.src !== BLANK_IMAGE;
   }
 
   update(properties) {
-    const { image, fixed, width, height } = properties;
+    const { src: image, fixed, width, height } = properties;
     const { src, width: w, height: h, fixed: f } = this.properties;
 
+    // If we get an HTMLImageElement
     if (typeof image === 'object') {
+      this.image = image;
+
       if (image.src === BLANK_IMAGE) {
         // Image reset
         properties = { ...ImageDisplay.config.defaultProperties };
@@ -135,6 +139,8 @@ export default class ImageDisplay extends WebGLDisplay {
           height: image.naturalHeight,
           opacity: 1,
         };
+      } else {
+        properties.src = image.src;
       }
     }
 
@@ -167,9 +173,7 @@ export default class ImageDisplay extends WebGLDisplay {
       const { opacity, zoom, width, height, x, y, rotation } = properties;
 
       if (image) {
-        this.image = image;
-
-        const texture = new Texture(this.image);
+        const texture = new Texture(image);
         texture.needsUpdate = true;
 
         const { width, height } = this.scene.getSize();
@@ -211,15 +215,17 @@ export default class ImageDisplay extends WebGLDisplay {
   addToScene({ getSize }) {
     const { width, height } = getSize();
 
-    const texture = new Texture(this.image);
+    new TextureLoader().load(this.properties.src, texture => {
+      this.pass = new ImagePass(texture, { width, height });
 
-    this.pass = new ImagePass(texture, { width, height });
-
-    this.setSize(width, height);
+      this.setSize(width, height);
+    });
   }
 
   setSize(width, height) {
-    this.pass.camera.aspect = width / height;
-    this.pass.camera.updateProjectionMatrix();
+    if (this.pass) {
+      this.pass.camera.aspect = width / height;
+      this.pass.camera.updateProjectionMatrix();
+    }
   }
 }

@@ -34,7 +34,7 @@ export function updateCanvas(width, height, backgroundColor) {
 }
 
 export function setZoom(value) {
-  updateStage({ zoom: value });
+  updateStage({ zoom: clamp(value, 0.1, 1) });
 }
 
 export function zoomIn() {
@@ -59,7 +59,7 @@ export function fitToScreen() {
 
   const newWidth = clamp((viewport.clientWidth * 0.8) / width, 0.1, 1);
   const newHeight = clamp((viewport.clientHeight * 0.8) / height, 0.1, 1);
-  console.log({ newWidth, newHeight });
+
   updateStage({ zoom: Math.min(newWidth, newHeight) });
 }
 
