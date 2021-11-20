@@ -1,37 +1,30 @@
 import {
-  DoubleSide,
-  Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
   PlaneBufferGeometry,
-  Scene,
 } from 'three';
 import Pass from './Pass';
 
 export default class ImagePass extends Pass {
-  constructor(texture, { width, height }) {
+  constructor(texture, resolution) {
     super();
+
+    const { width, height } = resolution;
     const { naturalWidth, naturalHeight } = texture.image;
 
     this.texture = texture;
 
-    this.material = new MeshBasicMaterial({
+    const material = new MeshBasicMaterial({
       map: texture,
       depthTest: false,
       depthWrite: false,
       transparent: true,
-      side: DoubleSide,
     });
 
-    this.scene = new Scene();
-    this.camera = new OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0, 1);
+    const camera = new OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0, 1);
+    const geometry = new PlaneBufferGeometry(naturalWidth, naturalHeight);
 
-    this.geometry = new PlaneBufferGeometry(naturalWidth, naturalHeight);
-
-    this.mesh = new Mesh(this.geometry, this.material);
-    this.mesh.frustumCulled = false;
-
-    this.scene.add(this.mesh);
+    this.setFullscreen(material, geometry, camera);
   }
 
   render(renderer, inputBuffer) {

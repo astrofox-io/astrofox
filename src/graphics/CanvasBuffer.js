@@ -8,7 +8,7 @@ export default class CanvasBuffer {
     this.texture = new Texture(this.canvas);
 
     this.pass = new TexturePass(this.texture);
-    this.pass.needsUpdate = true;
+    this.pass.alwaysUpdateTexture = true;
 
     this.context = this.canvas.getContext('2d');
 

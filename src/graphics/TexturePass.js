@@ -18,9 +18,11 @@ export default class TexturePass extends Pass {
   }
 
   render(renderer, inputBuffer) {
-    const { scene, camera, texture, needsUpdate } = this;
+    const { scene, camera, texture, alwaysUpdateTexture } = this;
 
-    texture.needsUpdate = needsUpdate;
+    if (alwaysUpdateTexture) {
+      texture.needsUpdate = true;
+    }
 
     super.render(renderer, scene, camera, inputBuffer);
   }
