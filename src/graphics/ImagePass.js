@@ -1,4 +1,5 @@
 import {
+  DoubleSide,
   Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
@@ -7,9 +8,10 @@ import {
 } from 'three';
 import Pass from './Pass';
 
-export default class SpritePass extends Pass {
+export default class ImagePass extends Pass {
   constructor(texture, { width, height }) {
     super();
+    const { naturalWidth, naturalHeight } = texture.image;
 
     this.texture = texture;
 
@@ -18,12 +20,13 @@ export default class SpritePass extends Pass {
       depthTest: false,
       depthWrite: false,
       transparent: true,
+      side: DoubleSide,
     });
 
     this.scene = new Scene();
     this.camera = new OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0, 1);
 
-    this.geometry = new PlaneBufferGeometry(texture.image.width, texture.image.height);
+    this.geometry = new PlaneBufferGeometry(naturalWidth, naturalHeight);
 
     this.mesh = new Mesh(this.geometry, this.material);
     this.mesh.frustumCulled = false;

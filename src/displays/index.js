@@ -5,4 +5,4 @@ export ShapeDisplay from './ShapeDisplay';
 export SoundWaveDisplay from './SoundWaveDisplay';
 export TextDisplay from './TextDisplay';
 export WaveSpectrumDisplay from './WaveSpectrumDisplay';
-export SpriteDisplay from './SpriteDisplay';
+export Image3DDisplay from './Image3DDisplay';

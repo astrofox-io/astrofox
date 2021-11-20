@@ -5,13 +5,13 @@ import { isDefined } from 'utils/array';
 
 const disabled = display => !display.hasImage;
 const maxWidth = display => {
-  const { naturalWidth } = display.image.image;
+  const { naturalWidth } = display.canvasImage.image;
   const { width } = display.scene.getSize();
 
   return naturalWidth > width ? naturalWidth : width;
 };
 const maxHeight = display => {
-  const { naturalHeight } = display.image.image;
+  const { naturalHeight } = display.canvasImage.image;
   const { height } = display.scene.getSize();
 
   return naturalHeight > height ? naturalHeight : height;
@@ -37,7 +37,7 @@ export default class ImageDisplay extends CanvasDisplay {
       opacity: 0,
     },
     controls: {
-      src: {
+      image: {
         label: 'Image',
         type: 'image',
       },
@@ -110,39 +110,46 @@ export default class ImageDisplay extends CanvasDisplay {
   constructor(properties) {
     super(ImageDisplay, properties);
 
-    this.image = new CanvasImage(this.properties, this.canvas);
+    this.canvasImage = new CanvasImage(this.properties, this.canvas);
   }
 
   get hasImage() {
-    return this.image.image.src !== BLANK_IMAGE;
+    return this.canvasImage.image.src !== BLANK_IMAGE;
   }
 
   update(properties) {
-    const { src: newImage, width, height, zoom } = properties;
-    const { src, fixed } = this.properties;
+    const { image, fixed, width, height, zoom } = properties;
+    const { src, width: w, height: h, fixed: f } = this.properties;
+    const { naturalWidth, naturalHeight } = this.canvasImage.image;
+    const ratio = naturalWidth / naturalHeight;
 
-    if (typeof newImage === 'object') {
-      if (newImage.src === BLANK_IMAGE) {
+    if (typeof image === 'object') {
+      if (image.src === BLANK_IMAGE) {
         // Image reset
         properties = { ...ImageDisplay.config.defaultProperties };
-      } else if (newImage.src !== src) {
+      } else if (image.src !== src) {
         // New image
         properties = {
-          src: newImage.src,
-          width: newImage.naturalWidth,
-          height: newImage.naturalHeight,
+          src: image.src,
+          width: image.naturalWidth,
+          height: image.naturalHeight,
           opacity: 1.0,
         };
-      } else {
-        properties.src = newImage.src;
       }
     }
 
-    const { naturalWidth, naturalHeight } = this.image.image;
-    const ratio = naturalWidth / naturalHeight;
-
     // Sync width/height values
-    if (fixed && isDefined(width, height)) {
+    if (!image && (fixed || f)) {
+      if (!isDefined(width, height)) {
+        if (w > h) {
+          properties.height = Math.round(w * (1 / ratio)) || 0;
+          properties.width = Math.round(properties.height * ratio);
+        } else {
+          properties.width = Math.round(h * ratio);
+          properties.height = Math.round(properties.width * (1 / ratio)) || 0;
+        }
+      }
+
       if (width) {
         properties.height = Math.round(width * (1 / ratio)) || 0;
       }
@@ -159,8 +166,8 @@ export default class ImageDisplay extends CanvasDisplay {
         properties.width = naturalWidth * zoom * (this.properties.width / naturalWidth);
       }
 
-      if (this.image.update(properties)) {
-        this.image.render();
+      if (this.canvasImage.update(properties)) {
+        this.canvasImage.render();
       }
     }
 

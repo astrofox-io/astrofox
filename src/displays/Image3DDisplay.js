@@ -1,10 +1,9 @@
 import WebGLDisplay from 'core/WebGLDisplay';
 import { BLANK_IMAGE } from 'view/constants';
-import {
-  Texture,
-} from 'three';
-import SpritePass from 'graphics/SpritePass';
+import { Texture } from 'three';
+import ImagePass from 'graphics/ImagePass';
 import { deg2rad } from 'utils/math';
+import { isDefined } from 'utils/array';
 
 const disabled = display => !display.hasImage;
 const maxWidth = display => {
@@ -22,12 +21,12 @@ const maxHeight = display => {
 const maxX = display => (disabled(display) ? 0 : maxWidth(display));
 const maxY = display => (disabled(display) ? 0 : maxHeight(display));
 
-export default class SpriteDisplay extends WebGLDisplay {
+export default class Image3DDisplay extends WebGLDisplay {
   static config = {
-    name: 'SpriteDisplay',
-    description: 'Displays a sprite.',
+    name: 'Image3DDisplay',
+    description: 'Displays an image on a 3D plane.',
     type: 'display',
-    label: 'Sprite',
+    label: 'Image (3D)',
     defaultProperties: {
       src: BLANK_IMAGE,
       x: 0,
@@ -40,19 +39,9 @@ export default class SpriteDisplay extends WebGLDisplay {
       opacity: 0,
     },
     controls: {
-      src: {
+      image: {
         label: 'Image',
         type: 'image',
-      },
-      zoom: {
-        label: 'Zoom',
-        type: 'number',
-        min: 0.5,
-        max: 4.0,
-        step: 0.01,
-        withRange: true,
-        withReactor: true,
-        disabled,
       },
       width: {
         label: 'Width',
@@ -88,6 +77,16 @@ export default class SpriteDisplay extends WebGLDisplay {
         withRange: true,
         disabled,
       },
+      zoom: {
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
       rotation: {
         label: 'Rotation',
         type: 'number',
@@ -111,9 +110,9 @@ export default class SpriteDisplay extends WebGLDisplay {
   };
 
   constructor(properties) {
-    super(SpriteDisplay, properties);
+    super(Image3DDisplay, properties);
 
-    this.image = new Image(64, 64);
+    this.image = new Image(1, 1);
   }
 
   get hasImage() {
@@ -121,24 +120,46 @@ export default class SpriteDisplay extends WebGLDisplay {
   }
 
   update(properties) {
-    const { src: newImage } = properties;
+    const { image, fixed, width, height } = properties;
+    const { src, width: w, height: h, fixed: f } = this.properties;
 
-    const { src } = this.properties;
-
-    if (typeof newImage === 'object') {
-      if (newImage.src === BLANK_IMAGE) {
+    if (typeof image === 'object') {
+      if (image.src === BLANK_IMAGE) {
         // Image reset
-        properties = { ...SpriteDisplay.config.defaultProperties };
-      } else if (newImage.src !== src) {
+        properties = { ...Image3DDisplay.config.defaultProperties };
+      } else if (image.src !== src) {
         // New image
         properties = {
-          src: newImage.src,
-          width: newImage.naturalWidth,
-          height: newImage.naturalHeight,
-          opacity: 1.0,
+          src: image.src,
+          width: image.naturalWidth,
+          height: image.naturalHeight,
+          opacity: 1,
         };
       } else {
-        properties.src = newImage.src;
+        //properties.src = image.src;
+      }
+    }
+
+    // Sync width/height values
+    if (!image && (fixed || f)) {
+      const { naturalWidth, naturalHeight } = this.image;
+      const ratio = naturalWidth / naturalHeight;
+
+      if (!isDefined(width, height)) {
+        if (w > h) {
+          properties.height = Math.round(w * (1 / ratio)) || 0;
+          properties.width = Math.round(properties.height * ratio);
+        } else {
+          properties.width = Math.round(h * ratio);
+          properties.height = Math.round(properties.width * (1 / ratio)) || 0;
+        }
+      }
+
+      if (width) {
+        properties.height = Math.round(width * (1 / ratio)) || 0;
+      }
+      if (height) {
+        properties.width = Math.round(height * ratio);
       }
     }
 
@@ -147,18 +168,21 @@ export default class SpriteDisplay extends WebGLDisplay {
     if (changed) {
       const { opacity, zoom, width, height, x, y, rotation } = properties;
 
-      if (newImage) {
-        this.image = newImage;
+      if (image) {
+        this.image = image;
 
         const texture = new Texture(this.image);
         texture.needsUpdate = true;
 
-        this.pass = new SpritePass(texture, this.scene.getSize());
+        const { width, height } = this.scene.getSize();
 
+        this.pass = new ImagePass(texture, { width, height });
+
+        this.pass.camera.aspect = width / height;
         this.pass.camera.updateProjectionMatrix();
       }
       if (zoom !== undefined) {
-        const camera = this.pass.camera;
+        const { camera } = this.pass;
 
         camera.zoom = zoom;
         camera.updateProjectionMatrix();
@@ -188,11 +212,10 @@ export default class SpriteDisplay extends WebGLDisplay {
 
   addToScene({ getSize }) {
     const { width, height } = getSize();
-    this.size = { width, height};
 
     const texture = new Texture(this.image);
 
-    this.pass = new SpritePass(texture, { width, height });
+    this.pass = new ImagePass(texture, { width, height });
 
     this.setSize(width, height);
   }
