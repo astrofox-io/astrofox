@@ -111,8 +111,7 @@ export default class Renderer {
     this.clock.update();
 
     if (player.isPlaying()) {
-      analyzer.process(this.getAudioSample());
-      //analyzer.process();
+      analyzer.process();
     }
 
     const data = this.getFrameData(id);
