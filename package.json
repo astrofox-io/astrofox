@@ -91,11 +91,6 @@
       "prettier --write"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "dependencies": {
     "classnames": "^2.3.1",
     "debug": "^4.3.1",
