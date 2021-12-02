@@ -118,6 +118,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
+    "@babel/eslint-parser": "^7.16.3",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-proposal-export-default-from": "^7.12.13",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
@@ -127,7 +128,6 @@
     "@babel/preset-react": "^7.12.13",
     "@hot-loader/react-dom": "^17.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
-    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "^7.0.3",

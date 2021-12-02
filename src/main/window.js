@@ -72,14 +72,10 @@ export function createWindow() {
     },
   });
 
-  if (process.env === 'production') {
+  if (process.env.NODE_ENV === 'production') {
     const view = new BrowserView();
     win.setBrowserView(view);
     view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-    view.webContents.on('did-finish-load', () => {
-      view.destroy();
-    });
-
     view.webContents.loadURL('https://astrofox.io/hello');
   }
 
