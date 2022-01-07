@@ -21,7 +21,7 @@ export function downmix(input) {
   const output = new Float32Array(length);
 
   if (numberOfChannels < 2) {
-    return input.slice();
+    return input.getChannelData(0);
   }
 
   for (let i = 0; i < numberOfChannels; i++) {
