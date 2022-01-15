@@ -131,18 +131,20 @@ export default class VideoRenderer {
         // This is required for the UI to respond
         await sleep(20);
 
-        renderProcess.push(image);
+        if (image) {
+          renderProcess.push(image);
+        }
 
         this.frame += 1;
 
         updateState({
-          currentFrame: totalFrames - (endFrame - this.frame) ,
+          currentFrame: totalFrames - (endFrame - this.frame),
           totalFrames,
           startTime,
         });
       }
     } catch (error) {
-      if (error.message.indexOf('write EPIPE') < 0) {
+      if (!error.message.includes('write EPIPE')) {
         raiseError('Frame rendering failed.', error);
 
         this.stop();
@@ -152,4 +154,3 @@ export default class VideoRenderer {
     }
   }
 }
-
