@@ -1,12 +1,13 @@
 import { Scene, Camera } from 'three';
-import CopyPass from './CopyPass';
+import { WEBGL_BUFFER_SAMPLES } from 'view/constants';
 import { createRenderTarget } from './common';
+import CopyPass from './CopyPass';
 
 export default class WebGLBuffer {
   constructor(renderer) {
     this.renderer = renderer;
 
-    this.buffer = createRenderTarget({ samples: 2 });
+    this.buffer = createRenderTarget({ samples: WEBGL_BUFFER_SAMPLES });
 
     this.pass = new CopyPass(this.buffer);
     this.pass.copyFromBuffer = true;
@@ -24,13 +25,10 @@ export default class WebGLBuffer {
   }
 
   clear() {
-    const { renderer, buffer, scene, camera } = this;
+    const { renderer, buffer } = this;
 
     renderer.setRenderTarget(buffer);
     renderer.clear();
-
-    // HACK: Renderer clear does not work with multi-sample render target
-    renderer.render(scene, camera);
   }
 
   render(scene, camera) {

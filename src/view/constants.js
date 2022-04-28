@@ -23,5 +23,7 @@ export const REACTOR_BAR_WIDTH = 8;
 export const REACTOR_BAR_HEIGHT = 100;
 export const REACTOR_BAR_SPACING = 1;
 
+export const WEBGL_BUFFER_SAMPLES = 4;
+
 export const BLANK_IMAGE =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
