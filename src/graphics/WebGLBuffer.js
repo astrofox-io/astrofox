@@ -6,7 +6,7 @@ export default class WebGLBuffer {
   constructor(renderer) {
     this.renderer = renderer;
 
-    this.buffer = createRenderTarget({ multisample: true });
+    this.buffer = createRenderTarget({ samples: 2 });
 
     this.pass = new CopyPass(this.buffer);
     this.pass.copyFromBuffer = true;

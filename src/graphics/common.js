@@ -1,10 +1,4 @@
-import {
-  WebGLRenderer,
-  WebGLRenderTarget,
-  WebGLMultisampleRenderTarget,
-  BufferGeometry,
-  BufferAttribute,
-} from 'three';
+import { WebGLRenderer, WebGLRenderTarget, BufferGeometry, BufferAttribute } from 'three';
 
 let renderer = null;
 let geometry = null;
@@ -39,15 +33,12 @@ export function getFullscreenGeometry() {
 }
 
 export function createRenderTarget(options = {}) {
-  const { multisample } = options;
   const context = renderer.getContext();
   const pixelRatio = renderer.getPixelRatio();
   const width = Math.floor(context.canvas.width / pixelRatio) || 1;
   const height = Math.floor(context.canvas.height / pixelRatio) || 1;
 
-  return multisample
-    ? new WebGLMultisampleRenderTarget(width, height, options)
-    : new WebGLRenderTarget(width, height, options);
+  return new WebGLRenderTarget(width, height, options);
 }
 
 export function clearRenderTarget(target) {

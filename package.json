@@ -110,7 +110,7 @@
     "react-window": "^1.8.6",
     "reselect": "^4.0.0",
     "semver": "^7.3.5",
-    "three": "0.125.0",
+    "three": "0.139.2",
     "tinycolor2": "^1.4.2",
     "window-function": "^2.1.0",
     "yauzl": "^2.10.0",
