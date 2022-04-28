@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from 'components/App';
 import * as globals from './global';
 import 'styles/index.less';
@@ -18,4 +18,7 @@ if (process.env.NODE_ENV === 'production') {
   window.eval = global.eval = undefined;
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+const container = document.getElementById('app');
+const root = createRoot(container);
+
+root.render(<App />);

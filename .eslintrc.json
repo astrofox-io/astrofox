@@ -10,16 +10,18 @@
   "parser": "@babel/eslint-parser",
   "parserOptions": {
     "requireConfigFile": false,
-    "ecmaVersion": 9
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 11,
+    "sourceType": "module"
   },
   "extends": [
     "eslint:recommended",
+    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "plugin:import/errors",
     "plugin:css-modules/recommended",
-    "airbnb-base",
-    "airbnb/rules/react",
-    "prettier",
     "plugin:jest/recommended"
   ],
   "plugins": ["prettier", "promise", "css-modules", "react", "react-hooks", "jest"],

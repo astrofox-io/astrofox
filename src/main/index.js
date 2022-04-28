@@ -20,6 +20,13 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 // Memory profiling
 if (process.env.NODE_ENV !== 'production') {
   app.commandLine.appendSwitch('enable-precise-memory-info');
+
+  // Avoid "Skip checkForUpdatesAndNotify because application is not packed" error
+  Object.defineProperty(app, 'isPackaged', {
+    get() {
+      return true;
+    },
+  });
 }
 
 // Electron bug: https://github.com/electron/electron/issues/22119
