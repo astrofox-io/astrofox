@@ -4,7 +4,6 @@ const prettier = require('prettier');
 const pkg = require('../package.json');
 
 const appFolder = path.resolve(__dirname, '../app');
-const distFolder = path.resolve(__dirname, '../node_modules/electron/dist/resources');
 
 if (!fs.existsSync(appFolder)) {
   fs.mkdirSync(appFolder);
@@ -31,8 +30,6 @@ const json = prettier.format(
 
 fs.writeFileSync(path.join(appFolder, 'package.json'), json);
 
-
 // Create app-update.yml files
-const srcFile = path.resolve(__dirname, '../src/build/app/dev-app-update.yml')
+const srcFile = path.resolve(__dirname, '../src/build/app/dev-app-update.yml');
 fs.copyFileSync(srcFile, path.resolve(appFolder, 'dev-app-update.yml'));
-fs.copyFileSync(srcFile, path.resolve(distFolder, 'app-update.yml'));
