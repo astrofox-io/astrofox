@@ -34,7 +34,7 @@ export default class Audio {
   // Loads a url via AJAX
   async loadUrl(url) {
     const response = await fetch(url);
-    return this.loadData(response);
+    return this.loadData(response.arrayBuffer());
   }
 
   // Decodes an ArrayBuffer into an AudioBuffer
