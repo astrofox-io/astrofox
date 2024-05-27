@@ -1,4 +1,4 @@
-import { BrowserWindow, BrowserView } from 'electron';
+import { BrowserWindow, WebContentsView } from 'electron';
 import path from 'path';
 import url from 'url';
 import debug from 'debug';
@@ -69,24 +69,22 @@ export function createWindow() {
       textAreasAreResizable: false,
       devTools: true,
       webgl: true,
+      sandbox: false,
     },
   });
 
   if (process.env.NODE_ENV === 'production') {
-    const view = new BrowserView();
-    win.setBrowserView(view);
+    const view = new WebContentsView();
+    win.contentView.addChildView(view);
     view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
     view.webContents.loadURL('https://astrofox.io/hello');
   }
 
+  const url_index = new URL("file://"+path.join(__dirname, 'index.html'))
   // Load index page
   win.loadURL(
     process.env.NODE_ENV === 'production'
-      ? url.format({
-          pathname: path.join(__dirname, 'index.html'),
-          protocol: 'file',
-          slashes: true,
-        })
+      ? url_index.toString()
       : `http://localhost:${PORT}`,
   );
 

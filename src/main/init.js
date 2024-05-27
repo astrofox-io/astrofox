@@ -1,7 +1,7 @@
 import { app, session, systemPreferences } from 'electron';
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
+import {globSync} from 'glob';
 import debug from 'debug';
 import { removeFile, createFolder } from 'utils/io';
 import * as env from './environment';
@@ -12,7 +12,7 @@ import initEvents from './events';
 const log = debug('init');
 
 async function removeTempFiles() {
-  const files = glob.sync('*.*', { cwd: env.TEMP_PATH });
+  const files = globSync('*.*', { cwd: env.TEMP_PATH });
   const promises = [];
 
   files.forEach(file => promises.push(removeFile(path.join(env.TEMP_PATH, file))));
