@@ -7,7 +7,7 @@ import CanvasBars from 'canvas/CanvasBars';
 import CanvasMeter from 'canvas/CanvasMeter';
 import useApp, { setActiveReactorId } from 'actions/app';
 import { events, reactors } from 'global';
-import { ChevronDown } from 'icons';
+import { ChevronDown } from 'view/icons';
 import {
   PRIMARY_COLOR,
   REACTOR_BARS,
