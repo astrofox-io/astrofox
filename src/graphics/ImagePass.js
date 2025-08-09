@@ -1,4 +1,5 @@
 import {
+  LinearFilter,
   MeshBasicMaterial,
   OrthographicCamera,
   PlaneBufferGeometry,
@@ -13,6 +14,8 @@ export default class ImagePass extends Pass {
     const { naturalWidth, naturalHeight } = texture.image;
 
     this.texture = texture;
+
+    texture.minFilter = LinearFilter;
 
     const material = new MeshBasicMaterial({
       map: texture,

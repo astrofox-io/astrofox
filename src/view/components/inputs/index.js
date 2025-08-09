@@ -5,6 +5,7 @@ export CheckboxInput from './CheckboxInput';
 export ColorInput from './ColorInput';
 export ColorRangeInput from './ColorRangeInput';
 export ImageInput from './ImageInput';
+export VideoInput from './VideoInput';
 export NumberInput from './NumberInput';
 export RangeInput from './RangeInput';
 export ReactorButton from './ReactorButton';

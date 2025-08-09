@@ -3,6 +3,7 @@ import {
   ColorInput,
   ColorRangeInput,
   ImageInput,
+  VideoInput,
   NumberInput,
   RangeInput,
   SelectInput,
@@ -21,6 +22,7 @@ const inputComponents = {
   range: [RangeInput],
   select: [SelectInput, { width: 140 }],
   image: [ImageInput],
+  video: [VideoInput],
   time: [TimeInput],
 };
 
