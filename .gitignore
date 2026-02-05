@@ -14,6 +14,8 @@ Thumbs.db
 *.iml
 *.bat
 *.map
+.claude
+.vscode
 
 # Project
 node_modules
