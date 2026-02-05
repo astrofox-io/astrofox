@@ -1,83 +1,85 @@
-import create from 'zustand';
-import { api, analyzer, logger, player } from 'global';
-import { loadAudioData } from 'utils/audio';
-import { trimChars } from 'utils/string';
-import appStore from './app';
-import configStore from './config';
-import { raiseError } from './error';
+import { analyzer, api, logger, player } from "global";
+import { loadAudioData } from "utils/audio";
+import { trimChars } from "utils/string";
+import create from "zustand";
+import appStore from "./app";
+import configStore from "./config";
+import { raiseError } from "./error";
 
 export const initialState = {
-  file: '',
-  duration: 0,
-  loading: false,
-  tags: null,
-  error: null,
+	file: "",
+	duration: 0,
+	loading: false,
+	tags: null,
+	error: null,
 };
 
 const audioStore = create(() => ({
-  ...initialState,
+	...initialState,
 }));
 
 export async function loadAudioFile(file, play) {
-  audioStore.setState({ loading: true });
+	audioStore.setState({ loading: true });
 
-  player.stop();
+	player.stop();
 
-  logger.time('audio-file-load');
+	const name = file?.name || file;
 
-  try {
-    const data = await api.readAudioFile(file);
-    const audio = await loadAudioData(data);
-    const duration = audio.getDuration();
+	logger.time("audio-file-load");
 
-    player.load(audio);
-    audio.addNode(analyzer.analyzer);
+	try {
+		const data = await api.readAudioFile(file);
+		const audio = await loadAudioData(data);
+		const duration = audio.getDuration();
 
-    if (!play) {
-      play = configStore.getState().autoPlayAudio;
-    }
+		player.load(audio);
+		audio.addNode(analyzer.analyzer);
 
-    if (play) {
-      player.play();
-    }
+		if (!play) {
+			play = configStore.getState().autoPlayAudio;
+		}
 
-    logger.timeEnd('audio-file-load', 'Audio file loaded:', file);
+		if (play) {
+			player.play();
+		}
 
-    const tags = await api.loadAudioTags(file);
+		logger.timeEnd("audio-file-load", "Audio file loaded:", name);
 
-    if (tags) {
-      const { artist, title } = tags;
+		const tags = await api.loadAudioTags(file);
 
-      appStore.setState({ statusText: trimChars(`${artist} - ${title}`) });
-    } else {
-      appStore.setState({ statusText: trimChars(file) });
-    }
+		if (tags) {
+			const { artist, title } = tags;
 
-    audioStore.setState({ file, duration, tags, loading: false });
-  } catch (error) {
-    raiseError('Invalid audio file.', error);
+			appStore.setState({ statusText: trimChars(`${artist} - ${title}`) });
+		} else {
+			appStore.setState({ statusText: trimChars(name) });
+		}
 
-    audioStore.setState({ loading: false });
-  }
+		audioStore.setState({ file: name, duration, tags, loading: false });
+	} catch (error) {
+		raiseError("Invalid audio file.", error);
+
+		audioStore.setState({ loading: false });
+	}
 }
 
 export async function openAudioFile(play) {
-  const { filePaths, canceled } = await api.showOpenDialog({
-    filters: [
-      {
-        name: 'audio files',
-        extensions: ['aac', 'flac', 'mp3', 'm4a', 'opus', 'ogg', 'wav'],
-      },
-    ],
-  });
+	const { files, canceled } = await api.showOpenDialog({
+		filters: [
+			{
+				name: "audio files",
+				extensions: ["aac", "flac", "mp3", "m4a", "opus", "ogg", "wav"],
+			},
+		],
+	});
 
-  if (!canceled) {
-    if (!play) {
-      play = configStore.getState().autoPlayAudio;
-    }
+	if (!canceled && files && files.length) {
+		if (!play) {
+			play = configStore.getState().autoPlayAudio;
+		}
 
-    await loadAudioFile(filePaths[0], play);
-  }
+		await loadAudioFile(files[0], play);
+	}
 }
 
 export default audioStore;

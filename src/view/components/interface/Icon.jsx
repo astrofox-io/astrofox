@@ -1,40 +1,45 @@
-import React from 'react';
-import classNames from 'classnames';
-import styles from './Icon.module.less';
+import classNames from "classnames";
+import React from "react";
+import styles from "./Icon.module.less";
 
 const Icon = ({
-  className,
-  width,
-  height,
-  title,
-  glyph,
-  shapeRendering,
-  onClick,
+	className,
+	width,
+	height,
+	title,
+	glyph,
+	shapeRendering,
+	onClick,
 }) => {
-  const isSpriteGlyph = glyph && typeof glyph === 'object' && glyph.url;
-  const Glyph = glyph;
+	const isSpriteGlyph = glyph && typeof glyph === "object" && glyph.url;
+	const Glyph = glyph;
 
-  return (
-    <span className={classNames(styles.icon, className)} title={title}>
-      {isSpriteGlyph ? (
-        <svg
-          viewBox={glyph.viewBox}
-          width={width}
-          height={height}
-          onClick={onClick}
-          shapeRendering={shapeRendering}
-        >
-          <use xlinkHref={glyph.url} />
-        </svg>
-      ) : Glyph ? (
-        <Glyph width={width} height={height} onClick={onClick} shapeRendering={shapeRendering} />
-      ) : null}
-    </span>
-  );
+	return (
+		<span className={classNames(styles.icon, className)} title={title}>
+			{isSpriteGlyph ? (
+				<svg
+					viewBox={glyph.viewBox}
+					width={width}
+					height={height}
+					onClick={onClick}
+					shapeRendering={shapeRendering}
+				>
+					<use xlinkHref={glyph.url} />
+				</svg>
+			) : Glyph ? (
+				<Glyph
+					width={width}
+					height={height}
+					onClick={onClick}
+					shapeRendering={shapeRendering}
+				/>
+			) : null}
+		</span>
+	);
 };
 
 Icon.defaultProps = {
-  shapeRendering: 'geometricPrecision',
+	shapeRendering: "geometricPrecision",
 };
 
 export default Icon;

@@ -1,37 +1,37 @@
-import Display from 'core/Display';
+import Display from "core/Display";
 
 export default class Effect extends Display {
-  constructor(Type, properties) {
-    super(Type, properties);
+	constructor(Type, properties) {
+		super(Type, properties);
 
-    this.type = 'effect';
-  }
+		this.type = "effect";
+	}
 
-  update(properties = {}) {
-    const changed = super.update(properties);
+	update(properties = {}) {
+		const changed = super.update(properties);
 
-    if (changed) {
-      this.updatePass();
-    }
+		if (changed) {
+			this.updatePass();
+		}
 
-    return changed;
-  }
+		return changed;
+	}
 
-  updatePass() {
-    const { pass } = this;
+	updatePass() {
+		const { pass } = this;
 
-    if (pass.setUniforms) {
-      pass.setUniforms(this.properties);
-    }
-  }
+		if (pass.setUniforms) {
+			pass.setUniforms(this.properties);
+		}
+	}
 
-  setSize(width, height) {
-    const { pass } = this;
+	setSize(width, height) {
+		const { pass } = this;
 
-    if (pass) {
-      pass.setSize(width, height);
-    }
-  }
+		if (pass) {
+			pass.setSize(width, height);
+		}
+	}
 
-  render() {}
+	render() {}
 }

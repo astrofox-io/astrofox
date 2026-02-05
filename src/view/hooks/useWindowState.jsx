@@ -1,23 +1,29 @@
-import { api } from 'global';
-import { useEffect, useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 export default function useWindowState() {
-  const [state, setState] = useState({});
+	const [state, setState] = useState({});
 
-  const updateState = useCallback(
-    newState => {
-      setState(newState);
-    },
-    [api],
-  );
+	const updateState = useCallback(() => {
+		setState({
+			focused: document.hasFocus(),
+			maximized: false,
+			minimized: false,
+		});
+	}, []);
 
-  useEffect(() => {
-    api.on('window-state-changed', updateState);
+	useEffect(() => {
+		updateState();
 
-    return () => {
-      api.off('window-state-changed', updateState);
-    };
-  }, [api]);
+		window.addEventListener("focus", updateState);
+		window.addEventListener("blur", updateState);
+		document.addEventListener("visibilitychange", updateState);
 
-  return state;
+		return () => {
+			window.removeEventListener("focus", updateState);
+			window.removeEventListener("blur", updateState);
+			document.removeEventListener("visibilitychange", updateState);
+		};
+	}, [updateState]);
+
+	return state;
 }

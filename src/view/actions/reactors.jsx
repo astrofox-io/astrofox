@@ -1,45 +1,45 @@
-import create from 'zustand';
-import { reactors } from 'global';
-import { setActiveReactorId } from './app';
+import { reactors } from "global";
+import create from "zustand";
+import { setActiveReactorId } from "./app";
 
 const initialState = {
-  reactors: [],
+	reactors: [],
 };
 
 const reactorStore = create(() => ({
-  ...initialState,
+	...initialState,
 }));
 
 export function loadReactors() {
-  reactorStore.setState({ reactors: reactors.toJSON() });
+	reactorStore.setState({ reactors: reactors.toJSON() });
 }
 
 export function resetReactors() {
-  reactorStore.setState({ ...initialState });
+	reactorStore.setState({ ...initialState });
 
-  reactors.clearReactors();
+	reactors.clearReactors();
 
-  setActiveReactorId(null);
+	setActiveReactorId(null);
 }
 
 export function addReactor(reactor) {
-  const newReactor = reactors.addReactor(reactor);
+	const newReactor = reactors.addReactor(reactor);
 
-  loadReactors();
+	loadReactors();
 
-  return newReactor;
+	return newReactor;
 }
 
 export function removeReactor(reactor) {
-  reactors.removeReactor(reactor);
+	reactors.removeReactor(reactor);
 
-  loadReactors();
+	loadReactors();
 }
 
 export function clearReactors() {
-  reactors.clearReactors();
+	reactors.clearReactors();
 
-  loadReactors();
+	loadReactors();
 }
 
 export default reactorStore;

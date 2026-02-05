@@ -1,32 +1,32 @@
-import ShaderPass from 'graphics/ShaderPass';
-import CopyShader from 'shaders/CopyShader';
+import ShaderPass from "graphics/ShaderPass";
+import CopyShader from "shaders/CopyShader";
 
 export default class CopyPass extends ShaderPass {
-  constructor(buffer) {
-    super(CopyShader);
+	constructor(buffer) {
+		super(CopyShader);
 
-    this.buffer = buffer;
-    this.needsSwap = false;
-    this.copyFromBuffer = false;
-    this.clearBuffer = false;
-  }
+		this.buffer = buffer;
+		this.needsSwap = false;
+		this.copyFromBuffer = false;
+		this.clearBuffer = false;
+	}
 
-  dispose() {
-    this.buffer.dispose();
-  }
+	dispose() {
+		this.buffer.dispose();
+	}
 
-  render(renderer, inputBuffer) {
-    const { buffer, copyFromBuffer, clearBuffer } = this;
+	render(renderer, inputBuffer) {
+		const { buffer, copyFromBuffer, clearBuffer } = this;
 
-    if (clearBuffer) {
-      renderer.setRenderTarget(buffer);
-      renderer.clear();
-    }
+		if (clearBuffer) {
+			renderer.setRenderTarget(buffer);
+			renderer.clear();
+		}
 
-    super.render(
-      renderer,
-      copyFromBuffer ? buffer : inputBuffer,
-      copyFromBuffer ? inputBuffer : buffer,
-    );
-  }
+		super.render(
+			renderer,
+			copyFromBuffer ? buffer : inputBuffer,
+			copyFromBuffer ? inputBuffer : buffer,
+		);
+	}
 }

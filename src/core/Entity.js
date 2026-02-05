@@ -1,57 +1,60 @@
-import { updateExistingProps, resolve } from 'utils/object';
-import { uniqueId } from 'utils/crypto';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
+import { uniqueId } from "utils/crypto";
+import { resolve, updateExistingProps } from "utils/object";
 
 export default class Entity {
-  static create = (Type, config) => {
-    const { id, name, properties, displays, effects, ...props } = config;
+	static create = (Type, config) => {
+		const { id, name, properties, displays, effects, ...props } = config;
 
-    const entity = new Type(properties);
+		const entity = new Type(properties);
 
-    for (const [key, value] of Object.entries(props)) {
-      entity[key] = value;
-    }
+		for (const [key, value] of Object.entries(props)) {
+			entity[key] = value;
+		}
 
-    entity.id = id;
+		entity.id = id;
 
-    return entity;
-  };
+		return entity;
+	};
 
-  constructor(name, properties = {}) {
-    Object.defineProperties(this, {
-      id: {
-        value: uniqueId(),
-        enumerable: true,
-        writable: true
-      },
-      name: {
-        value: name,
-        enumerable: true,
-      },
-      properties: {
-        value: properties,
-        enumerable: true,
-      },
-    });
-  }
+	constructor(name, properties = {}) {
+		Object.defineProperties(this, {
+			id: {
+				value: uniqueId(),
+				enumerable: true,
+				writable: true,
+			},
+			name: {
+				value: name,
+				enumerable: true,
+			},
+			properties: {
+				value: properties,
+				enumerable: true,
+			},
+		});
+	}
 
-  update(properties = {}) {
-    return updateExistingProps(this.properties, resolve(properties, [this.properties]));
-  }
+	update(properties = {}) {
+		return updateExistingProps(
+			this.properties,
+			resolve(properties, [this.properties]),
+		);
+	}
 
-  toString() {
-    return `[${this.name} ${this.id}]`;
-  }
+	toString() {
+		return `[${this.name} ${this.id}]`;
+	}
 
-  toJSON() {
-    const { id, name, type, enabled, properties } = this;
+	toJSON() {
+		const { id, name, type, enabled, properties } = this;
 
-    return {
-      id,
-      name,
-      type,
-      enabled,
-      properties: cloneDeep(properties),
-    };
-  }
+		return {
+			id,
+			name,
+			type,
+			enabled,
+			properties: cloneDeep(properties),
+		};
+	}
 }

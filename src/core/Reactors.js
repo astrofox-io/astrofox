@@ -1,32 +1,32 @@
-import AudioReactor from 'audio/AudioReactor';
-import EntityList from 'core/EntityList';
+import AudioReactor from "audio/AudioReactor";
+import EntityList from "core/EntityList";
 
 export default class Reactors extends EntityList {
-  constructor() {
-    super();
+	constructor() {
+		super();
 
-    this.results = {};
-  }
+		this.results = {};
+	}
 
-  addReactor(reactor) {
-    return this.addElement(reactor ?? new AudioReactor());
-  }
+	addReactor(reactor) {
+		return this.addElement(reactor ?? new AudioReactor());
+	}
 
-  removeReactor(reactor) {
-    this.removeElement(reactor);
-  }
+	removeReactor(reactor) {
+		this.removeElement(reactor);
+	}
 
-  clearReactors() {
-    this.clear();
-  }
+	clearReactors() {
+		this.clear();
+	}
 
-  getResults(data) {
-    if (data.hasUpdate) {
-      this.results = this.reduce((memo, reactor) => {
-        memo[reactor.id] = reactor.parse(data).output;
-        return memo;
-      }, {});
-    }
-    return this.results;
-  }
+	getResults(data) {
+		if (data.hasUpdate) {
+			this.results = this.reduce((memo, reactor) => {
+				memo[reactor.id] = reactor.parse(data).output;
+				return memo;
+			}, {});
+		}
+		return this.results;
+	}
 }

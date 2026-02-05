@@ -1,22 +1,27 @@
-import create from 'zustand';
-import { uniqueId } from 'utils/crypto';
+import { uniqueId } from "utils/crypto";
+import create from "zustand";
 
 const initialState = {
-  modals: [],
+	modals: [],
 };
 
 const modalStore = create(() => ({
-  ...initialState,
+	...initialState,
 }));
 
 export function showModal(component, modalProps, componentProps) {
-  modalStore.setState(({ modals }) => ({
-    modals: modals.concat({ id: uniqueId(), component, modalProps, componentProps }),
-  }));
+	modalStore.setState(({ modals }) => ({
+		modals: modals.concat({
+			id: uniqueId(),
+			component,
+			modalProps,
+			componentProps,
+		}),
+	}));
 }
 
 export function closeModal() {
-  modalStore.setState(({ modals }) => ({ modals: modals.slice(0, -1) }));
+	modalStore.setState(({ modals }) => ({ modals: modals.slice(0, -1) }));
 }
 
 export default modalStore;

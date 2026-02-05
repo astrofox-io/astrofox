@@ -1,70 +1,93 @@
-import create from 'zustand';
-import semver from 'semver';
-import { api, env, logger } from 'global';
-import configStore from './config';
+import { api, env, logger } from "global";
+import semver from "semver";
+import create from "zustand";
+import configStore from "./config";
 
 const initialState = {
-  status: null,
-  checked: false,
-  hasUpdate: false,
-  downloadComplete: false,
-  downloadProgress: 0,
-  lastCheck: 0,
-  updateInfo: null,
+	status: null,
+	checked: false,
+	hasUpdate: false,
+	downloadComplete: false,
+	downloadProgress: 0,
+	lastCheck: 0,
+	updateInfo: null,
 };
 
 const updateStore = create(() => ({
-  ...initialState,
+	...initialState,
 }));
 
 export function updateDownloadProgress(info) {
-  updateStore.setState({ downloadProgress: info.percent });
+	updateStore.setState({ downloadProgress: info.percent });
 }
 
 export async function downloadUpdate() {
-  updateStore.setState({ status: 'downloading' });
+	if (env.IS_WEB) {
+		updateStore.setState({ status: "unsupported" });
+		return;
+	}
 
-  const result = await api.invoke('download-update');
+	updateStore.setState({ status: "downloading" });
 
-  logger.log('Update downloaded:', result);
+	const result = await api.invoke("download-update");
 
-  updateStore.setState({ downloadComplete: true, status: null });
+	logger.log("Update downloaded:", result);
+
+	updateStore.setState({ downloadComplete: true, status: null });
 }
 
 export async function quitAndInstall() {
-  const { downloadComplete } = updateStore.getState();
+	if (env.IS_WEB) {
+		updateStore.setState({ status: "unsupported" });
+		return;
+	}
 
-  if (downloadComplete) {
-    await api.invoke('quit-and-install');
-  }
+	const { downloadComplete } = updateStore.getState();
+
+	if (downloadComplete) {
+		await api.invoke("quit-and-install");
+	}
 }
 
 export async function checkForUpdates() {
-  updateStore.setState({ status: 'checking', lastCheck: Date.now() });
+	if (env.IS_WEB) {
+		updateStore.setState({
+			status: "unsupported",
+			checked: true,
+			hasUpdate: false,
+			downloadComplete: false,
+			downloadProgress: 0,
+			lastCheck: Date.now(),
+			updateInfo: null,
+		});
+		return;
+	}
 
-  try {
-    const { updateInfo } = await api.invoke('check-for-updates');
+	updateStore.setState({ status: "checking", lastCheck: Date.now() });
 
-    const hasUpdate = semver.gt(updateInfo.version, env.APP_VERSION);
-    const { autoUpdate } = configStore.getState();
-    const status = autoUpdate && hasUpdate ? 'downloading' : null;
+	try {
+		const { updateInfo } = await api.invoke("check-for-updates");
 
-    logger.log('Update check complete', updateInfo);
+		const hasUpdate = semver.gt(updateInfo.version, env.APP_VERSION);
+		const { autoUpdate } = configStore.getState();
+		const status = autoUpdate && hasUpdate ? "downloading" : null;
 
-    updateStore.setState({ checked: true, status, updateInfo, hasUpdate });
+		logger.log("Update check complete", updateInfo);
 
-    if (autoUpdate && hasUpdate) {
-      await downloadUpdate();
-    }
-  } catch (e) {
-    updateStore.setState({ status: 'error' });
+		updateStore.setState({ checked: true, status, updateInfo, hasUpdate });
 
-    logger.error('Update check failed:', e);
-  }
+		if (autoUpdate && hasUpdate) {
+			await downloadUpdate();
+		}
+	} catch (e) {
+		updateStore.setState({ status: "error" });
+
+		logger.error("Update check failed:", e);
+	}
 }
 
 export function resetUpdates() {
-  updateStore.setState({ status: null });
+	updateStore.setState({ status: null });
 }
 
 export default updateStore;

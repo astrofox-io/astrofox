@@ -1,118 +1,118 @@
 @font-face {
-  font-family: 'Abel';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/abel.woff2) format('woff2');
+	font-family: "Abel";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/abel.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Abril Fatface';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/abril-fatface.woff2) format('woff2');
+	font-family: "Abril Fatface";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/abril-fatface.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Bangers';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/bangers.woff2) format('woff2');
+	font-family: "Bangers";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/bangers.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Cardo';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/cardo.woff2) format('woff2');
+	font-family: "Cardo";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/cardo.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Caveat';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/caveat.woff2) format('woff2');
+	font-family: "Caveat";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/caveat.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Chunkfive';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/chunkfive.woff2) format('woff2');
+	font-family: "Chunkfive";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/chunkfive.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Dynalight';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/dynalight.woff2) format('woff2');
+	font-family: "Dynalight";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/dynalight.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Intro';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/intro.woff2) format('woff2');
+	font-family: "Intro";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/intro.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Merriweather';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/merriweather.woff2) format('woff2');
+	font-family: "Merriweather";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/merriweather.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/playfair-display.woff2) format('woff2');
+	font-family: "Playfair Display";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/playfair-display.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Permanent Marker';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/permanent-marker.woff2) format('woff2');
+	font-family: "Permanent Marker";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/permanent-marker.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Oswald';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/oswald.woff2) format('woff2');
+	font-family: "Oswald";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/oswald.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Oxygen';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/oxygen.woff2) format('woff2');
+	font-family: "Oxygen";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/oxygen.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Racing Sans One';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/racing-sans-one.woff2) format('woff2');
+	font-family: "Racing Sans One";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/racing-sans-one.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/raleway.woff2) format('woff2');
+	font-family: "Raleway";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/raleway.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/roboto.woff2) format('woff2');
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/roboto.woff2) format("woff2");
 }
 
 @font-face {
-  font-family: 'Vast Shadow';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/fonts/vast-shadow.woff2) format('woff2');
+	font-family: "Vast Shadow";
+	font-style: normal;
+	font-weight: 400;
+	src: url(./assets/fonts/vast-shadow.woff2) format("woff2");
 }

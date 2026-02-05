@@ -1,169 +1,57 @@
 {
-  "name": "astrofox",
-  "version": "2.0.0",
-  "productName": "Astrofox",
-  "description": "Audio reactive motion graphics program",
-  "author": "Mike Cao <mike@mikecao.com>",
-  "license": "MIT",
-  "homepage": "https://astrofox.io",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/astrofox-io/astrofox"
-  },
-  "main": "app/main.js",
-  "scripts": {
-    "start": "dotenv electron ./app",
-    "dev": "npm-run-all bootstrap dev-all",
-    "build": "npm-run-all bootstrap build-prod",
-    "test": "jest --coverage",
-    "dev-all": "npm-run-all --parallel dev-electron dev-view",
-    "dev-view": "dotenv vite",
-    "dev-electron": "npm-run-all --parallel dev-main dev-preload",
-    "build-dev": "vite build --mode development",
-    "build-prod": "cross-env NODE_ENV=production npm-run-all build-view build-electron",
-    "build-electron": "npm-run-all build-main build-preload",
-    "build-main": "vite build -c vite.main.config.mjs",
-    "build-preload": "vite build -c vite.preload.config.mjs",
-    "build-win": "dotenv electron-builder --x64 --win",
-    "build-mac": "dotenv electron-builder --x64 --mac",
-    "build-linux": "dotenv electron-builder --x64 --linux",
-    "lint": "eslint src || exit 0",
-    "lint-fix": "eslint --fix src || exit 0",
-    "lint-check": "eslint --print-config . | eslint-config-prettier-check",
-    "stylelint": "stylelint src/view/components",
-    "notarize": "node ./scripts/notarize.js",
-    "bootstrap": "node scripts/bootstrap.js",
-    "install-ffmpeg": "node ./scripts/install-ffmpeg.js",
-    "build-view": "vite build",
-    "dev-main": "vite build -c vite.main.config.mjs --watch",
-    "dev-preload": "vite build -c vite.preload.config.mjs --watch"
-  },
-  "build": {
-    "appId": "io.astrofox.app",
-    "productName": "Astrofox",
-    "asar": true,
-    "files": [
-      "**/*",
-      "!*.yml",
-      "!*.lock"
-    ],
-    "extraResources": [
-      {
-        "from": "bin",
-        "to": "bin"
-      }
-    ],
-    "publish": {
-      "provider": "generic",
-      "url": "https://files.astrofox.io/download",
-      "channel": "latest"
-    },
-    "dmg": {
-      "sign": false
-    },
-    "nsis": {
-      "oneClick": true
-    },
-    "mac": {
-      "category": "public.app-category.video",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage"
-      ],
-      "icon": "build/icons/512x512.png",
-      "category": "AudioVideo"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.js": [
-      "prettier --write",
-      "eslint"
-    ],
-    "src/**/*.{css,less}": [
-      "stylelint --fix",
-      "prettier --write"
-    ]
-  },
-  "dependencies": {
-    "classnames": "^2.3.1",
-    "debug": "^4.3.1",
-    "del": "^6.0.0",
-    "electron-localshortcut": "^3.2.1",
-    "fourier-transform": "^1.1.2",
-    "glob": "^7.1.6",
-    "id3js": "2.1.1",
-    "immer": "^9.0.6",
-    "lodash": "^4.17.21",
-    "mime": "^2.5.2",
-    "path-browserify": "^1.0.1",
-    "prop-types": "^15.7.2",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-spring": "^9.0.0",
-    "react-window": "^1.8.6",
-    "reselect": "^4.0.0",
-    "semver": "^7.3.5",
-    "three": "0.139.2",
-    "tinycolor2": "^1.4.2",
-    "window-function": "^2.1.0",
-    "yauzl": "^2.10.0",
-    "zustand": "^3.4.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.13.14",
-    "@babel/eslint-parser": "^7.16.3",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-export-default-from": "^7.12.13",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
-    "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
-    "@babel/plugin-proposal-optional-chaining": "^7.13.12",
-    "@babel/preset-env": "^7.13.12",
-    "@babel/preset-react": "^7.12.13",
-    "@vitejs/plugin-react": "^4.3.0",
-    "babel-loader": "^8.2.2",
-    "cross-env": "^7.0.3",
-    "dotenv": "^10.0.0",
-    "dotenv-cli": "^4.0.0",
-    "electron": "18.3.7",
-    "electron-builder": "^23.0.3",
-    "electron-notarize": "^1.0.0",
-    "electron-updater": "^5.0.1",
-    "eslint": "^8.0.1",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-css-modules": "^2.11.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^25.2.2",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-react": "^7.23.1",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "express": "^4.17.1",
-    "glsl-man": "^1.1.14",
-    "glslx": "^0.2.13",
-    "husky": "^7.0.2",
-    "jest": "^27.2.5",
-    "less": "^4.1.1",
-    "lint-staged": "^11.2.3",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.1",
-    "prettier-eslint": "^13.0.0",
-    "stylelint": "^14.0.1",
-    "stylelint-config-css-modules": "^2.2.0",
-    "stylelint-config-prettier": "^9.0.3",
-    "stylelint-config-recommended": "^6.0.0",
-    "vite": "^5.4.0",
-    "vite-plugin-glsl": "^1.3.0",
-    "vite-plugin-svgr": "^4.3.0"
-  }
+	"name": "astrofox",
+	"version": "2.0.0",
+	"productName": "Astrofox",
+	"description": "Audio reactive motion graphics program",
+	"author": "Mike Cao <mike@mikecao.com>",
+	"license": "MIT",
+	"homepage": "https://astrofox.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/astrofox-io/astrofox"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"stylelint": "stylelint src/view/components",
+		"lint": "biome check .",
+		"lint-fix": "biome check . --write"
+	},
+	"dependencies": {
+		"classnames": "^2.3.1",
+		"debug": "^4.3.1",
+		"fourier-transform": "^1.1.2",
+		"immer": "^9.0.6",
+		"jsmediatags": "^3.9.7",
+		"lodash": "^4.17.21",
+		"mime": "^2.5.2",
+		"path-browserify": "^1.0.1",
+		"prop-types": "^15.7.2",
+		"react": "^18.1.0",
+		"react-dom": "^18.1.0",
+		"react-spring": "^9.0.0",
+		"react-window": "^1.8.6",
+		"reselect": "^4.0.0",
+		"semver": "^7.3.5",
+		"three": "0.139.2",
+		"tinycolor2": "^1.4.2",
+		"window-function": "^2.1.0",
+		"zustand": "^3.4.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@vitejs/plugin-react": "^4.3.0",
+		"express": "^4.17.1",
+		"glsl-man": "^1.1.14",
+		"glslx": "^0.2.13",
+		"less": "^4.1.1",
+		"stylelint": "^14.0.1",
+		"stylelint-config-css-modules": "^2.2.0",
+		"stylelint-config-prettier": "^9.0.3",
+		"stylelint-config-recommended": "^6.0.0",
+		"vite": "^5.4.0",
+		"vite-plugin-glsl": "^1.3.0",
+		"vite-plugin-svgr": "^4.3.0"
+	}
 }

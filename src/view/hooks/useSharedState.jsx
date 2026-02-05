@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 let listeners = [];
 let state = {};
 
 function setState(newState) {
-  state = { ...state, ...newState };
-  listeners.forEach(listener => {
-    listener(state);
-  });
+	state = { ...state, ...newState };
+	listeners.forEach((listener) => {
+		listener(state);
+	});
 }
 
 export default function useSharedState(initialState) {
-  const [, newListener] = useState();
+	const [, newListener] = useState();
 
-  if (initialState && Object.keys(state).length === 0) {
-    state = initialState;
-  }
+	if (initialState && Object.keys(state).length === 0) {
+		state = initialState;
+	}
 
-  useEffect(() => {
-    listeners.push(newListener);
+	useEffect(() => {
+		listeners.push(newListener);
 
-    return () => {
-      listeners = listeners.filter(e => e !== newListener);
-    };
-  }, []);
+		return () => {
+			listeners = listeners.filter((e) => e !== newListener);
+		};
+	}, []);
 
-  return [state, setState];
+	return [state, setState];
 }

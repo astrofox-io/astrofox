@@ -1,89 +1,89 @@
-import create from 'zustand';
-import { stage } from 'global';
-import { touchProject } from './project';
+import { stage } from "global";
+import create from "zustand";
+import { touchProject } from "./project";
 
 const initialState = {
-  scenes: [],
+	scenes: [],
 };
 
 const sceneStore = create(() => ({
-  ...initialState,
+	...initialState,
 }));
 
 export function loadScenes(touch = true) {
-  sceneStore.setState({ scenes: stage.scenes.toJSON() });
+	sceneStore.setState({ scenes: stage.scenes.toJSON() });
 
-  if (touch) {
-    touchProject();
-  }
+	if (touch) {
+		touchProject();
+	}
 }
 
 export function resetScenes(touch = true) {
-  sceneStore.setState({ ...initialState });
+	sceneStore.setState({ ...initialState });
 
-  stage.clearScenes();
+	stage.clearScenes();
 
-  if (touch) {
-    touchProject();
-  }
+	if (touch) {
+		touchProject();
+	}
 }
 
 export function addScene() {
-  const scene = stage.addScene();
+	const scene = stage.addScene();
 
-  loadScenes();
+	loadScenes();
 
-  return scene;
+	return scene;
 }
 
 export function addElement(element, sceneId) {
-  const scene = sceneId ? stage.getSceneById(sceneId) : stage.scenes[0];
+	const scene = sceneId ? stage.getSceneById(sceneId) : stage.scenes[0];
 
-  if (scene) {
-    scene.addElement(element);
-  }
+	if (scene) {
+		scene.addElement(element);
+	}
 
-  loadScenes();
+	loadScenes();
 }
 
 export function updateElement(id, prop, value) {
-  const element = stage.getStageElementById(id);
+	const element = stage.getStageElementById(id);
 
-  if (element) {
-    element[prop] = value;
+	if (element) {
+		element[prop] = value;
 
-    loadScenes();
-  }
+		loadScenes();
+	}
 }
 
 export function updateElementProperty(id, prop, value) {
-  const element = stage.getStageElementById(id);
+	const element = stage.getStageElementById(id);
 
-  if (element) {
-    element.update({ [prop]: value });
+	if (element) {
+		element.update({ [prop]: value });
 
-    loadScenes();
-  }
+		loadScenes();
+	}
 }
 
 export function removeElement(id) {
-  const element = stage.getStageElementById(id);
+	const element = stage.getStageElementById(id);
 
-  if (element) {
-    stage.removeStageElement(element);
+	if (element) {
+		stage.removeStageElement(element);
 
-    loadScenes();
-  }
+		loadScenes();
+	}
 }
 
 export function moveElement(id, spaces) {
-  const element = stage.getStageElementById(id);
+	const element = stage.getStageElementById(id);
 
-  if (element) {
-    stage.shiftStageElement(element, spaces);
+	if (element) {
+		stage.shiftStageElement(element, spaces);
 
-    loadScenes();
-  }
+		loadScenes();
+	}
 }
 
 export default sceneStore;

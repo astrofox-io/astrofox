@@ -1,125 +1,125 @@
 [
-  {
-    "label": "File",
-    "submenu": [
-      {
-        "label": "New project",
-        "action": "new-project"
-      },
-      {
-        "label": "Open project...",
-        "action": "open-project"
-      },
-      {
-        "label": "Save project",
-        "action": "save-project"
-      },
-      {
-        "label": "Save project as...",
-        "action": "save-project-as"
-      },
-      {
-        "type": "separator"
-      },
-      {
-        "label": "Load audio...",
-        "action": "load-audio"
-      },
-      {
-        "label": "Save image...",
-        "action": "save-image"
-      },
-      {
-        "label": "Save video...",
-        "action": "save-video"
-      },
-      {
-        "type": "separator"
-      },
-      {
-        "label": "Exit",
-        "role": "quit",
-        "action": "exit"
-      }
-    ]
-  },
-  {
-    "label": "Edit",
-    "submenu": [
-      {
-        "label": "Canvas",
-        "action": "edit-canvas"
-      },
-      {
-        "label": "Settings",
-        "action": "edit-settings"
-      }
-    ]
-  },
-  {
-    "label": "View",
-    "submenu": [
-      {
-        "label": "Zoom in",
-        "action": "zoom-in"
-      },
-      {
-        "label": "Zoom out",
-        "action": "zoom-out"
-      },
-      {
-        "label": "Actual size",
-        "action": "zoom-reset"
-      },
-      {
-        "label": "Fit to screen",
-        "action": "zoom-fit"
-      },
-      {
-        "type": "separator"
-      },
-      {
-        "label": "Control dock",
-        "type": "checkbox",
-        "checked": true,
-        "action": "view-control-dock"
-      },
-      {
-        "label": "Player",
-        "type": "checkbox",
-        "checked": true,
-        "action": "view-player"
-      }
-    ]
-  },
-  {
-    "label": "Developer",
-    "hidden": true,
-    "submenu": [
-      {
-        "label": "Reload",
-        "role": "reload",
-        "accelerator": "CmdOrCtrl+R"
-      }
-    ]
-  },
-  {
-    "label": "Help",
-    "submenu": [
-      {
-        "label": "Check for updates...",
-        "action": "check-for-updates"
-      },
-      {
-        "label": "Developer tools",
-        "action": "open-dev-tools",
-        "role": "toggledevtools",
-        "accelerator": "CmdOrCtrl+Shift+I"
-      },
-      {
-        "label": "About",
-        "action": "about"
-      }
-    ]
-  }
+	{
+		"label": "File",
+		"submenu": [
+			{
+				"label": "New project",
+				"action": "new-project"
+			},
+			{
+				"label": "Open project...",
+				"action": "open-project"
+			},
+			{
+				"label": "Save project",
+				"action": "save-project"
+			},
+			{
+				"label": "Save project as...",
+				"action": "save-project-as"
+			},
+			{
+				"type": "separator"
+			},
+			{
+				"label": "Load audio...",
+				"action": "load-audio"
+			},
+			{
+				"label": "Save image...",
+				"action": "save-image"
+			},
+			{
+				"label": "Save video...",
+				"action": "save-video"
+			},
+			{
+				"type": "separator"
+			},
+			{
+				"label": "Exit",
+				"role": "quit",
+				"action": "exit"
+			}
+		]
+	},
+	{
+		"label": "Edit",
+		"submenu": [
+			{
+				"label": "Canvas",
+				"action": "edit-canvas"
+			},
+			{
+				"label": "Settings",
+				"action": "edit-settings"
+			}
+		]
+	},
+	{
+		"label": "View",
+		"submenu": [
+			{
+				"label": "Zoom in",
+				"action": "zoom-in"
+			},
+			{
+				"label": "Zoom out",
+				"action": "zoom-out"
+			},
+			{
+				"label": "Actual size",
+				"action": "zoom-reset"
+			},
+			{
+				"label": "Fit to screen",
+				"action": "zoom-fit"
+			},
+			{
+				"type": "separator"
+			},
+			{
+				"label": "Control dock",
+				"type": "checkbox",
+				"checked": true,
+				"action": "view-control-dock"
+			},
+			{
+				"label": "Player",
+				"type": "checkbox",
+				"checked": true,
+				"action": "view-player"
+			}
+		]
+	},
+	{
+		"label": "Developer",
+		"hidden": true,
+		"submenu": [
+			{
+				"label": "Reload",
+				"role": "reload",
+				"accelerator": "CmdOrCtrl+R"
+			}
+		]
+	},
+	{
+		"label": "Help",
+		"submenu": [
+			{
+				"label": "Check for updates...",
+				"action": "check-for-updates"
+			},
+			{
+				"label": "Developer tools",
+				"action": "open-dev-tools",
+				"role": "toggledevtools",
+				"accelerator": "CmdOrCtrl+Shift+I"
+			},
+			{
+				"label": "About",
+				"action": "about"
+			}
+		]
+	}
 ]

@@ -1,88 +1,92 @@
-import Entity from 'core/Entity';
-import cloneDeep from 'lodash/cloneDeep';
-import { getDisplayName } from 'utils/controls';
+import Entity from "core/Entity";
+import cloneDeep from "lodash/cloneDeep";
+import { getDisplayName } from "utils/controls";
 
 export default class Display extends Entity {
-  static create = (Type, config) => {
-    const { reactors = {} } = config;
-    const entity = Entity.create(Type, config);
+	static create = (Type, config) => {
+		const { reactors = {} } = config;
+		const entity = Entity.create(Type, config);
 
-    for (const [key, value] of Object.entries(reactors)) {
-      entity.setReactor(key, value);
-    }
+		for (const [key, value] of Object.entries(reactors)) {
+			entity.setReactor(key, value);
+		}
 
-    return entity;
-  };
+		return entity;
+	};
 
-  constructor(Type, properties) {
-    const {
-      config: { name, label, defaultProperties },
-    } = Type;
+	constructor(Type, properties) {
+		const {
+			config: { name, label, defaultProperties },
+		} = Type;
 
-    super(name, { ...defaultProperties, ...properties });
+		super(name, { ...defaultProperties, ...properties });
 
-    Object.defineProperties(this, {
-      type: { value: 'display', writable: true, enumerable: true },
-      displayName: { value: getDisplayName(label), writable: true, enumerable: true },
-      enabled: { value: true, writable: true, enumerable: true },
-      scene: { value: null, writable: true, enumerable: true },
-      reactors: { value: {}, writable: true, enumerable: true },
-    });
-  }
+		Object.defineProperties(this, {
+			type: { value: "display", writable: true, enumerable: true },
+			displayName: {
+				value: getDisplayName(label),
+				writable: true,
+				enumerable: true,
+			},
+			enabled: { value: true, writable: true, enumerable: true },
+			scene: { value: null, writable: true, enumerable: true },
+			reactors: { value: {}, writable: true, enumerable: true },
+		});
+	}
 
-  getReactor(prop) {
-    return this.reactors[prop];
-  }
+	getReactor(prop) {
+		return this.reactors[prop];
+	}
 
-  setReactor(prop, config) {
-    this.reactors[prop] = config;
-  }
+	setReactor(prop, config) {
+		this.reactors[prop] = config;
+	}
 
-  removeReactor(prop) {
-    delete this.reactors[prop];
-  }
+	removeReactor(prop) {
+		delete this.reactors[prop];
+	}
 
-  clearReactors() {
-    this.reactors = {};
-  }
+	clearReactors() {
+		this.reactors = {};
+	}
 
-  updateReactors(data) {
-    if (!data.hasUpdate) {
-      return;
-    }
+	updateReactors(data) {
+		if (!data.hasUpdate) {
+			return;
+		}
 
-    const { reactors } = this;
-    const properties = {};
-    let hasUpdate = false;
+		const { reactors } = this;
+		const properties = {};
+		let hasUpdate = false;
 
-    for (const [key, value] of Object.entries(reactors)) {
-      const { id, min, max } = value;
-      const output = data.reactors[id];
+		for (const [key, value] of Object.entries(reactors)) {
+			const { id, min, max } = value;
+			const output = data.reactors[id];
 
-      if (output !== undefined) {
-        properties[key] = (max - min) * output + min;
-        hasUpdate = true;
-      }
-    }
+			if (output !== undefined) {
+				properties[key] = (max - min) * output + min;
+				hasUpdate = true;
+			}
+		}
 
-    if (hasUpdate) {
-      this.update(properties);
-    }
-  }
+		if (hasUpdate) {
+			this.update(properties);
+		}
+	}
 
-  toJSON() {
-    const { id, name, type, enabled, displayName, properties, reactors } = this;
+	toJSON() {
+		const { id, name, type, enabled, displayName, properties, reactors } = this;
 
-    return {
-      id,
-      name,
-      type,
-      enabled,
-      displayName,
-      properties: cloneDeep(properties),
-      reactors: cloneDeep(reactors),
-    };
-  }
+		return {
+			id,
+			name,
+			type,
+			enabled,
+			displayName,
+			properties: cloneDeep(properties),
+			reactors: cloneDeep(reactors),
+		};
+	}
 
-  render() {}
+	render() {}
 }
