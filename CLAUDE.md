@@ -20,7 +20,6 @@ pnpm test
 
 # Lint and fix
 pnpm lint-fix
-pnpm stylelint
 
 # Platform-specific builds
 pnpm build-win    # Windows NSIS installer
@@ -67,7 +66,7 @@ Multi-process system in `src/video/`:
 ## Code Style
 
 - ESLint with Airbnb config (relaxed)
-- Prettier: 100 char line limit, single quotes, semicolons
+- Biome for linting and formatting
 - LESS for stylesheets
 - Pre-commit hooks enforce linting
 
