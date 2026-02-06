@@ -1,33 +1,77 @@
-export { default as AngleDoubleLeft } from "assets/icons/angle-double-left.svg?react";
-export { default as AngleDoubleRight } from "assets/icons/angle-double-right.svg?react";
-export { default as ArrowsHorizontal } from "assets/icons/arrows-h.svg?react";
-export { default as ChevronDown } from "assets/icons/chevron-down.svg?react";
-export { default as ChevronLeft } from "assets/icons/chevron-left.svg?react";
-export { default as ChevronRight } from "assets/icons/chevron-right.svg?react";
-export { default as ChevronUp } from "assets/icons/chevron-up.svg?react";
-export { default as Cube } from "assets/icons/cube.svg?react";
-export { default as Cycle } from "assets/icons/cycle.svg?react";
-export { default as DocumentLandscape } from "assets/icons/document-landscape.svg?react";
-export { default as DotsHorizontal } from "assets/icons/dots-three-horizontal.svg?react";
-export { default as Expand } from "assets/icons/expand.svg?react";
-export { default as Eye } from "assets/icons/eye.svg?react";
-export { default as FolderOpen } from "assets/icons/folder-open.svg?react";
-export { default as Flash } from "assets/icons/flash.svg?react";
-export { default as LightUp } from "assets/icons/light-up.svg?react";
-export { default as Link } from "assets/icons/link.svg?react";
-export { default as Minus } from "assets/icons/minus.svg?react";
-export { default as Pause } from "assets/icons/pause.svg?react";
-export { default as Picture } from "assets/icons/picture.svg?react";
-export { default as Play } from "assets/icons/play.svg?react";
-export { default as Plus } from "assets/icons/plus.svg?react";
-export { default as SoundBars } from "assets/icons/sound-bars.svg?react";
-export { default as SoundWaves } from "assets/icons/sound-waves.svg?react";
-export { default as Square } from "assets/icons/square.svg?react";
-export { default as Stop } from "assets/icons/stop.svg?react";
-export { default as Times } from "assets/icons/times.svg?react";
-export { default as TrashEmpty } from "assets/icons/trash-empty.svg?react";
-export { default as Volume } from "assets/icons/volume.svg?react";
-export { default as Volume2 } from "assets/icons/volume2.svg?react";
-export { default as Volume3 } from "assets/icons/volume3.svg?react";
-export { default as Volume4 } from "assets/icons/volume4.svg?react";
-export { default as Warning } from "assets/icons/warning.svg?react";
+import {
+	CaretDoubleLeft as AngleDoubleLeft,
+	CaretDoubleRight as AngleDoubleRight,
+	ArrowsHorizontal,
+	CaretDown as ChevronDown,
+	CaretLeft as ChevronLeft,
+	CaretRight as ChevronRight,
+	CaretUp as ChevronUp,
+	Cube,
+	ArrowsClockwise as Cycle,
+	File as DocumentLandscape,
+	DotsThree as DotsHorizontal,
+	ArrowsOut as Expand,
+	Eye,
+	FolderOpen,
+	Lightning as Flash,
+	Lightbulb as LightUp,
+	Link,
+	Minus,
+	Pause,
+	ImageSquare as Picture,
+	Play as PlayIcon,
+	Plus,
+	Waveform as SoundBars,
+	WaveSine as SoundWaves,
+	Square,
+	Stop as StopIcon,
+	X as Times,
+	Trash as TrashEmpty,
+	SpeakerHigh as Volume,
+	SpeakerLow as Volume2,
+	SpeakerNone as Volume3,
+	SpeakerSimpleX as Volume4,
+	Warning,
+} from "@phosphor-icons/react";
+
+export {
+	AngleDoubleLeft,
+	AngleDoubleRight,
+	ArrowsHorizontal,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	Cube,
+	Cycle,
+	DocumentLandscape,
+	DotsHorizontal,
+	Expand,
+	Eye,
+	FolderOpen,
+	Flash,
+	LightUp,
+	Link,
+	Minus,
+	Pause,
+	Picture,
+	Plus,
+	SoundBars,
+	SoundWaves,
+	Square,
+	Times,
+	TrashEmpty,
+	Volume,
+	Volume2,
+	Volume3,
+	Volume4,
+	Warning,
+};
+
+export function Play(props) {
+	return <PlayIcon weight="fill" {...props} />;
+}
+
+export function Stop(props) {
+	return <StopIcon weight="fill" {...props} />;
+}

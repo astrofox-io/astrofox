@@ -18,6 +18,7 @@
 		"lint-fix": "biome check . --write"
 	},
 	"dependencies": {
+		"@phosphor-icons/react": "^2.1.10",
 		"classnames": "^2.3.1",
 		"debug": "^4.3.1",
 		"fourier-transform": "^1.1.2",

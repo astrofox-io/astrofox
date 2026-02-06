@@ -8,6 +8,7 @@ const Icon = ({
 	height,
 	title,
 	glyph,
+	monochrome,
 	shapeRendering,
 	onClick,
 }) => {
@@ -15,7 +16,10 @@ const Icon = ({
 	const Glyph = glyph;
 
 	return (
-		<span className={classNames(styles.icon, className)} title={title}>
+		<span
+			className={classNames(styles.icon, { [styles.monochrome]: monochrome }, className)}
+			title={title}
+		>
 			{isSpriteGlyph ? (
 				<svg
 					viewBox={glyph.viewBox}
@@ -39,6 +43,7 @@ const Icon = ({
 };
 
 Icon.defaultProps = {
+	monochrome: true,
 	shapeRendering: "geometricPrecision",
 };
 

@@ -8,8 +8,29 @@
 
   svg {
     color: inherit;
-    fill: currentColor;
     width: inherit;
     height: inherit;
+  }
+}
+
+.monochrome {
+  // Force color for mono icon assets while respecting explicit inline color values.
+  svg path:not([fill]),
+  svg circle:not([fill]),
+  svg ellipse:not([fill]),
+  svg rect:not([fill]),
+  svg polygon:not([fill]),
+  svg polyline:not([fill]) {
+    fill: currentColor;
+  }
+
+  svg path:not([stroke]),
+  svg circle:not([stroke]),
+  svg ellipse:not([stroke]),
+  svg rect:not([stroke]),
+  svg polygon:not([stroke]),
+  svg polyline:not([stroke]),
+  svg line:not([stroke]) {
+    stroke: currentColor;
   }
 }

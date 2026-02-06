@@ -22,7 +22,7 @@ export default function TitleBar() {
 			<div className={styles.title}>{env.APP_NAME}</div>
 			{!env.IS_MACOS && (
 				<>
-					<Icon className={styles.icon} glyph={appIcon} />
+					<Icon className={styles.icon} glyph={appIcon} monochrome={false} />
 					<MenuBar
 						items={menuConfig}
 						onMenuAction={handleMenuAction}
