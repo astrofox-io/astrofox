@@ -16,6 +16,8 @@ Thumbs.db
 *.map
 .claude
 .vscode
+_tmp*
+nul
 
 # Project
 node_modules
