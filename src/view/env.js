@@ -18,8 +18,6 @@ export const env = {
 	IS_LINUX,
 	IS_WEB: true,
 	USER_AGENT,
-	FFMPEG_BINARY: null,
-	TEMP_PATH: null,
 	USER_DATA_PATH: null,
 	APP_CONFIG_FILE: null,
 };

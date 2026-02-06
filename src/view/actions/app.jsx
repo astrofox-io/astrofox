@@ -107,10 +107,6 @@ export async function handleMenuAction(action) {
 			await saveImage();
 			break;
 
-		case "save-video":
-			await showModal("VideoSettings", { title: "Save Video" });
-			break;
-
 		case "edit-canvas":
 			await showModal("CanvasSettings", { title: "Canvas" });
 			break;

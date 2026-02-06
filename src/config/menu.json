@@ -30,10 +30,6 @@
 				"action": "save-image"
 			},
 			{
-				"label": "Save video...",
-				"action": "save-video"
-			},
-			{
 				"type": "separator"
 			},
 			{

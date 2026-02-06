@@ -5,7 +5,6 @@ import Logger from "core/Logger";
 import Reactors from "core/Reactors";
 import Renderer from "core/Renderer";
 import Stage from "core/Stage";
-import VideoRenderer from "video/VideoRenderer";
 import * as api from "view/api";
 import env from "view/env";
 import { SAMPLE_RATE } from "./constants";
@@ -21,7 +20,4 @@ export const player = new Player(audioContext);
 export const analyzer = new SpectrumAnalyzer(audioContext);
 export const reactors = new Reactors();
 export const renderer = new Renderer();
-export const videoRenderer = env.IS_WEB
-	? { start: () => {}, stop: () => {} }
-	: new VideoRenderer(renderer);
 export const library = new Map();
