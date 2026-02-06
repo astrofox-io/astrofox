@@ -116,17 +116,72 @@ export default class ImageDisplay extends WebGLDisplay {
 		this.image.src = this.properties.src;
 	}
 
+	applyImage(image) {
+		this.image = image;
+
+		const texture = new Texture(image);
+		texture.needsUpdate = true;
+
+		const { width, height } = this.scene.getSize();
+
+		this.pass = new ImagePass(texture, { width, height });
+		this.pass.camera.aspect = width / height;
+		this.pass.camera.updateProjectionMatrix();
+
+		this.applyPassProperties(this.properties);
+	}
+
+	applyPassProperties(properties) {
+		if (!this.pass) {
+			return;
+		}
+
+		const { opacity, zoom, width, height, x, y, rotation } = properties;
+
+		if (zoom !== undefined) {
+			const { camera } = this.pass;
+
+			camera.zoom = zoom;
+			camera.updateProjectionMatrix();
+		}
+
+		if (width !== undefined && this.image.naturalWidth > 0) {
+			this.pass.mesh.scale.x = width / this.image.naturalWidth;
+		}
+
+		if (height !== undefined && this.image.naturalHeight > 0) {
+			this.pass.mesh.scale.y = height / this.image.naturalHeight;
+		}
+
+		if (opacity !== undefined) {
+			this.pass.material.opacity = opacity;
+		}
+
+		if (x !== undefined) {
+			this.pass.mesh.position.x = x;
+		}
+
+		if (y !== undefined) {
+			this.pass.mesh.position.y = y;
+		}
+
+		if (rotation !== undefined) {
+			this.pass.mesh.rotation.z = deg2rad(-rotation);
+		}
+	}
+
 	get hasImage() {
 		return this.properties.src !== BLANK_IMAGE;
 	}
 
 	update(properties) {
-		const { src: image, fixed, width, height } = properties;
+		const { src: inputSrc, fixed, width, height } = properties;
 		const { src, width: w, height: h, fixed: f } = this.properties;
+		let image = null;
 
 		// If we get an HTMLImageElement
-		if (typeof image === "object") {
-			this.image = image;
+		if (typeof inputSrc === "object" && inputSrc?.src) {
+			image = inputSrc;
 
 			if (image.src === BLANK_IMAGE) {
 				// Image reset
@@ -147,6 +202,10 @@ export default class ImageDisplay extends WebGLDisplay {
 		// Sync width/height values
 		if (!image && (fixed || f)) {
 			const { naturalWidth, naturalHeight } = this.image;
+			if (!naturalWidth || !naturalHeight) {
+				return false;
+			}
+
 			const ratio = naturalWidth / naturalHeight;
 
 			if (!isDefined(width, height)) {
@@ -167,45 +226,22 @@ export default class ImageDisplay extends WebGLDisplay {
 			}
 		}
 
+		const srcChanged =
+			typeof properties.src === "string" && properties.src !== src;
+
 		const changed = super.update(properties);
 
 		if (changed) {
-			const { opacity, zoom, width, height, x, y, rotation } = properties;
-
-			if (image) {
-				const texture = new Texture(image);
-				texture.needsUpdate = true;
-
-				const { width, height } = this.scene.getSize();
-
-				this.pass = new ImagePass(texture, { width, height });
-
-				this.pass.camera.aspect = width / height;
-				this.pass.camera.updateProjectionMatrix();
-			}
-			if (zoom !== undefined) {
-				const { camera } = this.pass;
-
-				camera.zoom = zoom;
-				camera.updateProjectionMatrix();
-			}
-			if (width) {
-				this.pass.mesh.scale.x = width / this.image.naturalWidth;
-			}
-			if (height) {
-				this.pass.mesh.scale.y = height / this.image.naturalHeight;
-			}
-			if (opacity) {
-				this.pass.material.opacity = opacity;
-			}
-			if (x !== undefined) {
-				this.pass.mesh.position.x = x;
-			}
-			if (y !== undefined) {
-				this.pass.mesh.position.y = y;
-			}
-			if (rotation !== undefined) {
-				this.pass.mesh.rotation.z = deg2rad(-rotation);
+			if (srcChanged && properties.src !== BLANK_IMAGE) {
+				if (image && image.naturalWidth > 0 && image.naturalHeight > 0) {
+					this.applyImage(image);
+				} else {
+					const nextImage = new Image();
+					nextImage.onload = () => this.applyImage(nextImage);
+					nextImage.src = properties.src;
+				}
+			} else {
+				this.applyPassProperties(this.properties);
 			}
 		}
 

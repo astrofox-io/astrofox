@@ -13,7 +13,7 @@ export default function ImageInput({ name, value, onChange }) {
 	const hasImage = value !== BLANK_IMAGE;
 
 	function handleImageLoad() {
-		onChange(name, image.current);
+		onChange(name, image.current?.src || BLANK_IMAGE);
 	}
 
 	function loadImageSrc(src) {
