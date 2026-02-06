@@ -1,5 +1,5 @@
 import { openAudioFile } from "actions/audio";
-import configStore, { loadConfig } from "actions/config";
+import { loadConfig } from "actions/config";
 import { raiseError } from "actions/error";
 import { showModal } from "actions/modals";
 import projectStore, {
@@ -9,10 +9,6 @@ import projectStore, {
 	saveProjectFile,
 } from "actions/project";
 import { fitToScreen, setZoom, zoomIn, zoomOut } from "actions/stage";
-import updateStore, {
-	checkForUpdates,
-	updateDownloadProgress,
-} from "actions/updates";
 import Plugin from "core/Plugin";
 import * as displays from "displays";
 import * as effects from "effects";
@@ -147,10 +143,6 @@ export async function handleMenuAction(action) {
 			await toggleState("showPlayer");
 			break;
 
-		case "check-for-updates":
-			await showModal("AppUpdates", { title: "Updates" });
-			break;
-
 		case "open-dev-tools":
 			api.openDevTools();
 			break;
@@ -226,23 +218,7 @@ export async function initApp() {
 	await loadLibrary();
 	await newProject();
 
-	const config = configStore.getState();
-
 	if (!env.IS_WEB) {
-		api.on("download-progress", (info) => {
-			updateDownloadProgress(info);
-		});
-
-		if (config.checkForUpdates) {
-			await checkForUpdates();
-
-			const { hasUpdate } = updateStore.getState();
-
-			if (hasUpdate) {
-				showModal("AppUpdates", { title: "Updates" });
-			}
-		}
-
 		api.on("menu-action", handleMenuAction);
 	}
 

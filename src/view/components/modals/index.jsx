@@ -1,5 +1,4 @@
 export { default as About } from "components/modals/About";
-export { default as AppUpdates } from "components/modals/AppUpdates";
 export { default as AppSettings } from "components/modals/AppSettings";
 export { default as CanvasSettings } from "components/modals/CanvasSettings";
 export { default as ControlPicker } from "components/modals/ControlPicker";

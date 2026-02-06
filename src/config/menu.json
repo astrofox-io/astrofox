@@ -107,10 +107,6 @@
 		"label": "Help",
 		"submenu": [
 			{
-				"label": "Check for updates...",
-				"action": "check-for-updates"
-			},
-			{
 				"label": "Developer tools",
 				"action": "open-dev-tools",
 				"role": "toggledevtools",
