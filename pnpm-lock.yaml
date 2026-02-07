@@ -8,6 +8,57 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/abel':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/abril-fatface':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/bangers':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/bevan':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/cardo':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/caveat':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/dynalight':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/exo-2':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/merriweather':
+        specifier: ^5.2.11
+        version: 5.2.11
+      '@fontsource/oswald':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/oxygen':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/permanent-marker':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/playfair-display':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/racing-sans-one':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/raleway':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/roboto':
+        specifier: ^5.2.9
+        version: 5.2.9
+      '@fontsource/vast-shadow':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@phosphor-icons/react':
         specifier: ^2.1.10
         version: 2.1.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -459,6 +510,57 @@ packages:
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource/abel@5.2.7':
+    resolution: {integrity: sha512-C4iyv0u8xPN9+PVyi/NWTqHZREh6L7Q7yewuD22W35gK8BHyn2qZ9oGweYbo71+ZuTogQA1SmAQdWAdcqQ/7lg==}
+
+  '@fontsource/abril-fatface@5.2.7':
+    resolution: {integrity: sha512-2wcf7CchGHdAAl27L+StPK3fj5H1OtpPMglZ9ism0Za6w5h3khsKIMLvJaV/hey8U8QDyk6yDdkOjMXDEhOc6Q==}
+
+  '@fontsource/bangers@5.2.8':
+    resolution: {integrity: sha512-fFFXg+IHf05TEQ4U0gS8f7B0JHrhAN7oEw/Q8wR0APPLXnhnQSfZz2QDjg0kmVuM+IsM28ODga+0rSpnHLqFfQ==}
+
+  '@fontsource/bevan@5.2.7':
+    resolution: {integrity: sha512-fJYcvVGlKE6lQZSn76pqTQJ0uIT4XVlWG55g8C7PfdC2W4MfN4Y5AcNMlzYI0hJNAJmvNvw4BkqyfS6/2uaz9Q==}
+
+  '@fontsource/cardo@5.2.8':
+    resolution: {integrity: sha512-EsHtfb83KANO2dMrTkTVYN7eRLEX7aWGbpKwd7Qqy3k+Yc4GTQJrTyMmxaJzIiZo/RyC3xXM7L2p5uDASMDISQ==}
+
+  '@fontsource/caveat@5.2.8':
+    resolution: {integrity: sha512-9fUUfFE2IQFKbx+xOcaeQxxmh8iJguEb8z+j1PeueO4UUx+XfT4pRm/B04ZDvFA794/iRxY/IibmP8ZKtIf4rw==}
+
+  '@fontsource/dynalight@5.2.8':
+    resolution: {integrity: sha512-LoLian+ofFbI06pxi+F66grsJStwulJytIe1kJefOgC5ni0P9QDYDO3CRMef1GdIb1tjX82AU0+6uxhGH3ZLNQ==}
+
+  '@fontsource/exo-2@5.2.8':
+    resolution: {integrity: sha512-cOZuiqW+gKg2SJAjymCicup0A8qto4M/lpyGahal3twMeLCRma8x/okFCdLYlTvYeQesF7d3WLKi+N04iPb40A==}
+
+  '@fontsource/merriweather@5.2.11':
+    resolution: {integrity: sha512-ZiIMeUh5iT8d73o6xlSF8GKgjV5pgiFrufYc5jZTVAfExtWKqM2vQHnsqXSFMv4ELhAcjt6Vf+5T3oVGXhAizQ==}
+
+  '@fontsource/oswald@5.2.8':
+    resolution: {integrity: sha512-DFoPK1BqsFIQhVjs2xgO/oL9veF9oUJgFojEWIU+nazUrfqsBDtAMI4n9L9CZFX3kQNDLcCyzKx1xoEDvQT4WQ==}
+
+  '@fontsource/oxygen@5.2.8':
+    resolution: {integrity: sha512-8dZ9kzAT0lRjvKk8DKxv8LdLvBxJM03xSgqPH/BTVFflbzEAtv35ufwVWCTSDkpFk6oB4Xj455IwOMy8j4OmAQ==}
+
+  '@fontsource/permanent-marker@5.2.7':
+    resolution: {integrity: sha512-Lpjv3yD6TSRvcxjhdv4OZuNtEttbUgVNfFqAE8Qf7D1J8L97qZTZ8rj8OExX2ezCNv920psv+HBHvthAQxNE+A==}
+
+  '@fontsource/playfair-display@5.2.8':
+    resolution: {integrity: sha512-fUEhib70SszNhQVsGbUMSsWJhr7Je0rdeuZdtGpDNu0GKF1xJM8QhpI/y0pckU25GcChXm9TLOmeZupkvvZo2g==}
+
+  '@fontsource/racing-sans-one@5.2.7':
+    resolution: {integrity: sha512-YWnTyQPFC5mxKUDLJUYCxyxO1LQkOu/ZVGo1SB+SGNyfHOhBcjutZcupCVFJ+W9ttoSMxozEruFMyRooeHMlog==}
+
+  '@fontsource/raleway@5.2.8':
+    resolution: {integrity: sha512-OATNM+J4XniKQRlI1e67v3euOnCUiXwpqgMofomKc5JNYOq0JPE6E5uTXMnFaZejKN1Z7s05JrHpmYB7/tg1Fw==}
+
+  '@fontsource/roboto@5.2.9':
+    resolution: {integrity: sha512-ZTkyHiPk74B/aj8BZWbsxD5Yu+Lq+nR64eV4wirlrac2qXR7jYk2h6JlLYuOuoruTkGQWNw2fMuKNavw7/rg0w==}
+
+  '@fontsource/vast-shadow@5.2.8':
+    resolution: {integrity: sha512-SE3/ZGWH8g20bjX5M+aiTCepA/px3c5i4cRuU0aoVXrj0R7X+HYObObokeAY5naOxMhwxaf56EcYs7m73vUp8g==}
 
   '@isaacs/ttlcache@1.4.1':
     resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
@@ -2650,6 +2752,40 @@ snapshots:
 
   '@esbuild/win32-x64@0.21.5':
     optional: true
+
+  '@fontsource/abel@5.2.7': {}
+
+  '@fontsource/abril-fatface@5.2.7': {}
+
+  '@fontsource/bangers@5.2.8': {}
+
+  '@fontsource/bevan@5.2.7': {}
+
+  '@fontsource/cardo@5.2.8': {}
+
+  '@fontsource/caveat@5.2.8': {}
+
+  '@fontsource/dynalight@5.2.8': {}
+
+  '@fontsource/exo-2@5.2.8': {}
+
+  '@fontsource/merriweather@5.2.11': {}
+
+  '@fontsource/oswald@5.2.8': {}
+
+  '@fontsource/oxygen@5.2.8': {}
+
+  '@fontsource/permanent-marker@5.2.7': {}
+
+  '@fontsource/playfair-display@5.2.8': {}
+
+  '@fontsource/racing-sans-one@5.2.7': {}
+
+  '@fontsource/raleway@5.2.8': {}
+
+  '@fontsource/roboto@5.2.9': {}
+
+  '@fontsource/vast-shadow@5.2.8': {}
 
   '@isaacs/ttlcache@1.4.1': {}
 

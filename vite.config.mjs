@@ -28,7 +28,11 @@ export default defineConfig(({ mode }) => ({
 		port: Number(PORT),
 		strictPort: true,
 		fs: {
-			allow: [path.resolve(__dirname, "src")],
+			allow: [
+				path.resolve(__dirname, "src"),
+				path.resolve(__dirname, "node_modules"),
+				path.resolve(__dirname),
+			],
 		},
 	},
 	build: {

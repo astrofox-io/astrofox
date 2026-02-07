@@ -16,23 +16,61 @@ export default class CanvasText extends Entity {
 
 		this.canvas = canvas;
 		this.context = this.canvas.getContext("2d");
+		this.loadingFonts = new Set();
+	}
+
+	normalizeFontFamily(font) {
+		if (font === "Chunkfive") {
+			return "Bevan";
+		}
+		if (font === "Intro") {
+			return "Exo 2";
+		}
+		return font;
 	}
 
 	getFont() {
 		const { italic, bold, size, font } = this.properties;
+		const fontFamily = this.normalizeFontFamily(font);
 
 		return [
 			italic ? "italic" : "normal",
 			bold ? "bold" : "normal",
 			`${size}px`,
-			font,
+			fontFamily,
 		].join(" ");
+	}
+
+	loadFontIfNeeded(font, text) {
+		if (!document.fonts) {
+			return;
+		}
+
+		if (document.fonts.check(font, text || " ")) {
+			return;
+		}
+
+		if (this.loadingFonts.has(font)) {
+			return;
+		}
+
+		this.loadingFonts.add(font);
+
+		document.fonts
+			.load(font, text || " ")
+			.then(() => this.render())
+			.catch(() => {})
+			.finally(() => {
+				this.loadingFonts.delete(font);
+			});
 	}
 
 	render() {
 		const { canvas, context } = this;
 		const { text, size, color } = this.properties;
 		const font = this.getFont();
+
+		this.loadFontIfNeeded(font, text);
 
 		context.font = font;
 
