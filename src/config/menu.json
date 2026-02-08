@@ -103,12 +103,6 @@
 		"label": "Help",
 		"submenu": [
 			{
-				"label": "Developer tools",
-				"action": "open-dev-tools",
-				"role": "toggledevtools",
-				"accelerator": "CmdOrCtrl+Shift+I"
-			},
-			{
 				"label": "About",
 				"action": "about"
 			}
