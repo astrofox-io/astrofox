@@ -1,5 +1,4 @@
-import { clamp } from "utils/math";
-import { events, analyzer, player, reactors, stage } from "view/global";
+import { events, analyzer, player, reactors, renderBackend } from "view/global";
 import Clock from "./Clock";
 
 const STOP_RENDERING = 0;
@@ -92,19 +91,12 @@ export default class Renderer {
 	}
 
 	renderFrame(frame, fps) {
-		return new Promise((resolve, reject) => {
-			try {
-				analyzer.process(this.getAudioSample(frame / fps));
-
-				const frameData = this.getFrameData(VIDEO_RENDERING);
-				frameData.delta = 1000 / fps;
-
-				stage.render(frameData);
-
-				resolve(stage.getPixels());
-			} catch (e) {
-				reject(e);
-			}
+		return renderBackend.renderExportFrame({
+			frame,
+			fps,
+			getAudioSample: this.getAudioSample.bind(this),
+			analyzer,
+			getFrameData: this.getFrameData.bind(this),
 		});
 	}
 
@@ -119,7 +111,7 @@ export default class Renderer {
 
 		const data = this.getFrameData(id);
 
-		stage.render(data);
+		renderBackend.render(data);
 
 		events.emit("render", data);
 	}

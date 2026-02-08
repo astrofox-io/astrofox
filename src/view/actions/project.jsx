@@ -1,7 +1,7 @@
 import { raiseError } from "actions/error";
 import { showModal } from "actions/modals";
 import { loadReactors, resetReactors } from "actions/reactors";
-import { loadScenes, resetScenes } from "actions/scenes";
+import { getScenesSnapshot, loadScenes, resetScenes } from "actions/scenes";
 import { updateCanvas, updateStage } from "actions/stage";
 import AudioReactor from "audio/AudioReactor";
 import Display from "core/Display";
@@ -61,10 +61,9 @@ export function loadProject(data) {
 	resetLabelCount();
 
 	if (data.stage) {
-		stage.update(data.stage.properties);
 		updateStage(data.stage.properties);
 	} else {
-		stage.update(Stage.defaultProperties);
+		updateStage(Stage.defaultProperties);
 	}
 
 	if (data.reactors) {
@@ -153,7 +152,7 @@ export async function saveProjectFile(file) {
 		const data = {
 			version: env.APP_VERSION,
 			stage: stage.toJSON(),
-			scenes: stage.scenes.toJSON(),
+			scenes: getScenesSnapshot(),
 			reactors: reactors.toJSON(),
 		};
 

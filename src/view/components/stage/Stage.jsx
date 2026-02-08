@@ -3,20 +3,32 @@ import useStage from "actions/stage";
 import React, { useEffect, useRef } from "react";
 import { animated, useTransition } from "react-spring";
 import { ignoreEvents } from "utils/react";
-import { analyzer, stage } from "view/global";
+import { analyzer, renderBackend } from "view/global";
 import shallow from "zustand/shallow";
 import styles from "./Stage.module.less";
 
 export default function Stage() {
-	const [width, height, zoom] = useStage(
-		(state) => [state.width, state.height, state.zoom],
+	const [width, height, backgroundColor, zoom] = useStage(
+		(state) => [state.width, state.height, state.backgroundColor, state.zoom],
 		shallow,
 	);
 	const canvas = useRef(null);
+	const initProps = useRef({ width, height, backgroundColor });
 	const loading = useAudioStore((state) => state.loading);
 
 	useEffect(() => {
-		stage.init(canvas.current);
+		const { width, height, backgroundColor } = initProps.current;
+
+		renderBackend.init({
+			canvas: canvas.current,
+			width,
+			height,
+			backgroundColor,
+		});
+
+		return () => {
+			renderBackend.dispose();
+		};
 	}, []);
 
 	async function handleDrop(e) {

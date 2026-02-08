@@ -3,21 +3,38 @@ import useScenes from "actions/scenes";
 import Control from "components/controls/Control";
 import { stage } from "global";
 import React, { useMemo, useRef, useEffect } from "react";
+import { reverse } from "utils/array";
 import styles from "./ControlsPanel.module.less";
 
 export default function ControlsPanel() {
 	const activeElementId = useApp((state) => state.activeElementId);
-	const scenes = useScenes((state) => state.scenes);
+	const sceneOrder = useScenes((state) => state.sceneOrder);
+	const sceneElementsById = useScenes((state) => state.sceneElementsById);
 	const panelRef = useRef();
 
+	const displayIds = useMemo(() => {
+		const ids = [];
+
+		for (const sceneId of reverse(sceneOrder)) {
+			ids.push(sceneId);
+
+			const sceneElements = sceneElementsById[sceneId];
+			if (!sceneElements) {
+				continue;
+			}
+
+			ids.push(...reverse(sceneElements.effects));
+			ids.push(...reverse(sceneElements.displays));
+		}
+
+		return ids;
+	}, [sceneOrder, sceneElementsById]);
+
 	const displays = useMemo(() => {
-		return [...stage.scenes].reverse().reduce((arr, scene) => {
-			arr.push(scene);
-			return arr
-				.concat([...scene.effects].reverse())
-				.concat([...scene.displays].reverse());
-		}, []);
-	}, [scenes]);
+		return displayIds
+			.map((id) => stage.getStageElementById(id))
+			.filter((display) => !!display);
+	}, [displayIds]);
 
 	useEffect(() => {
 		const node = document.getElementById(`control-${activeElementId}`);

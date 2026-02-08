@@ -1,6 +1,12 @@
 const APP_NAME = "Astrofox";
 const APP_VERSION =
 	typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.0.0";
+const RENDER_BACKEND =
+	typeof import.meta !== "undefined" &&
+	import.meta.env &&
+	import.meta.env.VITE_RENDER_BACKEND
+		? import.meta.env.VITE_RENDER_BACKEND
+		: "legacy";
 const USER_AGENT =
 	typeof navigator !== "undefined" ? navigator.userAgent : "unknown";
 const PLATFORM =
@@ -17,6 +23,7 @@ export const env = {
 	IS_MACOS,
 	IS_LINUX,
 	IS_WEB: true,
+	RENDER_BACKEND,
 	USER_AGENT,
 	USER_DATA_PATH: null,
 	APP_CONFIG_FILE: null,

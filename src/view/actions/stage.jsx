@@ -5,7 +5,7 @@ import {
 	DEFAULT_CANVAS_WIDTH,
 	DEFAULT_ZOOM,
 } from "view/constants";
-import { stage } from "view/global";
+import { renderBackend } from "view/global";
 import create from "zustand";
 import { touchProject } from "./project";
 
@@ -24,7 +24,7 @@ const stageStore = create(() => ({
 export function updateStage(props) {
 	stageStore.setState(props);
 
-	stage.update(props);
+	renderBackend.update(props);
 }
 
 export function updateCanvas(width, height, backgroundColor) {

@@ -12,7 +12,14 @@ import { fitToScreen, setZoom, zoomIn, zoomOut } from "actions/stage";
 import Plugin from "core/Plugin";
 import * as displays from "displays";
 import * as effects from "effects";
-import { api, env, library, logger, renderer, stage } from "view/global";
+import {
+	api,
+	env,
+	library,
+	logger,
+	renderBackend,
+	renderer,
+} from "view/global";
 import create from "zustand";
 
 const initialState = {
@@ -51,13 +58,13 @@ export async function saveImage() {
 		try {
 			const data = renderer.getFrameData(false);
 
-			stage.render(data);
+			renderBackend.render(data);
 
 			const fileName =
 				filePath || fileHandle?.name || `image-${Date.now()}.png`;
 			const isJpeg = /jpe?g$/i.test(fileName);
 			const mimeType = isJpeg ? "image/jpeg" : "image/png";
-			const buffer = stage.getImage(mimeType);
+			const buffer = renderBackend.getImage(mimeType);
 
 			await api.saveImageFile(fileHandle || fileName, buffer, {
 				mimeType,

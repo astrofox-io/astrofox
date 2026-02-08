@@ -36,6 +36,7 @@
 		"@fontsource/roboto": "^5.2.9",
 		"@fontsource/vast-shadow": "^5.2.8",
 		"@phosphor-icons/react": "^2.1.10",
+		"@react-three/fiber": "^8.17.10",
 		"classnames": "^2.3.1",
 		"debug": "^4.3.1",
 		"fourier-transform": "^1.1.2",
