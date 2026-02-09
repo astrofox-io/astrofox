@@ -15,7 +15,7 @@ const pkg = JSON.parse(
 
 export default defineConfig(({ mode }) => ({
 	root: path.resolve(__dirname, "src/view"),
-	publicDir: path.resolve(__dirname, "src/view/assets"),
+	publicDir: path.resolve(__dirname, "public"),
 	base: "./",
 	plugins: [
 		react({
