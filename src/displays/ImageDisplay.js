@@ -178,6 +178,8 @@ export default class ImageDisplay extends WebGLDisplay {
 		const { src: inputSrc, fixed, width, height } = properties;
 		const { src, width: w, height: h, fixed: f } = this.properties;
 		let image = null;
+		const srcChanged =
+			typeof inputSrc === "string" && inputSrc !== src;
 
 		// If we get an HTMLImageElement
 		if (typeof inputSrc === "object" && inputSrc?.src) {
@@ -200,7 +202,7 @@ export default class ImageDisplay extends WebGLDisplay {
 		}
 
 		// Sync width/height values
-		if (!image && (fixed || f)) {
+		if (!image && !srcChanged && (fixed || f)) {
 			const { naturalWidth, naturalHeight } = this.image;
 			if (!naturalWidth || !naturalHeight) {
 				return false;
@@ -226,18 +228,34 @@ export default class ImageDisplay extends WebGLDisplay {
 			}
 		}
 
-		const srcChanged =
+		const nextSrcChanged =
 			typeof properties.src === "string" && properties.src !== src;
 
 		const changed = super.update(properties);
 
 		if (changed) {
-			if (srcChanged && properties.src !== BLANK_IMAGE) {
+			if (nextSrcChanged && properties.src !== BLANK_IMAGE) {
 				if (image && image.naturalWidth > 0 && image.naturalHeight > 0) {
 					this.applyImage(image);
 				} else {
 					const nextImage = new Image();
-					nextImage.onload = () => this.applyImage(nextImage);
+					nextImage.onload = () => {
+						this.applyImage(nextImage);
+
+						const passProps = {};
+						if (!this.properties.width && !this.properties.height) {
+							passProps.width = nextImage.naturalWidth;
+							passProps.height = nextImage.naturalHeight;
+						}
+						if (this.properties.opacity === 0) {
+							passProps.opacity = 1;
+						}
+
+						if (Object.keys(passProps).length > 0) {
+							super.update(passProps);
+							this.applyPassProperties(this.properties);
+						}
+					};
 					nextImage.src = properties.src;
 				}
 			} else {
