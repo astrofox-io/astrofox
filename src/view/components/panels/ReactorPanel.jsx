@@ -6,7 +6,7 @@ import { BoxInput } from "components/inputs";
 import Icon from "components/interface/Icon";
 import { events, reactors } from "global";
 import useEntity from "hooks/useEntity";
-import { ChevronDown } from "icons";
+import { ChevronDown } from "view/icons";
 import React, { useEffect, useRef } from "react";
 import { inputValueToProps } from "utils/react";
 import {

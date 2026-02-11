@@ -13,3 +13,4 @@ export { default as SelectInput } from "./SelectInput";
 export { default as TextInput } from "./TextInput";
 export { default as TimeInput } from "./TimeInput";
 export { default as ToggleInput } from "./ToggleInput";
+export { default as VideoInput } from "./VideoInput";

@@ -1,4 +1,5 @@
 import {
+	LinearFilter,
 	MeshBasicMaterial,
 	OrthographicCamera,
 	PlaneBufferGeometry,
@@ -10,9 +11,16 @@ export default class ImagePass extends Pass {
 		super();
 
 		const { width, height } = resolution;
-		const { naturalWidth, naturalHeight } = texture.image;
+		const mediaWidth =
+			texture.image?.naturalWidth || texture.image?.videoWidth || texture.image?.width || 1;
+		const mediaHeight =
+			texture.image?.naturalHeight ||
+			texture.image?.videoHeight ||
+			texture.image?.height ||
+			1;
 
 		this.texture = texture;
+		texture.minFilter = LinearFilter;
 
 		const material = new MeshBasicMaterial({
 			map: texture,
@@ -29,7 +37,7 @@ export default class ImagePass extends Pass {
 			0,
 			1,
 		);
-		const geometry = new PlaneBufferGeometry(naturalWidth, naturalHeight);
+		const geometry = new PlaneBufferGeometry(mediaWidth, mediaHeight);
 
 		this.setFullscreen(material, geometry, camera);
 	}

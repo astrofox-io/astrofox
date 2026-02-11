@@ -9,6 +9,7 @@ import {
 	TextInput,
 	TimeInput,
 	ToggleInput,
+	VideoInput,
 } from "components/inputs";
 
 const inputComponents = {
@@ -21,6 +22,7 @@ const inputComponents = {
 	range: [RangeInput],
 	select: [SelectInput, { width: 140 }],
 	image: [ImageInput],
+	video: [VideoInput],
 	time: [TimeInput],
 };
 

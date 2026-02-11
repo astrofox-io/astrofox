@@ -214,6 +214,25 @@ export async function readImageFile(file) {
 	});
 }
 
+export async function readVideoFile(file) {
+	const videoFile = await toFile(file);
+
+	if (!videoFile) {
+		throw new Error("No video file provided.");
+	}
+
+	if (videoFile.type && !/^video/.test(videoFile.type)) {
+		throw new Error(`Unrecognized video type: ${videoFile.type}`);
+	}
+
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onerror = () => reject(new Error("Failed to read video file."));
+		reader.onload = () => resolve(reader.result);
+		reader.readAsDataURL(videoFile);
+	});
+}
+
 export async function saveImageFile(target, data, props = {}) {
 	const mimeType = props.mimeType || "image/png";
 	const blob = new Blob([data], { type: mimeType });
