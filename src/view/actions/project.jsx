@@ -1,7 +1,12 @@
 import { raiseError } from "actions/error";
 import { showModal } from "actions/modals";
 import { loadReactors, resetReactors } from "actions/reactors";
-import { getScenesSnapshot, loadScenes, resetScenes } from "actions/scenes";
+import {
+	getScenesSnapshot,
+	loadScenes,
+	resetScenes,
+	updateElementProperty,
+} from "actions/scenes";
 import { updateCanvas, updateStage } from "actions/stage";
 import AudioReactor from "audio/AudioReactor";
 import Display from "core/Display";
@@ -9,24 +14,85 @@ import Entity from "core/Entity";
 import Scene from "core/Scene";
 import Stage from "core/Stage";
 import { api, env, library, logger, reactors, stage } from "global";
+import cloneDeep from "lodash/cloneDeep";
 import { resetLabelCount } from "utils/controls";
 import {
+	BLANK_IMAGE,
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
 } from "view/constants";
 import create from "zustand";
 
+export const DEFAULT_PROJECT_NAME = "Untitled Project";
+
 const initialState = {
-	file: "",
-	fileHandle: null,
+	projectId: null,
+	projectName: DEFAULT_PROJECT_NAME,
 	opened: 0,
 	lastModified: 0,
+	unresolvedMediaRefs: [],
 };
 
 const projectStore = create(() => ({
 	...initialState,
 }));
+
+function snapshotProject() {
+	return {
+		version: env.APP_VERSION,
+		stage: stage.toJSON(),
+		scenes: getScenesSnapshot(),
+		reactors: reactors.toJSON(),
+	};
+}
+
+function sanitizeSnapshotMedia(snapshot) {
+	const cloned = cloneDeep(snapshot);
+	const mediaRefs = [];
+
+	cloned.scenes = (cloned.scenes || []).map((scene) => {
+		const mapMediaProps = (element) => {
+			const src = element?.properties?.src;
+
+			if (!src || src === BLANK_IMAGE || typeof src !== "string") {
+				return element;
+			}
+
+			const kind = element.name === "VideoDisplay" ? "video" : "image";
+			mediaRefs.push({
+				displayId: element.id,
+				kind,
+				label: element.displayName || element.name || "Media",
+			});
+
+			return {
+				...element,
+				properties: {
+					...element.properties,
+					src: BLANK_IMAGE,
+				},
+			};
+		};
+
+		return {
+			...scene,
+			displays: (scene.displays || []).map(mapMediaProps),
+			effects: (scene.effects || []).map(mapMediaProps),
+		};
+	});
+
+	return {
+		snapshot: cloned,
+		mediaRefs,
+	};
+}
+
+function setUnresolvedMediaRefs(mediaRefs = []) {
+	projectStore.setState({
+		unresolvedMediaRefs: mediaRefs,
+	});
+}
 
 export function touchProject() {
 	projectStore.setState({ lastModified: Date.now() });
@@ -44,12 +110,10 @@ export function loadProject(data) {
 
 	const loadElement = (scene, config) => {
 		const { name } = config;
-
 		const module = displays[name] || effects[name];
 
 		if (module) {
 			const entity = Display.create(module, config);
-
 			scene.addElement(entity);
 		} else {
 			logger.warn("Component not found:", name);
@@ -67,27 +131,30 @@ export function loadProject(data) {
 	}
 
 	if (data.reactors) {
-		data.reactors.forEach((config) => {
+		for (const config of data.reactors) {
 			const reactor = Entity.create(AudioReactor, config);
-
 			reactors.addReactor(reactor);
-		});
+		}
 	}
 
 	if (data.scenes) {
-		data.scenes.forEach((config) => {
+		for (const config of data.scenes) {
 			const scene = Display.create(Scene, config);
 
 			stage.addScene(scene);
 
 			if (config.displays) {
-				config.displays.forEach((display) => loadElement(scene, display));
+				for (const display of config.displays) {
+					loadElement(scene, display);
+				}
 			}
 
 			if (config.effects) {
-				config.effects.forEach((effect) => loadElement(scene, effect));
+				for (const effect of config.effects) {
+					loadElement(scene, effect);
+				}
 			}
-		});
+		}
 	}
 }
 
@@ -110,7 +177,14 @@ export async function newProject() {
 
 	await loadScenes();
 	await loadReactors();
-	await resetProject();
+
+	projectStore.setState({
+		projectId: null,
+		projectName: DEFAULT_PROJECT_NAME,
+		opened: Date.now(),
+		lastModified: 0,
+		unresolvedMediaRefs: [],
+	});
 }
 
 export function checkUnsavedChanges(menuAction, action) {
@@ -127,91 +201,167 @@ export function checkUnsavedChanges(menuAction, action) {
 	}
 }
 
-export async function loadProjectFile(file, fileHandle) {
-	try {
-		const data = await api.loadProjectFile(fileHandle || file);
+export function openProjectBrowser() {
+	showModal("ProjectBrowser", { title: "Projects" });
+}
 
-		await loadProject(data);
-		await loadScenes();
-		await projectStore.setState({
-			file: file?.name || file || "",
-			fileHandle: fileHandle || null,
+export function openRelinkMediaDialog() {
+	const { unresolvedMediaRefs } = projectStore.getState();
+
+	if (unresolvedMediaRefs.length > 0) {
+		showModal("RelinkMediaDialog", {
+			title: "Relink Media",
+		});
+	}
+}
+
+export async function listProjects() {
+	const response = await api.listProjects();
+	return response.projects || [];
+}
+
+export async function loadProjectById(projectId) {
+	try {
+		const response = await api.getProjectById(projectId);
+		const { project, revision } = response;
+
+		if (!project) {
+			throw new Error("Project not found.");
+		}
+
+		if (revision?.snapshot) {
+			loadProject(revision.snapshot);
+			await loadScenes();
+		} else {
+			await newProject();
+		}
+
+		projectStore.setState({
+			projectId: project.id,
+			projectName: project.name || DEFAULT_PROJECT_NAME,
+			opened: Date.now(),
+			lastModified: 0,
+			unresolvedMediaRefs: revision?.mediaRefs || [],
+		});
+
+		if ((revision?.mediaRefs || []).length > 0) {
+			openRelinkMediaDialog();
+		}
+	} catch (error) {
+		raiseError("Failed to load project.", error);
+	}
+}
+
+export async function renameProjectById(projectId, name) {
+	const response = await api.renameProject(projectId, name);
+	const { project } = response;
+
+	if (project?.id === projectStore.getState().projectId) {
+		projectStore.setState({
+			projectName: project.name,
+		});
+	}
+
+	return project;
+}
+
+export async function deleteProjectById(projectId) {
+	await api.deleteProjectById(projectId);
+
+	if (projectStore.getState().projectId === projectId) {
+		await newProject();
+	}
+}
+
+export async function saveProject(nameOverride) {
+	const state = projectStore.getState();
+	const name = (
+		nameOverride ||
+		state.projectName ||
+		DEFAULT_PROJECT_NAME
+	).trim();
+	let projectId = state.projectId;
+
+	try {
+		if (!projectId) {
+			const created = await api.createProject(name);
+			projectId = created.project.id;
+		}
+
+		const { snapshot, mediaRefs } = sanitizeSnapshotMedia(snapshotProject());
+
+		await api.createProjectRevision(projectId, snapshot, mediaRefs);
+
+		projectStore.setState({
+			projectId,
+			projectName: name,
 			opened: Date.now(),
 			lastModified: 0,
 		});
-	} catch (e) {
-		return raiseError("Invalid project file.", e);
+
+		logger.log("Project saved:", name);
+		return true;
+	} catch (error) {
+		raiseError("Failed to save project.", error);
+		return false;
 	}
 }
 
-export async function saveProjectFile(file) {
-	const { fileHandle } = projectStore.getState();
-	const target = fileHandle || file;
+export async function duplicateProject() {
+	const { projectId, projectName } = projectStore.getState();
 
-	if (target) {
-		const data = {
-			version: env.APP_VERSION,
-			stage: stage.toJSON(),
-			scenes: getScenesSnapshot(),
-			reactors: reactors.toJSON(),
-		};
-
-		logger.debug("Save data", data);
-
-		try {
-			const fileName =
-				typeof target === "string"
-					? target
-					: target?.name || file?.name || "project.afx";
-
-			await api.saveProjectFile(target, data, {
-				fileName,
-			});
-
-			logger.log("Project saved:", fileName || "project", data);
-
-			projectStore.setState({
-				file: fileName,
-				fileHandle: target && target.createWritable ? target : null,
-				lastModified: 0,
-			});
-
-			return true;
-		} catch (error) {
-			raiseError("Failed to save project file.", error);
+	try {
+		if (!projectId) {
+			return saveProject(`${projectName || DEFAULT_PROJECT_NAME} copy`);
 		}
-	} else {
-		const {
-			fileHandle: newHandle,
-			filePath,
-			canceled,
-		} = await api.showSaveDialog({
-			defaultPath: "project.afx",
-			filters: [{ name: "Project files", extensions: ["afx"] }],
-		});
 
-		if (!canceled) {
-			await projectStore.setState({
-				file: filePath || "project.afx",
-				fileHandle: newHandle || null,
-			});
-			await saveProjectFile(newHandle || filePath);
-		}
+		const duplicated = await api.duplicateProjectById(
+			projectId,
+			`${projectName || DEFAULT_PROJECT_NAME} copy`,
+		);
+
+		await loadProjectById(duplicated.project.id);
+
+		return true;
+	} catch (error) {
+		raiseError("Failed to duplicate project.", error);
+		return false;
 	}
-
-	return false;
 }
 
-export async function openProjectFile() {
-	const { files, fileHandles, canceled } = await api.showOpenDialog({
-		filters: [{ name: "Project files", extensions: ["afx"] }],
-	});
+export async function relinkMediaRef(mediaRef) {
+	try {
+		const isVideo = mediaRef.kind === "video";
+		const filters = isVideo
+			? [{ name: "Video files", extensions: ["mp4", "webm", "ogv"] }]
+			: [{ name: "Image files", extensions: ["jpg", "jpeg", "png", "gif"] }];
+		const { files, canceled } = await api.showOpenDialog({ filters });
 
-	if (!canceled && files && files.length) {
+		if (canceled || !files || !files.length) {
+			return;
+		}
+
 		const file = files[0];
-		const handle = fileHandles ? fileHandles[0] : null;
-		loadProjectFile(file, handle);
+		const src = isVideo
+			? await api.readVideoFile(file)
+			: await api.readImageFile(file);
+
+		updateElementProperty(mediaRef.displayId, "src", src);
+
+		setUnresolvedMediaRefs(
+			projectStore
+				.getState()
+				.unresolvedMediaRefs.filter(
+					(ref) => ref.displayId !== mediaRef.displayId,
+				),
+		);
+	} catch (error) {
+		raiseError("Failed to relink media.", error);
 	}
+}
+
+export function clearUnresolvedMedia() {
+	setUnresolvedMediaRefs([]);
 }
 
 export default projectStore;

@@ -15,11 +15,15 @@
 				"action": "save-project"
 			},
 			{
-				"label": "Save project as...",
-				"action": "save-project-as"
+				"label": "Duplicate project",
+				"action": "duplicate-project"
 			},
 			{
 				"type": "separator"
+			},
+			{
+				"label": "Relink media...",
+				"action": "relink-media"
 			},
 			{
 				"label": "Load audio...",
@@ -33,9 +37,8 @@
 				"type": "separator"
 			},
 			{
-				"label": "Exit",
-				"role": "quit",
-				"action": "exit"
+				"label": "Sign out",
+				"action": "sign-out"
 			}
 		]
 	},

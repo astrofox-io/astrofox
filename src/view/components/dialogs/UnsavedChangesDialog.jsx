@@ -1,7 +1,7 @@
 import useProject, {
 	newProject,
-	openProjectFile,
-	saveProjectFile,
+	openProjectBrowser,
+	saveProject,
 } from "actions/project";
 import Dialog from "components/window/Dialog";
 import React from "react";
@@ -13,13 +13,13 @@ export default function UnsavedChangesDialog({ action, onClose }) {
 		if (action === "new-project") {
 			await newProject();
 		} else if (action === "open-project") {
-			await openProjectFile();
+			await openProjectBrowser();
 		}
 	}
 
 	async function handleConfirm(button) {
 		if (button === "Yes") {
-			const saved = await saveProjectFile(project.file);
+			const saved = await saveProject(project.projectName);
 
 			if (saved) {
 				await handleAction(action);

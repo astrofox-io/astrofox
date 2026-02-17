@@ -1,12 +1,15 @@
 import { openAudioFile } from "actions/audio";
+import { signOut } from "actions/auth";
 import { loadConfig } from "actions/config";
 import { raiseError } from "actions/error";
 import { showModal } from "actions/modals";
-import projectStore, {
+import {
 	checkUnsavedChanges,
+	duplicateProject,
 	newProject,
-	openProjectFile,
-	saveProjectFile,
+	openProjectBrowser,
+	openRelinkMediaDialog,
+	saveProject,
 } from "actions/project";
 import { fitToScreen, setZoom, zoomIn, zoomOut } from "actions/stage";
 import Plugin from "core/Plugin";
@@ -39,10 +42,6 @@ const appStore = create(() => ({
 
 export function toggleState(key) {
 	appStore.setState((state) => ({ [key]: !state[key] }));
-}
-
-export function exitApp() {
-	api.closeWindow();
 }
 
 export async function saveImage() {
@@ -87,27 +86,29 @@ export function setActiveElementId(elementId) {
 }
 
 export async function handleMenuAction(action) {
-	const { file } = projectStore.getState();
-
 	switch (action) {
 		case "new-project":
 			await checkUnsavedChanges(action, newProject);
 			break;
 
 		case "open-project":
-			await checkUnsavedChanges(action, openProjectFile);
+			await checkUnsavedChanges(action, openProjectBrowser);
 			break;
 
 		case "save-project":
-			await saveProjectFile(file);
+			await saveProject();
 			break;
 
-		case "save-project-as":
-			await saveProjectFile();
+		case "duplicate-project":
+			await duplicateProject();
 			break;
 
 		case "load-audio":
 			await openAudioFile();
+			break;
+
+		case "relink-media":
+			await openRelinkMediaDialog();
 			break;
 
 		case "save-image":
@@ -154,8 +155,8 @@ export async function handleMenuAction(action) {
 			await showModal("About");
 			break;
 
-		case "exit":
-			await exitApp();
+		case "sign-out":
+			await signOut();
 			break;
 	}
 }

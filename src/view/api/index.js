@@ -25,40 +25,8 @@ async function toFile(input) {
 	return null;
 }
 
-function isGzip(data) {
-	return data && data.length >= 2 && data[0] === 0x1f && data[1] === 0x8b;
-}
-
-async function gzipString(data) {
-	if (typeof CompressionStream === "undefined") {
-		return new TextEncoder().encode(data);
-	}
-
-	const stream = new CompressionStream("gzip");
-	const writer = stream.writable.getWriter();
-	await writer.write(new TextEncoder().encode(data));
-	await writer.close();
-
-	const buffer = await new Response(stream.readable).arrayBuffer();
-	return new Uint8Array(buffer);
-}
-
-async function gunzipBytes(bytes) {
-	if (typeof DecompressionStream === "undefined") {
-		return new TextDecoder().decode(bytes);
-	}
-
-	const stream = new DecompressionStream("gzip");
-	const writer = stream.writable.getWriter();
-	await writer.write(bytes);
-	await writer.close();
-
-	const buffer = await new Response(stream.readable).arrayBuffer();
-	return new TextDecoder().decode(new Uint8Array(buffer));
-}
-
 async function saveBlob(target, blob, fallbackName) {
-	if (target && target.createWritable) {
+	if (target?.createWritable) {
 		const writable = await target.createWritable();
 		await writable.write(blob);
 		await writable.close();
@@ -73,6 +41,41 @@ async function saveBlob(target, blob, fallbackName) {
 	link.download = filename;
 	link.click();
 	URL.revokeObjectURL(url);
+}
+
+async function request(path, options = {}) {
+	const { method = "GET", body, headers = {} } = options;
+	const response = await fetch(path, {
+		method,
+		credentials: "include",
+		headers: {
+			...(body ? { "Content-Type": "application/json" } : {}),
+			...headers,
+		},
+		body: body ? JSON.stringify(body) : undefined,
+	});
+
+	const raw = await response.text();
+	let data = null;
+
+	if (raw) {
+		try {
+			data = JSON.parse(raw);
+		} catch {
+			data = { message: raw };
+		}
+	}
+
+	if (!response.ok) {
+		const error = new Error(
+			data?.message || `Request failed with status ${response.status}.`,
+		);
+		error.status = response.status;
+		error.payload = data;
+		throw error;
+	}
+
+	return data;
 }
 
 export function getEnvironment() {
@@ -127,7 +130,7 @@ export async function showOpenDialog(props = {}) {
 		const input = document.createElement("input");
 		input.type = "file";
 		input.multiple = multiple;
-		if (props.filters && props.filters.length) {
+		if (props.filters?.length) {
 			const extensions = props.filters.flatMap(
 				(filter) => filter.extensions || [],
 			);
@@ -169,7 +172,7 @@ export async function readAudioFile(file) {
 
 	let { type } = audioFile;
 
-	if (audioFile.name && audioFile.name.endsWith(".opus")) {
+	if (audioFile.name?.endsWith(".opus")) {
 		type = "audio/opus";
 	}
 
@@ -250,32 +253,90 @@ export async function saveConfig(config) {
 	localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
 }
 
-export async function loadProjectFile(file) {
-	const projectFile = await toFile(file);
-
-	if (!projectFile) {
-		throw new Error("No project file provided.");
-	}
-
-	const buffer = new Uint8Array(await projectFile.arrayBuffer());
-	let json = null;
-
-	if (isGzip(buffer)) {
-		json = await gunzipBytes(buffer);
-	} else {
-		json = new TextDecoder().decode(buffer);
-	}
-
-	return JSON.parse(json);
+export async function getSession() {
+	return request("/api/auth/get-session");
 }
 
-export async function saveProjectFile(target, data, props = {}) {
-	const json = JSON.stringify(data);
-	const bytes = await gzipString(json);
-	const blob = new Blob([bytes], { type: "application/octet-stream" });
-	const filename = props.fileName || "project.afx";
+export async function signUpEmail(name, email, password) {
+	return request("/api/auth/sign-up/email", {
+		method: "POST",
+		body: {
+			name,
+			email,
+			password,
+		},
+	});
+}
 
-	await saveBlob(target, blob, filename);
+export async function signInEmail(email, password) {
+	return request("/api/auth/sign-in/email", {
+		method: "POST",
+		body: {
+			email,
+			password,
+		},
+	});
+}
+
+export async function signOutUser() {
+	return request("/api/auth/sign-out", {
+		method: "POST",
+	});
+}
+
+export function signInWithGoogle(callbackURL = window.location.href) {
+	const params = new URLSearchParams({
+		provider: "google",
+		callbackURL,
+	});
+
+	window.location.assign(`/api/auth/sign-in/social?${params.toString()}`);
+}
+
+export async function listProjects() {
+	return request("/api/projects");
+}
+
+export async function createProject(name) {
+	return request("/api/projects", {
+		method: "POST",
+		body: { name },
+	});
+}
+
+export async function getProjectById(projectId) {
+	return request(`/api/projects/${projectId}`);
+}
+
+export async function renameProject(projectId, name) {
+	return request(`/api/projects/${projectId}`, {
+		method: "PATCH",
+		body: { name },
+	});
+}
+
+export async function deleteProjectById(projectId) {
+	return request(`/api/projects/${projectId}`, {
+		method: "DELETE",
+	});
+}
+
+export async function createProjectRevision(
+	projectId,
+	snapshot,
+	mediaRefs = [],
+) {
+	return request(`/api/projects/${projectId}/revisions`, {
+		method: "POST",
+		body: { snapshot, mediaRefs },
+	});
+}
+
+export async function duplicateProjectById(projectId, name) {
+	return request(`/api/projects/${projectId}/duplicate`, {
+		method: "POST",
+		body: { name },
+	});
 }
 
 export async function loadPlugins() {

@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import glsl from "vite-plugin-glsl";
@@ -9,6 +9,8 @@ import svgr from "vite-plugin-svgr";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3000;
+const API_PROXY_TARGET =
+	process.env.VITE_API_PROXY_TARGET || "http://localhost:3005";
 const pkg = JSON.parse(
 	fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8"),
 );
@@ -27,6 +29,12 @@ export default defineConfig(({ mode }) => ({
 	server: {
 		port: Number(PORT),
 		strictPort: true,
+		proxy: {
+			"/api": {
+				target: API_PROXY_TARGET,
+				changeOrigin: true,
+			},
+		},
 		fs: {
 			allow: [
 				path.resolve(__dirname, "src"),
