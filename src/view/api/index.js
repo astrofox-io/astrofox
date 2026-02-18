@@ -246,7 +246,18 @@ export async function saveImageFile(target, data, props = {}) {
 
 export async function loadConfig() {
 	const value = localStorage.getItem(CONFIG_KEY);
-	return value ? JSON.parse(value) : null;
+
+	if (!value) {
+		return null;
+	}
+
+	try {
+		return JSON.parse(value);
+	} catch (error) {
+		log("Invalid config data found in localStorage. Resetting config.", error);
+		localStorage.removeItem(CONFIG_KEY);
+		return null;
+	}
 }
 
 export async function saveConfig(config) {

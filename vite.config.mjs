@@ -30,7 +30,15 @@ export default defineConfig(({ mode }) => ({
 		port: Number(PORT),
 		strictPort: true,
 		proxy: {
-			"/api": {
+			"/api/auth": {
+				target: API_PROXY_TARGET,
+				changeOrigin: true,
+			},
+			"/api/projects": {
+				target: API_PROXY_TARGET,
+				changeOrigin: true,
+			},
+			"/api/health": {
 				target: API_PROXY_TARGET,
 				changeOrigin: true,
 			},

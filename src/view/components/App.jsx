@@ -17,6 +17,7 @@ function App() {
 	const loading = useAuth((state) => state.loading);
 	const session = useAuth((state) => state.session);
 	const [initialized, setInitialized] = useState(false);
+	const [initError, setInitError] = useState(null);
 
 	useEffect(() => {
 		bootstrapSession();
@@ -24,26 +25,46 @@ function App() {
 
 	useEffect(() => {
 		if (!loading && session && !initialized) {
-			initApp().then(() => setInitialized(true));
+			initApp()
+				.then(() => {
+					setInitialized(true);
+					setInitError(null);
+				})
+				.catch((error) => {
+					// eslint-disable-next-line no-console
+					console.error("Failed to initialize app", error);
+					setInitError(error);
+				});
 		}
 	}, [loading, session, initialized]);
 
 	useEffect(() => {
 		if (!session) {
 			setInitialized(false);
+			setInitError(null);
 		}
 	}, [session]);
 
-	if (loading || (session && !initialized)) {
+	if (loading || (session && !initialized && !initError)) {
 		return (
 			<Layout direction="column" full>
-				<Preload />
+				<div>Loading Astrofox...</div>
 			</Layout>
 		);
 	}
 
 	if (!session) {
 		return <AuthScreen />;
+	}
+
+	if (initError) {
+		return (
+			<Layout direction="column" full>
+				<div>
+					Failed to initialize Astrofox. Check console/network logs and reload.
+				</div>
+			</Layout>
+		);
 	}
 
 	return (
