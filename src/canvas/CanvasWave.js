@@ -1,6 +1,6 @@
-import Entity from "core/Entity";
-import { drawPath } from "drawing/bezierSpline";
-import { resetCanvas, setColor } from "utils/canvas";
+import Entity from "@/core/Entity";
+import { drawPath } from "@/drawing/bezierSpline";
+import { resetCanvas, setColor } from "@/utils/canvas";
 
 export default class CanvasWave extends Entity {
 	static defaultProperties = {

@@ -1,4 +1,10 @@
-import { events, analyzer, player, reactors, renderBackend } from "view/global";
+import {
+	events,
+	analyzer,
+	player,
+	reactors,
+	renderBackend,
+} from "@/view/global";
 import Clock from "./Clock";
 
 const STOP_RENDERING = 0;

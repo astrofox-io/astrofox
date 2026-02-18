@@ -1,5 +1,5 @@
-import fragmentShader from "src/shaders/glsl/fragment/ripple.glsl";
-import vertexShader from "src/shaders/glsl/vertex/ripple.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/ripple.glsl";
+import vertexShader from "@/shaders/glsl/vertex/ripple.glsl";
 
 export default {
 	uniforms: {

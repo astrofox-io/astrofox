@@ -1,9 +1,13 @@
+import inputComponents from "@/view/components/controls/inputComponents";
+import {
+	RangeInput,
+	ReactorButton,
+	ReactorInput,
+} from "@/view/components/inputs";
+import Icon from "@/view/components/interface/Icon";
+import { Link } from "@/view/icons";
 import classNames from "classnames";
-import inputComponents from "components/controls/inputComponents";
-import { RangeInput, ReactorButton, ReactorInput } from "components/inputs";
-import Icon from "components/interface/Icon";
 import React from "react";
-import { Link } from "view/icons";
 import styles from "./Option.module.less";
 
 export default function Option({

@@ -1,8 +1,11 @@
-import { openAudioFile } from "actions/audio";
-import { signOut } from "actions/auth";
-import { loadConfig } from "actions/config";
-import { raiseError } from "actions/error";
-import { showModal } from "actions/modals";
+import Plugin from "@/core/Plugin";
+import * as displays from "@/displays";
+import * as effects from "@/effects";
+import { openAudioFile } from "@/view/actions/audio";
+import { signOut } from "@/view/actions/auth";
+import { loadConfig } from "@/view/actions/config";
+import { raiseError } from "@/view/actions/error";
+import { showModal } from "@/view/actions/modals";
 import {
 	checkUnsavedChanges,
 	duplicateProject,
@@ -10,11 +13,8 @@ import {
 	openProjectBrowser,
 	openRelinkMediaDialog,
 	saveProject,
-} from "actions/project";
-import { fitToScreen, setZoom, zoomIn, zoomOut } from "actions/stage";
-import Plugin from "core/Plugin";
-import * as displays from "displays";
-import * as effects from "effects";
+} from "@/view/actions/project";
+import { fitToScreen, setZoom, zoomIn, zoomOut } from "@/view/actions/stage";
 import {
 	api,
 	env,
@@ -22,7 +22,7 @@ import {
 	logger,
 	renderBackend,
 	renderer,
-} from "view/global";
+} from "@/view/global";
 import create from "zustand";
 
 const initialState = {

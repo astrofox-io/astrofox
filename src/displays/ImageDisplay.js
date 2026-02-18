@@ -1,9 +1,9 @@
-import WebGLDisplay from "core/WebGLDisplay";
-import ImagePass from "graphics/ImagePass";
+import WebGLDisplay from "@/core/WebGLDisplay";
+import ImagePass from "@/graphics/ImagePass";
+import { isDefined } from "@/utils/array";
+import { deg2rad } from "@/utils/math";
+import { BLANK_IMAGE } from "@/view/constants";
 import { Texture, TextureLoader } from "three";
-import { isDefined } from "utils/array";
-import { deg2rad } from "utils/math";
-import { BLANK_IMAGE } from "view/constants";
 
 const disabled = (display) => !display.hasImage;
 const maxWidth = (display) => {
@@ -178,8 +178,7 @@ export default class ImageDisplay extends WebGLDisplay {
 		const { src: inputSrc, fixed, width, height } = properties;
 		const { src, width: w, height: h, fixed: f } = this.properties;
 		let image = null;
-		const srcChanged =
-			typeof inputSrc === "string" && inputSrc !== src;
+		const srcChanged = typeof inputSrc === "string" && inputSrc !== src;
 
 		// If we get an HTMLImageElement
 		if (typeof inputSrc === "object" && inputSrc?.src) {

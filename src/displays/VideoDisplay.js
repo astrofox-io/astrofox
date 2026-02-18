@@ -1,6 +1,6 @@
-import CanvasDisplay from "core/CanvasDisplay";
-import { isDefined } from "utils/array";
-import { BLANK_IMAGE } from "view/constants";
+import CanvasDisplay from "@/core/CanvasDisplay";
+import { isDefined } from "@/utils/array";
+import { BLANK_IMAGE } from "@/view/constants";
 
 const disabled = (display) => !display.hasVideo;
 const maxWidth = (display) => {
@@ -162,8 +162,15 @@ export default class VideoDisplay extends CanvasDisplay {
 	}
 
 	update(properties) {
-		const { src: inputSrc, loop, startTime, endTime, fixed, width, height } =
-			properties;
+		const {
+			src: inputSrc,
+			loop,
+			startTime,
+			endTime,
+			fixed,
+			width,
+			height,
+		} = properties;
 		const { src, width: w, height: h, fixed: f } = this.properties;
 		const srcChanged = typeof inputSrc === "string" && inputSrc !== src;
 
@@ -200,7 +207,9 @@ export default class VideoDisplay extends CanvasDisplay {
 
 		if (changed) {
 			if (loop !== undefined || endTime !== undefined) {
-				this.video.loop = Boolean(this.properties.loop && !this.properties.endTime);
+				this.video.loop = Boolean(
+					this.properties.loop && !this.properties.endTime,
+				);
 			}
 
 			if (nextSrcChanged) {
@@ -211,11 +220,16 @@ export default class VideoDisplay extends CanvasDisplay {
 					this.setCanvasSize(0, 0);
 				} else {
 					this.video.src = this.properties.src;
-					this.video.loop = Boolean(this.properties.loop && !this.properties.endTime);
+					this.video.loop = Boolean(
+						this.properties.loop && !this.properties.endTime,
+					);
 					this.playVideo();
 
 					const onLoadedMetadata = () => {
-						this.video.currentTime = Math.max(0, this.properties.startTime || 0);
+						this.video.currentTime = Math.max(
+							0,
+							this.properties.startTime || 0,
+						);
 
 						const nextProps = {};
 						if (!this.properties.width && !this.properties.height) {

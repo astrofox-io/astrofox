@@ -1,5 +1,5 @@
+import Menu from "@/view/components/nav/Menu";
 import classNames from "classnames";
-import Menu from "components/nav/Menu";
 import React from "react";
 import styles from "./MenuBarItem.module.less";
 

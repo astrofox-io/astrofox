@@ -1,9 +1,9 @@
+import { RangeInput } from "@/view/components/inputs";
+import Icon from "@/view/components/interface/Icon";
+import { player } from "@/view/global";
+import { Volume, Volume2, Volume3, Volume4 } from "@/view/icons";
 import classNames from "classnames";
-import { RangeInput } from "components/inputs";
-import Icon from "components/interface/Icon";
 import React, { useState } from "react";
-import { player } from "view/global";
-import { Volume, Volume2, Volume3, Volume4 } from "view/icons";
 import styles from "./VolumeControl.module.less";
 
 const initialState = {

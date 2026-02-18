@@ -1,6 +1,6 @@
-import Effect from "core/Effect";
-import ShaderPass from "graphics/ShaderPass";
-import MirrorShader from "shaders/MirrorShader";
+import Effect from "@/core/Effect";
+import ShaderPass from "@/graphics/ShaderPass";
+import MirrorShader from "@/shaders/MirrorShader";
 
 const mirrorOptions = [
 	{ label: "Left 🠖 Right", value: 0 },

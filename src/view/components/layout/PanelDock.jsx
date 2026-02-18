@@ -1,8 +1,8 @@
+import { mapChildren } from "@/utils/react";
+import Panel from "@/view/components/layout/Panel";
+import useMeasure from "@/view/hooks/useMeasure";
 import classNames from "classnames";
-import Panel from "components/layout/Panel";
-import useMeasure from "hooks/useMeasure";
 import React from "react";
-import { mapChildren } from "utils/react";
 import styles from "./PanelDock.module.less";
 
 export default function PanelDock({

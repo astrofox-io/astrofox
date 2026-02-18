@@ -1,6 +1,6 @@
-import { touchProject } from "actions/project";
-import useForceUpdate from "hooks/useForceUpdate";
-import useTimeout from "hooks/useTimeout";
+import { touchProject } from "@/view/actions/project";
+import useForceUpdate from "@/view/hooks/useForceUpdate";
+import useTimeout from "@/view/hooks/useTimeout";
 import { useCallback } from "react";
 
 export default function useEntity(entity, touchTimeout = 1000) {

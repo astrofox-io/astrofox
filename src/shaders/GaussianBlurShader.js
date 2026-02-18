@@ -1,5 +1,5 @@
-import fragmentShader from "shaders/glsl/fragment/gaussian-blur.glsl";
-import vertexShader from "shaders/glsl/vertex/basic.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/gaussian-blur.glsl";
+import vertexShader from "@/shaders/glsl/vertex/basic.glsl";
 import { Vector2 } from "three";
 
 export default {

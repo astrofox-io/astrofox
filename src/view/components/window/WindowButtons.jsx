@@ -1,6 +1,6 @@
+import { api, env } from "@/view/global";
 import classNames from "classnames";
 import React from "react";
-import { api, env } from "view/global";
 import styles from "./WindowButtons.module.less";
 
 export default function WindowButtons({ focused, maximized }) {

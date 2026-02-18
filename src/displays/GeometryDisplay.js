@@ -1,6 +1,7 @@
-import POINT_SPRITE from "assets/images/point.png";
-import FFTParser from "audio/FFTParser";
-import WebGLDisplay from "core/WebGLDisplay";
+import FFTParser from "@/audio/FFTParser";
+import WebGLDisplay from "@/core/WebGLDisplay";
+import { isDefined } from "@/utils/array";
+import POINT_SPRITE from "@/view/assets/images/point.png";
 import {
 	BoxBufferGeometry,
 	Color,
@@ -32,7 +33,6 @@ import {
 	TorusBufferGeometry,
 	TorusKnotBufferGeometry,
 } from "three";
-import { isDefined } from "utils/array";
 
 const shapeOptions = [
 	"Box",

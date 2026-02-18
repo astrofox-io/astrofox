@@ -1,5 +1,5 @@
-import Button from "components/interface/Button";
-import { env } from "global";
+import Button from "@/view/components/interface/Button";
+import { env } from "@/view/global";
 import React from "react";
 import styles from "./About.module.less";
 

@@ -17,7 +17,11 @@ const Icon = ({
 
 	return (
 		<span
-			className={classNames(styles.icon, { [styles.monochrome]: monochrome }, className)}
+			className={classNames(
+				styles.icon,
+				{ [styles.monochrome]: monochrome },
+				className,
+			)}
 			title={title}
 		>
 			{isSpriteGlyph ? (

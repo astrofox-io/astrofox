@@ -2,8 +2,8 @@ import useProject, {
 	newProject,
 	openProjectBrowser,
 	saveProject,
-} from "actions/project";
-import Dialog from "components/window/Dialog";
+} from "@/view/actions/project";
+import Dialog from "@/view/components/window/Dialog";
 import React from "react";
 
 export default function UnsavedChangesDialog({ action, onClose }) {

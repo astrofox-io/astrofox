@@ -1,6 +1,6 @@
+import { uniqueId } from "@/utils/crypto";
+import { resolve, updateExistingProps } from "@/utils/object";
 import cloneDeep from "lodash/cloneDeep";
-import { uniqueId } from "utils/crypto";
-import { resolve, updateExistingProps } from "utils/object";
 
 export default class Entity {
 	static create = (Type, config) => {

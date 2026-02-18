@@ -1,4 +1,4 @@
-import { api, player, renderer } from "global";
+import { api, player, renderer } from "@/view/global";
 import create from "zustand";
 
 const initialState = {

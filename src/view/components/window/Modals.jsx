@@ -1,10 +1,10 @@
-import useModals, { closeModal } from "actions/modals";
-import * as modalComponents from "components/modals";
-import ModalWindow from "components/window/ModalWindow";
-import Overlay from "components/window/Overlay";
+import { easeInOutQuad } from "@/utils/easing";
+import useModals, { closeModal } from "@/view/actions/modals";
+import * as modalComponents from "@/view/components/modals";
+import ModalWindow from "@/view/components/window/ModalWindow";
+import Overlay from "@/view/components/window/Overlay";
 import React from "react";
 import { animated, useTransition } from "react-spring";
-import { easeInOutQuad } from "utils/easing";
 import styles from "./Modals.module.less";
 
 export default function Modals() {

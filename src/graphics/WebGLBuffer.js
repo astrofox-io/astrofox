@@ -1,5 +1,5 @@
+import { WEBGL_BUFFER_SAMPLES } from "@/view/constants";
 import { Camera, Scene } from "three";
-import { WEBGL_BUFFER_SAMPLES } from "view/constants";
 import CopyPass from "./CopyPass";
 import { createRenderTarget } from "./common";
 

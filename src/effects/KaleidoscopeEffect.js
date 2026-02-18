@@ -1,6 +1,6 @@
-import Effect from "core/Effect";
-import ShaderPass from "graphics/ShaderPass";
-import KaleidoscopeShader from "shaders/KaleidoscopeShader";
+import Effect from "@/core/Effect";
+import ShaderPass from "@/graphics/ShaderPass";
+import KaleidoscopeShader from "@/shaders/KaleidoscopeShader";
 
 export default class KaleidoscopeEffect extends Effect {
 	static config = {

@@ -1,7 +1,7 @@
-import TextInput from "components/inputs/TextInput";
+import { formatSeekTime, parseSeekTime } from "@/utils/format";
+import { clamp } from "@/utils/math.js";
+import TextInput from "@/view/components/inputs/TextInput";
 import React, { useState } from "react";
-import { formatSeekTime, parseSeekTime } from "utils/format";
-import { clamp } from "utils/math.js";
 
 export default function TimeInput({
 	name = "time",

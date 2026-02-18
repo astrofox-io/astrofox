@@ -1,4 +1,4 @@
-export { default as Button } from "components/interface/Button";
-export { default as Checkmark } from "components/interface/Checkmark";
-export { default as Icon } from "components/interface/Icon";
-export { default as Spinner } from "components/interface/Spinner";
+export { default as Button } from "@/view/components/interface/Button";
+export { default as Checkmark } from "@/view/components/interface/Checkmark";
+export { default as Icon } from "@/view/components/interface/Icon";
+export { default as Spinner } from "@/view/components/interface/Spinner";

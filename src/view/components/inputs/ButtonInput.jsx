@@ -1,5 +1,5 @@
+import Icon from "@/view/components/interface/Icon";
 import classNames from "classnames";
-import Icon from "components/interface/Icon";
 import React from "react";
 import styles from "./ButtonInput.module.less";
 

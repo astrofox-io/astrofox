@@ -1,10 +1,10 @@
-import useApp, { toggleState } from "actions/app";
+import useApp, { toggleState } from "@/view/actions/app";
+import Icon from "@/view/components/interface/Icon";
+import { player } from "@/view/global";
+import useForceUpdate from "@/view/hooks/useForceUpdate";
+import { Cycle, SoundBars, SoundWaves } from "@/view/icons";
 import classNames from "classnames";
-import Icon from "components/interface/Icon";
-import useForceUpdate from "hooks/useForceUpdate";
 import React from "react";
-import { player } from "view/global";
-import { Cycle, SoundBars, SoundWaves } from "view/icons";
 import shallow from "zustand/shallow";
 import styles from "./ToggleButtons.module.less";
 

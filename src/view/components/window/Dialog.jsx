@@ -1,6 +1,6 @@
+import Button from "@/view/components/interface/Button";
+import ButtonRow from "@/view/components/layout/ButtonRow";
 import classNames from "classnames";
-import Button from "components/interface/Button";
-import ButtonRow from "components/layout/ButtonRow";
 import React from "react";
 import styles from "./Dialog.module.less";
 

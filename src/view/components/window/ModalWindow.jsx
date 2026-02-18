@@ -1,8 +1,8 @@
+import Button from "@/view/components/interface/Button";
+import Icon from "@/view/components/interface/Icon";
+import { Times } from "@/view/icons";
 import classNames from "classnames";
-import Button from "components/interface/Button";
-import Icon from "components/interface/Icon";
 import React, { Children, cloneElement } from "react";
-import { Times } from "view/icons";
 import styles from "./ModalWindow.module.less";
 
 export default function ModalWindow({

@@ -1,8 +1,8 @@
+import { reverse } from "@/utils/array";
+import Layer from "@/view/components/panels/Layer";
+import { Cube, DocumentLandscape, LightUp, Picture } from "@/view/icons";
 import classNames from "classnames";
-import Layer from "components/panels/Layer";
 import React, { useMemo } from "react";
-import { reverse } from "utils/array";
-import { Cube, DocumentLandscape, LightUp, Picture } from "view/icons";
 import styles from "./SceneLayer.module.less";
 
 const icons = {

@@ -1,4 +1,4 @@
-import Display from "core/Display";
+import Display from "@/core/Display";
 
 export default class CanvasDisplay extends Display {
 	constructor(Type, properties) {

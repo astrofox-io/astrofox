@@ -1,9 +1,9 @@
-import CopyPass from "graphics/CopyPass";
-import MultiPass from "graphics/MultiPass";
-import ShaderPass from "graphics/ShaderPass";
-import { createRenderTarget } from "graphics/common";
-import LensBlurShader from "shaders/LensBlurShader";
-import { clamp, deg2rad } from "utils/math";
+import CopyPass from "@/graphics/CopyPass";
+import MultiPass from "@/graphics/MultiPass";
+import ShaderPass from "@/graphics/ShaderPass";
+import { createRenderTarget } from "@/graphics/common";
+import LensBlurShader from "@/shaders/LensBlurShader";
+import { clamp, deg2rad } from "@/utils/math";
 
 export default class LensBlurPass extends MultiPass {
 	static defaultProperties = {

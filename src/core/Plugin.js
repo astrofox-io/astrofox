@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import ShaderPass from "graphics/ShaderPass";
+import ShaderPass from "@/graphics/ShaderPass";
 import Display from "./Display";
 import Effect from "./Effect";
 

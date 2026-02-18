@@ -1,17 +1,17 @@
-import { initApp } from "actions/app";
-import useAuth, { bootstrapSession } from "actions/auth";
-import AuthScreen from "components/auth/AuthScreen";
-import Layout from "components/layout/Layout";
-import ControlDock from "components/panels/ControlDock";
-import ReactorPanel from "components/panels/ReactorPanel";
-import Player from "components/player/Player";
-import Stage from "components/stage/Stage";
-import Modals from "components/window/Modals";
-import Preload from "components/window/Preload";
-import StatusBar from "components/window/StatusBar";
-import TitleBar from "components/window/TitleBar";
+import { ignoreEvents } from "@/utils/react";
+import { initApp } from "@/view/actions/app";
+import useAuth, { bootstrapSession } from "@/view/actions/auth";
+import AuthScreen from "@/view/components/auth/AuthScreen";
+import Layout from "@/view/components/layout/Layout";
+import ControlDock from "@/view/components/panels/ControlDock";
+import ReactorPanel from "@/view/components/panels/ReactorPanel";
+import Player from "@/view/components/player/Player";
+import Stage from "@/view/components/stage/Stage";
+import Modals from "@/view/components/window/Modals";
+import Preload from "@/view/components/window/Preload";
+import StatusBar from "@/view/components/window/StatusBar";
+import TitleBar from "@/view/components/window/TitleBar";
 import React, { useEffect, useState } from "react";
-import { ignoreEvents } from "utils/react";
 
 function App() {
 	const loading = useAuth((state) => state.loading);

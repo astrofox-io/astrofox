@@ -1,6 +1,6 @@
-import Effect from "core/Effect";
-import ShaderPass from "graphics/ShaderPass";
-import DistortionShader from "shaders/DistortionShader";
+import Effect from "@/core/Effect";
+import ShaderPass from "@/graphics/ShaderPass";
+import DistortionShader from "@/shaders/DistortionShader";
 
 const DISTORTION_MAX = 30.0;
 

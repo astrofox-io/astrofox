@@ -1,5 +1,5 @@
-import ShaderPass from "graphics/ShaderPass";
-import CopyShader from "shaders/CopyShader";
+import ShaderPass from "@/graphics/ShaderPass";
+import CopyShader from "@/shaders/CopyShader";
 
 export default class CopyPass extends ShaderPass {
 	constructor(buffer) {

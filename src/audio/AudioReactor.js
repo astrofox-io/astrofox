@@ -1,9 +1,8 @@
-import FFTParser from "audio/FFTParser";
-import Entity from "core/Entity";
-import cloneDeep from "lodash/cloneDeep";
-import { isDefined } from "utils/array";
-import { getDisplayName } from "utils/controls";
-import { ceil, floor, normalize } from "utils/math";
+import FFTParser from "@/audio/FFTParser";
+import Entity from "@/core/Entity";
+import { isDefined } from "@/utils/array";
+import { getDisplayName } from "@/utils/controls";
+import { ceil, floor, normalize } from "@/utils/math";
 import {
 	FFT_SIZE,
 	REACTOR_BARS,
@@ -11,7 +10,8 @@ import {
 	REACTOR_BAR_SPACING,
 	REACTOR_BAR_WIDTH,
 	SAMPLE_RATE,
-} from "view/constants";
+} from "@/view/constants";
+import cloneDeep from "lodash/cloneDeep";
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.1;

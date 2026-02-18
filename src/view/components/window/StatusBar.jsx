@@ -1,8 +1,8 @@
-import useAppStore from "actions/app";
-import ZoomControl from "components/window/ZoomControl";
+import { formatSize } from "@/utils/format";
+import useAppStore from "@/view/actions/app";
+import ZoomControl from "@/view/components/window/ZoomControl";
+import { env, renderer } from "@/view/global";
 import React, { useState, useEffect } from "react";
-import { formatSize } from "utils/format";
-import { env, renderer } from "view/global";
 import styles from "./StatusBar.module.less";
 
 const { APP_VERSION } = env;

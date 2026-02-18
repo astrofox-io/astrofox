@@ -10,7 +10,7 @@ import {
 	TimeInput,
 	ToggleInput,
 	VideoInput,
-} from "components/inputs";
+} from "@/view/components/inputs";
 
 const inputComponents = {
 	text: [TextInput, { width: 140 }],

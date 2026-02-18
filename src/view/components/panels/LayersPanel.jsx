@@ -1,18 +1,17 @@
-import useApp, { setActiveElementId } from "actions/app";
-import { showModal } from "actions/modals";
+import { reverse } from "@/utils/array";
+import useApp, { setActiveElementId } from "@/view/actions/app";
+import { showModal } from "@/view/actions/modals";
 import useScenes, {
 	addElement,
 	addScene,
 	moveElement,
 	removeElement,
 	updateElement,
-} from "actions/scenes";
-import { ButtonInput } from "components/inputs";
-import ButtonPanel from "components/layout/ButtonPanel";
-import Layout from "components/layout/Layout";
-import SceneLayer from "components/panels/SceneLayer";
-import React, { useMemo } from "react";
-import { reverse } from "utils/array";
+} from "@/view/actions/scenes";
+import { ButtonInput } from "@/view/components/inputs";
+import ButtonPanel from "@/view/components/layout/ButtonPanel";
+import Layout from "@/view/components/layout/Layout";
+import SceneLayer from "@/view/components/panels/SceneLayer";
 import {
 	ChevronDown,
 	ChevronUp,
@@ -20,7 +19,8 @@ import {
 	LightUp,
 	Picture,
 	TrashEmpty,
-} from "view/icons";
+} from "@/view/icons";
+import React, { useMemo } from "react";
 import styles from "./LayersPanel.module.less";
 
 export default function LayersPanel() {

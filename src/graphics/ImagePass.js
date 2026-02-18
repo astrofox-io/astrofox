@@ -12,7 +12,10 @@ export default class ImagePass extends Pass {
 
 		const { width, height } = resolution;
 		const mediaWidth =
-			texture.image?.naturalWidth || texture.image?.videoWidth || texture.image?.width || 1;
+			texture.image?.naturalWidth ||
+			texture.image?.videoWidth ||
+			texture.image?.width ||
+			1;
 		const mediaHeight =
 			texture.image?.naturalHeight ||
 			texture.image?.videoHeight ||

@@ -1,11 +1,11 @@
-import { raiseError } from "actions/error";
+import { ignoreEvents } from "@/utils/react";
+import { raiseError } from "@/view/actions/error";
+import Icon from "@/view/components/interface/Icon";
+import { BLANK_IMAGE } from "@/view/constants";
+import { api } from "@/view/global";
+import { FolderOpen, Times } from "@/view/icons";
 import classNames from "classnames";
-import Icon from "components/interface/Icon";
 import React, { useRef } from "react";
-import { ignoreEvents } from "utils/react";
-import { BLANK_IMAGE } from "view/constants";
-import { api } from "view/global";
-import { FolderOpen, Times } from "view/icons";
 import styles from "./ImageInput.module.less";
 
 export default function VideoInput({ name, value, onChange }) {

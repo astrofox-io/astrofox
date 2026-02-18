@@ -1,4 +1,4 @@
-import { stage } from "global";
+import { stage } from "@/view/global";
 import cloneDeep from "lodash/cloneDeep";
 import create from "zustand";
 import { touchProject } from "./project";

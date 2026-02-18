@@ -1,4 +1,4 @@
-import ArrayList from "core/ArrayList";
+import ArrayList from "@/core/ArrayList";
 
 export default class EntityList extends ArrayList {
 	getElementById(id) {

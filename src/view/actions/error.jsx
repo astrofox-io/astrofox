@@ -1,4 +1,4 @@
-import { logger } from "global";
+import { logger } from "@/view/global";
 import create from "zustand";
 import { showModal } from "./modals";
 

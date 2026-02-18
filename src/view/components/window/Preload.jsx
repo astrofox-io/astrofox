@@ -1,4 +1,4 @@
-import fonts from "config/fonts.json";
+import fonts from "@/config/fonts.json";
 import React from "react";
 import styles from "./Preload.module.less";
 

@@ -1,4 +1,4 @@
-import { uniqueId } from "utils/crypto";
+import { uniqueId } from "@/utils/crypto";
 import create from "zustand";
 
 const initialState = {

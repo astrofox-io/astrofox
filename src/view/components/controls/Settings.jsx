@@ -1,7 +1,7 @@
+import { inputValueToProps, mapChildren } from "@/utils/react";
+import Setting from "@/view/components/controls/Setting";
 import classNames from "classnames";
-import Setting from "components/controls/Setting";
 import React from "react";
-import { inputValueToProps, mapChildren } from "utils/react";
 import styles from "./Settings.module.less";
 
 export default function Settings({

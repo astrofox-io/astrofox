@@ -1,7 +1,7 @@
-import useApp from "actions/app";
+import useApp from "@/view/actions/app";
+import { player } from "@/view/global";
 import classNames from "classnames";
 import React, { useState, useEffect } from "react";
-import { player } from "view/global";
 import shallow from "zustand/shallow";
 import AudioWaveform from "./AudioWaveform";
 import Oscilloscope from "./Oscilloscope";

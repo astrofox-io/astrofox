@@ -1,27 +1,27 @@
-import { raiseError } from "actions/error";
-import { showModal } from "actions/modals";
-import { loadReactors, resetReactors } from "actions/reactors";
+import AudioReactor from "@/audio/AudioReactor";
+import Display from "@/core/Display";
+import Entity from "@/core/Entity";
+import Scene from "@/core/Scene";
+import Stage from "@/core/Stage";
+import { resetLabelCount } from "@/utils/controls";
+import { raiseError } from "@/view/actions/error";
+import { showModal } from "@/view/actions/modals";
+import { loadReactors, resetReactors } from "@/view/actions/reactors";
 import {
 	getScenesSnapshot,
 	loadScenes,
 	resetScenes,
 	updateElementProperty,
-} from "actions/scenes";
-import { updateCanvas, updateStage } from "actions/stage";
-import AudioReactor from "audio/AudioReactor";
-import Display from "core/Display";
-import Entity from "core/Entity";
-import Scene from "core/Scene";
-import Stage from "core/Stage";
-import { api, env, library, logger, reactors, stage } from "global";
-import cloneDeep from "lodash/cloneDeep";
-import { resetLabelCount } from "utils/controls";
+} from "@/view/actions/scenes";
+import { updateCanvas, updateStage } from "@/view/actions/stage";
 import {
 	BLANK_IMAGE,
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
-} from "view/constants";
+} from "@/view/constants";
+import { api, env, library, logger, reactors, stage } from "@/view/global";
+import cloneDeep from "lodash/cloneDeep";
 import create from "zustand";
 
 export const DEFAULT_PROJECT_NAME = "Untitled Project";

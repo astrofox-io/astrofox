@@ -1,6 +1,6 @@
-import EventEmitter from "core/EventEmitter";
+import EventEmitter from "@/core/EventEmitter";
+import env from "@/view/env";
 import jsmediatags from "jsmediatags/dist/jsmediatags.min.js";
-import env from "view/env";
 
 const events = new EventEmitter();
 const CONFIG_KEY = "astrofox.config";

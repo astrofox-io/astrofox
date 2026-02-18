@@ -1,6 +1,6 @@
-import defaultAppConfig from "config/app.json";
-import { api, env, logger } from "global";
-import { uniqueId } from "utils/crypto";
+import defaultAppConfig from "@/config/app.json";
+import { uniqueId } from "@/utils/crypto";
+import { api, env, logger } from "@/view/global";
 import create from "zustand";
 import { raiseError } from "./error";
 

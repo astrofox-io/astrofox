@@ -1,9 +1,9 @@
+import { clamp } from "@/utils/math";
+import Icon from "@/view/components/interface/Icon";
+import useMouseDrag from "@/view/hooks/useMouseDrag";
+import { DotsHorizontal } from "@/view/icons";
 import classNames from "classnames";
-import Icon from "components/interface/Icon";
-import useMouseDrag from "hooks/useMouseDrag";
 import React, { useRef } from "react";
-import { clamp } from "utils/math";
-import { DotsHorizontal } from "view/icons";
 import styles from "./Splitter.module.less";
 
 export default function Splitter({

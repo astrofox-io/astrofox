@@ -1,6 +1,6 @@
-import CanvasShape from "canvas/CanvasShape";
-import CanvasDisplay from "core/CanvasDisplay";
-import { maxSize, property, stageHeight, stageWidth } from "utils/controls";
+import CanvasShape from "@/canvas/CanvasShape";
+import CanvasDisplay from "@/core/CanvasDisplay";
+import { maxSize, property, stageHeight, stageWidth } from "@/utils/controls";
 
 const shapeOptions = ["Circle", "Triangle", "Square", "Rectangle", "Hexagon"];
 

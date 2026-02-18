@@ -1,21 +1,21 @@
-import useApp, { setActiveReactorId } from "actions/app";
-import CanvasBars from "canvas/CanvasBars";
-import CanvasMeter from "canvas/CanvasMeter";
-import { Control } from "components/controls";
-import { BoxInput } from "components/inputs";
-import Icon from "components/interface/Icon";
-import { events, reactors } from "global";
-import useEntity from "hooks/useEntity";
-import { ChevronDown } from "view/icons";
-import React, { useEffect, useRef } from "react";
-import { inputValueToProps } from "utils/react";
+import CanvasBars from "@/canvas/CanvasBars";
+import CanvasMeter from "@/canvas/CanvasMeter";
+import { inputValueToProps } from "@/utils/react";
+import useApp, { setActiveReactorId } from "@/view/actions/app";
+import { Control } from "@/view/components/controls";
+import { BoxInput } from "@/view/components/inputs";
+import Icon from "@/view/components/interface/Icon";
 import {
 	PRIMARY_COLOR,
 	REACTOR_BARS,
 	REACTOR_BAR_HEIGHT,
 	REACTOR_BAR_SPACING,
 	REACTOR_BAR_WIDTH,
-} from "view/constants";
+} from "@/view/constants";
+import { events, reactors } from "@/view/global";
+import useEntity from "@/view/hooks/useEntity";
+import { ChevronDown } from "@/view/icons";
+import React, { useEffect, useRef } from "react";
 import styles from "./ReactorPanel.module.less";
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);

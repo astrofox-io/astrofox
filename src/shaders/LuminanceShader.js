@@ -1,5 +1,5 @@
-import fragmentShader from "shaders/glsl/fragment/luminance.glsl";
-import vertexShader from "shaders/glsl/vertex/basic.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/luminance.glsl";
+import vertexShader from "@/shaders/glsl/vertex/basic.glsl";
 
 export default {
 	uniforms: {

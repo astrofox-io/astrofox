@@ -1,10 +1,10 @@
-import { setActiveReactorId } from "actions/app";
-import { addReactor } from "actions/reactors";
-import { loadScenes } from "actions/scenes";
+import { setActiveReactorId } from "@/view/actions/app";
+import { addReactor } from "@/view/actions/reactors";
+import { loadScenes } from "@/view/actions/scenes";
+import Icon from "@/view/components/interface/Icon";
+import { Flash } from "@/view/icons";
 import classNames from "classnames";
-import Icon from "components/interface/Icon";
 import React from "react";
-import { Flash } from "view/icons";
 import styles from "./ReactorButton.module.less";
 
 export default function ReactorButton({

@@ -1,9 +1,9 @@
+import { resolve } from "@/utils/object";
+import { inputValueToProps } from "@/utils/react";
+import Option from "@/view/components/controls/Option";
+import useEntity from "@/view/hooks/useEntity";
 import classNames from "classnames";
-import Option from "components/controls/Option";
-import useEntity from "hooks/useEntity";
 import React from "react";
-import { resolve } from "utils/object";
-import { inputValueToProps } from "utils/react";
 import styles from "./Control.module.less";
 
 export default function Control({ display, className, showHeader = true }) {

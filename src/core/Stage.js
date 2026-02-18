@@ -1,18 +1,18 @@
-import Entity from "core/Entity";
-import EntityList from "core/EntityList";
-import Scene from "core/Scene";
-import CanvasBuffer from "graphics/CanvasBuffer";
-import Composer from "graphics/Composer";
-import WebGLBuffer from "graphics/WebGLBuffer";
-import { getRenderer } from "graphics/common";
-import cloneDeep from "lodash/cloneDeep";
-import { Color } from "three";
-import { isDefined } from "utils/array";
+import Entity from "@/core/Entity";
+import EntityList from "@/core/EntityList";
+import Scene from "@/core/Scene";
+import CanvasBuffer from "@/graphics/CanvasBuffer";
+import Composer from "@/graphics/Composer";
+import WebGLBuffer from "@/graphics/WebGLBuffer";
+import { getRenderer } from "@/graphics/common";
+import { isDefined } from "@/utils/array";
 import {
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
-} from "view/constants";
+} from "@/view/constants";
+import cloneDeep from "lodash/cloneDeep";
+import { Color } from "three";
 
 export default class Stage extends Entity {
 	static defaultProperties = {

@@ -1,6 +1,6 @@
-import { analyzer, api, logger, player } from "global";
-import { loadAudioData } from "utils/audio";
-import { trimChars } from "utils/string";
+import { loadAudioData } from "@/utils/audio";
+import { trimChars } from "@/utils/string";
+import { analyzer, api, logger, player } from "@/view/global";
 import create from "zustand";
 import appStore from "./app";
 import configStore from "./config";

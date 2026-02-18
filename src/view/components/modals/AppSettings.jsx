@@ -1,8 +1,8 @@
-import useConfig, { saveConfig } from "actions/config";
-import { Setting, Settings } from "components/controls";
-import Button from "components/interface/Button";
-import ButtonRow from "components/layout/ButtonRow";
-import Layout from "components/layout/Layout";
+import useConfig, { saveConfig } from "@/view/actions/config";
+import { Setting, Settings } from "@/view/components/controls";
+import Button from "@/view/components/interface/Button";
+import ButtonRow from "@/view/components/layout/ButtonRow";
+import Layout from "@/view/components/layout/Layout";
 import React, { useState } from "react";
 
 export default function AppSettings({ onClose }) {

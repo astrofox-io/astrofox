@@ -1,6 +1,6 @@
-import Effect from "core/Effect";
-import ShaderPass from "graphics/ShaderPass";
-import ColorHalftoneShader from "shaders/ColorHalftoneShader";
+import Effect from "@/core/Effect";
+import ShaderPass from "@/graphics/ShaderPass";
+import ColorHalftoneShader from "@/shaders/ColorHalftoneShader";
 import { deg2rad } from "../utils/math";
 
 export default class ColorHalftoneEffect extends Effect {

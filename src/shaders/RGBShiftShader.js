@@ -1,5 +1,5 @@
-import fragmentShader from "shaders/glsl/fragment/rgb-shift.glsl";
-import vertexShader from "shaders/glsl/vertex/basic.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/rgb-shift.glsl";
+import vertexShader from "@/shaders/glsl/vertex/basic.glsl";
 
 export default {
 	uniforms: {

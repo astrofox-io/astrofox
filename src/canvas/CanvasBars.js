@@ -1,6 +1,6 @@
-import Entity from "core/Entity";
-import { resetCanvas, setColor } from "utils/canvas";
-import { clamp } from "utils/math";
+import Entity from "@/core/Entity";
+import { resetCanvas, setColor } from "@/utils/canvas";
+import { clamp } from "@/utils/math";
 
 export default class CanvasBars extends Entity {
 	static defaultProperties = {

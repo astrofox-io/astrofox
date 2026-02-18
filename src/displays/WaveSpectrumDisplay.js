@@ -1,8 +1,8 @@
-import FFTParser from "audio/FFTParser";
-import CanvasWave from "canvas/CanvasWave";
-import CanvasDisplay from "core/CanvasDisplay";
-import { property, stageHeight, stageWidth } from "utils/controls";
-import { FFT_SIZE, SAMPLE_RATE } from "view/constants";
+import FFTParser from "@/audio/FFTParser";
+import CanvasWave from "@/canvas/CanvasWave";
+import CanvasDisplay from "@/core/CanvasDisplay";
+import { property, stageHeight, stageWidth } from "@/utils/controls";
+import { FFT_SIZE, SAMPLE_RATE } from "@/view/constants";
 
 export default class WaveSpectrumDisplay extends CanvasDisplay {
 	static config = {

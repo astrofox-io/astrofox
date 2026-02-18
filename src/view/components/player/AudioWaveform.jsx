@@ -1,8 +1,8 @@
-import CanvasAudio from "canvas/CanvasAudio";
+import CanvasAudio from "@/canvas/CanvasAudio";
+import { player } from "@/view/global";
+import useSharedState from "@/view/hooks/useSharedState";
 import classNames from "classnames";
-import useSharedState from "hooks/useSharedState";
 import React, { useRef, useEffect, useLayoutEffect, useMemo } from "react";
-import { player } from "view/global";
 import styles from "./AudioWaveform.module.less";
 
 const canvasProperties = {

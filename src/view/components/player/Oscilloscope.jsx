@@ -1,8 +1,8 @@
-import WaveParser from "audio/WaveParser";
-import CanvasWave from "canvas/CanvasWave";
+import WaveParser from "@/audio/WaveParser";
+import CanvasWave from "@/canvas/CanvasWave";
+import { PRIMARY_COLOR } from "@/view/constants";
+import { events } from "@/view/global";
 import React, { useRef, useEffect } from "react";
-import { PRIMARY_COLOR } from "view/constants";
-import { events } from "view/global";
 import styles from "./Oscilloscope.module.less";
 
 const canvasProperties = {

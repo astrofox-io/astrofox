@@ -1,7 +1,7 @@
-import useError, { clearError } from "actions/error";
-import Dialog from "components/window/Dialog";
+import useError, { clearError } from "@/view/actions/error";
+import Dialog from "@/view/components/window/Dialog";
+import { Warning } from "@/view/icons";
 import React from "react";
-import { Warning } from "view/icons";
 
 export default function ErrorDialog({ onClose }) {
 	const message = useError((state) => state.message);

@@ -1,6 +1,6 @@
+import { easeInQuad } from "@/utils/easing";
 import React from "react";
 import { animated, useTransition } from "react-spring";
-import { easeInQuad } from "utils/easing";
 import styles from "./Overlay.module.less";
 
 export default function Overlay({

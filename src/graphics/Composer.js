@@ -1,9 +1,9 @@
-import ShaderPass from "graphics/ShaderPass";
-import blendModes from "graphics/blendModes";
-import BlendShader from "shaders/BlendShader";
-import CopyShader from "shaders/CopyShader";
+import ShaderPass from "@/graphics/ShaderPass";
+import blendModes from "@/graphics/blendModes";
+import BlendShader from "@/shaders/BlendShader";
+import CopyShader from "@/shaders/CopyShader";
+import { base64ToBytes } from "@/utils/data";
 import { Color } from "three";
-import { base64ToBytes } from "utils/data";
 import { createRenderTarget } from "./common";
 
 export default class Composer {

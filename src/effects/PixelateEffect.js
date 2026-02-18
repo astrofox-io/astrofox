@@ -1,7 +1,7 @@
-import Effect from "core/Effect";
-import ShaderPass from "graphics/ShaderPass";
-import HexagonShader from "shaders/HexagonShader";
-import PixelateShader from "shaders/PixelateShader";
+import Effect from "@/core/Effect";
+import ShaderPass from "@/graphics/ShaderPass";
+import HexagonShader from "@/shaders/HexagonShader";
+import PixelateShader from "@/shaders/PixelateShader";
 
 const renderOptions = ["Square", "Hexagon"];
 

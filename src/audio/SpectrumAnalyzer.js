@@ -1,8 +1,8 @@
-import Entity from "core/Entity";
+import Entity from "@/core/Entity";
+import { downmix } from "@/utils/audio";
+import { mag2db, normalize } from "@/utils/math";
+import { FFT_SIZE } from "@/view/constants";
 import fft from "fourier-transform";
-import { downmix } from "utils/audio";
-import { mag2db, normalize } from "utils/math";
-import { FFT_SIZE } from "view/constants";
 import blackman from "window-function/blackman";
 import { updateExistingProps } from "../utils/object";
 

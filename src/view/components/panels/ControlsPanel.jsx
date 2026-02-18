@@ -1,9 +1,9 @@
-import useApp from "actions/app";
-import useScenes from "actions/scenes";
-import Control from "components/controls/Control";
-import { stage } from "global";
+import { reverse } from "@/utils/array";
+import useApp from "@/view/actions/app";
+import useScenes from "@/view/actions/scenes";
+import Control from "@/view/components/controls/Control";
+import { stage } from "@/view/global";
 import React, { useMemo, useRef, useEffect } from "react";
-import { reverse } from "utils/array";
 import styles from "./ControlsPanel.module.less";
 
 export default function ControlsPanel() {

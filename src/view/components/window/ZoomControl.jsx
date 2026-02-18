@@ -1,4 +1,9 @@
-import useStage, { setZoom, zoomIn, zoomOut, fitToScreen } from "actions/stage";
+import useStage, {
+	setZoom,
+	zoomIn,
+	zoomOut,
+	fitToScreen,
+} from "@/view/actions/stage";
 import React from "react";
 import styles from "./ZoomControl.module.less";
 

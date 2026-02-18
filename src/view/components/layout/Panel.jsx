@@ -1,5 +1,5 @@
+import Splitter from "@/view/components/layout/Splitter";
 import classNames from "classnames";
-import Splitter from "components/layout/Splitter";
 import React, { useState } from "react";
 import styles from "./Panel.module.less";
 

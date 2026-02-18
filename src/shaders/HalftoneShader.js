@@ -1,5 +1,5 @@
-import vertexShader from "shaders/glsl/vertex/basic.glsl";
-import fragmentShader from "src/shaders/glsl/fragment/color-halftone.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/color-halftone.glsl";
+import vertexShader from "@/shaders/glsl/vertex/basic.glsl";
 import { Vector2 } from "three";
 
 export default {

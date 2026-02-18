@@ -1,5 +1,5 @@
-import CanvasBars from "canvas/CanvasBars";
-import Entity from "core/Entity";
+import CanvasBars from "@/canvas/CanvasBars";
+import Entity from "@/core/Entity";
 
 export default class CanvasAudio extends Entity {
 	static defaultProperties = {

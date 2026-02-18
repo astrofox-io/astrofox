@@ -1,5 +1,5 @@
-import fragmentShader from "shaders/glsl/fragment/point.glsl";
-import vertexShader from "shaders/glsl/vertex/point.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/point.glsl";
+import vertexShader from "@/shaders/glsl/vertex/point.glsl";
 import { Color } from "three";
 
 export default {

@@ -1,12 +1,12 @@
-import { setActiveReactorId } from "actions/app";
-import { removeReactor } from "actions/reactors";
-import { loadScenes } from "actions/scenes";
-import CanvasMeter from "canvas/CanvasMeter";
-import Icon from "components/interface/Icon";
+import CanvasMeter from "@/canvas/CanvasMeter";
+import { setActiveReactorId } from "@/view/actions/app";
+import { removeReactor } from "@/view/actions/reactors";
+import { loadScenes } from "@/view/actions/scenes";
+import Icon from "@/view/components/interface/Icon";
+import { PRIMARY_COLOR } from "@/view/constants";
+import { events, reactors } from "@/view/global";
+import { Times } from "@/view/icons";
 import React, { useRef, useEffect, useMemo } from "react";
-import { PRIMARY_COLOR } from "view/constants";
-import { events, reactors } from "view/global";
-import { Times } from "view/icons";
 import styles from "./ReactorInput.module.less";
 
 export default function ReactorInput({

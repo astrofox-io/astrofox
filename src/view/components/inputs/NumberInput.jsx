@@ -1,6 +1,6 @@
-import TextInput from "components/inputs/TextInput";
+import { clamp, roundTo } from "@/utils/math.js";
+import TextInput from "@/view/components/inputs/TextInput";
 import React, { useState } from "react";
-import { clamp, roundTo } from "utils/math.js";
 
 export default function NumberInput({
 	name = "number",

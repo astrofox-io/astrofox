@@ -1,5 +1,5 @@
-import fragmentShader from "shaders/glsl/fragment/glow.glsl";
-import vertexShader from "shaders/glsl/vertex/basic.glsl";
+import fragmentShader from "@/shaders/glsl/fragment/glow.glsl";
+import vertexShader from "@/shaders/glsl/vertex/basic.glsl";
 import { Vector2 } from "three";
 
 export default {

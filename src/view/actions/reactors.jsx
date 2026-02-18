@@ -1,4 +1,4 @@
-import { reactors } from "global";
+import { reactors } from "@/view/global";
 import create from "zustand";
 import { setActiveReactorId } from "./app";
 

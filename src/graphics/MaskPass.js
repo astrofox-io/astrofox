@@ -1,4 +1,4 @@
-import Pass from "graphics/Pass";
+import Pass from "@/graphics/Pass";
 
 export default class MaskPass extends Pass {
 	constructor(scene, camera) {

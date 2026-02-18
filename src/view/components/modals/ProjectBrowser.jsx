@@ -6,8 +6,8 @@ import useProject, {
 	newProject,
 	renameProjectById,
 	saveProject,
-} from "actions/project";
-import Button from "components/interface/Button";
+} from "@/view/actions/project";
+import Button from "@/view/components/interface/Button";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./ProjectBrowser.module.less";
 
