@@ -152,7 +152,7 @@ export async function handleMenuAction(action) {
 			break;
 
 		case "about":
-			await showModal("About");
+			await showModal("AppSettings", { title: "Settings" });
 			break;
 
 		case "account":

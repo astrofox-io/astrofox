@@ -3,21 +3,40 @@ import React from "react";
 import styles from "./Menu.module.less";
 import MenuItem from "./MenuItem";
 
-const Menu = ({ items, visible, onMenuItemClick }) => (
+const menuItemIds = new WeakMap();
+let menuItemId = 0;
+
+function getItemKey(item) {
+	if (!menuItemIds.has(item)) {
+		menuItemId += 1;
+		menuItemIds.set(item, `menu-item-${menuItemId}`);
+	}
+
+	return menuItemIds.get(item);
+}
+
+const Menu = ({ className, items, visible, onMenuItemClick }) => (
 	<div
-		className={classNames(styles.menu, {
-			[styles.hidden]: visible === false,
-		})}
+		className={classNames(
+			styles.menu,
+			{
+				[styles.hidden]: visible === false,
+			},
+			className,
+		)}
 	>
-		{items.map((item, index) => {
+		{items.map((item) => {
 			const { type, label, hidden, checked, disabled } = item;
+			const key = getItemKey(item);
 
 			if (type === "separator") {
-				return <div key={index} className={styles.separator} />;
-			} else if (label && !hidden) {
+				return <div key={key} className={styles.separator} />;
+			}
+
+			if (label && !hidden) {
 				return (
 					<MenuItem
-						key={index}
+						key={key}
 						label={label}
 						checked={checked}
 						disabled={disabled}
@@ -32,6 +51,7 @@ const Menu = ({ items, visible, onMenuItemClick }) => (
 );
 
 Menu.defaultProps = {
+	className: null,
 	items: [],
 	visible: false,
 };

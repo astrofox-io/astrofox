@@ -32,17 +32,6 @@
 			{
 				"label": "Save image...",
 				"action": "save-image"
-			},
-			{
-				"type": "separator"
-			},
-			{
-				"label": "Account...",
-				"action": "account"
-			},
-			{
-				"label": "Sign out",
-				"action": "sign-out"
 			}
 		]
 	},
@@ -52,10 +41,6 @@
 			{
 				"label": "Canvas",
 				"action": "edit-canvas"
-			},
-			{
-				"label": "Settings",
-				"action": "edit-settings"
 			}
 		]
 	},
@@ -103,15 +88,6 @@
 				"label": "Reload",
 				"role": "reload",
 				"accelerator": "CmdOrCtrl+R"
-			}
-		]
-	},
-	{
-		"label": "Help",
-		"submenu": [
-			{
-				"label": "About",
-				"action": "about"
 			}
 		]
 	}
