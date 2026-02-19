@@ -22,36 +22,33 @@ Astrofox is a motion graphics program that lets turn audio into amazing videos.
 git clone https://github.com/astrofox-io/astrofox.git
 ```
 
-### Install FFmpeg
-
-```
-yarn install-ffmpeg
-```
-
 ### Install dependencies
 
 ```
-yarn install
+pnpm install
 ```
 
 ### Build the application
 
 ```
-yarn build
+pnpm build
 ```
 
 ### Start the application
 
 ```
-yarn start
+pnpm start
 ```
 
 ## Running for development
 
-Instead of `yarn build` above, run `yarn dev`. This will start up a development server
-in the current console window.
+Run:
 
-Then, in a separate console window, run `yarn start`.
+```
+pnpm dev
+```
+
+Astrofox now runs as a single Next.js app with built-in API routes (`/api/auth`, `/api/projects`, `/api/health`), so you no longer need a separate backend server process during development.
 
 ## License
 

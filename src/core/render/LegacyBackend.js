@@ -52,6 +52,10 @@ export default class LegacyBackend extends RenderBackend {
 	}
 
 	render(frameData) {
+		if (!this.initialized) {
+			return;
+		}
+
 		this.stage.render(frameData);
 	}
 

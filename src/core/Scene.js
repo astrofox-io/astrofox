@@ -97,7 +97,10 @@ export default class Scene extends Display {
 	removeFromStage() {
 		this.displays.clear();
 		this.effects.clear();
-		this.composer.dispose();
+		if (this.composer) {
+			this.composer.dispose();
+			this.composer = null;
+		}
 	}
 
 	getSize() {

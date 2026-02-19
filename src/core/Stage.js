@@ -39,6 +39,14 @@ export default class Stage extends Entity {
 		this.canvasBuffer = new CanvasBuffer(width, height);
 		this.webglBuffer = new WebGLBuffer(this.renderer);
 
+		// Scenes can be created before the canvas is mounted; attach them now.
+		this.scenes.forEach((scene) => {
+			if (!scene.composer && scene.addToStage) {
+				scene.addToStage(this);
+				scene.setSize(width, height);
+			}
+		});
+
 		this.backgroundColor = new Color(backgroundColor);
 	}
 
@@ -129,7 +137,7 @@ export default class Stage extends Entity {
 
 		scene.stage = this;
 
-		if (scene.addToStage) {
+		if (this.renderer && scene.addToStage) {
 			scene.addToStage(this);
 		}
 

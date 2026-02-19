@@ -4,8 +4,12 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db/client.mjs";
 import { account, session, user, verification } from "./db/schema.mjs";
 
-const baseURL = process.env.BETTER_AUTH_URL || "http://localhost:3005";
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+const baseURL =
+	process.env.BETTER_AUTH_URL ||
+	process.env.NEXT_PUBLIC_APP_URL ||
+	"http://localhost:3000";
+const corsOrigin = process.env.CORS_ORIGIN || baseURL;
+const trustedOrigins = Array.from(new Set([baseURL, corsOrigin]));
 
 const socialProviders =
 	process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
@@ -20,7 +24,7 @@ const socialProviders =
 export const auth = betterAuth({
 	baseURL,
 	basePath: "/api/auth",
-	trustedOrigins: [baseURL, corsOrigin],
+	trustedOrigins,
 	database: drizzleAdapter(db, {
 		provider: "pg",
 		schema: {

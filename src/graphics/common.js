@@ -37,9 +37,13 @@ export function getFullscreenGeometry() {
 	return geometry;
 }
 
-export function createRenderTarget(options = {}) {
-	const context = renderer.getContext();
-	const pixelRatio = renderer.getPixelRatio();
+export function createRenderTarget(options = {}, activeRenderer = renderer) {
+	if (!activeRenderer) {
+		throw new Error("Renderer has not been initialized.");
+	}
+
+	const context = activeRenderer.getContext();
+	const pixelRatio = activeRenderer.getPixelRatio();
 	const width = Math.floor(context.canvas.width / pixelRatio) || 1;
 	const height = Math.floor(context.canvas.height / pixelRatio) || 1;
 

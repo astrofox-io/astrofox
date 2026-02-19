@@ -24,6 +24,7 @@ node_modules
 bin
 coverage
 dist
+.next
 /app/
 /plugins/
 /resources/

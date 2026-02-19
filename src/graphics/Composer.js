@@ -17,7 +17,7 @@ export default class Composer {
 		this.copyPass.material.transparent = true;
 		this.copyPass.renderToScreen = true;
 
-		this.inputBuffer = createRenderTarget();
+		this.inputBuffer = createRenderTarget({}, this.renderer);
 		this.outputBuffer = this.inputBuffer.clone();
 
 		this.dataBuffer = new Uint8Array(
