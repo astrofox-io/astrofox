@@ -104,7 +104,15 @@ export default class Scene extends Display {
 	}
 
 	getSize() {
-		return this.composer.getSize();
+		if (this.composer) {
+			return this.composer.getSize();
+		}
+
+		if (this.stage?.getSize) {
+			return this.stage.getSize();
+		}
+
+		return { width: 1, height: 1 };
 	}
 
 	setSize(width, height) {
@@ -120,7 +128,9 @@ export default class Scene extends Display {
 			}
 		});
 
-		this.composer.setSize(width, height);
+		if (this.composer) {
+			this.composer.setSize(width, height);
+		}
 	}
 
 	getTarget(obj) {

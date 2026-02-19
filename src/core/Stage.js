@@ -80,7 +80,10 @@ export default class Stage extends Entity {
 			return this.composer.getSize();
 		}
 
-		return { width: 0, height: 0 };
+		return {
+			width: this.properties.width || 1,
+			height: this.properties.height || 1,
+		};
 	}
 
 	setSize(width, height) {
