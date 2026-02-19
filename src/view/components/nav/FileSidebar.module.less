@@ -1,0 +1,48 @@
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	width: 180px;
+	flex-shrink: 0;
+	background-color: var(--gray75);
+	border-right: 1px solid var(--gray300);
+	padding: 8px;
+	overflow: auto;
+}
+
+.header {
+	font-size: var(--font-size-small);
+	color: var(--text200);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+	padding: 6px 8px;
+}
+
+.section {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid var(--gray300);
+}
+
+.section:first-of-type {
+	margin-top: 0;
+	padding-top: 0;
+	border-top: 0;
+}
+
+.item {
+	background: transparent;
+	border: 0;
+	color: var(--text100);
+	text-align: left;
+	font-size: var(--font-size-normal);
+	padding: 8px;
+	cursor: default;
+
+	&:hover {
+		background-color: var(--primary100);
+	}
+}

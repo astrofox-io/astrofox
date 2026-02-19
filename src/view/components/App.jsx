@@ -2,6 +2,7 @@ import { ignoreEvents } from "@/utils/react";
 import { initApp } from "@/view/actions/app";
 import { bootstrapSession } from "@/view/actions/auth";
 import Layout from "@/view/components/layout/Layout";
+import FileSidebar from "@/view/components/nav/FileSidebar";
 import ControlDock from "@/view/components/panels/ControlDock";
 import ReactorPanel from "@/view/components/panels/ReactorPanel";
 import Player from "@/view/components/player/Player";
@@ -87,6 +88,7 @@ function App() {
 			<Preload />
 			<TitleBar />
 			<Layout direction="row">
+				<FileSidebar />
 				<Layout id="viewport" direction="column">
 					<Stage />
 					<Player />

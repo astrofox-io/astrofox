@@ -7,11 +7,15 @@ import WindowButtons from "@/view/components/window/WindowButtons";
 import { env } from "@/view/global";
 import useWindowState from "@/view/hooks/useWindowState";
 import classNames from "classnames";
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./TitleBar.module.less";
 
 export default function TitleBar() {
 	const { focused, maximized } = useWindowState();
+	const items = useMemo(
+		() => menuConfig.filter((item) => item.label !== "File"),
+		[],
+	);
 
 	return (
 		<div
@@ -24,7 +28,7 @@ export default function TitleBar() {
 				<>
 					<Icon className={styles.icon} glyph={appIcon} monochrome={false} />
 					<MenuBar
-						items={menuConfig}
+						items={items}
 						onMenuAction={handleMenuAction}
 						focused={focused}
 					/>
