@@ -4,6 +4,7 @@ import Entity from "@/core/Entity";
 import Scene from "@/core/Scene";
 import Stage from "@/core/Stage";
 import { resetLabelCount } from "@/utils/controls";
+import authStore from "@/view/actions/auth";
 import { raiseError } from "@/view/actions/error";
 import { showModal } from "@/view/actions/modals";
 import { loadReactors, resetReactors } from "@/view/actions/reactors";
@@ -37,6 +38,18 @@ const initialState = {
 const projectStore = create(() => ({
 	...initialState,
 }));
+
+function requireAccount(featureMessage) {
+	const session = authStore.getState().session;
+
+	if (session?.user) {
+		return true;
+	}
+
+	showModal("AccountModal", { title: "Account Required" }, { featureMessage });
+
+	return false;
+}
 
 function snapshotProject() {
 	return {
@@ -202,6 +215,14 @@ export function checkUnsavedChanges(menuAction, action) {
 }
 
 export function openProjectBrowser() {
+	if (
+		!requireAccount(
+			"Sign in or create an account to open, rename, and delete saved projects.",
+		)
+	) {
+		return;
+	}
+
 	showModal("ProjectBrowser", { title: "Projects" });
 }
 
@@ -274,6 +295,14 @@ export async function deleteProjectById(projectId) {
 }
 
 export async function saveProject(nameOverride) {
+	if (
+		!requireAccount(
+			"Sign in or create an account to save projects and project revisions.",
+		)
+	) {
+		return false;
+	}
+
 	const state = projectStore.getState();
 	const name = (
 		nameOverride ||
@@ -308,6 +337,14 @@ export async function saveProject(nameOverride) {
 }
 
 export async function duplicateProject() {
+	if (
+		!requireAccount(
+			"Sign in or create an account to duplicate and manage cloud projects.",
+		)
+	) {
+		return false;
+	}
+
 	const { projectId, projectName } = projectStore.getState();
 
 	try {

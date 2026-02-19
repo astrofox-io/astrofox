@@ -23,11 +23,14 @@ export default function UnsavedChangesDialog({ action, onClose }) {
 
 			if (saved) {
 				await handleAction(action);
+				onClose();
 			}
 		} else if (button === "No") {
 			await handleAction(action);
+			onClose();
+		} else {
+			onClose();
 		}
-		onClose();
 	}
 
 	return (

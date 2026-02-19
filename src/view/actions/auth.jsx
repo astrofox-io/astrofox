@@ -1,4 +1,4 @@
-import { api, player, renderer } from "@/view/global";
+import { api, player } from "@/view/global";
 import create from "zustand";
 
 const initialState = {
@@ -67,12 +67,16 @@ export function signInWithGoogle() {
 }
 
 export async function signOut() {
+	if (!authStore.getState().session) {
+		authStore.setState({ error: null, loading: false });
+		return;
+	}
+
 	authStore.setState({ loading: true, error: null });
 
 	try {
 		await api.signOutUser();
 		player.stop();
-		renderer.stop();
 		authStore.setState({ session: null, loading: false });
 	} catch (error) {
 		setError(error);

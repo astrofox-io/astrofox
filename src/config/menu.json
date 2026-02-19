@@ -37,6 +37,10 @@
 				"type": "separator"
 			},
 			{
+				"label": "Account...",
+				"action": "account"
+			},
+			{
 				"label": "Sign out",
 				"action": "sign-out"
 			}

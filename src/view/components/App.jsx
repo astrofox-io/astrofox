@@ -1,7 +1,6 @@
 import { ignoreEvents } from "@/utils/react";
 import { initApp } from "@/view/actions/app";
-import useAuth, { bootstrapSession } from "@/view/actions/auth";
-import AuthScreen from "@/view/components/auth/AuthScreen";
+import { bootstrapSession } from "@/view/actions/auth";
 import Layout from "@/view/components/layout/Layout";
 import ControlDock from "@/view/components/panels/ControlDock";
 import ReactorPanel from "@/view/components/panels/ReactorPanel";
@@ -14,47 +13,58 @@ import TitleBar from "@/view/components/window/TitleBar";
 import React, { useEffect, useState } from "react";
 
 function App() {
-	const loading = useAuth((state) => state.loading);
-	const session = useAuth((state) => state.session);
+	const [sessionReady, setSessionReady] = useState(false);
 	const [initialized, setInitialized] = useState(false);
 	const [initError, setInitError] = useState(null);
 
 	useEffect(() => {
-		bootstrapSession();
+		let mounted = true;
+
+		bootstrapSession().finally(() => {
+			if (mounted) {
+				setSessionReady(true);
+			}
+		});
+
+		return () => {
+			mounted = false;
+		};
 	}, []);
 
 	useEffect(() => {
-		if (!loading && session && !initialized) {
+		let mounted = true;
+
+		if (sessionReady && !initialized) {
 			initApp()
 				.then(() => {
+					if (!mounted) {
+						return;
+					}
+
 					setInitialized(true);
 					setInitError(null);
 				})
 				.catch((error) => {
 					// eslint-disable-next-line no-console
 					console.error("Failed to initialize app", error);
-					setInitError(error);
+
+					if (mounted) {
+						setInitError(error);
+					}
 				});
 		}
-	}, [loading, session, initialized]);
 
-	useEffect(() => {
-		if (!session) {
-			setInitialized(false);
-			setInitError(null);
-		}
-	}, [session]);
+		return () => {
+			mounted = false;
+		};
+	}, [sessionReady, initialized]);
 
-	if (loading || (session && !initialized && !initError)) {
+	if (!sessionReady || (!initialized && !initError)) {
 		return (
 			<Layout direction="column" full>
 				<div>Loading Astrofox...</div>
 			</Layout>
 		);
-	}
-
-	if (!session) {
-		return <AuthScreen />;
 	}
 
 	if (initError) {

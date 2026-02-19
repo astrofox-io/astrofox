@@ -155,6 +155,10 @@ export async function handleMenuAction(action) {
 			await showModal("About");
 			break;
 
+		case "account":
+			await showModal("AccountModal", { title: "Account" });
+			break;
+
 		case "sign-out":
 			await signOut();
 			break;
