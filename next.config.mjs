@@ -1,61 +1,74 @@
 import path from "node:path";
-import withLess from "next-with-less";
 
 /** @type {import("next").NextConfig} */
-const nextConfig = withLess({
-	webpack(config) {
-		config.resolve.alias = {
-			...(config.resolve.alias || {}),
-			"@": path.resolve(process.cwd(), "src"),
-			actions: path.resolve(process.cwd(), "src/view/actions"),
-			assets: path.resolve(process.cwd(), "src/view/assets"),
-			audio: path.resolve(process.cwd(), "src/audio"),
-			canvas: path.resolve(process.cwd(), "src/canvas"),
-			components: path.resolve(process.cwd(), "src/view/components"),
-			config: path.resolve(process.cwd(), "src/config"),
-			core: path.resolve(process.cwd(), "src/core"),
-			displays: path.resolve(process.cwd(), "src/displays"),
-			drawing: path.resolve(process.cwd(), "src/drawing"),
-			effects: path.resolve(process.cwd(), "src/effects"),
-			global: path.resolve(process.cwd(), "src/view/global.jsx"),
-			graphics: path.resolve(process.cwd(), "src/graphics"),
-			hooks: path.resolve(process.cwd(), "src/view/hooks"),
-			icons: path.resolve(process.cwd(), "src/view/icons.jsx"),
-			shaders: path.resolve(process.cwd(), "src/shaders"),
-			styles: path.resolve(process.cwd(), "src/view/styles"),
-			utils: path.resolve(process.cwd(), "src/utils"),
-			video: path.resolve(process.cwd(), "src/video"),
-			view: path.resolve(process.cwd(), "src/view"),
-			src: path.resolve(process.cwd(), "src"),
-		};
+const resolveFromRoot = (target) => path.resolve(process.cwd(), target);
+const shaderLoader = resolveFromRoot("loaders/glsl-loader.cjs");
 
-		const fileLoaderRule = config.module.rules.find((rule) =>
-			rule?.test?.test?.(".svg"),
-		);
-
-		if (fileLoaderRule) {
-			fileLoaderRule.exclude = /\.svg$/i;
-
-			config.module.rules.push({
-				...fileLoaderRule,
-				test: /\.svg$/i,
-				resourceQuery: /url/,
-			});
-
-			config.module.rules.push({
-				test: /\.svg$/i,
-				resourceQuery: /react/,
-				use: ["@svgr/webpack"],
-			});
-		}
-
-		config.module.rules.push({
-			test: /\.(glsl|vs|fs|vert|frag)$/i,
-			type: "asset/source",
-		});
-
-		return config;
+const nextConfig = {
+	turbopack: {
+		resolveAlias: {
+			"@": resolveFromRoot("src"),
+			actions: resolveFromRoot("src/view/actions"),
+			assets: resolveFromRoot("src/view/assets"),
+			audio: resolveFromRoot("src/audio"),
+			canvas: resolveFromRoot("src/canvas"),
+			components: resolveFromRoot("src/view/components"),
+			config: resolveFromRoot("src/config"),
+			core: resolveFromRoot("src/core"),
+			displays: resolveFromRoot("src/displays"),
+			drawing: resolveFromRoot("src/drawing"),
+			effects: resolveFromRoot("src/effects"),
+			global: resolveFromRoot("src/view/global.jsx"),
+			graphics: resolveFromRoot("src/graphics"),
+			hooks: resolveFromRoot("src/view/hooks"),
+			icons: resolveFromRoot("src/view/icons.jsx"),
+			shaders: resolveFromRoot("src/shaders"),
+			styles: resolveFromRoot("src/view/styles"),
+			utils: resolveFromRoot("src/utils"),
+			video: resolveFromRoot("src/video"),
+			view: resolveFromRoot("src/view"),
+			src: resolveFromRoot("src"),
+		},
+		rules: {
+			"*.less": [
+				{
+					condition: {
+						path: /\.module\.less$/i,
+					},
+					loaders: ["less-loader"],
+					as: "*.module.css",
+				},
+				{
+					loaders: ["less-loader"],
+					as: "*.css",
+				},
+			],
+			"*.svg": {
+				loaders: ["@svgr/webpack"],
+				as: "*.js",
+			},
+			"*.glsl": {
+				loaders: [shaderLoader],
+				as: "*.js",
+			},
+			"*.vs": {
+				loaders: [shaderLoader],
+				as: "*.js",
+			},
+			"*.fs": {
+				loaders: [shaderLoader],
+				as: "*.js",
+			},
+			"*.vert": {
+				loaders: [shaderLoader],
+				as: "*.js",
+			},
+			"*.frag": {
+				loaders: [shaderLoader],
+				as: "*.js",
+			},
+		},
 	},
-});
+};
 
 export default nextConfig;

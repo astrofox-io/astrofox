@@ -18,6 +18,7 @@ Thumbs.db
 .vscode
 _tmp*
 nul
+.pnpm-store
 
 # Project
 node_modules
@@ -25,6 +26,5 @@ bin
 coverage
 dist
 .next
-/app/
 /plugins/
 /resources/

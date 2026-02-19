@@ -1,6 +1,6 @@
 import menuConfig from "@/config/menu.json";
 import { handleMenuAction } from "@/view/actions/app";
-import appIcon from "@/view/assets/logo.svg?react";
+import appIcon from "@/view/assets/logo.svg";
 import Icon from "@/view/components/interface/Icon";
 import MenuBar from "@/view/components/nav/MenuBar";
 import WindowButtons from "@/view/components/window/WindowButtons";

@@ -1,4 +1,3 @@
-import { createRoot, events as fiberEvents } from "@react-three/fiber";
 import React from "react";
 import LegacyBackend from "./LegacyBackend";
 
@@ -6,6 +5,16 @@ const VIEWPORT_ORIGIN = {
 	top: 0,
 	left: 0,
 };
+
+let fiberModulePromise = null;
+
+function loadFiberModule() {
+	if (!fiberModulePromise) {
+		fiberModulePromise = import("@react-three/fiber");
+	}
+
+	return fiberModulePromise;
+}
 
 function R3FShellScene({ backgroundColor }) {
 	return React.createElement("color", {
@@ -63,28 +72,51 @@ export default class R3FBackend extends LegacyBackend {
 			return;
 		}
 
-		this.root = createRoot(canvas);
+		this.rootReady = this.rootReady
+			.then(() => loadFiberModule())
+			.then(({ createRoot }) => {
+				if (!this.root) {
+					this.root = createRoot(canvas);
+				}
+			})
+			.then(() => {
+				this.syncRoot();
+			})
+			.catch((error) => {
+				console.warn("[render] Failed to mount R3F root:", error);
+			});
 	}
 
 	syncRoot() {
-		if (!this.root) {
-			return;
-		}
-
 		const { width, height } = this.size;
 		const backgroundColor = this.backgroundColor;
 
 		this.rootReady = this.rootReady
-			.then(() =>
-				this.root.configure({
-					events: fiberEvents,
+			.then(() => {
+				if (!this.root) {
+					return;
+				}
+
+				return loadFiberModule();
+			})
+			.then((fiberModule) => {
+				if (!this.root || !fiberModule) {
+					return;
+				}
+
+				return this.root.configure({
+					events: fiberModule.events,
 					gl: this.stage.renderer,
 					frameloop: "demand",
 					dpr: 1,
 					size: { width, height, ...VIEWPORT_ORIGIN },
-				}),
-			)
+				});
+			})
 			.then(() => {
+				if (!this.root) {
+					return;
+				}
+
 				this.root.render(
 					React.createElement(R3FShellScene, {
 						backgroundColor,
