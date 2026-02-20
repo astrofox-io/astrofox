@@ -3,9 +3,9 @@ import authStore, {
 	signInWithGoogle,
 	signOut,
 	signUpWithEmail,
-} from "@/view/actions/auth";
-import useAuth from "@/view/actions/auth";
-import Button from "@/view/components/interface/Button";
+} from "@/lib/view/actions/auth";
+import useAuth from "@/lib/view/actions/auth";
+import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
 import styles from "./AccountModal.module.less";
 

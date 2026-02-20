@@ -1,4 +1,4 @@
-import { formatTime } from "@/utils/format";
+import { formatTime } from "@/lib/utils/format";
 import React from "react";
 import styles from "./TimeInfo.module.less";
 

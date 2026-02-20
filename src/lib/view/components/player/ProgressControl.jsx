@@ -1,7 +1,7 @@
-import { RangeInput } from "@/view/components/inputs";
-import TimeInfo from "@/view/components/player/TimeInfo";
-import { player } from "@/view/global";
-import useSharedState from "@/view/hooks/useSharedState";
+import { RangeInput } from "@/lib/view/components/inputs";
+import TimeInfo from "@/lib/view/components/player/TimeInfo";
+import { player } from "@/lib/view/global";
+import useSharedState from "@/lib/view/hooks/useSharedState";
 import React, { useEffect } from "react";
 import styles from "./ProgressControl.module.less";
 

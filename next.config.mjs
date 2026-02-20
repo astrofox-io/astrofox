@@ -7,7 +7,7 @@ const shaderLoader = resolveFromRoot("loaders/glsl-loader.cjs");
 const nextConfig = {
 	turbopack: {
 		resolveAlias: {
-			"@": resolveFromRoot("src/lib"),
+			"@": resolveFromRoot("src"),
 			actions: resolveFromRoot("src/lib/view/actions"),
 			assets: resolveFromRoot("src/lib/view/assets"),
 			audio: resolveFromRoot("src/lib/audio"),

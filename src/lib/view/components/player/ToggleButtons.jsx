@@ -1,8 +1,8 @@
-import useApp, { toggleState } from "@/view/actions/app";
-import Icon from "@/view/components/interface/Icon";
-import { player } from "@/view/global";
-import useForceUpdate from "@/view/hooks/useForceUpdate";
-import { Cycle, SoundBars, SoundWaves } from "@/view/icons";
+import useApp, { toggleState } from "@/lib/view/actions/app";
+import Icon from "@/lib/view/components/interface/Icon";
+import { player } from "@/lib/view/global";
+import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
+import { Cycle, SoundBars, SoundWaves } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
 import shallow from "zustand/shallow";

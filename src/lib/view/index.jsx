@@ -1,4 +1,4 @@
-import App from "@/view/components/App";
+import App from "@/lib/view/components/App";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import * as globals from "./global";

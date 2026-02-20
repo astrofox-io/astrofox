@@ -1,5 +1,5 @@
-import Entity from "@/core/Entity";
-import { normalize } from "@/utils/math";
+import Entity from "@/lib/core/Entity";
+import { normalize } from "@/lib/utils/math";
 
 export default class WaveParser extends Entity {
 	static defaultProperties = {

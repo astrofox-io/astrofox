@@ -1,5 +1,5 @@
-import AudioReactor from "@/audio/AudioReactor";
-import EntityList from "@/core/EntityList";
+import AudioReactor from "@/lib/audio/AudioReactor";
+import EntityList from "@/lib/core/EntityList";
 
 export default class Reactors extends EntityList {
 	constructor() {

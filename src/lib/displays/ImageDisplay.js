@@ -1,8 +1,8 @@
-import WebGLDisplay from "@/core/WebGLDisplay";
-import ImagePass from "@/graphics/ImagePass";
-import { isDefined } from "@/utils/array";
-import { deg2rad } from "@/utils/math";
-import { BLANK_IMAGE } from "@/view/constants";
+import WebGLDisplay from "@/lib/core/WebGLDisplay";
+import ImagePass from "@/lib/graphics/ImagePass";
+import { isDefined } from "@/lib/utils/array";
+import { deg2rad } from "@/lib/utils/math";
+import { BLANK_IMAGE } from "@/lib/view/constants";
 import { Texture, TextureLoader } from "three";
 
 const disabled = (display) => !display.hasImage;

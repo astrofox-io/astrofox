@@ -1,7 +1,7 @@
-import Panel from "@/view/components/layout/Panel";
-import PanelDock from "@/view/components/layout/PanelDock";
-import ControlsPanel from "@/view/components/panels/ControlsPanel";
-import LayersPanel from "@/view/components/panels/LayersPanel";
+import Panel from "@/lib/view/components/layout/Panel";
+import PanelDock from "@/lib/view/components/layout/PanelDock";
+import ControlsPanel from "@/lib/view/components/panels/ControlsPanel";
+import LayersPanel from "@/lib/view/components/panels/LayersPanel";
 import React from "react";
 
 export default function ControlDock() {

@@ -1,5 +1,5 @@
-import menuConfig from "@/config/menu.json";
-import { handleMenuAction } from "@/view/actions/app";
+import menuConfig from "@/lib/config/menu.json";
+import { handleMenuAction } from "@/lib/view/actions/app";
 import React, { useMemo } from "react";
 import styles from "./FileSidebar.module.less";
 

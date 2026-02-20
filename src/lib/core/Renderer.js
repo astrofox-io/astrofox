@@ -4,7 +4,7 @@ import {
 	player,
 	reactors,
 	renderBackend,
-} from "@/view/global";
+} from "@/lib/view/global";
 import Clock from "./Clock";
 
 const STOP_RENDERING = 0;

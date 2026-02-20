@@ -1,7 +1,7 @@
-import { resolve } from "@/utils/object";
-import { inputValueToProps } from "@/utils/react";
-import Option from "@/view/components/controls/Option";
-import useEntity from "@/view/hooks/useEntity";
+import { resolve } from "@/lib/utils/object";
+import { inputValueToProps } from "@/lib/utils/react";
+import Option from "@/lib/view/components/controls/Option";
+import useEntity from "@/lib/view/hooks/useEntity";
 import classNames from "classnames";
 import React from "react";
 import styles from "./Control.module.less";

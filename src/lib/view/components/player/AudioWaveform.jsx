@@ -1,6 +1,6 @@
-import CanvasAudio from "@/canvas/CanvasAudio";
-import { player } from "@/view/global";
-import useSharedState from "@/view/hooks/useSharedState";
+import CanvasAudio from "@/lib/canvas/CanvasAudio";
+import { player } from "@/lib/view/global";
+import useSharedState from "@/lib/view/hooks/useSharedState";
 import classNames from "classnames";
 import React, { useRef, useEffect, useLayoutEffect, useMemo } from "react";
 import styles from "./AudioWaveform.module.less";

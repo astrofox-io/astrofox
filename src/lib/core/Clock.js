@@ -1,4 +1,4 @@
-import { clamp, round } from "@/utils/math";
+import { clamp, round } from "@/lib/utils/math";
 
 export default class Clock {
 	constructor() {

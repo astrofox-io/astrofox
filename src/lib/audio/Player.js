@@ -1,4 +1,4 @@
-import EventEmitter from "@/core/EventEmitter";
+import EventEmitter from "@/lib/core/EventEmitter";
 
 const UPDATE_INTERVAL = 200;
 

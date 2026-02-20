@@ -1,5 +1,5 @@
-import Entity from "@/core/Entity";
-import { getDisplayName } from "@/utils/controls";
+import Entity from "@/lib/core/Entity";
+import { getDisplayName } from "@/lib/utils/controls";
 import cloneDeep from "lodash/cloneDeep";
 
 export default class Display extends Entity {

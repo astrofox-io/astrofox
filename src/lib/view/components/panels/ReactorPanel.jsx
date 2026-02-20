@@ -1,20 +1,20 @@
-import CanvasBars from "@/canvas/CanvasBars";
-import CanvasMeter from "@/canvas/CanvasMeter";
-import { inputValueToProps } from "@/utils/react";
-import useApp, { setActiveReactorId } from "@/view/actions/app";
-import { Control } from "@/view/components/controls";
-import { BoxInput } from "@/view/components/inputs";
-import Icon from "@/view/components/interface/Icon";
+import CanvasBars from "@/lib/canvas/CanvasBars";
+import CanvasMeter from "@/lib/canvas/CanvasMeter";
+import { inputValueToProps } from "@/lib/utils/react";
+import useApp, { setActiveReactorId } from "@/lib/view/actions/app";
+import { Control } from "@/lib/view/components/controls";
+import { BoxInput } from "@/lib/view/components/inputs";
+import Icon from "@/lib/view/components/interface/Icon";
 import {
 	PRIMARY_COLOR,
 	REACTOR_BARS,
 	REACTOR_BAR_HEIGHT,
 	REACTOR_BAR_SPACING,
 	REACTOR_BAR_WIDTH,
-} from "@/view/constants";
-import { events, reactors } from "@/view/global";
-import useEntity from "@/view/hooks/useEntity";
-import { ChevronDown } from "@/view/icons";
+} from "@/lib/view/constants";
+import { events, reactors } from "@/lib/view/global";
+import useEntity from "@/lib/view/hooks/useEntity";
+import { ChevronDown } from "@/lib/view/icons";
 import React, { useEffect, useRef } from "react";
 import styles from "./ReactorPanel.module.less";
 

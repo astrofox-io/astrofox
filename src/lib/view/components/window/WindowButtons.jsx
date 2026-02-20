@@ -1,4 +1,4 @@
-import { api, env } from "@/view/global";
+import { api, env } from "@/lib/view/global";
 import classNames from "classnames";
 import React from "react";
 import styles from "./WindowButtons.module.less";

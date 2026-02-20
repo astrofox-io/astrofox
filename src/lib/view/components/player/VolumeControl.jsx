@@ -1,7 +1,7 @@
-import { RangeInput } from "@/view/components/inputs";
-import Icon from "@/view/components/interface/Icon";
-import { player } from "@/view/global";
-import { Volume, Volume2, Volume3, Volume4 } from "@/view/icons";
+import { RangeInput } from "@/lib/view/components/inputs";
+import Icon from "@/lib/view/components/interface/Icon";
+import { player } from "@/lib/view/global";
+import { Volume, Volume2, Volume3, Volume4 } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
 import styles from "./VolumeControl.module.less";

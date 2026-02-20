@@ -1,11 +1,11 @@
-import Effect from "@/core/Effect";
-import GaussianBlurPass from "@/effects/passes/GaussianBlurPass";
-import BlendPass from "@/graphics/BlendPass";
-import CopyPass from "@/graphics/CopyPass";
-import MultiPass from "@/graphics/MultiPass";
-import ShaderPass from "@/graphics/ShaderPass";
-import { createRenderTarget } from "@/graphics/common";
-import LuminanceShader from "@/shaders/LuminanceShader";
+import Effect from "@/lib/core/Effect";
+import GaussianBlurPass from "@/lib/effects/passes/GaussianBlurPass";
+import BlendPass from "@/lib/graphics/BlendPass";
+import CopyPass from "@/lib/graphics/CopyPass";
+import MultiPass from "@/lib/graphics/MultiPass";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import { createRenderTarget } from "@/lib/graphics/common";
+import LuminanceShader from "@/lib/shaders/LuminanceShader";
 
 const blendOptions = ["Add", "Screen"];
 

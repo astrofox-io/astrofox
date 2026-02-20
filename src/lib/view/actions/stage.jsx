@@ -1,11 +1,11 @@
-import { clamp } from "@/utils/math";
+import { clamp } from "@/lib/utils/math";
 import {
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
 	DEFAULT_ZOOM,
-} from "@/view/constants";
-import { renderBackend } from "@/view/global";
+} from "@/lib/view/constants";
+import { renderBackend } from "@/lib/view/global";
 import create from "zustand";
 import { touchProject } from "./project";
 

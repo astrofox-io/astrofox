@@ -1,5 +1,5 @@
-import useApp from "@/view/actions/app";
-import { player } from "@/view/global";
+import useApp from "@/lib/view/actions/app";
+import { player } from "@/lib/view/global";
 import React, { useState, useEffect, useCallback } from "react";
 import shallow from "zustand/shallow";
 import AudioWaveform from "./AudioWaveform";

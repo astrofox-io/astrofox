@@ -1,5 +1,5 @@
-import useProject, { relinkMediaRef } from "@/view/actions/project";
-import Button from "@/view/components/interface/Button";
+import useProject, { relinkMediaRef } from "@/lib/view/actions/project";
+import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
 import styles from "./RelinkMediaDialog.module.less";
 

@@ -1,27 +1,27 @@
-import AudioReactor from "@/audio/AudioReactor";
-import Display from "@/core/Display";
-import Entity from "@/core/Entity";
-import Scene from "@/core/Scene";
-import Stage from "@/core/Stage";
-import { resetLabelCount } from "@/utils/controls";
-import authStore from "@/view/actions/auth";
-import { raiseError } from "@/view/actions/error";
-import { showModal } from "@/view/actions/modals";
-import { loadReactors, resetReactors } from "@/view/actions/reactors";
+import AudioReactor from "@/lib/audio/AudioReactor";
+import Display from "@/lib/core/Display";
+import Entity from "@/lib/core/Entity";
+import Scene from "@/lib/core/Scene";
+import Stage from "@/lib/core/Stage";
+import { resetLabelCount } from "@/lib/utils/controls";
+import authStore from "@/lib/view/actions/auth";
+import { raiseError } from "@/lib/view/actions/error";
+import { showModal } from "@/lib/view/actions/modals";
+import { loadReactors, resetReactors } from "@/lib/view/actions/reactors";
 import {
 	getScenesSnapshot,
 	loadScenes,
 	resetScenes,
 	updateElementProperty,
-} from "@/view/actions/scenes";
-import { updateCanvas, updateStage } from "@/view/actions/stage";
+} from "@/lib/view/actions/scenes";
+import { updateCanvas, updateStage } from "@/lib/view/actions/stage";
 import {
 	BLANK_IMAGE,
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
-} from "@/view/constants";
-import { api, env, library, logger, reactors, stage } from "@/view/global";
+} from "@/lib/view/constants";
+import { api, env, library, logger, reactors, stage } from "@/lib/view/global";
 import cloneDeep from "lodash/cloneDeep";
 import create from "zustand";
 

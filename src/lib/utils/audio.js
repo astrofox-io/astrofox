@@ -1,5 +1,5 @@
-import Audio from "@/audio/Audio";
-import { audioContext } from "@/view/global";
+import Audio from "@/lib/audio/Audio";
+import { audioContext } from "@/lib/view/global";
 
 export function loadAudioData(data) {
 	return new Promise((resolve, reject) => {

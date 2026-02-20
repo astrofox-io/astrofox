@@ -1,7 +1,7 @@
-import Display from "@/core/Display";
-import Effect from "@/core/Effect";
-import EntityList from "@/core/EntityList";
-import Composer from "@/graphics/Composer";
+import Display from "@/lib/core/Display";
+import Effect from "@/lib/core/Effect";
+import EntityList from "@/lib/core/EntityList";
+import Composer from "@/lib/graphics/Composer";
 import { renderImageToCanvas } from "../utils/canvas";
 
 const blendOptions = [

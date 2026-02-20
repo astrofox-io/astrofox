@@ -1,5 +1,5 @@
-import EventEmitter from "@/core/EventEmitter";
-import { api, logger } from "@/view/global";
+import EventEmitter from "@/lib/core/EventEmitter";
+import { api, logger } from "@/lib/view/global";
 
 export default class Process extends EventEmitter {
 	constructor(command) {

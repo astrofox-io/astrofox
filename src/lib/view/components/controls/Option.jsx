@@ -1,11 +1,11 @@
-import inputComponents from "@/view/components/controls/inputComponents";
+import inputComponents from "@/lib/view/components/controls/inputComponents";
 import {
 	RangeInput,
 	ReactorButton,
 	ReactorInput,
-} from "@/view/components/inputs";
-import Icon from "@/view/components/interface/Icon";
-import { Link } from "@/view/icons";
+} from "@/lib/view/components/inputs";
+import Icon from "@/lib/view/components/interface/Icon";
+import { Link } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
 import styles from "./Option.module.less";

@@ -1,5 +1,5 @@
-import EventEmitter from "@/core/EventEmitter";
-import env from "@/view/env";
+import EventEmitter from "@/lib/core/EventEmitter";
+import env from "@/lib/view/env";
 import jsmediatags from "jsmediatags/dist/jsmediatags.min.js";
 
 const events = new EventEmitter();

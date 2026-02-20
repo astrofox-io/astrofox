@@ -1,6 +1,6 @@
-import ShaderPass from "@/graphics/ShaderPass";
-import blendModes from "@/graphics/blendModes";
-import BlendShader from "@/shaders/BlendShader";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import blendModes from "@/lib/graphics/blendModes";
+import BlendShader from "@/lib/shaders/BlendShader";
 
 export default class BlendPass extends ShaderPass {
 	constructor(buffer) {

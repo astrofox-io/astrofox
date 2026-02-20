@@ -2,8 +2,8 @@ import useAuth, {
 	signInWithEmail,
 	signInWithGoogle,
 	signUpWithEmail,
-} from "@/view/actions/auth";
-import Button from "@/view/components/interface/Button";
+} from "@/lib/view/actions/auth";
+import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
 import styles from "./AuthScreen.module.less";
 

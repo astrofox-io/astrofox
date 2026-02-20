@@ -1,14 +1,14 @@
-import useStage, { updateCanvas } from "@/view/actions/stage";
-import { Setting, Settings } from "@/view/components/controls";
-import Button from "@/view/components/interface/Button";
-import ButtonRow from "@/view/components/layout/ButtonRow";
-import Layout from "@/view/components/layout/Layout";
+import useStage, { updateCanvas } from "@/lib/view/actions/stage";
+import { Setting, Settings } from "@/lib/view/components/controls";
+import Button from "@/lib/view/components/interface/Button";
+import ButtonRow from "@/lib/view/components/layout/ButtonRow";
+import Layout from "@/lib/view/components/layout/Layout";
 import {
 	MAX_CANVAS_HEIGHT,
 	MAX_CANVAS_WIDTH,
 	MIN_CANVAS_HEIGHT,
 	MIN_CANVAS_WIDTH,
-} from "@/view/constants";
+} from "@/lib/view/constants";
 import React, { useState } from "react";
 
 export default function CanvasSettings({ onClose }) {

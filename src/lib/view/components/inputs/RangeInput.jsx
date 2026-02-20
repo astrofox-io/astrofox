@@ -1,4 +1,4 @@
-import { normalize } from "@/utils/math";
+import { normalize } from "@/lib/utils/math";
 import classNames from "classnames";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./RangeInput.module.less";

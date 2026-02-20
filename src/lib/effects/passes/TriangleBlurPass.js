@@ -1,6 +1,6 @@
-import MultiPass from "@/graphics/MultiPass";
-import ShaderPass from "@/graphics/ShaderPass";
-import TriangleBlurShader from "@/shaders/TriangleBlurShader";
+import MultiPass from "@/lib/graphics/MultiPass";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import TriangleBlurShader from "@/lib/shaders/TriangleBlurShader";
 
 const BLUR_PASSES = 4;
 

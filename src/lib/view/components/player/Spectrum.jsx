@@ -1,6 +1,6 @@
-import FFTParser from "@/audio/FFTParser";
-import CanvasBars from "@/canvas/CanvasBars";
-import { FFT_SIZE, SAMPLE_RATE } from "@/view/constants";
+import FFTParser from "@/lib/audio/FFTParser";
+import CanvasBars from "@/lib/canvas/CanvasBars";
+import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 import React, { useEffect, useRef, useImperativeHandle } from "react";
 import styles from "./Spectrum.module.less";
 

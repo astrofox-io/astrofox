@@ -1,5 +1,5 @@
-import { uniqueId } from "@/utils/crypto";
-import { resolve, updateExistingProps } from "@/utils/object";
+import { uniqueId } from "@/lib/utils/crypto";
+import { resolve, updateExistingProps } from "@/lib/utils/object";
 import cloneDeep from "lodash/cloneDeep";
 
 export default class Entity {

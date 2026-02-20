@@ -1,6 +1,6 @@
-import MultiPass from "@/graphics/MultiPass";
-import ShaderPass from "@/graphics/ShaderPass";
-import GaussianBlurShader from "@/shaders/GaussianBlurShader";
+import MultiPass from "@/lib/graphics/MultiPass";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import GaussianBlurShader from "@/lib/shaders/GaussianBlurShader";
 
 const BLUR_PASSES = 8;
 

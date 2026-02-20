@@ -1,8 +1,8 @@
-export { default as About } from "@/view/components/modals/About";
-export { default as AccountModal } from "@/view/components/modals/AccountModal";
-export { default as CanvasSettings } from "@/view/components/modals/CanvasSettings";
-export { default as ControlPicker } from "@/view/components/modals/ControlPicker";
-export { default as ProjectBrowser } from "@/view/components/modals/ProjectBrowser";
-export { default as RelinkMediaDialog } from "@/view/components/modals/RelinkMediaDialog";
-export { default as UnsavedChangesDialog } from "@/view/components/dialogs/UnsavedChangesDialog";
-export { default as ErrorDialog } from "@/view/components/dialogs/ErrorDialog";
+export { default as About } from "@/lib/view/components/modals/About";
+export { default as AccountModal } from "@/lib/view/components/modals/AccountModal";
+export { default as CanvasSettings } from "@/lib/view/components/modals/CanvasSettings";
+export { default as ControlPicker } from "@/lib/view/components/modals/ControlPicker";
+export { default as ProjectBrowser } from "@/lib/view/components/modals/ProjectBrowser";
+export { default as RelinkMediaDialog } from "@/lib/view/components/modals/RelinkMediaDialog";
+export { default as UnsavedChangesDialog } from "@/lib/view/components/dialogs/UnsavedChangesDialog";
+export { default as ErrorDialog } from "@/lib/view/components/dialogs/ErrorDialog";

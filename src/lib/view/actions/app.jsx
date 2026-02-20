@@ -1,9 +1,9 @@
-import Plugin from "@/core/Plugin";
-import * as displays from "@/displays";
-import * as effects from "@/effects";
-import { openAudioFile } from "@/view/actions/audio";
-import { raiseError } from "@/view/actions/error";
-import { showModal } from "@/view/actions/modals";
+import Plugin from "@/lib/core/Plugin";
+import * as displays from "@/lib/displays";
+import * as effects from "@/lib/effects";
+import { openAudioFile } from "@/lib/view/actions/audio";
+import { raiseError } from "@/lib/view/actions/error";
+import { showModal } from "@/lib/view/actions/modals";
 import {
 	checkUnsavedChanges,
 	duplicateProject,
@@ -11,7 +11,7 @@ import {
 	openProjectBrowser,
 	openRelinkMediaDialog,
 	saveProject,
-} from "@/view/actions/project";
+} from "@/lib/view/actions/project";
 import {
 	api,
 	env,
@@ -19,7 +19,7 @@ import {
 	logger,
 	renderBackend,
 	renderer,
-} from "@/view/global";
+} from "@/lib/view/global";
 import create from "zustand";
 
 const initialState = {

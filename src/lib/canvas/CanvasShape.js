@@ -1,6 +1,6 @@
-import Entity from "@/core/Entity";
-import { resetCanvas } from "@/utils/canvas";
-import { deg2rad } from "@/utils/math";
+import Entity from "@/lib/core/Entity";
+import { resetCanvas } from "@/lib/utils/canvas";
+import { deg2rad } from "@/lib/utils/math";
 
 const TRIANGLE_ANGLE = (2 * Math.PI) / 3;
 const HEXAGON_ANGLE = (2 * Math.PI) / 6;

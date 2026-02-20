@@ -1,6 +1,6 @@
-import Button from "@/view/components/interface/Button";
-import Icon from "@/view/components/interface/Icon";
-import { Times } from "@/view/icons";
+import Button from "@/lib/view/components/interface/Button";
+import Icon from "@/lib/view/components/interface/Icon";
+import { Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { Children, cloneElement } from "react";
 import styles from "./ModalWindow.module.less";

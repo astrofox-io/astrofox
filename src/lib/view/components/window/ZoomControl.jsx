@@ -3,7 +3,7 @@ import useStage, {
 	zoomIn,
 	zoomOut,
 	fitToScreen,
-} from "@/view/actions/stage";
+} from "@/lib/view/actions/stage";
 import React from "react";
 import styles from "./ZoomControl.module.less";
 

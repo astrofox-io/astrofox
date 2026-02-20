@@ -1,11 +1,24 @@
 "use client";
 
+import Spinner from "@/lib/view/components/interface/Spinner";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 
-const AstrofoxApp = dynamic(() => import("@/view/components/App"), {
+const loadingScreenStyle = {
+	position: "fixed",
+	inset: 0,
+	display: "flex",
+	justifyContent: "center",
+	alignItems: "center",
+};
+
+const AstrofoxApp = dynamic(() => import("@/lib/view/components/App"), {
 	ssr: false,
-	loading: () => <div>Loading Astrofox...</div>,
+	loading: () => (
+		<div style={loadingScreenStyle}>
+			<Spinner size={56} />
+		</div>
+	),
 });
 
 export default function HomePage() {
@@ -16,7 +29,7 @@ export default function HomePage() {
 			return;
 		}
 
-		import("@/view/global").then((globals) => {
+		import("@/lib/view/global").then((globals) => {
 			window._astrofox = globals;
 		});
 	}, []);

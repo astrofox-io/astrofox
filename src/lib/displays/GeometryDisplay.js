@@ -1,7 +1,7 @@
-import FFTParser from "@/audio/FFTParser";
-import WebGLDisplay from "@/core/WebGLDisplay";
-import { isDefined } from "@/utils/array";
-import POINT_SPRITE from "@/view/assets/images/point.png";
+import FFTParser from "@/lib/audio/FFTParser";
+import WebGLDisplay from "@/lib/core/WebGLDisplay";
+import { isDefined } from "@/lib/utils/array";
+import POINT_SPRITE from "@/lib/view/assets/images/point.png";
 import {
 	BoxBufferGeometry,
 	Color,

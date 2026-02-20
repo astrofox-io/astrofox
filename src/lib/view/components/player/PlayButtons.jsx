@@ -1,7 +1,7 @@
-import Icon from "@/view/components/interface/Icon";
-import { player } from "@/view/global";
-import useForceUpdate from "@/view/hooks/useForceUpdate";
-import { Pause, Play, Stop } from "@/view/icons";
+import Icon from "@/lib/view/components/interface/Icon";
+import { player } from "@/lib/view/global";
+import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
+import { Pause, Play, Stop } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 import styles from "./PlayButtons.module.less";

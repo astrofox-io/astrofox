@@ -1,8 +1,8 @@
-import { reverse } from "@/utils/array";
-import useApp from "@/view/actions/app";
-import useScenes from "@/view/actions/scenes";
-import Control from "@/view/components/controls/Control";
-import { stage } from "@/view/global";
+import { reverse } from "@/lib/utils/array";
+import useApp from "@/lib/view/actions/app";
+import useScenes from "@/lib/view/actions/scenes";
+import Control from "@/lib/view/components/controls/Control";
+import { stage } from "@/lib/view/global";
 import React, { useMemo, useRef, useEffect } from "react";
 import styles from "./ControlsPanel.module.less";
 

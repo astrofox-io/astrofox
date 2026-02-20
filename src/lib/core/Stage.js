@@ -1,16 +1,16 @@
-import Entity from "@/core/Entity";
-import EntityList from "@/core/EntityList";
-import Scene from "@/core/Scene";
-import CanvasBuffer from "@/graphics/CanvasBuffer";
-import Composer from "@/graphics/Composer";
-import WebGLBuffer from "@/graphics/WebGLBuffer";
-import { getRenderer } from "@/graphics/common";
-import { isDefined } from "@/utils/array";
+import Entity from "@/lib/core/Entity";
+import EntityList from "@/lib/core/EntityList";
+import Scene from "@/lib/core/Scene";
+import CanvasBuffer from "@/lib/graphics/CanvasBuffer";
+import Composer from "@/lib/graphics/Composer";
+import WebGLBuffer from "@/lib/graphics/WebGLBuffer";
+import { getRenderer } from "@/lib/graphics/common";
+import { isDefined } from "@/lib/utils/array";
 import {
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
-} from "@/view/constants";
+} from "@/lib/view/constants";
 import cloneDeep from "lodash/cloneDeep";
 import { Color } from "three";
 

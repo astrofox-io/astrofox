@@ -1,13 +1,13 @@
-import Effect from "@/core/Effect";
-import GaussianBlurPass from "@/effects/passes/GaussianBlurPass";
-import LensBlurPass from "@/effects/passes/LensBlurPass";
-import TriangleBlurPass from "@/effects/passes/TriangleBlurPass";
-import ShaderPass from "@/graphics/ShaderPass";
-import BoxBlurShader from "@/shaders/BoxBlurShader";
-import CircularBlurShader from "@/shaders/CircularBlurShader";
-import ZoomBlurShader from "@/shaders/ZoomBlurShader";
-import { property, stageHeight, stageWidth } from "@/utils/controls";
-import { normalize } from "@/utils/math";
+import Effect from "@/lib/core/Effect";
+import GaussianBlurPass from "@/lib/effects/passes/GaussianBlurPass";
+import LensBlurPass from "@/lib/effects/passes/LensBlurPass";
+import TriangleBlurPass from "@/lib/effects/passes/TriangleBlurPass";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import BoxBlurShader from "@/lib/shaders/BoxBlurShader";
+import CircularBlurShader from "@/lib/shaders/CircularBlurShader";
+import ZoomBlurShader from "@/lib/shaders/ZoomBlurShader";
+import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
+import { normalize } from "@/lib/utils/math";
 
 const blurOptions = ["Box", "Circular", "Gaussian", "Triangle", "Zoom"];
 

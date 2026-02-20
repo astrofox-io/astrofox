@@ -1,6 +1,6 @@
-import Effect from "@/core/Effect";
-import ShaderPass from "@/graphics/ShaderPass";
-import GlitchShader from "@/shaders/GlitchShader";
+import Effect from "@/lib/core/Effect";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import GlitchShader from "@/lib/shaders/GlitchShader";
 import { DataTexture, FloatType, RGBFormat, Math as _Math } from "three";
 
 export default class GlitchEffect extends Effect {

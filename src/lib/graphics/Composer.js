@@ -1,8 +1,8 @@
-import ShaderPass from "@/graphics/ShaderPass";
-import blendModes from "@/graphics/blendModes";
-import BlendShader from "@/shaders/BlendShader";
-import CopyShader from "@/shaders/CopyShader";
-import { base64ToBytes } from "@/utils/data";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import blendModes from "@/lib/graphics/blendModes";
+import BlendShader from "@/lib/shaders/BlendShader";
+import CopyShader from "@/lib/shaders/CopyShader";
+import { base64ToBytes } from "@/lib/utils/data";
 import { Color } from "three";
 import { createRenderTarget } from "./common";
 

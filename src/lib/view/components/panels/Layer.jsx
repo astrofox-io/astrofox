@@ -1,6 +1,6 @@
-import TextInput from "@/view/components/inputs/TextInput";
-import Icon from "@/view/components/interface/Icon";
-import { Eye } from "@/view/icons";
+import TextInput from "@/lib/view/components/inputs/TextInput";
+import Icon from "@/lib/view/components/interface/Icon";
+import { Eye } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
 import styles from "./Layer.module.less";

@@ -1,8 +1,8 @@
-import { setActiveReactorId } from "@/view/actions/app";
-import { addReactor } from "@/view/actions/reactors";
-import { loadScenes } from "@/view/actions/scenes";
-import Icon from "@/view/components/interface/Icon";
-import { Flash } from "@/view/icons";
+import { setActiveReactorId } from "@/lib/view/actions/app";
+import { addReactor } from "@/lib/view/actions/reactors";
+import { loadScenes } from "@/lib/view/actions/scenes";
+import Icon from "@/lib/view/components/interface/Icon";
+import { Flash } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
 import styles from "./ReactorButton.module.less";

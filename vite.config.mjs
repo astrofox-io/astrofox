@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => ({
 	},
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "src/lib"),
+			"@": path.resolve(__dirname, "src"),
 			actions: path.resolve(__dirname, "src/lib/view/actions"),
 			assets: path.resolve(__dirname, "src/lib/view/assets"),
 			audio: path.resolve(__dirname, "src/lib/audio"),

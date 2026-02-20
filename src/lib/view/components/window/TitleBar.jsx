@@ -1,8 +1,8 @@
-import appIcon from "@/view/assets/logo.svg";
-import Icon from "@/view/components/interface/Icon";
-import WindowButtons from "@/view/components/window/WindowButtons";
-import { env } from "@/view/global";
-import useWindowState from "@/view/hooks/useWindowState";
+import appIcon from "@/app/icon.svg";
+import Icon from "@/lib/view/components/interface/Icon";
+import WindowButtons from "@/lib/view/components/window/WindowButtons";
+import { env } from "@/lib/view/global";
+import useWindowState from "@/lib/view/hooks/useWindowState";
 import classNames from "classnames";
 import React from "react";
 import styles from "./TitleBar.module.less";

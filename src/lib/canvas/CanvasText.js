@@ -1,5 +1,5 @@
-import Entity from "@/core/Entity";
-import { resetCanvas } from "@/utils/canvas";
+import Entity from "@/lib/core/Entity";
+import { resetCanvas } from "@/lib/utils/canvas";
 
 export default class CanvasText extends Entity {
 	static defaultProperties = {

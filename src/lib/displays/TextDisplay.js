@@ -1,7 +1,7 @@
-import CanvasText from "@/canvas/CanvasText";
-import fonts from "@/config/fonts.json";
-import CanvasDisplay from "@/core/CanvasDisplay";
-import { stageHeight, stageWidth } from "@/utils/controls";
+import CanvasText from "@/lib/canvas/CanvasText";
+import fonts from "@/lib/config/fonts.json";
+import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import { stageHeight, stageWidth } from "@/lib/utils/controls";
 
 const fontOptions = fonts.map((item) => ({
 	label: item,

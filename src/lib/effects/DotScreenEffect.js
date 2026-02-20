@@ -1,7 +1,7 @@
-import Effect from "@/core/Effect";
-import ShaderPass from "@/graphics/ShaderPass";
-import DotScreenShader from "@/shaders/DotScreenShader";
-import { deg2rad } from "@/utils/math";
+import Effect from "@/lib/core/Effect";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import DotScreenShader from "@/lib/shaders/DotScreenShader";
+import { deg2rad } from "@/lib/utils/math";
 
 export default class DotScreenEffect extends Effect {
 	static config = {

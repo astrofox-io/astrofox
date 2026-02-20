@@ -1,6 +1,6 @@
-import Entity from "@/core/Entity";
-import { db2mag, floor, normalize } from "@/utils/math";
-import { FFT_SIZE, SAMPLE_RATE } from "@/view/constants";
+import Entity from "@/lib/core/Entity";
+import { db2mag, floor, normalize } from "@/lib/utils/math";
+import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
 export default class FFTParser extends Entity {
 	static defaultProperties = {

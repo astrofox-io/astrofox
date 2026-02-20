@@ -1,4 +1,4 @@
-import Menu from "@/view/components/nav/Menu";
+import Menu from "@/lib/view/components/nav/Menu";
 import classNames from "classnames";
 import React from "react";
 import styles from "./MenuBarItem.module.less";

@@ -1,4 +1,4 @@
-import { easeInQuad } from "@/utils/easing";
+import { easeInQuad } from "@/lib/utils/easing";
 import React from "react";
 import { animated, useTransition } from "react-spring";
 import styles from "./Overlay.module.less";

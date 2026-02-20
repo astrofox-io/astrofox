@@ -1,5 +1,5 @@
-import Entity from "@/core/Entity";
-import { resetCanvas, setColor } from "@/utils/canvas";
+import Entity from "@/lib/core/Entity";
+import { resetCanvas, setColor } from "@/lib/utils/canvas";
 
 export default class CanvasMeter extends Entity {
 	static defaultProperties = {

@@ -1,5 +1,5 @@
-import { clamp } from "@/utils/math.js";
-import useMouseDrag from "@/view/hooks/useMouseDrag";
+import { clamp } from "@/lib/utils/math.js";
+import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import React, { useRef } from "react";
 import styles from "./BoxInput.module.less";
 

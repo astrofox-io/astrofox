@@ -1,17 +1,26 @@
-import { ignoreEvents } from "@/utils/react";
-import { initApp } from "@/view/actions/app";
-import { bootstrapSession } from "@/view/actions/auth";
-import Layout from "@/view/components/layout/Layout";
-import NavSidebar from "@/view/components/nav/NavSidebar";
-import ControlDock from "@/view/components/panels/ControlDock";
-import ReactorPanel from "@/view/components/panels/ReactorPanel";
-import Player from "@/view/components/player/Player";
-import Stage from "@/view/components/stage/Stage";
-import Modals from "@/view/components/window/Modals";
-import Preload from "@/view/components/window/Preload";
-import StatusBar from "@/view/components/window/StatusBar";
-import TitleBar from "@/view/components/window/TitleBar";
+import { ignoreEvents } from "@/lib/utils/react";
+import { initApp } from "@/lib/view/actions/app";
+import { bootstrapSession } from "@/lib/view/actions/auth";
+import Spinner from "@/lib/view/components/interface/Spinner";
+import Layout from "@/lib/view/components/layout/Layout";
+import NavSidebar from "@/lib/view/components/nav/NavSidebar";
+import ControlDock from "@/lib/view/components/panels/ControlDock";
+import ReactorPanel from "@/lib/view/components/panels/ReactorPanel";
+import Player from "@/lib/view/components/player/Player";
+import Stage from "@/lib/view/components/stage/Stage";
+import Modals from "@/lib/view/components/window/Modals";
+import Preload from "@/lib/view/components/window/Preload";
+import StatusBar from "@/lib/view/components/window/StatusBar";
+import TitleBar from "@/lib/view/components/window/TitleBar";
 import React, { useEffect, useState } from "react";
+
+const loadingContainerStyle = {
+	width: "100%",
+	height: "100%",
+	display: "flex",
+	justifyContent: "center",
+	alignItems: "center",
+};
 
 function App() {
 	const [sessionReady, setSessionReady] = useState(false);
@@ -63,7 +72,9 @@ function App() {
 	if (!sessionReady || (!initialized && !initError)) {
 		return (
 			<Layout direction="column" full>
-				<div>Loading Astrofox...</div>
+				<div style={loadingContainerStyle}>
+					<Spinner size={56} />
+				</div>
 			</Layout>
 		);
 	}

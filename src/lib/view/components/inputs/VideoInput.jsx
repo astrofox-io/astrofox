@@ -1,9 +1,9 @@
-import { ignoreEvents } from "@/utils/react";
-import { raiseError } from "@/view/actions/error";
-import Icon from "@/view/components/interface/Icon";
-import { BLANK_IMAGE } from "@/view/constants";
-import { api } from "@/view/global";
-import { FolderOpen, Times } from "@/view/icons";
+import { ignoreEvents } from "@/lib/utils/react";
+import { raiseError } from "@/lib/view/actions/error";
+import Icon from "@/lib/view/components/interface/Icon";
+import { BLANK_IMAGE } from "@/lib/view/constants";
+import { api } from "@/lib/view/global";
+import { FolderOpen, Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
 import styles from "./ImageInput.module.less";

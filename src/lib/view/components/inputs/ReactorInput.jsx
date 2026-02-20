@@ -1,11 +1,11 @@
-import CanvasMeter from "@/canvas/CanvasMeter";
-import { setActiveReactorId } from "@/view/actions/app";
-import { removeReactor } from "@/view/actions/reactors";
-import { loadScenes } from "@/view/actions/scenes";
-import Icon from "@/view/components/interface/Icon";
-import { PRIMARY_COLOR } from "@/view/constants";
-import { events, reactors } from "@/view/global";
-import { Times } from "@/view/icons";
+import CanvasMeter from "@/lib/canvas/CanvasMeter";
+import { setActiveReactorId } from "@/lib/view/actions/app";
+import { removeReactor } from "@/lib/view/actions/reactors";
+import { loadScenes } from "@/lib/view/actions/scenes";
+import Icon from "@/lib/view/components/interface/Icon";
+import { PRIMARY_COLOR } from "@/lib/view/constants";
+import { events, reactors } from "@/lib/view/global";
+import { Times } from "@/lib/view/icons";
 import React, { useRef, useEffect, useMemo } from "react";
 import styles from "./ReactorInput.module.less";
 

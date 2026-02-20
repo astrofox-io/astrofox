@@ -1,5 +1,5 @@
-import "@/view/fonts.css";
-import "@/view/styles/index.less";
+import "@/lib/view/fonts.css";
+import "@/lib/view/styles/index.less";
 
 export const metadata = {
 	title: "Astrofox",

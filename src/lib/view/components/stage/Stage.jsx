@@ -1,7 +1,7 @@
-import { ignoreEvents } from "@/utils/react";
-import useAudioStore, { loadAudioFile } from "@/view/actions/audio";
-import useStage from "@/view/actions/stage";
-import { analyzer, renderBackend } from "@/view/global";
+import { ignoreEvents } from "@/lib/utils/react";
+import useAudioStore, { loadAudioFile } from "@/lib/view/actions/audio";
+import useStage from "@/lib/view/actions/stage";
+import { analyzer, renderBackend } from "@/lib/view/global";
 import React, { useEffect, useRef } from "react";
 import { animated, useTransition } from "react-spring";
 import shallow from "zustand/shallow";

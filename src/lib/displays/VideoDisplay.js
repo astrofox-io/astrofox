@@ -1,6 +1,6 @@
-import CanvasDisplay from "@/core/CanvasDisplay";
-import { isDefined } from "@/utils/array";
-import { BLANK_IMAGE } from "@/view/constants";
+import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import { isDefined } from "@/lib/utils/array";
+import { BLANK_IMAGE } from "@/lib/view/constants";
 
 const disabled = (display) => !display.hasVideo;
 const maxWidth = (display) => {

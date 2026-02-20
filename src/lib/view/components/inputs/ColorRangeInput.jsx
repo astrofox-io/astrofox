@@ -1,4 +1,4 @@
-import { ColorInput } from "@/view/components/inputs/index";
+import { ColorInput } from "@/lib/view/components/inputs/index";
 import React from "react";
 import styles from "./ColorRangeInput.module.less";
 

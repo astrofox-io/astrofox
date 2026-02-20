@@ -1,8 +1,8 @@
-import FFTParser from "@/audio/FFTParser";
-import CanvasBars from "@/canvas/CanvasBars";
-import CanvasDisplay from "@/core/CanvasDisplay";
-import { property, stageHeight, stageWidth } from "@/utils/controls";
-import { FFT_SIZE, SAMPLE_RATE } from "@/view/constants";
+import FFTParser from "@/lib/audio/FFTParser";
+import CanvasBars from "@/lib/canvas/CanvasBars";
+import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
+import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
 export default class BarSpectrumDisplay extends CanvasDisplay {
 	static config = {

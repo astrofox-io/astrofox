@@ -1,8 +1,8 @@
-import Effect from "@/core/Effect";
-import ShaderPass from "@/graphics/ShaderPass";
-import RGBShiftShader from "@/shaders/RGBShiftShader";
-import { stageWidth } from "@/utils/controls";
-import { deg2rad } from "@/utils/math";
+import Effect from "@/lib/core/Effect";
+import ShaderPass from "@/lib/graphics/ShaderPass";
+import RGBShiftShader from "@/lib/shaders/RGBShiftShader";
+import { stageWidth } from "@/lib/utils/controls";
+import { deg2rad } from "@/lib/utils/math";
 
 export default class RGBShiftEffect extends Effect {
 	static config = {
