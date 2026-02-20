@@ -24,7 +24,6 @@ export const env = {
 	RENDER_BACKEND,
 	USER_AGENT,
 	USER_DATA_PATH: null,
-	APP_CONFIG_FILE: null,
 };
 
 export default env;

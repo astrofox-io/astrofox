@@ -3,7 +3,6 @@ import { trimChars } from "@/utils/string";
 import { analyzer, api, logger, player } from "@/view/global";
 import create from "zustand";
 import appStore from "./app";
-import configStore from "./config";
 import { raiseError } from "./error";
 
 export const initialState = {
@@ -35,11 +34,9 @@ export async function loadAudioFile(file, play) {
 		player.load(audio);
 		audio.addNode(analyzer.analyzer);
 
-		if (!play) {
-			play = configStore.getState().autoPlayAudio;
-		}
+		const shouldPlay = play ?? true;
 
-		if (play) {
+		if (shouldPlay) {
 			player.play();
 		}
 
@@ -74,11 +71,9 @@ export async function openAudioFile(play) {
 	});
 
 	if (!canceled && files && files.length) {
-		if (!play) {
-			play = configStore.getState().autoPlayAudio;
-		}
+		const shouldPlay = play ?? true;
 
-		await loadAudioFile(files[0], play);
+		await loadAudioFile(files[0], shouldPlay);
 	}
 }
 

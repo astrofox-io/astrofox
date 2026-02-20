@@ -1,20 +1,17 @@
 import menuConfig from "@/config/menu.json";
 import { handleMenuAction } from "@/view/actions/app";
-import { Cube, FolderOpen, GearSix } from "@phosphor-icons/react";
+import { Cube, FolderOpen } from "@phosphor-icons/react";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
 import styles from "./NavSidebar.module.less";
 
 const NAV_LABELS = ["File", "Edit"];
-const SETTINGS_ACTIONS = new Set(["account", "sign-out", "about"]);
-const EDIT_SETTINGS_ACTION = "edit-settings";
 const EDIT_CANVAS_ACTION = "edit-canvas";
 
 const ICON_MAP = {
 	File: FolderOpen,
 	Canvas: Cube,
-	Settings: GearSix,
 };
 
 function cloneSubmenu(items = []) {
@@ -25,17 +22,7 @@ function createNavItems() {
 	const topLevelItems = menuConfig
 		.filter((item) => NAV_LABELS.includes(item.label))
 		.map((item) => {
-			const submenu = cloneSubmenu(item.submenu).filter((submenuItem) => {
-				if (submenuItem.type === "separator") {
-					return true;
-				}
-
-				if (submenuItem.action === EDIT_SETTINGS_ACTION) {
-					return false;
-				}
-
-				return !SETTINGS_ACTIONS.has(submenuItem.action);
-			});
+			const submenu = cloneSubmenu(item.submenu);
 
 			if (
 				item.label === "Edit" &&
@@ -54,16 +41,6 @@ function createNavItems() {
 				submenu,
 			};
 		});
-
-	topLevelItems.push({
-		label: "Settings",
-		submenu: [
-			{ label: "App settings", action: "edit-settings" },
-			{ type: "separator" },
-			{ label: "Account", action: "account" },
-			{ label: "Sign out", action: "sign-out" },
-		],
-	});
 
 	return topLevelItems.map((item) => ({
 		...item,
@@ -148,16 +125,10 @@ export default function NavSidebar() {
 			{items.map((item, index) => {
 				const hasMenu = item.submenu.length > 0;
 				const isActive = hasMenu && activeIndex === index;
-				const Icon = ICON_MAP[item.label] || GearSix;
-				const isSettings = item.label === "Settings";
+				const Icon = ICON_MAP[item.label] || FolderOpen;
 
 				return (
-					<div
-						key={item.label}
-						className={classNames(styles.group, {
-							[styles.bottomGroup]: isSettings,
-						})}
-					>
+					<div key={item.label} className={styles.group}>
 						<button
 							type="button"
 							className={classNames(styles.button, {

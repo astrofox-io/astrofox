@@ -3,7 +3,6 @@ import env from "@/view/env";
 import jsmediatags from "jsmediatags/dist/jsmediatags.min.js";
 
 const events = new EventEmitter();
-const CONFIG_KEY = "astrofox.config";
 
 function buildPickerTypes(filters = []) {
 	if (!filters.length) return undefined;
@@ -242,26 +241,6 @@ export async function saveImageFile(target, data, props = {}) {
 	const filename = props.fileName || "image.png";
 
 	await saveBlob(target, blob, filename);
-}
-
-export async function loadConfig() {
-	const value = localStorage.getItem(CONFIG_KEY);
-
-	if (!value) {
-		return null;
-	}
-
-	try {
-		return JSON.parse(value);
-	} catch (error) {
-		log("Invalid config data found in localStorage. Resetting config.", error);
-		localStorage.removeItem(CONFIG_KEY);
-		return null;
-	}
-}
-
-export async function saveConfig(config) {
-	localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
 }
 
 export async function getSession() {

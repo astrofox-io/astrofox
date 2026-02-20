@@ -1,5 +1,4 @@
 export { default as audioStore } from "./actions/audio";
-export { default as configStore } from "./actions/config";
 export { default as errorStore } from "./actions/error";
 export { default as modalStore } from "./actions/modals";
 export { default as projectStore } from "./actions/project";

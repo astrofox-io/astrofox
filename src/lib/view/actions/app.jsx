@@ -2,8 +2,6 @@ import Plugin from "@/core/Plugin";
 import * as displays from "@/displays";
 import * as effects from "@/effects";
 import { openAudioFile } from "@/view/actions/audio";
-import { signOut } from "@/view/actions/auth";
-import { loadConfig } from "@/view/actions/config";
 import { raiseError } from "@/view/actions/error";
 import { showModal } from "@/view/actions/modals";
 import {
@@ -116,24 +114,8 @@ export async function handleMenuAction(action) {
 			await showModal("CanvasSettings", { title: "Canvas" });
 			break;
 
-		case "edit-settings":
-			await showModal("AppSettings", { title: "Settings" });
-			break;
-
 		case "open-dev-tools":
 			api.openDevTools();
-			break;
-
-		case "about":
-			await showModal("AppSettings", { title: "Settings" });
-			break;
-
-		case "account":
-			await showModal("AccountModal", { title: "Account" });
-			break;
-
-		case "sign-out":
-			await signOut();
 			break;
 	}
 }
@@ -196,7 +178,6 @@ export async function loadLibrary() {
 }
 
 export async function initApp() {
-	await loadConfig();
 	await loadPlugins();
 	await loadLibrary();
 	await newProject();
