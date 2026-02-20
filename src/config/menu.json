@@ -45,42 +45,6 @@
 		]
 	},
 	{
-		"label": "View",
-		"submenu": [
-			{
-				"label": "Zoom in",
-				"action": "zoom-in"
-			},
-			{
-				"label": "Zoom out",
-				"action": "zoom-out"
-			},
-			{
-				"label": "Actual size",
-				"action": "zoom-reset"
-			},
-			{
-				"label": "Fit to screen",
-				"action": "zoom-fit"
-			},
-			{
-				"type": "separator"
-			},
-			{
-				"label": "Control dock",
-				"type": "checkbox",
-				"checked": true,
-				"action": "view-control-dock"
-			},
-			{
-				"label": "Player",
-				"type": "checkbox",
-				"checked": true,
-				"action": "view-player"
-			}
-		]
-	},
-	{
 		"label": "Developer",
 		"hidden": true,
 		"submenu": [

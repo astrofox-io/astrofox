@@ -227,13 +227,9 @@ export function openProjectBrowser() {
 }
 
 export function openRelinkMediaDialog() {
-	const { unresolvedMediaRefs } = projectStore.getState();
-
-	if (unresolvedMediaRefs.length > 0) {
-		showModal("RelinkMediaDialog", {
-			title: "Relink Media",
-		});
-	}
+	showModal("RelinkMediaDialog", {
+		title: "Relink Media",
+	});
 }
 
 export async function listProjects() {

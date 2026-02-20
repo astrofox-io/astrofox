@@ -12,12 +12,12 @@ export default function Zoom() {
 
 	return (
 		<div className={styles.zoom}>
-			<div className={styles.label} onClick={() => setZoom(1)}>
+			<button type="button" className={styles.label} onClick={() => setZoom(1)}>
 				{`${width} x ${height}`}
-			</div>
-			<div className={styles.button} onClick={zoomIn}>
+			</button>
+			<button type="button" className={styles.button} onClick={zoomOut}>
 				{"\uff0d"}
-			</div>
+			</button>
 			<input
 				className={styles.range}
 				type="range"
@@ -25,15 +25,15 @@ export default function Zoom() {
 				value={zoom}
 				onChange={(e) => setZoom(e.target.value)}
 				min={0.1}
-				max={1.0}
+				max={3.0}
 				step={0.02}
 			/>
-			<div className={styles.button} onClick={zoomOut}>
+			<button type="button" className={styles.button} onClick={zoomIn}>
 				{"\uff0b"}
-			</div>
-			<div className={styles.value} onClick={fitToScreen}>
+			</button>
+			<button type="button" className={styles.value} onClick={fitToScreen}>
 				{`${~~(zoom * 100)}%`}
-			</div>
+			</button>
 		</div>
 	);
 }

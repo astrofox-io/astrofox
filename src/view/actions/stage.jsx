@@ -17,6 +17,10 @@ const initialState = {
 	loading: false,
 };
 
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 3;
+const ZOOM_STEP = 0.1;
+
 const stageStore = create(() => ({
 	...initialState,
 }));
@@ -34,13 +38,19 @@ export function updateCanvas(width, height, backgroundColor) {
 }
 
 export function setZoom(value) {
-	updateStage({ zoom: clamp(value, 0.1, 1) });
+	const nextValue = Number(value);
+
+	if (!Number.isFinite(nextValue)) {
+		return;
+	}
+
+	updateStage({ zoom: clamp(nextValue, MIN_ZOOM, MAX_ZOOM) });
 }
 
 export function zoomIn() {
 	const { zoom } = stageStore.getState();
 
-	const newValue = clamp(zoom - 0.1, 0.1, 1);
+	const newValue = clamp(zoom + ZOOM_STEP, MIN_ZOOM, MAX_ZOOM);
 
 	updateStage({ zoom: newValue });
 }
@@ -48,17 +58,30 @@ export function zoomIn() {
 export function zoomOut() {
 	const { zoom } = stageStore.getState();
 
-	const newValue = clamp(zoom + 0.1, 0.1, 1.0);
+	const newValue = clamp(zoom - ZOOM_STEP, MIN_ZOOM, MAX_ZOOM);
 
 	updateStage({ zoom: newValue });
 }
 
 export function fitToScreen() {
 	const viewport = document.getElementById("viewport");
-	const { width, height, zoom } = stageStore.getState();
 
-	const newWidth = clamp((viewport.clientWidth * 0.8) / width, 0.1, 1);
-	const newHeight = clamp((viewport.clientHeight * 0.8) / height, 0.1, 1);
+	if (!viewport) {
+		return;
+	}
+
+	const { width, height } = stageStore.getState();
+
+	const newWidth = clamp(
+		(viewport.clientWidth * 0.8) / width,
+		MIN_ZOOM,
+		MAX_ZOOM,
+	);
+	const newHeight = clamp(
+		(viewport.clientHeight * 0.8) / height,
+		MIN_ZOOM,
+		MAX_ZOOM,
+	);
 
 	updateStage({ zoom: Math.min(newWidth, newHeight) });
 }

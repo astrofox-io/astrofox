@@ -14,7 +14,6 @@ import {
 	openRelinkMediaDialog,
 	saveProject,
 } from "@/view/actions/project";
-import { fitToScreen, setZoom, zoomIn, zoomOut } from "@/view/actions/stage";
 import {
 	api,
 	env,
@@ -27,8 +26,6 @@ import create from "zustand";
 
 const initialState = {
 	statusText: "",
-	showControlDock: true,
-	showPlayer: true,
 	showReactor: false,
 	showWaveform: true,
 	showOsc: false,
@@ -121,30 +118,6 @@ export async function handleMenuAction(action) {
 
 		case "edit-settings":
 			await showModal("AppSettings", { title: "Settings" });
-			break;
-
-		case "zoom-in":
-			await zoomIn();
-			break;
-
-		case "zoom-out":
-			await zoomOut();
-			break;
-
-		case "zoom-reset":
-			await setZoom(1);
-			break;
-
-		case "zoom-fit":
-			await fitToScreen();
-			break;
-
-		case "view-control-dock":
-			await toggleState("showControlDock");
-			break;
-
-		case "view-player":
-			await toggleState("showPlayer");
 			break;
 
 		case "open-dev-tools":

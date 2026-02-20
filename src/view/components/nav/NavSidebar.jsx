@@ -1,19 +1,19 @@
 import menuConfig from "@/config/menu.json";
 import { handleMenuAction } from "@/view/actions/app";
-import { Cube, Eye, FolderOpen, GearSix } from "@phosphor-icons/react";
+import { Cube, FolderOpen, GearSix } from "@phosphor-icons/react";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
 import styles from "./NavSidebar.module.less";
 
-const NAV_LABELS = ["File", "Edit", "View"];
+const NAV_LABELS = ["File", "Edit"];
 const SETTINGS_ACTIONS = new Set(["account", "sign-out", "about"]);
 const EDIT_SETTINGS_ACTION = "edit-settings";
+const EDIT_CANVAS_ACTION = "edit-canvas";
 
 const ICON_MAP = {
 	File: FolderOpen,
-	Edit: Cube,
-	View: Eye,
+	Canvas: Cube,
 	Settings: GearSix,
 };
 
@@ -24,9 +24,8 @@ function cloneSubmenu(items = []) {
 function createNavItems() {
 	const topLevelItems = menuConfig
 		.filter((item) => NAV_LABELS.includes(item.label))
-		.map((item) => ({
-			label: item.label,
-			submenu: cloneSubmenu(item.submenu).filter((submenuItem) => {
+		.map((item) => {
+			const submenu = cloneSubmenu(item.submenu).filter((submenuItem) => {
 				if (submenuItem.type === "separator") {
 					return true;
 				}
@@ -36,8 +35,25 @@ function createNavItems() {
 				}
 
 				return !SETTINGS_ACTIONS.has(submenuItem.action);
-			}),
-		}));
+			});
+
+			if (
+				item.label === "Edit" &&
+				submenu.length === 1 &&
+				submenu[0].action === EDIT_CANVAS_ACTION
+			) {
+				return {
+					label: "Canvas",
+					action: EDIT_CANVAS_ACTION,
+					submenu: [],
+				};
+			}
+
+			return {
+				label: item.label,
+				submenu,
+			};
+		});
 
 	topLevelItems.push({
 		label: "Settings",
@@ -85,6 +101,18 @@ export default function NavSidebar() {
 		};
 	}
 
+	function handleButtonClick(item, index) {
+		if (item.action) {
+			return (event) => {
+				event.stopPropagation();
+				setActiveIndex(-1);
+				handleMenuAction(item.action);
+			};
+		}
+
+		return handleToggle(index);
+	}
+
 	function handleMouseOver(index) {
 		return (event) => {
 			event.stopPropagation();
@@ -118,7 +146,8 @@ export default function NavSidebar() {
 	return (
 		<nav className={styles.sidebar} aria-label="Main navigation">
 			{items.map((item, index) => {
-				const isActive = activeIndex === index;
+				const hasMenu = item.submenu.length > 0;
+				const isActive = hasMenu && activeIndex === index;
 				const Icon = ICON_MAP[item.label] || GearSix;
 				const isSettings = item.label === "Settings";
 
@@ -136,18 +165,20 @@ export default function NavSidebar() {
 							})}
 							title={item.label}
 							aria-label={item.label}
-							onClick={handleToggle(index)}
-							onMouseOver={handleMouseOver(index)}
-							onFocus={handleMouseOver(index)}
+							onClick={handleButtonClick(item, index)}
+							onMouseOver={hasMenu ? handleMouseOver(index) : undefined}
+							onFocus={hasMenu ? handleMouseOver(index) : undefined}
 						>
 							<Icon size={18} weight={isActive ? "fill" : "regular"} />
 						</button>
-						<Menu
-							className={styles.menu}
-							items={item.submenu}
-							visible={isActive}
-							onMenuItemClick={handleMenuItemClick}
-						/>
+						{hasMenu && (
+							<Menu
+								className={styles.menu}
+								items={item.submenu}
+								visible={isActive}
+								onMenuItemClick={handleMenuItemClick}
+							/>
+						)}
 					</div>
 				);
 			})}

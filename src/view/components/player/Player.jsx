@@ -1,7 +1,6 @@
 import useApp from "@/view/actions/app";
 import { player } from "@/view/global";
-import classNames from "classnames";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import shallow from "zustand/shallow";
 import AudioWaveform from "./AudioWaveform";
 import Oscilloscope from "./Oscilloscope";
@@ -13,14 +12,14 @@ import VolumeControl from "./VolumeControl";
 
 export default function Player() {
 	const [hasAudio, setHasAudio] = useState(false);
-	const [showPlayer, showWaveform, showOsc] = useApp(
-		(state) => [state.showPlayer, state.showWaveform, state.showOsc],
+	const [showWaveform, showOsc] = useApp(
+		(state) => [state.showWaveform, state.showOsc],
 		shallow,
 	);
 
-	function handleAudioLoad() {
+	const handleAudioLoad = useCallback(() => {
 		setHasAudio(player.hasAudio());
-	}
+	}, []);
 
 	useEffect(() => {
 		player.on("audio-load", handleAudioLoad);
@@ -28,10 +27,10 @@ export default function Player() {
 		return () => {
 			player.off("audio-load", handleAudioLoad);
 		};
-	}, []);
+	}, [handleAudioLoad]);
 
 	return (
-		<div className={classNames({ [styles.hidden]: !showPlayer })}>
+		<div>
 			<AudioWaveform visible={hasAudio && showWaveform} />
 			<div className={styles.player}>
 				<PlayButtons />
