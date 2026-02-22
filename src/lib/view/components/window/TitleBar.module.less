@@ -1,5 +1,6 @@
 .titlebar {
   display: flex;
+  align-items: center;
   position: relative;
   height: 40px;
   background-color: var(--gray75);
@@ -45,5 +46,47 @@
 .icon {
   width: 28px;
   height: 28px;
-  margin: 6px 0 0 6px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  -webkit-app-region: no-drag;
+}
+
+.menuWrap {
+  position: relative;
+}
+
+.menuButton {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--text300);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-app-region: no-drag;
+
+  &:hover {
+    color: var(--text100);
+    background-color: var(--gray100);
+  }
+}
+
+.menuButtonActive {
+  color: var(--text100);
+  background-color: var(--primary100);
+}
+
+.menu {
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 190px;
+  border: 1px solid var(--gray300);
 }

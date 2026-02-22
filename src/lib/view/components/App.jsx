@@ -3,7 +3,6 @@ import { initApp } from "@/lib/view/actions/app";
 import { bootstrapSession } from "@/lib/view/actions/auth";
 import Spinner from "@/lib/view/components/interface/Spinner";
 import Layout from "@/lib/view/components/layout/Layout";
-import NavSidebar from "@/lib/view/components/nav/NavSidebar";
 import ControlDock from "@/lib/view/components/panels/ControlDock";
 import ReactorPanel from "@/lib/view/components/panels/ReactorPanel";
 import Player from "@/lib/view/components/player/Player";
@@ -99,7 +98,6 @@ function App() {
 			<Preload />
 			<TitleBar />
 			<Layout direction="row">
-				<NavSidebar />
 				<Layout id="viewport" direction="column">
 					<Stage />
 					<Player />
