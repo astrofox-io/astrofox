@@ -1,7 +1,6 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/lib/view/actions/app";
 import Menu from "@/lib/view/components/nav/Menu";
-import WindowButtons from "@/lib/view/components/window/WindowButtons";
 import { env } from "@/lib/view/global";
 import useWindowState from "@/lib/view/hooks/useWindowState";
 import { List } from "@phosphor-icons/react";
@@ -41,7 +40,7 @@ function createMenuItems() {
 }
 
 export default function TitleBar() {
-	const { focused, maximized } = useWindowState();
+	const { focused } = useWindowState();
 	const [menuItems, setMenuItems] = useState(createMenuItems);
 	const [menuVisible, setMenuVisible] = useState(false);
 
@@ -85,13 +84,6 @@ export default function TitleBar() {
 			})}
 		>
 			<div className={styles.controls}>
-				<img
-					alt=""
-					aria-hidden="true"
-					className={styles.icon}
-					draggable={false}
-					src="/icon.svg"
-				/>
 				<div className={styles.menuWrap}>
 					<button
 						type="button"
@@ -112,9 +104,13 @@ export default function TitleBar() {
 				</div>
 			</div>
 			<div className={styles.title}>{env.APP_NAME}</div>
-			{!env.IS_MACOS && (
-				<WindowButtons focused={focused} maximized={maximized} />
-			)}
+			<img
+				alt=""
+				aria-hidden="true"
+				className={styles.rightIcon}
+				draggable={false}
+				src="/icon.svg"
+			/>
 		</div>
 	);
 }

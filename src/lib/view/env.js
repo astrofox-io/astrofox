@@ -7,23 +7,12 @@ const RENDER_BACKEND =
 	"legacy";
 const USER_AGENT =
 	typeof navigator !== "undefined" ? navigator.userAgent : "unknown";
-const PLATFORM =
-	typeof navigator !== "undefined" ? navigator.platform || "" : "";
-const IS_WINDOWS = /Win/.test(PLATFORM);
-const IS_MACOS = /Mac/.test(PLATFORM);
-const IS_LINUX = !IS_WINDOWS && !IS_MACOS;
 
 export const env = {
 	APP_NAME,
 	APP_VERSION,
-	OS_PLATFORM: PLATFORM,
-	IS_WINDOWS,
-	IS_MACOS,
-	IS_LINUX,
-	IS_WEB: true,
 	RENDER_BACKEND,
 	USER_AGENT,
-	USER_DATA_PATH: null,
 };
 
 export default env;

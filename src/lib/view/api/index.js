@@ -341,14 +341,6 @@ export function spawnProcess() {
 	throw new Error("Process spawning is not available in web mode.");
 }
 
-export function maximizeWindow() {}
-export function unmaximizeWindow() {}
-export function minimizeWindow() {}
-
-export function closeWindow() {
-	window.close();
-}
-
 export function openDevTools() {}
 
 export async function getWindowState() {

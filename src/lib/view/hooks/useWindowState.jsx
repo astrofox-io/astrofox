@@ -6,8 +6,6 @@ export default function useWindowState() {
 	const updateState = useCallback(() => {
 		setState({
 			focused: document.hasFocus(),
-			maximized: false,
-			minimized: false,
 		});
 	}, []);
 

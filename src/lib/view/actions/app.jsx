@@ -14,7 +14,6 @@ import {
 } from "@/lib/view/actions/project";
 import {
 	api,
-	env,
 	library,
 	logger,
 	renderBackend,
@@ -181,10 +180,6 @@ export async function initApp() {
 	await loadPlugins();
 	await loadLibrary();
 	await newProject();
-
-	if (!env.IS_WEB) {
-		api.on("menu-action", handleMenuAction);
-	}
 
 	renderer.start();
 }
