@@ -9,12 +9,18 @@ import React from "react";
 export default function UnsavedChangesDialog({ action, onClose }) {
 	const project = useProject((state) => state);
 
-	async function handleAction(action) {
-		if (action === "new-project") {
+	async function handleAction(actionType) {
+		if (actionType === "new-project") {
 			await newProject();
-		} else if (action === "open-project") {
+		} else if (actionType === "open-project") {
 			await openProjectBrowser();
 		}
+	}
+
+	async function closeThenRunAction() {
+		onClose();
+		await Promise.resolve();
+		await handleAction(action);
 	}
 
 	async function handleConfirm(button) {
@@ -22,12 +28,10 @@ export default function UnsavedChangesDialog({ action, onClose }) {
 			const saved = await saveProject(project.projectName);
 
 			if (saved) {
-				await handleAction(action);
-				onClose();
+				await closeThenRunAction();
 			}
 		} else if (button === "No") {
-			await handleAction(action);
-			onClose();
+			await closeThenRunAction();
 		} else {
 			onClose();
 		}
