@@ -1,4 +1,5 @@
-import "@/lib/view/fonts.css";
+import { fontVariables, inter } from "@/app/fonts";
+import "@/app/tailwind.css";
 import "@/lib/view/styles/index.less";
 
 export const metadata = {
@@ -8,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<body className={`${fontVariables} ${inter.className}`}>{children}</body>
 		</html>
 	);
 }

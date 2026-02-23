@@ -1,7 +1,7 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/lib/view/actions/app";
-import { Cube, FolderOpen } from "@phosphor-icons/react";
 import classNames from "classnames";
+import { Cube, FolderOpen } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
 import styles from "./NavSidebar.module.less";
@@ -140,7 +140,7 @@ export default function NavSidebar() {
 							onMouseOver={hasMenu ? handleMouseOver(index) : undefined}
 							onFocus={hasMenu ? handleMouseOver(index) : undefined}
 						>
-							<Icon size={18} weight={isActive ? "fill" : "regular"} />
+							<Icon size={18} />
 						</button>
 						{hasMenu && (
 							<Menu

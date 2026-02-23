@@ -1,38 +1,38 @@
 import {
-	CaretDoubleLeft as AngleDoubleLeft,
-	CaretDoubleRight as AngleDoubleRight,
-	ArrowsHorizontal,
-	CaretDown as ChevronDown,
-	CaretLeft as ChevronLeft,
-	CaretRight as ChevronRight,
-	CaretUp as ChevronUp,
-	Cube,
-	ArrowsClockwise as Cycle,
-	File as DocumentLandscape,
-	DotsThree as DotsHorizontal,
-	ArrowsOut as Expand,
+	ChevronsLeft as AngleDoubleLeft,
+	ChevronsRight as AngleDoubleRight,
+	MoveHorizontal as ArrowsHorizontal,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	Box as Cube,
+	Repeat as Cycle,
+	FileText as DocumentLandscape,
+	Ellipsis as DotsHorizontal,
+	Expand,
 	Eye,
-	Lightning as Flash,
+	Zap as Flash,
 	FolderOpen,
 	Lightbulb as LightUp,
 	Link,
 	Minus,
 	Pause,
-	ImageSquare as Picture,
-	Play as PlayIcon,
+	Image as Picture,
+	Play as PlayBase,
 	Plus,
-	Waveform as SoundBars,
-	WaveSine as SoundWaves,
+	AudioLines as SoundBars,
+	Waves as SoundWaves,
 	Square,
-	Stop as StopIcon,
+	Square as StopBase,
 	X as Times,
-	Trash as TrashEmpty,
-	SpeakerHigh as Volume,
-	SpeakerLow as Volume2,
-	SpeakerNone as Volume3,
-	SpeakerSimpleX as Volume4,
-	Warning,
-} from "@phosphor-icons/react";
+	Trash2 as TrashEmpty,
+	Volume2 as Volume,
+	Volume1 as Volume2,
+	Volume as Volume3,
+	VolumeX as Volume4,
+	TriangleAlert as Warning,
+} from "lucide-react";
 
 export {
 	AngleDoubleLeft,
@@ -69,9 +69,9 @@ export {
 };
 
 export function Play(props) {
-	return <PlayIcon weight="fill" {...props} />;
+	return <PlayBase strokeWidth={2.4} {...props} />;
 }
 
 export function Stop(props) {
-	return <StopIcon weight="fill" {...props} />;
+	return <StopBase strokeWidth={2.4} {...props} />;
 }

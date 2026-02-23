@@ -3,8 +3,8 @@ import { handleMenuAction } from "@/lib/view/actions/app";
 import Menu from "@/lib/view/components/nav/Menu";
 import { env } from "@/lib/view/global";
 import useWindowState from "@/lib/view/hooks/useWindowState";
-import { List } from "@phosphor-icons/react";
 import classNames from "classnames";
+import { Menu as MenuIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import styles from "./TitleBar.module.less";
 
@@ -93,7 +93,7 @@ export default function TitleBar() {
 						aria-label="Main menu"
 						onClick={toggleMenu}
 					>
-						<List size={18} weight={menuVisible ? "fill" : "regular"} />
+						<MenuIcon size={18} />
 					</button>
 					<Menu
 						className={styles.menu}

@@ -2,11 +2,12 @@ import CanvasText from "@/lib/canvas/CanvasText";
 import fonts from "@/lib/config/fonts.json";
 import CanvasDisplay from "@/lib/core/CanvasDisplay";
 import { stageHeight, stageWidth } from "@/lib/utils/controls";
+import { resolveFontFamily } from "@/lib/view/fontFamilies";
 
 const fontOptions = fonts.map((item) => ({
 	label: item,
 	value: item,
-	style: { fontFamily: item },
+	style: { fontFamily: resolveFontFamily(item) },
 }));
 
 export default class TextDisplay extends CanvasDisplay {

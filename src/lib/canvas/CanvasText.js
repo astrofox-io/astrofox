@@ -1,5 +1,6 @@
 import Entity from "@/lib/core/Entity";
 import { resetCanvas } from "@/lib/utils/canvas";
+import { resolveCanvasFontFamily } from "@/lib/view/fontFamilies";
 
 export default class CanvasText extends Entity {
 	static defaultProperties = {
@@ -26,7 +27,7 @@ export default class CanvasText extends Entity {
 		if (font === "Intro") {
 			return "Exo 2";
 		}
-		return font;
+		return resolveCanvasFontFamily(font);
 	}
 
 	getFont() {
