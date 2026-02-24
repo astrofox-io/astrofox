@@ -126,9 +126,7 @@ export async function loadPlugins() {
 
 	for (const [key, plugin] of Object.entries(api.getPlugins())) {
 		try {
-			const module = await import(
-				/* webpackIgnore: true */ /* @vite-ignore */ plugin.src
-			);
+			const module = await import(/* webpackIgnore: true */ plugin.src);
 
 			module.default.config.icon = plugin.icon;
 

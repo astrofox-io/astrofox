@@ -2,9 +2,9 @@ import { randomUUID } from "node:crypto";
 import { and, desc, eq, isNull, max } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "../../../../server/auth.mjs";
-import { db } from "../../../../server/db/client.mjs";
-import { projectRevisions, projects } from "../../../../server/db/schema.mjs";
+import { auth } from "@/lib/auth.mjs";
+import { db } from "@/lib/db/client.mjs";
+import { projectRevisions, projects } from "@/lib/db/schema.mjs";
 
 export const runtime = "nodejs";
 
