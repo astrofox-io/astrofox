@@ -1,3 +1,25 @@
+@keyframes stage-loader-pop {
+  0% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes stage-loader-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 .stage {
   display: flex;
   flex-direction: column;
@@ -25,14 +47,20 @@
   }
 }
 
-.loading {
-  border: 3px solid var(--primary100);
-  border-top-color: transparent;
-  border-left-color: transparent;
-  border-radius: 100%;
+.loadingOverlay {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: var(--z-index-canvas);
+  inset: 0;
+  z-index: var(--z-index-render-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.loadingSpinnerWrap {
+  animation: stage-loader-pop 220ms ease-out;
+}
+
+.loadingSpinnerLeave {
+  animation: stage-loader-out 220ms ease-in forwards;
 }

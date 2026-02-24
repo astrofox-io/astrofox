@@ -22,6 +22,16 @@ export async function loadAudioFile(file, play) {
 
 	player.stop();
 
+	// Yield one frame so loading UI can paint before heavy audio decode work begins.
+	await new Promise((resolve) => {
+		if (typeof window !== "undefined" && window.requestAnimationFrame) {
+			window.requestAnimationFrame(() => resolve());
+			return;
+		}
+
+		setTimeout(() => resolve(), 0);
+	});
+
 	const name = file?.name || file;
 
 	logger.time("audio-file-load");

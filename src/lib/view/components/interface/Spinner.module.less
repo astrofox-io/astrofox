@@ -1,8 +1,19 @@
+@keyframes spinner-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .spinner {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  will-change: transform;
+  animation: spinner-rotate 0.45s linear infinite;
 }
 
 .svg {

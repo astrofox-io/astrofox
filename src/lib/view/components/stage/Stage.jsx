@@ -1,9 +1,9 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import useAudioStore, { loadAudioFile } from "@/lib/view/actions/audio";
 import useStage from "@/lib/view/actions/stage";
+import Spinner from "@/lib/view/components/interface/Spinner";
 import { analyzer, renderBackend } from "@/lib/view/global";
 import React, { useEffect, useRef, useState } from "react";
-import { Motion, TransitionMotion, spring } from "react-motion";
 import shallow from "zustand/shallow";
 import styles from "./Stage.module.less";
 
@@ -15,6 +15,7 @@ export default function Stage() {
 	const canvas = useRef(null);
 	const initProps = useRef({ width, height, backgroundColor });
 	const loading = useAudioStore((state) => state.loading);
+	const [dropLoading, setDropLoading] = useState(false);
 
 	useEffect(() => {
 		const { width, height, backgroundColor } = initProps.current;
@@ -37,7 +38,23 @@ export default function Stage() {
 		const file = e.dataTransfer.files[0];
 
 		if (file) {
-			await loadAudioFile(file);
+			setDropLoading(true);
+
+			// Force one paint so the overlay spinner can appear immediately.
+			await new Promise((resolve) => {
+				if (typeof window !== "undefined" && window.requestAnimationFrame) {
+					window.requestAnimationFrame(() => resolve());
+					return;
+				}
+
+				setTimeout(() => resolve(), 0);
+			});
+
+			try {
+				await loadAudioFile(file);
+			} finally {
+				setDropLoading(false);
+			}
 		}
 	}
 
@@ -53,10 +70,17 @@ export default function Stage() {
 					className={styles.canvas}
 					onDrop={handleDrop}
 					onDragOver={ignoreEvents}
+					onDragEnter={ignoreEvents}
 					onDoubleClick={() => console.log(analyzer)}
 				>
-					<canvas ref={canvas} style={style} />
-					<Loading show={loading} />
+					<canvas
+						ref={canvas}
+						style={style}
+						onDrop={handleDrop}
+						onDragOver={ignoreEvents}
+						onDragEnter={ignoreEvents}
+					/>
+					<Loading show={loading || dropLoading} />
 				</div>
 			</div>
 		</div>
@@ -64,69 +88,54 @@ export default function Stage() {
 }
 
 const Loading = ({ show }) => {
-	const [rotationTarget, setRotationTarget] = useState(0);
+	const [visible, setVisible] = useState(show);
+	const [leaving, setLeaving] = useState(false);
+	const leaveTimer = useRef(null);
 
 	useEffect(() => {
-		if (!show) {
+		if (leaveTimer.current) {
+			window.clearTimeout(leaveTimer.current);
+			leaveTimer.current = null;
+		}
+
+		if (show) {
+			setVisible(true);
+			setLeaving(false);
 			return undefined;
 		}
 
-		const id = window.setInterval(() => {
-			setRotationTarget((current) => current + 120);
-		}, 200);
+		if (!visible) {
+			return undefined;
+		}
 
-		return () => window.clearInterval(id);
-	}, [show]);
+		setLeaving(true);
+		leaveTimer.current = window.setTimeout(() => {
+			setVisible(false);
+			setLeaving(false);
+			leaveTimer.current = null;
+		}, 220);
 
-	const transitionStyles = show
-		? [
-				{
-					key: "loading",
-					style: {
-						opacity: spring(1, { stiffness: 150, damping: 18 }),
-						size: spring(100, { stiffness: 170, damping: 20 }),
-					},
-				},
-			]
-		: [];
+		return () => {
+			if (leaveTimer.current) {
+				window.clearTimeout(leaveTimer.current);
+				leaveTimer.current = null;
+			}
+		};
+	}, [show, visible]);
+
+	if (!visible) {
+		return null;
+	}
 
 	return (
-		<TransitionMotion
-			styles={transitionStyles}
-			willEnter={() => ({ opacity: 0, size: 200 })}
-			willLeave={() => ({
-				opacity: spring(0, { stiffness: 170, damping: 20 }),
-				size: spring(200, { stiffness: 170, damping: 20 }),
-			})}
-		>
-			{(interpolatedStyles) => (
-				<>
-					{interpolatedStyles.map(({ key, style }) => (
-						<Motion
-							key={key}
-							defaultStyle={{ rotate: 0 }}
-							style={{
-								rotate: spring(rotationTarget, {
-									stiffness: 100,
-									damping: 20,
-								}),
-							}}
-						>
-							{({ rotate }) => (
-								<div
-									className={styles.loading}
-									style={{
-										opacity: style.opacity,
-										width: `${style.size}px`,
-										height: `${style.size}px`,
-										transform: `translate(-50%, -50%) rotate(${rotate}deg)`,
-									}}
-								/>
-							)}
-						</Motion>
-					))}
-				</>
-			)}
-		</TransitionMotion>
+		<div className={styles.loadingOverlay}>
+			<div
+				className={`${styles.loadingSpinnerWrap} ${
+					leaving ? styles.loadingSpinnerLeave : ""
+				}`}
+			>
+				<Spinner size={96} />
+			</div>
+		</div>
 	);
 };
