@@ -70,12 +70,11 @@ export default function Option({
 		<div
 			className={classNames("relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-[var(--font-size-small)] text-[var(--text300)] leading-5", className, {
 				["hidden"]: hidden || inputs.length === 0,
-				["gap-1"]: showReactor,
 			})}
 		>
 			{withReactor && (
 				<ReactorButton
-					className={"absolute -ml-1"}
+					className={"!absolute left-0 top-1/2 -translate-y-1/2"}
 					display={display}
 					name={name}
 					min={min}
@@ -83,8 +82,8 @@ export default function Option({
 				/>
 			)}
 			<div
-				className={classNames("ml-5 flex min-w-[100px] cursor-default", {
-					["ml-2.5 min-w-14"]: showReactor,
+				className={classNames("ml-6 flex min-w-[100px] cursor-default", {
+					["min-w-14"]: showReactor,
 				})}
 			>
 				<div
