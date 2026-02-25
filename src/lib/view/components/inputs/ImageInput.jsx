@@ -56,14 +56,14 @@ export default function ImageInput({ name, value, onChange }) {
 	return (
 		<>
 			<div
-				className={"h-[100px] w-[100px] bg-input-bg border border-input-border rounded-input relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"}
+				className={"h-24 w-24 bg-input-bg border border-input-border rounded-input relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"}
 				onDrop={handleDrop}
 				onDragOver={ignoreEvents}
 				onClick={handleClick}
 			>
 				<img
 					ref={image}
-					className={classNames("absolute top-1/2 -translate-y-1/2 w-full h-[auto]", {
+					className={classNames("absolute top-1/2 -translate-y-1/2 w-full h-auto", {
 						hidden: !hasImage,
 					})}
 					src={value}

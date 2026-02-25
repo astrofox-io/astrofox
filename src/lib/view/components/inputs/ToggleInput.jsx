@@ -12,9 +12,9 @@ export default function ToggleInput({
 		<div className={"flex items-center"}>
 			<div
 				className={classNames(
-					"relative order-[1] h-[17px] w-8 shrink-0 rounded-[17px] border border-input-bg bg-input-bg transition-[background-color_0.25s] [&:before]:absolute [&:before]:top-1/2 [&:before]:left-0 [&:before]:-translate-y-1/2 [&:before]:content-[''] [&:before]:h-[15px] [&:before]:w-[15px] [&:before]:rounded-[15px] [&:before]:border [&:before]:border-input-border [&:before]:bg-text100 [&:before]:shadow-[0_0_2px_rgba(0,_0,_0,_0.3)] [&:before]:transition-[left_0.25s]",
+					"relative order-[1] h-4 w-8 shrink-0 rounded-full border border-input-bg bg-input-bg transition-[background-color_0.25s] [&:before]:absolute [&:before]:top-1/2 [&:before]:left-0 [&:before]:-translate-y-1/2 [&:before]:content-[''] [&:before]:h-4 [&:before]:w-4 [&:before]:rounded-full [&:before]:border [&:before]:border-input-border [&:before]:bg-text100 [&:before]:shadow-[0_0_2px_rgba(0,_0,_0,_0.3)] [&:before]:transition-[left_0.25s]",
 					{
-						"bg-primary100 [&:before]:left-[15px]": value,
+						"bg-primary100 [&:before]:left-4": value,
 					},
 				)}
 				onClick={() => onChange(name, !value)}

@@ -87,10 +87,10 @@ const ReactorControl = ({ reactor }) => {
 	}, [reactor]);
 
 	return (
-		<div className={"w-full min-w-[910px] overflow-hidden bg-gray75 border-t border-t-gray200 relative p-[10px_20px_15px]"}>
+		<div className={"w-full min-w-[56rem] overflow-hidden bg-gray75 border-t border-t-gray200 relative pt-2.5 px-5 pb-4"}>
 			<Header path={reactor.displayName.split("/")} />
 			<div className={"flex flex-row justify-center items-center"}>
-				<div className={"min-w-[300px] m-[10px_10px_0_0]"}>
+				<div className={"min-w-72 mt-2.5 mr-2.5 mb-0 ml-0"}>
 					<Control display={reactor} showHeader={false} />
 				</div>
 				<div className={"relative bg-gray75 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-gray200"}>
@@ -128,7 +128,7 @@ const ReactorControl = ({ reactor }) => {
 };
 
 const Header = ({ path }) => (
-	<div className={"text-text200 text-[var(--font-size-xsmall)] [text-shadow:1px_1px_0_var(--gray75)]"}>
+	<div className={"text-text200 text-sm [text-shadow:1px_1px_0_var(--gray75)]"}>
 		{path.map((item, index) => (
 			<span
 				key={index}

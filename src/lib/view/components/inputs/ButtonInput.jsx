@@ -24,7 +24,7 @@ const ButtonInput = ({
 		onClick={disabled ? null : onClick}
 	>
 		{icon && <Icon className={"text-text100 w-3 h-3"} glyph={icon} />}
-		{text && <span className={"text-[var(--font-size-small)]"}>{text}</span>}
+		{text && <span className={"text-sm"}>{text}</span>}
 	</div>
 );
 

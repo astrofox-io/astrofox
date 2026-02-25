@@ -33,7 +33,7 @@ const Menu = ({ className, items, visible, onMenuItemClick }) => (
 				return (
 					<div
 						key={key}
-						className={"p-[5px] [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-primary100 [&:after]:block [&:hover]:bg-transparent"}
+						className={"p-1 [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-primary100 [&:after]:block [&:hover]:bg-transparent"}
 					/>
 				);
 			}

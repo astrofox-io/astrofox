@@ -48,9 +48,9 @@ export default function AccountModal({ featureMessage, onClose }) {
 
 	if (session?.user) {
 		return (
-			<div className={"flex flex-col gap-2.5 min-w-[420px]"}>
-				<div className={"text-xs text-text200"}>You are signed in.</div>
-				<div className={"text-[13px] text-text100"}>
+			<div className={"flex flex-col gap-2.5 min-w-96"}>
+				<div className={"text-sm text-text200"}>You are signed in.</div>
+				<div className={"text-sm text-text100"}>
 					{session.user.name || session.user.email || "Authenticated user"}
 				</div>
 				<div className={"flex gap-1.5 [flex-wrap:wrap]"}>
@@ -62,18 +62,18 @@ export default function AccountModal({ featureMessage, onClose }) {
 	}
 
 	return (
-		<form className={"flex flex-col gap-2.5 min-w-[420px]"} onSubmit={handleSubmit}>
-			<div className={"text-xs text-text200"}>
+		<form className={"flex flex-col gap-2.5 min-w-96"} onSubmit={handleSubmit}>
+			<div className={"text-sm text-text200"}>
 				{featureMessage ||
 					"Create an account to unlock cloud project features like save, open, and duplicate."}
 			</div>
-			<div className={"text-xs font-bold uppercase opacity-[0.85]"}>
+			<div className={"text-sm font-bold uppercase opacity-[0.85]"}>
 				{mode === "sign-up" ? "Create account" : "Sign in"}
 			</div>
 
 			{mode === "sign-up" && (
 				<input
-					className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
+					className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 					type="text"
 					placeholder="Name"
 					value={name}
@@ -83,7 +83,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 			)}
 
 			<input
-				className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
+				className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 				type="email"
 				placeholder="Email"
 				value={email}
@@ -91,7 +91,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 				required
 			/>
 			<input
-				className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
+				className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 				type="password"
 				placeholder="Password"
 				value={password}
@@ -118,7 +118,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 				/>
 			</div>
 
-			<div className={"text-xs opacity-[0.9]"}>
+			<div className={"text-sm opacity-[0.9]"}>
 				{mode === "sign-up" ? "Already have an account?" : "Need an account?"}{" "}
 				<button
 					type="button"
@@ -129,7 +129,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 				</button>
 			</div>
 
-			{error && <div className={"text-xs text-[#ff8f8f]"}>{error}</div>}
+			{error && <div className={"text-sm text-[#ff8f8f]"}>{error}</div>}
 		</form>
 	);
 }

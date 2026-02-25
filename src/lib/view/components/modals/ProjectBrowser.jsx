@@ -96,11 +96,11 @@ export default function ProjectBrowser({ onClose }) {
 	}
 
 	return (
-		<div className={"flex flex-col gap-3 min-w-[620px]"}>
+		<div className={"flex flex-col gap-3 min-w-[40rem]"}>
 			<div className={"flex gap-3"}>
 				<div className={"list-column flex-1 flex flex-col gap-2"}>
-					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Projects</div>
-					<div className={"flex flex-col gap-1 min-h-[220px] max-h-[220px] overflow-y-auto border border-[#444] p-1"}>
+					<div className={"text-sm font-bold uppercase opacity-[0.8]"}>Projects</div>
+					<div className={"flex flex-col gap-1 min-h-56 max-h-56 overflow-y-auto border border-[#444] p-1"}>
 						{projects.map((project) => (
 							<button
 								type="button"
@@ -110,11 +110,11 @@ export default function ProjectBrowser({ onClose }) {
 								}`}
 								onClick={() => setSelectedId(project.id)}
 							>
-								<div className={"text-xs"}>{project.name}</div>
+								<div className={"text-sm"}>{project.name}</div>
 							</button>
 						))}
 						{!loading && projects.length === 0 && (
-							<div className={"opacity-[0.7] text-xs p-2"}>No projects yet.</div>
+							<div className={"opacity-[0.7] text-sm p-2"}>No projects yet.</div>
 						)}
 					</div>
 					<div className={"flex gap-1.5"}>
@@ -128,9 +128,9 @@ export default function ProjectBrowser({ onClose }) {
 				</div>
 
 				<div className={"flex-1 flex flex-col gap-2"}>
-					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Create New</div>
+					<div className={"text-sm font-bold uppercase opacity-[0.8]"}>Create New</div>
 					<input
-						className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
+						className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 						value={createName}
 						onChange={(e) => setCreateName(e.currentTarget.value)}
 					/>
@@ -138,9 +138,9 @@ export default function ProjectBrowser({ onClose }) {
 						<Button text="Create" onClick={handleCreateProject} />
 					</div>
 
-					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Rename Selected</div>
+					<div className={"text-sm font-bold uppercase opacity-[0.8]"}>Rename Selected</div>
 					<input
-						className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
+						className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 						value={renameName}
 						onChange={(e) => setRenameName(e.currentTarget.value)}
 						disabled={!selectedId}
@@ -160,7 +160,7 @@ export default function ProjectBrowser({ onClose }) {
 				</div>
 			</div>
 
-			{error && <div className={"text-[#ff7d7d] text-xs"}>{error}</div>}
+			{error && <div className={"text-[#ff7d7d] text-sm"}>{error}</div>}
 		</div>
 	);
 }

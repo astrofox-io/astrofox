@@ -6,10 +6,10 @@ export default function ColorInput({
 	onChange = () => {},
 }) {
 	return (
-		<div className={"flex items-center justify-center w-[25px] h-[25px] rounded-full border border-input-border bg-input-bg"}>
+		<div className={"flex items-center justify-center w-6 h-6 rounded-full border border-input-border bg-input-bg"}>
 			<input
 				type="color"
-				className={"w-[15px] h-[15px] rounded-full border-0 [&::-webkit-color-swatch-wrapper]:hidden [&::-webkit-color-swatch]:hidden"}
+				className={"w-4 h-4 rounded-full border-0 [&::-webkit-color-swatch-wrapper]:hidden [&::-webkit-color-swatch]:hidden"}
 				name={name}
 				value={value}
 				style={{ backgroundColor: value }}

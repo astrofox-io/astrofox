@@ -103,10 +103,10 @@ export default function BoxInput({
 			}}
 		>
 			<div className={"absolute cursor-move w-full h-full"} onMouseDown={handleDragStart("center")} />
-			<div className={"absolute cursor-ns-resize w-full h-2.5 top-[-5px]"} onMouseDown={handleDragStart("top")} />
-			<div className={"absolute cursor-ew-resize w-2.5 h-full right-[-5px]"} onMouseDown={handleDragStart("right")} />
-			<div className={"absolute cursor-ns-resize w-full h-2.5 bottom-[-5px]"} onMouseDown={handleDragStart("bottom")} />
-			<div className={"absolute cursor-ew-resize w-2.5 h-full left-[-5px]"} onMouseDown={handleDragStart("left")} />
+			<div className={"absolute cursor-ns-resize w-full h-2.5 -top-1"} onMouseDown={handleDragStart("top")} />
+			<div className={"absolute cursor-ew-resize w-2.5 h-full -right-1"} onMouseDown={handleDragStart("right")} />
+			<div className={"absolute cursor-ns-resize w-full h-2.5 -bottom-1"} onMouseDown={handleDragStart("bottom")} />
+			<div className={"absolute cursor-ew-resize w-2.5 h-full -left-1"} onMouseDown={handleDragStart("left")} />
 		</div>
 	);
 }

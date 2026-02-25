@@ -146,7 +146,7 @@ export default function AudioWaveform({ visible = true }) {
 	return (
 		<div
 			className={classNames({
-				["min-w-[900px] relative bg-gray75 border-t border-t-gray200 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-[200px] transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
+				["min-w-[56rem] relative bg-gray75 border-t border-t-gray200 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-48 transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
 				["hidden max-h-0 transition-[max-height_0.2s_ease-in]"]: !visible,
 			})}
 		>

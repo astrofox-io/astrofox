@@ -13,14 +13,14 @@ export default function ModalWindow({
 	children,
 }) {
 	return (
-		<div className={classNames("relative m-auto min-w-[400px] flex flex-col shadow-[5px_5px_40px_rgba(0,_0,_0,_0.5)]", className)}>
+		<div className={classNames("relative m-auto min-w-96 flex flex-col shadow-[5px_5px_40px_rgba(0,_0,_0,_0.5)]", className)}>
 			{showCloseButton && (
-				<div className={"absolute top-0 right-0 h-6 w-6 text-center z-[var(--z-index-above)] [&_.close-icon]:text-text100 [&_.close-icon]:w-3.5 [&_.close-icon]:h-3.5 [&_.close-icon]:mt-[5px] [&:hover]:bg-primary100"} onClick={onClose}>
+				<div className={"absolute top-0 right-0 h-6 w-6 text-center z-[var(--z-index-above)] [&_.close-icon]:text-text100 [&_.close-icon]:w-3.5 [&_.close-icon]:h-3.5 [&_.close-icon]:mt-1 [&:hover]:bg-primary100"} onClick={onClose}>
 					<Icon className={""} glyph={Times} />
 				</div>
 			)}
-			{title && <div className={"relative bg-gray200 leading-9 text-center uppercase tracking-[2px] cursor-default"}>{title}</div>}
-			<div className={"relative min-h-[100px] bg-gray100 flex flex-col"}>
+			{title && <div className={"relative bg-gray200 leading-9 text-center uppercase tracking-wider cursor-default"}>{title}</div>}
+			<div className={"relative min-h-24 bg-gray100 flex flex-col"}>
 				{Children.map(children, (child) => cloneElement(child, { onClose }))}
 			</div>
 			{buttons && (

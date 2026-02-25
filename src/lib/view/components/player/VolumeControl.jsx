@@ -51,7 +51,7 @@ export default function VolumeControl() {
 			>
 				<Icon className={""} glyph={getIcon()} />
 			</div>
-			<div className={"flex items-center w-[100px]"}>
+			<div className={"flex items-center w-24"}>
 				<RangeInput
 					name="volume"
 					min={0}

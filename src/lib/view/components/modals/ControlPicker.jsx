@@ -22,15 +22,15 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 			} = item;
 
 			return (
-				<div key={index} className={"flex flex-col items-center mb-2.5 w-[110px]"}>
-					<div className={"bg-[#000_center] border-[2px] border-gray300 rounded-[7px] h-[84px] w-[84px] transition-[border-color_0.5s] overflow-hidden [&_img]:w-full [&_img]:h-[auto] [&:hover]:border-primary100 [&:hover]:transition-[none]"} onClick={() => handleClick(item)}>
+				<div key={index} className={"flex flex-col items-center mb-2.5 w-28"}>
+					<div className={"bg-[#000_center] border-2 border-gray300 rounded-lg h-20 w-20 transition-[border-color_0.5s] overflow-hidden [&_img]:w-full [&_img]:h-auto [&:hover]:border-primary100 [&:hover]:transition-[none]"} onClick={() => handleClick(item)}>
 						<img
 							src={icon || "images/controls/Plugin.png"}
 							alt={label}
 							onError={hideImage}
 						/>
 					</div>
-					<div className={"text-[var(--font-size-small)] text-center m-[5px_0]"}>{label}</div>
+					<div className={"text-sm text-center my-1 mx-0"}>{label}</div>
 				</div>
 			);
 		});
@@ -38,7 +38,7 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 
 	return (
 		<TabPanel
-			className={"w-[720px] h-[400px]"}
+			className={"w-full max-w-5xl h-96"}
 			tabPosition="left"
 			activeIndex={types.indexOf(type)}
 		>

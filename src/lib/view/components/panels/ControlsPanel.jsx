@@ -43,12 +43,12 @@ export default function ControlsPanel() {
 	}, [activeElementId]);
 
 	return (
-		<div className={"flex-1 overflow-auto relative p-[0_5px] mb-[6px]"} ref={panelRef}>
+		<div className={"flex-1 overflow-auto relative py-0 px-1 mb-1.5"} ref={panelRef}>
 			{displays.map((display) => {
 				const { id } = display;
 
 				return (
-					<div id={`control-${id}`} key={id} className={"bg-gray200 border-t border-t-gray400 border-l border-l-gray300 border-b border-b-gray50 mb-[6px] [&:last-child]:mb-0"}>
+					<div id={`control-${id}`} key={id} className={"bg-gray200 border-t border-t-gray400 border-l border-l-gray300 border-b border-b-gray50 mb-1.5 [&:last-child]:mb-0"}>
 						<Control display={display} />
 					</div>
 				);

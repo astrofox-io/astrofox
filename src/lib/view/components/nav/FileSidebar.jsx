@@ -26,8 +26,8 @@ export default function FileSidebar() {
 	}, []);
 
 	return (
-		<nav className={"flex flex-col w-[180px] shrink-0 bg-gray75 border-r border-r-gray300 p-2 overflow-auto"} aria-label="File actions">
-			<div className={"text-[var(--font-size-small)] text-text200 uppercase tracking-[1px] mb-2 py-1.5 px-2"}>File</div>
+		<nav className={"flex flex-col w-44 shrink-0 bg-gray75 border-r border-r-gray300 p-2 overflow-auto"} aria-label="File actions">
+			<div className={"text-sm text-text200 uppercase tracking-wide mb-2 py-1.5 px-2"}>File</div>
 			{sections.map((section) => (
 				<div
 					key={section.map((item) => item.action).join("-")}
@@ -37,7 +37,7 @@ export default function FileSidebar() {
 						<button
 							key={item.action}
 							type="button"
-							className={"bg-transparent border-0 text-text100 text-left text-[var(--font-size-normal)] p-2 cursor-default [&:hover]:bg-primary100"}
+							className={"bg-transparent border-0 text-text100 text-left text-sm p-2 cursor-default [&:hover]:bg-primary100"}
 							onClick={() => handleMenuAction(item.action)}
 						>
 							{item.label}

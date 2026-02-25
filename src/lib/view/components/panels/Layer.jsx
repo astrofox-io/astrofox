@@ -43,7 +43,7 @@ export default function Layer({
 	return (
 		<div
 			className={classNames(
-				"flex flex-row text-[var(--font-size-small)] text-text100 bg-gray200 border-b border-b-gray75 p-[5px] mx-[5px] relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				"flex flex-row text-sm text-text100 bg-gray200 border-b border-b-gray75 p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
 				className,
 				{
 					"bg-gray100": edit,
@@ -69,7 +69,7 @@ export default function Layer({
 				)}
 			</div>
 			<Icon
-				className={classNames("w-[13px] h-[13px]", {
+				className={classNames("w-3.5 h-3.5", {
 					"opacity-30": !enabled,
 				})}
 				glyph={Eye}

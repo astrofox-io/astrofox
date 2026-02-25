@@ -68,7 +68,7 @@ export default function Option({
 
 	return (
 		<div
-			className={classNames("relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-[var(--font-size-small)] text-text300 leading-5", className, {
+			className={classNames("relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-text300 leading-5", className, {
 				["hidden"]: hidden || inputs.length === 0,
 			})}
 		>
@@ -82,7 +82,7 @@ export default function Option({
 				/>
 			)}
 			<div
-				className={classNames("ml-6 flex min-w-[100px] cursor-default", {
+				className={classNames("ml-6 flex min-w-24 cursor-default", {
 					["min-w-14"]: showReactor,
 				})}
 			>

@@ -93,7 +93,7 @@ export default function TitleBar() {
 						<MenuIcon size={18} />
 					</button>
 					<Menu
-						className={"top-[calc(100%_+_6px)] left-0 min-w-[190px] border border-gray300"}
+						className={"top-full mt-1.5 left-0 min-w-48 border border-gray300"}
 						items={menuItems}
 						visible={menuVisible}
 						onMenuItemClick={onMenuItemClick}
@@ -102,7 +102,7 @@ export default function TitleBar() {
 			</div>
 			<div
 				className={classNames(
-					"absolute left-1/2 -translate-x-1/2 text-[var(--font-size-normal)] leading-10 tracking-[5px] uppercase cursor-default max-[700px]:hidden",
+					"absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden",
 					{
 						"text-text300": focused,
 						"text-text400": !focused,
