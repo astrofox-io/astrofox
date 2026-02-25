@@ -3,7 +3,7 @@ import Panel from "@/lib/view/components/layout/Panel";
 import useMeasure from "@/lib/view/hooks/useMeasure";
 import classNames from "classnames";
 import React from "react";
-import styles from "./PanelDock.module.less";
+import styles from "./PanelDock.module.tailwind";
 
 export default function PanelDock({
 	direction = "vertical",

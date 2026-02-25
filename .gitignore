@@ -14,11 +14,6 @@ Thumbs.db
 *.iml
 *.bat
 *.map
-.claude
-.vscode
-_tmp*
-nul
-.pnpm-store
 
 # Project
 node_modules
@@ -28,3 +23,8 @@ dist
 .next
 /plugins/
 /resources/
+
+# Other
+.claude
+.vscode
+.pnpm-store

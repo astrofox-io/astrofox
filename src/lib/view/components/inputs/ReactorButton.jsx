@@ -5,7 +5,7 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Flash } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
-import styles from "./ReactorButton.module.less";
+import styles from "./ReactorButton.module.tailwind";
 
 export default function ReactorButton({
 	display,

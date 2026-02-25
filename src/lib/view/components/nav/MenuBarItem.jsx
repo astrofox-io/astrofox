@@ -1,7 +1,7 @@
 import Menu from "@/lib/view/components/nav/Menu";
 import classNames from "classnames";
 import React from "react";
-import styles from "./MenuBarItem.module.less";
+import styles from "./MenuBarItem.module.tailwind";
 
 export default function MenuBarItem({
 	label,

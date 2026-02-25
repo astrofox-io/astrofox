@@ -1,7 +1,7 @@
 import fonts from "@/lib/config/fonts.json";
 import { resolveFontFamily } from "@/lib/view/fontFamilies";
 import React from "react";
-import styles from "./Preload.module.less";
+import styles from "./Preload.module.tailwind";
 
 export default function Preload() {
 	return (

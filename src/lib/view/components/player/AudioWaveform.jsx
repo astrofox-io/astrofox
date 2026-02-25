@@ -3,7 +3,7 @@ import { player } from "@/lib/view/global";
 import useSharedState from "@/lib/view/hooks/useSharedState";
 import classNames from "classnames";
 import React, { useRef, useEffect, useLayoutEffect, useMemo } from "react";
-import styles from "./AudioWaveform.module.less";
+import styles from "./AudioWaveform.module.tailwind";
 
 const canvasProperties = {
 	width: 854,

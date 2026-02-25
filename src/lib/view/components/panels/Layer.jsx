@@ -3,7 +3,7 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Eye } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
-import styles from "./Layer.module.less";
+import styles from "./Layer.module.tailwind";
 
 export default function Layer({
 	id,

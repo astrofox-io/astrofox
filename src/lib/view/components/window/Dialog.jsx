@@ -2,7 +2,7 @@ import Button from "@/lib/view/components/interface/Button";
 import ButtonRow from "@/lib/view/components/layout/ButtonRow";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Dialog.module.less";
+import styles from "./Dialog.module.tailwind";
 
 export default function Dialog({ icon, message, buttons, onConfirm }) {
 	return (

@@ -2,7 +2,7 @@ import { inputValueToProps, mapChildren } from "@/lib/utils/react";
 import Setting from "@/lib/view/components/controls/Setting";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Settings.module.less";
+import styles from "./Settings.module.tailwind";
 
 export default function Settings({
 	label,

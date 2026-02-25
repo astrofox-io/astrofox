@@ -7,7 +7,7 @@ import { PRIMARY_COLOR } from "@/lib/view/constants";
 import { events, reactors } from "@/lib/view/global";
 import { Times } from "@/lib/view/icons";
 import React, { useRef, useEffect, useMemo } from "react";
-import styles from "./ReactorInput.module.less";
+import styles from "./ReactorInput.module.tailwind";
 
 export default function ReactorInput({
 	display,

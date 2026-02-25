@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Setting.module.less";
+import styles from "./Setting.module.tailwind";
 import inputComponents from "./inputComponents";
 
 export default function Setting({

@@ -1,7 +1,7 @@
 import Button from "@/lib/view/components/interface/Button";
 import { env } from "@/lib/view/global";
 import React from "react";
-import styles from "./About.module.less";
+import styles from "./About.module.tailwind";
 
 const { APP_NAME, APP_VERSION } = env;
 

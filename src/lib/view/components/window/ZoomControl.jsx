@@ -5,7 +5,7 @@ import useStage, {
 	fitToScreen,
 } from "@/lib/view/actions/stage";
 import React from "react";
-import styles from "./ZoomControl.module.less";
+import styles from "./ZoomControl.module.tailwind";
 
 export default function Zoom() {
 	const { width, height, zoom } = useStage((state) => state);

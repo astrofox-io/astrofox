@@ -3,7 +3,7 @@ import Layer from "@/lib/view/components/panels/Layer";
 import { Cube, DocumentLandscape, LightUp, Picture } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useMemo } from "react";
-import styles from "./SceneLayer.module.less";
+import styles from "./SceneLayer.module.tailwind";
 
 const icons = {
 	display: DocumentLandscape,

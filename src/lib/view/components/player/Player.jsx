@@ -5,7 +5,7 @@ import shallow from "zustand/shallow";
 import AudioWaveform from "./AudioWaveform";
 import Oscilloscope from "./Oscilloscope";
 import PlayButtons from "./PlayButtons";
-import styles from "./Player.module.less";
+import styles from "./Player.module.tailwind";
 import ProgressControl from "./ProgressControl";
 import ToggleButtons from "./ToggleButtons";
 import VolumeControl from "./VolumeControl";

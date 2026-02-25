@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Layout.module.less";
+import styles from "./Layout.module.tailwind";
 
 export default function Layout({
 	className,

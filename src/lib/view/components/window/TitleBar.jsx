@@ -6,7 +6,7 @@ import useWindowState from "@/lib/view/hooks/useWindowState";
 import classNames from "classnames";
 import { Menu as MenuIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import styles from "./TitleBar.module.less";
+import styles from "./TitleBar.module.tailwind";
 
 const NAV_LABELS = ["File", "Edit"];
 

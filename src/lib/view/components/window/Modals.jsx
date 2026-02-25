@@ -5,7 +5,7 @@ import ModalWindow from "@/lib/view/components/window/ModalWindow";
 import Overlay from "@/lib/view/components/window/Overlay";
 import React from "react";
 import { animated, useTransition } from "react-spring";
-import styles from "./Modals.module.less";
+import styles from "./Modals.module.tailwind";
 
 export default function Modals() {
 	const modals = useModals((state) => state.modals);

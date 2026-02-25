@@ -240,14 +240,14 @@ export async function listProjects() {
 export async function loadProjectById(projectId) {
 	try {
 		const response = await api.getProjectById(projectId);
-		const { project, revision } = response;
+		const { project, snapshot, mediaRefs = [] } = response;
 
 		if (!project) {
 			throw new Error("Project not found.");
 		}
 
-		if (revision?.snapshot) {
-			loadProject(revision.snapshot);
+		if (snapshot) {
+			loadProject(snapshot);
 			await loadScenes();
 		} else {
 			await newProject();
@@ -258,10 +258,10 @@ export async function loadProjectById(projectId) {
 			projectName: project.name || DEFAULT_PROJECT_NAME,
 			opened: Date.now(),
 			lastModified: 0,
-			unresolvedMediaRefs: revision?.mediaRefs || [],
+			unresolvedMediaRefs: mediaRefs,
 		});
 
-		if ((revision?.mediaRefs || []).length > 0) {
+		if (mediaRefs.length > 0) {
 			openRelinkMediaDialog();
 		}
 	} catch (error) {
@@ -291,11 +291,7 @@ export async function deleteProjectById(projectId) {
 }
 
 export async function saveProject(nameOverride) {
-	if (
-		!requireAccount(
-			"Sign in or create an account to save projects and project revisions.",
-		)
-	) {
+	if (!requireAccount("Sign in or create an account to save projects.")) {
 		return false;
 	}
 
@@ -315,7 +311,7 @@ export async function saveProject(nameOverride) {
 
 		const { snapshot, mediaRefs } = sanitizeSnapshotMedia(snapshotProject());
 
-		await api.createProjectRevision(projectId, snapshot, mediaRefs);
+		await api.saveProjectSnapshot(projectId, snapshot, mediaRefs);
 
 		projectStore.setState({
 			projectId,

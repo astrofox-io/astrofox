@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Button.module.less";
+import styles from "./Button.module.tailwind";
 
 const Button = ({ text, disabled, className, onClick }) => {
 	return (

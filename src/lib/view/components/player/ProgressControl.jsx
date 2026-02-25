@@ -3,7 +3,7 @@ import TimeInfo from "@/lib/view/components/player/TimeInfo";
 import { player } from "@/lib/view/global";
 import useSharedState from "@/lib/view/hooks/useSharedState";
 import React, { useEffect } from "react";
-import styles from "./ProgressControl.module.less";
+import styles from "./ProgressControl.module.tailwind";
 
 const PROGRESS_MAX = 1000;
 

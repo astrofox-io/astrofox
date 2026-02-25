@@ -9,7 +9,7 @@ import useProject, {
 } from "@/lib/view/actions/project";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styles from "./ProjectBrowser.module.less";
+import styles from "./ProjectBrowser.module.tailwind";
 
 export default function ProjectBrowser({ onClose }) {
 	const currentProjectId = useProject((state) => state.projectId);

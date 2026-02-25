@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { Children, cloneElement } from "react";
-import styles from "./ButtonGroup.module.less";
+import styles from "./ButtonGroup.module.tailwind";
 
 const ButtonGroup = ({ className, children }) => (
 	<div className={classNames(styles.group, className)}>

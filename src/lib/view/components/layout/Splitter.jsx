@@ -4,7 +4,7 @@ import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import { DotsHorizontal } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
-import styles from "./Splitter.module.less";
+import styles from "./Splitter.module.tailwind";
 
 export default function Splitter({
 	type = "horizontal",

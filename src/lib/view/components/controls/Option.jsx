@@ -8,7 +8,7 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Link } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Option.module.less";
+import styles from "./Option.module.tailwind";
 
 export default function Option({
 	display,
@@ -70,6 +70,7 @@ export default function Option({
 		<div
 			className={classNames(styles.option, className, {
 				[styles.hidden]: hidden || inputs.length === 0,
+				[styles.optionWithReactor]: showReactor,
 			})}
 		>
 			{withReactor && (
@@ -81,7 +82,11 @@ export default function Option({
 					max={max}
 				/>
 			)}
-			<div className={styles.label}>
+			<div
+				className={classNames(styles.label, {
+					[styles.labelWithReactor]: showReactor,
+				})}
+			>
 				<div className={styles.text}>{label}</div>
 				{withLink && (
 					<Icon

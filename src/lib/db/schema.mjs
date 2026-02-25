@@ -1,8 +1,6 @@
-import { sql } from "drizzle-orm";
 import {
 	boolean,
 	index,
-	integer,
 	jsonb,
 	pgTable,
 	text,
@@ -111,6 +109,8 @@ export const projects = pgTable(
 			withTimezone: true,
 			mode: "date",
 		}),
+		snapshotJson: jsonb("snapshot_json"),
+		mediaRefs: jsonb("media_refs").notNull().default([]),
 		deletedAt: timestamp("deleted_at", {
 			withTimezone: true,
 			mode: "date",
@@ -121,38 +121,6 @@ export const projects = pgTable(
 		ownerUpdatedIdx: index("projects_owner_updated_idx").on(
 			table.ownerId,
 			table.updatedAt,
-		),
-	}),
-);
-
-export const projectRevisions = pgTable(
-	"project_revisions",
-	{
-		id: text("id").primaryKey(),
-		projectId: text("project_id")
-			.notNull()
-			.references(() => projects.id, { onDelete: "cascade" }),
-		version: integer("version").notNull(),
-		snapshotJson: jsonb("snapshot_json").notNull(),
-		mediaRefs: jsonb("media_refs").notNull().default(sql`'[]'::jsonb`),
-		createdBy: text("created_by")
-			.notNull()
-			.references(() => user.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at", {
-			withTimezone: true,
-			mode: "date",
-		})
-			.notNull()
-			.defaultNow(),
-	},
-	(table) => ({
-		projectVersionIdx: uniqueIndex("project_revisions_project_version_idx").on(
-			table.projectId,
-			table.version,
-		),
-		projectVersionOrderIdx: index("project_revisions_project_order_idx").on(
-			table.projectId,
-			table.version,
 		),
 	}),
 );

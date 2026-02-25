@@ -4,7 +4,7 @@ import Option from "@/lib/view/components/controls/Option";
 import useEntity from "@/lib/view/hooks/useEntity";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Control.module.less";
+import styles from "./Control.module.tailwind";
 
 export default function Control({ display, className, showHeader = true }) {
 	const {

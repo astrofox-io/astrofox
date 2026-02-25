@@ -16,7 +16,7 @@ import { events, reactors } from "@/lib/view/global";
 import useEntity from "@/lib/view/hooks/useEntity";
 import { ChevronDown } from "@/lib/view/icons";
 import React, { useEffect, useRef } from "react";
-import styles from "./ReactorPanel.module.less";
+import styles from "./ReactorPanel.module.tailwind";
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 const METER_WIDTH = 20;

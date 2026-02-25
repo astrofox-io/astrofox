@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState, useRef, useEffect } from "react";
-import styles from "./TextInput.module.less";
+import styles from "./TextInput.module.tailwind";
 
 export default function TextInput({
 	name = "text",

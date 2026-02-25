@@ -1,7 +1,7 @@
 import Splitter from "@/lib/view/components/layout/Splitter";
 import classNames from "classnames";
 import React, { useState } from "react";
-import styles from "./Panel.module.less";
+import styles from "./Panel.module.tailwind";
 
 export default function Panel({
 	title,

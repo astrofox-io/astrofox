@@ -1,7 +1,7 @@
 import { normalize } from "@/lib/utils/math";
 import classNames from "classnames";
 import React, { useState, useRef, useEffect } from "react";
-import styles from "./RangeInput.module.less";
+import styles from "./RangeInput.module.tailwind";
 
 export default function RangeInput({
 	name = "range",

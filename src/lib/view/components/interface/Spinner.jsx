@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Spinner.module.less";
+import styles from "./Spinner.module.tailwind";
 
 const Spinner = ({ size, className }) => (
 	<div

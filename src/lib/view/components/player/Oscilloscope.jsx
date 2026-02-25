@@ -3,7 +3,7 @@ import CanvasWave from "@/lib/canvas/CanvasWave";
 import { PRIMARY_COLOR } from "@/lib/view/constants";
 import { events } from "@/lib/view/global";
 import React, { useRef, useEffect } from "react";
-import styles from "./Oscilloscope.module.less";
+import styles from "./Oscilloscope.module.tailwind";
 
 const canvasProperties = {
 	width: 854,

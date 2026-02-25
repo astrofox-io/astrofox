@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Cube, FolderOpen } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
-import styles from "./NavSidebar.module.less";
+import styles from "./NavSidebar.module.tailwind";
 
 const NAV_LABELS = ["File", "Edit"];
 const EDIT_CANVAS_ACTION = "edit-canvas";

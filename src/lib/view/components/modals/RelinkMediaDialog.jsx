@@ -1,7 +1,7 @@
 import useProject, { relinkMediaRef } from "@/lib/view/actions/project";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
-import styles from "./RelinkMediaDialog.module.less";
+import styles from "./RelinkMediaDialog.module.tailwind";
 
 export default function RelinkMediaDialog({ onClose }) {
 	const mediaRefs = useProject((state) => state.unresolvedMediaRefs);

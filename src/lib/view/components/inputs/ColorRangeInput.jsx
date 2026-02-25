@@ -1,6 +1,6 @@
 import { ColorInput } from "@/lib/view/components/inputs/index";
 import React from "react";
-import styles from "./ColorRangeInput.module.less";
+import styles from "./ColorRangeInput.module.tailwind";
 
 export default function ColorRangeInput({
 	name = "color",

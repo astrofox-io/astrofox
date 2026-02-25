@@ -311,12 +311,8 @@ export async function deleteProjectById(projectId) {
 	});
 }
 
-export async function createProjectRevision(
-	projectId,
-	snapshot,
-	mediaRefs = [],
-) {
-	return request(`/api/projects/${projectId}/revisions`, {
+export async function saveProjectSnapshot(projectId, snapshot, mediaRefs = []) {
+	return request(`/api/projects/${projectId}/save`, {
 		method: "POST",
 		body: { snapshot, mediaRefs },
 	});

@@ -5,7 +5,7 @@ import useAuth, {
 } from "@/lib/view/actions/auth";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
-import styles from "./AuthScreen.module.less";
+import styles from "./AuthScreen.module.tailwind";
 
 export default function AuthScreen() {
 	const loading = useAuth((state) => state.loading);

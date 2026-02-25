@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./CheckboxInput.module.less";
+import styles from "./CheckboxInput.module.tailwind";
 
 export default function CheckboxInput({
 	name = "checkbox",

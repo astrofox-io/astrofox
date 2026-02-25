@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { Children, cloneElement } from "react";
-import styles from "./OptionGroup.module.less";
+import styles from "./OptionGroup.module.tailwind";
 
 export default function OptionGroup({ title, className, children, ...props }) {
 	return (

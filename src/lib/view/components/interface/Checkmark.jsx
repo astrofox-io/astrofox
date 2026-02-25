@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import { Motion, spring } from "react-motion";
-import styles from "./Checkmark.module.less";
+import styles from "./Checkmark.module.tailwind";
 
 const Checkmark = ({ size, className }) => (
 	<Motion

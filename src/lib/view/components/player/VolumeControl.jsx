@@ -4,7 +4,7 @@ import { player } from "@/lib/view/global";
 import { Volume, Volume2, Volume3, Volume4 } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
-import styles from "./VolumeControl.module.less";
+import styles from "./VolumeControl.module.tailwind";
 
 const initialState = {
 	value: 100,

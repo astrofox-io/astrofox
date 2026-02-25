@@ -1,7 +1,7 @@
 import Icon from "@/lib/view/components/interface/Icon";
 import classNames from "classnames";
 import React from "react";
-import styles from "./ButtonInput.module.less";
+import styles from "./ButtonInput.module.tailwind";
 
 const ButtonInput = ({
 	title,

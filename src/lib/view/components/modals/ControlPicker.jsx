@@ -1,7 +1,7 @@
 import { Tab, TabPanel } from "@/lib/view/components/layout/TabPanel";
 import { library } from "@/lib/view/global";
 import React from "react";
-import styles from "./ControlPicker.module.less";
+import styles from "./ControlPicker.module.tailwind";
 
 const types = ["displays", "effects"];
 

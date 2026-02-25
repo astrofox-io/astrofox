@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Icon.module.less";
+import styles from "./Icon.module.tailwind";
 
 const Icon = ({
 	className,

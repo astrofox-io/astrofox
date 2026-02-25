@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState, useEffect } from "react";
-import styles from "./MenuBar.module.less";
+import styles from "./MenuBar.module.tailwind";
 import MenuBarItem from "./MenuBarItem";
 
 export default function MenuBar({

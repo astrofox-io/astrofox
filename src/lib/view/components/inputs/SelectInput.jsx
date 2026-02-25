@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState, useMemo } from "react";
-import styles from "./SelectInput.module.less";
+import styles from "./SelectInput.module.tailwind";
 
 export default function SelectInput({
 	name = "select",

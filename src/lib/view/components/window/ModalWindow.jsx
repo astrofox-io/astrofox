@@ -3,7 +3,7 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { Children, cloneElement } from "react";
-import styles from "./ModalWindow.module.less";
+import styles from "./ModalWindow.module.tailwind";
 
 export default function ModalWindow({
 	className,

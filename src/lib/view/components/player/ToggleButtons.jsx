@@ -6,7 +6,7 @@ import { Cycle, SoundBars, SoundWaves } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
 import shallow from "zustand/shallow";
-import styles from "./ToggleButtons.module.less";
+import styles from "./ToggleButtons.module.tailwind";
 
 export default function ToggleButtons() {
 	const [showWaveform, showOsc] = useApp(

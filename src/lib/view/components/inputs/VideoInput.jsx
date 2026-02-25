@@ -6,7 +6,7 @@ import { api } from "@/lib/view/global";
 import { FolderOpen, Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
-import styles from "./ImageInput.module.less";
+import styles from "./ImageInput.module.tailwind";
 
 export default function VideoInput({ name, value, onChange }) {
 	const video = useRef();

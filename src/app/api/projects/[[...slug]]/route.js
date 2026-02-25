@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, isNull, max } from "drizzle-orm";
-import { NextResponse } from "next/server";
-import { z } from "zod";
 import { auth } from "@/lib/auth.mjs";
 import { db } from "@/lib/db/client.mjs";
-import { projectRevisions, projects } from "@/lib/db/schema.mjs";
+import { projects } from "@/lib/db/schema.mjs";
+import { and, desc, eq, isNull } from "drizzle-orm";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
 export const runtime = "nodejs";
 
@@ -16,7 +16,7 @@ const renameProjectSchema = z.object({
 	name: z.string().trim().min(1).max(120),
 });
 
-const saveRevisionSchema = z.object({
+const saveProjectSchema = z.object({
 	snapshot: z.unknown(),
 	mediaRefs: z.array(z.unknown()).default([]),
 });
@@ -106,17 +106,6 @@ async function getOwnedProject(projectId, ownerId) {
 	return project || null;
 }
 
-async function getLatestRevision(projectId) {
-	const [revision] = await db
-		.select()
-		.from(projectRevisions)
-		.where(eq(projectRevisions.projectId, projectId))
-		.orderBy(desc(projectRevisions.version))
-		.limit(1);
-
-	return revision || null;
-}
-
 async function listProjectsHandler(userId) {
 	const items = await db
 		.select({
@@ -163,20 +152,11 @@ async function getProjectByIdHandler(userId, projectId) {
 		);
 	}
 
-	const revision = await getLatestRevision(project.id);
-
 	return NextResponse.json(
 		{
 			project,
-			revision: revision
-				? {
-						id: revision.id,
-						version: revision.version,
-						snapshot: revision.snapshotJson,
-						mediaRefs: revision.mediaRefs || [],
-						createdAt: revision.createdAt,
-					}
-				: null,
+			snapshot: project.snapshotJson,
+			mediaRefs: project.mediaRefs || [],
 		},
 		{ status: 200 },
 	);
@@ -226,7 +206,7 @@ async function deleteProjectHandler(userId, projectId) {
 	return new Response(null, { status: 204 });
 }
 
-async function createRevisionHandler(userId, projectId, request) {
+async function saveProjectHandler(userId, projectId, request) {
 	const project = await getOwnedProject(projectId, userId);
 
 	if (!project) {
@@ -236,45 +216,25 @@ async function createRevisionHandler(userId, projectId, request) {
 		);
 	}
 
-	const payload = saveRevisionSchema.parse(await parseRequestJson(request));
+	const payload = saveProjectSchema.parse(await parseRequestJson(request));
 	const now = new Date();
 
-	const [result] = await db
-		.select({ version: max(projectRevisions.version) })
-		.from(projectRevisions)
-		.where(eq(projectRevisions.projectId, project.id));
-	const nextVersion = Number(result?.version || 0) + 1;
-
-	const [revision] = await db
-		.insert(projectRevisions)
-		.values({
-			id: randomUUID(),
-			projectId: project.id,
-			version: nextVersion,
-			snapshotJson: payload.snapshot,
-			mediaRefs: payload.mediaRefs,
-			createdBy: userId,
-			createdAt: now,
-		})
-		.returning();
-
-	await db
+	const [updated] = await db
 		.update(projects)
 		.set({
+			snapshotJson: payload.snapshot,
+			mediaRefs: payload.mediaRefs,
 			updatedAt: now,
 			lastOpenedAt: now,
 		})
-		.where(eq(projects.id, project.id));
+		.where(eq(projects.id, project.id))
+		.returning();
 
 	return NextResponse.json(
 		{
-			revision: {
-				id: revision.id,
-				version: revision.version,
-				createdAt: revision.createdAt,
-			},
+			project: updated,
 		},
-		{ status: 201 },
+		{ status: 200 },
 	);
 }
 
@@ -289,7 +249,6 @@ async function duplicateProjectHandler(userId, projectId, request) {
 		);
 	}
 
-	const latestRevision = await getLatestRevision(sourceProject.id);
 	const now = new Date();
 	const newProjectId = randomUUID();
 
@@ -299,23 +258,13 @@ async function duplicateProjectHandler(userId, projectId, request) {
 			id: newProjectId,
 			ownerId: userId,
 			name: payload.name || `${sourceProject.name} copy`,
+			snapshotJson: sourceProject.snapshotJson,
+			mediaRefs: sourceProject.mediaRefs || [],
 			createdAt: now,
 			updatedAt: now,
 			lastOpenedAt: now,
 		})
 		.returning();
-
-	if (latestRevision) {
-		await db.insert(projectRevisions).values({
-			id: randomUUID(),
-			projectId: newProjectId,
-			version: 1,
-			snapshotJson: latestRevision.snapshotJson,
-			mediaRefs: latestRevision.mediaRefs || [],
-			createdBy: userId,
-			createdAt: now,
-		});
-	}
 
 	return NextResponse.json({ project: newProject }, { status: 201 });
 }
@@ -372,9 +321,9 @@ async function handleRequest(request, context) {
 		if (slug.length === 2) {
 			const [projectId, action] = slug;
 
-			if (action === "revisions") {
+			if (action === "save") {
 				if (method === "POST") {
-					return createRevisionHandler(userId, projectId, request);
+					return saveProjectHandler(userId, projectId, request);
 				}
 
 				return respondMethodNotAllowed(["POST"]);

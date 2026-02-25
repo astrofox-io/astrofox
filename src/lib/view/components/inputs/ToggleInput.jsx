@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./ToggleInput.module.less";
+import styles from "./ToggleInput.module.tailwind";
 
 export default function ToggleInput({
 	name = "toggle",

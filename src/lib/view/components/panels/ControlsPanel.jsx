@@ -4,7 +4,7 @@ import useScenes from "@/lib/view/actions/scenes";
 import Control from "@/lib/view/components/controls/Control";
 import { stage } from "@/lib/view/global";
 import React, { useMemo, useRef, useEffect } from "react";
-import styles from "./ControlsPanel.module.less";
+import styles from "./ControlsPanel.module.tailwind";
 
 export default function ControlsPanel() {
 	const activeElementId = useApp((state) => state.activeElementId);

@@ -1,7 +1,7 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/lib/view/actions/app";
 import React, { useMemo } from "react";
-import styles from "./FileSidebar.module.less";
+import styles from "./FileSidebar.module.tailwind";
 
 export default function FileSidebar() {
 	const sections = useMemo(() => {

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState, Children, cloneElement } from "react";
-import styles from "./TabPanel.module.less";
+import styles from "./TabPanel.module.tailwind";
 
 export function TabPanel({
 	className,

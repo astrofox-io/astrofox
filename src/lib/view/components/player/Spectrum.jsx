@@ -2,7 +2,7 @@ import FFTParser from "@/lib/audio/FFTParser";
 import CanvasBars from "@/lib/canvas/CanvasBars";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 import React, { useEffect, useRef, useImperativeHandle } from "react";
-import styles from "./Spectrum.module.less";
+import styles from "./Spectrum.module.tailwind";
 
 const spectrumProperties = {
 	width: 854,

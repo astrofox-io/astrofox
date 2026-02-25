@@ -1,6 +1,6 @@
 import { formatTime } from "@/lib/utils/format";
 import React from "react";
-import styles from "./TimeInfo.module.less";
+import styles from "./TimeInfo.module.tailwind";
 
 export default function TimeInfo({ currentTime, totalTime }) {
 	return (

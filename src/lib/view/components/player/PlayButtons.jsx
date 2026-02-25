@@ -4,7 +4,7 @@ import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
 import { Pause, Play, Stop } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useEffect } from "react";
-import styles from "./PlayButtons.module.less";
+import styles from "./PlayButtons.module.tailwind";
 
 export default function PlayButtons() {
 	const forceUpdate = useForceUpdate();

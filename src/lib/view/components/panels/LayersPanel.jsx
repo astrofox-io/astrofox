@@ -16,12 +16,12 @@ import {
 	ChevronDown,
 	ChevronUp,
 	Cube,
-	LightUp,
 	Picture,
+	Sun,
 	TrashEmpty,
 } from "@/lib/view/icons";
 import React, { useMemo } from "react";
-import styles from "./LayersPanel.module.less";
+import styles from "./LayersPanel.module.tailwind";
 
 export default function LayersPanel() {
 	const scenes = useScenes((state) => state.scenes);
@@ -144,7 +144,7 @@ export default function LayersPanel() {
 					disabled={!hasScenes}
 				/>
 				<ButtonInput
-					icon={LightUp}
+					icon={Sun}
 					title="Add Effect"
 					onClick={handleAddEffect}
 					disabled={!hasScenes}

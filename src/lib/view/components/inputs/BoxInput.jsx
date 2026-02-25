@@ -1,7 +1,7 @@
 import { clamp } from "@/lib/utils/math.js";
 import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import React, { useRef } from "react";
-import styles from "./BoxInput.module.less";
+import styles from "./BoxInput.module.tailwind";
 
 export default function BoxInput({
 	name = "box",

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./ColorInput.module.less";
+import styles from "./ColorInput.module.tailwind";
 
 export default function ColorInput({
 	name = "color",

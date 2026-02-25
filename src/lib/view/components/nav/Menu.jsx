@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Menu.module.less";
+import styles from "./Menu.module.tailwind";
 import MenuItem from "./MenuItem";
 
 const menuItemIds = new WeakMap();

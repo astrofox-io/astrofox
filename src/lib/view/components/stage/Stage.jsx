@@ -5,7 +5,7 @@ import Spinner from "@/lib/view/components/interface/Spinner";
 import { analyzer, renderBackend } from "@/lib/view/global";
 import React, { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
-import styles from "./Stage.module.less";
+import styles from "./Stage.module.tailwind";
 
 export default function Stage() {
 	const [width, height, backgroundColor, zoom] = useStage(

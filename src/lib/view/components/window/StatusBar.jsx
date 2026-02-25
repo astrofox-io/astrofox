@@ -3,7 +3,7 @@ import useAppStore from "@/lib/view/actions/app";
 import ZoomControl from "@/lib/view/components/window/ZoomControl";
 import { env, renderer } from "@/lib/view/global";
 import React, { useState, useEffect } from "react";
-import styles from "./StatusBar.module.less";
+import styles from "./StatusBar.module.tailwind";
 
 const { APP_VERSION } = env;
 

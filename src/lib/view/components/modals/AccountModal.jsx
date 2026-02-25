@@ -7,7 +7,7 @@ import authStore, {
 import useAuth from "@/lib/view/actions/auth";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
-import styles from "./AccountModal.module.less";
+import styles from "./AccountModal.module.tailwind";
 
 export default function AccountModal({ featureMessage, onClose }) {
 	const loading = useAuth((state) => state.loading);
