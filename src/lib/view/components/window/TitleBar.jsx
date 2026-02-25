@@ -78,13 +78,13 @@ export default function TitleBar() {
 
 	return (
 		<div
-			className={"flex items-center relative h-[40px] bg-[var(--gray75)] border-b border-b-[var(--gray300)]"}
+			className={"flex items-center relative h-10 bg-[var(--gray75)] border-b border-b-[var(--gray300)]"}
 		>
-			<div className={"flex items-center gap-[0] ml-[6px]"}>
+			<div className={"flex items-center gap-0 ml-1.5"}>
 				<div className={"relative"}>
 					<button
 						type="button"
-						className={classNames("w-[28px] h-[28px] border-0 p-0 rounded-[6px] bg-transparent text-[var(--text300)] inline-flex items-center justify-center [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
+						className={classNames("w-7 h-7 border-0 p-0 rounded-md bg-transparent text-[var(--text300)] inline-flex items-center justify-center [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
 							["text-[var(--text100)] bg-[var(--primary100)]"]: menuVisible,
 						})}
 						aria-label="Main menu"
@@ -102,7 +102,7 @@ export default function TitleBar() {
 			</div>
 			<div
 				className={classNames(
-					"absolute left-1/2 -translate-x-1/2 text-[var(--font-size-normal)] leading-[40px] tracking-[5px] uppercase cursor-default max-[700px]:hidden",
+					"absolute left-1/2 -translate-x-1/2 text-[var(--font-size-normal)] leading-10 tracking-[5px] uppercase cursor-default max-[700px]:hidden",
 					{
 						"text-[var(--text300)]": focused,
 						"text-[var(--text400)]": !focused,
@@ -114,7 +114,7 @@ export default function TitleBar() {
 			<img
 				alt=""
 				aria-hidden="true"
-				className={"absolute top-[6px] right-[8px] w-[28px] h-[28px]"}
+				className={"absolute top-1.5 right-2 w-7 h-7"}
 				draggable={false}
 				src="/icon.svg"
 			/>

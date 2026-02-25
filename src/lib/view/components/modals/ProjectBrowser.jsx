@@ -96,16 +96,16 @@ export default function ProjectBrowser({ onClose }) {
 	}
 
 	return (
-		<div className={"flex flex-col gap-[12px] min-w-[620px]"}>
-			<div className={"flex gap-[12px]"}>
-				<div className={"list-column flex-1 flex flex-col gap-[8px]"}>
+		<div className={"flex flex-col gap-3 min-w-[620px]"}>
+			<div className={"flex gap-3"}>
+				<div className={"list-column flex-1 flex flex-col gap-2"}>
 					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Projects</div>
-					<div className={"flex flex-col gap-[4px] min-h-[220px] max-h-[220px] overflow-y-auto border border-[#444] p-[4px]"}>
+					<div className={"flex flex-col gap-1 min-h-[220px] max-h-[220px] overflow-y-auto border border-[#444] p-1"}>
 						{projects.map((project) => (
 							<button
 								type="button"
 								key={project.id}
-								className={`${"w-full text-left bg-transparent p-[6px_8px] border border-[transparent] cursor-pointer [&:hover]:[border-color:#666]"} ${
+								className={`${"w-full text-left bg-transparent py-1.5 px-2 border border-[transparent] cursor-pointer [&:hover]:[border-color:#666]"} ${
 									project.id === selectedId ? "[border-color:#0ec5ff] bg-[rgba(14,_197,_255,_0.12)]" : ""
 								}`}
 								onClick={() => setSelectedId(project.id)}
@@ -114,10 +114,10 @@ export default function ProjectBrowser({ onClose }) {
 							</button>
 						))}
 						{!loading && projects.length === 0 && (
-							<div className={"opacity-[0.7] text-xs p-[8px]"}>No projects yet.</div>
+							<div className={"opacity-[0.7] text-xs p-2"}>No projects yet.</div>
 						)}
 					</div>
-					<div className={"flex gap-[6px]"}>
+					<div className={"flex gap-1.5"}>
 						<Button text="Refresh" onClick={refreshProjects} />
 						<Button
 							text="Open"
@@ -127,14 +127,14 @@ export default function ProjectBrowser({ onClose }) {
 					</div>
 				</div>
 
-				<div className={"flex-1 flex flex-col gap-[8px]"}>
+				<div className={"flex-1 flex flex-col gap-2"}>
 					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Create New</div>
 					<input
 						className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
 						value={createName}
 						onChange={(e) => setCreateName(e.currentTarget.value)}
 					/>
-					<div className={"flex gap-[6px]"}>
+					<div className={"flex gap-1.5"}>
 						<Button text="Create" onClick={handleCreateProject} />
 					</div>
 
@@ -145,7 +145,7 @@ export default function ProjectBrowser({ onClose }) {
 						onChange={(e) => setRenameName(e.currentTarget.value)}
 						disabled={!selectedId}
 					/>
-					<div className={"flex gap-[6px]"}>
+					<div className={"flex gap-1.5"}>
 						<Button
 							text="Rename"
 							disabled={!selectedId || !renameName.trim()}

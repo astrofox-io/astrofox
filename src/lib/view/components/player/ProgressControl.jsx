@@ -50,7 +50,7 @@ export default function ProgressControl() {
 	return (
 		<div className={"flex items-center flex-1"}>
 			<RangeInput
-				className={"w-full mr-[20px]"}
+				className={"w-full mr-5"}
 				name="progress"
 				min={0}
 				max={PROGRESS_MAX}

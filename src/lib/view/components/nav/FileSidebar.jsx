@@ -26,18 +26,18 @@ export default function FileSidebar() {
 	}, []);
 
 	return (
-		<nav className={"flex flex-col w-[180px] shrink-0 bg-[var(--gray75)] border-r border-r-[var(--gray300)] p-[8px] overflow-auto"} aria-label="File actions">
-			<div className={"text-[var(--font-size-small)] text-[var(--text200)] uppercase tracking-[1px] mb-[8px] p-[6px_8px]"}>File</div>
+		<nav className={"flex flex-col w-[180px] shrink-0 bg-[var(--gray75)] border-r border-r-[var(--gray300)] p-2 overflow-auto"} aria-label="File actions">
+			<div className={"text-[var(--font-size-small)] text-[var(--text200)] uppercase tracking-[1px] mb-2 py-1.5 px-2"}>File</div>
 			{sections.map((section) => (
 				<div
 					key={section.map((item) => item.action).join("-")}
-					className={"flex flex-col gap-[4px] mt-[8px] pt-[8px] border-t border-t-[var(--gray300)] [&:first-of-type]:mt-0 [&:first-of-type]:pt-0 [&:first-of-type]:border-t-0"}
+					className={"flex flex-col gap-1 mt-2 pt-[8px] border-t border-t-[var(--gray300)] [&:first-of-type]:mt-0 [&:first-of-type]:pt-0 [&:first-of-type]:border-t-0"}
 				>
 					{section.map((item) => (
 						<button
 							key={item.action}
 							type="button"
-							className={"bg-transparent border-0 text-[var(--text100)] text-left text-[var(--font-size-normal)] p-[8px] cursor-default [&:hover]:bg-[var(--primary100)]"}
+							className={"bg-transparent border-0 text-[var(--text100)] text-left text-[var(--font-size-normal)] p-2 cursor-default [&:hover]:bg-[var(--primary100)]"}
 							onClick={() => handleMenuAction(item.action)}
 						>
 							{item.label}

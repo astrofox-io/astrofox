@@ -52,7 +52,7 @@ export default function Spectrum({ forwardedRef }) {
 		<div className={"min-w-[900px] relative bg-[var(--gray75)] pb-[10px]"}>
 			<canvas
 				ref={canvas}
-				className={"block m-[0_auto] border border-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
+				className={"block my-0 mx-auto border border-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
 				width={width}
 				height={height}
 				onClick={handleClick}

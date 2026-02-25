@@ -48,12 +48,12 @@ export default function AccountModal({ featureMessage, onClose }) {
 
 	if (session?.user) {
 		return (
-			<div className={"flex flex-col gap-[10px] min-w-[420px]"}>
+			<div className={"flex flex-col gap-2.5 min-w-[420px]"}>
 				<div className={"text-xs text-[var(--text200)]"}>You are signed in.</div>
 				<div className={"text-[13px] text-[var(--text100)]"}>
 					{session.user.name || session.user.email || "Authenticated user"}
 				</div>
-				<div className={"flex gap-[6px] [flex-wrap:wrap]"}>
+				<div className={"flex gap-1.5 [flex-wrap:wrap]"}>
 					<Button text="Close" onClick={onClose} />
 					<Button text="Sign out" onClick={handleSignOut} />
 				</div>
@@ -62,7 +62,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 	}
 
 	return (
-		<form className={"flex flex-col gap-[10px] min-w-[420px]"} onSubmit={handleSubmit}>
+		<form className={"flex flex-col gap-2.5 min-w-[420px]"} onSubmit={handleSubmit}>
 			<div className={"text-xs text-[var(--text200)]"}>
 				{featureMessage ||
 					"Create an account to unlock cloud project features like save, open, and duplicate."}
@@ -99,7 +99,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 				required
 			/>
 
-			<div className={"flex gap-[6px] [flex-wrap:wrap]"}>
+			<div className={"flex gap-1.5 [flex-wrap:wrap]"}>
 				<Button
 					text={
 						loading

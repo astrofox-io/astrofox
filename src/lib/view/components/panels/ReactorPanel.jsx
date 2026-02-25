@@ -109,7 +109,7 @@ const ReactorControl = ({ reactor }) => {
 						onChange={inputValueToProps(handleChange)}
 					/>
 				</div>
-				<div className={"ml-[10px] shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-[var(--gray200)]"}>
+				<div className={"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-[var(--gray200)]"}>
 					<canvas
 						ref={outputCanvas}
 						width={METER_WIDTH}
@@ -118,7 +118,7 @@ const ReactorControl = ({ reactor }) => {
 				</div>
 			</div>
 			<Icon
-				className={"absolute top-[10px] right-[20px] text-[var(--text200)] w-[14px] h-[14px] [&:hover]:text-[var(--text100)]"}
+				className={"absolute top-2.5 right-5 text-[var(--text200)] w-3.5 h-3.5 [&:hover]:text-[var(--text100)]"}
 				glyph={ChevronDown}
 				title="Hide Panel"
 				onClick={hideReactor}
@@ -132,7 +132,7 @@ const Header = ({ path }) => (
 		{path.map((item, index) => (
 			<span
 				key={index}
-				className={"uppercase cursor-default after:content-['\\2022'] after:text-[var(--primary100)] after:mx-[8px] last:after:content-none"}
+				className={"uppercase cursor-default after:content-['\\2022'] after:text-[var(--primary100)] after:mx-2 last:after:content-none"}
 			>
 				{item}
 			</span>

@@ -20,7 +20,7 @@ export default function Setting({
 
 	return (
 		<div
-			className={classNames("flex items-center mb-[16px] [&_>_*]:mr-[8px] [&_>_*:last-child]:mr-0", className, {
+			className={classNames("flex items-center mb-4 [&_>_*]:mr-2 [&_>_*:last-child]:mr-0", className, {
 				["hidden"]: hidden,
 			})}
 		>

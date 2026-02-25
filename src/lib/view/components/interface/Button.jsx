@@ -5,7 +5,7 @@ const Button = ({ text, disabled, className, onClick }) => {
 	return (
 		<span
 			className={classNames(
-				"inline-block bg-[var(--primary100)] p-[8px_10px] rounded-[3px] cursor-default mr-[10px] [&:last-child]:mr-0 [&:hover]:bg-[var(--primary200)]",
+				"inline-block bg-[var(--primary100)] py-2 px-2.5 rounded cursor-default mr-2.5 [&:last-child]:mr-0 [&:hover]:bg-[var(--primary200)]",
 				className,
 				{
 					"text-[var(--text200)] bg-[var(--gray400)]": disabled,

@@ -46,7 +46,7 @@ export default function VolumeControl() {
 	return (
 		<div className={"flex"}>
 			<div
-				className={classNames("mr-[10px] [&_.icon]:text-[var(--text100)] [&_.icon]:w-[20px] [&_.icon]:h-[20px]", { ["[&_.icon]:text-[var(--text300)]"]: mute })}
+				className={classNames("mr-2.5 [&_.icon]:text-[var(--text100)] [&_.icon]:w-5 [&_.icon]:h-5", { ["[&_.icon]:text-[var(--text300)]"]: mute })}
 				onClick={handleClick}
 			>
 				<Icon className={""} glyph={getIcon()} />

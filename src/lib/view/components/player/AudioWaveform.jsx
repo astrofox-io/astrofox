@@ -147,12 +147,12 @@ export default function AudioWaveform({ visible = true }) {
 		<div
 			className={classNames({
 				["min-w-[900px] relative bg-[var(--gray75)] border-t border-t-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-[200px] transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
-				["hidden max-h-[0] transition-[max-height_0.2s_ease-in]"]: !visible,
+				["hidden max-h-0 transition-[max-height_0.2s_ease-in]"]: !visible,
 			})}
 		>
 			<canvas
 				ref={canvas}
-				className={"m-[20px_auto] block"}
+				className={"my-5 mx-auto block"}
 				width={width}
 				height={height + shadowHeight}
 				onClick={handleClick}

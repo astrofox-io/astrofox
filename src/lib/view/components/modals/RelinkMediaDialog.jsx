@@ -14,7 +14,7 @@ export default function RelinkMediaDialog({ onClose }) {
 
 	if (!mediaRefs.length) {
 		return (
-			<div className={"flex flex-col gap-[10px] min-w-[520px]"}>
+			<div className={"flex flex-col gap-2.5 min-w-[520px]"}>
 				<div className={"text-xs opacity-[0.8]"}>All media links are resolved.</div>
 				<div className={"flex justify-end"}>
 					<Button text="Close" onClick={onClose} />
@@ -24,14 +24,14 @@ export default function RelinkMediaDialog({ onClose }) {
 	}
 
 	return (
-		<div className={"flex flex-col gap-[10px] min-w-[520px]"}>
+		<div className={"flex flex-col gap-2.5 min-w-[520px]"}>
 			<div className={"text-xs opacity-[0.85]"}>
 				This project references local media files. Relink each source to render
 				the project correctly.
 			</div>
-			<div className={"flex flex-col gap-[6px]"}>
+			<div className={"flex flex-col gap-1.5"}>
 				{mediaRefs.map((ref) => (
-					<div key={ref.displayId} className={"flex items-center justify-between gap-[10px] p-[7px_8px] border border-[#444]"}>
+					<div key={ref.displayId} className={"flex items-center justify-between gap-2.5 p-[7px_8px] border border-[#444]"}>
 						<div className={"text-xs"}>
 							{ref.label} ({ref.kind})
 						</div>

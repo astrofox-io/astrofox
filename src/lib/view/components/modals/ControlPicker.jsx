@@ -22,7 +22,7 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 			} = item;
 
 			return (
-				<div key={index} className={"flex flex-col items-center mb-[10px] w-[110px]"}>
+				<div key={index} className={"flex flex-col items-center mb-2.5 w-[110px]"}>
 					<div className={"bg-[#000_center] border-[2px] border-[var(--gray300)] rounded-[7px] h-[84px] w-[84px] transition-[border-color_0.5s] overflow-hidden [&_img]:w-full [&_img]:h-[auto] [&:hover]:[border-color:var(--primary100)] [&:hover]:transition-[none]"} onClick={() => handleClick(item)}>
 						<img
 							src={icon || "images/controls/Plugin.png"}
@@ -42,10 +42,10 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 			tabPosition="left"
 			activeIndex={types.indexOf(type)}
 		>
-			<Tab name="Displays" contentClassName={"flex flex-row [flex-wrap:wrap] items-center justify-center p-[10px]"}>
+			<Tab name="Displays" contentClassName={"flex flex-row [flex-wrap:wrap] items-center justify-center p-2.5"}>
 				<Catalog items={library.get("displays")} />
 			</Tab>
-			<Tab name="Effects" contentClassName={"flex flex-row [flex-wrap:wrap] items-center justify-center p-[10px]"}>
+			<Tab name="Effects" contentClassName={"flex flex-row [flex-wrap:wrap] items-center justify-center p-2.5"}>
 				<Catalog items={library.get("effects")} />
 			</Tab>
 		</TabPanel>

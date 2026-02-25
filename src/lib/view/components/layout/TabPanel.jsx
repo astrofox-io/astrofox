@@ -24,7 +24,7 @@ export function TabPanel({
 			<div
 				key={index}
 				className={classNames(
-					"text-center list-none p-[8px_16px] cursor-default",
+					"text-center list-none py-2 px-4 cursor-default",
 					{
 						"bg-[var(--primary100)]": index === activeIndex,
 					},
@@ -51,8 +51,8 @@ export function TabPanel({
 			className={classNames(
 				"flex flex-1",
 				{
-					["flex-row [&_.tabs]:w-[160px]"]: tabPosition === "left",
-					["flex-row [&_.tabs]:order-[99] [&_.tabs]:w-[160px]"]: tabPosition === "right",
+					["flex-row [&_.tabs]:w-40"]: tabPosition === "left",
+					["flex-row [&_.tabs]:order-[99] [&_.tabs]:w-40"]: tabPosition === "right",
 					["flex-col"]: tabPosition === "top",
 					["flex-col [&_.tabs]:order-[99]"]: tabPosition === "bottom",
 				},

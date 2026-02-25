@@ -20,8 +20,8 @@ export default function Settings({
 	}
 
 	return (
-		<div className={classNames("flex flex-col p-[16px]", className)}>
-			{label && <div className={"text-[var(--text400)] text-[var(--font-size-small)] uppercase mb-[16px]"}>{label}</div>}
+		<div className={classNames("flex flex-col p-4", className)}>
+			{label && <div className={"text-[var(--text400)] text-[var(--font-size-small)] uppercase mb-4"}>{label}</div>}
 			{mapChildren(
 				children,
 				{ labelWidth, inputWidth, onChange: inputValueToProps(onChange) },

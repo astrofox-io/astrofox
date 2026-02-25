@@ -71,7 +71,7 @@ export default function ImageInput({ name, value, onChange }) {
 					onLoad={handleImageLoad}
 				/>
 				<Icon
-					className={"absolute top-0 left-0 right-0 bottom-0 m-[auto] scale-50 text-[var(--text100)] h-[24px] w-[24px] opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"}
+					className={"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-[var(--text100)] h-6 w-6 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"}
 					glyph={FolderOpen}
 					title="Open File"
 				/>
@@ -79,7 +79,7 @@ export default function ImageInput({ name, value, onChange }) {
 			{hasImage && (
 				<Icon
 					className={classNames({
-						["text-[var(--text200)] w-[14px] h-[14px] [&:hover]:text-[var(--text100)]"]: true,
+						["text-[var(--text200)] w-3.5 h-3.5 [&:hover]:text-[var(--text100)]"]: true,
 					})}
 					glyph={Times}
 					title="Remove Image"

@@ -24,9 +24,9 @@ export default function PlayButtons() {
 	return (
 		<div className={"whitespace-nowrap"}>
 			<div
-				className={classNames("text-[var(--text100)] bg-transparent p-0 mr-[4px] inline-block [flex-wrap:nowrap] border-[2px] border-[var(--gray300)] h-[40px] w-[40px] rounded-[20px] leading-[36px] text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-[2px] [&:hover]:border-[var(--primary100)] [&:active]:[border-color:var(--text100)]", {
-					["[&_.icon]:w-[36px] [&_.icon]:h-[36px] [&_.icon]:ml-[2px]"]: !playing,
-					["[&_.icon]:w-[24px] [&_.icon]:h-[24px] [&_.icon]:m-[6px]"]: playing,
+				className={classNames("text-[var(--text100)] bg-transparent p-0 mr-1 inline-block [flex-wrap:nowrap] border-[2px] border-[var(--gray300)] h-10 w-10 rounded-[20px] leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-[2px] [&:hover]:border-[var(--primary100)] [&:active]:[border-color:var(--text100)]", {
+					["[&_.icon]:w-9 [&_.icon]:h-9 [&_.icon]:ml-0.5"]: !playing,
+					["[&_.icon]:w-6 [&_.icon]:h-6 [&_.icon]:m-1.5"]: playing,
 				})}
 				onClick={handlePlayButtonClick}
 			>
@@ -37,7 +37,7 @@ export default function PlayButtons() {
 				/>
 			</div>
 			<div
-				className={classNames("text-[var(--text100)] bg-transparent p-0 mr-[4px] inline-block [flex-wrap:nowrap] border-[2px] border-[var(--gray300)] h-[40px] w-[40px] rounded-[20px] leading-[36px] text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-[2px] [&:hover]:border-[var(--primary100)] [&:active]:[border-color:var(--text100)]", "[&_.icon]:w-[24px] [&_.icon]:h-[24px] [&_.icon]:m-[6px]")}
+				className={classNames("text-[var(--text100)] bg-transparent p-0 mr-1 inline-block [flex-wrap:nowrap] border-[2px] border-[var(--gray300)] h-10 w-10 rounded-[20px] leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-[2px] [&:hover]:border-[var(--primary100)] [&:active]:[border-color:var(--text100)]", "[&_.icon]:w-6 [&_.icon]:h-6 [&_.icon]:m-1.5")}
 				onClick={handleStopButtonClick}
 			>
 				<Icon className={""} glyph={Stop} title="Stop" />

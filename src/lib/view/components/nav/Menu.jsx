@@ -18,7 +18,7 @@ function getItemKey(item) {
 const Menu = ({ className, items, visible, onMenuItemClick }) => (
 	<div
 		className={classNames(
-			"absolute top-[100%] left-0 list-none bg-[var(--gray100)] shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)] overflow-hidden z-[var(--z-index-menu)]",
+			"absolute top-full left-0 list-none bg-[var(--gray100)] shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)] overflow-hidden z-[var(--z-index-menu)]",
 			{
 				["hidden"]: visible === false,
 			},

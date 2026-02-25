@@ -37,7 +37,7 @@ export default function Control({ display, className, showHeader = true }) {
 	return (
 		<div className={classNames("pb-[8px]", className)}>
 			{showHeader && (
-				<div className={"relative p-[0_10px] h-[30px] cursor-default"}>
+				<div className={"relative py-0 px-2.5 h-[30px] cursor-default"}>
 					<div className={"flex justify-center text-[var(--font-size-xsmall)] text-[var(--text100)] leading-[30px] overflow-hidden"}>
 						<div className={"relative uppercase pr-[20px] [&:after]:content-['\\2022'] [&:after]:absolute [&:after]:right-[7px] [&:after]:text-[var(--text300)]"}>
 							{label}

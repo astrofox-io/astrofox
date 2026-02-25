@@ -37,16 +37,16 @@ export default function AuthScreen() {
 	}
 
 	return (
-		<div className={"min-h-[100vh] flex items-center justify-center bg-[radial-gradient(circle_at_top,_#1f2a38_0%,_#101014_70%)]"}>
-			<form className={"w-[420px] flex flex-col gap-[10px] p-[24px] bg-[rgba(14,_20,_28,_0.92)] border border-[#2f3f55]"} onSubmit={handleSubmit}>
+		<div className={"min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,_#1f2a38_0%,_#101014_70%)]"}>
+			<form className={"w-[420px] flex flex-col gap-2.5 p-6 bg-[rgba(14,_20,_28,_0.92)] border border-[#2f3f55]"} onSubmit={handleSubmit}>
 				<div className={"text-[26px] font-bold tracking-[0.04em]"}>Astrofox</div>
-				<div className={"text-[13px] opacity-[0.8] mb-[8px]"}>
+				<div className={"text-[13px] opacity-[0.8] mb-2"}>
 					{mode === "sign-up" ? "Create account" : "Sign in"}
 				</div>
 
 				{mode === "sign-up" && (
 					<input
-						className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] p-[8px_10px] text-[13px]"}
+						className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] py-2 px-2.5 text-[13px]"}
 						type="text"
 						placeholder="Name"
 						value={name}
@@ -55,7 +55,7 @@ export default function AuthScreen() {
 					/>
 				)}
 				<input
-					className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] p-[8px_10px] text-[13px]"}
+					className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] py-2 px-2.5 text-[13px]"}
 					type="email"
 					placeholder="Email"
 					value={email}
@@ -63,7 +63,7 @@ export default function AuthScreen() {
 					required
 				/>
 				<input
-					className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] p-[8px_10px] text-[13px]"}
+					className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] py-2 px-2.5 text-[13px]"}
 					type="password"
 					placeholder="Password"
 					value={password}
@@ -71,7 +71,7 @@ export default function AuthScreen() {
 					required
 				/>
 
-				<div className={"flex gap-[6px] [flex-wrap:wrap]"}>
+				<div className={"flex gap-1.5 [flex-wrap:wrap]"}>
 					<Button
 						text={
 							loading

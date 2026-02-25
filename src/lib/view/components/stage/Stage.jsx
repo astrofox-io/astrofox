@@ -64,9 +64,9 @@ export default function Stage() {
 
 	return (
 		<div className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}>
-			<div className={"m-[auto]"}>
+			<div className={"m-auto"}>
 				<div
-					className={"relative flex flex-col justify-center shadow-[0_5px_20px_rgba(0,_0,_0,_0.5)] m-[20px] [&_canvas]:z-[var(--z-index-canvas)]"}
+					className={"relative flex flex-col justify-center shadow-[0_5px_20px_rgba(0,_0,_0,_0.5)] m-5 [&_canvas]:z-[var(--z-index-canvas)]"}
 					onDrop={handleDrop}
 					onDragOver={ignoreEvents}
 					onDragEnter={ignoreEvents}

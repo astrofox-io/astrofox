@@ -68,14 +68,14 @@ export default function Option({
 
 	return (
 		<div
-			className={classNames("flex flex-row items-center p-[8px_0] m-[0_10px] relative text-[var(--font-size-small)] text-[var(--text300)] leading-[20px] [&_>_*]:mr-[8px] [&_>_*:last-child]:mr-0", className, {
+			className={classNames("relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-[var(--font-size-small)] text-[var(--text300)] leading-5", className, {
 				["hidden"]: hidden || inputs.length === 0,
-				["[&_>_*]:mr-[4px] [&_>_*:last-child]:mr-0"]: showReactor,
+				["gap-1"]: showReactor,
 			})}
 		>
 			{withReactor && (
 				<ReactorButton
-					className={"absolute ml-[-5px]"}
+					className={"absolute -ml-1"}
 					display={display}
 					name={name}
 					min={min}
@@ -83,20 +83,20 @@ export default function Option({
 				/>
 			)}
 			<div
-				className={classNames("flex ml-[20px] cursor-default min-w-[100px]", {
-					["ml-[12px] min-w-[56px]"]: showReactor,
+				className={classNames("ml-5 flex min-w-[100px] cursor-default", {
+					["ml-2.5 min-w-14"]: showReactor,
 				})}
 			>
 				<div
-					className={classNames("flex-1 whitespace-nowrap [text-overflow:ellipsis] overflow-hidden mr-[8px]", {
-						["text-with-reactor mr-[4px]"]: showReactor,
+					className={classNames("mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis", {
+						["mr-1"]: showReactor,
 					})}
 				>
 					{label}
 				</div>
 				{withLink && (
 					<Icon
-						className={classNames("text-[var(--text500)] w-[12px] h-[12px]", {
+						className={classNames("text-[var(--text500)] w-3 h-3", {
 							["text-[var(--text100)]"]: withLink && display.properties[withLink],
 						})}
 						glyph={Link}

@@ -13,7 +13,7 @@ const ButtonInput = ({
 }) => (
 	<div
 		className={classNames(
-			"text-[var(--text100)] bg-[var(--input-bg-color)] min-h-[24px] min-w-[24px] text-center rounded-[2px] inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-[var(--primary100)]",
+			"text-[var(--text100)] bg-[var(--input-bg-color)] min-h-6 min-w-6 text-center rounded-sm inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-[var(--primary100)]",
 			{
 				["bg-[var(--primary100)]"]: active,
 				["[&_svg]:text-[var(--gray500)] [&:hover]:bg-[var(--input-bg-color)]"]: disabled,
@@ -23,7 +23,7 @@ const ButtonInput = ({
 		title={title}
 		onClick={disabled ? null : onClick}
 	>
-		{icon && <Icon className={"text-[var(--text100)] w-[12px] h-[12px]"} glyph={icon} />}
+		{icon && <Icon className={"text-[var(--text100)] w-3 h-3"} glyph={icon} />}
 		{text && <span className={"text-[var(--font-size-small)]"}>{text}</span>}
 	</div>
 );

@@ -26,14 +26,14 @@ export default function StatusBar() {
 	}, []);
 
 	return (
-		<div className={"flex text-[var(--text100)] bg-[var(--primary100)] text-[11px] p-[0_20px] cursor-default whitespace-nowrap z-[var(--z-index-above)]"}>
-			<div className={"text-left w-[33%] [&_.item]:mr-[20px]"}>
+		<div className={"flex text-[var(--text100)] bg-[var(--primary100)] text-[11px] py-0 px-5 cursor-default whitespace-nowrap z-[var(--z-index-above)]"}>
+			<div className={"text-left w-[33%] [&_.item]:mr-5"}>
 				<InfoItem value={statusText} />
 			</div>
-			<div className={"text-center flex-1 w-[34%] [&_.item]:m-[0_10px]"}>
+			<div className={"text-center flex-1 w-[34%] [&_.item]:my-0 mx-2.5"}>
 				<ZoomControl />
 			</div>
-			<div className={"text-right w-[33%] [&_.item]:ml-[20px]"}>
+			<div className={"text-right w-[33%] [&_.item]:ml-5"}>
 				{process.env.NODE_ENV !== "production" && <InfoItem value={mem} />}
 				<InfoItem value={fps} />
 				<InfoItem value={APP_VERSION} />
@@ -43,5 +43,5 @@ export default function StatusBar() {
 }
 
 function InfoItem({ value }) {
-	return <span className={"inline-block leading-[28px]"}>{value}</span>;
+	return <span className={"inline-block leading-7"}>{value}</span>;
 }

@@ -120,7 +120,7 @@ export default function NavSidebar() {
 	}
 
 	return (
-		<nav className={"flex flex-col w-[52px] shrink-0 p-[8px_6px] gap-[6px] bg-[var(--gray75)] border-r border-r-[var(--gray300)]"} aria-label="Main navigation">
+		<nav className={"flex flex-col w-[52px] shrink-0 py-2 px-1.5 gap-1.5 bg-[var(--gray75)] border-r border-r-[var(--gray300)]"} aria-label="Main navigation">
 			{items.map((item, index) => {
 				const hasMenu = item.submenu.length > 0;
 				const isActive = hasMenu && activeIndex === index;
@@ -130,7 +130,7 @@ export default function NavSidebar() {
 					<div key={item.label} className={"group relative flex justify-center"}>
 						<button
 							type="button"
-							className={classNames("w-[38px] h-[38px] border-0 p-0 rounded-[8px] bg-transparent text-[var(--text300)] inline-flex items-center justify-center cursor-default [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
+							className={classNames("w-[38px] h-[38px] border-0 p-0 rounded-lg bg-transparent text-[var(--text300)] inline-flex items-center justify-center cursor-default [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
 								["text-[var(--text100)] bg-[var(--primary100)]"]: isActive,
 							})}
 							title={item.label}

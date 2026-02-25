@@ -17,7 +17,7 @@ const Icon = ({
 	return (
 		<span
 			className={classNames(
-				"inline-flex [align-self:center] relative text-[var(--text100)] w-[16px] h-[16px] [&_svg]:text-inherit [&_svg]:w-[inherit] [&_svg]:h-[inherit]",
+				"relative inline-flex self-center h-4 w-4 text-[var(--text100)] [&_svg]:h-full [&_svg]:w-full [&_svg]:text-inherit",
 				{ ["[&_svg_path:not([fill])]:[fill:currentColor] [&_svg_circle:not([fill])]:[fill:currentColor] [&_svg_ellipse:not([fill])]:[fill:currentColor] [&_svg_rect:not([fill])]:[fill:currentColor] [&_svg_polygon:not([fill])]:[fill:currentColor] [&_svg_polyline:not([fill])]:[fill:currentColor] [&_svg_path:not([stroke])]:[stroke:currentColor] [&_svg_circle:not([stroke])]:[stroke:currentColor] [&_svg_ellipse:not([stroke])]:[stroke:currentColor] [&_svg_rect:not([stroke])]:[stroke:currentColor] [&_svg_polygon:not([stroke])]:[stroke:currentColor] [&_svg_polyline:not([stroke])]:[stroke:currentColor] [&_svg_line:not([stroke])]:[stroke:currentColor]"]: monochrome },
 				className,
 			)}

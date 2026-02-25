@@ -57,8 +57,8 @@ export default function Splitter({
 			onMouseDown={handleDragStart}
 		>
 			<Icon
-				className={classNames("text-[var(--text200)] w-[12px] h-[12px]", {
-					"block absolute m-[0_auto] top-[-4px] left-0 right-0":
+				className={classNames("text-[var(--text200)] w-3 h-3", {
+					"block absolute my-0 mx-auto -top-1 left-0 right-0":
 						type === "horizontal",
 				})}
 				glyph={DotsHorizontal}
