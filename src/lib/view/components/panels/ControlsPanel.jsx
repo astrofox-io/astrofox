@@ -43,7 +43,7 @@ export default function ControlsPanel() {
 	}, [activeElementId]);
 
 	return (
-		<div className={"flex-1 overflow-auto relative py-0 px-1 mb-1.5"} ref={panelRef}>
+		<div className={"flex-1 overflow-auto relative pt-1 pb-0 px-1 mb-1.5"} ref={panelRef}>
 			{displays.map((display) => {
 				const { id } = display;
 

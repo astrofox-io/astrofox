@@ -40,8 +40,8 @@ export default function Panel({
 			style={{ width, height }}
 		>
 			{title && (
-				<div className={"flex h-8 leading-8 shrink-0"}>
-					<div className={"text-sm text-text200 uppercase ml-2.5 cursor-default"}>{title}</div>{" "}
+				<div className={"flex shrink-0 items-start py-3"}>
+					<div className={"ml-2.5 cursor-default text-sm uppercase text-text200 leading-none"}>{title}</div>{" "}
 				</div>
 			)}
 			{children}

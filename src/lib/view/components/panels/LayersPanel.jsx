@@ -119,7 +119,7 @@ export default function LayersPanel() {
 
 	return (
 		<Layout className={"flex flex-col flex-1 relative overflow-auto"}>
-			<div className={"flex-1 overflow-auto"}>
+			<div className={"flex-1 overflow-auto pt-1"}>
 				{sortedScenes.map((scene) => (
 					<SceneLayer
 						key={scene.id}

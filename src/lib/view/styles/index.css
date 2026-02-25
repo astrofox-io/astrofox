@@ -28,9 +28,9 @@
   --text500: var(--gray500);
   --background-color: #202020;
   --font-family: var(--font-inter), sans-serif;
-  --font-size-xsmall: 10px;
-  --font-size-small: 11px;
-  --font-size-normal: 12px;
+  --font-size-xsmall: 11px;
+  --font-size-small: 12px;
+  --font-size-normal: 14px;
   --font-size-large: 16px;
   --font-size-xlarge: 20px;
   --input-text-color: var(--text200);
