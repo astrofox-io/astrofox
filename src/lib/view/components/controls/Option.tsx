@@ -82,8 +82,8 @@ export default function Option({
 				/>
 			)}
 			<div
-				className={classNames("ml-6 flex min-w-24 cursor-default", {
-					["min-w-14"]: showReactor,
+				className={classNames("ml-6 flex min-w-28 cursor-default", {
+					["min-w-20"]: showReactor,
 				})}
 			>
 				<div

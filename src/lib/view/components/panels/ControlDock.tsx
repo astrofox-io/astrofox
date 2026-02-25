@@ -6,7 +6,7 @@ import React from "react";
 
 export default function ControlDock() {
 	return (
-		<PanelDock width={320} visible>
+		<PanelDock width={360} visible>
 			<Panel title="Layers" height={300} minHeight={100} resizable>
 				<LayersPanel />
 			</Panel>
