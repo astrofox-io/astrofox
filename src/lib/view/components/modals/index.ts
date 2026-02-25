@@ -1,5 +1,4 @@
 export { default as About } from "@/lib/view/components/modals/About";
-export { default as AccountModal } from "@/lib/view/components/modals/AccountModal";
 export { default as CanvasSettings } from "@/lib/view/components/modals/CanvasSettings";
 export { default as ControlPicker } from "@/lib/view/components/modals/ControlPicker";
 export { default as ProjectBrowser } from "@/lib/view/components/modals/ProjectBrowser";

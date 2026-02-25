@@ -1,6 +1,5 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import { initApp } from "@/lib/view/actions/app";
-import { bootstrapSession } from "@/lib/view/actions/auth";
 import Spinner from "@/lib/view/components/interface/Spinner";
 import Layout from "@/lib/view/components/layout/Layout";
 import ControlDock from "@/lib/view/components/panels/ControlDock";
@@ -22,28 +21,13 @@ const loadingContainerStyle = {
 };
 
 function App() {
-	const [sessionReady, setSessionReady] = useState(false);
 	const [initialized, setInitialized] = useState(false);
 	const [initError, setInitError] = useState(null);
 
 	useEffect(() => {
 		let mounted = true;
 
-		bootstrapSession().finally(() => {
-			if (mounted) {
-				setSessionReady(true);
-			}
-		});
-
-		return () => {
-			mounted = false;
-		};
-	}, []);
-
-	useEffect(() => {
-		let mounted = true;
-
-		if (sessionReady && !initialized) {
+		if (!initialized) {
 			initApp()
 				.then(() => {
 					if (!mounted) {
@@ -66,9 +50,9 @@ function App() {
 		return () => {
 			mounted = false;
 		};
-	}, [sessionReady, initialized]);
+	}, [initialized]);
 
-	if (!sessionReady || (!initialized && !initError)) {
+	if (!initialized && !initError) {
 		return (
 			<Layout direction="column" full>
 				<div style={loadingContainerStyle}>

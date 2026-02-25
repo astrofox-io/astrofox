@@ -5,7 +5,6 @@ import Entity from "@/lib/core/Entity";
 import Scene from "@/lib/core/Scene";
 import Stage from "@/lib/core/Stage";
 import { resetLabelCount } from "@/lib/utils/controls";
-import authStore from "@/lib/view/actions/auth";
 import { raiseError } from "@/lib/view/actions/error";
 import { showModal } from "@/lib/view/actions/modals";
 import { loadReactors, resetReactors } from "@/lib/view/actions/reactors";
@@ -23,10 +22,17 @@ import {
 	DEFAULT_CANVAS_WIDTH,
 } from "@/lib/view/constants";
 import { api, env, library, logger, reactors, stage } from "@/lib/view/global";
-import cloneDeep from "lodash/cloneDeep";
 import create from "zustand";
 
 export const DEFAULT_PROJECT_NAME = "Untitled Project";
+
+const PROJECT_FILE_FILTERS = [
+	{
+		name: "Astrofox project",
+		extensions: ["json"],
+		mimeType: "application/json",
+	},
+];
 
 const initialState = {
 	projectId: null,
@@ -40,18 +46,6 @@ const projectStore = create(() => ({
 	...initialState,
 }));
 
-function requireAccount(featureMessage) {
-	const session = authStore.getState().session;
-
-	if (session?.user) {
-		return true;
-	}
-
-	showModal("AccountModal", { title: "Account Required" }, { featureMessage });
-
-	return false;
-}
-
 function snapshotProject() {
 	return {
 		version: env.APP_VERSION,
@@ -61,51 +55,71 @@ function snapshotProject() {
 	};
 }
 
-function sanitizeSnapshotMedia(snapshot) {
-	const cloned = cloneDeep(snapshot);
-	const mediaRefs = [];
-
-	cloned.scenes = (cloned.scenes || []).map((scene) => {
-		const mapMediaProps = (element) => {
-			const src = element?.properties?.src;
-
-			if (!src || src === BLANK_IMAGE || typeof src !== "string") {
-				return element;
-			}
-
-			const kind = element.name === "VideoDisplay" ? "video" : "image";
-			mediaRefs.push({
-				displayId: element.id,
-				kind,
-				label: element.displayName || element.name || "Media",
-			});
-
-			return {
-				...element,
-				properties: {
-					...element.properties,
-					src: BLANK_IMAGE,
-				},
-			};
-		};
-
-		return {
-			...scene,
-			displays: (scene.displays || []).map(mapMediaProps),
-			effects: (scene.effects || []).map(mapMediaProps),
-		};
-	});
-
-	return {
-		snapshot: cloned,
-		mediaRefs,
-	};
-}
-
 function setUnresolvedMediaRefs(mediaRefs = []) {
 	projectStore.setState({
 		unresolvedMediaRefs: mediaRefs,
 	});
+}
+
+function sanitizeFileName(name) {
+	return (name || "")
+		.trim()
+		.replace(/[<>:\"/\\|?*\x00-\x1F]/g, "-")
+		.replace(/\s+/g, " ")
+		.trim();
+}
+
+function createProjectFileName(name) {
+	const safeName = sanitizeFileName(name) || DEFAULT_PROJECT_NAME;
+	return `${safeName}.json`;
+}
+
+function parseProjectNameFromFile(fileName = "") {
+	return fileName.replace(/\.json$/i, "").trim() || DEFAULT_PROJECT_NAME;
+}
+
+function parseProjectPayload(payload, fallbackName) {
+	if (!payload || typeof payload !== "object") {
+		throw new Error("Invalid project file.");
+	}
+
+	const snapshot = payload.snapshot || payload;
+
+	if (!snapshot || typeof snapshot !== "object") {
+		throw new Error("Invalid project snapshot.");
+	}
+
+	return {
+		snapshot,
+		projectName:
+			payload.projectName ||
+			payload.name ||
+			fallbackName ||
+			DEFAULT_PROJECT_NAME,
+		mediaRefs: payload.mediaRefs || [],
+	};
+}
+
+async function loadProjectFromPayload(payload, fallbackName) {
+	const { snapshot, projectName, mediaRefs } = parseProjectPayload(
+		payload,
+		fallbackName,
+	);
+
+	loadProject(snapshot);
+	await loadScenes();
+
+	projectStore.setState({
+		projectId: null,
+		projectName: projectName || DEFAULT_PROJECT_NAME,
+		opened: Date.now(),
+		lastModified: 0,
+		unresolvedMediaRefs: mediaRefs,
+	});
+
+	if (mediaRefs.length > 0) {
+		openRelinkMediaDialog();
+	}
 }
 
 export function touchProject() {
@@ -215,16 +229,34 @@ export function checkUnsavedChanges(menuAction, action) {
 	}
 }
 
-export function openProjectBrowser() {
-	if (
-		!requireAccount(
-			"Sign in or create an account to open, rename, and delete saved projects.",
-		)
-	) {
-		return;
-	}
+export async function openProjectFile() {
+	try {
+		const { files, canceled } = await api.showOpenDialog({
+			filters: PROJECT_FILE_FILTERS,
+		});
 
-	showModal("ProjectBrowser", { title: "Projects" });
+		if (canceled || !files || !files.length) {
+			return false;
+		}
+
+		const file = files[0];
+		if (!/\.json$/i.test(file.name || "")) {
+			throw new Error("Project file must use the .json extension.");
+		}
+		const text = await file.text();
+		const payload = JSON.parse(text);
+		const fallbackName = parseProjectNameFromFile(file.name);
+
+		await loadProjectFromPayload(payload, fallbackName);
+		return true;
+	} catch (error) {
+		raiseError("Failed to open project file.", error);
+		return false;
+	}
+}
+
+export function openProjectBrowser() {
+	return openProjectFile();
 }
 
 export function openRelinkMediaDialog() {
@@ -234,129 +266,78 @@ export function openRelinkMediaDialog() {
 }
 
 export async function listProjects() {
-	const response = await api.listProjects();
-	return response.projects || [];
+	return [];
 }
 
-export async function loadProjectById(projectId) {
-	try {
-		const response = await api.getProjectById(projectId);
-		const { project, snapshot, mediaRefs = [] } = response;
-
-		if (!project) {
-			throw new Error("Project not found.");
-		}
-
-		if (snapshot) {
-			loadProject(snapshot);
-			await loadScenes();
-		} else {
-			await newProject();
-		}
-
-		projectStore.setState({
-			projectId: project.id,
-			projectName: project.name || DEFAULT_PROJECT_NAME,
-			opened: Date.now(),
-			lastModified: 0,
-			unresolvedMediaRefs: mediaRefs,
-		});
-
-		if (mediaRefs.length > 0) {
-			openRelinkMediaDialog();
-		}
-	} catch (error) {
-		raiseError("Failed to load project.", error);
-	}
+export async function loadProjectById(_projectId) {
+	raiseError("Cloud projects were removed.", new Error("Use Open project."));
 }
 
-export async function renameProjectById(projectId, name) {
-	const response = await api.renameProject(projectId, name);
-	const { project } = response;
-
-	if (project?.id === projectStore.getState().projectId) {
-		projectStore.setState({
-			projectName: project.name,
-		});
-	}
-
-	return project;
+export async function renameProjectById(_projectId, _name) {
+	raiseError(
+		"Cloud projects were removed.",
+		new Error("Use Save project to download a new file."),
+	);
+	return null;
 }
 
-export async function deleteProjectById(projectId) {
-	await api.deleteProjectById(projectId);
-
-	if (projectStore.getState().projectId === projectId) {
-		await newProject();
-	}
+export async function deleteProjectById(_projectId) {
+	raiseError(
+		"Cloud projects were removed.",
+		new Error("Use your file system to delete local project files."),
+	);
 }
 
 export async function saveProject(nameOverride) {
-	if (!requireAccount("Sign in or create an account to save projects.")) {
-		return false;
-	}
-
 	const state = projectStore.getState();
 	const name = (
 		nameOverride ||
 		state.projectName ||
 		DEFAULT_PROJECT_NAME
 	).trim();
-	let projectId = state.projectId;
 
 	try {
-		if (!projectId) {
-			const created = await api.createProject(name);
-			projectId = created.project.id;
+		const payload = {
+			name,
+			projectName: name,
+			version: env.APP_VERSION,
+			savedAt: new Date().toISOString(),
+			snapshot: snapshotProject(),
+		};
+		const fileName = createProjectFileName(name);
+		const { fileHandle, filePath, canceled } = await api.showSaveDialog({
+			defaultPath: fileName,
+			filters: PROJECT_FILE_FILTERS,
+		});
+
+		if (canceled) {
+			return false;
 		}
 
-		const { snapshot, mediaRefs } = sanitizeSnapshotMedia(snapshotProject());
-
-		await api.saveProjectSnapshot(projectId, snapshot, mediaRefs);
+		const target = fileHandle || filePath || fileName;
+		await api.saveTextFile(target, JSON.stringify(payload, null, 2), {
+			mimeType: "application/json",
+			fileName,
+		});
 
 		projectStore.setState({
-			projectId,
+			projectId: null,
 			projectName: name,
 			opened: Date.now(),
 			lastModified: 0,
 		});
 
-		logger.log("Project saved:", name);
+		logger.log("Project saved locally:", fileName);
 		return true;
 	} catch (error) {
-		raiseError("Failed to save project.", error);
+		raiseError("Failed to save project file.", error);
 		return false;
 	}
 }
 
 export async function duplicateProject() {
-	if (
-		!requireAccount(
-			"Sign in or create an account to duplicate and manage cloud projects.",
-		)
-	) {
-		return false;
-	}
-
-	const { projectId, projectName } = projectStore.getState();
-
-	try {
-		if (!projectId) {
-			return saveProject(`${projectName || DEFAULT_PROJECT_NAME} copy`);
-		}
-
-		const duplicated = await api.duplicateProjectById(
-			projectId,
-			`${projectName || DEFAULT_PROJECT_NAME} copy`,
-		);
-
-		await loadProjectById(duplicated.project.id);
-
-		return true;
-	} catch (error) {
-		raiseError("Failed to duplicate project.", error);
-		return false;
-	}
+	const { projectName } = projectStore.getState();
+	return saveProject(`${projectName || DEFAULT_PROJECT_NAME} copy`);
 }
 
 export async function relinkMediaRef(mediaRef) {

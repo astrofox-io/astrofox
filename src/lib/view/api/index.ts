@@ -11,7 +11,7 @@ function buildPickerTypes(filters = []) {
 	return filters.map((filter) => ({
 		description: filter.name || "Files",
 		accept: {
-			"application/octet-stream": (filter.extensions || []).map(
+			[filter.mimeType || "application/octet-stream"]: (filter.extensions || []).map(
 				(ext) => `.${ext}`,
 			),
 		},
@@ -244,86 +244,12 @@ export async function saveImageFile(target, data, props: any = {}) {
 	await saveBlob(target, blob, filename);
 }
 
-export async function getSession() {
-	return request("/api/auth/get-session");
-}
+export async function saveTextFile(target, data, props: any = {}) {
+	const mimeType = props.mimeType || "application/octet-stream";
+	const blob = new Blob([data], { type: mimeType });
+	const filename = props.fileName || "download.txt";
 
-export async function signUpEmail(name, email, password) {
-	return request("/api/auth/sign-up/email", {
-		method: "POST",
-		body: {
-			name,
-			email,
-			password,
-		},
-	});
-}
-
-export async function signInEmail(email, password) {
-	return request("/api/auth/sign-in/email", {
-		method: "POST",
-		body: {
-			email,
-			password,
-		},
-	});
-}
-
-export async function signOutUser() {
-	return request("/api/auth/sign-out", {
-		method: "POST",
-	});
-}
-
-export function signInWithGoogle(callbackURL = window.location.href) {
-	const params = new URLSearchParams({
-		provider: "google",
-		callbackURL,
-	});
-
-	window.location.assign(`/api/auth/sign-in/social?${params.toString()}`);
-}
-
-export async function listProjects() {
-	return request("/api/projects");
-}
-
-export async function createProject(name) {
-	return request("/api/projects", {
-		method: "POST",
-		body: { name },
-	});
-}
-
-export async function getProjectById(projectId) {
-	return request(`/api/projects/${projectId}`);
-}
-
-export async function renameProject(projectId, name) {
-	return request(`/api/projects/${projectId}`, {
-		method: "PATCH",
-		body: { name },
-	});
-}
-
-export async function deleteProjectById(projectId) {
-	return request(`/api/projects/${projectId}`, {
-		method: "DELETE",
-	});
-}
-
-export async function saveProjectSnapshot(projectId, snapshot, mediaRefs = []) {
-	return request(`/api/projects/${projectId}/save`, {
-		method: "POST",
-		body: { snapshot, mediaRefs },
-	});
-}
-
-export async function duplicateProjectById(projectId, name) {
-	return request(`/api/projects/${projectId}/duplicate`, {
-		method: "POST",
-		body: { name },
-	});
+	await saveBlob(target, blob, filename);
 }
 
 export async function loadPlugins() {
