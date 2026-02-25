@@ -1,0 +1,22 @@
+import useError, { clearError } from "@/lib/view/actions/error";
+import Dialog from "@/lib/view/components/window/Dialog";
+import { Warning } from "@/lib/view/icons";
+import React from "react";
+
+export default function ErrorDialog({ onClose }: any) {
+	const message = useError((state) => state.message);
+
+	function handleConfirm() {
+		clearError();
+		onClose();
+	}
+
+	return (
+		<Dialog
+			icon={Warning}
+			message={message}
+			buttons={["Ok"]}
+			onConfirm={handleConfirm}
+		/>
+	);
+}

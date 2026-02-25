@@ -1,0 +1,11 @@
+import Pass from "@/lib/graphics/Pass";
+
+export default class ClearMaskPass extends Pass {
+	[key: string]: any;
+	render(renderer) {
+		const { stencil } = renderer.state.buffers;
+
+		stencil.setLocked(false);
+		stencil.setTest(false);
+	}
+}
