@@ -13,7 +13,7 @@ export default function StatusBar() {
 	function updateStats() {
 		setState({
 			fps: `${renderer.getFPS()} FPS`,
-			mem: formatSize(window.performance.memory.usedJSHeapSize, 2),
+			mem: window.performance.memory ? formatSize(window.performance.memory.usedJSHeapSize, 2) : undefined,
 		});
 	}
 
