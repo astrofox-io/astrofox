@@ -1,6 +1,5 @@
 import { ColorInput } from "@/lib/view/components/inputs/index";
 import React from "react";
-import styles from "./ColorRangeInput.module.tailwind";
 
 export default function ColorRangeInput({
 	name = "color",
@@ -10,14 +9,14 @@ export default function ColorRangeInput({
 	const [startColor, endColor] = value;
 
 	return (
-		<div className={styles.input}>
+		<div className={"flex flex-row items-center w-full"}>
 			<ColorInput
 				name="startColor"
 				value={startColor}
 				onChange={(n, value) => onChange(name, [value, endColor])}
 			/>
 			<div
-				className={styles.range}
+				className={"flex-1 relative h-[16px] border border-[var(--input-border-color)] rounded-[3px] m-[0_8px]"}
 				style={{
 					backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`,
 				}}

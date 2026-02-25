@@ -4,7 +4,6 @@ import { player } from "@/lib/view/global";
 import { Volume, Volume2, Volume3, Volume4 } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
-import styles from "./VolumeControl.module.tailwind";
 
 const initialState = {
 	value: 100,
@@ -45,14 +44,14 @@ export default function VolumeControl() {
 	}
 
 	return (
-		<div className={styles.volume}>
+		<div className={"flex"}>
 			<div
-				className={classNames(styles.speaker, { [styles.mute]: mute })}
+				className={classNames("mr-[10px] [&_.icon]:text-[var(--text100)] [&_.icon]:w-[20px] [&_.icon]:h-[20px]", { ["[&_.icon]:text-[var(--text300)]"]: mute })}
 				onClick={handleClick}
 			>
-				<Icon className={styles.icon} glyph={getIcon()} />
+				<Icon className={""} glyph={getIcon()} />
 			</div>
-			<div className={styles.slider}>
+			<div className={"flex items-center w-[100px]"}>
 				<RangeInput
 					name="volume"
 					min={0}

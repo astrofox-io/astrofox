@@ -21,7 +21,6 @@ import {
 	TrashEmpty,
 } from "@/lib/view/icons";
 import React, { useMemo } from "react";
-import styles from "./LayersPanel.module.tailwind";
 
 export default function LayersPanel() {
 	const scenes = useScenes((state) => state.scenes);
@@ -119,8 +118,8 @@ export default function LayersPanel() {
 	}
 
 	return (
-		<Layout className={styles.panel}>
-			<div className={styles.layers}>
+		<Layout className={"flex flex-col flex-1 relative overflow-auto"}>
+			<div className={"flex-1 overflow-auto"}>
 				{sortedScenes.map((scene) => (
 					<SceneLayer
 						key={scene.id}

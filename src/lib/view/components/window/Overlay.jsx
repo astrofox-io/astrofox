@@ -1,7 +1,6 @@
 import { easeInQuad } from "@/lib/utils/easing";
 import React from "react";
 import { animated, useTransition } from "react-spring";
-import styles from "./Overlay.module.tailwind";
 
 export default function Overlay({
 	show,
@@ -18,6 +17,11 @@ export default function Overlay({
 
 	return transitions(
 		(style, item) =>
-			item && <animated.div className={styles.overlay} style={style} />,
+			item && (
+				<animated.div
+					className={"fixed inset-0 bg-black opacity-50 z-[var(--z-index-overlay)]"}
+					style={style}
+				/>
+			),
 	);
 }

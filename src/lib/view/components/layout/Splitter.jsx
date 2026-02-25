@@ -4,7 +4,6 @@ import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import { DotsHorizontal } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
-import styles from "./Splitter.module.tailwind";
 
 export default function Splitter({
 	type = "horizontal",
@@ -51,13 +50,19 @@ export default function Splitter({
 
 	return (
 		<div
-			className={classNames(styles.splitter, {
-				[styles.vertical]: type === "vertical",
-				[styles.horizontal]: type !== "vertical",
+			className={classNames("bg-[var(--gray75)] text-center relative", {
+				"w-[5px] h-full cursor-ew-resize": type === "vertical",
+				"h-[5px] w-full cursor-ns-resize": type !== "vertical",
 			})}
 			onMouseDown={handleDragStart}
 		>
-			<Icon className={styles.grip} glyph={DotsHorizontal} />
+			<Icon
+				className={classNames("text-[var(--text200)] w-[12px] h-[12px]", {
+					"block absolute m-[0_auto] top-[-4px] left-0 right-0":
+						type === "horizontal",
+				})}
+				glyph={DotsHorizontal}
+			/>
 		</div>
 	);
 }

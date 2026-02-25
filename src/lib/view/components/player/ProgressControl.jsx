@@ -3,7 +3,6 @@ import TimeInfo from "@/lib/view/components/player/TimeInfo";
 import { player } from "@/lib/view/global";
 import useSharedState from "@/lib/view/hooks/useSharedState";
 import React, { useEffect } from "react";
-import styles from "./ProgressControl.module.tailwind";
 
 const PROGRESS_MAX = 1000;
 
@@ -49,9 +48,9 @@ export default function ProgressControl() {
 	}, []);
 
 	return (
-		<div className={styles.progress}>
+		<div className={"flex items-center flex-1"}>
 			<RangeInput
-				className={styles.bar}
+				className={"w-full mr-[20px]"}
 				name="progress"
 				min={0}
 				max={PROGRESS_MAX}

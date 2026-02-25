@@ -6,7 +6,6 @@ import { Cycle, SoundBars, SoundWaves } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
 import shallow from "zustand/shallow";
-import styles from "./ToggleButtons.module.tailwind";
 
 export default function ToggleButtons() {
 	const [showWaveform, showOsc] = useApp(
@@ -22,7 +21,7 @@ export default function ToggleButtons() {
 	}
 
 	return (
-		<div className={styles.buttons}>
+		<div className={"flex [&.is-focused_.button]:opacity-[1]"}>
 			<ToggleButton
 				icon={Cycle}
 				title="Repeat"
@@ -47,13 +46,13 @@ export default function ToggleButtons() {
 
 const ToggleButton = ({ enabled, title, icon, onClick }) => (
 	<div
-		className={classNames(styles.button, {
-			[styles.enabled]: enabled,
+		className={classNames("mr-[10px] [&:last-child]:mr-0 [&_.icon]:text-[var(--text500)] [&_.icon]:w-[16px] [&_.icon]:h-[16px] [&_.icon:hover]:text-[var(--text300)]", {
+			["[&_.icon]:text-[var(--text100)] [&_.icon:hover]:text-[var(--text100)]"]: enabled,
 		})}
 		onClick={onClick}
 	>
 		<Icon
-			className={styles.icon}
+			className={""}
 			glyph={icon}
 			title={title}
 			width={20}

@@ -6,7 +6,6 @@ import useWindowState from "@/lib/view/hooks/useWindowState";
 import classNames from "classnames";
 import { Menu as MenuIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import styles from "./TitleBar.module.tailwind";
 
 const NAV_LABELS = ["File", "Edit"];
 
@@ -79,16 +78,14 @@ export default function TitleBar() {
 
 	return (
 		<div
-			className={classNames(styles.titlebar, {
-				[styles.focused]: focused,
-			})}
+			className={"flex items-center relative h-[40px] bg-[var(--gray75)] border-b border-b-[var(--gray300)]"}
 		>
-			<div className={styles.controls}>
-				<div className={styles.menuWrap}>
+			<div className={"flex items-center gap-[0] ml-[6px]"}>
+				<div className={"relative"}>
 					<button
 						type="button"
-						className={classNames(styles.menuButton, {
-							[styles.menuButtonActive]: menuVisible,
+						className={classNames("w-[28px] h-[28px] border-0 p-0 rounded-[6px] bg-transparent text-[var(--text300)] inline-flex items-center justify-center [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
+							["text-[var(--text100)] bg-[var(--primary100)]"]: menuVisible,
 						})}
 						aria-label="Main menu"
 						onClick={toggleMenu}
@@ -96,18 +93,28 @@ export default function TitleBar() {
 						<MenuIcon size={18} />
 					</button>
 					<Menu
-						className={styles.menu}
+						className={"top-[calc(100%_+_6px)] left-0 min-w-[190px] border border-[var(--gray300)]"}
 						items={menuItems}
 						visible={menuVisible}
 						onMenuItemClick={onMenuItemClick}
 					/>
 				</div>
 			</div>
-			<div className={styles.title}>{env.APP_NAME}</div>
+			<div
+				className={classNames(
+					"absolute left-1/2 -translate-x-1/2 text-[var(--font-size-normal)] leading-[40px] tracking-[5px] uppercase cursor-default max-[700px]:hidden",
+					{
+						"text-[var(--text300)]": focused,
+						"text-[var(--text400)]": !focused,
+					},
+				)}
+			>
+				{env.APP_NAME}
+			</div>
 			<img
 				alt=""
 				aria-hidden="true"
-				className={styles.rightIcon}
+				className={"absolute top-[6px] right-[8px] w-[28px] h-[28px]"}
 				draggable={false}
 				src="/icon.svg"
 			/>

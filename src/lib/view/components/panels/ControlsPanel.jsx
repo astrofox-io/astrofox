@@ -4,7 +4,6 @@ import useScenes from "@/lib/view/actions/scenes";
 import Control from "@/lib/view/components/controls/Control";
 import { stage } from "@/lib/view/global";
 import React, { useMemo, useRef, useEffect } from "react";
-import styles from "./ControlsPanel.module.tailwind";
 
 export default function ControlsPanel() {
 	const activeElementId = useApp((state) => state.activeElementId);
@@ -44,12 +43,12 @@ export default function ControlsPanel() {
 	}, [activeElementId]);
 
 	return (
-		<div className={styles.panel} ref={panelRef}>
+		<div className={"flex-1 overflow-auto relative p-[0_5px] mb-[6px]"} ref={panelRef}>
 			{displays.map((display) => {
 				const { id } = display;
 
 				return (
-					<div id={`control-${id}`} key={id} className={styles.control}>
+					<div id={`control-${id}`} key={id} className={"bg-[var(--gray200)] border-t border-t-[var(--gray400)] border-l border-l-[var(--gray300)] border-b border-b-[var(--gray50)] mb-[6px] [&:last-child]:mb-0"}>
 						<Control display={display} />
 					</div>
 				);

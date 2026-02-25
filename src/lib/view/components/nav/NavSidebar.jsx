@@ -4,7 +4,6 @@ import classNames from "classnames";
 import { Cube, FolderOpen } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
-import styles from "./NavSidebar.module.tailwind";
 
 const NAV_LABELS = ["File", "Edit"];
 const EDIT_CANVAS_ACTION = "edit-canvas";
@@ -121,18 +120,18 @@ export default function NavSidebar() {
 	}
 
 	return (
-		<nav className={styles.sidebar} aria-label="Main navigation">
+		<nav className={"flex flex-col w-[52px] shrink-0 p-[8px_6px] gap-[6px] bg-[var(--gray75)] border-r border-r-[var(--gray300)]"} aria-label="Main navigation">
 			{items.map((item, index) => {
 				const hasMenu = item.submenu.length > 0;
 				const isActive = hasMenu && activeIndex === index;
 				const Icon = ICON_MAP[item.label] || FolderOpen;
 
 				return (
-					<div key={item.label} className={styles.group}>
+					<div key={item.label} className={"group relative flex justify-center"}>
 						<button
 							type="button"
-							className={classNames(styles.button, {
-								[styles.active]: isActive,
+							className={classNames("w-[38px] h-[38px] border-0 p-0 rounded-[8px] bg-transparent text-[var(--text300)] inline-flex items-center justify-center cursor-default [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
+								["text-[var(--text100)] bg-[var(--primary100)]"]: isActive,
 							})}
 							title={item.label}
 							aria-label={item.label}
@@ -144,7 +143,7 @@ export default function NavSidebar() {
 						</button>
 						{hasMenu && (
 							<Menu
-								className={styles.menu}
+								className={"top-0 left-[calc(100%_+_8px)] min-w-[180px] border border-[var(--gray300)]"}
 								items={item.submenu}
 								visible={isActive}
 								onMenuItemClick={handleMenuItemClick}

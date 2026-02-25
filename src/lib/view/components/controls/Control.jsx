@@ -4,7 +4,6 @@ import Option from "@/lib/view/components/controls/Option";
 import useEntity from "@/lib/view/hooks/useEntity";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Control.module.tailwind";
 
 export default function Control({ display, className, showHeader = true }) {
 	const {
@@ -36,12 +35,16 @@ export default function Control({ display, className, showHeader = true }) {
 	}
 
 	return (
-		<div className={classNames(styles.control, className)}>
+		<div className={classNames("pb-[8px]", className)}>
 			{showHeader && (
-				<div className={styles.header}>
-					<div className={styles.title}>
-						<div className={styles.label}>{label}</div>
-						<div className={styles.displayName}>{displayName}</div>
+				<div className={"relative p-[0_10px] h-[30px] cursor-default"}>
+					<div className={"flex justify-center text-[var(--font-size-xsmall)] text-[var(--text100)] leading-[30px] overflow-hidden"}>
+						<div className={"relative uppercase pr-[20px] [&:after]:content-['\\2022'] [&:after]:absolute [&:after]:right-[7px] [&:after]:text-[var(--text300)]"}>
+							{label}
+						</div>
+						<div className={"text-[var(--text200)] overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-[100px]"}>
+							{displayName}
+						</div>
 					</div>
 				</div>
 			)}

@@ -1,7 +1,6 @@
 import { clamp } from "@/lib/utils/math.js";
 import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import React, { useRef } from "react";
-import styles from "./BoxInput.module.tailwind";
 
 export default function BoxInput({
 	name = "box",
@@ -95,7 +94,7 @@ export default function BoxInput({
 
 	return (
 		<div
-			className={styles.box}
+			className={"absolute top-0 left-0 border border-[var(--primary400)]"}
 			style={{
 				width,
 				height,
@@ -103,11 +102,11 @@ export default function BoxInput({
 				left: x,
 			}}
 		>
-			<div className={styles.center} onMouseDown={handleDragStart("center")} />
-			<div className={styles.top} onMouseDown={handleDragStart("top")} />
-			<div className={styles.right} onMouseDown={handleDragStart("right")} />
-			<div className={styles.bottom} onMouseDown={handleDragStart("bottom")} />
-			<div className={styles.left} onMouseDown={handleDragStart("left")} />
+			<div className={"absolute cursor-move w-full h-full"} onMouseDown={handleDragStart("center")} />
+			<div className={"absolute cursor-ns-resize w-full h-[10px] top-[-5px]"} onMouseDown={handleDragStart("top")} />
+			<div className={"absolute cursor-ew-resize w-[10px] h-full right-[-5px]"} onMouseDown={handleDragStart("right")} />
+			<div className={"absolute cursor-ns-resize w-full h-[10px] bottom-[-5px]"} onMouseDown={handleDragStart("bottom")} />
+			<div className={"absolute cursor-ew-resize w-[10px] h-full left-[-5px]"} onMouseDown={handleDragStart("left")} />
 		</div>
 	);
 }

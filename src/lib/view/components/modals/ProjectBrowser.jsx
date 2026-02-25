@@ -9,7 +9,6 @@ import useProject, {
 } from "@/lib/view/actions/project";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styles from "./ProjectBrowser.module.tailwind";
 
 export default function ProjectBrowser({ onClose }) {
 	const currentProjectId = useProject((state) => state.projectId);
@@ -97,28 +96,28 @@ export default function ProjectBrowser({ onClose }) {
 	}
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.columns}>
-				<div className={styles.listColumn}>
-					<div className={styles.sectionTitle}>Projects</div>
-					<div className={styles.list}>
+		<div className={"flex flex-col gap-[12px] min-w-[620px]"}>
+			<div className={"flex gap-[12px]"}>
+				<div className={"list-column flex-1 flex flex-col gap-[8px]"}>
+					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Projects</div>
+					<div className={"flex flex-col gap-[4px] min-h-[220px] max-h-[220px] overflow-y-auto border border-[#444] p-[4px]"}>
 						{projects.map((project) => (
 							<button
 								type="button"
 								key={project.id}
-								className={`${styles.item} ${
-									project.id === selectedId ? styles.active : ""
+								className={`${"w-full text-left bg-transparent p-[6px_8px] border border-[transparent] cursor-pointer [&:hover]:[border-color:#666]"} ${
+									project.id === selectedId ? "[border-color:#0ec5ff] bg-[rgba(14,_197,_255,_0.12)]" : ""
 								}`}
 								onClick={() => setSelectedId(project.id)}
 							>
-								<div className={styles.itemName}>{project.name}</div>
+								<div className={"text-xs"}>{project.name}</div>
 							</button>
 						))}
 						{!loading && projects.length === 0 && (
-							<div className={styles.empty}>No projects yet.</div>
+							<div className={"opacity-[0.7] text-xs p-[8px]"}>No projects yet.</div>
 						)}
 					</div>
-					<div className={styles.row}>
+					<div className={"flex gap-[6px]"}>
 						<Button text="Refresh" onClick={refreshProjects} />
 						<Button
 							text="Open"
@@ -128,25 +127,25 @@ export default function ProjectBrowser({ onClose }) {
 					</div>
 				</div>
 
-				<div className={styles.formColumn}>
-					<div className={styles.sectionTitle}>Create New</div>
+				<div className={"flex-1 flex flex-col gap-[8px]"}>
+					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Create New</div>
 					<input
-						className={styles.input}
+						className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
 						value={createName}
 						onChange={(e) => setCreateName(e.currentTarget.value)}
 					/>
-					<div className={styles.row}>
+					<div className={"flex gap-[6px]"}>
 						<Button text="Create" onClick={handleCreateProject} />
 					</div>
 
-					<div className={styles.sectionTitle}>Rename Selected</div>
+					<div className={"text-xs font-bold uppercase opacity-[0.8]"}>Rename Selected</div>
 					<input
-						className={styles.input}
+						className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
 						value={renameName}
 						onChange={(e) => setRenameName(e.currentTarget.value)}
 						disabled={!selectedId}
 					/>
-					<div className={styles.row}>
+					<div className={"flex gap-[6px]"}>
 						<Button
 							text="Rename"
 							disabled={!selectedId || !renameName.trim()}
@@ -161,7 +160,7 @@ export default function ProjectBrowser({ onClose }) {
 				</div>
 			</div>
 
-			{error && <div className={styles.error}>{error}</div>}
+			{error && <div className={"text-[#ff7d7d] text-xs"}>{error}</div>}
 		</div>
 	);
 }

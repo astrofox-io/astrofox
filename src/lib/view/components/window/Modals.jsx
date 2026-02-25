@@ -5,7 +5,6 @@ import ModalWindow from "@/lib/view/components/window/ModalWindow";
 import Overlay from "@/lib/view/components/window/Overlay";
 import React from "react";
 import { animated, useTransition } from "react-spring";
-import styles from "./Modals.module.tailwind";
 
 export default function Modals() {
 	const modals = useModals((state) => state.modals);
@@ -26,9 +25,9 @@ export default function Modals() {
 		const { component, modalProps, componentProps } = item;
 		const Component = modalComponents[component];
 		return (
-			<div className={styles.container} key={component}>
+			<div className={"absolute w-full h-full flex flex-col justify-center items-center z-[var(--z-index-modal-overlay)] [perspective:800px]"} key={component}>
 				<Overlay show={!!modals.length} />
-				<animated.div className={styles.modal} style={style}>
+				<animated.div className={"flex [transform-style:preserve-3d] z-[var(--z-index-modal-window)]"} style={style}>
 					<ModalWindow {...modalProps} onClose={handleClose}>
 						{Component && (
 							<Component {...componentProps} onClose={handleClose} />

@@ -3,7 +3,6 @@ import CanvasWave from "@/lib/canvas/CanvasWave";
 import { PRIMARY_COLOR } from "@/lib/view/constants";
 import { events } from "@/lib/view/global";
 import React, { useRef, useEffect } from "react";
-import styles from "./Oscilloscope.module.tailwind";
 
 const canvasProperties = {
 	width: 854,
@@ -35,10 +34,10 @@ export default function Oscilloscope() {
 	}, []);
 
 	return (
-		<div className={styles.oscilloscope}>
+		<div className={"min-w-[900px] relative bg-[var(--gray75)] pb-[10px]"}>
 			<canvas
 				ref={canvas}
-				className={styles.canvas}
+				className={"block m-[0_auto] border border-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
 				width={width}
 				height={height}
 			/>

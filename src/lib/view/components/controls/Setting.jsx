@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Setting.module.tailwind";
+
 import inputComponents from "./inputComponents";
 
 export default function Setting({
@@ -20,11 +20,11 @@ export default function Setting({
 
 	return (
 		<div
-			className={classNames(styles.setting, className, {
-				[styles.hidden]: hidden,
+			className={classNames("flex items-center mb-[16px] [&_>_*]:mr-[8px] [&_>_*:last-child]:mr-0", className, {
+				["hidden"]: hidden,
 			})}
 		>
-			<div className={styles.label} style={{ width: labelWidth }}>
+			<div className={"text-[var(--text200)]"} style={{ width: labelWidth }}>
 				{label}
 			</div>
 			<div style={{ width: inputWidth }}>

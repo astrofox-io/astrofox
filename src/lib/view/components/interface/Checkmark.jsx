@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import React from "react";
 import { Motion, spring } from "react-motion";
-import styles from "./Checkmark.module.tailwind";
 
 const Checkmark = ({ size, className }) => (
 	<Motion
@@ -19,22 +18,22 @@ const Checkmark = ({ size, className }) => (
 	>
 		{({ circleOffset, pathOffset }) => (
 			<div
-				className={classNames(styles.checkmark, className)}
+				className={classNames("block", className)}
 				style={{
 					width: `${size}px`,
 					height: `${size}px`,
 				}}
 			>
-				<svg aria-hidden="true" className={styles.svg} viewBox="0 0 72 72">
+				<svg aria-hidden="true" className={"inline-block [transform-origin:center_center]"} viewBox="0 0 72 72">
 					<circle
-						className={styles.circle}
+						className={"[stroke:var(--primary100)] [stroke-width:2] [fill:none] [stroke-dasharray:240px,_240px] [stroke-dashoffset:240px]"}
 						cx="36"
 						cy="36"
 						r="35"
 						style={{ strokeDashoffset: circleOffset }}
 					/>
 					<path
-						className={styles.path}
+						className={"[stroke:var(--primary100)] [stroke-width:2] [fill:none] [stroke-dasharray:50px,_50px] [stroke-dashoffset:50px]"}
 						d="M17.417,37.778l9.93,9.909l25.444-25.393"
 						style={{ strokeDashoffset: pathOffset }}
 					/>

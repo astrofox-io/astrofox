@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import React, { useState, useMemo } from "react";
-import styles from "./SelectInput.module.tailwind";
 
 export default function SelectInput({
 	name = "select",
@@ -53,10 +52,20 @@ export default function SelectInput({
 	}
 
 	return (
-		<div className={classNames(styles.select, className)}>
+		<div
+			className={classNames(
+				"inline-block relative [&:after]:content-[''] [&:after]:absolute [&:after]:rotate-[135deg] [&:after]:h-[6px] [&:after]:w-[6px] [&:after]:right-[10px] [&:after]:bottom-[12px] [&:after]:border-t [&:after]:border-t-[var(--input-text-color)] [&:after]:border-r [&:after]:border-r-[var(--input-text-color)] [&:after]:pointer-events-none",
+				className,
+			)}
+		>
 			<input
 				type="text"
-				className={classNames(styles.input, { [styles.active]: showItems })}
+				className={classNames(
+					"cursor-default text-[var(--font-size-small)] text-[var(--input-text-color)] bg-[var(--input-bg-color)] border border-[var(--input-border-color)] rounded-[2px] leading-[24px] p-[0_6px] outline-none [&:focus]:border [&:focus]:border-[var(--primary100)] [&:read-only]:border-[var(--input-border-color)] [&:disabled]:text-[var(--text400)] [&:disabled]:border-[var(--input-border-color)]",
+					{
+						"border-[var(--primary100)]": showItems,
+					},
+				)}
 				name={name}
 				style={{ width }}
 				value={getDisplayText()}
@@ -65,17 +74,25 @@ export default function SelectInput({
 				readOnly
 			/>
 			<div
-				className={classNames(styles.options, optionsClassName, {
-					[styles.hidden]: !showItems,
-				})}
+				className={classNames(
+					"absolute top-full z-[var(--z-index-above)] list-none bg-[var(--input-bg-color)] overflow-hidden shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)]",
+					optionsClassName,
+					{
+						hidden: !showItems,
+					},
+				)}
 				style={{ width: optionsWidth }}
 			>
 				{parsedItems.map((item, index) => (
 					<div
 						key={index}
-						className={classNames(styles.option, {
-							[styles.separator]: !item,
-						})}
+						className={classNames(
+							"text-[var(--input-text-color)] text-[var(--font-size-small)] leading-[24px] p-[0_6px] min-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap [&:hover]:cursor-default [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--primary100)]",
+							{
+								"relative h-[10px] [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-[6px] [&:after]:right-[6px] [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-[1px] [&:after]:bg-[var(--primary100)] [&:hover]:bg-transparent":
+									!item,
+							},
+						)}
 						style={item?.style}
 						onMouseDown={item ? handleItemClick(item[valueField]) : null}
 					>

@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Layout.module.tailwind";
 
 export default function Layout({
 	className,
@@ -17,11 +16,11 @@ export default function Layout({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.container, className, {
-				[styles.row]: direction === "row",
-				[styles.column]: direction === "column",
-				[styles.grow]: grow,
-				[styles.full]: full,
+			className={classNames("flex overflow-hidden relative", className, {
+				["flex-row"]: direction === "row",
+				["flex-col"]: direction === "column",
+				["flex-1"]: grow,
+				["w-full h-full"]: full,
 			})}
 			style={{ width, height, padding, margin }}
 		>

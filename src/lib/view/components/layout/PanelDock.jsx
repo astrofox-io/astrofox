@@ -3,7 +3,6 @@ import Panel from "@/lib/view/components/layout/Panel";
 import useMeasure from "@/lib/view/hooks/useMeasure";
 import classNames from "classnames";
 import React from "react";
-import styles from "./PanelDock.module.tailwind";
 
 export default function PanelDock({
 	direction = "vertical",
@@ -25,14 +24,14 @@ export default function PanelDock({
 	return (
 		<div
 			ref={ref}
-			className={classNames(styles.dock, {
-				[styles.vertical]: direction === "vertical",
-				[styles.horizontal]: direction !== "vertical",
-				[styles.top]: side === "top",
-				[styles.right]: side === "right",
-				[styles.bottom]: side === "bottom",
-				[styles.left]: side === "left",
-				[styles.hidden]: !visible,
+			className={classNames("flex relative overflow-hidden bg-[var(--gray100)]", {
+				"flex-col shrink-0": direction === "vertical",
+				"flex-row shrink-0": direction !== "vertical",
+				"border-b border-b-[var(--gray75)]": side === "top",
+				"border-l border-l-[var(--gray75)]": side === "right",
+				"border-t border-t-[var(--gray75)]": side === "bottom",
+				"border-r border-r-[var(--gray75)]": side === "left",
+				["hidden"]: !visible,
 			})}
 			style={{
 				width,

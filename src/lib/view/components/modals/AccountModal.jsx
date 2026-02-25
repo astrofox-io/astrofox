@@ -7,7 +7,6 @@ import authStore, {
 import useAuth from "@/lib/view/actions/auth";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
-import styles from "./AccountModal.module.tailwind";
 
 export default function AccountModal({ featureMessage, onClose }) {
 	const loading = useAuth((state) => state.loading);
@@ -49,12 +48,12 @@ export default function AccountModal({ featureMessage, onClose }) {
 
 	if (session?.user) {
 		return (
-			<div className={styles.container}>
-				<div className={styles.message}>You are signed in.</div>
-				<div className={styles.user}>
+			<div className={"flex flex-col gap-[10px] min-w-[420px]"}>
+				<div className={"text-xs text-[var(--text200)]"}>You are signed in.</div>
+				<div className={"text-[13px] text-[var(--text100)]"}>
 					{session.user.name || session.user.email || "Authenticated user"}
 				</div>
-				<div className={styles.row}>
+				<div className={"flex gap-[6px] [flex-wrap:wrap]"}>
 					<Button text="Close" onClick={onClose} />
 					<Button text="Sign out" onClick={handleSignOut} />
 				</div>
@@ -63,18 +62,18 @@ export default function AccountModal({ featureMessage, onClose }) {
 	}
 
 	return (
-		<form className={styles.container} onSubmit={handleSubmit}>
-			<div className={styles.message}>
+		<form className={"flex flex-col gap-[10px] min-w-[420px]"} onSubmit={handleSubmit}>
+			<div className={"text-xs text-[var(--text200)]"}>
 				{featureMessage ||
 					"Create an account to unlock cloud project features like save, open, and duplicate."}
 			</div>
-			<div className={styles.subtitle}>
+			<div className={"text-xs font-bold uppercase opacity-[0.85]"}>
 				{mode === "sign-up" ? "Create account" : "Sign in"}
 			</div>
 
 			{mode === "sign-up" && (
 				<input
-					className={styles.input}
+					className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
 					type="text"
 					placeholder="Name"
 					value={name}
@@ -84,7 +83,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 			)}
 
 			<input
-				className={styles.input}
+				className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
 				type="email"
 				placeholder="Email"
 				value={email}
@@ -92,7 +91,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 				required
 			/>
 			<input
-				className={styles.input}
+				className={"bg-[#181818] text-[#fff] border border-[#555] p-[7px_8px] text-xs"}
 				type="password"
 				placeholder="Password"
 				value={password}
@@ -100,7 +99,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 				required
 			/>
 
-			<div className={styles.row}>
+			<div className={"flex gap-[6px] [flex-wrap:wrap]"}>
 				<Button
 					text={
 						loading
@@ -119,18 +118,18 @@ export default function AccountModal({ featureMessage, onClose }) {
 				/>
 			</div>
 
-			<div className={styles.toggle}>
+			<div className={"text-xs opacity-[0.9]"}>
 				{mode === "sign-up" ? "Already have an account?" : "Need an account?"}{" "}
 				<button
 					type="button"
-					className={styles.link}
+					className={"bg-transparent border-0 p-0 text-[#62d0ff] cursor-pointer"}
 					onClick={handleToggleMode}
 				>
 					{mode === "sign-up" ? "Sign in" : "Sign up"}
 				</button>
 			</div>
 
-			{error && <div className={styles.error}>{error}</div>}
+			{error && <div className={"text-xs text-[#ff8f8f]"}>{error}</div>}
 		</form>
 	);
 }

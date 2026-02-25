@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./ColorInput.module.tailwind";
 
 export default function ColorInput({
 	name = "color",
@@ -7,10 +6,10 @@ export default function ColorInput({
 	onChange = () => {},
 }) {
 	return (
-		<div className={styles.wrapper}>
+		<div className={"flex items-center justify-center w-[25px] h-[25px] rounded-full border border-[var(--input-border-color)] bg-[var(--input-bg-color)]"}>
 			<input
 				type="color"
-				className={styles.input}
+				className={"w-[15px] h-[15px] rounded-full border-0 [&::-webkit-color-swatch-wrapper]:hidden [&::-webkit-color-swatch]:hidden"}
 				name={name}
 				value={value}
 				style={{ backgroundColor: value }}

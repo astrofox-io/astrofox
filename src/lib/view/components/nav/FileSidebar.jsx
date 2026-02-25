@@ -1,7 +1,6 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/lib/view/actions/app";
 import React, { useMemo } from "react";
-import styles from "./FileSidebar.module.tailwind";
 
 export default function FileSidebar() {
 	const sections = useMemo(() => {
@@ -27,18 +26,18 @@ export default function FileSidebar() {
 	}, []);
 
 	return (
-		<nav className={styles.sidebar} aria-label="File actions">
-			<div className={styles.header}>File</div>
+		<nav className={"flex flex-col w-[180px] shrink-0 bg-[var(--gray75)] border-r border-r-[var(--gray300)] p-[8px] overflow-auto"} aria-label="File actions">
+			<div className={"text-[var(--font-size-small)] text-[var(--text200)] uppercase tracking-[1px] mb-[8px] p-[6px_8px]"}>File</div>
 			{sections.map((section) => (
 				<div
 					key={section.map((item) => item.action).join("-")}
-					className={styles.section}
+					className={"flex flex-col gap-[4px] mt-[8px] pt-[8px] border-t border-t-[var(--gray300)] [&:first-of-type]:mt-0 [&:first-of-type]:pt-0 [&:first-of-type]:border-t-0"}
 				>
 					{section.map((item) => (
 						<button
 							key={item.action}
 							type="button"
-							className={styles.item}
+							className={"bg-transparent border-0 text-[var(--text100)] text-left text-[var(--font-size-normal)] p-[8px] cursor-default [&:hover]:bg-[var(--primary100)]"}
 							onClick={() => handleMenuAction(item.action)}
 						>
 							{item.label}

@@ -4,7 +4,6 @@ import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
 import { Pause, Play, Stop } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useEffect } from "react";
-import styles from "./PlayButtons.module.tailwind";
 
 export default function PlayButtons() {
 	const forceUpdate = useForceUpdate();
@@ -23,25 +22,25 @@ export default function PlayButtons() {
 	}
 
 	return (
-		<div className={styles.buttons}>
+		<div className={"whitespace-nowrap"}>
 			<div
-				className={classNames(styles.button, {
-					[styles.playButton]: !playing,
-					[styles.pauseButton]: playing,
+				className={classNames("text-[var(--text100)] bg-transparent p-0 mr-[4px] inline-block [flex-wrap:nowrap] border-[2px] border-[var(--gray300)] h-[40px] w-[40px] rounded-[20px] leading-[36px] text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-[2px] [&:hover]:border-[var(--primary100)] [&:active]:[border-color:var(--text100)]", {
+					["[&_.icon]:w-[36px] [&_.icon]:h-[36px] [&_.icon]:ml-[2px]"]: !playing,
+					["[&_.icon]:w-[24px] [&_.icon]:h-[24px] [&_.icon]:m-[6px]"]: playing,
 				})}
 				onClick={handlePlayButtonClick}
 			>
 				<Icon
-					className={styles.icon}
+					className={""}
 					glyph={playing ? Pause : Play}
 					title={playing ? "Pause" : "Play"}
 				/>
 			</div>
 			<div
-				className={classNames(styles.button, styles.stopButton)}
+				className={classNames("text-[var(--text100)] bg-transparent p-0 mr-[4px] inline-block [flex-wrap:nowrap] border-[2px] border-[var(--gray300)] h-[40px] w-[40px] rounded-[20px] leading-[36px] text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-[2px] [&:hover]:border-[var(--primary100)] [&:active]:[border-color:var(--text100)]", "[&_.icon]:w-[24px] [&_.icon]:h-[24px] [&_.icon]:m-[6px]")}
 				onClick={handleStopButtonClick}
 			>
-				<Icon className={styles.icon} glyph={Stop} title="Stop" />
+				<Icon className={""} glyph={Stop} title="Stop" />
 			</div>
 		</div>
 	);

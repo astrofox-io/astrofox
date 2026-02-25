@@ -2,7 +2,6 @@ import { inputValueToProps, mapChildren } from "@/lib/utils/react";
 import Setting from "@/lib/view/components/controls/Setting";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Settings.module.tailwind";
 
 export default function Settings({
 	label,
@@ -21,8 +20,8 @@ export default function Settings({
 	}
 
 	return (
-		<div className={classNames(styles.settings, className)}>
-			{label && <div className={styles.label}>{label}</div>}
+		<div className={classNames("flex flex-col p-[16px]", className)}>
+			{label && <div className={"text-[var(--text400)] text-[var(--font-size-small)] uppercase mb-[16px]"}>{label}</div>}
 			{mapChildren(
 				children,
 				{ labelWidth, inputWidth, onChange: inputValueToProps(onChange) },

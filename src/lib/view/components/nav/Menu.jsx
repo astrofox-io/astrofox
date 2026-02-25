@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Menu.module.tailwind";
+
 import MenuItem from "./MenuItem";
 
 const menuItemIds = new WeakMap();
@@ -18,9 +18,9 @@ function getItemKey(item) {
 const Menu = ({ className, items, visible, onMenuItemClick }) => (
 	<div
 		className={classNames(
-			styles.menu,
+			"absolute top-[100%] left-0 list-none bg-[var(--gray100)] shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)] overflow-hidden z-[var(--z-index-menu)]",
 			{
-				[styles.hidden]: visible === false,
+				["hidden"]: visible === false,
 			},
 			className,
 		)}
@@ -30,7 +30,12 @@ const Menu = ({ className, items, visible, onMenuItemClick }) => (
 			const key = getItemKey(item);
 
 			if (type === "separator") {
-				return <div key={key} className={styles.separator} />;
+				return (
+					<div
+						key={key}
+						className={"p-[5px] [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-[var(--primary100)] [&:after]:block [&:hover]:bg-transparent"}
+					/>
+				);
 			}
 
 			if (label && !hidden) {

@@ -1,7 +1,6 @@
 import useProject, { relinkMediaRef } from "@/lib/view/actions/project";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
-import styles from "./RelinkMediaDialog.module.tailwind";
 
 export default function RelinkMediaDialog({ onClose }) {
 	const mediaRefs = useProject((state) => state.unresolvedMediaRefs);
@@ -15,9 +14,9 @@ export default function RelinkMediaDialog({ onClose }) {
 
 	if (!mediaRefs.length) {
 		return (
-			<div className={styles.container}>
-				<div className={styles.empty}>All media links are resolved.</div>
-				<div className={styles.row}>
+			<div className={"flex flex-col gap-[10px] min-w-[520px]"}>
+				<div className={"text-xs opacity-[0.8]"}>All media links are resolved.</div>
+				<div className={"flex justify-end"}>
 					<Button text="Close" onClick={onClose} />
 				</div>
 			</div>
@@ -25,15 +24,15 @@ export default function RelinkMediaDialog({ onClose }) {
 	}
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.description}>
+		<div className={"flex flex-col gap-[10px] min-w-[520px]"}>
+			<div className={"text-xs opacity-[0.85]"}>
 				This project references local media files. Relink each source to render
 				the project correctly.
 			</div>
-			<div className={styles.list}>
+			<div className={"flex flex-col gap-[6px]"}>
 				{mediaRefs.map((ref) => (
-					<div key={ref.displayId} className={styles.item}>
-						<div className={styles.label}>
+					<div key={ref.displayId} className={"flex items-center justify-between gap-[10px] p-[7px_8px] border border-[#444]"}>
+						<div className={"text-xs"}>
 							{ref.label} ({ref.kind})
 						</div>
 						<Button
@@ -46,7 +45,7 @@ export default function RelinkMediaDialog({ onClose }) {
 					</div>
 				))}
 			</div>
-			<div className={styles.row}>
+			<div className={"flex justify-end"}>
 				<Button text="Close" onClick={onClose} />
 			</div>
 		</div>

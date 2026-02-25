@@ -3,7 +3,6 @@ import Layer from "@/lib/view/components/panels/Layer";
 import { Cube, DocumentLandscape, LightUp, Picture } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useMemo } from "react";
-import styles from "./SceneLayer.module.tailwind";
 
 const icons = {
 	display: DocumentLandscape,
@@ -28,7 +27,7 @@ export default function SceneLayer({
 			id={id}
 			name={displayName}
 			icon={icons[type]}
-			className={styles.child}
+			className={"pl-[20px]"}
 			enabled={enabled}
 			active={id === activeElementId}
 			onLayerClick={onLayerClick}
@@ -37,7 +36,7 @@ export default function SceneLayer({
 	);
 
 	return (
-		<div className={styles.contaainer}>
+		<div className={"flex flex-col [&:first-child]:border-t [&:first-child]:border-t-[var(--gray75)]"}>
 			<Layer
 				key={id}
 				id={id}
@@ -48,7 +47,7 @@ export default function SceneLayer({
 				onLayerClick={onLayerClick}
 				onLayerUpdate={onLayerUpdate}
 			/>
-			<div className={classNames(styles.children)}>
+			<div className={classNames("flex flex-col")}>
 				{effects.map((effect) => renderLayer(effect))}
 				{displays.map((display) => renderLayer(display))}
 			</div>

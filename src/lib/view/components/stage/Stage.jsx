@@ -5,7 +5,6 @@ import Spinner from "@/lib/view/components/interface/Spinner";
 import { analyzer, renderBackend } from "@/lib/view/global";
 import React, { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
-import styles from "./Stage.module.tailwind";
 
 export default function Stage() {
 	const [width, height, backgroundColor, zoom] = useStage(
@@ -64,10 +63,10 @@ export default function Stage() {
 	};
 
 	return (
-		<div className={styles.stage}>
-			<div className={styles.scroll}>
+		<div className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}>
+			<div className={"m-[auto]"}>
 				<div
-					className={styles.canvas}
+					className={"relative flex flex-col justify-center shadow-[0_5px_20px_rgba(0,_0,_0,_0.5)] m-[20px] [&_canvas]:z-[var(--z-index-canvas)]"}
 					onDrop={handleDrop}
 					onDragOver={ignoreEvents}
 					onDragEnter={ignoreEvents}
@@ -128,10 +127,10 @@ const Loading = ({ show }) => {
 	}
 
 	return (
-		<div className={styles.loadingOverlay}>
+		<div className={"absolute inset-0 z-[var(--z-index-render-panel)] flex items-center justify-center pointer-events-none"}>
 			<div
-				className={`${styles.loadingSpinnerWrap} ${
-					leaving ? styles.loadingSpinnerLeave : ""
+				className={`${"[animation:stage-loader-pop_220ms_ease-out]"} ${
+					leaving ? "[animation:stage-loader-out_220ms_ease-in_forwards]" : ""
 				}`}
 			>
 				<Spinner size={96} />

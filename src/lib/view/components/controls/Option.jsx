@@ -8,7 +8,6 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Link } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
-import styles from "./Option.module.tailwind";
 
 export default function Option({
 	display,
@@ -37,6 +36,7 @@ export default function Option({
 				display={display}
 				name={name}
 				value={value}
+				width={84}
 			/>,
 		);
 	} else if (InputCompnent) {
@@ -68,14 +68,14 @@ export default function Option({
 
 	return (
 		<div
-			className={classNames(styles.option, className, {
-				[styles.hidden]: hidden || inputs.length === 0,
-				[styles.optionWithReactor]: showReactor,
+			className={classNames("flex flex-row items-center p-[8px_0] m-[0_10px] relative text-[var(--font-size-small)] text-[var(--text300)] leading-[20px] [&_>_*]:mr-[8px] [&_>_*:last-child]:mr-0", className, {
+				["hidden"]: hidden || inputs.length === 0,
+				["[&_>_*]:mr-[4px] [&_>_*:last-child]:mr-0"]: showReactor,
 			})}
 		>
 			{withReactor && (
 				<ReactorButton
-					className={styles.reactorIcon}
+					className={"absolute ml-[-5px]"}
 					display={display}
 					name={name}
 					min={min}
@@ -83,15 +83,21 @@ export default function Option({
 				/>
 			)}
 			<div
-				className={classNames(styles.label, {
-					[styles.labelWithReactor]: showReactor,
+				className={classNames("flex ml-[20px] cursor-default min-w-[100px]", {
+					["ml-[12px] min-w-[56px]"]: showReactor,
 				})}
 			>
-				<div className={styles.text}>{label}</div>
+				<div
+					className={classNames("flex-1 whitespace-nowrap [text-overflow:ellipsis] overflow-hidden mr-[8px]", {
+						["text-with-reactor mr-[4px]"]: showReactor,
+					})}
+				>
+					{label}
+				</div>
 				{withLink && (
 					<Icon
-						className={classNames(styles.linkIcon, {
-							[styles.linkIconActive]: withLink && display.properties[withLink],
+						className={classNames("text-[var(--text500)] w-[12px] h-[12px]", {
+							["text-[var(--text100)]"]: withLink && display.properties[withLink],
 						})}
 						glyph={Link}
 						onClick={() => onChange(withLink, !display.properties[withLink])}

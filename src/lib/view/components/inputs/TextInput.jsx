@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import React, { useState, useRef, useEffect } from "react";
-import styles from "./TextInput.module.tailwind";
 
 export default function TextInput({
 	name = "text",
@@ -61,7 +60,7 @@ export default function TextInput({
 		<input
 			ref={input}
 			type="text"
-			className={classNames(styles.input, className)}
+			className={classNames("text-[var(--font-size-small)] text-[var(--input-text-color)] bg-[var(--input-bg-color)] border border-[var(--input-border-color)] rounded-[2px] leading-[24px] p-[0_6px] [outline:none] [&:focus]:border [&:focus]:border-[var(--primary100)] [&:read-only]:[border-color:var(--input-border-color)] [&:disabled]:text-[var(--text400)] [&:disabled]:[border-color:var(--input-border-color)]", className)}
 			style={{ width }}
 			name={name}
 			size={size}

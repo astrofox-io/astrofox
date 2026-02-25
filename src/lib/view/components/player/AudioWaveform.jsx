@@ -3,7 +3,6 @@ import { player } from "@/lib/view/global";
 import useSharedState from "@/lib/view/hooks/useSharedState";
 import classNames from "classnames";
 import React, { useRef, useEffect, useLayoutEffect, useMemo } from "react";
-import styles from "./AudioWaveform.module.tailwind";
 
 const canvasProperties = {
 	width: 854,
@@ -147,13 +146,13 @@ export default function AudioWaveform({ visible = true }) {
 	return (
 		<div
 			className={classNames({
-				[styles.waveform]: true,
-				[styles.hidden]: !visible,
+				["min-w-[900px] relative bg-[var(--gray75)] border-t border-t-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-[200px] transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
+				["hidden max-h-[0] transition-[max-height_0.2s_ease-in]"]: !visible,
 			})}
 		>
 			<canvas
 				ref={canvas}
-				className={styles.canvas}
+				className={"m-[20px_auto] block"}
 				width={width}
 				height={height + shadowHeight}
 				onClick={handleClick}

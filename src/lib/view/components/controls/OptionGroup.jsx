@@ -1,12 +1,11 @@
 import classNames from "classnames";
 import React, { Children, cloneElement } from "react";
-import styles from "./OptionGroup.module.tailwind";
 
 export default function OptionGroup({ title, className, children, ...props }) {
 	return (
-		<div className={classNames(styles.group, className)}>
-			{title && <div className={styles.header}>{title}</div>}
-			<div className={styles.body}>
+		<div className={classNames("group flex flex-col", className)}>
+			{title && <div className={"flex"}>{title}</div>}
+			<div className={"relative"}>
 				{Children.map(children, (child) => {
 					if (child) {
 						return cloneElement(child, { ...props });

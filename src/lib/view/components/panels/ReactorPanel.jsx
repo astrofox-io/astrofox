@@ -16,7 +16,6 @@ import { events, reactors } from "@/lib/view/global";
 import useEntity from "@/lib/view/hooks/useEntity";
 import { ChevronDown } from "@/lib/view/icons";
 import React, { useEffect, useRef } from "react";
-import styles from "./ReactorPanel.module.tailwind";
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 const METER_WIDTH = 20;
@@ -88,13 +87,13 @@ const ReactorControl = ({ reactor }) => {
 	}, [reactor]);
 
 	return (
-		<div className={styles.reactor}>
+		<div className={"w-full min-w-[910px] overflow-hidden bg-[var(--gray75)] border-t border-t-[var(--gray200)] relative p-[10px_20px_15px]"}>
 			<Header path={reactor.displayName.split("/")} />
-			<div className={styles.display}>
-				<div className={styles.controls}>
+			<div className={"flex flex-row justify-center items-center"}>
+				<div className={"min-w-[300px] m-[10px_10px_0_0]"}>
 					<Control display={reactor} showHeader={false} />
 				</div>
-				<div className={styles.spectrum}>
+				<div className={"relative bg-[var(--gray75)] shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-[var(--gray200)]"}>
 					<canvas
 						ref={spectrumCanvas}
 						width={SPECTRUM_WIDTH}
@@ -110,7 +109,7 @@ const ReactorControl = ({ reactor }) => {
 						onChange={inputValueToProps(handleChange)}
 					/>
 				</div>
-				<div className={styles.output}>
+				<div className={"ml-[10px] shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-[var(--gray200)]"}>
 					<canvas
 						ref={outputCanvas}
 						width={METER_WIDTH}
@@ -119,7 +118,7 @@ const ReactorControl = ({ reactor }) => {
 				</div>
 			</div>
 			<Icon
-				className={styles.closeIcon}
+				className={"absolute top-[10px] right-[20px] text-[var(--text200)] w-[14px] h-[14px] [&:hover]:text-[var(--text100)]"}
 				glyph={ChevronDown}
 				title="Hide Panel"
 				onClick={hideReactor}
@@ -129,9 +128,12 @@ const ReactorControl = ({ reactor }) => {
 };
 
 const Header = ({ path }) => (
-	<div className={styles.header}>
+	<div className={"text-[var(--text200)] text-[var(--font-size-xsmall)] [text-shadow:1px_1px_0_var(--gray75)]"}>
 		{path.map((item, index) => (
-			<span key={index} className={styles.node}>
+			<span
+				key={index}
+				className={"uppercase cursor-default after:content-['\\2022'] after:text-[var(--primary100)] after:mx-[8px] last:after:content-none"}
+			>
 				{item}
 			</span>
 		))}

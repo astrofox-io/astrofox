@@ -3,7 +3,6 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Eye } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
-import styles from "./Layer.module.tailwind";
 
 export default function Layer({
 	id,
@@ -43,14 +42,18 @@ export default function Layer({
 
 	return (
 		<div
-			className={classNames(styles.layer, className, {
-				[styles.edit]: edit,
-				[styles.active]: active,
-			})}
+			className={classNames(
+				"flex flex-row text-[var(--font-size-small)] text-[var(--text100)] bg-[var(--gray200)] border-b border-b-[var(--gray75)] p-[5px] mx-[5px] relative cursor-default [&>*]:mr-[8px] [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				className,
+				{
+					"bg-[var(--gray100)]": edit,
+					"bg-[var(--primary100)]": active,
+				},
+			)}
 			onClick={handleLayerClick}
 		>
-			{icon && <Icon className={styles.icon} glyph={icon} />}
-			<div className={styles.text} onDoubleClick={handleEnableEdit}>
+			{icon && <Icon className={"w-[12px] h-[12px]"} glyph={icon} />}
+			<div className={"flex-1"} onDoubleClick={handleEnableEdit}>
 				{edit ? (
 					<TextInput
 						name="displayName"
@@ -66,8 +69,8 @@ export default function Layer({
 				)}
 			</div>
 			<Icon
-				className={classNames(styles.enableIcon, {
-					[styles.disabled]: !enabled,
+				className={classNames("w-[13px] h-[13px]", {
+					"opacity-30": !enabled,
 				})}
 				glyph={Eye}
 				onClick={handleEnableClick}

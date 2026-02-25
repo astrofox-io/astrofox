@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import React, { useState, Children, cloneElement } from "react";
-import styles from "./TabPanel.module.tailwind";
 
 export function TabPanel({
 	className,
@@ -25,9 +24,9 @@ export function TabPanel({
 			<div
 				key={index}
 				className={classNames(
-					styles.tab,
+					"text-center list-none p-[8px_16px] cursor-default",
 					{
-						[styles.active]: index === activeIndex,
+						"bg-[var(--primary100)]": index === activeIndex,
 					},
 					tabClassName,
 					child.props.className,
@@ -50,26 +49,26 @@ export function TabPanel({
 	return (
 		<div
 			className={classNames(
-				styles.panel,
+				"flex flex-1",
 				{
-					[styles.positionLeft]: tabPosition === "left",
-					[styles.positionRight]: tabPosition === "right",
-					[styles.positionTop]: tabPosition === "top",
-					[styles.positionBottom]: tabPosition === "bottom",
+					["flex-row [&_.tabs]:w-[160px]"]: tabPosition === "left",
+					["flex-row [&_.tabs]:order-[99] [&_.tabs]:w-[160px]"]: tabPosition === "right",
+					["flex-col"]: tabPosition === "top",
+					["flex-col [&_.tabs]:order-[99]"]: tabPosition === "bottom",
 				},
 				className,
 			)}
 		>
 			<div
 				className={classNames({
-					[styles.tabs]: true,
-					[styles.horizontal]:
+					["bg-[var(--gray75)]"]: true,
+					["flex flex-row"]:
 						tabPosition === "top" || tabPosition === "bottom",
 				})}
 			>
 				{tabs}
 			</div>
-			<div className={classNames(styles.content, contentClassName)}>
+			<div className={classNames("w-full overflow-auto [&_.hidden]:hidden", contentClassName)}>
 				{content}
 			</div>
 		</div>
@@ -80,7 +79,7 @@ export const Tab = ({ visible, className, children }) => (
 	<div
 		className={classNames(
 			{
-				[styles.hidden]: !visible,
+				["hidden"]: !visible,
 			},
 			className,
 		)}

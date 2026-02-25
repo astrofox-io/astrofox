@@ -2,7 +2,6 @@ import FFTParser from "@/lib/audio/FFTParser";
 import CanvasBars from "@/lib/canvas/CanvasBars";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 import React, { useEffect, useRef, useImperativeHandle } from "react";
-import styles from "./Spectrum.module.tailwind";
 
 const spectrumProperties = {
 	width: 854,
@@ -50,10 +49,10 @@ export default function Spectrum({ forwardedRef }) {
 	}, [bars, parser]);
 
 	return (
-		<div className={styles.spectrum}>
+		<div className={"min-w-[900px] relative bg-[var(--gray75)] pb-[10px]"}>
 			<canvas
 				ref={canvas}
-				className={styles.canvas}
+				className={"block m-[0_auto] border border-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
 				width={width}
 				height={height}
 				onClick={handleClick}

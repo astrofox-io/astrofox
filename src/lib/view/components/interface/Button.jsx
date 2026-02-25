@@ -1,13 +1,16 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Button.module.tailwind";
 
 const Button = ({ text, disabled, className, onClick }) => {
 	return (
 		<span
-			className={classNames(styles.button, className, {
-				[styles.disabled]: disabled,
-			})}
+			className={classNames(
+				"inline-block bg-[var(--primary100)] p-[8px_10px] rounded-[3px] cursor-default mr-[10px] [&:last-child]:mr-0 [&:hover]:bg-[var(--primary200)]",
+				className,
+				{
+					"text-[var(--text200)] bg-[var(--gray400)]": disabled,
+				},
+			)}
 			onClick={disabled ? null : onClick}
 		>
 			{text}

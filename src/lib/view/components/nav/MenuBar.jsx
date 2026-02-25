@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState, useEffect } from "react";
-import styles from "./MenuBar.module.tailwind";
+
 import MenuBarItem from "./MenuBarItem";
 
 export default function MenuBar({
@@ -59,7 +59,7 @@ export default function MenuBar({
 	});
 
 	return (
-		<div className={classNames(styles.bar, { [styles.focused]: focused })}>
+		<div className={classNames("relative text-[var(--font-size-normal)] text-[var(--text400)] bg-[var(--gray75)] p-[0_20px]", { ["text-[var(--text300)]"]: focused })}>
 			{menuItems.map(
 				({ hidden, label, submenu }, index) =>
 					!hidden && (

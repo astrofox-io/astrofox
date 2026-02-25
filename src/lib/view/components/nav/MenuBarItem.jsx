@@ -1,7 +1,6 @@
 import Menu from "@/lib/view/components/nav/Menu";
 import classNames from "classnames";
 import React from "react";
-import styles from "./MenuBarItem.module.tailwind";
 
 export default function MenuBarItem({
 	label,
@@ -22,9 +21,14 @@ export default function MenuBarItem({
 	}
 
 	return (
-		<div className={styles.item}>
+		<div className={"inline-block relative"}>
 			<div
-				className={classNames(styles.text, { [styles.active]: active })}
+				className={classNames(
+					"leading-[40px] p-[0_8px] relative cursor-default [&:hover]:text-[var(--primary300)]",
+					{
+						"text-[var(--primary300)] bg-[var(--gray50)]": active,
+					},
+				)}
 				onClick={handleClick}
 				onMouseOver={handleMouseOver}
 			>

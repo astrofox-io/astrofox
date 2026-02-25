@@ -1,7 +1,6 @@
 import { Tab, TabPanel } from "@/lib/view/components/layout/TabPanel";
 import { library } from "@/lib/view/global";
 import React from "react";
-import styles from "./ControlPicker.module.tailwind";
 
 const types = ["displays", "effects"];
 
@@ -23,15 +22,15 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 			} = item;
 
 			return (
-				<div key={index} className={styles.item}>
-					<div className={styles.image} onClick={() => handleClick(item)}>
+				<div key={index} className={"flex flex-col items-center mb-[10px] w-[110px]"}>
+					<div className={"bg-[#000_center] border-[2px] border-[var(--gray300)] rounded-[7px] h-[84px] w-[84px] transition-[border-color_0.5s] overflow-hidden [&_img]:w-full [&_img]:h-[auto] [&:hover]:[border-color:var(--primary100)] [&:hover]:transition-[none]"} onClick={() => handleClick(item)}>
 						<img
 							src={icon || "images/controls/Plugin.png"}
 							alt={label}
 							onError={hideImage}
 						/>
 					</div>
-					<div className={styles.name}>{label}</div>
+					<div className={"text-[var(--font-size-small)] text-center m-[5px_0]"}>{label}</div>
 				</div>
 			);
 		});
@@ -39,14 +38,14 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 
 	return (
 		<TabPanel
-			className={styles.panel}
+			className={"w-[720px] h-[400px]"}
 			tabPosition="left"
 			activeIndex={types.indexOf(type)}
 		>
-			<Tab name="Displays" contentClassName={styles.picker}>
+			<Tab name="Displays" contentClassName={"flex flex-row [flex-wrap:wrap] items-center justify-center p-[10px]"}>
 				<Catalog items={library.get("displays")} />
 			</Tab>
-			<Tab name="Effects" contentClassName={styles.picker}>
+			<Tab name="Effects" contentClassName={"flex flex-row [flex-wrap:wrap] items-center justify-center p-[10px]"}>
 				<Catalog items={library.get("effects")} />
 			</Tab>
 		</TabPanel>

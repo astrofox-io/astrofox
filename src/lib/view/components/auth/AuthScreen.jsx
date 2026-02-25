@@ -5,7 +5,6 @@ import useAuth, {
 } from "@/lib/view/actions/auth";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
-import styles from "./AuthScreen.module.tailwind";
 
 export default function AuthScreen() {
 	const loading = useAuth((state) => state.loading);
@@ -38,16 +37,16 @@ export default function AuthScreen() {
 	}
 
 	return (
-		<div className={styles.page}>
-			<form className={styles.card} onSubmit={handleSubmit}>
-				<div className={styles.title}>Astrofox</div>
-				<div className={styles.subtitle}>
+		<div className={"min-h-[100vh] flex items-center justify-center bg-[radial-gradient(circle_at_top,_#1f2a38_0%,_#101014_70%)]"}>
+			<form className={"w-[420px] flex flex-col gap-[10px] p-[24px] bg-[rgba(14,_20,_28,_0.92)] border border-[#2f3f55]"} onSubmit={handleSubmit}>
+				<div className={"text-[26px] font-bold tracking-[0.04em]"}>Astrofox</div>
+				<div className={"text-[13px] opacity-[0.8] mb-[8px]"}>
 					{mode === "sign-up" ? "Create account" : "Sign in"}
 				</div>
 
 				{mode === "sign-up" && (
 					<input
-						className={styles.input}
+						className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] p-[8px_10px] text-[13px]"}
 						type="text"
 						placeholder="Name"
 						value={name}
@@ -56,7 +55,7 @@ export default function AuthScreen() {
 					/>
 				)}
 				<input
-					className={styles.input}
+					className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] p-[8px_10px] text-[13px]"}
 					type="email"
 					placeholder="Email"
 					value={email}
@@ -64,7 +63,7 @@ export default function AuthScreen() {
 					required
 				/>
 				<input
-					className={styles.input}
+					className={"bg-[#0d1219] text-[#fff] border border-[#3c4b60] p-[8px_10px] text-[13px]"}
 					type="password"
 					placeholder="Password"
 					value={password}
@@ -72,7 +71,7 @@ export default function AuthScreen() {
 					required
 				/>
 
-				<div className={styles.row}>
+				<div className={"flex gap-[6px] [flex-wrap:wrap]"}>
 					<Button
 						text={
 							loading
@@ -91,11 +90,11 @@ export default function AuthScreen() {
 					/>
 				</div>
 
-				<div className={styles.toggle}>
+				<div className={"text-xs opacity-[0.85]"}>
 					{mode === "sign-up" ? "Already have an account?" : "Need an account?"}{" "}
 					<button
 						type="button"
-						className={styles.link}
+						className={"bg-transparent border-0 p-0 text-[#62d0ff] cursor-pointer"}
 						onClick={toggleMode}
 						onKeyDown={handleToggleModeKeyDown}
 					>
@@ -103,7 +102,7 @@ export default function AuthScreen() {
 					</button>
 				</div>
 
-				{error && <div className={styles.error}>{error}</div>}
+				{error && <div className={"text-xs text-[#ff8f8f]"}>{error}</div>}
 			</form>
 		</div>
 	);

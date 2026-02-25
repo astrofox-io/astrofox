@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import React from "react";
-import styles from "./Icon.module.tailwind";
 
 const Icon = ({
 	className,
@@ -18,8 +17,8 @@ const Icon = ({
 	return (
 		<span
 			className={classNames(
-				styles.icon,
-				{ [styles.monochrome]: monochrome },
+				"inline-flex [align-self:center] relative text-[var(--text100)] w-[16px] h-[16px] [&_svg]:text-inherit [&_svg]:w-[inherit] [&_svg]:h-[inherit]",
+				{ ["[&_svg_path:not([fill])]:[fill:currentColor] [&_svg_circle:not([fill])]:[fill:currentColor] [&_svg_ellipse:not([fill])]:[fill:currentColor] [&_svg_rect:not([fill])]:[fill:currentColor] [&_svg_polygon:not([fill])]:[fill:currentColor] [&_svg_polyline:not([fill])]:[fill:currentColor] [&_svg_path:not([stroke])]:[stroke:currentColor] [&_svg_circle:not([stroke])]:[stroke:currentColor] [&_svg_ellipse:not([stroke])]:[stroke:currentColor] [&_svg_rect:not([stroke])]:[stroke:currentColor] [&_svg_polygon:not([stroke])]:[stroke:currentColor] [&_svg_polyline:not([stroke])]:[stroke:currentColor] [&_svg_line:not([stroke])]:[stroke:currentColor]"]: monochrome },
 				className,
 			)}
 			title={title}

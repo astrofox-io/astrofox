@@ -1,7 +1,6 @@
 import Icon from "@/lib/view/components/interface/Icon";
 import classNames from "classnames";
 import React from "react";
-import styles from "./ButtonInput.module.tailwind";
 
 const ButtonInput = ({
 	title,
@@ -14,18 +13,18 @@ const ButtonInput = ({
 }) => (
 	<div
 		className={classNames(
-			styles.button,
+			"text-[var(--text100)] bg-[var(--input-bg-color)] min-h-[24px] min-w-[24px] text-center rounded-[2px] inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-[var(--primary100)]",
 			{
-				[styles.active]: active,
-				[styles.disabled]: disabled,
+				["bg-[var(--primary100)]"]: active,
+				["[&_svg]:text-[var(--gray500)] [&:hover]:bg-[var(--input-bg-color)]"]: disabled,
 			},
 			className,
 		)}
 		title={title}
 		onClick={disabled ? null : onClick}
 	>
-		{icon && <Icon className={styles.icon} glyph={icon} />}
-		{text && <span className={styles.text}>{text}</span>}
+		{icon && <Icon className={"text-[var(--text100)] w-[12px] h-[12px]"} glyph={icon} />}
+		{text && <span className={"text-[var(--font-size-small)]"}>{text}</span>}
 	</div>
 );
 

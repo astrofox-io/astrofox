@@ -6,7 +6,6 @@ import { api } from "@/lib/view/global";
 import { FolderOpen, Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
-import styles from "./ImageInput.module.tailwind";
 
 export default function ImageInput({ name, value, onChange }) {
 	const image = useRef();
@@ -57,22 +56,22 @@ export default function ImageInput({ name, value, onChange }) {
 	return (
 		<>
 			<div
-				className={styles.image}
+				className={"h-[100px] w-[100px] bg-[var(--input-bg-color)] border border-[var(--input-border-color)] rounded-[var(--input-border-radius)] relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"}
 				onDrop={handleDrop}
 				onDragOver={ignoreEvents}
 				onClick={handleClick}
 			>
 				<img
 					ref={image}
-					className={classNames(styles.img, {
-						[styles.hidden]: !hasImage,
+					className={classNames("absolute top-1/2 -translate-y-1/2 w-full h-[auto]", {
+						hidden: !hasImage,
 					})}
 					src={value}
 					alt=""
 					onLoad={handleImageLoad}
 				/>
 				<Icon
-					className={styles.openIcon}
+					className={"absolute top-0 left-0 right-0 bottom-0 m-[auto] scale-50 text-[var(--text100)] h-[24px] w-[24px] opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"}
 					glyph={FolderOpen}
 					title="Open File"
 				/>
@@ -80,7 +79,7 @@ export default function ImageInput({ name, value, onChange }) {
 			{hasImage && (
 				<Icon
 					className={classNames({
-						[styles.closeIcon]: true,
+						["text-[var(--text200)] w-[14px] h-[14px] [&:hover]:text-[var(--text100)]"]: true,
 					})}
 					glyph={Times}
 					title="Remove Image"

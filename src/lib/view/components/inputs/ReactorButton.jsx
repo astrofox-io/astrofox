@@ -5,7 +5,6 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Flash } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
-import styles from "./ReactorButton.module.tailwind";
 
 export default function ReactorButton({
 	display,
@@ -31,8 +30,8 @@ export default function ReactorButton({
 
 	return (
 		<Icon
-			className={classNames(styles.icon, className, {
-				[styles.iconActive]: reactor,
+			className={classNames("text-[var(--text500)] w-[16px] h-[16px] [&:hover]:text-[var(--text100)]", className, {
+				["text-[var(--text100)]"]: reactor,
 			})}
 			glyph={Flash}
 			title={reactor ? "Show Reactor" : "Enable Reactor"}
