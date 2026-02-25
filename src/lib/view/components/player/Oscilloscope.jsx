@@ -34,10 +34,10 @@ export default function Oscilloscope() {
 	}, []);
 
 	return (
-		<div className={"min-w-[900px] relative bg-[var(--gray75)] pb-[10px]"}>
+		<div className={"min-w-[900px] relative bg-gray75 pb-[10px]"}>
 			<canvas
 				ref={canvas}
-				className={"block my-0 mx-auto border border-[var(--gray200)] shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
+				className={"block my-0 mx-auto border border-gray200 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
 				width={width}
 				height={height}
 			/>

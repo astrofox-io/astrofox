@@ -24,7 +24,7 @@ export default function Setting({
 				["hidden"]: hidden,
 			})}
 		>
-			<div className={"text-[var(--text200)]"} style={{ width: labelWidth }}>
+			<div className={"text-text200"} style={{ width: labelWidth }}>
 				{label}
 			</div>
 			<div style={{ width: inputWidth }}>

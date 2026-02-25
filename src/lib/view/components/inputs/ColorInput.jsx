@@ -6,7 +6,7 @@ export default function ColorInput({
 	onChange = () => {},
 }) {
 	return (
-		<div className={"flex items-center justify-center w-[25px] h-[25px] rounded-full border border-[var(--input-border-color)] bg-[var(--input-bg-color)]"}>
+		<div className={"flex items-center justify-center w-[25px] h-[25px] rounded-full border border-input-border bg-input-bg"}>
 			<input
 				type="color"
 				className={"w-[15px] h-[15px] rounded-full border-0 [&::-webkit-color-swatch-wrapper]:hidden [&::-webkit-color-swatch]:hidden"}

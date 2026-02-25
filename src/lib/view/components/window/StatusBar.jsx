@@ -26,14 +26,14 @@ export default function StatusBar() {
 	}, []);
 
 	return (
-		<div className={"flex text-[var(--text100)] bg-[var(--primary100)] text-[11px] py-0 px-5 cursor-default whitespace-nowrap z-[var(--z-index-above)]"}>
+		<div className={"flex text-text100 bg-primary100 text-[11px] py-0 px-5 cursor-default whitespace-nowrap z-[var(--z-index-above)]"}>
 			<div className={"text-left w-[33%] [&_.item]:mr-5"}>
 				<InfoItem value={statusText} />
 			</div>
 			<div className={"text-center flex-1 w-[34%] [&_.item]:my-0 mx-2.5"}>
 				<ZoomControl />
 			</div>
-			<div className={"text-right w-[33%] [&_.item]:ml-5"}>
+			<div className={"flex w-[33%] items-center justify-end gap-5 text-right"}>
 				{process.env.NODE_ENV !== "production" && <InfoItem value={mem} />}
 				<InfoItem value={fps} />
 				<InfoItem value={APP_VERSION} />

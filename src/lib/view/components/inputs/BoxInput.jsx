@@ -94,7 +94,7 @@ export default function BoxInput({
 
 	return (
 		<div
-			className={"absolute top-0 left-0 border border-[var(--primary400)]"}
+			className={"absolute top-0 left-0 border border-primary400"}
 			style={{
 				width,
 				height,

@@ -49,8 +49,8 @@ export default function AccountModal({ featureMessage, onClose }) {
 	if (session?.user) {
 		return (
 			<div className={"flex flex-col gap-2.5 min-w-[420px]"}>
-				<div className={"text-xs text-[var(--text200)]"}>You are signed in.</div>
-				<div className={"text-[13px] text-[var(--text100)]"}>
+				<div className={"text-xs text-text200"}>You are signed in.</div>
+				<div className={"text-[13px] text-text100"}>
 					{session.user.name || session.user.email || "Authenticated user"}
 				</div>
 				<div className={"flex gap-1.5 [flex-wrap:wrap]"}>
@@ -63,7 +63,7 @@ export default function AccountModal({ featureMessage, onClose }) {
 
 	return (
 		<form className={"flex flex-col gap-2.5 min-w-[420px]"} onSubmit={handleSubmit}>
-			<div className={"text-xs text-[var(--text200)]"}>
+			<div className={"text-xs text-text200"}>
 				{featureMessage ||
 					"Create an account to unlock cloud project features like save, open, and duplicate."}
 			</div>

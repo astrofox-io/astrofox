@@ -63,11 +63,11 @@ export default function ReactorInput({
 
 	return (
 		<div className={"flex flex-row items-center gap-1"}>
-			<div className={"flex h-6 shrink-0 items-center rounded-sm border border-[var(--input-border-color)] bg-[var(--input-bg-color)] py-0 px-2"} onDoubleClick={toggleReactor}>
+			<div className={"flex h-6 shrink-0 items-center rounded-sm border border-input-border bg-input-bg py-0 px-2"} onDoubleClick={toggleReactor}>
 				<canvas ref={canvas} className="canvas" width={width} height={height} />
 			</div>
 			<Icon
-				className={"ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-[var(--text200)] [&:hover]:text-[var(--text100)]"}
+				className={"ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-text200 [&:hover]:text-text100"}
 				glyph={Times}
 				title="Disable Reactor"
 				onClick={disableReactor}

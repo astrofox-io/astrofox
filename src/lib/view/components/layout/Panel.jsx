@@ -41,7 +41,7 @@ export default function Panel({
 		>
 			{title && (
 				<div className={"flex h-[30px] leading-[30px] shrink-0"}>
-					<div className={"text-[var(--font-size-small)] text-[var(--text200)] uppercase ml-2.5 cursor-default"}>{title}</div>{" "}
+					<div className={"text-[var(--font-size-small)] text-text200 uppercase ml-2.5 cursor-default"}>{title}</div>{" "}
 				</div>
 			)}
 			{children}

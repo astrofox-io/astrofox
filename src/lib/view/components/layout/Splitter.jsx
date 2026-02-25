@@ -50,14 +50,14 @@ export default function Splitter({
 
 	return (
 		<div
-			className={classNames("bg-[var(--gray75)] text-center relative", {
+			className={classNames("bg-gray75 text-center relative", {
 				"w-[5px] h-full cursor-ew-resize": type === "vertical",
 				"h-[5px] w-full cursor-ns-resize": type !== "vertical",
 			})}
 			onMouseDown={handleDragStart}
 		>
 			<Icon
-				className={classNames("text-[var(--text200)] w-3 h-3", {
+				className={classNames("text-text200 w-3 h-3", {
 					"block absolute my-0 mx-auto -top-1 left-0 right-0":
 						type === "horizontal",
 				})}

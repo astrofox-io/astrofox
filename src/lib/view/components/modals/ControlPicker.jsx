@@ -23,7 +23,7 @@ export default function ControlPicker({ type, onSelect, onClose }) {
 
 			return (
 				<div key={index} className={"flex flex-col items-center mb-2.5 w-[110px]"}>
-					<div className={"bg-[#000_center] border-[2px] border-[var(--gray300)] rounded-[7px] h-[84px] w-[84px] transition-[border-color_0.5s] overflow-hidden [&_img]:w-full [&_img]:h-[auto] [&:hover]:[border-color:var(--primary100)] [&:hover]:transition-[none]"} onClick={() => handleClick(item)}>
+					<div className={"bg-[#000_center] border-[2px] border-gray300 rounded-[7px] h-[84px] w-[84px] transition-[border-color_0.5s] overflow-hidden [&_img]:w-full [&_img]:h-[auto] [&:hover]:border-primary100 [&:hover]:transition-[none]"} onClick={() => handleClick(item)}>
 						<img
 							src={icon || "images/controls/Plugin.png"}
 							alt={label}

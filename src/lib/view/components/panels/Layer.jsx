@@ -43,11 +43,11 @@ export default function Layer({
 	return (
 		<div
 			className={classNames(
-				"flex flex-row text-[var(--font-size-small)] text-[var(--text100)] bg-[var(--gray200)] border-b border-b-[var(--gray75)] p-[5px] mx-[5px] relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				"flex flex-row text-[var(--font-size-small)] text-text100 bg-gray200 border-b border-b-gray75 p-[5px] mx-[5px] relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
 				className,
 				{
-					"bg-[var(--gray100)]": edit,
-					"bg-[var(--primary100)]": active,
+					"bg-gray100": edit,
+					"bg-primary100": active,
 				},
 			)}
 			onClick={handleLayerClick}

@@ -120,7 +120,7 @@ export default function NavSidebar() {
 	}
 
 	return (
-		<nav className={"flex flex-col w-[52px] shrink-0 py-2 px-1.5 gap-1.5 bg-[var(--gray75)] border-r border-r-[var(--gray300)]"} aria-label="Main navigation">
+		<nav className={"flex flex-col w-[52px] shrink-0 py-2 px-1.5 gap-1.5 bg-gray75 border-r border-r-gray300"} aria-label="Main navigation">
 			{items.map((item, index) => {
 				const hasMenu = item.submenu.length > 0;
 				const isActive = hasMenu && activeIndex === index;
@@ -130,8 +130,8 @@ export default function NavSidebar() {
 					<div key={item.label} className={"group relative flex justify-center"}>
 						<button
 							type="button"
-							className={classNames("w-[38px] h-[38px] border-0 p-0 rounded-lg bg-transparent text-[var(--text300)] inline-flex items-center justify-center cursor-default [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
-								["text-[var(--text100)] bg-[var(--primary100)]"]: isActive,
+							className={classNames("w-[38px] h-[38px] border-0 p-0 rounded-lg bg-transparent text-text300 inline-flex items-center justify-center cursor-default [&:hover]:text-text100 [&:hover]:bg-gray100", {
+								["text-text100 bg-primary100"]: isActive,
 							})}
 							title={item.label}
 							aria-label={item.label}
@@ -143,7 +143,7 @@ export default function NavSidebar() {
 						</button>
 						{hasMenu && (
 							<Menu
-								className={"top-0 left-[calc(100%_+_8px)] min-w-[180px] border border-[var(--gray300)]"}
+								className={"top-0 left-[calc(100%_+_8px)] min-w-[180px] border border-gray300"}
 								items={item.submenu}
 								visible={isActive}
 								onMenuItemClick={handleMenuItemClick}

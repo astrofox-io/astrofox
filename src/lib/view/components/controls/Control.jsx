@@ -38,11 +38,11 @@ export default function Control({ display, className, showHeader = true }) {
 		<div className={classNames("pb-[8px]", className)}>
 			{showHeader && (
 				<div className={"relative py-0 px-2.5 h-[30px] cursor-default"}>
-					<div className={"flex justify-center text-[var(--font-size-xsmall)] text-[var(--text100)] leading-[30px] overflow-hidden"}>
-						<div className={"relative uppercase pr-[20px] [&:after]:content-['\\2022'] [&:after]:absolute [&:after]:right-[7px] [&:after]:text-[var(--text300)]"}>
+					<div className={"flex justify-center text-[var(--font-size-xsmall)] text-text100 leading-[30px] overflow-hidden"}>
+						<div className={"relative uppercase pr-[20px] [&:after]:content-['\\2022'] [&:after]:absolute [&:after]:right-[7px] [&:after]:text-text300"}>
 							{label}
 						</div>
-						<div className={"text-[var(--text200)] overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-[100px]"}>
+						<div className={"text-text200 overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-[100px]"}>
 							{displayName}
 						</div>
 					</div>

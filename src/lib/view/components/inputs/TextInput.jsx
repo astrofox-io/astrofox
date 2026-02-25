@@ -60,7 +60,7 @@ export default function TextInput({
 		<input
 			ref={input}
 			type="text"
-			className={classNames("text-[var(--font-size-small)] text-[var(--input-text-color)] bg-[var(--input-bg-color)] border border-[var(--input-border-color)] rounded-sm leading-6 py-0 px-1.5 [outline:none] [&:focus]:border [&:focus]:border-[var(--primary100)] [&:read-only]:[border-color:var(--input-border-color)] [&:disabled]:text-[var(--text400)] [&:disabled]:[border-color:var(--input-border-color)]", className)}
+			className={classNames("text-[var(--font-size-small)] text-input-text bg-input-bg border border-input-border rounded-sm leading-6 py-0 px-1.5 [outline:none] [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border", className)}
 			style={{ width }}
 			name={name}
 			size={size}

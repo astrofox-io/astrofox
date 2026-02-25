@@ -36,7 +36,7 @@ export default function SceneLayer({
 	);
 
 	return (
-		<div className={"flex flex-col [&:first-child]:border-t [&:first-child]:border-t-[var(--gray75)]"}>
+		<div className={"flex flex-col [&:first-child]:border-t [&:first-child]:border-t-gray75"}>
 			<Layer
 				key={id}
 				id={id}

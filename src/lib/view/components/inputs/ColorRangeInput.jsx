@@ -16,7 +16,7 @@ export default function ColorRangeInput({
 				onChange={(n, value) => onChange(name, [value, endColor])}
 			/>
 			<div
-				className={"flex-1 relative h-4 border border-[var(--input-border-color)] rounded my-0 mx-2"}
+				className={"flex-1 relative h-4 border border-input-border rounded my-0 mx-2"}
 				style={{
 					backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`,
 				}}

@@ -78,14 +78,14 @@ export default function TitleBar() {
 
 	return (
 		<div
-			className={"flex items-center relative h-10 bg-[var(--gray75)] border-b border-b-[var(--gray300)]"}
+			className={"flex items-center relative h-10 bg-gray75 border-b border-b-gray300"}
 		>
 			<div className={"flex items-center gap-0 ml-1.5"}>
 				<div className={"relative"}>
 					<button
 						type="button"
-						className={classNames("w-7 h-7 border-0 p-0 rounded-md bg-transparent text-[var(--text300)] inline-flex items-center justify-center [&:hover]:text-[var(--text100)] [&:hover]:bg-[var(--gray100)]", {
-							["text-[var(--text100)] bg-[var(--primary100)]"]: menuVisible,
+						className={classNames("w-7 h-7 border-0 p-0 rounded-md bg-transparent text-text300 inline-flex items-center justify-center [&:hover]:text-text100 [&:hover]:bg-gray100", {
+							["text-text100 bg-primary100"]: menuVisible,
 						})}
 						aria-label="Main menu"
 						onClick={toggleMenu}
@@ -93,7 +93,7 @@ export default function TitleBar() {
 						<MenuIcon size={18} />
 					</button>
 					<Menu
-						className={"top-[calc(100%_+_6px)] left-0 min-w-[190px] border border-[var(--gray300)]"}
+						className={"top-[calc(100%_+_6px)] left-0 min-w-[190px] border border-gray300"}
 						items={menuItems}
 						visible={menuVisible}
 						onMenuItemClick={onMenuItemClick}
@@ -104,8 +104,8 @@ export default function TitleBar() {
 				className={classNames(
 					"absolute left-1/2 -translate-x-1/2 text-[var(--font-size-normal)] leading-10 tracking-[5px] uppercase cursor-default max-[700px]:hidden",
 					{
-						"text-[var(--text300)]": focused,
-						"text-[var(--text400)]": !focused,
+						"text-text300": focused,
+						"text-text400": !focused,
 					},
 				)}
 			>

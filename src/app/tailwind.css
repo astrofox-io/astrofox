@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
+@theme {
+  --color-gray50: var(--gray50);
+  --color-gray75: var(--gray75);
+  --color-gray100: var(--gray100);
+  --color-gray200: var(--gray200);
+  --color-gray300: var(--gray300);
+  --color-gray400: var(--gray400);
+  --color-gray500: var(--gray500);
+  --color-gray600: var(--gray600);
+  --color-gray700: var(--gray700);
+  --color-gray800: var(--gray800);
+  --color-gray900: var(--gray900);
+  --color-red400: var(--red400);
+  --color-blue400: var(--blue400);
+  --color-green400: var(--green400);
+  --color-orange400: var(--orange400);
+  --color-yellow400: var(--yellow400);
+  --color-purple400: var(--purple400);
+  --color-primary100: var(--primary100);
+  --color-primary200: var(--primary200);
+  --color-primary300: var(--primary300);
+  --color-primary400: var(--primary400);
+  --color-primary500: var(--primary500);
+  --color-text100: var(--text100);
+  --color-text200: var(--text200);
+  --color-text300: var(--text300);
+  --color-text400: var(--text400);
+  --color-text500: var(--text500);
+  --color-input-text: var(--input-text-color);
+  --color-input-border: var(--input-border-color);
+  --color-input-bg: var(--input-bg-color);
+  --color-background: var(--background-color);
+  --radius-input: var(--input-border-radius);
+}
+
 /* less-migrated-keyframes */
 @keyframes spinner-rotate {
   0% {

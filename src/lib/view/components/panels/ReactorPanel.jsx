@@ -87,13 +87,13 @@ const ReactorControl = ({ reactor }) => {
 	}, [reactor]);
 
 	return (
-		<div className={"w-full min-w-[910px] overflow-hidden bg-[var(--gray75)] border-t border-t-[var(--gray200)] relative p-[10px_20px_15px]"}>
+		<div className={"w-full min-w-[910px] overflow-hidden bg-gray75 border-t border-t-gray200 relative p-[10px_20px_15px]"}>
 			<Header path={reactor.displayName.split("/")} />
 			<div className={"flex flex-row justify-center items-center"}>
 				<div className={"min-w-[300px] m-[10px_10px_0_0]"}>
 					<Control display={reactor} showHeader={false} />
 				</div>
-				<div className={"relative bg-[var(--gray75)] shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-[var(--gray200)]"}>
+				<div className={"relative bg-gray75 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-gray200"}>
 					<canvas
 						ref={spectrumCanvas}
 						width={SPECTRUM_WIDTH}
@@ -109,7 +109,7 @@ const ReactorControl = ({ reactor }) => {
 						onChange={inputValueToProps(handleChange)}
 					/>
 				</div>
-				<div className={"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-[var(--gray200)]"}>
+				<div className={"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-gray200"}>
 					<canvas
 						ref={outputCanvas}
 						width={METER_WIDTH}
@@ -118,7 +118,7 @@ const ReactorControl = ({ reactor }) => {
 				</div>
 			</div>
 			<Icon
-				className={"absolute top-2.5 right-5 text-[var(--text200)] w-3.5 h-3.5 [&:hover]:text-[var(--text100)]"}
+				className={"absolute top-2.5 right-5 text-text200 w-3.5 h-3.5 [&:hover]:text-text100"}
 				glyph={ChevronDown}
 				title="Hide Panel"
 				onClick={hideReactor}
@@ -128,11 +128,11 @@ const ReactorControl = ({ reactor }) => {
 };
 
 const Header = ({ path }) => (
-	<div className={"text-[var(--text200)] text-[var(--font-size-xsmall)] [text-shadow:1px_1px_0_var(--gray75)]"}>
+	<div className={"text-text200 text-[var(--font-size-xsmall)] [text-shadow:1px_1px_0_var(--gray75)]"}>
 		{path.map((item, index) => (
 			<span
 				key={index}
-				className={"uppercase cursor-default after:content-['\\2022'] after:text-[var(--primary100)] after:mx-2 last:after:content-none"}
+				className={"uppercase cursor-default after:content-['\\2022'] after:text-primary100 after:mx-2 last:after:content-none"}
 			>
 				{item}
 			</span>

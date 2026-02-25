@@ -30,8 +30,8 @@ export default function ReactorButton({
 
 	return (
 		<Icon
-			className={classNames("text-[var(--text500)] w-4 h-4 [&:hover]:text-[var(--text100)]", className, {
-				["text-[var(--text100)]"]: reactor,
+			className={classNames("text-text500 w-4 h-4 [&:hover]:text-text100", className, {
+				["text-text100"]: reactor,
 			})}
 			glyph={Flash}
 			title={reactor ? "Show Reactor" : "Enable Reactor"}

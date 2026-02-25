@@ -24,9 +24,9 @@ export default function MenuBarItem({
 		<div className={"inline-block relative"}>
 			<div
 				className={classNames(
-					"leading-10 py-0 px-2 relative cursor-default [&:hover]:text-[var(--primary300)]",
+					"leading-10 py-0 px-2 relative cursor-default [&:hover]:text-primary300",
 					{
-						"text-[var(--primary300)] bg-[var(--gray50)]": active,
+						"text-primary300 bg-gray50": active,
 					},
 				)}
 				onClick={handleClick}

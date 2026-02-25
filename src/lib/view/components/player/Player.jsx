@@ -32,7 +32,7 @@ export default function Player() {
 	return (
 		<div>
 			<AudioWaveform visible={hasAudio && showWaveform} />
-			<div className={"flex flex-row items-center min-w-[500px] overflow-hidden py-2.5 px-5 bg-[var(--gray75)] border-t border-t-[var(--gray200)] [&_>_div]:mr-5 [&_>_div:last-child]:mr-0"}>
+			<div className={"flex flex-row items-center min-w-[500px] overflow-hidden py-2.5 px-5 bg-gray75 border-t border-t-gray200 [&_>_div]:mr-5 [&_>_div:last-child]:mr-0"}>
 				<PlayButtons />
 				<VolumeControl />
 				<ProgressControl />
