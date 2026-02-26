@@ -9,7 +9,6 @@ import {
 	checkUnsavedChanges,
 	newProject,
 	openProjectBrowser,
-	openRelinkMediaDialog,
 	saveProject,
 } from "@/lib/view/actions/project";
 import {
@@ -98,10 +97,6 @@ export async function handleMenuAction(action) {
 
 		case "load-audio":
 			await openAudioFile();
-			break;
-
-		case "relink-media":
-			await openRelinkMediaDialog();
 			break;
 
 		case "save-image":

@@ -1,10 +1,17 @@
+import { createRequire } from "node:module";
 import path from "node:path";
+
+const require = createRequire(import.meta.url);
+const { version: appVersion } = require("./package.json");
 
 /** @type {import("next").NextConfig} */
 const resolveFromRoot = (target) => path.resolve(process.cwd(), target);
 const shaderLoader = resolveFromRoot("loaders/glsl-loader.cjs");
 
 const nextConfig = {
+	env: {
+		NEXT_PUBLIC_APP_VERSION: appVersion,
+	},
 	turbopack: {
 		resolveAlias: {
 			"@": resolveFromRoot("src"),

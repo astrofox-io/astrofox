@@ -38,7 +38,7 @@ export default function Control({ display, className, showHeader = true }: any) 
 		<div className={classNames("pb-2", className)}>
 			{showHeader && (
 				<div className={"relative py-0 px-2.5 h-8 cursor-default"}>
-					<div className={"flex justify-center text-sm text-text100 leading-8 overflow-hidden"}>
+					<div className={"text-xs flex justify-center text-sm text-text100 leading-8 overflow-hidden"}>
 						<div className={"relative uppercase pr-5 [&:after]:content-['\\2022'] [&:after]:absolute [&:after]:right-2 [&:after]:text-text300"}>
 							{label}
 						</div>
