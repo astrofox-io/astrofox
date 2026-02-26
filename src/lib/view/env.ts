@@ -3,7 +3,7 @@ const APP_NAME = "Astrofox";
 const APP_VERSION =
 	process.env.NEXT_PUBLIC_APP_VERSION ||
 	(typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.0.0");
-const RENDER_BACKEND = process.env.NEXT_PUBLIC_RENDER_BACKEND || "r3f";
+const RENDER_BACKEND = "r3f";
 const USER_AGENT =
 	typeof navigator !== "undefined" ? navigator.userAgent : "unknown";
 

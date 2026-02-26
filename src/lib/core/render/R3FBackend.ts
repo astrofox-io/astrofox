@@ -1,92 +1,15 @@
+// @ts-nocheck
+import { base64ToBytes } from "@/lib/utils/data";
 import React from "react";
-import LegacyBackend from "./LegacyBackend";
 import R3FStageRoot from "./R3FStageRoot";
 import RenderBackend from "./RenderBackend";
+
+const VIDEO_RENDERING = -1;
 
 const VIEWPORT_ORIGIN = {
 	top: 0,
 	left: 0,
 };
-
-const SUPPORTED_DISPLAYS = new Set([
-	"ImageDisplay",
-	"VideoDisplay",
-	"TextDisplay",
-	"ShapeDisplay",
-	"BarSpectrumDisplay",
-	"WaveSpectrumDisplay",
-	"SoundWaveDisplay",
-	"GeometryDisplay",
-]);
-
-const SUPPORTED_SCENE_BLEND_MODES = new Set([
-	"Normal",
-	"Add",
-	"Multiply",
-	"Subtract",
-]);
-
-const SUPPORTED_MASK_DISPLAYS = new Set([
-	"ImageDisplay",
-	"VideoDisplay",
-	"TextDisplay",
-	"ShapeDisplay",
-	"BarSpectrumDisplay",
-	"WaveSpectrumDisplay",
-	"SoundWaveDisplay",
-]);
-
-const SUPPORTED_EFFECTS = new Set([
-	"RGBShiftEffect",
-	"DistortionEffect",
-	"MirrorEffect",
-	"PixelateEffect",
-	"KaleidoscopeEffect",
-	"DotScreenEffect",
-	"ColorHalftoneEffect",
-	"LEDEffect",
-	"GlowEffect",
-	"BlurEffect",
-	"BloomEffect",
-	"GlitchEffect",
-]);
-
-const SUPPORTED_EFFECT_DISPLAYS = new Set([
-	"ImageDisplay",
-	"VideoDisplay",
-	"TextDisplay",
-	"ShapeDisplay",
-	"BarSpectrumDisplay",
-	"WaveSpectrumDisplay",
-	"SoundWaveDisplay",
-]);
-
-const SUPPORTED_BLUR_TYPES = new Set([
-	"Box",
-	"Circular",
-	"Gaussian",
-	"Triangle",
-	"Zoom",
-	"Lens",
-]);
-
-function isSupportedNativeEffect(effect) {
-	if (!effect || !SUPPORTED_EFFECTS.has(effect.name)) {
-		return false;
-	}
-
-	if (effect.name === "BlurEffect") {
-		const type = effect.properties?.type || "Gaussian";
-		return SUPPORTED_BLUR_TYPES.has(type);
-	}
-
-	if (effect.name === "PixelateEffect") {
-		const type = effect.properties?.type || "Square";
-		return type === "Square" || type === "Hexagon";
-	}
-
-	return true;
-}
 
 let fiberModulePromise = null;
 
@@ -108,84 +31,6 @@ function snapshotStage(stage) {
 	}));
 
 	return { scenes };
-}
-
-function canRenderNatively(graph) {
-	for (const scene of graph.scenes) {
-		if (!scene.enabled) {
-			continue;
-		}
-
-		const blendMode = scene.properties?.blendMode || "Normal";
-		const masked = Boolean(scene.properties?.mask || scene.properties?.inverse);
-		const inverseMask = Boolean(scene.properties?.inverse);
-		const enabledDisplays = (scene.displays || []).filter(
-			(display) => display?.enabled,
-		);
-		const enabledEffects = (scene.effects || []).filter(
-			(effect) => effect?.enabled,
-		);
-
-		if (!SUPPORTED_SCENE_BLEND_MODES.has(blendMode)) {
-			return false;
-		}
-
-		if (masked) {
-			if (blendMode !== "Normal") {
-				return false;
-			}
-
-			if (enabledDisplays.length < 1) {
-				return false;
-			}
-
-			if (inverseMask && enabledDisplays.length > 1) {
-				return false;
-			}
-
-			for (const display of enabledDisplays) {
-				if (!SUPPORTED_MASK_DISPLAYS.has(display.name)) {
-					return false;
-				}
-			}
-		}
-
-		if (blendMode !== "Normal" && enabledDisplays.length > 1) {
-			return false;
-		}
-
-		if (enabledEffects.length > 0) {
-			if (enabledEffects.length > 1) {
-				return false;
-			}
-
-			const [effect] = enabledEffects;
-
-			if (!isSupportedNativeEffect(effect)) {
-				return false;
-			}
-
-			if (enabledDisplays.length !== 1) {
-				return false;
-			}
-
-			if (!SUPPORTED_EFFECT_DISPLAYS.has(enabledDisplays[0].name)) {
-				return false;
-			}
-		}
-
-		for (const display of enabledDisplays) {
-			if (!display.enabled) {
-				continue;
-			}
-
-			if (!SUPPORTED_DISPLAYS.has(display.name)) {
-				return false;
-			}
-		}
-	}
-
-	return true;
 }
 
 function updateNativeSceneState(scenes, frameData) {
@@ -224,13 +69,31 @@ function updateNativeSceneState(scenes, frameData) {
 	}
 }
 
+function readCanvasPixels(canvas, width, height) {
+	const w = Math.max(1, Math.round(width || canvas.width || 1));
+	const h = Math.max(1, Math.round(height || canvas.height || 1));
+
+	const copy = document.createElement("canvas");
+	copy.width = w;
+	copy.height = h;
+
+	const context = copy.getContext("2d", { willReadFrequently: true });
+
+	if (!context) {
+		return new Uint8Array(w * h * 4);
+	}
+
+	context.clearRect(0, 0, w, h);
+	context.drawImage(canvas, 0, 0, w, h);
+
+	return new Uint8Array(context.getImageData(0, 0, w, h).data.buffer);
+}
+
 export default class R3FBackend extends RenderBackend {
 	constructor(stage) {
 		super();
 
 		this.stage = stage;
-		this.legacyBackend = new LegacyBackend(stage);
-
 		this.root = null;
 		this.fiberModule = null;
 		this.mountPromise = null;
@@ -250,36 +113,7 @@ export default class R3FBackend extends RenderBackend {
 		this.frameData = null;
 		this.frameIndex = 0;
 		this.renderMode = null;
-	}
-
-	init(params) {
-		this.canvas = params.canvas;
-
-		this.legacyBackend.init(params);
-
-		this.size = this.legacyBackend.getSize();
-		this.backgroundColor = this.stage.properties.backgroundColor;
-		this.initialized = true;
-
-		return true;
-	}
-
-	update(properties) {
-		const changed = this.legacyBackend.update(properties);
-
-		if (properties.width !== undefined || properties.height !== undefined) {
-			this.size = this.legacyBackend.getSize();
-		}
-
-		if (properties.backgroundColor !== undefined) {
-			this.backgroundColor = properties.backgroundColor;
-		}
-
-		if (this.root) {
-			this.renderRoot();
-		}
-
-		return changed;
+		this.pendingProperties = {};
 	}
 
 	setRenderMode(mode) {
@@ -289,6 +123,65 @@ export default class R3FBackend extends RenderBackend {
 
 		this.renderMode = mode;
 		console.info(`[render] Active mode: ${mode}`);
+	}
+
+	applyProperties(properties = {}) {
+		Object.assign(this.stage.properties, properties);
+
+		if (properties.width !== undefined || properties.height !== undefined) {
+			this.size = {
+				width: Number(properties.width ?? this.size.width),
+				height: Number(properties.height ?? this.size.height),
+			};
+		}
+
+		if (properties.backgroundColor !== undefined) {
+			this.backgroundColor = properties.backgroundColor;
+		}
+	}
+
+	init({ canvas, width, height, backgroundColor }) {
+		this.canvas = canvas;
+
+		const properties = {
+			...this.pendingProperties,
+		};
+
+		if (width !== undefined) {
+			properties.width = width;
+		}
+
+		if (height !== undefined) {
+			properties.height = height;
+		}
+
+		if (backgroundColor !== undefined) {
+			properties.backgroundColor = backgroundColor;
+		}
+
+		this.pendingProperties = {};
+		this.applyProperties(properties);
+		this.initialized = true;
+
+		this.mountRoot();
+
+		return true;
+	}
+
+	update(properties) {
+		if (!this.initialized) {
+			Object.assign(this.pendingProperties, properties);
+			this.applyProperties(properties);
+			return true;
+		}
+
+		this.applyProperties(properties);
+
+		if (this.root) {
+			this.renderRoot();
+		}
+
+		return true;
 	}
 
 	configureRoot(force = false) {
@@ -342,42 +235,46 @@ export default class R3FBackend extends RenderBackend {
 		);
 	}
 
-	mountRoot() {
-		if (!this.canvas || this.root || this.mountPromise) {
-			return;
+	async ensureRoot() {
+		if (this.root) {
+			return true;
 		}
 
-		this.mountPromise = loadFiberModule()
-			.then((module) => {
-				this.fiberModule = module;
-				const { createRoot } = module;
+		if (!this.canvas) {
+			return false;
+		}
 
-				if (!this.root) {
-					this.root = createRoot(this.canvas);
-				}
+		if (!this.mountPromise) {
+			this.mountPromise = loadFiberModule()
+				.then((module) => {
+					this.fiberModule = module;
+					const { createRoot } = module;
 
-				this.configureRoot(true);
-				this.renderRoot(true);
-			})
-			.catch((error) => {
-				this.r3fAvailable = false;
+					if (!this.root) {
+						this.root = createRoot(this.canvas);
+					}
 
-				const message = String(error?.message || error || "");
+					this.configureRoot(true);
+					this.renderRoot(true);
+				})
+				.catch((error) => {
+					this.r3fAvailable = false;
+					console.error("[render] Failed to mount R3F root:", error);
+				})
+				.finally(() => {
+					if (!this.root) {
+						this.mountPromise = null;
+					}
+				});
+		}
 
-				if (message.includes("ReactCurrentOwner")) {
-					console.info(
-						"[render] R3F unavailable in this runtime; using legacy renderer.",
-					);
-					return;
-				}
+		await this.mountPromise;
 
-				console.warn("[render] Failed to mount R3F root:", error);
-			})
-			.finally(() => {
-				if (!this.root) {
-					this.mountPromise = null;
-				}
-			});
+		return Boolean(this.root);
+	}
+
+	mountRoot() {
+		this.ensureRoot();
 	}
 
 	unmountRoot() {
@@ -396,49 +293,84 @@ export default class R3FBackend extends RenderBackend {
 			return;
 		}
 
+		if (!this.r3fAvailable) {
+			this.setRenderMode("r3f-error");
+			return;
+		}
+
 		updateNativeSceneState(this.stage.scenes, frameData);
 
 		this.frameData = frameData;
 		this.frameIndex += 1;
 		this.graph = snapshotStage(this.stage);
 
-		const nativeEnabled = this.r3fAvailable && canRenderNatively(this.graph);
-
-		if (nativeEnabled) {
-			if (!this.root) {
-				this.mountRoot();
-			}
-
-			if (this.root) {
-				this.setRenderMode("r3f-native");
-				this.renderRoot();
-				return;
-			}
+		if (!this.root) {
+			this.mountRoot();
+			this.setRenderMode("r3f-initializing");
+			return;
 		}
 
-		if (this.root) {
-			this.unmountRoot();
-		}
-
-		this.setRenderMode("legacy");
-		this.legacyBackend.render(frameData);
-		this.size = this.legacyBackend.getSize();
+		this.setRenderMode("r3f");
+		this.renderRoot();
 	}
 
-	async renderExportFrame(params) {
-		return this.legacyBackend.renderExportFrame(params);
+	async renderExportFrame({
+		frame,
+		fps,
+		getAudioSample,
+		analyzer,
+		getFrameData,
+	}) {
+		if (!this.initialized) {
+			return this.getPixels();
+		}
+
+		analyzer.process(getAudioSample(frame / fps));
+
+		const frameData = getFrameData(VIDEO_RENDERING);
+		frameData.delta = 1000 / fps;
+
+		if (!this.root) {
+			await this.ensureRoot();
+		}
+
+		this.render(frameData);
+
+		await new Promise((resolve) => window.requestAnimationFrame(resolve));
+
+		return this.getPixels();
 	}
 
 	getSize() {
-		return this.legacyBackend.getSize();
+		return {
+			width: Math.max(1, Math.round(this.size.width || 1)),
+			height: Math.max(1, Math.round(this.size.height || 1)),
+		};
 	}
 
 	getPixels() {
-		return this.legacyBackend.getPixels();
+		if (!this.canvas) {
+			return new Uint8Array(4);
+		}
+
+		const { width, height } = this.getSize();
+
+		try {
+			return readCanvasPixels(this.canvas, width, height);
+		} catch (_error) {
+			return new Uint8Array(width * height * 4);
+		}
 	}
 
-	getImage(format) {
-		return this.legacyBackend.getImage(format);
+	getImage(format = "image/png") {
+		if (!this.canvas) {
+			return new Uint8Array();
+		}
+
+		const dataUrl = this.canvas.toDataURL(format);
+		const base64 = dataUrl.replace(/^data:image\/\w+;base64,/, "");
+
+		return base64ToBytes(base64);
 	}
 
 	dispose() {
@@ -452,7 +384,6 @@ export default class R3FBackend extends RenderBackend {
 		this.frameData = null;
 		this.frameIndex = 0;
 		this.renderMode = null;
-
-		this.legacyBackend.dispose();
+		this.pendingProperties = {};
 	}
 }
