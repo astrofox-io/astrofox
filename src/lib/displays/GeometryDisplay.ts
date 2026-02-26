@@ -4,13 +4,13 @@ import WebGLDisplay from "@/lib/core/WebGLDisplay";
 import { isDefined } from "@/lib/utils/array";
 import POINT_SPRITE from "@/lib/view/assets/images/point.png";
 import {
-	BoxBufferGeometry,
+	BoxGeometry,
 	Color,
-	DodecahedronBufferGeometry,
+	DodecahedronGeometry,
 	DoubleSide,
 	EdgesGeometry,
 	FrontSide,
-	IcosahedronBufferGeometry,
+	IcosahedronGeometry,
 	LineBasicMaterial,
 	LineSegments,
 	Mesh,
@@ -22,17 +22,17 @@ import {
 	MeshPhysicalMaterial,
 	MeshStandardMaterial,
 	Object3D,
-	OctahedronBufferGeometry,
+	OctahedronGeometry,
 	PerspectiveCamera,
 	PointLight,
 	Points,
 	PointsMaterial,
 	Scene,
-	SphereBufferGeometry,
-	TetrahedronBufferGeometry,
+	SphereGeometry,
+	TetrahedronGeometry,
 	TextureLoader,
-	TorusBufferGeometry,
-	TorusKnotBufferGeometry,
+	TorusGeometry,
+	TorusKnotGeometry,
 } from "three";
 
 const shapeOptions = [
@@ -308,35 +308,35 @@ export default class GeometryDisplay extends WebGLDisplay {
 		switch (properties.shape) {
 			case "Box":
 				// width, height, depth, widthSegments:1, heightSegments:1, depthSegments:1
-				geometry = new BoxBufferGeometry(50, 50, 50);
+				geometry = new BoxGeometry(50, 50, 50);
 				break;
 			case "Sphere":
 				// radius:50, widthSegments:8, heightSegments:6, phiStart:0, phiLength:PI*2, thetaStart:0, thetaLength:PI
-				geometry = new SphereBufferGeometry(40, 10, 10);
+				geometry = new SphereGeometry(40, 10, 10);
 				break;
 			case "Dodecahedron":
 				// radius:1, detail:0
-				geometry = new DodecahedronBufferGeometry(40, 0);
+				geometry = new DodecahedronGeometry(40, 0);
 				break;
 			case "Icosahedron":
 				// radius:1, detail:0
-				geometry = new IcosahedronBufferGeometry(40, 0);
+				geometry = new IcosahedronGeometry(40, 0);
 				break;
 			case "Octahedron":
 				// radius:1, detail:0
-				geometry = new OctahedronBufferGeometry(40, 0);
+				geometry = new OctahedronGeometry(40, 0);
 				break;
 			case "Tetrahedron":
 				// radius:1, detail:0
-				geometry = new TetrahedronBufferGeometry(40, 0);
+				geometry = new TetrahedronGeometry(40, 0);
 				break;
 			case "Torus":
 				// radius:100, tube:40, radialSegments:8, tubularSegments:6, arc:PI*2
-				geometry = new TorusBufferGeometry(50, 20, 10, 10);
+				geometry = new TorusGeometry(50, 20, 10, 10);
 				break;
 			case "Torus Knot":
 				// radius:100, tube:40, radialSegments:64, tubularSegments:8, p:2, q:3, heightScale:1
-				geometry = new TorusKnotBufferGeometry(50, 10, 20, 10);
+				geometry = new TorusKnotGeometry(50, 10, 20, 10);
 				break;
 		}
 

@@ -2,7 +2,7 @@
 import Effect from "@/lib/core/Effect";
 import ShaderPass from "@/lib/graphics/ShaderPass";
 import GlitchShader from "@/lib/shaders/GlitchShader";
-import { DataTexture, FloatType, RGBFormat, Math as _Math } from "three";
+import { DataTexture, FloatType, MathUtils, RGBFormat } from "three";
 
 export default class GlitchEffect extends Effect {
 	[key: string]: any;
@@ -52,7 +52,7 @@ export default class GlitchEffect extends Effect {
 		const length = size * size;
 
 		for (let i = 0; i < length; i++) {
-			const val = _Math.randFloat(0, 1);
+			const val = MathUtils.randFloat(0, 1);
 			data[i * 3] = val;
 			data[i * 3 + 1] = val;
 			data[i * 3 + 2] = val;
@@ -74,13 +74,13 @@ export default class GlitchEffect extends Effect {
 
 		this.pass.setUniforms({
 			shift: (Math.random() / 90) * amount,
-			angle: _Math.randFloat(-Math.PI, Math.PI) * amount,
+			angle: MathUtils.randFloat(-Math.PI, Math.PI) * amount,
 			seed: Math.random() * amount,
-			seed_x: _Math.randFloat(-0.3, 0.3) * amount,
-			seed_y: _Math.randFloat(-0.3, 0.3) * amount,
-			distortion_x: _Math.randFloat(0, 1),
-			distortion_y: _Math.randFloat(0, 1),
-			col_s: amount > 0.25 ? 0.05 : _Math.randFloat(0, 1) * amount * 0.05,
+			seed_x: MathUtils.randFloat(-0.3, 0.3) * amount,
+			seed_y: MathUtils.randFloat(-0.3, 0.3) * amount,
+			distortion_x: MathUtils.randFloat(0, 1),
+			distortion_y: MathUtils.randFloat(0, 1),
+			col_s: amount > 0.25 ? 0.05 : MathUtils.randFloat(0, 1) * amount * 0.05,
 		});
 	}
 }

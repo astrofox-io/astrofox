@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { base64ToBytes } from "@/lib/utils/data";
 import React from "react";
+import * as THREE from "three";
 import R3FStageRoot from "./R3FStageRoot";
 import RenderBackend from "./RenderBackend";
 
@@ -114,6 +115,7 @@ export default class R3FBackend extends RenderBackend {
 		this.frameIndex = 0;
 		this.renderMode = null;
 		this.pendingProperties = {};
+		this.threeExtended = false;
 	}
 
 	setRenderMode(mode) {
@@ -205,6 +207,17 @@ export default class R3FBackend extends RenderBackend {
 			events: this.fiberModule.events,
 			frameloop: "demand",
 			dpr: 1,
+			orthographic: true,
+			camera: {
+				position: [0, 0, 10],
+				near: -1000,
+				far: 1000,
+				left: -width / 2,
+				right: width / 2,
+				top: height / 2,
+				bottom: -height / 2,
+				zoom: 1,
+			},
 			size: { width, height, ...VIEWPORT_ORIGIN },
 		});
 
@@ -249,6 +262,11 @@ export default class R3FBackend extends RenderBackend {
 				.then((module) => {
 					this.fiberModule = module;
 					const { createRoot } = module;
+
+					if (!this.threeExtended && module.extend) {
+						module.extend(THREE);
+						this.threeExtended = true;
+					}
 
 					if (!this.root) {
 						this.root = createRoot(this.canvas);
@@ -385,5 +403,6 @@ export default class R3FBackend extends RenderBackend {
 		this.frameIndex = 0;
 		this.renderMode = null;
 		this.pendingProperties = {};
+		this.threeExtended = false;
 	}
 }

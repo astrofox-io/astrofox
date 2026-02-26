@@ -11,6 +11,7 @@ import {
 	AddEquation,
 	AdditiveBlending,
 	CanvasTexture,
+	Color,
 	CustomBlending,
 	DoubleSide,
 	FrontSide,
@@ -321,14 +322,6 @@ void main() {
 
 function toRadians(value = 0) {
 	return (Number(value) * Math.PI) / 180;
-}
-
-function StageCamera({ width, height }) {
-	return React.createElement("orthographicCamera", {
-		makeDefault: true,
-		args: [-width / 2, width / 2, height / 2, -height / 2, -1000, 1000],
-		position: [0, 0, 10],
-	});
 }
 
 function FallbackLayer({ width, height, texture }) {
@@ -1593,15 +1586,10 @@ export default function R3FStageRoot({
 	frameIndex,
 }) {
 	const rootChildren = [
-		React.createElement("color", {
+		React.createElement("primitive", {
 			key: "background",
 			attach: "background",
-			args: [backgroundColor],
-		}),
-		React.createElement(StageCamera, {
-			key: "camera",
-			width,
-			height,
+			object: new Color(backgroundColor),
 		}),
 	];
 

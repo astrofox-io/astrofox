@@ -2,7 +2,7 @@ import {
 	LinearFilter,
 	MeshBasicMaterial,
 	OrthographicCamera,
-	PlaneBufferGeometry,
+	PlaneGeometry,
 } from "three";
 import Pass from "./Pass";
 
@@ -41,7 +41,7 @@ export default class ImagePass extends Pass {
 			0,
 			1,
 		);
-		const geometry = new PlaneBufferGeometry(mediaWidth, mediaHeight);
+		const geometry = new PlaneGeometry(mediaWidth, mediaHeight);
 
 		this.setFullscreen(material, geometry, camera);
 	}
