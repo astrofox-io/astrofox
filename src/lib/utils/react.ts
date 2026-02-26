@@ -7,7 +7,14 @@ export function ignoreEvents(e) {
 }
 
 export function inputValueToProps(callback) {
-	return (name, value) => callback({ [name]: value });
+	return (name, value) => {
+		if (name && typeof name === "object" && !Array.isArray(name)) {
+			callback(name);
+			return;
+		}
+
+		callback({ [name]: value });
+	};
 }
 
 export function mapChildren(children, props, callback) {

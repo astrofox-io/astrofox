@@ -28,6 +28,7 @@ export default class VideoDisplay extends CanvasDisplay {
 		label: "Video",
 		defaultProperties: {
 			src: BLANK_IMAGE,
+			sourcePath: "",
 			x: 0,
 			y: 0,
 			zoom: 1,

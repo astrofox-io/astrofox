@@ -62,6 +62,135 @@ function isRemoteMediaSource(src) {
 	return /^(https?:)?\/\//i.test(src);
 }
 
+function isBlobMediaSource(src) {
+	return /^blob:/i.test(src);
+}
+
+function isFileUrlSource(src) {
+	return /^file:\/\//i.test(src);
+}
+
+function isWindowsPathSource(src) {
+	return /^[a-zA-Z]:[\\/]/.test(src);
+}
+
+function isUncPathSource(src) {
+	return /^\\\\/.test(src);
+}
+
+function normalizeMediaPath(path) {
+	if (typeof path !== "string") {
+		return "";
+	}
+
+	return path.trim();
+}
+
+function fileUrlToPath(src) {
+	if (!isFileUrlSource(src)) {
+		return "";
+	}
+
+	try {
+		const url = new URL(src);
+		let path = decodeURIComponent(url.pathname || "");
+
+		if (/^\/[a-zA-Z]:/.test(path)) {
+			path = path.slice(1);
+		}
+
+		if (url.host) {
+			return `\\\\${url.host}${path.replace(/\//g, "\\")}`;
+		}
+
+		if (/^[a-zA-Z]:/.test(path)) {
+			return path.replace(/\//g, "\\");
+		}
+
+		return path;
+	} catch {
+		const rawPath = decodeURIComponent(src.replace(/^file:\/\//i, ""));
+		return rawPath.replace(/^\/[a-zA-Z]:/, (match) => match.slice(1));
+	}
+}
+
+function toFileUrl(path) {
+	const sourcePath = normalizeMediaPath(path);
+
+	if (!sourcePath) {
+		return "";
+	}
+
+	if (isFileUrlSource(sourcePath)) {
+		return sourcePath;
+	}
+
+	const escaped = encodeURI(sourcePath)
+		.replace(/#/g, "%23")
+		.replace(/\?/g, "%3F");
+
+	if (isWindowsPathSource(sourcePath)) {
+		return `file:///${escaped.replace(/\\/g, "/")}`;
+	}
+
+	if (isUncPathSource(sourcePath)) {
+		const unc = escaped.replace(/^\\\\/, "").replace(/\\/g, "/");
+		return `file://${unc}`;
+	}
+
+	if (sourcePath.startsWith("/")) {
+		return `file://${escaped}`;
+	}
+
+	return sourcePath;
+}
+
+function getMediaSourcePath(src) {
+	if (typeof src !== "string") {
+		return "";
+	}
+
+	if (isFileUrlSource(src)) {
+		return normalizeMediaPath(fileUrlToPath(src));
+	}
+
+	if (isWindowsPathSource(src) || isUncPathSource(src)) {
+		return normalizeMediaPath(src);
+	}
+
+	return "";
+}
+
+function getFilePath(file) {
+	if (!file || typeof file !== "object") {
+		return "";
+	}
+
+	const path =
+		normalizeMediaPath(file.path) ||
+		normalizeMediaPath(file.filePath) ||
+		normalizeMediaPath(file.fullPath);
+
+	return path;
+}
+
+function getMediaKind(element) {
+	return element?.name === "VideoDisplay" ? "video" : "image";
+}
+
+function getMediaLabel(element) {
+	return element?.displayName || element?.name || "Media";
+}
+
+function buildMediaRef(element, sourcePath = "") {
+	return {
+		displayId: element.id,
+		kind: getMediaKind(element),
+		label: getMediaLabel(element),
+		sourcePath,
+	};
+}
+
 function normalizeMediaRef(mediaRef) {
 	if (!mediaRef || typeof mediaRef !== "object" || !mediaRef.displayId) {
 		return null;
@@ -71,6 +200,10 @@ function normalizeMediaRef(mediaRef) {
 		displayId: mediaRef.displayId,
 		kind: mediaRef.kind === "video" ? "video" : "image",
 		label: mediaRef.label || "Media",
+		sourcePath:
+			normalizeMediaPath(mediaRef.sourcePath) ||
+			normalizeMediaPath(mediaRef.path) ||
+			"",
 	};
 }
 
@@ -84,42 +217,144 @@ function mergeMediaRefs(...groups) {
 				continue;
 			}
 
-			byDisplayId.set(normalized.displayId, normalized);
+			const previous = byDisplayId.get(normalized.displayId);
+
+			byDisplayId.set(normalized.displayId, {
+				...(previous || {}),
+				...normalized,
+				sourcePath: normalized.sourcePath || previous?.sourcePath || "",
+			});
 		}
 	}
 
 	return Array.from(byDisplayId.values());
 }
 
-function sanitizeSnapshotMedia(snapshot) {
+async function canLoadMediaSource(src, kind) {
+	if (!src) {
+		return false;
+	}
+
+	return new Promise((resolve) => {
+		let settled = false;
+
+		function done(result) {
+			if (settled) {
+				return;
+			}
+
+			settled = true;
+			resolve(result);
+		}
+
+		const timeoutId = window.setTimeout(() => done(false), 2000);
+
+		if (kind === "video") {
+			const video = document.createElement("video");
+			video.preload = "metadata";
+
+			video.onloadedmetadata = () => {
+				window.clearTimeout(timeoutId);
+				video.removeAttribute("src");
+				video.load();
+				done(true);
+			};
+
+			video.onerror = () => {
+				window.clearTimeout(timeoutId);
+				video.removeAttribute("src");
+				video.load();
+				done(false);
+			};
+
+			video.src = src;
+			return;
+		}
+
+		const image = new Image();
+
+		image.onload = () => {
+			window.clearTimeout(timeoutId);
+			done(true);
+		};
+
+		image.onerror = () => {
+			window.clearTimeout(timeoutId);
+			done(false);
+		};
+
+		image.src = src;
+	});
+}
+
+function prepareSnapshotMediaForSave(snapshot) {
 	const mediaRefs = [];
 
 	const scenes = (snapshot?.scenes || []).map((scene) => {
 		const mapMediaProps = (element) => {
 			const src = element?.properties?.src;
+			const sourcePath = normalizeMediaPath(element?.properties?.sourcePath);
+
+			if (sourcePath) {
+				mediaRefs.push(buildMediaRef(element, sourcePath));
+
+				if (!src || src === BLANK_IMAGE || typeof src !== "string") {
+					return {
+						...element,
+						properties: {
+							...element.properties,
+							sourcePath,
+						},
+					};
+				}
+
+				return {
+					...element,
+					properties: {
+						...element.properties,
+						src: toFileUrl(sourcePath),
+						sourcePath,
+					},
+				};
+			}
 
 			if (!src || src === BLANK_IMAGE || typeof src !== "string") {
 				return element;
+			}
+
+			const inferredSourcePath = getMediaSourcePath(src);
+
+			if (inferredSourcePath) {
+				mediaRefs.push(buildMediaRef(element, inferredSourcePath));
+
+				return {
+					...element,
+					properties: {
+						...element.properties,
+						src: toFileUrl(inferredSourcePath),
+						sourcePath: inferredSourcePath,
+					},
+				};
+			}
+
+			if (isBlobMediaSource(src)) {
+				mediaRefs.push(buildMediaRef(element));
+
+				return {
+					...element,
+					properties: {
+						...element.properties,
+						src: BLANK_IMAGE,
+						sourcePath: "",
+					},
+				};
 			}
 
 			if (isEmbeddedMediaSource(src) || isRemoteMediaSource(src)) {
 				return element;
 			}
 
-			const kind = element.name === "VideoDisplay" ? "video" : "image";
-			mediaRefs.push({
-				displayId: element.id,
-				kind,
-				label: element.displayName || element.name || "Media",
-			});
-
-			return {
-				...element,
-				properties: {
-					...element.properties,
-					src: BLANK_IMAGE,
-				},
-			};
+			return element;
 		};
 
 		return {
@@ -135,6 +370,107 @@ function sanitizeSnapshotMedia(snapshot) {
 			scenes,
 		},
 		mediaRefs,
+	};
+}
+
+async function resolveSnapshotMediaOnLoad(snapshot, payloadMediaRefs = []) {
+	const mediaRefMap = new Map();
+
+	for (const mediaRef of payloadMediaRefs || []) {
+		const normalized = normalizeMediaRef(mediaRef);
+
+		if (normalized) {
+			mediaRefMap.set(normalized.displayId, normalized);
+		}
+	}
+
+	const unresolvedMediaRefs = [];
+
+	const scenes = await Promise.all(
+		(snapshot?.scenes || []).map(async (scene) => {
+			const mapMediaProps = async (element) => {
+				const src = element?.properties?.src;
+
+				const mediaRef = mediaRefMap.get(element.id);
+				const sourcePath =
+					normalizeMediaPath(element?.properties?.sourcePath) ||
+					normalizeMediaPath(mediaRef?.sourcePath) ||
+					getMediaSourcePath(src);
+
+				if (sourcePath) {
+					const sourceUrl = toFileUrl(sourcePath);
+					const canLoad = await canLoadMediaSource(
+						sourceUrl,
+						getMediaKind(element),
+					);
+
+					if (canLoad) {
+						return {
+							...element,
+							properties: {
+								...element.properties,
+								src: sourceUrl,
+								sourcePath,
+							},
+						};
+					}
+
+					if (isEmbeddedMediaSource(src) || isRemoteMediaSource(src)) {
+						return {
+							...element,
+							properties: {
+								...element.properties,
+								sourcePath: "",
+							},
+						};
+					}
+
+					unresolvedMediaRefs.push(buildMediaRef(element, sourcePath));
+
+					return {
+						...element,
+						properties: {
+							...element.properties,
+							src: BLANK_IMAGE,
+							sourcePath,
+						},
+					};
+				}
+
+				if (!src || src === BLANK_IMAGE || typeof src !== "string") {
+					return element;
+				}
+
+				if (isBlobMediaSource(src)) {
+					unresolvedMediaRefs.push(buildMediaRef(element));
+
+					return {
+						...element,
+						properties: {
+							...element.properties,
+							src: BLANK_IMAGE,
+							sourcePath: "",
+						},
+					};
+				}
+
+				return element;
+			};
+
+			return {
+				...scene,
+				displays: await Promise.all((scene.displays || []).map(mapMediaProps)),
+				effects: await Promise.all((scene.effects || []).map(mapMediaProps)),
+			};
+		}),
+	);
+
+	return {
+		snapshot: {
+			...snapshot,
+			scenes,
+		},
+		unresolvedMediaRefs,
 	};
 }
 
@@ -194,11 +530,13 @@ async function loadProjectFromPayload(payload, fallbackName) {
 		payload,
 		fallbackName,
 	);
-	const { snapshot: sanitizedSnapshot, mediaRefs: detectedMediaRefs } =
-		sanitizeSnapshotMedia(snapshot);
-	const unresolvedMediaRefs = mergeMediaRefs(mediaRefs, detectedMediaRefs);
+	const {
+		snapshot: resolvedSnapshot,
+		unresolvedMediaRefs: detectedMissingMedia,
+	} = await resolveSnapshotMediaOnLoad(snapshot, mediaRefs);
+	const unresolvedMediaRefs = mergeMediaRefs(detectedMissingMedia);
 
-	loadProject(sanitizedSnapshot);
+	loadProject(resolvedSnapshot);
 	await loadScenes();
 
 	projectStore.setState({
@@ -210,7 +548,10 @@ async function loadProjectFromPayload(payload, fallbackName) {
 	});
 
 	if (unresolvedMediaRefs.length > 0) {
-		openRelinkMediaDialog();
+		const count = unresolvedMediaRefs.length;
+		openRelinkMediaDialog({
+			title: `${count} media file${count === 1 ? "" : "s"} missing`,
+		});
 	}
 }
 
@@ -351,9 +692,10 @@ export function openProjectBrowser() {
 	return openProjectFile();
 }
 
-export function openRelinkMediaDialog() {
+export function openRelinkMediaDialog(modalProps = {}) {
 	showModal("RelinkMediaDialog", {
 		title: "Relink Media",
+		...modalProps,
 	});
 }
 
@@ -389,7 +731,9 @@ export async function saveProject(nameOverride) {
 	).trim();
 
 	try {
-		const { snapshot, mediaRefs } = sanitizeSnapshotMedia(snapshotProject());
+		const { snapshot, mediaRefs } = prepareSnapshotMediaForSave(
+			snapshotProject(),
+		);
 		const payload = {
 			name,
 			projectName: name,
@@ -419,6 +763,7 @@ export async function saveProject(nameOverride) {
 			projectName: name,
 			opened: Date.now(),
 			lastModified: 0,
+			unresolvedMediaRefs: [],
 		});
 
 		logger.log("Project saved locally:", fileName);
@@ -442,11 +787,15 @@ export async function relinkMediaRef(mediaRef) {
 		}
 
 		const file = files[0];
-		const src = isVideo
-			? await api.readVideoFile(file)
-			: await api.readImageFile(file);
+		const sourcePath = getFilePath(file);
+		const src = sourcePath
+			? toFileUrl(sourcePath)
+			: isVideo
+				? await api.readVideoFile(file)
+				: await api.readImageFile(file);
 
 		updateElementProperty(mediaRef.displayId, "src", src);
+		updateElementProperty(mediaRef.displayId, "sourcePath", sourcePath || "");
 
 		setUnresolvedMediaRefs(
 			projectStore

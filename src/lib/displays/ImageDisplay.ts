@@ -31,6 +31,7 @@ export default class ImageDisplay extends WebGLDisplay {
 		label: "Image",
 		defaultProperties: {
 			src: BLANK_IMAGE,
+			sourcePath: "",
 			x: 0,
 			y: 0,
 			zoom: 1,

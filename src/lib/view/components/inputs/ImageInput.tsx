@@ -8,13 +8,76 @@ import { FolderOpen, Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
 
+function isFileUrlSource(src) {
+	return /^file:\/\//i.test(src || "");
+}
+
+function isWindowsPathSource(src) {
+	return /^[a-zA-Z]:[\\/]/.test(src || "");
+}
+
+function isUncPathSource(src) {
+	return /^\\\\/.test(src || "");
+}
+
+function toFileUrl(path) {
+	if (!path || typeof path !== "string") {
+		return "";
+	}
+
+	const sourcePath = path.trim();
+
+	if (!sourcePath) {
+		return "";
+	}
+
+	if (isFileUrlSource(sourcePath)) {
+		return sourcePath;
+	}
+
+	const escaped = encodeURI(sourcePath)
+		.replace(/#/g, "%23")
+		.replace(/\?/g, "%3F");
+
+	if (isWindowsPathSource(sourcePath)) {
+		return `file:///${escaped.replace(/\\/g, "/")}`;
+	}
+
+	if (isUncPathSource(sourcePath)) {
+		const unc = escaped.replace(/^\\\\/, "").replace(/\\/g, "/");
+		return `file://${unc}`;
+	}
+
+	if (sourcePath.startsWith("/")) {
+		return `file://${escaped}`;
+	}
+
+	return sourcePath;
+}
+
+function getFilePath(file) {
+	if (!file || typeof file !== "object") {
+		return "";
+	}
+
+	if (typeof file.path === "string" && file.path.trim()) {
+		return file.path.trim();
+	}
+
+	if (typeof file.filePath === "string" && file.filePath.trim()) {
+		return file.filePath.trim();
+	}
+
+	if (typeof file.fullPath === "string" && file.fullPath.trim()) {
+		return file.fullPath.trim();
+	}
+
+	return "";
+}
+
 export default function ImageInput({ name, value, onChange }: any) {
 	const image = useRef<any>(null);
 	const hasImage = value !== BLANK_IMAGE;
-
-	function handleImageLoad() {
-		onChange(name, image.current?.src || BLANK_IMAGE);
-	}
 
 	function loadImageSrc(src) {
 		if (image.current.src !== src) {
@@ -24,9 +87,16 @@ export default function ImageInput({ name, value, onChange }: any) {
 
 	async function loadImageFile(file) {
 		try {
-			const dataUrl = await api.readImageFile(file);
+			const sourcePath = getFilePath(file);
+			const src = sourcePath
+				? toFileUrl(sourcePath)
+				: await api.readImageFile(file);
 
-			return loadImageSrc(dataUrl);
+			loadImageSrc(src);
+			onChange({
+				[name]: src,
+				sourcePath: sourcePath || "",
+			});
 		} catch (error) {
 			raiseError("Invalid image file.", error);
 		}
@@ -52,6 +122,10 @@ export default function ImageInput({ name, value, onChange }: any) {
 
 	function handleDelete() {
 		loadImageSrc(BLANK_IMAGE);
+		onChange({
+			[name]: BLANK_IMAGE,
+			sourcePath: "",
+		});
 	}
 
 	return (
@@ -74,7 +148,6 @@ export default function ImageInput({ name, value, onChange }: any) {
 					)}
 					src={value}
 					alt=""
-					onLoad={handleImageLoad}
 				/>
 				<Icon
 					className={
