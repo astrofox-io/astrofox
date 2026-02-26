@@ -36,7 +36,20 @@ const SUPPORTED_MASK_DISPLAYS = new Set([
 	"SoundWaveDisplay",
 ]);
 
-const SUPPORTED_EFFECTS = new Set(["RGBShiftEffect", "DistortionEffect"]);
+const SUPPORTED_EFFECTS = new Set([
+	"RGBShiftEffect",
+	"DistortionEffect",
+	"MirrorEffect",
+	"PixelateEffect",
+	"KaleidoscopeEffect",
+	"DotScreenEffect",
+	"ColorHalftoneEffect",
+	"LEDEffect",
+	"GlowEffect",
+	"BlurEffect",
+	"BloomEffect",
+	"GlitchEffect",
+]);
 
 const SUPPORTED_EFFECT_DISPLAYS = new Set([
 	"ImageDisplay",
@@ -47,6 +60,33 @@ const SUPPORTED_EFFECT_DISPLAYS = new Set([
 	"WaveSpectrumDisplay",
 	"SoundWaveDisplay",
 ]);
+
+const SUPPORTED_BLUR_TYPES = new Set([
+	"Box",
+	"Circular",
+	"Gaussian",
+	"Triangle",
+	"Zoom",
+	"Lens",
+]);
+
+function isSupportedNativeEffect(effect) {
+	if (!effect || !SUPPORTED_EFFECTS.has(effect.name)) {
+		return false;
+	}
+
+	if (effect.name === "BlurEffect") {
+		const type = effect.properties?.type || "Gaussian";
+		return SUPPORTED_BLUR_TYPES.has(type);
+	}
+
+	if (effect.name === "PixelateEffect") {
+		const type = effect.properties?.type || "Square";
+		return type === "Square" || type === "Hexagon";
+	}
+
+	return true;
+}
 
 let fiberModulePromise = null;
 
@@ -121,7 +161,7 @@ function canRenderNatively(graph) {
 
 			const [effect] = enabledEffects;
 
-			if (!SUPPORTED_EFFECTS.has(effect.name)) {
+			if (!isSupportedNativeEffect(effect)) {
 				return false;
 			}
 

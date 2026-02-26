@@ -19,6 +19,7 @@ import {
 	OneFactor,
 	SubtractiveBlending,
 	TextureLoader,
+	Vector2,
 	VideoTexture,
 	ZeroFactor,
 } from "three";
@@ -41,37 +42,267 @@ uniform sampler2D map;
 uniform float opacity;
 uniform float inverse;
 uniform vec3 luma;
-uniform float shiftAmount;
-uniform float shiftAngle;
 uniform float enableMask;
-uniform float enableShift;
-uniform float distortionAmount;
-uniform float distortionTime;
-uniform float enableDistortion;
+uniform vec2 sceneResolution;
+uniform int effectType;
+uniform float effectValue1;
+uniform float effectValue2;
+uniform float effectValue3;
+uniform float effectValue4;
 varying vec2 vUv;
 
-vec4 sampleLayerTexture(vec2 uv) {
-	vec2 sampleUv = uv;
+vec2 distortUv(vec2 uv, float amount, float time) {
+	float frequency = 6.0;
+	float amplitude = 0.015 * amount;
+	float x = uv.y * frequency + time * 0.7;
+	float y = uv.x * frequency + time * 0.3;
+	uv.x += cos(x + y) * amplitude * cos(y);
+	uv.y += sin(x - y) * amplitude * cos(y);
+	return uv;
+}
 
-	if (enableDistortion > 0.5) {
-		float frequency = 6.0;
-		float amplitude = 0.015 * distortionAmount;
-		float x = sampleUv.y * frequency + distortionTime * 0.7;
-		float y = sampleUv.x * frequency + distortionTime * 0.3;
-		sampleUv.x += cos(x + y) * amplitude * cos(y);
-		sampleUv.y += sin(x - y) * amplitude * cos(y);
+vec2 mirrorUv(vec2 uv, int side) {
+	vec2 p = uv;
+
+	if (side == 0) {
+		if (p.x > 0.5) p.x = 1.0 - p.x;
+	}
+	else if (side == 1) {
+		if (p.x < 0.5) p.x = 1.0 - p.x;
+	}
+	else if (side == 2) {
+		if (p.y < 0.5) p.y = 1.0 - p.y;
+	}
+	else if (side == 3) {
+		if (p.y > 0.5) p.y = 1.0 - p.y;
 	}
 
-	if (enableShift < 0.5) {
-		return texture2D(map, sampleUv);
-	}
+	return p;
+}
 
-	vec2 offset = shiftAmount * vec2(cos(shiftAngle), sin(shiftAngle));
-	vec4 cr = texture2D(map, sampleUv + offset);
-	vec4 cg = texture2D(map, sampleUv);
-	vec4 cb = texture2D(map, sampleUv - offset);
+vec4 rgbShiftSample(vec2 uv, float amount, float angle) {
+	vec2 offset = amount * vec2(cos(angle), sin(angle));
+	vec4 cr = texture2D(map, uv + offset);
+	vec4 cg = texture2D(map, uv);
+	vec4 cb = texture2D(map, uv - offset);
 
 	return vec4(cr.r, cg.g, cb.b, (cr.a + cg.a + cb.a) / 3.0);
+}
+
+vec4 boxBlurSample(vec2 uv, float amount) {
+	float h = amount / sceneResolution.x;
+	float v = amount / sceneResolution.y;
+	vec4 sum = vec4(0.0);
+
+	sum += texture2D(map, vec2(uv.x - 4.0 * h, uv.y)) * 0.051;
+	sum += texture2D(map, vec2(uv.x - 3.0 * h, uv.y)) * 0.0918;
+	sum += texture2D(map, vec2(uv.x - 2.0 * h, uv.y)) * 0.12245;
+	sum += texture2D(map, vec2(uv.x - 1.0 * h, uv.y)) * 0.1531;
+	sum += texture2D(map, vec2(uv.x, uv.y)) * 0.1633;
+	sum += texture2D(map, vec2(uv.x + 1.0 * h, uv.y)) * 0.1531;
+	sum += texture2D(map, vec2(uv.x + 2.0 * h, uv.y)) * 0.12245;
+	sum += texture2D(map, vec2(uv.x + 3.0 * h, uv.y)) * 0.0918;
+	sum += texture2D(map, vec2(uv.x + 4.0 * h, uv.y)) * 0.051;
+
+	sum += texture2D(map, vec2(uv.x, uv.y - 4.0 * v)) * 0.051;
+	sum += texture2D(map, vec2(uv.x, uv.y - 3.0 * v)) * 0.0918;
+	sum += texture2D(map, vec2(uv.x, uv.y - 2.0 * v)) * 0.12245;
+	sum += texture2D(map, vec2(uv.x, uv.y - 1.0 * v)) * 0.1531;
+	sum += texture2D(map, vec2(uv.x, uv.y)) * 0.1633;
+	sum += texture2D(map, vec2(uv.x, uv.y + 1.0 * v)) * 0.1531;
+	sum += texture2D(map, vec2(uv.x, uv.y + 2.0 * v)) * 0.12245;
+	sum += texture2D(map, vec2(uv.x, uv.y + 3.0 * v)) * 0.0918;
+	sum += texture2D(map, vec2(uv.x, uv.y + 4.0 * v)) * 0.051;
+
+	return sum * 0.5;
+}
+
+vec4 zoomBlurSample(vec2 uv, float amount, vec2 center) {
+	vec4 color = vec4(0.0);
+	float total = 0.0;
+	vec2 c = center * sceneResolution;
+	vec2 toCenter = c - uv * sceneResolution;
+
+	for (float t = 0.0; t <= 40.0; t++) {
+		float percent = t / 40.0;
+		float weight = 4.0 * (percent - percent * percent);
+		vec4 s = texture2D(map, uv + toCenter * percent * amount / sceneResolution);
+		color += s * weight;
+		total += weight;
+	}
+
+	return color / max(total, 0.0001);
+}
+
+float dotPattern(vec2 uv, float angle, float scale, vec2 size) {
+	float s = sin(angle);
+	float c = cos(angle);
+	vec2 tex = uv * size - vec2(size.x * 0.5, size.y * 0.5);
+	vec2 point = vec2(c * tex.x - s * tex.y, s * tex.x + c * tex.y) * scale;
+	return (sin(point.x) * sin(point.y)) * 4.0;
+}
+
+float rand(vec2 n) {
+	return fract(sin(dot(n, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec4 sampleLayerTexture(vec2 uv) {
+	if (effectType == 1) {
+		return rgbShiftSample(uv, effectValue1, effectValue2);
+	}
+
+	if (effectType == 2) {
+		return texture2D(map, distortUv(uv, effectValue1, effectValue2));
+	}
+
+	if (effectType == 3) {
+		return texture2D(map, mirrorUv(uv, int(effectValue1 + 0.5)));
+	}
+
+	if (effectType == 4) {
+		float d = effectValue1 / sceneResolution.x;
+		float u = floor(uv.x / d) * d;
+		d = effectValue1 / sceneResolution.y;
+		float v = floor(uv.y / d) * d;
+		return texture2D(map, vec2(u, v));
+	}
+
+	if (effectType == 5) {
+		vec2 center = sceneResolution * 0.5;
+		vec2 tex = (uv * sceneResolution - center) / effectValue1;
+		tex.y /= 0.866025404;
+		tex.x -= tex.y * 0.5;
+		vec2 a;
+		if (tex.x + tex.y - floor(tex.x) - floor(tex.y) < 1.0) {
+			a = vec2(floor(tex.x), floor(tex.y));
+		} else {
+			a = vec2(ceil(tex.x), ceil(tex.y));
+		}
+		vec2 b = vec2(ceil(tex.x), floor(tex.y));
+		vec2 c = vec2(floor(tex.x), ceil(tex.y));
+		vec3 TEX = vec3(tex.x, tex.y, 1.0 - tex.x - tex.y);
+		vec3 A = vec3(a.x, a.y, 1.0 - a.x - a.y);
+		vec3 B = vec3(b.x, b.y, 1.0 - b.x - b.y);
+		vec3 C = vec3(c.x, c.y, 1.0 - c.x - c.y);
+		float alen = length(TEX - A);
+		float blen = length(TEX - B);
+		float clen = length(TEX - C);
+		vec2 choice;
+		if (alen < blen) {
+			choice = alen < clen ? a : c;
+		} else {
+			choice = blen < clen ? b : c;
+		}
+		choice.x += choice.y * 0.5;
+		choice.y *= 0.866025404;
+		choice *= effectValue1 / sceneResolution;
+		return texture2D(map, choice + center / sceneResolution);
+	}
+
+	if (effectType == 6) {
+		vec2 p = uv - 0.5;
+		float r = length(p);
+		float a = atan(p.y, p.x) + effectValue2;
+		float tau = 6.28318530718;
+		a = mod(a, tau / max(effectValue1, 1.0));
+		a = abs(a - tau / max(effectValue1, 1.0) / 2.0);
+		p = r * vec2(cos(a), sin(a));
+		return texture2D(map, p + 0.5);
+	}
+
+	if (effectType == 7) {
+		vec4 color = texture2D(map, uv);
+		float average = (color.r + color.g + color.b) / 3.0;
+		float pattern = dotPattern(uv, effectValue2, effectValue1, vec2(256.0, 256.0));
+		return vec4(vec3(average * 10.0 - 5.0 + pattern), color.a);
+	}
+
+	if (effectType == 8) {
+		vec4 color = texture2D(map, uv);
+		vec3 cmy = 1.0 - color.rgb;
+		float k = min(cmy.x, min(cmy.y, cmy.z));
+		cmy = (cmy - k) / max(1.0 - k, 0.0001);
+		float a0 = effectValue2;
+		float s0 = effectValue1;
+		vec3 pattern = vec3(
+			dotPattern(uv, a0 + 0.26179, s0, sceneResolution),
+			dotPattern(uv, a0 + 1.30899, s0, sceneResolution),
+			dotPattern(uv, a0, s0, sceneResolution)
+		);
+		cmy = clamp(cmy * 10.0 - 3.0 + pattern, 0.0, 1.0);
+		k = clamp(k * 10.0 - 5.0 + dotPattern(uv, a0 + 0.78539, s0, sceneResolution), 0.0, 1.0);
+		return vec4(1.0 - cmy - k, color.a);
+	}
+
+	if (effectType == 9) {
+		vec2 count = vec2(sceneResolution / effectValue1);
+		vec2 p = floor(uv * count) / count;
+		vec4 color = texture2D(map, p);
+		vec2 pos = mod(gl_FragCoord.xy, vec2(effectValue1)) - vec2(effectValue1 / 2.0);
+		float distSquared = dot(pos, pos);
+		float t = smoothstep(effectValue2, effectValue2 + effectValue3, distSquared);
+		return mix(color, vec4(0.0), t);
+	}
+
+	if (effectType == 10) {
+		vec4 src = texture2D(map, uv);
+		vec4 sum = boxBlurSample(uv, effectValue1);
+		return vec4(mix(src.rgb, sum.rgb, 0.6) * effectValue2, sum.a);
+	}
+
+	if (effectType == 11 || effectType == 12 || effectType == 14 || effectType == 15) {
+		return boxBlurSample(uv, effectValue1);
+	}
+
+	if (effectType == 13) {
+		return zoomBlurSample(uv, effectValue1, vec2(effectValue2, effectValue3));
+	}
+
+	if (effectType == 18) {
+		vec2 dir = vec2(cos(effectValue3), sin(effectValue3));
+		float d = effectValue1 / max(sceneResolution.x, sceneResolution.y);
+		vec4 sum = vec4(0.0);
+		sum += texture2D(map, uv + dir * d * -4.0);
+		sum += texture2D(map, uv + dir * d * -3.0);
+		sum += texture2D(map, uv + dir * d * -2.0);
+		sum += texture2D(map, uv + dir * d * -1.0);
+		sum += texture2D(map, uv);
+		sum += texture2D(map, uv + dir * d * 1.0);
+		sum += texture2D(map, uv + dir * d * 2.0);
+		sum += texture2D(map, uv + dir * d * 3.0);
+		sum += texture2D(map, uv + dir * d * 4.0);
+		vec4 color = sum / 9.0;
+		color.rgb += effectValue2;
+		return vec4(clamp(color.rgb, 0.0, 1.0), color.a);
+	}
+
+	if (effectType == 16) {
+		vec4 src = texture2D(map, uv);
+		vec4 blur = boxBlurSample(uv, effectValue1 * 10.0);
+		float l = max(blur.r, max(blur.g, blur.b));
+		float m = smoothstep(effectValue2, 1.0, l);
+		vec3 bloom = blur.rgb * m * effectValue1;
+		if (effectValue3 < 0.5) {
+			return vec4(min(src.rgb + bloom, vec3(1.0)), src.a);
+		}
+		return vec4(1.0 - ((1.0 - src.rgb) * (1.0 - bloom)), src.a);
+	}
+
+	if (effectType == 17) {
+		float amount = effectValue1;
+		float time = effectValue2;
+		float line = step(0.95, rand(vec2(floor(uv.y * 80.0 + time * 0.05), time)));
+		float jitter = (rand(vec2(time * 0.01, floor(uv.y * 40.0))) - 0.5) * 0.06 * amount;
+		vec2 guv = uv + vec2(jitter * line, 0.0);
+		vec4 base = texture2D(map, guv);
+		float angle = rand(vec2(time * 0.02, 1.0)) * 6.28318530718;
+		vec4 rgb = rgbShiftSample(guv, amount * 0.03, angle);
+		float noise = (rand(uv * vec2(640.0, 360.0) + time * 0.1) - 0.5) * 0.2 * amount;
+		vec3 color = mix(base.rgb, rgb.rgb, 0.6) + noise;
+		return vec4(clamp(color, 0.0, 1.0), base.a);
+	}
+
+	return texture2D(map, uv);
 }
 
 void main() {
@@ -141,6 +372,7 @@ function TexturePlane({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 	renderOrder,
 }) {
 	const position = [x + (width / 2 - originX), -y + (height / 2 - originY), 0];
@@ -159,9 +391,8 @@ function TexturePlane({
 		blending: getThreeBlending(sceneBlendMode),
 	};
 
-	const rgbShift = getRGBShiftProps(sceneEffects, sceneWidth);
-	const distortion = getDistortionProps(sceneEffects);
-	const useShaderMaterial = sceneMask || rgbShift.enabled || distortion.enabled;
+	const effect = getLayerEffectProps(sceneEffects, sceneWidth, sceneHeight);
+	const useShaderMaterial = sceneMask || effect.mode !== 0;
 
 	if (useShaderMaterial) {
 		const blendDstAlpha = sceneMaskCombine === "add" ? OneFactor : ZeroFactor;
@@ -183,13 +414,15 @@ function TexturePlane({
 					opacity: { value: finalOpacity },
 					inverse: { value: sceneInverse ? 1 : 0 },
 					luma: { value: LUMA },
-					shiftAmount: { value: rgbShift.amount },
-					shiftAngle: { value: rgbShift.angle },
+					sceneResolution: {
+						value: new Vector2(sceneWidth, sceneHeight),
+					},
+					effectType: { value: effect.mode },
+					effectValue1: { value: effect.v1 },
+					effectValue2: { value: effect.v2 },
+					effectValue3: { value: effect.v3 },
+					effectValue4: { value: effect.v4 },
 					enableMask: { value: sceneMask ? 1 : 0 },
-					enableShift: { value: rgbShift.enabled ? 1 : 0 },
-					distortionAmount: { value: distortion.amount },
-					distortionTime: { value: distortion.time },
-					enableDistortion: { value: distortion.enabled ? 1 : 0 },
 				},
 				vertexShader: LAYER_VERTEX_SHADER,
 				fragmentShader: LAYER_FRAGMENT_SHADER,
@@ -235,51 +468,155 @@ function getThreeBlending(blendMode = "Normal") {
 	}
 }
 
-function getRGBShiftProps(sceneEffects, sceneWidth) {
-	const rgbShift = (sceneEffects || []).find(
-		(effect) => effect?.enabled && effect.name === "RGBShiftEffect",
-	);
+function getLayerEffectProps(sceneEffects, sceneWidth, sceneHeight) {
+	const effect = (sceneEffects || []).find((item) => item?.enabled);
 
-	if (!rgbShift) {
-		return {
-			enabled: false,
-			amount: 0,
-			angle: 0,
-		};
+	if (!effect) {
+		return { mode: 0, v1: 0, v2: 0, v3: 0, v4: 0 };
 	}
 
-	const offset = Number(rgbShift.properties?.offset || 0);
-	const angle = Number(rgbShift.properties?.angle || 0);
+	const props = effect.properties || {};
 
-	return {
-		enabled: true,
-		amount: offset / Math.max(1, Number(sceneWidth || 1)),
-		angle: toRadians(angle),
-	};
-}
+	switch (effect.name) {
+		case "RGBShiftEffect": {
+			const offset = Number(props.offset || 0);
+			const angle = Number(props.angle || 0);
+			return {
+				mode: 1,
+				v1: offset / Math.max(1, Number(sceneWidth || 1)),
+				v2: toRadians(angle),
+				v3: 0,
+				v4: 0,
+			};
+		}
 
-function getDistortionProps(sceneEffects) {
-	const distortion = (sceneEffects || []).find(
-		(effect) => effect?.enabled && effect.name === "DistortionEffect",
-	);
+		case "DistortionEffect": {
+			const amount = Number(props.amount || 0) * 30;
+			const time = Number(effect.time || props.time || 0);
+			return { mode: 2, v1: amount, v2: time, v3: 0, v4: 0 };
+		}
 
-	if (!distortion) {
-		return {
-			enabled: false,
-			amount: 0,
-			time: 0,
-		};
+		case "MirrorEffect": {
+			return { mode: 3, v1: Number(props.side || 0), v2: 0, v3: 0, v4: 0 };
+		}
+
+		case "PixelateEffect": {
+			const size = Number(props.size || 10);
+			const type = props.type || "Square";
+			return {
+				mode: type === "Hexagon" ? 5 : 4,
+				v1: size,
+				v2: 0,
+				v3: 0,
+				v4: 0,
+			};
+		}
+
+		case "KaleidoscopeEffect": {
+			return {
+				mode: 6,
+				v1: Math.max(1, Number(props.sides || 6)),
+				v2: Number(props.angle || 0),
+				v3: 0,
+				v4: 0,
+			};
+		}
+
+		case "DotScreenEffect": {
+			const scale = Number(props.scale || 0);
+			const angle = Number(props.angle || 0);
+			return {
+				mode: 7,
+				v1: 2 - scale * 2,
+				v2: toRadians(angle),
+				v3: 0,
+				v4: 0,
+			};
+		}
+
+		case "ColorHalftoneEffect": {
+			const scale = Number(props.scale || 0);
+			const angle = Number(props.angle || 0);
+			return {
+				mode: 8,
+				v1: 1 - scale,
+				v2: toRadians(angle),
+				v3: 0,
+				v4: 0,
+			};
+		}
+
+		case "LEDEffect": {
+			return {
+				mode: 9,
+				v1: Math.max(1, Number(props.spacing || 10)),
+				v2: Number(props.size || 4),
+				v3: Number(props.blur || 4),
+				v4: 0,
+			};
+		}
+
+		case "GlowEffect": {
+			return {
+				mode: 10,
+				v1: Number(props.amount || 0) * 5,
+				v2: Number(props.intensity || 1),
+				v3: 0,
+				v4: 0,
+			};
+		}
+
+		case "BlurEffect": {
+			const type = props.type || "Gaussian";
+			const amount = Number(props.amount || 0);
+			if (type === "Lens") {
+				return {
+					mode: 18,
+					v1: Number(props.radius || 10),
+					v2: Number(props.brightness || 0),
+					v3: toRadians(Number(props.angle || 0)),
+					v4: 0,
+				};
+			}
+			if (type === "Box") {
+				return { mode: 11, v1: amount * 10, v2: 0, v3: 0, v4: 0 };
+			}
+			if (type === "Circular") {
+				return { mode: 12, v1: amount * 10, v2: 0, v3: 0, v4: 0 };
+			}
+			if (type === "Zoom") {
+				const x = Number(props.x || 0);
+				const y = Number(props.y || 0);
+				return {
+					mode: 13,
+					v1: amount,
+					v2: Math.max(0, Math.min(1, (x + sceneWidth / 2) / sceneWidth)),
+					v3: Math.max(0, Math.min(1, (y + sceneHeight / 2) / sceneHeight)),
+					v4: 0,
+				};
+			}
+			if (type === "Triangle") {
+				return { mode: 15, v1: amount * 200, v2: 0, v3: 0, v4: 0 };
+			}
+			return { mode: 14, v1: amount, v2: 0, v3: 0, v4: 0 };
+		}
+
+		case "BloomEffect": {
+			const amount = Number(props.amount || 0);
+			const threshold = Number(props.threshold || 1);
+			const blendMode = props.blendMode === "Screen" ? 1 : 0;
+			return { mode: 16, v1: amount, v2: threshold, v3: blendMode, v4: 0 };
+		}
+
+		case "GlitchEffect": {
+			const amount = Number(props.amount || 0);
+			const time = Number(effect.time || 0);
+			return { mode: 17, v1: amount, v2: time, v3: 0, v4: 0 };
+		}
+
+		default:
+			return { mode: 0, v1: 0, v2: 0, v3: 0, v4: 0 };
 	}
-
-	const baseAmount = Number(distortion.properties?.amount || 0);
-	const amount = baseAmount * 30;
-	const time = Number(distortion.time || distortion.properties?.time || 0);
-
-	return {
-		enabled: true,
-		amount,
-		time,
-	};
 }
 
 function ImageDisplayLayer({
@@ -292,6 +629,7 @@ function ImageDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const { properties = {} } = display;
 	const {
@@ -346,6 +684,7 @@ function ImageDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		renderOrder: order,
 	});
 }
@@ -360,6 +699,7 @@ function VideoDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const { properties = {} } = display;
 	const {
@@ -467,6 +807,7 @@ function VideoDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		renderOrder: order,
 	});
 }
@@ -586,6 +927,7 @@ function CanvasTextureLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 	drawFrame,
 }) {
 	const { properties = {} } = display;
@@ -674,6 +1016,7 @@ function CanvasTextureLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		renderOrder: order,
 	});
 }
@@ -690,6 +1033,7 @@ function TextDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const textRef = React.useRef(null);
 
@@ -733,6 +1077,7 @@ function TextDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		drawFrame,
 	});
 }
@@ -749,6 +1094,7 @@ function ShapeDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const drawFrame = React.useCallback(({ context, properties }) => {
 		const width = Math.max(
@@ -797,6 +1143,7 @@ function ShapeDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		drawFrame,
 	});
 }
@@ -813,6 +1160,7 @@ function BarSpectrumDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const barsRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -855,6 +1203,7 @@ function BarSpectrumDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		drawFrame,
 	});
 }
@@ -871,6 +1220,7 @@ function WaveSpectrumDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -916,6 +1266,7 @@ function WaveSpectrumDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		drawFrame,
 	});
 }
@@ -932,6 +1283,7 @@ function SoundWaveDisplayLayer({
 	sceneMaskCombine,
 	sceneEffects,
 	sceneWidth,
+	sceneHeight,
 }) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -983,6 +1335,7 @@ function SoundWaveDisplayLayer({
 		sceneMaskCombine,
 		sceneEffects,
 		sceneWidth,
+		sceneHeight,
 		drawFrame,
 	});
 }
@@ -1310,6 +1663,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
@@ -1328,6 +1682,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
@@ -1348,6 +1703,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
@@ -1368,6 +1724,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
@@ -1388,6 +1745,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
@@ -1408,6 +1766,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
@@ -1428,6 +1787,7 @@ export default function R3FStageRoot({
 							sceneMaskCombine,
 							sceneEffects,
 							sceneWidth: width,
+							sceneHeight: height,
 						}),
 					);
 					break;
