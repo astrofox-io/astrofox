@@ -34,6 +34,9 @@ const appStore = create(() => ({
 	...initialState,
 }));
 
+let appInitPromise = null;
+let appInitialized = false;
+
 export function toggleState(key) {
 	appStore.setState((state) => ({ [key]: !state[key] }));
 }
@@ -171,11 +174,26 @@ export async function loadLibrary() {
 }
 
 export async function initApp() {
-	await loadPlugins();
-	await loadLibrary();
-	await newProject();
+	if (appInitialized) {
+		return;
+	}
 
-	renderer.start();
+	if (appInitPromise) {
+		return appInitPromise;
+	}
+
+	appInitPromise = (async () => {
+		await loadPlugins();
+		await loadLibrary();
+		await newProject();
+
+		renderer.start();
+		appInitialized = true;
+	})().finally(() => {
+		appInitPromise = null;
+	});
+
+	return appInitPromise;
 }
 
 export default appStore;
