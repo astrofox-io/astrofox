@@ -151,14 +151,25 @@ export default class Stage extends Entity {
 
 	removeScene(scene) {
 		this.scenes.removeElement(scene);
-
-		scene.stage = null;
-
 		scene.removeFromStage(this);
+		scene.stage = null;
 	}
 
 	clearScenes() {
 		[...this.scenes].forEach((scene) => this.removeScene(scene));
+
+		if (this.canvasBuffer) {
+			this.canvasBuffer.clear();
+		}
+
+		if (this.webglBuffer) {
+			this.webglBuffer.clear();
+		}
+
+		if (this.composer) {
+			this.composer.clear(this.backgroundColor, 1);
+			this.composer.renderToScreen();
+		}
 	}
 
 	hasScenes() {

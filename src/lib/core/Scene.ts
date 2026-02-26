@@ -96,9 +96,24 @@ export default class Scene extends Display {
 	}
 
 	removeFromStage() {
-		this.displays.clear();
-		this.effects.clear();
+		[...this.displays].forEach((display) => {
+			this.removeElement(display);
+		});
+
+		[...this.effects].forEach((effect) => {
+			this.removeElement(effect);
+		});
+
+		if (this.stage?.canvasBuffer?.clear) {
+			this.stage.canvasBuffer.clear();
+		}
+
+		if (this.stage?.webglBuffer?.clear) {
+			this.stage.webglBuffer.clear();
+		}
+
 		if (this.composer) {
+			this.composer.clearBuffer();
 			this.composer.dispose();
 			this.composer = null;
 		}
