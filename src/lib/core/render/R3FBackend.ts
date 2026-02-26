@@ -47,10 +47,9 @@ function canRenderNatively(graph) {
 		}
 
 		const blendMode = scene.properties?.blendMode || "Normal";
-		const opacity = Number(scene.properties?.opacity ?? 1);
 		const masked = Boolean(scene.properties?.mask || scene.properties?.inverse);
 
-		if (blendMode !== "Normal" || opacity !== 1 || masked) {
+		if (blendMode !== "Normal" || masked) {
 			return false;
 		}
 

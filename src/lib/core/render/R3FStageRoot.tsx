@@ -65,9 +65,14 @@ function TexturePlane({
 	rotation,
 	zoom,
 	opacity,
+	sceneOpacity,
 	renderOrder,
 }) {
 	const position = [x + (width / 2 - originX), -y + (height / 2 - originY), 0];
+	const finalOpacity = Math.max(
+		0,
+		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
+	);
 
 	return React.createElement(
 		"mesh",
@@ -83,7 +88,7 @@ function TexturePlane({
 		React.createElement("meshBasicMaterial", {
 			map: texture,
 			transparent: true,
-			opacity,
+			opacity: finalOpacity,
 			toneMapped: false,
 			depthTest: false,
 			depthWrite: false,
@@ -91,7 +96,7 @@ function TexturePlane({
 	);
 }
 
-function ImageDisplayLayer({ display, order }) {
+function ImageDisplayLayer({ display, order, sceneOpacity }) {
 	const { properties = {} } = display;
 	const {
 		src,
@@ -138,11 +143,12 @@ function ImageDisplayLayer({ display, order }) {
 		rotation,
 		zoom,
 		opacity,
+		sceneOpacity,
 		renderOrder: order,
 	});
 }
 
-function VideoDisplayLayer({ display, order }) {
+function VideoDisplayLayer({ display, order, sceneOpacity }) {
 	const { properties = {} } = display;
 	const {
 		src,
@@ -242,6 +248,7 @@ function VideoDisplayLayer({ display, order }) {
 		rotation,
 		zoom,
 		opacity,
+		sceneOpacity,
 		renderOrder: order,
 	});
 }
@@ -350,7 +357,13 @@ function getSoundWavePoints(values, width) {
 	return Array.from(values).flatMap((n, i) => [i * step, n]);
 }
 
-function CanvasTextureLayer({ display, order, frameData, drawFrame }) {
+function CanvasTextureLayer({
+	display,
+	order,
+	frameData,
+	sceneOpacity,
+	drawFrame,
+}) {
 	const { properties = {} } = display;
 	const { x = 0, y = 0, rotation = 0, zoom = 1, opacity = 1 } = properties;
 
@@ -430,11 +443,18 @@ function CanvasTextureLayer({ display, order, frameData, drawFrame }) {
 		rotation,
 		zoom,
 		opacity,
+		sceneOpacity,
 		renderOrder: order,
 	});
 }
 
-function TextDisplayLayer({ display, order, frameData, frameIndex }) {
+function TextDisplayLayer({
+	display,
+	order,
+	frameData,
+	frameIndex,
+	sceneOpacity,
+}) {
 	const textRef = React.useRef(null);
 
 	const drawFrame = React.useCallback(({ context, properties }) => {
@@ -470,11 +490,18 @@ function TextDisplayLayer({ display, order, frameData, frameIndex }) {
 		display,
 		order,
 		frameData,
+		sceneOpacity,
 		drawFrame,
 	});
 }
 
-function ShapeDisplayLayer({ display, order, frameData, frameIndex }) {
+function ShapeDisplayLayer({
+	display,
+	order,
+	frameData,
+	frameIndex,
+	sceneOpacity,
+}) {
 	const drawFrame = React.useCallback(({ context, properties }) => {
 		const width = Math.max(
 			1,
@@ -515,11 +542,18 @@ function ShapeDisplayLayer({ display, order, frameData, frameIndex }) {
 		display,
 		order,
 		frameData,
+		sceneOpacity,
 		drawFrame,
 	});
 }
 
-function BarSpectrumDisplayLayer({ display, order, frameData, frameIndex }) {
+function BarSpectrumDisplayLayer({
+	display,
+	order,
+	frameData,
+	frameIndex,
+	sceneOpacity,
+}) {
 	const barsRef = React.useRef(null);
 	const parserRef = React.useRef(null);
 
@@ -554,11 +588,18 @@ function BarSpectrumDisplayLayer({ display, order, frameData, frameIndex }) {
 		display,
 		order,
 		frameData,
+		sceneOpacity,
 		drawFrame,
 	});
 }
 
-function WaveSpectrumDisplayLayer({ display, order, frameData, frameIndex }) {
+function WaveSpectrumDisplayLayer({
+	display,
+	order,
+	frameData,
+	frameIndex,
+	sceneOpacity,
+}) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
 
@@ -596,11 +637,18 @@ function WaveSpectrumDisplayLayer({ display, order, frameData, frameIndex }) {
 		display,
 		order,
 		frameData,
+		sceneOpacity,
 		drawFrame,
 	});
 }
 
-function SoundWaveDisplayLayer({ display, order, frameData, frameIndex }) {
+function SoundWaveDisplayLayer({
+	display,
+	order,
+	frameData,
+	frameIndex,
+	sceneOpacity,
+}) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
 
@@ -644,6 +692,7 @@ function SoundWaveDisplayLayer({ display, order, frameData, frameIndex }) {
 		display,
 		order,
 		frameData,
+		sceneOpacity,
 		drawFrame,
 	});
 }
@@ -695,7 +744,7 @@ function getMaterialNode(material, props) {
 	}
 }
 
-function GeometryDisplayLayer({ display, order, frameData }) {
+function GeometryDisplayLayer({ display, order, frameData, sceneOpacity }) {
 	const { properties = {} } = display;
 	const {
 		shape = "Box",
@@ -747,6 +796,10 @@ function GeometryDisplayLayer({ display, order, frameData }) {
 		rotationRef.current.z,
 	];
 	const zoomScale = cameraZoom > 0 ? 250 / cameraZoom : 1;
+	const finalOpacity = Math.max(
+		0,
+		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
+	);
 
 	const children = [
 		React.createElement("pointLight", {
@@ -787,7 +840,7 @@ function GeometryDisplayLayer({ display, order, frameData }) {
 					transparent: true,
 					alphaTest: 0.5,
 					color,
-					opacity,
+					opacity: finalOpacity,
 					depthTest: false,
 					depthWrite: false,
 				}),
@@ -807,7 +860,7 @@ function GeometryDisplayLayer({ display, order, frameData }) {
 				getMaterialNode(material, {
 					flatShading: shading === "Flat",
 					color,
-					opacity,
+					opacity: finalOpacity,
 					wireframe,
 					transparent: true,
 					side: material === "Basic" ? FrontSide : DoubleSide,
@@ -832,7 +885,7 @@ function GeometryDisplayLayer({ display, order, frameData }) {
 						color: edgeColor,
 						wireframe: true,
 						transparent: true,
-						opacity: 0.9,
+						opacity: 0.9 * Number(sceneOpacity ?? 1),
 						depthTest: false,
 						depthWrite: false,
 					}),
@@ -893,6 +946,8 @@ export default function R3FStageRoot({
 			continue;
 		}
 
+		const sceneOpacity = Number(scene.properties?.opacity ?? 1);
+
 		for (const display of scene.displays || []) {
 			if (!display?.enabled) {
 				continue;
@@ -911,6 +966,7 @@ export default function R3FStageRoot({
 							key: display.id,
 							display,
 							order,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -922,6 +978,7 @@ export default function R3FStageRoot({
 							key: display.id,
 							display,
 							order,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -935,6 +992,7 @@ export default function R3FStageRoot({
 							order,
 							frameData,
 							frameIndex,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -948,6 +1006,7 @@ export default function R3FStageRoot({
 							order,
 							frameData,
 							frameIndex,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -961,6 +1020,7 @@ export default function R3FStageRoot({
 							order,
 							frameData,
 							frameIndex,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -974,6 +1034,7 @@ export default function R3FStageRoot({
 							order,
 							frameData,
 							frameIndex,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -987,6 +1048,7 @@ export default function R3FStageRoot({
 							order,
 							frameData,
 							frameIndex,
+							sceneOpacity,
 						}),
 					);
 					break;
@@ -999,6 +1061,7 @@ export default function R3FStageRoot({
 							display,
 							order,
 							frameData,
+							sceneOpacity,
 						}),
 					);
 					break;
