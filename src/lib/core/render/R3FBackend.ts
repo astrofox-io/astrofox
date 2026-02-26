@@ -11,11 +11,41 @@ const VIEWPORT_ORIGIN = {
 const SUPPORTED_DISPLAYS = new Set([
 	"ImageDisplay",
 	"VideoDisplay",
+	"TextDisplay",
 	"ShapeDisplay",
 	"BarSpectrumDisplay",
 	"WaveSpectrumDisplay",
 	"SoundWaveDisplay",
 	"GeometryDisplay",
+]);
+
+const SUPPORTED_SCENE_BLEND_MODES = new Set([
+	"Normal",
+	"Add",
+	"Multiply",
+	"Subtract",
+]);
+
+const SUPPORTED_MASK_DISPLAYS = new Set([
+	"ImageDisplay",
+	"VideoDisplay",
+	"TextDisplay",
+	"ShapeDisplay",
+	"BarSpectrumDisplay",
+	"WaveSpectrumDisplay",
+	"SoundWaveDisplay",
+]);
+
+const SUPPORTED_EFFECTS = new Set(["RGBShiftEffect"]);
+
+const SUPPORTED_EFFECT_DISPLAYS = new Set([
+	"ImageDisplay",
+	"VideoDisplay",
+	"TextDisplay",
+	"ShapeDisplay",
+	"BarSpectrumDisplay",
+	"WaveSpectrumDisplay",
+	"SoundWaveDisplay",
 ]);
 
 let fiberModulePromise = null;
@@ -48,16 +78,63 @@ function canRenderNatively(graph) {
 
 		const blendMode = scene.properties?.blendMode || "Normal";
 		const masked = Boolean(scene.properties?.mask || scene.properties?.inverse);
+		const inverseMask = Boolean(scene.properties?.inverse);
+		const enabledDisplays = (scene.displays || []).filter(
+			(display) => display?.enabled,
+		);
+		const enabledEffects = (scene.effects || []).filter(
+			(effect) => effect?.enabled,
+		);
 
-		if (blendMode !== "Normal" || masked) {
+		if (!SUPPORTED_SCENE_BLEND_MODES.has(blendMode)) {
 			return false;
 		}
 
-		if ((scene.effects || []).length > 0) {
+		if (masked) {
+			if (blendMode !== "Normal") {
+				return false;
+			}
+
+			if (enabledDisplays.length < 1) {
+				return false;
+			}
+
+			if (inverseMask && enabledDisplays.length > 1) {
+				return false;
+			}
+
+			for (const display of enabledDisplays) {
+				if (!SUPPORTED_MASK_DISPLAYS.has(display.name)) {
+					return false;
+				}
+			}
+		}
+
+		if (blendMode !== "Normal" && enabledDisplays.length > 1) {
 			return false;
 		}
 
-		for (const display of scene.displays || []) {
+		if (enabledEffects.length > 0) {
+			if (enabledEffects.length > 1) {
+				return false;
+			}
+
+			const [effect] = enabledEffects;
+
+			if (!SUPPORTED_EFFECTS.has(effect.name)) {
+				return false;
+			}
+
+			if (enabledDisplays.length !== 1) {
+				return false;
+			}
+
+			if (!SUPPORTED_EFFECT_DISPLAYS.has(enabledDisplays[0].name)) {
+				return false;
+			}
+		}
+
+		for (const display of enabledDisplays) {
 			if (!display.enabled) {
 				continue;
 			}
@@ -69,6 +146,42 @@ function canRenderNatively(graph) {
 	}
 
 	return true;
+}
+
+function updateNativeSceneState(scenes, frameData) {
+	for (const scene of scenes || []) {
+		if (!scene?.enabled) {
+			continue;
+		}
+
+		if (scene.updateReactors) {
+			scene.updateReactors(frameData);
+		}
+
+		for (const display of scene.displays || []) {
+			if (!display?.enabled) {
+				continue;
+			}
+
+			if (display.updateReactors) {
+				display.updateReactors(frameData);
+			}
+		}
+
+		for (const effect of scene.effects || []) {
+			if (!effect?.enabled) {
+				continue;
+			}
+
+			if (effect.updateReactors) {
+				effect.updateReactors(frameData);
+			}
+
+			if (effect.render) {
+				effect.render(scene, frameData);
+			}
+		}
+	}
 }
 
 export default class R3FBackend extends RenderBackend {
@@ -242,6 +355,8 @@ export default class R3FBackend extends RenderBackend {
 		if (!this.initialized) {
 			return;
 		}
+
+		updateNativeSceneState(this.stage.scenes, frameData);
 
 		this.frameData = frameData;
 		this.frameIndex += 1;

@@ -8,16 +8,71 @@ import POINT_SPRITE from "@/lib/view/assets/images/point.png";
 import { BLANK_IMAGE } from "@/lib/view/constants";
 import React from "react";
 import {
+	AddEquation,
+	AdditiveBlending,
 	CanvasTexture,
+	CustomBlending,
 	DoubleSide,
 	FrontSide,
+	MultiplyBlending,
+	NormalBlending,
+	OneFactor,
+	SubtractiveBlending,
 	TextureLoader,
 	VideoTexture,
+	ZeroFactor,
 } from "three";
 
 const TRIANGLE_ANGLE = (2 * Math.PI) / 3;
 const HEXAGON_ANGLE = (2 * Math.PI) / 6;
 const WAVELENGTH_MAX = 0.25;
+const LUMA = [0.2126, 0.7152, 0.0722];
+
+const LAYER_VERTEX_SHADER = `
+varying vec2 vUv;
+void main() {
+	vUv = uv;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const LAYER_FRAGMENT_SHADER = `
+uniform sampler2D map;
+uniform float opacity;
+uniform float inverse;
+uniform vec3 luma;
+uniform float shiftAmount;
+uniform float shiftAngle;
+uniform float enableMask;
+uniform float enableShift;
+varying vec2 vUv;
+
+vec4 sampleLayerTexture(vec2 uv) {
+	if (enableShift < 0.5) {
+		return texture2D(map, uv);
+	}
+
+	vec2 offset = shiftAmount * vec2(cos(shiftAngle), sin(shiftAngle));
+	vec4 cr = texture2D(map, uv + offset);
+	vec4 cg = texture2D(map, uv);
+	vec4 cb = texture2D(map, uv - offset);
+
+	return vec4(cr.r, cg.g, cb.b, (cr.a + cg.a + cb.a) / 3.0);
+}
+
+void main() {
+	vec4 tex = sampleLayerTexture(vUv) * opacity;
+
+	if (enableMask > 0.5) {
+		float lightness = dot(tex.rgb, luma);
+		float alpha = inverse > 0.5 ? 1.0 - lightness : lightness;
+		gl_FragColor = vec4(0.0, 0.0, 0.0, clamp(alpha, 0.0, 1.0));
+		return;
+	}
+
+	gl_FragColor = tex;
+}
+`;
 
 function toRadians(value = 0) {
 	return (Number(value) * Math.PI) / 180;
@@ -66,6 +121,12 @@ function TexturePlane({
 	zoom,
 	opacity,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 	renderOrder,
 }) {
 	const position = [x + (width / 2 - originX), -y + (height / 2 - originY), 0];
@@ -73,6 +134,60 @@ function TexturePlane({
 		0,
 		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
 	);
+
+	const materialProps = {
+		map: texture,
+		transparent: true,
+		opacity: finalOpacity,
+		toneMapped: false,
+		depthTest: false,
+		depthWrite: false,
+		blending: getThreeBlending(sceneBlendMode),
+	};
+
+	const rgbShift = getRGBShiftProps(sceneEffects, sceneWidth);
+	const useShaderMaterial = sceneMask || rgbShift.enabled;
+
+	if (useShaderMaterial) {
+		const blendDstAlpha = sceneMaskCombine === "add" ? OneFactor : ZeroFactor;
+
+		return React.createElement(
+			"mesh",
+			{
+				position,
+				rotation: [0, 0, -toRadians(rotation)],
+				scale: [zoom, zoom, 1],
+				renderOrder,
+			},
+			React.createElement("planeGeometry", {
+				args: [Math.max(1, width), Math.max(1, height)],
+			}),
+			React.createElement("shaderMaterial", {
+				uniforms: {
+					map: { value: texture },
+					opacity: { value: finalOpacity },
+					inverse: { value: sceneInverse ? 1 : 0 },
+					luma: { value: LUMA },
+					shiftAmount: { value: rgbShift.amount },
+					shiftAngle: { value: rgbShift.angle },
+					enableMask: { value: sceneMask ? 1 : 0 },
+					enableShift: { value: rgbShift.enabled ? 1 : 0 },
+				},
+				vertexShader: LAYER_VERTEX_SHADER,
+				fragmentShader: LAYER_FRAGMENT_SHADER,
+				transparent: true,
+				depthTest: false,
+				depthWrite: false,
+				blending: sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode),
+				blendEquation: sceneMask ? AddEquation : undefined,
+				blendSrc: sceneMask ? ZeroFactor : undefined,
+				blendDst: sceneMask ? OneFactor : undefined,
+				blendEquationAlpha: sceneMask ? AddEquation : undefined,
+				blendSrcAlpha: sceneMask ? OneFactor : undefined,
+				blendDstAlpha: sceneMask ? blendDstAlpha : undefined,
+			}),
+		);
+	}
 
 	return React.createElement(
 		"mesh",
@@ -85,18 +200,57 @@ function TexturePlane({
 		React.createElement("planeGeometry", {
 			args: [Math.max(1, width), Math.max(1, height)],
 		}),
-		React.createElement("meshBasicMaterial", {
-			map: texture,
-			transparent: true,
-			opacity: finalOpacity,
-			toneMapped: false,
-			depthTest: false,
-			depthWrite: false,
-		}),
+		React.createElement("meshBasicMaterial", materialProps),
 	);
 }
 
-function ImageDisplayLayer({ display, order, sceneOpacity }) {
+function getThreeBlending(blendMode = "Normal") {
+	switch (blendMode) {
+		case "Add":
+			return AdditiveBlending;
+		case "Multiply":
+			return MultiplyBlending;
+		case "Subtract":
+			return SubtractiveBlending;
+		default:
+			return NormalBlending;
+	}
+}
+
+function getRGBShiftProps(sceneEffects, sceneWidth) {
+	const rgbShift = (sceneEffects || []).find(
+		(effect) => effect?.enabled && effect.name === "RGBShiftEffect",
+	);
+
+	if (!rgbShift) {
+		return {
+			enabled: false,
+			amount: 0,
+			angle: 0,
+		};
+	}
+
+	const offset = Number(rgbShift.properties?.offset || 0);
+	const angle = Number(rgbShift.properties?.angle || 0);
+
+	return {
+		enabled: true,
+		amount: offset / Math.max(1, Number(sceneWidth || 1)),
+		angle: toRadians(angle),
+	};
+}
+
+function ImageDisplayLayer({
+	display,
+	order,
+	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
+}) {
 	const { properties = {} } = display;
 	const {
 		src,
@@ -144,11 +298,27 @@ function ImageDisplayLayer({ display, order, sceneOpacity }) {
 		zoom,
 		opacity,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		renderOrder: order,
 	});
 }
 
-function VideoDisplayLayer({ display, order, sceneOpacity }) {
+function VideoDisplayLayer({
+	display,
+	order,
+	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
+}) {
 	const { properties = {} } = display;
 	const {
 		src,
@@ -249,6 +419,12 @@ function VideoDisplayLayer({ display, order, sceneOpacity }) {
 		zoom,
 		opacity,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		renderOrder: order,
 	});
 }
@@ -362,6 +538,12 @@ function CanvasTextureLayer({
 	order,
 	frameData,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 	drawFrame,
 }) {
 	const { properties = {} } = display;
@@ -444,6 +626,12 @@ function CanvasTextureLayer({
 		zoom,
 		opacity,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		renderOrder: order,
 	});
 }
@@ -454,6 +642,12 @@ function TextDisplayLayer({
 	frameData,
 	frameIndex,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 }) {
 	const textRef = React.useRef(null);
 
@@ -491,6 +685,12 @@ function TextDisplayLayer({
 		order,
 		frameData,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		drawFrame,
 	});
 }
@@ -501,6 +701,12 @@ function ShapeDisplayLayer({
 	frameData,
 	frameIndex,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 }) {
 	const drawFrame = React.useCallback(({ context, properties }) => {
 		const width = Math.max(
@@ -543,6 +749,12 @@ function ShapeDisplayLayer({
 		order,
 		frameData,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		drawFrame,
 	});
 }
@@ -553,6 +765,12 @@ function BarSpectrumDisplayLayer({
 	frameData,
 	frameIndex,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 }) {
 	const barsRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -589,6 +807,12 @@ function BarSpectrumDisplayLayer({
 		order,
 		frameData,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		drawFrame,
 	});
 }
@@ -599,6 +823,12 @@ function WaveSpectrumDisplayLayer({
 	frameData,
 	frameIndex,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 }) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -638,6 +868,12 @@ function WaveSpectrumDisplayLayer({
 		order,
 		frameData,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		drawFrame,
 	});
 }
@@ -648,6 +884,12 @@ function SoundWaveDisplayLayer({
 	frameData,
 	frameIndex,
 	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+	sceneMaskCombine,
+	sceneEffects,
+	sceneWidth,
 }) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -693,6 +935,12 @@ function SoundWaveDisplayLayer({
 		order,
 		frameData,
 		sceneOpacity,
+		sceneBlendMode,
+		sceneMask,
+		sceneInverse,
+		sceneMaskCombine,
+		sceneEffects,
+		sceneWidth,
 		drawFrame,
 	});
 }
@@ -744,7 +992,15 @@ function getMaterialNode(material, props) {
 	}
 }
 
-function GeometryDisplayLayer({ display, order, frameData, sceneOpacity }) {
+function GeometryDisplayLayer({
+	display,
+	order,
+	frameData,
+	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+}) {
 	const { properties = {} } = display;
 	const {
 		shape = "Box",
@@ -800,6 +1056,13 @@ function GeometryDisplayLayer({ display, order, frameData, sceneOpacity }) {
 		0,
 		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
 	);
+	const blending = sceneMask
+		? CustomBlending
+		: getThreeBlending(sceneBlendMode);
+	const geometryColor = sceneMask ? "#000000" : color;
+	const edgeOpacity = sceneMask
+		? Number(sceneInverse ? 1 : 0)
+		: 0.9 * Number(sceneOpacity ?? 1);
 
 	const children = [
 		React.createElement("pointLight", {
@@ -839,10 +1102,17 @@ function GeometryDisplayLayer({ display, order, frameData, sceneOpacity }) {
 					map: sprite,
 					transparent: true,
 					alphaTest: 0.5,
-					color,
+					color: geometryColor,
 					opacity: finalOpacity,
 					depthTest: false,
 					depthWrite: false,
+					blending,
+					blendEquation: sceneMask ? AddEquation : undefined,
+					blendSrc: sceneMask ? ZeroFactor : undefined,
+					blendDst: sceneMask ? OneFactor : undefined,
+					blendEquationAlpha: sceneMask ? AddEquation : undefined,
+					blendSrcAlpha: sceneMask ? OneFactor : undefined,
+					blendDstAlpha: sceneMask ? ZeroFactor : undefined,
 				}),
 			),
 		);
@@ -859,13 +1129,20 @@ function GeometryDisplayLayer({ display, order, frameData, sceneOpacity }) {
 				createGeometryNode(shape, "geometry"),
 				getMaterialNode(material, {
 					flatShading: shading === "Flat",
-					color,
+					color: geometryColor,
 					opacity: finalOpacity,
 					wireframe,
 					transparent: true,
 					side: material === "Basic" ? FrontSide : DoubleSide,
 					depthTest: false,
 					depthWrite: false,
+					blending,
+					blendEquation: sceneMask ? AddEquation : undefined,
+					blendSrc: sceneMask ? ZeroFactor : undefined,
+					blendDst: sceneMask ? OneFactor : undefined,
+					blendEquationAlpha: sceneMask ? AddEquation : undefined,
+					blendSrcAlpha: sceneMask ? OneFactor : undefined,
+					blendDstAlpha: sceneMask ? ZeroFactor : undefined,
 				}),
 			),
 		);
@@ -885,9 +1162,16 @@ function GeometryDisplayLayer({ display, order, frameData, sceneOpacity }) {
 						color: edgeColor,
 						wireframe: true,
 						transparent: true,
-						opacity: 0.9 * Number(sceneOpacity ?? 1),
+						opacity: edgeOpacity,
 						depthTest: false,
 						depthWrite: false,
+						blending,
+						blendEquation: sceneMask ? AddEquation : undefined,
+						blendSrc: sceneMask ? ZeroFactor : undefined,
+						blendDst: sceneMask ? OneFactor : undefined,
+						blendEquationAlpha: sceneMask ? AddEquation : undefined,
+						blendSrcAlpha: sceneMask ? OneFactor : undefined,
+						blendDstAlpha: sceneMask ? ZeroFactor : undefined,
 					}),
 				),
 			);
@@ -947,6 +1231,17 @@ export default function R3FStageRoot({
 		}
 
 		const sceneOpacity = Number(scene.properties?.opacity ?? 1);
+		const sceneBlendMode = scene.properties?.blendMode || "Normal";
+		const sceneMask = Boolean(scene.properties?.mask);
+		const sceneInverse = Boolean(scene.properties?.inverse);
+		const sceneEffects = (scene.effects || []).filter(
+			(effect) => effect?.enabled,
+		);
+		const enabledDisplayCount = (scene.displays || []).filter(
+			(display) => display?.enabled,
+		).length;
+		const sceneMaskCombine =
+			sceneMask && !sceneInverse && enabledDisplayCount > 1 ? "add" : "replace";
 
 		for (const display of scene.displays || []) {
 			if (!display?.enabled) {
@@ -967,6 +1262,12 @@ export default function R3FStageRoot({
 							display,
 							order,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -979,6 +1280,12 @@ export default function R3FStageRoot({
 							display,
 							order,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -993,6 +1300,12 @@ export default function R3FStageRoot({
 							frameData,
 							frameIndex,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -1007,6 +1320,12 @@ export default function R3FStageRoot({
 							frameData,
 							frameIndex,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -1021,6 +1340,12 @@ export default function R3FStageRoot({
 							frameData,
 							frameIndex,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -1035,6 +1360,12 @@ export default function R3FStageRoot({
 							frameData,
 							frameIndex,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -1049,6 +1380,12 @@ export default function R3FStageRoot({
 							frameData,
 							frameIndex,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneMaskCombine,
+							sceneEffects,
+							sceneWidth: width,
 						}),
 					);
 					break;
@@ -1062,6 +1399,10 @@ export default function R3FStageRoot({
 							order,
 							frameData,
 							sceneOpacity,
+							sceneBlendMode,
+							sceneMask,
+							sceneInverse,
+							sceneEffects,
 						}),
 					);
 					break;
