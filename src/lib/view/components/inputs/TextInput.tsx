@@ -17,20 +17,22 @@ export default function TextInput({
 }: any) {
 	const [bufferedValue, setBufferedValue] = useState(value);
 	const input = useRef(null);
+	const shouldAutoFocus = useRef(Boolean(autoFocus));
+	const shouldAutoSelect = useRef(Boolean(autoSelect));
 
 	useEffect(() => {
 		if (!input.current) {
 			return;
 		}
 
-		if (autoFocus || autoSelect) {
+		if (shouldAutoFocus.current || shouldAutoSelect.current) {
 			input.current.focus();
 		}
 
-		if (autoSelect) {
+		if (shouldAutoSelect.current) {
 			input.current.select();
 		}
-	}, [autoFocus, autoSelect]);
+	}, []);
 
 	useEffect(() => {
 		setBufferedValue(value);

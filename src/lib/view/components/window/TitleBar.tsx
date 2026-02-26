@@ -156,7 +156,7 @@ export default function TitleBar() {
 						aria-label="Main menu"
 						onClick={toggleMenu}
 					>
-						<MenuIcon size={18} />
+						<MenuIcon size={16} />
 					</button>
 					<Menu
 						className={"top-full mt-1.5 left-0 min-w-56 border border-gray300"}

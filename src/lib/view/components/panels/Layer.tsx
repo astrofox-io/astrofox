@@ -53,7 +53,7 @@ export default function Layer({
 			)}
 			onClick={handleLayerClick}
 		>
-			{icon && <Icon className={"w-3 h-3"} glyph={icon} />}
+			{icon && <Icon className={"w-4 h-4"} glyph={icon} />}
 			<div className={"flex-1 min-w-0 py-0.5"} onDoubleClick={handleEnableEdit}>
 				{edit ? (
 					<TextInput
@@ -74,7 +74,7 @@ export default function Layer({
 				)}
 			</div>
 			<Icon
-				className={classNames("w-3.5 h-3.5", {
+				className={classNames("w-4 h-4", {
 					"opacity-30": !enabled,
 				})}
 				glyph={Eye}

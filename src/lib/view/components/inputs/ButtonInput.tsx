@@ -23,7 +23,7 @@ const ButtonInput = ({
 		title={title}
 		onClick={disabled ? null : onClick}
 	>
-		{icon && <Icon className={"text-text100 w-3 h-3"} glyph={icon} />}
+		{icon && <Icon className={"text-text100 w-4 h-4"} glyph={icon} />}
 		{text && <span className={"text-sm"}>{text}</span>}
 	</div>
 );

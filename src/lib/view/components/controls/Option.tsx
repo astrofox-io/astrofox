@@ -68,9 +68,13 @@ export default function Option({
 
 	return (
 		<div
-			className={classNames("relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-text300 leading-5", className, {
-				["hidden"]: hidden || inputs.length === 0,
-			})}
+			className={classNames(
+				"relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-text300 leading-5",
+				className,
+				{
+					["hidden"]: hidden || inputs.length === 0,
+				},
+			)}
 		>
 			{withReactor && (
 				<ReactorButton
@@ -87,15 +91,18 @@ export default function Option({
 				})}
 			>
 				<div
-					className={classNames("mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis", {
-						["mr-1"]: showReactor,
-					})}
+					className={classNames(
+						"mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis",
+						{
+							["mr-1"]: showReactor,
+						},
+					)}
 				>
 					{label}
 				</div>
 				{withLink && (
 					<Icon
-						className={classNames("text-text500 w-3 h-3", {
+						className={classNames("text-text500 w-4 h-4", {
 							["text-text100"]: withLink && display.properties[withLink],
 						})}
 						glyph={Link}

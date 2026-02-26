@@ -57,7 +57,7 @@ export default function Splitter({
 			onMouseDown={handleDragStart}
 		>
 			<Icon
-				className={classNames("text-text200 w-3 h-3", {
+				className={classNames("text-text200 w-4 h-4", {
 					"block absolute my-0 mx-auto -top-1 left-0 right-0":
 						type === "horizontal",
 				})}

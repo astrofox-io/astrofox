@@ -46,17 +46,14 @@ export default function ToggleButtons() {
 
 const ToggleButton = ({ enabled, title, icon, onClick }: any) => (
 	<div
-		className={classNames("mr-2.5 [&:last-child]:mr-0 [&_.icon]:text-text500 [&_.icon]:w-4 [&_.icon]:h-4 [&_.icon:hover]:text-text300", {
-			["[&_.icon]:text-text100 [&_.icon:hover]:text-text100"]: enabled,
-		})}
+		className={classNames(
+			"mr-2.5 [&:last-child]:mr-0 [&_.icon]:text-text500 [&_.icon]:w-4 [&_.icon]:h-4 [&_.icon:hover]:text-text300",
+			{
+				["[&_.icon]:text-text100 [&_.icon:hover]:text-text100"]: enabled,
+			},
+		)}
 		onClick={onClick}
 	>
-		<Icon
-			className={""}
-			glyph={icon}
-			title={title}
-			width={20}
-			height={20}
-		/>
+		<Icon className={""} glyph={icon} title={title} />
 	</div>
 );

@@ -56,16 +56,21 @@ export default function VideoInput({ name, value, onChange }: any) {
 	return (
 		<>
 			<div
-				className={"h-24 w-24 bg-input-bg border border-input-border rounded-input relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"}
+				className={
+					"h-24 w-24 bg-input-bg border border-input-border rounded-input relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"
+				}
 				onDrop={handleDrop}
 				onDragOver={ignoreEvents}
 				onClick={handleClick}
 			>
 				<video
 					ref={video}
-					className={classNames("absolute top-1/2 -translate-y-1/2 w-full h-auto", {
-						hidden: !hasVideo,
-					})}
+					className={classNames(
+						"absolute top-1/2 -translate-y-1/2 w-full h-auto",
+						{
+							hidden: !hasVideo,
+						},
+					)}
 					src={hasVideo ? value : ""}
 					muted
 					loop
@@ -73,7 +78,9 @@ export default function VideoInput({ name, value, onChange }: any) {
 					onLoadedData={handleVideoLoad}
 				/>
 				<Icon
-					className={"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-text100 h-6 w-6 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"}
+					className={
+						"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-text100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
+					}
 					glyph={FolderOpen}
 					title="Open File"
 				/>
@@ -81,7 +88,7 @@ export default function VideoInput({ name, value, onChange }: any) {
 			{hasVideo && (
 				<Icon
 					className={classNames({
-						["text-text200 w-3.5 h-3.5 [&:hover]:text-text100"]: true,
+						["text-text200 w-4 h-4 [&:hover]:text-text100"]: true,
 					})}
 					glyph={Times}
 					title="Remove Video"

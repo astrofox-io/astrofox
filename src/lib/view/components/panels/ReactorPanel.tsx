@@ -87,13 +87,21 @@ const ReactorControl = ({ reactor }: any) => {
 	}, [reactor]);
 
 	return (
-		<div className={"w-full min-w-[56rem] overflow-hidden bg-gray75 border-t border-t-gray200 relative pt-2.5 px-5 pb-4"}>
+		<div
+			className={
+				"w-full min-w-[56rem] overflow-hidden bg-gray75 border-t border-t-gray200 relative pt-2.5 px-5 pb-4"
+			}
+		>
 			<Header path={reactor.displayName.split("/")} />
 			<div className={"flex flex-row justify-center items-center"}>
 				<div className={"min-w-72 mt-2.5 mr-2.5 mb-0 ml-0"}>
 					<Control display={reactor} showHeader={false} />
 				</div>
-				<div className={"relative bg-gray75 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-gray200"}>
+				<div
+					className={
+						"relative bg-gray75 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-gray200"
+					}
+				>
 					<canvas
 						ref={spectrumCanvas}
 						width={SPECTRUM_WIDTH}
@@ -109,7 +117,11 @@ const ReactorControl = ({ reactor }: any) => {
 						onChange={inputValueToProps(handleChange)}
 					/>
 				</div>
-				<div className={"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-gray200"}>
+				<div
+					className={
+						"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-gray200"
+					}
+				>
 					<canvas
 						ref={outputCanvas}
 						width={METER_WIDTH}
@@ -118,7 +130,9 @@ const ReactorControl = ({ reactor }: any) => {
 				</div>
 			</div>
 			<Icon
-				className={"absolute top-2.5 right-5 text-text200 w-3.5 h-3.5 [&:hover]:text-text100"}
+				className={
+					"absolute top-2.5 right-5 text-text200 w-4 h-4 [&:hover]:text-text100"
+				}
 				glyph={ChevronDown}
 				title="Hide Panel"
 				onClick={hideReactor}
@@ -132,7 +146,9 @@ const Header = ({ path }: any) => (
 		{path.map((item, index) => (
 			<span
 				key={index}
-				className={"uppercase cursor-default after:content-['\\2022'] after:text-primary100 after:mx-2 last:after:content-none"}
+				className={
+					"uppercase cursor-default after:content-['\\2022'] after:text-primary100 after:mx-2 last:after:content-none"
+				}
 			>
 				{item}
 			</span>

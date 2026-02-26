@@ -151,7 +151,7 @@ export default function NavSidebar() {
 							onMouseOver={hasMenu ? handleMouseOver(index) : undefined}
 							onFocus={hasMenu ? handleMouseOver(index) : undefined}
 						>
-							<Icon size={18} />
+							<Icon size={16} />
 						</button>
 						{hasMenu && (
 							<Menu

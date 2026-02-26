@@ -47,10 +47,13 @@ export default function VolumeControl() {
 	return (
 		<div className={"flex"}>
 			<div
-				className={classNames("mr-2.5 [&_.icon]:text-text100 [&_.icon]:w-5 [&_.icon]:h-5", { ["[&_.icon]:text-text300"]: mute })}
+				className={classNames(
+					"mr-2.5 inline-flex h-4 w-4 items-center justify-center text-text100",
+					{ "text-text300": mute },
+				)}
 				onClick={handleClick}
 			>
-				<Icon className={""} glyph={getIcon()} />
+				<Icon className={"text-inherit"} glyph={getIcon()} />
 			</div>
 			<div className={"flex items-center w-24"}>
 				<RangeInput
