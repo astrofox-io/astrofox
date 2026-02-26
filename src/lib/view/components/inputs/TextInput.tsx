@@ -7,6 +7,7 @@ export default function TextInput({
 	size = null,
 	value = "",
 	spellCheck = false,
+	autoFocus = false,
 	autoSelect = false,
 	buffered = false,
 	readOnly = false,
@@ -18,10 +19,18 @@ export default function TextInput({
 	const input = useRef(null);
 
 	useEffect(() => {
+		if (!input.current) {
+			return;
+		}
+
+		if (autoFocus || autoSelect) {
+			input.current.focus();
+		}
+
 		if (autoSelect) {
 			input.current.select();
 		}
-	}, []);
+	}, [autoFocus, autoSelect]);
 
 	useEffect(() => {
 		setBufferedValue(value);
@@ -60,7 +69,10 @@ export default function TextInput({
 		<input
 			ref={input}
 			type="text"
-			className={classNames("text-sm text-input-text bg-input-bg border border-input-border rounded-sm leading-6 py-0 px-1.5 [outline:none] [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border", className)}
+			className={classNames(
+				"text-sm text-input-text bg-input-bg border border-input-border rounded-sm leading-6 py-0 px-1.5 [outline:none] [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
+				className,
+			)}
 			style={{ width }}
 			name={name}
 			size={size}

@@ -75,7 +75,7 @@ export default function SelectInput({
 			/>
 			<div
 				className={classNames(
-					"absolute top-full z-[var(--z-index-above)] list-none bg-input-bg overflow-hidden shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)]",
+					"absolute top-full min-w-36 z-[var(--z-index-menu)] list-none bg-input-bg overflow-hidden shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)]",
 					optionsClassName,
 					{
 						hidden: !showItems,
@@ -87,7 +87,7 @@ export default function SelectInput({
 					<div
 						key={index}
 						className={classNames(
-							"text-input-text text-sm leading-6 py-0 px-1.5 min-w-24 overflow-hidden text-ellipsis whitespace-nowrap [&:hover]:cursor-default [&:hover]:text-text100 [&:hover]:bg-primary100",
+							"text-input-text text-sm leading-6 py-0 px-1.5 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap [&:hover]:cursor-default [&:hover]:text-text100 [&:hover]:bg-primary100",
 							{
 								"relative h-2.5 [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-1.5 [&:after]:right-1.5 [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-px [&:after]:bg-primary100 [&:hover]:bg-transparent":
 									!item,

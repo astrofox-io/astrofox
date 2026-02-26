@@ -121,19 +121,30 @@ export default function NavSidebar() {
 	}
 
 	return (
-		<nav className={"flex flex-col w-14 shrink-0 py-2 px-1.5 gap-1.5 bg-gray75 border-r border-r-gray300"} aria-label="Main navigation">
+		<nav
+			className={
+				"flex flex-col w-14 shrink-0 py-2 px-1.5 gap-1.5 bg-gray75 border-r border-r-gray300"
+			}
+			aria-label="Main navigation"
+		>
 			{items.map((item, index) => {
 				const hasMenu = item.submenu.length > 0;
 				const isActive = hasMenu && activeIndex === index;
 				const Icon = ICON_MAP[item.label] || FolderOpen;
 
 				return (
-					<div key={item.label} className={"group relative flex justify-center"}>
+					<div
+						key={item.label}
+						className={"group relative flex justify-center"}
+					>
 						<button
 							type="button"
-							className={classNames("w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-text300 inline-flex items-center justify-center cursor-default [&:hover]:text-text100 [&:hover]:bg-gray100", {
-								["text-text100 bg-primary100"]: isActive,
-							})}
+							className={classNames(
+								"w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-text300 inline-flex items-center justify-center cursor-default [&:hover]:text-text100 [&:hover]:bg-gray100",
+								{
+									"text-text100 bg-primary100": isActive,
+								},
+							)}
 							title={item.label}
 							aria-label={item.label}
 							onClick={handleButtonClick(item, index)}
@@ -144,7 +155,9 @@ export default function NavSidebar() {
 						</button>
 						{hasMenu && (
 							<Menu
-								className={"top-0 left-full ml-2 min-w-44 border border-gray300"}
+								className={
+									"top-0 left-full ml-2 min-w-52 border border-gray300"
+								}
 								items={item.submenu}
 								visible={isActive}
 								onMenuItemClick={handleMenuItemClick}

@@ -159,7 +159,7 @@ export default function TitleBar() {
 						<MenuIcon size={18} />
 					</button>
 					<Menu
-						className={"top-full mt-1.5 left-0 min-w-48 border border-gray300"}
+						className={"top-full mt-1.5 left-0 min-w-56 border border-gray300"}
 						items={menuItems}
 						visible={menuVisible}
 						onMenuItemClick={onMenuItemClick}

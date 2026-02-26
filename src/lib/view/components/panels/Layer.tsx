@@ -44,21 +44,25 @@ export default function Layer({
 	return (
 		<div
 			className={classNames(
-				"flex flex-row text-sm text-text100 bg-gray200 border-b border-b-gray75 p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				"flex flex-row items-center text-sm text-text100 bg-gray200 border-b border-b-gray75 p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
 				className,
 				{
 					"bg-gray100": edit,
-					"bg-primary100": active,
+					"bg-primary100": active && !edit,
 				},
 			)}
 			onClick={handleLayerClick}
 		>
 			{icon && <Icon className={"w-3 h-3"} glyph={icon} />}
-			<div className={"flex-1"} onDoubleClick={handleEnableEdit}>
+			<div className={"flex-1 min-w-0 py-0.5"} onDoubleClick={handleEnableEdit}>
 				{edit ? (
 					<TextInput
 						name="displayName"
 						value={name}
+						width="100%"
+						className={
+							"h-7 !px-2 !leading-7 !rounded-md !bg-gray100 !border-primary100"
+						}
 						buffered
 						autoFocus
 						autoSelect
