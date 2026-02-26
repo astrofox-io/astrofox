@@ -36,7 +36,7 @@ const SUPPORTED_MASK_DISPLAYS = new Set([
 	"SoundWaveDisplay",
 ]);
 
-const SUPPORTED_EFFECTS = new Set(["RGBShiftEffect"]);
+const SUPPORTED_EFFECTS = new Set(["RGBShiftEffect", "DistortionEffect"]);
 
 const SUPPORTED_EFFECT_DISPLAYS = new Set([
 	"ImageDisplay",

@@ -45,17 +45,31 @@ uniform float shiftAmount;
 uniform float shiftAngle;
 uniform float enableMask;
 uniform float enableShift;
+uniform float distortionAmount;
+uniform float distortionTime;
+uniform float enableDistortion;
 varying vec2 vUv;
 
 vec4 sampleLayerTexture(vec2 uv) {
+	vec2 sampleUv = uv;
+
+	if (enableDistortion > 0.5) {
+		float frequency = 6.0;
+		float amplitude = 0.015 * distortionAmount;
+		float x = sampleUv.y * frequency + distortionTime * 0.7;
+		float y = sampleUv.x * frequency + distortionTime * 0.3;
+		sampleUv.x += cos(x + y) * amplitude * cos(y);
+		sampleUv.y += sin(x - y) * amplitude * cos(y);
+	}
+
 	if (enableShift < 0.5) {
-		return texture2D(map, uv);
+		return texture2D(map, sampleUv);
 	}
 
 	vec2 offset = shiftAmount * vec2(cos(shiftAngle), sin(shiftAngle));
-	vec4 cr = texture2D(map, uv + offset);
-	vec4 cg = texture2D(map, uv);
-	vec4 cb = texture2D(map, uv - offset);
+	vec4 cr = texture2D(map, sampleUv + offset);
+	vec4 cg = texture2D(map, sampleUv);
+	vec4 cb = texture2D(map, sampleUv - offset);
 
 	return vec4(cr.r, cg.g, cb.b, (cr.a + cg.a + cb.a) / 3.0);
 }
@@ -146,7 +160,8 @@ function TexturePlane({
 	};
 
 	const rgbShift = getRGBShiftProps(sceneEffects, sceneWidth);
-	const useShaderMaterial = sceneMask || rgbShift.enabled;
+	const distortion = getDistortionProps(sceneEffects);
+	const useShaderMaterial = sceneMask || rgbShift.enabled || distortion.enabled;
 
 	if (useShaderMaterial) {
 		const blendDstAlpha = sceneMaskCombine === "add" ? OneFactor : ZeroFactor;
@@ -172,6 +187,9 @@ function TexturePlane({
 					shiftAngle: { value: rgbShift.angle },
 					enableMask: { value: sceneMask ? 1 : 0 },
 					enableShift: { value: rgbShift.enabled ? 1 : 0 },
+					distortionAmount: { value: distortion.amount },
+					distortionTime: { value: distortion.time },
+					enableDistortion: { value: distortion.enabled ? 1 : 0 },
 				},
 				vertexShader: LAYER_VERTEX_SHADER,
 				fragmentShader: LAYER_FRAGMENT_SHADER,
@@ -237,6 +255,30 @@ function getRGBShiftProps(sceneEffects, sceneWidth) {
 		enabled: true,
 		amount: offset / Math.max(1, Number(sceneWidth || 1)),
 		angle: toRadians(angle),
+	};
+}
+
+function getDistortionProps(sceneEffects) {
+	const distortion = (sceneEffects || []).find(
+		(effect) => effect?.enabled && effect.name === "DistortionEffect",
+	);
+
+	if (!distortion) {
+		return {
+			enabled: false,
+			amount: 0,
+			time: 0,
+		};
+	}
+
+	const baseAmount = Number(distortion.properties?.amount || 0);
+	const amount = baseAmount * 30;
+	const time = Number(distortion.time || distortion.properties?.time || 0);
+
+	return {
+		enabled: true,
+		amount,
+		time,
 	};
 }
 
