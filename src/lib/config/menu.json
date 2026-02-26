@@ -15,10 +15,6 @@
 				"action": "save-project"
 			},
 			{
-				"label": "Duplicate project",
-				"action": "duplicate-project"
-			},
-			{
 				"type": "separator"
 			},
 			{

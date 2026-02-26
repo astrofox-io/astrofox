@@ -7,7 +7,6 @@ import { raiseError } from "@/lib/view/actions/error";
 import { showModal } from "@/lib/view/actions/modals";
 import {
 	checkUnsavedChanges,
-	duplicateProject,
 	newProject,
 	openProjectBrowser,
 	openRelinkMediaDialog,
@@ -92,10 +91,6 @@ export async function handleMenuAction(action) {
 
 		case "save-project":
 			await saveProject();
-			break;
-
-		case "duplicate-project":
-			await duplicateProject();
 			break;
 
 		case "load-audio":

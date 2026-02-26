@@ -9,7 +9,6 @@ import { raiseError } from "@/lib/view/actions/error";
 import { showModal } from "@/lib/view/actions/modals";
 import { loadReactors, resetReactors } from "@/lib/view/actions/reactors";
 import {
-	getScenesSnapshot,
 	loadScenes,
 	resetScenes,
 	updateElementProperty,
@@ -50,8 +49,92 @@ function snapshotProject() {
 	return {
 		version: env.APP_VERSION,
 		stage: stage.toJSON(),
-		scenes: getScenesSnapshot(),
+		scenes: stage.scenes.toJSON(),
 		reactors: reactors.toJSON(),
+	};
+}
+
+function isEmbeddedMediaSource(src) {
+	return /^data:(image|video)\//i.test(src);
+}
+
+function isRemoteMediaSource(src) {
+	return /^(https?:)?\/\//i.test(src);
+}
+
+function normalizeMediaRef(mediaRef) {
+	if (!mediaRef || typeof mediaRef !== "object" || !mediaRef.displayId) {
+		return null;
+	}
+
+	return {
+		displayId: mediaRef.displayId,
+		kind: mediaRef.kind === "video" ? "video" : "image",
+		label: mediaRef.label || "Media",
+	};
+}
+
+function mergeMediaRefs(...groups) {
+	const byDisplayId = new Map();
+
+	for (const group of groups) {
+		for (const mediaRef of group || []) {
+			const normalized = normalizeMediaRef(mediaRef);
+			if (!normalized) {
+				continue;
+			}
+
+			byDisplayId.set(normalized.displayId, normalized);
+		}
+	}
+
+	return Array.from(byDisplayId.values());
+}
+
+function sanitizeSnapshotMedia(snapshot) {
+	const mediaRefs = [];
+
+	const scenes = (snapshot?.scenes || []).map((scene) => {
+		const mapMediaProps = (element) => {
+			const src = element?.properties?.src;
+
+			if (!src || src === BLANK_IMAGE || typeof src !== "string") {
+				return element;
+			}
+
+			if (isEmbeddedMediaSource(src) || isRemoteMediaSource(src)) {
+				return element;
+			}
+
+			const kind = element.name === "VideoDisplay" ? "video" : "image";
+			mediaRefs.push({
+				displayId: element.id,
+				kind,
+				label: element.displayName || element.name || "Media",
+			});
+
+			return {
+				...element,
+				properties: {
+					...element.properties,
+					src: BLANK_IMAGE,
+				},
+			};
+		};
+
+		return {
+			...scene,
+			displays: (scene.displays || []).map(mapMediaProps),
+			effects: (scene.effects || []).map(mapMediaProps),
+		};
+	});
+
+	return {
+		snapshot: {
+			...snapshot,
+			scenes,
+		},
+		mediaRefs,
 	};
 }
 
@@ -83,7 +166,12 @@ function parseProjectPayload(payload, fallbackName) {
 		throw new Error("Invalid project file.");
 	}
 
-	const snapshot = payload.snapshot || payload;
+	const snapshot =
+		payload.snapshot ||
+		payload.snapshotJson ||
+		payload.project?.snapshot ||
+		payload.project?.snapshotJson ||
+		payload;
 
 	if (!snapshot || typeof snapshot !== "object") {
 		throw new Error("Invalid project snapshot.");
@@ -94,9 +182,10 @@ function parseProjectPayload(payload, fallbackName) {
 		projectName:
 			payload.projectName ||
 			payload.name ||
+			payload.project?.name ||
 			fallbackName ||
 			DEFAULT_PROJECT_NAME,
-		mediaRefs: payload.mediaRefs || [],
+		mediaRefs: payload.mediaRefs || payload.project?.mediaRefs || [],
 	};
 }
 
@@ -105,8 +194,11 @@ async function loadProjectFromPayload(payload, fallbackName) {
 		payload,
 		fallbackName,
 	);
+	const { snapshot: sanitizedSnapshot, mediaRefs: detectedMediaRefs } =
+		sanitizeSnapshotMedia(snapshot);
+	const unresolvedMediaRefs = mergeMediaRefs(mediaRefs, detectedMediaRefs);
 
-	loadProject(snapshot);
+	loadProject(sanitizedSnapshot);
 	await loadScenes();
 
 	projectStore.setState({
@@ -114,10 +206,10 @@ async function loadProjectFromPayload(payload, fallbackName) {
 		projectName: projectName || DEFAULT_PROJECT_NAME,
 		opened: Date.now(),
 		lastModified: 0,
-		unresolvedMediaRefs: mediaRefs,
+		unresolvedMediaRefs: unresolvedMediaRefs,
 	});
 
-	if (mediaRefs.length > 0) {
+	if (unresolvedMediaRefs.length > 0) {
 		openRelinkMediaDialog();
 	}
 }
@@ -297,12 +389,14 @@ export async function saveProject(nameOverride) {
 	).trim();
 
 	try {
+		const { snapshot, mediaRefs } = sanitizeSnapshotMedia(snapshotProject());
 		const payload = {
 			name,
 			projectName: name,
 			version: env.APP_VERSION,
 			savedAt: new Date().toISOString(),
-			snapshot: snapshotProject(),
+			snapshot,
+			mediaRefs,
 		};
 		const fileName = createProjectFileName(name);
 		const { fileHandle, filePath, canceled } = await api.showSaveDialog({
@@ -333,11 +427,6 @@ export async function saveProject(nameOverride) {
 		raiseError("Failed to save project file.", error);
 		return false;
 	}
-}
-
-export async function duplicateProject() {
-	const { projectName } = projectStore.getState();
-	return saveProject(`${projectName || DEFAULT_PROJECT_NAME} copy`);
 }
 
 export async function relinkMediaRef(mediaRef) {
