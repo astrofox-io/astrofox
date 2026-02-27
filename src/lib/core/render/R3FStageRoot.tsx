@@ -1239,7 +1239,7 @@ function BarSpectrumDisplayLayer({
 			width: canvas.width,
 			height: canvas.height,
 			originX: canvas.width / 2,
-			originY: Number(properties.height || 0),
+			originY: canvas.height / 2,
 		};
 	}, []);
 
