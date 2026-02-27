@@ -103,6 +103,7 @@ export default class R3FBackend extends RenderBackend {
 		this.initialized = false;
 		this.r3fAvailable = true;
 		this.canvas = null;
+		this.invalidate = null;
 
 		this.graph = { scenes: [] };
 		this.backgroundColor = stage.properties.backgroundColor;
@@ -246,6 +247,10 @@ export default class R3FBackend extends RenderBackend {
 				frameIndex: this.frameIndex,
 			}),
 		);
+
+		if (this.invalidate) {
+			this.invalidate();
+		}
 	}
 
 	async ensureRoot() {
@@ -261,6 +266,7 @@ export default class R3FBackend extends RenderBackend {
 			this.mountPromise = loadFiberModule()
 				.then((module) => {
 					this.fiberModule = module;
+					this.invalidate = module.invalidate || null;
 					const { createRoot } = module;
 
 					if (!this.threeExtended && module.extend) {
@@ -397,6 +403,7 @@ export default class R3FBackend extends RenderBackend {
 		this.initialized = false;
 		this.r3fAvailable = true;
 		this.canvas = null;
+		this.invalidate = null;
 
 		this.graph = { scenes: [] };
 		this.frameData = null;
