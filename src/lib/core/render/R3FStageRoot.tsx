@@ -15,6 +15,7 @@ import {
 	CustomBlending,
 	DoubleSide,
 	FrontSide,
+	LinearFilter,
 	MultiplyBlending,
 	NormalBlending,
 	OneFactor,
@@ -369,6 +370,9 @@ function TexturePlane({
 	renderOrder,
 }) {
 	const position = [x + (width / 2 - originX), -y + (height / 2 - originY), 0];
+	const planeWidth = Math.max(1, width);
+	const planeHeight = Math.max(1, height);
+	const planeScale = [planeWidth * zoom, planeHeight * zoom, 1];
 	const finalOpacity = Math.max(
 		0,
 		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
@@ -395,11 +399,11 @@ function TexturePlane({
 			{
 				position,
 				rotation: [0, 0, -toRadians(rotation)],
-				scale: [zoom, zoom, 1],
+				scale: planeScale,
 				renderOrder,
 			},
 			React.createElement("planeGeometry", {
-				args: [Math.max(1, width), Math.max(1, height)],
+				args: [1, 1],
 			}),
 			React.createElement("shaderMaterial", {
 				uniforms: {
@@ -438,11 +442,11 @@ function TexturePlane({
 		{
 			position,
 			rotation: [0, 0, -toRadians(rotation)],
-			scale: [zoom, zoom, 1],
+			scale: planeScale,
 			renderOrder,
 		},
 		React.createElement("planeGeometry", {
-			args: [Math.max(1, width), Math.max(1, height)],
+			args: [1, 1],
 		}),
 		React.createElement("meshBasicMaterial", materialProps),
 	);
@@ -638,6 +642,9 @@ function ImageDisplayLayer({
 
 	const texture = React.useMemo(() => {
 		const nextTexture = new TextureLoader().load(src);
+		nextTexture.minFilter = LinearFilter;
+		nextTexture.magFilter = LinearFilter;
+		nextTexture.generateMipmaps = false;
 		nextTexture.needsUpdate = true;
 
 		return nextTexture;
@@ -721,6 +728,9 @@ function VideoDisplayLayer({
 
 	const texture = React.useMemo(() => {
 		const nextTexture = new VideoTexture(video);
+		nextTexture.minFilter = LinearFilter;
+		nextTexture.magFilter = LinearFilter;
+		nextTexture.generateMipmaps = false;
 		nextTexture.needsUpdate = true;
 		return nextTexture;
 	}, [video]);
@@ -927,11 +937,32 @@ function CanvasTextureLayer({
 	const { x = 0, y = 0, rotation = 0, zoom = 1, opacity = 1 } = properties;
 
 	const canvas = React.useMemo(() => document.createElement("canvas"), []);
-	const texture = React.useMemo(() => new CanvasTexture(canvas), [canvas]);
-	const originRef = React.useRef({ x: 0.5, y: 0.5 });
+	const [plane, setPlane] = React.useState(() => ({
+		width: Math.max(1, canvas.width || 1),
+		height: Math.max(1, canvas.height || 1),
+		originX: Math.round((canvas.width || 1) / 2),
+		originY: Math.round((canvas.height || 1) / 2),
+	}));
+	const textureSizeRef = React.useRef({
+		width: Math.max(1, canvas.width || 1),
+		height: Math.max(1, canvas.height || 1),
+	});
+	const texture = React.useMemo(() => {
+		const nextTexture = new CanvasTexture(canvas);
+		nextTexture.minFilter = LinearFilter;
+		nextTexture.magFilter = LinearFilter;
+		nextTexture.generateMipmaps = false;
+		nextTexture.needsUpdate = true;
 
-	React.useEffect(() => {
-		const ctx = canvas.getContext("2d");
+		return nextTexture;
+	}, [canvas]);
+
+	React.useLayoutEffect(() => {
+		const ctx = canvas.getContext("2d", {
+			alpha: true,
+			willReadFrequently: true,
+		});
+
 		if (!ctx) {
 			return;
 		}
@@ -947,20 +978,27 @@ function CanvasTextureLayer({
 			return;
 		}
 
-		const width = Math.max(1, Math.round(firstPass.width || canvas.width || 1));
-		const height = Math.max(
+		const nextWidth = Math.max(
+			1,
+			Math.round(firstPass.width || canvas.width || 1),
+		);
+		const nextHeight = Math.max(
 			1,
 			Math.round(firstPass.height || canvas.height || 1),
 		);
 
-		if (canvas.width !== width || canvas.height !== height) {
-			canvas.width = width;
-			canvas.height = height;
+		if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+			canvas.width = nextWidth;
+			canvas.height = nextHeight;
 
-			const nextContext = canvas.getContext("2d");
-			if (nextContext) {
+			const redrawContext = canvas.getContext("2d", {
+				alpha: true,
+				willReadFrequently: true,
+			});
+
+			if (redrawContext) {
 				drawFrame({
-					context: nextContext,
+					context: redrawContext,
 					canvas,
 					properties,
 					frameData,
@@ -968,17 +1006,41 @@ function CanvasTextureLayer({
 			}
 		}
 
-		originRef.current = {
-			x:
-				firstPass.originX !== undefined
-					? firstPass.originX
-					: Math.round(width / 2),
-			y:
-				firstPass.originY !== undefined
-					? firstPass.originY
-					: Math.round(height / 2),
-		};
+		const nextOriginX =
+			firstPass.originX !== undefined
+				? firstPass.originX
+				: Math.round(nextWidth / 2);
+		const nextOriginY =
+			firstPass.originY !== undefined
+				? firstPass.originY
+				: Math.round(nextHeight / 2);
 
+		if (
+			plane.width !== nextWidth ||
+			plane.height !== nextHeight ||
+			plane.originX !== nextOriginX ||
+			plane.originY !== nextOriginY
+		) {
+			setPlane({
+				width: nextWidth,
+				height: nextHeight,
+				originX: nextOriginX,
+				originY: nextOriginY,
+			});
+		}
+
+		if (
+			textureSizeRef.current.width !== nextWidth ||
+			textureSizeRef.current.height !== nextHeight
+		) {
+			texture.dispose();
+			textureSizeRef.current = {
+				width: nextWidth,
+				height: nextHeight,
+			};
+		}
+
+		texture.image = canvas;
 		texture.needsUpdate = true;
 	});
 
@@ -988,8 +1050,8 @@ function CanvasTextureLayer({
 		};
 	}, [texture]);
 
-	const width = Math.max(1, canvas.width || 1);
-	const height = Math.max(1, canvas.height || 1);
+	const width = plane.width;
+	const height = plane.height;
 
 	return React.createElement(TexturePlane, {
 		texture,
@@ -997,8 +1059,8 @@ function CanvasTextureLayer({
 		height,
 		x,
 		y,
-		originX: originRef.current.x,
-		originY: originRef.current.y,
+		originX: plane.originX,
+		originY: plane.originY,
 		rotation,
 		zoom,
 		opacity,
@@ -1035,12 +1097,8 @@ function TextDisplayLayer({
 			textRef.current = new CanvasText(properties, context.canvas);
 		}
 
-		if (textRef.current.update(properties)) {
-			textRef.current.render();
-		} else if (!textRef.current._r3fHasRendered) {
-			textRef.current.render();
-			textRef.current._r3fHasRendered = true;
-		}
+		textRef.current.update(properties);
+		textRef.current.render();
 
 		const width = Math.max(1, context.canvas.width || 1);
 		const height = Math.max(1, context.canvas.height || 1);

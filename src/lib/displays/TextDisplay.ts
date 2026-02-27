@@ -19,7 +19,7 @@ export default class TextDisplay extends CanvasDisplay {
 		type: "display",
 		label: "Text",
 		defaultProperties: {
-			text: "",
+			text: "Text",
 			size: 40,
 			font: "Roboto",
 			italic: false,

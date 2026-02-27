@@ -5,7 +5,7 @@ import { resolveCanvasFontFamily } from "@/lib/view/fontFamilies";
 export default class CanvasText extends Entity {
 	[key: string]: any;
 	static defaultProperties = {
-		text: "",
+		text: "Text",
 		size: 40,
 		font: "Roboto",
 		italic: false,
@@ -78,8 +78,8 @@ export default class CanvasText extends Entity {
 
 		const length = Math.ceil(context.measureText(text).width);
 		const spacing = text.length ? Math.ceil(length / text.length) : 0;
-		const width = length + spacing;
-		const height = size * 2;
+		const width = Math.max(1, length + spacing);
+		const height = Math.max(1, size * 2);
 
 		// Reset canvas
 		resetCanvas(canvas, width, height);
