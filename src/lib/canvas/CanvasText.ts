@@ -5,7 +5,7 @@ import { resolveCanvasFontFamily } from "@/lib/view/fontFamilies";
 export default class CanvasText extends Entity {
 	[key: string]: any;
 	static defaultProperties = {
-		text: "Text",
+		text: "",
 		size: 40,
 		font: "Roboto",
 		italic: false,
