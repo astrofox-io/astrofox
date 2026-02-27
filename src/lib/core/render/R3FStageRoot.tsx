@@ -309,14 +309,14 @@ function EffectBridge({ effect, width, height }) {
 
 	switch (effect.name) {
 		case "BloomEffect": {
-			const amount = Number(props.amount || 0);
-			const threshold = Number(props.threshold || 1);
+			const amount = Number(props.amount ?? 0);
+			const threshold = Number(props.threshold ?? 1);
 			const blendMode = props.blendMode === "Screen" ? BlendFunction.SCREEN : BlendFunction.ADD;
 			return (
 				<Bloom
 					intensity={amount * 10}
 					luminanceThreshold={threshold}
-					luminanceSmoothing={0.1}
+					luminanceSmoothing={0.025}
 					blendFunction={blendMode}
 				/>
 			);

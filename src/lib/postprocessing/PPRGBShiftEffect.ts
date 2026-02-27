@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Effect } from "postprocessing";
+import { Effect, EffectAttribute } from "postprocessing";
 import { Uniform } from "three";
 
 const fragmentShader = `
@@ -19,6 +19,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 export class PPRGBShiftEffect extends Effect {
 	constructor({ offset = 0, angle = 0 } = {}) {
 		super("PPRGBShiftEffect", fragmentShader, {
+			attributes: EffectAttribute.CONVOLUTION,
 			uniforms: new Map([
 				["offset", new Uniform(offset)],
 				["angle", new Uniform(angle)],

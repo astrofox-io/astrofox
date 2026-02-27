@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Effect } from "postprocessing";
+import { Effect, EffectAttribute } from "postprocessing";
 import { Uniform } from "three";
 
 const fragmentShader = `
@@ -33,6 +33,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 export class PPGlitchEffect extends Effect {
 	constructor({ amount = 0.5, time = 0 } = {}) {
 		super("PPGlitchEffect", fragmentShader, {
+			attributes: EffectAttribute.CONVOLUTION,
 			uniforms: new Map([
 				["amount", new Uniform(amount)],
 				["time", new Uniform(time)],

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Effect } from "postprocessing";
+import { Effect, EffectAttribute } from "postprocessing";
 import { Uniform, Vector2 } from "three";
 
 const fragmentShader = `
@@ -107,6 +107,7 @@ export class PPBlurEffect extends Effect {
 		height = 1,
 	} = {}) {
 		super("PPBlurEffect", fragmentShader, {
+			attributes: EffectAttribute.CONVOLUTION,
 			uniforms: new Map([
 				["amount", new Uniform(amount)],
 				["blurType", new Uniform(blurType)],

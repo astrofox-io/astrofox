@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Effect } from "postprocessing";
+import { Effect, EffectAttribute } from "postprocessing";
 import { Uniform, Vector2 } from "three";
 
 const fragmentShader = `
@@ -45,6 +45,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 export class PPGlowEffect extends Effect {
 	constructor({ amount = 0, intensity = 1, width = 1, height = 1 } = {}) {
 		super("PPGlowEffect", fragmentShader, {
+			attributes: EffectAttribute.CONVOLUTION,
 			uniforms: new Map([
 				["amount", new Uniform(amount)],
 				["intensity", new Uniform(intensity)],
