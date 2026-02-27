@@ -4,8 +4,22 @@ import WaveParser from "@/lib/audio/WaveParser";
 import CanvasBars from "@/lib/canvas/CanvasBars";
 import CanvasText from "@/lib/canvas/CanvasText";
 import CanvasWave from "@/lib/canvas/CanvasWave";
+import {
+	PPBlurEffect,
+	PPColorHalftoneEffect,
+	PPDistortionEffect,
+	PPGlitchEffect,
+	PPGlowEffect,
+	PPHexPixelateEffect,
+	PPKaleidoscopeEffect,
+	PPLEDEffect,
+	PPMirrorEffect,
+	PPRGBShiftEffect,
+} from "@/lib/postprocessing";
 import POINT_SPRITE from "@/lib/view/assets/images/point.png";
 import { BLANK_IMAGE } from "@/lib/view/constants";
+import { EffectComposer, Bloom, DotScreen, Pixelation } from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 import React from "react";
 import {
 	AddEquation,
@@ -21,7 +35,6 @@ import {
 	OneFactor,
 	SubtractiveBlending,
 	TextureLoader,
-	Vector2,
 	VideoTexture,
 	ZeroFactor,
 } from "three";
@@ -31,7 +44,7 @@ const HEXAGON_ANGLE = (2 * Math.PI) / 6;
 const WAVELENGTH_MAX = 0.25;
 const LUMA = [0.2126, 0.7152, 0.0722];
 
-const LAYER_VERTEX_SHADER = `
+const MASK_VERTEX_SHADER = `
 varying vec2 vUv;
 void main() {
 	vUv = uv;
@@ -39,285 +52,18 @@ void main() {
 }
 `;
 
-const LAYER_FRAGMENT_SHADER = `
+const MASK_FRAGMENT_SHADER = `
 uniform sampler2D map;
 uniform float opacity;
 uniform float inverse;
 uniform vec3 luma;
-uniform float enableMask;
-uniform vec2 sceneResolution;
-uniform int effectType;
-uniform float effectValue1;
-uniform float effectValue2;
-uniform float effectValue3;
-uniform float effectValue4;
 varying vec2 vUv;
 
-vec2 distortUv(vec2 uv, float amount, float time) {
-	float frequency = 6.0;
-	float amplitude = 0.015 * amount;
-	float x = uv.y * frequency + time * 0.7;
-	float y = uv.x * frequency + time * 0.3;
-	uv.x += cos(x + y) * amplitude * cos(y);
-	uv.y += sin(x - y) * amplitude * cos(y);
-	return uv;
-}
-
-vec2 mirrorUv(vec2 uv, int side) {
-	vec2 p = uv;
-
-	if (side == 0) {
-		if (p.x > 0.5) p.x = 1.0 - p.x;
-	}
-	else if (side == 1) {
-		if (p.x < 0.5) p.x = 1.0 - p.x;
-	}
-	else if (side == 2) {
-		if (p.y < 0.5) p.y = 1.0 - p.y;
-	}
-	else if (side == 3) {
-		if (p.y > 0.5) p.y = 1.0 - p.y;
-	}
-
-	return p;
-}
-
-vec4 rgbShiftSample(vec2 uv, float amount, float angle) {
-	vec2 offset = amount * vec2(cos(angle), sin(angle));
-	vec4 cr = texture2D(map, uv + offset);
-	vec4 cg = texture2D(map, uv);
-	vec4 cb = texture2D(map, uv - offset);
-
-	return vec4(cr.r, cg.g, cb.b, (cr.a + cg.a + cb.a) / 3.0);
-}
-
-vec4 boxBlurSample(vec2 uv, float amount) {
-	float h = amount / sceneResolution.x;
-	float v = amount / sceneResolution.y;
-	vec4 sum = vec4(0.0);
-
-	sum += texture2D(map, vec2(uv.x - 4.0 * h, uv.y)) * 0.051;
-	sum += texture2D(map, vec2(uv.x - 3.0 * h, uv.y)) * 0.0918;
-	sum += texture2D(map, vec2(uv.x - 2.0 * h, uv.y)) * 0.12245;
-	sum += texture2D(map, vec2(uv.x - 1.0 * h, uv.y)) * 0.1531;
-	sum += texture2D(map, vec2(uv.x, uv.y)) * 0.1633;
-	sum += texture2D(map, vec2(uv.x + 1.0 * h, uv.y)) * 0.1531;
-	sum += texture2D(map, vec2(uv.x + 2.0 * h, uv.y)) * 0.12245;
-	sum += texture2D(map, vec2(uv.x + 3.0 * h, uv.y)) * 0.0918;
-	sum += texture2D(map, vec2(uv.x + 4.0 * h, uv.y)) * 0.051;
-
-	sum += texture2D(map, vec2(uv.x, uv.y - 4.0 * v)) * 0.051;
-	sum += texture2D(map, vec2(uv.x, uv.y - 3.0 * v)) * 0.0918;
-	sum += texture2D(map, vec2(uv.x, uv.y - 2.0 * v)) * 0.12245;
-	sum += texture2D(map, vec2(uv.x, uv.y - 1.0 * v)) * 0.1531;
-	sum += texture2D(map, vec2(uv.x, uv.y)) * 0.1633;
-	sum += texture2D(map, vec2(uv.x, uv.y + 1.0 * v)) * 0.1531;
-	sum += texture2D(map, vec2(uv.x, uv.y + 2.0 * v)) * 0.12245;
-	sum += texture2D(map, vec2(uv.x, uv.y + 3.0 * v)) * 0.0918;
-	sum += texture2D(map, vec2(uv.x, uv.y + 4.0 * v)) * 0.051;
-
-	return sum * 0.5;
-}
-
-vec4 zoomBlurSample(vec2 uv, float amount, vec2 center) {
-	vec4 color = vec4(0.0);
-	float total = 0.0;
-	vec2 c = center * sceneResolution;
-	vec2 toCenter = c - uv * sceneResolution;
-
-	for (float t = 0.0; t <= 40.0; t++) {
-		float percent = t / 40.0;
-		float weight = 4.0 * (percent - percent * percent);
-		vec4 s = texture2D(map, uv + toCenter * percent * amount / sceneResolution);
-		color += s * weight;
-		total += weight;
-	}
-
-	return color / max(total, 0.0001);
-}
-
-float dotPattern(vec2 uv, float angle, float scale, vec2 size) {
-	float s = sin(angle);
-	float c = cos(angle);
-	vec2 tex = uv * size - vec2(size.x * 0.5, size.y * 0.5);
-	vec2 point = vec2(c * tex.x - s * tex.y, s * tex.x + c * tex.y) * scale;
-	return (sin(point.x) * sin(point.y)) * 4.0;
-}
-
-float rand(vec2 n) {
-	return fract(sin(dot(n, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
-vec4 sampleLayerTexture(vec2 uv) {
-	if (effectType == 1) {
-		return rgbShiftSample(uv, effectValue1, effectValue2);
-	}
-
-	if (effectType == 2) {
-		return texture2D(map, distortUv(uv, effectValue1, effectValue2));
-	}
-
-	if (effectType == 3) {
-		return texture2D(map, mirrorUv(uv, int(effectValue1 + 0.5)));
-	}
-
-	if (effectType == 4) {
-		float d = effectValue1 / sceneResolution.x;
-		float u = floor(uv.x / d) * d;
-		d = effectValue1 / sceneResolution.y;
-		float v = floor(uv.y / d) * d;
-		return texture2D(map, vec2(u, v));
-	}
-
-	if (effectType == 5) {
-		vec2 center = sceneResolution * 0.5;
-		vec2 tex = (uv * sceneResolution - center) / effectValue1;
-		tex.y /= 0.866025404;
-		tex.x -= tex.y * 0.5;
-		vec2 a;
-		if (tex.x + tex.y - floor(tex.x) - floor(tex.y) < 1.0) {
-			a = vec2(floor(tex.x), floor(tex.y));
-		} else {
-			a = vec2(ceil(tex.x), ceil(tex.y));
-		}
-		vec2 b = vec2(ceil(tex.x), floor(tex.y));
-		vec2 c = vec2(floor(tex.x), ceil(tex.y));
-		vec3 TEX = vec3(tex.x, tex.y, 1.0 - tex.x - tex.y);
-		vec3 A = vec3(a.x, a.y, 1.0 - a.x - a.y);
-		vec3 B = vec3(b.x, b.y, 1.0 - b.x - b.y);
-		vec3 C = vec3(c.x, c.y, 1.0 - c.x - c.y);
-		float alen = length(TEX - A);
-		float blen = length(TEX - B);
-		float clen = length(TEX - C);
-		vec2 choice;
-		if (alen < blen) {
-			choice = alen < clen ? a : c;
-		} else {
-			choice = blen < clen ? b : c;
-		}
-		choice.x += choice.y * 0.5;
-		choice.y *= 0.866025404;
-		choice *= effectValue1 / sceneResolution;
-		return texture2D(map, choice + center / sceneResolution);
-	}
-
-	if (effectType == 6) {
-		vec2 p = uv - 0.5;
-		float r = length(p);
-		float a = atan(p.y, p.x) + effectValue2;
-		float tau = 6.28318530718;
-		a = mod(a, tau / max(effectValue1, 1.0));
-		a = abs(a - tau / max(effectValue1, 1.0) / 2.0);
-		p = r * vec2(cos(a), sin(a));
-		return texture2D(map, p + 0.5);
-	}
-
-	if (effectType == 7) {
-		vec4 color = texture2D(map, uv);
-		float average = (color.r + color.g + color.b) / 3.0;
-		float pattern = dotPattern(uv, effectValue2, effectValue1, vec2(256.0, 256.0));
-		return vec4(vec3(average * 10.0 - 5.0 + pattern), color.a);
-	}
-
-	if (effectType == 8) {
-		vec4 color = texture2D(map, uv);
-		vec3 cmy = 1.0 - color.rgb;
-		float k = min(cmy.x, min(cmy.y, cmy.z));
-		cmy = (cmy - k) / max(1.0 - k, 0.0001);
-		float a0 = effectValue2;
-		float s0 = effectValue1;
-		vec3 pattern = vec3(
-			dotPattern(uv, a0 + 0.26179, s0, sceneResolution),
-			dotPattern(uv, a0 + 1.30899, s0, sceneResolution),
-			dotPattern(uv, a0, s0, sceneResolution)
-		);
-		cmy = clamp(cmy * 10.0 - 3.0 + pattern, 0.0, 1.0);
-		k = clamp(k * 10.0 - 5.0 + dotPattern(uv, a0 + 0.78539, s0, sceneResolution), 0.0, 1.0);
-		return vec4(1.0 - cmy - k, color.a);
-	}
-
-	if (effectType == 9) {
-		vec2 count = vec2(sceneResolution / effectValue1);
-		vec2 p = floor(uv * count) / count;
-		vec4 color = texture2D(map, p);
-		vec2 pos = mod(gl_FragCoord.xy, vec2(effectValue1)) - vec2(effectValue1 / 2.0);
-		float distSquared = dot(pos, pos);
-		float t = smoothstep(effectValue2, effectValue2 + effectValue3, distSquared);
-		return mix(color, vec4(0.0), t);
-	}
-
-	if (effectType == 10) {
-		vec4 src = texture2D(map, uv);
-		vec4 sum = boxBlurSample(uv, effectValue1);
-		return vec4(mix(src.rgb, sum.rgb, 0.6) * effectValue2, sum.a);
-	}
-
-	if (effectType == 11 || effectType == 12 || effectType == 14 || effectType == 15) {
-		return boxBlurSample(uv, effectValue1);
-	}
-
-	if (effectType == 13) {
-		return zoomBlurSample(uv, effectValue1, vec2(effectValue2, effectValue3));
-	}
-
-	if (effectType == 18) {
-		vec2 dir = vec2(cos(effectValue3), sin(effectValue3));
-		float d = effectValue1 / max(sceneResolution.x, sceneResolution.y);
-		vec4 sum = vec4(0.0);
-		sum += texture2D(map, uv + dir * d * -4.0);
-		sum += texture2D(map, uv + dir * d * -3.0);
-		sum += texture2D(map, uv + dir * d * -2.0);
-		sum += texture2D(map, uv + dir * d * -1.0);
-		sum += texture2D(map, uv);
-		sum += texture2D(map, uv + dir * d * 1.0);
-		sum += texture2D(map, uv + dir * d * 2.0);
-		sum += texture2D(map, uv + dir * d * 3.0);
-		sum += texture2D(map, uv + dir * d * 4.0);
-		vec4 color = sum / 9.0;
-		color.rgb += effectValue2;
-		return vec4(clamp(color.rgb, 0.0, 1.0), color.a);
-	}
-
-	if (effectType == 16) {
-		vec4 src = texture2D(map, uv);
-		vec4 blur = boxBlurSample(uv, effectValue1 * 10.0);
-		float l = max(blur.r, max(blur.g, blur.b));
-		float m = smoothstep(effectValue2, 1.0, l);
-		vec3 bloom = blur.rgb * m * effectValue1;
-		if (effectValue3 < 0.5) {
-			return vec4(min(src.rgb + bloom, vec3(1.0)), src.a);
-		}
-		return vec4(1.0 - ((1.0 - src.rgb) * (1.0 - bloom)), src.a);
-	}
-
-	if (effectType == 17) {
-		float amount = effectValue1;
-		float time = effectValue2;
-		float line = step(0.95, rand(vec2(floor(uv.y * 80.0 + time * 0.05), time)));
-		float jitter = (rand(vec2(time * 0.01, floor(uv.y * 40.0))) - 0.5) * 0.06 * amount;
-		vec2 guv = uv + vec2(jitter * line, 0.0);
-		vec4 base = texture2D(map, guv);
-		float angle = rand(vec2(time * 0.02, 1.0)) * 6.28318530718;
-		vec4 rgb = rgbShiftSample(guv, amount * 0.03, angle);
-		float noise = (rand(uv * vec2(640.0, 360.0) + time * 0.1) - 0.5) * 0.2 * amount;
-		vec3 color = mix(base.rgb, rgb.rgb, 0.6) + noise;
-		return vec4(clamp(color, 0.0, 1.0), base.a);
-	}
-
-	return texture2D(map, uv);
-}
-
 void main() {
-	vec4 tex = sampleLayerTexture(vUv) * opacity;
-
-	if (enableMask > 0.5) {
-		float lightness = dot(tex.rgb, luma);
-		float alpha = inverse > 0.5 ? 1.0 - lightness : lightness;
-		gl_FragColor = vec4(0.0, 0.0, 0.0, clamp(alpha, 0.0, 1.0));
-		return;
-	}
-
-	gl_FragColor = tex;
+	vec4 tex = texture2D(map, vUv) * opacity;
+	float lightness = dot(tex.rgb, luma);
+	float alpha = inverse > 0.5 ? 1.0 - lightness : lightness;
+	gl_FragColor = vec4(0.0, 0.0, 0.0, clamp(alpha, 0.0, 1.0));
 }
 `;
 
@@ -360,9 +106,6 @@ function TexturePlane({
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 	renderOrder,
 }) {
 	const position = [x + (width / 2 - originX), -y + (height / 2 - originY), 0];
@@ -374,20 +117,7 @@ function TexturePlane({
 		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
 	);
 
-	const materialProps = {
-		map: texture,
-		transparent: true,
-		opacity: finalOpacity,
-		toneMapped: false,
-		depthTest: false,
-		depthWrite: false,
-		blending: getThreeBlending(sceneBlendMode),
-	};
-
-	const effect = getLayerEffectProps(sceneEffects, sceneWidth, sceneHeight);
-	const useShaderMaterial = sceneMask || effect.mode !== 0;
-
-	if (useShaderMaterial) {
+	if (sceneMask) {
 		const blendDstAlpha = sceneMaskCombine === "add" ? OneFactor : ZeroFactor;
 
 		return (
@@ -404,28 +134,19 @@ function TexturePlane({
 						opacity: { value: finalOpacity },
 						inverse: { value: sceneInverse ? 1 : 0 },
 						luma: { value: LUMA },
-						sceneResolution: {
-							value: new Vector2(sceneWidth, sceneHeight),
-						},
-						effectType: { value: effect.mode },
-						effectValue1: { value: effect.v1 },
-						effectValue2: { value: effect.v2 },
-						effectValue3: { value: effect.v3 },
-						effectValue4: { value: effect.v4 },
-						enableMask: { value: sceneMask ? 1 : 0 },
 					}}
-					vertexShader={LAYER_VERTEX_SHADER}
-					fragmentShader={LAYER_FRAGMENT_SHADER}
+					vertexShader={MASK_VERTEX_SHADER}
+					fragmentShader={MASK_FRAGMENT_SHADER}
 					transparent={true}
 					depthTest={false}
 					depthWrite={false}
-					blending={sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode)}
-					blendEquation={sceneMask ? AddEquation : undefined}
-					blendSrc={sceneMask ? ZeroFactor : undefined}
-					blendDst={sceneMask ? OneFactor : undefined}
-					blendEquationAlpha={sceneMask ? AddEquation : undefined}
-					blendSrcAlpha={sceneMask ? OneFactor : undefined}
-					blendDstAlpha={sceneMask ? blendDstAlpha : undefined}
+					blending={CustomBlending}
+					blendEquation={AddEquation}
+					blendSrc={ZeroFactor}
+					blendDst={OneFactor}
+					blendEquationAlpha={AddEquation}
+					blendSrcAlpha={OneFactor}
+					blendDstAlpha={blendDstAlpha}
 				/>
 			</mesh>
 		);
@@ -439,7 +160,15 @@ function TexturePlane({
 			renderOrder={renderOrder}
 		>
 			<planeGeometry args={[1, 1]} />
-			<meshBasicMaterial {...materialProps} />
+			<meshBasicMaterial
+				map={texture}
+				transparent={true}
+				opacity={finalOpacity}
+				toneMapped={false}
+				depthTest={false}
+				depthWrite={false}
+				blending={getThreeBlending(sceneBlendMode)}
+			/>
 		</mesh>
 	);
 }
@@ -457,156 +186,230 @@ function getThreeBlending(blendMode = "Normal") {
 	}
 }
 
-function getLayerEffectProps(sceneEffects, sceneWidth, sceneHeight) {
-	const effect = (sceneEffects || []).find((item) => item?.enabled);
+// --- Effect Wrapper Components ---
 
-	if (!effect) {
-		return { mode: 0, v1: 0, v2: 0, v3: 0, v4: 0 };
-	}
+function PPMirrorWrapper({ side }) {
+	const effect = React.useMemo(() => new PPMirrorEffect({ side }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("side").value = Number(side || 0);
+	}, [effect, side]);
+	return <primitive object={effect} dispose={null} />;
+}
 
+function PPKaleidoscopeWrapper({ sides, angle }) {
+	const effect = React.useMemo(() => new PPKaleidoscopeEffect({ sides, angle }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("sides").value = Math.max(1, Number(sides || 6));
+		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
+	}, [effect, sides, angle]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPDistortionWrapper({ amount, time }) {
+	const effect = React.useMemo(() => new PPDistortionEffect({ amount: Number(amount || 0) * 30, time: Number(time || 0) }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("amount").value = Number(amount || 0) * 30;
+	}, [effect, amount]);
+	React.useEffect(() => {
+		effect.uniforms.get("time").value = Number(time || 0);
+	}, [effect, time]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPRGBShiftWrapper({ offset, angle, width }) {
+	const effect = React.useMemo(() => new PPRGBShiftEffect({ offset: 0, angle: 0 }), []);
+	React.useEffect(() => {
+		const normalizedOffset = Number(offset || 0) / Math.max(1, Number(width || 1));
+		effect.uniforms.get("offset").value = normalizedOffset;
+		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
+	}, [effect, offset, angle, width]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPColorHalftoneWrapper({ scale, angle, width, height }) {
+	const effect = React.useMemo(() => new PPColorHalftoneEffect({ scale: 1, angle: 0, width, height }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("scale").value = 1 - Number(scale || 0);
+		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
+		const res = effect.uniforms.get("sceneResolution").value;
+		res.set(width, height);
+	}, [effect, scale, angle, width, height]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPLEDWrapper({ spacing, size, blur, width, height }) {
+	const effect = React.useMemo(() => new PPLEDEffect({ spacing: 10, size: 4, blur: 4, width, height }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("spacing").value = Math.max(1, Number(spacing || 10));
+		effect.uniforms.get("size").value = Number(size || 4);
+		effect.uniforms.get("blur").value = Number(blur || 4);
+		const res = effect.uniforms.get("sceneResolution").value;
+		res.set(width, height);
+	}, [effect, spacing, size, blur, width, height]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPGlowWrapper({ amount, intensity, width, height }) {
+	const effect = React.useMemo(() => new PPGlowEffect({ amount: 0, intensity: 1, width, height }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("amount").value = Number(amount || 0) * 5;
+		effect.uniforms.get("intensity").value = Number(intensity || 1);
+		const res = effect.uniforms.get("sceneResolution").value;
+		res.set(width, height);
+	}, [effect, amount, intensity, width, height]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPHexPixelateWrapper({ size, width, height }) {
+	const effect = React.useMemo(() => new PPHexPixelateEffect({ size: 10, width, height }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("size").value = Number(size || 10);
+		const res = effect.uniforms.get("sceneResolution").value;
+		res.set(width, height);
+	}, [effect, size, width, height]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPGlitchWrapper({ amount, time }) {
+	const effect = React.useMemo(() => new PPGlitchEffect({ amount: 0.5, time: 0 }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("amount").value = Number(amount || 0);
+	}, [effect, amount]);
+	React.useEffect(() => {
+		effect.uniforms.get("time").value = Number(time || 0);
+	}, [effect, time]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+function PPBlurWrapper({ type, amount, x, y, radius, brightness, angle, width, height }) {
+	const blurTypeMap = { Box: 0, Circular: 1, Gaussian: 2, Triangle: 3, Zoom: 4, Lens: 5 };
+	const blurType = blurTypeMap[type] ?? 2;
+
+	const effect = React.useMemo(() => new PPBlurEffect({ amount: 0, blurType, width, height }), []);
+	React.useEffect(() => {
+		effect.uniforms.get("amount").value = Number(amount || 0);
+		effect.uniforms.get("blurType").value = blurType;
+		const centerX = Math.max(0, Math.min(1, (Number(x || 0) + width / 2) / width));
+		const centerY = Math.max(0, Math.min(1, (Number(y || 0) + height / 2) / height));
+		effect.uniforms.get("centerX").value = centerX;
+		effect.uniforms.get("centerY").value = centerY;
+		effect.uniforms.get("radius").value = Number(radius || 10);
+		effect.uniforms.get("brightness").value = Number(brightness || 0);
+		effect.uniforms.get("blurAngle").value = toRadians(Number(angle || 0));
+		const res = effect.uniforms.get("sceneResolution").value;
+		res.set(width, height);
+	}, [effect, type, amount, x, y, radius, brightness, angle, width, height]);
+	return <primitive object={effect} dispose={null} />;
+}
+
+// --- EffectBridge ---
+
+function EffectBridge({ effect, width, height }) {
 	const props = effect.properties || {};
 
 	switch (effect.name) {
-		case "RGBShiftEffect": {
-			const offset = Number(props.offset || 0);
-			const angle = Number(props.angle || 0);
-			return {
-				mode: 1,
-				v1: offset / Math.max(1, Number(sceneWidth || 1)),
-				v2: toRadians(angle),
-				v3: 0,
-				v4: 0,
-			};
-		}
-
-		case "DistortionEffect": {
-			const amount = Number(props.amount || 0) * 30;
-			const time = Number(effect.time || props.time || 0);
-			return { mode: 2, v1: amount, v2: time, v3: 0, v4: 0 };
-		}
-
-		case "MirrorEffect": {
-			return { mode: 3, v1: Number(props.side || 0), v2: 0, v3: 0, v4: 0 };
+		case "BloomEffect": {
+			const amount = Number(props.amount || 0);
+			const threshold = Number(props.threshold || 1);
+			const blendMode = props.blendMode === "Screen" ? BlendFunction.SCREEN : BlendFunction.ADD;
+			return (
+				<Bloom
+					intensity={amount * 10}
+					luminanceThreshold={threshold}
+					luminanceSmoothing={0.1}
+					blendFunction={blendMode}
+				/>
+			);
 		}
 
 		case "PixelateEffect": {
 			const size = Number(props.size || 10);
 			const type = props.type || "Square";
-			return {
-				mode: type === "Hexagon" ? 5 : 4,
-				v1: size,
-				v2: 0,
-				v3: 0,
-				v4: 0,
-			};
-		}
-
-		case "KaleidoscopeEffect": {
-			return {
-				mode: 6,
-				v1: Math.max(1, Number(props.sides || 6)),
-				v2: Number(props.angle || 0),
-				v3: 0,
-				v4: 0,
-			};
+			if (type === "Hexagon") {
+				return <PPHexPixelateWrapper size={size} width={width} height={height} />;
+			}
+			return <Pixelation granularity={size} />;
 		}
 
 		case "DotScreenEffect": {
 			const scale = Number(props.scale || 0);
 			const angle = Number(props.angle || 0);
-			return {
-				mode: 7,
-				v1: 2 - scale * 2,
-				v2: toRadians(angle),
-				v3: 0,
-				v4: 0,
-			};
+			return <DotScreen scale={2 - scale * 2} angle={toRadians(angle)} />;
 		}
 
-		case "ColorHalftoneEffect": {
-			const scale = Number(props.scale || 0);
-			const angle = Number(props.angle || 0);
-			return {
-				mode: 8,
-				v1: 1 - scale,
-				v2: toRadians(angle),
-				v3: 0,
-				v4: 0,
-			};
-		}
+		case "RGBShiftEffect":
+			return (
+				<PPRGBShiftWrapper
+					offset={props.offset}
+					angle={props.angle}
+					width={width}
+				/>
+			);
 
-		case "LEDEffect": {
-			return {
-				mode: 9,
-				v1: Math.max(1, Number(props.spacing || 10)),
-				v2: Number(props.size || 4),
-				v3: Number(props.blur || 4),
-				v4: 0,
-			};
-		}
+		case "MirrorEffect":
+			return <PPMirrorWrapper side={props.side} />;
 
-		case "GlowEffect": {
-			return {
-				mode: 10,
-				v1: Number(props.amount || 0) * 5,
-				v2: Number(props.intensity || 1),
-				v3: 0,
-				v4: 0,
-			};
-		}
+		case "KaleidoscopeEffect":
+			return <PPKaleidoscopeWrapper sides={props.sides} angle={props.angle} />;
 
-		case "BlurEffect": {
-			const type = props.type || "Gaussian";
-			const amount = Number(props.amount || 0);
-			if (type === "Lens") {
-				return {
-					mode: 18,
-					v1: Number(props.radius || 10),
-					v2: Number(props.brightness || 0),
-					v3: toRadians(Number(props.angle || 0)),
-					v4: 0,
-				};
-			}
-			if (type === "Box") {
-				return { mode: 11, v1: amount * 10, v2: 0, v3: 0, v4: 0 };
-			}
-			if (type === "Circular") {
-				return { mode: 12, v1: amount * 10, v2: 0, v3: 0, v4: 0 };
-			}
-			if (type === "Zoom") {
-				const x = Number(props.x || 0);
-				const y = Number(props.y || 0);
-				return {
-					mode: 13,
-					v1: amount,
-					v2: Math.max(0, Math.min(1, (x + sceneWidth / 2) / sceneWidth)),
-					v3: Math.max(0, Math.min(1, (y + sceneHeight / 2) / sceneHeight)),
-					v4: 0,
-				};
-			}
-			if (type === "Triangle") {
-				return { mode: 15, v1: amount * 200, v2: 0, v3: 0, v4: 0 };
-			}
-			return { mode: 14, v1: amount, v2: 0, v3: 0, v4: 0 };
-		}
+		case "DistortionEffect":
+			return <PPDistortionWrapper amount={props.amount} time={effect.time} />;
 
-		case "BloomEffect": {
-			const amount = Number(props.amount || 0);
-			const threshold = Number(props.threshold || 1);
-			const blendMode = props.blendMode === "Screen" ? 1 : 0;
-			return { mode: 16, v1: amount, v2: threshold, v3: blendMode, v4: 0 };
-		}
+		case "GlitchEffect":
+			return <PPGlitchWrapper amount={props.amount} time={effect.time} />;
 
-		case "GlitchEffect": {
-			const amount = Number(props.amount || 0);
-			const time = Number(effect.time || 0);
-			return { mode: 17, v1: amount, v2: time, v3: 0, v4: 0 };
-		}
+		case "ColorHalftoneEffect":
+			return (
+				<PPColorHalftoneWrapper
+					scale={props.scale}
+					angle={props.angle}
+					width={width}
+					height={height}
+				/>
+			);
+
+		case "LEDEffect":
+			return (
+				<PPLEDWrapper
+					spacing={props.spacing}
+					size={props.size}
+					blur={props.blur}
+					width={width}
+					height={height}
+				/>
+			);
+
+		case "GlowEffect":
+			return (
+				<PPGlowWrapper
+					amount={props.amount}
+					intensity={props.intensity}
+					width={width}
+					height={height}
+				/>
+			);
+
+		case "BlurEffect":
+			return (
+				<PPBlurWrapper
+					type={props.type}
+					amount={props.amount}
+					x={props.x}
+					y={props.y}
+					radius={props.radius}
+					brightness={props.brightness}
+					angle={props.angle}
+					width={width}
+					height={height}
+				/>
+			);
 
 		default:
-			return { mode: 0, v1: 0, v2: 0, v3: 0, v4: 0 };
+			return null;
 	}
 }
+
+// --- Display Layer Components ---
 
 function ImageDisplayLayer({
 	display,
@@ -616,9 +419,6 @@ function ImageDisplayLayer({
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const { properties = {} } = display;
 	const {
@@ -675,9 +475,6 @@ function ImageDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			renderOrder={order}
 		/>
 	);
@@ -691,9 +488,6 @@ function VideoDisplayLayer({
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const { properties = {} } = display;
 	const {
@@ -803,9 +597,6 @@ function VideoDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			renderOrder={order}
 		/>
 	);
@@ -924,9 +715,6 @@ function CanvasTextureLayer({
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 	drawFrame,
 }) {
 	const { properties = {} } = display;
@@ -1066,9 +854,6 @@ function CanvasTextureLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			renderOrder={order}
 		/>
 	);
@@ -1078,15 +863,11 @@ function TextDisplayLayer({
 	display,
 	order,
 	frameData,
-	frameIndex,
 	sceneOpacity,
 	sceneBlendMode,
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const textRef = React.useRef(null);
 
@@ -1125,9 +906,6 @@ function TextDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			drawFrame={drawFrame}
 		/>
 	);
@@ -1137,15 +915,11 @@ function ShapeDisplayLayer({
 	display,
 	order,
 	frameData,
-	frameIndex,
 	sceneOpacity,
 	sceneBlendMode,
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const drawFrame = React.useCallback(({ context, properties }) => {
 		const width = Math.max(
@@ -1193,9 +967,6 @@ function ShapeDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			drawFrame={drawFrame}
 		/>
 	);
@@ -1205,15 +976,11 @@ function BarSpectrumDisplayLayer({
 	display,
 	order,
 	frameData,
-	frameIndex,
 	sceneOpacity,
 	sceneBlendMode,
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const barsRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -1255,9 +1022,6 @@ function BarSpectrumDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			drawFrame={drawFrame}
 		/>
 	);
@@ -1267,15 +1031,11 @@ function WaveSpectrumDisplayLayer({
 	display,
 	order,
 	frameData,
-	frameIndex,
 	sceneOpacity,
 	sceneBlendMode,
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -1320,9 +1080,6 @@ function WaveSpectrumDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			drawFrame={drawFrame}
 		/>
 	);
@@ -1332,15 +1089,11 @@ function SoundWaveDisplayLayer({
 	display,
 	order,
 	frameData,
-	frameIndex,
 	sceneOpacity,
 	sceneBlendMode,
 	sceneMask,
 	sceneInverse,
 	sceneMaskCombine,
-	sceneEffects,
-	sceneWidth,
-	sceneHeight,
 }) {
 	const waveRef = React.useRef(null);
 	const parserRef = React.useRef(null);
@@ -1391,9 +1144,6 @@ function SoundWaveDisplayLayer({
 			sceneMask={sceneMask}
 			sceneInverse={sceneInverse}
 			sceneMaskCombine={sceneMaskCombine}
-			sceneEffects={sceneEffects}
-			sceneWidth={sceneWidth}
-			sceneHeight={sceneHeight}
 			drawFrame={drawFrame}
 		/>
 	);
@@ -1637,6 +1387,8 @@ function GeometryDisplayLayer({
 	);
 }
 
+// --- Main Component ---
+
 export default function R3FStageRoot({
 	width,
 	height,
@@ -1665,6 +1417,7 @@ export default function R3FStageRoot({
 
 	let order = 1;
 	const displayElements = [];
+	const allEffects = [];
 
 	for (const scene of scenes || []) {
 		if (!scene?.enabled) {
@@ -1675,14 +1428,17 @@ export default function R3FStageRoot({
 		const sceneBlendMode = scene.properties?.blendMode || "Normal";
 		const sceneMask = Boolean(scene.properties?.mask);
 		const sceneInverse = Boolean(scene.properties?.inverse);
-		const sceneEffects = (scene.effects || []).filter(
-			(effect) => effect?.enabled,
-		);
 		const enabledDisplayCount = (scene.displays || []).filter(
 			(display) => display?.enabled,
 		).length;
 		const sceneMaskCombine =
 			sceneMask && !sceneInverse && enabledDisplayCount > 1 ? "add" : "replace";
+
+		for (const effect of scene.effects || []) {
+			if (effect?.enabled) {
+				allEffects.push(effect);
+			}
+		}
 
 		for (const display of scene.displays || []) {
 			if (!display?.enabled) {
@@ -1707,9 +1463,6 @@ export default function R3FStageRoot({
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1726,9 +1479,6 @@ export default function R3FStageRoot({
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1741,15 +1491,11 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							frameIndex={frameIndex}
 							sceneOpacity={sceneOpacity}
 							sceneBlendMode={sceneBlendMode}
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1762,15 +1508,11 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							frameIndex={frameIndex}
 							sceneOpacity={sceneOpacity}
 							sceneBlendMode={sceneBlendMode}
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1783,15 +1525,11 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							frameIndex={frameIndex}
 							sceneOpacity={sceneOpacity}
 							sceneBlendMode={sceneBlendMode}
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1804,15 +1542,11 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							frameIndex={frameIndex}
 							sceneOpacity={sceneOpacity}
 							sceneBlendMode={sceneBlendMode}
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1825,15 +1559,11 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							frameIndex={frameIndex}
 							sceneOpacity={sceneOpacity}
 							sceneBlendMode={sceneBlendMode}
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
 							sceneMaskCombine={sceneMaskCombine}
-							sceneEffects={sceneEffects}
-							sceneWidth={width}
-							sceneHeight={height}
 						/>,
 					);
 					break;
@@ -1850,7 +1580,6 @@ export default function R3FStageRoot({
 							sceneBlendMode={sceneBlendMode}
 							sceneMask={sceneMask}
 							sceneInverse={sceneInverse}
-							sceneEffects={sceneEffects}
 						/>,
 					);
 					break;
@@ -1868,6 +1597,18 @@ export default function R3FStageRoot({
 		<>
 			<primitive key="background" attach="background" object={bgColor} />
 			{displayElements}
+			{allEffects.length > 0 && (
+				<EffectComposer>
+					{allEffects.map((effect) => (
+						<EffectBridge
+							key={effect.id}
+							effect={effect}
+							width={width}
+							height={height}
+						/>
+					))}
+				</EffectComposer>
+			)}
 		</>
 	);
 }
