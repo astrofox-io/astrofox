@@ -13,31 +13,96 @@ uniform float blurAngle;
 uniform vec2 sceneResolution;
 
 vec4 boxBlur(vec2 uv, float amt) {
+	float d = amt / max(sceneResolution.x, sceneResolution.y);
+	vec4 sum = vec4(0.0);
+	float count = 0.0;
+	for (float x = -4.0; x <= 4.0; x += 1.0) {
+		for (float y = -4.0; y <= 4.0; y += 1.0) {
+			sum += texture2D(inputBuffer, uv + vec2(x, y) * d);
+			count += 1.0;
+		}
+	}
+	return sum / count;
+}
+
+vec4 gaussianBlur(vec2 uv, float amt) {
 	float h = amt / sceneResolution.x;
 	float v = amt / sceneResolution.y;
 	vec4 sum = vec4(0.0);
 
-	sum += texture2D(inputBuffer, vec2(uv.x - 4.0 * h, uv.y)) * 0.051;
-	sum += texture2D(inputBuffer, vec2(uv.x - 3.0 * h, uv.y)) * 0.0918;
-	sum += texture2D(inputBuffer, vec2(uv.x - 2.0 * h, uv.y)) * 0.12245;
-	sum += texture2D(inputBuffer, vec2(uv.x - 1.0 * h, uv.y)) * 0.1531;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y)) * 0.1633;
-	sum += texture2D(inputBuffer, vec2(uv.x + 1.0 * h, uv.y)) * 0.1531;
-	sum += texture2D(inputBuffer, vec2(uv.x + 2.0 * h, uv.y)) * 0.12245;
-	sum += texture2D(inputBuffer, vec2(uv.x + 3.0 * h, uv.y)) * 0.0918;
-	sum += texture2D(inputBuffer, vec2(uv.x + 4.0 * h, uv.y)) * 0.051;
+	// Horizontal pass - Gaussian weights for 9-tap kernel (sigma ~2.0)
+	sum += texture2D(inputBuffer, vec2(uv.x - 4.0 * h, uv.y)) * 0.0162;
+	sum += texture2D(inputBuffer, vec2(uv.x - 3.0 * h, uv.y)) * 0.0540;
+	sum += texture2D(inputBuffer, vec2(uv.x - 2.0 * h, uv.y)) * 0.1216;
+	sum += texture2D(inputBuffer, vec2(uv.x - 1.0 * h, uv.y)) * 0.1945;
+	sum += texture2D(inputBuffer, vec2(uv.x, uv.y)) * 0.2270;
+	sum += texture2D(inputBuffer, vec2(uv.x + 1.0 * h, uv.y)) * 0.1945;
+	sum += texture2D(inputBuffer, vec2(uv.x + 2.0 * h, uv.y)) * 0.1216;
+	sum += texture2D(inputBuffer, vec2(uv.x + 3.0 * h, uv.y)) * 0.0540;
+	sum += texture2D(inputBuffer, vec2(uv.x + 4.0 * h, uv.y)) * 0.0162;
 
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y - 4.0 * v)) * 0.051;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y - 3.0 * v)) * 0.0918;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y - 2.0 * v)) * 0.12245;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y - 1.0 * v)) * 0.1531;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y)) * 0.1633;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y + 1.0 * v)) * 0.1531;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y + 2.0 * v)) * 0.12245;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y + 3.0 * v)) * 0.0918;
-	sum += texture2D(inputBuffer, vec2(uv.x, uv.y + 4.0 * v)) * 0.051;
+	// Vertical pass
+	vec4 sum2 = vec4(0.0);
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y - 4.0 * v)) * 0.0162;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y - 3.0 * v)) * 0.0540;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y - 2.0 * v)) * 0.1216;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y - 1.0 * v)) * 0.1945;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y)) * 0.2270;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y + 1.0 * v)) * 0.1945;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y + 2.0 * v)) * 0.1216;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y + 3.0 * v)) * 0.0540;
+	sum2 += texture2D(inputBuffer, vec2(uv.x, uv.y + 4.0 * v)) * 0.0162;
 
-	return sum * 0.5;
+	return (sum + sum2) * 0.5;
+}
+
+vec4 circularBlur(vec2 uv, float amt) {
+	float d = amt / max(sceneResolution.x, sceneResolution.y);
+	vec4 sum = vec4(0.0);
+	float count = 0.0;
+
+	// 16-sample Poisson disc pattern
+	sum += texture2D(inputBuffer, uv + vec2( 0.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 1.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-1.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.0,  1.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.0, -1.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.707,  0.707) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-0.707,  0.707) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.707, -0.707) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-0.707, -0.707) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 2.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-2.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.0,  2.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.0, -2.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 1.414,  1.414) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-1.414,  1.414) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 1.414, -1.414) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-1.414, -1.414) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 3.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-3.0,  0.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.0,  3.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 0.0, -3.0) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 2.121,  2.121) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-2.121,  2.121) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2( 2.121, -2.121) * d); count += 1.0;
+	sum += texture2D(inputBuffer, uv + vec2(-2.121, -2.121) * d); count += 1.0;
+
+	return sum / count;
+}
+
+vec4 triangleBlur(vec2 uv, float amt) {
+	float d = amt / max(sceneResolution.x, sceneResolution.y);
+	vec4 sum = vec4(0.0);
+	float total = 0.0;
+	for (float x = -4.0; x <= 4.0; x += 1.0) {
+		for (float y = -4.0; y <= 4.0; y += 1.0) {
+			float w = max(0.0, 5.0 - abs(x) - abs(y));
+			sum += texture2D(inputBuffer, uv + vec2(x, y) * d) * w;
+			total += w;
+		}
+	}
+	return sum / max(total, 0.0001);
 }
 
 vec4 zoomBlur(vec2 uv, float amt, vec2 center) {
@@ -77,19 +142,19 @@ vec4 lensBlur(vec2 uv, float r, float bright, float a) {
 
 void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
 	// blurType: 0=Box, 1=Circular, 2=Gaussian, 3=Triangle, 4=Zoom, 5=Lens
-	if (blurType == 4) {
+	float scaledAmount = amount * 10.0;
+	if (blurType == 0) {
+		outputColor = boxBlur(uv, scaledAmount);
+	} else if (blurType == 1) {
+		outputColor = circularBlur(uv, scaledAmount);
+	} else if (blurType == 2) {
+		outputColor = gaussianBlur(uv, scaledAmount);
+	} else if (blurType == 3) {
+		outputColor = triangleBlur(uv, amount * 200.0);
+	} else if (blurType == 4) {
 		outputColor = zoomBlur(uv, amount, vec2(centerX, centerY));
 	} else if (blurType == 5) {
 		outputColor = lensBlur(uv, radius, brightness, blurAngle);
-	} else {
-		// Box, Circular, Gaussian, Triangle all use box blur with different amount scaling
-		float scaledAmount = amount;
-		if (blurType == 0 || blurType == 1 || blurType == 2) {
-			scaledAmount = amount * 10.0;
-		} else if (blurType == 3) {
-			scaledAmount = amount * 200.0;
-		}
-		outputColor = boxBlur(uv, scaledAmount);
 	}
 }
 `;
