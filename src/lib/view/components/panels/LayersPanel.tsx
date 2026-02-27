@@ -1,8 +1,6 @@
 import { reverse } from "@/lib/utils/array";
 import useApp, { setActiveElementId } from "@/lib/view/actions/app";
-import { showModal } from "@/lib/view/actions/modals";
 import useScenes, {
-	addElement,
 	addScene,
 	moveElement,
 	removeElement,
@@ -15,9 +13,7 @@ import SceneLayer from "@/lib/view/components/panels/SceneLayer";
 import {
 	ChevronDown,
 	ChevronUp,
-	Cube,
 	Picture,
-	Sun,
 	TrashEmpty,
 } from "@/lib/view/icons";
 import React, { useMemo } from "react";
@@ -45,14 +41,6 @@ export default function LayersPanel() {
 		}, undefined);
 	}, [scenes, activeElementId]);
 
-	function handleAddControl(Entity) {
-		const entity = new Entity();
-
-		setActiveElementId(entity?.id);
-
-		addElement(entity, activeScene?.id);
-	}
-
 	function handleLayerClick(id) {
 		setActiveElementId(id);
 	}
@@ -65,22 +53,6 @@ export default function LayersPanel() {
 		const scene = await addScene();
 
 		setActiveElementId(scene?.id);
-	}
-
-	function handleAddDisplay() {
-		showModal(
-			"ControlPicker",
-			{ title: "Controls" },
-			{ type: "displays", onSelect: handleAddControl },
-		);
-	}
-
-	function handleAddEffect() {
-		showModal(
-			"ControlPicker",
-			{ title: "Controls" },
-			{ type: "effects", onSelect: handleAddControl },
-		);
 	}
 
 	function handleMoveUp() {
@@ -135,18 +107,6 @@ export default function LayersPanel() {
 					icon={Picture}
 					title="Add Scene"
 					onClick={handleAddScene}
-				/>
-				<ButtonInput
-					icon={Cube}
-					title="Add Display"
-					onClick={handleAddDisplay}
-					disabled={!hasScenes}
-				/>
-				<ButtonInput
-					icon={Sun}
-					title="Add Effect"
-					onClick={handleAddEffect}
-					disabled={!hasScenes}
 				/>
 				<ButtonInput
 					icon={ChevronUp}

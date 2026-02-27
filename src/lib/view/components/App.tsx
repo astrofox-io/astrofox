@@ -6,6 +6,7 @@ import ControlDock from "@/lib/view/components/panels/ControlDock";
 import ReactorPanel from "@/lib/view/components/panels/ReactorPanel";
 import Player from "@/lib/view/components/player/Player";
 import Stage from "@/lib/view/components/stage/Stage";
+import Toolbar from "@/lib/view/components/nav/Toolbar";
 import Modals from "@/lib/view/components/window/Modals";
 import Preload from "@/lib/view/components/window/Preload";
 import StatusBar from "@/lib/view/components/window/StatusBar";
@@ -82,6 +83,7 @@ function App() {
 			<Preload />
 			<TitleBar />
 			<Layout direction="row">
+				<Toolbar />
 				<Layout id="viewport" direction="column">
 					<Stage />
 					<Player />
