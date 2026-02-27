@@ -1,11 +1,11 @@
 // @ts-nocheck
 import FFTParser from "@/lib/audio/FFTParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
-import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import Display from "@/lib/core/Display";
 import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
-export default class WaveSpectrumDisplay extends CanvasDisplay {
+export default class WaveSpectrumDisplay extends Display {
 	[key: string]: any;
 	static config = {
 		name: "WaveSpectrumDisplay",
@@ -139,7 +139,8 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
 	constructor(properties) {
 		super(WaveSpectrumDisplay, properties);
 
-		this.wave = new CanvasWave(this.properties, this.canvas);
+		const canvas = new OffscreenCanvas(1, 1);
+		this.wave = new CanvasWave(this.properties, canvas);
 		this.parser = new FFTParser(this.properties);
 	}
 
@@ -158,42 +159,5 @@ export default class WaveSpectrumDisplay extends CanvasDisplay {
 		}
 
 		return changed;
-	}
-
-	getPoints(fft, width) {
-		const points = [];
-
-		for (let i = 0, j = 0, k = 0; i < fft.length; i += 1) {
-			j = fft[i];
-
-			if (i === 0 || i === fft.length - 1 || k !== j > fft[i - 1] ? 1 : -1) {
-				points.push(i * (width / fft.length));
-				points.push(j);
-			}
-
-			k = j > fft[i - 1] ? 1 : -1;
-		}
-
-		points[points.length - 2] = width;
-
-		return points;
-	}
-
-	render(scene, data) {
-		const {
-			wave,
-			parser,
-			canvas: { width, height },
-		} = this;
-		const fft = parser.parseFFT(data.fft);
-
-		wave.render(this.getPoints(fft, width), true);
-
-		const origin = {
-			x: width / 2,
-			y: height,
-		};
-
-		scene.renderToCanvas(this.canvas, this.properties, origin);
 	}
 }

@@ -1,6 +1,4 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import LEDShader from "@/lib/shaders/LEDShader";
 
 export default class LEDEffect extends Effect {
 	[key: string]: any;
@@ -44,13 +42,5 @@ export default class LEDEffect extends Effect {
 
 	constructor(properties) {
 		super(LEDEffect, properties);
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(LEDShader);
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

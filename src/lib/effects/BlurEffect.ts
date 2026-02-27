@@ -1,27 +1,7 @@
-// @ts-nocheck
 import Effect from "@/lib/core/Effect";
-import GaussianBlurPass from "@/lib/effects/passes/GaussianBlurPass";
-import LensBlurPass from "@/lib/effects/passes/LensBlurPass";
-import TriangleBlurPass from "@/lib/effects/passes/TriangleBlurPass";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import BoxBlurShader from "@/lib/shaders/BoxBlurShader";
-import CircularBlurShader from "@/lib/shaders/CircularBlurShader";
-import ZoomBlurShader from "@/lib/shaders/ZoomBlurShader";
 import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
-import { normalize } from "@/lib/utils/math";
 
 const blurOptions = ["Box", "Circular", "Gaussian", "Triangle", "Zoom"];
-
-const shaderOptions = {
-	Box: BoxBlurShader,
-	Circular: CircularBlurShader,
-	Zoom: ZoomBlurShader,
-};
-
-const BOX_BLUR_MAX = 10;
-const TRIANGLE_BLUR_MAX = 200;
-const CIRCULAR_BLUR_MAX = 10;
-const ZOOM_BLUR_MAX = 1;
 
 const showZoomOption = property("type", (value) => value !== "Zoom");
 const showLensOption = property("type", (value) => value !== "Lens");
@@ -103,93 +83,5 @@ export default class BlurEffect extends Effect {
 
 	constructor(properties) {
 		super(BlurEffect, properties);
-	}
-
-	update(properties) {
-		const { type } = properties;
-		const { type: currentType } = this.properties;
-
-		if (type !== undefined && type !== currentType) {
-			this.pass = this.getShaderPass(type);
-		}
-
-		return super.update(properties);
-	}
-
-	updatePass() {
-		const { type, amount, x, y, radius, brightness, angle } = this.properties;
-		const { width, height } = this.scene.getSize();
-
-		switch (type) {
-			case "Box":
-				this.pass.setUniforms({ amount: amount * BOX_BLUR_MAX });
-				break;
-
-			case "Triangle":
-				this.pass.setUniforms({
-					amount: amount * TRIANGLE_BLUR_MAX,
-					width,
-					height,
-				});
-				break;
-
-			case "Circular":
-				this.pass.setUniforms({ amount: amount * CIRCULAR_BLUR_MAX });
-				break;
-
-			case "Gaussian":
-				this.pass.setUniforms({ amount });
-				break;
-
-			case "Lens":
-				this.pass.setUniforms({ radius, brightness, angle, width, height });
-				break;
-
-			case "Zoom":
-				this.pass.setUniforms({
-					amount: amount * ZOOM_BLUR_MAX,
-					center: [
-						normalize(x, -width / 2, width / 2),
-						normalize(y, -height / 2, height / 2),
-					],
-				});
-				break;
-		}
-	}
-
-	addToScene() {
-		this.pass = this.getShaderPass(this.properties.type);
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
-	}
-
-	getShaderPass(type) {
-		const { width, height } = this.scene.getSize();
-		let pass;
-
-		switch (type) {
-			case "Gaussian":
-				pass = new GaussianBlurPass();
-				break;
-
-			case "Triangle":
-				pass = new TriangleBlurPass();
-				break;
-
-			case "Lens":
-				pass = new LensBlurPass();
-				break;
-
-			default:
-				pass = new ShaderPass(shaderOptions[type]);
-		}
-
-		pass.setSize(width, height);
-
-		return pass;
 	}
 }

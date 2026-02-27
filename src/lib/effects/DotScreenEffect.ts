@@ -1,7 +1,4 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import DotScreenShader from "@/lib/shaders/DotScreenShader";
-import { deg2rad } from "@/lib/utils/math";
 
 export default class DotScreenEffect extends Effect {
 	[key: string]: any;
@@ -37,24 +34,5 @@ export default class DotScreenEffect extends Effect {
 
 	constructor(properties) {
 		super(DotScreenEffect, properties);
-	}
-
-	updatePass() {
-		const { scale, angle } = this.properties;
-
-		this.pass.setUniforms({
-			scale: 2 - scale * 2,
-			angle: deg2rad(angle),
-		});
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(DotScreenShader);
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

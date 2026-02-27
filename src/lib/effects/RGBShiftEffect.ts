@@ -1,9 +1,5 @@
-// @ts-nocheck
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import RGBShiftShader from "@/lib/shaders/RGBShiftShader";
 import { stageWidth } from "@/lib/utils/controls";
-import { deg2rad } from "@/lib/utils/math";
 
 export default class RGBShiftEffect extends Effect {
 	[key: string]: any;
@@ -38,23 +34,5 @@ export default class RGBShiftEffect extends Effect {
 
 	constructor(properties) {
 		super(RGBShiftEffect, properties);
-	}
-
-	updatePass() {
-		const { width } = this.scene.getSize();
-
-		this.pass.setUniforms({
-			amount: this.properties.offset / width,
-			angle: deg2rad(this.properties.angle),
-		});
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(RGBShiftShader);
-		this.pass.enabled = this.enabled;
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

@@ -1,6 +1,4 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import KaleidoscopeShader from "@/lib/shaders/KaleidoscopeShader";
 
 export default class KaleidoscopeEffect extends Effect {
 	[key: string]: any;
@@ -35,15 +33,5 @@ export default class KaleidoscopeEffect extends Effect {
 
 	constructor(properties) {
 		super(KaleidoscopeEffect, properties);
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(KaleidoscopeShader);
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

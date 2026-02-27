@@ -1,8 +1,4 @@
-// @ts-nocheck
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import GlitchShader from "@/lib/shaders/GlitchShader";
-import { DataTexture, FloatType, MathUtils, RGBFormat } from "three";
 
 export default class GlitchEffect extends Effect {
 	[key: string]: any;
@@ -33,54 +29,9 @@ export default class GlitchEffect extends Effect {
 		this.time = 0;
 	}
 
-	addToScene() {
-		this.pass = new ShaderPass(GlitchShader);
-
-		this.pass.setUniforms({
-			displacementTexture: this.generateHeightmap(64),
-		});
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
-	}
-
-	generateHeightmap(size) {
-		const data = new Float32Array(size * size * 3);
-		const length = size * size;
-
-		for (let i = 0; i < length; i++) {
-			const val = MathUtils.randFloat(0, 1);
-			data[i * 3] = val;
-			data[i * 3 + 1] = val;
-			data[i * 3 + 2] = val;
-		}
-
-		const texture = new DataTexture(data, size, size, RGBFormat, FloatType);
-		texture.needsUpdate = true;
-
-		return texture;
-	}
-
 	render(scene, data) {
-		if (!data.hasUpdate) {
-			return;
-		}
+		if (!data.hasUpdate) return;
 
-		const { amount } = this.properties;
 		this.time += data.delta;
-
-		this.pass.setUniforms({
-			shift: (Math.random() / 90) * amount,
-			angle: MathUtils.randFloat(-Math.PI, Math.PI) * amount,
-			seed: Math.random() * amount,
-			seed_x: MathUtils.randFloat(-0.3, 0.3) * amount,
-			seed_y: MathUtils.randFloat(-0.3, 0.3) * amount,
-			distortion_x: MathUtils.randFloat(0, 1),
-			distortion_y: MathUtils.randFloat(0, 1),
-			col_s: amount > 0.25 ? 0.05 : MathUtils.randFloat(0, 1) * amount * 0.05,
-		});
 	}
 }

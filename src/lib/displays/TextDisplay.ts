@@ -1,7 +1,7 @@
 // @ts-nocheck
 import CanvasText from "@/lib/canvas/CanvasText";
 import fonts from "@/lib/config/fonts.json";
-import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import Display from "@/lib/core/Display";
 import { stageHeight, stageWidth } from "@/lib/utils/controls";
 import { resolveFontFamily } from "@/lib/view/fontFamilies";
 
@@ -11,7 +11,7 @@ const fontOptions = fonts.map((item) => ({
 	style: { fontFamily: resolveFontFamily(item) },
 }));
 
-export default class TextDisplay extends CanvasDisplay {
+export default class TextDisplay extends Display {
 	[key: string]: any;
 	static config = {
 		name: "TextDisplay",
@@ -92,11 +92,9 @@ export default class TextDisplay extends CanvasDisplay {
 
 	constructor(properties) {
 		super(TextDisplay, properties);
-	}
 
-	addToScene() {
-		this.text = new CanvasText(this.properties, this.canvas);
-		this.text.render();
+		const canvas = new OffscreenCanvas(1, 1);
+		this.text = new CanvasText(this.properties, canvas);
 	}
 
 	update(properties) {

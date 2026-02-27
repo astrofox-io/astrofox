@@ -1,12 +1,10 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import MirrorShader from "@/lib/shaders/MirrorShader";
 
 const mirrorOptions = [
-	{ label: "Left 🠖 Right", value: 0 },
-	{ label: "Right 🠖 Left", value: 1 },
-	{ label: "Top 🠖 Bottom", value: 2 },
-	{ label: "Bottom 🠖 Top", value: 3 },
+	{ label: "Left \u{1F816} Right", value: 0 },
+	{ label: "Right \u{1F816} Left", value: 1 },
+	{ label: "Top \u{1F816} Bottom", value: 2 },
+	{ label: "Bottom \u{1F816} Top", value: 3 },
 ];
 
 export default class MirrorEffect extends Effect {
@@ -30,13 +28,5 @@ export default class MirrorEffect extends Effect {
 
 	constructor(properties) {
 		super(MirrorEffect, properties);
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(MirrorShader);
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

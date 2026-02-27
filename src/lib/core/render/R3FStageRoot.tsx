@@ -330,21 +330,17 @@ function FallbackLayer({ width, height, texture }) {
 		return null;
 	}
 
-	return React.createElement(
-		"mesh",
-		{
-			renderOrder: 0,
-		},
-		React.createElement("planeGeometry", {
-			args: [width, height],
-		}),
-		React.createElement("meshBasicMaterial", {
-			map: texture,
-			transparent: true,
-			toneMapped: false,
-			depthTest: false,
-			depthWrite: false,
-		}),
+	return (
+		<mesh renderOrder={0}>
+			<planeGeometry args={[width, height]} />
+			<meshBasicMaterial
+				map={texture}
+				transparent={true}
+				toneMapped={false}
+				depthTest={false}
+				depthWrite={false}
+			/>
+		</mesh>
 	);
 }
 
@@ -394,61 +390,57 @@ function TexturePlane({
 	if (useShaderMaterial) {
 		const blendDstAlpha = sceneMaskCombine === "add" ? OneFactor : ZeroFactor;
 
-		return React.createElement(
-			"mesh",
-			{
-				position,
-				rotation: [0, 0, -toRadians(rotation)],
-				scale: planeScale,
-				renderOrder,
-			},
-			React.createElement("planeGeometry", {
-				args: [1, 1],
-			}),
-			React.createElement("shaderMaterial", {
-				uniforms: {
-					map: { value: texture },
-					opacity: { value: finalOpacity },
-					inverse: { value: sceneInverse ? 1 : 0 },
-					luma: { value: LUMA },
-					sceneResolution: {
-						value: new Vector2(sceneWidth, sceneHeight),
-					},
-					effectType: { value: effect.mode },
-					effectValue1: { value: effect.v1 },
-					effectValue2: { value: effect.v2 },
-					effectValue3: { value: effect.v3 },
-					effectValue4: { value: effect.v4 },
-					enableMask: { value: sceneMask ? 1 : 0 },
-				},
-				vertexShader: LAYER_VERTEX_SHADER,
-				fragmentShader: LAYER_FRAGMENT_SHADER,
-				transparent: true,
-				depthTest: false,
-				depthWrite: false,
-				blending: sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode),
-				blendEquation: sceneMask ? AddEquation : undefined,
-				blendSrc: sceneMask ? ZeroFactor : undefined,
-				blendDst: sceneMask ? OneFactor : undefined,
-				blendEquationAlpha: sceneMask ? AddEquation : undefined,
-				blendSrcAlpha: sceneMask ? OneFactor : undefined,
-				blendDstAlpha: sceneMask ? blendDstAlpha : undefined,
-			}),
+		return (
+			<mesh
+				position={position}
+				rotation={[0, 0, -toRadians(rotation)]}
+				scale={planeScale}
+				renderOrder={renderOrder}
+			>
+				<planeGeometry args={[1, 1]} />
+				<shaderMaterial
+					uniforms={{
+						map: { value: texture },
+						opacity: { value: finalOpacity },
+						inverse: { value: sceneInverse ? 1 : 0 },
+						luma: { value: LUMA },
+						sceneResolution: {
+							value: new Vector2(sceneWidth, sceneHeight),
+						},
+						effectType: { value: effect.mode },
+						effectValue1: { value: effect.v1 },
+						effectValue2: { value: effect.v2 },
+						effectValue3: { value: effect.v3 },
+						effectValue4: { value: effect.v4 },
+						enableMask: { value: sceneMask ? 1 : 0 },
+					}}
+					vertexShader={LAYER_VERTEX_SHADER}
+					fragmentShader={LAYER_FRAGMENT_SHADER}
+					transparent={true}
+					depthTest={false}
+					depthWrite={false}
+					blending={sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode)}
+					blendEquation={sceneMask ? AddEquation : undefined}
+					blendSrc={sceneMask ? ZeroFactor : undefined}
+					blendDst={sceneMask ? OneFactor : undefined}
+					blendEquationAlpha={sceneMask ? AddEquation : undefined}
+					blendSrcAlpha={sceneMask ? OneFactor : undefined}
+					blendDstAlpha={sceneMask ? blendDstAlpha : undefined}
+				/>
+			</mesh>
 		);
 	}
 
-	return React.createElement(
-		"mesh",
-		{
-			position,
-			rotation: [0, 0, -toRadians(rotation)],
-			scale: planeScale,
-			renderOrder,
-		},
-		React.createElement("planeGeometry", {
-			args: [1, 1],
-		}),
-		React.createElement("meshBasicMaterial", materialProps),
+	return (
+		<mesh
+			position={position}
+			rotation={[0, 0, -toRadians(rotation)]}
+			scale={planeScale}
+			renderOrder={renderOrder}
+		>
+			<planeGeometry args={[1, 1]} />
+			<meshBasicMaterial {...materialProps} />
+		</mesh>
 	);
 }
 
@@ -666,27 +658,29 @@ function ImageDisplayLayer({
 	const planeWidth = width || naturalWidth;
 	const planeHeight = height || naturalHeight;
 
-	return React.createElement(TexturePlane, {
-		texture,
-		width: planeWidth,
-		height: planeHeight,
-		x,
-		y,
-		originX: planeWidth / 2,
-		originY: planeHeight / 2,
-		rotation,
-		zoom,
-		opacity,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		renderOrder: order,
-	});
+	return (
+		<TexturePlane
+			texture={texture}
+			width={planeWidth}
+			height={planeHeight}
+			x={x}
+			y={y}
+			originX={planeWidth / 2}
+			originY={planeHeight / 2}
+			rotation={rotation}
+			zoom={zoom}
+			opacity={opacity}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			renderOrder={order}
+		/>
+	);
 }
 
 function VideoDisplayLayer({
@@ -792,27 +786,29 @@ function VideoDisplayLayer({
 	const planeWidth = width || videoWidth;
 	const planeHeight = height || videoHeight;
 
-	return React.createElement(TexturePlane, {
-		texture,
-		width: planeWidth,
-		height: planeHeight,
-		x,
-		y,
-		originX: planeWidth / 2,
-		originY: planeHeight / 2,
-		rotation,
-		zoom,
-		opacity,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		renderOrder: order,
-	});
+	return (
+		<TexturePlane
+			texture={texture}
+			width={planeWidth}
+			height={planeHeight}
+			x={x}
+			y={y}
+			originX={planeWidth / 2}
+			originY={planeHeight / 2}
+			rotation={rotation}
+			zoom={zoom}
+			opacity={opacity}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			renderOrder={order}
+		/>
+	);
 }
 
 function drawShape(ctx, props, width, height) {
@@ -1053,27 +1049,29 @@ function CanvasTextureLayer({
 	const width = plane.width;
 	const height = plane.height;
 
-	return React.createElement(TexturePlane, {
-		texture,
-		width,
-		height,
-		x,
-		y,
-		originX: plane.originX,
-		originY: plane.originY,
-		rotation,
-		zoom,
-		opacity,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		renderOrder: order,
-	});
+	return (
+		<TexturePlane
+			texture={texture}
+			width={width}
+			height={height}
+			x={x}
+			y={y}
+			originX={plane.originX}
+			originY={plane.originY}
+			rotation={rotation}
+			zoom={zoom}
+			opacity={opacity}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			renderOrder={order}
+		/>
+	);
 }
 
 function TextDisplayLayer({
@@ -1117,20 +1115,22 @@ function TextDisplayLayer({
 		};
 	}, []);
 
-	return React.createElement(CanvasTextureLayer, {
-		display,
-		order,
-		frameData,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		drawFrame,
-	});
+	return (
+		<CanvasTextureLayer
+			display={display}
+			order={order}
+			frameData={frameData}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			drawFrame={drawFrame}
+		/>
+	);
 }
 
 function ShapeDisplayLayer({
@@ -1183,20 +1183,22 @@ function ShapeDisplayLayer({
 		};
 	}, []);
 
-	return React.createElement(CanvasTextureLayer, {
-		display,
-		order,
-		frameData,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		drawFrame,
-	});
+	return (
+		<CanvasTextureLayer
+			display={display}
+			order={order}
+			frameData={frameData}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			drawFrame={drawFrame}
+		/>
+	);
 }
 
 function BarSpectrumDisplayLayer({
@@ -1243,20 +1245,22 @@ function BarSpectrumDisplayLayer({
 		};
 	}, []);
 
-	return React.createElement(CanvasTextureLayer, {
-		display,
-		order,
-		frameData,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		drawFrame,
-	});
+	return (
+		<CanvasTextureLayer
+			display={display}
+			order={order}
+			frameData={frameData}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			drawFrame={drawFrame}
+		/>
+	);
 }
 
 function WaveSpectrumDisplayLayer({
@@ -1306,20 +1310,22 @@ function WaveSpectrumDisplayLayer({
 		};
 	}, []);
 
-	return React.createElement(CanvasTextureLayer, {
-		display,
-		order,
-		frameData,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		drawFrame,
-	});
+	return (
+		<CanvasTextureLayer
+			display={display}
+			order={order}
+			frameData={frameData}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			drawFrame={drawFrame}
+		/>
+	);
 }
 
 function SoundWaveDisplayLayer({
@@ -1375,20 +1381,22 @@ function SoundWaveDisplayLayer({
 		};
 	}, []);
 
-	return React.createElement(CanvasTextureLayer, {
-		display,
-		order,
-		frameData,
-		sceneOpacity,
-		sceneBlendMode,
-		sceneMask,
-		sceneInverse,
-		sceneMaskCombine,
-		sceneEffects,
-		sceneWidth,
-		sceneHeight,
-		drawFrame,
-	});
+	return (
+		<CanvasTextureLayer
+			display={display}
+			order={order}
+			frameData={frameData}
+			sceneOpacity={sceneOpacity}
+			sceneBlendMode={sceneBlendMode}
+			sceneMask={sceneMask}
+			sceneInverse={sceneInverse}
+			sceneMaskCombine={sceneMaskCombine}
+			sceneEffects={sceneEffects}
+			sceneWidth={sceneWidth}
+			sceneHeight={sceneHeight}
+			drawFrame={drawFrame}
+		/>
+	);
 }
 
 function getGeometrySpec(shape) {
@@ -1415,26 +1423,40 @@ function getGeometrySpec(shape) {
 function createGeometryNode(shape, key) {
 	const spec = getGeometrySpec(shape);
 
-	return React.createElement(spec.type, {
-		key,
-		args: spec.args,
-	});
+	switch (spec.type) {
+		case "sphereGeometry":
+			return <sphereGeometry key={key} args={spec.args} />;
+		case "dodecahedronGeometry":
+			return <dodecahedronGeometry key={key} args={spec.args} />;
+		case "icosahedronGeometry":
+			return <icosahedronGeometry key={key} args={spec.args} />;
+		case "octahedronGeometry":
+			return <octahedronGeometry key={key} args={spec.args} />;
+		case "tetrahedronGeometry":
+			return <tetrahedronGeometry key={key} args={spec.args} />;
+		case "torusGeometry":
+			return <torusGeometry key={key} args={spec.args} />;
+		case "torusKnotGeometry":
+			return <torusKnotGeometry key={key} args={spec.args} />;
+		default:
+			return <boxGeometry key={key} args={spec.args} />;
+	}
 }
 
 function getMaterialNode(material, props) {
 	switch (material) {
 		case "Basic":
-			return React.createElement("meshBasicMaterial", props);
+			return <meshBasicMaterial {...props} />;
 		case "Lambert":
-			return React.createElement("meshLambertMaterial", props);
+			return <meshLambertMaterial {...props} />;
 		case "Normal":
-			return React.createElement("meshNormalMaterial", props);
+			return <meshNormalMaterial {...props} />;
 		case "Phong":
-			return React.createElement("meshPhongMaterial", props);
+			return <meshPhongMaterial {...props} />;
 		case "Physical":
-			return React.createElement("meshPhysicalMaterial", props);
+			return <meshPhysicalMaterial {...props} />;
 		default:
-			return React.createElement("meshStandardMaterial", props);
+			return <meshStandardMaterial {...props} />;
 	}
 }
 
@@ -1510,126 +1532,108 @@ function GeometryDisplayLayer({
 		? Number(sceneInverse ? 1 : 0)
 		: 0.9 * Number(sceneOpacity ?? 1);
 
-	const children = [
-		React.createElement("pointLight", {
-			key: "light-0",
-			intensity: lightIntensity,
-			distance: lightDistance,
-			position: [0, lightDistance * 2, 0],
-		}),
-		React.createElement("pointLight", {
-			key: "light-1",
-			intensity: lightIntensity,
-			distance: lightDistance,
-			position: [lightDistance, lightDistance * 2, lightDistance],
-		}),
-		React.createElement("pointLight", {
-			key: "light-2",
-			intensity: lightIntensity,
-			distance: lightDistance,
-			position: [-lightDistance, -lightDistance * 2, -lightDistance],
-		}),
-	];
-
-	if (isPoints) {
-		children.push(
-			React.createElement(
-				"points",
-				{
-					key: "points",
-					position: meshPosition,
-					rotation: meshRotation,
-					renderOrder: order,
-				},
-				createGeometryNode(shape, "geometry"),
-				React.createElement("pointsMaterial", {
-					size: 5,
-					sizeAttenuation: true,
-					map: sprite,
-					transparent: true,
-					alphaTest: 0.5,
-					color: geometryColor,
-					opacity: finalOpacity,
-					depthTest: false,
-					depthWrite: false,
-					blending,
-					blendEquation: sceneMask ? AddEquation : undefined,
-					blendSrc: sceneMask ? ZeroFactor : undefined,
-					blendDst: sceneMask ? OneFactor : undefined,
-					blendEquationAlpha: sceneMask ? AddEquation : undefined,
-					blendSrcAlpha: sceneMask ? OneFactor : undefined,
-					blendDstAlpha: sceneMask ? ZeroFactor : undefined,
-				}),
-			),
-		);
-	} else {
-		children.push(
-			React.createElement(
-				"mesh",
-				{
-					key: "mesh",
-					position: meshPosition,
-					rotation: meshRotation,
-					renderOrder: order,
-				},
-				createGeometryNode(shape, "geometry"),
-				getMaterialNode(material, {
-					flatShading: shading === "Flat",
-					color: geometryColor,
-					opacity: finalOpacity,
-					wireframe,
-					transparent: true,
-					side: material === "Basic" ? FrontSide : DoubleSide,
-					depthTest: false,
-					depthWrite: false,
-					blending,
-					blendEquation: sceneMask ? AddEquation : undefined,
-					blendSrc: sceneMask ? ZeroFactor : undefined,
-					blendDst: sceneMask ? OneFactor : undefined,
-					blendEquationAlpha: sceneMask ? AddEquation : undefined,
-					blendSrcAlpha: sceneMask ? OneFactor : undefined,
-					blendDstAlpha: sceneMask ? ZeroFactor : undefined,
-				}),
-			),
-		);
-
-		if (edges) {
-			children.push(
-				React.createElement(
-					"mesh",
-					{
-						key: "edge-overlay",
-						position: meshPosition,
-						rotation: meshRotation,
-						renderOrder: order + 0.01,
-					},
-					createGeometryNode(shape, "edge-geometry"),
-					React.createElement("meshBasicMaterial", {
-						color: edgeColor,
-						wireframe: true,
-						transparent: true,
-						opacity: edgeOpacity,
-						depthTest: false,
-						depthWrite: false,
-						blending,
-						blendEquation: sceneMask ? AddEquation : undefined,
-						blendSrc: sceneMask ? ZeroFactor : undefined,
-						blendDst: sceneMask ? OneFactor : undefined,
-						blendEquationAlpha: sceneMask ? AddEquation : undefined,
-						blendSrcAlpha: sceneMask ? OneFactor : undefined,
-						blendDstAlpha: sceneMask ? ZeroFactor : undefined,
-					}),
-				),
-			);
-		}
-	}
-
-	return React.createElement(
-		"group",
-		{
-			scale: [zoomScale, zoomScale, zoomScale],
-		},
-		...children,
+	return (
+		<group scale={[zoomScale, zoomScale, zoomScale]}>
+			<pointLight
+				key="light-0"
+				intensity={lightIntensity}
+				distance={lightDistance}
+				position={[0, lightDistance * 2, 0]}
+			/>
+			<pointLight
+				key="light-1"
+				intensity={lightIntensity}
+				distance={lightDistance}
+				position={[lightDistance, lightDistance * 2, lightDistance]}
+			/>
+			<pointLight
+				key="light-2"
+				intensity={lightIntensity}
+				distance={lightDistance}
+				position={[-lightDistance, -lightDistance * 2, -lightDistance]}
+			/>
+			{isPoints ? (
+				<points
+					key="points"
+					position={meshPosition}
+					rotation={meshRotation}
+					renderOrder={order}
+				>
+					{createGeometryNode(shape, "geometry")}
+					<pointsMaterial
+						size={5}
+						sizeAttenuation={true}
+						map={sprite}
+						transparent={true}
+						alphaTest={0.5}
+						color={geometryColor}
+						opacity={finalOpacity}
+						depthTest={false}
+						depthWrite={false}
+						blending={blending}
+						blendEquation={sceneMask ? AddEquation : undefined}
+						blendSrc={sceneMask ? ZeroFactor : undefined}
+						blendDst={sceneMask ? OneFactor : undefined}
+						blendEquationAlpha={sceneMask ? AddEquation : undefined}
+						blendSrcAlpha={sceneMask ? OneFactor : undefined}
+						blendDstAlpha={sceneMask ? ZeroFactor : undefined}
+					/>
+				</points>
+			) : (
+				<>
+					<mesh
+						key="mesh"
+						position={meshPosition}
+						rotation={meshRotation}
+						renderOrder={order}
+					>
+						{createGeometryNode(shape, "geometry")}
+						{getMaterialNode(material, {
+							flatShading: shading === "Flat",
+							color: geometryColor,
+							opacity: finalOpacity,
+							wireframe,
+							transparent: true,
+							side: material === "Basic" ? FrontSide : DoubleSide,
+							depthTest: false,
+							depthWrite: false,
+							blending,
+							blendEquation: sceneMask ? AddEquation : undefined,
+							blendSrc: sceneMask ? ZeroFactor : undefined,
+							blendDst: sceneMask ? OneFactor : undefined,
+							blendEquationAlpha: sceneMask ? AddEquation : undefined,
+							blendSrcAlpha: sceneMask ? OneFactor : undefined,
+							blendDstAlpha: sceneMask ? ZeroFactor : undefined,
+						})}
+					</mesh>
+					{edges && (
+						<mesh
+							key="edge-overlay"
+							position={meshPosition}
+							rotation={meshRotation}
+							renderOrder={order + 0.01}
+						>
+							{createGeometryNode(shape, "edge-geometry")}
+							<meshBasicMaterial
+								color={edgeColor}
+								wireframe={true}
+								transparent={true}
+								opacity={edgeOpacity}
+								depthTest={false}
+								depthWrite={false}
+								blending={blending}
+								blendEquation={sceneMask ? AddEquation : undefined}
+								blendSrc={sceneMask ? ZeroFactor : undefined}
+								blendDst={sceneMask ? OneFactor : undefined}
+								blendEquationAlpha={sceneMask ? AddEquation : undefined}
+								blendSrcAlpha={sceneMask ? OneFactor : undefined}
+								blendDstAlpha={sceneMask ? ZeroFactor : undefined}
+							/>
+						</mesh>
+					)}
+				</>
+			)}
+		</group>
 	);
 }
 
@@ -1643,28 +1647,24 @@ export default function R3FStageRoot({
 	frameData,
 	frameIndex,
 }) {
-	const rootChildren = [
-		React.createElement("primitive", {
-			key: "background",
-			attach: "background",
-			object: new Color(backgroundColor),
-		}),
-	];
+	const bgColor = React.useMemo(() => new Color(backgroundColor), [backgroundColor]);
 
 	if (useFallback) {
-		rootChildren.push(
-			React.createElement(FallbackLayer, {
-				key: "fallback-layer",
-				width,
-				height,
-				texture: fallbackTexture,
-			}),
+		return (
+			<>
+				<primitive key="background" attach="background" object={bgColor} />
+				<FallbackLayer
+					key="fallback-layer"
+					width={width}
+					height={height}
+					texture={fallbackTexture}
+				/>
+			</>
 		);
-
-		return React.createElement(React.Fragment, null, ...rootChildren);
 	}
 
 	let order = 1;
+	const displayElements = [];
 
 	for (const scene of scenes || []) {
 		if (!scene?.enabled) {
@@ -1697,161 +1697,161 @@ export default function R3FStageRoot({
 						break;
 					}
 
-					rootChildren.push(
-						React.createElement(ImageDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<ImageDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "VideoDisplay": {
-					rootChildren.push(
-						React.createElement(VideoDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<VideoDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "TextDisplay": {
-					rootChildren.push(
-						React.createElement(TextDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							frameData,
-							frameIndex,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<TextDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							frameData={frameData}
+							frameIndex={frameIndex}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "ShapeDisplay": {
-					rootChildren.push(
-						React.createElement(ShapeDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							frameData,
-							frameIndex,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<ShapeDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							frameData={frameData}
+							frameIndex={frameIndex}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "BarSpectrumDisplay": {
-					rootChildren.push(
-						React.createElement(BarSpectrumDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							frameData,
-							frameIndex,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<BarSpectrumDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							frameData={frameData}
+							frameIndex={frameIndex}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "WaveSpectrumDisplay": {
-					rootChildren.push(
-						React.createElement(WaveSpectrumDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							frameData,
-							frameIndex,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<WaveSpectrumDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							frameData={frameData}
+							frameIndex={frameIndex}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "SoundWaveDisplay": {
-					rootChildren.push(
-						React.createElement(SoundWaveDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							frameData,
-							frameIndex,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneMaskCombine,
-							sceneEffects,
-							sceneWidth: width,
-							sceneHeight: height,
-						}),
+					displayElements.push(
+						<SoundWaveDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							frameData={frameData}
+							frameIndex={frameIndex}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneMaskCombine={sceneMaskCombine}
+							sceneEffects={sceneEffects}
+							sceneWidth={width}
+							sceneHeight={height}
+						/>,
 					);
 					break;
 				}
 
 				case "GeometryDisplay": {
-					rootChildren.push(
-						React.createElement(GeometryDisplayLayer, {
-							key: display.id,
-							display,
-							order,
-							frameData,
-							sceneOpacity,
-							sceneBlendMode,
-							sceneMask,
-							sceneInverse,
-							sceneEffects,
-						}),
+					displayElements.push(
+						<GeometryDisplayLayer
+							key={display.id}
+							display={display}
+							order={order}
+							frameData={frameData}
+							sceneOpacity={sceneOpacity}
+							sceneBlendMode={sceneBlendMode}
+							sceneMask={sceneMask}
+							sceneInverse={sceneInverse}
+							sceneEffects={sceneEffects}
+						/>,
 					);
 					break;
 				}
@@ -1864,5 +1864,10 @@ export default function R3FStageRoot({
 		}
 	}
 
-	return React.createElement(React.Fragment, null, ...rootChildren);
+	return (
+		<>
+			<primitive key="background" attach="background" object={bgColor} />
+			{displayElements}
+		</>
+	);
 }

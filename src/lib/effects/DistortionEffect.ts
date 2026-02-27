@@ -1,9 +1,4 @@
-// @ts-nocheck
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import DistortionShader from "@/lib/shaders/DistortionShader";
-
-const DISTORTION_MAX = 30.0;
 
 export default class DistortionEffect extends Effect {
 	[key: string]: any;
@@ -45,35 +40,13 @@ export default class DistortionEffect extends Effect {
 		this.time = 0;
 	}
 
-	updatePass() {
-		this.pass.setUniforms({
-			amount: this.properties.amount * DISTORTION_MAX,
-		});
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(DistortionShader);
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
-	}
-
 	render(scene, data) {
-		if (!data.hasUpdate) {
-			return;
-		}
+		if (!data.hasUpdate) return;
 
 		const { speed } = this.properties;
 
 		if (speed > 0) {
 			this.time += data.delta / (100 / speed);
 		}
-
-		this.pass.setUniforms({
-			time: this.time,
-		});
 	}
 }

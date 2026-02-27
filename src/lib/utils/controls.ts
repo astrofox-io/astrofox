@@ -24,14 +24,14 @@ export function property(name, compare) {
 	};
 }
 
-export function stageWidth(transform) {
+export function stageWidth(transform?) {
 	return (display) => {
 		const value = display.scene.getSize().width;
 		return transform ? transform(value) : value;
 	};
 }
 
-export function stageHeight(transform) {
+export function stageHeight(transform?) {
 	return (display) => {
 		const value = display.scene.getSize().height;
 		return transform ? transform(value) : value;

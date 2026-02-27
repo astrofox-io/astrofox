@@ -1,8 +1,4 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import GlowShader from "@/lib/shaders/GlowShader";
-
-const GLOW_MAX = 5;
 
 export default class GlowEffect extends Effect {
 	[key: string]: any;
@@ -39,30 +35,5 @@ export default class GlowEffect extends Effect {
 
 	constructor(properties) {
 		super(GlowEffect, properties);
-	}
-
-	update(properties) {
-		const changed = super.update(properties);
-
-		if (changed) {
-			const { amount, intensity } = this.properties;
-
-			this.pass.setUniforms({
-				amount: amount * GLOW_MAX,
-				intensity,
-			});
-		}
-
-		return changed;
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(GlowShader);
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

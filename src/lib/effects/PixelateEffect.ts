@@ -1,14 +1,6 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import HexagonShader from "@/lib/shaders/HexagonShader";
-import PixelateShader from "@/lib/shaders/PixelateShader";
 
 const renderOptions = ["Square", "Hexagon"];
-
-const shaders = {
-	Square: PixelateShader,
-	Hexagon: HexagonShader,
-};
 
 export default class PixelateEffect extends Effect {
 	[key: string]: any;
@@ -40,38 +32,5 @@ export default class PixelateEffect extends Effect {
 
 	constructor(properties) {
 		super(PixelateEffect, properties);
-	}
-
-	update(properties) {
-		const changed = Effect.prototype.update.call(this, properties);
-
-		if (this.pass && properties.type !== undefined) {
-			this.pass = this.getShaderPass(this.properties.type);
-		}
-
-		return changed;
-	}
-
-	updatePass() {
-		this.pass.setUniforms({ size: this.properties.size });
-	}
-
-	addToScene() {
-		this.pass = this.getShaderPass(this.properties.type);
-		this.pass.enabled = this.enabled;
-	}
-
-	removeFromScene() {
-		this.pass = null;
-	}
-
-	getShaderPass(type) {
-		const pass = new ShaderPass(shaders[type]);
-		const { width, height } = this.scene.getSize();
-
-		pass.setUniforms(this.properties);
-		pass.setSize(width, height);
-
-		return pass;
 	}
 }

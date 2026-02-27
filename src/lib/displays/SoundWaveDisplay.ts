@@ -1,14 +1,11 @@
 // @ts-nocheck
 import WaveParser from "@/lib/audio/WaveParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
-import CanvasDisplay from "@/lib/core/CanvasDisplay";
-import { renderImageToCanvas } from "@/lib/utils/canvas";
+import Display from "@/lib/core/Display";
 import { stageHeight, stageWidth } from "@/lib/utils/controls";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@/lib/view/constants";
 
-const WAVELENGTH_MAX = 0.25;
-
-export default class SoundWaveDisplay extends CanvasDisplay {
+export default class SoundWaveDisplay extends Display {
 	[key: string]: any;
 	static config = {
 		name: "SoundWaveDisplay",
@@ -127,7 +124,8 @@ export default class SoundWaveDisplay extends CanvasDisplay {
 	constructor(properties) {
 		super(SoundWaveDisplay, properties);
 
-		this.wave = new CanvasWave(this.properties, this.canvas);
+		const canvas = new OffscreenCanvas(1, 1);
+		this.wave = new CanvasWave(this.properties, canvas);
 		this.parser = new WaveParser();
 	}
 
@@ -146,36 +144,5 @@ export default class SoundWaveDisplay extends CanvasDisplay {
 		}
 
 		return changed;
-	}
-
-	getPoints(data, width) {
-		const step = width / (data.length - 1);
-
-		return Array.from(data).flatMap((n, i) => [i * step, n]);
-	}
-
-	render(scene, data) {
-		const {
-			wave,
-			parser,
-			canvas: { width, height },
-			properties: { wavelength },
-		} = this;
-
-		const values = parser.parseTimeData(
-			data.td,
-			wavelength > 0
-				? ~~(width / (wavelength * WAVELENGTH_MAX * width))
-				: width,
-		);
-
-		wave.render(this.getPoints(values, width), wavelength > 0.02);
-
-		const origin = {
-			x: width / 2,
-			y: height / 2,
-		};
-
-		scene.renderToCanvas(this.canvas, this.properties, origin);
 	}
 }

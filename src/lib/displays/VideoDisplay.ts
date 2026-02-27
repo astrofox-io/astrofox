@@ -1,5 +1,5 @@
 // @ts-nocheck
-import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import Display from "@/lib/core/Display";
 import { isDefined } from "@/lib/utils/array";
 import { BLANK_IMAGE } from "@/lib/view/constants";
 
@@ -19,7 +19,7 @@ const maxHeight = (display) => {
 const maxX = (display) => (disabled(display) ? 0 : maxWidth(display));
 const maxY = (display) => (disabled(display) ? 0 : maxHeight(display));
 
-export default class VideoDisplay extends CanvasDisplay {
+export default class VideoDisplay extends Display {
 	[key: string]: any;
 	static config = {
 		name: "VideoDisplay",
@@ -152,18 +152,6 @@ export default class VideoDisplay extends CanvasDisplay {
 		}
 	};
 
-	playVideo() {
-		const playback = this.video.play();
-		if (playback?.catch) {
-			playback.catch(() => {});
-		}
-	}
-
-	setCanvasSize(width, height) {
-		this.canvas.width = Math.max(0, Math.round(width || 0));
-		this.canvas.height = Math.max(0, Math.round(height || 0));
-	}
-
 	update(properties) {
 		const {
 			src: inputSrc,
@@ -220,13 +208,13 @@ export default class VideoDisplay extends CanvasDisplay {
 					this.video.pause();
 					this.video.removeAttribute("src");
 					this.video.load();
-					this.setCanvasSize(0, 0);
 				} else {
 					this.video.src = this.properties.src;
 					this.video.loop = Boolean(
 						this.properties.loop && !this.properties.endTime,
 					);
-					this.playVideo();
+					const p = this.video.play();
+					if (p?.catch) p.catch(() => {});
 
 					const onLoadedMetadata = () => {
 						this.video.currentTime = Math.max(
@@ -246,8 +234,6 @@ export default class VideoDisplay extends CanvasDisplay {
 						if (Object.keys(nextProps).length > 0) {
 							super.update(nextProps);
 						}
-
-						this.setCanvasSize(this.properties.width, this.properties.height);
 					};
 
 					if (this.video.readyState >= 1) {
@@ -262,35 +248,9 @@ export default class VideoDisplay extends CanvasDisplay {
 				if (startTime !== undefined && this.video.readyState >= 1) {
 					this.video.currentTime = Math.max(0, this.properties.startTime || 0);
 				}
-				if (isDefined(width, height)) {
-					this.setCanvasSize(this.properties.width, this.properties.height);
-				}
 			}
 		}
 
 		return changed;
-	}
-
-	render(scene) {
-		if (!this.hasVideo) {
-			return;
-		}
-
-		const { width, height } = this.canvas;
-		if (!width || !height || this.video.readyState < 2) {
-			return;
-		}
-
-		this.context.clearRect(0, 0, width, height);
-		this.context.drawImage(this.video, 0, 0, width, height);
-
-		super.render(scene);
-	}
-
-	removeFromScene() {
-		this.video.pause();
-		this.video.removeAttribute("src");
-		this.video.load();
-		this.video.removeEventListener("timeupdate", this.handleTimeUpdate);
 	}
 }

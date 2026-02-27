@@ -9,30 +9,10 @@ export default class Effect extends Display {
 	}
 
 	update(properties: any = {}) {
-		const changed = super.update(properties);
-
-		if (changed) {
-			this.updatePass();
-		}
-
-		return changed;
+		return super.update(properties);
 	}
 
-	updatePass() {
-		const { pass } = this;
+	updatePass() {}
 
-		if (pass.setUniforms) {
-			pass.setUniforms(this.properties);
-		}
-	}
-
-	setSize(width, height) {
-		const { pass } = this;
-
-		if (pass) {
-			pass.setSize(width, height);
-		}
-	}
-
-	render() {}
+	render(..._args: any[]) {}
 }

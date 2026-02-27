@@ -1,11 +1,11 @@
 // @ts-nocheck
 import FFTParser from "@/lib/audio/FFTParser";
 import CanvasBars from "@/lib/canvas/CanvasBars";
-import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import Display from "@/lib/core/Display";
 import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
-export default class BarSpectrumDisplay extends CanvasDisplay {
+export default class BarSpectrumDisplay extends Display {
 	[key: string]: any;
 	static config = {
 		name: "BarSpectrumDisplay",
@@ -162,7 +162,8 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
 	constructor(properties) {
 		super(BarSpectrumDisplay, properties);
 
-		this.bars = new CanvasBars(this.properties, this.canvas);
+		const canvas = new OffscreenCanvas(1, 1);
+		this.bars = new CanvasBars(this.properties, canvas);
 		this.parser = new FFTParser({
 			...this.properties,
 			fftSize: FFT_SIZE,
@@ -188,18 +189,5 @@ export default class BarSpectrumDisplay extends CanvasDisplay {
 		}
 
 		return changed;
-	}
-
-	render(scene, data) {
-		const fft = this.parser.parseFFT(data.fft);
-
-		this.bars.render(fft);
-
-		const origin = {
-			x: this.canvas.width / 2,
-			y: this.properties.height,
-		};
-
-		scene.renderToCanvas(this.canvas, this.properties, origin);
 	}
 }

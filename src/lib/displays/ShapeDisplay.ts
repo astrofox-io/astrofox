@@ -1,13 +1,13 @@
 // @ts-nocheck
 import CanvasShape from "@/lib/canvas/CanvasShape";
-import CanvasDisplay from "@/lib/core/CanvasDisplay";
+import Display from "@/lib/core/Display";
 import { maxSize, property, stageHeight, stageWidth } from "@/lib/utils/controls";
 
 const shapeOptions = ["Circle", "Triangle", "Square", "Rectangle", "Hexagon"];
 
 const isRectangle = (display) => display.properties.shape === "Rectangle";
 
-export default class ShapeDisplay extends CanvasDisplay {
+export default class ShapeDisplay extends Display {
 	[key: string]: any;
 	static config = {
 		name: "ShapeDisplay",
@@ -113,11 +113,9 @@ export default class ShapeDisplay extends CanvasDisplay {
 
 	constructor(properties) {
 		super(ShapeDisplay, properties);
-	}
 
-	addToScene() {
-		this.shape = new CanvasShape(this.properties, this.canvas);
-		this.shape.render();
+		const canvas = new OffscreenCanvas(1, 1);
+		this.shape = new CanvasShape(this.properties, canvas);
 	}
 
 	update(properties) {

@@ -1,7 +1,4 @@
 import Effect from "@/lib/core/Effect";
-import ShaderPass from "@/lib/graphics/ShaderPass";
-import ColorHalftoneShader from "@/lib/shaders/ColorHalftoneShader";
-import { deg2rad } from "../utils/math";
 
 export default class ColorHalftoneEffect extends Effect {
 	[key: string]: any;
@@ -37,24 +34,5 @@ export default class ColorHalftoneEffect extends Effect {
 
 	constructor(properties) {
 		super(ColorHalftoneEffect, properties);
-	}
-
-	updatePass() {
-		const { scale, angle } = this.properties;
-
-		this.pass.setUniforms({
-			scale: 1 - scale,
-			angle: deg2rad(angle),
-		});
-	}
-
-	addToScene() {
-		this.pass = new ShaderPass(ColorHalftoneShader);
-
-		this.updatePass();
-	}
-
-	removeFromScene() {
-		this.pass = null;
 	}
 }

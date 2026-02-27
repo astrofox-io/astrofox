@@ -1,8 +1,6 @@
 import Display from "@/lib/core/Display";
 import Effect from "@/lib/core/Effect";
 import EntityList from "@/lib/core/EntityList";
-import Composer from "@/lib/graphics/Composer";
-import { renderImageToCanvas } from "../utils/canvas";
 
 const blendOptions = [
 	"None",
@@ -86,44 +84,10 @@ export default class Scene extends Display {
 		this.displays = new EntityList();
 		this.effects = new EntityList();
 
-		this.renderToCanvas = this.renderToCanvas.bind(this);
-		this.renderToScene = this.renderToScene.bind(this);
 		this.getSize = this.getSize.bind(this);
 	}
 
-	addToStage(stage) {
-		this.composer = new Composer(stage.renderer);
-	}
-
-	removeFromStage() {
-		[...this.displays].forEach((display) => {
-			this.removeElement(display);
-		});
-
-		[...this.effects].forEach((effect) => {
-			this.removeElement(effect);
-		});
-
-		if (this.stage?.canvasBuffer?.clear) {
-			this.stage.canvasBuffer.clear();
-		}
-
-		if (this.stage?.webglBuffer?.clear) {
-			this.stage.webglBuffer.clear();
-		}
-
-		if (this.composer) {
-			this.composer.clearBuffer();
-			this.composer.dispose();
-			this.composer = null;
-		}
-	}
-
 	getSize() {
-		if (this.composer) {
-			return this.composer.getSize();
-		}
-
 		if (this.stage?.getSize) {
 			return this.stage.getSize();
 		}
@@ -143,10 +107,6 @@ export default class Scene extends Display {
 				effect.setSize(width, height);
 			}
 		});
-
-		if (this.composer) {
-			this.composer.setSize(width, height);
-		}
 	}
 
 	getTarget(obj) {
@@ -166,8 +126,8 @@ export default class Scene extends Display {
 			return;
 		}
 
-		const { renderToScene, renderToCanvas, getSize } = this;
-		const scene = { renderToScene, renderToCanvas, getSize };
+		const { getSize } = this;
+		const scene = { getSize };
 
 		const target = this.getTarget(obj);
 
@@ -216,19 +176,6 @@ export default class Scene extends Display {
 		return target.shiftElement(obj, spaces);
 	}
 
-	renderToCanvas(image, props, origin) {
-		renderImageToCanvas(
-			this.stage.canvasBuffer.getContext(),
-			image,
-			props,
-			origin,
-		);
-	}
-
-	renderToScene(scene, camera) {
-		this.stage.webglBuffer.render(scene, camera);
-	}
-
 	toJSON() {
 		const json = super.toJSON();
 		const { displays, effects } = this;
@@ -238,62 +185,5 @@ export default class Scene extends Display {
 			displays: displays.map((display) => display.toJSON()),
 			effects: effects.map((effect) => effect.toJSON()),
 		};
-	}
-
-	clear() {
-		const {
-			composer,
-			stage: { canvasBuffer, webglBuffer },
-		} = this;
-
-		canvasBuffer.clear();
-		webglBuffer.clear();
-		composer.clearBuffer();
-	}
-
-	render(data) {
-		const {
-			composer,
-			displays,
-			effects,
-			stage: { canvasBuffer, webglBuffer },
-			renderToScene,
-			renderToCanvas,
-			getSize,
-		} = this;
-
-		this.clear();
-		this.updateReactors(data);
-
-		const scene = { renderToScene, renderToCanvas, getSize };
-		const passes = [webglBuffer.pass, canvasBuffer.pass];
-
-		if (displays.length > 0 || effects.length > 0) {
-			displays.forEach((display) => {
-				if (display.enabled) {
-					display.updateReactors(data);
-					display.render(scene, data);
-
-					if (display.pass) {
-						passes.push(display.pass);
-					}
-				}
-			});
-
-			effects.forEach((effect) => {
-				if (effect.enabled) {
-					effect.updateReactors(data);
-					effect.render(scene, data);
-
-					if (effect.pass) {
-						passes.push(effect.pass);
-					}
-				}
-			});
-
-			composer.render(passes);
-		}
-
-		return composer.inputBuffer;
 	}
 }
