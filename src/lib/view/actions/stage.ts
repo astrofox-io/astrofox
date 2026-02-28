@@ -33,15 +33,6 @@ export function updateStage(props) {
 
 export function updateCanvas(width, height, backgroundColor) {
 	updateStage({ width, height, backgroundColor });
-
-	if (typeof window !== "undefined" && window.requestAnimationFrame) {
-		window.requestAnimationFrame(() => {
-			fitToScreen();
-		});
-	} else {
-		fitToScreen();
-	}
-
 	touchProject();
 }
 
