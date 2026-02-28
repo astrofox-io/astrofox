@@ -19,7 +19,6 @@ const materialOptions = [
 	"Normal",
 	"Phong",
 	"Physical",
-	"Points",
 	"Standard",
 ];
 
@@ -102,7 +101,7 @@ export default class GeometryDisplay extends Display {
 				label: "Z",
 				type: "number",
 				min: -1000,
-				max: 1000,
+				max: 5000,
 				withRange: true,
 			},
 			opacity: {

@@ -16,7 +16,6 @@ import {
 	PPMirrorEffect,
 	PPRGBShiftEffect,
 } from "@/lib/postprocessing";
-import POINT_SPRITE from "@/lib/view/assets/images/point.png";
 import { BLANK_IMAGE } from "@/lib/view/constants";
 import { EffectComposer, Bloom, DotScreen, Pixelation } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
@@ -1149,47 +1148,24 @@ function SoundWaveDisplayLayer({
 	);
 }
 
-function getGeometrySpec(shape) {
+function createGeometryNode(shape, key) {
 	switch (shape) {
 		case "Sphere":
-			return { type: "sphereGeometry", args: [40, 10, 10] };
+			return <sphereGeometry key={key} args={[40, 10, 10]} />;
 		case "Dodecahedron":
-			return { type: "dodecahedronGeometry", args: [40, 0] };
+			return <dodecahedronGeometry key={key} args={[40, 0]} />;
 		case "Icosahedron":
-			return { type: "icosahedronGeometry", args: [40, 0] };
+			return <icosahedronGeometry key={key} args={[40, 0]} />;
 		case "Octahedron":
-			return { type: "octahedronGeometry", args: [40, 0] };
+			return <octahedronGeometry key={key} args={[40, 0]} />;
 		case "Tetrahedron":
-			return { type: "tetrahedronGeometry", args: [40, 0] };
+			return <tetrahedronGeometry key={key} args={[40, 0]} />;
 		case "Torus":
-			return { type: "torusGeometry", args: [50, 20, 10, 10] };
+			return <torusGeometry key={key} args={[50, 20, 10, 10]} />;
 		case "Torus Knot":
-			return { type: "torusKnotGeometry", args: [50, 10, 20, 10] };
+			return <torusKnotGeometry key={key} args={[50, 10, 20, 10]} />;
 		default:
-			return { type: "boxGeometry", args: [50, 50, 50] };
-	}
-}
-
-function createGeometryNode(shape, key) {
-	const spec = getGeometrySpec(shape);
-
-	switch (spec.type) {
-		case "sphereGeometry":
-			return <sphereGeometry key={key} args={spec.args} />;
-		case "dodecahedronGeometry":
-			return <dodecahedronGeometry key={key} args={spec.args} />;
-		case "icosahedronGeometry":
-			return <icosahedronGeometry key={key} args={spec.args} />;
-		case "octahedronGeometry":
-			return <octahedronGeometry key={key} args={spec.args} />;
-		case "tetrahedronGeometry":
-			return <tetrahedronGeometry key={key} args={spec.args} />;
-		case "torusGeometry":
-			return <torusGeometry key={key} args={spec.args} />;
-		case "torusKnotGeometry":
-			return <torusKnotGeometry key={key} args={spec.args} />;
-		default:
-			return <boxGeometry key={key} args={spec.args} />;
+			return <boxGeometry key={key} args={[50, 50, 50]} />;
 	}
 }
 
@@ -1239,10 +1215,6 @@ function GeometryDisplayLayer({
 
 	const parserRef = React.useRef(new FFTParser(properties));
 	const rotationRef = React.useRef({ x: 0, y: 0, z: 0 });
-	const sprite = React.useMemo(
-		() => new TextureLoader().load(POINT_SPRITE),
-		[],
-	);
 
 	parserRef.current.update(properties);
 
@@ -1254,22 +1226,15 @@ function GeometryDisplayLayer({
 		rotationRef.current.z += 2 * (fft[2] || 0);
 	}
 
-	React.useEffect(() => {
-		return () => {
-			if (sprite?.dispose) {
-				sprite.dispose();
-			}
-		};
-	}, [sprite]);
-
-	const isPoints = material === "Points";
-	const meshPosition = [x, -y, z];
+	const meshPosition = [x, -y, 0];
 	const meshRotation = [
 		rotationRef.current.x,
 		rotationRef.current.y,
 		rotationRef.current.z,
 	];
-	const zoomScale = cameraZoom > 0 ? 250 / cameraZoom : 1;
+	const baseZoom = cameraZoom > 0 ? 250 / cameraZoom : 1;
+	const zDepthScale = 1 + z / 500;
+	const zoomScale = baseZoom * Math.max(0.01, zDepthScale);
 	const finalOpacity = Math.max(
 		0,
 		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
@@ -1284,40 +1249,63 @@ function GeometryDisplayLayer({
 
 	return (
 		<group scale={[zoomScale, zoomScale, zoomScale]}>
+			<ambientLight intensity={0.3 * lightIntensity} />
 			<pointLight
 				key="light-0"
 				intensity={lightIntensity}
-				distance={lightDistance}
-				position={[0, lightDistance * 2, 0]}
+				decay={0}
+				position={[0, lightDistance, 0]}
 			/>
 			<pointLight
 				key="light-1"
 				intensity={lightIntensity}
-				distance={lightDistance}
-				position={[lightDistance, lightDistance * 2, lightDistance]}
+				decay={0}
+				position={[lightDistance, lightDistance, lightDistance]}
 			/>
 			<pointLight
 				key="light-2"
-				intensity={lightIntensity}
-				distance={lightDistance}
-				position={[-lightDistance, -lightDistance * 2, -lightDistance]}
+				intensity={lightIntensity * 0.5}
+				decay={0}
+				position={[-lightDistance, -lightDistance, -lightDistance]}
 			/>
-			{isPoints ? (
-				<points
-					key="points"
+			<mesh
+				key="mesh"
+				position={meshPosition}
+				rotation={meshRotation}
+				renderOrder={order}
+			>
+				{createGeometryNode(shape, "geometry")}
+				{getMaterialNode(material, {
+					flatShading: shading === "Flat",
+					color: geometryColor,
+					opacity: finalOpacity,
+					wireframe,
+					transparent: true,
+					side: material === "Basic" ? FrontSide : DoubleSide,
+					depthTest: false,
+					depthWrite: false,
+					blending,
+					blendEquation: sceneMask ? AddEquation : undefined,
+					blendSrc: sceneMask ? ZeroFactor : undefined,
+					blendDst: sceneMask ? OneFactor : undefined,
+					blendEquationAlpha: sceneMask ? AddEquation : undefined,
+					blendSrcAlpha: sceneMask ? OneFactor : undefined,
+					blendDstAlpha: sceneMask ? ZeroFactor : undefined,
+				})}
+			</mesh>
+			{edges && (
+				<mesh
+					key="edge-overlay"
 					position={meshPosition}
 					rotation={meshRotation}
-					renderOrder={order}
+					renderOrder={order + 0.01}
 				>
-					{createGeometryNode(shape, "geometry")}
-					<pointsMaterial
-						size={5}
-						sizeAttenuation={true}
-						map={sprite}
+					{createGeometryNode(shape, "edge-geometry")}
+					<meshBasicMaterial
+						color={edgeColor}
+						wireframe={true}
 						transparent={true}
-						alphaTest={0.5}
-						color={geometryColor}
-						opacity={finalOpacity}
+						opacity={edgeOpacity}
 						depthTest={false}
 						depthWrite={false}
 						blending={blending}
@@ -1328,60 +1316,7 @@ function GeometryDisplayLayer({
 						blendSrcAlpha={sceneMask ? OneFactor : undefined}
 						blendDstAlpha={sceneMask ? ZeroFactor : undefined}
 					/>
-				</points>
-			) : (
-				<>
-					<mesh
-						key="mesh"
-						position={meshPosition}
-						rotation={meshRotation}
-						renderOrder={order}
-					>
-						{createGeometryNode(shape, "geometry")}
-						{getMaterialNode(material, {
-							flatShading: shading === "Flat",
-							color: geometryColor,
-							opacity: finalOpacity,
-							wireframe,
-							transparent: true,
-							side: material === "Basic" ? FrontSide : DoubleSide,
-							depthTest: false,
-							depthWrite: false,
-							blending,
-							blendEquation: sceneMask ? AddEquation : undefined,
-							blendSrc: sceneMask ? ZeroFactor : undefined,
-							blendDst: sceneMask ? OneFactor : undefined,
-							blendEquationAlpha: sceneMask ? AddEquation : undefined,
-							blendSrcAlpha: sceneMask ? OneFactor : undefined,
-							blendDstAlpha: sceneMask ? ZeroFactor : undefined,
-						})}
-					</mesh>
-					{edges && (
-						<mesh
-							key="edge-overlay"
-							position={meshPosition}
-							rotation={meshRotation}
-							renderOrder={order + 0.01}
-						>
-							{createGeometryNode(shape, "edge-geometry")}
-							<meshBasicMaterial
-								color={edgeColor}
-								wireframe={true}
-								transparent={true}
-								opacity={edgeOpacity}
-								depthTest={false}
-								depthWrite={false}
-								blending={blending}
-								blendEquation={sceneMask ? AddEquation : undefined}
-								blendSrc={sceneMask ? ZeroFactor : undefined}
-								blendDst={sceneMask ? OneFactor : undefined}
-								blendEquationAlpha={sceneMask ? AddEquation : undefined}
-								blendSrcAlpha={sceneMask ? OneFactor : undefined}
-								blendDstAlpha={sceneMask ? ZeroFactor : undefined}
-							/>
-						</mesh>
-					)}
-				</>
+				</mesh>
 			)}
 		</group>
 	);
