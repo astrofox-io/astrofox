@@ -7,7 +7,6 @@ import useScenes, {
 	updateElement,
 } from "@/lib/view/actions/scenes";
 import { ButtonInput } from "@/lib/view/components/inputs";
-import ButtonPanel from "@/lib/view/components/layout/ButtonPanel";
 import Layout from "@/lib/view/components/layout/Layout";
 import SceneLayer from "@/lib/view/components/panels/SceneLayer";
 import {
@@ -100,7 +99,7 @@ export default function LayersPanel() {
 
 	return (
 		<Layout className={"flex flex-col flex-1 relative overflow-auto"}>
-			<ButtonPanel>
+			<div className={"flex p-1 gap-1"}>
 				<ButtonInput
 					icon={Picture}
 					title="Add Scene"
@@ -118,7 +117,7 @@ export default function LayersPanel() {
 					onClick={handleMoveDown}
 					disabled={!layerSelected}
 				/>
-			</ButtonPanel>
+			</div>
 			<div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
 				{sortedScenes.map((scene) => (
 					<SceneLayer

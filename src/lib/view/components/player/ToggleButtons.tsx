@@ -46,14 +46,16 @@ export default function ToggleButtons() {
 
 const ToggleButton = ({ enabled, title, icon, onClick }: any) => (
 	<div
-		className={classNames(
-			"mr-2.5 [&:last-child]:mr-0 [&_.icon]:text-text500 [&_.icon]:w-4 [&_.icon]:h-4 [&_.icon:hover]:text-text300",
-			{
-				["[&_.icon]:text-primary100 [&_.icon:hover]:text-primary100"]: enabled,
-			},
-		)}
+		className={"mr-2.5 [&:last-child]:mr-0 cursor-default"}
 		onClick={onClick}
 	>
-		<Icon className={""} glyph={icon} title={title} />
+		<Icon
+			className={classNames("w-4 h-4", {
+				"!text-text500 hover:!text-text300": !enabled,
+				"!text-primary400 hover:!text-primary400": enabled,
+			})}
+			glyph={icon}
+			title={title}
+		/>
 	</div>
 );
