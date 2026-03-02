@@ -14,7 +14,6 @@ import {
 	ChevronDown,
 	ChevronUp,
 	Picture,
-	TrashEmpty,
 } from "@/lib/view/icons";
 import React, { useMemo } from "react";
 
@@ -62,31 +61,41 @@ export default function LayersPanel() {
 		moveElement(activeElementId, -1);
 	}
 
-	function handleRemove() {
-		if (activeElementId) {
-			if (activeElementId === activeScene?.id) {
-				const newScene = sortedScenes.find((e) => e !== activeScene);
+	function handleRemove(id) {
+		if (!id) return;
 
-				setActiveElementId(newScene?.id);
-			} else {
-				const scene = sortedScenes.find((e) => e === activeScene);
-
-				if (scene) {
-					const { displays, effects } = scene;
-					const element =
-						reverse(displays).find((e) => e !== activeElementId) ||
-						reverse(effects).find((e) => e !== activeElementId);
-
-					if (element) {
-						setActiveElementId(element?.id);
-					} else {
-						setActiveElementId(activeScene?.id);
-					}
+		const ownerScene = scenes.reduce((memo, scene) => {
+			if (!memo) {
+				if (
+					scene?.id === id ||
+					scene?.displays.find((e) => e.id === id) ||
+					scene?.effects.find((e) => e.id === id)
+				) {
+					memo = scene;
 				}
 			}
+			return memo;
+		}, undefined);
 
-			removeElement(activeElementId);
+		if (id === ownerScene?.id) {
+			const newScene = sortedScenes.find((e) => e !== ownerScene);
+			setActiveElementId(newScene?.id);
+		} else if (id === activeElementId) {
+			if (ownerScene) {
+				const { displays, effects } = ownerScene;
+				const element =
+					reverse(displays).find((e) => e !== id) ||
+					reverse(effects).find((e) => e !== id);
+
+				if (element) {
+					setActiveElementId(element?.id);
+				} else {
+					setActiveElementId(ownerScene?.id);
+				}
+			}
 		}
+
+		removeElement(id);
 	}
 
 	return (
@@ -109,12 +118,6 @@ export default function LayersPanel() {
 					onClick={handleMoveDown}
 					disabled={!layerSelected}
 				/>
-				<ButtonInput
-					icon={TrashEmpty}
-					title="Delete Layer"
-					onClick={handleRemove}
-					disabled={!layerSelected}
-				/>
 			</ButtonPanel>
 			<div className={"flex-1 overflow-auto pt-1"}>
 				{sortedScenes.map((scene) => (
@@ -124,6 +127,7 @@ export default function LayersPanel() {
 						activeElementId={activeElementId}
 						onLayerClick={handleLayerClick}
 						onLayerUpdate={handleLayerUpdate}
+						onLayerDelete={handleRemove}
 					/>
 				))}
 			</div>

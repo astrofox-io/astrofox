@@ -15,6 +15,7 @@ export default function SceneLayer({
 	activeElementId,
 	onLayerClick,
 	onLayerUpdate,
+	onLayerDelete,
 }: any) {
 	const { id, displayName, enabled } = scene;
 
@@ -32,6 +33,7 @@ export default function SceneLayer({
 			active={id === activeElementId}
 			onLayerClick={onLayerClick}
 			onLayerUpdate={onLayerUpdate}
+			onLayerDelete={onLayerDelete}
 		/>
 	);
 
@@ -46,6 +48,7 @@ export default function SceneLayer({
 				active={id === activeElementId}
 				onLayerClick={onLayerClick}
 				onLayerUpdate={onLayerUpdate}
+				onLayerDelete={onLayerDelete}
 			/>
 			<div className={classNames("flex flex-col")}>
 				{effects.map((effect) => renderLayer(effect))}

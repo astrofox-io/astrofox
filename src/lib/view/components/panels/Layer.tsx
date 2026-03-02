@@ -1,7 +1,7 @@
 // @ts-nocheck
 import TextInput from "@/lib/view/components/inputs/TextInput";
 import Icon from "@/lib/view/components/interface/Icon";
-import { Eye } from "@/lib/view/icons";
+import { Eye, TrashEmpty } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useState } from "react";
 
@@ -14,6 +14,7 @@ export default function Layer({
 	enabled = true,
 	onLayerClick = () => {},
 	onLayerUpdate = () => {},
+	onLayerDelete = null,
 }) {
 	const [edit, setEdit] = useState(false);
 
@@ -41,10 +42,17 @@ export default function Layer({
 		setEdit(false);
 	}
 
+	function handleDeleteClick(e) {
+		e.stopPropagation();
+		if (onLayerDelete) {
+			onLayerDelete(id);
+		}
+	}
+
 	return (
 		<div
 			className={classNames(
-				"flex flex-row items-center text-sm text-text100 bg-gray200 border-b border-b-gray75 p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				"group flex flex-row items-center text-sm text-text100 bg-gray200 border-b border-b-gray75 p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
 				className,
 				{
 					"bg-gray100": edit,
@@ -73,6 +81,13 @@ export default function Layer({
 					name
 				)}
 			</div>
+			{onLayerDelete && (
+				<Icon
+					className="w-4 h-4 opacity-0 group-hover:opacity-100"
+					glyph={TrashEmpty}
+					onClick={handleDeleteClick}
+				/>
+			)}
 			<Icon
 				className={classNames("w-4 h-4", {
 					"opacity-30": !enabled,
