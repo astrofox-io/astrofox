@@ -5,7 +5,7 @@ import classNames from "classnames";
 import React, { useMemo } from "react";
 
 const icons = {
-	display: DocumentLandscape,
+	display: Cube,
 	effect: Sun,
 	webgl: Cube,
 };

@@ -83,7 +83,7 @@ export default function Layer({
 			</div>
 			{onLayerDelete && (
 				<Icon
-					className="w-4 h-4 opacity-0 group-hover:opacity-100"
+					className="w-4 h-4 opacity-0 group-hover:opacity-50 group-hover:hover:opacity-100"
 					glyph={TrashEmpty}
 					onClick={handleDeleteClick}
 				/>
