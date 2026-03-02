@@ -1,7 +1,5 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import { initApp } from "@/lib/view/actions/app";
-import Spinner from "@/lib/view/components/interface/Spinner";
-import Layout from "@/lib/view/components/layout/Layout";
 import Panel from "@/lib/view/components/layout/Panel";
 import PanelDock from "@/lib/view/components/layout/PanelDock";
 import ControlDock from "@/lib/view/components/panels/ControlDock";
@@ -14,94 +12,38 @@ import Modals from "@/lib/view/components/window/Modals";
 import Preload from "@/lib/view/components/window/Preload";
 import StatusBar from "@/lib/view/components/window/StatusBar";
 import TitleBar from "@/lib/view/components/window/TitleBar";
-import React, { useEffect, useState } from "react";
-
-const loadingContainerStyle = {
-	width: "100%",
-	height: "100%",
-	display: "flex",
-	justifyContent: "center",
-	alignItems: "center",
-};
+import React, { useEffect } from "react";
 
 function App() {
-	const [initialized, setInitialized] = useState(false);
-	const [initError, setInitError] = useState(null);
-
 	useEffect(() => {
-		let mounted = true;
-
-		if (!initialized) {
-			initApp()
-				.then(() => {
-					if (!mounted) {
-						return;
-					}
-
-					setInitialized(true);
-					setInitError(null);
-				})
-				.catch((error) => {
-					// eslint-disable-next-line no-console
-					console.error("Failed to initialize app", error);
-
-					if (mounted) {
-						setInitError(error);
-					}
-				});
-		}
-
-		return () => {
-			mounted = false;
-		};
-	}, [initialized]);
-
-	if (!initialized && !initError) {
-		return (
-			<Layout direction="column" full>
-				<div style={loadingContainerStyle}>
-					<Spinner size={56} />
-				</div>
-			</Layout>
-		);
-	}
-
-	if (initError) {
-		return (
-			<Layout direction="column" full>
-				<div>
-					Failed to initialize Astrofox. Check console/network logs and reload.
-				</div>
-			</Layout>
-		);
-	}
+		initApp();
+	}, []);
 
 	return (
-		<Layout
-			direction="column"
+		<div
+			className="flex flex-col flex-1 overflow-hidden relative w-full h-full"
 			onDrop={ignoreEvents}
 			onDragOver={ignoreEvents}
-			full
 		>
 			<Preload />
 			<TitleBar />
-			<Layout direction="row">
+			<div className="flex flex-row flex-1 overflow-hidden relative">
 				<PanelDock width={260} side="left" visible>
 					<Panel title="Layers" stretch>
 						<LayersPanel />
 					</Panel>
 				</PanelDock>
-				<Layout id="viewport" direction="column">
+				<div id="viewport" className="flex flex-col flex-1 overflow-hidden relative">
 					<Toolbar />
 					<Stage />
-				</Layout>
+				</div>
 				<ControlDock />
-			</Layout>
+			</div>
 			<Player />
 			<ReactorPanel />
 			<StatusBar />
 			<Modals />
-		</Layout>
+		</div>
 	);
 }
 

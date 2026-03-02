@@ -48,8 +48,8 @@ export default function VolumeControl() {
 		<div className={"flex"}>
 			<div
 				className={classNames(
-					"mr-2.5 inline-flex h-4 w-4 items-center justify-center text-text100",
-					{ "text-text300": mute },
+					"mr-2.5 inline-flex h-4 w-4 items-center justify-center text-neutral-100",
+					{ "text-neutral-400": mute },
 				)}
 				onClick={handleClick}
 			>

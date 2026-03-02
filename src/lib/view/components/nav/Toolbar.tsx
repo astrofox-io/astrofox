@@ -82,7 +82,7 @@ export default function Toolbar() {
 
   return (
     <div
-      className="flex flex-row shrink-0 p-2 gap-1 items-center justify-center"
+      className="flex flex-row shrink-0 py-2 gap-1 items-center justify-center"
       aria-label="Tools"
     >
       {TOOLBAR_ITEMS.map((item, index) => {
@@ -96,11 +96,12 @@ export default function Toolbar() {
             <button
               type="button"
               className={classNames(
-                "border-0 p-3 rounded bg-gray200 text-text300 inline-flex items-center justify-center cursor-default",
+                "border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default",
                 {
-                  "text-text100 bg-primary100": isActive,
-                  "[&:hover]:text-text100 [&:hover]:bg-gray100": !disabled,
-                  "[&_svg]:text-gray500": disabled,
+                  "text-neutral-100 bg-violet-600": isActive,
+                  "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800":
+                    !disabled,
+                  "[&_svg]:text-neutral-500": disabled,
                 },
               )}
               title={item.title}
@@ -112,7 +113,7 @@ export default function Toolbar() {
               <Icon size={18} />
             </button>
             <Menu
-              className="top-full! left-0! mt-1 min-w-44 border border-gray300"
+              className="top-full! left-0! mt-1 min-w-44 border border-neutral-700"
               items={menuItems}
               visible={isActive}
               onMenuItemClick={handleMenuItemClick}

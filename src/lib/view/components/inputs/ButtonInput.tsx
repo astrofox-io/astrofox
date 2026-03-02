@@ -13,17 +13,17 @@ const ButtonInput = ({
 }: any) => (
 	<div
 		className={classNames(
-			"text-text100 bg-input-bg min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary100",
+			"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-violet-600",
 			{
-				["bg-primary100"]: active,
-				["opacity-30 hover:!bg-input-bg"]: disabled,
+				["bg-violet-600"]: active,
+				["opacity-30 hover:!bg-neutral-900"]: disabled,
 			},
 			className,
 		)}
 		title={title}
 		onClick={disabled ? null : onClick}
 	>
-		{icon && <Icon className={"text-text100 w-4 h-4"} glyph={icon} />}
+		{icon && <Icon className={"text-neutral-100 w-4 h-4"} glyph={icon} />}
 		{text && <span className={"text-sm"}>{text}</span>}
 	</div>
 );

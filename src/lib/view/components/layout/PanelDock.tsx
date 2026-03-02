@@ -25,13 +25,13 @@ export default function PanelDock({
 	return (
 		<div
 			ref={ref}
-			className={classNames("flex relative overflow-hidden bg-gray100", {
+			className={classNames("flex relative overflow-hidden bg-neutral-800", {
 				"flex-col shrink-0": direction === "vertical",
 				"flex-row shrink-0": direction !== "vertical",
-				"border-b border-b-gray75": side === "top",
-				"border-l border-l-gray75": side === "right",
-				"border-t border-t-gray75": side === "bottom",
-				"border-r border-r-gray75": side === "left",
+				"border-b border-b-neutral-900": side === "top",
+				"border-l border-l-neutral-900": side === "right",
+				"border-t border-t-neutral-900": side === "bottom",
+				"border-r border-r-neutral-900": side === "left",
 				["hidden"]: !visible,
 			})}
 			style={{

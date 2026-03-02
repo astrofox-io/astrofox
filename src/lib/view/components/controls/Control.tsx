@@ -44,13 +44,13 @@ export default function Control({
         <div className={"relative py-2 px-2.5 cursor-default"}>
           <div
             className={
-              "flex justify-center text-xs text-text100 leading-8 overflow-hidden"
+              "flex justify-center text-xs text-neutral-100 leading-8 overflow-hidden"
             }
           >
             <div className={"relative uppercase pr-5"}>{label}</div>
             <div
               className={
-                "text-text200 overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-24"
+                "text-neutral-300 overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-24"
               }
             >
               {displayName}

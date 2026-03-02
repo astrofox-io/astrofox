@@ -140,7 +140,7 @@ export default function TitleBar() {
 	return (
 		<div
 			className={
-				"flex items-center relative h-10 bg-gray75 border-b border-b-gray300"
+				"flex items-center relative h-10 bg-neutral-900 border-b border-b-neutral-700"
 			}
 		>
 			<div className={"flex items-center gap-0.5 ml-1.5 max-w-[45vw]"}>
@@ -148,9 +148,9 @@ export default function TitleBar() {
 					<button
 						type="button"
 						className={classNames(
-							"w-7 h-7 border-0 p-0 rounded-md bg-transparent text-text300 inline-flex items-center justify-center [&:hover]:text-text100 [&:hover]:bg-gray100",
+							"w-7 h-7 border-0 p-0 rounded-md bg-transparent text-neutral-400 inline-flex items-center justify-center [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
 							{
-								"text-text100 bg-primary100": menuVisible,
+								"text-neutral-100 bg-violet-600": menuVisible,
 							},
 						)}
 						aria-label="Main menu"
@@ -159,7 +159,7 @@ export default function TitleBar() {
 						<MenuIcon size={16} />
 					</button>
 					<Menu
-						className={"top-full mt-1.5 left-0 min-w-56 border border-gray300"}
+						className={"top-full mt-1.5 left-0 min-w-56 border border-neutral-700"}
 						items={menuItems}
 						visible={menuVisible}
 						onMenuItemClick={onMenuItemClick}
@@ -169,7 +169,7 @@ export default function TitleBar() {
 					<input
 						ref={projectNameInputRef}
 						className={
-							"h-7 px-2 rounded-md bg-gray100 border border-primary100 text-sm text-text100 outline-none w-52 max-w-[32vw]"
+							"h-7 px-2 rounded-md bg-neutral-800 border border-violet-600 text-sm text-neutral-100 outline-none w-52 max-w-[32vw]"
 						}
 						value={projectNameDraft}
 						onBlur={commitProjectNameEdit}
@@ -181,7 +181,7 @@ export default function TitleBar() {
 					<button
 						type="button"
 						className={
-							"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-text300 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-text100 [&:hover]:bg-gray100"
+							"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-neutral-400 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800"
 						}
 						onClick={beginProjectNameEdit}
 						title="Click to rename project"
@@ -194,8 +194,8 @@ export default function TitleBar() {
 				className={classNames(
 					"absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden",
 					{
-						"text-text300": focused,
-						"text-text400": !focused,
+						"text-neutral-400": focused,
+						"text-neutral-500": !focused,
 					},
 				)}
 			>

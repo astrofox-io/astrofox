@@ -2,7 +2,6 @@ import useStage, { updateCanvas } from "@/lib/view/actions/stage";
 import { Setting, Settings } from "@/lib/view/components/controls";
 import Button from "@/lib/view/components/interface/Button";
 import ButtonRow from "@/lib/view/components/layout/ButtonRow";
-import Layout from "@/lib/view/components/layout/Layout";
 import React, { useState } from "react";
 
 type CanvasSettingsProps = {
@@ -117,7 +116,7 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 	}
 
 	return (
-		<Layout width={500}>
+		<div className="flex flex-col flex-1 overflow-hidden relative w-[500px]">
 			<Settings columns={["50%", "50%"]} onChange={handleChange}>
 				<Setting
 					label="Format"
@@ -146,13 +145,13 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 					value={backgroundColor}
 				/>
 			</Settings>
-			<div className={"px-4 pb-2 text-sm text-text300"}>
+			<div className={"px-4 pb-2 text-sm text-neutral-400"}>
 				Output: {width} x {height}
 			</div>
 			<ButtonRow>
 				<Button onClick={handleSave} text="OK" />
 				<Button onClick={handleCancel} text="Cancel" />
 			</ButtonRow>
-		</Layout>
+		</div>
 	);
 }

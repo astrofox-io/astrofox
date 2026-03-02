@@ -48,7 +48,7 @@ export default function ControlsPanel() {
 				const { id } = display;
 
 				return (
-					<div id={`control-${id}`} key={id} className={"bg-gray200 rounded-md mb-1.5 [&:last-child]:mb-0"}>
+					<div id={`control-${id}`} key={id} className={"bg-neutral-800 rounded-md mb-1.5 [&:last-child]:mb-0"}>
 						<Control display={display} />
 					</div>
 				);

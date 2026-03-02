@@ -18,7 +18,7 @@ function getItemKey(item) {
 const Menu = ({ className, items, visible, onMenuItemClick }: any) => (
 	<div
 		className={classNames(
-			"absolute top-full left-0 list-none bg-input-bg rounded-md border border-gray300 shadow-lg z-[var(--z-index-menu)] p-1 flex flex-col gap-0.5",
+			"absolute top-full left-0 list-none bg-neutral-900 rounded-md border border-neutral-700 shadow-lg z-[7] p-1 flex flex-col gap-0.5",
 			{
 				["hidden"]: visible === false,
 			},
@@ -33,7 +33,7 @@ const Menu = ({ className, items, visible, onMenuItemClick }: any) => (
 				return (
 					<div
 						key={key}
-						className={"p-1 [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-primary100 [&:after]:block [&:hover]:bg-transparent"}
+						className={"p-1 [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-violet-600 [&:after]:block [&:hover]:bg-transparent"}
 					/>
 				);
 			}

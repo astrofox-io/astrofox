@@ -52,11 +52,11 @@ export default function Layer({
 	return (
 		<div
 			className={classNames(
-				"group flex flex-row items-center text-sm text-text100 bg-gray200 rounded-md px-2 py-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				"group flex flex-row items-center text-sm text-neutral-100 bg-neutral-800 rounded-md px-2 py-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
 				className,
 				{
-					"bg-gray100": edit,
-					"bg-primary100": active && !edit,
+					"bg-neutral-800": edit,
+					"bg-violet-600": active && !edit,
 				},
 			)}
 			onClick={handleLayerClick}
@@ -69,7 +69,7 @@ export default function Layer({
 						value={name}
 						width="100%"
 						className={
-							"h-7 !px-2 !leading-7 !rounded-md !bg-gray100 !border-primary100"
+							"h-7 !px-2 !leading-7 !rounded-md !bg-neutral-800 !border-violet-600"
 						}
 						buffered
 						autoFocus

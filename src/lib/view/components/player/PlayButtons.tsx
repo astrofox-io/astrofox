@@ -25,7 +25,7 @@ export default function PlayButtons() {
 		<div className={"whitespace-nowrap"}>
 			<div
 				className={classNames(
-					"text-text100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-gray300 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-primary100 [&:active]:border-text100",
+					"text-neutral-100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-neutral-700 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-violet-600 [&:active]:border-neutral-100",
 				)}
 				onClick={handlePlayButtonClick}
 			>
@@ -39,7 +39,7 @@ export default function PlayButtons() {
 			</div>
 			<div
 				className={classNames(
-					"text-text100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-gray300 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-primary100 [&:active]:border-text100",
+					"text-neutral-100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-neutral-700 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-violet-600 [&:active]:border-neutral-100",
 				)}
 				onClick={handleStopButtonClick}
 			>

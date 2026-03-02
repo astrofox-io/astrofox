@@ -26,7 +26,7 @@ export function TabPanel({
 				className={classNames(
 					"text-center list-none py-2 px-4 cursor-default",
 					{
-						"bg-primary100": index === activeIndex,
+						"bg-violet-600": index === activeIndex,
 					},
 					tabClassName,
 					child.props.className,
@@ -61,7 +61,7 @@ export function TabPanel({
 		>
 			<div
 				className={classNames({
-					["bg-gray75"]: true,
+					["bg-neutral-900"]: true,
 					["flex flex-row"]:
 						tabPosition === "top" || tabPosition === "bottom",
 				})}

@@ -72,7 +72,7 @@ export default function TextInput({
 			ref={input}
 			type="text"
 			className={classNames(
-				"text-sm text-input-text bg-input-bg border border-input-border rounded-md py-1 px-2 [outline:none] [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
+				"text-sm text-neutral-300 bg-neutral-900 border border-neutral-600 rounded-md py-1 px-2 [outline:none] [&:focus]:border [&:focus]:border-violet-600 [&:read-only]:border-neutral-600 [&:disabled]:text-neutral-500 [&:disabled]:border-neutral-600",
 				className,
 			)}
 			style={{ width }}

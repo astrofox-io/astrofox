@@ -69,7 +69,7 @@ export default function Option({
 	return (
 		<div
 			className={classNames(
-				"relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-text300 leading-5",
+				"relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-neutral-400 leading-5",
 				className,
 				{
 					["hidden"]: hidden || inputs.length === 0,
@@ -103,8 +103,8 @@ export default function Option({
 				{withLink && (
 					<Icon
 						className={classNames("w-4 h-4", {
-							["text-primary100"]: display.properties[withLink],
-							["text-text500 opacity-50"]: !display.properties[withLink],
+							["text-violet-600"]: display.properties[withLink],
+							["text-neutral-500 opacity-50"]: !display.properties[withLink],
 						})}
 						glyph={display.properties[withLink] ? Link : Unlink}
 						onClick={() => onChange(withLink, !display.properties[withLink])}

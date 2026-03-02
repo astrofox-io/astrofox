@@ -1,57 +1,12 @@
 :root {
-  --gray50: #080808;
-  --gray75: #1a1a1a;
-  --gray100: #1e1e1e;
-  --gray200: #2c2c2c;
-  --gray300: #393939;
-  --gray400: #494949;
-  --gray500: #5c5c5c;
-  --gray600: #7c7c7c;
-  --gray700: #a2a2a2;
-  --gray800: #c8c8c8;
-  --gray900: #efefef;
-  --red400: #d7373f;
-  --blue400: #1473e6;
-  --green400: #268e6c;
-  --orange400: #da7b11;
-  --yellow400: #dfbf00;
-  --purple400: #9256d9;
-  --primary100: #704dd8;
-  --primary200: #7d5edc;
-  --primary300: #8b6edf;
-  --primary400: #987fe3;
-  --primary500: #a690e7;
-  --text100: var(--gray900);
-  --text200: var(--gray800);
-  --text300: var(--gray700);
-  --text400: var(--gray600);
-  --text500: var(--gray500);
-  --background-color: #202020;
   --font-family: var(--font-inter), sans-serif;
-  --font-size-xsmall: 11px;
-  --font-size-small: 12px;
-  --font-size-normal: 14px;
-  --font-size-large: 16px;
-  --font-size-xlarge: 20px;
-  --input-text-color: var(--text200);
-  --input-border-color: var(--gray400);
-  --input-bg-color: var(--gray75);
-  --input-border-radius: 6px;
-  --z-index-hidden: -1;
-  --z-index-above: 1;
-  --z-index-overlay: 2;
-  --z-index-canvas: 3;
-  --z-index-render-panel: 4;
-  --z-index-modal-overlay: 5;
-  --z-index-modal-window: 6;
-  --z-index-menu: 7;
 }
 html,
 body {
   font-family: var(--font-family);
-  font-size: var(--font-size-normal);
-  color: var(--text100);
-  background-color: var(--background-color);
+  font-size: 14px;
+  color: var(--color-neutral-100);
+  background-color: var(--color-neutral-900);
   height: 100%;
   width: 100%;
   margin: 0;
@@ -68,8 +23,8 @@ canvas {
   display: block;
 }
 ::selection {
-  color: var(--text100);
-  background-color: var(--primary100);
+  color: var(--color-neutral-100);
+  background-color: var(--color-violet-600);
 }
 #app,
 #__next {
@@ -91,23 +46,23 @@ input[type='color'] {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--gray400);
+  background-color: var(--color-neutral-600);
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--gray500);
+  background-color: var(--color-neutral-500);
 }
 ::-webkit-scrollbar-thumb:active {
-  background-color: var(--gray600);
+  background-color: var(--color-neutral-500);
 }
 ::-webkit-scrollbar-button {
   display: none;
 }
 ::-webkit-scrollbar-corner {
-  background: var(--gray75);
+  background: var(--color-neutral-900);
 }
 ::-webkit-resizer {
-  background: var(--gray75);
+  background: var(--color-neutral-900);
 }

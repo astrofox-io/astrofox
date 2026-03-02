@@ -31,8 +31,8 @@ export default function ReactorButton({
 
 	return (
 		<Icon
-			className={classNames("text-text500 w-4 h-4 [&:hover]:text-text100", className, {
-				["text-text100"]: reactor,
+			className={classNames("text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100", className, {
+				["text-neutral-100"]: reactor,
 			})}
 			glyph={Flash}
 			title={reactor ? "Show Reactor" : "Enable Reactor"}

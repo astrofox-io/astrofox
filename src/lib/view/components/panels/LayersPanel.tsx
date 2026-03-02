@@ -1,169 +1,168 @@
 import { reverse } from "@/lib/utils/array";
 import useApp, { setActiveElementId } from "@/lib/view/actions/app";
 import useScenes, {
-	addScene,
-	moveElement,
-	removeElement,
-	updateElement,
+  addScene,
+  moveElement,
+  removeElement,
+  updateElement,
 } from "@/lib/view/actions/scenes";
 import { ButtonInput } from "@/lib/view/components/inputs";
-import Layout from "@/lib/view/components/layout/Layout";
 import SceneLayer from "@/lib/view/components/panels/SceneLayer";
-import {
-	ChevronDown,
-	ChevronUp,
-	Picture,
-} from "@/lib/view/icons";
+import { ChevronDown, ChevronUp, Picture } from "@/lib/view/icons";
 import React, { useMemo } from "react";
 
 export default function LayersPanel() {
-	const scenes = useScenes((state) => state.scenes);
-	const activeElementId = useApp((state) => state.activeElementId);
-	const hasScenes = scenes.length > 0;
-	const layerSelected = hasScenes && activeElementId;
+  const scenes = useScenes((state) => state.scenes);
+  const activeElementId = useApp((state) => state.activeElementId);
+  const hasScenes = scenes.length > 0;
+  const layerSelected = hasScenes && activeElementId;
 
-	const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
+  const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
 
-	const activeScene = useMemo(() => {
-		return scenes.reduce((memo, scene) => {
-			if (!memo) {
-				if (
-					scene?.id === activeElementId ||
-					scene?.displays.find((e) => e.id === activeElementId) ||
-					scene?.effects.find((e) => e.id === activeElementId)
-				) {
-					memo = scene;
-				}
-			}
-			return memo;
-		}, undefined);
-	}, [scenes, activeElementId]);
+  const activeScene = useMemo(() => {
+    return scenes.reduce((memo, scene) => {
+      if (!memo) {
+        if (
+          scene?.id === activeElementId ||
+          scene?.displays.find((e) => e.id === activeElementId) ||
+          scene?.effects.find((e) => e.id === activeElementId)
+        ) {
+          memo = scene;
+        }
+      }
+      return memo;
+    }, undefined);
+  }, [scenes, activeElementId]);
 
-	const { canMoveUp, canMoveDown } = useMemo(() => {
-		if (!layerSelected) return { canMoveUp: false, canMoveDown: false };
+  const { canMoveUp, canMoveDown } = useMemo(() => {
+    if (!layerSelected) return { canMoveUp: false, canMoveDown: false };
 
-		// Check if it's a scene
-		const sceneIndex = scenes.findIndex((s) => s.id === activeElementId);
-		if (sceneIndex > -1) {
-			return {
-				canMoveUp: sceneIndex < scenes.length - 1,
-				canMoveDown: sceneIndex > 0,
-			};
-		}
+    // Check if it's a scene
+    const sceneIndex = scenes.findIndex((s) => s.id === activeElementId);
+    if (sceneIndex > -1) {
+      return {
+        canMoveUp: sceneIndex < scenes.length - 1,
+        canMoveDown: sceneIndex > 0,
+      };
+    }
 
-		// Check displays and effects within the owning scene
-		for (const scene of scenes) {
-			const displayIndex = scene.displays.findIndex((d) => d.id === activeElementId);
-			if (displayIndex > -1) {
-				return {
-					canMoveUp: displayIndex < scene.displays.length - 1,
-					canMoveDown: displayIndex > 0,
-				};
-			}
+    // Check displays and effects within the owning scene
+    for (const scene of scenes) {
+      const displayIndex = scene.displays.findIndex(
+        (d) => d.id === activeElementId,
+      );
+      if (displayIndex > -1) {
+        return {
+          canMoveUp: displayIndex < scene.displays.length - 1,
+          canMoveDown: displayIndex > 0,
+        };
+      }
 
-			const effectIndex = scene.effects.findIndex((e) => e.id === activeElementId);
-			if (effectIndex > -1) {
-				return {
-					canMoveUp: effectIndex < scene.effects.length - 1,
-					canMoveDown: effectIndex > 0,
-				};
-			}
-		}
+      const effectIndex = scene.effects.findIndex(
+        (e) => e.id === activeElementId,
+      );
+      if (effectIndex > -1) {
+        return {
+          canMoveUp: effectIndex < scene.effects.length - 1,
+          canMoveDown: effectIndex > 0,
+        };
+      }
+    }
 
-		return { canMoveUp: false, canMoveDown: false };
-	}, [scenes, activeElementId, layerSelected]);
+    return { canMoveUp: false, canMoveDown: false };
+  }, [scenes, activeElementId, layerSelected]);
 
-	function handleLayerClick(id) {
-		setActiveElementId(id);
-	}
+  function handleLayerClick(id) {
+    setActiveElementId(id);
+  }
 
-	function handleLayerUpdate(id, prop, value) {
-		updateElement(id, prop, value);
-	}
+  function handleLayerUpdate(id, prop, value) {
+    updateElement(id, prop, value);
+  }
 
-	async function handleAddScene() {
-		const scene = await addScene();
+  async function handleAddScene() {
+    const scene = await addScene();
 
-		setActiveElementId(scene?.id);
-	}
+    setActiveElementId(scene?.id);
+  }
 
-	function handleMoveUp() {
-		moveElement(activeElementId, 1);
-	}
-	function handleMoveDown() {
-		moveElement(activeElementId, -1);
-	}
+  function handleMoveUp() {
+    moveElement(activeElementId, 1);
+  }
+  function handleMoveDown() {
+    moveElement(activeElementId, -1);
+  }
 
-	function handleRemove(id) {
-		if (!id) return;
+  function handleRemove(id) {
+    if (!id) return;
 
-		const ownerScene = scenes.reduce((memo, scene) => {
-			if (!memo) {
-				if (
-					scene?.id === id ||
-					scene?.displays.find((e) => e.id === id) ||
-					scene?.effects.find((e) => e.id === id)
-				) {
-					memo = scene;
-				}
-			}
-			return memo;
-		}, undefined);
+    const ownerScene = scenes.reduce((memo, scene) => {
+      if (!memo) {
+        if (
+          scene?.id === id ||
+          scene?.displays.find((e) => e.id === id) ||
+          scene?.effects.find((e) => e.id === id)
+        ) {
+          memo = scene;
+        }
+      }
+      return memo;
+    }, undefined);
 
-		if (id === ownerScene?.id) {
-			const newScene = sortedScenes.find((e) => e !== ownerScene);
-			setActiveElementId(newScene?.id);
-		} else if (id === activeElementId) {
-			if (ownerScene) {
-				const { displays, effects } = ownerScene;
-				const element =
-					reverse(displays).find((e) => e !== id) ||
-					reverse(effects).find((e) => e !== id);
+    if (id === ownerScene?.id) {
+      const newScene = sortedScenes.find((e) => e !== ownerScene);
+      setActiveElementId(newScene?.id);
+    } else if (id === activeElementId) {
+      if (ownerScene) {
+        const { displays, effects } = ownerScene;
+        const element =
+          reverse(displays).find((e) => e !== id) ||
+          reverse(effects).find((e) => e !== id);
 
-				if (element) {
-					setActiveElementId(element?.id);
-				} else {
-					setActiveElementId(ownerScene?.id);
-				}
-			}
-		}
+        if (element) {
+          setActiveElementId(element?.id);
+        } else {
+          setActiveElementId(ownerScene?.id);
+        }
+      }
+    }
 
-		removeElement(id);
-	}
+    removeElement(id);
+  }
 
-	return (
-		<Layout className={"flex flex-col flex-1 relative overflow-auto"}>
-			<div className={"flex p-1 gap-1"}>
-				<ButtonInput
-					icon={Picture}
-					title="Add Scene"
-					onClick={handleAddScene}
-				/>
-				<ButtonInput
-					icon={ChevronUp}
-					title="Move Layer Up"
-					onClick={handleMoveUp}
-					disabled={!canMoveUp}
-				/>
-				<ButtonInput
-					icon={ChevronDown}
-					title="Move Layer Down"
-					onClick={handleMoveDown}
-					disabled={!canMoveDown}
-				/>
-			</div>
-			<div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
-				{sortedScenes.map((scene) => (
-					<SceneLayer
-						key={scene.id}
-						scene={scene}
-						activeElementId={activeElementId}
-						onLayerClick={handleLayerClick}
-						onLayerUpdate={handleLayerUpdate}
-						onLayerDelete={handleRemove}
-					/>
-				))}
-			</div>
-		</Layout>
-	);
+  return (
+    <div className={"flex flex-col flex-1 relative overflow-auto border-r"}>
+      <div className={"flex p-1 gap-1"}>
+        <ButtonInput
+          icon={Picture}
+          title="Add Scene"
+          onClick={handleAddScene}
+        />
+        <ButtonInput
+          icon={ChevronUp}
+          title="Move Layer Up"
+          onClick={handleMoveUp}
+          disabled={!canMoveUp}
+        />
+        <ButtonInput
+          icon={ChevronDown}
+          title="Move Layer Down"
+          onClick={handleMoveDown}
+          disabled={!canMoveDown}
+        />
+      </div>
+      <div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
+        {sortedScenes.map((scene) => (
+          <SceneLayer
+            key={scene.id}
+            scene={scene}
+            activeElementId={activeElementId}
+            onLayerClick={handleLayerClick}
+            onLayerUpdate={handleLayerUpdate}
+            onLayerDelete={handleRemove}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }

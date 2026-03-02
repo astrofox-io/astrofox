@@ -28,3 +28,4 @@ dist
 .claude
 .vscode
 .pnpm-store
+_git_*

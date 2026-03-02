@@ -54,16 +54,16 @@ export default function SelectInput({
 	return (
 		<div
 			className={classNames(
-				"inline-block relative [&:after]:content-[''] [&:after]:absolute [&:after]:rotate-[135deg] [&:after]:h-1.5 [&:after]:w-1.5 [&:after]:right-2.5 [&:after]:bottom-3 [&:after]:border-t [&:after]:border-t-input-text [&:after]:border-r [&:after]:border-r-input-text [&:after]:pointer-events-none",
+				"inline-block relative [&:after]:content-[''] [&:after]:absolute [&:after]:rotate-[135deg] [&:after]:h-1.5 [&:after]:w-1.5 [&:after]:right-2.5 [&:after]:bottom-3 [&:after]:border-t [&:after]:border-t-neutral-300 [&:after]:border-r [&:after]:border-r-neutral-300 [&:after]:pointer-events-none",
 				className,
 			)}
 		>
 			<input
 				type="text"
 				className={classNames(
-					"cursor-default text-sm text-input-text bg-input-bg border border-input-border rounded-md py-1 px-2 outline-none [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
+					"cursor-default text-sm text-neutral-300 bg-neutral-900 border border-neutral-600 rounded-md py-1 px-2 outline-none [&:focus]:border [&:focus]:border-violet-600 [&:read-only]:border-neutral-600 [&:disabled]:text-neutral-500 [&:disabled]:border-neutral-600",
 					{
-						"border-primary100": showItems,
+						"border-violet-600": showItems,
 					},
 				)}
 				name={name}
@@ -75,7 +75,7 @@ export default function SelectInput({
 			/>
 			<div
 				className={classNames(
-					"absolute top-full min-w-36 z-[var(--z-index-menu)] list-none bg-input-bg rounded-md border border-gray300 shadow-lg mt-1 p-1 flex flex-col gap-0.5",
+					"absolute top-full min-w-36 z-[7] list-none bg-neutral-900 rounded-md border border-neutral-700 shadow-lg mt-1 p-1 flex flex-col gap-0.5",
 					optionsClassName,
 					{
 						hidden: !showItems,
@@ -87,9 +87,9 @@ export default function SelectInput({
 					<div
 						key={index}
 						className={classNames(
-							"text-input-text text-sm py-1 px-2 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap rounded-md [&:hover]:cursor-default [&:hover]:text-text100 [&:hover]:bg-primary100",
+							"text-neutral-300 text-sm py-1 px-2 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap rounded-md [&:hover]:cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-violet-600",
 							{
-								"relative h-2.5 [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-1.5 [&:after]:right-1.5 [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-px [&:after]:bg-primary100 [&:hover]:bg-transparent":
+								"relative h-2.5 [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-1.5 [&:after]:right-1.5 [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-px [&:after]:bg-violet-600 [&:hover]:bg-transparent":
 									!item,
 							},
 						)}

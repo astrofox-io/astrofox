@@ -123,7 +123,7 @@ export default function NavSidebar() {
 	return (
 		<nav
 			className={
-				"flex flex-col w-14 shrink-0 py-2 px-1.5 gap-1.5 bg-gray75 border-r border-r-gray300"
+				"flex flex-col w-14 shrink-0 py-2 px-1.5 gap-1.5 bg-neutral-900 border-r border-r-neutral-700"
 			}
 			aria-label="Main navigation"
 		>
@@ -140,9 +140,9 @@ export default function NavSidebar() {
 						<button
 							type="button"
 							className={classNames(
-								"w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-text300 inline-flex items-center justify-center cursor-default [&:hover]:text-text100 [&:hover]:bg-gray100",
+								"w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-neutral-400 inline-flex items-center justify-center cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
 								{
-									"text-text100 bg-primary100": isActive,
+									"text-neutral-100 bg-violet-600": isActive,
 								},
 							)}
 							title={item.label}
@@ -156,7 +156,7 @@ export default function NavSidebar() {
 						{hasMenu && (
 							<Menu
 								className={
-									"top-0 left-full ml-2 min-w-52 border border-gray300"
+									"top-0 left-full ml-2 min-w-52 border border-neutral-700"
 								}
 								items={item.submenu}
 								visible={isActive}

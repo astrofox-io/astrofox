@@ -89,7 +89,7 @@ const ReactorControl = ({ reactor }: any) => {
 	return (
 		<div
 			className={
-				"w-full min-w-[56rem] overflow-hidden bg-gray75 border-t border-t-gray200 relative pt-2.5 px-5 pb-4"
+				"w-full min-w-[56rem] overflow-hidden bg-neutral-900 border-t border-t-neutral-800 relative pt-2.5 px-5 pb-4"
 			}
 		>
 			<Header path={reactor.displayName.split("/")} />
@@ -99,7 +99,7 @@ const ReactorControl = ({ reactor }: any) => {
 				</div>
 				<div
 					className={
-						"relative bg-gray75 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-gray200"
+						"relative bg-neutral-900 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border border-neutral-800"
 					}
 				>
 					<canvas
@@ -119,7 +119,7 @@ const ReactorControl = ({ reactor }: any) => {
 				</div>
 				<div
 					className={
-						"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-gray200"
+						"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-neutral-800"
 					}
 				>
 					<canvas
@@ -131,7 +131,7 @@ const ReactorControl = ({ reactor }: any) => {
 			</div>
 			<Icon
 				className={
-					"absolute top-2.5 right-5 text-text200 w-4 h-4 [&:hover]:text-text100"
+					"absolute top-2.5 right-5 text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100"
 				}
 				glyph={ChevronDown}
 				title="Hide Panel"
@@ -142,12 +142,12 @@ const ReactorControl = ({ reactor }: any) => {
 };
 
 const Header = ({ path }: any) => (
-	<div className={"text-text200 text-sm [text-shadow:1px_1px_0_var(--gray75)]"}>
+	<div className={"text-neutral-300 text-sm [text-shadow:1px_1px_0_var(--color-neutral-900)]"}>
 		{path.map((item, index) => (
 			<span
 				key={index}
 				className={
-					"uppercase cursor-default after:content-['\\2022'] after:text-primary100 after:mx-2 last:after:content-none"
+					"uppercase cursor-default after:content-['\\2022'] after:text-violet-600 after:mx-2 last:after:content-none"
 				}
 			>
 				{item}

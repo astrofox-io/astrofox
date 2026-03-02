@@ -20,7 +20,7 @@ export default function Overlay({
 		(style, item) =>
 			item && (
 				<animated.div
-					className={"fixed inset-0 bg-black opacity-50 z-[var(--z-index-overlay)]"}
+					className={"fixed inset-0 bg-black opacity-50 z-[2]"}
 					style={style}
 				/>
 			),
