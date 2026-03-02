@@ -49,7 +49,7 @@ const ToggleButton = ({ enabled, title, icon, onClick }: any) => (
 		className={classNames(
 			"mr-2.5 [&:last-child]:mr-0 [&_.icon]:text-text500 [&_.icon]:w-4 [&_.icon]:h-4 [&_.icon:hover]:text-text300",
 			{
-				["[&_.icon]:text-text100 [&_.icon:hover]:text-text100"]: enabled,
+				["[&_.icon]:text-primary100 [&_.icon:hover]:text-primary100"]: enabled,
 			},
 		)}
 		onClick={onClick}

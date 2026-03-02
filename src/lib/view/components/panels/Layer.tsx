@@ -52,7 +52,7 @@ export default function Layer({
 	return (
 		<div
 			className={classNames(
-				"group flex flex-row items-center text-sm text-text100 bg-gray200 border-b border-b-gray75 p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+				"group flex flex-row items-center text-sm text-text100 bg-gray200 rounded-md p-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
 				className,
 				{
 					"bg-gray100": edit,

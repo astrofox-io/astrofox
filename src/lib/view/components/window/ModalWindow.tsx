@@ -13,7 +13,7 @@ export default function ModalWindow({
 	children,
 }: any) {
 	return (
-		<div className={classNames("relative m-auto min-w-96 flex flex-col shadow-[5px_5px_40px_rgba(0,_0,_0,_0.5)]", className)}>
+		<div className={classNames("relative m-auto min-w-96 flex flex-col shadow-2xl rounded-lg overflow-hidden", className)}>
 			{showCloseButton && (
 				<div className={"absolute top-0 right-0 h-6 w-6 text-center z-[var(--z-index-above)] [&_.close-icon]:text-text100 [&_.close-icon]:w-3.5 [&_.close-icon]:h-3.5 [&_.close-icon]:mt-1 [&:hover]:bg-primary100"} onClick={onClose}>
 					<Icon className={""} glyph={Times} />

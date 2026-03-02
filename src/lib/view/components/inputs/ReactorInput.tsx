@@ -63,7 +63,7 @@ export default function ReactorInput({
 
 	return (
 		<div className={"flex flex-row items-center gap-1"}>
-			<div className={"flex h-6 shrink-0 items-center rounded-sm border border-input-border bg-input-bg py-0 px-2"} onDoubleClick={toggleReactor}>
+			<div className={"flex h-6 shrink-0 items-center rounded-md border border-input-border bg-input-bg py-0 px-2"} onDoubleClick={toggleReactor}>
 				<canvas ref={canvas} className="canvas" width={width} height={height} />
 			</div>
 			<Icon

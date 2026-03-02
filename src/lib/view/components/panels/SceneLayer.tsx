@@ -38,7 +38,7 @@ export default function SceneLayer({
 	);
 
 	return (
-		<div className={"flex flex-col [&:first-child]:border-t [&:first-child]:border-t-gray75"}>
+		<div className={"flex flex-col gap-0.5"}>
 			<Layer
 				key={id}
 				id={id}

@@ -61,7 +61,7 @@ export default function SelectInput({
 			<input
 				type="text"
 				className={classNames(
-					"cursor-default text-sm text-input-text bg-input-bg border border-input-border rounded-sm leading-6 py-0 px-1.5 outline-none [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
+					"cursor-default text-sm text-input-text bg-input-bg border border-input-border rounded-md leading-6 py-0 px-1.5 outline-none [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
 					{
 						"border-primary100": showItems,
 					},
@@ -75,7 +75,7 @@ export default function SelectInput({
 			/>
 			<div
 				className={classNames(
-					"absolute top-full min-w-36 z-[var(--z-index-menu)] list-none bg-input-bg overflow-hidden shadow-[0_5px_10px_rgba(0,_0,_0,_0.5)]",
+					"absolute top-full min-w-36 z-[var(--z-index-menu)] list-none bg-input-bg overflow-hidden rounded-md border border-gray300 shadow-lg mt-1",
 					optionsClassName,
 					{
 						hidden: !showItems,
