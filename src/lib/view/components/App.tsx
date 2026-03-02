@@ -2,7 +2,10 @@ import { ignoreEvents } from "@/lib/utils/react";
 import { initApp } from "@/lib/view/actions/app";
 import Spinner from "@/lib/view/components/interface/Spinner";
 import Layout from "@/lib/view/components/layout/Layout";
+import Panel from "@/lib/view/components/layout/Panel";
+import PanelDock from "@/lib/view/components/layout/PanelDock";
 import ControlDock from "@/lib/view/components/panels/ControlDock";
+import LayersPanel from "@/lib/view/components/panels/LayersPanel";
 import ReactorPanel from "@/lib/view/components/panels/ReactorPanel";
 import Player from "@/lib/view/components/player/Player";
 import Stage from "@/lib/view/components/stage/Stage";
@@ -83,8 +86,13 @@ function App() {
 			<Preload />
 			<TitleBar />
 			<Layout direction="row">
-				<Toolbar />
+				<PanelDock width={260} side="left" visible>
+					<Panel title="Layers" stretch>
+						<LayersPanel />
+					</Panel>
+				</PanelDock>
 				<Layout id="viewport" direction="column">
+					<Toolbar />
 					<Stage />
 					<Player />
 					<ReactorPanel />

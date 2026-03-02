@@ -1,18 +1,13 @@
-import Panel from "@/lib/view/components/layout/Panel";
-import PanelDock from "@/lib/view/components/layout/PanelDock";
 import ControlsPanel from "@/lib/view/components/panels/ControlsPanel";
-import LayersPanel from "@/lib/view/components/panels/LayersPanel";
 import React from "react";
 
 export default function ControlDock() {
 	return (
-		<PanelDock width={360} visible>
-			<Panel title="Layers" height={300} minHeight={100} resizable>
-				<LayersPanel />
-			</Panel>
-			<Panel title="Controls" stretch>
-				<ControlsPanel />
-			</Panel>
-		</PanelDock>
+		<div className="flex flex-col w-[360px] shrink-0 overflow-hidden bg-gray100 border-l border-l-gray75">
+			<div className="flex shrink-0 items-start py-3">
+				<div className="ml-2.5 cursor-default text-sm uppercase text-text200 leading-none">Controls</div>
+			</div>
+			<ControlsPanel />
+		</div>
 	);
 }

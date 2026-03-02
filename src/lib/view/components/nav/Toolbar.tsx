@@ -82,7 +82,7 @@ export default function Toolbar() {
 
   return (
     <div
-      className="flex flex-col shrink-0 p-3 px-0.5 gap-1 bg-gray100 items-center"
+      className="flex flex-row shrink-0 py-1 px-1 gap-1 items-center justify-center"
       aria-label="Tools"
     >
       {TOOLBAR_ITEMS.map((item, index) => {
@@ -111,7 +111,7 @@ export default function Toolbar() {
               <Icon size={18} />
             </button>
             <Menu
-              className="top-0! left-full! ml-1 min-w-44 border border-gray300"
+              className="top-full! left-0! mt-1 min-w-44 border border-gray300"
               items={menuItems}
               visible={isActive}
               onMenuItemClick={handleMenuItemClick}
