@@ -52,7 +52,7 @@ const ToggleButton = ({ enabled, title, icon, onClick }: any) => (
 		<Icon
 			className={classNames("w-4 h-4", {
 				"!text-neutral-500 hover:!text-neutral-400": !enabled,
-				"!text-violet-400 hover:!text-violet-400": enabled,
+				"!text-primary hover:!text-primary": enabled,
 			})}
 			glyph={icon}
 			title={title}

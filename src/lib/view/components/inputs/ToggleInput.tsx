@@ -14,7 +14,7 @@ export default function ToggleInput({
 				className={classNames(
 					"relative order-[1] h-4 w-8 shrink-0 rounded-full border border-neutral-900 bg-neutral-900 transition-[background-color_0.25s] [&:before]:absolute [&:before]:top-1/2 [&:before]:left-0 [&:before]:-translate-y-1/2 [&:before]:content-[''] [&:before]:h-4 [&:before]:w-4 [&:before]:rounded-full [&:before]:border [&:before]:border-neutral-600 [&:before]:bg-neutral-100 [&:before]:shadow-[0_0_2px_rgba(0,_0,_0,_0.3)] [&:before]:transition-[left_0.25s]",
 					{
-						"bg-violet-600 [&:before]:left-4": value,
+						"bg-primary [&:before]:left-4": value,
 					},
 				)}
 				onClick={() => onChange(name, !value)}

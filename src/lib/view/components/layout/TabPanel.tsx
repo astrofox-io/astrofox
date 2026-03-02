@@ -26,7 +26,7 @@ export function TabPanel({
 				className={classNames(
 					"text-center list-none py-2 px-4 cursor-default",
 					{
-						"bg-violet-600": index === activeIndex,
+						"bg-primary": index === activeIndex,
 					},
 					tabClassName,
 					child.props.className,

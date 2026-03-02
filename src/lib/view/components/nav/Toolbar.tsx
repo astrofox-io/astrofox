@@ -98,7 +98,7 @@ export default function Toolbar() {
               className={classNames(
                 "border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default",
                 {
-                  "text-neutral-100 bg-violet-600": isActive,
+                  "text-neutral-100 bg-primary": isActive,
                   "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800":
                     !disabled,
                   "[&_svg]:text-neutral-500": disabled,

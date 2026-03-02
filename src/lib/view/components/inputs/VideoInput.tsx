@@ -144,7 +144,7 @@ export default function VideoInput({ name, value, onChange }: any) {
 							hidden: !hasVideo,
 						},
 					)}
-					src={hasVideo ? value : ""}
+					src={hasVideo ? value : undefined}
 					muted
 					loop
 					autoPlay

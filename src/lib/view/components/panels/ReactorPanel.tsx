@@ -147,7 +147,7 @@ const Header = ({ path }: any) => (
 			<span
 				key={index}
 				className={
-					"uppercase cursor-default after:content-['\\2022'] after:text-violet-600 after:mx-2 last:after:content-none"
+					"uppercase cursor-default after:content-['\\2022'] after:text-primary after:mx-2 last:after:content-none"
 				}
 			>
 				{item}

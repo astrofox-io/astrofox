@@ -27,7 +27,7 @@ export default function StatusBar() {
 	}, []);
 
 	return (
-		<div className={"flex text-neutral-100 bg-violet-600 text-sm py-0 px-5 cursor-default whitespace-nowrap z-[1]"}>
+		<div className={"flex text-neutral-100 bg-primary text-sm py-0 px-5 cursor-default whitespace-nowrap z-[1]"}>
 			<div className={"text-left w-1/3 [&_.item]:mr-5"}>
 				<InfoItem value={statusText} />
 			</div>

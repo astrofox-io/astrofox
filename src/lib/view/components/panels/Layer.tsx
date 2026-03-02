@@ -56,7 +56,7 @@ export default function Layer({
 				className,
 				{
 					"bg-neutral-800": edit,
-					"bg-violet-600": active && !edit,
+					"bg-primary": active && !edit,
 				},
 			)}
 			onClick={handleLayerClick}
@@ -69,7 +69,7 @@ export default function Layer({
 						value={name}
 						width="100%"
 						className={
-							"h-7 !px-2 !leading-7 !rounded-md !bg-neutral-800 !border-violet-600"
+							"h-7 !px-2 !leading-7 !rounded-md !bg-neutral-800 !border-primary"
 						}
 						buffered
 						autoFocus

@@ -24,7 +24,7 @@ canvas {
 }
 ::selection {
   color: var(--color-neutral-100);
-  background-color: var(--color-violet-600);
+  background-color: var(--color-primary);
 }
 #app,
 #__next {

@@ -14,7 +14,7 @@ export default function Zoom() {
 			<button type="button" className={"inline-flex h-7 items-center border-0 bg-transparent p-0 text-inherit"} onClick={() => setZoom(1)}>
 				{`${width} x ${height}`}
 			</button>
-			<button type="button" className={"inline-flex items-center justify-center w-8 h-7 text-sm border-0 bg-transparent text-inherit p-0 [&:hover]:bg-violet-500"} onClick={zoomOut}>
+			<button type="button" className={"inline-flex items-center justify-center w-8 h-7 text-sm border-0 bg-transparent text-inherit p-0 [&:hover]:bg-primary"} onClick={zoomOut}>
 				{"\uff0d"}
 			</button>
 			<input
@@ -27,7 +27,7 @@ export default function Zoom() {
 				max={3.0}
 				step={0.02}
 			/>
-			<button type="button" className={"inline-flex items-center justify-center w-8 h-7 text-sm border-0 bg-transparent text-inherit p-0 [&:hover]:bg-violet-500"} onClick={zoomIn}>
+			<button type="button" className={"inline-flex items-center justify-center w-8 h-7 text-sm border-0 bg-transparent text-inherit p-0 [&:hover]:bg-primary"} onClick={zoomIn}>
 				{"\uff0b"}
 			</button>
 			<button type="button" className={"inline-flex items-center justify-center w-12 h-7 text-center border-0 bg-transparent text-inherit p-0"} onClick={fitToScreen}>

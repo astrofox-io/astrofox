@@ -150,7 +150,7 @@ export default function TitleBar() {
 						className={classNames(
 							"w-7 h-7 border-0 p-0 rounded-md bg-transparent text-neutral-400 inline-flex items-center justify-center [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
 							{
-								"text-neutral-100 bg-violet-600": menuVisible,
+								"text-neutral-100 bg-primary": menuVisible,
 							},
 						)}
 						aria-label="Main menu"
@@ -169,7 +169,7 @@ export default function TitleBar() {
 					<input
 						ref={projectNameInputRef}
 						className={
-							"h-7 px-2 rounded-md bg-neutral-800 border border-violet-600 text-sm text-neutral-100 outline-none w-52 max-w-[32vw]"
+							"h-7 px-2 rounded-md bg-neutral-800 border border-primary text-sm text-neutral-100 outline-none w-52 max-w-[32vw]"
 						}
 						value={projectNameDraft}
 						onBlur={commitProjectNameEdit}

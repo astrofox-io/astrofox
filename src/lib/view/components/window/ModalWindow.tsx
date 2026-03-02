@@ -15,7 +15,7 @@ export default function ModalWindow({
 	return (
 		<div className={classNames("relative m-auto min-w-96 flex flex-col shadow-2xl rounded-lg overflow-hidden", className)}>
 			{showCloseButton && (
-				<div className={"absolute top-0 right-0 h-6 w-6 text-center z-[1] [&_.close-icon]:text-neutral-100 [&_.close-icon]:w-3.5 [&_.close-icon]:h-3.5 [&_.close-icon]:mt-1 [&:hover]:bg-violet-600"} onClick={onClose}>
+				<div className={"absolute top-0 right-0 h-6 w-6 text-center z-[1] [&_.close-icon]:text-neutral-100 [&_.close-icon]:w-3.5 [&_.close-icon]:h-3.5 [&_.close-icon]:mt-1 [&:hover]:bg-primary"} onClick={onClose}>
 					<Icon className={""} glyph={Times} />
 				</div>
 			)}

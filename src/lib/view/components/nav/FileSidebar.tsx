@@ -38,7 +38,7 @@ export default function FileSidebar() {
 						<button
 							key={item.action}
 							type="button"
-							className={"bg-transparent border-0 text-neutral-100 text-left text-sm p-2 cursor-default [&:hover]:bg-violet-600"}
+							className={"bg-transparent border-0 text-neutral-100 text-left text-sm p-2 cursor-default [&:hover]:bg-primary"}
 							onClick={() => handleMenuAction(item.action)}
 						>
 							{item.label}

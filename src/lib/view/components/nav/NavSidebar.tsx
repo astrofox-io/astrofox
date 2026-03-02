@@ -142,7 +142,7 @@ export default function NavSidebar() {
 							className={classNames(
 								"w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-neutral-400 inline-flex items-center justify-center cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
 								{
-									"text-neutral-100 bg-violet-600": isActive,
+									"text-neutral-100 bg-primary": isActive,
 								},
 							)}
 							title={item.label}

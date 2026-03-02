@@ -13,9 +13,9 @@ const ButtonInput = ({
 }: any) => (
 	<div
 		className={classNames(
-			"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-violet-600",
+			"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary",
 			{
-				["bg-violet-600"]: active,
+				["bg-primary"]: active,
 				["opacity-30 hover:!bg-neutral-900"]: disabled,
 			},
 			className,

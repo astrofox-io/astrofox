@@ -61,9 +61,9 @@ export default function SelectInput({
 			<input
 				type="text"
 				className={classNames(
-					"cursor-default text-sm text-neutral-300 bg-neutral-900 border border-neutral-600 rounded-md py-1 px-2 outline-none [&:focus]:border [&:focus]:border-violet-600 [&:read-only]:border-neutral-600 [&:disabled]:text-neutral-500 [&:disabled]:border-neutral-600",
+					"cursor-default text-sm text-neutral-300 bg-neutral-900 border border-neutral-600 rounded-md py-1 px-2 outline-none [&:focus]:border [&:focus]:border-primary [&:read-only]:border-neutral-600 [&:disabled]:text-neutral-500 [&:disabled]:border-neutral-600",
 					{
-						"border-violet-600": showItems,
+						"border-primary": showItems,
 					},
 				)}
 				name={name}
@@ -87,9 +87,9 @@ export default function SelectInput({
 					<div
 						key={index}
 						className={classNames(
-							"text-neutral-300 text-sm py-1 px-2 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap rounded-md [&:hover]:cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-violet-600",
+							"text-neutral-300 text-sm py-1 px-2 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap rounded-md [&:hover]:cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-primary",
 							{
-								"relative h-2.5 [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-1.5 [&:after]:right-1.5 [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-px [&:after]:bg-violet-600 [&:hover]:bg-transparent":
+								"relative h-2.5 [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-1.5 [&:after]:right-1.5 [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-px [&:after]:bg-primary [&:hover]:bg-transparent":
 									!item,
 							},
 						)}
