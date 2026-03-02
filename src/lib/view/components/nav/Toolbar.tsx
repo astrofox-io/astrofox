@@ -82,7 +82,7 @@ export default function Toolbar() {
 
   return (
     <div
-      className="flex flex-row shrink-0 py-1 px-1 gap-1 items-center justify-center"
+      className="flex flex-row shrink-0 p-2 gap-1 items-center justify-center"
       aria-label="Tools"
     >
       {TOOLBAR_ITEMS.map((item, index) => {
@@ -107,6 +107,7 @@ export default function Toolbar() {
               aria-label={item.title}
               onClick={handleButtonClick(index)}
               onMouseOver={handleMouseOver(index)}
+              onFocus={handleMouseOver(index)}
             >
               <Icon size={18} />
             </button>

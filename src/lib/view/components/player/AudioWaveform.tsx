@@ -213,6 +213,7 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 					onClick={handleClick}
 					onMouseMove={handleMouseMove}
 					onMouseOut={handleMouseOut}
+				onBlur={handleMouseOut}
 				/>
 			)}
 			{showOsc && (

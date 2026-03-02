@@ -31,6 +31,7 @@ export default function MenuBarItem({
 				)}
 				onClick={handleClick}
 				onMouseOver={handleMouseOver}
+			onFocus={handleMouseOver}
 			>
 				{label}
 			</div>
