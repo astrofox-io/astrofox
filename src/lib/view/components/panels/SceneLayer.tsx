@@ -1,12 +1,12 @@
 import { reverse } from "@/lib/utils/array";
 import Layer from "@/lib/view/components/panels/Layer";
-import { Cube, DocumentLandscape, LightUp, Picture } from "@/lib/view/icons";
+import { Cube, DocumentLandscape, Sun, Picture } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useMemo } from "react";
 
 const icons = {
 	display: DocumentLandscape,
-	effect: LightUp,
+	effect: Sun,
 	webgl: Cube,
 };
 
