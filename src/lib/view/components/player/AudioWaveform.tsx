@@ -1,6 +1,9 @@
 // @ts-nocheck
 import CanvasAudio from "@/lib/canvas/CanvasAudio";
-import { player } from "@/lib/view/global";
+import CanvasWave from "@/lib/canvas/CanvasWave";
+import WaveParser from "@/lib/audio/WaveParser";
+import { PRIMARY_COLOR } from "@/lib/view/constants";
+import { player, events } from "@/lib/view/global";
 import useSharedState from "@/lib/view/hooks/useSharedState";
 import classNames from "classnames";
 import React, { useRef, useEffect, useLayoutEffect, useMemo } from "react";
@@ -15,11 +18,25 @@ const canvasProperties = {
 	bars: 213,
 };
 
-export default function AudioWaveform({ visible = true }: any) {
+const oscProperties = {
+	width: 854,
+	height: 50,
+	midpoint: 25,
+	strokeColor: PRIMARY_COLOR,
+};
+
+export default function AudioWaveform({ showWaveform = false, showOsc = false }: any) {
 	const [state, setState] = useSharedState();
 	const { progressPosition, seekPosition } = state;
 	const { width, height, shadowHeight } = canvasProperties;
 	const canvas = useRef<any>(null);
+	const oscCanvas = useRef<any>(null);
+	const oscDisplay = useRef<any>(null);
+	const oscParser = useRef<any>(null);
+	const hasAudioRef = useRef(false);
+	const flatRenderedRef = useRef(false);
+
+	const visible = showWaveform || showOsc;
 
 	const [baseCanvas, progressCanvas, seekCanvas] = useMemo(
 		() => [
@@ -73,7 +90,9 @@ export default function AudioWaveform({ visible = true }: any) {
 		setState({ seekPosition: 0 });
 	}
 
-	function draw() {
+	function drawWaveform() {
+		if (!canvas.current) return;
+
 		const { width, height } = canvas.current;
 		const context = canvas.current.getContext("2d");
 		const position = progressPosition * width;
@@ -124,12 +143,29 @@ export default function AudioWaveform({ visible = true }: any) {
 		}
 	}
 
+	function renderFlatWaveform() {
+		const { bars } = canvasProperties;
+		const flatData = new Float32Array(bars).fill(0.05);
+		baseCanvas.bars.render(flatData);
+		progressCanvas.bars.render(flatData);
+		seekCanvas.bars.render(flatData);
+		flatRenderedRef.current = true;
+	}
+
 	function loadAudio() {
 		const { buffer } = player.getAudio();
 
 		baseCanvas.render(buffer);
 		progressCanvas.render(buffer);
 		seekCanvas.render(buffer);
+		hasAudioRef.current = true;
+		flatRenderedRef.current = false;
+	}
+
+	function drawOsc({ td }: any) {
+		if (!oscDisplay.current || !oscParser.current) return;
+		const data = oscParser.current.parseTimeData(td, oscProperties.width);
+		oscDisplay.current.render(Array.from(data).flatMap((n, i) => [i, n]));
 	}
 
 	useEffect(() => {
@@ -140,26 +176,57 @@ export default function AudioWaveform({ visible = true }: any) {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (showOsc && oscCanvas.current) {
+			oscDisplay.current = new CanvasWave(oscProperties, oscCanvas.current);
+			oscParser.current = new WaveParser();
+			events.on("render", drawOsc);
+		}
+
+		return () => {
+			events.off("render", drawOsc);
+		};
+	}, [showOsc]);
+
 	useLayoutEffect(() => {
-		draw();
+		if (showWaveform) {
+			if (!hasAudioRef.current && !flatRenderedRef.current) {
+				renderFlatWaveform();
+			}
+			drawWaveform();
+		}
 	});
 
 	return (
 		<div
 			className={classNames({
-				["min-w-[56rem] relative bg-gray75 border-t border-t-gray200 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-48 transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
+				["min-w-[56rem] relative bg-gray75 border-t border-t-gray200 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-64 transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
 				["hidden max-h-0 transition-[max-height_0.2s_ease-in]"]: !visible,
 			})}
 		>
-			<canvas
-				ref={canvas}
-				className={"my-5 mx-auto block"}
-				width={width}
-				height={height + shadowHeight}
-				onClick={handleClick}
-				onMouseMove={handleMouseMove}
-				onMouseOut={handleMouseOut}
-			/>
+			{showWaveform && (
+				<canvas
+					ref={canvas}
+					className={"mt-5 mx-auto block"}
+					width={width}
+					height={height + shadowHeight}
+					onClick={handleClick}
+					onMouseMove={handleMouseMove}
+					onMouseOut={handleMouseOut}
+				/>
+			)}
+			{showOsc && (
+				<canvas
+					ref={oscCanvas}
+					className={classNames("block mx-auto", {
+						"mt-5": !showWaveform,
+						"mt-1": showWaveform,
+					})}
+					width={oscProperties.width}
+					height={oscProperties.height}
+				/>
+			)}
+			<div className="h-5" />
 		</div>
 	);
 }
