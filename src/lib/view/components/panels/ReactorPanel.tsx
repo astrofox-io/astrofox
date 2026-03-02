@@ -14,7 +14,7 @@ import {
 } from "@/lib/view/constants";
 import { events, reactors } from "@/lib/view/global";
 import useEntity from "@/lib/view/hooks/useEntity";
-import { ChevronDown } from "@/lib/view/icons";
+import { Times } from "@/lib/view/icons";
 import React, { useEffect, useRef } from "react";
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
@@ -131,9 +131,9 @@ const ReactorControl = ({ reactor }: any) => {
 			</div>
 			<Icon
 				className={
-					"absolute top-2.5 right-5 text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100"
+					"absolute top-2 right-2 text-neutral-300 w-3.5 h-3.5 [&:hover]:text-neutral-100"
 				}
-				glyph={ChevronDown}
+				glyph={Times}
 				title="Hide Panel"
 				onClick={hideReactor}
 			/>

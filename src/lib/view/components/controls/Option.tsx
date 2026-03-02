@@ -103,7 +103,7 @@ export default function Option({
 				{withLink && (
 					<Icon
 						className={classNames("w-4 h-4", {
-							["text-primary"]: display.properties[withLink],
+							["text-neutral-100"]: display.properties[withLink],
 							["text-neutral-500 opacity-50"]: !display.properties[withLink],
 						})}
 						glyph={display.properties[withLink] ? Link : Unlink}
