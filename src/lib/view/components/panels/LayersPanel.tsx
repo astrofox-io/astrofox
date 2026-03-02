@@ -119,7 +119,7 @@ export default function LayersPanel() {
 					disabled={!layerSelected}
 				/>
 			</ButtonPanel>
-			<div className={"flex-1 overflow-auto pt-1"}>
+			<div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
 				{sortedScenes.map((scene) => (
 					<SceneLayer
 						key={scene.id}

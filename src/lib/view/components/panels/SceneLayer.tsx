@@ -50,7 +50,7 @@ export default function SceneLayer({
 				onLayerUpdate={onLayerUpdate}
 				onLayerDelete={onLayerDelete}
 			/>
-			<div className={classNames("flex flex-col")}>
+			<div className={classNames("flex flex-col gap-0.5")}>
 				{effects.map((effect) => renderLayer(effect))}
 				{displays.map((display) => renderLayer(display))}
 			</div>
