@@ -16,7 +16,7 @@ const ButtonInput = ({
 			"text-text100 bg-input-bg min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary100",
 			{
 				["bg-primary100"]: active,
-				["[&_svg]:text-gray500 [&:hover]:bg-input-bg"]: disabled,
+				["opacity-30 hover:!bg-input-bg"]: disabled,
 			},
 			className,
 		)}

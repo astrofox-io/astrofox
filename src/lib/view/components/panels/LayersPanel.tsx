@@ -39,6 +39,40 @@ export default function LayersPanel() {
 		}, undefined);
 	}, [scenes, activeElementId]);
 
+	const { canMoveUp, canMoveDown } = useMemo(() => {
+		if (!layerSelected) return { canMoveUp: false, canMoveDown: false };
+
+		// Check if it's a scene
+		const sceneIndex = scenes.findIndex((s) => s.id === activeElementId);
+		if (sceneIndex > -1) {
+			return {
+				canMoveUp: sceneIndex < scenes.length - 1,
+				canMoveDown: sceneIndex > 0,
+			};
+		}
+
+		// Check displays and effects within the owning scene
+		for (const scene of scenes) {
+			const displayIndex = scene.displays.findIndex((d) => d.id === activeElementId);
+			if (displayIndex > -1) {
+				return {
+					canMoveUp: displayIndex < scene.displays.length - 1,
+					canMoveDown: displayIndex > 0,
+				};
+			}
+
+			const effectIndex = scene.effects.findIndex((e) => e.id === activeElementId);
+			if (effectIndex > -1) {
+				return {
+					canMoveUp: effectIndex < scene.effects.length - 1,
+					canMoveDown: effectIndex > 0,
+				};
+			}
+		}
+
+		return { canMoveUp: false, canMoveDown: false };
+	}, [scenes, activeElementId, layerSelected]);
+
 	function handleLayerClick(id) {
 		setActiveElementId(id);
 	}
@@ -109,13 +143,13 @@ export default function LayersPanel() {
 					icon={ChevronUp}
 					title="Move Layer Up"
 					onClick={handleMoveUp}
-					disabled={!layerSelected}
+					disabled={!canMoveUp}
 				/>
 				<ButtonInput
 					icon={ChevronDown}
 					title="Move Layer Down"
 					onClick={handleMoveDown}
-					disabled={!layerSelected}
+					disabled={!canMoveDown}
 				/>
 			</div>
 			<div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
