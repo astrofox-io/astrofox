@@ -94,11 +94,11 @@ function App() {
 				<Layout id="viewport" direction="column">
 					<Toolbar />
 					<Stage />
-					<Player />
-					<ReactorPanel />
 				</Layout>
 				<ControlDock />
 			</Layout>
+			<Player />
+			<ReactorPanel />
 			<StatusBar />
 			<Modals />
 		</Layout>
