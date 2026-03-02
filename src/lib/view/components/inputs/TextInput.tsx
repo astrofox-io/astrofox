@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 export default function TextInput({
 	name = "text",
-	width = 140,
+	width = 160,
 	size = null,
 	value = "",
 	spellCheck = false,
@@ -72,7 +72,7 @@ export default function TextInput({
 			ref={input}
 			type="text"
 			className={classNames(
-				"text-sm text-input-text bg-input-bg border border-input-border rounded-md leading-6 py-0 px-1.5 [outline:none] [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
+				"text-sm text-input-text bg-input-bg border border-input-border rounded-md py-1 px-2 [outline:none] [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
 				className,
 			)}
 			style={{ width }}

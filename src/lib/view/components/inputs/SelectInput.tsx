@@ -61,7 +61,7 @@ export default function SelectInput({
 			<input
 				type="text"
 				className={classNames(
-					"cursor-default text-sm text-input-text bg-input-bg border border-input-border rounded-md leading-6 py-0 px-1.5 outline-none [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
+					"cursor-default text-sm text-input-text bg-input-bg border border-input-border rounded-md py-1 px-2 outline-none [&:focus]:border [&:focus]:border-primary100 [&:read-only]:border-input-border [&:disabled]:text-text400 [&:disabled]:border-input-border",
 					{
 						"border-primary100": showItems,
 					},
@@ -75,7 +75,7 @@ export default function SelectInput({
 			/>
 			<div
 				className={classNames(
-					"absolute top-full min-w-36 z-[var(--z-index-menu)] list-none bg-input-bg overflow-hidden rounded-md border border-gray300 shadow-lg mt-1",
+					"absolute top-full min-w-36 z-[var(--z-index-menu)] list-none bg-input-bg rounded-md border border-gray300 shadow-lg mt-1 p-1 flex flex-col gap-0.5",
 					optionsClassName,
 					{
 						hidden: !showItems,
@@ -87,7 +87,7 @@ export default function SelectInput({
 					<div
 						key={index}
 						className={classNames(
-							"text-input-text text-sm leading-6 py-0 px-1.5 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap [&:hover]:cursor-default [&:hover]:text-text100 [&:hover]:bg-primary100",
+							"text-input-text text-sm py-1 px-2 min-w-36 overflow-hidden text-ellipsis whitespace-nowrap rounded-md [&:hover]:cursor-default [&:hover]:text-text100 [&:hover]:bg-primary100",
 							{
 								"relative h-2.5 [&:after]:content-[''] [&:after]:block [&:after]:absolute [&:after]:top-0 [&:after]:left-1.5 [&:after]:right-1.5 [&:after]:bottom-0 [&:after]:m-auto [&:after]:h-px [&:after]:bg-primary100 [&:hover]:bg-transparent":
 									!item,

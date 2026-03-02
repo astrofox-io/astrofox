@@ -162,6 +162,7 @@ function TexturePlane({
 			<meshBasicMaterial
 				map={texture}
 				transparent={true}
+				premultipliedAlpha={sceneBlendMode === "Multiply"}
 				opacity={finalOpacity}
 				toneMapped={false}
 				depthTest={false}
