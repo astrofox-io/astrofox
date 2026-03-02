@@ -5,7 +5,7 @@ import {
 	ReactorInput,
 } from "@/lib/view/components/inputs";
 import Icon from "@/lib/view/components/interface/Icon";
-import { Link } from "@/lib/view/icons";
+import { Link, Unlink } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
 
@@ -102,10 +102,11 @@ export default function Option({
 				</div>
 				{withLink && (
 					<Icon
-						className={classNames("text-text500 w-4 h-4", {
-							["text-text100"]: withLink && display.properties[withLink],
+						className={classNames("w-4 h-4", {
+							["text-primary100"]: display.properties[withLink],
+							["text-text500 opacity-50"]: !display.properties[withLink],
 						})}
-						glyph={Link}
+						glyph={display.properties[withLink] ? Link : Unlink}
 						onClick={() => onChange(withLink, !display.properties[withLink])}
 					/>
 				)}
