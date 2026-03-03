@@ -1,9 +1,7 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import { initApp } from "@/lib/view/actions/app";
-import Panel from "@/lib/view/components/layout/Panel";
-import PanelDock from "@/lib/view/components/layout/PanelDock";
-import ControlDock from "@/lib/view/components/panels/ControlDock";
-import LayersPanel from "@/lib/view/components/panels/LayersPanel";
+import LeftPanel from "@/lib/view/components/panels/LeftPanel";
+import RightPanel from "@/lib/view/components/panels/RightPanel";
 import ReactorPanel from "@/lib/view/components/panels/ReactorPanel";
 import Player from "@/lib/view/components/player/Player";
 import Stage from "@/lib/view/components/stage/Stage";
@@ -28,16 +26,12 @@ function App() {
 			<Preload />
 			<TitleBar />
 			<div className="flex flex-row flex-1 overflow-hidden relative">
-				<PanelDock width={260} side="left" visible>
-					<Panel title="Layers" stretch>
-						<LayersPanel />
-					</Panel>
-				</PanelDock>
+				<LeftPanel />
 				<div id="viewport" className="flex flex-col flex-1 overflow-hidden relative">
 					<Toolbar />
 					<Stage />
 				</div>
-				<ControlDock />
+				<RightPanel />
 			</div>
 			<Player />
 			<ReactorPanel />

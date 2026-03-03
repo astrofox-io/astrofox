@@ -131,7 +131,7 @@ export default function LayersPanel() {
   }
 
   return (
-    <div className={"flex flex-col flex-1 relative overflow-auto border-r"}>
+    <div className={"flex flex-col flex-1 relative overflow-auto"}>
       <div className={"flex p-1 gap-1"}>
         <ButtonInput
           icon={Picture}
