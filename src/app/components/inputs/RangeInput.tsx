@@ -1,6 +1,5 @@
-import { normalize } from "@/lib/utils/math";
-import classNames from "classnames";
-import type React from "react";
+import { Slider as SliderPrimitive } from "@base-ui/react/slider";
+import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
 interface RangeInputProps {
@@ -51,90 +50,71 @@ export default function RangeInput({
 		}
 	}, [value]);
 
-	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-		let newValue = +e.currentTarget.value;
-
-		if (lowerLimit !== false && newValue < (lowerLimit as number)) {
-			newValue = lowerLimit as number;
-		} else if (upperLimit !== false && newValue > (upperLimit as number)) {
-			newValue = upperLimit as number;
+	function clampToLimits(val: number): number {
+		let clamped = val;
+		if (lowerLimit !== false && clamped < (lowerLimit as number)) {
+			clamped = lowerLimit as number;
 		}
+		if (upperLimit !== false && clamped > (upperLimit as number)) {
+			clamped = upperLimit as number;
+		}
+		return clamped;
+	}
 
+	function handleValueChange(newValue: number) {
+		const clamped = clampToLimits(newValue);
 		if (buffered) {
-			setBufferedValue(newValue);
-			onUpdate?.(name, newValue);
+			buffering.current = true;
+			setBufferedValue(clamped);
+			onUpdate?.(name, clamped);
 		} else {
-			onChange?.(name, newValue);
+			onChange?.(name, clamped);
 		}
 	}
 
-	function handleMouseDown() {
-		buffering.current = true;
-	}
-
-	function handleMouseUp() {
+	function handleValueCommitted(newValue: number) {
 		buffering.current = false;
-
 		if (buffered) {
-			onChange?.(name, bufferedValue);
+			const clamped = clampToLimits(newValue);
+			onChange?.(name, clamped);
 		}
 	}
 
-	function getFillStyle() {
-		const pct = normalize(buffered ? bufferedValue : value, min, max) * 100;
-
-		switch (fillStyle) {
-			case "left":
-				return { width: `${pct}%` };
-			case "right":
-				return { width: `${100 - pct}%`, marginLeft: `${pct}%` };
-			default:
-				return { display: "none" };
-		}
-	}
+	const currentValue = buffered ? bufferedValue : value;
 
 	return (
-		<div
-			className={classNames(
-				"relative h-5 [&:disabled::-webkit-slider-thumb]:hidden",
-				className,
-			)}
+		<SliderPrimitive.Root
+			className={cn("relative h-5 w-full group", className)}
+			value={currentValue}
+			min={min}
+			max={max}
+			step={step}
+			disabled={disabled}
+			onValueChange={(val) => handleValueChange(val as number)}
+			onValueCommitted={(val) => handleValueCommitted(val as number)}
 		>
-			<div
-				className={
-					"absolute z-[0] top-1/2 -translate-y-1/2 h-1 w-full rounded bg-neutral-700 pointer-events-none"
-				}
-			/>
-			{!hideFill && (
-				<div
-					className={
-						"absolute z-[0] top-1/2 -translate-y-1/2 h-1 w-full rounded bg-primary pointer-events-none"
-					}
-					style={getFillStyle()}
+			<SliderPrimitive.Control className="flex w-full items-center h-5">
+				<SliderPrimitive.Track className="relative h-1 w-full rounded bg-neutral-700">
+					{!hideFill && (
+						<SliderPrimitive.Indicator
+							className={cn("h-full rounded bg-primary", {
+								"direction-rtl": fillStyle === "right",
+								hidden: fillStyle !== "left" && fillStyle !== "right",
+							})}
+						/>
+					)}
+				</SliderPrimitive.Track>
+				<SliderPrimitive.Thumb
+					className={cn(
+						"block rounded-full bg-neutral-100 border border-neutral-600 shadow-[0_2px_5px_rgba(0,0,0,0.3)]",
+						smallThumb ? "size-2.5" : "size-3.5",
+						{
+							invisible: hideThumb,
+							"group-hover:visible": hideThumb && showThumbOnHover,
+						},
+					)}
 				/>
-			)}
-			<input
-				className={classNames(
-					"[--thumb-size:14px] [--track-size:4px] relative z-[1] w-full h-5 m-0 bg-transparent [&::-webkit-slider-thumb]:[-webkit-appearance:none] [&::-webkit-slider-thumb]:[box-sizing:border-box] [&::-webkit-slider-thumb]:w-[var(--thumb-size)] [&::-webkit-slider-thumb]:h-[var(--thumb-size)] [&::-webkit-slider-thumb]:mt-[calc((var(--track-size)_-_var(--thumb-size))_/_2)] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-neutral-100 [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-neutral-600 [&::-webkit-slider-thumb]:shadow-[0_2px_5px_rgba(0,_0,_0,_0.3)] [&::-webkit-slider-runnable-track]:w-full [&::-webkit-slider-runnable-track]:h-[var(--track-size)] [&::-webkit-slider-runnable-track]:border-0 [&::-webkit-slider-runnable-track]:bg-transparent [&::-moz-range-thumb]:[box-sizing:border-box] [&::-moz-range-thumb]:w-[var(--thumb-size)] [&::-moz-range-thumb]:h-[var(--thumb-size)] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-neutral-100 [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-neutral-600 [&::-moz-range-thumb]:shadow-[0_2px_5px_rgba(0,_0,_0,_0.3)] [&::-moz-range-track]:w-full [&::-moz-range-track]:h-[var(--track-size)] [&::-moz-range-track]:border-0 [&::-moz-range-track]:bg-transparent",
-					{
-						"[&::-webkit-slider-thumb]:[visibility:hidden] [&::-moz-range-thumb]:[visibility:hidden]":
-							hideThumb,
-						"[&:hover::-webkit-slider-thumb]:[visibility:visible] [&:hover::-moz-range-thumb]:[visibility:visible]":
-							hideThumb && showThumbOnHover,
-						"[--thumb-size:10px]": smallThumb,
-					},
-				)}
-				type="range"
-				name={name}
-				min={min}
-				max={max}
-				step={step}
-				value={buffered ? bufferedValue : value}
-				onChange={handleChange}
-				onMouseDown={handleMouseDown}
-				onMouseUp={handleMouseUp}
-				disabled={disabled}
-			/>
-		</div>
+			</SliderPrimitive.Control>
+		</SliderPrimitive.Root>
 	);
 }

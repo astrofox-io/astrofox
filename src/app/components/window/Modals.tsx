@@ -1,49 +1,38 @@
 // @ts-nocheck
-import { easeInOutQuad } from "@/lib/utils/easing";
 import useModals, { closeModal } from "@/app/actions/modals";
 import * as modalComponents from "@/app/components/modals";
 import ModalWindow from "@/app/components/window/ModalWindow";
-import Overlay from "@/app/components/window/Overlay";
-import React from "react";
-import { animated, useTransition } from "react-spring";
+import {
+	Dialog,
+	DialogOverlay,
+	DialogPortal,
+} from "@/components/ui/dialog";
+import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 
 export default function Modals() {
 	const modals = useModals((state) => state.modals);
-
-	const transitions = useTransition(modals, {
-		keys: (item) => item.id,
-		from: { opacity: 0, transform: "scale(0.7) rotateX(-90deg)" },
-		enter: { opacity: 1, transform: "scale(1.0) rotateX(0deg)" },
-		leave: { opacity: 0, transform: "scale(0.7) rotateX(-90deg)" },
-		config: { duration: 300, easing: easeInOutQuad },
-	});
 
 	function handleClose() {
 		closeModal();
 	}
 
-	return transitions((style, item) => {
-		const { component, modalProps, componentProps } = item;
+	return modals.map((item) => {
+		const { id, component, modalProps, componentProps } = item;
 		const Component = modalComponents[component];
+
 		return (
-			<div
-				className={
-					"absolute w-full h-full flex flex-col justify-center items-center z-[5] [perspective:800px]"
-				}
-				key={component}
-			>
-				<Overlay show={!!modals.length} />
-				<animated.div
-					className={"flex [transform-style:preserve-3d] z-[6]"}
-					style={style}
-				>
-					<ModalWindow {...modalProps} onClose={handleClose}>
-						{Component && (
-							<Component {...componentProps} onClose={handleClose} />
-						)}
-					</ModalWindow>
-				</animated.div>
-			</div>
+			<Dialog key={id} open onOpenChange={(open) => !open && handleClose()}>
+				<DialogPortal>
+					<DialogOverlay className="bg-black/50" />
+					<DialogPrimitive.Popup className="fixed inset-0 z-50 flex items-center justify-center outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95">
+						<ModalWindow {...modalProps} onClose={handleClose}>
+							{Component && (
+								<Component {...componentProps} onClose={handleClose} />
+							)}
+						</ModalWindow>
+					</DialogPrimitive.Popup>
+				</DialogPortal>
+			</Dialog>
 		);
 	});
 }

@@ -1,9 +1,8 @@
 import Button from "@/app/components/interface/Button";
-import Icon from "@/app/components/interface/Icon";
-import { Times } from "@/app/icons";
-import classNames from "classnames";
+import { cn } from "@/lib/utils";
 import type React from "react";
 import { Children, cloneElement, isValidElement } from "react";
+import { XIcon } from "lucide-react";
 
 interface ModalWindowProps {
 	className?: string;
@@ -24,31 +23,26 @@ export default function ModalWindow({
 }: ModalWindowProps) {
 	return (
 		<div
-			className={classNames(
+			className={cn(
 				"relative m-auto min-w-96 flex flex-col shadow-2xl rounded-lg overflow-hidden",
 				className,
 			)}
 		>
 			{showCloseButton && (
-				<div
-					className={
-						"absolute top-0 right-0 h-6 w-6 text-center z-[1] [&_.close-icon]:text-neutral-100 [&_.close-icon]:w-3.5 [&_.close-icon]:h-3.5 [&_.close-icon]:mt-1 [&:hover]:bg-primary"
-					}
+				<button
+					type="button"
+					className="absolute top-0 right-0 h-6 w-6 flex items-center justify-center z-[1] text-neutral-100 bg-transparent border-0 p-0 [&:hover]:bg-primary"
 					onClick={() => onClose?.()}
 				>
-					<Icon className={""} glyph={Times} />
-				</div>
+					<XIcon className="w-3.5 h-3.5" />
+				</button>
 			)}
 			{title && (
-				<div
-					className={
-						"relative bg-neutral-800 leading-9 text-center uppercase tracking-wider cursor-default"
-					}
-				>
+				<div className="relative bg-neutral-800 leading-9 text-center uppercase tracking-wider cursor-default">
 					{title}
 				</div>
 			)}
-			<div className={"relative min-h-24 bg-neutral-800 flex flex-col"}>
+			<div className="relative min-h-24 bg-neutral-800 flex flex-col">
 				{Children.map(children, (child) =>
 					isValidElement<{ onClose?: (value?: string) => void }>(child)
 						? cloneElement(child, { onClose })
@@ -56,7 +50,7 @@ export default function ModalWindow({
 				)}
 			</div>
 			{buttons && (
-				<div className={"bg-neutral-700 text-center p-2.5"}>
+				<div className="bg-neutral-700 text-center p-2.5">
 					{buttons.map((text: string, index: number) => (
 						<Button key={index} text={text} onClick={() => onClose?.(text)} />
 					))}

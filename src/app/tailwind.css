@@ -1,46 +1,62 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
 @theme {
-	--color-primary: #704dd8;
+    --color-primary: #704dd8;
+    --color-primary-foreground: #f5f5f5;
+    --color-background: #171717;
+    --color-foreground: #f5f5f5;
+    --color-muted: #262626;
+    --color-muted-foreground: #a3a3a3;
+    --color-accent: #704dd8;
+    --color-accent-foreground: #f5f5f5;
+    --color-popover: #171717;
+    --color-popover-foreground: #d4d4d4;
+    --color-border: #404040;
+    --color-input: #525252;
+    --color-ring: #704dd8;
+    --color-destructive: #ef4444;
+    --color-secondary: #262626;
+    --color-secondary-foreground: #f5f5f5;
 }
 
 @layer base {
-	*,
-	::after,
-	::before,
-	::backdrop {
-		border-color: var(--color-neutral-800);
-	}
+    *,
+    ::after,
+    ::before,
+    ::backdrop {
+        border-color: var(--color-neutral-800);
+    }
 }
 
 /* less-migrated-keyframes */
 @keyframes spinner-rotate {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes stage-loader-pop {
-	0% {
-		transform: scale(2);
-		opacity: 0;
-	}
-	100% {
-		transform: scale(1);
-		opacity: 1;
-	}
+    0% {
+        transform: scale(2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @keyframes stage-loader-out {
-	0% {
-		transform: scale(1);
-		opacity: 1;
-	}
-	100% {
-		transform: scale(2);
-		opacity: 0;
-	}
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
 }

@@ -1,4 +1,9 @@
-import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
+import {
+	Tooltip as TooltipRoot,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type React from "react";
 
 interface TooltipProps {
@@ -12,17 +17,17 @@ export default function Tooltip({ text, children }: TooltipProps) {
 	}
 
 	return (
-		<BaseTooltip.Provider>
-			<BaseTooltip.Root>
-				<BaseTooltip.Trigger render={children} />
-				<BaseTooltip.Portal>
-					<BaseTooltip.Positioner sideOffset={6}>
-						<BaseTooltip.Popup className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100">
-							{text}
-						</BaseTooltip.Popup>
-					</BaseTooltip.Positioner>
-				</BaseTooltip.Portal>
-			</BaseTooltip.Root>
-		</BaseTooltip.Provider>
+		<TooltipProvider>
+			<TooltipRoot>
+				<TooltipTrigger render={children} />
+				<TooltipContent
+					side="bottom"
+					sideOffset={6}
+					className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+				>
+					{text}
+				</TooltipContent>
+			</TooltipRoot>
+		</TooltipProvider>
 	);
 }

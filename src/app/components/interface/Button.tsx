@@ -1,5 +1,4 @@
-import classNames from "classnames";
-import React from "react";
+import { Button as ShadcnButton } from "@/components/ui/button";
 
 interface ButtonProps {
 	text?: string;
@@ -8,21 +7,16 @@ interface ButtonProps {
 	onClick?: (() => void) | null;
 }
 
-const Button = ({ text, disabled, className, onClick }: ButtonProps) => {
+export default function Button({ text, disabled, className, onClick }: ButtonProps) {
 	return (
-		<span
-			className={classNames(
-				"inline-block bg-primary py-2 px-2.5 rounded-md cursor-default mr-2.5 [&:last-child]:mr-0 [&:hover]:bg-primary",
-				className,
-				{
-					"text-neutral-300 bg-neutral-600": disabled,
-				},
-			)}
+		<ShadcnButton
+			variant="default"
+			size="sm"
+			className={className}
+			disabled={disabled}
 			onClick={disabled ? undefined : (onClick ?? undefined)}
 		>
 			{text}
-		</span>
+		</ShadcnButton>
 	);
-};
-
-export default Button;
+}

@@ -137,7 +137,7 @@ const Loading = ({ show }: LoadingProps) => {
   return (
     <div
       className={
-        "absolute inset-0 z-[4] flex items-center justify-center pointer-events-none"
+        "absolute inset-0 z-4 flex items-center justify-center pointer-events-none"
       }
     >
       <div

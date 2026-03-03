@@ -3,10 +3,16 @@ import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/app/actions/app";
 import useProject, { DEFAULT_PROJECT_NAME } from "@/app/actions/project";
 import Tooltip from "@/app/components/interface/Tooltip";
-import Menu from "@/app/components/nav/Menu";
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { env } from "@/app/global";
 import useWindowState from "@/app/hooks/useWindowState";
-import classNames from "classnames";
 import { Menu as MenuIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -45,21 +51,12 @@ export default function TitleBar() {
 	const { focused } = useWindowState();
 	const projectName = useProject((state) => state.projectName);
 	const [menuItems, setMenuItems] = useState(createMenuItems);
-	const [menuVisible, setMenuVisible] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
 	const [projectNameEditing, setProjectNameEditing] = useState(false);
 	const [projectNameDraft, setProjectNameDraft] = useState(
 		projectName || DEFAULT_PROJECT_NAME,
 	);
 	const projectNameInputRef = useRef(null);
-
-	useEffect(() => {
-		function closeMenu() {
-			setMenuVisible(false);
-		}
-
-		window.addEventListener("click", closeMenu);
-		return () => window.removeEventListener("click", closeMenu);
-	}, []);
 
 	useEffect(() => {
 		if (!projectNameEditing) {
@@ -76,14 +73,9 @@ export default function TitleBar() {
 		projectNameInputRef.current.select();
 	}, [projectNameEditing]);
 
-	function toggleMenu(event) {
-		event.stopPropagation();
-		setMenuVisible((visible) => !visible);
-	}
-
 	function onMenuItemClick(item) {
 		const { action, checked } = item;
-		setMenuVisible(false);
+		setMenuOpen(false);
 
 		if (checked !== undefined) {
 			setMenuItems((current) =>
@@ -145,29 +137,60 @@ export default function TitleBar() {
 			}
 		>
 			<div className={"flex items-center gap-0.5 ml-1.5 max-w-[45vw]"}>
-				<div className={"relative"}>
-					<button
-						type="button"
-						className={classNames(
-							"w-7 h-7 border-0 p-0 rounded-md bg-transparent text-neutral-400 inline-flex items-center justify-center [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
-							{
-								"text-neutral-100 bg-primary": menuVisible,
-							},
-						)}
-						aria-label="Main menu"
-						onClick={toggleMenu}
+				<DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+					<DropdownMenuTrigger
+						render={
+							<button
+								type="button"
+								className={`w-7 h-7 border-0 p-0 rounded-md bg-transparent text-neutral-400 inline-flex items-center justify-center [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800 ${menuOpen ? "text-neutral-100 bg-primary" : ""}`}
+								aria-label="Main menu"
+							/>
+						}
 					>
 						<MenuIcon size={16} />
-					</button>
-					<Menu
-						className={
-							"top-full mt-1.5 left-0 min-w-56 border border-neutral-700"
-						}
-						items={menuItems}
-						visible={menuVisible}
-						onMenuItemClick={onMenuItemClick}
-					/>
-				</div>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent
+						className="bg-neutral-900 border-neutral-700 rounded-md shadow-lg p-1 min-w-56"
+						align="start"
+						sideOffset={6}
+					>
+						{menuItems.map((item, index) => {
+							if (item.type === "separator") {
+								return (
+									<DropdownMenuSeparator
+										key={`sep-${index}`}
+										className="bg-primary"
+									/>
+								);
+							}
+
+							if (item.checked !== undefined) {
+								return (
+									<DropdownMenuCheckboxItem
+										key={item.label}
+										checked={item.checked}
+										disabled={item.disabled}
+										className="text-sm min-w-44 rounded-md focus:text-neutral-100 focus:bg-primary"
+										onClick={() => onMenuItemClick(item)}
+									>
+										{item.label}
+									</DropdownMenuCheckboxItem>
+								);
+							}
+
+							return (
+								<DropdownMenuItem
+									key={item.label}
+									disabled={item.disabled}
+									className="text-sm min-w-44 rounded-md focus:text-neutral-100 focus:bg-primary"
+									onClick={() => onMenuItemClick(item)}
+								>
+									{item.label}
+								</DropdownMenuItem>
+							);
+						})}
+					</DropdownMenuContent>
+				</DropdownMenu>
 				{projectNameEditing ? (
 					<input
 						ref={projectNameInputRef}

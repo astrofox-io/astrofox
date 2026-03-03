@@ -1,5 +1,5 @@
-import classNames from "classnames";
-import React from "react";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
 interface ToggleInputProps {
 	name?: string;
@@ -17,19 +17,15 @@ export default function ToggleInput({
 	onChange,
 }: ToggleInputProps) {
 	return (
-		<div className={"flex items-center"}>
-			<div
-				className={classNames(
-					"relative order-[1] h-4 w-8 shrink-0 rounded-full border border-neutral-900 bg-neutral-900 transition-[background-color_0.25s] [&:before]:absolute [&:before]:top-1/2 [&:before]:left-0 [&:before]:-translate-y-1/2 [&:before]:content-[''] [&:before]:h-4 [&:before]:w-4 [&:before]:rounded-full [&:before]:border [&:before]:border-neutral-600 [&:before]:bg-neutral-100 [&:before]:shadow-[0_0_2px_rgba(0,_0,_0,_0.3)] [&:before]:transition-[left_0.25s]",
-					{
-						"bg-primary [&:before]:left-4": value,
-					},
-				)}
-				onClick={() => onChange?.(name, !value)}
+		<div className="flex items-center">
+			<Switch
+				className="order-[1] h-4 w-8 data-unchecked:bg-neutral-900 data-checked:bg-primary [&_[data-slot=switch-thumb]]:size-4 [&_[data-slot=switch-thumb]]:data-checked:translate-x-4 [&_[data-slot=switch-thumb]]:bg-neutral-100 [&_[data-slot=switch-thumb]]:border [&_[data-slot=switch-thumb]]:border-neutral-600 [&_[data-slot=switch-thumb]]:shadow-[0_0_2px_rgba(0,0,0,0.3)]"
+				checked={value}
+				onCheckedChange={(checked) => onChange?.(name, Boolean(checked))}
 			/>
 			{label && (
 				<div
-					className={classNames("inline-block shrink-0 whitespace-nowrap", {
+					className={cn("inline-block shrink-0 whitespace-nowrap", {
 						"order-[0] pr-3": labelPosition === "left",
 						"order-[2] pl-4": labelPosition === "right",
 					})}
