@@ -1,46 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #704dd8;
+	--color-primary: #704dd8;
 }
 
 @layer base {
-    *,
-    ::after,
-    ::before,
-    ::backdrop {
-        border-color: var(--color-neutral-800);
-    }
+	*,
+	::after,
+	::before,
+	::backdrop {
+		border-color: var(--color-neutral-800);
+	}
 }
 
 /* less-migrated-keyframes */
 @keyframes spinner-rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 @keyframes stage-loader-pop {
-    0% {
-        transform: scale(2);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+	0% {
+		transform: scale(2);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
 }
 
 @keyframes stage-loader-out {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(2);
-        opacity: 0;
-    }
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(2);
+		opacity: 0;
+	}
 }

@@ -8,7 +8,7 @@ import {
 import Icon from "@/lib/view/components/interface/Icon";
 import { Link, Unlink } from "@/lib/view/icons";
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 
 interface OptionProps {
 	display: Display & { properties: Record<string, unknown> };
@@ -43,7 +43,9 @@ export default function Option({
 	inputProps,
 	...otherProps
 }: OptionProps) {
-	const [InputCompnent, defaultProps] = type ? (inputComponents[type] ?? []) : [];
+	const [InputCompnent, defaultProps] = type
+		? (inputComponents[type] ?? [])
+		: [];
 	const showReactor = withReactor && display.getReactor?.(name);
 	const { min, max } = otherProps;
 	const inputs: React.ReactNode[] = [];
@@ -91,7 +93,7 @@ export default function Option({
 				"relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-neutral-400 leading-5",
 				className,
 				{
-					["hidden"]: hidden || inputs.length === 0,
+					hidden: hidden || inputs.length === 0,
 				},
 			)}
 		>
@@ -106,14 +108,14 @@ export default function Option({
 			)}
 			<div
 				className={classNames("ml-6 flex min-w-28 cursor-default", {
-					["min-w-20"]: showReactor,
+					"min-w-20": showReactor,
 				})}
 			>
 				<div
 					className={classNames(
 						"mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis",
 						{
-							["mr-1"]: showReactor,
+							"mr-1": showReactor,
 						},
 					)}
 				>
@@ -122,8 +124,8 @@ export default function Option({
 				{withLink && (
 					<Icon
 						className={classNames("w-4 h-4", {
-							["text-neutral-100"]: display.properties[withLink],
-							["text-neutral-500 opacity-50"]: !display.properties[withLink],
+							"text-neutral-100": display.properties[withLink],
+							"text-neutral-500 opacity-50": !display.properties[withLink],
 						})}
 						glyph={display.properties[withLink] ? Link : Unlink}
 						onClick={() => onChange?.(withLink, !display.properties[withLink])}

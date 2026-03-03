@@ -22,8 +22,10 @@ const maxHeight = (display: ImageDisplayInstance) => {
 
 	return naturalHeight > height ? naturalHeight : height;
 };
-const maxX = (display: ImageDisplayInstance) => (disabled(display) ? 0 : maxWidth(display));
-const maxY = (display: ImageDisplayInstance) => (disabled(display) ? 0 : maxHeight(display));
+const maxX = (display: ImageDisplayInstance) =>
+	disabled(display) ? 0 : maxWidth(display);
+const maxY = (display: ImageDisplayInstance) =>
+	disabled(display) ? 0 : maxHeight(display);
 
 export default class ImageDisplay extends Display {
 	declare image: HTMLImageElement;
@@ -170,7 +172,8 @@ export default class ImageDisplay extends Display {
 					properties.width = Math.round((properties.height as number) * ratio);
 				} else {
 					properties.width = Math.round((h as number) * ratio);
-					properties.height = Math.round((properties.width as number) * (1 / ratio)) || 0;
+					properties.height =
+						Math.round((properties.width as number) * (1 / ratio)) || 0;
 				}
 			}
 

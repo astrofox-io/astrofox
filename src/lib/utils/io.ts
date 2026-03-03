@@ -1,6 +1,6 @@
 // @ts-nocheck
-import fs from "fs";
-import zlib from "zlib";
+import fs from "node:fs";
+import zlib from "node:zlib";
 
 export function compress(data) {
 	return new Promise((resolve, reject) => {

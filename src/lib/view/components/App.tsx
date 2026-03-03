@@ -1,11 +1,11 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import { initApp } from "@/lib/view/actions/app";
+import Toolbar from "@/lib/view/components/nav/Toolbar";
 import LeftPanel from "@/lib/view/components/panels/LeftPanel";
-import RightPanel from "@/lib/view/components/panels/RightPanel";
 import ReactorPanel from "@/lib/view/components/panels/ReactorPanel";
+import RightPanel from "@/lib/view/components/panels/RightPanel";
 import Player from "@/lib/view/components/player/Player";
 import Stage from "@/lib/view/components/stage/Stage";
-import Toolbar from "@/lib/view/components/nav/Toolbar";
 import Modals from "@/lib/view/components/window/Modals";
 import Preload from "@/lib/view/components/window/Preload";
 import StatusBar from "@/lib/view/components/window/StatusBar";
@@ -27,7 +27,10 @@ function App() {
 			<TitleBar />
 			<div className="flex flex-row flex-1 overflow-hidden relative">
 				<LeftPanel />
-				<div id="viewport" className="flex flex-col flex-1 overflow-hidden relative">
+				<div
+					id="viewport"
+					className="flex flex-col flex-1 overflow-hidden relative"
+				>
 					<Toolbar />
 					<Stage />
 				</div>

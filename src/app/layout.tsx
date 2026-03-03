@@ -7,7 +7,9 @@ export const metadata = {
 	title: "Astrofox",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+	children,
+}: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
 			<body className={`${fontVariables} ${inter.className}`}>{children}</body>

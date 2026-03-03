@@ -1,6 +1,6 @@
 import FFTParser from "@/lib/audio/FFTParser";
 import Entity from "@/lib/core/Entity";
-import type { RenderFrameData, ReactorResult } from "@/lib/types";
+import type { ReactorResult, RenderFrameData } from "@/lib/types";
 import { isDefined } from "@/lib/utils/array";
 import { getDisplayName } from "@/lib/utils/controls";
 import { ceil, floor, normalize } from "@/lib/utils/math";

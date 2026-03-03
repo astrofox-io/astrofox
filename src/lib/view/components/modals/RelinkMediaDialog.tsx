@@ -14,7 +14,9 @@ interface RelinkMediaDialogProps {
 }
 
 export default function RelinkMediaDialog({ onClose }: RelinkMediaDialogProps) {
-	const mediaRefs = useProject((state) => state.unresolvedMediaRefs) as MediaRef[];
+	const mediaRefs = useProject(
+		(state) => state.unresolvedMediaRefs,
+	) as MediaRef[];
 	const [loadingDisplayId, setLoadingDisplayId] = useState<string | null>(null);
 
 	async function handleRelink(ref: MediaRef) {

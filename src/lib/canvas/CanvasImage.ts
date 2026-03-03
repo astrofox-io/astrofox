@@ -48,7 +48,7 @@ export default class CanvasImage extends Entity {
 		for (let i = 0; i < steps; i += 1) {
 			const canvas = new OffscreenCanvas(width, height);
 
-			canvas.getContext("2d")!.drawImage(src, 0, 0, width, height);
+			canvas.getContext("2d")?.drawImage(src, 0, 0, width, height);
 
 			mipmaps.push(canvas);
 

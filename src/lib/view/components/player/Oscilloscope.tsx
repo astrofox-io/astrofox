@@ -22,7 +22,12 @@ export default function Oscilloscope() {
 		if (!parser.current || !display.current || !td) return;
 		const data = parser.current.parseTimeData(td, width);
 
-		display.current.render(new Float32Array(Array.from(data).flatMap((n: number, i: number) => [i, n])), false);
+		display.current.render(
+			new Float32Array(
+				Array.from(data).flatMap((n: number, i: number) => [i, n]),
+			),
+			false,
+		);
 	}
 
 	useEffect(() => {
@@ -39,7 +44,9 @@ export default function Oscilloscope() {
 		<div className={"min-w-[56rem] relative bg-neutral-900 pb-[10px]"}>
 			<canvas
 				ref={canvas}
-				className={"block my-0 mx-auto border border-neutral-800 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"}
+				className={
+					"block my-0 mx-auto border border-neutral-800 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)]"
+				}
 				width={width}
 				height={height}
 			/>

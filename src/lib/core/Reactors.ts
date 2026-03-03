@@ -22,7 +22,11 @@ export default class Reactors extends EntityList {
 			this.results = this.reduce(
 				(
 					memo: Record<string, number>,
-					reactor: { enabled: boolean; id: string; parse: (data: RenderFrameData) => { output: number } },
+					reactor: {
+						enabled: boolean;
+						id: string;
+						parse: (data: RenderFrameData) => { output: number };
+					},
 				) => {
 					if (reactor.enabled) {
 						memo[reactor.id] = reactor.parse(data).output;

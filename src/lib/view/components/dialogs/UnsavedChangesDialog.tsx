@@ -11,7 +11,10 @@ interface UnsavedChangesDialogProps {
 	onClose?: () => void;
 }
 
-export default function UnsavedChangesDialog({ action, onClose }: UnsavedChangesDialogProps) {
+export default function UnsavedChangesDialog({
+	action,
+	onClose,
+}: UnsavedChangesDialogProps) {
 	const project = useProject((state) => state);
 
 	async function handleAction(actionType: string) {

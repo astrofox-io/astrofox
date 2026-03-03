@@ -1,10 +1,16 @@
 import CanvasShape from "@/lib/canvas/CanvasShape";
 import Display from "@/lib/core/Display";
-import { maxSize, property, stageHeight, stageWidth } from "@/lib/utils/controls";
+import {
+	maxSize,
+	property,
+	stageHeight,
+	stageWidth,
+} from "@/lib/utils/controls";
 
 const shapeOptions = ["Circle", "Triangle", "Square", "Rectangle", "Hexagon"];
 
-const isRectangle = (display: { properties: Record<string, unknown> }) => display.properties.shape === "Rectangle";
+const isRectangle = (display: { properties: Record<string, unknown> }) =>
+	display.properties.shape === "Rectangle";
 
 export default class ShapeDisplay extends Display {
 	declare shape: CanvasShape;
@@ -36,7 +42,8 @@ export default class ShapeDisplay extends Display {
 				items: shapeOptions,
 			},
 			width: {
-				label: (display: { properties: Record<string, unknown> }) => (isRectangle(display) ? "Width" : "Size"),
+				label: (display: { properties: Record<string, unknown> }) =>
+					isRectangle(display) ? "Width" : "Size",
 				type: "number",
 				min: 1,
 				max: maxSize(),
@@ -50,7 +57,8 @@ export default class ShapeDisplay extends Display {
 				max: maxSize(),
 				withRange: true,
 				withReactor: true,
-				hidden: (display: { properties: Record<string, unknown> }) => !isRectangle(display),
+				hidden: (display: { properties: Record<string, unknown> }) =>
+					!isRectangle(display),
 			},
 			x: {
 				label: "X",

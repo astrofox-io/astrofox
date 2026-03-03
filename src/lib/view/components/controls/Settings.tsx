@@ -1,7 +1,8 @@
 import { inputValueToProps, mapChildren } from "@/lib/utils/react";
 import Setting from "@/lib/view/components/controls/Setting";
 import classNames from "classnames";
-import React, { type ReactElement } from "react";
+import type React from "react";
+import type { ReactElement } from "react";
 
 interface SettingsProps {
 	label?: string;
@@ -29,10 +30,16 @@ export default function Settings({
 
 	return (
 		<div className={classNames("flex flex-col p-4", className)}>
-			{label && <div className={"text-neutral-500 text-sm uppercase mb-4"}>{label}</div>}
+			{label && (
+				<div className={"text-neutral-500 text-sm uppercase mb-4"}>{label}</div>
+			)}
 			{mapChildren(
 				children,
-				{ labelWidth, inputWidth, onChange: onChange ? inputValueToProps(onChange) : undefined },
+				{
+					labelWidth,
+					inputWidth,
+					onChange: onChange ? inputValueToProps(onChange) : undefined,
+				},
 				handleClone,
 			)}
 		</div>

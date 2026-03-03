@@ -31,12 +31,17 @@ interface MenuProps {
 	onMenuItemClick?: (item: MenuItemData) => void;
 }
 
-const Menu = ({ className, items = [], visible = false, onMenuItemClick }: MenuProps) => (
+const Menu = ({
+	className,
+	items = [],
+	visible = false,
+	onMenuItemClick,
+}: MenuProps) => (
 	<div
 		className={classNames(
 			"absolute top-full left-0 list-none bg-neutral-900 rounded-md border border-neutral-700 shadow-lg z-[60] p-1 flex flex-col gap-0.5",
 			{
-				["hidden"]: visible === false,
+				hidden: visible === false,
 			},
 			className,
 		)}
@@ -49,7 +54,9 @@ const Menu = ({ className, items = [], visible = false, onMenuItemClick }: MenuP
 				return (
 					<div
 						key={key}
-						className={"p-1 [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-primary [&:after]:block [&:hover]:bg-transparent"}
+						className={
+							"p-1 [&:after]:content-[''] [&:after]:border-t [&:after]:border-t-primary [&:after]:block [&:hover]:bg-transparent"
+						}
 					/>
 				);
 			}

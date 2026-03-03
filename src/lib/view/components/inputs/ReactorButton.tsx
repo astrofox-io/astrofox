@@ -4,8 +4,8 @@ import { addReactor } from "@/lib/view/actions/reactors";
 import { loadScenes } from "@/lib/view/actions/scenes";
 import Icon from "@/lib/view/components/interface/Icon";
 import Tooltip from "@/lib/view/components/interface/Tooltip";
-import { Flash, Plus } from "@/lib/view/icons";
 import { reactors } from "@/lib/view/global";
+import { Flash, Plus } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -69,9 +69,13 @@ export default function ReactorButton({
 		<div className="relative" ref={pickerRef}>
 			<Tooltip text={reactor ? "Show Reactor" : "Enable Reactor"}>
 				<Icon
-					className={classNames("text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100", className, {
-						["text-neutral-100"]: reactor,
-					})}
+					className={classNames(
+						"text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100",
+						className,
+						{
+							"text-neutral-100": reactor,
+						},
+					)}
 					glyph={Flash}
 					onClick={handleClick}
 				/>

@@ -11,86 +11,88 @@ import { Times } from "@/lib/view/icons";
 import React, { useRef, useEffect, useMemo } from "react";
 
 interface ReactorInputProps {
-  display: Display;
-  name: string;
-  value: unknown;
-  width?: number;
-  height?: number;
-  color?: string;
+	display: Display;
+	name: string;
+	value: unknown;
+	width?: number;
+	height?: number;
+	color?: string;
 }
 
 export default function ReactorInput({
-  display,
-  name,
-  value,
-  width = 100,
-  height = 10,
-  color = PRIMARY_COLOR,
+	display,
+	name,
+	value,
+	width = 100,
+	height = 10,
+	color = PRIMARY_COLOR,
 }: ReactorInputProps) {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const meter = useRef<CanvasMeter | null>(null);
-  const lastValue = useRef(value);
-  const reactor = useMemo(
-    () => reactors.getElementById(display.getReactor(name)!.id),
-    [display],
-  );
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const meter = useRef<CanvasMeter | null>(null);
+	const lastValue = useRef(value);
+	const reactor = useMemo(
+		() => reactors.getElementById(display.getReactor(name)!.id),
+		[display],
+	);
 
-  function disableReactor() {
-    display.removeReactor(name);
-    display.update({ [name]: lastValue.current });
+	function disableReactor() {
+		display.removeReactor(name);
+		display.update({ [name]: lastValue.current });
 
-    setActiveReactorId(null);
-    removeReactor(reactor as { id: string });
+		setActiveReactorId(null);
+		removeReactor(reactor as { id: string });
 
-    loadScenes();
-  }
+		loadScenes();
+	}
 
-  function toggleReactor() {
-    setActiveReactorId((reactor as { id: string })?.id ?? null);
-  }
+	function toggleReactor() {
+		setActiveReactorId((reactor as { id: string })?.id ?? null);
+	}
 
-  function draw() {
-    const { output } = (reactor as { getResult: () => { output: number } }).getResult();
+	function draw() {
+		const { output } = (
+			reactor as { getResult: () => { output: number } }
+		).getResult();
 
-    meter.current?.render(output);
-  }
+		meter.current?.render(output);
+	}
 
-  useEffect(() => {
-    meter.current = new CanvasMeter(
-      {
-        width,
-        height,
-        color,
-      },
-      canvas.current!,
-    );
+	useEffect(() => {
+		meter.current = new CanvasMeter(
+			{
+				width,
+				height,
+				color,
+			},
+			canvas.current!,
+		);
 
-    events.on("render", draw);
+		events.on("render", draw);
 
-    return () => {
-      events.off("render", draw);
-    };
-  }, []);
+		return () => {
+			events.off("render", draw);
+		};
+	}, []);
 
-  return (
-    <div className={"flex flex-row items-center gap-1"}>
-      <div
-        className={
-          "flex h-8 shrink-0 items-center rounded-md border border-neutral-600 bg-neutral-900 py-0 px-2"
-        }
-        onDoubleClick={toggleReactor}
-      >
-        <canvas ref={canvas} className="canvas" width={width} height={height} />
-      </div>
-      <Tooltip text="Disable Reactor">
-        <Icon
-          className={
-            "ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-neutral-300 [&:hover]:text-neutral-100"
-          }
-          glyph={Times}
-          onClick={disableReactor}
-        />
-      </Tooltip>
-    </div>
-  );
+	return (
+		<div className={"flex flex-row items-center gap-1"}>
+			<div
+				className={
+					"flex h-8 shrink-0 items-center rounded-md border border-neutral-600 bg-neutral-900 py-0 px-2"
+				}
+				onDoubleClick={toggleReactor}
+			>
+				<canvas ref={canvas} className="canvas" width={width} height={height} />
+			</div>
+			<Tooltip text="Disable Reactor">
+				<Icon
+					className={
+						"ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-neutral-300 [&:hover]:text-neutral-100"
+					}
+					glyph={Times}
+					onClick={disableReactor}
+				/>
+			</Tooltip>
+		</div>
+	);
 }

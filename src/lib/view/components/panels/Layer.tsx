@@ -1,9 +1,10 @@
 import TextInput from "@/lib/view/components/inputs/TextInput";
 import Icon from "@/lib/view/components/interface/Icon";
 import { Eye, TrashEmpty } from "@/lib/view/icons";
-import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
-import React, { useState } from "react";
+import type { LucideIcon } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 
 interface LayerProps {
 	id: string;

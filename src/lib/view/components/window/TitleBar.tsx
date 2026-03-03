@@ -160,7 +160,9 @@ export default function TitleBar() {
 						<MenuIcon size={16} />
 					</button>
 					<Menu
-						className={"top-full mt-1.5 left-0 min-w-56 border border-neutral-700"}
+						className={
+							"top-full mt-1.5 left-0 min-w-56 border border-neutral-700"
+						}
 						items={menuItems}
 						visible={menuVisible}
 						onMenuItemClick={onMenuItemClick}
@@ -192,9 +194,7 @@ export default function TitleBar() {
 					</Tooltip>
 				)}
 			</div>
-			<div
-				className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400"
-			>
+			<div className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400">
 				{env.APP_NAME}
 			</div>
 			<img

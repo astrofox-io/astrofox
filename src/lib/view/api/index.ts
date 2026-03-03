@@ -1,5 +1,5 @@
-import type { EventCallback } from "@/lib/types";
 import EventEmitter from "@/lib/core/EventEmitter";
+import type { EventCallback } from "@/lib/types";
 import env from "@/lib/view/env";
 import jsmediatags from "jsmediatags/dist/jsmediatags.min.js";
 
@@ -39,19 +39,24 @@ interface SaveFileProps {
 
 interface FileHandle {
 	getFile: () => Promise<File>;
-	createWritable: () => Promise<{ write: (blob: Blob) => Promise<void>; close: () => Promise<void> }>;
+	createWritable: () => Promise<{
+		write: (blob: Blob) => Promise<void>;
+		close: () => Promise<void>;
+	}>;
 	name: string;
 }
 
-function buildPickerTypes(filters: FileFilter[] = []): PickerType[] | undefined {
+function buildPickerTypes(
+	filters: FileFilter[] = [],
+): PickerType[] | undefined {
 	if (!filters.length) return undefined;
 
 	return filters.map((filter) => ({
 		description: filter.name || "Files",
 		accept: {
-			[filter.mimeType || "application/octet-stream"]: (filter.extensions || []).map(
-				(ext: string) => `.${ext}`,
-			),
+			[filter.mimeType || "application/octet-stream"]: (
+				filter.extensions || []
+			).map((ext: string) => `.${ext}`),
 		},
 	}));
 }
@@ -68,7 +73,12 @@ async function saveBlob(
 	blob: Blob,
 	fallbackName: string,
 ) {
-	if (target && typeof target === "object" && "createWritable" in target && target.createWritable) {
+	if (
+		target &&
+		typeof target === "object" &&
+		"createWritable" in target &&
+		target.createWritable
+	) {
 		const writable = await target.createWritable();
 		await writable.write(blob);
 		await writable.close();
@@ -115,7 +125,8 @@ async function request(path: string, options: RequestOptions = {}) {
 
 	if (!response.ok) {
 		const error: RequestError = new Error(
-			(data?.message as string) || `Request failed with status ${response.status}.`,
+			(data?.message as string) ||
+				`Request failed with status ${response.status}.`,
 		);
 		error.status = response.status;
 		error.payload = data;
@@ -236,7 +247,8 @@ export async function loadAudioTags(file: File | FileHandle) {
 		if (!audioFile) return null;
 		return await new Promise<Record<string, unknown> | null>((resolve) => {
 			jsmediatags.read(audioFile, {
-				onSuccess: (result: { tags: Record<string, unknown> | null }) => resolve(result.tags || null),
+				onSuccess: (result: { tags: Record<string, unknown> | null }) =>
+					resolve(result.tags || null),
 				onError: (error: unknown) => {
 					log(error);
 					resolve(null);

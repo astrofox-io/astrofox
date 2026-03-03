@@ -22,8 +22,10 @@ const maxHeight = (display: VideoDisplayInstance) => {
 
 	return videoHeight > height ? videoHeight : height;
 };
-const maxX = (display: VideoDisplayInstance) => (disabled(display) ? 0 : maxWidth(display));
-const maxY = (display: VideoDisplayInstance) => (disabled(display) ? 0 : maxHeight(display));
+const maxX = (display: VideoDisplayInstance) =>
+	disabled(display) ? 0 : maxWidth(display);
+const maxY = (display: VideoDisplayInstance) =>
+	disabled(display) ? 0 : maxHeight(display);
 
 export default class VideoDisplay extends Display {
 	declare video: HTMLVideoElement;
@@ -153,9 +155,16 @@ export default class VideoDisplay extends Display {
 	}
 
 	handleTimeUpdate = () => {
-		const { loop, startTime, endTime } = this.properties as Record<string, unknown>;
+		const { loop, startTime, endTime } = this.properties as Record<
+			string,
+			unknown
+		>;
 
-		if (loop && (endTime as number) > 0 && this.video.currentTime >= (endTime as number)) {
+		if (
+			loop &&
+			(endTime as number) > 0 &&
+			this.video.currentTime >= (endTime as number)
+		) {
 			this.video.currentTime = Math.max(0, (startTime as number) || 0);
 		}
 	};
@@ -170,7 +179,12 @@ export default class VideoDisplay extends Display {
 			width,
 			height,
 		} = properties;
-		const { src, width: w, height: h, fixed: f } = this.properties as Record<string, unknown>;
+		const {
+			src,
+			width: w,
+			height: h,
+			fixed: f,
+		} = this.properties as Record<string, unknown>;
 		const srcChanged = typeof inputSrc === "string" && inputSrc !== src;
 
 		if (!srcChanged && (fixed || f) && isDefined(width, height, fixed)) {
@@ -188,7 +202,8 @@ export default class VideoDisplay extends Display {
 					properties.width = Math.round((properties.height as number) * ratio);
 				} else {
 					properties.width = Math.round((h as number) * ratio);
-					properties.height = Math.round((properties.width as number) * (1 / ratio)) || 0;
+					properties.height =
+						Math.round((properties.width as number) * (1 / ratio)) || 0;
 				}
 			}
 

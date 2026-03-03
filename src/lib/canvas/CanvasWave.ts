@@ -64,10 +64,7 @@ export default class CanvasWave extends Entity {
 			context.beginPath();
 
 			// Draw bezier spline
-			drawPath(
-				context as CanvasRenderingContext2D,
-				Array.from(points),
-			);
+			drawPath(context as CanvasRenderingContext2D, Array.from(points));
 
 			if (stroke) {
 				context.stroke();

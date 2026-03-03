@@ -5,11 +5,11 @@ export function blobToDataUrl(blob: Blob) {
 		const reader = new FileReader();
 
 		reader.onload = (e) => {
-			resolve(e.target!.result);
+			resolve(e.target?.result);
 		};
 
 		reader.onerror = (e) => {
-			reject(e.target!.error);
+			reject(e.target?.error);
 		};
 
 		reader.readAsDataURL(blob);
@@ -21,11 +21,11 @@ export function blobToArrayBuffer(blob: Blob) {
 		const reader = new FileReader();
 
 		reader.onload = (e) => {
-			resolve(e.target!.result);
+			resolve(e.target?.result);
 		};
 
 		reader.onerror = (e) => {
-			reject(e.target!.error);
+			reject(e.target?.error);
 		};
 
 		return reader.readAsArrayBuffer(blob);
@@ -33,7 +33,9 @@ export function blobToArrayBuffer(blob: Blob) {
 }
 
 export async function dataToBlob(data: ArrayBuffer | Uint8Array, ext: string) {
-	return new Blob([new Uint8Array(data).buffer], { type: mime.getType(ext) ?? undefined });
+	return new Blob([new Uint8Array(data).buffer], {
+		type: mime.getType(ext) ?? undefined,
+	});
 }
 
 export function base64ToBytes(base64: string) {

@@ -18,8 +18,17 @@ export default function StatusBar() {
 	function updateStats() {
 		setState({
 			fps: `${renderer.getFPS()} FPS`,
-			mem: (window.performance as unknown as { memory?: { usedJSHeapSize: number } }).memory
-				? formatSize((window.performance as unknown as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize, 2)
+			mem: (
+				window.performance as unknown as { memory?: { usedJSHeapSize: number } }
+			).memory
+				? formatSize(
+						(
+							window.performance as unknown as {
+								memory: { usedJSHeapSize: number };
+							}
+						).memory.usedJSHeapSize,
+						2,
+					)
 				: undefined,
 		});
 	}
@@ -33,7 +42,11 @@ export default function StatusBar() {
 	}, []);
 
 	return (
-		<div className={"flex text-neutral-100 bg-primary text-sm py-0 px-5 cursor-default whitespace-nowrap z-[1]"}>
+		<div
+			className={
+				"flex text-neutral-100 bg-primary text-sm py-0 px-5 cursor-default whitespace-nowrap z-[1]"
+			}
+		>
 			<div className={"text-left w-1/3 [&_.item]:mr-5"}>
 				<InfoItem value={statusText} />
 			</div>

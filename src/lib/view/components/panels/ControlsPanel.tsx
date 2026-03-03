@@ -13,7 +13,9 @@ interface SceneElements {
 export default function ControlsPanel() {
 	const activeElementId = useApp((state) => state.activeElementId);
 	const sceneOrder = useScenes((state) => state.sceneOrder);
-	const sceneElementsById = useScenes((state) => state.sceneElementsById) as Record<string, SceneElements>;
+	const sceneElementsById = useScenes(
+		(state) => state.sceneElementsById,
+	) as Record<string, SceneElements>;
 	const panelRef = useRef<HTMLDivElement>(null);
 
 	const displayIds = useMemo(() => {
@@ -48,13 +50,24 @@ export default function ControlsPanel() {
 	}, [activeElementId]);
 
 	return (
-		<div className={"flex-1 overflow-auto relative pt-1 pb-0 px-1 mb-1.5"} ref={panelRef}>
+		<div
+			className={"flex-1 overflow-auto relative pt-1 pb-0 px-1 mb-1.5"}
+			ref={panelRef}
+		>
 			{displays.map((display) => {
 				const { id } = display as { id: string };
 
 				return (
-					<div id={`control-${id}`} key={id as string} className={"bg-neutral-800 rounded-md mb-1.5 [&:last-child]:mb-0"}>
-						<Control display={display as unknown as Parameters<typeof Control>[0]["display"]} />
+					<div
+						id={`control-${id}`}
+						key={id as string}
+						className={"bg-neutral-800 rounded-md mb-1.5 [&:last-child]:mb-0"}
+					>
+						<Control
+							display={
+								display as unknown as Parameters<typeof Control>[0]["display"]
+							}
+						/>
 					</div>
 				);
 			})}

@@ -34,7 +34,11 @@ export function formatTime(val: number) {
 	return `${h}${m}:${s}`;
 }
 
-export function formatShortTime(val: number, formats: string[] = ["m", "s"], space: string = "") {
+export function formatShortTime(
+	val: number,
+	formats: string[] = ["m", "s"],
+	space = "",
+) {
 	if (val === 0) {
 		return `0${formats[formats.length - 1]}`;
 	}

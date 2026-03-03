@@ -29,16 +29,24 @@ const Checkmark = ({ size, className }: CheckmarkProps) => (
 					height: `${size}px`,
 				}}
 			>
-				<svg aria-hidden="true" className={"inline-block [transform-origin:center_center]"} viewBox="0 0 72 72">
+				<svg
+					aria-hidden="true"
+					className={"inline-block [transform-origin:center_center]"}
+					viewBox="0 0 72 72"
+				>
 					<circle
-						className={"stroke-primary [stroke-width:2] [fill:none] [stroke-dasharray:240px,_240px] [stroke-dashoffset:240px]"}
+						className={
+							"stroke-primary [stroke-width:2] [fill:none] [stroke-dasharray:240px,_240px] [stroke-dashoffset:240px]"
+						}
 						cx="36"
 						cy="36"
 						r="35"
 						style={{ strokeDashoffset: circleOffset }}
 					/>
 					<path
-						className={"stroke-primary [stroke-width:2] [fill:none] [stroke-dasharray:50px,_50px] [stroke-dashoffset:50px]"}
+						className={
+							"stroke-primary [stroke-width:2] [fill:none] [stroke-dasharray:50px,_50px] [stroke-dashoffset:50px]"
+						}
 						d="M17.417,37.778l9.93,9.909l25.444-25.393"
 						style={{ strokeDashoffset: pathOffset }}
 					/>

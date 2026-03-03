@@ -124,7 +124,10 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 
 	return (
 		<div className="flex flex-col flex-1 overflow-hidden relative w-[500px]">
-			<Settings columns={["50%", "50%"]} onChange={handleChange as (props: Record<string, unknown>) => void}>
+			<Settings
+				columns={["50%", "50%"]}
+				onChange={handleChange as (props: Record<string, unknown>) => void}
+			>
 				<Setting
 					label="Format"
 					type="select"

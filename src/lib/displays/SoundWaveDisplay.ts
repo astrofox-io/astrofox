@@ -2,7 +2,10 @@ import WaveParser from "@/lib/audio/WaveParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
 import Display from "@/lib/core/Display";
 import { stageHeight, stageWidth } from "@/lib/utils/controls";
-import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@/lib/view/constants";
+import {
+	DEFAULT_CANVAS_HEIGHT,
+	DEFAULT_CANVAS_WIDTH,
+} from "@/lib/view/constants";
 
 export default class SoundWaveDisplay extends Display {
 	declare wave: CanvasWave;

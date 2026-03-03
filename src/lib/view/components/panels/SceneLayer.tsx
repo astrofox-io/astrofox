@@ -1,8 +1,8 @@
 import { reverse } from "@/lib/utils/array";
 import Layer from "@/lib/view/components/panels/Layer";
-import { Cube, DocumentLandscape, Sun, Picture } from "@/lib/view/icons";
-import type { LucideIcon } from "lucide-react";
+import { Cube, DocumentLandscape, Picture, Sun } from "@/lib/view/icons";
 import classNames from "classnames";
+import type { LucideIcon } from "lucide-react";
 import React, { useMemo } from "react";
 
 const icons: Record<string, LucideIcon> = {

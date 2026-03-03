@@ -6,7 +6,8 @@ import { BLANK_IMAGE } from "@/lib/view/constants";
 import { api } from "@/lib/view/global";
 import { FolderOpen, Times } from "@/lib/view/icons";
 import classNames from "classnames";
-import React, { useRef } from "react";
+import type React from "react";
+import { useRef } from "react";
 
 function isFileUrlSource(src: string) {
 	return /^file:\/\//i.test(src || "");
@@ -162,24 +163,24 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
 					autoPlay
 				/>
 				<Tooltip text="Open File">
-				<Icon
-					className={
-						"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
-					}
-					glyph={FolderOpen}
-				/>
-			</Tooltip>
+					<Icon
+						className={
+							"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
+						}
+						glyph={FolderOpen}
+					/>
+				</Tooltip>
 			</div>
 			{hasVideo && (
 				<Tooltip text="Remove Video">
-				<Icon
-					className={classNames({
-						["text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100"]: true,
-					})}
-					glyph={Times}
-					onClick={handleDelete}
-				/>
-			</Tooltip>
+					<Icon
+						className={classNames({
+							"text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
+						})}
+						glyph={Times}
+						onClick={handleDelete}
+					/>
+				</Tooltip>
 			)}
 		</>
 	);

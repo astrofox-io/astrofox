@@ -3,9 +3,9 @@ import { db2mag, floor, normalize } from "@/lib/utils/math";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
 export default class FFTParser extends Entity {
-	startBin: number = 0;
-	endBin: number = 0;
-	totalBins: number = 0;
+	startBin = 0;
+	endBin = 0;
+	totalBins = 0;
 	output: Float32Array = new Float32Array();
 	buffer: Float32Array = new Float32Array();
 
@@ -26,8 +26,8 @@ export default class FFTParser extends Entity {
 	}
 
 	init() {
-		const { fftSize, sampleRate, minFrequency, maxFrequency } =
-			this.properties as Record<string, number>;
+		const { fftSize, sampleRate, minFrequency, maxFrequency } = this
+			.properties as Record<string, number>;
 
 		const range = sampleRate / fftSize;
 
@@ -59,10 +59,7 @@ export default class FFTParser extends Entity {
 	parseFFT(fft: Uint8Array | Float32Array, bins?: number): Float32Array {
 		let { output, buffer } = this;
 		const { startBin, endBin, totalBins } = this;
-		const { smoothingTimeConstant } = this.properties as Record<
-			string,
-			number
-		>;
+		const { smoothingTimeConstant } = this.properties as Record<string, number>;
 		const size = bins || totalBins;
 
 		// Resize data arrays

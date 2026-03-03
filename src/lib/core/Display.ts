@@ -98,8 +98,7 @@ export default class Display extends Entity {
 	}
 
 	toJSON(): Record<string, unknown> {
-		const { id, name, type, enabled, displayName, properties, reactors } =
-			this;
+		const { id, name, type, enabled, displayName, properties, reactors } = this;
 
 		return {
 			id,

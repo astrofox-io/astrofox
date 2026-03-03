@@ -216,7 +216,10 @@ function PPMirrorWrapper({ side }) {
 }
 
 function PPKaleidoscopeWrapper({ sides, angle }) {
-	const effect = React.useMemo(() => new PPKaleidoscopeEffect({ sides, angle }), []);
+	const effect = React.useMemo(
+		() => new PPKaleidoscopeEffect({ sides, angle }),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("sides").value = Math.max(1, Number(sides || 6));
 		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
@@ -225,7 +228,14 @@ function PPKaleidoscopeWrapper({ sides, angle }) {
 }
 
 function PPDistortionWrapper({ amount, time }) {
-	const effect = React.useMemo(() => new PPDistortionEffect({ amount: Number(amount || 0) * 30, time: Number(time || 0) }), []);
+	const effect = React.useMemo(
+		() =>
+			new PPDistortionEffect({
+				amount: Number(amount || 0) * 30,
+				time: Number(time || 0),
+			}),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("amount").value = Number(amount || 0) * 30;
 	}, [effect, amount]);
@@ -236,9 +246,13 @@ function PPDistortionWrapper({ amount, time }) {
 }
 
 function PPRGBShiftWrapper({ offset, angle, width }) {
-	const effect = React.useMemo(() => new PPRGBShiftEffect({ offset: 0, angle: 0 }), []);
+	const effect = React.useMemo(
+		() => new PPRGBShiftEffect({ offset: 0, angle: 0 }),
+		[],
+	);
 	React.useEffect(() => {
-		const normalizedOffset = Number(offset || 0) / Math.max(1, Number(width || 1));
+		const normalizedOffset =
+			Number(offset || 0) / Math.max(1, Number(width || 1));
 		effect.uniforms.get("offset").value = normalizedOffset;
 		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
 	}, [effect, offset, angle, width]);
@@ -246,7 +260,10 @@ function PPRGBShiftWrapper({ offset, angle, width }) {
 }
 
 function PPColorHalftoneWrapper({ scale, angle, width, height }) {
-	const effect = React.useMemo(() => new PPColorHalftoneEffect({ scale: 1, angle: 0, width, height }), []);
+	const effect = React.useMemo(
+		() => new PPColorHalftoneEffect({ scale: 1, angle: 0, width, height }),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("scale").value = 1 - Number(scale || 0);
 		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
@@ -257,7 +274,10 @@ function PPColorHalftoneWrapper({ scale, angle, width, height }) {
 }
 
 function PPLEDWrapper({ spacing, size, blur, width, height }) {
-	const effect = React.useMemo(() => new PPLEDEffect({ spacing: 10, size: 4, blur: 4, width, height }), []);
+	const effect = React.useMemo(
+		() => new PPLEDEffect({ spacing: 10, size: 4, blur: 4, width, height }),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("spacing").value = Math.max(1, Number(spacing || 10));
 		effect.uniforms.get("size").value = Number(size || 4);
@@ -269,7 +289,10 @@ function PPLEDWrapper({ spacing, size, blur, width, height }) {
 }
 
 function PPGlowWrapper({ amount, intensity, width, height }) {
-	const effect = React.useMemo(() => new PPGlowEffect({ amount: 0, intensity: 1, width, height }), []);
+	const effect = React.useMemo(
+		() => new PPGlowEffect({ amount: 0, intensity: 1, width, height }),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("amount").value = Number(amount || 0) * 5;
 		effect.uniforms.get("intensity").value = Number(intensity || 1);
@@ -280,7 +303,10 @@ function PPGlowWrapper({ amount, intensity, width, height }) {
 }
 
 function PPHexPixelateWrapper({ size, width, height }) {
-	const effect = React.useMemo(() => new PPHexPixelateEffect({ size: 10, width, height }), []);
+	const effect = React.useMemo(
+		() => new PPHexPixelateEffect({ size: 10, width, height }),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("size").value = Number(size || 10);
 		const res = effect.uniforms.get("sceneResolution").value;
@@ -289,16 +315,42 @@ function PPHexPixelateWrapper({ size, width, height }) {
 	return <primitive object={effect} dispose={null} />;
 }
 
-function PPBlurWrapper({ type, amount, x, y, radius, brightness, angle, width, height }) {
-	const blurTypeMap = { Box: 0, Circular: 1, Gaussian: 2, Triangle: 3, Zoom: 4, Lens: 5 };
+function PPBlurWrapper({
+	type,
+	amount,
+	x,
+	y,
+	radius,
+	brightness,
+	angle,
+	width,
+	height,
+}) {
+	const blurTypeMap = {
+		Box: 0,
+		Circular: 1,
+		Gaussian: 2,
+		Triangle: 3,
+		Zoom: 4,
+		Lens: 5,
+	};
 	const blurType = blurTypeMap[type] ?? 2;
 
-	const effect = React.useMemo(() => new PPBlurEffect({ amount: 0, blurType, width, height }), []);
+	const effect = React.useMemo(
+		() => new PPBlurEffect({ amount: 0, blurType, width, height }),
+		[],
+	);
 	React.useEffect(() => {
 		effect.uniforms.get("amount").value = Number(amount || 0);
 		effect.uniforms.get("blurType").value = blurType;
-		const centerX = Math.max(0, Math.min(1, (Number(x || 0) + width / 2) / width));
-		const centerY = Math.max(0, Math.min(1, (Number(y || 0) + height / 2) / height));
+		const centerX = Math.max(
+			0,
+			Math.min(1, (Number(x || 0) + width / 2) / width),
+		);
+		const centerY = Math.max(
+			0,
+			Math.min(1, (Number(y || 0) + height / 2) / height),
+		);
 		effect.uniforms.get("centerX").value = centerX;
 		effect.uniforms.get("centerY").value = centerY;
 		effect.uniforms.get("radius").value = Number(radius || 10);
@@ -319,7 +371,8 @@ function EffectBridge({ effect, width, height }) {
 		case "BloomEffect": {
 			const amount = Number(props.amount ?? 0);
 			const threshold = Number(props.threshold ?? 1);
-			const blendMode = props.blendMode === "Screen" ? BlendFunction.SCREEN : BlendFunction.ADD;
+			const blendMode =
+				props.blendMode === "Screen" ? BlendFunction.SCREEN : BlendFunction.ADD;
 			return (
 				<Bloom
 					intensity={amount * 10}
@@ -334,7 +387,9 @@ function EffectBridge({ effect, width, height }) {
 			const size = Number(props.size || 10);
 			const type = props.type || "Square";
 			if (type === "Hexagon") {
-				return <PPHexPixelateWrapper size={size} width={width} height={height} />;
+				return (
+					<PPHexPixelateWrapper size={size} width={width} height={height} />
+				);
 			}
 			return <Pixelation granularity={size} />;
 		}
@@ -364,7 +419,10 @@ function EffectBridge({ effect, width, height }) {
 			return <PPDistortionWrapper amount={props.amount} time={effect.time} />;
 
 		case "GlitchEffect": {
-			const mode = props.mode === "Constant" ? GlitchMode.CONSTANT_WILD : GlitchMode.SPORADIC;
+			const mode =
+				props.mode === "Constant"
+					? GlitchMode.CONSTANT_WILD
+					: GlitchMode.SPORADIC;
 			const strength = Number(props.strength ?? 0.3);
 			return (
 				<Glitch
@@ -456,7 +514,9 @@ function EffectBridge({ effect, width, height }) {
 
 		case "NoiseEffect": {
 			const premultiply = !!props.premultiply;
-			return <Noise premultiply={premultiply} blendFunction={BlendFunction.ADD} />;
+			return (
+				<Noise premultiply={premultiply} blendFunction={BlendFunction.ADD} />
+			);
 		}
 
 		case "ScanlineEffect": {
@@ -495,7 +555,14 @@ function EffectBridge({ effect, width, height }) {
 			const cellSize = Number(props.cellSize ?? 16);
 			const color = String(props.color ?? "#ffffff");
 			const invert = !!props.invert;
-			return <ASCII fontSize={fontSize} cellSize={cellSize} color={color} invert={invert} />;
+			return (
+				<ASCII
+					fontSize={fontSize}
+					cellSize={cellSize}
+					color={color}
+					invert={invert}
+				/>
+			);
 		}
 
 		case "TiltShiftEffect": {
@@ -1436,7 +1503,10 @@ export default function R3FStageRoot({
 	frameData,
 	frameIndex,
 }) {
-	const bgColor = React.useMemo(() => new Color(backgroundColor), [backgroundColor]);
+	const bgColor = React.useMemo(
+		() => new Color(backgroundColor),
+		[backgroundColor],
+	);
 
 	if (useFallback) {
 		return (

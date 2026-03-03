@@ -60,7 +60,12 @@ export default function MenuBar({
 	});
 
 	return (
-		<div className={classNames("relative text-sm text-neutral-500 bg-neutral-900 py-0 px-5", { ["text-neutral-400"]: focused })}>
+		<div
+			className={classNames(
+				"relative text-sm text-neutral-500 bg-neutral-900 py-0 px-5",
+				{ "text-neutral-400": focused },
+			)}
+		>
 			{menuItems.map(
 				({ hidden, label, submenu }, index) =>
 					!hidden && (

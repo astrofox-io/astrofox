@@ -26,9 +26,17 @@ export default function Modals() {
 		const { component, modalProps, componentProps } = item;
 		const Component = modalComponents[component];
 		return (
-			<div className={"absolute w-full h-full flex flex-col justify-center items-center z-[5] [perspective:800px]"} key={component}>
+			<div
+				className={
+					"absolute w-full h-full flex flex-col justify-center items-center z-[5] [perspective:800px]"
+				}
+				key={component}
+			>
 				<Overlay show={!!modals.length} />
-				<animated.div className={"flex [transform-style:preserve-3d] z-[6]"} style={style}>
+				<animated.div
+					className={"flex [transform-style:preserve-3d] z-[6]"}
+					style={style}
+				>
 					<ModalWindow {...modalProps} onClose={handleClose}>
 						{Component && (
 							<Component {...componentProps} onClose={handleClose} />

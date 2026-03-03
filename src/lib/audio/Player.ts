@@ -161,7 +161,7 @@ export default class Player extends EventEmitter {
 	}
 
 	isPlaying() {
-		return !!(this.audio && this.audio.playing);
+		return !!this.audio?.playing;
 	}
 
 	isLooping() {

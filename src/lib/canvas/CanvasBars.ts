@@ -28,8 +28,8 @@ export default class CanvasBars extends Entity {
 	render(data: Float32Array | number[]) {
 		const bars = data.length;
 		const { canvas, context } = this;
-		const { height, width, color, shadowHeight, shadowColor, minHeight } =
-			this.properties as Record<string, unknown>;
+		const { height, width, color, shadowHeight, shadowColor, minHeight } = this
+			.properties as Record<string, unknown>;
 		let { barWidth, barSpacing } = this.properties as Record<string, number>;
 
 		// Reset canvas
@@ -56,7 +56,8 @@ export default class CanvasBars extends Entity {
 		const fullWidth = barSize * bars;
 
 		// Stepping
-		const step = fullWidth > (width as number) ? fullWidth / (width as number) : 1;
+		const step =
+			fullWidth > (width as number) ? fullWidth / (width as number) : 1;
 
 		// Canvas setup
 		setColor(context, color as string, 0, 0, 0, height as number);

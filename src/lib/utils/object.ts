@@ -1,4 +1,7 @@
-export function updateExistingProps(obj: object, props: Record<string, unknown>) {
+export function updateExistingProps(
+	obj: object,
+	props: Record<string, unknown>,
+) {
 	let changed = false;
 	const target = obj as Record<string, unknown>;
 

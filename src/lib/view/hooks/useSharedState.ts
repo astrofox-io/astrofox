@@ -20,8 +20,7 @@ export default function useSharedState(initialState?: Record<string, unknown>) {
 	}
 
 	useEffect(() => {
-		const listener: Listener<Record<string, unknown>> = (s) =>
-			newListener(s);
+		const listener: Listener<Record<string, unknown>> = (s) => newListener(s);
 		listeners.push(listener);
 
 		return () => {

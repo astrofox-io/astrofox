@@ -1,10 +1,17 @@
 import Menu from "@/lib/view/components/nav/Menu";
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 
 interface MenuBarItemProps {
 	label?: string;
-	items?: { type?: string; label?: string; hidden?: boolean; checked?: boolean; disabled?: boolean; [key: string]: unknown }[];
+	items?: {
+		type?: string;
+		label?: string;
+		hidden?: boolean;
+		checked?: boolean;
+		disabled?: boolean;
+		[key: string]: unknown;
+	}[];
 	active?: boolean;
 	onClick?: () => void;
 	onMouseOver?: () => void;
@@ -40,7 +47,7 @@ export default function MenuBarItem({
 				)}
 				onClick={handleClick}
 				onMouseOver={handleMouseOver}
-			onFocus={() => onMouseOver?.()}
+				onFocus={() => onMouseOver?.()}
 			>
 				{label}
 			</div>

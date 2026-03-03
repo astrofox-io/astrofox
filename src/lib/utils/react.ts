@@ -1,11 +1,22 @@
-import { type ReactElement, type ReactNode, Children, Fragment, cloneElement } from "react";
+import {
+	Children,
+	Fragment,
+	type ReactElement,
+	type ReactNode,
+	cloneElement,
+} from "react";
 
-export function ignoreEvents(e: { stopPropagation(): void; preventDefault(): void }) {
+export function ignoreEvents(e: {
+	stopPropagation(): void;
+	preventDefault(): void;
+}) {
 	e.stopPropagation();
 	e.preventDefault();
 }
 
-export function inputValueToProps(callback: (props: Record<string, unknown>) => void) {
+export function inputValueToProps(
+	callback: (props: Record<string, unknown>) => void,
+) {
 	return (name: string | Record<string, unknown>, value?: unknown) => {
 		if (name && typeof name === "object" && !Array.isArray(name)) {
 			callback(name);
@@ -19,7 +30,11 @@ export function inputValueToProps(callback: (props: Record<string, unknown>) => 
 export function mapChildren(
 	children: ReactNode,
 	props: Record<string, unknown>,
-	callback?: (child: ReactElement, props: Record<string, unknown>, index: number) => ReactElement[],
+	callback?: (
+		child: ReactElement,
+		props: Record<string, unknown>,
+		index: number,
+	) => ReactElement[],
 ): ReactNode {
 	return Children.map(children, (child, index) => {
 		if (child) {
@@ -28,7 +43,9 @@ export function mapChildren(
 				return mapChildren(element.props.children, props);
 			}
 
-			const args = callback ? callback(element, props, index) : [element, props] as [ReactElement, Record<string, unknown>];
+			const args = callback
+				? callback(element, props, index)
+				: ([element, props] as [ReactElement, Record<string, unknown>]);
 			const [el, cloneProps] = args;
 
 			return cloneProps ? cloneElement(el, cloneProps) : cloneElement(el);

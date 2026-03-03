@@ -4,8 +4,8 @@ import Tooltip from "@/lib/view/components/interface/Tooltip";
 import { player } from "@/lib/view/global";
 import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
 import { Cycle, SoundBars, SoundWaves } from "@/lib/view/icons";
-import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
+import type { LucideIcon } from "lucide-react";
 import React from "react";
 import shallow from "zustand/shallow";
 

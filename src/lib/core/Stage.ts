@@ -59,7 +59,10 @@ export default class Stage extends Entity {
 
 	getStageElementById(id: string) {
 		return this.scenes.reduce(
-			(element: unknown, scene: { getElementById: (id: string) => unknown }) => {
+			(
+				element: unknown,
+				scene: { getElementById: (id: string) => unknown },
+			) => {
 				if (!element) {
 					element = scene.getElementById(id);
 				}
@@ -76,7 +79,13 @@ export default class Stage extends Entity {
 			const element = obj as { scene: { id: string } };
 			const scene = this.getSceneById(element.scene.id) as Scene | undefined;
 			if (scene) {
-				scene.removeElement(obj as { id: string; scene: unknown; toJSON: () => Record<string, unknown> });
+				scene.removeElement(
+					obj as {
+						id: string;
+						scene: unknown;
+						toJSON: () => Record<string, unknown>;
+					},
+				);
 			}
 		}
 	}
@@ -111,9 +120,7 @@ export default class Stage extends Entity {
 	}
 
 	clearScenes() {
-		[...this.scenes].forEach((scene) =>
-			this.removeScene(scene),
-		);
+		[...this.scenes].forEach((scene) => this.removeScene(scene));
 	}
 
 	hasScenes() {

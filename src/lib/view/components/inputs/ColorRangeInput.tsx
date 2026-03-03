@@ -19,10 +19,14 @@ export default function ColorRangeInput({
 			<ColorInput
 				name="startColor"
 				value={startColor}
-				onChange={(_n: string, value: string) => onChange?.(name, [value, endColor])}
+				onChange={(_n: string, value: string) =>
+					onChange?.(name, [value, endColor])
+				}
 			/>
 			<div
-				className={"flex-1 relative h-4 border border-neutral-600 rounded my-0 mx-2"}
+				className={
+					"flex-1 relative h-4 border border-neutral-600 rounded my-0 mx-2"
+				}
 				style={{
 					backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`,
 				}}
@@ -30,7 +34,9 @@ export default function ColorRangeInput({
 			<ColorInput
 				name="endColor"
 				value={endColor}
-				onChange={(_n: string, value: string) => onChange?.(name, [startColor, value])}
+				onChange={(_n: string, value: string) =>
+					onChange?.(name, [startColor, value])
+				}
 			/>
 		</div>
 	);

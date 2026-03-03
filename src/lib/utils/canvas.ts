@@ -23,9 +23,21 @@ export function getColor(start: string, end: string, pct: number) {
 	return `#${c.r.toString(16)}${c.g.toString(16)}${c.b.toString(16)}`;
 }
 
-export function setColor(context: CanvasContext, color: string | string[], x1: number, y1: number, x2: number, y2: number) {
-	if (color instanceof Array) {
-		const gradient = (context as CanvasRenderingContext2D).createLinearGradient(x1, y1, x2, y2);
+export function setColor(
+	context: CanvasContext,
+	color: string | string[],
+	x1: number,
+	y1: number,
+	x2: number,
+	y2: number,
+) {
+	if (Array.isArray(color)) {
+		const gradient = (context as CanvasRenderingContext2D).createLinearGradient(
+			x1,
+			y1,
+			x2,
+			y2,
+		);
 
 		for (let i = 0; i < color.length; i++) {
 			gradient.addColorStop(i / (color.length - 1), color[i]);
@@ -37,12 +49,14 @@ export function setColor(context: CanvasContext, color: string | string[], x1: n
 	}
 }
 
-export function resetCanvas(canvas: CanvasElement, width: number = 1, height: number = 1) {
+export function resetCanvas(canvas: CanvasElement, width = 1, height = 1) {
 	if (canvas.width !== width || canvas.height !== height) {
 		canvas.width = width;
 		canvas.height = height;
 	} else {
-		(canvas as HTMLCanvasElement).getContext("2d")!.clearRect(0, 0, width, height);
+		(canvas as HTMLCanvasElement)
+			.getContext("2d")
+			?.clearRect(0, 0, width, height);
 	}
 }
 

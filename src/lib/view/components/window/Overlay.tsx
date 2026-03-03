@@ -1,5 +1,5 @@
 import { easeInQuad } from "@/lib/utils/easing";
-import React from "react";
+import type React from "react";
 import { animated, useTransition } from "react-spring";
 
 interface OverlayProps {
@@ -23,7 +23,9 @@ export default function Overlay({
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const AnimatedDiv = animated.div as React.ComponentType<Record<string, unknown>>;
+	const AnimatedDiv = animated.div as React.ComponentType<
+		Record<string, unknown>
+	>;
 
 	return transitions(
 		(style, item) =>

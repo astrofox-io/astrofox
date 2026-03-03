@@ -19,7 +19,10 @@ export function getDisplayName(label: string) {
 	return `${label} ${labelCount[label]}`;
 }
 
-export function property(name: string, compare?: unknown | ((value: unknown) => boolean)) {
+export function property(
+	name: string,
+	compare?: unknown | ((value: unknown) => boolean),
+) {
 	return (display: { properties: Record<string, unknown> }) => {
 		const value = display.properties[name];
 		if (compare !== undefined) {

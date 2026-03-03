@@ -1,6 +1,7 @@
 import { clamp } from "@/lib/utils/math";
 import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
-import React, { useRef } from "react";
+import type React from "react";
+import { useRef } from "react";
 
 interface BoxValue {
 	x: number;
@@ -129,11 +130,26 @@ export default function BoxInput({
 				left: x,
 			}}
 		>
-			<div className={"absolute cursor-move w-full h-full"} onMouseDown={handleDragStart("center")} />
-			<div className={"absolute cursor-ns-resize w-full h-2.5 -top-1"} onMouseDown={handleDragStart("top")} />
-			<div className={"absolute cursor-ew-resize w-2.5 h-full -right-1"} onMouseDown={handleDragStart("right")} />
-			<div className={"absolute cursor-ns-resize w-full h-2.5 -bottom-1"} onMouseDown={handleDragStart("bottom")} />
-			<div className={"absolute cursor-ew-resize w-2.5 h-full -left-1"} onMouseDown={handleDragStart("left")} />
+			<div
+				className={"absolute cursor-move w-full h-full"}
+				onMouseDown={handleDragStart("center")}
+			/>
+			<div
+				className={"absolute cursor-ns-resize w-full h-2.5 -top-1"}
+				onMouseDown={handleDragStart("top")}
+			/>
+			<div
+				className={"absolute cursor-ew-resize w-2.5 h-full -right-1"}
+				onMouseDown={handleDragStart("right")}
+			/>
+			<div
+				className={"absolute cursor-ns-resize w-full h-2.5 -bottom-1"}
+				onMouseDown={handleDragStart("bottom")}
+			/>
+			<div
+				className={"absolute cursor-ew-resize w-2.5 h-full -left-1"}
+				onMouseDown={handleDragStart("left")}
+			/>
 		</div>
 	);
 }

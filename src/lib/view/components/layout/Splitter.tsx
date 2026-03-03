@@ -3,7 +3,8 @@ import Icon from "@/lib/view/components/interface/Icon";
 import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import { DotsHorizontal } from "@/lib/view/icons";
 import classNames from "classnames";
-import React, { useRef } from "react";
+import type React from "react";
+import { useRef } from "react";
 
 interface SplitterStartValues {
 	startWidth: number | null;
@@ -45,11 +46,19 @@ export default function Splitter({
 
 		switch (type) {
 			case "horizontal":
-				newHeight = clamp((startHeight ?? 0) + deltaY, minHeight ?? 0, maxHeight ?? Infinity);
+				newHeight = clamp(
+					(startHeight ?? 0) + deltaY,
+					minHeight ?? 0,
+					maxHeight ?? Number.POSITIVE_INFINITY,
+				);
 				break;
 
 			case "vertical":
-				newWidth = clamp((startWidth ?? 0) + deltaX, minWidth ?? 0, maxWidth ?? Infinity);
+				newWidth = clamp(
+					(startWidth ?? 0) + deltaX,
+					minWidth ?? 0,
+					maxWidth ?? Number.POSITIVE_INFINITY,
+				);
 				break;
 		}
 

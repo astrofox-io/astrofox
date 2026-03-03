@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 
 import inputComponents from "./inputComponents";
 
@@ -34,9 +34,13 @@ export default function Setting({
 
 	return (
 		<div
-			className={classNames("flex items-center mb-4 [&_>_*]:mr-2 [&_>_*:last-child]:mr-0", className, {
-				["hidden"]: hidden,
-			})}
+			className={classNames(
+				"flex items-center mb-4 [&_>_*]:mr-2 [&_>_*:last-child]:mr-0",
+				className,
+				{
+					hidden: hidden,
+				},
+			)}
 		>
 			<div className={"text-neutral-300"} style={{ width: labelWidth }}>
 				{label}

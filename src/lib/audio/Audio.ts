@@ -24,9 +24,11 @@ export default class Audio {
 	load(src: string | ArrayBuffer | AudioBuffer) {
 		if (typeof src === "string") {
 			return this.loadUrl(src);
-		} else if (src instanceof ArrayBuffer) {
+		}
+		if (src instanceof ArrayBuffer) {
 			return this.loadData(src);
-		} else if (src instanceof AudioBuffer) {
+		}
+		if (src instanceof AudioBuffer) {
 			return this.loadBuffer(src);
 		}
 

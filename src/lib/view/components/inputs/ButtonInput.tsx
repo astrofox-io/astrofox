@@ -1,7 +1,7 @@
 import Icon from "@/lib/view/components/interface/Icon";
 import Tooltip from "@/lib/view/components/interface/Tooltip";
-import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
+import type { LucideIcon } from "lucide-react";
 import React from "react";
 
 interface ButtonInputProps {
@@ -28,8 +28,8 @@ const ButtonInput = ({
 			className={classNames(
 				"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary",
 				{
-					["bg-primary"]: active,
-					["opacity-30 hover:!bg-neutral-900"]: disabled,
+					"bg-primary": active,
+					"opacity-30 hover:!bg-neutral-900": disabled,
 				},
 				className,
 			)}

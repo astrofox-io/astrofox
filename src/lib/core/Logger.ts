@@ -64,7 +64,10 @@ export default class Logger {
 			const t = (window.performance.now() - timer) / 1000;
 			const val = t < 1 ? `${~~(t * 1000)}ms` : `${t.toFixed(2)}s`;
 
-			this.output(console.log, (["%c+%s", TIMER_CSS, val] as unknown[]).concat(args));
+			this.output(
+				console.log,
+				(["%c+%s", TIMER_CSS, val] as unknown[]).concat(args),
+			);
 		}
 	}
 }

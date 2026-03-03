@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import React, { useState, useMemo } from "react";
+import type React from "react";
+import { useMemo, useState } from "react";
 
 interface SelectItem {
 	[key: string]: unknown;

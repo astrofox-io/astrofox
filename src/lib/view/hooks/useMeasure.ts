@@ -15,10 +15,7 @@ export default function useMeasure() {
 	const [dimensions, setDimensions] = useState<Dimensions>({});
 	const [node, setNode] = useState<HTMLElement | null>(null);
 
-	const ref = useCallback(
-		(node: HTMLElement | null) => setNode(node),
-		[],
-	);
+	const ref = useCallback((node: HTMLElement | null) => setNode(node), []);
 
 	const measure = useCallback(() => {
 		window.requestAnimationFrame(() => {

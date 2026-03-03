@@ -1,7 +1,9 @@
 import Audio from "@/lib/audio/Audio";
 import { audioContext } from "@/lib/view/global";
 
-export async function loadAudioData(data: string | ArrayBuffer): Promise<Audio> {
+export async function loadAudioData(
+	data: string | ArrayBuffer,
+): Promise<Audio> {
 	const audio = new Audio(audioContext);
 	await audio.load(data);
 	return audio;

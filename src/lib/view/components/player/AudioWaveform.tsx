@@ -1,11 +1,12 @@
+import WaveParser from "@/lib/audio/WaveParser";
 import CanvasAudio from "@/lib/canvas/CanvasAudio";
 import CanvasWave from "@/lib/canvas/CanvasWave";
-import WaveParser from "@/lib/audio/WaveParser";
 import { PRIMARY_COLOR } from "@/lib/view/constants";
-import { player, events } from "@/lib/view/global";
+import { events, player } from "@/lib/view/global";
 import useSharedState from "@/lib/view/hooks/useSharedState";
 import classNames from "classnames";
-import React, { useRef, useEffect, useLayoutEffect, useMemo } from "react";
+import type React from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 
 const canvasProperties = {
 	width: 854,
@@ -29,9 +30,15 @@ interface AudioWaveformProps {
 	showOsc?: boolean;
 }
 
-export default function AudioWaveform({ showWaveform = false, showOsc = false }: AudioWaveformProps) {
+export default function AudioWaveform({
+	showWaveform = false,
+	showOsc = false,
+}: AudioWaveformProps) {
 	const [state, setState] = useSharedState();
-	const { progressPosition, seekPosition } = state as { progressPosition?: number; seekPosition?: number };
+	const { progressPosition, seekPosition } = state as {
+		progressPosition?: number;
+		seekPosition?: number;
+	};
 	const { width, height, shadowHeight } = canvasProperties;
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const oscCanvas = useRef<HTMLCanvasElement>(null);
@@ -172,7 +179,12 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 		const { td } = (args[0] ?? {}) as { td?: Float32Array | null };
 		if (!oscDisplay.current || !oscParser.current || !td) return;
 		const data = oscParser.current.parseTimeData(td, oscProperties.width);
-		oscDisplay.current.render(new Float32Array(Array.from(data).flatMap((n: number, i: number) => [i, n])), false);
+		oscDisplay.current.render(
+			new Float32Array(
+				Array.from(data).flatMap((n: number, i: number) => [i, n]),
+			),
+			false,
+		);
 	}
 
 	useEffect(() => {
@@ -207,8 +219,8 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 	return (
 		<div
 			className={classNames({
-				["min-w-[56rem] relative bg-neutral-900 border-t border-t-neutral-800 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-64 transition-[max-height_0.2s_ease-out] overflow-hidden"]: true,
-				["hidden max-h-0 transition-[max-height_0.2s_ease-in]"]: !visible,
+				"min-w-[56rem] relative bg-neutral-900 border-t border-t-neutral-800 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-64 transition-[max-height_0.2s_ease-out] overflow-hidden": true,
+				"hidden max-h-0 transition-[max-height_0.2s_ease-in]": !visible,
 			})}
 		>
 			{showWaveform && (
@@ -220,7 +232,7 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 					onClick={handleClick}
 					onMouseMove={handleMouseMove}
 					onMouseOut={handleMouseOut}
-				onBlur={handleMouseOut}
+					onBlur={handleMouseOut}
 				/>
 			)}
 			{showOsc && (

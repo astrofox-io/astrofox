@@ -39,8 +39,14 @@ export function removeReactor(reactor: { id: string }) {
 	// Clean up all display references to this reactor
 	stage.scenes.forEach(
 		(scene: {
-			displays: { reactors?: Record<string, { id: string }>; removeReactor: (prop: string) => void }[];
-			effects: { reactors?: Record<string, { id: string }>; removeReactor: (prop: string) => void }[];
+			displays: {
+				reactors?: Record<string, { id: string }>;
+				removeReactor: (prop: string) => void;
+			}[];
+			effects: {
+				reactors?: Record<string, { id: string }>;
+				removeReactor: (prop: string) => void;
+			}[];
 		}) => {
 			[...scene.displays, ...scene.effects].forEach((display) => {
 				if (display.reactors) {

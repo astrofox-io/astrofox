@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import React, { useState, Children, cloneElement, isValidElement } from "react";
+import type React from "react";
+import { Children, cloneElement, isValidElement, useState } from "react";
 
 interface TabPanelProps {
 	className?: string;
@@ -70,24 +71,29 @@ export function TabPanel({
 			className={classNames(
 				"flex flex-1",
 				{
-					["flex-row [&_.tabs]:w-40"]: tabPosition === "left",
-					["flex-row [&_.tabs]:order-[99] [&_.tabs]:w-40"]: tabPosition === "right",
-					["flex-col"]: tabPosition === "top",
-					["flex-col [&_.tabs]:order-[99]"]: tabPosition === "bottom",
+					"flex-row [&_.tabs]:w-40": tabPosition === "left",
+					"flex-row [&_.tabs]:order-[99] [&_.tabs]:w-40":
+						tabPosition === "right",
+					"flex-col": tabPosition === "top",
+					"flex-col [&_.tabs]:order-[99]": tabPosition === "bottom",
 				},
 				className,
 			)}
 		>
 			<div
 				className={classNames({
-					["bg-neutral-900"]: true,
-					["flex flex-row"]:
-						tabPosition === "top" || tabPosition === "bottom",
+					"bg-neutral-900": true,
+					"flex flex-row": tabPosition === "top" || tabPosition === "bottom",
 				})}
 			>
 				{tabs}
 			</div>
-			<div className={classNames("w-full overflow-auto [&_.hidden]:hidden", contentClassName)}>
+			<div
+				className={classNames(
+					"w-full overflow-auto [&_.hidden]:hidden",
+					contentClassName,
+				)}
+			>
 				{content}
 			</div>
 		</div>
@@ -98,7 +104,7 @@ export const Tab = ({ visible, className, children }: TabProps) => (
 	<div
 		className={classNames(
 			{
-				["hidden"]: !visible,
+				hidden: !visible,
 			},
 			className,
 		)}

@@ -18,10 +18,7 @@ export default class WaveParser extends Entity {
 
 	parseTimeData(data: Float32Array, size: number): Float32Array {
 		let { output, buffer } = this;
-		const { smoothingTimeConstant } = this.properties as Record<
-			string,
-			number
-		>;
+		const { smoothingTimeConstant } = this.properties as Record<string, number>;
 		const step = data.length / size;
 
 		// Resize data arrays

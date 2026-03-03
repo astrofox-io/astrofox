@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import React, { Children, cloneElement, isValidElement } from "react";
+import type React from "react";
+import { Children, cloneElement, isValidElement } from "react";
 
 interface OptionGroupProps {
 	title?: React.ReactNode;
@@ -8,7 +9,12 @@ interface OptionGroupProps {
 	[key: string]: unknown;
 }
 
-export default function OptionGroup({ title, className, children, ...props }: OptionGroupProps) {
+export default function OptionGroup({
+	title,
+	className,
+	children,
+	...props
+}: OptionGroupProps) {
 	return (
 		<div className={classNames("group flex flex-col", className)}>
 			{title && <div className={"flex"}>{title}</div>}

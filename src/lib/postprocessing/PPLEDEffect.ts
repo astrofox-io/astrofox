@@ -20,7 +20,13 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 `;
 
 export class PPLEDEffect extends Effect {
-	constructor({ spacing = 10, size = 4, blur = 4, width = 1, height = 1 } = {}) {
+	constructor({
+		spacing = 10,
+		size = 4,
+		blur = 4,
+		width = 1,
+		height = 1,
+	} = {}) {
 		super("PPLEDEffect", fragmentShader, {
 			attributes: EffectAttribute.CONVOLUTION,
 			uniforms: new Map([

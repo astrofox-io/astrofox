@@ -39,7 +39,9 @@ interface SceneElement {
 	id: string;
 	scene: unknown;
 	setSize?: (width: number, height: number) => void;
-	addToScene?: (scene: { getSize: () => { width: number; height: number } }) => void;
+	addToScene?: (scene: {
+		getSize: () => { width: number; height: number };
+	}) => void;
 	removeFromScene?: (scene: Scene) => void;
 	toJSON: () => Record<string, unknown>;
 }
@@ -103,9 +105,9 @@ export default class Scene extends Display {
 	}
 
 	getSize(): { width: number; height: number } {
-		const stage = this.stage as
-			| { getSize?: () => { width: number; height: number } }
-			| null;
+		const stage = this.stage as {
+			getSize?: () => { width: number; height: number };
+		} | null;
 		if (stage?.getSize) {
 			return stage.getSize();
 		}
@@ -128,9 +130,7 @@ export default class Scene extends Display {
 	}
 
 	getTarget(obj: unknown): EntityList {
-		return obj instanceof Effect
-			? this.effects
-			: this.displays;
+		return obj instanceof Effect ? this.effects : this.displays;
 	}
 
 	getElementById(id: string) {

@@ -1,3 +1,4 @@
+import type { RenderFrameData } from "@/lib/types";
 import {
 	events,
 	analyzer,
@@ -5,7 +6,6 @@ import {
 	reactors,
 	renderBackend,
 } from "@/lib/view/global";
-import type { RenderFrameData } from "@/lib/types";
 import Clock from "./Clock";
 
 const STOP_RENDERING = 0;
