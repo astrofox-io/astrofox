@@ -5,7 +5,7 @@ import {
 	player,
 	reactors,
 	renderBackend,
-} from "@/lib/view/global";
+} from "@/app/global";
 import Clock from "./Clock";
 
 const STOP_RENDERING = 0;

@@ -2,7 +2,7 @@ import CanvasText from "@/lib/canvas/CanvasText";
 import fonts from "@/lib/config/fonts.json";
 import Display from "@/lib/core/Display";
 import { stageHeight, stageWidth } from "@/lib/utils/controls";
-import { resolveFontFamily } from "@/lib/view/fontFamilies";
+import { resolveFontFamily } from "@/app/fontFamilies";
 
 const fontOptions = fonts.map((item) => ({
 	label: item,

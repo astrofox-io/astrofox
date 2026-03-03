@@ -1,6 +1,6 @@
 "use client";
 
-import Spinner from "@/lib/view/components/interface/Spinner";
+import Spinner from "@/app/components/interface/Spinner";
 import dynamic from "next/dynamic";
 import React, { useEffect, type CSSProperties } from "react";
 
@@ -12,7 +12,7 @@ const loadingScreenStyle: CSSProperties = {
 	alignItems: "center",
 };
 
-const AstrofoxApp = dynamic(() => import("@/lib/view/components/App"), {
+const AstrofoxApp = dynamic(() => import("@/app/components/App"), {
 	ssr: false,
 	loading: () => (
 		<div style={loadingScreenStyle}>
@@ -29,7 +29,7 @@ export default function HomePage() {
 			return;
 		}
 
-		import("@/lib/view/global").then((globals) => {
+		import("@/app/global").then((globals) => {
 			window._astrofox = globals;
 		});
 	}, []);

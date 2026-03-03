@@ -26,66 +26,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "actions/*": [
-        "src/lib/view/actions/*"
-      ],
-      "assets/*": [
-        "src/lib/view/assets/*"
-      ],
-      "audio/*": [
-        "src/lib/audio/*"
-      ],
-      "canvas/*": [
-        "src/lib/canvas/*"
-      ],
-      "components/*": [
-        "src/lib/view/components/*"
-      ],
-      "config/*": [
-        "src/lib/config/*"
-      ],
-      "core/*": [
-        "src/lib/core/*"
-      ],
-      "displays/*": [
-        "src/lib/displays/*"
-      ],
-      "drawing/*": [
-        "src/lib/drawing/*"
-      ],
-      "effects/*": [
-        "src/lib/effects/*"
-      ],
-      "global": [
-        "src/lib/view/global"
-      ],
-      "graphics/*": [
-        "src/lib/graphics/*"
-      ],
-      "hooks/*": [
-        "src/lib/view/hooks/*"
-      ],
-      "icons": [
-        "src/lib/view/icons"
-      ],
-      "shaders/*": [
-        "src/lib/shaders/*"
-      ],
-      "styles/*": [
-        "src/lib/view/styles/*"
-      ],
-      "utils/*": [
-        "src/lib/utils/*"
-      ],
-      "video/*": [
-        "src/lib/video/*"
-      ],
-      "view/*": [
-        "src/lib/view/*"
-      ],
-      "src/*": [
-        "src/lib/*"
       ]
     }
   },

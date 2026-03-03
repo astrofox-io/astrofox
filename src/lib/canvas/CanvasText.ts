@@ -1,7 +1,7 @@
 import Entity from "@/lib/core/Entity";
 import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { resetCanvas } from "@/lib/utils/canvas";
-import { resolveCanvasFontFamily } from "@/lib/view/fontFamilies";
+import { resolveCanvasFontFamily } from "@/app/fontFamilies";
 
 export default class CanvasText extends Entity {
 	canvas: CanvasElement;

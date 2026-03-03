@@ -1,0 +1,138 @@
+import type Display from "@/lib/core/Display";
+import inputComponents from "@/app/components/controls/inputComponents";
+import {
+	RangeInput,
+	ReactorButton,
+	ReactorInput,
+} from "@/app/components/inputs";
+import Icon from "@/app/components/interface/Icon";
+import { Link, Unlink } from "@/app/icons";
+import classNames from "classnames";
+import type React from "react";
+
+interface OptionProps {
+	display: Display & { properties: Record<string, unknown> };
+	label?: string;
+	type?: string;
+	name: string;
+	value?: unknown;
+	className?: string;
+	onChange?: (name: string | Record<string, unknown>, value?: unknown) => void;
+	hidden?: boolean;
+	withReactor?: boolean;
+	withRange?: boolean;
+	withLink?: string;
+	inputProps?: Record<string, unknown>;
+	min?: number;
+	max?: number;
+	[key: string]: unknown;
+}
+
+export default function Option({
+	display,
+	label,
+	type,
+	name,
+	value,
+	className,
+	onChange,
+	hidden,
+	withReactor,
+	withRange,
+	withLink,
+	inputProps,
+	...otherProps
+}: OptionProps) {
+	const [InputCompnent, defaultProps] = type
+		? (inputComponents[type] ?? [])
+		: [];
+	const showReactor = withReactor && display.getReactor?.(name);
+	const { min, max } = otherProps;
+	const inputs: React.ReactNode[] = [];
+
+	if (showReactor) {
+		inputs.push(
+			<ReactorInput
+				key="reactor"
+				display={display}
+				name={name}
+				value={value}
+				width={84}
+			/>,
+		);
+	} else if (InputCompnent) {
+		inputs.push(
+			<InputCompnent
+				key="input"
+				{...defaultProps}
+				{...inputProps}
+				{...otherProps}
+				name={name}
+				value={value}
+				onChange={onChange}
+			/>,
+		);
+
+		if (withRange) {
+			inputs.push(
+				<RangeInput
+					key="range"
+					{...otherProps}
+					name={name}
+					value={value as number}
+					onChange={onChange as (name: string, value: number) => void}
+					smallThumb
+				/>,
+			);
+		}
+	}
+
+	return (
+		<div
+			className={classNames(
+				"relative my-0 mx-2.5 flex flex-row items-center gap-2 py-2 px-0 text-sm text-neutral-400 leading-5",
+				className,
+				{
+					hidden: hidden || inputs.length === 0,
+				},
+			)}
+		>
+			{withReactor && (
+				<ReactorButton
+					className={"!absolute left-0 top-1/2 -translate-y-1/2"}
+					display={display}
+					name={name}
+					min={min}
+					max={max}
+				/>
+			)}
+			<div
+				className={classNames("ml-6 flex min-w-28 cursor-default", {
+					"min-w-20": showReactor,
+				})}
+			>
+				<div
+					className={classNames(
+						"mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis",
+						{
+							"mr-1": showReactor,
+						},
+					)}
+				>
+					{label}
+				</div>
+				{withLink && (
+					<Icon
+						className={classNames("w-4 h-4", {
+							"text-neutral-100": display.properties[withLink],
+							"text-neutral-500 opacity-50": !display.properties[withLink],
+						})}
+						glyph={display.properties[withLink] ? Link : Unlink}
+						onClick={() => onChange?.(withLink, !display.properties[withLink])}
+					/>
+				)}
+			</div>
+			{inputs}
+		</div>
+	);
+}

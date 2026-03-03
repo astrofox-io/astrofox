@@ -6,7 +6,7 @@ import {
 	DEFAULT_CANVAS_BGCOLOR,
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
-} from "@/lib/view/constants";
+} from "@/app/constants";
 import cloneDeep from "lodash/cloneDeep";
 
 export default class Stage extends Entity {

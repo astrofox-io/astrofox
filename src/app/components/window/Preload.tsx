@@ -1,0 +1,17 @@
+import fonts from "@/lib/config/fonts.json";
+import { resolveFontFamily } from "@/app/fontFamilies";
+import React from "react";
+
+export default function Preload() {
+	return (
+		<div
+			className={"fixed left-full -bottom-full h-0 w-0 overflow-hidden z-[-1]"}
+		>
+			{fonts.map((font) => (
+				<span key={font} style={{ fontFamily: resolveFontFamily(font) }}>
+					{font}
+				</span>
+			))}
+		</div>
+	);
+}

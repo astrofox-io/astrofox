@@ -1,6 +1,6 @@
 import Display from "@/lib/core/Display";
 import { isDefined } from "@/lib/utils/array";
-import { BLANK_IMAGE } from "@/lib/view/constants";
+import { BLANK_IMAGE } from "@/app/constants";
 
 interface VideoDisplayInstance {
 	hasVideo: boolean;

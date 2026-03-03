@@ -1,0 +1,26 @@
+import useError, { clearError } from "@/app/actions/error";
+import Dialog from "@/app/components/window/Dialog";
+import { Warning } from "@/app/icons";
+import React from "react";
+
+interface ErrorDialogProps {
+	onClose?: () => void;
+}
+
+export default function ErrorDialog({ onClose }: ErrorDialogProps) {
+	const message = useError((state) => state.message);
+
+	function handleConfirm() {
+		clearError();
+		onClose?.();
+	}
+
+	return (
+		<Dialog
+			icon={Warning}
+			message={message ?? undefined}
+			buttons={["Ok"]}
+			onConfirm={handleConfirm}
+		/>
+	);
+}

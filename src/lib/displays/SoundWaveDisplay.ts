@@ -5,7 +5,7 @@ import { stageHeight, stageWidth } from "@/lib/utils/controls";
 import {
 	DEFAULT_CANVAS_HEIGHT,
 	DEFAULT_CANVAS_WIDTH,
-} from "@/lib/view/constants";
+} from "@/app/constants";
 
 export default class SoundWaveDisplay extends Display {
 	declare wave: CanvasWave;

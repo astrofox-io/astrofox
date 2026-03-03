@@ -15,7 +15,7 @@ import {
 	PPMirrorEffect,
 	PPRGBShiftEffect,
 } from "@/lib/postprocessing";
-import { BLANK_IMAGE } from "@/lib/view/constants";
+import { BLANK_IMAGE } from "@/app/constants";
 import {
 	ASCII,
 	Bloom,

@@ -2,7 +2,7 @@ import FFTParser from "@/lib/audio/FFTParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
 import Display from "@/lib/core/Display";
 import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
-import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
+import { FFT_SIZE, SAMPLE_RATE } from "@/app/constants";
 
 export default class WaveSpectrumDisplay extends Display {
 	declare wave: CanvasWave;

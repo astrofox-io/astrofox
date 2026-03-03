@@ -11,7 +11,7 @@ import {
 	REACTOR_BAR_SPACING,
 	REACTOR_BAR_WIDTH,
 	SAMPLE_RATE,
-} from "@/lib/view/constants";
+} from "@/app/constants";
 import cloneDeep from "lodash/cloneDeep";
 
 const REACTOR_BINS = 64;

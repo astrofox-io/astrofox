@@ -2,7 +2,7 @@ import FFTParser from "@/lib/audio/FFTParser";
 import CanvasBars from "@/lib/canvas/CanvasBars";
 import Display from "@/lib/core/Display";
 import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
-import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
+import { FFT_SIZE, SAMPLE_RATE } from "@/app/constants";
 
 export default class BarSpectrumDisplay extends Display {
 	declare bars: CanvasBars;
