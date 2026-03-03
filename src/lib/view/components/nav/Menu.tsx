@@ -34,7 +34,7 @@ interface MenuProps {
 const Menu = ({ className, items = [], visible = false, onMenuItemClick }: MenuProps) => (
 	<div
 		className={classNames(
-			"absolute top-full left-0 list-none bg-neutral-900 rounded-md border border-neutral-700 shadow-lg z-[7] p-1 flex flex-col gap-0.5",
+			"absolute top-full left-0 list-none bg-neutral-900 rounded-md border border-neutral-700 shadow-lg z-[60] p-1 flex flex-col gap-0.5",
 			{
 				["hidden"]: visible === false,
 			},

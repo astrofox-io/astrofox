@@ -1,20 +1,27 @@
 import Effect from "@/lib/core/Effect";
-import type { RenderFrameData } from "@/lib/types";
+
+const glitchModes = ["Sporadic", "Constant"];
 
 export default class GlitchEffect extends Effect {
-	declare time: number;
-
 	static config = {
 		name: "GlitchEffect",
 		description: "Glitch effect.",
 		type: "effect",
 		label: "Glitch",
 		defaultProperties: {
-			amount: 0.5,
+			mode: "Sporadic",
+			strength: 0.3,
+			columns: 0.05,
+			ratio: 0.85,
 		},
 		controls: {
-			amount: {
-				label: "Amount",
+			mode: {
+				label: "Mode",
+				type: "select",
+				items: glitchModes,
+			},
+			strength: {
+				label: "Strength",
 				type: "number",
 				min: 0,
 				max: 1.0,
@@ -22,18 +29,26 @@ export default class GlitchEffect extends Effect {
 				withRange: true,
 				withReactor: true,
 			},
+			columns: {
+				label: "Columns",
+				type: "number",
+				min: 0,
+				max: 0.5,
+				step: 0.01,
+				withRange: true,
+			},
+			ratio: {
+				label: "Ratio",
+				type: "number",
+				min: 0,
+				max: 1.0,
+				step: 0.01,
+				withRange: true,
+			},
 		},
 	};
 
 	constructor(properties?: Record<string, unknown>) {
 		super(GlitchEffect, properties);
-
-		this.time = 0;
-	}
-
-	render(scene: unknown, data: RenderFrameData) {
-		if (!data.hasUpdate) return;
-
-		this.time += data.delta;
 	}
 }

@@ -1,7 +1,6 @@
 export { PPBlurEffect } from "./PPBlurEffect";
 export { PPColorHalftoneEffect } from "./PPColorHalftoneEffect";
 export { PPDistortionEffect } from "./PPDistortionEffect";
-export { PPGlitchEffect } from "./PPGlitchEffect";
 export { PPGlowEffect } from "./PPGlowEffect";
 export { PPHexPixelateEffect } from "./PPHexPixelateEffect";
 export { PPKaleidoscopeEffect } from "./PPKaleidoscopeEffect";

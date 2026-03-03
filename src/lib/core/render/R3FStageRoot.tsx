@@ -8,7 +8,6 @@ import {
 	PPBlurEffect,
 	PPColorHalftoneEffect,
 	PPDistortionEffect,
-	PPGlitchEffect,
 	PPGlowEffect,
 	PPHexPixelateEffect,
 	PPKaleidoscopeEffect,
@@ -17,8 +16,27 @@ import {
 	PPRGBShiftEffect,
 } from "@/lib/postprocessing";
 import { BLANK_IMAGE } from "@/lib/view/constants";
-import { EffectComposer, Bloom, DotScreen, Pixelation } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
+import {
+	ASCII,
+	Bloom,
+	BrightnessContrast,
+	ChromaticAberration,
+	ColorAverage,
+	ColorDepth,
+	DotScreen,
+	EffectComposer,
+	Glitch,
+	Grid,
+	HueSaturation,
+	Noise,
+	Pixelation,
+	Scanline as ScanlinePP,
+	Sepia,
+	TiltShift2,
+	ToneMapping,
+	Vignette,
+} from "@react-three/postprocessing";
+import { BlendFunction, GlitchMode } from "postprocessing";
 import React from "react";
 import {
 	AddEquation,
@@ -34,6 +52,7 @@ import {
 	OneFactor,
 	SubtractiveBlending,
 	TextureLoader,
+	Vector2,
 	VideoTexture,
 	ZeroFactor,
 } from "three";
@@ -270,17 +289,6 @@ function PPHexPixelateWrapper({ size, width, height }) {
 	return <primitive object={effect} dispose={null} />;
 }
 
-function PPGlitchWrapper({ amount, time }) {
-	const effect = React.useMemo(() => new PPGlitchEffect({ amount: 0.5, time: 0 }), []);
-	React.useEffect(() => {
-		effect.uniforms.get("amount").value = Number(amount || 0);
-	}, [effect, amount]);
-	React.useEffect(() => {
-		effect.uniforms.get("time").value = Number(time || 0);
-	}, [effect, time]);
-	return <primitive object={effect} dispose={null} />;
-}
-
 function PPBlurWrapper({ type, amount, x, y, radius, brightness, angle, width, height }) {
 	const blurTypeMap = { Box: 0, Circular: 1, Gaussian: 2, Triangle: 3, Zoom: 4, Lens: 5 };
 	const blurType = blurTypeMap[type] ?? 2;
@@ -355,8 +363,18 @@ function EffectBridge({ effect, width, height }) {
 		case "DistortionEffect":
 			return <PPDistortionWrapper amount={props.amount} time={effect.time} />;
 
-		case "GlitchEffect":
-			return <PPGlitchWrapper amount={props.amount} time={effect.time} />;
+		case "GlitchEffect": {
+			const mode = props.mode === "Constant" ? GlitchMode.CONSTANT_WILD : GlitchMode.SPORADIC;
+			const strength = Number(props.strength ?? 0.3);
+			return (
+				<Glitch
+					mode={mode}
+					strength={new Vector2(strength * 0.5, strength)}
+					columns={Number(props.columns ?? 0.05)}
+					ratio={Number(props.ratio ?? 0.85)}
+				/>
+			);
+		}
 
 		case "ColorHalftoneEffect":
 			return (
@@ -403,6 +421,89 @@ function EffectBridge({ effect, width, height }) {
 					height={height}
 				/>
 			);
+
+		case "BrightnessContrastEffect": {
+			const brightness = Number(props.brightness ?? 0);
+			const contrast = Number(props.contrast ?? 0);
+			return <BrightnessContrast brightness={brightness} contrast={contrast} />;
+		}
+
+		case "ChromaticAberrationEffect": {
+			const offsetX = Number(props.offsetX ?? 0.01);
+			const offsetY = Number(props.offsetY ?? 0.01);
+			return <ChromaticAberration offset={new Vector2(offsetX, offsetY)} />;
+		}
+
+		case "ColorAverageEffect":
+			return <ColorAverage blendFunction={BlendFunction.NORMAL} />;
+
+		case "ColorDepthEffect": {
+			const bits = Number(props.bits ?? 16);
+			return <ColorDepth bits={bits} />;
+		}
+
+		case "GridEffect": {
+			const scale = Number(props.scale ?? 1.0);
+			const lineWidth = Number(props.lineWidth ?? 0.5);
+			return <Grid scale={scale} lineWidth={lineWidth} />;
+		}
+
+		case "HueSaturationEffect": {
+			const hue = toRadians(Number(props.hue ?? 0));
+			const saturation = Number(props.saturation ?? 0);
+			return <HueSaturation hue={hue} saturation={saturation} />;
+		}
+
+		case "NoiseEffect": {
+			const premultiply = !!props.premultiply;
+			return <Noise premultiply={premultiply} blendFunction={BlendFunction.ADD} />;
+		}
+
+		case "ScanlineEffect": {
+			const density = Number(props.density ?? 1.25);
+			return <ScanlinePP density={density} />;
+		}
+
+		case "SepiaEffect": {
+			const intensity = Number(props.intensity ?? 1.0);
+			return <Sepia intensity={intensity} />;
+		}
+
+		case "ToneMappingEffect": {
+			const middleGrey = Number(props.middleGrey ?? 0.6);
+			const maxLuminance = Number(props.maxLuminance ?? 16);
+			const averageLuminance = Number(props.averageLuminance ?? 1.0);
+			const adaptationRate = Number(props.adaptationRate ?? 1.0);
+			return (
+				<ToneMapping
+					middleGrey={middleGrey}
+					maxLuminance={maxLuminance}
+					averageLuminance={averageLuminance}
+					adaptationRate={adaptationRate}
+				/>
+			);
+		}
+
+		case "VignetteEffect": {
+			const offset = Number(props.offset ?? 0.5);
+			const darkness = Number(props.darkness ?? 0.5);
+			return <Vignette offset={offset} darkness={darkness} />;
+		}
+
+		case "ASCIIEffect": {
+			const fontSize = Number(props.fontSize ?? 54);
+			const cellSize = Number(props.cellSize ?? 16);
+			const color = String(props.color ?? "#ffffff");
+			const invert = !!props.invert;
+			return <ASCII fontSize={fontSize} cellSize={cellSize} color={color} invert={invert} />;
+		}
+
+		case "TiltShiftEffect": {
+			const blur = Number(props.blur ?? 0.15);
+			const taper = Number(props.taper ?? 0.5);
+			const samples = Number(props.samples ?? 10);
+			return <TiltShift2 blur={blur} taper={taper} samples={samples} />;
+		}
 
 		default:
 			return null;
