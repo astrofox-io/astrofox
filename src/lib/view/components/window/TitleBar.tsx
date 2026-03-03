@@ -191,13 +191,7 @@ export default function TitleBar() {
 				)}
 			</div>
 			<div
-				className={classNames(
-					"absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden",
-					{
-						"text-neutral-400": focused,
-						"text-neutral-500": !focused,
-					},
-				)}
+				className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400"
 			>
 				{env.APP_NAME}
 			</div>
