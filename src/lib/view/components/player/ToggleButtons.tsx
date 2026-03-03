@@ -1,5 +1,6 @@
 import useApp, { toggleState } from "@/lib/view/actions/app";
 import Icon from "@/lib/view/components/interface/Icon";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import { player } from "@/lib/view/global";
 import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
 import { Cycle, SoundBars, SoundWaves } from "@/lib/view/icons";
@@ -53,17 +54,18 @@ interface ToggleButtonProps {
 }
 
 const ToggleButton = ({ enabled, title, icon, onClick }: ToggleButtonProps) => (
-	<div
-		className={"mr-2.5 [&:last-child]:mr-0 cursor-default"}
-		onClick={onClick}
-	>
-		<Icon
-			className={classNames("w-4 h-4", {
-				"!text-neutral-500 hover:!text-neutral-400": !enabled,
-				"!text-primary hover:!text-primary": enabled,
-			})}
-			glyph={icon}
-			title={title}
-		/>
-	</div>
+	<Tooltip text={title}>
+		<div
+			className={"mr-2.5 [&:last-child]:mr-0 cursor-default"}
+			onClick={onClick}
+		>
+			<Icon
+				className={classNames("w-4 h-4", {
+					"!text-neutral-500 hover:!text-neutral-400": !enabled,
+					"!text-primary hover:!text-primary": enabled,
+				})}
+				glyph={icon}
+			/>
+		</div>
+	</Tooltip>
 );

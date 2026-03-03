@@ -2,6 +2,7 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/lib/view/actions/app";
 import useProject, { DEFAULT_PROJECT_NAME } from "@/lib/view/actions/project";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import Menu from "@/lib/view/components/nav/Menu";
 import { env } from "@/lib/view/global";
 import useWindowState from "@/lib/view/hooks/useWindowState";
@@ -178,16 +179,17 @@ export default function TitleBar() {
 						onKeyDown={onProjectNameKeyDown}
 					/>
 				) : (
-					<button
-						type="button"
-						className={
-							"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-neutral-400 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800"
-						}
-						onClick={beginProjectNameEdit}
-						title="Click to rename project"
-					>
-						{projectName || DEFAULT_PROJECT_NAME}
-					</button>
+					<Tooltip text="Click to rename project">
+						<button
+							type="button"
+							className={
+								"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-neutral-400 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800"
+							}
+							onClick={beginProjectNameEdit}
+						>
+							{projectName || DEFAULT_PROJECT_NAME}
+						</button>
+					</Tooltip>
 				)}
 			</div>
 			<div

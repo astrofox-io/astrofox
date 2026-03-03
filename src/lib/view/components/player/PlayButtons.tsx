@@ -1,4 +1,5 @@
 import Icon from "@/lib/view/components/interface/Icon";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import { player } from "@/lib/view/global";
 import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
 import { Pause, Play, Stop } from "@/lib/view/icons";
@@ -23,28 +24,31 @@ export default function PlayButtons() {
 
 	return (
 		<div className={"whitespace-nowrap"}>
-			<div
-				className={classNames(
-					"text-neutral-100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-neutral-700 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-primary [&:active]:border-neutral-100",
-				)}
-				onClick={handlePlayButtonClick}
-			>
-				<Icon
-					className={classNames("w-6 h-6", {
-						"translate-x-px": !playing,
-					})}
-					glyph={playing ? Pause : Play}
-					title={playing ? "Pause" : "Play"}
-				/>
-			</div>
-			<div
-				className={classNames(
-					"text-neutral-100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-neutral-700 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-primary [&:active]:border-neutral-100",
-				)}
-				onClick={handleStopButtonClick}
-			>
-				<Icon className={"w-6 h-6"} glyph={Stop} title="Stop" />
-			</div>
+			<Tooltip text={playing ? "Pause" : "Play"}>
+				<div
+					className={classNames(
+						"text-neutral-100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-neutral-700 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-primary [&:active]:border-neutral-100",
+					)}
+					onClick={handlePlayButtonClick}
+				>
+					<Icon
+						className={classNames("w-6 h-6", {
+							"translate-x-px": !playing,
+						})}
+						glyph={playing ? Pause : Play}
+					/>
+				</div>
+			</Tooltip>
+			<Tooltip text="Stop">
+				<div
+					className={classNames(
+						"text-neutral-100 bg-transparent p-0 mr-1 inline-flex items-center justify-center [flex-wrap:nowrap] border-2 border-neutral-700 h-10 w-10 rounded-full leading-9 text-center [vertical-align:middle] transition-[all_0.2s] [&:last-child]:mr-0 [&:hover]:border-2 [&:hover]:border-primary [&:active]:border-neutral-100",
+					)}
+					onClick={handleStopButtonClick}
+				>
+					<Icon className={"w-6 h-6"} glyph={Stop} />
+				</div>
+			</Tooltip>
 		</div>
 	);
 }

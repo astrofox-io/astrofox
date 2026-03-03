@@ -1,6 +1,7 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import { raiseError } from "@/lib/view/actions/error";
 import Icon from "@/lib/view/components/interface/Icon";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import { BLANK_IMAGE } from "@/lib/view/constants";
 import { api } from "@/lib/view/global";
 import { FolderOpen, Times } from "@/lib/view/icons";
@@ -160,23 +161,25 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
 					loop
 					autoPlay
 				/>
+				<Tooltip text="Open File">
 				<Icon
 					className={
 						"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
 					}
 					glyph={FolderOpen}
-					title="Open File"
 				/>
+			</Tooltip>
 			</div>
 			{hasVideo && (
+				<Tooltip text="Remove Video">
 				<Icon
 					className={classNames({
 						["text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100"]: true,
 					})}
 					glyph={Times}
-					title="Remove Video"
 					onClick={handleDelete}
 				/>
+			</Tooltip>
 			)}
 		</>
 	);

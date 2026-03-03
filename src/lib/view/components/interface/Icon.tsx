@@ -13,7 +13,6 @@ interface IconProps {
 	className?: string;
 	width?: number;
 	height?: number;
-	title?: string;
 	glyph?: IconGlyph | null;
 	monochrome?: boolean;
 	shapeRendering?: string;
@@ -24,7 +23,6 @@ const Icon = ({
 	className,
 	width,
 	height,
-	title,
 	glyph,
 	monochrome = true,
 	shapeRendering = "geometricPrecision",
@@ -44,7 +42,6 @@ const Icon = ({
 				},
 				className,
 			)}
-			title={title}
 		>
 			{isSpriteGlyph ? (
 				<svg

@@ -4,6 +4,7 @@ import useScenes, { addElement } from "@/lib/view/actions/scenes";
 import Menu from "@/lib/view/components/nav/Menu";
 import { library } from "@/lib/view/global";
 import { Cube, Sun } from "@/lib/view/icons";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import classNames from "classnames";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -93,25 +94,26 @@ export default function Toolbar() {
 
         return (
           <div key={item.type} className="relative flex justify-center">
-            <button
-              type="button"
-              className={classNames(
-                "border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default",
-                {
-                  "text-neutral-100 bg-primary": isActive,
-                  "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800":
-                    !disabled,
-                  "[&_svg]:text-neutral-500": disabled,
-                },
-              )}
-              title={item.title}
-              aria-label={item.title}
-              onClick={handleButtonClick(index)}
-              onMouseOver={handleMouseOver(index)}
-              onFocus={handleMouseOver(index)}
-            >
-              <Icon size={18} />
-            </button>
+            <Tooltip text={item.title}>
+              <button
+                type="button"
+                className={classNames(
+                  "border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default",
+                  {
+                    "text-neutral-100 bg-primary": isActive,
+                    "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800":
+                      !disabled,
+                    "[&_svg]:text-neutral-500": disabled,
+                  },
+                )}
+                aria-label={item.title}
+                onClick={handleButtonClick(index)}
+                onMouseOver={handleMouseOver(index)}
+                onFocus={handleMouseOver(index)}
+              >
+                <Icon size={18} />
+              </button>
+            </Tooltip>
             <Menu
               className="top-full! left-0! mt-1 min-w-44 border border-neutral-700"
               items={menuItems}

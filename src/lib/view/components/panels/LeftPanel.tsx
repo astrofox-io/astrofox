@@ -7,10 +7,7 @@ import React from "react";
 
 export default function LeftPanel() {
   return (
-    <div
-      className="flex flex-col shrink-0 relative overflow-hidden border-r"
-      style={{ width: 260 }}
-    >
+    <div className="flex flex-col shrink-0 relative w-90 overflow-hidden border-r">
       <Group orientation="vertical">
         <Panel defaultSize={60} minSize={20}>
           <div className="flex flex-col h-full overflow-hidden">

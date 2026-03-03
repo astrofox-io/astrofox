@@ -1,6 +1,7 @@
 // @ts-nocheck
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/lib/view/actions/app";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import classNames from "classnames";
 import { Cube, FolderOpen } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -137,22 +138,23 @@ export default function NavSidebar() {
 						key={item.label}
 						className={"group relative flex justify-center"}
 					>
-						<button
-							type="button"
-							className={classNames(
-								"w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-neutral-400 inline-flex items-center justify-center cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
-								{
-									"text-neutral-100 bg-primary": isActive,
-								},
-							)}
-							title={item.label}
-							aria-label={item.label}
-							onClick={handleButtonClick(item, index)}
-							onMouseOver={hasMenu ? handleMouseOver(index) : undefined}
-							onFocus={hasMenu ? handleMouseOver(index) : undefined}
-						>
-							<Icon size={16} />
-						</button>
+						<Tooltip text={item.label}>
+							<button
+								type="button"
+								className={classNames(
+									"w-10 h-10 border-0 p-0 rounded-lg bg-transparent text-neutral-400 inline-flex items-center justify-center cursor-default [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800",
+									{
+										"text-neutral-100 bg-primary": isActive,
+									},
+								)}
+								aria-label={item.label}
+								onClick={handleButtonClick(item, index)}
+								onMouseOver={hasMenu ? handleMouseOver(index) : undefined}
+								onFocus={hasMenu ? handleMouseOver(index) : undefined}
+							>
+								<Icon size={16} />
+							</button>
+						</Tooltip>
 						{hasMenu && (
 							<Menu
 								className={

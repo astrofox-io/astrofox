@@ -3,6 +3,7 @@ import { setActiveReactorId } from "@/lib/view/actions/app";
 import { addReactor } from "@/lib/view/actions/reactors";
 import { loadScenes } from "@/lib/view/actions/scenes";
 import Icon from "@/lib/view/components/interface/Icon";
+import Tooltip from "@/lib/view/components/interface/Tooltip";
 import { Flash, Plus } from "@/lib/view/icons";
 import { reactors } from "@/lib/view/global";
 import classNames from "classnames";
@@ -66,14 +67,15 @@ export default function ReactorButton({
 
 	return (
 		<div className="relative" ref={pickerRef}>
-			<Icon
-				className={classNames("text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100", className, {
-					["text-neutral-100"]: reactor,
-				})}
-				glyph={Flash}
-				title={reactor ? "Show Reactor" : "Enable Reactor"}
-				onClick={handleClick}
-			/>
+			<Tooltip text={reactor ? "Show Reactor" : "Enable Reactor"}>
+				<Icon
+					className={classNames("text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100", className, {
+						["text-neutral-100"]: reactor,
+					})}
+					glyph={Flash}
+					onClick={handleClick}
+				/>
+			</Tooltip>
 			{showPicker && (
 				<div className="absolute left-0 top-full mt-1 z-50 min-w-40 rounded-md border border-neutral-700 bg-neutral-800 py-1 shadow-lg">
 					{reactors.map((r: { id: string; displayName: string }) => (
