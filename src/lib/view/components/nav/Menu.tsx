@@ -3,10 +3,19 @@ import React from "react";
 
 import MenuItem from "./MenuItem";
 
-const menuItemIds = new WeakMap();
+interface MenuItemData {
+	type?: string;
+	label?: string;
+	hidden?: boolean;
+	checked?: boolean;
+	disabled?: boolean;
+	[key: string]: unknown;
+}
+
+const menuItemIds = new WeakMap<MenuItemData, string>();
 let menuItemId = 0;
 
-function getItemKey(item) {
+function getItemKey(item: MenuItemData) {
 	if (!menuItemIds.has(item)) {
 		menuItemId += 1;
 		menuItemIds.set(item, `menu-item-${menuItemId}`);
@@ -15,7 +24,14 @@ function getItemKey(item) {
 	return menuItemIds.get(item);
 }
 
-const Menu = ({ className, items, visible, onMenuItemClick }: any) => (
+interface MenuProps {
+	className?: string;
+	items?: MenuItemData[];
+	visible?: boolean;
+	onMenuItemClick?: (item: MenuItemData) => void;
+}
+
+const Menu = ({ className, items = [], visible = false, onMenuItemClick }: MenuProps) => (
 	<div
 		className={classNames(
 			"absolute top-full left-0 list-none bg-neutral-900 rounded-md border border-neutral-700 shadow-lg z-[7] p-1 flex flex-col gap-0.5",
@@ -25,7 +41,7 @@ const Menu = ({ className, items, visible, onMenuItemClick }: any) => (
 			className,
 		)}
 	>
-		{items.map((item) => {
+		{items.map((item: MenuItemData) => {
 			const { type, label, hidden, checked, disabled } = item;
 			const key = getItemKey(item);
 
@@ -45,7 +61,7 @@ const Menu = ({ className, items, visible, onMenuItemClick }: any) => (
 						label={label}
 						checked={checked}
 						disabled={disabled}
-						onClick={() => onMenuItemClick(item)}
+						onClick={() => onMenuItemClick?.(item)}
 					/>
 				);
 			}
@@ -54,11 +70,5 @@ const Menu = ({ className, items, visible, onMenuItemClick }: any) => (
 		})}
 	</div>
 );
-
-Menu.defaultProps = {
-	className: null,
-	items: [],
-	visible: false,
-};
 
 export default Menu;

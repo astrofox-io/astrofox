@@ -3,6 +3,7 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { player } from "@/lib/view/global";
 import useForceUpdate from "@/lib/view/hooks/useForceUpdate";
 import { Cycle, SoundBars, SoundWaves } from "@/lib/view/icons";
+import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
 import React from "react";
 import shallow from "zustand/shallow";
@@ -44,7 +45,14 @@ export default function ToggleButtons() {
 	);
 }
 
-const ToggleButton = ({ enabled, title, icon, onClick }: any) => (
+interface ToggleButtonProps {
+	enabled?: boolean;
+	title?: string;
+	icon?: LucideIcon;
+	onClick?: () => void;
+}
+
+const ToggleButton = ({ enabled, title, icon, onClick }: ToggleButtonProps) => (
 	<div
 		className={"mr-2.5 [&:last-child]:mr-0 cursor-default"}
 		onClick={onClick}

@@ -1,7 +1,6 @@
 import Effect from "@/lib/core/Effect";
 
 export default class LEDEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "LEDEffect",
 		description: "LED effect.",
@@ -40,7 +39,7 @@ export default class LEDEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(LEDEffect, properties);
 	}
 }

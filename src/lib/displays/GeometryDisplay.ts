@@ -1,4 +1,3 @@
-// @ts-nocheck
 import FFTParser from "@/lib/audio/FFTParser";
 import Display from "@/lib/core/Display";
 
@@ -25,7 +24,8 @@ const materialOptions = [
 const shadingOptions = ["Smooth", "Flat"];
 
 export default class GeometryDisplay extends Display {
-	[key: string]: any;
+	declare parser: FFTParser;
+
 	static config = {
 		name: "GeometryDisplay",
 		description: "Displays 3D geometry.",
@@ -116,13 +116,13 @@ export default class GeometryDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(GeometryDisplay, properties);
 
 		this.parser = new FFTParser();
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const changed = super.update(properties);
 
 		if (changed) {

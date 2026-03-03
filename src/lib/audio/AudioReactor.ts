@@ -1,5 +1,6 @@
 import FFTParser from "@/lib/audio/FFTParser";
 import Entity from "@/lib/core/Entity";
+import type { RenderFrameData, ReactorResult } from "@/lib/types";
 import { isDefined } from "@/lib/utils/array";
 import { getDisplayName } from "@/lib/utils/controls";
 import { ceil, floor, normalize } from "@/lib/utils/math";
@@ -27,7 +28,13 @@ const spectrumProperties = {
 };
 
 export default class AudioReactor extends Entity {
-	[key: string]: any;
+	parser: FFTParser;
+	type: string;
+	displayName: string;
+	enabled: boolean;
+	result: ReactorResult;
+	direction: number;
+
 	static config = {
 		name: "AudioReactor",
 		description: "Audio reactor.",
@@ -74,7 +81,7 @@ export default class AudioReactor extends Entity {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		const {
 			config: { name, label, defaultProperties },
 		} = AudioReactor;
@@ -89,7 +96,7 @@ export default class AudioReactor extends Entity {
 		this.direction = 1;
 	}
 
-	update(properties: any = {}) {
+	update(properties: Record<string, unknown> = {}) {
 		const { selection, maxDecibels, smoothingTimeConstant } = properties;
 
 		if (isDefined(maxDecibels, smoothingTimeConstant)) {
@@ -97,7 +104,7 @@ export default class AudioReactor extends Entity {
 		}
 
 		if (selection) {
-			const { x, y, width, height } = selection;
+			const { x, y, width, height } = selection as Record<string, number>;
 			const maxWidth = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
 			const maxHeight = REACTOR_BAR_HEIGHT;
 
@@ -116,13 +123,16 @@ export default class AudioReactor extends Entity {
 		return this.result;
 	}
 
-	parse(data) {
+	parse(data: RenderFrameData): ReactorResult {
 		const { hasUpdate, fft: inputFft } = data;
-		const fft = this.parser.parseFFT(inputFft);
+		const fft = this.parser.parseFFT(inputFft!);
 		const {
 			outputMode,
 			range: { x1, y1, x2, y2 },
-		} = this.properties;
+		} = this.properties as Record<string, unknown> & {
+			outputMode: string;
+			range: { x1: number; y1: number; x2: number; y2: number };
+		};
 		const start = floor(x1 * fft.length);
 		const end = ceil(x2 * fft.length);
 

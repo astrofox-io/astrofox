@@ -9,7 +9,15 @@ import { renderBackend } from "@/lib/view/global";
 import create from "zustand";
 import { touchProject } from "./project";
 
-const initialState = {
+interface StageState {
+	width: number;
+	height: number;
+	backgroundColor: string;
+	zoom: number;
+	loading: boolean;
+}
+
+const initialState: StageState = {
 	width: DEFAULT_CANVAS_WIDTH,
 	height: DEFAULT_CANVAS_HEIGHT,
 	backgroundColor: DEFAULT_CANVAS_BGCOLOR,
@@ -25,18 +33,22 @@ const stageStore = create(() => ({
 	...initialState,
 }));
 
-export function updateStage(props) {
-	stageStore.setState(props);
+export function updateStage(props: Partial<StageState>) {
+	stageStore.setState(props as StageState);
 
 	renderBackend.update(props);
 }
 
-export function updateCanvas(width, height, backgroundColor) {
+export function updateCanvas(
+	width: number,
+	height: number,
+	backgroundColor: string,
+) {
 	updateStage({ width, height, backgroundColor });
 	touchProject();
 }
 
-export function setZoom(value) {
+export function setZoom(value: number) {
 	const nextValue = Number(value);
 
 	if (!Number.isFinite(nextValue)) {

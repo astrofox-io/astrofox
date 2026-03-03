@@ -1,6 +1,6 @@
 const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
 
-export function formatSize(val, decimals) {
+export function formatSize(val: number, decimals: number) {
 	if (val === 0) return "N/A";
 
 	const precision = 10 ** (decimals || 0);
@@ -9,7 +9,7 @@ export function formatSize(val, decimals) {
 	return `${Math.round((val * precision) / 1024 ** i) / precision} ${sizes[i]}`;
 }
 
-export function parseTime(val) {
+export function parseTime(val: number) {
 	const days = ~~(val / 86400);
 	const hours = ~~(val / 3600) - days * 24;
 	const minutes = ~~(val / 60) - days * 1440 - hours * 60;
@@ -25,7 +25,7 @@ export function parseTime(val) {
 	};
 }
 
-export function formatTime(val) {
+export function formatTime(val: number) {
 	const { hours, minutes, seconds } = parseTime(val);
 	const h = hours > 0 ? `${hours}:` : "";
 	const m = hours > 0 ? minutes.toString().padStart(2, "0") : minutes;
@@ -34,7 +34,7 @@ export function formatTime(val) {
 	return `${h}${m}:${s}`;
 }
 
-export function formatShortTime(val, formats = ["m", "s"], space = "") {
+export function formatShortTime(val: number, formats: string[] = ["m", "s"], space: string = "") {
 	if (val === 0) {
 		return `0${formats[formats.length - 1]}`;
 	}
@@ -51,7 +51,7 @@ export function formatShortTime(val, formats = ["m", "s"], space = "") {
 	return t;
 }
 
-export function parseSeekTime(val) {
+export function parseSeekTime(val: string) {
 	const matches = val.match(/^(0?\d+:)?(0?\d+):(\d{2})$/);
 
 	if (matches) {
@@ -66,7 +66,7 @@ export function parseSeekTime(val) {
 	return null;
 }
 
-export function formatSeekTime(val) {
+export function formatSeekTime(val: number) {
 	const { hours, minutes, seconds } = parseTime(val);
 
 	return [

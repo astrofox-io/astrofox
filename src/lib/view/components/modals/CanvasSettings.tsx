@@ -14,9 +14,16 @@ type CanvasSettingsState = {
 	aspect: string;
 };
 
+interface AspectOption {
+	label: string;
+	value: string;
+	widthRatio: number;
+	heightRatio: number;
+}
+
 const CANVAS_BASE_SIZES = [480, 720, 1080];
 
-const CANVAS_ASPECT_OPTIONS = [
+const CANVAS_ASPECT_OPTIONS: AspectOption[] = [
 	{ label: "Square", value: "1:1", widthRatio: 1, heightRatio: 1 },
 	{ label: "Portrait (9:16)", value: "9:16", widthRatio: 9, heightRatio: 16 },
 	{
@@ -39,18 +46,18 @@ const CANVAS_ASPECT_OPTIONS = [
 	},
 ];
 
-function toEven(value) {
+function toEven(value: number) {
 	return Math.max(2, Math.round(value / 2) * 2);
 }
 
-function getAspectByValue(value) {
+function getAspectByValue(value: string) {
 	return (
 		CANVAS_ASPECT_OPTIONS.find((aspect) => aspect.value === value) ||
 		CANVAS_ASPECT_OPTIONS[2]
 	);
 }
 
-function getNearestBaseSize(size) {
+function getNearestBaseSize(size: number) {
 	return CANVAS_BASE_SIZES.reduce((nearest, current) => {
 		return Math.abs(current - size) < Math.abs(nearest - size)
 			? current
@@ -58,7 +65,7 @@ function getNearestBaseSize(size) {
 	}, CANVAS_BASE_SIZES[0]);
 }
 
-function getInitialAspect(width, height) {
+function getInitialAspect(width: number, height: number) {
 	const ratio = width > 0 && height > 0 ? width / height : 16 / 9;
 
 	return CANVAS_ASPECT_OPTIONS.reduce(
@@ -73,7 +80,7 @@ function getInitialAspect(width, height) {
 	).value;
 }
 
-function getCanvasDimensions(baseSize, aspectValue) {
+function getCanvasDimensions(baseSize: number, aspectValue: string) {
 	const aspect = getAspectByValue(aspectValue);
 	const ratio = aspect.widthRatio / aspect.heightRatio;
 
@@ -117,7 +124,7 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 
 	return (
 		<div className="flex flex-col flex-1 overflow-hidden relative w-[500px]">
-			<Settings columns={["50%", "50%"]} onChange={handleChange}>
+			<Settings columns={["50%", "50%"]} onChange={handleChange as (props: Record<string, unknown>) => void}>
 				<Setting
 					label="Format"
 					type="select"

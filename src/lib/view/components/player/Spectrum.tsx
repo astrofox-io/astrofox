@@ -24,18 +24,24 @@ const parserProperties = {
 	maxFrequency: 10000,
 };
 
-export default function Spectrum({ forwardedRef }: any) {
-	const canvas = useRef<any>(null);
-	const bars = useRef<any>(null);
-	const parser = useRef<any>(null);
+interface SpectrumProps {
+	forwardedRef?: React.Ref<{ draw: (data: { fft: Uint8Array | null }) => void }>;
+}
+
+export default function Spectrum({ forwardedRef }: SpectrumProps) {
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const bars = useRef<CanvasBars | null>(null);
+	const parser = useRef<FFTParser | null>(null);
 	const { width, height } = spectrumProperties;
 
 	function handleClick() {
-		const { normalize } = parser.current.properties;
-		parser.current.update({ normalize: !normalize });
+		if (!parser.current) return;
+		const props = parser.current.properties as Record<string, unknown>;
+		parser.current.update({ normalize: !props.normalize });
 	}
 
-	function draw(data) {
+	function draw(data: { fft: Uint8Array | null }) {
+		if (!parser.current || !bars.current || !data.fft) return;
 		const fft = parser.current.parseFFT(data.fft, 32);
 
 		bars.current.render(fft);
@@ -44,7 +50,7 @@ export default function Spectrum({ forwardedRef }: any) {
 	useImperativeHandle(forwardedRef, () => ({ draw }));
 
 	useEffect(() => {
-		bars.current = new CanvasBars(spectrumProperties, canvas.current);
+		bars.current = new CanvasBars(spectrumProperties, canvas.current!);
 		parser.current = new FFTParser(parserProperties);
 	}, [bars, parser]);
 

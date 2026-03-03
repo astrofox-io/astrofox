@@ -1,13 +1,19 @@
-// @ts-nocheck
 import Entity from "@/lib/core/Entity";
+import type { ReactorConfig, RenderFrameData } from "@/lib/types";
 import { getDisplayName } from "@/lib/utils/controls";
 import cloneDeep from "lodash/cloneDeep";
 
 export default class Display extends Entity {
-	[key: string]: any;
-	static create = (Type, config) => {
-		const { reactors = {} } = config;
-		const entity = Entity.create(Type, config);
+	[key: string]: unknown;
+
+	static create = (
+		Type: new (properties?: Record<string, unknown>) => Entity,
+		config: Record<string, unknown>,
+	) => {
+		const { reactors = {} } = config as {
+			reactors?: Record<string, ReactorConfig>;
+		};
+		const entity = Entity.create(Type, config) as Display;
 
 		for (const [key, value] of Object.entries(reactors)) {
 			entity.setReactor(key, value);
@@ -16,7 +22,22 @@ export default class Display extends Entity {
 		return entity;
 	};
 
-	constructor(Type, properties) {
+	declare type: string;
+	declare displayName: string;
+	declare enabled: boolean;
+	declare scene: unknown;
+	declare reactors: Record<string, ReactorConfig>;
+
+	constructor(
+		Type: {
+			config: {
+				name: string;
+				label: string;
+				defaultProperties: Record<string, unknown>;
+			};
+		},
+		properties?: Record<string, unknown>,
+	) {
 		const {
 			config: { name, label, defaultProperties },
 		} = Type;
@@ -36,32 +57,32 @@ export default class Display extends Entity {
 		});
 	}
 
-	getReactor(prop) {
+	getReactor(prop: string): ReactorConfig | undefined {
 		return this.reactors[prop];
 	}
 
-	setReactor(prop, config) {
+	setReactor(prop: string, config: ReactorConfig) {
 		this.reactors[prop] = config;
 	}
 
-	removeReactor(prop) {
+	removeReactor(prop: string) {
 		delete this.reactors[prop];
 	}
 
 	clearReactors() {
-		this.reactors = {};
+		this.reactors = {} as Record<string, ReactorConfig>;
 	}
 
-	updateReactors(data) {
+	updateReactors(data: RenderFrameData) {
 		if (!data.hasUpdate) {
 			return;
 		}
 
 		const { reactors } = this;
-		const properties = {};
+		const properties: Record<string, unknown> = {};
 		let hasUpdate = false;
 
-		for (const [key, value] of Object.entries(reactors as any)) {
+		for (const [key, value] of Object.entries(reactors)) {
 			const { id, min, max } = value;
 			const output = data.reactors[id];
 
@@ -76,8 +97,9 @@ export default class Display extends Entity {
 		}
 	}
 
-	toJSON(): any {
-		const { id, name, type, enabled, displayName, properties, reactors } = this;
+	toJSON(): Record<string, unknown> {
+		const { id, name, type, enabled, displayName, properties, reactors } =
+			this;
 
 		return {
 			id,
@@ -90,5 +112,5 @@ export default class Display extends Entity {
 		};
 	}
 
-	render(..._args: any[]) {}
+	render(..._args: unknown[]) {}
 }

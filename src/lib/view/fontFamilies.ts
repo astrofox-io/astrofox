@@ -1,4 +1,4 @@
-const FONT_FAMILY_BY_NAME = {
+const FONT_FAMILY_BY_NAME: Record<string, string> = {
 	Abel: "var(--font-abel), sans-serif",
 	"Abril Fatface": "var(--font-abril-fatface), serif",
 	Bangers: "var(--font-bangers), cursive",
@@ -18,7 +18,7 @@ const FONT_FAMILY_BY_NAME = {
 	"Vast Shadow": "var(--font-vast-shadow), cursive",
 };
 
-const CANVAS_FONT_FAMILY_BY_NAME = {
+const CANVAS_FONT_FAMILY_BY_NAME: Record<string, string> = {
 	Abel: '"Abel", sans-serif',
 	"Abril Fatface": '"Abril Fatface", serif',
 	Bangers: '"Bangers", cursive',
@@ -38,11 +38,11 @@ const CANVAS_FONT_FAMILY_BY_NAME = {
 	"Vast Shadow": '"Vast Shadow", cursive',
 };
 
-export function resolveFontFamily(fontName) {
+export function resolveFontFamily(fontName: string) {
 	return FONT_FAMILY_BY_NAME[fontName] || fontName;
 }
 
-export function resolveCanvasFontFamily(fontName) {
+export function resolveCanvasFontFamily(fontName: string) {
 	return CANVAS_FONT_FAMILY_BY_NAME[fontName] || fontName;
 }
 

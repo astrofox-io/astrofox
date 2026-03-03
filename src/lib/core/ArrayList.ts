@@ -1,5 +1,4 @@
 export default class ArrayList extends Array {
-	[key: string]: any;
 	static get [Symbol.species]() {
 		return Array;
 	}
@@ -8,15 +7,15 @@ export default class ArrayList extends Array {
 		return this.length === 0;
 	}
 
-	insert(item, index) {
+	insert(item: unknown, index: number) {
 		this.splice(index, 0, item);
 	}
 
-	remove(index) {
+	remove(index: number): boolean {
 		return !!this.splice(index, 1).length;
 	}
 
-	swap(index, newIndex) {
+	swap(index: number, newIndex: number): void {
 		if (
 			index !== newIndex &&
 			index > -1 &&
@@ -30,7 +29,7 @@ export default class ArrayList extends Array {
 		}
 	}
 
-	clear() {
+	clear(): void {
 		this.length = 0;
 	}
 }

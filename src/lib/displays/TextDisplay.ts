@@ -1,4 +1,3 @@
-// @ts-nocheck
 import CanvasText from "@/lib/canvas/CanvasText";
 import fonts from "@/lib/config/fonts.json";
 import Display from "@/lib/core/Display";
@@ -12,7 +11,8 @@ const fontOptions = fonts.map((item) => ({
 }));
 
 export default class TextDisplay extends Display {
-	[key: string]: any;
+	declare text: CanvasText;
+
 	static config = {
 		name: "TextDisplay",
 		description: "Displays text.",
@@ -55,14 +55,14 @@ export default class TextDisplay extends Display {
 			x: {
 				label: "X",
 				type: "number",
-				min: stageWidth((n) => -n),
+				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: stageHeight((n) => -n),
+				min: stageHeight((n: number) => -n),
 				max: stageHeight(),
 				withRange: true,
 			},
@@ -90,14 +90,15 @@ export default class TextDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(TextDisplay, properties);
 
 		const canvas = new OffscreenCanvas(1, 1);
-		this.text = new CanvasText(this.properties, canvas);
+		const props = this.properties as Record<string, unknown>;
+		this.text = new CanvasText(props, canvas);
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		if (this.text.update(properties)) {
 			this.text.render();
 		}

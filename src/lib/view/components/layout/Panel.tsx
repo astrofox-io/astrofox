@@ -2,6 +2,21 @@ import Splitter from "@/lib/view/components/layout/Splitter";
 import classNames from "classnames";
 import React, { useState } from "react";
 
+interface PanelProps {
+  title?: string;
+  direction?: "vertical" | "horizontal";
+  stretch?: boolean;
+  resizable?: boolean;
+  width?: number | null;
+  height?: number | null;
+  minHeight?: number;
+  minWidth?: number;
+  maxWidth?: number;
+  maxHeight?: number;
+  className?: string;
+  children?: React.ReactNode;
+}
+
 export default function Panel({
   title,
   direction = "vertical",
@@ -15,14 +30,14 @@ export default function Panel({
   maxHeight,
   className,
   children,
-}: any) {
+}: PanelProps) {
   const [state, setState] = useState({
-    width: initialWidth,
-    height: initialHeight,
+    width: initialWidth as number | null,
+    height: initialHeight as number | null,
   });
   const { width, height } = state;
 
-  function handleResize(width, height) {
+  function handleResize(width: number | null, height: number | null) {
     setState({ width, height });
   }
 
@@ -37,7 +52,7 @@ export default function Panel({
         },
         className,
       )}
-      style={{ width, height }}
+      style={{ width: width ?? undefined, height: height ?? undefined }}
     >
       {title && (
         <div className={"flex shrink-0 items-start py-3"}>

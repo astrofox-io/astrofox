@@ -1,18 +1,19 @@
+import type { DragHandlers } from "@/lib/types";
 import { useCallback, useRef } from "react";
 
 export default function useMouseDrag() {
-	const eventHandlers = useRef<any>(null);
+	const eventHandlers = useRef<DragHandlers | null>(null);
 
-	const handleMouseMove = useCallback((e) => {
-		const { onDrag } = eventHandlers.current;
+	const handleMouseMove = useCallback((e: MouseEvent) => {
+		const { onDrag } = eventHandlers.current || {};
 
 		if (onDrag) {
 			onDrag(e);
 		}
 	}, []);
 
-	const handleMouseUp = useCallback((e) => {
-		const { onDragEnd } = eventHandlers.current;
+	const handleMouseUp = useCallback((e: MouseEvent) => {
+		const { onDragEnd } = eventHandlers.current || {};
 
 		window.removeEventListener("mousemove", handleMouseMove);
 		window.removeEventListener("mousemove", handleMouseUp);
@@ -22,7 +23,7 @@ export default function useMouseDrag() {
 		}
 	}, []);
 
-	function startDrag(e, props: any = {}) {
+	function startDrag(e: React.MouseEvent, props: DragHandlers = {}) {
 		e.persist();
 
 		const { onDrag, onDragStart, onDragEnd } = props;

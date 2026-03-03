@@ -22,7 +22,7 @@ export default function Zoom() {
 				type="range"
 				name="zoom"
 				value={zoom}
-				onChange={(e) => setZoom(e.target.value)}
+				onChange={(e) => setZoom(Number(e.target.value))}
 				min={0.1}
 				max={3.0}
 				step={0.02}

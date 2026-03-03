@@ -6,10 +6,15 @@ import useProject, {
 import Dialog from "@/lib/view/components/window/Dialog";
 import React from "react";
 
-export default function UnsavedChangesDialog({ action, onClose }: any) {
+interface UnsavedChangesDialogProps {
+	action?: string;
+	onClose?: () => void;
+}
+
+export default function UnsavedChangesDialog({ action, onClose }: UnsavedChangesDialogProps) {
 	const project = useProject((state) => state);
 
-	async function handleAction(actionType) {
+	async function handleAction(actionType: string) {
 		if (actionType === "new-project") {
 			await newProject();
 		} else if (actionType === "open-project") {
@@ -18,12 +23,14 @@ export default function UnsavedChangesDialog({ action, onClose }: any) {
 	}
 
 	async function closeThenRunAction() {
-		onClose();
+		onClose?.();
 		await Promise.resolve();
-		await handleAction(action);
+		if (action) {
+			await handleAction(action);
+		}
 	}
 
-	async function handleConfirm(button) {
+	async function handleConfirm(button: string) {
 		if (button === "Yes") {
 			const saved = await saveProject(project.projectName);
 
@@ -33,7 +40,7 @@ export default function UnsavedChangesDialog({ action, onClose }: any) {
 		} else if (button === "No") {
 			await closeThenRunAction();
 		} else {
-			onClose();
+			onClose?.();
 		}
 	}
 

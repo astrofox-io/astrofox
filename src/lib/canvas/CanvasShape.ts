@@ -1,4 +1,5 @@
 import Entity from "@/lib/core/Entity";
+import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { resetCanvas } from "@/lib/utils/canvas";
 import { deg2rad } from "@/lib/utils/math";
 
@@ -6,7 +7,9 @@ const TRIANGLE_ANGLE = (2 * Math.PI) / 3;
 const HEXAGON_ANGLE = (2 * Math.PI) / 6;
 
 export default class CanvasShape extends Entity {
-	[key: string]: any;
+	canvas: CanvasElement;
+	context: CanvasContext;
+
 	static defaultProperties = {
 		shape: "Circle",
 		width: 100,
@@ -18,16 +21,19 @@ export default class CanvasShape extends Entity {
 		strokeWidth: 0,
 	};
 
-	constructor(properties, canvas) {
+	constructor(properties: Record<string, unknown>, canvas: CanvasElement) {
 		super("CanvasShape", { ...CanvasShape.defaultProperties, ...properties });
 
-		const { width, height, strokeWidth } = this.properties;
+		const { width, height, strokeWidth } = this.properties as Record<
+			string,
+			number
+		>;
 
 		this.canvas = canvas;
 		this.canvas.width = width + strokeWidth;
 		this.canvas.height = height + strokeWidth;
 
-		this.context = this.canvas.getContext("2d");
+		this.context = this.canvas.getContext("2d") as CanvasContext;
 	}
 
 	render() {
@@ -41,9 +47,9 @@ export default class CanvasShape extends Entity {
 			stroke,
 			strokeColor,
 			strokeWidth,
-		} = this.properties;
-		const w = width + strokeWidth * 2;
-		const h = height + strokeWidth * 2;
+		} = this.properties as Record<string, unknown>;
+		const w = (width as number) + (strokeWidth as number) * 2;
+		const h = (height as number) + (strokeWidth as number) * 2;
 		const x = w / 2;
 		const y = h / 2;
 		const r = w > 0 ? w / 2 : 1;
@@ -52,9 +58,9 @@ export default class CanvasShape extends Entity {
 		resetCanvas(canvas, w, h);
 
 		// Draw
-		context.fillStyle = color;
-		context.strokeStyle = strokeColor;
-		context.lineWidth = strokeWidth;
+		context.fillStyle = color as string;
+		context.strokeStyle = strokeColor as string;
+		context.lineWidth = strokeWidth as number;
 
 		if (shape === "Circle") {
 			context.beginPath();
@@ -104,7 +110,7 @@ export default class CanvasShape extends Entity {
 			context.fill();
 		}
 
-		if (stroke && strokeWidth > 0) {
+		if (stroke && (strokeWidth as number) > 0) {
 			context.save();
 			context.clip();
 			context.stroke();

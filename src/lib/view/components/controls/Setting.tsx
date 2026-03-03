@@ -3,6 +3,20 @@ import React from "react";
 
 import inputComponents from "./inputComponents";
 
+interface SettingProps {
+	label?: string;
+	type?: string;
+	name?: string;
+	value?: unknown;
+	className?: string;
+	labelWidth?: number;
+	inputWidth?: number;
+	onChange?: (name: string | Record<string, unknown>, value?: unknown) => void;
+	hidden?: boolean;
+	children?: React.ReactNode;
+	[key: string]: unknown;
+}
+
 export default function Setting({
 	label,
 	type,
@@ -15,8 +29,8 @@ export default function Setting({
 	hidden,
 	children,
 	...otherProps
-}: any) {
-	const [InputCompnent, inputProps] = inputComponents[type] ?? [];
+}: SettingProps) {
+	const [InputCompnent, inputProps] = type ? (inputComponents[type] ?? []) : [];
 
 	return (
 		<div

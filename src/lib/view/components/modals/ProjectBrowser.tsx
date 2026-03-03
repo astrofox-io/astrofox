@@ -10,11 +10,20 @@ import useProject, {
 import Button from "@/lib/view/components/interface/Button";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-export default function ProjectBrowser({ onClose }: any) {
+interface Project {
+	id: string;
+	name: string;
+}
+
+interface ProjectBrowserProps {
+	onClose?: () => void;
+}
+
+export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 	const currentProjectId = useProject((state) => state.projectId);
-	const [projects, setProjects] = useState([]);
+	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [selectedId, setSelectedId] = useState(null);
+	const [selectedId, setSelectedId] = useState<string | null>(null);
 	const [createName, setCreateName] = useState(DEFAULT_PROJECT_NAME);
 	const [renameName, setRenameName] = useState("");
 	const [error, setError] = useState("");
@@ -29,13 +38,13 @@ export default function ProjectBrowser({ onClose }: any) {
 		setError("");
 
 		try {
-			const items = await listProjects();
+			const items = (await listProjects()) as Project[];
 			setProjects(items);
 			setSelectedId(
-				(current) => current || currentProjectId || items[0]?.id || null,
+				(current: string | null) => current || currentProjectId || items[0]?.id || null,
 			);
-		} catch (requestError) {
-			setError(requestError?.message || "Failed to load projects.");
+		} catch (requestError: unknown) {
+			setError((requestError as Error)?.message || "Failed to load projects.");
 		} finally {
 			setLoading(false);
 		}
@@ -55,7 +64,7 @@ export default function ProjectBrowser({ onClose }: any) {
 		}
 
 		await loadProjectById(selectedId);
-		onClose();
+		onClose?.();
 	}
 
 	async function handleCreateProject() {
@@ -65,7 +74,7 @@ export default function ProjectBrowser({ onClose }: any) {
 		const saved = await saveProject(name);
 
 		if (saved) {
-			onClose();
+			onClose?.();
 		}
 	}
 
@@ -132,7 +141,7 @@ export default function ProjectBrowser({ onClose }: any) {
 					<input
 						className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 						value={createName}
-						onChange={(e) => setCreateName(e.currentTarget.value)}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateName(e.currentTarget.value)}
 					/>
 					<div className={"flex gap-1.5"}>
 						<Button text="Create" onClick={handleCreateProject} />
@@ -142,7 +151,7 @@ export default function ProjectBrowser({ onClose }: any) {
 					<input
 						className={"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"}
 						value={renameName}
-						onChange={(e) => setRenameName(e.currentTarget.value)}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRenameName(e.currentTarget.value)}
 						disabled={!selectedId}
 					/>
 					<div className={"flex gap-1.5"}>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import WaveParser from "@/lib/audio/WaveParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
 import Display from "@/lib/core/Display";
@@ -6,7 +5,9 @@ import { stageHeight, stageWidth } from "@/lib/utils/controls";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@/lib/view/constants";
 
 export default class SoundWaveDisplay extends Display {
-	[key: string]: any;
+	declare wave: CanvasWave;
+	declare parser: WaveParser;
+
 	static config = {
 		name: "SoundWaveDisplay",
 		description: "Displays a sound wave.",
@@ -77,27 +78,27 @@ export default class SoundWaveDisplay extends Display {
 				label: "Width",
 				type: "number",
 				min: 1,
-				max: stageWidth((n) => n * 2),
+				max: stageWidth((n: number) => n * 2),
 				withRange: true,
 			},
 			height: {
 				label: "Height",
 				type: "number",
 				min: 1,
-				max: stageHeight((n) => n * 2),
+				max: stageHeight((n: number) => n * 2),
 				withRange: true,
 			},
 			x: {
 				label: "X",
 				type: "number",
-				min: stageWidth((n) => -n),
+				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: stageHeight((n) => -n),
+				min: stageHeight((n: number) => -n),
 				max: stageHeight(),
 				withRange: true,
 			},
@@ -121,22 +122,23 @@ export default class SoundWaveDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(SoundWaveDisplay, properties);
 
 		const canvas = new OffscreenCanvas(1, 1);
-		this.wave = new CanvasWave(this.properties, canvas);
+		const props = this.properties as Record<string, unknown>;
+		this.wave = new CanvasWave(props, canvas);
 		this.parser = new WaveParser();
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const changed = super.update(properties);
 
 		if (changed) {
 			const { height } = properties;
 
 			if (height !== undefined) {
-				properties.midpoint = height / 2;
+				properties.midpoint = (height as number) / 2;
 			}
 
 			this.wave.update(properties);

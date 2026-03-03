@@ -1,7 +1,6 @@
 import Effect from "@/lib/core/Effect";
 
 export default class GlowEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "GlowEffect",
 		description: "Glow effect.",
@@ -33,7 +32,7 @@ export default class GlowEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(GlowEffect, properties);
 	}
 }

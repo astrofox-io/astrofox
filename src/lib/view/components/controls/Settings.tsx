@@ -1,7 +1,15 @@
 import { inputValueToProps, mapChildren } from "@/lib/utils/react";
 import Setting from "@/lib/view/components/controls/Setting";
 import classNames from "classnames";
-import React from "react";
+import React, { type ReactElement } from "react";
+
+interface SettingsProps {
+	label?: string;
+	columns?: (string | number | undefined)[];
+	className?: string;
+	children?: React.ReactNode;
+	onChange?: (props: Record<string, unknown>) => void;
+}
 
 export default function Settings({
 	label,
@@ -9,14 +17,14 @@ export default function Settings({
 	className,
 	children,
 	onChange,
-}: any) {
+}: SettingsProps) {
 	const [labelWidth, inputWidth] = columns;
 
-	function handleClone(child, props) {
+	function handleClone(child: ReactElement, props: Record<string, unknown>) {
 		if (child.type === Setting) {
-			return [child, props];
+			return [child, props] as unknown as ReactElement[];
 		}
-		return [child];
+		return [child] as unknown as ReactElement[];
 	}
 
 	return (
@@ -24,7 +32,7 @@ export default function Settings({
 			{label && <div className={"text-neutral-500 text-sm uppercase mb-4"}>{label}</div>}
 			{mapChildren(
 				children,
-				{ labelWidth, inputWidth, onChange: inputValueToProps(onChange) },
+				{ labelWidth, inputWidth, onChange: onChange ? inputValueToProps(onChange) : undefined },
 				handleClone,
 			)}
 		</div>

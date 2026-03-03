@@ -3,11 +3,15 @@ import { resolve, updateExistingProps } from "@/lib/utils/object";
 import cloneDeep from "lodash/cloneDeep";
 
 export default class Entity {
-	[key: string]: any;
-	static create = (Type, config) => {
+	[key: string]: unknown;
+
+	static create = (
+		Type: new (properties?: Record<string, unknown>) => Entity,
+		config: Record<string, unknown>,
+	) => {
 		const { id, name, properties, displays, effects, ...props } = config;
 
-		const entity = new Type(properties);
+		const entity = new Type(properties as Record<string, unknown>);
 
 		for (const [key, value] of Object.entries(props)) {
 			entity[key] = value;
@@ -18,7 +22,7 @@ export default class Entity {
 		return entity;
 	};
 
-	constructor(name, properties: any = {}) {
+	constructor(name: string, properties: Record<string, unknown> = {}) {
 		Object.defineProperties(this, {
 			id: {
 				value: uniqueId(),
@@ -36,10 +40,10 @@ export default class Entity {
 		});
 	}
 
-	update(properties: any = {}) {
+	update(properties: Record<string, unknown> = {}): boolean {
 		return updateExistingProps(
-			this.properties,
-			resolve(properties, [this.properties]),
+			this.properties as Record<string, unknown>,
+			resolve(properties, [this.properties]) as Record<string, unknown>,
 		);
 	}
 
@@ -47,7 +51,7 @@ export default class Entity {
 		return `[${this.name} ${this.id}]`;
 	}
 
-	toJSON(): any {
+	toJSON(): Record<string, unknown> {
 		const { id, name, type, enabled, properties } = this;
 
 		return {

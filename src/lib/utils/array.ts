@@ -1,11 +1,11 @@
-export function isDefined(...arr) {
-	return arr.filter((e) => e !== undefined).length > 0;
+export function isDefined(...arr: unknown[]) {
+	return arr.filter((e: unknown) => e !== undefined).length > 0;
 }
 
-export function contains(arr1, arr2) {
-	return arr1.some((e) => arr2.includes(e));
+export function contains<T>(arr1: T[], arr2: T[]) {
+	return arr1.some((e: T) => arr2.includes(e));
 }
 
-export function reverse(arr) {
+export function reverse<T>(arr: T[]): T[] {
 	return [...arr].reverse();
 }

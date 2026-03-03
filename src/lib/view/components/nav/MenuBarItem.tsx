@@ -2,6 +2,15 @@ import Menu from "@/lib/view/components/nav/Menu";
 import classNames from "classnames";
 import React from "react";
 
+interface MenuBarItemProps {
+	label?: string;
+	items?: { type?: string; label?: string; hidden?: boolean; checked?: boolean; disabled?: boolean; [key: string]: unknown }[];
+	active?: boolean;
+	onClick?: () => void;
+	onMouseOver?: () => void;
+	onMenuItemClick?: (item: Record<string, unknown>) => void;
+}
+
 export default function MenuBarItem({
 	label,
 	items,
@@ -9,15 +18,15 @@ export default function MenuBarItem({
 	onClick,
 	onMouseOver,
 	onMenuItemClick,
-}: any) {
-	function handleClick(e) {
+}: MenuBarItemProps) {
+	function handleClick(e: React.MouseEvent) {
 		e.stopPropagation();
-		onClick();
+		onClick?.();
 	}
 
-	function handleMouseOver(e) {
+	function handleMouseOver(e: React.MouseEvent) {
 		e.stopPropagation();
-		onMouseOver();
+		onMouseOver?.();
 	}
 
 	return (
@@ -31,7 +40,7 @@ export default function MenuBarItem({
 				)}
 				onClick={handleClick}
 				onMouseOver={handleMouseOver}
-			onFocus={handleMouseOver}
+			onFocus={() => onMouseOver?.()}
 			>
 				{label}
 			</div>

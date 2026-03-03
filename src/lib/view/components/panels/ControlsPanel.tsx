@@ -5,19 +5,24 @@ import Control from "@/lib/view/components/controls/Control";
 import { stage } from "@/lib/view/global";
 import React, { useMemo, useRef, useEffect } from "react";
 
+interface SceneElements {
+	displays: string[];
+	effects: string[];
+}
+
 export default function ControlsPanel() {
 	const activeElementId = useApp((state) => state.activeElementId);
 	const sceneOrder = useScenes((state) => state.sceneOrder);
-	const sceneElementsById = useScenes((state) => state.sceneElementsById);
-	const panelRef = useRef<any>(null);
+	const sceneElementsById = useScenes((state) => state.sceneElementsById) as Record<string, SceneElements>;
+	const panelRef = useRef<HTMLDivElement>(null);
 
 	const displayIds = useMemo(() => {
-		const ids = [];
+		const ids: string[] = [];
 
 		for (const sceneId of reverse(sceneOrder)) {
-			ids.push(sceneId);
+			ids.push(sceneId as string);
 
-			const sceneElements = sceneElementsById[sceneId];
+			const sceneElements = sceneElementsById[sceneId as string];
 			if (!sceneElements) {
 				continue;
 			}
@@ -37,7 +42,7 @@ export default function ControlsPanel() {
 
 	useEffect(() => {
 		const node = document.getElementById(`control-${activeElementId}`);
-		if (node) {
+		if (node && panelRef.current) {
 			panelRef.current.scrollTop = node.offsetTop;
 		}
 	}, [activeElementId]);
@@ -45,11 +50,11 @@ export default function ControlsPanel() {
 	return (
 		<div className={"flex-1 overflow-auto relative pt-1 pb-0 px-1 mb-1.5"} ref={panelRef}>
 			{displays.map((display) => {
-				const { id } = display;
+				const { id } = display as { id: string };
 
 				return (
-					<div id={`control-${id}`} key={id} className={"bg-neutral-800 rounded-md mb-1.5 [&:last-child]:mb-0"}>
-						<Control display={display} />
+					<div id={`control-${id}`} key={id as string} className={"bg-neutral-800 rounded-md mb-1.5 [&:last-child]:mb-0"}>
+						<Control display={display as unknown as Parameters<typeof Control>[0]["display"]} />
 					</div>
 				);
 			})}

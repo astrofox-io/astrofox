@@ -1,6 +1,15 @@
 export default class Audio {
-	[key: string]: any;
-	constructor(context) {
+	audioContext: AudioContext;
+	source: AudioBufferSourceNode | null;
+	buffer: AudioBuffer | null;
+	startTime: number;
+	stopTime: number;
+	nodes: AudioNode[];
+	playing: boolean;
+	paused: boolean;
+	repeat: boolean;
+
+	constructor(context: AudioContext) {
 		this.audioContext = context;
 		this.source = null;
 		this.buffer = null;
@@ -12,7 +21,7 @@ export default class Audio {
 		this.repeat = false;
 	}
 
-	load(src) {
+	load(src: string | ArrayBuffer | AudioBuffer) {
 		if (typeof src === "string") {
 			return this.loadUrl(src);
 		} else if (src instanceof ArrayBuffer) {
@@ -33,29 +42,31 @@ export default class Audio {
 	}
 
 	// Loads a url via AJAX
-	async loadUrl(url) {
+	async loadUrl(url: string) {
 		const response = await fetch(url);
 		return this.loadData(response);
 	}
 
 	// Decodes an ArrayBuffer into an AudioBuffer
-	async loadData(data) {
-		const buffer = await this.audioContext.decodeAudioData(data);
+	async loadData(data: ArrayBuffer | Response) {
+		const buffer = await this.audioContext.decodeAudioData(
+			data instanceof Response ? await data.arrayBuffer() : data,
+		);
 		return this.loadBuffer(buffer);
 	}
 
 	// Loads an AudioBuffer
-	loadBuffer(buffer) {
+	loadBuffer(buffer: AudioBuffer) {
 		this.buffer = buffer;
 	}
 
-	addNode(node) {
+	addNode(node: AudioNode) {
 		if (this.nodes.indexOf(node) < 0) {
 			this.nodes.push(node);
 		}
 	}
 
-	removeNode(node) {
+	removeNode(node: AudioNode) {
 		const index = this.nodes.indexOf(node);
 
 		if (index > -1) {
@@ -64,13 +75,13 @@ export default class Audio {
 	}
 
 	reconnectNodes() {
-		this.nodes.forEach((node) => {
-			this.source.connect(node);
+		this.nodes.forEach((node: AudioNode) => {
+			this.source!.connect(node);
 		});
 	}
 
 	disconnectNodes() {
-		this.nodes.forEach((node) => {
+		this.nodes.forEach((node: AudioNode) => {
 			node.disconnect();
 		});
 	}
@@ -87,7 +98,7 @@ export default class Audio {
 			this.initBuffer();
 
 			this.startTime = this.audioContext.currentTime;
-			this.source.start(0, this.getCurrentTime());
+			this.source!.start(0, this.getCurrentTime());
 			this.playing = true;
 			this.paused = false;
 		}
@@ -116,7 +127,7 @@ export default class Audio {
 		this.paused = false;
 	}
 
-	seek(pos) {
+	seek(pos: number) {
 		if (this.playing) {
 			this.stop();
 			this.updatePosition(pos);
@@ -144,13 +155,13 @@ export default class Audio {
 		return this.getCurrentTime() / this.getDuration() || 0;
 	}
 
-	getBufferPosition(time) {
+	getBufferPosition(time: number) {
 		const position = time ? time / this.getDuration() : this.getPosition();
-		return ~~(position * this.buffer.length);
+		return ~~(position * this.buffer!.length);
 	}
 
-	getAudioSlice(start, end) {
-		const channels = this.buffer.numberOfChannels;
+	getAudioSlice(start: number, end: number): AudioBuffer {
+		const channels = this.buffer!.numberOfChannels;
 		const length = end - start;
 		const output = this.audioContext.createBuffer(
 			channels,
@@ -160,7 +171,7 @@ export default class Audio {
 
 		for (let i = 0; i < channels; i++) {
 			const ch = output.getChannelData(i);
-			const buffer = this.buffer.getChannelData(i);
+			const buffer = this.buffer!.getChannelData(i);
 
 			for (let j = start; j < end; j++) {
 				ch[j - start] = buffer[j];
@@ -170,7 +181,7 @@ export default class Audio {
 		return output;
 	}
 
-	updatePosition(pos) {
-		this.stopTime = ~~(pos * this.buffer.duration);
+	updatePosition(pos: number) {
+		this.stopTime = ~~(pos * this.buffer!.duration);
 	}
 }

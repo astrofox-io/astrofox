@@ -1,26 +1,33 @@
-// @ts-nocheck
 import Display from "@/lib/core/Display";
 import { isDefined } from "@/lib/utils/array";
 import { BLANK_IMAGE } from "@/lib/view/constants";
 
-const disabled = (display) => !display.hasImage;
-const maxWidth = (display) => {
+interface ImageDisplayInstance {
+	hasImage: boolean;
+	image: HTMLImageElement;
+	scene: { getSize(): { width: number; height: number } };
+	properties: Record<string, unknown>;
+}
+
+const disabled = (display: ImageDisplayInstance) => !display.hasImage;
+const maxWidth = (display: ImageDisplayInstance) => {
 	const { naturalWidth } = display.image;
 	const { width } = display.scene.getSize();
 
 	return naturalWidth > width ? naturalWidth : width;
 };
-const maxHeight = (display) => {
+const maxHeight = (display: ImageDisplayInstance) => {
 	const { naturalHeight } = display.image;
 	const { height } = display.scene.getSize();
 
 	return naturalHeight > height ? naturalHeight : height;
 };
-const maxX = (display) => (disabled(display) ? 0 : maxWidth(display));
-const maxY = (display) => (disabled(display) ? 0 : maxHeight(display));
+const maxX = (display: ImageDisplayInstance) => (disabled(display) ? 0 : maxWidth(display));
+const maxY = (display: ImageDisplayInstance) => (disabled(display) ? 0 : maxHeight(display));
 
 export default class ImageDisplay extends Display {
-	[key: string]: any;
+	declare image: HTMLImageElement;
+
 	static config = {
 		name: "ImageDisplay",
 		description: "Displays an image.",
@@ -64,16 +71,16 @@ export default class ImageDisplay extends Display {
 			x: {
 				label: "X",
 				type: "number",
-				min: (display) => -1 * maxX(display),
-				max: (display) => maxX(display),
+				min: (display: ImageDisplayInstance) => -1 * maxX(display),
+				max: (display: ImageDisplayInstance) => maxX(display),
 				withRange: true,
 				disabled,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: (display) => -1 * maxY(display),
-				max: (display) => maxY(display),
+				min: (display: ImageDisplayInstance) => -1 * maxY(display),
+				max: (display: ImageDisplayInstance) => maxY(display),
 				withRange: true,
 				disabled,
 			},
@@ -109,26 +116,28 @@ export default class ImageDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(ImageDisplay, properties);
 
 		this.image = new Image();
-		this.image.src = this.properties.src;
+		const props = this.properties as Record<string, unknown>;
+		this.image.src = props.src as string;
 	}
 
 	get hasImage() {
-		return this.properties.src !== BLANK_IMAGE;
+		return (this.properties as Record<string, unknown>).src !== BLANK_IMAGE;
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const { src: inputSrc, fixed, width, height } = properties;
-		const { src, width: w, height: h, fixed: f } = this.properties;
-		let image = null;
+		const props = this.properties as Record<string, unknown>;
+		const { src, width: w, height: h, fixed: f } = props;
+		let image: HTMLImageElement | null = null;
 		const srcChanged = typeof inputSrc === "string" && inputSrc !== src;
 
 		// If we get an HTMLImageElement
-		if (typeof inputSrc === "object" && inputSrc?.src) {
-			image = inputSrc;
+		if (typeof inputSrc === "object" && (inputSrc as HTMLImageElement)?.src) {
+			image = inputSrc as HTMLImageElement;
 
 			if (image.src === BLANK_IMAGE) {
 				// Image reset
@@ -150,26 +159,26 @@ export default class ImageDisplay extends Display {
 		if (!image && !srcChanged && (fixed || f)) {
 			const { naturalWidth, naturalHeight } = this.image;
 			if (!naturalWidth || !naturalHeight) {
-				return false;
+				return super.update({});
 			}
 
 			const ratio = naturalWidth / naturalHeight;
 
 			if (!isDefined(width, height)) {
-				if (w > h) {
-					properties.height = Math.round(w * (1 / ratio)) || 0;
-					properties.width = Math.round(properties.height * ratio);
+				if ((w as number) > (h as number)) {
+					properties.height = Math.round((w as number) * (1 / ratio)) || 0;
+					properties.width = Math.round((properties.height as number) * ratio);
 				} else {
-					properties.width = Math.round(h * ratio);
-					properties.height = Math.round(properties.width * (1 / ratio)) || 0;
+					properties.width = Math.round((h as number) * ratio);
+					properties.height = Math.round((properties.width as number) * (1 / ratio)) || 0;
 				}
 			}
 
 			if (width) {
-				properties.height = Math.round(width * (1 / ratio)) || 0;
+				properties.height = Math.round((width as number) * (1 / ratio)) || 0;
 			}
 			if (height) {
-				properties.width = Math.round(height * ratio);
+				properties.width = Math.round((height as number) * ratio);
 			}
 		}
 
@@ -187,12 +196,13 @@ export default class ImageDisplay extends Display {
 					nextImage.onload = () => {
 						this.image = nextImage;
 
-						const nextProps = {};
-						if (!this.properties.width && !this.properties.height) {
+						const p = this.properties as Record<string, unknown>;
+						const nextProps: Record<string, unknown> = {};
+						if (!p.width && !p.height) {
 							nextProps.width = nextImage.naturalWidth;
 							nextProps.height = nextImage.naturalHeight;
 						}
-						if (this.properties.opacity === 0) {
+						if (p.opacity === 0) {
 							nextProps.opacity = 1;
 						}
 
@@ -200,7 +210,7 @@ export default class ImageDisplay extends Display {
 							super.update(nextProps);
 						}
 					};
-					nextImage.src = properties.src;
+					nextImage.src = properties.src as string;
 				}
 			}
 		}

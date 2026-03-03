@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { formatSize } from "@/lib/utils/format";
 import useAppStore from "@/lib/view/actions/app";
 import ZoomControl from "@/lib/view/components/window/ZoomControl";
@@ -7,15 +6,20 @@ import React, { useState, useEffect } from "react";
 
 const { APP_VERSION } = env;
 
+interface StatsState {
+	mem?: string;
+	fps?: string;
+}
+
 export default function StatusBar() {
 	const statusText = useAppStore((state) => state.statusText);
-	const [{ mem, fps }, setState] = useState({});
+	const [{ mem, fps }, setState] = useState<StatsState>({});
 
 	function updateStats() {
 		setState({
 			fps: `${renderer.getFPS()} FPS`,
-			mem: window.performance.memory
-				? formatSize(window.performance.memory.usedJSHeapSize, 2)
+			mem: (window.performance as unknown as { memory?: { usedJSHeapSize: number } }).memory
+				? formatSize((window.performance as unknown as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize, 2)
 				: undefined,
 		});
 	}
@@ -45,6 +49,10 @@ export default function StatusBar() {
 	);
 }
 
-function InfoItem({ value }: any) {
+interface InfoItemProps {
+	value?: string;
+}
+
+function InfoItem({ value }: InfoItemProps) {
 	return <span className={"inline-block leading-7"}>{value}</span>;
 }

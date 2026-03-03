@@ -1,4 +1,3 @@
-// @ts-nocheck
 import FFTParser from "@/lib/audio/FFTParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
 import Display from "@/lib/core/Display";
@@ -6,7 +5,9 @@ import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
 export default class WaveSpectrumDisplay extends Display {
-	[key: string]: any;
+	declare wave: CanvasWave;
+	declare parser: FFTParser;
+
 	static config = {
 		name: "WaveSpectrumDisplay",
 		description: "Displays an audio wave spectrum.",
@@ -105,14 +106,14 @@ export default class WaveSpectrumDisplay extends Display {
 			x: {
 				label: "X",
 				type: "number",
-				min: stageWidth((n) => -n),
+				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: stageHeight((n) => -n),
+				min: stageHeight((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
@@ -136,15 +137,16 @@ export default class WaveSpectrumDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(WaveSpectrumDisplay, properties);
 
 		const canvas = new OffscreenCanvas(1, 1);
-		this.wave = new CanvasWave(this.properties, canvas);
-		this.parser = new FFTParser(this.properties);
+		const props = this.properties as Record<string, unknown>;
+		this.wave = new CanvasWave(props, canvas);
+		this.parser = new FFTParser(props);
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const changed = super.update(properties);
 
 		if (changed) {

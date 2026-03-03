@@ -1,27 +1,19 @@
-/**
- * @typedef {object} RenderFrameData
- * @property {number} id
- * @property {number} delta
- * @property {Float32Array | null} fft
- * @property {Float32Array | null} td
- * @property {number} volume
- * @property {number} gain
- * @property {boolean} audioPlaying
- * @property {boolean} hasUpdate
- * @property {Record<string, number>} reactors
- */
+import type { RenderFrameData } from "@/lib/types";
 
 /**
  * Render backend contract used by the app-level renderer loop.
  * Implementations may be legacy imperative Three.js or @react-three/fiber.
  */
 export default class RenderBackend {
-	[key: string]: any;
 	/**
 	 * Called once after the stage viewport is mounted.
-	 * @param {{ canvas: HTMLCanvasElement, width: number, height: number, backgroundColor: string }} params
 	 */
-	init(params) {
+	init(params: {
+		canvas: HTMLCanvasElement;
+		width: number;
+		height: number;
+		backgroundColor: string;
+	}): void {
 		throw new Error(
 			`RenderBackend.init is not implemented for ${this.constructor.name}`,
 		);
@@ -29,10 +21,8 @@ export default class RenderBackend {
 
 	/**
 	 * Apply stage property updates (size, background color, zoom metadata, etc).
-	 * @param {Record<string, unknown>} properties
-	 * @returns {boolean}
 	 */
-	update(properties) {
+	update(properties: Record<string, unknown>): boolean {
 		throw new Error(
 			`RenderBackend.update is not implemented for ${this.constructor.name}`,
 		);
@@ -40,9 +30,8 @@ export default class RenderBackend {
 
 	/**
 	 * Render one interactive frame.
-	 * @param {RenderFrameData} frameData
 	 */
-	render(frameData) {
+	render(frameData: RenderFrameData): void {
 		throw new Error(
 			`RenderBackend.render is not implemented for ${this.constructor.name}`,
 		);
@@ -50,10 +39,10 @@ export default class RenderBackend {
 
 	/**
 	 * Render one deterministic export frame and return RGBA pixels.
-	 * @param {{ frame: number, fps: number, getAudioSample: (time: number) => Float32Array, analyzer: { process: (sample: Float32Array) => void } }} params
-	 * @returns {Promise<Uint8Array>}
 	 */
-	async renderExportFrame(params) {
+	async renderExportFrame(
+		params: Record<string, unknown>,
+	): Promise<Uint8Array> {
 		throw new Error(
 			`RenderBackend.renderExportFrame is not implemented for ${this.constructor.name}`,
 		);
@@ -61,9 +50,8 @@ export default class RenderBackend {
 
 	/**
 	 * Get current stage size in pixels.
-	 * @returns {{ width: number, height: number }}
 	 */
-	getSize() {
+	getSize(): { width: number; height: number } {
 		throw new Error(
 			`RenderBackend.getSize is not implemented for ${this.constructor.name}`,
 		);
@@ -71,9 +59,8 @@ export default class RenderBackend {
 
 	/**
 	 * Read current output RGBA pixels.
-	 * @returns {Uint8Array}
 	 */
-	getPixels() {
+	getPixels(): Uint8Array {
 		throw new Error(
 			`RenderBackend.getPixels is not implemented for ${this.constructor.name}`,
 		);
@@ -81,10 +68,8 @@ export default class RenderBackend {
 
 	/**
 	 * Encode current output as an image buffer.
-	 * @param {string} format
-	 * @returns {Uint8Array}
 	 */
-	getImage(format = "image/png") {
+	getImage(format = "image/png"): Uint8Array {
 		throw new Error(
 			`RenderBackend.getImage is not implemented for ${this.constructor.name}`,
 		);

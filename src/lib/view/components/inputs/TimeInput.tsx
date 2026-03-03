@@ -3,6 +3,18 @@ import { clamp } from "@/lib/utils/math";
 import TextInput from "@/lib/view/components/inputs/TextInput";
 import React, { useState } from "react";
 
+interface TimeInputProps {
+	name?: string;
+	value?: number;
+	width?: number;
+	size?: number | null;
+	min?: number;
+	max?: number;
+	readOnly?: boolean;
+	disabled?: boolean;
+	onChange?: (name: string, value: number) => void;
+}
+
 export default function TimeInput({
 	name = "time",
 	value = 0,
@@ -13,10 +25,10 @@ export default function TimeInput({
 	readOnly = false,
 	disabled = false,
 	onChange,
-}: any) {
+}: TimeInputProps) {
 	const [key, setKey] = useState(0);
 
-	function handleChange(name, value) {
+	function handleChange(name: string, value: string) {
 		let time = parseSeekTime(value);
 
 		if (time !== null) {
@@ -28,7 +40,7 @@ export default function TimeInput({
 				time = clamp(time, min, max);
 			}
 
-			onChange(name, time);
+			onChange?.(name, time);
 		}
 		// Reset to previous value
 		else {

@@ -1,13 +1,13 @@
-function computeControlPoints(K) {
-	const p1 = [];
-	const p2 = [];
+function computeControlPoints(K: number[]) {
+	const p1: number[] = [];
+	const p2: number[] = [];
 	const n = K.length - 1;
 
 	// RHS vector
-	const a = [];
-	const b = [];
-	const c = [];
-	const r = [];
+	const a: number[] = [];
+	const b: number[] = [];
+	const c: number[] = [];
+	const r: number[] = [];
 
 	// Left most segment
 	a[0] = 0;
@@ -51,9 +51,9 @@ function computeControlPoints(K) {
 	return { p1, p2 };
 }
 
-export function getSplinePoints(points) {
-	const x = [];
-	const y = [];
+export function getSplinePoints(points: number[]) {
+	const x: number[] = [];
+	const y: number[] = [];
 
 	// Grab (x,y) coordinates of the control points
 	for (let i = 0; i < points.length; i += 2) {
@@ -73,7 +73,7 @@ export function getSplinePoints(points) {
 	};
 }
 
-export function drawPath(context, points) {
+export function drawPath(context: CanvasRenderingContext2D, points: number[]) {
 	const { x, y, px, py } = getSplinePoints(points);
 
 	context.moveTo(points[0], points[1]);
@@ -90,7 +90,7 @@ export function drawPath(context, points) {
 	}
 }
 
-export function draw(context, points) {
+export function draw(context: CanvasRenderingContext2D, points: number[]) {
 	context.beginPath();
 
 	drawPath(context, points);

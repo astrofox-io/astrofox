@@ -1,12 +1,13 @@
 import { clamp, round } from "@/lib/utils/math";
 
 export default class Clock {
-	[key: string]: any;
+	time = 0;
+	elapsedTime = 0;
+	frames = 0;
+	delta = 0;
+	startTime: number;
+
 	constructor() {
-		this.time = 0;
-		this.elapsedTime = 0;
-		this.frames = 0;
-		this.delta = 0;
 		this.startTime = Date.now();
 	}
 

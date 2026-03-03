@@ -1,9 +1,12 @@
 import Entity from "@/lib/core/Entity";
+import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { resetCanvas, setColor } from "@/lib/utils/canvas";
 import { clamp } from "@/lib/utils/math";
 
 export default class CanvasBars extends Entity {
-	[key: string]: any;
+	canvas: CanvasElement;
+	context: CanvasContext;
+
 	static defaultProperties = {
 		width: 300,
 		height: 100,
@@ -15,32 +18,36 @@ export default class CanvasBars extends Entity {
 		shadowColor: "#CCCCCC",
 	};
 
-	constructor(properties, canvas) {
+	constructor(properties: Record<string, unknown>, canvas: CanvasElement) {
 		super("CanvasBars", { ...CanvasBars.defaultProperties, ...properties });
 
 		this.canvas = canvas;
-		this.context = this.canvas.getContext("2d");
+		this.context = this.canvas.getContext("2d") as CanvasContext;
 	}
 
-	render(data) {
+	render(data: Float32Array | number[]) {
 		const bars = data.length;
 		const { canvas, context } = this;
 		const { height, width, color, shadowHeight, shadowColor, minHeight } =
-			this.properties;
-		let { barWidth, barSpacing } = this.properties;
+			this.properties as Record<string, unknown>;
+		let { barWidth, barSpacing } = this.properties as Record<string, number>;
 
 		// Reset canvas
-		resetCanvas(canvas, width, height + shadowHeight);
+		resetCanvas(
+			canvas,
+			width as number,
+			(height as number) + (shadowHeight as number),
+		);
 
 		// Calculate bar widths
 		if (barWidth < 0 && barSpacing < 0) {
-			barSpacing = width / bars / 2;
+			barSpacing = (width as number) / bars / 2;
 			barWidth = barSpacing;
 		} else if (barSpacing >= 0 && barWidth < 0) {
-			barWidth = (width - bars * barSpacing) / bars;
+			barWidth = ((width as number) - bars * barSpacing) / bars;
 			if (barWidth <= 0) barWidth = 1;
 		} else if (barWidth > 0 && barSpacing < 0) {
-			barSpacing = (width - bars * barWidth) / bars;
+			barSpacing = ((width as number) - bars * barWidth) / bars;
 			if (barSpacing <= 0) barSpacing = 1;
 		}
 
@@ -49,10 +56,10 @@ export default class CanvasBars extends Entity {
 		const fullWidth = barSize * bars;
 
 		// Stepping
-		const step = fullWidth > width ? fullWidth / width : 1;
+		const step = fullWidth > (width as number) ? fullWidth / (width as number) : 1;
 
 		// Canvas setup
-		setColor(context, color, 0, 0, 0, height);
+		setColor(context, color as string, 0, 0, 0, height as number);
 
 		// Draw bars
 		for (
@@ -63,16 +70,27 @@ export default class CanvasBars extends Entity {
 			const index = ~~i;
 
 			if (index !== last) {
-				const val = clamp(data[index] * height, minHeight, height);
+				const val = clamp(
+					data[index] * (height as number),
+					minHeight as number,
+					height as number,
+				);
 				last = index;
 
-				context.fillRect(x, height, barWidth, -val);
+				context.fillRect(x, height as number, barWidth, -val);
 			}
 		}
 
 		// Draw shadow bars
-		if (shadowHeight > 0) {
-			setColor(context, shadowColor, 0, height, 0, height + shadowHeight);
+		if ((shadowHeight as number) > 0) {
+			setColor(
+				context,
+				shadowColor as string,
+				0,
+				height as number,
+				0,
+				(height as number) + (shadowHeight as number),
+			);
 
 			for (
 				let i = 0, x = 0, last = null;
@@ -82,10 +100,10 @@ export default class CanvasBars extends Entity {
 				const index = ~~i;
 
 				if (index !== last) {
-					const val = data[index] * shadowHeight;
+					const val = data[index] * (shadowHeight as number);
 					last = index;
 
-					context.fillRect(x, height, barWidth, val);
+					context.fillRect(x, height as number, barWidth, val);
 				}
 			}
 		}

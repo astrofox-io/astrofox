@@ -1,14 +1,14 @@
-// @ts-nocheck
 import CanvasShape from "@/lib/canvas/CanvasShape";
 import Display from "@/lib/core/Display";
 import { maxSize, property, stageHeight, stageWidth } from "@/lib/utils/controls";
 
 const shapeOptions = ["Circle", "Triangle", "Square", "Rectangle", "Hexagon"];
 
-const isRectangle = (display) => display.properties.shape === "Rectangle";
+const isRectangle = (display: { properties: Record<string, unknown> }) => display.properties.shape === "Rectangle";
 
 export default class ShapeDisplay extends Display {
-	[key: string]: any;
+	declare shape: CanvasShape;
+
 	static config = {
 		name: "ShapeDisplay",
 		description: "Displays a shape.",
@@ -36,7 +36,7 @@ export default class ShapeDisplay extends Display {
 				items: shapeOptions,
 			},
 			width: {
-				label: (display) => (isRectangle(display) ? "Width" : "Size"),
+				label: (display: { properties: Record<string, unknown> }) => (isRectangle(display) ? "Width" : "Size"),
 				type: "number",
 				min: 1,
 				max: maxSize(),
@@ -50,19 +50,19 @@ export default class ShapeDisplay extends Display {
 				max: maxSize(),
 				withRange: true,
 				withReactor: true,
-				hidden: (display) => !isRectangle(display),
+				hidden: (display: { properties: Record<string, unknown> }) => !isRectangle(display),
 			},
 			x: {
 				label: "X",
 				type: "number",
-				min: stageWidth((n) => -n),
+				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: stageHeight((n) => -n),
+				min: stageHeight((n: number) => -n),
 				max: stageHeight(),
 				withRange: true,
 			},
@@ -111,22 +111,24 @@ export default class ShapeDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(ShapeDisplay, properties);
 
 		const canvas = new OffscreenCanvas(1, 1);
-		this.shape = new CanvasShape(this.properties, canvas);
+		const props = this.properties as Record<string, unknown>;
+		this.shape = new CanvasShape(props, canvas);
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const { shape, width } = properties;
+		const props = this.properties as Record<string, unknown>;
 
-		if (width !== undefined && this.properties.shape !== "Rectangle") {
+		if (width !== undefined && props.shape !== "Rectangle") {
 			properties.height = width;
 		}
 
 		if (shape !== undefined && shape !== "Rectangle") {
-			properties.width = this.properties.width;
+			properties.width = props.width;
 			properties.height = properties.width;
 		}
 

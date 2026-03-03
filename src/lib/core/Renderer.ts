@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
 	events,
 	analyzer,
@@ -6,16 +5,22 @@ import {
 	reactors,
 	renderBackend,
 } from "@/lib/view/global";
+import type { RenderFrameData } from "@/lib/types";
 import Clock from "./Clock";
 
 const STOP_RENDERING = 0;
 const VIDEO_RENDERING = -1;
 
 export default class Renderer {
-	[key: string]: any;
+	rendering: boolean;
+	clock: Clock;
+	frameData: RenderFrameData;
+	time: number;
+
 	constructor() {
 		this.rendering = false;
 		this.clock = new Clock();
+		this.time = 0;
 
 		// Frame render data
 		this.frameData = {
@@ -24,6 +29,7 @@ export default class Renderer {
 			fft: null,
 			td: null,
 			volume: 0,
+			gain: 0,
 			audioPlaying: false,
 			hasUpdate: false,
 			reactors: {},
@@ -65,7 +71,7 @@ export default class Renderer {
 		this.rendering = false;
 	}
 
-	getFrameData(id) {
+	getFrameData(id: number): RenderFrameData {
 		const {
 			frameData,
 			clock: { delta },
@@ -84,9 +90,10 @@ export default class Renderer {
 		return frameData;
 	}
 
-	getAudioSample(time) {
+	getAudioSample(time: number) {
 		const { fftSize } = analyzer.analyzer;
 		const audio = player.getAudio();
+		if (!audio) return null;
 		const pos = audio.getBufferPosition(time);
 		const start = pos - fftSize / 2;
 		const end = pos + fftSize / 2;
@@ -98,7 +105,7 @@ export default class Renderer {
 		return this.clock.getFPS();
 	}
 
-	renderFrame(frame, fps) {
+	renderFrame(frame: number, fps: number): Promise<Uint8Array> {
 		return renderBackend.renderExportFrame({
 			frame,
 			fps,
@@ -114,7 +121,7 @@ export default class Renderer {
 		this.clock.update();
 
 		if (player.isPlaying()) {
-			analyzer.process();
+			analyzer.process(undefined);
 		}
 
 		const data = this.getFrameData(id);

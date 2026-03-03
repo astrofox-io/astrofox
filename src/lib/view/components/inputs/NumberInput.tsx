@@ -2,6 +2,19 @@ import { clamp, roundTo } from "@/lib/utils/math";
 import TextInput from "@/lib/view/components/inputs/TextInput";
 import React, { useState } from "react";
 
+interface NumberInputProps {
+	name?: string;
+	value?: number;
+	width?: number;
+	min?: number | false;
+	max?: number | false;
+	step?: number | false;
+	readOnly?: boolean;
+	disabled?: boolean;
+	className?: string;
+	onChange?: (name: string, value: number) => void;
+}
+
 export default function NumberInput({
 	name = "number",
 	value = 0,
@@ -13,10 +26,10 @@ export default function NumberInput({
 	disabled = false,
 	className,
 	onChange,
-}: any) {
+}: NumberInputProps) {
 	const [key, setKey] = useState(0);
 
-	function handleChange(name, value) {
+	function handleChange(name: string, value: string) {
 		const regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
 		// If valid number, send new value to parent
@@ -38,7 +51,7 @@ export default function NumberInput({
 				setKey(key + 1);
 			}
 
-			onChange(name, newValue);
+			onChange?.(name, newValue);
 		}
 		// Reset to old value
 		else {

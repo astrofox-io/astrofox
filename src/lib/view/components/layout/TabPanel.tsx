@@ -1,5 +1,22 @@
 import classNames from "classnames";
-import React, { useState, Children, cloneElement } from "react";
+import React, { useState, Children, cloneElement, isValidElement } from "react";
+
+interface TabPanelProps {
+	className?: string;
+	tabClassName?: string;
+	contentClassName?: string;
+	tabPosition?: "top" | "bottom" | "left" | "right";
+	activeIndex?: number;
+	children?: React.ReactNode;
+}
+
+interface TabProps {
+	name?: string;
+	visible?: boolean;
+	className?: string;
+	contentClassName?: string;
+	children?: React.ReactNode;
+}
 
 export function TabPanel({
 	className,
@@ -8,18 +25,20 @@ export function TabPanel({
 	tabPosition = "top",
 	activeIndex: initialActiveIndex,
 	children,
-}: any) {
+}: TabPanelProps) {
 	const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
 
-	function handleTabClick(index) {
+	function handleTabClick(index: number) {
 		setActiveIndex(index);
 	}
 
-	const tabs = [];
-	const content = [];
+	const tabs: React.ReactNode[] = [];
+	const content: React.ReactNode[] = [];
 
 	// Generate tabs and content
 	Children.map(children, (child, index) => {
+		if (!isValidElement<TabProps>(child)) return;
+
 		tabs.push(
 			<div
 				key={index}
@@ -75,7 +94,7 @@ export function TabPanel({
 	);
 }
 
-export const Tab = ({ visible, className, children }: any) => (
+export const Tab = ({ visible, className, children }: TabProps) => (
 	<div
 		className={classNames(
 			{

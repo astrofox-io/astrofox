@@ -1,9 +1,12 @@
 import Entity from "@/lib/core/Entity";
 import { drawPath } from "@/lib/drawing/bezierSpline";
+import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { resetCanvas, setColor } from "@/lib/utils/canvas";
 
 export default class CanvasWave extends Entity {
-	[key: string]: any;
+	canvas: CanvasElement;
+	context: CanvasContext;
+
 	static defaultProperties = {
 		stroke: true,
 		strokeColor: "#FFFFFF",
@@ -16,14 +19,14 @@ export default class CanvasWave extends Entity {
 		lineWidth: 1.0,
 	};
 
-	constructor(properties, canvas) {
+	constructor(properties: Record<string, unknown>, canvas: CanvasElement) {
 		super("CanvasWave", { ...CanvasWave.defaultProperties, ...properties });
 
 		this.canvas = canvas;
-		this.context = this.canvas.getContext("2d");
+		this.context = this.canvas.getContext("2d") as CanvasContext;
 	}
 
-	render(points, smooth) {
+	render(points: Float32Array, smooth: boolean) {
 		const { canvas, context } = this;
 		const {
 			width,
@@ -35,25 +38,25 @@ export default class CanvasWave extends Entity {
 			fillColor,
 			lineWidth,
 			taper,
-		} = this.properties;
+		} = this.properties as Record<string, unknown>;
 
 		// Reset canvas
-		resetCanvas(canvas, width, height);
+		resetCanvas(canvas, width as number, height as number);
 
 		// Canvas setup
-		context.lineWidth = lineWidth;
-		context.strokeStyle = strokeColor;
-		setColor(context, fillColor, 0, 0, 0, height);
+		context.lineWidth = lineWidth as number;
+		context.strokeStyle = strokeColor as string;
+		setColor(context, fillColor as string, 0, 0, 0, height as number);
 
 		// Normalize points
 		for (let i = 0; i < points.length; i += 2) {
-			points[i + 1] = height - points[i + 1] * height;
+			points[i + 1] = (height as number) - points[i + 1] * (height as number);
 		}
 
 		// Taper edges
 		if (taper) {
-			points[1] = midpoint;
-			points[points.length - 1] = midpoint;
+			points[1] = midpoint as number;
+			points[points.length - 1] = midpoint as number;
 		}
 
 		// Draw wave
@@ -61,15 +64,18 @@ export default class CanvasWave extends Entity {
 			context.beginPath();
 
 			// Draw bezier spline
-			drawPath(context, points);
+			drawPath(
+				context as CanvasRenderingContext2D,
+				Array.from(points),
+			);
 
 			if (stroke) {
 				context.stroke();
 			}
 
 			if (fill) {
-				context.lineTo(width, midpoint);
-				context.lineTo(0, midpoint);
+				context.lineTo(width as number, midpoint as number);
+				context.lineTo(0, midpoint as number);
 				context.closePath();
 				context.fill();
 			}
@@ -77,7 +83,7 @@ export default class CanvasWave extends Entity {
 			context.beginPath();
 
 			if (fill) {
-				context.moveTo(0, midpoint);
+				context.moveTo(0, midpoint as number);
 			}
 
 			for (let i = 0; i < points.length; i += 2) {
@@ -89,7 +95,7 @@ export default class CanvasWave extends Entity {
 			}
 
 			if (fill) {
-				context.lineTo(width, midpoint);
+				context.lineTo(width as number, midpoint as number);
 				context.closePath();
 				context.fill();
 			}

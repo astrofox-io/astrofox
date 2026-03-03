@@ -1,9 +1,13 @@
 import Entity from "@/lib/core/Entity";
+import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { resetCanvas } from "@/lib/utils/canvas";
 import { resolveCanvasFontFamily } from "@/lib/view/fontFamilies";
 
 export default class CanvasText extends Entity {
-	[key: string]: any;
+	canvas: CanvasElement;
+	context: CanvasContext;
+	loadingFonts: Set<string>;
+
 	static defaultProperties = {
 		text: "",
 		size: 40,
@@ -13,15 +17,15 @@ export default class CanvasText extends Entity {
 		color: "#FFFFFF",
 	};
 
-	constructor(properties, canvas) {
+	constructor(properties: Record<string, unknown>, canvas: CanvasElement) {
 		super("CanvasText", { ...CanvasText.defaultProperties, ...properties });
 
 		this.canvas = canvas;
-		this.context = this.canvas.getContext("2d");
+		this.context = this.canvas.getContext("2d") as CanvasContext;
 		this.loadingFonts = new Set();
 	}
 
-	normalizeFontFamily(font) {
+	normalizeFontFamily(font: string) {
 		if (font === "Chunkfive") {
 			return "Bevan";
 		}
@@ -32,8 +36,11 @@ export default class CanvasText extends Entity {
 	}
 
 	getFont() {
-		const { italic, bold, size, font } = this.properties;
-		const fontFamily = this.normalizeFontFamily(font);
+		const { italic, bold, size, font } = this.properties as Record<
+			string,
+			unknown
+		>;
+		const fontFamily = this.normalizeFontFamily(font as string);
 
 		return [
 			italic ? "italic" : "normal",
@@ -43,7 +50,7 @@ export default class CanvasText extends Entity {
 		].join(" ");
 	}
 
-	loadFontIfNeeded(font, text) {
+	loadFontIfNeeded(font: string, text: string) {
 		if (!document.fonts) {
 			return;
 		}
@@ -69,27 +76,29 @@ export default class CanvasText extends Entity {
 
 	render() {
 		const { canvas, context } = this;
-		const { text, size, color } = this.properties;
+		const { text, size, color } = this.properties as Record<string, unknown>;
 		const font = this.getFont();
 
-		this.loadFontIfNeeded(font, text);
+		this.loadFontIfNeeded(font, text as string);
 
 		context.font = font;
 
-		const length = Math.ceil(context.measureText(text).width);
-		const spacing = text.length ? Math.ceil(length / text.length) : 0;
+		const length = Math.ceil(context.measureText(text as string).width);
+		const spacing = (text as string).length
+			? Math.ceil(length / (text as string).length)
+			: 0;
 		const width = Math.max(1, length + spacing);
-		const height = Math.max(1, size * 2);
+		const height = Math.max(1, (size as number) * 2);
 
 		// Reset canvas
 		resetCanvas(canvas, width, height);
 
 		// Draw text
 		context.font = font;
-		context.fillStyle = color;
+		context.fillStyle = color as string;
 		context.textAlign = "center";
 		context.textBaseline = "middle";
-		context.fillText(text, width / 2, height / 2);
+		context.fillText(text as string, width / 2, height / 2);
 
 		// Debugging
 		/*

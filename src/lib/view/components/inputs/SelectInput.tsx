@@ -1,6 +1,24 @@
 import classNames from "classnames";
 import React, { useState, useMemo } from "react";
 
+interface SelectItem {
+	[key: string]: unknown;
+	style?: React.CSSProperties;
+}
+
+interface SelectInputProps {
+	name?: string;
+	value?: string | number;
+	items?: (SelectItem | string | number | null)[];
+	displayField?: string;
+	valueField?: string;
+	width?: number;
+	optionsWidth?: number | string;
+	className?: string;
+	optionsClassName?: string;
+	onChange?: (name: string, value: unknown) => void;
+}
+
 export default function SelectInput({
 	name = "select",
 	value = "",
@@ -12,10 +30,10 @@ export default function SelectInput({
 	className,
 	optionsClassName,
 	onChange,
-}: any) {
+}: SelectInputProps) {
 	const [showItems, setShowItems] = useState(false);
 	const parsedItems = useMemo(() => {
-		return items.map((item) => {
+		return items.map((item: SelectItem | string | number | null) => {
 			if (typeof item !== "object") {
 				return { [displayField]: item, [valueField]: item };
 			}
@@ -27,11 +45,11 @@ export default function SelectInput({
 		setShowItems((state) => !state);
 	}
 
-	function handleItemClick(value) {
+	function handleItemClick(value: unknown) {
 		return () => {
 			setShowItems(false);
 
-			onChange(name, value);
+			onChange?.(name, value);
 		};
 	}
 
@@ -42,9 +60,9 @@ export default function SelectInput({
 	function getDisplayText() {
 		let text = "";
 
-		parsedItems.forEach((item) => {
+		parsedItems.forEach((item: SelectItem | null) => {
 			if (text.length === 0 && item?.[valueField] === value) {
-				text = item[displayField];
+				text = String(item[displayField]);
 			}
 		});
 
@@ -83,7 +101,7 @@ export default function SelectInput({
 				)}
 				style={{ width: optionsWidth }}
 			>
-				{parsedItems.map((item, index) => (
+				{parsedItems.map((item: SelectItem | null, index: number) => (
 					<div
 						key={index}
 						className={classNames(
@@ -93,10 +111,10 @@ export default function SelectInput({
 									!item,
 							},
 						)}
-						style={item?.style}
-						onMouseDown={item ? handleItemClick(item[valueField]) : null}
+						style={item?.style as React.CSSProperties | undefined}
+						onMouseDown={item ? handleItemClick(item[valueField]) : undefined}
 					>
-						{item?.[displayField]}
+						{item?.[displayField] as React.ReactNode}
 					</div>
 				))}
 			</div>

@@ -3,7 +3,6 @@ import Effect from "@/lib/core/Effect";
 const blendOptions = ["Add", "Screen"];
 
 export default class BloomEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "BloomEffect",
 		description: "Bloom effect.",
@@ -41,7 +40,7 @@ export default class BloomEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(BloomEffect, properties);
 	}
 }

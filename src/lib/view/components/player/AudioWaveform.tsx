@@ -1,4 +1,3 @@
-// @ts-nocheck
 import CanvasAudio from "@/lib/canvas/CanvasAudio";
 import CanvasWave from "@/lib/canvas/CanvasWave";
 import WaveParser from "@/lib/audio/WaveParser";
@@ -25,14 +24,19 @@ const oscProperties = {
 	strokeColor: PRIMARY_COLOR,
 };
 
-export default function AudioWaveform({ showWaveform = false, showOsc = false }: any) {
+interface AudioWaveformProps {
+	showWaveform?: boolean;
+	showOsc?: boolean;
+}
+
+export default function AudioWaveform({ showWaveform = false, showOsc = false }: AudioWaveformProps) {
 	const [state, setState] = useSharedState();
-	const { progressPosition, seekPosition } = state;
+	const { progressPosition, seekPosition } = state as { progressPosition?: number; seekPosition?: number };
 	const { width, height, shadowHeight } = canvasProperties;
-	const canvas = useRef<any>(null);
-	const oscCanvas = useRef<any>(null);
-	const oscDisplay = useRef<any>(null);
-	const oscParser = useRef<any>(null);
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const oscCanvas = useRef<HTMLCanvasElement>(null);
+	const oscDisplay = useRef<CanvasWave | null>(null);
+	const oscParser = useRef<WaveParser | null>(null);
 	const hasAudioRef = useRef(false);
 	const flatRenderedRef = useRef(false);
 
@@ -68,7 +72,7 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 		[],
 	);
 
-	function handleClick(e) {
+	function handleClick(e: React.MouseEvent<HTMLCanvasElement>) {
 		const rect = e.currentTarget.getBoundingClientRect();
 		const progressPosition = (e.clientX - rect.left) / rect.width;
 
@@ -77,7 +81,7 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 		setState({ progressPosition, seekPosition: 0 });
 	}
 
-	function handleMouseMove(e) {
+	function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
 		e.stopPropagation();
 
 		const rect = e.currentTarget.getBoundingClientRect();
@@ -95,8 +99,9 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 
 		const { width, height } = canvas.current;
 		const context = canvas.current.getContext("2d");
-		const position = progressPosition * width;
-		const seek = seekPosition * width;
+		if (!context) return;
+		const position = (progressPosition ?? 0) * width;
+		const seek = (seekPosition ?? 0) * width;
 		const sx = seek < position ? seek : position;
 		const dx = seek < position ? position - seek : seek - position;
 
@@ -153,19 +158,21 @@ export default function AudioWaveform({ showWaveform = false, showOsc = false }:
 	}
 
 	function loadAudio() {
-		const { buffer } = player.getAudio();
+		const audio = player.getAudio();
+		if (!audio?.buffer) return;
 
-		baseCanvas.render(buffer);
-		progressCanvas.render(buffer);
-		seekCanvas.render(buffer);
+		baseCanvas.render(audio.buffer);
+		progressCanvas.render(audio.buffer);
+		seekCanvas.render(audio.buffer);
 		hasAudioRef.current = true;
 		flatRenderedRef.current = false;
 	}
 
-	function drawOsc({ td }: any) {
-		if (!oscDisplay.current || !oscParser.current) return;
+	function drawOsc(...args: unknown[]) {
+		const { td } = (args[0] ?? {}) as { td?: Float32Array | null };
+		if (!oscDisplay.current || !oscParser.current || !td) return;
 		const data = oscParser.current.parseTimeData(td, oscProperties.width);
-		oscDisplay.current.render(Array.from(data).flatMap((n, i) => [i, n]));
+		oscDisplay.current.render(new Float32Array(Array.from(data).flatMap((n: number, i: number) => [i, n])), false);
 	}
 
 	useEffect(() => {

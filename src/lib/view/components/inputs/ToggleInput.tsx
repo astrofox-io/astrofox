@@ -1,13 +1,21 @@
 import classNames from "classnames";
 import React from "react";
 
+interface ToggleInputProps {
+	name?: string;
+	value?: boolean;
+	label?: string;
+	labelPosition?: "left" | "right";
+	onChange?: (name: string, value: boolean) => void;
+}
+
 export default function ToggleInput({
 	name = "toggle",
 	value = false,
 	label,
 	labelPosition = "right",
 	onChange,
-}: any) {
+}: ToggleInputProps) {
 	return (
 		<div className={"flex items-center"}>
 			<div
@@ -17,7 +25,7 @@ export default function ToggleInput({
 						"bg-primary [&:before]:left-4": value,
 					},
 				)}
-				onClick={() => onChange(name, !value)}
+				onClick={() => onChange?.(name, !value)}
 			/>
 			{label && (
 				<div

@@ -1,12 +1,17 @@
-// @ts-nocheck
 import { ColorInput } from "@/lib/view/components/inputs/index";
 import React from "react";
+
+interface ColorRangeInputProps {
+	name?: string;
+	value?: [string, string];
+	onChange?: (name: string, value: [string, string]) => void;
+}
 
 export default function ColorRangeInput({
 	name = "color",
 	value = ["#ffffff", "#ffffff"],
 	onChange,
-}: any) {
+}: ColorRangeInputProps) {
 	const [startColor, endColor] = value;
 
 	return (
@@ -14,7 +19,7 @@ export default function ColorRangeInput({
 			<ColorInput
 				name="startColor"
 				value={startColor}
-				onChange={(n, value) => onChange(name, [value, endColor])}
+				onChange={(_n: string, value: string) => onChange?.(name, [value, endColor])}
 			/>
 			<div
 				className={"flex-1 relative h-4 border border-neutral-600 rounded my-0 mx-2"}
@@ -25,7 +30,7 @@ export default function ColorRangeInput({
 			<ColorInput
 				name="endColor"
 				value={endColor}
-				onChange={(n, value) => onChange(name, [startColor, value])}
+				onChange={(_n: string, value: string) => onChange?.(name, [startColor, value])}
 			/>
 		</div>
 	);

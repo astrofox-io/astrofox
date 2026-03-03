@@ -4,7 +4,11 @@ import React from "react";
 
 const { APP_NAME, APP_VERSION } = env;
 
-export default function About({ onClose }: any) {
+interface AboutProps {
+	onClose?: () => void;
+}
+
+export default function About({ onClose }: AboutProps) {
 	return (
 		<div className={"text-neutral-100 text-center cursor-default p-8 bg-[url(/images/about_bg.jpg)_no-repeat_center_center_fixed]"}>
 			<div className={"[font-family:var(--font-oswald),_sans-serif] font-[100] text-2xl uppercase tracking-widest mb-8"}>{APP_NAME}</div>

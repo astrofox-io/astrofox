@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ignoreEvents } from "@/lib/utils/react";
 import { raiseError } from "@/lib/view/actions/error";
 import Icon from "@/lib/view/components/interface/Icon";
@@ -8,19 +7,19 @@ import { FolderOpen, Times } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
 
-function isFileUrlSource(src) {
+function isFileUrlSource(src: string) {
 	return /^file:\/\//i.test(src || "");
 }
 
-function isWindowsPathSource(src) {
+function isWindowsPathSource(src: string) {
 	return /^[a-zA-Z]:[\\/]/.test(src || "");
 }
 
-function isUncPathSource(src) {
+function isUncPathSource(src: string) {
 	return /^\\\\/.test(src || "");
 }
 
-function toFileUrl(path) {
+function toFileUrl(path: string) {
 	if (!path || typeof path !== "string") {
 		return "";
 	}
@@ -55,7 +54,13 @@ function toFileUrl(path) {
 	return sourcePath;
 }
 
-function getFilePath(file) {
+interface FileWithPath {
+	path?: string;
+	filePath?: string;
+	fullPath?: string;
+}
+
+function getFilePath(file: FileWithPath | null) {
 	if (!file || typeof file !== "object") {
 		return "";
 	}
@@ -75,25 +80,31 @@ function getFilePath(file) {
 	return "";
 }
 
-export default function VideoInput({ name, value, onChange }: any) {
-	const video = useRef<any>(null);
+interface VideoInputProps {
+	name: string;
+	value?: string;
+	onChange?: (props: Record<string, unknown>) => void;
+}
+
+export default function VideoInput({ name, value, onChange }: VideoInputProps) {
+	const video = useRef<HTMLVideoElement>(null);
 	const hasVideo = value !== BLANK_IMAGE;
 
-	function loadVideoSrc(src) {
-		if (video.current.src !== src) {
-			video.current.src = src;
+	function loadVideoSrc(src: string | ArrayBuffer | null) {
+		if (video.current && video.current.src !== src) {
+			video.current.src = String(src);
 		}
 	}
 
-	async function loadVideoFile(file) {
+	async function loadVideoFile(file: File) {
 		try {
-			const sourcePath = getFilePath(file);
+			const sourcePath = getFilePath(file as unknown as FileWithPath);
 			const src = sourcePath
 				? toFileUrl(sourcePath)
 				: await api.readVideoFile(file);
 
 			loadVideoSrc(src);
-			onChange({
+			onChange?.({
 				[name]: src,
 				sourcePath: sourcePath || "",
 			});
@@ -102,7 +113,7 @@ export default function VideoInput({ name, value, onChange }: any) {
 		}
 	}
 
-	async function handleDrop(e) {
+	async function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
 
 		await loadVideoFile(e.dataTransfer.files[0]);
@@ -120,7 +131,7 @@ export default function VideoInput({ name, value, onChange }: any) {
 
 	function handleDelete() {
 		loadVideoSrc("");
-		onChange({
+		onChange?.({
 			[name]: BLANK_IMAGE,
 			sourcePath: "",
 		});

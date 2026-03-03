@@ -1,10 +1,10 @@
-const byteToHex = [];
+const byteToHex: string[] = [];
 
 for (let n = 0; n <= 0xff; n++) {
 	byteToHex.push(n.toString(16).padStart(2, "0"));
 }
 
-function toHexString(buffer) {
+function toHexString(buffer: Uint8Array) {
 	const hexOctets = new Array(buffer.length);
 
 	for (let i = 0; i < buffer.length; i++) {

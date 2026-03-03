@@ -1,14 +1,18 @@
-// @ts-nocheck
 import { logger } from "@/lib/view/global";
 import create from "zustand";
 import { showModal } from "./modals";
 
-const initialState = {
+interface ErrorState {
+	error: string | null;
+	message: string | null;
+}
+
+const initialState: ErrorState = {
 	error: null,
 	message: null,
 };
 
-const errorStore = create(() => ({
+const errorStore = create<ErrorState>(() => ({
 	...initialState,
 }));
 
@@ -16,12 +20,12 @@ export function clearError() {
 	errorStore.setState({ ...initialState });
 }
 
-export function raiseError(message, error) {
+export function raiseError(message: string, error?: unknown) {
 	if (error) {
-		logger.error(`${message}\n`, error.toString());
+		logger.error(`${message}\n`, String(error));
 	}
 
-	errorStore.setState({ message, error });
+	errorStore.setState({ message, error: error ? String(error) : null });
 
 	showModal("ErrorDialog", { title: "Error" });
 }

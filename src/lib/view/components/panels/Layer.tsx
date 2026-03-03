@@ -1,39 +1,51 @@
-// @ts-nocheck
 import TextInput from "@/lib/view/components/inputs/TextInput";
 import Icon from "@/lib/view/components/interface/Icon";
 import { Eye, TrashEmpty } from "@/lib/view/icons";
+import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
 import React, { useState } from "react";
+
+interface LayerProps {
+	id: string;
+	name?: string;
+	icon?: LucideIcon | null;
+	className?: string;
+	active?: boolean;
+	enabled?: boolean;
+	onLayerClick?: (id: string) => void;
+	onLayerUpdate?: (id: string, prop: string, value: unknown) => void;
+	onLayerDelete?: ((id: string) => void) | null;
+}
 
 export default function Layer({
 	id,
 	name = "",
 	icon = null,
-	className = null,
+	className,
 	active = false,
 	enabled = true,
-	onLayerClick = () => {},
-	onLayerUpdate = () => {},
+	onLayerClick,
+	onLayerUpdate,
 	onLayerDelete = null,
-}) {
+}: LayerProps) {
 	const [edit, setEdit] = useState(false);
 
 	function handleLayerClick() {
-		onLayerClick(id);
+		onLayerClick?.(id);
 	}
 
 	function handleEnableClick() {
-		onLayerUpdate(id, "enabled", !enabled);
+		onLayerUpdate?.(id, "enabled", !enabled);
 	}
 
-	function handleNameChange(name, val) {
+	function handleNameChange(name: string, val: string) {
 		if (val.length > 0) {
-			onLayerUpdate(id, name, val);
+			onLayerUpdate?.(id, name, val);
 		}
 		setEdit(false);
 	}
 
-	function handleEnableEdit(e) {
+	function handleEnableEdit(e: React.MouseEvent) {
 		e.stopPropagation();
 		setEdit(true);
 	}
@@ -42,7 +54,7 @@ export default function Layer({
 		setEdit(false);
 	}
 
-	function handleDeleteClick(e) {
+	function handleDeleteClick(e: React.MouseEvent) {
 		e.stopPropagation();
 		if (onLayerDelete) {
 			onLayerDelete(id);
@@ -67,7 +79,7 @@ export default function Layer({
 					<TextInput
 						name="displayName"
 						value={name}
-						width="100%"
+						width={undefined as unknown as number}
 						className={
 							"h-7 !px-2 !leading-7 !rounded-md !bg-neutral-800 !border-primary"
 						}
@@ -75,7 +87,6 @@ export default function Layer({
 						autoFocus
 						autoSelect
 						onChange={handleNameChange}
-						onCancel={handleCancelEdit}
 					/>
 				) : (
 					name

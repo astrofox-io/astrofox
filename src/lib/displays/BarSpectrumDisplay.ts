@@ -1,4 +1,3 @@
-// @ts-nocheck
 import FFTParser from "@/lib/audio/FFTParser";
 import CanvasBars from "@/lib/canvas/CanvasBars";
 import Display from "@/lib/core/Display";
@@ -6,7 +5,9 @@ import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
 export default class BarSpectrumDisplay extends Display {
-	[key: string]: any;
+	declare bars: CanvasBars;
+	declare parser: FFTParser;
+
 	static config = {
 		name: "BarSpectrumDisplay",
 		description: "Displays an audio bar spectrum.",
@@ -98,7 +99,7 @@ export default class BarSpectrumDisplay extends Display {
 			},
 			barWidth: {
 				type: "number",
-				min: property("barWidthAutoSize", (n) => (n ? -1 : 1)),
+				min: property("barWidthAutoSize", (n: unknown) => (n ? -1 : 1)),
 				max: stageWidth(),
 				hidden: property("barWidthAutoSize"),
 				withRange: true,
@@ -112,7 +113,7 @@ export default class BarSpectrumDisplay extends Display {
 			},
 			barSpacing: {
 				type: "number",
-				min: property("barSpacingAutoSize", (n) => (n ? -1 : 1)),
+				min: property("barSpacingAutoSize", (n: unknown) => (n ? -1 : 1)),
 				max: stageWidth(),
 				hidden: property("barSpacingAutoSize"),
 				withRange: true,
@@ -128,14 +129,14 @@ export default class BarSpectrumDisplay extends Display {
 			x: {
 				label: "X",
 				type: "number",
-				min: stageWidth((n) => -n),
+				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: stageWidth((n) => -n),
+				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
 			},
@@ -159,19 +160,20 @@ export default class BarSpectrumDisplay extends Display {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(BarSpectrumDisplay, properties);
 
 		const canvas = new OffscreenCanvas(1, 1);
-		this.bars = new CanvasBars(this.properties, canvas);
+		const props = this.properties as Record<string, unknown>;
+		this.bars = new CanvasBars(props, canvas);
 		this.parser = new FFTParser({
-			...this.properties,
+			...props,
 			fftSize: FFT_SIZE,
 			sampleRate: SAMPLE_RATE,
 		});
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const { barWidthAutoSize, barSpacingAutoSize } = properties;
 
 		if (barWidthAutoSize !== undefined) {

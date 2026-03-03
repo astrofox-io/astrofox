@@ -2,21 +2,26 @@ import Entity from "@/lib/core/Entity";
 import { normalize } from "@/lib/utils/math";
 
 export default class WaveParser extends Entity {
-	[key: string]: any;
+	output: Float32Array;
+	buffer: Float32Array;
+
 	static defaultProperties = {
 		smoothingTimeConstant: 0,
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super("WaveParser", { ...WaveParser.defaultProperties, ...properties });
 
 		this.output = new Float32Array();
 		this.buffer = new Float32Array();
 	}
 
-	parseTimeData(data, size) {
+	parseTimeData(data: Float32Array, size: number): Float32Array {
 		let { output, buffer } = this;
-		const { smoothingTimeConstant } = this.properties;
+		const { smoothingTimeConstant } = this.properties as Record<
+			string,
+			number
+		>;
 		const step = data.length / size;
 
 		// Resize data arrays

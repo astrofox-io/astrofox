@@ -2,7 +2,6 @@ import Effect from "@/lib/core/Effect";
 import { stageWidth } from "@/lib/utils/controls";
 
 export default class RGBShiftEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "RGBShiftEffect",
 		description: "RGB shift effect.",
@@ -32,7 +31,7 @@ export default class RGBShiftEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(RGBShiftEffect, properties);
 	}
 }

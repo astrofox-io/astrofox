@@ -3,7 +3,12 @@ import { db2mag, floor, normalize } from "@/lib/utils/math";
 import { FFT_SIZE, SAMPLE_RATE } from "@/lib/view/constants";
 
 export default class FFTParser extends Entity {
-	[key: string]: any;
+	startBin: number = 0;
+	endBin: number = 0;
+	totalBins: number = 0;
+	output: Float32Array = new Float32Array();
+	buffer: Float32Array = new Float32Array();
+
 	static defaultProperties = {
 		fftSize: FFT_SIZE,
 		sampleRate: SAMPLE_RATE,
@@ -14,14 +19,15 @@ export default class FFTParser extends Entity {
 		maxFrequency: SAMPLE_RATE / 2,
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super("FFTParser", { ...FFTParser.defaultProperties, ...properties });
 
 		this.init();
 	}
 
 	init() {
-		const { fftSize, sampleRate, minFrequency, maxFrequency } = this.properties;
+		const { fftSize, sampleRate, minFrequency, maxFrequency } =
+			this.properties as Record<string, number>;
 
 		const range = sampleRate / fftSize;
 
@@ -30,7 +36,7 @@ export default class FFTParser extends Entity {
 		this.totalBins = this.endBin - this.startBin;
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const changed = super.update(properties);
 
 		if (changed) {
@@ -40,17 +46,23 @@ export default class FFTParser extends Entity {
 		return changed;
 	}
 
-	getValue(fft) {
-		const { minDecibels, maxDecibels } = this.properties;
+	getValue(fft: number): number {
+		const { minDecibels, maxDecibels } = this.properties as Record<
+			string,
+			number
+		>;
 		const db = minDecibels * (1 - fft / 256);
 
 		return normalize(db2mag(db), db2mag(minDecibels), db2mag(maxDecibels));
 	}
 
-	parseFFT(fft, bins) {
+	parseFFT(fft: Uint8Array | Float32Array, bins?: number): Float32Array {
 		let { output, buffer } = this;
 		const { startBin, endBin, totalBins } = this;
-		const { smoothingTimeConstant } = this.properties;
+		const { smoothingTimeConstant } = this.properties as Record<
+			string,
+			number
+		>;
 		const size = bins || totalBins;
 
 		// Resize data arrays

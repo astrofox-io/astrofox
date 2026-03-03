@@ -1,24 +1,29 @@
 import CanvasBars from "@/lib/canvas/CanvasBars";
 import Entity from "@/lib/core/Entity";
+import type { CanvasElement } from "@/lib/types";
 
 export default class CanvasAudio extends Entity {
-	[key: string]: any;
+	bars: CanvasBars;
+	results: Float32Array;
+
 	static defaultProperties = {
 		bars: 100,
 	};
 
-	constructor(properties, canvas) {
+	constructor(properties: Record<string, unknown>, canvas: CanvasElement) {
 		super("CanvasAudio", { ...CanvasAudio.defaultProperties, ...properties });
 
 		this.bars = new CanvasBars(properties, canvas);
-		this.results = new Float32Array(this.properties.bars);
+		this.results = new Float32Array(
+			(this.properties as Record<string, number>).bars,
+		);
 	}
 
 	getCanvas() {
 		return this.bars.canvas;
 	}
 
-	parseAudioBuffer(buffer) {
+	parseAudioBuffer(buffer: AudioBuffer): Float32Array {
 		const { results } = this;
 		const size = buffer.length / results.length;
 		const step = ~~(size / 10) || 1;
@@ -52,7 +57,7 @@ export default class CanvasAudio extends Entity {
 		return results;
 	}
 
-	render(data) {
+	render(data: AudioBuffer) {
 		this.bars.render(this.parseAudioBuffer(data));
 	}
 }

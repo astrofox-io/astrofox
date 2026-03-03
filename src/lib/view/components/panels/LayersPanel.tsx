@@ -11,8 +11,23 @@ import SceneLayer from "@/lib/view/components/panels/SceneLayer";
 import { ChevronDown, ChevronUp, Picture } from "@/lib/view/icons";
 import React, { useMemo } from "react";
 
+interface SceneElement {
+  id: string;
+  type: string;
+  displayName: string;
+  enabled: boolean;
+}
+
+interface SceneData {
+  id: string;
+  displayName: string;
+  enabled: boolean;
+  displays: SceneElement[];
+  effects: SceneElement[];
+}
+
 export default function LayersPanel() {
-  const scenes = useScenes((state) => state.scenes);
+  const scenes = useScenes((state) => state.scenes) as SceneData[];
   const activeElementId = useApp((state) => state.activeElementId);
   const hasScenes = scenes.length > 0;
   const layerSelected = hasScenes && activeElementId;
@@ -20,12 +35,12 @@ export default function LayersPanel() {
   const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
 
   const activeScene = useMemo(() => {
-    return scenes.reduce((memo, scene) => {
+    return scenes.reduce((memo: SceneData | undefined, scene: SceneData) => {
       if (!memo) {
         if (
           scene?.id === activeElementId ||
-          scene?.displays.find((e) => e.id === activeElementId) ||
-          scene?.effects.find((e) => e.id === activeElementId)
+          scene?.displays.find((e: { id: string }) => e.id === activeElementId) ||
+          scene?.effects.find((e: { id: string }) => e.id === activeElementId)
         ) {
           memo = scene;
         }
@@ -49,7 +64,7 @@ export default function LayersPanel() {
     // Check displays and effects within the owning scene
     for (const scene of scenes) {
       const displayIndex = scene.displays.findIndex(
-        (d) => d.id === activeElementId,
+        (d: { id: string }) => d.id === activeElementId,
       );
       if (displayIndex > -1) {
         return {
@@ -59,7 +74,7 @@ export default function LayersPanel() {
       }
 
       const effectIndex = scene.effects.findIndex(
-        (e) => e.id === activeElementId,
+        (e: { id: string }) => e.id === activeElementId,
       );
       if (effectIndex > -1) {
         return {
@@ -72,11 +87,11 @@ export default function LayersPanel() {
     return { canMoveUp: false, canMoveDown: false };
   }, [scenes, activeElementId, layerSelected]);
 
-  function handleLayerClick(id) {
+  function handleLayerClick(id: string) {
     setActiveElementId(id);
   }
 
-  function handleLayerUpdate(id, prop, value) {
+  function handleLayerUpdate(id: string, prop: string, value: unknown) {
     updateElement(id, prop, value);
   }
 
@@ -93,15 +108,15 @@ export default function LayersPanel() {
     moveElement(activeElementId, -1);
   }
 
-  function handleRemove(id) {
+  function handleRemove(id: string) {
     if (!id) return;
 
-    const ownerScene = scenes.reduce((memo, scene) => {
+    const ownerScene = scenes.reduce((memo: SceneData | undefined, scene: SceneData) => {
       if (!memo) {
         if (
           scene?.id === id ||
-          scene?.displays.find((e) => e.id === id) ||
-          scene?.effects.find((e) => e.id === id)
+          scene?.displays.find((e: { id: string }) => e.id === id) ||
+          scene?.effects.find((e: { id: string }) => e.id === id)
         ) {
           memo = scene;
         }
@@ -116,11 +131,11 @@ export default function LayersPanel() {
       if (ownerScene) {
         const { displays, effects } = ownerScene;
         const element =
-          reverse(displays).find((e) => e !== id) ||
-          reverse(effects).find((e) => e !== id);
+          reverse(displays).find((e: { id: string }) => (e as { id: string }).id !== id) ||
+          reverse(effects).find((e: { id: string }) => (e as { id: string }).id !== id);
 
         if (element) {
-          setActiveElementId(element?.id);
+          setActiveElementId((element as { id: string })?.id);
         } else {
           setActiveElementId(ownerScene?.id);
         }

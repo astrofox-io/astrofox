@@ -1,10 +1,24 @@
 import { useCallback, useLayoutEffect, useState } from "react";
 
-export default function useMeasure() {
-	const [dimensions, setDimensions] = useState({});
-	const [node, setNode] = useState(null);
+interface Dimensions {
+	width?: number;
+	height?: number;
+	top?: number;
+	left?: number;
+	right?: number;
+	bottom?: number;
+	x?: number;
+	y?: number;
+}
 
-	const ref = useCallback((node) => setNode(node), []);
+export default function useMeasure() {
+	const [dimensions, setDimensions] = useState<Dimensions>({});
+	const [node, setNode] = useState<HTMLElement | null>(null);
+
+	const ref = useCallback(
+		(node: HTMLElement | null) => setNode(node),
+		[],
+	);
 
 	const measure = useCallback(() => {
 		window.requestAnimationFrame(() => {
@@ -28,5 +42,5 @@ export default function useMeasure() {
 		}
 	}, [node]);
 
-	return [ref, dimensions, measure];
+	return [ref, dimensions, measure] as const;
 }

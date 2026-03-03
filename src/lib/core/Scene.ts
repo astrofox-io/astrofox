@@ -35,8 +35,18 @@ const blendOptions = [
 	"Reflect",
 ];
 
+interface SceneElement {
+	id: string;
+	scene: unknown;
+	setSize?: (width: number, height: number) => void;
+	addToScene?: (scene: { getSize: () => { width: number; height: number } }) => void;
+	removeFromScene?: (scene: Scene) => void;
+	toJSON: () => Record<string, unknown>;
+}
+
 export default class Scene extends Display {
-	[key: string]: any;
+	[key: string]: unknown;
+
 	static config = {
 		name: "Scene",
 		description: "Scene display.",
@@ -72,12 +82,17 @@ export default class Scene extends Display {
 			inverse: {
 				label: "Inverse",
 				type: "toggle",
-				hidden: (display) => !display.properties.mask,
+				hidden: (display: { properties: Record<string, unknown> }) =>
+					!display.properties.mask,
 			},
 		},
 	};
 
-	constructor(properties) {
+	declare displays: EntityList;
+	declare effects: EntityList;
+	declare stage: unknown;
+
+	constructor(properties?: Record<string, unknown>) {
 		super(Scene, properties);
 
 		this.stage = null;
@@ -87,47 +102,54 @@ export default class Scene extends Display {
 		this.getSize = this.getSize.bind(this);
 	}
 
-	getSize() {
-		if (this.stage?.getSize) {
-			return this.stage.getSize();
+	getSize(): { width: number; height: number } {
+		const stage = this.stage as
+			| { getSize?: () => { width: number; height: number } }
+			| null;
+		if (stage?.getSize) {
+			return stage.getSize();
 		}
 
 		return { width: 1, height: 1 };
 	}
 
-	setSize(width, height) {
-		this.displays.forEach((display) => {
+	setSize(width: number, height: number) {
+		this.displays.forEach((display: SceneElement) => {
 			if (display.setSize) {
 				display.setSize(width, height);
 			}
 		});
 
-		this.effects.forEach((effect) => {
+		this.effects.forEach((effect: SceneElement) => {
 			if (effect.setSize) {
 				effect.setSize(width, height);
 			}
 		});
 	}
 
-	getTarget(obj) {
-		return obj instanceof Effect ? this.effects : this.displays;
+	getTarget(obj: unknown): EntityList {
+		return obj instanceof Effect
+			? this.effects
+			: this.displays;
 	}
 
-	getElementById(id) {
+	getElementById(id: string) {
 		return this.displays.getElementById(id) || this.effects.getElementById(id);
 	}
 
-	hasElement(obj) {
+	hasElement(obj: SceneElement) {
 		return !!this.getElementById(obj.id);
 	}
 
-	addElement(obj, index) {
+	addElement(obj: SceneElement, index?: number) {
 		if (!obj) {
 			return;
 		}
 
 		const { getSize } = this;
-		const scene = { getSize };
+		const scene = { getSize } as {
+			getSize: () => { width: number; height: number };
+		};
 
 		const target = this.getTarget(obj);
 
@@ -140,7 +162,10 @@ export default class Scene extends Display {
 		}
 
 		if (obj.setSize) {
-			const { width, height } = this.stage.getSize();
+			const stage = this.stage as {
+				getSize: () => { width: number; height: number };
+			};
+			const { width, height } = stage.getSize();
 
 			obj.setSize(width, height);
 		}
@@ -148,7 +173,7 @@ export default class Scene extends Display {
 		return obj;
 	}
 
-	removeElement(obj) {
+	removeElement(obj: SceneElement) {
 		if (!this.hasElement(obj)) {
 			return false;
 		}
@@ -166,8 +191,9 @@ export default class Scene extends Display {
 		return true;
 	}
 
-	shiftElement(obj, spaces) {
-		if (!this.hasElement(obj)) {
+	shiftElement(obj: unknown, spaces: number) {
+		const element = obj as SceneElement;
+		if (!this.hasElement(element)) {
 			return false;
 		}
 
@@ -182,8 +208,8 @@ export default class Scene extends Display {
 
 		return {
 			...json,
-			displays: displays.map((display) => display.toJSON()),
-			effects: effects.map((effect) => effect.toJSON()),
+			displays: displays.map((display: SceneElement) => display.toJSON()),
+			effects: effects.map((effect: SceneElement) => effect.toJSON()),
 		};
 	}
 }

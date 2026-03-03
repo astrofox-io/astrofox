@@ -1,13 +1,21 @@
 import classNames from "classnames";
 import React from "react";
 
+interface CheckboxInputProps {
+	name?: string;
+	value?: boolean;
+	label?: string;
+	labelPosition?: "left" | "right";
+	onChange?: (name: string, value: boolean) => void;
+}
+
 export default function CheckboxInput({
 	name = "checkbox",
 	value = false,
 	label,
 	labelPosition = "right",
 	onChange,
-}: any) {
+}: CheckboxInputProps) {
 	return (
 		<div className={"flex items-center"}>
 			<div
@@ -18,7 +26,7 @@ export default function CheckboxInput({
 							value,
 					},
 				)}
-				onClick={() => onChange(name, !value)}
+				onClick={() => onChange?.(name, !value)}
 			/>
 			{label && (
 				<div

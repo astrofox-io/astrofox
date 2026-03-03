@@ -1,48 +1,54 @@
 import Entity from "@/lib/core/Entity";
+import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { resetCanvas } from "@/lib/utils/canvas";
 
 const MIN_RESIZE_WIDTH = 100;
 
 export default class CanvasImage extends Entity {
-	[key: string]: any;
+	canvas: CanvasElement;
+	context: CanvasContext;
+	image: HTMLImageElement;
+	mipmaps: OffscreenCanvas[];
+
 	static defaultProperties = {
 		src: "",
 		width: 1,
 		height: 1,
 	};
 
-	constructor(properties, canvas) {
+	constructor(properties: Record<string, unknown>, canvas: CanvasElement) {
 		super("CanvasImage", { ...CanvasImage.defaultProperties, ...properties });
 
-		const { src } = this.properties;
+		const { src } = this.properties as Record<string, unknown>;
 
 		this.canvas = canvas;
-		this.context = this.canvas.getContext("2d");
+		this.context = this.canvas.getContext("2d") as CanvasContext;
+		this.mipmaps = [];
 
 		this.image = new Image();
 		this.image.onload = () => {
 			this.generateMipMaps();
 			this.render();
 		};
-		this.image.src = src;
+		this.image.src = src as string;
 	}
 
-	getResizeSteps(sourceWidth, targetWidth) {
+	getResizeSteps(sourceWidth: number, targetWidth: number) {
 		return Math.ceil(Math.log(sourceWidth / targetWidth) / Math.log(2));
 	}
 
 	generateMipMaps() {
 		const { image } = this;
 		const steps = this.getResizeSteps(image.naturalWidth, MIN_RESIZE_WIDTH);
-		const mipmaps = [];
-		let src = image;
+		const mipmaps: OffscreenCanvas[] = [];
+		let src: HTMLImageElement | OffscreenCanvas = image;
 		let width = image.naturalWidth / 2;
 		let height = image.naturalHeight / 2;
 
 		for (let i = 0; i < steps; i += 1) {
 			const canvas = new OffscreenCanvas(width, height);
 
-			canvas.getContext("2d").drawImage(src, 0, 0, width, height);
+			canvas.getContext("2d")!.drawImage(src, 0, 0, width, height);
 
 			mipmaps.push(canvas);
 
@@ -54,12 +60,13 @@ export default class CanvasImage extends Entity {
 		this.mipmaps = mipmaps;
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const changed = super.update(properties);
 
 		if (changed) {
-			if (this.image.src !== this.properties.src) {
-				this.image.src = this.properties.src;
+			if (this.image.src !== (this.properties as Record<string, unknown>).src) {
+				this.image.src = (this.properties as Record<string, unknown>)
+					.src as string;
 			}
 		}
 
@@ -67,12 +74,8 @@ export default class CanvasImage extends Entity {
 	}
 
 	render() {
-		const {
-			canvas,
-			context,
-			image,
-			properties: { width, height },
-		} = this;
+		const { canvas, context, image } = this;
+		const { width, height } = this.properties as Record<string, number>;
 
 		if (!image.src) return;
 
@@ -81,9 +84,9 @@ export default class CanvasImage extends Entity {
 
 		// Resize smaller
 		if (width < image.naturalWidth || height < image.naturalHeight) {
-			let src = image;
+			let src: HTMLImageElement | OffscreenCanvas = image;
 
-			this.mipmaps.forEach((map) => {
+			this.mipmaps.forEach((map: OffscreenCanvas) => {
 				if (width < map.width) {
 					src = map;
 				}

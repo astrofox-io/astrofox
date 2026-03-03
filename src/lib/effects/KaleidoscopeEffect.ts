@@ -1,7 +1,6 @@
 import Effect from "@/lib/core/Effect";
 
 export default class KaleidoscopeEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "KaleidoscopeEffect",
 		description: "Kaleidoscope effect.",
@@ -31,7 +30,7 @@ export default class KaleidoscopeEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(KaleidoscopeEffect, properties);
 	}
 }

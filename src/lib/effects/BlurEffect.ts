@@ -3,11 +3,10 @@ import { property, stageHeight, stageWidth } from "@/lib/utils/controls";
 
 const blurOptions = ["Box", "Circular", "Gaussian", "Triangle", "Zoom"];
 
-const showZoomOption = property("type", (value) => value !== "Zoom");
-const showLensOption = property("type", (value) => value !== "Lens");
+const showZoomOption = property("type", (value: unknown) => value !== "Zoom");
+const showLensOption = property("type", (value: unknown) => value !== "Lens");
 
 export default class BlurEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "BlurEffect",
 		description: "Blur effect.",
@@ -40,16 +39,16 @@ export default class BlurEffect extends Effect {
 			x: {
 				label: "X",
 				type: "number",
-				min: stageWidth((n) => -n / 2),
-				max: stageWidth((n) => n / 2),
+				min: stageWidth((n: number) => -n / 2),
+				max: stageWidth((n: number) => n / 2),
 				hidden: showZoomOption,
 				withRange: true,
 			},
 			y: {
 				label: "Y",
 				type: "number",
-				min: stageHeight((n) => -n / 2),
-				max: stageHeight((n) => n / 2),
+				min: stageHeight((n: number) => -n / 2),
+				max: stageHeight((n: number) => n / 2),
 				hidden: showZoomOption,
 				withRange: true,
 			},
@@ -81,7 +80,7 @@ export default class BlurEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(BlurEffect, properties);
 	}
 }

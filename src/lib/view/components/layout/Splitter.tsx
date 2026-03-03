@@ -5,6 +5,24 @@ import { DotsHorizontal } from "@/lib/view/icons";
 import classNames from "classnames";
 import React, { useRef } from "react";
 
+interface SplitterStartValues {
+	startWidth: number | null;
+	startHeight: number | null;
+	startX: number;
+	startY: number;
+}
+
+interface SplitterProps {
+	type?: "horizontal" | "vertical";
+	width?: number | null;
+	height?: number | null;
+	minWidth?: number;
+	minHeight?: number;
+	maxWidth?: number;
+	maxHeight?: number;
+	onResize?: (width: number | null, height: number | null) => void;
+}
+
 export default function Splitter({
 	type = "horizontal",
 	width,
@@ -14,34 +32,34 @@ export default function Splitter({
 	maxWidth,
 	maxHeight,
 	onResize,
-}: any) {
+}: SplitterProps) {
 	const startDrag = useMouseDrag();
-	const startValues = useRef<any>(null);
+	const startValues = useRef<SplitterStartValues | null>(null);
 
-	function handleDrag(e) {
-		const { startWidth, startHeight, startX, startY } = startValues.current;
+	function handleDrag(e: MouseEvent) {
+		const { startWidth, startHeight, startX, startY } = startValues.current!;
 		const deltaX = e.pageX - startX;
 		const deltaY = e.pageY - startY;
-		let newWidth = width;
-		let newHeight = height;
+		let newWidth = width ?? null;
+		let newHeight = height ?? null;
 
 		switch (type) {
 			case "horizontal":
-				newHeight = clamp(startHeight + deltaY, minHeight, maxHeight);
+				newHeight = clamp((startHeight ?? 0) + deltaY, minHeight ?? 0, maxHeight ?? Infinity);
 				break;
 
 			case "vertical":
-				newWidth = clamp(startWidth + deltaX, minWidth, maxWidth);
+				newWidth = clamp((startWidth ?? 0) + deltaX, minWidth ?? 0, maxWidth ?? Infinity);
 				break;
 		}
 
-		onResize(newWidth, newHeight);
+		onResize?.(newWidth, newHeight);
 	}
 
-	function handleDragStart(e) {
+	function handleDragStart(e: React.MouseEvent) {
 		startValues.current = {
-			startWidth: width,
-			startHeight: height,
+			startWidth: width ?? null,
+			startHeight: height ?? null,
 			startX: e.pageX,
 			startY: e.pageY,
 		};

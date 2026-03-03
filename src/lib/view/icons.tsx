@@ -1,3 +1,4 @@
+import type { LucideProps } from "lucide-react";
 import {
 	ChevronsLeft as AngleDoubleLeft,
 	ChevronsRight as AngleDoubleRight,
@@ -72,10 +73,10 @@ export {
 	Warning,
 };
 
-export function Play(props) {
+export function Play(props: LucideProps) {
 	return <PlayBase strokeWidth={2.4} {...props} />;
 }
 
-export function Stop(props) {
+export function Stop(props: LucideProps) {
 	return <StopBase strokeWidth={2.4} {...props} />;
 }

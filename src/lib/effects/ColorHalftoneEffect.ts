@@ -1,7 +1,6 @@
 import Effect from "@/lib/core/Effect";
 
 export default class ColorHalftoneEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "ColorHalftoneEffect",
 		description: "Color halftone effect.",
@@ -32,7 +31,7 @@ export default class ColorHalftoneEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(ColorHalftoneEffect, properties);
 	}
 }

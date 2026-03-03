@@ -3,7 +3,6 @@ import Effect from "@/lib/core/Effect";
 const renderOptions = ["Square", "Hexagon"];
 
 export default class PixelateEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "PixelateEffect",
 		description: "Pixelate effect.",
@@ -30,7 +29,7 @@ export default class PixelateEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(PixelateEffect, properties);
 	}
 }

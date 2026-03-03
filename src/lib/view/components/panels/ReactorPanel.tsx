@@ -22,7 +22,7 @@ const METER_WIDTH = 20;
 
 export default function ReactorPanel() {
   const activeReactorId = useApp((state) => state.activeReactorId);
-  const reactor = reactors.getElementById(activeReactorId);
+  const reactor = activeReactorId ? reactors.getElementById(activeReactorId) : undefined;
 
   if (!reactor) {
     return null;
@@ -31,14 +31,23 @@ export default function ReactorPanel() {
   return <ReactorControl reactor={reactor} />;
 }
 
-const ReactorControl = ({ reactor }: any) => {
-  const spectrum = useRef<any>(null);
-  const meter = useRef<any>(null);
-  const spectrumCanvas = useRef<any>(null);
-  const outputCanvas = useRef<any>(null);
-  const onChange = useEntity(reactor);
+interface ReactorControlProps {
+  reactor: {
+    displayName: string;
+    properties: Record<string, unknown>;
+    getResult: () => { fft: Float32Array | number[]; output: number };
+    [key: string]: unknown;
+  };
+}
 
-  function handleChange(props) {
+const ReactorControl = ({ reactor }: ReactorControlProps) => {
+  const spectrum = useRef<CanvasBars | null>(null);
+  const meter = useRef<CanvasMeter | null>(null);
+  const spectrumCanvas = useRef<HTMLCanvasElement>(null);
+  const outputCanvas = useRef<HTMLCanvasElement>(null);
+  const onChange = useEntity(reactor as unknown as Parameters<typeof useEntity>[0]);
+
+  function handleChange(props: Record<string, unknown>) {
     onChange(props);
   }
 
@@ -49,8 +58,8 @@ const ReactorControl = ({ reactor }: any) => {
   function draw() {
     const { fft, output } = reactor.getResult();
 
-    spectrum.current.render(fft);
-    meter.current.render(output);
+    spectrum.current?.render(fft);
+    meter.current?.render(output);
   }
 
   useEffect(() => {
@@ -64,7 +73,7 @@ const ReactorControl = ({ reactor }: any) => {
         color: "#775FD8",
         backgroundColor: "#FF0000",
       },
-      spectrumCanvas.current,
+      spectrumCanvas.current!,
     );
 
     meter.current = new CanvasMeter(
@@ -74,7 +83,7 @@ const ReactorControl = ({ reactor }: any) => {
         color: PRIMARY_COLOR,
         origin: "bottom",
       },
-      outputCanvas.current,
+      outputCanvas.current!,
     );
 
     events.on("render", draw);
@@ -95,7 +104,7 @@ const ReactorControl = ({ reactor }: any) => {
       <Header path={reactor.displayName.split("/")} />
       <div className={"flex flex-row justify-center items-center"}>
         <div className={"min-w-72 mt-2.5 mr-2.5 mb-0 ml-0"}>
-          <Control display={reactor} showHeader={false} />
+          <Control display={reactor as unknown as Parameters<typeof Control>[0]["display"]} showHeader={false} />
         </div>
         <div
           className={
@@ -109,7 +118,7 @@ const ReactorControl = ({ reactor }: any) => {
           />
           <BoxInput
             name="selection"
-            value={reactor.properties.selection}
+            value={reactor.properties.selection as { x: number; y: number; width: number; height: number }}
             minWidth={REACTOR_BAR_WIDTH}
             minHeight={REACTOR_BAR_WIDTH}
             maxWidth={SPECTRUM_WIDTH}
@@ -143,13 +152,17 @@ const ReactorControl = ({ reactor }: any) => {
   );
 };
 
-const Header = ({ path }: any) => (
+interface HeaderProps {
+  path: string[];
+}
+
+const Header = ({ path }: HeaderProps) => (
   <div
     className={
       "text-neutral-300 text-sm [text-shadow:1px_1px_0_var(--color-neutral-900)]"
     }
   >
-    {path.map((item, index) => (
+    {path.map((item: string, index: number) => (
       <span
         key={index}
         className={

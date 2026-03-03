@@ -1,3 +1,4 @@
+import type Display from "@/lib/core/Display";
 import { resolve } from "@/lib/utils/object";
 import { inputValueToProps } from "@/lib/utils/react";
 import Option from "@/lib/view/components/controls/Option";
@@ -5,11 +6,26 @@ import useEntity from "@/lib/view/hooks/useEntity";
 import classNames from "classnames";
 import React from "react";
 
+interface ControlProps {
+  display: Display & {
+    displayName: string;
+    properties: Record<string, unknown>;
+    constructor: {
+      config: {
+        label: string;
+        controls?: Record<string, Record<string, unknown>>;
+      };
+    };
+  };
+  className?: string;
+  showHeader?: boolean;
+}
+
 export default function Control({
   display,
   className,
   showHeader = true,
-}: any) {
+}: ControlProps) {
   const {
     displayName,
     constructor: {
@@ -19,8 +35,8 @@ export default function Control({
 
   const onChange = useEntity(display);
 
-  function mapOption(name, option) {
-    const props = {};
+  function mapOption(name: string, option: Record<string, unknown>) {
+    const props: Record<string, unknown> = {};
 
     for (const [name, value] of Object.entries(option)) {
       props[name] = resolve(value, [display]);
@@ -31,7 +47,7 @@ export default function Control({
         key={name}
         display={display}
         name={name}
-        value={display.properties[name]}
+        value={(display.properties as Record<string, unknown>)[name]}
         onChange={inputValueToProps(onChange)}
         {...props}
       />

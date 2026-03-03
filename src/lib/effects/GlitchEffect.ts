@@ -1,7 +1,9 @@
 import Effect from "@/lib/core/Effect";
+import type { RenderFrameData } from "@/lib/types";
 
 export default class GlitchEffect extends Effect {
-	[key: string]: any;
+	declare time: number;
+
 	static config = {
 		name: "GlitchEffect",
 		description: "Glitch effect.",
@@ -23,13 +25,13 @@ export default class GlitchEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(GlitchEffect, properties);
 
 		this.time = 0;
 	}
 
-	render(scene, data) {
+	render(scene: unknown, data: RenderFrameData) {
 		if (!data.hasUpdate) return;
 
 		this.time += data.delta;

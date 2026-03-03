@@ -1,5 +1,24 @@
+import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
 import React from "react";
+
+interface SpriteGlyph {
+	url: string;
+	viewBox: string;
+}
+
+type IconGlyph = LucideIcon | React.ComponentType<Record<string, unknown>> | SpriteGlyph;
+
+interface IconProps {
+	className?: string;
+	width?: number;
+	height?: number;
+	title?: string;
+	glyph?: IconGlyph | null;
+	monochrome?: boolean;
+	shapeRendering?: string;
+	onClick?: (e: React.MouseEvent) => void;
+}
 
 const Icon = ({
 	className,
@@ -7,12 +26,12 @@ const Icon = ({
 	height,
 	title,
 	glyph,
-	monochrome,
-	shapeRendering,
+	monochrome = true,
+	shapeRendering = "geometricPrecision",
 	onClick,
-}: any) => {
-	const isSpriteGlyph = glyph && typeof glyph === "object" && glyph.url;
-	const Glyph = glyph;
+}: IconProps) => {
+	const isSpriteGlyph = glyph && typeof glyph === "object" && "url" in glyph;
+	const Glyph = glyph as LucideIcon;
 
 	return (
 		<span
@@ -28,13 +47,13 @@ const Icon = ({
 		>
 			{isSpriteGlyph ? (
 				<svg
-					viewBox={glyph.viewBox}
+					viewBox={(glyph as SpriteGlyph).viewBox}
 					width={width}
 					height={height}
 					onClick={onClick}
 					shapeRendering={shapeRendering}
 				>
-					<use xlinkHref={glyph.url} />
+					<use xlinkHref={(glyph as SpriteGlyph).url} />
 				</svg>
 			) : Glyph ? (
 				<Glyph
@@ -46,11 +65,6 @@ const Icon = ({
 			) : null}
 		</span>
 	);
-};
-
-Icon.defaultProps = {
-	monochrome: true,
-	shapeRendering: "geometricPrecision",
 };
 
 export default Icon;

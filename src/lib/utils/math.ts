@@ -1,27 +1,27 @@
 /* eslint-disable no-bitwise, no-nested-ternary */
 // Fast rounding
-export function round(val) {
+export function round(val: number) {
 	return (val + 0.5) << 0;
 }
 
 // Fast ceiling
-export function ceil(val) {
+export function ceil(val: number) {
 	const n = val << 0;
 	return n === val ? n : n + 1;
 }
 
 // Fast floor
-export function floor(val) {
+export function floor(val: number) {
 	return ~~val;
 }
 
 // Clamps value between min and max
-export function clamp(num, min, max) {
+export function clamp(num: number, min: number, max: number) {
 	return num < min ? min : num > max ? max : num;
 }
 
 // Decimal places in a number
-export function decimals(num) {
+export function decimals(num: number) {
 	if (num % 1 !== 0) {
 		return +num.toString().split(".")[1].length;
 	}
@@ -29,7 +29,7 @@ export function decimals(num) {
 }
 
 // Round to nearest given interval
-export function roundTo(num, step) {
+export function roundTo(num: number, step: number) {
 	const d = decimals(step);
 	const n = ceil(num / step) * step;
 
@@ -37,39 +37,39 @@ export function roundTo(num, step) {
 }
 
 // Normalize value over a given range
-export function normalize(val, min, max) {
+export function normalize(val: number, min: number, max: number) {
 	const n = (val - min) / (max - min);
 
 	return clamp(n, 0, 1);
 }
 
 // Log base 10
-export function log10(val) {
+export function log10(val: number) {
 	return Math.log(val) / Math.LN10;
 }
 
 // Decibels to magnitude: Math.pow(10, 0.05 * val);
-export function db2mag(val) {
+export function db2mag(val: number) {
 	return Math.exp(0.1151292546497023 * val);
 }
 
 // Magnitude to decibels: 20 * log10(db)
-export function mag2db(val) {
+export function mag2db(val: number) {
 	return 20 * log10(val);
 }
 
 // Degrees to radians
-export function deg2rad(val) {
+export function deg2rad(val: number) {
 	return val * 0.017453292519943295;
 }
 
 // Radians to degrees
-export function rad2deg(val) {
+export function rad2deg(val: number) {
 	return val * 57.29577951308232;
 }
 
 // Hash code of a string
-export function hash(s) {
+export function hash(s: string) {
 	let h = 0;
 	if (s.length === 0) return h;
 

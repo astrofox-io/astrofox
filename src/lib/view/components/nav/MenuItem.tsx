@@ -1,7 +1,14 @@
 import classNames from "classnames";
 import React from "react";
 
-const MenuItem = ({ label, checked, disabled, onClick }: any) => (
+interface MenuItemProps {
+	label?: string;
+	checked?: boolean;
+	disabled?: boolean;
+	onClick?: () => void;
+}
+
+const MenuItem = ({ label, checked, disabled, onClick }: MenuItemProps) => (
 	<div
 		className={classNames(
 			"relative block text-sm py-1 px-2 min-w-44 rounded-md [&:hover]:text-neutral-100 [&:hover]:bg-primary [&:hover]:cursor-default",

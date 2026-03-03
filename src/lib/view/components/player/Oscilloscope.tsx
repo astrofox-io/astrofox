@@ -1,4 +1,3 @@
-// @ts-nocheck
 import WaveParser from "@/lib/audio/WaveParser";
 import CanvasWave from "@/lib/canvas/CanvasWave";
 import { PRIMARY_COLOR } from "@/lib/view/constants";
@@ -14,19 +13,21 @@ const canvasProperties = {
 
 export default function Oscilloscope() {
 	const { width, height } = canvasProperties;
-	const canvas = useRef<any>(null);
-	const display = useRef<any>(null);
-	const parser = useRef<any>(null);
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const display = useRef<CanvasWave | null>(null);
+	const parser = useRef<WaveParser | null>(null);
 
-	function draw({ td }: any) {
+	function draw(...args: unknown[]) {
+		const { td } = (args[0] ?? {}) as { td?: Float32Array | null };
+		if (!parser.current || !display.current || !td) return;
 		const data = parser.current.parseTimeData(td, width);
 
-		display.current.render(Array.from(data).flatMap((n, i) => [i, n]));
+		display.current.render(new Float32Array(Array.from(data).flatMap((n: number, i: number) => [i, n])), false);
 	}
 
 	useEffect(() => {
 		events.on("render", draw);
-		display.current = new CanvasWave(canvasProperties, canvas.current);
+		display.current = new CanvasWave(canvasProperties, canvas.current!);
 		parser.current = new WaveParser();
 
 		return () => {

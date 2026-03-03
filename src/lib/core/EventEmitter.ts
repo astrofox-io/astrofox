@@ -1,24 +1,32 @@
+import type { EventCallback } from "@/lib/types";
+
 export default class EventEmitter {
-	[key: string]: any;
-	on(event, fn) {
-		this.events = this.events || {};
+	events: Record<string, EventCallback[]> = {};
+
+	on(event: string, fn: EventCallback): number {
 		this.events[event] = this.events[event] || [];
 
 		return this.events[event].push(fn);
 	}
 
-	off(event, fn) {
-		if (!this.events || !this.events[event]) return;
+	once(event: string, fn: EventCallback): void {
+		const wrapper: EventCallback = (...args: unknown[]) => {
+			this.off(event, wrapper);
+			fn(...args);
+		};
+		this.on(event, wrapper);
+	}
+
+	off(event: string, fn: EventCallback): void {
+		if (!this.events[event]) return;
 
 		const events = this.events[event];
 
 		this.events[event] = events.filter((e) => e !== fn);
 	}
 
-	emit(...args) {
-		this.events = this.events || {};
-
-		const event = args.shift();
+	emit(...args: unknown[]): void {
+		const event = args.shift() as string;
 		const events = this.events[event] || [];
 
 		events.forEach((fn) => fn(...args));

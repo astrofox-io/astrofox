@@ -1,7 +1,14 @@
 import classNames from "classnames";
 import React from "react";
 
-const Button = ({ text, disabled, className, onClick }: any) => {
+interface ButtonProps {
+	text?: string;
+	disabled?: boolean;
+	className?: string;
+	onClick?: (() => void) | null;
+}
+
+const Button = ({ text, disabled, className, onClick }: ButtonProps) => {
 	return (
 		<span
 			className={classNames(
@@ -11,7 +18,7 @@ const Button = ({ text, disabled, className, onClick }: any) => {
 					"text-neutral-300 bg-neutral-600": disabled,
 				},
 			)}
-			onClick={disabled ? null : onClick}
+			onClick={disabled ? undefined : (onClick ?? undefined)}
 		>
 			{text}
 		</span>

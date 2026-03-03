@@ -2,6 +2,33 @@ import { clamp } from "@/lib/utils/math";
 import useMouseDrag from "@/lib/view/hooks/useMouseDrag";
 import React, { useRef } from "react";
 
+interface BoxValue {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
+interface DragStartValues {
+	position: string;
+	startX: number;
+	startY: number;
+	startWidth: number;
+	startHeight: number;
+	startLeft: number;
+	startTop: number;
+}
+
+interface BoxInputProps {
+	name?: string;
+	value: BoxValue;
+	minWidth?: number;
+	minHeight?: number;
+	maxWidth?: number;
+	maxHeight?: number;
+	onChange?: (name: string, value: BoxValue) => void;
+}
+
 export default function BoxInput({
 	name = "box",
 	value,
@@ -10,12 +37,12 @@ export default function BoxInput({
 	maxWidth = 100,
 	maxHeight = 100,
 	onChange,
-}: any) {
+}: BoxInputProps) {
 	const startDrag = useMouseDrag();
 	const { x, y, width, height } = value;
-	const startValues = useRef<any>(null);
+	const startValues = useRef<DragStartValues | null>(null);
 
-	function handleDrag(e) {
+	function handleDrag(e: MouseEvent) {
 		const {
 			startWidth,
 			startHeight,
@@ -24,10 +51,10 @@ export default function BoxInput({
 			position,
 			startTop,
 			startLeft,
-		} = startValues.current;
+		} = startValues.current!;
 		const deltaX = e.pageX - startX;
 		const deltaY = e.pageY - startY;
-		const value = { x, y, width, height };
+		const value: BoxValue = { x, y, width, height };
 
 		switch (position) {
 			case "top":
@@ -74,10 +101,10 @@ export default function BoxInput({
 				break;
 		}
 
-		onChange(name, value);
+		onChange?.(name, value);
 	}
 
-	const handleDragStart = (position) => (e) => {
+	const handleDragStart = (position: string) => (e: React.MouseEvent) => {
 		startValues.current = {
 			position,
 			startX: e.pageX,

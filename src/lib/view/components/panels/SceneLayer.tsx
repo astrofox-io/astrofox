@@ -1,14 +1,36 @@
 import { reverse } from "@/lib/utils/array";
 import Layer from "@/lib/view/components/panels/Layer";
 import { Cube, DocumentLandscape, Sun, Picture } from "@/lib/view/icons";
+import type { LucideIcon } from "lucide-react";
 import classNames from "classnames";
 import React, { useMemo } from "react";
 
-const icons = {
+const icons: Record<string, LucideIcon> = {
 	display: Cube,
 	effect: Sun,
 	webgl: Cube,
 };
+
+interface SceneElement {
+	id: string;
+	type: string;
+	displayName: string;
+	enabled: boolean;
+}
+
+interface SceneLayerProps {
+	scene: {
+		id: string;
+		displayName: string;
+		enabled: boolean;
+		displays: SceneElement[];
+		effects: SceneElement[];
+	};
+	activeElementId: string | null;
+	onLayerClick?: (id: string) => void;
+	onLayerUpdate?: (id: string, prop: string, value: unknown) => void;
+	onLayerDelete?: (id: string) => void;
+}
 
 export default function SceneLayer({
 	scene,
@@ -16,13 +38,13 @@ export default function SceneLayer({
 	onLayerClick,
 	onLayerUpdate,
 	onLayerDelete,
-}: any) {
+}: SceneLayerProps) {
 	const { id, displayName, enabled } = scene;
 
 	const displays = useMemo(() => reverse(scene.displays), [scene.displays]);
 	const effects = useMemo(() => reverse(scene.effects), [scene.effects]);
 
-	const renderLayer = ({ id, type, displayName, enabled }: any) => (
+	const renderLayer = ({ id, type, displayName, enabled }: SceneElement) => (
 		<Layer
 			key={id}
 			id={id}
@@ -51,8 +73,8 @@ export default function SceneLayer({
 				onLayerDelete={onLayerDelete}
 			/>
 			<div className={classNames("flex flex-col gap-0.5")}>
-				{effects.map((effect) => renderLayer(effect))}
-				{displays.map((display) => renderLayer(display))}
+				{effects.map((effect: SceneElement) => renderLayer(effect))}
+				{displays.map((display: SceneElement) => renderLayer(display))}
 			</div>
 		</div>
 	);

@@ -13,10 +13,10 @@ if (process.env.NODE_ENV !== "production") {
 if (process.env.NODE_ENV === "production") {
 	// Disable eval
 	// eslint-disable-next-line no-eval
-	globalThis.eval = undefined;
+	Reflect.deleteProperty(globalThis, "eval");
 }
 
-const container = document.getElementById("app");
+const container = document.getElementById("app")!;
 const root = createRoot(container);
 
 root.render(<App />);

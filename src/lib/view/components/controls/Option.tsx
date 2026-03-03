@@ -1,3 +1,4 @@
+import type Display from "@/lib/core/Display";
 import inputComponents from "@/lib/view/components/controls/inputComponents";
 import {
 	RangeInput,
@@ -8,6 +9,24 @@ import Icon from "@/lib/view/components/interface/Icon";
 import { Link, Unlink } from "@/lib/view/icons";
 import classNames from "classnames";
 import React from "react";
+
+interface OptionProps {
+	display: Display & { properties: Record<string, unknown> };
+	label?: string;
+	type?: string;
+	name: string;
+	value?: unknown;
+	className?: string;
+	onChange?: (name: string | Record<string, unknown>, value?: unknown) => void;
+	hidden?: boolean;
+	withReactor?: boolean;
+	withRange?: boolean;
+	withLink?: string;
+	inputProps?: Record<string, unknown>;
+	min?: number;
+	max?: number;
+	[key: string]: unknown;
+}
 
 export default function Option({
 	display,
@@ -23,11 +42,11 @@ export default function Option({
 	withLink,
 	inputProps,
 	...otherProps
-}: any) {
-	const [InputCompnent, defaultProps] = inputComponents[type] ?? [];
+}: OptionProps) {
+	const [InputCompnent, defaultProps] = type ? (inputComponents[type] ?? []) : [];
 	const showReactor = withReactor && display.getReactor?.(name);
 	const { min, max } = otherProps;
-	const inputs = [];
+	const inputs: React.ReactNode[] = [];
 
 	if (showReactor) {
 		inputs.push(
@@ -58,8 +77,8 @@ export default function Option({
 					key="range"
 					{...otherProps}
 					name={name}
-					value={value}
-					onChange={onChange}
+					value={value as number}
+					onChange={onChange as (name: string, value: number) => void}
 					smallThumb
 				/>,
 			);
@@ -107,7 +126,7 @@ export default function Option({
 							["text-neutral-500 opacity-50"]: !display.properties[withLink],
 						})}
 						glyph={display.properties[withLink] ? Link : Unlink}
-						onClick={() => onChange(withLink, !display.properties[withLink])}
+						onClick={() => onChange?.(withLink, !display.properties[withLink])}
 					/>
 				)}
 			</div>

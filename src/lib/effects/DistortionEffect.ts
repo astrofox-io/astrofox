@@ -1,7 +1,9 @@
 import Effect from "@/lib/core/Effect";
+import type { RenderFrameData } from "@/lib/types";
 
 export default class DistortionEffect extends Effect {
-	[key: string]: any;
+	declare time: number;
+
 	static config = {
 		name: "DistortionEffect",
 		description: "Distortion effect.",
@@ -34,19 +36,19 @@ export default class DistortionEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(DistortionEffect, properties);
 
 		this.time = 0;
 	}
 
-	render(scene, data) {
+	render(scene: unknown, data: RenderFrameData) {
 		if (!data.hasUpdate) return;
 
-		const { speed } = this.properties;
+		const { speed } = this.properties as Record<string, unknown>;
 
-		if (speed > 0) {
-			this.time += data.delta / (100 / speed);
+		if ((speed as number) > 0) {
+			this.time += data.delta / (100 / (speed as number));
 		}
 	}
 }

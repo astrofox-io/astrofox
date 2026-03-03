@@ -1,20 +1,15 @@
-// @ts-nocheck
 import AudioReactor from "@/lib/audio/AudioReactor";
 import EntityList from "@/lib/core/EntityList";
+import type { RenderFrameData } from "@/lib/types";
 
 export default class Reactors extends EntityList {
-	[key: string]: any;
-	constructor() {
-		super();
+	results: Record<string, number> = {};
 
-		this.results = {};
+	addReactor(reactor?: unknown) {
+		return this.addElement(reactor ?? new AudioReactor({}));
 	}
 
-	addReactor(reactor) {
-		return this.addElement(reactor ?? new AudioReactor());
-	}
-
-	removeReactor(reactor) {
+	removeReactor(reactor: unknown) {
 		this.removeElement(reactor);
 	}
 
@@ -22,12 +17,20 @@ export default class Reactors extends EntityList {
 		this.clear();
 	}
 
-	getResults(data) {
+	getResults(data: RenderFrameData): Record<string, number> {
 		if (data.hasUpdate) {
-			this.results = this.reduce((memo, reactor) => {
-				memo[reactor.id] = reactor.parse(data).output;
-				return memo;
-			}, {});
+			this.results = this.reduce(
+				(
+					memo: Record<string, number>,
+					reactor: { enabled: boolean; id: string; parse: (data: RenderFrameData) => { output: number } },
+				) => {
+					if (reactor.enabled) {
+						memo[reactor.id] = reactor.parse(data).output;
+					}
+					return memo;
+				},
+				{} as Record<string, number>,
+			);
 		}
 		return this.results;
 	}

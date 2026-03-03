@@ -7,7 +7,14 @@ import blackman from "window-function/blackman";
 import { updateExistingProps } from "../utils/object";
 
 export default class SpectrumAnalyzer extends Entity {
-	[key: string]: any;
+	audioContext: AudioContext;
+	analyzer: AnalyserNode;
+	fft: Uint8Array<ArrayBuffer> = new Uint8Array();
+	td: Float32Array<ArrayBuffer> = new Float32Array();
+	blackmanTable: Float32Array = new Float32Array();
+	buffer: AudioBuffer;
+	smoothing: Float32Array = new Float32Array();
+
 	static defaultProperties = {
 		fftSize: FFT_SIZE,
 		minDecibels: -100,
@@ -15,7 +22,7 @@ export default class SpectrumAnalyzer extends Entity {
 		smoothingTimeConstant: 0,
 	};
 
-	constructor(context, properties) {
+	constructor(context: AudioContext, properties?: Record<string, unknown>) {
 		super("SpectrumAnalyzer", {
 			...SpectrumAnalyzer.defaultProperties,
 			...properties,
@@ -25,10 +32,16 @@ export default class SpectrumAnalyzer extends Entity {
 
 		this.analyzer = Object.assign(context.createAnalyser(), this.properties);
 
+		this.buffer = context.createBuffer(
+			1,
+			(this.properties as Record<string, number>).fftSize,
+			context.sampleRate,
+		);
+
 		this.init();
 	}
 
-	update(properties) {
+	update(properties: Record<string, unknown>) {
 		const changed = super.update(properties);
 
 		const { fftSize } = properties;
@@ -70,14 +83,14 @@ export default class SpectrumAnalyzer extends Entity {
 
 	get gain() {
 		const { fft } = this;
-		return fft.reduce((a, b) => a + b) / fft.length;
+		return fft.reduce((a: number, b: number) => a + b) / fft.length;
 	}
 
-	getFloatTimeDomainData(array) {
+	getFloatTimeDomainData(array: Float32Array) {
 		array.set(this.buffer.getChannelData(0));
 	}
 
-	getFloatFrequencyData(array) {
+	getFloatFrequencyData(array: Float32Array) {
 		const { fftSize, smoothingTimeConstant } = this.analyzer;
 		const waveform = new Float32Array(fftSize);
 
@@ -107,7 +120,7 @@ export default class SpectrumAnalyzer extends Entity {
 		}
 	}
 
-	getByteTimeDomainData(array) {
+	getByteTimeDomainData(array: Uint8Array) {
 		const { fftSize } = this.analyzer;
 		const waveform = new Float32Array(fftSize);
 
@@ -118,7 +131,7 @@ export default class SpectrumAnalyzer extends Entity {
 		}
 	}
 
-	getByteFrequencyData(array) {
+	getByteFrequencyData(array: Uint8Array) {
 		const { minDecibels, maxDecibels, frequencyBinCount } = this.analyzer;
 		const spectrum = new Float32Array(frequencyBinCount);
 
@@ -131,7 +144,7 @@ export default class SpectrumAnalyzer extends Entity {
 		}
 	}
 
-	process(input) {
+	process(input?: AudioBuffer) {
 		if (input) {
 			const data = downmix(input);
 			this.buffer.copyToChannel(data, 0);
@@ -141,7 +154,7 @@ export default class SpectrumAnalyzer extends Entity {
 		this.updateFrequencyData(input);
 	}
 
-	updateFrequencyData(input) {
+	updateFrequencyData(input?: AudioBuffer) {
 		if (input) {
 			this.getByteFrequencyData(this.fft);
 		} else {
@@ -149,7 +162,7 @@ export default class SpectrumAnalyzer extends Entity {
 		}
 	}
 
-	updateTimeData(input) {
+	updateTimeData(input?: AudioBuffer) {
 		if (input) {
 			this.getFloatTimeDomainData(this.td);
 		} else {

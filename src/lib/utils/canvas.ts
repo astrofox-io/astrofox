@@ -1,7 +1,7 @@
-// @ts-nocheck
+import type { CanvasContext, CanvasElement } from "@/lib/types";
 import { deg2rad } from "./math";
 
-export function getColor(start, end, pct) {
+export function getColor(start: string, end: string, pct: number) {
 	const startColor = {
 		r: Number.parseInt(start.substring(1, 3), 16),
 		g: Number.parseInt(start.substring(3, 5), 16),
@@ -23,9 +23,9 @@ export function getColor(start, end, pct) {
 	return `#${c.r.toString(16)}${c.g.toString(16)}${c.b.toString(16)}`;
 }
 
-export function setColor(context, color, x1, y1, x2, y2) {
+export function setColor(context: CanvasContext, color: string | string[], x1: number, y1: number, x2: number, y2: number) {
 	if (color instanceof Array) {
-		const gradient = context.createLinearGradient(x1, y1, x2, y2);
+		const gradient = (context as CanvasRenderingContext2D).createLinearGradient(x1, y1, x2, y2);
 
 		for (let i = 0; i < color.length; i++) {
 			gradient.addColorStop(i / (color.length - 1), color[i]);
@@ -37,20 +37,32 @@ export function setColor(context, color, x1, y1, x2, y2) {
 	}
 }
 
-export function resetCanvas(canvas, width = 1, height = 1) {
+export function resetCanvas(canvas: CanvasElement, width: number = 1, height: number = 1) {
 	if (canvas.width !== width || canvas.height !== height) {
 		canvas.width = width;
 		canvas.height = height;
 	} else {
-		canvas.getContext("2d").clearRect(0, 0, width, height);
+		(canvas as HTMLCanvasElement).getContext("2d")!.clearRect(0, 0, width, height);
 	}
 }
 
+interface RenderImageProps {
+	x: number;
+	y: number;
+	opacity?: number;
+	rotation?: number;
+}
+
+interface RenderOrigin {
+	x: number;
+	y: number;
+}
+
 export function renderImageToCanvas(
-	context,
-	image,
-	props = { x: 0, y: 0 },
-	origin = { x: 0, y: 0 },
+	context: CanvasContext,
+	image: CanvasImageSource,
+	props: RenderImageProps = { x: 0, y: 0 },
+	origin: RenderOrigin = { x: 0, y: 0 },
 ) {
 	const { width, height } = context.canvas;
 	const { x, y, opacity, rotation } = props;
@@ -58,7 +70,7 @@ export function renderImageToCanvas(
 	const halfSceneWidth = width / 2;
 	const halfSceneHeight = height / 2;
 
-	context.globalAlpha = opacity;
+	context.globalAlpha = opacity ?? 1.0;
 
 	if (rotation && rotation % 360 !== 0) {
 		context.save();

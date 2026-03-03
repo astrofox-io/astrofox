@@ -1,11 +1,20 @@
-// @ts-nocheck
+import type Display from "@/lib/core/Display";
 import { setActiveReactorId } from "@/lib/view/actions/app";
 import { addReactor } from "@/lib/view/actions/reactors";
 import { loadScenes } from "@/lib/view/actions/scenes";
 import Icon from "@/lib/view/components/interface/Icon";
-import { Flash } from "@/lib/view/icons";
+import { Flash, Plus } from "@/lib/view/icons";
+import { reactors } from "@/lib/view/global";
 import classNames from "classnames";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+interface ReactorButtonProps {
+	display: Display;
+	name: string;
+	min?: number;
+	max?: number;
+	className?: string;
+}
 
 export default function ReactorButton({
 	display,
@@ -13,30 +22,80 @@ export default function ReactorButton({
 	min = 0,
 	max = 1,
 	className,
-}: any) {
+}: ReactorButtonProps) {
 	const reactor = display.getReactor(name);
+	const [showPicker, setShowPicker] = useState(false);
+	const pickerRef = useRef<HTMLDivElement>(null);
 
-	async function enableReactor() {
+	useEffect(() => {
+		if (!showPicker) return;
+
+		function handleClickOutside(e: MouseEvent) {
+			if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+				setShowPicker(false);
+			}
+		}
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, [showPicker]);
+
+	function assignReactor(reactorId: string) {
+		display.setReactor(name, { id: reactorId, min, max });
+		setActiveReactorId(reactorId);
+		loadScenes();
+		setShowPicker(false);
+	}
+
+	function createAndAssign() {
+		const newReactor = addReactor() as { id: string } | undefined;
+		if (newReactor) {
+			assignReactor(newReactor.id);
+		}
+	}
+
+	function handleClick() {
 		if (reactor) {
-			setActiveReactorId(reactor?.id ?? null);
+			setActiveReactorId(reactor.id);
+		} else if (reactors.length === 0) {
+			createAndAssign();
 		} else {
-			const newReactor = await addReactor();
-
-			display.setReactor(name, { id: newReactor.id, min, max });
-
-			setActiveReactorId(newReactor?.id ?? null);
-			loadScenes();
+			setShowPicker(true);
 		}
 	}
 
 	return (
-		<Icon
-			className={classNames("text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100", className, {
-				["text-neutral-100"]: reactor,
-			})}
-			glyph={Flash}
-			title={reactor ? "Show Reactor" : "Enable Reactor"}
-			onClick={enableReactor}
-		/>
+		<div className="relative" ref={pickerRef}>
+			<Icon
+				className={classNames("text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100", className, {
+					["text-neutral-100"]: reactor,
+				})}
+				glyph={Flash}
+				title={reactor ? "Show Reactor" : "Enable Reactor"}
+				onClick={handleClick}
+			/>
+			{showPicker && (
+				<div className="absolute left-0 top-full mt-1 z-50 min-w-40 rounded-md border border-neutral-700 bg-neutral-800 py-1 shadow-lg">
+					{reactors.map((r: { id: string; displayName: string }) => (
+						<button
+							key={r.id}
+							className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-neutral-200 hover:bg-primary cursor-default bg-transparent border-none"
+							onClick={() => assignReactor(r.id)}
+						>
+							<Icon className="w-3.5 h-3.5 text-neutral-400" glyph={Flash} />
+							{r.displayName}
+						</button>
+					))}
+					<div className="border-t border-neutral-700 my-1" />
+					<button
+						className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-neutral-200 hover:bg-primary cursor-default bg-transparent border-none"
+						onClick={createAndAssign}
+					>
+						<Icon className="w-3.5 h-3.5 text-neutral-400" glyph={Plus} />
+						New Reactor
+					</button>
+				</div>
+			)}
+		</div>
 	);
 }

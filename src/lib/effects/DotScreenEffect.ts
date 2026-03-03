@@ -1,7 +1,6 @@
 import Effect from "@/lib/core/Effect";
 
 export default class DotScreenEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "DotScreenEffect",
 		description: "Dot screen effect.",
@@ -32,7 +31,7 @@ export default class DotScreenEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(DotScreenEffect, properties);
 	}
 }

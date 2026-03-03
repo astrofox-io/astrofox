@@ -1,4 +1,5 @@
 import CanvasMeter from "@/lib/canvas/CanvasMeter";
+import type Display from "@/lib/core/Display";
 import { setActiveReactorId } from "@/lib/view/actions/app";
 import { removeReactor } from "@/lib/view/actions/reactors";
 import { loadScenes } from "@/lib/view/actions/scenes";
@@ -8,6 +9,15 @@ import { events, reactors } from "@/lib/view/global";
 import { Times } from "@/lib/view/icons";
 import React, { useRef, useEffect, useMemo } from "react";
 
+interface ReactorInputProps {
+  display: Display;
+  name: string;
+  value: unknown;
+  width?: number;
+  height?: number;
+  color?: string;
+}
+
 export default function ReactorInput({
   display,
   name,
@@ -15,12 +25,12 @@ export default function ReactorInput({
   width = 100,
   height = 10,
   color = PRIMARY_COLOR,
-}: any) {
-  const canvas = useRef<any>(null);
-  const meter = useRef<any>(null);
+}: ReactorInputProps) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const meter = useRef<CanvasMeter | null>(null);
   const lastValue = useRef(value);
   const reactor = useMemo(
-    () => reactors.getElementById(display.getReactor(name).id),
+    () => reactors.getElementById(display.getReactor(name)!.id),
     [display],
   );
 
@@ -29,19 +39,19 @@ export default function ReactorInput({
     display.update({ [name]: lastValue.current });
 
     setActiveReactorId(null);
-    removeReactor(reactor);
+    removeReactor(reactor as { id: string });
 
     loadScenes();
   }
 
   function toggleReactor() {
-    setActiveReactorId(reactor?.id ?? null);
+    setActiveReactorId((reactor as { id: string })?.id ?? null);
   }
 
   function draw() {
-    const { output } = reactor.getResult();
+    const { output } = (reactor as { getResult: () => { output: number } }).getResult();
 
-    meter.current.render(output);
+    meter.current?.render(output);
   }
 
   useEffect(() => {
@@ -51,7 +61,7 @@ export default function ReactorInput({
         height,
         color,
       },
-      canvas.current,
+      canvas.current!,
     );
 
     events.on("render", draw);

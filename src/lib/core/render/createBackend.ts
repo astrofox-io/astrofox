@@ -1,6 +1,9 @@
 import R3FBackend from "./R3FBackend";
 
-export function createRenderBackend(_type, { stage }) {
+export function createRenderBackend(
+	_type: string,
+	{ stage }: { stage: unknown },
+) {
 	return new R3FBackend(stage);
 }
 

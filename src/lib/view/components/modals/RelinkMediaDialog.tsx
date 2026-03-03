@@ -2,11 +2,22 @@ import useProject, { relinkMediaRef } from "@/lib/view/actions/project";
 import Button from "@/lib/view/components/interface/Button";
 import React, { useState } from "react";
 
-export default function RelinkMediaDialog({ onClose }: any) {
-	const mediaRefs = useProject((state) => state.unresolvedMediaRefs);
-	const [loadingDisplayId, setLoadingDisplayId] = useState(null);
+interface MediaRef {
+	displayId: string;
+	label: string;
+	kind: string;
+	sourcePath?: string;
+}
 
-	async function handleRelink(ref) {
+interface RelinkMediaDialogProps {
+	onClose?: () => void;
+}
+
+export default function RelinkMediaDialog({ onClose }: RelinkMediaDialogProps) {
+	const mediaRefs = useProject((state) => state.unresolvedMediaRefs) as MediaRef[];
+	const [loadingDisplayId, setLoadingDisplayId] = useState<string | null>(null);
+
+	async function handleRelink(ref: MediaRef) {
 		setLoadingDisplayId(ref.displayId);
 		await relinkMediaRef(ref);
 		setLoadingDisplayId(null);

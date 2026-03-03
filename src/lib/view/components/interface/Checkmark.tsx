@@ -2,7 +2,12 @@ import classNames from "classnames";
 import React from "react";
 import { Motion, spring } from "react-motion";
 
-const Checkmark = ({ size, className }: any) => (
+interface CheckmarkProps {
+	size?: number;
+	className?: string;
+}
+
+const Checkmark = ({ size, className }: CheckmarkProps) => (
 	<Motion
 		defaultStyle={{ circleOffset: 240, pathOffset: 50 }}
 		style={{
@@ -16,7 +21,7 @@ const Checkmark = ({ size, className }: any) => (
 			}),
 		}}
 	>
-		{({ circleOffset, pathOffset }) => (
+		{({ circleOffset, pathOffset }: Record<string, number>) => (
 			<div
 				className={classNames("block", className)}
 				style={{

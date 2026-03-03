@@ -1,23 +1,13 @@
-// @ts-nocheck
 import Audio from "@/lib/audio/Audio";
 import { audioContext } from "@/lib/view/global";
 
-export function loadAudioData(data) {
-	return new Promise((resolve, reject) => {
-		const audio = new Audio(audioContext);
-
-		return audio
-			.load(data)
-			.then(() => {
-				resolve(audio);
-			})
-			.catch((error) => {
-				reject(error);
-			});
-	});
+export async function loadAudioData(data: string | ArrayBuffer): Promise<Audio> {
+	const audio = new Audio(audioContext);
+	await audio.load(data);
+	return audio;
 }
 
-export function downmix(input) {
+export function downmix(input: AudioBuffer) {
 	const { length, numberOfChannels } = input;
 	const output = new Float32Array(length);
 

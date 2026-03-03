@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ignoreEvents } from "@/lib/utils/react";
 import useAudioStore, { loadAudioFile } from "@/lib/view/actions/audio";
 import useStage from "@/lib/view/actions/stage";
@@ -12,7 +11,7 @@ export default function Stage() {
     (state) => [state.width, state.height, state.backgroundColor, state.zoom],
     shallow,
   );
-  const canvas = useRef(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
   const initProps = useRef({ width, height, backgroundColor });
   const loading = useAudioStore((state) => state.loading);
   const [dropLoading, setDropLoading] = useState(false);
@@ -32,7 +31,7 @@ export default function Stage() {
     };
   }, []);
 
-  async function handleDrop(e) {
+  async function handleDrop(e: React.DragEvent) {
     ignoreEvents(e);
 
     const file = e.dataTransfer.files[0];
@@ -41,7 +40,7 @@ export default function Stage() {
       setDropLoading(true);
 
       // Force one paint so the overlay spinner can appear immediately.
-      await new Promise((resolve) => {
+      await new Promise<void>((resolve) => {
         if (typeof window !== "undefined" && window.requestAnimationFrame) {
           window.requestAnimationFrame(() => resolve());
           return;
@@ -51,7 +50,7 @@ export default function Stage() {
       });
 
       try {
-        await loadAudioFile(file);
+        await loadAudioFile(file, true);
       } finally {
         setDropLoading(false);
       }
@@ -91,14 +90,18 @@ export default function Stage() {
   );
 }
 
-const Loading = ({ show }: any) => {
+interface LoadingProps {
+  show?: boolean;
+}
+
+const Loading = ({ show }: LoadingProps) => {
   const [visible, setVisible] = useState(show);
   const [leaving, setLeaving] = useState(false);
-  const leaveTimer = useRef(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (leaveTimer.current) {
-      window.clearTimeout(leaveTimer.current);
+      window.clearTimeout(leaveTimer.current as unknown as number);
       leaveTimer.current = null;
     }
 
@@ -113,7 +116,7 @@ const Loading = ({ show }: any) => {
     }
 
     setLeaving(true);
-    leaveTimer.current = window.setTimeout(() => {
+    leaveTimer.current = setTimeout(() => {
       setVisible(false);
       setLeaving(false);
       leaveTimer.current = null;
@@ -121,7 +124,7 @@ const Loading = ({ show }: any) => {
 
     return () => {
       if (leaveTimer.current) {
-        window.clearTimeout(leaveTimer.current);
+        window.clearTimeout(leaveTimer.current as unknown as number);
         leaveTimer.current = null;
       }
     };

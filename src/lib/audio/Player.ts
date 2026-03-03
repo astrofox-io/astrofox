@@ -1,15 +1,23 @@
+import type Audio from "@/lib/audio/Audio";
 import EventEmitter from "@/lib/core/EventEmitter";
 
 const UPDATE_INTERVAL = 200;
 
 export default class Player extends EventEmitter {
-	[key: string]: any;
-	constructor(context) {
+	audioContext: AudioContext;
+	volume: GainNode;
+	audio: Audio | null;
+	nodes: AudioNode[];
+	loop: boolean;
+	timer: ReturnType<typeof setInterval> | null;
+
+	constructor(context: AudioContext) {
 		super();
 
 		this.audioContext = context;
 		this.nodes = [];
 		this.audio = null;
+		this.timer = null;
 
 		this.volume = this.audioContext.createGain();
 		this.volume.connect(this.audioContext.destination);
@@ -17,7 +25,7 @@ export default class Player extends EventEmitter {
 		this.loop = false;
 	}
 
-	load(audio) {
+	load(audio: Audio) {
 		this.unload();
 
 		this.audio = audio;
@@ -70,7 +78,9 @@ export default class Player extends EventEmitter {
 		if (audio) {
 			audio.pause();
 
-			clearInterval(this.timer);
+			if (this.timer !== null) {
+				clearInterval(this.timer);
+			}
 
 			this.emit("pause");
 			this.emit("playback-change");
@@ -82,13 +92,15 @@ export default class Player extends EventEmitter {
 
 		if (audio) {
 			audio.stop();
-			clearInterval(this.timer);
+			if (this.timer !== null) {
+				clearInterval(this.timer);
+			}
 			this.emit("stop");
 			this.emit("playback-change");
 		}
 	}
 
-	seek(val) {
+	seek(val: number) {
 		const { audio } = this;
 
 		if (audio) {
@@ -105,7 +117,7 @@ export default class Player extends EventEmitter {
 		return !!this.getAudio();
 	}
 
-	setVolume(val) {
+	setVolume(val: number) {
 		if (this.volume) {
 			this.volume.gain.value = val;
 		}
@@ -144,7 +156,7 @@ export default class Player extends EventEmitter {
 		return 0;
 	}
 
-	setLoop(val) {
+	setLoop(val: boolean) {
 		this.loop = val;
 	}
 

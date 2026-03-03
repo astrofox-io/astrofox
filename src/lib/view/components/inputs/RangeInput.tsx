@@ -1,7 +1,26 @@
-// @ts-nocheck
 import { normalize } from "@/lib/utils/math";
 import classNames from "classnames";
 import React, { useState, useRef, useEffect } from "react";
+
+interface RangeInputProps {
+	name?: string;
+	value?: number;
+	min?: number;
+	max?: number;
+	step?: number;
+	lowerLimit?: boolean | number;
+	upperLimit?: boolean | number;
+	buffered?: boolean;
+	disabled?: boolean;
+	fillStyle?: string;
+	hideFill?: boolean;
+	hideThumb?: boolean;
+	showThumbOnHover?: boolean;
+	smallThumb?: boolean;
+	className?: string;
+	onChange?: (name: string, value: number) => void;
+	onUpdate?: (name: string, value: number) => void;
+}
 
 export default function RangeInput({
 	name = "range",
@@ -20,8 +39,8 @@ export default function RangeInput({
 	smallThumb = false,
 	className,
 	onChange,
-	onUpdate = () => {},
-}) {
+	onUpdate,
+}: RangeInputProps) {
 	const [bufferedValue, setBufferedValue] = useState(value);
 	const buffering = useRef(false);
 
@@ -31,20 +50,20 @@ export default function RangeInput({
 		}
 	}, [value]);
 
-	function handleChange(e) {
+	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		let newValue = +e.currentTarget.value;
 
-		if (lowerLimit !== false && newValue < lowerLimit) {
-			newValue = lowerLimit;
-		} else if (upperLimit !== false && newValue > upperLimit) {
-			newValue = upperLimit;
+		if (lowerLimit !== false && newValue < (lowerLimit as number)) {
+			newValue = lowerLimit as number;
+		} else if (upperLimit !== false && newValue > (upperLimit as number)) {
+			newValue = upperLimit as number;
 		}
 
 		if (buffered) {
 			setBufferedValue(newValue);
-			onUpdate(name, newValue);
+			onUpdate?.(name, newValue);
 		} else {
-			onChange(name, newValue);
+			onChange?.(name, newValue);
 		}
 	}
 
@@ -56,7 +75,7 @@ export default function RangeInput({
 		buffering.current = false;
 
 		if (buffered) {
-			onChange(name, bufferedValue);
+			onChange?.(name, bufferedValue);
 		}
 	}
 

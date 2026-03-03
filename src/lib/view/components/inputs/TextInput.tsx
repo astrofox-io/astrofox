@@ -1,6 +1,21 @@
 import classNames from "classnames";
 import React, { useState, useRef, useEffect } from "react";
 
+interface TextInputProps {
+	name?: string;
+	width?: number;
+	size?: number | null;
+	value?: string | number;
+	spellCheck?: boolean;
+	autoFocus?: boolean;
+	autoSelect?: boolean;
+	buffered?: boolean;
+	readOnly?: boolean;
+	disabled?: boolean;
+	className?: string;
+	onChange?: (name: string, value: string) => void;
+}
+
 export default function TextInput({
 	name = "text",
 	width = 160,
@@ -14,9 +29,9 @@ export default function TextInput({
 	disabled = false,
 	className,
 	onChange,
-}: any) {
+}: TextInputProps) {
 	const [bufferedValue, setBufferedValue] = useState(value);
-	const input = useRef(null);
+	const input = useRef<HTMLInputElement>(null);
 	const shouldAutoFocus = useRef(Boolean(autoFocus));
 	const shouldAutoSelect = useRef(Boolean(autoSelect));
 
@@ -38,32 +53,32 @@ export default function TextInput({
 		setBufferedValue(value);
 	}, [value]);
 
-	function handleChange(e) {
+	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const { value } = e.currentTarget;
 
 		setBufferedValue(value);
 
 		if (!buffered) {
-			onChange(name, value);
+			onChange?.(name, value);
 		}
 	}
 
-	function handleKeyUp(e) {
+	function handleKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
 		if (buffered) {
 			// Enter key
 			if (e.keyCode === 13) {
-				onChange(name, bufferedValue);
+				onChange?.(name, String(bufferedValue));
 			}
 			// Esc key
 			else if (e.keyCode === 27) {
-				onChange(name, value);
+				onChange?.(name, String(value));
 			}
 		}
 	}
 
 	function handleBlur() {
 		if (buffered) {
-			onChange(name, bufferedValue);
+			onChange?.(name, String(bufferedValue));
 		}
 	}
 
@@ -77,7 +92,7 @@ export default function TextInput({
 			)}
 			style={{ width }}
 			name={name}
-			size={size}
+			size={size ?? undefined}
 			spellCheck={spellCheck}
 			value={buffered ? bufferedValue : value}
 			onChange={handleChange}

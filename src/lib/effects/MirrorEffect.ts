@@ -8,7 +8,6 @@ const mirrorOptions = [
 ];
 
 export default class MirrorEffect extends Effect {
-	[key: string]: any;
 	static config = {
 		name: "MirrorEffect",
 		description: "Mirror effect.",
@@ -26,7 +25,7 @@ export default class MirrorEffect extends Effect {
 		},
 	};
 
-	constructor(properties) {
+	constructor(properties?: Record<string, unknown>) {
 		super(MirrorEffect, properties);
 	}
 }
