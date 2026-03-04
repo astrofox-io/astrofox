@@ -29,3 +29,4 @@ dist
 .vscode
 .pnpm-store
 _git_*
+tsconfig.tsbuildinfo
