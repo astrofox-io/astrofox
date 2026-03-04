@@ -39,6 +39,7 @@ import {
 import {
 	BlendFunction,
 	Effect as RawEffect,
+	EffectAttribute,
 	EffectComposer as RawEffectComposer,
 	EffectPass,
 	GlitchMode,
@@ -1959,10 +1960,25 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 			composer.addPass(pass);
 		}
 
-		// Then add EffectPass with remaining effects
-		if (rawEffects.length > 0) {
+		// CONVOLUTION effects cannot be merged into a single EffectPass — each
+		// needs its own pass. Non-convolution effects can share one EffectPass.
+		const convolutionEffects = rawEffects.filter(
+			(e) => (e.getAttributes() & EffectAttribute.CONVOLUTION) !== 0,
+		);
+		const otherEffects = rawEffects.filter(
+			(e) => (e.getAttributes() & EffectAttribute.CONVOLUTION) === 0,
+		);
+
+		for (const effect of convolutionEffects) {
 			try {
-				composer.addPass(new EffectPass(camera, ...rawEffects));
+				composer.addPass(new EffectPass(camera, effect));
+			} catch {
+				// Effect pass failed to compile, skip
+			}
+		}
+		if (otherEffects.length > 0) {
+			try {
+				composer.addPass(new EffectPass(camera, ...otherEffects));
 			} catch {
 				// Effect pass failed to compile, skip effects
 			}
