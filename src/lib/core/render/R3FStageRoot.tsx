@@ -8,6 +8,7 @@ import {
 	PPBlurEffect,
 	PPColorHalftoneEffect,
 	PPDistortionEffect,
+	PPGaussianBlurPass,
 	PPGlowEffect,
 	PPHexPixelateEffect,
 	PPKaleidoscopeEffect,
@@ -37,9 +38,11 @@ import {
 } from "@react-three/postprocessing";
 import {
 	BlendFunction,
+	Effect as RawEffect,
 	EffectComposer as RawEffectComposer,
 	EffectPass,
 	GlitchMode,
+	Pass as RawPass,
 	BloomEffect as RawBloomEffect,
 	BrightnessContrastEffect as RawBrightnessContrastEffect,
 	ColorAverageEffect as RawColorAverageEffect,
@@ -476,10 +479,16 @@ function createRawEffect(effectConfig, width, height) {
 				height,
 			});
 		case "BlurEffect": {
-			const blurTypeMap = { Box: 0, Circular: 1, Gaussian: 2, Triangle: 3, Zoom: 4, Lens: 5 };
+			const blurType = props.type || "Gaussian";
+			if (blurType === "Gaussian") {
+				return new PPGaussianBlurPass({
+					amount: Number(props.amount || 0),
+				});
+			}
+			const blurTypeMap = { Box: 0, Circular: 1, Triangle: 3, Zoom: 4, Lens: 5 };
 			return new PPBlurEffect({
 				amount: Number(props.amount || 0),
-				blurType: blurTypeMap[props.type] ?? 2,
+				blurType: blurTypeMap[blurType] ?? 0,
 				width,
 				height,
 			});
@@ -1922,6 +1931,7 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 
 	// Rebuild passes when effect list or properties change
 	const effectKey = JSON.stringify(effects.map((e) => ({ id: e.id, name: e.name, properties: e.properties })));
+	const resultBufferRef = React.useRef<"input" | "output">("output");
 	React.useEffect(() => {
 		const composer = composerRef.current;
 		if (!composer) return;
@@ -1930,7 +1940,7 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 			composer.removePass(composer.passes[0]);
 		}
 
-		const rawEffects = effects
+		const rawItems = effects
 			.map((e) => {
 				try {
 					return createRawEffect(e, width, height);
@@ -1940,6 +1950,16 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 			})
 			.filter(Boolean);
 
+		// Separate Pass objects (e.g. PPGaussianBlurPass) from Effect objects
+		const passes = rawItems.filter((item) => item instanceof RawPass && !(item instanceof RawEffect));
+		const rawEffects = rawItems.filter((item) => item instanceof RawEffect);
+
+		// Add standalone passes first (blur passes, etc.)
+		for (const pass of passes) {
+			composer.addPass(pass);
+		}
+
+		// Then add EffectPass with remaining effects
 		if (rawEffects.length > 0) {
 			try {
 				composer.addPass(new EffectPass(camera, ...rawEffects));
@@ -1947,6 +1967,15 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 				// Effect pass failed to compile, skip effects
 			}
 		}
+
+		// Track which buffer holds the final result based on needsSwap parity.
+		// We render scene to inputBuffer. Each needsSwap pass alternates the result
+		// between outputBuffer (odd) and inputBuffer (even).
+		let swaps = 0;
+		for (const p of composer.passes) {
+			if (p.enabled && p.needsSwap) swaps++;
+		}
+		resultBufferRef.current = swaps % 2 === 1 ? "output" : "input";
 	}, [effectKey, camera, width, height]);
 
 	const tempColor = React.useRef(new Color());
@@ -1977,7 +2006,9 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 
 		// Step 3: Update output mesh with composited result
 		if (meshRef.current) {
-			meshRef.current.material.map = composer.outputBuffer.texture;
+			const result = resultBufferRef.current === "output"
+				? composer.outputBuffer : composer.inputBuffer;
+			meshRef.current.material.map = result.texture;
 		}
 	});
 
