@@ -14,7 +14,7 @@ export default function ColorInput({
 	return (
 		<div
 			className={
-				"flex items-center justify-center w-6 h-6 rounded-full border border-neutral-600 bg-neutral-900"
+				"flex items-center justify-center w-6 h-6 rounded-full border border-border-input bg-neutral-900"
 			}
 		>
 			<input

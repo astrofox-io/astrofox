@@ -106,7 +106,7 @@ export default function RangeInput({
 				</SliderPrimitive.Track>
 				<SliderPrimitive.Thumb
 					className={cn(
-						"block rounded-full bg-neutral-100 border border-neutral-600 shadow-[0_2px_5px_rgba(0,0,0,0.3)]",
+						"block rounded-full bg-neutral-100 border border-border-input shadow-[0_2px_5px_rgba(0,0,0,0.3)]",
 						smallThumb ? "size-2.5" : "size-3.5",
 						{
 							invisible: hideThumb,

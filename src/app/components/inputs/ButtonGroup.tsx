@@ -10,7 +10,7 @@ interface ButtonGroupProps {
 const ButtonGroup = ({ className, children }: ButtonGroupProps) => (
 	<div
 		className={classNames(
-			"group mr-1 border-neutral-600 [&_.button]:mr-0 [&_.button]:border-r-0 [&_.button]:rounded-none [&_.button]:[border-color:inherit] [&_.button:first-child]:[border-top-left-radius:6px] [&_.button:first-child]:[border-bottom-left-radius:6px] [&_.button:last-child]:[border-top-right-radius:6px] [&_.button:last-child]:[border-bottom-right-radius:6px]",
+			"group mr-1 border-border-input [&_.button]:mr-0 [&_.button]:border-r-0 [&_.button]:rounded-none [&_.button]:[border-color:inherit] [&_.button:first-child]:[border-top-left-radius:6px] [&_.button:first-child]:[border-bottom-left-radius:6px] [&_.button:last-child]:[border-top-right-radius:6px] [&_.button:last-child]:[border-bottom-right-radius:6px]",
 			className,
 		)}
 	>

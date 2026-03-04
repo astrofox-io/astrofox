@@ -3,10 +3,10 @@ import { BLANK_IMAGE } from "@/app/constants";
 import { api } from "@/app/global";
 import { FolderOpen, Times } from "@/app/icons";
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ignoreEvents } from "@/lib/utils/react";
 import classNames from "classnames";
@@ -14,202 +14,202 @@ import type React from "react";
 import { useRef } from "react";
 
 function isFileUrlSource(src: string) {
-	return /^file:\/\//i.test(src || "");
+  return /^file:\/\//i.test(src || "");
 }
 
 function isWindowsPathSource(src: string) {
-	return /^[a-zA-Z]:[\\/]/.test(src || "");
+  return /^[a-zA-Z]:[\\/]/.test(src || "");
 }
 
 function isUncPathSource(src: string) {
-	return /^\\\\/.test(src || "");
+  return /^\\\\/.test(src || "");
 }
 
 function toFileUrl(path: string) {
-	if (!path || typeof path !== "string") {
-		return "";
-	}
+  if (!path || typeof path !== "string") {
+    return "";
+  }
 
-	const sourcePath = path.trim();
+  const sourcePath = path.trim();
 
-	if (!sourcePath) {
-		return "";
-	}
+  if (!sourcePath) {
+    return "";
+  }
 
-	if (isFileUrlSource(sourcePath)) {
-		return sourcePath;
-	}
+  if (isFileUrlSource(sourcePath)) {
+    return sourcePath;
+  }
 
-	const escaped = encodeURI(sourcePath)
-		.replace(/#/g, "%23")
-		.replace(/\?/g, "%3F");
+  const escaped = encodeURI(sourcePath)
+    .replace(/#/g, "%23")
+    .replace(/\?/g, "%3F");
 
-	if (isWindowsPathSource(sourcePath)) {
-		return `file:///${escaped.replace(/\\/g, "/")}`;
-	}
+  if (isWindowsPathSource(sourcePath)) {
+    return `file:///${escaped.replace(/\\/g, "/")}`;
+  }
 
-	if (isUncPathSource(sourcePath)) {
-		const unc = escaped.replace(/^\\\\/, "").replace(/\\/g, "/");
-		return `file://${unc}`;
-	}
+  if (isUncPathSource(sourcePath)) {
+    const unc = escaped.replace(/^\\\\/, "").replace(/\\/g, "/");
+    return `file://${unc}`;
+  }
 
-	if (sourcePath.startsWith("/")) {
-		return `file://${escaped}`;
-	}
+  if (sourcePath.startsWith("/")) {
+    return `file://${escaped}`;
+  }
 
-	return sourcePath;
+  return sourcePath;
 }
 
 interface FileWithPath {
-	path?: string;
-	filePath?: string;
-	fullPath?: string;
+  path?: string;
+  filePath?: string;
+  fullPath?: string;
 }
 
 function getFilePath(file: FileWithPath | null) {
-	if (!file || typeof file !== "object") {
-		return "";
-	}
+  if (!file || typeof file !== "object") {
+    return "";
+  }
 
-	if (typeof file.path === "string" && file.path.trim()) {
-		return file.path.trim();
-	}
+  if (typeof file.path === "string" && file.path.trim()) {
+    return file.path.trim();
+  }
 
-	if (typeof file.filePath === "string" && file.filePath.trim()) {
-		return file.filePath.trim();
-	}
+  if (typeof file.filePath === "string" && file.filePath.trim()) {
+    return file.filePath.trim();
+  }
 
-	if (typeof file.fullPath === "string" && file.fullPath.trim()) {
-		return file.fullPath.trim();
-	}
+  if (typeof file.fullPath === "string" && file.fullPath.trim()) {
+    return file.fullPath.trim();
+  }
 
-	return "";
+  return "";
 }
 
 interface VideoInputProps {
-	name: string;
-	value?: string;
-	onChange?: (props: Record<string, unknown>) => void;
+  name: string;
+  value?: string;
+  onChange?: (props: Record<string, unknown>) => void;
 }
 
 export default function VideoInput({ name, value, onChange }: VideoInputProps) {
-	const video = useRef<HTMLVideoElement>(null);
-	const hasVideo = value !== BLANK_IMAGE;
+  const video = useRef<HTMLVideoElement>(null);
+  const hasVideo = value !== BLANK_IMAGE;
 
-	function loadVideoSrc(src: string | ArrayBuffer | null) {
-		if (video.current && video.current.src !== src) {
-			video.current.src = String(src);
-		}
-	}
+  function loadVideoSrc(src: string | ArrayBuffer | null) {
+    if (video.current && video.current.src !== src) {
+      video.current.src = String(src);
+    }
+  }
 
-	async function loadVideoFile(file: File) {
-		try {
-			const sourcePath = getFilePath(file as unknown as FileWithPath);
-			const src = sourcePath
-				? toFileUrl(sourcePath)
-				: await api.readVideoFile(file);
+  async function loadVideoFile(file: File) {
+    try {
+      const sourcePath = getFilePath(file as unknown as FileWithPath);
+      const src = sourcePath
+        ? toFileUrl(sourcePath)
+        : await api.readVideoFile(file);
 
-			loadVideoSrc(src);
-			onChange?.({
-				[name]: src,
-				sourcePath: sourcePath || "",
-			});
-		} catch (error) {
-			raiseError("Invalid video file.", error);
-		}
-	}
+      loadVideoSrc(src);
+      onChange?.({
+        [name]: src,
+        sourcePath: sourcePath || "",
+      });
+    } catch (error) {
+      raiseError("Invalid video file.", error);
+    }
+  }
 
-	async function handleDrop(e: React.DragEvent) {
-		e.preventDefault();
+  async function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
 
-		await loadVideoFile(e.dataTransfer.files[0]);
-	}
+    await loadVideoFile(e.dataTransfer.files[0]);
+  }
 
-	async function handleClick() {
-		const { files, canceled } = await api.showOpenDialog({
-			filters: [{ name: "Video files", extensions: ["mp4", "webm", "ogv"] }],
-		});
+  async function handleClick() {
+    const { files, canceled } = await api.showOpenDialog({
+      filters: [{ name: "Video files", extensions: ["mp4", "webm", "ogv"] }],
+    });
 
-		if (!canceled && files && files.length) {
-			await loadVideoFile(files[0]);
-		}
-	}
+    if (!canceled && files && files.length) {
+      await loadVideoFile(files[0]);
+    }
+  }
 
-	function handleDelete() {
-		loadVideoSrc("");
-		onChange?.({
-			[name]: BLANK_IMAGE,
-			sourcePath: "",
-		});
-	}
+  function handleDelete() {
+    loadVideoSrc("");
+    onChange?.({
+      [name]: BLANK_IMAGE,
+      sourcePath: "",
+    });
+  }
 
-	return (
-		<>
-			<div
-				className={
-					"h-24 w-24 bg-neutral-900 border border-neutral-600 rounded-md relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"
-				}
-				onDrop={handleDrop}
-				onDragOver={ignoreEvents}
-				onClick={handleClick}
-			>
-				<video
-					ref={video}
-					className={classNames(
-						"absolute top-1/2 -translate-y-1/2 w-full h-auto",
-						{
-							hidden: !hasVideo,
-						},
-					)}
-					src={hasVideo ? value : undefined}
-					muted
-					loop
-					autoPlay
-				/>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger
-							render={
-								<FolderOpen
-									className={
-										"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
-									}
-								/>
-							}
-						/>
-						<TooltipContent
-							side="bottom"
-							sideOffset={6}
-							className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-						>
-							Open File
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
-			{hasVideo && (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger
-							render={
-								<Times
-									className={classNames({
-										"text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
-									})}
-									onClick={handleDelete}
-								/>
-							}
-						/>
-						<TooltipContent
-							side="bottom"
-							sideOffset={6}
-							className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-						>
-							Remove Video
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)}
-		</>
-	);
+  return (
+    <>
+      <div
+        className={
+          "h-24 w-24 bg-neutral-900 border border-border-input rounded relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"
+        }
+        onDrop={handleDrop}
+        onDragOver={ignoreEvents}
+        onClick={handleClick}
+      >
+        <video
+          ref={video}
+          className={classNames(
+            "absolute top-1/2 -translate-y-1/2 w-full h-auto",
+            {
+              hidden: !hasVideo,
+            },
+          )}
+          src={hasVideo ? value : undefined}
+          muted
+          loop
+          autoPlay
+        />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <FolderOpen
+                  className={
+                    "absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
+                  }
+                />
+              }
+            />
+            <TooltipContent
+              side="bottom"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              Open File
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+      {hasVideo && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Times
+                  className={classNames({
+                    "text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
+                  })}
+                  onClick={handleDelete}
+                />
+              }
+            />
+            <TooltipContent
+              side="bottom"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              Remove Video
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </>
+  );
 }

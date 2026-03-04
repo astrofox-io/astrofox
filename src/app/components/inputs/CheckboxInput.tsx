@@ -19,7 +19,7 @@ export default function CheckboxInput({
 	return (
 		<div className="flex items-center">
 			<Checkbox
-				className="order-[1] size-4 rounded border-neutral-600 bg-neutral-900 shadow-none data-checked:border-primary data-checked:bg-primary data-checked:text-neutral-100"
+				className="order-[1] size-4 rounded border-border-input bg-neutral-900 shadow-none data-checked:border-primary data-checked:bg-primary data-checked:text-neutral-100"
 				checked={value}
 				onCheckedChange={(checked) => onChange?.(name, Boolean(checked))}
 			/>

@@ -19,7 +19,7 @@ export default function ToggleInput({
 	return (
 		<div className="flex items-center">
 			<Switch
-				className="order-[1] h-4 w-8 data-unchecked:bg-neutral-900 data-checked:bg-primary [&_[data-slot=switch-thumb]]:size-4 [&_[data-slot=switch-thumb]]:data-checked:translate-x-4 [&_[data-slot=switch-thumb]]:bg-neutral-100 [&_[data-slot=switch-thumb]]:border [&_[data-slot=switch-thumb]]:border-neutral-600 [&_[data-slot=switch-thumb]]:shadow-[0_0_2px_rgba(0,0,0,0.3)]"
+				className="order-[1] h-4 w-8 data-unchecked:bg-neutral-900 data-checked:bg-primary [&_[data-slot=switch-thumb]]:size-4 [&_[data-slot=switch-thumb]]:data-checked:translate-x-4 [&_[data-slot=switch-thumb]]:bg-neutral-100 [&_[data-slot=switch-thumb]]:border [&_[data-slot=switch-thumb]]:border-border-input [&_[data-slot=switch-thumb]]:shadow-[0_0_2px_rgba(0,0,0,0.3)]"
 				checked={value}
 				onCheckedChange={(checked) => onChange?.(name, Boolean(checked))}
 			/>
