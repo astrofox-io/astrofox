@@ -26,10 +26,36 @@ const TOOLBAR_ITEMS = [
   { type: "effects", title: "Add effect", icon: Sun },
 ];
 
+const DISPLAY_CATEGORIES = [
+  {
+    label: "2D",
+    displays: [
+      "Text",
+      "Image",
+      "Video",
+      "Shape",
+      "Bar Spectrum",
+      "Wave Spectrum",
+      "Sound Wave",
+    ],
+  },
+  {
+    label: "3D",
+    displays: ["Geometry (3D)"],
+  },
+];
+
 const EFFECT_CATEGORIES = [
   {
     label: "Color",
-    effects: ["Brightness / Contrast", "Color Average", "Color Depth", "Hue / Saturation", "Sepia", "Tone Mapping"],
+    effects: [
+      "Brightness / Contrast",
+      "Color Average",
+      "Color Depth",
+      "Hue / Saturation",
+      "Sepia",
+      "Tone Mapping",
+    ],
   },
   {
     label: "Blur & Focus",
@@ -41,7 +67,15 @@ const EFFECT_CATEGORIES = [
   },
   {
     label: "Pattern",
-    effects: ["ASCII", "Color Halftone", "Dot Screen", "Grid", "LED", "Pixelate", "Scanline"],
+    effects: [
+      "ASCII",
+      "Color Halftone",
+      "Dot Screen",
+      "Grid",
+      "LED",
+      "Pixelate",
+      "Scanline",
+    ],
   },
   {
     label: "Stylize",
@@ -140,42 +174,38 @@ export default function Toolbar() {
             </TooltipProvider>
             <DropdownMenuContent
               className="bg-neutral-900 border-neutral-700 rounded shadow-lg p-1 min-w-44"
-              align="start"
+              align="center"
               sideOffset={4}
             >
-              {item.type === "effects"
-                ? EFFECT_CATEGORIES.map((category, catIndex) => {
-                    const categoryItems = menuItems.filter((mi) =>
-                      category.effects.includes(mi.label),
-                    );
-                    if (categoryItems.length === 0) return null;
-                    return (
-                      <React.Fragment key={category.label}>
-                        {catIndex > 0 && <DropdownMenuSeparator />}
-                        <DropdownMenuGroup>
-                          <DropdownMenuLabel>{category.label}</DropdownMenuLabel>
-                          {categoryItems.map((menuItem) => (
-                            <DropdownMenuItem
-                              key={menuItem.label}
-                              className="text-sm min-w-44 rounded focus:text-neutral-100 focus:bg-primary"
-                              onClick={() => handleMenuItemClick(menuItem)}
-                            >
-                              {menuItem.label}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuGroup>
-                      </React.Fragment>
-                    );
-                  })
-                : menuItems.map((menuItem) => (
-                    <DropdownMenuItem
-                      key={menuItem.label}
-                      className="text-sm min-w-44 rounded focus:text-neutral-100 focus:bg-primary"
-                      onClick={() => handleMenuItemClick(menuItem)}
-                    >
-                      {menuItem.label}
-                    </DropdownMenuItem>
-                  ))}
+              {(item.type === "effects"
+                ? EFFECT_CATEGORIES
+                : DISPLAY_CATEGORIES
+              ).map((category, catIndex) => {
+                const items = category.effects || category.displays;
+                const categoryItems = menuItems.filter((mi) =>
+                  items.includes(mi.label),
+                );
+                if (categoryItems.length === 0) return null;
+                return (
+                  <React.Fragment key={category.label}>
+                    {catIndex > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel>
+                        {category.label}
+                      </DropdownMenuLabel>
+                      {categoryItems.map((menuItem) => (
+                        <DropdownMenuItem
+                          key={menuItem.label}
+                          className="text-sm min-w-44 rounded focus:text-neutral-100 focus:bg-primary"
+                          onClick={() => handleMenuItemClick(menuItem)}
+                        >
+                          {menuItem.label}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuGroup>
+                  </React.Fragment>
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         );

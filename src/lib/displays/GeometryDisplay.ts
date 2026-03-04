@@ -102,9 +102,10 @@ export default class GeometryDisplay extends Display {
 			z: {
 				label: "Z",
 				type: "number",
-				min: -1000,
-				max: 5000,
+				min: -500,
+				max: 500,
 				withRange: true,
+				hideFill: true,
 			},
 			opacity: {
 				label: "Opacity",

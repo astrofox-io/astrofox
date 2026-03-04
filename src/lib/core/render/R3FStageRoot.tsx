@@ -20,7 +20,6 @@ import {
 	ASCII,
 	Bloom,
 	BrightnessContrast,
-	ChromaticAberration,
 	ColorAverage,
 	ColorDepth,
 	DotScreen,
@@ -37,6 +36,7 @@ import {
 	Vignette,
 } from "@react-three/postprocessing";
 import { BlendFunction, GlitchMode } from "postprocessing";
+import { createPortal, useFrame, useThree } from "@react-three/fiber";
 import React from "react";
 import {
 	AddEquation,
@@ -46,14 +46,19 @@ import {
 	CustomBlending,
 	DoubleSide,
 	FrontSide,
+	HalfFloatType,
 	LinearFilter,
 	MultiplyBlending,
 	NormalBlending,
 	OneFactor,
+	PerspectiveCamera,
+	RGBAFormat,
+	Scene as ThreeScene,
 	SubtractiveBlending,
 	TextureLoader,
 	Vector2,
 	VideoTexture,
+	WebGLRenderTarget,
 	ZeroFactor,
 } from "three";
 
@@ -484,12 +489,6 @@ function EffectBridge({ effect, width, height }) {
 			const brightness = Number(props.brightness ?? 0);
 			const contrast = Number(props.contrast ?? 0);
 			return <BrightnessContrast brightness={brightness} contrast={contrast} />;
-		}
-
-		case "ChromaticAberrationEffect": {
-			const offsetX = Number(props.offsetX ?? 0.01);
-			const offsetY = Number(props.offsetY ?? 0.01);
-			return <ChromaticAberration offset={new Vector2(offsetX, offsetY)} />;
 		}
 
 		case "ColorAverageEffect":
@@ -1491,6 +1490,215 @@ function GeometryDisplayLayer({
 	);
 }
 
+// --- 3D Perspective Scene ---
+
+const PERSPECTIVE_FOV = 50;
+
+function PerspectiveScene3D({ width, height, children }) {
+	const gl = useThree((state) => state.gl);
+
+	const cameraZ = React.useMemo(
+		() => (height / 2) / Math.tan((PERSPECTIVE_FOV / 2) * Math.PI / 180),
+		[height],
+	);
+
+	const perspScene = React.useMemo(() => new ThreeScene(), []);
+
+	const perspCamera = React.useMemo(() => {
+		const cam = new PerspectiveCamera(PERSPECTIVE_FOV, width / height, 0.1, 5000);
+		cam.position.set(0, 0, cameraZ);
+		cam.lookAt(0, 0, 0);
+		return cam;
+	}, []);
+
+	React.useEffect(() => {
+		perspCamera.aspect = width / height;
+		perspCamera.position.z = cameraZ;
+		perspCamera.updateProjectionMatrix();
+	}, [perspCamera, width, height, cameraZ]);
+
+	const fbo = React.useMemo(
+		() =>
+			new WebGLRenderTarget(width, height, {
+				minFilter: LinearFilter,
+				magFilter: LinearFilter,
+				format: RGBAFormat,
+				type: HalfFloatType,
+			}),
+		[],
+	);
+
+	React.useEffect(() => {
+		fbo.setSize(width, height);
+	}, [fbo, width, height]);
+
+	React.useEffect(() => {
+		return () => {
+			fbo.dispose();
+		};
+	}, [fbo]);
+
+	useFrame(() => {
+		const prevClearAlpha = gl.getClearAlpha();
+		gl.setClearAlpha(0);
+		gl.setRenderTarget(fbo);
+		gl.clear();
+		gl.render(perspScene, perspCamera);
+		gl.setRenderTarget(null);
+		gl.setClearAlpha(prevClearAlpha);
+	});
+
+	return (
+		<>
+			{createPortal(children, perspScene)}
+			<mesh renderOrder={0}>
+				<planeGeometry args={[width, height]} />
+				<meshBasicMaterial
+					map={fbo.texture}
+					transparent={true}
+					toneMapped={false}
+					depthTest={false}
+					depthWrite={false}
+				/>
+			</mesh>
+		</>
+	);
+}
+
+function GeometryDisplayLayer3D({
+	display,
+	order,
+	frameData,
+	sceneOpacity,
+	sceneBlendMode,
+	sceneMask,
+	sceneInverse,
+}) {
+	const { properties = {} } = display;
+	const {
+		shape = "Box",
+		material = "Standard",
+		shading = "Smooth",
+		color = "#FFFFFF",
+		edges = false,
+		edgeColor = "#FFFFFF",
+		wireframe = false,
+		x = 0,
+		y = 0,
+		z = 0,
+		opacity = 1,
+		lightIntensity = 1,
+		lightDistance = 500,
+		cameraZoom = 250,
+	} = properties;
+
+	const parserRef = React.useRef(new FFTParser(properties));
+	const rotationRef = React.useRef({ x: 0, y: 0, z: 0 });
+
+	parserRef.current.update(properties);
+
+	if (frameData?.hasUpdate && frameData.fft) {
+		const fft = parserRef.current.parseFFT(frameData.fft);
+
+		rotationRef.current.x += 5 * (fft[0] || 0);
+		rotationRef.current.y += 3 * (fft[3] || 0);
+		rotationRef.current.z += 2 * (fft[2] || 0);
+	}
+
+	const meshPosition = [x, -y, -z];
+	const meshRotation = [
+		rotationRef.current.x,
+		rotationRef.current.y,
+		rotationRef.current.z,
+	];
+	const uniformScale = cameraZoom > 0 ? 250 / cameraZoom : 1;
+	const finalOpacity = Math.max(
+		0,
+		Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)),
+	);
+	const blending = sceneMask
+		? CustomBlending
+		: getThreeBlending(sceneBlendMode);
+	const geometryColor = sceneMask ? "#000000" : color;
+	const edgeOpacity = sceneMask
+		? Number(sceneInverse ? 1 : 0)
+		: 0.9 * Number(sceneOpacity ?? 1);
+
+	return (
+		<group scale={[uniformScale, uniformScale, uniformScale]}>
+			<ambientLight intensity={0.3 * lightIntensity} />
+			<pointLight
+				key="light-0"
+				intensity={lightIntensity}
+				decay={0}
+				position={[0, lightDistance, 0]}
+			/>
+			<pointLight
+				key="light-1"
+				intensity={lightIntensity}
+				decay={0}
+				position={[lightDistance, lightDistance, lightDistance]}
+			/>
+			<pointLight
+				key="light-2"
+				intensity={lightIntensity * 0.5}
+				decay={0}
+				position={[-lightDistance, -lightDistance, -lightDistance]}
+			/>
+			<mesh
+				key="mesh"
+				position={meshPosition}
+				rotation={meshRotation}
+				renderOrder={order}
+			>
+				{createGeometryNode(shape, "geometry")}
+				{getMaterialNode(material, {
+					flatShading: shading === "Flat",
+					color: geometryColor,
+					opacity: finalOpacity,
+					wireframe,
+					transparent: true,
+					side: material === "Basic" ? FrontSide : DoubleSide,
+					depthTest: true,
+					depthWrite: true,
+					blending,
+					blendEquation: sceneMask ? AddEquation : undefined,
+					blendSrc: sceneMask ? ZeroFactor : undefined,
+					blendDst: sceneMask ? OneFactor : undefined,
+					blendEquationAlpha: sceneMask ? AddEquation : undefined,
+					blendSrcAlpha: sceneMask ? OneFactor : undefined,
+					blendDstAlpha: sceneMask ? ZeroFactor : undefined,
+				})}
+			</mesh>
+			{edges && (
+				<mesh
+					key="edge-overlay"
+					position={meshPosition}
+					rotation={meshRotation}
+					renderOrder={order + 0.01}
+				>
+					{createGeometryNode(shape, "edge-geometry")}
+					<meshBasicMaterial
+						color={edgeColor}
+						wireframe={true}
+						transparent={true}
+						opacity={edgeOpacity}
+						depthTest={true}
+						depthWrite={false}
+						blending={blending}
+						blendEquation={sceneMask ? AddEquation : undefined}
+						blendSrc={sceneMask ? ZeroFactor : undefined}
+						blendDst={sceneMask ? OneFactor : undefined}
+						blendEquationAlpha={sceneMask ? AddEquation : undefined}
+						blendSrcAlpha={sceneMask ? OneFactor : undefined}
+						blendDstAlpha={sceneMask ? ZeroFactor : undefined}
+					/>
+				</mesh>
+			)}
+		</group>
+	);
+}
+
 // --- Main Component ---
 
 export default function R3FStageRoot({
@@ -1523,7 +1731,8 @@ export default function R3FStageRoot({
 	}
 
 	let order = 1;
-	const displayElements = [];
+	const display2DElements = [];
+	const display3DElements = [];
 	const allEffects = [];
 
 	for (const scene of scenes || []) {
@@ -1560,7 +1769,7 @@ export default function R3FStageRoot({
 						break;
 					}
 
-					displayElements.push(
+					display2DElements.push(
 						<ImageDisplayLayer
 							key={display.id}
 							display={display}
@@ -1576,7 +1785,7 @@ export default function R3FStageRoot({
 				}
 
 				case "VideoDisplay": {
-					displayElements.push(
+					display2DElements.push(
 						<VideoDisplayLayer
 							key={display.id}
 							display={display}
@@ -1592,7 +1801,7 @@ export default function R3FStageRoot({
 				}
 
 				case "TextDisplay": {
-					displayElements.push(
+					display2DElements.push(
 						<TextDisplayLayer
 							key={display.id}
 							display={display}
@@ -1609,7 +1818,7 @@ export default function R3FStageRoot({
 				}
 
 				case "ShapeDisplay": {
-					displayElements.push(
+					display2DElements.push(
 						<ShapeDisplayLayer
 							key={display.id}
 							display={display}
@@ -1626,7 +1835,7 @@ export default function R3FStageRoot({
 				}
 
 				case "BarSpectrumDisplay": {
-					displayElements.push(
+					display2DElements.push(
 						<BarSpectrumDisplayLayer
 							key={display.id}
 							display={display}
@@ -1643,7 +1852,7 @@ export default function R3FStageRoot({
 				}
 
 				case "WaveSpectrumDisplay": {
-					displayElements.push(
+					display2DElements.push(
 						<WaveSpectrumDisplayLayer
 							key={display.id}
 							display={display}
@@ -1660,7 +1869,7 @@ export default function R3FStageRoot({
 				}
 
 				case "SoundWaveDisplay": {
-					displayElements.push(
+					display2DElements.push(
 						<SoundWaveDisplayLayer
 							key={display.id}
 							display={display}
@@ -1677,8 +1886,8 @@ export default function R3FStageRoot({
 				}
 
 				case "GeometryDisplay": {
-					displayElements.push(
-						<GeometryDisplayLayer
+					display3DElements.push(
+						<GeometryDisplayLayer3D
 							key={display.id}
 							display={display}
 							order={order}
@@ -1703,7 +1912,12 @@ export default function R3FStageRoot({
 	return (
 		<>
 			<primitive key="background" attach="background" object={bgColor} />
-			{displayElements}
+			{display3DElements.length > 0 && (
+				<PerspectiveScene3D width={width} height={height}>
+					{display3DElements}
+				</PerspectiveScene3D>
+			)}
+			{display2DElements}
 			{allEffects.length > 0 && (
 				<EffectComposer>
 					{allEffects.map((effect) => (
