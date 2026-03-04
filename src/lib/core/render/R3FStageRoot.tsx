@@ -70,11 +70,14 @@ import {
 	FrontSide,
 	HalfFloatType,
 	LinearFilter,
+	Mesh as ThreeMesh,
+	MeshBasicMaterial as ThreeMeshBasicMaterial,
 	MultiplyBlending,
 	NormalBlending,
 	OneFactor,
 	OrthographicCamera,
 	PerspectiveCamera,
+	PlaneGeometry as ThreePlaneGeometry,
 	RGBAFormat,
 	Scene as ThreeScene,
 	SubtractiveBlending,
@@ -1670,7 +1673,7 @@ function GeometryDisplayLayer({
 
 const PERSPECTIVE_FOV = 50;
 
-function PerspectiveScene3D({ width, height, children }) {
+function PerspectiveScene3D({ width, height, renderOrder = 0, children }) {
 	const gl = useThree((state) => state.gl);
 
 	const cameraZ = React.useMemo(
@@ -1727,7 +1730,7 @@ function PerspectiveScene3D({ width, height, children }) {
 	return (
 		<>
 			{createPortal(children, perspScene)}
-			<mesh renderOrder={0}>
+			<mesh renderOrder={renderOrder}>
 				<planeGeometry args={[width, height]} />
 				<meshBasicMaterial
 					map={fbo.texture}
@@ -1877,9 +1880,10 @@ function GeometryDisplayLayer3D({
 
 // --- Per-Scene Effects Renderer ---
 
-function SceneWithEffects({ width, height, effects, children }) {
+function SceneWithEffects({ width, height, effects, renderOrder = 0, children }) {
 	const gl = useThree((state) => state.gl);
 
+	// Portal scene for children (2D + 3D displays)
 	const sceneObj = React.useMemo(() => new ThreeScene(), []);
 	const camera = React.useMemo(() => {
 		const cam = new OrthographicCamera(
@@ -1898,6 +1902,41 @@ function SceneWithEffects({ width, height, effects, children }) {
 		camera.updateProjectionMatrix();
 	}, [camera, width, height]);
 
+	// Pre-render FBO: sceneObj is rendered here manually each frame
+	const preRenderFbo = React.useMemo(
+		() =>
+			new WebGLRenderTarget(width, height, {
+				minFilter: LinearFilter,
+				magFilter: LinearFilter,
+				format: RGBAFormat,
+				type: HalfFloatType,
+			}),
+		[],
+	);
+
+	React.useEffect(() => {
+		preRenderFbo.setSize(width, height);
+	}, [preRenderFbo, width, height]);
+
+	// Quad scene: fullscreen mesh showing the pre-rendered FBO texture
+	// The EffectComposer's RenderPass renders this instead of sceneObj directly
+	const { quadScene, quadCamera } = React.useMemo(() => {
+		const qs = new ThreeScene();
+		const qc = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
+		const geo = new ThreePlaneGeometry(2, 2);
+		const mat = new ThreeMeshBasicMaterial({
+			map: preRenderFbo.texture,
+			transparent: true,
+			depthTest: false,
+			depthWrite: false,
+			toneMapped: false,
+		});
+		const mesh = new ThreeMesh(geo, mat);
+		qs.add(mesh);
+		return { quadScene: qs, quadCamera: qc };
+	}, [preRenderFbo]);
+
+	// EffectComposer
 	const composerRef = React.useRef(null);
 
 	if (!composerRef.current) {
@@ -1916,8 +1955,9 @@ function SceneWithEffects({ width, height, effects, children }) {
 	React.useEffect(() => {
 		return () => {
 			composerRef.current?.dispose();
+			preRenderFbo.dispose();
 		};
-	}, []);
+	}, [preRenderFbo]);
 
 	// Rebuild passes when effect list changes
 	const effectIds = effects.map((e) => e.id + ":" + e.name).join(",");
@@ -1929,7 +1969,7 @@ function SceneWithEffects({ width, height, effects, children }) {
 			composer.removePass(composer.passes[0]);
 		}
 
-		composer.addPass(new RenderPass(sceneObj, camera));
+		composer.addPass(new RenderPass(quadScene, quadCamera));
 
 		const rawEffects = effects
 			.map((e) => {
@@ -1943,12 +1983,12 @@ function SceneWithEffects({ width, height, effects, children }) {
 
 		if (rawEffects.length > 0) {
 			try {
-				composer.addPass(new EffectPass(camera, ...rawEffects));
+				composer.addPass(new EffectPass(quadCamera, ...rawEffects));
 			} catch {
 				// Effect pass failed to compile, skip effects
 			}
 		}
-	}, [effectIds, sceneObj, camera, width, height]);
+	}, [effectIds, quadScene, quadCamera, width, height]);
 
 	const meshRef = React.useRef();
 
@@ -1956,17 +1996,24 @@ function SceneWithEffects({ width, height, effects, children }) {
 		const composer = composerRef.current;
 		if (!composer) return;
 
+		// Step 1: Render sceneObj (all portaled children) to pre-render FBO
+		const prevClearAlpha = gl.getClearAlpha();
+		gl.setClearAlpha(0);
+		gl.setRenderTarget(preRenderFbo);
+		gl.clear();
+		gl.render(sceneObj, camera);
+
+		// Step 2: Run EffectComposer (keep clear alpha = 0 for transparent compositing)
 		try {
 			composer.render(delta);
 		} catch {
 			// Ignore render errors
 		}
 
-		// CRITICAL: reset render target after composer.render()
-		// autoRenderToScreen=false leaves GL pointing at the internal buffer
 		gl.setRenderTarget(null);
+		gl.setClearAlpha(prevClearAlpha);
 
-		// Update material map imperatively (ref-based, not via JSX)
+		// Step 3: Update output mesh with composited result
 		if (meshRef.current) {
 			meshRef.current.material.map = composer.outputBuffer.texture;
 		}
@@ -1975,7 +2022,7 @@ function SceneWithEffects({ width, height, effects, children }) {
 	return (
 		<>
 			{createPortal(children, sceneObj)}
-			<mesh ref={meshRef} renderOrder={0}>
+			<mesh ref={meshRef} renderOrder={renderOrder}>
 				<planeGeometry args={[width, height]} />
 				<meshBasicMaterial
 					transparent={true}
@@ -2040,6 +2087,8 @@ export default function R3FStageRoot({
 		const sceneEffects = (scene.effects || []).filter((e) => e?.enabled);
 		const scene2D = [];
 		const scene3D = [];
+		let scene3DOrder = order; // track first 3D display's order for FBO renderOrder
+		let sceneLastOrder = order; // track last display's order for SceneWithEffects renderOrder
 
 		for (const display of scene.displays || []) {
 			if (!display?.enabled) {
@@ -2154,6 +2203,7 @@ export default function R3FStageRoot({
 					);
 					break;
 				case "GeometryDisplay":
+					if (scene3D.length === 0) scene3DOrder = order;
 					scene3D.push(
 						<GeometryDisplayLayer3D
 							key={display.id}
@@ -2170,13 +2220,14 @@ export default function R3FStageRoot({
 				default:
 					break;
 			}
+			sceneLastOrder = order;
 			order += 1;
 		}
 
 		const displayContent = (
 			<React.Fragment key={scene.id}>
 				{scene3D.length > 0 && (
-					<PerspectiveScene3D width={width} height={height}>
+					<PerspectiveScene3D width={width} height={height} renderOrder={scene3DOrder}>
 						{scene3D}
 					</PerspectiveScene3D>
 				)}
@@ -2191,6 +2242,7 @@ export default function R3FStageRoot({
 					width={width}
 					height={height}
 					effects={sceneEffects}
+					renderOrder={sceneLastOrder}
 				>
 					{displayContent}
 				</SceneWithEffects>,
