@@ -3,7 +3,10 @@ import { RangeInput } from "@/app/components/inputs";
 import { player } from "@/app/global";
 import { Volume, Volume2, Volume3, Volume4 } from "@/app/icons";
 import classNames from "classnames";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+const STORAGE_KEY = "astrofox.player.volume";
+const STORAGE_MUTE_KEY = "astrofox.player.volumeMuted";
 
 const initialState = {
   value: 100,
@@ -15,16 +18,36 @@ export default function VolumeControl() {
   const { value, mute } = state;
   const VolumeIcon = getIcon();
 
+  function persistState(nextValue, nextMute) {
+    localStorage.setItem(STORAGE_KEY, String(nextValue));
+    localStorage.setItem(STORAGE_MUTE_KEY, String(nextMute));
+  }
+
+  useEffect(() => {
+    const rawValue = Number(localStorage.getItem(STORAGE_KEY));
+    const storedMute = localStorage.getItem(STORAGE_MUTE_KEY) === "true";
+    const nextValue =
+      Number.isFinite(rawValue) && rawValue >= 0 && rawValue <= 100
+        ? rawValue
+        : 100;
+
+    setState({ value: nextValue, mute: storedMute });
+    player.setVolume(storedMute ? 0 : nextValue / 100);
+  }, []);
+
   function handleChange(name, value) {
     setState({ value, mute: false });
     player.setVolume(value / 100);
+    persistState(value, false);
   }
 
   function handleClick() {
     setState((prevState) => {
-      player.setVolume(prevState.mute ? prevState.value / 100 : 0);
+      const nextMute = !prevState.mute;
+      player.setVolume(nextMute ? 0 : prevState.value / 100);
+      persistState(prevState.value, nextMute);
 
-      return { ...prevState, mute: !prevState.mute };
+      return { ...prevState, mute: nextMute };
     });
   }
 
