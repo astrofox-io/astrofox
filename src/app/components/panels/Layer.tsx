@@ -65,7 +65,7 @@ export default function Layer({
   return (
     <div
       className={classNames(
-        "group flex flex-row items-center text-sm text-neutral-200 hover:text-neutral-100 bg-neutral-800 rounded px-2 py-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
+        "group flex flex-row items-center text-sm text-neutral-300 hover:text-neutral-100 bg-neutral-800 rounded px-2 py-1 mx-1 relative cursor-default [&>*]:mr-2 [&>*:last-child]:mr-0 [&:after]:content-['\\00a0']",
         className,
         {
           "bg-neutral-800": edit,
