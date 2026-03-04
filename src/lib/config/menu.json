@@ -24,6 +24,10 @@
 			{
 				"label": "Save image...",
 				"action": "save-image"
+			},
+			{
+				"label": "Save video...",
+				"action": "save-video"
 			}
 		]
 	},

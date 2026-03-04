@@ -8,6 +8,7 @@ import {
 	PPBlurEffect,
 	PPColorHalftoneEffect,
 	PPDistortionEffect,
+	PPGaussianBlurPass,
 	PPGlowEffect,
 	PPHexPixelateEffect,
 	PPKaleidoscopeEffect,
@@ -37,9 +38,11 @@ import {
 } from "@react-three/postprocessing";
 import {
 	BlendFunction,
+	Effect as RawEffect,
 	EffectComposer as RawEffectComposer,
 	EffectPass,
 	GlitchMode,
+	Pass as RawPass,
 	RenderPass,
 	BloomEffect as RawBloomEffect,
 	BrightnessContrastEffect as RawBrightnessContrastEffect,
@@ -357,15 +360,20 @@ function PPBlurWrapper({
 	width,
 	height,
 }) {
+	if (type === "Gaussian") {
+		return (
+			<PPGaussianBlurPassWrapper amount={amount} width={width} height={height} />
+		);
+	}
+
 	const blurTypeMap = {
 		Box: 0,
 		Circular: 1,
-		Gaussian: 2,
 		Triangle: 3,
 		Zoom: 4,
 		Lens: 5,
 	};
-	const blurType = blurTypeMap[type] ?? 2;
+	const blurType = blurTypeMap[type] ?? 0;
 
 	const effect = React.useMemo(
 		() => new PPBlurEffect({ amount: 0, blurType, width, height }),
@@ -391,6 +399,20 @@ function PPBlurWrapper({
 		res.set(width, height);
 	}, [effect, type, amount, x, y, radius, brightness, angle, width, height]);
 	return <primitive object={effect} dispose={null} />;
+}
+
+function PPGaussianBlurPassWrapper({ amount, width, height }) {
+	const pass = React.useMemo(
+		() => new PPGaussianBlurPass({ amount: 0 }),
+		[],
+	);
+
+	React.useEffect(() => {
+		pass.setAmount(Number(amount || 0));
+		pass.setSize(width, height);
+	}, [pass, amount, width, height]);
+
+	return <primitive object={pass} dispose={null} />;
 }
 
 // --- Raw Effect Factory (for per-scene postprocessing) ---
@@ -480,10 +502,19 @@ function createRawEffect(effectConfig, width, height) {
 				height,
 			});
 		case "BlurEffect": {
-			const blurTypeMap = { Box: 0, Circular: 1, Gaussian: 2, Triangle: 3, Zoom: 4, Lens: 5 };
+			const selectedType = props.type || "Gaussian";
+			if (selectedType === "Gaussian") {
+				const pass = new PPGaussianBlurPass({
+					amount: Number(props.amount || 0),
+				});
+				pass.setSize(width, height);
+				return pass;
+			}
+
+			const blurTypeMap = { Box: 0, Circular: 1, Triangle: 3, Zoom: 4, Lens: 5 };
 			return new PPBlurEffect({
 				amount: Number(props.amount || 0),
-				blurType: blurTypeMap[props.type] ?? 2,
+				blurType: blurTypeMap[selectedType] ?? 0,
 				width,
 				height,
 			});
@@ -1971,7 +2002,7 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 
 		composer.addPass(new RenderPass(quadScene, quadCamera));
 
-		const rawEffects = effects
+		const pipelineItems = effects
 			.map((e) => {
 				try {
 					return createRawEffect(e, width, height);
@@ -1981,13 +2012,30 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 			})
 			.filter(Boolean);
 
-		if (rawEffects.length > 0) {
+		let batchedEffects = [];
+		const flushBatchedEffects = () => {
+			if (batchedEffects.length === 0) return;
 			try {
-				composer.addPass(new EffectPass(quadCamera, ...rawEffects));
+				composer.addPass(new EffectPass(quadCamera, ...batchedEffects));
 			} catch {
-				// Effect pass failed to compile, skip effects
+				// Effect pass failed to compile, skip this effect group
+			}
+			batchedEffects = [];
+		};
+
+		for (const item of pipelineItems) {
+			if (item instanceof RawPass) {
+				flushBatchedEffects();
+				composer.addPass(item);
+				continue;
+			}
+
+			if (item instanceof RawEffect) {
+				batchedEffects.push(item);
 			}
 		}
+
+		flushBatchedEffects();
 	}, [effectIds, quadScene, quadCamera, width, height]);
 
 	const meshRef = React.useRef();

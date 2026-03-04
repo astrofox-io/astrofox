@@ -307,6 +307,18 @@ export async function saveImageFile(
 	await saveBlob(target, blob, filename);
 }
 
+export async function saveVideoFile(
+	target: FileHandle | string | null,
+	data: BlobPart,
+	props: SaveFileProps = {},
+) {
+	const mimeType = props.mimeType || "video/webm";
+	const blob = new Blob([data], { type: mimeType });
+	const filename = props.fileName || "video.webm";
+
+	await saveBlob(target, blob, filename);
+}
+
 export async function saveTextFile(
 	target: FileHandle | string | null,
 	data: BlobPart,
