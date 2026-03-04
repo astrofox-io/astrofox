@@ -103,7 +103,10 @@ export default function Layer({
         className={classNames("w-4 h-4", {
           "opacity-30": !enabled,
         })}
-        onClick={handleEnableClick}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleEnableClick();
+        }}
       />
     </div>
   );
