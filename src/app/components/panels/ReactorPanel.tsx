@@ -11,7 +11,6 @@ import {
 import { events, reactors } from "@/app/global";
 import useEntity from "@/app/hooks/useEntity";
 import { Times } from "@/app/icons";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -170,15 +169,13 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="absolute top-2 right-2 z-10"
+              <div
+                className="absolute top-2 right-2 z-10 text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
                 onClick={hideReactor}
               />
             }
           >
-            <Times className="text-neutral-300 [&:hover]:text-neutral-100" />
+            <Times className="w-4 h-4" />
           </TooltipTrigger>
           <TooltipContent
             side="bottom"

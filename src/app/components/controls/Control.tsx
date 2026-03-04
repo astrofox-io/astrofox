@@ -57,10 +57,10 @@ export default function Control({
   return (
     <div className={classNames("pb-2", className)}>
       {showHeader && (
-        <div className={"relative py-2 px-2.5"}>
+        <div className={"relative py-3 px-2.5"}>
           <div
             className={
-              "flex items-center justify-between text-xs text-neutral-100 leading-8 overflow-hidden gap"
+              "flex items-center justify-between text-xs text-neutral-100 overflow-hidden gap"
             }
           >
             <div className={"uppercase"}>{label}</div>

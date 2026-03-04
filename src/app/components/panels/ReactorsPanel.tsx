@@ -17,7 +17,7 @@ function ReactorMeter({ id }: { id: string }) {
 
   useEffect(() => {
     meter.current = new CanvasMeter(
-      { width: 100, height: 10, color: PRIMARY_COLOR },
+      { width: 100, height: 5, color: PRIMARY_COLOR },
       canvas.current!,
     );
 
@@ -35,12 +35,9 @@ function ReactorMeter({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <canvas
-      ref={canvas}
-      className="shrink-0"
-      width={100}
-      height={10}
-    />
+    <div className="my-2 mx-1 px-2 py-1 border border-input rounded">
+      <canvas ref={canvas} className="w-full" />
+    </div>
   );
 }
 
@@ -72,20 +69,17 @@ export default function ReactorsPanel() {
     <div className="flex flex-col flex-1 relative overflow-auto">
       <div className="flex-1 overflow-auto pt-1 flex flex-col gap-0.5">
         {reactorList.map((reactor) => (
-          <div key={reactor.id} className="flex flex-row items-center gap-1 mx-1">
-            <div className="flex-1 min-w-0">
-              <Layer
-                id={reactor.id}
-                name={reactor.displayName}
-                icon={Flash}
-                active={reactor.id === activeReactorId}
-                enabled={reactor.enabled}
-                onLayerClick={handleLayerClick}
-                onLayerUpdate={handleLayerUpdate}
-                onLayerDelete={handleLayerDelete}
-                className="!mx-0"
-              />
-            </div>
+          <div key={reactor.id} className="flex flex-col mx-1">
+            <Layer
+              id={reactor.id}
+              name={reactor.displayName}
+              icon={Flash}
+              active={reactor.id === activeReactorId}
+              enabled={reactor.enabled}
+              onLayerClick={handleLayerClick}
+              onLayerUpdate={handleLayerUpdate}
+              onLayerDelete={handleLayerDelete}
+            />
             <ReactorMeter id={reactor.id} />
           </div>
         ))}
