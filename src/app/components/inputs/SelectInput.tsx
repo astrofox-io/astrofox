@@ -73,7 +73,7 @@ export default function SelectInput({
       >
         {parsedItems.map((item: SelectItemData | null, index: number) => {
           if (!item) {
-            return <SelectSeparator key={index} className="bg-primary" />;
+            return <SelectSeparator key={index} />;
           }
           const itemValue = String(item[valueField]);
           return (

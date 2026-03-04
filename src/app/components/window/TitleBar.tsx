@@ -164,10 +164,7 @@ export default function TitleBar() {
             {menuItems.map((item, index) => {
               if (item.type === "separator") {
                 return (
-                  <DropdownMenuSeparator
-                    key={`sep-${index}`}
-                    className="bg-primary"
-                  />
+                  <DropdownMenuSeparator key={`sep-${index}`} />
                 );
               }
 

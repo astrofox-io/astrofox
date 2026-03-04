@@ -156,54 +156,24 @@ export default function LayersPanel() {
   return (
     <div className={"flex flex-col flex-1 relative overflow-auto"}>
       <div className={"flex p-1 gap-1"}>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <div
-                  className={classNames(
-                    "text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary",
-                    { "opacity-30 hover:bg-neutral-900": !canMoveUp },
-                  )}
-                  onClick={canMoveUp ? handleMoveUp : undefined}
-                />
-              }
-            >
-              <ChevronUp className="text-neutral-100 w-4 h-4" />
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              sideOffset={6}
-              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-            >
-              Move up
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <div
-                  className={classNames(
-                    "text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary",
-                    { "opacity-30 hover:bg-neutral-900": !canMoveDown },
-                  )}
-                  onClick={canMoveDown ? handleMoveDown : undefined}
-                />
-              }
-            >
-              <ChevronDown className="text-neutral-100 w-4 h-4" />
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              sideOffset={6}
-              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-            >
-              Move down
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div
+          className={classNames(
+            "text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0",
+            { "opacity-30 hover:bg-neutral-900": !canMoveUp },
+          )}
+          onClick={canMoveUp ? handleMoveUp : undefined}
+        >
+          <ChevronUp className="text-neutral-100 w-4 h-4" />
+        </div>
+        <div
+          className={classNames(
+            "text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0",
+            { "opacity-30 hover:bg-neutral-900": !canMoveDown },
+          )}
+          onClick={canMoveDown ? handleMoveDown : undefined}
+        >
+          <ChevronDown className="text-neutral-100 w-4 h-4" />
+        </div>
       </div>
       <div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
         {sortedScenes.map((scene) => (

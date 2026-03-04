@@ -66,7 +66,7 @@ export default function ReactorButton({
 						</button>
 					}
 				/>
-				<DropdownMenuContent side="bottom" align="start" sideOffset={4} className="min-w-40">
+				<DropdownMenuContent side="left" align="start" sideOffset={4} className="min-w-40">
 					<DropdownMenuRadioGroup value={reactor?.id ?? ""}>
 						{reactorList.map((r) => (
 							<DropdownMenuRadioItem
