@@ -4,7 +4,12 @@ import { setActiveReactorId } from "@/app/actions/app";
 import { removeReactor } from "@/app/actions/reactors";
 import { loadScenes } from "@/app/actions/scenes";
 import Icon from "@/app/components/interface/Icon";
-import Tooltip from "@/app/components/interface/Tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { PRIMARY_COLOR } from "@/app/constants";
 import { events, reactors } from "@/app/global";
 import { Times } from "@/app/icons";
@@ -84,15 +89,28 @@ export default function ReactorInput({
 			>
 				<canvas ref={canvas} className="canvas" width={width} height={height} />
 			</div>
-			<Tooltip text="Disable Reactor">
-				<Icon
-					className={
-						"ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-neutral-300 [&:hover]:text-neutral-100"
-					}
-					glyph={Times}
-					onClick={disableReactor}
-				/>
-			</Tooltip>
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<Icon
+								className={
+									"ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-neutral-300 [&:hover]:text-neutral-100"
+								}
+								glyph={Times}
+								onClick={disableReactor}
+							/>
+						}
+					/>
+					<TooltipContent
+						side="bottom"
+						sideOffset={6}
+						className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+					>
+						Disable Reactor
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
 		</div>
 	);
 }

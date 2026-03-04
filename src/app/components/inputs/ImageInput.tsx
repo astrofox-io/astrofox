@@ -1,7 +1,12 @@
 import { ignoreEvents } from "@/lib/utils/react";
 import { raiseError } from "@/app/actions/error";
 import Icon from "@/app/components/interface/Icon";
-import Tooltip from "@/app/components/interface/Tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { BLANK_IMAGE } from "@/app/constants";
 import { api } from "@/app/global";
 import { FolderOpen, Times } from "@/app/icons";
@@ -162,25 +167,51 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
 					src={value}
 					alt=""
 				/>
-				<Tooltip text="Open File">
-					<Icon
-						className={
-							"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
-						}
-						glyph={FolderOpen}
-					/>
-				</Tooltip>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger
+							render={
+								<Icon
+									className={
+										"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
+									}
+									glyph={FolderOpen}
+								/>
+							}
+						/>
+						<TooltipContent
+							side="bottom"
+							sideOffset={6}
+							className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+						>
+							Open File
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 			{hasImage && (
-				<Tooltip text="Remove Image">
-					<Icon
-						className={classNames({
-							"text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
-						})}
-						glyph={Times}
-						onClick={handleDelete}
-					/>
-				</Tooltip>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger
+							render={
+								<Icon
+									className={classNames({
+										"text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
+									})}
+									glyph={Times}
+									onClick={handleDelete}
+								/>
+							}
+						/>
+						<TooltipContent
+							side="bottom"
+							sideOffset={6}
+							className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+						>
+							Remove Image
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			)}
 		</>
 	);

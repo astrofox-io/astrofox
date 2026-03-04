@@ -2,7 +2,12 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/app/actions/app";
 import useProject, { DEFAULT_PROJECT_NAME } from "@/app/actions/project";
-import Tooltip from "@/app/components/interface/Tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -204,17 +209,30 @@ export default function TitleBar() {
 						onKeyDown={onProjectNameKeyDown}
 					/>
 				) : (
-					<Tooltip text="Click to rename project">
-						<button
-							type="button"
-							className={
-								"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-neutral-400 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800"
-							}
-							onClick={beginProjectNameEdit}
-						>
-							{projectName || DEFAULT_PROJECT_NAME}
-						</button>
-					</Tooltip>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger
+								render={
+									<button
+										type="button"
+										className={
+											"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-neutral-400 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800"
+										}
+										onClick={beginProjectNameEdit}
+									/>
+								}
+							>
+								{projectName || DEFAULT_PROJECT_NAME}
+							</TooltipTrigger>
+							<TooltipContent
+								side="bottom"
+								sideOffset={6}
+								className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+							>
+								Click to rename project
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				)}
 			</div>
 			<div className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400">

@@ -1,4 +1,4 @@
-import Button from "@/app/components/interface/Button";
+import { Button } from "@/components/ui/button";
 import { env } from "@/app/global";
 import React from "react";
 
@@ -27,7 +27,7 @@ export default function About({ onClose }: AboutProps) {
 				{"Copyright \u00A9 Mike Cao"}
 			</div>
 			<div className={"mt-5"}>
-				<Button text="Close" onClick={onClose} />
+				<Button variant="default" size="sm" onClick={onClose}>Close</Button>
 			</div>
 		</div>
 	);

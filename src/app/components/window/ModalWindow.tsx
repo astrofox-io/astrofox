@@ -1,4 +1,4 @@
-import Button from "@/app/components/interface/Button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type React from "react";
 import { Children, cloneElement, isValidElement } from "react";
@@ -52,7 +52,7 @@ export default function ModalWindow({
 			{buttons && (
 				<div className="bg-neutral-700 text-center p-2.5">
 					{buttons.map((text: string, index: number) => (
-						<Button key={index} text={text} onClick={() => onClose?.(text)} />
+						<Button key={index} variant="default" size="sm" onClick={() => onClose?.(text)}>{text}</Button>
 					))}
 				</div>
 			)}

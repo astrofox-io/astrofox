@@ -1,7 +1,12 @@
 // @ts-nocheck
 import useApp, { setActiveElementId } from "@/app/actions/app";
 import useScenes, { addElement } from "@/app/actions/scenes";
-import Tooltip from "@/app/components/interface/Tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -80,19 +85,32 @@ export default function Toolbar() {
 							setOpenIndex(open ? index : -1);
 						}}
 					>
-						<Tooltip text={item.title}>
-							<DropdownMenuTrigger
-								render={
-									<button
-										type="button"
-										className={`border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default ${isOpen ? "text-neutral-100 bg-primary" : ""} ${!disabled ? "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800" : ""} ${disabled ? "[&_svg]:text-neutral-500" : ""}`}
-										aria-label={item.title}
-									/>
-								}
-							>
-								<Icon size={18} />
-							</DropdownMenuTrigger>
-						</Tooltip>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger
+									render={
+										<DropdownMenuTrigger
+											render={
+												<button
+													type="button"
+													className={`border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default ${isOpen ? "text-neutral-100 bg-primary" : ""} ${!disabled ? "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800" : ""} ${disabled ? "[&_svg]:text-neutral-500" : ""}`}
+													aria-label={item.title}
+												/>
+											}
+										>
+											<Icon size={18} />
+										</DropdownMenuTrigger>
+									}
+								/>
+								<TooltipContent
+									side="bottom"
+									sideOffset={6}
+									className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+								>
+									{item.title}
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
 						<DropdownMenuContent
 							className="bg-neutral-900 border-neutral-700 rounded-md shadow-lg p-1 min-w-44"
 							align="start"

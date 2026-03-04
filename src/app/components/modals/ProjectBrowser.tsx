@@ -7,7 +7,7 @@ import useProject, {
 	renameProjectById,
 	saveProject,
 } from "@/app/actions/project";
-import Button from "@/app/components/interface/Button";
+import { Button } from "@/components/ui/button";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -139,12 +139,15 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 						)}
 					</div>
 					<div className={"flex gap-1.5"}>
-						<Button text="Refresh" onClick={refreshProjects} />
+						<Button variant="default" size="sm" onClick={refreshProjects}>Refresh</Button>
 						<Button
-							text="Open"
+							variant="default"
+							size="sm"
 							disabled={!selectedId}
 							onClick={handleOpenProject}
-						/>
+						>
+							Open
+						</Button>
 					</div>
 				</div>
 
@@ -162,7 +165,7 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 						}
 					/>
 					<div className={"flex gap-1.5"}>
-						<Button text="Create" onClick={handleCreateProject} />
+						<Button variant="default" size="sm" onClick={handleCreateProject}>Create</Button>
 					</div>
 
 					<div className={"text-sm font-bold uppercase opacity-[0.8]"}>
@@ -180,15 +183,21 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 					/>
 					<div className={"flex gap-1.5"}>
 						<Button
-							text="Rename"
+							variant="default"
+							size="sm"
 							disabled={!selectedId || !renameName.trim()}
 							onClick={handleRenameProject}
-						/>
+						>
+							Rename
+						</Button>
 						<Button
-							text="Delete"
+							variant="default"
+							size="sm"
 							disabled={!selectedId}
 							onClick={handleDeleteProject}
-						/>
+						>
+							Delete
+						</Button>
 					</div>
 				</div>
 			</div>

@@ -1,6 +1,6 @@
 import useStage, { updateCanvas } from "@/app/actions/stage";
 import { Setting, Settings } from "@/app/components/controls";
-import Button from "@/app/components/interface/Button";
+import { Button } from "@/components/ui/button";
 import ButtonRow from "@/app/components/layout/ButtonRow";
 import React, { useState } from "react";
 
@@ -159,8 +159,8 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 				Output: {width} x {height}
 			</div>
 			<ButtonRow>
-				<Button onClick={handleSave} text="OK" />
-				<Button onClick={handleCancel} text="Cancel" />
+				<Button variant="default" size="sm" onClick={handleSave}>OK</Button>
+				<Button variant="default" size="sm" onClick={handleCancel}>Cancel</Button>
 			</ButtonRow>
 		</div>
 	);

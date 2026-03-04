@@ -1,4 +1,4 @@
-import Button from "@/app/components/interface/Button";
+import { Button } from "@/components/ui/button";
 import ButtonRow from "@/app/components/layout/ButtonRow";
 import classNames from "classnames";
 import type { LucideIcon } from "lucide-react";
@@ -35,9 +35,12 @@ export default function Dialog({
 					{buttons.map((button: string) => (
 						<Button
 							key={button}
-							text={button}
+							variant="default"
+							size="sm"
 							onClick={() => onConfirm?.(button)}
-						/>
+						>
+							{button}
+						</Button>
 					))}
 				</ButtonRow>
 			)}

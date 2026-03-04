@@ -1,6 +1,11 @@
 import useApp, { toggleState } from "@/app/actions/app";
 import Icon from "@/app/components/interface/Icon";
-import Tooltip from "@/app/components/interface/Tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { player } from "@/app/global";
 import useForceUpdate from "@/app/hooks/useForceUpdate";
 import { Cycle, SoundBars, SoundWaves } from "@/app/icons";
@@ -54,18 +59,33 @@ interface ToggleButtonProps {
 }
 
 const ToggleButton = ({ enabled, title, icon, onClick }: ToggleButtonProps) => (
-	<Tooltip text={title}>
-		<div
-			className={"mr-2.5 [&:last-child]:mr-0 cursor-default"}
-			onClick={onClick}
-		>
-			<Icon
-				className={classNames("w-4 h-4", {
-					"!text-neutral-500 hover:!text-neutral-400": !enabled,
-					"!text-primary hover:!text-primary": enabled,
-				})}
-				glyph={icon}
-			/>
-		</div>
-	</Tooltip>
+	<TooltipProvider>
+		<Tooltip>
+			<TooltipTrigger
+				render={
+					<div
+						className={"mr-2.5 [&:last-child]:mr-0 cursor-default"}
+						onClick={onClick}
+					/>
+				}
+			>
+				<Icon
+					className={classNames("w-4 h-4", {
+						"!text-neutral-500 hover:!text-neutral-400": !enabled,
+						"!text-primary hover:!text-primary": enabled,
+					})}
+					glyph={icon}
+				/>
+			</TooltipTrigger>
+			{title && (
+				<TooltipContent
+					side="bottom"
+					sideOffset={6}
+					className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+				>
+					{title}
+				</TooltipContent>
+			)}
+		</Tooltip>
+	</TooltipProvider>
 );

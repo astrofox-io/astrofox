@@ -5,7 +5,12 @@ import useApp, { setActiveReactorId } from "@/app/actions/app";
 import { Control } from "@/app/components/controls";
 import { BoxInput } from "@/app/components/inputs";
 import Icon from "@/app/components/interface/Icon";
-import Tooltip from "@/app/components/interface/Tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
 	PRIMARY_COLOR,
 	REACTOR_BARS,
@@ -155,17 +160,30 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
 					/>
 				</div>
 			</div>
-			<Tooltip text="Hide Panel">
-				<button
-					className="absolute top-2 right-2 z-10 cursor-pointer bg-transparent border-none p-0"
-					onClick={hideReactor}
-				>
-					<Icon
-						className="text-neutral-300 w-3.5 h-3.5 [&:hover]:text-neutral-100"
-						glyph={Times}
-					/>
-				</button>
-			</Tooltip>
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<button
+								className="absolute top-2 right-2 z-10 cursor-pointer bg-transparent border-none p-0"
+								onClick={hideReactor}
+							/>
+						}
+					>
+						<Icon
+							className="text-neutral-300 w-3.5 h-3.5 [&:hover]:text-neutral-100"
+							glyph={Times}
+						/>
+					</TooltipTrigger>
+					<TooltipContent
+						side="bottom"
+						sideOffset={6}
+						className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+					>
+						Hide Panel
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
 		</div>
 	);
 };

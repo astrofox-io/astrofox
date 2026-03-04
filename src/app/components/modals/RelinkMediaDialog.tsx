@@ -1,5 +1,5 @@
 import useProject, { relinkMediaRef } from "@/app/actions/project";
-import Button from "@/app/components/interface/Button";
+import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 
 interface MediaRef {
@@ -32,7 +32,7 @@ export default function RelinkMediaDialog({ onClose }: RelinkMediaDialogProps) {
 					All media links are resolved.
 				</div>
 				<div className={"flex justify-end"}>
-					<Button text="Close" onClick={onClose} />
+					<Button variant="default" size="sm" onClick={onClose}>Close</Button>
 				</div>
 			</div>
 		);
@@ -63,17 +63,18 @@ export default function RelinkMediaDialog({ onClose }: RelinkMediaDialogProps) {
 							) : null}
 						</div>
 						<Button
-							text={
-								loadingDisplayId === ref.displayId ? "Loading..." : "Relink"
-							}
+							variant="default"
+							size="sm"
 							disabled={loadingDisplayId === ref.displayId}
 							onClick={() => handleRelink(ref)}
-						/>
+						>
+							{loadingDisplayId === ref.displayId ? "Loading..." : "Relink"}
+						</Button>
 					</div>
 				))}
 			</div>
 			<div className={"flex justify-end"}>
-				<Button text="Close" onClick={onClose} />
+				<Button variant="default" size="sm" onClick={onClose}>Close</Button>
 			</div>
 		</div>
 	);
