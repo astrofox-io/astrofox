@@ -50,50 +50,25 @@ export default function ReactorButton({
 		}
 	}
 
-	function handleClick() {
-		if (reactor) {
-			setActiveReactorId(reactor.id);
-		} else {
-			createAndAssign();
-		}
-	}
-
 	const buttonClasses = classNames(
-		"min-h-5 min-w-5 rounded inline-flex justify-center items-center cursor-default shrink-0 border-0 bg-transparent p-0",
+		"min-h-5 min-w-5 rounded inline-flex justify-center items-center cursor-default shrink-0 border-0 p-0",
 		reactor
 			? "bg-primary text-neutral-100"
-			: "text-neutral-500 [&:hover]:text-neutral-100",
+			: "bg-transparent text-neutral-500 [&:hover]:text-neutral-100",
 	);
-
-	const tooltipLabel = reactor ? "Show Reactor" : "Enable Reactor";
 
 	// When no reactor assigned and reactors exist, show dropdown to pick one
 	if (!reactor && reactors.length > 0) {
 		return (
 			<div className={classNames("relative", className)}>
 				<DropdownMenu>
-					<TooltipProvider>
-						<Tooltip>
-							<DropdownMenuTrigger
-								render={
-									<TooltipTrigger
-										render={
-											<button type="button" className={buttonClasses} />
-										}
-									>
-										<Flash className="w-3.5 h-3.5" />
-									</TooltipTrigger>
-								}
-							/>
-							<TooltipContent
-								side="bottom"
-								sideOffset={6}
-								className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-							>
-								{tooltipLabel}
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+					<DropdownMenuTrigger
+						render={
+							<button type="button" className={buttonClasses}>
+								<Flash className="w-3.5 h-3.5" />
+							</button>
+						}
+					/>
 					<DropdownMenuContent side="bottom" align="start" sideOffset={4}>
 						{reactors.map((r: { id: string; displayName: string }) => (
 							<DropdownMenuItem
@@ -115,7 +90,26 @@ export default function ReactorButton({
 		);
 	}
 
-	// Otherwise, simple click: show assigned reactor or create new one
+	// No reactor and no existing reactors: simple click to create
+	if (!reactor) {
+		return (
+			<div className={classNames("relative", className)}>
+				<button
+					type="button"
+					className={buttonClasses}
+					onClick={createAndAssign}
+				>
+					<Flash className="w-3.5 h-3.5" />
+				</button>
+			</div>
+		);
+	}
+
+	// Reactor assigned: show tooltip with reactor name
+	const reactorEntity = reactors.getElementById(reactor.id) as
+		| { displayName: string }
+		| undefined;
+
 	return (
 		<div className={classNames("relative", className)}>
 			<TooltipProvider>
@@ -125,18 +119,18 @@ export default function ReactorButton({
 							<button
 								type="button"
 								className={buttonClasses}
-								onClick={handleClick}
+								onClick={() => setActiveReactorId(reactor.id)}
 							/>
 						}
 					>
 						<Flash className="w-3.5 h-3.5" />
 					</TooltipTrigger>
 					<TooltipContent
-						side="bottom"
+						side="left"
 						sideOffset={6}
 						className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
 					>
-						{tooltipLabel}
+						{reactorEntity?.displayName}
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>
