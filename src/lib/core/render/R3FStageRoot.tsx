@@ -35,7 +35,29 @@ import {
 	ToneMapping,
 	Vignette,
 } from "@react-three/postprocessing";
-import { BlendFunction, GlitchMode } from "postprocessing";
+import {
+	BlendFunction,
+	EffectComposer as RawEffectComposer,
+	EffectPass,
+	GlitchMode,
+	RenderPass,
+	BloomEffect as RawBloomEffect,
+	BrightnessContrastEffect as RawBrightnessContrastEffect,
+	ColorAverageEffect as RawColorAverageEffect,
+	ColorDepthEffect as RawColorDepthEffect,
+	DotScreenEffect as RawDotScreenEffect,
+	GlitchEffect as RawGlitchEffect,
+	GridEffect as RawGridEffect,
+	HueSaturationEffect as RawHueSaturationEffect,
+	NoiseEffect as RawNoiseEffect,
+	PixelationEffect as RawPixelationEffect,
+	ScanlineEffect as RawScanlineEffect,
+	SepiaEffect as RawSepiaEffect,
+	TiltShiftEffect as RawTiltShiftEffect,
+	ToneMappingEffect as RawToneMappingEffect,
+	VignetteEffect as RawVignetteEffect,
+	ASCIIEffect as RawASCIIEffect,
+} from "postprocessing";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
 import React from "react";
 import {
@@ -51,6 +73,7 @@ import {
 	MultiplyBlending,
 	NormalBlending,
 	OneFactor,
+	OrthographicCamera,
 	PerspectiveCamera,
 	RGBAFormat,
 	Scene as ThreeScene,
@@ -365,6 +388,159 @@ function PPBlurWrapper({
 		res.set(width, height);
 	}, [effect, type, amount, x, y, radius, brightness, angle, width, height]);
 	return <primitive object={effect} dispose={null} />;
+}
+
+// --- Raw Effect Factory (for per-scene postprocessing) ---
+
+function createRawEffect(effectConfig, width, height) {
+	const props = effectConfig.properties || {};
+
+	switch (effectConfig.name) {
+		case "BloomEffect": {
+			const amount = Number(props.amount ?? 0);
+			const threshold = Number(props.threshold ?? 1);
+			const blendMode =
+				props.blendMode === "Screen" ? BlendFunction.SCREEN : BlendFunction.ADD;
+			return new RawBloomEffect({
+				intensity: amount * 10,
+				luminanceThreshold: threshold,
+				luminanceSmoothing: 0.025,
+				blendFunction: blendMode,
+			});
+		}
+		case "PixelateEffect": {
+			const size = Number(props.size || 10);
+			const type = props.type || "Square";
+			if (type === "Hexagon") {
+				return new PPHexPixelateEffect({ size, width, height });
+			}
+			return new RawPixelationEffect(size);
+		}
+		case "DotScreenEffect": {
+			const scale = Number(props.scale || 0);
+			const angle = Number(props.angle || 0);
+			return new RawDotScreenEffect({ scale: 2 - scale * 2, angle: toRadians(angle) });
+		}
+		case "RGBShiftEffect": {
+			const normalizedOffset =
+				Number(props.offset || 0) / Math.max(1, Number(width || 1));
+			return new PPRGBShiftEffect({
+				offset: normalizedOffset,
+				angle: toRadians(Number(props.angle || 0)),
+			});
+		}
+		case "MirrorEffect":
+			return new PPMirrorEffect({ side: Number(props.side || 0) });
+		case "KaleidoscopeEffect":
+			return new PPKaleidoscopeEffect({
+				sides: Math.max(1, Number(props.sides || 6)),
+				angle: toRadians(Number(props.angle || 0)),
+			});
+		case "DistortionEffect":
+			return new PPDistortionEffect({
+				amount: Number(props.amount || 0) * 30,
+				time: Number(effectConfig.time || 0),
+			});
+		case "GlitchEffect": {
+			const mode =
+				props.mode === "Constant"
+					? GlitchMode.CONSTANT_WILD
+					: GlitchMode.SPORADIC;
+			const strength = Number(props.strength ?? 0.3);
+			return new RawGlitchEffect({
+				mode,
+				strength: new Vector2(strength * 0.5, strength),
+				columns: Number(props.columns ?? 0.05),
+				ratio: Number(props.ratio ?? 0.85),
+			});
+		}
+		case "ColorHalftoneEffect":
+			return new PPColorHalftoneEffect({
+				scale: 1 - Number(props.scale || 0),
+				angle: toRadians(Number(props.angle || 0)),
+				width,
+				height,
+			});
+		case "LEDEffect":
+			return new PPLEDEffect({
+				spacing: Math.max(1, Number(props.spacing || 10)),
+				size: Number(props.size || 4),
+				blur: Number(props.blur || 4),
+				width,
+				height,
+			});
+		case "GlowEffect":
+			return new PPGlowEffect({
+				amount: Number(props.amount || 0) * 5,
+				intensity: Number(props.intensity || 1),
+				width,
+				height,
+			});
+		case "BlurEffect": {
+			const blurTypeMap = { Box: 0, Circular: 1, Gaussian: 2, Triangle: 3, Zoom: 4, Lens: 5 };
+			return new PPBlurEffect({
+				amount: Number(props.amount || 0),
+				blurType: blurTypeMap[props.type] ?? 2,
+				width,
+				height,
+			});
+		}
+		case "BrightnessContrastEffect":
+			return new RawBrightnessContrastEffect({
+				brightness: Number(props.brightness ?? 0),
+				contrast: Number(props.contrast ?? 0),
+			});
+		case "ColorAverageEffect":
+			return new RawColorAverageEffect(BlendFunction.NORMAL);
+		case "ColorDepthEffect":
+			return new RawColorDepthEffect({ bits: Number(props.bits ?? 16) });
+		case "GridEffect":
+			return new RawGridEffect({
+				scale: Number(props.scale ?? 1.0),
+				lineWidth: Number(props.lineWidth ?? 0.5),
+			});
+		case "HueSaturationEffect":
+			return new RawHueSaturationEffect({
+				hue: toRadians(Number(props.hue ?? 0)),
+				saturation: Number(props.saturation ?? 0),
+			});
+		case "NoiseEffect":
+			return new RawNoiseEffect({
+				premultiply: !!props.premultiply,
+				blendFunction: BlendFunction.ADD,
+			});
+		case "ScanlineEffect":
+			return new RawScanlineEffect({ density: Number(props.density ?? 1.25) });
+		case "SepiaEffect":
+			return new RawSepiaEffect({ intensity: Number(props.intensity ?? 1.0) });
+		case "ToneMappingEffect":
+			return new RawToneMappingEffect({
+				middleGrey: Number(props.middleGrey ?? 0.6),
+				maxLuminance: Number(props.maxLuminance ?? 16),
+				averageLuminance: Number(props.averageLuminance ?? 1.0),
+				adaptationRate: Number(props.adaptationRate ?? 1.0),
+			});
+		case "VignetteEffect":
+			return new RawVignetteEffect({
+				offset: Number(props.offset ?? 0.5),
+				darkness: Number(props.darkness ?? 0.5),
+			});
+		case "ASCIIEffect":
+			return new RawASCIIEffect({
+				fontSize: Number(props.fontSize ?? 54),
+				cellSize: Number(props.cellSize ?? 16),
+				color: String(props.color ?? "#ffffff"),
+				invert: !!props.invert,
+			});
+		case "TiltShiftEffect":
+			return new RawTiltShiftEffect({
+				blur: Number(props.blur ?? 0.15),
+				taper: Number(props.taper ?? 0.5),
+				samples: Number(props.samples ?? 10),
+			});
+		default:
+			return null;
+	}
 }
 
 // --- EffectBridge ---
@@ -1699,6 +1875,119 @@ function GeometryDisplayLayer3D({
 	);
 }
 
+// --- Per-Scene Effects Renderer ---
+
+function SceneWithEffects({ width, height, effects, children }) {
+	const gl = useThree((state) => state.gl);
+
+	const sceneObj = React.useMemo(() => new ThreeScene(), []);
+	const camera = React.useMemo(() => {
+		const cam = new OrthographicCamera(
+			-width / 2, width / 2, height / 2, -height / 2, -1000, 1000,
+		);
+		cam.position.set(0, 0, 10);
+		cam.updateProjectionMatrix();
+		return cam;
+	}, []);
+
+	React.useEffect(() => {
+		camera.left = -width / 2;
+		camera.right = width / 2;
+		camera.top = height / 2;
+		camera.bottom = -height / 2;
+		camera.updateProjectionMatrix();
+	}, [camera, width, height]);
+
+	const composerRef = React.useRef(null);
+
+	if (!composerRef.current) {
+		const c = new RawEffectComposer(gl, {
+			frameBufferType: HalfFloatType,
+		});
+		c.autoRenderToScreen = false;
+		c.setSize(width, height);
+		composerRef.current = c;
+	}
+
+	React.useEffect(() => {
+		composerRef.current?.setSize(width, height);
+	}, [width, height]);
+
+	React.useEffect(() => {
+		return () => {
+			composerRef.current?.dispose();
+		};
+	}, []);
+
+	// Rebuild passes when effect list changes
+	const effectIds = effects.map((e) => e.id + ":" + e.name).join(",");
+	React.useEffect(() => {
+		const composer = composerRef.current;
+		if (!composer) return;
+
+		while (composer.passes.length > 0) {
+			composer.removePass(composer.passes[0]);
+		}
+
+		composer.addPass(new RenderPass(sceneObj, camera));
+
+		const rawEffects = effects
+			.map((e) => {
+				try {
+					return createRawEffect(e, width, height);
+				} catch {
+					return null;
+				}
+			})
+			.filter(Boolean);
+
+		if (rawEffects.length > 0) {
+			try {
+				composer.addPass(new EffectPass(camera, ...rawEffects));
+			} catch {
+				// Effect pass failed to compile, skip effects
+			}
+		}
+	}, [effectIds, sceneObj, camera, width, height]);
+
+	const meshRef = React.useRef();
+
+	useFrame((_, delta) => {
+		const composer = composerRef.current;
+		if (!composer) return;
+
+		try {
+			composer.render(delta);
+		} catch {
+			// Ignore render errors
+		}
+
+		// CRITICAL: reset render target after composer.render()
+		// autoRenderToScreen=false leaves GL pointing at the internal buffer
+		gl.setRenderTarget(null);
+
+		// Update material map imperatively (ref-based, not via JSX)
+		if (meshRef.current) {
+			meshRef.current.material.map = composer.outputBuffer.texture;
+		}
+	});
+
+	return (
+		<>
+			{createPortal(children, sceneObj)}
+			<mesh ref={meshRef} renderOrder={0}>
+				<planeGeometry args={[width, height]} />
+				<meshBasicMaterial
+					transparent={true}
+					toneMapped={false}
+					depthTest={false}
+					depthWrite={false}
+				/>
+			</mesh>
+		</>
+	);
+}
+
 // --- Main Component ---
 
 export default function R3FStageRoot({
@@ -1731,9 +2020,7 @@ export default function R3FStageRoot({
 	}
 
 	let order = 1;
-	const display2DElements = [];
-	const display3DElements = [];
-	const allEffects = [];
+	const sceneElements = [];
 
 	for (const scene of scenes || []) {
 		if (!scene?.enabled) {
@@ -1750,11 +2037,9 @@ export default function R3FStageRoot({
 		const sceneMaskCombine =
 			sceneMask && !sceneInverse && enabledDisplayCount > 1 ? "add" : "replace";
 
-		for (const effect of scene.effects || []) {
-			if (effect?.enabled) {
-				allEffects.push(effect);
-			}
-		}
+		const sceneEffects = (scene.effects || []).filter((e) => e?.enabled);
+		const scene2D = [];
+		const scene3D = [];
 
 		for (const display of scene.displays || []) {
 			if (!display?.enabled) {
@@ -1764,12 +2049,8 @@ export default function R3FStageRoot({
 			switch (display.name) {
 				case "ImageDisplay": {
 					const src = display.properties?.src;
-
-					if (!src || src === BLANK_IMAGE) {
-						break;
-					}
-
-					display2DElements.push(
+					if (!src || src === BLANK_IMAGE) break;
+					scene2D.push(
 						<ImageDisplayLayer
 							key={display.id}
 							display={display}
@@ -1783,9 +2064,8 @@ export default function R3FStageRoot({
 					);
 					break;
 				}
-
-				case "VideoDisplay": {
-					display2DElements.push(
+				case "VideoDisplay":
+					scene2D.push(
 						<VideoDisplayLayer
 							key={display.id}
 							display={display}
@@ -1798,10 +2078,8 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
-				case "TextDisplay": {
-					display2DElements.push(
+				case "TextDisplay":
+					scene2D.push(
 						<TextDisplayLayer
 							key={display.id}
 							display={display}
@@ -1815,10 +2093,8 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
-				case "ShapeDisplay": {
-					display2DElements.push(
+				case "ShapeDisplay":
+					scene2D.push(
 						<ShapeDisplayLayer
 							key={display.id}
 							display={display}
@@ -1832,10 +2108,8 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
-				case "BarSpectrumDisplay": {
-					display2DElements.push(
+				case "BarSpectrumDisplay":
+					scene2D.push(
 						<BarSpectrumDisplayLayer
 							key={display.id}
 							display={display}
@@ -1849,10 +2123,8 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
-				case "WaveSpectrumDisplay": {
-					display2DElements.push(
+				case "WaveSpectrumDisplay":
+					scene2D.push(
 						<WaveSpectrumDisplayLayer
 							key={display.id}
 							display={display}
@@ -1866,10 +2138,8 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
-				case "SoundWaveDisplay": {
-					display2DElements.push(
+				case "SoundWaveDisplay":
+					scene2D.push(
 						<SoundWaveDisplayLayer
 							key={display.id}
 							display={display}
@@ -1883,10 +2153,8 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
-				case "GeometryDisplay": {
-					display3DElements.push(
+				case "GeometryDisplay":
+					scene3D.push(
 						<GeometryDisplayLayer3D
 							key={display.id}
 							display={display}
@@ -1899,37 +2167,43 @@ export default function R3FStageRoot({
 						/>,
 					);
 					break;
-				}
-
 				default:
 					break;
 			}
-
 			order += 1;
+		}
+
+		const displayContent = (
+			<React.Fragment key={scene.id}>
+				{scene3D.length > 0 && (
+					<PerspectiveScene3D width={width} height={height}>
+						{scene3D}
+					</PerspectiveScene3D>
+				)}
+				{scene2D}
+			</React.Fragment>
+		);
+
+		if (sceneEffects.length > 0) {
+			sceneElements.push(
+				<SceneWithEffects
+					key={scene.id}
+					width={width}
+					height={height}
+					effects={sceneEffects}
+				>
+					{displayContent}
+				</SceneWithEffects>,
+			);
+		} else {
+			sceneElements.push(displayContent);
 		}
 	}
 
 	return (
 		<>
 			<primitive key="background" attach="background" object={bgColor} />
-			{display3DElements.length > 0 && (
-				<PerspectiveScene3D width={width} height={height}>
-					{display3DElements}
-				</PerspectiveScene3D>
-			)}
-			{display2DElements}
-			{allEffects.length > 0 && (
-				<EffectComposer>
-					{allEffects.map((effect) => (
-						<EffectBridge
-							key={effect.id}
-							effect={effect}
-							width={width}
-							height={height}
-						/>
-					))}
-				</EffectComposer>
-			)}
+			{sceneElements}
 		</>
 	);
 }
