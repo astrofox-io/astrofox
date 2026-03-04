@@ -35,7 +35,7 @@ function ReactorMeter({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <div className="my-2 mx-1 flex items-center h-8 px-2 border border-input rounded bg-neutral-950">
+    <div className="flex items-center h-8 px-2 bg-neutral-950 rounded-b">
       <canvas ref={canvas} className="w-full" />
     </div>
   );
@@ -67,9 +67,12 @@ export default function ReactorsPanel() {
 
   return (
     <div className="flex flex-col flex-1 relative overflow-auto">
-      <div className="flex-1 overflow-auto pt-1 flex flex-col gap-0.5">
+      <div className="flex-1 overflow-auto flex flex-col gap-2 px-1">
         {reactorList.map((reactor) => (
-          <div key={reactor.id} className="flex flex-col mx-1">
+          <div
+            key={reactor.id}
+            className="flex flex-col border border-neutral-700 rounded"
+          >
             <Layer
               id={reactor.id}
               name={reactor.displayName}
@@ -79,6 +82,7 @@ export default function ReactorsPanel() {
               onLayerClick={handleLayerClick}
               onLayerUpdate={handleLayerUpdate}
               onLayerDelete={handleLayerDelete}
+              className="rounded-t"
             />
             <ReactorMeter id={reactor.id} />
           </div>

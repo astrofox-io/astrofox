@@ -175,7 +175,7 @@ export default function LayersPanel() {
           <ChevronDown className="text-neutral-100 w-4 h-4" />
         </div>
       </div>
-      <div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
+      <div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5 px-1"}>
         {sortedScenes.map((scene) => (
           <SceneLayer
             key={scene.id}
