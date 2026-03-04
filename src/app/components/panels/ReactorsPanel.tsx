@@ -17,7 +17,7 @@ function ReactorMeter({ id }: { id: string }) {
 
   useEffect(() => {
     meter.current = new CanvasMeter(
-      { width: 100, height: 5, color: PRIMARY_COLOR },
+      { width: 100, height: 3, color: PRIMARY_COLOR },
       canvas.current!,
     );
 
@@ -35,7 +35,7 @@ function ReactorMeter({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <div className="my-2 mx-1 px-2 py-1 border border-input rounded">
+    <div className="my-2 mx-1 flex items-center h-8 px-2 border border-input rounded bg-neutral-950">
       <canvas ref={canvas} className="w-full" />
     </div>
   );

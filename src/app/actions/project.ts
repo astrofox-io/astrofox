@@ -538,6 +538,7 @@ async function loadProjectFromPayload(payload, fallbackName) {
 
 	loadProject(resolvedSnapshot);
 	await loadScenes();
+	loadReactors();
 
 	projectStore.setState({
 		projectId: null,
