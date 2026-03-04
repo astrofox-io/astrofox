@@ -79,7 +79,7 @@ export default function ReactorButton({
 							</DropdownMenuRadioItem>
 						))}
 					</DropdownMenuRadioGroup>
-					<DropdownMenuSeparator />
+					{reactorList.length > 0 && <DropdownMenuSeparator />}
 					<DropdownMenuItem onClick={createAndAssign}>
 						<Plus className="w-3.5 h-3.5 text-neutral-400" />
 						New Reactor
