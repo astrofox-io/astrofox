@@ -2,6 +2,7 @@
 import menuConfig from "@/lib/config/menu.json";
 import { handleMenuAction } from "@/app/actions/app";
 import useProject, { DEFAULT_PROJECT_NAME } from "@/app/actions/project";
+import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -145,9 +146,10 @@ export default function TitleBar() {
 				<DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
 					<DropdownMenuTrigger
 						render={
-							<button
-								type="button"
-								className={`w-7 h-7 border-0 p-0 rounded-md bg-transparent text-neutral-400 inline-flex items-center justify-center [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800 ${menuOpen ? "text-neutral-100 bg-primary" : ""}`}
+							<Button
+								variant="ghost"
+								size="icon-sm"
+								className={`bg-transparent text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 ${menuOpen ? "text-neutral-100 bg-primary" : ""}`}
 								aria-label="Main menu"
 							/>
 						}
@@ -213,11 +215,10 @@ export default function TitleBar() {
 						<Tooltip>
 							<TooltipTrigger
 								render={
-									<button
-										type="button"
-										className={
-											"h-7 px-2 rounded-md border-0 bg-transparent text-sm text-neutral-400 inline-flex items-center truncate max-w-[32vw] [&:hover]:text-neutral-100 [&:hover]:bg-neutral-800"
-										}
+									<Button
+										variant="ghost"
+										size="sm"
+										className="bg-transparent text-neutral-400 truncate max-w-[32vw] hover:text-neutral-100 hover:bg-neutral-800"
 										onClick={beginProjectNameEdit}
 									/>
 								}

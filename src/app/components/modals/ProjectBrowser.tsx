@@ -119,18 +119,18 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 						}
 					>
 						{projects.map((project) => (
-							<button
-								type="button"
+							<Button
+								variant="ghost"
 								key={project.id}
-								className={`${"w-full text-left bg-transparent py-1.5 px-2 border border-[transparent] cursor-pointer [&:hover]:[border-color:#666]"} ${
+								className={`w-full justify-start h-auto py-1.5 px-2 rounded-none border border-transparent cursor-pointer hover:border-[#666] hover:bg-transparent ${
 									project.id === selectedId
-										? "[border-color:#0ec5ff] bg-[rgba(14,_197,_255,_0.12)]"
+										? "border-[#0ec5ff] bg-[rgba(14,_197,_255,_0.12)] hover:bg-[rgba(14,_197,_255,_0.12)]"
 										: ""
 								}`}
 								onClick={() => setSelectedId(project.id)}
 							>
 								<div className={"text-sm"}>{project.name}</div>
-							</button>
+							</Button>
 						))}
 						{!loading && projects.length === 0 && (
 							<div className={"opacity-[0.7] text-sm p-2"}>

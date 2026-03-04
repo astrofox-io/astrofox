@@ -3,6 +3,7 @@ import { setActiveReactorId } from "@/app/actions/app";
 import { addReactor } from "@/app/actions/reactors";
 import { loadScenes } from "@/app/actions/scenes";
 import Icon from "@/app/components/interface/Icon";
+import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -101,23 +102,25 @@ export default function ReactorButton({
 			{showPicker && (
 				<div className="absolute left-0 top-full mt-1 z-50 min-w-40 rounded-md border border-neutral-700 bg-neutral-800 py-1 shadow-lg">
 					{reactors.map((r: { id: string; displayName: string }) => (
-						<button
+						<Button
 							key={r.id}
-							className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-neutral-200 hover:bg-primary cursor-default bg-transparent border-none"
+							variant="ghost"
+							className="flex w-full justify-start gap-2 px-3 py-1.5 h-auto rounded-none text-neutral-200 hover:bg-primary"
 							onClick={() => assignReactor(r.id)}
 						>
 							<Icon className="w-3.5 h-3.5 text-neutral-400" glyph={Flash} />
 							{r.displayName}
-						</button>
+						</Button>
 					))}
 					<div className="border-t border-neutral-700 my-1" />
-					<button
-						className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-neutral-200 hover:bg-primary cursor-default bg-transparent border-none"
+					<Button
+						variant="ghost"
+						className="flex w-full justify-start gap-2 px-3 py-1.5 h-auto rounded-none text-neutral-200 hover:bg-primary"
 						onClick={createAndAssign}
 					>
 						<Icon className="w-3.5 h-3.5 text-neutral-400" glyph={Plus} />
 						New Reactor
-					</button>
+					</Button>
 				</div>
 			)}
 		</div>

@@ -29,13 +29,14 @@ export default function ModalWindow({
 			)}
 		>
 			{showCloseButton && (
-				<button
-					type="button"
-					className="absolute top-0 right-0 h-6 w-6 flex items-center justify-center z-[1] text-neutral-100 bg-transparent border-0 p-0 [&:hover]:bg-primary"
+				<Button
+					variant="ghost"
+					size="icon-xs"
+					className="absolute top-0 right-0 z-[1] text-neutral-100 hover:bg-primary"
 					onClick={() => onClose?.()}
 				>
 					<XIcon className="w-3.5 h-3.5" />
-				</button>
+				</Button>
 			)}
 			{title && (
 				<div className="relative bg-neutral-800 leading-9 text-center uppercase tracking-wider cursor-default">

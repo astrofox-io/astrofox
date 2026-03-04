@@ -5,6 +5,7 @@ import useApp, { setActiveReactorId } from "@/app/actions/app";
 import { Control } from "@/app/components/controls";
 import { BoxInput } from "@/app/components/inputs";
 import Icon from "@/app/components/interface/Icon";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -168,8 +169,10 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
         <Tooltip>
           <TooltipTrigger
             render={
-              <button
-                className="absolute top-2 right-2 z-10 cursor-pointer bg-transparent border-none p-0"
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                className="absolute top-2 right-2 z-10"
                 onClick={hideReactor}
               />
             }

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import useApp, { setActiveElementId } from "@/app/actions/app";
 import useScenes, { addElement } from "@/app/actions/scenes";
+import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -91,9 +92,9 @@ export default function Toolbar() {
 									render={
 										<DropdownMenuTrigger
 											render={
-												<button
-													type="button"
-													className={`border-0 p-3 rounded bg-neutral-800 text-neutral-400 inline-flex items-center justify-center cursor-default ${isOpen ? "text-neutral-100 bg-primary" : ""} ${!disabled ? "[&:hover]:text-neutral-100 [&:hover]:bg-neutral-800" : ""} ${disabled ? "[&_svg]:text-neutral-500" : ""}`}
+												<Button
+													variant="ghost"
+													className={`p-3 rounded bg-neutral-800 text-neutral-400 cursor-default ${isOpen ? "text-neutral-100 bg-primary" : ""} ${!disabled ? "hover:text-neutral-100 hover:bg-neutral-800" : ""} ${disabled ? "[&_svg]:text-neutral-500" : ""}`}
 													aria-label={item.title}
 												/>
 											}
