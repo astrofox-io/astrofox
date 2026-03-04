@@ -40,7 +40,6 @@ import {
 	EffectComposer as RawEffectComposer,
 	EffectPass,
 	GlitchMode,
-	RenderPass,
 	BloomEffect as RawBloomEffect,
 	BrightnessContrastEffect as RawBrightnessContrastEffect,
 	ColorAverageEffect as RawColorAverageEffect,
@@ -70,14 +69,11 @@ import {
 	FrontSide,
 	HalfFloatType,
 	LinearFilter,
-	Mesh as ThreeMesh,
-	MeshBasicMaterial as ThreeMeshBasicMaterial,
 	MultiplyBlending,
 	NormalBlending,
 	OneFactor,
 	OrthographicCamera,
 	PerspectiveCamera,
-	PlaneGeometry as ThreePlaneGeometry,
 	RGBAFormat,
 	Scene as ThreeScene,
 	SubtractiveBlending,
@@ -1902,41 +1898,7 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		camera.updateProjectionMatrix();
 	}, [camera, width, height]);
 
-	// Pre-render FBO: sceneObj is rendered here manually each frame
-	const preRenderFbo = React.useMemo(
-		() =>
-			new WebGLRenderTarget(width, height, {
-				minFilter: LinearFilter,
-				magFilter: LinearFilter,
-				format: RGBAFormat,
-				type: HalfFloatType,
-			}),
-		[],
-	);
-
-	React.useEffect(() => {
-		preRenderFbo.setSize(width, height);
-	}, [preRenderFbo, width, height]);
-
-	// Quad scene: fullscreen mesh showing the pre-rendered FBO texture
-	// The EffectComposer's RenderPass renders this instead of sceneObj directly
-	const { quadScene, quadCamera } = React.useMemo(() => {
-		const qs = new ThreeScene();
-		const qc = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
-		const geo = new ThreePlaneGeometry(2, 2);
-		const mat = new ThreeMeshBasicMaterial({
-			map: preRenderFbo.texture,
-			transparent: true,
-			depthTest: false,
-			depthWrite: false,
-			toneMapped: false,
-		});
-		const mesh = new ThreeMesh(geo, mat);
-		qs.add(mesh);
-		return { quadScene: qs, quadCamera: qc };
-	}, [preRenderFbo]);
-
-	// EffectComposer
+	// EffectComposer — no RenderPass needed, we render directly to inputBuffer
 	const composerRef = React.useRef(null);
 
 	if (!composerRef.current) {
@@ -1955,12 +1917,11 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 	React.useEffect(() => {
 		return () => {
 			composerRef.current?.dispose();
-			preRenderFbo.dispose();
 		};
-	}, [preRenderFbo]);
+	}, []);
 
-	// Rebuild passes when effect list changes
-	const effectIds = effects.map((e) => e.id + ":" + e.name).join(",");
+	// Rebuild passes when effect list or properties change
+	const effectKey = JSON.stringify(effects.map((e) => ({ id: e.id, name: e.name, properties: e.properties })));
 	React.useEffect(() => {
 		const composer = composerRef.current;
 		if (!composer) return;
@@ -1968,8 +1929,6 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		while (composer.passes.length > 0) {
 			composer.removePass(composer.passes[0]);
 		}
-
-		composer.addPass(new RenderPass(quadScene, quadCamera));
 
 		const rawEffects = effects
 			.map((e) => {
@@ -1983,27 +1942,31 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 
 		if (rawEffects.length > 0) {
 			try {
-				composer.addPass(new EffectPass(quadCamera, ...rawEffects));
+				composer.addPass(new EffectPass(camera, ...rawEffects));
 			} catch {
 				// Effect pass failed to compile, skip effects
 			}
 		}
-	}, [effectIds, quadScene, quadCamera, width, height]);
+	}, [effectKey, camera, width, height]);
 
+	const tempColor = React.useRef(new Color());
 	const meshRef = React.useRef();
 
 	useFrame((_, delta) => {
 		const composer = composerRef.current;
-		if (!composer) return;
+		if (!composer || composer.passes.length === 0) return;
 
-		// Step 1: Render sceneObj (all portaled children) to pre-render FBO
+		// Step 1: Render scene content directly to composer's inputBuffer
+		// Clear with opaque black (matching v1 behavior — effects process on opaque background)
+		gl.getClearColor(tempColor.current);
 		const prevClearAlpha = gl.getClearAlpha();
-		gl.setClearAlpha(0);
-		gl.setRenderTarget(preRenderFbo);
+		gl.setClearColor(0x000000, 1);
+		gl.setRenderTarget(composer.inputBuffer);
 		gl.clear();
+		gl.setClearColor(tempColor.current, prevClearAlpha);
 		gl.render(sceneObj, camera);
 
-		// Step 2: Run EffectComposer (keep clear alpha = 0 for transparent compositing)
+		// Step 2: Run EffectComposer (only EffectPass — reads inputBuffer, writes outputBuffer)
 		try {
 			composer.render(delta);
 		} catch {
@@ -2011,7 +1974,6 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		}
 
 		gl.setRenderTarget(null);
-		gl.setClearAlpha(prevClearAlpha);
 
 		// Step 3: Update output mesh with composited result
 		if (meshRef.current) {
