@@ -182,7 +182,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               sideOffset={6}
               className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
             >
-              Open File
+              Open file
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -205,7 +205,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               sideOffset={6}
               className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
             >
-              Remove Image
+              Remove image
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

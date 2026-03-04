@@ -11,6 +11,7 @@ import {
 import { events, reactors } from "@/app/global";
 import useEntity from "@/app/hooks/useEntity";
 import { Times } from "@/app/icons";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -128,7 +129,7 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
         </div>
         <div
           className={
-            "relative bg-neutral-900 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border"
+            "relative bg-neutral-900 shadow-[inset_0_0_60px_rgba(0,_0,_0,_0.5)] border  border-neutral-800"
           }
         >
           <canvas
@@ -154,7 +155,9 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
           />
         </div>
         <div
-          className={"ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border"}
+          className={
+            "ml-2.5 shadow-[inset_0_0_20px_rgba(0,_0,_0,_0.5)] border border-neutral-800"
+          }
         >
           <canvas
             ref={outputCanvas}
@@ -167,13 +170,15 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
         <Tooltip>
           <TooltipTrigger
             render={
-              <div
-                className="absolute top-2 right-2 z-10 text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                className="absolute top-2 right-2 z-10"
                 onClick={hideReactor}
               />
             }
           >
-            <Times className="text-neutral-100 w-4 h-4" />
+            <Times className="text-neutral-300 [&:hover]:text-neutral-100" />
           </TooltipTrigger>
           <TooltipContent
             side="bottom"

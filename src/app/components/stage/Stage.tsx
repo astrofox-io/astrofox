@@ -66,15 +66,15 @@ export default function Stage() {
   return (
     <div
       className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}
+      onDrop={handleDrop}
+      onDragOver={ignoreEvents}
+      onDragEnter={ignoreEvents}
     >
       <div className={"m-auto"}>
         <div
           className={
             "relative flex flex-col justify-center shadow-xl m-5 z-50 bg-black"
           }
-          onDrop={handleDrop}
-          onDragOver={ignoreEvents}
-          onDragEnter={ignoreEvents}
         >
           <canvas
             ref={canvas}
