@@ -149,7 +149,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
     <>
       <div
         className={
-          "h-24 w-24 bg-neutral-900 border border-border-input rounded relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100"
+          "h-24 w-24 bg-neutral-900 border border-border-input rounded relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100 cursor-pointer"
         }
         onDrop={handleDrop}
         onDragOver={ignoreEvents}
@@ -172,7 +172,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               render={
                 <FolderOpen
                   className={
-                    "absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
+                    "open-icon absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
                   }
                 />
               }
