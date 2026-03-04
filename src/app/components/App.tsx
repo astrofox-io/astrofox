@@ -33,11 +33,11 @@ function App() {
 				>
 					<Toolbar />
 					<Stage />
+					<ReactorPanel />
 				</div>
 				<RightPanel />
 			</div>
 			<Player />
-			<ReactorPanel />
 			<StatusBar />
 			<Modals />
 		</div>
