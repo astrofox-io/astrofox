@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { RangeInput } from "@/app/components/inputs";
-import Icon from "@/app/components/interface/Icon";
 import { player } from "@/app/global";
 import { Volume, Volume2, Volume3, Volume4 } from "@/app/icons";
 import classNames from "classnames";
@@ -14,6 +13,7 @@ const initialState = {
 export default function VolumeControl() {
 	const [state, setState] = useState(initialState);
 	const { value, mute } = state;
+	const VolumeIcon = getIcon();
 
 	function handleChange(name, value) {
 		setState({ value, mute: false });
@@ -53,7 +53,7 @@ export default function VolumeControl() {
 				)}
 				onClick={handleClick}
 			>
-				<Icon className={"text-inherit"} glyph={getIcon()} />
+				<VolumeIcon className={"text-inherit"} />
 			</div>
 			<div className={"flex items-center w-24"}>
 				<RangeInput

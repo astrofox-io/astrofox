@@ -5,9 +5,15 @@ import useScenes, {
 	removeElement,
 	updateElement,
 } from "@/app/actions/scenes";
-import { ButtonInput } from "@/app/components/inputs";
 import SceneLayer from "@/app/components/panels/SceneLayer";
 import { ChevronDown, ChevronUp } from "@/app/icons";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import classNames from "classnames";
 import React, { useMemo } from "react";
 
 interface SceneElement {
@@ -150,18 +156,54 @@ export default function LayersPanel() {
 	return (
 		<div className={"flex flex-col flex-1 relative overflow-auto"}>
 			<div className={"flex p-1 gap-1"}>
-				<ButtonInput
-					icon={ChevronUp}
-					title="Move Layer Up"
-					onClick={handleMoveUp}
-					disabled={!canMoveUp}
-				/>
-				<ButtonInput
-					icon={ChevronDown}
-					title="Move Layer Down"
-					onClick={handleMoveDown}
-					disabled={!canMoveDown}
-				/>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger
+							render={
+								<div
+									className={classNames(
+										"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary",
+										{ "opacity-30 hover:bg-neutral-900": !canMoveUp },
+									)}
+									onClick={canMoveUp ? handleMoveUp : undefined}
+								/>
+							}
+						>
+							<ChevronUp className="text-neutral-100 w-4 h-4" />
+						</TooltipTrigger>
+						<TooltipContent
+							side="bottom"
+							sideOffset={6}
+							className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+						>
+							Move Layer Up
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger
+							render={
+								<div
+									className={classNames(
+										"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary",
+										{ "opacity-30 hover:bg-neutral-900": !canMoveDown },
+									)}
+									onClick={canMoveDown ? handleMoveDown : undefined}
+								/>
+							}
+						>
+							<ChevronDown className="text-neutral-100 w-4 h-4" />
+						</TooltipTrigger>
+						<TooltipContent
+							side="bottom"
+							sideOffset={6}
+							className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+						>
+							Move Layer Down
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 			<div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5"}>
 				{sortedScenes.map((scene) => (

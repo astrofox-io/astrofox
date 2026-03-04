@@ -1,12 +1,11 @@
-import type Display from "@/lib/core/Display";
 import inputComponents from "@/app/components/controls/inputComponents";
 import {
 	RangeInput,
 	ReactorButton,
 	ReactorInput,
 } from "@/app/components/inputs";
-import Icon from "@/app/components/interface/Icon";
 import { Link, Unlink } from "@/app/icons";
+import type Display from "@/lib/core/Display";
 import classNames from "classnames";
 import type React from "react";
 
@@ -47,6 +46,8 @@ export default function Option({
 		? (inputComponents[type] ?? [])
 		: [];
 	const showReactor = withReactor && display.getReactor?.(name);
+	const linked = Boolean(withLink && display.properties[withLink]);
+	const LinkIcon = linked ? Link : Unlink;
 	const { min, max } = otherProps;
 	const inputs: React.ReactNode[] = [];
 
@@ -99,7 +100,7 @@ export default function Option({
 		>
 			{withReactor && (
 				<ReactorButton
-					className={"!absolute left-0 top-1/2 -translate-y-1/2"}
+					className={"!absolute -left-1 top-1/2 -translate-y-1/2"}
 					display={display}
 					name={name}
 					min={min}
@@ -122,12 +123,11 @@ export default function Option({
 					{label}
 				</div>
 				{withLink && (
-					<Icon
+					<LinkIcon
 						className={classNames("w-4 h-4", {
-							"text-neutral-100": display.properties[withLink],
-							"text-neutral-500 opacity-50": !display.properties[withLink],
+							"text-neutral-100": linked,
+							"text-neutral-500 opacity-50": !linked,
 						})}
-						glyph={display.properties[withLink] ? Link : Unlink}
 						onClick={() => onChange?.(withLink, !display.properties[withLink])}
 					/>
 				)}

@@ -1,5 +1,4 @@
 import TextInput from "@/app/components/inputs/TextInput";
-import Icon from "@/app/components/interface/Icon";
 import { Eye, TrashEmpty } from "@/app/icons";
 import classNames from "classnames";
 import type { LucideIcon } from "lucide-react";
@@ -30,6 +29,7 @@ export default function Layer({
 	onLayerDelete = null,
 }: LayerProps) {
 	const [edit, setEdit] = useState(false);
+	const LayerIcon = icon;
 
 	function handleLayerClick() {
 		onLayerClick?.(id);
@@ -74,7 +74,7 @@ export default function Layer({
 			)}
 			onClick={handleLayerClick}
 		>
-			{icon && <Icon className={"w-4 h-4"} glyph={icon} />}
+			{LayerIcon && <LayerIcon className={"w-4 h-4"} />}
 			<div className={"flex-1 min-w-0 py-0.5"} onDoubleClick={handleEnableEdit}>
 				{edit ? (
 					<TextInput
@@ -94,17 +94,15 @@ export default function Layer({
 				)}
 			</div>
 			{onLayerDelete && (
-				<Icon
+				<TrashEmpty
 					className="w-4 h-4 opacity-0 group-hover:opacity-50 group-hover:hover:opacity-100"
-					glyph={TrashEmpty}
 					onClick={handleDeleteClick}
 				/>
 			)}
-			<Icon
+			<Eye
 				className={classNames("w-4 h-4", {
 					"opacity-30": !enabled,
 				})}
-				glyph={Eye}
 				onClick={handleEnableClick}
 			/>
 		</div>

@@ -1,18 +1,17 @@
-import CanvasMeter from "@/lib/canvas/CanvasMeter";
-import type Display from "@/lib/core/Display";
 import { setActiveReactorId } from "@/app/actions/app";
 import { removeReactor } from "@/app/actions/reactors";
 import { loadScenes } from "@/app/actions/scenes";
-import Icon from "@/app/components/interface/Icon";
+import { PRIMARY_COLOR } from "@/app/constants";
+import { events, reactors } from "@/app/global";
+import { Times } from "@/app/icons";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PRIMARY_COLOR } from "@/app/constants";
-import { events, reactors } from "@/app/global";
-import { Times } from "@/app/icons";
+import CanvasMeter from "@/lib/canvas/CanvasMeter";
+import type Display from "@/lib/core/Display";
 import React, { useRef, useEffect, useMemo } from "react";
 
 interface ReactorInputProps {
@@ -93,11 +92,10 @@ export default function ReactorInput({
 				<Tooltip>
 					<TooltipTrigger
 						render={
-							<Icon
+							<Times
 								className={
 									"ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-neutral-300 [&:hover]:text-neutral-100"
 								}
-								glyph={Times}
 								onClick={disableReactor}
 							/>
 						}

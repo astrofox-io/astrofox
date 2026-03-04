@@ -1,19 +1,19 @@
-import Icon from "@/app/components/interface/Icon";
+import { player } from "@/app/global";
+import useForceUpdate from "@/app/hooks/useForceUpdate";
+import { Pause, Play, Stop } from "@/app/icons";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { player } from "@/app/global";
-import useForceUpdate from "@/app/hooks/useForceUpdate";
-import { Pause, Play, Stop } from "@/app/icons";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 
 export default function PlayButtons() {
 	const forceUpdate = useForceUpdate();
 	const playing = player.isPlaying();
+	const PlayPauseIcon = playing ? Pause : Play;
 
 	useEffect(() => {
 		player.on("playback-change", forceUpdate);
@@ -41,11 +41,10 @@ export default function PlayButtons() {
 							/>
 						}
 					>
-						<Icon
+						<PlayPauseIcon
 							className={classNames("w-6 h-6", {
 								"translate-x-px": !playing,
 							})}
-							glyph={playing ? Pause : Play}
 						/>
 					</TooltipTrigger>
 					<TooltipContent
@@ -69,7 +68,7 @@ export default function PlayButtons() {
 							/>
 						}
 					>
-						<Icon className={"w-6 h-6"} glyph={Stop} />
+						<Stop className={"w-6 h-6"} />
 					</TooltipTrigger>
 					<TooltipContent
 						side="bottom"

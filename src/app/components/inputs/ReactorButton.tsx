@@ -1,19 +1,24 @@
-import type Display from "@/lib/core/Display";
 import { setActiveReactorId } from "@/app/actions/app";
 import { addReactor } from "@/app/actions/reactors";
 import { loadScenes } from "@/app/actions/scenes";
-import Icon from "@/app/components/interface/Icon";
-import { Button } from "@/components/ui/button";
+import { reactors } from "@/app/global";
+import { Flash, Plus } from "@/app/icons";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { reactors } from "@/app/global";
-import { Flash, Plus } from "@/app/icons";
+import type Display from "@/lib/core/Display";
 import classNames from "classnames";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
 interface ReactorButtonProps {
 	display: Display;
@@ -31,27 +36,11 @@ export default function ReactorButton({
 	className,
 }: ReactorButtonProps) {
 	const reactor = display.getReactor(name);
-	const [showPicker, setShowPicker] = useState(false);
-	const pickerRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		if (!showPicker) return;
-
-		function handleClickOutside(e: MouseEvent) {
-			if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
-				setShowPicker(false);
-			}
-		}
-
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, [showPicker]);
 
 	function assignReactor(reactorId: string) {
 		display.setReactor(name, { id: reactorId, min, max });
 		setActiveReactorId(reactorId);
 		loadScenes();
-		setShowPicker(false);
 	}
 
 	function createAndAssign() {
@@ -64,65 +53,93 @@ export default function ReactorButton({
 	function handleClick() {
 		if (reactor) {
 			setActiveReactorId(reactor.id);
-		} else if (reactors.length === 0) {
-			createAndAssign();
 		} else {
-			setShowPicker(true);
+			createAndAssign();
 		}
 	}
 
+	const buttonClasses = classNames(
+		"min-h-5 min-w-5 rounded inline-flex justify-center items-center cursor-default shrink-0 border-0 bg-transparent p-0",
+		reactor
+			? "bg-primary text-neutral-100"
+			: "text-neutral-500 [&:hover]:text-neutral-100",
+	);
+
+	const tooltipLabel = reactor ? "Show Reactor" : "Enable Reactor";
+
+	// When no reactor assigned and reactors exist, show dropdown to pick one
+	if (!reactor && reactors.length > 0) {
+		return (
+			<div className={classNames("relative", className)}>
+				<DropdownMenu>
+					<TooltipProvider>
+						<Tooltip>
+							<DropdownMenuTrigger
+								render={
+									<TooltipTrigger
+										render={
+											<button type="button" className={buttonClasses} />
+										}
+									>
+										<Flash className="w-3.5 h-3.5" />
+									</TooltipTrigger>
+								}
+							/>
+							<TooltipContent
+								side="bottom"
+								sideOffset={6}
+								className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+							>
+								{tooltipLabel}
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+					<DropdownMenuContent side="bottom" align="start" sideOffset={4}>
+						{reactors.map((r: { id: string; displayName: string }) => (
+							<DropdownMenuItem
+								key={r.id}
+								onClick={() => assignReactor(r.id)}
+							>
+								<Flash className="w-3.5 h-3.5 text-neutral-400" />
+								{r.displayName}
+							</DropdownMenuItem>
+						))}
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={createAndAssign}>
+							<Plus className="w-3.5 h-3.5 text-neutral-400" />
+							New Reactor
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
+		);
+	}
+
+	// Otherwise, simple click: show assigned reactor or create new one
 	return (
-		<div className="relative" ref={pickerRef}>
+		<div className={classNames("relative", className)}>
 			<TooltipProvider>
 				<Tooltip>
 					<TooltipTrigger
 						render={
-							<Icon
-								className={classNames(
-									"text-neutral-500 w-4 h-4 [&:hover]:text-neutral-100",
-									className,
-									{
-										"text-neutral-100": reactor,
-									},
-								)}
-								glyph={Flash}
+							<button
+								type="button"
+								className={buttonClasses}
 								onClick={handleClick}
 							/>
 						}
-					/>
+					>
+						<Flash className="w-3.5 h-3.5" />
+					</TooltipTrigger>
 					<TooltipContent
 						side="bottom"
 						sideOffset={6}
 						className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
 					>
-						{reactor ? "Show Reactor" : "Enable Reactor"}
+						{tooltipLabel}
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>
-			{showPicker && (
-				<div className="absolute left-0 top-full mt-1 z-50 min-w-40 rounded-md border border-neutral-700 bg-neutral-800 py-1 shadow-lg">
-					{reactors.map((r: { id: string; displayName: string }) => (
-						<Button
-							key={r.id}
-							variant="ghost"
-							className="flex w-full justify-start gap-2 px-3 py-1.5 h-auto rounded-none text-neutral-200 hover:bg-primary"
-							onClick={() => assignReactor(r.id)}
-						>
-							<Icon className="w-3.5 h-3.5 text-neutral-400" glyph={Flash} />
-							{r.displayName}
-						</Button>
-					))}
-					<div className="border-t border-neutral-700 my-1" />
-					<Button
-						variant="ghost"
-						className="flex w-full justify-start gap-2 px-3 py-1.5 h-auto rounded-none text-neutral-200 hover:bg-primary"
-						onClick={createAndAssign}
-					>
-						<Icon className="w-3.5 h-3.5 text-neutral-400" glyph={Plus} />
-						New Reactor
-					</Button>
-				</div>
-			)}
 		</div>
 	);
 }

@@ -1,17 +1,6 @@
-import CanvasBars from "@/lib/canvas/CanvasBars";
-import CanvasMeter from "@/lib/canvas/CanvasMeter";
-import { inputValueToProps } from "@/lib/utils/react";
 import useApp, { setActiveReactorId } from "@/app/actions/app";
 import { Control } from "@/app/components/controls";
 import { BoxInput } from "@/app/components/inputs";
-import Icon from "@/app/components/interface/Icon";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   PRIMARY_COLOR,
   REACTOR_BARS,
@@ -22,6 +11,15 @@ import {
 import { events, reactors } from "@/app/global";
 import useEntity from "@/app/hooks/useEntity";
 import { Times } from "@/app/icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import CanvasBars from "@/lib/canvas/CanvasBars";
+import CanvasMeter from "@/lib/canvas/CanvasMeter";
+import { inputValueToProps } from "@/lib/utils/react";
 import React, { useEffect, useRef } from "react";
 
 const SPECTRUM_WIDTH = REACTOR_BARS * (REACTOR_BAR_WIDTH + REACTOR_BAR_SPACING);
@@ -169,18 +167,13 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="absolute top-2 right-2 z-10"
+              <div
+                className="absolute top-2 right-2 z-10 text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
                 onClick={hideReactor}
               />
             }
           >
-            <Icon
-              className="text-neutral-300 w-3.5 h-3.5 [&:hover]:text-neutral-100"
-              glyph={Times}
-            />
+            <Times className="text-neutral-100 w-4 h-4" />
           </TooltipTrigger>
           <TooltipContent
             side="bottom"

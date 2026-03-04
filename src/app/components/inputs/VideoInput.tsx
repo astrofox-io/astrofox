@@ -1,15 +1,14 @@
-import { ignoreEvents } from "@/lib/utils/react";
 import { raiseError } from "@/app/actions/error";
-import Icon from "@/app/components/interface/Icon";
+import { BLANK_IMAGE } from "@/app/constants";
+import { api } from "@/app/global";
+import { FolderOpen, Times } from "@/app/icons";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { BLANK_IMAGE } from "@/app/constants";
-import { api } from "@/app/global";
-import { FolderOpen, Times } from "@/app/icons";
+import { ignoreEvents } from "@/lib/utils/react";
 import classNames from "classnames";
 import type React from "react";
 import { useRef } from "react";
@@ -171,11 +170,10 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
 					<Tooltip>
 						<TooltipTrigger
 							render={
-								<Icon
+								<FolderOpen
 									className={
 										"absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
 									}
-									glyph={FolderOpen}
 								/>
 							}
 						/>
@@ -194,11 +192,10 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
 					<Tooltip>
 						<TooltipTrigger
 							render={
-								<Icon
+								<Times
 									className={classNames({
 										"text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
 									})}
-									glyph={Times}
 									onClick={handleDelete}
 								/>
 							}

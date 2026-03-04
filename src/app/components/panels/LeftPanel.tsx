@@ -1,11 +1,16 @@
 import { setActiveElementId, setActiveReactorId } from "@/app/actions/app";
 import { addReactor } from "@/app/actions/reactors";
 import { addScene } from "@/app/actions/scenes";
-import { ButtonInput } from "@/app/components/inputs";
 import LayersPanel from "@/app/components/panels/LayersPanel";
 import PanelHeader from "@/app/components/panels/PanelHeader";
 import ReactorsPanel from "@/app/components/panels/ReactorsPanel";
 import { Plus } from "@/app/icons";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -31,11 +36,27 @@ export default function LeftPanel() {
 						<PanelHeader
 							title="Layers"
 							actions={
-								<ButtonInput
-									icon={Plus}
-									title="Add Scene"
-									onClick={handleAddScene}
-								/>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger
+											render={
+												<div
+													className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
+													onClick={handleAddScene}
+												/>
+											}
+										>
+											<Plus className="text-neutral-100 w-4 h-4" />
+										</TooltipTrigger>
+										<TooltipContent
+											side="bottom"
+											sideOffset={6}
+											className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+										>
+											Add Scene
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 							}
 						/>
 						<LayersPanel />
@@ -47,11 +68,27 @@ export default function LeftPanel() {
 						<PanelHeader
 							title="Reactors"
 							actions={
-								<ButtonInput
-									icon={Plus}
-									title="Add Reactor"
-									onClick={handleAddReactor}
-								/>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger
+											render={
+												<div
+													className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded-md inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
+													onClick={handleAddReactor}
+												/>
+											}
+										>
+											<Plus className="text-neutral-100 w-4 h-4" />
+										</TooltipTrigger>
+										<TooltipContent
+											side="bottom"
+											sideOffset={6}
+											className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+										>
+											Add Reactor
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 							}
 						/>
 						<ReactorsPanel />
