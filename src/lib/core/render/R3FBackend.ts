@@ -368,6 +368,10 @@ export default class R3FBackend extends RenderBackend {
 		};
 	}
 
+	getCanvas() {
+		return this.canvas || null;
+	}
+
 	getPixels() {
 		if (!this.canvas) {
 			return new Uint8Array(4);

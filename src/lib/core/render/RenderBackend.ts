@@ -49,6 +49,15 @@ export default class RenderBackend {
 	}
 
 	/**
+	 * Get the active rendering canvas.
+	 */
+	getCanvas(): HTMLCanvasElement | null {
+		throw new Error(
+			`RenderBackend.getCanvas is not implemented for ${this.constructor.name}`,
+		);
+	}
+
+	/**
 	 * Get current stage size in pixels.
 	 */
 	getSize(): { width: number; height: number } {
