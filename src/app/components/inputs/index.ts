@@ -1,5 +1,4 @@
 export { default as BoxInput } from "./BoxInput";
-export { default as ButtonGroup } from "./ButtonGroup";
 export { default as CheckboxInput } from "./CheckboxInput";
 export { default as ColorInput } from "./ColorInput";
 export { default as ColorRangeInput } from "./ColorRangeInput";

@@ -97,6 +97,7 @@ export default class SoundWaveDisplay extends Display {
 				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
+				hideFill: true,
 			},
 			y: {
 				label: "Y",
@@ -104,6 +105,7 @@ export default class SoundWaveDisplay extends Display {
 				min: stageHeight((n: number) => -n),
 				max: stageHeight(),
 				withRange: true,
+				hideFill: true,
 			},
 			rotation: {
 				label: "Rotation",

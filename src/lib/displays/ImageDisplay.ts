@@ -76,6 +76,7 @@ export default class ImageDisplay extends Display {
 				min: (display: ImageDisplayInstance) => -1 * maxX(display),
 				max: (display: ImageDisplayInstance) => maxX(display),
 				withRange: true,
+				hideFill: true,
 				disabled,
 			},
 			y: {
@@ -84,6 +85,7 @@ export default class ImageDisplay extends Display {
 				min: (display: ImageDisplayInstance) => -1 * maxY(display),
 				max: (display: ImageDisplayInstance) => maxY(display),
 				withRange: true,
+				hideFill: true,
 				disabled,
 			},
 			zoom: {

@@ -109,6 +109,7 @@ export default class WaveSpectrumDisplay extends Display {
 				min: stageWidth((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
+				hideFill: true,
 			},
 			y: {
 				label: "Y",
@@ -116,6 +117,7 @@ export default class WaveSpectrumDisplay extends Display {
 				min: stageHeight((n: number) => -n),
 				max: stageWidth(),
 				withRange: true,
+				hideFill: true,
 			},
 			rotation: {
 				label: "Rotation",

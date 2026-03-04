@@ -79,6 +79,7 @@ export default class VideoDisplay extends Display {
 				min: (display: VideoDisplayInstance) => -1 * maxX(display),
 				max: (display: VideoDisplayInstance) => maxX(display),
 				withRange: true,
+				hideFill: true,
 				disabled,
 			},
 			y: {
@@ -87,6 +88,7 @@ export default class VideoDisplay extends Display {
 				min: (display: VideoDisplayInstance) => -1 * maxY(display),
 				max: (display: VideoDisplayInstance) => maxY(display),
 				withRange: true,
+				hideFill: true,
 				disabled,
 			},
 			rotation: {

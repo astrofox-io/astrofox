@@ -89,6 +89,7 @@ export default class GeometryDisplay extends Display {
 				min: -500,
 				max: 500,
 				withRange: true,
+				hideFill: true,
 			},
 			y: {
 				label: "Y",
@@ -96,6 +97,7 @@ export default class GeometryDisplay extends Display {
 				min: -500,
 				max: 500,
 				withRange: true,
+				hideFill: true,
 			},
 			z: {
 				label: "Z",
