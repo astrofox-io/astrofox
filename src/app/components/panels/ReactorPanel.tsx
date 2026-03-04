@@ -170,7 +170,7 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
           <TooltipTrigger
             render={
               <div
-                className="absolute top-2 right-2 z-10 text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
+                className="absolute top-2 right-2 z-10 text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-neutral-800"
                 onClick={hideReactor}
               />
             }
@@ -178,7 +178,7 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
             <Times className="w-4 h-4" />
           </TooltipTrigger>
           <TooltipContent
-            side="bottom"
+            side="top"
             sideOffset={6}
             className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
           >

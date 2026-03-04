@@ -2,7 +2,6 @@ export { default as ASCIIEffect } from "./ASCIIEffect";
 export { default as BloomEffect } from "./BloomEffect";
 export { default as BlurEffect } from "./BlurEffect";
 export { default as BrightnessContrastEffect } from "./BrightnessContrastEffect";
-export { default as ChromaticAberrationEffect } from "./ChromaticAberrationEffect";
 export { default as ColorAverageEffect } from "./ColorAverageEffect";
 export { default as ColorDepthEffect } from "./ColorDepthEffect";
 export { default as ColorHalftoneEffect } from "./ColorHalftoneEffect";

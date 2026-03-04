@@ -31,7 +31,7 @@ export default function LeftPanel() {
   return (
     <div className="flex flex-col shrink-0 relative w-90 overflow-hidden border-r">
       <ResizablePanelGroup orientation="vertical">
-        <ResizablePanel defaultSize={60} minSize="48px">
+        <ResizablePanel defaultSize={60} minSize="40px">
           <div className="flex flex-col h-full overflow-hidden">
             <PanelHeader
               title="Layers"
@@ -41,7 +41,7 @@ export default function LeftPanel() {
                     <TooltipTrigger
                       render={
                         <div
-                          className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
+                          className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-neutral-800"
                           onClick={handleAddScene}
                         />
                       }
@@ -63,7 +63,7 @@ export default function LeftPanel() {
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={40} minSize="48px">
+        <ResizablePanel defaultSize={40} minSize="40px">
           <div className="flex flex-col h-full overflow-hidden bg-neutral-900">
             <PanelHeader
               title="Reactors"
@@ -73,7 +73,7 @@ export default function LeftPanel() {
                     <TooltipTrigger
                       render={
                         <div
-                          className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-primary"
+                          className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-neutral-800"
                           onClick={handleAddReactor}
                         />
                       }
