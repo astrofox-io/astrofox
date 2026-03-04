@@ -1,4 +1,3 @@
-import useApp, { toggleState } from "@/app/actions/app";
 import Icon from "@/app/components/interface/Icon";
 import {
 	Tooltip,
@@ -8,17 +7,12 @@ import {
 } from "@/components/ui/tooltip";
 import { player } from "@/app/global";
 import useForceUpdate from "@/app/hooks/useForceUpdate";
-import { Cycle, SoundBars, SoundWaves } from "@/app/icons";
+import { Cycle } from "@/app/icons";
 import classNames from "classnames";
 import type { LucideIcon } from "lucide-react";
 import React from "react";
-import shallow from "zustand/shallow";
 
 export default function ToggleButtons() {
-	const [showWaveform, showOsc] = useApp(
-		(state) => [state.showWaveform, state.showOsc],
-		shallow,
-	);
 	const forceUpdate = useForceUpdate();
 	const looping = player.isLooping();
 
@@ -34,18 +28,6 @@ export default function ToggleButtons() {
 				title="Repeat"
 				enabled={looping}
 				onClick={handleLoopButtonClick}
-			/>
-			<ToggleButton
-				icon={SoundBars}
-				title="Waveform"
-				enabled={showWaveform}
-				onClick={() => toggleState("showWaveform")}
-			/>
-			<ToggleButton
-				icon={SoundWaves}
-				title="Oscilloscope"
-				enabled={showOsc}
-				onClick={() => toggleState("showOsc")}
 			/>
 		</div>
 	);

@@ -23,8 +23,6 @@ import create from "zustand";
 const initialState = {
 	statusText: "",
 	showReactor: false,
-	showWaveform: true,
-	showOsc: false,
 	activeReactorId: null,
 	activeElementId: null,
 };
@@ -35,10 +33,6 @@ const appStore = create(() => ({
 
 let appInitPromise = null;
 let appInitialized = false;
-
-export function toggleState(key) {
-	appStore.setState((state) => ({ [key]: !state[key] }));
-}
 
 export async function saveImage() {
 	const { fileHandle, filePath, canceled } = await api.showSaveDialog({

@@ -1,12 +1,9 @@
-import WaveParser from "@/lib/audio/WaveParser";
 import CanvasAudio from "@/lib/canvas/CanvasAudio";
-import CanvasWave from "@/lib/canvas/CanvasWave";
-import { PRIMARY_COLOR } from "@/app/constants";
-import { events, player } from "@/app/global";
+import { player } from "@/app/global";
 import useSharedState from "@/app/hooks/useSharedState";
 import classNames from "classnames";
 import type React from "react";
-import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 const canvasProperties = {
 	width: 854,
@@ -18,22 +15,7 @@ const canvasProperties = {
 	bars: 213,
 };
 
-const oscProperties = {
-	width: 854,
-	height: 50,
-	midpoint: 25,
-	strokeColor: PRIMARY_COLOR,
-};
-
-interface AudioWaveformProps {
-	showWaveform?: boolean;
-	showOsc?: boolean;
-}
-
-export default function AudioWaveform({
-	showWaveform = false,
-	showOsc = false,
-}: AudioWaveformProps) {
+export default function AudioWaveform() {
 	const [state, setState] = useSharedState();
 	const { progressPosition, seekPosition } = state as {
 		progressPosition?: number;
@@ -41,13 +23,9 @@ export default function AudioWaveform({
 	};
 	const { width, height, shadowHeight } = canvasProperties;
 	const canvas = useRef<HTMLCanvasElement>(null);
-	const oscCanvas = useRef<HTMLCanvasElement>(null);
-	const oscDisplay = useRef<CanvasWave | null>(null);
-	const oscParser = useRef<WaveParser | null>(null);
 	const hasAudioRef = useRef(false);
 	const flatRenderedRef = useRef(false);
-
-	const visible = showWaveform || showOsc;
+	const [hasAudio, setHasAudio] = useState(() => player.hasAudio());
 
 	const [baseCanvas, progressCanvas, seekCanvas] = useMemo(
 		() => [
@@ -173,18 +151,7 @@ export default function AudioWaveform({
 		seekCanvas.render(audio.buffer);
 		hasAudioRef.current = true;
 		flatRenderedRef.current = false;
-	}
-
-	function drawOsc(...args: unknown[]) {
-		const { td } = (args[0] ?? {}) as { td?: Float32Array | null };
-		if (!oscDisplay.current || !oscParser.current || !td) return;
-		const data = oscParser.current.parseTimeData(td, oscProperties.width);
-		oscDisplay.current.render(
-			new Float32Array(
-				Array.from(data).flatMap((n: number, i: number) => [i, n]),
-			),
-			false,
-		);
+		setHasAudio(true);
 	}
 
 	useEffect(() => {
@@ -195,20 +162,8 @@ export default function AudioWaveform({
 		};
 	}, []);
 
-	useEffect(() => {
-		if (showOsc && oscCanvas.current) {
-			oscDisplay.current = new CanvasWave(oscProperties, oscCanvas.current);
-			oscParser.current = new WaveParser();
-			events.on("render", drawOsc);
-		}
-
-		return () => {
-			events.off("render", drawOsc);
-		};
-	}, [showOsc]);
-
 	useLayoutEffect(() => {
-		if (showWaveform) {
+		if (hasAudio) {
 			if (!hasAudioRef.current && !flatRenderedRef.current) {
 				renderFlatWaveform();
 			}
@@ -220,32 +175,19 @@ export default function AudioWaveform({
 		<div
 			className={classNames({
 				"min-w-[56rem] relative bg-neutral-900 border-t border-t-neutral-800 shadow-[inset_0_0_40px_rgba(0,_0,_0,_0.5)] max-h-64 transition-[max-height_0.2s_ease-out] overflow-hidden": true,
-				"hidden max-h-0 transition-[max-height_0.2s_ease-in]": !visible,
+				"hidden max-h-0 transition-[max-height_0.2s_ease-in]": !hasAudio,
 			})}
 		>
-			{showWaveform && (
-				<canvas
-					ref={canvas}
-					className={"mt-5 mx-auto block"}
-					width={width}
-					height={height + shadowHeight}
-					onClick={handleClick}
-					onMouseMove={handleMouseMove}
-					onMouseOut={handleMouseOut}
-					onBlur={handleMouseOut}
-				/>
-			)}
-			{showOsc && (
-				<canvas
-					ref={oscCanvas}
-					className={classNames("block mx-auto", {
-						"mt-5": !showWaveform,
-						"mt-1": showWaveform,
-					})}
-					width={oscProperties.width}
-					height={oscProperties.height}
-				/>
-			)}
+			<canvas
+				ref={canvas}
+				className={"mt-5 mx-auto block"}
+				width={width}
+				height={height + shadowHeight}
+				onClick={handleClick}
+				onMouseMove={handleMouseMove}
+				onMouseOut={handleMouseOut}
+				onBlur={handleMouseOut}
+			/>
 			<div className="h-5" />
 		</div>
 	);
