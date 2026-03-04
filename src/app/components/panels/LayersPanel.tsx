@@ -1,14 +1,13 @@
 import { reverse } from "@/lib/utils/array";
 import useApp, { setActiveElementId } from "@/app/actions/app";
 import useScenes, {
-	addScene,
 	moveElement,
 	removeElement,
 	updateElement,
 } from "@/app/actions/scenes";
 import { ButtonInput } from "@/app/components/inputs";
 import SceneLayer from "@/app/components/panels/SceneLayer";
-import { ChevronDown, ChevronUp, Picture } from "@/app/icons";
+import { ChevronDown, ChevronUp } from "@/app/icons";
 import React, { useMemo } from "react";
 
 interface SceneElement {
@@ -97,12 +96,6 @@ export default function LayersPanel() {
 		updateElement(id, prop, value);
 	}
 
-	async function handleAddScene() {
-		const scene = await addScene();
-
-		setActiveElementId(scene?.id);
-	}
-
 	function handleMoveUp() {
 		moveElement(activeElementId, 1);
 	}
@@ -157,11 +150,6 @@ export default function LayersPanel() {
 	return (
 		<div className={"flex flex-col flex-1 relative overflow-auto"}>
 			<div className={"flex p-1 gap-1"}>
-				<ButtonInput
-					icon={Picture}
-					title="Add Scene"
-					onClick={handleAddScene}
-				/>
 				<ButtonInput
 					icon={ChevronUp}
 					title="Move Layer Up"
