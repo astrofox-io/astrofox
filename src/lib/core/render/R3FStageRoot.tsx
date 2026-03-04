@@ -1976,11 +1976,8 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		gl.setRenderTarget(null);
 
 		// Step 3: Update output mesh with composited result
-		// RenderPass writes to inputBuffer (needsSwap=false), then EffectPass reads
-		// inputBuffer, writes outputBuffer, and swaps. After the swap the final
-		// effected result is always in inputBuffer, not outputBuffer.
 		if (meshRef.current) {
-			meshRef.current.material.map = composer.inputBuffer.texture;
+			meshRef.current.material.map = composer.outputBuffer.texture;
 		}
 	});
 
