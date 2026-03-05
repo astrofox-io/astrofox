@@ -1606,6 +1606,12 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		const chain = chainRef.current;
 		if (!chain || passesRef.current.length === 0) return;
 
+		// Disable autoClear — EffectComposer used to do this as a side effect
+		// of setRenderer(). Without it, gl.render() auto-clears our manually
+		// cleared opaque-black buffer with the canvas clear color (alpha=0).
+		const prevAutoClear = gl.autoClear;
+		gl.autoClear = false;
+
 		// Step 1: Render scene content directly to chain's inputBuffer
 		// Clear with opaque black (matching v1 behavior — effects process on opaque background)
 		gl.getClearColor(tempColor.current);
@@ -1620,6 +1626,7 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		chain.render(gl, passesRef.current, delta);
 
 		gl.setRenderTarget(null);
+		gl.autoClear = prevAutoClear;
 
 		// Step 3: Update output mesh with composited result
 		if (meshRef.current) {
