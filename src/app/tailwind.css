@@ -51,6 +51,15 @@
     }
 }
 
+@keyframes logo-dash {
+    0% {
+        stroke-dashoffset: 1;
+    }
+    100% {
+        stroke-dashoffset: -1;
+    }
+}
+
 @keyframes stage-loader-out {
     0% {
         transform: scale(1);
