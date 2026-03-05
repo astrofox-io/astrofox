@@ -8,6 +8,7 @@ import React from "react";
 
 interface ControlProps {
   display: Display & {
+    id: string;
     displayName: string;
     properties: Record<string, unknown>;
     constructor: {
@@ -19,14 +20,17 @@ interface ControlProps {
   };
   className?: string;
   showHeader?: boolean;
+  onNameClick?: (id: string) => void;
 }
 
 export default function Control({
   display,
   className,
   showHeader = true,
+  onNameClick,
 }: ControlProps) {
   const {
+    id,
     displayName,
     constructor: {
       config: { label, controls = {} },
@@ -66,8 +70,9 @@ export default function Control({
             <div className={"uppercase"}>{label}</div>
             <div
               className={
-                "text-neutral-300 overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-24"
+                "text-neutral-300 overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-24 cursor-pointer hover:text-neutral-100"
               }
+              onClick={() => onNameClick?.(id)}
             >
               {displayName}
             </div>

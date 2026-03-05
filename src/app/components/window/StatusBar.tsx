@@ -1,4 +1,3 @@
-import { formatSize } from "@/lib/utils/format";
 import useAppStore from "@/app/actions/app";
 import ZoomControl from "@/app/components/window/ZoomControl";
 import { env, renderer } from "@/app/global";
@@ -7,29 +6,16 @@ import React, { useState, useEffect } from "react";
 const { APP_VERSION } = env;
 
 interface StatsState {
-	mem?: string;
 	fps?: string;
 }
 
 export default function StatusBar() {
 	const statusText = useAppStore((state) => state.statusText);
-	const [{ mem, fps }, setState] = useState<StatsState>({});
+	const [{ fps }, setState] = useState<StatsState>({});
 
 	function updateStats() {
 		setState({
 			fps: `${renderer.getFPS()} FPS`,
-			mem: (
-				window.performance as unknown as { memory?: { usedJSHeapSize: number } }
-			).memory
-				? formatSize(
-						(
-							window.performance as unknown as {
-								memory: { usedJSHeapSize: number };
-							}
-						).memory.usedJSHeapSize,
-						2,
-					)
-				: undefined,
 		});
 	}
 
@@ -54,7 +40,6 @@ export default function StatusBar() {
 				<ZoomControl />
 			</div>
 			<div className={"flex w-1/3 items-center justify-end gap-5 text-right"}>
-				{process.env.NODE_ENV !== "production" && <InfoItem value={mem} />}
 				<InfoItem value={fps} />
 				<InfoItem value={APP_VERSION} />
 			</div>

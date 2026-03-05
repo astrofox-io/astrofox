@@ -1,5 +1,5 @@
 import { reverse } from "@/lib/utils/array";
-import useApp from "@/app/actions/app";
+import useApp, { setActiveElementId } from "@/app/actions/app";
 import useScenes from "@/app/actions/scenes";
 import Control from "@/app/components/controls/Control";
 import { stage } from "@/app/global";
@@ -67,6 +67,7 @@ export default function ControlsPanel() {
               display={
                 display as unknown as Parameters<typeof Control>[0]["display"]
               }
+              onNameClick={setActiveElementId}
             />
           </div>
         );
