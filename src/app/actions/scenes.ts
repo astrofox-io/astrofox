@@ -253,6 +253,24 @@ function swapAtIndex(items, index, spaces) {
 	return nextItems;
 }
 
+function moveAtIndex(items, fromIndex, toIndex) {
+	if (
+		fromIndex === toIndex ||
+		fromIndex < 0 ||
+		toIndex < 0 ||
+		fromIndex >= items.length ||
+		toIndex >= items.length
+	) {
+		return items;
+	}
+
+	const nextItems = [...items];
+	const [item] = nextItems.splice(fromIndex, 1);
+	nextItems.splice(toIndex, 0, item);
+
+	return nextItems;
+}
+
 export function moveElement(id, spaces) {
 	updateScenes((scenes) => {
 		const sceneIndex = scenes.findIndex((scene) => scene.id === id);
@@ -289,6 +307,121 @@ export function moveElement(id, spaces) {
 	if (element) {
 		stage.shiftStageElement(element, spaces);
 	}
+}
+
+export function reorderElement(sourceId, targetId) {
+	if (!sourceId || !targetId || sourceId === targetId) {
+		return false;
+	}
+
+	const scenes = sceneStore.getState().scenes;
+	let sourceIndex = -1;
+	let targetIndex = -1;
+	let sourceType = null;
+	let targetType = null;
+	let sourceSceneId = null;
+	let targetSceneId = null;
+
+	sourceIndex = scenes.findIndex((scene) => scene.id === sourceId);
+	targetIndex = scenes.findIndex((scene) => scene.id === targetId);
+
+	if (sourceIndex > -1) {
+		sourceType = "scene";
+	}
+	if (targetIndex > -1) {
+		targetType = "scene";
+	}
+
+	if (sourceType !== "scene") {
+		for (const scene of scenes) {
+			const displayIndex = scene.displays.findIndex(
+				(display) => display.id === sourceId,
+			);
+			if (displayIndex > -1) {
+				sourceType = "display";
+				sourceSceneId = scene.id;
+				sourceIndex = displayIndex;
+				break;
+			}
+
+			const effectIndex = scene.effects.findIndex((effect) => effect.id === sourceId);
+			if (effectIndex > -1) {
+				sourceType = "effect";
+				sourceSceneId = scene.id;
+				sourceIndex = effectIndex;
+				break;
+			}
+		}
+	}
+
+	if (targetType !== "scene") {
+		for (const scene of scenes) {
+			const displayIndex = scene.displays.findIndex(
+				(display) => display.id === targetId,
+			);
+			if (displayIndex > -1) {
+				targetType = "display";
+				targetSceneId = scene.id;
+				targetIndex = displayIndex;
+				break;
+			}
+
+			const effectIndex = scene.effects.findIndex((effect) => effect.id === targetId);
+			if (effectIndex > -1) {
+				targetType = "effect";
+				targetSceneId = scene.id;
+				targetIndex = effectIndex;
+				break;
+			}
+		}
+	}
+
+	if (!sourceType || !targetType || sourceType !== targetType) {
+		return false;
+	}
+
+	if (sourceType === "scene") {
+		updateScenes((currentScenes) => moveAtIndex(currentScenes, sourceIndex, targetIndex));
+	} else {
+		if (sourceSceneId !== targetSceneId) {
+			return false;
+		}
+
+		updateScenes((currentScenes) =>
+			currentScenes.map((scene) => {
+				if (scene.id !== sourceSceneId) {
+					return scene;
+				}
+
+				if (sourceType === "display") {
+					return {
+						...scene,
+						displays: moveAtIndex(scene.displays, sourceIndex, targetIndex),
+					};
+				}
+
+				return {
+					...scene,
+					effects: moveAtIndex(scene.effects, sourceIndex, targetIndex),
+				};
+			}),
+		);
+	}
+
+	const element = stage.getStageElementById(sourceId);
+	if (!element) {
+		return true;
+	}
+
+	const offset = targetIndex - sourceIndex;
+	const direction = Math.sign(offset);
+	const distance = Math.abs(offset);
+
+	for (let i = 0; i < distance; i += 1) {
+		stage.shiftStageElement(element, direction);
+	}
+
+	return true;
 }
 
 export function getScenesSnapshot() {

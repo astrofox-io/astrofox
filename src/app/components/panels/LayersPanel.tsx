@@ -2,6 +2,7 @@ import { reverse } from "@/lib/utils/array";
 import useApp, { setActiveElementId } from "@/app/actions/app";
 import useScenes, {
   moveElement,
+  reorderElement,
   removeElement,
   updateElement,
 } from "@/app/actions/scenes";
@@ -14,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import classNames from "classnames";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 interface SceneElement {
   id: string;
@@ -34,6 +35,8 @@ interface SceneData {
 export default function LayersPanel() {
   const scenes = useScenes((state) => state.scenes) as SceneData[];
   const activeElementId = useApp((state) => state.activeElementId);
+  const [dragSourceId, setDragSourceId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
   const hasScenes = scenes.length > 0;
   const layerSelected = hasScenes && activeElementId;
 
@@ -102,6 +105,48 @@ export default function LayersPanel() {
     updateElement(id, prop, value);
   }
 
+  function getLayerMeta(id: string) {
+    const sceneIndex = scenes.findIndex((scene) => scene.id === id);
+    if (sceneIndex > -1) {
+      return { type: "scene", sceneId: id };
+    }
+
+    for (const scene of scenes) {
+      if (scene.displays.some((display) => display.id === id)) {
+        return { type: "display", sceneId: scene.id };
+      }
+
+      if (scene.effects.some((effect) => effect.id === id)) {
+        return { type: "effect", sceneId: scene.id };
+      }
+    }
+
+    return null;
+  }
+
+  function canDrop(sourceId: string, targetId: string) {
+    if (!sourceId || !targetId || sourceId === targetId) {
+      return false;
+    }
+
+    const sourceMeta = getLayerMeta(sourceId);
+    const targetMeta = getLayerMeta(targetId);
+
+    if (!sourceMeta || !targetMeta) {
+      return false;
+    }
+
+    if (sourceMeta.type !== targetMeta.type) {
+      return false;
+    }
+
+    if (sourceMeta.type === "scene") {
+      return true;
+    }
+
+    return sourceMeta.sceneId === targetMeta.sceneId;
+  }
+
   function handleMoveUp() {
     moveElement(activeElementId, 1);
   }
@@ -153,6 +198,53 @@ export default function LayersPanel() {
     removeElement(id);
   }
 
+  function handleLayerDragStart(id: string) {
+    setDragSourceId(id);
+    setDragOverId(null);
+  }
+
+  function handleLayerDragOver(id: string, e: React.DragEvent<HTMLDivElement>) {
+    const sourceId = dragSourceId;
+    if (!sourceId) {
+      return;
+    }
+
+    if (!canDrop(sourceId, id)) {
+      return;
+    }
+
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+
+    if (dragOverId !== id) {
+      setDragOverId(id);
+    }
+  }
+
+  function resetDragState() {
+    setDragSourceId(null);
+    setDragOverId(null);
+  }
+
+  function handleLayerDrop(id: string, e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+
+    const sourceId = dragSourceId;
+    if (!sourceId) {
+      resetDragState();
+      return;
+    }
+
+    if (canDrop(sourceId, id)) {
+      const moved = reorderElement(sourceId, id);
+      if (moved) {
+        setActiveElementId(sourceId);
+      }
+    }
+
+    resetDragState();
+  }
+
   return (
     <div className={"flex flex-col flex-1 relative overflow-auto"}>
       <div className={"flex p-1 gap-1"}>
@@ -181,9 +273,14 @@ export default function LayersPanel() {
             key={scene.id}
             scene={scene}
             activeElementId={activeElementId}
+            dragOverId={dragOverId}
             onLayerClick={handleLayerClick}
             onLayerUpdate={handleLayerUpdate}
             onLayerDelete={handleRemove}
+            onLayerDragStart={handleLayerDragStart}
+            onLayerDragOver={handleLayerDragOver}
+            onLayerDrop={handleLayerDrop}
+            onLayerDragEnd={resetDragState}
           />
         ))}
       </div>

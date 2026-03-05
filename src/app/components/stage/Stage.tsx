@@ -3,6 +3,7 @@ import useAudioStore, { loadAudioFile } from "@/app/actions/audio";
 import useStage from "@/app/actions/stage";
 import Spinner from "@/app/components/interface/Spinner";
 import { analyzer, renderBackend } from "@/app/global";
+import { Download } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
@@ -16,6 +17,8 @@ export default function Stage() {
   const initProps = useRef({ width, height, backgroundColor });
   const loading = useAudioStore((state) => state.loading);
   const [dropLoading, setDropLoading] = useState(false);
+  const [dragOverStage, setDragOverStage] = useState(false);
+  const dragDepth = useRef(0);
 
   useEffect(() => {
     const { width, height, backgroundColor } = initProps.current;
@@ -34,6 +37,8 @@ export default function Stage() {
 
   async function handleDrop(e: React.DragEvent) {
     ignoreEvents(e);
+    dragDepth.current = 0;
+    setDragOverStage(false);
 
     const file = e.dataTransfer.files[0];
 
@@ -58,6 +63,28 @@ export default function Stage() {
     }
   }
 
+  function handleStageDragEnter(e: React.DragEvent) {
+    ignoreEvents(e);
+    dragDepth.current += 1;
+    setDragOverStage(true);
+  }
+
+  function handleStageDragOver(e: React.DragEvent) {
+    ignoreEvents(e);
+    if (!dragOverStage) {
+      setDragOverStage(true);
+    }
+  }
+
+  function handleStageDragLeave(e: React.DragEvent) {
+    ignoreEvents(e);
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
+
+    if (dragDepth.current === 0) {
+      setDragOverStage(false);
+    }
+  }
+
   const style = {
     width: `${width * zoom}px`,
     height: `${height * zoom}px`,
@@ -67,9 +94,11 @@ export default function Stage() {
     <div
       className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}
       onDrop={handleDrop}
-      onDragOver={ignoreEvents}
-      onDragEnter={ignoreEvents}
+      onDragOver={handleStageDragOver}
+      onDragEnter={handleStageDragEnter}
+      onDragLeave={handleStageDragLeave}
     >
+      <DragOverlay show={dragOverStage} />
       <div className={"m-auto"}>
         <div
           className={
@@ -80,8 +109,9 @@ export default function Stage() {
             ref={canvas}
             style={style}
             onDrop={handleDrop}
-            onDragOver={ignoreEvents}
-            onDragEnter={ignoreEvents}
+            onDragOver={handleStageDragOver}
+            onDragEnter={handleStageDragEnter}
+            onDragLeave={handleStageDragLeave}
           />
           <Loading show={loading || dropLoading} />
         </div>
@@ -89,6 +119,24 @@ export default function Stage() {
     </div>
   );
 }
+
+interface DragOverlayProps {
+  show?: boolean;
+}
+
+const DragOverlay = ({ show = false }: DragOverlayProps) => {
+  if (!show) {
+    return null;
+  }
+
+  return (
+    <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+      <div className="flex h-44 w-44 items-center justify-center rounded-full border border-primary/40 bg-black/55 shadow-2xl">
+        <Download className="h-24 w-24 text-primary" strokeWidth={1.8} />
+      </div>
+    </div>
+  );
+};
 
 interface LoadingProps {
   show?: boolean;

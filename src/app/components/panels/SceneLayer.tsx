@@ -27,17 +27,27 @@ interface SceneLayerProps {
     effects: SceneElement[];
   };
   activeElementId: string | null;
+  dragOverId?: string | null;
   onLayerClick?: (id: string) => void;
   onLayerUpdate?: (id: string, prop: string, value: unknown) => void;
   onLayerDelete?: (id: string) => void;
+  onLayerDragStart?: (id: string, e: React.DragEvent<HTMLDivElement>) => void;
+  onLayerDragOver?: (id: string, e: React.DragEvent<HTMLDivElement>) => void;
+  onLayerDrop?: (id: string, e: React.DragEvent<HTMLDivElement>) => void;
+  onLayerDragEnd?: () => void;
 }
 
 export default function SceneLayer({
   scene,
   activeElementId,
+  dragOverId = null,
   onLayerClick,
   onLayerUpdate,
   onLayerDelete,
+  onLayerDragStart,
+  onLayerDragOver,
+  onLayerDrop,
+  onLayerDragEnd,
 }: SceneLayerProps) {
   const { id, displayName, enabled } = scene;
 
@@ -53,9 +63,14 @@ export default function SceneLayer({
       className={"rounded ml-4"}
       enabled={enabled}
       active={id === activeElementId}
+      dragOver={id === dragOverId}
       onLayerClick={onLayerClick}
       onLayerUpdate={onLayerUpdate}
       onLayerDelete={onLayerDelete}
+      onLayerDragStart={onLayerDragStart}
+      onLayerDragOver={onLayerDragOver}
+      onLayerDrop={onLayerDrop}
+      onLayerDragEnd={onLayerDragEnd}
     />
   );
 
@@ -68,9 +83,14 @@ export default function SceneLayer({
         icon={Picture}
         enabled={enabled}
         active={id === activeElementId}
+        dragOver={id === dragOverId}
         onLayerClick={onLayerClick}
         onLayerUpdate={onLayerUpdate}
         onLayerDelete={onLayerDelete}
+        onLayerDragStart={onLayerDragStart}
+        onLayerDragOver={onLayerDragOver}
+        onLayerDrop={onLayerDrop}
+        onLayerDragEnd={onLayerDragEnd}
         className="rounded"
       />
       <div className={classNames("flex flex-col gap-0.5")}>

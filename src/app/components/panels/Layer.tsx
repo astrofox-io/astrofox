@@ -11,10 +11,15 @@ interface LayerProps {
   icon?: LucideIcon | null;
   className?: string;
   active?: boolean;
+  dragOver?: boolean;
   enabled?: boolean;
   onLayerClick?: (id: string) => void;
   onLayerUpdate?: (id: string, prop: string, value: unknown) => void;
   onLayerDelete?: ((id: string) => void) | null;
+  onLayerDragStart?: (id: string, e: React.DragEvent<HTMLDivElement>) => void;
+  onLayerDragOver?: (id: string, e: React.DragEvent<HTMLDivElement>) => void;
+  onLayerDrop?: (id: string, e: React.DragEvent<HTMLDivElement>) => void;
+  onLayerDragEnd?: () => void;
 }
 
 export default function Layer({
@@ -23,10 +28,15 @@ export default function Layer({
   icon = null,
   className,
   active = false,
+  dragOver = false,
   enabled = true,
   onLayerClick,
   onLayerUpdate,
   onLayerDelete = null,
+  onLayerDragStart,
+  onLayerDragOver,
+  onLayerDrop,
+  onLayerDragEnd,
 }: LayerProps) {
   const [edit, setEdit] = useState(false);
   const LayerIcon = icon;
@@ -64,15 +74,25 @@ export default function Layer({
 
   return (
     <div
+      draggable={!edit}
       className={classNames(
         className,
         "group flex flex-row items-center text-sm text-neutral-300 hover:text-neutral-100 bg-neutral-800 px-2 py-1 relative cursor-default gap-2",
         {
           "bg-neutral-800": edit,
           "bg-primary": active && !edit,
+          "ring-1 ring-primary": dragOver && !edit,
         },
       )}
       onClick={handleLayerClick}
+      onDragStart={(e) => {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", id);
+        onLayerDragStart?.(id, e);
+      }}
+      onDragOver={(e) => onLayerDragOver?.(id, e)}
+      onDrop={(e) => onLayerDrop?.(id, e)}
+      onDragEnd={onLayerDragEnd}
     >
       {LayerIcon && <LayerIcon className={"w-4 h-4"} />}
       <div className={"flex-1 min-w-0 py-0.5"} onDoubleClick={handleEnableEdit}>
