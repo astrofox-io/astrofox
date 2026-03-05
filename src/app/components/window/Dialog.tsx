@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ButtonRow from "@/app/components/layout/ButtonRow";
+import { DialogFooter } from "@/components/ui/dialog";
 import classNames from "classnames";
 import type { LucideIcon } from "lucide-react";
 import React from "react";
@@ -18,20 +18,21 @@ export default function Dialog({
 	onConfirm,
 }: DialogProps) {
 	return (
-		<div className={"max-w-[38rem] cursor-default w-full"}>
-			<div className={"flex flex-row p-10 text-center"}>
+		<div className="flex min-h-[12rem] w-full max-w-[38rem] flex-col cursor-default">
+			<div className="flex flex-1 items-start gap-4 px-6 py-6">
 				{icon && (
 					<div
 						className={classNames(
-							"text-5xl mr-5",
+							"mt-1 text-3xl",
 							typeof icon === "string" ? icon : undefined,
 						)}
 					/>
 				)}
-				<div className={"flex-1"}>{message}</div>
+				<div className="flex-1 text-sm leading-6 text-neutral-100">{message}</div>
 			</div>
 			{buttons && (
-				<ButtonRow>
+				<div className="shrink-0 border-t border-neutral-700 bg-neutral-800 px-4 py-3">
+					<DialogFooter className="sm:justify-end">
 					{buttons.map((button: string) => (
 						<Button
 							key={button}
@@ -42,7 +43,8 @@ export default function Dialog({
 							{button}
 						</Button>
 					))}
-				</ButtonRow>
+					</DialogFooter>
+				</div>
 			)}
 		</div>
 	);

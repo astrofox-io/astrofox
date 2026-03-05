@@ -8,6 +8,7 @@ import useProject, {
 	saveProject,
 } from "@/app/actions/project";
 import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -107,8 +108,8 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 	}
 
 	return (
-		<div className={"flex flex-col gap-3 min-w-[40rem]"}>
-			<div className={"flex gap-3"}>
+		<div className="flex min-h-[24rem] min-w-[40rem] max-w-full flex-1 flex-col">
+			<div className="flex min-h-0 flex-1 gap-3 overflow-auto p-4">
 				<div className={"list-column flex-1 flex flex-col gap-2"}>
 					<div className={"text-sm font-bold uppercase opacity-[0.8]"}>
 						Projects
@@ -211,8 +212,16 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 					</div>
 				</div>
 			</div>
-
-			{error && <div className={"text-[#ff7d7d] text-sm"}>{error}</div>}
+			<div className="shrink-0 border-t border-neutral-700 bg-neutral-800 px-4 py-3">
+				<div className="flex items-center justify-between gap-3">
+					{error ? <div className="text-sm text-[#ff7d7d]">{error}</div> : <div />}
+					<DialogFooter className="sm:justify-end">
+						<Button variant="default" size="sm" onClick={onClose}>
+							Close
+						</Button>
+					</DialogFooter>
+				</div>
+			</div>
 		</div>
 	);
 }

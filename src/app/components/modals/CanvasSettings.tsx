@@ -1,7 +1,7 @@
 import useStage, { updateCanvas } from "@/app/actions/stage";
 import { Setting, Settings } from "@/app/components/controls";
 import { Button } from "@/components/ui/button";
-import ButtonRow from "@/app/components/layout/ButtonRow";
+import { DialogFooter } from "@/components/ui/dialog";
 import React, { useState } from "react";
 
 type CanvasSettingsProps = {
@@ -123,45 +123,56 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 	}
 
 	return (
-		<div className="flex flex-col flex-1 overflow-hidden relative w-[500px]">
-			<Settings
-				columns={["50%", "50%"]}
-				onChange={handleChange as (props: Record<string, unknown>) => void}
-			>
-				<Setting
-					label="Format"
-					type="select"
-					name="aspect"
-					value={aspect}
-					items={CANVAS_ASPECT_OPTIONS}
-					width={180}
-					optionsWidth={220}
-				/>
-				<Setting
-					label="Size"
-					type="select"
-					name="baseSize"
-					value={baseSize}
-					items={CANVAS_BASE_SIZES.map((size) => ({
-						label: `${size}p`,
-						value: size,
-					}))}
-					width={100}
-				/>
-				<Setting
-					label="Background Color"
-					type="color"
-					name="backgroundColor"
-					value={backgroundColor}
-				/>
-			</Settings>
-			<div className={"px-4 pb-2 text-sm text-neutral-400"}>
-				Output: {width} x {height}
+		<div className="flex w-[500px] max-w-full flex-col">
+			<div className="max-h-[60vh] overflow-auto">
+				<Settings
+					columns={["50%", "50%"]}
+					onChange={handleChange as (props: Record<string, unknown>) => void}
+				>
+					<Setting
+						label="Format"
+						type="select"
+						name="aspect"
+						value={aspect}
+						items={CANVAS_ASPECT_OPTIONS}
+						width={180}
+						optionsWidth={220}
+					/>
+					<Setting
+						label="Size"
+						type="select"
+						name="baseSize"
+						value={baseSize}
+						items={CANVAS_BASE_SIZES.map((size) => ({
+							label: `${size}p`,
+							value: size,
+						}))}
+						width={100}
+					/>
+					<div className="mb-4 flex items-center">
+						<div style={{ width: "50%" }} />
+						<div style={{ width: "50%" }} className="text-sm text-neutral-400">
+							Output: {width} x {height}
+						</div>
+					</div>
+					<Setting
+						label="Background Color"
+						type="color"
+						name="backgroundColor"
+						value={backgroundColor}
+					/>
+				</Settings>
 			</div>
-			<ButtonRow>
-				<Button variant="default" size="sm" onClick={handleSave}>OK</Button>
-				<Button variant="default" size="sm" onClick={handleCancel}>Cancel</Button>
-			</ButtonRow>
+			<div className="shrink-0 border-t border-neutral-700 bg-neutral-800 px-4 py-3">
+				<DialogFooter className="justify-end sm:justify-end">
+					<Button variant="default" size="sm" onClick={handleSave}>
+						OK
+					</Button>
+					<Button variant="default" size="sm" onClick={handleCancel}>
+						Cancel
+					</Button>
+				</DialogFooter>
+			</div>
 		</div>
 	);
 }
