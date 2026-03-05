@@ -13,7 +13,7 @@ export class PPUnrealBloomPass extends Pass {
 		threshold = 0,
 	} = {}) {
 		super("PPUnrealBloomPass");
-		const exposureScale = Math.pow(Math.max(0, Number(exposure ?? 1)), 4);
+		const exposureScale = Math.max(0, Number(exposure ?? 1)) ** 4;
 		const mappedStrength = Number(strength ?? 1.5) * exposureScale;
 
 		this.unrealBloomPass = new UnrealBloomPass(

@@ -119,7 +119,7 @@ export function SceneWithEffects({ width, height, effects, renderOrder = 0, chil
 
 	useFrame((_, delta) => {
 		const chain = chainRef.current;
-		if (!chain || passesRef.current.length === 0) return;
+		if (!chain) return;
 
 		// Disable autoClear — EffectComposer used to do this as a side effect
 		// of setRenderer(). Without it, gl.render() auto-clears our manually
@@ -137,8 +137,12 @@ export function SceneWithEffects({ width, height, effects, renderOrder = 0, chil
 		gl.setClearColor(tempColor.current, prevClearAlpha);
 		gl.render(sceneObj, camera);
 
-		// Step 2: Run PassChain (reads inputBuffer, result ends up in inputBuffer)
-		chain.render(gl, passesRef.current, delta);
+		// Step 2: Run PassChain when effects are available.
+		// If there are no passes (e.g. while toggling/rebuilding), keep a passthrough
+		// frame in inputBuffer so the output plane never falls back to white.
+		if (passesRef.current.length > 0) {
+			chain.render(gl, passesRef.current, delta);
+		}
 
 		gl.setRenderTarget(null);
 		gl.autoClear = prevAutoClear;
