@@ -231,6 +231,11 @@ export default function TitleBar() {
         {projectNameEditing ? (
           <input
             ref={projectNameInputRef}
+            type="text"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
             className={
               "h-7 px-2 rounded bg-neutral-800 border border-primary text-sm text-neutral-100 outline-none w-52 max-w-[32vw]"
             }

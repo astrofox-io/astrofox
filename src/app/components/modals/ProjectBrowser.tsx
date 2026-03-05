@@ -156,6 +156,11 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 						Create New
 					</div>
 					<input
+						type="text"
+						autoComplete="off"
+						autoCorrect="off"
+						autoCapitalize="off"
+						spellCheck={false}
 						className={
 							"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"
 						}
@@ -172,6 +177,11 @@ export default function ProjectBrowser({ onClose }: ProjectBrowserProps) {
 						Rename Selected
 					</div>
 					<input
+						type="text"
+						autoComplete="off"
+						autoCorrect="off"
+						autoCapitalize="off"
+						spellCheck={false}
 						className={
 							"bg-[#181818] text-[#fff] border border-[#555] py-2 px-2 text-sm"
 						}

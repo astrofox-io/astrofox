@@ -87,6 +87,9 @@ export default function TextInput({
     <input
       ref={input}
       type="text"
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
       className={classNames(
         "text-sm text-neutral-300 bg-neutral-900 border border-border-input rounded py-1 px-2 [outline:none] [&:focus]:border [&:focus]:border-primary [&:read-only]:border-border-input [&:disabled]:text-neutral-500 [&:disabled]:border-border-input",
         className,
