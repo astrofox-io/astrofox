@@ -41,6 +41,7 @@ export default function LayersPanel() {
   const layerSelected = hasScenes && activeElementId;
 
   const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
+  const lastSceneId = sortedScenes[sortedScenes.length - 1]?.id;
 
   const activeScene = useMemo(() => {
     return scenes.reduce((memo: SceneData | undefined, scene: SceneData) => {
@@ -283,6 +284,13 @@ export default function LayersPanel() {
             onLayerDragEnd={resetDragState}
           />
         ))}
+        {lastSceneId && (
+          <div
+            className="h-2"
+            onDragOver={(e) => handleLayerDragOver(lastSceneId, e)}
+            onDrop={(e) => handleLayerDrop(lastSceneId, e)}
+          />
+        )}
       </div>
     </div>
   );

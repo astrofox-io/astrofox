@@ -53,6 +53,8 @@ export default function SceneLayer({
 
   const displays = useMemo(() => reverse(scene.displays), [scene.displays]);
   const effects = useMemo(() => reverse(scene.effects), [scene.effects]);
+  const lastEffectId = effects[effects.length - 1]?.id;
+  const lastDisplayId = displays[displays.length - 1]?.id;
 
   const renderLayer = ({ id, type, displayName, enabled }: SceneElement) => (
     <Layer
@@ -95,7 +97,21 @@ export default function SceneLayer({
       />
       <div className={classNames("flex flex-col gap-0.5")}>
         {effects.map((effect: SceneElement) => renderLayer(effect))}
+        {lastEffectId && (
+          <div
+            className="h-2 ml-4"
+            onDragOver={(e) => onLayerDragOver?.(lastEffectId, e)}
+            onDrop={(e) => onLayerDrop?.(lastEffectId, e)}
+          />
+        )}
         {displays.map((display: SceneElement) => renderLayer(display))}
+        {lastDisplayId && (
+          <div
+            className="h-2 ml-4"
+            onDragOver={(e) => onLayerDragOver?.(lastDisplayId, e)}
+            onDrop={(e) => onLayerDrop?.(lastDisplayId, e)}
+          />
+        )}
       </div>
     </div>
   );
