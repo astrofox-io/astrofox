@@ -1,21 +1,29 @@
 import { reverse } from "@/lib/utils/array";
 import Layer from "@/app/components/panels/Layer";
-import { Cube, DocumentLandscape, Picture, Sun } from "@/app/icons";
+import { Cube, Picture, Square, Sun } from "@/app/icons";
 import classNames from "classnames";
 import type { LucideIcon } from "lucide-react";
 import React, { useMemo } from "react";
 
 const icons: Record<string, LucideIcon> = {
-  display: Cube,
   effect: Sun,
   webgl: Cube,
 };
 
 interface SceneElement {
   id: string;
+  name?: string;
   type: string;
   displayName: string;
   enabled: boolean;
+}
+
+function resolveLayerIcon(layer: SceneElement): LucideIcon {
+  if (layer.type === "display") {
+    return layer.name === "GeometryDisplay" ? Cube : Square;
+  }
+
+  return icons[layer.type] || Cube;
 }
 
 interface SceneLayerProps {
@@ -56,12 +64,12 @@ export default function SceneLayer({
   const lastEffectId = effects[effects.length - 1]?.id;
   const lastDisplayId = displays[displays.length - 1]?.id;
 
-  const renderLayer = ({ id, type, displayName, enabled }: SceneElement) => (
+  const renderLayer = ({ id, type, name, displayName, enabled }: SceneElement) => (
     <Layer
       key={id}
       id={id}
       name={displayName}
-      icon={icons[type]}
+      icon={resolveLayerIcon({ id, type, name, displayName, enabled })}
       className={"rounded ml-4"}
       enabled={enabled}
       active={id === activeElementId}

@@ -15,8 +15,8 @@ import {
 	Play as PlayBase,
 	Plus,
 	AudioLines as SoundBars,
+	Square as SquareBase,
 	Waves as SoundWaves,
-	Square as StopBase,
 	Sun,
 	X as Times,
 	Trash2 as TrashEmpty,
@@ -43,6 +43,7 @@ export {
 	Pause,
 	Picture,
 	Plus,
+	SquareBase as Square,
 	Sun,
 	SoundBars,
 	SoundWaves,
@@ -60,5 +61,5 @@ export function Play(props: LucideProps) {
 }
 
 export function Stop(props: LucideProps) {
-	return <StopBase strokeWidth={2.4} {...props} />;
+	return <SquareBase strokeWidth={2.4} {...props} />;
 }
