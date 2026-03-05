@@ -18,29 +18,9 @@ import {
 } from "@/lib/postprocessing";
 import { BLANK_IMAGE } from "@/app/constants";
 import {
-	ASCII,
-	Bloom,
-	BrightnessContrast,
-	ColorAverage,
-	ColorDepth,
-	DotScreen,
-	EffectComposer,
-	Glitch,
-	Grid,
-	HueSaturation,
-	Noise,
-	Pixelation,
-	Scanline as ScanlinePP,
-	Sepia,
-	TiltShift2,
-	ToneMapping,
-	Vignette,
-} from "@react-three/postprocessing";
-import {
 	BlendFunction,
 	Effect as RawEffect,
 	EffectAttribute,
-	EffectComposer as RawEffectComposer,
 	EffectPass,
 	GlitchMode,
 	Pass as RawPass,
@@ -61,6 +41,7 @@ import {
 	VignetteEffect as RawVignetteEffect,
 	ASCIIEffect as RawASCIIEffect,
 } from "postprocessing";
+import { PassChain } from "./PassChain";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
 import React from "react";
 import {
@@ -236,163 +217,6 @@ function getThreeBlending(blendMode = "Normal") {
 	}
 }
 
-// --- Effect Wrapper Components ---
-
-function PPMirrorWrapper({ side }) {
-	const effect = React.useMemo(() => new PPMirrorEffect({ side }), []);
-	React.useEffect(() => {
-		effect.uniforms.get("side").value = Number(side || 0);
-	}, [effect, side]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPKaleidoscopeWrapper({ sides, angle }) {
-	const effect = React.useMemo(
-		() => new PPKaleidoscopeEffect({ sides, angle }),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("sides").value = Math.max(1, Number(sides || 6));
-		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
-	}, [effect, sides, angle]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPDistortionWrapper({ amount, time }) {
-	const effect = React.useMemo(
-		() =>
-			new PPDistortionEffect({
-				amount: Number(amount || 0) * 30,
-				time: Number(time || 0),
-			}),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("amount").value = Number(amount || 0) * 30;
-	}, [effect, amount]);
-	React.useEffect(() => {
-		effect.uniforms.get("time").value = Number(time || 0);
-	}, [effect, time]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPRGBShiftWrapper({ offset, angle, width }) {
-	const effect = React.useMemo(
-		() => new PPRGBShiftEffect({ offset: 0, angle: 0 }),
-		[],
-	);
-	React.useEffect(() => {
-		const normalizedOffset =
-			Number(offset || 0) / Math.max(1, Number(width || 1));
-		effect.uniforms.get("offset").value = normalizedOffset;
-		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
-	}, [effect, offset, angle, width]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPColorHalftoneWrapper({ scale, angle, width, height }) {
-	const effect = React.useMemo(
-		() => new PPColorHalftoneEffect({ scale: 1, angle: 0, width, height }),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("scale").value = 1 - Number(scale || 0);
-		effect.uniforms.get("angle").value = toRadians(Number(angle || 0));
-		const res = effect.uniforms.get("sceneResolution").value;
-		res.set(width, height);
-	}, [effect, scale, angle, width, height]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPLEDWrapper({ spacing, size, blur, width, height }) {
-	const effect = React.useMemo(
-		() => new PPLEDEffect({ spacing: 10, size: 4, blur: 4, width, height }),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("spacing").value = Math.max(1, Number(spacing || 10));
-		effect.uniforms.get("size").value = Number(size || 4);
-		effect.uniforms.get("blur").value = Number(blur || 4);
-		const res = effect.uniforms.get("sceneResolution").value;
-		res.set(width, height);
-	}, [effect, spacing, size, blur, width, height]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPGlowWrapper({ amount, intensity, width, height }) {
-	const effect = React.useMemo(
-		() => new PPGlowEffect({ amount: 0, intensity: 1, width, height }),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("amount").value = Number(amount || 0) * 5;
-		effect.uniforms.get("intensity").value = Number(intensity || 1);
-		const res = effect.uniforms.get("sceneResolution").value;
-		res.set(width, height);
-	}, [effect, amount, intensity, width, height]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPHexPixelateWrapper({ size, width, height }) {
-	const effect = React.useMemo(
-		() => new PPHexPixelateEffect({ size: 10, width, height }),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("size").value = Number(size || 10);
-		const res = effect.uniforms.get("sceneResolution").value;
-		res.set(width, height);
-	}, [effect, size, width, height]);
-	return <primitive object={effect} dispose={null} />;
-}
-
-function PPBlurWrapper({
-	type,
-	amount,
-	x,
-	y,
-	radius,
-	brightness,
-	angle,
-	width,
-	height,
-}) {
-	const blurTypeMap = {
-		Box: 0,
-		Circular: 1,
-		Gaussian: 2,
-		Triangle: 3,
-		Zoom: 4,
-		Lens: 5,
-	};
-	const blurType = blurTypeMap[type] ?? 2;
-
-	const effect = React.useMemo(
-		() => new PPBlurEffect({ amount: 0, blurType, width, height }),
-		[],
-	);
-	React.useEffect(() => {
-		effect.uniforms.get("amount").value = Number(amount || 0);
-		effect.uniforms.get("blurType").value = blurType;
-		const centerX = Math.max(
-			0,
-			Math.min(1, (Number(x || 0) + width / 2) / width),
-		);
-		const centerY = Math.max(
-			0,
-			Math.min(1, (Number(y || 0) + height / 2) / height),
-		);
-		effect.uniforms.get("centerX").value = centerX;
-		effect.uniforms.get("centerY").value = centerY;
-		effect.uniforms.get("radius").value = Number(radius || 10);
-		effect.uniforms.get("brightness").value = Number(brightness || 0);
-		effect.uniforms.get("blurAngle").value = toRadians(Number(angle || 0));
-		const res = effect.uniforms.get("sceneResolution").value;
-		res.set(width, height);
-	}, [effect, type, amount, x, y, radius, brightness, angle, width, height]);
-	return <primitive object={effect} dispose={null} />;
-}
-
 // --- Raw Effect Factory (for per-scene postprocessing) ---
 
 function createRawEffect(effectConfig, width, height) {
@@ -547,215 +371,6 @@ function createRawEffect(effectConfig, width, height) {
 				taper: Number(props.taper ?? 0.5),
 				samples: Number(props.samples ?? 10),
 			});
-		default:
-			return null;
-	}
-}
-
-// --- EffectBridge ---
-
-function EffectBridge({ effect, width, height }) {
-	const props = effect.properties || {};
-
-	switch (effect.name) {
-		case "BloomEffect": {
-			const amount = Number(props.amount ?? 0);
-			const threshold = Number(props.threshold ?? 1);
-			const blendMode =
-				props.blendMode === "Screen" ? BlendFunction.SCREEN : BlendFunction.ADD;
-			return (
-				<Bloom
-					intensity={amount * 10}
-					luminanceThreshold={threshold}
-					luminanceSmoothing={0.025}
-					blendFunction={blendMode}
-				/>
-			);
-		}
-
-		case "PixelateEffect": {
-			const size = Number(props.size || 10);
-			const type = props.type || "Square";
-			if (type === "Hexagon") {
-				return (
-					<PPHexPixelateWrapper size={size} width={width} height={height} />
-				);
-			}
-			return <Pixelation granularity={size} />;
-		}
-
-		case "DotScreenEffect": {
-			const scale = Number(props.scale || 0);
-			const angle = Number(props.angle || 0);
-			return <DotScreen scale={2 - scale * 2} angle={toRadians(angle)} />;
-		}
-
-		case "RGBShiftEffect":
-			return (
-				<PPRGBShiftWrapper
-					offset={props.offset}
-					angle={props.angle}
-					width={width}
-				/>
-			);
-
-		case "MirrorEffect":
-			return <PPMirrorWrapper side={props.side} />;
-
-		case "KaleidoscopeEffect":
-			return <PPKaleidoscopeWrapper sides={props.sides} angle={props.angle} />;
-
-		case "DistortionEffect":
-			return <PPDistortionWrapper amount={props.amount} time={effect.time} />;
-
-		case "GlitchEffect": {
-			const mode =
-				props.mode === "Constant"
-					? GlitchMode.CONSTANT_WILD
-					: GlitchMode.SPORADIC;
-			const strength = Number(props.strength ?? 0.3);
-			return (
-				<Glitch
-					mode={mode}
-					strength={new Vector2(strength * 0.5, strength)}
-					columns={Number(props.columns ?? 0.05)}
-					ratio={Number(props.ratio ?? 0.85)}
-				/>
-			);
-		}
-
-		case "ColorHalftoneEffect":
-			return (
-				<PPColorHalftoneWrapper
-					scale={props.scale}
-					angle={props.angle}
-					width={width}
-					height={height}
-				/>
-			);
-
-		case "LEDEffect":
-			return (
-				<PPLEDWrapper
-					spacing={props.spacing}
-					size={props.size}
-					blur={props.blur}
-					width={width}
-					height={height}
-				/>
-			);
-
-		case "GlowEffect":
-			return (
-				<PPGlowWrapper
-					amount={props.amount}
-					intensity={props.intensity}
-					width={width}
-					height={height}
-				/>
-			);
-
-		case "BlurEffect":
-			return (
-				<PPBlurWrapper
-					type={props.type}
-					amount={props.amount}
-					x={props.x}
-					y={props.y}
-					radius={props.radius}
-					brightness={props.brightness}
-					angle={props.angle}
-					width={width}
-					height={height}
-				/>
-			);
-
-		case "BrightnessContrastEffect": {
-			const brightness = Number(props.brightness ?? 0);
-			const contrast = Number(props.contrast ?? 0);
-			return <BrightnessContrast brightness={brightness} contrast={contrast} />;
-		}
-
-		case "ColorAverageEffect":
-			return <ColorAverage blendFunction={BlendFunction.NORMAL} />;
-
-		case "ColorDepthEffect": {
-			const bits = Number(props.bits ?? 16);
-			return <ColorDepth bits={bits} />;
-		}
-
-		case "GridEffect": {
-			const scale = Number(props.scale ?? 1.0);
-			const lineWidth = Number(props.lineWidth ?? 0.5);
-			return <Grid scale={scale} lineWidth={lineWidth} />;
-		}
-
-		case "HueSaturationEffect": {
-			const hue = toRadians(Number(props.hue ?? 0));
-			const saturation = Number(props.saturation ?? 0);
-			return <HueSaturation hue={hue} saturation={saturation} />;
-		}
-
-		case "NoiseEffect": {
-			const premultiply = !!props.premultiply;
-			return (
-				<Noise premultiply={premultiply} blendFunction={BlendFunction.ADD} />
-			);
-		}
-
-		case "ScanlineEffect": {
-			const density = Number(props.density ?? 1.25);
-			return <ScanlinePP density={density} />;
-		}
-
-		case "SepiaEffect": {
-			const intensity = Number(props.intensity ?? 1.0);
-			return <Sepia intensity={intensity} />;
-		}
-
-		case "ToneMappingEffect": {
-			const middleGrey = Number(props.middleGrey ?? 0.6);
-			const maxLuminance = Number(props.maxLuminance ?? 16);
-			const averageLuminance = Number(props.averageLuminance ?? 1.0);
-			const adaptationRate = Number(props.adaptationRate ?? 1.0);
-			return (
-				<ToneMapping
-					middleGrey={middleGrey}
-					maxLuminance={maxLuminance}
-					averageLuminance={averageLuminance}
-					adaptationRate={adaptationRate}
-				/>
-			);
-		}
-
-		case "VignetteEffect": {
-			const offset = Number(props.offset ?? 0.5);
-			const darkness = Number(props.darkness ?? 0.5);
-			return <Vignette offset={offset} darkness={darkness} />;
-		}
-
-		case "ASCIIEffect": {
-			const fontSize = Number(props.fontSize ?? 54);
-			const cellSize = Number(props.cellSize ?? 16);
-			const color = String(props.color ?? "#ffffff");
-			const invert = !!props.invert;
-			return (
-				<ASCII
-					fontSize={fontSize}
-					cellSize={cellSize}
-					color={color}
-					invert={invert}
-				/>
-			);
-		}
-
-		case "TiltShiftEffect": {
-			const blur = Number(props.blur ?? 0.15);
-			const taper = Number(props.taper ?? 0.5);
-			const samples = Number(props.samples ?? 10);
-			return <TiltShift2 blur={blur} taper={taper} samples={samples} />;
-		}
-
 		default:
 			return null;
 	}
@@ -1908,39 +1523,27 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 		camera.updateProjectionMatrix();
 	}, [camera, width, height]);
 
-	// EffectComposer — no RenderPass needed, we render directly to inputBuffer
-	const composerRef = React.useRef(null);
+	// PassChain — v1-style ping-pong buffer management
+	const chainRef = React.useRef(null);
 
-	if (!composerRef.current) {
-		const c = new RawEffectComposer(gl, {
-			frameBufferType: HalfFloatType,
-		});
-		c.autoRenderToScreen = false;
-		c.setSize(width, height);
-		composerRef.current = c;
+	if (!chainRef.current) {
+		chainRef.current = new PassChain(width, height);
 	}
 
 	React.useEffect(() => {
-		composerRef.current?.setSize(width, height);
+		chainRef.current?.setSize(width, height);
 	}, [width, height]);
 
 	React.useEffect(() => {
 		return () => {
-			composerRef.current?.dispose();
+			chainRef.current?.dispose();
 		};
 	}, []);
 
 	// Rebuild passes when effect list or properties change
 	const effectKey = JSON.stringify(effects.map((e) => ({ id: e.id, name: e.name, properties: e.properties })));
-	const resultBufferRef = React.useRef<"input" | "output">("output");
+	const passesRef = React.useRef([]);
 	React.useEffect(() => {
-		const composer = composerRef.current;
-		if (!composer) return;
-
-		while (composer.passes.length > 0) {
-			composer.removePass(composer.passes[0]);
-		}
-
 		const rawItems = effects
 			.map((e) => {
 				try {
@@ -1952,13 +1555,11 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 			.filter(Boolean);
 
 		// Separate Pass objects (e.g. PPGaussianBlurPass) from Effect objects
-		const passes = rawItems.filter((item) => item instanceof RawPass && !(item instanceof RawEffect));
+		const standalonePasses = rawItems.filter((item) => item instanceof RawPass && !(item instanceof RawEffect));
 		const rawEffects = rawItems.filter((item) => item instanceof RawEffect);
 
-		// Add standalone passes first (blur passes, etc.)
-		for (const pass of passes) {
-			composer.addPass(pass);
-		}
+		// Build the ordered pass list
+		const builtPasses = [...standalonePasses];
 
 		// CONVOLUTION effects cannot be merged into a single EffectPass — each
 		// needs its own pass. Non-convolution effects can share one EffectPass.
@@ -1971,60 +1572,58 @@ function SceneWithEffects({ width, height, effects, renderOrder = 0, children })
 
 		for (const effect of convolutionEffects) {
 			try {
-				composer.addPass(new EffectPass(camera, effect));
+				builtPasses.push(new EffectPass(camera, effect));
 			} catch {
 				// Effect pass failed to compile, skip
 			}
 		}
 		if (otherEffects.length > 0) {
 			try {
-				composer.addPass(new EffectPass(camera, ...otherEffects));
+				builtPasses.push(new EffectPass(camera, ...otherEffects));
 			} catch {
 				// Effect pass failed to compile, skip effects
 			}
 		}
 
-		// Track which buffer holds the final result based on needsSwap parity.
-		// We render scene to inputBuffer. Each needsSwap pass alternates the result
-		// between outputBuffer (odd) and inputBuffer (even).
-		let swaps = 0;
-		for (const p of composer.passes) {
-			if (p.enabled && p.needsSwap) swaps++;
+		// Initialize all passes (matching what EffectComposer.addPass does)
+		const alpha = gl.getContext().getContextAttributes()?.alpha ?? false;
+		for (const pass of builtPasses) {
+			try {
+				pass.setSize(width, height);
+				pass.initialize(gl, alpha, HalfFloatType);
+			} catch {
+				// Ignore initialization errors
+			}
 		}
-		resultBufferRef.current = swaps % 2 === 1 ? "output" : "input";
-	}, [effectKey, camera, width, height]);
+
+		passesRef.current = builtPasses;
+	}, [effectKey, camera, gl, width, height]);
 
 	const tempColor = React.useRef(new Color());
 	const meshRef = React.useRef();
 
 	useFrame((_, delta) => {
-		const composer = composerRef.current;
-		if (!composer || composer.passes.length === 0) return;
+		const chain = chainRef.current;
+		if (!chain || passesRef.current.length === 0) return;
 
-		// Step 1: Render scene content directly to composer's inputBuffer
+		// Step 1: Render scene content directly to chain's inputBuffer
 		// Clear with opaque black (matching v1 behavior — effects process on opaque background)
 		gl.getClearColor(tempColor.current);
 		const prevClearAlpha = gl.getClearAlpha();
 		gl.setClearColor(0x000000, 1);
-		gl.setRenderTarget(composer.inputBuffer);
+		gl.setRenderTarget(chain.inputBuffer);
 		gl.clear();
 		gl.setClearColor(tempColor.current, prevClearAlpha);
 		gl.render(sceneObj, camera);
 
-		// Step 2: Run EffectComposer (only EffectPass — reads inputBuffer, writes outputBuffer)
-		try {
-			composer.render(delta);
-		} catch {
-			// Ignore render errors
-		}
+		// Step 2: Run PassChain (reads inputBuffer, result ends up in inputBuffer)
+		chain.render(gl, passesRef.current, delta);
 
 		gl.setRenderTarget(null);
 
 		// Step 3: Update output mesh with composited result
 		if (meshRef.current) {
-			const result = resultBufferRef.current === "output"
-				? composer.outputBuffer : composer.inputBuffer;
-			meshRef.current.material.map = result.texture;
+			meshRef.current.material.map = chain.inputBuffer.texture;
 		}
 	});
 
