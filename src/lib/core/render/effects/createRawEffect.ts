@@ -10,6 +10,7 @@ import {
 	PPLEDEffect,
 	PPMirrorEffect,
 	PPRGBShiftEffect,
+	PPUnrealBloomPass,
 } from "@/lib/postprocessing";
 import {
 	BlendFunction,
@@ -50,6 +51,15 @@ export function createRawEffect(effectConfig, width, height) {
 				blendFunction: blendMode,
 			});
 		}
+		case "UnrealBloomEffect":
+			return new PPUnrealBloomPass({
+				width,
+				height,
+				exposure: Number(props.exposure ?? 1),
+				strength: Number(props.strength ?? 1.5),
+				radius: Number(props.radius ?? 0),
+				threshold: Number(props.threshold ?? 0),
+			});
 		case "PixelateEffect": {
 			const size = Number(props.size || 10);
 			const type = props.type || "Square";

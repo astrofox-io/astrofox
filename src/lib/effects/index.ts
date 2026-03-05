@@ -21,4 +21,5 @@ export { default as ScanlineEffect } from "./ScanlineEffect";
 export { default as SepiaEffect } from "./SepiaEffect";
 export { default as TiltShiftEffect } from "./TiltShiftEffect";
 export { default as ToneMappingEffect } from "./ToneMappingEffect";
+export { default as UnrealBloomEffect } from "./UnrealBloomEffect";
 export { default as VignetteEffect } from "./VignetteEffect";
