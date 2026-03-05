@@ -1,4 +1,5 @@
 import { player } from "@/app/global";
+import useAppStore from "@/app/actions/app";
 import useForceUpdate from "@/app/hooks/useForceUpdate";
 import { Cycle } from "@/app/icons";
 import {
@@ -12,8 +13,13 @@ import type { LucideIcon } from "lucide-react";
 import React from "react";
 
 export default function ToggleButtons() {
+	const isVideoRecording = useAppStore((state) => state.isVideoRecording);
 	const forceUpdate = useForceUpdate();
 	const looping = player.isLooping();
+
+	if (isVideoRecording) {
+		return null;
+	}
 
 	function handleLoopButtonClick() {
 		player.setLoop(!looping);

@@ -1,7 +1,8 @@
 // @ts-nocheck
 import menuConfig from "@/lib/config/menu.json";
-import { handleMenuAction } from "@/app/actions/app";
+import useAppStore, { handleMenuAction } from "@/app/actions/app";
 import useProject, { DEFAULT_PROJECT_NAME } from "@/app/actions/project";
+import { player } from "@/app/global";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -55,7 +56,9 @@ function createMenuItems() {
 
 export default function TitleBar() {
   const { focused } = useWindowState();
+  const isVideoRecording = useAppStore((state) => state.isVideoRecording);
   const projectName = useProject((state) => state.projectName);
+  const [hasAudio, setHasAudio] = useState(() => player.hasAudio());
   const [menuItems, setMenuItems] = useState(createMenuItems);
   const [menuOpen, setMenuOpen] = useState(false);
   const [projectNameEditing, setProjectNameEditing] = useState(false);
@@ -63,6 +66,20 @@ export default function TitleBar() {
     projectName || DEFAULT_PROJECT_NAME,
   );
   const projectNameInputRef = useRef(null);
+
+  useEffect(() => {
+    const syncAudioAvailability = () => {
+      setHasAudio(player.hasAudio());
+    };
+
+    player.on("audio-load", syncAudioAvailability);
+    player.on("audio-unload", syncAudioAvailability);
+
+    return () => {
+      player.off("audio-load", syncAudioAvailability);
+      player.off("audio-unload", syncAudioAvailability);
+    };
+  }, []);
 
   useEffect(() => {
     if (!projectNameEditing) {
@@ -81,6 +98,10 @@ export default function TitleBar() {
 
   function onMenuItemClick(item) {
     const { action, checked } = item;
+    if (isMenuItemDisabled(item)) {
+      return;
+    }
+
     setMenuOpen(false);
 
     if (checked !== undefined) {
@@ -136,6 +157,18 @@ export default function TitleBar() {
     }
   }
 
+  function isMenuItemDisabled(item) {
+    if (item.disabled) {
+      return true;
+    }
+
+    if (item.action === "save-video") {
+      return !hasAudio || isVideoRecording;
+    }
+
+    return false;
+  }
+
   return (
     <div
       className={
@@ -173,7 +206,7 @@ export default function TitleBar() {
                   <DropdownMenuCheckboxItem
                     key={item.label}
                     checked={item.checked}
-                    disabled={item.disabled}
+                    disabled={isMenuItemDisabled(item)}
                     className="text-sm min-w-44 rounded focus:text-neutral-100 focus:bg-primary"
                     onClick={() => onMenuItemClick(item)}
                   >
@@ -185,7 +218,7 @@ export default function TitleBar() {
               return (
                 <DropdownMenuItem
                   key={item.label}
-                  disabled={item.disabled}
+                  disabled={isMenuItemDisabled(item)}
                   className="text-sm min-w-44 rounded focus:text-neutral-100 focus:bg-primary"
                   onClick={() => onMenuItemClick(item)}
                 >

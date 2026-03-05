@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { RangeInput } from "@/app/components/inputs";
+import useAppStore from "@/app/actions/app";
 import TimeInfo from "@/app/components/player/TimeInfo";
 import { player } from "@/app/global";
 import useSharedState from "@/app/hooks/useSharedState";
@@ -14,10 +15,11 @@ const initialState = {
 };
 
 export default function ProgressControl() {
+	const isVideoRecording = useAppStore((state) => state.isVideoRecording);
 	const [state, setState] = useSharedState(initialState);
 	const { progressPosition, seekPosition, buffering } = state;
 	const duration = player.getDuration();
-	const disabled = !player.hasAudio();
+	const disabled = !player.hasAudio() || isVideoRecording;
 
 	function handleProgressChange(value) {
 		player.seek(value);

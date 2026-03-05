@@ -1,4 +1,5 @@
 import CanvasAudio from "@/lib/canvas/CanvasAudio";
+import useAppStore from "@/app/actions/app";
 import { player } from "@/app/global";
 import useSharedState from "@/app/hooks/useSharedState";
 import classNames from "classnames";
@@ -16,6 +17,7 @@ const canvasProperties = {
 };
 
 export default function AudioWaveform() {
+	const isVideoRecording = useAppStore((state) => state.isVideoRecording);
 	const [state, setState] = useSharedState();
 	const { progressPosition, seekPosition } = state as {
 		progressPosition?: number;
@@ -58,6 +60,10 @@ export default function AudioWaveform() {
 	);
 
 	function handleClick(e: React.MouseEvent<HTMLCanvasElement>) {
+		if (isVideoRecording || !hasAudio) {
+			return;
+		}
+
 		const rect = e.currentTarget.getBoundingClientRect();
 		const progressPosition = (e.clientX - rect.left) / rect.width;
 
@@ -67,6 +73,10 @@ export default function AudioWaveform() {
 	}
 
 	function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
+		if (isVideoRecording || !hasAudio) {
+			return;
+		}
+
 		e.stopPropagation();
 
 		const rect = e.currentTarget.getBoundingClientRect();
@@ -180,7 +190,10 @@ export default function AudioWaveform() {
 		>
 			<canvas
 				ref={canvas}
-				className={"mt-5 mx-auto block"}
+				className={classNames("mt-5 mx-auto block", {
+					"cursor-pointer": hasAudio && !isVideoRecording,
+					"cursor-default": !hasAudio || isVideoRecording,
+				})}
 				width={width}
 				height={height + shadowHeight}
 				onClick={handleClick}

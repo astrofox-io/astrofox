@@ -27,6 +27,7 @@ const initialState = {
 	showReactor: false,
 	activeReactorId: null,
 	activeElementId: null,
+	isVideoRecording: false,
 };
 
 const appStore = create(() => ({
@@ -107,6 +108,11 @@ export async function saveVideo() {
 		return;
 	}
 
+	if (!player.hasAudio()) {
+		raiseError("Load an audio track before saving video.");
+		return;
+	}
+
 	if (typeof window === "undefined" || typeof window.MediaRecorder === "undefined") {
 		raiseError("Video recording is not supported in this browser.");
 		return;
@@ -127,34 +133,14 @@ export async function saveVideo() {
 	}
 
 	let durationMs = DEFAULT_VIDEO_DURATION_SECONDS * 1000;
-	const hasAudio = player.hasAudio() && player.getDuration() > 0;
+	const totalDuration = player.getDuration();
 
-	if (hasAudio) {
-		const totalDuration = player.getDuration();
-		const remainingDuration = totalDuration - player.getCurrentTime();
-		const nextDuration =
-			remainingDuration > 0 ? remainingDuration : totalDuration;
-
-		durationMs = Math.max(250, Math.round(nextDuration * 1000));
-	} else {
-		const response = window.prompt(
-			"Video length in seconds",
-			String(DEFAULT_VIDEO_DURATION_SECONDS),
-		);
-
-		if (response === null) {
-			return;
-		}
-
-		const seconds = Number(response);
-
-		if (!Number.isFinite(seconds) || seconds <= 0) {
-			raiseError("Please enter a valid video length in seconds.");
-			return;
-		}
-
-		durationMs = Math.round(seconds * 1000);
+	if (!Number.isFinite(totalDuration) || totalDuration <= 0) {
+		raiseError("Failed to determine audio duration for video recording.");
+		return;
 	}
+
+	durationMs = Math.max(250, Math.round(totalDuration * 1000));
 
 	const extension = getExtensionFromMimeType(mimeType);
 	const defaultPath = `video-${Date.now()}.${extension}`;
@@ -176,11 +162,9 @@ export async function saveVideo() {
 		const tracks = [...canvasStream.getVideoTracks()];
 
 		let audioDestination = null;
-		if (hasAudio) {
-			audioDestination = audioContext.createMediaStreamDestination();
-			player.volume.connect(audioDestination);
-			tracks.push(...audioDestination.stream.getAudioTracks());
-		}
+		audioDestination = audioContext.createMediaStreamDestination();
+		player.volume.connect(audioDestination);
+		tracks.push(...audioDestination.stream.getAudioTracks());
 
 		const recordingStream = new MediaStream(tracks);
 		const recorder = new window.MediaRecorder(recordingStream, {
@@ -218,6 +202,7 @@ export async function saveVideo() {
 
 			recordingStream.getTracks().forEach((track) => track.stop());
 			activeVideoRecorder = null;
+			appStore.setState({ isVideoRecording: false });
 		};
 
 		recorder.ondataavailable = (event) => {
@@ -246,7 +231,6 @@ export async function saveVideo() {
 					fileName,
 				});
 
-				appStore.setState({ statusText: `Video saved: ${fileName}` });
 				logger.log("Video saved:", fileName);
 			} catch (error) {
 				raiseError("Failed to save video file.", error);
@@ -255,24 +239,13 @@ export async function saveVideo() {
 			}
 		};
 
-		if (hasAudio) {
-			player.on("stop", onPlayerStop);
-
-			if (!player.isPlaying()) {
-				if (player.getPosition() >= 1) {
-					player.seek(0);
-				}
-
-				player.play();
-			}
-		}
+		player.stop();
+		player.seek(0);
+		player.on("stop", onPlayerStop);
 
 		recorder.start(RECORDING_TIMESLICE_MS);
-		appStore.setState({
-			statusText: hasAudio
-				? "Recording video with audio..."
-				: "Recording video...",
-		});
+		appStore.setState({ isVideoRecording: true });
+		player.play();
 
 		stopTimer = window.setTimeout(() => {
 			if (recorder.state === "recording") {
@@ -281,6 +254,7 @@ export async function saveVideo() {
 		}, durationMs);
 	} catch (error) {
 		activeVideoRecorder = null;
+		appStore.setState({ isVideoRecording: false });
 		raiseError("Failed to start video recording.", error);
 	}
 }
