@@ -237,8 +237,6 @@ export default class R3FBackend extends RenderBackend {
 				height,
 				backgroundColor: this.backgroundColor,
 				scenes: this.graph.scenes,
-				useFallback: false,
-				fallbackTexture: null,
 				frameData: this.frameData,
 				frameIndex: this.frameIndex,
 			}),

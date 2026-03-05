@@ -3,7 +3,6 @@ import React from "react";
 import { Color } from "three";
 import { BLANK_IMAGE } from "@/app/constants";
 import {
-	FallbackLayer,
 	ImageDisplayLayer,
 	VideoDisplayLayer,
 	TextDisplayLayer,
@@ -20,8 +19,6 @@ export default function R3FStageRoot({
 	height,
 	backgroundColor,
 	scenes,
-	useFallback,
-	fallbackTexture,
 	frameData,
 	frameIndex,
 }) {
@@ -29,20 +26,6 @@ export default function R3FStageRoot({
 		() => new Color(backgroundColor),
 		[backgroundColor],
 	);
-
-	if (useFallback) {
-		return (
-			<>
-				<primitive key="background" attach="background" object={bgColor} />
-				<FallbackLayer
-					key="fallback-layer"
-					width={width}
-					height={height}
-					texture={fallbackTexture}
-				/>
-			</>
-		);
-	}
 
 	let order = 1;
 	const sceneElements = [];

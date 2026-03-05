@@ -1,4 +1,3 @@
-export { FallbackLayer } from "./FallbackLayer";
 export { TexturePlane, getThreeBlending } from "./TexturePlane";
 export { ImageDisplayLayer } from "./ImageDisplayLayer";
 export { VideoDisplayLayer } from "./VideoDisplayLayer";
