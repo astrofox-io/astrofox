@@ -1,29 +1,42 @@
 // @ts-nocheck
-import React from "react";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
+import {
+	EffectAttribute,
+	EffectPass,
+	Effect as RawEffect,
+	Pass as RawPass,
+} from "postprocessing";
+import React from "react";
 import {
 	Color,
 	HalfFloatType,
 	OrthographicCamera,
 	Scene as ThreeScene,
 } from "three";
-import {
-	Effect as RawEffect,
-	EffectAttribute,
-	EffectPass,
-	Pass as RawPass,
-} from "postprocessing";
 import { PassChain } from "../PassChain";
 import { createRawEffect } from "./createRawEffect";
 
-export function SceneWithEffects({ width, height, effects, renderOrder = 0, children }) {
+export function SceneWithEffects({
+	width,
+	height,
+	effects,
+	renderOrder = 0,
+	onTexture,
+	outputToScreen = true,
+	children,
+}) {
 	const gl = useThree((state) => state.gl);
 
 	// Portal scene for children (2D + 3D displays)
 	const sceneObj = React.useMemo(() => new ThreeScene(), []);
 	const camera = React.useMemo(() => {
 		const cam = new OrthographicCamera(
-			-width / 2, width / 2, height / 2, -height / 2, -1000, 1000,
+			-width / 2,
+			width / 2,
+			height / 2,
+			-height / 2,
+			-1000,
+			1000,
 		);
 		cam.position.set(0, 0, 10);
 		cam.updateProjectionMatrix();
@@ -55,8 +68,16 @@ export function SceneWithEffects({ width, height, effects, renderOrder = 0, chil
 		};
 	}, []);
 
+	React.useEffect(() => {
+		return () => {
+			onTexture?.(null);
+		};
+	}, [onTexture]);
+
 	// Rebuild passes when effect list or properties change
-	const effectKey = JSON.stringify(effects.map((e) => ({ id: e.id, name: e.name, properties: e.properties })));
+	const effectKey = JSON.stringify(
+		effects.map((e) => ({ id: e.id, name: e.name, properties: e.properties })),
+	);
 	const passesRef = React.useRef([]);
 	React.useEffect(() => {
 		const rawItems = effects
@@ -70,7 +91,9 @@ export function SceneWithEffects({ width, height, effects, renderOrder = 0, chil
 			.filter(Boolean);
 
 		// Separate Pass objects (e.g. PPGaussianBlurPass) from Effect objects
-		const standalonePasses = rawItems.filter((item) => item instanceof RawPass && !(item instanceof RawEffect));
+		const standalonePasses = rawItems.filter(
+			(item) => item instanceof RawPass && !(item instanceof RawEffect),
+		);
 		const rawEffects = rawItems.filter((item) => item instanceof RawEffect);
 
 		// Build the ordered pass list
@@ -128,10 +151,10 @@ export function SceneWithEffects({ width, height, effects, renderOrder = 0, chil
 		gl.autoClear = false;
 
 		// Step 1: Render scene content directly to chain's inputBuffer
-		// Clear with opaque black (matching v1 behavior — effects process on opaque background)
+		// Clear to transparent black so the composed scene can blend with scenes below it.
 		gl.getClearColor(tempColor.current);
 		const prevClearAlpha = gl.getClearAlpha();
-		gl.setClearColor(0x000000, 1);
+		gl.setClearColor(0x000000, 0);
 		gl.setRenderTarget(chain.inputBuffer);
 		gl.clear();
 		gl.setClearColor(tempColor.current, prevClearAlpha);
@@ -148,23 +171,27 @@ export function SceneWithEffects({ width, height, effects, renderOrder = 0, chil
 		gl.autoClear = prevAutoClear;
 
 		// Step 3: Update output mesh with composited result
-		if (meshRef.current) {
+		onTexture?.(chain.inputBuffer.texture);
+
+		if (outputToScreen && meshRef.current) {
 			meshRef.current.material.map = chain.inputBuffer.texture;
 		}
-	});
+	}, 1);
 
 	return (
 		<>
 			{createPortal(children, sceneObj)}
-			<mesh ref={meshRef} renderOrder={renderOrder}>
-				<planeGeometry args={[width, height]} />
-				<meshBasicMaterial
-					transparent={true}
-					toneMapped={false}
-					depthTest={false}
-					depthWrite={false}
-				/>
-			</mesh>
+			{outputToScreen ? (
+				<mesh ref={meshRef} renderOrder={renderOrder}>
+					<planeGeometry args={[width, height]} />
+					<meshBasicMaterial
+						transparent={true}
+						toneMapped={false}
+						depthTest={false}
+						depthWrite={false}
+					/>
+				</mesh>
+			) : null}
 		</>
 	);
 }

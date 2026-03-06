@@ -1,18 +1,18 @@
 // @ts-nocheck
+import { BLANK_IMAGE } from "@/app/constants";
 import React from "react";
 import { Color } from "three";
-import { BLANK_IMAGE } from "@/app/constants";
-import {
-	ImageDisplayLayer,
-	VideoDisplayLayer,
-	TextDisplayLayer,
-	ShapeDisplayLayer,
-	BarSpectrumDisplayLayer,
-	WaveSpectrumDisplayLayer,
-	SoundWaveDisplayLayer,
-} from "./layers";
-import { GeometryDisplayLayer3D, PerspectiveScene3D } from "./geometry";
 import { SceneWithEffects } from "./effects";
+import { GeometryDisplayLayer3D, PerspectiveScene3D } from "./geometry";
+import {
+	BarSpectrumDisplayLayer,
+	ImageDisplayLayer,
+	ShapeDisplayLayer,
+	SoundWaveDisplayLayer,
+	TextDisplayLayer,
+	VideoDisplayLayer,
+	WaveSpectrumDisplayLayer,
+} from "./layers";
 
 export default function R3FStageRoot({
 	width,
@@ -188,7 +188,11 @@ export default function R3FStageRoot({
 		const displayContent = (
 			<React.Fragment key={scene.id}>
 				{scene3D.length > 0 && (
-					<PerspectiveScene3D width={width} height={height} renderOrder={scene3DOrder}>
+					<PerspectiveScene3D
+						width={width}
+						height={height}
+						renderOrder={scene3DOrder}
+					>
 						{scene3D}
 					</PerspectiveScene3D>
 				)}

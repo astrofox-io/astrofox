@@ -1,6 +1,6 @@
 // @ts-nocheck
-import React from "react";
 import FFTParser from "@/lib/audio/FFTParser";
+import React from "react";
 import {
 	AddEquation,
 	CustomBlending,
@@ -9,7 +9,10 @@ import {
 	OneFactor,
 	ZeroFactor,
 } from "three";
-import { getThreeBlending } from "../layers/TexturePlane";
+import {
+	getThreeBlending,
+	requiresPremultipliedAlpha,
+} from "../layers/TexturePlane";
 
 export function createGeometryNode(shape, key) {
 	switch (shape) {
@@ -147,6 +150,7 @@ export function GeometryDisplayLayer({
 					side: material === "Basic" ? FrontSide : DoubleSide,
 					depthTest: false,
 					depthWrite: false,
+					premultipliedAlpha: requiresPremultipliedAlpha(sceneBlendMode),
 					blending,
 					blendEquation: sceneMask ? AddEquation : undefined,
 					blendSrc: sceneMask ? ZeroFactor : undefined,
@@ -168,6 +172,7 @@ export function GeometryDisplayLayer({
 						color={edgeColor}
 						wireframe={true}
 						transparent={true}
+						premultipliedAlpha={requiresPremultipliedAlpha(sceneBlendMode)}
 						opacity={edgeOpacity}
 						depthTest={false}
 						depthWrite={false}

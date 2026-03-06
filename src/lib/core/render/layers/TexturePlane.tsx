@@ -10,7 +10,12 @@ import {
 	SubtractiveBlending,
 	ZeroFactor,
 } from "three";
-import { LUMA, MASK_VERTEX_SHADER, MASK_FRAGMENT_SHADER, toRadians } from "../constants";
+import {
+	LUMA,
+	MASK_FRAGMENT_SHADER,
+	MASK_VERTEX_SHADER,
+	toRadians,
+} from "../constants";
 
 export function getThreeBlending(blendMode = "Normal") {
 	switch (blendMode) {
@@ -23,6 +28,10 @@ export function getThreeBlending(blendMode = "Normal") {
 		default:
 			return NormalBlending;
 	}
+}
+
+export function requiresPremultipliedAlpha(blendMode = "Normal") {
+	return blendMode === "Multiply" || blendMode === "Subtract";
 }
 
 export function TexturePlane({
@@ -98,7 +107,7 @@ export function TexturePlane({
 			<meshBasicMaterial
 				map={texture}
 				transparent={true}
-				premultipliedAlpha={sceneBlendMode === "Multiply"}
+				premultipliedAlpha={requiresPremultipliedAlpha(sceneBlendMode)}
 				opacity={finalOpacity}
 				toneMapped={false}
 				depthTest={false}
