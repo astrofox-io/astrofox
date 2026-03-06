@@ -137,15 +137,15 @@ export default function LayersPanel() {
       return false;
     }
 
-    if (sourceMeta.type !== targetMeta.type) {
-      return false;
+    if (sourceMeta.type === "scene") {
+      return targetMeta.type === "scene";
     }
 
-    if (sourceMeta.type === "scene") {
+    if (targetMeta.type === "scene") {
       return true;
     }
 
-    return sourceMeta.sceneId === targetMeta.sceneId;
+    return sourceMeta.type === targetMeta.type;
   }
 
   function handleMoveUp() {

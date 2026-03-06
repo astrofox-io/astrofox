@@ -70,6 +70,47 @@ function getElementTarget(type) {
 	return type === "effect" ? "effects" : "displays";
 }
 
+function insertAtIndex(items, index, item) {
+	const nextItems = [...items];
+	const normalizedIndex = Math.max(0, Math.min(index, nextItems.length));
+	nextItems.splice(normalizedIndex, 0, item);
+	return nextItems;
+}
+
+function findElementLocation(scenes, id) {
+	const sceneIndex = scenes.findIndex((scene) => scene.id === id);
+
+	if (sceneIndex > -1) {
+		return {
+			type: "scene",
+			sceneId: id,
+			index: sceneIndex,
+		};
+	}
+
+	for (const scene of scenes) {
+		const displayIndex = scene.displays.findIndex((display) => display.id === id);
+		if (displayIndex > -1) {
+			return {
+				type: "display",
+				sceneId: scene.id,
+				index: displayIndex,
+			};
+		}
+
+		const effectIndex = scene.effects.findIndex((effect) => effect.id === id);
+		if (effectIndex > -1) {
+			return {
+				type: "effect",
+				sceneId: scene.id,
+				index: effectIndex,
+			};
+		}
+	}
+
+	return null;
+}
+
 function updateScenes(callback) {
 	const scenes = sceneStore.getState().scenes;
 	const nextScenes = callback(scenes);
@@ -315,105 +356,171 @@ export function reorderElement(sourceId, targetId) {
 	}
 
 	const scenes = sceneStore.getState().scenes;
-	let sourceIndex = -1;
-	let targetIndex = -1;
-	let sourceType = null;
-	let targetType = null;
-	let sourceSceneId = null;
-	let targetSceneId = null;
+	const source = findElementLocation(scenes, sourceId);
+	const target = findElementLocation(scenes, targetId);
 
-	sourceIndex = scenes.findIndex((scene) => scene.id === sourceId);
-	targetIndex = scenes.findIndex((scene) => scene.id === targetId);
-
-	if (sourceIndex > -1) {
-		sourceType = "scene";
-	}
-	if (targetIndex > -1) {
-		targetType = "scene";
-	}
-
-	if (sourceType !== "scene") {
-		for (const scene of scenes) {
-			const displayIndex = scene.displays.findIndex(
-				(display) => display.id === sourceId,
-			);
-			if (displayIndex > -1) {
-				sourceType = "display";
-				sourceSceneId = scene.id;
-				sourceIndex = displayIndex;
-				break;
-			}
-
-			const effectIndex = scene.effects.findIndex((effect) => effect.id === sourceId);
-			if (effectIndex > -1) {
-				sourceType = "effect";
-				sourceSceneId = scene.id;
-				sourceIndex = effectIndex;
-				break;
-			}
-		}
-	}
-
-	if (targetType !== "scene") {
-		for (const scene of scenes) {
-			const displayIndex = scene.displays.findIndex(
-				(display) => display.id === targetId,
-			);
-			if (displayIndex > -1) {
-				targetType = "display";
-				targetSceneId = scene.id;
-				targetIndex = displayIndex;
-				break;
-			}
-
-			const effectIndex = scene.effects.findIndex((effect) => effect.id === targetId);
-			if (effectIndex > -1) {
-				targetType = "effect";
-				targetSceneId = scene.id;
-				targetIndex = effectIndex;
-				break;
-			}
-		}
-	}
-
-	if (!sourceType || !targetType || sourceType !== targetType) {
+	if (!source || !target) {
 		return false;
 	}
 
-	if (sourceType === "scene") {
-		updateScenes((currentScenes) => moveAtIndex(currentScenes, sourceIndex, targetIndex));
-	} else {
-		if (sourceSceneId !== targetSceneId) {
+	if (source.type === "scene" || target.type === "scene") {
+		if (source.type !== "scene" && target.type !== "scene") {
+			return false;
+		}
+
+		if (source.type === "scene") {
+			updateScenes((currentScenes) =>
+				moveAtIndex(currentScenes, source.index, target.index),
+			);
+
+			const scene = stage.getSceneById(sourceId);
+			if (!scene) {
+				return true;
+			}
+
+			const offset = target.index - source.index;
+			const direction = Math.sign(offset);
+			const distance = Math.abs(offset);
+
+			for (let i = 0; i < distance; i += 1) {
+				stage.shiftStageElement(scene, direction);
+			}
+
+			return true;
+		}
+
+		const sourceCollection = getElementTarget(source.type);
+		const sourceScene = scenes.find((scene) => scene.id === source.sceneId);
+		const sourceItem = sourceScene?.[sourceCollection]?.[source.index];
+
+		if (!sourceScene || !sourceItem) {
 			return false;
 		}
 
 		updateScenes((currentScenes) =>
 			currentScenes.map((scene) => {
-				if (scene.id !== sourceSceneId) {
-					return scene;
-				}
-
-				if (sourceType === "display") {
+				if (scene.id === source.sceneId && scene.id === target.sceneId) {
+					const nextItems = [...scene[sourceCollection]];
+					nextItems.splice(source.index, 1);
+					nextItems.push(sourceItem);
 					return {
 						...scene,
-						displays: moveAtIndex(scene.displays, sourceIndex, targetIndex),
+						[sourceCollection]: nextItems,
 					};
 				}
 
-				return {
-					...scene,
-					effects: moveAtIndex(scene.effects, sourceIndex, targetIndex),
-				};
+				if (scene.id === source.sceneId) {
+					return {
+						...scene,
+						[sourceCollection]: scene[sourceCollection].filter(
+							(item) => item.id !== sourceId,
+						),
+					};
+				}
+
+				if (scene.id === target.sceneId) {
+					return {
+						...scene,
+						[sourceCollection]: [...scene[sourceCollection], sourceItem],
+					};
+				}
+
+				return scene;
 			}),
 		);
+
+		const element = stage.getStageElementById(sourceId);
+		const sourceSceneInstance = stage.getSceneById(source.sceneId);
+		const targetSceneInstance = stage.getSceneById(target.sceneId);
+
+		if (!element || !sourceSceneInstance || !targetSceneInstance) {
+			return true;
+		}
+
+		sourceSceneInstance.removeElement(element);
+		targetSceneInstance.addElement(element);
+		return true;
 	}
+
+	if (source.type !== target.type) {
+		return false;
+	}
+
+	if (source.sceneId !== target.sceneId) {
+		const targetCollection = getElementTarget(source.type);
+		const sourceScene = scenes.find((scene) => scene.id === source.sceneId);
+		const targetScene = scenes.find((scene) => scene.id === target.sceneId);
+		const sourceItem = sourceScene?.[targetCollection]?.[source.index];
+
+		if (!sourceScene || !targetScene || !sourceItem) {
+			return false;
+		}
+
+		updateScenes((currentScenes) =>
+			currentScenes.map((scene) => {
+				if (scene.id === source.sceneId) {
+					return {
+						...scene,
+						[targetCollection]: scene[targetCollection].filter(
+							(item) => item.id !== sourceId,
+						),
+					};
+				}
+
+				if (scene.id === target.sceneId) {
+					return {
+						...scene,
+						[targetCollection]: insertAtIndex(
+							scene[targetCollection],
+							target.index,
+							sourceItem,
+						),
+					};
+				}
+
+				return scene;
+			}),
+		);
+
+		const element = stage.getStageElementById(sourceId);
+		const sourceSceneInstance = stage.getSceneById(source.sceneId);
+		const targetSceneInstance = stage.getSceneById(target.sceneId);
+
+		if (!element || !sourceSceneInstance || !targetSceneInstance) {
+			return true;
+		}
+
+		sourceSceneInstance.removeElement(element);
+		targetSceneInstance.addElement(element, target.index);
+		return true;
+	}
+
+	updateScenes((currentScenes) =>
+		currentScenes.map((scene) => {
+			if (scene.id !== source.sceneId) {
+				return scene;
+			}
+
+			if (source.type === "display") {
+				return {
+					...scene,
+					displays: moveAtIndex(scene.displays, source.index, target.index),
+				};
+			}
+
+			return {
+				...scene,
+				effects: moveAtIndex(scene.effects, source.index, target.index),
+			};
+		}),
+	);
 
 	const element = stage.getStageElementById(sourceId);
 	if (!element) {
 		return true;
 	}
 
-	const offset = targetIndex - sourceIndex;
+	const offset = target.index - source.index;
 	const direction = Math.sign(offset);
 	const distance = Math.abs(offset);
 
