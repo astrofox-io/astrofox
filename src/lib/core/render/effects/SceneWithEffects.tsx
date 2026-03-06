@@ -26,6 +26,11 @@ export function SceneWithEffects({
 	children,
 }) {
 	const gl = useThree((state) => state.gl);
+	const onTextureRef = React.useRef(onTexture);
+
+	React.useEffect(() => {
+		onTextureRef.current = onTexture;
+	}, [onTexture]);
 
 	// Portal scene for children (2D + 3D displays)
 	const sceneObj = React.useMemo(() => new ThreeScene(), []);
@@ -70,9 +75,9 @@ export function SceneWithEffects({
 
 	React.useEffect(() => {
 		return () => {
-			onTexture?.(null);
+			onTextureRef.current?.(null);
 		};
-	}, [onTexture]);
+	}, []);
 
 	// Rebuild passes when effect list or properties change
 	const effectKey = JSON.stringify(
@@ -171,12 +176,16 @@ export function SceneWithEffects({
 		gl.autoClear = prevAutoClear;
 
 		// Step 3: Update output mesh with composited result
-		onTexture?.(chain.inputBuffer.texture);
+		onTextureRef.current?.(chain.inputBuffer.texture);
 
 		if (outputToScreen && meshRef.current) {
-			meshRef.current.material.map = chain.inputBuffer.texture;
+			const material = meshRef.current.material;
+			if (material.map !== chain.inputBuffer.texture) {
+				material.map = chain.inputBuffer.texture;
+				material.needsUpdate = true;
+			}
 		}
-	}, 1);
+	});
 
 	return (
 		<>
@@ -186,6 +195,7 @@ export function SceneWithEffects({
 					<planeGeometry args={[width, height]} />
 					<meshBasicMaterial
 						transparent={true}
+						premultipliedAlpha={true}
 						toneMapped={false}
 						depthTest={false}
 						depthWrite={false}

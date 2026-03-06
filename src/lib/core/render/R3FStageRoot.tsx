@@ -2,7 +2,7 @@
 import { BLANK_IMAGE } from "@/app/constants";
 import React from "react";
 import { Color } from "three";
-import { SceneWithEffects } from "./effects";
+import { SceneComposite, SceneWithEffects } from "./effects";
 import { GeometryDisplayLayer3D, PerspectiveScene3D } from "./geometry";
 import {
 	BarSpectrumDisplayLayer,
@@ -13,6 +13,14 @@ import {
 	VideoDisplayLayer,
 	WaveSpectrumDisplayLayer,
 } from "./layers";
+
+const NEUTRAL_SCENE_PROPS = {
+	sceneOpacity: 1,
+	sceneBlendMode: "Normal",
+	sceneMask: false,
+	sceneInverse: false,
+	sceneMaskCombine: "replace",
+};
 
 export default function R3FStageRoot({
 	width,
@@ -26,30 +34,21 @@ export default function R3FStageRoot({
 		() => new Color(backgroundColor),
 		[backgroundColor],
 	);
+	const sceneLayersRef = React.useRef(new Map());
 
 	let order = 1;
-	const sceneElements = [];
+	let sceneOrder = 0;
+	const sceneProducers = [];
 
 	for (const scene of scenes || []) {
 		if (!scene?.enabled) {
 			continue;
 		}
 
-		const sceneOpacity = Number(scene.properties?.opacity ?? 1);
-		const sceneBlendMode = scene.properties?.blendMode || "Normal";
-		const sceneMask = Boolean(scene.properties?.mask);
-		const sceneInverse = Boolean(scene.properties?.inverse);
-		const enabledDisplayCount = (scene.displays || []).filter(
-			(display) => display?.enabled,
-		).length;
-		const sceneMaskCombine =
-			sceneMask && !sceneInverse && enabledDisplayCount > 1 ? "add" : "replace";
-
 		const sceneEffects = (scene.effects || []).filter((e) => e?.enabled);
 		const scene2D = [];
 		const scene3D = [];
 		let scene3DOrder = order; // track first 3D display's order for FBO renderOrder
-		let sceneLastOrder = order; // track last display's order for SceneWithEffects renderOrder
 
 		for (const display of scene.displays || []) {
 			if (!display?.enabled) {
@@ -65,11 +64,7 @@ export default function R3FStageRoot({
 							key={display.id}
 							display={display}
 							order={order}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -80,11 +75,7 @@ export default function R3FStageRoot({
 							key={display.id}
 							display={display}
 							order={order}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -95,11 +86,7 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -110,11 +97,7 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -125,11 +108,7 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -140,11 +119,7 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -155,11 +130,7 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
-							sceneMaskCombine={sceneMaskCombine}
+							{...NEUTRAL_SCENE_PROPS}
 						/>,
 					);
 					break;
@@ -171,17 +142,16 @@ export default function R3FStageRoot({
 							display={display}
 							order={order}
 							frameData={frameData}
-							sceneOpacity={sceneOpacity}
-							sceneBlendMode={sceneBlendMode}
-							sceneMask={sceneMask}
-							sceneInverse={sceneInverse}
+							sceneOpacity={1}
+							sceneBlendMode="Normal"
+							sceneMask={false}
+							sceneInverse={false}
 						/>,
 					);
 					break;
 				default:
 					break;
 			}
-			sceneLastOrder = order;
 			order += 1;
 		}
 
@@ -200,27 +170,44 @@ export default function R3FStageRoot({
 			</React.Fragment>
 		);
 
-		if (sceneEffects.length > 0) {
-			sceneElements.push(
-				<SceneWithEffects
-					key={scene.id}
-					width={width}
-					height={height}
-					effects={sceneEffects}
-					renderOrder={sceneLastOrder}
-				>
-					{displayContent}
-				</SceneWithEffects>,
-			);
-		} else {
-			sceneElements.push(displayContent);
-		}
+		const currentSceneOrder = sceneOrder;
+		sceneOrder += 1;
+
+		sceneProducers.push(
+			<SceneWithEffects
+				key={scene.id}
+				width={width}
+				height={height}
+				effects={sceneEffects}
+				outputToScreen={false}
+				onTexture={(texture) => {
+					if (!texture) {
+						sceneLayersRef.current.delete(scene.id);
+						return;
+					}
+
+					sceneLayersRef.current.set(scene.id, {
+						order: currentSceneOrder,
+						properties: scene.properties || {},
+						texture,
+					});
+				}}
+			>
+				{displayContent}
+			</SceneWithEffects>,
+		);
 	}
 
 	return (
 		<>
 			<primitive key="background" attach="background" object={bgColor} />
-			{sceneElements}
+			{sceneProducers}
+			<SceneComposite
+				width={width}
+				height={height}
+				backgroundColor={backgroundColor}
+				sceneLayersRef={sceneLayersRef}
+			/>
 		</>
 	);
 }

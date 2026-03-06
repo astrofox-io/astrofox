@@ -154,6 +154,7 @@ export function SceneComposite({
 	}, [width, height]);
 
 	const finalMaterialRef = React.useRef();
+	const finalMeshRef = React.useRef();
 	const tempColor = React.useRef(new Color());
 
 	useFrame(() => {
@@ -176,6 +177,10 @@ export function SceneComposite({
 		const sceneLayers = [...sceneLayersRef.current.values()]
 			.filter((layer) => layer?.texture)
 			.sort((a, b) => a.order - b.order);
+
+		if (finalMeshRef.current) {
+			finalMeshRef.current.visible = sceneLayers.length > 0;
+		}
 
 		for (const layer of sceneLayers) {
 			const properties = layer.properties || {};
@@ -204,12 +209,17 @@ export function SceneComposite({
 		gl.autoClear = prevAutoClear;
 
 		if (finalMaterialRef.current) {
-			finalMaterialRef.current.map = inputBufferRef.current.texture;
+			const nextMap =
+				sceneLayers.length > 0 ? inputBufferRef.current.texture : null;
+			if (finalMaterialRef.current.map !== nextMap) {
+				finalMaterialRef.current.map = nextMap;
+				finalMaterialRef.current.needsUpdate = true;
+			}
 		}
-	}, 2);
+	});
 
 	return (
-		<mesh renderOrder={renderOrder}>
+		<mesh ref={finalMeshRef} renderOrder={renderOrder} visible={false}>
 			<planeGeometry args={[width, height]} />
 			<meshBasicMaterial
 				ref={finalMaterialRef}

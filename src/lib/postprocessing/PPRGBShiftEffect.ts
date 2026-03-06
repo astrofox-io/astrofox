@@ -12,7 +12,8 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 	vec4 cg = texture2D(inputBuffer, uv);
 	vec4 cb = texture2D(inputBuffer, uv - dir);
 
-	outputColor = vec4(cr.r, cg.g, cb.b, (cr.a + cg.a + cb.a) / 3.0);
+	float alpha = min(1.0, cr.a + cg.a + cb.a);
+	outputColor = vec4(cr.r, cg.g, cb.b, alpha);
 }
 `;
 
