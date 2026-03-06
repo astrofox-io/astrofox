@@ -11,6 +11,7 @@ interface LayerProps {
   icon?: LucideIcon | null;
   className?: string;
   active?: boolean;
+  dragging?: boolean;
   dragOver?: boolean;
   enabled?: boolean;
   onLayerClick?: (id: string) => void;
@@ -28,6 +29,7 @@ export default function Layer({
   icon = null,
   className,
   active = false,
+  dragging = false,
   dragOver = false,
   enabled = true,
   onLayerClick,
@@ -81,6 +83,7 @@ export default function Layer({
         {
           "bg-neutral-800": edit,
           "bg-primary": active && !edit,
+          "opacity-25": dragging && !edit,
           "ring-1 ring-primary": dragOver && !edit,
         },
       )}

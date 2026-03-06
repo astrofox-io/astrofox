@@ -28,6 +28,11 @@
     ::backdrop {
         border-color: var(--color-neutral-800);
     }
+
+    body.layers-dragging,
+    body.layers-dragging * {
+        cursor: grabbing !important;
+    }
 }
 
 /* less-migrated-keyframes */

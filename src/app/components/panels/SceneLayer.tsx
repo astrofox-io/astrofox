@@ -35,6 +35,7 @@ interface SceneLayerProps {
     effects: SceneElement[];
   };
   activeElementId: string | null;
+  dragSourceId?: string | null;
   dragOverId?: string | null;
   onLayerClick?: (id: string) => void;
   onLayerUpdate?: (id: string, prop: string, value: unknown) => void;
@@ -48,6 +49,7 @@ interface SceneLayerProps {
 export default function SceneLayer({
   scene,
   activeElementId,
+  dragSourceId = null,
   dragOverId = null,
   onLayerClick,
   onLayerUpdate,
@@ -73,6 +75,7 @@ export default function SceneLayer({
       className={"rounded ml-4"}
       enabled={enabled}
       active={id === activeElementId}
+      dragging={id === dragSourceId}
       dragOver={id === dragOverId}
       onLayerClick={onLayerClick}
       onLayerUpdate={onLayerUpdate}
@@ -93,6 +96,7 @@ export default function SceneLayer({
         icon={Picture}
         enabled={enabled}
         active={id === activeElementId}
+        dragging={id === dragSourceId}
         dragOver={id === dragOverId}
         onLayerClick={onLayerClick}
         onLayerUpdate={onLayerUpdate}

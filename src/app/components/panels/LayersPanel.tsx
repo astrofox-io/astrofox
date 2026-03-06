@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import classNames from "classnames";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface SceneElement {
   id: string;
@@ -42,6 +42,18 @@ export default function LayersPanel() {
 
   const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
   const lastSceneId = sortedScenes[sortedScenes.length - 1]?.id;
+
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document.body.classList.toggle("layers-dragging", Boolean(dragSourceId));
+
+    return () => {
+      document.body.classList.remove("layers-dragging");
+    };
+  }, [dragSourceId]);
 
   const activeScene = useMemo(() => {
     return scenes.reduce((memo: SceneData | undefined, scene: SceneData) => {
@@ -247,7 +259,17 @@ export default function LayersPanel() {
   }
 
   return (
-    <div className={"flex flex-col flex-1 relative overflow-auto"}>
+    <div
+      className={"flex flex-col flex-1 relative overflow-auto"}
+      onDragOver={(e) => {
+        if (!dragSourceId) {
+          return;
+        }
+
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      }}
+    >
       <div className={"flex p-1 gap-1"}>
         <div
           className={classNames(
@@ -274,6 +296,7 @@ export default function LayersPanel() {
             key={scene.id}
             scene={scene}
             activeElementId={activeElementId}
+            dragSourceId={dragSourceId}
             dragOverId={dragOverId}
             onLayerClick={handleLayerClick}
             onLayerUpdate={handleLayerUpdate}
