@@ -1,6 +1,7 @@
+import { BLANK_IMAGE } from "@/app/constants";
 import Display from "@/lib/core/Display";
 import { isDefined } from "@/lib/utils/array";
-import { BLANK_IMAGE } from "@/app/constants";
+import { fitMediaWithinBounds } from "@/lib/utils/media";
 
 interface ImageDisplayInstance {
 	hasImage: boolean;
@@ -26,6 +27,14 @@ const maxX = (display: ImageDisplayInstance) =>
 	disabled(display) ? 0 : maxWidth(display);
 const maxY = (display: ImageDisplayInstance) =>
 	disabled(display) ? 0 : maxHeight(display);
+const getFittedSize = (
+	display: ImageDisplayInstance,
+	mediaWidth: number,
+	mediaHeight: number,
+) => {
+	const { width, height } = display.scene.getSize();
+	return fitMediaWithinBounds(mediaWidth, mediaHeight, width, height);
+};
 
 export default class ImageDisplay extends Display {
 	declare image: HTMLImageElement;
@@ -137,6 +146,7 @@ export default class ImageDisplay extends Display {
 		const props = this.properties as Record<string, unknown>;
 		const { src, width: w, height: h, fixed: f } = props;
 		let image: HTMLImageElement | null = null;
+		let nextProperties = properties;
 		const srcChanged = typeof inputSrc === "string" && inputSrc !== src;
 
 		// If we get an HTMLImageElement
@@ -145,17 +155,22 @@ export default class ImageDisplay extends Display {
 
 			if (image.src === BLANK_IMAGE) {
 				// Image reset
-				properties = { ...ImageDisplay.config.defaultProperties };
+				nextProperties = { ...ImageDisplay.config.defaultProperties };
 			} else if (image.src !== src) {
 				// New image
-				properties = {
+				const fittedSize = getFittedSize(
+					this,
+					image.naturalWidth,
+					image.naturalHeight,
+				);
+				nextProperties = {
 					src: image.src,
-					width: image.naturalWidth,
-					height: image.naturalHeight,
+					width: fittedSize.width,
+					height: fittedSize.height,
 					opacity: 1,
 				};
 			} else {
-				properties.src = image.src;
+				nextProperties.src = image.src;
 			}
 		}
 
@@ -170,30 +185,33 @@ export default class ImageDisplay extends Display {
 
 			if (!isDefined(width, height)) {
 				if ((w as number) > (h as number)) {
-					properties.height = Math.round((w as number) * (1 / ratio)) || 0;
-					properties.width = Math.round((properties.height as number) * ratio);
+					nextProperties.height = Math.round((w as number) * (1 / ratio)) || 0;
+					nextProperties.width = Math.round(
+						(nextProperties.height as number) * ratio,
+					);
 				} else {
-					properties.width = Math.round((h as number) * ratio);
-					properties.height =
-						Math.round((properties.width as number) * (1 / ratio)) || 0;
+					nextProperties.width = Math.round((h as number) * ratio);
+					nextProperties.height =
+						Math.round((nextProperties.width as number) * (1 / ratio)) || 0;
 				}
 			}
 
 			if (width) {
-				properties.height = Math.round((width as number) * (1 / ratio)) || 0;
+				nextProperties.height =
+					Math.round((width as number) * (1 / ratio)) || 0;
 			}
 			if (height) {
-				properties.width = Math.round((height as number) * ratio);
+				nextProperties.width = Math.round((height as number) * ratio);
 			}
 		}
 
 		const nextSrcChanged =
-			typeof properties.src === "string" && properties.src !== src;
+			typeof nextProperties.src === "string" && nextProperties.src !== src;
 
-		const changed = super.update(properties);
+		const changed = super.update(nextProperties);
 
 		if (changed) {
-			if (nextSrcChanged && properties.src !== BLANK_IMAGE) {
+			if (nextSrcChanged && nextProperties.src !== BLANK_IMAGE) {
 				if (image && image.naturalWidth > 0 && image.naturalHeight > 0) {
 					this.image = image;
 				} else {
@@ -204,8 +222,13 @@ export default class ImageDisplay extends Display {
 						const p = this.properties as Record<string, unknown>;
 						const nextProps: Record<string, unknown> = {};
 						if (!p.width && !p.height) {
-							nextProps.width = nextImage.naturalWidth;
-							nextProps.height = nextImage.naturalHeight;
+							const fittedSize = getFittedSize(
+								this,
+								nextImage.naturalWidth,
+								nextImage.naturalHeight,
+							);
+							nextProps.width = fittedSize.width;
+							nextProps.height = fittedSize.height;
 						}
 						if (p.opacity === 0) {
 							nextProps.opacity = 1;
@@ -215,7 +238,7 @@ export default class ImageDisplay extends Display {
 							super.update(nextProps);
 						}
 					};
-					nextImage.src = properties.src as string;
+					nextImage.src = nextProperties.src as string;
 				}
 			}
 		}

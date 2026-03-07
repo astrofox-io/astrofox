@@ -1,6 +1,7 @@
+import { BLANK_IMAGE } from "@/app/constants";
 import Display from "@/lib/core/Display";
 import { isDefined } from "@/lib/utils/array";
-import { BLANK_IMAGE } from "@/app/constants";
+import { fitMediaWithinBounds } from "@/lib/utils/media";
 
 interface VideoDisplayInstance {
 	hasVideo: boolean;
@@ -26,6 +27,14 @@ const maxX = (display: VideoDisplayInstance) =>
 	disabled(display) ? 0 : maxWidth(display);
 const maxY = (display: VideoDisplayInstance) =>
 	disabled(display) ? 0 : maxHeight(display);
+const getFittedSize = (
+	display: VideoDisplayInstance,
+	mediaWidth: number,
+	mediaHeight: number,
+) => {
+	const { width, height } = display.scene.getSize();
+	return fitMediaWithinBounds(mediaWidth, mediaHeight, width, height);
+};
 
 export default class VideoDisplay extends Display {
 	declare video: HTMLVideoElement;
@@ -247,8 +256,13 @@ export default class VideoDisplay extends Display {
 
 						const nextProps: Record<string, unknown> = {};
 						if (!props.width && !props.height) {
-							nextProps.width = this.video.videoWidth;
-							nextProps.height = this.video.videoHeight;
+							const fittedSize = getFittedSize(
+								this,
+								this.video.videoWidth,
+								this.video.videoHeight,
+							);
+							nextProps.width = fittedSize.width;
+							nextProps.height = fittedSize.height;
 						}
 						if (props.opacity === 0) {
 							nextProps.opacity = 1;
