@@ -1,5 +1,5 @@
-import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import { cn } from "@/lib/utils";
+import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import { useEffect, useRef, useState } from "react";
 
 interface RangeInputProps {
@@ -81,6 +81,8 @@ export default function RangeInput({
 	}
 
 	const currentValue = buffered ? bufferedValue : value;
+	const effectiveHideFill = hideFill || disabled;
+	const effectiveHideThumb = hideThumb || disabled;
 
 	return (
 		<SliderPrimitive.Root
@@ -95,7 +97,7 @@ export default function RangeInput({
 		>
 			<SliderPrimitive.Control className="flex w-full items-center h-5">
 				<SliderPrimitive.Track className="relative h-1 w-full rounded bg-neutral-700">
-					{!hideFill && (
+					{!effectiveHideFill && (
 						<SliderPrimitive.Indicator
 							className={cn("h-full rounded bg-primary", {
 								"direction-rtl": fillStyle === "right",
@@ -109,8 +111,9 @@ export default function RangeInput({
 						"block rounded-full bg-neutral-100 border border-border-input shadow-[0_2px_5px_rgba(0,0,0,0.3)]",
 						smallThumb ? "size-2.5" : "size-3.5",
 						{
-							invisible: hideThumb,
-							"group-hover:visible": hideThumb && showThumbOnHover,
+							invisible: effectiveHideThumb,
+							"group-hover:visible":
+								effectiveHideThumb && showThumbOnHover && !disabled,
 						},
 					)}
 				/>

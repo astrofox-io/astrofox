@@ -1,200 +1,231 @@
-import { ignoreEvents } from "@/lib/utils/react";
 import useAudioStore, { loadAudioFile } from "@/app/actions/audio";
 import useStage from "@/app/actions/stage";
 import Spinner from "@/app/components/interface/Spinner";
-import { analyzer, renderBackend } from "@/app/global";
+import { renderBackend } from "@/app/global";
+import { ignoreEvents } from "@/lib/utils/react";
 import { Download } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
 
+function isFileDrag(event: React.DragEvent) {
+	const { types } = event.dataTransfer;
+	return Array.from(types || []).includes("Files");
+}
+
+function acceptStageDrag(event: React.DragEvent) {
+	if (!isFileDrag(event)) {
+		return false;
+	}
+
+	ignoreEvents(event);
+	event.dataTransfer.dropEffect = "copy";
+	return true;
+}
+
 export default function Stage() {
-  const [width, height, backgroundColor, zoom] = useStage(
-    (state) => [state.width, state.height, state.backgroundColor, state.zoom],
-    shallow,
-  );
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const initProps = useRef({ width, height, backgroundColor });
-  const loading = useAudioStore((state) => state.loading);
-  const [dropLoading, setDropLoading] = useState(false);
-  const [dragOverStage, setDragOverStage] = useState(false);
-  const dragDepth = useRef(0);
+	const [width, height, backgroundColor, zoom] = useStage(
+		(state) => [state.width, state.height, state.backgroundColor, state.zoom],
+		shallow,
+	);
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const initProps = useRef({ width, height, backgroundColor });
+	const loading = useAudioStore((state) => state.loading);
+	const [dropLoading, setDropLoading] = useState(false);
+	const [dragOverStage, setDragOverStage] = useState(false);
+	const dragDepth = useRef(0);
 
-  useEffect(() => {
-    const { width, height, backgroundColor } = initProps.current;
+	useEffect(() => {
+		const { width, height, backgroundColor } = initProps.current;
 
-    renderBackend.init({
-      canvas: canvas.current,
-      width,
-      height,
-      backgroundColor,
-    });
+		renderBackend.init({
+			canvas: canvas.current,
+			width,
+			height,
+			backgroundColor,
+		});
 
-    return () => {
-      renderBackend.dispose();
-    };
-  }, []);
+		return () => {
+			renderBackend.dispose();
+		};
+	}, []);
 
-  async function handleDrop(e: React.DragEvent) {
-    ignoreEvents(e);
-    dragDepth.current = 0;
-    setDragOverStage(false);
+	async function handleDrop(e: React.DragEvent) {
+		if (!acceptStageDrag(e)) {
+			return;
+		}
 
-    const file = e.dataTransfer.files[0];
+		dragDepth.current = 0;
+		setDragOverStage(false);
 
-    if (file) {
-      setDropLoading(true);
+		const file = e.dataTransfer.files[0];
 
-      // Force one paint so the overlay spinner can appear immediately.
-      await new Promise<void>((resolve) => {
-        if (typeof window !== "undefined" && window.requestAnimationFrame) {
-          window.requestAnimationFrame(() => resolve());
-          return;
-        }
+		if (file) {
+			setDropLoading(true);
 
-        setTimeout(() => resolve(), 0);
-      });
+			// Force one paint so the overlay spinner can appear immediately.
+			await new Promise<void>((resolve) => {
+				if (typeof window !== "undefined" && window.requestAnimationFrame) {
+					window.requestAnimationFrame(() => resolve());
+					return;
+				}
 
-      try {
-        await loadAudioFile(file, true);
-      } finally {
-        setDropLoading(false);
-      }
-    }
-  }
+				setTimeout(() => resolve(), 0);
+			});
 
-  function handleStageDragEnter(e: React.DragEvent) {
-    ignoreEvents(e);
-    dragDepth.current += 1;
-    setDragOverStage(true);
-  }
+			try {
+				await loadAudioFile(file, true);
+			} finally {
+				setDropLoading(false);
+			}
+		}
+	}
 
-  function handleStageDragOver(e: React.DragEvent) {
-    ignoreEvents(e);
-    if (!dragOverStage) {
-      setDragOverStage(true);
-    }
-  }
+	function handleStageDragEnter(e: React.DragEvent) {
+		if (!acceptStageDrag(e)) {
+			return;
+		}
 
-  function handleStageDragLeave(e: React.DragEvent) {
-    ignoreEvents(e);
-    dragDepth.current = Math.max(0, dragDepth.current - 1);
+		dragDepth.current += 1;
+		setDragOverStage(true);
+	}
 
-    if (dragDepth.current === 0) {
-      setDragOverStage(false);
-    }
-  }
+	function handleStageDragOver(e: React.DragEvent) {
+		if (!acceptStageDrag(e)) {
+			return;
+		}
 
-  const style = {
-    width: `${width * zoom}px`,
-    height: `${height * zoom}px`,
-  };
+		if (!dragOverStage) {
+			setDragOverStage(true);
+		}
+	}
 
-  return (
-    <div
-      className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}
-      onDrop={handleDrop}
-      onDragOver={handleStageDragOver}
-      onDragEnter={handleStageDragEnter}
-      onDragLeave={handleStageDragLeave}
-    >
-      <DragOverlay show={dragOverStage} />
-      <div className={"m-auto"}>
-        <div
-          className={
-            "relative flex flex-col justify-center shadow-xl m-5 z-50 bg-black"
-          }
-        >
-          <canvas
-            ref={canvas}
-            style={style}
-            onDrop={handleDrop}
-            onDragOver={handleStageDragOver}
-            onDragEnter={handleStageDragEnter}
-            onDragLeave={handleStageDragLeave}
-          />
-          <Loading show={loading || dropLoading} />
-        </div>
-      </div>
-    </div>
-  );
+	function handleStageDragLeave(e: React.DragEvent) {
+		if (!acceptStageDrag(e)) {
+			return;
+		}
+
+		dragDepth.current = Math.max(0, dragDepth.current - 1);
+
+		if (dragDepth.current === 0) {
+			setDragOverStage(false);
+		}
+	}
+
+	const style = {
+		width: `${width * zoom}px`,
+		height: `${height * zoom}px`,
+	};
+
+	return (
+		<div
+			className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}
+			onDropCapture={handleDrop}
+			onDragOverCapture={handleStageDragOver}
+			onDragEnterCapture={handleStageDragEnter}
+			onDragLeaveCapture={handleStageDragLeave}
+			onDrop={handleDrop}
+			onDragOver={handleStageDragOver}
+			onDragEnter={handleStageDragEnter}
+			onDragLeave={handleStageDragLeave}
+		>
+			<DragOverlay show={dragOverStage} />
+			<div className={"m-auto"}>
+				<div
+					className={
+						"relative flex flex-col justify-center shadow-xl m-5 z-50 bg-black"
+					}
+				>
+					<canvas
+						ref={canvas}
+						style={style}
+						onDrop={handleDrop}
+						onDragOver={handleStageDragOver}
+						onDragEnter={handleStageDragEnter}
+						onDragLeave={handleStageDragLeave}
+					/>
+					<Loading show={loading || dropLoading} />
+				</div>
+			</div>
+		</div>
+	);
 }
 
 interface DragOverlayProps {
-  show?: boolean;
+	show?: boolean;
 }
 
 const DragOverlay = ({ show = false }: DragOverlayProps) => {
-  if (!show) {
-    return null;
-  }
+	if (!show) {
+		return null;
+	}
 
-  return (
-    <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
-      <div className="flex h-44 w-44 items-center justify-center rounded-full border border-primary/40 bg-black/55 shadow-2xl">
-        <Download className="h-24 w-24 text-primary" strokeWidth={1.8} />
-      </div>
-    </div>
-  );
+	return (
+		<div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+			<div className="flex h-44 w-44 items-center justify-center rounded-full border border-primary/40 bg-black/55 shadow-2xl">
+				<Download className="h-24 w-24 text-primary" strokeWidth={1.8} />
+			</div>
+		</div>
+	);
 };
 
 interface LoadingProps {
-  show?: boolean;
+	show?: boolean;
 }
 
 const Loading = ({ show }: LoadingProps) => {
-  const [visible, setVisible] = useState(show);
-  const [leaving, setLeaving] = useState(false);
-  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [visible, setVisible] = useState(show);
+	const [leaving, setLeaving] = useState(false);
+	const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (leaveTimer.current) {
-      window.clearTimeout(leaveTimer.current as unknown as number);
-      leaveTimer.current = null;
-    }
+	useEffect(() => {
+		if (leaveTimer.current) {
+			window.clearTimeout(leaveTimer.current as unknown as number);
+			leaveTimer.current = null;
+		}
 
-    if (show) {
-      setVisible(true);
-      setLeaving(false);
-      return undefined;
-    }
+		if (show) {
+			setVisible(true);
+			setLeaving(false);
+			return undefined;
+		}
 
-    if (!visible) {
-      return undefined;
-    }
+		if (!visible) {
+			return undefined;
+		}
 
-    setLeaving(true);
-    leaveTimer.current = setTimeout(() => {
-      setVisible(false);
-      setLeaving(false);
-      leaveTimer.current = null;
-    }, 220);
+		setLeaving(true);
+		leaveTimer.current = setTimeout(() => {
+			setVisible(false);
+			setLeaving(false);
+			leaveTimer.current = null;
+		}, 220);
 
-    return () => {
-      if (leaveTimer.current) {
-        window.clearTimeout(leaveTimer.current as unknown as number);
-        leaveTimer.current = null;
-      }
-    };
-  }, [show, visible]);
+		return () => {
+			if (leaveTimer.current) {
+				window.clearTimeout(leaveTimer.current as unknown as number);
+				leaveTimer.current = null;
+			}
+		};
+	}, [show, visible]);
 
-  if (!visible) {
-    return null;
-  }
+	if (!visible) {
+		return null;
+	}
 
-  return (
-    <div
-      className={
-        "absolute inset-0 z-4 flex items-center justify-center pointer-events-none"
-      }
-    >
-      <div
-        className={`${"[animation:stage-loader-pop_220ms_ease-out]"} ${
-          leaving ? "[animation:stage-loader-out_220ms_ease-in_forwards]" : ""
-        }`}
-      >
-        <Spinner size={96} />
-      </div>
-    </div>
-  );
+	return (
+		<div
+			className={
+				"absolute inset-0 z-4 flex items-center justify-center pointer-events-none"
+			}
+		>
+			<div
+				className={`${"[animation:stage-loader-pop_220ms_ease-out]"} ${
+					leaving ? "[animation:stage-loader-out_220ms_ease-in_forwards]" : ""
+				}`}
+			>
+				<Spinner size={96} />
+			</div>
+		</div>
+	);
 };
