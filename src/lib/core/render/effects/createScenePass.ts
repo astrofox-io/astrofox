@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { normalize } from "@/lib/utils/math";
-import { DataTexture, FloatType, MathUtils, RGBFormat } from "three";
 import ShaderPass from "../composer/ShaderPass";
 import { toRadians } from "../constants";
 import GaussianBlurPass from "./passes/GaussianBlurPass";
@@ -11,7 +10,6 @@ import CircularBlurShader from "./shaders/CircularBlurShader";
 import ColorHalftoneShader from "./shaders/ColorHalftoneShader";
 import DistortionShader from "./shaders/DistortionShader";
 import DotScreenShader from "./shaders/DotScreenShader";
-import GlitchShader from "./shaders/GlitchShader";
 import GlowShader from "./shaders/GlowShader";
 import HexagonShader from "./shaders/HexagonShader";
 import KaleidoscopeShader from "./shaders/KaleidoscopeShader";
@@ -32,22 +30,6 @@ function attachUpdater(pass, update) {
 	pass.__updateScenePass = update;
 	update();
 	return pass;
-}
-
-function createGlitchHeightmap(size) {
-	const data = new Float32Array(size * size * 3);
-	const length = size * size;
-
-	for (let i = 0; i < length; i += 1) {
-		const value = MathUtils.randFloat(0, 1);
-		data[i * 3] = value;
-		data[i * 3 + 1] = value;
-		data[i * 3 + 2] = value;
-	}
-
-	const texture = new DataTexture(data, size, size, RGBFormat, FloatType);
-	texture.needsUpdate = true;
-	return texture;
 }
 
 export function createScenePass(effectConfig, width, height) {
@@ -229,48 +211,6 @@ export function createScenePass(effectConfig, width, height) {
 					spacing: Number(props.spacing || 10),
 					size: Number(props.size || 4),
 					blur: Number(props.blur || 4),
-				});
-			});
-		}
-		case "GlitchEffect": {
-			const pass = new ShaderPass(GlitchShader);
-			const displacementTexture = createGlitchHeightmap(64);
-			pass.enabled = effectConfig.enabled !== false;
-			pass.setUniforms({ displacementTexture });
-			const originalDispose = pass.dispose?.bind(pass);
-			pass.dispose = () => {
-				displacementTexture.dispose();
-				originalDispose?.();
-			};
-			return attachUpdater(pass, (frameData) => {
-				const amount = Number(props.strength ?? props.amount ?? 0.3);
-				const mode = props.mode || "Sporadic";
-				const columns = Number(props.columns ?? 0.05);
-				const ratio = Number(props.ratio ?? 0.85);
-				if (!frameData?.hasUpdate) {
-					return;
-				}
-
-				if (mode !== "Constant" && Math.random() < ratio) {
-					pass.setUniforms({
-						shift: 0,
-						seed: 0,
-						seed_x: 0,
-						seed_y: 0,
-						col_s: 0,
-					});
-					return;
-				}
-
-				pass.setUniforms({
-					shift: (Math.random() / 90) * amount,
-					angle: MathUtils.randFloat(-Math.PI, Math.PI) * amount,
-					seed: Math.random() * amount,
-					seed_x: MathUtils.randFloat(-0.3, 0.3) * amount,
-					seed_y: MathUtils.randFloat(-0.3, 0.3) * amount,
-					distortion_x: MathUtils.randFloat(0, 1),
-					distortion_y: MathUtils.randFloat(0, 1),
-					col_s: columns,
 				});
 			});
 		}

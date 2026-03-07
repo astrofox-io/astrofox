@@ -15,6 +15,7 @@ import {
 import {
 	BlendFunction,
 	GlitchMode,
+	ASCIIEffect as RawASCIIEffect,
 	BloomEffect as RawBloomEffect,
 	BrightnessContrastEffect as RawBrightnessContrastEffect,
 	ColorAverageEffect as RawColorAverageEffect,
@@ -30,7 +31,6 @@ import {
 	TiltShiftEffect as RawTiltShiftEffect,
 	ToneMappingEffect as RawToneMappingEffect,
 	VignetteEffect as RawVignetteEffect,
-	ASCIIEffect as RawASCIIEffect,
 } from "postprocessing";
 import { Vector2 } from "three";
 import { toRadians } from "../constants";
@@ -71,7 +71,10 @@ export function createRawEffect(effectConfig, width, height) {
 		case "DotScreenEffect": {
 			const scale = Number(props.scale || 0);
 			const angle = Number(props.angle || 0);
-			return new RawDotScreenEffect({ scale: 2 - scale * 2, angle: toRadians(angle) });
+			return new RawDotScreenEffect({
+				scale: 2 - scale * 2,
+				angle: toRadians(angle),
+			});
 		}
 		case "RGBShiftEffect": {
 			const normalizedOffset =
@@ -94,17 +97,28 @@ export function createRawEffect(effectConfig, width, height) {
 				time: Number(effectConfig.time || 0),
 			});
 		case "GlitchEffect": {
-			const mode =
-				props.mode === "Constant"
-					? GlitchMode.CONSTANT_WILD
-					: GlitchMode.SPORADIC;
 			const strength = Number(props.strength ?? 0.3);
-			return new RawGlitchEffect({
-				mode,
+			const effect = new RawGlitchEffect({
+				mode:
+					props.mode === "Constant"
+						? GlitchMode.CONSTANT_WILD
+						: GlitchMode.SPORADIC,
 				strength: new Vector2(strength * 0.5, strength),
 				columns: Number(props.columns ?? 0.05),
 				ratio: Number(props.ratio ?? 0.85),
 			});
+			effect.__updateRawEffect = (frameData) => {
+				const nextStrength = Number(props.strength ?? 0.3);
+				effect.strength.set(nextStrength * 0.5, nextStrength);
+				effect.columns = Number(props.columns ?? 0.05);
+				effect.ratio = Number(props.ratio ?? 0.85);
+				effect.mode = frameData?.hasUpdate
+					? props.mode === "Constant"
+						? GlitchMode.CONSTANT_WILD
+						: GlitchMode.SPORADIC
+					: GlitchMode.DISABLED;
+			};
+			return effect;
 		}
 		case "ColorHalftoneEffect":
 			return new PPColorHalftoneEffect({
@@ -135,7 +149,13 @@ export function createRawEffect(effectConfig, width, height) {
 					amount: Number(props.amount || 0),
 				});
 			}
-			const blurTypeMap = { Box: 0, Circular: 1, Triangle: 3, Zoom: 4, Lens: 5 };
+			const blurTypeMap = {
+				Box: 0,
+				Circular: 1,
+				Triangle: 3,
+				Zoom: 4,
+				Lens: 5,
+			};
 			return new PPBlurEffect({
 				amount: Number(props.amount || 0),
 				blurType: blurTypeMap[blurType] ?? 0,

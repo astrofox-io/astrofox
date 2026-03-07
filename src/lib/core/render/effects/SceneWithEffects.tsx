@@ -86,6 +86,7 @@ export function SceneWithEffects({
 		effects.map((e) => ({ id: e.id, name: e.name, properties: e.properties })),
 	);
 	const passesRef = React.useRef([]);
+	const rawEffectsRef = React.useRef([]);
 	React.useEffect(() => {
 		const builtPasses = [];
 		const rawEffects = [];
@@ -161,6 +162,7 @@ export function SceneWithEffects({
 
 		const previousPasses = passesRef.current;
 		passesRef.current = builtPasses;
+		rawEffectsRef.current = rawEffects;
 		for (const pass of previousPasses) {
 			if (!builtPasses.includes(pass)) {
 				try {
@@ -184,6 +186,13 @@ export function SceneWithEffects({
 				pass.__updateScenePass?.(frameData);
 			} catch {
 				// Ignore live uniform update errors and continue rendering.
+			}
+		}
+		for (const effect of rawEffectsRef.current) {
+			try {
+				effect.__updateRawEffect?.(frameData);
+			} catch {
+				// Ignore live raw effect update errors and continue rendering.
 			}
 		}
 
