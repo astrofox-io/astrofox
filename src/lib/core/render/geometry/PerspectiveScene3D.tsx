@@ -1,6 +1,6 @@
 // @ts-nocheck
-import React from "react";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
+import React from "react";
 import {
 	HalfFloatType,
 	LinearFilter,
@@ -12,18 +12,28 @@ import {
 
 const PERSPECTIVE_FOV = 50;
 
-export function PerspectiveScene3D({ width, height, renderOrder = 0, children }) {
+export function PerspectiveScene3D({
+	width,
+	height,
+	renderOrder = 0,
+	children,
+}) {
 	const gl = useThree((state) => state.gl);
 
 	const cameraZ = React.useMemo(
-		() => (height / 2) / Math.tan((PERSPECTIVE_FOV / 2) * Math.PI / 180),
+		() => height / 2 / Math.tan(((PERSPECTIVE_FOV / 2) * Math.PI) / 180),
 		[height],
 	);
 
 	const perspScene = React.useMemo(() => new ThreeScene(), []);
 
 	const perspCamera = React.useMemo(() => {
-		const cam = new PerspectiveCamera(PERSPECTIVE_FOV, width / height, 0.1, 5000);
+		const cam = new PerspectiveCamera(
+			PERSPECTIVE_FOV,
+			width / height,
+			0.1,
+			5000,
+		);
 		cam.position.set(0, 0, cameraZ);
 		cam.lookAt(0, 0, 0);
 		return cam;
@@ -64,7 +74,7 @@ export function PerspectiveScene3D({ width, height, renderOrder = 0, children })
 		gl.render(perspScene, perspCamera);
 		gl.setRenderTarget(null);
 		gl.setClearAlpha(prevClearAlpha);
-	});
+	}, -2);
 
 	return (
 		<>

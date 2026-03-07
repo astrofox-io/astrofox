@@ -185,7 +185,7 @@ export function SceneWithEffects({
 				material.needsUpdate = true;
 			}
 		}
-	});
+	}, -1);
 
 	return (
 		<>

@@ -1,10 +1,15 @@
+import HybridBackend from "./HybridBackend";
 import R3FBackend from "./R3FBackend";
 
 export function createRenderBackend(
-	_type: string,
+	type: string,
 	{ stage }: { stage: unknown },
 ) {
-	return new R3FBackend(stage);
+	if (type === "r3f") {
+		return new R3FBackend(stage);
+	}
+
+	return new HybridBackend(stage);
 }
 
 export default createRenderBackend;
