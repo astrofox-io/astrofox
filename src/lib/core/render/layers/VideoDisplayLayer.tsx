@@ -1,7 +1,7 @@
 // @ts-nocheck
-import React from "react";
-import { LinearFilter, VideoTexture } from "three";
 import { BLANK_IMAGE } from "@/app/constants";
+import React from "react";
+import { LinearFilter, SRGBColorSpace, VideoTexture } from "three";
 import { TexturePlane } from "./TexturePlane";
 
 export function VideoDisplayLayer({
@@ -42,6 +42,7 @@ export function VideoDisplayLayer({
 		const nextTexture = new VideoTexture(video);
 		nextTexture.minFilter = LinearFilter;
 		nextTexture.magFilter = LinearFilter;
+		nextTexture.colorSpace = SRGBColorSpace;
 		nextTexture.generateMipmaps = false;
 		nextTexture.needsUpdate = true;
 		return nextTexture;

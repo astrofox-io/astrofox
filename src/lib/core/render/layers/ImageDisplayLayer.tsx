@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-import { LinearFilter, TextureLoader } from "three";
+import { LinearFilter, SRGBColorSpace, TextureLoader } from "three";
 import { TexturePlane } from "./TexturePlane";
 
 export function ImageDisplayLayer({
@@ -28,6 +28,7 @@ export function ImageDisplayLayer({
 		const nextTexture = new TextureLoader().load(src);
 		nextTexture.minFilter = LinearFilter;
 		nextTexture.magFilter = LinearFilter;
+		nextTexture.colorSpace = SRGBColorSpace;
 		nextTexture.generateMipmaps = false;
 		nextTexture.needsUpdate = true;
 

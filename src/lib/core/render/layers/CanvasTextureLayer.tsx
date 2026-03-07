@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-import { CanvasTexture, LinearFilter } from "three";
+import { CanvasTexture, LinearFilter, SRGBColorSpace } from "three";
 import { TexturePlane } from "./TexturePlane";
 
 export function CanvasTextureLayer({
@@ -32,6 +32,7 @@ export function CanvasTextureLayer({
 		const nextTexture = new CanvasTexture(canvas);
 		nextTexture.minFilter = LinearFilter;
 		nextTexture.magFilter = LinearFilter;
+		nextTexture.colorSpace = SRGBColorSpace;
 		nextTexture.generateMipmaps = false;
 		nextTexture.needsUpdate = true;
 

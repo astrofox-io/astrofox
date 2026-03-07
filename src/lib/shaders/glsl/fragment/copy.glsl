@@ -11,4 +11,7 @@ void main() {
     if (alpha == 1) {
         gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
     }
+
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
 }
