@@ -182,6 +182,7 @@ export default function HybridStageRoot({
 				width={width}
 				height={height}
 				effects={sceneEffects}
+				frameData={frameData}
 				outputToScreen={false}
 				onTexture={(texture) => {
 					if (!texture) {

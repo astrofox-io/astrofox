@@ -179,6 +179,7 @@ export default function R3FStageRoot({
 				width={width}
 				height={height}
 				effects={sceneEffects}
+				frameData={frameData}
 				outputToScreen={false}
 				onTexture={(texture) => {
 					if (!texture) {

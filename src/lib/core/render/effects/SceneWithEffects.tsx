@@ -15,11 +15,13 @@ import {
 } from "three";
 import { PassChain } from "../PassChain";
 import { createRawEffect } from "./createRawEffect";
+import { createScenePass } from "./createScenePass";
 
 export function SceneWithEffects({
 	width,
 	height,
 	effects,
+	frameData,
 	renderOrder = 0,
 	onTexture,
 	outputToScreen = true,
@@ -85,24 +87,42 @@ export function SceneWithEffects({
 	);
 	const passesRef = React.useRef([]);
 	React.useEffect(() => {
-		const rawItems = effects
-			.map((e) => {
-				try {
-					return createRawEffect(e, width, height);
-				} catch {
-					return null;
-				}
-			})
-			.filter(Boolean);
+		const builtPasses = [];
+		const rawEffects = [];
 
-		// Separate Pass objects (e.g. PPGaussianBlurPass) from Effect objects
-		const standalonePasses = rawItems.filter(
-			(item) => item instanceof RawPass && !(item instanceof RawEffect),
-		);
-		const rawEffects = rawItems.filter((item) => item instanceof RawEffect);
+		for (const effect of effects) {
+			let item = null;
 
-		// Build the ordered pass list
-		const builtPasses = [...standalonePasses];
+			try {
+				item = createScenePass(effect, width, height);
+			} catch {
+				item = null;
+			}
+
+			if (item) {
+				builtPasses.push(item);
+				continue;
+			}
+
+			try {
+				item = createRawEffect(effect, width, height);
+			} catch {
+				item = null;
+			}
+
+			if (!item) {
+				continue;
+			}
+
+			if (item instanceof RawPass && !(item instanceof RawEffect)) {
+				builtPasses.push(item);
+				continue;
+			}
+
+			if (item instanceof RawEffect) {
+				rawEffects.push(item);
+			}
+		}
 
 		// CONVOLUTION effects cannot be merged into a single EffectPass — each
 		// needs its own pass. Non-convolution effects can share one EffectPass.
@@ -132,14 +152,24 @@ export function SceneWithEffects({
 		const alpha = gl.getContext().getContextAttributes()?.alpha ?? false;
 		for (const pass of builtPasses) {
 			try {
-				pass.setSize(width, height);
-				pass.initialize(gl, alpha, HalfFloatType);
+				pass.setSize?.(width, height);
+				pass.initialize?.(gl, alpha, HalfFloatType);
 			} catch {
 				// Ignore initialization errors
 			}
 		}
 
+		const previousPasses = passesRef.current;
 		passesRef.current = builtPasses;
+		for (const pass of previousPasses) {
+			if (!builtPasses.includes(pass)) {
+				try {
+					pass.dispose?.();
+				} catch {
+					// Ignore dispose errors
+				}
+			}
+		}
 	}, [effectKey, camera, gl, width, height]);
 
 	const tempColor = React.useRef(new Color());
@@ -148,6 +178,14 @@ export function SceneWithEffects({
 	useFrame((_, delta) => {
 		const chain = chainRef.current;
 		if (!chain) return;
+
+		for (const pass of passesRef.current) {
+			try {
+				pass.__updateScenePass?.(frameData);
+			} catch {
+				// Ignore live uniform update errors and continue rendering.
+			}
+		}
 
 		// Disable autoClear — EffectComposer used to do this as a side effect
 		// of setRenderer(). Without it, gl.render() auto-clears our manually

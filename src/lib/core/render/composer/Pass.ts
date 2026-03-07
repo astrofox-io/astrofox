@@ -4,6 +4,7 @@ import { getFullscreenGeometry } from "./common";
 
 export default class Pass {
 	constructor() {
+		this.enabled = true;
 		this.needsSwap = false;
 		this.clearColor = false;
 		this.clearDepth = false;
@@ -23,6 +24,10 @@ export default class Pass {
 		this.mesh.frustumCulled = false;
 
 		this.scene.add(this.mesh);
+	}
+
+	dispose() {
+		this.material?.dispose?.();
 	}
 
 	update(properties = {}) {
