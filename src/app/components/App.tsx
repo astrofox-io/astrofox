@@ -1,4 +1,3 @@
-import { ignoreEvents } from "@/lib/utils/react";
 import { initApp } from "@/app/actions/app";
 import Toolbar from "@/app/components/nav/Toolbar";
 import LeftPanel from "@/app/components/panels/LeftPanel";
@@ -10,6 +9,7 @@ import Modals from "@/app/components/window/Modals";
 import Preload from "@/app/components/window/Preload";
 import StatusBar from "@/app/components/window/StatusBar";
 import TitleBar from "@/app/components/window/TitleBar";
+import { ignoreEvents } from "@/lib/utils/react";
 import React, { useEffect } from "react";
 
 function App() {
@@ -34,10 +34,10 @@ function App() {
 					<Toolbar />
 					<Stage />
 					<ReactorPanel />
+					<Player />
 				</div>
 				<RightPanel />
 			</div>
-			<Player />
 			<StatusBar />
 			<Modals />
 		</div>
