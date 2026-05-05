@@ -35,7 +35,7 @@
 		"drizzle-orm": "^0.45.1",
 		"fourier-transform": "^1.1.2",
 		"jsmediatags": "^3.9.7",
-		"lodash": "^4.17.21",
+		"lodash": "^4.18.1",
 		"lucide-react": "^0.575.0",
 		"mime": "^2.5.2",
 		"next": "^16.1.6",
