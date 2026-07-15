@@ -31,7 +31,11 @@
 		"hide-controls-panel": "Ẩn bảng điều khiển",
 		"show-controls-panel": "Hiện bảng điều khiển",
 		"language": "Ngôn ngữ",
-		"default-project-name": "Dự án chưa có tiêu đề"
+		"default-project-name": "Dự án chưa có tiêu đề",
+		"minimize-window": "Thu nhỏ",
+		"maximize-window": "Phóng to",
+		"restore-window": "Khôi phục",
+		"close-window": "Đóng"
 	},
 	"player": {
 		"recording": "Đang ghi...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "Phiên bản {{version}}",
 		"copyright": "Bản quyền © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "Dự án",
-		"create-new": "Tạo mới",
-		"rename-selected": "Đổi tên mục đã chọn",
-		"no-projects": "Chưa có dự án nào.",
-		"confirm-delete": "Xóa \"{{name}}\"? Hành động này không thể hoàn tác.",
-		"failed-to-load": "Không tải được dự án."
 	},
 	"relink-media": {
 		"title": "Liên kết lại phương tiện",
@@ -196,7 +192,12 @@
 		"live-midi": "MIDI trực tiếp: {{label}}",
 		"input-mode-choose-microphone": "Chế độ đầu vào: chọn micrô",
 		"input-mode-desktop-audio": "Chế độ đầu vào: âm thanh máy tính",
-		"input-mode-choose-midi": "Chế độ đầu vào: chọn đầu vào MIDI"
+		"input-mode-choose-midi": "Chế độ đầu vào: chọn đầu vào MIDI",
+		"export-preparing": "Đang chuẩn bị xuất video…",
+		"export-rendering-video": "Đang render video {{current}} / {{total}}",
+		"export-rendering-audio": "Đang mã hóa âm thanh…",
+		"export-merging": "Đang ghép âm thanh và video…",
+		"export-finished": "Xuất video hoàn tất"
 	},
 	"errors": {
 		"title": "Lỗi",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "Không chọn được vị trí lưu video.",
 		"invalid-project-file": "Tệp dự án không hợp lệ.",
 		"invalid-project-snapshot": "Ảnh chụp nhanh dự án không hợp lệ.",
-		"project-json-extension-required": "Tệp dự án phải sử dụng phần mở rộng .json.",
+		"project-file-extension-required": "Tệp dự án phải sử dụng phần mở rộng .json hoặc .afx.",
 		"open-project-file-failed": "Không mở được tệp dự án.",
 		"save-project-file-failed": "Không lưu được tệp dự án.",
 		"relink-media-failed": "Không liên kết lại được phương tiện.",
-		"cloud-projects-removed": "Các dự án đám mây đã bị xóa.",
-		"use-open-project": "Hãy dùng Mở dự án.",
-		"use-save-project-to-download": "Hãy dùng Lưu dự án để tải xuống tệp mới.",
-		"use-file-system-to-delete": "Hãy dùng hệ thống tệp của bạn để xóa các tệp dự án cục bộ.",
 		"ipc-invoke-unavailable": "Lời gọi IPC không khả dụng ở chế độ web.",
 		"no-audio-file-provided": "Không có tệp âm thanh nào được cung cấp.",
 		"unrecognized-audio-type": "Loại âm thanh không nhận dạng được: {{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "Không có tệp video nào được cung cấp.",
 		"unrecognized-video-type": "Loại video không nhận dạng được: {{type}}",
 		"read-video-file-failed": "Không đọc được tệp video.",
-		"process-spawning-unavailable": "Việc khởi chạy tiến trình không khả dụng ở chế độ web."
+		"process-spawning-unavailable": "Việc khởi chạy tiến trình không khả dụng ở chế độ web.",
+		"gzip-decompress-unsupported": "Trình duyệt này không hỗ trợ giải nén gzip.",
+		"ffmpeg-export-failed": "Xuất video FFmpeg thất bại.",
+		"ffmpeg-output-path-required": "Chọn vị trí lưu trên đĩa để xuất video trên desktop.",
+		"ffmpeg-temp-audio-failed": "Không thể chuẩn bị âm thanh để xuất."
 	},
 	"labels": {
 		"2d-displays": "Hiển thị 2D",

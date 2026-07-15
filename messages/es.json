@@ -31,7 +31,11 @@
 		"hide-controls-panel": "Ocultar panel de controles",
 		"show-controls-panel": "Mostrar panel de controles",
 		"language": "Idioma",
-		"default-project-name": "Proyecto sin título"
+		"default-project-name": "Proyecto sin título",
+		"minimize-window": "Minimizar",
+		"maximize-window": "Maximizar",
+		"restore-window": "Restaurar",
+		"close-window": "Cerrar"
 	},
 	"player": {
 		"recording": "Grabando...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "Versión {{version}}",
 		"copyright": "Copyright © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "Proyectos",
-		"create-new": "Crear nuevo",
-		"rename-selected": "Cambiar nombre del seleccionado",
-		"no-projects": "Aún no hay proyectos.",
-		"confirm-delete": "¿Eliminar «{{name}}»? Esta acción no se puede deshacer.",
-		"failed-to-load": "Error al cargar los proyectos."
 	},
 	"relink-media": {
 		"title": "Volver a vincular medios",
@@ -196,7 +192,12 @@
 		"live-midi": "MIDI en vivo: {{label}}",
 		"input-mode-choose-microphone": "Modo de entrada: elige un micrófono",
 		"input-mode-desktop-audio": "Modo de entrada: audio del escritorio",
-		"input-mode-choose-midi": "Modo de entrada: elige una entrada MIDI"
+		"input-mode-choose-midi": "Modo de entrada: elige una entrada MIDI",
+		"export-preparing": "Preparando exportación de video…",
+		"export-rendering-video": "Renderizando video {{current}} / {{total}}",
+		"export-rendering-audio": "Codificando audio…",
+		"export-merging": "Combinando audio y video…",
+		"export-finished": "Exportación de video finalizada"
 	},
 	"errors": {
 		"title": "Error",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "Error al elegir una ubicación de guardado de vídeo.",
 		"invalid-project-file": "Archivo de proyecto no válido.",
 		"invalid-project-snapshot": "Instantánea de proyecto no válida.",
-		"project-json-extension-required": "El archivo de proyecto debe usar la extensión .json.",
+		"project-file-extension-required": "El archivo de proyecto debe usar la extensión .json o .afx.",
 		"open-project-file-failed": "Error al abrir el archivo de proyecto.",
 		"save-project-file-failed": "Error al guardar el archivo de proyecto.",
 		"relink-media-failed": "Error al volver a vincular los medios.",
-		"cloud-projects-removed": "Se eliminaron los proyectos en la nube.",
-		"use-open-project": "Usa Abrir proyecto.",
-		"use-save-project-to-download": "Usa Guardar proyecto para descargar un archivo nuevo.",
-		"use-file-system-to-delete": "Usa tu sistema de archivos para eliminar los archivos de proyecto locales.",
 		"ipc-invoke-unavailable": "La invocación IPC no está disponible en modo web.",
 		"no-audio-file-provided": "No se proporcionó ningún archivo de audio.",
 		"unrecognized-audio-type": "Tipo de audio no reconocido: {{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "No se proporcionó ningún archivo de vídeo.",
 		"unrecognized-video-type": "Tipo de vídeo no reconocido: {{type}}",
 		"read-video-file-failed": "Error al leer el archivo de vídeo.",
-		"process-spawning-unavailable": "El lanzamiento de procesos no está disponible en modo web."
+		"process-spawning-unavailable": "El lanzamiento de procesos no está disponible en modo web.",
+		"gzip-decompress-unsupported": "La descompresión gzip no es compatible con este navegador.",
+		"ffmpeg-export-failed": "Falló la exportación de video con FFmpeg.",
+		"ffmpeg-output-path-required": "Elige una ubicación en disco para exportar video en escritorio.",
+		"ffmpeg-temp-audio-failed": "No se pudo preparar el audio para la exportación."
 	},
 	"labels": {
 		"2d-displays": "Visualizaciones 2D",

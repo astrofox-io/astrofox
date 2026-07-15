@@ -59,14 +59,15 @@ function getCanvasSize(display: TransformableDisplay) {
 		display.radial?.canvas ||
 		display.ring?.canvas;
 
-	if (!canvas?.width || !canvas?.height) {
+	const width = Number(canvas?.width) || 0;
+	const height = Number(canvas?.height) || 0;
+
+	// A canvas collapsed to a line (or empty) has nothing to resize.
+	if (width <= 1 || height <= 1) {
 		return null;
 	}
 
-	return {
-		width: Number(canvas.width) || 0,
-		height: Number(canvas.height) || 0,
-	};
+	return { width, height };
 }
 
 function getMediaSize(display: TransformableDisplay) {
@@ -145,8 +146,11 @@ export function getDisplayTransformFrame(
 
 	if (display.name === "TextDisplay") {
 		const canvasSize = getCanvasSize(display);
+		const textValue = String(properties.text ?? "").trim();
 
-		if (!canvasSize) {
+		// An empty text value renders a degenerate (~1px wide) canvas, which
+		// would collapse the transform handles into a single line.
+		if (!canvasSize || !textValue) {
 			return null;
 		}
 
@@ -295,5 +299,13 @@ export function getDisplayTransformFrame(
 export function isTransformable2DDisplay(
 	display?: TransformableDisplay | null,
 ): boolean {
-	return getDisplayTransformFrame(display) !== null;
+	// Based on the display *type*, not its current content: a text layer stays
+	// transformable (toggle enabled, mode kept on) even while empty. Whether any
+	// handles actually draw is decided separately by getDisplayTransformFrame.
+	return (
+		!!display &&
+		display.enabled !== false &&
+		display.type === "display" &&
+		getDisplayRenderGroup(display) === "2d"
+	);
 }

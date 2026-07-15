@@ -1,6 +1,7 @@
+import { getDesktopBridge } from "@/app/desktop";
+import env from "@/app/env";
 import EventEmitter from "@/lib/core/EventEmitter";
 import type { EventCallback } from "@/lib/types";
-import env from "@/app/env";
 import { t } from "@/i18n/config";
 import jsmediatags from "jsmediatags/dist/jsmediatags.min.js";
 
@@ -15,12 +16,6 @@ interface FileFilter {
 interface PickerType {
 	description: string;
 	accept: Record<string, string[]>;
-}
-
-interface RequestOptions {
-	method?: string;
-	body?: Record<string, unknown>;
-	headers?: Record<string, string>;
 }
 
 interface OpenDialogProps {
@@ -96,48 +91,15 @@ async function saveBlob(
 	URL.revokeObjectURL(url);
 }
 
-interface RequestError extends Error {
-	status?: number;
-	payload?: unknown;
-}
-
-async function request(path: string, options: RequestOptions = {}) {
-	const { method = "GET", body, headers = {} } = options;
-	const response = await fetch(path, {
-		method,
-		credentials: "include",
-		headers: {
-			...(body ? { "Content-Type": "application/json" } : {}),
-			...headers,
-		},
-		body: body ? JSON.stringify(body) : undefined,
-	});
-
-	const raw = await response.text();
-	let data: Record<string, unknown> | null = null;
-
-	if (raw) {
-		try {
-			data = JSON.parse(raw);
-		} catch {
-			data = { message: raw };
-		}
-	}
-
-	if (!response.ok) {
-		const error: RequestError = new Error(
-			(data?.message as string) ||
-				`Request failed with status ${response.status}.`,
-		);
-		error.status = response.status;
-		error.payload = data;
-		throw error;
-	}
-
-	return data;
-}
-
 export function getEnvironment() {
+	const desktop = getDesktopBridge();
+	if (desktop?.getEnvironment) {
+		return {
+			...env,
+			...desktop.getEnvironment(),
+			IS_DESKTOP: true,
+		};
+	}
 	return env;
 }
 
@@ -166,9 +128,63 @@ export function log(...args: unknown[]) {
 	console.log(...args);
 }
 
+export async function minimizeWindow() {
+	const desktop = getDesktopBridge();
+	if (desktop?.minimizeWindow) {
+		return desktop.minimizeWindow();
+	}
+}
+
+export async function maximizeWindow() {
+	const desktop = getDesktopBridge();
+	if (desktop?.maximizeWindow) {
+		return desktop.maximizeWindow();
+	}
+}
+
+export async function closeWindow() {
+	const desktop = getDesktopBridge();
+	if (desktop?.closeWindow) {
+		return desktop.closeWindow();
+	}
+}
+
 export async function showOpenDialog(props: OpenDialogProps = {}) {
-	const types = buildPickerTypes(props.filters || []);
+	const desktop = getDesktopBridge();
 	const multiple = Boolean(props.multiple);
+
+	// Native dialogs in Electron give real filesystem paths (needed for ffmpeg).
+	if (desktop?.showOpenDialog && desktop.readFile) {
+		const result = await desktop.showOpenDialog({
+			filters: (props.filters || []).map((filter) => ({
+				name: filter.name || t("file-types.files"),
+				extensions: filter.extensions || ["*"],
+			})),
+			multiple,
+		});
+
+		if (result.canceled || !result.filePaths?.length) {
+			return { canceled: true, files: [] as File[] };
+		}
+
+		const files = await Promise.all(
+			result.filePaths.map(async (filePath) => {
+				const { name, data } = await desktop.readFile!(filePath);
+				// Copy into a fresh ArrayBuffer so TypeScript accepts it as a BlobPart
+				// (IPC-transferred buffers are typed as ArrayBufferLike).
+				const bytes = new Uint8Array(
+					data instanceof Uint8Array ? data : new Uint8Array(data),
+				);
+				const file = new File([bytes.buffer], name || "file");
+				Object.assign(file, { path: filePath });
+				return file;
+			}),
+		);
+
+		return { canceled: false, files, filePaths: result.filePaths };
+	}
+
+	const types = buildPickerTypes(props.filters || []);
 
 	if (window.showOpenFilePicker) {
 		try {
@@ -204,8 +220,26 @@ export async function showOpenDialog(props: OpenDialogProps = {}) {
 }
 
 export async function showSaveDialog(props: SaveDialogProps = {}) {
-	const types = buildPickerTypes(props.filters || []);
+	const desktop = getDesktopBridge();
 	const suggestedName = props.defaultPath || "astrofox";
+
+	if (desktop?.showSaveDialog) {
+		const result = await desktop.showSaveDialog({
+			defaultPath: suggestedName,
+			filters: (props.filters || []).map((filter) => ({
+				name: filter.name || t("file-types.files"),
+				extensions: filter.extensions || ["*"],
+			})),
+		});
+
+		if (result.canceled || !result.filePath) {
+			return { canceled: true };
+		}
+
+		return { canceled: false, filePath: result.filePath };
+	}
+
+	const types = buildPickerTypes(props.filters || []);
 
 	if (window.showSaveFilePicker) {
 		try {
@@ -351,6 +385,10 @@ export function spawnProcess() {
 export function openDevTools() {}
 
 export async function getWindowState() {
+	const desktop = getDesktopBridge();
+	if (desktop?.getWindowState) {
+		return desktop.getWindowState();
+	}
 	return {
 		focused: document.hasFocus(),
 		maximized: false,

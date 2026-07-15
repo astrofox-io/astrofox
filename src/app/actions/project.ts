@@ -35,7 +35,6 @@ export interface MediaRef {
 }
 
 interface ProjectState {
-	projectId: string | null;
 	projectName: string;
 	opened: number;
 	lastModified: number;
@@ -94,21 +93,95 @@ type SceneEntity = {
 	toJSON: () => Record<string, unknown>;
 };
 
-const PROJECT_FILE_EXTENSIONS = ["json"];
+/** Canonical save/open format */
+const PROJECT_JSON_EXTENSION = "json";
+/** Legacy gzip-compressed JSON from the old desktop app */
+const PROJECT_LEGACY_EXTENSION = "afx";
+const PROJECT_OPEN_EXTENSIONS = [PROJECT_JSON_EXTENSION, PROJECT_LEGACY_EXTENSION];
+const PROJECT_SAVE_EXTENSIONS = [PROJECT_JSON_EXTENSION];
 const PROJECT_FILE_MIME_TYPE = "application/json";
+const GZIP_MAGIC_0 = 0x1f;
+const GZIP_MAGIC_1 = 0x8b;
 
-function getProjectFileFilters() {
+function getProjectOpenFilters() {
 	return [
 		{
 			name: t("file-types.astrofox-project"),
-			extensions: PROJECT_FILE_EXTENSIONS,
+			extensions: PROJECT_OPEN_EXTENSIONS,
 			mimeType: PROJECT_FILE_MIME_TYPE,
 		},
 	];
 }
 
+function getProjectSaveFilters() {
+	return [
+		{
+			name: t("file-types.astrofox-project"),
+			extensions: PROJECT_SAVE_EXTENSIONS,
+			mimeType: PROJECT_FILE_MIME_TYPE,
+		},
+	];
+}
+
+function isGzipBytes(bytes: Uint8Array) {
+	return (
+		bytes.length >= 2 &&
+		bytes[0] === GZIP_MAGIC_0 &&
+		bytes[1] === GZIP_MAGIC_1
+	);
+}
+
+async function gunzipToText(bytes: Uint8Array): Promise<string> {
+	if (typeof DecompressionStream === "undefined") {
+		throw new Error(t("errors.gzip-decompress-unsupported"));
+	}
+
+	const copy = new Uint8Array(bytes.byteLength);
+	copy.set(bytes);
+	const stream = new Blob([copy])
+		.stream()
+		.pipeThrough(new DecompressionStream("gzip"));
+	const buffer = await new Response(stream).arrayBuffer();
+	return new TextDecoder("utf-8").decode(buffer);
+}
+
+/**
+ * Read a project file as JSON text.
+ * - `.json` / plain text: decode as UTF-8
+ * - `.afx` or gzip magic: inflate gzip then decode (legacy format)
+ * Falls back to raw UTF-8 if gzip inflate fails (matches old desktop behavior).
+ */
+async function readProjectFileText(file: File): Promise<string> {
+	const buffer = await file.arrayBuffer();
+	const bytes = new Uint8Array(buffer);
+	const name = file.name || "";
+	const looksLegacy =
+		/\.afx$/i.test(name) || isGzipBytes(bytes);
+
+	if (looksLegacy) {
+		try {
+			return await gunzipToText(bytes);
+		} catch (error) {
+			// Match old desktop behavior: only fall back when the file is not
+			// actually gzip (e.g. misnamed plain JSON). Real gzip failures throw.
+			if (isGzipBytes(bytes)) {
+				throw error;
+			}
+			logger.log(
+				"Project file is not gzip-compressed, trying raw text:",
+				error,
+			);
+		}
+	}
+
+	return new TextDecoder("utf-8").decode(bytes);
+}
+
+function isSupportedProjectFileName(fileName = "") {
+	return /\.(json|afx)$/i.test(fileName);
+}
+
 const initialState: ProjectState = {
-	projectId: null,
 	projectName: DEFAULT_PROJECT_NAME,
 	opened: 0,
 	lastModified: 0,
@@ -582,11 +655,13 @@ function sanitizeFileName(name?: string) {
 
 function createProjectFileName(name?: string) {
 	const safeName = sanitizeFileName(name) || DEFAULT_PROJECT_NAME;
-	return `${safeName}.json`;
+	return `${safeName}.${PROJECT_JSON_EXTENSION}`;
 }
 
 function parseProjectNameFromFile(fileName = "") {
-	return fileName.replace(/\.json$/i, "").trim() || DEFAULT_PROJECT_NAME;
+	return (
+		fileName.replace(/\.(json|afx)$/i, "").trim() || DEFAULT_PROJECT_NAME
+	);
 }
 
 function parseProjectPayload(payload: unknown, fallbackName?: string) {
@@ -635,7 +710,6 @@ async function loadProjectFromPayload(payload: unknown, fallbackName?: string) {
 	loadReactors();
 
 	projectStore.setState({
-		projectId: null,
 		projectName: projectName || DEFAULT_PROJECT_NAME,
 		opened: Date.now(),
 		lastModified: 0,
@@ -753,7 +827,6 @@ export async function newProject() {
 	await loadReactors();
 
 	projectStore.setState({
-		projectId: null,
 		projectName: DEFAULT_PROJECT_NAME,
 		opened: Date.now(),
 		lastModified: 0,
@@ -781,7 +854,7 @@ export function checkUnsavedChanges(
 export async function openProjectFile() {
 	try {
 		const { files, canceled } = await api.showOpenDialog({
-			filters: getProjectFileFilters(),
+			filters: getProjectOpenFilters(),
 		});
 
 		if (canceled || !files || !files.length) {
@@ -789,10 +862,11 @@ export async function openProjectFile() {
 		}
 
 		const file = files[0];
-		if (!/\.json$/i.test(file.name || "")) {
-			throw new Error(t("errors.project-json-extension-required"));
+		if (!isSupportedProjectFileName(file.name || "")) {
+			throw new Error(t("errors.project-file-extension-required"));
 		}
-		const text = await file.text();
+
+		const text = await readProjectFileText(file);
 		const payload = JSON.parse(text);
 		const fallbackName = parseProjectNameFromFile(file.name);
 
@@ -804,41 +878,11 @@ export async function openProjectFile() {
 	}
 }
 
-export function openProjectBrowser() {
-	return openProjectFile();
-}
-
 export function openRelinkMediaDialog(modalProps: Record<string, unknown> = {}) {
 	showModal("RelinkMediaDialog", {
 		titleKey: "relink-media.title",
 		...modalProps,
 	});
-}
-
-export async function listProjects() {
-	return [];
-}
-
-export async function loadProjectById(_projectId: string) {
-	raiseError(
-		t("errors.cloud-projects-removed"),
-		new Error(t("errors.use-open-project")),
-	);
-}
-
-export async function renameProjectById(_projectId: string, _name: string) {
-	raiseError(
-		t("errors.cloud-projects-removed"),
-		new Error(t("errors.use-save-project-to-download")),
-	);
-	return null;
-}
-
-export async function deleteProjectById(_projectId: string) {
-	raiseError(
-		t("errors.cloud-projects-removed"),
-		new Error(t("errors.use-file-system-to-delete")),
-	);
 }
 
 export async function saveProject(nameOverride?: string) {
@@ -864,7 +908,7 @@ export async function saveProject(nameOverride?: string) {
 		const fileName = createProjectFileName(name);
 		const { fileHandle, filePath, canceled } = await api.showSaveDialog({
 			defaultPath: fileName,
-			filters: getProjectFileFilters(),
+			filters: getProjectSaveFilters(),
 		});
 
 		if (canceled) {
@@ -878,7 +922,6 @@ export async function saveProject(nameOverride?: string) {
 		});
 
 		projectStore.setState({
-			projectId: null,
 			projectName: name,
 			opened: Date.now(),
 			lastModified: 0,

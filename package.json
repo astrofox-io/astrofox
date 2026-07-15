@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/astrofox-io/astrofox"
   },
+  "main": "electron/main.mjs",
   "scripts": {
     "dev": "dotenv next dev --turbo",
     "start": "next start",
@@ -17,23 +18,88 @@
     "preview": "next start",
     "lint": "biome check .",
     "lint-fix": "biome check . --write",
-    "db:generate": "drizzle-kit generate --config=drizzle.config.mjs",
-    "db:migrate": "drizzle-kit migrate --config=drizzle.config.mjs",
-    "db:push": "drizzle-kit push --config=drizzle.config.mjs"
+    "dev:desktop": "concurrently -k -n web,electron -c cyan,magenta \"pnpm dev\" \"wait-on http://127.0.0.1:3000 && cross-env ELECTRON_DEV=1 electron .\"",
+    "build:renderer": "cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
+    "build:desktop": "pnpm build:renderer && electron-builder --publish never",
+    "dist:win": "pnpm build:renderer && electron-builder --win --publish never",
+    "dist:mac": "pnpm build:renderer && electron-builder --mac --publish never",
+    "dist:linux": "pnpm build:renderer && electron-builder --linux --publish never",
+    "release:desktop": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --publish always",
+    "install-ffmpeg": "node ./scripts/install-ffmpeg.mjs"
+  },
+  "build": {
+    "appId": "io.astrofox.app",
+    "productName": "Astrofox",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "astrofox-io",
+        "repo": "astrofox",
+        "releaseType": "draft"
+      }
+    ],
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "electron/**/*",
+      "out/**/*",
+      "package.json",
+      "!node_modules/**/*",
+      "!**/*.{md,map}",
+      "!.git/**/*",
+      "!.next/**/*",
+      "!src/**/*",
+      "!messages/**/*",
+      "!release/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": [
+          "ffmpeg",
+          "ffmpeg.exe"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/icons/icon-512.png"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.video",
+      "icon": "public/icons/icon-512.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "AudioVideo",
+      "icon": "public/icons/icon-512.png"
+    },
+    "nsis": {
+      "oneClick": true
+    }
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@react-three/fiber": "^9.6.1",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.3.1",
-    "better-auth": "^1.6.13",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.3.1",
     "clsx": "^2.1.1",
     "cnfast": "^0.0.6",
     "debug": "^4.3.1",
     "dotenv": "^17.4.2",
-    "drizzle-orm": "^0.45.2",
     "fourier-transform": "^2.3.0",
     "i18next": "^26.3.1",
     "i18next-browser-languagedetector": "^8.2.1",
@@ -41,7 +107,6 @@
     "lucide-react": "^1.21.0",
     "mime": "^4.1.0",
     "next": "^16.2.9",
-    "pg": "^8.22.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-i18next": "^17.0.8",
@@ -60,8 +125,12 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.2",
     "@types/three": "^0.184.1",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
     "dotenv-cli": "^11.0.0",
-    "drizzle-kit": "^0.31.10",
-    "typescript": "6.0.3"
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "6.0.3",
+    "wait-on": "^8.0.4"
   }
 }

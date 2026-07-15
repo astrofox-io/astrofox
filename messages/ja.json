@@ -31,7 +31,11 @@
 		"hide-controls-panel": "コントロールパネルを非表示",
 		"show-controls-panel": "コントロールパネルを表示",
 		"language": "言語",
-		"default-project-name": "無題のプロジェクト"
+		"default-project-name": "無題のプロジェクト",
+		"minimize-window": "最小化",
+		"maximize-window": "最大化",
+		"restore-window": "元に戻す",
+		"close-window": "閉じる"
 	},
 	"player": {
 		"recording": "録画中...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "バージョン {{version}}",
 		"copyright": "Copyright © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "プロジェクト",
-		"create-new": "新規作成",
-		"rename-selected": "選択項目の名前を変更",
-		"no-projects": "まだプロジェクトがありません。",
-		"confirm-delete": "「{{name}}」を削除しますか？この操作は取り消せません。",
-		"failed-to-load": "プロジェクトの読み込みに失敗しました。"
 	},
 	"relink-media": {
 		"title": "メディアを再リンク",
@@ -196,7 +192,12 @@
 		"live-midi": "ライブMIDI: {{label}}",
 		"input-mode-choose-microphone": "入力モード: マイクを選択",
 		"input-mode-desktop-audio": "入力モード: デスクトップ音声",
-		"input-mode-choose-midi": "入力モード: MIDI入力を選択"
+		"input-mode-choose-midi": "入力モード: MIDI入力を選択",
+		"export-preparing": "動画の書き出しを準備中…",
+		"export-rendering-video": "動画をレンダリング中 {{current}} / {{total}}",
+		"export-rendering-audio": "音声をエンコード中…",
+		"export-merging": "音声と動画を結合中…",
+		"export-finished": "動画の書き出しが完了しました"
 	},
 	"errors": {
 		"title": "エラー",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "動画の保存先の選択に失敗しました。",
 		"invalid-project-file": "無効なプロジェクトファイルです。",
 		"invalid-project-snapshot": "無効なプロジェクトスナップショットです。",
-		"project-json-extension-required": "プロジェクトファイルは.json拡張子を使用する必要があります。",
+		"project-file-extension-required": "プロジェクトファイルは .json または .afx 拡張子を使用する必要があります。",
 		"open-project-file-failed": "プロジェクトファイルを開くことができませんでした。",
 		"save-project-file-failed": "プロジェクトファイルの保存に失敗しました。",
 		"relink-media-failed": "メディアの再リンクに失敗しました。",
-		"cloud-projects-removed": "クラウドプロジェクトが削除されました。",
-		"use-open-project": "「プロジェクトを開く」を使用してください。",
-		"use-save-project-to-download": "新しいファイルをダウンロードするには「プロジェクトを保存」を使用してください。",
-		"use-file-system-to-delete": "ローカルプロジェクトファイルを削除するにはファイルシステムを使用してください。",
 		"ipc-invoke-unavailable": "WebモードではIPC呼び出しは利用できません。",
 		"no-audio-file-provided": "音声ファイルが提供されていません。",
 		"unrecognized-audio-type": "認識できない音声タイプ: {{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "動画ファイルが提供されていません。",
 		"unrecognized-video-type": "認識できない動画タイプ: {{type}}",
 		"read-video-file-failed": "動画ファイルの読み込みに失敗しました。",
-		"process-spawning-unavailable": "Webモードではプロセスの生成は利用できません。"
+		"process-spawning-unavailable": "Webモードではプロセスの生成は利用できません。",
+		"gzip-decompress-unsupported": "このブラウザでは Gzip 展開がサポートされていません。",
+		"ffmpeg-export-failed": "FFmpeg による動画の書き出しに失敗しました。",
+		"ffmpeg-output-path-required": "デスクトップ書き出しでは保存先を選択してください。",
+		"ffmpeg-temp-audio-failed": "書き出し用オーディオの準備に失敗しました。"
 	},
 	"labels": {
 		"2d-displays": "2Dディスプレイ",

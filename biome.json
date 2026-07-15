@@ -1,7 +1,15 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
 	"files": {
-		"includes": ["**", "!**/dist/**", "!**/.next/**"]
+		"includes": [
+			"**",
+			"!**/dist/**",
+			"!**/.next/**",
+			"!**/out/**",
+			"!**/release/**",
+			"!**/bin/**",
+			"!**/.pnpm-store/**"
+		]
 	},
 	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"linter": {

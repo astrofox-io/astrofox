@@ -9,9 +9,10 @@ import { showModal } from "@/app/actions/modals";
 import {
 	checkUnsavedChanges,
 	newProject,
-	openProjectBrowser,
+	openProjectFile,
 	saveProject,
 } from "@/app/actions/project";
+import { getDesktopBridge, isFfmpegAvailable } from "@/app/desktop";
 import {
 	api,
 	audioContext,
@@ -25,6 +26,7 @@ import { t } from "@/i18n/config";
 import Plugin from "@/lib/core/Plugin";
 import * as displays from "@/lib/displays";
 import * as effects from "@/lib/effects";
+import VideoExporter from "@/lib/video/VideoExporter";
 import { create } from "zustand";
 
 export interface VideoExportSegment {
@@ -128,10 +130,12 @@ const appStore = create<AppState>(() => ({
 let appInitPromise: Promise<void> | null = null;
 let appInitialized = false;
 let activeVideoRecorder: MediaRecorder | null = null;
+let activeFfmpegExport: VideoExporter | null = null;
 let stagePictureInPictureVideo: HTMLVideoElement | null = null;
 let stagePictureInPictureStream: MediaStream | null = null;
 
 const DEFAULT_VIDEO_FPS = 60;
+const FFMPEG_VIDEO_FPS = 30;
 const RECORDING_TIMESLICE_MS = 250;
 const VIDEO_BITS_PER_SECOND = 8_000_000;
 const VIDEO_MIME_CANDIDATES = [
@@ -222,14 +226,31 @@ export function isStagePictureInPictureSupported() {
 	);
 }
 
+function isVideoExportInProgress() {
+	return Boolean(
+		activeFfmpegExport ||
+			(activeVideoRecorder && activeVideoRecorder.state === "recording"),
+	);
+}
+
 function getVideoRecordingSetup(): {
-	canvas: CaptureStreamCanvas;
+	mode: "ffmpeg" | "mediarecorder";
+	canvas: CaptureStreamCanvas | null;
 	mimeType: string;
 	extension: string;
 } | null {
-	if (activeVideoRecorder && activeVideoRecorder.state === "recording") {
+	if (isVideoExportInProgress()) {
 		raiseError(t("errors.video-recording-in-progress"));
 		return null;
+	}
+
+	if (isFfmpegAvailable()) {
+		return {
+			mode: "ffmpeg",
+			canvas: null,
+			mimeType: "video/mp4",
+			extension: "mp4",
+		};
 	}
 
 	if (
@@ -255,10 +276,44 @@ function getVideoRecordingSetup(): {
 	}
 
 	return {
+		mode: "mediarecorder",
 		canvas,
 		mimeType,
 		extension: getExtensionFromMimeType(mimeType),
 	};
+}
+
+function getNativeFilePath(file: File | null | undefined): string | null {
+	if (!file) return null;
+	const withPath = file as File & { path?: string; filePath?: string };
+	return withPath.path || withPath.filePath || null;
+}
+
+async function resolveAudioPathForFfmpeg(
+	audioSource: File | null,
+): Promise<{ path: string | null; cleanupPaths: string[] }> {
+	if (!audioSource) {
+		return { path: null, cleanupPaths: [] };
+	}
+
+	const existingPath = getNativeFilePath(audioSource);
+	if (existingPath) {
+		return { path: existingPath, cleanupPaths: [] };
+	}
+
+	const bridge = getDesktopBridge();
+	if (!bridge?.writeTempFile) {
+		throw new Error(t("errors.ffmpeg-temp-audio-failed"));
+	}
+
+	const buffer = await audioSource.arrayBuffer();
+	const extensionMatch = audioSource.name?.match(/\.([a-z0-9]+)$/i);
+	const ext = extensionMatch?.[1] || "bin";
+	const { filePath } = await bridge.writeTempFile(
+		`export-audio-${Date.now()}.${ext}`,
+		buffer,
+	);
+	return { path: filePath, cleanupPaths: [filePath] };
 }
 
 export async function chooseVideoSaveLocation(
@@ -389,6 +444,123 @@ export function clearVideoExportSegment() {
 	appStore.setState({ videoExportSegment: null });
 }
 
+async function startFfmpegVideoExport({
+	filePath,
+	defaultPath,
+	startTime = 0,
+	endTime,
+	includeAudio = true,
+	audioSource = null,
+}: StartVideoRecordingOptions): Promise<boolean> {
+	const bridge = getDesktopBridge();
+	const outputPath = filePath || defaultPath || "";
+
+	// Native save dialog should always provide an absolute filesystem path.
+	if (!outputPath || !/[\\/]/.test(outputPath)) {
+		raiseError(t("errors.ffmpeg-output-path-required"));
+		return false;
+	}
+
+	const totalDuration = player.getDuration();
+	const clampedStartTime = Math.max(0, startTime);
+	const clampedEndTime = Math.min(totalDuration, endTime ?? totalDuration);
+
+	if (clampedEndTime <= clampedStartTime) {
+		raiseError(t("errors.video-end-before-start"));
+		return false;
+	}
+
+	let audioResolved: { path: string | null; cleanupPaths: string[] } = {
+		path: null,
+		cleanupPaths: [],
+	};
+
+	try {
+		audioResolved = includeAudio
+			? await resolveAudioPathForFfmpeg(audioSource)
+			: { path: null, cleanupPaths: [] };
+
+		if (includeAudio && !audioResolved.path) {
+			raiseError(t("errors.choose-audio-before-saving-video"));
+			return false;
+		}
+	} catch (error) {
+		raiseError(t("errors.ffmpeg-temp-audio-failed"), error);
+		return false;
+	}
+
+	const exporter = new VideoExporter();
+	activeFfmpegExport = exporter;
+	appStore.setState({
+		isVideoRecording: true,
+		statusText: t("status.export-preparing"),
+	});
+
+	try {
+		const savedPath = await exporter.export({
+			outputPath,
+			audioFilePath: audioResolved.path,
+			includeAudio: includeAudio && Boolean(audioResolved.path),
+			startTime: clampedStartTime,
+			endTime: clampedEndTime,
+			fps: FFMPEG_VIDEO_FPS,
+			quality: "medium",
+			onProgress: ({ status, currentFrame, totalFrames }) => {
+				if (status === "rendering-video" && totalFrames) {
+					appStore.setState({
+						statusText: t("status.export-rendering-video", {
+							current: currentFrame ?? 0,
+							total: totalFrames,
+						}),
+					});
+					return;
+				}
+				if (status === "rendering-audio") {
+					appStore.setState({ statusText: t("status.export-rendering-audio") });
+					return;
+				}
+				if (status === "merging") {
+					appStore.setState({ statusText: t("status.export-merging") });
+					return;
+				}
+				if (status === "finished") {
+					appStore.setState({ statusText: t("status.export-finished") });
+				}
+			},
+		});
+
+		logger.log("FFmpeg video saved:", savedPath);
+		if (bridge?.showItemInFolder) {
+			try {
+				await bridge.showItemInFolder(savedPath);
+			} catch {
+				// non-fatal
+			}
+		}
+		return true;
+	} catch (error) {
+		raiseError(t("errors.ffmpeg-export-failed"), error);
+		return false;
+	} finally {
+		activeFfmpegExport = null;
+		appStore.setState({
+			isVideoRecording: false,
+			videoExportSegment: null,
+			statusText: "",
+		});
+
+		if (bridge?.removePath) {
+			for (const tempPath of audioResolved.cleanupPaths) {
+				try {
+					await bridge.removePath(tempPath);
+				} catch {
+					// best-effort
+				}
+			}
+		}
+	}
+}
+
 export async function startVideoRecording({
 	fileHandle,
 	filePath,
@@ -425,6 +597,22 @@ export async function startVideoRecording({
 
 	if (clampedEndTime <= clampedStartTime) {
 		raiseError(t("errors.video-end-before-start"));
+		return false;
+	}
+
+	if (setup.mode === "ffmpeg") {
+		return startFfmpegVideoExport({
+			filePath,
+			defaultPath,
+			startTime: clampedStartTime,
+			endTime: clampedEndTime,
+			includeAudio,
+			audioSource,
+		});
+	}
+
+	if (!setup.canvas) {
+		raiseError(t("errors.stage-canvas-video-access-failed"));
 		return false;
 	}
 
@@ -699,7 +887,7 @@ export async function handleMenuAction(action: string) {
 			break;
 
 		case "open-project":
-			await checkUnsavedChanges(action, openProjectBrowser);
+			await checkUnsavedChanges(action, openProjectFile);
 			break;
 
 		case "save-project":

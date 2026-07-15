@@ -1,0 +1,81 @@
+# Desktop publishing path.
+#
+# Publishing model:
+#   - Web:     Vercel deploys automatically on every commit (`pnpm build`).
+#              This workflow never touches that path.
+#   - Desktop: pushing a `v*` tag (or running this manually) builds the
+#              Electron app on all three OSes and uploads installers to a
+#              draft GitHub Release for review before publishing.
+
+name: Desktop Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: --win
+          - os: macos-latest
+            target: --mac
+          - os: ubuntu-latest
+            target: --linux
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download ffmpeg binary
+        run: pnpm install-ffmpeg
+
+      - name: Build renderer (static export)
+        run: pnpm build:renderer
+
+      - name: Package and publish (tag push)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: pnpm exec electron-builder ${{ matrix.target }} --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Skip code signing until certs are configured as repo secrets.
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Package only (manual run)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: pnpm exec electron-builder ${{ matrix.target }} --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Upload artifacts (manual run)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: astrofox-${{ matrix.os }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+          if-no-files-found: error

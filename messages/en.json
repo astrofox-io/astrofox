@@ -31,7 +31,11 @@
 		"hide-controls-panel": "Hide controls panel",
 		"show-controls-panel": "Show controls panel",
 		"language": "Language",
-		"default-project-name": "Untitled Project"
+		"default-project-name": "Untitled Project",
+		"minimize-window": "Minimize",
+		"maximize-window": "Maximize",
+		"restore-window": "Restore",
+		"close-window": "Close"
 	},
 	"player": {
 		"recording": "Recording...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "Version {{version}}",
 		"copyright": "Copyright © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "Projects",
-		"create-new": "Create New",
-		"rename-selected": "Rename Selected",
-		"no-projects": "No projects yet.",
-		"confirm-delete": "Delete \"{{name}}\"? This cannot be undone.",
-		"failed-to-load": "Failed to load projects."
 	},
 	"relink-media": {
 		"title": "Relink Media",
@@ -196,7 +192,12 @@
 		"live-midi": "Live MIDI: {{label}}",
 		"input-mode-choose-microphone": "Input mode: choose a microphone",
 		"input-mode-desktop-audio": "Input mode: desktop audio",
-		"input-mode-choose-midi": "Input mode: choose a MIDI input"
+		"input-mode-choose-midi": "Input mode: choose a MIDI input",
+		"export-preparing": "Preparing video export…",
+		"export-rendering-video": "Rendering video {{current}} / {{total}}",
+		"export-rendering-audio": "Encoding audio…",
+		"export-merging": "Merging audio and video…",
+		"export-finished": "Video export finished"
 	},
 	"errors": {
 		"title": "Error",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "Failed to choose a video save location.",
 		"invalid-project-file": "Invalid project file.",
 		"invalid-project-snapshot": "Invalid project snapshot.",
-		"project-json-extension-required": "Project file must use the .json extension.",
+		"project-file-extension-required": "Project file must use the .json or .afx extension.",
 		"open-project-file-failed": "Failed to open project file.",
 		"save-project-file-failed": "Failed to save project file.",
 		"relink-media-failed": "Failed to relink media.",
-		"cloud-projects-removed": "Cloud projects were removed.",
-		"use-open-project": "Use Open project.",
-		"use-save-project-to-download": "Use Save project to download a new file.",
-		"use-file-system-to-delete": "Use your file system to delete local project files.",
 		"ipc-invoke-unavailable": "IPC invoke is not available in web mode.",
 		"no-audio-file-provided": "No audio file provided.",
 		"unrecognized-audio-type": "Unrecognized audio type: {{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "No video file provided.",
 		"unrecognized-video-type": "Unrecognized video type: {{type}}",
 		"read-video-file-failed": "Failed to read video file.",
-		"process-spawning-unavailable": "Process spawning is not available in web mode."
+		"process-spawning-unavailable": "Process spawning is not available in web mode.",
+		"gzip-decompress-unsupported": "Gzip decompression is not supported in this browser.",
+		"ffmpeg-export-failed": "FFmpeg video export failed.",
+		"ffmpeg-output-path-required": "Choose a save location on disk for desktop video export.",
+		"ffmpeg-temp-audio-failed": "Failed to prepare audio for export."
 	},
 	"labels": {
 		"2d-displays": "2D Displays",

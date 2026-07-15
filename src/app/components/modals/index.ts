@@ -1,6 +1,5 @@
 export { default as About } from "@/app/components/modals/About";
 export { default as CanvasSettings } from "@/app/components/modals/CanvasSettings";
-export { default as ProjectBrowser } from "@/app/components/modals/ProjectBrowser";
 export { default as RelinkMediaDialog } from "@/app/components/modals/RelinkMediaDialog";
 export { default as SaveVideoDialog } from "@/app/components/modals/SaveVideoDialog";
 export { default as UnsavedChangesDialog } from "@/app/components/dialogs/UnsavedChangesDialog";

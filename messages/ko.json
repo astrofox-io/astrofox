@@ -31,7 +31,11 @@
 		"hide-controls-panel": "컨트롤 패널 숨기기",
 		"show-controls-panel": "컨트롤 패널 표시",
 		"language": "언어",
-		"default-project-name": "제목 없는 프로젝트"
+		"default-project-name": "제목 없는 프로젝트",
+		"minimize-window": "최소화",
+		"maximize-window": "최대화",
+		"restore-window": "이전 크기로",
+		"close-window": "닫기"
 	},
 	"player": {
 		"recording": "녹화 중...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "버전 {{version}}",
 		"copyright": "Copyright © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "프로젝트",
-		"create-new": "새로 만들기",
-		"rename-selected": "선택 항목 이름 바꾸기",
-		"no-projects": "아직 프로젝트가 없습니다.",
-		"confirm-delete": "\"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
-		"failed-to-load": "프로젝트를 로드하지 못했습니다."
 	},
 	"relink-media": {
 		"title": "미디어 다시 연결",
@@ -196,7 +192,12 @@
 		"live-midi": "실시간 MIDI: {{label}}",
 		"input-mode-choose-microphone": "입력 모드: 마이크 선택",
 		"input-mode-desktop-audio": "입력 모드: 데스크톱 오디오",
-		"input-mode-choose-midi": "입력 모드: MIDI 입력 선택"
+		"input-mode-choose-midi": "입력 모드: MIDI 입력 선택",
+		"export-preparing": "동영상 내보내기 준비 중…",
+		"export-rendering-video": "동영상 렌더링 중 {{current}} / {{total}}",
+		"export-rendering-audio": "오디오 인코딩 중…",
+		"export-merging": "오디오와 동영상 병합 중…",
+		"export-finished": "동영상 내보내기 완료"
 	},
 	"errors": {
 		"title": "오류",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "비디오 저장 위치를 선택하지 못했습니다.",
 		"invalid-project-file": "잘못된 프로젝트 파일입니다.",
 		"invalid-project-snapshot": "잘못된 프로젝트 스냅샷입니다.",
-		"project-json-extension-required": "프로젝트 파일은 .json 확장자를 사용해야 합니다.",
+		"project-file-extension-required": "프로젝트 파일은 .json 또는 .afx 확장자를 사용해야 합니다.",
 		"open-project-file-failed": "프로젝트 파일을 열지 못했습니다.",
 		"save-project-file-failed": "프로젝트 파일을 저장하지 못했습니다.",
 		"relink-media-failed": "미디어를 다시 연결하지 못했습니다.",
-		"cloud-projects-removed": "클라우드 프로젝트가 제거되었습니다.",
-		"use-open-project": "프로젝트 열기를 사용하세요.",
-		"use-save-project-to-download": "새 파일을 다운로드하려면 프로젝트 저장을 사용하세요.",
-		"use-file-system-to-delete": "로컬 프로젝트 파일을 삭제하려면 파일 시스템을 사용하세요.",
 		"ipc-invoke-unavailable": "웹 모드에서는 IPC 호출을 사용할 수 없습니다.",
 		"no-audio-file-provided": "제공된 오디오 파일이 없습니다.",
 		"unrecognized-audio-type": "인식할 수 없는 오디오 유형: {{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "제공된 비디오 파일이 없습니다.",
 		"unrecognized-video-type": "인식할 수 없는 비디오 유형: {{type}}",
 		"read-video-file-failed": "비디오 파일을 읽지 못했습니다.",
-		"process-spawning-unavailable": "웹 모드에서는 프로세스 생성을 사용할 수 없습니다."
+		"process-spawning-unavailable": "웹 모드에서는 프로세스 생성을 사용할 수 없습니다.",
+		"gzip-decompress-unsupported": "이 브라우저에서는 Gzip 압축 해제가 지원되지 않습니다.",
+		"ffmpeg-export-failed": "FFmpeg 동영상보내기에 실패했습니다.",
+		"ffmpeg-output-path-required": "데스크톱 동영상 내보내기를 위해 저장 위치를 선택하세요.",
+		"ffmpeg-temp-audio-failed": "내보내기용 오디오를 준비하지 못했습니다."
 	},
 	"labels": {
 		"2d-displays": "2D 디스플레이",

@@ -8,14 +8,27 @@ const { version: appVersion } = require('./package.json');
 const resolveFromRoot = target => path.resolve(process.cwd(), target);
 const shaderLoader = resolveFromRoot('loaders/glsl-loader.cjs');
 
+// Desktop offline package uses static export. Web/Vercel keeps the default Next build.
+const isDesktopBuild = process.env.BUILD_TARGET === 'desktop';
+
 const nextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
+    NEXT_PUBLIC_BUILD_TARGET: isDesktopBuild ? 'desktop' : 'web',
   },
   typescript: {
     ignoreBuildErrors: true,
   },
   devIndicators: false,
+  ...(isDesktopBuild
+    ? {
+        output: 'export',
+        images: { unoptimized: true },
+        // Relative asset URLs work with the custom app protocol in Electron.
+        assetPrefix: '.',
+        trailingSlash: true,
+      }
+    : {}),
   turbopack: {
     resolveAlias: {
       '@': resolveFromRoot('src'),
@@ -47,12 +60,15 @@ const nextConfig = {
       },
     },
   },
-  rewrites: async () => [
-    {
-      source: '/u.js',
-      destination: 'https://cloud.umami.is/script.js',
-    },
-  ],
+  // Rewrites are unsupported with `output: 'export'` (desktop).
+  rewrites: isDesktopBuild
+    ? undefined
+    : async () => [
+        {
+          source: '/u.js',
+          destination: 'https://cloud.umami.is/script.js',
+        },
+      ],
 };
 
 export default nextConfig;

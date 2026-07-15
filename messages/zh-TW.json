@@ -31,7 +31,11 @@
 		"hide-controls-panel": "隱藏控制項面板",
 		"show-controls-panel": "顯示控制項面板",
 		"language": "語言",
-		"default-project-name": "未命名專案"
+		"default-project-name": "未命名專案",
+		"minimize-window": "最小化",
+		"maximize-window": "最大化",
+		"restore-window": "還原",
+		"close-window": "關閉"
 	},
 	"player": {
 		"recording": "錄製中...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "版本 {{version}}",
 		"copyright": "版權所有 © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "專案",
-		"create-new": "新建專案",
-		"rename-selected": "重新命名所選項目",
-		"no-projects": "尚無專案。",
-		"confirm-delete": "刪除「{{name}}」？此操作無法復原。",
-		"failed-to-load": "載入專案失敗。"
 	},
 	"relink-media": {
 		"title": "重新連結媒體",
@@ -196,7 +192,12 @@
 		"live-midi": "即時 MIDI：{{label}}",
 		"input-mode-choose-microphone": "輸入模式：選擇麥克風",
 		"input-mode-desktop-audio": "輸入模式：桌面音訊",
-		"input-mode-choose-midi": "輸入模式：選擇 MIDI 輸入"
+		"input-mode-choose-midi": "輸入模式：選擇 MIDI 輸入",
+		"export-preparing": "正在準備匯出影片…",
+		"export-rendering-video": "正在渲染影片 {{current}} / {{total}}",
+		"export-rendering-audio": "正在編碼音訊…",
+		"export-merging": "正在合併音訊與影片…",
+		"export-finished": "影片匯出完成"
 	},
 	"errors": {
 		"title": "錯誤",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "選擇影片儲存位置失敗。",
 		"invalid-project-file": "無效的專案檔案。",
 		"invalid-project-snapshot": "無效的專案快照。",
-		"project-json-extension-required": "專案檔案必須使用 .json 副檔名。",
+		"project-file-extension-required": "專案檔案必須使用 .json 或 .afx 副檔名。",
 		"open-project-file-failed": "開啟專案檔案失敗。",
 		"save-project-file-failed": "儲存專案檔案失敗。",
 		"relink-media-failed": "重新連結媒體失敗。",
-		"cloud-projects-removed": "雲端專案已移除。",
-		"use-open-project": "請使用「開啟專案」。",
-		"use-save-project-to-download": "請使用「儲存專案」下載新檔案。",
-		"use-file-system-to-delete": "請使用檔案系統刪除本機專案檔案。",
 		"ipc-invoke-unavailable": "網頁模式下無法使用 IPC 呼叫。",
 		"no-audio-file-provided": "未提供音訊檔案。",
 		"unrecognized-audio-type": "無法識別的音訊類型：{{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "未提供影片檔案。",
 		"unrecognized-video-type": "無法識別的影片類型：{{type}}",
 		"read-video-file-failed": "讀取影片檔案失敗。",
-		"process-spawning-unavailable": "網頁模式下無法啟動處理程序。"
+		"process-spawning-unavailable": "網頁模式下無法啟動處理程序。",
+		"gzip-decompress-unsupported": "此瀏覽器不支援 Gzip 解壓。",
+		"ffmpeg-export-failed": "FFmpeg 影片匯出失敗。",
+		"ffmpeg-output-path-required": "桌面匯出請選擇磁碟上的儲存位置。",
+		"ffmpeg-temp-audio-failed": "無法準備用於匯出的音訊。"
 	},
 	"labels": {
 		"2d-displays": "2D 顯示",

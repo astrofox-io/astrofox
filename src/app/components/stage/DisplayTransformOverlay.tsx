@@ -1,5 +1,5 @@
 import { updateElementProperties } from "@/app/actions/scenes";
-import { stage } from "@/app/global";
+import { events, stage } from "@/app/global";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -258,6 +258,23 @@ function buildDragResult(
 	};
 }
 
+function framesEqual(
+	a: DisplayTransformFrame | null,
+	b: DisplayTransformFrame | null,
+) {
+	if (a === b) {
+		return true;
+	}
+
+	if (!a || !b) {
+		return false;
+	}
+
+	return (Object.keys(a) as (keyof DisplayTransformFrame)[]).every(
+		(key) => a[key] === b[key],
+	);
+}
+
 function hasChangedProperties(
 	startProperties: Record<string, unknown>,
 	finalProperties: Record<string, unknown> | null,
@@ -346,25 +363,39 @@ export default function DisplayTransformOverlay({
 	zoom,
 }: DisplayTransformOverlayProps) {
 	const { t } = useTranslation(undefined, { keyPrefix: "stage" });
-	const resolvedFrame = React.useMemo(
-		() =>
-			getDisplayTransformFrame(
-				stage.getStageElementById(activeElementId || ""),
-			),
-		[activeElementId, displayDescriptor],
-	);
 	const [draftFrame, setDraftFrame] =
-		React.useState<DisplayTransformFrame | null>(resolvedFrame);
+		React.useState<DisplayTransformFrame | null>(() =>
+			getDisplayTransformFrame(stage.getStageElementById(activeElementId || "")),
+		);
 	const [hoverHandle, setHoverHandle] = React.useState<Handle | null>(null);
 	const interactionRef = React.useRef<DragInteraction | null>(null);
 
+	// Re-derive the frame from the live display. Live property edits (e.g. typing
+	// text) update the display element and request a render without committing to
+	// the scene store, so we sync off the render loop rather than a prop change —
+	// otherwise the overlay would go stale until the layer is reselected.
 	React.useEffect(() => {
-		if (interactionRef.current) {
-			return;
+		function refresh() {
+			if (interactionRef.current) {
+				return;
+			}
+
+			const nextFrame = getDisplayTransformFrame(
+				stage.getStageElementById(activeElementId || ""),
+			);
+
+			setDraftFrame((current) =>
+				framesEqual(current, nextFrame) ? current : nextFrame,
+			);
 		}
 
-		setDraftFrame(resolvedFrame);
-	}, [resolvedFrame]);
+		refresh();
+		events.on("render", refresh);
+
+		return () => {
+			events.off("render", refresh);
+		};
+	}, [activeElementId, displayDescriptor]);
 
 	const handleWindowPointerMove = React.useCallback(
 		(event: PointerEvent) => {

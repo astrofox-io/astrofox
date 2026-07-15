@@ -31,7 +31,11 @@
 		"hide-controls-panel": "隐藏控件面板",
 		"show-controls-panel": "显示控件面板",
 		"language": "语言",
-		"default-project-name": "未命名项目"
+		"default-project-name": "未命名项目",
+		"minimize-window": "最小化",
+		"maximize-window": "最大化",
+		"restore-window": "还原",
+		"close-window": "关闭"
 	},
 	"player": {
 		"recording": "录制中...",
@@ -90,14 +94,6 @@
 	"about": {
 		"version": "版本 {{version}}",
 		"copyright": "版权所有 © Mike Cao"
-	},
-	"project-browser": {
-		"projects": "项目",
-		"create-new": "新建项目",
-		"rename-selected": "重命名所选",
-		"no-projects": "暂无项目。",
-		"confirm-delete": "删除“{{name}}”？此操作无法撤销。",
-		"failed-to-load": "加载项目失败。"
 	},
 	"relink-media": {
 		"title": "重新链接媒体",
@@ -196,7 +192,12 @@
 		"live-midi": "实时 MIDI：{{label}}",
 		"input-mode-choose-microphone": "输入模式：选择麦克风",
 		"input-mode-desktop-audio": "输入模式：桌面音频",
-		"input-mode-choose-midi": "输入模式：选择 MIDI 输入"
+		"input-mode-choose-midi": "输入模式：选择 MIDI 输入",
+		"export-preparing": "正在准备导出视频…",
+		"export-rendering-video": "正在渲染视频 {{current}} / {{total}}",
+		"export-rendering-audio": "正在编码音频…",
+		"export-merging": "正在合并音视频…",
+		"export-finished": "视频导出完成"
 	},
 	"errors": {
 		"title": "错误",
@@ -231,14 +232,10 @@
 		"choose-video-save-location-failed": "选择视频保存位置失败。",
 		"invalid-project-file": "无效的项目文件。",
 		"invalid-project-snapshot": "无效的项目快照。",
-		"project-json-extension-required": "项目文件必须使用 .json 扩展名。",
+		"project-file-extension-required": "项目文件必须使用 .json 或 .afx 扩展名。",
 		"open-project-file-failed": "打开项目文件失败。",
 		"save-project-file-failed": "保存项目文件失败。",
 		"relink-media-failed": "重新链接媒体失败。",
-		"cloud-projects-removed": "云项目已移除。",
-		"use-open-project": "请使用“打开项目”。",
-		"use-save-project-to-download": "请使用“保存项目”下载新文件。",
-		"use-file-system-to-delete": "请使用文件系统删除本地项目文件。",
 		"ipc-invoke-unavailable": "网页模式下无法使用 IPC 调用。",
 		"no-audio-file-provided": "未提供音频文件。",
 		"unrecognized-audio-type": "无法识别的音频类型：{{type}}",
@@ -247,7 +244,11 @@
 		"no-video-file-provided": "未提供视频文件。",
 		"unrecognized-video-type": "无法识别的视频类型：{{type}}",
 		"read-video-file-failed": "读取视频文件失败。",
-		"process-spawning-unavailable": "网页模式下无法启动进程。"
+		"process-spawning-unavailable": "网页模式下无法启动进程。",
+		"gzip-decompress-unsupported": "此浏览器不支持 Gzip 解压。",
+		"ffmpeg-export-failed": "FFmpeg 视频导出失败。",
+		"ffmpeg-output-path-required": "桌面导出请选择磁盘上的保存位置。",
+		"ffmpeg-temp-audio-failed": "无法准备用于导出的音频。"
 	},
 	"labels": {
 		"2d-displays": "2D 显示",

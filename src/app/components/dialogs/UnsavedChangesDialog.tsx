@@ -1,6 +1,6 @@
 import useProject, {
 	newProject,
-	openProjectBrowser,
+	openProjectFile,
 	saveProject,
 } from "@/app/actions/project";
 import Dialog from "@/app/components/window/Dialog";
@@ -24,7 +24,7 @@ export default function UnsavedChangesDialog({
 		if (actionType === "new-project") {
 			await newProject();
 		} else if (actionType === "open-project") {
-			await openProjectBrowser();
+			await openProjectFile();
 		}
 	}
 

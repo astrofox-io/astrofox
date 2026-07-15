@@ -11,6 +11,7 @@ Thumbs.db
 # Environment
 .idea
 .env
+.env.*
 *.iml
 *.bat
 *.map
@@ -21,6 +22,8 @@ node_modules
 bin
 coverage
 dist
+out
+release
 .next
 /plugins/
 /resources/

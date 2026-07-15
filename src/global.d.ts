@@ -1,5 +1,62 @@
+interface AstrofoxDesktopBridge {
+	isDesktop: true;
+	getEnvironment: () => Record<string, unknown>;
+	minimizeWindow: () => Promise<void>;
+	maximizeWindow: () => Promise<{
+		focused: boolean;
+		maximized: boolean;
+		minimized: boolean;
+	} | void>;
+	closeWindow: () => Promise<void>;
+	getWindowState: () => Promise<{
+		focused: boolean;
+		maximized: boolean;
+		minimized: boolean;
+	}>;
+	openPath?: (targetPath: string) => Promise<string>;
+	showItemInFolder?: (targetPath: string) => Promise<void>;
+	showSaveDialog?: (options?: {
+		title?: string;
+		defaultPath?: string;
+		filters?: Array<{ name: string; extensions: string[] }>;
+	}) => Promise<{ canceled: boolean; filePath: string }>;
+	showOpenDialog?: (options?: {
+		title?: string;
+		defaultPath?: string;
+		filters?: Array<{ name: string; extensions: string[] }>;
+		multiple?: boolean;
+	}) => Promise<{ canceled: boolean; filePaths: string[] }>;
+	writeTempFile?: (
+		name: string,
+		data: ArrayBuffer | Uint8Array,
+	) => Promise<{ filePath: string }>;
+	removePath?: (filePath: string) => Promise<{ ok: boolean }>;
+	readFile?: (
+		filePath: string,
+	) => Promise<{ name: string; data: Uint8Array | ArrayBuffer }>;
+	ffmpegRun?: (args: string[]) => Promise<{ ok: boolean }>;
+	ffmpegStartPipe?: (
+		args: string[],
+		id?: string,
+	) => Promise<{ id: string }>;
+	ffmpegWrite?: (
+		id: string,
+		data: ArrayBuffer | Uint8Array,
+	) => Promise<{ ok: boolean; bytes: number }>;
+	ffmpegEndPipe?: (id: string) => Promise<{ ok: boolean }>;
+	ffmpegKill?: (id: string) => Promise<{ ok: boolean }>;
+	onWindowStateChanged?: (
+		callback: (state: {
+			focused: boolean;
+			maximized: boolean;
+			minimized: boolean;
+		}) => void,
+	) => () => void;
+}
+
 interface Window {
 	_astrofox: unknown;
+	__ASTROFOX__?: AstrofoxDesktopBridge;
 	showOpenFilePicker?: (options?: {
 		types?: Array<{ description: string; accept: Record<string, string[]> }>;
 		multiple?: boolean;
