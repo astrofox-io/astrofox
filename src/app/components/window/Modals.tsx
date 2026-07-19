@@ -30,6 +30,7 @@ export default function Modals() {
 			>
 				<DialogContent
 					keepMounted
+					initialFocus={component === "CanvasSettings" ? false : undefined}
 					showCloseButton={false}
 					className="w-auto max-h-[85vh] max-w-[calc(100%-2rem)] gap-0 overflow-hidden rounded-md border border-neutral-700 bg-neutral-800 p-0 text-neutral-100 sm:max-w-[calc(100%-2rem)]"
 				>

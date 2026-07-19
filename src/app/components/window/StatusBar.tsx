@@ -11,11 +11,13 @@ interface StatsState {
 
 export default function StatusBar() {
 	const statusText = useAppStore((state) => state.statusText);
-	const [{ fps }, setState] = useState<StatsState>({});
+	const [{ fps }, setState] = useState<StatsState>({ fps: "—" });
 
 	function updateStats() {
+		const currentFPS = renderer.getFPS();
+
 		setState({
-			fps: `${renderer.getFPS()} FPS`,
+			fps: renderer.rendering ? `${currentFPS} FPS` : "—",
 		});
 	}
 

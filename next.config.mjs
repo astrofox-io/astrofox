@@ -10,8 +10,10 @@ const shaderLoader = resolveFromRoot('loaders/glsl-loader.cjs');
 
 // Desktop offline package uses static export. Web/Vercel keeps the default Next build.
 const isDesktopBuild = process.env.BUILD_TARGET === 'desktop';
+const devDistDir = process.env.NEXT_DEV_DIST_DIR;
 
 const nextConfig = {
+  ...(devDistDir ? { distDir: devDistDir } : {}),
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
     NEXT_PUBLIC_BUILD_TARGET: isDesktopBuild ? 'desktop' : 'web',

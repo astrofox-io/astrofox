@@ -172,7 +172,6 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
 						value={draftProjectName}
 						width={220}
 						buffered
-						autoSelect
 					/>
 					<Setting
 						label={t("format")}

@@ -20,8 +20,8 @@ const isDev =
 	process.env.NODE_ENV === "development" ||
 	!app.isPackaged;
 
-const WINDOW_WIDTH = 1320;
-const WINDOW_HEIGHT = 1200;
+const WINDOW_WIDTH = 1920;
+const WINDOW_HEIGHT = 1080;
 const WINDOW_MIN_WIDTH = 800;
 const WINDOW_MIN_HEIGHT = 600;
 const WINDOW_BGCOLOR = "#171717";

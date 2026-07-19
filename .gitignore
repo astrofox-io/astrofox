@@ -25,6 +25,7 @@ dist
 out
 release
 .next
+.next-desktop
 /plugins/
 /resources/
 

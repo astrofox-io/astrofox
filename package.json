@@ -18,7 +18,7 @@
     "preview": "next start",
     "lint": "biome check .",
     "lint-fix": "biome check . --write",
-    "dev:desktop": "dotenv -- concurrently -k -n web,electron -c cyan,magenta \"next dev --turbo\" \"node ./scripts/dev-electron.mjs\"",
+    "dev:desktop": "dotenv -- node ./scripts/dev-electron.mjs",
     "build:renderer": "cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
     "build:desktop": "pnpm build:renderer && electron-builder --publish never",
     "dist:win": "pnpm build:renderer && electron-builder --win --publish never",
@@ -130,6 +130,7 @@
     "dotenv-cli": "^11.0.0",
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",
+    "get-port": "^7.2.0",
     "typescript": "6.0.3",
     "wait-on": "^8.0.4"
   }
