@@ -18,7 +18,7 @@
     "preview": "next start",
     "lint": "biome check .",
     "lint-fix": "biome check . --write",
-    "dev:desktop": "concurrently -k -n web,electron -c cyan,magenta \"pnpm dev\" \"wait-on http://127.0.0.1:3000 && cross-env ELECTRON_DEV=1 electron .\"",
+    "dev:desktop": "dotenv -- concurrently -k -n web,electron -c cyan,magenta \"next dev --turbo\" \"node ./scripts/dev-electron.mjs\"",
     "build:renderer": "cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
     "build:desktop": "pnpm build:renderer && electron-builder --publish never",
     "dist:win": "pnpm build:renderer && electron-builder --win --publish never",

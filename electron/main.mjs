@@ -25,7 +25,9 @@ const WINDOW_HEIGHT = 1200;
 const WINDOW_MIN_WIDTH = 800;
 const WINDOW_MIN_HEIGHT = 600;
 const WINDOW_BGCOLOR = "#171717";
-const DEV_SERVER_URL = process.env.ELECTRON_START_URL || "http://localhost:3000";
+const DEV_SERVER_URL =
+	process.env.ELECTRON_START_URL ||
+	`http://localhost:${process.env.PORT || 3000}`;
 
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
