@@ -1,42 +1,42 @@
-import type { DragHandlers } from "@/lib/types";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef } from 'react';
+import type { DragHandlers } from '@/lib/types';
 
 export default function useMouseDrag() {
-	const eventHandlers = useRef<DragHandlers | null>(null);
+  const eventHandlers = useRef<DragHandlers | null>(null);
 
-	const handleMouseMove = useCallback((e: MouseEvent) => {
-		const { onDrag } = eventHandlers.current || {};
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const { onDrag } = eventHandlers.current || {};
 
-		if (onDrag) {
-			onDrag(e);
-		}
-	}, []);
+    if (onDrag) {
+      onDrag(e);
+    }
+  }, []);
 
-	const handleMouseUp = useCallback((e: MouseEvent) => {
-		const { onDragEnd } = eventHandlers.current || {};
+  const handleMouseUp = useCallback((e: MouseEvent) => {
+    const { onDragEnd } = eventHandlers.current || {};
 
-		window.removeEventListener("mousemove", handleMouseMove);
-		window.removeEventListener("mousemove", handleMouseUp);
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('mousemove', handleMouseUp);
 
-		if (onDragEnd) {
-			onDragEnd(e);
-		}
-	}, []);
+    if (onDragEnd) {
+      onDragEnd(e);
+    }
+  }, []);
 
-	function startDrag(e: React.MouseEvent, props: DragHandlers = {}) {
-		e.persist();
+  function startDrag(e: React.MouseEvent, props: DragHandlers = {}) {
+    e.persist();
 
-		const { onDrag, onDragStart, onDragEnd } = props;
+    const { onDrag, onDragStart, onDragEnd } = props;
 
-		eventHandlers.current = { onDrag, onDragStart, onDragEnd };
+    eventHandlers.current = { onDrag, onDragStart, onDragEnd };
 
-		window.addEventListener("mousemove", handleMouseMove);
-		window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
 
-		if (onDragStart) {
-			onDragStart(e);
-		}
-	}
+    if (onDragStart) {
+      onDragStart(e);
+    }
+  }
 
-	return startDrag;
+  return startDrag;
 }

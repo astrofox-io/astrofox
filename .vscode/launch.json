@@ -7,7 +7,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [ "run", "build" ],
+      "runtimeArgs": ["run", "build"]
     },
     {
       "name": "Build: yarn dev",
@@ -15,7 +15,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [ "run", "dev" ],
+      "runtimeArgs": ["run", "dev"]
     },
     {
       "name": "Build: yarn test",
@@ -23,7 +23,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [ "run", "test" ],
+      "runtimeArgs": ["run", "test"]
     },
     {
       "name": "React: DevServer",
@@ -32,7 +32,7 @@
       "cwd": "${workspaceFolder}",
       "env": { "PORT": "3001" },
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [ "run", "dev" ],
+      "runtimeArgs": ["run", "dev"]
     },
     {
       "name": "Electron: Main",
@@ -41,7 +41,7 @@
       "cwd": "${workspaceFolder}",
       "protocol": "inspector",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-      "runtimeArgs": [ "--remote-debugging-port=9223", "." ],
+      "runtimeArgs": ["--remote-debugging-port=9223", "."],
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       }
@@ -58,11 +58,7 @@
   "compounds": [
     {
       "name": "Astrofox: Debug",
-      "configurations": [
-        "React: DevServer",
-        "Electron: Main",
-        "Electron: Renderer",
-      ]
+      "configurations": ["React: DevServer", "Electron: Main", "Electron: Renderer"]
     }
   ]
 }

@@ -1,71 +1,66 @@
-import { Button } from "@/components/ui/button";
-import { DialogFooter, DialogTitle } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
-import type React from "react";
-import { Children, cloneElement, isValidElement } from "react";
-import { useTranslation } from "react-i18next";
+import type React from 'react';
+import { Children, cloneElement, isValidElement } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { DialogFooter, DialogTitle } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 interface ModalWindowProps {
-	className?: string;
-	title?: string;
-	titleKey?: string;
-	titleOptions?: Record<string, unknown>;
-	buttons?: string[];
-	showCloseButton?: boolean;
-	onClose?: (value?: string) => void;
-	children?: React.ReactNode;
+  className?: string;
+  title?: string;
+  titleKey?: string;
+  titleOptions?: Record<string, unknown>;
+  buttons?: string[];
+  showCloseButton?: boolean;
+  onClose?: (value?: string) => void;
+  children?: React.ReactNode;
 }
 
 export default function ModalWindow({
-	className,
-	title,
-	titleKey,
-	titleOptions,
-	buttons,
-	showCloseButton: _showCloseButton = true,
-	onClose,
-	children,
+  className,
+  title,
+  titleKey,
+  titleOptions,
+  buttons,
+  showCloseButton: _showCloseButton = true,
+  onClose,
+  children,
 }: ModalWindowProps) {
-	const { t } = useTranslation();
-	const resolvedTitle = titleKey ? String(t(titleKey, titleOptions)) : title;
+  const { t } = useTranslation();
+  const resolvedTitle = titleKey ? String(t(titleKey, titleOptions)) : title;
 
-	return (
-		<div
-			className={cn(
-				"relative flex min-h-0 min-w-96 max-w-full max-h-full flex-col overflow-hidden rounded-md",
-				className,
-			)}
-		>
-			{resolvedTitle && (
-				<div className="shrink-0 bg-neutral-800 px-4 py-2.5 text-center">
-					<DialogTitle className="cursor-default text-sm uppercase tracking-wider text-neutral-100">
-						{resolvedTitle}
-					</DialogTitle>
-				</div>
-			)}
-			<div className="relative flex min-h-0 flex-1 flex-col bg-neutral-800">
-				{Children.map(children, (child) =>
-					isValidElement<{ onClose?: (value?: string) => void }>(child)
-						? cloneElement(child, { onClose })
-						: child,
-				)}
-			</div>
-			{buttons && (
-				<div className="shrink-0 bg-neutral-800 px-4 py-3">
-					<DialogFooter className="sm:justify-end">
-						{buttons.map((text: string) => (
-							<Button
-								key={text}
-								variant="default"
-								size="sm"
-								onClick={() => onClose?.(text)}
-							>
-								{text}
-							</Button>
-						))}
-					</DialogFooter>
-				</div>
-			)}
-		</div>
-	);
+  return (
+    <div
+      className={cn(
+        'relative flex min-h-0 min-w-96 max-w-full max-h-full flex-col overflow-hidden rounded-md',
+        className,
+      )}
+    >
+      {resolvedTitle && (
+        <div className="shrink-0 bg-neutral-800 px-4 py-2.5 text-center">
+          <DialogTitle className="cursor-default text-sm uppercase tracking-wider text-neutral-100">
+            {resolvedTitle}
+          </DialogTitle>
+        </div>
+      )}
+      <div className="relative flex min-h-0 flex-1 flex-col bg-neutral-800">
+        {Children.map(children, child =>
+          isValidElement<{ onClose?: (value?: string) => void }>(child)
+            ? cloneElement(child, { onClose })
+            : child,
+        )}
+      </div>
+      {buttons && (
+        <div className="shrink-0 bg-neutral-800 px-4 py-3">
+          <DialogFooter className="sm:justify-end">
+            {buttons.map((text: string) => (
+              <Button key={text} variant="default" size="sm" onClick={() => onClose?.(text)}>
+                {text}
+              </Button>
+            ))}
+          </DialogFooter>
+        </div>
+      )}
+    </div>
+  );
 }

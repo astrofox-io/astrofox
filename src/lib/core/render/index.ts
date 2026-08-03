@@ -1,1 +1,1 @@
-export { default as CompositorBackend } from "./CompositorBackend";
+export { default as CompositorBackend } from './CompositorBackend';

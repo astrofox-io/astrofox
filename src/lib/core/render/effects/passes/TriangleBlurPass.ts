@@ -1,25 +1,24 @@
 // @ts-nocheck
-import { MultiPass, ShaderPass } from "../../composer";
-import TriangleBlurShader from "../shaders/TriangleBlurShader";
+import { MultiPass, ShaderPass } from '../../composer';
+import TriangleBlurShader from '../shaders/TriangleBlurShader';
 
 const BLUR_PASSES = 4;
 
 export default class TriangleBlurPass extends MultiPass {
-	constructor() {
-		const passes = [];
+  constructor() {
+    const passes = [];
 
-		for (let i = 0; i < BLUR_PASSES; i += 1) {
-			passes.push(new ShaderPass(TriangleBlurShader));
-		}
+    for (let i = 0; i < BLUR_PASSES; i += 1) {
+      passes.push(new ShaderPass(TriangleBlurShader));
+    }
 
-		super(passes);
-	}
+    super(passes);
+  }
 
-	setUniforms({ amount, width, height }) {
-		this.passes.forEach((pass, index) => {
-			const delta =
-				index % 2 === 0 ? [amount / width, 0] : [0, amount / height];
-			pass.setUniforms({ delta });
-		});
-	}
+  setUniforms({ amount, width, height }) {
+    this.passes.forEach((pass, index) => {
+      const delta = index % 2 === 0 ? [amount / width, 0] : [0, amount / height];
+      pass.setUniforms({ delta });
+    });
+  }
 }

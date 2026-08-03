@@ -1,48 +1,46 @@
-import Entity from "@/lib/core/Entity";
-import { normalize } from "@/lib/utils/math";
+import Entity from '@/lib/core/Entity';
+import { normalize } from '@/lib/utils/math';
 
 export default class WaveParser extends Entity {
-	output: Float32Array;
-	buffer: Float32Array;
+  output: Float32Array;
+  buffer: Float32Array;
 
-	static defaultProperties = {
-		smoothingTimeConstant: 0,
-	};
+  static defaultProperties = {
+    smoothingTimeConstant: 0,
+  };
 
-	constructor(properties?: Record<string, unknown>) {
-		super("WaveParser", { ...WaveParser.defaultProperties, ...properties });
+  constructor(properties?: Record<string, unknown>) {
+    super('WaveParser', { ...WaveParser.defaultProperties, ...properties });
 
-		this.output = new Float32Array();
-		this.buffer = new Float32Array();
-	}
+    this.output = new Float32Array();
+    this.buffer = new Float32Array();
+  }
 
-	parseTimeData(data: Float32Array, size: number): Float32Array {
-		let { output, buffer } = this;
-		const { smoothingTimeConstant } = this.properties as Record<string, number>;
-		const step = data.length / size;
+  parseTimeData(data: Float32Array, size: number): Float32Array {
+    let { output, buffer } = this;
+    const { smoothingTimeConstant } = this.properties as Record<string, number>;
+    const step = data.length / size;
 
-		// Resize data arrays
-		if (output === undefined || output.length !== size) {
-			output = new Float32Array(size);
-			buffer = new Float32Array(size);
-			this.output = output;
-			this.buffer = buffer;
-		}
+    // Resize data arrays
+    if (output === undefined || output.length !== size) {
+      output = new Float32Array(size);
+      buffer = new Float32Array(size);
+      this.output = output;
+      this.buffer = buffer;
+    }
 
-		for (let i = 0, j = 0; i < size; i += 1, j += step) {
-			output[i] = normalize(data[~~j], -1, 1);
-		}
+    for (let i = 0, j = 0; i < size; i += 1, j += step) {
+      output[i] = normalize(data[~~j], -1, 1);
+    }
 
-		// Apply smoothing
-		if (smoothingTimeConstant > 0) {
-			for (let i = 0; i < size; i += 1) {
-				output[i] =
-					buffer[i] * smoothingTimeConstant +
-					output[i] * (1.0 - smoothingTimeConstant);
-				buffer[i] = output[i];
-			}
-		}
+    // Apply smoothing
+    if (smoothingTimeConstant > 0) {
+      for (let i = 0; i < size; i += 1) {
+        output[i] = buffer[i] * smoothingTimeConstant + output[i] * (1.0 - smoothingTimeConstant);
+        buffer[i] = output[i];
+      }
+    }
 
-		return output;
-	}
+    return output;
+  }
 }

@@ -1,28 +1,28 @@
-import Display from "@/lib/core/Display";
+import Display from '@/lib/core/Display';
 
 export default class Effect extends Display {
-	[key: string]: unknown;
+  [key: string]: unknown;
 
-	constructor(
-		Type: {
-			config: {
-				name: string;
-				label: string;
-				defaultProperties: Record<string, unknown>;
-			};
-		},
-		properties?: Record<string, unknown>,
-	) {
-		super(Type, properties);
+  constructor(
+    Type: {
+      config: {
+        name: string;
+        label: string;
+        defaultProperties: Record<string, unknown>;
+      };
+    },
+    properties?: Record<string, unknown>,
+  ) {
+    super(Type, properties);
 
-		this.type = "effect";
-	}
+    this.type = 'effect';
+  }
 
-	update(properties?: Record<string, unknown>) {
-		return super.update(properties);
-	}
+  update(properties?: Record<string, unknown>) {
+    return super.update(properties);
+  }
 
-	updatePass() {}
+  updatePass() {}
 
-	render(..._args: unknown[]) {}
+  render(..._args: unknown[]) {}
 }

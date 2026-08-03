@@ -1,155 +1,152 @@
-import WaveParser from "@/lib/audio/WaveParser";
-import CanvasWave from "@/lib/canvas/CanvasWave";
-import Display from "@/lib/core/Display";
-import { stageHeight, stageWidth } from "@/lib/utils/controls";
-import {
-	DEFAULT_CANVAS_HEIGHT,
-	DEFAULT_CANVAS_WIDTH,
-} from "@/app/constants";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from '@/app/constants';
+import WaveParser from '@/lib/audio/WaveParser';
+import CanvasWave from '@/lib/canvas/CanvasWave';
+import Display from '@/lib/core/Display';
+import { stageHeight, stageWidth } from '@/lib/utils/controls';
 
 export default class SoundWaveDisplay extends Display {
-	declare wave: CanvasWave;
-	declare parser: WaveParser;
+  declare wave: CanvasWave;
+  declare parser: WaveParser;
 
-	static config = {
-		name: "SoundWaveDisplay",
-		description: "Displays a sound wave.",
-		type: "display",
-		label: "Sound Wave",
-		defaultProperties: {
-			stroke: true,
-			strokeColor: "#FFFFFF",
-			fill: false,
-			fillColor: "#FFFFFF",
-			taper: false,
-			width: DEFAULT_CANVAS_WIDTH,
-			height: DEFAULT_CANVAS_HEIGHT / 2,
-			midpoint: DEFAULT_CANVAS_HEIGHT / 4,
-			lineWidth: 1.0,
-			wavelength: 0,
-			smoothingTimeConstant: 0,
-			x: 0,
-			y: 0,
-			rotation: 0,
-			opacity: 1.0,
-		},
-		controls: {
-			lineWidth: {
-				label: "Line Width",
-				type: "number",
-				min: 1,
-				max: 10,
-				withRange: true,
-			},
-			wavelength: {
-				label: "Wavelength",
-				type: "number",
-				min: 0,
-				max: 1.0,
-				step: 0.01,
-				withRange: true,
-			},
-			smoothingTimeConstant: {
-				label: "Smoothing",
-				type: "number",
-				min: 0,
-				max: 0.99,
-				step: 0.01,
-				withRange: true,
-			},
-			stroke: {
-				label: "Stroke",
-				type: "toggle",
-			},
-			strokeColor: {
-				label: "Stroke Color",
-				type: "color",
-			},
-			fill: {
-				label: "Fill",
-				type: "toggle",
-			},
-			fillColor: {
-				label: "Fill Color",
-				type: "color",
-			},
-			taper: {
-				label: "Taper Edges",
-				type: "toggle",
-			},
-			width: {
-				label: "Width",
-				type: "number",
-				min: 1,
-				max: stageWidth((n: number) => n * 2),
-				withRange: true,
-			},
-			height: {
-				label: "Height",
-				type: "number",
-				min: 1,
-				max: stageHeight((n: number) => n * 2),
-				withRange: true,
-			},
-			x: {
-				label: "X",
-				type: "number",
-				min: stageWidth((n: number) => -n),
-				max: stageWidth(),
-				withRange: true,
-				hideFill: true,
-			},
-			y: {
-				label: "Y",
-				type: "number",
-				min: stageHeight((n: number) => -n),
-				max: stageHeight(),
-				withRange: true,
-				hideFill: true,
-			},
-			rotation: {
-				label: "Rotation",
-				type: "number",
-				min: 0,
-				max: 360,
-				withRange: true,
-				withReactor: true,
-			},
-			opacity: {
-				label: "Opacity",
-				type: "number",
-				min: 0,
-				max: 1.0,
-				step: 0.01,
-				withRange: true,
-				withReactor: true,
-			},
-		},
-	};
+  static config = {
+    name: 'SoundWaveDisplay',
+    description: 'Displays a sound wave.',
+    type: 'display',
+    label: 'Sound Wave',
+    defaultProperties: {
+      stroke: true,
+      strokeColor: '#FFFFFF',
+      fill: false,
+      fillColor: '#FFFFFF',
+      taper: false,
+      width: DEFAULT_CANVAS_WIDTH,
+      height: DEFAULT_CANVAS_HEIGHT / 2,
+      midpoint: DEFAULT_CANVAS_HEIGHT / 4,
+      lineWidth: 1.0,
+      wavelength: 0,
+      smoothingTimeConstant: 0,
+      x: 0,
+      y: 0,
+      rotation: 0,
+      opacity: 1.0,
+    },
+    controls: {
+      lineWidth: {
+        label: 'Line Width',
+        type: 'number',
+        min: 1,
+        max: 10,
+        withRange: true,
+      },
+      wavelength: {
+        label: 'Wavelength',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+      },
+      smoothingTimeConstant: {
+        label: 'Smoothing',
+        type: 'number',
+        min: 0,
+        max: 0.99,
+        step: 0.01,
+        withRange: true,
+      },
+      stroke: {
+        label: 'Stroke',
+        type: 'toggle',
+      },
+      strokeColor: {
+        label: 'Stroke Color',
+        type: 'color',
+      },
+      fill: {
+        label: 'Fill',
+        type: 'toggle',
+      },
+      fillColor: {
+        label: 'Fill Color',
+        type: 'color',
+      },
+      taper: {
+        label: 'Taper Edges',
+        type: 'toggle',
+      },
+      width: {
+        label: 'Width',
+        type: 'number',
+        min: 1,
+        max: stageWidth((n: number) => n * 2),
+        withRange: true,
+      },
+      height: {
+        label: 'Height',
+        type: 'number',
+        min: 1,
+        max: stageHeight((n: number) => n * 2),
+        withRange: true,
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: stageWidth((n: number) => -n),
+        max: stageWidth(),
+        withRange: true,
+        hideFill: true,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: stageHeight((n: number) => -n),
+        max: stageHeight(),
+        withRange: true,
+        hideFill: true,
+      },
+      rotation: {
+        label: 'Rotation',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
+    },
+  };
 
-	constructor(properties?: Record<string, unknown>) {
-		super(SoundWaveDisplay, properties);
+  constructor(properties?: Record<string, unknown>) {
+    super(SoundWaveDisplay, properties);
 
-		const canvas = new OffscreenCanvas(1, 1);
-		const props = this.properties as Record<string, unknown>;
-		this.wave = new CanvasWave(props, canvas);
-		this.parser = new WaveParser();
-	}
+    const canvas = new OffscreenCanvas(1, 1);
+    const props = this.properties as Record<string, unknown>;
+    this.wave = new CanvasWave(props, canvas);
+    this.parser = new WaveParser();
+  }
 
-	update(properties: Record<string, unknown>) {
-		const changed = super.update(properties);
+  update(properties: Record<string, unknown>) {
+    const changed = super.update(properties);
 
-		if (changed) {
-			const { height } = properties;
+    if (changed) {
+      const { height } = properties;
 
-			if (height !== undefined) {
-				properties.midpoint = (height as number) / 2;
-			}
+      if (height !== undefined) {
+        properties.midpoint = (height as number) / 2;
+      }
 
-			this.wave.update(properties);
-			this.parser.update(properties);
-		}
+      this.wave.update(properties);
+      this.parser.update(properties);
+    }
 
-		return changed;
-	}
+    return changed;
+  }
 }

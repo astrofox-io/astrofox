@@ -1,72 +1,62 @@
-import useStage, {
-	setZoom,
-	zoomIn,
-	zoomOut,
-	fitToScreen,
-} from "@/app/actions/stage";
-import { Button } from "@/components/ui/button";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import useStage, { fitToScreen, setZoom, zoomIn, zoomOut } from '@/app/actions/stage';
+import { Button } from '@/components/ui/button';
 
 export default function Zoom() {
-	const { t } = useTranslation(undefined, { keyPrefix: "zoom" });
-	const { width, height, zoom } = useStage((state) => state);
-	const canvasSizeLabel = t("reset-zoom-to-canvas-size", { width, height });
-	const zoomLevelLabel = t("zoom-level", { zoom: ~~(zoom * 100) });
+  const { t } = useTranslation(undefined, { keyPrefix: 'zoom' });
+  const { width, height, zoom } = useStage(state => state);
+  const canvasSizeLabel = t('reset-zoom-to-canvas-size', { width, height });
+  const zoomLevelLabel = t('zoom-level', { zoom: ~~(zoom * 100) });
 
-	return (
-		<div
-			className={
-				"flex w-full items-center justify-center gap-2 leading-7 overflow-hidden"
-			}
-		>
-			<Button
-				variant="ghost"
-				className="h-7 bg-transparent p-0 text-inherit hover:bg-transparent"
-				aria-label={canvasSizeLabel}
-				onClick={() => setZoom(1)}
-			>
-				{`${width} x ${height}`}
-			</Button>
-			<Button
-				variant="ghost"
-				size="sm"
-				className="w-8 h-7 text-sm bg-transparent text-inherit p-0 hover:bg-primary"
-				aria-label={t("zoom-out")}
-				onClick={zoomOut}
-			>
-				{"\uff0d"}
-			</Button>
-			<input
-				className={
-					"[--thumb-size:8px] [--track-size:2px] relative my-0 mx-0 h-2.5 w-24 appearance-none bg-transparent text-neutral-100 [-webkit-appearance:none] [&::-webkit-slider-thumb]:[-webkit-appearance:none] [&::-webkit-slider-thumb]:[box-sizing:border-box] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[currentColor] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-current [&::-webkit-slider-thumb]:w-[var(--thumb-size)] [&::-webkit-slider-thumb]:h-[var(--thumb-size)] [&::-webkit-slider-thumb]:mt-[calc((var(--track-size)_-_var(--thumb-size))_/_2)] [&::-webkit-slider-runnable-track]:w-full [&::-webkit-slider-runnable-track]:h-[var(--track-size)] [&::-webkit-slider-runnable-track]:rounded-sm [&::-webkit-slider-runnable-track]:border-0 [&::-webkit-slider-runnable-track]:bg-[currentColor] [&::-moz-range-thumb]:[box-sizing:border-box] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[currentColor] [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-current [&::-moz-range-thumb]:w-[var(--thumb-size)] [&::-moz-range-thumb]:h-[var(--thumb-size)] [&::-moz-range-track]:w-full [&::-moz-range-track]:h-[var(--track-size)] [&::-moz-range-track]:rounded-sm [&::-moz-range-track]:border-0 [&::-moz-range-track]:bg-[currentColor]"
-				}
-				type="range"
-				name="zoom"
-				aria-label={zoomLevelLabel}
-				value={zoom}
-				onChange={(e) => setZoom(Number(e.target.value))}
-				min={0.1}
-				max={3.0}
-				step={0.02}
-			/>
-			<Button
-				variant="ghost"
-				size="sm"
-				className="w-8 h-7 text-sm bg-transparent text-inherit p-0 hover:bg-primary"
-				aria-label={t("zoom-in")}
-				onClick={zoomIn}
-			>
-				{"\uff0b"}
-			</Button>
-			<Button
-				variant="ghost"
-				className="w-12 h-7 text-center bg-transparent text-inherit p-0 hover:bg-transparent"
-				aria-label={t("fit-to-screen")}
-				onClick={fitToScreen}
-			>
-				{`${~~(zoom * 100)}%`}
-			</Button>
-		</div>
-	);
+  return (
+    <div className={'flex w-full items-center justify-center gap-2 leading-7 overflow-hidden'}>
+      <Button
+        variant="ghost"
+        className="h-7 bg-transparent p-0 text-inherit hover:bg-transparent"
+        aria-label={canvasSizeLabel}
+        onClick={() => setZoom(1)}
+      >
+        {`${width} x ${height}`}
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-8 h-7 text-sm bg-transparent text-inherit p-0 hover:bg-primary"
+        aria-label={t('zoom-out')}
+        onClick={zoomOut}
+      >
+        {'\uff0d'}
+      </Button>
+      <input
+        className={
+          '[--thumb-size:8px] [--track-size:2px] relative my-0 mx-0 h-2.5 w-24 appearance-none bg-transparent text-neutral-100 [-webkit-appearance:none] [&::-webkit-slider-thumb]:[-webkit-appearance:none] [&::-webkit-slider-thumb]:[box-sizing:border-box] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[currentColor] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-current [&::-webkit-slider-thumb]:w-[var(--thumb-size)] [&::-webkit-slider-thumb]:h-[var(--thumb-size)] [&::-webkit-slider-thumb]:mt-[calc((var(--track-size)_-_var(--thumb-size))_/_2)] [&::-webkit-slider-runnable-track]:w-full [&::-webkit-slider-runnable-track]:h-[var(--track-size)] [&::-webkit-slider-runnable-track]:rounded-sm [&::-webkit-slider-runnable-track]:border-0 [&::-webkit-slider-runnable-track]:bg-[currentColor] [&::-moz-range-thumb]:[box-sizing:border-box] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[currentColor] [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-current [&::-moz-range-thumb]:w-[var(--thumb-size)] [&::-moz-range-thumb]:h-[var(--thumb-size)] [&::-moz-range-track]:w-full [&::-moz-range-track]:h-[var(--track-size)] [&::-moz-range-track]:rounded-sm [&::-moz-range-track]:border-0 [&::-moz-range-track]:bg-[currentColor]'
+        }
+        type="range"
+        name="zoom"
+        aria-label={zoomLevelLabel}
+        value={zoom}
+        onChange={e => setZoom(Number(e.target.value))}
+        min={0.1}
+        max={3.0}
+        step={0.02}
+      />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-8 h-7 text-sm bg-transparent text-inherit p-0 hover:bg-primary"
+        aria-label={t('zoom-in')}
+        onClick={zoomIn}
+      >
+        {'\uff0b'}
+      </Button>
+      <Button
+        variant="ghost"
+        className="w-12 h-7 text-center bg-transparent text-inherit p-0 hover:bg-transparent"
+        aria-label={t('fit-to-screen')}
+        onClick={fitToScreen}
+      >
+        {`${~~(zoom * 100)}%`}
+      </Button>
+    </div>
+  );
 }

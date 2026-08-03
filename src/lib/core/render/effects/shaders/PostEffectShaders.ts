@@ -1,15 +1,16 @@
 // @ts-nocheck
-import vertexShader from "@/lib/shaders/glsl/vertex/basic.glsl";
-import { Vector2 } from "three";
+
+import { Vector2 } from 'three';
+import vertexShader from '@/lib/shaders/glsl/vertex/basic.glsl';
 
 export const BrightnessContrastShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		brightness: { type: "f", value: 0 },
-		contrast: { type: "f", value: 0 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    brightness: { type: 'f', value: 0 },
+    contrast: { type: 'f', value: 0 },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float brightness;
@@ -31,11 +32,11 @@ void main() {
 };
 
 export const ColorAverageShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 
@@ -48,12 +49,12 @@ void main() {
 };
 
 export const ColorDepthShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		bits: { type: "f", value: 16 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    bits: { type: 'f', value: 16 },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float bits;
@@ -68,13 +69,13 @@ void main() {
 };
 
 export const HueSaturationShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		hue: { type: "f", value: 0 },
-		saturation: { type: "f", value: 0 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    hue: { type: 'f', value: 0 },
+    saturation: { type: 'f', value: 0 },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float hue;
@@ -106,12 +107,12 @@ void main() {
 };
 
 export const SepiaShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		intensity: { type: "f", value: 1 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    intensity: { type: 'f', value: 1 },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float intensity;
@@ -129,13 +130,13 @@ void main() {
 };
 
 export const ScanlineShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		density: { type: "f", value: 1.25 },
-		resolution: { type: "v2", value: new Vector2(1, 1) },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    density: { type: 'f', value: 1.25 },
+    resolution: { type: 'v2', value: new Vector2(1, 1) },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float density;
@@ -151,13 +152,13 @@ void main() {
 };
 
 export const VignetteShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		offset: { type: "f", value: 0.5 },
-		darkness: { type: "f", value: 0.5 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    offset: { type: 'f', value: 0.5 },
+    darkness: { type: 'f', value: 0.5 },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float offset;
@@ -174,16 +175,16 @@ void main() {
 };
 
 export const ToneMappingShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		adaptive: { type: "f", value: 0 },
-		middleGrey: { type: "f", value: 0.6 },
-		maxLuminance: { type: "f", value: 16 },
-		averageLuminance: { type: "f", value: 1 },
-		adaptationRate: { type: "f", value: 1 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    adaptive: { type: 'f', value: 0 },
+    middleGrey: { type: 'f', value: 0.6 },
+    maxLuminance: { type: 'f', value: 16 },
+    averageLuminance: { type: 'f', value: 1 },
+    adaptationRate: { type: 'f', value: 1 },
+  },
+  vertexShader,
+  fragmentShader: `
 varying vec2 vUv;
 uniform sampler2D inputTexture;
 uniform float adaptive;
@@ -207,18 +208,18 @@ void main() {
 };
 
 export const TiltShiftShader = {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		blur: { type: "f", value: 0.15 },
-		taper: { type: "f", value: 0.5 },
-		start: { type: "v2", value: new Vector2(0.5, 0.0) },
-		end: { type: "v2", value: new Vector2(0.5, 1.0) },
-		direction: { type: "v2", value: new Vector2(1, 1) },
-		samples: { type: "i", value: 10 },
-		resolution: { type: "v2", value: new Vector2(1, 1) },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    blur: { type: 'f', value: 0.15 },
+    taper: { type: 'f', value: 0.5 },
+    start: { type: 'v2', value: new Vector2(0.5, 0.0) },
+    end: { type: 'v2', value: new Vector2(0.5, 1.0) },
+    direction: { type: 'v2', value: new Vector2(1, 1) },
+    samples: { type: 'i', value: 10 },
+    resolution: { type: 'v2', value: new Vector2(1, 1) },
+  },
+  vertexShader,
+  fragmentShader: `
 #define MAX_ITERATIONS 100
 varying vec2 vUv;
 uniform sampler2D inputTexture;

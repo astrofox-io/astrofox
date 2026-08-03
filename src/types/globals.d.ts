@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-	interface Window {
-		_astrofox?: unknown;
-	}
+  interface Window {
+    _astrofox?: unknown;
+  }
 }

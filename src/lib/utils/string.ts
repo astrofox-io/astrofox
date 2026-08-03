@@ -1,4 +1,8 @@
 export function trimChars(str: string) {
-	// eslint-disable-next-line no-control-regex
-	return str.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+  return Array.from(str)
+    .filter(character => {
+      const code = character.charCodeAt(0);
+      return code > 0x1f && (code < 0x7f || code > 0x9f);
+    })
+    .join('');
 }

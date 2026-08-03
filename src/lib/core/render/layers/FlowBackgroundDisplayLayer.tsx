@@ -1,16 +1,10 @@
 // @ts-nocheck
-import { useFrame, useThree } from "@react-three/fiber";
-import React from "react";
-import {
-	Color,
-	GLSL3,
-	RawShaderMaterial,
-	SRGBColorSpace,
-	Vector2,
-} from "three";
-import Pass from "../composer/Pass";
-import { createRenderTarget } from "../composer/common";
-import { TexturePlane } from "./TexturePlane";
+import { useFrame, useThree } from '@react-three/fiber';
+import React from 'react';
+import { Color, GLSL3, RawShaderMaterial, SRGBColorSpace, Vector2 } from 'three';
+import { createRenderTarget } from '../composer/common';
+import Pass from '../composer/Pass';
+import { TexturePlane } from './TexturePlane';
 
 const FLOW_VERTEX_SHADER = `precision mediump float;
 in vec3 position;
@@ -433,355 +427,310 @@ void main() {
 `;
 
 function createFlowPass(fragmentShader, uniforms) {
-	const material = new RawShaderMaterial({
-		glslVersion: GLSL3,
-		vertexShader: FLOW_VERTEX_SHADER,
-		fragmentShader,
-		uniforms,
-		depthTest: false,
-		depthWrite: false,
-	});
-	const pass = new Pass();
-	pass.setFullscreen(material);
+  const material = new RawShaderMaterial({
+    glslVersion: GLSL3,
+    vertexShader: FLOW_VERTEX_SHADER,
+    fragmentShader,
+    uniforms,
+    depthTest: false,
+    depthWrite: false,
+  });
+  const pass = new Pass();
+  pass.setFullscreen(material);
 
-	return pass;
+  return pass;
 }
 
 function setPassUniforms(pass, values = {}) {
-	const uniforms = pass.material.uniforms || {};
+  const uniforms = pass.material.uniforms || {};
 
-	for (const [key, value] of Object.entries(values)) {
-		const uniform = uniforms[key];
+  for (const [key, value] of Object.entries(values)) {
+    const uniform = uniforms[key];
 
-		if (!uniform) {
-			continue;
-		}
+    if (!uniform) {
+      continue;
+    }
 
-		const currentValue = uniform.value;
-		if (currentValue?.set && Array.isArray(value)) {
-			currentValue.set(...value);
-		} else {
-			uniform.value = value;
-		}
-	}
+    const currentValue = uniform.value;
+    if (currentValue?.set && Array.isArray(value)) {
+      currentValue.set(...value);
+    } else {
+      uniform.value = value;
+    }
+  }
 }
 
 function clearRenderTarget(renderer, target) {
-	const previousColor = new Color();
-	const previousAlpha = renderer.getClearAlpha();
-	renderer.getClearColor(previousColor);
-	renderer.setRenderTarget(target);
-	renderer.setClearColor(0x000000, 1);
-	renderer.clear(true, true, false);
-	renderer.setRenderTarget(null);
-	renderer.setClearColor(previousColor, previousAlpha);
+  const previousColor = new Color();
+  const previousAlpha = renderer.getClearAlpha();
+  renderer.getClearColor(previousColor);
+  renderer.setRenderTarget(target);
+  renderer.setClearColor(0x000000, 1);
+  renderer.clear(true, true, false);
+  renderer.setRenderTarget(null);
+  renderer.setClearColor(previousColor, previousAlpha);
 }
 
 function clamp(value, min, max) {
-	return Math.max(min, Math.min(max, value));
+  return Math.max(min, Math.min(max, value));
 }
 
 function getFlowMousePosition(time, speed, motion) {
-	const rate = 0.45 + speed * 0.45;
-	const originX = 0.5685640362225097;
-	const originY = 0.6510996119016818;
-	const spread = 1 + speed * 0.18;
+  const rate = 0.45 + speed * 0.45;
+  const originX = 0.5685640362225097;
+  const originY = 0.6510996119016818;
+  const spread = 1 + speed * 0.18;
 
-	switch (motion) {
-		case "Figure 8":
-			return [
-				originX + Math.sin(time * 0.72 * rate) * 0.11 * spread,
-				originY + Math.sin(time * 1.44 * rate + 0.45) * 0.075 * spread,
-			];
-		case "Sweep":
-			return [
-				originX + Math.sin(time * 0.52 * rate) * 0.24 * spread,
-				originY + Math.cos(time * 0.3 * rate + 0.8) * 0.08 * spread,
-			];
-		case "Drift":
-			return [
-				originX +
-					Math.sin(time * 0.36 * rate) * 0.095 * spread +
-					Math.sin(time * 0.81 * rate + 1.3) * 0.055 * spread,
-				originY +
-					Math.cos(time * 0.31 * rate + 0.7) * 0.085 * spread +
-					Math.sin(time * 0.62 * rate) * 0.05 * spread,
-			];
-		case "Pulse":
-			return [
-				originX + Math.sin(time * 0.68 * rate) * 0.055 * spread,
-				originY + Math.cos(time * 0.68 * rate + 0.5) * 0.055 * spread,
-			];
-		default:
-			return [
-				originX + Math.sin(time * 0.6 * rate) * 0.12 * spread,
-				originY + Math.cos(time * 0.48 * rate + 0.7) * 0.09 * spread,
-			];
-	}
+  switch (motion) {
+    case 'Figure 8':
+      return [
+        originX + Math.sin(time * 0.72 * rate) * 0.11 * spread,
+        originY + Math.sin(time * 1.44 * rate + 0.45) * 0.075 * spread,
+      ];
+    case 'Sweep':
+      return [
+        originX + Math.sin(time * 0.52 * rate) * 0.24 * spread,
+        originY + Math.cos(time * 0.3 * rate + 0.8) * 0.08 * spread,
+      ];
+    case 'Drift':
+      return [
+        originX +
+          Math.sin(time * 0.36 * rate) * 0.095 * spread +
+          Math.sin(time * 0.81 * rate + 1.3) * 0.055 * spread,
+        originY +
+          Math.cos(time * 0.31 * rate + 0.7) * 0.085 * spread +
+          Math.sin(time * 0.62 * rate) * 0.05 * spread,
+      ];
+    case 'Pulse':
+      return [
+        originX + Math.sin(time * 0.68 * rate) * 0.055 * spread,
+        originY + Math.cos(time * 0.68 * rate + 0.5) * 0.055 * spread,
+      ];
+    default:
+      return [
+        originX + Math.sin(time * 0.6 * rate) * 0.12 * spread,
+        originY + Math.cos(time * 0.48 * rate + 0.7) * 0.09 * spread,
+      ];
+  }
 }
 
 export function FlowBackgroundDisplayLayer({
-	display,
-	order,
-	frameData,
-	sceneOpacity,
-	sceneBlendMode,
-	sceneMask,
-	sceneInverse,
-	sceneMaskCombine,
+  display,
+  order,
+  frameData,
+  sceneOpacity,
+  sceneBlendMode,
+  sceneMask,
+  sceneInverse,
+  sceneMaskCombine,
 }) {
-	const gl = useThree((state) => state.gl);
-	const { properties = {} } = display;
-	const {
-		x = 0,
-		y = 0,
-		rotation = 0,
-		zoom = 1,
-		opacity = 1,
-		motion = "Orbit",
-	} = properties;
-	const width = Math.max(2, Math.round(Number(properties.width || 2)));
-	const height = Math.max(2, Math.round(Number(properties.height || 2)));
-	const speed = clamp(Number(properties.speed ?? 1), 0, 5);
-	const halfWidth = Math.max(2, Math.round(width * 0.5));
-	const halfHeight = Math.max(2, Math.round(height * 0.5));
-	const fbmWidth = Math.max(2, Math.round(width * 0.75));
-	const fbmHeight = Math.max(2, Math.round(height * 0.75));
+  const gl = useThree(state => state.gl);
+  const { properties = {} } = display;
+  const { x = 0, y = 0, rotation = 0, zoom = 1, opacity = 1, motion = 'Orbit' } = properties;
+  const width = Math.max(2, Math.round(Number(properties.width || 2)));
+  const height = Math.max(2, Math.round(Number(properties.height || 2)));
+  const speed = clamp(Number(properties.speed ?? 1), 0, 5);
+  const halfWidth = Math.max(2, Math.round(width * 0.5));
+  const halfHeight = Math.max(2, Math.round(height * 0.5));
+  const fbmWidth = Math.max(2, Math.round(width * 0.75));
+  const fbmHeight = Math.max(2, Math.round(height * 0.75));
 
-	const gradientTarget = React.useMemo(
-		() => createRenderTarget(halfWidth, halfHeight),
-		[],
-	);
-	const trailReadTarget = React.useMemo(
-		() => createRenderTarget(halfWidth, halfHeight),
-		[],
-	);
-	const trailWriteTarget = React.useMemo(
-		() => createRenderTarget(halfWidth, halfHeight),
-		[],
-	);
-	const compositeTarget = React.useMemo(
-		() => createRenderTarget(halfWidth, halfHeight),
-		[],
-	);
-	const fbmTarget = React.useMemo(
-		() => createRenderTarget(fbmWidth, fbmHeight),
-		[],
-	);
-	fbmTarget.texture.colorSpace = SRGBColorSpace;
+  const gradientTarget = React.useMemo(() => createRenderTarget(halfWidth, halfHeight), []);
+  const trailReadTarget = React.useMemo(() => createRenderTarget(halfWidth, halfHeight), []);
+  const trailWriteTarget = React.useMemo(() => createRenderTarget(halfWidth, halfHeight), []);
+  const compositeTarget = React.useMemo(() => createRenderTarget(halfWidth, halfHeight), []);
+  const fbmTarget = React.useMemo(() => createRenderTarget(fbmWidth, fbmHeight), []);
+  fbmTarget.texture.colorSpace = SRGBColorSpace;
 
-	const gradientPassRef = React.useRef(null);
-	const trailUpdatePassRef = React.useRef(null);
-	const trailCompositePassRef = React.useRef(null);
-	const fbmPassRef = React.useRef(null);
-	const timeRef = React.useRef(0);
-	const previousMousePosRef = React.useRef(
-		new Vector2(0.5685640362225097, 0.6510996119016818),
-	);
-	const pingRef = React.useRef({
-		read: trailReadTarget,
-		write: trailWriteTarget,
-	});
-	const needsClearRef = React.useRef(true);
-	const needsRenderRef = React.useRef(true);
+  const gradientPassRef = React.useRef(null);
+  const trailUpdatePassRef = React.useRef(null);
+  const trailCompositePassRef = React.useRef(null);
+  const fbmPassRef = React.useRef(null);
+  const timeRef = React.useRef(0);
+  const previousMousePosRef = React.useRef(new Vector2(0.5685640362225097, 0.6510996119016818));
+  const pingRef = React.useRef({
+    read: trailReadTarget,
+    write: trailWriteTarget,
+  });
+  const needsClearRef = React.useRef(true);
+  const needsRenderRef = React.useRef(true);
 
-	if (!gradientPassRef.current) {
-		gradientPassRef.current = createFlowPass(FLOW_GRADIENT_FRAGMENT_SHADER, {
-			uTime: { value: 0 },
-			uMousePos: { value: new Vector2(0.5, 0.5) },
-		});
-	}
+  if (!gradientPassRef.current) {
+    gradientPassRef.current = createFlowPass(FLOW_GRADIENT_FRAGMENT_SHADER, {
+      uTime: { value: 0 },
+      uMousePos: { value: new Vector2(0.5, 0.5) },
+    });
+  }
 
-	if (!trailUpdatePassRef.current) {
-		trailUpdatePassRef.current = createFlowPass(
-			FLOW_TRAIL_UPDATE_FRAGMENT_SHADER,
-			{
-				uPingPongTexture: { value: trailReadTarget.texture },
-				uPreviousMousePos: { value: previousMousePosRef.current.clone() },
-				uTime: { value: 0 },
-				uMousePos: { value: new Vector2(0.5, 0.5) },
-				uResolution: { value: new Vector2(halfWidth, halfHeight) },
-			},
-		);
-	}
+  if (!trailUpdatePassRef.current) {
+    trailUpdatePassRef.current = createFlowPass(FLOW_TRAIL_UPDATE_FRAGMENT_SHADER, {
+      uPingPongTexture: { value: trailReadTarget.texture },
+      uPreviousMousePos: { value: previousMousePosRef.current.clone() },
+      uTime: { value: 0 },
+      uMousePos: { value: new Vector2(0.5, 0.5) },
+      uResolution: { value: new Vector2(halfWidth, halfHeight) },
+    });
+  }
 
-	if (!trailCompositePassRef.current) {
-		trailCompositePassRef.current = createFlowPass(
-			FLOW_TRAIL_COMPOSITE_FRAGMENT_SHADER,
-			{
-				uTexture: { value: gradientTarget.texture },
-				uPingPongTexture: { value: trailWriteTarget.texture },
-			},
-		);
-	}
+  if (!trailCompositePassRef.current) {
+    trailCompositePassRef.current = createFlowPass(FLOW_TRAIL_COMPOSITE_FRAGMENT_SHADER, {
+      uTexture: { value: gradientTarget.texture },
+      uPingPongTexture: { value: trailWriteTarget.texture },
+    });
+  }
 
-	if (!fbmPassRef.current) {
-		fbmPassRef.current = createFlowPass(FLOW_FBM_FRAGMENT_SHADER, {
-			uTexture: { value: compositeTarget.texture },
-			uTime: { value: 0 },
-			uMousePos: { value: new Vector2(0.5, 0.5) },
-			uResolution: { value: new Vector2(fbmWidth, fbmHeight) },
-		});
-	}
+  if (!fbmPassRef.current) {
+    fbmPassRef.current = createFlowPass(FLOW_FBM_FRAGMENT_SHADER, {
+      uTexture: { value: compositeTarget.texture },
+      uTime: { value: 0 },
+      uMousePos: { value: new Vector2(0.5, 0.5) },
+      uResolution: { value: new Vector2(fbmWidth, fbmHeight) },
+    });
+  }
 
-	React.useEffect(() => {
-		gradientTarget.setSize(halfWidth, halfHeight);
-		trailReadTarget.setSize(halfWidth, halfHeight);
-		trailWriteTarget.setSize(halfWidth, halfHeight);
-		compositeTarget.setSize(halfWidth, halfHeight);
-		fbmTarget.setSize(fbmWidth, fbmHeight);
-		setPassUniforms(trailUpdatePassRef.current, {
-			uResolution: [halfWidth, halfHeight],
-		});
-		setPassUniforms(fbmPassRef.current, {
-			uResolution: [fbmWidth, fbmHeight],
-		});
-		needsClearRef.current = true;
-		needsRenderRef.current = true;
-	}, [
-		compositeTarget,
-		fbmHeight,
-		fbmTarget,
-		fbmWidth,
-		gradientTarget,
-		halfHeight,
-		halfWidth,
-		trailReadTarget,
-		trailWriteTarget,
-	]);
+  React.useEffect(() => {
+    gradientTarget.setSize(halfWidth, halfHeight);
+    trailReadTarget.setSize(halfWidth, halfHeight);
+    trailWriteTarget.setSize(halfWidth, halfHeight);
+    compositeTarget.setSize(halfWidth, halfHeight);
+    fbmTarget.setSize(fbmWidth, fbmHeight);
+    setPassUniforms(trailUpdatePassRef.current, {
+      uResolution: [halfWidth, halfHeight],
+    });
+    setPassUniforms(fbmPassRef.current, {
+      uResolution: [fbmWidth, fbmHeight],
+    });
+    needsClearRef.current = true;
+    needsRenderRef.current = true;
+  }, [
+    compositeTarget,
+    fbmHeight,
+    fbmTarget,
+    fbmWidth,
+    gradientTarget,
+    halfHeight,
+    halfWidth,
+    trailReadTarget,
+    trailWriteTarget,
+  ]);
 
-	React.useEffect(() => {
-		needsRenderRef.current = true;
-	}, [motion, speed, width, height]);
+  React.useEffect(() => {
+    needsRenderRef.current = true;
+  }, [motion, speed, width, height]);
 
-	React.useEffect(() => {
-		return () => {
-			gradientTarget.dispose();
-			trailReadTarget.dispose();
-			trailWriteTarget.dispose();
-			compositeTarget.dispose();
-			fbmTarget.dispose();
-			gradientPassRef.current?.dispose?.();
-			trailUpdatePassRef.current?.dispose?.();
-			trailCompositePassRef.current?.dispose?.();
-			fbmPassRef.current?.dispose?.();
-		};
-	}, [
-		compositeTarget,
-		fbmTarget,
-		gradientTarget,
-		trailReadTarget,
-		trailWriteTarget,
-	]);
+  React.useEffect(() => {
+    return () => {
+      gradientTarget.dispose();
+      trailReadTarget.dispose();
+      trailWriteTarget.dispose();
+      compositeTarget.dispose();
+      fbmTarget.dispose();
+      gradientPassRef.current?.dispose?.();
+      trailUpdatePassRef.current?.dispose?.();
+      trailCompositePassRef.current?.dispose?.();
+      fbmPassRef.current?.dispose?.();
+    };
+  }, [compositeTarget, fbmTarget, gradientTarget, trailReadTarget, trailWriteTarget]);
 
-	useFrame((_, delta) => {
-		if (!gl.capabilities.isWebGL2) {
-			return;
-		}
+  useFrame((_, delta) => {
+    if (!gl.capabilities.isWebGL2) {
+      return;
+    }
 
-		const shouldAnimate = Boolean(frameData?.hasUpdate);
+    const shouldAnimate = Boolean(frameData?.hasUpdate);
 
-		if (needsClearRef.current) {
-			clearRenderTarget(gl, trailReadTarget);
-			clearRenderTarget(gl, trailWriteTarget);
-			needsClearRef.current = false;
-		}
+    if (needsClearRef.current) {
+      clearRenderTarget(gl, trailReadTarget);
+      clearRenderTarget(gl, trailWriteTarget);
+      needsClearRef.current = false;
+    }
 
-		if (!shouldAnimate && !needsRenderRef.current) {
-			return;
-		}
+    if (!shouldAnimate && !needsRenderRef.current) {
+      return;
+    }
 
-		const animationRate = 0.75 + speed * 1.75;
-		if (shouldAnimate) {
-			timeRef.current += delta * animationRate;
-		}
-		const currentMousePos = getFlowMousePosition(
-			timeRef.current,
-			speed,
-			motion,
-		);
-		const currentRead = pingRef.current.read;
-		const currentWrite = pingRef.current.write;
+    const animationRate = 0.75 + speed * 1.75;
+    if (shouldAnimate) {
+      timeRef.current += delta * animationRate;
+    }
+    const currentMousePos = getFlowMousePosition(timeRef.current, speed, motion);
+    const currentRead = pingRef.current.read;
+    const currentWrite = pingRef.current.write;
 
-		setPassUniforms(gradientPassRef.current, {
-			uTime: 0,
-			uMousePos: currentMousePos,
-		});
-		gradientPassRef.current.render(
-			gl,
-			gradientPassRef.current.scene,
-			gradientPassRef.current.camera,
-			gradientTarget,
-		);
+    setPassUniforms(gradientPassRef.current, {
+      uTime: 0,
+      uMousePos: currentMousePos,
+    });
+    gradientPassRef.current.render(
+      gl,
+      gradientPassRef.current.scene,
+      gradientPassRef.current.camera,
+      gradientTarget,
+    );
 
-		setPassUniforms(trailUpdatePassRef.current, {
-			uPingPongTexture: currentRead.texture,
-			uPreviousMousePos: previousMousePosRef.current,
-			uMousePos: currentMousePos,
-			uTime: 0,
-			uResolution: [halfWidth, halfHeight],
-		});
-		trailUpdatePassRef.current.render(
-			gl,
-			trailUpdatePassRef.current.scene,
-			trailUpdatePassRef.current.camera,
-			currentWrite,
-		);
+    setPassUniforms(trailUpdatePassRef.current, {
+      uPingPongTexture: currentRead.texture,
+      uPreviousMousePos: previousMousePosRef.current,
+      uMousePos: currentMousePos,
+      uTime: 0,
+      uResolution: [halfWidth, halfHeight],
+    });
+    trailUpdatePassRef.current.render(
+      gl,
+      trailUpdatePassRef.current.scene,
+      trailUpdatePassRef.current.camera,
+      currentWrite,
+    );
 
-		setPassUniforms(trailCompositePassRef.current, {
-			uTexture: gradientTarget.texture,
-			uPingPongTexture: currentWrite.texture,
-		});
-		trailCompositePassRef.current.render(
-			gl,
-			trailCompositePassRef.current.scene,
-			trailCompositePassRef.current.camera,
-			compositeTarget,
-		);
+    setPassUniforms(trailCompositePassRef.current, {
+      uTexture: gradientTarget.texture,
+      uPingPongTexture: currentWrite.texture,
+    });
+    trailCompositePassRef.current.render(
+      gl,
+      trailCompositePassRef.current.scene,
+      trailCompositePassRef.current.camera,
+      compositeTarget,
+    );
 
-		setPassUniforms(fbmPassRef.current, {
-			uTexture: compositeTarget.texture,
-			uTime: timeRef.current,
-			uMousePos: currentMousePos,
-			uResolution: [fbmWidth, fbmHeight],
-		});
-		fbmPassRef.current.render(
-			gl,
-			fbmPassRef.current.scene,
-			fbmPassRef.current.camera,
-			fbmTarget,
-		);
+    setPassUniforms(fbmPassRef.current, {
+      uTexture: compositeTarget.texture,
+      uTime: timeRef.current,
+      uMousePos: currentMousePos,
+      uResolution: [fbmWidth, fbmHeight],
+    });
+    fbmPassRef.current.render(gl, fbmPassRef.current.scene, fbmPassRef.current.camera, fbmTarget);
 
-		if (shouldAnimate) {
-			pingRef.current.read = currentWrite;
-			pingRef.current.write = currentRead;
-			previousMousePosRef.current.set(...currentMousePos);
-		}
-		needsRenderRef.current = false;
-	}, -3);
+    if (shouldAnimate) {
+      pingRef.current.read = currentWrite;
+      pingRef.current.write = currentRead;
+      previousMousePosRef.current.set(...currentMousePos);
+    }
+    needsRenderRef.current = false;
+  }, -3);
 
-	if (!gl.capabilities.isWebGL2) {
-		return null;
-	}
+  if (!gl.capabilities.isWebGL2) {
+    return null;
+  }
 
-	return (
-		<TexturePlane
-			texture={fbmTarget.texture}
-			width={width}
-			height={height}
-			x={x}
-			y={y}
-			originX={width / 2}
-			originY={height / 2}
-			rotation={rotation}
-			zoom={zoom}
-			opacity={opacity}
-			sceneOpacity={sceneOpacity}
-			sceneBlendMode={sceneBlendMode}
-			sceneMask={sceneMask}
-			sceneInverse={sceneInverse}
-			sceneMaskCombine={sceneMaskCombine}
-			renderOrder={order}
-		/>
-	);
+  return (
+    <TexturePlane
+      texture={fbmTarget.texture}
+      width={width}
+      height={height}
+      x={x}
+      y={y}
+      originX={width / 2}
+      originY={height / 2}
+      rotation={rotation}
+      zoom={zoom}
+      opacity={opacity}
+      sceneOpacity={sceneOpacity}
+      sceneBlendMode={sceneBlendMode}
+      sceneMask={sceneMask}
+      sceneInverse={sceneInverse}
+      sceneMaskCombine={sceneMaskCombine}
+      renderOrder={order}
+    />
+  );
 }

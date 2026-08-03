@@ -75,7 +75,7 @@ if (isBrowser) {
   (window as unknown as { i18n?: typeof i18n }).i18n = i18n;
 }
 
-const translate: typeof i18n['t'] = i18n['t'].bind(i18n);
+const translate: (typeof i18n)['t'] = i18n.t.bind(i18n);
 
 export { translate as t };
 

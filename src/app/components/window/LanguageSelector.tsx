@@ -65,9 +65,7 @@ export default function LanguageSelector() {
             }}
           >
             {lang.label}
-            {currentLng === lang.code && (
-              <Check size={16} className="ml-auto" />
-            )}
+            {currentLng === lang.code && <Check size={16} className="ml-auto" />}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

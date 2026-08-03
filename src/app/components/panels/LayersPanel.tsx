@@ -1,329 +1,318 @@
-import useApp, { setActiveElementId } from "@/app/actions/app";
+import { clsx as classNames } from 'cnfast';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import useApp, { setActiveElementId } from '@/app/actions/app';
 import useScenes, {
-	moveElement,
-	reorderElement,
-	removeElement,
-	updateElement,
-} from "@/app/actions/scenes";
-import SceneLayer from "@/app/components/panels/SceneLayer";
-import { ChevronDown, ChevronUp } from "@/app/icons";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { reverse } from "@/lib/utils/array";
-import { getDisplayRenderGroup } from "@/lib/utils/displayRenderGroup";
-import { clsx as classNames } from "cnfast";
-import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+  moveElement,
+  removeElement,
+  reorderElement,
+  updateElement,
+} from '@/app/actions/scenes';
+import SceneLayer from '@/app/components/panels/SceneLayer';
+import { ChevronDown, ChevronUp } from '@/app/icons';
+import { reverse } from '@/lib/utils/array';
+import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 
 interface SceneElement {
-	id: string;
-	name?: string;
-	type: string;
-	displayName: string;
-	enabled: boolean;
+  id: string;
+  name?: string;
+  type: string;
+  displayName: string;
+  enabled: boolean;
 }
 
 interface SceneData {
-	id: string;
-	displayName: string;
-	enabled: boolean;
-	displays: SceneElement[];
-	effects: SceneElement[];
+  id: string;
+  displayName: string;
+  enabled: boolean;
+  displays: SceneElement[];
+  effects: SceneElement[];
 }
 
 export default function LayersPanel() {
-	const scenes = useScenes((state) => state.scenes) as SceneData[];
-	const activeElementId = useApp((state) => state.activeElementId);
-	const [dragSourceId, setDragSourceId] = useState<string | null>(null);
-	const [dragOverId, setDragOverId] = useState<string | null>(null);
-	const hasScenes = scenes.length > 0;
-	const layerSelected = hasScenes && activeElementId;
+  const scenes = useScenes(state => state.scenes) as SceneData[];
+  const activeElementId = useApp(state => state.activeElementId);
+  const [dragSourceId, setDragSourceId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const hasScenes = scenes.length > 0;
+  const layerSelected = hasScenes && activeElementId;
 
-	const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
-	const lastSceneId = sortedScenes[sortedScenes.length - 1]?.id;
+  const sortedScenes = useMemo(() => reverse(scenes), [scenes]);
+  const lastSceneId = sortedScenes[sortedScenes.length - 1]?.id;
 
-	useEffect(() => {
-		if (typeof document === "undefined") {
-			return;
-		}
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
 
-		document.body.classList.toggle("layers-dragging", Boolean(dragSourceId));
+    document.body.classList.toggle('layers-dragging', Boolean(dragSourceId));
 
-		return () => {
-			document.body.classList.remove("layers-dragging");
-		};
-	}, [dragSourceId]);
+    return () => {
+      document.body.classList.remove('layers-dragging');
+    };
+  }, [dragSourceId]);
 
-	const dragSourceMeta = useMemo(() => {
-		if (!dragSourceId) {
-			return null;
-		}
+  const dragSourceMeta = useMemo(() => {
+    if (!dragSourceId) {
+      return null;
+    }
 
-		return getLayerMeta(dragSourceId);
-	}, [dragSourceId, scenes]);
+    return getLayerMeta(dragSourceId);
+  }, [dragSourceId, scenes]);
 
-	const { canMoveUp, canMoveDown } = useMemo(() => {
-		if (!layerSelected) return { canMoveUp: false, canMoveDown: false };
+  const { canMoveUp, canMoveDown } = useMemo(() => {
+    if (!layerSelected) return { canMoveUp: false, canMoveDown: false };
 
-		// Check if it's a scene
-		const sceneIndex = scenes.findIndex((s) => s.id === activeElementId);
-		if (sceneIndex > -1) {
-			return {
-				canMoveUp: sceneIndex < scenes.length - 1,
-				canMoveDown: sceneIndex > 0,
-			};
-		}
+    // Check if it's a scene
+    const sceneIndex = scenes.findIndex(s => s.id === activeElementId);
+    if (sceneIndex > -1) {
+      return {
+        canMoveUp: sceneIndex < scenes.length - 1,
+        canMoveDown: sceneIndex > 0,
+      };
+    }
 
-		// Check displays and effects within the owning scene
-		for (const scene of scenes) {
-			const displayIndex = scene.displays.findIndex(
-				(d: { id: string }) => d.id === activeElementId,
-			);
-			if (displayIndex > -1) {
-				const renderGroup = getDisplayRenderGroup(scene.displays[displayIndex]);
-				const displayGroup = scene.displays.filter(
-					(display) => getDisplayRenderGroup(display) === renderGroup,
-				);
-				const groupIndex = displayGroup.findIndex(
-					(display) => display.id === activeElementId,
-				);
-				return {
-					canMoveUp: groupIndex < displayGroup.length - 1,
-					canMoveDown: groupIndex > 0,
-				};
-			}
+    // Check displays and effects within the owning scene
+    for (const scene of scenes) {
+      const displayIndex = scene.displays.findIndex(
+        (d: { id: string }) => d.id === activeElementId,
+      );
+      if (displayIndex > -1) {
+        const renderGroup = getDisplayRenderGroup(scene.displays[displayIndex]);
+        const displayGroup = scene.displays.filter(
+          display => getDisplayRenderGroup(display) === renderGroup,
+        );
+        const groupIndex = displayGroup.findIndex(display => display.id === activeElementId);
+        return {
+          canMoveUp: groupIndex < displayGroup.length - 1,
+          canMoveDown: groupIndex > 0,
+        };
+      }
 
-			const effectIndex = scene.effects.findIndex(
-				(e: { id: string }) => e.id === activeElementId,
-			);
-			if (effectIndex > -1) {
-				return {
-					canMoveUp: effectIndex < scene.effects.length - 1,
-					canMoveDown: effectIndex > 0,
-				};
-			}
-		}
+      const effectIndex = scene.effects.findIndex((e: { id: string }) => e.id === activeElementId);
+      if (effectIndex > -1) {
+        return {
+          canMoveUp: effectIndex < scene.effects.length - 1,
+          canMoveDown: effectIndex > 0,
+        };
+      }
+    }
 
-		return { canMoveUp: false, canMoveDown: false };
-	}, [scenes, activeElementId, layerSelected]);
+    return { canMoveUp: false, canMoveDown: false };
+  }, [scenes, activeElementId, layerSelected]);
 
-	function handleLayerClick(id: string) {
-		setActiveElementId(id);
-	}
+  function handleLayerClick(id: string) {
+    setActiveElementId(id);
+  }
 
-	function handleLayerUpdate(id: string, prop: string, value: unknown) {
-		updateElement(id, prop, value);
-	}
+  function handleLayerUpdate(id: string, prop: string, value: unknown) {
+    updateElement(id, prop, value);
+  }
 
-	function getLayerMeta(id: string) {
-		const sceneIndex = scenes.findIndex((scene) => scene.id === id);
-		if (sceneIndex > -1) {
-			return { type: "scene", sceneId: id };
-		}
+  function getLayerMeta(id: string) {
+    const sceneIndex = scenes.findIndex(scene => scene.id === id);
+    if (sceneIndex > -1) {
+      return { type: 'scene', sceneId: id };
+    }
 
-		for (const scene of scenes) {
-			if (scene.displays.some((display) => display.id === id)) {
-				const display = scene.displays.find((item) => item.id === id);
-				return {
-					type: "display",
-					sceneId: scene.id,
-					renderGroup: getDisplayRenderGroup(display),
-				};
-			}
+    for (const scene of scenes) {
+      if (scene.displays.some(display => display.id === id)) {
+        const display = scene.displays.find(item => item.id === id);
+        return {
+          type: 'display',
+          sceneId: scene.id,
+          renderGroup: getDisplayRenderGroup(display),
+        };
+      }
 
-			if (scene.effects.some((effect) => effect.id === id)) {
-				return { type: "effect", sceneId: scene.id };
-			}
-		}
+      if (scene.effects.some(effect => effect.id === id)) {
+        return { type: 'effect', sceneId: scene.id };
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	function canDrop(sourceId: string, targetId: string) {
-		if (!sourceId || !targetId || sourceId === targetId) {
-			return false;
-		}
+  function canDrop(sourceId: string, targetId: string) {
+    if (!sourceId || !targetId || sourceId === targetId) {
+      return false;
+    }
 
-		const sourceMeta = getLayerMeta(sourceId);
-		const targetMeta = getLayerMeta(targetId);
+    const sourceMeta = getLayerMeta(sourceId);
+    const targetMeta = getLayerMeta(targetId);
 
-		if (!sourceMeta || !targetMeta) {
-			return false;
-		}
+    if (!sourceMeta || !targetMeta) {
+      return false;
+    }
 
-		if (sourceMeta.type === "scene") {
-			return targetMeta.type === "scene";
-		}
+    if (sourceMeta.type === 'scene') {
+      return targetMeta.type === 'scene';
+    }
 
-		if (targetMeta.type === "scene") {
-			return true;
-		}
+    if (targetMeta.type === 'scene') {
+      return true;
+    }
 
-		if (sourceMeta.type !== targetMeta.type) {
-			return false;
-		}
+    if (sourceMeta.type !== targetMeta.type) {
+      return false;
+    }
 
-		if (sourceMeta.type === "display") {
-			return sourceMeta.renderGroup === targetMeta.renderGroup;
-		}
+    if (sourceMeta.type === 'display') {
+      return sourceMeta.renderGroup === targetMeta.renderGroup;
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	function handleMoveUp() {
-		moveElement(activeElementId, 1);
-	}
-	function handleMoveDown() {
-		moveElement(activeElementId, -1);
-	}
+  function handleMoveUp() {
+    moveElement(activeElementId, 1);
+  }
+  function handleMoveDown() {
+    moveElement(activeElementId, -1);
+  }
 
-	function handleRemove(id: string) {
-		if (!id) return;
+  function handleRemove(id: string) {
+    if (!id) return;
 
-		const ownerScene = scenes.find(
-			(scene) =>
-				scene?.id === id ||
-				scene?.displays.find((e: { id: string }) => e.id === id) ||
-				scene?.effects.find((e: { id: string }) => e.id === id),
-		);
+    const ownerScene = scenes.find(
+      scene =>
+        scene?.id === id ||
+        scene?.displays.find((e: { id: string }) => e.id === id) ||
+        scene?.effects.find((e: { id: string }) => e.id === id),
+    );
 
-		if (id === ownerScene?.id) {
-			const newScene = sortedScenes.find((e) => e !== ownerScene);
-			setActiveElementId(newScene?.id);
-		} else if (id === activeElementId) {
-			if (ownerScene) {
-				const { displays, effects } = ownerScene;
-				const element =
-					reverse(displays).find(
-						(e: { id: string }) => (e as { id: string }).id !== id,
-					) ||
-					reverse(effects).find(
-						(e: { id: string }) => (e as { id: string }).id !== id,
-					);
+    if (id === ownerScene?.id) {
+      const newScene = sortedScenes.find(e => e !== ownerScene);
+      setActiveElementId(newScene?.id);
+    } else if (id === activeElementId) {
+      if (ownerScene) {
+        const { displays, effects } = ownerScene;
+        const element =
+          reverse(displays).find((e: { id: string }) => (e as { id: string }).id !== id) ||
+          reverse(effects).find((e: { id: string }) => (e as { id: string }).id !== id);
 
-				if (element) {
-					setActiveElementId((element as { id: string })?.id);
-				} else {
-					setActiveElementId(ownerScene?.id);
-				}
-			}
-		}
+        if (element) {
+          setActiveElementId((element as { id: string })?.id);
+        } else {
+          setActiveElementId(ownerScene?.id);
+        }
+      }
+    }
 
-		removeElement(id);
-	}
+    removeElement(id);
+  }
 
-	function handleLayerDragStart(id: string) {
-		setDragSourceId(id);
-		setDragOverId(null);
-	}
+  function handleLayerDragStart(id: string) {
+    setDragSourceId(id);
+    setDragOverId(null);
+  }
 
-	function handleLayerDragOver(id: string, e: React.DragEvent<HTMLDivElement>) {
-		const sourceId = dragSourceId;
-		if (!sourceId) {
-			return;
-		}
+  function handleLayerDragOver(id: string, e: React.DragEvent<HTMLDivElement>) {
+    const sourceId = dragSourceId;
+    if (!sourceId) {
+      return;
+    }
 
-		if (!canDrop(sourceId, id)) {
-			return;
-		}
+    if (!canDrop(sourceId, id)) {
+      return;
+    }
 
-		e.preventDefault();
-		e.dataTransfer.dropEffect = "move";
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
 
-		if (dragOverId !== id) {
-			setDragOverId(id);
-		}
-	}
+    if (dragOverId !== id) {
+      setDragOverId(id);
+    }
+  }
 
-	function resetDragState() {
-		setDragSourceId(null);
-		setDragOverId(null);
-	}
+  function resetDragState() {
+    setDragSourceId(null);
+    setDragOverId(null);
+  }
 
-	function handleLayerDrop(id: string, e: React.DragEvent<HTMLDivElement>) {
-		e.preventDefault();
+  function handleLayerDrop(id: string, e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
 
-		const sourceId = dragSourceId;
-		if (!sourceId) {
-			resetDragState();
-			return;
-		}
+    const sourceId = dragSourceId;
+    if (!sourceId) {
+      resetDragState();
+      return;
+    }
 
-		if (canDrop(sourceId, id)) {
-			const moved = reorderElement(sourceId, id);
-			if (moved) {
-				setActiveElementId(sourceId);
-			}
-		}
+    if (canDrop(sourceId, id)) {
+      const moved = reorderElement(sourceId, id);
+      if (moved) {
+        setActiveElementId(sourceId);
+      }
+    }
 
-		resetDragState();
-	}
+    resetDragState();
+  }
 
-	return (
-		<div
-			className={"flex flex-col flex-1 relative overflow-auto"}
-			onDragOver={(e) => {
-				if (!dragSourceId) {
-					return;
-				}
+  return (
+    <div
+      role="listbox"
+      aria-label="Layers"
+      className={'flex flex-col flex-1 relative overflow-auto'}
+      onDragOver={e => {
+        if (!dragSourceId) {
+          return;
+        }
 
-				e.preventDefault();
-				e.dataTransfer.dropEffect = "move";
-			}}
-		>
-			<div className={"flex p-1 gap-1"}>
-				<button
-					type="button"
-					className={classNames(
-						"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0",
-						{ "opacity-30 hover:bg-neutral-900": !canMoveUp },
-					)}
-					onClick={canMoveUp ? handleMoveUp : undefined}
-				>
-					<ChevronUp className="text-neutral-100 w-4 h-4" />
-				</button>
-				<button
-					type="button"
-					className={classNames(
-						"text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0",
-						{ "opacity-30 hover:bg-neutral-900": !canMoveDown },
-					)}
-					onClick={canMoveDown ? handleMoveDown : undefined}
-				>
-					<ChevronDown className="text-neutral-100 w-4 h-4" />
-				</button>
-			</div>
-			<div className={"flex-1 overflow-auto pt-1 flex flex-col gap-0.5 px-1"}>
-				{sortedScenes.map((scene) => (
-					<SceneLayer
-						key={scene.id}
-						scene={scene}
-						activeElementId={activeElementId}
-						dragSourceId={dragSourceId}
-						dragOverId={dragOverId}
-						dragSourceType={dragSourceMeta?.type ?? null}
-						dragSourceRenderGroup={dragSourceMeta?.renderGroup ?? null}
-						onLayerClick={handleLayerClick}
-						onLayerUpdate={handleLayerUpdate}
-						onLayerDelete={handleRemove}
-						onLayerDragStart={handleLayerDragStart}
-						onLayerDragOver={handleLayerDragOver}
-						onLayerDrop={handleLayerDrop}
-						onLayerDragEnd={resetDragState}
-					/>
-				))}
-				{lastSceneId && (
-					<div
-						className="h-2"
-						onDragOver={(e) => handleLayerDragOver(lastSceneId, e)}
-						onDrop={(e) => handleLayerDrop(lastSceneId, e)}
-					/>
-				)}
-			</div>
-		</div>
-	);
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }}
+    >
+      <div className={'flex p-1 gap-1'}>
+        <button
+          type="button"
+          className={classNames(
+            'text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0',
+            { 'opacity-30 hover:bg-neutral-900': !canMoveUp },
+          )}
+          onClick={canMoveUp ? handleMoveUp : undefined}
+        >
+          <ChevronUp className="text-neutral-100 w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          className={classNames(
+            'text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0',
+            { 'opacity-30 hover:bg-neutral-900': !canMoveDown },
+          )}
+          onClick={canMoveDown ? handleMoveDown : undefined}
+        >
+          <ChevronDown className="text-neutral-100 w-4 h-4" />
+        </button>
+      </div>
+      <div className={'flex-1 overflow-auto pt-1 flex flex-col gap-0.5 px-1'}>
+        {sortedScenes.map(scene => (
+          <SceneLayer
+            key={scene.id}
+            scene={scene}
+            activeElementId={activeElementId}
+            dragSourceId={dragSourceId}
+            dragOverId={dragOverId}
+            dragSourceType={dragSourceMeta?.type ?? null}
+            dragSourceRenderGroup={dragSourceMeta?.renderGroup ?? null}
+            onLayerClick={handleLayerClick}
+            onLayerUpdate={handleLayerUpdate}
+            onLayerDelete={handleRemove}
+            onLayerDragStart={handleLayerDragStart}
+            onLayerDragOver={handleLayerDragOver}
+            onLayerDrop={handleLayerDrop}
+            onLayerDragEnd={resetDragState}
+          />
+        ))}
+        {lastSceneId && (
+          // biome-ignore lint/a11y/noStaticElementInteractions: This spacer is only a pointer drag-and-drop target.
+          <div
+            className="h-2"
+            onDragOver={e => handleLayerDragOver(lastSceneId, e)}
+            onDrop={e => handleLayerDrop(lastSceneId, e)}
+          />
+        )}
+      </div>
+    </div>
+  );
 }

@@ -2,137 +2,137 @@
 @plugin "tailwindcss-animate";
 
 @theme {
-	--color-primary: #704dd8;
-	--color-primary-foreground: #f5f5f5;
-	--color-background: #171717;
-	--color-foreground: #f5f5f5;
-	--color-muted: #262626;
-	--color-muted-foreground: #a3a3a3;
-	--color-accent: #704dd8;
-	--color-accent-foreground: #f5f5f5;
-	--color-popover: #171717;
-	--color-popover-foreground: #d4d4d4;
-	--color-border: #404040;
-	--color-input: #525252;
-	--color-border-input: #525252;
-	--color-ring: #704dd8;
-	--color-destructive: #ef4444;
-	--color-secondary: #262626;
-	--color-secondary-foreground: #f5f5f5;
+  --color-primary: #704dd8;
+  --color-primary-foreground: #f5f5f5;
+  --color-background: #171717;
+  --color-foreground: #f5f5f5;
+  --color-muted: #262626;
+  --color-muted-foreground: #a3a3a3;
+  --color-accent: #704dd8;
+  --color-accent-foreground: #f5f5f5;
+  --color-popover: #171717;
+  --color-popover-foreground: #d4d4d4;
+  --color-border: #404040;
+  --color-input: #525252;
+  --color-border-input: #525252;
+  --color-ring: #704dd8;
+  --color-destructive: #ef4444;
+  --color-secondary: #262626;
+  --color-secondary-foreground: #f5f5f5;
 }
 
 @layer base {
-	*,
-	::after,
-	::before,
-	::backdrop {
-		border-color: var(--color-neutral-800);
-	}
+  *,
+  ::after,
+  ::before,
+  ::backdrop {
+    border-color: var(--color-neutral-800);
+  }
 
-	body.layers-dragging,
-	body.layers-dragging * {
-		cursor: grabbing !important;
-	}
+  body.layers-dragging,
+  body.layers-dragging * {
+    cursor: grabbing;
+  }
 }
 
 @layer components {
-	.dialog-overlay-motion {
-		opacity: 1;
-		animation: dialog-overlay-in 240ms ease-out both;
-	}
+  .dialog-overlay-motion {
+    opacity: 1;
+    animation: dialog-overlay-in 240ms ease-out both;
+  }
 
-	.dialog-overlay-motion[data-ending-style] {
-		animation: dialog-overlay-out 220ms ease-in both;
-	}
+  .dialog-overlay-motion[data-ending-style] {
+    animation: dialog-overlay-out 220ms ease-in both;
+  }
 
-	.dialog-content-motion {
-		transform: translate(-50%, -50%);
-		opacity: 1;
-		animation: dialog-content-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
-	}
+  .dialog-content-motion {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    animation: dialog-content-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 
-	.dialog-content-motion[data-ending-style] {
-		animation: dialog-content-out 220ms cubic-bezier(0.4, 0, 1, 1) both;
-	}
+  .dialog-content-motion[data-ending-style] {
+    animation: dialog-content-out 220ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
 }
 
 /* less-migrated-keyframes */
 @keyframes dialog-overlay-in {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes dialog-overlay-out {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes dialog-content-in {
-	0% {
-		opacity: 0;
-		transform: translate(-50%, -46%);
-	}
-	100% {
-		opacity: 1;
-		transform: translate(-50%, -50%);
-	}
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 @keyframes dialog-content-out {
-	0% {
-		opacity: 1;
-		transform: translate(-50%, -50%);
-	}
-	100% {
-		opacity: 0;
-		transform: translate(-50%, -46%);
-	}
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
 }
 
 @keyframes spinner-rotate {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes stage-loader-pop {
-	0% {
-		transform: scale(2);
-		opacity: 0;
-	}
-	100% {
-		transform: scale(1);
-		opacity: 1;
-	}
+  0% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes logo-dash {
-	0% {
-		stroke-dashoffset: 1;
-	}
-	100% {
-		stroke-dashoffset: -1;
-	}
+  0% {
+    stroke-dashoffset: 1;
+  }
+  100% {
+    stroke-dashoffset: -1;
+  }
 }
 
 @keyframes stage-loader-out {
-	0% {
-		transform: scale(1);
-		opacity: 1;
-	}
-	100% {
-		transform: scale(2);
-		opacity: 0;
-	}
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }

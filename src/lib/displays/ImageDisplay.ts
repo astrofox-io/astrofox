@@ -1,249 +1,234 @@
-import { BLANK_IMAGE } from "@/app/constants";
-import Display from "@/lib/core/Display";
-import { isDefined } from "@/lib/utils/array";
-import { fitMediaWithinBounds } from "@/lib/utils/media";
+import { BLANK_IMAGE } from '@/app/constants';
+import Display from '@/lib/core/Display';
+import { isDefined } from '@/lib/utils/array';
+import { fitMediaWithinBounds } from '@/lib/utils/media';
 
 interface ImageDisplayInstance {
-	hasImage: boolean;
-	image: HTMLImageElement;
-	scene: { getSize(): { width: number; height: number } };
-	properties: Record<string, unknown>;
+  hasImage: boolean;
+  image: HTMLImageElement;
+  scene: { getSize(): { width: number; height: number } };
+  properties: Record<string, unknown>;
 }
 
 const disabled = (display: ImageDisplayInstance) => !display.hasImage;
 const maxWidth = (display: ImageDisplayInstance) => {
-	const { naturalWidth } = display.image;
-	const { width } = display.scene.getSize();
+  const { naturalWidth } = display.image;
+  const { width } = display.scene.getSize();
 
-	return naturalWidth > width ? naturalWidth : width;
+  return naturalWidth > width ? naturalWidth : width;
 };
 const maxHeight = (display: ImageDisplayInstance) => {
-	const { naturalHeight } = display.image;
-	const { height } = display.scene.getSize();
+  const { naturalHeight } = display.image;
+  const { height } = display.scene.getSize();
 
-	return naturalHeight > height ? naturalHeight : height;
+  return naturalHeight > height ? naturalHeight : height;
 };
-const maxX = (display: ImageDisplayInstance) =>
-	disabled(display) ? 0 : maxWidth(display);
-const maxY = (display: ImageDisplayInstance) =>
-	disabled(display) ? 0 : maxHeight(display);
-const getFittedSize = (
-	display: ImageDisplayInstance,
-	mediaWidth: number,
-	mediaHeight: number,
-) => {
-	const { width, height } = display.scene.getSize();
-	return fitMediaWithinBounds(mediaWidth, mediaHeight, width, height);
+const maxX = (display: ImageDisplayInstance) => (disabled(display) ? 0 : maxWidth(display));
+const maxY = (display: ImageDisplayInstance) => (disabled(display) ? 0 : maxHeight(display));
+const getFittedSize = (display: ImageDisplayInstance, mediaWidth: number, mediaHeight: number) => {
+  const { width, height } = display.scene.getSize();
+  return fitMediaWithinBounds(mediaWidth, mediaHeight, width, height);
 };
 
 export default class ImageDisplay extends Display {
-	declare image: HTMLImageElement;
-	declare scene: { getSize(): { width: number; height: number } };
+  declare image: HTMLImageElement;
+  declare scene: { getSize(): { width: number; height: number } };
 
-	static config = {
-		name: "ImageDisplay",
-		description: "Displays an image.",
-		type: "display",
-		label: "Image",
-		defaultProperties: {
-			src: BLANK_IMAGE,
-			sourcePath: "",
-			x: 0,
-			y: 0,
-			zoom: 1,
-			width: 0,
-			height: 0,
-			fixed: true,
-			rotation: 0,
-			opacity: 0,
-		},
-		controls: {
-			src: {
-				label: "Image",
-				type: "image",
-			},
-			width: {
-				label: "Width",
-				type: "number",
-				min: 0,
-				max: maxWidth,
-				withRange: true,
-				withLink: "fixed",
-				disabled,
-			},
-			height: {
-				label: "Height",
-				type: "number",
-				min: 0,
-				max: maxHeight,
-				withRange: true,
-				withLink: "fixed",
-				disabled,
-			},
-			x: {
-				label: "X",
-				type: "number",
-				min: (display: ImageDisplayInstance) => -1 * maxX(display),
-				max: (display: ImageDisplayInstance) => maxX(display),
-				withRange: true,
-				hideFill: true,
-				disabled,
-			},
-			y: {
-				label: "Y",
-				type: "number",
-				min: (display: ImageDisplayInstance) => -1 * maxY(display),
-				max: (display: ImageDisplayInstance) => maxY(display),
-				withRange: true,
-				hideFill: true,
-				disabled,
-			},
-			zoom: {
-				label: "Zoom",
-				type: "number",
-				min: 1.0,
-				max: 4.0,
-				step: 0.01,
-				withRange: true,
-				withReactor: true,
-				disabled,
-			},
-			rotation: {
-				label: "Rotation",
-				type: "number",
-				min: 0,
-				max: 360,
-				withRange: true,
-				withReactor: true,
-				disabled,
-			},
-			opacity: {
-				label: "Opacity",
-				type: "number",
-				min: 0,
-				max: 1.0,
-				step: 0.01,
-				withRange: true,
-				withReactor: true,
-				disabled,
-			},
-		},
-	};
+  static config = {
+    name: 'ImageDisplay',
+    description: 'Displays an image.',
+    type: 'display',
+    label: 'Image',
+    defaultProperties: {
+      src: BLANK_IMAGE,
+      sourcePath: '',
+      x: 0,
+      y: 0,
+      zoom: 1,
+      width: 0,
+      height: 0,
+      fixed: true,
+      rotation: 0,
+      opacity: 0,
+    },
+    controls: {
+      src: {
+        label: 'Image',
+        type: 'image',
+      },
+      width: {
+        label: 'Width',
+        type: 'number',
+        min: 0,
+        max: maxWidth,
+        withRange: true,
+        withLink: 'fixed',
+        disabled,
+      },
+      height: {
+        label: 'Height',
+        type: 'number',
+        min: 0,
+        max: maxHeight,
+        withRange: true,
+        withLink: 'fixed',
+        disabled,
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: (display: ImageDisplayInstance) => -1 * maxX(display),
+        max: (display: ImageDisplayInstance) => maxX(display),
+        withRange: true,
+        hideFill: true,
+        disabled,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: (display: ImageDisplayInstance) => -1 * maxY(display),
+        max: (display: ImageDisplayInstance) => maxY(display),
+        withRange: true,
+        hideFill: true,
+        disabled,
+      },
+      zoom: {
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
+      rotation: {
+        label: 'Rotation',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
+    },
+  };
 
-	constructor(properties?: Record<string, unknown>) {
-		super(ImageDisplay, properties);
+  constructor(properties?: Record<string, unknown>) {
+    super(ImageDisplay, properties);
 
-		this.image = new Image();
-		const props = this.properties as Record<string, unknown>;
-		this.image.src = props.src as string;
-	}
+    this.image = new Image();
+    const props = this.properties as Record<string, unknown>;
+    this.image.src = props.src as string;
+  }
 
-	get hasImage() {
-		return (this.properties as Record<string, unknown>).src !== BLANK_IMAGE;
-	}
+  get hasImage() {
+    return (this.properties as Record<string, unknown>).src !== BLANK_IMAGE;
+  }
 
-	update(properties: Record<string, unknown>) {
-		const { src: inputSrc, fixed, width, height } = properties;
-		const props = this.properties as Record<string, unknown>;
-		const { src, width: w, height: h, fixed: f } = props;
-		let image: HTMLImageElement | null = null;
-		let nextProperties = properties;
-		const srcChanged = typeof inputSrc === "string" && inputSrc !== src;
+  update(properties: Record<string, unknown>) {
+    const { src: inputSrc, fixed, width, height } = properties;
+    const props = this.properties as Record<string, unknown>;
+    const { src, width: w, height: h, fixed: f } = props;
+    let image: HTMLImageElement | null = null;
+    let nextProperties = properties;
+    const srcChanged = typeof inputSrc === 'string' && inputSrc !== src;
 
-		// If we get an HTMLImageElement
-		if (typeof inputSrc === "object" && (inputSrc as HTMLImageElement)?.src) {
-			image = inputSrc as HTMLImageElement;
+    // If we get an HTMLImageElement
+    if (typeof inputSrc === 'object' && (inputSrc as HTMLImageElement)?.src) {
+      image = inputSrc as HTMLImageElement;
 
-			if (image.src === BLANK_IMAGE) {
-				// Image reset
-				nextProperties = { ...ImageDisplay.config.defaultProperties };
-			} else if (image.src !== src) {
-				// New image
-				const fittedSize = getFittedSize(
-					this,
-					image.naturalWidth,
-					image.naturalHeight,
-				);
-				nextProperties = {
-					src: image.src,
-					width: fittedSize.width,
-					height: fittedSize.height,
-					opacity: 1,
-				};
-			} else {
-				nextProperties.src = image.src;
-			}
-		}
+      if (image.src === BLANK_IMAGE) {
+        // Image reset
+        nextProperties = { ...ImageDisplay.config.defaultProperties };
+      } else if (image.src !== src) {
+        // New image
+        const fittedSize = getFittedSize(this, image.naturalWidth, image.naturalHeight);
+        nextProperties = {
+          src: image.src,
+          width: fittedSize.width,
+          height: fittedSize.height,
+          opacity: 1,
+        };
+      } else {
+        nextProperties.src = image.src;
+      }
+    }
 
-		// Sync width/height values
-		if (!image && !srcChanged && (fixed || f)) {
-			const { naturalWidth, naturalHeight } = this.image;
-			if (!naturalWidth || !naturalHeight) {
-				return super.update({});
-			}
+    // Sync width/height values
+    if (!image && !srcChanged && (fixed || f)) {
+      const { naturalWidth, naturalHeight } = this.image;
+      if (!naturalWidth || !naturalHeight) {
+        return super.update({});
+      }
 
-			const ratio = naturalWidth / naturalHeight;
+      const ratio = naturalWidth / naturalHeight;
 
-			if (!isDefined(width, height)) {
-				if ((w as number) > (h as number)) {
-					nextProperties.height = Math.round((w as number) * (1 / ratio)) || 0;
-					nextProperties.width = Math.round(
-						(nextProperties.height as number) * ratio,
-					);
-				} else {
-					nextProperties.width = Math.round((h as number) * ratio);
-					nextProperties.height =
-						Math.round((nextProperties.width as number) * (1 / ratio)) || 0;
-				}
-			}
+      if (!isDefined(width, height)) {
+        if ((w as number) > (h as number)) {
+          nextProperties.height = Math.round((w as number) * (1 / ratio)) || 0;
+          nextProperties.width = Math.round((nextProperties.height as number) * ratio);
+        } else {
+          nextProperties.width = Math.round((h as number) * ratio);
+          nextProperties.height = Math.round((nextProperties.width as number) * (1 / ratio)) || 0;
+        }
+      }
 
-			if (width) {
-				nextProperties.height =
-					Math.round((width as number) * (1 / ratio)) || 0;
-			}
-			if (height) {
-				nextProperties.width = Math.round((height as number) * ratio);
-			}
-		}
+      if (width) {
+        nextProperties.height = Math.round((width as number) * (1 / ratio)) || 0;
+      }
+      if (height) {
+        nextProperties.width = Math.round((height as number) * ratio);
+      }
+    }
 
-		const nextSrcChanged =
-			typeof nextProperties.src === "string" && nextProperties.src !== src;
+    const nextSrcChanged = typeof nextProperties.src === 'string' && nextProperties.src !== src;
 
-		const changed = super.update(nextProperties);
+    const changed = super.update(nextProperties);
 
-		if (changed) {
-			if (nextSrcChanged && nextProperties.src !== BLANK_IMAGE) {
-				if (image && image.naturalWidth > 0 && image.naturalHeight > 0) {
-					this.image = image;
-				} else {
-					const nextImage = new Image();
-					nextImage.onload = () => {
-						this.image = nextImage;
+    if (changed) {
+      if (nextSrcChanged && nextProperties.src !== BLANK_IMAGE) {
+        if (image && image.naturalWidth > 0 && image.naturalHeight > 0) {
+          this.image = image;
+        } else {
+          const nextImage = new Image();
+          nextImage.onload = () => {
+            this.image = nextImage;
 
-						const p = this.properties as Record<string, unknown>;
-						const nextProps: Record<string, unknown> = {};
-						if (!p.width && !p.height) {
-							const fittedSize = getFittedSize(
-								this,
-								nextImage.naturalWidth,
-								nextImage.naturalHeight,
-							);
-							nextProps.width = fittedSize.width;
-							nextProps.height = fittedSize.height;
-						}
-						if (p.opacity === 0) {
-							nextProps.opacity = 1;
-						}
+            const p = this.properties as Record<string, unknown>;
+            const nextProps: Record<string, unknown> = {};
+            if (!p.width && !p.height) {
+              const fittedSize = getFittedSize(
+                this,
+                nextImage.naturalWidth,
+                nextImage.naturalHeight,
+              );
+              nextProps.width = fittedSize.width;
+              nextProps.height = fittedSize.height;
+            }
+            if (p.opacity === 0) {
+              nextProps.opacity = 1;
+            }
 
-						if (Object.keys(nextProps).length > 0) {
-							super.update(nextProps);
-						}
-					};
-					nextImage.src = nextProperties.src as string;
-				}
-			}
-		}
+            if (Object.keys(nextProps).length > 0) {
+              super.update(nextProps);
+            }
+          };
+          nextImage.src = nextProperties.src as string;
+        }
+      }
+    }
 
-		return changed;
-	}
+    return changed;
+  }
 }

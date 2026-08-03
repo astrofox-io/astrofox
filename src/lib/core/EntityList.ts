@@ -1,50 +1,50 @@
-import ArrayList from "@/lib/core/ArrayList";
+import ArrayList from '@/lib/core/ArrayList';
 
 export default class EntityList extends ArrayList {
-	getElementById(id: string) {
-		return this.find((e) => e.id === id);
-	}
+  getElementById(id: string) {
+    return this.find(e => e.id === id);
+  }
 
-	hasElement(obj: unknown): boolean {
-		return this.indexOf(obj) > -1;
-	}
+  hasElement(obj: unknown): boolean {
+    return this.indexOf(obj) > -1;
+  }
 
-	addElement(obj: unknown, index?: number) {
-		if (!obj) {
-			return;
-		}
+  addElement(obj: unknown, index?: number) {
+    if (!obj) {
+      return;
+    }
 
-		if (index !== undefined) {
-			this.insert(obj, index);
-		} else {
-			this.push(obj);
-		}
+    if (index !== undefined) {
+      this.insert(obj, index);
+    } else {
+      this.push(obj);
+    }
 
-		return obj;
-	}
+    return obj;
+  }
 
-	removeElement(obj: unknown): boolean {
-		if (!this.hasElement(obj)) {
-			return false;
-		}
+  removeElement(obj: unknown): boolean {
+    if (!this.hasElement(obj)) {
+      return false;
+    }
 
-		return this.remove(this.indexOf(obj));
-	}
+    return this.remove(this.indexOf(obj));
+  }
 
-	shiftElement(obj: unknown, spaces: number): boolean {
-		if (!this.hasElement(obj)) {
-			return false;
-		}
+  shiftElement(obj: unknown, spaces: number): boolean {
+    if (!this.hasElement(obj)) {
+      return false;
+    }
 
-		const index = this.indexOf(obj);
-		const newIndex = index + spaces;
+    const index = this.indexOf(obj);
+    const newIndex = index + spaces;
 
-		this.swap(index, newIndex);
+    this.swap(index, newIndex);
 
-		return this.indexOf(obj) !== index;
-	}
+    return this.indexOf(obj) !== index;
+  }
 
-	toJSON() {
-		return this.map((e) => e.toJSON());
-	}
+  toJSON() {
+    return this.map(e => e.toJSON());
+  }
 }

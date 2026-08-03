@@ -1,457 +1,427 @@
+import { Download, PictureInPicture2 } from 'lucide-react';
+import type React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import useApp, {
-	isStagePictureInPictureSupported,
-	setCameraModeEnabled,
-	setDisplayTransformModeEnabled,
-	toggleStagePictureInPicture,
-} from "@/app/actions/app";
-import useAudioStore, { loadAudioFile } from "@/app/actions/audio";
-import useScenes, { getSceneIdForElement } from "@/app/actions/scenes";
-import useStage from "@/app/actions/stage";
-import Spinner from "@/app/components/interface/Spinner";
-import { renderBackend, renderer, stage } from "@/app/global";
-import { VectorSquare, Video } from "@/app/icons";
-import { Button } from "@/components/ui/button";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { getDisplayRenderGroup } from "@/lib/utils/displayRenderGroup";
-import { ignoreEvents } from "@/lib/utils/react";
-import { Download, PictureInPicture2 } from "lucide-react";
-import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useShallow } from "zustand/react/shallow";
-import DisplayTransformOverlay from "./DisplayTransformOverlay";
-import { isTransformable2DDisplay } from "./displayTransform";
+  isStagePictureInPictureSupported,
+  setCameraModeEnabled,
+  setDisplayTransformModeEnabled,
+  toggleStagePictureInPicture,
+} from '@/app/actions/app';
+import useAudioStore, { loadAudioFile } from '@/app/actions/audio';
+import useScenes, { getSceneIdForElement } from '@/app/actions/scenes';
+import useStage from '@/app/actions/stage';
+import Spinner from '@/app/components/interface/Spinner';
+import { renderBackend, renderer, stage } from '@/app/global';
+import { VectorSquare, Video } from '@/app/icons';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
+import { ignoreEvents } from '@/lib/utils/react';
+import DisplayTransformOverlay from './DisplayTransformOverlay';
+import { isTransformable2DDisplay } from './displayTransform';
 
 function isFileDrag(event: React.DragEvent) {
-	const { types } = event.dataTransfer;
-	return Array.from(types || []).includes("Files");
+  const { types } = event.dataTransfer;
+  return Array.from(types || []).includes('Files');
 }
 
 function acceptStageDrag(event: React.DragEvent) {
-	if (!isFileDrag(event)) {
-		return false;
-	}
+  if (!isFileDrag(event)) {
+    return false;
+  }
 
-	ignoreEvents(event);
-	event.dataTransfer.dropEffect = "copy";
-	return true;
+  ignoreEvents(event);
+  event.dataTransfer.dropEffect = 'copy';
+  return true;
 }
 
 export default function Stage() {
-	const { t } = useTranslation(undefined, { keyPrefix: "stage" });
-	const [width, height, backgroundColor, zoom] = useStage(
-		useShallow((state) => [
-			state.width,
-			state.height,
-			state.backgroundColor,
-			state.zoom,
-		]),
-	);
-	const activeElementId = useApp((state) => state.activeElementId);
-	const cameraModeEnabled = useApp((state) => state.cameraModeEnabled);
-	const displayTransformModeEnabled = useApp(
-		(state) => state.displayTransformModeEnabled,
-	);
-	const isStagePictureInPictureActive = useApp(
-		(state) => state.isStagePictureInPictureActive,
-	);
-	const sceneById = useScenes((state) => state.sceneById) as Record<
-		string,
-		{ displayName?: string }
-	>;
-	const elementById = useScenes((state) => state.elementById) as Record<
-		string,
-		Record<string, unknown>
-	>;
-	const elementParentSceneId = useScenes(
-		(state) => state.elementParentSceneId,
-	) as Record<string, string>;
-	const sceneElementsById = useScenes(
-		(state) => state.sceneElementsById,
-	) as Record<string, { displays?: string[] }>;
-	const canvas = useRef<HTMLCanvasElement>(null);
-	const initProps = useRef({ width, height, backgroundColor });
-	const loading = useAudioStore((state) => state.loading);
-	const [dropLoading, setDropLoading] = useState(false);
-	const [dragOverStage, setDragOverStage] = useState(false);
-	const [pictureInPictureSupported, setPictureInPictureSupported] =
-		useState(false);
-	const dragDepth = useRef(0);
-	const activeSceneId = useMemo(
-		() =>
-			getSceneIdForElement(activeElementId, sceneById, elementParentSceneId),
-		[activeElementId, elementParentSceneId, sceneById],
-	);
-	const activeDisplay = useMemo(
-		() => stage.getStageElementById(activeElementId || ""),
-		[activeElementId, elementById[activeElementId || ""]],
-	);
-	const activeDisplayDescriptor = elementById[activeElementId || ""];
-	const transformableDisplaySelected = isTransformable2DDisplay(activeDisplay);
-	const activeSceneHas3DDisplays = useMemo(() => {
-		if (!activeSceneId) {
-			return false;
-		}
+  const { t } = useTranslation(undefined, { keyPrefix: 'stage' });
+  const [width, height, backgroundColor, zoom] = useStage(
+    useShallow(state => [state.width, state.height, state.backgroundColor, state.zoom]),
+  );
+  const activeElementId = useApp(state => state.activeElementId);
+  const cameraModeEnabled = useApp(state => state.cameraModeEnabled);
+  const displayTransformModeEnabled = useApp(state => state.displayTransformModeEnabled);
+  const isStagePictureInPictureActive = useApp(state => state.isStagePictureInPictureActive);
+  const sceneById = useScenes(state => state.sceneById) as Record<string, { displayName?: string }>;
+  const elementById = useScenes(state => state.elementById) as Record<
+    string,
+    Record<string, unknown>
+  >;
+  const elementParentSceneId = useScenes(state => state.elementParentSceneId) as Record<
+    string,
+    string
+  >;
+  const sceneElementsById = useScenes(state => state.sceneElementsById) as Record<
+    string,
+    { displays?: string[] }
+  >;
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const initProps = useRef({ width, height, backgroundColor });
+  const loading = useAudioStore(state => state.loading);
+  const [dropLoading, setDropLoading] = useState(false);
+  const [dragOverStage, setDragOverStage] = useState(false);
+  const [pictureInPictureSupported, setPictureInPictureSupported] = useState(false);
+  const dragDepth = useRef(0);
+  const activeSceneId = useMemo(
+    () => getSceneIdForElement(activeElementId, sceneById, elementParentSceneId),
+    [activeElementId, elementParentSceneId, sceneById],
+  );
+  const activeDisplay = useMemo(
+    () => stage.getStageElementById(activeElementId || ''),
+    [activeElementId, elementById[activeElementId || '']],
+  );
+  const activeDisplayDescriptor = elementById[activeElementId || ''];
+  const transformableDisplaySelected = isTransformable2DDisplay(activeDisplay);
+  const activeSceneHas3DDisplays = useMemo(() => {
+    if (!activeSceneId) {
+      return false;
+    }
 
-		return (sceneElementsById[activeSceneId]?.displays || []).some(
-			(displayId) => getDisplayRenderGroup(elementById[displayId]) === "3d",
-		);
-	}, [activeSceneId, elementById, sceneElementsById]);
+    return (sceneElementsById[activeSceneId]?.displays || []).some(
+      displayId => getDisplayRenderGroup(elementById[displayId]) === '3d',
+    );
+  }, [activeSceneId, elementById, sceneElementsById]);
 
-	useEffect(() => {
-		const { width, height, backgroundColor } = initProps.current;
+  useEffect(() => {
+    const { width, height, backgroundColor } = initProps.current;
 
-		renderBackend.init({
-			canvas: canvas.current,
-			width,
-			height,
-			backgroundColor,
-		});
-		renderer.requestRender();
+    renderBackend.init({
+      canvas: canvas.current,
+      width,
+      height,
+      backgroundColor,
+    });
+    renderer.requestRender();
 
-		return () => {
-			renderer.stop();
-			renderBackend.dispose();
-		};
-	}, []);
+    return () => {
+      renderer.stop();
+      renderBackend.dispose();
+    };
+  }, []);
 
-	useEffect(() => {
-		setPictureInPictureSupported(isStagePictureInPictureSupported());
-	}, []);
+  useEffect(() => {
+    setPictureInPictureSupported(isStagePictureInPictureSupported());
+  }, []);
 
-	useEffect(() => {
-		if (!cameraModeEnabled && !displayTransformModeEnabled) {
-			return;
-		}
+  useEffect(() => {
+    if (!cameraModeEnabled && !displayTransformModeEnabled) {
+      return;
+    }
 
-		function handleKeyDown(event: KeyboardEvent) {
-			if (event.key === "Escape") {
-				setCameraModeEnabled(false);
-				setDisplayTransformModeEnabled(false);
-			}
-		}
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setCameraModeEnabled(false);
+        setDisplayTransformModeEnabled(false);
+      }
+    }
 
-		window.addEventListener("keydown", handleKeyDown);
-		return () => {
-			window.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [cameraModeEnabled, displayTransformModeEnabled]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [cameraModeEnabled, displayTransformModeEnabled]);
 
-	useEffect(() => {
-		if (cameraModeEnabled && (!activeSceneId || !activeSceneHas3DDisplays)) {
-			setCameraModeEnabled(false);
-		}
-	}, [activeSceneHas3DDisplays, activeSceneId, cameraModeEnabled]);
+  useEffect(() => {
+    if (cameraModeEnabled && (!activeSceneId || !activeSceneHas3DDisplays)) {
+      setCameraModeEnabled(false);
+    }
+  }, [activeSceneHas3DDisplays, activeSceneId, cameraModeEnabled]);
 
-	useEffect(() => {
-		if (displayTransformModeEnabled && !transformableDisplaySelected) {
-			setDisplayTransformModeEnabled(false);
-		}
-	}, [displayTransformModeEnabled, transformableDisplaySelected]);
+  useEffect(() => {
+    if (displayTransformModeEnabled && !transformableDisplaySelected) {
+      setDisplayTransformModeEnabled(false);
+    }
+  }, [displayTransformModeEnabled, transformableDisplaySelected]);
 
-	async function handleDrop(e: React.DragEvent) {
-		if (!acceptStageDrag(e)) {
-			return;
-		}
+  async function handleDrop(e: React.DragEvent) {
+    if (!acceptStageDrag(e)) {
+      return;
+    }
 
-		dragDepth.current = 0;
-		setDragOverStage(false);
+    dragDepth.current = 0;
+    setDragOverStage(false);
 
-		const file = e.dataTransfer.files[0];
+    const file = e.dataTransfer.files[0];
 
-		if (file) {
-			setDropLoading(true);
+    if (file) {
+      setDropLoading(true);
 
-			// Force one paint so the overlay spinner can appear immediately.
-			await new Promise<void>((resolve) => {
-				if (typeof window !== "undefined" && window.requestAnimationFrame) {
-					window.requestAnimationFrame(() => resolve());
-					return;
-				}
+      // Force one paint so the overlay spinner can appear immediately.
+      await new Promise<void>(resolve => {
+        if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+          window.requestAnimationFrame(() => resolve());
+          return;
+        }
 
-				setTimeout(() => resolve(), 0);
-			});
+        setTimeout(() => resolve(), 0);
+      });
 
-			try {
-				await loadAudioFile(file, true);
-			} finally {
-				setDropLoading(false);
-			}
-		}
-	}
+      try {
+        await loadAudioFile(file, true);
+      } finally {
+        setDropLoading(false);
+      }
+    }
+  }
 
-	function handleStageDragEnter(e: React.DragEvent) {
-		if (!acceptStageDrag(e)) {
-			return;
-		}
+  function handleStageDragEnter(e: React.DragEvent) {
+    if (!acceptStageDrag(e)) {
+      return;
+    }
 
-		dragDepth.current += 1;
-		setDragOverStage(true);
-	}
+    dragDepth.current += 1;
+    setDragOverStage(true);
+  }
 
-	function handleStageDragOver(e: React.DragEvent) {
-		if (!acceptStageDrag(e)) {
-			return;
-		}
+  function handleStageDragOver(e: React.DragEvent) {
+    if (!acceptStageDrag(e)) {
+      return;
+    }
 
-		if (!dragOverStage) {
-			setDragOverStage(true);
-		}
-	}
+    if (!dragOverStage) {
+      setDragOverStage(true);
+    }
+  }
 
-	function handleStageDragLeave(e: React.DragEvent) {
-		if (!acceptStageDrag(e)) {
-			return;
-		}
+  function handleStageDragLeave(e: React.DragEvent) {
+    if (!acceptStageDrag(e)) {
+      return;
+    }
 
-		dragDepth.current = Math.max(0, dragDepth.current - 1);
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
 
-		if (dragDepth.current === 0) {
-			setDragOverStage(false);
-		}
-	}
+    if (dragDepth.current === 0) {
+      setDragOverStage(false);
+    }
+  }
 
-	const style = {
-		width: `${width * zoom}px`,
-		height: `${height * zoom}px`,
-	};
+  const style = {
+    width: `${width * zoom}px`,
+    height: `${height * zoom}px`,
+  };
 
-	function handleCameraModeToggle() {
-		if (!activeSceneId || !activeSceneHas3DDisplays) {
-			return;
-		}
+  function handleCameraModeToggle() {
+    if (!activeSceneId || !activeSceneHas3DDisplays) {
+      return;
+    }
 
-		if (!cameraModeEnabled) {
-			setDisplayTransformModeEnabled(false);
-		}
+    if (!cameraModeEnabled) {
+      setDisplayTransformModeEnabled(false);
+    }
 
-		setCameraModeEnabled(!cameraModeEnabled);
-	}
+    setCameraModeEnabled(!cameraModeEnabled);
+  }
 
-	function handleDisplayTransformModeToggle() {
-		if (!transformableDisplaySelected) {
-			return;
-		}
+  function handleDisplayTransformModeToggle() {
+    if (!transformableDisplaySelected) {
+      return;
+    }
 
-		if (!displayTransformModeEnabled) {
-			setCameraModeEnabled(false);
-		}
+    if (!displayTransformModeEnabled) {
+      setCameraModeEnabled(false);
+    }
 
-		setDisplayTransformModeEnabled(!displayTransformModeEnabled);
-	}
+    setDisplayTransformModeEnabled(!displayTransformModeEnabled);
+  }
 
-	function handleStagePictureInPictureToggle() {
-		void toggleStagePictureInPicture();
-	}
+  function handleStagePictureInPictureToggle() {
+    void toggleStagePictureInPicture();
+  }
 
-	const pictureInPictureLabel = isStagePictureInPictureActive
-		? t("close-picture-in-picture")
-		: t("open-picture-in-picture");
-	const layerTransformLabel = t("layer-transform");
-	const cameraControlLabel = t("camera-control");
+  const pictureInPictureLabel = isStagePictureInPictureActive
+    ? t('close-picture-in-picture')
+    : t('open-picture-in-picture');
+  const layerTransformLabel = t('layer-transform');
+  const cameraControlLabel = t('camera-control');
 
-	return (
-		<div
-			className={"flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative"}
-			onDropCapture={handleDrop}
-			onDragOverCapture={handleStageDragOver}
-			onDragEnterCapture={handleStageDragEnter}
-			onDragLeaveCapture={handleStageDragLeave}
-			onDrop={handleDrop}
-			onDragOver={handleStageDragOver}
-			onDragEnter={handleStageDragEnter}
-			onDragLeave={handleStageDragLeave}
-		>
-			<DragOverlay show={dragOverStage} />
-			<div className={"m-auto"}>
-				<div
-					className={
-						"relative flex flex-col justify-center shadow-xl m-5 z-50 bg-black"
-					}
-				>
-					<canvas
-						ref={canvas}
-						style={style}
-						onDrop={handleDrop}
-						onDragOver={handleStageDragOver}
-						onDragEnter={handleStageDragEnter}
-						onDragLeave={handleStageDragLeave}
-					/>
-					<DisplayTransformOverlay
-						activeElementId={activeElementId}
-						displayDescriptor={activeDisplayDescriptor}
-						enabled={displayTransformModeEnabled}
-						stageWidth={width}
-						stageHeight={height}
-						zoom={zoom}
-					/>
-					<Loading show={loading || dropLoading} />
-				</div>
-				<div className="mt-2 flex justify-end gap-2 px-5">
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger render={<span />}>
-								<Button
-									type="button"
-									variant={
-										isStagePictureInPictureActive ? "default" : "outline"
-									}
-									size="icon-sm"
-									aria-label={pictureInPictureLabel}
-									className="shadow-xl"
-									disabled={!pictureInPictureSupported}
-									onClick={handleStagePictureInPictureToggle}
-								>
-									<PictureInPicture2 className="size-4" />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent
-								side="bottom"
-								sideOffset={6}
-								className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-							>
-								{pictureInPictureLabel}
-							</TooltipContent>
-						</Tooltip>
-						<Tooltip>
-							<TooltipTrigger render={<span />}>
-								<Button
-									type="button"
-									variant={
-										displayTransformModeEnabled && transformableDisplaySelected
-											? "default"
-											: "outline"
-									}
-									size="icon-sm"
-									aria-label={layerTransformLabel}
-									className="shadow-xl"
-									disabled={!transformableDisplaySelected}
-									onClick={handleDisplayTransformModeToggle}
-								>
-									<VectorSquare className="size-4" />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent
-								side="bottom"
-								sideOffset={6}
-								className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-							>
-								{layerTransformLabel}
-							</TooltipContent>
-						</Tooltip>
-						<Tooltip>
-							<TooltipTrigger render={<span />}>
-								<Button
-									type="button"
-									variant={
-										cameraModeEnabled && activeSceneHas3DDisplays
-											? "default"
-											: "outline"
-									}
-									size="icon-sm"
-									aria-label={cameraControlLabel}
-									className="shadow-xl"
-									disabled={!activeSceneHas3DDisplays}
-									onClick={handleCameraModeToggle}
-								>
-									<Video className="size-4" />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent
-								side="bottom"
-								sideOffset={6}
-								className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-							>
-								{cameraControlLabel}
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <section
+      aria-label="Stage"
+      className={'flex flex-col flex-1 min-w-0 min-h-0 overflow-auto relative'}
+      onDropCapture={handleDrop}
+      onDragOverCapture={handleStageDragOver}
+      onDragEnterCapture={handleStageDragEnter}
+      onDragLeaveCapture={handleStageDragLeave}
+      onDrop={handleDrop}
+      onDragOver={handleStageDragOver}
+      onDragEnter={handleStageDragEnter}
+      onDragLeave={handleStageDragLeave}
+    >
+      <DragOverlay show={dragOverStage} />
+      <div className={'m-auto'}>
+        <div className={'relative flex flex-col justify-center shadow-xl m-5 z-50 bg-black'}>
+          <canvas
+            ref={canvas}
+            style={style}
+            onDrop={handleDrop}
+            onDragOver={handleStageDragOver}
+            onDragEnter={handleStageDragEnter}
+            onDragLeave={handleStageDragLeave}
+          />
+          <DisplayTransformOverlay
+            activeElementId={activeElementId}
+            displayDescriptor={activeDisplayDescriptor}
+            enabled={displayTransformModeEnabled}
+            stageWidth={width}
+            stageHeight={height}
+            zoom={zoom}
+          />
+          <Loading show={loading || dropLoading} />
+        </div>
+        <div className="mt-2 flex justify-end gap-2 px-5">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger render={<span />}>
+                <Button
+                  type="button"
+                  variant={isStagePictureInPictureActive ? 'default' : 'outline'}
+                  size="icon-sm"
+                  aria-label={pictureInPictureLabel}
+                  className="shadow-xl"
+                  disabled={!pictureInPictureSupported}
+                  onClick={handleStagePictureInPictureToggle}
+                >
+                  <PictureInPicture2 className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                sideOffset={6}
+                className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+              >
+                {pictureInPictureLabel}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger render={<span />}>
+                <Button
+                  type="button"
+                  variant={
+                    displayTransformModeEnabled && transformableDisplaySelected
+                      ? 'default'
+                      : 'outline'
+                  }
+                  size="icon-sm"
+                  aria-label={layerTransformLabel}
+                  className="shadow-xl"
+                  disabled={!transformableDisplaySelected}
+                  onClick={handleDisplayTransformModeToggle}
+                >
+                  <VectorSquare className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                sideOffset={6}
+                className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+              >
+                {layerTransformLabel}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger render={<span />}>
+                <Button
+                  type="button"
+                  variant={cameraModeEnabled && activeSceneHas3DDisplays ? 'default' : 'outline'}
+                  size="icon-sm"
+                  aria-label={cameraControlLabel}
+                  className="shadow-xl"
+                  disabled={!activeSceneHas3DDisplays}
+                  onClick={handleCameraModeToggle}
+                >
+                  <Video className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                sideOffset={6}
+                className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+              >
+                {cameraControlLabel}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 interface DragOverlayProps {
-	show?: boolean;
+  show?: boolean;
 }
 
 const DragOverlay = ({ show = false }: DragOverlayProps) => {
-	if (!show) {
-		return null;
-	}
+  if (!show) {
+    return null;
+  }
 
-	return (
-		<div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
-			<div className="flex h-44 w-44 items-center justify-center rounded-full border border-primary/40 bg-black/55 shadow-2xl">
-				<Download className="h-24 w-24 text-primary" strokeWidth={1.8} />
-			</div>
-		</div>
-	);
+  return (
+    <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+      <div className="flex h-44 w-44 items-center justify-center rounded-full border border-primary/40 bg-black/55 shadow-2xl">
+        <Download className="h-24 w-24 text-primary" strokeWidth={1.8} />
+      </div>
+    </div>
+  );
 };
 
 interface LoadingProps {
-	show?: boolean;
+  show?: boolean;
 }
 
 const Loading = ({ show }: LoadingProps) => {
-	const [visible, setVisible] = useState(show);
-	const [leaving, setLeaving] = useState(false);
-	const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [visible, setVisible] = useState(show);
+  const [leaving, setLeaving] = useState(false);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	useEffect(() => {
-		if (leaveTimer.current) {
-			window.clearTimeout(leaveTimer.current as unknown as number);
-			leaveTimer.current = null;
-		}
+  useEffect(() => {
+    if (leaveTimer.current) {
+      window.clearTimeout(leaveTimer.current as unknown as number);
+      leaveTimer.current = null;
+    }
 
-		if (show) {
-			setVisible(true);
-			setLeaving(false);
-			return undefined;
-		}
+    if (show) {
+      setVisible(true);
+      setLeaving(false);
+      return undefined;
+    }
 
-		if (!visible) {
-			return undefined;
-		}
+    if (!visible) {
+      return undefined;
+    }
 
-		setLeaving(true);
-		leaveTimer.current = setTimeout(() => {
-			setVisible(false);
-			setLeaving(false);
-			leaveTimer.current = null;
-		}, 220);
+    setLeaving(true);
+    leaveTimer.current = setTimeout(() => {
+      setVisible(false);
+      setLeaving(false);
+      leaveTimer.current = null;
+    }, 220);
 
-		return () => {
-			if (leaveTimer.current) {
-				window.clearTimeout(leaveTimer.current as unknown as number);
-				leaveTimer.current = null;
-			}
-		};
-	}, [show, visible]);
+    return () => {
+      if (leaveTimer.current) {
+        window.clearTimeout(leaveTimer.current as unknown as number);
+        leaveTimer.current = null;
+      }
+    };
+  }, [show, visible]);
 
-	if (!visible) {
-		return null;
-	}
+  if (!visible) {
+    return null;
+  }
 
-	return (
-		<div
-			className={
-				"absolute inset-0 z-4 flex items-center justify-center pointer-events-none"
-			}
-		>
-			<div
-				className={`${"[animation:stage-loader-pop_220ms_ease-out]"} ${
-					leaving ? "[animation:stage-loader-out_220ms_ease-in_forwards]" : ""
-				}`}
-			>
-				<Spinner size={96} />
-			</div>
-		</div>
-	);
+  return (
+    <div className={'absolute inset-0 z-4 flex items-center justify-center pointer-events-none'}>
+      <div
+        className={`${'[animation:stage-loader-pop_220ms_ease-out]'} ${
+          leaving ? '[animation:stage-loader-out_220ms_ease-in_forwards]' : ''
+        }`}
+      >
+        <Spinner size={96} />
+      </div>
+    </div>
+  );
 };

@@ -1,88 +1,84 @@
-import { reactors, stage } from "@/app/global";
-import { create } from "zustand";
-import { setActiveReactorId } from "./app";
-import { loadScenes } from "./scenes";
+import { create } from 'zustand';
+import { reactors, stage } from '@/app/global';
+import { setActiveReactorId } from './app';
+import { loadScenes } from './scenes';
 
 interface ReactorState {
-	reactors: Record<string, unknown>[];
+  reactors: Record<string, unknown>[];
 }
 
 const initialState: ReactorState = {
-	reactors: [],
+  reactors: [],
 };
 
 const reactorStore = create(() => ({
-	...initialState,
+  ...initialState,
 }));
 
 export function loadReactors() {
-	reactorStore.setState({ reactors: reactors.toJSON() });
+  reactorStore.setState({ reactors: reactors.toJSON() });
 }
 
 export function resetReactors() {
-	reactorStore.setState({ ...initialState });
+  reactorStore.setState({ ...initialState });
 
-	reactors.clearReactors();
+  reactors.clearReactors();
 
-	setActiveReactorId(null);
+  setActiveReactorId(null);
 }
 
 export function addReactor(reactor?: unknown) {
-	const newReactor = reactors.addReactor(reactor);
+  const newReactor = reactors.addReactor(reactor);
 
-	loadReactors();
+  loadReactors();
 
-	return newReactor;
+  return newReactor;
 }
 
 export function removeReactor(reactor: { id: string }) {
-	// Clean up all display references to this reactor
-	stage.scenes.forEach(
-		(scene: {
-			displays: {
-				reactors?: Record<string, { id: string }>;
-				removeReactor: (prop: string) => void;
-			}[];
-			effects: {
-				reactors?: Record<string, { id: string }>;
-				removeReactor: (prop: string) => void;
-			}[];
-		}) => {
-			[...scene.displays, ...scene.effects].forEach((display) => {
-				if (display.reactors) {
-					for (const [prop, config] of Object.entries(display.reactors)) {
-						if (config.id === reactor.id) {
-							display.removeReactor(prop);
-						}
-					}
-				}
-			});
-		},
-	);
+  // Clean up all display references to this reactor
+  stage.scenes.forEach(
+    (scene: {
+      displays: {
+        reactors?: Record<string, { id: string }>;
+        removeReactor: (prop: string) => void;
+      }[];
+      effects: {
+        reactors?: Record<string, { id: string }>;
+        removeReactor: (prop: string) => void;
+      }[];
+    }) => {
+      [...scene.displays, ...scene.effects].forEach(display => {
+        if (display.reactors) {
+          for (const [prop, config] of Object.entries(display.reactors)) {
+            if (config.id === reactor.id) {
+              display.removeReactor(prop);
+            }
+          }
+        }
+      });
+    },
+  );
 
-	reactors.removeReactor(reactor);
+  reactors.removeReactor(reactor);
 
-	loadReactors();
-	loadScenes();
+  loadReactors();
+  loadScenes();
 }
 
-export function updateReactorProperty(
-	reactorId: string,
-	prop: string,
-	value: unknown,
-) {
-	const reactor = reactors.getElementById(reactorId);
+export function updateReactorProperty(reactorId: string, prop: string, value: unknown) {
+  const reactor = reactors.getElementById(reactorId);
 
-	if (reactor) {
-		reactor[prop] = value;
-		loadReactors();
-	}
+  if (reactor) {
+    reactor[prop] = value;
+    loadReactors();
+  }
 }
 
 export function clearReactors() {
-	reactors.clearReactors();
+  reactors.clearReactors();
 
-	loadReactors();
+  loadReactors();
 }
 
 export default reactorStore;

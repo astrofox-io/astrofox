@@ -1,60 +1,53 @@
-import { raiseError } from "@/app/actions/error";
-import { BLANK_IMAGE } from "@/app/constants";
-import { api } from "@/app/global";
-import { FolderOpen, Times } from "@/app/icons";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { ignoreEvents } from "@/lib/utils/react";
-import { clsx as classNames } from "cnfast";
-import type React from "react";
-import { useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { clsx as classNames } from 'cnfast';
+import type React from 'react';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { raiseError } from '@/app/actions/error';
+import { BLANK_IMAGE } from '@/app/constants';
+import { api } from '@/app/global';
+import { FolderOpen, Times } from '@/app/icons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ignoreEvents } from '@/lib/utils/react';
 
 function isFileUrlSource(src: string) {
-  return /^file:\/\//i.test(src || "");
+  return /^file:\/\//i.test(src || '');
 }
 
 function isWindowsPathSource(src: string) {
-  return /^[a-zA-Z]:[\\/]/.test(src || "");
+  return /^[a-zA-Z]:[\\/]/.test(src || '');
 }
 
 function isUncPathSource(src: string) {
-  return /^\\\\/.test(src || "");
+  return /^\\\\/.test(src || '');
 }
 
 function toFileUrl(path: string) {
-  if (!path || typeof path !== "string") {
-    return "";
+  if (!path || typeof path !== 'string') {
+    return '';
   }
 
   const sourcePath = path.trim();
 
   if (!sourcePath) {
-    return "";
+    return '';
   }
 
   if (isFileUrlSource(sourcePath)) {
     return sourcePath;
   }
 
-  const escaped = encodeURI(sourcePath)
-    .replace(/#/g, "%23")
-    .replace(/\?/g, "%3F");
+  const escaped = encodeURI(sourcePath).replace(/#/g, '%23').replace(/\?/g, '%3F');
 
   if (isWindowsPathSource(sourcePath)) {
-    return `file:///${escaped.replace(/\\/g, "/")}`;
+    return `file:///${escaped.replace(/\\/g, '/')}`;
   }
 
   if (isUncPathSource(sourcePath)) {
-    const unc = escaped.replace(/^\\\\/, "").replace(/\\/g, "/");
+    const unc = escaped.replace(/^\\\\/, '').replace(/\\/g, '/');
     return `file://${unc}`;
   }
 
-  if (sourcePath.startsWith("/")) {
+  if (sourcePath.startsWith('/')) {
     return `file://${escaped}`;
   }
 
@@ -68,23 +61,23 @@ interface FileWithPath {
 }
 
 function getFilePath(file: FileWithPath | null) {
-  if (!file || typeof file !== "object") {
-    return "";
+  if (!file || typeof file !== 'object') {
+    return '';
   }
 
-  if (typeof file.path === "string" && file.path.trim()) {
+  if (typeof file.path === 'string' && file.path.trim()) {
     return file.path.trim();
   }
 
-  if (typeof file.filePath === "string" && file.filePath.trim()) {
+  if (typeof file.filePath === 'string' && file.filePath.trim()) {
     return file.filePath.trim();
   }
 
-  if (typeof file.fullPath === "string" && file.fullPath.trim()) {
+  if (typeof file.fullPath === 'string' && file.fullPath.trim()) {
     return file.fullPath.trim();
   }
 
-  return "";
+  return '';
 }
 
 interface ImageInputProps {
@@ -94,8 +87,8 @@ interface ImageInputProps {
 }
 
 export default function ImageInput({ name, value, onChange }: ImageInputProps) {
-  const { t } = useTranslation(undefined, { keyPrefix: "inputs" });
-  const { t: te } = useTranslation(undefined, { keyPrefix: "errors" });
+  const { t } = useTranslation(undefined, { keyPrefix: 'inputs' });
+  const { t: te } = useTranslation(undefined, { keyPrefix: 'errors' });
   const image = useRef<HTMLImageElement>(null);
   const hasImage = value !== BLANK_IMAGE;
 
@@ -108,17 +101,15 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
   async function loadImageFile(file: File) {
     try {
       const sourcePath = getFilePath(file as unknown as FileWithPath);
-      const src = sourcePath
-        ? toFileUrl(sourcePath)
-        : await api.readImageFile(file);
+      const src = sourcePath ? toFileUrl(sourcePath) : await api.readImageFile(file);
 
       loadImageSrc(src);
       onChange?.({
         [name]: src,
-        sourcePath: sourcePath || "",
+        sourcePath: sourcePath || '',
       });
     } catch (error) {
-      raiseError(te("invalid-image-file"), error);
+      raiseError(te('invalid-image-file'), error);
     }
   }
 
@@ -130,9 +121,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
 
   async function handleClick() {
     const { files, canceled } = await api.showOpenDialog({
-      filters: [
-        { name: t("image-files"), extensions: ["jpg", "jpeg", "png", "gif"] },
-      ],
+      filters: [{ name: t('image-files'), extensions: ['jpg', 'jpeg', 'png', 'gif'] }],
     });
 
     if (!canceled && files && files.length) {
@@ -144,28 +133,27 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
     loadImageSrc(BLANK_IMAGE);
     onChange?.({
       [name]: BLANK_IMAGE,
-      sourcePath: "",
+      sourcePath: '',
     });
   }
 
   return (
     <>
-      <div
+      <button
+        type="button"
         className={
-          "h-24 w-24 bg-neutral-900 border border-border-input rounded relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100 cursor-pointer"
+          'h-24 w-24 bg-neutral-900 border border-border-input rounded relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100 cursor-pointer'
         }
         onDrop={handleDrop}
         onDragOver={ignoreEvents}
         onClick={handleClick}
       >
+        {/* biome-ignore lint/performance/noImgElement: User-selected blob and data URLs need a native image element. */}
         <img
           ref={image}
-          className={classNames(
-            "absolute top-1/2 -translate-y-1/2 w-full h-auto",
-            {
-              hidden: !hasImage,
-            },
-          )}
+          className={classNames('absolute top-1/2 -translate-y-1/2 w-full h-auto', {
+            hidden: !hasImage,
+          })}
           src={value || undefined}
           alt=""
         />
@@ -175,7 +163,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               render={
                 <FolderOpen
                   className={
-                    "open-icon absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]"
+                    'open-icon absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]'
                   }
                 />
               }
@@ -185,11 +173,11 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               sideOffset={6}
               className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
             >
-              {t("open-file")}
+              {t('open-file')}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </div>
+      </button>
       {hasImage && (
         <TooltipProvider>
           <Tooltip>
@@ -197,7 +185,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               render={
                 <Times
                   className={classNames({
-                    "text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100": true,
+                    'text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100': true,
                   })}
                   onClick={handleDelete}
                 />
@@ -208,7 +196,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               sideOffset={6}
               className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
             >
-              {t("remove-image")}
+              {t('remove-image')}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

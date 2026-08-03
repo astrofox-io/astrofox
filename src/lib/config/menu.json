@@ -1,62 +1,62 @@
 [
-	{
-		"label": "File",
-		"submenu": [
-			{
-				"label": "New project",
-				"action": "new-project"
-			},
-			{
-				"label": "Open project",
-				"action": "open-project"
-			},
-			{
-				"label": "Save project",
-				"action": "save-project"
-			},
-			{
-				"type": "separator"
-			},
-			{
-				"label": "Load audio",
-				"action": "load-audio"
-			},
-			{
-				"label": "Use microphone",
-				"action": "use-microphone"
-			},
-			{
-				"label": "Use MIDI",
-				"action": "use-midi"
-			},
-			{
-				"label": "Save image",
-				"action": "save-image"
-			},
-			{
-				"label": "Save video",
-				"action": "save-video"
-			}
-		]
-	},
-	{
-		"label": "Edit",
-		"submenu": [
-			{
-				"label": "Project settings",
-				"action": "edit-canvas"
-			}
-		]
-	},
-	{
-		"label": "Developer",
-		"hidden": true,
-		"submenu": [
-			{
-				"label": "Reload",
-				"role": "reload",
-				"accelerator": "CmdOrCtrl+R"
-			}
-		]
-	}
+  {
+    "label": "File",
+    "submenu": [
+      {
+        "label": "New project",
+        "action": "new-project"
+      },
+      {
+        "label": "Open project",
+        "action": "open-project"
+      },
+      {
+        "label": "Save project",
+        "action": "save-project"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "label": "Load audio",
+        "action": "load-audio"
+      },
+      {
+        "label": "Use microphone",
+        "action": "use-microphone"
+      },
+      {
+        "label": "Use MIDI",
+        "action": "use-midi"
+      },
+      {
+        "label": "Save image",
+        "action": "save-image"
+      },
+      {
+        "label": "Save video",
+        "action": "save-video"
+      }
+    ]
+  },
+  {
+    "label": "Edit",
+    "submenu": [
+      {
+        "label": "Project settings",
+        "action": "edit-canvas"
+      }
+    ]
+  },
+  {
+    "label": "Developer",
+    "hidden": true,
+    "submenu": [
+      {
+        "label": "Reload",
+        "role": "reload",
+        "accelerator": "CmdOrCtrl+R"
+      }
+    ]
+  }
 ]

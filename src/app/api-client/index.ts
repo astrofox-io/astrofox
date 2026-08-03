@@ -1,397 +1,379 @@
-import { getDesktopBridge } from "@/app/desktop";
-import env from "@/app/env";
-import EventEmitter from "@/lib/core/EventEmitter";
-import type { EventCallback } from "@/lib/types";
-import { t } from "@/i18n/config";
-import jsmediatags from "jsmediatags/dist/jsmediatags.min.js";
+import jsmediatags from 'jsmediatags/dist/jsmediatags.min.js';
+import { getDesktopBridge } from '@/app/desktop';
+import env from '@/app/env';
+import { t } from '@/i18n/config';
+import EventEmitter from '@/lib/core/EventEmitter';
+import type { EventCallback } from '@/lib/types';
 
 const events = new EventEmitter();
 
 interface FileFilter {
-	name?: string;
-	mimeType?: string;
-	extensions?: string[];
+  name?: string;
+  mimeType?: string;
+  extensions?: string[];
 }
 
 interface PickerType {
-	description: string;
-	accept: Record<string, string[]>;
+  description: string;
+  accept: Record<string, string[]>;
 }
 
 interface OpenDialogProps {
-	filters?: FileFilter[];
-	multiple?: boolean;
+  filters?: FileFilter[];
+  multiple?: boolean;
 }
 
 interface SaveDialogProps {
-	filters?: FileFilter[];
-	defaultPath?: string;
+  filters?: FileFilter[];
+  defaultPath?: string;
 }
 
 interface SaveFileProps {
-	mimeType?: string;
-	fileName?: string;
+  mimeType?: string;
+  fileName?: string;
 }
 
 interface FileHandle {
-	getFile: () => Promise<File>;
-	createWritable: () => Promise<{
-		write: (blob: Blob) => Promise<void>;
-		close: () => Promise<void>;
-	}>;
-	name: string;
+  getFile: () => Promise<File>;
+  createWritable: () => Promise<{
+    write: (blob: Blob) => Promise<void>;
+    close: () => Promise<void>;
+  }>;
+  name: string;
 }
 
-function buildPickerTypes(
-	filters: FileFilter[] = [],
-): PickerType[] | undefined {
-	if (!filters.length) return undefined;
+function buildPickerTypes(filters: FileFilter[] = []): PickerType[] | undefined {
+  if (!filters.length) return undefined;
 
-	return filters.map((filter) => ({
-		description: filter.name || t("file-types.files"),
-		accept: {
-			[filter.mimeType || "application/octet-stream"]: (
-				filter.extensions || []
-			).map((ext: string) => `.${ext}`),
-		},
-	}));
+  return filters.map(filter => ({
+    description: filter.name || t('file-types.files'),
+    accept: {
+      [filter.mimeType || 'application/octet-stream']: (filter.extensions || []).map(
+        (ext: string) => `.${ext}`,
+      ),
+    },
+  }));
 }
 
 async function toFile(input: File | FileHandle | null): Promise<File | null> {
-	if (!input) return null;
-	if (input instanceof File) return input;
-	if ("getFile" in input && input.getFile) return input.getFile();
-	return null;
+  if (!input) return null;
+  if (input instanceof File) return input;
+  if ('getFile' in input && input.getFile) return input.getFile();
+  return null;
 }
 
-async function saveBlob(
-	target: FileHandle | string | null,
-	blob: Blob,
-	fallbackName: string,
-) {
-	if (
-		target &&
-		typeof target === "object" &&
-		"createWritable" in target &&
-		target.createWritable
-	) {
-		const writable = await target.createWritable();
-		await writable.write(blob);
-		await writable.close();
-		return;
-	}
+async function saveBlob(target: FileHandle | string | null, blob: Blob, fallbackName: string) {
+  if (target && typeof target === 'object' && 'createWritable' in target && target.createWritable) {
+    const writable = await target.createWritable();
+    await writable.write(blob);
+    await writable.close();
+    return;
+  }
 
-	const filename =
-		typeof target === "string" ? target : fallbackName || "astrofox";
-	const url = URL.createObjectURL(blob);
-	const link = document.createElement("a");
-	link.href = url;
-	link.download = filename;
-	link.click();
-	URL.revokeObjectURL(url);
+  const filename = typeof target === 'string' ? target : fallbackName || 'astrofox';
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export function getEnvironment() {
-	const desktop = getDesktopBridge();
-	if (desktop?.getEnvironment) {
-		return {
-			...env,
-			...desktop.getEnvironment(),
-			IS_DESKTOP: true,
-		};
-	}
-	return env;
+  const desktop = getDesktopBridge();
+  if (desktop?.getEnvironment) {
+    return {
+      ...env,
+      ...desktop.getEnvironment(),
+      IS_DESKTOP: true,
+    };
+  }
+  return env;
 }
 
 export function on(channel: string, callback: EventCallback) {
-	events.on(channel, callback);
+  events.on(channel, callback);
 }
 
 export function once(channel: string, callback: EventCallback) {
-	events.once(channel, callback);
+  events.once(channel, callback);
 }
 
 export function off(channel: string, callback: EventCallback) {
-	events.off(channel, callback);
+  events.off(channel, callback);
 }
 
 export function send(channel: string, data?: unknown) {
-	events.emit(channel, data);
+  events.emit(channel, data);
 }
 
 export async function invoke() {
-	throw new Error(t("errors.ipc-invoke-unavailable"));
+  throw new Error(t('errors.ipc-invoke-unavailable'));
 }
 
 export function log(...args: unknown[]) {
-	// eslint-disable-next-line no-console
-	console.log(...args);
+  // eslint-disable-next-line no-console
+  console.log(...args);
 }
 
 export async function minimizeWindow() {
-	const desktop = getDesktopBridge();
-	if (desktop?.minimizeWindow) {
-		return desktop.minimizeWindow();
-	}
+  const desktop = getDesktopBridge();
+  if (desktop?.minimizeWindow) {
+    return desktop.minimizeWindow();
+  }
 }
 
 export async function maximizeWindow() {
-	const desktop = getDesktopBridge();
-	if (desktop?.maximizeWindow) {
-		return desktop.maximizeWindow();
-	}
+  const desktop = getDesktopBridge();
+  if (desktop?.maximizeWindow) {
+    return desktop.maximizeWindow();
+  }
 }
 
 export async function closeWindow() {
-	const desktop = getDesktopBridge();
-	if (desktop?.closeWindow) {
-		return desktop.closeWindow();
-	}
+  const desktop = getDesktopBridge();
+  if (desktop?.closeWindow) {
+    return desktop.closeWindow();
+  }
 }
 
 export async function showOpenDialog(props: OpenDialogProps = {}) {
-	const desktop = getDesktopBridge();
-	const multiple = Boolean(props.multiple);
+  const desktop = getDesktopBridge();
+  const multiple = Boolean(props.multiple);
 
-	// Native dialogs in Electron give real filesystem paths (needed for ffmpeg).
-	if (desktop?.showOpenDialog && desktop.readFile) {
-		const result = await desktop.showOpenDialog({
-			filters: (props.filters || []).map((filter) => ({
-				name: filter.name || t("file-types.files"),
-				extensions: filter.extensions || ["*"],
-			})),
-			multiple,
-		});
+  // Native dialogs in Electron give real filesystem paths (needed for ffmpeg).
+  if (desktop?.showOpenDialog && desktop.readFile) {
+    const result = await desktop.showOpenDialog({
+      filters: (props.filters || []).map(filter => ({
+        name: filter.name || t('file-types.files'),
+        extensions: filter.extensions || ['*'],
+      })),
+      multiple,
+    });
 
-		if (result.canceled || !result.filePaths?.length) {
-			return { canceled: true, files: [] as File[] };
-		}
+    if (result.canceled || !result.filePaths?.length) {
+      return { canceled: true, files: [] as File[] };
+    }
 
-		const files = await Promise.all(
-			result.filePaths.map(async (filePath) => {
-				const { name, data } = await desktop.readFile!(filePath);
-				// Copy into a fresh ArrayBuffer so TypeScript accepts it as a BlobPart
-				// (IPC-transferred buffers are typed as ArrayBufferLike).
-				const bytes = new Uint8Array(
-					data instanceof Uint8Array ? data : new Uint8Array(data),
-				);
-				const file = new File([bytes.buffer], name || "file");
-				Object.assign(file, { path: filePath });
-				return file;
-			}),
-		);
+    const files = await Promise.all(
+      result.filePaths.map(async filePath => {
+        const { name, data } = await desktop.readFile!(filePath);
+        // Copy into a fresh ArrayBuffer so TypeScript accepts it as a BlobPart
+        // (IPC-transferred buffers are typed as ArrayBufferLike).
+        const bytes = new Uint8Array(data instanceof Uint8Array ? data : new Uint8Array(data));
+        const file = new File([bytes.buffer], name || 'file');
+        Object.assign(file, { path: filePath });
+        return file;
+      }),
+    );
 
-		return { canceled: false, files, filePaths: result.filePaths };
-	}
+    return { canceled: false, files, filePaths: result.filePaths };
+  }
 
-	const types = buildPickerTypes(props.filters || []);
+  const types = buildPickerTypes(props.filters || []);
 
-	if (window.showOpenFilePicker) {
-		try {
-			const handles = await window.showOpenFilePicker({ types, multiple });
-			const files = await Promise.all(
-				handles.map((handle: FileHandle) => handle.getFile()),
-			);
-			return { canceled: false, files, fileHandles: handles };
-		} catch (error) {
-			if (error && (error as Error).name === "AbortError") {
-				return { canceled: true, files: [] as File[] };
-			}
-			throw error;
-		}
-	}
+  if (window.showOpenFilePicker) {
+    try {
+      const handles = await window.showOpenFilePicker({ types, multiple });
+      const files = await Promise.all(handles.map((handle: FileHandle) => handle.getFile()));
+      return { canceled: false, files, fileHandles: handles };
+    } catch (error) {
+      if (error && (error as Error).name === 'AbortError') {
+        return { canceled: true, files: [] as File[] };
+      }
+      throw error;
+    }
+  }
 
-	return new Promise<{ canceled: boolean; files: File[] }>((resolve) => {
-		const input = document.createElement("input");
-		input.type = "file";
-		input.multiple = multiple;
-		if (props.filters?.length) {
-			const extensions = props.filters.flatMap(
-				(filter: FileFilter) => filter.extensions || [],
-			);
-			input.accept = extensions.map((ext: string) => `.${ext}`).join(",");
-		}
-		input.onchange = () => {
-			const files = Array.from(input.files || []);
-			resolve({ canceled: files.length === 0, files });
-		};
-		input.click();
-	});
+  return new Promise<{ canceled: boolean; files: File[] }>(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = multiple;
+    if (props.filters?.length) {
+      const extensions = props.filters.flatMap((filter: FileFilter) => filter.extensions || []);
+      input.accept = extensions.map((ext: string) => `.${ext}`).join(',');
+    }
+    input.onchange = () => {
+      const files = Array.from(input.files || []);
+      resolve({ canceled: files.length === 0, files });
+    };
+    input.click();
+  });
 }
 
 export async function showSaveDialog(props: SaveDialogProps = {}) {
-	const desktop = getDesktopBridge();
-	const suggestedName = props.defaultPath || "astrofox";
+  const desktop = getDesktopBridge();
+  const suggestedName = props.defaultPath || 'astrofox';
 
-	if (desktop?.showSaveDialog) {
-		const result = await desktop.showSaveDialog({
-			defaultPath: suggestedName,
-			filters: (props.filters || []).map((filter) => ({
-				name: filter.name || t("file-types.files"),
-				extensions: filter.extensions || ["*"],
-			})),
-		});
+  if (desktop?.showSaveDialog) {
+    const result = await desktop.showSaveDialog({
+      defaultPath: suggestedName,
+      filters: (props.filters || []).map(filter => ({
+        name: filter.name || t('file-types.files'),
+        extensions: filter.extensions || ['*'],
+      })),
+    });
 
-		if (result.canceled || !result.filePath) {
-			return { canceled: true };
-		}
+    if (result.canceled || !result.filePath) {
+      return { canceled: true };
+    }
 
-		return { canceled: false, filePath: result.filePath };
-	}
+    return { canceled: false, filePath: result.filePath };
+  }
 
-	const types = buildPickerTypes(props.filters || []);
+  const types = buildPickerTypes(props.filters || []);
 
-	if (window.showSaveFilePicker) {
-		try {
-			const handle = await window.showSaveFilePicker({ suggestedName, types });
-			return { canceled: false, fileHandle: handle, filePath: handle.name };
-		} catch (error) {
-			if (error && (error as Error).name === "AbortError") {
-				return { canceled: true };
-			}
-			throw error;
-		}
-	}
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({ suggestedName, types });
+      return { canceled: false, fileHandle: handle, filePath: handle.name };
+    } catch (error) {
+      if (error && (error as Error).name === 'AbortError') {
+        return { canceled: true };
+      }
+      throw error;
+    }
+  }
 
-	return { canceled: false, filePath: suggestedName };
+  return { canceled: false, filePath: suggestedName };
 }
 
 export async function readAudioFile(file: File | FileHandle) {
-	const audioFile = await toFile(file);
+  const audioFile = await toFile(file);
 
-	if (!audioFile) {
-		throw new Error(t("errors.no-audio-file-provided"));
-	}
+  if (!audioFile) {
+    throw new Error(t('errors.no-audio-file-provided'));
+  }
 
-	let { type } = audioFile;
+  let { type } = audioFile;
 
-	if (audioFile.name?.endsWith(".opus")) {
-		type = "audio/opus";
-	}
+  if (audioFile.name?.endsWith('.opus')) {
+    type = 'audio/opus';
+  }
 
-	if (!/^audio/.test(type)) {
-		throw new Error(
-			t("errors.unrecognized-audio-type", {
-				type: type || t("common.unknown"),
-			}),
-		);
-	}
+  if (!/^audio/.test(type)) {
+    throw new Error(
+      t('errors.unrecognized-audio-type', {
+        type: type || t('common.unknown'),
+      }),
+    );
+  }
 
-	return audioFile.arrayBuffer();
+  return audioFile.arrayBuffer();
 }
 
 export async function loadAudioTags(file: File | FileHandle) {
-	try {
-		const audioFile = await toFile(file);
-		if (!audioFile) return null;
-		return await new Promise<Record<string, unknown> | null>((resolve) => {
-			jsmediatags.read(audioFile, {
-				onSuccess: (result: { tags: Record<string, unknown> | null }) =>
-					resolve(result.tags || null),
-				onError: (error: unknown) => {
-					log(error);
-					resolve(null);
-				},
-			});
-		});
-	} catch (error) {
-		log(error);
-		return null;
-	}
+  try {
+    const audioFile = await toFile(file);
+    if (!audioFile) return null;
+    return await new Promise<Record<string, unknown> | null>(resolve => {
+      jsmediatags.read(audioFile, {
+        onSuccess: (result: { tags: Record<string, unknown> | null }) =>
+          resolve(result.tags || null),
+        onError: (error: unknown) => {
+          log(error);
+          resolve(null);
+        },
+      });
+    });
+  } catch (error) {
+    log(error);
+    return null;
+  }
 }
 
 export async function readImageFile(file: File | FileHandle) {
-	const imageFile = await toFile(file);
+  const imageFile = await toFile(file);
 
-	if (!imageFile) {
-		throw new Error(t("errors.no-image-file-provided"));
-	}
+  if (!imageFile) {
+    throw new Error(t('errors.no-image-file-provided'));
+  }
 
-	return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onerror = () => reject(new Error(t("errors.read-image-file-failed")));
-		reader.onload = () => resolve(reader.result);
-		reader.readAsDataURL(imageFile);
-	});
+  return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error(t('errors.read-image-file-failed')));
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(imageFile);
+  });
 }
 
 export async function readVideoFile(file: File | FileHandle) {
-	const videoFile = await toFile(file);
+  const videoFile = await toFile(file);
 
-	if (!videoFile) {
-		throw new Error(t("errors.no-video-file-provided"));
-	}
+  if (!videoFile) {
+    throw new Error(t('errors.no-video-file-provided'));
+  }
 
-	if (videoFile.type && !/^video/.test(videoFile.type)) {
-		throw new Error(t("errors.unrecognized-video-type", { type: videoFile.type }));
-	}
+  if (videoFile.type && !/^video/.test(videoFile.type)) {
+    throw new Error(t('errors.unrecognized-video-type', { type: videoFile.type }));
+  }
 
-	return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onerror = () => reject(new Error(t("errors.read-video-file-failed")));
-		reader.onload = () => resolve(reader.result);
-		reader.readAsDataURL(videoFile);
-	});
+  return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error(t('errors.read-video-file-failed')));
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(videoFile);
+  });
 }
 
 export async function saveImageFile(
-	target: FileHandle | string | null,
-	data: BlobPart,
-	props: SaveFileProps = {},
+  target: FileHandle | string | null,
+  data: BlobPart,
+  props: SaveFileProps = {},
 ) {
-	const mimeType = props.mimeType || "image/png";
-	const blob = new Blob([data], { type: mimeType });
-	const filename = props.fileName || "image.png";
+  const mimeType = props.mimeType || 'image/png';
+  const blob = new Blob([data], { type: mimeType });
+  const filename = props.fileName || 'image.png';
 
-	await saveBlob(target, blob, filename);
+  await saveBlob(target, blob, filename);
 }
 
 export async function saveVideoFile(
-	target: FileHandle | string | null,
-	data: BlobPart,
-	props: SaveFileProps = {},
+  target: FileHandle | string | null,
+  data: BlobPart,
+  props: SaveFileProps = {},
 ) {
-	const mimeType = props.mimeType || "video/webm";
-	const blob = new Blob([data], { type: mimeType });
-	const filename = props.fileName || "video.webm";
+  const mimeType = props.mimeType || 'video/webm';
+  const blob = new Blob([data], { type: mimeType });
+  const filename = props.fileName || 'video.webm';
 
-	await saveBlob(target, blob, filename);
+  await saveBlob(target, blob, filename);
 }
 
 export async function saveTextFile(
-	target: FileHandle | string | null,
-	data: BlobPart,
-	props: SaveFileProps = {},
+  target: FileHandle | string | null,
+  data: BlobPart,
+  props: SaveFileProps = {},
 ) {
-	const mimeType = props.mimeType || "application/octet-stream";
-	const blob = new Blob([data], { type: mimeType });
-	const filename = props.fileName || "download.txt";
+  const mimeType = props.mimeType || 'application/octet-stream';
+  const blob = new Blob([data], { type: mimeType });
+  const filename = props.fileName || 'download.txt';
 
-	await saveBlob(target, blob, filename);
+  await saveBlob(target, blob, filename);
 }
 
 export async function loadPlugins() {
-	return {};
+  return {};
 }
 
 export function getPlugins() {
-	return {};
+  return {};
 }
 
 export function spawnProcess() {
-	throw new Error(t("errors.process-spawning-unavailable"));
+  throw new Error(t('errors.process-spawning-unavailable'));
 }
 
 export function openDevTools() {}
 
 export async function getWindowState() {
-	const desktop = getDesktopBridge();
-	if (desktop?.getWindowState) {
-		return desktop.getWindowState();
-	}
-	return {
-		focused: document.hasFocus(),
-		maximized: false,
-		minimized: false,
-	};
+  const desktop = getDesktopBridge();
+  if (desktop?.getWindowState) {
+    return desktop.getWindowState();
+  }
+  return {
+    focused: document.hasFocus(),
+    maximized: false,
+    minimized: false,
+  };
 }

@@ -1,15 +1,13 @@
 // @ts-nocheck
-import useApp, { setActiveReactorId } from "@/app/actions/app";
-import useReactors, {
-  removeReactor,
-  updateReactorProperty,
-} from "@/app/actions/reactors";
-import { PRIMARY_COLOR } from "@/app/constants";
-import { events, reactors } from "@/app/global";
-import { Flash } from "@/app/icons";
-import CanvasMeter from "@/lib/canvas/CanvasMeter";
-import React, { useEffect, useRef } from "react";
-import Layer from "@/app/components/panels/Layer";
+
+import { useEffect, useRef } from 'react';
+import useApp, { setActiveReactorId } from '@/app/actions/app';
+import useReactors, { removeReactor, updateReactorProperty } from '@/app/actions/reactors';
+import Layer from '@/app/components/panels/Layer';
+import { PRIMARY_COLOR } from '@/app/constants';
+import { events, reactors } from '@/app/global';
+import { Flash } from '@/app/icons';
+import CanvasMeter from '@/lib/canvas/CanvasMeter';
 
 function ReactorMeter({ id }: { id: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -28,9 +26,9 @@ function ReactorMeter({ id }: { id: string }) {
       meter.current?.render(output);
     }
 
-    events.on("render", draw);
+    events.on('render', draw);
     return () => {
-      events.off("render", draw);
+      events.off('render', draw);
     };
   }, [id]);
 
@@ -42,8 +40,8 @@ function ReactorMeter({ id }: { id: string }) {
 }
 
 export default function ReactorsPanel() {
-  const reactorList = useReactors((state) => state.reactors);
-  const activeReactorId = useApp((state) => state.activeReactorId);
+  const reactorList = useReactors(state => state.reactors);
+  const activeReactorId = useApp(state => state.activeReactorId);
 
   function handleLayerClick(id) {
     setActiveReactorId(id);
@@ -68,11 +66,8 @@ export default function ReactorsPanel() {
   return (
     <div className="flex flex-col flex-1 relative overflow-auto">
       <div className="flex-1 overflow-auto flex flex-col gap-4 px-1">
-        {reactorList.map((reactor) => (
-          <div
-            key={reactor.id}
-            className="flex flex-col border border-neutral-700 rounded"
-          >
+        {reactorList.map(reactor => (
+          <div key={reactor.id} className="flex flex-col border border-neutral-700 rounded">
             <Layer
               id={reactor.id}
               name={reactor.displayName}

@@ -1,7 +1,8 @@
 // @ts-nocheck
-import classicNoise3D from "@/lib/shaders/glsl/func/classic-noise-3d.glsl";
-import vertexShader from "@/lib/shaders/glsl/vertex/basic.glsl";
-import { Vector2 } from "three";
+
+import { Vector2 } from 'three';
+import classicNoise3D from '@/lib/shaders/glsl/func/classic-noise-3d.glsl';
+import vertexShader from '@/lib/shaders/glsl/vertex/basic.glsl';
 
 const fragmentShader = `
 uniform sampler2D inputTexture;
@@ -45,13 +46,13 @@ void main() {
 `;
 
 export default {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		time: { type: "f", value: 0 },
-		amount: { type: "f", value: 0.35 },
-		scale: { type: "f", value: 3 },
-		resolution: { type: "v2", value: new Vector2(1, 1) },
-	},
-	vertexShader,
-	fragmentShader,
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    time: { type: 'f', value: 0 },
+    amount: { type: 'f', value: 0.35 },
+    scale: { type: 'f', value: 3 },
+    resolution: { type: 'v2', value: new Vector2(1, 1) },
+  },
+  vertexShader,
+  fragmentShader,
 };

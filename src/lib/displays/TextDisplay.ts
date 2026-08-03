@@ -1,110 +1,110 @@
-import CanvasText from "@/lib/canvas/CanvasText";
-import fonts from "@/lib/config/fonts.json";
-import Display from "@/lib/core/Display";
-import { stageHeight, stageWidth } from "@/lib/utils/controls";
-import { resolveFontFamily } from "@/app/fontFamilies";
+import { resolveFontFamily } from '@/app/fontFamilies';
+import CanvasText from '@/lib/canvas/CanvasText';
+import fonts from '@/lib/config/fonts.json';
+import Display from '@/lib/core/Display';
+import { stageHeight, stageWidth } from '@/lib/utils/controls';
 
-const fontOptions = fonts.map((item) => ({
-	label: item,
-	value: item,
-	style: { fontFamily: resolveFontFamily(item) },
+const fontOptions = fonts.map(item => ({
+  label: item,
+  value: item,
+  style: { fontFamily: resolveFontFamily(item) },
 }));
 
 export default class TextDisplay extends Display {
-	declare text: CanvasText;
+  declare text: CanvasText;
 
-	static config = {
-		name: "TextDisplay",
-		description: "Displays text.",
-		type: "display",
-		label: "Text",
-		defaultProperties: {
-			text: "",
-			size: 40,
-			font: "Roboto",
-			italic: false,
-			bold: false,
-			x: 0,
-			y: 0,
-			color: "#FFFFFF",
-			rotation: 0,
-			opacity: 1.0,
-		},
-		controls: {
-			text: {
-				label: "Text",
-				type: "text",
-			},
-			size: {
-				label: "Size",
-				type: "number",
-			},
-			font: {
-				label: "Font",
-				type: "select",
-				items: fontOptions,
-			},
-			italic: {
-				label: "Italic",
-				type: "toggle",
-			},
-			bold: {
-				label: "Bold",
-				type: "toggle",
-			},
-			x: {
-				label: "X",
-				type: "number",
-				min: stageWidth((n: number) => -n),
-				max: stageWidth(),
-				withRange: true,
-				hideFill: true,
-			},
-			y: {
-				label: "Y",
-				type: "number",
-				min: stageHeight((n: number) => -n),
-				max: stageHeight(),
-				withRange: true,
-				hideFill: true,
-			},
-			color: {
-				label: "Color",
-				type: "color",
-			},
-			rotation: {
-				label: "Rotation",
-				type: "number",
-				min: 0,
-				max: 360,
-				withRange: true,
-				withReactor: true,
-			},
-			opacity: {
-				label: "Opacity",
-				type: "number",
-				min: 0,
-				max: 1.0,
-				step: 0.01,
-				withRange: true,
-				withReactor: true,
-			},
-		},
-	};
+  static config = {
+    name: 'TextDisplay',
+    description: 'Displays text.',
+    type: 'display',
+    label: 'Text',
+    defaultProperties: {
+      text: '',
+      size: 40,
+      font: 'Roboto',
+      italic: false,
+      bold: false,
+      x: 0,
+      y: 0,
+      color: '#FFFFFF',
+      rotation: 0,
+      opacity: 1.0,
+    },
+    controls: {
+      text: {
+        label: 'Text',
+        type: 'text',
+      },
+      size: {
+        label: 'Size',
+        type: 'number',
+      },
+      font: {
+        label: 'Font',
+        type: 'select',
+        items: fontOptions,
+      },
+      italic: {
+        label: 'Italic',
+        type: 'toggle',
+      },
+      bold: {
+        label: 'Bold',
+        type: 'toggle',
+      },
+      x: {
+        label: 'X',
+        type: 'number',
+        min: stageWidth((n: number) => -n),
+        max: stageWidth(),
+        withRange: true,
+        hideFill: true,
+      },
+      y: {
+        label: 'Y',
+        type: 'number',
+        min: stageHeight((n: number) => -n),
+        max: stageHeight(),
+        withRange: true,
+        hideFill: true,
+      },
+      color: {
+        label: 'Color',
+        type: 'color',
+      },
+      rotation: {
+        label: 'Rotation',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
+      opacity: {
+        label: 'Opacity',
+        type: 'number',
+        min: 0,
+        max: 1.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
+    },
+  };
 
-	constructor(properties?: Record<string, unknown>) {
-		super(TextDisplay, properties);
+  constructor(properties?: Record<string, unknown>) {
+    super(TextDisplay, properties);
 
-		const canvas = new OffscreenCanvas(1, 1);
-		const props = this.properties as Record<string, unknown>;
-		this.text = new CanvasText(props, canvas);
-	}
+    const canvas = new OffscreenCanvas(1, 1);
+    const props = this.properties as Record<string, unknown>;
+    this.text = new CanvasText(props, canvas);
+  }
 
-	update(properties: Record<string, unknown>) {
-		if (this.text.update(properties)) {
-			this.text.render();
-		}
+  update(properties: Record<string, unknown>) {
+    if (this.text.update(properties)) {
+      this.text.render();
+    }
 
-		return super.update(properties);
-	}
+    return super.update(properties);
+  }
 }

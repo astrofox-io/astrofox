@@ -1,211 +1,180 @@
-import {
-	PanelBottom,
-	PanelLeft,
-	PanelRight,
-	Minus,
-	Square,
-	X,
-} from "lucide-react";
-import { type CSSProperties, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Minus, PanelBottom, PanelLeft, PanelRight, Square, X } from 'lucide-react';
+import Image from 'next/image';
+import { type CSSProperties, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useAppStore, {
-	handleMenuAction,
-	toggleBottomPanelVisibility,
-	toggleLeftPanelVisibility,
-	toggleRightPanelVisibility,
-} from "@/app/actions/app";
-import useProject, { DEFAULT_PROJECT_NAME } from "@/app/actions/project";
-import {
-	closeWindow,
-	getWindowState,
-	maximizeWindow,
-	minimizeWindow,
-} from "@/app/api-client";
-import { isDesktopApp } from "@/app/desktop";
-import LanguageSelector from "@/app/components/window/LanguageSelector";
-import { env } from "@/app/global";
-import { Button } from "@/components/ui/button";
+  handleMenuAction,
+  toggleBottomPanelVisibility,
+  toggleLeftPanelVisibility,
+  toggleRightPanelVisibility,
+} from '@/app/actions/app';
+import useProject, { DEFAULT_PROJECT_NAME } from '@/app/actions/project';
+import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
+import LanguageSelector from '@/app/components/window/LanguageSelector';
+import { isDesktopApp } from '@/app/desktop';
+import { env } from '@/app/global';
+import { Button } from '@/components/ui/button';
 
 export default function TitleBar() {
-	const { t } = useTranslation(undefined, { keyPrefix: "title-bar" });
-	const isLeftPanelVisible = useAppStore((state) => state.isLeftPanelVisible);
-	const isBottomPanelVisible = useAppStore(
-		(state) => state.isBottomPanelVisible,
-	);
-	const isRightPanelVisible = useAppStore((state) => state.isRightPanelVisible);
-	const projectName = useProject((state) => state.projectName);
-	const title =
-		projectName && projectName !== DEFAULT_PROJECT_NAME
-			? projectName
-			: t("default-project-name");
-	const desktop = isDesktopApp();
-	const [maximized, setMaximized] = useState(false);
+  const { t } = useTranslation(undefined, { keyPrefix: 'title-bar' });
+  const isLeftPanelVisible = useAppStore(state => state.isLeftPanelVisible);
+  const isBottomPanelVisible = useAppStore(state => state.isBottomPanelVisible);
+  const isRightPanelVisible = useAppStore(state => state.isRightPanelVisible);
+  const projectName = useProject(state => state.projectName);
+  const title =
+    projectName && projectName !== DEFAULT_PROJECT_NAME ? projectName : t('default-project-name');
+  const desktop = isDesktopApp();
+  const [maximized, setMaximized] = useState(false);
 
-	useEffect(() => {
-		if (!desktop) return;
+  useEffect(() => {
+    if (!desktop) return;
 
-		let unsubscribe: (() => void) | undefined;
-		const bridge = window.__ASTROFOX__;
+    let unsubscribe: (() => void) | undefined;
+    const bridge = window.__ASTROFOX__;
 
-		getWindowState()
-			.then((state) => {
-				if (state && typeof state.maximized === "boolean") {
-					setMaximized(state.maximized);
-				}
-			})
-			.catch(() => {});
+    getWindowState()
+      .then(state => {
+        if (state && typeof state.maximized === 'boolean') {
+          setMaximized(state.maximized);
+        }
+      })
+      .catch(() => {});
 
-		if (bridge?.onWindowStateChanged) {
-			unsubscribe = bridge.onWindowStateChanged((state) => {
-				if (typeof state?.maximized === "boolean") {
-					setMaximized(state.maximized);
-				}
-			});
-		}
+    if (bridge?.onWindowStateChanged) {
+      unsubscribe = bridge.onWindowStateChanged(state => {
+        if (typeof state?.maximized === 'boolean') {
+          setMaximized(state.maximized);
+        }
+      });
+    }
 
-		return () => {
-			unsubscribe?.();
-		};
-	}, [desktop]);
+    return () => {
+      unsubscribe?.();
+    };
+  }, [desktop]);
 
-	const panelButtons = [
-		{
-			key: "left",
-			label: isLeftPanelVisible
-				? t("hide-layers-panel")
-				: t("show-layers-panel"),
-			isVisible: isLeftPanelVisible,
-			icon: PanelLeft,
-			onClick: toggleLeftPanelVisibility,
-		},
-		{
-			key: "bottom",
-			label: isBottomPanelVisible
-				? t("hide-player-panel")
-				: t("show-player-panel"),
-			isVisible: isBottomPanelVisible,
-			icon: PanelBottom,
-			onClick: toggleBottomPanelVisibility,
-		},
-		{
-			key: "right",
-			label: isRightPanelVisible
-				? t("hide-controls-panel")
-				: t("show-controls-panel"),
-			isVisible: isRightPanelVisible,
-			icon: PanelRight,
-			onClick: toggleRightPanelVisibility,
-		},
-	];
+  const panelButtons = [
+    {
+      key: 'left',
+      label: isLeftPanelVisible ? t('hide-layers-panel') : t('show-layers-panel'),
+      isVisible: isLeftPanelVisible,
+      icon: PanelLeft,
+      onClick: toggleLeftPanelVisibility,
+    },
+    {
+      key: 'bottom',
+      label: isBottomPanelVisible ? t('hide-player-panel') : t('show-player-panel'),
+      isVisible: isBottomPanelVisible,
+      icon: PanelBottom,
+      onClick: toggleBottomPanelVisibility,
+    },
+    {
+      key: 'right',
+      label: isRightPanelVisible ? t('hide-controls-panel') : t('show-controls-panel'),
+      isVisible: isRightPanelVisible,
+      icon: PanelRight,
+      onClick: toggleRightPanelVisibility,
+    },
+  ];
 
-	return (
-		<div
-			className={
-				"flex items-center relative h-10 bg-neutral-900 border-b border-b-neutral-700"
-			}
-			style={desktop ? ({ WebkitAppRegion: "drag" } as CSSProperties) : undefined}
-		>
-			<div
-				className={"flex items-center gap-1.5 ml-3 max-w-[45vw]"}
-				style={
-					desktop
-						? ({ WebkitAppRegion: "no-drag" } as CSSProperties)
-						: undefined
-				}
-			>
-				<img
-					alt=""
-					aria-hidden="true"
-					className="h-8 w-8 shrink-0 opacity-90"
-					draggable={false}
-					src="/icon.svg"
-				/>
-				<Button
-					variant="ghost"
-					size="sm"
-					className="bg-transparent text-neutral-400 truncate max-w-[32vw] hover:text-neutral-100 hover:bg-neutral-800"
-					onClick={() => handleMenuAction("edit-canvas")}
-				>
-					{title}
-				</Button>
-			</div>
-			<div className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400">
-				{env.APP_NAME}
-			</div>
-			<div
-				className="absolute top-1 right-2 flex items-center gap-1"
-				style={
-					desktop
-						? ({ WebkitAppRegion: "no-drag" } as CSSProperties)
-						: undefined
-				}
-			>
-				{panelButtons.map((button) => {
-					const Icon = button.icon;
+  return (
+    <div
+      className={'flex items-center relative h-10 bg-neutral-900 border-b border-b-neutral-700'}
+      style={desktop ? ({ WebkitAppRegion: 'drag' } as CSSProperties) : undefined}
+    >
+      <div
+        className={'flex items-center gap-1.5 ml-3 max-w-[45vw]'}
+        style={desktop ? ({ WebkitAppRegion: 'no-drag' } as CSSProperties) : undefined}
+      >
+        <Image
+          alt=""
+          aria-hidden="true"
+          className="h-8 w-8 shrink-0 opacity-90"
+          draggable={false}
+          height={32}
+          src="/icon.svg"
+          width={32}
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          className="bg-transparent text-neutral-400 truncate max-w-[32vw] hover:text-neutral-100 hover:bg-neutral-800"
+          onClick={() => handleMenuAction('edit-canvas')}
+        >
+          {title}
+        </Button>
+      </div>
+      <div className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400">
+        {env.APP_NAME}
+      </div>
+      <div
+        className="absolute top-1 right-2 flex items-center gap-1"
+        style={desktop ? ({ WebkitAppRegion: 'no-drag' } as CSSProperties) : undefined}
+      >
+        {panelButtons.map(button => {
+          const Icon = button.icon;
 
-					return (
-						<Button
-							key={button.key}
-							variant="ghost"
-							size="icon-sm"
-							className={`${
-								button.isVisible
-									? "bg-transparent text-neutral-400"
-									: "bg-transparent text-neutral-500"
-							} hover:bg-neutral-800 hover:text-neutral-100`}
-							aria-label={button.label}
-							aria-pressed={button.isVisible}
-							onClick={button.onClick}
-						>
-							<Icon size={16} />
-						</Button>
-					);
-				})}
-				<LanguageSelector />
-				{desktop ? (
-					<>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							className="bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
-							aria-label={t("minimize-window")}
-							onClick={() => {
-								void minimizeWindow();
-							}}
-						>
-							<Minus size={16} />
-						</Button>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							className="bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
-							aria-label={
-								maximized ? t("restore-window") : t("maximize-window")
-							}
-							onClick={() => {
-								void maximizeWindow().then((state) => {
-									if (state && typeof state.maximized === "boolean") {
-										setMaximized(state.maximized);
-									}
-								});
-							}}
-						>
-							<Square size={14} />
-						</Button>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							className="bg-transparent text-neutral-400 hover:bg-red-600/80 hover:text-white"
-							aria-label={t("close-window")}
-							onClick={() => {
-								void closeWindow();
-							}}
-						>
-							<X size={16} />
-						</Button>
-					</>
-				) : null}
-			</div>
-		</div>
-	);
+          return (
+            <Button
+              key={button.key}
+              variant="ghost"
+              size="icon-sm"
+              className={`${
+                button.isVisible
+                  ? 'bg-transparent text-neutral-400'
+                  : 'bg-transparent text-neutral-500'
+              } hover:bg-neutral-800 hover:text-neutral-100`}
+              aria-label={button.label}
+              aria-pressed={button.isVisible}
+              onClick={button.onClick}
+            >
+              <Icon size={16} />
+            </Button>
+          );
+        })}
+        <LanguageSelector />
+        {desktop ? (
+          <>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+              aria-label={t('minimize-window')}
+              onClick={() => {
+                void minimizeWindow();
+              }}
+            >
+              <Minus size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+              aria-label={maximized ? t('restore-window') : t('maximize-window')}
+              onClick={() => {
+                void maximizeWindow().then(state => {
+                  if (state && typeof state.maximized === 'boolean') {
+                    setMaximized(state.maximized);
+                  }
+                });
+              }}
+            >
+              <Square size={14} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="bg-transparent text-neutral-400 hover:bg-red-600/80 hover:text-white"
+              aria-label={t('close-window')}
+              onClick={() => {
+                void closeWindow();
+              }}
+            >
+              <X size={16} />
+            </Button>
+          </>
+        ) : null}
+      </div>
+    </div>
+  );
 }

@@ -1,21 +1,22 @@
 // @ts-nocheck
-import vertexShader from "@/lib/shaders/glsl/vertex/basic.glsl";
-import { Vector2 } from "three";
+
+import { Vector2 } from 'three';
+import vertexShader from '@/lib/shaders/glsl/vertex/basic.glsl';
 
 export default {
-	uniforms: {
-		inputTexture: { type: "t", value: null },
-		depthTexture: { type: "t", value: null },
-		resolution: { type: "v2", value: new Vector2(1, 1) },
-		nearClip: { type: "f", value: 0.1 },
-		farClip: { type: "f", value: 5000 },
-		focusDistance: { type: "f", value: 0 },
-		focalLength: { type: "f", value: 0.02 },
-		bokehScale: { type: "f", value: 2 },
-		resolutionScale: { type: "f", value: 1 },
-	},
-	vertexShader,
-	fragmentShader: `
+  uniforms: {
+    inputTexture: { type: 't', value: null },
+    depthTexture: { type: 't', value: null },
+    resolution: { type: 'v2', value: new Vector2(1, 1) },
+    nearClip: { type: 'f', value: 0.1 },
+    farClip: { type: 'f', value: 5000 },
+    focusDistance: { type: 'f', value: 0 },
+    focalLength: { type: 'f', value: 0.02 },
+    bokehScale: { type: 'f', value: 2 },
+    resolutionScale: { type: 'f', value: 1 },
+  },
+  vertexShader,
+  fragmentShader: `
 #include <packing>
 
 varying vec2 vUv;

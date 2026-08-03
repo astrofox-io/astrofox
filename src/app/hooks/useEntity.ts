@@ -1,24 +1,24 @@
-import { touchProject } from "@/app/actions/project";
-import { renderer } from "@/app/global";
-import useForceUpdate from "@/app/hooks/useForceUpdate";
-import useTimeout from "@/app/hooks/useTimeout";
-import type Entity from "@/lib/core/Entity";
-import { useCallback } from "react";
+import { useCallback } from 'react';
+import { touchProject } from '@/app/actions/project';
+import { renderer } from '@/app/global';
+import useForceUpdate from '@/app/hooks/useForceUpdate';
+import useTimeout from '@/app/hooks/useTimeout';
+import type Entity from '@/lib/core/Entity';
 
 export default function useEntity(entity: Entity | null, touchTimeout = 1000) {
-	const forceUpdate = useForceUpdate();
-	const touch = useTimeout(() => touchProject(), touchTimeout);
+  const forceUpdate = useForceUpdate();
+  const touch = useTimeout(() => touchProject(), touchTimeout);
 
-	return useCallback(
-		(props: Record<string, unknown>) => {
-			if (entity?.update(props)) {
-				if (touchTimeout) {
-					touch();
-				}
-				renderer.requestRender();
-				forceUpdate();
-			}
-		},
-		[entity],
-	);
+  return useCallback(
+    (props: Record<string, unknown>) => {
+      if (entity?.update(props)) {
+        if (touchTimeout) {
+          touch();
+        }
+        renderer.requestRender();
+        forceUpdate();
+      }
+    },
+    [entity],
+  );
 }

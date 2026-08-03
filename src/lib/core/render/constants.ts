@@ -28,5 +28,5 @@ void main() {
 `;
 
 export function toRadians(value = 0) {
-	return (Number(value) * Math.PI) / 180;
+  return (Number(value) * Math.PI) / 180;
 }

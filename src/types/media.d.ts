@@ -1,3 +1,3 @@
 interface DisplayMediaStreamOptions {
-	systemAudio?: "include" | "exclude";
+  systemAudio?: 'include' | 'exclude';
 }
