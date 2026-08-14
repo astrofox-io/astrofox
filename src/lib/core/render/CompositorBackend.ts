@@ -2,6 +2,7 @@
 
 import React from 'react';
 import * as THREE from 'three';
+import { renderModuleFramesForExport } from '@/lib/modules/ModuleHost';
 import { base64ToBytes } from '@/lib/utils/data';
 import { StageComposer } from './composer';
 import RenderBackend from './RenderBackend';
@@ -371,6 +372,10 @@ export default class CompositorBackend extends RenderBackend {
 
     const frameData = getFrameData(VIDEO_RENDERING);
     frameData.delta = 1000 / fps;
+
+    // Worker display modules render asynchronously; wait for their bitmaps
+    // for this exact frame so exports stay frame-accurate.
+    await renderModuleFramesForExport(frameData);
 
     if (!this.root) {
       await this.ensureRoot();
