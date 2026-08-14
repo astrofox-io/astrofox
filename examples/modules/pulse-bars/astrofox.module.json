@@ -1,0 +1,58 @@
+{
+  "api": 1,
+  "name": "@astrofox/pulse-bars",
+  "version": "1.0.0",
+  "label": "Pulse Bars",
+  "description": "Bar spectrum with falling-peak physics, drawn by JavaScript in a sandboxed worker.",
+  "author": "Astrofox",
+  "type": "display",
+  "runtime": "worker",
+  "entry": "./index.js",
+  "audio": {
+    "fft": {
+      "bins": 32,
+      "maxFrequency": 6000,
+      "smoothing": 0.4
+    }
+  },
+  "defaultProperties": {
+    "width": 800,
+    "height": 300,
+    "barColor": "#66ffcc",
+    "peakColor": "#ffffff",
+    "gravity": 1.5
+  },
+  "controls": {
+    "width": {
+      "label": "Width",
+      "type": "number",
+      "min": 16,
+      "max": { "$stage": "width" },
+      "withRange": true
+    },
+    "height": {
+      "label": "Height",
+      "type": "number",
+      "min": 16,
+      "max": { "$stage": "height" },
+      "withRange": true
+    },
+    "barColor": {
+      "label": "Bar Color",
+      "type": "color"
+    },
+    "peakColor": {
+      "label": "Peak Color",
+      "type": "color"
+    },
+    "gravity": {
+      "label": "Gravity",
+      "type": "number",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.1,
+      "withRange": true,
+      "withReactor": true
+    }
+  }
+}

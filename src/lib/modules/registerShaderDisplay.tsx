@@ -1,0 +1,28 @@
+// @ts-nocheck
+
+import React from 'react';
+import {
+  registerDisplayLayer,
+  unregisterDisplayLayer,
+} from '@/lib/core/render/displayLayerRegistry';
+import { ShaderDisplayLayer } from './ShaderDisplayLayer';
+import type { InstalledModule } from './types';
+
+export function registerShaderDisplayRuntime(installed: InstalledModule) {
+  registerDisplayLayer(installed.manifest.name, {
+    group: '2d',
+    render: ({ display, order, frameData, sceneProps }) => (
+      <ShaderDisplayLayer
+        installed={installed}
+        display={display}
+        order={order}
+        frameData={frameData}
+        {...sceneProps}
+      />
+    ),
+  });
+}
+
+export function unregisterShaderDisplayRuntime(name: string) {
+  unregisterDisplayLayer(name);
+}

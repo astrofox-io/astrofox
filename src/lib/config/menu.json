@@ -45,6 +45,10 @@
       {
         "label": "Project settings",
         "action": "edit-canvas"
+      },
+      {
+        "label": "Manage modules",
+        "action": "manage-modules"
       }
     ]
   },

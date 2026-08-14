@@ -1,0 +1,34 @@
+{
+  "api": 1,
+  "name": "@astrofox/bass-glow",
+  "version": "1.0.0",
+  "label": "Bass Glow",
+  "description": "Adds a volume-reactive glow tint over the scene.",
+  "author": "Astrofox",
+  "type": "effect",
+  "runtime": "shader",
+  "shader": "./effect.frag",
+  "defaultProperties": {
+    "amount": 0.6,
+    "color": "#ff6633"
+  },
+  "controls": {
+    "amount": {
+      "label": "Amount",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "withRange": true,
+      "withReactor": true
+    },
+    "color": {
+      "label": "Color",
+      "type": "color"
+    }
+  },
+  "uniforms": {
+    "amount": { "type": "float", "from": "amount" },
+    "tint": { "type": "color", "from": "color" }
+  }
+}

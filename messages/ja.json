@@ -116,7 +116,8 @@
     "use-midi": "MIDIを使用",
     "save-image": "画像を保存",
     "save-video": "動画を保存",
-    "project-settings": "プロジェクト設定"
+    "project-settings": "プロジェクト設定",
+    "manage-modules": "モジュールの管理"
   },
   "add-menu": {
     "add-2d-display": "2Dディスプレイを追加",

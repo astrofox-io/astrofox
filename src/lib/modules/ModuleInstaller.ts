@@ -133,6 +133,9 @@ export function installModulePackage(pkg: ModulePackage): InstalledModule {
     installedAt: new Date().toISOString(),
     files: pkg.files,
     integrity: pkg.integrity,
+    // localhost installs are development iterations; content is expected to
+    // change between reloads, so integrity is not pinned for them.
+    dev: isLocalhost(new URL(pkg.sourceUrl)),
   };
 
   saveInstalledModule(installed);

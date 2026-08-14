@@ -3,5 +3,7 @@ export { default as UnsavedChangesDialog } from '@/app/components/dialogs/Unsave
 export { default as About } from '@/app/components/modals/About';
 export { default as CanvasSettings } from '@/app/components/modals/CanvasSettings';
 export { default as InstallModule } from '@/app/components/modals/InstallModule';
+export { default as ManageModules } from '@/app/components/modals/ManageModules';
+export { default as MissingModules } from '@/app/components/modals/MissingModules';
 export { default as RelinkMediaDialog } from '@/app/components/modals/RelinkMediaDialog';
 export { default as SaveVideoDialog } from '@/app/components/modals/SaveVideoDialog';

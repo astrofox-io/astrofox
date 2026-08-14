@@ -6,11 +6,12 @@ import type { ModulePackage } from '@/lib/modules';
 import { fetchModulePackage, getInstalledModule, installModulePackage } from '@/lib/modules';
 
 interface InstallModuleProps {
+  initialUrl?: string;
   onClose?: () => void;
 }
 
-export default function InstallModule({ onClose }: InstallModuleProps) {
-  const [url, setUrl] = useState('');
+export default function InstallModule({ initialUrl = '', onClose }: InstallModuleProps) {
+  const [url, setUrl] = useState(initialUrl);
   const [pkg, setPkg] = useState<ModulePackage | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

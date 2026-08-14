@@ -870,6 +870,12 @@ export async function handleMenuAction(action: string) {
       });
       break;
 
+    case 'manage-modules':
+      await showModal('ManageModules', {
+        titleKey: 'menu.manage-modules',
+      });
+      break;
+
     case 'open-dev-tools':
       api.openDevTools();
       break;

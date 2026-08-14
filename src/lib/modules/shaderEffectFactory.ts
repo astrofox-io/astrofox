@@ -7,7 +7,7 @@ import type { InstalledModule, ModuleUniformDef } from './types';
 
 const MAX_SHADER_LENGTH = 256 * 1024;
 
-function defaultUniformValue(def: ModuleUniformDef) {
+export function defaultUniformValue(def: ModuleUniformDef) {
   switch (def.type) {
     case 'vec2':
       return new Vector2();
@@ -36,7 +36,7 @@ function readVectorValues(props, from, size) {
   return values.slice(0, size);
 }
 
-function applyUniform(uniform, def: ModuleUniformDef, props) {
+export function applyUniform(uniform, def: ModuleUniformDef, props) {
   const from = def.from;
 
   switch (def.type) {

@@ -6,6 +6,10 @@ import { createExternalEntityClass } from './ExternalEntity';
 import { verifyIntegrity } from './integrity';
 import { getInstalledModules, removeInstalledModule } from './ModuleStore';
 import {
+  registerShaderDisplayRuntime,
+  unregisterShaderDisplayRuntime,
+} from './registerShaderDisplay';
+import {
   registerWorkerDisplayRuntime,
   unregisterWorkerDisplayRuntime,
 } from './registerWorkerDisplay';
@@ -44,6 +48,11 @@ export function registerModuleRuntime(installed: InstalledModule): LibraryEntity
     return createExternalEntityClass(installed);
   }
 
+  if (manifest.type === 'display' && manifest.runtime === 'shader') {
+    registerShaderDisplayRuntime(installed);
+    return createExternalEntityClass(installed);
+  }
+
   throw new Error(
     `Module ${manifest.name}: unsupported combination type=${manifest.type} runtime=${manifest.runtime}`,
   );
@@ -52,6 +61,7 @@ export function registerModuleRuntime(installed: InstalledModule): LibraryEntity
 export function unregisterModuleRuntime(name: string) {
   unregisterEffectPass(name);
   unregisterWorkerDisplayRuntime(name);
+  unregisterShaderDisplayRuntime(name);
 }
 
 /**

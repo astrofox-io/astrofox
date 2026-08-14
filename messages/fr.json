@@ -116,7 +116,8 @@
     "use-midi": "Utiliser le MIDI",
     "save-image": "Enregistrer l'image",
     "save-video": "Enregistrer la vidéo",
-    "project-settings": "Paramètres du projet"
+    "project-settings": "Paramètres du projet",
+    "manage-modules": "Gérer les modules"
   },
   "add-menu": {
     "add-2d-display": "Ajouter un affichage 2D",
