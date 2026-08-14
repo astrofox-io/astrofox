@@ -29,6 +29,7 @@ interface SectionAddMenuProps {
 interface LibraryItem {
   config?: {
     label?: string;
+    external?: boolean;
   };
 }
 
@@ -71,6 +72,17 @@ function getCategoryItems(
     .filter(Boolean) as MenuItem[];
 }
 
+function getExternalItems(itemsByKey: Record<string, EntityConstructor>): MenuItem[] {
+  return Object.entries(itemsByKey)
+    .filter(([, Entity]) => Entity.config?.external)
+    .map(([key, Entity]) => ({
+      key,
+      label: Entity.config?.label ?? key,
+      Entity,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
 export default function SectionAddMenu({
   sceneId,
   entityType,
@@ -79,6 +91,7 @@ export default function SectionAddMenu({
 }: SectionAddMenuProps) {
   const { t } = useTranslation();
   const libraryItems = getLibraryItems(entityType);
+  const externalItems = getExternalItems(libraryItems);
 
   function handleSelect(Entity: EntityConstructor) {
     const entity = new Entity();
@@ -104,6 +117,23 @@ export default function SectionAddMenu({
         align="center"
         sideOffset={8}
       >
+        {externalItems.length > 0 ? (
+          <div>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>External</DropdownMenuLabel>
+              {externalItems.map(item => (
+                <DropdownMenuItem
+                  key={item.key}
+                  className="min-w-44 rounded text-sm focus:bg-primary focus:text-neutral-100"
+                  onClick={() => handleSelect(item.Entity)}
+                >
+                  {item.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </div>
+        ) : null}
         {categories.map((category, index) => {
           const categoryItems = getCategoryItems(libraryItems, category.items);
 

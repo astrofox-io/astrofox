@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { app, BrowserWindow, ipcMain, net, protocol, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, net, protocol, session, shell } from 'electron';
 import { registerDialogIpc } from './dialogs-ipc.mjs';
 import { registerFfmpegIpc } from './ffmpeg-ipc.mjs';
 
@@ -171,6 +171,35 @@ function registerAppProtocol() {
   });
 }
 
+function isAllowedNavigation(url) {
+  if (url.startsWith('astrofox://')) {
+    return true;
+  }
+  if (isDev && (url.startsWith(DEV_SERVER_URL) || url.startsWith('devtools://'))) {
+    return true;
+  }
+  return false;
+}
+
+// Only grant the capabilities the app actually uses (audio input, screen/system
+// audio capture, MIDI); everything else is denied so content running in the
+// renderer cannot silently acquire it.
+const ALLOWED_PERMISSIONS = new Set([
+  'media',
+  'audioCapture',
+  'display-capture',
+  'midi',
+  'midiSysex',
+  'clipboard-sanitized-write',
+  'fullscreen',
+]);
+
+function hardenSession() {
+  session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
+    callback(ALLOWED_PERMISSIONS.has(permission));
+  });
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: WINDOW_WIDTH,
@@ -191,6 +220,21 @@ function createWindow() {
       webgl: true,
       devTools: true,
     },
+  });
+
+  // The app is a single window: navigation away from it and new windows are
+  // never legitimate. External links open in the system browser instead.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https?:/i.test(url)) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' };
+  });
+
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (!isAllowedNavigation(url)) {
+      event.preventDefault();
+    }
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -228,6 +272,7 @@ app.whenReady().then(async () => {
   }
 
   registerIpc();
+  hardenSession();
 
   if (!isDev) {
     registerAppProtocol();

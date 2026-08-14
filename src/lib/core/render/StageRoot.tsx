@@ -4,26 +4,9 @@ import { useFrame } from '@react-three/fiber';
 import React from 'react';
 import useApp from '@/app/actions/app';
 import useScenes, { getSceneIdForElement } from '@/app/actions/scenes';
-import { BLANK_IMAGE } from '@/app/constants';
+import { getDisplayLayerEntry } from './displayLayerRegistry';
 import { SceneWithEffects } from './effects';
-import {
-  CubesDisplayLayer3D,
-  GeometryDisplayLayer3D,
-  MeshGridDisplayLayer3D,
-  PerspectiveScene3D,
-  TunnelDisplayLayer3D,
-} from './geometry';
-import {
-  BarSpectrumDisplayLayer,
-  ImageDisplayLayer,
-  RadialSpectrumDisplayLayer,
-  ShapeDisplayLayer,
-  SoundWaveDisplayLayer,
-  TextDisplayLayer,
-  VideoDisplayLayer,
-  WaveformRingDisplayLayer,
-  WaveSpectrumDisplayLayer,
-} from './layers';
+import { PerspectiveScene3D } from './geometry';
 
 const NEUTRAL_SCENE_PROPS = {
   sceneOpacity: 1,
@@ -32,13 +15,6 @@ const NEUTRAL_SCENE_PROPS = {
   sceneInverse: false,
   sceneMaskCombine: 'replace',
 };
-
-const THREE_D_DISPLAY_NAMES = new Set([
-  'GeometryDisplay',
-  'TunnelDisplay',
-  'CubesDisplay',
-  'MeshGridDisplay',
-]);
 
 function wrapDisplayNode(display, node) {
   if (!node) {
@@ -87,8 +63,8 @@ export default function StageRoot({ width, height, scenes, frameData, sceneLayer
     const postEffects = sceneEffects.filter(effect => effect?.name !== 'DepthOfFieldEffect');
     const scene2D = [];
     const scene3D = [];
-    const has3DDisplays = (scene.displays || []).some(display =>
-      THREE_D_DISPLAY_NAMES.has(display?.name),
+    const has3DDisplays = (scene.displays || []).some(
+      display => getDisplayLayerEntry(display?.name)?.group === '3d',
     );
     let scene3DOrder = order;
 
@@ -98,179 +74,29 @@ export default function StageRoot({ width, height, scenes, frameData, sceneLayer
         continue;
       }
 
-      switch (display.name) {
-        case 'ImageDisplay': {
-          const src = display.properties?.src;
-          if (!src || src === BLANK_IMAGE) break;
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <ImageDisplayLayer display={display} order={order} {...NEUTRAL_SCENE_PROPS} />,
-            ),
-          );
-          break;
+      const entry = getDisplayLayerEntry(display.name);
+
+      if (entry) {
+        const node = entry.render({
+          display,
+          order,
+          frameData,
+          width,
+          height,
+          scene,
+          sceneProps: NEUTRAL_SCENE_PROPS,
+        });
+
+        if (node) {
+          if (entry.group === '3d') {
+            if (scene3D.length === 0) {
+              scene3DOrder = order;
+            }
+            scene3D.push(wrapDisplayNode(display, node));
+          } else {
+            scene2D.push(wrapDisplayNode(display, node));
+          }
         }
-        case 'VideoDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <VideoDisplayLayer display={display} order={order} {...NEUTRAL_SCENE_PROPS} />,
-            ),
-          );
-          break;
-        case 'TextDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <TextDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'ShapeDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <ShapeDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'BarSpectrumDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <BarSpectrumDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'RadialSpectrumDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <RadialSpectrumDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'WaveSpectrumDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <WaveSpectrumDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'WaveformRingDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <WaveformRingDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'SoundWaveDisplay':
-          scene2D.push(
-            wrapDisplayNode(
-              display,
-              <SoundWaveDisplayLayer
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'GeometryDisplay':
-          if (scene3D.length === 0) scene3DOrder = order;
-          scene3D.push(
-            wrapDisplayNode(
-              display,
-              <GeometryDisplayLayer3D
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'TunnelDisplay':
-          if (scene3D.length === 0) scene3DOrder = order;
-          scene3D.push(
-            wrapDisplayNode(
-              display,
-              <TunnelDisplayLayer3D
-                display={display}
-                order={order}
-                height={height}
-                sceneProperties={scene.properties || {}}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'CubesDisplay':
-          if (scene3D.length === 0) scene3DOrder = order;
-          scene3D.push(
-            wrapDisplayNode(
-              display,
-              <CubesDisplayLayer3D
-                display={display}
-                order={order}
-                width={width}
-                height={height}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        case 'MeshGridDisplay':
-          if (scene3D.length === 0) scene3DOrder = order;
-          scene3D.push(
-            wrapDisplayNode(
-              display,
-              <MeshGridDisplayLayer3D
-                display={display}
-                order={order}
-                frameData={frameData}
-                {...NEUTRAL_SCENE_PROPS}
-              />,
-            ),
-          );
-          break;
-        default:
-          break;
       }
 
       order += 1;

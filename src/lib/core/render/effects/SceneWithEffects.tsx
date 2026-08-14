@@ -5,6 +5,7 @@ import { Color, OrthographicCamera, Scene as ThreeScene } from 'three';
 import { PassChain } from '../PassChain';
 import { createRawEffect } from './createRawEffect';
 import { createScenePass } from './createScenePass';
+import { getEffectPassFactory, getEffectPassMeta } from './effectPassRegistry';
 
 const LIVE_UPDATABLE_EFFECTS = new Set([
   'BloomEffect',
@@ -40,14 +41,21 @@ function getEffectBuildKey(effect) {
     name: effect.name,
   };
 
-  if (!LIVE_UPDATABLE_EFFECTS.has(effect.name)) {
+  const registryMeta = getEffectPassMeta(effect.name);
+  const liveUpdatable = registryMeta
+    ? Boolean(registryMeta.liveUpdatable)
+    : LIVE_UPDATABLE_EFFECTS.has(effect.name);
+
+  if (!liveUpdatable) {
     return {
       ...base,
       properties: effect.properties,
     };
   }
 
-  const structuralKeys = STRUCTURAL_EFFECT_PROPS[effect.name] || [];
+  const structuralKeys = registryMeta
+    ? registryMeta.structuralProps || []
+    : STRUCTURAL_EFFECT_PROPS[effect.name] || [];
   if (structuralKeys.length === 0) {
     return base;
   }
@@ -137,6 +145,18 @@ export function SceneWithEffects({
 
     for (const effect of effects) {
       let item = null;
+
+      const registeredFactory = getEffectPassFactory(effect.name);
+      if (registeredFactory) {
+        try {
+          item = registeredFactory(effect, width, height);
+        } catch {
+          item = null;
+        }
+
+        addPassItem(item);
+        continue;
+      }
 
       try {
         item = createScenePass(effect, width, height);

@@ -127,6 +127,8 @@ export default class Renderer {
     frameData.hasUpdate = playing || id === VIDEO_RENDERING;
     frameData.audioPlaying = playing;
     frameData.gain = analysis.gain;
+    // Analyzer gain is the mean of the byte FFT (0-255); expose a normalized level.
+    frameData.volume = Math.min(1, Math.max(0, (analysis.gain ?? 0) / 255));
     frameData.fft = analysis.fft;
     frameData.td = analysis.td;
     frameData.reactors = reactors.getResults(frameData);
