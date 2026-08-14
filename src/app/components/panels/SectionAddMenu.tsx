@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { setActiveElementId } from '@/app/actions/app';
+import useApp, { setActiveElementId } from '@/app/actions/app';
+import { showModal } from '@/app/actions/modals';
 import { addElement } from '@/app/actions/scenes';
 import { library } from '@/app/global';
 import { Plus } from '@/app/icons';
@@ -90,6 +91,8 @@ export default function SectionAddMenu({
   ariaLabel,
 }: SectionAddMenuProps) {
   const { t } = useTranslation();
+  // Re-read the library after a module install/uninstall.
+  useApp(state => state.modulesUpdatedAt);
   const libraryItems = getLibraryItems(entityType);
   const externalItems = getExternalItems(libraryItems);
 
@@ -159,6 +162,13 @@ export default function SectionAddMenu({
             </div>
           );
         })}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="min-w-44 rounded text-sm text-neutral-400 focus:bg-primary focus:text-neutral-100"
+          onClick={() => showModal('InstallModule', { title: 'Add External Module' })}
+        >
+          Add module from URL…
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
