@@ -42,6 +42,32 @@ interface FileHandle {
   name: string;
 }
 
+const FILE_MIME_TYPES: Record<string, string> = {
+  aac: 'audio/aac',
+  flac: 'audio/flac',
+  gif: 'image/gif',
+  jpeg: 'image/jpeg',
+  jpg: 'image/jpeg',
+  m4a: 'audio/mp4',
+  mp3: 'audio/mpeg',
+  mp4: 'video/mp4',
+  ogg: 'audio/ogg',
+  ogv: 'video/ogg',
+  opus: 'audio/ogg',
+  png: 'image/png',
+  wav: 'audio/wav',
+  webm: 'video/webm',
+};
+
+function getFileMimeType(fileName: string, filters: FileFilter[] = []) {
+  const extension = fileName.split('.').pop()?.toLowerCase() || '';
+  const filter = filters.find(item =>
+    (item.extensions || []).some(candidate => candidate.toLowerCase() === extension),
+  );
+
+  return filter?.mimeType || FILE_MIME_TYPES[extension] || '';
+}
+
 function buildPickerTypes(filters: FileFilter[] = []): PickerType[] | undefined {
   if (!filters.length) return undefined;
 
@@ -57,9 +83,17 @@ function buildPickerTypes(filters: FileFilter[] = []): PickerType[] | undefined 
 
 async function toFile(input: File | FileHandle | null): Promise<File | null> {
   if (!input) return null;
-  if (input instanceof File) return input;
-  if ('getFile' in input && input.getFile) return input.getFile();
-  return null;
+
+  const file = input instanceof File ? input : 'getFile' in input ? await input.getFile() : null;
+  if (!file || file.type) return file;
+
+  const inferredType = getFileMimeType(file.name);
+  if (!inferredType) return file;
+
+  return new File([file], file.name, {
+    type: inferredType,
+    lastModified: file.lastModified,
+  });
 }
 
 async function saveBlob(target: FileHandle | string | null, blob: Blob, fallbackName: string) {
@@ -161,7 +195,10 @@ export async function showOpenDialog(props: OpenDialogProps = {}) {
         // Copy into a fresh ArrayBuffer so TypeScript accepts it as a BlobPart
         // (IPC-transferred buffers are typed as ArrayBufferLike).
         const bytes = new Uint8Array(data instanceof Uint8Array ? data : new Uint8Array(data));
-        const file = new File([bytes.buffer], name || 'file');
+        const fileName = name || 'file';
+        const file = new File([bytes.buffer], fileName, {
+          type: getFileMimeType(fileName, props.filters),
+        });
         Object.assign(file, { path: filePath });
         return file;
       }),

@@ -9,51 +9,6 @@ import { FolderOpen, Times } from '@/app/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ignoreEvents } from '@/lib/utils/react';
 
-function isFileUrlSource(src: string) {
-  return /^file:\/\//i.test(src || '');
-}
-
-function isWindowsPathSource(src: string) {
-  return /^[a-zA-Z]:[\\/]/.test(src || '');
-}
-
-function isUncPathSource(src: string) {
-  return /^\\\\/.test(src || '');
-}
-
-function toFileUrl(path: string) {
-  if (!path || typeof path !== 'string') {
-    return '';
-  }
-
-  const sourcePath = path.trim();
-
-  if (!sourcePath) {
-    return '';
-  }
-
-  if (isFileUrlSource(sourcePath)) {
-    return sourcePath;
-  }
-
-  const escaped = encodeURI(sourcePath).replace(/#/g, '%23').replace(/\?/g, '%3F');
-
-  if (isWindowsPathSource(sourcePath)) {
-    return `file:///${escaped.replace(/\\/g, '/')}`;
-  }
-
-  if (isUncPathSource(sourcePath)) {
-    const unc = escaped.replace(/^\\\\/, '').replace(/\\/g, '/');
-    return `file://${unc}`;
-  }
-
-  if (sourcePath.startsWith('/')) {
-    return `file://${escaped}`;
-  }
-
-  return sourcePath;
-}
-
 interface FileWithPath {
   path?: string;
   filePath?: string;
@@ -101,7 +56,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
   async function loadImageFile(file: File) {
     try {
       const sourcePath = getFilePath(file as unknown as FileWithPath);
-      const src = sourcePath ? toFileUrl(sourcePath) : await api.readImageFile(file);
+      const src = await api.readImageFile(file);
 
       loadImageSrc(src);
       onChange?.({

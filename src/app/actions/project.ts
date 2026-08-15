@@ -425,6 +425,7 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
     const mapMediaProps = (element: ElementSnapshot) => {
       const src = element?.properties?.src;
       const sourcePath = normalizeMediaPath(element?.properties?.sourcePath);
+      const kind = getMediaKind(element);
 
       if (sourcePath) {
         mediaRefs.push(buildMediaRef(element, sourcePath));
@@ -439,11 +440,21 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
           };
         }
 
+        if (kind === 'image' && (isEmbeddedMediaSource(src) || isRemoteMediaSource(src))) {
+          return {
+            ...element,
+            properties: {
+              ...element.properties,
+              sourcePath,
+            },
+          };
+        }
+
         return {
           ...element,
           properties: {
             ...element.properties,
-            src: toFileUrl(sourcePath),
+            src: kind === 'image' ? BLANK_IMAGE : toFileUrl(sourcePath),
             sourcePath,
           },
         };
@@ -462,7 +473,7 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
           ...element,
           properties: {
             ...element.properties,
-            src: toFileUrl(inferredSourcePath),
+            src: getMediaKind(element) === 'image' ? BLANK_IMAGE : toFileUrl(inferredSourcePath),
             sourcePath: inferredSourcePath,
           },
         };
@@ -527,6 +538,7 @@ async function resolveSnapshotMediaOnLoad(
     (snapshot?.scenes || []).map(async (scene: SceneSnapshot) => {
       const mapMediaProps = async (element: ElementSnapshot) => {
         const src = element?.properties?.src;
+        const kind = getMediaKind(element);
 
         const mediaRef = mediaRefMap.get(element.id);
         const sourcePath =
@@ -534,29 +546,48 @@ async function resolveSnapshotMediaOnLoad(
           normalizeMediaPath(mediaRef?.sourcePath) ||
           getMediaSourcePath(src);
 
+        if (
+          kind === 'image' &&
+          typeof src === 'string' &&
+          (isEmbeddedMediaSource(src) || isRemoteMediaSource(src))
+        ) {
+          return {
+            ...element,
+            properties: {
+              ...element.properties,
+              sourcePath,
+            },
+          };
+        }
+
         if (sourcePath) {
-          const sourceUrl = toFileUrl(sourcePath);
-          const canLoad = await canLoadMediaSource(sourceUrl, getMediaKind(element));
+          if (kind === 'video') {
+            const sourceUrl = toFileUrl(sourcePath);
+            const canLoad = await canLoadMediaSource(sourceUrl, kind);
 
-          if (canLoad) {
-            return {
-              ...element,
-              properties: {
-                ...element.properties,
-                src: sourceUrl,
-                sourcePath,
-              },
-            };
-          }
+            if (canLoad) {
+              return {
+                ...element,
+                properties: {
+                  ...element.properties,
+                  src: sourceUrl,
+                  sourcePath,
+                },
+              };
+            }
 
-          if (typeof src === 'string' && (isEmbeddedMediaSource(src) || isRemoteMediaSource(src))) {
-            return {
-              ...element,
-              properties: {
-                ...element.properties,
-                sourcePath: '',
-              },
-            };
+            if (
+              typeof src === 'string' &&
+              (isEmbeddedMediaSource(src) || isRemoteMediaSource(src))
+            ) {
+              return {
+                ...element,
+                properties: {
+                  ...element.properties,
+                  sourcePath: '',
+                },
+              };
+            }
           }
 
           unresolvedMediaRefs.push(buildMediaRef(element, sourcePath));
@@ -910,11 +941,12 @@ export async function relinkMediaRef(mediaRef: MediaRef) {
 
     const file = files[0];
     const sourcePath = getFilePath(file);
-    const src = sourcePath
-      ? toFileUrl(sourcePath)
-      : isVideo
-        ? await api.readVideoFile(file)
-        : await api.readImageFile(file);
+    const src =
+      isVideo && sourcePath
+        ? toFileUrl(sourcePath)
+        : isVideo
+          ? await api.readVideoFile(file)
+          : await api.readImageFile(file);
 
     updateElementProperty(mediaRef.displayId, 'src', src);
     updateElementProperty(mediaRef.displayId, 'sourcePath', sourcePath || '');
