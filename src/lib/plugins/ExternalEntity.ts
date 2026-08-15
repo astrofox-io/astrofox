@@ -2,7 +2,7 @@ import Display from '@/lib/core/Display';
 import Effect from '@/lib/core/Effect';
 import { stageHeight, stageWidth } from '@/lib/utils/controls';
 import { resolveManifestControls } from './resolveControls';
-import type { ExternalEntityConfig, InstalledModule, LibraryEntityClass } from './types';
+import type { ExternalEntityConfig, InstalledPlugin, LibraryEntityClass } from './types';
 
 // Every external display gets the standard transform block so it is
 // positionable, blendable and reactor-able like core displays, and so the
@@ -64,11 +64,11 @@ function getStandardDisplayControls(): Record<string, Record<string, unknown>> {
 
 /**
  * Builds a library-registrable Display/Effect subclass from an installed
- * module. Instances behave exactly like core entities (properties, reactors,
- * serialization); rendering is provided separately by the runtime the module
+ * plugin. Instances behave exactly like core entities (properties, reactors,
+ * serialization); rendering is provided separately by the runtime the plugin
  * declares (shader pass factory or worker layer).
  */
-export function createExternalEntityClass(installed: InstalledModule): LibraryEntityClass {
+export function createExternalEntityClass(installed: InstalledPlugin): LibraryEntityClass {
   const { manifest } = installed;
   const isEffect = manifest.type === 'effect';
   const Base = (isEffect ? Effect : Display) as unknown as new (
@@ -93,7 +93,7 @@ export function createExternalEntityClass(installed: InstalledModule): LibraryEn
     type: manifest.type,
     external: true,
     icon: manifest.icon ? installed.files[manifest.icon] : undefined,
-    module: {
+    plugin: {
       url: installed.sourceUrl,
       version: manifest.version,
       runtime: manifest.runtime,
@@ -112,10 +112,10 @@ export function createExternalEntityClass(installed: InstalledModule): LibraryEn
     }
 
     toJSON(): Record<string, unknown> {
-      // Record provenance so projects can offer to reinstall a missing module.
+      // Record provenance so projects can offer to reinstall a missing plugin.
       return {
         ...super.toJSON(),
-        module: {
+        plugin: {
           url: installed.sourceUrl,
           version: manifest.version,
         },

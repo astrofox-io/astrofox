@@ -3,11 +3,11 @@
 import { Color, Vector2, Vector3, Vector4 } from 'three';
 import ShaderPass from '@/lib/core/render/composer/ShaderPass';
 import vertexShader from '@/lib/shaders/glsl/vertex/basic.glsl';
-import type { InstalledModule, ModuleUniformDef } from './types';
+import type { InstalledPlugin, PluginUniformDef } from './types';
 
 const MAX_SHADER_LENGTH = 256 * 1024;
 
-export function defaultUniformValue(def: ModuleUniformDef) {
+export function defaultUniformValue(def: PluginUniformDef) {
   switch (def.type) {
     case 'vec2':
       return new Vector2();
@@ -36,7 +36,7 @@ function readVectorValues(props, from, size) {
   return values.slice(0, size);
 }
 
-export function applyUniform(uniform, def: ModuleUniformDef, props) {
+export function applyUniform(uniform, def: PluginUniformDef, props) {
   const from = def.from;
 
   switch (def.type) {
@@ -73,22 +73,22 @@ export function applyUniform(uniform, def: ModuleUniformDef, props) {
 }
 
 /**
- * Builds an effectPassRegistry factory for a shader-runtime module. The
- * module's fragment shader is compiled into the standard ShaderPass contract:
+ * Builds an effectPassRegistry factory for a shader-runtime plugin. The
+ * plugin's fragment shader is compiled into the standard ShaderPass contract:
  * inputTexture/resolution plus time/delta/volume and one uniform per manifest
  * "uniforms" entry, kept in sync with the effect's (reactor-modulated)
  * properties every frame.
  */
-export function createShaderEffectPassFactory(installed: InstalledModule) {
+export function createShaderEffectPassFactory(installed: InstalledPlugin) {
   const { manifest } = installed;
   const fragmentShader = installed.files[manifest.shader];
 
   if (typeof fragmentShader !== 'string' || !fragmentShader.trim()) {
-    throw new Error(`Module ${manifest.name} is missing its shader source`);
+    throw new Error(`Plugin ${manifest.name} is missing its shader source`);
   }
 
   if (fragmentShader.length > MAX_SHADER_LENGTH) {
-    throw new Error(`Module ${manifest.name} shader exceeds the size limit`);
+    throw new Error(`Plugin ${manifest.name} shader exceeds the size limit`);
   }
 
   const uniformDefs = manifest.uniforms || {};

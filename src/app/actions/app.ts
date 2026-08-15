@@ -18,7 +18,7 @@ import { api, audioContext, library, logger, player, renderBackend, renderer } f
 import { t } from '@/i18n/config';
 import * as displays from '@/lib/displays';
 import * as effects from '@/lib/effects';
-import { loadInstalledModules } from '@/lib/modules';
+import { loadInstalledPlugins } from '@/lib/plugins';
 import VideoExporter from '@/lib/video/VideoExporter';
 
 export interface VideoExportSegment {
@@ -39,7 +39,7 @@ interface AppState {
   isVideoRecording: boolean;
   isStagePictureInPictureActive: boolean;
   videoExportSegment: VideoExportSegment | null;
-  modulesUpdatedAt: number;
+  pluginsUpdatedAt: number;
 }
 
 export interface FileHandleLike {
@@ -81,11 +81,11 @@ interface PluginConfig {
   icon?: string;
 }
 
-type LibraryModule = {
+type LibraryPlugin = {
   config: PluginConfig;
 };
 
-type LibraryConstructor = (new (properties?: Record<string, unknown>) => unknown) & LibraryModule;
+type LibraryConstructor = (new (properties?: Record<string, unknown>) => unknown) & LibraryPlugin;
 
 const initialState: AppState = {
   statusText: '',
@@ -100,7 +100,7 @@ const initialState: AppState = {
   isVideoRecording: false,
   isStagePictureInPictureActive: false,
   videoExportSegment: null,
-  modulesUpdatedAt: 0,
+  pluginsUpdatedAt: 0,
 };
 
 const appStore = create<AppState>(() => ({
@@ -870,9 +870,9 @@ export async function handleMenuAction(action: string) {
       });
       break;
 
-    case 'manage-modules':
-      await showModal('ManageModules', {
-        titleKey: 'menu.manage-modules',
+    case 'manage-plugins':
+      await showModal('ManagePlugins', {
+        titleKey: 'menu.manage-plugins',
       });
       break;
 
@@ -883,28 +883,24 @@ export async function handleMenuAction(action: string) {
 }
 
 export async function loadPlugins() {
-  logger.time('plugins');
-
   let plugins: Record<string, LibraryConstructor> = {};
 
   try {
-    plugins = (await loadInstalledModules()) as unknown as Record<string, LibraryConstructor>;
+    plugins = (await loadInstalledPlugins()) as unknown as Record<string, LibraryConstructor>;
   } catch (e) {
     logger.error(e);
   }
 
   library.set('plugins', plugins);
-
-  logger.timeEnd('plugins', 'Loaded plugins', plugins);
 }
 
-// Rebuilds the library after a module install/uninstall and nudges any UI
+// Rebuilds the library after a plugin install/uninstall and nudges any UI
 // that lists library entries (e.g. the Add menus) to re-render.
-export async function reloadModuleLibrary() {
+export async function reloadPluginLibrary() {
   await loadPlugins();
   await loadLibrary();
 
-  appStore.setState({ modulesUpdatedAt: Date.now() });
+  appStore.setState({ pluginsUpdatedAt: Date.now() });
 }
 
 export async function loadLibrary() {
@@ -936,8 +932,6 @@ export async function loadLibrary() {
 
   library.set('displays', coreDisplays);
   library.set('effects', coreEffects);
-
-  logger.log('Loaded library', library);
 }
 
 export async function initApp() {

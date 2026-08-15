@@ -1,7 +1,7 @@
 /**
- * Source for the sandbox worker that runs worker-runtime display modules.
+ * Source for the sandbox worker that runs worker-runtime display plugins.
  * The host creates a Worker from this source as a blob, then posts the
- * module's stored code; the module executes inside the worker (no DOM, no
+ * plugin's stored code; the plugin executes inside the worker (no DOM, no
  * desktop bridge) and draws into per-instance OffscreenCanvases. Rendered
  * frames return to the host as transferred ImageBitmaps.
  */
@@ -27,7 +27,7 @@ function fail(instanceId, error) {
 
 function disableNetwork() {
   const denied = () => {
-    throw new Error('This module does not have the "network" permission');
+    throw new Error('This plugin does not have the "network" permission');
   };
   try { self.fetch = denied; } catch {}
   try { self.XMLHttpRequest = undefined; } catch {}
@@ -53,7 +53,7 @@ self.onmessage = async event => {
 
         factory = mod.default;
         if (typeof factory !== 'function') {
-          throw new Error('Module entry must default-export a factory function');
+          throw new Error('Plugin entry must default-export a factory function');
         }
 
         readyResolve();

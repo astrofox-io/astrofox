@@ -6,9 +6,9 @@ import {
   unregisterDisplayLayer,
 } from '@/lib/core/render/displayLayerRegistry';
 import { ShaderDisplayLayer } from './ShaderDisplayLayer';
-import type { InstalledModule } from './types';
+import type { InstalledPlugin } from './types';
 
-export function registerShaderDisplayRuntime(installed: InstalledModule) {
+export function registerShaderDisplayRuntime(installed: InstalledPlugin) {
   registerDisplayLayer(installed.manifest.name, {
     group: '2d',
     render: ({ display, order, frameData, sceneProps }) => (

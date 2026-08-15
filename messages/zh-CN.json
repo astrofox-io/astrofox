@@ -117,7 +117,7 @@
     "save-image": "保存图片",
     "save-video": "保存视频",
     "project-settings": "项目设置",
-    "manage-modules": "管理模块"
+    "manage-plugins": "管理插件"
   },
   "add-menu": {
     "add-2d-display": "添加 2D 显示",

@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import type { ModuleManifest } from './types';
+import type { PluginManifest } from './types';
 
-// Control types module manifests may use. Media inputs (image/video) are
-// excluded until asset transfer to module runtimes is supported.
+// Control types plugin manifests may use. Media inputs (image/video) are
+// excluded until asset transfer to plugin runtimes is supported.
 export const ALLOWED_CONTROL_TYPES = new Set([
   'text',
   'number',
@@ -40,10 +40,10 @@ const tdSchema = z.object({
 export const manifestSchema = z
   .object({
     api: z.literal(1),
-    // Namespaced "@author/name" ids only, so external modules can never
+    // Namespaced "@author/name" ids only, so external plugins can never
     // collide with core display/effect names.
     name: z.string().min(3).max(100).regex(namePattern, {
-      message: 'Module name must look like "@author/module-name"',
+      message: 'Plugin name must look like "@author/plugin-name"',
     }),
     version: z.string().min(1).max(32),
     label: z.string().min(1).max(50),
@@ -105,6 +105,6 @@ export const manifestSchema = z
     }
   });
 
-export function parseManifest(data: unknown): ModuleManifest {
-  return manifestSchema.parse(data) as ModuleManifest;
+export function parseManifest(data: unknown): PluginManifest {
+  return manifestSchema.parse(data) as PluginManifest;
 }

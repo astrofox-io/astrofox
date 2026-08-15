@@ -57,10 +57,20 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
     try {
       const sourcePath = getFilePath(file as unknown as FileWithPath);
       const src = await api.readImageFile(file);
+      if (typeof src !== 'string') {
+        throw new Error('The selected image could not be decoded');
+      }
+
+      const loadedImage = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const nextImage = new Image();
+        nextImage.onload = () => resolve(nextImage);
+        nextImage.onerror = () => reject(new Error('The selected image could not be decoded'));
+        nextImage.src = src;
+      });
 
       loadImageSrc(src);
       onChange?.({
-        [name]: src,
+        [name]: loadedImage,
         sourcePath: sourcePath || '',
       });
     } catch (error) {

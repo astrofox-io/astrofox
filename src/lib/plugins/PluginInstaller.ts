@@ -1,7 +1,7 @@
 import { computeIntegrity } from './integrity';
-import { saveInstalledModule } from './ModuleStore';
 import { parseManifest } from './manifestSchema';
-import type { InstalledModule, ModulePackage } from './types';
+import { saveInstalledPlugin } from './PluginStore';
+import type { InstalledPlugin, PluginPackage } from './types';
 
 const MAX_MANIFEST_SIZE = 64 * 1024;
 const MAX_TEXT_FILE_SIZE = 1024 * 1024;
@@ -18,7 +18,7 @@ function assertAllowedUrl(url: URL) {
   if (url.protocol === 'http:' && isLocalhost(url)) {
     return;
   }
-  throw new Error(`Modules can only be fetched over https (got ${url.protocol}//${url.host})`);
+  throw new Error(`Plugins can only be fetched over https (got ${url.protocol}//${url.host})`);
 }
 
 async function fetchText(url: URL, maxSize: number): Promise<string> {
@@ -53,26 +53,26 @@ async function fetchIconAsDataUrl(url: URL): Promise<string> {
 
   const blob = await response.blob();
   if (blob.size > MAX_ICON_SIZE) {
-    throw new Error('Module icon exceeds the size limit');
+    throw new Error('Plugin icon exceeds the size limit');
   }
   if (!blob.type.startsWith('image/')) {
-    throw new Error('Module icon is not an image');
+    throw new Error('Plugin icon is not an image');
   }
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(new Error('Failed to read module icon'));
+    reader.onerror = () => reject(new Error('Failed to read plugin icon'));
     reader.readAsDataURL(blob);
   });
 }
 
 /**
- * Fetches and validates a module package from a manifest URL. Does NOT
+ * Fetches and validates a plugin package from a manifest URL. Does NOT
  * install anything — the caller shows the fetched metadata to the user for
- * consent first, then calls installModulePackage.
+ * consent first, then calls installPluginPackage.
  */
-export async function fetchModulePackage(manifestUrl: string): Promise<ModulePackage> {
+export async function fetchPluginPackage(manifestUrl: string): Promise<PluginPackage> {
   const base = new URL(manifestUrl);
   assertAllowedUrl(base);
 
@@ -82,7 +82,7 @@ export async function fetchModulePackage(manifestUrl: string): Promise<ModulePac
   try {
     manifestData = JSON.parse(manifestText);
   } catch {
-    throw new Error('Module manifest is not valid JSON');
+    throw new Error('Plugin manifest is not valid JSON');
   }
 
   const manifest = parseManifest(manifestData);
@@ -126,8 +126,8 @@ export async function fetchModulePackage(manifestUrl: string): Promise<ModulePac
  * what runs from now on — the source URL is only contacted again for
  * explicit updates, and integrity hashes are re-verified on every load.
  */
-export function installModulePackage(pkg: ModulePackage): InstalledModule {
-  const installed: InstalledModule = {
+export function installPluginPackage(pkg: PluginPackage): InstalledPlugin {
+  const installed: InstalledPlugin = {
     manifest: pkg.manifest,
     sourceUrl: pkg.sourceUrl,
     installedAt: new Date().toISOString(),
@@ -138,7 +138,7 @@ export function installModulePackage(pkg: ModulePackage): InstalledModule {
     dev: isLocalhost(new URL(pkg.sourceUrl)),
   };
 
-  saveInstalledModule(installed);
+  saveInstalledPlugin(installed);
 
   return installed;
 }

@@ -1,7 +1,7 @@
 import FFTParser from '@/lib/audio/FFTParser';
 import WaveParser from '@/lib/audio/WaveParser';
 import type { RenderFrameData } from '@/lib/types';
-import type { InstalledModule, ModuleFrame } from './types';
+import type { InstalledPlugin, PluginFrame } from './types';
 import { workerBootstrapSource } from './workerBootstrap';
 
 const EXPORT_FRAME_TIMEOUT_MS = 5000;
@@ -43,20 +43,20 @@ function hashSeed(value: string): number {
 }
 
 /**
- * Host side of a worker-runtime display module. One worker per module
+ * Host side of a worker-runtime display plugin. One worker per plugin
  * definition; one instance record per stage element. All audio parsing
- * happens here (per the manifest's audio block) so modules receive small,
+ * happens here (per the manifest's audio block) so plugins receive small,
  * pre-normalized arrays and the offline export path is identical to live
- * rendering from the module's point of view.
+ * rendering from the plugin's point of view.
  */
-export class ModuleWorkerHost {
-  installed: InstalledModule;
+export class PluginWorkerHost {
+  installed: InstalledPlugin;
   worker: Worker | null = null;
   workerUrl: string | null = null;
   workerFailed = false;
   instances = new Map<string, InstanceRecord>();
 
-  constructor(installed: InstalledModule) {
+  constructor(installed: InstalledPlugin) {
     this.installed = installed;
   }
 
@@ -70,7 +70,7 @@ export class ModuleWorkerHost {
 
     if (typeof entry !== 'string' || !entry.trim()) {
       this.workerFailed = true;
-      console.error(`Module ${manifest.name} is missing its entry code`);
+      console.error(`Plugin ${manifest.name} is missing its entry code`);
       return null;
     }
 
@@ -81,17 +81,17 @@ export class ModuleWorkerHost {
       this.workerUrl = URL.createObjectURL(blob);
       this.worker = new Worker(this.workerUrl, {
         type: 'module',
-        name: `module:${manifest.name}`,
+        name: `plugin:${manifest.name}`,
       });
     } catch (e) {
       this.workerFailed = true;
-      console.error(`Failed to start worker for module ${manifest.name}:`, e);
+      console.error(`Failed to start worker for plugin ${manifest.name}:`, e);
       return null;
     }
 
     this.worker.onmessage = event => this.handleMessage(event.data);
     this.worker.onerror = event => {
-      console.error(`Module ${manifest.name} worker error:`, event.message);
+      console.error(`Plugin ${manifest.name} worker error:`, event.message);
       this.failAll();
     };
 
@@ -125,7 +125,7 @@ export class ModuleWorkerHost {
     }
 
     if (msg.op === 'error') {
-      console.error(`Module ${this.installed.manifest.name} error:`, msg.message);
+      console.error(`Plugin ${this.installed.manifest.name} error:`, msg.message);
       if (msg.instanceId) {
         const record = this.instances.get(msg.instanceId);
         if (record) {
@@ -223,7 +223,7 @@ export class ModuleWorkerHost {
     });
   }
 
-  private buildFrame(record: InstanceRecord, frameData: RenderFrameData): ModuleFrame {
+  private buildFrame(record: InstanceRecord, frameData: RenderFrameData): PluginFrame {
     const { manifest } = this.installed;
     const exporting = frameData.id === VIDEO_RENDERING;
 
@@ -231,7 +231,7 @@ export class ModuleWorkerHost {
       record.time += (frameData.delta || 0) / 1000;
     }
 
-    const frame: ModuleFrame = {
+    const frame: PluginFrame = {
       id: frameData.id,
       time: record.time,
       delta: frameData.delta,
@@ -260,7 +260,7 @@ export class ModuleWorkerHost {
   /**
    * Fire-and-forget frame request for live rendering. At most one frame is
    * in flight per instance; the stage keeps drawing the latest completed
-   * bitmap, so a slow module lags rather than stalling the render loop.
+   * bitmap, so a slow plugin lags rather than stalling the render loop.
    */
   requestFrame(id: string, frameData: RenderFrameData) {
     const record = this.instances.get(id);
@@ -270,7 +270,7 @@ export class ModuleWorkerHost {
 
     if (record.pending) {
       if (performance.now() - record.pendingSince > LIVE_FRAME_TIMEOUT_MS) {
-        console.error(`Module ${this.installed.manifest.name} is unresponsive; disabling instance`);
+        console.error(`Plugin ${this.installed.manifest.name} is unresponsive; disabling instance`);
         record.failed = true;
         this.settlePending(record);
       }
@@ -378,28 +378,28 @@ export class ModuleWorkerHost {
   }
 }
 
-const hosts = new Map<string, ModuleWorkerHost>();
+const hosts = new Map<string, PluginWorkerHost>();
 
-export function registerModuleWorkerHost(installed: InstalledModule) {
+export function registerPluginWorkerHost(installed: InstalledPlugin) {
   hosts.get(installed.manifest.name)?.disposeAll();
-  hosts.set(installed.manifest.name, new ModuleWorkerHost(installed));
+  hosts.set(installed.manifest.name, new PluginWorkerHost(installed));
 }
 
-export function unregisterModuleWorkerHost(name: string) {
+export function unregisterPluginWorkerHost(name: string) {
   hosts.get(name)?.disposeAll();
   hosts.delete(name);
 }
 
-export function getModuleWorkerHost(name: string): ModuleWorkerHost | null {
+export function getPluginWorkerHost(name: string): PluginWorkerHost | null {
   return hosts.get(name) ?? null;
 }
 
 /**
- * Called by the export renderer before drawing each frame so worker modules
+ * Called by the export renderer before drawing each frame so worker plugins
  * contribute deterministic, frame-accurate bitmaps instead of whatever
  * rendered last.
  */
-export async function renderModuleFramesForExport(frameData: RenderFrameData) {
+export async function renderPluginFramesForExport(frameData: RenderFrameData) {
   for (const host of hosts.values()) {
     for (const id of [...host.instances.keys()]) {
       await host.renderFrameAndWait(id, frameData);

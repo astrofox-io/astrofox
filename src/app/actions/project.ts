@@ -745,25 +745,25 @@ export function loadProject(data: ProjectSnapshot) {
   const displays = library.get('displays') as Record<string, LibraryConstructor>;
   const effects = library.get('effects') as Record<string, LibraryConstructor>;
 
-  const missingModules = new Map<string, { name: string; url?: string }>();
+  const missingPlugins = new Map<string, { name: string; url?: string }>();
 
   const loadElement = (
     scene: Scene,
-    config: Record<string, unknown> & { name?: string; module?: { url?: string } },
+    config: Record<string, unknown> & { name?: string; plugin?: { url?: string } },
   ) => {
     const { name = '' } = config;
-    const module = displays[name] || effects[name];
+    const plugin = displays[name] || effects[name];
 
-    if (module) {
-      const entity = Display.create(module, config);
+    if (plugin) {
+      const entity = Display.create(plugin, config);
       scene.addElement(entity as unknown as SceneEntity);
     } else {
       logger.warn('Component not found:', name);
 
-      // External elements record their module's source URL; collect them so
+      // External elements record their plugin's source URL; collect them so
       // the user can be offered a reinstall after loading.
-      if (config.module?.url || name.startsWith('@')) {
-        missingModules.set(name, { name, url: config.module?.url });
+      if (config.plugin?.url || name.startsWith('@')) {
+        missingPlugins.set(name, { name, url: config.plugin?.url });
       }
     }
   };
@@ -805,11 +805,11 @@ export function loadProject(data: ProjectSnapshot) {
     }
   }
 
-  if (missingModules.size > 0) {
+  if (missingPlugins.size > 0) {
     showModal(
-      'MissingModules',
-      { title: 'Missing Modules' },
-      { missing: [...missingModules.values()] },
+      'MissingPlugins',
+      { title: 'Missing Plugins' },
+      { missing: [...missingPlugins.values()] },
     );
   }
 }

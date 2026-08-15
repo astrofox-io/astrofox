@@ -117,7 +117,7 @@
     "save-image": "이미지 저장",
     "save-video": "비디오 저장",
     "project-settings": "프로젝트 설정",
-    "manage-modules": "모듈 관리"
+    "manage-plugins": "플러그인 관리"
   },
   "add-menu": {
     "add-2d-display": "2D 디스플레이 추가",

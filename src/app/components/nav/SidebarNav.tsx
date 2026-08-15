@@ -24,7 +24,7 @@ type MenuAction =
   | 'save-image'
   | 'save-video'
   | 'edit-canvas'
-  | 'manage-modules'
+  | 'manage-plugins'
   | 'open-dev-tools';
 
 type MenuEntry = {
@@ -52,7 +52,7 @@ const ACTION_ICONS: Record<MenuAction, LucideIcon> = {
   'save-image': Image,
   'save-video': Video,
   'edit-canvas': Settings2,
-  'manage-modules': Blocks,
+  'manage-plugins': Blocks,
   'open-dev-tools': Settings2,
 };
 
@@ -64,7 +64,7 @@ const ACTION_TRANSLATION_KEYS: Record<string, string> = {
   'save-image': 'save-image',
   'save-video': 'save-video',
   'edit-canvas': 'project-settings',
-  'manage-modules': 'manage-modules',
+  'manage-plugins': 'manage-plugins',
 };
 
 const typedMenuConfig = menuConfig as MenuSection[];

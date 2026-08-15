@@ -2,28 +2,28 @@ import { showModal } from '@/app/actions/modals';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 
-export interface MissingModuleRef {
+export interface MissingPluginRef {
   name: string;
   url?: string;
 }
 
-interface MissingModulesProps {
-  missing?: MissingModuleRef[];
+interface MissingPluginsProps {
+  missing?: MissingPluginRef[];
   onClose?: () => void;
 }
 
-export default function MissingModules({ missing = [], onClose }: MissingModulesProps) {
+export default function MissingPlugins({ missing = [], onClose }: MissingPluginsProps) {
   function handleInstall(url: string) {
     onClose?.();
-    showModal('ManageModules', { titleKey: 'menu.manage-modules' }, { initialUrl: url });
+    showModal('ManagePlugins', { titleKey: 'menu.manage-plugins' }, { initialUrl: url });
   }
 
   return (
     <div className="flex w-[34rem] max-w-full flex-col">
       <div className="flex flex-col gap-3 p-4">
         <div className="text-sm text-neutral-300">
-          This project uses external modules that are not installed. Their layers and effects were
-          skipped. Install the modules and reopen the project to restore them.
+          This project uses external plugins that are not installed. Their layers and effects were
+          skipped. Install the plugins and reopen the project to restore them.
         </div>
         <div className="flex flex-col gap-2">
           {missing.map(item => (

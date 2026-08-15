@@ -1,4 +1,5 @@
 import { BLANK_IMAGE } from '@/app/constants';
+import { renderer } from '@/app/global';
 import Display from '@/lib/core/Display';
 import { isDefined } from '@/lib/utils/array';
 import { fitMediaWithinBounds } from '@/lib/utils/media';
@@ -155,6 +156,7 @@ export default class ImageDisplay extends Display {
         // New image
         const fittedSize = getFittedSize(this, image.naturalWidth, image.naturalHeight);
         nextProperties = {
+          ...properties,
           src: image.src,
           width: fittedSize.width,
           height: fittedSize.height,
@@ -221,7 +223,9 @@ export default class ImageDisplay extends Display {
             }
 
             if (Object.keys(nextProps).length > 0) {
-              super.update(nextProps);
+              if (super.update(nextProps)) {
+                renderer.requestRender();
+              }
             }
           };
           nextImage.src = nextProperties.src as string;

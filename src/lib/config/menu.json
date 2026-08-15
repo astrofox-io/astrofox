@@ -47,8 +47,8 @@
         "action": "edit-canvas"
       },
       {
-        "label": "Manage modules",
-        "action": "manage-modules"
+        "label": "Manage plugins",
+        "action": "manage-plugins"
       }
     ]
   },

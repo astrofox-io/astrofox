@@ -2,25 +2,25 @@
 
 import React from 'react';
 import { CanvasTextureLayer } from '@/lib/core/render/layers';
-import { getModuleWorkerHost } from './ModuleHost';
+import { getPluginWorkerHost } from './PluginHost';
 
 const VIDEO_RENDERING = -1;
 
 /**
- * Generic stage layer for worker-runtime display modules. Reuses the
- * CanvasTextureLayer/TexturePlane pipeline: the module's transferred
+ * Generic stage layer for worker-runtime display plugins. Reuses the
+ * CanvasTextureLayer/TexturePlane pipeline: the plugin's transferred
  * ImageBitmap is drawn into the layer canvas, which then gets the standard
  * transform, blending and scene handling every core 2D display has.
  */
 export function ExternalDisplayLayer({ display, order, frameData, ...sceneProps }) {
-  const host = getModuleWorkerHost(display.name);
+  const host = getPluginWorkerHost(display.name);
   const bitmapRef = React.useRef(null);
 
   React.useEffect(() => {
     return () => {
       bitmapRef.current?.bitmap.close();
       bitmapRef.current = null;
-      getModuleWorkerHost(display.name)?.disposeInstance(display.id);
+      getPluginWorkerHost(display.name)?.disposeInstance(display.id);
     };
   }, [display.name, display.id]);
 
@@ -34,7 +34,7 @@ export function ExternalDisplayLayer({ display, order, frameData, ...sceneProps 
       host.updateInstance(display.id, properties);
 
       // Export frames are pre-rendered synchronously by the export loop
-      // (renderModuleFramesForExport); live frames are fire-and-forget.
+      // (renderPluginFramesForExport); live frames are fire-and-forget.
       if (frame && frame.id !== VIDEO_RENDERING) {
         host.requestFrame(display.id, frame);
       }

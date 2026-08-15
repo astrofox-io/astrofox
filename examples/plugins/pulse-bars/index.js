@@ -1,10 +1,10 @@
 /**
- * Example worker-runtime display module. Runs inside Astrofox's module
+ * Example worker-runtime display plugin. Runs inside Astrofox's plugin
  * sandbox worker: no DOM, no app internals — just the factory contract.
  * All animation derives from frame.time/frame.delta so video export is
  * deterministic.
  */
-export default function createModule({ properties }) {
+export default function createPlugin({ properties }) {
   let props = { ...properties };
   let canvas = null;
   let ctx = null;

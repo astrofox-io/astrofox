@@ -117,7 +117,7 @@
     "save-image": "Enregistrer l'image",
     "save-video": "Enregistrer la vidéo",
     "project-settings": "Paramètres du projet",
-    "manage-modules": "Gérer les modules"
+    "manage-plugins": "Gérer les plugins"
   },
   "add-menu": {
     "add-2d-display": "Ajouter un affichage 2D",

@@ -1,8 +1,8 @@
-# External Modules: Analysis & Spec Proposal
+# External Plugins: Analysis & Spec Proposal
 
-This document analyzes how Astrofox can support **external modules** — third-party
+This document analyzes how Astrofox can support **external plugins** — third-party
 displays and effects that a user adds by entering a URL, which the app then fetches
-and runs — and proposes a module spec covering audio data, parameters, rendering,
+and runs — and proposes a plugin spec covering audio data, parameters, rendering,
 and lifecycle.
 
 - [1. What exists today](#1-what-exists-today)
@@ -10,7 +10,7 @@ and lifecycle.
 - [3. Security analysis](#3-security-analysis)
 - [4. Execution models considered](#4-execution-models-considered)
 - [5. Proposed architecture](#5-proposed-architecture)
-- [6. Module spec (draft v1)](#6-module-spec-draft-v1)
+- [6. Plugin spec (draft v1)](#6-plugin-spec-draft-v1)
 - [7. Host integration work](#7-host-integration-work)
 - [8. Phased roadmap](#8-phased-roadmap)
 - [9. Open questions](#9-open-questions)
@@ -26,10 +26,10 @@ The v1-era plugin mechanism survives in the codebase and is *almost* wired up:
 - `loadPlugins()` (`src/app/actions/app.ts:888`) iterates descriptors from
   `api.getPlugins()`, dynamic-imports each `plugin.src` with
   `/* webpackIgnore: true */` — i.e. a true runtime `import()` of an arbitrary
-  URL — and passes `module.default` to `Plugin.create()`.
+  URL — and passes `plugin.default` to `Plugin.create()`.
 - `Plugin.create()` (`src/lib/core/Plugin.ts`) subclasses `Display` or `Effect`
-  based on `config.type`, copies the module's own properties onto the class
-  (hoisting `config` as the static the rest of the app reads) and the module's
+  based on `config.type`, copies the plugin's own properties onto the class
+  (hoisting `config` as the static the rest of the app reads) and the plugin's
   `prototype` methods onto the subclass prototype.
 - `loadLibrary()` (`src/app/actions/app.ts:914`) merges the result into the
   `library` map alongside the core displays/effects, keyed by descriptor key.
@@ -81,7 +81,7 @@ registry (`inputComponents.ts`). Reactors bind by property name
 (`display.setReactor(prop, { id, min, max })`) and the host writes
 `(max - min) * output + min` into `properties` each frame before rendering
 (`Display.ts:75-97`). **This is the single best piece of existing leverage:
-external modules can reuse the whole controls + reactors system without any new
+external plugins can reuse the whole controls + reactors system without any new
 UI code**, with one caveat — schema values may currently be *functions*
 (`property()`, `stageWidth()`), which don't survive serialization or a sandbox
 boundary (see §6.4).
@@ -92,13 +92,13 @@ Projects store elements as `{ id, name, type, enabled, displayName, properties,
 reactors }` and reload by looking up `name` in the library
 (`src/app/actions/project.ts:711-765`). Unknown names are warn-and-drop. There
 is already a media relink flow (`RelinkMediaDialog`) that is a good template for
-"module missing — refetch from URL?".
+"plugin missing — refetch from URL?".
 
 ---
 
 ## 2. Why the legacy path is not enough
 
-Even with `getPlugins()` implemented, a module loaded via `Plugin.create` today
+Even with `getPlugins()` implemented, a plugin loaded via `Plugin.create` today
 would be a ghost: constructible, with working controls and reactors, but
 
 - **invisible in the Add menus** — `SectionAddMenu.tsx` matches hardcoded label
@@ -109,10 +109,10 @@ would be a ghost: constructible, with working controls and reactors, but
 - **has no transform overlay** — `displayTransform.ts` special-cases known names.
 
 In total there are ~14 hardcoded tables keyed on `display.name`,
-`effect.name`, or `config.label` that a module would need to enter (add-menu
+`effect.name`, or `config.label` that a plugin would need to enter (add-menu
 categories, layer dispatch, pass factories, live-updatable effect list, 3D
 grouping, transform overlay, i18n label whitelist, blend-mode map, input-type
-registry...). The first prerequisite for external modules is therefore an
+registry...). The first prerequisite for external plugins is therefore an
 **internal registry refactor** (§7.1) so that "being in the library" is
 sufficient for a display/effect to be addable, renderable, and transformable.
 
@@ -137,17 +137,17 @@ Running third-party JS in the main renderer realm gives it:
   - `shell.openPath` / `showItemInFolder` on arbitrary strings.
 - **A permissive window.** `sandbox: false`, no CSP anywhere, no
   `will-navigate` guard, no `setWindowOpenHandler`, no permission-request
-  handler (`electron/main.mjs:185-193`). A malicious module can navigate the
+  handler (`electron/main.mjs:185-193`). A malicious plugin can navigate the
   window, open windows, use mic/screen capture, and exfiltrate anything it can
   read.
 - **The app itself**: project data, the zustand stores, the audio graph, other
-  modules' code, and (in dev) `window._astrofox` globals.
+  plugins' code, and (in dev) `window._astrofox` globals.
 - On the **web build** the blast radius is smaller (no bridge, browser sandbox)
   but still includes the user's project, clipboard-adjacent APIs, and network
   exfiltration.
 
-Also note: modules are *persistent* (stored in projects and auto-loaded), so a
-compromised module URL is a supply-chain attack on every project that uses it.
+Also note: plugins are *persistent* (stored in projects and auto-loaded), so a
+compromised plugin URL is a supply-chain attack on every project that uses it.
 The URL's content can change after the user vetted it.
 
 ### 3.2 Consequences for the design
@@ -155,7 +155,7 @@ The URL's content can change after the user vetted it.
 1. **Untrusted code must not run in the main realm.** Isolation (worker and/or
    sandboxed iframe) is a requirement, not an option, at least on desktop.
 2. **Prefer data over code where possible.** A shader + declarative uniform
-   schema is not a program with ambient authority; it's the safest module tier
+   schema is not a program with ambient authority; it's the safest plugin tier
    and covers most *effects*.
 3. **Pin content.** Record a subresource-integrity hash at install time and
    verify on every subsequent load, so a vetted URL can't silently change.
@@ -170,13 +170,13 @@ The URL's content can change after the user vetted it.
 ### 3.3 Residual risks to accept explicitly
 
 - A worker/iframe can still spin CPU (denial of service on the render loop) —
-  mitigated by per-frame timeouts and a "module unresponsive → disable" policy.
+  mitigated by per-frame timeouts and a "plugin unresponsive → disable" policy.
 - Network exfiltration from inside a sandbox is hard to fully prevent on the
   web build (no CSP control over a data-URL worker's `fetch` beyond the page's
   own CSP). On desktop, the Electron session can block requests whose initiator
-  is the sandbox origin. A per-module "network" permission prompt is the honest
+  is the sandbox origin. A per-plugin "network" permission prompt is the honest
   UX. Audio data itself is low-sensitivity, but project contents are passed to
-  modules via properties — keep the module input surface minimal.
+  plugins via properties — keep the plugin input surface minimal.
 
 ---
 
@@ -184,31 +184,31 @@ The URL's content can change after the user vetted it.
 
 | Model | Isolation | Perf | Capability | Notes |
 |---|---|---|---|---|
-| **A. Main-realm `import()`** (status quo path) | none | best | full three.js/DOM | Unacceptable for untrusted URLs on desktop (§3). Fine as an explicit **dev mode** for module authors. |
-| **B. Declarative shader modules** (no JS at all) | total | native | fragment-shader effects, shader displays | GLSL + uniform schema compiled by the host into the existing `ShaderPass` chain. Covers most effect ideas; can't do layout/text/complex geometry. |
-| **C. Web Worker + OffscreenCanvas** | strong (no DOM, no bridge) | good | canvas-2d and WebGL drawing, arbitrary JS logic | Module draws into an `OffscreenCanvas` in the worker; host receives an `ImageBitmap` (zero-copy transfer) and uploads it as a texture — exactly the shape of the existing `CanvasTextureLayer` pattern. Async by nature: one frame of latency, or await in export. |
+| **A. Main-realm `import()`** (status quo path) | none | best | full three.js/DOM | Unacceptable for untrusted URLs on desktop (§3). Fine as an explicit **dev mode** for plugin authors. |
+| **B. Declarative shader plugins** (no JS at all) | total | native | fragment-shader effects, shader displays | GLSL + uniform schema compiled by the host into the existing `ShaderPass` chain. Covers most effect ideas; can't do layout/text/complex geometry. |
+| **C. Web Worker + OffscreenCanvas** | strong (no DOM, no bridge) | good | canvas-2d and WebGL drawing, arbitrary JS logic | Plugin draws into an `OffscreenCanvas` in the worker; host receives an `ImageBitmap` (zero-copy transfer) and uploads it as a texture — exactly the shape of the existing `CanvasTextureLayer` pattern. Async by nature: one frame of latency, or await in export. |
 | **D. Sandboxed iframe (`sandbox` attr, opaque origin) hosting the worker** | strongest, adds origin isolation + CSP leverage | good | same as C | The iframe is a container for CSP/permission control; actual work still in a worker. More moving parts; postMessage double-hop. |
 | **E. In-realm interpreter (SES/ShadowRealm/QuickJS-wasm)** | strong | poor–medium | JS logic only, no direct canvas | Heavyweight dependency; ShadowRealm still not shipped everywhere; wasm interpreter for per-frame drawing is slow. Not recommended for v1. |
 
 **Recommendation:** a **tiered system**:
 
-- **Tier 1 — shader modules (data, not code).** Ship first. An external effect
+- **Tier 1 — shader plugins (data, not code).** Ship first. An external effect
   is a manifest + fragment shader; the host owns compilation, the pass chain,
   uniforms, controls, reactors. Zero sandboxing needed beyond shader compile
   guards (already have try/catch around pass construction, plus size/complexity
   limits).
-- **Tier 2 — worker modules (code in a sandbox).** Canvas-2d (and later WebGL)
-  displays as JS modules running in a dedicated `Worker` created from the
+- **Tier 2 — worker plugins (code in a sandbox).** Canvas-2d (and later WebGL)
+  displays as JS plugins running in a dedicated `Worker` created from the
   *cached, integrity-checked* source via a blob URL. Communication via
   postMessage + transferables. On desktop, additionally block network for the
-  worker at the session level unless the module holds the `network` permission.
+  worker at the session level unless the plugin holds the `network` permission.
 - **Dev mode — main-realm import behind an explicit toggle** ("Load unpacked
-  module", desktop only, scary consent dialog), reusing `Plugin.create`. This
+  plugin", desktop only, scary consent dialog), reusing `Plugin.create`. This
   is how authors iterate before packaging; it is never triggered by a URL from
   a project file.
 
 Tier boundaries are expressed in the manifest (`runtime: "shader" | "worker"`)
-so the permission UI can be honest about what a module can do.
+so the permission UI can be honest about what a plugin can do.
 
 ---
 
@@ -216,10 +216,10 @@ so the permission UI can be honest about what a module can do.
 
 ```
                         ┌────────────────────────────────────────────┐
-  user enters URL ──►   │ ModuleInstaller                            │
+  user enters URL ──►   │ PluginInstaller                            │
                         │  fetch manifest → fetch entry/shader       │
                         │  → hash (SRI) → permission dialog          │
-                        │  → persist to module store (cache + meta)  │
+                        │  → persist to plugin store (cache + meta)  │
                         └───────────────┬────────────────────────────┘
                                         │ register
                                         ▼
@@ -237,7 +237,7 @@ so the permission UI can be honest about what a module can do.
         │                                   │                          │
         │             registry lookup (replaces switch):               │
         │               core name → built-in layer                     │
-        │               external display → ExternalDisplayLayer ───────┼──► ModuleWorker
+        │               external display → ExternalDisplayLayer ───────┼──► PluginWorker
         │               external effect (shader) → ShaderPass from     │    (postMessage:
         │                 manifest, in existing PassChain              │     init/update/
         └──────────────────────────────────────────────────────────────┘     frame/dispose;
@@ -249,14 +249,14 @@ Key points:
 - **Reactors, controls, serialization, and audio parsing stay host-side.** The
   worker only ever sees `properties` (already reactor-modulated by
   `updateReactors`) and a compact, pre-parsed audio frame. This keeps the
-  module API small and keeps every existing UI feature working for free.
-- **The host parses audio for the module** according to the manifest's `audio`
+  plugin API small and keeps every existing UI feature working for free.
+- **The host parses audio for the plugin** according to the manifest's `audio`
   block, using the existing `FFTParser`/`WaveParser` semantics (0..1, windowed,
-  smoothed). Modules never touch the raw analyzer. This also makes offline
-  export identical to live rendering from the module's point of view.
+  smoothed). Plugins never touch the raw analyzer. This also makes offline
+  export identical to live rendering from the plugin's point of view.
 - **External displays are one generic React layer.** `ExternalDisplayLayer`
   behaves like `CanvasTextureLayer`/`TexturePlane`: it owns a `CanvasTexture`,
-  posts `{frame, properties, size}` to the module worker, receives an
+  posts `{frame, properties, size}` to the plugin worker, receives an
   `ImageBitmap`, uploads it, and reuses the standard transform properties
   (`x/y/rotation/zoom/opacity` + scene blending). Because it takes the standard
   bounding box, the transform overlay works generically too.
@@ -271,7 +271,7 @@ Key points:
 Video export must produce identical output for identical input. Rules:
 
 - The host provides `frame.time` (frame / fps during export, playback time
-  live) and `frame.delta` (fixed `1000/fps` during export). Modules must derive
+  live) and `frame.delta` (fixed `1000/fps` during export). Plugins must derive
   all animation from these — the spec forbids `Date.now()`/`performance.now()`
   as animation clocks and requires seeded randomness (the host passes a
   per-instance `seed`).
@@ -281,17 +281,17 @@ Video export must produce identical output for identical input. Rules:
 
 ---
 
-## 6. Module spec (draft v1)
+## 6. Plugin spec (draft v1)
 
 ### 6.1 Distribution format
 
-A module is a directory (or single URL) containing a **manifest** plus assets.
-The user enters the manifest URL (`https://.../astrofox.module.json`); entering
-a bare `.js`/`.frag` URL is allowed if the file self-describes (worker modules
+A plugin is a directory (or single URL) containing a **manifest** plus assets.
+The user enters the manifest URL (`https://.../astrofox.plugin.json`); entering
+a bare `.js`/`.frag` URL is allowed if the file self-describes (worker plugins
 export `manifest`; not recommended for v1 docs).
 
 ```jsonc
-// astrofox.module.json
+// astrofox.plugin.json
 {
   "api": 1,                          // spec version; host refuses unknown majors
   "name": "@mikecao/super-bars",     // globally-namespaced id; serialized into projects
@@ -306,7 +306,7 @@ export `manifest`; not recommended for v1 docs).
   // "shader": "./effect.frag",      // runtime=shader: fragment shader
   "icon": "./icon.svg",              // rendered in Add menu / layers panel
   "permissions": [],                 // e.g. ["network"] — each is a user prompt
-  "audio": {                         // what the host should hand the module
+  "audio": {                         // what the host should hand the plugin
     "fft":  { "bins": 64, "minFrequency": 0, "maxFrequency": 6000,
               "smoothing": 0.5, "minDecibels": -100, "maxDecibels": -12 },
     "td":   { "samples": 256 }       // omit fft/td to not receive them
@@ -319,26 +319,26 @@ export `manifest`; not recommended for v1 docs).
 Install pipeline: fetch manifest → validate with zod (already a dependency,
 currently unused) → fetch entry/shader/icon → compute SHA-384 for each file →
 show consent dialog (name, author, origin, type/runtime, permissions) → persist
-`{manifest, files, hashes, installedAt, sourceUrl}` in the module store
-(desktop: `userData/modules/`; web: Cache API + IndexedDB) → register into
+`{manifest, files, hashes, installedAt, sourceUrl}` in the plugin store
+(desktop: `userData/plugins/`; web: Cache API + IndexedDB) → register into
 `library`. Subsequent app launches load from the store and re-verify hashes —
 the network is only touched again for an explicit "check for updates".
 
-### 6.2 Worker module runtime (`runtime: "worker"`, `type: "display"`)
+### 6.2 Worker plugin runtime (`runtime: "worker"`, `type: "display"`)
 
 The entry is an ES module executed inside a dedicated `Worker` (module type),
 instantiated from the cached blob. It default-exports a factory:
 
 ```js
 // index.js
-export default function createModule({ properties, seed, size }) {
+export default function createPlugin({ properties, seed, size }) {
   // Private per-instance state lives in this closure.
   let canvas;   // OffscreenCanvas, provided in init
   let ctx;
 
   return {
     // Called once. The host transfers an OffscreenCanvas sized to the
-    // module's content box (from properties/size).
+    // plugin's content box (from properties/size).
     init({ canvas: c }) {
       canvas = c;
       ctx = canvas.getContext('2d');
@@ -370,7 +370,7 @@ export default function createModule({ properties, seed, size }) {
 copied — small because bin counts come from the manifest):
 
 ```ts
-interface ModuleFrame {
+interface PluginFrame {
   id: number;        // monotonically increasing; -1-style export id not exposed
   time: number;      // seconds; playback position live, frame/fps in export
   delta: number;     // ms since last frame; fixed 1000/fps in export
@@ -387,7 +387,7 @@ Deliberately absent: raw analyzer arrays, reactor outputs (already folded into
 `properties` by the host), input mode / source labels, and anything DOM-ish.
 Additions later (e.g. beat events, BPM) are additive and gated by `api`.
 
-**Host↔worker protocol** (one worker per module *definition*, one instance
+**Host↔worker protocol** (one worker per plugin *definition*, one instance
 record per stage element — a worker crash or per-frame deadline miss disables
 the element with a badge in the layers panel, never the app):
 
@@ -400,7 +400,7 @@ worker → host: {op:'frame-done', instanceId, bitmap (transfer), box?}
 host → worker: {op:'resize'|'dispose', instanceId, ...}
 ```
 
-### 6.3 Shader module runtime (`runtime: "shader"`, `type: "effect"`)
+### 6.3 Shader plugin runtime (`runtime: "shader"`, `type: "effect"`)
 
 No JavaScript. The manifest names a GLSL fragment shader; the host wraps it in
 the existing `ShaderPass` (`src/lib/core/render/composer/ShaderPass.ts`) and
@@ -432,8 +432,8 @@ void main() { ... }
 ```
 
 Because reactors modulate `properties` host-side, `withReactor` controls work
-on shader uniforms with zero module effort. Shader compile failure at install
-time rejects the module; at load time it disables the effect with an error
+on shader uniforms with zero plugin effort. Shader compile failure at install
+time rejects the plugin; at load time it disables the effect with an error
 badge. Guardrails: source size limit, `#include` disallowed, loop bounds lint
 (best-effort), and the existing per-pass try/catch in `PassChain.render`.
 
@@ -477,7 +477,7 @@ resolves with the same semantics:
 - `withReactor` works unchanged (host-side). i18n already falls back to the raw
   label for unknown strings, so nothing breaks there.
 
-For `type: "display"` modules the host injects the standard transform block
+For `type: "display"` plugins the host injects the standard transform block
 (`x, y, rotation, opacity` and optionally `zoom`) if absent, so every external
 display is positionable, blendable, reactor-able, and gets the transform
 overlay for free.
@@ -493,8 +493,8 @@ External elements serialize like core ones plus provenance:
   "displayName": "Super Bars 1",
   "properties": { ... },
   "reactors": { ... },
-  "module": {                        // NEW block, external elements only
-    "url": "https://example.com/super-bars/astrofox.module.json",
+  "plugin": {                        // NEW block, external elements only
+    "url": "https://example.com/super-bars/astrofox.plugin.json",
     "version": "1.2.0",
     "integrity": "sha384-..."        // hash of the manifest (which pins files)
   }
@@ -502,7 +502,7 @@ External elements serialize like core ones plus provenance:
 ```
 
 On project load, `loadElement` (`project.ts:715`) resolves `name` in the
-library; on miss with a `module` block present, the app offers a relink-style
+library; on miss with a `plugin` block present, the app offers a relink-style
 dialog: "This project uses *Super Bars 1.2.0* from example.com — fetch and
 install?" (with the same consent + integrity flow as manual install; an
 integrity mismatch against the recorded hash is a hard warning). Declined →
@@ -529,32 +529,32 @@ library membership is sufficient:
    Same for the `LIVE_UPDATABLE_EFFECTS` / `STRUCTURAL_EFFECT_PROPS` sets in
    `SceneWithEffects.tsx` → `config.passRebuild` metadata.
 3. **Add menus** — `SectionAddMenu.tsx` matches labels; add a `config.category`
-   and an automatic **External** section listing installed modules (with icon),
-   so external modules are reachable without touching the hardcoded category
+   and an automatic **External** section listing installed plugins (with icon),
+   so external plugins are reachable without touching the hardcoded category
    lists.
 4. **Transform overlay** — `displayTransform.ts` name-switch → use the layer's
    reported box (external displays already return one) with a generic fallback.
 5. Fix two small host bugs surfaced by this analysis while in there:
    `frameData.volume` is declared but never assigned (always 0), and
-   `frameData.gain` is 0–255 — the module spec's `volume: 0..1` needs a real
+   `frameData.gain` is 0–255 — the plugin spec's `volume: 0..1` needs a real
    normalized level.
 
-This refactor pays for itself even if external modules never ship — it deletes
+This refactor pays for itself even if external plugins never ship — it deletes
 five parallel switch statements that must currently be updated in lockstep to
 add a core display.
 
 ### 7.2 New components
 
-- `src/lib/modules/` — `ModuleInstaller` (fetch/validate/hash/consent/store),
-  `ModuleStore` (desktop dir / web Cache API), `ModuleHost` (worker lifecycle +
+- `src/lib/plugins/` — `PluginInstaller` (fetch/validate/hash/consent/store),
+  `PluginStore` (desktop dir / web Cache API), `PluginHost` (worker lifecycle +
   protocol), `ExternalDisplay` / `ExternalEffect` (thin `Display`/`Effect`
   subclasses built from a manifest — the modern replacement for `Plugin.ts`),
   `shaderEffectFactory` (manifest → `ShaderPass`).
 - `ExternalDisplayLayer.tsx` next to the existing layers.
-- UI: "Add module from URL…" entry (Add menu footer or settings), consent
-  dialog, module manager panel (list / update / remove / permissions), error
+- UI: "Add plugin from URL…" entry (Add menu footer or settings), consent
+  dialog, plugin manager panel (list / update / remove / permissions), error
   badges on failed elements.
-- Zod schemas for manifest + project `module` block (first real use of the
+- Zod schemas for manifest + project `plugin` block (first real use of the
   existing zod dependency).
 - Electron hardening from §3.2.4 as an accompanying PR.
 
@@ -571,9 +571,9 @@ that everything stateful and UI-facing remains host-side.
 | Phase | Scope | Outcome |
 |---|---|---|
 | **0** | Registry refactor (§7.1) + Electron hardening (§3.2.4) | Core pluggable internally; safer app regardless |
-| **1** | Shader effect modules: manifest, installer, store, consent UI, `shaderEffectFactory`, project `module` block + relink | Users load effects from URLs; zero arbitrary code execution |
-| **2** | Worker display modules: `ModuleHost`, `ExternalDisplayLayer`, frame protocol, export integration, watchdog/disable policy | Full custom displays from URLs, sandboxed |
-| **3** | Ecosystem: shader *displays* (Shadertoy-style), module manager panel, update checks, dev mode (local unpacked + hot reload), docs + template repo | Authoring story and community growth |
+| **1** | Shader effect plugins: manifest, installer, store, consent UI, `shaderEffectFactory`, project `plugin` block + relink | Users load effects from URLs; zero arbitrary code execution |
+| **2** | Worker display plugins: `PluginHost`, `ExternalDisplayLayer`, frame protocol, export integration, watchdog/disable policy | Full custom displays from URLs, sandboxed |
+| **3** | Ecosystem: shader *displays* (Shadertoy-style), plugin manager panel, update checks, dev mode (local unpacked + hot reload), docs + template repo | Authoring story and community growth |
 
 Phase 1 is intentionally first among the user-visible phases: it delivers the
 "paste a URL, get a new effect" experience with the smallest security surface
@@ -582,15 +582,15 @@ and validates the manifest/store/consent machinery that Phase 2 reuses.
 ## 9. Open questions
 
 1. **Web-build network policy** — is a `network` permission prompt acceptable,
-   or should worker modules be offline-only everywhere (desktop can enforce;
+   or should worker plugins be offline-only everywhere (desktop can enforce;
    web can't fully)?
 2. **WebGL worker displays in v1 of Phase 2**, or canvas-2d only first?
    (OffscreenCanvas WebGL in workers is well-supported now; the protocol is
    identical, so it's mostly testing surface.)
-3. **A curated index** (`modules.astrofox.io`) vs. raw URLs only — a registry
+3. **A curated index** (`plugins.astrofox.io`) vs. raw URLs only — a registry
    improves discovery and enables revocation lists, but raw URLs should keep
    working either way.
-4. **Versioning policy for projects** — pin exact module versions in projects
+4. **Versioning policy for projects** — pin exact plugin versions in projects
    (deterministic re-renders) with explicit per-project upgrade, or follow
    installed versions? Proposed: pin + prompt.
 5. **Should `Plugin.ts` / `loadPlugins()` be removed** once `ExternalDisplay`/

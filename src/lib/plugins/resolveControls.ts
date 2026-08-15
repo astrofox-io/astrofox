@@ -3,7 +3,7 @@ import { ALLOWED_CONTROL_TYPES } from './manifestSchema';
 
 /**
  * Manifests are JSON, but core control schemas may hold functions (live
- * min/max bounds, hidden predicates). Modules express those with declarative
+ * min/max bounds, hidden predicates). Plugins express those with declarative
  * refs which are resolved here into the same functions the control renderer
  * already understands:
  *

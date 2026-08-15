@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { useThree } from '@react-three/fiber';
 import React from 'react';
 import { LinearFilter, SRGBColorSpace, TextureLoader } from 'three';
 import { TexturePlane } from './TexturePlane';
@@ -12,6 +13,7 @@ export function ImageDisplayLayer({
   sceneInverse,
   sceneMaskCombine,
 }) {
+  const invalidate = useThree(state => state.invalidate);
   const { properties = {} } = display;
   const {
     src,
@@ -25,7 +27,7 @@ export function ImageDisplayLayer({
   } = properties;
 
   const texture = React.useMemo(() => {
-    const nextTexture = new TextureLoader().load(src);
+    const nextTexture = new TextureLoader().load(src, () => invalidate());
     nextTexture.minFilter = LinearFilter;
     nextTexture.magFilter = LinearFilter;
     nextTexture.colorSpace = SRGBColorSpace;
@@ -33,7 +35,7 @@ export function ImageDisplayLayer({
     nextTexture.needsUpdate = true;
 
     return nextTexture;
-  }, [src]);
+  }, [src, invalidate]);
 
   React.useEffect(() => {
     return () => {

@@ -1,34 +1,34 @@
 import { useState } from 'react';
-import { reloadModuleLibrary } from '@/app/actions/app';
+import { reloadPluginLibrary } from '@/app/actions/app';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
-import type { InstalledModule, ModulePackage } from '@/lib/modules';
+import type { InstalledPlugin, PluginPackage } from '@/lib/plugins';
 import {
-  fetchModulePackage,
-  getInstalledModules,
-  installModulePackage,
-  uninstallModule,
-} from '@/lib/modules';
+  fetchPluginPackage,
+  getInstalledPlugins,
+  installPluginPackage,
+  uninstallPlugin,
+} from '@/lib/plugins';
 
-interface ManageModulesProps {
+interface ManagePluginsProps {
   initialUrl?: string;
   onClose?: () => void;
 }
 
-export default function ManageModules({ initialUrl = '', onClose }: ManageModulesProps) {
-  const [modules, setModules] = useState<Record<string, InstalledModule>>(() =>
-    getInstalledModules(),
+export default function ManagePlugins({ initialUrl = '', onClose }: ManagePluginsProps) {
+  const [plugins, setPlugins] = useState<Record<string, InstalledPlugin>>(() =>
+    getInstalledPlugins(),
   );
   const [url, setUrl] = useState(initialUrl);
-  const [candidate, setCandidate] = useState<ModulePackage | null>(null);
+  const [candidate, setCandidate] = useState<PluginPackage | null>(null);
   const [installBusy, setInstallBusy] = useState(false);
   const [busyName, setBusyName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const entries = Object.values(modules).sort((a, b) =>
+  const entries = Object.values(plugins).sort((a, b) =>
     a.manifest.label.localeCompare(b.manifest.label),
   );
-  const existing = candidate ? modules[candidate.manifest.name] : null;
+  const existing = candidate ? plugins[candidate.manifest.name] : null;
 
   async function handleReview() {
     if (!url.trim() || installBusy) {
@@ -39,7 +39,7 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
     setError(null);
     setCandidate(null);
     try {
-      setCandidate(await fetchModulePackage(url.trim()));
+      setCandidate(await fetchPluginPackage(url.trim()));
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -55,9 +55,9 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
     setInstallBusy(true);
     setError(null);
     try {
-      installModulePackage(candidate);
-      await reloadModuleLibrary();
-      setModules(getInstalledModules());
+      installPluginPackage(candidate);
+      await reloadPluginLibrary();
+      setPlugins(getInstalledPlugins());
       setCandidate(null);
       setUrl('');
     } catch (e) {
@@ -71,9 +71,9 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
     setBusyName(name);
     setError(null);
     try {
-      uninstallModule(name);
-      await reloadModuleLibrary();
-      setModules(getInstalledModules());
+      uninstallPlugin(name);
+      await reloadPluginLibrary();
+      setPlugins(getInstalledPlugins());
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -81,18 +81,18 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
     }
   }
 
-  async function handleUpdate(installed: InstalledModule) {
+  async function handleUpdate(installed: InstalledPlugin) {
     const name = installed.manifest.name;
     setBusyName(name);
     setError(null);
     try {
-      const pkg = await fetchModulePackage(installed.sourceUrl);
+      const pkg = await fetchPluginPackage(installed.sourceUrl);
       if (pkg.manifest.name !== name) {
-        throw new Error(`URL now serves a different module (${pkg.manifest.name})`);
+        throw new Error(`URL now serves a different plugin (${pkg.manifest.name})`);
       }
-      installModulePackage(pkg);
-      await reloadModuleLibrary();
-      setModules(getInstalledModules());
+      installPluginPackage(pkg);
+      await reloadPluginLibrary();
+      setPlugins(getInstalledPlugins());
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -112,10 +112,10 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
         >
           <input
             type="url"
-            aria-label="Module manifest URL"
+            aria-label="Plugin manifest URL"
             value={url}
             spellCheck={false}
-            placeholder="Module manifest URL"
+            placeholder="Plugin manifest URL"
             disabled={installBusy}
             onChange={event => {
               setUrl(event.target.value);
@@ -132,7 +132,7 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
         {candidate ? (
           <div className="flex items-center gap-3 rounded border border-neutral-700 bg-neutral-900 px-3 py-2.5">
             {candidate.manifest.icon && candidate.files[candidate.manifest.icon] ? (
-              // biome-ignore lint/performance/noImgElement: data URL icon from the module package
+              // biome-ignore lint/performance/noImgElement: data URL icon from the plugin package
               <img
                 src={candidate.files[candidate.manifest.icon]}
                 alt=""
@@ -176,7 +176,7 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
 
         <div className="flex max-h-[20rem] min-h-0 flex-col gap-2 overflow-y-auto">
           {entries.length === 0 ? (
-            <div className="py-5 text-center text-sm text-neutral-500">No modules installed.</div>
+            <div className="py-5 text-center text-sm text-neutral-500">No plugins installed.</div>
           ) : null}
 
           {entries.map(installed => {
@@ -189,7 +189,7 @@ export default function ManageModules({ initialUrl = '', onClose }: ManageModule
                 className="flex items-center gap-3 rounded border border-neutral-700 bg-neutral-900 px-3 py-2.5"
               >
                 {manifest.icon && installed.files[manifest.icon] ? (
-                  // biome-ignore lint/performance/noImgElement: data URL icon from the module store
+                  // biome-ignore lint/performance/noImgElement: data URL icon from the plugin store
                   <img src={installed.files[manifest.icon]} alt="" className="h-7 w-7 rounded" />
                 ) : null}
                 <div className="min-w-0 flex-1">

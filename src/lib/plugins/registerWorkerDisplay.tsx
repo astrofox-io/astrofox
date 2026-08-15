@@ -6,11 +6,11 @@ import {
   unregisterDisplayLayer,
 } from '@/lib/core/render/displayLayerRegistry';
 import { ExternalDisplayLayer } from './ExternalDisplayLayer';
-import { registerModuleWorkerHost, unregisterModuleWorkerHost } from './ModuleHost';
-import type { InstalledModule } from './types';
+import { registerPluginWorkerHost, unregisterPluginWorkerHost } from './PluginHost';
+import type { InstalledPlugin } from './types';
 
-export function registerWorkerDisplayRuntime(installed: InstalledModule) {
-  registerModuleWorkerHost(installed);
+export function registerWorkerDisplayRuntime(installed: InstalledPlugin) {
+  registerPluginWorkerHost(installed);
 
   registerDisplayLayer(installed.manifest.name, {
     group: '2d',
@@ -22,5 +22,5 @@ export function registerWorkerDisplayRuntime(installed: InstalledModule) {
 
 export function unregisterWorkerDisplayRuntime(name: string) {
   unregisterDisplayLayer(name);
-  unregisterModuleWorkerHost(name);
+  unregisterPluginWorkerHost(name);
 }

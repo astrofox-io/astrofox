@@ -10,8 +10,8 @@ import vertexShader from '@/lib/shaders/glsl/vertex/basic.glsl';
 import { applyUniform, defaultUniformValue } from './shaderEffectFactory';
 
 /**
- * Stage layer for shader-runtime display modules (Shadertoy-style generative
- * layers). The module's fragment shader renders into a private render target
+ * Stage layer for shader-runtime display plugins (Shadertoy-style generative
+ * layers). The plugin's fragment shader renders into a private render target
  * each frame with time/audio uniforms, and the result is presented through
  * the standard TexturePlane, so transforms, blending and reactors behave
  * like any core 2D display.

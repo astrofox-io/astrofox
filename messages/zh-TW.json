@@ -117,7 +117,7 @@
     "save-image": "儲存圖片",
     "save-video": "儲存影片",
     "project-settings": "專案設定",
-    "manage-modules": "管理模組"
+    "manage-plugins": "管理外掛"
   },
   "add-menu": {
     "add-2d-display": "新增 2D 顯示",

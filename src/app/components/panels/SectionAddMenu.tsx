@@ -90,8 +90,8 @@ export default function SectionAddMenu({
   ariaLabel,
 }: SectionAddMenuProps) {
   const { t } = useTranslation();
-  // Re-read the library after a module install/uninstall.
-  useApp(state => state.modulesUpdatedAt);
+  // Re-read the library after a plugin install/uninstall.
+  useApp(state => state.pluginsUpdatedAt);
   const libraryItems = getLibraryItems(entityType);
   const externalItems = getExternalItems(libraryItems);
 

@@ -31,7 +31,7 @@ import {
  * decides whether the node lives in the 2D plane stack or the shared
  * perspective 3D scene.
  *
- * Core displays register below; external modules register at install time.
+ * Core displays register below; external plugins register at install time.
  */
 const registry = new Map();
 

@@ -4,7 +4,7 @@ import {
 } from '@/lib/core/render/effects/effectPassRegistry';
 import { createExternalEntityClass } from './ExternalEntity';
 import { verifyIntegrity } from './integrity';
-import { getInstalledModules, removeInstalledModule } from './ModuleStore';
+import { getInstalledPlugins, removeInstalledPlugin } from './PluginStore';
 import {
   registerShaderDisplayRuntime,
   unregisterShaderDisplayRuntime,
@@ -14,13 +14,13 @@ import {
   unregisterWorkerDisplayRuntime,
 } from './registerWorkerDisplay';
 import { createShaderEffectPassFactory } from './shaderEffectFactory';
-import type { InstalledModule, LibraryEntityClass } from './types';
+import type { InstalledPlugin, LibraryEntityClass } from './types';
 
-export { fetchModulePackage, installModulePackage } from './ModuleInstaller';
-export { getInstalledModule, getInstalledModules } from './ModuleStore';
-export type { InstalledModule, ModuleManifest, ModulePackage } from './types';
+export { fetchPluginPackage, installPluginPackage } from './PluginInstaller';
+export { getInstalledPlugin, getInstalledPlugins } from './PluginStore';
+export type { InstalledPlugin, PluginManifest, PluginPackage } from './types';
 
-async function verifyModuleIntegrity(installed: InstalledModule) {
+async function verifyPluginIntegrity(installed: InstalledPlugin) {
   for (const [ref, content] of Object.entries(installed.files)) {
     if (!(await verifyIntegrity(content, installed.integrity[ref]))) {
       throw new Error(`Integrity check failed for ${installed.manifest.name} (${ref})`);
@@ -29,11 +29,11 @@ async function verifyModuleIntegrity(installed: InstalledModule) {
 }
 
 /**
- * Registers a module's runtime (pass factory / stage layer) and returns the
+ * Registers a plugin's runtime (pass factory / stage layer) and returns the
  * library-registrable entity class. Throws for runtimes this build does not
  * support yet.
  */
-export function registerModuleRuntime(installed: InstalledModule): LibraryEntityClass {
+export function registerPluginRuntime(installed: InstalledPlugin): LibraryEntityClass {
   const { manifest } = installed;
 
   if (manifest.type === 'effect' && manifest.runtime === 'shader') {
@@ -54,39 +54,39 @@ export function registerModuleRuntime(installed: InstalledModule): LibraryEntity
   }
 
   throw new Error(
-    `Module ${manifest.name}: unsupported combination type=${manifest.type} runtime=${manifest.runtime}`,
+    `Plugin ${manifest.name}: unsupported combination type=${manifest.type} runtime=${manifest.runtime}`,
   );
 }
 
-export function unregisterModuleRuntime(name: string) {
+export function unregisterPluginRuntime(name: string) {
   unregisterEffectPass(name);
   unregisterWorkerDisplayRuntime(name);
   unregisterShaderDisplayRuntime(name);
 }
 
 /**
- * Loads all installed modules from the store, re-verifying content hashes.
- * Returns library entries keyed by module name; failures are skipped so one
- * broken module can't take the app down.
+ * Loads all installed plugins from the store, re-verifying content hashes.
+ * Returns library entries keyed by plugin name; failures are skipped so one
+ * broken plugin can't take the app down.
  */
-export async function loadInstalledModules(): Promise<Record<string, LibraryEntityClass>> {
+export async function loadInstalledPlugins(): Promise<Record<string, LibraryEntityClass>> {
   const result: Record<string, LibraryEntityClass> = {};
 
-  for (const [name, installed] of Object.entries(getInstalledModules())) {
+  for (const [name, installed] of Object.entries(getInstalledPlugins())) {
     try {
       if (!installed.dev) {
-        await verifyModuleIntegrity(installed);
+        await verifyPluginIntegrity(installed);
       }
-      result[name] = registerModuleRuntime(installed);
+      result[name] = registerPluginRuntime(installed);
     } catch (e) {
-      console.error(`Failed to load module ${name}:`, e);
+      console.error(`Failed to load plugin ${name}:`, e);
     }
   }
 
   return result;
 }
 
-export function uninstallModule(name: string) {
-  unregisterModuleRuntime(name);
-  removeInstalledModule(name);
+export function uninstallPlugin(name: string) {
+  unregisterPluginRuntime(name);
+  removeInstalledPlugin(name);
 }

@@ -117,7 +117,7 @@
     "save-image": "Lưu hình ảnh",
     "save-video": "Lưu video",
     "project-settings": "Cài đặt dự án",
-    "manage-modules": "Quản lý mô-đun"
+    "manage-plugins": "Quản lý plugin"
   },
   "add-menu": {
     "add-2d-display": "Thêm hiển thị 2D",

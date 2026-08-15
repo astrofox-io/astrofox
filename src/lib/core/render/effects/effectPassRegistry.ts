@@ -1,7 +1,7 @@
 /**
  * Registry of externally-registered effect pass factories. Core effects are
  * built by createScenePass/createRawEffect; entries here take precedence and
- * are how module-provided effects plug into the composer without touching
+ * are how plugin-provided effects plug into the composer without touching
  * those switch statements.
  */
 

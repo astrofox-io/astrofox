@@ -1,13 +1,13 @@
-# Authoring External Modules
+# Authoring External Plugins
 
-Astrofox can load third-party **displays** and **effects** from a URL. A module
+Astrofox can load third-party **displays** and **effects** from a URL. A plugin
 is a directory containing a JSON **manifest** plus a shader or a JavaScript
-entry file. Users install it via *Add module from URL…* in the layer/effect
+entry file. Users install it via *Add plugin from URL…* in the layer/effect
 menus, review what it is and where it comes from, and consent before anything
 is stored. Installed content is cached locally and pinned with SHA-384 hashes;
 the URL is only contacted again for explicit updates.
 
-Working examples live in [`examples/modules/`](../examples/modules/):
+Working examples live in [`examples/plugins/`](../examples/plugins/):
 
 | Example | Type | Runtime | Shows |
 |---|---|---|---|
@@ -15,14 +15,14 @@ Working examples live in [`examples/modules/`](../examples/modules/):
 | `plasma` | display | shader | generative fragment-shader layer with FFT array |
 | `pulse-bars` | display | worker | JavaScript canvas drawing in the sandbox worker |
 
-## The manifest (`astrofox.module.json`)
+## The manifest (`astrofox.plugin.json`)
 
 ```jsonc
 {
   "api": 1,                          // spec version
-  "name": "@author/module-name",     // required namespaced id ("@a/b")
+  "name": "@author/plugin-name",     // required namespaced id ("@a/b")
   "version": "1.0.0",
-  "label": "My Module",              // shown in menus and the layers panel
+  "label": "My Plugin",              // shown in menus and the layers panel
   "description": "…",
   "author": "…",
   "type": "display",                 // "display" | "effect"
@@ -63,7 +63,7 @@ Astrofox parses audio for you — declare what you want:
 
 FFT values arrive normalized 0..1 for the declared window; time-domain values
 are 0..1 with silence at 0.5. The same parsing feeds live rendering and video
-export, so your module renders identically in both.
+export, so your plugin renders identically in both.
 
 ## Displays: standard behavior for free
 
@@ -71,7 +71,7 @@ Every external display automatically gets `x`, `y`, `rotation`, `zoom` and
 `opacity` properties with controls, the on-stage transform overlay, scene
 blending, and reactor support. Any control marked `withReactor: true` can be
 driven by an audio reactor — Astrofox modulates the property before your
-module sees it, so you don't handle reactors at all.
+plugin sees it, so you don't handle reactors at all.
 
 ## Controls
 
@@ -122,11 +122,11 @@ layer).
 
 The entry file is an ES module that default-exports a factory. It runs in a
 dedicated Web Worker — no DOM, no Astrofox internals, and no network unless
-the module holds the `network` permission. You draw into an `OffscreenCanvas`
+the plugin holds the `network` permission. You draw into an `OffscreenCanvas`
 you own:
 
 ```js
-export default function createModule({ properties, seed, size }) {
+export default function createPlugin({ properties, seed, size }) {
   let canvas, ctx;
 
   return {
@@ -159,16 +159,16 @@ and stops rendering it; the app keeps running.
 
 ## Development workflow
 
-1. Serve your module directory locally, e.g. `npx serve --cors .`
-2. In Astrofox: *Add module from URL…* →
-   `http://localhost:3000/astrofox.module.json`. Localhost installs are
+1. Serve your plugin directory locally, e.g. `npx serve --cors .`
+2. In Astrofox: *Add plugin from URL…* →
+   `http://localhost:3000/astrofox.plugin.json`. Localhost installs are
    flagged **dev** and skip integrity pinning.
-3. Iterate: edit files, then *Edit → Manage modules → Reload*.
+3. Iterate: edit files, then *Edit → Manage plugins → Reload*.
 4. Publish by hosting the same files on any https origin.
 
 ## Versioning and projects
 
-Projects store `name`, `properties`, reactors and the module's source URL +
-version for every external element. Opening a project with a missing module
-shows which modules are needed and offers installation; elements render again
-once the module is installed and the project is reopened.
+Projects store `name`, `properties`, reactors and the plugin's source URL +
+version for every external element. Opening a project with a missing plugin
+shows which plugins are needed and offers installation; elements render again
+once the plugin is installed and the project is reopened.

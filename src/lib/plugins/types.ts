@@ -1,7 +1,7 @@
-export type ModuleType = 'display' | 'effect';
-export type ModuleRuntime = 'shader' | 'worker';
+export type PluginType = 'display' | 'effect';
+export type PluginRuntime = 'shader' | 'worker';
 
-export interface ModuleFFTConfig {
+export interface PluginFFTConfig {
   bins: number;
   minFrequency: number;
   maxFrequency: number;
@@ -10,23 +10,23 @@ export interface ModuleFFTConfig {
   maxDecibels: number;
 }
 
-export interface ModuleTDConfig {
+export interface PluginTDConfig {
   samples: number;
 }
 
-export interface ModuleAudioConfig {
-  fft?: ModuleFFTConfig;
-  td?: ModuleTDConfig;
+export interface PluginAudioConfig {
+  fft?: PluginFFTConfig;
+  td?: PluginTDConfig;
 }
 
-export type ModuleUniformType = 'float' | 'int' | 'vec2' | 'vec3' | 'vec4' | 'color';
+export type PluginUniformType = 'float' | 'int' | 'vec2' | 'vec3' | 'vec4' | 'color';
 
-export interface ModuleUniformDef {
-  type: ModuleUniformType;
+export interface PluginUniformDef {
+  type: PluginUniformType;
   from: string | string[];
 }
 
-export interface ModuleManifest {
+export interface PluginManifest {
   api: number;
   name: string;
   version: string;
@@ -34,20 +34,20 @@ export interface ModuleManifest {
   description?: string;
   author?: string;
   homepage?: string;
-  type: ModuleType;
-  runtime: ModuleRuntime;
+  type: PluginType;
+  runtime: PluginRuntime;
   entry?: string;
   shader?: string;
   icon?: string;
   permissions: string[];
-  audio?: ModuleAudioConfig;
+  audio?: PluginAudioConfig;
   defaultProperties: Record<string, unknown>;
   controls: Record<string, Record<string, unknown>>;
-  uniforms?: Record<string, ModuleUniformDef>;
+  uniforms?: Record<string, PluginUniformDef>;
 }
 
-export interface InstalledModule {
-  manifest: ModuleManifest;
+export interface InstalledPlugin {
+  manifest: PluginManifest;
   // URL the manifest was installed from.
   sourceUrl: string;
   installedAt: string;
@@ -60,15 +60,15 @@ export interface InstalledModule {
   dev?: boolean;
 }
 
-export interface ModulePackage {
-  manifest: ModuleManifest;
+export interface PluginPackage {
+  manifest: PluginManifest;
   sourceUrl: string;
   files: Record<string, string>;
   integrity: Record<string, string>;
 }
 
-// The frame object handed to worker display modules each rendered frame.
-export interface ModuleFrame {
+// The frame object handed to worker display plugins each rendered frame.
+export interface PluginFrame {
   id: number;
   time: number;
   delta: number;
@@ -84,13 +84,13 @@ export interface ExternalEntityConfig {
   name: string;
   label: string;
   description: string;
-  type: ModuleType;
+  type: PluginType;
   external: true;
   icon?: string;
-  module: {
+  plugin: {
     url: string;
     version: string;
-    runtime: ModuleRuntime;
+    runtime: PluginRuntime;
   };
   defaultProperties: Record<string, unknown>;
   controls: Record<string, Record<string, unknown>>;
