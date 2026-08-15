@@ -315,14 +315,11 @@ export async function loadAudioFile(file: File | string, play?: boolean) {
     logger.timeEnd('audio-file-load', 'Audio file loaded:', name);
 
     const tags = await api.loadAudioTags(file);
+    const artist = typeof tags?.artist === 'string' ? tags.artist.trim() : '';
+    const title = typeof tags?.title === 'string' ? tags.title.trim() : '';
+    const metadataLabel = [artist, title].filter(Boolean).join(' - ');
 
-    if (tags) {
-      const { artist, title } = tags;
-
-      appStore.setState({ statusText: trimChars(`${artist} - ${title}`) });
-    } else {
-      appStore.setState({ statusText: trimChars(name) });
-    }
+    appStore.setState({ statusText: trimChars(metadataLabel || name) });
 
     updateAudioState({
       liveModeEnabled: false,
