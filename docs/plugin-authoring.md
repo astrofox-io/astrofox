@@ -159,10 +159,12 @@ and stops rendering it; the app keeps running.
 
 ## Development workflow
 
-1. Serve your plugin directory locally, e.g. `npx serve --cors .`
-2. In Astrofox: *Add plugin from URL…* →
-   `http://localhost:3000/astrofox.plugin.json`. Localhost installs are
-   flagged **dev** and skip integrity pinning.
+1. From the Astrofox repository, run `pnpm dev:plugins`. This serves every
+   example plugin with CORS enabled on a random available port and prints each
+   manifest URL.
+2. In Astrofox, open *Edit → Manage plugins*, paste one of the printed URLs,
+   then review and install it. Localhost installs are flagged **dev** and skip
+   integrity pinning.
 3. Iterate: edit files, then *Edit → Manage plugins → Reload*.
 4. Publish by hosting the same files on any https origin.
 

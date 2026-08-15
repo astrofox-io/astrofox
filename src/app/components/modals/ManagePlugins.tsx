@@ -125,7 +125,7 @@ export default function ManagePlugins({ initialUrl = '', onClose }: ManagePlugin
             className="h-8 min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-900 px-2 text-sm text-neutral-100 outline-none placeholder:text-neutral-500 focus:border-neutral-500 disabled:opacity-50"
           />
           <Button type="submit" variant="default" size="sm" disabled={!url.trim() || installBusy}>
-            {installBusy && !candidate ? 'Reviewing…' : 'Review'}
+            {installBusy && !candidate ? 'Adding…' : 'Add'}
           </Button>
         </form>
 

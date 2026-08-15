@@ -19,6 +19,7 @@
     "lint": "biome check .",
     "lint-fix": "biome check . --write",
     "dev:desktop": "dotenv -- node ./scripts/dev-electron.mjs",
+    "dev:plugins": "node ./scripts/dev-plugins.mjs",
     "build:renderer": "cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
     "build:desktop": "pnpm build:renderer && electron-builder --publish never",
     "dist:win": "pnpm build:renderer && electron-builder --win --publish never",

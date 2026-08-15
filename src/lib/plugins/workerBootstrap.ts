@@ -10,8 +10,7 @@ export const workerBootstrapSource = `
 
 const instances = new Map();
 let factory = null;
-let readyResolve = null;
-const ready = new Promise(resolve => { readyResolve = resolve; });
+let messageQueue = Promise.resolve();
 
 function post(message, transfer) {
   self.postMessage(message, transfer || []);
@@ -36,11 +35,8 @@ function disableNetwork() {
   try { self.importScripts = denied; } catch {}
 }
 
-self.onmessage = async event => {
-  const msg = event.data || {};
-
-  try {
-    switch (msg.op) {
+async function handleMessage(msg) {
+  switch (msg.op) {
       case 'load': {
         if (!msg.permissions || !msg.permissions.includes('network')) {
           disableNetwork();
@@ -56,14 +52,11 @@ self.onmessage = async event => {
           throw new Error('Plugin entry must default-export a factory function');
         }
 
-        readyResolve();
         post({ op: 'loaded' });
         break;
       }
 
       case 'create': {
-        await ready;
-
         const size = msg.size || {};
         const canvas = new OffscreenCanvas(
           Math.max(1, size.width || 1),
@@ -106,7 +99,7 @@ self.onmessage = async event => {
       case 'frame': {
         const record = instances.get(msg.instanceId);
         if (!record) {
-          break;
+          throw new Error('Plugin instance is not initialized');
         }
 
         let box = null;
@@ -136,9 +129,13 @@ self.onmessage = async event => {
         instances.delete(msg.instanceId);
         break;
       }
-    }
-  } catch (error) {
-    fail(msg.instanceId, error);
   }
+}
+
+self.onmessage = event => {
+  const msg = event.data || {};
+  messageQueue = messageQueue
+    .then(() => handleMessage(msg))
+    .catch(error => fail(msg.instanceId, error));
 };
 `;
