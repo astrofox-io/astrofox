@@ -116,7 +116,8 @@
     "use-midi": "Dùng MIDI",
     "save-image": "Lưu hình ảnh",
     "save-video": "Lưu video",
-    "project-settings": "Cài đặt dự án"
+    "project-settings": "Cài đặt dự án",
+    "manage-modules": "Quản lý mô-đun"
   },
   "add-menu": {
     "add-2d-display": "Thêm hiển thị 2D",

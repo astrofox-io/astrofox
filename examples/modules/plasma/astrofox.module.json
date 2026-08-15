@@ -1,0 +1,61 @@
+{
+  "api": 1,
+  "name": "@astrofox/plasma",
+  "version": "1.0.0",
+  "label": "Plasma",
+  "description": "Audio-reactive plasma background rendered from a fragment shader.",
+  "author": "Astrofox",
+  "type": "display",
+  "runtime": "shader",
+  "shader": "./display.frag",
+  "audio": {
+    "fft": {
+      "bins": 64,
+      "maxFrequency": 4000,
+      "smoothing": 0.5
+    }
+  },
+  "defaultProperties": {
+    "width": 1280,
+    "height": 720,
+    "speed": 1,
+    "scale": 4
+  },
+  "controls": {
+    "width": {
+      "label": "Width",
+      "type": "number",
+      "min": 16,
+      "max": { "$stage": "width" },
+      "withRange": true
+    },
+    "height": {
+      "label": "Height",
+      "type": "number",
+      "min": 16,
+      "max": { "$stage": "height" },
+      "withRange": true
+    },
+    "speed": {
+      "label": "Speed",
+      "type": "number",
+      "min": 0,
+      "max": 10,
+      "step": 0.1,
+      "withRange": true,
+      "withReactor": true
+    },
+    "scale": {
+      "label": "Scale",
+      "type": "number",
+      "min": 1,
+      "max": 20,
+      "step": 0.1,
+      "withRange": true
+    }
+  },
+  "uniforms": {
+    "speed": { "type": "float", "from": "speed" },
+    "scale": { "type": "float", "from": "scale" }
+  }
+}
