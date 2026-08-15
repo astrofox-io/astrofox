@@ -1,6 +1,6 @@
 import { Minus, PanelBottom, PanelLeft, PanelRight, Square, X } from 'lucide-react';
 import Image from 'next/image';
-import { type CSSProperties, useEffect, useState } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useAppStore, {
   handleMenuAction,
@@ -25,6 +25,22 @@ export default function TitleBar() {
     projectName && projectName !== DEFAULT_PROJECT_NAME ? projectName : t('default-project-name');
   const desktop = isDesktopApp();
   const [maximized, setMaximized] = useState(false);
+  const projectTitleRef = useRef<HTMLButtonElement>(null);
+  const allowProjectTitleFocusRef = useRef(false);
+
+  useEffect(() => {
+    const allowKeyboardFocus = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        allowProjectTitleFocusRef.current = true;
+      }
+    };
+
+    window.addEventListener('keydown', allowKeyboardFocus, true);
+
+    return () => {
+      window.removeEventListener('keydown', allowKeyboardFocus, true);
+    };
+  }, []);
 
   useEffect(() => {
     if (!desktop) return;
@@ -44,6 +60,14 @@ export default function TitleBar() {
       unsubscribe = bridge.onWindowStateChanged(state => {
         if (typeof state?.maximized === 'boolean') {
           setMaximized(state.maximized);
+        }
+        if (state?.focused) {
+          window.requestAnimationFrame(() => {
+            const projectTitle = projectTitleRef.current;
+            if (projectTitle && document.activeElement === projectTitle) {
+              projectTitle.blur();
+            }
+          });
         }
       });
     }
@@ -96,9 +120,20 @@ export default function TitleBar() {
           width={32}
         />
         <Button
+          ref={projectTitleRef}
           variant="ghost"
           size="sm"
           className="bg-transparent text-neutral-400 truncate max-w-[32vw] hover:text-neutral-100 hover:bg-neutral-800"
+          onPointerDown={() => {
+            allowProjectTitleFocusRef.current = true;
+          }}
+          onFocus={event => {
+            const allowFocus = allowProjectTitleFocusRef.current;
+            allowProjectTitleFocusRef.current = false;
+            if (!allowFocus) {
+              event.currentTarget.blur();
+            }
+          }}
           onClick={() => handleMenuAction('edit-canvas')}
         >
           {title}
