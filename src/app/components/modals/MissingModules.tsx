@@ -15,7 +15,7 @@ interface MissingModulesProps {
 export default function MissingModules({ missing = [], onClose }: MissingModulesProps) {
   function handleInstall(url: string) {
     onClose?.();
-    showModal('InstallModule', { title: 'Add External Module' }, { initialUrl: url });
+    showModal('ManageModules', { titleKey: 'menu.manage-modules' }, { initialUrl: url });
   }
 
   return (
