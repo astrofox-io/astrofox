@@ -1,5 +1,5 @@
-import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 import { useEffect, useRef, useState } from 'react';
+import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 
 interface DualRangeInputProps {
@@ -40,56 +40,38 @@ export default function DualRangeInput({
     return [start, end];
   }
 
-  function handleValueChange(nextValue: number[]) {
-    const normalized = normalizeRange(nextValue);
+  function handleValueChange(nextValue: number | readonly number[]) {
+    const normalized = normalizeRange([...(nextValue as number[])]);
     buffering.current = true;
     setBufferedValue(normalized);
     onUpdate?.(name, normalized);
   }
 
-  function handleValueCommitted(nextValue: number[]) {
+  function handleValueCommitted(nextValue: number | readonly number[]) {
     buffering.current = false;
-    onChange?.(name, normalizeRange(nextValue));
+    onChange?.(name, normalizeRange([...(nextValue as number[])]));
   }
 
   return (
-    <SliderPrimitive.Root
-      className={cn('relative h-6 w-full group', className)}
+    <Slider
+      className={cn(
+        'relative h-6 w-full group',
+        '[&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:bg-neutral-700',
+        disabled && '[&_[data-slot=slider-range]]:hidden',
+        '[&_[data-slot=slider-thumb]]:size-3.5',
+        '[&_[data-slot=slider-thumb]]:border-border-input [&_[data-slot=slider-thumb]]:bg-neutral-100',
+        '[&_[data-slot=slider-thumb]]:shadow-[0_2px_5px_rgba(0,0,0,0.3)]',
+        '[&_[data-slot=slider-thumb]]:hover:ring-0 [&_[data-slot=slider-thumb]]:focus-visible:ring-0',
+        disabled && '[&_[data-slot=slider-thumb]]:invisible',
+        className,
+      )}
       value={bufferedValue}
       min={min}
       max={max}
       step={step}
       disabled={disabled}
-      onValueChange={nextValue => handleValueChange(nextValue as number[])}
-      onValueCommitted={nextValue => handleValueCommitted(nextValue as number[])}
-    >
-      <SliderPrimitive.Control className="flex h-6 w-full items-center">
-        <SliderPrimitive.Track className="relative h-1.5 w-full rounded bg-neutral-700">
-          <SliderPrimitive.Indicator
-            className={cn('h-full rounded bg-primary', {
-              hidden: disabled,
-            })}
-          />
-        </SliderPrimitive.Track>
-        <SliderPrimitive.Thumb
-          className={cn(
-            'block size-3.5 rounded-full border border-border-input shadow-[0_2px_5px_rgba(0,0,0,0.3)]',
-            'bg-neutral-100',
-            {
-              invisible: disabled,
-            },
-          )}
-        />
-        <SliderPrimitive.Thumb
-          className={cn(
-            'block size-3.5 rounded-full border border-border-input shadow-[0_2px_5px_rgba(0,0,0,0.3)]',
-            'bg-neutral-100',
-            {
-              invisible: disabled,
-            },
-          )}
-        />
-      </SliderPrimitive.Control>
-    </SliderPrimitive.Root>
+      onValueChange={handleValueChange}
+      onValueCommitted={handleValueCommitted}
+    />
   );
 }

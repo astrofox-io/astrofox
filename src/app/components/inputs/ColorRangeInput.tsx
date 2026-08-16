@@ -1,4 +1,5 @@
 import { ColorInput } from '@/app/components/inputs/index';
+import { cn } from '@/lib/utils';
 
 interface ColorRangeInputProps {
   name?: string;
@@ -14,22 +15,22 @@ export default function ColorRangeInput({
   const [startColor, endColor] = value;
 
   return (
-    <div className={'flex flex-row items-center w-full'}>
+    <div className="flex w-full flex-row items-center">
       <ColorInput
         name="startColor"
         value={startColor}
-        onChange={(_n: string, value: string) => onChange?.(name, [value, endColor])}
+        onChange={(_n: string, next: string) => onChange?.(name, [next, endColor])}
       />
       <div
-        className={'flex-1 relative h-4 border border-border-input rounded my-0 mx-2'}
+        className={cn('relative mx-2 my-0 h-4 flex-1 rounded border border-input')}
         style={{
-          backgroundImage: `-webkit-linear-gradient(left, ${startColor}, ${endColor})`,
+          backgroundImage: `linear-gradient(to right, ${startColor}, ${endColor})`,
         }}
       />
       <ColorInput
         name="endColor"
         value={endColor}
-        onChange={(_n: string, value: string) => onChange?.(name, [startColor, value])}
+        onChange={(_n: string, next: string) => onChange?.(name, [startColor, next])}
       />
     </div>
   );

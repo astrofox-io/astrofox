@@ -5,6 +5,7 @@ import { loadScenes } from '@/app/actions/scenes';
 import { PRIMARY_COLOR } from '@/app/constants';
 import { events, reactors } from '@/app/global';
 import { Times } from '@/app/icons';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import CanvasMeter from '@/lib/canvas/CanvasMeter';
 import type Display from '@/lib/core/Display';
@@ -69,12 +70,11 @@ export default function ReactorInput({
   }, []);
 
   return (
-    <div className={'flex flex-row items-center gap-1'}>
-      <button
+    <div className="flex flex-row items-center gap-1">
+      <Button
         type="button"
-        className={
-          'flex h-8 shrink-0 items-center rounded border border-border-input bg-neutral-900 py-0 px-2'
-        }
+        variant="outline"
+        className="h-8 shrink-0 rounded border-border-input bg-neutral-900 px-2 py-0 shadow-none hover:bg-neutral-900"
         onDoubleClick={toggleReactor}
         onKeyDown={event => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -84,23 +84,26 @@ export default function ReactorInput({
         }}
       >
         <canvas ref={canvas} className="canvas" width={width} height={height} />
-      </button>
+      </Button>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger
             render={
-              <Times
-                className={
-                  'ml-1 mr-1.5 inline-flex h-4 w-4 shrink-0 items-center justify-center self-center leading-none text-neutral-300 [&:hover]:text-neutral-100'
-                }
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                className="ml-1 mr-1.5 text-neutral-300 hover:bg-transparent hover:text-neutral-100"
                 onClick={disableReactor}
-              />
+              >
+                <Times className="h-4 w-4" />
+              </Button>
             }
           />
           <TooltipContent
             side="bottom"
             sideOffset={6}
-            className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            className="z-100 rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg"
           >
             {t('disable-reactor')}
           </TooltipContent>

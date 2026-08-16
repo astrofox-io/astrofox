@@ -1,4 +1,5 @@
 import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
 interface CheckboxInputProps {
@@ -16,22 +17,28 @@ export default function CheckboxInput({
   labelPosition = 'right',
   onChange,
 }: CheckboxInputProps) {
+  const id = `checkbox-${name}`;
+
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-2">
+      {label && labelPosition === 'left' && (
+        <Label htmlFor={id} className="order-0 font-normal text-neutral-300">
+          {label}
+        </Label>
+      )}
       <Checkbox
-        className="order-[1] size-4 rounded border-border-input bg-neutral-900 shadow-none data-checked:border-primary data-checked:bg-primary data-checked:text-neutral-100"
+        id={id}
+        className={cn(
+          'order-1 size-4 rounded border-border-input bg-neutral-900 shadow-none',
+          'data-checked:border-primary data-checked:bg-primary data-checked:text-neutral-100',
+        )}
         checked={value}
         onCheckedChange={checked => onChange?.(name, Boolean(checked))}
       />
-      {label && (
-        <div
-          className={cn('inline-block', {
-            'order-[0] mr-2': labelPosition === 'left',
-            'order-[2] ml-2': labelPosition === 'right',
-          })}
-        >
+      {label && labelPosition === 'right' && (
+        <Label htmlFor={id} className="order-2 font-normal text-neutral-300">
           {label}
-        </div>
+        </Label>
       )}
     </div>
   );

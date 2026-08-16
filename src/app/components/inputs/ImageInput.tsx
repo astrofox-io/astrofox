@@ -6,6 +6,7 @@ import { raiseError } from '@/app/actions/error';
 import { BLANK_IMAGE } from '@/app/constants';
 import { api } from '@/app/global';
 import { FolderOpen, Times } from '@/app/icons';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getFileSystemPath } from '@/lib/utils/media';
 import { ignoreEvents } from '@/lib/utils/react';
@@ -55,7 +56,6 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
 
   async function handleDrop(e: React.DragEvent) {
     e.preventDefault();
-
     await loadImageFile(e.dataTransfer.files[0]);
   }
 
@@ -79,10 +79,11 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
+        variant="outline"
         className={
-          'h-24 w-24 bg-neutral-900 border border-border-input rounded relative overflow-hidden [&:hover_.open-icon]:opacity-[1] [&:hover_.open-icon]:scale-100 cursor-pointer'
+          'relative h-24 w-24 overflow-hidden rounded border-border-input bg-neutral-900 p-0 shadow-none hover:bg-neutral-900 [&:hover_.open-icon]:scale-100 [&:hover_.open-icon]:opacity-100'
         }
         onDrop={handleDrop}
         onDragOver={ignoreEvents}
@@ -91,7 +92,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
         {/* biome-ignore lint/performance/noImgElement: User-selected blob and data URLs need a native image element. */}
         <img
           ref={image}
-          className={classNames('absolute top-1/2 -translate-y-1/2 w-full h-auto', {
+          className={classNames('absolute top-1/2 h-auto w-full -translate-y-1/2', {
             hidden: !hasImage,
           })}
           src={value || undefined}
@@ -103,7 +104,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
               render={
                 <FolderOpen
                   className={
-                    'open-icon absolute top-0 left-0 right-0 bottom-0 m-auto scale-50 text-neutral-100 h-4 w-4 opacity-[0] transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]'
+                    'open-icon absolute top-0 right-0 bottom-0 left-0 m-auto h-4 w-4 scale-50 text-neutral-100 opacity-0 transition-[all_0.25s] [filter:drop-shadow(1px_1px_1px_#000)]'
                   }
                 />
               }
@@ -111,30 +112,33 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
             <TooltipContent
               side="bottom"
               sideOffset={6}
-              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+              className="z-100 rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg"
             >
               {t('open-file')}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </button>
+      </Button>
       {hasImage && (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger
               render={
-                <Times
-                  className={classNames({
-                    'text-neutral-300 w-4 h-4 [&:hover]:text-neutral-100': true,
-                  })}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="text-neutral-300 hover:bg-transparent hover:text-neutral-100"
                   onClick={handleDelete}
-                />
+                >
+                  <Times className="h-4 w-4" />
+                </Button>
               }
             />
             <TooltipContent
               side="bottom"
               sideOffset={6}
-              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+              className="z-100 rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg"
             >
               {t('remove-image')}
             </TooltipContent>

@@ -59,8 +59,13 @@ export default function SelectInput({
       }}
     >
       <SelectTrigger
+        size="sm"
         className={cn(
-          'h-auto cursor-default text-sm text-neutral-300 bg-neutral-900 border-border-input rounded py-1 px-2 shadow-none',
+          // Match compact shadcn Input field chrome used by TextInput.
+          'h-8 min-h-8 w-auto cursor-default text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+          'border-border-input shadow-none',
+          'hover:bg-neutral-900 focus-visible:border-primary focus-visible:ring-0',
+          'data-[size=sm]:h-8 data-[size=default]:h-8',
           className,
         )}
         style={{ width }}
@@ -76,7 +81,7 @@ export default function SelectInput({
               : ''}
         </span>
       </SelectTrigger>
-      <SelectContent className={cn('bg-neutral-900 border-neutral-700 rounded shadow-lg p-1')}>
+      <SelectContent className="min-w-(--anchor-width) border-border-input bg-neutral-900 text-neutral-300">
         {parsedItems.map((item: SelectItemData | null, index: number) => {
           if (!item) {
             const previousValue =
@@ -93,7 +98,7 @@ export default function SelectInput({
             <SelectItem
               key={`${name}-${itemValue || index}`}
               value={itemValue}
-              className="text-neutral-300 text-sm py-1 px-2 min-w-36 rounded focus:text-neutral-100 focus:bg-primary"
+              className="min-w-36 text-sm text-neutral-300 focus:bg-primary focus:text-neutral-100"
               style={item.style as React.CSSProperties | undefined}
             >
               {item[displayField] as React.ReactNode}

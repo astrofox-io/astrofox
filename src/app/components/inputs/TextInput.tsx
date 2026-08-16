@@ -1,6 +1,7 @@
-import { clsx as classNames } from 'cnfast';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 interface TextInputProps {
   name?: string;
@@ -55,23 +56,19 @@ export default function TextInput({
   }, [value]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = e.currentTarget;
-
-    setBufferedValue(value);
+    const next = e.currentTarget.value;
+    setBufferedValue(next);
 
     if (!buffered) {
-      onChange?.(name, value);
+      onChange?.(name, next);
     }
   }
 
   function handleKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
     if (buffered) {
-      // Enter key
-      if (e.keyCode === 13) {
+      if (e.key === 'Enter') {
         onChange?.(name, String(bufferedValue));
-      }
-      // Esc key
-      else if (e.keyCode === 27) {
+      } else if (e.key === 'Escape') {
         onChange?.(name, String(value));
       }
     }
@@ -84,14 +81,18 @@ export default function TextInput({
   }
 
   return (
-    <input
+    <Input
       ref={input}
       type="text"
       autoComplete="off"
       autoCorrect="off"
       autoCapitalize="off"
-      className={classNames(
-        'text-sm text-neutral-300 bg-neutral-900 border border-border-input rounded py-1 px-2 [outline:none] [&:focus]:border [&:focus]:border-primary [&:read-only]:border-border-input [&:disabled]:text-neutral-500 [&:disabled]:border-border-input',
+      className={cn(
+        // Compact control-panel field on top of shadcn Input.
+        'h-8 w-auto text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+        'border-border-input shadow-none',
+        'focus-visible:border-primary focus-visible:ring-0',
+        'read-only:border-border-input disabled:text-neutral-500',
         className,
       )}
       style={{ width }}

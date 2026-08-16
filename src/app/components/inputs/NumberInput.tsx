@@ -32,29 +32,23 @@ export default function NumberInput({
   function handleChange(name: string, value: string) {
     const regex = /^(0|-?([0-9]*\.[0-9]+|[1-9]+[0-9]*))$/;
 
-    // If valid number, send new value to parent
     if (regex.test(value)) {
       let newValue = +value;
 
-      // Clamp to min/max
       if (min !== false && max !== false) {
         newValue = clamp(newValue, min, max);
       }
 
-      // Round value to nearest interval
       if (step !== false) {
         newValue = roundTo(newValue, step);
       }
 
-      // Force value to update
       if (newValue !== +value) {
         setKey(key + 1);
       }
 
       onChange?.(name, newValue);
-    }
-    // Reset to old value
-    else {
+    } else {
       setKey(key + 1);
     }
   }

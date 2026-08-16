@@ -1,8 +1,8 @@
-import { clsx as classNames } from 'cnfast';
 import { setActiveReactorId } from '@/app/actions/app';
 import useReactors, { addReactor } from '@/app/actions/reactors';
 import { loadScenes } from '@/app/actions/scenes';
 import { Flash, Plus } from '@/app/icons';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type Display from '@/lib/core/Display';
+import { cn } from '@/lib/utils';
 
 interface ReactorButtonProps {
   display: Display;
@@ -50,28 +51,31 @@ export default function ReactorButton({
     }
   }
 
-  const buttonClasses = classNames(
-    'min-h-5 min-w-5 rounded inline-flex justify-center items-center cursor-default shrink-0 border-0 p-0',
-    reactor
-      ? 'bg-primary text-neutral-100'
-      : 'bg-transparent text-neutral-500 [&:hover]:text-neutral-100',
-  );
-
   return (
-    <div className={classNames('relative', className)}>
+    <div className={cn('relative', className)}>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <button type="button" className={buttonClasses}>
-              <Flash className="w-3.5 h-3.5" />
-            </button>
+            <Button
+              type="button"
+              variant={reactor ? 'default' : 'ghost'}
+              size="icon-xs"
+              className={cn(
+                'min-h-5 min-w-5 shrink-0 border-0 p-0',
+                reactor
+                  ? 'bg-primary text-neutral-100 hover:bg-primary/80'
+                  : 'bg-transparent text-neutral-500 hover:bg-transparent hover:text-neutral-100',
+              )}
+            >
+              <Flash className="h-3.5 w-3.5" />
+            </Button>
           }
         />
         <DropdownMenuContent side="left" align="start" sideOffset={4} className="min-w-40">
           <DropdownMenuRadioGroup value={reactor?.id ?? ''}>
             {reactorList.map(r => (
               <DropdownMenuRadioItem key={r.id} value={r.id} onClick={() => assignReactor(r.id)}>
-                <Flash className="w-3.5 h-3.5 text-neutral-400" />
+                <Flash className="h-3.5 w-3.5 text-neutral-400" />
                 {r.displayName}
               </DropdownMenuRadioItem>
             ))}
@@ -79,7 +83,7 @@ export default function ReactorButton({
           {reactorList.length > 0 && <DropdownMenuSeparator />}
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={createAndAssign}>
-              <Plus className="w-3.5 h-3.5 text-neutral-400" />
+              <Plus className="h-3.5 w-3.5 text-neutral-400" />
               New Reactor
             </DropdownMenuItem>
           </DropdownMenuGroup>

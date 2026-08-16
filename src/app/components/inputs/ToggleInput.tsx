@@ -1,5 +1,5 @@
+import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { cn } from '@/lib/utils';
 
 interface ToggleInputProps {
   name?: string;
@@ -16,22 +16,25 @@ export default function ToggleInput({
   labelPosition = 'right',
   onChange,
 }: ToggleInputProps) {
+  const id = `toggle-${name}`;
+
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-2">
+      {label && labelPosition === 'left' && (
+        <Label htmlFor={id} className="order-0 font-normal text-neutral-300">
+          {label}
+        </Label>
+      )}
       <Switch
-        className="order-[1]"
+        id={id}
+        className="order-1"
         checked={value}
         onCheckedChange={checked => onChange?.(name, Boolean(checked))}
       />
-      {label && (
-        <div
-          className={cn('inline-block shrink-0 whitespace-nowrap', {
-            'order-[0] pr-3': labelPosition === 'left',
-            'order-[2] pl-4': labelPosition === 'right',
-          })}
-        >
+      {label && labelPosition === 'right' && (
+        <Label htmlFor={id} className="order-2 font-normal text-neutral-300">
           {label}
-        </div>
+        </Label>
       )}
     </div>
   );

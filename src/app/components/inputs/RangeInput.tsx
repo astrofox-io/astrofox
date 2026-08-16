@@ -1,5 +1,5 @@
-import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 import { useEffect, useRef, useState } from 'react';
+import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 
 interface RangeInputProps {
@@ -61,8 +61,9 @@ export default function RangeInput({
     return clamped;
   }
 
-  function handleValueChange(newValue: number) {
-    const clamped = clampToLimits(newValue);
+  function handleValueChange(newValue: number | readonly number[]) {
+    const raw = Array.isArray(newValue) ? newValue[0] : (newValue as number);
+    const clamped = clampToLimits(raw);
     if (buffered) {
       buffering.current = true;
       setBufferedValue(clamped);
@@ -72,11 +73,11 @@ export default function RangeInput({
     }
   }
 
-  function handleValueCommitted(newValue: number) {
+  function handleValueCommitted(newValue: number | readonly number[]) {
     buffering.current = false;
     if (buffered) {
-      const clamped = clampToLimits(newValue);
-      onChange?.(name, clamped);
+      const raw = Array.isArray(newValue) ? newValue[0] : (newValue as number);
+      onChange?.(name, clampToLimits(raw));
     }
   }
 
@@ -90,38 +91,32 @@ export default function RangeInput({
   const effectiveHideThumb = hideThumb || sliderDisabled;
 
   return (
-    <SliderPrimitive.Root
-      className={cn('relative h-5 w-full group', className)}
-      value={sliderValue}
+    <Slider
+      className={cn(
+        'relative h-5 w-full group',
+        '[&_[data-slot=slider-track]]:h-1 [&_[data-slot=slider-track]]:bg-neutral-700',
+        effectiveHideFill && '[&_[data-slot=slider-range]]:hidden',
+        fillStyle === 'right' && '[&_[data-slot=slider-range]]:direction-rtl',
+        fillStyle !== 'left' && fillStyle !== 'right' && '[&_[data-slot=slider-range]]:hidden',
+        effectiveHideThumb && '[&_[data-slot=slider-thumb]]:invisible',
+        effectiveHideThumb &&
+          showThumbOnHover &&
+          !sliderDisabled &&
+          'group-hover:[&_[data-slot=slider-thumb]]:visible',
+        smallThumb && '[&_[data-slot=slider-thumb]]:size-2.5',
+        !smallThumb && '[&_[data-slot=slider-thumb]]:size-3.5',
+        '[&_[data-slot=slider-thumb]]:border-border-input [&_[data-slot=slider-thumb]]:bg-neutral-100',
+        '[&_[data-slot=slider-thumb]]:shadow-[0_2px_5px_rgba(0,0,0,0.3)]',
+        '[&_[data-slot=slider-thumb]]:hover:ring-0 [&_[data-slot=slider-thumb]]:focus-visible:ring-0',
+        className,
+      )}
+      value={[sliderValue]}
       min={sliderMin}
       max={sliderMax}
       step={step}
       disabled={sliderDisabled}
-      onValueChange={val => handleValueChange(val as number)}
-      onValueCommitted={val => handleValueCommitted(val as number)}
-    >
-      <SliderPrimitive.Control className="flex w-full items-center h-5">
-        <SliderPrimitive.Track className="relative h-1 w-full rounded bg-neutral-700">
-          {!effectiveHideFill && (
-            <SliderPrimitive.Indicator
-              className={cn('h-full rounded bg-primary', {
-                'direction-rtl': fillStyle === 'right',
-                hidden: fillStyle !== 'left' && fillStyle !== 'right',
-              })}
-            />
-          )}
-        </SliderPrimitive.Track>
-        <SliderPrimitive.Thumb
-          className={cn(
-            'block rounded-full bg-neutral-100 border border-border-input shadow-[0_2px_5px_rgba(0,0,0,0.3)]',
-            smallThumb ? 'size-2.5' : 'size-3.5',
-            {
-              invisible: effectiveHideThumb,
-              'group-hover:visible': effectiveHideThumb && showThumbOnHover && !sliderDisabled,
-            },
-          )}
-        />
-      </SliderPrimitive.Control>
-    </SliderPrimitive.Root>
+      onValueChange={handleValueChange}
+      onValueCommitted={handleValueCommitted}
+    />
   );
 }

@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useRef } from 'react';
 import useMouseDrag from '@/app/hooks/useMouseDrag';
+import { Button } from '@/components/ui/button';
 import { clamp } from '@/lib/utils/math';
 
 interface BoxValue {
@@ -48,30 +49,30 @@ export default function BoxInput({
       startValues.current!;
     const deltaX = e.pageX - startX;
     const deltaY = e.pageY - startY;
-    const value: BoxValue = { x, y, width, height };
+    const next: BoxValue = { x, y, width, height };
 
     switch (position) {
       case 'top':
-        value.y = clamp(startTop + deltaY, 0, startTop + startHeight - minHeight);
-        value.height = clamp(startHeight - deltaY, minHeight, startTop + startHeight);
+        next.y = clamp(startTop + deltaY, 0, startTop + startHeight - minHeight);
+        next.height = clamp(startHeight - deltaY, minHeight, startTop + startHeight);
         break;
       case 'right':
-        value.width = clamp(startWidth + deltaX, minWidth, maxWidth - startLeft);
+        next.width = clamp(startWidth + deltaX, minWidth, maxWidth - startLeft);
         break;
       case 'bottom':
-        value.height = clamp(startHeight + deltaY, minHeight, maxHeight - startTop);
+        next.height = clamp(startHeight + deltaY, minHeight, maxHeight - startTop);
         break;
       case 'left':
-        value.x = clamp(startLeft + deltaX, 0, startLeft + startWidth - minWidth);
-        value.width = clamp(startWidth - deltaX, minWidth, startLeft + startWidth);
+        next.x = clamp(startLeft + deltaX, 0, startLeft + startWidth - minWidth);
+        next.width = clamp(startWidth - deltaX, minWidth, startLeft + startWidth);
         break;
       case 'center':
-        value.x = clamp(startLeft + deltaX, 0, maxWidth - startWidth);
-        value.y = clamp(startTop + deltaY, 0, maxHeight - startHeight);
+        next.x = clamp(startLeft + deltaX, 0, maxWidth - startWidth);
+        next.y = clamp(startTop + deltaY, 0, maxHeight - startHeight);
         break;
     }
 
-    onChange?.(name, value);
+    onChange?.(name, next);
   }
 
   const handleDragStart = (position: string) => (e: React.MouseEvent) => {
@@ -91,7 +92,7 @@ export default function BoxInput({
 
   return (
     <div
-      className={'absolute top-0 left-0 border border-primary'}
+      className="absolute top-0 left-0 border border-primary"
       style={{
         width,
         height,
@@ -99,34 +100,39 @@ export default function BoxInput({
         left: x,
       }}
     >
-      <button
+      <Button
         type="button"
+        variant="ghost"
         aria-label="Move selection"
-        className={'absolute cursor-move w-full h-full'}
+        className="absolute h-full w-full cursor-move rounded-none border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
         onMouseDown={handleDragStart('center')}
       />
-      <button
+      <Button
         type="button"
+        variant="ghost"
         aria-label="Resize selection from top"
-        className={'absolute cursor-ns-resize w-full h-2.5 -top-1'}
+        className="absolute -top-1 h-2.5 w-full cursor-ns-resize rounded-none border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
         onMouseDown={handleDragStart('top')}
       />
-      <button
+      <Button
         type="button"
+        variant="ghost"
         aria-label="Resize selection from right"
-        className={'absolute cursor-ew-resize w-2.5 h-full -right-1'}
+        className="absolute -right-1 h-full w-2.5 cursor-ew-resize rounded-none border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
         onMouseDown={handleDragStart('right')}
       />
-      <button
+      <Button
         type="button"
+        variant="ghost"
         aria-label="Resize selection from bottom"
-        className={'absolute cursor-ns-resize w-full h-2.5 -bottom-1'}
+        className="absolute -bottom-1 h-2.5 w-full cursor-ns-resize rounded-none border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
         onMouseDown={handleDragStart('bottom')}
       />
-      <button
+      <Button
         type="button"
+        variant="ghost"
         aria-label="Resize selection from left"
-        className={'absolute cursor-ew-resize w-2.5 h-full -left-1'}
+        className="absolute -left-1 h-full w-2.5 cursor-ew-resize rounded-none border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
         onMouseDown={handleDragStart('left')}
       />
     </div>

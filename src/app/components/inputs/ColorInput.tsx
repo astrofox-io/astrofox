@@ -1,3 +1,6 @@
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+
 interface ColorInputProps {
   name?: string;
   value?: string;
@@ -11,15 +14,18 @@ export default function ColorInput({
 }: ColorInputProps) {
   return (
     <div
-      className={
-        'flex items-center justify-center w-6 h-6 rounded-full border border-border-input bg-neutral-900'
-      }
+      className={cn(
+        'flex size-6 items-center justify-center rounded-full border border-input bg-neutral-900 shadow-xs',
+      )}
     >
-      <input
+      <Input
         type="color"
-        className={
-          'w-4 h-4 rounded-full border-0 [&::-webkit-color-swatch-wrapper]:hidden [&::-webkit-color-swatch]:hidden'
-        }
+        className={cn(
+          'size-4 min-w-0 rounded-full border-0 bg-transparent p-0 shadow-none',
+          'focus-visible:border-0 focus-visible:ring-0',
+          '[&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full [&::-webkit-color-swatch]:border-0',
+          '[&::-moz-color-swatch]:rounded-full [&::-moz-color-swatch]:border-0',
+        )}
         name={name}
         value={value}
         style={{ backgroundColor: value }}

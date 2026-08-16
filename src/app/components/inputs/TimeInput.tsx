@@ -32,7 +32,6 @@ export default function TimeInput({
     let time = parseSeekTime(value);
 
     if (time !== null) {
-      // Clamp to min/max
       if (min !== undefined && max !== undefined) {
         if (time < min || time > max) {
           setKey(key + 1);
@@ -41,9 +40,7 @@ export default function TimeInput({
       }
 
       onChange?.(name, time);
-    }
-    // Reset to previous value
-    else {
+    } else {
       setKey(key + 1);
     }
   }
