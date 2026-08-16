@@ -89,7 +89,7 @@ export default function TextInput({
       autoCapitalize="off"
       className={cn(
         // Compact field. Use shadcn border token (#404040) — softer than border-input, still visible.
-        'h-8 w-auto text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+        'h-8 w-auto px-2 text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
         'border-border shadow-none',
         'focus-visible:border-ring focus-visible:ring-0',
         'disabled:text-neutral-500',

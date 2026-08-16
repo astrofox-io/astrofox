@@ -83,7 +83,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
         type="button"
         variant="outline"
         className={
-          'relative h-24 w-24 overflow-hidden rounded border-border-input bg-neutral-900 p-0 shadow-none hover:bg-neutral-900 [&:hover_.open-icon]:scale-100 [&:hover_.open-icon]:opacity-100'
+          'relative h-24 w-24 overflow-hidden rounded border-border bg-neutral-900 p-0 shadow-none hover:bg-neutral-900 [&:hover_.open-icon]:scale-100 [&:hover_.open-icon]:opacity-100'
         }
         onDrop={handleDrop}
         onDragOver={ignoreEvents}
