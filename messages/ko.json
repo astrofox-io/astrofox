@@ -200,7 +200,8 @@
     "export-rendering-video": "동영상 렌더링 중 {{current}} / {{total}}",
     "export-rendering-audio": "오디오 인코딩 중…",
     "export-merging": "오디오와 동영상 병합 중…",
-    "export-finished": "동영상 내보내기 완료"
+    "export-finished": "동영상 내보내기 완료",
+    "video-saved": "동영상 저장됨: {{name}}"
   },
   "errors": {
     "title": "오류",

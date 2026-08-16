@@ -200,7 +200,8 @@
     "export-rendering-video": "正在渲染视频 {{current}} / {{total}}",
     "export-rendering-audio": "正在编码音频…",
     "export-merging": "正在合并音视频…",
-    "export-finished": "视频导出完成"
+    "export-finished": "视频导出完成",
+    "video-saved": "视频已保存：{{name}}"
   },
   "errors": {
     "title": "错误",

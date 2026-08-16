@@ -200,7 +200,8 @@
     "export-rendering-video": "Video wird gerendert {{current}} / {{total}}",
     "export-rendering-audio": "Audio wird kodiert…",
     "export-merging": "Audio und Video werden zusammengeführt…",
-    "export-finished": "Videoexport abgeschlossen"
+    "export-finished": "Videoexport abgeschlossen",
+    "video-saved": "Video gespeichert: {{name}}"
   },
   "errors": {
     "title": "Fehler",

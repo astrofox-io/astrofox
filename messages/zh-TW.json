@@ -200,7 +200,8 @@
     "export-rendering-video": "正在渲染影片 {{current}} / {{total}}",
     "export-rendering-audio": "正在編碼音訊…",
     "export-merging": "正在合併音訊與影片…",
-    "export-finished": "影片匯出完成"
+    "export-finished": "影片匯出完成",
+    "video-saved": "影片已儲存：{{name}}"
   },
   "errors": {
     "title": "錯誤",

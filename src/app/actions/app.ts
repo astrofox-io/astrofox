@@ -19,6 +19,7 @@ import { t } from '@/i18n/config';
 import * as displays from '@/lib/displays';
 import * as effects from '@/lib/effects';
 import { loadInstalledPlugins } from '@/lib/plugins';
+import { finalizeWebm } from '@/lib/utils/webm';
 import VideoExporter from '@/lib/video/VideoExporter';
 
 export interface VideoExportSegment {
@@ -415,6 +416,20 @@ export function clearVideoExportSegment() {
   appStore.setState({ videoExportSegment: null });
 }
 
+const TRANSIENT_STATUS_MS = 6000;
+
+/** Show a status bar message briefly, then restore whatever was there before. */
+function showTransientStatus(message: string) {
+  const previous = appStore.getState().statusText;
+  appStore.setState({ statusText: message });
+
+  window.setTimeout(() => {
+    if (appStore.getState().statusText === message) {
+      appStore.setState({ statusText: previous });
+    }
+  }, TRANSIENT_STATUS_MS);
+}
+
 function isAbsoluteOutputPath(value: string) {
   return /^[a-zA-Z]:[\\/]/.test(value) || value.startsWith('\\\\') || value.startsWith('/');
 }
@@ -631,6 +646,7 @@ export async function startVideoRecording({
     const fileName = targetPath;
     let stopTimer: number | null = null;
     let recordingFailed = false;
+    let recordingStartedAt = 0;
 
     const onPlayerStop = () => {
       if (recorder.state === 'recording') {
@@ -682,6 +698,10 @@ export async function startVideoRecording({
       raiseError(t('errors.record-video-failed'), event?.error || event);
     };
 
+    recorder.onstart = () => {
+      recordingStartedAt = performance.now();
+    };
+
     recorder.onstop = async () => {
       if (recordingFailed) {
         cleanup();
@@ -689,7 +709,11 @@ export async function startVideoRecording({
       }
 
       try {
-        const blob = new Blob(chunks, { type: setup.mimeType });
+        const elapsedMs = recordingStartedAt ? performance.now() - recordingStartedAt : durationMs;
+        // MediaRecorder leaves WebM files "unfinished" (no duration, unknown
+        // segment/cluster sizes). Browsers tolerate that, but many desktop
+        // players show black video with no audio until the container is fixed.
+        const blob = await finalizeWebm(new Blob(chunks, { type: setup.mimeType }), elapsedMs);
 
         await api.saveVideoFile(fileHandle || targetPath || fileName, blob, {
           mimeType: setup.mimeType,
@@ -697,6 +721,7 @@ export async function startVideoRecording({
         });
 
         logger.log('Video saved:', fileName);
+        showTransientStatus(t('status.video-saved', { name: fileName.split(/[\\/]/).pop() }));
       } catch (error) {
         raiseError(t('errors.save-video-file-failed'), error);
       } finally {

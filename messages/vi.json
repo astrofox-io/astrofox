@@ -200,7 +200,8 @@
     "export-rendering-video": "Đang render video {{current}} / {{total}}",
     "export-rendering-audio": "Đang mã hóa âm thanh…",
     "export-merging": "Đang ghép âm thanh và video…",
-    "export-finished": "Xuất video hoàn tất"
+    "export-finished": "Xuất video hoàn tất",
+    "video-saved": "Đã lưu video: {{name}}"
   },
   "errors": {
     "title": "Lỗi",

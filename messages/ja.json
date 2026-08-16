@@ -200,7 +200,8 @@
     "export-rendering-video": "動画をレンダリング中 {{current}} / {{total}}",
     "export-rendering-audio": "音声をエンコード中…",
     "export-merging": "音声と動画を結合中…",
-    "export-finished": "動画の書き出しが完了しました"
+    "export-finished": "動画の書き出しが完了しました",
+    "video-saved": "動画を保存しました: {{name}}"
   },
   "errors": {
     "title": "エラー",

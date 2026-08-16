@@ -275,8 +275,15 @@ async function saveBlob(target: FileHandle | string | null, blob: Blob, fallback
   const link = document.createElement('a');
   link.href = url;
   link.download = filename.split(/[\\/]/).pop() || filename;
+  link.style.display = 'none';
+  document.body.appendChild(link);
   link.click();
-  URL.revokeObjectURL(url);
+  link.remove();
+
+  // Firefox and Safari may not start a download from a detached anchor, and
+  // revoking the object URL in the same task can cancel the navigation before
+  // the browser has consumed it. Release it after the download has started.
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }
 
 export function getEnvironment() {
