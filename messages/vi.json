@@ -78,6 +78,7 @@
     "audio-source": "Nguồn âm thanh",
     "no-audio-selected": "Chưa chọn tệp âm thanh",
     "save-location": "Vị trí lưu",
+    "save-location-browser-prompt": "Trình duyệt sẽ hỏi nơi lưu video khi quá trình xuất hoàn tất.",
     "no-video-selected": "Chưa chọn tệp video",
     "time-duration": "Khoảng thời gian",
     "start": "Bắt đầu",

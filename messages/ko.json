@@ -78,6 +78,7 @@
     "audio-source": "오디오 소스",
     "no-audio-selected": "선택된 오디오 파일 없음",
     "save-location": "저장 위치",
+    "save-location-browser-prompt": "내보내기가 완료되면 브라우저가 동영상을 저장할 위치를 묻습니다.",
     "no-video-selected": "선택된 비디오 파일 없음",
     "time-duration": "시간 길이",
     "start": "시작",

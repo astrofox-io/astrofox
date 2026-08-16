@@ -78,6 +78,7 @@
     "audio-source": "音訊來源",
     "no-audio-selected": "未選擇音訊檔案",
     "save-location": "儲存位置",
+    "save-location-browser-prompt": "匯出完成後，瀏覽器會詢問影片的儲存位置。",
     "no-video-selected": "未選擇影片檔案",
     "time-duration": "時間範圍",
     "start": "開始",

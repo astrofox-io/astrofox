@@ -78,6 +78,7 @@
     "audio-source": "音频源",
     "no-audio-selected": "未选择音频文件",
     "save-location": "保存位置",
+    "save-location-browser-prompt": "导出完成后，浏览器会询问视频的保存位置。",
     "no-video-selected": "未选择视频文件",
     "time-duration": "时间范围",
     "start": "开始",

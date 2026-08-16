@@ -290,6 +290,11 @@ async function resolveAudioPathForFfmpeg(
   return { path: filePath, cleanupPaths: [filePath] };
 }
 
+/** False when the browser will prompt for the location itself at the end of the export. */
+export function canChooseVideoSaveLocation() {
+  return api.canPickSaveLocation({ preferNativePath: isFfmpegAvailable() });
+}
+
 export async function chooseVideoSaveLocation(
   preferredPath?: string,
   extension = 'webm',

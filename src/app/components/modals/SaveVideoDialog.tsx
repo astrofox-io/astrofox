@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  canChooseVideoSaveLocation,
   chooseVideoSaveLocation,
   clearVideoExportSegment,
   type FileHandleLike,
@@ -73,7 +74,10 @@ export default function SaveVideoDialog({
   const [isChoosingAudio, setIsChoosingAudio] = useState(false);
   const keepSegmentOverlayRef = useRef(false);
   const hasSelectedAudio = Boolean(audioFileName);
-  const hasSaveLocation = Boolean(filePath || fileHandle?.name);
+  // Browsers without File System Access (Firefox, Safari) prompt for the
+  // location when the download starts, so there is nothing to choose up front.
+  const [canChooseLocation] = useState(() => canChooseVideoSaveLocation());
+  const hasSaveLocation = !canChooseLocation || Boolean(filePath || fileHandle?.name);
   const effectiveMinExportDuration = Math.min(MIN_EXPORT_DURATION, Math.max(totalDuration, 0));
   const hasValidDuration = totalDuration >= MIN_EXPORT_DURATION;
   const hasValidTimeRange =
@@ -195,7 +199,7 @@ export default function SaveVideoDialog({
       return;
     }
 
-    if (!filePath && !fileHandle?.name) {
+    if (canChooseLocation && !filePath && !fileHandle?.name) {
       setValidationMessage(t('validation-no-location'));
       return;
     }
@@ -268,26 +272,33 @@ export default function SaveVideoDialog({
           />
         </section>
 
-        <section className="space-y-2">
-          <div className="flex items-center justify-between gap-3">
+        {canChooseLocation ? (
+          <section className="space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-sm font-medium text-neutral-100">{t('save-location')}</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={isSubmitting || isChoosingLocation}
+                onClick={handleChooseLocation}
+              >
+                {isChoosingLocation ? tc('choosing') : tc('choose')}
+              </Button>
+            </div>
+            <input
+              type="text"
+              readOnly
+              value={filePath}
+              placeholder={t('no-video-selected')}
+              className="w-full rounded border border-border-input bg-neutral-900 px-3 py-2 font-mono text-xs text-neutral-300 outline-none"
+            />
+          </section>
+        ) : (
+          <section className="space-y-2">
             <h3 className="text-sm font-medium text-neutral-100">{t('save-location')}</h3>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={isSubmitting || isChoosingLocation}
-              onClick={handleChooseLocation}
-            >
-              {isChoosingLocation ? tc('choosing') : tc('choose')}
-            </Button>
-          </div>
-          <input
-            type="text"
-            readOnly
-            value={filePath}
-            placeholder={t('no-video-selected')}
-            className="w-full rounded border border-border-input bg-neutral-900 px-3 py-2 font-mono text-xs text-neutral-300 outline-none"
-          />
-        </section>
+            <p className="text-xs text-neutral-400">{t('save-location-browser-prompt')}</p>
+          </section>
+        )}
 
         <section className="space-y-3">
           <h3 className="text-sm font-medium text-neutral-100">{t('time-duration')}</h3>

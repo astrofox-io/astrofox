@@ -78,6 +78,7 @@
     "audio-source": "Audioquelle",
     "no-audio-selected": "Keine Audiodatei ausgewählt",
     "save-location": "Speicherort",
+    "save-location-browser-prompt": "Ihr Browser fragt nach dem Speicherort, sobald der Export abgeschlossen ist.",
     "no-video-selected": "Keine Videodatei ausgewählt",
     "time-duration": "Zeitdauer",
     "start": "Start",

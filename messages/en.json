@@ -80,6 +80,7 @@
     "audio-source": "Audio source",
     "no-audio-selected": "No audio file selected",
     "save-location": "Save location",
+    "save-location-browser-prompt": "Your browser will ask where to save the video when the export finishes.",
     "no-video-selected": "No video file selected",
     "time-duration": "Time duration",
     "start": "Start",

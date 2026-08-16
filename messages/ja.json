@@ -78,6 +78,7 @@
     "audio-source": "音声ソース",
     "no-audio-selected": "音声ファイルが選択されていません",
     "save-location": "保存先",
+    "save-location-browser-prompt": "書き出しが完了すると、ブラウザーが動画の保存先を確認します。",
     "no-video-selected": "動画ファイルが選択されていません",
     "time-duration": "再生時間",
     "start": "開始",

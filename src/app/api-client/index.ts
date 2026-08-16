@@ -356,6 +356,19 @@ export async function showOpenDialog(props: OpenDialogProps = {}): Promise<OpenD
   return showWebOpenDialog(props);
 }
 
+/**
+ * Whether `showSaveDialog` can let the user pick a destination up front. When
+ * false (e.g. Firefox/Safari without File System Access), the browser decides
+ * the location itself when the download is triggered.
+ */
+export function canPickSaveLocation(props: Pick<SaveDialogProps, 'preferNativePath'> = {}) {
+  if (props.preferNativePath && getDesktopBridge()?.showSaveDialog) {
+    return true;
+  }
+
+  return typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function';
+}
+
 export async function showSaveDialog(props: SaveDialogProps = {}): Promise<SaveDialogResult> {
   if (props.preferNativePath) {
     const desktop = getDesktopBridge();
