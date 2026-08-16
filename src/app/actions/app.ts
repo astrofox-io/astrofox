@@ -293,9 +293,11 @@ export async function chooseVideoSaveLocation(
 ): Promise<VideoSaveLocationResult> {
   const defaultPath = preferredPath || `video-${Date.now()}.${extension}`;
   const filters = [{ name: extension.toUpperCase(), extensions: [extension] }];
+  // FFmpeg needs a real filesystem path; MediaRecorder uses File System Access / download.
   const { fileHandle, filePath, canceled } = await api.showSaveDialog({
     defaultPath,
     filters,
+    preferNativePath: isFfmpegAvailable(),
   });
 
   if (canceled) {
@@ -316,6 +318,7 @@ export async function chooseVideoSaveLocation(
 }
 
 export async function saveImage() {
+  // Same web File System Access path as the browser build (no native dialog).
   const { fileHandle, filePath, canceled } = await api.showSaveDialog({
     defaultPath: `image-${Date.now()}.png`,
     filters: [
@@ -330,12 +333,12 @@ export async function saveImage() {
 
       renderBackend.render(data);
 
-      const fileName = filePath || fileHandle?.name || `image-${Date.now()}.png`;
+      const fileName = fileHandle?.name || filePath || `image-${Date.now()}.png`;
       const isJpeg = /jpe?g$/i.test(fileName);
       const mimeType = isJpeg ? 'image/jpeg' : 'image/png';
       const buffer = renderBackend.getImage(mimeType);
 
-      await api.saveImageFile(fileHandle || fileName, buffer, {
+      await api.saveImageFile(fileHandle || filePath || fileName, buffer, {
         mimeType,
         fileName,
       });
@@ -410,6 +413,10 @@ export function clearVideoExportSegment() {
   appStore.setState({ videoExportSegment: null });
 }
 
+function isAbsoluteOutputPath(value: string) {
+  return /^[a-zA-Z]:[\\/]/.test(value) || value.startsWith('\\\\') || value.startsWith('/');
+}
+
 async function startFfmpegVideoExport({
   filePath,
   defaultPath,
@@ -422,8 +429,8 @@ async function startFfmpegVideoExport({
   const bridge = getDesktopBridge();
   const outputPath = filePath || defaultPath || '';
 
-  // Native save dialog should always provide an absolute filesystem path.
-  if (!outputPath || !/[\\/]/.test(outputPath)) {
+  // preferNativePath save dialog must yield an absolute filesystem path for ffmpeg.
+  if (!outputPath || !isAbsoluteOutputPath(outputPath)) {
     raiseError(t('errors.ffmpeg-output-path-required'));
     return false;
   }
@@ -682,7 +689,7 @@ export async function startVideoRecording({
       try {
         const blob = new Blob(chunks, { type: setup.mimeType });
 
-        await api.saveVideoFile(fileHandle || fileName, blob, {
+        await api.saveVideoFile(fileHandle || targetPath || fileName, blob, {
           mimeType: setup.mimeType,
           fileName,
         });

@@ -251,7 +251,8 @@
     "gzip-decompress-unsupported": "Trình duyệt này không hỗ trợ giải nén gzip.",
     "ffmpeg-export-failed": "Xuất video FFmpeg thất bại.",
     "ffmpeg-output-path-required": "Chọn vị trí lưu trên đĩa để xuất video trên desktop.",
-    "ffmpeg-temp-audio-failed": "Không thể chuẩn bị âm thanh để xuất."
+    "ffmpeg-temp-audio-failed": "Không thể chuẩn bị âm thanh để xuất.",
+    "native-file-dialog-unavailable": "Hộp thoại tệp gốc không khả dụng."
   },
   "labels": {
     "2d-displays": "Hiển thị 2D",

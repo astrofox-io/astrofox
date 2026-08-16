@@ -251,7 +251,8 @@
     "gzip-decompress-unsupported": "La descompresión gzip no es compatible con este navegador.",
     "ffmpeg-export-failed": "Falló la exportación de video con FFmpeg.",
     "ffmpeg-output-path-required": "Elige una ubicación en disco para exportar video en escritorio.",
-    "ffmpeg-temp-audio-failed": "No se pudo preparar el audio para la exportación."
+    "ffmpeg-temp-audio-failed": "No se pudo preparar el audio para la exportación.",
+    "native-file-dialog-unavailable": "El diálogo nativo de archivos no está disponible."
   },
   "labels": {
     "2d-displays": "Visualizaciones 2D",

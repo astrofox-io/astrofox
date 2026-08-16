@@ -3,6 +3,12 @@ interface MediaBounds {
   height: number;
 }
 
+interface FileWithOptionalPath {
+  path?: string;
+  filePath?: string;
+  fullPath?: string;
+}
+
 const LOCAL_MEDIA_PROTOCOL = 'astrofox-media:';
 
 export function isLocalMediaUrl(source: unknown): source is string {
@@ -30,6 +36,38 @@ export function localMediaUrlToPath(source: string): string {
   } catch {
     return '';
   }
+}
+
+/**
+ * Best-effort filesystem path on a File (Electron native open, or legacy drag-drop).
+ * Web File System Access pickers never provide a path.
+ */
+export function getFileSystemPath(file: FileWithOptionalPath | File | null | undefined): string {
+  if (!file || typeof file !== 'object') {
+    return '';
+  }
+
+  const withPath = file as FileWithOptionalPath;
+  for (const key of ['path', 'filePath', 'fullPath'] as const) {
+    const value = withPath[key];
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Playable URL for a video File: stream via desktop media protocol when a real
+ * path is known; otherwise a blob: URL (same on web and desktop).
+ */
+export function resolveVideoSourceUrl(file: File, knownPath?: string): string {
+  const sourcePath = (knownPath || getFileSystemPath(file)).trim();
+  if (sourcePath) {
+    return toLocalMediaUrl(sourcePath);
+  }
+  return URL.createObjectURL(file);
 }
 
 export function fitMediaWithinBounds(

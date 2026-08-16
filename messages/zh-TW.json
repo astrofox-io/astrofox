@@ -251,7 +251,8 @@
     "gzip-decompress-unsupported": "此瀏覽器不支援 Gzip 解壓。",
     "ffmpeg-export-failed": "FFmpeg 影片匯出失敗。",
     "ffmpeg-output-path-required": "桌面匯出請選擇磁碟上的儲存位置。",
-    "ffmpeg-temp-audio-failed": "無法準備用於匯出的音訊。"
+    "ffmpeg-temp-audio-failed": "無法準備用於匯出的音訊。",
+    "native-file-dialog-unavailable": "原生檔案對話方塊無法使用。"
   },
   "labels": {
     "2d-displays": "2D 顯示",

@@ -251,7 +251,8 @@
     "gzip-decompress-unsupported": "このブラウザでは Gzip 展開がサポートされていません。",
     "ffmpeg-export-failed": "FFmpeg による動画の書き出しに失敗しました。",
     "ffmpeg-output-path-required": "デスクトップ書き出しでは保存先を選択してください。",
-    "ffmpeg-temp-audio-failed": "書き出し用オーディオの準備に失敗しました。"
+    "ffmpeg-temp-audio-failed": "書き出し用オーディオの準備に失敗しました。",
+    "native-file-dialog-unavailable": "ネイティブのファイルダイアログは利用できません。"
   },
   "labels": {
     "2d-displays": "2Dディスプレイ",

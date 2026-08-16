@@ -297,8 +297,8 @@ function isAllowedNavigation(url) {
 }
 
 // Only grant the capabilities the app actually uses (audio input, screen/system
-// audio capture, MIDI); everything else is denied so content running in the
-// renderer cannot silently acquire it.
+// audio capture, MIDI, File System Access pickers); everything else is denied so
+// content running in the renderer cannot silently acquire it.
 const ALLOWED_PERMISSIONS = new Set([
   'media',
   'audioCapture',
@@ -307,11 +307,18 @@ const ALLOWED_PERMISSIONS = new Set([
   'midiSysex',
   'clipboard-sanitized-write',
   'fullscreen',
+  // Chromium File System Access API (showOpenFilePicker / showSaveFilePicker).
+  'fileSystem',
 ]);
 
 function hardenSession() {
   session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
     callback(ALLOWED_PERMISSIONS.has(permission));
+  });
+
+  // Permission checks (sync) must also allow fileSystem or pickers stay blocked.
+  session.defaultSession.setPermissionCheckHandler((_webContents, permission) => {
+    return ALLOWED_PERMISSIONS.has(permission);
   });
 }
 

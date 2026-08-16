@@ -251,7 +251,8 @@
     "gzip-decompress-unsupported": "이 브라우저에서는 Gzip 압축 해제가 지원되지 않습니다.",
     "ffmpeg-export-failed": "FFmpeg 동영상보내기에 실패했습니다.",
     "ffmpeg-output-path-required": "데스크톱 동영상 내보내기를 위해 저장 위치를 선택하세요.",
-    "ffmpeg-temp-audio-failed": "내보내기용 오디오를 준비하지 못했습니다."
+    "ffmpeg-temp-audio-failed": "내보내기용 오디오를 준비하지 못했습니다.",
+    "native-file-dialog-unavailable": "네이티브 파일 대화 상자를 사용할 수 없습니다."
   },
   "labels": {
     "2d-displays": "2D 디스플레이",

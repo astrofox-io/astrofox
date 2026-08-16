@@ -7,34 +7,8 @@ import { BLANK_IMAGE } from '@/app/constants';
 import { api } from '@/app/global';
 import { FolderOpen, Times } from '@/app/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { toLocalMediaUrl } from '@/lib/utils/media';
+import { getFileSystemPath, resolveVideoSourceUrl } from '@/lib/utils/media';
 import { ignoreEvents } from '@/lib/utils/react';
-
-interface FileWithPath {
-  path?: string;
-  filePath?: string;
-  fullPath?: string;
-}
-
-function getFilePath(file: FileWithPath | null) {
-  if (!file || typeof file !== 'object') {
-    return '';
-  }
-
-  if (typeof file.path === 'string' && file.path.trim()) {
-    return file.path.trim();
-  }
-
-  if (typeof file.filePath === 'string' && file.filePath.trim()) {
-    return file.filePath.trim();
-  }
-
-  if (typeof file.fullPath === 'string' && file.fullPath.trim()) {
-    return file.fullPath.trim();
-  }
-
-  return '';
-}
 
 interface VideoInputProps {
   name: string;
@@ -80,11 +54,9 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
 
   async function loadVideoFile(file: File) {
     try {
-      const sourcePath = getFilePath(file as unknown as FileWithPath);
-      const src = sourcePath ? toLocalMediaUrl(sourcePath) : await api.readVideoFile(file);
-      if (typeof src !== 'string') {
-        throw new Error('The selected video could not be decoded');
-      }
+      // Blob URL on web and desktop; media-protocol stream only when a real path exists.
+      const sourcePath = getFileSystemPath(file);
+      const src = resolveVideoSourceUrl(file, sourcePath);
       const loadedVideo = await loadVideoMetadata(src);
 
       loadVideoSrc(src);

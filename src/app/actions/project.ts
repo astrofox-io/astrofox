@@ -18,7 +18,13 @@ import Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
 import Stage from '@/lib/core/Stage';
 import { resetLabelCount } from '@/lib/utils/controls';
-import { isLocalMediaUrl, localMediaUrlToPath, toLocalMediaUrl } from '@/lib/utils/media';
+import {
+  getFileSystemPath,
+  isLocalMediaUrl,
+  localMediaUrlToPath,
+  resolveVideoSourceUrl,
+  toLocalMediaUrl,
+} from '@/lib/utils/media';
 
 export const DEFAULT_PROJECT_NAME = 'Untitled Project';
 
@@ -36,12 +42,6 @@ interface ProjectState {
   opened: number;
   lastModified: number;
   unresolvedMediaRefs: MediaRef[];
-}
-
-interface FileLikeWithPath extends File {
-  path?: string;
-  filePath?: string;
-  fullPath?: string;
 }
 
 interface ElementSnapshot extends Record<string, unknown> {
@@ -264,19 +264,6 @@ function getMediaSourcePath(src: unknown): string {
   }
 
   return '';
-}
-
-function getFilePath(file: FileLikeWithPath | null | undefined): string {
-  if (!file || typeof file !== 'object') {
-    return '';
-  }
-
-  const path =
-    normalizeMediaPath(file.path) ||
-    normalizeMediaPath(file.filePath) ||
-    normalizeMediaPath(file.fullPath);
-
-  return path;
 }
 
 function getMediaKind(element: Pick<ElementSnapshot, 'name'> | null | undefined): MediaKind {
@@ -917,13 +904,8 @@ export async function relinkMediaRef(mediaRef: MediaRef) {
     }
 
     const file = files[0];
-    const sourcePath = getFilePath(file);
-    const src =
-      isVideo && sourcePath
-        ? toLocalMediaUrl(sourcePath)
-        : isVideo
-          ? await api.readVideoFile(file)
-          : await api.readImageFile(file);
+    const sourcePath = getFileSystemPath(file);
+    const src = isVideo ? resolveVideoSourceUrl(file, sourcePath) : await api.readImageFile(file);
 
     updateElementProperty(mediaRef.displayId, 'src', src);
     updateElementProperty(mediaRef.displayId, 'sourcePath', sourcePath || '');

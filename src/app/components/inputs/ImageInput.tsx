@@ -7,33 +7,8 @@ import { BLANK_IMAGE } from '@/app/constants';
 import { api } from '@/app/global';
 import { FolderOpen, Times } from '@/app/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { getFileSystemPath } from '@/lib/utils/media';
 import { ignoreEvents } from '@/lib/utils/react';
-
-interface FileWithPath {
-  path?: string;
-  filePath?: string;
-  fullPath?: string;
-}
-
-function getFilePath(file: FileWithPath | null) {
-  if (!file || typeof file !== 'object') {
-    return '';
-  }
-
-  if (typeof file.path === 'string' && file.path.trim()) {
-    return file.path.trim();
-  }
-
-  if (typeof file.filePath === 'string' && file.filePath.trim()) {
-    return file.filePath.trim();
-  }
-
-  if (typeof file.fullPath === 'string' && file.fullPath.trim()) {
-    return file.fullPath.trim();
-  }
-
-  return '';
-}
 
 interface ImageInputProps {
   name: string;
@@ -55,7 +30,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
 
   async function loadImageFile(file: File) {
     try {
-      const sourcePath = getFilePath(file as unknown as FileWithPath);
+      const sourcePath = getFileSystemPath(file);
       const src = await api.readImageFile(file);
       if (typeof src !== 'string') {
         throw new Error('The selected image could not be decoded');

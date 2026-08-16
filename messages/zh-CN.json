@@ -251,7 +251,8 @@
     "gzip-decompress-unsupported": "此浏览器不支持 Gzip 解压。",
     "ffmpeg-export-failed": "FFmpeg 视频导出失败。",
     "ffmpeg-output-path-required": "桌面导出请选择磁盘上的保存位置。",
-    "ffmpeg-temp-audio-failed": "无法准备用于导出的音频。"
+    "ffmpeg-temp-audio-failed": "无法准备用于导出的音频。",
+    "native-file-dialog-unavailable": "本机文件对话框不可用。"
   },
   "labels": {
     "2d-displays": "2D 显示",

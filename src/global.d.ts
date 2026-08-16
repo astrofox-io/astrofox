@@ -32,6 +32,10 @@ interface AstrofoxDesktopBridge {
   writeTempFile?: (name: string, data: ArrayBuffer | Uint8Array) => Promise<{ filePath: string }>;
   removePath?: (filePath: string) => Promise<{ ok: boolean }>;
   readFile?: (filePath: string) => Promise<{ name: string; data: Uint8Array | ArrayBuffer }>;
+  writeFile?: (
+    filePath: string,
+    data: Uint8Array | ArrayBuffer | string,
+  ) => Promise<{ ok: boolean; filePath: string }>;
   ffmpegRun?: (args: string[]) => Promise<{ ok: boolean }>;
   ffmpegStartPipe?: (args: string[], id?: string) => Promise<{ id: string }>;
   ffmpegWrite?: (

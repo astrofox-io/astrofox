@@ -18,14 +18,22 @@ interface PickerType {
   accept: Record<string, string[]>;
 }
 
+/**
+ * File pickers default to web File System Access APIs (same on web and desktop).
+ * Set `preferNativePath` only when a real OS path is required (e.g. ffmpeg output).
+ */
 interface OpenDialogProps {
   filters?: FileFilter[];
   multiple?: boolean;
+  /** Use the Electron dialog + filesystem path (needed for ffmpeg / media protocol). */
+  preferNativePath?: boolean;
 }
 
 interface SaveDialogProps {
   filters?: FileFilter[];
   defaultPath?: string;
+  /** Use the Electron dialog + absolute path (needed for ffmpeg output). */
+  preferNativePath?: boolean;
 }
 
 interface SaveFileProps {
@@ -41,6 +49,19 @@ interface FileHandle {
   }>;
   name: string;
 }
+
+export type OpenDialogResult = {
+  canceled: boolean;
+  files: File[];
+  fileHandles?: FileHandle[];
+  filePaths?: string[];
+};
+
+export type SaveDialogResult = {
+  canceled: boolean;
+  fileHandle?: FileHandle;
+  filePath?: string;
+};
 
 const FILE_MIME_TYPES: Record<string, string> = {
   aac: 'audio/aac',
@@ -101,6 +122,137 @@ function isAbsoluteFilePath(value: string) {
   return /^[a-zA-Z]:[\\/]/.test(value) || value.startsWith('\\\\') || value.startsWith('/');
 }
 
+function mapDesktopOpenFilters(filters: FileFilter[] = []) {
+  return filters.map(filter => ({
+    name: filter.name || t('file-types.files'),
+    extensions: filter.extensions || ['*'],
+  }));
+}
+
+function mapDesktopSaveFilters(filters: FileFilter[] = []) {
+  return filters.map(filter => ({
+    name: filter.name || t('file-types.files'),
+    extensions: filter.extensions || ['*'],
+  }));
+}
+
+/**
+ * Native open: dialog returns paths; load bytes over IPC and attach `.path` for
+ * callers that need a real filesystem location (ffmpeg, optional media streaming).
+ */
+async function showNativeOpenDialog(props: OpenDialogProps): Promise<OpenDialogResult> {
+  const desktop = getDesktopBridge();
+  if (!desktop?.showOpenDialog || !desktop.readFile) {
+    throw new Error(t('errors.native-file-dialog-unavailable'));
+  }
+
+  const multiple = Boolean(props.multiple);
+  const result = await desktop.showOpenDialog({
+    filters: mapDesktopOpenFilters(props.filters),
+    multiple,
+  });
+
+  if (result.canceled || !result.filePaths?.length) {
+    return { canceled: true, files: [] };
+  }
+
+  const files = await Promise.all(
+    result.filePaths.map(async filePath => {
+      const { name, data } = await desktop.readFile!(filePath);
+      const bytes = new Uint8Array(data instanceof Uint8Array ? data : new Uint8Array(data));
+      const fileName = name || 'file';
+      const file = new File([bytes.buffer], fileName, {
+        type: getFileMimeType(fileName, props.filters),
+      });
+      Object.assign(file, { path: filePath });
+      return file;
+    }),
+  );
+
+  return { canceled: false, files, filePaths: result.filePaths };
+}
+
+async function showNativeSaveDialog(props: SaveDialogProps): Promise<SaveDialogResult> {
+  const desktop = getDesktopBridge();
+  if (!desktop?.showSaveDialog) {
+    throw new Error(t('errors.native-file-dialog-unavailable'));
+  }
+
+  const suggestedName = props.defaultPath || 'astrofox';
+  const result = await desktop.showSaveDialog({
+    defaultPath: suggestedName,
+    filters: mapDesktopSaveFilters(props.filters),
+  });
+
+  if (result.canceled || !result.filePath) {
+    return { canceled: true };
+  }
+
+  return { canceled: false, filePath: result.filePath };
+}
+
+async function showWebOpenDialog(props: OpenDialogProps): Promise<OpenDialogResult> {
+  const multiple = Boolean(props.multiple);
+  const types = buildPickerTypes(props.filters || []);
+
+  if (window.showOpenFilePicker) {
+    try {
+      const handles = await window.showOpenFilePicker({ types, multiple });
+      const files = await Promise.all(handles.map((handle: FileHandle) => handle.getFile()));
+      return { canceled: false, files, fileHandles: handles };
+    } catch (error) {
+      if (error && (error as Error).name === 'AbortError') {
+        return { canceled: true, files: [] };
+      }
+      throw error;
+    }
+  }
+
+  return new Promise<OpenDialogResult>(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = multiple;
+    if (props.filters?.length) {
+      const extensions = props.filters.flatMap((filter: FileFilter) => filter.extensions || []);
+      input.accept = extensions.map((ext: string) => `.${ext}`).join(',');
+    }
+    input.onchange = () => {
+      const files = Array.from(input.files || []);
+      resolve({ canceled: files.length === 0, files });
+    };
+    // Cancel is not reliably detectable on all browsers; empty selection ≈ cancel.
+    input.addEventListener('cancel', () => {
+      resolve({ canceled: true, files: [] });
+    });
+    input.click();
+  });
+}
+
+async function showWebSaveDialog(props: SaveDialogProps): Promise<SaveDialogResult> {
+  const suggestedName = props.defaultPath || 'astrofox';
+  const types = buildPickerTypes(props.filters || []);
+
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({ suggestedName, types });
+      return { canceled: false, fileHandle: handle, filePath: handle.name };
+    } catch (error) {
+      if (error && (error as Error).name === 'AbortError') {
+        return { canceled: true };
+      }
+      throw error;
+    }
+  }
+
+  // No File System Access: caller downloads with this suggested name.
+  return { canceled: false, filePath: suggestedName };
+}
+
+/**
+ * Write a blob to a File System Access handle, absolute desktop path (ffmpeg),
+ * or trigger a browser download. Prefer handles; absolute paths are only for
+ * native-dialog / ffmpeg flows.
+ */
 async function saveBlob(target: FileHandle | string | null, blob: Blob, fallbackName: string) {
   if (target && typeof target === 'object' && 'createWritable' in target && target.createWritable) {
     const writable = await target.createWritable();
@@ -109,7 +261,7 @@ async function saveBlob(target: FileHandle | string | null, blob: Blob, fallback
     return;
   }
 
-  // Desktop: absolute paths from the native save dialog are written directly.
+  // Absolute paths come only from preferNativePath save dialogs (or legacy callers).
   const desktop = getDesktopBridge();
   if (desktop?.writeFile && typeof target === 'string' && isAbsoluteFilePath(target)) {
     const data = new Uint8Array(await blob.arrayBuffer());
@@ -117,11 +269,12 @@ async function saveBlob(target: FileHandle | string | null, blob: Blob, fallback
     return;
   }
 
-  const filename = typeof target === 'string' ? target : fallbackName || 'astrofox';
+  const filename =
+    typeof target === 'string' && !isAbsoluteFilePath(target) ? target : fallbackName || 'astrofox';
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = filename;
+  link.download = filename.split(/[\\/]/).pop() || filename;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -184,108 +337,27 @@ export async function closeWindow() {
   }
 }
 
-export async function showOpenDialog(props: OpenDialogProps = {}) {
-  const desktop = getDesktopBridge();
-  const multiple = Boolean(props.multiple);
-
-  // Native dialogs in Electron give real filesystem paths (needed for ffmpeg).
-  if (desktop?.showOpenDialog && desktop.readFile) {
-    const result = await desktop.showOpenDialog({
-      filters: (props.filters || []).map(filter => ({
-        name: filter.name || t('file-types.files'),
-        extensions: filter.extensions || ['*'],
-      })),
-      multiple,
-    });
-
-    if (result.canceled || !result.filePaths?.length) {
-      return { canceled: true, files: [] as File[] };
-    }
-
-    const files = await Promise.all(
-      result.filePaths.map(async filePath => {
-        const { name, data } = await desktop.readFile!(filePath);
-        // Copy into a fresh ArrayBuffer so TypeScript accepts it as a BlobPart
-        // (IPC-transferred buffers are typed as ArrayBufferLike).
-        const bytes = new Uint8Array(data instanceof Uint8Array ? data : new Uint8Array(data));
-        const fileName = name || 'file';
-        const file = new File([bytes.buffer], fileName, {
-          type: getFileMimeType(fileName, props.filters),
-        });
-        Object.assign(file, { path: filePath });
-        return file;
-      }),
-    );
-
-    return { canceled: false, files, filePaths: result.filePaths };
-  }
-
-  const types = buildPickerTypes(props.filters || []);
-
-  if (window.showOpenFilePicker) {
-    try {
-      const handles = await window.showOpenFilePicker({ types, multiple });
-      const files = await Promise.all(handles.map((handle: FileHandle) => handle.getFile()));
-      return { canceled: false, files, fileHandles: handles };
-    } catch (error) {
-      if (error && (error as Error).name === 'AbortError') {
-        return { canceled: true, files: [] as File[] };
-      }
-      throw error;
+export async function showOpenDialog(props: OpenDialogProps = {}): Promise<OpenDialogResult> {
+  // Path-required flows (rare): native dialog only when explicitly requested and available.
+  if (props.preferNativePath) {
+    const desktop = getDesktopBridge();
+    if (desktop?.showOpenDialog && desktop.readFile) {
+      return showNativeOpenDialog(props);
     }
   }
 
-  return new Promise<{ canceled: boolean; files: File[] }>(resolve => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.multiple = multiple;
-    if (props.filters?.length) {
-      const extensions = props.filters.flatMap((filter: FileFilter) => filter.extensions || []);
-      input.accept = extensions.map((ext: string) => `.${ext}`).join(',');
-    }
-    input.onchange = () => {
-      const files = Array.from(input.files || []);
-      resolve({ canceled: files.length === 0, files });
-    };
-    input.click();
-  });
+  return showWebOpenDialog(props);
 }
 
-export async function showSaveDialog(props: SaveDialogProps = {}) {
-  const desktop = getDesktopBridge();
-  const suggestedName = props.defaultPath || 'astrofox';
-
-  if (desktop?.showSaveDialog) {
-    const result = await desktop.showSaveDialog({
-      defaultPath: suggestedName,
-      filters: (props.filters || []).map(filter => ({
-        name: filter.name || t('file-types.files'),
-        extensions: filter.extensions || ['*'],
-      })),
-    });
-
-    if (result.canceled || !result.filePath) {
-      return { canceled: true };
-    }
-
-    return { canceled: false, filePath: result.filePath };
-  }
-
-  const types = buildPickerTypes(props.filters || []);
-
-  if (window.showSaveFilePicker) {
-    try {
-      const handle = await window.showSaveFilePicker({ suggestedName, types });
-      return { canceled: false, fileHandle: handle, filePath: handle.name };
-    } catch (error) {
-      if (error && (error as Error).name === 'AbortError') {
-        return { canceled: true };
-      }
-      throw error;
+export async function showSaveDialog(props: SaveDialogProps = {}): Promise<SaveDialogResult> {
+  if (props.preferNativePath) {
+    const desktop = getDesktopBridge();
+    if (desktop?.showSaveDialog) {
+      return showNativeSaveDialog(props);
     }
   }
 
-  return { canceled: false, filePath: suggestedName };
+  return showWebSaveDialog(props);
 }
 
 export async function readAudioFile(file: File | FileHandle) {
@@ -347,6 +419,10 @@ export async function readImageFile(file: File | FileHandle) {
   });
 }
 
+/**
+ * Return a playable video URL for a File. Prefer blob: URLs over data URLs so
+ * large videos are not base64-expanded into memory twice.
+ */
 export async function readVideoFile(file: File | FileHandle) {
   const videoFile = await toFile(file);
 
@@ -358,12 +434,7 @@ export async function readVideoFile(file: File | FileHandle) {
     throw new Error(t('errors.unrecognized-video-type', { type: videoFile.type }));
   }
 
-  return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error(t('errors.read-video-file-failed')));
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(videoFile);
-  });
+  return URL.createObjectURL(videoFile);
 }
 
 export async function saveImageFile(

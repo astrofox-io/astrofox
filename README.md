@@ -50,6 +50,8 @@ pnpm dev
 
 Astrofox is a client-side Next.js app. Projects are opened and saved as local files (`.json`; legacy `.afx` gzip projects can still be opened). There is no backend or auth service required for development.
 
+**File I/O:** web and desktop use the same browser pickers (File System Access API, with `<input>` / download fallbacks). The Electron bridge is reserved for window chrome, temp files, and **ffmpeg** export (absolute paths only when needed). See `docs/desktop-capabilities.md`.
+
 ### Web (Vercel)
 
 Commits deploy through Vercel using the standard build:
