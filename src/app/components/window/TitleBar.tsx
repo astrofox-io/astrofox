@@ -103,7 +103,7 @@ export default function TitleBar() {
 
   return (
     <div
-      className={'flex items-center relative h-10 bg-neutral-900 border-b border-b-neutral-700'}
+      className={'flex items-center relative h-12 bg-neutral-900 border-b border-b-neutral-700'}
       style={desktop ? ({ WebkitAppRegion: 'drag' } as CSSProperties) : undefined}
     >
       <div
@@ -139,41 +139,42 @@ export default function TitleBar() {
           {title}
         </Button>
       </div>
-      <div className="absolute left-1/2 -translate-x-1/2 text-sm leading-10 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400">
+      <div className="absolute left-1/2 -translate-x-1/2 text-sm leading-12 tracking-widest uppercase cursor-default max-[700px]:hidden text-neutral-400">
         {env.APP_NAME}
       </div>
       <div
-        className="absolute top-1 right-2 flex items-center gap-1"
+        className="absolute inset-y-0 right-0 flex items-center"
         style={desktop ? ({ WebkitAppRegion: 'no-drag' } as CSSProperties) : undefined}
       >
-        {panelButtons.map(button => {
-          const Icon = button.icon;
+        <div className={`flex items-center gap-1 ${desktop ? 'mr-6' : 'mr-2'}`}>
+          {panelButtons.map(button => {
+            const Icon = button.icon;
 
-          return (
-            <Button
-              key={button.key}
-              variant="ghost"
-              size="icon-sm"
-              className={`${
-                button.isVisible
-                  ? 'bg-transparent text-neutral-400'
-                  : 'bg-transparent text-neutral-500'
-              } hover:bg-neutral-800 hover:text-neutral-100`}
-              aria-label={button.label}
-              aria-pressed={button.isVisible}
-              onClick={button.onClick}
-            >
-              <Icon size={16} />
-            </Button>
-          );
-        })}
-        <LanguageSelector />
+            return (
+              <Button
+                key={button.key}
+                variant="ghost"
+                size="icon-sm"
+                className={`${
+                  button.isVisible
+                    ? 'bg-transparent text-neutral-400'
+                    : 'bg-transparent text-neutral-500'
+                } hover:bg-neutral-800 hover:text-neutral-100`}
+                aria-label={button.label}
+                aria-pressed={button.isVisible}
+                onClick={button.onClick}
+              >
+                <Icon size={16} />
+              </Button>
+            );
+          })}
+          <LanguageSelector />
+        </div>
         {desktop ? (
-          <>
+          <div className="flex h-full items-stretch">
             <Button
               variant="ghost"
-              size="icon-sm"
-              className="bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+              className="h-full w-11 rounded-none bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
               aria-label={t('minimize-window')}
               onClick={() => {
                 void minimizeWindow();
@@ -183,8 +184,7 @@ export default function TitleBar() {
             </Button>
             <Button
               variant="ghost"
-              size="icon-sm"
-              className="bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+              className="h-full w-11 rounded-none bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
               aria-label={maximized ? t('restore-window') : t('maximize-window')}
               onClick={() => {
                 void maximizeWindow().then(state => {
@@ -198,8 +198,7 @@ export default function TitleBar() {
             </Button>
             <Button
               variant="ghost"
-              size="icon-sm"
-              className="bg-transparent text-neutral-400 hover:bg-red-600/80 hover:text-white"
+              className="h-full w-11 rounded-none bg-transparent text-neutral-400 hover:bg-red-600 hover:text-white"
               aria-label={t('close-window')}
               onClick={() => {
                 void closeWindow();
@@ -207,7 +206,7 @@ export default function TitleBar() {
             >
               <X size={16} />
             </Button>
-          </>
+          </div>
         ) : null}
       </div>
     </div>
