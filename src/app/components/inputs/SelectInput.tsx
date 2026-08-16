@@ -61,10 +61,10 @@ export default function SelectInput({
       <SelectTrigger
         size="sm"
         className={cn(
-          // Match compact shadcn Input field chrome used by TextInput.
+          // Compact field. Same border token as TextInput / SelectContent.
           'h-8 min-h-8 w-auto cursor-default text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
-          'border-border-input shadow-none',
-          'hover:bg-neutral-900 focus-visible:border-primary focus-visible:ring-0',
+          'border-border shadow-none hover:bg-neutral-900',
+          'focus-visible:border-ring focus-visible:ring-0',
           'data-[size=sm]:h-8 data-[size=default]:h-8',
           className,
         )}
@@ -81,7 +81,7 @@ export default function SelectInput({
               : ''}
         </span>
       </SelectTrigger>
-      <SelectContent className="min-w-(--anchor-width) border-border-input bg-neutral-900 text-neutral-300">
+      <SelectContent className="min-w-(--anchor-width) border border-border bg-neutral-900 text-neutral-300 ring-0">
         {parsedItems.map((item: SelectItemData | null, index: number) => {
           if (!item) {
             const previousValue =

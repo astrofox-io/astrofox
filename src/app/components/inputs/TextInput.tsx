@@ -88,11 +88,11 @@ export default function TextInput({
       autoCorrect="off"
       autoCapitalize="off"
       className={cn(
-        // Compact control-panel field on top of shadcn Input.
+        // Compact field. Use shadcn border token (#404040) — softer than border-input, still visible.
         'h-8 w-auto text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
-        'border-border-input shadow-none',
-        'focus-visible:border-primary focus-visible:ring-0',
-        'read-only:border-border-input disabled:text-neutral-500',
+        'border-border shadow-none',
+        'focus-visible:border-ring focus-visible:ring-0',
+        'disabled:text-neutral-500',
         className,
       )}
       style={{ width }}
