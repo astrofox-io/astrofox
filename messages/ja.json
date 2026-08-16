@@ -83,6 +83,8 @@
     "start": "開始",
     "end": "終了",
     "include-audio": "音声を含める",
+    "frame-rate": "フレームレート",
+    "fps": "{{value}} fps",
     "save-video": "動画を保存",
     "starting": "開始中...",
     "validation-no-audio": "エクスポートを開始する前に音声ファイルを選択してください。",

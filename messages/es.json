@@ -83,6 +83,8 @@
     "start": "Inicio",
     "end": "Fin",
     "include-audio": "Incluir audio",
+    "frame-rate": "Velocidad de fotogramas",
+    "fps": "{{value}} fps",
     "save-video": "Guardar vídeo",
     "starting": "Iniciando...",
     "validation-no-audio": "Elige un archivo de audio antes de iniciar la exportación.",

@@ -96,11 +96,24 @@ async function toFile(input: File | FileHandle | null): Promise<File | null> {
   });
 }
 
+function isAbsoluteFilePath(value: string) {
+  // Windows drive (C:\ or C:/), UNC (\\server), or POSIX (/) paths.
+  return /^[a-zA-Z]:[\\/]/.test(value) || value.startsWith('\\\\') || value.startsWith('/');
+}
+
 async function saveBlob(target: FileHandle | string | null, blob: Blob, fallbackName: string) {
   if (target && typeof target === 'object' && 'createWritable' in target && target.createWritable) {
     const writable = await target.createWritable();
     await writable.write(blob);
     await writable.close();
+    return;
+  }
+
+  // Desktop: absolute paths from the native save dialog are written directly.
+  const desktop = getDesktopBridge();
+  if (desktop?.writeFile && typeof target === 'string' && isAbsoluteFilePath(target)) {
+    const data = new Uint8Array(await blob.arrayBuffer());
+    await desktop.writeFile(target, data);
     return;
   }
 

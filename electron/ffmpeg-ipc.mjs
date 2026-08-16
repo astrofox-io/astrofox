@@ -7,6 +7,40 @@ import path from 'node:path';
 
 /** @type {Map<string, ManagedProcess>} */
 const processes = new Map();
+const TRANSIENT_UNLINK_ERROR_CODES = new Set(['EBUSY', 'EPERM']);
+const UNLINK_RETRY_ATTEMPTS = 10;
+const UNLINK_RETRY_DELAY_MS = 100;
+
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function unlinkWithRetry(target) {
+  for (let attempt = 0; attempt < UNLINK_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      await fs.promises.unlink(target);
+      return true;
+    } catch (error) {
+      if (error?.code === 'ENOENT') {
+        return true;
+      }
+
+      if (!TRANSIENT_UNLINK_ERROR_CODES.has(error?.code)) {
+        throw error;
+      }
+
+      if (attempt === UNLINK_RETRY_ATTEMPTS - 1) {
+        return false;
+      }
+
+      await wait(UNLINK_RETRY_DELAY_MS);
+    }
+  }
+
+  return false;
+}
 
 /**
  * @param {string} ffmpegPath
@@ -195,14 +229,27 @@ export function registerFfmpegIpc(ipcMain, deps) {
     if (!normalized.startsWith(tempRoot)) {
       throw new Error('Refusing to delete path outside temp directory');
     }
-    try {
-      fs.unlinkSync(normalized);
-    } catch (error) {
-      if (error && error.code !== 'ENOENT') {
-        throw error;
-      }
+    const removed = await unlinkWithRetry(normalized);
+    return { ok: removed };
+  });
+
+  ipcMain.handle('desktop:write-file', async (_event, payload = {}) => {
+    const target = String(payload.filePath || '');
+    if (!target || !path.isAbsolute(target)) {
+      throw new Error(`Invalid file path: ${target || '(empty)'}`);
     }
-    return { ok: true };
+    const data = payload.data;
+    const buffer = Buffer.isBuffer(data)
+      ? data
+      : typeof data === 'string'
+        ? Buffer.from(data, 'utf8')
+        : Buffer.from(data instanceof ArrayBuffer ? data : new Uint8Array(data));
+    const dir = path.dirname(target);
+    if (!fs.existsSync(dir)) {
+      await fs.promises.mkdir(dir, { recursive: true });
+    }
+    await fs.promises.writeFile(target, buffer);
+    return { ok: true, filePath: target };
   });
 
   ipcMain.handle('desktop:read-file', async (_event, payload = {}) => {

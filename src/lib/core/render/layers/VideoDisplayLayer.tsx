@@ -134,9 +134,16 @@ export function VideoDisplayLayer({
       const clipStart = getClipStart(startTime);
       const clipEnd = getClipEnd(video, clipStart, endTime);
 
-      if (shouldLoop && clipEnd > clipStart && video.currentTime >= clipEnd) {
+      if (clipEnd <= clipStart || video.currentTime < clipEnd) {
+        return;
+      }
+
+      if (shouldLoop) {
         video.currentTime = clipStart;
         resumeVideo();
+      } else {
+        video.pause();
+        video.currentTime = clipEnd;
       }
     };
 

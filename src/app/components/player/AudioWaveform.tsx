@@ -29,6 +29,7 @@ export default function AudioWaveform() {
     })),
   );
   const videoExportSegment = useAppStore(state => state.videoExportSegment);
+  const videoExportPosition = useAppStore(state => state.videoExportPosition);
   const [state, setState] = useSharedState();
   const { progressPosition, seekPosition } = state as {
     progressPosition?: number;
@@ -123,8 +124,11 @@ export default function AudioWaveform() {
     const { width, height } = canvas.current;
     const context = canvas.current.getContext('2d');
     if (!context) return;
-    const position = (progressPosition ?? 0) * width;
-    const seek = (seekPosition ?? 0) * width;
+    const position =
+      (isVideoRecording && videoExportPosition != null
+        ? videoExportPosition
+        : (progressPosition ?? 0)) * width;
+    const seek = isVideoRecording ? 0 : (seekPosition ?? 0) * width;
     const sx = seek < position ? seek : position;
     const dx = seek < position ? position - seek : seek - position;
     const selectionStart = videoExportSegment ? videoExportSegment.startPosition * width : 0;

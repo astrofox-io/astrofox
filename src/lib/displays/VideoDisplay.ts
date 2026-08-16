@@ -170,9 +170,32 @@ export default class VideoDisplay extends Display {
   update(properties: Record<string, unknown>) {
     const { src: inputSrc, loop, startTime, endTime, fixed, width, height } = properties;
     const { src, width: w, height: h, fixed: f } = this.properties as Record<string, unknown>;
-    const srcChanged = typeof inputSrc === 'string' && inputSrc !== src;
+    let loadedVideo: HTMLVideoElement | null = null;
+    let nextProperties = properties;
 
-    if (!srcChanged && (fixed || f) && isDefined(width, height, fixed)) {
+    if (typeof inputSrc === 'object' && (inputSrc as HTMLVideoElement)?.src) {
+      loadedVideo = inputSrc as HTMLVideoElement;
+
+      if (loadedVideo.src === BLANK_IMAGE) {
+        nextProperties = { ...VideoDisplay.config.defaultProperties };
+      } else if (loadedVideo.src !== src || !w || !h) {
+        const fittedSize = getFittedSize(this, loadedVideo.videoWidth, loadedVideo.videoHeight);
+        nextProperties = {
+          ...properties,
+          src: loadedVideo.src,
+          width: fittedSize.width,
+          height: fittedSize.height,
+          opacity: 1,
+        };
+      } else {
+        nextProperties.src = loadedVideo.src;
+      }
+    }
+
+    const nextInputSrc = nextProperties.src;
+    const srcChanged = typeof nextInputSrc === 'string' && nextInputSrc !== src;
+
+    if (!loadedVideo && !srcChanged && (fixed || f) && isDefined(width, height, fixed)) {
       const videoWidth = this.video.videoWidth;
       const videoHeight = this.video.videoHeight;
       if (!videoWidth || !videoHeight) {
@@ -183,24 +206,24 @@ export default class VideoDisplay extends Display {
 
       if (!isDefined(width, height)) {
         if ((w as number) > (h as number)) {
-          properties.height = Math.round((w as number) * (1 / ratio)) || 0;
-          properties.width = Math.round((properties.height as number) * ratio);
+          nextProperties.height = Math.round((w as number) * (1 / ratio)) || 0;
+          nextProperties.width = Math.round((nextProperties.height as number) * ratio);
         } else {
-          properties.width = Math.round((h as number) * ratio);
-          properties.height = Math.round((properties.width as number) * (1 / ratio)) || 0;
+          nextProperties.width = Math.round((h as number) * ratio);
+          nextProperties.height = Math.round((nextProperties.width as number) * (1 / ratio)) || 0;
         }
       }
 
       if (width) {
-        properties.height = Math.round((width as number) * (1 / ratio)) || 0;
+        nextProperties.height = Math.round((width as number) * (1 / ratio)) || 0;
       }
       if (height) {
-        properties.width = Math.round((height as number) * ratio);
+        nextProperties.width = Math.round((height as number) * ratio);
       }
     }
 
-    const nextSrcChanged = typeof properties.src === 'string' && properties.src !== src;
-    const changed = super.update(properties);
+    const nextSrcChanged = typeof nextProperties.src === 'string' && nextProperties.src !== src;
+    const changed = super.update(nextProperties);
 
     if (changed) {
       const p = this.properties as Record<string, unknown>;
@@ -213,6 +236,13 @@ export default class VideoDisplay extends Display {
           this.video.pause();
           this.video.removeAttribute('src');
           this.video.load();
+        } else if (loadedVideo) {
+          this.video.pause();
+          this.video.removeAttribute('src');
+          this.video.load();
+          this.video = loadedVideo;
+          this.video.loop = Boolean(p.loop && !p.endTime);
+          this.video.currentTime = Math.max(0, (p.startTime as number) || 0);
         } else {
           this.video.src = p.src as string;
           this.video.loop = Boolean(p.loop && !p.endTime);

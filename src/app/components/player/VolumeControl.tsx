@@ -14,6 +14,19 @@ const initialState = {
   mute: false,
 };
 
+function readStoredState() {
+  try {
+    const rawValue = localStorage.getItem(STORAGE_KEY);
+    const parsed = rawValue === null ? Number.NaN : Number(rawValue);
+    const value = Number.isFinite(parsed) && parsed >= 0 && parsed <= 100 ? parsed : 100;
+    const mute = localStorage.getItem(STORAGE_MUTE_KEY) === 'true';
+
+    return { value, mute };
+  } catch {
+    return initialState;
+  }
+}
+
 export default function VolumeControl() {
   const { liveModeEnabled, mode } = useAudioStore(
     useShallow(state => ({
@@ -21,23 +34,22 @@ export default function VolumeControl() {
       mode: state.mode,
     })),
   );
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState(readStoredState);
   const { value, mute } = state;
   const VolumeIcon = getIcon();
 
   function persistState(nextValue: number, nextMute: boolean) {
-    localStorage.setItem(STORAGE_KEY, String(nextValue));
-    localStorage.setItem(STORAGE_MUTE_KEY, String(nextMute));
+    try {
+      localStorage.setItem(STORAGE_KEY, String(nextValue));
+      localStorage.setItem(STORAGE_MUTE_KEY, String(nextMute));
+    } catch {
+      // storage unavailable
+    }
   }
 
   useEffect(() => {
-    const rawValue = Number(localStorage.getItem(STORAGE_KEY));
-    const storedMute = localStorage.getItem(STORAGE_MUTE_KEY) === 'true';
-    const nextValue =
-      Number.isFinite(rawValue) && rawValue >= 0 && rawValue <= 100 ? rawValue : 100;
-
-    setState({ value: nextValue, mute: storedMute });
-    player.setVolume(storedMute ? 0 : nextValue / 100);
+    // Apply the restored setting to the player once on mount.
+    player.setVolume(mute ? 0 : value / 100);
   }, []);
 
   if (liveModeEnabled && (mode === 'microphone' || mode === 'desktop' || mode === 'midi')) {

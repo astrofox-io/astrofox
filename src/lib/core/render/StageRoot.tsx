@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import React from 'react';
 import useApp from '@/app/actions/app';
 import useScenes, { getSceneIdForElement } from '@/app/actions/scenes';
@@ -28,15 +28,33 @@ function wrapDisplayNode(display, node) {
   );
 }
 
-function ComposerPresenter({ onPresent }) {
+function ComposerPresenter({ frameIndex, onPresent }) {
+  const invalidate = useThree(state => state.invalidate);
+
   useFrame(state => {
-    onPresent?.(state.gl);
+    onPresent?.(state.gl, frameIndex);
   }, 1);
+
+  // root.render() is asynchronous, so the frame requested by the backend may
+  // run before React commits the new frameIndex. Request another frame once
+  // the commit lands so presentFrame always sees the latest index (required
+  // for waitForPresentation during export).
+  React.useLayoutEffect(() => {
+    invalidate();
+  }, [frameIndex, invalidate]);
 
   return null;
 }
 
-export default function StageRoot({ width, height, scenes, frameData, sceneLayersRef, onPresent }) {
+export default function StageRoot({
+  width,
+  height,
+  scenes,
+  frameData,
+  frameIndex,
+  sceneLayersRef,
+  onPresent,
+}) {
   const activeElementId = useApp(state => state.activeElementId);
   const cameraModeEnabled = useApp(state => state.cameraModeEnabled);
   const sceneById = useScenes(state => state.sceneById);
@@ -153,7 +171,7 @@ export default function StageRoot({ width, height, scenes, frameData, sceneLayer
   return (
     <>
       {sceneProducers}
-      <ComposerPresenter onPresent={onPresent} />
+      <ComposerPresenter frameIndex={frameIndex} onPresent={onPresent} />
     </>
   );
 }

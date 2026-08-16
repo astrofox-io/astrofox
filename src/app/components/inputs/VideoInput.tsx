@@ -7,52 +7,8 @@ import { BLANK_IMAGE } from '@/app/constants';
 import { api } from '@/app/global';
 import { FolderOpen, Times } from '@/app/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { toLocalMediaUrl } from '@/lib/utils/media';
 import { ignoreEvents } from '@/lib/utils/react';
-
-function isFileUrlSource(src: string) {
-  return /^file:\/\//i.test(src || '');
-}
-
-function isWindowsPathSource(src: string) {
-  return /^[a-zA-Z]:[\\/]/.test(src || '');
-}
-
-function isUncPathSource(src: string) {
-  return /^\\\\/.test(src || '');
-}
-
-function toFileUrl(path: string) {
-  if (!path || typeof path !== 'string') {
-    return '';
-  }
-
-  const sourcePath = path.trim();
-
-  if (!sourcePath) {
-    return '';
-  }
-
-  if (isFileUrlSource(sourcePath)) {
-    return sourcePath;
-  }
-
-  const escaped = encodeURI(sourcePath).replace(/#/g, '%23').replace(/\?/g, '%3F');
-
-  if (isWindowsPathSource(sourcePath)) {
-    return `file:///${escaped.replace(/\\/g, '/')}`;
-  }
-
-  if (isUncPathSource(sourcePath)) {
-    const unc = escaped.replace(/^\\\\/, '').replace(/\\/g, '/');
-    return `file://${unc}`;
-  }
-
-  if (sourcePath.startsWith('/')) {
-    return `file://${escaped}`;
-  }
-
-  return sourcePath;
-}
 
 interface FileWithPath {
   path?: string;
@@ -98,14 +54,42 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
     }
   }
 
+  function loadVideoMetadata(src: string) {
+    return new Promise<HTMLVideoElement>((resolve, reject) => {
+      const loadedVideo = document.createElement('video');
+      loadedVideo.muted = true;
+      loadedVideo.playsInline = true;
+      loadedVideo.preload = 'metadata';
+      loadedVideo.crossOrigin = 'anonymous';
+
+      loadedVideo.onloadedmetadata = () => {
+        loadedVideo.onloadedmetadata = null;
+        loadedVideo.onerror = null;
+        resolve(loadedVideo);
+      };
+      loadedVideo.onerror = () => {
+        loadedVideo.onloadedmetadata = null;
+        loadedVideo.onerror = null;
+        loadedVideo.removeAttribute('src');
+        loadedVideo.load();
+        reject(new Error('The selected video metadata could not be loaded'));
+      };
+      loadedVideo.src = src;
+    });
+  }
+
   async function loadVideoFile(file: File) {
     try {
       const sourcePath = getFilePath(file as unknown as FileWithPath);
-      const src = sourcePath ? toFileUrl(sourcePath) : await api.readVideoFile(file);
+      const src = sourcePath ? toLocalMediaUrl(sourcePath) : await api.readVideoFile(file);
+      if (typeof src !== 'string') {
+        throw new Error('The selected video could not be decoded');
+      }
+      const loadedVideo = await loadVideoMetadata(src);
 
       loadVideoSrc(src);
       onChange?.({
-        [name]: src,
+        [name]: loadedVideo,
         sourcePath: sourcePath || '',
       });
     } catch (error) {

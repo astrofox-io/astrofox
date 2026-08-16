@@ -18,6 +18,7 @@ import Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
 import Stage from '@/lib/core/Stage';
 import { resetLabelCount } from '@/lib/utils/controls';
+import { isLocalMediaUrl, localMediaUrlToPath, toLocalMediaUrl } from '@/lib/utils/media';
 
 export const DEFAULT_PROJECT_NAME = 'Untitled Project';
 
@@ -245,38 +246,13 @@ function fileUrlToPath(src: string): string {
   }
 }
 
-function toFileUrl(path: string): string {
-  const sourcePath = normalizeMediaPath(path);
-
-  if (!sourcePath) {
-    return '';
-  }
-
-  if (isFileUrlSource(sourcePath)) {
-    return sourcePath;
-  }
-
-  const escaped = encodeURI(sourcePath).replace(/#/g, '%23').replace(/\?/g, '%3F');
-
-  if (isWindowsPathSource(sourcePath)) {
-    return `file:///${escaped.replace(/\\/g, '/')}`;
-  }
-
-  if (isUncPathSource(sourcePath)) {
-    const unc = escaped.replace(/^\\\\/, '').replace(/\\/g, '/');
-    return `file://${unc}`;
-  }
-
-  if (sourcePath.startsWith('/')) {
-    return `file://${escaped}`;
-  }
-
-  return sourcePath;
-}
-
 function getMediaSourcePath(src: unknown): string {
   if (typeof src !== 'string') {
     return '';
+  }
+
+  if (isLocalMediaUrl(src)) {
+    return normalizeMediaPath(localMediaUrlToPath(src));
   }
 
   if (isFileUrlSource(src)) {
@@ -454,7 +430,7 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
           ...element,
           properties: {
             ...element.properties,
-            src: kind === 'image' ? BLANK_IMAGE : toFileUrl(sourcePath),
+            src: kind === 'image' ? BLANK_IMAGE : toLocalMediaUrl(sourcePath),
             sourcePath,
           },
         };
@@ -473,7 +449,8 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
           ...element,
           properties: {
             ...element.properties,
-            src: getMediaKind(element) === 'image' ? BLANK_IMAGE : toFileUrl(inferredSourcePath),
+            src:
+              getMediaKind(element) === 'image' ? BLANK_IMAGE : toLocalMediaUrl(inferredSourcePath),
             sourcePath: inferredSourcePath,
           },
         };
@@ -562,7 +539,7 @@ async function resolveSnapshotMediaOnLoad(
 
         if (sourcePath) {
           if (kind === 'video') {
-            const sourceUrl = toFileUrl(sourcePath);
+            const sourceUrl = toLocalMediaUrl(sourcePath);
             const canLoad = await canLoadMediaSource(sourceUrl, kind);
 
             if (canLoad) {
@@ -943,7 +920,7 @@ export async function relinkMediaRef(mediaRef: MediaRef) {
     const sourcePath = getFilePath(file);
     const src =
       isVideo && sourcePath
-        ? toFileUrl(sourcePath)
+        ? toLocalMediaUrl(sourcePath)
         : isVideo
           ? await api.readVideoFile(file)
           : await api.readImageFile(file);

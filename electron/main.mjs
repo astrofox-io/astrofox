@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { app, BrowserWindow, ipcMain, net, protocol, session, shell } from 'electron';
 import { registerDialogIpc } from './dialogs-ipc.mjs';
@@ -33,6 +34,15 @@ protocol.registerSchemesAsPrivileged([
       corsEnabled: true,
       stream: true,
       allowServiceWorkers: true,
+    },
+  },
+  {
+    scheme: 'astrofox-media',
+    privileges: {
+      standard: true,
+      secure: true,
+      corsEnabled: true,
+      stream: true,
     },
   },
 ]);
@@ -171,6 +181,111 @@ function registerAppProtocol() {
   });
 }
 
+function registerMediaProtocol() {
+  const videoMimeTypes = new Map([
+    ['.mp4', 'video/mp4'],
+    ['.webm', 'video/webm'],
+    ['.ogv', 'video/ogg'],
+  ]);
+
+  function createMediaHeaders(contentType) {
+    return new Headers({
+      'Accept-Ranges': 'bytes',
+      'Access-Control-Allow-Headers': 'Range',
+      'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': contentType,
+    });
+  }
+
+  function parseByteRange(rangeHeader, fileSize) {
+    const match = /^bytes=(\d*)-(\d*)$/i.exec(rangeHeader.trim());
+    if (!match || (!match[1] && !match[2])) {
+      return null;
+    }
+
+    let start;
+    let end;
+
+    if (!match[1]) {
+      const suffixLength = Number(match[2]);
+      if (!Number.isSafeInteger(suffixLength) || suffixLength <= 0) {
+        return null;
+      }
+      start = Math.max(0, fileSize - suffixLength);
+      end = fileSize - 1;
+    } else {
+      start = Number(match[1]);
+      end = match[2] ? Number(match[2]) : fileSize - 1;
+    }
+
+    if (
+      !Number.isSafeInteger(start) ||
+      !Number.isSafeInteger(end) ||
+      start < 0 ||
+      start >= fileSize ||
+      end < start
+    ) {
+      return null;
+    }
+
+    return {
+      start,
+      end: Math.min(end, fileSize - 1),
+    };
+  }
+
+  protocol.handle('astrofox-media', async request => {
+    const url = new URL(request.url);
+    const targetPath = url.host === 'local' ? url.searchParams.get('path')?.trim() : '';
+    const extension = targetPath ? path.extname(targetPath).toLowerCase() : '';
+    const contentType = videoMimeTypes.get(extension);
+
+    if (
+      !targetPath ||
+      !path.isAbsolute(targetPath) ||
+      !contentType ||
+      !fs.existsSync(targetPath) ||
+      !fs.statSync(targetPath).isFile()
+    ) {
+      return new Response('Media not found', { status: 404 });
+    }
+
+    const headers = createMediaHeaders(contentType);
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers });
+    }
+
+    const { size } = fs.statSync(targetPath);
+    const rangeHeader = request.headers.get('range');
+    const range = rangeHeader ? parseByteRange(rangeHeader, size) : null;
+
+    if (rangeHeader && !range) {
+      headers.set('Content-Range', `bytes */${size}`);
+      return new Response(null, { status: 416, headers });
+    }
+
+    const start = range?.start ?? 0;
+    const end = range?.end ?? size - 1;
+    headers.set('Content-Length', String(Math.max(0, end - start + 1)));
+
+    if (range) {
+      headers.set('Content-Range', `bytes ${start}-${end}/${size}`);
+    }
+
+    const body =
+      request.method === 'HEAD'
+        ? null
+        : Readable.toWeb(fs.createReadStream(targetPath, { start, end }));
+
+    return new Response(body, {
+      status: range ? 206 : 200,
+      headers,
+    });
+  });
+}
+
 function isAllowedNavigation(url) {
   if (url.startsWith('astrofox://')) {
     return true;
@@ -244,6 +359,15 @@ function createWindow() {
     }
   });
 
+  // Silence the harmless "Request Autofill.* failed" errors that the bundled
+  // DevTools frontend logs because Electron doesn't implement that CDP domain.
+  mainWindow.webContents.on('console-message', event => {
+    const { sourceId = '', message = '' } = event;
+    if (sourceId.startsWith('devtools://') && /Autofill\./.test(message)) {
+      event.preventDefault();
+    }
+  });
+
   mainWindow.on('focus', sendWindowState);
   mainWindow.on('blur', sendWindowState);
   mainWindow.on('maximize', sendWindowState);
@@ -273,6 +397,7 @@ app.whenReady().then(async () => {
 
   registerIpc();
   hardenSession();
+  registerMediaProtocol();
 
   if (!isDev) {
     registerAppProtocol();

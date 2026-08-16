@@ -22,6 +22,7 @@ const api = {
   writeTempFile: (name, data) => ipcRenderer.invoke('desktop:write-temp-file', { name, data }),
   removePath: filePath => ipcRenderer.invoke('desktop:remove-path', { filePath }),
   readFile: filePath => ipcRenderer.invoke('desktop:read-file', { filePath }),
+  writeFile: (filePath, data) => ipcRenderer.invoke('desktop:write-file', { filePath, data }),
 
   ffmpegRun: args => ipcRenderer.invoke('ffmpeg:run', { args }),
   ffmpegStartPipe: (args, id) => ipcRenderer.invoke('ffmpeg:start-pipe', { args, id }),

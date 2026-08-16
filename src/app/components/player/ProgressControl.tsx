@@ -21,6 +21,7 @@ type ProgressState = typeof initialState;
 export default function ProgressControl() {
   const { t } = useTranslation(undefined, { keyPrefix: 'player' });
   const isVideoRecording = useAppStore(state => state.isVideoRecording);
+  const videoExportPosition = useAppStore(state => state.videoExportPosition);
   const { liveModeEnabled, mode, sourceLabel } = useAudioStore(
     useShallow(state => ({
       liveModeEnabled: state.liveModeEnabled,
@@ -36,6 +37,8 @@ export default function ProgressControl() {
   const duration = player.getDuration();
   const canSeek = player.canSeek();
   const disabled = !canSeek || isVideoRecording;
+  const displayPosition =
+    isVideoRecording && videoExportPosition != null ? videoExportPosition : progressPosition;
 
   function handleProgressChange(value: number) {
     player.seek(value);
@@ -90,14 +93,19 @@ export default function ProgressControl() {
         name="progress"
         min={0}
         max={PROGRESS_MAX}
-        value={progressPosition * PROGRESS_MAX}
+        value={displayPosition * PROGRESS_MAX}
         buffered
         onChange={(_name, newValue) => handleProgressChange(newValue / PROGRESS_MAX)}
         onUpdate={(_name, newValue) => handleProgressUpdate(newValue / PROGRESS_MAX)}
         disabled={disabled}
         hideThumb={disabled}
       />
-      <TimeInfo currentTime={duration * (seekPosition || progressPosition)} totalTime={duration} />
+      <TimeInfo
+        currentTime={
+          duration * (isVideoRecording ? displayPosition : seekPosition || progressPosition)
+        }
+        totalTime={duration}
+      />
     </div>
   );
 }

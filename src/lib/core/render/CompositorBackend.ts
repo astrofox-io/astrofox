@@ -9,6 +9,7 @@ import RenderBackend from './RenderBackend';
 import StageRoot from './StageRoot';
 
 const VIDEO_RENDERING = -1;
+const PRESENTATION_TIMEOUT_MS = 5000;
 
 const VIEWPORT_ORIGIN = {
   top: 0,
@@ -119,6 +120,7 @@ export default class CompositorBackend extends RenderBackend {
 
     this.frameData = null;
     this.frameIndex = 0;
+    this.pendingPresentation = null;
     this.renderMode = null;
     this.pendingProperties = {};
     this.threeExtended = false;
@@ -321,7 +323,7 @@ export default class CompositorBackend extends RenderBackend {
     this.configuredSize = null;
   }
 
-  presentFrame(gl) {
+  presentFrame(gl, frameIndex) {
     if (!gl) {
       return;
     }
@@ -335,6 +337,32 @@ export default class CompositorBackend extends RenderBackend {
     const sceneLayers = [...this.sceneLayersRef.current.values()].sort((a, b) => a.order - b.order);
 
     this.composer.composeSceneLayers(sceneLayers, this.backgroundColor);
+
+    if (this.pendingPresentation && frameIndex >= this.pendingPresentation.frameIndex) {
+      const { resolve, timeoutId } = this.pendingPresentation;
+      this.pendingPresentation = null;
+      window.clearTimeout(timeoutId);
+      resolve();
+    }
+  }
+
+  waitForPresentation(frameIndex) {
+    return new Promise((resolve, reject) => {
+      const timeoutId = window.setTimeout(() => {
+        if (this.pendingPresentation?.frameIndex !== frameIndex) {
+          return;
+        }
+
+        this.pendingPresentation = null;
+        reject(new Error(`Timed out while presenting export frame ${frameIndex}.`));
+      }, PRESENTATION_TIMEOUT_MS);
+
+      this.pendingPresentation = {
+        frameIndex,
+        resolve,
+        timeoutId,
+      };
+    });
   }
 
   render(frameData) {
@@ -381,9 +409,11 @@ export default class CompositorBackend extends RenderBackend {
       await this.ensureRoot();
     }
 
-    this.render(frameData);
+    const expectedFrameIndex = this.frameIndex + 1;
+    const presented = this.waitForPresentation(expectedFrameIndex);
 
-    await new Promise(resolve => window.requestAnimationFrame(resolve));
+    this.render(frameData);
+    await presented;
 
     return this.getPixels();
   }
@@ -442,6 +472,10 @@ export default class CompositorBackend extends RenderBackend {
     this.graph = { scenes: [] };
     this.frameData = null;
     this.frameIndex = 0;
+    if (this.pendingPresentation) {
+      window.clearTimeout(this.pendingPresentation.timeoutId);
+      this.pendingPresentation = null;
+    }
     this.renderMode = null;
     this.pendingProperties = {};
     this.threeExtended = false;

@@ -83,6 +83,8 @@
     "start": "開始",
     "end": "結束",
     "include-audio": "包含音訊",
+    "frame-rate": "幀率",
+    "fps": "{{value}} fps",
     "save-video": "儲存影片",
     "starting": "啟動中...",
     "validation-no-audio": "請在開始匯出前選擇音訊檔案。",

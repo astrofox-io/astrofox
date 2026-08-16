@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Color } from 'three';
+import { Color, LinearFilter, RGBAFormat, UnsignedByteType, WebGLRenderTarget } from 'three';
 import BlendShader from './BlendShader';
 import blendModes from './blendModes';
 import CopyShader from './CopyShader';
@@ -16,8 +16,13 @@ export default class StageComposer {
     this.copyPass = new ShaderPass(CopyShader);
     this.copyPass.material.transparent = true;
     this.copyPass.renderToScreen = true;
+    // Readback copy pass encodes to sRGB so exported pixels match the screen.
+    this.readbackPass = new ShaderPass({ ...CopyShader, defines: { ENCODE_SRGB: 1 } });
+    this.readbackPass.material.transparent = false;
+    this.readbackPass.renderToScreen = false;
     this.inputBuffer = null;
     this.outputBuffer = null;
+    this.readbackBuffer = null;
     this.dataBuffer = new Uint8Array(this.width * this.height * 4);
     this.warmedUpRenderer = null;
 
@@ -54,14 +59,18 @@ export default class StageComposer {
 
     this.inputBuffer.setSize(this.width, this.height);
     this.outputBuffer.setSize(this.width, this.height);
+    this.readbackBuffer?.setSize(this.width, this.height);
     this.dataBuffer = new Uint8Array(this.width * this.height * 4);
   }
 
   dispose() {
     this.inputBuffer?.dispose();
     this.outputBuffer?.dispose();
+    this.readbackBuffer?.dispose();
+    this.readbackBuffer = null;
     this.blendPass?.material?.dispose?.();
     this.copyPass?.material?.dispose?.();
+    this.readbackPass?.material?.dispose?.();
   }
 
   swapBuffers() {
@@ -165,8 +174,37 @@ export default class StageComposer {
       return new Uint8Array(this.width * this.height * 4);
     }
 
+    // The composer buffers are HalfFloatType, which cannot be read into a
+    // Uint8Array. Copy the composite into an 8-bit target first.
+    if (!this.readbackBuffer) {
+      this.readbackBuffer = new WebGLRenderTarget(this.width, this.height, {
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        format: RGBAFormat,
+        type: UnsignedByteType,
+        depthBuffer: false,
+        stencilBuffer: false,
+      });
+    }
+
+    const clearColor = new Color();
+    this.renderer.getClearColor(clearColor);
+    const clearAlpha = this.renderer.getClearAlpha();
+    this.renderer.setClearColor(0x000000, 0);
+    this.renderer.setRenderTarget(this.readbackBuffer);
+    this.renderer.clear(true, false, false);
+    this.renderer.setClearColor(clearColor, clearAlpha);
+
+    this.readbackPass.setUniforms({
+      inputTexture: this.inputBuffer.texture,
+      opacity: 1,
+      alpha: 0,
+    });
+    this.readbackPass.render(this.renderer, this.inputBuffer, this.readbackBuffer);
+    this.renderer.setRenderTarget(null);
+
     this.renderer.readRenderTargetPixels(
-      this.inputBuffer,
+      this.readbackBuffer,
       0,
       0,
       this.width,

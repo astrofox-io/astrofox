@@ -83,6 +83,8 @@
     "start": "Bắt đầu",
     "end": "Kết thúc",
     "include-audio": "Bao gồm âm thanh",
+    "frame-rate": "Tốc độ khung hình",
+    "fps": "{{value}} fps",
     "save-video": "Lưu video",
     "starting": "Đang bắt đầu...",
     "validation-no-audio": "Hãy chọn tệp âm thanh trước khi bắt đầu xuất.",

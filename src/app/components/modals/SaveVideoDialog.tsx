@@ -6,10 +6,13 @@ import {
   type FileHandleLike,
   setVideoExportSegment,
   startVideoRecording,
+  VIDEO_EXPORT_FPS_OPTIONS,
+  type VideoExportFps,
 } from '@/app/actions/app';
 import { chooseAudioFile, inspectAudioFile } from '@/app/actions/audio';
 import { raiseError } from '@/app/actions/error';
 import DualRangeInput from '@/app/components/inputs/DualRangeInput';
+import SelectInput from '@/app/components/inputs/SelectInput';
 import TimeInput from '@/app/components/inputs/TimeInput';
 import ExportWaveform from '@/app/components/modals/ExportWaveform';
 import { Button } from '@/components/ui/button';
@@ -18,6 +21,7 @@ import { Switch } from '@/components/ui/switch';
 
 type SaveVideoDialogProps = {
   onClose: () => void;
+  onCloseAndThen: (afterClose: () => void) => void;
   fileHandle?: FileHandleLike | null;
   filePath?: string;
   defaultPath?: string;
@@ -29,12 +33,14 @@ type SaveVideoDialogProps = {
   startTime?: number;
   endTime?: number;
   includeAudio?: boolean;
+  fps?: VideoExportFps;
 };
 
 const MIN_EXPORT_DURATION = 5;
 
 export default function SaveVideoDialog({
   onClose,
+  onCloseAndThen,
   fileHandle: initialFileHandle = null,
   filePath: initialFilePath = '',
   defaultPath: initialDefaultPath = '',
@@ -46,6 +52,7 @@ export default function SaveVideoDialog({
   startTime = 0,
   endTime = initialTotalDuration,
   includeAudio = true,
+  fps: initialFps = 30,
 }: SaveVideoDialogProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'save-video' });
   const { t: tc } = useTranslation(undefined, { keyPrefix: 'common' });
@@ -59,13 +66,20 @@ export default function SaveVideoDialog({
   const [selectedStartTime, setSelectedStartTime] = useState(startTime);
   const [selectedEndTime, setSelectedEndTime] = useState(endTime);
   const [shouldIncludeAudio, setShouldIncludeAudio] = useState(includeAudio);
+  const [fps, setFps] = useState<VideoExportFps>(initialFps);
   const [validationMessage, setValidationMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isChoosingLocation, setIsChoosingLocation] = useState(false);
   const [isChoosingAudio, setIsChoosingAudio] = useState(false);
   const keepSegmentOverlayRef = useRef(false);
   const hasSelectedAudio = Boolean(audioFileName);
+  const hasSaveLocation = Boolean(filePath || fileHandle?.name);
   const effectiveMinExportDuration = Math.min(MIN_EXPORT_DURATION, Math.max(totalDuration, 0));
+  const hasValidDuration = totalDuration >= MIN_EXPORT_DURATION;
+  const hasValidTimeRange =
+    selectedEndTime > selectedStartTime &&
+    selectedEndTime - selectedStartTime >= MIN_EXPORT_DURATION;
+  const canSave = hasSelectedAudio && hasSaveLocation && hasValidDuration && hasValidTimeRange;
 
   useEffect(() => {
     setVideoExportSegment(selectedStartTime, selectedEndTime, totalDuration);
@@ -113,6 +127,7 @@ export default function SaveVideoDialog({
       if (!selection.canceled) {
         setFileHandle(selection.fileHandle || null);
         setFilePath(selection.filePath || selection.defaultPath);
+        setValidationMessage('');
       }
     } catch (error) {
       raiseError(te('choose-video-save-location-failed'), error);
@@ -174,7 +189,7 @@ export default function SaveVideoDialog({
     setSelectedEndTime(nextEnd);
   }
 
-  async function handleSave() {
+  function handleSave() {
     if (!audioFileName) {
       setValidationMessage(t('validation-no-audio'));
       return;
@@ -202,25 +217,31 @@ export default function SaveVideoDialog({
 
     setValidationMessage('');
     setIsSubmitting(true);
+    keepSegmentOverlayRef.current = true;
 
-    try {
-      const started = await startVideoRecording({
-        fileHandle,
-        filePath,
-        defaultPath: initialDefaultPath,
-        startTime: selectedStartTime,
-        endTime: selectedEndTime,
-        includeAudio: shouldIncludeAudio,
-        audioSource,
-      });
+    onCloseAndThen(() => {
+      void (async () => {
+        try {
+          const started = await startVideoRecording({
+            fileHandle,
+            filePath,
+            defaultPath: initialDefaultPath,
+            startTime: selectedStartTime,
+            endTime: selectedEndTime,
+            includeAudio: shouldIncludeAudio,
+            audioSource,
+            fps,
+          });
 
-      if (started) {
-        keepSegmentOverlayRef.current = true;
-        onClose();
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+          if (!started) {
+            clearVideoExportSegment();
+          }
+        } catch (error) {
+          clearVideoExportSegment();
+          raiseError(te('start-video-recording-failed'), error);
+        }
+      })();
+    });
   }
 
   return (
@@ -334,6 +355,19 @@ export default function SaveVideoDialog({
 
         <section className="space-y-2">
           <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-sm text-neutral-100">{t('frame-rate')}</span>
+            <SelectInput
+              name="fps"
+              value={fps}
+              width={100}
+              items={VIDEO_EXPORT_FPS_OPTIONS.map(option => ({
+                label: t('fps', { value: option }),
+                value: option,
+              }))}
+              onChange={(_name, value) => setFps(Number(value) as VideoExportFps)}
+            />
+          </div>
+          <div className="flex items-center justify-between gap-4 py-1">
             <label htmlFor="video-export-include-audio" className="text-sm text-neutral-100">
               {t('include-audio')}
             </label>
@@ -357,7 +391,7 @@ export default function SaveVideoDialog({
           <Button
             variant="default"
             size="sm"
-            disabled={isSubmitting || isChoosingLocation}
+            disabled={isSubmitting || isChoosingLocation || isChoosingAudio || !canSave}
             onClick={handleSave}
           >
             {isSubmitting ? t('starting') : t('save-video')}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import useAppStore from '@/app/actions/app';
 import ZoomControl from '@/app/components/window/ZoomControl';
 import { env, renderer } from '@/app/global';
@@ -6,18 +6,18 @@ import { env, renderer } from '@/app/global';
 const { APP_VERSION } = env;
 
 interface StatsState {
-  fps?: string;
+  fps?: number | null;
 }
 
 export default function StatusBar() {
   const statusText = useAppStore(state => state.statusText);
-  const [{ fps }, setState] = useState<StatsState>({ fps: '—' });
+  const [{ fps }, setState] = useState<StatsState>({ fps: null });
 
   function updateStats() {
     const currentFPS = renderer.getFPS();
 
     setState({
-      fps: renderer.rendering ? `${currentFPS} FPS` : '—',
+      fps: renderer.rendering ? currentFPS : null,
     });
   }
 
@@ -42,7 +42,16 @@ export default function StatusBar() {
         <ZoomControl />
       </div>
       <div className={'flex w-1/3 items-center justify-end gap-5 text-right'}>
-        <InfoItem value={fps} />
+        <InfoItem
+          value={
+            <>
+              <span className={fps === null ? 'text-muted-foreground' : undefined}>
+                {fps ?? '—'}
+              </span>{' '}
+              FPS
+            </>
+          }
+        />
         <InfoItem value={APP_VERSION} />
       </div>
     </div>
@@ -50,7 +59,7 @@ export default function StatusBar() {
 }
 
 interface InfoItemProps {
-  value?: string;
+  value?: ReactNode;
 }
 
 function InfoItem({ value }: InfoItemProps) {

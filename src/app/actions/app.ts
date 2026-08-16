@@ -39,6 +39,8 @@ interface AppState {
   isVideoRecording: boolean;
   isStagePictureInPictureActive: boolean;
   videoExportSegment: VideoExportSegment | null;
+  /** Export playhead position (0-1 of total duration) while an offline export is running. */
+  videoExportPosition: number | null;
   pluginsUpdatedAt: number;
 }
 
@@ -67,7 +69,11 @@ interface StartVideoRecordingOptions {
   endTime?: number;
   includeAudio?: boolean;
   audioSource?: File | null;
+  fps?: VideoExportFps;
 }
+
+export const VIDEO_EXPORT_FPS_OPTIONS = [30, 60] as const;
+export type VideoExportFps = (typeof VIDEO_EXPORT_FPS_OPTIONS)[number];
 
 interface CaptureStreamCanvas {
   captureStream: (frameRate?: number) => MediaStream;
@@ -100,6 +106,7 @@ const initialState: AppState = {
   isVideoRecording: false,
   isStagePictureInPictureActive: false,
   videoExportSegment: null,
+  videoExportPosition: null,
   pluginsUpdatedAt: 0,
 };
 
@@ -115,7 +122,7 @@ let stagePictureInPictureVideo: HTMLVideoElement | null = null;
 let stagePictureInPictureStream: MediaStream | null = null;
 
 const DEFAULT_VIDEO_FPS = 60;
-const FFMPEG_VIDEO_FPS = 30;
+const DEFAULT_EXPORT_FPS: VideoExportFps = 30;
 const RECORDING_TIMESLICE_MS = 250;
 const VIDEO_BITS_PER_SECOND = 8_000_000;
 const VIDEO_MIME_CANDIDATES = [
@@ -371,6 +378,7 @@ export async function saveVideo() {
       startTime: 0,
       endTime: totalDuration,
       includeAudio: true,
+      fps: DEFAULT_EXPORT_FPS,
     },
   );
 }
@@ -409,6 +417,7 @@ async function startFfmpegVideoExport({
   endTime,
   includeAudio = true,
   audioSource = null,
+  fps = DEFAULT_EXPORT_FPS,
 }: StartVideoRecordingOptions): Promise<boolean> {
   const bridge = getDesktopBridge();
   const outputPath = filePath || defaultPath || '';
@@ -461,15 +470,19 @@ async function startFfmpegVideoExport({
       includeAudio: includeAudio && Boolean(audioResolved.path),
       startTime: clampedStartTime,
       endTime: clampedEndTime,
-      fps: FFMPEG_VIDEO_FPS,
+      fps,
       quality: 'medium',
       onProgress: ({ status, currentFrame, totalFrames }) => {
         if (status === 'rendering-video' && totalFrames) {
+          const exportTime =
+            clampedStartTime +
+            ((currentFrame ?? 0) / totalFrames) * (clampedEndTime - clampedStartTime);
           appStore.setState({
             statusText: t('status.export-rendering-video', {
               current: currentFrame ?? 0,
               total: totalFrames,
             }),
+            videoExportPosition: totalDuration > 0 ? exportTime / totalDuration : 0,
           });
           return;
         }
@@ -504,6 +517,7 @@ async function startFfmpegVideoExport({
     appStore.setState({
       isVideoRecording: false,
       videoExportSegment: null,
+      videoExportPosition: null,
       statusText: '',
     });
 
@@ -527,6 +541,7 @@ export async function startVideoRecording({
   endTime,
   includeAudio = true,
   audioSource = null,
+  fps = DEFAULT_EXPORT_FPS,
 }: StartVideoRecordingOptions): Promise<boolean> {
   if (audioSource) {
     await loadAudioFile(audioSource, false);
@@ -566,6 +581,7 @@ export async function startVideoRecording({
       endTime: clampedEndTime,
       includeAudio,
       audioSource,
+      fps,
     });
   }
 
@@ -586,7 +602,7 @@ export async function startVideoRecording({
       await audioContext.resume();
     }
 
-    const canvasStream = setup.canvas.captureStream(DEFAULT_VIDEO_FPS);
+    const canvasStream = setup.canvas.captureStream(fps || DEFAULT_VIDEO_FPS);
     const tracks = [...canvasStream.getVideoTracks()];
 
     if (includeAudio) {

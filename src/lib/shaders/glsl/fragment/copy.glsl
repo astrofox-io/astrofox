@@ -14,4 +14,11 @@ void main() {
 
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
+
+    #ifdef ENCODE_SRGB
+    // When rendering into a texture (not the screen), three.js leaves the
+    // output in the linear working color space. Apply the sRGB transfer
+    // manually so pixel readbacks match what is shown on screen.
+    gl_FragColor = sRGBTransferOETF(gl_FragColor);
+    #endif
 }
