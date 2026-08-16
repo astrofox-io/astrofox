@@ -114,7 +114,12 @@ export default function Control({
   let activeGroup: string | null = null;
 
   return (
-    <div className={classNames('pb-2', className)}>
+    <div
+      className={classNames('pb-2 border-l-2', className, {
+        'border-l-primary': active,
+        'border-l-transparent': !active,
+      })}
+    >
       {showHeader && (
         <div className={'relative py-3 px-2.5'}>
           <div
@@ -123,14 +128,7 @@ export default function Control({
             }
           >
             <div className="flex items-center gap-2">
-              <div
-                className="inline-flex border-b-2 border-b-transparent uppercase"
-                style={{
-                  borderBottomColor: active ? 'var(--color-primary)' : 'transparent',
-                }}
-              >
-                {translateLabel(t, label)}
-              </div>
+              <div className="inline-flex uppercase">{translateLabel(t, label)}</div>
             </div>
             <button
               type="button"
