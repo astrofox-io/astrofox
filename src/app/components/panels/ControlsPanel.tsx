@@ -43,6 +43,7 @@ const ControlCard = React.memo(
 
 export default function ControlsPanel() {
   const activeElementId = useApp(state => state.activeElementId);
+  const controlsPanelMode = useApp(state => state.controlsPanelMode);
   const sceneOrder = useScenes(state => state.sceneOrder);
   const sceneById = useScenes(state => state.sceneById) as Record<string, Record<string, unknown>>;
   const sceneElementsById = useScenes(state => state.sceneElementsById) as Record<
@@ -90,6 +91,14 @@ export default function ControlsPanel() {
     return items;
   }, [elementById, sceneById, sceneElementsById, sceneOrder]);
 
+  const visibleItems = useMemo(
+    () =>
+      controlsPanelMode === 'active'
+        ? controlItems.filter(item => item.id === activeElementId)
+        : controlItems,
+    [activeElementId, controlItems, controlsPanelMode],
+  );
+
   useEffect(() => {
     const node = document.getElementById(`control-${activeElementId}`);
     if (node && panelRef.current) {
@@ -99,7 +108,7 @@ export default function ControlsPanel() {
 
   return (
     <div className={'flex-1 overflow-auto relative pt-1 pb-0 px-1 mb-1.5'} ref={panelRef}>
-      {controlItems.map(item => (
+      {visibleItems.map(item => (
         <ControlCard key={item.id} item={item} active={item.id === activeElementId} />
       ))}
     </div>

@@ -36,6 +36,7 @@ interface AppState {
   isLeftPanelVisible: boolean;
   isBottomPanelVisible: boolean;
   isRightPanelVisible: boolean;
+  controlsPanelMode: 'active' | 'all';
   isVideoRecording: boolean;
   isStagePictureInPictureActive: boolean;
   videoExportSegment: VideoExportSegment | null;
@@ -103,6 +104,7 @@ const initialState: AppState = {
   isLeftPanelVisible: true,
   isBottomPanelVisible: true,
   isRightPanelVisible: true,
+  controlsPanelMode: 'all',
   isVideoRecording: false,
   isStagePictureInPictureActive: false,
   videoExportSegment: null,
@@ -812,6 +814,10 @@ export function toggleStagePictureInPicture() {
 
 export function setActiveReactorId(reactorId?: string | null) {
   appStore.setState({ activeReactorId: reactorId || null });
+}
+
+export function setControlsPanelMode(mode: 'active' | 'all') {
+  appStore.setState({ controlsPanelMode: mode });
 }
 
 export function setActiveElementId(elementId?: string | null) {

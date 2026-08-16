@@ -21,7 +21,9 @@
     "reactors": "Reactors",
     "controls": "Controls",
     "add-scene": "Add scene",
-    "add-reactor": "Add reactor"
+    "add-reactor": "Add reactor",
+    "show-active-layer": "Show active layer only",
+    "show-all-layers": "Show all layers"
   },
   "title-bar": {
     "hide-layers-panel": "Hide layers and reactors panel",
