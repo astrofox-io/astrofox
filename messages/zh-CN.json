@@ -14,7 +14,8 @@
     "choose": "选择",
     "choosing": "选择中...",
     "loading": "加载中...",
-    "unknown": "未知"
+    "unknown": "未知",
+    "plugin": "插件"
   },
   "panels": {
     "layers": "图层",

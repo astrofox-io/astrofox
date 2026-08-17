@@ -14,7 +14,8 @@
     "choose": "선택",
     "choosing": "선택 중...",
     "loading": "로드 중...",
-    "unknown": "알 수 없음"
+    "unknown": "알 수 없음",
+    "plugin": "플러그인"
   },
   "panels": {
     "layers": "레이어",

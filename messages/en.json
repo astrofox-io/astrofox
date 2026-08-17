@@ -14,7 +14,8 @@
     "choose": "Choose",
     "choosing": "Choosing...",
     "loading": "Loading...",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "plugin": "Plugin"
   },
   "panels": {
     "layers": "Layers",

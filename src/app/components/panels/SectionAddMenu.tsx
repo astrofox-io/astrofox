@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import useApp, { type AddMenuKind, closeAddMenu, openAddMenu } from '@/app/actions/app';
-import { SquarePlus } from 'lucide-react';
+import { Plus } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getAddMenuConfig } from './addMenuConfig';
@@ -37,7 +37,7 @@ export default function SectionAddMenu({ sceneId, kind }: SectionAddMenuProps) {
         }
       }}
     >
-      <SquarePlus className="size-5" />
+      <Plus className="size-4" />
     </Button>
   );
 }

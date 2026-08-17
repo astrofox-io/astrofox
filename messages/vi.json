@@ -14,7 +14,8 @@
     "choose": "Chọn",
     "choosing": "Đang chọn...",
     "loading": "Đang tải...",
-    "unknown": "không xác định"
+    "unknown": "không xác định",
+    "plugin": "Plugin"
   },
   "panels": {
     "layers": "Lớp",

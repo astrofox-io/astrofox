@@ -14,7 +14,8 @@
     "choose": "選択",
     "choosing": "選択中...",
     "loading": "読み込み中...",
-    "unknown": "不明"
+    "unknown": "不明",
+    "plugin": "プラグイン"
   },
   "panels": {
     "layers": "レイヤー",

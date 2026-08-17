@@ -9,6 +9,7 @@ export interface MenuCategory {
 
 interface LibraryItem {
   config?: {
+    name?: string;
     label?: string;
     external?: boolean;
   };

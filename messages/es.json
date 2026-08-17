@@ -14,7 +14,8 @@
     "choose": "Elegir",
     "choosing": "Eligiendo...",
     "loading": "Cargando...",
-    "unknown": "desconocido"
+    "unknown": "desconocido",
+    "plugin": "Plugin"
   },
   "panels": {
     "layers": "Capas",

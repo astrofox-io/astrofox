@@ -14,7 +14,8 @@
     "choose": "Choisir",
     "choosing": "Sélection...",
     "loading": "Chargement...",
-    "unknown": "inconnu"
+    "unknown": "inconnu",
+    "plugin": "Plugin"
   },
   "panels": {
     "layers": "Calques",

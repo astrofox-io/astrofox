@@ -14,7 +14,8 @@
     "choose": "Auswählen",
     "choosing": "Auswahl...",
     "loading": "Wird geladen...",
-    "unknown": "unbekannt"
+    "unknown": "unbekannt",
+    "plugin": "Plugin"
   },
   "panels": {
     "layers": "Ebenen",

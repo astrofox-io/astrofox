@@ -1,3 +1,4 @@
+import { Blocks } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp, { closeAddMenu, setActiveElementId } from '@/app/actions/app';
@@ -6,6 +7,7 @@ import { Times } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import { translateLabel } from '@/i18n/labels';
 import { cn } from '@/lib/utils';
+import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 import {
   type EntityConstructor,
   getAddMenuConfig,
@@ -22,11 +24,14 @@ interface AddElementDrawerProps {
   offset: string;
 }
 
+interface DrawerItem extends MenuItem {
+  external: boolean;
+}
+
 interface DrawerGroup {
   key: string;
-  label: string;
-  items: MenuItem[];
-  translate: boolean;
+  label: string | null;
+  items: DrawerItem[];
 }
 
 /**
@@ -51,22 +56,34 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
 
     const config = getAddMenuConfig(ta, addMenu.kind);
     const libraryItems = getLibraryItems(config.entityType);
-    const nextGroups: DrawerGroup[] = [];
+    const nextGroups: DrawerGroup[] = config.categories
+      .map(category => ({
+        key: category.label,
+        label: category.label,
+        items: getCategoryItems(libraryItems, category.items).map(item => ({
+          ...item,
+          external: false,
+        })),
+      }))
+      .filter(group => group.items.length > 0);
 
-    const externalItems = getExternalItems(libraryItems);
+    // Plugin entities are listed inline (marked with an icon) rather than in
+    // their own "External" section. Displays only appear in the menu for the
+    // render group they belong to.
+    const externalItems = getExternalItems(libraryItems)
+      .filter(item => {
+        if (config.entityType !== 'displays') {
+          return true;
+        }
+        return getDisplayRenderGroup(item.Entity.config?.name ?? item.key) === addMenu.kind;
+      })
+      .map(item => ({ ...item, external: true }));
+
     if (externalItems.length > 0) {
-      nextGroups.push({
-        key: 'external',
-        label: 'External',
-        items: externalItems,
-        translate: false,
-      });
-    }
-
-    for (const category of config.categories) {
-      const items = getCategoryItems(libraryItems, category.items);
-      if (items.length > 0) {
-        nextGroups.push({ key: category.label, label: category.label, items, translate: true });
+      if (nextGroups.length === 1) {
+        nextGroups[0].items.push(...externalItems);
+      } else {
+        nextGroups.push({ key: 'external', label: null, items: externalItems });
       }
     }
 
@@ -142,7 +159,7 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
         style={{ width: DRAWER_WIDTH, left: offset }}
       >
         <div className="flex h-12 shrink-0 items-center border-b px-2.5">
-          <div className="cursor-default text-sm uppercase text-neutral-400 leading-none">
+          <div className="cursor-default text-xs font-medium uppercase tracking-wide text-neutral-400 leading-none">
             {title}
           </div>
           <Button
@@ -158,18 +175,28 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
         <div className="min-h-0 flex-1 overflow-y-auto p-2">
           {groups.map((group, index) => (
             <div key={group.key} className={cn(index > 0 && 'mt-2 border-t pt-2')}>
-              <div className="px-2 pt-1 pb-1 text-[10px] font-semibold uppercase text-neutral-400">
-                {group.label}
-              </div>
+              {group.label ? (
+                <div className="px-2 pt-1 pb-1 text-[10px] font-semibold uppercase text-neutral-400">
+                  {group.label}
+                </div>
+              ) : null}
               <ul className="flex flex-col gap-0.5">
                 {group.items.map(item => (
                   <li key={item.key}>
                     <Button
                       variant="ghost"
-                      className="h-8 w-full justify-start rounded px-2 text-sm font-normal text-neutral-200 transition-none hover:bg-primary hover:text-neutral-100"
+                      className="group h-8 w-full justify-start rounded px-2 text-sm font-normal text-neutral-200 transition-none hover:bg-primary hover:text-neutral-100"
                       onClick={() => handleSelect(item.Entity)}
                     >
-                      {group.translate ? translateLabel(t, item.label) : item.label}
+                      <span className="min-w-0 flex-1 truncate text-left">
+                        {item.external ? item.label : translateLabel(t, item.label)}
+                      </span>
+                      {item.external ? (
+                        <Blocks
+                          aria-label={tc('plugin')}
+                          className="size-4 shrink-0 text-neutral-500 group-hover:text-neutral-100"
+                        />
+                      ) : null}
                     </Button>
                   </li>
                 ))}
