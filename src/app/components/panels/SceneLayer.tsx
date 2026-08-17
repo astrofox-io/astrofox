@@ -3,10 +3,8 @@ import type { LucideIcon } from 'lucide-react';
 import type React from 'react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Add2DDisplaysMenu from '@/app/components/panels/Add2DDisplaysMenu';
-import Add3DDisplaysMenu from '@/app/components/panels/Add3DDisplaysMenu';
-import AddEffectsMenu from '@/app/components/panels/AddEffectsMenu';
 import Layer from '@/app/components/panels/Layer';
+import SectionAddMenu from '@/app/components/panels/SectionAddMenu';
 import { Cube, Picture, Square, Sun } from '@/app/icons';
 import { translateGeneratedName, translateLabel } from '@/i18n/labels';
 import { reverse } from '@/lib/utils/array';
@@ -115,13 +113,16 @@ export default function SceneLayer({
     sectionRenderGroup: '2d' | '3d' | null = null,
   ) => (
     <div className="flex flex-col gap-0.5">
-      <div className="ml-4 px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-neutral-400">
-        {translateLabel(t, title)}
+      <div className="ml-4 flex items-center pl-2 pr-1 pt-1 pb-0.5">
+        <div className="text-[10px] font-semibold uppercase text-neutral-400">
+          {translateLabel(t, title)}
+        </div>
+        <div className="ml-auto">{addMenu}</div>
       </div>
       {layers.length > 0 ? layers.map((layer: SceneElement) => renderLayer(layer)) : null}
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: This container accepts pointer drag-and-drop between layer sections. */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: Drop target for moving layers into this section. */}
       <div
-        className="ml-4 flex justify-center py-1"
+        className="ml-4 h-1.5"
         onDragOver={e => {
           if (
             dragSourceType !== sectionType ||
@@ -142,9 +143,7 @@ export default function SceneLayer({
 
           onLayerDrop?.(scene.id, e);
         }}
-      >
-        {addMenu}
-      </div>
+      />
     </div>
   );
 
@@ -189,19 +188,24 @@ export default function SceneLayer({
         className="rounded"
       />
       <div className={classNames('flex flex-col gap-1')}>
-        {renderSection('Effects', effects, 'effect', <AddEffectsMenu sceneId={id} />)}
+        {renderSection(
+          'Effects',
+          effects,
+          'effect',
+          <SectionAddMenu sceneId={id} kind="effects" />,
+        )}
         {renderSection(
           '2D Displays',
           displays2D,
           'display',
-          <Add2DDisplaysMenu sceneId={id} />,
+          <SectionAddMenu sceneId={id} kind="2d" />,
           '2d',
         )}
         {renderSection(
           '3D Displays',
           displays3D,
           'display',
-          <Add3DDisplaysMenu sceneId={id} />,
+          <SectionAddMenu sceneId={id} kind="3d" />,
           '3d',
         )}
       </div>

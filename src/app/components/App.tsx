@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import useAppStore, { initApp } from '@/app/actions/app';
+import AddElementDrawer from '@/app/components/panels/AddElementDrawer';
 import LeftPanel from '@/app/components/panels/LeftPanel';
 import ReactorPanel from '@/app/components/panels/ReactorPanel';
 import RightPanel from '@/app/components/panels/RightPanel';
@@ -98,11 +99,12 @@ function App() {
       <div className="flex flex-row flex-1 overflow-hidden relative">
         <div
           aria-hidden={!isLeftPanelVisible}
-          className={`flex shrink-0 overflow-hidden transition-[width] ${PANEL_TRANSITION}`}
+          // Opaque and above the add-element drawer so the drawer slides out from beneath it.
+          className={`relative z-30 flex shrink-0 overflow-hidden bg-background transition-[width] ${PANEL_TRANSITION}`}
           style={{ width: isLeftPanelVisible ? PANEL_WIDTH : '0rem' }}
         >
           <div
-            className={`flex h-full transition-[transform,opacity] ${PANEL_TRANSITION} ${
+            className={`flex h-full transition-[translate,opacity] ${PANEL_TRANSITION} ${
               isLeftPanelVisible
                 ? 'translate-x-0 opacity-100'
                 : '-translate-x-4 opacity-0 pointer-events-none'
@@ -111,7 +113,8 @@ function App() {
             <LeftPanel />
           </div>
         </div>
-        <div id="viewport" className="flex flex-col flex-1 overflow-hidden relative">
+        {/* `isolate` keeps the stage's internal z-indexes from escaping above the add-element drawer. */}
+        <div id="viewport" className="flex flex-col flex-1 overflow-hidden relative isolate z-0">
           <Stage />
           <div
             aria-hidden={!isBottomPanelVisible}
@@ -121,7 +124,7 @@ function App() {
           >
             <div
               ref={bottomPanel.ref}
-              className={`transition-[transform,opacity] ${PANEL_TRANSITION} ${
+              className={`transition-[translate,opacity] ${PANEL_TRANSITION} ${
                 isBottomPanelVisible
                   ? 'translate-y-0 opacity-100'
                   : 'translate-y-4 opacity-0 pointer-events-none'
@@ -134,11 +137,11 @@ function App() {
         </div>
         <div
           aria-hidden={!isRightPanelVisible}
-          className={`flex shrink-0 overflow-hidden transition-[width] ${PANEL_TRANSITION}`}
+          className={`relative isolate z-0 flex shrink-0 overflow-hidden transition-[width] ${PANEL_TRANSITION}`}
           style={{ width: isRightPanelVisible ? PANEL_WIDTH : '0rem' }}
         >
           <div
-            className={`flex h-full transition-[transform,opacity] ${PANEL_TRANSITION} ${
+            className={`flex h-full transition-[translate,opacity] ${PANEL_TRANSITION} ${
               isRightPanelVisible
                 ? 'translate-x-0 opacity-100'
                 : 'translate-x-4 opacity-0 pointer-events-none'
@@ -147,6 +150,7 @@ function App() {
             <RightPanel />
           </div>
         </div>
+        <AddElementDrawer offset={isLeftPanelVisible ? PANEL_WIDTH : '0rem'} />
       </div>
       <StatusBar />
       <Modals />

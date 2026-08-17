@@ -33,6 +33,13 @@ export interface VideoExportSegment {
   endPosition: number;
 }
 
+export type AddMenuKind = 'effects' | '2d' | '3d';
+
+export interface AddMenuState {
+  sceneId: string;
+  kind: AddMenuKind;
+}
+
 interface AppState {
   statusText: string;
   showReactor: boolean;
@@ -50,6 +57,8 @@ interface AppState {
   /** Export playhead position (0-1 of total duration) while an offline export is running. */
   videoExportPosition: number | null;
   pluginsUpdatedAt: number;
+  /** Slide-out "add element" menu (effects / 2D / 3D displays) for a scene. */
+  addMenu: AddMenuState | null;
 }
 
 export interface FileHandleLike {
@@ -132,6 +141,7 @@ const initialState: AppState = {
   videoExportSegment: null,
   videoExportPosition: null,
   pluginsUpdatedAt: 0,
+  addMenu: null,
 };
 
 const appStore = create<AppState>(() => ({
@@ -912,6 +922,16 @@ export function setDisplayTransformModeEnabled(enabled: boolean) {
 
 export function toggleCameraMode() {
   setCameraModeEnabled(!appStore.getState().cameraModeEnabled);
+}
+
+export function openAddMenu(sceneId: string, kind: AddMenuKind) {
+  appStore.setState({ addMenu: { sceneId, kind } });
+}
+
+export function closeAddMenu() {
+  if (appStore.getState().addMenu) {
+    appStore.setState({ addMenu: null });
+  }
 }
 
 export function toggleLeftPanelVisibility() {
