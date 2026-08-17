@@ -6,7 +6,6 @@ export { default as ColorAverageEffect } from './ColorAverageEffect';
 export { default as ColorDepthEffect } from './ColorDepthEffect';
 export { default as ColorEffect } from './ColorEffect';
 export { default as ColorHalftoneEffect } from './ColorHalftoneEffect';
-export { default as DepthOfFieldEffect } from './DepthOfFieldEffect';
 export { default as DistortionEffect } from './DistortionEffect';
 export { default as DotScreenEffect } from './DotScreenEffect';
 export { default as GlitchEffect } from './GlitchEffect';

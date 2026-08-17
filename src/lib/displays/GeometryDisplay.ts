@@ -1,5 +1,6 @@
 import FFTParser from '@/lib/audio/FFTParser';
 import Display from '@/lib/core/Display';
+import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
 
 const shapeOptions = [
   'Box',
@@ -43,6 +44,7 @@ export default class GeometryDisplay extends Display {
       startY: 0,
       startZ: 0,
       seed: 0,
+      ...DISPLAY_3D_DEFAULTS,
     },
     controls: {
       shape: {
@@ -93,30 +95,6 @@ export default class GeometryDisplay extends Display {
         hidden: (display: { properties: Record<string, unknown> }) =>
           display.properties.material !== 'Points',
       },
-      x: {
-        label: 'X',
-        type: 'number',
-        min: -500,
-        max: 500,
-        withRange: true,
-        hideFill: true,
-      },
-      y: {
-        label: 'Y',
-        type: 'number',
-        min: -500,
-        max: 500,
-        withRange: true,
-        hideFill: true,
-      },
-      z: {
-        label: 'Z',
-        type: 'number',
-        min: -500,
-        max: 500,
-        withRange: true,
-        hideFill: true,
-      },
       opacity: {
         label: 'Opacity',
         type: 'number',
@@ -126,6 +104,34 @@ export default class GeometryDisplay extends Display {
         withRange: true,
         withReactor: true,
       },
+      x: {
+        group: 'Position',
+        label: 'X',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+        hideFill: true,
+      },
+      y: {
+        group: 'Position',
+        label: 'Y',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+        hideFill: true,
+      },
+      z: {
+        group: 'Position',
+        label: 'Z',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+        hideFill: true,
+      },
+      ...display3DControls,
     },
   };
 

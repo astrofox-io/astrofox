@@ -4,7 +4,7 @@ import React from 'react';
 import { AddEquation, CustomBlending, DoubleSide, FrontSide, OneFactor, ZeroFactor } from 'three';
 import FFTParser from '@/lib/audio/FFTParser';
 import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
-import { createGeometryNode, getMaterialNode, isPointsMaterial } from './GeometryDisplayLayer';
+import { createGeometryNode, getMaterialNode, isPointsMaterial } from './geometryMaterials';
 import { useTexture3D } from './useTexture3D';
 
 export function GeometryDisplayLayer3D({

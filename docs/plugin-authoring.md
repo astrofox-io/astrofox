@@ -204,9 +204,11 @@ export default function createPlugin({ properties, seed, size, libraries }) {
 
 Available libraries: `three` (the version Astrofox itself uses; check
 `libraries.three.REVISION` if you rely on newer APIs). Requested libraries are
-shown to the user at install time. The result is still a regular 2D layer —
-it gets the standard transform/blending controls, but does not share the
-camera or lights of the built-in 3D displays. See `examples/plugins/audio-orb`.
+shown to the user at install time. The result is a regular layer, exactly like
+the built-in 3D displays: every 3D display owns its own scene, camera and
+lighting rig and returns a bitmap. The host does not control lights; if you
+want your lighting to be audio-reactive, expose the relevant values as
+controls with `withReactor`. See `examples/plugins/audio-orb`.
 
 ## Development workflow
 

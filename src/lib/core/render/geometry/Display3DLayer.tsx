@@ -18,10 +18,28 @@ import {
 import { updateElementProperties } from '@/app/actions/scenes';
 import ShaderPass from '../composer/ShaderPass';
 import DepthOfFieldShader from '../effects/shaders/DepthOfFieldShader';
-import { SceneLights3D } from './SceneLights3D';
+import { DisplayLights3D } from './DisplayLights3D';
 
-const PERSPECTIVE_FOV = 50;
+export const PERSPECTIVE_FOV = 50;
 const CAMERA_PERSIST_DELAY_MS = 120;
+
+/**
+ * Exposes the host's private camera/viewport to the 3D content rendered
+ * inside a Display3DLayer (e.g. TunnelDisplayLayer3D follows the camera).
+ */
+export const Display3DContext = React.createContext({
+  camera: null,
+  width: 0,
+  height: 0,
+});
+
+export function useDisplay3D() {
+  return React.useContext(Display3DContext);
+}
+
+export function getDefaultCameraDistance(height, fov = PERSPECTIVE_FOV) {
+  return height / 2 / Math.tan(((fov / 2) * Math.PI) / 180);
+}
 
 function createRenderTarget(width, height, withDepth = false) {
   const target = new WebGLRenderTarget(width, height, {
@@ -41,28 +59,35 @@ function createRenderTarget(width, height, withDepth = false) {
   return target;
 }
 
-export function PerspectiveScene3D({
-  sceneId,
-  sceneProperties = {},
-  cameraModeActive = false,
+/**
+ * Per-display 3D host. Each "has a camera" display renders its own three.js
+ * scene (own perspective camera, own lighting rig, optional depth of field)
+ * into a private render target, and presents the result as a full-stage
+ * textured plane in the ordinary 2D layer stack.
+ *
+ * Camera state lives on the display (`cameraAzimuth`, `cameraPolar`,
+ * `cameraDistance`); when `cameraModeActive` the stage canvas becomes an
+ * orbit controller for this display's camera.
+ */
+export function Display3DLayer({
+  display,
+  order = 0,
   width,
   height,
-  renderOrder = 0,
-  depthOfFieldEffect = null,
+  cameraModeActive = false,
   children,
 }) {
   const gl = useThree(state => state.gl);
-  const dofProperties = depthOfFieldEffect?.properties || {};
-  const depthOfFieldEnabled = !!depthOfFieldEffect && depthOfFieldEffect.enabled !== false;
+  const invalidate = useThree(state => state.invalidate);
+  const properties = display?.properties || {};
+  const displayId = display?.id;
+  const depthOfFieldEnabled = Boolean(properties.depthOfField);
   const cameraAxisScale = React.useMemo(
     () => Math.max(48, Math.min(width, height) * 0.12),
     [height, width],
   );
 
-  const cameraZ = React.useMemo(
-    () => height / 2 / Math.tan(((PERSPECTIVE_FOV / 2) * Math.PI) / 180),
-    [height],
-  );
+  const cameraZ = React.useMemo(() => getDefaultCameraDistance(height), [height]);
 
   const perspScene = React.useMemo(() => new ThreeScene(), []);
   const cameraAxisHelper = React.useMemo(() => {
@@ -123,57 +148,79 @@ export function PerspectiveScene3D({
       perspCamera.position.set(x, y, z);
       perspCamera.lookAt(0, 0, 0);
       perspCamera.updateProjectionMatrix();
+      invalidate();
     },
-    [perspCamera],
+    [invalidate, perspCamera],
   );
 
   const persistCameraState = React.useCallback(
     nextState => {
-      if (!sceneId) {
+      if (!displayId) {
         return;
       }
 
-      updateElementProperties(sceneId, {
+      updateElementProperties(displayId, {
         cameraAzimuth: nextState.azimuth,
         cameraPolar: nextState.polar,
         cameraDistance: nextState.distance,
       });
     },
-    [sceneId],
+    [displayId],
   );
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     perspCamera.aspect = width / height;
     applyCameraState(cameraStateRef.current);
   }, [applyCameraState, perspCamera, width, height, cameraZ]);
 
+  // Display properties are mutated in place by the control panel, so React
+  // props never change identity; request a frame explicitly whenever a DoF
+  // value changes so the pass re-runs with the new uniforms after commit.
+  const focusDistance = properties.focusDistance;
+  const focalLength = properties.focalLength;
+  const bokehScale = properties.bokehScale;
+  const dofHeight = properties.dofHeight;
+
+  React.useLayoutEffect(() => {
+    invalidate();
+  }, [invalidate, depthOfFieldEnabled, focusDistance, focalLength, bokehScale, dofHeight]);
+
   React.useEffect(() => {
-    gl.shadowMap.enabled = true;
-    gl.shadowMap.type = PCFSoftShadowMap;
+    if (!gl.shadowMap.enabled) {
+      gl.shadowMap.enabled = true;
+      gl.shadowMap.type = PCFSoftShadowMap;
+    }
   }, [gl]);
 
   React.useEffect(() => {
     cameraAxisHelper.scale.setScalar(cameraAxisScale);
   }, [cameraAxisHelper, cameraAxisScale]);
 
-  React.useEffect(() => {
+  const cameraAzimuth = properties.cameraAzimuth;
+  const cameraPolar = properties.cameraPolar;
+  const cameraDistance = properties.cameraDistance;
+
+  // Layout effect + invalidate: the backend requests a frame right after
+  // root.render(), which can run before a passive effect commits the new
+  // camera pose (leaving the stage one control change behind).
+  React.useLayoutEffect(() => {
     if (dragStateRef.current.active) {
       return;
     }
 
     applyCameraState({
-      azimuth: Number(sceneProperties.cameraAzimuth ?? 0),
-      polar: clampPolar(Number(sceneProperties.cameraPolar ?? 0)),
-      distance: clampDistance(Number(sceneProperties.cameraDistance ?? cameraZ) || cameraZ),
+      azimuth: Number(cameraAzimuth ?? 0),
+      polar: clampPolar(Number(cameraPolar ?? 0)),
+      distance: clampDistance(Number(cameraDistance ?? cameraZ) || cameraZ),
     });
   }, [
     applyCameraState,
     cameraZ,
     clampDistance,
     clampPolar,
-    sceneProperties.cameraAzimuth,
-    sceneProperties.cameraDistance,
-    sceneProperties.cameraPolar,
+    cameraAzimuth,
+    cameraDistance,
+    cameraPolar,
   ]);
 
   React.useEffect(() => {
@@ -259,6 +306,7 @@ export function PerspectiveScene3D({
 
     return () => {
       clearPersistTimeout();
+      dragStateRef.current.active = false;
       element.style.cursor = '';
       element.removeEventListener('pointerdown', handlePointerDown);
       ownerDocument.removeEventListener('pointermove', handlePointerMove);
@@ -272,47 +320,42 @@ export function PerspectiveScene3D({
   const dofPassRef = React.useRef(null);
   const materialRef = React.useRef(null);
 
-  if (!dofPassRef.current) {
+  if (depthOfFieldEnabled && !dofPassRef.current) {
     dofPassRef.current = new ShaderPass(DepthOfFieldShader);
   }
 
-  const dofRenderHeight = React.useMemo(() => {
-    const requestedHeight = Math.max(
-      1,
-      Math.round(Number(dofProperties.height ?? height) || height),
-    );
-
-    return Math.min(requestedHeight, Math.max(1, height));
-  }, [dofProperties.height, height]);
-
-  const dofRenderWidth = React.useMemo(() => {
-    if (height <= 0) {
-      return Math.max(1, width);
-    }
-
-    return Math.max(1, Math.round((width * dofRenderHeight) / height));
-  }, [dofRenderHeight, height, width]);
   const multisampleCount = React.useMemo(() => (gl.capabilities.isWebGL2 ? 4 : 0), [gl]);
 
-  React.useEffect(() => {
+  // DoF runs at a reduced height (default 480) to keep the 16-tap bokeh cheap.
+  const dofRenderHeight = React.useMemo(() => {
+    const requested = Math.max(1, Math.round(Number(dofHeight ?? 480) || height));
+    return Math.min(requested, Math.max(1, height));
+  }, [dofHeight, height]);
+  const dofRenderWidth = React.useMemo(
+    () => (height > 0 ? Math.max(1, Math.round((width * dofRenderHeight) / height)) : width),
+    [dofRenderHeight, height, width],
+  );
+
+  React.useLayoutEffect(() => {
     colorTarget.setSize(width, height);
-  }, [colorTarget, width, height]);
+    const targetWidth = depthOfFieldEnabled ? dofRenderWidth : width;
+    const targetHeight = depthOfFieldEnabled ? dofRenderHeight : height;
+    effectTarget.setSize(targetWidth, targetHeight);
+    dofPassRef.current?.setSize(targetWidth, targetHeight);
+  }, [
+    colorTarget,
+    effectTarget,
+    width,
+    height,
+    depthOfFieldEnabled,
+    dofRenderWidth,
+    dofRenderHeight,
+  ]);
 
   React.useEffect(() => {
     colorTarget.samples = multisampleCount;
     effectTarget.samples = multisampleCount;
   }, [colorTarget, effectTarget, multisampleCount]);
-
-  React.useEffect(() => {
-    effectTarget.setSize(
-      depthOfFieldEnabled ? dofRenderWidth : width,
-      depthOfFieldEnabled ? dofRenderHeight : height,
-    );
-    dofPassRef.current?.setSize(
-      depthOfFieldEnabled ? dofRenderWidth : width,
-      depthOfFieldEnabled ? dofRenderHeight : height,
-    );
-  }, [depthOfFieldEnabled, dofRenderHeight, dofRenderWidth, effectTarget, height, width]);
 
   React.useEffect(() => {
     return () => {
@@ -325,17 +368,8 @@ export function PerspectiveScene3D({
 
   const outputTexture =
     depthOfFieldEnabled && colorTarget.depthTexture ? effectTarget.texture : colorTarget.texture;
-  const sceneChildren = React.useMemo(
-    () =>
-      React.Children.map(children, child =>
-        React.isValidElement(child)
-          ? React.cloneElement(child, { sceneCamera: perspCamera })
-          : child,
-      ),
-    [children, perspCamera],
-  );
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const material = materialRef.current;
     if (!material) {
       return;
@@ -343,7 +377,13 @@ export function PerspectiveScene3D({
 
     material.map = outputTexture;
     material.needsUpdate = true;
-  }, [outputTexture]);
+    invalidate();
+  }, [invalidate, outputTexture]);
+
+  const contextValue = React.useMemo(
+    () => ({ camera: perspCamera, width, height }),
+    [perspCamera, width, height],
+  );
 
   useFrame(() => {
     const prevClearAlpha = gl.getClearAlpha();
@@ -352,17 +392,17 @@ export function PerspectiveScene3D({
     gl.clear();
     gl.render(perspScene, perspCamera);
 
-    if (depthOfFieldEnabled && colorTarget.depthTexture) {
-      dofPassRef.current?.setUniforms({
+    if (depthOfFieldEnabled && colorTarget.depthTexture && dofPassRef.current) {
+      dofPassRef.current.setUniforms({
         depthTexture: colorTarget.depthTexture,
         nearClip: perspCamera.near,
         farClip: perspCamera.far,
-        focusDistance: Number(dofProperties.focusDistance ?? 0),
-        focalLength: Number(dofProperties.focalLength ?? 0.02),
-        bokehScale: Number(dofProperties.bokehScale ?? 2),
+        focusDistance: Number(properties.focusDistance ?? 0),
+        focalLength: Number(properties.focalLength ?? 0.02),
+        bokehScale: Number(properties.bokehScale ?? 2),
         resolutionScale: dofRenderHeight / Math.max(1, height),
       });
-      dofPassRef.current?.render(gl, colorTarget, effectTarget);
+      dofPassRef.current.render(gl, colorTarget, effectTarget);
     }
 
     gl.setRenderTarget(null);
@@ -372,14 +412,14 @@ export function PerspectiveScene3D({
   return (
     <>
       {createPortal(
-        <>
-          <SceneLights3D sceneProperties={sceneProperties} width={width} height={height} />
-          {sceneChildren}
+        <Display3DContext.Provider value={contextValue}>
+          <DisplayLights3D properties={properties} width={width} height={height} />
+          {children}
           {cameraModeActive ? <primitive object={cameraAxisHelper} /> : null}
-        </>,
+        </Display3DContext.Provider>,
         perspScene,
       )}
-      <mesh renderOrder={renderOrder}>
+      <mesh renderOrder={order}>
         <planeGeometry args={[width, height]} />
         <meshBasicMaterial
           ref={materialRef}

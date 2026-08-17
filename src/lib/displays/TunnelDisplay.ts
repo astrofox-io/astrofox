@@ -1,4 +1,5 @@
 import Display from '@/lib/core/Display';
+import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
 
 export default class TunnelDisplay extends Display {
   static config = {
@@ -26,6 +27,7 @@ export default class TunnelDisplay extends Display {
       shader: false,
       radialSegments: 40,
       lengthSegments: 128,
+      ...DISPLAY_3D_DEFAULTS,
     },
     controls: {
       color: {
@@ -154,6 +156,7 @@ export default class TunnelDisplay extends Display {
         withRange: true,
         withReactor: true,
       },
+      ...display3DControls,
     },
   };
 

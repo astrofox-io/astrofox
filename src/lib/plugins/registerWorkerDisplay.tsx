@@ -13,7 +13,6 @@ export function registerWorkerDisplayRuntime(installed: InstalledPlugin) {
   registerPluginWorkerHost(installed);
 
   registerDisplayLayer(installed.manifest.name, {
-    group: '2d',
     render: ({ display, order, frameData, sceneProps }) => (
       <ExternalDisplayLayer display={display} order={order} frameData={frameData} {...sceneProps} />
     ),

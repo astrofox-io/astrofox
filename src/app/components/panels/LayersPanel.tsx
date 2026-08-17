@@ -11,7 +11,6 @@ import useScenes, {
 import SceneLayer from '@/app/components/panels/SceneLayer';
 import { ChevronDown, ChevronUp } from '@/app/icons';
 import { reverse } from '@/lib/utils/array';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 
 interface SceneElement {
   id: string;
@@ -78,14 +77,9 @@ export default function LayersPanel() {
         (d: { id: string }) => d.id === activeElementId,
       );
       if (displayIndex > -1) {
-        const renderGroup = getDisplayRenderGroup(scene.displays[displayIndex]);
-        const displayGroup = scene.displays.filter(
-          display => getDisplayRenderGroup(display) === renderGroup,
-        );
-        const groupIndex = displayGroup.findIndex(display => display.id === activeElementId);
         return {
-          canMoveUp: groupIndex < displayGroup.length - 1,
-          canMoveDown: groupIndex > 0,
+          canMoveUp: displayIndex < scene.displays.length - 1,
+          canMoveDown: displayIndex > 0,
         };
       }
 
@@ -117,12 +111,7 @@ export default function LayersPanel() {
 
     for (const scene of scenes) {
       if (scene.displays.some(display => display.id === id)) {
-        const display = scene.displays.find(item => item.id === id);
-        return {
-          type: 'display',
-          sceneId: scene.id,
-          renderGroup: getDisplayRenderGroup(display),
-        };
+        return { type: 'display', sceneId: scene.id };
       }
 
       if (scene.effects.some(effect => effect.id === id)) {
@@ -153,15 +142,7 @@ export default function LayersPanel() {
       return true;
     }
 
-    if (sourceMeta.type !== targetMeta.type) {
-      return false;
-    }
-
-    if (sourceMeta.type === 'display') {
-      return sourceMeta.renderGroup === targetMeta.renderGroup;
-    }
-
-    return true;
+    return sourceMeta.type === targetMeta.type;
   }
 
   function handleMoveUp() {
@@ -294,7 +275,6 @@ export default function LayersPanel() {
             dragSourceId={dragSourceId}
             dragOverId={dragOverId}
             dragSourceType={dragSourceMeta?.type ?? null}
-            dragSourceRenderGroup={dragSourceMeta?.renderGroup ?? null}
             onLayerClick={handleLayerClick}
             onLayerUpdate={handleLayerUpdate}
             onLayerDelete={handleRemove}

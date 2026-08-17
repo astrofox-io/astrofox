@@ -7,12 +7,12 @@ import { Times } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import { translateLabel } from '@/i18n/labels';
 import { cn } from '@/lib/utils';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 import {
   type EntityConstructor,
   getAddMenuConfig,
   getCategoryItems,
   getExternalItems,
+  getItemCategory,
   getLibraryItems,
   type MenuItem,
 } from './addMenuConfig';
@@ -68,24 +68,32 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
       .filter(group => group.items.length > 0);
 
     // Plugin entities are listed inline (marked with an icon) rather than in
-    // their own "External" section. Displays only appear in the menu for the
-    // render group they belong to.
-    const externalItems = getExternalItems(libraryItems)
-      .filter(item => {
-        if (config.entityType !== 'displays') {
-          return true;
-        }
-        return getDisplayRenderGroup(item.Entity.config?.name ?? item.key) === addMenu.kind;
-      })
-      .map(item => ({ ...item, external: true }));
+    // their own "External" section: displays join their 2D/3D category,
+    // effects join their config.category (or a trailing unlabeled group).
+    const externalItems = getExternalItems(libraryItems).map(item => ({
+      ...item,
+      external: true,
+    }));
 
-    if (externalItems.length > 0) {
-      if (nextGroups.length === 1) {
-        nextGroups[0].items.push(...externalItems);
-      } else {
-        nextGroups.push({ key: 'external', label: null, items: externalItems });
+    for (const item of externalItems) {
+      const categoryKey = getItemCategory(config.entityType, item.key, item.Entity);
+      const category = config.categories.find(entry => entry.key === categoryKey);
+      let group = nextGroups.find(entry => entry.key === (category?.key ?? 'external'));
+
+      if (!group) {
+        group = { key: category?.key ?? 'external', label: category?.label ?? null, items: [] };
+        nextGroups.push(group);
       }
+
+      group.items.push(item);
     }
+
+    // Keep configured category order (unknown/external group last).
+    nextGroups.sort((a, b) => {
+      const indexA = config.categories.findIndex(entry => entry.key === a.key);
+      const indexB = config.categories.findIndex(entry => entry.key === b.key);
+      return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+    });
 
     return { title: config.title, groups: nextGroups };
     // pluginsUpdatedAt forces a re-read of the library after plugin changes.

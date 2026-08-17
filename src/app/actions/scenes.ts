@@ -2,7 +2,6 @@
 
 import { create } from 'zustand';
 import { renderer, stage } from '@/app/global';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 import { touchProject } from './project';
 
 const initialState = {
@@ -72,57 +71,6 @@ function getElementTarget(type) {
   return type === 'effect' ? 'effects' : 'displays';
 }
 
-function getDisplayGroups(displays) {
-  return {
-    '3d': displays.filter(display => getDisplayRenderGroup(display) === '3d'),
-    '2d': displays.filter(display => getDisplayRenderGroup(display) === '2d'),
-  };
-}
-
-function buildDisplayOrder(displayGroups) {
-  return [...displayGroups['3d'], ...displayGroups['2d']];
-}
-
-function getDisplayGroupLength(displays, renderGroup) {
-  return displays.filter(display => getDisplayRenderGroup(display) === renderGroup).length;
-}
-
-function getDisplayGroupIndex(displays, displayIndex) {
-  const renderGroup = getDisplayRenderGroup(displays[displayIndex]);
-  let groupIndex = -1;
-
-  for (let i = 0; i <= displayIndex; i += 1) {
-    if (getDisplayRenderGroup(displays[i]) === renderGroup) {
-      groupIndex += 1;
-    }
-  }
-
-  return {
-    renderGroup,
-    groupIndex,
-  };
-}
-
-function insertDisplayAtRenderGroup(displays, display, targetIndex) {
-  const renderGroup = getDisplayRenderGroup(display);
-  const displayGroups = getDisplayGroups(displays);
-  displayGroups[renderGroup] = insertAtIndex(displayGroups[renderGroup], targetIndex, display);
-  return buildDisplayOrder(displayGroups);
-}
-
-function moveDisplayWithinRenderGroup(displays, sourceIndex, targetGroupIndex) {
-  const { renderGroup, groupIndex } = getDisplayGroupIndex(displays, sourceIndex);
-  const displayGroups = getDisplayGroups(displays);
-  const nextGroup = moveAtIndex(displayGroups[renderGroup], groupIndex, targetGroupIndex);
-
-  if (nextGroup === displayGroups[renderGroup]) {
-    return displays;
-  }
-
-  displayGroups[renderGroup] = nextGroup;
-  return buildDisplayOrder(displayGroups);
-}
-
 function insertAtIndex(items, index, item) {
   const nextItems = [...items];
   const normalizedIndex = Math.max(0, Math.min(index, nextItems.length));
@@ -144,13 +92,10 @@ function findElementLocation(scenes, id) {
   for (const scene of scenes) {
     const displayIndex = scene.displays.findIndex(display => display.id === id);
     if (displayIndex > -1) {
-      const { renderGroup, groupIndex } = getDisplayGroupIndex(scene.displays, displayIndex);
       return {
         type: 'display',
         sceneId: scene.id,
         index: displayIndex,
-        renderGroup,
-        groupIndex,
       };
     }
 
@@ -227,11 +172,6 @@ export function addElement(element, sceneId) {
   }
 
   const nextElement = element.toJSON();
-  const targetScene = scenes.find(scene => scene.id === targetSceneId);
-  const targetIndex =
-    target === 'displays'
-      ? getDisplayGroupLength(targetScene?.displays || [], getDisplayRenderGroup(nextElement))
-      : undefined;
 
   updateScenes(currentScenes =>
     currentScenes.map(scene => {
@@ -241,10 +181,7 @@ export function addElement(element, sceneId) {
 
       return {
         ...scene,
-        [target]:
-          target === 'displays'
-            ? insertDisplayAtRenderGroup(scene[target], nextElement, targetIndex)
-            : [...scene[target], nextElement],
+        [target]: [...scene[target], nextElement],
       };
     }),
   );
@@ -252,7 +189,7 @@ export function addElement(element, sceneId) {
   const scene = stage.getSceneById(targetSceneId) || stage.scenes[0];
 
   if (scene) {
-    scene.addElement(element, targetIndex);
+    scene.addElement(element);
   }
 }
 
@@ -445,12 +382,7 @@ export function moveElement(id, spaces) {
     return;
   }
 
-  const targetGroupIndex = source.groupIndex + spaces;
-  const nextDisplays = moveDisplayWithinRenderGroup(
-    sourceScene.displays,
-    source.index,
-    targetGroupIndex,
-  );
+  const nextDisplays = moveAtIndex(sourceScene.displays, source.index, source.index + spaces);
 
   if (nextDisplays === sourceScene.displays) {
     return;
@@ -506,14 +438,10 @@ export function reorderElement(sourceId, targetId) {
           : sourceScene.effects;
       const targetDisplays =
         source.type === 'display'
-          ? insertDisplayAtRenderGroup(
-              source.sceneId === target.sceneId ? sourceDisplays : targetScene.displays,
+          ? [
+              ...(source.sceneId === target.sceneId ? sourceDisplays : targetScene.displays),
               sourceItem,
-              getDisplayGroupLength(
-                source.sceneId === target.sceneId ? sourceDisplays : targetScene.displays,
-                source.renderGroup,
-              ),
-            )
+            ]
           : source.sceneId === target.sceneId
             ? sourceDisplays
             : targetScene.displays;
@@ -598,10 +526,6 @@ export function reorderElement(sourceId, targetId) {
     return false;
   }
 
-  if (source.type === 'display' && source.renderGroup !== target.renderGroup) {
-    return false;
-  }
-
   if (source.sceneId !== target.sceneId) {
     const targetCollection = getElementTarget(source.type);
     const sourceScene = scenes.find(scene => scene.id === source.sceneId);
@@ -624,10 +548,7 @@ export function reorderElement(sourceId, targetId) {
         if (scene.id === target.sceneId) {
           return {
             ...scene,
-            [targetCollection]:
-              source.type === 'display'
-                ? insertDisplayAtRenderGroup(scene[targetCollection], sourceItem, target.groupIndex)
-                : insertAtIndex(scene[targetCollection], target.index, sourceItem),
+            [targetCollection]: insertAtIndex(scene[targetCollection], target.index, sourceItem),
           };
         }
 
@@ -638,14 +559,7 @@ export function reorderElement(sourceId, targetId) {
     const element = stage.getStageElementById(sourceId);
     const sourceSceneInstance = stage.getSceneById(source.sceneId);
     const targetSceneInstance = stage.getSceneById(target.sceneId);
-    const targetIndex =
-      source.type === 'display'
-        ? insertDisplayAtRenderGroup(
-            targetScene[targetCollection],
-            sourceItem,
-            target.groupIndex,
-          ).findIndex(display => display.id === sourceId)
-        : target.index;
+    const targetIndex = target.index;
 
     if (!element || !sourceSceneInstance || !targetSceneInstance) {
       return true;
@@ -662,11 +576,7 @@ export function reorderElement(sourceId, targetId) {
       return false;
     }
 
-    const nextDisplays = moveDisplayWithinRenderGroup(
-      sourceScene.displays,
-      source.index,
-      target.groupIndex,
-    );
+    const nextDisplays = moveAtIndex(sourceScene.displays, source.index, target.index);
 
     updateScenes(currentScenes =>
       currentScenes.map(scene =>

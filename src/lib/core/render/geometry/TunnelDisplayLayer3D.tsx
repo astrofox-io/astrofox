@@ -18,6 +18,7 @@ import {
 } from 'three';
 import { clamp } from '@/lib/utils/math';
 import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
+import { useDisplay3D } from './Display3DLayer';
 
 const FOV = 50;
 
@@ -272,14 +273,12 @@ function updateTubeFogColors(
 export function TunnelDisplayLayer3D({
   display,
   order,
-  height,
-  sceneProperties,
   frameData,
-  sceneCamera,
   sceneOpacity,
   sceneBlendMode,
   sceneMask,
 }) {
+  const { camera: sceneCamera, height } = useDisplay3D();
   const { properties = {} } = display;
   const {
     color = '#D6ECFF',
@@ -342,9 +341,9 @@ export function TunnelDisplayLayer3D({
   const curveTime = timeRef.current * Number(turnSpeed || 0);
   const fallbackCameraDistance =
     Number(height || 0) > 0 ? Number(height) / 2 / Math.tan(((FOV / 2) * Math.PI) / 180) : 0;
-  const cameraAzimuth = Number(sceneProperties?.cameraAzimuth ?? DEFAULT_CAMERA_AZIMUTH);
+  const cameraAzimuth = Number(properties.cameraAzimuth ?? DEFAULT_CAMERA_AZIMUTH);
   const cameraPolar = clamp(
-    Number(sceneProperties?.cameraPolar ?? DEFAULT_CAMERA_POLAR),
+    Number(properties.cameraPolar ?? DEFAULT_CAMERA_POLAR),
     -Math.PI / 2 + 0.05,
     Math.PI / 2 - 0.05,
   );
@@ -352,7 +351,7 @@ export function TunnelDisplayLayer3D({
     50,
     Math.min(
       5000,
-      Number(sceneProperties?.cameraDistance ?? fallbackCameraDistance) || fallbackCameraDistance,
+      Number(properties.cameraDistance ?? fallbackCameraDistance) || fallbackCameraDistance,
     ),
   );
   const cameraCosPolar = Math.cos(cameraPolar);

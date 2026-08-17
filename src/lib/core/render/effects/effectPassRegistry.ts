@@ -39,9 +39,6 @@ export interface EffectPassMeta {
   // pass (except for the properties listed in structuralProps).
   liveUpdatable?: boolean;
   structuralProps?: string[];
-  // Effects that are not composer passes but are applied by another stage
-  // (currently only the shared 3D scene, e.g. Depth of Field).
-  scope?: 'composer' | 'scene3d';
 }
 
 interface EffectPassEntry {
@@ -69,10 +66,6 @@ export function getEffectPassFactory(name: string): EffectPassFactory | null {
 
 export function getEffectPassMeta(name: string): EffectPassMeta | null {
   return registry.get(name)?.meta ?? null;
-}
-
-export function getEffectPassScope(name: string): 'composer' | 'scene3d' {
-  return registry.get(name)?.meta.scope ?? 'composer';
 }
 
 /**

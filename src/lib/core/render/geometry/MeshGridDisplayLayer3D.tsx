@@ -15,7 +15,7 @@ import {
 } from 'three';
 import { clamp } from '@/lib/utils/math';
 import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
-import { getMaterialNode, isPointsMaterial } from './GeometryDisplayLayer';
+import { getMaterialNode, isPointsMaterial } from './geometryMaterials';
 import { createGridMotionContext, sampleProceduralGridMotion } from './gridMotion';
 import { useTexture3D } from './useTexture3D';
 

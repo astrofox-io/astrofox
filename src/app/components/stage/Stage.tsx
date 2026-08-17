@@ -10,14 +10,14 @@ import useApp, {
   toggleStagePictureInPicture,
 } from '@/app/actions/app';
 import useAudioStore, { loadAudioFile } from '@/app/actions/audio';
-import useScenes, { getSceneIdForElement } from '@/app/actions/scenes';
+import useScenes from '@/app/actions/scenes';
 import useStage from '@/app/actions/stage';
 import Spinner from '@/app/components/interface/Spinner';
 import { renderBackend, renderer, stage } from '@/app/global';
 import { VectorSquare, Video } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
+import { hasDisplayCamera } from '@/lib/utils/displayCamera';
 import { ignoreEvents } from '@/lib/utils/react';
 import DisplayTransformOverlay from './DisplayTransformOverlay';
 import { isTransformable2DDisplay } from './displayTransform';
@@ -46,18 +46,9 @@ export default function Stage() {
   const cameraModeEnabled = useApp(state => state.cameraModeEnabled);
   const displayTransformModeEnabled = useApp(state => state.displayTransformModeEnabled);
   const isStagePictureInPictureActive = useApp(state => state.isStagePictureInPictureActive);
-  const sceneById = useScenes(state => state.sceneById) as Record<string, { displayName?: string }>;
   const elementById = useScenes(state => state.elementById) as Record<
     string,
     Record<string, unknown>
-  >;
-  const elementParentSceneId = useScenes(state => state.elementParentSceneId) as Record<
-    string,
-    string
-  >;
-  const sceneElementsById = useScenes(state => state.sceneElementsById) as Record<
-    string,
-    { displays?: string[] }
   >;
   const canvas = useRef<HTMLCanvasElement>(null);
   const initProps = useRef({ width, height, backgroundColor });
@@ -66,25 +57,16 @@ export default function Stage() {
   const [dragOverStage, setDragOverStage] = useState(false);
   const [pictureInPictureSupported, setPictureInPictureSupported] = useState(false);
   const dragDepth = useRef(0);
-  const activeSceneId = useMemo(
-    () => getSceneIdForElement(activeElementId, sceneById, elementParentSceneId),
-    [activeElementId, elementParentSceneId, sceneById],
-  );
   const activeDisplay = useMemo(
     () => stage.getStageElementById(activeElementId || ''),
     [activeElementId, elementById[activeElementId || '']],
   );
   const activeDisplayDescriptor = elementById[activeElementId || ''];
   const transformableDisplaySelected = isTransformable2DDisplay(activeDisplay);
-  const activeSceneHas3DDisplays = useMemo(() => {
-    if (!activeSceneId) {
-      return false;
-    }
-
-    return (sceneElementsById[activeSceneId]?.displays || []).some(
-      displayId => getDisplayRenderGroup(elementById[displayId]) === '3d',
-    );
-  }, [activeSceneId, elementById, sceneElementsById]);
+  const activeElementHasCamera =
+    !!activeDisplayDescriptor &&
+    activeDisplayDescriptor.enabled !== false &&
+    hasDisplayCamera(activeDisplayDescriptor as { name?: string });
 
   useEffect(() => {
     const { width, height, backgroundColor } = initProps.current;
@@ -126,10 +108,10 @@ export default function Stage() {
   }, [cameraModeEnabled, displayTransformModeEnabled]);
 
   useEffect(() => {
-    if (cameraModeEnabled && (!activeSceneId || !activeSceneHas3DDisplays)) {
+    if (cameraModeEnabled && !activeElementHasCamera) {
       setCameraModeEnabled(false);
     }
-  }, [activeSceneHas3DDisplays, activeSceneId, cameraModeEnabled]);
+  }, [activeElementHasCamera, cameraModeEnabled]);
 
   useEffect(() => {
     if (displayTransformModeEnabled && !transformableDisplaySelected) {
@@ -205,7 +187,7 @@ export default function Stage() {
   };
 
   function handleCameraModeToggle() {
-    if (!activeSceneId || !activeSceneHas3DDisplays) {
+    if (!activeElementHasCamera) {
       return;
     }
 
@@ -326,11 +308,11 @@ export default function Stage() {
               <TooltipTrigger render={<span />}>
                 <Button
                   type="button"
-                  variant={cameraModeEnabled && activeSceneHas3DDisplays ? 'default' : 'outline'}
+                  variant={cameraModeEnabled && activeElementHasCamera ? 'default' : 'outline'}
                   size="icon-sm"
                   aria-label={cameraControlLabel}
                   className="shadow-xl"
-                  disabled={!activeSceneHas3DDisplays}
+                  disabled={!activeElementHasCamera}
                   onClick={handleCameraModeToggle}
                 >
                   <Video className="size-4" />

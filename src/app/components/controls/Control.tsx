@@ -1,6 +1,7 @@
 import { clsx as classNames } from 'cnfast';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import ControlGroup from '@/app/components/controls/ControlGroup';
 import Option from '@/app/components/controls/Option';
 import useEntity from '@/app/hooks/useEntity';
 import { translateControlProps, translateGeneratedName, translateLabel } from '@/i18n/labels';
@@ -70,32 +71,18 @@ export default function Control({
     };
   }
 
-  function mapOption(
-    resolvedOption: {
-      name: string;
-      group: string | null;
-      props: Record<string, unknown>;
-    },
-    groupStarted: boolean,
-  ) {
-    const { name, group, props } = resolvedOption;
-    const { group: _group, ...optionProps } = props;
+  function renderOption(name: string, props: Record<string, unknown>) {
+    const { group: _group, groupToggle: _groupToggle, ...optionProps } = props;
 
     return (
-      <React.Fragment key={name}>
-        {group && !groupStarted ? (
-          <div className="mx-2.5 mt-3 px-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
-            {group}
-          </div>
-        ) : null}
-        <Option
-          display={display}
-          name={name}
-          value={(display.properties as Record<string, unknown>)[name]}
-          onChange={inputValueToProps(onChange)}
-          {...optionProps}
-        />
-      </React.Fragment>
+      <Option
+        key={name}
+        display={display}
+        name={name}
+        value={(display.properties as Record<string, unknown>)[name]}
+        onChange={inputValueToProps(onChange)}
+        {...optionProps}
+      />
     );
   }
 
@@ -111,7 +98,22 @@ export default function Control({
       } => option !== null,
     );
 
-  let activeGroup: string | null = null;
+  // Consecutive options sharing a group collapse into one ControlGroup.
+  const sections: Array<{
+    group: string | null;
+    options: typeof visibleOptions;
+  }> = [];
+
+  for (const option of visibleOptions) {
+    const last = sections[sections.length - 1];
+    if (last && last.group === option.group && option.group !== null) {
+      last.options.push(option);
+    } else if (last && last.group === null && option.group === null) {
+      last.options.push(option);
+    } else {
+      sections.push({ group: option.group, options: [option] });
+    }
+  }
 
   return (
     <div
@@ -146,10 +148,37 @@ export default function Control({
           </div>
         </div>
       )}
-      {visibleOptions.map(option => {
-        const groupStarted = Boolean(option.group && option.group === activeGroup);
-        activeGroup = option.group;
-        return mapOption(option, groupStarted);
+      {sections.map(section => {
+        if (!section.group) {
+          return (
+            <React.Fragment key={`options-${section.options[0].name}`}>
+              {section.options.map(option => renderOption(option.name, option.props))}
+            </React.Fragment>
+          );
+        }
+
+        // A control flagged `groupToggle` becomes the switch in the group header.
+        const toggleOption = section.options.find(option => option.props.groupToggle === true);
+        const bodyOptions = section.options.filter(option => option !== toggleOption);
+        const properties = display.properties as Record<string, unknown>;
+
+        return (
+          <ControlGroup
+            key={`group-${section.options[0].name}`}
+            title={section.group}
+            toggle={
+              toggleOption
+                ? {
+                    name: toggleOption.name,
+                    value: Boolean(properties[toggleOption.name]),
+                    onChange: (name, value) => onChange({ [name]: value }),
+                  }
+                : undefined
+            }
+          >
+            {bodyOptions.map(option => renderOption(option.name, option.props))}
+          </ControlGroup>
+        );
       })}
     </div>
   );

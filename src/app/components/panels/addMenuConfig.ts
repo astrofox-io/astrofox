@@ -1,7 +1,7 @@
 import type { TFunction } from 'i18next';
 import type { AddMenuKind } from '@/app/actions/app';
 import { library } from '@/app/global';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
+import { hasDisplayCamera } from '@/lib/utils/displayCamera';
 
 export interface MenuCategory {
   key: string;
@@ -53,17 +53,14 @@ export function getAddMenuConfig(t: TFunction, kind: AddMenuKind): AddMenuConfig
         title: t('add-effect'),
         categories: EFFECT_CATEGORIES.map(key => ({ key, label: t(`category-${key}`) })),
       };
-    case '3d':
-      return {
-        entityType: 'displays',
-        title: t('add-3d-display'),
-        categories: [{ key: '3d', label: t('category-3d') }],
-      };
     default:
       return {
         entityType: 'displays',
-        title: t('add-2d-display'),
-        categories: [{ key: '2d', label: t('category-2d') }],
+        title: t('add-display'),
+        categories: [
+          { key: '2d', label: t('category-2d') },
+          { key: '3d', label: t('category-3d') },
+        ],
       };
   }
 }
@@ -72,9 +69,10 @@ export function getLibraryItems(entityType: EntityType) {
   return (library.get(entityType) ?? {}) as Record<string, EntityConstructor>;
 }
 
-function getItemCategory(entityType: EntityType, key: string, Entity: EntityConstructor) {
+/** Displays are grouped by whether they own a 3D camera; effects by config.category. */
+export function getItemCategory(entityType: EntityType, key: string, Entity: EntityConstructor) {
   if (entityType === 'displays') {
-    return getDisplayRenderGroup(Entity.config?.name ?? key);
+    return hasDisplayCamera(Entity.config?.name ?? key) ? '3d' : '2d';
   }
   return Entity.config?.category ?? null;
 }

@@ -35,22 +35,6 @@ const blendOptions = [
   'Reflect',
 ];
 
-function resolveInitialSceneProperties(properties?: Record<string, unknown>) {
-  if (!properties) {
-    return properties;
-  }
-
-  // Preserve lighting for older saved scenes that predate the explicit toggle.
-  if (properties.lighting === undefined) {
-    return {
-      ...properties,
-      lighting: true,
-    };
-  }
-
-  return properties;
-}
-
 interface SceneElement {
   id: string;
   scene: unknown;
@@ -76,20 +60,6 @@ export default class Scene extends Display {
       mask: false,
       inverse: false,
       stencil: false,
-      cameraDistance: 0,
-      cameraAzimuth: (45 * Math.PI) / 180,
-      cameraPolar: (30 * Math.PI) / 180,
-      shadows: true,
-      lighting: false,
-      keyLightIntensity: 2.2,
-      keyLightDistance: 700,
-      lightColor: '#0000FF',
-      fillLightIntensity: 0.75,
-      fillLightDistance: 700,
-      fillLightColor: '#00FF00',
-      rimLightIntensity: 0.35,
-      rimLightDistance: 700,
-      rimLightColor: '#FF0000',
     },
     controls: {
       blendMode: {
@@ -115,98 +85,6 @@ export default class Scene extends Display {
         type: 'toggle',
         hidden: (display: { properties: Record<string, unknown> }) => !display.properties.mask,
       },
-      shadows: {
-        label: 'Shadows',
-        type: 'toggle',
-      },
-      lighting: {
-        label: 'Lighting',
-        type: 'toggle',
-      },
-      keyLightIntensity: {
-        label: 'Intensity',
-        type: 'number',
-        min: 0,
-        max: 4,
-        step: 0.01,
-        withRange: true,
-        withReactor: true,
-        group: 'Key',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      keyLightDistance: {
-        label: 'Distance',
-        type: 'number',
-        min: 50,
-        max: 2500,
-        step: 1,
-        withRange: true,
-        withReactor: true,
-        group: 'Key',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      lightColor: {
-        label: 'Color',
-        type: 'color',
-        group: 'Key',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      fillLightIntensity: {
-        label: 'Intensity',
-        type: 'number',
-        min: 0,
-        max: 4,
-        step: 0.01,
-        withRange: true,
-        withReactor: true,
-        group: 'Fill',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      fillLightDistance: {
-        label: 'Distance',
-        type: 'number',
-        min: 50,
-        max: 2500,
-        step: 1,
-        withRange: true,
-        withReactor: true,
-        group: 'Fill',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      fillLightColor: {
-        label: 'Color',
-        type: 'color',
-        group: 'Fill',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      rimLightIntensity: {
-        label: 'Intensity',
-        type: 'number',
-        min: 0,
-        max: 4,
-        step: 0.01,
-        withRange: true,
-        withReactor: true,
-        group: 'Rim',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      rimLightDistance: {
-        label: 'Distance',
-        type: 'number',
-        min: 50,
-        max: 2500,
-        step: 1,
-        withRange: true,
-        withReactor: true,
-        group: 'Rim',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
-      rimLightColor: {
-        label: 'Color',
-        type: 'color',
-        group: 'Rim',
-        hidden: (display: { properties: Record<string, unknown> }) => !display.properties.lighting,
-      },
     },
   };
 
@@ -215,7 +93,7 @@ export default class Scene extends Display {
   declare stage: unknown;
 
   constructor(properties?: Record<string, unknown>) {
-    super(Scene, resolveInitialSceneProperties(properties));
+    super(Scene, properties);
 
     this.stage = null;
     this.displays = new EntityList();

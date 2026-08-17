@@ -519,7 +519,7 @@ doesn't destroy it.
 > from their own module (`src/lib/effects/*.ts` → `registerEffectPass`);
 > `createScenePass`/`createRawEffect` and the `LIVE_UPDATABLE_EFFECTS` /
 > `STRUCTURAL_EFFECT_PROPS` tables are gone. `displayLayerRegistry` is the only
-> source of render groups. Add menus are driven by `config.category` /
+> source of the per-display `camera` capability. Add menus are driven by `config.category` /
 > `config.order`, generated-name labels come from the library, and the
 > transform overlay reads a per-display `config.transform` block instead of
 > testing names. Core entities carry `config.builtin = true`.
@@ -530,8 +530,9 @@ library membership is sufficient:
 1. **Layer dispatch** — `StageRoot.tsx:101-274`: replace the `switch` with a
    `displayLayerRegistry: Record<name, LayerComponent>` populated by the core
    displays, plus a generic `ExternalDisplayLayer` fallback for library entries
-   flagged external. Fold in the duplicated 3D-name sets
-   (`displayRenderGroup.ts`, `StageRoot.tsx:36-41`) as `config.renderGroup`.
+   flagged external. (Done — the shared 3D render group has since been removed
+   entirely; 3D displays are self-contained layers with a `camera` capability
+   flag in the registry.)
 2. **Effect pass factories** — `createScenePass.ts` / `createRawEffect.ts`:
    key on a `config.createPass(effect, w, h)` (or a registry map) instead of
    name switches; external shader effects register a manifest-driven factory.

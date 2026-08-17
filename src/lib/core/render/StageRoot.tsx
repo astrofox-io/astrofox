@@ -3,11 +3,8 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import React from 'react';
 import useApp from '@/app/actions/app';
-import useScenes, { getSceneIdForElement } from '@/app/actions/scenes';
 import { getDisplayLayerEntry } from './displayLayerRegistry';
 import { SceneWithEffects } from './effects';
-import { getEffectPassScope } from './effects/effectPassRegistry';
-import { PerspectiveScene3D } from './geometry';
 
 const NEUTRAL_SCENE_PROPS = {
   sceneOpacity: 1,
@@ -44,6 +41,14 @@ function ComposerPresenter({ frameIndex, onPresent }) {
     invalidate();
   }, [frameIndex, invalidate]);
 
+  // Layers that apply properties in passive effects (three.js objects mutated
+  // in useEffect) commit after the layout-phase frame request; request one
+  // more frame once passive effects have flushed so nothing renders one
+  // change behind.
+  React.useEffect(() => {
+    invalidate();
+  }, [frameIndex, invalidate]);
+
   return null;
 }
 
@@ -58,15 +63,8 @@ export default function StageRoot({
 }) {
   const activeElementId = useApp(state => state.activeElementId);
   const cameraModeEnabled = useApp(state => state.cameraModeEnabled);
-  const sceneById = useScenes(state => state.sceneById);
-  const elementParentSceneId = useScenes(state => state.elementParentSceneId);
-  const cameraModeSceneId = React.useMemo(
-    () =>
-      cameraModeEnabled
-        ? getSceneIdForElement(activeElementId, sceneById, elementParentSceneId)
-        : null,
-    [activeElementId, cameraModeEnabled, elementParentSceneId, sceneById],
-  );
+  // Camera mode orbits the camera of the selected display (if it has one).
+  const cameraModeDisplayId = cameraModeEnabled ? activeElementId : null;
   let order = 1;
   let sceneOrder = 0;
   const sceneProducers = [];
@@ -77,19 +75,7 @@ export default function StageRoot({
     }
 
     const sceneEffects = (scene.effects || []).filter(e => e?.enabled);
-    // Effects scoped to the 3D scene (depth of field) are applied inside
-    // PerspectiveScene3D rather than the scene's composer chain.
-    const depthOfFieldEffect =
-      sceneEffects.find(effect => getEffectPassScope(effect.name) === 'scene3d') || null;
-    const postEffects = sceneEffects.filter(
-      effect => getEffectPassScope(effect.name) !== 'scene3d',
-    );
-    const scene2D = [];
-    const scene3D = [];
-    const has3DDisplays = (scene.displays || []).some(
-      display => getDisplayLayerEntry(display?.name)?.group === '3d',
-    );
-    let scene3DOrder = order;
+    const sceneLayers = [];
 
     for (const display of scene.displays || []) {
       if (!display) {
@@ -108,41 +94,18 @@ export default function StageRoot({
           height,
           scene,
           sceneProps: NEUTRAL_SCENE_PROPS,
+          cameraModeActive: entry.camera === true && cameraModeDisplayId === display.id,
         });
 
         if (node) {
-          if (entry.group === '3d') {
-            if (scene3D.length === 0) {
-              scene3DOrder = order;
-            }
-            scene3D.push(wrapDisplayNode(display, node));
-          } else {
-            scene2D.push(wrapDisplayNode(display, node));
-          }
+          sceneLayers.push(wrapDisplayNode(display, node));
         }
       }
 
       order += 1;
     }
 
-    const displayContent = (
-      <React.Fragment key={scene.id}>
-        {(has3DDisplays || cameraModeSceneId === scene.id) && (
-          <PerspectiveScene3D
-            sceneId={scene.id}
-            sceneProperties={scene.properties || {}}
-            cameraModeActive={cameraModeSceneId === scene.id}
-            width={width}
-            height={height}
-            renderOrder={scene3DOrder}
-            depthOfFieldEffect={depthOfFieldEffect}
-          >
-            {scene3D}
-          </PerspectiveScene3D>
-        )}
-        {scene2D}
-      </React.Fragment>
-    );
+    const displayContent = <React.Fragment key={scene.id}>{sceneLayers}</React.Fragment>;
 
     const currentSceneOrder = sceneOrder;
     sceneOrder += 1;
@@ -152,7 +115,7 @@ export default function StageRoot({
         key={scene.id}
         width={width}
         height={height}
-        effects={postEffects}
+        effects={sceneEffects}
         frameData={frameData}
         outputToScreen={false}
         onTexture={texture => {

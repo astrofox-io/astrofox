@@ -1,5 +1,6 @@
 import Display from '@/lib/core/Display';
 import { GRID_MOTION_OPTIONS } from '@/lib/core/render/geometry/gridMotion';
+import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
 
 const materialOptions = ['Basic', 'Lambert', 'Normal', 'Phong', 'Physical', 'Standard'];
 
@@ -33,6 +34,7 @@ export default class CubesDisplay extends Display {
       frequencyX: 0.3,
       frequencyY: 0.5,
       opacity: 1.0,
+      ...DISPLAY_3D_DEFAULTS,
     },
     controls: {
       material: {
@@ -69,30 +71,6 @@ export default class CubesDisplay extends Display {
       edgeColor: {
         label: 'Edge Color',
         type: 'color',
-      },
-      x: {
-        label: 'X',
-        type: 'number',
-        min: -500,
-        max: 500,
-        withRange: true,
-        hideFill: true,
-      },
-      y: {
-        label: 'Y',
-        type: 'number',
-        min: -500,
-        max: 500,
-        withRange: true,
-        hideFill: true,
-      },
-      z: {
-        label: 'Z',
-        type: 'number',
-        min: -500,
-        max: 500,
-        withRange: true,
-        hideFill: true,
       },
       rows: {
         label: 'Rows',
@@ -171,6 +149,34 @@ export default class CubesDisplay extends Display {
         withRange: true,
         withReactor: true,
       },
+      x: {
+        group: 'Position',
+        label: 'X',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+        hideFill: true,
+      },
+      y: {
+        group: 'Position',
+        label: 'Y',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+        hideFill: true,
+      },
+      z: {
+        group: 'Position',
+        label: 'Z',
+        type: 'number',
+        min: -500,
+        max: 500,
+        withRange: true,
+        hideFill: true,
+      },
+      ...display3DControls,
     },
   };
 

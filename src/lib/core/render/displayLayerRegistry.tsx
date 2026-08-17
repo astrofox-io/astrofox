@@ -2,12 +2,10 @@
 
 import React from 'react';
 import { BLANK_IMAGE } from '@/app/constants';
-import {
-  registerDisplayRenderGroup,
-  unregisterDisplayRenderGroup,
-} from '@/lib/utils/displayRenderGroup';
+import { registerDisplayCamera, unregisterDisplayCamera } from '@/lib/utils/displayCamera';
 import {
   CubesDisplayLayer3D,
+  Display3DLayer,
   GeometryDisplayLayer3D,
   MeshGridDisplayLayer3D,
   TunnelDisplayLayer3D,
@@ -26,23 +24,24 @@ import {
 
 /**
  * Maps a display's `name` to how it renders on the stage. An entry's `render`
- * receives { display, order, frameData, width, height, scene, sceneProps } and
- * returns a React node (or null to render nothing this frame). `group`
- * decides whether the node lives in the 2D plane stack or the shared
- * perspective 3D scene.
+ * receives { display, order, frameData, width, height, scene, sceneProps,
+ * cameraModeActive } and returns a React node (or null to render nothing this
+ * frame). Every display is a layer in the scene's 2D stack; `camera: true`
+ * marks displays that own a 3D camera (rendered through Display3DLayer) so
+ * the stage can offer camera controls for them.
  *
  * Core displays register below; external plugins register at install time.
  */
 const registry = new Map();
 
-export function registerDisplayLayer(name, { group = '2d', render }) {
-  registry.set(name, { group, render });
-  registerDisplayRenderGroup(name, group);
+export function registerDisplayLayer(name, { camera = false, render }) {
+  registry.set(name, { camera, render });
+  registerDisplayCamera(name, camera);
 }
 
 export function unregisterDisplayLayer(name) {
   registry.delete(name);
-  unregisterDisplayRenderGroup(name);
+  unregisterDisplayCamera(name);
 }
 
 export function getDisplayLayerEntry(name) {
@@ -51,7 +50,6 @@ export function getDisplayLayerEntry(name) {
 
 function simple2D(Component, { withFrameData = true } = {}) {
   return {
-    group: '2d',
     render: ({ display, order, frameData, sceneProps }) => (
       <Component
         display={display}
@@ -64,7 +62,6 @@ function simple2D(Component, { withFrameData = true } = {}) {
 }
 
 registerDisplayLayer('ImageDisplay', {
-  group: '2d',
   render: ({ display, order, sceneProps }) => {
     const src = display.properties?.src;
     if (!src || src === BLANK_IMAGE) {
@@ -83,44 +80,24 @@ registerDisplayLayer('WaveSpectrumDisplay', simple2D(WaveSpectrumDisplayLayer));
 registerDisplayLayer('WaveformRingDisplay', simple2D(WaveformRingDisplayLayer));
 registerDisplayLayer('SoundWaveDisplay', simple2D(SoundWaveDisplayLayer));
 
-registerDisplayLayer('GeometryDisplay', {
-  group: '3d',
-  render: ({ display, order, frameData, sceneProps }) => (
-    <GeometryDisplayLayer3D display={display} order={order} frameData={frameData} {...sceneProps} />
-  ),
-});
+function camera3D(Component) {
+  return {
+    camera: true,
+    render: ({ display, order, frameData, width, height, cameraModeActive, sceneProps }) => (
+      <Display3DLayer
+        display={display}
+        order={order}
+        width={width}
+        height={height}
+        cameraModeActive={cameraModeActive}
+      >
+        <Component display={display} order={order} frameData={frameData} {...sceneProps} />
+      </Display3DLayer>
+    ),
+  };
+}
 
-registerDisplayLayer('TunnelDisplay', {
-  group: '3d',
-  render: ({ display, order, frameData, height, scene, sceneProps }) => (
-    <TunnelDisplayLayer3D
-      display={display}
-      order={order}
-      height={height}
-      sceneProperties={scene.properties || {}}
-      frameData={frameData}
-      {...sceneProps}
-    />
-  ),
-});
-
-registerDisplayLayer('CubesDisplay', {
-  group: '3d',
-  render: ({ display, order, frameData, width, height, sceneProps }) => (
-    <CubesDisplayLayer3D
-      display={display}
-      order={order}
-      width={width}
-      height={height}
-      frameData={frameData}
-      {...sceneProps}
-    />
-  ),
-});
-
-registerDisplayLayer('MeshGridDisplay', {
-  group: '3d',
-  render: ({ display, order, frameData, sceneProps }) => (
-    <MeshGridDisplayLayer3D display={display} order={order} frameData={frameData} {...sceneProps} />
-  ),
-});
+registerDisplayLayer('GeometryDisplay', camera3D(GeometryDisplayLayer3D));
+registerDisplayLayer('TunnelDisplay', camera3D(TunnelDisplayLayer3D));
+registerDisplayLayer('CubesDisplay', camera3D(CubesDisplayLayer3D));
+registerDisplayLayer('MeshGridDisplay', camera3D(MeshGridDisplayLayer3D));

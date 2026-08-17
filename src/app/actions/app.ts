@@ -34,7 +34,7 @@ export interface VideoExportSegment {
   endPosition: number;
 }
 
-export type AddMenuKind = 'effects' | '2d' | '3d';
+export type AddMenuKind = 'effects' | 'displays';
 
 export interface AddMenuState {
   sceneId: string;

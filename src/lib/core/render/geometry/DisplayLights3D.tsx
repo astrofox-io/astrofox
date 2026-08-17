@@ -116,8 +116,8 @@ function syncDirectionalShadow(light, distance: number, width: number, height: n
   }
 }
 
-function syncSceneLights({
-  sceneProperties = {},
+function syncDisplayLights({
+  properties = {},
   width,
   height,
   previewAmbientLight,
@@ -139,7 +139,7 @@ function syncSceneLights({
     fillLightColor = '#FFFFFF',
     rimLightColor = '#F3F1FF',
     shadows = true,
-  } = sceneProperties;
+  } = properties;
 
   if (!lighting) {
     setLightIntensity(previewAmbientLight, PREVIEW_AMBIENT_INTENSITY);
@@ -195,7 +195,7 @@ function syncSceneLights({
   setLightColor(rimLight, String(rimLightColor || '#F3F1FF'));
 }
 
-function SceneLights3DImpl({ sceneProperties = {}, width, height }) {
+function DisplayLights3DImpl({ properties = {}, width, height }) {
   const previewAmbientRef = React.useRef(null);
   const previewKeyRef = React.useRef(null);
   const keyLightRef = React.useRef(null);
@@ -203,22 +203,22 @@ function SceneLights3DImpl({ sceneProperties = {}, width, height }) {
   const rimLightRef = React.useRef(null);
   const invalidate = useThree(state => state.invalidate);
 
-  const lighting = Boolean(sceneProperties.lighting);
-  const shadows = Boolean(sceneProperties.shadows ?? true);
-  const keyLightIntensity = Number(sceneProperties.keyLightIntensity ?? 2.2);
-  const fillLightIntensity = Number(sceneProperties.fillLightIntensity ?? 0.75);
-  const rimLightIntensity = Number(sceneProperties.rimLightIntensity ?? 0.35);
-  const lightDistance = Number(sceneProperties.lightDistance ?? DEFAULT_LIGHT_DISTANCE);
-  const keyLightDistance = Number(sceneProperties.keyLightDistance ?? lightDistance);
-  const fillLightDistance = Number(sceneProperties.fillLightDistance ?? lightDistance);
-  const rimLightDistance = Number(sceneProperties.rimLightDistance ?? lightDistance);
-  const lightColor = String(sceneProperties.lightColor || '#FFFFFF');
-  const fillLightColor = String(sceneProperties.fillLightColor || '#FFFFFF');
-  const rimLightColor = String(sceneProperties.rimLightColor || '#F3F1FF');
+  const lighting = Boolean(properties.lighting);
+  const shadows = Boolean(properties.shadows ?? true);
+  const keyLightIntensity = Number(properties.keyLightIntensity ?? 2.2);
+  const fillLightIntensity = Number(properties.fillLightIntensity ?? 0.75);
+  const rimLightIntensity = Number(properties.rimLightIntensity ?? 0.35);
+  const lightDistance = Number(properties.lightDistance ?? DEFAULT_LIGHT_DISTANCE);
+  const keyLightDistance = Number(properties.keyLightDistance ?? lightDistance);
+  const fillLightDistance = Number(properties.fillLightDistance ?? lightDistance);
+  const rimLightDistance = Number(properties.rimLightDistance ?? lightDistance);
+  const lightColor = String(properties.lightColor || '#FFFFFF');
+  const fillLightColor = String(properties.fillLightColor || '#FFFFFF');
+  const rimLightColor = String(properties.rimLightColor || '#F3F1FF');
 
   React.useLayoutEffect(() => {
-    syncSceneLights({
-      sceneProperties,
+    syncDisplayLights({
+      properties,
       width,
       height,
       previewAmbientLight: previewAmbientRef.current,
@@ -241,7 +241,7 @@ function SceneLights3DImpl({ sceneProperties = {}, width, height }) {
     rimLightColor,
     rimLightDistance,
     rimLightIntensity,
-    sceneProperties,
+    properties,
     shadows,
     width,
   ]);
@@ -263,4 +263,4 @@ function SceneLights3DImpl({ sceneProperties = {}, width, height }) {
   );
 }
 
-export const SceneLights3D = SceneLights3DImpl;
+export const DisplayLights3D = DisplayLights3DImpl;

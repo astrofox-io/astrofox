@@ -8,7 +8,7 @@ import SectionAddMenu from '@/app/components/panels/SectionAddMenu';
 import { Cube, Picture, Square, Sun } from '@/app/icons';
 import { translateGeneratedName, translateLabel } from '@/i18n/labels';
 import { reverse } from '@/lib/utils/array';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
+import { hasDisplayCamera } from '@/lib/utils/displayCamera';
 
 const icons: Record<string, LucideIcon> = {
   effect: Sun,
@@ -25,7 +25,7 @@ interface SceneElement {
 
 function resolveLayerIcon(layer: SceneElement): LucideIcon {
   if (layer.type === 'display') {
-    return getDisplayRenderGroup(layer) === '3d' ? Cube : Square;
+    return hasDisplayCamera(layer) ? Cube : Square;
   }
 
   return icons[layer.type] || Cube;
@@ -43,7 +43,6 @@ interface SceneLayerProps {
   dragSourceId?: string | null;
   dragOverId?: string | null;
   dragSourceType?: string | null;
-  dragSourceRenderGroup?: string | null;
   onLayerClick?: (id: string) => void;
   onLayerUpdate?: (id: string, prop: string, value: unknown) => void;
   onLayerDelete?: (id: string) => void;
@@ -59,7 +58,6 @@ export default function SceneLayer({
   dragSourceId = null,
   dragOverId = null,
   dragSourceType = null,
-  dragSourceRenderGroup = null,
   onLayerClick,
   onLayerUpdate,
   onLayerDelete,
@@ -73,14 +71,7 @@ export default function SceneLayer({
   const sceneDragging = dragSourceId === id;
   const sceneDragOver = dragOverId === id;
 
-  const displays3D = useMemo(
-    () => reverse(scene.displays.filter(display => getDisplayRenderGroup(display) === '3d')),
-    [scene.displays],
-  );
-  const displays2D = useMemo(
-    () => reverse(scene.displays.filter(display => getDisplayRenderGroup(display) === '2d')),
-    [scene.displays],
-  );
+  const displays = useMemo(() => reverse(scene.displays), [scene.displays]);
   const effects = useMemo(() => reverse(scene.effects), [scene.effects]);
 
   const renderLayer = ({ id, type, name, displayName, enabled }: SceneElement) => (
@@ -110,7 +101,6 @@ export default function SceneLayer({
     layers: SceneElement[],
     sectionType: 'effect' | 'display',
     addMenu: React.ReactNode,
-    sectionRenderGroup: '2d' | '3d' | null = null,
   ) => (
     <div className="flex flex-col gap-0.5">
       <div className="ml-4 flex items-center pl-2 pr-1 pt-1 pb-0.5">
@@ -124,20 +114,14 @@ export default function SceneLayer({
       <div
         className="ml-4 h-1.5"
         onDragOver={e => {
-          if (
-            dragSourceType !== sectionType ||
-            (sectionRenderGroup && dragSourceRenderGroup !== sectionRenderGroup)
-          ) {
+          if (dragSourceType !== sectionType) {
             return;
           }
 
           onLayerDragOver?.(scene.id, e);
         }}
         onDrop={e => {
-          if (
-            dragSourceType !== sectionType ||
-            (sectionRenderGroup && dragSourceRenderGroup !== sectionRenderGroup)
-          ) {
+          if (dragSourceType !== sectionType) {
             return;
           }
 
@@ -195,18 +179,10 @@ export default function SceneLayer({
           <SectionAddMenu sceneId={id} kind="effects" />,
         )}
         {renderSection(
-          '2D Displays',
-          displays2D,
+          'Displays',
+          displays,
           'display',
-          <SectionAddMenu sceneId={id} kind="2d" />,
-          '2d',
-        )}
-        {renderSection(
-          '3D Displays',
-          displays3D,
-          'display',
-          <SectionAddMenu sceneId={id} kind="3d" />,
-          '3d',
+          <SectionAddMenu sceneId={id} kind="displays" />,
         )}
       </div>
     </div>

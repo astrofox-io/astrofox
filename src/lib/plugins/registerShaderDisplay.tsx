@@ -10,7 +10,6 @@ import type { InstalledPlugin } from './types';
 
 export function registerShaderDisplayRuntime(installed: InstalledPlugin) {
   registerDisplayLayer(installed.manifest.name, {
-    group: '2d',
     render: ({ display, order, frameData, sceneProps }) => (
       <ShaderDisplayLayer
         installed={installed}

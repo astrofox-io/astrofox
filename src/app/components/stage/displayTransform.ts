@@ -1,5 +1,5 @@
 import { getDisplayTransformConfig } from '@/lib/core/Display';
-import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
+import { hasDisplayCamera } from '@/lib/utils/displayCamera';
 
 type CanvasLike = {
   width?: number;
@@ -120,7 +120,7 @@ export function getDisplayTransformFrame(
     !display ||
     display.enabled === false ||
     display.type !== 'display' ||
-    getDisplayRenderGroup(display) !== '2d'
+    hasDisplayCamera(display)
   ) {
     return null;
   }
@@ -294,6 +294,6 @@ export function isTransformable2DDisplay(display?: TransformableDisplay | null):
     !!display &&
     display.enabled !== false &&
     display.type === 'display' &&
-    getDisplayRenderGroup(display) === '2d'
+    !hasDisplayCamera(display)
   );
 }
