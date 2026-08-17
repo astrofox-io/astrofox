@@ -1,0 +1,215 @@
+{
+  "api": 1,
+  "name": "@astrofox/cubes",
+  "version": "1.0.0",
+  "label": "Cubes",
+  "description": "An animated wall of extruded cubes rendered with the host-provided three.js. Declares a camera so the stage orbit controls drive its view.",
+  "author": "Astrofox",
+  "type": "display",
+  "runtime": "worker",
+  "entry": "./index.js",
+  "libraries": [
+    "three"
+  ],
+  "camera": true,
+  "defaultProperties": {
+    "width": 1280,
+    "height": 720,
+    "material": "Standard",
+    "shading": "Smooth",
+    "color": "#000000",
+    "wireframe": false,
+    "edges": true,
+    "edgeColor": "#FFFFFF",
+    "rows": 8,
+    "columns": 8,
+    "separation": 32,
+    "gap": 2,
+    "motion": "Radial",
+    "extrusion": 28,
+    "speed": 1,
+    "frequencyX": 0.3,
+    "frequencyY": 0.5,
+    "keyLightColor": "#FFFFFF",
+    "keyLightIntensity": 2.2,
+    "fillLightColor": "#FFFFFF",
+    "fillLightIntensity": 0.75,
+    "shadows": true
+  },
+  "controls": {
+    "width": {
+      "label": "Width",
+      "type": "number",
+      "min": 16,
+      "max": {
+        "$stage": "width"
+      },
+      "withRange": true
+    },
+    "height": {
+      "label": "Height",
+      "type": "number",
+      "min": 16,
+      "max": {
+        "$stage": "height"
+      },
+      "withRange": true
+    },
+    "material": {
+      "label": "Material",
+      "type": "select",
+      "items": [
+        "Basic",
+        "Lambert",
+        "Normal",
+        "Phong",
+        "Physical",
+        "Standard"
+      ]
+    },
+    "shading": {
+      "label": "Shading",
+      "type": "select",
+      "items": [
+        "Smooth",
+        "Flat"
+      ]
+    },
+    "motion": {
+      "label": "Motion",
+      "type": "select",
+      "items": [
+        "Static",
+        "Horizontal",
+        "Vertical",
+        "Diagonal",
+        "Radial",
+        "Sweep",
+        "Noise"
+      ]
+    },
+    "color": {
+      "label": "Color",
+      "type": "color"
+    },
+    "wireframe": {
+      "label": "Wireframe",
+      "type": "toggle"
+    },
+    "edges": {
+      "label": "Edges",
+      "type": "toggle"
+    },
+    "edgeColor": {
+      "label": "Edge Color",
+      "type": "color",
+      "hidden": {
+        "$prop": "edges",
+        "not": true
+      }
+    },
+    "rows": {
+      "label": "Rows",
+      "type": "number",
+      "min": 1,
+      "max": 32,
+      "step": 1,
+      "withRange": true
+    },
+    "columns": {
+      "label": "Columns",
+      "type": "number",
+      "min": 1,
+      "max": 32,
+      "step": 1,
+      "withRange": true
+    },
+    "separation": {
+      "label": "Separation",
+      "type": "number",
+      "min": 8,
+      "max": 120,
+      "step": 1,
+      "withRange": true
+    },
+    "gap": {
+      "label": "Gap",
+      "type": "number",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "withRange": true
+    },
+    "extrusion": {
+      "label": "Height",
+      "type": "number",
+      "min": 0,
+      "max": 120,
+      "step": 1,
+      "withRange": true,
+      "withReactor": true
+    },
+    "speed": {
+      "label": "Speed",
+      "type": "number",
+      "min": 0,
+      "max": 4,
+      "step": 0.05,
+      "withRange": true,
+      "withReactor": true
+    },
+    "frequencyX": {
+      "label": "Frequency X",
+      "type": "number",
+      "min": 0.05,
+      "max": 3,
+      "step": 0.05,
+      "withRange": true,
+      "withReactor": true
+    },
+    "frequencyY": {
+      "label": "Frequency Y",
+      "type": "number",
+      "min": 0.05,
+      "max": 3,
+      "step": 0.05,
+      "withRange": true,
+      "withReactor": true
+    },
+    "keyLightColor": {
+      "label": "Key Color",
+      "type": "color",
+      "group": "Lighting"
+    },
+    "keyLightIntensity": {
+      "label": "Key Intensity",
+      "type": "number",
+      "min": 0,
+      "max": 4,
+      "step": 0.01,
+      "withRange": true,
+      "withReactor": true,
+      "group": "Lighting"
+    },
+    "fillLightColor": {
+      "label": "Fill Color",
+      "type": "color",
+      "group": "Lighting"
+    },
+    "fillLightIntensity": {
+      "label": "Fill Intensity",
+      "type": "number",
+      "min": 0,
+      "max": 4,
+      "step": 0.01,
+      "withRange": true,
+      "withReactor": true,
+      "group": "Lighting"
+    },
+    "shadows": {
+      "label": "Shadows",
+      "type": "toggle",
+      "group": "Lighting"
+    }
+  }
+}

@@ -19,9 +19,9 @@ import { updateElementProperties } from '@/app/actions/scenes';
 import ShaderPass from '../composer/ShaderPass';
 import DepthOfFieldShader from '../effects/shaders/DepthOfFieldShader';
 import { DisplayLights3D } from './DisplayLights3D';
+import { clampCameraDistance, clampCameraPolar, useCameraOrbit } from './useCameraOrbit';
 
 export const PERSPECTIVE_FOV = 50;
-const CAMERA_PERSIST_DELAY_MS = 120;
 
 /**
  * Exposes the host's private camera/viewport to the 3D content rendered
@@ -119,22 +119,11 @@ export function Display3DLayer({
     return cam;
   }, []);
 
-  const clampPolar = React.useCallback(
-    value => Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, value)),
-    [],
-  );
-  const clampDistance = React.useCallback(value => Math.max(50, Math.min(5000, value)), []);
   const cameraStateRef = React.useRef({
     azimuth: 0,
     polar: 0,
     distance: cameraZ,
   });
-  const dragStateRef = React.useRef({
-    active: false,
-    lastX: 0,
-    lastY: 0,
-  });
-  const persistTimeoutRef = React.useRef(null);
 
   const applyCameraState = React.useCallback(
     nextState => {
@@ -203,117 +192,25 @@ export function Display3DLayer({
   // Layout effect + invalidate: the backend requests a frame right after
   // root.render(), which can run before a passive effect commits the new
   // camera pose (leaving the stage one control change behind).
+  const draggingRef = useCameraOrbit({
+    enabled: cameraModeActive,
+    element: gl.domElement,
+    stateRef: cameraStateRef,
+    onChange: applyCameraState,
+    onCommit: persistCameraState,
+  });
+
   React.useLayoutEffect(() => {
-    if (dragStateRef.current.active) {
+    if (draggingRef.current) {
       return;
     }
 
     applyCameraState({
       azimuth: Number(cameraAzimuth ?? 0),
-      polar: clampPolar(Number(cameraPolar ?? 0)),
-      distance: clampDistance(Number(cameraDistance ?? cameraZ) || cameraZ),
+      polar: clampCameraPolar(Number(cameraPolar ?? 0)),
+      distance: clampCameraDistance(Number(cameraDistance ?? cameraZ) || cameraZ),
     });
-  }, [
-    applyCameraState,
-    cameraZ,
-    clampDistance,
-    clampPolar,
-    cameraAzimuth,
-    cameraDistance,
-    cameraPolar,
-  ]);
-
-  React.useEffect(() => {
-    if (!cameraModeActive) {
-      return;
-    }
-
-    const element = gl.domElement;
-    const ownerDocument = element.ownerDocument;
-    element.style.cursor = 'grab';
-
-    function clearPersistTimeout() {
-      if (persistTimeoutRef.current) {
-        window.clearTimeout(persistTimeoutRef.current);
-        persistTimeoutRef.current = null;
-      }
-    }
-
-    function schedulePersist(nextState) {
-      clearPersistTimeout();
-      persistTimeoutRef.current = window.setTimeout(() => {
-        persistTimeoutRef.current = null;
-        persistCameraState(nextState);
-      }, CAMERA_PERSIST_DELAY_MS);
-    }
-
-    function handlePointerDown(event) {
-      if (event.button !== 0) {
-        return;
-      }
-
-      dragStateRef.current.active = true;
-      dragStateRef.current.lastX = event.clientX;
-      dragStateRef.current.lastY = event.clientY;
-      element.style.cursor = 'grabbing';
-      event.preventDefault();
-    }
-
-    function handlePointerMove(event) {
-      if (!dragStateRef.current.active) {
-        return;
-      }
-
-      const dx = event.clientX - dragStateRef.current.lastX;
-      const dy = event.clientY - dragStateRef.current.lastY;
-      dragStateRef.current.lastX = event.clientX;
-      dragStateRef.current.lastY = event.clientY;
-
-      applyCameraState({
-        ...cameraStateRef.current,
-        azimuth: cameraStateRef.current.azimuth - dx * 0.01,
-        polar: clampPolar(cameraStateRef.current.polar - dy * 0.01),
-      });
-    }
-
-    function handlePointerUp() {
-      if (!dragStateRef.current.active) {
-        return;
-      }
-
-      dragStateRef.current.active = false;
-      element.style.cursor = 'grab';
-      clearPersistTimeout();
-      persistCameraState(cameraStateRef.current);
-    }
-
-    function handleWheel(event) {
-      event.preventDefault();
-
-      const nextState = {
-        ...cameraStateRef.current,
-        distance: clampDistance(cameraStateRef.current.distance * Math.exp(event.deltaY * 0.0015)),
-      };
-
-      applyCameraState(nextState);
-      schedulePersist(nextState);
-    }
-
-    element.addEventListener('pointerdown', handlePointerDown);
-    ownerDocument.addEventListener('pointermove', handlePointerMove);
-    ownerDocument.addEventListener('pointerup', handlePointerUp);
-    element.addEventListener('wheel', handleWheel, { passive: false });
-
-    return () => {
-      clearPersistTimeout();
-      dragStateRef.current.active = false;
-      element.style.cursor = '';
-      element.removeEventListener('pointerdown', handlePointerDown);
-      ownerDocument.removeEventListener('pointermove', handlePointerMove);
-      ownerDocument.removeEventListener('pointerup', handlePointerUp);
-      element.removeEventListener('wheel', handleWheel);
-    };
-  }, [applyCameraState, cameraModeActive, clampDistance, clampPolar, gl, persistCameraState]);
+  }, [applyCameraState, cameraZ, cameraAzimuth, cameraDistance, cameraPolar, draggingRef]);
 
   const colorTarget = React.useMemo(() => createRenderTarget(width, height, true), []);
   const effectTarget = React.useMemo(() => createRenderTarget(width, height, false), []);

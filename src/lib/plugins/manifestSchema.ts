@@ -59,6 +59,9 @@ export const manifestSchema = z
     permissions: z.array(z.string().max(50)).max(10).default([]),
     // Host-provided libraries handed to worker plugins (see libraries.ts).
     libraries: z.array(z.string().max(50)).max(10).default([]),
+    // Worker displays that own a 3D camera: the host adds the standard camera
+    // properties/controls and lets the user orbit them from the stage.
+    camera: z.boolean().default(false),
     audio: z
       .object({
         fft: fftSchema.optional(),
@@ -105,6 +108,14 @@ export const manifestSchema = z
           message: `Unknown library: ${library}`,
         });
       }
+    }
+
+    if (manifest.camera && (manifest.type !== 'display' || manifest.runtime !== 'worker')) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['camera'],
+        message: 'Only worker-runtime displays can declare a camera',
+      });
     }
 
     if (manifest.libraries.length > 0 && manifest.runtime !== 'worker') {

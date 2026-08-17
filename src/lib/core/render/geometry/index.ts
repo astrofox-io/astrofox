@@ -1,4 +1,3 @@
-export { CubesDisplayLayer3D } from './CubesDisplayLayer3D';
 export {
   Display3DContext,
   Display3DLayer,

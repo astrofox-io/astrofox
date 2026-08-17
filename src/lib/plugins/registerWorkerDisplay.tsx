@@ -13,8 +13,15 @@ export function registerWorkerDisplayRuntime(installed: InstalledPlugin) {
   registerPluginWorkerHost(installed);
 
   registerDisplayLayer(installed.manifest.name, {
-    render: ({ display, order, frameData, sceneProps }) => (
-      <ExternalDisplayLayer display={display} order={order} frameData={frameData} {...sceneProps} />
+    camera: installed.manifest.camera === true,
+    render: ({ display, order, frameData, cameraModeActive, sceneProps }) => (
+      <ExternalDisplayLayer
+        display={display}
+        order={order}
+        frameData={frameData}
+        cameraModeActive={cameraModeActive}
+        {...sceneProps}
+      />
     ),
   });
 }

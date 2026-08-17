@@ -15,6 +15,7 @@ Working examples live in [`examples/plugins/`](../examples/plugins/):
 | `plasma` | display | shader | generative fragment-shader layer with FFT array |
 | `pulse-bars` | display | worker | JavaScript canvas drawing in the sandbox worker |
 | `audio-orb` | display | worker | 3D scene using the host-provided three.js library |
+| `cubes` | display | worker | 3D scene with `"camera": true` — host orbit controls drive the plugin's camera |
 
 ## The manifest (`astrofox.plugin.json`)
 
@@ -33,6 +34,7 @@ Working examples live in [`examples/plugins/`](../examples/plugins/):
   "icon": "./icon.svg",              // optional, shown in menus
   "permissions": [],                 // e.g. ["network"] — prompted at install
   "libraries": [],                   // worker runtime: e.g. ["three"] (below)
+  "camera": false,                   // worker displays: expose host camera controls (below)
   "audio": { … },                    // what audio data you want (below)
   "defaultProperties": { … },
   "controls": { … },                 // control panel schema (below)
@@ -209,6 +211,44 @@ the built-in 3D displays: every 3D display owns its own scene, camera and
 lighting rig and returns a bitmap. The host does not control lights; if you
 want your lighting to be audio-reactive, expose the relevant values as
 controls with `withReactor`. See `examples/plugins/audio-orb`.
+
+### Exposing camera controls (`"camera": true`)
+
+A worker display that owns a 3D camera can opt into the host's camera UX:
+
+```jsonc
+"runtime": "worker",
+"libraries": ["three"],
+"camera": true
+```
+
+When `camera` is set, Astrofox:
+
+- adds three properties to the display — `cameraAzimuth`, `cameraPolar`
+  (radians) and `cameraDistance` (world units; `0` = "auto") — together with a
+  **Camera** control group (each control is reactor-able), and
+- enables the stage's camera button for the display: dragging on the stage
+  orbits (azimuth/polar) and the wheel dollies (distance). Changes are pushed
+  to your plugin through `update()` live while dragging and persisted to the
+  project on release.
+
+Your plugin owns the actual `THREE.PerspectiveCamera`; just position it from
+those values each frame:
+
+```js
+const cosPolar = Math.cos(props.cameraPolar);
+const distance = props.cameraDistance || autoDistance; // 0 → your own default
+camera.position.set(
+  Math.sin(props.cameraAzimuth) * cosPolar * distance,
+  Math.sin(props.cameraPolar) * distance,
+  Math.cos(props.cameraAzimuth) * cosPolar * distance,
+);
+camera.lookAt(0, 0, 0);
+```
+
+Lighting, depth of field and everything else remain entirely up to the plugin.
+See `examples/plugins/cubes` for a complete example (instanced geometry,
+shadow-casting light rig, and a host-driven camera).
 
 ## Development workflow
 

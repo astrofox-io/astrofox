@@ -41,6 +41,8 @@ export interface PluginManifest {
   icon?: string;
   permissions: string[];
   libraries: string[];
+  // Worker displays that own a 3D camera (see docs/plugin-authoring.md).
+  camera?: boolean;
   audio?: PluginAudioConfig;
   defaultProperties: Record<string, unknown>;
   controls: Record<string, Record<string, unknown>>;

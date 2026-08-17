@@ -1,5 +1,6 @@
 import Display from '@/lib/core/Display';
 import Effect from '@/lib/core/Effect';
+import { CAMERA_3D_DEFAULTS, camera3DControls } from '@/lib/displays/shared/display3DConfig';
 import { stageHeight, stageWidth } from '@/lib/utils/controls';
 import { resolveManifestControls } from './resolveControls';
 import type { ExternalEntityConfig, InstalledPlugin, LibraryEntityClass } from './types';
@@ -86,6 +87,17 @@ export function createExternalEntityClass(installed: InstalledPlugin): LibraryEn
     }
   }
 
+  // Camera-enabled displays get the host's camera block so the stage orbit
+  // controls and the control panel work exactly like the core 3D displays.
+  const hasCamera = !isEffect && manifest.camera === true;
+  if (hasCamera) {
+    for (const [key, control] of Object.entries(camera3DControls)) {
+      if (!controls[key]) {
+        controls[key] = control as Record<string, unknown>;
+      }
+    }
+  }
+
   const config: ExternalEntityConfig = {
     name: manifest.name,
     label: manifest.label,
@@ -100,7 +112,11 @@ export function createExternalEntityClass(installed: InstalledPlugin): LibraryEn
     },
     defaultProperties: isEffect
       ? { ...manifest.defaultProperties }
-      : { ...STANDARD_DISPLAY_PROPERTIES, ...manifest.defaultProperties },
+      : {
+          ...STANDARD_DISPLAY_PROPERTIES,
+          ...(hasCamera ? CAMERA_3D_DEFAULTS : {}),
+          ...manifest.defaultProperties,
+        },
     controls,
   };
 

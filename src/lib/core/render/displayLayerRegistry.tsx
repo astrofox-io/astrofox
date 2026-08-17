@@ -4,7 +4,6 @@ import React from 'react';
 import { BLANK_IMAGE } from '@/app/constants';
 import { registerDisplayCamera, unregisterDisplayCamera } from '@/lib/utils/displayCamera';
 import {
-  CubesDisplayLayer3D,
   Display3DLayer,
   GeometryDisplayLayer3D,
   MeshGridDisplayLayer3D,
@@ -99,5 +98,4 @@ function camera3D(Component) {
 
 registerDisplayLayer('GeometryDisplay', camera3D(GeometryDisplayLayer3D));
 registerDisplayLayer('TunnelDisplay', camera3D(TunnelDisplayLayer3D));
-registerDisplayLayer('CubesDisplay', camera3D(CubesDisplayLayer3D));
 registerDisplayLayer('MeshGridDisplay', camera3D(MeshGridDisplayLayer3D));

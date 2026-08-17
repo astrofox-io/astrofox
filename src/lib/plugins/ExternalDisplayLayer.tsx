@@ -1,6 +1,15 @@
 // @ts-nocheck
 
+import { useThree } from '@react-three/fiber';
 import React from 'react';
+import { updateElementProperties } from '@/app/actions/scenes';
+import { renderer } from '@/app/global';
+import { getDefaultCameraDistance } from '@/lib/core/render/geometry/Display3DLayer';
+import {
+  clampCameraDistance,
+  clampCameraPolar,
+  useCameraOrbit,
+} from '@/lib/core/render/geometry/useCameraOrbit';
 import { CanvasTextureLayer } from '@/lib/core/render/layers';
 import { getPluginWorkerHost } from './PluginHost';
 
@@ -12,9 +21,80 @@ const VIDEO_RENDERING = -1;
  * ImageBitmap is drawn into the layer canvas, which then gets the standard
  * transform, blending and scene handling every core 2D display has.
  */
-export function ExternalDisplayLayer({ display, order, frameData, ...sceneProps }) {
+/**
+ * Stage-side orbit controller for camera-enabled worker plugins. The plugin
+ * owns its three.js camera; the host only edits the display's
+ * cameraAzimuth/cameraPolar/cameraDistance properties (live while dragging,
+ * persisted to the project on release), which the plugin reads in update().
+ */
+function useExternalCameraOrbit(display, cameraModeActive) {
+  const gl = useThree(state => state.gl);
+  const properties = display.properties || {};
+  const canvasHeight = Number(properties.height) || 512;
+  const defaultDistance = getDefaultCameraDistance(canvasHeight);
+  const stateRef = React.useRef({ azimuth: 0, polar: 0, distance: defaultDistance });
+
+  const applyLive = React.useCallback(
+    state => {
+      // Mutate the stage instance directly (like the control panel does) so
+      // the next frame ships the new values to the worker; no store churn.
+      display.update?.({
+        cameraAzimuth: state.azimuth,
+        cameraPolar: state.polar,
+        cameraDistance: state.distance,
+      });
+      renderer.requestRender();
+    },
+    [display],
+  );
+
+  const persist = React.useCallback(
+    state => {
+      updateElementProperties(display.id, {
+        cameraAzimuth: state.azimuth,
+        cameraPolar: state.polar,
+        cameraDistance: state.distance,
+      });
+    },
+    [display.id],
+  );
+
+  const draggingRef = useCameraOrbit({
+    enabled: cameraModeActive,
+    element: gl.domElement,
+    stateRef,
+    onChange: applyLive,
+    onCommit: persist,
+  });
+
+  const cameraAzimuth = properties.cameraAzimuth;
+  const cameraPolar = properties.cameraPolar;
+  const cameraDistance = properties.cameraDistance;
+
+  React.useLayoutEffect(() => {
+    if (draggingRef.current) {
+      return;
+    }
+
+    stateRef.current = {
+      azimuth: Number(cameraAzimuth ?? 0),
+      polar: clampCameraPolar(Number(cameraPolar ?? 0)),
+      distance: clampCameraDistance(Number(cameraDistance ?? defaultDistance) || defaultDistance),
+    };
+  }, [cameraAzimuth, cameraPolar, cameraDistance, defaultDistance, draggingRef]);
+}
+
+export function ExternalDisplayLayer({
+  display,
+  order,
+  frameData,
+  cameraModeActive = false,
+  ...sceneProps
+}) {
   const host = getPluginWorkerHost(display.name);
   const bitmapRef = React.useRef(null);
+
+  useExternalCameraOrbit(display, cameraModeActive);
 
   React.useEffect(() => {
     return () => {
