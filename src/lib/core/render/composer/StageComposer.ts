@@ -15,10 +15,14 @@ export default class StageComposer {
     this.blendPass.material.transparent = true;
     this.copyPass = new ShaderPass(CopyShader);
     this.copyPass.material.transparent = true;
+    // Never tone map the final on-screen copy; the readback path renders into
+    // a render target where three.js skips tone mapping, so both must agree.
+    this.copyPass.material.toneMapped = false;
     this.copyPass.renderToScreen = true;
     // Readback copy pass encodes to sRGB so exported pixels match the screen.
     this.readbackPass = new ShaderPass({ ...CopyShader, defines: { ENCODE_SRGB: 1 } });
     this.readbackPass.material.transparent = false;
+    this.readbackPass.material.toneMapped = false;
     this.readbackPass.renderToScreen = false;
     this.inputBuffer = null;
     this.outputBuffer = null;

@@ -219,6 +219,10 @@ export default class CompositorBackend extends RenderBackend {
       events: this.fiberModule.events,
       frameloop: 'demand',
       dpr: 1,
+      // Disable R3F's default ACES filmic tone mapping. Tone mapping only runs
+      // when rendering to the screen (never into render targets), so leaving it
+      // on makes the on-screen composite differ from exported frames/images.
+      flat: true,
       gl: {
         antialias: true,
         alpha: true,
