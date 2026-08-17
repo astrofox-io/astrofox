@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { KNOWN_LIBRARIES } from './libraries';
 import type { PluginManifest } from './types';
 
 // Control types plugin manifests may use. Media inputs (image/video) are
@@ -56,6 +57,8 @@ export const manifestSchema = z
     shader: z.string().max(500).optional(),
     icon: z.string().max(500).optional(),
     permissions: z.array(z.string().max(50)).max(10).default([]),
+    // Host-provided libraries handed to worker plugins (see libraries.ts).
+    libraries: z.array(z.string().max(50)).max(10).default([]),
     audio: z
       .object({
         fft: fftSchema.optional(),
@@ -92,6 +95,24 @@ export const manifestSchema = z
           message: `Unsupported control type: ${String(type)}`,
         });
       }
+    }
+
+    for (const library of manifest.libraries) {
+      if (!KNOWN_LIBRARIES.has(library)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['libraries'],
+          message: `Unknown library: ${library}`,
+        });
+      }
+    }
+
+    if (manifest.libraries.length > 0 && manifest.runtime !== 'worker') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['libraries'],
+        message: 'Only worker-runtime plugins can request libraries',
+      });
     }
 
     for (const permission of manifest.permissions) {

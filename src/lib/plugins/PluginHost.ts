@@ -1,8 +1,8 @@
 import FFTParser from '@/lib/audio/FFTParser';
 import WaveParser from '@/lib/audio/WaveParser';
 import type { RenderFrameData } from '@/lib/types';
+import { resolvePluginLibraries, resolveSandboxWorkerUrl } from './libraries';
 import type { InstalledPlugin, PluginFrame } from './types';
-import { workerBootstrapSource } from './workerBootstrap';
 
 const EXPORT_FRAME_TIMEOUT_MS = 5000;
 const LIVE_FRAME_TIMEOUT_MS = 3000;
@@ -52,7 +52,6 @@ function hashSeed(value: string): number {
 export class PluginWorkerHost {
   installed: InstalledPlugin;
   worker: Worker | null = null;
-  workerUrl: string | null = null;
   workerFailed = false;
   instances = new Map<string, InstanceRecord>();
 
@@ -75,11 +74,9 @@ export class PluginWorkerHost {
     }
 
     try {
-      const blob = new Blob([workerBootstrapSource], { type: 'text/javascript' });
-      // Revoked on dispose — revoking immediately can race the worker's
-      // fetch of its own script in some browsers.
-      this.workerUrl = URL.createObjectURL(blob);
-      this.worker = new Worker(this.workerUrl, {
+      // Loaded by same-origin URL (not blob:) so the script response carries
+      // the sandbox CSP that blocks network access and remote code.
+      this.worker = new Worker(resolveSandboxWorkerUrl(manifest.permissions || []), {
         type: 'module',
         name: `plugin:${manifest.name}`,
       });
@@ -99,6 +96,7 @@ export class PluginWorkerHost {
       op: 'load',
       code: entry,
       permissions: manifest.permissions || [],
+      libraries: resolvePluginLibraries(manifest.libraries || []),
     });
 
     return this.worker;
@@ -370,10 +368,6 @@ export class PluginWorkerHost {
     }
     this.worker?.terminate();
     this.worker = null;
-    if (this.workerUrl) {
-      URL.revokeObjectURL(this.workerUrl);
-      this.workerUrl = null;
-    }
     this.workerFailed = false;
   }
 }

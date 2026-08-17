@@ -12,21 +12,23 @@
   },
   "main": "electron/main.mjs",
   "scripts": {
-    "dev": "dotenv next dev --turbo",
+    "dev": "node ./scripts/copy-plugin-libs.mjs && dotenv next dev --turbo",
     "start": "next start",
-    "build": "next build --turbo",
+    "build": "node ./scripts/copy-plugin-libs.mjs && next build --turbo",
     "preview": "next start",
     "lint": "biome check .",
     "lint-fix": "biome check . --write",
     "dev:desktop": "dotenv -- node ./scripts/dev-electron.mjs",
     "dev:plugins": "node ./scripts/dev-plugins.mjs",
-    "build:renderer": "cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
+    "build:renderer": "node ./scripts/copy-plugin-libs.mjs && cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
     "build:desktop": "pnpm build:renderer && electron-builder --publish never",
     "dist:win": "pnpm build:renderer && electron-builder --win --publish never",
     "dist:mac": "pnpm build:renderer && electron-builder --mac --publish never",
     "dist:linux": "pnpm build:renderer && electron-builder --linux --publish never",
     "release:desktop": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --publish always",
-    "install-ffmpeg": "node ./scripts/install-ffmpeg.mjs"
+    "install-ffmpeg": "node ./scripts/install-ffmpeg.mjs",
+    "plugin-libs": "node ./scripts/copy-plugin-libs.mjs",
+    "postinstall": "node ./scripts/copy-plugin-libs.mjs"
   },
   "build": {
     "appId": "io.astrofox.app",

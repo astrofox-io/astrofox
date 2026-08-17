@@ -40,6 +40,7 @@ export interface PluginManifest {
   shader?: string;
   icon?: string;
   permissions: string[];
+  libraries: string[];
   audio?: PluginAudioConfig;
   defaultProperties: Record<string, unknown>;
   controls: Record<string, Record<string, unknown>>;

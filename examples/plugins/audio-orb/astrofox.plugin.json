@@ -1,0 +1,93 @@
+{
+  "api": 1,
+  "name": "@astrofox/audio-orb",
+  "version": "1.0.0",
+  "label": "Audio Orb",
+  "description": "A lit 3D icosphere whose surface ripples with the spectrum, rendered with the host-provided three.js.",
+  "author": "Astrofox",
+  "type": "display",
+  "runtime": "worker",
+  "entry": "./index.js",
+  "libraries": ["three"],
+  "audio": {
+    "fft": {
+      "bins": 64,
+      "maxFrequency": 8000,
+      "smoothing": 0.6
+    }
+  },
+  "defaultProperties": {
+    "width": 720,
+    "height": 720,
+    "color": "#33ccff",
+    "lightColor": "#ffffff",
+    "radius": 1,
+    "displacement": 0.5,
+    "detail": 24,
+    "rotationSpeed": 0.3,
+    "wireframe": false
+  },
+  "controls": {
+    "width": {
+      "label": "Width",
+      "type": "number",
+      "min": 16,
+      "max": { "$stage": "width" },
+      "withRange": true
+    },
+    "height": {
+      "label": "Height",
+      "type": "number",
+      "min": 16,
+      "max": { "$stage": "height" },
+      "withRange": true
+    },
+    "color": {
+      "label": "Color",
+      "type": "color"
+    },
+    "lightColor": {
+      "label": "Light Color",
+      "type": "color"
+    },
+    "radius": {
+      "label": "Radius",
+      "type": "number",
+      "min": 0.2,
+      "max": 3,
+      "step": 0.05,
+      "withRange": true,
+      "withReactor": true
+    },
+    "displacement": {
+      "label": "Displacement",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.05,
+      "withRange": true,
+      "withReactor": true
+    },
+    "detail": {
+      "label": "Detail",
+      "type": "number",
+      "min": 4,
+      "max": 64,
+      "step": 1,
+      "withRange": true
+    },
+    "rotationSpeed": {
+      "label": "Rotation Speed",
+      "type": "number",
+      "min": -3,
+      "max": 3,
+      "step": 0.05,
+      "withRange": true,
+      "withReactor": true
+    },
+    "wireframe": {
+      "label": "Wireframe",
+      "type": "toggle"
+    }
+  }
+}

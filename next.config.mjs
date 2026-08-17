@@ -1,5 +1,6 @@
 import { createRequire } from 'node:module';
 import path from 'node:path';
+import { PLUGIN_SANDBOX_HEADERS } from './electron/plugin-sandbox-policy.mjs';
 
 const require = createRequire(import.meta.url);
 const { version: appVersion } = require('./package.json');
@@ -62,6 +63,15 @@ const nextConfig = {
       },
     },
   },
+  // Headers/rewrites are unsupported with `output: 'export'` (desktop); the
+  // Electron protocol handler applies the same sandbox CSP there.
+  headers: isDesktopBuild
+    ? undefined
+    : async () =>
+        PLUGIN_SANDBOX_HEADERS.map(({ path: source, csp }) => ({
+          source,
+          headers: [{ key: 'Content-Security-Policy', value: csp }],
+        })),
   // Rewrites are unsupported with `output: 'export'` (desktop).
   rewrites: isDesktopBuild
     ? undefined

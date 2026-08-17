@@ -153,6 +153,11 @@ export default function ManagePlugins({ initialUrl = '', onClose }: ManagePlugin
                   Permissions: {candidate.manifest.permissions.join(', ')}
                 </div>
               ) : null}
+              {candidate.manifest.libraries?.length > 0 ? (
+                <div className="truncate text-xs text-neutral-400">
+                  Libraries: {candidate.manifest.libraries.join(', ')}
+                </div>
+              ) : null}
             </div>
             <Button
               variant="ghost"

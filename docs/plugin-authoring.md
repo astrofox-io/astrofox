@@ -14,6 +14,7 @@ Working examples live in [`examples/plugins/`](../examples/plugins/):
 | `bass-glow` | effect | shader | post-processing with audio + property uniforms |
 | `plasma` | display | shader | generative fragment-shader layer with FFT array |
 | `pulse-bars` | display | worker | JavaScript canvas drawing in the sandbox worker |
+| `audio-orb` | display | worker | 3D scene using the host-provided three.js library |
 
 ## The manifest (`astrofox.plugin.json`)
 
@@ -31,6 +32,7 @@ Working examples live in [`examples/plugins/`](../examples/plugins/):
   "entry": "./index.js",             // runtime "worker": ES module file
   "icon": "./icon.svg",              // optional, shown in menus
   "permissions": [],                 // e.g. ["network"] — prompted at install
+  "libraries": [],                   // worker runtime: e.g. ["three"] (below)
   "audio": { … },                    // what audio data you want (below)
   "defaultProperties": { … },
   "controls": { … },                 // control panel schema (below)
@@ -122,8 +124,14 @@ layer).
 
 The entry file is an ES module that default-exports a factory. It runs in a
 dedicated Web Worker — no DOM, no Astrofox internals, and no network unless
-the plugin holds the `network` permission. You draw into an `OffscreenCanvas`
-you own:
+the plugin holds the `network` permission. The worker is served with a
+Content-Security-Policy, so this is enforced by the browser rather than by
+runtime shims: `fetch`/`XMLHttpRequest`/`WebSocket` are refused
+(`connect-src 'none'`), `import()` only works for the plugin's own code and
+host-provided libraries (`script-src 'self' blob:`), and nested workers are
+blocked. With the `network` permission, connections are allowed but remote
+code still is not — bundle everything you execute into your entry file. You
+draw into an `OffscreenCanvas` you own:
 
 ```js
 export default function createPlugin({ properties, seed, size }) {
@@ -156,6 +164,49 @@ Rules for correct export rendering:
 
 A frame that takes more than a few seconds marks the instance unresponsive
 and stops rendering it; the app keeps running.
+
+### Host libraries (3D with three.js)
+
+Worker plugins can't import from the network, and bundling a 3D library into
+`index.js` is heavy. Instead, ask Astrofox for the copy it already ships:
+
+```jsonc
+"runtime": "worker",
+"entry": "./index.js",
+"libraries": ["three"]
+```
+
+Requested libraries are loaded into the worker before your entry runs and are
+passed to the factory:
+
+```js
+export default function createPlugin({ properties, seed, size, libraries }) {
+  const THREE = libraries.three;   // the "three" ES module namespace
+  let renderer, scene, camera;
+
+  return {
+    init({ canvas }) {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setClearColor(0x000000, 0);   // transparent → composited as a layer
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.z = 5;
+    },
+    render(frame) {
+      renderer.setSize(canvas.width, canvas.height, false);
+      renderer.render(scene, camera);
+      return { width: canvas.width, height: canvas.height };
+    },
+    dispose() { renderer.dispose(); },
+  };
+}
+```
+
+Available libraries: `three` (the version Astrofox itself uses; check
+`libraries.three.REVISION` if you rely on newer APIs). Requested libraries are
+shown to the user at install time. The result is still a regular 2D layer —
+it gets the standard transform/blending controls, but does not share the
+camera or lights of the built-in 3D displays. See `examples/plugins/audio-orb`.
 
 ## Development workflow
 

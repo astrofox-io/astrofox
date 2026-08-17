@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { app, BrowserWindow, ipcMain, net, protocol, session, shell } from 'electron';
 import { registerDialogIpc } from './dialogs-ipc.mjs';
 import { registerFfmpegIpc } from './ffmpeg-ipc.mjs';
+import { PLUGIN_SANDBOX_HEADERS } from './plugin-sandbox-policy.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -148,7 +149,7 @@ function registerIpc() {
 function registerAppProtocol() {
   const rendererRoot = getRendererRoot();
 
-  protocol.handle('astrofox', request => {
+  protocol.handle('astrofox', async request => {
     const url = new URL(request.url);
     let pathname = decodeURIComponent(url.pathname);
 
@@ -177,7 +178,18 @@ function registerAppProtocol() {
       return new Response('Not Found', { status: 404 });
     }
 
-    return net.fetch(pathToFileURL(resolved).href);
+    const response = await net.fetch(pathToFileURL(resolved).href);
+
+    // The plugin sandbox worker is served with a CSP that blocks network
+    // access and remote code; keep in sync with the Next headers config.
+    const sandbox = PLUGIN_SANDBOX_HEADERS.find(entry => entry.path === pathname);
+    if (sandbox) {
+      const headers = new Headers(response.headers);
+      headers.set('Content-Security-Policy', sandbox.csp);
+      return new Response(response.body, { status: response.status, headers });
+    }
+
+    return response;
   });
 }
 
