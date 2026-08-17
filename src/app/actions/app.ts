@@ -20,6 +20,12 @@ import * as displays from '@/lib/displays';
 import * as effects from '@/lib/effects';
 import { loadInstalledPlugins } from '@/lib/plugins';
 import { finalizeWebm } from '@/lib/utils/webm';
+import {
+  getVideoEncoderConfig,
+  VIDEO_ENCODERS,
+  type VideoEncoder,
+  type VideoQuality,
+} from '@/lib/video/encoders';
 import VideoExporter from '@/lib/video/VideoExporter';
 
 export interface VideoExportSegment {
@@ -72,10 +78,25 @@ interface StartVideoRecordingOptions {
   includeAudio?: boolean;
   audioSource?: File | null;
   fps?: VideoExportFps;
+  encoder?: VideoEncoder;
+  quality?: VideoQuality;
 }
 
 export const VIDEO_EXPORT_FPS_OPTIONS = [30, 60] as const;
 export type VideoExportFps = (typeof VIDEO_EXPORT_FPS_OPTIONS)[number];
+
+export type { VideoEncoder, VideoQuality } from '@/lib/video/encoders';
+export { VIDEO_ENCODERS, VIDEO_QUALITIES } from '@/lib/video/encoders';
+
+const DEFAULT_EXPORT_ENCODER: VideoEncoder = 'x264';
+const DEFAULT_EXPORT_QUALITY: VideoQuality = 'medium';
+
+/** MediaRecorder bitrate per quality level (browser exports). */
+const MEDIA_RECORDER_BITS_PER_SECOND: Record<VideoQuality, number> = {
+  low: 4_000_000,
+  medium: 8_000_000,
+  high: 16_000_000,
+};
 
 interface CaptureStreamCanvas {
   captureStream: (frameRate?: number) => MediaStream;
@@ -127,7 +148,6 @@ let stagePictureInPictureStream: MediaStream | null = null;
 const DEFAULT_VIDEO_FPS = 60;
 const DEFAULT_EXPORT_FPS: VideoExportFps = 30;
 const RECORDING_TIMESLICE_MS = 250;
-const VIDEO_BITS_PER_SECOND = 8_000_000;
 const VIDEO_MIME_CANDIDATES = [
   'video/webm;codecs=vp9,opus',
   'video/webm;codecs=vp8,opus',
@@ -144,6 +164,14 @@ function getSupportedVideoMimeType(): string | null {
   return (
     VIDEO_MIME_CANDIDATES.find(mimeType => window.MediaRecorder.isTypeSupported(mimeType)) || null
   );
+}
+
+/**
+ * Encoders the user can pick from. Only desktop builds with ffmpeg expose a
+ * choice; browser exports always use MediaRecorder.
+ */
+export function getVideoEncoderOptions(): VideoEncoder[] {
+  return isFfmpegAvailable() ? [...VIDEO_ENCODERS] : [];
 }
 
 function getExtensionFromMimeType(mimeType: string): string {
@@ -213,7 +241,7 @@ function isVideoExportInProgress() {
   );
 }
 
-function getVideoRecordingSetup(): {
+function getVideoRecordingSetup(encoder: VideoEncoder = DEFAULT_EXPORT_ENCODER): {
   mode: 'ffmpeg' | 'mediarecorder';
   canvas: CaptureStreamCanvas | null;
   mimeType: string;
@@ -225,11 +253,12 @@ function getVideoRecordingSetup(): {
   }
 
   if (isFfmpegAvailable()) {
+    const { extension } = getVideoEncoderConfig(encoder).video;
     return {
       mode: 'ffmpeg',
       canvas: null,
-      mimeType: 'video/mp4',
-      extension: 'mp4',
+      mimeType: `video/${extension}`,
+      extension,
     };
   }
 
@@ -359,7 +388,7 @@ export async function saveImage() {
 }
 
 export async function saveVideo() {
-  const setup = getVideoRecordingSetup();
+  const setup = getVideoRecordingSetup(DEFAULT_EXPORT_ENCODER);
 
   if (!setup) {
     return;
@@ -373,6 +402,11 @@ export async function saveVideo() {
   const audioBuffer =
     (player.getAudio?.() as { buffer?: AudioBuffer | null } | undefined)?.buffer ?? null;
   const totalDuration = Number(audioState.duration ?? 0);
+
+  // Stop playback while the export dialog is open.
+  if (player.isPlaying()) {
+    player.pause();
+  }
 
   showModal(
     'SaveVideoDialog',
@@ -390,6 +424,9 @@ export async function saveVideo() {
       endTime: totalDuration,
       includeAudio: true,
       fps: DEFAULT_EXPORT_FPS,
+      encoder: DEFAULT_EXPORT_ENCODER,
+      encoderOptions: getVideoEncoderOptions(),
+      quality: DEFAULT_EXPORT_QUALITY,
     },
   );
 }
@@ -447,6 +484,8 @@ async function startFfmpegVideoExport({
   includeAudio = true,
   audioSource = null,
   fps = DEFAULT_EXPORT_FPS,
+  encoder = DEFAULT_EXPORT_ENCODER,
+  quality = DEFAULT_EXPORT_QUALITY,
 }: StartVideoRecordingOptions): Promise<boolean> {
   const bridge = getDesktopBridge();
   const outputPath = filePath || defaultPath || '';
@@ -500,7 +539,8 @@ async function startFfmpegVideoExport({
       startTime: clampedStartTime,
       endTime: clampedEndTime,
       fps,
-      quality: 'medium',
+      encoder,
+      quality,
       onProgress: ({ status, currentFrame, totalFrames }) => {
         if (status === 'rendering-video' && totalFrames) {
           const exportTime =
@@ -571,12 +611,14 @@ export async function startVideoRecording({
   includeAudio = true,
   audioSource = null,
   fps = DEFAULT_EXPORT_FPS,
+  encoder = DEFAULT_EXPORT_ENCODER,
+  quality = DEFAULT_EXPORT_QUALITY,
 }: StartVideoRecordingOptions): Promise<boolean> {
   if (audioSource) {
     await loadAudioFile(audioSource, false);
   }
 
-  const setup = getVideoRecordingSetup();
+  const setup = getVideoRecordingSetup(encoder);
 
   if (!setup) {
     return false;
@@ -611,6 +653,8 @@ export async function startVideoRecording({
       includeAudio,
       audioSource,
       fps,
+      encoder,
+      quality,
     });
   }
 
@@ -643,7 +687,7 @@ export async function startVideoRecording({
     recordingStream = new MediaStream(tracks);
     const recorder = new window.MediaRecorder(recordingStream, {
       mimeType: setup.mimeType,
-      videoBitsPerSecond: VIDEO_BITS_PER_SECOND,
+      videoBitsPerSecond: MEDIA_RECORDER_BITS_PER_SECOND[quality],
     });
 
     activeVideoRecorder = recorder;

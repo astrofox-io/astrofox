@@ -8,7 +8,10 @@ import {
   setVideoExportSegment,
   startVideoRecording,
   VIDEO_EXPORT_FPS_OPTIONS,
+  VIDEO_QUALITIES,
+  type VideoEncoder,
   type VideoExportFps,
+  type VideoQuality,
 } from '@/app/actions/app';
 import { chooseAudioFile, inspectAudioFile } from '@/app/actions/audio';
 import { raiseError } from '@/app/actions/error';
@@ -19,6 +22,7 @@ import ExportWaveform from '@/app/components/modals/ExportWaveform';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
+import { getVideoEncoderConfig } from '@/lib/video/encoders';
 
 type SaveVideoDialogProps = {
   onClose: () => void;
@@ -35,9 +39,21 @@ type SaveVideoDialogProps = {
   endTime?: number;
   includeAudio?: boolean;
   fps?: VideoExportFps;
+  encoder?: VideoEncoder;
+  encoderOptions?: VideoEncoder[];
+  quality?: VideoQuality;
 };
 
 const MIN_EXPORT_DURATION = 5;
+
+function replaceFileExtension(filePath: string, extension: string) {
+  if (!filePath) {
+    return filePath;
+  }
+
+  const normalized = extension.startsWith('.') ? extension : `.${extension}`;
+  return filePath.replace(/\.[^./\\]+$/, '') + normalized;
+}
 
 export default function SaveVideoDialog({
   onClose,
@@ -54,6 +70,9 @@ export default function SaveVideoDialog({
   endTime = initialTotalDuration,
   includeAudio = true,
   fps: initialFps = 30,
+  encoder: initialEncoder = 'x264',
+  encoderOptions = [],
+  quality: initialQuality = 'medium',
 }: SaveVideoDialogProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'save-video' });
   const { t: tc } = useTranslation(undefined, { keyPrefix: 'common' });
@@ -68,6 +87,13 @@ export default function SaveVideoDialog({
   const [selectedEndTime, setSelectedEndTime] = useState(endTime);
   const [shouldIncludeAudio, setShouldIncludeAudio] = useState(includeAudio);
   const [fps, setFps] = useState<VideoExportFps>(initialFps);
+  const [encoder, setEncoder] = useState<VideoEncoder>(initialEncoder);
+  const [quality, setQuality] = useState<VideoQuality>(initialQuality);
+  const canChooseEncoder = encoderOptions.length > 0;
+  const activeExtension = canChooseEncoder
+    ? getVideoEncoderConfig(encoder).video.extension
+    : extension;
+  const defaultPath = replaceFileExtension(initialDefaultPath, activeExtension);
   const [validationMessage, setValidationMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isChoosingLocation, setIsChoosingLocation] = useState(false);
@@ -126,7 +152,7 @@ export default function SaveVideoDialog({
     setIsChoosingLocation(true);
 
     try {
-      const selection = await chooseVideoSaveLocation(filePath, extension);
+      const selection = await chooseVideoSaveLocation(filePath || defaultPath, activeExtension);
 
       if (!selection.canceled) {
         setFileHandle(selection.fileHandle || null);
@@ -137,6 +163,24 @@ export default function SaveVideoDialog({
       raiseError(te('choose-video-save-location-failed'), error);
     } finally {
       setIsChoosingLocation(false);
+    }
+  }
+
+  function handleEncoderChange(nextEncoder: VideoEncoder) {
+    if (nextEncoder === encoder) {
+      return;
+    }
+
+    setEncoder(nextEncoder);
+
+    // Keep a previously chosen native path but swap its extension. File System
+    // Access handles are bound to a specific file, so they must be re-chosen.
+    const nextExtension = getVideoEncoderConfig(nextEncoder).video.extension;
+    if (fileHandle) {
+      setFileHandle(null);
+      setFilePath('');
+    } else if (filePath) {
+      setFilePath(replaceFileExtension(filePath, nextExtension));
     }
   }
 
@@ -229,12 +273,14 @@ export default function SaveVideoDialog({
           const started = await startVideoRecording({
             fileHandle,
             filePath,
-            defaultPath: initialDefaultPath,
+            defaultPath,
             startTime: selectedStartTime,
             endTime: selectedEndTime,
             includeAudio: shouldIncludeAudio,
             audioSource,
             fps,
+            encoder,
+            quality,
           });
 
           if (!started) {
@@ -365,6 +411,34 @@ export default function SaveVideoDialog({
         </section>
 
         <section className="space-y-2">
+          {canChooseEncoder ? (
+            <div className="flex items-center justify-between gap-4 py-1">
+              <span className="text-sm text-neutral-100">{t('encoder')}</span>
+              <SelectInput
+                name="encoder"
+                value={encoder}
+                width={100}
+                items={encoderOptions.map(option => ({
+                  label: getVideoEncoderConfig(option).label,
+                  value: option,
+                }))}
+                onChange={(_name, value) => handleEncoderChange(String(value) as VideoEncoder)}
+              />
+            </div>
+          ) : null}
+          <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-sm text-neutral-100">{t('quality')}</span>
+            <SelectInput
+              name="quality"
+              value={quality}
+              width={100}
+              items={VIDEO_QUALITIES.map(option => ({
+                label: t(`quality-${option}`),
+                value: option,
+              }))}
+              onChange={(_name, value) => setQuality(String(value) as VideoQuality)}
+            />
+          </div>
           <div className="flex items-center justify-between gap-4 py-1">
             <span className="text-sm text-neutral-100">{t('frame-rate')}</span>
             <SelectInput

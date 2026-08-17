@@ -1,5 +1,6 @@
 import { getDesktopBridge } from '@/app/desktop';
 import { logger, renderBackend, renderer } from '@/app/global';
+import { getVideoEncoderConfig, type VideoEncoder, type VideoQuality } from './encoders';
 
 export type VideoExportProgress = {
   status: string;
@@ -14,7 +15,8 @@ export type VideoExportOptions = {
   startTime?: number;
   endTime?: number;
   fps?: number;
-  quality?: 'low' | 'medium' | 'high';
+  encoder?: VideoEncoder;
+  quality?: VideoQuality;
   onProgress?: (progress: VideoExportProgress) => void;
 };
 
@@ -24,29 +26,20 @@ function sleep(ms: number) {
   });
 }
 
-function ensureMp4Path(filePath: string) {
-  return /\.mp4$/i.test(filePath) ? filePath : `${filePath}.mp4`;
-}
-
 function replaceExtension(filePath: string, extension: string) {
   const normalized = extension.startsWith('.') ? extension : `.${extension}`;
   return filePath.replace(/\.[^./\\]+$/, '') + normalized;
 }
 
-function qualityArgs(quality: 'low' | 'medium' | 'high'): string[] {
-  switch (quality) {
-    case 'low':
-      return ['-preset', 'veryfast', '-crf', '23'];
-    case 'high':
-      return ['-preset', 'slow', '-crf', '18'];
-    default:
-      return ['-preset', 'medium', '-crf', '20'];
-  }
+function ensureExtension(filePath: string, extension: string) {
+  const pattern = new RegExp(`\\.${extension}$`, 'i');
+  return pattern.test(filePath) ? filePath : replaceExtension(filePath, extension);
 }
 
 /**
- * Offline desktop export: raw RGBA frames → libx264, optional audio, merge to MP4.
- * Requires the Electron preload ffmpeg bridge and a bundled ffmpeg binary.
+ * Offline desktop export: raw RGBA frames → ffmpeg encoder, optional audio,
+ * merge into the final container. Requires the Electron preload ffmpeg bridge
+ * and a bundled ffmpeg binary.
  */
 export default class VideoExporter {
   private cancelled = false;
@@ -83,11 +76,13 @@ export default class VideoExporter {
       startTime = 0,
       endTime,
       fps = 30,
+      encoder = 'x264',
       quality = 'medium',
       onProgress,
     } = options;
 
-    const finalOutput = ensureMp4Path(outputPath);
+    const config = getVideoEncoderConfig(encoder);
+    const finalOutput = ensureExtension(outputPath, config.video.extension);
     const duration = Math.max(0, (endTime ?? startTime) - startTime);
     if (duration <= 0) {
       throw new Error('Invalid export duration.');
@@ -106,8 +101,9 @@ export default class VideoExporter {
     const startFrame = Math.round(startTime * fps);
     const endFrame = startFrame + totalFrames;
     const id = `export-${Date.now()}`;
-    const tempVideo = replaceExtension(`${tempRoot.replace(/[\\/]$/, '')}/${id}.video`, '.mp4');
-    const tempAudio = replaceExtension(`${tempRoot.replace(/[\\/]$/, '')}/${id}.audio`, '.m4a');
+    const tempBase = `${tempRoot.replace(/[\\/]$/, '')}/${id}`;
+    const tempVideo = `${tempBase}.video.${config.video.extension}`;
+    const tempAudio = `${tempBase}.audio.${config.audio.extension}`;
 
     const tempFiles = [tempVideo, tempAudio];
     const report = (progress: VideoExportProgress) => {
@@ -134,7 +130,7 @@ export default class VideoExporter {
         '-i',
         'pipe:0',
         '-c:v',
-        'libx264',
+        config.video.encoder,
         // Convert RGB → YUV with the BT.709 matrix (swscale defaults to BT.601)
         // and tag the stream accordingly so players decode the colors as intended.
         '-vf',
@@ -149,13 +145,8 @@ export default class VideoExporter {
         'bt709',
         '-color_range',
         'tv',
-        '-profile:v',
-        'high',
-        '-tune',
-        'animation',
-        '-movflags',
-        '+faststart',
-        ...qualityArgs(quality),
+        ...config.video.output,
+        ...config.video.quality[quality],
         tempVideo,
       ];
 
@@ -199,9 +190,8 @@ export default class VideoExporter {
           '-t',
           String(duration),
           '-c:a',
-          'aac',
-          '-b:a',
-          '192k',
+          config.audio.encoder,
+          ...config.audio.settings,
           tempAudio,
         ];
         await bridge.ffmpegRun?.(audioArgs);
@@ -219,11 +209,10 @@ export default class VideoExporter {
             '-c',
             'copy',
             '-shortest',
-            '-movflags',
-            '+faststart',
+            ...config.video.merge,
             finalOutput,
           ]
-        : ['-y', '-i', tempVideo, '-c', 'copy', '-movflags', '+faststart', finalOutput];
+        : ['-y', '-i', tempVideo, '-c', 'copy', ...config.video.merge, finalOutput];
       await bridge.ffmpegRun?.(mergeArgs);
 
       report({ status: 'finished', currentFrame: totalFrames, totalFrames });
