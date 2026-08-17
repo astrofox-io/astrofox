@@ -11,6 +11,7 @@ export default class MeshGridDisplay extends Display {
     description: 'Displays an animated 3D mesh grid surface.',
     type: 'display',
     label: 'Mesh Grid',
+    order: 4,
     defaultProperties: {
       material: 'Standard',
       shading: 'Smooth',

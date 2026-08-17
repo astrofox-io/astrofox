@@ -1,4 +1,6 @@
 import Effect from '@/lib/core/Effect';
+import { registerEffectPass } from '@/lib/core/render/effects/effectPassRegistry';
+import { createToneMappingPass } from '@/lib/core/render/effects/passes/colorPasses';
 
 const isAdaptive = (display: { properties: Record<string, unknown> }) =>
   Boolean(display.properties.adaptive);
@@ -62,3 +64,5 @@ export default class ToneMappingEffect extends Effect {
     super(ToneMappingEffect, properties);
   }
 }
+
+registerEffectPass(ToneMappingEffect.config.name, createToneMappingPass, { liveUpdatable: true });

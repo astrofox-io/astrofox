@@ -1,4 +1,13 @@
 import Effect from '@/lib/core/Effect';
+import ShaderPass from '@/lib/core/render/composer/ShaderPass';
+import { toRadians } from '@/lib/core/render/constants';
+import {
+  attachPassUpdater,
+  type EffectPassConfig,
+  isEffectEnabled,
+  registerEffectPass,
+} from '@/lib/core/render/effects/effectPassRegistry';
+import KaleidoscopeShader from '@/lib/core/render/effects/shaders/KaleidoscopeShader';
 
 export default class KaleidoscopeEffect extends Effect {
   static config = {
@@ -6,6 +15,7 @@ export default class KaleidoscopeEffect extends Effect {
     description: 'Kaleidoscope effect.',
     type: 'effect',
     label: 'Kaleidoscope',
+    category: 'distortion',
     defaultProperties: {
       sides: 6,
       angle: 0,
@@ -34,3 +44,16 @@ export default class KaleidoscopeEffect extends Effect {
     super(KaleidoscopeEffect, properties);
   }
 }
+
+function createPass(effect: EffectPassConfig) {
+  const props = effect.properties;
+  const pass = new ShaderPass(KaleidoscopeShader);
+  return attachPassUpdater(pass, () => {
+    pass.enabled = isEffectEnabled(effect);
+    pass.setUniforms({
+      sides: Math.max(1, Number(props.sides || 6)),
+      angle: toRadians(Number(props.angle || 0)),
+    });
+  });
+}
+registerEffectPass(KaleidoscopeEffect.config.name, createPass, { liveUpdatable: true });

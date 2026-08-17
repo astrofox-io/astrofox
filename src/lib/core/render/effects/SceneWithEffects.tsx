@@ -3,59 +3,27 @@ import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import React from 'react';
 import { Color, OrthographicCamera, Scene as ThreeScene } from 'three';
 import { PassChain } from '../PassChain';
-import { createRawEffect } from './createRawEffect';
-import { createScenePass } from './createScenePass';
 import { getEffectPassFactory, getEffectPassMeta } from './effectPassRegistry';
 
-const LIVE_UPDATABLE_EFFECTS = new Set([
-  'BloomEffect',
-  'BlurEffect',
-  'BrightnessContrastEffect',
-  'ColorEffect',
-  'ColorHalftoneEffect',
-  'ColorDepthEffect',
-  'DistortionEffect',
-  'DotScreenEffect',
-  'GlitchEffect',
-  'HueSaturationEffect',
-  'KaleidoscopeEffect',
-  'LEDEffect',
-  'MirrorEffect',
-  'NoiseEffect',
-  'PerlinNoiseEffect',
-  'PixelateEffect',
-  'RGBShiftEffect',
-  'SepiaEffect',
-  'ToneMappingEffect',
-]);
-
-const STRUCTURAL_EFFECT_PROPS = {
-  BlurEffect: ['type'],
-  ColorEffect: ['colorAverageEnabled', 'colorDepthEnabled', 'toneMappingEnabled'],
-  PixelateEffect: ['type'],
-};
-
+// Effects whose pass factory is registered with liveUpdatable only rebuild
+// when one of their structuralProps changes; everything else rebuilds on any
+// property change.
 function getEffectBuildKey(effect) {
   const base = {
     id: effect.id,
     name: effect.name,
   };
 
-  const registryMeta = getEffectPassMeta(effect.name);
-  const liveUpdatable = registryMeta
-    ? Boolean(registryMeta.liveUpdatable)
-    : LIVE_UPDATABLE_EFFECTS.has(effect.name);
+  const meta = getEffectPassMeta(effect.name);
 
-  if (!liveUpdatable) {
+  if (!meta?.liveUpdatable) {
     return {
       ...base,
       properties: effect.properties,
     };
   }
 
-  const structuralKeys = registryMeta
-    ? registryMeta.structuralProps || []
-    : STRUCTURAL_EFFECT_PROPS[effect.name] || [];
+  const structuralKeys = meta.structuralProps || [];
   if (structuralKeys.length === 0) {
     return base;
   }
@@ -144,39 +112,16 @@ export function SceneWithEffects({
     };
 
     for (const effect of effects) {
+      const factory = getEffectPassFactory(effect.name);
+      if (!factory) {
+        continue;
+      }
+
       let item = null;
-
-      const registeredFactory = getEffectPassFactory(effect.name);
-      if (registeredFactory) {
-        try {
-          item = registeredFactory(effect, width, height);
-        } catch {
-          item = null;
-        }
-
-        addPassItem(item);
-        continue;
-      }
-
       try {
-        item = createScenePass(effect, width, height);
-      } catch {
-        item = null;
-      }
-
-      if (item) {
-        builtPasses.push(item);
-        continue;
-      }
-
-      try {
-        item = createRawEffect(effect, width, height);
-      } catch {
-        item = null;
-      }
-
-      if (!item) {
-        continue;
+        item = factory(effect, width, height);
+      } catch (e) {
+        console.error(`Failed to build pass for effect ${effect.name}:`, e);
       }
 
       addPassItem(item);

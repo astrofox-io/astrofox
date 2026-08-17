@@ -1,4 +1,12 @@
 import Effect from '@/lib/core/Effect';
+import ShaderPass from '@/lib/core/render/composer/ShaderPass';
+import {
+  attachPassUpdater,
+  type EffectPassConfig,
+  isEffectEnabled,
+  registerEffectPass,
+} from '@/lib/core/render/effects/effectPassRegistry';
+import PerlinNoiseShader from '@/lib/core/render/effects/shaders/PerlinNoiseShader';
 import type { RenderFrameData } from '@/lib/types';
 
 export default class PerlinNoiseEffect extends Effect {
@@ -9,6 +17,7 @@ export default class PerlinNoiseEffect extends Effect {
     description: 'Perlin noise effect.',
     type: 'effect',
     label: 'Perlin Noise',
+    category: 'stylize',
     defaultProperties: {
       time: 0,
       amount: 0.35,
@@ -67,3 +76,18 @@ export default class PerlinNoiseEffect extends Effect {
     }
   }
 }
+
+function createPass(effect: EffectPassConfig, width: number, height: number) {
+  const props = effect.properties;
+  const pass = new ShaderPass(PerlinNoiseShader);
+  return attachPassUpdater(pass, () => {
+    pass.enabled = isEffectEnabled(effect);
+    pass.setSize(width, height);
+    pass.setUniforms({
+      time: Number(effect.time || props.time || 0),
+      amount: Number(props.amount ?? 0.35),
+      scale: Number(props.scale ?? 3),
+    });
+  });
+}
+registerEffectPass(PerlinNoiseEffect.config.name, createPass, { liveUpdatable: true });

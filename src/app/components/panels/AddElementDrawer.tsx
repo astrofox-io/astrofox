@@ -58,9 +58,9 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
     const libraryItems = getLibraryItems(config.entityType);
     const nextGroups: DrawerGroup[] = config.categories
       .map(category => ({
-        key: category.label,
+        key: category.key,
         label: category.label,
-        items: getCategoryItems(libraryItems, category.items).map(item => ({
+        items: getCategoryItems(config.entityType, libraryItems, category.key).map(item => ({
           ...item,
           external: false,
         })),

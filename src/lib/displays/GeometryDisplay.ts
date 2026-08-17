@@ -24,6 +24,7 @@ export default class GeometryDisplay extends Display {
     description: 'Displays 3D geometry.',
     type: 'display',
     label: 'Geometry',
+    order: 1,
     defaultProperties: {
       shape: 'Box',
       material: 'Standard',

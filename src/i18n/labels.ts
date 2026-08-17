@@ -1,42 +1,17 @@
 import type { TFunction } from 'i18next';
 
-const GENERATED_NAME_LABELS = [
-  'Scene',
-  'Text',
-  'Image',
-  'Video',
-  'Shape',
-  'Bar Spectrum',
-  'Radial Spectrum',
-  'Wave Spectrum',
-  'Waveform Ring',
-  'Sound Wave',
-  'Geometry',
-  'Tunnel',
-  'Cubes',
-  'Mesh Grid',
-  'Color',
-  'Blur',
-  'Bloom',
-  'Depth of Field',
-  'Tilt Shift',
-  'Distortion',
-  'Glitch',
-  'Kaleidoscope',
-  'Mirror',
-  'RGB Shift',
-  'ASCII',
-  'Color Halftone',
-  'Dot Screen',
-  'LED',
-  'Pixelate',
-  'Scanline',
-  'Noise',
-  'Perlin Noise',
-  'Vignette',
-] as const;
+// Labels that auto-generated element names ("Bar Spectrum 1") can start
+// with. Scenes are always known; display/effect labels are registered from the
+// library once it loads (see loadLibrary) so this file needs no entity list.
+const GENERATED_NAME_PREFIXES = new Set<string>(['Scene']);
 
-const GENERATED_NAME_PREFIXES = new Set<string>(GENERATED_NAME_LABELS);
+export function registerGeneratedNameLabels(labels: Iterable<unknown>) {
+  for (const label of labels) {
+    if (typeof label === 'string' && label.length > 0) {
+      GENERATED_NAME_PREFIXES.add(label);
+    }
+  }
+}
 
 function labelKey(label: string) {
   const words = label

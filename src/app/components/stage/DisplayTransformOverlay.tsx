@@ -179,7 +179,7 @@ function buildDragResult(
     if (handleY !== 0) {
       renderHeight = Math.max(minRenderHeight, frame.renderHeight + handleY * localDelta.y);
       const nextBaseHeight = renderHeight / frame.displayZoom;
-      if (frame.name === 'BarSpectrumDisplay') {
+      if (frame.heightIncludesShadow) {
         const currentTotalHeight = Math.max(1, frame.barHeight + frame.barShadowHeight);
         const scale = nextBaseHeight / currentTotalHeight;
         const nextBarHeight = Math.max(1, frame.barHeight * scale);

@@ -1,11 +1,9 @@
 export type DisplayRenderGroup = '2d' | '3d';
 
-const renderGroups = new Map<string, DisplayRenderGroup>([
-  ['CubesDisplay', '3d'],
-  ['GeometryDisplay', '3d'],
-  ['MeshGridDisplay', '3d'],
-  ['TunnelDisplay', '3d'],
-]);
+// Populated by registerDisplayLayer (core displays at module load, plugins at
+// install); kept in this dependency-free module so UI code can ask about
+// render groups without importing the three.js layer registry.
+const renderGroups = new Map<string, DisplayRenderGroup>();
 
 export function registerDisplayRenderGroup(name: string, group: DisplayRenderGroup) {
   renderGroups.set(name, group);

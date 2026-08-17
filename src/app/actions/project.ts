@@ -266,8 +266,13 @@ function getMediaSourcePath(src: unknown): string {
   return '';
 }
 
+// Media displays declare `media: 'image' | 'video'` on their config.
 function getMediaKind(element: Pick<ElementSnapshot, 'name'> | null | undefined): MediaKind {
-  return element?.name === 'VideoDisplay' ? 'video' : 'image';
+  const displays = (library.get('displays') ?? {}) as Record<
+    string,
+    { config?: { media?: string } }
+  >;
+  return displays[element?.name ?? '']?.config?.media === 'video' ? 'video' : 'image';
 }
 
 function getMediaLabel(

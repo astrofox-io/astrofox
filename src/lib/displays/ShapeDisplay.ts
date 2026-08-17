@@ -15,6 +15,10 @@ export default class ShapeDisplay extends Display {
     description: 'Displays a shape.',
     type: 'display',
     label: 'Shape',
+    order: 4,
+    transform: {
+      fixedAspect: (properties: Record<string, unknown>) => properties.shape !== 'Rectangle',
+    },
     defaultProperties: {
       shape: 'Circle',
       size: 100,

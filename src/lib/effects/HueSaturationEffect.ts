@@ -1,4 +1,6 @@
 import Effect from '@/lib/core/Effect';
+import { registerEffectPass } from '@/lib/core/render/effects/effectPassRegistry';
+import { createHueSaturationPass } from '@/lib/core/render/effects/passes/colorPasses';
 
 export default class HueSaturationEffect extends Effect {
   static config = {
@@ -36,3 +38,7 @@ export default class HueSaturationEffect extends Effect {
     super(HueSaturationEffect, properties);
   }
 }
+
+registerEffectPass(HueSaturationEffect.config.name, createHueSaturationPass, {
+  liveUpdatable: true,
+});

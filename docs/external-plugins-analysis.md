@@ -515,6 +515,15 @@ doesn't destroy it.
 
 ### 7.1 Registry refactor (prerequisite, no behavior change)
 
+> **Status: done.** Core effects register their pass factory + rebuild metadata
+> from their own module (`src/lib/effects/*.ts` → `registerEffectPass`);
+> `createScenePass`/`createRawEffect` and the `LIVE_UPDATABLE_EFFECTS` /
+> `STRUCTURAL_EFFECT_PROPS` tables are gone. `displayLayerRegistry` is the only
+> source of render groups. Add menus are driven by `config.category` /
+> `config.order`, generated-name labels come from the library, and the
+> transform overlay reads a per-display `config.transform` block instead of
+> testing names. Core entities carry `config.builtin = true`.
+
 Replace the name-keyed hardcoded tables with data on the class/config so that
 library membership is sufficient:
 

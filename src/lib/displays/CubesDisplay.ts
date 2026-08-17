@@ -11,6 +11,7 @@ export default class CubesDisplay extends Display {
     description: 'Displays an animated 3D wall of cubes.',
     type: 'display',
     label: 'Cubes',
+    order: 3,
     defaultProperties: {
       material: 'Standard',
       shading: 'Smooth',

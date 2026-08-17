@@ -18,6 +18,13 @@ export default class TextDisplay extends Display {
     description: 'Displays text.',
     type: 'display',
     label: 'Text',
+    order: 1,
+    transform: {
+      kind: 'text',
+      // Empty text renders a degenerate (~1px) canvas; draw no handles.
+      hasContent: (properties: Record<string, unknown>) =>
+        String(properties.text ?? '').trim().length > 0,
+    },
     defaultProperties: {
       text: '',
       size: 40,

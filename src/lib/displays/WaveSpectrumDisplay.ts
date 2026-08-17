@@ -13,6 +13,7 @@ export default class WaveSpectrumDisplay extends Display {
     description: 'Displays an audio wave spectrum.',
     type: 'display',
     label: 'Wave Spectrum',
+    order: 7,
     defaultProperties: {
       width: 770,
       height: 240,

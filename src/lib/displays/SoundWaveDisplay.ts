@@ -13,6 +13,7 @@ export default class SoundWaveDisplay extends Display {
     description: 'Displays a sound wave.',
     type: 'display',
     label: 'Sound Wave',
+    order: 9,
     defaultProperties: {
       stroke: true,
       strokeColor: '#FFFFFF',

@@ -1,4 +1,5 @@
 import Effect from '@/lib/core/Effect';
+import { registerEffectPass } from '@/lib/core/render/effects/effectPassRegistry';
 import { stageHeight } from '@/lib/utils/controls';
 
 export default class DepthOfFieldEffect extends Effect {
@@ -7,6 +8,8 @@ export default class DepthOfFieldEffect extends Effect {
     description: 'Depth of field effect for 3D scene content.',
     type: 'effect',
     label: 'Depth of Field',
+    category: 'blur-focus',
+    order: 3,
     defaultProperties: {
       focusDistance: 0,
       focalLength: 0.02,
@@ -56,3 +59,7 @@ export default class DepthOfFieldEffect extends Effect {
     super(DepthOfFieldEffect, properties);
   }
 }
+
+// Not a composer pass: PerspectiveScene3D applies depth of field to the 3D
+// scene using its depth texture. StageRoot routes it there by scope.
+registerEffectPass(DepthOfFieldEffect.config.name, () => null, { scope: 'scene3d' });

@@ -1,3 +1,4 @@
+import { getDisplayTransformConfig } from '@/lib/core/Display';
 import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 
 type CanvasLike = {
@@ -10,8 +11,6 @@ type TransformableDisplay = {
   name?: string;
   enabled?: boolean;
   properties?: Record<string, unknown>;
-  image?: { naturalWidth?: number; naturalHeight?: number };
-  video?: { videoWidth?: number; videoHeight?: number };
   text?: { canvas?: CanvasLike };
   shape?: { canvas?: CanvasLike };
   wave?: { canvas?: CanvasLike };
@@ -35,6 +34,8 @@ export interface DisplayTransformFrame {
   widthOffset: number;
   heightOffset: number;
   fixedAspect: boolean;
+  // Height handle scales height and shadowHeight together (bar spectrum).
+  heightIncludesShadow: boolean;
   size: number;
   barHeight: number;
   barShadowHeight: number;
@@ -66,24 +67,19 @@ function getCanvasSize(display: TransformableDisplay) {
   return { width, height };
 }
 
+// Media displays declare an intrinsic size (transform.naturalSize) that
+// applies while the width/height properties are still 0.
 function getMediaSize(display: TransformableDisplay) {
+  const natural = getDisplayTransformConfig(display).naturalSize?.(display as never);
+  if (!natural) {
+    return null;
+  }
+
   const properties = display.properties || {};
-
-  if (display.name === 'ImageDisplay') {
-    return {
-      width: Number(properties.width) || Number(display.image?.naturalWidth) || 0,
-      height: Number(properties.height) || Number(display.image?.naturalHeight) || 0,
-    };
-  }
-
-  if (display.name === 'VideoDisplay') {
-    return {
-      width: Number(properties.width) || Number(display.video?.videoWidth) || 0,
-      height: Number(properties.height) || Number(display.video?.videoHeight) || 0,
-    };
-  }
-
-  return null;
+  return {
+    width: Number(properties.width) || Number(natural.width) || 0,
+    height: Number(properties.height) || Number(natural.height) || 0,
+  };
 }
 
 function getRadialSpectrumSize(properties: Record<string, unknown>) {
@@ -130,6 +126,8 @@ export function getDisplayTransformFrame(
   }
 
   const properties = display.properties || {};
+  const transform = getDisplayTransformConfig(display);
+  const kind = transform.kind ?? 'size';
   const x = Number(properties.x ?? 0);
   const y = Number(properties.y ?? 0);
   const rotation = Number(properties.rotation ?? 0);
@@ -137,13 +135,14 @@ export function getDisplayTransformFrame(
   const size = Math.max(1, Number(properties.size ?? 1));
   const displayZoom = Math.max(0.01, Number(properties.zoom ?? 1));
 
-  if (display.name === 'TextDisplay') {
-    const canvasSize = getCanvasSize(display);
-    const textValue = String(properties.text ?? '').trim();
+  if (transform.hasContent && !transform.hasContent(properties)) {
+    return null;
+  }
 
-    // An empty text value renders a degenerate (~1px wide) canvas, which
-    // would collapse the transform handles into a single line.
-    if (!canvasSize || !textValue) {
+  if (kind === 'text') {
+    const canvasSize = getCanvasSize(display);
+
+    if (!canvasSize) {
       return null;
     }
 
@@ -160,6 +159,7 @@ export function getDisplayTransformFrame(
       widthOffset: 0,
       heightOffset: 0,
       fixedAspect: true,
+      heightIncludesShadow: false,
       size,
       barHeight: 0,
       barShadowHeight: 0,
@@ -170,7 +170,7 @@ export function getDisplayTransformFrame(
     };
   }
 
-  if (display.name === 'RadialSpectrumDisplay') {
+  if (kind === 'radialSpectrum') {
     const circularSize = getRadialSpectrumSize(properties);
     const renderWidth = circularSize.width * displayZoom;
     const renderHeight = circularSize.height * displayZoom;
@@ -188,6 +188,7 @@ export function getDisplayTransformFrame(
       widthOffset: 0,
       heightOffset: 0,
       fixedAspect: true,
+      heightIncludesShadow: false,
       size,
       barHeight: 0,
       barShadowHeight: 0,
@@ -198,7 +199,7 @@ export function getDisplayTransformFrame(
     };
   }
 
-  if (display.name === 'WaveformRingDisplay') {
+  if (kind === 'waveformRing') {
     const circularSize = getWaveformRingSize(properties);
     const renderWidth = circularSize.width * displayZoom;
     const renderHeight = circularSize.height * displayZoom;
@@ -216,6 +217,7 @@ export function getDisplayTransformFrame(
       widthOffset: 0,
       heightOffset: 0,
       fixedAspect: true,
+      heightIncludesShadow: false,
       size,
       barHeight: 0,
       barShadowHeight: 0,
@@ -231,10 +233,14 @@ export function getDisplayTransformFrame(
   const widthProperty = Number(properties.width ?? 0);
   const heightProperty = Number(properties.height ?? 0);
   const shadowHeightProperty = Math.max(0, Number(properties.shadowHeight ?? 0));
-  const isBarSpectrum = display.name === 'BarSpectrumDisplay';
+  const heightIncludesShadow = Boolean(transform.heightIncludesShadow);
+  const keepsAspect =
+    typeof transform.fixedAspect === 'function'
+      ? transform.fixedAspect(properties)
+      : Boolean(transform.fixedAspect);
   const editableWidth =
     widthProperty > 0 ? widthProperty : Number(mediaSize?.width || canvasSize?.width || 0);
-  const editableHeight = isBarSpectrum
+  const editableHeight = heightIncludesShadow
     ? Math.max(1, heightProperty + shadowHeightProperty)
     : heightProperty > 0
       ? heightProperty
@@ -268,15 +274,11 @@ export function getDisplayTransformFrame(
     renderHeight,
     widthOffset: Math.max(0, baseRenderWidth - Math.max(1, editableWidth)),
     heightOffset: Math.max(0, baseRenderHeight - Math.max(1, editableHeight)),
-    fixedAspect:
-      display.name === 'ImageDisplay' ||
-      display.name === 'VideoDisplay' ||
-      (display.name === 'ShapeDisplay' && properties.shape !== 'Rectangle')
-        ? fixedAspect
-        : false,
+    fixedAspect: keepsAspect ? fixedAspect : false,
+    heightIncludesShadow,
     size,
     barHeight: Math.max(0, heightProperty),
-    barShadowHeight: isBarSpectrum ? shadowHeightProperty : 0,
+    barShadowHeight: heightIncludesShadow ? shadowHeightProperty : 0,
     radius: 0,
     innerRadius: 0,
     amplitude: 0,

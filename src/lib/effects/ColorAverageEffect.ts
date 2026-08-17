@@ -1,4 +1,6 @@
 import Effect from '@/lib/core/Effect';
+import { registerEffectPass } from '@/lib/core/render/effects/effectPassRegistry';
+import { createColorAveragePass } from '@/lib/core/render/effects/passes/colorPasses';
 
 export default class ColorAverageEffect extends Effect {
   static config = {
@@ -14,3 +16,5 @@ export default class ColorAverageEffect extends Effect {
     super(ColorAverageEffect, properties);
   }
 }
+
+registerEffectPass(ColorAverageEffect.config.name, createColorAveragePass, { liveUpdatable: true });

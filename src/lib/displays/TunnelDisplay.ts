@@ -6,6 +6,7 @@ export default class TunnelDisplay extends Display {
     description: 'Displays a moving tunnel grid.',
     type: 'display',
     label: 'Tunnel',
+    order: 2,
     defaultProperties: {
       color: '#FFFFFF',
       backgroundColor: '#02060A',

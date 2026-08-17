@@ -1,4 +1,13 @@
 import Effect from '@/lib/core/Effect';
+import ShaderPass from '@/lib/core/render/composer/ShaderPass';
+import { toRadians } from '@/lib/core/render/constants';
+import {
+  attachPassUpdater,
+  type EffectPassConfig,
+  isEffectEnabled,
+  registerEffectPass,
+} from '@/lib/core/render/effects/effectPassRegistry';
+import ColorHalftoneShader from '@/lib/core/render/effects/shaders/ColorHalftoneShader';
 
 const halftoneShapeOptions = ['Dot', 'Ellipse', 'Line', 'Square', 'Diamond'];
 
@@ -8,6 +17,7 @@ export default class ColorHalftoneEffect extends Effect {
     description: 'Color halftone effect.',
     type: 'effect',
     label: 'Color Halftone',
+    category: 'pattern',
     defaultProperties: {
       shape: 'Dot',
       radius: 4,
@@ -74,3 +84,30 @@ export default class ColorHalftoneEffect extends Effect {
     super(ColorHalftoneEffect, properties);
   }
 }
+
+const HALFTONE_SHAPE_MAP: Record<string, number> = {
+  Dot: 1,
+  Ellipse: 2,
+  Line: 3,
+  Square: 4,
+  Diamond: 5,
+};
+
+function createPass(effect: EffectPassConfig, width: number, height: number) {
+  const props = effect.properties;
+  const pass = new ShaderPass(ColorHalftoneShader);
+  return attachPassUpdater(pass, () => {
+    pass.enabled = isEffectEnabled(effect);
+    pass.setUniforms({
+      width,
+      height,
+      shape: HALFTONE_SHAPE_MAP[String(props.shape)] || HALFTONE_SHAPE_MAP.Dot,
+      radius: Math.max(1, Number(props.radius ?? 4)),
+      rotateR: toRadians(Number(props.rotateR ?? props.angle ?? 15)),
+      rotateG: toRadians(Number(props.rotateG ?? 30)),
+      rotateB: toRadians(Number(props.rotateB ?? 45)),
+      scatter: Number(props.scatter ?? 0),
+    });
+  });
+}
+registerEffectPass(ColorHalftoneEffect.config.name, createPass, { liveUpdatable: true });

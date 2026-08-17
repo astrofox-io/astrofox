@@ -6,6 +6,7 @@ import useApp from '@/app/actions/app';
 import useScenes, { getSceneIdForElement } from '@/app/actions/scenes';
 import { getDisplayLayerEntry } from './displayLayerRegistry';
 import { SceneWithEffects } from './effects';
+import { getEffectPassScope } from './effects/effectPassRegistry';
 import { PerspectiveScene3D } from './geometry';
 
 const NEUTRAL_SCENE_PROPS = {
@@ -76,9 +77,13 @@ export default function StageRoot({
     }
 
     const sceneEffects = (scene.effects || []).filter(e => e?.enabled);
+    // Effects scoped to the 3D scene (depth of field) are applied inside
+    // PerspectiveScene3D rather than the scene's composer chain.
     const depthOfFieldEffect =
-      sceneEffects.find(effect => effect?.name === 'DepthOfFieldEffect') || null;
-    const postEffects = sceneEffects.filter(effect => effect?.name !== 'DepthOfFieldEffect');
+      sceneEffects.find(effect => getEffectPassScope(effect.name) === 'scene3d') || null;
+    const postEffects = sceneEffects.filter(
+      effect => getEffectPassScope(effect.name) !== 'scene3d',
+    );
     const scene2D = [];
     const scene3D = [];
     const has3DDisplays = (scene.displays || []).some(

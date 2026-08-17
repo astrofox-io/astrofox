@@ -2,6 +2,30 @@ import Entity from '@/lib/core/Entity';
 import type { ReactorConfig, RenderFrameData } from '@/lib/types';
 import { getDisplayName } from '@/lib/utils/controls';
 
+/**
+ * How the stage transform overlay should treat a display. Declared on the
+ * display's static config as `transform` so the overlay never has to test
+ * display names; everything is optional and defaults to a plain resizable box.
+ */
+export interface DisplayTransformConfig {
+  // Which handle set the overlay draws.
+  kind?: 'size' | 'text' | 'radialSpectrum' | 'waveformRing';
+  // Whether resizing keeps the aspect ratio (subject to the `fixed` property).
+  fixedAspect?: boolean | ((properties: Record<string, unknown>) => boolean);
+  // Intrinsic media size used when width/height properties are 0.
+  naturalSize?: (display: Display) => { width: number; height: number } | null;
+  // When it returns false the overlay draws no handles (e.g. empty text).
+  hasContent?: (properties: Record<string, unknown>) => boolean;
+  // The editable height is height + shadowHeight and both scale together.
+  heightIncludesShadow?: boolean;
+}
+
+export function getDisplayTransformConfig(display: unknown): DisplayTransformConfig {
+  const config = (display as { constructor?: { config?: { transform?: DisplayTransformConfig } } })
+    ?.constructor?.config;
+  return config?.transform ?? {};
+}
+
 export default class Display extends Entity {
   [key: string]: unknown;
 

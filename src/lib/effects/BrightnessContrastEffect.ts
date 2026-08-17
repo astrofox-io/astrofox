@@ -1,4 +1,6 @@
 import Effect from '@/lib/core/Effect';
+import { registerEffectPass } from '@/lib/core/render/effects/effectPassRegistry';
+import { createBrightnessContrastPass } from '@/lib/core/render/effects/passes/colorPasses';
 
 export default class BrightnessContrastEffect extends Effect {
   static config = {
@@ -36,3 +38,7 @@ export default class BrightnessContrastEffect extends Effect {
     super(BrightnessContrastEffect, properties);
   }
 }
+
+registerEffectPass(BrightnessContrastEffect.config.name, createBrightnessContrastPass, {
+  liveUpdatable: true,
+});

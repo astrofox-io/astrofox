@@ -40,6 +40,15 @@ export default class ImageDisplay extends Display {
     description: 'Displays an image.',
     type: 'display',
     label: 'Image',
+    order: 2,
+    media: 'image',
+    transform: {
+      fixedAspect: true,
+      naturalSize: (display: ImageDisplay) => ({
+        width: Number(display.image?.naturalWidth) || 0,
+        height: Number(display.image?.naturalHeight) || 0,
+      }),
+    },
     defaultProperties: {
       src: BLANK_IMAGE,
       sourcePath: '',

@@ -1,4 +1,12 @@
 import Effect from '@/lib/core/Effect';
+import ShaderPass from '@/lib/core/render/composer/ShaderPass';
+import {
+  attachPassUpdater,
+  type EffectPassConfig,
+  isEffectEnabled,
+  registerEffectPass,
+} from '@/lib/core/render/effects/effectPassRegistry';
+import DistortionShader from '@/lib/core/render/effects/shaders/DistortionShader';
 import type { RenderFrameData } from '@/lib/types';
 
 export default class DistortionEffect extends Effect {
@@ -9,6 +17,7 @@ export default class DistortionEffect extends Effect {
     description: 'Distortion effect.',
     type: 'effect',
     label: 'Distortion',
+    category: 'distortion',
     defaultProperties: {
       time: 0,
       amount: 0.15,
@@ -52,3 +61,19 @@ export default class DistortionEffect extends Effect {
     }
   }
 }
+
+const DISTORTION_MAX = 30;
+
+function createPass(effect: EffectPassConfig, width: number, height: number) {
+  const props = effect.properties;
+  const pass = new ShaderPass(DistortionShader);
+  return attachPassUpdater(pass, () => {
+    pass.enabled = isEffectEnabled(effect);
+    pass.setSize(width, height);
+    pass.setUniforms({
+      amount: Number(props.amount || 0) * DISTORTION_MAX,
+      time: Number(effect.time || props.time || 0),
+    });
+  });
+}
+registerEffectPass(DistortionEffect.config.name, createPass, { liveUpdatable: true });

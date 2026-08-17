@@ -1,4 +1,11 @@
 import Effect from '@/lib/core/Effect';
+import {
+  attachPassUpdater,
+  type EffectPassConfig,
+  isEffectEnabled,
+  registerEffectPass,
+} from '@/lib/core/render/effects/effectPassRegistry';
+import UnrealBloomEffectPass from '@/lib/core/render/effects/passes/UnrealBloomEffectPass';
 
 export default class BloomEffect extends Effect {
   static config = {
@@ -6,6 +13,8 @@ export default class BloomEffect extends Effect {
     description: 'Bloom effect.',
     type: 'effect',
     label: 'Bloom',
+    category: 'blur-focus',
+    order: 2,
     defaultProperties: {
       exposure: 1,
       strength: 0.5,
@@ -56,3 +65,22 @@ export default class BloomEffect extends Effect {
     super(BloomEffect, properties);
   }
 }
+
+function getBloomOptions(props: Record<string, unknown>) {
+  return {
+    exposure: Number(props.exposure ?? 1),
+    strength: Number(props.strength ?? 1.5),
+    radius: Number(props.radius ?? 0),
+    threshold: Number(props.threshold ?? 0),
+  };
+}
+
+function createPass(effect: EffectPassConfig, width: number, height: number) {
+  const props = effect.properties;
+  const pass = new UnrealBloomEffectPass({ width, height, ...getBloomOptions(props) });
+  return attachPassUpdater(pass, () => {
+    pass.enabled = isEffectEnabled(effect);
+    pass.updateOptions(getBloomOptions(props));
+  });
+}
+registerEffectPass(BloomEffect.config.name, createPass, { liveUpdatable: true });

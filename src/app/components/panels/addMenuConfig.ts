@@ -1,10 +1,11 @@
 import type { TFunction } from 'i18next';
 import type { AddMenuKind } from '@/app/actions/app';
 import { library } from '@/app/global';
+import { getDisplayRenderGroup } from '@/lib/utils/displayRenderGroup';
 
 export interface MenuCategory {
+  key: string;
   label: string;
-  items: string[];
 }
 
 interface LibraryItem {
@@ -12,6 +13,11 @@ interface LibraryItem {
     name?: string;
     label?: string;
     external?: boolean;
+    // Effects: menu category key (see EFFECT_CATEGORIES). Effects without a
+    // category are library-only (e.g. the ColorEffect sub-passes).
+    category?: string;
+    // Sort position within a category; unordered items follow, by label.
+    order?: number;
   };
 }
 
@@ -36,6 +42,8 @@ export interface AddMenuConfig {
   categories: MenuCategory[];
 }
 
+const EFFECT_CATEGORIES = ['color', 'blur-focus', 'distortion', 'pattern', 'stylize'];
+
 /** Menu definition for each section. `t` must be scoped to the `add-menu` namespace. */
 export function getAddMenuConfig(t: TFunction, kind: AddMenuKind): AddMenuConfig {
   switch (kind) {
@@ -43,51 +51,19 @@ export function getAddMenuConfig(t: TFunction, kind: AddMenuKind): AddMenuConfig
       return {
         entityType: 'effects',
         title: t('add-effect'),
-        categories: [
-          { label: t('category-color'), items: ['Color'] },
-          {
-            label: t('category-blur-focus'),
-            items: ['Blur', 'Bloom', 'Depth of Field', 'Tilt Shift'],
-          },
-          {
-            label: t('category-distortion'),
-            items: ['Distortion', 'Glitch', 'Kaleidoscope', 'Mirror', 'RGB Shift'],
-          },
-          {
-            label: t('category-pattern'),
-            items: ['ASCII', 'Color Halftone', 'Dot Screen', 'LED', 'Pixelate', 'Scanline'],
-          },
-          { label: t('category-stylize'), items: ['Noise', 'Perlin Noise', 'Vignette'] },
-        ],
+        categories: EFFECT_CATEGORIES.map(key => ({ key, label: t(`category-${key}`) })),
       };
     case '3d':
       return {
         entityType: 'displays',
         title: t('add-3d-display'),
-        categories: [
-          { label: t('category-3d'), items: ['Geometry', 'Tunnel', 'Cubes', 'Mesh Grid'] },
-        ],
+        categories: [{ key: '3d', label: t('category-3d') }],
       };
     default:
       return {
         entityType: 'displays',
         title: t('add-2d-display'),
-        categories: [
-          {
-            label: t('category-2d'),
-            items: [
-              'Text',
-              'Image',
-              'Video',
-              'Shape',
-              'Bar Spectrum',
-              'Radial Spectrum',
-              'Wave Spectrum',
-              'Waveform Ring',
-              'Sound Wave',
-            ],
-          },
-        ],
+        categories: [{ key: '2d', label: t('category-2d') }],
       };
   }
 }
@@ -96,22 +72,35 @@ export function getLibraryItems(entityType: EntityType) {
   return (library.get(entityType) ?? {}) as Record<string, EntityConstructor>;
 }
 
+function getItemCategory(entityType: EntityType, key: string, Entity: EntityConstructor) {
+  if (entityType === 'displays') {
+    return getDisplayRenderGroup(Entity.config?.name ?? key);
+  }
+  return Entity.config?.category ?? null;
+}
+
+function compareItems(a: MenuItem, b: MenuItem) {
+  const orderA = a.Entity.config?.order ?? Number.POSITIVE_INFINITY;
+  const orderB = b.Entity.config?.order ?? Number.POSITIVE_INFINITY;
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+  return a.label.localeCompare(b.label);
+}
+
+/** Built-in entities belonging to a menu category, in menu order. */
 export function getCategoryItems(
+  entityType: EntityType,
   itemsByKey: Record<string, EntityConstructor>,
-  labels: string[],
+  category: string,
 ): MenuItem[] {
-  return labels
-    .map(label => {
-      const match = Object.entries(itemsByKey).find(([, Entity]) => Entity.config?.label === label);
-
-      if (!match) {
-        return null;
-      }
-
-      const [key, Entity] = match;
-      return { key, label, Entity };
-    })
-    .filter(Boolean) as MenuItem[];
+  return Object.entries(itemsByKey)
+    .filter(
+      ([key, Entity]) =>
+        !Entity.config?.external && getItemCategory(entityType, key, Entity) === category,
+    )
+    .map(([key, Entity]) => ({ key, label: Entity.config?.label ?? key, Entity }))
+    .sort(compareItems);
 }
 
 export function getExternalItems(itemsByKey: Record<string, EntityConstructor>): MenuItem[] {

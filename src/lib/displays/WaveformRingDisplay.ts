@@ -13,6 +13,8 @@ export default class WaveformRingDisplay extends Display {
     description: 'Displays a sound wave wrapped around a ring.',
     type: 'display',
     label: 'Waveform Ring',
+    order: 8,
+    transform: { kind: 'waveformRing' },
     defaultProperties: {
       radius: 160,
       amplitude: 80,

@@ -13,6 +13,8 @@ export default class BarSpectrumDisplay extends Display {
     description: 'Displays an audio bar spectrum.',
     type: 'display',
     label: 'Bar Spectrum',
+    order: 5,
+    transform: { heightIncludesShadow: true },
     defaultProperties: {
       width: 770,
       height: 240,

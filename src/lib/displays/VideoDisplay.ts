@@ -39,6 +39,15 @@ export default class VideoDisplay extends Display {
     description: 'Displays a video.',
     type: 'display',
     label: 'Video',
+    order: 3,
+    media: 'video',
+    transform: {
+      fixedAspect: true,
+      naturalSize: (display: VideoDisplay) => ({
+        width: Number(display.video?.videoWidth) || 0,
+        height: Number(display.video?.videoHeight) || 0,
+      }),
+    },
     defaultProperties: {
       src: BLANK_IMAGE,
       sourcePath: '',

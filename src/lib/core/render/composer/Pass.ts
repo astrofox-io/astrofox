@@ -3,6 +3,22 @@ import { Color, Mesh, OrthographicCamera, Scene } from 'three';
 import { getFullscreenGeometry } from './common';
 
 export default class Pass {
+  // Declared so TypeScript consumers of the (untyped) pass classes see the
+  // shared fields; values are assigned in the constructor.
+  declare enabled: boolean;
+  declare needsSwap: boolean;
+  declare clearColor: boolean;
+  declare clearDepth: boolean;
+  declare clearStencil: boolean;
+  declare renderToScreen: boolean;
+  declare setClearColor: unknown;
+  declare setClearAlpha: number;
+  declare scene: Scene;
+  declare camera: OrthographicCamera;
+  declare geometry: unknown;
+  declare material: unknown;
+  declare mesh: Mesh;
+
   constructor() {
     this.enabled = true;
     this.needsSwap = false;

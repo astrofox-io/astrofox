@@ -16,6 +16,7 @@ import {
 import { getDesktopBridge, isFfmpegAvailable } from '@/app/desktop';
 import { api, audioContext, library, logger, player, renderBackend, renderer } from '@/app/global';
 import { t } from '@/i18n/config';
+import { registerGeneratedNameLabels } from '@/i18n/labels';
 import * as displays from '@/lib/displays';
 import * as effects from '@/lib/effects';
 import { loadInstalledPlugins } from '@/lib/plugins';
@@ -117,6 +118,7 @@ interface PluginConfig {
   type: string;
   defaultProperties: Record<string, unknown>;
   icon?: string;
+  builtin?: boolean;
 }
 
 type LibraryPlugin = {
@@ -1029,9 +1031,12 @@ export async function reloadPluginLibrary() {
 export async function loadLibrary() {
   const plugins = (library.get('plugins') ?? {}) as Record<string, LibraryConstructor>;
 
+  // Core displays/effects ship with the app and can't be removed; they are
+  // flagged builtin so UI can tell them apart from installed plugins.
   const coreDisplays: Record<string, LibraryConstructor> = {};
   for (const [key, display] of Object.entries(displays as Record<string, LibraryConstructor>)) {
     display.config.icon = `images/controls/${key}.png`;
+    display.config.builtin = true;
 
     coreDisplays[key] = display;
   }
@@ -1039,6 +1044,7 @@ export async function loadLibrary() {
   const coreEffects: Record<string, LibraryConstructor> = {};
   for (const [key, effect] of Object.entries(effects as Record<string, LibraryConstructor>)) {
     effect.config.icon = `images/controls/${key}.png`;
+    effect.config.builtin = true;
 
     coreEffects[key] = effect;
   }
@@ -1055,6 +1061,12 @@ export async function loadLibrary() {
 
   library.set('displays', coreDisplays);
   library.set('effects', coreEffects);
+
+  registerGeneratedNameLabels(
+    [...Object.values(coreDisplays), ...Object.values(coreEffects)].map(
+      entity => entity.config.label,
+    ),
+  );
 }
 
 export async function initApp() {

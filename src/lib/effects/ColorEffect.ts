@@ -1,4 +1,16 @@
 import Effect from '@/lib/core/Effect';
+import {
+  type EffectPassConfig,
+  registerEffectPass,
+} from '@/lib/core/render/effects/effectPassRegistry';
+import {
+  createBrightnessContrastPass,
+  createColorAveragePass,
+  createColorDepthPass,
+  createHueSaturationPass,
+  createSepiaPass,
+  createToneMappingPass,
+} from '@/lib/core/render/effects/passes/colorPasses';
 
 const isDisabled = (propertyName: string) => (display: { properties: Record<string, unknown> }) =>
   !display.properties[propertyName];
@@ -9,6 +21,7 @@ export default class ColorEffect extends Effect {
     description: 'Combined color adjustment effect.',
     type: 'effect',
     label: 'Color',
+    category: 'color',
     defaultProperties: {
       brightness: 0,
       contrast: 0,
@@ -143,3 +156,28 @@ export default class ColorEffect extends Effect {
     super(ColorEffect, properties);
   }
 }
+
+// A chain of the individual color passes; optional stages are structural
+// (toggling them rebuilds the chain).
+function createPass(effect: EffectPassConfig) {
+  const props = effect.properties;
+  const passes = [createBrightnessContrastPass(effect)];
+
+  if (props.colorAverageEnabled) {
+    passes.push(createColorAveragePass(effect));
+  }
+  if (props.colorDepthEnabled) {
+    passes.push(createColorDepthPass(effect));
+  }
+  passes.push(createHueSaturationPass(effect));
+  passes.push(createSepiaPass(effect));
+  if (props.toneMappingEnabled) {
+    passes.push(createToneMappingPass(effect));
+  }
+
+  return passes;
+}
+registerEffectPass(ColorEffect.config.name, createPass, {
+  liveUpdatable: true,
+  structuralProps: ['colorAverageEnabled', 'colorDepthEnabled', 'toneMappingEnabled'],
+});

@@ -13,6 +13,8 @@ export default class RadialSpectrumDisplay extends Display {
     description: 'Displays an audio spectrum in a radial/circular layout.',
     type: 'display',
     label: 'Radial Spectrum',
+    order: 6,
+    transform: { kind: 'radialSpectrum' },
     defaultProperties: {
       radius: 150,
       innerRadius: 80,
