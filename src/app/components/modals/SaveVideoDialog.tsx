@@ -17,6 +17,7 @@ import { chooseAudioFile, inspectAudioFile } from '@/app/actions/audio';
 import { raiseError } from '@/app/actions/error';
 import DualRangeInput from '@/app/components/inputs/DualRangeInput';
 import SelectInput from '@/app/components/inputs/SelectInput';
+import TextInput from '@/app/components/inputs/TextInput';
 import TimeInput from '@/app/components/inputs/TimeInput';
 import ExportWaveform from '@/app/components/modals/ExportWaveform';
 import { Button } from '@/components/ui/button';
@@ -309,12 +310,12 @@ export default function SaveVideoDialog({
               {isChoosingAudio ? tc('choosing') : tc('choose')}
             </Button>
           </div>
-          <input
-            type="text"
-            readOnly
+          <TextInput
+            name="audioFileName"
             value={audioFileName}
             placeholder={t('no-audio-selected')}
-            className="w-full rounded border border-border-input bg-neutral-900 px-3 py-2 font-mono text-xs text-neutral-300 outline-none placeholder:text-neutral-500"
+            width="100%"
+            readOnly
           />
         </section>
 
@@ -331,12 +332,12 @@ export default function SaveVideoDialog({
                 {isChoosingLocation ? tc('choosing') : tc('choose')}
               </Button>
             </div>
-            <input
-              type="text"
-              readOnly
+            <TextInput
+              name="filePath"
               value={filePath}
               placeholder={t('no-video-selected')}
-              className="w-full rounded border border-border-input bg-neutral-900 px-3 py-2 font-mono text-xs text-neutral-300 outline-none"
+              width="100%"
+              readOnly
             />
           </section>
         ) : (

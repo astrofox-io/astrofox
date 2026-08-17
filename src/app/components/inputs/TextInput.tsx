@@ -8,6 +8,7 @@ interface TextInputProps {
   width?: number | string;
   size?: number | null;
   value?: string | number;
+  placeholder?: string;
   spellCheck?: boolean;
   autoFocus?: boolean;
   autoSelect?: boolean;
@@ -23,6 +24,7 @@ export default function TextInput({
   width = 160,
   size = null,
   value = '',
+  placeholder,
   spellCheck = false,
   autoFocus = false,
   autoSelect = false,
@@ -100,6 +102,7 @@ export default function TextInput({
       size={size ?? undefined}
       spellCheck={spellCheck}
       value={buffered ? bufferedValue : value}
+      placeholder={placeholder}
       onChange={handleChange}
       onBlur={handleBlur}
       onKeyUp={handleKeyUp}

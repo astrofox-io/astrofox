@@ -34,7 +34,9 @@ export default function SelectInput({
   displayField = 'label',
   valueField = 'value',
   width = 140,
+  optionsWidth,
   className,
+  optionsClassName,
   onChange,
 }: SelectInputProps) {
   const parsedItems = useMemo(() => {
@@ -81,7 +83,19 @@ export default function SelectInput({
               : ''}
         </span>
       </SelectTrigger>
-      <SelectContent className="min-w-(--anchor-width) border border-border bg-neutral-900 text-neutral-300 ring-0">
+      <SelectContent
+        // Base UI's default overlays the selected item on the trigger and
+        // disables the open/close animation; use a regular animated dropdown.
+        alignItemWithTrigger={false}
+        align="start"
+        className={cn(
+          // Grow to fit the longest option instead of clipping to the trigger width.
+          'w-auto min-w-(--anchor-width) max-w-[min(90vw,32rem)]',
+          'border border-border bg-neutral-900 text-neutral-300 ring-0',
+          optionsClassName,
+        )}
+        style={optionsWidth != null ? { width: optionsWidth } : undefined}
+      >
         {parsedItems.map((item: SelectItemData | null, index: number) => {
           if (!item) {
             const previousValue =

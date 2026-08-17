@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { reloadPluginLibrary } from '@/app/actions/app';
+import TextInput from '@/app/components/inputs/TextInput';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import type { InstalledPlugin, PluginPackage } from '@/lib/plugins';
@@ -110,19 +111,18 @@ export default function ManagePlugins({ initialUrl = '', onClose }: ManagePlugin
             void handleReview();
           }}
         >
-          <input
-            type="url"
-            aria-label="Plugin manifest URL"
+          <TextInput
+            name="pluginUrl"
             value={url}
-            spellCheck={false}
             placeholder="Plugin manifest URL"
+            width="100%"
             disabled={installBusy}
-            onChange={event => {
-              setUrl(event.target.value);
+            className="min-w-0 flex-1 text-neutral-100"
+            onChange={(_name, value) => {
+              setUrl(value);
               setCandidate(null);
               setError(null);
             }}
-            className="h-8 min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-900 px-2 text-sm text-neutral-100 outline-none placeholder:text-neutral-500 focus:border-neutral-500 disabled:opacity-50"
           />
           <Button type="submit" variant="default" size="sm" disabled={!url.trim() || installBusy}>
             {installBusy && !candidate ? 'Adding…' : 'Add'}
