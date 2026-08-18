@@ -6,16 +6,10 @@ import { CanvasTextureLayer } from './CanvasTextureLayer';
 
 function getWaveSpectrumPoints(fft, width) {
   const points = [];
+  const step = width / Math.max(1, fft.length);
 
-  for (let i = 0, j = 0, k = 0; i < fft.length; i += 1) {
-    j = fft[i];
-
-    if (i === 0 || i === fft.length - 1 || k !== (j > fft[i - 1] ? 1 : -1)) {
-      points.push(i * (width / fft.length));
-      points.push(j);
-    }
-
-    k = j > fft[i - 1] ? 1 : -1;
+  for (let i = 0; i < fft.length; i += 1) {
+    points.push(i * step, fft[i]);
   }
 
   if (points.length >= 2) {
@@ -64,7 +58,7 @@ export function WaveSpectrumDisplayLayer({
       width: canvas.width,
       height: canvas.height,
       originX: canvas.width / 2,
-      originY: Number(properties.height || canvas.height),
+      originY: canvas.height / 2,
     };
   }, []);
 

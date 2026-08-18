@@ -24,3 +24,8 @@ export const analyzer = new SpectrumAnalyzer(audioContext);
 export const reactors = new Reactors();
 export const renderer = new Renderer();
 export const library = new Map();
+
+// Dev-only handle for debugging from the browser console / automation.
+if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
+  window.__astrofox = { stage, renderer, renderBackend, player, library, events };
+}

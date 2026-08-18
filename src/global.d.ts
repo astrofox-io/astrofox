@@ -51,6 +51,7 @@ interface AstrofoxDesktopBridge {
 
 interface Window {
   _astrofox: unknown;
+  __astrofox?: Record<string, unknown>;
   __ASTROFOX__?: AstrofoxDesktopBridge;
   showOpenFilePicker?: (options?: {
     types?: Array<{ description: string; accept: Record<string, string[]> }>;

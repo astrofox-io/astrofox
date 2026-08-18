@@ -469,6 +469,23 @@ export function TunnelDisplayLayer3D({
   shaderUniforms.uLineColor.value.set(resolvedLineColor);
   shaderUniforms.uBackgroundColor.value.set(resolvedBackgroundColor);
 
+  // R3F copies the `uniforms` prop into the material's own uniform objects on
+  // mount and does not re-read it (same reference), so scalar changes made on
+  // shaderUniforms never reach the GPU. Mirror the values onto the live
+  // material every commit.
+  React.useLayoutEffect(() => {
+    const material = shaderMaterialRef.current;
+    if (!material?.uniforms) {
+      return;
+    }
+    for (const name of Object.keys(shaderUniforms)) {
+      const target = material.uniforms[name];
+      if (target && target.value !== shaderUniforms[name].value) {
+        target.value = shaderUniforms[name].value;
+      }
+    }
+  });
+
   const surfaceStructuralKey = `${lengthDetail}-${radialDetail}`;
   if (surfaceStructuralKeyRef.current !== surfaceStructuralKey) {
     if (surfaceGeometryRef.current) surfaceGeometryRef.current.dispose();

@@ -78,7 +78,7 @@ export function drawPath(context: CanvasRenderingContext2D, points: number[]) {
 
   context.moveTo(points[0], points[1]);
 
-  for (let i = 0; i < points.length; i += 1) {
+  for (let i = 0; i < x.length - 1; i += 1) {
     context.bezierCurveTo(px.p1[i], py.p1[i], px.p2[i], py.p2[i], x[i + 1], y[i + 1]);
   }
 }
