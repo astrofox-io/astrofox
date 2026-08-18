@@ -104,7 +104,7 @@ export default function SceneLayer({
   ) => (
     <div className="flex flex-col gap-0.5">
       <div className="ml-4 flex items-center pl-2 pr-1 pt-1 pb-0.5">
-        <div className="text-[10px] font-semibold uppercase text-neutral-400">
+        <div className="text-xs uppercase text-neutral-400">
           {translateLabel(t, title)}
         </div>
         <div className="ml-auto">{addMenu}</div>

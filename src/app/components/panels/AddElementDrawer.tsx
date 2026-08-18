@@ -167,7 +167,7 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
         style={{ width: DRAWER_WIDTH, left: offset }}
       >
         <div className="flex h-12 shrink-0 items-center border-b px-2.5">
-          <div className="cursor-default text-xs font-medium uppercase tracking-wide text-neutral-400 leading-none">
+          <div className="cursor-default text-xs uppercase text-neutral-400 leading-none">
             {title}
           </div>
           <Button
@@ -184,7 +184,7 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
           {groups.map((group, index) => (
             <div key={group.key} className={cn(index > 0 && 'mt-2 border-t pt-2')}>
               {group.label ? (
-                <div className="px-2 pt-1 pb-1 text-[10px] font-semibold uppercase text-neutral-400">
+                <div className="px-2 pt-1 pb-1 text-xs uppercase text-neutral-400">
                   {group.label}
                 </div>
               ) : null}
