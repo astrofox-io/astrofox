@@ -135,7 +135,7 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
     <div className={'w-full overflow-hidden bg-neutral-900 border-t relative py-4 px-5'}>
       <div
         className={
-          'text-neutral-300 text-sm [text-shadow:1px_1px_0_var(--color-neutral-900)] uppercase'
+          'text-neutral-300 text-xs [text-shadow:1px_1px_0_var(--color-neutral-900)] uppercase'
         }
       >
         {reactor.displayName}

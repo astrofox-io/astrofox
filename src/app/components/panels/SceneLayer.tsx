@@ -81,7 +81,7 @@ export default function SceneLayer({
       name={displayName}
       displayName={translateGeneratedName(t, displayName)}
       icon={resolveLayerIcon({ id, type, name, displayName, enabled })}
-      className={'rounded ml-4'}
+      className={'rounded'}
       enabled={enabled}
       active={id === activeElementId}
       dragging={id === dragSourceId}
@@ -103,14 +103,14 @@ export default function SceneLayer({
     addMenu: React.ReactNode,
   ) => (
     <div className="flex flex-col gap-0.5">
-      <div className="ml-4 flex items-center pr-1 pt-1 pb-0.5">
+      <div className="flex items-center pr-1 pb-0.5">
         <div className="text-xs uppercase text-neutral-400">{translateLabel(t, title)}</div>
         <div className="ml-auto">{addMenu}</div>
       </div>
       {layers.length > 0 ? layers.map((layer: SceneElement) => renderLayer(layer)) : null}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Drop target for moving layers into this section. */}
       <div
-        className="ml-4 h-1.5"
+        className="h-1.5"
         onDragOver={e => {
           if (dragSourceType !== sectionType) {
             return;
@@ -131,10 +131,13 @@ export default function SceneLayer({
 
   return (
     <div
-      className={classNames('m-1 flex flex-col gap-0.5 rounded-md border border-neutral-700 p-1', {
-        'opacity-25': sceneDragging,
-        'ring-1 ring-primary': sceneDragOver,
-      })}
+      className={classNames(
+        'flex flex-col gap-0.5 rounded border border-neutral-700 overflow-hidden',
+        {
+          'opacity-25': sceneDragging,
+          'ring-1 ring-primary': sceneDragOver,
+        },
+      )}
       onDragOverCapture={e => {
         if (dragSourceType !== 'scene') {
           return;
@@ -167,9 +170,9 @@ export default function SceneLayer({
         onLayerDragOver={onLayerDragOver}
         onLayerDrop={onLayerDrop}
         onLayerDragEnd={onLayerDragEnd}
-        className="rounded"
+        className="rounded-t"
       />
-      <div className={classNames('flex flex-col gap-1')}>
+      <div className={classNames('flex flex-col gap-1 px-2 pt-2 pb-0.5')}>
         {renderSection(
           'Effects',
           effects,
