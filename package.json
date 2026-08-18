@@ -131,7 +131,7 @@
     "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^11.0.0",
-    "electron": "^37.2.0",
+    "electron": "^39.8.10",
     "electron-builder": "^26.0.12",
     "get-port": "^7.2.0",
     "typescript": "6.0.3",
