@@ -1,16 +1,16 @@
 import type React from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import useAppStore, { initApp } from '@/app/actions/app';
-import AddElementDrawer from '@/components/panels/AddElementDrawer';
-import LeftPanel from '@/components/panels/LeftPanel';
-import ReactorPanel from '@/components/panels/ReactorPanel';
-import RightPanel from '@/components/panels/RightPanel';
-import Player from '@/components/player/Player';
-import Stage from '@/components/stage/Stage';
-import Modals from '@/components/window/Modals';
-import Preload from '@/components/window/Preload';
-import StatusBar from '@/components/window/StatusBar';
-import TitleBar from '@/components/window/TitleBar';
+import AddElementDrawer from '@/components/AddElementDrawer';
+import LeftPanel from '@/components/LeftPanel';
+import Modals from '@/components/Modals';
+import Player from '@/components/Player';
+import Preload from '@/components/Preload';
+import ReactorPanel from '@/components/ReactorPanel';
+import RightPanel from '@/components/RightPanel';
+import Stage from '@/components/Stage';
+import StatusBar from '@/components/StatusBar';
+import TitleBar from '@/components/TitleBar';
 import { ignoreEvents } from '@/lib/utils/react';
 
 const PANEL_WIDTH = '22.5rem';

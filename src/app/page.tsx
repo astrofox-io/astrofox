@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { type CSSProperties, useEffect } from 'react';
-import Spinner from '@/components/interface/Spinner';
+import Spinner from '@/components/Spinner';
 import I18nProvider from '@/i18n/I18nProvider';
 
 const loadingScreenStyle: CSSProperties = {
