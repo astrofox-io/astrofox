@@ -77,6 +77,14 @@ export function isDesktopApp() {
   return getDesktopBridge() !== null;
 }
 
+export function getDesktopPlatform() {
+  return getDesktopBridge()?.getEnvironment?.()?.OS_PLATFORM;
+}
+
+export function isMacDesktop() {
+  return getDesktopPlatform() === 'darwin';
+}
+
 export function isFfmpegAvailable() {
   const env = getDesktopBridge()?.getEnvironment?.();
   return Boolean(env?.FFMPEG_AVAILABLE && env?.FFMPEG_PATH);

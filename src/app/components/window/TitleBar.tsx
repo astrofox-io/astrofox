@@ -11,7 +11,7 @@ import useAppStore, {
 import useProject, { DEFAULT_PROJECT_NAME } from '@/app/actions/project';
 import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
 import LanguageSelector from '@/app/components/window/LanguageSelector';
-import { isDesktopApp } from '@/app/desktop';
+import { isDesktopApp, isMacDesktop } from '@/app/desktop';
 import { env } from '@/app/global';
 import { Button } from '@/components/ui/button';
 
@@ -24,6 +24,9 @@ export default function TitleBar() {
   const title =
     projectName && projectName !== DEFAULT_PROJECT_NAME ? projectName : t('default-project-name');
   const desktop = isDesktopApp();
+  const macDesktop = isMacDesktop();
+  // hiddenInset traffic lights occupy the leading edge; keep custom chrome after them.
+  const macTrafficLightInset = macDesktop ? 'pl-[76px]' : '';
   const [maximized, setMaximized] = useState(false);
   const projectTitleRef = useRef<HTMLButtonElement>(null);
   const allowProjectTitleFocusRef = useRef(false);
@@ -103,7 +106,7 @@ export default function TitleBar() {
 
   return (
     <div
-      className={'flex items-center relative h-12 bg-neutral-900 border-b border-b-neutral-700'}
+      className={`flex items-center relative h-12 bg-neutral-900 border-b border-b-neutral-700 ${macTrafficLightInset}`}
       style={desktop ? ({ WebkitAppRegion: 'drag' } as CSSProperties) : undefined}
     >
       <div
@@ -146,7 +149,7 @@ export default function TitleBar() {
         className="absolute inset-y-0 right-0 flex items-center"
         style={desktop ? ({ WebkitAppRegion: 'no-drag' } as CSSProperties) : undefined}
       >
-        <div className={`flex items-center gap-1 ${desktop ? 'mr-6' : 'mr-2'}`}>
+        <div className={`flex items-center gap-1 ${desktop && !macDesktop ? 'mr-6' : 'mr-2'}`}>
           {panelButtons.map(button => {
             const Icon = button.icon;
 
@@ -170,7 +173,7 @@ export default function TitleBar() {
           })}
           <LanguageSelector />
         </div>
-        {desktop ? (
+        {desktop && !macDesktop ? (
           <div className="flex h-full items-stretch">
             <Button
               variant="ghost"

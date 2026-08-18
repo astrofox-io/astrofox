@@ -344,7 +344,8 @@ function createWindow() {
     show: false,
     frame: false,
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'hidden',
-    trafficLightPosition: process.platform === 'darwin' ? { x: 12, y: 12 } : undefined,
+    // Title bar is 48px; y:18 centers the 12px lights. x:16 leaves a left gutter.
+    trafficLightPosition: process.platform === 'darwin' ? { x: 16, y: 18 } : undefined,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
       contextIsolation: true,
