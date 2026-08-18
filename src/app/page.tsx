@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { type CSSProperties, useEffect } from 'react';
-import Spinner from '@/app/components/interface/Spinner';
+import Spinner from '@/components/interface/Spinner';
 import I18nProvider from '@/i18n/I18nProvider';
 
 const loadingScreenStyle: CSSProperties = {
@@ -13,7 +13,7 @@ const loadingScreenStyle: CSSProperties = {
   alignItems: 'center',
 };
 
-const AstrofoxApp = dynamic(() => import('@/app/components/App'), {
+const AstrofoxApp = dynamic(() => import('@/components/App'), {
   ssr: false,
   loading: () => (
     <div style={loadingScreenStyle}>

@@ -7,7 +7,7 @@ const { version: appVersion } = require('./package.json');
 
 /** @type {import("next").NextConfig} */
 const resolveFromRoot = target => path.resolve(process.cwd(), target);
-const shaderLoader = resolveFromRoot('loaders/glsl-loader.cjs');
+const shaderLoader = resolveFromRoot('loaders/glsl-loader.ts');
 
 // Desktop offline package uses static export. Web/Vercel keeps the default Next build.
 const isDesktopBuild = process.env.BUILD_TARGET === 'desktop';
