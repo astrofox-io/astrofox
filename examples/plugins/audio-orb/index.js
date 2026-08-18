@@ -1,16 +1,15 @@
 /**
  * Example 3D worker-runtime display plugin. Requests the host's copy of
  * three.js via "libraries": ["three"] in the manifest, so nothing needs to
- * be bundled. Renders a lit icosphere into the OffscreenCanvas with a
- * WebGLRenderer; vertices are displaced by the spectrum every frame.
- * All motion derives from frame.time so video export is deterministic.
+ * be bundled. The host also hands over its shared, pre-configured
+ * WebGLRenderer; the plugin builds a scene and renders a lit icosphere with
+ * it. Vertices are displaced by the spectrum every frame; all motion derives
+ * from frame.time so video export is deterministic.
  */
-export default function createPlugin({ properties, libraries }) {
+export default function createPlugin({ properties, libraries, renderer }) {
   const THREE = libraries.three;
 
   let props = { ...properties };
-  let canvas = null;
-  let renderer = null;
   let scene = null;
   let camera = null;
   let mesh = null;
@@ -46,29 +45,23 @@ export default function createPlugin({ properties, libraries }) {
     currentDetail = detail;
   }
 
-  function resizeIfNeeded() {
+  function resize() {
     const width = Math.max(16, Math.round(num(props.width, 720)));
     const height = Math.max(16, Math.round(num(props.height, 720)));
 
-    if (canvas.width !== width || canvas.height !== height) {
-      renderer.setSize(width, height, false);
+    // The renderer is shared by every instance of this plugin: size it for
+    // this instance every frame.
+    renderer.setSize(width, height, false);
+    if (camera.aspect !== width / height) {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     }
+
+    return { width, height };
   }
 
   return {
-    init({ canvas: c }) {
-      canvas = c;
-
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: true,
-        premultipliedAlpha: true,
-      });
-      renderer.setClearColor(0x000000, 0);
-
+    init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
       camera.position.set(0, 0, 5);
@@ -89,7 +82,7 @@ export default function createPlugin({ properties, libraries }) {
       const fft = frame.fft || new Float32Array(64);
       const detail = Math.max(4, Math.min(64, Math.round(num(props.detail, 24))));
 
-      resizeIfNeeded();
+      const size = resize();
 
       if (detail !== currentDetail) {
         buildMesh(detail);
@@ -126,13 +119,12 @@ export default function createPlugin({ properties, libraries }) {
 
       renderer.render(scene, camera);
 
-      return { width: canvas.width, height: canvas.height };
+      return size;
     },
 
     dispose() {
       mesh?.geometry.dispose();
       mesh?.material.dispose();
-      renderer?.dispose();
     },
   };
 }

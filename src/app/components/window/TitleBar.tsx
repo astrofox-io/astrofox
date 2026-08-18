@@ -106,7 +106,7 @@ export default function TitleBar() {
 
   return (
     <div
-      className={`flex items-center relative h-12 bg-neutral-900 border-b border-b-neutral-700 ${macTrafficLightInset}`}
+      className={`flex items-center relative h-12 bg-neutral-900 border-b ${macTrafficLightInset}`}
       style={desktop ? ({ WebkitAppRegion: 'drag' } as CSSProperties) : undefined}
     >
       <div

@@ -11,12 +11,52 @@
  * The host posts the plugin's stored code; the plugin executes here (no DOM,
  * no desktop bridge) and draws into per-instance OffscreenCanvases. Rendered
  * frames return to the host as transferred ImageBitmaps.
+ *
+ * Plugins that request the "three" library do not get a canvas; instead the
+ * sandbox owns ONE shared THREE.WebGLRenderer (one WebGL context per plugin,
+ * configured to match the host stage) and hands it to every instance. Each
+ * instance renders into it during render(); the sandbox then transfers the
+ * renderer's canvas contents to the host.
  */
 
 const instances = new Map();
 let factory = null;
 const libraries = {};
 let messageQueue = Promise.resolve();
+
+// Shared three.js renderer (created lazily, only when "three" is requested).
+let sharedRenderer = null;
+let sharedRendererCanvas = null;
+
+function getSharedRenderer() {
+  if (sharedRenderer) {
+    return sharedRenderer;
+  }
+
+  const THREE = libraries.three;
+  if (!THREE) {
+    return null;
+  }
+
+  sharedRendererCanvas = new OffscreenCanvas(1, 1);
+  sharedRenderer = new THREE.WebGLRenderer({
+    canvas: sharedRendererCanvas,
+    alpha: true,
+    antialias: true,
+    premultipliedAlpha: true,
+    powerPreference: 'high-performance',
+  });
+  // Match the host stage: transparent background so the layer composites,
+  // sRGB output, no tone mapping (the stage renders "flat"), soft shadows.
+  sharedRenderer.setClearColor(0x000000, 0);
+  sharedRenderer.outputColorSpace = THREE.SRGBColorSpace;
+  sharedRenderer.toneMapping = THREE.NoToneMapping;
+  sharedRenderer.shadowMap.enabled = true;
+  sharedRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  sharedRenderer.setPixelRatio(1);
+
+  return sharedRenderer;
+}
 
 function post(message, transfer) {
   self.postMessage(message, transfer || []);
@@ -90,22 +130,25 @@ async function handleMessage(msg) {
 
     case 'create': {
       const size = msg.size || {};
-      const canvas = new OffscreenCanvas(
-        Math.max(1, size.width || 1),
-        Math.max(1, size.height || 1),
-      );
+      const width = Math.max(1, size.width || 1);
+      const height = Math.max(1, size.height || 1);
+      const renderer = libraries.three ? getSharedRenderer() : null;
+      // three.js plugins draw through the shared renderer; everything else
+      // gets its own 2D-capable OffscreenCanvas.
+      const canvas = renderer ? null : new OffscreenCanvas(width, height);
       const instance = factory({
         properties: msg.properties || {},
         seed: msg.seed || 0,
-        size: { width: canvas.width, height: canvas.height },
+        size: { width, height },
         libraries,
+        renderer,
       });
 
       if (instance && typeof instance.init === 'function') {
-        instance.init({ canvas });
+        instance.init(renderer ? { renderer, size: { width, height } } : { canvas });
       }
 
-      instances.set(msg.instanceId, { instance, canvas });
+      instances.set(msg.instanceId, { instance, canvas, usesRenderer: Boolean(renderer) });
       break;
     }
 
@@ -120,8 +163,10 @@ async function handleMessage(msg) {
     case 'resize': {
       const record = instances.get(msg.instanceId);
       if (record && msg.size) {
-        record.canvas.width = Math.max(1, msg.size.width || 1);
-        record.canvas.height = Math.max(1, msg.size.height || 1);
+        if (record.canvas) {
+          record.canvas.width = Math.max(1, msg.size.width || 1);
+          record.canvas.height = Math.max(1, msg.size.height || 1);
+        }
         if (typeof record.instance.resize === 'function') {
           record.instance.resize(msg.size);
         }
@@ -140,7 +185,10 @@ async function handleMessage(msg) {
         box = record.instance.render(msg.frame) || null;
       }
 
-      const bitmap = record.canvas.transferToImageBitmap();
+      // Shared-renderer plugins leave their frame in the renderer's canvas;
+      // transferring it out also clears it for the next instance.
+      const source = record.usesRenderer ? sharedRendererCanvas : record.canvas;
+      const bitmap = source.transferToImageBitmap();
       post(
         {
           op: 'frame-done',

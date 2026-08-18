@@ -13,9 +13,11 @@
  * `cameraDistance === 0` means "auto": fit the canvas height at the FOV.
  *
  * Renders an animated wall of extruded cubes (instanced) with a shadow-
- * catching ground plane, using the host-provided three.js.
+ * catching ground plane, using the host-provided three.js and the host's
+ * shared WebGLRenderer (one GL context per plugin, pre-configured to match
+ * the stage: transparent clear, sRGB output, no tone mapping, soft shadows).
  */
-export default function createPlugin({ properties, libraries }) {
+export default function createPlugin({ properties, libraries, renderer }) {
   const THREE = libraries.three;
 
   const FOV = 50;
@@ -25,8 +27,6 @@ export default function createPlugin({ properties, libraries }) {
   const EDGE_SEGMENTS = 12;
 
   let props = { ...properties };
-  let canvas = null;
-  let renderer = null;
   let scene = null;
   let camera = null;
   let group = null;
@@ -249,31 +249,15 @@ export default function createPlugin({ properties, libraries }) {
     }
   }
 
-  function resizeIfNeeded() {
-    const width = Math.max(16, Math.round(num(props.width, 1280)));
-    const height = Math.max(16, Math.round(num(props.height, 720)));
-
-    if (canvas.width !== width || canvas.height !== height) {
-      renderer.setSize(width, height, false);
-    }
-
-    return { width, height };
+  function resolveSize() {
+    return {
+      width: Math.max(16, Math.round(num(props.width, 1280))),
+      height: Math.max(16, Math.round(num(props.height, 720))),
+    };
   }
 
   return {
-    init({ canvas: c }) {
-      canvas = c;
-
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: true,
-        premultipliedAlpha: true,
-      });
-      renderer.setClearColor(0x000000, 0);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
+    init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 5000);
       group = new THREE.Group();
@@ -306,7 +290,10 @@ export default function createPlugin({ properties, libraries }) {
     },
 
     render(frame) {
-      const { width, height } = resizeIfNeeded();
+      const { width, height } = resolveSize();
+      // The renderer is shared by every instance of this plugin, so size it
+      // for this instance before drawing.
+      renderer.setSize(width, height, false);
 
       if (frame.playing || frame.exporting) {
         time += (Math.max(0, num(frame.delta, 16.667)) / 1000) * Math.max(0, num(props.speed, 1));
@@ -392,7 +379,6 @@ export default function createPlugin({ properties, libraries }) {
       ground?.material.dispose();
       boxGeometry.dispose();
       edgeGeometry.dispose();
-      renderer?.dispose();
     },
   };
 }

@@ -37,7 +37,7 @@ export default function Zoom() {
           step={0.02}
           smallThumb
           // Status bar is primary-colored, so use white for the fill/thumb.
-          className="[&_[data-slot=slider-track]]:h-0.5 [&_[data-slot=slider-range]]:bg-white [&_[data-slot=slider-track]]:bg-white/30 [&_[data-slot=slider-thumb]]:border-white"
+          className="[&_[data-slot=slider-track]]:h-0.5 [&_[data-slot=slider-range]]:bg-white [&_[data-slot=slider-track]]:bg-white/30 [&_[data-slot=slider-thumb]]:size-2 [&_[data-slot=slider-thumb]]:border-white"
           onChange={(_name, value) => setZoom(value)}
         />
       </div>

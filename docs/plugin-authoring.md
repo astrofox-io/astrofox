@@ -133,7 +133,8 @@ runtime shims: `fetch`/`XMLHttpRequest`/`WebSocket` are refused
 host-provided libraries (`script-src 'self' blob:`), and nested workers are
 blocked. With the `network` permission, connections are allowed but remote
 code still is not — bundle everything you execute into your entry file. You
-draw into an `OffscreenCanvas` you own:
+draw into an `OffscreenCanvas` you own (or, for 3D, into the host's shared
+three.js renderer — see below):
 
 ```js
 export default function createPlugin({ properties, seed, size }) {
@@ -178,31 +179,48 @@ Worker plugins can't import from the network, and bundling a 3D library into
 "libraries": ["three"]
 ```
 
-Requested libraries are loaded into the worker before your entry runs and are
-passed to the factory:
+Requesting `three` gives you two things through the factory arguments:
+
+- `libraries.three` — the `three` ES module namespace, and
+- `renderer` — a **shared, host-configured `THREE.WebGLRenderer`**.
+
+You do not create a renderer or a canvas. The sandbox owns exactly one WebGL
+context per plugin and hands the same renderer to every instance, already set
+up to match the stage: transparent clear colour, sRGB output, no tone mapping,
+soft shadow maps, pixel ratio 1. Build your scene in `init()`, and in
+`render()` size the renderer for *this* instance and draw:
 
 ```js
-export default function createPlugin({ properties, seed, size, libraries }) {
-  const THREE = libraries.three;   // the "three" ES module namespace
-  let renderer, scene, camera;
+export default function createPlugin({ properties, seed, size, libraries, renderer }) {
+  const THREE = libraries.three;
+  let props = { ...properties };
+  let scene, camera;
 
   return {
-    init({ canvas }) {
-      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      renderer.setClearColor(0x000000, 0);   // transparent → composited as a layer
+    init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
       camera.position.z = 5;
+      scene.add(new THREE.AmbientLight(0xffffff, 0.5));
     },
+    update(next) { props = { ...props, ...next }; },
     render(frame) {
-      renderer.setSize(canvas.width, canvas.height, false);
+      const width = props.width, height = props.height;
+      renderer.setSize(width, height, false);   // shared: size it every frame
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
       renderer.render(scene, camera);
-      return { width: canvas.width, height: canvas.height };
+      return { width, height };
     },
-    dispose() { renderer.dispose(); },
+    dispose() { /* dispose your geometries/materials; not the renderer */ },
   };
 }
 ```
+
+Because the renderer is shared, treat it as borrowed: don't change its clear
+colour, colour space, tone mapping or shadow settings, and don't call
+`renderer.dispose()`. Anything you *do* set on it per frame (render targets,
+scissor, autoClear…) must be reset before `render()` returns.
 
 Available libraries: `three` (the version Astrofox itself uses; check
 `libraries.three.REVISION` if you rely on newer APIs). Requested libraries are
