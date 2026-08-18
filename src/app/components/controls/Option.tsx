@@ -51,7 +51,7 @@ export default function Option({
   } else if (InputCompnent) {
     const resolvedInputProps =
       type === 'number' && inputProps?.width === undefined
-        ? { ...inputProps, width: 96 }
+        ? { ...inputProps, width: 64 }
         : inputProps;
 
     inputs.push(

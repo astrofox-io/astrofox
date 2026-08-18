@@ -42,14 +42,14 @@ export default class TextDisplay extends Display {
         label: 'Text',
         type: 'text',
       },
-      size: {
-        label: 'Size',
-        type: 'number',
-      },
       font: {
         label: 'Font',
         type: 'select',
         items: fontOptions,
+      },
+      size: {
+        label: 'Size',
+        type: 'number',
       },
       italic: {
         label: 'Italic',

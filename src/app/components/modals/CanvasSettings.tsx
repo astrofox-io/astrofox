@@ -185,11 +185,11 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
       </div>
       <div className="shrink-0 bg-neutral-800 px-4 py-3">
         <DialogFooter className="justify-end sm:justify-end">
-          <Button variant="default" size="sm" onClick={handleSave}>
-            {tc('ok')}
-          </Button>
-          <Button variant="default" size="sm" onClick={handleCancel}>
+          <Button variant="secondary" size="sm" onClick={handleCancel}>
             {tc('cancel')}
+          </Button>
+          <Button variant="default" size="sm" onClick={handleSave}>
+            {tc('save')}
           </Button>
         </DialogFooter>
       </div>

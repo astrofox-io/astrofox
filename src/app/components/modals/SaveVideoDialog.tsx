@@ -302,7 +302,7 @@ export default function SaveVideoDialog({
           <div className="flex items-center justify-between gap-3">
             <h3 className="text-sm font-medium text-neutral-100">{t('audio-source')}</h3>
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               disabled={isSubmitting || isChoosingAudio}
               onClick={handleChooseAudio}
@@ -324,7 +324,7 @@ export default function SaveVideoDialog({
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-sm font-medium text-neutral-100">{t('save-location')}</h3>
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 disabled={isSubmitting || isChoosingLocation}
                 onClick={handleChooseLocation}
@@ -474,6 +474,9 @@ export default function SaveVideoDialog({
       </div>
       <div className="shrink-0 bg-neutral-800 px-4 py-3">
         <DialogFooter className="justify-end sm:justify-end">
+          <Button variant="secondary" size="sm" disabled={isSubmitting} onClick={handleCancel}>
+            {tc('cancel')}
+          </Button>
           <Button
             variant="default"
             size="sm"
@@ -481,9 +484,6 @@ export default function SaveVideoDialog({
             onClick={handleSave}
           >
             {isSubmitting ? t('starting') : t('save-video')}
-          </Button>
-          <Button variant="outline" size="sm" disabled={isSubmitting} onClick={handleCancel}>
-            {tc('cancel')}
           </Button>
         </DialogFooter>
       </div>

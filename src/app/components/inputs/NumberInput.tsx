@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import TextInput from '@/app/components/inputs/TextInput';
+import { cn } from '@/lib/utils';
 import { clamp, roundTo } from '@/lib/utils/math';
 
 interface NumberInputProps {
@@ -58,7 +59,7 @@ export default function NumberInput({
       key={key}
       name={name}
       value={value}
-      className={className}
+      className={cn('shrink-0', className)}
       width={width}
       onChange={handleChange}
       readOnly={readOnly}
