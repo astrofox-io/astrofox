@@ -95,9 +95,9 @@ export default class ShapeDisplay extends Display {
       },
       zoom: {
         group: 'Appearance',
-        label: 'Zoom',
+        label: 'Scale',
         type: 'number',
-        min: 1.0,
+        min: 0,
         max: 4.0,
         step: 0.01,
         withRange: true,

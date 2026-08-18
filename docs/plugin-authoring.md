@@ -71,7 +71,7 @@ export, so your plugin renders identically in both.
 
 ## Displays: standard behavior for free
 
-Every external display automatically gets `x`, `y`, `rotation`, `zoom` and
+Every external display automatically gets `x`, `y`, `rotation`, `zoom` (shown as "Scale") and
 `opacity` properties with controls, the on-stage transform overlay, scene
 blending, and reactor support. Any control marked `withReactor: true` can be
 driven by an audio reactor — Astrofox modulates the property before your

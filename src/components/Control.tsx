@@ -116,7 +116,7 @@ export default function Control({
   }
 
   return (
-    <div className={classNames('pb-2', className)}>
+    <div className={classNames('flex flex-col gap-3 pb-2', className)}>
       {showHeader && (
         <div className={'relative py-3 px-2.5'}>
           <div className={'flex items-center justify-between gap-2 text-xs text-neutral-100'}>

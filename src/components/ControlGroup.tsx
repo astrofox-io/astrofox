@@ -30,7 +30,7 @@ export default function ControlGroup({
   const hasContent = React.Children.toArray(children).some(child => child !== null);
 
   return (
-    <div className="mx-2 my-1.5 overflow-hidden rounded bg-neutral-900/70">
+    <div className="mx-2 overflow-hidden">
       <div className="flex items-center gap-1 pr-2.5">
         <button
           type="button"
@@ -52,7 +52,7 @@ export default function ControlGroup({
           />
         ) : null}
       </div>
-      {open && hasContent ? <div className="pb-1">{children}</div> : null}
+      {open && hasContent ? <div className="flex flex-col py-2 gap-3 border-l-1 border-border ml-3">{children}</div> : null}
     </div>
   );
 }
