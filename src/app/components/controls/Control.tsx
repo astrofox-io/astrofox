@@ -116,21 +116,23 @@ export default function Control({
   }
 
   return (
-    <div
-      className={classNames('pb-2 border-l-2', className, {
-        'border-l-primary': active,
-        'border-l-transparent': !active,
-      })}
-    >
+    <div className={classNames('pb-2', className)}>
       {showHeader && (
         <div className={'relative py-3 px-2.5'}>
-          <div
-            className={
-              'flex items-center justify-between text-xs text-neutral-100 overflow-hidden gap'
-            }
-          >
+          <div className={'flex items-center justify-between gap-2 text-xs text-neutral-100'}>
             <div className="flex items-center gap-2">
-              <div className="inline-flex uppercase">{translateLabel(t, label)}</div>
+              <button
+                type="button"
+                className={classNames(
+                  'inline-flex cursor-pointer uppercase underline-offset-2 hover:text-neutral-100',
+                  {
+                    'underline decoration-primary decoration-2': active,
+                  },
+                )}
+                onClick={() => onNameClick?.(id)}
+              >
+                {translateLabel(t, label)}
+              </button>
             </div>
             <button
               type="button"

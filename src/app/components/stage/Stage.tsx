@@ -17,6 +17,7 @@ import { renderBackend, renderer, stage } from '@/app/global';
 import { VectorSquare, Video } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import { hasDisplayCamera } from '@/lib/utils/displayCamera';
 import { ignoreEvents } from '@/lib/utils/react';
 import DisplayTransformOverlay from './DisplayTransformOverlay';
@@ -234,6 +235,90 @@ export default function Stage() {
       onDragLeave={handleStageDragLeave}
     >
       <DragOverlay show={dragOverStage} />
+      <div className="sticky top-2 z-60 flex h-0 shrink-0 items-start justify-center gap-2 overflow-visible">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger render={<span />}>
+              <Button
+                type="button"
+                variant={isStagePictureInPictureActive ? 'default' : 'outline'}
+                size="icon-sm"
+                aria-label={pictureInPictureLabel}
+                className={cn('shadow-xl', {
+                  'bg-neutral-800 hover:bg-neutral-700': !isStagePictureInPictureActive,
+                })}
+                disabled={!pictureInPictureSupported}
+                onClick={handleStagePictureInPictureToggle}
+              >
+                <PictureInPicture2 className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {pictureInPictureLabel}
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger render={<span />}>
+              <Button
+                type="button"
+                variant={
+                  displayTransformModeEnabled && transformableDisplaySelected
+                    ? 'default'
+                    : 'outline'
+                }
+                size="icon-sm"
+                aria-label={layerTransformLabel}
+                className={cn('shadow-xl', {
+                  'bg-neutral-800 hover:bg-neutral-700': !(
+                    displayTransformModeEnabled && transformableDisplaySelected
+                  ),
+                })}
+                disabled={!transformableDisplaySelected}
+                onClick={handleDisplayTransformModeToggle}
+              >
+                <VectorSquare className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {layerTransformLabel}
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger render={<span />}>
+              <Button
+                type="button"
+                variant={cameraModeEnabled && activeElementHasCamera ? 'default' : 'outline'}
+                size="icon-sm"
+                aria-label={cameraControlLabel}
+                className={cn('shadow-xl', {
+                  'bg-neutral-800 hover:bg-neutral-700': !(
+                    cameraModeEnabled && activeElementHasCamera
+                  ),
+                })}
+                disabled={!activeElementHasCamera}
+                onClick={handleCameraModeToggle}
+              >
+                <Video className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {cameraControlLabel}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
       <div className={'m-auto'}>
         <div className={'relative flex flex-col justify-center shadow-xl m-5 z-50 bg-black'}>
           <canvas
@@ -253,80 +338,6 @@ export default function Stage() {
             zoom={zoom}
           />
           <Loading show={loading || dropLoading} />
-        </div>
-        <div className="mt-2 flex justify-end gap-2 px-5">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger render={<span />}>
-                <Button
-                  type="button"
-                  variant={isStagePictureInPictureActive ? 'default' : 'outline'}
-                  size="icon-sm"
-                  aria-label={pictureInPictureLabel}
-                  className="shadow-xl"
-                  disabled={!pictureInPictureSupported}
-                  onClick={handleStagePictureInPictureToggle}
-                >
-                  <PictureInPicture2 className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                sideOffset={6}
-                className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-              >
-                {pictureInPictureLabel}
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger render={<span />}>
-                <Button
-                  type="button"
-                  variant={
-                    displayTransformModeEnabled && transformableDisplaySelected
-                      ? 'default'
-                      : 'outline'
-                  }
-                  size="icon-sm"
-                  aria-label={layerTransformLabel}
-                  className="shadow-xl"
-                  disabled={!transformableDisplaySelected}
-                  onClick={handleDisplayTransformModeToggle}
-                >
-                  <VectorSquare className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                sideOffset={6}
-                className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-              >
-                {layerTransformLabel}
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger render={<span />}>
-                <Button
-                  type="button"
-                  variant={cameraModeEnabled && activeElementHasCamera ? 'default' : 'outline'}
-                  size="icon-sm"
-                  aria-label={cameraControlLabel}
-                  className="shadow-xl"
-                  disabled={!activeElementHasCamera}
-                  onClick={handleCameraModeToggle}
-                >
-                  <Video className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                sideOffset={6}
-                className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-              >
-                {cameraControlLabel}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
       </div>
     </section>
