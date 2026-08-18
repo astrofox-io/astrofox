@@ -157,7 +157,7 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
         aria-label={title}
         aria-hidden={!open}
         className={cn(
-          'absolute top-0 bottom-0 z-20 flex flex-col overflow-hidden border-r bg-neutral-900',
+          'absolute top-0 bottom-0 z-20 flex flex-col overflow-hidden border-r bg-neutral-950',
           'transition-[translate,left,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
           // Shadow only while open; hidden it sits flush under the left column and would bleed out.
           open

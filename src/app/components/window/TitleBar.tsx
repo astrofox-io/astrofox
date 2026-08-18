@@ -116,7 +116,7 @@ export default function TitleBar() {
         <Image
           alt=""
           aria-hidden="true"
-          className="h-8 w-8 shrink-0 opacity-90"
+          className="block h-8 w-8 shrink-0 opacity-90"
           draggable={false}
           height={32}
           src="/icon.svg"
