@@ -32,6 +32,7 @@ export default class ShapeDisplay extends Display {
       strokeColor: '#ff0000',
       strokeWidth: 5,
       rotation: 0,
+      zoom: 1,
       opacity: 1.0,
     },
     controls: {
@@ -84,6 +85,7 @@ export default class ShapeDisplay extends Display {
         hidden: property('stroke', false),
       },
       rotation: {
+        group: 'Appearance',
         label: 'Rotation',
         type: 'number',
         min: 0,
@@ -91,7 +93,18 @@ export default class ShapeDisplay extends Display {
         withRange: true,
         withReactor: true,
       },
+      zoom: {
+        group: 'Appearance',
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
       opacity: {
+        group: 'Appearance',
         label: 'Opacity',
         type: 'number',
         min: 0,

@@ -103,10 +103,8 @@ export default function SceneLayer({
     addMenu: React.ReactNode,
   ) => (
     <div className="flex flex-col gap-0.5">
-      <div className="ml-4 flex items-center pl-2 pr-1 pt-1 pb-0.5">
-        <div className="text-xs uppercase text-neutral-400">
-          {translateLabel(t, title)}
-        </div>
+      <div className="ml-4 flex items-center pr-1 pt-1 pb-0.5">
+        <div className="text-xs uppercase text-neutral-400">{translateLabel(t, title)}</div>
         <div className="ml-auto">{addMenu}</div>
       </div>
       {layers.length > 0 ? layers.map((layer: SceneElement) => renderLayer(layer)) : null}
@@ -133,7 +131,7 @@ export default function SceneLayer({
 
   return (
     <div
-      className={classNames('flex flex-col gap-0.5 rounded', {
+      className={classNames('m-1 flex flex-col gap-0.5 rounded-md border border-neutral-700 p-1', {
         'opacity-25': sceneDragging,
         'ring-1 ring-primary': sceneDragOver,
       })}

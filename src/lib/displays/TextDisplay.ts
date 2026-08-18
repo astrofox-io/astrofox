@@ -35,6 +35,7 @@ export default class TextDisplay extends Display {
       y: 0,
       color: '#FFFFFF',
       rotation: 0,
+      zoom: 1,
       opacity: 1.0,
     },
     controls: {
@@ -64,6 +65,7 @@ export default class TextDisplay extends Display {
         type: 'color',
       },
       rotation: {
+        group: 'Appearance',
         label: 'Rotation',
         type: 'number',
         min: 0,
@@ -71,7 +73,18 @@ export default class TextDisplay extends Display {
         withRange: true,
         withReactor: true,
       },
+      zoom: {
+        group: 'Appearance',
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
       opacity: {
+        group: 'Appearance',
         label: 'Opacity',
         type: 'number',
         min: 0,

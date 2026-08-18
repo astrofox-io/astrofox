@@ -29,6 +29,7 @@ export default class SoundWaveDisplay extends Display {
       x: 0,
       y: 0,
       rotation: 0,
+      zoom: 1,
       opacity: 1.0,
     },
     controls: {
@@ -90,6 +91,7 @@ export default class SoundWaveDisplay extends Display {
         withRange: true,
       },
       rotation: {
+        group: 'Appearance',
         label: 'Rotation',
         type: 'number',
         min: 0,
@@ -97,7 +99,18 @@ export default class SoundWaveDisplay extends Display {
         withRange: true,
         withReactor: true,
       },
+      zoom: {
+        group: 'Appearance',
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+      },
       opacity: {
+        group: 'Appearance',
         label: 'Opacity',
         type: 'number',
         min: 0,

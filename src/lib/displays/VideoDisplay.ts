@@ -87,6 +87,7 @@ export default class VideoDisplay extends Display {
         disabled,
       },
       rotation: {
+        group: 'Appearance',
         label: 'Rotation',
         type: 'number',
         min: 0,
@@ -95,7 +96,19 @@ export default class VideoDisplay extends Display {
         withReactor: true,
         disabled,
       },
+      zoom: {
+        group: 'Appearance',
+        label: 'Zoom',
+        type: 'number',
+        min: 1.0,
+        max: 4.0,
+        step: 0.01,
+        withRange: true,
+        withReactor: true,
+        disabled,
+      },
       opacity: {
+        group: 'Appearance',
         label: 'Opacity',
         type: 'number',
         min: 0,
