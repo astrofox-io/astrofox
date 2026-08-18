@@ -109,7 +109,7 @@
     "jsmediatags": "^3.9.7",
     "lucide-react": "^1.21.0",
     "mime": "^4.1.0",
-    "next": "^16.2.9",
+    "next": "^16.2.11",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-i18next": "^17.0.8",
