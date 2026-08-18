@@ -1,3 +1,4 @@
+import { BLANK_IMAGE } from '@/app/constants';
 import FFTParser from '@/lib/audio/FFTParser';
 import Display from '@/lib/core/Display';
 import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
@@ -39,6 +40,9 @@ export default class GeometryDisplay extends Display {
       x: 0,
       y: 0,
       z: 0,
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: 0,
       opacity: 1.0,
       startX: 0,
       startY: 0,
@@ -131,6 +135,33 @@ export default class GeometryDisplay extends Display {
         withRange: true,
         hideFill: true,
       },
+      rotationX: {
+        group: 'Rotation',
+        label: 'X',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
+      rotationY: {
+        group: 'Rotation',
+        label: 'Y',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
+      rotationZ: {
+        group: 'Rotation',
+        label: 'Z',
+        type: 'number',
+        min: 0,
+        max: 360,
+        withRange: true,
+        withReactor: true,
+      },
       ...display3DControls,
     },
   };
@@ -142,7 +173,24 @@ export default class GeometryDisplay extends Display {
   }
 
   update(properties: Record<string, unknown>) {
-    const changed = super.update(properties);
+    let nextProperties = properties;
+
+    // Normalize texture input from ImageInput (HTMLImageElement or BLANK_IMAGE) to a src string
+    if (properties && 'texture' in properties) {
+      const { texture } = properties;
+      let src = '';
+
+      if (typeof texture === 'string') {
+        src = texture === BLANK_IMAGE ? '' : texture;
+      } else if (texture && typeof texture === 'object' && (texture as HTMLImageElement).src) {
+        const { src: imageSrc } = texture as HTMLImageElement;
+        src = imageSrc === BLANK_IMAGE ? '' : imageSrc;
+      }
+
+      nextProperties = { ...properties, texture: src };
+    }
+
+    const changed = super.update(nextProperties);
 
     if (changed) {
       this.parser.update(properties);

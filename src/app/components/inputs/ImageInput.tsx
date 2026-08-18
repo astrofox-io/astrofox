@@ -21,7 +21,7 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'inputs' });
   const { t: te } = useTranslation(undefined, { keyPrefix: 'errors' });
   const image = useRef<HTMLImageElement>(null);
-  const hasImage = value !== BLANK_IMAGE;
+  const hasImage = Boolean(value) && value !== BLANK_IMAGE;
 
   function loadImageSrc(src: string | ArrayBuffer | null) {
     if (image.current && image.current.src !== src) {

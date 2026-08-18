@@ -6,7 +6,7 @@ export interface CameraOrbitState {
   distance: number;
 }
 
-export const CAMERA_MIN_DISTANCE = 50;
+export const CAMERA_MIN_DISTANCE = 0;
 export const CAMERA_MAX_DISTANCE = 5000;
 const CAMERA_PERSIST_DELAY_MS = 120;
 const POLAR_LIMIT = Math.PI / 2 - 0.05;

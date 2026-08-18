@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { AddEquation, CustomBlending, DoubleSide, FrontSide, OneFactor, ZeroFactor } from 'three';
-import FFTParser from '@/lib/audio/FFTParser';
+import { BLANK_IMAGE } from '@/app/constants';
+import { deg2rad } from '@/lib/utils/math';
 import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
 import { createGeometryNode, getMaterialNode, isPointsMaterial } from './geometryMaterials';
 import { useTexture3D } from './useTexture3D';
@@ -10,7 +11,6 @@ import { useTexture3D } from './useTexture3D';
 export function GeometryDisplayLayer3D({
   display,
   order,
-  frameData,
   sceneOpacity,
   sceneBlendMode,
   sceneMask,
@@ -28,28 +28,33 @@ export function GeometryDisplayLayer3D({
     x = 0,
     y = 0,
     z = 0,
+    rotationX = 0,
+    rotationY = 0,
+    rotationZ = 0,
     pointSize = 8,
     opacity = 1,
     texture: textureSrc = '',
   } = properties;
 
-  const textureMap = useTexture3D(textureSrc || undefined);
+  const hasTexture =
+    typeof textureSrc === 'string' && textureSrc !== '' && textureSrc !== BLANK_IMAGE;
+  const textureMap = useTexture3D(hasTexture ? textureSrc : undefined);
+  const materialRef = React.useRef(null);
 
-  const parserRef = React.useRef(new FFTParser(properties));
-  const rotationRef = React.useRef({ x: 0, y: 0, z: 0 });
-
-  parserRef.current.update(properties);
-
-  if (frameData?.hasUpdate && frameData.fft) {
-    const fft = parserRef.current.parseFFT(frameData.fft);
-
-    rotationRef.current.x += 5 * (fft[0] || 0);
-    rotationRef.current.y += 3 * (fft[3] || 0);
-    rotationRef.current.z += 2 * (fft[2] || 0);
-  }
+  // Adding/removing a map changes the shader program; three.js needs an explicit recompile.
+  React.useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.needsUpdate = true;
+    }
+  }, [textureMap]);
 
   const meshPosition = [x, -y, z];
-  const meshRotation = [rotationRef.current.x, rotationRef.current.y, rotationRef.current.z];
+  // Rotation values are in degrees.
+  const meshRotation = [
+    deg2rad(Number(rotationX) || 0),
+    deg2rad(Number(rotationY) || 0),
+    deg2rad(Number(rotationZ) || 0),
+  ];
   const finalOpacity = Math.max(0, Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)));
   const blending = sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode);
   const geometryColor = sceneMask ? '#000000' : color;
@@ -90,7 +95,7 @@ export function GeometryDisplayLayer3D({
         blendEquationAlpha: sceneMask ? AddEquation : undefined,
         blendSrcAlpha: sceneMask ? OneFactor : undefined,
         blendDstAlpha: sceneMask ? ZeroFactor : undefined,
-        ...(textureMap ? { map: textureMap } : {}),
+        map: textureMap ?? null,
       };
 
   return (
@@ -102,7 +107,7 @@ export function GeometryDisplayLayer3D({
         renderOrder={order}
       >
         {createGeometryNode(shape, 'geometry')}
-        {getMaterialNode(material, geometryMaterialProps)}
+        {getMaterialNode(material, { ...geometryMaterialProps, ref: materialRef })}
       </GeometryPrimitive>
       {edges && (
         <mesh
