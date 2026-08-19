@@ -23,7 +23,7 @@ export default function ReactorInput({
   display,
   name,
   value,
-  width = 100,
+  width = 124,
   height = 10,
   color = PRIMARY_COLOR,
 }: ReactorInputProps) {
@@ -74,7 +74,8 @@ export default function ReactorInput({
       <Button
         type="button"
         variant="outline"
-        className="h-8 shrink-0 rounded border-border-input bg-neutral-900 px-2 py-0 shadow-none hover:bg-neutral-900"
+        className="h-8 shrink-0 rounded-md border-border bg-neutral-900 px-2 py-0 shadow-none hover:bg-neutral-900 focus-visible:border-ring focus-visible:ring-0"
+        style={{ width: width + 16 }}
         onDoubleClick={toggleReactor}
         onKeyDown={event => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -93,7 +94,7 @@ export default function ReactorInput({
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                className="ml-1 mr-1.5 text-neutral-300 hover:bg-transparent hover:text-neutral-100"
+                className="shrink-0 text-neutral-300 hover:bg-transparent hover:text-neutral-100"
                 onClick={disableReactor}
               >
                 <Times className="h-4 w-4" />

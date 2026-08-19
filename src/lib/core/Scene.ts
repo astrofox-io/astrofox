@@ -170,7 +170,7 @@ export default class Scene extends Display {
     return obj;
   }
 
-  removeElement(obj: SceneElement) {
+  removeElement(obj: SceneElement, dispose = true) {
     if (!this.hasElement(obj)) {
       return false;
     }
@@ -185,7 +185,10 @@ export default class Scene extends Display {
       obj.removeFromScene(this);
     }
 
-    obj.dispose?.();
+    // Skip disposal when the element is only being moved (reorder / cross-scene)
+    if (dispose) {
+      obj.dispose?.();
+    }
 
     return true;
   }

@@ -48,7 +48,7 @@ export default function Option({
 
   if (showReactor) {
     inputs.push(
-      <ReactorInput key="reactor" display={display} name={name} value={value} width={84} />,
+      <ReactorInput key="reactor" display={display} name={name} value={value} width={124} />,
     );
   } else if (InputCompnent) {
     const resolvedInputProps =
@@ -101,18 +101,8 @@ export default function Option({
           max={max}
         />
       )}
-      <div
-        className={classNames('ml-6 flex min-w-28 cursor-default', {
-          'min-w-20': showReactor,
-        })}
-      >
-        <div
-          className={classNames('mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis', {
-            'mr-1': showReactor,
-          })}
-        >
-          {label}
-        </div>
+      <div className="ml-6 flex min-w-28 cursor-default">
+        <div className="mr-2 flex-1 overflow-hidden whitespace-nowrap text-ellipsis">{label}</div>
         {withLink && (
           <Link
             className={classNames('h-3.5 w-3.5', {

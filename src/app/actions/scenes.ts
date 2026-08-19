@@ -399,7 +399,7 @@ export function moveElement(id, spaces) {
   const targetIndex = nextDisplays.findIndex(display => display.id === id);
 
   if (element && sceneInstance && targetIndex > -1) {
-    sceneInstance.removeElement(element);
+    sceneInstance.removeElement(element, false);
     sceneInstance.addElement(element, targetIndex);
   }
 }
@@ -418,7 +418,9 @@ export function reorderElement(sourceId, targetId) {
   }
 
   if (source.type === 'scene' || target.type === 'scene') {
-    if (source.type !== 'scene' && target.type !== 'scene') {
+    // Display/effect dropped onto a scene row: move it to the end of that
+    // scene's matching collection.
+    if (source.type !== 'scene') {
       const sourceCollection = getElementTarget(source.type);
       const sourceScene = scenes.find(scene => scene.id === source.sceneId);
       const targetScene = scenes.find(scene => scene.id === target.sceneId);
@@ -497,12 +499,16 @@ export function reorderElement(sourceId, targetId) {
         return true;
       }
 
-      sourceSceneInstance.removeElement(element);
+      sourceSceneInstance.removeElement(element, false);
       targetSceneInstance.addElement(element, targetIndex);
       return true;
     }
 
     if (source.type === 'scene') {
+      if (target.type !== 'scene') {
+        return false;
+      }
+
       updateScenes(currentScenes => moveAtIndex(currentScenes, source.index, target.index));
 
       const scene = stage.getSceneById(sourceId);
@@ -565,7 +571,7 @@ export function reorderElement(sourceId, targetId) {
       return true;
     }
 
-    sourceSceneInstance.removeElement(element);
+    sourceSceneInstance.removeElement(element, false);
     targetSceneInstance.addElement(element, targetIndex);
     return true;
   }
@@ -589,7 +595,7 @@ export function reorderElement(sourceId, targetId) {
     const targetIndex = nextDisplays.findIndex(display => display.id === sourceId);
 
     if (element && sceneInstance && targetIndex > -1) {
-      sceneInstance.removeElement(element);
+      sceneInstance.removeElement(element, false);
       sceneInstance.addElement(element, targetIndex);
     }
 

@@ -9,14 +9,14 @@ import {
 import DistortionShader from '@/lib/core/render/effects/shaders/DistortionShader';
 import type { RenderFrameData } from '@/lib/types';
 
-const distortionModes = ['Wave', 'Noise'];
+const distortionModes = ['Wave', 'Simplex Noise', 'Perlin Noise'];
 
 export default class DistortionEffect extends Effect {
   declare time: number;
 
   static config = {
     name: 'DistortionEffect',
-    description: 'Animated distortion using a periodic wave or organic noise field.',
+    description: 'Animated distortion using a wave, simplex noise or Perlin noise field.',
     type: 'effect',
     label: 'Distortion',
     category: 'distortion',
@@ -82,13 +82,14 @@ export default class DistortionEffect extends Effect {
 
 const DISTORTION_MAX = 30;
 
-function createPass(effect: EffectPassConfig) {
+function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new ShaderPass(DistortionShader);
   return attachPassUpdater(pass, () => {
     pass.enabled = isEffectEnabled(effect);
+    pass.setSize(width, height);
     pass.setUniforms({
-      mode: props.mode === 'Noise' ? 1 : 0,
+      mode: Math.max(0, distortionModes.indexOf(String(props.mode))),
       amount: Number(props.amount || 0) * DISTORTION_MAX,
       scale: Number(props.scale || 3),
       time: Number(effect.time || props.time || 0),
