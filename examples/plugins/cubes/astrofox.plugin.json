@@ -8,9 +8,7 @@
   "type": "display",
   "runtime": "worker",
   "entry": "./index.js",
-  "libraries": [
-    "three"
-  ],
+  "libraries": ["three"],
   "camera": true,
   "defaultProperties": {
     "width": 1280,
@@ -58,35 +56,17 @@
     "material": {
       "label": "Material",
       "type": "select",
-      "items": [
-        "Basic",
-        "Lambert",
-        "Normal",
-        "Phong",
-        "Physical",
-        "Standard"
-      ]
+      "items": ["Basic", "Lambert", "Normal", "Phong", "Physical", "Standard"]
     },
     "shading": {
       "label": "Shading",
       "type": "select",
-      "items": [
-        "Smooth",
-        "Flat"
-      ]
+      "items": ["Smooth", "Flat"]
     },
     "motion": {
       "label": "Motion",
       "type": "select",
-      "items": [
-        "Static",
-        "Horizontal",
-        "Vertical",
-        "Diagonal",
-        "Radial",
-        "Sweep",
-        "Noise"
-      ]
+      "items": ["Static", "Horizontal", "Vertical", "Diagonal", "Radial", "Sweep", "Noise"]
     },
     "color": {
       "label": "Color",

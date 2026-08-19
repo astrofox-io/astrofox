@@ -36,7 +36,7 @@ interface AstrofoxDesktopBridge {
     filePath: string,
     data: Uint8Array | ArrayBuffer | string,
   ) => Promise<{ ok: boolean; filePath: string }>;
-  ffmpegRun?: (args: string[]) => Promise<{ ok: boolean }>;
+  ffmpegRun?: (args: string[], id?: string) => Promise<{ ok: boolean; id?: string }>;
   ffmpegStartPipe?: (args: string[], id?: string) => Promise<{ id: string }>;
   ffmpegWrite?: (
     id: string,
@@ -47,6 +47,12 @@ interface AstrofoxDesktopBridge {
   onWindowStateChanged?: (
     callback: (state: { focused: boolean; maximized: boolean; minimized: boolean }) => void,
   ) => () => void;
+  updater?: {
+    check: () => Promise<{ ok: boolean; reason?: string; version?: string }>;
+    download: () => Promise<{ ok: boolean; reason?: string }>;
+    install: () => Promise<{ ok: boolean; reason?: string }>;
+    onStatus: (callback: (status: Record<string, unknown>) => void) => () => void;
+  };
 }
 
 interface Window {

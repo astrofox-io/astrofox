@@ -204,7 +204,7 @@ export class PluginWorkerHost {
 
   updateInstance(id: string, properties: Record<string, unknown>) {
     const record = this.instances.get(id);
-    if (!record || !record.created || record.failed || !this.worker) {
+    if (!record?.created || record.failed || !this.worker) {
       return;
     }
 
@@ -262,7 +262,7 @@ export class PluginWorkerHost {
    */
   requestFrame(id: string, frameData: RenderFrameData) {
     const record = this.instances.get(id);
-    if (!record || !record.created || record.failed || !this.worker) {
+    if (!record?.created || record.failed || !this.worker) {
       return;
     }
 
@@ -295,7 +295,7 @@ export class PluginWorkerHost {
    */
   async renderFrameAndWait(id: string, frameData: RenderFrameData): Promise<void> {
     const record = this.instances.get(id);
-    if (!record || !record.created || record.failed || !this.worker) {
+    if (!record?.created || record.failed || !this.worker) {
       return;
     }
 

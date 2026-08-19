@@ -3,13 +3,27 @@ import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-/** @typedef {{ proc: import('node:child_process').ChildProcessWithoutNullStreams, exit: Promise<{ code: number | null, signal: NodeJS.Signals | null, stderr: string }> }} ManagedProcess */
+/**
+ * @typedef {{
+ *   proc: import('node:child_process').ChildProcess,
+ *   exit: Promise<{ code: number | null, signal: NodeJS.Signals | null, stderr: string, error: Error | null }>,
+ *   getStderr: () => string,
+ *   getError: () => Error | null,
+ *   isDone: () => boolean,
+ * }} ManagedProcess
+ */
 
+/** Pipe (stdin-fed) processes addressable by id from the renderer. */
 /** @type {Map<string, ManagedProcess>} */
 const processes = new Map();
+/** Every live ffmpeg child (pipe + run jobs) so we can kill them on quit. */
+/** @type {Map<string, ManagedProcess>} */
+const allProcesses = new Map();
+
 const TRANSIENT_UNLINK_ERROR_CODES = new Set(['EBUSY', 'EPERM']);
 const UNLINK_RETRY_ATTEMPTS = 10;
 const UNLINK_RETRY_DELAY_MS = 100;
+const STDERR_TAIL_LENGTH = 4000;
 
 function wait(ms) {
   return new Promise(resolve => {
@@ -43,9 +57,49 @@ async function unlinkWithRetry(target) {
 }
 
 /**
+ * True when `target` is `root` itself or lives inside it. Case-insensitive on
+ * Windows where the filesystem is.
+ * @param {string} root
+ * @param {string} target
+ */
+export function isPathInside(root, target) {
+  let resolvedRoot = path.resolve(root);
+  let resolvedTarget = path.resolve(target);
+  if (process.platform === 'win32') {
+    resolvedRoot = resolvedRoot.toLowerCase();
+    resolvedTarget = resolvedTarget.toLowerCase();
+  }
+  const relative = path.relative(resolvedRoot, resolvedTarget);
+  if (relative === '') {
+    return true;
+  }
+  return !relative.startsWith('..') && !path.isAbsolute(relative);
+}
+
+function stderrTail(stderr) {
+  const trimmed = (stderr || '').trim();
+  return trimmed.length > STDERR_TAIL_LENGTH ? trimmed.slice(-STDERR_TAIL_LENGTH) : trimmed;
+}
+
+/**
+ * @param {{ code: number | null, signal: NodeJS.Signals | null, stderr: string, error: Error | null }} result
+ */
+function describeExit(result) {
+  if (result.error) {
+    const tail = stderrTail(result.stderr);
+    return `ffmpeg failed: ${result.error.message}${tail ? `\n${tail}` : ''}`;
+  }
+  return (
+    stderrTail(result.stderr) ||
+    `ffmpeg exited with code ${result.code}${result.signal ? ` signal ${result.signal}` : ''}`
+  );
+}
+
+/**
  * @param {string} ffmpegPath
  * @param {string[]} args
  * @param {{ pipeStdin?: boolean }} [options]
+ * @returns {ManagedProcess}
  */
 function spawnFfmpeg(ffmpegPath, args, options = {}) {
   if (!ffmpegPath || !fs.existsSync(ffmpegPath)) {
@@ -58,6 +112,9 @@ function spawnFfmpeg(ffmpegPath, args, options = {}) {
   });
 
   let stderr = '';
+  let error = null;
+  let done = false;
+
   proc.stderr?.on('data', chunk => {
     stderr += chunk.toString();
     // Keep stderr bounded
@@ -66,13 +123,83 @@ function spawnFfmpeg(ffmpegPath, args, options = {}) {
     }
   });
 
+  // Persistent handler: without it an EPIPE after ffmpeg exits early would be
+  // an unhandled 'error' event and crash the main process. Record it so the
+  // next write/end rejects with something useful.
+  proc.stdin?.on('error', stdinError => {
+    if (!error) {
+      error = stdinError;
+    }
+  });
+
   const exit = new Promise(resolve => {
-    proc.on('close', (code, signal) => {
-      resolve({ code, signal, stderr });
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      done = true;
+      resolve({ code: proc.exitCode, signal: proc.signalCode, stderr, error });
+    };
+    proc.on('close', finish);
+    // 'error' fires for spawn failures (ENOENT, EACCES) or kill failures; a
+    // 'close' may never follow, so settle here as well.
+    proc.on('error', spawnError => {
+      error = spawnError;
+      finish();
     });
   });
 
-  return { proc, exit };
+  const managed = {
+    proc,
+    exit,
+    getStderr: () => stderr,
+    getError: () => error,
+    isDone: () => done,
+  };
+
+  const trackingId = randomUUID();
+  allProcesses.set(trackingId, managed);
+  exit.finally(() => {
+    allProcesses.delete(trackingId);
+  });
+
+  return managed;
+}
+
+/**
+ * @param {ManagedProcess | undefined} managed
+ */
+function killManaged(managed) {
+  if (!managed || managed.isDone()) return;
+  try {
+    managed.proc.stdin?.destroy();
+  } catch {
+    // ignore
+  }
+  try {
+    managed.proc.kill('SIGTERM');
+  } catch {
+    // ignore
+  }
+  // ffmpeg normally exits promptly on SIGTERM; escalate if it doesn't.
+  const timer = setTimeout(() => {
+    if (!managed.isDone()) {
+      try {
+        managed.proc.kill('SIGKILL');
+      } catch {
+        // ignore
+      }
+    }
+  }, 3000);
+  timer.unref?.();
+}
+
+/** Kill every live ffmpeg child. Called on app quit. */
+export function killAllFfmpeg() {
+  for (const managed of allProcesses.values()) {
+    killManaged(managed);
+  }
+  processes.clear();
 }
 
 /**
@@ -82,17 +209,26 @@ function spawnFfmpeg(ffmpegPath, args, options = {}) {
 export function registerFfmpegIpc(ipcMain, deps) {
   ipcMain.handle('ffmpeg:run', async (_event, payload = {}) => {
     const args = Array.isArray(payload.args) ? payload.args.map(String) : [];
-    const { exit } = spawnFfmpeg(deps.getFfmpegPath(), args, {
-      pipeStdin: false,
-    });
-    const result = await exit;
-    if (result.code !== 0) {
-      const message =
-        result.stderr?.trim() ||
-        `ffmpeg exited with code ${result.code}${result.signal ? ` signal ${result.signal}` : ''}`;
-      throw new Error(message);
+    const id = typeof payload.id === 'string' && payload.id ? payload.id : randomUUID();
+
+    if (processes.has(id)) {
+      throw new Error(`ffmpeg process already exists: ${id}`);
     }
-    return { ok: true };
+
+    const managed = spawnFfmpeg(deps.getFfmpegPath(), args, { pipeStdin: false });
+    processes.set(id, managed);
+
+    let result;
+    try {
+      result = await managed.exit;
+    } finally {
+      processes.delete(id);
+    }
+
+    if (result.error || result.code !== 0) {
+      throw new Error(describeExit(result));
+    }
+    return { ok: true, id };
   });
 
   ipcMain.handle('ffmpeg:start-pipe', async (_event, payload = {}) => {
@@ -106,9 +242,16 @@ export function registerFfmpegIpc(ipcMain, deps) {
     const managed = spawnFfmpeg(deps.getFfmpegPath(), args, { pipeStdin: true });
     processes.set(id, managed);
 
-    // Detach waiter so we can still call wait later
-    managed.exit.finally(() => {
-      // leave entry until wait/kill cleans up
+    // If ffmpeg dies before the renderer ends the pipe (bad args, spawn
+    // failure) drop the entry once nobody could still be waiting on it. The
+    // end-pipe handler removes it itself on the normal path.
+    managed.exit.then(result => {
+      if (result.error) {
+        // Keep it around briefly so write/end can report the error, then drop.
+        setTimeout(() => {
+          if (processes.get(id) === managed) processes.delete(id);
+        }, 60_000).unref?.();
+      }
     });
 
     return { id };
@@ -121,6 +264,16 @@ export function registerFfmpegIpc(ipcMain, deps) {
       throw new Error(`Unknown ffmpeg pipe process: ${id}`);
     }
 
+    if (managed.isDone() || managed.getError()) {
+      // A stdin error without an exit means ffmpeg is wedged; don't wait on it.
+      if (!managed.isDone()) {
+        killManaged(managed);
+      }
+      const result = await managed.exit;
+      processes.delete(id);
+      throw new Error(describeExit(result));
+    }
+
     const data = payload.data;
     const buffer = Buffer.isBuffer(data)
       ? data
@@ -128,14 +281,20 @@ export function registerFfmpegIpc(ipcMain, deps) {
 
     const stdin = managed.proc.stdin;
     if (stdin.destroyed || stdin.writableEnded) {
-      throw new Error('ffmpeg stdin is closed');
+      throw new Error(`ffmpeg stdin is closed\n${stderrTail(managed.getStderr())}`.trim());
     }
 
     await new Promise((resolve, reject) => {
-      const onError = error => {
+      const fail = error => {
         stdin.off('drain', onDrain);
-        reject(error);
+        stdin.off('error', onError);
+        reject(
+          new Error(
+            `ffmpeg write failed: ${error?.message || error}\n${stderrTail(managed.getStderr())}`.trim(),
+          ),
+        );
       };
+      const onError = error => fail(error);
       const onDrain = () => {
         stdin.off('error', onError);
         resolve();
@@ -145,9 +304,7 @@ export function registerFfmpegIpc(ipcMain, deps) {
 
       const canContinue = stdin.write(buffer, error => {
         if (error) {
-          stdin.off('drain', onDrain);
-          stdin.off('error', onError);
-          reject(error);
+          fail(error);
         }
       });
 
@@ -181,11 +338,8 @@ export function registerFfmpegIpc(ipcMain, deps) {
     const result = await managed.exit;
     processes.delete(id);
 
-    if (result.code !== 0) {
-      const message =
-        result.stderr?.trim() ||
-        `ffmpeg exited with code ${result.code}${result.signal ? ` signal ${result.signal}` : ''}`;
-      throw new Error(message);
+    if (result.error || result.code !== 0) {
+      throw new Error(describeExit(result));
     }
 
     return { ok: true };
@@ -197,12 +351,8 @@ export function registerFfmpegIpc(ipcMain, deps) {
     if (!managed) {
       return { ok: true };
     }
-    try {
-      managed.proc.kill('SIGTERM');
-    } catch {
-      // ignore
-    }
     processes.delete(id);
+    killManaged(managed);
     return { ok: true };
   });
 
@@ -224,9 +374,9 @@ export function registerFfmpegIpc(ipcMain, deps) {
 
   ipcMain.handle('desktop:remove-path', async (_event, payload = {}) => {
     const target = String(payload.filePath || '');
-    const tempRoot = path.normalize(deps.getTempPath());
-    const normalized = path.normalize(target);
-    if (!normalized.startsWith(tempRoot)) {
+    const tempRoot = path.resolve(deps.getTempPath());
+    const normalized = path.resolve(target);
+    if (!target || normalized === tempRoot || !isPathInside(tempRoot, normalized)) {
       throw new Error('Refusing to delete path outside temp directory');
     }
     const removed = await unlinkWithRetry(normalized);

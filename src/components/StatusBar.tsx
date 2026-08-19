@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import useAppStore from '@/app/actions/app';
+import { useTranslation } from 'react-i18next';
+import useAppStore, { cancelVideoExport } from '@/app/actions/app';
 import { env, renderer } from '@/app/global';
 import ZoomControl from '@/components/ZoomControl';
 
@@ -10,7 +11,9 @@ interface StatsState {
 }
 
 export default function StatusBar() {
+  const { t: tc } = useTranslation(undefined, { keyPrefix: 'common' });
   const statusText = useAppStore(state => state.statusText);
+  const isVideoRecording = useAppStore(state => state.isVideoRecording);
   const [{ fps }, setState] = useState<StatsState>({ fps: null });
 
   function updateStats() {
@@ -35,8 +38,19 @@ export default function StatusBar() {
         'flex text-neutral-100 bg-primary text-sm py-0 px-5 cursor-default whitespace-nowrap z-[1]'
       }
     >
-      <div className={'text-left w-1/3 [&_.item]:mr-5'}>
+      <div className={'flex w-1/3 items-center gap-3 text-left [&_.item]:mr-5'}>
         <InfoItem value={statusText} />
+        {isVideoRecording && (
+          <button
+            type="button"
+            className="cursor-pointer rounded border border-neutral-100/40 px-2 leading-5 text-xs uppercase tracking-wide hover:border-neutral-100 hover:bg-neutral-100/10"
+            onClick={() => {
+              cancelVideoExport();
+            }}
+          >
+            {tc('cancel')}
+          </button>
+        )}
       </div>
       <div className={'text-center flex-1 w-1/3 [&_.item]:my-0 mx-2.5'}>
         <ZoomControl />

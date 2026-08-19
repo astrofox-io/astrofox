@@ -24,6 +24,29 @@ export type DesktopDialogFilter = {
   extensions: string[];
 };
 
+export type DesktopUpdaterStatus =
+  | { state: 'checking' }
+  | { state: 'available'; version?: string; releaseDate?: string }
+  | { state: 'not-available'; version?: string }
+  | {
+      state: 'downloading';
+      percent: number;
+      transferred: number;
+      total: number;
+      bytesPerSecond: number;
+    }
+  | { state: 'downloaded'; version?: string }
+  | { state: 'error'; message: string };
+
+export type DesktopUpdaterResult = { ok: boolean; reason?: string; version?: string };
+
+export type DesktopUpdaterBridge = {
+  check: () => Promise<DesktopUpdaterResult>;
+  download: () => Promise<DesktopUpdaterResult>;
+  install: () => Promise<DesktopUpdaterResult>;
+  onStatus: (callback: (status: DesktopUpdaterStatus) => void) => () => void;
+};
+
 export type DesktopBridge = {
   isDesktop: true;
   getEnvironment: () => DesktopEnvironment;
@@ -51,7 +74,7 @@ export type DesktopBridge = {
     filePath: string,
     data: Uint8Array | ArrayBuffer | string,
   ) => Promise<{ ok: boolean; filePath: string }>;
-  ffmpegRun?: (args: string[]) => Promise<{ ok: boolean }>;
+  ffmpegRun?: (args: string[], id?: string) => Promise<{ ok: boolean; id?: string }>;
   ffmpegStartPipe?: (args: string[], id?: string) => Promise<{ id: string }>;
   ffmpegWrite?: (
     id: string,
@@ -60,6 +83,7 @@ export type DesktopBridge = {
   ffmpegEndPipe?: (id: string) => Promise<{ ok: boolean }>;
   ffmpegKill?: (id: string) => Promise<{ ok: boolean }>;
   onWindowStateChanged?: (callback: (state: DesktopWindowState) => void) => () => void;
+  updater?: DesktopUpdaterBridge;
 };
 
 export function getDesktopBridge(): DesktopBridge | null {
@@ -88,4 +112,42 @@ export function isMacDesktop() {
 export function isFfmpegAvailable() {
   const env = getDesktopBridge()?.getEnvironment?.();
   return Boolean(env?.FFMPEG_AVAILABLE && env?.FFMPEG_PATH);
+}
+
+/** Auto-update is only wired up in packaged desktop builds. */
+export function isDesktopUpdaterAvailable() {
+  const bridge = getDesktopBridge();
+  return Boolean(bridge?.updater && bridge.getEnvironment?.()?.IS_PACKAGED);
+}
+
+export function checkForDesktopUpdates(): Promise<DesktopUpdaterResult> {
+  const updater = getDesktopBridge()?.updater;
+  if (!updater) {
+    return Promise.resolve({ ok: false, reason: 'unavailable' });
+  }
+  return updater.check();
+}
+
+export function downloadDesktopUpdate(): Promise<DesktopUpdaterResult> {
+  const updater = getDesktopBridge()?.updater;
+  if (!updater) {
+    return Promise.resolve({ ok: false, reason: 'unavailable' });
+  }
+  return updater.download();
+}
+
+export function installDesktopUpdate(): Promise<DesktopUpdaterResult> {
+  const updater = getDesktopBridge()?.updater;
+  if (!updater) {
+    return Promise.resolve({ ok: false, reason: 'unavailable' });
+  }
+  return updater.install();
+}
+
+export function onDesktopUpdaterStatus(callback: (status: DesktopUpdaterStatus) => void) {
+  const updater = getDesktopBridge()?.updater;
+  if (!updater) {
+    return () => {};
+  }
+  return updater.onStatus(callback);
 }

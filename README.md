@@ -91,18 +91,52 @@ Two independent paths from the same codebase:
 | Path | Trigger | Output |
 |------|---------|--------|
 | **Web** | Every commit | Vercel deploy (`pnpm build`) |
-| **Desktop** | Push a `v*` tag | GitHub Actions builds Windows/macOS/Linux installers and uploads them to a **draft GitHub Release** (`.github/workflows/desktop-release.yml`) |
+| **Desktop** | Push a `v*` tag | GitHub Actions builds Windows (x64), macOS (x64 + arm64) and Linux installers and uploads them to a **draft GitHub Release** (`.github/workflows/desktop-release.yml`) |
 
-To cut a desktop release:
+### Cutting a desktop release
 
-```
-git tag v2.0.0
-git push origin v2.0.0
-```
+1. Bump `version` in `package.json` and update `CHANGELOG.md`.
+2. Tag and push:
 
-Then review and publish the draft release on GitHub. The workflow can also be run manually (`workflow_dispatch`), which uploads installers as CI artifacts without creating a release. Local equivalent: `pnpm release:desktop` (requires `GH_TOKEN`).
+   ```
+   git tag v2.0.0
+   git push origin v2.0.0
+   ```
 
-Code signing is currently disabled in CI (`CSC_IDENTITY_AUTO_DISCOVERY=false`); add signing cert secrets (`CSC_LINK`/`CSC_KEY_PASSWORD`) and remove that env var to enable it.
+   The workflow typechecks, lints, downloads ffmpeg, builds the static renderer, and runs
+   `electron-builder --publish always` on each OS. Artifacts land on a **draft** release
+   named after the tag: `Astrofox-<version>-win-x64.exe`, `-mac-{x64,arm64}.dmg` / `.zip`,
+   `-linux-x64.AppImage`, plus `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and
+   `.blockmap` files used by the auto-updater.
+3. Review the draft on GitHub, then **publish** it. Desktop 2.x installs check GitHub Releases
+   via `electron-updater` and will pick up the new version once the release is published.
+4. **Legacy 1.x updater**: Astrofox 1.x checks `https://files.astrofox.io/download/`. To offer
+   2.x to those users, download the installers, `latest*.yml` and `*.blockmap` files from the
+   GitHub release and upload them to `files.astrofox.io/download/` (same directory as the
+   `.yml` files; the `url`/`path` entries in the yml are bare filenames, so no edits are needed).
+   The workflow also writes identical yml files under `release/generic/` for the
+   `generic` publish provider configured in `package.json`.
+
+The workflow can also be run manually (`workflow_dispatch`), which uploads installers as CI
+artifacts without creating a release. Local equivalent: `pnpm release:desktop`
+(requires `GH_TOKEN`), or `pnpm dist:win` / `dist:mac` / `dist:linux` for unpublished builds
+(these download ffmpeg first and fail if it is unavailable; `node scripts/install-ffmpeg.mjs --force`
+re-downloads it).
+
+### Code signing and notarization
+
+Builds are unsigned unless the following repository secrets are set (they are passed through
+to electron-builder by the workflow; `CSC_IDENTITY_AUTO_DISCOVERY` is enabled automatically
+when `CSC_LINK` is present):
+
+| Secret | Purpose |
+|--------|---------|
+| `CSC_LINK`, `CSC_KEY_PASSWORD` | Base64 `.p12` certificate + password (macOS Developer ID / Windows Authenticode) |
+| `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` | macOS notarization (`notarize: true` in `package.json`; skipped with a warning when unset) |
+
+macOS builds use the hardened runtime with `build/entitlements.mac.plist`. Windows builds
+are not yet configured with a `publisherName`; add one under `build.win` once a signing
+certificate is in place so the updater can verify installers.
 
 ## License
 

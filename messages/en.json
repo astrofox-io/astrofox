@@ -104,7 +104,16 @@
   },
   "about": {
     "version": "Version {{version}}",
-    "copyright": "Copyright © Mike Cao"
+    "copyright": "Copyright © Mike Cao",
+    "check-for-updates": "Check for updates",
+    "update-checking": "Checking for updates…",
+    "update-available": "Version {{version}} is available.",
+    "update-not-available": "You have the latest version.",
+    "update-downloading": "Downloading update… {{percent}}%",
+    "update-downloaded": "Version {{version}} is ready to install.",
+    "update-error": "Update check failed: {{message}}",
+    "download-update": "Download update",
+    "restart-to-update": "Restart to update"
   },
   "relink-media": {
     "title": "Relink Media",
@@ -209,6 +218,8 @@
     "export-rendering-audio": "Encoding audio…",
     "export-merging": "Merging audio and video…",
     "export-finished": "Video export finished",
+    "export-cancelling": "Cancelling video export…",
+    "export-cancelled": "Video export cancelled",
     "video-saved": "Video saved: {{name}}"
   },
   "errors": {

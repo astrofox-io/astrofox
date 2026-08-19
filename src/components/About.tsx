@@ -1,4 +1,13 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  checkForDesktopUpdates,
+  type DesktopUpdaterStatus,
+  downloadDesktopUpdate,
+  installDesktopUpdate,
+  isDesktopUpdaterAvailable,
+  onDesktopUpdaterStatus,
+} from '@/app/desktop';
 import { env } from '@/app/global';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
@@ -29,6 +38,7 @@ export default function About({ onClose }: AboutProps) {
         </div>
         <div className="mb-1">{t('version', { version: APP_VERSION })}</div>
         <div className="mb-2 text-neutral-300">{t('copyright')}</div>
+        <UpdateStatus />
       </div>
       <div className="shrink-0 bg-neutral-800 px-4 py-3">
         <DialogFooter className="sm:justify-end">
@@ -36,6 +46,94 @@ export default function About({ onClose }: AboutProps) {
             {tc('close')}
           </Button>
         </DialogFooter>
+      </div>
+    </div>
+  );
+}
+
+/** Desktop-only auto-update controls; renders nothing on the web build. */
+function UpdateStatus() {
+  const { t } = useTranslation(undefined, { keyPrefix: 'about' });
+  const [available, setAvailable] = useState(false);
+  const [status, setStatus] = useState<DesktopUpdaterStatus | null>(null);
+
+  useEffect(() => {
+    if (!isDesktopUpdaterAvailable()) {
+      return;
+    }
+    setAvailable(true);
+    return onDesktopUpdaterStatus(setStatus);
+  }, []);
+
+  if (!available) {
+    return null;
+  }
+
+  const busy = status?.state === 'checking' || status?.state === 'downloading';
+
+  function handleCheck() {
+    setStatus({ state: 'checking' });
+    void checkForDesktopUpdates().then(result => {
+      if (!result.ok && result.reason) {
+        setStatus({ state: 'error', message: result.reason });
+      }
+    });
+  }
+
+  function handleDownload() {
+    setStatus({ state: 'downloading', percent: 0, transferred: 0, total: 0, bytesPerSecond: 0 });
+    void downloadDesktopUpdate().then(result => {
+      if (!result.ok && result.reason) {
+        setStatus({ state: 'error', message: result.reason });
+      }
+    });
+  }
+
+  function handleInstall() {
+    void installDesktopUpdate();
+  }
+
+  let text: string | null = null;
+  switch (status?.state) {
+    case 'checking':
+      text = t('update-checking');
+      break;
+    case 'available':
+      text = t('update-available', { version: status.version ?? '' });
+      break;
+    case 'not-available':
+      text = t('update-not-available');
+      break;
+    case 'downloading':
+      text = t('update-downloading', { percent: Math.round(status.percent) });
+      break;
+    case 'downloaded':
+      text = t('update-downloaded', { version: status.version ?? '' });
+      break;
+    case 'error':
+      text = t('update-error', { message: status.message });
+      break;
+    default:
+      text = null;
+  }
+
+  return (
+    <div className="mt-4 flex flex-col items-center gap-2 text-sm">
+      {text && <div className="max-w-full break-words text-neutral-300">{text}</div>}
+      <div className="flex gap-2">
+        {status?.state === 'downloaded' ? (
+          <Button variant="default" size="xs" onClick={handleInstall}>
+            {t('restart-to-update')}
+          </Button>
+        ) : status?.state === 'available' ? (
+          <Button variant="default" size="xs" onClick={handleDownload}>
+            {t('download-update')}
+          </Button>
+        ) : (
+          <Button variant="secondary" size="xs" disabled={busy} onClick={handleCheck}>
+            {t('check-for-updates')}
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -131,13 +131,10 @@ export default function SceneLayer({
 
   return (
     <div
-      className={classNames(
-        'flex flex-col gap-0.5 overflow-hidden rounded',
-        {
-          'opacity-25': sceneDragging,
-          'ring-1 ring-primary': sceneDragOver,
-        },
-      )}
+      className={classNames('flex flex-col gap-0.5 overflow-hidden rounded', {
+        'opacity-25': sceneDragging,
+        'ring-1 ring-primary': sceneDragOver,
+      })}
       onDragOverCapture={e => {
         if (dragSourceType !== 'scene') {
           return;

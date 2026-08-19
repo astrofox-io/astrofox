@@ -15,6 +15,7 @@ import { t } from '@/i18n/config';
 import AudioReactor from '@/lib/audio/AudioReactor';
 import Display from '@/lib/core/Display';
 import Entity from '@/lib/core/Entity';
+import { type MigrationRegistry, migrateProjectSnapshot } from '@/lib/core/migrateProject';
 import Scene from '@/lib/core/Scene';
 import Stage from '@/lib/core/Stage';
 import { resetLabelCount } from '@/lib/utils/controls';
@@ -93,7 +94,8 @@ const PROJECT_JSON_EXTENSION = 'json';
 /** Legacy gzip-compressed JSON from the old desktop app */
 const PROJECT_LEGACY_EXTENSION = 'afx';
 const PROJECT_OPEN_EXTENSIONS = [PROJECT_JSON_EXTENSION, PROJECT_LEGACY_EXTENSION];
-const PROJECT_SAVE_EXTENSIONS = [PROJECT_JSON_EXTENSION];
+const PROJECT_SAVE_EXTENSIONS = [PROJECT_JSON_EXTENSION, PROJECT_LEGACY_EXTENSION];
+const PROJECT_LEGACY_MIME_TYPE = 'application/gzip';
 const PROJECT_FILE_MIME_TYPE = 'application/json';
 const GZIP_MAGIC_0 = 0x1f;
 const GZIP_MAGIC_1 = 0x8b;
@@ -132,6 +134,23 @@ async function gunzipToText(bytes: Uint8Array): Promise<string> {
   const stream = new Blob([copy]).stream().pipeThrough(new DecompressionStream('gzip'));
   const buffer = await new Response(stream).arrayBuffer();
   return new TextDecoder('utf-8').decode(buffer);
+}
+
+async function gzipText(text: string): Promise<ArrayBuffer> {
+  if (typeof CompressionStream === 'undefined') {
+    throw new Error(
+      t('errors.gzip-compress-unsupported', {
+        defaultValue: 'Gzip compression is not supported in this environment.',
+      }),
+    );
+  }
+
+  const stream = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'));
+  return new Response(stream).arrayBuffer();
+}
+
+function isLegacyProjectFileName(fileName = '') {
+  return /\.afx$/i.test(fileName);
 }
 
 /**
@@ -660,15 +679,46 @@ function parseProjectPayload(payload: unknown, fallbackName?: string) {
   };
 }
 
+function getMigrationRegistry(): MigrationRegistry {
+  return {
+    displays: library.get('displays') as MigrationRegistry['displays'],
+    effects: library.get('effects') as MigrationRegistry['effects'],
+  };
+}
+
+function notifyRemovedElements(removed: string[]) {
+  if (removed.length === 0) {
+    return;
+  }
+
+  const unique = [...new Set(removed)];
+  const message = t('errors.project-elements-removed', {
+    count: unique.length,
+    defaultValue:
+      'This project was created with an older version of Astrofox. Some elements could not be converted and were removed.',
+  });
+
+  raiseError(message, unique.join('\n'), { logLevel: 'warn' });
+}
+
 async function loadProjectFromPayload(payload: unknown, fallbackName?: string) {
   const { snapshot, projectName, mediaRefs } = parseProjectPayload(payload, fallbackName);
+  const version =
+    (payload as ProjectFilePayload).version ?? (snapshot as { version?: unknown }).version;
+  const { snapshot: migratedSnapshot, removed } = migrateProjectSnapshot(
+    snapshot,
+    typeof version === 'string' ? version : undefined,
+    getMigrationRegistry(),
+  );
   const { snapshot: resolvedSnapshot, unresolvedMediaRefs: detectedMissingMedia } =
-    await resolveSnapshotMediaOnLoad(snapshot, mediaRefs);
+    await resolveSnapshotMediaOnLoad(migratedSnapshot, mediaRefs);
   const unresolvedMediaRefs = mergeMediaRefs(detectedMissingMedia);
 
-  loadProject(resolvedSnapshot);
+  const { missing } = loadProject(resolvedSnapshot);
   await loadScenes();
   loadReactors();
+
+  notifyRemovedElements([...removed, ...missing]);
 
   projectStore.setState({
     projectName: projectName || DEFAULT_PROJECT_NAME,
@@ -715,6 +765,7 @@ export function loadProject(data: ProjectSnapshot) {
   const effects = library.get('effects') as Record<string, LibraryConstructor>;
 
   const missingPlugins = new Map<string, { name: string; url?: string }>();
+  const missingElements: string[] = [];
 
   const loadElement = (
     scene: Scene,
@@ -733,6 +784,11 @@ export function loadProject(data: ProjectSnapshot) {
       // the user can be offered a reinstall after loading.
       if (config.plugin?.url || name.startsWith('@')) {
         missingPlugins.set(name, { name, url: config.plugin?.url });
+      } else {
+        const displayName = typeof config.displayName === 'string' ? config.displayName : '';
+        missingElements.push(
+          displayName && displayName !== name ? `${displayName} (${name})` : name,
+        );
       }
     }
   };
@@ -781,6 +837,8 @@ export function loadProject(data: ProjectSnapshot) {
       { missing: [...missingPlugins.values()] },
     );
   }
+
+  return { missing: missingElements };
 }
 
 export async function newProject() {
@@ -876,10 +934,24 @@ export async function saveProject(nameOverride?: string) {
     }
 
     const target = fileHandle || filePath || fileName;
-    await api.saveTextFile(target, JSON.stringify(payload, null, 2), {
-      mimeType: 'application/json',
-      fileName,
-    });
+    const targetName =
+      (typeof filePath === 'string' && filePath) ||
+      (fileHandle as { name?: string } | undefined)?.name ||
+      fileName;
+    const json = JSON.stringify(payload, null, 2);
+
+    if (isLegacyProjectFileName(targetName)) {
+      // Legacy `.afx` projects are gzip-compressed JSON.
+      await api.saveTextFile(target, await gzipText(json), {
+        mimeType: PROJECT_LEGACY_MIME_TYPE,
+        fileName: targetName,
+      });
+    } else {
+      await api.saveTextFile(target, json, {
+        mimeType: PROJECT_FILE_MIME_TYPE,
+        fileName,
+      });
+    }
 
     projectStore.setState({
       projectName: name,

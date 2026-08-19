@@ -52,7 +52,9 @@ export default function ControlGroup({
           />
         ) : null}
       </div>
-      {open && hasContent ? <div className="flex flex-col py-2 gap-3 border-l-1 border-border ml-3">{children}</div> : null}
+      {open && hasContent ? (
+        <div className="flex flex-col py-2 gap-3 border-l-1 border-border ml-3">{children}</div>
+      ) : null}
     </div>
   );
 }

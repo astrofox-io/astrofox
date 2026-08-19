@@ -6,6 +6,11 @@
 #   - Desktop: pushing a `v*` tag (or running this manually) builds the
 #              Electron app on all three OSes and uploads installers to a
 #              draft GitHub Release for review before publishing.
+#
+# Optional signing / notarization secrets (all builds work unsigned without them):
+#   CSC_LINK, CSC_KEY_PASSWORD           - code signing cert (base64 .p12) for mac/win
+#   APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD,
+#   APPLE_TEAM_ID                        - macOS notarization (requires CSC_LINK)
 
 name: Desktop Release
 
@@ -33,6 +38,16 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      # Signing / notarization (no-ops when the secrets are not configured).
+      CSC_LINK: ${{ secrets.CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      # Only auto-discover a signing identity when a cert is provided.
+      CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.CSC_LINK == '' && 'false' || 'true' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,25 +64,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm lint
+
       - name: Download ffmpeg binary
         run: pnpm install-ffmpeg
 
       - name: Build renderer (static export)
         run: pnpm build:renderer
 
+      # Arch targets (mac x64 + arm64, win x64) come from package.json "build".
       - name: Package and publish (tag push)
         if: startsWith(github.ref, 'refs/tags/v')
         run: pnpm exec electron-builder ${{ matrix.target }} --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Skip code signing until certs are configured as repo secrets.
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       - name: Package only (manual run)
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: pnpm exec electron-builder ${{ matrix.target }} --publish never
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       - name: Upload artifacts (manual run)
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
@@ -77,5 +95,8 @@ jobs:
           path: |
             release/*.exe
             release/*.dmg
+            release/*.zip
             release/*.AppImage
+            release/*.blockmap
+            release/*.yml
           if-no-files-found: error

@@ -1,10 +1,11 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { app, BrowserWindow, ipcMain, net, protocol, session, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, net, protocol, session, shell } from 'electron';
 import { registerDialogIpc } from './dialogs-ipc.mjs';
-import { registerFfmpegIpc } from './ffmpeg-ipc.mjs';
+import { isPathInside, killAllFfmpeg, registerFfmpegIpc } from './ffmpeg-ipc.mjs';
 import { PLUGIN_SANDBOX_HEADERS } from './plugin-sandbox-policy.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,6 +13,13 @@ const __dirname = path.dirname(__filename);
 
 const isDev =
   process.env.ELECTRON_DEV === '1' || process.env.NODE_ENV === 'development' || !app.isPackaged;
+
+// Only one Astrofox instance may run: a second launch focuses the existing
+// window instead (this also keeps ffmpeg temp files from colliding).
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
+if (!hasSingleInstanceLock) {
+  app.quit();
+}
 
 const WINDOW_WIDTH = 1920;
 const WINDOW_HEIGHT = 1080;
@@ -160,7 +168,7 @@ function registerAppProtocol() {
     // Prevent path traversal.
     const relative = pathname.replace(/^\/+/, '');
     const filePath = path.normalize(path.join(rendererRoot, relative));
-    if (!filePath.startsWith(path.normalize(rendererRoot))) {
+    if (!isPathInside(rendererRoot, filePath)) {
       return new Response('Forbidden', { status: 403 });
     }
 
@@ -172,10 +180,10 @@ function registerAppProtocol() {
     if (!fs.existsSync(resolved)) {
       // SPA-style fallback for client routes.
       const fallback = path.join(rendererRoot, 'index.html');
-      if (fs.existsSync(fallback)) {
-        return net.fetch(pathToFileURL(fallback).href);
+      if (!fs.existsSync(fallback)) {
+        return new Response('Not Found', { status: 404 });
       }
-      return new Response('Not Found', { status: 404 });
+      resolved = fallback;
     }
 
     const response = await net.fetch(pathToFileURL(resolved).href);
@@ -189,8 +197,90 @@ function registerAppProtocol() {
       return new Response(response.body, { status: response.status, headers });
     }
 
+    // Documents get the app-wide CSP (only meaningful on document responses;
+    // static assets are left untouched).
+    if (/\.html?$/i.test(resolved)) {
+      const headers = new Headers(response.headers);
+      headers.set('Content-Security-Policy', getDocumentCsp(resolved));
+      return new Response(response.body, { status: response.status, headers });
+    }
+
     return response;
   });
+}
+
+// Content-Security-Policy for the packaged app document (astrofox://app).
+// - scripts: same-origin bundles only. window.eval is deleted by the renderer
+//   in production and there is no wasm, so no 'unsafe-eval'. blob: is needed
+//   for the Web Workers spawned from bundled code.
+// - styles: Tailwind runtime + inline style attributes need 'unsafe-inline'.
+// - connect: plugin installs fetch manifests/bundles over https (or localhost).
+// - img/media/font: bundled assets, blobs, data URLs and the local
+//   astrofox-media: protocol used for video textures.
+// The plugin sandbox worker keeps its own, stricter CSP (see above). Not
+// applied in dev where the app is served from the Next dev server.
+const APP_CSP_DIRECTIVES = [
+  "default-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' blob: data: astrofox-media:",
+  "media-src 'self' blob: data: astrofox-media:",
+  "font-src 'self' blob: data:",
+  // http://localhost is allowed so plugin authors can install from a local dev
+  // server (see docs/plugin-authoring.md).
+  "connect-src 'self' blob: data: https: http://localhost:* http://127.0.0.1:* astrofox-media:",
+  "worker-src 'self' blob:",
+  "child-src 'self' blob:",
+  "frame-src 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'none'",
+];
+
+/** @type {Map<string, { mtimeMs: number, csp: string }>} */
+const documentCspCache = new Map();
+
+/**
+ * Build the CSP for an exported HTML document. Next's static export bootstraps
+ * hydration with inline `<script>` blocks, so instead of 'unsafe-inline' the
+ * SHA-256 of each inline script is allow-listed. The result is cached per
+ * file (keyed by mtime); the exported HTML is immutable in a packaged build.
+ * @param {string} filePath
+ */
+function getDocumentCsp(filePath) {
+  let mtimeMs = 0;
+  try {
+    mtimeMs = fs.statSync(filePath).mtimeMs;
+  } catch {
+    // fall through and rebuild
+  }
+  const cached = documentCspCache.get(filePath);
+  if (cached && cached.mtimeMs === mtimeMs) {
+    return cached.csp;
+  }
+
+  const hashes = [];
+  try {
+    const html = fs.readFileSync(filePath, 'utf8');
+    const scriptPattern = /<script(\s[^>]*)?>([\s\S]*?)<\/script>/gi;
+    let match = scriptPattern.exec(html);
+    while (match) {
+      const attrs = match[1] || '';
+      const body = match[2];
+      if (!/\ssrc\s*=/i.test(attrs) && body.length > 0) {
+        const digest = createHash('sha256').update(body, 'utf8').digest('base64');
+        hashes.push(`'sha256-${digest}'`);
+      }
+      match = scriptPattern.exec(html);
+    }
+  } catch (error) {
+    console.warn('Failed to hash inline scripts for CSP:', error?.message || error);
+  }
+
+  const csp = [`script-src 'self' blob: ${hashes.join(' ')}`.trim(), ...APP_CSP_DIRECTIVES].join(
+    '; ',
+  );
+  documentCspCache.set(filePath, { mtimeMs, csp });
+  return csp;
 }
 
 function registerMediaProtocol() {
@@ -353,7 +443,7 @@ function createWindow() {
       sandbox: false,
       backgroundThrottling: false,
       webgl: true,
-      devTools: true,
+      devTools: isDev,
     },
   });
 
@@ -379,6 +469,37 @@ function createWindow() {
     }
   });
 
+  mainWindow.webContents.on(
+    'did-fail-load',
+    (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+      // -3 (ERR_ABORTED) is emitted for navigations we cancel ourselves.
+      if (!isMainFrame || errorCode === -3) return;
+      console.error(`Failed to load ${validatedURL}: ${errorDescription} (${errorCode})`);
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.show();
+      }
+      dialog.showErrorBox(
+        'Astrofox failed to start',
+        `The application window could not be loaded.
+
+${errorDescription} (${errorCode})
+${validatedURL}`,
+      );
+    },
+  );
+
+  mainWindow.webContents.on('render-process-gone', (_event, details) => {
+    console.error('Renderer process gone:', details.reason, details.exitCode);
+    if (details.reason === 'clean-exit' || details.reason === 'killed') return;
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.show();
+    }
+    dialog.showErrorBox(
+      'Astrofox stopped responding',
+      `The renderer process exited unexpectedly (${details.reason}, code ${details.exitCode}).`,
+    );
+  });
+
   // Silence the harmless "Request Autofill.* failed" errors that the bundled
   // DevTools frontend logs because Electron doesn't implement that CDP domain.
   mainWindow.webContents.on('console-message', event => {
@@ -399,38 +520,298 @@ function createWindow() {
     mainWindow = null;
   });
 
-  if (isDev) {
-    mainWindow.loadURL(DEV_SERVER_URL);
-  } else {
-    mainWindow.loadURL('astrofox://app/');
-  }
+  const loading = isDev
+    ? mainWindow.loadURL(DEV_SERVER_URL)
+    : mainWindow.loadURL('astrofox://app/');
+  loading.catch(error => {
+    // did-fail-load shows the user-facing message; just make sure the window
+    // is visible so the app doesn't sit invisibly in the background.
+    console.error('loadURL failed:', error);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.show();
+    }
+  });
 }
 
-app.commandLine.appendSwitch('ignore-gpu-blocklist');
+function focusMainWindow() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+  mainWindow.show();
+  mainWindow.focus();
+}
 
-app.whenReady().then(async () => {
+function setupApplicationMenu() {
+  if (isDev) {
+    // Keep Electron's default menu in development (reload, devtools, etc.).
+    return;
+  }
+  if (process.platform === 'darwin') {
+    // macOS needs an application menu for the standard edit shortcuts to work.
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate([
+        {
+          label: app.name,
+          submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideOthers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit' },
+          ],
+        },
+        {
+          role: 'editMenu',
+          submenu: [
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'cut' },
+            { role: 'copy' },
+            { role: 'paste' },
+            { role: 'selectAll' },
+          ],
+        },
+        { role: 'windowMenu' },
+      ]),
+    );
+    return;
+  }
+  Menu.setApplicationMenu(null);
+}
+
+/**
+ * Empty the Astrofox temp dir (leftover export frames/audio from a previous
+ * crash) and make sure it exists. Best-effort and asynchronous so a slow or
+ * locked file never blocks startup.
+ */
+async function resetTempDir() {
+  const tempPath = getTempPath();
   try {
-    fs.mkdirSync(getTempPath(), { recursive: true });
+    const entries = await fs.promises.readdir(tempPath).catch(() => []);
+    await Promise.all(
+      entries.map(entry =>
+        fs.promises
+          .rm(path.join(tempPath, entry), { recursive: true, force: true, maxRetries: 2 })
+          .catch(() => {}),
+      ),
+    );
   } catch {
     // non-fatal
   }
+  try {
+    await fs.promises.mkdir(tempPath, { recursive: true });
+  } catch {
+    // non-fatal
+  }
+}
 
-  registerIpc();
-  hardenSession();
-  registerMediaProtocol();
+// ---------------------------------------------------------------------------
+// Auto update (packaged builds only)
+// ---------------------------------------------------------------------------
 
-  if (!isDev) {
-    registerAppProtocol();
+/** @type {import('electron-updater').AppUpdater | null} */
+let autoUpdater = null;
+let updaterInitialized = false;
+const UPDATE_CHECK_DELAY_MS = 5000;
+
+function sendUpdaterStatus(status) {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send('updater:status', status);
+}
+
+async function setupAutoUpdater() {
+  if (updaterInitialized) return;
+  updaterInitialized = true;
+
+  if (!app.isPackaged) {
+    return;
   }
 
-  createWindow();
+  // electron-builder only writes app-update.yml for publishable targets
+  // (nsis/dmg/zip/AppImage); an unpacked --dir build has none.
+  if (!fs.existsSync(path.join(process.resourcesPath, 'app-update.yml'))) {
+    console.warn('Auto update disabled: app-update.yml not found');
+    return;
+  }
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+  try {
+    // Dynamic import so a missing dependency only disables updates instead of
+    // preventing startup.
+    const mod = await import('electron-updater');
+    autoUpdater = mod.autoUpdater ?? mod.default?.autoUpdater ?? null;
+  } catch (error) {
+    console.warn('electron-updater unavailable:', error?.message || error);
+    autoUpdater = null;
+    return;
+  }
+
+  if (!autoUpdater) return;
+
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.logger = console;
+
+  autoUpdater.on('checking-for-update', () => {
+    sendUpdaterStatus({ state: 'checking' });
+  });
+  autoUpdater.on('update-available', info => {
+    sendUpdaterStatus({
+      state: 'available',
+      version: info?.version,
+      releaseDate: info?.releaseDate,
+    });
+  });
+  autoUpdater.on('update-not-available', info => {
+    sendUpdaterStatus({ state: 'not-available', version: info?.version });
+  });
+  autoUpdater.on('download-progress', progress => {
+    sendUpdaterStatus({
+      state: 'downloading',
+      percent: progress?.percent ?? 0,
+      transferred: progress?.transferred ?? 0,
+      total: progress?.total ?? 0,
+      bytesPerSecond: progress?.bytesPerSecond ?? 0,
+    });
+  });
+  autoUpdater.on('update-downloaded', info => {
+    sendUpdaterStatus({ state: 'downloaded', version: info?.version });
+  });
+  autoUpdater.on('error', error => {
+    console.error('Auto update error:', error);
+    sendUpdaterStatus({ state: 'error', message: error?.message || String(error) });
+  });
+}
+
+function registerUpdaterIpc() {
+  ipcMain.handle('updater:check', async () => {
+    if (!autoUpdater) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    try {
+      const result = await autoUpdater.checkForUpdates();
+      return { ok: true, version: result?.updateInfo?.version };
+    } catch (error) {
+      // The 'error' event already forwarded the status; surface to caller too.
+      return { ok: false, reason: error?.message || String(error) };
     }
   });
+
+  ipcMain.handle('updater:download', async () => {
+    if (!autoUpdater) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    try {
+      await autoUpdater.downloadUpdate();
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, reason: error?.message || String(error) };
+    }
+  });
+
+  ipcMain.handle('updater:install', async () => {
+    if (!autoUpdater) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    // Let the renderer finish the IPC round-trip before the app tears down.
+    setImmediate(() => {
+      try {
+        autoUpdater?.quitAndInstall(false, true);
+      } catch (error) {
+        console.error('quitAndInstall failed:', error);
+      }
+    });
+    return { ok: true };
+  });
+}
+
+function scheduleUpdateCheck() {
+  if (!autoUpdater) return;
+  const timer = setTimeout(() => {
+    autoUpdater?.checkForUpdates().catch(error => {
+      console.error('Update check failed:', error);
+    });
+  }, UPDATE_CHECK_DELAY_MS);
+  timer.unref?.();
+}
+
+// ---------------------------------------------------------------------------
+// Process-level error handling
+// ---------------------------------------------------------------------------
+
+function reportFatal(kind, error) {
+  console.error(`${kind}:`, error);
+  if (isDev) return;
+  const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
+  try {
+    dialog.showErrorBox(`Astrofox: ${kind}`, message);
+  } catch {
+    // dialog may not be usable before app is ready; nothing more to do.
+  }
+}
+
+process.on('uncaughtException', error => {
+  reportFatal('Uncaught exception', error);
 });
+
+process.on('unhandledRejection', reason => {
+  // Rejections are usually recoverable (a failed IPC handler, a network
+  // error, an update check while offline); log them but don't interrupt the
+  // user with a dialog.
+  console.error('Unhandled rejection:', reason);
+});
+
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+
+app.on('second-instance', () => {
+  focusMainWindow();
+});
+
+app.on('before-quit', () => {
+  killAllFfmpeg();
+});
+
+if (hasSingleInstanceLock) {
+  app
+    .whenReady()
+    .then(async () => {
+      void resetTempDir();
+
+      setupApplicationMenu();
+      registerIpc();
+      registerUpdaterIpc();
+      hardenSession();
+      registerMediaProtocol();
+
+      if (!isDev) {
+        registerAppProtocol();
+      }
+
+      createWindow();
+
+      await setupAutoUpdater();
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        if (mainWindow.isVisible()) {
+          scheduleUpdateCheck();
+        } else {
+          mainWindow.once('show', scheduleUpdateCheck);
+        }
+      }
+
+      app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+          createWindow();
+        }
+      });
+    })
+    .catch(error => {
+      reportFatal('Startup failed', error);
+      app.quit();
+    });
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

@@ -41,16 +41,72 @@ function ensureExtension(filePath: string, extension: string) {
  * merge into the final container. Requires the Electron preload ffmpeg bridge
  * and a bundled ffmpeg binary.
  */
+export class VideoExportCancelledError extends Error {
+  readonly cancelled = true;
+
+  constructor() {
+    super('Export cancelled.');
+    this.name = 'VideoExportCancelledError';
+  }
+}
+
+export function isVideoExportCancelledError(error: unknown): boolean {
+  return (
+    error instanceof VideoExportCancelledError ||
+    (typeof error === 'object' &&
+      error !== null &&
+      (error as { cancelled?: boolean }).cancelled === true)
+  );
+}
+
 export default class VideoExporter {
   private cancelled = false;
   private pipeId: string | null = null;
+  private runId: string | null = null;
+
+  get isCancelled() {
+    return this.cancelled;
+  }
 
   cancel() {
     this.cancelled = true;
+    void this.killActiveProcesses();
+  }
+
+  /** Kill the pipe encoder and any in-flight run stage (audio/merge). */
+  private async killActiveProcesses() {
     const bridge = getDesktopBridge();
-    if (this.pipeId && bridge?.ffmpegKill) {
-      void bridge.ffmpegKill(this.pipeId);
+    if (!bridge?.ffmpegKill) return;
+    const ids = [this.pipeId, this.runId].filter((value): value is string => Boolean(value));
+    await Promise.all(ids.map(processId => bridge.ffmpegKill?.(processId).catch(() => {})));
+  }
+
+  private throwIfCancelled() {
+    if (this.cancelled) {
+      throw new VideoExportCancelledError();
     }
+  }
+
+  /** Run a one-shot ffmpeg stage under a known id so it can be cancelled. */
+  private async runStage(args: string[], stageId: string) {
+    const bridge = getDesktopBridge();
+    if (!bridge?.ffmpegRun) {
+      throw new Error('Desktop ffmpeg bridge is unavailable.');
+    }
+    this.throwIfCancelled();
+    this.runId = stageId;
+    try {
+      await bridge.ffmpegRun(args, stageId);
+    } catch (error) {
+      // A killed stage surfaces as a non-zero exit; report it as a cancel.
+      if (this.cancelled) {
+        throw new VideoExportCancelledError();
+      }
+      throw error;
+    } finally {
+      this.runId = null;
+    }
+    this.throwIfCancelled();
   }
 
   async export(options: VideoExportOptions): Promise<string> {
@@ -150,18 +206,29 @@ export default class VideoExporter {
         tempVideo,
       ];
 
+      this.throwIfCancelled();
       const { id: pipeId } = await bridge.ffmpegStartPipe(videoArgs, id);
       this.pipeId = pipeId;
+      // cancel() may have raced with start-pipe.
+      if (this.cancelled) {
+        await this.killActiveProcesses();
+        throw new VideoExportCancelledError();
+      }
 
       for (let frame = startFrame; frame < endFrame; frame += 1) {
-        if (this.cancelled) {
-          throw new Error('Export cancelled.');
-        }
+        this.throwIfCancelled();
 
         const pixels = await renderer.renderFrame(frame, fps);
         // Ensure even dimensions by cropping if needed.
         const frameBytes = this.normalizeFrame(pixels, width, height, w, h);
-        await bridge.ffmpegWrite(pipeId, frameBytes);
+        try {
+          await bridge.ffmpegWrite(pipeId, frameBytes);
+        } catch (error) {
+          if (this.cancelled) {
+            throw new VideoExportCancelledError();
+          }
+          throw error;
+        }
 
         // Yield so the UI can update progress.
         if ((frame - startFrame) % 2 === 0) {
@@ -175,7 +242,15 @@ export default class VideoExporter {
         });
       }
 
-      await bridge.ffmpegEndPipe(pipeId);
+      this.throwIfCancelled();
+      try {
+        await bridge.ffmpegEndPipe(pipeId);
+      } catch (error) {
+        if (this.cancelled) {
+          throw new VideoExportCancelledError();
+        }
+        throw error;
+      }
       this.pipeId = null;
 
       let audioOut: string | null = null;
@@ -194,7 +269,7 @@ export default class VideoExporter {
           ...config.audio.settings,
           tempAudio,
         ];
-        await bridge.ffmpegRun?.(audioArgs);
+        await this.runStage(audioArgs, `${id}.audio`);
         audioOut = tempAudio;
       }
 
@@ -213,13 +288,23 @@ export default class VideoExporter {
             finalOutput,
           ]
         : ['-y', '-i', tempVideo, '-c', 'copy', ...config.video.merge, finalOutput];
-      await bridge.ffmpegRun?.(mergeArgs);
+      await this.runStage(mergeArgs, `${id}.merge`);
 
       report({ status: 'finished', currentFrame: totalFrames, totalFrames });
       logger.log('FFmpeg video export finished:', finalOutput);
       return finalOutput;
+    } catch (error) {
+      // Whether this is a cancel or a failure, make sure no ffmpeg child is
+      // left running (a still-open pipe would otherwise keep the main-process
+      // entry alive and hold the temp video file open).
+      await this.killActiveProcesses();
+      if (this.cancelled && !isVideoExportCancelledError(error)) {
+        throw new VideoExportCancelledError();
+      }
+      throw error;
     } finally {
       this.pipeId = null;
+      this.runId = null;
       if (wasRendering) {
         renderer.start();
       } else {

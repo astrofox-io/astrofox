@@ -5,13 +5,23 @@
       "**",
       "!**/dist",
       "!**/.next",
+      "!**/.next-desktop",
       "!**/out",
       "!**/release",
       "!**/bin",
-      "!**/.pnpm-store"
+      "!**/build",
+      "!**/public/plugin-libs",
+      "!**/.pnpm-store",
+      "!next-env.d.ts"
     ]
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {

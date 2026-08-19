@@ -1,6 +1,5 @@
 // @ts-nocheck
 
-import React from 'react';
 import { BLANK_IMAGE } from '@/app/constants';
 import { registerDisplayCamera, unregisterDisplayCamera } from '@/lib/utils/displayCamera';
 import {

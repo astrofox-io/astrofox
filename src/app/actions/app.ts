@@ -13,7 +13,7 @@ import {
   openProjectFile,
   saveProject,
 } from '@/app/actions/project';
-import { getDesktopBridge, isFfmpegAvailable } from '@/app/desktop';
+import { getDesktopBridge, isFfmpegAvailable, onDesktopUpdaterStatus } from '@/app/desktop';
 import { api, audioContext, library, logger, player, renderBackend, renderer } from '@/app/global';
 import { t } from '@/i18n/config';
 import { registerGeneratedNameLabels } from '@/i18n/labels';
@@ -27,7 +27,7 @@ import {
   type VideoEncoder,
   type VideoQuality,
 } from '@/lib/video/encoders';
-import VideoExporter from '@/lib/video/VideoExporter';
+import VideoExporter, { isVideoExportCancelledError } from '@/lib/video/VideoExporter';
 
 export interface VideoExportSegment {
   startPosition: number;
@@ -470,6 +470,29 @@ export function clearVideoExportSegment() {
   appStore.setState({ videoExportSegment: null });
 }
 
+/** True while an offline (ffmpeg) export is running and can be cancelled. */
+export function isFfmpegExportActive() {
+  return activeFfmpegExport !== null;
+}
+
+/**
+ * Cancel the in-progress video export/recording. For the offline ffmpeg
+ * pipeline this kills the encoder and discards temp files; for the
+ * MediaRecorder path stopping playback ends the recording early.
+ */
+export function cancelVideoExport() {
+  if (activeFfmpegExport) {
+    activeFfmpegExport.cancel();
+    appStore.setState({ statusText: t('status.export-cancelling') });
+    return true;
+  }
+  if (activeVideoRecorder && activeVideoRecorder.state === 'recording') {
+    player.stop();
+    return true;
+  }
+  return false;
+}
+
 const TRANSIENT_STATUS_MS = 6000;
 
 /** Show a status bar message briefly, then restore whatever was there before. */
@@ -591,6 +614,13 @@ async function startFfmpegVideoExport({
     }
     return true;
   } catch (error) {
+    if (exporter.isCancelled || isVideoExportCancelledError(error)) {
+      // User-initiated cancel: not an error, just say so briefly.
+      logger.log('FFmpeg video export cancelled');
+      appStore.setState({ statusText: '' });
+      showTransientStatus(t('status.export-cancelled'));
+      return false;
+    }
     raiseError(t('errors.ffmpeg-export-failed'), error);
     return false;
   } finally {
@@ -599,7 +629,7 @@ async function startFfmpegVideoExport({
       isVideoRecording: false,
       videoExportSegment: null,
       videoExportPosition: null,
-      statusText: '',
+      ...(exporter.isCancelled ? {} : { statusText: '' }),
     });
 
     if (bridge?.removePath) {
@@ -1069,6 +1099,27 @@ export async function loadLibrary() {
   );
 }
 
+let updateWatcherAttached = false;
+
+/**
+ * Surface the desktop auto-update result of the background check in the
+ * status bar so users learn about a new version without opening About.
+ */
+function watchDesktopUpdates() {
+  if (updateWatcherAttached) {
+    return;
+  }
+  updateWatcherAttached = true;
+
+  onDesktopUpdaterStatus(status => {
+    if (status.state === 'available') {
+      showTransientStatus(t('about.update-available', { version: status.version ?? '' }));
+    } else if (status.state === 'downloaded') {
+      showTransientStatus(t('about.update-downloaded', { version: status.version ?? '' }));
+    }
+  });
+}
+
 export async function initApp() {
   if (appInitialized) {
     return;
@@ -1085,6 +1136,7 @@ export async function initApp() {
 
     renderer.start();
     appInitialized = true;
+    watchDesktopUpdates();
   })().finally(() => {
     appInitPromise = null;
   });
