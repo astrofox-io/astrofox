@@ -6,35 +6,26 @@ import {
   isEffectEnabled,
   registerEffectPass,
 } from '@/lib/core/render/effects/effectPassRegistry';
-import DistortionShader from '@/lib/core/render/effects/shaders/DistortionShader';
+import ShockwaveShader from '@/lib/core/render/effects/shaders/ShockwaveShader';
 import type { RenderFrameData } from '@/lib/types';
 
-const distortionModes = ['Wave', 'Noise'];
-
-export default class DistortionEffect extends Effect {
+export default class ShockwaveEffect extends Effect {
   declare time: number;
 
   static config = {
-    name: 'DistortionEffect',
-    description: 'Animated distortion using a periodic wave or organic noise field.',
+    name: 'ShockwaveEffect',
+    description: 'Radial shockwave distortion emanating from the center.',
     type: 'effect',
-    label: 'Distortion',
+    label: 'Shockwave',
     category: 'distortion',
     defaultProperties: {
-      time: 0,
-      mode: 'Wave',
-      amount: 0.15,
-      scale: 3.0,
+      amplitude: 0.5,
+      frequency: 5.0,
       speed: 0.5,
     },
     controls: {
-      mode: {
-        label: 'Mode',
-        type: 'select',
-        items: distortionModes,
-      },
-      amount: {
-        label: 'Amount',
+      amplitude: {
+        label: 'Amplitude',
         type: 'number',
         min: 0,
         max: 1.0,
@@ -42,12 +33,12 @@ export default class DistortionEffect extends Effect {
         withRange: true,
         withReactor: true,
       },
-      scale: {
-        label: 'Scale',
+      frequency: {
+        label: 'Frequency',
         type: 'number',
-        min: 0.5,
-        max: 10,
-        step: 0.1,
+        min: 1,
+        max: 20,
+        step: 0.5,
         withRange: true,
         withReactor: true,
       },
@@ -64,7 +55,7 @@ export default class DistortionEffect extends Effect {
   };
 
   constructor(properties?: Record<string, unknown>) {
-    super(DistortionEffect, properties);
+    super(ShockwaveEffect, properties);
 
     this.time = 0;
   }
@@ -75,24 +66,21 @@ export default class DistortionEffect extends Effect {
     const speed = Number(this.properties.speed || 0);
 
     if (speed > 0) {
-      this.time += data.delta / (100 / speed);
+      this.time += (data.delta / 1000) * speed;
     }
   }
 }
 
-const DISTORTION_MAX = 30;
-
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
-  const pass = new ShaderPass(DistortionShader);
+  const pass = new ShaderPass(ShockwaveShader);
   return attachPassUpdater(pass, () => {
     pass.enabled = isEffectEnabled(effect);
     pass.setUniforms({
-      mode: props.mode === 'Noise' ? 1 : 0,
-      amount: Number(props.amount || 0) * DISTORTION_MAX,
-      scale: Number(props.scale || 3),
-      time: Number(effect.time || props.time || 0),
+      amplitude: Number(props.amplitude || 0),
+      frequency: Number(props.frequency || 1),
+      time: Number(effect.time || 0),
     });
   });
 }
-registerEffectPass(DistortionEffect.config.name, createPass, { liveUpdatable: true });
+registerEffectPass(ShockwaveEffect.config.name, createPass, { liveUpdatable: true });

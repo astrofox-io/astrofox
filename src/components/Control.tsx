@@ -9,6 +9,8 @@ import type Display from '@/lib/core/Display';
 import { resolve } from '@/lib/utils/object';
 import { inputValueToProps } from '@/lib/utils/react';
 
+const TRAILING_GROUPS = ['Appearance', 'Position'];
+
 interface ControlProps {
   display: Display & {
     id: string;
@@ -63,6 +65,10 @@ export default function Control({
 
     return {
       name,
+      rawGroup:
+        typeof props.group === 'string' && props.group.trim().length > 0
+          ? props.group.trim()
+          : null,
       group:
         typeof translatedProps.group === 'string' && translatedProps.group.trim().length > 0
           ? translatedProps.group
@@ -94,6 +100,7 @@ export default function Control({
       ): option is {
         name: string;
         group: string | null;
+        rawGroup: string | null;
         props: Record<string, unknown>;
       } => option !== null,
     );
@@ -101,6 +108,7 @@ export default function Control({
   // Consecutive options sharing a group collapse into one ControlGroup.
   const sections: Array<{
     group: string | null;
+    rawGroup: string | null;
     options: typeof visibleOptions;
   }> = [];
 
@@ -111,12 +119,18 @@ export default function Control({
     } else if (last && last.group === null && option.group === null) {
       last.options.push(option);
     } else {
-      sections.push({ group: option.group, options: [option] });
+      sections.push({ group: option.group, rawGroup: option.rawGroup, options: [option] });
     }
   }
 
+  // Transform groups always render last, below the entity-specific controls.
+  const orderedSections = [
+    ...sections.filter(section => !section.rawGroup || !TRAILING_GROUPS.includes(section.rawGroup)),
+    ...TRAILING_GROUPS.flatMap(group => sections.filter(section => section.rawGroup === group)),
+  ];
+
   return (
-    <div className={classNames('flex flex-col gap-3 pb-2', className)}>
+    <div className={classNames('flex flex-col gap-3 pb-4', className)}>
       {showHeader && (
         <div className={'relative py-3 px-2.5'}>
           <div className={'flex items-center justify-between gap-2 text-xs text-neutral-100'}>
@@ -150,7 +164,7 @@ export default function Control({
           </div>
         </div>
       )}
-      {sections.map(section => {
+      {orderedSections.map(section => {
         if (!section.group) {
           return (
             <React.Fragment key={`options-${section.options[0].name}`}>
