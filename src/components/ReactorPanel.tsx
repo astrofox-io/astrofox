@@ -132,7 +132,7 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
   }, [reactor, outputMode]);
 
   return (
-    <div className={'w-full overflow-hidden bg-neutral-900 border-t relative py-4 px-5'}>
+    <div className={'flex flex-col gap-3 w-full overflow-hidden bg-neutral-900 border-t relative py-4 px-5'}>
       <div
         className={
           'text-neutral-300 text-xs [text-shadow:1px_1px_0_var(--color-neutral-900)] uppercase'
@@ -140,8 +140,8 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
       >
         {reactor.displayName}
       </div>
-      <div className={'flex flex-row justify-center items-center'}>
-        <div className={'min-w-72 mt-2.5 mr-2.5 mb-0 ml-0'}>
+      <div className={'flex flex-row justify-center items-center gap-2 overflow-auto'}>
+        <div className={'min-w-90'}>
           <Control
             display={reactor as unknown as Parameters<typeof Control>[0]['display']}
             showHeader={false}

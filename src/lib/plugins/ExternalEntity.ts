@@ -45,8 +45,8 @@ function getStandardDisplayControls(): Record<string, Record<string, unknown>> {
     zoom: {
       label: 'Scale',
       type: 'number',
-      min: 0,
-      max: 5,
+      min: 1,
+      max: 10,
       step: 0.05,
       withRange: true,
       withReactor: true,
