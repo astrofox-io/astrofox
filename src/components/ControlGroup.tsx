@@ -35,7 +35,7 @@ export default function ControlGroup({
         <button
           type="button"
           aria-expanded={open}
-          className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 px-1.5 py-1.5 text-left text-xs uppercase text-neutral-400 hover:text-neutral-100"
+          className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 py-1.5 pl-2.5 pr-1.5 text-left text-xs uppercase text-neutral-400 hover:text-neutral-100"
           onClick={() => setOpen(value => !value)}
         >
           <ChevronRight

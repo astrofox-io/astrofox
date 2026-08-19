@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 
 interface TextInputProps {
   name?: string;
+  /** Fixed width; when omitted the input fills the remaining row space. */
   width?: number | string;
   size?: number | null;
   value?: string | number;
@@ -21,7 +22,7 @@ interface TextInputProps {
 
 export default function TextInput({
   name = 'text',
-  width = 160,
+  width,
   size = null,
   value = '',
   placeholder,
@@ -91,13 +92,15 @@ export default function TextInput({
       autoCapitalize="off"
       className={cn(
         // Compact field. Use shadcn border token (#404040) — softer than border-input, still visible.
-        'h-8 w-auto px-2 text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+        'h-8 px-2 text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+        // Fixed width when given, otherwise fill the remaining row space.
+        width === undefined ? 'min-w-0 flex-1' : 'w-auto',
         'border-border shadow-none',
         'focus-visible:border-ring focus-visible:ring-0',
         'disabled:text-neutral-500',
         className,
       )}
-      style={{ width }}
+      style={width !== undefined ? { width } : undefined}
       name={name}
       size={size ?? undefined}
       spellCheck={spellCheck}

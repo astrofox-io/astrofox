@@ -20,6 +20,7 @@ interface SelectInputProps {
   items?: (SelectItemData | string | number | null)[];
   displayField?: string;
   valueField?: string;
+  /** Fixed width in px; when omitted the select fills the remaining row space. */
   width?: number;
   optionsWidth?: number | string;
   className?: string;
@@ -33,7 +34,7 @@ export default function SelectInput({
   items = [],
   displayField = 'label',
   valueField = 'value',
-  width = 140,
+  width,
   optionsWidth,
   className,
   optionsClassName,
@@ -64,13 +65,15 @@ export default function SelectInput({
         size="sm"
         className={cn(
           // Compact field. Same border token as TextInput / SelectContent.
-          'h-8 min-h-8 w-auto cursor-default text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+          'h-8 min-h-8 cursor-default text-sm text-neutral-300 bg-neutral-900 dark:bg-neutral-900',
+          // Fixed width when given, otherwise fill the remaining row space.
+          width === undefined ? 'min-w-0 flex-1' : 'w-auto',
           'border-border shadow-none hover:bg-neutral-900',
           'focus-visible:border-ring focus-visible:ring-0',
           'data-[size=sm]:h-8 data-[size=default]:h-8',
           className,
         )}
-        style={{ width }}
+        style={width !== undefined ? { width } : undefined}
       >
         <span
           data-slot="select-value"

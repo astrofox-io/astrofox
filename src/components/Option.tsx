@@ -47,9 +47,7 @@ export default function Option({
   const inputs: React.ReactNode[] = [];
 
   if (showReactor) {
-    inputs.push(
-      <ReactorInput key="reactor" display={display} name={name} value={value} width={124} />,
-    );
+    inputs.push(<ReactorInput key="reactor" display={display} name={name} value={value} />);
   } else if (InputCompnent) {
     const resolvedInputProps =
       type === 'number' && inputProps?.width === undefined

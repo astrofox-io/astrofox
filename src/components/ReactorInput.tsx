@@ -14,6 +14,7 @@ interface ReactorInputProps {
   display: Display;
   name: string;
   value: unknown;
+  /** Internal canvas resolution; the meter stretches to fill the row via CSS. */
   width?: number;
   height?: number;
   color?: string;
@@ -23,8 +24,8 @@ export default function ReactorInput({
   display,
   name,
   value,
-  width = 124,
-  height = 10,
+  width = 200,
+  height = 12,
   color = PRIMARY_COLOR,
 }: ReactorInputProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'inputs' });
@@ -70,12 +71,11 @@ export default function ReactorInput({
   }, []);
 
   return (
-    <div className="flex flex-row items-center gap-1">
+    <div className="flex min-w-0 flex-1 flex-row items-center gap-1">
       <Button
         type="button"
         variant="outline"
-        className="h-8 shrink-0 rounded-md border-border bg-neutral-900 px-2 py-0 shadow-none hover:bg-neutral-900 focus-visible:border-ring focus-visible:ring-0"
-        style={{ width: width + 16 }}
+        className="h-8 min-w-0 flex-1 rounded-md border-border bg-neutral-900 px-2 py-0 shadow-none hover:bg-neutral-900 focus-visible:border-ring focus-visible:ring-0"
         onDoubleClick={toggleReactor}
         onKeyDown={event => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -84,7 +84,7 @@ export default function ReactorInput({
           }
         }}
       >
-        <canvas ref={canvas} className="canvas" width={width} height={height} />
+        <canvas ref={canvas} className="canvas w-full" width={width} height={height} />
       </Button>
       <TooltipProvider>
         <Tooltip>

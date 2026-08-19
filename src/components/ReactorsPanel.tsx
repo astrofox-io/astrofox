@@ -33,7 +33,7 @@ function ReactorMeter({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <div className="flex items-center h-8 px-2 bg-neutral-950 rounded-b">
+    <div className="flex items-center h-8 px-2 rounded-b">
       <canvas ref={canvas} className="w-full" />
     </div>
   );
@@ -67,7 +67,7 @@ export default function ReactorsPanel() {
     <div className="flex flex-col flex-1 relative overflow-auto">
       <div className="flex-1 overflow-auto flex flex-col gap-4 px-1">
         {reactorList.map(reactor => (
-          <div key={reactor.id} className="flex flex-col border border-neutral-700 rounded">
+          <div key={reactor.id} className="flex flex-col border border-neutral-700 rounded mx-1">
             <Layer
               id={reactor.id}
               name={reactor.displayName}

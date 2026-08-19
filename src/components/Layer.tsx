@@ -138,7 +138,6 @@ export default function Layer({
           <TextInput
             name="displayName"
             value={name}
-            width={undefined as unknown as number}
             className={'h-7 !px-2 !leading-7 !rounded !bg-neutral-800 !border-primary'}
             buffered
             autoFocus
