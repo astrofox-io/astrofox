@@ -13,8 +13,15 @@ import {
   openProjectFile,
   saveProject,
 } from '@/app/actions/project';
-import { getDesktopBridge, isFfmpegAvailable, onDesktopUpdaterStatus } from '@/app/desktop';
+import {
+  checkForDesktopUpdates,
+  getDesktopBridge,
+  isDesktopUpdaterAvailable,
+  isFfmpegAvailable,
+  onDesktopUpdaterStatus,
+} from '@/app/desktop';
 import { api, audioContext, library, logger, player, renderBackend, renderer } from '@/app/global';
+import { getAutoUpdateCheck } from '@/app/preferences';
 import { t } from '@/i18n/config';
 import { registerGeneratedNameLabels } from '@/i18n/labels';
 import * as displays from '@/lib/displays';
@@ -1100,6 +1107,23 @@ export async function loadLibrary() {
 }
 
 let updateWatcherAttached = false;
+const AUTO_UPDATE_CHECK_DELAY_MS = 5000;
+
+/**
+ * Kick off a background update check shortly after startup when the user has
+ * automatic update checks enabled.
+ */
+function scheduleAutoUpdateCheck() {
+  if (!getAutoUpdateCheck() || !isDesktopUpdaterAvailable()) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    checkForDesktopUpdates().catch(error => {
+      logger.log('Update check failed:', error);
+    });
+  }, AUTO_UPDATE_CHECK_DELAY_MS);
+}
 
 /**
  * Surface the desktop auto-update result of the background check in the
@@ -1137,6 +1161,7 @@ export async function initApp() {
     renderer.start();
     appInitialized = true;
     watchDesktopUpdates();
+    scheduleAutoUpdateCheck();
   })().finally(() => {
     appInitPromise = null;
   });

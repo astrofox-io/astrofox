@@ -38,6 +38,11 @@
     "restore-window": "Restaurar",
     "close-window": "Cerrar"
   },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "auto-update-check": "Buscar actualizaciones automáticamente"
+  },
   "player": {
     "recording": "Grabando...",
     "play": "Reproducir",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "Error al elegir una ubicación de guardado de vídeo.",
     "invalid-project-file": "Archivo de proyecto no válido.",
     "invalid-project-snapshot": "Instantánea de proyecto no válida.",
-    "project-file-extension-required": "El archivo de proyecto debe usar la extensión .json o .afx.",
+    "project-file-extension-required": "El archivo de proyecto debe usar la extensión .afx o .json.",
     "open-project-file-failed": "Error al abrir el archivo de proyecto.",
     "save-project-file-failed": "Error al guardar el archivo de proyecto.",
     "relink-media-failed": "Error al volver a vincular los medios.",

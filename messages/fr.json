@@ -38,6 +38,11 @@
     "restore-window": "Restaurer",
     "close-window": "Fermer"
   },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "auto-update-check": "Rechercher automatiquement les mises à jour"
+  },
   "player": {
     "recording": "Enregistrement...",
     "play": "Lire",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "Échec du choix d'un emplacement d'enregistrement vidéo.",
     "invalid-project-file": "Fichier de projet invalide.",
     "invalid-project-snapshot": "Instantané de projet invalide.",
-    "project-file-extension-required": "Le fichier de projet doit utiliser l'extension .json ou .afx.",
+    "project-file-extension-required": "Le fichier de projet doit utiliser l'extension .afx ou .json.",
     "open-project-file-failed": "Échec de l'ouverture du fichier de projet.",
     "save-project-file-failed": "Échec de l'enregistrement du fichier de projet.",
     "relink-media-failed": "Échec de la reconnexion des médias.",

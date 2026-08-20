@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import useModals, { closeModal, removeModal } from '@/app/actions/modals';
 import About from '@/components/About';
+import AppSettings from '@/components/AppSettings';
 import CanvasSettings from '@/components/CanvasSettings';
 import ErrorDialog from '@/components/ErrorDialog';
 import ManagePlugins from '@/components/ManagePlugins';
@@ -15,6 +16,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const modalComponents = {
   About,
+  AppSettings,
   CanvasSettings,
   ErrorDialog,
   ManagePlugins,

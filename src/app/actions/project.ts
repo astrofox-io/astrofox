@@ -89,13 +89,12 @@ type SceneEntity = {
   toJSON: () => Record<string, unknown>;
 };
 
-/** Canonical save/open format */
-const PROJECT_JSON_EXTENSION = 'json';
-/** Legacy gzip-compressed JSON from the old desktop app */
-const PROJECT_LEGACY_EXTENSION = 'afx';
-const PROJECT_OPEN_EXTENSIONS = [PROJECT_JSON_EXTENSION, PROJECT_LEGACY_EXTENSION];
-const PROJECT_SAVE_EXTENSIONS = [PROJECT_JSON_EXTENSION, PROJECT_LEGACY_EXTENSION];
-const PROJECT_LEGACY_MIME_TYPE = 'application/gzip';
+/** Canonical project file extension */
+const PROJECT_FILE_EXTENSION = 'afx';
+/** Accepted on open only, for projects saved by older versions */
+const PROJECT_LEGACY_OPEN_EXTENSION = 'json';
+const PROJECT_OPEN_EXTENSIONS = [PROJECT_FILE_EXTENSION, PROJECT_LEGACY_OPEN_EXTENSION];
+const PROJECT_SAVE_EXTENSIONS = [PROJECT_FILE_EXTENSION];
 const PROJECT_FILE_MIME_TYPE = 'application/json';
 const GZIP_MAGIC_0 = 0x1f;
 const GZIP_MAGIC_1 = 0x8b;
@@ -136,53 +135,24 @@ async function gunzipToText(bytes: Uint8Array): Promise<string> {
   return new TextDecoder('utf-8').decode(buffer);
 }
 
-async function gzipText(text: string): Promise<ArrayBuffer> {
-  if (typeof CompressionStream === 'undefined') {
-    throw new Error(
-      t('errors.gzip-compress-unsupported', {
-        defaultValue: 'Gzip compression is not supported in this environment.',
-      }),
-    );
-  }
-
-  const stream = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'));
-  return new Response(stream).arrayBuffer();
-}
-
-function isLegacyProjectFileName(fileName = '') {
-  return /\.afx$/i.test(fileName);
-}
-
 /**
  * Read a project file as JSON text.
- * - `.json` / plain text: decode as UTF-8
- * - `.afx` or gzip magic: inflate gzip then decode (legacy format)
- * Falls back to raw UTF-8 if gzip inflate fails (matches old desktop behavior).
+ * - plain text: decode as UTF-8 (canonical format)
+ * - gzip magic bytes: inflate gzip then decode (legacy v1 format)
  */
 async function readProjectFileText(file: File): Promise<string> {
   const buffer = await file.arrayBuffer();
   const bytes = new Uint8Array(buffer);
-  const name = file.name || '';
-  const looksLegacy = /\.afx$/i.test(name) || isGzipBytes(bytes);
 
-  if (looksLegacy) {
-    try {
-      return await gunzipToText(bytes);
-    } catch (error) {
-      // Match old desktop behavior: only fall back when the file is not
-      // actually gzip (e.g. misnamed plain JSON). Real gzip failures throw.
-      if (isGzipBytes(bytes)) {
-        throw error;
-      }
-      logger.log('Project file is not gzip-compressed, trying raw text:', error);
-    }
+  if (isGzipBytes(bytes)) {
+    return gunzipToText(bytes);
   }
 
   return new TextDecoder('utf-8').decode(bytes);
 }
 
 function isSupportedProjectFileName(fileName = '') {
-  return /\.(json|afx)$/i.test(fileName);
+  return /\.(afx|json)$/i.test(fileName);
 }
 
 const initialState: ProjectState = {
@@ -646,11 +616,11 @@ function sanitizeFileName(name?: string) {
 
 function createProjectFileName(name?: string) {
   const safeName = sanitizeFileName(name) || DEFAULT_PROJECT_NAME;
-  return `${safeName}.${PROJECT_JSON_EXTENSION}`;
+  return `${safeName}.${PROJECT_FILE_EXTENSION}`;
 }
 
 function parseProjectNameFromFile(fileName = '') {
-  return fileName.replace(/\.(json|afx)$/i, '').trim() || DEFAULT_PROJECT_NAME;
+  return fileName.replace(/\.(afx|json)$/i, '').trim() || DEFAULT_PROJECT_NAME;
 }
 
 function parseProjectPayload(payload: unknown, fallbackName?: string) {
@@ -940,18 +910,10 @@ export async function saveProject(nameOverride?: string) {
       fileName;
     const json = JSON.stringify(payload, null, 2);
 
-    if (isLegacyProjectFileName(targetName)) {
-      // Legacy `.afx` projects are gzip-compressed JSON.
-      await api.saveTextFile(target, await gzipText(json), {
-        mimeType: PROJECT_LEGACY_MIME_TYPE,
-        fileName: targetName,
-      });
-    } else {
-      await api.saveTextFile(target, json, {
-        mimeType: PROJECT_FILE_MIME_TYPE,
-        fileName,
-      });
-    }
+    await api.saveTextFile(target, json, {
+      mimeType: PROJECT_FILE_MIME_TYPE,
+      fileName: targetName,
+    });
 
     projectStore.setState({
       projectName: name,

@@ -616,7 +616,6 @@ async function resetTempDir() {
 /** @type {import('electron-updater').AppUpdater | null} */
 let autoUpdater = null;
 let updaterInitialized = false;
-const UPDATE_CHECK_DELAY_MS = 5000;
 
 function sendUpdaterStatus(status) {
   if (!mainWindow || mainWindow.isDestroyed()) return;
@@ -728,16 +727,6 @@ function registerUpdaterIpc() {
   });
 }
 
-function scheduleUpdateCheck() {
-  if (!autoUpdater) return;
-  const timer = setTimeout(() => {
-    autoUpdater?.checkForUpdates().catch(error => {
-      console.error('Update check failed:', error);
-    });
-  }, UPDATE_CHECK_DELAY_MS);
-  timer.unref?.();
-}
-
 // ---------------------------------------------------------------------------
 // Process-level error handling
 // ---------------------------------------------------------------------------
@@ -792,14 +781,9 @@ if (hasSingleInstanceLock) {
 
       createWindow();
 
+      // The renderer starts the automatic update check based on the user's
+      // "Automatically check for updates" setting.
       await setupAutoUpdater();
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        if (mainWindow.isVisible()) {
-          scheduleUpdateCheck();
-        } else {
-          mainWindow.once('show', scheduleUpdateCheck);
-        }
-      }
 
       app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {

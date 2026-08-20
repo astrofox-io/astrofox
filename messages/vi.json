@@ -38,6 +38,11 @@
     "restore-window": "Khôi phục",
     "close-window": "Đóng"
   },
+  "settings": {
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "auto-update-check": "Tự động kiểm tra bản cập nhật"
+  },
   "player": {
     "recording": "Đang ghi...",
     "play": "Phát",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "Không chọn được vị trí lưu video.",
     "invalid-project-file": "Tệp dự án không hợp lệ.",
     "invalid-project-snapshot": "Ảnh chụp nhanh dự án không hợp lệ.",
-    "project-file-extension-required": "Tệp dự án phải sử dụng phần mở rộng .json hoặc .afx.",
+    "project-file-extension-required": "Tệp dự án phải sử dụng phần mở rộng .afx hoặc .json.",
     "open-project-file-failed": "Không mở được tệp dự án.",
     "save-project-file-failed": "Không lưu được tệp dự án.",
     "relink-media-failed": "Không liên kết lại được phương tiện.",

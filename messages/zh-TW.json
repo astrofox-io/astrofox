@@ -38,6 +38,11 @@
     "restore-window": "還原",
     "close-window": "關閉"
   },
+  "settings": {
+    "title": "設定",
+    "language": "語言",
+    "auto-update-check": "自動檢查更新"
+  },
   "player": {
     "recording": "錄製中...",
     "play": "播放",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "選擇影片儲存位置失敗。",
     "invalid-project-file": "無效的專案檔案。",
     "invalid-project-snapshot": "無效的專案快照。",
-    "project-file-extension-required": "專案檔案必須使用 .json 或 .afx 副檔名。",
+    "project-file-extension-required": "專案檔案必須使用 .afx 或 .json 副檔名。",
     "open-project-file-failed": "開啟專案檔案失敗。",
     "save-project-file-failed": "儲存專案檔案失敗。",
     "relink-media-failed": "重新連結媒體失敗。",

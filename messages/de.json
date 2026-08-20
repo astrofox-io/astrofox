@@ -38,6 +38,11 @@
     "restore-window": "Wiederherstellen",
     "close-window": "Schließen"
   },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "auto-update-check": "Automatisch nach Updates suchen"
+  },
   "player": {
     "recording": "Aufnahme...",
     "play": "Wiedergeben",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "Auswahl eines Video-Speicherorts fehlgeschlagen.",
     "invalid-project-file": "Ungültige Projektdatei.",
     "invalid-project-snapshot": "Ungültiger Projekt-Snapshot.",
-    "project-file-extension-required": "Die Projektdatei muss die Erweiterung .json oder .afx verwenden.",
+    "project-file-extension-required": "Die Projektdatei muss die Erweiterung .afx oder .json verwenden.",
     "open-project-file-failed": "Öffnen der Projektdatei fehlgeschlagen.",
     "save-project-file-failed": "Speichern der Projektdatei fehlgeschlagen.",
     "relink-media-failed": "Neuverknüpfung der Medien fehlgeschlagen.",

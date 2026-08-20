@@ -7,11 +7,13 @@ import {
   type LucideIcon,
   Save,
   Settings2,
+  Settings as SettingsIcon,
   Video,
 } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { handleMenuAction } from '@/app/actions/app';
+import { showModal } from '@/app/actions/modals';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import menuConfig from '@/lib/config/menu.json';
@@ -87,7 +89,12 @@ function getSidebarSections(): SidebarItem[][] {
 
 export default function SidebarNav() {
   const { t } = useTranslation(undefined, { keyPrefix: 'menu' });
+  const { t: ts } = useTranslation(undefined, { keyPrefix: 'settings' });
   const sections = getSidebarSections();
+
+  function handleOpenSettings() {
+    showModal('AppSettings', { titleKey: 'settings.title' });
+  }
 
   return (
     <TooltipProvider>
@@ -132,6 +139,30 @@ export default function SidebarNav() {
               })}
             </React.Fragment>
           ))}
+        </div>
+        <div className="flex w-full flex-col items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="w-full bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+                  aria-label={ts('title')}
+                  onClick={handleOpenSettings}
+                />
+              }
+            >
+              <SettingsIcon size={18} />
+            </TooltipTrigger>
+            <TooltipContent
+              side="right"
+              sideOffset={10}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {ts('title')}
+            </TooltipContent>
+          </Tooltip>
         </div>
       </aside>
     </TooltipProvider>

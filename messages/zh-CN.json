@@ -38,6 +38,11 @@
     "restore-window": "还原",
     "close-window": "关闭"
   },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "auto-update-check": "自动检查更新"
+  },
   "player": {
     "recording": "录制中...",
     "play": "播放",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "选择视频保存位置失败。",
     "invalid-project-file": "无效的项目文件。",
     "invalid-project-snapshot": "无效的项目快照。",
-    "project-file-extension-required": "项目文件必须使用 .json 或 .afx 扩展名。",
+    "project-file-extension-required": "项目文件必须使用 .afx 或 .json 扩展名。",
     "open-project-file-failed": "打开项目文件失败。",
     "save-project-file-failed": "保存项目文件失败。",
     "relink-media-failed": "重新链接媒体失败。",

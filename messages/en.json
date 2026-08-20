@@ -40,6 +40,11 @@
     "restore-window": "Restore",
     "close-window": "Close"
   },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "auto-update-check": "Automatically check for updates"
+  },
   "player": {
     "recording": "Recording...",
     "play": "Play",
@@ -255,7 +260,7 @@
     "choose-video-save-location-failed": "Failed to choose a video save location.",
     "invalid-project-file": "Invalid project file.",
     "invalid-project-snapshot": "Invalid project snapshot.",
-    "project-file-extension-required": "Project file must use the .json or .afx extension.",
+    "project-file-extension-required": "Project file must use the .afx or .json extension.",
     "open-project-file-failed": "Failed to open project file.",
     "save-project-file-failed": "Failed to save project file.",
     "relink-media-failed": "Failed to relink media.",

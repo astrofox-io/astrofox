@@ -38,6 +38,11 @@
     "restore-window": "元に戻す",
     "close-window": "閉じる"
   },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "auto-update-check": "自動的にアップデートを確認"
+  },
   "player": {
     "recording": "録画中...",
     "play": "再生",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "動画の保存先の選択に失敗しました。",
     "invalid-project-file": "無効なプロジェクトファイルです。",
     "invalid-project-snapshot": "無効なプロジェクトスナップショットです。",
-    "project-file-extension-required": "プロジェクトファイルは .json または .afx 拡張子を使用する必要があります。",
+    "project-file-extension-required": "プロジェクトファイルは .afx または .json 拡張子を使用する必要があります。",
     "open-project-file-failed": "プロジェクトファイルを開くことができませんでした。",
     "save-project-file-failed": "プロジェクトファイルの保存に失敗しました。",
     "relink-media-failed": "メディアの再リンクに失敗しました。",

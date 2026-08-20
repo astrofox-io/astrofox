@@ -38,6 +38,11 @@
     "restore-window": "이전 크기로",
     "close-window": "닫기"
   },
+  "settings": {
+    "title": "설정",
+    "language": "언어",
+    "auto-update-check": "자동으로 업데이트 확인"
+  },
   "player": {
     "recording": "녹화 중...",
     "play": "재생",
@@ -242,7 +247,7 @@
     "choose-video-save-location-failed": "비디오 저장 위치를 선택하지 못했습니다.",
     "invalid-project-file": "잘못된 프로젝트 파일입니다.",
     "invalid-project-snapshot": "잘못된 프로젝트 스냅샷입니다.",
-    "project-file-extension-required": "프로젝트 파일은 .json 또는 .afx 확장자를 사용해야 합니다.",
+    "project-file-extension-required": "프로젝트 파일은 .afx 또는 .json 확장자를 사용해야 합니다.",
     "open-project-file-failed": "프로젝트 파일을 열지 못했습니다.",
     "save-project-file-failed": "프로젝트 파일을 저장하지 못했습니다.",
     "relink-media-failed": "미디어를 다시 연결하지 못했습니다.",

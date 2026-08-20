@@ -12,7 +12,6 @@ import useProject, { DEFAULT_PROJECT_NAME } from '@/app/actions/project';
 import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
 import { isDesktopApp, isMacDesktop } from '@/app/desktop';
 import { env } from '@/app/global';
-import LanguageSelector from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
 
 export default function TitleBar() {
@@ -171,7 +170,6 @@ export default function TitleBar() {
               </Button>
             );
           })}
-          <LanguageSelector />
         </div>
         {desktop && !macDesktop ? (
           <div className="flex h-full items-stretch">
