@@ -41,7 +41,10 @@
   "settings": {
     "title": "Cài đặt",
     "language": "Ngôn ngữ",
-    "auto-update-check": "Tự động kiểm tra bản cập nhật"
+    "general": "Chung",
+    "play-audio-on-load": "Phát âm thanh khi tải",
+    "automatic-updates": "Cập nhật tự động",
+    "updates": "Cập nhật"
   },
   "player": {
     "recording": "Đang ghi...",

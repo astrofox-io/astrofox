@@ -41,7 +41,10 @@
   "settings": {
     "title": "설정",
     "language": "언어",
-    "auto-update-check": "자동으로 업데이트 확인"
+    "general": "일반",
+    "play-audio-on-load": "불러올 때 오디오 재생",
+    "automatic-updates": "자동 업데이트",
+    "updates": "업데이트"
   },
   "player": {
     "recording": "녹화 중...",

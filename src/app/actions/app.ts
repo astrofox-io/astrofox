@@ -15,13 +15,14 @@ import {
 } from '@/app/actions/project';
 import {
   checkForDesktopUpdates,
+  downloadDesktopUpdate,
   getDesktopBridge,
   isDesktopUpdaterAvailable,
   isFfmpegAvailable,
   onDesktopUpdaterStatus,
 } from '@/app/desktop';
 import { api, audioContext, library, logger, player, renderBackend, renderer } from '@/app/global';
-import { getAutoUpdateCheck } from '@/app/preferences';
+import { getAutomaticUpdates } from '@/app/preferences';
 import { t } from '@/i18n/config';
 import { registerGeneratedNameLabels } from '@/i18n/labels';
 import * as displays from '@/lib/displays';
@@ -1114,7 +1115,7 @@ const AUTO_UPDATE_CHECK_DELAY_MS = 5000;
  * automatic update checks enabled.
  */
 function scheduleAutoUpdateCheck() {
-  if (!getAutoUpdateCheck() || !isDesktopUpdaterAvailable()) {
+  if (!getAutomaticUpdates() || !isDesktopUpdaterAvailable()) {
     return;
   }
 
@@ -1138,6 +1139,11 @@ function watchDesktopUpdates() {
   onDesktopUpdaterStatus(status => {
     if (status.state === 'available') {
       showTransientStatus(t('about.update-available', { version: status.version ?? '' }));
+
+      // Always download available updates; they install automatically on quit.
+      downloadDesktopUpdate().catch(error => {
+        logger.log('Update download failed:', error);
+      });
     } else if (status.state === 'downloaded') {
       showTransientStatus(t('about.update-downloaded', { version: status.version ?? '' }));
     }

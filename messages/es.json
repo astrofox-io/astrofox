@@ -41,7 +41,10 @@
   "settings": {
     "title": "Configuración",
     "language": "Idioma",
-    "auto-update-check": "Buscar actualizaciones automáticamente"
+    "general": "General",
+    "play-audio-on-load": "Reproducir audio al cargar",
+    "automatic-updates": "Actualizaciones automáticas",
+    "updates": "Actualizaciones"
   },
   "player": {
     "recording": "Grabando...",

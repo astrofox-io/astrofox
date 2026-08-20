@@ -41,7 +41,10 @@
   "settings": {
     "title": "設定",
     "language": "言語",
-    "auto-update-check": "自動的にアップデートを確認"
+    "general": "一般",
+    "play-audio-on-load": "読み込み時にオーディオを再生",
+    "automatic-updates": "自動アップデート",
+    "updates": "アップデート"
   },
   "player": {
     "recording": "録画中...",

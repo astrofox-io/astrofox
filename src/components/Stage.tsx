@@ -144,7 +144,7 @@ export default function Stage() {
       });
 
       try {
-        await loadAudioFile(file, true);
+        await loadAudioFile(file);
       } finally {
         setDropLoading(false);
       }

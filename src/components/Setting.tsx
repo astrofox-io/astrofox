@@ -5,6 +5,7 @@ import inputComponents from './inputComponents';
 
 interface SettingProps {
   label?: string;
+  description?: string;
   type?: string;
   name?: string;
   value?: unknown;
@@ -19,6 +20,7 @@ interface SettingProps {
 
 export default function Setting({
   label,
+  description,
   type,
   name,
   value,
@@ -44,6 +46,7 @@ export default function Setting({
     >
       <div className={'text-neutral-300'} style={{ width: labelWidth }}>
         {label}
+        {description && <div className="mt-1 text-xs text-neutral-500">{description}</div>}
       </div>
       <div style={{ width: inputWidth }}>
         {InputCompnent && (

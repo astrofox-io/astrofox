@@ -41,7 +41,10 @@
   "settings": {
     "title": "設定",
     "language": "語言",
-    "auto-update-check": "自動檢查更新"
+    "general": "一般",
+    "play-audio-on-load": "載入時播放音訊",
+    "automatic-updates": "自動更新",
+    "updates": "更新"
   },
   "player": {
     "recording": "錄製中...",

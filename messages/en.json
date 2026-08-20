@@ -43,7 +43,10 @@
   "settings": {
     "title": "Settings",
     "language": "Language",
-    "auto-update-check": "Automatically check for updates"
+    "general": "General",
+    "play-audio-on-load": "Play audio on load",
+    "automatic-updates": "Automatic updates",
+    "updates": "Updates"
   },
   "player": {
     "recording": "Recording...",

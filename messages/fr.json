@@ -41,7 +41,10 @@
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
-    "auto-update-check": "Rechercher automatiquement les mises à jour"
+    "general": "Général",
+    "play-audio-on-load": "Lire l'audio au chargement",
+    "automatic-updates": "Mises à jour automatiques",
+    "updates": "Mises à jour"
   },
   "player": {
     "recording": "Enregistrement...",

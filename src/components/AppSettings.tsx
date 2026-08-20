@@ -1,17 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isDesktopApp } from '@/app/desktop';
-import { getAutoUpdateCheck, setAutoUpdateCheck } from '@/app/preferences';
+import {
+  checkForDesktopUpdates,
+  type DesktopUpdaterStatus,
+  installDesktopUpdate,
+  isDesktopApp,
+  isDesktopUpdaterAvailable,
+  onDesktopUpdaterStatus,
+} from '@/app/desktop';
+import { env } from '@/app/global';
+import {
+  getAutomaticUpdates,
+  getPlayAudioOnLoad,
+  setAutomaticUpdates,
+  setPlayAudioOnLoad,
+} from '@/app/preferences';
 import Setting from '@/components/Setting';
 import Settings from '@/components/Settings';
+import { Button } from '@/components/ui/button';
 import i18nInstance, { LANGUAGE_STORAGE_KEY, SUPPORTED_LANGUAGES } from '@/i18n/config';
 
 export default function AppSettings() {
   const { t } = useTranslation(undefined, { keyPrefix: 'settings' });
+  const desktop = isDesktopApp();
   const [language, setLanguage] = useState<string>(
     () => i18nInstance.resolvedLanguage ?? i18nInstance.language ?? 'en',
   );
-  const [autoUpdateCheck, setAutoUpdateCheckState] = useState<boolean>(() => getAutoUpdateCheck());
+  const [automaticUpdates, setAutomaticUpdatesState] = useState<boolean>(() =>
+    getAutomaticUpdates(),
+  );
+  const [playAudioOnLoad, setPlayAudioOnLoadState] = useState<boolean>(() => getPlayAudioOnLoad());
 
   useEffect(() => {
     const onChanged = (lng: string) => {
@@ -26,10 +44,16 @@ export default function AppSettings() {
   }, []);
 
   async function handleChange(props: Record<string, unknown>) {
-    if (props.autoUpdateCheck !== undefined) {
-      const enabled = Boolean(props.autoUpdateCheck);
-      setAutoUpdateCheck(enabled);
-      setAutoUpdateCheckState(enabled);
+    if (props.automaticUpdates !== undefined) {
+      const enabled = Boolean(props.automaticUpdates);
+      setAutomaticUpdates(enabled);
+      setAutomaticUpdatesState(enabled);
+    }
+
+    if (props.playAudioOnLoad !== undefined) {
+      const enabled = Boolean(props.playAudioOnLoad);
+      setPlayAudioOnLoad(enabled);
+      setPlayAudioOnLoadState(enabled);
     }
 
     const code = props.language as string | undefined;
@@ -44,10 +68,12 @@ export default function AppSettings() {
     setLanguage(i18nInstance.resolvedLanguage ?? i18nInstance.language ?? code);
   }
 
+  const onChange = (props: Record<string, unknown>) => void handleChange(props);
+
   return (
     <div className="flex w-[500px] max-w-full flex-col">
       <div className="max-h-[60vh] overflow-auto">
-        <Settings columns={['50%', '50%']} onChange={props => void handleChange(props)}>
+        <Settings label={t('general')} columns={['50%', '50%']} onChange={onChange}>
           <Setting
             label={t('language')}
             type="select"
@@ -60,13 +86,105 @@ export default function AppSettings() {
             width={180}
           />
           <Setting
-            label={t('auto-update-check')}
+            label={t('play-audio-on-load')}
             type="toggle"
-            name="autoUpdateCheck"
-            value={autoUpdateCheck}
-            hidden={!isDesktopApp()}
+            name="playAudioOnLoad"
+            value={playAudioOnLoad}
           />
         </Settings>
+        <Settings label={t('updates')} columns={['50%', '50%']} onChange={onChange}>
+          <VersionRow />
+          <Setting
+            label={t('automatic-updates')}
+            type="toggle"
+            name="automaticUpdates"
+            value={automaticUpdates}
+            hidden={!desktop}
+          />
+        </Settings>
+      </div>
+    </div>
+  );
+}
+
+/** Current version plus update status and a manual "Check for updates" button. */
+function VersionRow() {
+  const { t } = useTranslation(undefined, { keyPrefix: 'about' });
+  const desktop = isDesktopApp();
+  const [updaterAvailable, setUpdaterAvailable] = useState(false);
+  const [status, setStatus] = useState<DesktopUpdaterStatus | null>(null);
+
+  useEffect(() => {
+    if (!isDesktopUpdaterAvailable()) {
+      return;
+    }
+    setUpdaterAvailable(true);
+    return onDesktopUpdaterStatus(setStatus);
+  }, []);
+
+  const busy = status?.state === 'checking' || status?.state === 'downloading';
+
+  function handleCheck() {
+    setStatus({ state: 'checking' });
+    void checkForDesktopUpdates().then(result => {
+      if (!result.ok && result.reason) {
+        setStatus({ state: 'error', message: result.reason });
+      }
+    });
+  }
+
+  function handleInstall() {
+    void installDesktopUpdate();
+  }
+
+  let statusText: string | null = null;
+  switch (status?.state) {
+    case 'checking':
+      statusText = t('update-checking');
+      break;
+    case 'available':
+      statusText = t('update-available', { version: status.version ?? '' });
+      break;
+    case 'not-available':
+      statusText = t('update-not-available');
+      break;
+    case 'downloading':
+      statusText = t('update-downloading', { percent: Math.round(status.percent) });
+      break;
+    case 'downloaded':
+      statusText = t('update-downloaded', { version: status.version ?? '' });
+      break;
+    case 'error':
+      statusText = t('update-error', { message: status.message });
+      break;
+    default:
+      statusText = null;
+  }
+
+  return (
+    <div className="mb-4 flex items-center">
+      <div className="mr-2 text-neutral-300" style={{ width: '50%' }}>
+        {t('version', { version: env.APP_VERSION })}
+        {statusText && (
+          <div className="mt-1 break-words text-xs text-neutral-500">{statusText}</div>
+        )}
+      </div>
+      <div style={{ width: '50%' }}>
+        {desktop &&
+          (status?.state === 'downloaded' ? (
+            <Button variant="default" size="sm" onClick={handleInstall}>
+              {t('restart-to-update')}
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={busy || !updaterAvailable}
+              onClick={handleCheck}
+            >
+              {t('check-for-updates')}
+            </Button>
+          ))}
       </div>
     </div>
   );

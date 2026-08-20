@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { analyzer, api, audioContext, logger, player } from '@/app/global';
+import { getPlayAudioOnLoad } from '@/app/preferences';
 import { t } from '@/i18n/config';
 import { loadAudioData } from '@/lib/utils/audio';
 import { trimChars } from '@/lib/utils/string';
@@ -306,7 +307,7 @@ export async function loadAudioFile(file: File | string, play?: boolean) {
     player.load(audio, name);
     audio.addNode(analyzer.analyzer);
 
-    const shouldPlay = play ?? true;
+    const shouldPlay = play ?? getPlayAudioOnLoad();
 
     if (shouldPlay) {
       player.play();
@@ -578,9 +579,7 @@ export async function openAudioFile(play?: boolean) {
   });
 
   if (!canceled && files && files.length) {
-    const shouldPlay = play ?? true;
-
-    await loadAudioFile(files[0], shouldPlay);
+    await loadAudioFile(files[0], play);
   }
 }
 
