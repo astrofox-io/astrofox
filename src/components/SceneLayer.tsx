@@ -130,25 +130,14 @@ export default function SceneLayer({
   );
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Fallback drop target so layers can be dropped anywhere on the scene.
     <div
       className={classNames('flex flex-col gap-0.5 overflow-hidden rounded', {
         'opacity-25': sceneDragging,
         'ring-1 ring-primary': sceneDragOver,
       })}
-      onDragOverCapture={e => {
-        if (dragSourceType !== 'scene') {
-          return;
-        }
-
-        onLayerDragOver?.(id, e);
-      }}
-      onDropCapture={e => {
-        if (dragSourceType !== 'scene') {
-          return;
-        }
-
-        onLayerDrop?.(id, e);
-      }}
+      onDragOver={e => onLayerDragOver?.(id, e)}
+      onDrop={e => onLayerDrop?.(id, e)}
     >
       <Layer
         key={id}

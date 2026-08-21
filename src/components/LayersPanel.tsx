@@ -195,10 +195,13 @@ export default function LayersPanel() {
     }
 
     if (!canDrop(sourceId, id)) {
+      // Let the event bubble so an outer target (e.g. the scene container)
+      // can accept the drag instead.
       return;
     }
 
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
 
     if (dragOverId !== id) {
@@ -212,19 +215,24 @@ export default function LayersPanel() {
   }
 
   function handleLayerDrop(id: string, e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault();
-
     const sourceId = dragSourceId;
     if (!sourceId) {
       resetDragState();
       return;
     }
 
-    if (canDrop(sourceId, id)) {
-      const moved = reorderElement(sourceId, id);
-      if (moved) {
-        setActiveElementId(sourceId);
-      }
+    if (!canDrop(sourceId, id)) {
+      // Let the event bubble so an outer target (e.g. the scene container)
+      // can handle the drop instead. Drag state is reset by onDragEnd.
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const moved = reorderElement(sourceId, id);
+    if (moved) {
+      setActiveElementId(sourceId);
     }
 
     resetDragState();

@@ -41,7 +41,7 @@ export function getDefaultCameraDistance(height, fov = PERSPECTIVE_FOV) {
   return height / 2 / Math.tan(((fov / 2) * Math.PI) / 180);
 }
 
-function createRenderTarget(width, height, withDepth = false) {
+function createRenderTarget(width, height, withDepth = false, samples = 0) {
   const target = new WebGLRenderTarget(width, height, {
     minFilter: LinearFilter,
     magFilter: LinearFilter,
@@ -49,6 +49,7 @@ function createRenderTarget(width, height, withDepth = false) {
     type: HalfFloatType,
     depthBuffer: withDepth,
     stencilBuffer: false,
+    samples,
   });
 
   if (withDepth) {
@@ -212,16 +213,26 @@ export function Display3DLayer({
     });
   }, [applyCameraState, cameraZ, cameraAzimuth, cameraDistance, cameraPolar, draggingRef]);
 
-  const colorTarget = React.useMemo(() => createRenderTarget(width, height, true), []);
-  const effectTarget = React.useMemo(() => createRenderTarget(width, height, false), []);
+  const multisampleCount = React.useMemo(() => (gl.capabilities.isWebGL2 ? 4 : 0), [gl]);
+
+  // Samples must be set before the target's first use: three.js only allocates
+  // the multisampled framebuffer during setup, and changing `samples` on an
+  // already-initialized target leaves setRenderTarget reading an undefined
+  // framebuffer ("Invalid value used as weak map key").
+  const colorTarget = React.useMemo(
+    () => createRenderTarget(width, height, true, multisampleCount),
+    [],
+  );
+  const effectTarget = React.useMemo(
+    () => createRenderTarget(width, height, false, multisampleCount),
+    [],
+  );
   const dofPassRef = React.useRef(null);
   const materialRef = React.useRef(null);
 
   if (depthOfFieldEnabled && !dofPassRef.current) {
     dofPassRef.current = new ShaderPass(DepthOfFieldShader);
   }
-
-  const multisampleCount = React.useMemo(() => (gl.capabilities.isWebGL2 ? 4 : 0), [gl]);
 
   // DoF runs at a reduced height (default 480) to keep the 16-tap bokeh cheap.
   const dofRenderHeight = React.useMemo(() => {
@@ -250,8 +261,13 @@ export function Display3DLayer({
   ]);
 
   React.useEffect(() => {
-    colorTarget.samples = multisampleCount;
-    effectTarget.samples = multisampleCount;
+    for (const target of [colorTarget, effectTarget]) {
+      if (target.samples !== multisampleCount) {
+        target.samples = multisampleCount;
+        // Force three.js to re-allocate GL resources with the new sample count.
+        target.dispose();
+      }
+    }
   }, [colorTarget, effectTarget, multisampleCount]);
 
   React.useEffect(() => {
