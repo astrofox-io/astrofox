@@ -31,7 +31,7 @@ export default function Settings({
   return (
     <div className={classNames('flex flex-col p-4', className)}>
       {label && (
-        <div className={'text-neutral-500 text-xs uppercase tracking-wider mb-4'}>{label}</div>
+        <div className={'text-neutral-500 text-xs uppercase tracking-wider mb-2'}>{label}</div>
       )}
       {mapChildren(
         children,

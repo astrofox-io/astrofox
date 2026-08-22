@@ -93,7 +93,6 @@ export default function AppSettings() {
           />
         </Settings>
         <Settings label={t('updates')} columns={['50%', '50%']} onChange={onChange}>
-          <VersionRow />
           <Setting
             label={t('automatic-updates')}
             type="toggle"
@@ -101,6 +100,7 @@ export default function AppSettings() {
             value={automaticUpdates}
             hidden={!desktop}
           />
+          <VersionRow />
         </Settings>
       </div>
     </div>
