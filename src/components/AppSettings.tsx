@@ -92,16 +92,17 @@ export default function AppSettings() {
             value={playAudioOnLoad}
           />
         </Settings>
-        <Settings label={t('updates')} columns={['50%', '50%']} onChange={onChange}>
-          <Setting
-            label={t('automatic-updates')}
-            type="toggle"
-            name="automaticUpdates"
-            value={automaticUpdates}
-            hidden={!desktop}
-          />
-          <VersionRow />
-        </Settings>
+        {desktop && (
+          <Settings label={t('updates')} columns={['50%', '50%']} onChange={onChange}>
+            <Setting
+              label={t('automatic-updates')}
+              type="toggle"
+              name="automaticUpdates"
+              value={automaticUpdates}
+            />
+            <VersionRow />
+          </Settings>
+        )}
       </div>
     </div>
   );

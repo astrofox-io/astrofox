@@ -1115,11 +1115,18 @@ const AUTO_UPDATE_CHECK_DELAY_MS = 5000;
  * automatic update checks enabled.
  */
 function scheduleAutoUpdateCheck() {
-  if (!getAutomaticUpdates() || !isDesktopUpdaterAvailable()) {
+  if (!getAutomaticUpdates()) {
+    logger.log('Automatic update check skipped: disabled in settings');
+    return;
+  }
+
+  if (!isDesktopUpdaterAvailable()) {
+    logger.log('Automatic update check skipped: updater unavailable');
     return;
   }
 
   window.setTimeout(() => {
+    logger.log('Checking for updates');
     checkForDesktopUpdates().catch(error => {
       logger.log('Update check failed:', error);
     });
@@ -1145,7 +1152,11 @@ function watchDesktopUpdates() {
         logger.log('Update download failed:', error);
       });
     } else if (status.state === 'downloaded') {
-      showTransientStatus(t('about.update-downloaded', { version: status.version ?? '' }));
+      // Persistent: this is the one actionable state ("restart to install"),
+      // so keep it visible instead of flashing for a few seconds.
+      appStore.setState({
+        statusText: t('about.update-downloaded', { version: status.version ?? '' }),
+      });
     }
   });
 }
