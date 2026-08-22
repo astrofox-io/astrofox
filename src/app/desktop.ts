@@ -9,6 +9,7 @@ export type DesktopEnvironment = {
   APP_VERSION?: string;
   IS_DESKTOP?: boolean;
   IS_PACKAGED?: boolean;
+  UPDATER_ENABLED?: boolean;
   OS_PLATFORM?: string;
   USER_DATA_PATH?: string;
   TEMP_PATH?: string;
@@ -114,10 +115,14 @@ export function isFfmpegAvailable() {
   return Boolean(env?.FFMPEG_AVAILABLE && env?.FFMPEG_PATH);
 }
 
-/** Auto-update is only wired up in packaged desktop builds. */
+/**
+ * Auto-update is wired up in packaged desktop builds, plus dev builds running
+ * the simulated updater (ASTROFOX_FAKE_UPDATE).
+ */
 export function isDesktopUpdaterAvailable() {
   const bridge = getDesktopBridge();
-  return Boolean(bridge?.updater && bridge.getEnvironment?.()?.IS_PACKAGED);
+  const env = bridge?.getEnvironment?.();
+  return Boolean(bridge?.updater && (env?.UPDATER_ENABLED ?? env?.IS_PACKAGED));
 }
 
 export function checkForDesktopUpdates(): Promise<DesktopUpdaterResult> {

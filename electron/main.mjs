@@ -79,6 +79,7 @@ function getDesktopEnvironment() {
     APP_VERSION: app.getVersion(),
     IS_DESKTOP: true,
     IS_PACKAGED: app.isPackaged,
+    UPDATER_ENABLED: app.isPackaged || Boolean(getFakeUpdateScenario()),
     OS_PLATFORM: process.platform,
     USER_DATA_PATH: app.getPath('userData'),
     TEMP_PATH: getTempPath(),
@@ -617,9 +618,81 @@ async function resetTempDir() {
 let autoUpdater = null;
 let updaterInitialized = false;
 
+// Dev-only simulated updater for testing the update flow end-to-end without a
+// packaged build or release feed. Set ASTROFOX_FAKE_UPDATE to one of:
+//   available (or 1/true) - check finds an update, download succeeds
+//   none                  - check finds no update
+//   error                 - check fails
+function getFakeUpdateScenario() {
+  if (app.isPackaged) return null;
+  const value = String(process.env.ASTROFOX_FAKE_UPDATE || '').toLowerCase();
+  if (!value) return null;
+  if (value === 'none' || value === 'error') return value;
+  return 'available';
+}
+
+const fakeUpdateScenario = getFakeUpdateScenario();
+
 function sendUpdaterStatus(status) {
   if (!mainWindow || mainWindow.isDestroyed()) return;
   mainWindow.webContents.send('updater:status', status);
+}
+
+/**
+ * Mimics the subset of electron-updater's AppUpdater API used by the updater
+ * IPC handlers, driving the same 'updater:status' events on a timer.
+ */
+function createFakeUpdater(scenario) {
+  const fakeVersion = `${app.getVersion()}-fake.1`;
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  console.warn(`Fake updater enabled (ASTROFOX_FAKE_UPDATE=${scenario})`);
+
+  return {
+    async checkForUpdates() {
+      sendUpdaterStatus({ state: 'checking' });
+      await delay(1200);
+
+      if (scenario === 'none') {
+        sendUpdaterStatus({ state: 'not-available', version: app.getVersion() });
+        return { updateInfo: { version: app.getVersion() } };
+      }
+
+      if (scenario === 'error') {
+        const message = 'Simulated update error (ASTROFOX_FAKE_UPDATE=error)';
+        sendUpdaterStatus({ state: 'error', message });
+        throw new Error(message);
+      }
+
+      sendUpdaterStatus({
+        state: 'available',
+        version: fakeVersion,
+        releaseDate: new Date().toISOString(),
+      });
+      return { updateInfo: { version: fakeVersion } };
+    },
+
+    async downloadUpdate() {
+      const total = 50 * 1024 * 1024;
+      for (let percent = 0; percent <= 100; percent += 5) {
+        sendUpdaterStatus({
+          state: 'downloading',
+          percent,
+          transferred: Math.round((total * percent) / 100),
+          total,
+          bytesPerSecond: 8 * 1024 * 1024,
+        });
+        await delay(150);
+      }
+      sendUpdaterStatus({ state: 'downloaded', version: fakeVersion });
+    },
+
+    quitAndInstall() {
+      console.warn('Fake updater: quitAndInstall called - relaunching app');
+      app.relaunch();
+      app.quit();
+    },
+  };
 }
 
 async function setupAutoUpdater() {
@@ -627,6 +700,9 @@ async function setupAutoUpdater() {
   updaterInitialized = true;
 
   if (!app.isPackaged) {
+    if (fakeUpdateScenario) {
+      autoUpdater = createFakeUpdater(fakeUpdateScenario);
+    }
     return;
   }
 
