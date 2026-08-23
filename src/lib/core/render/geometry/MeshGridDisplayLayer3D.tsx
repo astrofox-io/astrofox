@@ -13,6 +13,7 @@ import {
   OneFactor,
   ZeroFactor,
 } from 'three';
+import { BLANK_IMAGE } from '@/app/constants';
 import { clamp } from '@/lib/utils/math';
 import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
 import { getMaterialNode, isPointsMaterial } from './geometryMaterials';
@@ -117,7 +118,17 @@ export function MeshGridDisplayLayer3D({
     texture: textureSrc = '',
   } = properties;
 
-  const textureMap = useTexture3D(textureSrc || undefined);
+  const hasTexture =
+    typeof textureSrc === 'string' && textureSrc !== '' && textureSrc !== BLANK_IMAGE;
+  const textureMap = useTexture3D(hasTexture ? textureSrc : undefined);
+  const materialRef = React.useRef(null);
+
+  // Adding/removing a map changes the shader program; three.js needs an explicit recompile.
+  React.useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.needsUpdate = true;
+    }
+  }, [textureMap]);
 
   const gridColumns = Math.max(4, Math.round(Number(columns) || 4));
   const gridRows = Math.max(4, Math.round(Number(rows) || 4));
@@ -170,7 +181,7 @@ export function MeshGridDisplayLayer3D({
         blendEquationAlpha: sceneMask ? AddEquation : undefined,
         blendSrcAlpha: sceneMask ? OneFactor : undefined,
         blendDstAlpha: sceneMask ? ZeroFactor : undefined,
-        ...(textureMap ? { map: textureMap } : {}),
+        map: textureMap ?? null,
       };
 
   React.useEffect(() => {
@@ -228,7 +239,7 @@ export function MeshGridDisplayLayer3D({
         renderOrder={order}
         frustumCulled={false}
       >
-        {getMaterialNode(material, geometryMaterialProps)}
+        {getMaterialNode(material, { ...geometryMaterialProps, ref: materialRef })}
       </GeometryPrimitive>
       {edges && !pointsMaterial && (
         <mesh

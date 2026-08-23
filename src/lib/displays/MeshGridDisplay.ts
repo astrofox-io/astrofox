@@ -1,3 +1,4 @@
+import { BLANK_IMAGE } from '@/app/constants';
 import Display from '@/lib/core/Display';
 import { GRID_MOTION_OPTIONS } from '@/lib/core/render/geometry/gridMotion';
 import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
@@ -187,5 +188,26 @@ export default class MeshGridDisplay extends Display {
 
   constructor(properties?: Record<string, unknown>) {
     super(MeshGridDisplay, properties);
+  }
+
+  update(properties: Record<string, unknown>) {
+    let nextProperties = properties;
+
+    // Normalize texture input from ImageInput (HTMLImageElement or BLANK_IMAGE) to a src string
+    if (properties && 'texture' in properties) {
+      const { texture } = properties;
+      let src = '';
+
+      if (typeof texture === 'string') {
+        src = texture === BLANK_IMAGE ? '' : texture;
+      } else if (texture && typeof texture === 'object' && (texture as HTMLImageElement).src) {
+        const { src: imageSrc } = texture as HTMLImageElement;
+        src = imageSrc === BLANK_IMAGE ? '' : imageSrc;
+      }
+
+      nextProperties = { ...properties, texture: src };
+    }
+
+    return super.update(nextProperties);
   }
 }
