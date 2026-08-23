@@ -8,6 +8,7 @@ export default class ColorDepthEffect extends Effect {
     description: 'Color depth effect.',
     type: 'effect',
     label: 'Color Depth',
+    category: 'color',
     defaultProperties: {
       bits: 16,
     },
