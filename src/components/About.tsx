@@ -1,14 +1,7 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  checkForDesktopUpdates,
-  type DesktopUpdaterStatus,
-  downloadDesktopUpdate,
-  installDesktopUpdate,
-  isDesktopUpdaterAvailable,
-  onDesktopUpdaterStatus,
-} from '@/app/desktop';
+import { checkForDesktopUpdates, installDesktopUpdate } from '@/app/desktop';
 import { env } from '@/app/global';
+import useDesktopUpdaterStatus from '@/app/hooks/useDesktopUpdaterStatus';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 
@@ -54,35 +47,20 @@ export default function About({ onClose }: AboutProps) {
 /** Desktop-only auto-update controls; renders nothing on the web build. */
 function UpdateStatus() {
   const { t } = useTranslation(undefined, { keyPrefix: 'about' });
-  const [available, setAvailable] = useState(false);
-  const [status, setStatus] = useState<DesktopUpdaterStatus | null>(null);
+  const { updaterAvailable, status, setStatus } = useDesktopUpdaterStatus();
 
-  useEffect(() => {
-    if (!isDesktopUpdaterAvailable()) {
-      return;
-    }
-    setAvailable(true);
-    return onDesktopUpdaterStatus(setStatus);
-  }, []);
-
-  if (!available) {
+  if (!updaterAvailable) {
     return null;
   }
 
-  const busy = status?.state === 'checking' || status?.state === 'downloading';
+  const busy =
+    status?.state === 'checking' ||
+    status?.state === 'available' ||
+    status?.state === 'downloading';
 
   function handleCheck() {
     setStatus({ state: 'checking' });
     void checkForDesktopUpdates().then(result => {
-      if (!result.ok && result.reason) {
-        setStatus({ state: 'error', message: result.reason });
-      }
-    });
-  }
-
-  function handleDownload() {
-    setStatus({ state: 'downloading', percent: 0, transferred: 0, total: 0, bytesPerSecond: 0 });
-    void downloadDesktopUpdate().then(result => {
       if (!result.ok && result.reason) {
         setStatus({ state: 'error', message: result.reason });
       }
@@ -124,10 +102,6 @@ function UpdateStatus() {
         {status?.state === 'downloaded' ? (
           <Button variant="default" size="xs" onClick={handleInstall}>
             {t('restart-to-update')}
-          </Button>
-        ) : status?.state === 'available' ? (
-          <Button variant="default" size="xs" onClick={handleDownload}>
-            {t('download-update')}
           </Button>
         ) : (
           <Button variant="secondary" size="xs" disabled={busy} onClick={handleCheck}>

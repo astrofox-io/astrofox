@@ -12,6 +12,7 @@ import useProject, { DEFAULT_PROJECT_NAME } from '@/app/actions/project';
 import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
 import { isDesktopApp, isMacDesktop } from '@/app/desktop';
 import { env } from '@/app/global';
+import TitleBarUpdateButton from '@/components/TitleBarUpdateButton';
 import { Button } from '@/components/ui/button';
 
 export default function TitleBar() {
@@ -148,6 +149,7 @@ export default function TitleBar() {
         className="absolute inset-y-0 right-0 flex items-center"
         style={desktop ? ({ WebkitAppRegion: 'no-drag' } as CSSProperties) : undefined}
       >
+        <TitleBarUpdateButton />
         <div className={`flex items-center gap-1 ${desktop && !macDesktop ? 'mr-6' : 'mr-2'}`}>
           {panelButtons.map(button => {
             const Icon = button.icon;

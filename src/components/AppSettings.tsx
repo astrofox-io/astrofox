@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  checkForDesktopUpdates,
-  type DesktopUpdaterStatus,
-  installDesktopUpdate,
-  isDesktopApp,
-  isDesktopUpdaterAvailable,
-  onDesktopUpdaterStatus,
-} from '@/app/desktop';
+import { checkForDesktopUpdates, installDesktopUpdate, isDesktopApp } from '@/app/desktop';
 import { env } from '@/app/global';
+import useDesktopUpdaterStatus from '@/app/hooks/useDesktopUpdaterStatus';
 import {
   getAutomaticUpdates,
   getPlayAudioOnLoad,
@@ -112,18 +106,12 @@ export default function AppSettings() {
 function VersionRow() {
   const { t } = useTranslation(undefined, { keyPrefix: 'about' });
   const desktop = isDesktopApp();
-  const [updaterAvailable, setUpdaterAvailable] = useState(false);
-  const [status, setStatus] = useState<DesktopUpdaterStatus | null>(null);
+  const { updaterAvailable, status, setStatus } = useDesktopUpdaterStatus();
 
-  useEffect(() => {
-    if (!isDesktopUpdaterAvailable()) {
-      return;
-    }
-    setUpdaterAvailable(true);
-    return onDesktopUpdaterStatus(setStatus);
-  }, []);
-
-  const busy = status?.state === 'checking' || status?.state === 'downloading';
+  const busy =
+    status?.state === 'checking' ||
+    status?.state === 'available' ||
+    status?.state === 'downloading';
 
   function handleCheck() {
     setStatus({ state: 'checking' });

@@ -31,6 +31,7 @@ const api = {
   ffmpegKill: id => ipcRenderer.invoke('ffmpeg:kill', { id }),
 
   updater: {
+    getStatus: () => ipcRenderer.invoke('updater:get-status'),
     check: () => ipcRenderer.invoke('updater:check'),
     download: () => ipcRenderer.invoke('updater:download'),
     install: () => ipcRenderer.invoke('updater:install'),

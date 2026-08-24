@@ -7,6 +7,7 @@ import LayersPanel from '@/components/LayersPanel';
 import PanelHeader from '@/components/PanelHeader';
 import ReactorsPanel from '@/components/ReactorsPanel';
 import SidebarNav from '@/components/SidebarNav';
+import { Button } from '@/components/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -37,14 +38,16 @@ export default function LeftPanel() {
                     <Tooltip>
                       <TooltipTrigger
                         render={
-                          <button
+                          <Button
                             type="button"
-                            className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-neutral-800"
+                            variant="ghost"
+                            size="icon-xs"
+                            className="bg-neutral-900 text-neutral-100 hover:bg-neutral-800"
                             onClick={handleAddScene}
                           />
                         }
                       >
-                        <Plus className="text-neutral-100 w-4 h-4" />
+                        <Plus className="size-4 text-neutral-100" />
                       </TooltipTrigger>
                       <TooltipContent
                         side="top"
@@ -70,15 +73,17 @@ export default function LeftPanel() {
                     <Tooltip>
                       <TooltipTrigger
                         render={
-                          <button
+                          <Button
                             type="button"
-                            className="text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0 [&:hover]:bg-neutral-800"
+                            variant="ghost"
+                            size="icon-xs"
+                            className="bg-neutral-900 text-neutral-100 hover:bg-neutral-800"
                             onClick={handleAddReactor}
                             aria-label={t('add-reactor')}
                           />
                         }
                       >
-                        <Plus className="text-neutral-100 w-4 h-4" />
+                        <Plus className="size-4 text-neutral-100" />
                       </TooltipTrigger>
                       <TooltipContent
                         side="top"

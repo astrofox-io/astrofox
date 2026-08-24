@@ -617,6 +617,7 @@ async function resetTempDir() {
 /** @type {import('electron-updater').AppUpdater | null} */
 let autoUpdater = null;
 let updaterInitialized = false;
+let updaterStatus = null;
 
 // Dev-only simulated updater for testing the update flow end-to-end without a
 // packaged build or release feed. Set ASTROFOX_FAKE_UPDATE to one of:
@@ -634,6 +635,7 @@ function getFakeUpdateScenario() {
 const fakeUpdateScenario = getFakeUpdateScenario();
 
 function sendUpdaterStatus(status) {
+  updaterStatus = status;
   if (!mainWindow || mainWindow.isDestroyed()) return;
   mainWindow.webContents.send('updater:status', status);
 }
@@ -762,6 +764,8 @@ async function setupAutoUpdater() {
 }
 
 function registerUpdaterIpc() {
+  ipcMain.handle('updater:get-status', () => updaterStatus);
+
   ipcMain.handle('updater:check', async () => {
     if (!autoUpdater) {
       return { ok: false, reason: 'unavailable' };

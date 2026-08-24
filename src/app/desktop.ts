@@ -42,6 +42,7 @@ export type DesktopUpdaterStatus =
 export type DesktopUpdaterResult = { ok: boolean; reason?: string; version?: string };
 
 export type DesktopUpdaterBridge = {
+  getStatus: () => Promise<DesktopUpdaterStatus | null>;
   check: () => Promise<DesktopUpdaterResult>;
   download: () => Promise<DesktopUpdaterResult>;
   install: () => Promise<DesktopUpdaterResult>;
@@ -131,6 +132,14 @@ export function checkForDesktopUpdates(): Promise<DesktopUpdaterResult> {
     return Promise.resolve({ ok: false, reason: 'unavailable' });
   }
   return updater.check();
+}
+
+export function getDesktopUpdaterStatus(): Promise<DesktopUpdaterStatus | null> {
+  const updater = getDesktopBridge()?.updater;
+  if (!updater) {
+    return Promise.resolve(null);
+  }
+  return updater.getStatus();
 }
 
 export function downloadDesktopUpdate(): Promise<DesktopUpdaterResult> {

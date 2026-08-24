@@ -1133,10 +1133,7 @@ function scheduleAutoUpdateCheck() {
   }, AUTO_UPDATE_CHECK_DELAY_MS);
 }
 
-/**
- * Surface the desktop auto-update result of the background check in the
- * status bar so users learn about a new version without opening About.
- */
+/** Download available desktop updates in the background. */
 function watchDesktopUpdates() {
   if (updateWatcherAttached) {
     return;
@@ -1145,17 +1142,9 @@ function watchDesktopUpdates() {
 
   onDesktopUpdaterStatus(status => {
     if (status.state === 'available') {
-      showTransientStatus(t('about.update-available', { version: status.version ?? '' }));
-
       // Always download available updates; they install automatically on quit.
       downloadDesktopUpdate().catch(error => {
         logger.log('Update download failed:', error);
-      });
-    } else if (status.state === 'downloaded') {
-      // Persistent: this is the one actionable state ("restart to install"),
-      // so keep it visible instead of flashing for a few seconds.
-      appStore.setState({
-        statusText: t('about.update-downloaded', { version: status.version ?? '' }),
       });
     }
   });
