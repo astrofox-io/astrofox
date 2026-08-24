@@ -124,7 +124,7 @@ importers:
         specifier: ^39.8.10
         version: 39.8.10(supports-color@8.1.1)
       electron-builder:
-        specifier: ^26.0.12
+        specifier: ^26.15.3
         version: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@8.1.1)
       get-port:
         specifier: ^7.2.0

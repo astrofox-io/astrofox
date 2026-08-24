@@ -1,0 +1,501 @@
+name: Package installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      sign:
+        description: Sign macOS and Windows artifacts when signing secrets are configured.
+        required: true
+        type: boolean
+        default: false
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+env:
+  ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
+  ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/../electron-builder-cache
+  ENABLE_SIGNING: ${{ github.event_name == 'push' || inputs.sign == true }}
+  ASTROFOX_UPDATE_FEED_URL: ${{ vars.ASTROFOX_UPDATE_FEED_URL || secrets.ASTROFOX_UPDATE_FEED_URL }}
+  SSL_COM_ENVIRONMENT_NAME: ${{ secrets.SSL_COM_ENVIRONMENT_NAME || 'PROD' }}
+
+jobs:
+  package-linux:
+    name: Package Linux
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.8
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Linux packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+
+      - name: Install ffmpeg
+        run: pnpm install-ffmpeg
+
+      - name: Build renderer
+        run: pnpm build:renderer
+
+      - name: Package Linux installers
+        run: pnpm exec electron-builder --linux --x64 --publish never
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: astrofox-linux
+          if-no-files-found: error
+          path: |
+            release/*.AppImage
+            release/*.deb
+            release/*.rpm
+            release/*.blockmap
+            release/latest-linux.yml
+
+  package-macos:
+    name: Package macOS
+    runs-on: blacksmith-6vcpu-macos-15
+    timeout-minutes: 70
+    env:
+      MAC_SIGNING_AVAILABLE: ${{ secrets.MAC_CSC_LINK != '' && secrets.MAC_CSC_KEY_PASSWORD != '' && secrets.APPLE_ID != '' && secrets.APPLE_APP_SPECIFIC_PASSWORD != '' && secrets.APPLE_TEAM_ID != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.8
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install ffmpeg
+        run: pnpm install-ffmpeg
+
+      - name: Build renderer
+        run: pnpm build:renderer
+
+      - name: Validate macOS entitlements
+        if: env.ENABLE_SIGNING == 'true' && env.MAC_SIGNING_AVAILABLE == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sw_vers
+          xcodebuild -version
+          xcrun notarytool --version
+          plutil -lint build/entitlements.mac.plist
+          plutil -p build/entitlements.mac.plist
+
+      - name: Package signed macOS app
+        if: env.ENABLE_SIGNING == 'true' && env.MAC_SIGNING_AVAILABLE == 'true'
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          log_dir="$PWD/macos-package-logs"
+          log_path="$log_dir/electron-builder-macos.log"
+          mkdir -p "$log_dir"
+          echo "MACOS_PACKAGE_LOG_DIR=$log_dir" >> "$GITHUB_ENV"
+
+          snapshot_release() {
+            if [[ -d release ]]; then
+              du -sh release 2>/dev/null || true
+              find release -maxdepth 2 \( -type d -name '*.app' -o -type f \) -print | sort | tail -n 80
+            fi
+          }
+
+          start_epoch="$(date +%s)"
+          (
+            while true; do
+              sleep 60
+              echo "::group::macOS packaging heartbeat ($(($(date +%s) - start_epoch))s)"
+              snapshot_release
+              echo "::endgroup::"
+            done
+          ) &
+          heartbeat_pid="$!"
+          cleanup_heartbeat() {
+            kill "$heartbeat_pid" 2>/dev/null || true
+            wait "$heartbeat_pid" 2>/dev/null || true
+          }
+          trap cleanup_heartbeat EXIT
+
+          set +e
+          DEBUG=electron-builder,electron-builder:*,electron-osx-sign,electron-osx-sign:* pnpm exec electron-builder --mac dir --arm64 --x64 --publish never -c.mac.notarize=false 2>&1 | tee "$log_path"
+          builder_status="${PIPESTATUS[0]}"
+          set -e
+          cleanup_heartbeat
+          trap - EXIT
+          snapshot_release
+          exit "$builder_status"
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+
+      - name: Notarize signed macOS app
+        if: env.ENABLE_SIGNING == 'true' && env.MAC_SIGNING_AVAILABLE == 'true'
+        timeout-minutes: 35
+        shell: bash
+        run: |
+          set -euo pipefail
+          app_paths=()
+          while IFS= read -r app_path; do
+            app_paths+=("$app_path")
+          done < <(find release -maxdepth 2 -type d -name 'Astrofox.app' ! -path '*universal*' -print | sort)
+          if [[ "${#app_paths[@]}" -eq 0 ]]; then
+            echo "Could not find any Astrofox.app bundles under release." >&2
+            find release -maxdepth 3 -print >&2
+            exit 1
+          fi
+          for app_path in "${app_paths[@]}"; do
+            NOTARY_WAIT_TIMEOUT=30m bash scripts/notarize-macos-app.sh "$app_path"
+          done
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Package notarized macOS installers
+        if: env.ENABLE_SIGNING == 'true' && env.MAC_SIGNING_AVAILABLE == 'true'
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          set -euo pipefail
+          app_paths=()
+          while IFS= read -r app_path; do
+            app_paths+=("$app_path")
+          done < <(find release -maxdepth 2 -type d -name 'Astrofox.app' ! -path '*universal*' -print | sort)
+          if [[ "${#app_paths[@]}" -eq 0 ]]; then
+            echo "Could not find any Astrofox.app bundles under release." >&2
+            exit 1
+          fi
+          latest_mac_files=()
+          for app_path in "${app_paths[@]}"; do
+            app_binary="$app_path/Contents/MacOS/Astrofox"
+            app_file_output="$(file "$app_binary")"
+            case "$app_file_output" in
+              *"arm64"*) arch="arm64" ;;
+              *"x86_64"*) arch="x64" ;;
+              *) echo "Could not determine architecture from: $app_file_output" >&2; exit 1 ;;
+            esac
+            pnpm exec electron-builder --mac dmg zip "--$arch" --prepackaged "$app_path" --publish never -c.mac.notarize=false
+            arch_latest_mac="$RUNNER_TEMP/latest-mac-$arch.yml"
+            cp release/latest-mac.yml "$arch_latest_mac"
+            latest_mac_files+=("$arch_latest_mac")
+          done
+          node scripts/merge-latest-mac-metadata.mjs release/latest-mac.yml "${latest_mac_files[@]}"
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Verify signed macOS app and notarization
+        if: env.ENABLE_SIGNING == 'true' && env.MAC_SIGNING_AVAILABLE == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          app_paths=()
+          while IFS= read -r app_path; do
+            app_paths+=("$app_path")
+          done < <(find release -maxdepth 2 -type d -name 'Astrofox.app' ! -path '*universal*' -print | sort)
+          if [[ "${#app_paths[@]}" -eq 0 ]]; then
+            echo "Could not find any Astrofox.app bundles under release." >&2
+            exit 1
+          fi
+          for app_path in "${app_paths[@]}"; do
+            codesign --verify --deep --strict --verbose=2 "$app_path"
+            spctl --assess --type execute --verbose=4 "$app_path"
+            xcrun stapler validate "$app_path"
+          done
+
+      - name: Upload macOS packaging logs
+        if: always() && env.ENABLE_SIGNING == 'true' && env.MAC_SIGNING_AVAILABLE == 'true'
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: astrofox-macos-package-logs
+          if-no-files-found: ignore
+          path: macos-package-logs/*
+
+      - name: Package unsigned macOS installers
+        if: env.ENABLE_SIGNING != 'true' || env.MAC_SIGNING_AVAILABLE != 'true'
+        run: pnpm exec electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=null
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: astrofox-macos
+          if-no-files-found: error
+          path: |
+            release/*.dmg
+            release/*.zip
+            release/*.blockmap
+            release/latest-mac.yml
+
+  package-windows:
+    name: Package Windows
+    runs-on: blacksmith-4vcpu-windows-2025
+    timeout-minutes: 60
+    env:
+      WINDOWS_SIGNING_AVAILABLE: ${{ secrets.SSL_COM_USERNAME != '' && secrets.SSL_COM_PASSWORD != '' && secrets.SSL_COM_CREDENTIAL_ID != '' && secrets.SSL_COM_TOTP_SECRET != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.8
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install ffmpeg
+        if: env.ENABLE_SIGNING != 'true' || env.WINDOWS_SIGNING_AVAILABLE != 'true'
+        run: pnpm install-ffmpeg
+
+      - name: Build renderer
+        if: env.ENABLE_SIGNING != 'true' || env.WINDOWS_SIGNING_AVAILABLE != 'true'
+        run: pnpm build:renderer
+
+      - name: Install SSL.com CodeSignTool
+        if: env.ENABLE_SIGNING == 'true' && env.WINDOWS_SIGNING_AVAILABLE == 'true'
+        shell: pwsh
+        run: |
+          $toolVersion = "v1.3.2"
+          $toolRoot = Join-Path $env:RUNNER_TEMP "CodeSignTool-$toolVersion"
+          $downloadPath = Join-Path $env:RUNNER_TEMP "CodeSignTool-$toolVersion-windows.zip"
+          $downloadUrl = "https://github.com/SSLcom/CodeSignTool/releases/download/$toolVersion/CodeSignTool-$toolVersion-windows.zip"
+          Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
+          Expand-Archive -LiteralPath $downloadPath -DestinationPath $toolRoot -Force
+          $codeSignTool = Join-Path $toolRoot "CodeSignTool.bat"
+          if (-not (Test-Path -LiteralPath $codeSignTool)) { throw "CodeSignTool.bat was not found." }
+          $configPath = Join-Path $toolRoot "conf\code_sign_tool.properties"
+          if ($env:SSL_COM_ENVIRONMENT_NAME -eq "TEST") {
+            @(
+              "CLIENT_ID=qOUeZCCzSqgA93acB3LYq6lBNjgZdiOxQc-KayC3UMw"
+              "OAUTH2_ENDPOINT=https://oauth-sandbox.ssl.com/oauth2/token"
+              "CSC_API_ENDPOINT=https://cs-try.ssl.com"
+              "TSA_URL=http://ts.ssl.com"
+              "TSA_LEGACY_URL=http://ts.ssl.com/legacy"
+            ) | Set-Content -LiteralPath $configPath -Encoding ASCII
+          } else {
+            @(
+              "CLIENT_ID=kaXTRACNijSWsFdRKg_KAfD3fqrBlzMbWs6TwWHwAn8"
+              "OAUTH2_ENDPOINT=https://login.ssl.com/oauth2/token"
+              "CSC_API_ENDPOINT=https://cs.ssl.com"
+              "TSA_URL=http://ts.ssl.com"
+              "TSA_LEGACY_URL=http://ts.ssl.com/legacy"
+            ) | Set-Content -LiteralPath $configPath -Encoding ASCII
+          }
+          "SSL_COM_CODESIGNTOOL=$codeSignTool" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Package signed Windows installer
+        if: env.ENABLE_SIGNING == 'true' && env.WINDOWS_SIGNING_AVAILABLE == 'true'
+        shell: pwsh
+        run: pnpm package:win:signed
+        env:
+          SSL_COM_USERNAME: ${{ secrets.SSL_COM_USERNAME }}
+          SSL_COM_PASSWORD: ${{ secrets.SSL_COM_PASSWORD }}
+          SSL_COM_CREDENTIAL_ID: ${{ secrets.SSL_COM_CREDENTIAL_ID }}
+          SSL_COM_TOTP_SECRET: ${{ secrets.SSL_COM_TOTP_SECRET }}
+
+      - name: Package unsigned Windows installer
+        if: env.ENABLE_SIGNING != 'true' || env.WINDOWS_SIGNING_AVAILABLE != 'true'
+        run: pnpm exec electron-builder --win --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: astrofox-windows
+          if-no-files-found: error
+          path: |
+            release/*.exe
+            release/*.blockmap
+            release/latest.yml
+
+  upload-r2:
+    name: Upload release assets to Cloudflare R2
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    needs:
+      - package-linux
+      - package-macos
+      - package-windows
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: astrofox-linux
+          path: release-assets
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: astrofox-macos
+          path: release-assets
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: astrofox-windows
+          path: release-assets
+
+      - name: Rewrite update metadata for R2
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t metadata_files < <(
+            find release-assets -type f \( -name 'latest.yml' -o -name 'latest-linux.yml' -o -name 'latest-mac.yml' \) -print | sort
+          )
+          if [[ "${#metadata_files[@]}" -eq 0 ]]; then
+            echo "No update metadata files found." >&2
+            exit 1
+          fi
+          node scripts/rewrite-update-metadata-urls.mjs "${metadata_files[@]}"
+
+      - name: Install AWS CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v aws >/dev/null 2>&1; then aws --version; exit 0; fi
+          case "$(uname -m)" in
+            x86_64) aws_arch="x86_64" ;;
+            aarch64 | arm64) aws_arch="aarch64" ;;
+            *) echo "Unsupported AWS CLI architecture: $(uname -m)" >&2; exit 1 ;;
+          esac
+          curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${aws_arch}.zip" -o "$RUNNER_TEMP/awscliv2.zip"
+          unzip -q "$RUNNER_TEMP/awscliv2.zip" -d "$RUNNER_TEMP"
+          sudo "$RUNNER_TEMP/aws/install" --update
+
+      - name: Upload release assets to Cloudflare R2
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY CLOUDFLARE_R2_ACCOUNT_ID CLOUDFLARE_R2_BUCKET ASTROFOX_UPDATE_FEED_URL; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required secret-backed environment variable: $name"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -ne 0 ]]; then exit 1; fi
+
+          endpoint="https://${CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp release-assets/ "s3://${CLOUDFLARE_R2_BUCKET}/releases/" --endpoint-url "$endpoint" --recursive --only-show-errors
+          version="$(node -p "require('./package.json').version")"
+
+          upload_latest_alias() {
+            local source_path="$1"
+            local alias_name="$2"
+            if [[ ! -f "$source_path" ]]; then
+              echo "Skipping missing latest alias source: $source_path"
+              return
+            fi
+            aws s3 cp "$source_path" "s3://${CLOUDFLARE_R2_BUCKET}/latest/${alias_name}" --endpoint-url "$endpoint" --only-show-errors
+          }
+
+          upload_latest_alias "release-assets/Astrofox-${version}-mac-arm64.dmg" "Astrofox-mac-arm64.dmg"
+          upload_latest_alias "release-assets/Astrofox-${version}-mac-x64.dmg" "Astrofox-mac-x64.dmg"
+          upload_latest_alias "release-assets/Astrofox-${version}-windows-x64-setup.exe" "Astrofox-windows-x64.exe"
+          upload_latest_alias "release-assets/Astrofox-${version}-linux-amd64.deb" "Astrofox-linux-x64.deb"
+          upload_latest_alias "release-assets/Astrofox-${version}-linux-x86_64.rpm" "Astrofox-linux-x64.rpm"
+          upload_latest_alias "release-assets/Astrofox-${version}-linux-x86_64.AppImage" "Astrofox-linux-x64.AppImage"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_EC2_METADATA_DISABLED: true
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+
+  publish-release:
+    name: Publish GitHub release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - package-linux
+      - package-macos
+      - package-windows
+      - upload-r2
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: astrofox-linux
+          path: release-assets
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: astrofox-macos
+          path: release-assets
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: astrofox-windows
+          path: release-assets
+
+      - name: Publish release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t assets < <(
+            find release-assets -type f \( -name '*.AppImage' -o -name '*.blockmap' -o -name '*.deb' -o -name '*.dmg' -o -name '*.exe' -o -name '*.rpm' -o -name '*.yml' -o -name '*.zip' \) -print | sort
+          )
+          if [[ "${#assets[@]}" -eq 0 ]]; then
+            echo "No release assets found." >&2
+            exit 1
+          fi
+          tag="${GITHUB_REF_NAME}"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$tag" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --title "$tag" --generate-notes
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}

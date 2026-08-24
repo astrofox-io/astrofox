@@ -25,10 +25,15 @@
     "dev:plugins": "node ./scripts/dev-plugins.mjs",
     "build:renderer": "node ./scripts/copy-plugin-libs.mjs && cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
     "build:desktop": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --publish never",
+    "package": "pnpm package:dir",
+    "package:dir": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --dir",
+    "package:mac": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --mac --publish never",
+    "package:win": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --win --publish never",
+    "package:win:signed": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-win-signed.ps1",
+    "package:linux": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --linux --publish never",
     "dist:win": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --win --publish never",
     "dist:mac": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --mac --publish never",
     "dist:linux": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --linux --publish never",
-    "release:desktop": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --publish always",
     "install-ffmpeg": "node ./scripts/install-ffmpeg.mjs",
     "plugin-libs": "node ./scripts/copy-plugin-libs.mjs",
     "postinstall": "node ./scripts/copy-plugin-libs.mjs"
@@ -36,6 +41,7 @@
   "build": {
     "appId": "io.astrofox.app",
     "productName": "Astrofox",
+    "executableName": "Astrofox",
     "asar": true,
     "directories": {
       "output": "release"
@@ -44,15 +50,10 @@
       {
         "provider": "github",
         "owner": "astrofox-io",
-        "repo": "astrofox",
-        "releaseType": "draft"
-      },
-      {
-        "provider": "generic",
-        "url": "https://files.astrofox.io/download"
+        "repo": "astrofox"
       }
     ],
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "afterPack": "scripts/configure-update-feed.cjs",
     "files": [
       "electron/**/*",
       "out/**/*",
@@ -102,6 +103,10 @@
       ],
       "icon": "public/icons/icon-512.png"
     },
+    "nsis": {
+      "oneClick": true,
+      "artifactName": "${productName}-${version}-windows-${arch}-setup.${ext}"
+    },
     "mac": {
       "target": [
         {
@@ -119,13 +124,13 @@
           ]
         }
       ],
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}",
       "category": "public.app-category.video",
       "icon": "public/icons/icon-512.png",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "notarize": true,
       "extendInfo": {
         "NSMicrophoneUsageDescription": "Astrofox needs microphone access for audio input.",
         "NSScreenCaptureUsageDescription": "Astrofox needs screen recording access to capture the desktop."
@@ -133,13 +138,14 @@
     },
     "linux": {
       "target": [
-        "AppImage"
+        "AppImage",
+        "deb",
+        "rpm"
       ],
       "category": "AudioVideo",
-      "icon": "public/icons/icon-512.png"
-    },
-    "nsis": {
-      "oneClick": true
+      "icon": "public/icons/icon-512.png",
+      "maintainer": "Astrofox <mike@mikecao.com>",
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
     },
     "npmRebuild": false
   },
@@ -184,7 +190,7 @@
     "cross-env": "^7.0.3",
     "dotenv-cli": "^11.0.0",
     "electron": "^39.8.10",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "^26.15.3",
     "get-port": "^7.2.0",
     "typescript": "6.0.3",
     "wait-on": "^8.0.4"

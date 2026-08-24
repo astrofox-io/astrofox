@@ -73,16 +73,34 @@ pnpm dev:desktop
 Production package (static export + electron-builder):
 
 ```
-pnpm install-ffmpeg   # optional; bundles ffmpeg for desktop export
-pnpm build:desktop    # or dist:win / dist:mac / dist:linux
+pnpm package
 ```
 
-Desktop uses `BUILD_TARGET=desktop` for a static export into `out/`, then packages `electron/` + `out/`. The web Vercel path is unchanged.
+Desktop uses `BUILD_TARGET=desktop` for a static export into `out/`, then packages `electron/` + `out/`. The web Vercel path is unchanged. Installers are written to `release/`.
+
+Platform-specific and unpacked variants:
+
+```
+pnpm package:dir
+pnpm package:mac
+pnpm package:win
+pnpm package:linux
+```
+
+### Desktop releases
+
+Pushing a `v*` tag runs `.github/workflows/package-installers.yml`. It packages Linux, macOS, and Windows separately; uses signing and notarization when the corresponding secrets are available; uploads versioned artifacts and update metadata to the R2 `releases/` folder; refreshes stable installer aliases in the R2 `latest/` folder; and publishes the GitHub release after the R2 upload succeeds. Manual workflow runs can produce unsigned artifacts by leaving the `sign` input disabled.
+
+The workflow expects the repository variable `ASTROFOX_UPDATE_FEED_URL` to contain the public R2 releases URL and these repository or organization secrets:
+
+- R2: `CLOUDFLARE_R2_ACCESS_KEY_ID`, `CLOUDFLARE_R2_SECRET_ACCESS_KEY`, `CLOUDFLARE_R2_ACCOUNT_ID`, `CLOUDFLARE_R2_BUCKET`
+- macOS signing: `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`
+- Windows signing: `SSL_COM_USERNAME`, `SSL_COM_PASSWORD`, `SSL_COM_CREDENTIAL_ID`, `SSL_COM_TOTP_SECRET`
 
 **Video export**
 
 - **Web:** browser `MediaRecorder` (WebM/MP4 when supported)
-- **Desktop:** offline frame render → bundled **ffmpeg** → MP4 (H.264/AAC). Run `pnpm install-ffmpeg` before packaging so the binary is included under `bin/`.
+- **Desktop:** offline frame render → bundled **ffmpeg** → MP4 (H.264/AAC). Packaging commands download the platform binary and include it under `bin/`.
 
 ## License
 
