@@ -46,11 +46,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Linux packaging tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rpm
-
       - name: Install ffmpeg
         run: pnpm install-ffmpeg
 
@@ -67,8 +62,6 @@ jobs:
           if-no-files-found: error
           path: |
             release/*.AppImage
-            release/*.deb
-            release/*.rpm
             release/*.blockmap
             release/latest-linux.yml
 
@@ -438,8 +431,6 @@ jobs:
           upload_latest_alias "release-assets/Astrofox-${version}-mac-arm64.dmg" "Astrofox-mac-arm64.dmg"
           upload_latest_alias "release-assets/Astrofox-${version}-mac-x64.dmg" "Astrofox-mac-x64.dmg"
           upload_latest_alias "release-assets/Astrofox-${version}-windows-x64-setup.exe" "Astrofox-windows-x64.exe"
-          upload_latest_alias "release-assets/Astrofox-${version}-linux-amd64.deb" "Astrofox-linux-x64.deb"
-          upload_latest_alias "release-assets/Astrofox-${version}-linux-x86_64.rpm" "Astrofox-linux-x64.rpm"
           upload_latest_alias "release-assets/Astrofox-${version}-linux-x86_64.AppImage" "Astrofox-linux-x64.AppImage"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
@@ -485,7 +476,7 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t assets < <(
-            find release-assets -type f \( -name '*.AppImage' -o -name '*.blockmap' -o -name '*.deb' -o -name '*.dmg' -o -name '*.exe' -o -name '*.rpm' -o -name '*.yml' -o -name '*.zip' \) -print | sort
+            find release-assets -type f \( -name '*.AppImage' -o -name '*.blockmap' -o -name '*.dmg' -o -name '*.exe' -o -name '*.yml' -o -name '*.zip' \) -print | sort
           )
           if [[ "${#assets[@]}" -eq 0 ]]; then
             echo "No release assets found." >&2

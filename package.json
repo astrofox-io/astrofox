@@ -138,9 +138,7 @@
     },
     "linux": {
       "target": [
-        "AppImage",
-        "deb",
-        "rpm"
+        "AppImage"
       ],
       "category": "AudioVideo",
       "icon": "public/icons/icon-512.png",
