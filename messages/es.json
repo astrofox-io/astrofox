@@ -7,6 +7,8 @@
     "no": "No",
     "save": "Guardar",
     "delete": "Eliminar",
+    "hide": "Ocultar",
+    "show": "Mostrar",
     "create": "Crear",
     "open": "Abrir",
     "refresh": "Actualizar",
@@ -22,7 +24,9 @@
     "reactors": "Reactores",
     "controls": "Controles",
     "add-scene": "Añadir escena",
-    "add-reactor": "Añadir reactor"
+    "add-reactor": "Añadir reactor",
+    "move-layer-up": "Mover capa hacia arriba",
+    "move-layer-down": "Mover capa hacia abajo"
   },
   "title-bar": {
     "hide-layers-panel": "Ocultar panel de capas y reactores",

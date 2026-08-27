@@ -7,6 +7,8 @@
     "no": "Non",
     "save": "Enregistrer",
     "delete": "Supprimer",
+    "hide": "Masquer",
+    "show": "Afficher",
     "create": "Créer",
     "open": "Ouvrir",
     "refresh": "Actualiser",
@@ -22,7 +24,9 @@
     "reactors": "Réacteurs",
     "controls": "Commandes",
     "add-scene": "Ajouter une scène",
-    "add-reactor": "Ajouter un réacteur"
+    "add-reactor": "Ajouter un réacteur",
+    "move-layer-up": "Déplacer le calque vers le haut",
+    "move-layer-down": "Déplacer le calque vers le bas"
   },
   "title-bar": {
     "hide-layers-panel": "Masquer le panneau des calques et réacteurs",

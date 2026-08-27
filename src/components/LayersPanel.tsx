@@ -1,6 +1,7 @@
 import { clsx as classNames } from 'cnfast';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useApp, { setActiveElementId } from '@/app/actions/app';
 import useScenes, {
   moveElement,
@@ -10,6 +11,7 @@ import useScenes, {
 } from '@/app/actions/scenes';
 import { ChevronDown, ChevronUp } from '@/app/icons';
 import SceneLayer from '@/components/SceneLayer';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { reverse } from '@/lib/utils/array';
 
 interface SceneElement {
@@ -29,6 +31,7 @@ interface SceneData {
 }
 
 export default function LayersPanel() {
+  const { t } = useTranslation(undefined, { keyPrefix: 'panels' });
   const scenes = useScenes(state => state.scenes) as SceneData[];
   const activeElementId = useApp(state => state.activeElementId);
   const [dragSourceId, setDragSourceId] = useState<string | null>(null);
@@ -239,68 +242,100 @@ export default function LayersPanel() {
   }
 
   return (
-    <div
-      role="listbox"
-      aria-label="Layers"
-      className={'flex flex-col flex-1 relative overflow-auto mx-1'}
-      onDragOver={e => {
-        if (!dragSourceId) {
-          return;
-        }
+    <TooltipProvider>
+      <div
+        role="listbox"
+        aria-label={t('layers')}
+        className={'flex flex-col flex-1 relative overflow-auto mx-1'}
+        onDragOver={e => {
+          if (!dragSourceId) {
+            return;
+          }
 
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-      }}
-    >
-      <div className={'flex p-1 gap-1'}>
-        <button
-          type="button"
-          className={classNames(
-            'text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0',
-            { 'opacity-30 hover:bg-neutral-900': !canMoveUp },
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        }}
+      >
+        <div className={'flex p-1 gap-1'}>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <button
+                  type="button"
+                  aria-label={t('move-layer-up')}
+                  aria-disabled={!canMoveUp}
+                  className={classNames(
+                    'text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0',
+                    { 'opacity-30 hover:bg-neutral-900': !canMoveUp },
+                  )}
+                  onClick={canMoveUp ? handleMoveUp : undefined}
+                />
+              }
+            >
+              <ChevronUp className="text-neutral-100 w-4 h-4" />
+            </TooltipTrigger>
+            <TooltipContent
+              side="top"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {t('move-layer-up')}
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <button
+                  type="button"
+                  aria-label={t('move-layer-down')}
+                  aria-disabled={!canMoveDown}
+                  className={classNames(
+                    'text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0',
+                    { 'opacity-30 hover:bg-neutral-900': !canMoveDown },
+                  )}
+                  onClick={canMoveDown ? handleMoveDown : undefined}
+                />
+              }
+            >
+              <ChevronDown className="text-neutral-100 w-4 h-4" />
+            </TooltipTrigger>
+            <TooltipContent
+              side="top"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {t('move-layer-down')}
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <div className={'flex-1 overflow-auto pt-1 flex flex-col gap-3 px-1'}>
+          {sortedScenes.map(scene => (
+            <SceneLayer
+              key={scene.id}
+              scene={scene}
+              activeElementId={activeElementId}
+              dragSourceId={dragSourceId}
+              dragOverId={dragOverId}
+              dragSourceType={dragSourceMeta?.type ?? null}
+              onLayerClick={handleLayerClick}
+              onLayerUpdate={handleLayerUpdate}
+              onLayerDelete={handleRemove}
+              onLayerDragStart={handleLayerDragStart}
+              onLayerDragOver={handleLayerDragOver}
+              onLayerDrop={handleLayerDrop}
+              onLayerDragEnd={resetDragState}
+            />
+          ))}
+          {lastSceneId && (
+            // biome-ignore lint/a11y/noStaticElementInteractions: This spacer is only a pointer drag-and-drop target.
+            <div
+              className="h-2"
+              onDragOver={e => handleLayerDragOver(lastSceneId, e)}
+              onDrop={e => handleLayerDrop(lastSceneId, e)}
+            />
           )}
-          onClick={canMoveUp ? handleMoveUp : undefined}
-        >
-          <ChevronUp className="text-neutral-100 w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          className={classNames(
-            'text-neutral-100 bg-neutral-900 min-h-6 min-w-6 text-center rounded inline-flex justify-center items-center cursor-default shrink-0',
-            { 'opacity-30 hover:bg-neutral-900': !canMoveDown },
-          )}
-          onClick={canMoveDown ? handleMoveDown : undefined}
-        >
-          <ChevronDown className="text-neutral-100 w-4 h-4" />
-        </button>
+        </div>
       </div>
-      <div className={'flex-1 overflow-auto pt-1 flex flex-col gap-3 px-1'}>
-        {sortedScenes.map(scene => (
-          <SceneLayer
-            key={scene.id}
-            scene={scene}
-            activeElementId={activeElementId}
-            dragSourceId={dragSourceId}
-            dragOverId={dragOverId}
-            dragSourceType={dragSourceMeta?.type ?? null}
-            onLayerClick={handleLayerClick}
-            onLayerUpdate={handleLayerUpdate}
-            onLayerDelete={handleRemove}
-            onLayerDragStart={handleLayerDragStart}
-            onLayerDragOver={handleLayerDragOver}
-            onLayerDrop={handleLayerDrop}
-            onLayerDragEnd={resetDragState}
-          />
-        ))}
-        {lastSceneId && (
-          // biome-ignore lint/a11y/noStaticElementInteractions: This spacer is only a pointer drag-and-drop target.
-          <div
-            className="h-2"
-            onDragOver={e => handleLayerDragOver(lastSceneId, e)}
-            onDrop={e => handleLayerDrop(lastSceneId, e)}
-          />
-        )}
-      </div>
-    </div>
+    </TooltipProvider>
   );
 }

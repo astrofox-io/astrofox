@@ -42,6 +42,7 @@ export default function LeftPanel() {
                             type="button"
                             variant="ghost"
                             size="icon-xs"
+                            aria-label={t('add-scene')}
                             className="bg-neutral-900 text-neutral-100 hover:bg-neutral-800"
                             onClick={handleAddScene}
                           />

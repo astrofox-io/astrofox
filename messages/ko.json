@@ -7,6 +7,8 @@
     "no": "아니요",
     "save": "저장",
     "delete": "삭제",
+    "hide": "숨기기",
+    "show": "표시",
     "create": "만들기",
     "open": "열기",
     "refresh": "새로 고침",
@@ -22,7 +24,9 @@
     "reactors": "리액터",
     "controls": "컨트롤",
     "add-scene": "장면 추가",
-    "add-reactor": "리액터 추가"
+    "add-reactor": "리액터 추가",
+    "move-layer-up": "레이어 위로 이동",
+    "move-layer-down": "레이어 아래로 이동"
   },
   "title-bar": {
     "hide-layers-panel": "레이어 및 리액터 패널 숨기기",

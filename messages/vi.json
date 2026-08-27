@@ -7,6 +7,8 @@
     "no": "Không",
     "save": "Lưu",
     "delete": "Xóa",
+    "hide": "Ẩn",
+    "show": "Hiện",
     "create": "Tạo",
     "open": "Mở",
     "refresh": "Làm mới",
@@ -22,7 +24,9 @@
     "reactors": "Bộ phản ứng",
     "controls": "Điều khiển",
     "add-scene": "Thêm cảnh",
-    "add-reactor": "Thêm bộ phản ứng"
+    "add-reactor": "Thêm bộ phản ứng",
+    "move-layer-up": "Di chuyển lớp lên",
+    "move-layer-down": "Di chuyển lớp xuống"
   },
   "title-bar": {
     "hide-layers-panel": "Ẩn bảng lớp và bộ phản ứng",

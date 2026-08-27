@@ -7,6 +7,8 @@
     "no": "No",
     "save": "Save",
     "delete": "Delete",
+    "hide": "Hide",
+    "show": "Show",
     "create": "Create",
     "open": "Open",
     "refresh": "Refresh",
@@ -23,6 +25,8 @@
     "controls": "Controls",
     "add-scene": "Add scene",
     "add-reactor": "Add reactor",
+    "move-layer-up": "Move layer up",
+    "move-layer-down": "Move layer down",
     "show-active-layer": "Show active layer only",
     "show-all-layers": "Show all layers"
   },

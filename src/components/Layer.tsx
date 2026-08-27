@@ -2,8 +2,10 @@ import { clsx as classNames } from 'cnfast';
 import type { LucideIcon } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, TrashEmpty } from '@/app/icons';
 import TextInput from '@/components/TextInput';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface LayerProps {
   id: string;
@@ -42,6 +44,7 @@ export default function Layer({
   onLayerDrop,
   onLayerDragEnd,
 }: LayerProps) {
+  const { t } = useTranslation(undefined, { keyPrefix: 'common' });
   const [edit, setEdit] = useState(false);
   const LayerIcon = icon;
 
@@ -148,21 +151,59 @@ export default function Layer({
           (displayName ?? name)
         )}
       </div>
-      {onLayerDelete && (
-        <TrashEmpty
-          className="w-4 h-4 opacity-0 group-hover:opacity-50 group-hover:hover:opacity-100"
-          onClick={handleDeleteClick}
-        />
-      )}
-      <Eye
-        className={classNames('w-4 h-4', {
-          'opacity-30': !enabled,
-        })}
-        onClick={e => {
-          e.stopPropagation();
-          handleEnableClick();
-        }}
-      />
+      <TooltipProvider>
+        {onLayerDelete && (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <button
+                  type="button"
+                  aria-label={t('delete')}
+                  className="inline-flex size-4 shrink-0 items-center justify-center opacity-0 group-hover:opacity-50 group-hover:hover:opacity-100 focus-visible:opacity-100"
+                  onClick={handleDeleteClick}
+                />
+              }
+            >
+              <TrashEmpty className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent
+              side="top"
+              sideOffset={6}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {t('delete')}
+            </TooltipContent>
+          </Tooltip>
+        )}
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <button
+                type="button"
+                aria-label={t(enabled ? 'hide' : 'show')}
+                className="inline-flex size-4 shrink-0 items-center justify-center"
+                onClick={e => {
+                  e.stopPropagation();
+                  handleEnableClick();
+                }}
+              />
+            }
+          >
+            <Eye
+              className={classNames('size-4', {
+                'opacity-30': !enabled,
+              })}
+            />
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            sideOffset={6}
+            className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+          >
+            {t(enabled ? 'hide' : 'show')}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

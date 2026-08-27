@@ -7,6 +7,8 @@
     "no": "Nein",
     "save": "Speichern",
     "delete": "Löschen",
+    "hide": "Ausblenden",
+    "show": "Anzeigen",
     "create": "Erstellen",
     "open": "Öffnen",
     "refresh": "Aktualisieren",
@@ -22,7 +24,9 @@
     "reactors": "Reaktoren",
     "controls": "Steuerung",
     "add-scene": "Szene hinzufügen",
-    "add-reactor": "Reaktor hinzufügen"
+    "add-reactor": "Reaktor hinzufügen",
+    "move-layer-up": "Ebene nach oben verschieben",
+    "move-layer-down": "Ebene nach unten verschieben"
   },
   "title-bar": {
     "hide-layers-panel": "Ebenen- und Reaktorpanel ausblenden",

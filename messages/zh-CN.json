@@ -7,6 +7,8 @@
     "no": "否",
     "save": "保存",
     "delete": "删除",
+    "hide": "隐藏",
+    "show": "显示",
     "create": "创建",
     "open": "打开",
     "refresh": "刷新",
@@ -22,7 +24,9 @@
     "reactors": "反应器",
     "controls": "控件",
     "add-scene": "添加场景",
-    "add-reactor": "添加反应器"
+    "add-reactor": "添加反应器",
+    "move-layer-up": "上移图层",
+    "move-layer-down": "下移图层"
   },
   "title-bar": {
     "hide-layers-panel": "隐藏图层和反应器面板",

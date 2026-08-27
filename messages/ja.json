@@ -7,6 +7,8 @@
     "no": "いいえ",
     "save": "保存",
     "delete": "削除",
+    "hide": "非表示",
+    "show": "表示",
     "create": "作成",
     "open": "開く",
     "refresh": "更新",
@@ -22,7 +24,9 @@
     "reactors": "リアクター",
     "controls": "コントロール",
     "add-scene": "シーンを追加",
-    "add-reactor": "リアクターを追加"
+    "add-reactor": "リアクターを追加",
+    "move-layer-up": "レイヤーを上へ移動",
+    "move-layer-down": "レイヤーを下へ移動"
   },
   "title-bar": {
     "hide-layers-panel": "レイヤーとリアクターのパネルを非表示",
