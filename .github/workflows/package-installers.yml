@@ -19,7 +19,6 @@ env:
   ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
   ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/../electron-builder-cache
   ENABLE_SIGNING: ${{ github.event_name == 'push' || inputs.sign == true }}
-  ASTROFOX_UPDATE_FEED_URL: ${{ vars.ASTROFOX_UPDATE_FEED_URL || secrets.ASTROFOX_UPDATE_FEED_URL }}
   SSL_COM_ENVIRONMENT_NAME: ${{ secrets.SSL_COM_ENVIRONMENT_NAME || 'PROD' }}
 
 jobs:
@@ -62,6 +61,8 @@ jobs:
           if-no-files-found: error
           path: |
             release/*.AppImage
+            release/*.deb
+            release/*.rpm
             release/*.blockmap
             release/latest-linux.yml
 
@@ -343,103 +344,6 @@ jobs:
             release/*.blockmap
             release/latest.yml
 
-  upload-r2:
-    name: Upload release assets to Cloudflare R2
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
-    needs:
-      - package-linux
-      - package-macos
-      - package-windows
-    runs-on: blacksmith-2vcpu-ubuntu-2404
-    timeout-minutes: 25
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6.0.3
-
-      - name: Download Linux artifacts
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: astrofox-linux
-          path: release-assets
-
-      - name: Download macOS artifacts
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: astrofox-macos
-          path: release-assets
-
-      - name: Download Windows artifacts
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: astrofox-windows
-          path: release-assets
-
-      - name: Rewrite update metadata for R2
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t metadata_files < <(
-            find release-assets -type f \( -name 'latest.yml' -o -name 'latest-linux.yml' -o -name 'latest-mac.yml' \) -print | sort
-          )
-          if [[ "${#metadata_files[@]}" -eq 0 ]]; then
-            echo "No update metadata files found." >&2
-            exit 1
-          fi
-          node scripts/rewrite-update-metadata-urls.mjs "${metadata_files[@]}"
-
-      - name: Install AWS CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          if command -v aws >/dev/null 2>&1; then aws --version; exit 0; fi
-          case "$(uname -m)" in
-            x86_64) aws_arch="x86_64" ;;
-            aarch64 | arm64) aws_arch="aarch64" ;;
-            *) echo "Unsupported AWS CLI architecture: $(uname -m)" >&2; exit 1 ;;
-          esac
-          curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${aws_arch}.zip" -o "$RUNNER_TEMP/awscliv2.zip"
-          unzip -q "$RUNNER_TEMP/awscliv2.zip" -d "$RUNNER_TEMP"
-          sudo "$RUNNER_TEMP/aws/install" --update
-
-      - name: Upload release assets to Cloudflare R2
-        shell: bash
-        run: |
-          set -euo pipefail
-          missing=0
-          for name in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY CLOUDFLARE_R2_ACCOUNT_ID CLOUDFLARE_R2_BUCKET ASTROFOX_UPDATE_FEED_URL; do
-            if [[ -z "${!name:-}" ]]; then
-              echo "::error::Missing required secret-backed environment variable: $name"
-              missing=1
-            fi
-          done
-          if [[ "$missing" -ne 0 ]]; then exit 1; fi
-
-          endpoint="https://${CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
-          aws s3 cp release-assets/ "s3://${CLOUDFLARE_R2_BUCKET}/releases/" --endpoint-url "$endpoint" --recursive --only-show-errors
-          version="$(node -p "require('./package.json').version")"
-
-          upload_latest_alias() {
-            local source_path="$1"
-            local alias_name="$2"
-            if [[ ! -f "$source_path" ]]; then
-              echo "Skipping missing latest alias source: $source_path"
-              return
-            fi
-            aws s3 cp "$source_path" "s3://${CLOUDFLARE_R2_BUCKET}/latest/${alias_name}" --endpoint-url "$endpoint" --only-show-errors
-          }
-
-          upload_latest_alias "release-assets/Astrofox-${version}-mac-arm64.dmg" "Astrofox-mac-arm64.dmg"
-          upload_latest_alias "release-assets/Astrofox-${version}-mac-x64.dmg" "Astrofox-mac-x64.dmg"
-          upload_latest_alias "release-assets/Astrofox-${version}-windows-x64-setup.exe" "Astrofox-windows-x64.exe"
-          upload_latest_alias "release-assets/Astrofox-${version}-linux-x86_64.AppImage" "Astrofox-linux-x64.AppImage"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: auto
-          AWS_EC2_METADATA_DISABLED: true
-          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
-          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
-
   publish-release:
     name: Publish GitHub release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -447,7 +351,6 @@ jobs:
       - package-linux
       - package-macos
       - package-windows
-      - upload-r2
     runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 15
     permissions:
@@ -476,7 +379,7 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t assets < <(
-            find release-assets -type f \( -name '*.AppImage' -o -name '*.blockmap' -o -name '*.dmg' -o -name '*.exe' -o -name '*.yml' -o -name '*.zip' \) -print | sort
+            find release-assets -type f \( -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' -o -name '*.blockmap' -o -name '*.dmg' -o -name '*.exe' -o -name '*.yml' -o -name '*.zip' \) -print | sort
           )
           if [[ "${#assets[@]}" -eq 0 ]]; then
             echo "No release assets found." >&2
