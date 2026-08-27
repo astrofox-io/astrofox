@@ -3,6 +3,10 @@ name: Package installers
 on:
   workflow_dispatch:
     inputs:
+      release_tag:
+        description: Release tag matching the package version, for example v2.0.0.
+        required: true
+        type: string
       sign:
         description: Sign macOS and Windows artifacts when signing secrets are configured.
         required: true
@@ -22,8 +26,34 @@ env:
   SSL_COM_ENVIRONMENT_NAME: ${{ secrets.SSL_COM_ENVIRONMENT_NAME || 'PROD' }}
 
 jobs:
+  validate_release:
+    name: Validate release tag
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Validate release tag
+        id: release
+        shell: bash
+        env:
+          REQUESTED_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          expected_tag="v${version}"
+          if [[ "$REQUESTED_TAG" != "$expected_tag" ]]; then
+            echo "::error::Release tag must match package.json version. Expected ${expected_tag}, received ${REQUESTED_TAG}."
+            exit 1
+          fi
+          echo "tag=${REQUESTED_TAG}" >> "$GITHUB_OUTPUT"
+
   package-linux:
     name: Package Linux
+    needs: validate_release
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 45
     steps:
@@ -68,6 +98,7 @@ jobs:
 
   package-macos:
     name: Package macOS
+    needs: validate_release
     runs-on: blacksmith-6vcpu-macos-15
     timeout-minutes: 70
     env:
@@ -255,6 +286,7 @@ jobs:
 
   package-windows:
     name: Package Windows
+    needs: validate_release
     runs-on: blacksmith-4vcpu-windows-2025
     timeout-minutes: 60
     env:
@@ -346,8 +378,9 @@ jobs:
 
   publish-release:
     name: Publish GitHub release
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     needs:
+      - validate_release
       - package-linux
       - package-macos
       - package-windows
@@ -355,6 +388,8 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
+    env:
+      RELEASE_TAG: ${{ needs.validate_release.outputs.tag }}
     steps:
       - name: Download Linux artifacts
         uses: actions/download-artifact@v8.0.1
@@ -385,11 +420,15 @@ jobs:
             echo "No release assets found." >&2
             exit 1
           fi
-          tag="${GITHUB_REF_NAME}"
+          tag="$RELEASE_TAG"
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$tag" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$tag" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --title "$tag" --generate-notes
+            create_args=()
+            if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+              create_args+=(--target "$GITHUB_SHA")
+            fi
+            gh release create "$tag" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --title "$tag" --generate-notes "${create_args[@]}"
           fi
         env:
           GH_TOKEN: ${{ github.token }}

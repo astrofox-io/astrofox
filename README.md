@@ -89,7 +89,7 @@ pnpm package:linux
 
 ### Desktop releases
 
-Pushing a `v*` tag runs `.github/workflows/package-installers.yml`. It packages Linux (AppImage, DEB, and RPM), macOS, and Windows separately; uses signing and notarization when the corresponding secrets are available; and publishes the installers and update metadata to a GitHub release. Packaged apps use that GitHub release as their automatic update feed. Manual workflow runs can produce unsigned artifacts by leaving the `sign` input disabled.
+Pushing a `v*` tag runs `.github/workflows/package-installers.yml`. It packages Linux (AppImage, DEB, and RPM), macOS, and Windows separately; uses signing and notarization when the corresponding secrets are available; and publishes the installers and update metadata to a GitHub release. Packaged apps use that GitHub release as their automatic update feed. For manual runs, provide a `release_tag` matching the version in `package.json`; the workflow creates the tag and release at the selected commit when needed. Leave `sign` disabled to produce an unsigned release.
 
 The workflow expects these repository or organization secrets when signing is enabled:
 
