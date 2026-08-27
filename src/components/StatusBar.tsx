@@ -66,7 +66,7 @@ export default function StatusBar() {
             </>
           }
         />
-        <InfoItem value={APP_VERSION} />
+        <InfoItem value={`v${APP_VERSION}`} />
       </div>
     </div>
   );

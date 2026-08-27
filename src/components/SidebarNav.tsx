@@ -77,7 +77,12 @@ function getSidebarSections(): SidebarItem[][] {
     .map(section =>
       (section.submenu || [])
         .filter((item): item is MenuEntry & { label: string; action: MenuAction } =>
-          Boolean(item.label && item.action && ACTION_ICONS[item.action]),
+          Boolean(
+            item.label &&
+              item.action &&
+              item.action !== 'manage-plugins' &&
+              ACTION_ICONS[item.action],
+          ),
         )
         .map(item => ({
           action: item.action,
@@ -141,6 +146,28 @@ export default function SidebarNav() {
           ))}
         </div>
         <div className="flex w-full flex-col items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="w-full bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+                  aria-label={t('manage-plugins')}
+                  onClick={() => handleMenuAction('manage-plugins')}
+                />
+              }
+            >
+              <Blocks size={18} />
+            </TooltipTrigger>
+            <TooltipContent
+              side="right"
+              sideOffset={10}
+              className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
+            >
+              {t('manage-plugins')}
+            </TooltipContent>
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger
               render={
