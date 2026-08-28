@@ -1,12 +1,59 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-// Resolve environment before exposing the bridge so getEnvironment() stays sync.
-const environment = await ipcRenderer.invoke('desktop:get-environment');
+// Resolve environment and the storage snapshot before exposing the bridge so
+// getEnvironment() and storage.get() stay sync.
+const [environment, storageSnapshot] = await Promise.all([
+  ipcRenderer.invoke('desktop:get-environment'),
+  ipcRenderer.invoke('storage:get-all').catch(error => {
+    console.error('storage:get-all failed:', error);
+    return {};
+  }),
+]);
+
+// This window is the only writer, so the in-memory cache is the source of
+// truth for reads. Writes are applied here synchronously and then serialized
+// to the main process in order.
+const storageCache = new Map(Object.entries(storageSnapshot ?? {}));
+let storagePending = Promise.resolve();
+
+function queueStorageWrite(channel, payload) {
+  storagePending = storagePending
+    .then(() => ipcRenderer.invoke(channel, payload))
+    .then(() => undefined)
+    .catch(error => {
+      console.error(`${channel} failed:`, error);
+    });
+}
+
+function assertString(name, value) {
+  if (typeof value !== 'string') {
+    throw new TypeError(`storage ${name} must be a string`);
+  }
+}
+
+const storage = {
+  get: key => (storageCache.has(key) ? storageCache.get(key) : null),
+  keys: () => Array.from(storageCache.keys()),
+  set: (key, value) => {
+    assertString('key', key);
+    assertString('value', value);
+    storageCache.set(key, value);
+    queueStorageWrite('storage:set', { key, value });
+  },
+  remove: key => {
+    assertString('key', key);
+    storageCache.delete(key);
+    queueStorageWrite('storage:remove', { key });
+  },
+  flush: () => storagePending,
+};
 
 const api = {
   isDesktop: true,
 
   getEnvironment: () => environment,
+
+  storage,
 
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window:maximize'),

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import i18nInstance, { LANGUAGE_STORAGE_KEY, SUPPORTED_LANGUAGES } from '@/i18n/config';
+import { setItem } from '@/lib/storage';
 
 export default function LanguageSelector() {
   const { t } = useTranslation(undefined, { keyPrefix: 'title-bar' });
@@ -31,11 +32,7 @@ export default function LanguageSelector() {
   }, []);
 
   const handleSelect = async (code: string) => {
-    try {
-      window.localStorage?.setItem(LANGUAGE_STORAGE_KEY, code);
-    } catch {
-      // ignore storage errors (private mode, etc.)
-    }
+    setItem(LANGUAGE_STORAGE_KEY, code);
     await i18nInstance.changeLanguage(code);
     // Defensive: force local state in case event ordering surprises us.
     setCurrentLng(i18nInstance.resolvedLanguage ?? i18nInstance.language ?? code);

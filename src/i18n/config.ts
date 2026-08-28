@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+import { getItem, setItem } from '@/lib/storage';
 
 import de from '../../messages/de.json';
 import en from '../../messages/en.json';
@@ -29,13 +30,25 @@ export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number]['code'];
 export const DEFAULT_LANGUAGE: LanguageCode = 'en';
 export const LANGUAGE_STORAGE_KEY = 'astrofox.language';
 
+const STORAGE_DETECTOR_NAME = 'astrofox';
+
 const isBrowser = typeof window !== 'undefined';
 
 if (!i18n.isInitialized) {
   const instance = i18n.use(initReactI18next);
 
   if (isBrowser) {
-    instance.use(LanguageDetector);
+    // Persist the language through the app storage module (SQLite on desktop,
+    // localStorage on web) instead of the detector's built-in localStorage cache.
+    const detector = new LanguageDetector();
+    detector.addDetector({
+      name: STORAGE_DETECTOR_NAME,
+      lookup: () => getItem(LANGUAGE_STORAGE_KEY) ?? undefined,
+      cacheUserLanguage: (lng: string) => {
+        setItem(LANGUAGE_STORAGE_KEY, lng);
+      },
+    });
+    instance.use(detector);
   }
 
   instance.init({
@@ -59,9 +72,8 @@ if (!i18n.isInitialized) {
       escapeValue: false,
     },
     detection: {
-      order: ['localStorage', 'navigator'],
-      lookupLocalStorage: LANGUAGE_STORAGE_KEY,
-      caches: ['localStorage'],
+      order: [STORAGE_DETECTOR_NAME, 'navigator'],
+      caches: [STORAGE_DETECTOR_NAME],
     },
     react: {
       useSuspense: false,

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { reloadPluginLibrary } from '@/app/actions/app';
 import TextInput from '@/components/TextInput';
 import { Button } from '@/components/ui/button';
-import { DialogFooter } from '@/components/ui/dialog';
 import type { InstalledPlugin, PluginPackage } from '@/lib/plugins';
 import {
   fetchPluginPackage,
@@ -13,10 +12,9 @@ import {
 
 interface ManagePluginsProps {
   initialUrl?: string;
-  onClose?: () => void;
 }
 
-export default function ManagePlugins({ initialUrl = '', onClose }: ManagePluginsProps) {
+export default function ManagePlugins({ initialUrl = '' }: ManagePluginsProps) {
   const [plugins, setPlugins] = useState<Record<string, InstalledPlugin>>(() =>
     getInstalledPlugins(),
   );
@@ -229,13 +227,6 @@ export default function ManagePlugins({ initialUrl = '', onClose }: ManagePlugin
             );
           })}
         </div>
-      </div>
-      <div className="shrink-0 bg-neutral-800 px-4 py-3">
-        <DialogFooter className="sm:justify-end">
-          <Button variant="default" size="sm" onClick={onClose}>
-            Close
-          </Button>
-        </DialogFooter>
       </div>
     </div>
   );

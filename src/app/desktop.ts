@@ -12,6 +12,8 @@ export type DesktopEnvironment = {
   UPDATER_ENABLED?: boolean;
   OS_PLATFORM?: string;
   USER_DATA_PATH?: string;
+  /** False when the desktop database could not be opened and settings live in memory only. */
+  STORAGE_PERSISTENT?: boolean;
   TEMP_PATH?: string;
   FFMPEG_PATH?: string;
   FFMPEG_AVAILABLE?: boolean;
@@ -49,9 +51,24 @@ export type DesktopUpdaterBridge = {
   onStatus: (callback: (status: DesktopUpdaterStatus) => void) => () => void;
 };
 
+/**
+ * Synchronous key-value storage backed by SQLite in the main process.
+ * Reads come from a snapshot cached in preload; writes are applied to the
+ * cache immediately and persisted asynchronously in order.
+ */
+export type DesktopStorageBridge = {
+  get: (key: string) => string | null;
+  keys: () => string[];
+  set: (key: string, value: string) => void;
+  remove: (key: string) => void;
+  /** Resolves once all queued writes have reached the database. */
+  flush: () => Promise<void>;
+};
+
 export type DesktopBridge = {
   isDesktop: true;
   getEnvironment: () => DesktopEnvironment;
+  storage?: DesktopStorageBridge;
   minimizeWindow: () => Promise<void>;
   maximizeWindow: () => Promise<DesktopWindowState | undefined>;
   closeWindow: () => Promise<void>;

@@ -5,6 +5,7 @@ import useAudioStore from '@/app/actions/audio';
 import { player } from '@/app/global';
 import { Volume, Volume2, Volume3, Volume4 } from '@/app/icons';
 import RangeInput from '@/components/RangeInput';
+import { getBoolean, getNumber, setBoolean, setNumber } from '@/lib/storage';
 
 const STORAGE_KEY = 'astrofox.player.volume';
 const STORAGE_MUTE_KEY = 'astrofox.player.volumeMuted';
@@ -15,16 +16,11 @@ const initialState = {
 };
 
 function readStoredState() {
-  try {
-    const rawValue = localStorage.getItem(STORAGE_KEY);
-    const parsed = rawValue === null ? Number.NaN : Number(rawValue);
-    const value = Number.isFinite(parsed) && parsed >= 0 && parsed <= 100 ? parsed : 100;
-    const mute = localStorage.getItem(STORAGE_MUTE_KEY) === 'true';
+  const stored = getNumber(STORAGE_KEY, initialState.value);
+  const value = stored >= 0 && stored <= 100 ? stored : initialState.value;
+  const mute = getBoolean(STORAGE_MUTE_KEY, initialState.mute);
 
-    return { value, mute };
-  } catch {
-    return initialState;
-  }
+  return { value, mute };
 }
 
 export default function VolumeControl() {
@@ -39,12 +35,8 @@ export default function VolumeControl() {
   const VolumeIcon = getIcon();
 
   function persistState(nextValue: number, nextMute: boolean) {
-    try {
-      localStorage.setItem(STORAGE_KEY, String(nextValue));
-      localStorage.setItem(STORAGE_MUTE_KEY, String(nextMute));
-    } catch {
-      // storage unavailable
-    }
+    setNumber(STORAGE_KEY, nextValue);
+    setBoolean(STORAGE_MUTE_KEY, nextMute);
   }
 
   useEffect(() => {

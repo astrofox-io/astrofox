@@ -1,6 +1,13 @@
 interface AstrofoxDesktopBridge {
   isDesktop: true;
   getEnvironment: () => Record<string, unknown>;
+  storage?: {
+    get: (key: string) => string | null;
+    keys: () => string[];
+    set: (key: string, value: string) => void;
+    remove: (key: string) => void;
+    flush: () => Promise<void>;
+  };
   minimizeWindow: () => Promise<void>;
   maximizeWindow: () => Promise<
     | {

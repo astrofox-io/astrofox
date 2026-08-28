@@ -13,6 +13,7 @@ import Setting from '@/components/Setting';
 import Settings from '@/components/Settings';
 import { Button } from '@/components/ui/button';
 import i18nInstance, { LANGUAGE_STORAGE_KEY, SUPPORTED_LANGUAGES } from '@/i18n/config';
+import { setItem } from '@/lib/storage';
 
 export default function AppSettings() {
   const { t } = useTranslation(undefined, { keyPrefix: 'settings' });
@@ -53,11 +54,7 @@ export default function AppSettings() {
     const code = props.language as string | undefined;
     if (!code) return;
 
-    try {
-      window.localStorage?.setItem(LANGUAGE_STORAGE_KEY, code);
-    } catch {
-      // ignore storage errors (private mode, etc.)
-    }
+    setItem(LANGUAGE_STORAGE_KEY, code);
     await i18nInstance.changeLanguage(code);
     setLanguage(i18nInstance.resolvedLanguage ?? i18nInstance.language ?? code);
   }

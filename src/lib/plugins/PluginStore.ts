@@ -1,55 +1,41 @@
+import { getJSON, keys, PLUGIN_KEY_PREFIX, removeItem, setJSON } from '@/lib/storage';
 import type { InstalledPlugin } from './types';
 
-const STORAGE_KEY = 'astrofox:plugins';
-
-interface StoreData {
-  plugins: Record<string, InstalledPlugin>;
+function pluginKey(name: string) {
+  return PLUGIN_KEY_PREFIX + name;
 }
 
-function readStore(): StoreData {
-  if (typeof window === 'undefined') {
-    return { plugins: {} };
-  }
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return { plugins: {} };
-    }
-
-    const data = JSON.parse(raw) as StoreData;
-    if (!data || typeof data.plugins !== 'object' || data.plugins === null) {
-      return { plugins: {} };
-    }
-    return data;
-  } catch {
-    return { plugins: {} };
-  }
-}
-
-function writeStore(data: StoreData) {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function isInstalledPlugin(value: unknown): value is InstalledPlugin {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as InstalledPlugin).manifest === 'object' &&
+    (value as InstalledPlugin).manifest !== null
+  );
 }
 
 export function getInstalledPlugins(): Record<string, InstalledPlugin> {
-  return readStore().plugins;
+  const plugins: Record<string, InstalledPlugin> = {};
+
+  for (const key of keys(PLUGIN_KEY_PREFIX)) {
+    const plugin = getJSON<unknown>(key, null);
+    if (isInstalledPlugin(plugin)) {
+      plugins[key.slice(PLUGIN_KEY_PREFIX.length)] = plugin;
+    }
+  }
+
+  return plugins;
 }
 
 export function getInstalledPlugin(name: string): InstalledPlugin | null {
-  return readStore().plugins[name] ?? null;
+  const plugin = getJSON<unknown>(pluginKey(name), null);
+  return isInstalledPlugin(plugin) ? plugin : null;
 }
 
 export function saveInstalledPlugin(plugin: InstalledPlugin) {
-  const data = readStore();
-  data.plugins[plugin.manifest.name] = plugin;
-  writeStore(data);
+  setJSON(pluginKey(plugin.manifest.name), plugin);
 }
 
 export function removeInstalledPlugin(name: string) {
-  const data = readStore();
-  delete data.plugins[name];
-  writeStore(data);
+  removeItem(pluginKey(name));
 }

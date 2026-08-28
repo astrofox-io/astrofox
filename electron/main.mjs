@@ -7,6 +7,8 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, net, protocol, session, shel
 import { registerDialogIpc } from './dialogs-ipc.mjs';
 import { isPathInside, killAllFfmpeg, registerFfmpegIpc } from './ffmpeg-ipc.mjs';
 import { PLUGIN_SANDBOX_HEADERS } from './plugin-sandbox-policy.mjs';
+import { closeDatabase, isDatabasePersistent, openDatabase } from './storage/db.mjs';
+import { registerStorageIpc } from './storage-ipc.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,6 +84,7 @@ function getDesktopEnvironment() {
     UPDATER_ENABLED: app.isPackaged || Boolean(getFakeUpdateScenario()),
     OS_PLATFORM: process.platform,
     USER_DATA_PATH: app.getPath('userData'),
+    STORAGE_PERSISTENT: isDatabasePersistent(),
     TEMP_PATH: getTempPath(),
     FFMPEG_PATH: getFfmpegBinaryPath(),
     FFMPEG_AVAILABLE: fs.existsSync(getFfmpegBinaryPath()),
@@ -148,6 +151,7 @@ function registerIpc() {
     shell.showItemInFolder(targetPath);
   });
 
+  registerStorageIpc(ipcMain);
   registerDialogIpc(ipcMain, () => mainWindow);
   registerFfmpegIpc(ipcMain, {
     getFfmpegPath: getFfmpegBinaryPath,
@@ -843,11 +847,18 @@ app.on('before-quit', () => {
   killAllFfmpeg();
 });
 
+app.on('will-quit', () => {
+  closeDatabase();
+});
+
 if (hasSingleInstanceLock) {
   app
     .whenReady()
     .then(async () => {
       void resetTempDir();
+
+      // Must be open before the renderer's preload requests its storage snapshot.
+      await openDatabase(path.join(app.getPath('userData'), 'astrofox.db'));
 
       setupApplicationMenu();
       registerIpc();
