@@ -74,5 +74,6 @@ desktop app.
   builds are imported automatically on first launch.
 - **Plugins**: v1 plugins are not compatible and are not migrated. Reinstall
   plugins built for the new plugin system (see `docs/plugin-authoring.md`).
-- **Updates**: 1.x installs will be offered 2.0.0 through the existing update
-  channel; new installs update from GitHub Releases.
+- **Updates**: new installs update from GitHub Releases. 1.x installs poll
+  `https://files.astrofox.io/download/` and will only see 2.0.0 once that path
+  forwards to the GitHub release assets (see "Desktop releases" in README).

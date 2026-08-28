@@ -91,6 +91,14 @@ pnpm package:linux
 
 Pushing a `v*` tag runs `.github/workflows/package-installers.yml`. It packages Linux (AppImage, DEB, and RPM), macOS, and Windows separately; uses signing and notarization when the corresponding secrets are available; and publishes the installers and update metadata to a GitHub release. Packaged apps use that GitHub release as their automatic update feed. For manual runs, provide a `release_tag` matching the version in `package.json`; the workflow creates the tag and release at the selected commit when needed. Leave `sign` disabled to produce an unsigned release.
 
+**Legacy 1.x update feed.** Astrofox 1.x was packaged with the `generic` updater provider pointing at `https://files.astrofox.io/download`, so 1.x installs poll `files.astrofox.io/download/latest.yml` (and `latest-mac.yml` / `latest-linux.yml`) and resolve the file names inside those manifests relative to that URL. For 1.x users to be offered 2.x, Cloudflare must forward that path to the latest GitHub release assets:
+
+```
+https://files.astrofox.io/download/*  ->  https://github.com/astrofox-io/astrofox/releases/latest/download/*
+```
+
+`electron-updater` follows the redirect chain (files.astrofox.io -> github.com -> objects.githubusercontent.com). Until this rule is in place 1.x installs keep seeing 1.4.0.
+
 The workflow expects these repository or organization secrets when signing is enabled:
 
 - macOS signing: `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`
