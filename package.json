@@ -105,7 +105,7 @@
     },
     "nsis": {
       "oneClick": true,
-      "artifactName": "${productName}-${version}-windows-${arch}-setup.${ext}"
+      "artifactName": "${productName}-windows-${arch}-setup.${ext}"
     },
     "mac": {
       "target": [
@@ -124,7 +124,7 @@
           ]
         }
       ],
-      "artifactName": "${productName}-${version}-mac-${arch}.${ext}",
+      "artifactName": "${productName}-mac-${arch}.${ext}",
       "category": "public.app-category.video",
       "icon": "public/icons/icon-512.png",
       "hardenedRuntime": true,
@@ -145,7 +145,7 @@
       "category": "AudioVideo",
       "icon": "public/icons/icon-512.png",
       "maintainer": "Astrofox <mike@mikecao.com>",
-      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
+      "artifactName": "${productName}-linux-${arch}.${ext}"
     },
     "npmRebuild": false
   },
