@@ -132,7 +132,11 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
   }, [reactor, outputMode]);
 
   return (
-    <div className={'flex flex-col gap-3 w-full overflow-hidden bg-neutral-900 border-t relative py-4 px-5'}>
+    <div
+      className={
+        'flex flex-col gap-3 w-full overflow-hidden bg-neutral-900 border-t relative py-4 px-5'
+      }
+    >
       <div
         className={
           'text-neutral-300 text-xs [text-shadow:1px_1px_0_var(--color-neutral-900)] uppercase'

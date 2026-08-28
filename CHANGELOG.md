@@ -41,9 +41,13 @@ desktop app.
   displays/effects/plugins, editable project title, panel visibility toggles,
   active-layer filter, picture-in-picture stage, unified control components.
 - **Localization**: client-side language switching with English, German,
-  Spanish, French, Japanese, Korean, Vietnamese and Traditional Chinese.
+  Spanish, French, Japanese, Korean, Vietnamese, Simplified Chinese and
+  Traditional Chinese.
 - **Auto-update**: desktop builds check GitHub Releases for updates
   (`electron-updater`).
+- **Settings storage**: desktop preferences and installed plugins are stored in
+  a SQLite database (`astrofox.db` in the app's user-data folder) instead of
+  browser `localStorage`; the web build keeps using `localStorage`.
 - **macOS**: now ships both x64 and Apple Silicon (arm64) builds (DMG + ZIP);
   hardened runtime and notarization supported.
 
@@ -62,10 +66,12 @@ desktop app.
     effect -> `Distortion` (`Perlin Noise` mode)
   Elements that cannot be migrated are dropped and reported when the project
   opens.
-- **Project format**: projects now save as `.json` by default. Legacy `.afx`
-  (gzip) files can still be opened and saved.
+- **Project format**: projects still save as `.afx`, but the file is now plain
+  JSON rather than gzip-compressed. Legacy gzip `.afx` and `.json` files can
+  still be opened.
 - **Settings**: v1 app settings (`app.config`) are not migrated; reconfigure
-  preferences in the new app.
+  preferences in the new app. Preferences and plugins saved by 2.0 pre-release
+  builds are imported automatically on first launch.
 - **Plugins**: v1 plugins are not compatible and are not migrated. Reinstall
   plugins built for the new plugin system (see `docs/plugin-authoring.md`).
 - **Updates**: 1.x installs will be offered 2.0.0 through the existing update

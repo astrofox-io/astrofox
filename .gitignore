@@ -26,6 +26,7 @@ out
 release
 .next
 .next-desktop
+release-validation
 /plugins/
 /resources/
 
