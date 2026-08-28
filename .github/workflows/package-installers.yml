@@ -72,6 +72,16 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Cache Electron and electron-builder downloads
+        uses: actions/cache@v5
+        with:
+          path: |
+            ${{ env.ELECTRON_CACHE }}
+            ${{ env.ELECTRON_BUILDER_CACHE }}
+          key: electron-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            electron-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -118,6 +128,16 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
+      - name: Cache Electron and electron-builder downloads
+        uses: actions/cache@v5
+        with:
+          path: |
+            ${{ env.ELECTRON_CACHE }}
+            ${{ env.ELECTRON_BUILDER_CACHE }}
+          key: electron-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            electron-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -306,6 +326,16 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
+      - name: Cache Electron and electron-builder downloads
+        uses: actions/cache@v5
+        with:
+          path: |
+            ${{ env.ELECTRON_CACHE }}
+            ${{ env.ELECTRON_BUILDER_CACHE }}
+          key: electron-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            electron-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
