@@ -163,6 +163,12 @@
     "message": "Do you want to save project changes before closing?"
   },
   "menu": {
+    "edit": "Edit",
+    "undo": "Undo",
+    "redo": "Redo",
+    "duplicate-layer": "Duplicate layer",
+    "copy-properties": "Copy properties",
+    "paste-properties": "Paste properties",
     "new-project": "New project",
     "open-project": "Open project",
     "save-project": "Save project",

@@ -26,6 +26,7 @@ import {
   resolveVideoSourceUrl,
   toLocalMediaUrl,
 } from '@/lib/utils/media';
+import { resetHistory } from './history';
 
 export const DEFAULT_PROJECT_NAME = 'Untitled Project';
 
@@ -702,6 +703,8 @@ async function loadProjectFromPayload(
     unresolvedMediaRefs: unresolvedMediaRefs,
   });
 
+  resetHistory();
+
   if (unresolvedMediaRefs.length > 0 && options.interactive !== false) {
     const count = unresolvedMediaRefs.length;
     openRelinkMediaDialog({
@@ -872,6 +875,7 @@ export async function newProject() {
     lastModified: 0,
     unresolvedMediaRefs: [],
   });
+  resetHistory();
 }
 
 export function checkUnsavedChanges(menuAction: string, action: () => unknown) {

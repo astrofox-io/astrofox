@@ -4,6 +4,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, TrashEmpty } from '@/app/icons';
+import LayerContextMenu from '@/components/LayerContextMenu';
 import TextInput from '@/components/TextInput';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -14,6 +15,7 @@ interface LayerProps {
   icon?: LucideIcon | null;
   className?: string;
   active?: boolean;
+  contextMenu?: boolean;
   dragging?: boolean;
   dragOver?: boolean;
   enabled?: boolean;
@@ -33,6 +35,7 @@ export default function Layer({
   icon = null,
   className,
   active = false,
+  contextMenu = false,
   dragging = false,
   dragOver = false,
   enabled = true,
@@ -98,7 +101,7 @@ export default function Layer({
     }
   }
 
-  return (
+  const row = (
     <div
       role="option"
       aria-selected={active}
@@ -206,4 +209,6 @@ export default function Layer({
       </TooltipProvider>
     </div>
   );
+
+  return contextMenu && !edit ? <LayerContextMenu id={id} row={row} /> : row;
 }

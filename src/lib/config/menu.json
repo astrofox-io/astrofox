@@ -43,6 +43,32 @@
     "label": "Edit",
     "submenu": [
       {
+        "label": "Undo",
+        "action": "undo"
+      },
+      {
+        "label": "Redo",
+        "action": "redo"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "label": "Duplicate layer",
+        "action": "duplicate-layer"
+      },
+      {
+        "label": "Copy properties",
+        "action": "copy-properties"
+      },
+      {
+        "label": "Paste properties",
+        "action": "paste-properties"
+      },
+      {
+        "type": "separator"
+      },
+      {
         "label": "Project settings",
         "action": "edit-canvas"
       },

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp, { setActiveReactorId } from '@/app/actions/app';
+import useReactors from '@/app/actions/reactors';
 import {
   PRIMARY_COLOR,
   REACTOR_BAR_HEIGHT,
@@ -46,6 +47,7 @@ function getMeterColor(outputMode: string) {
 }
 
 export default function ReactorPanel() {
+  useReactors(state => state.reactors);
   const activeReactorId = useApp(state => state.activeReactorId);
   const reactor = activeReactorId ? reactors.getElementById(activeReactorId) : undefined;
 

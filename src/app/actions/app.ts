@@ -36,6 +36,14 @@ import {
   type VideoQuality,
 } from '@/lib/video/encoders';
 import VideoExporter, { isVideoExportCancelledError } from '@/lib/video/VideoExporter';
+import {
+  copyProperties,
+  duplicateLayer,
+  initializeHistory,
+  pasteProperties,
+  redo,
+  undo,
+} from './history';
 
 export interface VideoExportSegment {
   startPosition: number;
@@ -1003,6 +1011,21 @@ export function toggleRightPanelVisibility() {
 
 export async function handleMenuAction(action: string) {
   switch (action) {
+    case 'undo':
+      undo();
+      break;
+    case 'redo':
+      redo();
+      break;
+    case 'duplicate-layer':
+      duplicateLayer();
+      break;
+    case 'copy-properties':
+      copyProperties();
+      break;
+    case 'paste-properties':
+      pasteProperties();
+      break;
     case 'new-project':
       await checkUnsavedChanges(action, newProject);
       break;
@@ -1173,6 +1196,7 @@ export async function initApp() {
     await loadLibrary();
     await newProject();
 
+    initializeHistory();
     renderer.start();
     appInitialized = true;
     watchDesktopUpdates();

@@ -12,6 +12,7 @@ import useProject, { DEFAULT_PROJECT_NAME } from '@/app/actions/project';
 import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
 import { isDesktopApp, isMacDesktop } from '@/app/desktop';
 import { env } from '@/app/global';
+import EditMenu from '@/components/EditMenu';
 import TitleBarUpdateButton from '@/components/TitleBarUpdateButton';
 import { Button } from '@/components/ui/button';
 
@@ -122,6 +123,7 @@ export default function TitleBar() {
           src="/icon.svg"
           width={32}
         />
+        <EditMenu />
         <Button
           ref={projectTitleRef}
           variant="ghost"

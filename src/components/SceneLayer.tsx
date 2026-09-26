@@ -76,6 +76,7 @@ export default function SceneLayer({
 
   const renderLayer = ({ id, type, name, displayName, enabled }: SceneElement) => (
     <Layer
+      contextMenu
       key={id}
       id={id}
       name={displayName}
@@ -140,6 +141,7 @@ export default function SceneLayer({
       onDrop={e => onLayerDrop?.(id, e)}
     >
       <Layer
+        contextMenu
         key={id}
         id={id}
         name={displayName}
