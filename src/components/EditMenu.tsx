@@ -6,6 +6,7 @@ import {
   type LucideIcon,
   Menu,
   Redo2,
+  Settings,
   Settings2,
   Undo2,
 } from 'lucide-react';
@@ -39,6 +40,7 @@ const actionIcons: Record<string, LucideIcon> = {
   'paste-properties': ClipboardPaste,
   'edit-canvas': Settings2,
   'manage-plugins': Blocks,
+  'app-settings': Settings,
 };
 
 const shortcuts: Record<string, string> = {
@@ -122,6 +124,7 @@ export default function EditMenu() {
 
 // Shared by the title-bar Edit menu and layer context menus.
 export function EditMenuItems({ layerOnly = false }: { layerOnly?: boolean }) {
+  const { t: ts } = useTranslation(undefined, { keyPrefix: 'settings' });
   const { t } = useTranslation(undefined, { keyPrefix: 'menu' });
   const { canUndo, canRedo } = useHistory();
   appStore(state => state.activeElementId);
@@ -156,9 +159,11 @@ export function EditMenuItems({ layerOnly = false }: { layerOnly?: boolean }) {
             onClick={() => handleMenuAction(item.action!)}
           >
             {Icon && <Icon aria-hidden="true" className="size-4" />}
-            {t(item.action === 'edit-canvas' ? 'project-settings' : item.action, {
-              defaultValue: item.label,
-            })}
+            {item.action === 'app-settings'
+              ? ts('title')
+              : t(item.action === 'edit-canvas' ? 'project-settings' : item.action, {
+                  defaultValue: item.label,
+                })}
             {!layerOnly && shortcuts[item.action] ? (
               <DropdownMenuShortcut>
                 {modifier}+{shortcuts[item.action]}

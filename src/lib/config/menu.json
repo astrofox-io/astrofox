@@ -75,6 +75,10 @@
       {
         "label": "Manage plugins",
         "action": "manage-plugins"
+      },
+      {
+        "label": "Settings",
+        "action": "app-settings"
       }
     ]
   },

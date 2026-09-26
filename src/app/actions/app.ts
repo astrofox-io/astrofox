@@ -1071,6 +1071,10 @@ export async function handleMenuAction(action: string) {
       });
       break;
 
+    case 'app-settings':
+      await showModal('AppSettings', { titleKey: 'settings.title' });
+      break;
+
     case 'open-dev-tools':
       api.openDevTools();
       break;
