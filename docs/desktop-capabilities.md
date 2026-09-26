@@ -2,6 +2,10 @@
 
 Astrofox is one React app. Desktop is the same UI inside Electron. Use **web APIs by default**; the preload bridge (`window.__ASTROFOX__`) only for what the browser cannot do.
 
+Opt-in [MCP automation](mcp.md) uses a dedicated command/reply bridge and explicit
+path-based project/media operations because MCP clients cannot use browser file
+pickers. Interactive file operations continue to follow the policy below.
+
 ## Principle
 
 | Need | Approach |

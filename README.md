@@ -87,6 +87,10 @@ pnpm package:win
 pnpm package:linux
 ```
 
+**MCP automation:** desktop can expose its editor to a local MCP client. Start
+with `pnpm dev:desktop:mcp`; see [MCP setup and tools](docs/mcp.md) for connection
+credentials, tool descriptions, and packaged-app configuration.
+
 **Video export**
 
 - **Web:** browser `MediaRecorder` (WebM/MP4 when supported)

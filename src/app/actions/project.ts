@@ -166,7 +166,7 @@ const projectStore = create<ProjectState>(() => ({
   ...initialState,
 }));
 
-function snapshotProject(): ProjectSnapshot {
+export function snapshotProject(): ProjectSnapshot {
   return {
     version: env.APP_VERSION,
     stage: stage.toJSON(),
@@ -671,7 +671,11 @@ function notifyRemovedElements(removed: string[]) {
   raiseError(message, unique.join('\n'), { logLevel: 'warn' });
 }
 
-async function loadProjectFromPayload(payload: unknown, fallbackName?: string) {
+async function loadProjectFromPayload(
+  payload: unknown,
+  fallbackName?: string,
+  options: { interactive?: boolean; validate?: (snapshot: ProjectSnapshot) => void } = {},
+) {
   const { snapshot, projectName, mediaRefs } = parseProjectPayload(payload, fallbackName);
   const version =
     (payload as ProjectFilePayload).version ?? (snapshot as { version?: unknown }).version;
@@ -680,15 +684,16 @@ async function loadProjectFromPayload(payload: unknown, fallbackName?: string) {
     typeof version === 'string' ? version : undefined,
     getMigrationRegistry(),
   );
+  options.validate?.(migratedSnapshot);
   const { snapshot: resolvedSnapshot, unresolvedMediaRefs: detectedMissingMedia } =
     await resolveSnapshotMediaOnLoad(migratedSnapshot, mediaRefs);
   const unresolvedMediaRefs = mergeMediaRefs(detectedMissingMedia);
 
-  const { missing } = loadProject(resolvedSnapshot);
+  const { missing, missingPlugins } = loadProject(resolvedSnapshot, options.interactive !== false);
   await loadScenes();
   loadReactors();
 
-  notifyRemovedElements([...removed, ...missing]);
+  if (options.interactive !== false) notifyRemovedElements([...removed, ...missing]);
 
   projectStore.setState({
     projectName: projectName || DEFAULT_PROJECT_NAME,
@@ -697,12 +702,46 @@ async function loadProjectFromPayload(payload: unknown, fallbackName?: string) {
     unresolvedMediaRefs: unresolvedMediaRefs,
   });
 
-  if (unresolvedMediaRefs.length > 0) {
+  if (unresolvedMediaRefs.length > 0 && options.interactive !== false) {
     const count = unresolvedMediaRefs.length;
     openRelinkMediaDialog({
       titleKey: 'relink-media.missing-title',
       titleOptions: { count },
     });
+  }
+  return { removed: [...removed, ...missing], missingPlugins, unresolvedMediaRefs };
+}
+
+/** Dialog-free file loading shares migration and media resolution with the UI. */
+export async function openProjectData(file: File, validate: (snapshot: ProjectSnapshot) => void) {
+  if (!isSupportedProjectFileName(file.name)) throw new Error('Expected an .afx or .json project.');
+  const payload = JSON.parse(await readProjectFileText(file));
+  return loadProjectFromPayload(payload, parseProjectNameFromFile(file.name), {
+    interactive: false,
+    validate,
+  });
+}
+
+export function serializeProjectFile() {
+  const { snapshot, mediaRefs } = prepareSnapshotMediaForSave(snapshotProject());
+  const name = projectStore.getState().projectName;
+  return JSON.stringify(
+    {
+      name,
+      projectName: name,
+      version: env.APP_VERSION,
+      savedAt: new Date().toISOString(),
+      snapshot,
+      mediaRefs,
+    },
+    null,
+    2,
+  );
+}
+
+export function markProjectSaved(lastModified: number) {
+  if (projectStore.getState().lastModified === lastModified) {
+    projectStore.setState({ opened: Date.now(), lastModified: 0 });
   }
 }
 
@@ -728,7 +767,7 @@ export function resetProject() {
   projectStore.setState({ ...initialState });
 }
 
-export function loadProject(data: ProjectSnapshot) {
+export function loadProject(data: ProjectSnapshot, interactive = true) {
   logger.log('Loaded project:', data);
 
   const displays = library.get('displays') as Record<string, LibraryConstructor>;
@@ -800,7 +839,7 @@ export function loadProject(data: ProjectSnapshot) {
     }
   }
 
-  if (missingPlugins.size > 0) {
+  if (missingPlugins.size > 0 && interactive) {
     showModal(
       'MissingPlugins',
       { title: 'Missing Plugins' },
@@ -808,7 +847,7 @@ export function loadProject(data: ProjectSnapshot) {
     );
   }
 
-  return { missing: missingElements };
+  return { missing: missingElements, missingPlugins: [...missingPlugins.values()] };
 }
 
 export async function newProject() {

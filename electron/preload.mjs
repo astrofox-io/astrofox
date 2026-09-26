@@ -55,6 +55,25 @@ const api = {
 
   storage,
 
+  automation: {
+    onCommand: callback => {
+      const listener = (_event, request) => callback(request);
+      const probe = () => ipcRenderer.send('mcp:ready');
+      ipcRenderer.on('mcp:command', listener);
+      ipcRenderer.on('mcp:probe', probe);
+      probe();
+      return () => {
+        ipcRenderer.send('mcp:not-ready');
+        ipcRenderer.removeListener('mcp:command', listener);
+        ipcRenderer.removeListener('mcp:probe', probe);
+      };
+    },
+    respond: response => ipcRenderer.send('mcp:response', response),
+    readFile: filePath => ipcRenderer.invoke('mcp:read-file', filePath),
+    writeProject: input => ipcRenderer.invoke('mcp:write-project', input),
+    checkOutput: input => ipcRenderer.invoke('mcp:check-output', input),
+  },
+
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window:maximize'),
   closeWindow: () => ipcRenderer.invoke('window:close'),

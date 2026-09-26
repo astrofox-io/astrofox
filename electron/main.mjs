@@ -33,6 +33,7 @@ const DEV_SERVER_URL =
 
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
+let stopMcp = null;
 
 // Must be registered before app is ready.
 protocol.registerSchemesAsPrivileged([
@@ -844,6 +845,7 @@ app.on('second-instance', () => {
 });
 
 app.on('before-quit', () => {
+  stopMcp?.();
   killAllFfmpeg();
 });
 
@@ -871,6 +873,21 @@ if (hasSingleInstanceLock) {
       }
 
       createWindow();
+
+      if (process.env.ASTROFOX_MCP === '1') {
+        try {
+          const { startMcpServer } = await import('./generated/mcp-server.mjs');
+          stopMcp = await startMcpServer({
+            ipcMain,
+            getWindow: () => mainWindow,
+            userDataPath: app.getPath('userData'),
+            version: app.getVersion(),
+            onRendererGone: killAllFfmpeg,
+          });
+        } catch (error) {
+          console.error('[mcp] Could not start:', error);
+        }
+      }
 
       // The renderer starts the automatic update check based on the user's
       // "Automatically check for updates" setting.

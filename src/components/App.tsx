@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import useAppStore, { initApp } from '@/app/actions/app';
+import { getDesktopBridge } from '@/app/desktop';
 import AddElementDrawer from '@/components/AddElementDrawer';
 import LeftPanel from '@/components/LeftPanel';
 import Modals from '@/components/Modals';
@@ -84,7 +85,17 @@ function App() {
   const bottomPanel = useCollapsibleHeight<HTMLDivElement>(isBottomPanelVisible);
 
   useEffect(() => {
-    initApp();
+    let disposed = false;
+    let disconnect: (() => void) | undefined;
+    void initApp().then(async () => {
+      if (!getDesktopBridge()?.automation || disposed) return;
+      const { connectAutomation } = await import('@/lib/automation/dispatcher');
+      if (!disposed) disconnect = connectAutomation();
+    });
+    return () => {
+      disposed = true;
+      disconnect?.();
+    };
   }, []);
 
   return (

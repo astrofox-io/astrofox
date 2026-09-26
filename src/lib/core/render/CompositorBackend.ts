@@ -369,6 +369,10 @@ export default class CompositorBackend extends RenderBackend {
     });
   }
 
+  waitForNextPresentation() {
+    return this.waitForPresentation(this.frameIndex + 1);
+  }
+
   render(frameData) {
     if (!this.initialized) {
       return;

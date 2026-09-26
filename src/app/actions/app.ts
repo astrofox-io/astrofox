@@ -98,6 +98,10 @@ interface StartVideoRecordingOptions {
   fps?: VideoExportFps;
   encoder?: VideoEncoder;
   quality?: VideoQuality;
+  automation?: {
+    overwrite: boolean;
+    onProgress: (progress: { status: string; currentFrame?: number; totalFrames?: number }) => void;
+  };
 }
 
 export const VIDEO_EXPORT_FPS_OPTIONS = [30, 60] as const;
@@ -519,7 +523,7 @@ function isAbsoluteOutputPath(value: string) {
   return /^[a-zA-Z]:[\\/]/.test(value) || value.startsWith('\\\\') || value.startsWith('/');
 }
 
-async function startFfmpegVideoExport({
+export async function startFfmpegVideoExport({
   filePath,
   defaultPath,
   startTime = 0,
@@ -529,6 +533,7 @@ async function startFfmpegVideoExport({
   fps = DEFAULT_EXPORT_FPS,
   encoder = DEFAULT_EXPORT_ENCODER,
   quality = DEFAULT_EXPORT_QUALITY,
+  automation,
 }: StartVideoRecordingOptions): Promise<boolean> {
   const bridge = getDesktopBridge();
   const outputPath = filePath || defaultPath || '';
@@ -563,6 +568,7 @@ async function startFfmpegVideoExport({
       return false;
     }
   } catch (error) {
+    if (automation) throw error;
     raiseError(t('errors.ffmpeg-temp-audio-failed'), error);
     return false;
   }
@@ -584,7 +590,9 @@ async function startFfmpegVideoExport({
       fps,
       encoder,
       quality,
+      overwrite: automation?.overwrite,
       onProgress: ({ status, currentFrame, totalFrames }) => {
+        automation?.onProgress({ status, currentFrame, totalFrames });
         if (status === 'rendering-video' && totalFrames) {
           const exportTime =
             clampedStartTime +
@@ -613,7 +621,7 @@ async function startFfmpegVideoExport({
     });
 
     logger.log('FFmpeg video saved:', savedPath);
-    if (bridge?.showItemInFolder) {
+    if (!automation && bridge?.showItemInFolder) {
       try {
         await bridge.showItemInFolder(savedPath);
       } catch {
@@ -622,6 +630,7 @@ async function startFfmpegVideoExport({
     }
     return true;
   } catch (error) {
+    if (automation) throw error;
     if (exporter.isCancelled || isVideoExportCancelledError(error)) {
       // User-initiated cancel: not an error, just say so briefly.
       logger.log('FFmpeg video export cancelled');

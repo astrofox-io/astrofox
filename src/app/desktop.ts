@@ -1,3 +1,5 @@
+import type { AutomationRequest, AutomationResponse } from '@/lib/automation/protocol';
+
 export type DesktopWindowState = {
   focused: boolean;
   maximized: boolean;
@@ -69,6 +71,17 @@ export type DesktopBridge = {
   isDesktop: true;
   getEnvironment: () => DesktopEnvironment;
   storage?: DesktopStorageBridge;
+  automation?: {
+    onCommand: (callback: (request: AutomationRequest) => void) => () => void;
+    respond: (response: AutomationResponse) => void;
+    readFile: (path: string) => Promise<{ name: string; data: Uint8Array }>;
+    writeProject: (input: {
+      path: string;
+      text: string;
+      overwrite: boolean;
+    }) => Promise<{ path: string }>;
+    checkOutput: (input: { path: string; overwrite: boolean }) => Promise<{ path: string }>;
+  };
   minimizeWindow: () => Promise<void>;
   maximizeWindow: () => Promise<DesktopWindowState | undefined>;
   closeWindow: () => Promise<void>;

@@ -17,6 +17,7 @@ export type VideoExportOptions = {
   fps?: number;
   encoder?: VideoEncoder;
   quality?: VideoQuality;
+  overwrite?: boolean;
   onProgress?: (progress: VideoExportProgress) => void;
 };
 
@@ -274,9 +275,10 @@ export default class VideoExporter {
       }
 
       report({ status: 'merging' });
+      const overwriteFlag = options.overwrite === false ? '-n' : '-y';
       const mergeArgs = audioOut
         ? [
-            '-y',
+            overwriteFlag,
             '-i',
             tempVideo,
             '-i',
@@ -287,7 +289,7 @@ export default class VideoExporter {
             ...config.video.merge,
             finalOutput,
           ]
-        : ['-y', '-i', tempVideo, '-c', 'copy', ...config.video.merge, finalOutput];
+        : [overwriteFlag, '-i', tempVideo, '-c', 'copy', ...config.video.merge, finalOutput];
       await this.runStage(mergeArgs, `${id}.merge`);
 
       report({ status: 'finished', currentFrame: totalFrames, totalFrames });

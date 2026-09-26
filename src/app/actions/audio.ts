@@ -281,7 +281,7 @@ export function setLiveInputGain(value: number) {
   player.setInputGain(liveInputGain / 100);
 }
 
-export async function loadAudioFile(file: File | string, play?: boolean) {
+export async function loadAudioFile(file: File | string, play?: boolean, throwOnError = false) {
   updateAudioState({ loading: true, liveModeEnabled: false, mode: 'file' });
   clearLiveInputs();
 
@@ -333,8 +333,9 @@ export async function loadAudioFile(file: File | string, play?: boolean) {
       loading: false,
     });
   } catch (error) {
-    raiseError(t('errors.invalid-audio-file'), error);
     updateAudioState({ loading: false });
+    if (throwOnError) throw error;
+    raiseError(t('errors.invalid-audio-file'), error);
   }
 }
 

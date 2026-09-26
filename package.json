@@ -18,12 +18,12 @@
     "preview": "next start",
     "lint": "biome check .",
     "lint-fix": "biome check . --write",
-    "dev:desktop": "dotenv -- node ./scripts/dev-electron.mjs",
-    "dev:desktop:update": "cross-env ASTROFOX_FAKE_UPDATE=available dotenv -- node ./scripts/dev-electron.mjs",
-    "dev:desktop:update-none": "cross-env ASTROFOX_FAKE_UPDATE=none dotenv -- node ./scripts/dev-electron.mjs",
-    "dev:desktop:update-error": "cross-env ASTROFOX_FAKE_UPDATE=error dotenv -- node ./scripts/dev-electron.mjs",
+    "dev:desktop": "pnpm build:mcp && dotenv -- node ./scripts/dev-electron.mjs",
+    "dev:desktop:update": "pnpm build:mcp && cross-env ASTROFOX_FAKE_UPDATE=available dotenv -- node ./scripts/dev-electron.mjs",
+    "dev:desktop:update-none": "pnpm build:mcp && cross-env ASTROFOX_FAKE_UPDATE=none dotenv -- node ./scripts/dev-electron.mjs",
+    "dev:desktop:update-error": "pnpm build:mcp && cross-env ASTROFOX_FAKE_UPDATE=error dotenv -- node ./scripts/dev-electron.mjs",
     "dev:plugins": "node ./scripts/dev-plugins.mjs",
-    "build:renderer": "node ./scripts/copy-plugin-libs.mjs && cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
+    "build:renderer": "pnpm build:mcp && node ./scripts/copy-plugin-libs.mjs && cross-env BUILD_TARGET=desktop NODE_ENV=production next build --turbo",
     "build:desktop": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --publish never",
     "package": "pnpm package:dir",
     "package:dir": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --dir",
@@ -36,7 +36,9 @@
     "dist:linux": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --linux --publish never",
     "install-ffmpeg": "node ./scripts/install-ffmpeg.mjs",
     "plugin-libs": "node ./scripts/copy-plugin-libs.mjs",
-    "postinstall": "node ./scripts/copy-plugin-libs.mjs"
+    "postinstall": "node ./scripts/copy-plugin-libs.mjs",
+    "build:mcp": "node ./scripts/build-mcp.mjs",
+    "dev:desktop:mcp": "pnpm build:mcp && cross-env ASTROFOX_MCP=1 dotenv -- node ./scripts/dev-electron.mjs"
   },
   "build": {
     "appId": "io.astrofox.app",
@@ -151,6 +153,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@modelcontextprotocol/node": "2.1.0",
+    "@modelcontextprotocol/server": "2.1.0",
     "@react-three/fiber": "^9.8.0",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.3.3",
@@ -191,6 +195,7 @@
     "dotenv-cli": "^11.0.0",
     "electron": "^39.8.10",
     "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2",
     "get-port": "^7.2.0",
     "typescript": "6.0.3",
     "wait-on": "^8.0.4"
