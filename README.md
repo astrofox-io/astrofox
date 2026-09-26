@@ -87,9 +87,9 @@ pnpm package:win
 pnpm package:linux
 ```
 
-**MCP automation:** desktop can expose its editor to a local MCP client. Start
-with `pnpm dev:desktop:mcp`; see [MCP setup and tools](docs/mcp.md) for connection
-credentials, tool descriptions, and packaged-app configuration.
+**MCP automation:** turn on **Enable MCP server** in desktop **Settings → MCP
+server**, then copy the connection details shown there. The setting and token
+persist across app restarts. See [MCP setup and tools](docs/mcp.md).
 
 **Video export**
 

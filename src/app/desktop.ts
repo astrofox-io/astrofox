@@ -6,6 +6,14 @@ export type DesktopWindowState = {
   minimized: boolean;
 };
 
+export type DesktopMcpStatus = {
+  enabled: boolean;
+  running: boolean;
+  url: string;
+  token: string;
+  error: string | null;
+};
+
 export type DesktopEnvironment = {
   APP_NAME?: string;
   APP_VERSION?: string;
@@ -72,6 +80,9 @@ export type DesktopBridge = {
   getEnvironment: () => DesktopEnvironment;
   storage?: DesktopStorageBridge;
   automation?: {
+    getStatus: () => Promise<DesktopMcpStatus>;
+    setEnabled: (enabled: boolean) => Promise<DesktopMcpStatus>;
+    resetToken: () => Promise<DesktopMcpStatus>;
     onCommand: (callback: (request: AutomationRequest) => void) => () => void;
     respond: (response: AutomationResponse) => void;
     readFile: (path: string) => Promise<{ name: string; data: Uint8Array }>;

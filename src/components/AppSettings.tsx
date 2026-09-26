@@ -9,6 +9,7 @@ import {
   setAutomaticUpdates,
   setPlayAudioOnLoad,
 } from '@/app/preferences';
+import McpSettings from '@/components/McpSettings';
 import Setting from '@/components/Setting';
 import Settings from '@/components/Settings';
 import { Button } from '@/components/ui/button';
@@ -94,6 +95,7 @@ export default function AppSettings() {
             <VersionRow />
           </Settings>
         )}
+        {desktop && <McpSettings />}
       </div>
     </div>
   );

@@ -7,27 +7,43 @@ adapter in this version.
 
 ## Enable and connect
 
-For development, start the desktop app with:
+Open **Settings → MCP server** and turn on **Enable MCP server**. The server
+starts immediately. Turning the setting off closes the listener and connected
+clients. The choice is remembered, so an enabled server starts with Astrofox on
+future launches. MCP is disabled by default.
+
+Copy the **Server URL** and **Bearer token** from the same panel into your MCP
+client. The token stays the same across app restarts and disable/enable cycles.
+**Reset token** replaces it and disconnects existing clients; update those clients
+with the new token before reconnecting.
+
+No environment variables or special launch command are required. For development,
+use the normal desktop command:
 
 ```sh
-pnpm dev:desktop:mcp
+pnpm dev:desktop
 ```
 
-If Astrofox is already running, save your work and fully quit it before restarting
-with MCP enabled. The single-instance guard otherwise focuses the existing app.
-Renderer hot reload cannot add the new main-process server or preload bridge.
+When upgrading from a version without the settings bridge, restart the desktop
+app once to load the new main-process and preload code. Subsequent setting changes
+do not require a restart.
 
-For an installed desktop app, launch it with `ASTROFOX_MCP=1` in its environment.
 Packaged builds include the MCP runtime; Node and pnpm are not needed to serve MCP.
+
+Preferences are stored in `mcp-settings.json` in Electron's user-data directory.
+Existing `mcp.json` credentials are preserved on migration when available. The
+legacy environment variables below seed preferences **only on the first launch
+without saved MCP settings**. After that, the saved choice takes precedence.
 
 | Environment variable | Default | Purpose |
 | --- | --- | --- |
-| `ASTROFOX_MCP` | disabled | Set to `1` to enable the server |
+| `ASTROFOX_MCP` | disabled | Set to `1` to initially enable the server |
 | `ASTROFOX_MCP_PORT` | `43120` | Loopback TCP port |
-| `ASTROFOX_MCP_TOKEN` | Random per launch | Optional persistent bearer token, 32–256 printable non-space ASCII characters |
+| `ASTROFOX_MCP_TOKEN` | Random, persisted | Optional initial bearer token, 32–256 printable non-space ASCII characters |
 
-The development launcher loads `.env`. Use a randomly generated token if setting
-`ASTROFOX_MCP_TOKEN` explicitly. Do not commit credentials.
+The development launcher loads `.env`. The legacy `pnpm dev:desktop:mcp` command
+still seeds initial enablement, but does not override a saved disabled setting.
+Do not commit credentials.
 
 On successful startup, Astrofox writes `mcp.json` to Electron's user-data directory
 and logs the file's location without printing the token. It contains:
@@ -47,9 +63,11 @@ to your MCP client using that URL and the header:
 Authorization: Bearer <token from mcp.json>
 ```
 
-Client configuration formats differ. Without an explicit environment token, update
-the client's token after each desktop restart. A client running on another machine
-or in a remote container cannot reach this loopback endpoint directly.
+Client configuration formats differ. A client running on another machine or in a
+remote container cannot reach this loopback endpoint directly. If startup fails,
+the settings panel shows the error and offers **Retry**. The rest of Astrofox
+continues working. Disabling MCP does not undo completed commands or cancel an
+already-started video export; use the export cancellation control for that.
 
 ## Tools
 
@@ -120,6 +138,8 @@ These are examples of tool calls, not raw JSON-RPC request envelopes.
 - `src/lib/automation/dispatcher.ts`: live renderer command handlers.
 - `src/lib/automation/validation.ts`: control and project validation.
 - `electron/mcp/server.ts`: HTTP MCP server, IPC routing and local file operations.
+- `electron/mcp-controller.mjs`: persistent preferences, token management, and serialized start/stop operations.
+- `src/components/McpSettings.tsx`: desktop settings and connection details.
 - `electron/preload.mjs`: isolated command/reply bridge.
 - `scripts/build-mcp.mjs`: bundles the SDK and server into
   `electron/generated/mcp-server.mjs`. This generated file is ignored by git and
@@ -131,5 +151,7 @@ run this automatically. Changes to the main process require a desktop restart.
 Before shipping, verify in a running desktop session: connect and discover tools;
 create/edit a scene and check the UI and preview; save/reopen a project; load media;
 export a short clip; cancel a second export; and reconnect after a renderer reload.
+Toggle the server off/on, restart the app, and reset its token to check settings
+persistence and connection lifecycle.
 Also check that invalid properties, missing authentication and accidental file
 overwrites fail without changing the project.

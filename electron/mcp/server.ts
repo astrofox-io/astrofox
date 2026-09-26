@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
+import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import { createServer, type IncomingMessage } from 'node:http';
 import path from 'node:path';
@@ -19,6 +19,8 @@ interface Options {
   getWindow: () => BrowserWindow | null;
   userDataPath: string;
   version: string;
+  port: number;
+  token: string;
   onRendererGone?: () => void;
 }
 
@@ -52,12 +54,12 @@ export async function startMcpServer({
   getWindow,
   userDataPath,
   version,
+  port,
+  token,
   onRendererGone,
 }: Options) {
-  const port = Number(process.env.ASTROFOX_MCP_PORT || 43120);
   if (!Number.isInteger(port) || port < 1 || port > 65535)
     throw new Error('Invalid ASTROFOX_MCP_PORT.');
-  const token = process.env.ASTROFOX_MCP_TOKEN || randomBytes(32).toString('hex');
   if (!/^[!-~]{32,256}$/.test(token))
     throw new Error('ASTROFOX_MCP_TOKEN must contain 32–256 printable non-space ASCII characters.');
   const expectedAuthorization = Buffer.from(`Bearer ${token}`);
@@ -321,11 +323,15 @@ export async function startMcpServer({
   http.requestTimeout = 65_000;
   http.headersTimeout = 10_000;
   const configPath = path.join(userDataPath, 'mcp.json');
+  let closing: Promise<void> | undefined;
   const close = () => {
+    if (closing) return closing;
     closed = true;
     reset('Astrofox MCP stopped.');
-    http.close();
-    http.closeAllConnections();
+    closing = new Promise<void>(resolve => {
+      http.close(() => resolve());
+      http.closeAllConnections();
+    });
     for (const server of activeServers) void server.close();
     ipcMain.removeListener('mcp:ready', onReady);
     ipcMain.removeListener('mcp:response', onResponse);
@@ -333,6 +339,7 @@ export async function startMcpServer({
     for (const channel of ['mcp:read-file', 'mcp:write-project', 'mcp:check-output'])
       ipcMain.removeHandler(channel);
     unwatchWindow();
+    return closing;
   };
   try {
     await new Promise<void>((resolve, reject) => {
@@ -346,7 +353,7 @@ export async function startMcpServer({
     console.info(`[mcp] Listening at ${url}; connection credentials: ${configPath}`);
     return close;
   } catch (error) {
-    close();
+    await close();
     throw error;
   }
 }

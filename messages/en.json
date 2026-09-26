@@ -51,7 +51,29 @@
     "general": "General",
     "play-audio-on-load": "Play audio on load",
     "automatic-updates": "Automatic updates",
-    "updates": "Updates"
+    "updates": "Updates",
+    "mcp": {
+      "title": "MCP server",
+      "enable": "Enable MCP server",
+      "description": "Let AI tools connect to Astrofox on this computer. Your choice is remembered when the app restarts.",
+      "updating": "Updating…",
+      "running": "Running",
+      "stopped": "Stopped",
+      "retry": "Retry",
+      "url": "Server URL",
+      "token": "Bearer token",
+      "authentication": "Connect using Streamable HTTP and this bearer token.",
+      "copy": "Copy",
+      "copy-url": "Copy server URL",
+      "copy-token": "Copy bearer token",
+      "copied": "Copied to clipboard.",
+      "copy-failed": "Could not copy. Select and copy the value manually.",
+      "show-token": "Show token",
+      "hide-token": "Hide token",
+      "reset-token": "Reset token",
+      "reset-description": "Resetting disconnects existing clients. Reconnect them using the new token.",
+      "unavailable": "Restart the desktop app to use MCP settings."
+    }
   },
   "player": {
     "recording": "Recording...",

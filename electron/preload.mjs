@@ -56,6 +56,9 @@ const api = {
   storage,
 
   automation: {
+    getStatus: () => ipcRenderer.invoke('mcp:get-status'),
+    setEnabled: enabled => ipcRenderer.invoke('mcp:set-enabled', enabled),
+    resetToken: () => ipcRenderer.invoke('mcp:reset-token'),
     onCommand: callback => {
       const listener = (_event, request) => callback(request);
       const probe = () => ipcRenderer.send('mcp:ready');
