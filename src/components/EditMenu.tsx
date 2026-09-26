@@ -4,6 +4,7 @@ import {
   ClipboardPaste,
   Copy,
   type LucideIcon,
+  Menu,
   Redo2,
   Settings2,
   Undo2,
@@ -101,9 +102,16 @@ export default function EditMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button variant="ghost" size="sm" className="text-neutral-400" />}
+        render={
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-neutral-400"
+            aria-label={t('edit')}
+          />
+        }
       >
-        {t('edit')}
+        <Menu size={18} aria-hidden="true" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-64">
         <EditMenuItems />
