@@ -130,12 +130,17 @@ export default class Audio {
   }
 
   seek(pos: number) {
+    this.seekTime(pos * this.getDuration());
+  }
+
+  /** Seek to an absolute time in seconds (fractional seconds are kept). */
+  seekTime(time: number) {
     if (this.playing) {
       this.stop();
-      this.updatePosition(pos);
+      this.updatePosition(time);
       this.play();
     } else {
-      this.updatePosition(pos);
+      this.updatePosition(time);
     }
   }
 
@@ -179,7 +184,8 @@ export default class Audio {
     return output;
   }
 
-  updatePosition(pos: number) {
-    this.stopTime = ~~(pos * this.buffer!.duration);
+  updatePosition(time: number) {
+    const duration = this.getDuration();
+    this.stopTime = Math.min(duration, Math.max(0, Number.isFinite(time) ? time : 0));
   }
 }

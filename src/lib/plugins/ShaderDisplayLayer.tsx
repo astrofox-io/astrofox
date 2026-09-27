@@ -78,10 +78,9 @@ export function ShaderDisplayLayer({ installed, display, order, frameData, ...sc
     const uniforms = pass.material.uniforms;
     const state = stateRef.current;
 
-    if (frameData?.hasUpdate && frameData.id !== state.lastFrameId) {
-      state.time += (frameData.delta || 0) / 1000;
-      state.lastFrameId = frameData.id;
-    }
+    // Project time keeps shader plugins deterministic when seeking and exporting.
+    state.time = frameData?.time ?? 0;
+    state.lastFrameId = frameData?.id ?? null;
 
     uniforms.resolution.value.set(width, height);
     uniforms.time.value = state.time;

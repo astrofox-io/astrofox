@@ -83,5 +83,7 @@ export function attachPassUpdater<T extends EffectPassLike>(
 }
 
 export function isEffectEnabled(effect: EffectPassConfig): boolean {
-  return effect.enabled !== false;
+  return (
+    effect.enabled !== false && (effect as { timelineActive?: boolean }).timelineActive !== false
+  );
 }

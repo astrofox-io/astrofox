@@ -28,6 +28,7 @@ import { registerGeneratedNameLabels } from '@/i18n/labels';
 import * as displays from '@/lib/displays';
 import * as effects from '@/lib/effects';
 import { loadInstalledPlugins } from '@/lib/plugins';
+import { getProjectDuration, initTransport, pauseTransport } from '@/lib/timeline/transport';
 import { finalizeWebm } from '@/lib/utils/webm';
 import {
   getVideoEncoderConfig,
@@ -433,12 +434,10 @@ export async function saveVideo() {
   };
   const audioBuffer =
     (player.getAudio?.() as { buffer?: AudioBuffer | null } | undefined)?.buffer ?? null;
-  const totalDuration = Number(audioState.duration ?? 0);
+  const totalDuration = getProjectDuration();
 
   // Stop playback while the export dialog is open.
-  if (player.isPlaying()) {
-    player.pause();
-  }
+  pauseTransport();
 
   showModal(
     'SaveVideoDialog',
@@ -451,6 +450,7 @@ export async function saveVideo() {
       audioSource: audioState.source ?? null,
       audioFileName: audioState.file ?? '',
       audioBuffer,
+      audioDuration: Number(audioState.duration ?? 0),
       totalDuration,
       startTime: 0,
       endTime: totalDuration,
@@ -552,7 +552,7 @@ export async function startFfmpegVideoExport({
     return false;
   }
 
-  const totalDuration = player.getDuration();
+  const totalDuration = getProjectDuration();
   const clampedStartTime = Math.max(0, startTime);
   const clampedEndTime = Math.min(totalDuration, endTime ?? totalDuration);
 
@@ -560,6 +560,8 @@ export async function startFfmpegVideoExport({
     raiseError(t('errors.video-end-before-start'));
     return false;
   }
+
+  pauseTransport();
 
   let audioResolved: { path: string | null; cleanupPaths: string[] } = {
     path: null,
@@ -691,6 +693,29 @@ export async function startVideoRecording({
     return false;
   }
 
+  if (setup.mode === 'ffmpeg') {
+    const projectDuration = getProjectDuration();
+    const exportEnd = Math.min(projectDuration, endTime ?? projectDuration);
+
+    if (exportEnd <= Math.max(0, startTime)) {
+      raiseError(t('errors.video-end-before-start'));
+      return false;
+    }
+
+    return startFfmpegVideoExport({
+      filePath,
+      defaultPath,
+      startTime: Math.max(0, startTime),
+      endTime: exportEnd,
+      includeAudio,
+      audioSource,
+      fps,
+      encoder,
+      quality,
+    });
+  }
+
+  // The browser build records real-time playback, which still needs audio.
   if (!player.hasAudio()) {
     raiseError(t('errors.choose-audio-before-saving-video'));
     return false;
@@ -709,20 +734,6 @@ export async function startVideoRecording({
   if (clampedEndTime <= clampedStartTime) {
     raiseError(t('errors.video-end-before-start'));
     return false;
-  }
-
-  if (setup.mode === 'ffmpeg') {
-    return startFfmpegVideoExport({
-      filePath,
-      defaultPath,
-      startTime: clampedStartTime,
-      endTime: clampedEndTime,
-      includeAudio,
-      audioSource,
-      fps,
-      encoder,
-      quality,
-    });
   }
 
   if (!setup.canvas) {
@@ -1200,6 +1211,7 @@ export async function initApp() {
     await loadLibrary();
     await newProject();
 
+    initTransport();
     initializeHistory();
     renderer.start();
     appInitialized = true;

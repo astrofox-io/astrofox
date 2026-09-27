@@ -1,8 +1,9 @@
 import { clsx as classNames } from 'cnfast';
-import type { LucideIcon } from 'lucide-react';
+import { ChartGantt, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useAppStore from '@/app/actions/app';
 import useAudioStore from '@/app/actions/audio';
+import useTimelinePanel, { toggleTimelineOpen } from '@/app/actions/timelinePanel';
 import { player } from '@/app/global';
 import useForceUpdate from '@/app/hooks/useForceUpdate';
 import { Cycle } from '@/app/icons';
@@ -13,6 +14,7 @@ export default function ToggleButtons() {
   const isVideoRecording = useAppStore(state => state.isVideoRecording);
   const liveModeEnabled = useAudioStore(state => state.liveModeEnabled);
   const forceUpdate = useForceUpdate();
+  const timelineOpen = useTimelinePanel(state => state.open);
   const looping = player.isLooping();
 
   if (isVideoRecording || liveModeEnabled) {
@@ -31,6 +33,12 @@ export default function ToggleButtons() {
         title={t('repeat')}
         enabled={looping}
         onClick={handleLoopButtonClick}
+      />
+      <ToggleButton
+        icon={ChartGantt}
+        title={t(timelineOpen ? 'hide-timeline' : 'show-timeline')}
+        enabled={timelineOpen}
+        onClick={toggleTimelineOpen}
       />
     </div>
   );

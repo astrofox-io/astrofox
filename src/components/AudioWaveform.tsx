@@ -1,13 +1,14 @@
 import { clsx as classNames } from 'cnfast';
 import type React from 'react';
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import useAppStore from '@/app/actions/app';
 import useAudioStore from '@/app/actions/audio';
+import { seekTransport } from '@/app/actions/timeline';
 import { player } from '@/app/global';
-import useSharedState from '@/app/hooks/useSharedState';
 import CanvasAudio from '@/lib/canvas/CanvasAudio';
+import transportStore from '@/lib/timeline/transport';
 
 const canvasProperties = {
   width: 854,
@@ -19,6 +20,11 @@ const canvasProperties = {
   bars: 213,
 };
 
+/**
+ * Overview of the loaded audio with the playhead. Positions are fractions of
+ * the audio; a project longer than its audio simply pins the playhead at the
+ * right edge once the audio has ended.
+ */
 export default function AudioWaveform() {
   const { t } = useTranslation(undefined, { keyPrefix: 'player' });
   const isVideoRecording = useAppStore(state => state.isVideoRecording);
@@ -30,16 +36,19 @@ export default function AudioWaveform() {
   );
   const videoExportSegment = useAppStore(state => state.videoExportSegment);
   const videoExportPosition = useAppStore(state => state.videoExportPosition);
-  const [state, setState] = useSharedState();
-  const { progressPosition, seekPosition } = state as {
-    progressPosition?: number;
-    seekPosition?: number;
-  };
+  const time = transportStore(state => state.time);
+  const projectDuration = transportStore(state => state.duration);
+  const [seekPosition, setSeekPosition] = useState(0);
   const { width, height, shadowHeight } = canvasProperties;
   const canvas = useRef<HTMLCanvasElement>(null);
   const hasAudioRef = useRef(false);
   const flatRenderedRef = useRef(false);
   const hasAudio = !liveModeEnabled && mode === 'file' && player.canSeek();
+  const audioDuration = player.getDuration();
+  // Project-relative fractions (export segment/position) mapped onto the audio.
+  const toAudioFraction = (fraction: number) =>
+    audioDuration > 0 ? Math.min(1, (fraction * projectDuration) / audioDuration) : 0;
+  const progressPosition = audioDuration > 0 ? Math.min(1, time / audioDuration) : 0;
 
   const [baseCanvas, progressCanvas, seekCanvas] = useMemo(
     () => [
@@ -71,17 +80,18 @@ export default function AudioWaveform() {
     [],
   );
 
+  function seekToFraction(fraction: number) {
+    seekTransport(fraction * audioDuration);
+    setSeekPosition(0);
+  }
+
   function handleClick(e: React.MouseEvent<HTMLCanvasElement>) {
     if (isVideoRecording || !hasAudio) {
       return;
     }
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const progressPosition = (e.clientX - rect.left) / rect.width;
-
-    player.seek(progressPosition);
-
-    setState({ progressPosition, seekPosition: 0 });
+    seekToFraction((e.clientX - rect.left) / rect.width);
   }
 
   function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
@@ -92,13 +102,11 @@ export default function AudioWaveform() {
     e.stopPropagation();
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const seekPosition = (e.clientX - rect.left) / rect.width;
-
-    setState({ seekPosition });
+    setSeekPosition((e.clientX - rect.left) / rect.width);
   }
 
   function handleMouseOut() {
-    setState({ seekPosition: 0 });
+    setSeekPosition(0);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLCanvasElement>) {
@@ -111,11 +119,7 @@ export default function AudioWaveform() {
     }
 
     e.preventDefault();
-
-    const nextPosition = seekPosition ?? progressPosition ?? 0;
-
-    player.seek(nextPosition);
-    setState({ progressPosition: nextPosition, seekPosition: 0 });
+    seekToFraction(seekPosition || progressPosition);
   }
 
   function drawWaveform() {
@@ -126,13 +130,17 @@ export default function AudioWaveform() {
     if (!context) return;
     const position =
       (isVideoRecording && videoExportPosition != null
-        ? videoExportPosition
-        : (progressPosition ?? 0)) * width;
-    const seek = isVideoRecording ? 0 : (seekPosition ?? 0) * width;
+        ? toAudioFraction(videoExportPosition)
+        : progressPosition) * width;
+    const seek = isVideoRecording ? 0 : seekPosition * width;
     const sx = seek < position ? seek : position;
     const dx = seek < position ? position - seek : seek - position;
-    const selectionStart = videoExportSegment ? videoExportSegment.startPosition * width : 0;
-    const selectionEnd = videoExportSegment ? videoExportSegment.endPosition * width : 0;
+    const selectionStart = videoExportSegment
+      ? toAudioFraction(videoExportSegment.startPosition) * width
+      : 0;
+    const selectionEnd = videoExportSegment
+      ? toAudioFraction(videoExportSegment.endPosition) * width
+      : 0;
     const selectionWidth = Math.max(0, selectionEnd - selectionStart);
 
     context.clearRect(0, 0, width, height);

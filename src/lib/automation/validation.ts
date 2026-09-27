@@ -2,6 +2,8 @@ import { library, stage } from '@/app/global';
 import AudioReactor from '@/lib/audio/AudioReactor';
 import type Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
+import { MAX_CLIP_TIME } from '@/lib/timeline/clip';
+import { isValidFps, isValidProjectDuration } from '@/lib/timeline/transport';
 import { resolve } from '@/lib/utils/object';
 
 export interface EntityType {
@@ -177,6 +179,7 @@ export function validateSnapshot(snapshot: Record<string, unknown>) {
     'plugin',
     'displays',
     'effects',
+    'clip',
   ]);
   function visit(value: unknown, kind: 'scene' | 'display' | 'effect' | 'reactor') {
     if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -221,6 +224,18 @@ export function validateSnapshot(snapshot: Record<string, unknown>) {
         if (Object.hasOwn(Type.config.defaultProperties, key))
           checkShape(value, Type.config.defaultProperties[key], key);
       }
+    if (entity.clip !== undefined && entity.clip !== null) {
+      const clip = entity.clip as Record<string, unknown>;
+      if (!clip || typeof clip !== 'object' || Array.isArray(clip))
+        throw new Error('Invalid timeline clip.');
+      for (const [key, value] of Object.entries(clip)) {
+        if (!['start', 'end', 'fadeIn', 'fadeOut'].includes(key))
+          throw new Error(`Unsupported clip field: ${key}`);
+        if (value === null && key === 'end') continue;
+        if (typeof value !== 'number' || value < 0 || value > MAX_CLIP_TIME)
+          throw new Error(`Invalid clip.${key}.`);
+      }
+    }
     if (entity.reactors !== undefined) {
       if (!entity.reactors || typeof entity.reactors !== 'object' || Array.isArray(entity.reactors))
         throw new Error('Invalid reactor bindings.');
@@ -242,6 +257,21 @@ export function validateSnapshot(snapshot: Record<string, unknown>) {
     throw new Error('Project requires scenes and reactors arrays.');
   for (const scene of snapshot.scenes) visit(scene, 'scene');
   for (const reactor of snapshot.reactors) visit(reactor, 'reactor');
+  if (snapshot.timeline !== undefined) {
+    const timeline = snapshot.timeline as Record<string, unknown>;
+    if (!timeline || typeof timeline !== 'object' || Array.isArray(timeline))
+      throw new Error('Invalid timeline settings.');
+    for (const key of Object.keys(timeline))
+      if (!['duration', 'fps'].includes(key)) throw new Error(`Unsupported timeline field: ${key}`);
+    if (
+      timeline.duration !== undefined &&
+      timeline.duration !== null &&
+      !isValidProjectDuration(timeline.duration)
+    )
+      throw new Error('Invalid project duration.');
+    if (timeline.fps !== undefined && !isValidFps(timeline.fps))
+      throw new Error('Invalid project frame rate.');
+  }
   const props = (snapshot.stage as { properties?: Record<string, unknown> })?.properties;
   if (props) {
     for (const key of ['width', 'height'])

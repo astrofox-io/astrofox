@@ -1,4 +1,5 @@
 import { analyzer, events, player, reactors, renderBackend } from '@/app/global';
+import transportStore, { tickTransport } from '@/lib/timeline/transport';
 import type { RenderFrameData } from '@/lib/types';
 import Clock from './Clock';
 
@@ -13,6 +14,7 @@ export default class Renderer {
   rafId: number | null;
   needsRender: boolean;
   continuousReasons: Set<string>;
+  silence: AudioBuffer | null;
 
   constructor() {
     this.rendering = false;
@@ -22,11 +24,15 @@ export default class Renderer {
     this.rafId = null;
     this.needsRender = true;
     this.continuousReasons = new Set();
+    this.silence = null;
 
     // Frame render data
     this.frameData = {
       id: 0,
       delta: 0,
+      time: 0,
+      duration: 0,
+      fps: 30,
       fft: null,
       td: null,
       volume: 0,
@@ -62,7 +68,9 @@ export default class Renderer {
   }
 
   shouldKeepRendering() {
-    return player.isPlaying() || this.continuousReasons.size > 0;
+    return (
+      player.isPlaying() || transportStore.getState().playing || this.continuousReasons.size > 0
+    );
   }
 
   scheduleRender() {
@@ -116,6 +124,7 @@ export default class Renderer {
       clock: { delta },
     } = this;
     const playing = player.isPlaying();
+    const transport = transportStore.getState();
     const analysis = player.getAnalysisData({
       fft: analyzer.fft,
       td: analyzer.td,
@@ -124,8 +133,11 @@ export default class Renderer {
     });
 
     frameData.id = id;
-    frameData.hasUpdate = playing || id === VIDEO_RENDERING;
+    frameData.hasUpdate = playing || transport.playing || id === VIDEO_RENDERING;
     frameData.audioPlaying = playing;
+    frameData.time = transport.time;
+    frameData.duration = transport.duration;
+    frameData.fps = transport.fps;
     frameData.gain = analysis.gain;
     // Analyzer gain is the mean of the byte FFT (0-255); expose a normalized level.
     frameData.volume = Math.min(1, Math.max(0, (analysis.gain ?? 0) / 255));
@@ -141,15 +153,61 @@ export default class Renderer {
     return frameData;
   }
 
+  /** A zeroed buffer the analyzer can process for frames with no audio. */
+  getSilence() {
+    const { fftSize } = analyzer.analyzer;
+
+    if (!this.silence || this.silence.length !== fftSize) {
+      this.silence = analyzer.audioContext.createBuffer(
+        1,
+        fftSize,
+        analyzer.audioContext.sampleRate,
+      );
+    }
+
+    return this.silence;
+  }
+
+  /**
+   * Audio samples centred on an absolute project time, for offline analysis.
+   * Silence outside the loaded audio (or without audio) keeps reactors and
+   * analysis deterministic for silent intros and outros.
+   */
   getAudioSample(time: number) {
     const { fftSize } = analyzer.analyzer;
     const audio = player.getAudio();
-    if (!audio) return null;
-    const pos = audio.getBufferPosition(time);
-    const start = pos - fftSize / 2;
-    const end = pos + fftSize / 2;
+    const buffer = audio?.buffer;
 
-    return audio.getAudioSlice(start, end);
+    if (!audio || !buffer) {
+      return this.getSilence();
+    }
+
+    const center = Math.round(time * buffer.sampleRate);
+    const start = center - fftSize / 2;
+    const end = center + fftSize / 2;
+
+    if (start >= buffer.length || end <= 0) {
+      return this.getSilence();
+    }
+
+    // Partial overlap at the edges: copy what exists, leave the rest silent.
+    const output = analyzer.audioContext.createBuffer(
+      buffer.numberOfChannels,
+      fftSize,
+      audio.audioContext.sampleRate,
+    );
+    const from = Math.max(0, start);
+    const to = Math.min(buffer.length, end);
+
+    for (let channel = 0; channel < buffer.numberOfChannels; channel += 1) {
+      output.copyToChannel(
+        buffer.getChannelData(channel).subarray(from, to),
+        channel,
+        from - start,
+      );
+    }
+
+    return output;
   }
 
   getFPS() {
@@ -183,7 +241,14 @@ export default class Renderer {
 
     this.clock.update();
 
-    player.updateAnalysis(analyzer);
+    tickTransport();
+
+    if (player.isPlaying()) {
+      player.updateAnalysis(analyzer);
+    } else if (transportStore.getState().playing) {
+      // Playing past the audio (or without any): feed silence so reactors settle.
+      analyzer.process(this.getSilence());
+    }
 
     const data = this.getFrameData(id);
 

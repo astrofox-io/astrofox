@@ -4,6 +4,8 @@ const id = z.string().min(1).max(200);
 const properties = z.record(z.string().min(1).max(100), z.json());
 const filePath = z.string().min(1).max(4096).describe('Absolute local filesystem path.');
 const empty = z.object({}).strict();
+const seconds = z.number().min(0).describe('Seconds from the project start.');
+const fps = z.union([z.literal(30), z.literal(60)]);
 
 export const commands = {
   get_project: {
@@ -94,9 +96,56 @@ export const commands = {
   },
   get_preview: {
     description:
-      'Capture the current composition as a PNG, scaled to maxSize. This is a live preview, not a deterministic time render.',
-    schema: z.object({ maxSize: z.number().int().min(64).max(2048).default(1024) }).strict(),
+      'Capture the composition as a PNG scaled to maxSize. With time (seconds), renders that exact project time deterministically (clips, fades, reactors from the audio at that time); without it, captures the live view.',
+    schema: z
+      .object({
+        maxSize: z.number().int().min(64).max(2048).default(1024),
+        time: seconds.optional(),
+      })
+      .strict(),
     readOnly: true,
+  },
+  get_timeline: {
+    description:
+      'Read the project transport (time, duration, fps) and every element with its timeline clip. Elements without a clip are active for the whole project.',
+    schema: empty,
+    readOnly: true,
+  },
+  set_timeline: {
+    description:
+      'Set the project duration in seconds (null follows the loaded audio) and/or the frame rate used for frame snapping and export.',
+    schema: z
+      .object({
+        duration: z.number().positive().max(14_400).nullable().optional(),
+        fps: fps.optional(),
+      })
+      .strict(),
+  },
+  set_clips: {
+    description:
+      'Set when elements are active. Each clip is merged into the existing one: start/end in seconds (end null = until the project ends), optional fadeIn/fadeOut in seconds applied to opacity. Omitted fields are kept; null resets them.',
+    schema: z
+      .object({
+        clips: z
+          .array(
+            z
+              .object({
+                id,
+                start: seconds.nullable().optional(),
+                end: seconds.nullable().optional(),
+                fadeIn: seconds.nullable().optional(),
+                fadeOut: seconds.nullable().optional(),
+              })
+              .strict(),
+          )
+          .min(1)
+          .max(500),
+      })
+      .strict(),
+  },
+  clear_clips: {
+    description: 'Remove timeline clips so the elements are active for the whole project.',
+    schema: z.object({ ids: z.array(id).min(1).max(500) }).strict(),
   },
   open_project: {
     description:
@@ -120,24 +169,26 @@ export const commands = {
       .strict(),
   },
   playback: {
-    description: 'Play, pause or seek loaded audio. Seek position is a fraction from 0 to 1.',
+    description:
+      'Play, pause, stop or seek the project transport (works without audio). Seek with time in seconds, or position as a 0-1 fraction of the project duration.',
     schema: z
       .object({
-        action: z.enum(['play', 'pause', 'seek']),
+        action: z.enum(['play', 'pause', 'stop', 'seek']),
+        time: seconds.optional(),
         position: z.number().min(0).max(1).optional(),
       })
       .strict(),
   },
   start_export: {
     description:
-      'Start an offline video export and immediately return a job ID. Requires loaded audio for duration/analysis. Other MCP edits are blocked until completion.',
+      'Start an offline video export of the project timeline and immediately return a job ID. Times are seconds within the project duration; audio is required only when includeAudio is true. Other MCP edits are blocked until completion.',
     schema: z
       .object({
         path: filePath,
         overwrite: z.boolean().default(false),
         startTime: z.number().min(0).default(0),
         endTime: z.number().positive().optional(),
-        fps: z.union([z.literal(30), z.literal(60)]).default(30),
+        fps: fps.default(30),
         encoder: z.enum(['x264', 'x265', 'nvenc', 'webm']).default('x264'),
         quality: z.enum(['low', 'medium', 'high']).default('medium'),
         includeAudio: z.boolean().default(true),

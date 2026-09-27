@@ -1,22 +1,15 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import useAppStore from '@/app/actions/app';
 import useAudioStore from '@/app/actions/audio';
+import { seekTransport } from '@/app/actions/timeline';
 import { player } from '@/app/global';
-import useSharedState from '@/app/hooks/useSharedState';
 import RangeInput from '@/components/RangeInput';
 import TimeInfo from '@/components/TimeInfo';
+import transportStore from '@/lib/timeline/transport';
 
 const PROGRESS_MAX = 1000;
-
-const initialState = {
-  progressPosition: 0,
-  seekPosition: 0,
-  buffering: false,
-};
-
-type ProgressState = typeof initialState;
 
 export default function ProgressControl() {
   const { t } = useTranslation(undefined, { keyPrefix: 'player' });
@@ -29,45 +22,24 @@ export default function ProgressControl() {
       sourceLabel: state.sourceLabel,
     })),
   );
-  const [state, setState] = useSharedState(initialState) as readonly [
-    ProgressState,
-    (nextState: Partial<ProgressState>) => void,
-  ];
-  const { progressPosition, seekPosition, buffering } = state;
-  const duration = player.getDuration();
+  const time = transportStore(state => state.time);
+  const duration = transportStore(state => state.duration);
+  // Fraction shown while the thumb is being dragged, before the seek commits.
+  const [seekPosition, setSeekPosition] = useState<number | null>(null);
   const canSeek = player.canSeek();
-  const disabled = !canSeek || isVideoRecording;
+  const disabled = isVideoRecording;
+  const progressPosition = duration > 0 ? time / duration : 0;
   const displayPosition =
     isVideoRecording && videoExportPosition != null ? videoExportPosition : progressPosition;
 
   function handleProgressChange(value: number) {
-    player.seek(value);
-    setState({ progressPosition: value, seekPosition: 0, buffering: false });
+    seekTransport(value * duration);
+    setSeekPosition(null);
   }
 
   function handleProgressUpdate(value: number) {
-    setState({ seekPosition: value, buffering: true });
+    setSeekPosition(value);
   }
-
-  function handlePlayerUpdate() {
-    if (player.isPlaying() && !buffering) {
-      setState({ progressPosition: player.getPosition() });
-    }
-  }
-
-  function handlePlayerStop() {
-    setState({ progressPosition: 0 });
-  }
-
-  useEffect(() => {
-    player.on('tick', handlePlayerUpdate);
-    player.on('stop', handlePlayerStop);
-
-    return () => {
-      player.off('tick', handlePlayerUpdate);
-      player.off('stop', handlePlayerStop);
-    };
-  }, []);
 
   if (liveModeEnabled && !canSeek) {
     const liveText =
@@ -102,7 +74,7 @@ export default function ProgressControl() {
       />
       <TimeInfo
         currentTime={
-          duration * (isVideoRecording ? displayPosition : seekPosition || progressPosition)
+          duration * (isVideoRecording ? displayPosition : (seekPosition ?? progressPosition))
         }
         totalTime={duration}
       />

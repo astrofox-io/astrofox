@@ -1,6 +1,8 @@
 import Entity from '@/lib/core/Entity';
+import { type Clip, clipEnvelope, isClipActive, normalizeClip } from '@/lib/timeline/clip';
 import type { ReactorConfig, RenderFrameData } from '@/lib/types';
 import { getDisplayName } from '@/lib/utils/controls';
+import { resolve, updateExistingProps } from '@/lib/utils/object';
 
 /**
  * How the stage transform overlay should treat a display. Declared on the
@@ -26,6 +28,32 @@ export function getDisplayTransformConfig(display: unknown): DisplayTransformCon
   return config?.transform ?? {};
 }
 
+/**
+ * The values a person (or MCP client) set, as opposed to the runtime values a
+ * frame is rendered with. Entities without the split (reactors) have only one.
+ */
+export function getAuthoredProperties(entity: Entity): Record<string, unknown> {
+  const authored = (entity as { authoredProperties?: Record<string, unknown> }).authoredProperties;
+  return authored ?? (entity.properties as Record<string, unknown>);
+}
+
+// Greater than zero while `evaluate()` is pushing runtime values through
+// `update()`, so those writes do not become authored values.
+let evaluating = 0;
+
+/**
+ * Base class for scenes, displays and effects.
+ *
+ * Properties exist in two layers:
+ * - `authoredProperties`: what was edited. Saved in the project, shown in the
+ *   controls panel, tracked by undo.
+ * - `properties`: the runtime values renderers read. Recomputed every frame by
+ *   `evaluate()` from the authored values, the clip fade envelope and reactor
+ *   output. Runtime values never leak back into the authored layer.
+ *
+ * Subclasses keep overriding `update()` for side effects (canvas re-render,
+ * media loading); it runs for both authoring and per-frame evaluation.
+ */
 export default class Display extends Entity {
   [key: string]: unknown;
 
@@ -33,14 +61,17 @@ export default class Display extends Entity {
     Type: new (properties?: Record<string, unknown>) => Entity,
     config: Record<string, unknown>,
   ) => {
-    const { reactors = {} } = config as {
+    const { reactors = {}, clip } = config as {
       reactors?: Record<string, ReactorConfig>;
+      clip?: unknown;
     };
     const entity = Entity.create(Type, config) as Display;
 
     for (const [key, value] of Object.entries(reactors)) {
       entity.setReactor(key, value);
     }
+
+    entity.setClip(clip);
 
     return entity;
   };
@@ -50,6 +81,10 @@ export default class Display extends Entity {
   declare enabled: boolean;
   declare scene: unknown;
   declare reactors: Record<string, ReactorConfig>;
+  declare authoredProperties: Record<string, unknown>;
+  declare clip: Clip | null;
+  /** Runtime flag from `evaluate()`: false while the element's clip is not active. */
+  declare timelineActive: boolean;
 
   constructor(
     Type: {
@@ -77,7 +112,25 @@ export default class Display extends Entity {
       enabled: { value: true, writable: true, enumerable: true },
       scene: { value: null, writable: true, enumerable: true },
       reactors: { value: {}, writable: true, enumerable: true },
+      clip: { value: null, writable: true, enumerable: true },
+      authoredProperties: { value: { ...this.properties }, writable: true, enumerable: false },
+      timelineActive: { value: true, writable: true, enumerable: false },
     });
+  }
+
+  /**
+   * Apply property values. Outside of frame evaluation this is an authoring
+   * change and is recorded in `authoredProperties` too.
+   */
+  update(properties: Record<string, unknown> = {}): boolean {
+    const resolved = resolve(properties, [this.properties]) as Record<string, unknown>;
+    const changed = updateExistingProps(this.properties, resolved);
+
+    if (evaluating === 0) {
+      return updateExistingProps(this.authoredProperties, resolved) || changed;
+    }
+
+    return changed;
   }
 
   getReactor(prop: string): ReactorConfig | undefined {
@@ -96,32 +149,66 @@ export default class Display extends Entity {
     this.reactors = {} as Record<string, ReactorConfig>;
   }
 
-  updateReactors(data: RenderFrameData) {
-    if (!data.hasUpdate) {
-      return;
-    }
+  setClip(clip: unknown) {
+    this.clip = normalizeClip(clip);
+  }
 
-    const { reactors } = this;
-    const properties: Record<string, unknown> = {};
-    let hasUpdate = false;
+  isActiveAt(time: number, duration?: number) {
+    return isClipActive(this.clip, time, duration);
+  }
 
-    for (const [key, value] of Object.entries(reactors)) {
-      const { id, min, max } = value;
-      const output = data.reactors[id];
+  /**
+   * Recompute runtime properties for a frame: authored values, `opacity`
+   * scaled by the clip fade envelope, then reactor output. Only values that
+   * differ from the current runtime values go through `update()`, exactly as
+   * reactor updates always did.
+   */
+  evaluate(frameData: RenderFrameData) {
+    const { time, duration } = frameData;
+    const { clip, authoredProperties, properties, reactors } = this;
+    const active = isClipActive(clip, time, duration);
 
-      if (output !== undefined) {
-        properties[key] = (max - min) * output + min;
-        hasUpdate = true;
+    this.timelineActive = active;
+
+    const envelope = clip && active ? clipEnvelope(clip, time, duration) : 1;
+    let next: Record<string, unknown> | null = null;
+
+    for (const key of Object.keys(authoredProperties)) {
+      let value = authoredProperties[key];
+
+      if (key === 'opacity' && envelope < 1 && typeof value === 'number') {
+        value *= envelope;
+      }
+
+      const binding = reactors[key];
+
+      if (binding) {
+        const output = frameData.reactors[binding.id];
+
+        if (output !== undefined) {
+          value = (binding.max - binding.min) * output + binding.min;
+        }
+      }
+
+      if (value !== properties[key]) {
+        next ??= {};
+        next[key] = value;
       }
     }
 
-    if (hasUpdate) {
-      this.update(properties);
+    if (next) {
+      const changes = next;
+      evaluating += 1;
+      try {
+        this.update(changes);
+      } finally {
+        evaluating -= 1;
+      }
     }
   }
 
   toJSON(): Record<string, unknown> {
-    const { id, name, type, enabled, displayName, properties, reactors } = this;
+    const { id, name, type, enabled, displayName, authoredProperties, reactors, clip } = this;
 
     return {
       id,
@@ -129,8 +216,9 @@ export default class Display extends Entity {
       type,
       enabled,
       displayName,
-      properties: structuredClone(properties),
+      properties: structuredClone(authoredProperties),
       reactors: structuredClone(reactors),
+      ...(clip ? { clip: { ...clip } } : {}),
     };
   }
 

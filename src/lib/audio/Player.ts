@@ -26,6 +26,12 @@ export default class Player extends EventEmitter {
   streamAnalyzer: AudioNode | null;
   liveActive: boolean;
   midi: MidiController;
+  /**
+   * When the project transport owns playback, the end of the audio only emits
+   * `ended` and stops; looping and continuing past the audio are the
+   * transport's job.
+   */
+  transportControlled: boolean;
 
   constructor(context: AudioContext) {
     super();
@@ -40,6 +46,7 @@ export default class Player extends EventEmitter {
     this.streamAnalyzer = null;
     this.liveActive = false;
     this.midi = new MidiController();
+    this.transportControlled = false;
 
     this.volume = this.audioContext.createGain();
     this.volume.connect(this.audioContext.destination);
@@ -204,7 +211,10 @@ export default class Player extends EventEmitter {
 
       this.timer = setInterval(() => {
         if (!audio.repeat && audio.getPosition() >= 1.0) {
-          if (this.loop) {
+          if (this.transportControlled) {
+            this.emit('ended');
+            this.stop();
+          } else if (this.loop) {
             this.seek(0);
           } else {
             this.stop();
@@ -299,6 +309,16 @@ export default class Player extends EventEmitter {
 
     if (audio) {
       audio.seek(val);
+      this.emit('seek');
+    }
+  }
+
+  /** Seek the loaded audio to an absolute time in seconds. */
+  seekTime(time: number) {
+    const { audio } = this;
+
+    if (audio) {
+      audio.seekTime(time);
       this.emit('seek');
     }
   }

@@ -98,7 +98,9 @@
     "live-desktop-audio": "Live desktop audio",
     "live-midi-input": "Live MIDI input",
     "choose-audio-or-live-input": "Load an audio file or choose a live input",
-    "audio-waveform-seek-bar": "Audio waveform seek bar"
+    "audio-waveform-seek-bar": "Audio waveform seek bar",
+    "show-timeline": "Show timeline",
+    "hide-timeline": "Hide timeline"
   },
   "canvas-settings": {
     "project-title": "Project Title",
@@ -537,5 +539,26 @@
     "y": "Y",
     "z": "Z",
     "zoom": "Zoom"
+  },
+  "timeline": {
+    "title": "Timeline",
+    "timing": "Timing",
+    "scrub": "Timeline ruler",
+    "duration": "Duration",
+    "follow-audio": "Auto",
+    "follow-audio-help": "Follow the audio length",
+    "fps": "FPS",
+    "snap": "Snap",
+    "zoom-in": "Zoom in",
+    "zoom-out": "Zoom out",
+    "zoom-fit": "Fit project",
+    "hide": "Hide timeline",
+    "start": "Start",
+    "end": "End",
+    "fade-in": "Fade in",
+    "fade-out": "Fade out",
+    "reset": "Always on",
+    "no-fades": "This element has no opacity; it cuts in and out.",
+    "no-elements": "Add a scene to see it on the timeline."
   }
 }

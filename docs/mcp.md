@@ -79,8 +79,9 @@ already-started video export; use the export cancellation control for that.
 | `create_scene`, `add_element`, `update_element`, `remove_element`, `reorder_element` | Edit scenes, displays and effects |
 | `configure_canvas` | Set dimensions and background color |
 | `create_reactor`, `update_reactor`, `remove_reactor`, `bind_reactor` | Configure audio-reactive properties |
-| `load_media`, `playback` | Load local audio/images/videos and play, pause or seek |
-| `get_preview` | Return the rendered composition as a bounded PNG image |
+| `load_media`, `playback` | Load local audio/images/videos and play, pause, stop or seek the project transport (seconds) |
+| `get_timeline`, `set_timeline`, `set_clips`, `clear_clips` | Read the project clock, set duration/fps, and decide when elements are active |
+| `get_preview` | Return the rendered composition as a bounded PNG image, live or at an exact `time` |
 | `start_export`, `get_export_status`, `cancel_export` | Start and monitor cancellable offline video exports |
 
 Call `list_element_types`, then `describe_element_type` before choosing properties.
@@ -98,6 +99,38 @@ Example tool arguments, in order:
 ```
 
 These are examples of tool calls, not raw JSON-RPC request envelopes.
+
+## Timeline
+
+Every scene, display and effect can carry a **clip**: `start` and `end` in
+seconds from the project start (`end: null` means until the project ends), and
+optional `fadeIn` / `fadeOut` in seconds that scale the element's `opacity`.
+An element without a clip is active for the whole project, so existing projects
+behave unchanged. The project **duration** follows the loaded audio unless set
+explicitly with `set_timeline`, which also allows silent intros/outros and
+projects without audio. `fps` (30 or 60) is the frame grid used for snapping
+and export.
+
+Recommended flow for a synced sequence:
+
+```json
+{"tool":"load_media","arguments":{"path":"E:\\music\\track.mp3","kind":"audio"}}
+{"tool":"get_timeline","arguments":{}}
+{"tool":"set_clips","arguments":{"clips":[
+  {"id":"<title text ID>","start":0,"end":8,"fadeOut":1},
+  {"id":"<spectrum ID>","start":8,"fadeIn":0.5},
+  {"id":"<bloom effect ID>","start":32,"end":48}
+]}}
+{"tool":"get_preview","arguments":{"time":8.5,"maxSize":512}}
+{"tool":"start_export","arguments":{"path":"E:\\videos\\out.mp4"}}
+```
+
+`set_clips` merges into the existing clip (omitted fields are kept, `null`
+resets a field) and validates against the project duration. `get_preview` with
+`time` renders that exact frame through the export path, so what it returns is
+what the export will contain at that time; the live view returns to the
+playhead afterwards. `describe_element_type` reports `hasOpacity` so you know
+whether fades will apply or the element will hard-cut.
 
 ## Behavior and limits
 
@@ -117,13 +150,15 @@ These are examples of tool calls, not raw JSON-RPC request envelopes.
   the server does not silently queue edits. A 60-second timeout reports an unknown
   outcome and blocks further commands until the editor reloads. Inspect state
   after reloading before repeating a mutation.
-- Previews capture the current live composition, not a deterministic timestamp.
-  They wait for a compositor presentation and font readiness. External plugins
-  and independently loading remote textures may need another preview call.
-- Exports require loaded audio for their duration and analysis, even when
-  `includeAudio` is false. Supported frame rates are 30 and 60; available encoders
-  are x264, x265, NVENC and WebM. NVENC requires compatible hardware. Use `.webm`
-  for WebM and `.mp4` for the other encoders, with even canvas dimensions.
+- Previews without `time` capture the current live composition. With `time`
+  they are deterministic renders at that project time. Both wait for a
+  compositor presentation and font readiness. External plugins and
+  independently loading remote textures may need another preview call.
+- Exports render the project timeline; `startTime`/`endTime` are seconds within
+  the project duration and audio is required only when `includeAudio` is true.
+  Supported frame rates are 30 and 60; available encoders are x264, x265, NVENC
+  and WebM. NVENC requires compatible hardware. Use `.webm` for WebM and `.mp4`
+  for the other encoders, with even canvas dimensions.
 - `start_export` returns a job ID immediately. Poll `get_export_status` until
   `completed`, `cancelled` or `failed`. The most recent 50 jobs live in renderer
   memory and do not survive reload. Other MCP mutations and previews are blocked

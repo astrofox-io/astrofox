@@ -20,12 +20,29 @@ import {
   updateElementProperties,
 } from '@/app/actions/scenes';
 import { updateCanvas } from '@/app/actions/stage';
+import {
+  clearElementClip,
+  listTimelineElements,
+  setElementClip,
+  setProjectDuration,
+  setProjectFps,
+} from '@/app/actions/timeline';
 import { getDesktopBridge, isFfmpegAvailable } from '@/app/desktop';
 import { api, player, reactors, renderBackend, renderer, stage } from '@/app/global';
 import AudioReactor from '@/lib/audio/AudioReactor';
 import Display from '@/lib/core/Display';
 import type Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
+import { validateClipPatch } from '@/lib/timeline/clip';
+import {
+  getProjectDuration,
+  getProjectFps,
+  getTransportState,
+  pauseTransport,
+  playTransport,
+  seekTransport,
+  stopTransport,
+} from '@/lib/timeline/transport';
 import { getVideoEncoderConfig } from '@/lib/video/encoders';
 import { isVideoExportCancelledError } from '@/lib/video/VideoExporter';
 import { type CommandArgs, type CommandName, commands } from './protocol';
@@ -108,8 +125,7 @@ async function waitForFrame() {
   await presented;
 }
 
-async function preview(maxSize: number) {
-  await waitForFrame();
+async function waitForMedia() {
   await document.fonts.ready;
   for (const scene of stage.scenes as Scene[]) {
     for (const display of scene.displays as unknown as Display[]) {
@@ -117,7 +133,55 @@ async function preview(maxSize: number) {
       if (img instanceof HTMLImageElement && img.src && !img.complete) await img.decode();
     }
   }
+}
+
+function transportSummary() {
+  const { time, duration, explicitDuration, fps, playing } = getTransportState();
+  return {
+    time,
+    duration,
+    explicitDuration,
+    fps,
+    playing,
+    position: duration > 0 ? time / duration : 0,
+    audioDuration: player.getDuration(),
+  };
+}
+
+/**
+ * Deterministic render at an absolute project time through the export path:
+ * audio analysis, reactors, clips and fades all come from that time. The live
+ * view is restored to the playhead afterwards.
+ */
+async function previewAt(maxSize: number, time: number) {
+  const duration = getProjectDuration();
+  if (time > duration) throw new Error(`time must be within the project duration (${duration}s).`);
+  pauseTransport();
+  if (!(await renderBackend.ensureRoot())) throw new Error('Stage renderer is not ready.');
+  await waitForMedia();
+  const fps = getProjectFps();
+  const wasRendering = renderer.rendering;
+  renderer.stop();
+  try {
+    await renderer.renderFrame(Math.round(time * fps), fps);
+    const image = captureCanvas(maxSize);
+    // Put analysis and reactor state back at the playhead.
+    await renderer.renderFrame(Math.round(getTransportState().time * fps), fps);
+    return image;
+  } finally {
+    if (wasRendering) renderer.start();
+    else renderer.requestRender();
+  }
+}
+
+async function preview(maxSize: number) {
   await waitForFrame();
+  await waitForMedia();
+  await waitForFrame();
+  return captureCanvas(maxSize);
+}
+
+function captureCanvas(maxSize: number) {
   const source = renderBackend.getCanvas();
   if (!source?.width || !source?.height) throw new Error('Stage canvas is unavailable.');
   const ratio = Math.min(1, maxSize / Math.max(source.width, source.height));
@@ -147,6 +211,7 @@ const handlers: Handlers = {
         playing: player.isPlaying(),
         name: audioStore.getState().sourceLabel,
       },
+      transport: transportSummary(),
       exportJob: activeJob?.id,
     }),
   list_element_types: () =>
@@ -170,6 +235,8 @@ const handlers: Handlers = {
       defaults: Type.config.defaultProperties,
       controls: resolvedControls(Type, target),
       media: Type.config.media,
+      // Clip fades scale `opacity`; elements without it hard-cut at the clip edges.
+      hasOpacity: typeof Type.config.defaultProperties.opacity === 'number',
     });
   },
   new_project: async ({ discardChanges }) => {
@@ -254,7 +321,31 @@ const handlers: Handlers = {
     edited();
     return compact(target.toJSON());
   },
-  get_preview: ({ maxSize }) => preview(maxSize),
+  get_preview: ({ maxSize, time }) =>
+    time === undefined ? preview(maxSize) : previewAt(maxSize, time),
+  get_timeline: () => ({ ...transportSummary(), elements: listTimelineElements().elements }),
+  set_timeline: ({ duration, fps }) => {
+    if (duration !== undefined) setProjectDuration(duration);
+    if (fps !== undefined) setProjectFps(fps);
+    renderer.requestRender();
+    return handlers.get_timeline({});
+  },
+  set_clips: ({ clips }) => {
+    const duration = getProjectDuration();
+    for (const { id, ...patch } of clips) {
+      element(id);
+      validateClipPatch(patch, duration);
+    }
+    const result = clips.map(({ id, ...patch }) => ({ id, clip: setElementClip(id, patch) }));
+    edited();
+    return result;
+  },
+  clear_clips: ({ ids }) => {
+    for (const id of ids) element(id);
+    for (const id of ids) clearElementClip(id);
+    edited();
+    return { cleared: ids };
+  },
   open_project: async ({ path, discardChanges }) => {
     requireDiscard(discardChanges);
     const file = await readFile(path);
@@ -327,23 +418,25 @@ const handlers: Handlers = {
     if (typeof previous === 'string' && previous.startsWith('blob:')) URL.revokeObjectURL(previous);
     return { id: elementId, path, kind };
   },
-  playback: ({ action, position }) => {
-    if (!player.hasAudio()) throw new Error('Load an audio file first.');
+  playback: ({ action, time, position }) => {
     if (action === 'seek') {
-      if (position === undefined) throw new Error('Seek requires position.');
-      player.seek(position);
-    } else if (action === 'play') player.play();
-    else player.pause();
+      if (time === undefined && position === undefined)
+        throw new Error('Seek requires time (seconds) or position (0-1).');
+      seekTransport(time ?? (position ?? 0) * getProjectDuration());
+    } else if (action === 'play') playTransport();
+    else if (action === 'pause') pauseTransport();
+    else stopTransport();
     renderer.requestRender();
-    return { playing: player.isPlaying(), position: player.getPosition() };
+    return transportSummary();
   },
   start_export: async args => {
     if (!isFfmpegAvailable()) throw new Error('Bundled ffmpeg is unavailable.');
-    if (!player.hasAudio()) throw new Error('Load an audio file before exporting.');
-    const duration = player.getDuration();
+    if (args.includeAudio && !player.hasAudio())
+      throw new Error('Load an audio file before exporting with audio, or set includeAudio=false.');
+    const duration = getProjectDuration();
     const endTime = args.endTime ?? duration;
     if (!Number.isFinite(duration) || endTime > duration || endTime <= args.startTime)
-      throw new Error('Export range must be within the loaded audio duration.');
+      throw new Error(`Export range must be within the project duration (${duration}s).`);
     const { width, height } = stage.getSize();
     if (width % 2 || height % 2) throw new Error('Video export requires even canvas dimensions.');
     const extension = getVideoEncoderConfig(args.encoder).video.extension;
@@ -354,7 +447,7 @@ const handlers: Handlers = {
     const source = audioStore.getState().source;
     if (args.includeAudio && !source)
       throw new Error('Reload the audio file before exporting with audio.');
-    player.pause();
+    pauseTransport();
     const job: ExportJob = {
       id: crypto.randomUUID(),
       state: 'running',

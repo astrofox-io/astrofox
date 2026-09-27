@@ -4,7 +4,14 @@ import type React from 'react';
 
 export interface RenderFrameData {
   id: number;
+  /** Milliseconds since the previous frame (wall clock, or 1000/fps when exporting). */
   delta: number;
+  /** Absolute project time in seconds, from the transport (or frame/fps when exporting). */
+  time: number;
+  /** Project duration in seconds. */
+  duration: number;
+  /** Project frame rate; keyframe/clip snapping and export cadence. */
+  fps: number;
   fft: Uint8Array | null;
   td: Float32Array | null;
   volume: number;

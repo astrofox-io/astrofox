@@ -18,6 +18,12 @@ import Entity from '@/lib/core/Entity';
 import { type MigrationRegistry, migrateProjectSnapshot } from '@/lib/core/migrateProject';
 import Scene from '@/lib/core/Scene';
 import Stage from '@/lib/core/Stage';
+import {
+  applyTimelineSettings,
+  getTimelineSettings,
+  seekTransport,
+  type TimelineSettings,
+} from '@/lib/timeline/transport';
 import { resetLabelCount } from '@/lib/utils/controls';
 import {
   getFileSystemPath,
@@ -62,6 +68,8 @@ interface ProjectSnapshot extends Record<string, unknown> {
   stage?: { properties?: Record<string, unknown> };
   scenes?: SceneSnapshot[];
   reactors?: Record<string, unknown>[];
+  /** Absent in projects saved before the timeline existed: duration follows the audio. */
+  timeline?: TimelineSettings;
 }
 
 interface ProjectFilePayload extends Record<string, unknown> {
@@ -173,6 +181,7 @@ export function snapshotProject(): ProjectSnapshot {
     stage: stage.toJSON(),
     scenes: stage.scenes.toJSON(),
     reactors: reactors.toJSON(),
+    timeline: getTimelineSettings(),
   };
 }
 
@@ -693,6 +702,7 @@ async function loadProjectFromPayload(
   const { missing, missingPlugins } = loadProject(resolvedSnapshot, options.interactive !== false);
   await loadScenes();
   loadReactors();
+  seekTransport(0);
 
   if (options.interactive !== false) notifyRemovedElements([...removed, ...missing]);
 
@@ -815,6 +825,8 @@ export function loadProject(data: ProjectSnapshot, interactive = true) {
     updateStage(Stage.defaultProperties);
   }
 
+  applyTimelineSettings(data.timeline);
+
   if (data.reactors) {
     for (const config of data.reactors) {
       const reactor = Entity.create(AudioReactor, config);
@@ -865,6 +877,9 @@ export async function newProject() {
   scene.addElement(new displays.ImageDisplay() as unknown as SceneEntity);
   scene.addElement(new displays.BarSpectrumDisplay() as unknown as SceneEntity);
   scene.addElement(new displays.TextDisplay() as unknown as SceneEntity);
+
+  applyTimelineSettings(undefined);
+  seekTransport(0);
 
   await loadScenes();
   await loadReactors();

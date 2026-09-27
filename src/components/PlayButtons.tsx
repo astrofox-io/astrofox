@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import useAppStore, { cancelVideoExport } from '@/app/actions/app';
 import useAudioStore, { setLiveModeEnabled } from '@/app/actions/audio';
+import { stopTransport, toggleTransport } from '@/app/actions/timeline';
 import { player } from '@/app/global';
 import useForceUpdate from '@/app/hooks/useForceUpdate';
 import { Pause, Play, Stop } from '@/app/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import transportStore from '@/lib/timeline/transport';
 
 export default function PlayButtons() {
   const { t } = useTranslation(undefined, { keyPrefix: 'player' });
@@ -19,7 +21,8 @@ export default function PlayButtons() {
       mode: state.mode,
     })),
   );
-  const playing = player.isPlaying();
+  const transportPlaying = transportStore(state => state.playing);
+  const playing = transportPlaying || player.isPlaying();
   const hasSource = liveModeEnabled ? player.hasSource() : true;
   const PlayPauseIcon = isVideoRecording ? Play : playing ? Pause : Play;
 
@@ -38,7 +41,7 @@ export default function PlayButtons() {
       return;
     }
 
-    player.play();
+    toggleTransport();
   }
 
   function handleStopButtonClick() {
@@ -56,7 +59,7 @@ export default function PlayButtons() {
       return;
     }
 
-    player.stop();
+    stopTransport();
   }
 
   const playTitle = isVideoRecording

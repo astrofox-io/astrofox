@@ -30,6 +30,7 @@ function snapshotStage(stage) {
   const scenes = [...stage.scenes].map(scene => ({
     id: scene.id,
     enabled: scene.enabled,
+    timelineActive: scene.timelineActive,
     properties: scene.properties,
     displays: [...scene.displays],
     effects: [...scene.effects],
@@ -38,14 +39,19 @@ function snapshotStage(stage) {
   return { scenes };
 }
 
+// Evaluates every enabled element for the frame: clip activity and fades,
+// then reactor output. Elements outside their clip (`timelineActive === false`)
+// are skipped by StageRoot and the effect passes.
 function updateNativeSceneState(scenes, frameData) {
   for (const scene of scenes || []) {
     if (!scene?.enabled) {
       continue;
     }
 
-    if (scene.updateReactors) {
-      scene.updateReactors(frameData);
+    scene.evaluate?.(frameData);
+
+    if (scene.timelineActive === false) {
+      continue;
     }
 
     for (const display of scene.displays || []) {
@@ -53,9 +59,7 @@ function updateNativeSceneState(scenes, frameData) {
         continue;
       }
 
-      if (display.updateReactors) {
-        display.updateReactors(frameData);
-      }
+      display.evaluate?.(frameData);
     }
 
     for (const effect of scene.effects || []) {
@@ -63,11 +67,9 @@ function updateNativeSceneState(scenes, frameData) {
         continue;
       }
 
-      if (effect.updateReactors) {
-        effect.updateReactors(frameData);
-      }
+      effect.evaluate?.(frameData);
 
-      if (effect.render) {
+      if (effect.render && effect.timelineActive !== false) {
         effect.render(scene, frameData);
       }
     }
@@ -404,10 +406,14 @@ export default class CompositorBackend extends RenderBackend {
       return this.getPixels();
     }
 
-    analyzer.process(getAudioSample(frame / fps));
+    const time = frame / fps;
+
+    analyzer.process(getAudioSample(time));
 
     const frameData = getFrameData(VIDEO_RENDERING);
     frameData.delta = 1000 / fps;
+    frameData.time = time;
+    frameData.fps = fps;
 
     // Worker display plugins render asynchronously; wait for their bitmaps
     // for this exact frame so exports stay frame-accurate.

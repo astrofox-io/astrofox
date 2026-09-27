@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import useEntity from '@/app/hooks/useEntity';
 import ControlGroup from '@/components/ControlGroup';
 import Option from '@/components/Option';
+import TimingControls from '@/components/timeline/TimingControls';
 import { translateControlProps, translateGeneratedName, translateLabel } from '@/i18n/labels';
-import type Display from '@/lib/core/Display';
+import Display, { getAuthoredProperties } from '@/lib/core/Display';
 import { resolve } from '@/lib/utils/object';
 import { inputValueToProps } from '@/lib/utils/react';
 
@@ -49,6 +50,9 @@ export default function Control({
 
   const internalOnChange = useEntity(display);
   const onChange = onChangeProp ?? internalOnChange;
+  // Inputs show what was set, never the per-frame reactor/fade output.
+  const authored = getAuthoredProperties(display);
+  const isStageElement = display instanceof Display;
 
   function resolveOption(name: string, option: Record<string, unknown>) {
     const props: Record<string, unknown> = {};
@@ -85,7 +89,7 @@ export default function Control({
         key={name}
         display={display}
         name={name}
-        value={(display.properties as Record<string, unknown>)[name]}
+        value={authored[name]}
         onChange={inputValueToProps(onChange)}
         {...optionProps}
       />
@@ -176,7 +180,7 @@ export default function Control({
         // A control flagged `groupToggle` becomes the switch in the group header.
         const toggleOption = section.options.find(option => option.props.groupToggle === true);
         const bodyOptions = section.options.filter(option => option !== toggleOption);
-        const properties = display.properties as Record<string, unknown>;
+        const properties = authored;
 
         return (
           <ControlGroup
@@ -196,6 +200,11 @@ export default function Control({
           </ControlGroup>
         );
       })}
+      {isStageElement ? (
+        <ControlGroup key="group-timing" title={t('timeline.timing')}>
+          <TimingControls display={display} />
+        </ControlGroup>
+      ) : null}
     </div>
   );
 }

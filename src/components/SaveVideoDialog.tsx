@@ -23,6 +23,7 @@ import TimeInput from '@/components/TimeInput';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
+import transportStore from '@/lib/timeline/transport';
 import { getVideoEncoderConfig } from '@/lib/video/encoders';
 
 type SaveVideoDialogProps = {
@@ -110,7 +111,10 @@ export default function SaveVideoDialog({
   const hasValidTimeRange =
     selectedEndTime > selectedStartTime &&
     selectedEndTime - selectedStartTime >= MIN_EXPORT_DURATION;
-  const canSave = hasSelectedAudio && hasSaveLocation && hasValidDuration && hasValidTimeRange;
+  // The offline exporter renders the project timeline; audio is only needed to include it.
+  const needsAudio = shouldIncludeAudio || encoderOptions.length === 0;
+  const canSave =
+    (hasSelectedAudio || !needsAudio) && hasSaveLocation && hasValidDuration && hasValidTimeRange;
 
   useEffect(() => {
     setVideoExportSegment(selectedStartTime, selectedEndTime, totalDuration);
@@ -138,9 +142,13 @@ export default function SaveVideoDialog({
       setAudioSource(audio.file);
       setAudioFileName(audio.name);
       setAudioBuffer(audio.buffer ?? null);
-      setTotalDuration(audio.duration);
+      // An explicit project duration wins; otherwise the project follows the audio.
+      const nextDuration = transportStore.getState().explicitDuration
+        ? totalDuration
+        : audio.duration;
+      setTotalDuration(nextDuration);
       setSelectedStartTime(0);
-      setSelectedEndTime(audio.duration);
+      setSelectedEndTime(nextDuration);
       setValidationMessage('');
     } catch (error) {
       raiseError(te('choose-audio-file-failed'), error);
@@ -239,7 +247,7 @@ export default function SaveVideoDialog({
   }
 
   function handleSave() {
-    if (!audioFileName) {
+    if (!audioFileName && needsAudio) {
       setValidationMessage(t('validation-no-audio'));
       return;
     }
@@ -405,7 +413,7 @@ export default function SaveVideoDialog({
             min={0}
             max={Math.max(totalDuration, 0)}
             step={0.01}
-            disabled={!hasSelectedAudio || totalDuration <= 0}
+            disabled={totalDuration <= 0}
             onChange={handleTimeRangeUpdate}
             onUpdate={handleTimeRangeUpdate}
           />

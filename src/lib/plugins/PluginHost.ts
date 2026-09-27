@@ -225,9 +225,8 @@ export class PluginWorkerHost {
     const { manifest } = this.installed;
     const exporting = frameData.id === VIDEO_RENDERING;
 
-    if (frameData.hasUpdate) {
-      record.time += (frameData.delta || 0) / 1000;
-    }
+    // Project time keeps worker plugins deterministic when seeking and exporting.
+    record.time = frameData.time ?? 0;
 
     const frame: PluginFrame = {
       id: frameData.id,

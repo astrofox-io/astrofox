@@ -20,7 +20,7 @@ function wrapDisplayNode(display, node) {
   }
 
   return (
-    <group key={display.id} visible={Boolean(display.enabled)}>
+    <group key={display.id} visible={Boolean(display.enabled) && display.timelineActive !== false}>
       {node}
     </group>
   );
@@ -70,11 +70,13 @@ export default function StageRoot({
   const sceneProducers = [];
 
   for (const scene of scenes || []) {
-    if (!scene?.enabled) {
+    if (!scene?.enabled || scene.timelineActive === false) {
       continue;
     }
 
-    const sceneEffects = (scene.effects || []).filter(e => e?.enabled);
+    const sceneEffects = (scene.effects || []).filter(
+      e => e?.enabled && e.timelineActive !== false,
+    );
     const sceneLayers = [];
 
     for (const display of scene.displays || []) {

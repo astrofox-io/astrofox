@@ -1,4 +1,6 @@
 import useAudioStore from '@/app/actions/audio';
+import useTimelinePanel from '@/app/actions/timelinePanel';
+import TimelinePanel from '@/components/timeline/TimelinePanel';
 import AudioWaveform from './AudioWaveform';
 import LiveInputButton from './LiveInputButton';
 import LiveInputGain from './LiveInputGain';
@@ -13,10 +15,11 @@ import VolumeControl from './VolumeControl';
 
 export default function Player() {
   const liveModeEnabled = useAudioStore(state => state.liveModeEnabled);
+  const timelineOpen = useTimelinePanel(state => state.open);
 
   return (
     <div className="shrink-0">
-      <AudioWaveform />
+      {timelineOpen ? <TimelinePanel /> : <AudioWaveform />}
       <LiveOscilloscope />
       <div className="min-w-lg overflow-hidden border-t border-t-neutral-800 bg-neutral-900 px-5 py-2.5">
         {liveModeEnabled ? (

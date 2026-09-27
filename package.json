@@ -38,7 +38,9 @@
     "plugin-libs": "node ./scripts/copy-plugin-libs.mjs",
     "postinstall": "node ./scripts/copy-plugin-libs.mjs",
     "build:mcp": "node ./scripts/build-mcp.mjs",
-    "dev:desktop:mcp": "pnpm build:mcp && cross-env ASTROFOX_MCP=1 dotenv -- node ./scripts/dev-electron.mjs"
+    "dev:desktop:mcp": "pnpm build:mcp && cross-env ASTROFOX_MCP=1 dotenv -- node ./scripts/dev-electron.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "build": {
     "appId": "io.astrofox.app",
@@ -198,6 +200,7 @@
     "esbuild": "^0.28.2",
     "get-port": "^7.2.0",
     "typescript": "6.0.3",
+    "vitest": "^5.0.2",
     "wait-on": "^8.0.4"
   }
 }

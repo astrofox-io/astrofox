@@ -2,6 +2,7 @@
 
 import { Color, Vector2, Vector3, Vector4 } from 'three';
 import ShaderPass from '@/lib/core/render/composer/ShaderPass';
+import { isEffectEnabled } from '@/lib/core/render/effects/effectPassRegistry';
 import vertexShader from '@/lib/shaders/glsl/vertex/basic.glsl';
 import type { InstalledPlugin, PluginUniformDef } from './types';
 
@@ -109,18 +110,14 @@ export function createShaderEffectPassFactory(installed: InstalledPlugin) {
     }
 
     const pass = new ShaderPass({ uniforms, vertexShader, fragmentShader });
-    let time = 0;
 
     pass.__updateScenePass = frameData => {
-      pass.enabled = effect.enabled !== false;
+      pass.enabled = isEffectEnabled(effect);
 
       const liveUniforms = pass.material.uniforms;
 
-      if (frameData?.hasUpdate) {
-        time += (frameData.delta || 0) / 1000;
-      }
-
-      liveUniforms.time.value = time;
+      // Project time keeps shader plugins deterministic when seeking and exporting.
+      liveUniforms.time.value = frameData?.time ?? 0;
       liveUniforms.delta.value = frameData?.delta ?? 0;
       liveUniforms.volume.value = frameData?.volume ?? 0;
 

@@ -3,7 +3,7 @@
 import React from 'react';
 import { LinearFilter, SRGBColorSpace, VideoTexture } from 'three';
 import { BLANK_IMAGE } from '@/app/constants';
-import { player } from '@/app/global';
+import transportStore from '@/lib/timeline/transport';
 import { TexturePlane } from './TexturePlane';
 
 function getClipStart(startTime) {
@@ -106,7 +106,7 @@ export function VideoDisplayLayer({
   );
 
   const resumeVideo = React.useCallback(() => {
-    if (!src || src === BLANK_IMAGE || !player.isPlaying()) {
+    if (!src || src === BLANK_IMAGE || !transportStore.getState().playing) {
       return;
     }
 
@@ -148,9 +148,10 @@ export function VideoDisplayLayer({
     };
 
     const onLoadedMetadata = () => {
-      syncVideoTime(player.isPlaying() ? player.getCurrentTime() : 0);
+      const { time, playing } = transportStore.getState();
+      syncVideoTime(time);
 
-      if (player.isPlaying()) {
+      if (playing) {
         resumeVideo();
       } else {
         video.pause();
@@ -162,7 +163,7 @@ export function VideoDisplayLayer({
         return;
       }
 
-      syncVideoTime(player.getCurrentTime());
+      syncVideoTime(transportStore.getState().time);
       resumeVideo();
     };
 
@@ -187,40 +188,38 @@ export function VideoDisplayLayer({
       return;
     }
 
-    const handlePlay = () => {
-      syncVideoTime(player.getCurrentTime());
-      resumeVideo();
-    };
+    // Follow the project transport: play/pause with it, and re-seek whenever
+    // the playhead jumps (scrubbing, MCP seeks, looping) or drifts.
+    let lastTime = transportStore.getState().time;
+    let lastPlaying = transportStore.getState().playing;
 
-    const handlePause = () => {
-      video.pause();
-      syncVideoTime(player.getCurrentTime());
-    };
+    const unsubscribe = transportStore.subscribe(state => {
+      const jumped = Math.abs(state.time - lastTime) > 0.25;
+      const playingChanged = state.playing !== lastPlaying;
+      lastTime = state.time;
+      lastPlaying = state.playing;
 
-    const handleSeek = () => {
-      syncVideoTime(player.getCurrentTime());
-
-      if (player.isPlaying()) {
-        resumeVideo();
+      if (playingChanged) {
+        if (state.playing) {
+          syncVideoTime(state.time);
+          resumeVideo();
+        } else {
+          video.pause();
+          syncVideoTime(state.time);
+        }
+        return;
       }
-    };
 
-    const handleStop = () => {
-      video.pause();
-      syncVideoTime(0);
-    };
+      if (jumped || !state.playing) {
+        syncVideoTime(state.time);
 
-    player.on('play', handlePlay);
-    player.on('pause', handlePause);
-    player.on('seek', handleSeek);
-    player.on('stop', handleStop);
+        if (state.playing) {
+          resumeVideo();
+        }
+      }
+    });
 
-    return () => {
-      player.off('play', handlePlay);
-      player.off('pause', handlePause);
-      player.off('seek', handleSeek);
-      player.off('stop', handleStop);
-    };
+    return unsubscribe;
   }, [video, src, syncVideoTime, resumeVideo]);
 
   React.useEffect(() => {

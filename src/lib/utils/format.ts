@@ -51,6 +51,15 @@ export function formatShortTime(val: number, formats: string[] = ['m', 's'], spa
   return t;
 }
 
+/** `m:ss.ff` (frames at the given rate), for timeline readouts. */
+export function formatTimecode(val: number, fps: number) {
+  const safe = Number.isFinite(val) ? Math.max(0, val) : 0;
+  const whole = Math.floor(safe + 1e-9);
+  const frames = Math.min(fps - 1, Math.floor((safe - whole) * fps + 1e-6));
+
+  return `${formatTime(whole)}.${String(frames).padStart(2, '0')}`;
+}
+
 export function parseSeekTime(val: string) {
   const matches = val.match(/^(0?\d+:)?(0?\d+):(\d{2})$/);
 

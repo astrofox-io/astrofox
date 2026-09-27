@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import transportStore, { getTimelineSettings } from '@/lib/timeline/transport';
 import { uniqueId } from '@/lib/utils/crypto';
 import appStore, { setActiveElementId, setActiveReactorId } from './app';
 import projectStore, { loadProject, touchProject } from './project';
@@ -26,6 +27,7 @@ function snapshot() {
     scenes: sceneStore.getState().scenes as SceneSnapshot[],
     reactors: reactorStore.getState().reactors,
     stage: { properties: { width, height, backgroundColor } },
+    timeline: getTimelineSettings(),
     projectName,
     unresolvedMediaRefs,
   });
@@ -99,6 +101,15 @@ export function initializeHistory() {
   sceneStore.subscribe(scheduleCapture);
   reactorStore.subscribe(scheduleCapture);
   stageStore.subscribe(scheduleCapture);
+  transportStore.subscribe((state, previous) => {
+    // Only the saved settings are history; the playhead and play state are not.
+    if (
+      state.duration !== previous.duration ||
+      state.explicitDuration !== previous.explicitDuration ||
+      state.fps !== previous.fps
+    )
+      scheduleCapture();
+  });
   projectStore.subscribe((state, previous) => {
     if (
       state.projectName !== previous.projectName ||
