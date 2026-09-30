@@ -2,7 +2,7 @@
 
 import { useThree } from '@react-three/fiber';
 import React from 'react';
-import { updateElementProperties } from '@/app/actions/scenes';
+import { projectDocument } from '@/app/document';
 import { renderer } from '@/app/global';
 import { getDefaultCameraDistance } from '@/lib/core/render/geometry/Display3DLayer';
 import {
@@ -12,8 +12,6 @@ import {
 } from '@/lib/core/render/geometry/useCameraOrbit';
 import { CanvasTextureLayer } from '@/lib/core/render/layers';
 import { getPluginWorkerHost } from './PluginHost';
-
-const VIDEO_RENDERING = -1;
 
 /**
  * Generic stage layer for worker-runtime display plugins. Reuses the
@@ -50,10 +48,14 @@ function useExternalCameraOrbit(display, cameraModeActive) {
 
   const persist = React.useCallback(
     state => {
-      updateElementProperties(display.id, {
-        cameraAzimuth: state.azimuth,
-        cameraPolar: state.polar,
-        cameraDistance: state.distance,
+      projectDocument.apply({
+        type: 'setProperties',
+        id: display.id,
+        properties: {
+          cameraAzimuth: state.azimuth,
+          cameraPolar: state.polar,
+          cameraDistance: state.distance,
+        },
       });
     },
     [display.id],
@@ -115,7 +117,7 @@ export function ExternalDisplayLayer({
 
       // Export frames are pre-rendered synchronously by the export loop
       // (renderPluginFramesForExport); live frames are fire-and-forget.
-      if (frame && frame.id !== VIDEO_RENDERING) {
+      if (frame && !frame.offline) {
         host.requestFrame(display.id, frame);
       }
 

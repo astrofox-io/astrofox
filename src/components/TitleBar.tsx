@@ -8,20 +8,21 @@ import useAppStore, {
   toggleLeftPanelVisibility,
   toggleRightPanelVisibility,
 } from '@/app/actions/app';
-import useProject, { DEFAULT_PROJECT_NAME } from '@/app/actions/project';
 import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
 import { isDesktopApp, isMacDesktop } from '@/app/desktop';
+import { useDocument } from '@/app/document';
 import { env } from '@/app/global';
 import EditMenu from '@/components/EditMenu';
 import TitleBarUpdateButton from '@/components/TitleBarUpdateButton';
 import { Button } from '@/components/ui/button';
+import { DEFAULT_PROJECT_NAME } from '@/lib/document/types';
 
 export default function TitleBar() {
   const { t } = useTranslation(undefined, { keyPrefix: 'title-bar' });
   const isLeftPanelVisible = useAppStore(state => state.isLeftPanelVisible);
   const isBottomPanelVisible = useAppStore(state => state.isBottomPanelVisible);
   const isRightPanelVisible = useAppStore(state => state.isRightPanelVisible);
-  const projectName = useProject(state => state.projectName);
+  const projectName = useDocument(state => state.name);
   const title =
     projectName && projectName !== DEFAULT_PROJECT_NAME ? projectName : t('default-project-name');
   const desktop = isDesktopApp();

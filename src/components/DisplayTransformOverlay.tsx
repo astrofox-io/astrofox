@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { updateElementProperties } from '@/app/actions/scenes';
+import { projectDocument } from '@/app/document';
 import { events, stage } from '@/app/global';
 import { type DisplayTransformFrame, getDisplayTransformFrame } from './displayTransform';
 
@@ -393,7 +393,11 @@ export default function DisplayTransformOverlay({
       interaction &&
       hasChangedProperties(interaction.startProperties, interaction.finalProperties)
     ) {
-      updateElementProperties(interaction.elementId, interaction.finalProperties || {});
+      projectDocument.apply({
+        type: 'setProperties',
+        id: interaction.elementId,
+        properties: interaction.finalProperties || {},
+      });
     }
   }, [handleWindowPointerMove]);
 

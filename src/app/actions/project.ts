@@ -1,30 +1,22 @@
 import { create } from 'zustand';
 import { raiseError } from '@/app/actions/error';
 import { showModal } from '@/app/actions/modals';
-import { loadReactors, resetReactors } from '@/app/actions/reactors';
-import { loadScenes, resetScenes, updateElementProperty } from '@/app/actions/scenes';
-import { updateCanvas, updateStage } from '@/app/actions/stage';
-import {
-  BLANK_IMAGE,
-  DEFAULT_CANVAS_BGCOLOR,
-  DEFAULT_CANVAS_HEIGHT,
-  DEFAULT_CANVAS_WIDTH,
-} from '@/app/constants';
-import { api, env, library, logger, reactors, stage } from '@/app/global';
+import stageStore, { setZoom } from '@/app/actions/stage';
+import { BLANK_IMAGE } from '@/app/constants';
+import { projectDocument } from '@/app/document';
+import { api, env, library, logger } from '@/app/global';
 import { t } from '@/i18n/config';
-import AudioReactor from '@/lib/audio/AudioReactor';
-import Display from '@/lib/core/Display';
-import Entity from '@/lib/core/Entity';
+import type Entity from '@/lib/core/Entity';
 import { type MigrationRegistry, migrateProjectSnapshot } from '@/lib/core/migrateProject';
-import Scene from '@/lib/core/Scene';
-import Stage from '@/lib/core/Stage';
 import {
-  applyTimelineSettings,
-  getTimelineSettings,
-  seekTransport,
-  type TimelineSettings,
-} from '@/lib/timeline/transport';
-import { resetLabelCount } from '@/lib/utils/controls';
+  type Canvas,
+  DEFAULT_PROJECT_NAME,
+  type DocumentChange,
+  type LoadInput,
+  type MediaKind,
+  type MediaRef,
+} from '@/lib/document/types';
+import { seekTransport, type TimelineSettings } from '@/lib/timeline/transport';
 import {
   getFileSystemPath,
   isLocalMediaUrl,
@@ -32,24 +24,13 @@ import {
   resolveVideoSourceUrl,
   toLocalMediaUrl,
 } from '@/lib/utils/media';
-import { resetHistory } from './history';
 
-export const DEFAULT_PROJECT_NAME = 'Untitled Project';
+export { DEFAULT_PROJECT_NAME, type MediaRef };
 
-type MediaKind = 'image' | 'video';
-
-export interface MediaRef {
-  displayId: string;
-  kind: MediaKind;
-  label: string;
-  sourcePath: string;
-}
-
+/** The project file's save state. Its content lives in `projectDocument`. */
 interface ProjectState {
-  projectName: string;
   opened: number;
   lastModified: number;
-  unresolvedMediaRefs: MediaRef[];
 }
 
 interface ElementSnapshot extends Record<string, unknown> {
@@ -65,7 +46,7 @@ interface SceneSnapshot extends Record<string, unknown> {
 }
 
 interface ProjectSnapshot extends Record<string, unknown> {
-  stage?: { properties?: Record<string, unknown> };
+  stage?: { name?: string; properties?: Record<string, unknown> };
   scenes?: SceneSnapshot[];
   reactors?: Record<string, unknown>[];
   /** Absent in projects saved before the timeline existed: duration follows the audio. */
@@ -91,12 +72,6 @@ type MediaRefInput = Partial<MediaRef> & {
 };
 
 type LibraryConstructor = new (properties?: Record<string, unknown>) => Entity;
-
-type SceneEntity = {
-  id: string;
-  scene: unknown;
-  toJSON: () => Record<string, unknown>;
-};
 
 /** Canonical project file extension */
 const PROJECT_FILE_EXTENSION = 'afx';
@@ -165,23 +140,49 @@ function isSupportedProjectFileName(fileName = '') {
 }
 
 const initialState: ProjectState = {
-  projectName: DEFAULT_PROJECT_NAME,
   opened: 0,
   lastModified: 0,
-  unresolvedMediaRefs: [],
 };
 
 const projectStore = create<ProjectState>(() => ({
   ...initialState,
 }));
 
+/** The document in project file format. */
 export function snapshotProject(): ProjectSnapshot {
+  const { canvas, scenes, reactors, timeline } = projectDocument.snapshot();
+
   return {
     version: env.APP_VERSION,
-    stage: stage.toJSON(),
-    scenes: stage.scenes.toJSON(),
-    reactors: reactors.toJSON(),
-    timeline: getTimelineSettings(),
+    stage: { name: 'Stage', properties: { ...canvas, zoom: stageStore.getState().zoom } },
+    scenes,
+    reactors,
+    timeline,
+  };
+}
+
+/** A migrated, media-resolved project file snapshot as Document input. */
+function toLoadInput(
+  snapshot: ProjectSnapshot,
+  name: string,
+  unresolvedMediaRefs: MediaRef[],
+): LoadInput {
+  const properties = (snapshot.stage?.properties ?? {}) as Partial<Canvas>;
+  const canvas: Partial<Canvas> = {};
+
+  for (const key of ['width', 'height', 'backgroundColor'] as const) {
+    if (properties[key] !== undefined) {
+      (canvas as Record<string, unknown>)[key] = properties[key];
+    }
+  }
+
+  return {
+    canvas,
+    scenes: snapshot.scenes as LoadInput['scenes'],
+    reactors: snapshot.reactors,
+    timeline: snapshot.timeline,
+    name,
+    unresolvedMediaRefs,
   };
 }
 
@@ -607,12 +608,6 @@ async function resolveSnapshotMediaOnLoad(
   };
 }
 
-function setUnresolvedMediaRefs(mediaRefs: MediaRef[] = []) {
-  projectStore.setState({
-    unresolvedMediaRefs: mediaRefs,
-  });
-}
-
 function sanitizeFileName(name?: string) {
   return (name || '')
     .trim()
@@ -699,21 +694,32 @@ async function loadProjectFromPayload(
     await resolveSnapshotMediaOnLoad(migratedSnapshot, mediaRefs);
   const unresolvedMediaRefs = mergeMediaRefs(detectedMissingMedia);
 
-  const { missing, missingPlugins } = loadProject(resolvedSnapshot, options.interactive !== false);
-  await loadScenes();
-  loadReactors();
+  const interactive = options.interactive !== false;
+  const { missing, missingPlugins } = projectDocument.load(
+    toLoadInput(resolvedSnapshot, projectName || DEFAULT_PROJECT_NAME, unresolvedMediaRefs),
+  );
+  logger.log('Loaded project:', resolvedSnapshot);
+
+  for (const name of [...missing, ...missingPlugins.map(plugin => plugin.name)]) {
+    logger.warn('Component not found:', name);
+  }
+
+  const zoom = resolvedSnapshot.stage?.properties?.zoom;
+  if (typeof zoom === 'number') {
+    setZoom(zoom);
+  }
+
   seekTransport(0);
 
-  if (options.interactive !== false) notifyRemovedElements([...removed, ...missing]);
+  if (interactive) {
+    notifyRemovedElements([...removed, ...missing]);
 
-  projectStore.setState({
-    projectName: projectName || DEFAULT_PROJECT_NAME,
-    opened: Date.now(),
-    lastModified: 0,
-    unresolvedMediaRefs: unresolvedMediaRefs,
-  });
+    if (missingPlugins.length > 0) {
+      showModal('MissingPlugins', { title: 'Missing Plugins' }, { missing: missingPlugins });
+    }
+  }
 
-  resetHistory();
+  projectStore.setState({ opened: Date.now(), lastModified: 0 });
 
   if (unresolvedMediaRefs.length > 0 && options.interactive !== false) {
     const count = unresolvedMediaRefs.length;
@@ -735,9 +741,9 @@ export async function openProjectData(file: File, validate: (snapshot: ProjectSn
   });
 }
 
-export function serializeProjectFile() {
+/** The project file's text, as saved from the UI and by automation. */
+export function serializeProjectFile(name = projectDocument.getState().name) {
   const { snapshot, mediaRefs } = prepareSnapshotMediaForSave(snapshotProject());
-  const name = projectStore.getState().projectName;
   return JSON.stringify(
     {
       name,
@@ -762,135 +768,33 @@ export function touchProject() {
   projectStore.setState({ lastModified: Date.now() });
 }
 
-export function updateProjectName(name: string) {
-  const nextName = name.trim() || DEFAULT_PROJECT_NAME;
-  const { projectName } = projectStore.getState();
-
-  if (nextName === projectName) {
-    return;
-  }
-
-  projectStore.setState({
-    projectName: nextName,
-    lastModified: Date.now(),
+/** Mark the project modified whenever the document records a change. */
+export function trackProjectChanges() {
+  return projectDocument.subscribe((change: DocumentChange) => {
+    if (change.record) {
+      touchProject();
+    }
   });
 }
 
-export function resetProject() {
-  projectStore.setState({ ...initialState });
-}
-
-export function loadProject(data: ProjectSnapshot, interactive = true) {
-  logger.log('Loaded project:', data);
+/** Replace the document with the default starting project. */
+export function newProject() {
+  projectDocument.load({ name: DEFAULT_PROJECT_NAME });
 
   const displays = library.get('displays') as Record<string, LibraryConstructor>;
-  const effects = library.get('effects') as Record<string, LibraryConstructor>;
+  const { id: sceneId } = projectDocument.apply({ type: 'addScene' }, { record: false });
 
-  const missingPlugins = new Map<string, { name: string; url?: string }>();
-  const missingElements: string[] = [];
+  projectDocument.apply(
+    [displays.ImageDisplay, displays.BarSpectrumDisplay, displays.TextDisplay].map(Type => ({
+      type: 'addElement' as const,
+      element: new Type(),
+      sceneId,
+    })),
+    { record: false },
+  );
 
-  const loadElement = (
-    scene: Scene,
-    config: Record<string, unknown> & { name?: string; plugin?: { url?: string } },
-  ) => {
-    const { name = '' } = config;
-    const plugin = displays[name] || effects[name];
-
-    if (plugin) {
-      const entity = Display.create(plugin, config);
-      scene.addElement(entity as unknown as SceneEntity);
-    } else {
-      logger.warn('Component not found:', name);
-
-      // External elements record their plugin's source URL; collect them so
-      // the user can be offered a reinstall after loading.
-      if (config.plugin?.url || name.startsWith('@')) {
-        missingPlugins.set(name, { name, url: config.plugin?.url });
-      } else {
-        const displayName = typeof config.displayName === 'string' ? config.displayName : '';
-        missingElements.push(
-          displayName && displayName !== name ? `${displayName} (${name})` : name,
-        );
-      }
-    }
-  };
-
-  resetScenes(false);
-  resetReactors();
-  resetLabelCount();
-
-  if (data.stage) {
-    updateStage(data.stage.properties || {});
-  } else {
-    updateStage(Stage.defaultProperties);
-  }
-
-  applyTimelineSettings(data.timeline);
-
-  if (data.reactors) {
-    for (const config of data.reactors) {
-      const reactor = Entity.create(AudioReactor, config);
-      reactors.addReactor(reactor as unknown);
-    }
-  }
-
-  if (data.scenes) {
-    for (const config of data.scenes) {
-      const scene = Display.create(Scene, config) as Scene;
-
-      stage.addScene(scene);
-
-      if (config.displays) {
-        for (const display of config.displays) {
-          loadElement(scene, display);
-        }
-      }
-
-      if (config.effects) {
-        for (const effect of config.effects) {
-          loadElement(scene, effect);
-        }
-      }
-    }
-  }
-
-  if (missingPlugins.size > 0 && interactive) {
-    showModal(
-      'MissingPlugins',
-      { title: 'Missing Plugins' },
-      { missing: [...missingPlugins.values()] },
-    );
-  }
-
-  return { missing: missingElements, missingPlugins: [...missingPlugins.values()] };
-}
-
-export async function newProject() {
-  resetLabelCount();
-  await resetScenes();
-  await resetReactors();
-  await updateCanvas(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_BGCOLOR);
-
-  const scene = stage.addScene() as Scene;
-  const displays = library.get('displays') as Record<string, LibraryConstructor>;
-
-  scene.addElement(new displays.ImageDisplay() as unknown as SceneEntity);
-  scene.addElement(new displays.BarSpectrumDisplay() as unknown as SceneEntity);
-  scene.addElement(new displays.TextDisplay() as unknown as SceneEntity);
-
-  applyTimelineSettings(undefined);
   seekTransport(0);
-
-  await loadScenes();
-  await loadReactors();
-
-  projectStore.setState({
-    projectName: DEFAULT_PROJECT_NAME,
-    opened: Date.now(),
-    lastModified: 0,
-    unresolvedMediaRefs: [],
-  });
-  resetHistory();
+  projectStore.setState({ opened: Date.now(), lastModified: 0 });
 }
 
 export function checkUnsavedChanges(menuAction: string, action: () => unknown) {
@@ -938,19 +842,11 @@ export function openRelinkMediaDialog(modalProps: Record<string, unknown> = {}) 
 }
 
 export async function saveProject(nameOverride?: string) {
-  const state = projectStore.getState();
-  const name = (nameOverride || state.projectName || DEFAULT_PROJECT_NAME).trim();
+  const name = (nameOverride || projectDocument.getState().name || DEFAULT_PROJECT_NAME).trim();
 
   try {
-    const { snapshot, mediaRefs } = prepareSnapshotMediaForSave(snapshotProject());
-    const payload = {
-      name,
-      projectName: name,
-      version: env.APP_VERSION,
-      savedAt: new Date().toISOString(),
-      snapshot,
-      mediaRefs,
-    };
+    // Captured before the dialog opens, so edits made meanwhile are not saved.
+    const json = serializeProjectFile(name);
     const fileName = createProjectFileName(name);
     const { fileHandle, filePath, canceled } = await api.showSaveDialog({
       defaultPath: fileName,
@@ -966,19 +862,21 @@ export async function saveProject(nameOverride?: string) {
       (typeof filePath === 'string' && filePath) ||
       (fileHandle as { name?: string } | undefined)?.name ||
       fileName;
-    const json = JSON.stringify(payload, null, 2);
 
     await api.saveTextFile(target, json, {
       mimeType: PROJECT_FILE_MIME_TYPE,
       fileName: targetName,
     });
 
-    projectStore.setState({
-      projectName: name,
-      opened: Date.now(),
-      lastModified: 0,
-      unresolvedMediaRefs: [],
-    });
+    // Adopting the saved name is not an edit: no undo step, not modified.
+    projectDocument.apply(
+      [
+        { type: 'setName', name },
+        { type: 'setUnresolvedMediaRefs', refs: [] },
+      ],
+      { record: false },
+    );
+    projectStore.setState({ opened: Date.now(), lastModified: 0 });
 
     logger.log('Project saved locally:', fileName);
     return true;
@@ -1004,21 +902,26 @@ export async function relinkMediaRef(mediaRef: MediaRef) {
     const sourcePath = getFileSystemPath(file);
     const src = isVideo ? resolveVideoSourceUrl(file, sourcePath) : await api.readImageFile(file);
 
-    updateElementProperty(mediaRef.displayId, 'src', src);
-    updateElementProperty(mediaRef.displayId, 'sourcePath', sourcePath || '');
-
-    setUnresolvedMediaRefs(
-      projectStore
-        .getState()
-        .unresolvedMediaRefs.filter(ref => ref.displayId !== mediaRef.displayId),
-    );
+    projectDocument.apply([
+      {
+        type: 'setProperties',
+        id: mediaRef.displayId,
+        properties: { src, sourcePath: sourcePath || '' },
+      },
+      {
+        type: 'setUnresolvedMediaRefs',
+        refs: projectDocument
+          .getState()
+          .unresolvedMediaRefs.filter(ref => ref.displayId !== mediaRef.displayId),
+      },
+    ]);
   } catch (error) {
     raiseError(t('errors.relink-media-failed'), error);
   }
 }
 
 export function clearUnresolvedMedia() {
-  setUnresolvedMediaRefs([]);
+  projectDocument.apply({ type: 'setUnresolvedMediaRefs', refs: [] });
 }
 
 export default projectStore;

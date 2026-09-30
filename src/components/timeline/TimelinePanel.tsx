@@ -4,12 +4,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import useApp from '@/app/actions/app';
 import {
-  clearElementClip,
   pauseTransport,
   playTransport,
   seekTransport,
-  setProjectDuration,
-  setProjectFps,
   stepTransport,
   toggleTransport,
 } from '@/app/actions/timeline';
@@ -20,6 +17,7 @@ import useTimelinePanel, {
   setTimelineZoom,
   TIMELINE_MAX_ZOOM,
 } from '@/app/actions/timelinePanel';
+import { projectDocument } from '@/app/document';
 import { Times } from '@/app/icons';
 import NumberInput from '@/components/NumberInput';
 import SelectInput from '@/components/SelectInput';
@@ -245,7 +243,7 @@ export default function TimelinePanel() {
       case 'Backspace':
         if (activeElementId) {
           event.preventDefault();
-          clearElementClip(activeElementId);
+          projectDocument.apply({ type: 'clearClip', id: activeElementId });
         }
         break;
       case 'k':
@@ -314,7 +312,8 @@ export default function TimelinePanel() {
               disabled={isVideoRecording}
               onChange={(_name, value) => {
                 // Buffered inputs also submit on blur; only an edit should disable auto duration.
-                if (value !== Math.round(duration * 100) / 100) setProjectDuration(value);
+                if (value !== Math.round(duration * 100) / 100)
+                  projectDocument.apply({ type: 'setTimeline', duration: value });
               }}
             />
             {explicitDuration ? (
@@ -322,7 +321,7 @@ export default function TimelinePanel() {
                 type="button"
                 className="text-neutral-400 underline-offset-2 hover:text-neutral-100 hover:underline"
                 title={t('follow-audio-help')}
-                onClick={() => setProjectDuration(null)}
+                onClick={() => projectDocument.apply({ type: 'setTimeline', duration: null })}
               >
                 {t('follow-audio')}
               </button>
@@ -335,7 +334,9 @@ export default function TimelinePanel() {
               value={fps}
               width={64}
               items={[...TIMELINE_FPS_OPTIONS]}
-              onChange={(_name, value) => setProjectFps(Number(value) as TimelineFps)}
+              onChange={(_name, value) =>
+                projectDocument.apply({ type: 'setTimeline', fps: Number(value) as TimelineFps })
+              }
             />
           </div>
           <div className="flex items-center gap-1.5">

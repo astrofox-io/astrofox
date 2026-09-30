@@ -1,14 +1,7 @@
-import { stage } from '@/app/global';
-import Display from '@/lib/core/Display';
-import { type Clip, type ClipPatch, mergeClip } from '@/lib/timeline/clip';
-import {
-  getProjectDuration,
-  setProjectDuration as setTransportDuration,
-  setProjectFps as setTransportFps,
-  type TimelineFps,
-} from '@/lib/timeline/transport';
-import { touchProject } from './project';
-import { loadScenes } from './scenes';
+import { projectDocument } from '@/app/document';
+import type { LayerJSON } from '@/lib/document/types';
+import type { Clip } from '@/lib/timeline/clip';
+import { getProjectDuration } from '@/lib/timeline/transport';
 
 export {
   getProjectDuration,
@@ -22,86 +15,35 @@ export {
   toggleTransport,
 } from '@/lib/timeline/transport';
 
-function findDisplay(id: string): Display | null {
-  const element = stage.getStageElementById(id);
-  return element instanceof Display ? element : null;
-}
-
-/**
- * Merge a clip patch into an element's clip. Goes through `loadScenes()` so
- * the scene store, undo history and the renderer all pick it up.
- */
-export function setElementClip(id: string, patch: ClipPatch): Clip | null {
-  const element = findDisplay(id);
-
-  if (!element) {
-    return null;
-  }
-
-  const next = mergeClip(element.clip, patch);
-
-  if (JSON.stringify(next) === JSON.stringify(element.clip)) {
-    return element.clip;
-  }
-
-  element.setClip(next);
-  loadScenes();
-
-  return element.clip;
-}
-
-/** Remove an element's clip so it is active for the whole project. */
-export function clearElementClip(id: string) {
-  const element = findDisplay(id);
-
-  if (!element?.clip) {
-    return;
-  }
-
-  element.setClip(null);
-  loadScenes();
-}
-
-export function setProjectDuration(duration: number | null) {
-  setTransportDuration(duration);
-  touchProject();
-}
-
-export function setProjectFps(fps: TimelineFps) {
-  setTransportFps(fps);
-  touchProject();
+export interface TimelineElement {
+  id: string;
+  sceneId: string | null;
+  type: 'scene' | 'display' | 'effect';
+  name: string;
+  displayName: string;
+  enabled: boolean;
+  clip: Clip | null;
+  hasOpacity: boolean;
 }
 
 /** Elements in the same order as the Layers panel, with their clips. */
 export function listTimelineElements() {
   const duration = getProjectDuration();
-  const elements: {
-    id: string;
-    sceneId: string | null;
-    type: 'scene' | 'display' | 'effect';
-    name: string;
-    displayName: string;
-    enabled: boolean;
-    clip: Clip | null;
-    hasOpacity: boolean;
-  }[] = [];
+  const elements: TimelineElement[] = [];
 
-  const push = (element: Display, sceneId: string | null, type: 'scene' | 'display' | 'effect') =>
+  const push = (layer: LayerJSON, sceneId: string | null, type: TimelineElement['type']) =>
     elements.push({
-      id: element.id,
+      id: layer.id,
       sceneId,
       type,
-      name: element.name,
-      displayName: element.displayName,
-      enabled: element.enabled,
-      clip: element.clip,
-      hasOpacity: typeof element.authoredProperties.opacity === 'number',
+      name: layer.name,
+      displayName: layer.displayName,
+      enabled: layer.enabled,
+      clip: layer.clip ?? null,
+      hasOpacity: typeof layer.properties.opacity === 'number',
     });
 
-  for (const scene of stage.scenes as unknown as (Display & {
-    displays: Display[];
-    effects: Display[];
-  })[]) {
+  for (const scene of projectDocument.getState().scenes) {
     push(scene, null, 'scene');
 
     for (const effect of scene.effects) {

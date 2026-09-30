@@ -2,7 +2,7 @@ import { Blocks } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp, { closeAddMenu, setActiveElementId } from '@/app/actions/app';
-import { addElement } from '@/app/actions/scenes';
+import { projectDocument } from '@/app/document';
 import { Times } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import { translateLabel } from '@/i18n/labels';
@@ -136,9 +136,12 @@ export default function AddElementDrawer({ offset }: AddElementDrawerProps) {
       return;
     }
 
-    const entity = new Entity();
-    addElement(entity, addMenu.sceneId);
-    setActiveElementId(entity.id);
+    const { id } = projectDocument.apply({
+      type: 'addElement',
+      element: new Entity(),
+      sceneId: addMenu.sceneId,
+    });
+    setActiveElementId(id);
     closeAddMenu();
   }
 

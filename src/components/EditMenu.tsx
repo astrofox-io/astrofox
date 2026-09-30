@@ -13,14 +13,9 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import appStore, { handleMenuAction } from '@/app/actions/app';
-import useHistory, {
-  beginHistoryGesture,
-  canPasteProperties,
-  endHistoryGesture,
-  selectedLayer,
-} from '@/app/actions/history';
+import useHistory, { canPasteProperties, selectedLayer } from '@/app/actions/history';
 import modalStore from '@/app/actions/modals';
-import useScenes from '@/app/actions/scenes';
+import { useDocument } from '@/app/document';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -89,16 +84,8 @@ export default function EditMenu() {
       if (!event.repeat) void handleMenuAction(action);
     }
     window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('pointerdown', beginHistoryGesture, true);
-    window.addEventListener('pointerup', endHistoryGesture);
-    window.addEventListener('pointercancel', endHistoryGesture);
-    window.addEventListener('blur', endHistoryGesture);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('pointerdown', beginHistoryGesture, true);
-      window.removeEventListener('pointerup', endHistoryGesture);
-      window.removeEventListener('pointercancel', endHistoryGesture);
-      window.removeEventListener('blur', endHistoryGesture);
     };
   }, []);
   return (
@@ -128,7 +115,7 @@ export function EditMenuItems({ layerOnly = false }: { layerOnly?: boolean }) {
   const { t } = useTranslation(undefined, { keyPrefix: 'menu' });
   const { canUndo, canRedo } = useHistory();
   appStore(state => state.activeElementId);
-  useScenes(state => state.scenes);
+  useDocument(state => state.scenes);
   const [modifier, setModifier] = useState('Ctrl');
   useEffect(() => {
     setModifier(/Mac|iPhone|iPad/.test(navigator.platform) ? '\u2318' : 'Ctrl');

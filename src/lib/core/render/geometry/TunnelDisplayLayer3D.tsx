@@ -321,11 +321,8 @@ export function TunnelDisplayLayer3D({
   const fallbackGroupQuaternionRef = React.useRef(new Quaternion());
   const surfaceStructuralKeyRef = React.useRef('');
   const lineStructuralKeyRef = React.useRef('');
-  const deltaSeconds = Math.max(0, Number(frameData?.delta ?? 16.667)) / 1000;
-
-  if (frameData?.hasUpdate) {
-    timeRef.current += deltaSeconds;
-  }
+  // Motion follows project time, so live playback, previews and exports agree.
+  timeRef.current = Number(frameData?.time) || 0;
 
   const tunnelRadius = Math.max(40, Number(radius) || 0);
   const tunnelDepth = Math.max(600, Number(depth) || 0);

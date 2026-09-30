@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { setActiveElementId, setActiveReactorId } from '@/app/actions/app';
-import { addReactor } from '@/app/actions/reactors';
-import { addScene } from '@/app/actions/scenes';
+import { projectDocument } from '@/app/document';
 import { Plus } from '@/app/icons';
 import LayersPanel from '@/components/LayersPanel';
 import PanelHeader from '@/components/PanelHeader';
@@ -14,14 +13,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 export default function LeftPanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'panels' });
 
-  async function handleAddScene() {
-    const scene = await addScene();
-    setActiveElementId(scene?.id);
+  function handleAddScene() {
+    setActiveElementId(projectDocument.apply({ type: 'addScene' }).id);
   }
 
   function handleAddReactor() {
-    const reactor = addReactor() as { id?: string } | undefined;
-    setActiveReactorId(reactor?.id);
+    setActiveReactorId(projectDocument.apply({ type: 'addReactor' }).id);
   }
 
   return (

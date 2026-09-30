@@ -3,15 +3,11 @@ import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp, { setActiveElementId } from '@/app/actions/app';
-import useScenes, {
-  moveElement,
-  removeElement,
-  reorderElement,
-  updateElement,
-} from '@/app/actions/scenes';
+import { projectDocument, useDocument } from '@/app/document';
 import { ChevronDown, ChevronUp } from '@/app/icons';
 import SceneLayer from '@/components/SceneLayer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { canReorder, layerKind } from '@/lib/document/selection';
 import { reverse } from '@/lib/utils/array';
 
 interface SceneElement {
@@ -32,7 +28,7 @@ interface SceneData {
 
 export default function LayersPanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'panels' });
-  const scenes = useScenes(state => state.scenes) as SceneData[];
+  const scenes = useDocument(state => state.scenes) as SceneData[];
   const activeElementId = useApp(state => state.activeElementId);
   const [dragSourceId, setDragSourceId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -54,13 +50,10 @@ export default function LayersPanel() {
     };
   }, [dragSourceId]);
 
-  const dragSourceMeta = useMemo(() => {
-    if (!dragSourceId) {
-      return null;
-    }
-
-    return getLayerMeta(dragSourceId);
-  }, [dragSourceId, scenes]);
+  const dragSourceType = useMemo(
+    () => (dragSourceId ? layerKind(projectDocument.getState(), dragSourceId) : null),
+    [dragSourceId, scenes],
+  );
 
   const { canMoveUp, canMoveDown } = useMemo(() => {
     if (!layerSelected) return { canMoveUp: false, canMoveDown: false };
@@ -103,87 +96,31 @@ export default function LayersPanel() {
   }
 
   function handleLayerUpdate(id: string, prop: string, value: unknown) {
-    updateElement(id, prop, value);
-  }
-
-  function getLayerMeta(id: string) {
-    const sceneIndex = scenes.findIndex(scene => scene.id === id);
-    if (sceneIndex > -1) {
-      return { type: 'scene', sceneId: id };
-    }
-
-    for (const scene of scenes) {
-      if (scene.displays.some(display => display.id === id)) {
-        return { type: 'display', sceneId: scene.id };
-      }
-
-      if (scene.effects.some(effect => effect.id === id)) {
-        return { type: 'effect', sceneId: scene.id };
-      }
-    }
-
-    return null;
+    // Layer rows edit the visibility toggle and the name.
+    projectDocument.apply(
+      prop === 'enabled'
+        ? { type: 'setMeta', id, enabled: Boolean(value) }
+        : { type: 'setMeta', id, displayName: String(value) },
+    );
   }
 
   function canDrop(sourceId: string, targetId: string) {
-    if (!sourceId || !targetId || sourceId === targetId) {
-      return false;
-    }
-
-    const sourceMeta = getLayerMeta(sourceId);
-    const targetMeta = getLayerMeta(targetId);
-
-    if (!sourceMeta || !targetMeta) {
-      return false;
-    }
-
-    if (sourceMeta.type === 'scene') {
-      return targetMeta.type === 'scene';
-    }
-
-    if (targetMeta.type === 'scene') {
-      return true;
-    }
-
-    return sourceMeta.type === targetMeta.type;
+    const state = projectDocument.getState();
+    return canReorder(id => layerKind(state, id), sourceId, targetId);
   }
 
   function handleMoveUp() {
-    moveElement(activeElementId, 1);
+    if (activeElementId)
+      projectDocument.apply({ type: 'moveLayer', id: activeElementId, spaces: 1 });
   }
   function handleMoveDown() {
-    moveElement(activeElementId, -1);
+    if (activeElementId)
+      projectDocument.apply({ type: 'moveLayer', id: activeElementId, spaces: -1 });
   }
 
+  // The selection moves to a neighbour on its own (see keepSelectionValid).
   function handleRemove(id: string) {
-    if (!id) return;
-
-    const ownerScene = scenes.find(
-      scene =>
-        scene?.id === id ||
-        scene?.displays.find((e: { id: string }) => e.id === id) ||
-        scene?.effects.find((e: { id: string }) => e.id === id),
-    );
-
-    if (id === ownerScene?.id) {
-      const newScene = sortedScenes.find(e => e !== ownerScene);
-      setActiveElementId(newScene?.id);
-    } else if (id === activeElementId) {
-      if (ownerScene) {
-        const { displays, effects } = ownerScene;
-        const element =
-          reverse(displays).find((e: { id: string }) => (e as { id: string }).id !== id) ||
-          reverse(effects).find((e: { id: string }) => (e as { id: string }).id !== id);
-
-        if (element) {
-          setActiveElementId((element as { id: string })?.id);
-        } else {
-          setActiveElementId(ownerScene?.id);
-        }
-      }
-    }
-
-    removeElement(id);
+    if (id) projectDocument.apply({ type: 'removeLayer', id });
   }
 
   function handleLayerDragStart(id: string) {
@@ -233,10 +170,8 @@ export default function LayersPanel() {
     e.preventDefault();
     e.stopPropagation();
 
-    const moved = reorderElement(sourceId, id);
-    if (moved) {
-      setActiveElementId(sourceId);
-    }
+    projectDocument.apply({ type: 'reorderLayer', sourceId, targetId: id });
+    setActiveElementId(sourceId);
 
     resetDragState();
   }
@@ -316,7 +251,7 @@ export default function LayersPanel() {
               activeElementId={activeElementId}
               dragSourceId={dragSourceId}
               dragOverId={dragOverId}
-              dragSourceType={dragSourceMeta?.type ?? null}
+              dragSourceType={dragSourceType}
               onLayerClick={handleLayerClick}
               onLayerUpdate={handleLayerUpdate}
               onLayerDelete={handleRemove}

@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import useStage, { fitToScreen, setZoom, zoomIn, zoomOut } from '@/app/actions/stage';
+import { useDocument } from '@/app/document';
 import RangeInput from '@/components/RangeInput';
 import { Button } from '@/components/ui/button';
 
 export default function Zoom() {
   const { t } = useTranslation(undefined, { keyPrefix: 'zoom' });
-  const { width, height, zoom } = useStage(state => state);
+  const { width, height } = useDocument(state => state.canvas);
+  const zoom = useStage(state => state.zoom);
   const canvasSizeLabel = t('reset-zoom-to-canvas-size', { width, height });
   const zoomLevelLabel = t('zoom-level', { zoom: ~~(zoom * 100) });
 

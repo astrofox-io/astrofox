@@ -101,7 +101,7 @@ uniforms (plus `varying vec2 vUv`):
 ```glsl
 uniform sampler2D inputTexture; // effects only: the scene so far
 uniform vec2 resolution;        // pass size in px
-uniform float time;             // seconds, deterministic during export
+uniform float time;             // project seconds: animate from this
 uniform float delta;            // ms since last frame
 uniform float volume;           // overall level 0..1
 uniform float fft[N];           // displays with an audio.fft block (N = bins)
@@ -159,8 +159,13 @@ export default function createPlugin({ properties, seed, size }) {
 
 Rules for correct export rendering:
 
-- Derive all animation from `frame.time` / `frame.delta`, never wall-clock
-  time. During export `delta` is fixed to `1000 / fps`.
+- Derive all animation from `frame.time`, the project time in seconds, never
+  wall-clock time or a count of frames. The same `time` then draws the same
+  picture live, in a preview and in an export at any frame rate. `delta` is
+  only the gap since the previous frame (`1000 / fps` during export); adding
+  it up drifts between live playback and export.
+- `playing` is true while project time advances (including every export
+  frame); `exporting` is true for export and preview frames.
 - Use `frame.seed` (stable per instance) to seed any randomness.
 - Redraw the full canvas every `render` — the backing bitmap is transferred
   to the host each frame, which leaves the canvas blank.

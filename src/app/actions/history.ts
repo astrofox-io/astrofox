@@ -1,168 +1,143 @@
 import { create } from 'zustand';
-import transportStore, { getTimelineSettings } from '@/lib/timeline/transport';
-import { uniqueId } from '@/lib/utils/crypto';
+import { projectDocument } from '@/app/document';
+import { hasLayer } from '@/lib/document/selection';
+import type { DocumentChange, DocumentSnapshot, LayerJSON } from '@/lib/document/types';
 import appStore, { setActiveElementId, setActiveReactorId } from './app';
-import projectStore, { loadProject, touchProject } from './project';
-import reactorStore, { loadReactors } from './reactors';
-import sceneStore, { loadScenes, updateElement, updateElementProperties } from './scenes';
-import stageStore from './stage';
+import { touchProject } from './project';
 
-type Layer = {
-  id: string;
-  name: string;
-  type: string;
-  displayName?: string;
-  properties: Record<string, unknown>;
-  reactors?: Record<string, { id: string; min: number; max: number }>;
-  displays?: Layer[];
-  effects?: Layer[];
-};
-type PropertyClipboard = Pick<Layer, 'name' | 'type' | 'properties' | 'reactors'>;
-type SceneSnapshot = Layer & { displays: Layer[]; effects: Layer[] };
+type PropertyClipboard = Pick<LayerJSON, 'name' | 'type' | 'properties' | 'reactors'>;
+type Entry = { document: DocumentSnapshot; elementId: string | null; reactorId: string | null };
 
-function snapshot() {
-  const { width, height, backgroundColor } = stageStore.getState();
-  const { projectName, unresolvedMediaRefs } = projectStore.getState();
-  return structuredClone({
-    scenes: sceneStore.getState().scenes as SceneSnapshot[],
-    reactors: reactorStore.getState().reactors,
-    stage: { properties: { width, height, backgroundColor } },
-    timeline: getTimelineSettings(),
-    projectName,
-    unresolvedMediaRefs,
-  });
-}
+const MAX_ENTRIES = 100;
 
-type Snapshot = ReturnType<typeof snapshot>;
-type Entry = { document: Snapshot; elementId: string | null; reactorId: string | null };
 const historyStore = create(() => ({
   canUndo: false,
   canRedo: false,
   clipboard: null as PropertyClipboard | null,
 }));
+
 const past: Entry[] = [];
 const future: Entry[] = [];
 let current: Entry | null = null;
 let restoring = false;
 let initialized = false;
-let queued = false;
+// While a pointer is down, every change after the first joins the same step,
+// so a slider drag or a transform drag undoes in one go.
 let gesture = false;
 let gestureRecorded = false;
+// Changes applied in the same task (one click or command handler) are one step.
+let taskRecorded = false;
 
+// Published document objects are immutable, so entries hold them by reference.
 function entry(): Entry {
   const { activeElementId, activeReactorId } = appStore.getState();
-  return { document: snapshot(), elementId: activeElementId, reactorId: activeReactorId };
+  return {
+    document: projectDocument.snapshot(),
+    elementId: activeElementId,
+    reactorId: activeReactorId,
+  };
 }
 
 function publish() {
   historyStore.setState({ canUndo: past.length > 0, canRedo: future.length > 0 });
 }
 
-// Capture after all stores and their live rendering objects have been updated.
-export function flushHistory() {
-  queued = false;
-  if (restoring || !current) return;
-  const next = entry();
-  if (JSON.stringify(next.document) === JSON.stringify(current.document)) return;
-  if (!gesture || !gestureRecorded) {
-    past.push(current);
-    if (past.length > 100) past.shift();
+function record(change: DocumentChange) {
+  if (restoring) return;
+
+  if (change.kind === 'load') {
+    // Opening or creating a project starts a new history.
+    resetHistory();
+    return;
   }
+
+  if (!current) return;
+
+  if (!change.record) {
+    // Keep the change without making it a step of its own.
+    current = { ...current, document: projectDocument.snapshot() };
+    return;
+  }
+
+  if (!taskRecorded && (!gesture || !gestureRecorded)) {
+    past.push(current);
+    if (past.length > MAX_ENTRIES) past.shift();
+  }
+
   gestureRecorded = gesture;
-  current = next;
+
+  if (!taskRecorded) {
+    taskRecorded = true;
+    queueMicrotask(() => {
+      taskRecorded = false;
+    });
+  }
+
+  current = entry();
   future.length = 0;
-  touchProject();
   publish();
 }
 
-function scheduleCapture() {
-  if (restoring || queued) return;
-  queued = true;
-  queueMicrotask(() => {
-    if (queued) flushHistory();
-  });
-}
-
 export function resetHistory() {
-  queued = false;
   past.length = 0;
   future.length = 0;
   gesture = false;
   gestureRecorded = false;
+  taskRecorded = false;
   current = entry();
   historyStore.setState({ clipboard: null });
   publish();
+}
+
+export function beginHistoryGesture() {
+  gesture = true;
+  gestureRecorded = false;
+  taskRecorded = false;
+}
+
+export function endHistoryGesture() {
+  gesture = false;
+  gestureRecorded = false;
+  taskRecorded = false;
 }
 
 export function initializeHistory() {
   if (initialized) return;
   initialized = true;
   resetHistory();
-  sceneStore.subscribe(scheduleCapture);
-  reactorStore.subscribe(scheduleCapture);
-  stageStore.subscribe(scheduleCapture);
-  transportStore.subscribe((state, previous) => {
-    // Only the saved settings are history; the playhead and play state are not.
-    if (
-      state.duration !== previous.duration ||
-      state.explicitDuration !== previous.explicitDuration ||
-      state.fps !== previous.fps
-    )
-      scheduleCapture();
-  });
-  projectStore.subscribe((state, previous) => {
-    if (
-      state.projectName !== previous.projectName ||
-      state.unresolvedMediaRefs !== previous.unresolvedMediaRefs
-    )
-      scheduleCapture();
-  });
+  projectDocument.subscribe(record);
+
+  // The step records the selection that goes with it.
   appStore.subscribe((state, previous) => {
     if (
       !restoring &&
-      !queued &&
       current &&
       (state.activeElementId !== previous.activeElementId ||
         state.activeReactorId !== previous.activeReactorId)
     ) {
-      current.elementId = state.activeElementId;
-      current.reactorId = state.activeReactorId;
+      current = { ...current, elementId: state.activeElementId, reactorId: state.activeReactorId };
     }
   });
-}
 
-export function beginHistoryGesture() {
-  flushHistory();
-  gesture = true;
-  gestureRecorded = false;
-}
-
-export function endHistoryGesture() {
-  flushHistory();
-  gesture = false;
-  gestureRecorded = false;
+  window.addEventListener('pointerdown', beginHistoryGesture, true);
+  window.addEventListener('pointerup', endHistoryGesture);
+  window.addEventListener('pointercancel', endHistoryGesture);
+  window.addEventListener('blur', endHistoryGesture);
 }
 
 function restore(target: Entry) {
   restoring = true;
   try {
-    const data = structuredClone(target.document);
-    loadProject(data, false);
-    loadScenes(false);
-    loadReactors();
-    projectStore.setState({
-      projectName: data.projectName,
-      unresolvedMediaRefs: data.unresolvedMediaRefs,
-    });
-    const id = target.elementId;
-    setActiveElementId(id && findLayer(id) ? id : null);
+    projectDocument.load(target.document);
+    const state = projectDocument.getState();
+    setActiveElementId(hasLayer(state, target.elementId) ? target.elementId : null);
     setActiveReactorId(
-      data.reactors.some(reactor => reactor.id === target.reactorId) ? target.reactorId : null,
+      state.reactors.some(reactor => reactor.id === target.reactorId) ? target.reactorId : null,
     );
-    touchProject();
   } finally {
     restoring = false;
   }
+  touchProject();
 }
 
 export function undo() {
@@ -187,51 +162,18 @@ export function redo() {
   publish();
 }
 
-function findLayer(id: string): Layer | undefined {
-  const state = sceneStore.getState();
-  return (
-    (state.sceneById as Record<string, Layer>)[id] ||
-    (state.elementById as Record<string, Layer>)[id]
-  );
-}
-
-export function selectedLayer(): Layer | undefined {
+export function selectedLayer(): LayerJSON | undefined {
   const id = appStore.getState().activeElementId;
-  return id ? findLayer(id) : undefined;
+  const state = projectDocument.getState();
+  return id ? state.sceneById[id] || state.elementById[id] : undefined;
 }
 
 export function duplicateLayer() {
   endHistoryGesture();
   const source = selectedLayer();
   if (!source) return;
-  const next = entry();
-  const copy = structuredClone(source);
-  const ids = new Map<string, string>();
-  function assignIds(layer: Layer) {
-    const id = uniqueId();
-    ids.set(layer.id, id);
-    layer.id = id;
-    layer.displays?.forEach(assignIds);
-    layer.effects?.forEach(assignIds);
-  }
-  assignIds(copy);
-  copy.displayName = `${source.displayName || source.name} (copy)`;
-  const scenes = next.document.scenes;
-  const collection = scenes.some(scene => scene.id === source.id)
-    ? scenes
-    : scenes
-        .flatMap(scene => [scene.displays, scene.effects])
-        .find(items => items.some(item => item.id === source.id));
-  if (!collection) return;
-  (collection as Layer[]).splice(collection.findIndex(item => item.id === source.id) + 1, 0, copy);
-  next.document.unresolvedMediaRefs.push(
-    ...next.document.unresolvedMediaRefs
-      .filter(ref => ids.has(ref.displayId))
-      .map(ref => ({ ...ref, displayId: ids.get(ref.displayId)! })),
-  );
-  next.elementId = copy.id;
-  restore(next);
-  flushHistory();
+  const { id } = projectDocument.apply({ type: 'duplicateLayer', id: source.id });
+  if (id) setActiveElementId(id);
 }
 
 export function copyProperties() {
@@ -251,15 +193,12 @@ export function canPasteProperties() {
 export function pasteProperties() {
   if (!canPasteProperties()) return;
   endHistoryGesture();
-  const layer = selectedLayer()!;
-  const clipboard = historyStore.getState().clipboard!;
-  const reactorIds = new Set(reactorStore.getState().reactors.map(reactor => reactor.id));
-  const reactors = Object.fromEntries(
-    Object.entries(clipboard.reactors || {}).filter(([, reactor]) => reactorIds.has(reactor.id)),
-  );
-  updateElementProperties(layer.id, structuredClone(clipboard.properties));
-  updateElement(layer.id, 'reactors', structuredClone(reactors));
-  flushHistory();
+  const layer = selectedLayer() as LayerJSON;
+  const clipboard = historyStore.getState().clipboard as PropertyClipboard;
+  projectDocument.apply([
+    { type: 'setProperties', id: layer.id, properties: structuredClone(clipboard.properties) },
+    { type: 'setBindings', id: layer.id, bindings: clipboard.reactors ?? {} },
+  ]);
 }
 
 export default historyStore;

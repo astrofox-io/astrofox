@@ -5,10 +5,10 @@ import * as THREE from 'three';
 import { renderPluginFramesForExport } from '@/lib/plugins/PluginHost';
 import { base64ToBytes } from '@/lib/utils/data';
 import { StageComposer } from './composer';
+import { hasUnpreparedLayers, prepareFrame } from './framePreparation';
 import RenderBackend from './RenderBackend';
 import StageRoot from './StageRoot';
 
-const VIDEO_RENDERING = -1;
 const PRESENTATION_TIMEOUT_MS = 5000;
 
 const VIEWPORT_ORIGIN = {
@@ -401,35 +401,38 @@ export default class CompositorBackend extends RenderBackend {
     this.renderRoot();
   }
 
-  async renderExportFrame({ frame, fps, getAudioSample, analyzer, getFrameData }) {
+  /**
+   * Draw an offline frame (built by the Renderer for one project time) and
+   * return its pixels once it is presented. Layers that load asynchronously,
+   * worker plugins and videos, are ready for this exact time first.
+   */
+  async renderExportFrame(frameData) {
     if (!this.initialized) {
       return this.getPixels();
     }
-
-    const time = frame / fps;
-
-    analyzer.process(getAudioSample(time));
-
-    const frameData = getFrameData(VIDEO_RENDERING);
-    frameData.delta = 1000 / fps;
-    frameData.time = time;
-    frameData.fps = fps;
-
-    // Worker display plugins render asynchronously; wait for their bitmaps
-    // for this exact frame so exports stay frame-accurate.
-    await renderPluginFramesForExport(frameData);
 
     if (!this.root) {
       await this.ensureRoot();
     }
 
-    const expectedFrameIndex = this.frameIndex + 1;
-    const presented = this.waitForPresentation(expectedFrameIndex);
+    await renderPluginFramesForExport(frameData);
+    await prepareFrame(frameData);
+    await this.drawAndPresent(frameData);
 
-    this.render(frameData);
-    await presented;
+    // A layer that mounted during this frame (e.g. a video whose clip starts
+    // here) drew without being prepared: prepare it and draw again.
+    if (hasUnpreparedLayers()) {
+      await prepareFrame(frameData);
+      await this.drawAndPresent(frameData);
+    }
 
     return this.getPixels();
+  }
+
+  async drawAndPresent(frameData) {
+    const presented = this.waitForPresentation(this.frameIndex + 1);
+    this.render(frameData);
+    await presented;
   }
 
   getSize() {

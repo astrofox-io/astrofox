@@ -2,7 +2,6 @@ import { Download, PictureInPicture2 } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useShallow } from 'zustand/react/shallow';
 import useApp, {
   isStagePictureInPictureSupported,
   setCameraModeEnabled,
@@ -10,8 +9,8 @@ import useApp, {
   toggleStagePictureInPicture,
 } from '@/app/actions/app';
 import useAudioStore, { loadAudioFile } from '@/app/actions/audio';
-import useScenes from '@/app/actions/scenes';
 import useStage from '@/app/actions/stage';
+import { useDocument } from '@/app/document';
 import { renderBackend, renderer, stage } from '@/app/global';
 import { VectorSquare, Video } from '@/app/icons';
 import Spinner from '@/components/Spinner';
@@ -40,14 +39,13 @@ function acceptStageDrag(event: React.DragEvent) {
 
 export default function Stage() {
   const { t } = useTranslation(undefined, { keyPrefix: 'stage' });
-  const [width, height, backgroundColor, zoom] = useStage(
-    useShallow(state => [state.width, state.height, state.backgroundColor, state.zoom]),
-  );
+  const { width, height, backgroundColor } = useDocument(state => state.canvas);
+  const zoom = useStage(state => state.zoom);
   const activeElementId = useApp(state => state.activeElementId);
   const cameraModeEnabled = useApp(state => state.cameraModeEnabled);
   const displayTransformModeEnabled = useApp(state => state.displayTransformModeEnabled);
   const isStagePictureInPictureActive = useApp(state => state.isStagePictureInPictureActive);
-  const elementById = useScenes(state => state.elementById) as Record<
+  const elementById = useDocument(state => state.elementById) as Record<
     string,
     Record<string, unknown>
   >;

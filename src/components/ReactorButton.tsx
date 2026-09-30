@@ -1,6 +1,5 @@
 import { setActiveReactorId } from '@/app/actions/app';
-import useReactors, { addReactor } from '@/app/actions/reactors';
-import { loadScenes } from '@/app/actions/scenes';
+import { projectDocument, useDocument } from '@/app/document';
 import { Flash, Plus } from '@/app/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,22 +31,25 @@ export default function ReactorButton({
   className,
 }: ReactorButtonProps) {
   const reactor = display.getReactor(name);
-  const reactorList = useReactors(state => state.reactors) as {
-    id: string;
-    name: string;
-    displayName: string;
-  }[];
+  const reactorList = useDocument(state => state.reactors);
 
   function assignReactor(reactorId: string) {
-    display.setReactor(name, { id: reactorId, min, max });
+    projectDocument.apply({
+      type: 'bindReactor',
+      id: display.id,
+      property: name,
+      reactorId,
+      min,
+      max,
+    });
     setActiveReactorId(reactorId);
-    loadScenes();
   }
 
+  // One undo step: the new reactor and its binding.
   function createAndAssign() {
-    const newReactor = addReactor() as { id: string } | undefined;
-    if (newReactor) {
-      assignReactor(newReactor.id);
+    const { id: reactorId } = projectDocument.apply({ type: 'addReactor' });
+    if (reactorId) {
+      assignReactor(reactorId);
     }
   }
 

@@ -50,7 +50,8 @@ function createPass(effect: EffectPassConfig, width: number, height: number) {
   const pass = new FeedbackPass(width, height);
   return attachPassUpdater(pass, frameData => {
     pass.enabled = isEffectEnabled(effect);
-    pass.accumulate = frameData ? Boolean(frameData.hasUpdate) : true;
+    // Frozen while project time is not advancing.
+    pass.accumulate = frameData ? Boolean(frameData.playing) : true;
     pass.setUniforms({
       decay: Number(props.decay || 0),
       zoom: Math.max(1, Number(props.zoom || 1)),

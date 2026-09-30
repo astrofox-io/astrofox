@@ -14,6 +14,7 @@ import {
   ZeroFactor,
 } from 'three';
 import { BLANK_IMAGE } from '@/app/constants';
+import { Phase } from '@/lib/timeline/phase';
 import { clamp } from '@/lib/utils/math';
 import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
 import { getMaterialNode, isPointsMaterial } from './geometryMaterials';
@@ -144,6 +145,7 @@ export function MeshGridDisplayLayer3D({
     [gridColumns, gridRows, gridSeparation],
   );
   const timeRef = React.useRef(0);
+  const phaseRef = React.useRef(new Phase());
   const meshPosition = [Number(x) || 0, -(Number(y) || 0), Number(z) || 0];
   const GeometryPrimitive = pointsMaterial ? 'points' : 'mesh';
   const geometryMaterialProps = pointsMaterial
@@ -191,16 +193,13 @@ export function MeshGridDisplayLayer3D({
   }, [geometryData.geometry]);
 
   useFrame(() => {
-    const deltaSeconds = frameData?.hasUpdate
-      ? Math.max(0, Number(frameData?.delta ?? 16.667)) / 1000
-      : 0;
     const motionSpeed = Math.max(0, Number(speed) || 0);
     const amplitude = Math.max(0, Number(height) || 0);
     const resolvedFrequencyX = Math.max(0.05, Number(frequencyX) || 0.05);
     const resolvedFrequencyY = Math.max(0.05, Number(frequencyY) || 0.05);
     const { geometry, positions, positionAttribute } = geometryData;
 
-    timeRef.current += deltaSeconds * motionSpeed;
+    timeRef.current = phaseRef.current.at(Number(frameData?.time) || 0, motionSpeed);
 
     let positionIndex = 0;
     for (let rowIndex = 0; rowIndex < gridRows; rowIndex += 1) {

@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import useApp, { setActiveReactorId } from '@/app/actions/app';
-import useReactors, { removeReactor, updateReactorProperty } from '@/app/actions/reactors';
 import { PRIMARY_COLOR } from '@/app/constants';
+import { projectDocument, useDocument } from '@/app/document';
 import { events, reactors } from '@/app/global';
 import { Flash } from '@/app/icons';
 import Layer from '@/components/Layer';
@@ -40,7 +40,7 @@ function ReactorMeter({ id }: { id: string }) {
 }
 
 export default function ReactorsPanel() {
-  const reactorList = useReactors(state => state.reactors);
+  const reactorList = useDocument(state => state.reactors);
   const activeReactorId = useApp(state => state.activeReactorId);
 
   function handleLayerClick(id) {
@@ -48,19 +48,17 @@ export default function ReactorsPanel() {
   }
 
   function handleLayerUpdate(id, prop, value) {
-    updateReactorProperty(id, prop, value);
+    // Layer rows edit the visibility toggle and the name.
+    projectDocument.apply(
+      prop === 'enabled'
+        ? { type: 'setMeta', id, enabled: Boolean(value) }
+        : { type: 'setMeta', id, displayName: String(value) },
+    );
   }
 
+  // Bindings to it are removed and the selection is cleared by the document.
   function handleLayerDelete(id) {
-    const reactor = reactors.getElementById(id);
-
-    if (!reactor) return;
-
-    if (activeReactorId === id) {
-      setActiveReactorId(null);
-    }
-
-    removeReactor(reactor);
+    projectDocument.apply({ type: 'removeReactor', id });
   }
 
   return (

@@ -7,32 +7,17 @@ import projectStore, {
   openProjectData,
   serializeProjectFile,
   snapshotProject,
-  touchProject,
 } from '@/app/actions/project';
-import { addReactor, loadReactors, removeReactor } from '@/app/actions/reactors';
-import {
-  addElement,
-  addScene,
-  loadScenes,
-  removeElement,
-  reorderElement,
-  updateElement,
-  updateElementProperties,
-} from '@/app/actions/scenes';
-import { updateCanvas } from '@/app/actions/stage';
-import {
-  clearElementClip,
-  listTimelineElements,
-  setElementClip,
-  setProjectDuration,
-  setProjectFps,
-} from '@/app/actions/timeline';
+import { listTimelineElements } from '@/app/actions/timeline';
 import { getDesktopBridge, isFfmpegAvailable } from '@/app/desktop';
-import { api, player, reactors, renderBackend, renderer, stage } from '@/app/global';
+import { projectDocument } from '@/app/document';
+import { api, player, renderBackend, renderer, stage } from '@/app/global';
 import AudioReactor from '@/lib/audio/AudioReactor';
-import Display from '@/lib/core/Display';
+import type Display from '@/lib/core/Display';
 import type Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
+import { canReorder, layerKind } from '@/lib/document/selection';
+import type { DocumentOp } from '@/lib/document/types';
 import { validateClipPatch } from '@/lib/timeline/clip';
 import {
   getProjectDuration,
@@ -74,15 +59,25 @@ function automation() {
 }
 
 function element(id: string): Display {
-  const found = stage.getStageElementById(id);
-  if (!(found instanceof Display)) throw new Error(`Element not found: ${id}`);
+  const found = projectDocument.findLayer(id);
+  if (!found) throw new Error(`Element not found: ${id}`);
   return found;
 }
 
 function reactor(id: string): AudioReactor {
-  const found = reactors.getElementById(id);
-  if (!(found instanceof AudioReactor)) throw new Error(`Reactor not found: ${id}`);
+  const found = projectDocument.findReactor(id);
+  if (!found) throw new Error(`Reactor not found: ${id}`);
   return found;
+}
+
+/** The published JSON of a layer, after the command's change. */
+function layerJSON(id: string) {
+  const state = projectDocument.getState();
+  return compact(state.elementById[id] ?? state.sceneById[id]);
+}
+
+function reactorJSON(id: string) {
+  return projectDocument.getState().reactors.find(item => item.id === id);
 }
 
 function entityType(entity: Entity) {
@@ -93,13 +88,6 @@ function requireDiscard(discard: boolean) {
   const state = projectStore.getState();
   if (state.lastModified > state.opened && !discard)
     throw new Error('Unsaved project changes. Save first or explicitly set discardChanges=true.');
-}
-
-function edited() {
-  loadScenes(false);
-  loadReactors();
-  touchProject();
-  renderer.requestRender();
 }
 
 function compact(value: unknown): unknown {
@@ -149,9 +137,9 @@ function transportSummary() {
 }
 
 /**
- * Deterministic render at an absolute project time through the export path:
- * audio analysis, reactors, clips and fades all come from that time. The live
- * view is restored to the playhead afterwards.
+ * Render an absolute project time exactly as an export would draw it: audio
+ * analysis, reactors, clips, fades, video frames and effect motion all come
+ * from that time. The live view returns to the playhead on its next frame.
  */
 async function previewAt(maxSize: number, time: number) {
   const duration = getProjectDuration();
@@ -163,11 +151,8 @@ async function previewAt(maxSize: number, time: number) {
   const wasRendering = renderer.rendering;
   renderer.stop();
   try {
-    await renderer.renderFrame(Math.round(time * fps), fps);
-    const image = captureCanvas(maxSize);
-    // Put analysis and reactor state back at the playhead.
-    await renderer.renderFrame(Math.round(getTransportState().time * fps), fps);
-    return image;
+    await renderer.renderAt(Math.round(time * fps) / fps, fps);
+    return captureCanvas(maxSize);
   } finally {
     if (wasRendering) renderer.start();
     else renderer.requestRender();
@@ -202,9 +187,9 @@ function captureCanvas(maxSize: number) {
 const handlers: Handlers = {
   get_project: () =>
     compact({
-      name: projectStore.getState().projectName,
+      name: projectDocument.getState().name,
       ...snapshotProject(),
-      unresolvedMediaRefs: projectStore.getState().unresolvedMediaRefs,
+      unresolvedMediaRefs: projectDocument.getState().unresolvedMediaRefs,
       audio: {
         duration: player.getDuration(),
         position: player.getPosition(),
@@ -245,9 +230,8 @@ const handlers: Handlers = {
     return handlers.get_project({});
   },
   create_scene: ({ name }) => {
-    const scene = addScene() as Scene;
-    if (name) updateElement(scene.id, 'displayName', name);
-    return scene.toJSON();
+    const { id } = projectDocument.apply({ type: 'addScene', displayName: name || undefined });
+    return layerJSON(id as string);
   },
   add_element: ({ sceneId, type, properties }) => {
     const scene = element(sceneId);
@@ -256,60 +240,65 @@ const handlers: Handlers = {
     if (type === 'Scene' || type === 'AudioReactor')
       throw new Error('Use create_scene or create_reactor.');
     validateProperties(Type, properties);
-    const created = new Type(properties);
-    addElement(created, sceneId);
-    return created.toJSON();
+    const { id } = projectDocument.apply({
+      type: 'addElement',
+      element: new Type(properties),
+      sceneId,
+    });
+    return layerJSON(id as string);
   },
   update_element: ({ id, properties, name, enabled }) => {
     const target = element(id);
     validateProperties(entityType(target), properties, target);
-    updateElementProperties(id, properties);
-    if (name !== undefined) updateElement(id, 'displayName', name);
-    if (enabled !== undefined) updateElement(id, 'enabled', enabled);
-    edited();
-    return compact(target.toJSON());
+    projectDocument.apply([
+      { type: 'setProperties', id, properties },
+      { type: 'setMeta', id, displayName: name, enabled },
+    ]);
+    return layerJSON(id);
   },
   remove_element: ({ id }) => {
     element(id);
-    removeElement(id);
+    projectDocument.apply({ type: 'removeLayer', id });
     return { removed: id };
   },
   reorder_element: ({ id, targetId }) => {
     element(id);
     element(targetId);
-    if (!reorderElement(id, targetId)) throw new Error('Cannot reorder these elements.');
+    const state = projectDocument.getState();
+    if (!canReorder(layer => layerKind(state, layer), id, targetId))
+      throw new Error('Cannot reorder these elements.');
+    projectDocument.apply({ type: 'reorderLayer', sourceId: id, targetId });
     return { moved: id, targetId };
   },
   configure_canvas: ({ width, height, backgroundColor }) => {
     if (width * height > 33_177_600) throw new Error('Canvas exceeds 8K pixel budget.');
-    updateCanvas(width, height, backgroundColor);
+    projectDocument.apply({ type: 'setCanvas', width, height, backgroundColor });
     return stage.toJSON();
   },
   create_reactor: ({ properties }) => {
     validateProperties(AudioReactor, properties);
-    const created = new AudioReactor(properties);
-    addReactor(created);
-    edited();
-    return created.toJSON();
+    const { id } = projectDocument.apply({
+      type: 'addReactor',
+      reactor: new AudioReactor(properties),
+    });
+    return reactorJSON(id as string);
   },
   update_reactor: ({ id, properties }) => {
     const target = reactor(id);
     validateProperties(AudioReactor, properties, target);
-    target.update(properties);
-    edited();
-    return target.toJSON();
+    projectDocument.apply({ type: 'setProperties', id, properties });
+    return reactorJSON(id);
   },
   remove_reactor: ({ id }) => {
-    removeReactor(reactor(id));
-    edited();
+    reactor(id);
+    projectDocument.apply({ type: 'removeReactor', id });
     return { removed: id };
   },
   bind_reactor: ({ elementId, property, reactorId, min, max }) => {
     const target = element(elementId);
     if (reactorId === null) {
-      target.removeReactor(property);
-      edited();
-      return compact(target.toJSON());
+      projectDocument.apply({ type: 'unbindReactor', id: elementId, property });
+      return layerJSON(elementId);
     }
     reactor(reactorId);
     const control = resolvedControls(entityType(target), target)[property];
@@ -317,17 +306,14 @@ const handlers: Handlers = {
       throw new Error('Property does not support a numeric reactor binding.');
     validateProperties(entityType(target), { [property]: min }, target);
     validateProperties(entityType(target), { [property]: max }, target);
-    target.setReactor(property, { id: reactorId, min, max });
-    edited();
-    return compact(target.toJSON());
+    projectDocument.apply({ type: 'bindReactor', id: elementId, property, reactorId, min, max });
+    return layerJSON(elementId);
   },
   get_preview: ({ maxSize, time }) =>
     time === undefined ? preview(maxSize) : previewAt(maxSize, time),
   get_timeline: () => ({ ...transportSummary(), elements: listTimelineElements().elements }),
   set_timeline: ({ duration, fps }) => {
-    if (duration !== undefined) setProjectDuration(duration);
-    if (fps !== undefined) setProjectFps(fps);
-    renderer.requestRender();
+    projectDocument.apply({ type: 'setTimeline', duration, fps });
     return handlers.get_timeline({});
   },
   set_clips: ({ clips }) => {
@@ -336,14 +322,14 @@ const handlers: Handlers = {
       element(id);
       validateClipPatch(patch, duration);
     }
-    const result = clips.map(({ id, ...patch }) => ({ id, clip: setElementClip(id, patch) }));
-    edited();
-    return result;
+    projectDocument.apply(
+      clips.map(({ id, ...patch }): DocumentOp => ({ type: 'setClip', id, patch })),
+    );
+    return clips.map(({ id }) => ({ id, clip: element(id).clip }));
   },
   clear_clips: ({ ids }) => {
     for (const id of ids) element(id);
-    for (const id of ids) clearElementClip(id);
-    edited();
+    projectDocument.apply(ids.map((id): DocumentOp => ({ type: 'clearClip', id })));
     return { cleared: ids };
   },
   open_project: async ({ path, discardChanges }) => {
@@ -351,7 +337,7 @@ const handlers: Handlers = {
     const file = await readFile(path);
     requireDiscard(discardChanges);
     const warnings = await openProjectData(file, validateSnapshot);
-    return { name: projectStore.getState().projectName, warnings };
+    return { name: projectDocument.getState().name, warnings };
   },
   save_project: async ({ path, overwrite }) => {
     const modified = projectStore.getState().lastModified;
@@ -409,8 +395,11 @@ const handlers: Handlers = {
       // Use the same decoded media path as the UI, including natural sizing.
       if (element(elementId) !== target)
         throw new Error('The target element changed while loading media.');
-      target.update({ src: media, sourcePath: path });
-      edited();
+      projectDocument.apply({
+        type: 'setProperties',
+        id: elementId,
+        properties: { src: media, sourcePath: path },
+      });
     } catch (error) {
       if (src.startsWith('blob:')) URL.revokeObjectURL(src);
       throw error;
@@ -463,7 +452,7 @@ const handlers: Handlers = {
       filePath: output.path,
       startTime: args.startTime,
       endTime,
-      fps: args.fps,
+      fps: args.fps ?? getProjectFps(),
       encoder: args.encoder,
       quality: args.quality,
       includeAudio: args.includeAudio,

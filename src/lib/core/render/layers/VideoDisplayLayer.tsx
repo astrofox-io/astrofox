@@ -1,29 +1,56 @@
 // @ts-nocheck
 
+import { useThree } from '@react-three/fiber';
 import React from 'react';
 import { LinearFilter, SRGBColorSpace, VideoTexture } from 'three';
 import { BLANK_IMAGE } from '@/app/constants';
-import transportStore from '@/lib/timeline/transport';
+import { registerFramePreparer } from '../framePreparation';
 import { TexturePlane } from './TexturePlane';
+import { videoTimeAt } from './videoTime';
 
-function getClipStart(startTime) {
-  return Math.max(0, Number(startTime) || 0);
+/** While playing live, how far the video may drift from project time before it re-seeks. */
+const MAX_LIVE_DRIFT = 0.25;
+
+function hasMedia(src) {
+  return !!src && src !== BLANK_IMAGE;
 }
 
-function getClipEnd(video, clipStart, endTime) {
-  const explicitEnd = Number(endTime) || 0;
+function once(target, event) {
+  return new Promise(resolve => target.addEventListener(event, resolve, { once: true }));
+}
 
-  if (explicitEnd > clipStart) {
-    return explicitEnd;
+/**
+ * Seek to `getTarget()` and wait until that frame can be drawn. The target is
+ * read after metadata loads, since looping and clamping need the duration.
+ */
+async function seekAndWait(video, getTarget) {
+  if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+    await once(video, 'loadedmetadata');
   }
 
-  const duration = Number(video.duration) || 0;
-  return duration > clipStart ? duration : 0;
+  const target = getTarget();
+
+  if (Math.abs(video.currentTime - target) > 1e-3) {
+    const seeked = once(video, 'seeked');
+    video.currentTime = target;
+    await seeked;
+  }
+
+  if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+    await once(video, 'loadeddata');
+  }
 }
 
+/**
+ * A video display. The frame shown always comes from project time
+ * (`frameData.time`): live it plays along and re-seeks when it drifts; paused,
+ * in previews and in exports it seeks to the exact frame, and offline frames
+ * wait for the seek before they are captured.
+ */
 export function VideoDisplayLayer({
   display,
   order,
+  frameData,
   sceneOpacity,
   sceneBlendMode,
   sceneMask,
@@ -46,6 +73,7 @@ export function VideoDisplayLayer({
   } = properties;
   const shouldLoop = loop !== false;
   const hasExplicitEndTime = (Number(endTime) || 0) > 0;
+  const invalidate = useThree(state => state.invalidate);
 
   const video = React.useMemo(() => {
     const element = document.createElement('video');
@@ -67,57 +95,17 @@ export function VideoDisplayLayer({
     return nextTexture;
   }, [video]);
 
-  const syncVideoTime = React.useCallback(
-    (audioTime = 0) => {
-      if (!src || src === BLANK_IMAGE) {
-        return;
-      }
+  // The latest timing, for callbacks that outlive a render.
+  const timing = React.useRef({ startTime, endTime, loop: shouldLoop });
+  timing.current = { startTime, endTime, loop: shouldLoop };
 
-      const clipStart = getClipStart(startTime);
-      const clipEnd = getClipEnd(video, clipStart, endTime);
-      const nextAudioTime = Math.max(0, Number(audioTime) || 0);
-      let nextTime = clipStart + nextAudioTime;
-
-      if (shouldLoop && clipEnd > clipStart) {
-        const clipDuration = clipEnd - clipStart;
-        nextTime = clipStart + (nextAudioTime % clipDuration);
-      } else if (clipEnd > clipStart) {
-        nextTime = Math.min(nextTime, clipEnd);
-      }
-
-      const duration = Number(video.duration) || 0;
-      if (duration > 0) {
-        nextTime = Math.min(nextTime, duration);
-      }
-
-      if (!Number.isFinite(nextTime)) {
-        nextTime = clipStart;
-      }
-
-      if (Math.abs((video.currentTime || 0) - nextTime) > 0.05) {
-        try {
-          video.currentTime = nextTime;
-        } catch {
-          // Ignore failed seeks before metadata is ready.
-        }
-      }
-    },
-    [video, src, startTime, endTime, shouldLoop],
+  const mediaTimeAt = React.useCallback(
+    time => videoTimeAt(time, { ...timing.current, duration: video.duration }),
+    [video],
   );
 
-  const resumeVideo = React.useCallback(() => {
-    if (!src || src === BLANK_IMAGE || !transportStore.getState().playing) {
-      return;
-    }
-
-    const playback = video.play();
-    if (playback?.catch) {
-      playback.catch(() => {});
-    }
-  }, [video, src]);
-
   React.useEffect(() => {
-    if (!src || src === BLANK_IMAGE) {
+    if (!hasMedia(src)) {
       video.pause();
       video.removeAttribute('src');
       video.load();
@@ -129,98 +117,68 @@ export function VideoDisplayLayer({
     if (video.getAttribute('src') !== src) {
       video.src = src;
     }
+  }, [video, src, shouldLoop, hasExplicitEndTime]);
 
-    const onTimeUpdate = () => {
-      const clipStart = getClipStart(startTime);
-      const clipEnd = getClipEnd(video, clipStart, endTime);
-
-      if (clipEnd <= clipStart || video.currentTime < clipEnd) {
-        return;
-      }
-
-      if (shouldLoop) {
-        video.currentTime = clipStart;
-        resumeVideo();
-      } else {
-        video.pause();
-        video.currentTime = clipEnd;
-      }
+  // A seek finishes after the frame that asked for it: upload the new video
+  // frame and draw again, so a paused or scrubbed stage shows it.
+  React.useEffect(() => {
+    const onReady = () => {
+      texture.needsUpdate = true;
+      invalidate();
     };
 
-    const onLoadedMetadata = () => {
-      const { time, playing } = transportStore.getState();
-      syncVideoTime(time);
-
-      if (playing) {
-        resumeVideo();
-      } else {
-        video.pause();
-      }
-    };
-
-    const onEnded = () => {
-      if (!shouldLoop) {
-        return;
-      }
-
-      syncVideoTime(transportStore.getState().time);
-      resumeVideo();
-    };
-
-    video.addEventListener('timeupdate', onTimeUpdate);
-    video.addEventListener('loadedmetadata', onLoadedMetadata);
-    video.addEventListener('ended', onEnded);
-
-    if (video.readyState >= 1) {
-      onLoadedMetadata();
-    }
+    video.addEventListener('seeked', onReady);
+    video.addEventListener('loadeddata', onReady);
 
     return () => {
-      video.pause();
-      video.removeEventListener('timeupdate', onTimeUpdate);
-      video.removeEventListener('loadedmetadata', onLoadedMetadata);
-      video.removeEventListener('ended', onEnded);
+      video.removeEventListener('seeked', onReady);
+      video.removeEventListener('loadeddata', onReady);
     };
-  }, [video, src, shouldLoop, hasExplicitEndTime, startTime, endTime, syncVideoTime, resumeVideo]);
+  }, [video, texture, invalidate]);
 
+  // Offline frames (export, previews) wait for the exact video frame.
   React.useEffect(() => {
-    if (!src || src === BLANK_IMAGE) {
+    if (!hasMedia(src)) {
       return;
     }
 
-    // Follow the project transport: play/pause with it, and re-seek whenever
-    // the playhead jumps (scrubbing, MCP seeks, looping) or drifts.
-    let lastTime = transportStore.getState().time;
-    let lastPlaying = transportStore.getState().playing;
-
-    const unsubscribe = transportStore.subscribe(state => {
-      const jumped = Math.abs(state.time - lastTime) > 0.25;
-      const playingChanged = state.playing !== lastPlaying;
-      lastTime = state.time;
-      lastPlaying = state.playing;
-
-      if (playingChanged) {
-        if (state.playing) {
-          syncVideoTime(state.time);
-          resumeVideo();
-        } else {
-          video.pause();
-          syncVideoTime(state.time);
-        }
-        return;
-      }
-
-      if (jumped || !state.playing) {
-        syncVideoTime(state.time);
-
-        if (state.playing) {
-          resumeVideo();
-        }
-      }
+    return registerFramePreparer(async frame => {
+      video.pause();
+      await seekAndWait(video, () => mediaTimeAt(frame.time));
+      texture.needsUpdate = true;
     });
+  }, [video, texture, src, mediaTimeAt]);
 
-    return unsubscribe;
-  }, [video, src, syncVideoTime, resumeVideo]);
+  // Follow project time on every frame.
+  React.useLayoutEffect(() => {
+    if (!hasMedia(src) || !frameData || video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      return;
+    }
+
+    const target = mediaTimeAt(frameData.time);
+    const drift = Math.abs((video.currentTime || 0) - target);
+
+    if (frameData.playing && !frameData.offline) {
+      if (drift > MAX_LIVE_DRIFT) {
+        video.currentTime = target;
+      }
+
+      if (video.paused) {
+        video.play()?.catch?.(() => {});
+      }
+      return;
+    }
+
+    if (!video.paused) {
+      video.pause();
+    }
+
+    // Paused or offline: show the frame for this time (offline frames were
+    // already seeked by the preparer).
+    if (drift > 0.5 / (frameData.fps || 30)) {
+      video.currentTime = target;
+    }
+  });
 
   React.useEffect(() => {
     return () => {

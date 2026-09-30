@@ -15,7 +15,7 @@ import {
   UnsignedIntType,
   WebGLRenderTarget,
 } from 'three';
-import { updateElementProperties } from '@/app/actions/scenes';
+import { projectDocument } from '@/app/document';
 import ShaderPass from '../composer/ShaderPass';
 import DepthOfFieldShader from '../effects/shaders/DepthOfFieldShader';
 import { DisplayLights3D } from './DisplayLights3D';
@@ -149,10 +149,14 @@ export function Display3DLayer({
         return;
       }
 
-      updateElementProperties(displayId, {
-        cameraAzimuth: nextState.azimuth,
-        cameraPolar: nextState.polar,
-        cameraDistance: nextState.distance,
+      projectDocument.apply({
+        type: 'setProperties',
+        id: displayId,
+        properties: {
+          cameraAzimuth: nextState.azimuth,
+          cameraPolar: nextState.polar,
+          cameraDistance: nextState.distance,
+        },
       });
     },
     [displayId],

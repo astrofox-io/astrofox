@@ -1,26 +1,16 @@
 import { create } from 'zustand';
-import {
-  DEFAULT_CANVAS_BGCOLOR,
-  DEFAULT_CANVAS_HEIGHT,
-  DEFAULT_CANVAS_WIDTH,
-  DEFAULT_ZOOM,
-} from '@/app/constants';
+import { DEFAULT_ZOOM } from '@/app/constants';
+import { projectDocument } from '@/app/document';
 import { renderBackend, renderer } from '@/app/global';
 import { clamp } from '@/lib/utils/math';
-import { touchProject } from './project';
 
+/** How the stage is viewed. Canvas size and color are document content (`projectDocument`). */
 interface StageState {
-  width: number;
-  height: number;
-  backgroundColor: string;
   zoom: number;
   loading: boolean;
 }
 
 const initialState: StageState = {
-  width: DEFAULT_CANVAS_WIDTH,
-  height: DEFAULT_CANVAS_HEIGHT,
-  backgroundColor: DEFAULT_CANVAS_BGCOLOR,
   zoom: DEFAULT_ZOOM,
   loading: false,
 };
@@ -38,11 +28,6 @@ export function updateStage(props: Partial<StageState>) {
 
   renderBackend.update(props);
   renderer.requestRender();
-}
-
-export function updateCanvas(width: number, height: number, backgroundColor: string) {
-  updateStage({ width, height, backgroundColor });
-  touchProject();
 }
 
 export function setZoom(value: number) {
@@ -78,7 +63,7 @@ export function fitToScreen() {
     return;
   }
 
-  const { width, height } = stageStore.getState();
+  const { width, height } = projectDocument.getState().canvas;
 
   const newWidth = clamp((viewport.clientWidth * 0.8) / width, MIN_ZOOM, MAX_ZOOM);
   const newHeight = clamp((viewport.clientHeight * 0.8) / height, MIN_ZOOM, MAX_ZOOM);

@@ -15,5 +15,5 @@ function toHexString(buffer: Uint8Array) {
 }
 
 export function uniqueId() {
-  return toHexString(window.crypto.getRandomValues(new Uint8Array(20)));
+  return toHexString(globalThis.crypto.getRandomValues(new Uint8Array(20)));
 }

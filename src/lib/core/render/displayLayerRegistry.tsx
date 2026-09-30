@@ -46,15 +46,10 @@ export function getDisplayLayerEntry(name) {
   return registry.get(name) ?? null;
 }
 
-function simple2D(Component, { withFrameData = true } = {}) {
+function simple2D(Component) {
   return {
     render: ({ display, order, frameData, sceneProps }) => (
-      <Component
-        display={display}
-        order={order}
-        {...(withFrameData ? { frameData } : {})}
-        {...sceneProps}
-      />
+      <Component display={display} order={order} frameData={frameData} {...sceneProps} />
     ),
   };
 }
@@ -69,7 +64,7 @@ registerDisplayLayer('ImageDisplay', {
   },
 });
 
-registerDisplayLayer('VideoDisplay', simple2D(VideoDisplayLayer, { withFrameData: false }));
+registerDisplayLayer('VideoDisplay', simple2D(VideoDisplayLayer));
 registerDisplayLayer('TextDisplay', simple2D(TextDisplayLayer));
 registerDisplayLayer('ShapeDisplay', simple2D(ShapeDisplayLayer));
 registerDisplayLayer('BarSpectrumDisplay', simple2D(BarSpectrumDisplayLayer));

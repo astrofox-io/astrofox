@@ -1,5 +1,31 @@
 import { create } from 'zustand';
 import { player, renderer } from '@/app/global';
+import {
+  DEFAULT_PROJECT_DURATION,
+  isValidFps,
+  isValidProjectDuration,
+  MAX_PROJECT_DURATION,
+  MIN_PROJECT_DURATION,
+  normalizeTimelineSettings,
+  TIMELINE_FPS_OPTIONS,
+  type TimelineFps,
+  type TimelineSettings,
+} from './settings';
+
+// Saved settings are edited through the Document (setTimeline), which calls
+// applyTimelineSettings; the transport only plays them.
+
+export {
+  DEFAULT_PROJECT_DURATION,
+  isValidFps,
+  isValidProjectDuration,
+  MAX_PROJECT_DURATION,
+  MIN_PROJECT_DURATION,
+  normalizeTimelineSettings,
+  TIMELINE_FPS_OPTIONS,
+  type TimelineFps,
+  type TimelineSettings,
+};
 
 /**
  * The project clock. Rendering, scrubbing, previews and export all read time
@@ -9,18 +35,6 @@ import { player, renderer } from '@/app/global';
  *
  * Time is always absolute seconds from the project start.
  */
-
-export const TIMELINE_FPS_OPTIONS = [30, 60] as const;
-export type TimelineFps = (typeof TIMELINE_FPS_OPTIONS)[number];
-export const DEFAULT_PROJECT_DURATION = 30;
-export const MIN_PROJECT_DURATION = 1;
-export const MAX_PROJECT_DURATION = 4 * 60 * 60;
-
-/** Saved in the project file. `duration: null` follows the loaded audio. */
-export interface TimelineSettings {
-  duration: number | null;
-  fps: TimelineFps;
-}
 
 export interface TransportState {
   /** Playhead in seconds. */
@@ -96,29 +110,6 @@ function resolveDuration(explicit: number | null) {
   return explicit ?? (audioDuration() || DEFAULT_PROJECT_DURATION);
 }
 
-export function isValidFps(value: unknown): value is TimelineFps {
-  return (TIMELINE_FPS_OPTIONS as readonly number[]).includes(value as number);
-}
-
-export function isValidProjectDuration(value: unknown): value is number {
-  return (
-    typeof value === 'number' &&
-    Number.isFinite(value) &&
-    value >= MIN_PROJECT_DURATION &&
-    value <= MAX_PROJECT_DURATION
-  );
-}
-
-/** Coerce untrusted input (project files, MCP arguments) into valid settings. */
-export function normalizeTimelineSettings(input: unknown): TimelineSettings {
-  const raw = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
-
-  return {
-    duration: isValidProjectDuration(raw.duration) ? raw.duration : null,
-    fps: isValidFps(raw.fps) ? raw.fps : 30,
-  };
-}
-
 export function getTransportState() {
   return state();
 }
@@ -137,13 +128,6 @@ export function getTransportTime() {
 
 export function isTransportPlaying() {
   return state().playing;
-}
-
-/** What gets saved in the project file. */
-export function getTimelineSettings(): TimelineSettings {
-  const { duration, explicitDuration, fps } = state();
-
-  return { duration: explicitDuration ? duration : null, fps };
 }
 
 /** Move the audio to match the playhead; pause it when the playhead is past its end. */
@@ -166,7 +150,7 @@ function syncAudio(time: number, playing: boolean) {
 }
 
 /**
- * Apply settings from a project file (or undo entry). The playhead stays where
+ * Apply saved settings from the Document (load, undo, setTimeline). The playhead stays where
  * it is, clamped to the new duration.
  */
 export function applyTimelineSettings(settings?: unknown) {
@@ -188,34 +172,6 @@ export function applyTimelineSettings(settings?: unknown) {
     seekTransport(next);
   }
 
-  renderer.requestRender();
-}
-
-/** `null` follows the loaded audio (or 30 s without audio). */
-export function setProjectDuration(duration: number | null) {
-  if (duration !== null && !isValidProjectDuration(duration)) {
-    throw new Error(
-      `Project duration must be between ${MIN_PROJECT_DURATION} and ${MAX_PROJECT_DURATION} seconds.`,
-    );
-  }
-
-  const next = resolveDuration(duration);
-
-  setState({ duration: next, explicitDuration: duration !== null });
-
-  if (state().time > next) {
-    seekTransport(next);
-  }
-
-  renderer.requestRender();
-}
-
-export function setProjectFps(fps: TimelineFps) {
-  if (!isValidFps(fps)) {
-    throw new Error(`Frame rate must be one of ${TIMELINE_FPS_OPTIONS.join(', ')}.`);
-  }
-
-  setState({ fps });
   renderer.requestRender();
 }
 

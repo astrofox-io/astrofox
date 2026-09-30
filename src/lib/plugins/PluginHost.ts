@@ -6,7 +6,6 @@ import type { InstalledPlugin, PluginFrame } from './types';
 
 const EXPORT_FRAME_TIMEOUT_MS = 5000;
 const LIVE_FRAME_TIMEOUT_MS = 3000;
-const VIDEO_RENDERING = -1;
 
 interface FrameBox {
   originX?: number;
@@ -223,7 +222,7 @@ export class PluginWorkerHost {
 
   private buildFrame(record: InstanceRecord, frameData: RenderFrameData): PluginFrame {
     const { manifest } = this.installed;
-    const exporting = frameData.id === VIDEO_RENDERING;
+    const exporting = frameData.offline;
 
     // Project time keeps worker plugins deterministic when seeking and exporting.
     record.time = frameData.time ?? 0;
@@ -232,7 +231,7 @@ export class PluginWorkerHost {
       id: frameData.id,
       time: record.time,
       delta: frameData.delta,
-      playing: frameData.audioPlaying,
+      playing: frameData.playing,
       exporting,
       volume: frameData.volume ?? 0,
       seed: record.seed,

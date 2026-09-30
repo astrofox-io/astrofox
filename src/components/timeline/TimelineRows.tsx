@@ -3,8 +3,8 @@ import { ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp, { setActiveElementId } from '@/app/actions/app';
-import useScenes from '@/app/actions/scenes';
 import useTimelinePanel, { toggleSceneCollapsed } from '@/app/actions/timelinePanel';
+import { useDocument } from '@/app/document';
 import { Cube, Picture, Square, Sun } from '@/app/icons';
 import { translateGeneratedName } from '@/i18n/labels';
 import type { Clip } from '@/lib/timeline/clip';
@@ -59,7 +59,7 @@ export default function TimelineRows({
   snap,
 }: TimelineRowsProps) {
   const { t } = useTranslation();
-  const scenes = useScenes(state => state.scenes) as SceneData[];
+  const scenes = useDocument(state => state.scenes) as SceneData[];
   const activeElementId = useApp(state => state.activeElementId);
   const collapsed = useTimelinePanel(state => state.collapsed);
 

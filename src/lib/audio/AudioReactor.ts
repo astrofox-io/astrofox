@@ -8,6 +8,7 @@ import {
 } from '@/app/constants';
 import FFTParser from '@/lib/audio/FFTParser';
 import Entity from '@/lib/core/Entity';
+import { Phase } from '@/lib/timeline/phase';
 import type { ReactorResult, RenderFrameData } from '@/lib/types';
 import { isDefined } from '@/lib/utils/array';
 import { getDisplayName } from '@/lib/utils/controls';
@@ -15,6 +16,29 @@ import { ceil, floor, normalize } from '@/lib/utils/math';
 
 const REACTOR_BINS = 64;
 const CYCLE_MODIFIER = 0.1;
+/** Static modes advance CYCLE_MODIFIER per frame at a 60 fps reference, per second of project time. */
+const STATIC_RATE = CYCLE_MODIFIER * 60;
+
+/**
+ * A static mode's output for a phase (in cycles): Forward ramps 0 to 1,
+ * Reverse ramps 1 to 0, Cycle goes up and back down.
+ */
+export function staticOutput(outputMode: string, phase: number) {
+  const cycle = ((phase % 1) + 1) % 1;
+
+  switch (outputMode) {
+    case 'Static Forward':
+      return cycle;
+    case 'Static Reverse':
+      return 1 - cycle;
+    case 'Static Cycle': {
+      const wave = ((phase % 2) + 2) % 2;
+      return wave <= 1 ? wave : 2 - wave;
+    }
+    default:
+      return 0;
+  }
+}
 
 const outputOptions = [
   'Add',
@@ -69,7 +93,7 @@ export default class AudioReactor extends Entity {
 
   // Static state
   staticOutput = 0;
-  staticDirection = 1;
+  staticPhase = new Phase();
 
   static config = {
     name: 'AudioReactor',
@@ -416,50 +440,15 @@ export default class AudioReactor extends Entity {
   }
 
   private parseStatic(data: RenderFrameData): ReactorResult {
-    const { hasUpdate } = data;
-
-    if (!hasUpdate) {
-      return this.result;
-    }
-
     const { outputMode, speed } = this.properties as {
       outputMode: string;
       speed: number;
     };
 
-    const step = speed * CYCLE_MODIFIER;
+    // Cycles per second; speed used to step CYCLE_MODIFIER per frame at ~60 fps.
+    const phase = this.staticPhase.at(data.time, Math.max(0, Number(speed) || 0) * STATIC_RATE);
 
-    switch (outputMode) {
-      case 'Static Forward':
-        this.staticOutput += step;
-        if (this.staticOutput > 1) {
-          this.staticOutput -= 1;
-        }
-        break;
-
-      case 'Static Reverse':
-        this.staticOutput -= step;
-        if (this.staticOutput < 0) {
-          this.staticOutput += 1;
-        }
-        break;
-
-      case 'Static Cycle':
-        if (this.staticDirection > 0) {
-          this.staticOutput += step;
-          if (this.staticOutput >= 1) {
-            this.staticOutput = 1;
-            this.staticDirection = -1;
-          }
-        } else {
-          this.staticOutput -= step;
-          if (this.staticOutput <= 0) {
-            this.staticOutput = 0;
-            this.staticDirection = 1;
-          }
-        }
-        break;
-    }
+    this.staticOutput = staticOutput(outputMode, phase);
 
     // Static modes produce no FFT output
     this.result.fft = [];

@@ -12,6 +12,7 @@ import {
   newProject,
   openProjectFile,
   saveProject,
+  trackProjectChanges,
 } from '@/app/actions/project';
 import {
   checkForDesktopUpdates,
@@ -21,14 +22,25 @@ import {
   isFfmpegAvailable,
   onDesktopUpdaterStatus,
 } from '@/app/desktop';
+import { projectDocument } from '@/app/document';
 import { api, audioContext, library, logger, player, renderBackend, renderer } from '@/app/global';
 import { getAutomaticUpdates } from '@/app/preferences';
 import { t } from '@/i18n/config';
 import { registerGeneratedNameLabels } from '@/i18n/labels';
 import * as displays from '@/lib/displays';
+import { hasLayer, selectionAfterRemoval } from '@/lib/document/selection';
+import type { DocumentChange } from '@/lib/document/types';
 import * as effects from '@/lib/effects';
 import { loadInstalledPlugins } from '@/lib/plugins';
-import { getProjectDuration, initTransport, pauseTransport } from '@/lib/timeline/transport';
+import transportStore, {
+  getProjectDuration,
+  getProjectFps,
+  getTransportState,
+  initTransport,
+  pauseTransport,
+  playTransport,
+  seekTransport,
+} from '@/lib/timeline/transport';
 import { finalizeWebm } from '@/lib/utils/webm';
 import {
   getVideoEncoderConfig,
@@ -179,7 +191,6 @@ let stagePictureInPictureVideo: HTMLVideoElement | null = null;
 let stagePictureInPictureStream: MediaStream | null = null;
 
 const DEFAULT_VIDEO_FPS = 60;
-const DEFAULT_EXPORT_FPS: VideoExportFps = 30;
 const RECORDING_TIMESLICE_MS = 250;
 const VIDEO_MIME_CANDIDATES = [
   'video/webm;codecs=vp9,opus',
@@ -399,9 +410,9 @@ export async function saveImage() {
 
   if (!canceled) {
     try {
-      const data = renderer.getFrameData(0);
-
-      renderBackend.render(data);
+      // Drawn like an export frame, so media and effects are exactly at the playhead.
+      const { time, fps } = getTransportState();
+      await renderer.renderAt(time, fps);
 
       const fileName = fileHandle?.name || filePath || `image-${Date.now()}.png`;
       const isJpeg = /jpe?g$/i.test(fileName);
@@ -455,7 +466,7 @@ export async function saveVideo() {
       startTime: 0,
       endTime: totalDuration,
       includeAudio: true,
-      fps: DEFAULT_EXPORT_FPS,
+      fps: getProjectFps(),
       encoder: DEFAULT_EXPORT_ENCODER,
       encoderOptions: getVideoEncoderOptions(),
       quality: DEFAULT_EXPORT_QUALITY,
@@ -507,7 +518,8 @@ export function cancelVideoExport() {
     return true;
   }
   if (activeVideoRecorder && activeVideoRecorder.state === 'recording') {
-    player.stop();
+    // The recording stops when the transport does.
+    pauseTransport();
     return true;
   }
   return false;
@@ -538,7 +550,7 @@ export async function startFfmpegVideoExport({
   endTime,
   includeAudio = true,
   audioSource = null,
-  fps = DEFAULT_EXPORT_FPS,
+  fps = getProjectFps(),
   encoder = DEFAULT_EXPORT_ENCODER,
   quality = DEFAULT_EXPORT_QUALITY,
   automation,
@@ -679,7 +691,7 @@ export async function startVideoRecording({
   endTime,
   includeAudio = true,
   audioSource = null,
-  fps = DEFAULT_EXPORT_FPS,
+  fps = getProjectFps(),
   encoder = DEFAULT_EXPORT_ENCODER,
   quality = DEFAULT_EXPORT_QUALITY,
 }: StartVideoRecordingOptions): Promise<boolean> {
@@ -715,13 +727,14 @@ export async function startVideoRecording({
     });
   }
 
-  // The browser build records real-time playback, which still needs audio.
-  if (!player.hasAudio()) {
+  // The browser build records the stage in real time while the transport
+  // plays the range, like live playback (past the end of the audio too).
+  if (includeAudio && !player.hasAudio()) {
     raiseError(t('errors.choose-audio-before-saving-video'));
     return false;
   }
 
-  const totalDuration = player.getDuration();
+  const totalDuration = getProjectDuration();
 
   if (!Number.isFinite(totalDuration) || totalDuration <= 0) {
     raiseError(t('errors.video-duration-failed'));
@@ -771,23 +784,21 @@ export async function startVideoRecording({
     activeVideoRecorder = recorder;
     const chunks: Blob[] = [];
     const fileName = targetPath;
-    let stopTimer: number | null = null;
+    let stopWatching: (() => void) | null = null;
     let recordingFailed = false;
     let recordingStartedAt = 0;
 
-    const onPlayerStop = () => {
+    const stopRecording = () => {
+      pauseTransport();
+
       if (recorder.state === 'recording') {
         recorder.stop();
       }
     };
 
     const cleanup = () => {
-      if (stopTimer) {
-        window.clearTimeout(stopTimer);
-        stopTimer = null;
-      }
-
-      player.off('stop', onPlayerStop);
+      stopWatching?.();
+      stopWatching = null;
       player.setLoop(previousLoop);
 
       if (audioDestination) {
@@ -802,9 +813,7 @@ export async function startVideoRecording({
         track.stop();
       }
 
-      if (player.isPlaying()) {
-        player.stop();
-      }
+      pauseTransport();
 
       activeVideoRecorder = null;
       appStore.setState({
@@ -856,18 +865,20 @@ export async function startVideoRecording({
       }
     };
 
-    player.stop();
+    pauseTransport();
     player.setLoop(false);
-    player.seek(clampedStartTime / totalDuration);
-    player.on('stop', onPlayerStop);
+    seekTransport(clampedStartTime);
+
+    // Stop at the end of the range, or when playback stops for any reason.
+    stopWatching = transportStore.subscribe(state => {
+      if (!state.playing || state.time >= clampedEndTime - 1e-3) {
+        stopRecording();
+      }
+    });
 
     recorder.start(RECORDING_TIMESLICE_MS);
     appStore.setState({ isVideoRecording: true });
-    player.play();
-
-    stopTimer = window.setTimeout(() => {
-      player.stop();
-    }, durationMs);
+    playTransport();
     return true;
   } catch (error) {
     player.setLoop(previousLoop);
@@ -974,6 +985,25 @@ export function setControlsPanelMode(mode: 'active' | 'all') {
 
 export function setActiveElementId(elementId?: string | null) {
   appStore.setState({ activeElementId: elementId || null });
+}
+
+/**
+ * Never leave a removed layer or reactor selected, whichever path removed it
+ * (Layers panel, automation, undo). A removed layer passes the selection to
+ * its neighbour; a newly loaded project starts with nothing selected.
+ */
+function keepSelectionValid({ kind, previous, state }: DocumentChange) {
+  const { activeElementId, activeReactorId } = appStore.getState();
+
+  if (activeElementId && !hasLayer(state, activeElementId)) {
+    setActiveElementId(
+      kind === 'load' ? null : selectionAfterRemoval(previous, state, activeElementId),
+    );
+  }
+
+  if (activeReactorId && !state.reactors.some(reactor => reactor.id === activeReactorId)) {
+    setActiveReactorId(null);
+  }
 }
 
 export function setCameraModeEnabled(enabled: boolean) {
@@ -1209,7 +1239,9 @@ export async function initApp() {
   appInitPromise = (async () => {
     await loadPlugins();
     await loadLibrary();
-    await newProject();
+    projectDocument.subscribe(keepSelectionValid);
+    trackProjectChanges();
+    newProject();
 
     initTransport();
     initializeHistory();

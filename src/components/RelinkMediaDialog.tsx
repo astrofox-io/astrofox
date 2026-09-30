@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useProject, { type MediaRef, relinkMediaRef } from '@/app/actions/project';
+import { relinkMediaRef } from '@/app/actions/project';
+import { useDocument } from '@/app/document';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
+import type { MediaRef } from '@/lib/document/types';
 
 interface RelinkMediaDialogProps {
   onClose?: () => void;
@@ -11,7 +13,7 @@ interface RelinkMediaDialogProps {
 export default function RelinkMediaDialog({ onClose }: RelinkMediaDialogProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'relink-media' });
   const { t: tc } = useTranslation(undefined, { keyPrefix: 'common' });
-  const mediaRefs = useProject(state => state.unresolvedMediaRefs) as MediaRef[];
+  const mediaRefs = useDocument(state => state.unresolvedMediaRefs);
   const [loadingDisplayId, setLoadingDisplayId] = useState<string | null>(null);
 
   async function handleRelink(ref: MediaRef) {

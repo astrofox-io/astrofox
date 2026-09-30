@@ -181,14 +181,15 @@ export const commands = {
   },
   start_export: {
     description:
-      'Start an offline video export of the project timeline and immediately return a job ID. Times are seconds within the project duration; audio is required only when includeAudio is true. Other MCP edits are blocked until completion.',
+      'Start an offline video export of the project timeline and immediately return a job ID. Times are seconds within the project duration; fps defaults to the project frame rate; audio is required only when includeAudio is true. Other MCP edits are blocked until completion.',
     schema: z
       .object({
         path: filePath,
         overwrite: z.boolean().default(false),
         startTime: z.number().min(0).default(0),
         endTime: z.number().positive().optional(),
-        fps: fps.default(30),
+        // Defaults to the project frame rate.
+        fps: fps.optional(),
         encoder: z.enum(['x264', 'x265', 'nvenc', 'webm']).default('x264'),
         quality: z.enum(['low', 'medium', 'high']).default('medium'),
         includeAudio: z.boolean().default(true),

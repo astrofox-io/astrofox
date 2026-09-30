@@ -31,9 +31,9 @@ export default class RenderBackend {
   }
 
   /**
-   * Render one deterministic export frame and return RGBA pixels.
+   * Render one offline frame (export, preview) and return RGBA pixels.
    */
-  async renderExportFrame(_params: Record<string, unknown>): Promise<Uint8Array> {
+  async renderExportFrame(_frameData: RenderFrameData): Promise<Uint8Array> {
     throw new Error(
       `RenderBackend.renderExportFrame is not implemented for ${this.constructor.name}`,
     );

@@ -59,10 +59,9 @@ export default class FilmGrainEffect extends Effect {
     this.time = 0;
   }
 
+  // The grain pattern follows project time, so every render of a time matches.
   render(_scene: unknown, data: RenderFrameData) {
-    if (!data.hasUpdate) return;
-
-    this.time += data.delta / 1000;
+    this.time = data.time;
   }
 }
 

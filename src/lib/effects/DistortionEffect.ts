@@ -7,6 +7,7 @@ import {
   registerEffectPass,
 } from '@/lib/core/render/effects/effectPassRegistry';
 import DistortionShader from '@/lib/core/render/effects/shaders/DistortionShader';
+import { Phase } from '@/lib/timeline/phase';
 import type { RenderFrameData } from '@/lib/types';
 
 const distortionModes = ['Wave', 'Simplex Noise', 'Perlin Noise'];
@@ -63,6 +64,8 @@ export default class DistortionEffect extends Effect {
     },
   };
 
+  private phase = new Phase();
+
   constructor(properties?: Record<string, unknown>) {
     super(DistortionEffect, properties);
 
@@ -70,13 +73,10 @@ export default class DistortionEffect extends Effect {
   }
 
   render(_scene: unknown, data: RenderFrameData) {
-    if (!data.hasUpdate) return;
+    const speed = Math.max(0, Number(this.properties.speed) || 0);
 
-    const speed = Number(this.properties.speed || 0);
-
-    if (speed > 0) {
-      this.time += data.delta / (100 / speed);
-    }
+    // Ten units per second at speed 1, as the per-millisecond step of speed / 100 was.
+    this.time = this.phase.at(data.time, speed * 10);
   }
 }
 

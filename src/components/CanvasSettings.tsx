@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useProject, { DEFAULT_PROJECT_NAME, updateProjectName } from '@/app/actions/project';
-import useStage, { updateCanvas } from '@/app/actions/stage';
+import { projectDocument, useDocument } from '@/app/document';
 import Setting from '@/components/Setting';
 import Settings from '@/components/Settings';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
+import { DEFAULT_PROJECT_NAME } from '@/lib/document/types';
 
 type CanvasSettingsProps = {
   onClose: () => void;
@@ -106,8 +106,8 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
     },
   ];
 
-  const stageConfig = useStage(state => state);
-  const projectName = useProject(state => state.projectName);
+  const stageConfig = useDocument(state => state.canvas);
+  const projectName = useDocument(state => state.name);
   const defaultProjectName = tt('default-project-name');
   const [state, setState] = useState({
     projectName:
@@ -127,11 +127,15 @@ export default function CanvasSettings({ onClose }: CanvasSettingsProps) {
     onClose();
   }
 
-  async function handleSave() {
-    updateProjectName(
-      draftProjectName.trim() === defaultProjectName ? DEFAULT_PROJECT_NAME : draftProjectName,
-    );
-    await updateCanvas(width, height, backgroundColor);
+  function handleSave() {
+    projectDocument.apply([
+      {
+        type: 'setName',
+        name:
+          draftProjectName.trim() === defaultProjectName ? DEFAULT_PROJECT_NAME : draftProjectName,
+      },
+      { type: 'setCanvas', width, height, backgroundColor },
+    ]);
     onClose();
   }
 

@@ -7,6 +7,7 @@ import {
   registerEffectPass,
 } from '@/lib/core/render/effects/effectPassRegistry';
 import ShockwaveShader from '@/lib/core/render/effects/shaders/ShockwaveShader';
+import { Phase } from '@/lib/timeline/phase';
 import type { RenderFrameData } from '@/lib/types';
 
 export default class ShockwaveEffect extends Effect {
@@ -54,6 +55,8 @@ export default class ShockwaveEffect extends Effect {
     },
   };
 
+  private phase = new Phase();
+
   constructor(properties?: Record<string, unknown>) {
     super(ShockwaveEffect, properties);
 
@@ -61,13 +64,9 @@ export default class ShockwaveEffect extends Effect {
   }
 
   render(_scene: unknown, data: RenderFrameData) {
-    if (!data.hasUpdate) return;
+    const speed = Math.max(0, Number(this.properties.speed) || 0);
 
-    const speed = Number(this.properties.speed || 0);
-
-    if (speed > 0) {
-      this.time += (data.delta / 1000) * speed;
-    }
+    this.time = this.phase.at(data.time, speed);
   }
 }
 

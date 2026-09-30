@@ -7,6 +7,7 @@ import {
   registerEffectPass,
 } from '@/lib/core/render/effects/effectPassRegistry';
 import VHSShader from '@/lib/core/render/effects/shaders/VHSShader';
+import { Phase } from '@/lib/timeline/phase';
 import type { RenderFrameData } from '@/lib/types';
 
 // CPU-side mirror of the shader's noise, used for the per-frame crease noise value
@@ -202,6 +203,8 @@ export default class VHSEffect extends Effect {
     },
   };
 
+  private phase = new Phase();
+
   constructor(properties?: Record<string, unknown>) {
     super(VHSEffect, properties);
 
@@ -209,13 +212,9 @@ export default class VHSEffect extends Effect {
   }
 
   render(_scene: unknown, data: RenderFrameData) {
-    if (!data.hasUpdate) return;
+    const speed = Math.max(0, Number(this.properties.speed) || 0);
 
-    const speed = Number(this.properties.speed || 0);
-
-    if (speed > 0) {
-      this.time += (data.delta / 1000) * speed;
-    }
+    this.time = this.phase.at(data.time, speed);
   }
 }
 

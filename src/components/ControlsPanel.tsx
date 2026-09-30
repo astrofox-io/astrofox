@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import useApp, { setActiveElementId } from '@/app/actions/app';
-import useScenes from '@/app/actions/scenes';
+import { useDocument } from '@/app/document';
 import { stage } from '@/app/global';
 import Control from '@/components/Control';
 import { reverse } from '@/lib/utils/array';
@@ -52,13 +52,16 @@ const ControlCard = React.memo(
 export default function ControlsPanel() {
   const activeElementId = useApp(state => state.activeElementId);
   const controlsPanelMode = useApp(state => state.controlsPanelMode);
-  const sceneOrder = useScenes(state => state.sceneOrder);
-  const sceneById = useScenes(state => state.sceneById) as Record<string, Record<string, unknown>>;
-  const sceneElementsById = useScenes(state => state.sceneElementsById) as Record<
+  const sceneOrder = useDocument(state => state.sceneOrder);
+  const sceneById = useDocument(state => state.sceneById) as Record<
+    string,
+    Record<string, unknown>
+  >;
+  const sceneElementsById = useDocument(state => state.sceneElementsById) as Record<
     string,
     SceneElements
   >;
-  const elementById = useScenes(state => state.elementById) as Record<
+  const elementById = useDocument(state => state.elementById) as Record<
     string,
     Record<string, unknown>
   >;

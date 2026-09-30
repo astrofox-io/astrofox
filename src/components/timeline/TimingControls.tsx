@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import useScenes from '@/app/actions/scenes';
-import { clearElementClip, setElementClip } from '@/app/actions/timeline';
+import { projectDocument, useDocument } from '@/app/document';
 import NumberInput from '@/components/NumberInput';
 import { Button } from '@/components/ui/button';
 import type Display from '@/lib/core/Display';
-import type { Clip } from '@/lib/timeline/clip';
+import type { Clip, ClipPatch } from '@/lib/timeline/clip';
 import transportStore from '@/lib/timeline/transport';
 
 interface TimingControlsProps {
@@ -50,13 +49,11 @@ function Row({
 export default function TimingControls({ display }: TimingControlsProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'timeline' });
   const duration = transportStore(state => state.duration);
-  const clip = useScenes(
-    state =>
-      (
-        (state.elementById as Record<string, { clip?: Clip | null }>)[display.id] ??
-        (state.sceneById as Record<string, { clip?: Clip | null }>)[display.id]
-      )?.clip ?? null,
-  ) as Clip | null;
+  const clip: Clip | null = useDocument(
+    state => (state.elementById[display.id] ?? state.sceneById[display.id])?.clip ?? null,
+  );
+  const setClip = (patch: ClipPatch) =>
+    projectDocument.apply({ type: 'setClip', id: display.id, patch });
   const start = clip?.start ?? 0;
   const end = clip?.end ?? duration;
   const hasOpacity = typeof display.authoredProperties.opacity === 'number';
@@ -68,7 +65,7 @@ export default function TimingControls({ display }: TimingControlsProps) {
         name="start"
         value={start}
         max={duration}
-        onChange={value => setElementClip(display.id, { start: Math.min(value, end - 0.01) })}
+        onChange={value => setClip({ start: Math.min(value, end - 0.01) })}
       />
       <Row
         label={t('end')}
@@ -76,7 +73,7 @@ export default function TimingControls({ display }: TimingControlsProps) {
         value={end}
         max={duration}
         onChange={value =>
-          setElementClip(display.id, {
+          setClip({
             end: value >= duration ? null : Math.max(value, start + 0.01),
           })
         }
@@ -88,14 +85,14 @@ export default function TimingControls({ display }: TimingControlsProps) {
             name="fadeIn"
             value={clip?.fadeIn ?? 0}
             max={duration}
-            onChange={value => setElementClip(display.id, { fadeIn: value })}
+            onChange={value => setClip({ fadeIn: value })}
           />
           <Row
             label={t('fade-out')}
             name="fadeOut"
             value={clip?.fadeOut ?? 0}
             max={duration}
-            onChange={value => setElementClip(display.id, { fadeOut: value })}
+            onChange={value => setClip({ fadeOut: value })}
           />
         </>
       ) : (
@@ -103,7 +100,11 @@ export default function TimingControls({ display }: TimingControlsProps) {
       )}
       {clip ? (
         <div className="mx-2.5 ml-8.5">
-          <Button variant="secondary" size="sm" onClick={() => clearElementClip(display.id)}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => projectDocument.apply({ type: 'clearClip', id: display.id })}
+          >
             {t('reset')}
           </Button>
         </div>

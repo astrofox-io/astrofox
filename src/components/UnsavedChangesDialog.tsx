@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import useProject, { newProject, openProjectFile, saveProject } from '@/app/actions/project';
+import { newProject, openProjectFile, saveProject } from '@/app/actions/project';
+import { useDocument } from '@/app/document';
 import Dialog from '@/components/Dialog';
 
 interface UnsavedChangesDialogProps {
@@ -10,7 +11,7 @@ interface UnsavedChangesDialogProps {
 export default function UnsavedChangesDialog({ action, onClose }: UnsavedChangesDialogProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'unsaved-changes' });
   const { t: tc } = useTranslation(undefined, { keyPrefix: 'common' });
-  const project = useProject(state => state);
+  const projectName = useDocument(state => state.name);
 
   async function handleAction(actionType: string) {
     if (actionType === 'new-project') {
@@ -30,7 +31,7 @@ export default function UnsavedChangesDialog({ action, onClose }: UnsavedChanges
 
   async function handleConfirm(button: string) {
     if (button === tc('yes')) {
-      const saved = await saveProject(project.projectName);
+      const saved = await saveProject(projectName);
 
       if (saved) {
         await closeThenRunAction();

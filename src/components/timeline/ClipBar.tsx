@@ -1,8 +1,8 @@
 import { clsx as classNames } from 'cnfast';
 import type React from 'react';
 import { useRef } from 'react';
-import { clearElementClip, setElementClip } from '@/app/actions/timeline';
-import type { Clip } from '@/lib/timeline/clip';
+import { projectDocument } from '@/app/document';
+import type { Clip, ClipPatch } from '@/lib/timeline/clip';
 import { CLIP_COLORS } from './constants';
 import { snapTime } from './snap';
 
@@ -65,6 +65,10 @@ export default function ClipBar({
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
+  function setElementClip(patch: ClipPatch) {
+    projectDocument.apply({ type: 'setClip', id, patch });
+  }
+
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const state = drag.current;
     if (!state) return;
@@ -74,13 +78,13 @@ export default function ClipBar({
 
     if (state.mode === 'trim-start') {
       const next = Math.max(0, Math.min(state.end - frame, snapTo(state.start + delta)));
-      setElementClip(id, { start: next });
+      setElementClip({ start: next });
       return;
     }
 
     if (state.mode === 'trim-end') {
       const next = Math.max(state.start + frame, Math.min(duration, snapTo(state.end + delta)));
-      setElementClip(id, { end: next >= duration - 1e-6 ? null : next });
+      setElementClip({ end: next >= duration - 1e-6 ? null : next });
       return;
     }
 
@@ -88,7 +92,7 @@ export default function ClipBar({
     // start moves; a closed bar keeps its length.
     if (state.openEnd) {
       const next = Math.max(0, Math.min(duration - frame, snapTo(state.start + delta)));
-      setElementClip(id, { start: next });
+      setElementClip({ start: next });
       return;
     }
 
@@ -97,7 +101,7 @@ export default function ClipBar({
     const snappedEnd = snapTo(nextStart + length);
     if (snappedEnd !== nextStart + length) nextStart = snappedEnd - length;
     nextStart = Math.max(0, Math.min(duration - length, nextStart));
-    setElementClip(id, { start: nextStart, end: nextStart + length });
+    setElementClip({ start: nextStart, end: nextStart + length });
   }
 
   function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
@@ -133,7 +137,7 @@ export default function ClipBar({
       onPointerCancel={handlePointerUp}
       onDoubleClick={event => {
         event.stopPropagation();
-        clearElementClip(id);
+        projectDocument.apply({ type: 'clearClip', id });
       }}
     >
       {clip && clip.fadeIn > 0 ? (

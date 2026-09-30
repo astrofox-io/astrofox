@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { setActiveReactorId } from '@/app/actions/app';
-import { loadScenes } from '@/app/actions/scenes';
 import { PRIMARY_COLOR } from '@/app/constants';
+import { projectDocument } from '@/app/document';
 import { events, reactors } from '@/app/global';
 import { Times } from '@/app/icons';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,6 @@ interface ReactorInputProps {
 export default function ReactorInput({
   display,
   name,
-  value,
   width = 200,
   height = 12,
   color = PRIMARY_COLOR,
@@ -31,16 +30,12 @@ export default function ReactorInput({
   const { t } = useTranslation(undefined, { keyPrefix: 'inputs' });
   const canvas = useRef<HTMLCanvasElement>(null);
   const meter = useRef<CanvasMeter | null>(null);
-  const lastValue = useRef(value);
   const reactor = useMemo(() => reactors.getElementById(display.getReactor(name)!.id), [display]);
 
+  // The property goes back to its authored value.
   function disableReactor() {
-    display.removeReactor(name);
-    display.update({ [name]: lastValue.current });
-
+    projectDocument.apply({ type: 'unbindReactor', id: display.id, property: name });
     setActiveReactorId(null);
-
-    loadScenes();
   }
 
   function toggleReactor() {

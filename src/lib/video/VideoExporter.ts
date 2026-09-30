@@ -219,7 +219,7 @@ export default class VideoExporter {
       for (let frame = startFrame; frame < endFrame; frame += 1) {
         this.throwIfCancelled();
 
-        const pixels = await renderer.renderFrame(frame, fps);
+        const pixels = await renderer.renderAt(frame / fps, fps);
         // Ensure even dimensions by cropping if needed.
         const frameBytes = this.normalizeFrame(pixels, width, height, w, h);
         try {
