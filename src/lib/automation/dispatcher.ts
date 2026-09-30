@@ -1,6 +1,6 @@
 import mime from 'mime';
-import appStore, { cancelVideoExport, startFfmpegVideoExport } from '@/app/actions/app';
 import audioStore, { loadAudioFile } from '@/app/actions/audio';
+import { type ExportJob, getActiveExport, getExportMode, startExport } from '@/app/actions/export';
 import projectStore, {
   markProjectSaved,
   newProject,
@@ -28,7 +28,6 @@ import {
   stopTransport,
 } from '@/lib/timeline/transport';
 import { getVideoEncoderConfig } from '@/lib/video/encoders';
-import { isVideoExportCancelledError } from '@/lib/video/VideoExporter';
 import { type CommandArgs, type CommandName, commands } from './protocol';
 import {
   assertSafe,
@@ -41,15 +40,19 @@ import {
 } from './validation';
 
 type Handlers = { [K in CommandName]: (args: CommandArgs<K>) => unknown | Promise<unknown> };
-interface ExportJob {
-  id: string;
-  state: 'running' | 'cancelling' | 'completed' | 'cancelled' | 'failed';
-  path: string;
-  progress: { status: string; currentFrame?: number; totalFrames?: number };
-  error?: string;
-}
+/** Export jobs started over MCP, kept for get_export_status until the editor reloads. */
 const jobs = new Map<string, ExportJob>();
-let activeJob: ExportJob | undefined;
+const MAX_JOBS = 50;
+
+function jobSummary(job: ExportJob) {
+  return {
+    id: job.id,
+    state: job.state,
+    path: job.savedPath ?? job.plan.output.path,
+    progress: { ...job.progress },
+    ...(job.error ? { error: job.error } : {}),
+  };
+}
 
 function automation() {
   const bridge = platform.automation;
@@ -206,7 +209,7 @@ const handlers: Handlers = {
       unresolvedMediaRefs: projectDocument.getState().unresolvedMediaRefs,
       audio: audioSummary(),
       transport: transportSummary(),
-      exportJob: activeJob?.id,
+      exportJob: getActiveExport()?.id,
     }),
   list_element_types: () =>
     Object.entries(getTypes()).map(([name, Type]) => ({
@@ -424,79 +427,37 @@ const handlers: Handlers = {
     return transportSummary();
   },
   start_export: async args => {
-    if (!platform.encoder) throw new Error('Bundled ffmpeg is unavailable.');
-    if (args.includeAudio && !player.hasAudio())
-      throw new Error('Load an audio file before exporting with audio, or set includeAudio=false.');
-    const duration = getProjectDuration();
-    const endTime = args.endTime ?? duration;
-    if (!Number.isFinite(duration) || endTime > duration || endTime <= args.startTime)
-      throw new Error(`Export range must be within the project duration (${duration}s).`);
-    const { width, height } = stage.getSize();
-    if (width % 2 || height % 2) throw new Error('Video export requires even canvas dimensions.');
+    if (getExportMode() !== 'offline') throw new Error('Bundled ffmpeg is unavailable.');
     const extension = getVideoEncoderConfig(args.encoder).video.extension;
     if (!args.path.toLowerCase().endsWith(`.${extension}`))
       throw new Error(`This encoder requires .${extension}.`);
+    // MCP clients name the file themselves, so refuse to replace one unless asked.
     const output = await automation().checkOutput({ path: args.path, overwrite: args.overwrite });
-    if (appStore.getState().isVideoRecording) throw new Error('Another export is active.');
-    const source = audioStore.getState().source;
-    if (args.includeAudio && !source)
-      throw new Error('Reload the audio file before exporting with audio.');
-    pauseTransport();
-    const job: ExportJob = {
-      id: crypto.randomUUID(),
-      state: 'running',
-      path: output.path,
-      progress: { status: 'preparing' },
-    };
-    jobs.set(job.id, job);
-    activeJob = job;
-    if (jobs.size > 50) jobs.delete(jobs.keys().next().value!);
-    // Reserve before asynchronous audio preparation, including against UI export.
-    appStore.setState({ isVideoRecording: true });
-    void startFfmpegVideoExport({
-      filePath: output.path,
+    // The range, frame rate, audio and busy checks are the export's own (planExport).
+    const job = startExport({
+      output: { path: output.path },
       startTime: args.startTime,
-      endTime,
-      fps: args.fps ?? getProjectFps(),
+      endTime: args.endTime,
+      fps: args.fps,
       encoder: args.encoder,
       quality: args.quality,
       includeAudio: args.includeAudio,
-      audioSource: source,
-      automation: {
-        overwrite: args.overwrite,
-        onProgress: progress => {
-          job.progress = progress;
-          if (job.state === 'cancelling') cancelVideoExport();
-        },
-      },
-    })
-      .then(ok => {
-        if (!ok) throw new Error('Export could not be started.');
-        job.state = 'completed';
-      })
-      .catch(error => {
-        job.state = isVideoExportCancelledError(error) ? 'cancelled' : 'failed';
-        job.error = error instanceof Error ? error.message : String(error);
-      })
-      .finally(() => {
-        activeJob = undefined;
-        appStore.setState({ isVideoRecording: false, statusText: '' });
-      });
-    return { ...job };
+      overwrite: args.overwrite,
+    });
+    jobs.set(job.id, job);
+    if (jobs.size > MAX_JOBS) jobs.delete(jobs.keys().next().value!);
+    return jobSummary(job);
   },
   get_export_status: ({ jobId }) => {
     const job = jobs.get(jobId);
     if (!job) throw new Error('Export job not found (possibly an editor reload).');
-    return { ...job };
+    return jobSummary(job);
   },
   cancel_export: ({ jobId }) => {
     const job = jobs.get(jobId);
     if (!job) throw new Error('Export job not found.');
-    if (job === activeJob) {
-      job.state = 'cancelling';
-      cancelVideoExport();
-    }
-    return { ...job };
+    job.cancel();
+    return jobSummary(job);
   },
 };
 
@@ -510,7 +471,7 @@ export function connectAutomation() {
       if (!Object.hasOwn(commands, request.command)) throw new Error('Unknown automation command.');
       const definition = commands[request.command];
       if (
-        (activeJob || appStore.getState().isVideoRecording) &&
+        getActiveExport() &&
         ![
           'get_project',
           'list_element_types',

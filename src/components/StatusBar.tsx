@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useAppStore, { cancelVideoExport } from '@/app/actions/app';
+import useAppStore from '@/app/actions/app';
+import { cancelExport } from '@/app/actions/export';
 import { env, renderer } from '@/app/global';
 import ZoomControl from '@/components/ZoomControl';
 
@@ -45,7 +46,7 @@ export default function StatusBar() {
             type="button"
             className="cursor-pointer rounded border border-neutral-100/40 px-2 leading-5 text-xs uppercase tracking-wide hover:border-neutral-100 hover:bg-neutral-100/10"
             onClick={() => {
-              cancelVideoExport();
+              cancelExport();
             }}
           >
             {tc('cancel')}

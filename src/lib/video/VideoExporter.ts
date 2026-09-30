@@ -1,12 +1,7 @@
 import { logger, renderBackend, renderer } from '@/app/global';
 import { platform } from '@/lib/platform';
 import { getVideoEncoderConfig, type VideoEncoder, type VideoQuality } from './encoders';
-
-export type VideoExportProgress = {
-  status: string;
-  currentFrame?: number;
-  totalFrames?: number;
-};
+import { ExportCancelledError, type ExportProgress, isExportCancelledError } from './exportEncoder';
 
 export type VideoExportOptions = {
   outputPath: string;
@@ -18,7 +13,7 @@ export type VideoExportOptions = {
   encoder?: VideoEncoder;
   quality?: VideoQuality;
   overwrite?: boolean;
-  onProgress?: (progress: VideoExportProgress) => void;
+  onProgress?: (progress: ExportProgress) => void;
 };
 
 function sleep(ms: number) {
@@ -38,28 +33,10 @@ function ensureExtension(filePath: string, extension: string) {
 }
 
 /**
- * Offline desktop export: raw RGBA frames → ffmpeg encoder, optional audio,
- * merge into the final container. Requires the platform ffmpeg encoder
- * and a bundled ffmpeg binary.
+ * Offline desktop export: raw RGBA frames → ffmpeg, optional audio, merged
+ * into the final container. Driven by the offline encoder
+ * (`offlineEncoder.ts`); needs the platform's ffmpeg.
  */
-export class VideoExportCancelledError extends Error {
-  readonly cancelled = true;
-
-  constructor() {
-    super('Export cancelled.');
-    this.name = 'VideoExportCancelledError';
-  }
-}
-
-export function isVideoExportCancelledError(error: unknown): boolean {
-  return (
-    error instanceof VideoExportCancelledError ||
-    (typeof error === 'object' &&
-      error !== null &&
-      (error as { cancelled?: boolean }).cancelled === true)
-  );
-}
-
 export default class VideoExporter {
   private cancelled = false;
   private pipeId: string | null = null;
@@ -84,7 +61,7 @@ export default class VideoExporter {
 
   private throwIfCancelled() {
     if (this.cancelled) {
-      throw new VideoExportCancelledError();
+      throw new ExportCancelledError();
     }
   }
 
@@ -101,7 +78,7 @@ export default class VideoExporter {
     } catch (error) {
       // A killed stage surfaces as a non-zero exit; report it as a cancel.
       if (this.cancelled) {
-        throw new VideoExportCancelledError();
+        throw new ExportCancelledError();
       }
       throw error;
     } finally {
@@ -158,7 +135,7 @@ export default class VideoExporter {
     const tempAudio = `${tempBase}.audio.${config.audio.extension}`;
 
     const tempFiles = [tempVideo, tempAudio];
-    const report = (progress: VideoExportProgress) => {
+    const report = (progress: ExportProgress) => {
       onProgress?.(progress);
     };
 
@@ -209,7 +186,7 @@ export default class VideoExporter {
       // cancel() may have raced with start-pipe.
       if (this.cancelled) {
         await this.killActiveProcesses();
-        throw new VideoExportCancelledError();
+        throw new ExportCancelledError();
       }
 
       for (let frame = startFrame; frame < endFrame; frame += 1) {
@@ -222,7 +199,7 @@ export default class VideoExporter {
           await ffmpeg.write(pipeId, frameBytes);
         } catch (error) {
           if (this.cancelled) {
-            throw new VideoExportCancelledError();
+            throw new ExportCancelledError();
           }
           throw error;
         }
@@ -244,7 +221,7 @@ export default class VideoExporter {
         await ffmpeg.endPipe(pipeId);
       } catch (error) {
         if (this.cancelled) {
-          throw new VideoExportCancelledError();
+          throw new ExportCancelledError();
         }
         throw error;
       }
@@ -296,8 +273,8 @@ export default class VideoExporter {
       // left running (a still-open pipe would otherwise keep the main-process
       // entry alive and hold the temp video file open).
       await this.killActiveProcesses();
-      if (this.cancelled && !isVideoExportCancelledError(error)) {
-        throw new VideoExportCancelledError();
+      if (this.cancelled && !isExportCancelledError(error)) {
+        throw new ExportCancelledError();
       }
       throw error;
     } finally {

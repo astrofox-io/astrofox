@@ -158,7 +158,10 @@ whether fades will apply or the element will hard-cut.
   the project duration and audio is required only when `includeAudio` is true.
   Supported frame rates are 30 and 60; available encoders are x264, x265, NVENC
   and WebM. NVENC requires compatible hardware. Use `.webm` for WebM and `.mp4`
-  for the other encoders, with even canvas dimensions.
+  for the other encoders. An odd canvas width or height is padded by one black
+  pixel row or column, since the encoders need even dimensions. The save dialog
+  and MCP share one export job (`src/app/actions/export.ts`), so the same
+  request is checked by the same rules either way.
 - `start_export` returns a job ID immediately. Poll `get_export_status` until
   `completed`, `cancelled` or `failed`. The most recent 50 jobs live in renderer
   memory and do not survive reload. Other MCP mutations and previews are blocked

@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { chooseAudioFile, inspectAudioFile } from '@/app/actions/audio';
+import { raiseError } from '@/app/actions/error';
 import {
   canChooseVideoSaveLocation,
   chooseVideoSaveLocation,
   clearVideoExportSegment,
-  type FileHandleLike,
+  type ExportFileHandle,
+  exportVideo,
   setVideoExportSegment,
-  startVideoRecording,
   VIDEO_EXPORT_FPS_OPTIONS,
   VIDEO_QUALITIES,
   type VideoEncoder,
   type VideoExportFps,
   type VideoQuality,
-} from '@/app/actions/app';
-import { chooseAudioFile, inspectAudioFile } from '@/app/actions/audio';
-import { raiseError } from '@/app/actions/error';
+} from '@/app/actions/export';
 import DualRangeInput from '@/components/DualRangeInput';
 import ExportWaveform from '@/components/ExportWaveform';
 import SelectInput from '@/components/SelectInput';
@@ -29,7 +29,7 @@ import { getVideoEncoderConfig } from '@/lib/video/encoders';
 type SaveVideoDialogProps = {
   onClose: () => void;
   onCloseAndThen: (afterClose: () => void) => void;
-  fileHandle?: FileHandleLike | null;
+  fileHandle?: ExportFileHandle | null;
   filePath?: string;
   defaultPath?: string;
   extension?: string;
@@ -279,10 +279,8 @@ export default function SaveVideoDialog({
     onCloseAndThen(() => {
       void (async () => {
         try {
-          const started = await startVideoRecording({
-            fileHandle,
-            filePath,
-            defaultPath,
+          const started = await exportVideo({
+            output: { handle: fileHandle, path: filePath || undefined, name: defaultPath },
             startTime: selectedStartTime,
             endTime: selectedEndTime,
             includeAudio: shouldIncludeAudio,

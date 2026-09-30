@@ -67,5 +67,9 @@ and the MCP server into `electron/generated/`.
 
 ## Export modes
 
-1. **ffmpeg** (desktop when binary present): offline frames → H.264/AAC MP4; save location uses `preferNativePath`.
-2. **MediaRecorder** (web, or desktop without ffmpeg): canvas capture; save via File System Access or download.
+Every export, from the save dialog or MCP, is one job (`src/app/actions/export.ts`):
+the request is checked once (`planExport` in `src/lib/video/exportPlan.ts`), then
+the encoder this machine supports writes the file.
+
+1. **Offline** (desktop when ffmpeg is present, `offlineEncoder.ts`): each frame is rendered at its project time and piped to ffmpeg; the save location uses `preferNativePath`.
+2. **Realtime** (web, or desktop without ffmpeg, `realtimeEncoder.ts`): MediaRecorder captures the stage canvas while the transport plays the range; saved via File System Access or download.
