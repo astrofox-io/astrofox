@@ -4,26 +4,23 @@ import { useTranslation } from 'react-i18next';
 import useAppStore from '@/app/actions/app';
 import useAudioStore from '@/app/actions/audio';
 import useTimelinePanel, { toggleTimelineOpen } from '@/app/actions/timelinePanel';
-import { player } from '@/app/global';
-import useForceUpdate from '@/app/hooks/useForceUpdate';
 import { Cycle } from '@/app/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import transportStore, { setTransportLoop } from '@/lib/timeline/transport';
 
 export default function ToggleButtons() {
   const { t } = useTranslation(undefined, { keyPrefix: 'player' });
   const isVideoRecording = useAppStore(state => state.isVideoRecording);
   const liveModeEnabled = useAudioStore(state => state.liveModeEnabled);
-  const forceUpdate = useForceUpdate();
   const timelineOpen = useTimelinePanel(state => state.open);
-  const looping = player.isLooping();
+  const looping = transportStore(state => state.loop);
 
   if (isVideoRecording || liveModeEnabled) {
     return null;
   }
 
   function handleLoopButtonClick() {
-    player.setLoop(!looping);
-    forceUpdate();
+    setTransportLoop(!looping);
   }
 
   return (

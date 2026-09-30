@@ -81,9 +81,7 @@ export default class Renderer {
   }
 
   shouldKeepRendering() {
-    return (
-      player.isPlaying() || transportStore.getState().playing || this.continuousReasons.size > 0
-    );
+    return transportStore.getState().playing || this.continuousReasons.size > 0;
   }
 
   scheduleRender() {

@@ -30,7 +30,9 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Clip edit**: a move or trim made on the timeline (`ClipEdit`). `editClip` turns it into a patch that obeys the editing rules (inside the project, at least one frame long, open clips stay open), and every clip rule lives in `clip.ts`. The Document rejects any patch that breaks them (`validateClipPatch`).
 
-**Transport**: the project clock: playhead, play and pause. It plays the Document's timeline settings but does not own them. `src/lib/timeline/transport.ts`.
+**Transport**: the project clock and the only owner of playback: playhead, play, pause, seek and loop. It plays the Document's timeline settings but does not own them. `src/lib/timeline/createTransport.ts`, wired up in `transport.ts`.
+
+**Audio output**: what the Transport plays through (`AudioOutput`): the Web Audio Player (`playerOutput`), or a fake in tests. It is told when to play and from where, and never starts or stops on its own. "Is it playing?" is always the Transport's `playing`; the output's own state only says whether sound is coming out now (false past the end of the audio).
 
 **Frame**: everything one picture is drawn from (`RenderFrameData`), built by the `Renderer` for one project time: the audio analysis at that time, reactor output, clip activity and fades. Anything that moves reads `frame.time`, never wall-clock time or a count of frames, so a time draws the same picture live, in a preview and in an export at any frame rate.
 

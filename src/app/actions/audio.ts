@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { analyzer, api, audioContext, logger, player } from '@/app/global';
 import { getPlayAudioOnLoad } from '@/app/preferences';
 import { t } from '@/i18n/config';
+import { playTransport, seekTransport } from '@/lib/timeline/transport';
 import { loadAudioData } from '@/lib/utils/audio';
 import { trimChars } from '@/lib/utils/string';
 import appStore from './app';
@@ -310,7 +311,8 @@ export async function loadAudioFile(file: File | string, play?: boolean, throwOn
     const shouldPlay = play ?? getPlayAudioOnLoad();
 
     if (shouldPlay) {
-      player.play();
+      seekTransport(0);
+      playTransport();
     }
 
     logger.timeEnd('audio-file-load', 'Audio file loaded:', name);
@@ -371,6 +373,8 @@ export async function connectMicrophone(deviceId?: string) {
     // biome-ignore lint/correctness/useHookAtTopLevel: This is an imperative player method, not a React hook.
     player.useMicrophone(stream, analyzer.analyzer, label);
     player.setInputGain(audioStore.getState().liveInputGain / 100);
+    // Listening is playback: the transport starts it.
+    playTransport();
 
     appStore.setState({
       statusText: trimChars(t('status.live', { label })),
@@ -438,6 +442,7 @@ export async function connectDesktopAudio() {
     // biome-ignore lint/correctness/useHookAtTopLevel: This is an imperative player method, not a React hook.
     player.useDesktopAudio(stream, analyzer.analyzer, label);
     player.setInputGain(audioStore.getState().liveInputGain / 100);
+    playTransport();
 
     appStore.setState({
       statusText: trimChars(t('status.live', { label })),
@@ -500,6 +505,7 @@ export async function connectMidiInput(inputId?: string) {
     const label = targetInput.name || targetInput.manufacturer || t('audio.midi-input');
     // biome-ignore lint/correctness/useHookAtTopLevel: This is an imperative player method, not a React hook.
     player.useMidi(label);
+    playTransport();
 
     appStore.setState({
       statusText: trimChars(t('status.live-midi', { label })),

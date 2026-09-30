@@ -2,7 +2,6 @@ import type Audio from '@/lib/audio/Audio';
 import MidiController, { type MidiAnalysisData } from '@/lib/audio/MidiController';
 import EventEmitter from '@/lib/core/EventEmitter';
 
-const UPDATE_INTERVAL = 200;
 export type InputMode = 'file' | 'microphone' | 'midi' | 'desktop';
 
 export interface PlayerCapabilities {
@@ -12,13 +11,19 @@ export interface PlayerCapabilities {
   isLive: boolean;
 }
 
+/**
+ * The audio source (a loaded file or a live input) and its Web Audio graph.
+ * Playback is the Transport's: it drives the player through
+ * `playerOutput()`, and nothing else calls play, pause or seek.
+ *
+ * Events: `source-change` (plus `audio-load` / `audio-unload`) when the source
+ * changes, `playback-change` when it starts or stops sounding.
+ */
 export default class Player extends EventEmitter {
   audioContext: AudioContext;
   volume: GainNode;
   inputGain: GainNode;
   audio: Audio | null;
-  loop: boolean;
-  timer: ReturnType<typeof setInterval> | null;
   mode: InputMode | null;
   sourceLabel: string;
   stream: MediaStream | null;
@@ -26,19 +31,12 @@ export default class Player extends EventEmitter {
   streamAnalyzer: AudioNode | null;
   liveActive: boolean;
   midi: MidiController;
-  /**
-   * When the project transport owns playback, the end of the audio only emits
-   * `ended` and stops; looping and continuing past the audio are the
-   * transport's job.
-   */
-  transportControlled: boolean;
 
   constructor(context: AudioContext) {
     super();
 
     this.audioContext = context;
     this.audio = null;
-    this.timer = null;
     this.mode = null;
     this.sourceLabel = '';
     this.stream = null;
@@ -46,13 +44,10 @@ export default class Player extends EventEmitter {
     this.streamAnalyzer = null;
     this.liveActive = false;
     this.midi = new MidiController();
-    this.transportControlled = false;
 
     this.volume = this.audioContext.createGain();
     this.volume.connect(this.audioContext.destination);
     this.inputGain = this.audioContext.createGain();
-
-    this.loop = false;
   }
 
   load(audio: Audio, sourceLabel = '') {
@@ -75,12 +70,8 @@ export default class Player extends EventEmitter {
     this.stream = stream;
     this.streamAnalyzer = analyzerNode;
     this.streamSource = this.audioContext.createMediaStreamSource(stream);
-    this.reconnectLiveNodes();
-    this.liveActive = true;
 
     this.emit('source-change');
-    this.emit('play');
-    this.emit('playback-change');
   }
 
   useDesktopAudio(stream: MediaStream, analyzerNode: AudioNode, sourceLabel = '') {
@@ -91,12 +82,8 @@ export default class Player extends EventEmitter {
     this.stream = stream;
     this.streamAnalyzer = analyzerNode;
     this.streamSource = this.audioContext.createMediaStreamSource(stream);
-    this.reconnectLiveNodes();
-    this.liveActive = true;
 
     this.emit('source-change');
-    this.emit('play');
-    this.emit('playback-change');
   }
 
   useMidi(sourceLabel = '') {
@@ -104,11 +91,8 @@ export default class Player extends EventEmitter {
 
     this.mode = 'midi';
     this.sourceLabel = sourceLabel;
-    this.liveActive = true;
 
     this.emit('source-change');
-    this.emit('play');
-    this.emit('playback-change');
   }
 
   unload() {
@@ -116,7 +100,6 @@ export default class Player extends EventEmitter {
   }
 
   clearSource() {
-    this.disconnectTimer();
     this.releaseAudio();
     this.releaseStream();
     this.releaseMidi();
@@ -169,13 +152,6 @@ export default class Player extends EventEmitter {
     this.liveActive = false;
   }
 
-  disconnectTimer() {
-    if (this.timer !== null) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
-  }
-
   reconnectLiveNodes() {
     if (!this.streamSource || !this.streamAnalyzer) {
       return;
@@ -198,119 +174,62 @@ export default class Player extends EventEmitter {
     }
   }
 
+  /** Start sounding: play the file from its position, or start listening to the live input. */
   play() {
     const { audio, mode } = this;
 
-    if (mode === 'file' && audio) {
-      if (audio.playing) {
-        this.pause();
-        return;
-      }
-
-      audio.play();
-
-      this.timer = setInterval(() => {
-        if (!audio.repeat && audio.getPosition() >= 1.0) {
-          if (this.transportControlled) {
-            this.emit('ended');
-            this.stop();
-          } else if (this.loop) {
-            this.seek(0);
-          } else {
-            this.stop();
-          }
-        }
-
-        this.emit('tick');
-      }, UPDATE_INTERVAL);
-
-      this.emit('play');
-      this.emit('playback-change');
+    if (this.isPlaying()) {
       return;
     }
 
-    if ((mode === 'microphone' || mode === 'desktop') && this.streamSource) {
-      if (this.liveActive) {
-        this.pause();
-        return;
-      }
-
+    if (mode === 'file' && audio) {
+      audio.play();
+    } else if ((mode === 'microphone' || mode === 'desktop') && this.streamSource) {
       this.reconnectLiveNodes();
       this.liveActive = true;
-      this.emit('play');
-      this.emit('playback-change');
+    } else if (mode === 'midi') {
+      this.liveActive = true;
+    } else {
       return;
     }
 
-    if (mode === 'midi') {
-      if (this.liveActive) {
-        this.pause();
-        return;
-      }
-
-      this.liveActive = true;
-      this.emit('play');
-      this.emit('playback-change');
-    }
+    this.emit('playback-change');
   }
 
+  /** Stop sounding, keeping the file's position. */
   pause() {
     const { audio, mode } = this;
 
     if (mode === 'file' && audio) {
+      if (!audio.playing) {
+        return;
+      }
+
       audio.pause();
-
-      this.disconnectTimer();
-
-      this.emit('pause');
-      this.emit('playback-change');
-      return;
-    }
-
-    if ((mode === 'microphone' || mode === 'desktop') && this.liveActive) {
-      this.disconnectLiveNodes();
-      this.liveActive = false;
-      this.emit('pause');
-      this.emit('playback-change');
-      return;
-    }
-
-    if (mode === 'midi' && this.liveActive) {
-      this.liveActive = false;
-      this.emit('pause');
-      this.emit('playback-change');
-    }
-  }
-
-  stop() {
-    const { audio, mode } = this;
-
-    if (mode === 'file' && audio) {
-      audio.stop();
-      this.disconnectTimer();
-      this.emit('stop');
-      this.emit('playback-change');
-      return;
-    }
-
-    if ((mode === 'microphone' || mode === 'desktop' || mode === 'midi') && this.liveActive) {
+    } else if (this.liveActive) {
       if (mode === 'microphone' || mode === 'desktop') {
         this.disconnectLiveNodes();
       }
 
       this.liveActive = false;
-      this.emit('stop');
-      this.emit('playback-change');
+    } else {
+      return;
     }
+
+    this.emit('playback-change');
   }
 
-  seek(val: number) {
-    const { audio } = this;
+  /** Stop sounding and rewind the file. */
+  stop() {
+    const { audio, mode } = this;
 
-    if (audio) {
-      audio.seek(val);
-      this.emit('seek');
+    if (mode === 'file' && audio) {
+      audio.stop();
+      this.emit('playback-change');
+      return;
     }
+
+    this.pause();
   }
 
   /** Seek the loaded audio to an absolute time in seconds. */
@@ -319,7 +238,6 @@ export default class Player extends EventEmitter {
 
     if (audio) {
       audio.seekTime(time);
-      this.emit('seek');
     }
   }
 
@@ -374,30 +292,12 @@ export default class Player extends EventEmitter {
     return 0;
   }
 
-  getPosition() {
-    const { audio, mode } = this;
-
-    if (mode === 'file' && audio) {
-      return audio.getPosition();
-    }
-
-    return 0;
-  }
-
-  setLoop(val: boolean) {
-    this.loop = val;
-  }
-
   isPlaying() {
     if (this.mode === 'file') {
       return !!this.audio?.playing;
     }
 
     return this.liveActive;
-  }
-
-  isLooping() {
-    return !!this.loop;
   }
 
   canSeek() {

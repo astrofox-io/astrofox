@@ -21,17 +21,15 @@ export default function PlayButtons() {
       mode: state.mode,
     })),
   );
-  const transportPlaying = transportStore(state => state.playing);
-  const playing = transportPlaying || player.isPlaying();
+  const playing = transportStore(state => state.playing);
   const hasSource = liveModeEnabled ? player.hasSource() : true;
   const PlayPauseIcon = isVideoRecording ? Play : playing ? Pause : Play;
 
+  // hasSource reads the player, so re-render when the source changes.
   useEffect(() => {
-    player.on('playback-change', forceUpdate);
     player.on('source-change', forceUpdate);
 
     return () => {
-      player.off('playback-change', forceUpdate);
       player.off('source-change', forceUpdate);
     };
   }, [forceUpdate]);

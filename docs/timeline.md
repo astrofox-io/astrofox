@@ -16,8 +16,12 @@ the project duration is reached.
   no audio at all); **Auto** goes back to following the audio.
 - **FPS** (30 or 60) is the frame grid used for snapping and stepping. Clip
   times are stored in seconds, so changing it never retimes anything.
-- Play/pause/stop and the progress bar work with or without audio. Live inputs
-  (microphone, desktop audio, MIDI) keep feeding reactors while the clock runs.
+- Play/pause/stop and the progress bar work with or without audio. A live input
+  (microphone, desktop audio, MIDI) listens while the clock plays, and the clock
+  loops at the project end instead of stopping, so listening never runs out.
+- **Loop** starts again from zero at the project end.
+- Loading different audio, or connecting or disconnecting a live input, pauses
+  playback and keeps the playhead where it is.
 
 ## Clips
 

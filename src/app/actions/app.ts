@@ -40,6 +40,7 @@ import transportStore, {
   pauseTransport,
   playTransport,
   seekTransport,
+  setTransportLoop,
 } from '@/lib/timeline/transport';
 import { finalizeWebm } from '@/lib/utils/webm';
 import {
@@ -757,7 +758,7 @@ export async function startVideoRecording({
   const durationMs = Math.max(250, Math.round((clampedEndTime - clampedStartTime) * 1000));
   const targetPath =
     filePath || fileHandle?.name || defaultPath || `video-${Date.now()}.${setup.extension}`;
-  const previousLoop = player.isLooping();
+  const previousLoop = getTransportState().loop;
   let audioDestination: MediaStreamAudioDestinationNode | null = null;
   let recordingStream: MediaStream | null = null;
 
@@ -799,7 +800,7 @@ export async function startVideoRecording({
     const cleanup = () => {
       stopWatching?.();
       stopWatching = null;
-      player.setLoop(previousLoop);
+      setTransportLoop(previousLoop);
 
       if (audioDestination) {
         try {
@@ -866,7 +867,7 @@ export async function startVideoRecording({
     };
 
     pauseTransport();
-    player.setLoop(false);
+    setTransportLoop(false);
     seekTransport(clampedStartTime);
 
     // Stop at the end of the range, or when playback stops for any reason.
@@ -881,7 +882,7 @@ export async function startVideoRecording({
     playTransport();
     return true;
   } catch (error) {
-    player.setLoop(previousLoop);
+    setTransportLoop(previousLoop);
 
     if (audioDestination) {
       try {

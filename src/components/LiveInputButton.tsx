@@ -11,6 +11,7 @@ import useAudioStore, {
 import { player } from '@/app/global';
 import useForceUpdate from '@/app/hooks/useForceUpdate';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import transportStore, { playTransport, stopTransport } from '@/lib/timeline/transport';
 
 export default function LiveInputButton() {
   const { t } = useTranslation(undefined, { keyPrefix: 'player' });
@@ -26,7 +27,9 @@ export default function LiveInputButton() {
   const isStreamMode = liveInputMode === 'microphone' || liveInputMode === 'desktop';
   const hasSource =
     (player.getMode() === 'microphone' || player.getMode() === 'desktop') && player.hasSource();
-  const active = isStreamMode && player.isPlaying();
+  // The input listens while the transport plays.
+  const playing = transportStore(state => state.playing);
+  const active = isStreamMode && hasSource && playing;
   const InputIcon = liveInputMode === 'desktop' ? Monitor : Mic;
   const disabled =
     !isStreamMode ||
@@ -38,11 +41,9 @@ export default function LiveInputButton() {
     : t('start-input', { mode: liveInputMode });
 
   useEffect(() => {
-    player.on('playback-change', forceUpdate);
     player.on('source-change', forceUpdate);
 
     return () => {
-      player.off('playback-change', forceUpdate);
       player.off('source-change', forceUpdate);
     };
   }, [forceUpdate]);
@@ -72,11 +73,11 @@ export default function LiveInputButton() {
         return;
       }
 
-      player.stop();
+      stopTransport();
       return;
     }
 
-    player.play();
+    playTransport();
   }
 
   return (

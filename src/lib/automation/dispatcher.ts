@@ -122,6 +122,21 @@ async function waitForMedia() {
   }
 }
 
+/**
+ * The loaded audio at the playhead. `playing` is whether it is sounding now:
+ * false past its end even while the transport plays.
+ */
+function audioSummary() {
+  const duration = player.getDuration();
+  const { time } = getTransportState();
+  return {
+    duration,
+    position: duration > 0 ? Math.min(1, time / duration) : 0,
+    playing: player.isPlaying(),
+    name: audioStore.getState().sourceLabel,
+  };
+}
+
 function transportSummary() {
   const { time, duration, explicitDuration, fps, playing } = getTransportState();
   return {
@@ -189,12 +204,7 @@ const handlers: Handlers = {
       name: projectDocument.getState().name,
       ...snapshotProject(),
       unresolvedMediaRefs: projectDocument.getState().unresolvedMediaRefs,
-      audio: {
-        duration: player.getDuration(),
-        position: player.getPosition(),
-        playing: player.isPlaying(),
-        name: audioStore.getState().sourceLabel,
-      },
+      audio: audioSummary(),
       transport: transportSummary(),
       exportJob: activeJob?.id,
     }),
