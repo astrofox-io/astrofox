@@ -207,6 +207,12 @@ export default function TimelinePanel() {
     return () => element.removeEventListener('wheel', handleWheel);
   }, [zoomBy]);
 
+  function fitProject() {
+    pendingAnchor.current = null;
+    if (scrollRef.current) scrollRef.current.scrollLeft = 0;
+    setTimelineZoom(1);
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const target = event.target;
     if (
@@ -256,7 +262,7 @@ export default function TimelinePanel() {
         // Leave Ctrl/Cmd combinations to the app (e.g. window zoom).
         if (event.ctrlKey || event.metaKey || event.altKey) break;
         event.preventDefault();
-        if (event.key === '\\') setTimelineZoom(1);
+        if (event.key === '\\') fitProject();
         else zoomBy(event.key === '-' ? 1 / ZOOM_STEP : ZOOM_STEP);
         break;
       case 'l':
@@ -354,7 +360,7 @@ export default function TimelinePanel() {
             <IconButton label={t('zoom-in')} onClick={() => zoomBy(ZOOM_STEP)}>
               <ZoomIn className="size-3.5" />
             </IconButton>
-            <IconButton label={t('zoom-fit')} onClick={() => setTimelineZoom(1)}>
+            <IconButton label={t('zoom-fit')} onClick={fitProject}>
               <Maximize2 className="size-3.5" />
             </IconButton>
           </div>

@@ -20,10 +20,9 @@ export function getTimelineScale(
   zoom: number,
   zoomLimit: number,
 ): TimelineScale {
-  const fitPixelsPerSecond = Math.max(
-    1,
-    (Math.max(0, viewportWidth - LABEL_WIDTH - TRACK_PADDING) || 600) / duration,
-  );
+  const availableWidth =
+    viewportWidth > 0 ? Math.max(1, viewportWidth - LABEL_WIDTH - TRACK_PADDING) : 600;
+  const fitPixelsPerSecond = availableWidth / duration;
   const maxZoom = Math.max(1, Math.min(zoomLimit, MAX_TRACK_WIDTH / duration / fitPixelsPerSecond));
   const pixelsPerSecond = Math.min(
     fitPixelsPerSecond * Math.max(1, Math.min(maxZoom, zoom)),

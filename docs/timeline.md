@@ -48,6 +48,10 @@ panel replaces the waveform overview while open; drag its top edge to resize.
   make the element always on. Edges snap to other bars, the project start/end,
   the playhead and (with **Snap** on) whole frames.
 - Fades appear as darkened wedges at the ends of a bar.
+- **Fit project** resets horizontal zoom and scrolling so the whole project
+  duration is visible. The panel starts fitted, so clicking it then leaves
+  the view unchanged. Use the zoom buttons or `Ctrl/Cmd/Alt` + wheel to zoom
+  in; `\` fits again while the panel has focus.
 - Keyboard while the panel has focus: `Space` play/pause, `←`/`→` step one
   frame (`Shift` for one second), `Home`/`End`, `Delete` makes the selected
   element always on, `K`/`L` pause/play.
