@@ -18,7 +18,6 @@ import type Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
 import { canReorder, layerKind } from '@/lib/document/selection';
 import type { DocumentOp } from '@/lib/document/types';
-import { validateClipPatch } from '@/lib/timeline/clip';
 import {
   getProjectDuration,
   getProjectFps,
@@ -317,11 +316,7 @@ const handlers: Handlers = {
     return handlers.get_timeline({});
   },
   set_clips: ({ clips }) => {
-    const duration = getProjectDuration();
-    for (const { id, ...patch } of clips) {
-      element(id);
-      validateClipPatch(patch, duration);
-    }
+    for (const { id } of clips) element(id);
     projectDocument.apply(
       clips.map(({ id, ...patch }): DocumentOp => ({ type: 'setClip', id, patch })),
     );

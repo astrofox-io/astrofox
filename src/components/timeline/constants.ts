@@ -6,8 +6,6 @@ export const ROW_HEIGHT = 26;
 export const RULER_HEIGHT = 44;
 /** Widest track the panel will lay out; keeps the ruler canvas well under browser limits. */
 export const MAX_TRACK_WIDTH = 12_000;
-/** Distance within which edges snap to each other, in px. */
-export const SNAP_DISTANCE = 6;
 /** Right-hand padding after the project end, in px. */
 export const TRACK_PADDING = 24;
 

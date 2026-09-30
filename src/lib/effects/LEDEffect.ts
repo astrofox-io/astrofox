@@ -56,8 +56,8 @@ export default class LEDEffect extends Effect {
 function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new ShaderPass(LEDShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setSize(width, height);
     pass.setUniforms({
       spacing: Number(props.spacing || 10),

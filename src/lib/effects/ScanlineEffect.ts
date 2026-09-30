@@ -39,8 +39,8 @@ export default class ScanlineEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(ScanlineShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       density: Number(props.density ?? 1.25),
     });

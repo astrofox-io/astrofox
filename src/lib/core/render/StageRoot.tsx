@@ -3,6 +3,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import React from 'react';
 import useApp from '@/app/actions/app';
+import { isVisibleAt } from '@/lib/timeline/clip';
 import { getDisplayLayerEntry } from './displayLayerRegistry';
 import { SceneWithEffects } from './effects';
 
@@ -14,13 +15,16 @@ const NEUTRAL_SCENE_PROPS = {
   sceneMaskCombine: 'replace',
 };
 
-function wrapDisplayNode(display, node) {
+function wrapDisplayNode(display, node, frameData) {
   if (!node) {
     return null;
   }
 
   return (
-    <group key={display.id} visible={Boolean(display.enabled) && display.timelineActive !== false}>
+    <group
+      key={display.id}
+      visible={isVisibleAt(display, frameData?.time ?? 0, frameData?.duration)}
+    >
       {node}
     </group>
   );
@@ -70,12 +74,12 @@ export default function StageRoot({
   const sceneProducers = [];
 
   for (const scene of scenes || []) {
-    if (!scene?.enabled || scene.timelineActive === false) {
+    if (!isVisibleAt(scene, frameData?.time ?? 0, frameData?.duration)) {
       continue;
     }
 
-    const sceneEffects = (scene.effects || []).filter(
-      e => e?.enabled && e.timelineActive !== false,
+    const sceneEffects = (scene.effects || []).filter(effect =>
+      isVisibleAt(effect, frameData?.time ?? 0, frameData?.duration),
     );
     const sceneLayers = [];
 
@@ -100,7 +104,7 @@ export default function StageRoot({
         });
 
         if (node) {
-          sceneLayers.push(wrapDisplayNode(display, node));
+          sceneLayers.push(wrapDisplayNode(display, node, frameData));
         }
       }
 

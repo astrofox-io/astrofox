@@ -82,6 +82,7 @@ beforeEach(() => {
     applyCanvas: canvas => Object.assign(stage.properties, canvas),
     applyTimeline,
     requestRender: () => {},
+    getProjectDuration: () => 30,
   });
   doc.load(fixture);
   changes = [];
@@ -294,6 +295,46 @@ describe('apply', () => {
 
     doc.apply({ type: 'clearClip', id: 'd2' });
     expect(doc.getState().elementById.d2.clip).toBeUndefined();
+  });
+
+  it('checks a clip edit against the existing clip and the project end', () => {
+    doc.apply({ type: 'setClip', id: 'd2', patch: { start: 4, end: 8 } });
+
+    expect(() => doc.apply({ type: 'setClip', id: 'd2', patch: { end: 3 } })).toThrow(/later than/);
+    // The fixture's project follows the audio, which the transport reports as 30s.
+    expect(() => doc.apply({ type: 'setClip', id: 'd2', patch: { start: 30, end: null } })).toThrow(
+      /project end/,
+    );
+    expect(doc.findLayer('d2')?.clip).toMatchObject({ start: 4, end: 8 });
+  });
+
+  it('rejects a batch of clip edits as a whole', () => {
+    expect(() =>
+      doc.apply([
+        { type: 'setClip', id: 'd1', patch: { start: 1, end: 2 } },
+        { type: 'setClip', id: 'd2', patch: { start: 5, end: 5 } },
+      ]),
+    ).toThrow(/later than/);
+
+    expect(doc.findLayer('d1')?.clip).toBeNull();
+    expect(changes).toHaveLength(0);
+  });
+
+  it('checks later clip edits in a batch against earlier ones', () => {
+    doc.apply([
+      { type: 'setClip', id: 'd2', patch: { start: 4, end: 8 } },
+      { type: 'setClip', id: 'd2', patch: { end: 6 } },
+      { type: 'setTimeline', duration: 5 },
+      { type: 'setClip', id: 'd1', patch: { start: 1 } },
+    ]);
+    expect(doc.findLayer('d2')?.clip).toMatchObject({ start: 4, end: 6 });
+
+    expect(() =>
+      doc.apply([
+        { type: 'setTimeline', duration: 20 },
+        { type: 'setClip', id: 'd1', patch: { start: 25 } },
+      ]),
+    ).toThrow(/project end \(20s\)/);
   });
 
   it('pushes canvas changes through the renderer seam', () => {

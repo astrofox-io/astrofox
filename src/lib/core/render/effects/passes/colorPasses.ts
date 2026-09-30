@@ -18,27 +18,28 @@ import {
 export function createBrightnessContrastPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(BrightnessContrastShader);
-  return attachPassUpdater(pass, () => {
+  return attachPassUpdater(pass, frameData => {
     const brightness = Number(props.brightness ?? 0);
     const contrast = Number(props.contrast ?? 0);
     pass.enabled =
-      isEffectEnabled(effect) && (Math.abs(brightness) > 0.0001 || Math.abs(contrast) > 0.0001);
+      isEffectEnabled(effect, frameData) &&
+      (Math.abs(brightness) > 0.0001 || Math.abs(contrast) > 0.0001);
     pass.setUniforms({ brightness, contrast });
   });
 }
 
 export function createColorAveragePass(effect: EffectPassConfig) {
   const pass = new ShaderPass(ColorAverageShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
   });
 }
 
 export function createColorDepthPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(ColorDepthShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({ bits: Number(props.bits ?? 16) });
   });
 }
@@ -46,11 +47,12 @@ export function createColorDepthPass(effect: EffectPassConfig) {
 export function createHueSaturationPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(HueSaturationShader);
-  return attachPassUpdater(pass, () => {
+  return attachPassUpdater(pass, frameData => {
     const hue = toRadians(Number(props.hue ?? 0));
     const saturation = Number(props.saturation ?? 0);
     pass.enabled =
-      isEffectEnabled(effect) && (Math.abs(hue) > 0.0001 || Math.abs(saturation) > 0.0001);
+      isEffectEnabled(effect, frameData) &&
+      (Math.abs(hue) > 0.0001 || Math.abs(saturation) > 0.0001);
     pass.setUniforms({ hue, saturation });
   });
 }
@@ -58,9 +60,9 @@ export function createHueSaturationPass(effect: EffectPassConfig) {
 export function createSepiaPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(SepiaShader);
-  return attachPassUpdater(pass, () => {
+  return attachPassUpdater(pass, frameData => {
     const intensity = Number(props.intensity ?? 0);
-    pass.enabled = isEffectEnabled(effect) && Math.abs(intensity) > 0.0001;
+    pass.enabled = isEffectEnabled(effect, frameData) && Math.abs(intensity) > 0.0001;
     pass.setUniforms({ intensity });
   });
 }
@@ -68,8 +70,8 @@ export function createSepiaPass(effect: EffectPassConfig) {
 export function createToneMappingPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(ToneMappingShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       adaptive: (props.toneMappingAdaptive ?? props.adaptive ?? false) ? 1 : 0,
       middleGrey: Number(props.middleGrey ?? 0.6),

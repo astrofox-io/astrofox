@@ -3,7 +3,7 @@ import { library, reactors, renderBackend, renderer, stage } from '@/app/global'
 import type Entity from '@/lib/core/Entity';
 import { createDocument, type ProjectDocument } from '@/lib/document/document';
 import type { DocumentState } from '@/lib/document/types';
-import { applyTimelineSettings } from '@/lib/timeline/transport';
+import { applyTimelineSettings, getProjectDuration } from '@/lib/timeline/transport';
 
 type LayerConstructor = new (properties?: Record<string, unknown>) => Entity;
 
@@ -24,6 +24,7 @@ function get() {
     applyCanvas: canvas => renderBackend.update(canvas),
     applyTimeline: settings => applyTimelineSettings(settings),
     requestRender: () => renderer.requestRender(),
+    getProjectDuration,
   });
 
   return instance;

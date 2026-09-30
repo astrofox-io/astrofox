@@ -1,3 +1,4 @@
+import { type Clip, isVisibleAt } from '@/lib/timeline/clip';
 import type { RenderFrameData } from '@/lib/types';
 
 /**
@@ -13,6 +14,7 @@ export interface EffectPassConfig {
   id: string;
   name: string;
   enabled?: boolean;
+  clip?: Clip | null;
   time?: number;
   properties: Record<string, unknown>;
 }
@@ -82,8 +84,9 @@ export function attachPassUpdater<T extends EffectPassLike>(
   return pass;
 }
 
-export function isEffectEnabled(effect: EffectPassConfig): boolean {
-  return (
-    effect.enabled !== false && (effect as { timelineActive?: boolean }).timelineActive !== false
-  );
+export function isEffectEnabled(
+  effect: EffectPassConfig,
+  frameData?: RenderFrameData | null,
+): boolean {
+  return isVisibleAt(effect, frameData?.time ?? 0, frameData?.duration);
 }

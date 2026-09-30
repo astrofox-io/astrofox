@@ -26,6 +26,10 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Clip**: when a Layer is active on the timeline, with optional fades. `src/lib/timeline/clip.ts`.
 
+**Visible**: a Layer is visible at a time when it is enabled and inside its Clip (`isVisibleAt`). Worked out from the frame's time on every frame, never kept as a flag.
+
+**Clip edit**: a move or trim made on the timeline (`ClipEdit`). `editClip` turns it into a patch that obeys the editing rules (inside the project, at least one frame long, open clips stay open), and every clip rule lives in `clip.ts`. The Document rejects any patch that breaks them (`validateClipPatch`).
+
 **Transport**: the project clock: playhead, play and pause. It plays the Document's timeline settings but does not own them. `src/lib/timeline/transport.ts`.
 
 **Frame**: everything one picture is drawn from (`RenderFrameData`), built by the `Renderer` for one project time: the audio analysis at that time, reactor output, clip activity and fades. Anything that moves reads `frame.time`, never wall-clock time or a count of frames, so a time draws the same picture live, in a preview and in an export at any frame rate.

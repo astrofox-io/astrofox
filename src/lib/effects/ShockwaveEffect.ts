@@ -73,8 +73,8 @@ export default class ShockwaveEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(ShockwaveShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       amplitude: Number(props.amplitude || 0),
       frequency: Number(props.frequency || 1),

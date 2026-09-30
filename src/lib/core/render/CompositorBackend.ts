@@ -3,6 +3,7 @@
 import React from 'react';
 import * as THREE from 'three';
 import { renderPluginFramesForExport } from '@/lib/plugins/PluginHost';
+import { isVisibleAt } from '@/lib/timeline/clip';
 import { base64ToBytes } from '@/lib/utils/data';
 import { StageComposer } from './composer';
 import { hasUnpreparedLayers, prepareFrame } from './framePreparation';
@@ -30,7 +31,7 @@ function snapshotStage(stage) {
   const scenes = [...stage.scenes].map(scene => ({
     id: scene.id,
     enabled: scene.enabled,
-    timelineActive: scene.timelineActive,
+    clip: scene.clip,
     properties: scene.properties,
     displays: [...scene.displays],
     effects: [...scene.effects],
@@ -39,23 +40,18 @@ function snapshotStage(stage) {
   return { scenes };
 }
 
-// Evaluates every enabled element for the frame: clip activity and fades,
-// then reactor output. Elements outside their clip (`timelineActive === false`)
-// are skipped by StageRoot and the effect passes.
+// Evaluate visible layers for this project time; clip activity does not
+// depend on any previous evaluation or render.
 function updateNativeSceneState(scenes, frameData) {
   for (const scene of scenes || []) {
-    if (!scene?.enabled) {
+    if (!isVisibleAt(scene, frameData.time, frameData.duration)) {
       continue;
     }
 
     scene.evaluate?.(frameData);
 
-    if (scene.timelineActive === false) {
-      continue;
-    }
-
     for (const display of scene.displays || []) {
-      if (!display?.enabled) {
+      if (!isVisibleAt(display, frameData.time, frameData.duration)) {
         continue;
       }
 
@@ -63,13 +59,13 @@ function updateNativeSceneState(scenes, frameData) {
     }
 
     for (const effect of scene.effects || []) {
-      if (!effect?.enabled) {
+      if (!isVisibleAt(effect, frameData.time, frameData.duration)) {
         continue;
       }
 
       effect.evaluate?.(frameData);
 
-      if (effect.render && effect.timelineActive !== false) {
+      if (effect.render) {
         effect.render(scene, frameData);
       }
     }

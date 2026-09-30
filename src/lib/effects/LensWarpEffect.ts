@@ -41,8 +41,8 @@ export default class LensWarpEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(LensWarpShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       warp: Number(props.warp || 0) * WARP_MAX,
     });

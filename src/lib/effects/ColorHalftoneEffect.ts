@@ -96,8 +96,8 @@ const HALFTONE_SHAPE_MAP: Record<string, number> = {
 function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new ShaderPass(ColorHalftoneShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       width,
       height,

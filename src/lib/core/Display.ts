@@ -83,8 +83,6 @@ export default class Display extends Entity {
   declare reactors: Record<string, ReactorConfig>;
   declare authoredProperties: Record<string, unknown>;
   declare clip: Clip | null;
-  /** Runtime flag from `evaluate()`: false while the element's clip is not active. */
-  declare timelineActive: boolean;
 
   constructor(
     Type: {
@@ -114,7 +112,6 @@ export default class Display extends Entity {
       reactors: { value: {}, writable: true, enumerable: true },
       clip: { value: null, writable: true, enumerable: true },
       authoredProperties: { value: { ...this.properties }, writable: true, enumerable: false },
-      timelineActive: { value: true, writable: true, enumerable: false },
     });
   }
 
@@ -153,10 +150,6 @@ export default class Display extends Entity {
     this.clip = normalizeClip(clip);
   }
 
-  isActiveAt(time: number, duration?: number) {
-    return isClipActive(this.clip, time, duration);
-  }
-
   /**
    * Recompute runtime properties for a frame: authored values, `opacity`
    * scaled by the clip fade envelope, then reactor output. Only values that
@@ -167,8 +160,6 @@ export default class Display extends Entity {
     const { time, duration } = frameData;
     const { clip, authoredProperties, properties, reactors } = this;
     const active = isClipActive(clip, time, duration);
-
-    this.timelineActive = active;
 
     const envelope = clip && active ? clipEnvelope(clip, time, duration) : 1;
     let next: Record<string, unknown> | null = null;

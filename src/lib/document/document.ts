@@ -10,7 +10,7 @@ import Entity from '@/lib/core/Entity';
 import type Reactors from '@/lib/core/Reactors';
 import Scene from '@/lib/core/Scene';
 import type Stage from '@/lib/core/Stage';
-import { mergeClip } from '@/lib/timeline/clip';
+import { type Clip, mergeClip } from '@/lib/timeline/clip';
 import {
   isValidFps,
   isValidProjectDuration,
@@ -55,6 +55,8 @@ export interface DocumentDeps {
   /** Push saved timeline settings to the transport. */
   applyTimeline(settings: TimelineSettings): void;
   requestRender(): void;
+  /** The transport's project duration, which follows the audio when the saved duration is null. */
+  getProjectDuration(): number;
 }
 
 export interface ProjectDocument {
@@ -447,7 +449,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
         const layer = findLayer(op.id);
 
         if (layer) {
-          layer.setClip(mergeClip(layer.clip, op.patch));
+          layer.setClip(mergeClip(layer.clip, op.patch, projectDuration()));
           pending.dirty.add(op.id);
         }
         break;
@@ -682,12 +684,46 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
     return true;
   }
 
+  function projectDuration() {
+    return timeline.duration ?? deps.getProjectDuration();
+  }
+
+  /**
+   * Validate every clip edit in a batch before anything changes, so a bad
+   * patch fails the whole batch instead of leaving it half applied. A later
+   * patch sees earlier ones to the same layer, as it will when the batch runs.
+   */
+  function checkClipEdits(operations: DocumentOp[]) {
+    const clips = new Map<string, Clip | null>();
+    let duration: number | undefined = projectDuration();
+
+    for (const op of operations) {
+      if (op.type === 'setTimeline' && op.duration !== undefined) {
+        // Following the audio: the new length is only known once applied.
+        duration = op.duration ?? undefined;
+      } else if (op.type === 'clearClip') {
+        clips.set(op.id, null);
+      } else if (op.type === 'setClip') {
+        const layer = findLayer(op.id);
+
+        if (layer) {
+          const current = clips.has(op.id) ? clips.get(op.id) : layer.clip;
+          clips.set(op.id, mergeClip(current, op.patch, duration));
+        }
+      }
+    }
+  }
+
   // ---- Interface ------------------------------------------------------------
 
   function apply(ops: DocumentOp | DocumentOp[], options: ApplyOptions = {}): ApplyResult {
     const pending: Pending = { dirty: new Set() };
 
-    for (const op of Array.isArray(ops) ? ops : [ops]) {
+    const operations = Array.isArray(ops) ? ops : [ops];
+
+    checkClipEdits(operations);
+
+    for (const op of operations) {
       run(op, pending);
     }
 

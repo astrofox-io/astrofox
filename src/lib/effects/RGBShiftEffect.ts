@@ -49,8 +49,8 @@ export default class RGBShiftEffect extends Effect {
 function createPass(effect: EffectPassConfig, width: number) {
   const props = effect.properties;
   const pass = new ShaderPass(RGBShiftShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       amount: Number(props.offset || 0) / Math.max(1, Number(width || 1)),
       angle: toRadians(Number(props.angle || 0)),

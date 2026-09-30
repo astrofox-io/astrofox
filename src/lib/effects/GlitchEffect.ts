@@ -66,7 +66,7 @@ function createPass(effect: EffectPassConfig) {
   const pass = new GlitchPass();
   return attachPassUpdater(pass, frameData => {
     pass.updateOptions({ ...props, mode: props.mode || 'Sporadic' }, frameData);
-    pass.enabled = isEffectEnabled(effect) && pass.enabled;
+    pass.enabled = isEffectEnabled(effect, frameData) && pass.enabled;
   });
 }
 registerEffectPass(GlitchEffect.config.name, createPass, { liveUpdatable: true });

@@ -2,9 +2,8 @@ import { clsx as classNames } from 'cnfast';
 import type React from 'react';
 import { useRef } from 'react';
 import { projectDocument } from '@/app/document';
-import type { Clip, ClipPatch } from '@/lib/timeline/clip';
+import { type Clip, clipRange, editClip, snapTime } from '@/lib/timeline/clip';
 import { CLIP_COLORS } from './constants';
-import { snapTime } from './snap';
 
 type DragMode = 'move' | 'trim-start' | 'trim-end';
 
@@ -26,9 +25,7 @@ interface ClipBarProps {
 interface DragState {
   mode: DragMode;
   originX: number;
-  start: number;
-  end: number;
-  openEnd: boolean;
+  clip: Clip | null;
 }
 
 /**
@@ -49,10 +46,7 @@ export default function ClipBar({
   onSelect,
 }: ClipBarProps) {
   const drag = useRef<DragState | null>(null);
-  const start = clip?.start ?? 0;
-  const end = Math.min(duration, clip?.end ?? duration);
-  const openEnd = !clip || clip.end === null;
-  const frame = 1 / fps;
+  const { start, end, openEnd } = clipRange(clip, duration);
   const left = start * pixelsPerSecond;
   const width = Math.max(2, (end - start) * pixelsPerSecond);
   const color = CLIP_COLORS[type];
@@ -61,47 +55,28 @@ export default function ClipBar({
     if (event.button !== 0) return;
     event.stopPropagation();
     onSelect(id);
-    drag.current = { mode, originX: event.clientX, start, end, openEnd };
+    drag.current = { mode, originX: event.clientX, clip };
     event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function setElementClip(patch: ClipPatch) {
-    projectDocument.apply({ type: 'setClip', id, patch });
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const state = drag.current;
     if (!state) return;
-
     const delta = (event.clientX - state.originX) / pixelsPerSecond;
-    const snapTo = (time: number) => snapTime(time, snapTargets, pixelsPerSecond, snap, fps);
-
-    if (state.mode === 'trim-start') {
-      const next = Math.max(0, Math.min(state.end - frame, snapTo(state.start + delta)));
-      setElementClip({ start: next });
-      return;
-    }
-
-    if (state.mode === 'trim-end') {
-      const next = Math.max(state.start + frame, Math.min(duration, snapTo(state.end + delta)));
-      setElementClip({ end: next >= duration - 1e-6 ? null : next });
-      return;
-    }
-
-    // Move. An open-ended bar keeps ending at the project end, so only its
-    // start moves; a closed bar keeps its length.
-    if (state.openEnd) {
-      const next = Math.max(0, Math.min(duration - frame, snapTo(state.start + delta)));
-      setElementClip({ start: next });
-      return;
-    }
-
-    const length = state.end - state.start;
-    let nextStart = snapTo(state.start + delta);
-    const snappedEnd = snapTo(nextStart + length);
-    if (snappedEnd !== nextStart + length) nextStart = snappedEnd - length;
-    nextStart = Math.max(0, Math.min(duration - length, nextStart));
-    setElementClip({ start: nextStart, end: nextStart + length });
+    const range = clipRange(state.clip, duration);
+    const edit =
+      state.mode === 'move'
+        ? { type: 'move' as const, delta }
+        : {
+            type: state.mode,
+            time: (state.mode === 'trim-start' ? range.start : range.end) + delta,
+          };
+    const patch = editClip(state.clip, edit, {
+      duration,
+      fps,
+      snap: time => snapTime(time, snapTargets, pixelsPerSecond, snap, fps),
+    });
+    projectDocument.apply({ type: 'setClip', id, patch });
   }
 
   function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {

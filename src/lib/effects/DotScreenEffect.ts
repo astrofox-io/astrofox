@@ -49,8 +49,8 @@ export default class DotScreenEffect extends Effect {
 function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new ShaderPass(DotScreenShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       tSize: [width, height],
       center: [width / 2, height / 2],

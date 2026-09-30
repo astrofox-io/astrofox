@@ -48,8 +48,8 @@ export default class KaleidoscopeEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(KaleidoscopeShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       sides: Math.max(1, Number(props.sides || 6)),
       angle: toRadians(Number(props.angle || 0)),

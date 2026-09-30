@@ -3,7 +3,7 @@ import { projectDocument, useDocument } from '@/app/document';
 import NumberInput from '@/components/NumberInput';
 import { Button } from '@/components/ui/button';
 import type Display from '@/lib/core/Display';
-import type { Clip, ClipPatch } from '@/lib/timeline/clip';
+import { type Clip, type ClipPatch, clipRange, editClip } from '@/lib/timeline/clip';
 import transportStore from '@/lib/timeline/transport';
 
 interface TimingControlsProps {
@@ -49,13 +49,13 @@ function Row({
 export default function TimingControls({ display }: TimingControlsProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'timeline' });
   const duration = transportStore(state => state.duration);
+  const fps = transportStore(state => state.fps);
   const clip: Clip | null = useDocument(
     state => (state.elementById[display.id] ?? state.sceneById[display.id])?.clip ?? null,
   );
   const setClip = (patch: ClipPatch) =>
     projectDocument.apply({ type: 'setClip', id: display.id, patch });
-  const start = clip?.start ?? 0;
-  const end = clip?.end ?? duration;
+  const { start, end } = clipRange(clip, duration);
   const hasOpacity = typeof display.authoredProperties.opacity === 'number';
 
   return (
@@ -65,7 +65,9 @@ export default function TimingControls({ display }: TimingControlsProps) {
         name="start"
         value={start}
         max={duration}
-        onChange={value => setClip({ start: Math.min(value, end - 0.01) })}
+        onChange={value =>
+          setClip(editClip(clip, { type: 'trim-start', time: value }, { duration, fps }))
+        }
       />
       <Row
         label={t('end')}
@@ -73,9 +75,7 @@ export default function TimingControls({ display }: TimingControlsProps) {
         value={end}
         max={duration}
         onChange={value =>
-          setClip({
-            end: value >= duration ? null : Math.max(value, start + 0.01),
-          })
+          setClip(editClip(clip, { type: 'trim-end', time: value }, { duration, fps }))
         }
       />
       {hasOpacity ? (

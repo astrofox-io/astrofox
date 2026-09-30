@@ -61,8 +61,8 @@ function createPass(effect: EffectPassConfig) {
     fontSize: Number(props.fontSize ?? 54),
     invert: !!props.invert,
   });
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.updateOptions({
       cellSize: Number(props.cellSize ?? 16),
       fontSize: Number(props.fontSize ?? 54),

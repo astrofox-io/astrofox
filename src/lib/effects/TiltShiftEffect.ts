@@ -58,8 +58,8 @@ export default class TiltShiftEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(TiltShiftShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       blur: Number(props.blur ?? 0.15),
       taper: Number(props.taper ?? 0.5),

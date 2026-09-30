@@ -51,8 +51,8 @@ function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new ShaderPass(EdgeDetectionShader);
   const color = new Color();
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setSize(width, height);
     color.set(String(props.color || '#ffffff'));
     pass.setUniforms({

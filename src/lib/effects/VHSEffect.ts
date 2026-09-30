@@ -221,9 +221,9 @@ export default class VHSEffect extends Effect {
 function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new ShaderPass(VHSShader);
-  return attachPassUpdater(pass, () => {
+  return attachPassUpdater(pass, frameData => {
     const time = Number(effect.time || 0);
-    pass.enabled = isEffectEnabled(effect);
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setSize(width, height);
     pass.setUniforms({
       time,

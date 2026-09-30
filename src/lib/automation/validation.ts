@@ -2,7 +2,7 @@ import { library, stage } from '@/app/global';
 import AudioReactor from '@/lib/audio/AudioReactor';
 import type Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
-import { MAX_CLIP_TIME } from '@/lib/timeline/clip';
+import { validateClipFields } from '@/lib/timeline/clip';
 import { isValidFps, isValidProjectDuration } from '@/lib/timeline/transport';
 import { resolve } from '@/lib/utils/object';
 
@@ -225,16 +225,7 @@ export function validateSnapshot(snapshot: Record<string, unknown>) {
           checkShape(value, Type.config.defaultProperties[key], key);
       }
     if (entity.clip !== undefined && entity.clip !== null) {
-      const clip = entity.clip as Record<string, unknown>;
-      if (!clip || typeof clip !== 'object' || Array.isArray(clip))
-        throw new Error('Invalid timeline clip.');
-      for (const [key, value] of Object.entries(clip)) {
-        if (!['start', 'end', 'fadeIn', 'fadeOut'].includes(key))
-          throw new Error(`Unsupported clip field: ${key}`);
-        if (value === null && key === 'end') continue;
-        if (typeof value !== 'number' || value < 0 || value > MAX_CLIP_TIME)
-          throw new Error(`Invalid clip.${key}.`);
-      }
+      validateClipFields(entity.clip);
     }
     if (entity.reactors !== undefined) {
       if (!entity.reactors || typeof entity.reactors !== 'object' || Array.isArray(entity.reactors))

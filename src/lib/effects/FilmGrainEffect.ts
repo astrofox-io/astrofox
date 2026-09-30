@@ -68,8 +68,8 @@ export default class FilmGrainEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(FilmGrainShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       intensity: Number(props.intensity || 0),
       size: Math.max(1, Number(props.size || 1)),

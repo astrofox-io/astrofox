@@ -49,8 +49,8 @@ export default class VignetteEffect extends Effect {
 function createPass(effect: EffectPassConfig) {
   const props = effect.properties;
   const pass = new ShaderPass(VignetteShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setUniforms({
       offset: Number(props.offset ?? 0.5),
       darkness: Number(props.darkness ?? 0.5),

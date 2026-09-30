@@ -48,8 +48,8 @@ function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const hexagon = (props.type || 'Square') === 'Hexagon';
   const pass = new ShaderPass(hexagon ? HexagonShader : PixelateShader);
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setSize(width, height);
     pass.setUniforms({ size: Number(props.size || 10) });
     if (hexagon) {

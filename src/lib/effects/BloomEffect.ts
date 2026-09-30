@@ -78,8 +78,8 @@ function getBloomOptions(props: Record<string, unknown>) {
 function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new UnrealBloomEffectPass({ width, height, ...getBloomOptions(props) });
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.updateOptions(getBloomOptions(props));
   });
 }

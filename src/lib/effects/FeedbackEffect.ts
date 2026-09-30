@@ -49,7 +49,7 @@ function createPass(effect: EffectPassConfig, width: number, height: number) {
   const props = effect.properties;
   const pass = new FeedbackPass(width, height);
   return attachPassUpdater(pass, frameData => {
-    pass.enabled = isEffectEnabled(effect);
+    pass.enabled = isEffectEnabled(effect, frameData);
     // Frozen while project time is not advancing.
     pass.accumulate = frameData ? Boolean(frameData.playing) : true;
     pass.setUniforms({

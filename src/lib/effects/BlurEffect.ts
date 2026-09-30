@@ -134,8 +134,8 @@ function createPass(effect: EffectPassConfig, width: number, height: number) {
   const blurType = props.type || 'Gaussian';
   const pass = createBlurPass(blurType);
 
-  return attachPassUpdater(pass, () => {
-    pass.enabled = isEffectEnabled(effect);
+  return attachPassUpdater(pass, frameData => {
+    pass.enabled = isEffectEnabled(effect, frameData);
     pass.setSize?.(width, height);
 
     switch (blurType) {

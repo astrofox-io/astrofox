@@ -112,7 +112,7 @@ export function createShaderEffectPassFactory(installed: InstalledPlugin) {
     const pass = new ShaderPass({ uniforms, vertexShader, fragmentShader });
 
     pass.__updateScenePass = frameData => {
-      pass.enabled = isEffectEnabled(effect);
+      pass.enabled = isEffectEnabled(effect, frameData);
 
       const liveUniforms = pass.material.uniforms;
 
