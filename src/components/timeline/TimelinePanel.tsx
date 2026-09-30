@@ -1,6 +1,6 @@
 import { Maximize2, ZoomIn, ZoomOut } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp from '@/app/actions/app';
 import {
@@ -18,8 +18,7 @@ import useTimelinePanel, {
   setTimelineOpen,
   setTimelineSnap,
   setTimelineZoom,
-  zoomTimelineIn,
-  zoomTimelineOut,
+  TIMELINE_MAX_ZOOM,
 } from '@/app/actions/timelinePanel';
 import { Times } from '@/app/icons';
 import NumberInput from '@/components/NumberInput';
@@ -34,10 +33,20 @@ import transportStore, {
   type TimelineFps,
 } from '@/lib/timeline/transport';
 import { formatTimecode } from '@/lib/utils/format';
-import { LABEL_WIDTH, MAX_TRACK_WIDTH, TRACK_PADDING } from './constants';
+import { LABEL_WIDTH, TRACK_PADDING } from './constants';
 import Playhead from './Playhead';
 import TimelineRows from './TimelineRows';
 import TimelineRuler from './TimelineRuler';
+import { getTimelineScale, scrollLeftForAnchor, timeAtViewportX, wheelZoomFactor } from './zoom';
+
+const ZOOM_STEP = 1.5;
+
+/** A project time pinned to a point in the scroll viewport while zooming. */
+interface ZoomAnchor {
+  time: number;
+  /** Distance from the scroll container's left edge, in px. */
+  viewportX: number;
+}
 
 function TimeReadout({ fps }: { fps: number }) {
   const time = transportStore(state => state.time);
@@ -89,11 +98,33 @@ function IconButton({
   );
 }
 
+/** The playhead if it is on screen, otherwise the centre of the track area. */
+function defaultZoomAnchor(
+  element: HTMLElement,
+  pixelsPerSecond: number,
+  duration: number,
+): ZoomAnchor {
+  const time = transportStore.getState().time;
+  const playheadX = LABEL_WIDTH + time * pixelsPerSecond - element.scrollLeft;
+  if (playheadX >= LABEL_WIDTH && playheadX <= element.clientWidth) {
+    return { time, viewportX: playheadX };
+  }
+
+  const viewportX = LABEL_WIDTH + (element.clientWidth - LABEL_WIDTH) / 2;
+  return {
+    time: timeAtViewportX(viewportX, element.scrollLeft, pixelsPerSecond, duration),
+    viewportX,
+  };
+}
+
 /**
  * Bottom timeline: a ruler with the waveform, one bar per element, and the
  * playhead. Height is draggable from its top edge; zoom and snapping live in
  * the header. Keyboard: Space play/pause, ←/→ step a frame (Shift: a second),
- * Home/End, Delete resets the selected element's clip.
+ * Home/End, Delete resets the selected element's clip, =/- zoom, \ fits.
+ * Ctrl/Cmd/Alt + wheel (or a trackpad pinch) zooms around the cursor; the
+ * zoom buttons and keys zoom around the playhead, or the view's centre when
+ * the playhead is off-screen.
  */
 export default function TimelinePanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'timeline' });
@@ -121,12 +152,62 @@ export default function TimelinePanel() {
     return () => observer.disconnect();
   }, []);
 
-  const fitPixelsPerSecond = Math.max(
-    1,
-    (Math.max(0, viewportWidth - LABEL_WIDTH - TRACK_PADDING) || 600) / duration,
+  const { pixelsPerSecond, maxZoom } = getTimelineScale(
+    viewportWidth,
+    duration,
+    zoom,
+    TIMELINE_MAX_ZOOM,
   );
-  const pixelsPerSecond = Math.min(fitPixelsPerSecond * zoom, MAX_TRACK_WIDTH / duration);
   const trackWidth = Math.ceil(duration * pixelsPerSecond) + TRACK_PADDING;
+
+  // The rendered scale, for handlers that run outside React (wheel) or before
+  // the next render (several wheel events in one frame).
+  const view = useRef({ pixelsPerSecond, maxZoom, duration });
+  view.current = { pixelsPerSecond, maxZoom, duration };
+  const pendingAnchor = useRef<ZoomAnchor | null>(null);
+
+  // Once the new scale is laid out, scroll so the anchor stays put.
+  useLayoutEffect(() => {
+    const anchor = pendingAnchor.current;
+    const element = scrollRef.current;
+    pendingAnchor.current = null;
+    if (!anchor || !element) return;
+    element.scrollLeft = scrollLeftForAnchor(anchor.time, anchor.viewportX, pixelsPerSecond);
+  }, [pixelsPerSecond]);
+
+  /** Multiply the zoom by `factor`, keeping `anchor` (default: playhead or centre) in place. */
+  const zoomBy = useCallback((factor: number, anchor?: ZoomAnchor) => {
+    const element = scrollRef.current;
+    const { pixelsPerSecond, maxZoom, duration } = view.current;
+    const current = Math.max(1, Math.min(maxZoom, useTimelinePanel.getState().zoom));
+    const next = Math.max(1, Math.min(maxZoom, current * factor));
+    if (!element || next === current) return;
+
+    pendingAnchor.current = anchor ?? defaultZoomAnchor(element, pixelsPerSecond, duration);
+    setTimelineZoom(next);
+  }, []);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+
+    // Native listener: React's wheel listeners are passive and cannot stop the
+    // browser from scrolling (or page-zooming on Ctrl + wheel / pinch).
+    function handleWheel(event: WheelEvent) {
+      if (!(event.ctrlKey || event.metaKey || event.altKey) || !element) return;
+      event.preventDefault();
+
+      const { pixelsPerSecond, duration } = view.current;
+      const viewportX = Math.max(LABEL_WIDTH, event.clientX - element.getBoundingClientRect().left);
+      zoomBy(wheelZoomFactor(event.deltaY, event.deltaMode), {
+        time: timeAtViewportX(viewportX, element.scrollLeft, pixelsPerSecond, duration),
+        viewportX,
+      });
+    }
+
+    element.addEventListener('wheel', handleWheel, { passive: false });
+    return () => element.removeEventListener('wheel', handleWheel);
+  }, [zoomBy]);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const target = event.target;
@@ -169,6 +250,16 @@ export default function TimelinePanel() {
         break;
       case 'k':
         pauseTransport();
+        break;
+      case '=':
+      case '+':
+      case '-':
+      case '\\':
+        // Leave Ctrl/Cmd combinations to the app (e.g. window zoom).
+        if (event.ctrlKey || event.metaKey || event.altKey) break;
+        event.preventDefault();
+        if (event.key === '\\') setTimelineZoom(1);
+        else zoomBy(event.key === '-' ? 1 / ZOOM_STEP : ZOOM_STEP);
         break;
       case 'l':
         playTransport();
@@ -253,10 +344,10 @@ export default function TimelinePanel() {
             />
           </div>
           <div className="flex items-center gap-0.5">
-            <IconButton label={t('zoom-out')} onClick={zoomTimelineOut}>
+            <IconButton label={t('zoom-out')} onClick={() => zoomBy(1 / ZOOM_STEP)}>
               <ZoomOut className="size-3.5" />
             </IconButton>
-            <IconButton label={t('zoom-in')} onClick={zoomTimelineIn}>
+            <IconButton label={t('zoom-in')} onClick={() => zoomBy(ZOOM_STEP)}>
               <ZoomIn className="size-3.5" />
             </IconButton>
             <IconButton label={t('zoom-fit')} onClick={() => setTimelineZoom(1)}>

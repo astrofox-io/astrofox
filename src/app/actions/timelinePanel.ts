@@ -11,7 +11,6 @@ export const TIMELINE_MIN_HEIGHT = 140;
 export const TIMELINE_MAX_HEIGHT = 640;
 export const TIMELINE_DEFAULT_HEIGHT = 240;
 export const TIMELINE_MAX_ZOOM = 64;
-const ZOOM_STEP = 1.5;
 
 interface TimelinePanelState {
   open: boolean;
@@ -55,14 +54,6 @@ export function setTimelineZoom(zoom: number) {
   timelinePanelStore.setState({
     zoom: Math.max(1, Math.min(TIMELINE_MAX_ZOOM, Number.isFinite(zoom) ? zoom : 1)),
   });
-}
-
-export function zoomTimelineIn() {
-  setTimelineZoom(timelinePanelStore.getState().zoom * ZOOM_STEP);
-}
-
-export function zoomTimelineOut() {
-  setTimelineZoom(timelinePanelStore.getState().zoom / ZOOM_STEP);
 }
 
 export function setTimelineSnap(snap: boolean) {
