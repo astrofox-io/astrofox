@@ -99,6 +99,7 @@
     "time-duration": "再生時間",
     "start": "開始",
     "end": "終了",
+    "length": "長さ",
     "include-audio": "音声を含める",
     "encoder": "エンコーダー",
     "quality": "品質",

@@ -99,6 +99,7 @@
     "time-duration": "时间范围",
     "start": "开始",
     "end": "结束",
+    "length": "时长",
     "include-audio": "包含音频",
     "encoder": "编码器",
     "quality": "质量",

@@ -99,6 +99,7 @@
     "time-duration": "Duración",
     "start": "Inicio",
     "end": "Fin",
+    "length": "Duración",
     "include-audio": "Incluir audio",
     "encoder": "Codificador",
     "quality": "Calidad",

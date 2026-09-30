@@ -99,6 +99,7 @@
     "time-duration": "시간 길이",
     "start": "시작",
     "end": "끝",
+    "length": "길이",
     "include-audio": "오디오 포함",
     "encoder": "인코더",
     "quality": "품질",

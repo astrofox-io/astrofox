@@ -355,7 +355,7 @@ export default function SaveVideoDialog({
 
         <section className="space-y-3">
           <h3 className="text-sm font-medium text-neutral-100">{t('time-duration')}</h3>
-          <div className="grid grid-cols-2 gap-4 max-[520px]:grid-cols-1">
+          <div className="grid grid-cols-3 gap-4 max-[520px]:grid-cols-1">
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="video-export-start-time"
@@ -364,6 +364,7 @@ export default function SaveVideoDialog({
                 {t('start')}
               </label>
               <TimeInput
+                id="video-export-start-time"
                 name="startTime"
                 value={selectedStartTime}
                 min={0}
@@ -385,6 +386,7 @@ export default function SaveVideoDialog({
                 {t('end')}
               </label>
               <TimeInput
+                id="video-export-end-time"
                 name="endTime"
                 value={selectedEndTime}
                 min={effectiveMinExportDuration}
@@ -396,6 +398,21 @@ export default function SaveVideoDialog({
                   setSelectedStartTime(nextStart);
                   setSelectedEndTime(nextEnd);
                 }}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="video-export-length"
+                className="block text-xs uppercase tracking-wide text-neutral-400"
+              >
+                {t('length')}
+              </label>
+              <TimeInput
+                id="video-export-length"
+                name="length"
+                value={Math.max(0, selectedEndTime - selectedStartTime)}
+                width="100%"
+                readOnly
               />
             </div>
           </div>

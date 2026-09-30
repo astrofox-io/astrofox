@@ -123,6 +123,7 @@
     "time-duration": "Time duration",
     "start": "Start",
     "end": "End",
+    "length": "Length",
     "include-audio": "Include audio",
     "encoder": "Encoder",
     "quality": "Quality",

@@ -4,6 +4,7 @@ import { formatSeekTime, parseSeekTime } from '@/lib/utils/format';
 import { clamp } from '@/lib/utils/math';
 
 interface TimeInputProps {
+  id?: string;
   name?: string;
   value?: number;
   width?: number | string;
@@ -16,6 +17,7 @@ interface TimeInputProps {
 }
 
 export default function TimeInput({
+  id,
   name = 'time',
   value = 0,
   width = 140,
@@ -48,6 +50,7 @@ export default function TimeInput({
   return (
     <TextInput
       key={key}
+      id={id}
       name={name}
       width={width}
       size={size}

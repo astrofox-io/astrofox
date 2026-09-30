@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface TextInputProps {
+  id?: string;
   name?: string;
   /** Fixed width; when omitted the input fills the remaining row space. */
   width?: number | string;
@@ -21,6 +22,7 @@ interface TextInputProps {
 }
 
 export default function TextInput({
+  id,
   name = 'text',
   width,
   size = null,
@@ -85,6 +87,7 @@ export default function TextInput({
 
   return (
     <Input
+      id={id}
       ref={input}
       type="text"
       autoComplete="off"
