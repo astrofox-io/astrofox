@@ -33,7 +33,7 @@ import transportStore, {
   type TimelineFps,
 } from '@/lib/timeline/transport';
 import { formatTimecode } from '@/lib/utils/format';
-import { LABEL_WIDTH, TRACK_PADDING } from './constants';
+import { LABEL_WIDTH, RULER_HEIGHT, TRACK_PADDING } from './constants';
 import Playhead from './Playhead';
 import TimelineRows from './TimelineRows';
 import TimelineRuler from './TimelineRuler';
@@ -298,7 +298,7 @@ export default function TimelinePanel() {
         onPointerUp={handleResizeEnd}
         onPointerCancel={handleResizeEnd}
       />
-      <div className="flex h-9 shrink-0 items-center gap-3 border-b border-neutral-800 px-3">
+      <div className="flex shrink-0 items-center gap-3 border-b border-neutral-800 px-3 py-2">
         <div className="text-xs uppercase text-neutral-400">{t('title')}</div>
         <TimeReadout fps={fps} />
         <div className="ml-auto flex items-center gap-3 text-xs text-neutral-400">
@@ -312,7 +312,10 @@ export default function TimelinePanel() {
               max={MAX_PROJECT_DURATION}
               step={0.01}
               disabled={isVideoRecording}
-              onChange={(_name, value) => setProjectDuration(value)}
+              onChange={(_name, value) => {
+                // Buffered inputs also submit on blur; only an edit should disable auto duration.
+                if (value !== Math.round(duration * 100) / 100) setProjectDuration(value);
+              }}
             />
             {explicitDuration ? (
               <button
@@ -361,6 +364,19 @@ export default function TimelinePanel() {
       </div>
       <div ref={scrollRef} className="relative min-h-0 flex-1 overflow-auto">
         <div className="relative" style={{ width: LABEL_WIDTH + trackWidth, minHeight: '100%' }}>
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-35">
+            <div
+              className="sticky left-0 h-full border-r border-neutral-800 bg-neutral-900"
+              style={{ width: LABEL_WIDTH }}
+            >
+              <div
+                className="sticky top-0 flex items-end border-b border-neutral-800 bg-neutral-900 px-2 pb-1 text-[10px] uppercase text-neutral-500"
+                style={{ height: RULER_HEIGHT }}
+              >
+                {t('title')}
+              </div>
+            </div>
+          </div>
           <TimelineRuler
             pixelsPerSecond={pixelsPerSecond}
             trackWidth={trackWidth}

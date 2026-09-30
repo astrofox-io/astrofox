@@ -1,5 +1,5 @@
 import { clsx as classNames } from 'cnfast';
-import { ChartGantt, type LucideIcon } from 'lucide-react';
+import { AlignStartVertical, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useAppStore from '@/app/actions/app';
 import useAudioStore from '@/app/actions/audio';
@@ -35,7 +35,7 @@ export default function ToggleButtons() {
         onClick={handleLoopButtonClick}
       />
       <ToggleButton
-        icon={ChartGantt}
+        icon={AlignStartVertical}
         title={t(timelineOpen ? 'hide-timeline' : 'show-timeline')}
         enabled={timelineOpen}
         onClick={toggleTimelineOpen}

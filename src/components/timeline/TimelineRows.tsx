@@ -135,11 +135,16 @@ export default function TimelineRows({
               aria-selected={active}
               tabIndex={0}
               className={classNames(
-                'sticky left-0 z-40 flex shrink-0 cursor-default items-center gap-1.5 border-r border-neutral-800 pr-2 text-xs',
-                active ? 'bg-primary/40 text-neutral-100' : 'bg-neutral-900 text-neutral-300',
-                { 'opacity-50': !element.enabled },
+                'sticky left-0 z-40 flex shrink-0 cursor-default items-center gap-1.5 border-r border-neutral-800 bg-neutral-900 pr-2 text-xs',
+                active ? 'text-neutral-100' : 'text-neutral-300',
               )}
-              style={{ width: LABEL_WIDTH, paddingLeft: 6 + depth * 14 }}
+              style={{
+                width: LABEL_WIDTH,
+                paddingLeft: 6 + depth * 14,
+                backgroundColor: active
+                  ? 'color-mix(in srgb, var(--color-primary) 40%, var(--color-neutral-900))'
+                  : undefined,
+              }}
               onClick={() => setActiveElementId(element.id)}
               onKeyDown={event => {
                 if (event.key === 'Enter' || event.key === ' ') {
@@ -152,7 +157,10 @@ export default function TimelineRows({
                 <button
                   type="button"
                   aria-label={t(collapsed[sceneId] ? 'common.show' : 'common.hide')}
-                  className="-ml-1 inline-flex size-4 shrink-0 items-center justify-center text-neutral-400 hover:text-neutral-100"
+                  className={classNames(
+                    '-ml-1 inline-flex size-4 shrink-0 items-center justify-center text-neutral-400 hover:text-neutral-100',
+                    { 'opacity-50': !element.enabled },
+                  )}
                   onClick={event => {
                     event.stopPropagation();
                     toggleSceneCollapsed(sceneId);
@@ -165,8 +173,12 @@ export default function TimelineRows({
                   )}
                 </button>
               ) : null}
-              <Icon className="size-3.5 shrink-0" />
-              <span className="truncate">{translateGeneratedName(t, element.displayName)}</span>
+              <Icon
+                className={classNames('size-3.5 shrink-0', { 'opacity-50': !element.enabled })}
+              />
+              <span className={classNames('truncate', { 'opacity-50': !element.enabled })}>
+                {translateGeneratedName(t, element.displayName)}
+              </span>
             </div>
             <div className="relative shrink-0" style={{ width: trackWidth }}>
               <ClipBar

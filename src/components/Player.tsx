@@ -19,7 +19,7 @@ export default function Player() {
 
   return (
     <div className="shrink-0">
-      {timelineOpen ? <TimelinePanel /> : <AudioWaveform />}
+      {!liveModeEnabled && (timelineOpen ? <TimelinePanel /> : <AudioWaveform />)}
       <LiveOscilloscope />
       <div className="min-w-lg overflow-hidden border-t border-t-neutral-800 bg-neutral-900 px-5 py-2.5">
         {liveModeEnabled ? (
