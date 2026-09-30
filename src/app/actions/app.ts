@@ -14,14 +14,6 @@ import {
   saveProject,
   trackProjectChanges,
 } from '@/app/actions/project';
-import {
-  checkForDesktopUpdates,
-  downloadDesktopUpdate,
-  getDesktopBridge,
-  isDesktopUpdaterAvailable,
-  isFfmpegAvailable,
-  onDesktopUpdaterStatus,
-} from '@/app/desktop';
 import { projectDocument } from '@/app/document';
 import { api, audioContext, library, logger, player, renderBackend, renderer } from '@/app/global';
 import { getAutomaticUpdates } from '@/app/preferences';
@@ -31,6 +23,7 @@ import * as displays from '@/lib/displays';
 import { hasLayer, selectionAfterRemoval } from '@/lib/document/selection';
 import type { DocumentChange } from '@/lib/document/types';
 import * as effects from '@/lib/effects';
+import { platform } from '@/lib/platform';
 import { loadInstalledPlugins } from '@/lib/plugins';
 import transportStore, {
   getProjectDuration,
@@ -216,7 +209,7 @@ function getSupportedVideoMimeType(): string | null {
  * choice; browser exports always use MediaRecorder.
  */
 export function getVideoEncoderOptions(): VideoEncoder[] {
-  return isFfmpegAvailable() ? [...VIDEO_ENCODERS] : [];
+  return platform.encoder !== null ? [...VIDEO_ENCODERS] : [];
 }
 
 function getExtensionFromMimeType(mimeType: string): string {
@@ -297,7 +290,7 @@ function getVideoRecordingSetup(encoder: VideoEncoder = DEFAULT_EXPORT_ENCODER):
     return null;
   }
 
-  if (isFfmpegAvailable()) {
+  if (platform.encoder !== null) {
     const { extension } = getVideoEncoderConfig(encoder).video;
     return {
       mode: 'ffmpeg',
@@ -352,21 +345,21 @@ async function resolveAudioPathForFfmpeg(
     return { path: existingPath, cleanupPaths: [] };
   }
 
-  const bridge = getDesktopBridge();
-  if (!bridge?.writeTempFile) {
+  const { files } = platform;
+  if (!files) {
     throw new Error(t('errors.ffmpeg-temp-audio-failed'));
   }
 
   const buffer = await audioSource.arrayBuffer();
   const extensionMatch = audioSource.name?.match(/\.([a-z0-9]+)$/i);
   const ext = extensionMatch?.[1] || 'bin';
-  const { filePath } = await bridge.writeTempFile(`export-audio-${Date.now()}.${ext}`, buffer);
+  const filePath = await files.writeTemp(`export-audio-${Date.now()}.${ext}`, buffer);
   return { path: filePath, cleanupPaths: [filePath] };
 }
 
 /** False when the browser will prompt for the location itself at the end of the export. */
 export function canChooseVideoSaveLocation() {
-  return api.canPickSaveLocation({ preferNativePath: isFfmpegAvailable() });
+  return api.canPickSaveLocation({ preferNativePath: platform.encoder !== null });
 }
 
 export async function chooseVideoSaveLocation(
@@ -379,7 +372,7 @@ export async function chooseVideoSaveLocation(
   const { fileHandle, filePath, canceled } = await api.showSaveDialog({
     defaultPath,
     filters,
-    preferNativePath: isFfmpegAvailable(),
+    preferNativePath: platform.encoder !== null,
   });
 
   if (canceled) {
@@ -556,7 +549,7 @@ export async function startFfmpegVideoExport({
   quality = DEFAULT_EXPORT_QUALITY,
   automation,
 }: StartVideoRecordingOptions): Promise<boolean> {
-  const bridge = getDesktopBridge();
+  const { files } = platform;
   const outputPath = filePath || defaultPath || '';
 
   // preferNativePath save dialog must yield an absolute filesystem path for ffmpeg.
@@ -644,9 +637,9 @@ export async function startFfmpegVideoExport({
     });
 
     logger.log('FFmpeg video saved:', savedPath);
-    if (!automation && bridge?.showItemInFolder) {
+    if (!automation && files) {
       try {
-        await bridge.showItemInFolder(savedPath);
+        await files.reveal(savedPath);
       } catch {
         // non-fatal
       }
@@ -672,10 +665,10 @@ export async function startFfmpegVideoExport({
       ...(exporter.isCancelled ? {} : { statusText: '' }),
     });
 
-    if (bridge?.removePath) {
+    if (files) {
       for (const tempPath of audioResolved.cleanupPaths) {
         try {
-          await bridge.removePath(tempPath);
+          await files.removeTemp(tempPath);
         } catch {
           // best-effort
         }
@@ -1198,14 +1191,15 @@ function scheduleAutoUpdateCheck() {
     return;
   }
 
-  if (!isDesktopUpdaterAvailable()) {
+  const { updater } = platform;
+  if (!updater) {
     logger.log('Automatic update check skipped: updater unavailable');
     return;
   }
 
   window.setTimeout(() => {
     logger.log('Checking for updates');
-    checkForDesktopUpdates().catch(error => {
+    updater.check().catch(error => {
       logger.log('Update check failed:', error);
     });
   }, AUTO_UPDATE_CHECK_DELAY_MS);
@@ -1216,12 +1210,16 @@ function watchDesktopUpdates() {
   if (updateWatcherAttached) {
     return;
   }
+  const { updater } = platform;
+  if (!updater) {
+    return;
+  }
   updateWatcherAttached = true;
 
-  onDesktopUpdaterStatus(status => {
+  updater.onStatus(status => {
     if (status.state === 'available') {
       // Always download available updates; they install automatically on quit.
-      downloadDesktopUpdate().catch(error => {
+      updater.download().catch(error => {
         logger.log('Update download failed:', error);
       });
     }

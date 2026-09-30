@@ -1,4 +1,4 @@
-import { getDesktopBridge } from '@/app/desktop';
+import { getDesktopBridge } from '@/lib/platform/bridge';
 import { migrateLegacyKeys, type StorageBackend } from './migrateLegacyKeys';
 
 export * from './keys';

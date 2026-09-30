@@ -175,13 +175,16 @@ whether fades will apply or the element will hard-cut.
 - `electron/mcp/server.ts`: HTTP MCP server, IPC routing and local file operations.
 - `electron/mcp-controller.mjs`: persistent preferences, token management, and serialized start/stop operations.
 - `src/components/McpSettings.tsx`: desktop settings and connection details.
-- `electron/preload.mjs`: isolated command/reply bridge.
-- `scripts/build-mcp.mjs`: bundles the SDK and server into
-  `electron/generated/mcp-server.mjs`. This generated file is ignored by git and
-  included in desktop packaging under the existing `electron/**/*` rule.
+- `src/lib/platform/channels.ts`: the IPC channel table, including the MCP
+  command/reply channels; `electron/preload.ts` exposes exactly these.
+- `scripts/build-electron.mjs`: bundles the SDK and server into
+  `electron/generated/mcp-server.mjs`, and the preload and IPC helper beside it.
+  Generated files are ignored by git and included in desktop packaging under the
+  existing `electron/**/*` rule.
 
-`pnpm build:mcp` rebuilds the server. Desktop dev and renderer packaging scripts
-run this automatically. Changes to the main process require a desktop restart.
+`pnpm build:electron` rebuilds them. Desktop dev and renderer packaging scripts
+run this automatically. Changes to the main process or preload require a desktop
+restart.
 
 Before shipping, verify in a running desktop session: connect and discover tools;
 create/edit a scene and check the UI and preview; save/reopen a project; load media;

@@ -1,30 +1,25 @@
 import { useEffect, useState } from 'react';
-import {
-  type DesktopUpdaterStatus,
-  getDesktopUpdaterStatus,
-  isDesktopUpdaterAvailable,
-  onDesktopUpdaterStatus,
-} from '@/app/desktop';
+import { platform, type UpdaterStatus } from '@/lib/platform';
 
+/** The auto-updater's status, when this build has one (packaged desktop builds). */
 export default function useDesktopUpdaterStatus() {
-  const [updaterAvailable, setUpdaterAvailable] = useState(false);
-  const [status, setStatus] = useState<DesktopUpdaterStatus | null>(null);
+  const { updater } = platform;
+  const [status, setStatus] = useState<UpdaterStatus | null>(null);
 
   useEffect(() => {
-    if (!isDesktopUpdaterAvailable()) {
+    if (!updater) {
       return;
     }
 
     let mounted = true;
     let receivedEvent = false;
-    setUpdaterAvailable(true);
 
-    const unsubscribe = onDesktopUpdaterStatus(nextStatus => {
+    const unsubscribe = updater.onStatus(nextStatus => {
       receivedEvent = true;
       setStatus(nextStatus);
     });
 
-    void getDesktopUpdaterStatus().then(nextStatus => {
+    void updater.getStatus().then(nextStatus => {
       if (mounted && !receivedEvent) {
         setStatus(nextStatus);
       }
@@ -34,7 +29,7 @@ export default function useDesktopUpdaterStatus() {
       mounted = false;
       unsubscribe();
     };
-  }, []);
+  }, [updater]);
 
-  return { updaterAvailable, status, setStatus };
+  return { updaterAvailable: updater !== null, status, setStatus };
 }

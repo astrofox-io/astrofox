@@ -39,3 +39,7 @@ Domain terms used in the code. Add a term when a module is named after it.
 **Offline frame**: a frame rendered at a chosen time rather than the playhead: export frames, MCP previews at a time, saved images (`renderer.renderAt(time, fps)`). Layers that load asynchronously (videos, worker plugins) are made ready for that exact time before it is captured (`framePreparation.ts`).
 
 **Phase**: a value that advances with project time at a rate, such as an effect's speed (`src/lib/timeline/phase.ts`). At a constant rate it is exactly `rate × time`; a changing rate (driven by a reactor) is integrated, restarting after a seek.
+
+**Platform**: what the app can ask of the machine it runs on (`platform` from `src/lib/platform`): dialogs, and on the desktop the window, files by path, the ffmpeg encoder, the updater and MCP automation. Chosen once per session: the desktop adapter over IPC, or the web adapter over browser APIs. A capability the web lacks is `null`, so code checks the capability rather than "is this desktop".
+
+**Channel**: one IPC message between the Electron main process and the app window, declared once in `src/lib/platform/channels.ts` with its payload and result types. The main process (`electron/ipc.ts`), the preload and the desktop adapter all work from that table, and every channel answers only the app window's main frame.

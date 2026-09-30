@@ -8,14 +8,13 @@ import useAppStore, {
   toggleLeftPanelVisibility,
   toggleRightPanelVisibility,
 } from '@/app/actions/app';
-import { closeWindow, getWindowState, maximizeWindow, minimizeWindow } from '@/app/api-client';
-import { isDesktopApp, isMacDesktop } from '@/app/desktop';
 import { useDocument } from '@/app/document';
 import { env } from '@/app/global';
 import EditMenu from '@/components/EditMenu';
 import TitleBarUpdateButton from '@/components/TitleBarUpdateButton';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_PROJECT_NAME } from '@/lib/document/types';
+import { platform } from '@/lib/platform';
 
 export default function TitleBar() {
   const { t } = useTranslation(undefined, { keyPrefix: 'title-bar' });
@@ -25,8 +24,10 @@ export default function TitleBar() {
   const projectName = useDocument(state => state.name);
   const title =
     projectName && projectName !== DEFAULT_PROJECT_NAME ? projectName : t('default-project-name');
-  const desktop = isDesktopApp();
-  const macDesktop = isMacDesktop();
+  // The native window: present in the desktop app, null on the web.
+  const appWindow = platform.window;
+  const desktop = appWindow !== null;
+  const macDesktop = desktop && platform.environment.OS_PLATFORM === 'darwin';
   // hiddenInset traffic lights occupy the leading edge; keep custom chrome after them.
   const macTrafficLightInset = macDesktop ? 'pl-[76px]' : '';
   const [maximized, setMaximized] = useState(false);
@@ -48,39 +49,26 @@ export default function TitleBar() {
   }, []);
 
   useEffect(() => {
-    if (!desktop) return;
+    if (!appWindow) return;
 
-    let unsubscribe: (() => void) | undefined;
-    const bridge = window.__ASTROFOX__;
-
-    getWindowState()
-      .then(state => {
-        if (state && typeof state.maximized === 'boolean') {
-          setMaximized(state.maximized);
-        }
-      })
+    appWindow
+      .getState()
+      .then(state => setMaximized(state.maximized))
       .catch(() => {});
 
-    if (bridge?.onWindowStateChanged) {
-      unsubscribe = bridge.onWindowStateChanged(state => {
-        if (typeof state?.maximized === 'boolean') {
-          setMaximized(state.maximized);
-        }
-        if (state?.focused) {
-          window.requestAnimationFrame(() => {
-            const projectTitle = projectTitleRef.current;
-            if (projectTitle && document.activeElement === projectTitle) {
-              projectTitle.blur();
-            }
-          });
-        }
-      });
-    }
+    return appWindow.onStateChange(state => {
+      setMaximized(state.maximized);
 
-    return () => {
-      unsubscribe?.();
-    };
-  }, [desktop]);
+      if (state.focused) {
+        window.requestAnimationFrame(() => {
+          const projectTitle = projectTitleRef.current;
+          if (projectTitle && document.activeElement === projectTitle) {
+            projectTitle.blur();
+          }
+        });
+      }
+    });
+  }, [appWindow]);
 
   const panelButtons = [
     {
@@ -183,7 +171,7 @@ export default function TitleBar() {
               className="h-full w-11 rounded-none bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
               aria-label={t('minimize-window')}
               onClick={() => {
-                void minimizeWindow();
+                void appWindow?.minimize();
               }}
             >
               <Minus size={16} />
@@ -193,11 +181,7 @@ export default function TitleBar() {
               className="h-full w-11 rounded-none bg-transparent text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
               aria-label={maximized ? t('restore-window') : t('maximize-window')}
               onClick={() => {
-                void maximizeWindow().then(state => {
-                  if (state && typeof state.maximized === 'boolean') {
-                    setMaximized(state.maximized);
-                  }
-                });
+                void appWindow?.toggleMaximize().then(state => setMaximized(state.maximized));
               }}
             >
               <Square size={14} />
@@ -207,7 +191,7 @@ export default function TitleBar() {
               className="h-full w-11 rounded-none bg-transparent text-neutral-400 hover:bg-red-600 hover:text-white"
               aria-label={t('close-window')}
               onClick={() => {
-                void closeWindow();
+                void appWindow?.close();
               }}
             >
               <X size={16} />

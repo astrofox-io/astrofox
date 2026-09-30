@@ -1,4 +1,5 @@
 import { BrowserWindow, dialog } from 'electron';
+import { handle } from './generated/ipc.mjs';
 
 /**
  * @param {import('electron').IpcMain} ipcMain
@@ -9,33 +10,34 @@ export function registerDialogIpc(ipcMain, getMainWindow) {
     return BrowserWindow.getFocusedWindow() || getMainWindow() || undefined;
   }
 
-  ipcMain.handle('dialog:show-save', async (_event, options = {}) => {
-    const result = await dialog.showSaveDialog(resolveParent(), {
-      title: options.title,
-      defaultPath: options.defaultPath,
-      filters: options.filters,
-      properties: options.properties,
-    });
-    return {
-      canceled: Boolean(result.canceled),
-      filePath: result.filePath || '',
-    };
-  });
-
-  ipcMain.handle('dialog:show-open', async (_event, options = {}) => {
-    const properties = ['openFile'];
-    if (options.multiple) {
-      properties.push('multiSelections');
-    }
-    const result = await dialog.showOpenDialog(resolveParent(), {
-      title: options.title,
-      defaultPath: options.defaultPath,
-      filters: options.filters,
-      properties,
-    });
-    return {
-      canceled: Boolean(result.canceled),
-      filePaths: result.filePaths || [],
-    };
+  handle(ipcMain, getMainWindow, {
+    'dialog:show-save': async (options = {}) => {
+      const result = await dialog.showSaveDialog(resolveParent(), {
+        title: options.title,
+        defaultPath: options.defaultPath,
+        filters: options.filters,
+        properties: options.properties,
+      });
+      return {
+        canceled: Boolean(result.canceled),
+        filePath: result.filePath || '',
+      };
+    },
+    'dialog:show-open': async (options = {}) => {
+      const properties = ['openFile'];
+      if (options.multiple) {
+        properties.push('multiSelections');
+      }
+      const result = await dialog.showOpenDialog(resolveParent(), {
+        title: options.title,
+        defaultPath: options.defaultPath,
+        filters: options.filters,
+        properties,
+      });
+      return {
+        canceled: Boolean(result.canceled),
+        filePaths: result.filePaths || [],
+      };
+    },
   });
 }

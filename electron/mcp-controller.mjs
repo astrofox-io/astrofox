@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { handle } from './generated/ipc.mjs';
 
 const validToken = token => typeof token === 'string' && /^[!-~]{32,256}$/.test(token);
 const validPort = port => Number.isInteger(port) && port > 0 && port <= 65535;
@@ -113,48 +114,38 @@ export async function createMcpController(options) {
     return result;
   }
 
-  function trusted(event) {
-    const contents = getWindow()?.webContents;
-    if (!contents || event.sender !== contents || event.senderFrame !== contents.mainFrame) {
-      throw new Error('Untrusted MCP settings request.');
-    }
-  }
-
-  ipcMain.handle('mcp:get-status', async event => {
-    trusted(event);
-    await queue;
-    return status();
-  });
-  ipcMain.handle('mcp:set-enabled', (event, enabled) => {
-    trusted(event);
-    if (typeof enabled !== 'boolean') throw new Error('Expected a boolean MCP setting.');
-    return serialize(async () => {
-      const next = { ...config, enabled };
-      await persist(next);
-      config = next;
-      error = null;
-      if (enabled) await start();
-      else await stop();
-    });
-  });
-  ipcMain.handle('mcp:reset-token', event => {
-    trusted(event);
-    return serialize(async () => {
-      const next = { ...config, token: randomBytes(32).toString('hex') };
-      await persist(next);
-      config = next;
-      error = null;
-      await stop();
-      await start();
-    });
+  const removeHandlers = handle(ipcMain, getWindow, {
+    'mcp:get-status': async () => {
+      await queue;
+      return status();
+    },
+    'mcp:set-enabled': enabled => {
+      if (typeof enabled !== 'boolean') throw new Error('Expected a boolean MCP setting.');
+      return serialize(async () => {
+        const next = { ...config, enabled };
+        await persist(next);
+        config = next;
+        error = null;
+        if (enabled) await start();
+        else await stop();
+      });
+    },
+    'mcp:reset-token': () =>
+      serialize(async () => {
+        const next = { ...config, token: randomBytes(32).toString('hex') };
+        await persist(next);
+        config = next;
+        error = null;
+        await stop();
+        await start();
+      }),
   });
 
   return {
     start: () => serialize(start),
     close: () => {
       quitting = true;
-      for (const channel of ['mcp:get-status', 'mcp:set-enabled', 'mcp:reset-token'])
-        ipcMain.removeHandler(channel);
+      removeHandlers();
       return stop();
     },
   };

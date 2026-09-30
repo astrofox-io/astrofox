@@ -30,6 +30,7 @@
     ".next/dev/types/**/*.ts",
     ".next-desktop/types/**/*.ts",
     ".next-desktop/dev/types/**/*.ts",
+    "electron/*.ts",
     "electron/mcp/**/*.ts"
   ],
   "exclude": ["node_modules"]

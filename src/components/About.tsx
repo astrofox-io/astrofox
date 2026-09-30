@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { checkForDesktopUpdates, installDesktopUpdate } from '@/app/desktop';
 import { env } from '@/app/global';
 import useDesktopUpdaterStatus from '@/app/hooks/useDesktopUpdaterStatus';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
+import { platform } from '@/lib/platform';
 
 const { APP_NAME, APP_VERSION } = env;
 
@@ -60,7 +60,7 @@ function UpdateStatus() {
 
   function handleCheck() {
     setStatus({ state: 'checking' });
-    void checkForDesktopUpdates().then(result => {
+    void platform.updater?.check().then(result => {
       if (!result.ok && result.reason) {
         setStatus({ state: 'error', message: result.reason });
       }
@@ -68,7 +68,7 @@ function UpdateStatus() {
   }
 
   function handleInstall() {
-    void installDesktopUpdate();
+    void platform.updater?.install();
   }
 
   let text: string | null = null;

@@ -1,7 +1,6 @@
 import { Check, Copy } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type DesktopMcpStatus, getDesktopBridge } from '@/app/desktop';
 import Setting from '@/components/Setting';
 import Settings from '@/components/Settings';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { type McpStatus, platform } from '@/lib/platform';
 
 function CopyIconButton({
   value,
@@ -56,15 +56,15 @@ function CopyIconButton({
 
 export default function McpSettings() {
   const { t } = useTranslation(undefined, { keyPrefix: 'settings.mcp' });
-  const [status, setStatus] = useState<DesktopMcpStatus | null>(null);
+  const [status, setStatus] = useState<McpStatus | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const bridge = getDesktopBridge()?.automation;
+  const bridge = platform.automation;
 
   useEffect(() => {
     let disposed = false;
-    if (!bridge?.getStatus) {
+    if (!bridge) {
       setError(t('unavailable'));
       setBusy(false);
       return;
@@ -88,7 +88,7 @@ export default function McpSettings() {
     };
   }, [bridge, t]);
 
-  async function change(action: () => Promise<DesktopMcpStatus>) {
+  async function change(action: () => Promise<McpStatus>) {
     setBusy(true);
     setError(null);
     try {

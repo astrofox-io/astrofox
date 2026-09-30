@@ -7,12 +7,13 @@ import {
   NodeStreamableHTTPServerTransport,
 } from '@modelcontextprotocol/node';
 import { McpServer } from '@modelcontextprotocol/server';
-import type { BrowserWindow, IpcMain, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
+import type { BrowserWindow, IpcMain } from 'electron';
 import {
   type AutomationResponse,
   type CommandName,
   commands,
 } from '../../src/lib/automation/protocol';
+import { emit, handle, listen } from '../ipc';
 
 interface Options {
   ipcMain: IpcMain;
@@ -75,12 +76,6 @@ export async function startMcpServer({
   let closed = false;
   let contents: BrowserWindow['webContents'] | undefined;
 
-  function trusted(event: IpcMainEvent | IpcMainInvokeEvent) {
-    const contents = getWindow()?.webContents;
-    return Boolean(
-      contents && event.sender === contents && event.senderFrame === contents.mainFrame,
-    );
-  }
   function reset(reason: string) {
     ready = false;
     poisoned = false;
@@ -90,22 +85,22 @@ export async function startMcpServer({
       pending = null;
     }
   }
-  const onReady = (event: IpcMainEvent) => {
-    if (trusted(event)) {
+  // Only the app window's main frame is heard (electron/ipc.ts).
+  const stopListening = listen(ipcMain, getWindow, {
+    'mcp:ready': () => {
       watchWindow();
       ready = true;
-    }
-  };
-  const onResponse = (event: IpcMainEvent, response: AutomationResponse) => {
-    if (!trusted(event) || !pending || response?.id !== pending.id) return;
-    clearTimeout(pending.timer);
-    const current = pending;
-    pending = null;
-    if (response.error) current.reject(new Error(response.error));
-    else current.resolve(response.result);
-  };
-  ipcMain.on('mcp:ready', onReady);
-  ipcMain.on('mcp:response', onResponse);
+    },
+    'mcp:not-ready': () => reset('Astrofox editor is reconnecting.'),
+    'mcp:response': (response: AutomationResponse) => {
+      if (!pending || response?.id !== pending.id) return;
+      clearTimeout(pending.timer);
+      const current = pending;
+      pending = null;
+      if (response.error) current.reject(new Error(response.error));
+      else current.resolve(response.result);
+    },
+  });
   const onNavigate = () => {
     reset('Astrofox renderer reloaded; retry after it is ready.');
     onRendererGone?.();
@@ -114,10 +109,6 @@ export async function startMcpServer({
     reset('Astrofox renderer disconnected.');
     onRendererGone?.();
   };
-  const onNotReady = (event: IpcMainEvent) => {
-    if (trusted(event)) reset('Astrofox editor is reconnecting.');
-  };
-  ipcMain.on('mcp:not-ready', onNotReady);
   function unwatchWindow() {
     contents?.removeListener('did-start-loading', onNavigate);
     contents?.removeListener('render-process-gone', onGone);
@@ -134,26 +125,25 @@ export async function startMcpServer({
   }
   watchWindow();
 
-  function requireTrusted(event: IpcMainInvokeEvent) {
-    if (closed || !trusted(event)) throw new Error('Untrusted automation request.');
+  function requireOpen() {
+    if (closed) throw new Error('The MCP server has stopped.');
   }
-  ipcMain.handle('mcp:read-file', async (event, input: unknown) => {
-    requireTrusted(event);
-    const target = absolutePath(input);
-    const handle = await fs.open(target, 'r');
-    try {
-      const stat = await handle.stat();
-      if (!stat.isFile() || stat.size > MAX_FILE)
-        throw new Error('Media/project must be a file of at most 256 MiB.');
-      return { name: path.basename(target), data: await handle.readFile() };
-    } finally {
-      await handle.close();
-    }
-  });
-  ipcMain.handle(
-    'mcp:write-project',
-    async (event, input: { path: string; text: string; overwrite: boolean }) => {
-      requireTrusted(event);
+  const removeHandlers = handle(ipcMain, getWindow, {
+    'mcp:read-file': async input => {
+      requireOpen();
+      const target = absolutePath(input);
+      const file = await fs.open(target, 'r');
+      try {
+        const stat = await file.stat();
+        if (!stat.isFile() || stat.size > MAX_FILE)
+          throw new Error('Media/project must be a file of at most 256 MiB.');
+        return { name: path.basename(target), data: await file.readFile() };
+      } finally {
+        await file.close();
+      }
+    },
+    'mcp:write-project': async input => {
+      requireOpen();
       const target = absolutePath(input.path);
       if (path.extname(target).toLowerCase() !== '.afx')
         throw new Error('Save projects with the .afx extension.');
@@ -162,24 +152,24 @@ export async function startMcpServer({
       await fs.writeFile(target, input.text, { flag: input.overwrite === true ? 'w' : 'wx' });
       return { path: target };
     },
-  );
-  ipcMain.handle('mcp:check-output', async (event, input: { path: string; overwrite: boolean }) => {
-    requireTrusted(event);
-    const target = absolutePath(input.path);
-    if (!['.mp4', '.webm'].includes(path.extname(target).toLowerCase()))
-      throw new Error('Expected an .mp4 or .webm output.');
-    const directory = await fs.stat(path.dirname(target));
-    if (!directory.isDirectory()) throw new Error('Output directory does not exist.');
-    try {
-      const stat = await fs.lstat(target);
-      if (!stat.isFile() || stat.isSymbolicLink())
-        throw new Error('Output must be a regular file.');
-      if (input.overwrite !== true)
-        throw new Error('Output already exists; set overwrite=true to replace it.');
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-    }
-    return { path: target };
+    'mcp:check-output': async input => {
+      requireOpen();
+      const target = absolutePath(input.path);
+      if (!['.mp4', '.webm'].includes(path.extname(target).toLowerCase()))
+        throw new Error('Expected an .mp4 or .webm output.');
+      const directory = await fs.stat(path.dirname(target));
+      if (!directory.isDirectory()) throw new Error('Output directory does not exist.');
+      try {
+        const stat = await fs.lstat(target);
+        if (!stat.isFile() || stat.isSymbolicLink())
+          throw new Error('Output must be a regular file.');
+        if (input.overwrite !== true)
+          throw new Error('Output already exists; set overwrite=true to replace it.');
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+      }
+      return { path: target };
+    },
   });
 
   async function dispatch(command: CommandName, args: unknown) {
@@ -203,7 +193,7 @@ export async function startMcpServer({
       }, 60_000);
       pending = { id, resolve, reject, timer };
       try {
-        getWindow()?.webContents.send('mcp:command', {
+        emit(getWindow(), 'mcp:command', {
           id,
           command,
           args,
@@ -333,11 +323,8 @@ export async function startMcpServer({
       http.closeAllConnections();
     });
     for (const server of activeServers) void server.close();
-    ipcMain.removeListener('mcp:ready', onReady);
-    ipcMain.removeListener('mcp:response', onResponse);
-    ipcMain.removeListener('mcp:not-ready', onNotReady);
-    for (const channel of ['mcp:read-file', 'mcp:write-project', 'mcp:check-output'])
-      ipcMain.removeHandler(channel);
+    stopListening();
+    removeHandlers();
     unwatchWindow();
     return closing;
   };
@@ -349,7 +336,7 @@ export async function startMcpServer({
     await fs.mkdir(userDataPath, { recursive: true });
     await fs.writeFile(configPath, JSON.stringify({ url, token }, null, 2), { mode: 0o600 });
     // Renderer may have initialized before the server finished loading.
-    getWindow()?.webContents.send('mcp:probe');
+    emit(getWindow(), 'mcp:probe');
     console.info(`[mcp] Listening at ${url}; connection credentials: ${configPath}`);
     return close;
   } catch (error) {

@@ -1,5 +1,5 @@
-import { getDesktopBridge } from '@/app/desktop';
 import { logger, renderBackend, renderer } from '@/app/global';
+import { platform } from '@/lib/platform';
 import { getVideoEncoderConfig, type VideoEncoder, type VideoQuality } from './encoders';
 
 export type VideoExportProgress = {
@@ -39,7 +39,7 @@ function ensureExtension(filePath: string, extension: string) {
 
 /**
  * Offline desktop export: raw RGBA frames → ffmpeg encoder, optional audio,
- * merge into the final container. Requires the Electron preload ffmpeg bridge
+ * merge into the final container. Requires the platform ffmpeg encoder
  * and a bundled ffmpeg binary.
  */
 export class VideoExportCancelledError extends Error {
@@ -76,10 +76,10 @@ export default class VideoExporter {
 
   /** Kill the pipe encoder and any in-flight run stage (audio/merge). */
   private async killActiveProcesses() {
-    const bridge = getDesktopBridge();
-    if (!bridge?.ffmpegKill) return;
+    const { encoder: ffmpeg } = platform;
+    if (!ffmpeg) return;
     const ids = [this.pipeId, this.runId].filter((value): value is string => Boolean(value));
-    await Promise.all(ids.map(processId => bridge.ffmpegKill?.(processId).catch(() => {})));
+    await Promise.all(ids.map(processId => ffmpeg.kill(processId).catch(() => {})));
   }
 
   private throwIfCancelled() {
@@ -90,14 +90,14 @@ export default class VideoExporter {
 
   /** Run a one-shot ffmpeg stage under a known id so it can be cancelled. */
   private async runStage(args: string[], stageId: string) {
-    const bridge = getDesktopBridge();
-    if (!bridge?.ffmpegRun) {
-      throw new Error('Desktop ffmpeg bridge is unavailable.');
+    const { encoder: ffmpeg } = platform;
+    if (!ffmpeg) {
+      throw new Error('ffmpeg is not available. Run pnpm install-ffmpeg.');
     }
     this.throwIfCancelled();
     this.runId = stageId;
     try {
-      await bridge.ffmpegRun(args, stageId);
+      await ffmpeg.run(args, stageId);
     } catch (error) {
       // A killed stage surfaces as a non-zero exit; report it as a cancel.
       if (this.cancelled) {
@@ -111,17 +111,12 @@ export default class VideoExporter {
   }
 
   async export(options: VideoExportOptions): Promise<string> {
-    const bridge = getDesktopBridge();
-    if (!bridge?.ffmpegStartPipe || !bridge.ffmpegWrite || !bridge.ffmpegEndPipe) {
-      throw new Error('Desktop ffmpeg bridge is unavailable.');
-    }
-
-    const env = bridge.getEnvironment?.() || {};
-    if (!env.FFMPEG_AVAILABLE || !env.FFMPEG_PATH) {
+    const { encoder: ffmpeg, files } = platform;
+    if (!ffmpeg || !files) {
       throw new Error('ffmpeg is not available. Run pnpm install-ffmpeg.');
     }
 
-    const tempRoot = String(env.TEMP_PATH || '');
+    const tempRoot = files.tempPath;
     if (!tempRoot) {
       throw new Error('Desktop temp path is unavailable.');
     }
@@ -208,7 +203,8 @@ export default class VideoExporter {
       ];
 
       this.throwIfCancelled();
-      const { id: pipeId } = await bridge.ffmpegStartPipe(videoArgs, id);
+      const pipeId = id;
+      await ffmpeg.startPipe(videoArgs, pipeId);
       this.pipeId = pipeId;
       // cancel() may have raced with start-pipe.
       if (this.cancelled) {
@@ -223,7 +219,7 @@ export default class VideoExporter {
         // Ensure even dimensions by cropping if needed.
         const frameBytes = this.normalizeFrame(pixels, width, height, w, h);
         try {
-          await bridge.ffmpegWrite(pipeId, frameBytes);
+          await ffmpeg.write(pipeId, frameBytes);
         } catch (error) {
           if (this.cancelled) {
             throw new VideoExportCancelledError();
@@ -245,7 +241,7 @@ export default class VideoExporter {
 
       this.throwIfCancelled();
       try {
-        await bridge.ffmpegEndPipe(pipeId);
+        await ffmpeg.endPipe(pipeId);
       } catch (error) {
         if (this.cancelled) {
           throw new VideoExportCancelledError();
@@ -313,13 +309,11 @@ export default class VideoExporter {
         renderer.requestRender();
       }
 
-      if (bridge.removePath) {
-        for (const file of tempFiles) {
-          try {
-            await bridge.removePath(file);
-          } catch {
-            // best-effort cleanup
-          }
+      for (const file of tempFiles) {
+        try {
+          await files.removeTemp(file);
+        } catch {
+          // best-effort cleanup
         }
       }
     }

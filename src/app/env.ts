@@ -10,13 +10,9 @@ export const env = {
   APP_NAME,
   APP_VERSION,
   BUILD_TARGET,
-  /** Build-time hint; runtime desktop is detected via `isDesktopApp()`. */
+  /** Build-time hint; the runtime answer is `platform.isDesktop` (`@/lib/platform`). */
   IS_DESKTOP_BUILD: BUILD_TARGET === 'desktop',
   USER_AGENT,
-  IS_DESKTOP: false,
-  FFMPEG_PATH: null,
-  FFMPEG_AVAILABLE: false,
-  TEMP_PATH: null,
 };
 
 export default env;

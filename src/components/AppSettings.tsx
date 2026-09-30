@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { checkForDesktopUpdates, installDesktopUpdate, isDesktopApp } from '@/app/desktop';
 import { env } from '@/app/global';
 import useDesktopUpdaterStatus from '@/app/hooks/useDesktopUpdaterStatus';
 import {
@@ -14,11 +13,12 @@ import Setting from '@/components/Setting';
 import Settings from '@/components/Settings';
 import { Button } from '@/components/ui/button';
 import i18nInstance, { LANGUAGE_STORAGE_KEY, SUPPORTED_LANGUAGES } from '@/i18n/config';
+import { platform } from '@/lib/platform';
 import { setItem } from '@/lib/storage';
 
 export default function AppSettings() {
   const { t } = useTranslation(undefined, { keyPrefix: 'settings' });
-  const desktop = isDesktopApp();
+  const desktop = platform.isDesktop;
   const [language, setLanguage] = useState<string>(
     () => i18nInstance.resolvedLanguage ?? i18nInstance.language ?? 'en',
   );
@@ -104,7 +104,7 @@ export default function AppSettings() {
 /** Current version plus update status and a manual "Check for updates" button. */
 function VersionRow() {
   const { t } = useTranslation(undefined, { keyPrefix: 'about' });
-  const desktop = isDesktopApp();
+  const desktop = platform.isDesktop;
   const { updaterAvailable, status, setStatus } = useDesktopUpdaterStatus();
 
   const busy =
@@ -114,7 +114,7 @@ function VersionRow() {
 
   function handleCheck() {
     setStatus({ state: 'checking' });
-    void checkForDesktopUpdates().then(result => {
+    void platform.updater?.check().then(result => {
       if (!result.ok && result.reason) {
         setStatus({ state: 'error', message: result.reason });
       }
@@ -122,7 +122,7 @@ function VersionRow() {
   }
 
   function handleInstall() {
-    void installDesktopUpdate();
+    void platform.updater?.install();
   }
 
   let statusText: string | null = null;

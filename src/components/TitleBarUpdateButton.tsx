@@ -1,9 +1,9 @@
 import { DownloadCloud, LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { installDesktopUpdate } from '@/app/desktop';
 import useDesktopUpdaterStatus from '@/app/hooks/useDesktopUpdaterStatus';
 import { Button } from '@/components/ui/button';
+import { platform } from '@/lib/platform';
 
 export default function TitleBarUpdateButton() {
   const { t } = useTranslation(undefined, { keyPrefix: 'title-bar' });
@@ -19,9 +19,9 @@ export default function TitleBarUpdateButton() {
     if (busy) return;
 
     setBusy(true);
-    const result = await installDesktopUpdate();
+    const result = await platform.updater?.install();
 
-    if (!result.ok) {
+    if (!result?.ok) {
       setBusy(false);
     }
   }

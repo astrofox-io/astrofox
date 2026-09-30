@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { app, BrowserWindow, dialog, ipcMain, Menu, net, protocol, session, shell } from 'electron';
 import { registerDialogIpc } from './dialogs-ipc.mjs';
 import { isPathInside, killAllFfmpeg, registerFfmpegIpc } from './ffmpeg-ipc.mjs';
+import { emit, handle } from './generated/ipc.mjs';
 import { createMcpController } from './mcp-controller.mjs';
 import { PLUGIN_SANDBOX_HEADERS } from './plugin-sandbox-policy.mjs';
 import { closeDatabase, isDatabasePersistent, openDatabase } from './storage/db.mjs';
@@ -111,51 +112,47 @@ function getWindowState() {
   };
 }
 
-function sendWindowState() {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send('window-state-changed', getWindowState());
+function getMainWindow() {
+  return mainWindow;
 }
 
+function sendWindowState() {
+  emit(mainWindow, 'window-state-changed', getWindowState());
+}
+
+// Every channel is declared in src/lib/platform/channels.ts; `handle` refuses
+// names that are not there and answers only this app's window.
 function registerIpc() {
-  ipcMain.handle('window:minimize', () => {
-    mainWindow?.minimize();
+  handle(ipcMain, getMainWindow, {
+    'window:minimize': () => {
+      mainWindow?.minimize();
+    },
+    'window:maximize': () => {
+      if (mainWindow) {
+        if (mainWindow.isMaximized()) {
+          mainWindow.unmaximize();
+        } else {
+          mainWindow.maximize();
+        }
+      }
+      return getWindowState();
+    },
+    'window:close': () => {
+      mainWindow?.close();
+    },
+    'window:get-state': () => getWindowState(),
+    'desktop:get-environment': () => getDesktopEnvironment(),
+    'desktop:show-item-in-folder': targetPath => {
+      if (typeof targetPath !== 'string' || !targetPath) {
+        throw new Error('Invalid path');
+      }
+      shell.showItemInFolder(targetPath);
+    },
   });
 
-  ipcMain.handle('window:maximize', () => {
-    if (!mainWindow) return getWindowState();
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow.maximize();
-    }
-    return getWindowState();
-  });
-
-  ipcMain.handle('window:close', () => {
-    mainWindow?.close();
-  });
-
-  ipcMain.handle('window:get-state', () => getWindowState());
-
-  ipcMain.handle('desktop:get-environment', () => getDesktopEnvironment());
-
-  ipcMain.handle('desktop:open-path', async (_event, targetPath) => {
-    if (typeof targetPath !== 'string' || !targetPath) {
-      throw new Error('Invalid path');
-    }
-    return shell.openPath(targetPath);
-  });
-
-  ipcMain.handle('desktop:show-item-in-folder', (_event, targetPath) => {
-    if (typeof targetPath !== 'string' || !targetPath) {
-      throw new Error('Invalid path');
-    }
-    shell.showItemInFolder(targetPath);
-  });
-
-  registerStorageIpc(ipcMain);
-  registerDialogIpc(ipcMain, () => mainWindow);
-  registerFfmpegIpc(ipcMain, {
+  registerStorageIpc(ipcMain, getMainWindow);
+  registerDialogIpc(ipcMain, getMainWindow);
+  registerFfmpegIpc(ipcMain, getMainWindow, {
     getFfmpegPath: getFfmpegBinaryPath,
     getTempPath,
   });
@@ -444,7 +441,7 @@ function createWindow() {
     // Title bar is 48px; y:18 centers the 12px lights. x:16 leaves a left gutter.
     trafficLightPosition: process.platform === 'darwin' ? { x: 16, y: 18 } : undefined,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(__dirname, 'generated', 'preload.mjs'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
@@ -642,8 +639,7 @@ const fakeUpdateScenario = getFakeUpdateScenario();
 
 function sendUpdaterStatus(status) {
   updaterStatus = status;
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send('updater:status', status);
+  emit(mainWindow, 'updater:status', status);
 }
 
 /**
@@ -770,46 +766,45 @@ async function setupAutoUpdater() {
 }
 
 function registerUpdaterIpc() {
-  ipcMain.handle('updater:get-status', () => updaterStatus);
-
-  ipcMain.handle('updater:check', async () => {
-    if (!autoUpdater) {
-      return { ok: false, reason: 'unavailable' };
-    }
-    try {
-      const result = await autoUpdater.checkForUpdates();
-      return { ok: true, version: result?.updateInfo?.version };
-    } catch (error) {
-      // The 'error' event already forwarded the status; surface to caller too.
-      return { ok: false, reason: error?.message || String(error) };
-    }
-  });
-
-  ipcMain.handle('updater:download', async () => {
-    if (!autoUpdater) {
-      return { ok: false, reason: 'unavailable' };
-    }
-    try {
-      await autoUpdater.downloadUpdate();
-      return { ok: true };
-    } catch (error) {
-      return { ok: false, reason: error?.message || String(error) };
-    }
-  });
-
-  ipcMain.handle('updater:install', async () => {
-    if (!autoUpdater) {
-      return { ok: false, reason: 'unavailable' };
-    }
-    // Let the renderer finish the IPC round-trip before the app tears down.
-    setImmediate(() => {
-      try {
-        autoUpdater?.quitAndInstall(false, true);
-      } catch (error) {
-        console.error('quitAndInstall failed:', error);
+  handle(ipcMain, getMainWindow, {
+    'updater:get-status': () => updaterStatus,
+    'updater:check': async () => {
+      if (!autoUpdater) {
+        return { ok: false, reason: 'unavailable' };
       }
-    });
-    return { ok: true };
+      try {
+        const result = await autoUpdater.checkForUpdates();
+        return { ok: true, version: result?.updateInfo?.version };
+      } catch (error) {
+        // The 'error' event already forwarded the status; surface to caller too.
+        return { ok: false, reason: error?.message || String(error) };
+      }
+    },
+    'updater:download': async () => {
+      if (!autoUpdater) {
+        return { ok: false, reason: 'unavailable' };
+      }
+      try {
+        await autoUpdater.downloadUpdate();
+        return { ok: true };
+      } catch (error) {
+        return { ok: false, reason: error?.message || String(error) };
+      }
+    },
+    'updater:install': async () => {
+      if (!autoUpdater) {
+        return { ok: false, reason: 'unavailable' };
+      }
+      // Let the renderer finish the IPC round-trip before the app tears down.
+      setImmediate(() => {
+        try {
+          autoUpdater?.quitAndInstall(false, true);
+        } catch (error) {
+          console.error('quitAndInstall failed:', error);
+        }
+      });
+      return { ok: true };
+    },
   });
 }
 

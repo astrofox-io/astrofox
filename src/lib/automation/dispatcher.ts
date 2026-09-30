@@ -9,7 +9,6 @@ import projectStore, {
   snapshotProject,
 } from '@/app/actions/project';
 import { listTimelineElements } from '@/app/actions/timeline';
-import { getDesktopBridge, isFfmpegAvailable } from '@/app/desktop';
 import { projectDocument } from '@/app/document';
 import { api, player, renderBackend, renderer, stage } from '@/app/global';
 import AudioReactor from '@/lib/audio/AudioReactor';
@@ -18,6 +17,7 @@ import type Entity from '@/lib/core/Entity';
 import Scene from '@/lib/core/Scene';
 import { canReorder, layerKind } from '@/lib/document/selection';
 import type { DocumentOp } from '@/lib/document/types';
+import { platform } from '@/lib/platform';
 import {
   getProjectDuration,
   getProjectFps,
@@ -52,7 +52,7 @@ const jobs = new Map<string, ExportJob>();
 let activeJob: ExportJob | undefined;
 
 function automation() {
-  const bridge = getDesktopBridge()?.automation;
+  const bridge = platform.automation;
   if (!bridge) throw new Error('Desktop automation bridge is unavailable.');
   return bridge;
 }
@@ -424,7 +424,7 @@ const handlers: Handlers = {
     return transportSummary();
   },
   start_export: async args => {
-    if (!isFfmpegAvailable()) throw new Error('Bundled ffmpeg is unavailable.');
+    if (!platform.encoder) throw new Error('Bundled ffmpeg is unavailable.');
     if (args.includeAudio && !player.hasAudio())
       throw new Error('Load an audio file before exporting with audio, or set includeAudio=false.');
     const duration = getProjectDuration();

@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { handle } from './generated/ipc.mjs';
 
 /**
  * @typedef {{
@@ -204,214 +205,217 @@ export function killAllFfmpeg() {
 
 /**
  * @param {import('electron').IpcMain} ipcMain
+ * @param {() => import('electron').BrowserWindow | null} getMainWindow
  * @param {{ getFfmpegPath: () => string, getTempPath: () => string }} deps
  */
-export function registerFfmpegIpc(ipcMain, deps) {
-  ipcMain.handle('ffmpeg:run', async (_event, payload = {}) => {
-    const args = Array.isArray(payload.args) ? payload.args.map(String) : [];
-    const id = typeof payload.id === 'string' && payload.id ? payload.id : randomUUID();
+export function registerFfmpegIpc(ipcMain, getMainWindow, deps) {
+  handle(ipcMain, getMainWindow, {
+    'ffmpeg:run': async (payload = {}) => {
+      const args = Array.isArray(payload.args) ? payload.args.map(String) : [];
+      const id = typeof payload.id === 'string' && payload.id ? payload.id : randomUUID();
 
-    if (processes.has(id)) {
-      throw new Error(`ffmpeg process already exists: ${id}`);
-    }
-
-    const managed = spawnFfmpeg(deps.getFfmpegPath(), args, { pipeStdin: false });
-    processes.set(id, managed);
-
-    let result;
-    try {
-      result = await managed.exit;
-    } finally {
-      processes.delete(id);
-    }
-
-    if (result.error || result.code !== 0) {
-      throw new Error(describeExit(result));
-    }
-    return { ok: true, id };
-  });
-
-  ipcMain.handle('ffmpeg:start-pipe', async (_event, payload = {}) => {
-    const args = Array.isArray(payload.args) ? payload.args.map(String) : [];
-    const id = typeof payload.id === 'string' && payload.id ? payload.id : randomUUID();
-
-    if (processes.has(id)) {
-      throw new Error(`ffmpeg process already exists: ${id}`);
-    }
-
-    const managed = spawnFfmpeg(deps.getFfmpegPath(), args, { pipeStdin: true });
-    processes.set(id, managed);
-
-    // If ffmpeg dies before the renderer ends the pipe (bad args, spawn
-    // failure) drop the entry once nobody could still be waiting on it. The
-    // end-pipe handler removes it itself on the normal path.
-    managed.exit.then(result => {
-      if (result.error) {
-        // Keep it around briefly so write/end can report the error, then drop.
-        setTimeout(() => {
-          if (processes.get(id) === managed) processes.delete(id);
-        }, 60_000).unref?.();
+      if (processes.has(id)) {
+        throw new Error(`ffmpeg process already exists: ${id}`);
       }
-    });
 
-    return { id };
-  });
+      const managed = spawnFfmpeg(deps.getFfmpegPath(), args, { pipeStdin: false });
+      processes.set(id, managed);
 
-  ipcMain.handle('ffmpeg:write', async (_event, payload = {}) => {
-    const id = String(payload.id || '');
-    const managed = processes.get(id);
-    if (!managed?.proc?.stdin) {
-      throw new Error(`Unknown ffmpeg pipe process: ${id}`);
-    }
-
-    if (managed.isDone() || managed.getError()) {
-      // A stdin error without an exit means ffmpeg is wedged; don't wait on it.
-      if (!managed.isDone()) {
-        killManaged(managed);
+      let result;
+      try {
+        result = await managed.exit;
+      } finally {
+        processes.delete(id);
       }
-      const result = await managed.exit;
-      processes.delete(id);
-      throw new Error(describeExit(result));
-    }
 
-    const data = payload.data;
-    const buffer = Buffer.isBuffer(data)
-      ? data
-      : Buffer.from(data instanceof ArrayBuffer ? data : new Uint8Array(data));
+      if (result.error || result.code !== 0) {
+        throw new Error(describeExit(result));
+      }
+      return { ok: true, id };
+    },
 
-    const stdin = managed.proc.stdin;
-    if (stdin.destroyed || stdin.writableEnded) {
-      throw new Error(`ffmpeg stdin is closed\n${stderrTail(managed.getStderr())}`.trim());
-    }
+    'ffmpeg:start-pipe': async (payload = {}) => {
+      const args = Array.isArray(payload.args) ? payload.args.map(String) : [];
+      const id = typeof payload.id === 'string' && payload.id ? payload.id : randomUUID();
 
-    await new Promise((resolve, reject) => {
-      const fail = error => {
-        stdin.off('drain', onDrain);
-        stdin.off('error', onError);
-        reject(
-          new Error(
-            `ffmpeg write failed: ${error?.message || error}\n${stderrTail(managed.getStderr())}`.trim(),
-          ),
-        );
-      };
-      const onError = error => fail(error);
-      const onDrain = () => {
-        stdin.off('error', onError);
-        resolve();
-      };
+      if (processes.has(id)) {
+        throw new Error(`ffmpeg process already exists: ${id}`);
+      }
 
-      stdin.once('error', onError);
+      const managed = spawnFfmpeg(deps.getFfmpegPath(), args, { pipeStdin: true });
+      processes.set(id, managed);
 
-      const canContinue = stdin.write(buffer, error => {
-        if (error) {
-          fail(error);
+      // If ffmpeg dies before the renderer ends the pipe (bad args, spawn
+      // failure) drop the entry once nobody could still be waiting on it. The
+      // end-pipe handler removes it itself on the normal path.
+      managed.exit.then(result => {
+        if (result.error) {
+          // Keep it around briefly so write/end can report the error, then drop.
+          setTimeout(() => {
+            if (processes.get(id) === managed) processes.delete(id);
+          }, 60_000).unref?.();
         }
       });
 
-      if (canContinue) {
-        stdin.off('error', onError);
-        resolve();
-      } else {
-        stdin.once('drain', onDrain);
+      return { id };
+    },
+
+    'ffmpeg:write': async (payload = {}) => {
+      const id = String(payload.id || '');
+      const managed = processes.get(id);
+      if (!managed?.proc?.stdin) {
+        throw new Error(`Unknown ffmpeg pipe process: ${id}`);
       }
-    });
 
-    return { ok: true, bytes: buffer.byteLength };
-  });
-
-  ipcMain.handle('ffmpeg:end-pipe', async (_event, payload = {}) => {
-    const id = String(payload.id || '');
-    const managed = processes.get(id);
-    if (!managed) {
-      throw new Error(`Unknown ffmpeg pipe process: ${id}`);
-    }
-
-    await new Promise(resolve => {
-      const stdin = managed.proc.stdin;
-      if (!stdin || stdin.destroyed || stdin.writableEnded) {
-        resolve();
-        return;
+      if (managed.isDone() || managed.getError()) {
+        // A stdin error without an exit means ffmpeg is wedged; don't wait on it.
+        if (!managed.isDone()) {
+          killManaged(managed);
+        }
+        const result = await managed.exit;
+        processes.delete(id);
+        throw new Error(describeExit(result));
       }
-      stdin.end(() => resolve());
-    });
 
-    const result = await managed.exit;
-    processes.delete(id);
-
-    if (result.error || result.code !== 0) {
-      throw new Error(describeExit(result));
-    }
-
-    return { ok: true };
-  });
-
-  ipcMain.handle('ffmpeg:kill', async (_event, payload = {}) => {
-    const id = String(payload.id || '');
-    const managed = processes.get(id);
-    if (!managed) {
-      return { ok: true };
-    }
-    processes.delete(id);
-    killManaged(managed);
-    return { ok: true };
-  });
-
-  ipcMain.handle('desktop:write-temp-file', async (_event, payload = {}) => {
-    const tempRoot = deps.getTempPath();
-    fs.mkdirSync(tempRoot, { recursive: true });
-    const name =
-      typeof payload.name === 'string' && payload.name
-        ? path.basename(payload.name)
-        : `${randomUUID()}.bin`;
-    const filePath = path.join(tempRoot, name);
-    const data = payload.data;
-    const buffer = Buffer.isBuffer(data)
-      ? data
-      : Buffer.from(data instanceof ArrayBuffer ? data : new Uint8Array(data));
-    fs.writeFileSync(filePath, buffer);
-    return { filePath };
-  });
-
-  ipcMain.handle('desktop:remove-path', async (_event, payload = {}) => {
-    const target = String(payload.filePath || '');
-    const tempRoot = path.resolve(deps.getTempPath());
-    const normalized = path.resolve(target);
-    if (!target || normalized === tempRoot || !isPathInside(tempRoot, normalized)) {
-      throw new Error('Refusing to delete path outside temp directory');
-    }
-    const removed = await unlinkWithRetry(normalized);
-    return { ok: removed };
-  });
-
-  ipcMain.handle('desktop:write-file', async (_event, payload = {}) => {
-    const target = String(payload.filePath || '');
-    if (!target || !path.isAbsolute(target)) {
-      throw new Error(`Invalid file path: ${target || '(empty)'}`);
-    }
-    const data = payload.data;
-    const buffer = Buffer.isBuffer(data)
-      ? data
-      : typeof data === 'string'
-        ? Buffer.from(data, 'utf8')
+      const data = payload.data;
+      const buffer = Buffer.isBuffer(data)
+        ? data
         : Buffer.from(data instanceof ArrayBuffer ? data : new Uint8Array(data));
-    const dir = path.dirname(target);
-    if (!fs.existsSync(dir)) {
-      await fs.promises.mkdir(dir, { recursive: true });
-    }
-    await fs.promises.writeFile(target, buffer);
-    return { ok: true, filePath: target };
-  });
 
-  ipcMain.handle('desktop:read-file', async (_event, payload = {}) => {
-    const target = String(payload.filePath || '');
-    if (!target || !fs.existsSync(target) || !fs.statSync(target).isFile()) {
-      throw new Error(`File not found: ${target}`);
-    }
-    const data = fs.readFileSync(target);
-    const name = path.basename(target);
-    return {
-      name,
-      data,
-    };
+      const stdin = managed.proc.stdin;
+      if (stdin.destroyed || stdin.writableEnded) {
+        throw new Error(`ffmpeg stdin is closed\n${stderrTail(managed.getStderr())}`.trim());
+      }
+
+      await new Promise((resolve, reject) => {
+        const fail = error => {
+          stdin.off('drain', onDrain);
+          stdin.off('error', onError);
+          reject(
+            new Error(
+              `ffmpeg write failed: ${error?.message || error}\n${stderrTail(managed.getStderr())}`.trim(),
+            ),
+          );
+        };
+        const onError = error => fail(error);
+        const onDrain = () => {
+          stdin.off('error', onError);
+          resolve();
+        };
+
+        stdin.once('error', onError);
+
+        const canContinue = stdin.write(buffer, error => {
+          if (error) {
+            fail(error);
+          }
+        });
+
+        if (canContinue) {
+          stdin.off('error', onError);
+          resolve();
+        } else {
+          stdin.once('drain', onDrain);
+        }
+      });
+
+      return { ok: true, bytes: buffer.byteLength };
+    },
+
+    'ffmpeg:end-pipe': async (payload = {}) => {
+      const id = String(payload.id || '');
+      const managed = processes.get(id);
+      if (!managed) {
+        throw new Error(`Unknown ffmpeg pipe process: ${id}`);
+      }
+
+      await new Promise(resolve => {
+        const stdin = managed.proc.stdin;
+        if (!stdin || stdin.destroyed || stdin.writableEnded) {
+          resolve();
+          return;
+        }
+        stdin.end(() => resolve());
+      });
+
+      const result = await managed.exit;
+      processes.delete(id);
+
+      if (result.error || result.code !== 0) {
+        throw new Error(describeExit(result));
+      }
+
+      return { ok: true };
+    },
+
+    'ffmpeg:kill': async (payload = {}) => {
+      const id = String(payload.id || '');
+      const managed = processes.get(id);
+      if (!managed) {
+        return { ok: true };
+      }
+      processes.delete(id);
+      killManaged(managed);
+      return { ok: true };
+    },
+
+    'desktop:write-temp-file': async (payload = {}) => {
+      const tempRoot = deps.getTempPath();
+      fs.mkdirSync(tempRoot, { recursive: true });
+      const name =
+        typeof payload.name === 'string' && payload.name
+          ? path.basename(payload.name)
+          : `${randomUUID()}.bin`;
+      const filePath = path.join(tempRoot, name);
+      const data = payload.data;
+      const buffer = Buffer.isBuffer(data)
+        ? data
+        : Buffer.from(data instanceof ArrayBuffer ? data : new Uint8Array(data));
+      fs.writeFileSync(filePath, buffer);
+      return { filePath };
+    },
+
+    'desktop:remove-path': async (payload = {}) => {
+      const target = String(payload.filePath || '');
+      const tempRoot = path.resolve(deps.getTempPath());
+      const normalized = path.resolve(target);
+      if (!target || normalized === tempRoot || !isPathInside(tempRoot, normalized)) {
+        throw new Error('Refusing to delete path outside temp directory');
+      }
+      const removed = await unlinkWithRetry(normalized);
+      return { ok: removed };
+    },
+
+    'desktop:write-file': async (payload = {}) => {
+      const target = String(payload.filePath || '');
+      if (!target || !path.isAbsolute(target)) {
+        throw new Error(`Invalid file path: ${target || '(empty)'}`);
+      }
+      const data = payload.data;
+      const buffer = Buffer.isBuffer(data)
+        ? data
+        : typeof data === 'string'
+          ? Buffer.from(data, 'utf8')
+          : Buffer.from(data instanceof ArrayBuffer ? data : new Uint8Array(data));
+      const dir = path.dirname(target);
+      if (!fs.existsSync(dir)) {
+        await fs.promises.mkdir(dir, { recursive: true });
+      }
+      await fs.promises.writeFile(target, buffer);
+      return { ok: true, filePath: target };
+    },
+
+    'desktop:read-file': async (payload = {}) => {
+      const target = String(payload.filePath || '');
+      if (!target || !fs.existsSync(target) || !fs.statSync(target).isFile()) {
+        throw new Error(`File not found: ${target}`);
+      }
+      const data = fs.readFileSync(target);
+      const name = path.basename(target);
+      return {
+        name,
+        data,
+      };
+    },
   });
 }
