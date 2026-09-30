@@ -1,6 +1,8 @@
 import { BLANK_IMAGE } from '@/app/constants';
 import Display from '@/lib/core/Display';
+import { layer3D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
 import { GRID_MOTION_OPTIONS } from '@/lib/core/render/geometry/gridMotion';
+import { MeshGridDisplayLayer3D } from '@/lib/core/render/geometry/MeshGridDisplayLayer3D';
 import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
 
 const materialOptions = ['Basic', 'Lambert', 'Normal', 'Phong', 'Physical', 'Points', 'Standard'];
@@ -211,3 +213,5 @@ export default class MeshGridDisplay extends Display {
     return super.update(nextProperties);
   }
 }
+
+registerDisplayLayer(MeshGridDisplay.config.name, layer3D(MeshGridDisplayLayer3D));

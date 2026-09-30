@@ -1,5 +1,7 @@
 import { BLANK_IMAGE } from '@/app/constants';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { VideoDisplayLayer } from '@/lib/core/render/layers/VideoDisplayLayer';
 import { isDefined } from '@/lib/utils/array';
 import { fitMediaWithinBounds } from '@/lib/utils/media';
 
@@ -315,3 +317,5 @@ export default class VideoDisplay extends Display {
     this.video.load();
   }
 }
+
+registerDisplayLayer(VideoDisplay.config.name, layer2D(VideoDisplayLayer));

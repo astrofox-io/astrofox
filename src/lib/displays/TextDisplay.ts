@@ -2,6 +2,8 @@ import { resolveFontFamily } from '@/app/fontFamilies';
 import CanvasText from '@/lib/canvas/CanvasText';
 import fonts from '@/lib/config/fonts.json';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { TextDisplayLayer } from '@/lib/core/render/layers/TextDisplayLayer';
 import { stageHeight, stageWidth } from '@/lib/utils/controls';
 
 const fontOptions = fonts.map(item => ({
@@ -130,3 +132,5 @@ export default class TextDisplay extends Display {
     return super.update(properties);
   }
 }
+
+registerDisplayLayer(TextDisplay.config.name, layer2D(TextDisplayLayer));

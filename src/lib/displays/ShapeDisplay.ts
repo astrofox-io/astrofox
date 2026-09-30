@@ -1,5 +1,7 @@
 import CanvasShape from '@/lib/canvas/CanvasShape';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { ShapeDisplayLayer } from '@/lib/core/render/layers/ShapeDisplayLayer';
 import { maxSize, property, stageHeight, stageWidth } from '@/lib/utils/controls';
 
 const shapeOptions = ['Circle', 'Triangle', 'Square', 'Rectangle', 'Hexagon'];
@@ -162,3 +164,5 @@ export default class ShapeDisplay extends Display {
     return super.update(properties);
   }
 }
+
+registerDisplayLayer(ShapeDisplay.config.name, layer2D(ShapeDisplayLayer));

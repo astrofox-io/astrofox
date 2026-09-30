@@ -2,6 +2,8 @@ import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from '@/app/constants';
 import WaveParser from '@/lib/audio/WaveParser';
 import CanvasWave from '@/lib/canvas/CanvasWave';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { SoundWaveDisplayLayer } from '@/lib/core/render/layers/SoundWaveDisplayLayer';
 import { stageHeight, stageWidth } from '@/lib/utils/controls';
 
 export default class SoundWaveDisplay extends Display {
@@ -166,3 +168,5 @@ export default class SoundWaveDisplay extends Display {
     return changed;
   }
 }
+
+registerDisplayLayer(SoundWaveDisplay.config.name, layer2D(SoundWaveDisplayLayer));

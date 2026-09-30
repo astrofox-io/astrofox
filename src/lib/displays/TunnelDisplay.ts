@@ -1,4 +1,6 @@
 import Display from '@/lib/core/Display';
+import { layer3D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { TunnelDisplayLayer3D } from '@/lib/core/render/geometry/TunnelDisplayLayer3D';
 import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
 
 export default class TunnelDisplay extends Display {
@@ -164,3 +166,5 @@ export default class TunnelDisplay extends Display {
     super(TunnelDisplay, properties);
   }
 }
+
+registerDisplayLayer(TunnelDisplay.config.name, layer3D(TunnelDisplayLayer3D));

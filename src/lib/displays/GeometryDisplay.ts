@@ -1,6 +1,8 @@
 import { BLANK_IMAGE } from '@/app/constants';
 import FFTParser from '@/lib/audio/FFTParser';
 import Display from '@/lib/core/Display';
+import { layer3D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { GeometryDisplayLayer3D } from '@/lib/core/render/geometry/GeometryDisplayLayer3D';
 import { DISPLAY_3D_DEFAULTS, display3DControls } from '@/lib/displays/shared/display3DConfig';
 
 const shapeOptions = [
@@ -199,3 +201,5 @@ export default class GeometryDisplay extends Display {
     return changed;
   }
 }
+
+registerDisplayLayer(GeometryDisplay.config.name, layer3D(GeometryDisplayLayer3D));

@@ -1,6 +1,8 @@
 import { BLANK_IMAGE } from '@/app/constants';
 import { renderer } from '@/app/global';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { ImageDisplayLayer } from '@/lib/core/render/layers/ImageDisplayLayer';
 import { isDefined } from '@/lib/utils/array';
 import { fitMediaWithinBounds } from '@/lib/utils/media';
 
@@ -250,3 +252,14 @@ export default class ImageDisplay extends Display {
     return changed;
   }
 }
+
+/** Nothing is drawn until an image is chosen. */
+function hasImageSource(display: { properties: Record<string, unknown> }) {
+  const { src } = display.properties;
+  return Boolean(src) && src !== BLANK_IMAGE;
+}
+
+registerDisplayLayer(
+  ImageDisplay.config.name,
+  layer2D(ImageDisplayLayer, { when: hasImageSource }),
+);

@@ -16,9 +16,9 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Scene**: a Layer that holds Displays and Effects and composites them onto the canvas.
 
-**Display**: a Layer that draws something (image, text, spectrum, 3D geometry).
+**Display**: a Layer that draws something (image, text, spectrum, 3D geometry). Its module in `src/lib/displays` also registers the layer component that draws it (`registerDisplayLayer`, with `layer2D` or `layer3D`), so adding a display means its module, its layer component and a line in `src/lib/displays/index.ts`.
 
-**Effect**: a Layer that post-processes its Scene (blur, glitch, VHS).
+**Effect**: a Layer that post-processes its Scene (blur, glitch, VHS). Its module in `src/lib/effects` registers its render pass (`registerEffectPass`).
 
 **Reactor**: turns audio (or a static signal) into a 0–1 output that can drive a Layer's numeric property through a **binding** (`{ id, min, max }`).
 

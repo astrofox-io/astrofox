@@ -2,6 +2,8 @@ import { FFT_SIZE, SAMPLE_RATE } from '@/app/constants';
 import FFTParser from '@/lib/audio/FFTParser';
 import CanvasBars from '@/lib/canvas/CanvasBars';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { BarSpectrumDisplayLayer } from '@/lib/core/render/layers/BarSpectrumDisplayLayer';
 import { property, stageHeight, stageWidth } from '@/lib/utils/controls';
 
 export default class BarSpectrumDisplay extends Display {
@@ -212,3 +214,5 @@ export default class BarSpectrumDisplay extends Display {
     return changed;
   }
 }
+
+registerDisplayLayer(BarSpectrumDisplay.config.name, layer2D(BarSpectrumDisplayLayer));

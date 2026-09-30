@@ -2,6 +2,8 @@ import { FFT_SIZE, SAMPLE_RATE } from '@/app/constants';
 import FFTParser from '@/lib/audio/FFTParser';
 import CanvasRadial from '@/lib/canvas/CanvasRadial';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { RadialSpectrumDisplayLayer } from '@/lib/core/render/layers/RadialSpectrumDisplayLayer';
 import { property, stageHeight, stageWidth } from '@/lib/utils/controls';
 
 export default class RadialSpectrumDisplay extends Display {
@@ -199,3 +201,5 @@ export default class RadialSpectrumDisplay extends Display {
     return changed;
   }
 }
+
+registerDisplayLayer(RadialSpectrumDisplay.config.name, layer2D(RadialSpectrumDisplayLayer));

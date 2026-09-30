@@ -1,11 +1,5 @@
-export { BarSpectrumDisplayLayer } from './BarSpectrumDisplayLayer';
+// Shared building blocks for display layers, used by plugin displays too.
+// Core display layers are imported by their display module
+// (src/lib/displays/*), which registers them.
 export { CanvasTextureLayer } from './CanvasTextureLayer';
-export { ImageDisplayLayer } from './ImageDisplayLayer';
-export { RadialSpectrumDisplayLayer } from './RadialSpectrumDisplayLayer';
-export { ShapeDisplayLayer } from './ShapeDisplayLayer';
-export { SoundWaveDisplayLayer } from './SoundWaveDisplayLayer';
-export { TextDisplayLayer } from './TextDisplayLayer';
 export { getThreeBlending, TexturePlane } from './TexturePlane';
-export { VideoDisplayLayer } from './VideoDisplayLayer';
-export { WaveformRingDisplayLayer } from './WaveformRingDisplayLayer';
-export { WaveSpectrumDisplayLayer } from './WaveSpectrumDisplayLayer';

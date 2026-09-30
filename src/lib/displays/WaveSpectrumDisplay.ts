@@ -2,6 +2,8 @@ import { FFT_SIZE, SAMPLE_RATE } from '@/app/constants';
 import FFTParser from '@/lib/audio/FFTParser';
 import CanvasWave from '@/lib/canvas/CanvasWave';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { WaveSpectrumDisplayLayer } from '@/lib/core/render/layers/WaveSpectrumDisplayLayer';
 import { property, stageHeight, stageWidth } from '@/lib/utils/controls';
 
 export default class WaveSpectrumDisplay extends Display {
@@ -181,3 +183,5 @@ export default class WaveSpectrumDisplay extends Display {
     return changed;
   }
 }
+
+registerDisplayLayer(WaveSpectrumDisplay.config.name, layer2D(WaveSpectrumDisplayLayer));

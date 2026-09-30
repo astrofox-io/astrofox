@@ -1,24 +1,7 @@
 // @ts-nocheck
 
-import { BLANK_IMAGE } from '@/app/constants';
 import { registerDisplayCamera, unregisterDisplayCamera } from '@/lib/utils/displayCamera';
-import {
-  Display3DLayer,
-  GeometryDisplayLayer3D,
-  MeshGridDisplayLayer3D,
-  TunnelDisplayLayer3D,
-} from './geometry';
-import {
-  BarSpectrumDisplayLayer,
-  ImageDisplayLayer,
-  RadialSpectrumDisplayLayer,
-  ShapeDisplayLayer,
-  SoundWaveDisplayLayer,
-  TextDisplayLayer,
-  VideoDisplayLayer,
-  WaveformRingDisplayLayer,
-  WaveSpectrumDisplayLayer,
-} from './layers';
+import { Display3DLayer } from './geometry/Display3DLayer';
 
 /**
  * Maps a display's `name` to how it renders on the stage. An entry's `render`
@@ -28,7 +11,10 @@ import {
  * marks displays that own a 3D camera (rendered through Display3DLayer) so
  * the stage can offer camera controls for them.
  *
- * Core displays register below; external plugins register at install time.
+ * Core displays register themselves from their entity module
+ * (src/lib/displays/*), the same way effects register their passes; plugin
+ * displays register at install time. StageRoot consults only this registry,
+ * so adding a display touches its own module and its layer component.
  */
 const registry = new Map();
 
@@ -46,34 +32,26 @@ export function getDisplayLayerEntry(name) {
   return registry.get(name) ?? null;
 }
 
-function simple2D(Component) {
+/**
+ * A display drawn by a 2D layer component, which receives { display, order,
+ * frameData } plus the scene's blending props. `when`, if given, decides per
+ * frame whether there is anything to draw.
+ */
+export function layer2D(Component, { when } = {}) {
   return {
-    render: ({ display, order, frameData, sceneProps }) => (
-      <Component display={display} order={order} frameData={frameData} {...sceneProps} />
-    ),
+    render: ({ display, order, frameData, sceneProps }) =>
+      when && !when(display) ? null : (
+        <Component display={display} order={order} frameData={frameData} {...sceneProps} />
+      ),
   };
 }
 
-registerDisplayLayer('ImageDisplay', {
-  render: ({ display, order, sceneProps }) => {
-    const src = display.properties?.src;
-    if (!src || src === BLANK_IMAGE) {
-      return null;
-    }
-    return <ImageDisplayLayer display={display} order={order} {...sceneProps} />;
-  },
-});
-
-registerDisplayLayer('VideoDisplay', simple2D(VideoDisplayLayer));
-registerDisplayLayer('TextDisplay', simple2D(TextDisplayLayer));
-registerDisplayLayer('ShapeDisplay', simple2D(ShapeDisplayLayer));
-registerDisplayLayer('BarSpectrumDisplay', simple2D(BarSpectrumDisplayLayer));
-registerDisplayLayer('RadialSpectrumDisplay', simple2D(RadialSpectrumDisplayLayer));
-registerDisplayLayer('WaveSpectrumDisplay', simple2D(WaveSpectrumDisplayLayer));
-registerDisplayLayer('WaveformRingDisplay', simple2D(WaveformRingDisplayLayer));
-registerDisplayLayer('SoundWaveDisplay', simple2D(SoundWaveDisplayLayer));
-
-function camera3D(Component) {
+/**
+ * A display with its own 3D scene and camera: the component renders inside
+ * Display3DLayer, which owns the camera, orbit controls and the texture it is
+ * composited from.
+ */
+export function layer3D(Component) {
   return {
     camera: true,
     render: ({ display, order, frameData, width, height, cameraModeActive, sceneProps }) => (
@@ -89,7 +67,3 @@ function camera3D(Component) {
     ),
   };
 }
-
-registerDisplayLayer('GeometryDisplay', camera3D(GeometryDisplayLayer3D));
-registerDisplayLayer('TunnelDisplay', camera3D(TunnelDisplayLayer3D));
-registerDisplayLayer('MeshGridDisplay', camera3D(MeshGridDisplayLayer3D));

@@ -2,6 +2,8 @@ import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from '@/app/constants';
 import WaveParser from '@/lib/audio/WaveParser';
 import CanvasWaveRing from '@/lib/canvas/CanvasWaveRing';
 import Display from '@/lib/core/Display';
+import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
+import { WaveformRingDisplayLayer } from '@/lib/core/render/layers/WaveformRingDisplayLayer';
 import { stageHeight, stageWidth } from '@/lib/utils/controls';
 
 export default class WaveformRingDisplay extends Display {
@@ -162,3 +164,5 @@ export default class WaveformRingDisplay extends Display {
     return changed;
   }
 }
+
+registerDisplayLayer(WaveformRingDisplay.config.name, layer2D(WaveformRingDisplayLayer));
