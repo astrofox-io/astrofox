@@ -449,7 +449,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
         const layer = findLayer(op.id);
 
         if (layer) {
-          layer.setClip(mergeClip(layer.clip, op.patch, projectDuration()));
+          layer.setClip(mergeClip(layer.clip, op.patch, projectDuration(), timeline.fps));
           pending.dirty.add(op.id);
         }
         break;
@@ -696,11 +696,18 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
   function checkClipEdits(operations: DocumentOp[]) {
     const clips = new Map<string, Clip | null>();
     let duration: number | undefined = projectDuration();
+    let fps: number = timeline.fps;
 
     for (const op of operations) {
-      if (op.type === 'setTimeline' && op.duration !== undefined) {
-        // Following the audio: the new length is only known once applied.
-        duration = op.duration ?? undefined;
+      if (op.type === 'setTimeline') {
+        if (op.duration !== undefined) {
+          // Following the audio: the new length is only known once applied.
+          duration = op.duration ?? undefined;
+        }
+
+        if (op.fps !== undefined) {
+          fps = op.fps;
+        }
       } else if (op.type === 'clearClip') {
         clips.set(op.id, null);
       } else if (op.type === 'setClip') {
@@ -708,7 +715,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
 
         if (layer) {
           const current = clips.has(op.id) ? clips.get(op.id) : layer.clip;
-          clips.set(op.id, mergeClip(current, op.patch, duration));
+          clips.set(op.id, mergeClip(current, op.patch, duration, fps));
         }
       }
     }

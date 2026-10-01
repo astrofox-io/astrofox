@@ -67,7 +67,8 @@ element, so timing can be typed in without opening the panel.
 ## Agents
 
 The MCP tools `get_timeline`, `set_timeline`, `set_clips`, `clear_clips`,
-`playback` (seconds) and `get_preview({ time })` expose everything above; see
+`playback` (seconds and loop) and `get_preview({ time })` expose everything
+above, with the same one-frame minimum clip length as the panel; see
 `docs/mcp.md`. Previews at a time are rendered through the export path, so
 they are exactly what the exported video contains at that time.
 

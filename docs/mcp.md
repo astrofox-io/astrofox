@@ -79,7 +79,7 @@ already-started video export; use the export cancellation control for that.
 | `create_scene`, `add_element`, `update_element`, `remove_element`, `reorder_element` | Edit scenes, displays and effects |
 | `configure_canvas` | Set dimensions and background color |
 | `create_reactor`, `update_reactor`, `remove_reactor`, `bind_reactor` | Configure audio-reactive properties |
-| `load_media`, `playback` | Load local audio/images/videos and play, pause, stop or seek the project transport (seconds) |
+| `load_media`, `playback` | Load local audio/images/videos; play, pause, stop or seek the project transport (seconds) and turn loop on or off |
 | `get_timeline`, `set_timeline`, `set_clips`, `clear_clips` | Read the project clock, set duration/fps, and decide when elements are active |
 | `get_preview` | Return the rendered composition as a bounded PNG image, live or at an exact `time` |
 | `start_export`, `get_export_status`, `cancel_export` | Start and monitor cancellable offline video exports |
@@ -107,9 +107,9 @@ seconds from the project start (`end: null` means until the project ends), and
 optional `fadeIn` / `fadeOut` in seconds that scale the element's `opacity`.
 An element without a clip is active for the whole project, so existing projects
 behave unchanged. The project **duration** follows the loaded audio unless set
-explicitly with `set_timeline`, which also allows silent intros/outros and
-projects without audio. `fps` (30 or 60) is the frame grid used for snapping
-and export.
+explicitly with `set_timeline` (1 second to 4 hours), which also allows
+silent intros/outros and projects without audio. `fps` (30 or 60) is the frame
+grid used for snapping and export.
 
 Recommended flow for a synced sequence:
 
@@ -126,7 +126,16 @@ Recommended flow for a synced sequence:
 ```
 
 `set_clips` merges into the existing clip (omitted fields are kept, `null`
-resets a field) and validates against the project duration. `get_preview` with
+resets a field) and validates against the project duration. An edit that
+moves a clip edge must leave the clip at least one frame long at the project
+`fps`, the same limit the timeline panel enforces. Times are kept exactly as
+sent and are not snapped to frames (the panel snaps only while **Snap** is on).
+
+`playback` accepts `loop` on its own or together with an `action`, for example
+`{"action":"play","loop":true}`. With loop on, playback starts again from zero
+at the project end instead of stopping. Loop is editor state, not part of the
+saved project. `get_timeline`, `get_project` and `playback` report the current
+`loop` value with the rest of the transport. `get_preview` with
 `time` renders that exact frame through the export path, so what it returns is
 what the export will contain at that time; the live view returns to the
 playhead afterwards. `describe_element_type` reports `hasOpacity` so you know

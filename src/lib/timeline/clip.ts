@@ -103,17 +103,25 @@ export function validateClipFields(input: unknown): asserts input is ClipPatch {
   }
 }
 
+/** Tolerance for comparing a clip length with one frame, absorbing float error. */
+const FRAME_EPSILON = 1e-6;
+
 /**
  * Throw a descriptive error for an edit that normalizeClip would silently fix.
  * The patch is checked against the clip it applies to, so a lone `end` is
  * compared with the existing start. An explicit end may lie past the project
  * end (shortening a project keeps authored timing), but an edited start must
  * fall before it.
+ *
+ * With `fps`, an edit that moves an edge must also leave the clip at least one
+ * frame long, the same limit the timeline panel applies (editClip). Clips that
+ * an edit does not reshape are left alone.
  */
 export function validateClipPatch(
   patch: unknown,
   current?: Clip | null,
   duration?: number,
+  fps?: number,
 ): asserts patch is ClipPatch {
   validateClipFields(patch);
 
@@ -126,6 +134,26 @@ export function validateClipPatch(
   if (duration !== undefined && patch.start !== undefined && next.start >= duration) {
     throw new Error(`clip.start must be before the project end (${duration}s).`);
   }
+
+  if (fps !== undefined && fps > 0) {
+    const frame = 1 / fps;
+    const message = `A clip must be at least one frame long (${frame.toFixed(4)}s at ${fps} fps).`;
+
+    if (next.end !== null) {
+      if (
+        (patch.start !== undefined || patch.end !== undefined) &&
+        next.end - next.start < frame - FRAME_EPSILON
+      ) {
+        throw new Error(message);
+      }
+    } else if (
+      duration !== undefined &&
+      patch.start !== undefined &&
+      duration - next.start < frame - FRAME_EPSILON
+    ) {
+      throw new Error(message);
+    }
+  }
 }
 
 /**
@@ -136,8 +164,9 @@ export function mergeClip(
   current: Clip | null | undefined,
   patch: ClipPatch,
   duration?: number,
+  fps?: number,
 ): Clip | null {
-  validateClipPatch(patch, current, duration);
+  validateClipPatch(patch, current, duration, fps);
 
   return normalizeClip(patchedClip(current, patch));
 }

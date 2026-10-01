@@ -127,6 +127,31 @@ describe('validateClipPatch', () => {
     // An unchanged start that now lies past a shortened project is kept.
     expect(() => validateClipPatch({ fadeIn: 1 }, clip(35, 40), 30)).not.toThrow();
   });
+
+  describe('with fps', () => {
+    it('rejects an edit that leaves a closed clip shorter than one frame', () => {
+      expect(() => validateClipPatch({ start: 1, end: 1.01 }, null, 30, 30)).toThrow(/one frame/);
+      expect(() => validateClipPatch({ end: 4.02 }, clip(4, 8), 30, 30)).toThrow(/one frame/);
+      expect(() => validateClipPatch({ start: 7.99 }, clip(4, 8), 30, 30)).toThrow(/one frame/);
+    });
+
+    it('accepts exactly one frame despite float error', () => {
+      expect(() => validateClipPatch({ start: 4, end: 4 + 1 / 30 }, null, 30, 30)).not.toThrow();
+      expect(() => validateClipPatch({ end: 4.1 }, clip(4, 8), 30, 10)).not.toThrow();
+    });
+
+    it('measures an open clip to the project end', () => {
+      expect(() => validateClipPatch({ start: 29.99 }, clip(4, null), 30, 30)).toThrow(/one frame/);
+      expect(() => validateClipPatch({ start: 29.9 }, clip(4, null), 30, 30)).not.toThrow();
+      // Following the audio, the project end is not known yet.
+      expect(() => validateClipPatch({ start: 29.99 }, clip(4, null), undefined, 30)).not.toThrow();
+    });
+
+    it('leaves clips the edit does not reshape alone', () => {
+      expect(() => validateClipPatch({ fadeIn: 0.5 }, clip(4, 4.001), 30, 30)).not.toThrow();
+      expect(() => validateClipPatch({ end: null }, clip(29.99, 40), 30, 30)).not.toThrow();
+    });
+  });
 });
 
 describe('activity', () => {
@@ -352,7 +377,7 @@ describe('editClip', () => {
     for (const current of clips) {
       for (const edit of edits) {
         const patch: ClipPatch = editClip(current, edit, options);
-        expect(() => mergeClip(current, patch, options.duration)).not.toThrow();
+        expect(() => mergeClip(current, patch, options.duration, options.fps)).not.toThrow();
       }
     }
   });

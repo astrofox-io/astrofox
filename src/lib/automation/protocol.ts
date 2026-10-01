@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MAX_PROJECT_DURATION, MIN_PROJECT_DURATION } from '../timeline/settings';
 
 const id = z.string().min(1).max(200);
 const properties = z.record(z.string().min(1).max(100), z.json());
@@ -113,17 +114,22 @@ export const commands = {
   },
   set_timeline: {
     description:
-      'Set the project duration in seconds (null follows the loaded audio) and/or the frame rate used for frame snapping and export.',
+      'Set the project duration in seconds (null follows the loaded audio) and/or the frame rate used for frame snapping, the one-frame minimum clip length and export.',
     schema: z
       .object({
-        duration: z.number().positive().max(14_400).nullable().optional(),
+        duration: z
+          .number()
+          .min(MIN_PROJECT_DURATION)
+          .max(MAX_PROJECT_DURATION)
+          .nullable()
+          .optional(),
         fps: fps.optional(),
       })
       .strict(),
   },
   set_clips: {
     description:
-      'Set when elements are active. Each clip is merged into the existing one: start/end in seconds (end null = until the project ends), optional fadeIn/fadeOut in seconds applied to opacity. Omitted fields are kept; null resets them.',
+      'Set when elements are active. Each clip is merged into the existing one: start/end in seconds (end null = until the project ends), optional fadeIn/fadeOut in seconds applied to opacity. Omitted fields are kept; null resets them. A clip must be at least one frame long at the project fps; times are not snapped to frames.',
     schema: z
       .object({
         clips: z
@@ -170,10 +176,11 @@ export const commands = {
   },
   playback: {
     description:
-      'Play, pause, stop or seek the project transport (works without audio). Seek with time in seconds, or position as a 0-1 fraction of the project duration.',
+      'Play, pause, stop or seek the project transport (works without audio), and/or set loop. Seek with time in seconds, or position as a 0-1 fraction of the project duration. With loop, playback starts again from zero at the project end instead of stopping. Supply action, loop or both.',
     schema: z
       .object({
-        action: z.enum(['play', 'pause', 'stop', 'seek']),
+        action: z.enum(['play', 'pause', 'stop', 'seek']).optional(),
+        loop: z.boolean().optional(),
         time: seconds.optional(),
         position: z.number().min(0).max(1).optional(),
       })

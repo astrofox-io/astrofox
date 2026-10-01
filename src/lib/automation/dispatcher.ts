@@ -25,6 +25,7 @@ import {
   pauseTransport,
   playTransport,
   seekTransport,
+  setTransportLoop,
   stopTransport,
 } from '@/lib/timeline/transport';
 import { getVideoEncoderConfig } from '@/lib/video/encoders';
@@ -141,13 +142,14 @@ function audioSummary() {
 }
 
 function transportSummary() {
-  const { time, duration, explicitDuration, fps, playing } = getTransportState();
+  const { time, duration, explicitDuration, fps, playing, loop } = getTransportState();
   return {
     time,
     duration,
     explicitDuration,
     fps,
     playing,
+    loop,
     position: duration > 0 ? time / duration : 0,
     audioDuration: player.getDuration(),
   };
@@ -415,14 +417,17 @@ const handlers: Handlers = {
     if (typeof previous === 'string' && previous.startsWith('blob:')) URL.revokeObjectURL(previous);
     return { id: elementId, path, kind };
   },
-  playback: ({ action, time, position }) => {
-    if (action === 'seek') {
-      if (time === undefined && position === undefined)
-        throw new Error('Seek requires time (seconds) or position (0-1).');
-      seekTransport(time ?? (position ?? 0) * getProjectDuration());
-    } else if (action === 'play') playTransport();
+  playback: ({ action, loop, time, position }) => {
+    if (action === undefined && loop === undefined)
+      throw new Error('Supply an action, loop, or both.');
+    if (action === 'seek' && time === undefined && position === undefined)
+      throw new Error('Seek requires time (seconds) or position (0-1).');
+    // Set loop first so a play in the same call already knows what happens at the end.
+    if (loop !== undefined) setTransportLoop(loop);
+    if (action === 'seek') seekTransport(time ?? (position ?? 0) * getProjectDuration());
+    else if (action === 'play') playTransport();
     else if (action === 'pause') pauseTransport();
-    else stopTransport();
+    else if (action === 'stop') stopTransport();
     renderer.requestRender();
     return transportSummary();
   },

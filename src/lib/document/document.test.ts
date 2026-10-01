@@ -308,6 +308,21 @@ describe('apply', () => {
     expect(doc.findLayer('d2')?.clip).toMatchObject({ start: 4, end: 8 });
   });
 
+  it('keeps edited clips at least one frame long at the project fps', () => {
+    // The fixture runs at 30 fps.
+    expect(() => doc.apply({ type: 'setClip', id: 'd2', patch: { start: 4, end: 4.02 } })).toThrow(
+      /one frame/,
+    );
+    expect(doc.findLayer('d2')?.clip).toBeNull();
+
+    // An fps change earlier in the same batch applies to later clip edits.
+    doc.apply([
+      { type: 'setTimeline', fps: 60 },
+      { type: 'setClip', id: 'd2', patch: { start: 4, end: 4.02 } },
+    ]);
+    expect(doc.findLayer('d2')?.clip).toMatchObject({ start: 4, end: 4.02 });
+  });
+
   it('rejects a batch of clip edits as a whole', () => {
     expect(() =>
       doc.apply([
