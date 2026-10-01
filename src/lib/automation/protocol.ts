@@ -1,5 +1,7 @@
 import { z } from 'zod';
+import { CANVAS_LIMITS } from '../document/rules';
 import { MAX_PROJECT_DURATION, MIN_PROJECT_DURATION } from '../timeline/settings';
+import { assertSafe } from '../utils/object';
 
 const id = z.string().min(1).max(200);
 const properties = z.record(z.string().min(1).max(100), z.json());
@@ -102,8 +104,8 @@ export const commands = {
     description: 'Set canvas dimensions and background color.',
     schema: z
       .object({
-        width: z.number().int().min(16).max(7680),
-        height: z.number().int().min(16).max(7680),
+        width: z.number().int().min(CANVAS_LIMITS.minSize).max(CANVAS_LIMITS.maxSize),
+        height: z.number().int().min(CANVAS_LIMITS.minSize).max(CANVAS_LIMITS.maxSize),
         backgroundColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
       })
       .strict(),
@@ -309,20 +311,6 @@ export function toolContent(name: CommandName, result: unknown) {
   }
 
   return [{ type: 'text' as const, text: JSON.stringify(result) }];
-}
-
-/** Refuse prototype keys, non-finite numbers and deep nesting anywhere in client input. */
-export function assertSafe(value: unknown, depth = 0): void {
-  if (depth > 25) throw new Error('Object nesting exceeds 25 levels.');
-  if (typeof value === 'number' && !Number.isFinite(value))
-    throw new Error('Numbers must be finite.');
-  if (value && typeof value === 'object') {
-    for (const [key, entry] of Object.entries(value)) {
-      if (['__proto__', 'prototype', 'constructor'].includes(key))
-        throw new Error(`Forbidden property: ${key}`);
-      assertSafe(entry, depth + 1);
-    }
-  }
 }
 
 /**

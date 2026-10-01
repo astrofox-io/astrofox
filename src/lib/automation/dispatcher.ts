@@ -271,7 +271,6 @@ const handlers: Handlers = {
     return { moved: id, targetId };
   },
   configure_canvas: ({ width, height, backgroundColor }) => {
-    if (width * height > 33_177_600) throw new Error('Canvas exceeds 8K pixel budget.');
     projectDocument.apply({ type: 'setCanvas', width, height, backgroundColor });
     return stage.toJSON();
   },

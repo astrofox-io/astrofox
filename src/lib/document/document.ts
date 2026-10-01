@@ -11,18 +11,11 @@ import type Reactors from '@/lib/core/Reactors';
 import Scene from '@/lib/core/Scene';
 import type Stage from '@/lib/core/Stage';
 import { type Clip, mergeClip } from '@/lib/timeline/clip';
-import {
-  isValidFps,
-  isValidProjectDuration,
-  MAX_PROJECT_DURATION,
-  MIN_PROJECT_DURATION,
-  normalizeTimelineSettings,
-  TIMELINE_FPS_OPTIONS,
-  type TimelineSettings,
-} from '@/lib/timeline/settings';
+import { normalizeTimelineSettings, type TimelineSettings } from '@/lib/timeline/settings';
 import type { ReactorConfig } from '@/lib/types';
 import { resetLabelCount } from '@/lib/utils/controls';
 import { uniqueId } from '@/lib/utils/crypto';
+import { checkCanvas, checkLoadInput, checkTimeline, isHexColor, type RuleType } from './rules';
 import { canReorder } from './selection';
 import {
   type ApplyOptions,
@@ -57,6 +50,8 @@ export interface DocumentDeps {
   requestRender(): void;
   /** The transport's project duration, which follows the audio when the saved duration is null. */
   getProjectDuration(): number;
+  /** Whether a string is a color the canvas can use. Defaults to hex colors only. */
+  isColor?(value: string): boolean;
 }
 
 export interface ProjectDocument {
@@ -66,8 +61,13 @@ export interface ProjectDocument {
   snapshot(): DocumentSnapshot;
   /** Apply one op, or several as a single change (one undo step). */
   apply(ops: DocumentOp | DocumentOp[], options?: ApplyOptions): ApplyResult;
-  /** Replace the whole document. Not an undo step. */
+  /**
+   * Replace the whole document. Not an undo step. Throws, changing nothing,
+   * for a document that breaks the rules (`rules.ts`).
+   */
   load(input: LoadInput): LoadResult;
+  /** Throw if `load` would refuse this document, without loading it. */
+  check(input: LoadInput): void;
   /** The live scene, display or effect the renderer draws. */
   findLayer(id: string): Display | undefined;
   findReactor(id: string): AudioReactor | undefined;
@@ -152,6 +152,14 @@ function indexState(snapshot: DocumentSnapshot): DocumentState {
  */
 export function createDocument(deps: DocumentDeps): ProjectDocument {
   const { stage, reactors } = deps;
+  const isColor = deps.isColor ?? isHexColor;
+
+  /** The class a layer or reactor name is built from, for the rules. */
+  function ruleType(name: string) {
+    if (name === 'Scene') return Scene as unknown as RuleType;
+    if (name === 'AudioReactor') return AudioReactor as unknown as RuleType;
+    return deps.resolveType(name) as unknown as RuleType | undefined;
+  }
   const listeners = new Set<(change: DocumentChange) => void>();
 
   let timeline: TimelineSettings = normalizeTimelineSettings(undefined);
@@ -563,18 +571,9 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
       }
 
       case 'setTimeline': {
+        // Checked with the rest of the batch before anything ran (checkOps).
         const duration = op.duration === undefined ? timeline.duration : op.duration;
         const fps = op.fps === undefined ? timeline.fps : op.fps;
-
-        if (duration !== null && !isValidProjectDuration(duration)) {
-          throw new Error(
-            `Project duration must be between ${MIN_PROJECT_DURATION} and ${MAX_PROJECT_DURATION} seconds.`,
-          );
-        }
-
-        if (!isValidFps(fps)) {
-          throw new Error(`Frame rate must be one of ${TIMELINE_FPS_OPTIONS.join(', ')}.`);
-        }
 
         if (duration !== timeline.duration || fps !== timeline.fps) {
           timeline = { duration, fps };
@@ -731,11 +730,43 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
 
   // ---- Interface ------------------------------------------------------------
 
+  /**
+   * Refuse a batch whose canvas or timeline would break the rules, before any
+   * of it runs, so a batch applies whole or not at all.
+   */
+  function checkOps(operations: DocumentOp[]) {
+    let canvas = store.getState().canvas;
+    let settings: { duration: unknown; fps: unknown } = timeline;
+
+    for (const op of operations) {
+      if (op.type === 'setCanvas') {
+        canvas = {
+          width: op.width ?? canvas.width,
+          height: op.height ?? canvas.height,
+          backgroundColor: op.backgroundColor ?? canvas.backgroundColor,
+        };
+        checkCanvas(canvas, isColor);
+      } else if (op.type === 'setTimeline') {
+        settings = {
+          duration: op.duration === undefined ? settings.duration : op.duration,
+          fps: op.fps === undefined ? settings.fps : op.fps,
+        };
+        checkTimeline(settings);
+      }
+    }
+  }
+
+  function check(input: LoadInput) {
+    checkLoadInput(input, { resolveType: ruleType, isColor });
+    checkCanvas({ ...DEFAULT_CANVAS, ...input.canvas }, isColor);
+  }
+
   function apply(ops: DocumentOp | DocumentOp[], options: ApplyOptions = {}): ApplyResult {
     const pending: Pending = { dirty: new Set() };
 
     const operations = Array.isArray(ops) ? ops : [ops];
 
+    checkOps(operations);
     checkClipEdits(operations);
 
     for (const op of operations) {
@@ -754,6 +785,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
   function load(input: LoadInput): LoadResult {
     // Build from a private copy: live objects keep references into their config.
     const data = structuredClone(input);
+    check(data);
     const result: LoadResult = { missing: [], missingPlugins: [] };
 
     stage.clearScenes();
@@ -792,6 +824,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
     snapshot,
     apply,
     load,
+    check,
     findLayer,
     findReactor,
     subscribe(listener) {

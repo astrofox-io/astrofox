@@ -513,3 +513,108 @@ describe('canReorder', () => {
     expect(doc.apply({ type: 'reorderLayer', sourceId: 'd2', targetId: 's1' }).changed).toBe(false);
   });
 });
+
+describe('rules', () => {
+  it('refuses a canvas outside the limits, changing nothing', () => {
+    const before = doc.getState();
+
+    expect(() => doc.apply({ type: 'setCanvas', width: 8 })).toThrow('Canvas width');
+    expect(() => doc.apply({ type: 'setCanvas', width: 7680, height: 7680 })).toThrow(
+      '8K pixel budget',
+    );
+    expect(() => doc.apply({ type: 'setCanvas', backgroundColor: 'not a color' })).toThrow(
+      'background color',
+    );
+    expect(doc.getState()).toBe(before);
+  });
+
+  it('applies a batch whole or not at all', () => {
+    expect(() =>
+      doc.apply([
+        { type: 'setProperties', id: 'd1', properties: { width: 50 } },
+        { type: 'setTimeline', fps: 25 as never },
+      ]),
+    ).toThrow('Frame rate');
+
+    expect(doc.getState().elementById.d1.properties.width).toBe(10);
+    expect(changes).toEqual([]);
+  });
+
+  it('checks a canvas change against the canvas the batch has built so far', () => {
+    doc.apply([
+      { type: 'setCanvas', width: 7680, height: 16 },
+      { type: 'setCanvas', height: 4320 },
+    ]);
+
+    expect(doc.getState().canvas).toMatchObject({ width: 7680, height: 4320 });
+  });
+
+  describe('a document to load', () => {
+    const scene = (displays: unknown[]) =>
+      ({
+        ...fixture,
+        scenes: [{ ...layer('s1', 'Scene'), displays, effects: [] }],
+      }) as LoadInput;
+
+    const refusals: [string, LoadInput, string][] = [
+      ['repeated ids', scene([layer('d1', 'BoxDisplay'), layer('d1', 'BoxDisplay')]), 'unique'],
+      [
+        'an unknown field',
+        scene([{ ...layer('d1', 'BoxDisplay'), script: 'x' }]),
+        'Unsupported entity field',
+      ],
+      ['an effect among displays', scene([layer('e1', 'BlurEffect')]), 'Wrong entity collection'],
+      [
+        'a property of the wrong shape',
+        scene([layer('d1', 'BoxDisplay', { properties: { width: 'wide' } })]),
+        'width must be number',
+      ],
+      ['a broken clip', scene([layer('d1', 'BoxDisplay', { clip: { start: 'soon' } })]), 'clip'],
+      [
+        'a binding without a reactor id',
+        scene([layer('d1', 'BoxDisplay', { reactors: { width: { min: 0, max: 1 } } })]),
+        'reactor binding',
+      ],
+      ['a canvas too large', { ...fixture, canvas: { width: 10000, height: 100 } }, 'Canvas width'],
+      [
+        'an invalid frame rate',
+        { ...fixture, timeline: { duration: null, fps: 24 } },
+        'frame rate',
+      ],
+      [
+        'a prototype key',
+        JSON.parse('{"scenes":[],"__proto__":{"polluted":true}}'),
+        'Forbidden property',
+      ],
+    ];
+
+    for (const [what, input, message] of refusals) {
+      it(`is refused for ${what}, leaving the current one`, () => {
+        const before = doc.getState();
+
+        expect(() => doc.load(input)).toThrow(message);
+        expect(() => doc.check(input)).toThrow(message);
+        expect(doc.getState()).toBe(before);
+      });
+    }
+
+    it('may hold values beyond the editing bounds, and plugins that are not installed', () => {
+      const input = scene([
+        layer('d1', 'BoxDisplay', { properties: { width: 99999 } }),
+        layer('p1', 'MissingPlugin', { properties: { anything: 'goes' } }),
+      ]);
+
+      expect(() => doc.check(input)).not.toThrow();
+    });
+
+    it('is not loaded by check', () => {
+      doc.check({ ...fixture, name: 'Other' });
+
+      expect(doc.getState().name).toBe('Fixture');
+    });
+
+    it('round-trips through its own snapshot', () => {
+      expect(() => doc.check(doc.snapshot())).not.toThrow();
+    });
+  });
+});

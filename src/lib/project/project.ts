@@ -70,7 +70,11 @@ export interface OpenResult {
 }
 
 export interface OpenOptions {
-  /** Checks the migrated snapshot before anything is loaded; throw to refuse the file. */
+  /**
+   * An extra check of the migrated snapshot before anything is loaded (MCP's
+   * size limit); throw to refuse the file. Whether it is a valid project at all
+   * the Document checks for every open.
+   */
   validate?(snapshot: ProjectSnapshot): void;
 }
 
@@ -224,6 +228,8 @@ export function createProject(deps: ProjectDeps): Project {
       { displays, effects },
     );
     options.validate?.(migrated);
+    // A file that is not a valid project is refused before its media is looked for.
+    document.check(toLoadInput(migrated, parsed.name, []));
     const { snapshot, unresolvedMediaRefs } = await deps.media.resolve(migrated, parsed.mediaRefs);
 
     const { missing, missingPlugins } = document.load(

@@ -48,3 +48,17 @@ export function isDeepEqual(a: unknown, b: unknown): boolean {
 
   return false;
 }
+
+/** Refuse prototype keys, non-finite numbers and deep nesting anywhere in outside input. */
+export function assertSafe(value: unknown, depth = 0): void {
+  if (depth > 25) throw new Error('Object nesting exceeds 25 levels.');
+  if (typeof value === 'number' && !Number.isFinite(value))
+    throw new Error('Numbers must be finite.');
+  if (value && typeof value === 'object') {
+    for (const [key, entry] of Object.entries(value)) {
+      if (['__proto__', 'prototype', 'constructor'].includes(key))
+        throw new Error(`Forbidden property: ${key}`);
+      assertSafe(entry, depth + 1);
+    }
+  }
+}

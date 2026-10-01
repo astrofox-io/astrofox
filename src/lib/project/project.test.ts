@@ -352,3 +352,14 @@ describe('save', () => {
     expect(project.isModified()).toBe(true);
   });
 });
+
+describe('open, checked', () => {
+  it('refuses a file that is not a valid project, keeping the open one', async () => {
+    edit();
+    const broken = structuredClone(projectFile);
+    broken.snapshot.scenes[0].displays.push({ ...broken.snapshot.scenes[0].displays[0] });
+
+    await expect(project.open(file('broken.afx', broken))).rejects.toThrow('unique');
+    expect(doc.getState().canvas.width).toBe(800);
+  });
+});

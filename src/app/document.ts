@@ -25,6 +25,7 @@ function get() {
     applyTimeline: settings => applyTimelineSettings(settings),
     requestRender: () => renderer.requestRender(),
     getProjectDuration,
+    isColor: value => typeof CSS === 'undefined' || CSS.supports('color', value),
   });
 
   return instance;
@@ -42,6 +43,7 @@ export const projectDocument: ProjectDocument = {
   snapshot: () => get().snapshot(),
   apply: (ops, options) => get().apply(ops, options),
   load: input => get().load(input),
+  check: input => get().check(input),
   findLayer: id => get().findLayer(id),
   findReactor: id => get().findReactor(id),
   subscribe: listener => get().subscribe(listener),

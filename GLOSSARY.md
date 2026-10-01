@@ -14,6 +14,7 @@ Domain terms used in the code. Add a term when a module is named after it.
 - Every edit, from the UI, MCP automation or undo, goes through `projectDocument.apply(op)`. Several ops in one call are one undo step.
 - The live object graph (`stage`, `reactors`) is the only copy that is edited; the Document publishes an immutable snapshot of it for React (`useDocument`), undo and saving.
 - A load (open, new project, undo, redo) replaces the whole Document and is never an undo step itself.
+- The Document's **rules** (`src/lib/document/rules.ts`) say what it may hold: canvas size and color limits, timeline settings, well-formed layers with unique ids and properties in their type's shape, clips and bindings. `apply` refuses a batch that would break them before any of it runs; `load` and `check` refuse such a document, so every project opened (from the menu, a drop or MCP) is checked. MCP adds only its own limits (no media through properties, at most 2000 entities).
 
 **History**: undo and redo of the Document (`createHistory` in `src/lib/document/history.ts`; the app instance is in `src/app/history.ts`). Each **step** records the Document and the **selection** (the selected layer and reactor) that went with it, and undo restores both.
 
