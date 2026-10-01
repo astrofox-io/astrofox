@@ -1,16 +1,10 @@
 import mime from 'mime';
 import audioStore, { loadAudioFile } from '@/app/actions/audio';
 import { type ExportJob, getActiveExport, getExportMode, startExport } from '@/app/actions/export';
-import projectStore, {
-  markProjectSaved,
-  newProject,
-  openProjectData,
-  serializeProjectFile,
-  snapshotProject,
-} from '@/app/actions/project';
 import { listTimelineElements } from '@/app/actions/timeline';
 import { projectDocument } from '@/app/document';
 import { api, player, renderBackend, renderer, stage } from '@/app/global';
+import { project } from '@/app/project';
 import AudioReactor from '@/lib/audio/AudioReactor';
 import type Display from '@/lib/core/Display';
 import type Entity from '@/lib/core/Entity';
@@ -88,8 +82,7 @@ function entityType(entity: Entity) {
 }
 
 function requireDiscard(discard: boolean) {
-  const state = projectStore.getState();
-  if (state.lastModified > state.opened && !discard)
+  if (project.isModified() && !discard)
     throw new Error('Unsaved project changes. Save first or explicitly set discardChanges=true.');
 }
 
@@ -207,7 +200,7 @@ const handlers: Handlers = {
   get_project: () =>
     compact({
       name: projectDocument.getState().name,
-      ...snapshotProject(),
+      ...project.toFile(),
       unresolvedMediaRefs: projectDocument.getState().unresolvedMediaRefs,
       audio: audioSummary(),
       transport: transportSummary(),
@@ -240,7 +233,7 @@ const handlers: Handlers = {
   },
   new_project: async ({ discardChanges }) => {
     requireDiscard(discardChanges);
-    await newProject();
+    project.create();
     return handlers.get_project({});
   },
   create_scene: ({ name }) => {
@@ -346,19 +339,11 @@ const handlers: Handlers = {
     requireDiscard(discardChanges);
     const file = await readFile(path);
     requireDiscard(discardChanges);
-    const warnings = await openProjectData(file, validateSnapshot);
+    const warnings = await project.open(file, { validate: validateSnapshot });
     return { name: projectDocument.getState().name, warnings };
   },
-  save_project: async ({ path, overwrite }) => {
-    const modified = projectStore.getState().lastModified;
-    const result = await automation().writeProject({
-      path,
-      overwrite,
-      text: serializeProjectFile(),
-    });
-    markProjectSaved(modified);
-    return result;
-  },
+  save_project: ({ path, overwrite }) =>
+    project.save(({ text }) => automation().writeProject({ path, overwrite, text })),
   load_media: async ({ path, kind, elementId }) => {
     if (kind === 'audio') {
       if (elementId) throw new Error('Audio belongs to the project, not an element.');

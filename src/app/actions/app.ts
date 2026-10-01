@@ -8,7 +8,6 @@ import {
   newProject,
   openProjectFile,
   saveProject,
-  trackProjectChanges,
 } from '@/app/actions/project';
 import { projectDocument } from '@/app/document';
 import { api, library, logger, renderBackend, renderer } from '@/app/global';
@@ -367,15 +366,15 @@ export async function handleMenuAction(action: string) {
       pasteProperties();
       break;
     case 'new-project':
-      await checkUnsavedChanges(action, newProject);
+      checkUnsavedChanges(newProject);
       break;
 
     case 'open-project':
-      await checkUnsavedChanges(action, openProjectFile);
+      checkUnsavedChanges(openProjectFile);
       break;
 
     case 'save-project':
-      await saveProject(undefined);
+      await saveProject();
       break;
 
     case 'load-audio':
@@ -544,7 +543,6 @@ export async function initApp() {
     await loadPlugins();
     await loadLibrary();
     projectDocument.subscribe(keepSelectionValid);
-    trackProjectChanges();
     newProject();
 
     initTransport();

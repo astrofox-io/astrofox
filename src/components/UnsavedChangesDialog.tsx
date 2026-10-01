@@ -1,37 +1,26 @@
 import { useTranslation } from 'react-i18next';
-import { newProject, openProjectFile, saveProject } from '@/app/actions/project';
-import { useDocument } from '@/app/document';
+import { saveProject } from '@/app/actions/project';
 import Dialog from '@/components/Dialog';
 
 interface UnsavedChangesDialogProps {
-  action?: string;
+  /** What the person was doing when asked: runs once they save or discard. */
+  onContinue?: () => unknown;
   onClose?: () => void;
 }
 
-export default function UnsavedChangesDialog({ action, onClose }: UnsavedChangesDialogProps) {
+export default function UnsavedChangesDialog({ onContinue, onClose }: UnsavedChangesDialogProps) {
   const { t } = useTranslation(undefined, { keyPrefix: 'unsaved-changes' });
   const { t: tc } = useTranslation(undefined, { keyPrefix: 'common' });
-  const projectName = useDocument(state => state.name);
-
-  async function handleAction(actionType: string) {
-    if (actionType === 'new-project') {
-      await newProject();
-    } else if (actionType === 'open-project') {
-      await openProjectFile();
-    }
-  }
 
   async function closeThenRunAction() {
     onClose?.();
     await Promise.resolve();
-    if (action) {
-      await handleAction(action);
-    }
+    await onContinue?.();
   }
 
   async function handleConfirm(button: string) {
     if (button === tc('yes')) {
-      const saved = await saveProject(projectName);
+      const saved = await saveProject();
 
       if (saved) {
         await closeThenRunAction();

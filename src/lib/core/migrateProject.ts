@@ -11,6 +11,7 @@
  * All migrations are idempotent and safe to run on current-format files.
  */
 
+import type { TimelineSettings } from '@/lib/timeline/settings';
 import type { ReactorConfig } from '@/lib/types';
 
 type Properties = Record<string, unknown>;
@@ -32,9 +33,11 @@ export interface SceneSnapshot extends Record<string, unknown> {
 
 export interface ProjectSnapshot extends Record<string, unknown> {
   version?: string;
-  stage?: { properties?: Properties };
+  stage?: { name?: string; properties?: Properties };
   scenes?: SceneSnapshot[];
   reactors?: Record<string, unknown>[];
+  /** Absent in projects saved before the timeline existed: duration follows the audio. */
+  timeline?: TimelineSettings;
 }
 
 export interface MigrationComponent {

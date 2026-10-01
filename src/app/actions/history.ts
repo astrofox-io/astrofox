@@ -3,7 +3,6 @@ import { projectDocument } from '@/app/document';
 import { hasLayer } from '@/lib/document/selection';
 import type { DocumentChange, DocumentSnapshot, LayerJSON } from '@/lib/document/types';
 import appStore, { setActiveElementId, setActiveReactorId } from './app';
-import { touchProject } from './project';
 
 type PropertyClipboard = Pick<LayerJSON, 'name' | 'type' | 'properties' | 'reactors'>;
 type Entry = { document: DocumentSnapshot; elementId: string | null; reactorId: string | null };
@@ -137,7 +136,6 @@ function restore(target: Entry) {
   } finally {
     restoring = false;
   }
-  touchProject();
 }
 
 export function undo() {

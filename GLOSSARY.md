@@ -2,7 +2,12 @@
 
 Domain terms used in the code. Add a term when a module is named after it.
 
-**Project**: what a user opens and saves as an `.afx` file. Its content is the Document; its save state (opened, last modified) lives in `projectStore` (`src/app/actions/project.ts`).
+**Project**: what a user opens and saves as an `.afx` file. Its content is the Document. The Project module (`createProject` in `src/lib/project/project.ts`; the app instance is `project` in `src/app/project.ts`) is the only way to create, open or save one, and the only answer to "is it modified?". The menus and dialogs (`src/app/actions/project.ts`) and MCP automation are its two callers.
+
+- Opening returns what could not be brought back (removed elements, missing plugins, missing media); the caller decides whether to show dialogs.
+- Saving takes a `write` function (a save dialog, or a path from MCP). Once written, the project adopts the saved name, drops its unresolved media and is no longer modified, unless the Document changed while it was being written.
+- Modified means the Document recorded an edit, or was replaced by undo or redo, since the project was opened, created or saved.
+- Media sources are rewritten for saving and found again on open by the **project media** adapter (`src/app/projectMedia.ts`).
 
 **Document**: the editable content of a Project: canvas size and color, Scenes with their Displays and Effects, Reactors, timeline settings (duration, frame rate), the project name and unresolved media. `src/lib/document/document.ts`; the app instance is `projectDocument` in `src/app/document.ts`.
 
