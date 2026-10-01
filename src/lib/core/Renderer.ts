@@ -2,6 +2,12 @@ import { analyzer, events, player, reactors, renderBackend } from '@/app/global'
 import transportStore, { tickTransport } from '@/lib/timeline/transport';
 import type { RenderFrameData } from '@/lib/types';
 import Clock from './Clock';
+import { framePreparation } from './render/framePreparation';
+import {
+  createOfflineFrames,
+  type OfflineFrameSession,
+  type OfflineFrames,
+} from './render/offlineFrames';
 
 const VIDEO_RENDERING = -1;
 
@@ -25,6 +31,7 @@ export default class Renderer {
   silence: AudioBuffer | null;
   /** The project time the analyzer's current data belongs to. */
   analyzedTime: number | null;
+  private offlineFrames: OfflineFrames;
 
   constructor() {
     this.rendering = false;
@@ -54,6 +61,28 @@ export default class Renderer {
       offline: false,
       reactors: {},
     };
+
+    this.offlineFrames = createOfflineFrames({
+      ensureStage: () => renderBackend.ensureRoot(),
+      fontsReady: () => document.fonts?.ready ?? Promise.resolve(),
+      pauseLive: () => {
+        this.stop();
+        return () => this.requestRender();
+      },
+      frameAt: (time, fps) => {
+        this.analyzeAt(time);
+        return this.frameAt(VIDEO_RENDERING, time, {
+          fps,
+          delta: 1000 / fps,
+          hasUpdate: true,
+          playing: true,
+          offline: true,
+        });
+      },
+      draw: frameData => renderBackend.presentOfflineFrame(frameData),
+      readPixels: () => renderBackend.getPixels(),
+      preparation: framePreparation,
+    });
 
     // Bind context
     this.render = this.render.bind(this);
@@ -271,22 +300,12 @@ export default class Renderer {
   }
 
   /**
-   * Render project time `time` offline, as export and previews do, and return
-   * its pixels once every layer is ready and the frame is presented. The live
-   * view catches up with the playhead on its next frame.
+   * Render offline frames at project times, as export, previews at a time and
+   * saved images do. The live view pauses until `work` finishes, then catches
+   * up with the playhead; sessions run one at a time.
    */
-  renderAt(time: number, fps: number): Promise<Uint8Array> {
-    this.analyzeAt(time);
-
-    return renderBackend.renderExportFrame(
-      this.frameAt(VIDEO_RENDERING, time, {
-        fps,
-        delta: 1000 / fps,
-        hasUpdate: true,
-        playing: true,
-        offline: true,
-      }),
-    );
+  offline<T>(fps: number, work: (frames: OfflineFrameSession) => Promise<T>): Promise<T> {
+    return this.offlineFrames.session(fps, work);
   }
 
   render() {

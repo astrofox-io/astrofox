@@ -139,10 +139,6 @@ export default class VideoExporter {
       onProgress?.(progress);
     };
 
-    // Pause live render loop while exporting offline frames.
-    const wasRendering = renderer.rendering;
-    renderer.stop();
-
     try {
       report({ status: 'rendering-video', currentFrame: 0, totalFrames });
 
@@ -189,32 +185,35 @@ export default class VideoExporter {
         throw new ExportCancelledError();
       }
 
-      for (let frame = startFrame; frame < endFrame; frame += 1) {
-        this.throwIfCancelled();
+      // The live view stays paused until every frame is rendered.
+      await renderer.offline(fps, async frames => {
+        for (let frame = startFrame; frame < endFrame; frame += 1) {
+          this.throwIfCancelled();
 
-        const pixels = await renderer.renderAt(frame / fps, fps);
-        // Ensure even dimensions by cropping if needed.
-        const frameBytes = this.normalizeFrame(pixels, width, height, w, h);
-        try {
-          await ffmpeg.write(pipeId, frameBytes);
-        } catch (error) {
-          if (this.cancelled) {
-            throw new ExportCancelledError();
+          const pixels = await frames.renderAt(frame / fps);
+          // Ensure even dimensions by cropping if needed.
+          const frameBytes = this.normalizeFrame(pixels, width, height, w, h);
+          try {
+            await ffmpeg.write(pipeId, frameBytes);
+          } catch (error) {
+            if (this.cancelled) {
+              throw new ExportCancelledError();
+            }
+            throw error;
           }
-          throw error;
-        }
 
-        // Yield so the UI can update progress.
-        if ((frame - startFrame) % 2 === 0) {
-          await sleep(0);
-        }
+          // Yield so the UI can update progress.
+          if ((frame - startFrame) % 2 === 0) {
+            await sleep(0);
+          }
 
-        report({
-          status: 'rendering-video',
-          currentFrame: frame - startFrame + 1,
-          totalFrames,
-        });
-      }
+          report({
+            status: 'rendering-video',
+            currentFrame: frame - startFrame + 1,
+            totalFrames,
+          });
+        }
+      });
 
       this.throwIfCancelled();
       try {
@@ -280,11 +279,6 @@ export default class VideoExporter {
     } finally {
       this.pipeId = null;
       this.runId = null;
-      if (wasRendering) {
-        renderer.start();
-      } else {
-        renderer.requestRender();
-      }
 
       for (const file of tempFiles) {
         try {

@@ -2,6 +2,7 @@
 import { useThree } from '@react-three/fiber';
 import React from 'react';
 import { LinearFilter, SRGBColorSpace, TextureLoader } from 'three';
+import { registerFramePreparer } from '../framePreparation';
 import { TexturePlane } from './TexturePlane';
 
 export function ImageDisplayLayer({
@@ -26,16 +27,31 @@ export function ImageDisplayLayer({
     height = 0,
   } = properties;
 
-  const texture = React.useMemo(() => {
-    const nextTexture = new TextureLoader().load(src, () => invalidate());
+  const { texture, loaded } = React.useMemo(() => {
+    let settle = () => {};
+    const loaded = new Promise(resolve => {
+      settle = resolve;
+    });
+    const nextTexture = new TextureLoader().load(
+      src,
+      () => {
+        invalidate();
+        settle();
+      },
+      undefined,
+      settle,
+    );
     nextTexture.minFilter = LinearFilter;
     nextTexture.magFilter = LinearFilter;
     nextTexture.colorSpace = SRGBColorSpace;
     nextTexture.generateMipmaps = false;
     nextTexture.needsUpdate = true;
 
-    return nextTexture;
+    return { texture: nextTexture, loaded };
   }, [src, invalidate]);
+
+  // Offline frames wait until the image has loaded.
+  React.useEffect(() => registerFramePreparer(() => loaded), [loaded]);
 
   React.useEffect(() => {
     return () => {

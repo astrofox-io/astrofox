@@ -2,11 +2,9 @@
 
 import React from 'react';
 import * as THREE from 'three';
-import { renderPluginFramesForExport } from '@/lib/plugins/PluginHost';
 import { isVisibleAt } from '@/lib/timeline/clip';
 import { base64ToBytes } from '@/lib/utils/data';
 import { StageComposer } from './composer';
-import { hasUnpreparedLayers, prepareFrame } from './framePreparation';
 import RenderBackend from './RenderBackend';
 import StageRoot from './StageRoot';
 
@@ -399,33 +397,10 @@ export default class CompositorBackend extends RenderBackend {
 
   /**
    * Draw an offline frame (built by the Renderer for one project time) and
-   * return its pixels once it is presented. Layers that load asynchronously,
-   * worker plugins and videos, are ready for this exact time first.
+   * resolve once it is presented. Getting layers ready for it is the
+   * Renderer's offline session (`offlineFrames.ts`).
    */
-  async renderExportFrame(frameData) {
-    if (!this.initialized) {
-      return this.getPixels();
-    }
-
-    if (!this.root) {
-      await this.ensureRoot();
-    }
-
-    await renderPluginFramesForExport(frameData);
-    await prepareFrame(frameData);
-    await this.drawAndPresent(frameData);
-
-    // A layer that mounted during this frame (e.g. a video whose clip starts
-    // here) drew without being prepared: prepare it and draw again.
-    if (hasUnpreparedLayers()) {
-      await prepareFrame(frameData);
-      await this.drawAndPresent(frameData);
-    }
-
-    return this.getPixels();
-  }
-
-  async drawAndPresent(frameData) {
+  async presentOfflineFrame(frameData) {
     const presented = this.waitForPresentation(this.frameIndex + 1);
     this.render(frameData);
     await presented;

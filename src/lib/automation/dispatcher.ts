@@ -157,18 +157,11 @@ async function previewAt(maxSize: number, time: number) {
   const duration = getProjectDuration();
   if (time > duration) throw new Error(`time must be within the project duration (${duration}s).`);
   pauseTransport();
-  if (!(await renderBackend.ensureRoot())) throw new Error('Stage renderer is not ready.');
-  await waitForMedia();
   const fps = getProjectFps();
-  const wasRendering = renderer.rendering;
-  renderer.stop();
-  try {
-    await renderer.renderAt(Math.round(time * fps) / fps, fps);
+  return renderer.offline(fps, async frames => {
+    await frames.renderAt(Math.round(time * fps) / fps);
     return captureCanvas(maxSize);
-  } finally {
-    if (wasRendering) renderer.start();
-    else renderer.requestRender();
-  }
+  });
 }
 
 async function preview(maxSize: number) {

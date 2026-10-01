@@ -31,12 +31,19 @@ export default class RenderBackend {
   }
 
   /**
-   * Render one offline frame (export, preview) and return RGBA pixels.
+   * Draw one offline frame (export, preview) and resolve once it is presented.
    */
-  async renderExportFrame(_frameData: RenderFrameData): Promise<Uint8Array> {
+  async presentOfflineFrame(_frameData: RenderFrameData): Promise<void> {
     throw new Error(
-      `RenderBackend.renderExportFrame is not implemented for ${this.constructor.name}`,
+      `RenderBackend.presentOfflineFrame is not implemented for ${this.constructor.name}`,
     );
+  }
+
+  /**
+   * Mount the renderer on the stage canvas. False when there is no canvas yet.
+   */
+  async ensureRoot(): Promise<boolean> {
+    throw new Error(`RenderBackend.ensureRoot is not implemented for ${this.constructor.name}`);
   }
 
   /**

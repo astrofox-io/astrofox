@@ -385,16 +385,3 @@ export function unregisterPluginWorkerHost(name: string) {
 export function getPluginWorkerHost(name: string): PluginWorkerHost | null {
   return hosts.get(name) ?? null;
 }
-
-/**
- * Called by the export renderer before drawing each frame so worker plugins
- * contribute deterministic, frame-accurate bitmaps instead of whatever
- * rendered last.
- */
-export async function renderPluginFramesForExport(frameData: RenderFrameData) {
-  for (const host of hosts.values()) {
-    for (const id of [...host.instances.keys()]) {
-      await host.renderFrameAndWait(id, frameData);
-    }
-  }
-}

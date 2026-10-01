@@ -4,6 +4,7 @@ import { useThree } from '@react-three/fiber';
 import React from 'react';
 import { projectDocument } from '@/app/document';
 import { renderer } from '@/app/global';
+import { registerFramePreparer } from '@/lib/core/render/framePreparation';
 import { getDefaultCameraDistance } from '@/lib/core/render/geometry/Display3DLayer';
 import {
   clampCameraDistance,
@@ -106,6 +107,20 @@ export function ExternalDisplayLayer({
     };
   }, [display.name, display.id]);
 
+  // Offline frames wait for the worker to render this exact frame, so its
+  // bitmap comes from the frame's own time and audio.
+  React.useEffect(() => {
+    if (!host) {
+      return;
+    }
+
+    return registerFramePreparer(frame => {
+      host.ensureInstance(display.id, display.properties);
+      host.updateInstance(display.id, display.properties);
+      return host.renderFrameAndWait(display.id, frame);
+    });
+  }, [host, display]);
+
   const drawFrame = React.useCallback(
     ({ context, canvas, properties, frameData: frame }) => {
       if (!host) {
@@ -115,8 +130,8 @@ export function ExternalDisplayLayer({
       host.ensureInstance(display.id, properties);
       host.updateInstance(display.id, properties);
 
-      // Export frames are pre-rendered synchronously by the export loop
-      // (renderPluginFramesForExport); live frames are fire-and-forget.
+      // Offline frames were rendered by the preparer above; live frames are
+      // fire-and-forget.
       if (frame && !frame.offline) {
         host.requestFrame(display.id, frame);
       }

@@ -181,14 +181,16 @@ export async function saveImage() {
 
   if (!canceled) {
     try {
-      // Drawn like an export frame, so media and effects are exactly at the playhead.
-      const { time, fps } = getTransportState();
-      await renderer.renderAt(time, fps);
-
       const fileName = fileHandle?.name || filePath || `image-${Date.now()}.png`;
       const isJpeg = /jpe?g$/i.test(fileName);
       const mimeType = isJpeg ? 'image/jpeg' : 'image/png';
-      const buffer = renderBackend.getImage(mimeType);
+
+      // Drawn like an export frame, so media and effects are exactly at the playhead.
+      const { time, fps } = getTransportState();
+      const buffer = await renderer.offline(fps, async frames => {
+        await frames.renderAt(time);
+        return renderBackend.getImage(mimeType);
+      });
 
       await api.saveImageFile(fileHandle || filePath || fileName, buffer, {
         mimeType,

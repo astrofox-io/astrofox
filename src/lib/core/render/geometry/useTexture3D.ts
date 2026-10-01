@@ -6,6 +6,7 @@ import {
   type Texture,
   TextureLoader,
 } from 'three';
+import { registerFramePreparer } from '../framePreparation';
 
 const textureLoader = new TextureLoader();
 
@@ -23,16 +24,29 @@ export function useTexture3D(src: string | undefined): Texture | null {
       return;
     }
 
-    const tex = textureLoader.load(src, (loaded: Texture) => {
-      loaded.minFilter = LinearMipmapLinearFilter;
-      loaded.magFilter = LinearFilter;
-      loaded.colorSpace = SRGBColorSpace;
-      loaded.generateMipmaps = true;
-      loaded.needsUpdate = true;
-      setTexture(loaded);
+    let settle = () => {};
+    const ready = new Promise<void>(resolve => {
+      settle = resolve;
     });
+    const tex = textureLoader.load(
+      src,
+      (loaded: Texture) => {
+        loaded.minFilter = LinearMipmapLinearFilter;
+        loaded.magFilter = LinearFilter;
+        loaded.colorSpace = SRGBColorSpace;
+        loaded.generateMipmaps = true;
+        loaded.needsUpdate = true;
+        setTexture(loaded);
+        settle();
+      },
+      undefined,
+      settle,
+    );
+    // Offline frames wait until the texture has loaded.
+    const unregister = registerFramePreparer(() => ready);
 
     return () => {
+      unregister();
       tex.dispose();
       setTexture(null);
     };
