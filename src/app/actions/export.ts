@@ -1,7 +1,7 @@
 import audioStore, { loadAudioFile } from '@/app/actions/audio';
 import { raiseError } from '@/app/actions/error';
 import { showModal } from '@/app/actions/modals';
-import { api, audioContext, logger, player, renderBackend } from '@/app/global';
+import { api, audioContext, logger, player, renderBackend, renderer } from '@/app/global';
 import { t } from '@/i18n/config';
 import { platform } from '@/lib/platform';
 import transportStore, {
@@ -103,7 +103,20 @@ export function getActiveExport(): ExportJob | null {
 
 function createEncoder(mode: ExportMode): ExportEncoder {
   if (mode === 'offline') {
-    return createOfflineEncoder({ getAudioFile: () => audioStore.getState().source ?? null });
+    const { encoder: ffmpeg, files } = platform;
+
+    if (!ffmpeg || !files) {
+      throw new ExportError('unsupported', 'ffmpeg is not available. Run pnpm install-ffmpeg.');
+    }
+
+    return createOfflineEncoder({
+      ffmpeg,
+      files,
+      getAudioFile: () => audioStore.getState().source ?? null,
+      stageSize: () => renderBackend.getSize(),
+      render: (fps, work) => renderer.offline(fps, work),
+      yieldToUI: () => new Promise(resolve => window.setTimeout(resolve, 0)),
+    });
   }
 
   const canvas = renderBackend.getCanvas?.() as CaptureStreamCanvas | null;

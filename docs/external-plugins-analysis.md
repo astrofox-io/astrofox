@@ -276,7 +276,7 @@ Video export must produce identical output for identical input. Rules:
   as animation clocks and requires seeded randomness (the host passes a
   per-instance `seed`).
 - Export renders frame-by-frame and *awaits* the worker round-trip per frame
-  (the export loop is already async per frame in `VideoExporter`); live
+  (the export loop is already async per frame in `offlineEncoder.ts`); live
   rendering tolerates one frame of latency instead of blocking rAF.
 
 ---
