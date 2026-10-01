@@ -11,6 +11,7 @@ import {
 } from '@/app/actions/project';
 import { projectDocument } from '@/app/document';
 import { api, library, logger, renderBackend, renderer } from '@/app/global';
+import { connectHistory, redo, undo } from '@/app/history';
 import { getAutomaticUpdates } from '@/app/preferences';
 import { t } from '@/i18n/config';
 import { registerGeneratedNameLabels } from '@/i18n/labels';
@@ -21,14 +22,7 @@ import * as effects from '@/lib/effects';
 import { platform } from '@/lib/platform';
 import { loadInstalledPlugins } from '@/lib/plugins';
 import { getTransportState, initTransport } from '@/lib/timeline/transport';
-import {
-  copyProperties,
-  duplicateLayer,
-  initializeHistory,
-  pasteProperties,
-  redo,
-  undo,
-} from './history';
+import { copyProperties, duplicateLayer, pasteProperties } from './edit';
 
 export interface VideoExportSegment {
   startPosition: number;
@@ -548,7 +542,7 @@ export async function initApp() {
     newProject();
 
     initTransport();
-    initializeHistory();
+    connectHistory();
     renderer.start();
     appInitialized = true;
     watchDesktopUpdates();

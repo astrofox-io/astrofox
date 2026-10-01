@@ -8,10 +8,12 @@ import {
   type Canvas,
   DEFAULT_PROJECT_NAME,
   type DocumentChange,
+  type DocumentSnapshot,
   type LoadInput,
   type LoadResult,
   type MediaRef,
 } from '@/lib/document/types';
+import { isDeepEqual } from '@/lib/utils/object';
 import {
   PROJECT_FILE_MIME_TYPE,
   type ProjectFileInput,
@@ -104,7 +106,11 @@ export interface Project {
     write: (file: ProjectFileOutput) => Promise<R | null>,
     options?: SaveOptions,
   ): Promise<R | null>;
-  /** Whether the document has changed since it was opened, created or saved. */
+  /**
+   * Whether the document differs from the file it was opened from or last
+   * saved to (or, for a new project, from how it started). Undoing back to the
+   * saved state is not modified.
+   */
   isModified(): boolean;
   /** The document in project file format, without the media rewritten for saving. */
   toFile(): ProjectSnapshot;
@@ -112,6 +118,11 @@ export interface Project {
 
 /** The displays a new project starts with, back to front. */
 const STARTER_DISPLAYS = ['ImageDisplay', 'BarSpectrumDisplay', 'TextDisplay'];
+
+/** What a saved file holds of the document; missing media is worked out again on open. */
+function savedContent({ canvas, scenes, reactors, timeline, name }: DocumentSnapshot) {
+  return { canvas, scenes, reactors, timeline, name };
+}
 
 /** A migrated, media-resolved project file snapshot as Document input. */
 function toLoadInput(
@@ -141,10 +152,13 @@ function toLoadInput(
 export function createProject(deps: ProjectDeps): Project {
   const { document } = deps;
 
-  // Counts the changes that need saving: recorded edits, and loads the project
-  // did not make itself (undo and redo).
+  // Counts the changes that could need saving: recorded edits, and loads the
+  // project did not make itself (undo and redo). While it has not moved since
+  // the last save, the document is unmodified without comparing anything.
   let revision = 0;
   let savedRevision = 0;
+  /** What the file holds, compared against once the revision has moved. */
+  let saved = savedContent(document.snapshot());
 
   document.subscribe((change: DocumentChange) => {
     if (change.record || change.kind === 'load') {
@@ -152,8 +166,23 @@ export function createProject(deps: ProjectDeps): Project {
     }
   });
 
-  function markSaved() {
+  function markSaved(content = savedContent(document.snapshot())) {
+    saved = content;
     savedRevision = revision;
+  }
+
+  function isModified() {
+    if (revision === savedRevision) {
+      return false;
+    }
+
+    if (isDeepEqual(savedContent(document.snapshot()), saved)) {
+      // Back where it was saved (undone, or edited back by hand).
+      savedRevision = revision;
+      return false;
+    }
+
+    return true;
   }
 
   function toFile(): ProjectSnapshot {
@@ -219,6 +248,7 @@ export function createProject(deps: ProjectDeps): Project {
     const name = (options.name || document.getState().name || DEFAULT_PROJECT_NAME).trim();
     // Taken before writing, so changes made meanwhile (in a save dialog) stay unsaved.
     const savingRevision = revision;
+    const writing = savedContent({ ...document.snapshot(), name });
     const { snapshot, mediaRefs } = deps.media.forSave(toFile());
     const text = serializeProjectFile({ name, version: deps.appVersion, snapshot, mediaRefs });
 
@@ -243,6 +273,9 @@ export function createProject(deps: ProjectDeps): Project {
 
     if (revision === savingRevision) {
       markSaved();
+    } else {
+      // Changed while writing: the file holds the document as it was.
+      saved = writing;
     }
 
     return result;
@@ -252,7 +285,7 @@ export function createProject(deps: ProjectDeps): Project {
     create,
     open,
     save,
-    isModified: () => revision !== savedRevision,
+    isModified,
     toFile,
   };
 }

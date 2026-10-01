@@ -143,8 +143,36 @@ describe('isModified', () => {
     expect(project.isModified()).toBe(false);
   });
 
-  it('is set when someone else replaces the document, such as undo', () => {
-    doc.load(doc.snapshot());
+  it('is set when undo takes the document back past a save', async () => {
+    const before = doc.snapshot();
+    edit();
+    await saveToMemory();
+
+    doc.load(before);
+
+    expect(project.isModified()).toBe(true);
+  });
+
+  it('is cleared by undoing back to the saved state', () => {
+    const saved = doc.snapshot();
+    edit();
+    expect(project.isModified()).toBe(true);
+
+    doc.load(saved);
+
+    expect(project.isModified()).toBe(false);
+  });
+
+  it('is cleared by editing back to the saved state by hand', () => {
+    const { width } = doc.getState().canvas;
+    edit();
+    doc.apply({ type: 'setCanvas', width });
+
+    expect(project.isModified()).toBe(false);
+  });
+
+  it('is set by renaming the project', () => {
+    doc.apply({ type: 'setName', name: 'Renamed' });
 
     expect(project.isModified()).toBe(true);
   });
@@ -300,6 +328,17 @@ describe('save', () => {
 
     expect(JSON.parse(text).snapshot.stage.properties.width).not.toBe(800);
     expect(project.isModified()).toBe(true);
+  });
+
+  it('is not modified when changes made while writing were undone again', async () => {
+    const { width } = doc.getState().canvas;
+    await project.save(async () => {
+      edit();
+      doc.apply({ type: 'setCanvas', width });
+      return 'saved';
+    });
+
+    expect(project.isModified()).toBe(false);
   });
 
   it('leaves the document unsaved when writing fails', async () => {

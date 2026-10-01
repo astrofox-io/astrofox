@@ -13,9 +13,10 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import appStore, { handleMenuAction } from '@/app/actions/app';
-import useHistory, { canPasteProperties, selectedLayer } from '@/app/actions/history';
+import { canPasteProperties, selectedLayer, useHasCopiedProperties } from '@/app/actions/edit';
 import modalStore from '@/app/actions/modals';
 import { useDocument } from '@/app/document';
+import { useHistory } from '@/app/history';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -113,7 +114,9 @@ export default function EditMenu() {
 export function EditMenuItems({ layerOnly = false }: { layerOnly?: boolean }) {
   const { t: ts } = useTranslation(undefined, { keyPrefix: 'settings' });
   const { t } = useTranslation(undefined, { keyPrefix: 'menu' });
-  const { canUndo, canRedo } = useHistory();
+  const canUndo = useHistory(state => state.canUndo);
+  const canRedo = useHistory(state => state.canRedo);
+  useHasCopiedProperties();
   appStore(state => state.activeElementId);
   useDocument(state => state.scenes);
   const [modifier, setModifier] = useState('Ctrl');

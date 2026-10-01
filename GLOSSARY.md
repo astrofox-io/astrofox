@@ -6,7 +6,7 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 - Opening returns what could not be brought back (removed elements, missing plugins, missing media); the caller decides whether to show dialogs.
 - Saving takes a `write` function (a save dialog, or a path from MCP). Once written, the project adopts the saved name, drops its unresolved media and is no longer modified, unless the Document changed while it was being written.
-- Modified means the Document recorded an edit, or was replaced by undo or redo, since the project was opened, created or saved.
+- Modified means the Document differs from what the file holds: its canvas, scenes, reactors, timeline or name. Undoing back to the saved state, or editing back to it by hand, is not modified.
 - Media is rewritten for saving and found again on open by the Media module.
 
 **Document**: the editable content of a Project: canvas size and color, Scenes with their Displays and Effects, Reactors, timeline settings (duration, frame rate), the project name and unresolved media. `src/lib/document/document.ts`; the app instance is `projectDocument` in `src/app/document.ts`.
@@ -14,6 +14,12 @@ Domain terms used in the code. Add a term when a module is named after it.
 - Every edit, from the UI, MCP automation or undo, goes through `projectDocument.apply(op)`. Several ops in one call are one undo step.
 - The live object graph (`stage`, `reactors`) is the only copy that is edited; the Document publishes an immutable snapshot of it for React (`useDocument`), undo and saving.
 - A load (open, new project, undo, redo) replaces the whole Document and is never an undo step itself.
+
+**History**: undo and redo of the Document (`createHistory` in `src/lib/document/history.ts`; the app instance is in `src/app/history.ts`). Each **step** records the Document and the **selection** (the selected layer and reactor) that went with it, and undo restores both.
+
+- A step is every recorded change in one task (a click, a command), or in one **gesture** (a pointer drag, from pointer down to pointer up).
+- A change applied with `record: false` is a fact rather than an edit (saving adopts the name and clears the missing media): it is never a step, and undo and redo never take it back. Loading a Document starts a new history.
+- A selection change made while a Document change is still being handed out (the app moving the selection off a removed layer) belongs to the state after that change, so undoing a removal reselects the layer whatever order things subscribed in.
 
 **Op**: one edit to the Document, e.g. `setProperties`, `removeLayer`, `bindReactor`, `setClip`. The full list is `DocumentOp` in `src/lib/document/types.ts`.
 
