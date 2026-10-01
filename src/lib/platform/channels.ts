@@ -79,12 +79,12 @@ export const CHANNELS = {
   'desktop:remove-path': invoke<{ filePath: string }, { ok: boolean }>(),
   'desktop:show-item-in-folder': invoke<string>(),
 
-  // ffmpeg.
-  'ffmpeg:run': invoke<{ args: string[]; id: string }, { ok: boolean; id: string }>(),
-  'ffmpeg:start-pipe': invoke<{ args: string[]; id: string }, { id: string }>(),
-  'ffmpeg:write': invoke<{ id: string; data: Bytes }, { ok: boolean; bytes: number }>(),
-  'ffmpeg:end-pipe': invoke<{ id: string }, { ok: boolean }>(),
-  'ffmpeg:kill': invoke<{ id: string }, { ok: boolean }>(),
+  // ffmpeg, by export job (electron/ffmpeg.ts).
+  'ffmpeg:run': invoke<{ job: string; args: string[] }>(),
+  'ffmpeg:start-pipe': invoke<{ job: string; args: string[] }>(),
+  'ffmpeg:write': invoke<{ job: string; data: Bytes }>(),
+  'ffmpeg:end-pipe': invoke<{ job: string }>(),
+  'ffmpeg:cancel': invoke<{ job: string }>(),
 
   // Auto-update.
   'updater:get-status': invoke<never, UpdaterStatus | null>(),

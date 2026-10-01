@@ -128,21 +128,11 @@ export function createDesktopPlatform(
   const encoder: Encoder | null =
     environment.FFMPEG_AVAILABLE && environment.FFMPEG_PATH
       ? {
-          async run(args, id) {
-            await bridge.invoke('ffmpeg:run', { args, id });
-          },
-          async startPipe(args, id) {
-            await bridge.invoke('ffmpeg:start-pipe', { args, id });
-          },
-          async write(id, data) {
-            await bridge.invoke('ffmpeg:write', { id, data });
-          },
-          async endPipe(id) {
-            await bridge.invoke('ffmpeg:end-pipe', { id });
-          },
-          async kill(id) {
-            await bridge.invoke('ffmpeg:kill', { id });
-          },
+          run: (job, args) => bridge.invoke('ffmpeg:run', { job, args }),
+          startPipe: (job, args) => bridge.invoke('ffmpeg:start-pipe', { job, args }),
+          write: (job, data) => bridge.invoke('ffmpeg:write', { job, data }),
+          endPipe: job => bridge.invoke('ffmpeg:end-pipe', { job }),
+          cancel: job => bridge.invoke('ffmpeg:cancel', { job }),
         }
       : null;
 

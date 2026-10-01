@@ -81,8 +81,8 @@ describe('channels', () => {
     await expect(files.writeTemp('a.wav', new Uint8Array(1))).resolves.toBe('/tmp/Astrofox/a.wav');
     await expect(files.removeTemp('/tmp/Astrofox/a.wav')).resolves.toBe(true);
     await expect(files.read('/music/a.wav')).resolves.toMatchObject({ name: 'a.wav' });
-    await encoder.startPipe(['-i', '-'], 'job');
-    await encoder.kill('job');
+    await encoder.startPipe('job', ['-i', '-']);
+    await encoder.cancel('job');
 
     expect(calls).toEqual([
       {
@@ -91,8 +91,8 @@ describe('channels', () => {
       },
       { channel: 'desktop:remove-path', payload: { filePath: '/tmp/Astrofox/a.wav' } },
       { channel: 'desktop:read-file', payload: { filePath: '/music/a.wav' } },
-      { channel: 'ffmpeg:start-pipe', payload: { args: ['-i', '-'], id: 'job' } },
-      { channel: 'ffmpeg:kill', payload: { id: 'job' } },
+      { channel: 'ffmpeg:start-pipe', payload: { job: 'job', args: ['-i', '-'] } },
+      { channel: 'ffmpeg:cancel', payload: { job: 'job' } },
     ]);
   });
 

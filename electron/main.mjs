@@ -5,7 +5,8 @@ import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { app, BrowserWindow, dialog, ipcMain, Menu, net, protocol, session, shell } from 'electron';
 import { registerDialogIpc } from './dialogs-ipc.mjs';
-import { isPathInside, killAllFfmpeg, registerFfmpegIpc } from './ffmpeg-ipc.mjs';
+import { registerFfmpegIpc } from './generated/ffmpeg.mjs';
+import { isPathInside, registerFileIpc } from './generated/files.mjs';
 import { emit, handle } from './generated/ipc.mjs';
 import { createMcpController } from './mcp-controller.mjs';
 import { PLUGIN_SANDBOX_HEADERS } from './plugin-sandbox-policy.mjs';
@@ -36,6 +37,8 @@ const DEV_SERVER_URL =
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
 let mcpController = null;
+/** The ffmpeg processes of running exports (electron/ffmpeg.ts). */
+let ffmpegJobs = null;
 
 // Must be registered before app is ready.
 protocol.registerSchemesAsPrivileged([
@@ -152,9 +155,9 @@ function registerIpc() {
 
   registerStorageIpc(ipcMain, getMainWindow);
   registerDialogIpc(ipcMain, getMainWindow);
-  registerFfmpegIpc(ipcMain, getMainWindow, {
+  registerFileIpc(ipcMain, getMainWindow, { getTempPath });
+  ffmpegJobs = registerFfmpegIpc(ipcMain, getMainWindow, {
     getFfmpegPath: getFfmpegBinaryPath,
-    getTempPath,
   });
 }
 
@@ -491,6 +494,10 @@ ${validatedURL}`,
       );
     },
   );
+
+  // A reload or crash ends any export the window was running; its ffmpeg goes with it.
+  mainWindow.webContents.on('did-start-loading', () => ffmpegJobs?.cancelAll());
+  mainWindow.webContents.on('render-process-gone', () => ffmpegJobs?.cancelAll());
 
   mainWindow.webContents.on('render-process-gone', (_event, details) => {
     console.error('Renderer process gone:', details.reason, details.exitCode);
@@ -842,7 +849,7 @@ app.on('second-instance', () => {
 
 app.on('before-quit', () => {
   void mcpController?.close();
-  killAllFfmpeg();
+  ffmpegJobs?.cancelAll();
 });
 
 app.on('will-quit', () => {
@@ -873,7 +880,6 @@ if (hasSingleInstanceLock) {
         getWindow: () => mainWindow,
         userDataPath: app.getPath('userData'),
         version: app.getVersion(),
-        onRendererGone: killAllFfmpeg,
       });
       createWindow();
       await mcpController.start();

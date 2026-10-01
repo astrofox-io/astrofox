@@ -131,9 +131,9 @@ Running third-party JS in the main renderer realm gives it:
 - **The desktop bridge.** `window.__ASTROFOX__` is exposed to the whole main
   world via `contextBridge` (`electron/preload.mjs`). It includes:
   - `ffmpeg:run` with a **fully renderer-supplied argv** array
-    (`electron/ffmpeg-ipc.mjs:49`) — arbitrary file read/write via ffmpeg's
+    (`electron/ffmpeg.ts`) — arbitrary file read/write via ffmpeg's
     `-i` / output paths and protocol handlers;
-  - `desktop:read-file` with **no path restriction** (`ffmpeg-ipc.mjs:208`);
+  - `desktop:read-file` with **no path restriction** (`electron/files.ts`);
   - `shell.openPath` / `showItemInFolder` on arbitrary strings.
 - **A permissive window.** `sandbox: false`, no CSP anywhere, no
   `will-navigate` guard, no `setWindowOpenHandler`, no permission-request

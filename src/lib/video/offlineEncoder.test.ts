@@ -6,8 +6,8 @@ import type { ExportPlan } from './exportPlan';
 import { createOfflineEncoder, type OfflineEncoderDeps } from './offlineEncoder';
 
 interface Call {
-  op: 'run' | 'startPipe' | 'write' | 'endPipe' | 'kill';
-  id: string;
+  op: 'run' | 'startPipe' | 'write' | 'endPipe' | 'cancel';
+  job: string;
   args?: string[];
   bytes?: number;
 }
@@ -23,12 +23,12 @@ let progress: ExportProgress[];
 let onCall: (call: Call) => void;
 
 const ffmpeg: Encoder = {
-  run: async (args, id) => record({ op: 'run', id, args }),
-  startPipe: async (args, id) => record({ op: 'startPipe', id, args }),
-  write: async (id, data) => record({ op: 'write', id, bytes: data.byteLength }),
-  endPipe: async id => record({ op: 'endPipe', id }),
-  kill: async id => {
-    calls.push({ op: 'kill', id });
+  run: async (job, args) => record({ op: 'run', job, args }),
+  startPipe: async (job, args) => record({ op: 'startPipe', job, args }),
+  write: async (job, data) => record({ op: 'write', job, bytes: data.byteLength }),
+  endPipe: async job => record({ op: 'endPipe', job }),
+  cancel: async job => {
+    calls.push({ op: 'cancel', job });
   },
 };
 
@@ -90,8 +90,13 @@ function args(op: Call['op']) {
   return calls.find(call => call.op === op)?.args ?? [];
 }
 
-function stageArgs(id: string) {
-  return calls.find(call => call.id.endsWith(id))?.args ?? [];
+const STAGES = {
+  audio: (call: Call) => call.op === 'run' && Boolean(call.args?.includes('-c:a')),
+  merge: (call: Call) => call.op === 'run' && Boolean(call.args?.includes('copy')),
+};
+
+function stageArgs(stage: keyof typeof STAGES) {
+  return calls.find(STAGES[stage])?.args ?? [];
 }
 
 beforeEach(() => {
@@ -138,6 +143,12 @@ describe('run', () => {
     expect(calls.find(call => call.op === 'write')?.bytes).toBe(640 * 360 * 4);
   });
 
+  it('runs every ffmpeg process under one export job', async () => {
+    await run();
+
+    expect(new Set(calls.map(call => call.job)).size).toBe(1);
+  });
+
   it('pads an odd stage size to even dimensions', async () => {
     stage = { width: 641, height: 359 };
 
@@ -150,10 +161,10 @@ describe('run', () => {
   it('encodes the audio range and merges it with the video', async () => {
     const result = await run();
 
-    expect(stageArgs('.audio')).toEqual(
+    expect(stageArgs('audio')).toEqual(
       expect.arrayContaining(['-i', 'C:\\music\\song.mp3', '-ss', '1', '-t']),
     );
-    const merge = stageArgs('.merge');
+    const merge = stageArgs('merge');
     expect(merge[0]).toBe('-y');
     expect(merge).toContain('-shortest');
     expect(merge.at(-1)).toBe('C:\\videos\\out.mp4');
@@ -163,7 +174,7 @@ describe('run', () => {
   it('refuses to replace an existing file unless asked', async () => {
     await run(plan({ overwrite: false }));
 
-    expect(stageArgs('.merge')[0]).toBe('-n');
+    expect(stageArgs('merge')[0]).toBe('-n');
   });
 
   it('skips the audio when the export has none', async () => {
@@ -171,8 +182,8 @@ describe('run', () => {
 
     await run(plan({ includeAudio: false }));
 
-    expect(calls.some(call => call.id.endsWith('.audio'))).toBe(false);
-    expect(stageArgs('.merge')).not.toContain('-shortest');
+    expect(calls.some(STAGES.audio)).toBe(false);
+    expect(stageArgs('merge')).not.toContain('-shortest');
   });
 
   it('writes audio that has no path on disk to a temp file, and removes it', async () => {
@@ -181,7 +192,7 @@ describe('run', () => {
     await run();
 
     expect(written).toHaveLength(1);
-    expect(stageArgs('.audio')).toContain(written[0]);
+    expect(stageArgs('audio')).toContain(written[0]);
     expect(removed).toContain(written[0]);
   });
 
@@ -224,7 +235,7 @@ describe('run', () => {
     expect(removed.some(path => path.endsWith('.audio.m4a'))).toBe(true);
   });
 
-  it('kills the encoder when rendering fails', async () => {
+  it("cancels the export's ffmpeg job when rendering fails", async () => {
     const encoder = createOfflineEncoder({
       ...deps(),
       render: async () => {
@@ -233,7 +244,7 @@ describe('run', () => {
     });
 
     await expect(encoder.run(plan(), () => {})).rejects.toThrow('Stage renderer is not ready.');
-    expect(calls.at(-1)).toMatchObject({ op: 'kill' });
+    expect(calls.at(-1)).toMatchObject({ op: 'cancel' });
   });
 });
 
@@ -248,14 +259,14 @@ describe('cancel', () => {
 
     expect(isExportCancelledError(error)).toBe(true);
     expect(rendered).toHaveLength(1);
-    expect(calls.some(call => call.op === 'kill')).toBe(true);
-    expect(calls.some(call => call.id.endsWith('.merge'))).toBe(false);
+    expect(calls.some(call => call.op === 'cancel')).toBe(true);
+    expect(calls.some(STAGES.merge)).toBe(false);
   });
 
   it('reports a stage killed by the cancel as a cancel, not a failure', async () => {
     const encoder = createOfflineEncoder(deps());
     onCall = call => {
-      if (call.id.endsWith('.audio')) {
+      if (STAGES.audio(call)) {
         encoder.cancel();
         throw new Error('ffmpeg exited with code 255');
       }

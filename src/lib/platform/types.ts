@@ -137,15 +137,21 @@ export interface NativeFiles {
   reveal(filePath: string): Promise<void>;
 }
 
+/**
+ * ffmpeg in the main process, by export job: the job's processes are killed
+ * together when it is cancelled, or when the window reloads or the app quits.
+ */
 export interface Encoder {
-  /** Run ffmpeg to completion under `id`, so it can be killed. */
-  run(args: string[], id: string): Promise<void>;
-  /** Start ffmpeg reading frames from stdin. */
-  startPipe(args: string[], id: string): Promise<void>;
-  write(id: string, data: ArrayBuffer | Uint8Array): Promise<void>;
-  /** Close stdin and wait for ffmpeg to finish. */
-  endPipe(id: string): Promise<void>;
-  kill(id: string): Promise<void>;
+  /** Run ffmpeg to completion. Rejects with the end of its output when it fails. */
+  run(job: string, args: string[]): Promise<void>;
+  /** Start the job's pipe: ffmpeg reading raw frames from stdin. */
+  startPipe(job: string, args: string[]): Promise<void>;
+  /** Write frame bytes to the job's pipe. */
+  write(job: string, data: ArrayBuffer | Uint8Array): Promise<void>;
+  /** Close the job's pipe and wait for ffmpeg to finish. */
+  endPipe(job: string): Promise<void>;
+  /** Kill every process of the job; anything it starts afterwards is refused. */
+  cancel(job: string): Promise<void>;
 }
 
 export type UpdaterStatus =

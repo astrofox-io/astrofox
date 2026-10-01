@@ -27,6 +27,16 @@ await Promise.all([
   }),
   build({
     ...shared,
+    entryPoints: ['electron/ffmpeg.ts'],
+    outfile: 'electron/generated/ffmpeg.mjs',
+  }),
+  build({
+    ...shared,
+    entryPoints: ['electron/files.ts'],
+    outfile: 'electron/generated/files.mjs',
+  }),
+  build({
+    ...shared,
     entryPoints: ['electron/preload.ts'],
     outfile: 'electron/generated/preload.mjs',
   }),

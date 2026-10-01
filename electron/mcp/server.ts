@@ -24,7 +24,6 @@ interface Options {
   version: string;
   port: number;
   token: string;
-  onRendererGone?: () => void;
 }
 
 const MAX_BODY = 1024 * 1024;
@@ -59,7 +58,6 @@ export async function startMcpServer({
   version,
   port,
   token,
-  onRendererGone,
 }: Options) {
   if (!Number.isInteger(port) || port < 1 || port > 65535)
     throw new Error('Invalid ASTROFOX_MCP_PORT.');
@@ -103,14 +101,8 @@ export async function startMcpServer({
       else current.resolve(response.result);
     },
   });
-  const onNavigate = () => {
-    reset('Astrofox renderer reloaded; retry after it is ready.');
-    onRendererGone?.();
-  };
-  const onGone = () => {
-    reset('Astrofox renderer disconnected.');
-    onRendererGone?.();
-  };
+  const onNavigate = () => reset('Astrofox renderer reloaded; retry after it is ready.');
+  const onGone = () => reset('Astrofox renderer disconnected.');
   function unwatchWindow() {
     contents?.removeListener('did-start-loading', onNavigate);
     contents?.removeListener('render-process-gone', onGone);

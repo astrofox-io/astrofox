@@ -61,14 +61,15 @@ type Size = { width: number; height: number };
  * two are merged into the output. Intermediate files go to the temp directory
  * and are always removed.
  *
- * Cancelling kills whichever ffmpeg is running, discards the partial output
- * and rejects with an ExportCancelledError. One encoder runs one export.
+ * Every ffmpeg process belongs to the export's job, so cancelling is one call:
+ * the main process kills them all. A cancel discards the partial output and
+ * rejects with an ExportCancelledError. One encoder runs one export.
  */
 export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
   const { ffmpeg, files } = deps;
   let cancelled = false;
-  /** ffmpeg processes running now, by id, so a cancel can kill them. */
-  const running = new Set<string>();
+  /** The running export's ffmpeg job, once it has started. */
+  let job: string | null = null;
 
   function throwIfCancelled() {
     if (cancelled) {
@@ -76,8 +77,10 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
     }
   }
 
-  async function killRunning() {
-    await Promise.all([...running].map(id => ffmpeg.kill(id).catch(() => {})));
+  async function stopJob() {
+    if (job) {
+      await ffmpeg.cancel(job).catch(() => {});
+    }
   }
 
   /** Await an ffmpeg call; once cancelled, its failure (a killed process) is the cancel. */
@@ -90,17 +93,10 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
     }
   }
 
-  /** Run one ffmpeg stage to completion under `id`. */
-  async function runStage(args: string[], id: string) {
+  /** Run one ffmpeg stage of the job to completion. */
+  async function runStage(id: string, args: string[]) {
     throwIfCancelled();
-    running.add(id);
-
-    try {
-      await step(ffmpeg.run(args, id));
-    } finally {
-      running.delete(id);
-    }
-
+    await step(ffmpeg.run(id, args));
     throwIfCancelled();
   }
 
@@ -156,6 +152,7 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
       const startFrame = Math.round(startTime * fps);
 
       const id = `export-${Date.now()}`;
+      job = id;
       const tempBase = `${files.tempPath.replace(/[\\/]$/, '')}/${id}`;
       const tempVideo = `${tempBase}.video.${config.video.extension}`;
       const tempAudio = `${tempBase}.audio.${config.audio.extension}`;
@@ -167,45 +164,40 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
         onProgress({ status: 'rendering-video', currentFrame: 0, totalFrames });
 
         throwIfCancelled();
-        const pipeId = id;
-        running.add(pipeId);
         await step(
-          ffmpeg.startPipe(
-            [
-              '-y',
-              '-f',
-              'rawvideo',
-              '-pix_fmt',
-              'rgba',
-              '-s',
-              `${videoSize.width}x${videoSize.height}`,
-              '-r',
-              String(fps),
-              '-i',
-              'pipe:0',
-              '-c:v',
-              config.video.encoder,
-              // Frames arrive bottom row first. Convert RGB → YUV with the BT.709
-              // matrix (swscale defaults to BT.601) and tag the stream accordingly
-              // so players decode the colors as intended.
-              '-vf',
-              'vflip,scale=out_color_matrix=bt709:out_range=tv,format=yuv420p',
-              '-pix_fmt',
-              'yuv420p',
-              '-colorspace',
-              'bt709',
-              '-color_primaries',
-              'bt709',
-              '-color_trc',
-              'bt709',
-              '-color_range',
-              'tv',
-              ...config.video.output,
-              ...config.video.quality[quality],
-              tempVideo,
-            ],
-            pipeId,
-          ),
+          ffmpeg.startPipe(id, [
+            '-y',
+            '-f',
+            'rawvideo',
+            '-pix_fmt',
+            'rgba',
+            '-s',
+            `${videoSize.width}x${videoSize.height}`,
+            '-r',
+            String(fps),
+            '-i',
+            'pipe:0',
+            '-c:v',
+            config.video.encoder,
+            // Frames arrive bottom row first. Convert RGB → YUV with the BT.709
+            // matrix (swscale defaults to BT.601) and tag the stream accordingly
+            // so players decode the colors as intended.
+            '-vf',
+            'vflip,scale=out_color_matrix=bt709:out_range=tv,format=yuv420p',
+            '-pix_fmt',
+            'yuv420p',
+            '-colorspace',
+            'bt709',
+            '-color_primaries',
+            'bt709',
+            '-color_trc',
+            'bt709',
+            '-color_range',
+            'tv',
+            ...config.video.output,
+            ...config.video.quality[quality],
+            tempVideo,
+          ]),
         );
         // cancel() may have raced with starting the pipe.
         throwIfCancelled();
@@ -216,7 +208,7 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
             throwIfCancelled();
 
             const pixels = await frames.renderAt((startFrame + index) / fps);
-            await step(ffmpeg.write(pipeId, fitFrame(pixels, frameSize, videoSize)));
+            await step(ffmpeg.write(id, fitFrame(pixels, frameSize, videoSize)));
 
             if (index % 2 === 0) {
               await deps.yieldToUI();
@@ -227,32 +219,29 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
         });
 
         throwIfCancelled();
-        await step(ffmpeg.endPipe(pipeId));
-        running.delete(pipeId);
+        await step(ffmpeg.endPipe(id));
 
         if (audioPath) {
           onProgress({ status: 'rendering-audio' });
-          await runStage(
-            [
-              '-y',
-              '-i',
-              audioPath,
-              '-ss',
-              String(startTime),
-              '-t',
-              String(duration),
-              '-c:a',
-              config.audio.encoder,
-              ...config.audio.settings,
-              tempAudio,
-            ],
-            `${id}.audio`,
-          );
+          await runStage(id, [
+            '-y',
+            '-i',
+            audioPath,
+            '-ss',
+            String(startTime),
+            '-t',
+            String(duration),
+            '-c:a',
+            config.audio.encoder,
+            ...config.audio.settings,
+            tempAudio,
+          ]);
         }
 
         onProgress({ status: 'merging' });
         const overwrite = plan.overwrite ? '-y' : '-n';
         await runStage(
+          id,
           audioPath
             ? [
                 overwrite,
@@ -267,7 +256,6 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
                 output,
               ]
             : [overwrite, '-i', tempVideo, '-c', 'copy', ...config.video.merge, output],
-          `${id}.merge`,
         );
 
         onProgress({ status: 'finished', currentFrame: totalFrames, totalFrames });
@@ -275,8 +263,7 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
       } catch (error) {
         // Cancelled or failed, leave no ffmpeg running: an open pipe would hold
         // the temp video open.
-        await killRunning();
-        running.clear();
+        await stopJob();
 
         if (cancelled && !isExportCancelledError(error)) {
           throw new ExportCancelledError();
@@ -292,7 +279,7 @@ export function createOfflineEncoder(deps: OfflineEncoderDeps): ExportEncoder {
 
     cancel() {
       cancelled = true;
-      void killRunning();
+      void stopJob();
     },
   };
 }
