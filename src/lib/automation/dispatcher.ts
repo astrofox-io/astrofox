@@ -1,5 +1,5 @@
 import mime from 'mime';
-import audioStore, { loadAudioFile } from '@/app/actions/audio';
+import audioStore, { audioSource } from '@/app/actions/audio';
 import { type ExportJob, getActiveExport, getExportMode, startExport } from '@/app/actions/export';
 import { listTimelineElements } from '@/app/actions/timeline';
 import { projectDocument } from '@/app/document';
@@ -341,7 +341,7 @@ const handlers: Handlers = {
     if (kind === 'audio') {
       if (elementId) throw new Error('Audio belongs to the project, not an element.');
       const file = await readFile(path);
-      await loadAudioFile(file, false, true);
+      await audioSource.loadFile(file, { play: false });
       return { name: file.name, duration: player.getDuration() };
     }
     if (!elementId) throw new Error('elementId is required for images and videos.');

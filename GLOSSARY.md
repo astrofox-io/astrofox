@@ -51,6 +51,12 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Transport**: the project clock and the only owner of playback: playhead, play, pause, seek and loop. It plays the Document's timeline settings but does not own them. `src/lib/timeline/createTransport.ts`, wired up in `transport.ts`.
 
+**Audio source**: what the app listens to: a loaded file, a microphone, desktop audio or a MIDI input (`createAudioSource` in `src/lib/audio/audioSource.ts`; the app instance is `audioSource` in `src/app/actions/audio.ts`). Switching between them happens only there, and its one published state (`useAudioStore`) is what the UI reads; the status bar text is worked out from it (`audioStatusText`).
+
+- Connecting throws an `AudioSourceError` (or the browser's error) when it fails, and leaves no source; the UI words the message, MCP and export see the failure.
+- A file that cannot be decoded leaves the current source playing.
+- The newest switch wins: a microphone granted after the person moved on is released, not used.
+
 **Audio output**: what the Transport plays through (`AudioOutput`): the Web Audio Player (`playerOutput`), or a fake in tests. It is told when to play and from where, and never starts or stops on its own. "Is it playing?" is always the Transport's `playing`; the output's own state only says whether sound is coming out now (false past the end of the audio).
 
 **Frame**: everything one picture is drawn from (`RenderFrameData`), built by the `Renderer` for one project time: the audio analysis at that time, reactor output, clip activity and fades. Anything that moves reads `frame.time`, never wall-clock time or a count of frames, so a time draws the same picture live, in a preview and in an export at any frame rate.

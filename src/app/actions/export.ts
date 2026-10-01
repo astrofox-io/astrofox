@@ -401,8 +401,13 @@ export async function exportVideo({
   audioSource,
   ...request
 }: ExportRequest & { audioSource?: File | null }): Promise<boolean> {
-  if (audioSource && audioSource !== audioStore.getState().source) {
-    await loadAudioFile(audioSource, false);
+  // Exporting with audio that failed to load would export the wrong audio.
+  if (
+    audioSource &&
+    audioSource !== audioStore.getState().source &&
+    !(await loadAudioFile(audioSource, false))
+  ) {
+    return false;
   }
 
   let job: ExportJob;

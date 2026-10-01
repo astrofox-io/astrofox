@@ -4,7 +4,6 @@ import useAudioStore, {
   connectDesktopAudio,
   connectMidiInput,
   refreshInputOptions,
-  refreshMicrophoneDevices,
   selectMicrophoneDevice,
   selectMidiInput,
   setLiveInputMode,
@@ -51,7 +50,7 @@ export default function LiveModePanel() {
     }
 
     const handleDeviceChange = () => {
-      void refreshMicrophoneDevices();
+      void refreshInputOptions();
     };
 
     navigator.mediaDevices.addEventListener?.('devicechange', handleDeviceChange);
