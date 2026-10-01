@@ -3,7 +3,8 @@ import audioStore, { loadAudioFile } from '@/app/actions/audio';
 import { type ExportJob, getActiveExport, getExportMode, startExport } from '@/app/actions/export';
 import { listTimelineElements } from '@/app/actions/timeline';
 import { projectDocument } from '@/app/document';
-import { api, player, renderBackend, renderer, stage } from '@/app/global';
+import { player, renderBackend, renderer, stage } from '@/app/global';
+import { media } from '@/app/media';
 import { project } from '@/app/project';
 import AudioReactor from '@/lib/audio/AudioReactor';
 import type Display from '@/lib/core/Display';
@@ -355,51 +356,16 @@ const handlers: Handlers = {
     const target = element(elementId);
     const Type = entityType(target);
     if (Type.config.media !== kind) throw new Error(`Element must support ${kind} media.`);
-    const file = await readFile(path);
-    const src =
-      kind === 'image' ? String(await api.readImageFile(file)) : URL.createObjectURL(file);
-    const previous = target.properties.src;
-    try {
-      const media = kind === 'image' ? new Image() : document.createElement('video');
-      await new Promise<void>((resolve, reject) => {
-        const timer = window.setTimeout(() => {
-          cleanup();
-          reject(new Error('Media loading timed out.'));
-        }, 15_000);
-        const cleanup = () => {
-          window.clearTimeout(timer);
-          media.onload = null;
-          media.onerror = null;
-          if (media instanceof HTMLVideoElement) media.onloadeddata = null;
-        };
-        const loaded = () => {
-          cleanup();
-          resolve();
-        };
-        media.onerror = () => {
-          cleanup();
-          reject(new Error(`Could not decode ${kind} file.`));
-        };
-        if (media instanceof HTMLVideoElement) {
-          media.muted = true;
-          media.preload = 'auto';
-          media.onloadeddata = loaded;
-        } else media.onload = loaded;
-        media.src = src;
-      });
-      // Use the same decoded media path as the UI, including natural sizing.
-      if (element(elementId) !== target)
-        throw new Error('The target element changed while loading media.');
-      projectDocument.apply({
-        type: 'setProperties',
-        id: elementId,
-        properties: { src: media, sourcePath: path },
-      });
-    } catch (error) {
-      if (src.startsWith('blob:')) URL.revokeObjectURL(src);
-      throw error;
-    }
-    if (typeof previous === 'string' && previous.startsWith('blob:')) URL.revokeObjectURL(previous);
+    // A video streams from its path; an image is read so the project file carries it.
+    const file = kind === 'image' ? await readFile(path) : undefined;
+    const { element: decoded, sourcePath } = await media.load({ file, path }, kind);
+    if (element(elementId) !== target)
+      throw new Error('The target element changed while loading media.');
+    projectDocument.apply({
+      type: 'setProperties',
+      id: elementId,
+      properties: { src: decoded, sourcePath },
+    });
     return { id: elementId, path, kind };
   },
   playback: ({ action, loop, time, position }) => {

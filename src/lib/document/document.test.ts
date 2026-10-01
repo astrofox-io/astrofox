@@ -224,6 +224,22 @@ describe('apply', () => {
     expect(doc.getState().unresolvedMediaRefs).toEqual([]);
   });
 
+  it('forgets unresolved media when the layer is given new media', () => {
+    doc.apply({
+      type: 'setProperties',
+      id: 'd1',
+      properties: { src: 'x', sourcePath: 'D:\\b.png' },
+    });
+
+    expect(doc.getState().unresolvedMediaRefs).toEqual([]);
+  });
+
+  it('keeps unresolved media when other properties change', () => {
+    doc.apply({ type: 'setProperties', id: 'd1', properties: { width: 3 } });
+
+    expect(doc.getState().unresolvedMediaRefs).toHaveLength(1);
+  });
+
   it('removes a scene with its elements', () => {
     doc.apply({ type: 'removeLayer', id: 's1' });
 

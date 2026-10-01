@@ -6,9 +6,9 @@ import { raiseError } from '@/app/actions/error';
 import { BLANK_IMAGE } from '@/app/constants';
 import { api } from '@/app/global';
 import { FolderOpen, Times } from '@/app/icons';
+import { media } from '@/app/media';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { getFileSystemPath } from '@/lib/utils/media';
 import { ignoreEvents } from '@/lib/utils/react';
 
 interface ImageInputProps {
@@ -31,24 +31,10 @@ export default function ImageInput({ name, value, onChange }: ImageInputProps) {
 
   async function loadImageFile(file: File) {
     try {
-      const sourcePath = getFileSystemPath(file);
-      const src = await api.readImageFile(file);
-      if (typeof src !== 'string') {
-        throw new Error('The selected image could not be decoded');
-      }
+      const { element, url, sourcePath } = await media.load({ file }, 'image');
 
-      const loadedImage = await new Promise<HTMLImageElement>((resolve, reject) => {
-        const nextImage = new Image();
-        nextImage.onload = () => resolve(nextImage);
-        nextImage.onerror = () => reject(new Error('The selected image could not be decoded'));
-        nextImage.src = src;
-      });
-
-      loadImageSrc(src);
-      onChange?.({
-        [name]: loadedImage,
-        sourcePath: sourcePath || '',
-      });
+      loadImageSrc(url);
+      onChange?.({ [name]: element, sourcePath });
     } catch (error) {
       raiseError(te('invalid-image-file'), error);
     }

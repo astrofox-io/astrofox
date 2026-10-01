@@ -379,6 +379,12 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
     }
   }
 
+  function forgetUnresolvedMedia(ids: Set<string>) {
+    if (unresolvedMediaRefs.some(ref => ids.has(ref.displayId))) {
+      unresolvedMediaRefs = unresolvedMediaRefs.filter(ref => !ids.has(ref.displayId));
+    }
+  }
+
   function run(op: DocumentOp, pending: Pending) {
     switch (op.type) {
       case 'setProperties': {
@@ -387,6 +393,11 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
         if (target) {
           target.update(op.properties);
           pending.dirty.add(op.id);
+
+          // New media (or none) replaces the file that could not be found.
+          if ('sourcePath' in op.properties) {
+            forgetUnresolvedMedia(new Set([op.id]));
+          }
         }
         break;
       }
@@ -501,10 +512,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
           const ids = new Set(removedIds(located));
 
           stage.removeStageElement(located.entity);
-
-          if (unresolvedMediaRefs.some(ref => ids.has(ref.displayId))) {
-            unresolvedMediaRefs = unresolvedMediaRefs.filter(ref => !ids.has(ref.displayId));
-          }
+          forgetUnresolvedMedia(ids);
         }
         break;
       }

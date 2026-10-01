@@ -1,17 +1,70 @@
 import { BLANK_IMAGE } from '@/app/constants';
-import { library } from '@/app/global';
 import { t } from '@/i18n/config';
 import type { ElementSnapshot, ProjectSnapshot, SceneSnapshot } from '@/lib/core/migrateProject';
 import type { MediaKind, MediaRef } from '@/lib/document/types';
 import type { ProjectMedia } from '@/lib/project/project';
-import { isLocalMediaUrl, localMediaUrlToPath, toLocalMediaUrl } from '@/lib/utils/media';
+import {
+  getFileSystemPath,
+  isLocalMediaUrl,
+  localMediaUrlToPath,
+  toLocalMediaUrl,
+} from '@/lib/utils/media';
+
+/** What a media display takes as its `src` when new media is chosen. */
+export type MediaElement = HTMLImageElement | HTMLVideoElement;
+
+/** A file decoded for a media display. */
+export interface LoadedMedia {
+  /**
+   * Decoded and ready to draw. Set as a display's `src`, the display fits
+   * itself to it, as for newly chosen media.
+   */
+  element: MediaElement;
+  /** The element's URL. Set as `src`, the display keeps its size, as for relinked media. */
+  url: string;
+  /** Where the file is on disk, or '' when the platform does not say (the web). */
+  sourcePath: string;
+}
+
+/**
+ * Media for media displays: loading a chosen file, writing it to a project
+ * file and finding it again when the project is opened.
+ *
+ * Images become data URLs, so a saved project carries them. Videos stream from
+ * their path on disk (`astrofox-media:`), or from a blob URL when there is no
+ * path; a project file stores only the path.
+ */
+export interface Media extends ProjectMedia {
+  /**
+   * Decode a file. Give the file, its path, or both: an image needs the file,
+   * a video with a path needs nothing else.
+   */
+  load(input: { file?: File; path?: string }, kind: MediaKind): Promise<LoadedMedia>;
+}
+
+/** What `createMedia` needs from the browser. */
+export interface MediaDeps {
+  /** The kind of media a display type shows (its `config.media`). */
+  kindOf(displayName: string): MediaKind;
+  /** An image file as a data URL. */
+  readDataUrl(file: File): Promise<string>;
+  /** A URL for a file that has no path on disk. Never revoked: undo can bring it back. */
+  objectUrl(file: File): string;
+  /** Decode a URL into an element. Rejects when the file cannot be decoded or takes too long. */
+  decode(url: string, kind: MediaKind): Promise<MediaElement>;
+  /** Whether a URL loads, answered quickly enough to check every file of a project being opened. */
+  canLoad(url: string, kind: MediaKind): Promise<boolean>;
+}
+
+type KindOf = (element: Pick<ElementSnapshot, 'name'> | null | undefined) => MediaKind;
 
 type MediaRefInput = Partial<MediaRef> & {
   path?: string;
 };
 
+/** Media saved inside the project file. The blank placeholder is no media at all. */
 function isEmbeddedMediaSource(src: string) {
-  return /^data:(image|video)\//i.test(src);
+  return src !== BLANK_IMAGE && /^data:(image|video)\//i.test(src);
 }
 
 function isRemoteMediaSource(src: string) {
@@ -90,15 +143,6 @@ function getMediaSourcePath(src: unknown): string {
   return '';
 }
 
-// Media displays declare `media: 'image' | 'video'` on their config.
-function getMediaKind(element: Pick<ElementSnapshot, 'name'> | null | undefined): MediaKind {
-  const displays = (library.get('displays') ?? {}) as Record<
-    string,
-    { config?: { media?: string } }
-  >;
-  return displays[element?.name ?? '']?.config?.media === 'video' ? 'video' : 'image';
-}
-
 function getMediaLabel(
   element: Pick<ElementSnapshot, 'displayName' | 'name'> | null | undefined,
 ): string {
@@ -107,11 +151,12 @@ function getMediaLabel(
 
 function buildMediaRef(
   element: Pick<ElementSnapshot, 'id' | 'name' | 'displayName'>,
+  kind: MediaKind,
   sourcePath = '',
 ): MediaRef {
   return {
     displayId: element.id,
-    kind: getMediaKind(element),
+    kind,
     label: getMediaLabel(element),
     sourcePath,
   };
@@ -153,74 +198,17 @@ function mergeMediaRefs(...groups: Array<MediaRefInput[] | null | undefined>): M
   return Array.from(byDisplayId.values());
 }
 
-async function canLoadMediaSource(src: string, kind: MediaKind): Promise<boolean> {
-  if (!src) {
-    return false;
-  }
-
-  return new Promise<boolean>(resolve => {
-    let settled = false;
-
-    function done(result: boolean) {
-      if (settled) {
-        return;
-      }
-
-      settled = true;
-      resolve(result);
-    }
-
-    const timeoutId = window.setTimeout(() => done(false), 2000);
-
-    if (kind === 'video') {
-      const video = document.createElement('video');
-      video.preload = 'metadata';
-
-      video.onloadedmetadata = () => {
-        window.clearTimeout(timeoutId);
-        video.removeAttribute('src');
-        video.load();
-        done(true);
-      };
-
-      video.onerror = () => {
-        window.clearTimeout(timeoutId);
-        video.removeAttribute('src');
-        video.load();
-        done(false);
-      };
-
-      video.src = src;
-      return;
-    }
-
-    const image = new Image();
-
-    image.onload = () => {
-      window.clearTimeout(timeoutId);
-      done(true);
-    };
-
-    image.onerror = () => {
-      window.clearTimeout(timeoutId);
-      done(false);
-    };
-
-    image.src = src;
-  });
-}
-
-function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
+function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot, kindOf: KindOf) {
   const mediaRefs: MediaRef[] = [];
 
   const scenes = (snapshot?.scenes || []).map((scene: SceneSnapshot) => {
     const mapMediaProps = (element: ElementSnapshot) => {
       const src = element?.properties?.src;
       const sourcePath = normalizeMediaPath(element?.properties?.sourcePath);
-      const kind = getMediaKind(element);
+      const kind = kindOf(element);
 
       if (sourcePath) {
-        mediaRefs.push(buildMediaRef(element, sourcePath));
+        mediaRefs.push(buildMediaRef(element, kind, sourcePath));
 
         if (!src || src === BLANK_IMAGE || typeof src !== 'string') {
           return {
@@ -259,21 +247,20 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
       const inferredSourcePath = getMediaSourcePath(src);
 
       if (inferredSourcePath) {
-        mediaRefs.push(buildMediaRef(element, inferredSourcePath));
+        mediaRefs.push(buildMediaRef(element, kind, inferredSourcePath));
 
         return {
           ...element,
           properties: {
             ...element.properties,
-            src:
-              getMediaKind(element) === 'image' ? BLANK_IMAGE : toLocalMediaUrl(inferredSourcePath),
+            src: kindOf(element) === 'image' ? BLANK_IMAGE : toLocalMediaUrl(inferredSourcePath),
             sourcePath: inferredSourcePath,
           },
         };
       }
 
       if (isBlobMediaSource(src)) {
-        mediaRefs.push(buildMediaRef(element));
+        mediaRefs.push(buildMediaRef(element, kind));
 
         return {
           ...element,
@@ -310,7 +297,9 @@ function prepareSnapshotMediaForSave(snapshot: ProjectSnapshot) {
 
 async function resolveSnapshotMediaOnLoad(
   snapshot: ProjectSnapshot,
-  payloadMediaRefs: MediaRefInput[] = [],
+  payloadMediaRefs: MediaRefInput[],
+  kindOf: KindOf,
+  canLoad: MediaDeps['canLoad'],
 ): Promise<{
   snapshot: ProjectSnapshot;
   unresolvedMediaRefs: MediaRef[];
@@ -331,7 +320,7 @@ async function resolveSnapshotMediaOnLoad(
     (snapshot?.scenes || []).map(async (scene: SceneSnapshot) => {
       const mapMediaProps = async (element: ElementSnapshot) => {
         const src = element?.properties?.src;
-        const kind = getMediaKind(element);
+        const kind = kindOf(element);
 
         const mediaRef = mediaRefMap.get(element.id);
         const sourcePath =
@@ -356,9 +345,9 @@ async function resolveSnapshotMediaOnLoad(
         if (sourcePath) {
           if (kind === 'video') {
             const sourceUrl = toLocalMediaUrl(sourcePath);
-            const canLoad = await canLoadMediaSource(sourceUrl, kind);
+            const loadable = await canLoad(sourceUrl, kind);
 
-            if (canLoad) {
+            if (loadable) {
               return {
                 ...element,
                 properties: {
@@ -383,7 +372,7 @@ async function resolveSnapshotMediaOnLoad(
             }
           }
 
-          unresolvedMediaRefs.push(buildMediaRef(element, sourcePath));
+          unresolvedMediaRefs.push(buildMediaRef(element, kind, sourcePath));
 
           return {
             ...element,
@@ -400,7 +389,7 @@ async function resolveSnapshotMediaOnLoad(
         }
 
         if (isBlobMediaSource(src)) {
-          unresolvedMediaRefs.push(buildMediaRef(element));
+          unresolvedMediaRefs.push(buildMediaRef(element, kind));
 
           return {
             ...element,
@@ -432,17 +421,45 @@ async function resolveSnapshotMediaOnLoad(
   };
 }
 
-/**
- * Media in project files: local files are saved as paths (`sourcePath`) and
- * found again on open; embedded and remote images are saved as they are.
- */
-export const projectMedia: ProjectMedia = {
-  forSave: prepareSnapshotMediaForSave,
-  async resolve(snapshot, mediaRefs) {
-    const resolved = await resolveSnapshotMediaOnLoad(snapshot, mediaRefs as MediaRefInput[]);
-    return {
-      snapshot: resolved.snapshot,
-      unresolvedMediaRefs: mergeMediaRefs(resolved.unresolvedMediaRefs),
-    };
-  },
-};
+export function createMedia(deps: MediaDeps): Media {
+  const kindOf: KindOf = element => deps.kindOf(element?.name ?? '');
+
+  async function load(
+    input: { file?: File; path?: string },
+    kind: MediaKind,
+  ): Promise<LoadedMedia> {
+    const { file } = input;
+    const sourcePath = normalizeMediaPath(input.path) || getFileSystemPath(file);
+    let url: string;
+
+    if (kind === 'video' && sourcePath) {
+      url = toLocalMediaUrl(sourcePath);
+    } else if (!file) {
+      throw new Error(`A ${kind} file is required.`);
+    } else if (kind === 'image') {
+      url = await deps.readDataUrl(file);
+    } else {
+      url = deps.objectUrl(file);
+    }
+
+    const element = await deps.decode(url, kind);
+    return { element, url, sourcePath };
+  }
+
+  return {
+    load,
+    forSave: snapshot => prepareSnapshotMediaForSave(snapshot, kindOf),
+    async resolve(snapshot, mediaRefs) {
+      const resolved = await resolveSnapshotMediaOnLoad(
+        snapshot,
+        mediaRefs as MediaRefInput[],
+        kindOf,
+        deps.canLoad,
+      );
+      return {
+        snapshot: resolved.snapshot,
+        unresolvedMediaRefs: mergeMediaRefs(resolved.unresolvedMediaRefs),
+      };
+    },
+  };
+}

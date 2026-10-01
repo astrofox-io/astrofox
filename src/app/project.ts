@@ -1,7 +1,7 @@
 import stageStore, { setZoom } from '@/app/actions/stage';
 import { projectDocument } from '@/app/document';
 import { env, library, logger } from '@/app/global';
-import { projectMedia } from '@/app/projectMedia';
+import { media } from '@/app/media';
 import { createProject, type Project, type ProjectLibrary } from '@/lib/project/project';
 import { seekTransport } from '@/lib/timeline/transport';
 
@@ -16,7 +16,7 @@ function get() {
         displays: library.get('displays') ?? {},
         effects: library.get('effects') ?? {},
       }) as ProjectLibrary,
-    media: projectMedia,
+    media,
     zoom: { get: () => stageStore.getState().zoom, set: setZoom },
     rewind: () => seekTransport(0),
     appVersion: env.APP_VERSION,

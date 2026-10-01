@@ -6,9 +6,9 @@ import { raiseError } from '@/app/actions/error';
 import { BLANK_IMAGE } from '@/app/constants';
 import { api } from '@/app/global';
 import { FolderOpen, Times } from '@/app/icons';
+import { media } from '@/app/media';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { getFileSystemPath, resolveVideoSourceUrl } from '@/lib/utils/media';
 import { ignoreEvents } from '@/lib/utils/react';
 
 interface VideoInputProps {
@@ -29,41 +29,12 @@ export default function VideoInput({ name, value, onChange }: VideoInputProps) {
     }
   }
 
-  function loadVideoMetadata(src: string) {
-    return new Promise<HTMLVideoElement>((resolve, reject) => {
-      const loadedVideo = document.createElement('video');
-      loadedVideo.muted = true;
-      loadedVideo.playsInline = true;
-      loadedVideo.preload = 'metadata';
-      loadedVideo.crossOrigin = 'anonymous';
-
-      loadedVideo.onloadedmetadata = () => {
-        loadedVideo.onloadedmetadata = null;
-        loadedVideo.onerror = null;
-        resolve(loadedVideo);
-      };
-      loadedVideo.onerror = () => {
-        loadedVideo.onloadedmetadata = null;
-        loadedVideo.onerror = null;
-        loadedVideo.removeAttribute('src');
-        loadedVideo.load();
-        reject(new Error('The selected video metadata could not be loaded'));
-      };
-      loadedVideo.src = src;
-    });
-  }
-
   async function loadVideoFile(file: File) {
     try {
-      const sourcePath = getFileSystemPath(file);
-      const src = resolveVideoSourceUrl(file, sourcePath);
-      const loadedVideo = await loadVideoMetadata(src);
+      const { element, url, sourcePath } = await media.load({ file }, 'video');
 
-      loadVideoSrc(src);
-      onChange?.({
-        [name]: loadedVideo,
-        sourcePath: sourcePath || '',
-      });
+      loadVideoSrc(url);
+      onChange?.({ [name]: element, sourcePath });
     } catch (error) {
       raiseError(te('invalid-video-file'), error);
     }

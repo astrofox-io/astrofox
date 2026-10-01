@@ -7,7 +7,7 @@ Domain terms used in the code. Add a term when a module is named after it.
 - Opening returns what could not be brought back (removed elements, missing plugins, missing media); the caller decides whether to show dialogs.
 - Saving takes a `write` function (a save dialog, or a path from MCP). Once written, the project adopts the saved name, drops its unresolved media and is no longer modified, unless the Document changed while it was being written.
 - Modified means the Document recorded an edit, or was replaced by undo or redo, since the project was opened, created or saved.
-- Media sources are rewritten for saving and found again on open by the **project media** adapter (`src/app/projectMedia.ts`).
+- Media is rewritten for saving and found again on open by the Media module.
 
 **Document**: the editable content of a Project: canvas size and color, Scenes with their Displays and Effects, Reactors, timeline settings (duration, frame rate), the project name and unresolved media. `src/lib/document/document.ts`; the app instance is `projectDocument` in `src/app/document.ts`.
 
@@ -24,6 +24,14 @@ Domain terms used in the code. Add a term when a module is named after it.
 **Display**: a Layer that draws something (image, text, spectrum, 3D geometry). Its module in `src/lib/displays` also registers the layer component that draws it (`registerDisplayLayer`, with `layer2D` or `layer3D`), so adding a display means its module, its layer component and a line in `src/lib/displays/index.ts`.
 
 **Effect**: a Layer that post-processes its Scene (blur, glitch, VHS). Its module in `src/lib/effects` registers its render pass (`registerEffectPass`).
+
+**Media**: an image or video file a media display (`config.media`) shows. The Media module (`createMedia` in `src/lib/media/media.ts`; the app instance is `media` in `src/app/media.ts`) is the only way media gets onto a display, whether it comes from an input, the stage, relinking or MCP. It also writes media to a project file and finds it again on open.
+
+- `media.load({ file, path }, kind)` returns the decoded `element`, its `url` and its `sourcePath`. Setting `src` to the element makes the display fit itself to new media; setting it to the URL keeps the display's size, as relinking does.
+- Images become data URLs, so a saved project carries them. Videos stream from their path (`astrofox-media:`), or from a blob URL when there is none; a project file stores only the video's path.
+- Blob URLs are never revoked: undo can bring them back.
+
+**Unresolved media**: media a project refers to that could not be found when it was opened (`MediaRef`, listed in the Relink dialog). Setting a display's `sourcePath` (new media, or none) or removing the display drops its entry; the Document does this.
 
 **Reactor**: turns audio (or a static signal) into a 0–1 output that can drive a Layer's numeric property through a **binding** (`{ id, min, max }`).
 

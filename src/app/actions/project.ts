@@ -2,6 +2,7 @@ import { raiseError } from '@/app/actions/error';
 import { showModal } from '@/app/actions/modals';
 import { projectDocument } from '@/app/document';
 import { api, logger } from '@/app/global';
+import { media } from '@/app/media';
 import { project } from '@/app/project';
 import { t } from '@/i18n/config';
 import type { MediaRef } from '@/lib/document/types';
@@ -11,7 +12,6 @@ import {
   PROJECT_OPEN_EXTENSIONS,
   PROJECT_SAVE_EXTENSIONS,
 } from '@/lib/project/projectFile';
-import { getFileSystemPath, resolveVideoSourceUrl } from '@/lib/utils/media';
 
 // The menus' and dialogs' side of the Project module (`@/app/project`).
 
@@ -144,23 +144,14 @@ export async function relinkMediaRef(mediaRef: MediaRef) {
       return;
     }
 
-    const file = files[0];
-    const sourcePath = getFileSystemPath(file);
-    const src = isVideo ? resolveVideoSourceUrl(file, sourcePath) : await api.readImageFile(file);
+    const { url, sourcePath } = await media.load({ file: files[0] }, mediaRef.kind);
 
-    projectDocument.apply([
-      {
-        type: 'setProperties',
-        id: mediaRef.displayId,
-        properties: { src, sourcePath: sourcePath || '' },
-      },
-      {
-        type: 'setUnresolvedMediaRefs',
-        refs: projectDocument
-          .getState()
-          .unresolvedMediaRefs.filter(ref => ref.displayId !== mediaRef.displayId),
-      },
-    ]);
+    // The URL rather than the element: relinked media keeps the size the display had.
+    projectDocument.apply({
+      type: 'setProperties',
+      id: mediaRef.displayId,
+      properties: { src: url, sourcePath },
+    });
   } catch (error) {
     raiseError(t('errors.relink-media-failed'), error);
   }

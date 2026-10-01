@@ -58,18 +58,6 @@ export function getFileSystemPath(file: FileWithOptionalPath | File | null | und
   return '';
 }
 
-/**
- * Playable URL for a video File: stream via desktop media protocol when a real
- * path is known; otherwise a blob: URL (same on web and desktop).
- */
-export function resolveVideoSourceUrl(file: File, knownPath?: string): string {
-  const sourcePath = (knownPath || getFileSystemPath(file)).trim();
-  if (sourcePath) {
-    return toLocalMediaUrl(sourcePath);
-  }
-  return URL.createObjectURL(file);
-}
-
 export function fitMediaWithinBounds(
   mediaWidth: number,
   mediaHeight: number,

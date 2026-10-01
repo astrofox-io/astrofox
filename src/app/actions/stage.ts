@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { DEFAULT_ZOOM } from '@/app/constants';
 import { projectDocument } from '@/app/document';
-import { api, renderBackend, renderer } from '@/app/global';
+import { renderBackend, renderer } from '@/app/global';
+import { media } from '@/app/media';
 import { t } from '@/i18n/config';
 import ImageDisplay from '@/lib/displays/ImageDisplay';
 import type { DocumentOp } from '@/lib/document/types';
 import { clamp } from '@/lib/utils/math';
-import { getFileSystemPath } from '@/lib/utils/media';
 import { raiseError } from './error';
 
 /** How the stage is viewed. Canvas size and color are document content (`projectDocument`). */
@@ -30,19 +30,8 @@ const stageStore = create(() => ({
 
 export async function loadStageImage(file: File) {
   try {
-    const src = await api.readImageFile(file);
-    if (typeof src !== 'string') {
-      throw new Error('The selected image could not be decoded');
-    }
-
-    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error('The selected image could not be decoded'));
-      image.src = src;
-    });
-
-    const { scenes, unresolvedMediaRefs } = projectDocument.getState();
+    const image = await media.load({ file }, 'image');
+    const { scenes } = projectDocument.getState();
     const ops: DocumentOp[] = [];
     let target: { id: string; property: string } | undefined;
 
@@ -70,17 +59,11 @@ export async function loadStageImage(file: File) {
       target = { id: display.id, property: 'src' };
     }
 
-    ops.push(
-      {
-        type: 'setProperties',
-        id: target.id,
-        properties: { [target.property]: image, sourcePath: getFileSystemPath(file) },
-      },
-      {
-        type: 'setUnresolvedMediaRefs',
-        refs: unresolvedMediaRefs.filter(ref => ref.displayId !== target.id),
-      },
-    );
+    ops.push({
+      type: 'setProperties',
+      id: target.id,
+      properties: { [target.property]: image.element, sourcePath: image.sourcePath },
+    });
     projectDocument.apply(ops);
   } catch (error) {
     raiseError(t('errors.invalid-image-file'), error);
