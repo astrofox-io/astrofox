@@ -3,7 +3,6 @@ import { getBoolean, getNumber, setBoolean, setNumber } from '@/lib/storage';
 
 /** Editor-only state of the timeline panel (not part of the project). */
 
-const OPEN_KEY = 'astrofox.timeline.open';
 const HEIGHT_KEY = 'astrofox.timeline.height';
 const SNAP_KEY = 'astrofox.timeline.snap';
 
@@ -13,6 +12,7 @@ export const TIMELINE_DEFAULT_HEIGHT = 240;
 export const TIMELINE_MAX_ZOOM = 64;
 
 interface TimelinePanelState {
+  /** Hidden at startup; opening it lasts only for the session. */
   open: boolean;
   height: number;
   /** Horizontal zoom as a multiple of "fit the whole project". */
@@ -28,7 +28,7 @@ function clampHeight(height: number) {
 }
 
 const timelinePanelStore = create<TimelinePanelState>(() => ({
-  open: getBoolean(OPEN_KEY, false),
+  open: false,
   height: clampHeight(getNumber(HEIGHT_KEY, TIMELINE_DEFAULT_HEIGHT)),
   zoom: 1,
   snap: getBoolean(SNAP_KEY, true),
@@ -37,7 +37,6 @@ const timelinePanelStore = create<TimelinePanelState>(() => ({
 
 export function setTimelineOpen(open: boolean) {
   timelinePanelStore.setState({ open });
-  setBoolean(OPEN_KEY, open);
 }
 
 export function toggleTimelineOpen() {

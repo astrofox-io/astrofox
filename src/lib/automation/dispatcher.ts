@@ -24,9 +24,8 @@ import {
   stopTransport,
 } from '@/lib/timeline/transport';
 import { getVideoEncoderConfig } from '@/lib/video/encoders';
-import { type CommandArgs, type CommandName, commands } from './protocol';
+import { type CommandArgs, type CommandName, type ImageResult, parseCommand } from './protocol';
 import {
-  assertSafe,
   type EntityType,
   getType,
   getTypes,
@@ -179,7 +178,7 @@ async function preview(maxSize: number) {
   return captureCanvas(maxSize);
 }
 
-function captureCanvas(maxSize: number) {
+function captureCanvas(maxSize: number): ImageResult {
   const source = renderBackend.getCanvas();
   if (!source?.width || !source?.height) throw new Error('Stage canvas is unavailable.');
   const ratio = Math.min(1, maxSize / Math.max(source.width, source.height));
@@ -424,24 +423,12 @@ export function connectAutomation() {
     try {
       if (Date.now() > request.deadline) throw new Error('Command expired before execution.');
       if (busy) throw new Error('Another command is running.');
-      if (!Object.hasOwn(commands, request.command)) throw new Error('Unknown automation command.');
-      const definition = commands[request.command];
-      if (
-        getActiveExport() &&
-        ![
-          'get_project',
-          'list_element_types',
-          'describe_element_type',
-          'get_export_status',
-          'cancel_export',
-        ].includes(request.command)
-      )
-        throw new Error('Wait for the current export to finish, or cancel it.');
-      assertSafe(request.args);
-      const args = definition.schema.parse(request.args);
+      const { name, args } = parseCommand(request.command, request.args, {
+        exporting: Boolean(getActiveExport()),
+      });
       busy = true;
       try {
-        const handler = handlers[request.command] as (input: typeof args) => unknown;
+        const handler = handlers[name] as (input: unknown) => unknown;
         const result = await handler(args);
         bridge.respond({ id: request.id, result });
       } finally {

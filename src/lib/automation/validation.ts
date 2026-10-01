@@ -5,6 +5,7 @@ import Scene from '@/lib/core/Scene';
 import { validateClipFields } from '@/lib/timeline/clip';
 import { isValidFps, isValidProjectDuration } from '@/lib/timeline/transport';
 import { resolve } from '@/lib/utils/object';
+import { assertSafe } from './protocol';
 
 export interface EntityType {
   new (properties?: Record<string, unknown>): Entity;
@@ -27,19 +28,6 @@ export function getType(name: string) {
   const types = getTypes();
   if (!Object.hasOwn(types, name)) throw new Error(`Unknown element type: ${name}`);
   return types[name];
-}
-
-export function assertSafe(value: unknown, depth = 0): void {
-  if (depth > 25) throw new Error('Object nesting exceeds 25 levels.');
-  if (typeof value === 'number' && !Number.isFinite(value))
-    throw new Error('Numbers must be finite.');
-  if (value && typeof value === 'object') {
-    for (const [key, entry] of Object.entries(value)) {
-      if (['__proto__', 'prototype', 'constructor'].includes(key))
-        throw new Error(`Forbidden property: ${key}`);
-      assertSafe(entry, depth + 1);
-    }
-  }
 }
 
 export function resolvedControls(Type: EntityType, context?: object) {

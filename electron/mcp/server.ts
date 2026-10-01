@@ -12,6 +12,8 @@ import {
   type AutomationResponse,
   type CommandName,
   commands,
+  toolAnnotations,
+  toolContent,
 } from '../../src/lib/automation/protocol';
 import { emit, handle, listen } from '../ipc';
 
@@ -251,43 +253,18 @@ export async function startMcpServer({
       void server.close();
     });
     try {
-      for (const [name, definition] of Object.entries(commands)) {
+      for (const name of Object.keys(commands) as CommandName[]) {
+        const definition = commands[name];
         server.registerTool(
           name,
           {
             description: definition.description,
             inputSchema: definition.schema,
-            annotations: {
-              readOnlyHint: 'readOnly' in definition,
-              destructiveHint: [
-                'new_project',
-                'open_project',
-                'remove_element',
-                'remove_reactor',
-                'save_project',
-                'start_export',
-              ].includes(name),
-              openWorldHint: false,
-            },
+            annotations: toolAnnotations(name),
           },
           async (args: unknown) => {
             try {
-              const result = await dispatch(name as CommandName, args);
-              if (name === 'get_preview') {
-                const preview = result as {
-                  data: string;
-                  mimeType: string;
-                  width: number;
-                  height: number;
-                };
-                return {
-                  content: [
-                    { type: 'image' as const, data: preview.data, mimeType: preview.mimeType },
-                    { type: 'text' as const, text: `${preview.width} × ${preview.height}` },
-                  ],
-                };
-              }
-              return { content: [{ type: 'text' as const, text: JSON.stringify(result) }] };
+              return { content: toolContent(name, await dispatch(name, args)) };
             } catch (error) {
               return {
                 isError: true,

@@ -53,6 +53,8 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Phase**: a value that advances with project time at a rate, such as an effect's speed (`src/lib/timeline/phase.ts`). At a constant rate it is exactly `rate × time`; a changing rate (driven by a reactor) is integrated, restarting after a seek.
 
+**Command**: one MCP tool, declared once in `commands` (`src/lib/automation/protocol.ts`): its description, argument schema, **effect** (`read`, `edit` or `destructive`), whether it may run during an export, and whether its result is an image. The MCP server (`electron/mcp/server.ts`) registers tools and formats results from that table, and the editor checks every request with `parseCommand` before running its handler (`src/lib/automation/dispatcher.ts`, one per command). The table is shared by the Electron main process and the editor, so it holds no handlers.
+
 **Platform**: what the app can ask of the machine it runs on (`platform` from `src/lib/platform`): dialogs, and on the desktop the window, files by path, the ffmpeg encoder, the updater and MCP automation. Chosen once per session: the desktop adapter over IPC, or the web adapter over browser APIs. A capability the web lacks is `null`, so code checks the capability rather than "is this desktop".
 
 **Channel**: one IPC message between the Electron main process and the app window, declared once in `src/lib/platform/channels.ts` with its payload and result types. The main process (`electron/ipc.ts`), the preload and the desktop adapter all work from that table, and every channel answers only the app window's main frame.

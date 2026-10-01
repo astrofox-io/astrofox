@@ -8,36 +8,71 @@ const empty = z.object({}).strict();
 const seconds = z.number().min(0).describe('Seconds from the project start.');
 const fps = z.union([z.literal(30), z.literal(60)]);
 
+/**
+ * What running a command does to the project:
+ * - `read` leaves it unchanged
+ * - `edit` changes it in a way undo or another edit can reverse
+ * - `destructive` can lose unsaved work or overwrite a file
+ */
+export type CommandEffect = 'read' | 'edit' | 'destructive';
+
+/** One MCP tool: everything the server, the editor and the docs know about it. */
+export interface CommandDefinition {
+  description: string;
+  /** The arguments, checked in the editor before the command runs. */
+  schema: z.ZodType;
+  effect: CommandEffect;
+  /** Whether it may run while a video export is rendering: reads that do not draw, and cancelling. */
+  duringExport?: boolean;
+  /** `image` results are an `ImageResult`, sent to the client as an image. Others are JSON. */
+  result?: 'json' | 'image';
+}
+
+/** The result of a command whose `result` is `image`. */
+export interface ImageResult {
+  /** Base64, without a data URL prefix. */
+  data: string;
+  mimeType: string;
+  width: number;
+  height: number;
+}
+
 export const commands = {
   get_project: {
     description:
       'Inspect the live project, canvas, scenes, reactors and audio. Embedded media is omitted.',
     schema: empty,
-    readOnly: true,
+    effect: 'read',
+    duringExport: true,
   },
   list_element_types: {
     description: 'List installed displays and effects, plus Scene and AudioReactor.',
     schema: empty,
-    readOnly: true,
+    effect: 'read',
+    duringExport: true,
   },
   describe_element_type: {
     description:
       'Get defaults and resolved editable controls. Supply elementId for current, context-dependent bounds.',
     schema: z.object({ name: id, elementId: id.optional() }).strict(),
-    readOnly: true,
+    effect: 'read',
+    duringExport: true,
   },
   new_project: {
     description:
       'Replace the current project with a new project. Set discardChanges only when discarding unsaved edits is intended.',
     schema: z.object({ discardChanges: z.boolean().default(false) }).strict(),
+    effect: 'destructive',
   },
   create_scene: {
     description: 'Add a scene and return its ID.',
     schema: z.object({ name: z.string().min(1).max(200).optional() }).strict(),
+    effect: 'edit',
   },
   add_element: {
     description: 'Add a display or effect by its exact installed type name to an existing scene.',
     schema: z.object({ sceneId: id, type: id, properties: properties.default({}) }).strict(),
+    effect: 'edit',
   },
   update_element: {
     description:
@@ -50,15 +85,18 @@ export const commands = {
         enabled: z.boolean().optional(),
       })
       .strict(),
+    effect: 'edit',
   },
   remove_element: {
     description: 'Remove a scene (including its contents), display or effect.',
     schema: z.object({ id }).strict(),
+    effect: 'destructive',
   },
   reorder_element: {
     description:
       'Move an element to a target element position, or into a target scene. Types must be compatible.',
     schema: z.object({ id, targetId: id }).strict(),
+    effect: 'edit',
   },
   configure_canvas: {
     description: 'Set canvas dimensions and background color.',
@@ -69,18 +107,22 @@ export const commands = {
         backgroundColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
       })
       .strict(),
+    effect: 'edit',
   },
   create_reactor: {
     description: 'Create an audio reactor with validated properties.',
     schema: z.object({ properties: properties.default({}) }).strict(),
+    effect: 'edit',
   },
   update_reactor: {
     description: 'Update an audio reactor by ID.',
     schema: z.object({ id, properties }).strict(),
+    effect: 'edit',
   },
   remove_reactor: {
     description: 'Remove a reactor and its bindings.',
     schema: z.object({ id }).strict(),
+    effect: 'destructive',
   },
   bind_reactor: {
     description:
@@ -94,6 +136,7 @@ export const commands = {
         max: z.number().finite().default(1),
       })
       .strict(),
+    effect: 'edit',
   },
   get_preview: {
     description:
@@ -104,13 +147,15 @@ export const commands = {
         time: seconds.optional(),
       })
       .strict(),
-    readOnly: true,
+    effect: 'read',
+    result: 'image',
   },
   get_timeline: {
     description:
       'Read the project transport (time, duration, fps) and every element with its timeline clip. Elements without a clip are active for the whole project.',
     schema: empty,
-    readOnly: true,
+    effect: 'read',
+    duringExport: true,
   },
   set_timeline: {
     description:
@@ -126,6 +171,7 @@ export const commands = {
         fps: fps.optional(),
       })
       .strict(),
+    effect: 'edit',
   },
   set_clips: {
     description:
@@ -148,20 +194,24 @@ export const commands = {
           .max(500),
       })
       .strict(),
+    effect: 'edit',
   },
   clear_clips: {
     description: 'Remove timeline clips so the elements are active for the whole project.',
     schema: z.object({ ids: z.array(id).min(1).max(500) }).strict(),
+    effect: 'edit',
   },
   open_project: {
     description:
       'Open a local .afx/.json project, including legacy gzip .afx. Reports missing media/plugins without dialogs.',
     schema: z.object({ path: filePath, discardChanges: z.boolean().default(false) }).strict(),
+    effect: 'destructive',
   },
   save_project: {
     description:
       'Save the current project to an absolute .afx path. Existing files require overwrite=true.',
     schema: z.object({ path: filePath, overwrite: z.boolean().default(false) }).strict(),
+    effect: 'destructive',
   },
   load_media: {
     description:
@@ -173,6 +223,7 @@ export const commands = {
         elementId: id.optional(),
       })
       .strict(),
+    effect: 'edit',
   },
   playback: {
     description:
@@ -185,6 +236,7 @@ export const commands = {
         position: z.number().min(0).max(1).optional(),
       })
       .strict(),
+    effect: 'edit',
   },
   start_export: {
     description:
@@ -202,17 +254,21 @@ export const commands = {
         includeAudio: z.boolean().default(true),
       })
       .strict(),
+    effect: 'destructive',
   },
   get_export_status: {
     description: 'Read a video export job. Jobs are retained until renderer reload (up to 50).',
     schema: z.object({ jobId: id }).strict(),
-    readOnly: true,
+    effect: 'read',
+    duringExport: true,
   },
   cancel_export: {
     description: 'Cancel an export job and clean up its ffmpeg processes.',
     schema: z.object({ jobId: id }).strict(),
+    effect: 'edit',
+    duringExport: true,
   },
-} as const;
+} satisfies Record<string, CommandDefinition>;
 
 export type CommandName = keyof typeof commands;
 export type CommandArgs<K extends CommandName> = z.infer<(typeof commands)[K]['schema']>;
@@ -226,4 +282,62 @@ export interface AutomationResponse {
   id: string;
   result?: unknown;
   error?: string;
+}
+
+function definition(name: CommandName): CommandDefinition {
+  return commands[name];
+}
+
+/** The MCP tool hints for a command. */
+export function toolAnnotations(name: CommandName) {
+  const { effect } = definition(name);
+  return {
+    readOnlyHint: effect === 'read',
+    destructiveHint: effect === 'destructive',
+    openWorldHint: false,
+  };
+}
+
+/** A command's result as MCP tool content. */
+export function toolContent(name: CommandName, result: unknown) {
+  if (definition(name).result === 'image') {
+    const image = result as ImageResult;
+    return [
+      { type: 'image' as const, data: image.data, mimeType: image.mimeType },
+      { type: 'text' as const, text: `${image.width} × ${image.height}` },
+    ];
+  }
+
+  return [{ type: 'text' as const, text: JSON.stringify(result) }];
+}
+
+/** Refuse prototype keys, non-finite numbers and deep nesting anywhere in client input. */
+export function assertSafe(value: unknown, depth = 0): void {
+  if (depth > 25) throw new Error('Object nesting exceeds 25 levels.');
+  if (typeof value === 'number' && !Number.isFinite(value))
+    throw new Error('Numbers must be finite.');
+  if (value && typeof value === 'object') {
+    for (const [key, entry] of Object.entries(value)) {
+      if (['__proto__', 'prototype', 'constructor'].includes(key))
+        throw new Error(`Forbidden property: ${key}`);
+      assertSafe(entry, depth + 1);
+    }
+  }
+}
+
+/**
+ * Check a request from a client before it runs: the command exists, it may run
+ * now, and its arguments are safe and match its schema (defaults filled in).
+ */
+export function parseCommand(
+  command: string,
+  args: unknown,
+  state: { exporting: boolean },
+): { name: CommandName; args: unknown } {
+  if (!Object.hasOwn(commands, command)) throw new Error('Unknown automation command.');
+  const name = command as CommandName;
+  if (state.exporting && !definition(name).duringExport)
+    throw new Error('Wait for the current export to finish, or cancel it.');
+  assertSafe(args);
+  return { name, args: definition(name).schema.parse(args) };
 }

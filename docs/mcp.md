@@ -173,8 +173,10 @@ whether fades will apply or the element will hard-cut.
   request is checked by the same rules either way.
 - `start_export` returns a job ID immediately. Poll `get_export_status` until
   `completed`, `cancelled` or `failed`. The most recent 50 jobs live in renderer
-  memory and do not survive reload. Other MCP mutations and previews are blocked
-  while an export runs. Avoid manually editing the composition during export.
+  memory and do not survive reload. While an export runs, only `get_project`,
+  `get_timeline`, `list_element_types`, `describe_element_type`,
+  `get_export_status` and `cancel_export` are accepted; edits and previews are
+  refused. Avoid manually editing the composition during export.
 - The endpoint binds only to `127.0.0.1`, requires a bearer token, validates Host
   and Origin, limits request bodies to 1 MiB, and uses explicit IPC methods. It
   exposes no arbitrary JavaScript evaluation, shell command or raw ffmpeg tool.
