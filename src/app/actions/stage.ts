@@ -1,8 +1,13 @@
 import { create } from 'zustand';
 import { DEFAULT_ZOOM } from '@/app/constants';
 import { projectDocument } from '@/app/document';
-import { renderBackend, renderer } from '@/app/global';
+import { api, renderBackend, renderer } from '@/app/global';
+import { t } from '@/i18n/config';
+import ImageDisplay from '@/lib/displays/ImageDisplay';
+import type { DocumentOp } from '@/lib/document/types';
 import { clamp } from '@/lib/utils/math';
+import { getFileSystemPath } from '@/lib/utils/media';
+import { raiseError } from './error';
 
 /** How the stage is viewed. Canvas size and color are document content (`projectDocument`). */
 interface StageState {
@@ -22,6 +27,65 @@ const ZOOM_STEP = 0.1;
 const stageStore = create(() => ({
   ...initialState,
 }));
+
+export async function loadStageImage(file: File) {
+  try {
+    const src = await api.readImageFile(file);
+    if (typeof src !== 'string') {
+      throw new Error('The selected image could not be decoded');
+    }
+
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('The selected image could not be decoded'));
+      image.src = src;
+    });
+
+    const { scenes, unresolvedMediaRefs } = projectDocument.getState();
+    const ops: DocumentOp[] = [];
+    let target: { id: string; property: string } | undefined;
+
+    for (const scene of scenes) {
+      for (const layer of [scene, ...scene.displays, ...scene.effects]) {
+        const display = projectDocument.findLayer(layer.id);
+        const config = (
+          display?.constructor as { config?: { controls?: Record<string, { type?: string }> } }
+        )?.config;
+        const property = Object.keys(config?.controls ?? {}).find(
+          key => config?.controls?.[key].type === 'image',
+        );
+        if (property) {
+          target = { id: layer.id, property };
+          break;
+        }
+      }
+      if (target) break;
+    }
+
+    if (!target) {
+      const display = new ImageDisplay();
+      if (scenes.length === 0) ops.push({ type: 'addScene' });
+      ops.push({ type: 'addElement', element: display });
+      target = { id: display.id, property: 'src' };
+    }
+
+    ops.push(
+      {
+        type: 'setProperties',
+        id: target.id,
+        properties: { [target.property]: image, sourcePath: getFileSystemPath(file) },
+      },
+      {
+        type: 'setUnresolvedMediaRefs',
+        refs: unresolvedMediaRefs.filter(ref => ref.displayId !== target.id),
+      },
+    );
+    projectDocument.apply(ops);
+  } catch (error) {
+    raiseError(t('errors.invalid-image-file'), error);
+  }
+}
 
 export function updateStage(props: Partial<StageState>) {
   stageStore.setState(props as StageState);

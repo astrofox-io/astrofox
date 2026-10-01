@@ -69,17 +69,21 @@ export function checkUnsavedChanges(action: () => unknown) {
   }
 }
 
-export async function openProjectFile() {
+export async function openProjectFile(file?: File) {
   try {
-    const { files, canceled } = await api.showOpenDialog({
-      filters: projectFilters(PROJECT_OPEN_EXTENSIONS),
-    });
+    if (!file) {
+      const { files, canceled } = await api.showOpenDialog({
+        filters: projectFilters(PROJECT_OPEN_EXTENSIONS),
+      });
 
-    if (canceled || !files || !files.length) {
-      return false;
+      if (canceled || !files || !files.length) {
+        return false;
+      }
+
+      file = files[0];
     }
 
-    showOpenResult(await project.open(files[0]));
+    showOpenResult(await project.open(file));
     return true;
   } catch (error) {
     raiseError(t('errors.open-project-file-failed'), error);

@@ -9,13 +9,16 @@ import useApp, {
   toggleStagePictureInPicture,
 } from '@/app/actions/app';
 import useAudioStore, { loadAudioFile } from '@/app/actions/audio';
-import useStage from '@/app/actions/stage';
+import { checkUnsavedChanges, openProjectFile } from '@/app/actions/project';
+import useStage, { loadStageImage } from '@/app/actions/stage';
 import { useDocument } from '@/app/document';
 import { renderBackend, renderer, stage } from '@/app/global';
 import { VectorSquare, Video } from '@/app/icons';
 import Spinner from '@/components/Spinner';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { getFileMimeType } from '@/lib/platform/fileTypes';
+import { isProjectFileName } from '@/lib/project/projectFile';
 import { cn } from '@/lib/utils';
 import { hasDisplayCamera } from '@/lib/utils/displayCamera';
 import { ignoreEvents } from '@/lib/utils/react';
@@ -128,7 +131,11 @@ export default function Stage() {
 
     const file = e.dataTransfer.files[0];
 
-    if (file) {
+    if (!file) {
+      return;
+    }
+
+    async function loadFile() {
       setDropLoading(true);
 
       // Force one paint so the overlay spinner can appear immediately.
@@ -142,10 +149,22 @@ export default function Stage() {
       });
 
       try {
-        await loadAudioFile(file);
+        if (isProjectFileName(file.name)) {
+          await openProjectFile(file);
+        } else if ((file.type || getFileMimeType(file.name)).startsWith('image/')) {
+          await loadStageImage(file);
+        } else {
+          await loadAudioFile(file);
+        }
       } finally {
         setDropLoading(false);
       }
+    }
+
+    if (isProjectFileName(file.name)) {
+      checkUnsavedChanges(loadFile);
+    } else {
+      await loadFile();
     }
   }
 
