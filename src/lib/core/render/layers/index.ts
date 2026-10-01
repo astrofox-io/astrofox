@@ -2,4 +2,4 @@
 // Core display layers are imported by their display module
 // (src/lib/displays/*), which registers them.
 export { CanvasTextureLayer } from './CanvasTextureLayer';
-export { getThreeBlending, TexturePlane } from './TexturePlane';
+export { TexturePlane } from './TexturePlane';

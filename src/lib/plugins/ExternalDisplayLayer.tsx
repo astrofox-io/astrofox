@@ -87,13 +87,7 @@ function useExternalCameraOrbit(display, cameraModeActive) {
   }, [cameraAzimuth, cameraPolar, cameraDistance, defaultDistance, draggingRef]);
 }
 
-export function ExternalDisplayLayer({
-  display,
-  order,
-  frameData,
-  cameraModeActive = false,
-  ...sceneProps
-}) {
+export function ExternalDisplayLayer({ display, order, frameData, cameraModeActive = false }) {
   const host = getPluginWorkerHost(display.name);
   const bitmapRef = React.useRef(null);
 
@@ -172,7 +166,6 @@ export function ExternalDisplayLayer({
       order={order}
       frameData={frameData}
       drawFrame={drawFrame}
-      {...sceneProps}
     />
   );
 }

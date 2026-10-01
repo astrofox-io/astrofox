@@ -80,16 +80,7 @@ function drawShape(ctx, props, width, height) {
   }
 }
 
-export function ShapeDisplayLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function ShapeDisplayLayer({ display, order, frameData }) {
   const drawFrame = React.useCallback(({ context, properties }) => {
     const width = Math.max(1, Math.round(properties.width || properties.size || 100));
     const height = Math.max(
@@ -125,11 +116,6 @@ export function ShapeDisplayLayer({
       display={display}
       order={order}
       frameData={frameData}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       drawFrame={drawFrame}
     />
   );

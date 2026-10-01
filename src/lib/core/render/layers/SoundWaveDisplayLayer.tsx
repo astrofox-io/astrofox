@@ -11,16 +11,7 @@ function getSoundWavePoints(values, width) {
   return Array.from(values).flatMap((n, i) => [i * step, n]);
 }
 
-export function SoundWaveDisplayLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function SoundWaveDisplayLayer({ display, order, frameData }) {
   const waveRef = React.useRef(null);
   const parserRef = React.useRef(null);
 
@@ -63,11 +54,6 @@ export function SoundWaveDisplayLayer({
       display={display}
       order={order}
       frameData={frameData}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       drawFrame={drawFrame}
     />
   );

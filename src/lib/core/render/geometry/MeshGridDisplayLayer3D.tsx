@@ -3,20 +3,16 @@
 import { useFrame } from '@react-three/fiber';
 import React from 'react';
 import {
-  AddEquation,
   BufferAttribute,
   BufferGeometry,
-  CustomBlending,
   DoubleSide,
   DynamicDrawUsage,
   FrontSide,
-  OneFactor,
-  ZeroFactor,
+  NormalBlending,
 } from 'three';
 import { BLANK_IMAGE } from '@/app/constants';
 import { Phase } from '@/lib/timeline/phase';
 import { clamp } from '@/lib/utils/math';
-import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
 import { getMaterialNode, isPointsMaterial } from './geometryMaterials';
 import { createGridMotionContext, sampleProceduralGridMotion } from './gridMotion';
 import { useTexture3D } from './useTexture3D';
@@ -86,15 +82,7 @@ function createMeshGridGeometry(columns: number, rows: number, separation: numbe
   };
 }
 
-export function MeshGridDisplayLayer3D({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-}) {
+export function MeshGridDisplayLayer3D({ display, order, frameData }) {
   const { properties = {} } = display;
   const {
     material = 'Points',
@@ -135,11 +123,9 @@ export function MeshGridDisplayLayer3D({
   const gridRows = Math.max(4, Math.round(Number(rows) || 4));
   const gridSeparation = Math.max(8, Number(separation) || 8);
   const pointsMaterial = isPointsMaterial(material);
-  const finalOpacity = clamp(Number(opacity ?? 1) * Number(sceneOpacity ?? 1), 0, 1);
-  const blending = sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode);
-  const geometryColor = sceneMask ? '#000000' : color;
-  const edgeOpacity = sceneMask ? Number(sceneInverse ? 1 : 0) : 0.9 * Number(sceneOpacity ?? 1);
-  const premultipliedAlpha = requiresPremultipliedAlpha(sceneBlendMode);
+  const finalOpacity = clamp(Number(opacity ?? 1), 0, 1);
+  const blending = NormalBlending;
+  const edgeOpacity = 0.9;
   const geometryData = React.useMemo(
     () => createMeshGridGeometry(gridColumns, gridRows, gridSeparation),
     [gridColumns, gridRows, gridSeparation],
@@ -150,39 +136,27 @@ export function MeshGridDisplayLayer3D({
   const GeometryPrimitive = pointsMaterial ? 'points' : 'mesh';
   const geometryMaterialProps = pointsMaterial
     ? {
-        color: geometryColor,
+        color,
         opacity: finalOpacity,
         transparent: true,
         depthTest: true,
         depthWrite: false,
-        premultipliedAlpha,
+        premultipliedAlpha: false,
         blending,
-        blendEquation: sceneMask ? AddEquation : undefined,
-        blendSrc: sceneMask ? ZeroFactor : undefined,
-        blendDst: sceneMask ? OneFactor : undefined,
-        blendEquationAlpha: sceneMask ? AddEquation : undefined,
-        blendSrcAlpha: sceneMask ? OneFactor : undefined,
-        blendDstAlpha: sceneMask ? ZeroFactor : undefined,
         size: Math.max(0.5, Number(pointSize) || 0.5),
         sizeAttenuation: true,
       }
     : {
         flatShading: shading === 'Flat',
-        color: geometryColor,
+        color,
         opacity: finalOpacity,
         wireframe,
         transparent: true,
         side: material === 'Basic' ? FrontSide : DoubleSide,
         depthTest: true,
         depthWrite: true,
-        premultipliedAlpha,
+        premultipliedAlpha: false,
         blending,
-        blendEquation: sceneMask ? AddEquation : undefined,
-        blendSrc: sceneMask ? ZeroFactor : undefined,
-        blendDst: sceneMask ? OneFactor : undefined,
-        blendEquationAlpha: sceneMask ? AddEquation : undefined,
-        blendSrcAlpha: sceneMask ? OneFactor : undefined,
-        blendDstAlpha: sceneMask ? ZeroFactor : undefined,
         map: textureMap ?? null,
       };
 
@@ -249,12 +223,12 @@ export function MeshGridDisplayLayer3D({
           frustumCulled={false}
         >
           <meshStandardMaterial
-            color={sceneMask ? '#000000' : edgeColor}
+            color={edgeColor}
             wireframe={true}
             transparent={true}
             roughness={0.7}
             metalness={0.03}
-            premultipliedAlpha={premultipliedAlpha}
+            premultipliedAlpha={false}
             opacity={edgeOpacity}
             depthTest={true}
             depthWrite={false}
@@ -262,12 +236,6 @@ export function MeshGridDisplayLayer3D({
             polygonOffsetFactor={-1}
             polygonOffsetUnits={-1}
             blending={blending}
-            blendEquation={sceneMask ? AddEquation : undefined}
-            blendSrc={sceneMask ? ZeroFactor : undefined}
-            blendDst={sceneMask ? OneFactor : undefined}
-            blendEquationAlpha={sceneMask ? AddEquation : undefined}
-            blendSrcAlpha={sceneMask ? OneFactor : undefined}
-            blendDstAlpha={sceneMask ? ZeroFactor : undefined}
           />
         </mesh>
       )}

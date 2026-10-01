@@ -7,14 +7,6 @@ import { isVisibleAt } from '@/lib/timeline/clip';
 import { getDisplayLayerEntry } from './displayLayerRegistry';
 import { SceneWithEffects } from './effects';
 
-const NEUTRAL_SCENE_PROPS = {
-  sceneOpacity: 1,
-  sceneBlendMode: 'Normal',
-  sceneMask: false,
-  sceneInverse: false,
-  sceneMaskCombine: 'replace',
-};
-
 function wrapDisplayNode(display, node, frameData) {
   if (!node) {
     return null;
@@ -99,7 +91,6 @@ export default function StageRoot({
           width,
           height,
           scene,
-          sceneProps: NEUTRAL_SCENE_PROPS,
           cameraModeActive: entry.camera === true && cameraModeDisplayId === display.id,
         });
 

@@ -5,15 +5,7 @@ import { LinearFilter, SRGBColorSpace, TextureLoader } from 'three';
 import { registerFramePreparer } from '../framePreparation';
 import { TexturePlane } from './TexturePlane';
 
-export function ImageDisplayLayer({
-  display,
-  order,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function ImageDisplayLayer({ display, order }) {
   const invalidate = useThree(state => state.invalidate);
   const { properties = {} } = display;
   const {
@@ -79,11 +71,6 @@ export function ImageDisplayLayer({
       rotation={rotation}
       zoom={zoom}
       opacity={opacity}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       renderOrder={order}
     />
   );

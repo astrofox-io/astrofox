@@ -47,16 +47,7 @@ async function seekAndWait(video, getTarget) {
  * in previews and in exports it seeks to the exact frame, and offline frames
  * wait for the seek before they are captured.
  */
-export function VideoDisplayLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function VideoDisplayLayer({ display, order, frameData }) {
   const { properties = {} } = display;
   const {
     src,
@@ -210,11 +201,6 @@ export function VideoDisplayLayer({
       rotation={rotation}
       zoom={zoom}
       opacity={opacity}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       renderOrder={order}
     />
   );

@@ -4,16 +4,7 @@ import FFTParser from '@/lib/audio/FFTParser';
 import CanvasBars from '@/lib/canvas/CanvasBars';
 import { CanvasTextureLayer } from './CanvasTextureLayer';
 
-export function BarSpectrumDisplayLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function BarSpectrumDisplayLayer({ display, order, frameData }) {
   const barsRef = React.useRef(null);
   const parserRef = React.useRef(null);
 
@@ -49,11 +40,6 @@ export function BarSpectrumDisplayLayer({
       display={display}
       order={order}
       frameData={frameData}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       drawFrame={drawFrame}
     />
   );

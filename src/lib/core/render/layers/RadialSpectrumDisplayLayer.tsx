@@ -4,16 +4,7 @@ import FFTParser from '@/lib/audio/FFTParser';
 import CanvasRadial from '@/lib/canvas/CanvasRadial';
 import { CanvasTextureLayer } from './CanvasTextureLayer';
 
-export function RadialSpectrumDisplayLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function RadialSpectrumDisplayLayer({ display, order, frameData }) {
   const radialRef = React.useRef(null);
   const parserRef = React.useRef(null);
 
@@ -49,11 +40,6 @@ export function RadialSpectrumDisplayLayer({
       display={display}
       order={order}
       frameData={frameData}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       drawFrame={drawFrame}
     />
   );

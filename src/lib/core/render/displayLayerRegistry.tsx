@@ -5,8 +5,7 @@ import { Display3DLayer } from './geometry/Display3DLayer';
 
 /**
  * Maps a display's `name` to how it renders on the stage. An entry's `render`
- * receives { display, order, frameData, width, height, scene, sceneProps,
- * cameraModeActive } and returns a React node (or null to render nothing this
+ * receives { display, order, frameData, width, height, scene, cameraModeActive } and returns a React node (or null to render nothing this
  * frame). Every display is a layer in the scene's 2D stack; `camera: true`
  * marks displays that own a 3D camera (rendered through Display3DLayer) so
  * the stage can offer camera controls for them.
@@ -34,14 +33,14 @@ export function getDisplayLayerEntry(name) {
 
 /**
  * A display drawn by a 2D layer component, which receives { display, order,
- * frameData } plus the scene's blending props. `when`, if given, decides per
- * frame whether there is anything to draw.
+ * frameData }. `when`, if given, decides per frame whether there is anything
+ * to draw.
  */
 export function layer2D(Component, { when } = {}) {
   return {
-    render: ({ display, order, frameData, sceneProps }) =>
+    render: ({ display, order, frameData }) =>
       when && !when(display) ? null : (
-        <Component display={display} order={order} frameData={frameData} {...sceneProps} />
+        <Component display={display} order={order} frameData={frameData} />
       ),
   };
 }
@@ -54,7 +53,7 @@ export function layer2D(Component, { when } = {}) {
 export function layer3D(Component) {
   return {
     camera: true,
-    render: ({ display, order, frameData, width, height, cameraModeActive, sceneProps }) => (
+    render: ({ display, order, frameData, width, height, cameraModeActive }) => (
       <Display3DLayer
         display={display}
         order={order}
@@ -62,7 +61,7 @@ export function layer3D(Component) {
         height={height}
         cameraModeActive={cameraModeActive}
       >
-        <Component display={display} order={order} frameData={frameData} {...sceneProps} />
+        <Component display={display} order={order} frameData={frameData} />
       </Display3DLayer>
     ),
   };

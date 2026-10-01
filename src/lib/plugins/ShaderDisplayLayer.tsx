@@ -16,7 +16,7 @@ import { applyUniform, defaultUniformValue } from './shaderEffectFactory';
  * the standard TexturePlane, so transforms, blending and reactors behave
  * like any core 2D display.
  */
-export function ShaderDisplayLayer({ installed, display, order, frameData, ...sceneProps }) {
+export function ShaderDisplayLayer({ installed, display, order, frameData }) {
   const { manifest } = installed;
   const fragmentShader = installed.files[manifest.shader];
   const properties = display.properties || {};
@@ -125,7 +125,6 @@ export function ShaderDisplayLayer({ installed, display, order, frameData, ...sc
       zoom={zoom}
       opacity={opacity}
       renderOrder={order}
-      {...sceneProps}
     />
   );
 }

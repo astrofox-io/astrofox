@@ -3,17 +3,7 @@ import React from 'react';
 import { CanvasTexture, LinearFilter, SRGBColorSpace } from 'three';
 import { TexturePlane } from './TexturePlane';
 
-export function CanvasTextureLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-  drawFrame,
-}) {
+export function CanvasTextureLayer({ display, order, frameData, drawFrame }) {
   const { properties = {} } = display;
   const { x = 0, y = 0, rotation = 0, zoom = 1, opacity = 1 } = properties;
 
@@ -137,11 +127,6 @@ export function CanvasTextureLayer({
       rotation={rotation}
       zoom={zoom}
       opacity={opacity}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       renderOrder={order}
     />
   );

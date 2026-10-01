@@ -8,11 +8,6 @@ interface WaveformRingDisplayLayerProps {
   display: Record<string, unknown>;
   order: number;
   frameData?: RenderFrameData | null;
-  sceneOpacity: number;
-  sceneBlendMode: string;
-  sceneMask: boolean;
-  sceneInverse: boolean;
-  sceneMaskCombine: string;
 }
 
 interface DrawFrameArgs {
@@ -32,11 +27,6 @@ export function WaveformRingDisplayLayer({
   display,
   order,
   frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
 }: WaveformRingDisplayLayerProps) {
   const ringRef = React.useRef<CanvasWaveRing | null>(null);
   const parserRef = React.useRef<WaveParser | null>(null);
@@ -76,11 +66,6 @@ export function WaveformRingDisplayLayer({
       display={display}
       order={order}
       frameData={frameData}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       drawFrame={drawFrame}
     />
   );

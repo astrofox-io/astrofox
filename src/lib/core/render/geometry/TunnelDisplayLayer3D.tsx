@@ -3,21 +3,17 @@
 import { useFrame } from '@react-three/fiber';
 import React from 'react';
 import {
-  AddEquation,
   BackSide,
   BufferAttribute,
   CatmullRomCurve3,
   Color,
-  CustomBlending,
   Matrix4,
-  OneFactor,
+  NormalBlending,
   Quaternion,
   TubeGeometry,
   Vector3,
-  ZeroFactor,
 } from 'three';
 import { clamp } from '@/lib/utils/math';
-import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
 import { useDisplay3D } from './Display3DLayer';
 
 const FOV = 50;
@@ -270,14 +266,7 @@ function updateTubeFogColors(
   colorAttr.needsUpdate = true;
 }
 
-export function TunnelDisplayLayer3D({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-}) {
+export function TunnelDisplayLayer3D({ display, order, frameData }) {
   const { camera: sceneCamera, height } = useDisplay3D();
   const { properties = {} } = display;
   const {
@@ -357,16 +346,11 @@ export function TunnelDisplayLayer3D({
     Math.sin(cameraPolar) * cameraDistance,
     Math.cos(cameraAzimuth) * cameraCosPolar * cameraDistance,
   ];
-  const finalOpacity = clamp(Number(opacity ?? 1) * Number(sceneOpacity ?? 1), 0, 1);
+  const finalOpacity = clamp(Number(opacity ?? 1), 0, 1);
   const shaderEnabled = Boolean(shader);
-  const resolvedLineColor = sceneMask ? '#000000' : color;
-  const resolvedBackgroundColor = sceneMask ? '#000000' : backgroundColor;
-  const lineColorValue = React.useMemo(() => new Color(resolvedLineColor), [resolvedLineColor]);
-  const backgroundColorValue = React.useMemo(
-    () => new Color(resolvedBackgroundColor),
-    [resolvedBackgroundColor],
-  );
-  const blending = sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode);
+  const lineColorValue = React.useMemo(() => new Color(color), [color]);
+  const backgroundColorValue = React.useMemo(() => new Color(backgroundColor), [backgroundColor]);
+  const blending = NormalBlending;
   const rollRadians = ((Number(bank) || 0) * Math.PI) / 180;
   const visiblePathDistance = tunnelDepth + leadDistance + trailDistance;
   const lineRowSpacing = visiblePathDistance / Math.max(1, lineRows);
@@ -463,8 +447,8 @@ export function TunnelDisplayLayer3D({
     0,
     1,
   );
-  shaderUniforms.uLineColor.value.set(resolvedLineColor);
-  shaderUniforms.uBackgroundColor.value.set(resolvedBackgroundColor);
+  shaderUniforms.uLineColor.value.set(color);
+  shaderUniforms.uBackgroundColor.value.set(backgroundColor);
 
   // R3F copies the `uniforms` prop into the material's own uniform objects on
   // mount and does not re-read it (same reference), so scalar changes made on
@@ -625,7 +609,7 @@ export function TunnelDisplayLayer3D({
     >
       <mesh ref={surfaceMeshRef} renderOrder={order} frustumCulled={false} visible={!shaderEnabled}>
         <meshStandardMaterial
-          color={resolvedBackgroundColor}
+          color={backgroundColor}
           transparent={true}
           side={BackSide}
           roughness={0.85}
@@ -633,14 +617,8 @@ export function TunnelDisplayLayer3D({
           depthTest={true}
           depthWrite={!transparentSurface && finalOpacity > 0}
           opacity={transparentSurface ? 0 : finalOpacity}
-          premultipliedAlpha={requiresPremultipliedAlpha(sceneBlendMode)}
+          premultipliedAlpha={false}
           blending={blending}
-          blendEquation={sceneMask ? AddEquation : undefined}
-          blendSrc={sceneMask ? ZeroFactor : undefined}
-          blendDst={sceneMask ? OneFactor : undefined}
-          blendEquationAlpha={sceneMask ? AddEquation : undefined}
-          blendSrcAlpha={sceneMask ? OneFactor : undefined}
-          blendDstAlpha={sceneMask ? ZeroFactor : undefined}
         />
       </mesh>
       <mesh
@@ -650,7 +628,7 @@ export function TunnelDisplayLayer3D({
         visible={!shaderEnabled}
       >
         <meshStandardMaterial
-          color={resolvedLineColor}
+          color={color}
           vertexColors={true}
           wireframe={true}
           wireframeLinewidth={Math.max(1, clamp(Number(lineWidth) || 0, 0.005, 0.3) * 100)}
@@ -661,14 +639,8 @@ export function TunnelDisplayLayer3D({
           depthTest={true}
           depthWrite={false}
           opacity={finalOpacity}
-          premultipliedAlpha={requiresPremultipliedAlpha(sceneBlendMode)}
+          premultipliedAlpha={false}
           blending={blending}
-          blendEquation={sceneMask ? AddEquation : undefined}
-          blendSrc={sceneMask ? ZeroFactor : undefined}
-          blendDst={sceneMask ? OneFactor : undefined}
-          blendEquationAlpha={sceneMask ? AddEquation : undefined}
-          blendSrcAlpha={sceneMask ? OneFactor : undefined}
-          blendDstAlpha={sceneMask ? ZeroFactor : undefined}
         />
       </mesh>
       <mesh
@@ -686,14 +658,8 @@ export function TunnelDisplayLayer3D({
           side={BackSide}
           depthTest={true}
           depthWrite={!transparentSurface}
-          premultipliedAlpha={requiresPremultipliedAlpha(sceneBlendMode)}
+          premultipliedAlpha={false}
           blending={blending}
-          blendEquation={sceneMask ? AddEquation : undefined}
-          blendSrc={sceneMask ? ZeroFactor : undefined}
-          blendDst={sceneMask ? OneFactor : undefined}
-          blendEquationAlpha={sceneMask ? AddEquation : undefined}
-          blendSrcAlpha={sceneMask ? OneFactor : undefined}
-          blendDstAlpha={sceneMask ? ZeroFactor : undefined}
         />
       </mesh>
     </group>

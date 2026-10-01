@@ -3,16 +3,7 @@ import React from 'react';
 import CanvasText from '@/lib/canvas/CanvasText';
 import { CanvasTextureLayer } from './CanvasTextureLayer';
 
-export function TextDisplayLayer({
-  display,
-  order,
-  frameData,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-  sceneMaskCombine,
-}) {
+export function TextDisplayLayer({ display, order, frameData }) {
   const textRef = React.useRef(null);
 
   const drawFrame = React.useCallback(({ context, properties }) => {
@@ -45,11 +36,6 @@ export function TextDisplayLayer({
       display={display}
       order={order}
       frameData={frameData}
-      sceneOpacity={sceneOpacity}
-      sceneBlendMode={sceneBlendMode}
-      sceneMask={sceneMask}
-      sceneInverse={sceneInverse}
-      sceneMaskCombine={sceneMaskCombine}
       drawFrame={drawFrame}
     />
   );

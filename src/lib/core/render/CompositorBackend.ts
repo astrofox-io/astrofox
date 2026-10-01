@@ -5,7 +5,6 @@ import * as THREE from 'three';
 import { isVisibleAt } from '@/lib/timeline/clip';
 import { base64ToBytes } from '@/lib/utils/data';
 import { StageComposer } from './composer';
-import RenderBackend from './RenderBackend';
 import StageRoot from './StageRoot';
 
 const PRESENTATION_TIMEOUT_MS = 5000;
@@ -90,10 +89,13 @@ function readCanvasPixels(canvas, width, height) {
   return new Uint8Array(context.getImageData(0, 0, w, h).data.buffer);
 }
 
-export default class CompositorBackend extends RenderBackend {
+/**
+ * Draws the stage: the React Three Fiber root that renders each scene's
+ * layers and effects, and the StageComposer that composites the scenes onto
+ * the canvas. The Renderer drives it, live and for offline frames.
+ */
+export default class CompositorBackend {
   constructor(stage) {
-    super();
-
     this.stage = stage;
     this.root = null;
     this.fiberModule = null;

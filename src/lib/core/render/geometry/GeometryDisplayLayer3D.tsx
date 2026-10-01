@@ -1,21 +1,13 @@
 // @ts-nocheck
 
 import React from 'react';
-import { AddEquation, CustomBlending, DoubleSide, FrontSide, OneFactor, ZeroFactor } from 'three';
+import { DoubleSide, FrontSide, NormalBlending } from 'three';
 import { BLANK_IMAGE } from '@/app/constants';
 import { deg2rad } from '@/lib/utils/math';
-import { getThreeBlending, requiresPremultipliedAlpha } from '../layers/TexturePlane';
 import { createGeometryNode, getMaterialNode, isPointsMaterial } from './geometryMaterials';
 import { useTexture3D } from './useTexture3D';
 
-export function GeometryDisplayLayer3D({
-  display,
-  order,
-  sceneOpacity,
-  sceneBlendMode,
-  sceneMask,
-  sceneInverse,
-}) {
+export function GeometryDisplayLayer3D({ display, order }) {
   const { properties = {} } = display;
   const {
     shape = 'Box',
@@ -55,46 +47,33 @@ export function GeometryDisplayLayer3D({
     deg2rad(Number(rotationY) || 0),
     deg2rad(Number(rotationZ) || 0),
   ];
-  const finalOpacity = Math.max(0, Math.min(1, Number(opacity ?? 1) * Number(sceneOpacity ?? 1)));
-  const blending = sceneMask ? CustomBlending : getThreeBlending(sceneBlendMode);
-  const geometryColor = sceneMask ? '#000000' : color;
-  const edgeOpacity = sceneMask ? Number(sceneInverse ? 1 : 0) : 0.9 * Number(sceneOpacity ?? 1);
+  const finalOpacity = Math.max(0, Math.min(1, Number(opacity ?? 1)));
+  const blending = NormalBlending;
+  const edgeOpacity = 0.9;
   const GeometryPrimitive = isPointsMaterial(material) ? 'points' : 'mesh';
   const geometryMaterialProps = isPointsMaterial(material)
     ? {
-        color: geometryColor,
+        color,
         opacity: finalOpacity,
         transparent: true,
         depthTest: false,
         depthWrite: false,
-        premultipliedAlpha: requiresPremultipliedAlpha(sceneBlendMode),
+        premultipliedAlpha: false,
         blending,
-        blendEquation: sceneMask ? AddEquation : undefined,
-        blendSrc: sceneMask ? ZeroFactor : undefined,
-        blendDst: sceneMask ? OneFactor : undefined,
-        blendEquationAlpha: sceneMask ? AddEquation : undefined,
-        blendSrcAlpha: sceneMask ? OneFactor : undefined,
-        blendDstAlpha: sceneMask ? ZeroFactor : undefined,
         size: Math.max(0.5, Number(pointSize) || 0.5),
         sizeAttenuation: true,
       }
     : {
         flatShading: shading === 'Flat',
-        color: geometryColor,
+        color,
         opacity: finalOpacity,
         wireframe,
         transparent: true,
         side: material === 'Basic' ? FrontSide : DoubleSide,
         depthTest: true,
         depthWrite: true,
-        premultipliedAlpha: requiresPremultipliedAlpha(sceneBlendMode),
+        premultipliedAlpha: false,
         blending,
-        blendEquation: sceneMask ? AddEquation : undefined,
-        blendSrc: sceneMask ? ZeroFactor : undefined,
-        blendDst: sceneMask ? OneFactor : undefined,
-        blendEquationAlpha: sceneMask ? AddEquation : undefined,
-        blendSrcAlpha: sceneMask ? OneFactor : undefined,
-        blendDstAlpha: sceneMask ? ZeroFactor : undefined,
         map: textureMap ?? null,
       };
 
@@ -121,17 +100,11 @@ export function GeometryDisplayLayer3D({
             color={edgeColor}
             wireframe={true}
             transparent={true}
-            premultipliedAlpha={requiresPremultipliedAlpha(sceneBlendMode)}
+            premultipliedAlpha={false}
             opacity={edgeOpacity}
             depthTest={true}
             depthWrite={false}
             blending={blending}
-            blendEquation={sceneMask ? AddEquation : undefined}
-            blendSrc={sceneMask ? ZeroFactor : undefined}
-            blendDst={sceneMask ? OneFactor : undefined}
-            blendEquationAlpha={sceneMask ? AddEquation : undefined}
-            blendSrcAlpha={sceneMask ? OneFactor : undefined}
-            blendDstAlpha={sceneMask ? ZeroFactor : undefined}
           />
         </mesh>
       )}

@@ -23,7 +23,6 @@ export default class Renderer {
   rendering: boolean;
   clock: Clock;
   frameData: RenderFrameData;
-  time: number;
   frameCount: number;
   rafId: number | null;
   needsRender: boolean;
@@ -36,7 +35,6 @@ export default class Renderer {
   constructor() {
     this.rendering = false;
     this.clock = new Clock();
-    this.time = 0;
     this.frameCount = 0;
     this.rafId = null;
     this.needsRender = true;
@@ -122,7 +120,6 @@ export default class Renderer {
   }
 
   start() {
-    this.time = Date.now();
     this.rendering = true;
     this.requestRender();
   }
