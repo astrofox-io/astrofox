@@ -39,6 +39,50 @@ A clip is `start`, `end` and optional `fadeIn` / `fadeOut`, all in seconds.
 Inactive elements are skipped entirely (no drawing, no effect pass, no
 reactor work), which is the same path the eye icon uses.
 
+## Keyframes
+
+Number and colour properties can change over time. Keys sit at absolute
+project times, so moving or trimming a clip leaves its animation where it is
+in the song.
+
+- Click **◇** next to a control to start animating it; the first key holds the
+  current value at the playhead. Once a property is animated, editing it sets
+  the key at the playhead (snapped to the frame grid), and the control shows
+  the animated value as the playhead moves. ◇ is solid when a key is under the
+  playhead; clicking it then removes that key.
+- Removing the last key makes the property static again, at that key's value.
+- Before the first key a property holds the first value, after the last key
+  the last value. Each key's easing shapes the way to the next key: Linear,
+  Hold (jump at the next key), Ease in, Ease out, Ease in and out. Colours blend
+  in linear light.
+- Rotation (and a 3D camera's azimuth) keys may hold several turns, e.g. 0° to
+  720° for two spins; the control shows the angle within one turn.
+
+On the timeline, each animated property gets a lane under its element's bar:
+
+- Click a key to select it, `Shift`-click to add to the selection, and drag to
+  move the selected keys together (they snap to clip edges, the playhead and,
+  with **Snap** on, frames). Double-click a key to move the playhead to it.
+- With keys selected, the header shows their easing to change, and `Delete`
+  removes them (`Escape` deselects). Hold keys are drawn as squares.
+
+Copy and paste of an element's properties brings its keys along, and
+duplicating an element copies them.
+
+## Reactors on animated properties
+
+A reactor binding has a **mode** (in the ⚡ menu once bound):
+
+- **Replace** (the default, and how bindings always worked) sets the property
+  to the reactor output scaled to its range, ignoring keys.
+- **Add** adds the scaled output to the property's value, authored or
+  keyframed.
+- **Multiply** scales the value by the output (0 to 1), e.g. to pulse an
+  animated opacity.
+
+Clip fades always apply last, so they fade an element even when a reactor
+drives its opacity.
+
 ## The panel
 
 Open it with the timeline button next to the loop toggle in the player. The
@@ -67,6 +111,7 @@ element, so timing can be typed in without opening the panel.
 ## Agents
 
 The MCP tools `get_timeline`, `set_timeline`, `set_clips`, `clear_clips`,
+`set_keyframes`, `clear_keyframes`,
 `playback` (seconds and loop) and `get_preview({ time })` expose everything
 above, with the same one-frame minimum clip length as the panel; see
 `docs/mcp.md`. Previews at a time are rendered through the export path, so
@@ -74,5 +119,7 @@ they are exactly what the exported video contains at that time.
 
 ## Not yet
 
-Keyframes (per-property animation over time), reactor composition modes and
-beat/onset analysis are the next phases; see `docs/timeline-plan.md`.
+Beat/onset analysis and snapping to beats are the next phase; see
+`docs/timeline-plan.md`. Keyframe copy/paste on the timeline, step keys for
+switches and lists, and colour-gradient (`colorrange`) animation are not
+supported.

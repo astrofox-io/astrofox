@@ -1,6 +1,7 @@
 import type { Clip, ClipPatch } from '@/lib/timeline/clip';
 import type { TimelineFps, TimelineSettings } from '@/lib/timeline/settings';
-import type { ReactorConfig } from '@/lib/types';
+import type { Keyframe, Tracks } from '@/lib/timeline/tracks';
+import type { ReactorConfig, ReactorMode } from '@/lib/types';
 
 export const DEFAULT_PROJECT_NAME = 'Untitled Project';
 
@@ -14,6 +15,8 @@ export interface LayerJSON {
   properties: Record<string, unknown>;
   reactors: Record<string, ReactorConfig>;
   clip?: Clip;
+  /** Keyframe tracks by property; absent when nothing is animated. */
+  tracks?: Tracks;
   [key: string]: unknown;
 }
 
@@ -116,6 +119,8 @@ export type DocumentOp =
       reactorId: string;
       min: number;
       max: number;
+      /** Defaults to `replace`. */
+      mode?: ReactorMode;
     }
   /** The property returns to its authored value. */
   | { type: 'unbindReactor'; id: string; property: string }
@@ -123,6 +128,14 @@ export type DocumentOp =
   | { type: 'setBindings'; id: string; bindings: Record<string, ReactorConfig> }
   | { type: 'setClip'; id: string; patch: ClipPatch }
   | { type: 'clearClip'; id: string }
+  /**
+   * Replace one property's keyframes. The track type follows the property's
+   * control. Null or an empty list makes the property static again, at its
+   * authored value.
+   */
+  | { type: 'setTrack'; id: string; property: string; keyframes: Keyframe[] | null }
+  /** Remove the named properties' tracks, or every track when none are named. */
+  | { type: 'clearTracks'; id: string; properties?: string[] }
   | { type: 'addScene'; scene?: unknown; displayName?: string }
   /** Adds to the named scene, or the first scene when it is omitted. */
   | { type: 'addElement'; element: unknown; sceneId?: string }

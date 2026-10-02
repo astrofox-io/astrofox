@@ -6,6 +6,8 @@ import {
   MIN_PROJECT_DURATION,
   TIMELINE_FPS_OPTIONS,
 } from '@/lib/timeline/settings';
+import { checkTracks, trackTypeFor } from '@/lib/timeline/tracks';
+import { REACTOR_MODES } from '@/lib/types';
 import { assertSafe } from '@/lib/utils/object';
 import type { Canvas, LoadInput } from './types';
 
@@ -25,7 +27,36 @@ export const CANVAS_LIMITS = {
 
 /** The parts of a layer type the rules read. */
 export interface RuleType {
-  config: { type?: string; defaultProperties: Record<string, unknown> };
+  config: {
+    type?: string;
+    defaultProperties: Record<string, unknown>;
+    controls?: Record<string, Record<string, unknown>>;
+  };
+}
+
+/**
+ * Throw unless `tracks` animates only properties of `Type` that can be
+ * animated, with keys of the right type. Without a type (a plugin that is
+ * not installed) only the tracks' own shape is checked.
+ */
+export function checkLayerTracks(tracks: unknown, Type: RuleType | undefined) {
+  checkTracks(tracks, Type ? property => trackTypeFor(Type.config, property) : undefined);
+}
+
+/** Throw unless `binding` is a reactor binding: a reactor id, a range and an optional mode. */
+export function checkBinding(binding: unknown) {
+  const b = binding as { id?: unknown; min?: unknown; max?: unknown; mode?: unknown };
+  if (
+    !b ||
+    typeof b.id !== 'string' ||
+    typeof b.min !== 'number' ||
+    !Number.isFinite(b.min) ||
+    typeof b.max !== 'number' ||
+    !Number.isFinite(b.max)
+  )
+    throw new Error('Invalid reactor binding.');
+  if (b.mode !== undefined && !(REACTOR_MODES as readonly unknown[]).includes(b.mode))
+    throw new Error(`Reactor binding mode must be one of: ${REACTOR_MODES.join(', ')}.`);
 }
 
 export interface RuleContext {
@@ -111,6 +142,7 @@ const ENTITY_FIELDS = new Set([
   'displays',
   'effects',
   'clip',
+  'tracks',
 ]);
 
 type Kind = 'scene' | 'display' | 'effect' | 'reactor';
@@ -174,19 +206,15 @@ export function checkLoadInput(input: LoadInput, context: RuleContext) {
       validateClipFields(entity.clip);
     }
 
+    if (entity.tracks !== undefined) {
+      if (kind === 'reactor') throw new Error('Reactors cannot be animated.');
+      checkLayerTracks(entity.tracks, Type);
+    }
+
     if (entity.reactors !== undefined) {
       if (!entity.reactors || typeof entity.reactors !== 'object' || Array.isArray(entity.reactors))
         throw new Error('Invalid reactor bindings.');
-      for (const binding of Object.values(entity.reactors)) {
-        const b = binding as { id?: unknown; min?: unknown; max?: unknown };
-        if (
-          !b ||
-          typeof b.id !== 'string' ||
-          typeof b.min !== 'number' ||
-          typeof b.max !== 'number'
-        )
-          throw new Error('Invalid reactor binding.');
-      }
+      for (const binding of Object.values(entity.reactors)) checkBinding(binding);
     }
   }
 

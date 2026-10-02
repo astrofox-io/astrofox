@@ -38,10 +38,20 @@ export interface RenderFrameData {
   midiActivity?: number;
 }
 
+export const REACTOR_MODES = ['replace', 'add', 'multiply'] as const;
+/** How a reactor's output combines with the property's value. */
+export type ReactorMode = (typeof REACTOR_MODES)[number];
+
 export interface ReactorConfig {
   id: string;
   min: number;
   max: number;
+  /**
+   * `replace` (the default) sets the property to the output scaled to
+   * min..max; `add` adds that to the property's value (authored or keyframed);
+   * `multiply` scales the value by it.
+   */
+  mode?: ReactorMode;
 }
 
 export interface ReactorResult {

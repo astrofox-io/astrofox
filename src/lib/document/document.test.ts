@@ -12,7 +12,12 @@ class BoxDisplay extends Display {
     name: 'BoxDisplay',
     label: 'Box',
     type: 'display',
-    defaultProperties: { width: 10, opacity: 1, src: '' },
+    defaultProperties: { width: 10, opacity: 1, src: '', color: '#ffffff' },
+    controls: {
+      width: { type: 'number', min: 0, max: 100 },
+      opacity: { type: 'number', min: 0, max: 1 },
+      color: { type: 'color' },
+    },
   };
 
   constructor(properties?: Record<string, unknown>) {
@@ -368,6 +373,114 @@ describe('apply', () => {
     ).toThrow(/project end \(20s\)/);
   });
 
+  it('binds a reactor in a mode, storing only modes other than replace', () => {
+    doc.apply({
+      type: 'bindReactor',
+      id: 'd1',
+      property: 'width',
+      reactorId: 'r1',
+      min: 0,
+      max: 1,
+      mode: 'multiply',
+    });
+    expect(doc.getState().elementById.d1.reactors.width).toEqual({
+      id: 'r1',
+      min: 0,
+      max: 1,
+      mode: 'multiply',
+    });
+
+    doc.apply({
+      type: 'bindReactor',
+      id: 'd1',
+      property: 'width',
+      reactorId: 'r1',
+      min: 0,
+      max: 1,
+      mode: 'replace',
+    });
+    expect(doc.getState().elementById.d1.reactors.width).toEqual({ id: 'r1', min: 0, max: 1 });
+
+    expect(() =>
+      doc.apply({
+        type: 'setBindings',
+        id: 'd1',
+        bindings: { width: { id: 'r1', min: 0, max: 1, mode: 'divide' as never } },
+      }),
+    ).toThrow(/mode/);
+  });
+
+  it('sets, replaces and clears keyframe tracks', () => {
+    const keyframes = [
+      { time: 1, value: 0, easing: 'linear' as const },
+      { time: 2, value: 50, easing: 'ease-out' as const },
+    ];
+
+    doc.apply({ type: 'setTrack', id: 'd1', property: 'width', keyframes });
+    expect(doc.getState().elementById.d1.tracks).toEqual({ width: { type: 'number', keyframes } });
+
+    doc.apply({
+      type: 'setTrack',
+      id: 'd1',
+      property: 'color',
+      keyframes: [{ time: 0, value: '#ff0000', easing: 'linear' }],
+    });
+    expect(doc.getState().elementById.d1.tracks?.color.type).toBe('color');
+
+    doc.apply({ type: 'setTrack', id: 'd1', property: 'width', keyframes: null });
+    expect(Object.keys(doc.getState().elementById.d1.tracks ?? {})).toEqual(['color']);
+
+    doc.apply({ type: 'clearTracks', id: 'd1' });
+    expect(doc.getState().elementById.d1.tracks).toBeUndefined();
+    // Authored values are untouched by animation.
+    expect(doc.getState().elementById.d1.properties.width).toBe(10);
+  });
+
+  it('refuses keys for a property that cannot be animated, or broken keys, as a whole batch', () => {
+    const key = { time: 0, value: 1, easing: 'linear' as const };
+    const before = doc.getState();
+
+    expect(() =>
+      doc.apply({ type: 'setTrack', id: 'd1', property: 'src', keyframes: [key] }),
+    ).toThrow(/cannot be animated/);
+    expect(() =>
+      doc.apply({
+        type: 'setTrack',
+        id: 'd1',
+        property: 'color',
+        keyframes: [{ time: 0, value: 3, easing: 'linear' }],
+      }),
+    ).toThrow(/hex/);
+    expect(() =>
+      doc.apply([
+        { type: 'setTrack', id: 'd1', property: 'width', keyframes: [key] },
+        {
+          type: 'setTrack',
+          id: 'd2',
+          property: 'width',
+          keyframes: [
+            { ...key, time: 2 },
+            { ...key, time: 1 },
+          ],
+        },
+      ]),
+    ).toThrow(/time order/);
+    expect(doc.getState()).toBe(before);
+  });
+
+  it('keeps tracks through duplication, undo snapshots and reloads', () => {
+    const keyframes = [{ time: 3, value: 7, easing: 'hold' as const }];
+    doc.apply({ type: 'setTrack', id: 'd1', property: 'width', keyframes });
+
+    const { id } = doc.apply({ type: 'duplicateLayer', id: 'd1' });
+    expect(doc.getState().elementById[id as string].tracks?.width.keyframes).toEqual(keyframes);
+
+    const snapshot = doc.snapshot();
+    doc.apply({ type: 'clearTracks', id: 'd1' });
+    doc.load(snapshot);
+    expect(doc.findLayer('d1')?.tracks.width.keyframes).toEqual(keyframes);
+  });
+
   it('pushes canvas changes through the renderer seam', () => {
     doc.apply({ type: 'setCanvas', width: 1920, height: 1080 });
 
@@ -574,6 +687,43 @@ describe('rules', () => {
         'a binding without a reactor id',
         scene([layer('d1', 'BoxDisplay', { reactors: { width: { min: 0, max: 1 } } })]),
         'reactor binding',
+      ],
+      [
+        'a track for a property that cannot be animated',
+        scene([
+          layer('d1', 'BoxDisplay', {
+            tracks: {
+              src: { type: 'number', keyframes: [{ time: 0, value: 1, easing: 'linear' }] },
+            },
+          }),
+        ]),
+        'cannot be animated',
+      ],
+      [
+        'a track with keys out of order',
+        scene([
+          layer('d1', 'BoxDisplay', {
+            tracks: {
+              width: {
+                type: 'number',
+                keyframes: [
+                  { time: 2, value: 1, easing: 'linear' },
+                  { time: 1, value: 1, easing: 'linear' },
+                ],
+              },
+            },
+          }),
+        ]),
+        'time order',
+      ],
+      [
+        'a binding with an unknown mode',
+        scene([
+          layer('d1', 'BoxDisplay', {
+            reactors: { width: { id: 'r1', min: 0, max: 1, mode: 'divide' } },
+          }),
+        ]),
+        'mode',
       ],
       ['a canvas too large', { ...fixture, canvas: { width: 10000, height: 100 } }, 'Canvas width'],
       [

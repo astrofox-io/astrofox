@@ -204,7 +204,11 @@
     "connect": "Connect"
   },
   "reactor-panel": {
-    "close-panel": "Close panel"
+    "close-panel": "Close panel",
+    "mode": "Mode",
+    "mode-replace": "Replace",
+    "mode-add": "Add",
+    "mode-multiply": "Multiply"
   },
   "stage": {
     "open-picture-in-picture": "Open picture in picture",
@@ -560,6 +564,17 @@
     "fade-out": "Fade out",
     "reset": "Always on",
     "no-fades": "This element has no opacity; it cuts in and out.",
-    "no-elements": "Add a scene to see it on the timeline."
+    "no-elements": "Add a scene to see it on the timeline.",
+    "animate": "Animate",
+    "add-keyframe": "Add keyframe",
+    "remove-keyframe": "Remove keyframe",
+    "keyframe": "Keyframe",
+    "easing": "Easing",
+    "easing-linear": "Linear",
+    "easing-hold": "Hold",
+    "easing-ease-in": "Ease in",
+    "easing-ease-out": "Ease out",
+    "easing-ease-in-out": "Ease in and out",
+    "delete-keyframes": "Delete keyframes"
   }
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { setActiveReactorId } from '@/app/actions/app';
 import { projectDocument, useDocument } from '@/app/document';
 import { Flash, Plus } from '@/app/icons';
@@ -7,13 +8,26 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type Display from '@/lib/core/Display';
+import { REACTOR_MODES, type ReactorMode } from '@/lib/types';
 import { cn } from '@/lib/utils';
+
+/**
+ * The output range a binding starts with in each mode: the control's range
+ * to replace the value, up to the whole range on top of it to add, and 0..1
+ * to scale it.
+ */
+function defaultRange(mode: ReactorMode, min: number, max: number) {
+  if (mode === 'add') return { min: 0, max: max - min };
+  if (mode === 'multiply') return { min: 0, max: 1 };
+  return { min, max };
+}
 
 interface ReactorButtonProps {
   display: Display;
@@ -30,8 +44,10 @@ export default function ReactorButton({
   max = 1,
   className,
 }: ReactorButtonProps) {
+  const { t } = useTranslation();
   const reactor = display.getReactor(name);
   const reactorList = useDocument(state => state.reactors);
+  const mode = reactor?.mode ?? 'replace';
 
   function assignReactor(reactorId: string) {
     projectDocument.apply({
@@ -39,10 +55,22 @@ export default function ReactorButton({
       id: display.id,
       property: name,
       reactorId,
-      min,
-      max,
+      mode,
+      ...(reactor ? { min: reactor.min, max: reactor.max } : defaultRange(mode, min, max)),
     });
     setActiveReactorId(reactorId);
+  }
+
+  function setMode(next: ReactorMode) {
+    if (!reactor || next === mode) return;
+    projectDocument.apply({
+      type: 'bindReactor',
+      id: display.id,
+      property: name,
+      reactorId: reactor.id,
+      mode: next,
+      ...defaultRange(next, min, max),
+    });
   }
 
   // One undo step: the new reactor and its binding.
@@ -82,6 +110,21 @@ export default function ReactorButton({
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
+          {reactor && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>{t('reactor-panel.mode')}</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={mode}>
+                  {REACTOR_MODES.map(item => (
+                    <DropdownMenuRadioItem key={item} value={item} onClick={() => setMode(item)}>
+                      {t(`reactor-panel.mode-${item}`)}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuGroup>
+            </>
+          )}
           {reactorList.length > 0 && <DropdownMenuSeparator />}
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={createAndAssign}>

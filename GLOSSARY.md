@@ -40,9 +40,11 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Unresolved media**: media a project refers to that could not be found when it was opened (`MediaRef`, listed in the Relink dialog). Setting a display's `sourcePath` (new media, or none) or removing the display drops its entry; the Document does this.
 
-**Reactor**: turns audio (or a static signal) into a 0–1 output that can drive a Layer's numeric property through a **binding** (`{ id, min, max }`).
+**Reactor**: turns audio (or a static signal) into a 0–1 output that can drive a Layer's numeric property through a **binding** (`{ id, min, max, mode? }`). The output is scaled to min..max; the binding's **mode** says what happens next: `replace` (the default) sets the property to it, `add` adds it to the property's value, `multiply` scales the value by it. Reactors run on top of keyframes.
 
-**Authored value**: the value a person or MCP client set on a property, as opposed to the runtime value a frame renders with (after reactor output and clip fades). The Document stores authored values.
+**Authored value**: the value a person or MCP client set on a property, as opposed to the runtime value a frame renders with (after keyframes, reactor output and clip fades, in that order). The Document stores authored values.
+
+**Track**: a property's keyframes (`Tracks` on a Layer, `src/lib/timeline/tracks.ts`). Each **keyframe** is a project time, a value and an **easing** toward the next key. A property with a track renders the track's value at the frame time instead of its authored value, which is kept for when the track is removed. Number and colour controls can be animated (`trackTypeFor`); a control opts out with `animatable: false`, and `unbounded: true` lets keys go past its max (rotation).
 
 **Clip**: when a Layer is active on the timeline, with optional fades. `src/lib/timeline/clip.ts`.
 

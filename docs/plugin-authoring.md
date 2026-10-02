@@ -84,6 +84,11 @@ plugin sees it, so you don't handle reactors at all.
 `time`. Common options: `label`, `min`, `max`, `step`, `withRange` (slider),
 `withReactor` (audio-reactive), `items` (for select), `hidden`.
 
+`number`, `range` and `color` controls can be keyframed on the timeline; as
+with reactors, your plugin just receives the value for the current frame. Set
+`animatable: false` to keep a control static, and `unbounded: true` on an
+angle whose keys may go past `max` (several turns of a rotation).
+
 Because manifests are JSON, live values use refs instead of functions:
 
 ```jsonc

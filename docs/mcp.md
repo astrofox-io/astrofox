@@ -81,6 +81,7 @@ already-started video export; use the export cancellation control for that.
 | `create_reactor`, `update_reactor`, `remove_reactor`, `bind_reactor` | Configure audio-reactive properties |
 | `load_media`, `playback` | Load local audio/images/videos; play, pause, stop or seek the project transport (seconds) and turn loop on or off |
 | `get_timeline`, `set_timeline`, `set_clips`, `clear_clips` | Read the project clock, set duration/fps, and decide when elements are active |
+| `set_keyframes`, `clear_keyframes` | Animate number and color properties over project time |
 | `get_preview` | Return the rendered composition as a bounded PNG image, live or at an exact `time` |
 | `start_export`, `get_export_status`, `cancel_export` | Start and monitor cancellable offline video exports |
 
@@ -140,6 +141,36 @@ saved project. `get_timeline`, `get_project` and `playback` report the current
 what the export will contain at that time; the live view returns to the
 playhead afterwards. `describe_element_type` reports `hasOpacity` so you know
 whether fades will apply or the element will hard-cut.
+
+### Keyframes
+
+`set_keyframes` animates number and color properties. Keys are at absolute
+project seconds (moving a clip does not move them), and each key's `easing`
+(`linear`, `hold`, `ease-in`, `ease-out`, `ease-in-out`) shapes the way to the
+next key. Before the first key a property holds the first value, after the last
+key the last value. Colors are `#rrggbb` and blend in linear light.
+`describe_element_type` lists the properties that can be animated under
+`animatable`.
+
+```json
+{"tool":"set_keyframes","arguments":{"tracks":[
+  {"id":"<title text ID>","property":"opacity","keyframes":[
+    {"time":0,"value":0,"easing":"ease-out"},{"time":2,"value":1}]},
+  {"id":"<image ID>","property":"rotation","keyframes":[
+    {"time":8,"value":0},{"time":16,"value":720}]}
+]}}
+```
+
+`mode: "replace"` (the default) replaces the property's keys; `"merge"` sets
+keys at the given times and keeps the rest. Values are checked against the
+control bounds, except for unbounded controls such as rotation. An animated
+property cannot be set with `update_element`; use `set_keyframes`, or
+`clear_keyframes` to make it static again (it returns to its authored value).
+
+A reactor bound to an animated property applies on top of the keys in its
+`bind_reactor` `mode`: `replace` (the default) ignores them, `add` adds the
+scaled output, `multiply` scales the keyframed value (min 0, max 1 pulses it).
+Clip fades always apply last, so they also fade a reactor-driven opacity.
 
 ## Behavior and limits
 

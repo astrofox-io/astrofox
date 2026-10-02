@@ -12,10 +12,18 @@ import Scene from '@/lib/core/Scene';
 import type Stage from '@/lib/core/Stage';
 import { type Clip, mergeClip } from '@/lib/timeline/clip';
 import { normalizeTimelineSettings, type TimelineSettings } from '@/lib/timeline/settings';
+import { checkKeyframes, type TrackType, trackTypeFor } from '@/lib/timeline/tracks';
 import type { ReactorConfig } from '@/lib/types';
 import { resetLabelCount } from '@/lib/utils/controls';
 import { uniqueId } from '@/lib/utils/crypto';
-import { checkCanvas, checkLoadInput, checkTimeline, isHexColor, type RuleType } from './rules';
+import {
+  checkBinding,
+  checkCanvas,
+  checkLoadInput,
+  checkTimeline,
+  isHexColor,
+  type RuleType,
+} from './rules';
 import { canReorder } from './selection';
 import {
   type ApplyOptions,
@@ -425,7 +433,12 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
         const layer = findLayer(op.id);
 
         if (layer && findReactor(op.reactorId)) {
-          layer.setReactor(op.property, { id: op.reactorId, min: op.min, max: op.max });
+          layer.setReactor(op.property, {
+            id: op.reactorId,
+            min: op.min,
+            max: op.max,
+            ...(op.mode && op.mode !== 'replace' ? { mode: op.mode } : {}),
+          });
           pending.dirty.add(op.id);
         }
         break;
@@ -479,6 +492,29 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
 
         if (layer) {
           layer.setClip(null);
+          pending.dirty.add(op.id);
+        }
+        break;
+      }
+
+      case 'setTrack': {
+        const layer = findLayer(op.id);
+        const type = layer && trackType(layer, op.property);
+
+        if (layer && type) {
+          layer.setTrack(op.property, type, op.keyframes);
+          pending.dirty.add(op.id);
+        }
+        break;
+      }
+
+      case 'clearTracks': {
+        const layer = findLayer(op.id);
+
+        if (layer) {
+          for (const property of op.properties ?? Object.keys(layer.tracks)) {
+            delete layer.tracks[property];
+          }
           pending.dirty.add(op.id);
         }
         break;
@@ -728,6 +764,41 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
     }
   }
 
+  /** The track type a layer's property takes, or null when it cannot be animated. */
+  function trackType(layer: Display, property: string): TrackType | null {
+    const Type = layer.constructor as unknown as RuleType;
+    return Type.config ? trackTypeFor(Type.config, property) : null;
+  }
+
+  /**
+   * Refuse a batch with a track or binding the rules do not allow, before any
+   * of it runs: keys for a property that cannot be animated, or of the wrong
+   * type, out of order or out of range; a binding with an unknown mode.
+   */
+  function checkLayerEdits(operations: DocumentOp[]) {
+    for (const op of operations) {
+      if (op.type === 'setTrack') {
+        const layer = findLayer(op.id);
+
+        if (!layer || op.keyframes === null || op.keyframes.length === 0) {
+          continue;
+        }
+
+        const type = trackType(layer, op.property);
+
+        if (!type) {
+          throw new Error(`${op.property} cannot be animated.`);
+        }
+
+        checkKeyframes(op.keyframes, type, op.property);
+      } else if (op.type === 'bindReactor') {
+        checkBinding({ id: op.reactorId, min: op.min, max: op.max, mode: op.mode });
+      } else if (op.type === 'setBindings') {
+        for (const binding of Object.values(op.bindings)) checkBinding(binding);
+      }
+    }
+  }
+
   // ---- Interface ------------------------------------------------------------
 
   /**
@@ -768,6 +839,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
 
     checkOps(operations);
     checkClipEdits(operations);
+    checkLayerEdits(operations);
 
     for (const op of operations) {
       run(op, pending);

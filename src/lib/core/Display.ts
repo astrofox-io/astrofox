@@ -1,5 +1,6 @@
 import Entity from '@/lib/core/Entity';
 import { type Clip, clipEnvelope, isClipActive, normalizeClip } from '@/lib/timeline/clip';
+import { cloneTracks, evaluateTrack, type Keyframe, type Tracks } from '@/lib/timeline/tracks';
 import type { ReactorConfig, RenderFrameData } from '@/lib/types';
 import { getDisplayName } from '@/lib/utils/controls';
 import { resolve, updateExistingProps } from '@/lib/utils/object';
@@ -41,6 +42,17 @@ export function getAuthoredProperties(entity: Entity): Record<string, unknown> {
 // `update()`, so those writes do not become authored values.
 let evaluating = 0;
 
+/** A property value after a reactor binding, in the binding's mode. */
+export function applyReactor(value: unknown, binding: ReactorConfig, output: number): unknown {
+  const scaled = (binding.max - binding.min) * output + binding.min;
+
+  if (typeof value !== 'number' || !binding.mode || binding.mode === 'replace') {
+    return scaled;
+  }
+
+  return binding.mode === 'add' ? value + scaled : value * scaled;
+}
+
 /**
  * Base class for scenes, displays and effects.
  *
@@ -48,8 +60,9 @@ let evaluating = 0;
  * - `authoredProperties`: what was edited. Saved in the project, shown in the
  *   controls panel, tracked by undo.
  * - `properties`: the runtime values renderers read. Recomputed every frame by
- *   `evaluate()` from the authored values, the clip fade envelope and reactor
- *   output. Runtime values never leak back into the authored layer.
+ *   `evaluate()` from the authored values, keyframe tracks, reactor output
+ *   and the clip fade envelope. Runtime values never leak back into the
+ *   authored layer.
  *
  * Subclasses keep overriding `update()` for side effects (canvas re-render,
  * media loading); it runs for both authoring and per-frame evaluation.
@@ -61,9 +74,14 @@ export default class Display extends Entity {
     Type: new (properties?: Record<string, unknown>) => Entity,
     config: Record<string, unknown>,
   ) => {
-    const { reactors = {}, clip } = config as {
+    const {
+      reactors = {},
+      clip,
+      tracks,
+    } = config as {
       reactors?: Record<string, ReactorConfig>;
       clip?: unknown;
+      tracks?: Tracks;
     };
     const entity = Entity.create(Type, config) as Display;
 
@@ -72,6 +90,7 @@ export default class Display extends Entity {
     }
 
     entity.setClip(clip);
+    entity.tracks = cloneTracks(tracks);
 
     return entity;
   };
@@ -83,6 +102,8 @@ export default class Display extends Entity {
   declare reactors: Record<string, ReactorConfig>;
   declare authoredProperties: Record<string, unknown>;
   declare clip: Clip | null;
+  /** Keyframe tracks by property. Checked by the Document before they get here. */
+  declare tracks: Tracks;
 
   constructor(
     Type: {
@@ -111,6 +132,7 @@ export default class Display extends Entity {
       scene: { value: null, writable: true, enumerable: true },
       reactors: { value: {}, writable: true, enumerable: true },
       clip: { value: null, writable: true, enumerable: true },
+      tracks: { value: {}, writable: true, enumerable: true },
       authoredProperties: { value: { ...this.properties }, writable: true, enumerable: false },
     });
   }
@@ -150,26 +172,35 @@ export default class Display extends Entity {
     this.clip = normalizeClip(clip);
   }
 
+  /** Replace a property's keys; null or none makes the property static. */
+  setTrack(property: string, type: Tracks[string]['type'], keyframes: Keyframe[] | null) {
+    if (!keyframes || keyframes.length === 0) {
+      delete this.tracks[property];
+      return;
+    }
+
+    this.tracks[property] = { type, keyframes: keyframes.map(key => ({ ...key })) };
+  }
+
   /**
-   * Recompute runtime properties for a frame: authored values, `opacity`
-   * scaled by the clip fade envelope, then reactor output. Only values that
-   * differ from the current runtime values go through `update()`, exactly as
-   * reactor updates always did.
+   * Recompute runtime properties for a frame: the authored value, or the
+   * keyframe track's value at the frame time; then reactor output in the
+   * binding's mode; then `opacity` scaled by the clip fade envelope, last, so
+   * fades apply whatever drives opacity. Only values that differ from the
+   * current runtime values go through `update()`, exactly as reactor updates
+   * always did.
    */
   evaluate(frameData: RenderFrameData) {
     const { time, duration } = frameData;
-    const { clip, authoredProperties, properties, reactors } = this;
+    const { clip, authoredProperties, properties, reactors, tracks } = this;
     const active = isClipActive(clip, time, duration);
 
     const envelope = clip && active ? clipEnvelope(clip, time, duration) : 1;
     let next: Record<string, unknown> | null = null;
 
     for (const key of Object.keys(authoredProperties)) {
-      let value = authoredProperties[key];
-
-      if (key === 'opacity' && envelope < 1 && typeof value === 'number') {
-        value *= envelope;
-      }
+      const track = tracks[key];
+      let value = track ? evaluateTrack(track, time) : authoredProperties[key];
 
       const binding = reactors[key];
 
@@ -177,8 +208,12 @@ export default class Display extends Entity {
         const output = frameData.reactors[binding.id];
 
         if (output !== undefined) {
-          value = (binding.max - binding.min) * output + binding.min;
+          value = applyReactor(value, binding, output);
         }
+      }
+
+      if (key === 'opacity' && envelope < 1 && typeof value === 'number') {
+        value *= envelope;
       }
 
       if (value !== properties[key]) {
@@ -199,7 +234,8 @@ export default class Display extends Entity {
   }
 
   toJSON(): Record<string, unknown> {
-    const { id, name, type, enabled, displayName, authoredProperties, reactors, clip } = this;
+    const { id, name, type, enabled, displayName, authoredProperties, reactors, clip, tracks } =
+      this;
 
     return {
       id,
@@ -210,6 +246,7 @@ export default class Display extends Entity {
       properties: structuredClone(authoredProperties),
       reactors: structuredClone(reactors),
       ...(clip ? { clip: { ...clip } } : {}),
+      ...(Object.keys(tracks).length > 0 ? { tracks: cloneTracks(tracks) } : {}),
     };
   }
 

@@ -21,6 +21,8 @@ interface TimelinePanelState {
   snap: boolean;
   /** Scene IDs whose rows are collapsed. */
   collapsed: Record<string, boolean>;
+  /** Keyframes selected in the panel (see actions/keyframes.ts). */
+  selectedKeys: { id: string; property: string; time: number }[];
 }
 
 function clampHeight(height: number) {
@@ -33,6 +35,7 @@ const timelinePanelStore = create<TimelinePanelState>(() => ({
   zoom: 1,
   snap: getBoolean(SNAP_KEY, true),
   collapsed: {},
+  selectedKeys: [],
 }));
 
 export function setTimelineOpen(open: boolean) {

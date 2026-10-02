@@ -13,6 +13,7 @@ import Scene from '@/lib/core/Scene';
 import { canReorder, layerKind } from '@/lib/document/selection';
 import type { DocumentOp } from '@/lib/document/types';
 import { platform } from '@/lib/platform';
+import { EASINGS, type Keyframe, setKey, trackTypeFor } from '@/lib/timeline/tracks';
 import {
   getProjectDuration,
   getProjectFps,
@@ -79,6 +80,32 @@ function reactorJSON(id: string) {
 
 function entityType(entity: Entity) {
   return entity.constructor as unknown as EntityType;
+}
+
+/** Which of a type's properties can be animated, and as what. */
+function animatable(Type: EntityType) {
+  return Object.fromEntries(
+    Object.keys(Type.config.controls ?? {})
+      .map(property => [property, trackTypeFor(Type.config, property)])
+      .filter(([, type]) => type !== null),
+  );
+}
+
+/**
+ * Check one keyframe value like a property value: within the control's bounds,
+ * except on unbounded controls (rotation), where only a finite number is needed.
+ */
+function validateKeyValue(target: Display, property: string, value: unknown) {
+  const Type = entityType(target);
+  const control = resolvedControls(Type, target)[property];
+
+  if (control?.unbounded === true && typeof value === 'number') {
+    if (!Number.isFinite(value) || Math.abs(value) > 1e8)
+      throw new Error(`${property} is outside the supported numeric range.`);
+    return;
+  }
+
+  validateProperties(Type, { [property]: value }, target);
 }
 
 function requireDiscard(discard: boolean) {
@@ -222,6 +249,7 @@ const handlers: Handlers = {
       media: Type.config.media,
       // Clip fades scale `opacity`; elements without it hard-cut at the clip edges.
       hasOpacity: typeof Type.config.defaultProperties.opacity === 'number',
+      ...(name === 'AudioReactor' ? {} : { animatable: animatable(Type), easings: EASINGS }),
     });
   },
   new_project: async ({ discardChanges }) => {
@@ -250,6 +278,11 @@ const handlers: Handlers = {
   update_element: ({ id, properties, name, enabled }) => {
     const target = element(id);
     validateProperties(entityType(target), properties, target);
+    const animated = Object.keys(properties).filter(property => target.tracks[property]);
+    if (animated.length > 0)
+      throw new Error(
+        `Animated properties cannot be set directly: ${animated.join(', ')}. Use set_keyframes, or clear_keyframes first.`,
+      );
     projectDocument.apply([
       { type: 'setProperties', id, properties },
       { type: 'setMeta', id, displayName: name, enabled },
@@ -293,7 +326,7 @@ const handlers: Handlers = {
     projectDocument.apply({ type: 'removeReactor', id });
     return { removed: id };
   },
-  bind_reactor: ({ elementId, property, reactorId, min, max }) => {
+  bind_reactor: ({ elementId, property, reactorId, min, max, mode }) => {
     const target = element(elementId);
     if (reactorId === null) {
       projectDocument.apply({ type: 'unbindReactor', id: elementId, property });
@@ -303,9 +336,19 @@ const handlers: Handlers = {
     const control = resolvedControls(entityType(target), target)[property];
     if (!control?.withReactor || typeof target.properties[property] !== 'number')
       throw new Error('Property does not support a numeric reactor binding.');
-    validateProperties(entityType(target), { [property]: min }, target);
-    validateProperties(entityType(target), { [property]: max }, target);
-    projectDocument.apply({ type: 'bindReactor', id: elementId, property, reactorId, min, max });
+    if (mode === 'replace') {
+      validateProperties(entityType(target), { [property]: min }, target);
+      validateProperties(entityType(target), { [property]: max }, target);
+    }
+    projectDocument.apply({
+      type: 'bindReactor',
+      id: elementId,
+      property,
+      reactorId,
+      min,
+      max,
+      mode,
+    });
     return layerJSON(elementId);
   },
   get_preview: ({ maxSize, time }) =>
@@ -326,6 +369,26 @@ const handlers: Handlers = {
     for (const id of ids) element(id);
     projectDocument.apply(ids.map((id): DocumentOp => ({ type: 'clearClip', id })));
     return { cleared: ids };
+  },
+  set_keyframes: ({ tracks }) => {
+    const ops = tracks.map(({ id, property, keyframes, mode }): DocumentOp => {
+      const target = element(id);
+      if (!trackTypeFor(entityType(target).config, property))
+        throw new Error(`${property} cannot be animated.`);
+      for (const key of keyframes) validateKeyValue(target, property, key.value);
+      const base: Keyframe[] = mode === 'merge' ? (target.tracks[property]?.keyframes ?? []) : [];
+      const merged = [...keyframes]
+        .sort((a, b) => a.time - b.time)
+        .reduce((keys, key) => setKey(keys, key), base);
+      return { type: 'setTrack', id, property, keyframes: merged };
+    });
+    projectDocument.apply(ops);
+    return tracks.map(({ id }) => ({ id, tracks: element(id).tracks }));
+  },
+  clear_keyframes: ({ id, properties }) => {
+    element(id);
+    projectDocument.apply({ type: 'clearTracks', id, properties });
+    return layerJSON(id);
   },
   open_project: async ({ path, discardChanges }) => {
     requireDiscard(discardChanges);

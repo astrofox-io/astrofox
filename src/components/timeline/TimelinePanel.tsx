@@ -1,8 +1,13 @@
-import { Maximize2, ZoomIn, ZoomOut } from 'lucide-react';
+import { Maximize2, Trash2, ZoomIn, ZoomOut } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApp from '@/app/actions/app';
+import {
+  clearKeySelection,
+  deleteSelectedKeys,
+  setSelectedKeysEasing,
+} from '@/app/actions/keyframes';
 import {
   pauseTransport,
   playTransport,
@@ -17,13 +22,14 @@ import useTimelinePanel, {
   setTimelineZoom,
   TIMELINE_MAX_ZOOM,
 } from '@/app/actions/timelinePanel';
-import { projectDocument } from '@/app/document';
+import { projectDocument, useDocument } from '@/app/document';
 import { Times } from '@/app/icons';
 import NumberInput from '@/components/NumberInput';
 import SelectInput from '@/components/SelectInput';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { EASINGS, type Easing } from '@/lib/timeline/tracks';
 import transportStore, {
   MAX_PROJECT_DURATION,
   MIN_PROJECT_DURATION,
@@ -119,16 +125,54 @@ function defaultZoomAnchor(
  * Bottom timeline: a ruler with the waveform, one bar per element, and the
  * playhead. Height is draggable from its top edge; zoom and snapping live in
  * the header. Keyboard: Space play/pause, ←/→ step a frame (Shift: a second),
- * Home/End, Delete resets the selected element's clip, =/- zoom, \ fits.
+ * Home/End, Delete removes the selected keyframes (or, with none selected,
+ * resets the selected element's clip), Escape deselects keys, =/- zoom, \ fits.
  * Ctrl/Cmd/Alt + wheel (or a trackpad pinch) zooms around the cursor; the
  * zoom buttons and keys zoom around the playhead, or the view's centre when
  * the playhead is off-screen.
  */
+/** The easing of the selected keys, shown while any are selected. */
+function KeyEasing({ count }: { count: number }) {
+  const { t } = useTranslation(undefined, { keyPrefix: 'timeline' });
+  const selectedKeys = useTimelinePanel(state => state.selectedKeys);
+  // The easing they share, or none when they differ.
+  const easing = useDocument(state => {
+    const easings = new Set<string>();
+    for (const { id, property, time } of selectedKeys) {
+      const layer = state.elementById[id] ?? state.sceneById[id];
+      const key = layer?.tracks?.[property]?.keyframes.find(
+        item => Math.abs(item.time - time) < 1e-6,
+      );
+      if (key) easings.add(key.easing);
+    }
+    return easings.size === 1 ? [...easings][0] : '';
+  });
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <span>
+        {count > 1 ? `${t('keyframe')} ×${count}` : t('keyframe')} · {t('easing')}
+      </span>
+      <SelectInput
+        name="easing"
+        value={easing}
+        width={120}
+        items={EASINGS.map(item => ({ label: t(`easing-${item}`), value: item }))}
+        onChange={(_name, value) => setSelectedKeysEasing(value as Easing)}
+      />
+      <IconButton label={t('delete-keyframes')} onClick={() => deleteSelectedKeys()}>
+        <Trash2 className="size-3.5" />
+      </IconButton>
+    </div>
+  );
+}
+
 export default function TimelinePanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'timeline' });
   const height = useTimelinePanel(state => state.height);
   const zoom = useTimelinePanel(state => state.zoom);
   const snap = useTimelinePanel(state => state.snap);
+  const selectedKeys = useTimelinePanel(state => state.selectedKeys);
   const duration = transportStore(state => state.duration);
   const explicitDuration = transportStore(state => state.explicitDuration);
   const fps = transportStore(state => state.fps);
@@ -245,9 +289,14 @@ export default function TimelinePanel() {
         event.preventDefault();
         seekTransport(duration);
         break;
+      case 'Escape':
+        clearKeySelection();
+        break;
       case 'Delete':
       case 'Backspace':
-        if (activeElementId) {
+        if (deleteSelectedKeys()) {
+          event.preventDefault();
+        } else if (activeElementId) {
           event.preventDefault();
           projectDocument.apply({ type: 'clearClip', id: activeElementId });
         }
@@ -306,6 +355,7 @@ export default function TimelinePanel() {
         <div className="text-xs uppercase text-neutral-400">{t('title')}</div>
         <TimeReadout fps={fps} />
         <div className="ml-auto flex items-center gap-3 text-xs text-neutral-400">
+          {selectedKeys.length > 0 ? <KeyEasing count={selectedKeys.length} /> : null}
           <div className="flex items-center gap-1.5">
             <span>{t('duration')}</span>
             <NumberInput

@@ -26,6 +26,8 @@ export const camera3DControls = {
     min: -Math.PI,
     max: Math.PI,
     step: 0.01,
+    // Keyframes may orbit any number of times.
+    unbounded: true,
     withRange: true,
     withReactor: true,
     group: 'Camera',

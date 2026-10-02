@@ -1,11 +1,16 @@
 import { clsx as classNames } from 'cnfast';
 import type React from 'react';
+import { setAnimatedValue } from '@/app/actions/keyframes';
+import { useDocument } from '@/app/document';
 import { Link } from '@/app/icons';
 import inputComponents from '@/components/inputComponents';
+import KeyframeButton from '@/components/KeyframeButton';
 import RangeInput from '@/components/RangeInput';
 import ReactorButton from '@/components/ReactorButton';
 import ReactorInput from '@/components/ReactorInput';
 import type Display from '@/lib/core/Display';
+import { evaluateTrack, type TrackType, trackTypeFor } from '@/lib/timeline/tracks';
+import transportStore from '@/lib/timeline/transport';
 
 interface OptionProps {
   display: Display & { properties: Record<string, unknown> };
@@ -22,7 +27,23 @@ interface OptionProps {
   inputProps?: Record<string, unknown>;
   min?: number;
   max?: number;
+  /** False keeps a number or colour control from being animated. */
+  animatable?: boolean;
+  /** Keys may go past min/max (rotation); the input shows the value wrapped into range. */
+  unbounded?: boolean;
   [key: string]: unknown;
+}
+
+/** Which kind of track this control animates, or null. Reactors and other non-layers never animate. */
+function animatableAs(display: OptionProps['display'], name: string): TrackType | null {
+  const config = (display.constructor as { config?: Parameters<typeof trackTypeFor>[0] }).config;
+  return 'tracks' in display && config ? trackTypeFor(config, name) : null;
+}
+
+/** A value wrapped into min..max, for unbounded controls whose keys can go round. */
+function wrap(value: number, min: number, max: number) {
+  const span = max - min;
+  return span > 0 ? min + ((((value - min) % span) + span) % span) : value;
 }
 
 export default function Option({
@@ -38,9 +59,40 @@ export default function Option({
   withRange,
   withLink,
   inputProps,
+  animatable: _animatable,
+  unbounded,
   ...otherProps
 }: OptionProps) {
   const [InputCompnent, defaultProps] = type ? (inputComponents[type] ?? []) : [];
+  const trackType = animatableAs(display, name);
+  const track = useDocument(state => {
+    if (!trackType) return undefined;
+    const layer = state.elementById[display.id] ?? state.sceneById[display.id];
+    return layer?.tracks?.[name];
+  });
+  // An animated control shows its value at the playhead and edits the key there.
+  const time = transportStore(state => (track ? state.time : 0));
+
+  if (track) {
+    const animated = evaluateTrack(track, time);
+    value =
+      unbounded &&
+      typeof animated === 'number' &&
+      typeof otherProps.min === 'number' &&
+      typeof otherProps.max === 'number'
+        ? wrap(animated, otherProps.min, otherProps.max)
+        : animated;
+    const edit = onChange;
+    onChange = (key, next) => {
+      if (key === name && (typeof next === 'number' || typeof next === 'string')) {
+        setAnimatedValue(display.id, name, next);
+      } else {
+        // Other keys from this row (the link toggle) stay ordinary edits.
+        edit?.(key, next);
+      }
+    };
+  }
+
   const showReactor = withReactor && display.getReactor?.(name);
   const linked = Boolean(withLink && display.properties[withLink]);
   const { min, max } = otherProps;
@@ -112,6 +164,9 @@ export default function Option({
         )}
       </div>
       {inputs}
+      {trackType && inputs.length > 0 && (
+        <KeyframeButton id={display.id} name={name} track={track} className="-mr-1" />
+      )}
     </div>
   );
 }

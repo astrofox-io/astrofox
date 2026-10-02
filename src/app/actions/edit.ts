@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { projectDocument } from '@/app/document';
 import { endHistoryGesture } from '@/app/history';
-import type { LayerJSON } from '@/lib/document/types';
+import type { DocumentOp, LayerJSON } from '@/lib/document/types';
 import appStore, { setActiveElementId } from './app';
 
-/** Copied layer properties, pasted onto a layer of the same type. */
-type PropertyClipboard = Pick<LayerJSON, 'name' | 'type' | 'properties' | 'reactors'>;
+/** Copied layer properties, bindings and keyframes, pasted onto a layer of the same type. */
+type PropertyClipboard = Pick<LayerJSON, 'name' | 'type' | 'properties' | 'reactors' | 'tracks'>;
 
 const clipboardStore = create(() => ({ clipboard: null as PropertyClipboard | null }));
 
@@ -26,8 +26,10 @@ export function duplicateLayer() {
 export function copyProperties() {
   const layer = selectedLayer();
   if (layer) {
-    const { name, type, properties, reactors } = layer;
-    clipboardStore.setState({ clipboard: structuredClone({ name, type, properties, reactors }) });
+    const { name, type, properties, reactors, tracks } = layer;
+    clipboardStore.setState({
+      clipboard: structuredClone({ name, type, properties, reactors, tracks }),
+    });
   }
 }
 
@@ -45,6 +47,15 @@ export function pasteProperties() {
   projectDocument.apply([
     { type: 'setProperties', id: layer.id, properties: structuredClone(clipboard.properties) },
     { type: 'setBindings', id: layer.id, bindings: clipboard.reactors ?? {} },
+    { type: 'clearTracks', id: layer.id },
+    ...Object.entries(clipboard.tracks ?? {}).map(
+      ([property, track]): DocumentOp => ({
+        type: 'setTrack',
+        id: layer.id,
+        property,
+        keyframes: structuredClone(track.keyframes),
+      }),
+    ),
   ]);
 }
 

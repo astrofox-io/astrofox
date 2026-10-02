@@ -94,6 +94,8 @@ export default class VideoDisplay extends Display {
         type: 'number',
         min: 0,
         max: 360,
+        // Keyframes may hold any number of turns.
+        unbounded: true,
         withRange: true,
         withReactor: true,
         disabled,

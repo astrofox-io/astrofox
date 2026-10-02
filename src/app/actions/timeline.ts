@@ -1,6 +1,7 @@
 import { projectDocument } from '@/app/document';
 import type { LayerJSON } from '@/lib/document/types';
 import type { Clip } from '@/lib/timeline/clip';
+import type { Tracks } from '@/lib/timeline/tracks';
 import { getProjectDuration } from '@/lib/timeline/transport';
 
 export {
@@ -23,6 +24,8 @@ export interface TimelineElement {
   displayName: string;
   enabled: boolean;
   clip: Clip | null;
+  /** Keyframe tracks by property; empty when nothing is animated. */
+  tracks: Tracks;
   hasOpacity: boolean;
 }
 
@@ -40,6 +43,7 @@ export function listTimelineElements() {
       displayName: layer.displayName,
       enabled: layer.enabled,
       clip: layer.clip ?? null,
+      tracks: layer.tracks ?? {},
       hasOpacity: typeof layer.properties.opacity === 'number',
     });
 

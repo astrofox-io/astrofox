@@ -2,6 +2,8 @@
 export const LABEL_WIDTH = 184;
 /** Height of one element row, in px. */
 export const ROW_HEIGHT = 26;
+/** Height of one animated property's keyframe lane, in px. */
+export const KEY_ROW_HEIGHT = 20;
 /** Height of the ruler (ticks + waveform), in px. */
 export const RULER_HEIGHT = 44;
 /** Widest track the panel will lay out; keeps the ruler canvas well under browser limits. */

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { CANVAS_LIMITS } from '../document/rules';
 import { MAX_PROJECT_DURATION, MIN_PROJECT_DURATION } from '../timeline/settings';
+import { EASINGS, MAX_KEYFRAMES } from '../timeline/tracks';
+import { REACTOR_MODES } from '../types';
 import { assertSafe } from '../utils/object';
 
 const id = z.string().min(1).max(200);
@@ -78,7 +80,7 @@ export const commands = {
   },
   update_element: {
     description:
-      'Update an existing scene, display or effect. Unknown properties and invalid values are rejected.',
+      'Update an existing scene, display or effect. Unknown properties and invalid values are rejected, and so are animated properties: change those with set_keyframes, or remove their keys with clear_keyframes first.',
     schema: z
       .object({
         id,
@@ -128,7 +130,7 @@ export const commands = {
   },
   bind_reactor: {
     description:
-      'Bind a reactor to a supported numeric element property, or unbind it with reactorId=null.',
+      'Bind a reactor to a supported numeric element property, or unbind it with reactorId=null. The output (0-1) is scaled to min..max, then: replace (default) sets the property to it; add adds it to the property value (authored or keyframed); multiply scales the value by it, e.g. min 0, max 1 to pulse an animated opacity. In replace mode min and max must be within the property bounds.',
     schema: z
       .object({
         elementId: id,
@@ -136,6 +138,7 @@ export const commands = {
         reactorId: id.nullable(),
         min: z.number().finite().default(0),
         max: z.number().finite().default(1),
+        mode: z.enum(REACTOR_MODES).default('replace'),
       })
       .strict(),
     effect: 'edit',
@@ -154,7 +157,7 @@ export const commands = {
   },
   get_timeline: {
     description:
-      'Read the project transport (time, duration, fps) and every element with its timeline clip. Elements without a clip are active for the whole project.',
+      'Read the project transport (time, duration, fps) and every element with its timeline clip and keyframe tracks. Elements without a clip are active for the whole project.',
     schema: empty,
     effect: 'read',
     duringExport: true,
@@ -201,6 +204,45 @@ export const commands = {
   clear_clips: {
     description: 'Remove timeline clips so the elements are active for the whole project.',
     schema: z.object({ ids: z.array(id).min(1).max(500) }).strict(),
+    effect: 'edit',
+  },
+  set_keyframes: {
+    description:
+      'Animate element properties over project time. Each track sets keys for one property: time in absolute project seconds, value in the property type (number, or #rrggbb for colors), and the easing toward the next key (default linear; hold keeps the value until the next key). Before the first key the property holds the first value; after the last, the last. mode replace (default) replaces the property keys; merge sets keys at the given times and keeps the rest. Number and color controls can be animated (describe_element_type lists them under animatable); values must be within the control bounds, except unbounded controls such as rotation, whose keys may hold any number of turns. Reactor bindings apply on top of keys in their mode.',
+    schema: z
+      .object({
+        tracks: z
+          .array(
+            z
+              .object({
+                id,
+                property: id,
+                keyframes: z
+                  .array(
+                    z
+                      .object({
+                        time: seconds,
+                        value: z.union([z.number().finite(), z.string().max(32)]),
+                        easing: z.enum(EASINGS).optional(),
+                      })
+                      .strict(),
+                  )
+                  .min(1)
+                  .max(MAX_KEYFRAMES),
+                mode: z.enum(['replace', 'merge']).default('replace'),
+              })
+              .strict(),
+          )
+          .min(1)
+          .max(500),
+      })
+      .strict(),
+    effect: 'edit',
+  },
+  clear_keyframes: {
+    description:
+      'Remove keyframes so properties return to their static values. Omit properties to clear every track of the element.',
+    schema: z.object({ id, properties: z.array(id).min(1).max(200).optional() }).strict(),
     effect: 'edit',
   },
   open_project: {
