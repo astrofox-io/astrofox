@@ -1,6 +1,6 @@
 import { clsx as classNames } from 'cnfast';
 import type React from 'react';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   captureKeys,
   clearKeySelection,
@@ -30,6 +30,8 @@ interface KeyframeLaneProps {
 }
 
 interface DragState {
+  pointerId: number;
+  captureTarget: HTMLElement;
   originX: number;
   /** The key under the pointer when the drag began; it is the one that snaps. */
   anchor: KeyRef;
@@ -53,7 +55,24 @@ export default function KeyframeLane({
   snapTargets,
   selectedKeys,
 }: KeyframeLaneProps) {
+  const lane = useRef<HTMLDivElement>(null);
   const drag = useRef<DragState | null>(null);
+
+  const endDrag = useCallback(() => {
+    const state = drag.current;
+    drag.current = null;
+    if (state?.captureTarget.hasPointerCapture(state.pointerId)) {
+      state.captureTarget.releasePointerCapture(state.pointerId);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('blur', endDrag);
+    return () => {
+      window.removeEventListener('blur', endDrag);
+      endDrag();
+    };
+  }, [endDrag]);
 
   function beginDrag(event: React.PointerEvent<HTMLButtonElement>, key: Keyframe) {
     if (event.button !== 0) return;
@@ -73,6 +92,8 @@ export default function KeyframeLane({
 
     const keys = timelinePanelStore.getState().selectedKeys;
     drag.current = {
+      pointerId: event.pointerId,
+      captureTarget: event.currentTarget,
       originX: event.clientX,
       anchor: ref,
       keys,
@@ -82,12 +103,18 @@ export default function KeyframeLane({
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function handlePointerMove(event: React.PointerEvent<HTMLButtonElement>) {
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const state = drag.current;
-    if (!state) return;
+    if (!state || event.pointerId !== state.pointerId) return;
 
     const dx = event.clientX - state.originX;
     if (!state.moved && Math.abs(dx) < DRAG_THRESHOLD) return;
+    if (!state.moved && lane.current) {
+      // Moving changes the button's React key and replaces it. Transfer capture
+      // before editing, while keeping clicks and double-clicks on the button.
+      state.captureTarget = lane.current;
+      state.captureTarget.setPointerCapture(state.pointerId);
+    }
     state.moved = true;
 
     const targets = [...snapTargets, transportStore.getState().time];
@@ -102,14 +129,33 @@ export default function KeyframeLane({
     timelinePanelStore.setState({ selectedKeys: moved });
   }
 
-  function handlePointerUp(event: React.PointerEvent<HTMLButtonElement>) {
-    if (!drag.current) return;
-    drag.current = null;
-    event.currentTarget.releasePointerCapture(event.pointerId);
+  function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerId !== drag.current?.pointerId) return;
+    // Apply the release position before the window's history listener closes
+    // the gesture, including a release outside the lane.
+    handlePointerMove(event);
+    endDrag();
+  }
+
+  function handlePointerCancel(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerId === drag.current?.pointerId) endDrag();
+  }
+
+  function handleLostPointerCapture(event: React.PointerEvent<HTMLDivElement>) {
+    // Losing the button's capture during the handoff is expected.
+    if (event.target === drag.current?.captureTarget) handlePointerCancel(event);
   }
 
   return (
-    <div className="absolute inset-0" onPointerDown={() => clearKeySelection()}>
+    <div
+      ref={lane}
+      className="absolute inset-0 touch-none select-none"
+      onPointerDown={() => clearKeySelection()}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      onLostPointerCapture={handleLostPointerCapture}
+    >
       {keyframes.map(key => {
         const selected = isKeySelected(selectedKeys, { id, property, time: key.time });
 
@@ -126,9 +172,6 @@ export default function KeyframeLane({
             )}
             style={{ left: key.time * pixelsPerSecond }}
             onPointerDown={event => beginDrag(event, key)}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
             onDoubleClick={event => {
               event.stopPropagation();
               seekTransport(key.time);
