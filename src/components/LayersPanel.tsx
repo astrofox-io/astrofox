@@ -8,7 +8,9 @@ import { ChevronDown, ChevronUp } from '@/app/icons';
 import SceneLayer from '@/components/SceneLayer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { canReorder, layerKind } from '@/lib/document/selection';
+import type { DocumentState } from '@/lib/document/types';
 import { reverse } from '@/lib/utils/array';
+import { isDeepEqual } from '@/lib/utils/object';
 
 interface SceneElement {
   id: string;
@@ -26,9 +28,35 @@ interface SceneData {
   effects: SceneElement[];
 }
 
+function createLayerListSelector() {
+  let previous: SceneData[] = [];
+  const row = ({ id, name, type, displayName, enabled }: SceneElement) => ({
+    id,
+    name,
+    type,
+    displayName,
+    enabled,
+  });
+
+  return (state: DocumentState) => {
+    // Property edits (including every typed character) do not change the layer
+    // list. Subscribe only to its labels, visibility and ordering.
+    const next = state.scenes.map(({ id, displayName, enabled, displays, effects }) => ({
+      id,
+      displayName,
+      enabled,
+      displays: displays.map(row),
+      effects: effects.map(row),
+    }));
+    if (!isDeepEqual(previous, next)) previous = next;
+    return previous;
+  };
+}
+
 export default function LayersPanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'panels' });
-  const scenes = useDocument(state => state.scenes) as SceneData[];
+  const selectLayers = useMemo(createLayerListSelector, []);
+  const scenes = useDocument(selectLayers);
   const activeElementId = useApp(state => state.activeElementId);
   const [dragSourceId, setDragSourceId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
