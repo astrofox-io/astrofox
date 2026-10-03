@@ -18,6 +18,7 @@ export function TexturePlane({
   zoom,
   opacity,
   renderOrder,
+  color = '#FFFFFF',
 }) {
   const position = [x + (width / 2 - originX), -y + (height / 2 - originY), 0];
   const planeWidth = Math.max(1, width);
@@ -34,6 +35,7 @@ export function TexturePlane({
     >
       <planeGeometry args={[1, 1]} />
       <meshBasicMaterial
+        color={color}
         map={texture}
         transparent={true}
         premultipliedAlpha={false}

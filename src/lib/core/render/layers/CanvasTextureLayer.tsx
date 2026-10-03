@@ -3,7 +3,7 @@ import React from 'react';
 import { CanvasTexture, LinearFilter, SRGBColorSpace } from 'three';
 import { TexturePlane } from './TexturePlane';
 
-export function CanvasTextureLayer({ display, order, frameData, drawFrame }) {
+export function CanvasTextureLayer({ display, order, frameData, drawFrame, color = '#FFFFFF' }) {
   const { properties = {} } = display;
   const { x = 0, y = 0, rotation = 0, zoom = 1, opacity = 1 } = properties;
 
@@ -117,6 +117,7 @@ export function CanvasTextureLayer({ display, order, frameData, drawFrame }) {
 
   return (
     <TexturePlane
+      color={color}
       texture={texture}
       width={width}
       height={height}

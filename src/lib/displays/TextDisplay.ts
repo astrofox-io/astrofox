@@ -1,5 +1,5 @@
 import { resolveFontFamily } from '@/app/fontFamilies';
-import CanvasText from '@/lib/canvas/CanvasText';
+import type CanvasText from '@/lib/canvas/CanvasText';
 import fonts from '@/lib/config/fonts.json';
 import Display from '@/lib/core/Display';
 import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
@@ -13,7 +13,8 @@ const fontOptions = fonts.map(item => ({
 }));
 
 export default class TextDisplay extends Display {
-  declare text: CanvasText;
+  // The renderer owns this canvas; the transform overlay reads its dimensions.
+  declare text: CanvasText | undefined;
 
   static config = {
     name: 'TextDisplay',
@@ -120,18 +121,6 @@ export default class TextDisplay extends Display {
 
   constructor(properties?: Record<string, unknown>) {
     super(TextDisplay, properties);
-
-    const canvas = new OffscreenCanvas(1, 1);
-    const props = this.properties as Record<string, unknown>;
-    this.text = new CanvasText(props, canvas);
-  }
-
-  update(properties: Record<string, unknown>) {
-    if (this.text.update(properties)) {
-      this.text.render();
-    }
-
-    return super.update(properties);
   }
 }
 

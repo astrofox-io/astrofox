@@ -343,9 +343,11 @@ export default function DisplayTransformOverlay({
 
     refresh();
     events.on('render', refresh);
+    events.on('displayBoundsChanged', refresh);
 
     return () => {
       events.off('render', refresh);
+      events.off('displayBoundsChanged', refresh);
     };
   }, [activeElementId, displayDescriptor]);
 
