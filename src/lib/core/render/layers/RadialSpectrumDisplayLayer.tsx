@@ -1,46 +1,9 @@
-// @ts-nocheck
-import React from 'react';
-import FFTParser from '@/lib/audio/FFTParser';
-import CanvasRadial from '@/lib/canvas/CanvasRadial';
-import { CanvasTextureLayer } from './CanvasTextureLayer';
+import type { BaseDisplayLayerProps } from '../renderTypes';
+import { GpuDisplayLayer } from './gpu/GpuDisplayLayer';
+import { RadialRenderer } from './gpu/RadialRenderer';
 
-export function RadialSpectrumDisplayLayer({ display, order, frameData }) {
-  const radialRef = React.useRef(null);
-  const parserRef = React.useRef(null);
+const create = () => new RadialRenderer();
 
-  const drawFrame = React.useCallback(({ canvas, properties, frameData }) => {
-    if (!radialRef.current) {
-      radialRef.current = new CanvasRadial(properties, canvas);
-    }
-
-    if (!parserRef.current) {
-      parserRef.current = new FFTParser(properties);
-    }
-
-    radialRef.current.update(properties);
-    parserRef.current.update(properties);
-
-    const bins = Math.max(1, parserRef.current.totalBins || 64);
-    const fftValues = frameData?.fft
-      ? parserRef.current.parseFFT(frameData.fft)
-      : new Float32Array(bins);
-
-    radialRef.current.render(fftValues);
-
-    return {
-      width: canvas.width,
-      height: canvas.height,
-      originX: canvas.width / 2,
-      originY: canvas.height / 2,
-    };
-  }, []);
-
-  return (
-    <CanvasTextureLayer
-      display={display}
-      order={order}
-      frameData={frameData}
-      drawFrame={drawFrame}
-    />
-  );
+export function RadialSpectrumDisplayLayer(props: BaseDisplayLayerProps) {
+  return <GpuDisplayLayer {...props} create={create} />;
 }
