@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import { useEffect, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import useApp, { setActiveReactorId } from '@/app/actions/app';
 import { PRIMARY_COLOR } from '@/app/constants';
 import { projectDocument, useDocument } from '@/app/document';
@@ -39,9 +40,14 @@ function ReactorMeter({ id }: { id: string }) {
   );
 }
 
-export default function ReactorsPanel() {
-  const reactorList = useDocument(state => state.reactors);
-  const activeReactorId = useApp(state => state.activeReactorId);
+function ReactorRow({ id }: { id: string }) {
+  const reactor = useDocument(
+    useShallow(state => {
+      const value = state.reactors.find(r => r.id === id);
+      return value ? { displayName: value.displayName, enabled: value.enabled } : undefined;
+    }),
+  );
+  const active = useApp(state => state.activeReactorId === id);
 
   function handleLayerClick(id) {
     setActiveReactorId(id);
@@ -61,24 +67,34 @@ export default function ReactorsPanel() {
     projectDocument.apply({ type: 'removeReactor', id });
   }
 
+  if (!reactor) return null;
+
+  return (
+    <div className="flex flex-col border border-neutral-700 rounded mx-1">
+      <Layer
+        id={id}
+        name={reactor.displayName}
+        icon={Flash}
+        active={active}
+        enabled={reactor.enabled}
+        onLayerClick={handleLayerClick}
+        onLayerUpdate={handleLayerUpdate}
+        onLayerDelete={handleLayerDelete}
+        className="rounded-t"
+      />
+      <ReactorMeter id={id} />
+    </div>
+  );
+}
+
+export default function ReactorsPanel() {
+  const reactorIds = useDocument(useShallow(state => state.reactors.map(r => r.id)));
+
   return (
     <div className="flex flex-col flex-1 relative overflow-auto">
       <div className="flex-1 overflow-auto flex flex-col gap-4 px-1">
-        {reactorList.map(reactor => (
-          <div key={reactor.id} className="flex flex-col border border-neutral-700 rounded mx-1">
-            <Layer
-              id={reactor.id}
-              name={reactor.displayName}
-              icon={Flash}
-              active={reactor.id === activeReactorId}
-              enabled={reactor.enabled}
-              onLayerClick={handleLayerClick}
-              onLayerUpdate={handleLayerUpdate}
-              onLayerDelete={handleLayerDelete}
-              className="rounded-t"
-            />
-            <ReactorMeter id={reactor.id} />
-          </div>
+        {reactorIds.map(id => (
+          <ReactorRow key={id} id={id} />
         ))}
       </div>
     </div>

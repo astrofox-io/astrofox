@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import useApp, { setActiveReactorId } from '@/app/actions/app';
 import {
   PRIMARY_COLOR,
@@ -8,9 +9,8 @@ import {
   REACTOR_BAR_WIDTH,
   REACTOR_BARS,
 } from '@/app/constants';
-import { useDocument } from '@/app/document';
+import { projectDocument, useDocument } from '@/app/document';
 import { events, reactors } from '@/app/global';
-import useEntity from '@/app/hooks/useEntity';
 import { Times } from '@/app/icons';
 import BoxInput from '@/components/BoxInput';
 import Control from '@/components/Control';
@@ -47,9 +47,9 @@ function getMeterColor(outputMode: string) {
 }
 
 export default function ReactorPanel() {
-  useDocument(state => state.reactors);
   const activeReactorId = useApp(state => state.activeReactorId);
-  const reactor = activeReactorId ? reactors.getElementById(activeReactorId) : undefined;
+  const snapshot = useDocument(state => state.reactors.find(r => r.id === activeReactorId));
+  const reactor = snapshot ? reactors.getElementById(snapshot.id) : undefined;
 
   if (!reactor) {
     return null;
@@ -60,6 +60,7 @@ export default function ReactorPanel() {
 
 interface ReactorControlProps {
   reactor: {
+    id: string;
     displayName: string;
     name: string;
     properties: Record<string, unknown>;
@@ -68,20 +69,41 @@ interface ReactorControlProps {
   };
 }
 
+const ReactorSettings = memo(function ReactorSettings({ reactor }: ReactorControlProps) {
+  // The selection and its derived range do not change any settings controls.
+  // Subscribe to the published values so undo, load and other edits still refresh them.
+  useDocument(
+    useShallow(state => {
+      const {
+        selection: _selection,
+        range: _range,
+        ...settings
+      } = state.reactors.find(r => r.id === reactor.id)?.properties ?? {};
+      return settings;
+    }),
+  );
+
+  return (
+    <Control
+      display={reactor as unknown as Parameters<typeof Control>[0]['display']}
+      showHeader={false}
+    />
+  );
+});
+
 const ReactorControl = ({ reactor }: ReactorControlProps) => {
   const { t } = useTranslation(undefined, { keyPrefix: 'reactor-panel' });
   const spectrum = useRef<CanvasBars | null>(null);
   const meter = useRef<CanvasMeter | null>(null);
   const spectrumCanvas = useRef<HTMLCanvasElement>(null);
   const outputCanvas = useRef<HTMLCanvasElement>(null);
-  const onChange = useEntity(reactor as unknown as Parameters<typeof useEntity>[0]);
 
   const outputMode = reactor.properties.outputMode as string;
   const isStatic = staticOutputModes.includes(outputMode);
   const showBoxSelection = !isStatic && !beatOutputModes.includes(outputMode);
 
   function handleChange(props: Record<string, unknown>) {
-    onChange(props);
+    projectDocument.apply({ type: 'setProperties', id: reactor.id, properties: props });
   }
 
   function hideReactor() {
@@ -148,11 +170,7 @@ const ReactorControl = ({ reactor }: ReactorControlProps) => {
       </div>
       <div className={'flex flex-row justify-center items-center gap-2 overflow-auto'}>
         <div className={'min-w-90'}>
-          <Control
-            display={reactor as unknown as Parameters<typeof Control>[0]['display']}
-            showHeader={false}
-            onChange={handleChange}
-          />
+          <ReactorSettings reactor={reactor} />
         </div>
         {!isStatic && (
           <div

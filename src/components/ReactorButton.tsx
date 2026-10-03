@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { setActiveReactorId } from '@/app/actions/app';
 import { projectDocument, useDocument } from '@/app/document';
 import { Flash, Plus } from '@/app/icons';
@@ -37,6 +38,17 @@ interface ReactorButtonProps {
   className?: string;
 }
 
+function ReactorMenuItem({ id, onSelect }: { id: string; onSelect: (id: string) => void }) {
+  const name = useDocument(state => state.reactors.find(r => r.id === id)?.displayName);
+
+  return (
+    <DropdownMenuRadioItem value={id} onClick={() => onSelect(id)}>
+      <Flash className="h-3.5 w-3.5 text-neutral-400" />
+      {name}
+    </DropdownMenuRadioItem>
+  );
+}
+
 export default function ReactorButton({
   display,
   name,
@@ -46,7 +58,7 @@ export default function ReactorButton({
 }: ReactorButtonProps) {
   const { t } = useTranslation();
   const reactor = display.getReactor(name);
-  const reactorList = useDocument(state => state.reactors);
+  const reactorIds = useDocument(useShallow(state => state.reactors.map(r => r.id)));
   const mode = reactor?.mode ?? 'replace';
 
   function assignReactor(reactorId: string) {
@@ -103,11 +115,8 @@ export default function ReactorButton({
         />
         <DropdownMenuContent side="left" align="start" sideOffset={4} className="min-w-40">
           <DropdownMenuRadioGroup value={reactor?.id ?? ''}>
-            {reactorList.map(r => (
-              <DropdownMenuRadioItem key={r.id} value={r.id} onClick={() => assignReactor(r.id)}>
-                <Flash className="h-3.5 w-3.5 text-neutral-400" />
-                {r.displayName}
-              </DropdownMenuRadioItem>
+            {reactorIds.map(id => (
+              <ReactorMenuItem key={id} id={id} onSelect={assignReactor} />
             ))}
           </DropdownMenuRadioGroup>
           {reactor && (
@@ -125,7 +134,7 @@ export default function ReactorButton({
               </DropdownMenuGroup>
             </>
           )}
-          {reactorList.length > 0 && <DropdownMenuSeparator />}
+          {reactorIds.length > 0 && <DropdownMenuSeparator />}
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={createAndAssign}>
               <Plus className="h-3.5 w-3.5 text-neutral-400" />
