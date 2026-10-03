@@ -174,7 +174,11 @@
     "connect": "Kết nối"
   },
   "reactor-panel": {
-    "close-panel": "Đóng bảng"
+    "close-panel": "Đóng bảng",
+    "mode": "Chế độ",
+    "mode-replace": "Thay thế",
+    "mode-add": "Cộng",
+    "mode-multiply": "Nhân"
   },
   "stage": {
     "open-picture-in-picture": "Mở hình trong hình",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "Thu phóng"
+  },
+  "timeline": {
+    "animate": "Tạo chuyển động",
+    "add-keyframe": "Thêm khung hình chính",
+    "remove-keyframe": "Xóa khung hình chính",
+    "keyframe": "Khung hình chính",
+    "easing": "Chuyển tiếp",
+    "easing-linear": "Tuyến tính",
+    "easing-hold": "Giữ",
+    "easing-ease-in": "Tăng tốc dần",
+    "easing-ease-out": "Giảm tốc dần",
+    "easing-ease-in-out": "Tăng rồi giảm tốc",
+    "delete-keyframes": "Xóa các khung hình chính",
+    "move-keys": "Di chuyển khung hình chính",
+    "move-keys-help": "Kéo một thanh sẽ di chuyển cả các khung hình chính của nó"
   }
 }

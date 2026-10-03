@@ -174,7 +174,11 @@
     "connect": "接続"
   },
   "reactor-panel": {
-    "close-panel": "パネルを閉じる"
+    "close-panel": "パネルを閉じる",
+    "mode": "モード",
+    "mode-replace": "置換",
+    "mode-add": "加算",
+    "mode-multiply": "乗算"
   },
   "stage": {
     "open-picture-in-picture": "ピクチャーインピクチャーを開く",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "ズーム"
+  },
+  "timeline": {
+    "animate": "アニメート",
+    "add-keyframe": "キーフレームを追加",
+    "remove-keyframe": "キーフレームを削除",
+    "keyframe": "キーフレーム",
+    "easing": "イージング",
+    "easing-linear": "リニア",
+    "easing-hold": "停止",
+    "easing-ease-in": "イーズイン",
+    "easing-ease-out": "イーズアウト",
+    "easing-ease-in-out": "イーズインアウト",
+    "delete-keyframes": "キーフレームを削除",
+    "move-keys": "キーフレームも移動",
+    "move-keys-help": "バーをドラッグするとキーフレームも一緒に移動します"
   }
 }

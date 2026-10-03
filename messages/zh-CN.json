@@ -174,7 +174,11 @@
     "connect": "连接"
   },
   "reactor-panel": {
-    "close-panel": "关闭面板"
+    "close-panel": "关闭面板",
+    "mode": "模式",
+    "mode-replace": "替换",
+    "mode-add": "相加",
+    "mode-multiply": "相乘"
   },
   "stage": {
     "open-picture-in-picture": "打开画中画",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "缩放"
+  },
+  "timeline": {
+    "animate": "动画",
+    "add-keyframe": "添加关键帧",
+    "remove-keyframe": "移除关键帧",
+    "keyframe": "关键帧",
+    "easing": "缓动",
+    "easing-linear": "线性",
+    "easing-hold": "定格",
+    "easing-ease-in": "缓入",
+    "easing-ease-out": "缓出",
+    "easing-ease-in-out": "缓入缓出",
+    "delete-keyframes": "删除关键帧",
+    "move-keys": "关键帧跟随",
+    "move-keys-help": "拖动条形时其关键帧一起移动"
   }
 }

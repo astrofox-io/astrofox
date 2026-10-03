@@ -575,6 +575,8 @@
     "easing-ease-in": "Ease in",
     "easing-ease-out": "Ease out",
     "easing-ease-in-out": "Ease in and out",
-    "delete-keyframes": "Delete keyframes"
+    "delete-keyframes": "Delete keyframes",
+    "move-keys": "Move keys",
+    "move-keys-help": "Dragging a bar moves its keyframes too"
   }
 }

@@ -174,7 +174,11 @@
     "connect": "Connecter"
   },
   "reactor-panel": {
-    "close-panel": "Fermer le panneau"
+    "close-panel": "Fermer le panneau",
+    "mode": "Mode",
+    "mode-replace": "Remplacer",
+    "mode-add": "Ajouter",
+    "mode-multiply": "Multiplier"
   },
   "stage": {
     "open-picture-in-picture": "Ouvrir l'incrustation d'image",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "Zoom"
+  },
+  "timeline": {
+    "animate": "Animer",
+    "add-keyframe": "Ajouter une image clé",
+    "remove-keyframe": "Supprimer l'image clé",
+    "keyframe": "Image clé",
+    "easing": "Lissage",
+    "easing-linear": "Linéaire",
+    "easing-hold": "Maintien",
+    "easing-ease-in": "Accélérer",
+    "easing-ease-out": "Décélérer",
+    "easing-ease-in-out": "Accélérer puis décélérer",
+    "delete-keyframes": "Supprimer les images clés",
+    "move-keys": "Déplacer les images clés",
+    "move-keys-help": "Faire glisser une barre déplace aussi ses images clés"
   }
 }

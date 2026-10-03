@@ -9,9 +9,11 @@ import {
   keyIndexAt,
   mixColors,
   moveKeys,
+  pasteKeys,
   removeKeys,
   setEasing,
   setKey,
+  shiftTracks,
   type Track,
   trackTypeFor,
 } from './tracks';
@@ -195,5 +197,42 @@ describe('editing', () => {
 
   it('replaces a key that a moved key lands on', () => {
     expect(moveKeys(keys, [1], 1)).toEqual([key(2, 10), key(3, 30)]);
+  });
+});
+
+describe('shiftTracks', () => {
+  const tracks = {
+    size: { type: 'number' as const, keyframes: [key(2, 0), key(4, 1)] },
+    color: { type: 'color' as const, keyframes: [key(3, '#000000')] },
+  };
+
+  it('moves every key of every track by the same amount', () => {
+    const { tracks: moved, shift } = shiftTracks(tracks, 1.5);
+    expect(shift).toBe(1.5);
+    expect(moved.size.keyframes.map(k => k.time)).toEqual([3.5, 5.5]);
+    expect(moved.color.keyframes.map(k => k.time)).toEqual([4.5]);
+    expect(tracks.size.keyframes[0].time).toBe(2);
+  });
+
+  it('keeps every key inside the time limits, together', () => {
+    expect(shiftTracks(tracks, -10).shift).toBe(-2);
+    expect(shiftTracks(tracks, 10, 6).shift).toBe(2);
+    expect(shiftTracks({}, 5).shift).toBe(0);
+  });
+});
+
+describe('pasteKeys', () => {
+  const copied = [key(0, 5, 'hold'), key(0.5, 6)];
+
+  it('lands the first copied key at the paste time and keeps the spacing', () => {
+    expect(pasteKeys([key(0, 1)], copied, 2)).toEqual([key(0, 1), key(2, 5, 'hold'), key(2.5, 6)]);
+  });
+
+  it('replaces keys at the same times, easing included', () => {
+    expect(pasteKeys([key(2, 1, 'ease-in')], copied, 2)).toEqual([key(2, 5, 'hold'), key(2.5, 6)]);
+  });
+
+  it('leaves out keys past the time limit', () => {
+    expect(pasteKeys(undefined, copied, 10, 10.2)).toEqual([key(10, 5, 'hold')]);
   });
 });

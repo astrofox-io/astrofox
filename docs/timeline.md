@@ -42,8 +42,9 @@ reactor work), which is the same path the eye icon uses.
 ## Keyframes
 
 Number and colour properties can change over time. Keys sit at absolute
-project times, so moving or trimming a clip leaves its animation where it is
-in the song.
+project times, so by default moving or trimming a clip leaves its animation
+where it is in the song. Turn on **Move keys** in the timeline header to have
+dragging a bar carry the element's keys along (trimming never moves keys).
 
 - Click **◇** next to a control to start animating it; the first key holds the
   current value at the playhead. Once a property is animated, editing it sets
@@ -65,6 +66,12 @@ On the timeline, each animated property gets a lane under its element's bar:
   with **Snap** on, frames). Double-click a key to move the playhead to it.
 - With keys selected, the header shows their easing to change, and `Delete`
   removes them (`Escape` deselects). Hold keys are drawn as squares.
+- `Ctrl/Cmd+C` copies the selected keys and `Ctrl/Cmd+X` cuts them;
+  `Ctrl/Cmd+V` pastes them at the playhead, keeping their spacing and easing
+  and replacing keys at the same times. Keys copied from one element paste
+  onto the selected element when it has the same properties, so animation can
+  be carried between layers; otherwise they paste back onto their own
+  element. (`Ctrl/Cmd+Shift+C/V` still copy and paste a layer's properties.)
 
 Copy and paste of an element's properties brings its keys along, and
 duplicating an element copies them.
@@ -120,6 +127,5 @@ they are exactly what the exported video contains at that time.
 ## Not yet
 
 Beat/onset analysis and snapping to beats are the next phase; see
-`docs/timeline-plan.md`. Keyframe copy/paste on the timeline, step keys for
-switches and lists, and colour-gradient (`colorrange`) animation are not
-supported.
+`docs/timeline-plan.md`. Step keys for switches and lists, and colour-gradient
+(`colorrange`) animation are not supported.

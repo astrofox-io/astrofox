@@ -161,6 +161,10 @@ key the last value. Colors are `#rrggbb` and blend in linear light.
 ]}}
 ```
 
+Keys stay at their project times when `set_clips` moves a clip, unless the
+clip entry sets `"moveKeyframes": true`, which shifts all of the element's keys
+by however far its start moved.
+
 `mode: "replace"` (the default) replaces the property's keys; `"merge"` sets
 keys at the given times and keeps the rest. Values are checked against the
 control bounds, except for unbounded controls such as rotation. An animated

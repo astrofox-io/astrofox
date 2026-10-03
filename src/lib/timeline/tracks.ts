@@ -382,6 +382,53 @@ export function moveKeys(
   return sortKeys([...staying, ...moved]);
 }
 
+/**
+ * Shift every key of every track by the same amount, as moving a clip with
+ * its keys does. The shift is limited so no key goes before 0 or past
+ * `maxTime`; the shift applied is returned with the tracks.
+ */
+export function shiftTracks(
+  tracks: Tracks,
+  delta: number,
+  maxTime = MAX_CLIP_TIME,
+): { tracks: Tracks; shift: number } {
+  const times = Object.values(tracks).flatMap(track => track.keyframes.map(key => key.time));
+
+  if (times.length === 0) {
+    return { tracks: cloneTracks(tracks), shift: 0 };
+  }
+
+  const shift = Math.max(-Math.min(...times), Math.min(maxTime - Math.max(...times), delta));
+  const result: Tracks = {};
+
+  for (const [property, track] of Object.entries(tracks)) {
+    result[property] = {
+      type: track.type,
+      keyframes: track.keyframes.map(key => ({ ...key, time: key.time + shift })),
+    };
+  }
+
+  return { tracks: result, shift };
+}
+
+/**
+ * Paste copied keys into a track: `copied` holds times relative to the
+ * earliest copied key, which lands at `at`. A pasted key replaces a key at
+ * the same time, easing included. Keys that would go past `maxTime` are left
+ * out.
+ */
+export function pasteKeys(
+  keyframes: readonly Keyframe[] | undefined,
+  copied: readonly Keyframe[],
+  at: number,
+  maxTime = MAX_CLIP_TIME,
+): Keyframe[] {
+  return copied
+    .map(key => ({ ...key, time: at + key.time }))
+    .filter(key => key.time >= 0 && key.time <= maxTime)
+    .reduce<Keyframe[]>((keys, key) => setKey(keys, key), [...(keyframes ?? [])]);
+}
+
 /** Copies of tracks from untrusted input that already passed checkTracks. */
 export function cloneTracks(tracks: Tracks | null | undefined): Tracks {
   const result: Tracks = {};

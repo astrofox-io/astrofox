@@ -180,7 +180,7 @@ export const commands = {
   },
   set_clips: {
     description:
-      'Set when elements are active. Each clip is merged into the existing one: start/end in seconds (end null = until the project ends), optional fadeIn/fadeOut in seconds applied to opacity. Omitted fields are kept; null resets them. A clip must be at least one frame long at the project fps; times are not snapped to frames.',
+      'Set when elements are active. Each clip is merged into the existing one: start/end in seconds (end null = until the project ends), optional fadeIn/fadeOut in seconds applied to opacity. Omitted fields are kept; null resets them. A clip must be at least one frame long at the project fps; times are not snapped to frames. Keyframes stay at their project times unless moveKeyframes is true, which shifts all of the element keys by however far its start moves.',
     schema: z
       .object({
         clips: z
@@ -192,6 +192,7 @@ export const commands = {
                 end: seconds.nullable().optional(),
                 fadeIn: seconds.nullable().optional(),
                 fadeOut: seconds.nullable().optional(),
+                moveKeyframes: z.boolean().optional(),
               })
               .strict(),
           )

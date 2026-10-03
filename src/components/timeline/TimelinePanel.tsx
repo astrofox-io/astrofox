@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import useApp from '@/app/actions/app';
 import {
   clearKeySelection,
+  copySelectedKeys,
+  cutSelectedKeys,
   deleteSelectedKeys,
+  pasteKeysAtPlayhead,
   setSelectedKeysEasing,
 } from '@/app/actions/keyframes';
 import {
@@ -17,6 +20,7 @@ import {
 } from '@/app/actions/timeline';
 import useTimelinePanel, {
   setTimelineHeight,
+  setTimelineMoveKeys,
   setTimelineOpen,
   setTimelineSnap,
   setTimelineZoom,
@@ -126,7 +130,8 @@ function defaultZoomAnchor(
  * playhead. Height is draggable from its top edge; zoom and snapping live in
  * the header. Keyboard: Space play/pause, ←/→ step a frame (Shift: a second),
  * Home/End, Delete removes the selected keyframes (or, with none selected,
- * resets the selected element's clip), Escape deselects keys, =/- zoom, \ fits.
+ * resets the selected element's clip), Escape deselects keys, Ctrl/Cmd+C, X
+ * and V copy, cut and paste keys (pasting at the playhead), =/- zoom, \ fits.
  * Ctrl/Cmd/Alt + wheel (or a trackpad pinch) zooms around the cursor; the
  * zoom buttons and keys zoom around the playhead, or the view's centre when
  * the playhead is off-screen.
@@ -172,6 +177,7 @@ export default function TimelinePanel() {
   const height = useTimelinePanel(state => state.height);
   const zoom = useTimelinePanel(state => state.zoom);
   const snap = useTimelinePanel(state => state.snap);
+  const moveKeys = useTimelinePanel(state => state.moveKeys);
   const selectedKeys = useTimelinePanel(state => state.selectedKeys);
   const duration = transportStore(state => state.duration);
   const explicitDuration = transportStore(state => state.explicitDuration);
@@ -267,6 +273,24 @@ export default function TimelinePanel() {
     }
 
     if (isVideoRecording) return;
+
+    // Keyframe clipboard. Ctrl/Cmd+Shift+C/V stay the app's copy/paste of properties.
+    const clipboardKey = event.key.toLowerCase();
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      !event.shiftKey &&
+      !event.altKey &&
+      ['c', 'x', 'v'].includes(clipboardKey)
+    ) {
+      const done =
+        clipboardKey === 'c'
+          ? copySelectedKeys()
+          : clipboardKey === 'x'
+            ? cutSelectedKeys()
+            : pasteKeysAtPlayhead();
+      if (done) event.preventDefault();
+      return;
+    }
 
     switch (event.key) {
       case ' ':
@@ -393,6 +417,15 @@ export default function TimelinePanel() {
               onChange={(_name, value) =>
                 projectDocument.apply({ type: 'setTimeline', fps: Number(value) as TimelineFps })
               }
+            />
+          </div>
+          <div className="flex items-center gap-1.5" title={t('move-keys-help')}>
+            <span>{t('move-keys')}</span>
+            <Switch
+              size="sm"
+              checked={moveKeys}
+              aria-label={t('move-keys-help')}
+              onCheckedChange={checked => setTimelineMoveKeys(!!checked)}
             />
           </div>
           <div className="flex items-center gap-1.5">

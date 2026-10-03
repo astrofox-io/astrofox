@@ -5,6 +5,7 @@ import { getBoolean, getNumber, setBoolean, setNumber } from '@/lib/storage';
 
 const HEIGHT_KEY = 'astrofox.timeline.height';
 const SNAP_KEY = 'astrofox.timeline.snap';
+const MOVE_KEYS_KEY = 'astrofox.timeline.moveKeys';
 
 export const TIMELINE_MIN_HEIGHT = 140;
 export const TIMELINE_MAX_HEIGHT = 640;
@@ -19,6 +20,11 @@ interface TimelinePanelState {
   zoom: number;
   /** Snap clip edges and the playhead to whole frames. */
   snap: boolean;
+  /**
+   * Dragging a bar moves the element's keyframes with it. Off by default:
+   * keys sit at project times, so animation stays in sync with the audio.
+   */
+  moveKeys: boolean;
   /** Scene IDs whose rows are collapsed. */
   collapsed: Record<string, boolean>;
   /** Keyframes selected in the panel (see actions/keyframes.ts). */
@@ -34,6 +40,7 @@ const timelinePanelStore = create<TimelinePanelState>(() => ({
   height: clampHeight(getNumber(HEIGHT_KEY, TIMELINE_DEFAULT_HEIGHT)),
   zoom: 1,
   snap: getBoolean(SNAP_KEY, true),
+  moveKeys: getBoolean(MOVE_KEYS_KEY, false),
   collapsed: {},
   selectedKeys: [],
 }));
@@ -61,6 +68,11 @@ export function setTimelineZoom(zoom: number) {
 export function setTimelineSnap(snap: boolean) {
   timelinePanelStore.setState({ snap });
   setBoolean(SNAP_KEY, snap);
+}
+
+export function setTimelineMoveKeys(moveKeys: boolean) {
+  timelinePanelStore.setState({ moveKeys });
+  setBoolean(MOVE_KEYS_KEY, moveKeys);
 }
 
 export function toggleSceneCollapsed(sceneId: string) {

@@ -13,7 +13,8 @@ import Scene from '@/lib/core/Scene';
 import { canReorder, layerKind } from '@/lib/document/selection';
 import type { DocumentOp } from '@/lib/document/types';
 import { platform } from '@/lib/platform';
-import { EASINGS, type Keyframe, setKey, trackTypeFor } from '@/lib/timeline/tracks';
+import { mergeClip } from '@/lib/timeline/clip';
+import { EASINGS, type Keyframe, setKey, shiftTracks, trackTypeFor } from '@/lib/timeline/tracks';
 import {
   getProjectDuration,
   getProjectFps,
@@ -360,8 +361,20 @@ const handlers: Handlers = {
   },
   set_clips: ({ clips }) => {
     for (const { id } of clips) element(id);
+    const { duration, fps } = getTransportState();
     projectDocument.apply(
-      clips.map(({ id, ...patch }): DocumentOp => ({ type: 'setClip', id, patch })),
+      clips.flatMap(({ id, moveKeyframes, ...patch }): DocumentOp[] => {
+        const ops: DocumentOp[] = [{ type: 'setClip', id, patch }];
+        const target = element(id);
+        if (moveKeyframes && Object.keys(target.tracks).length > 0) {
+          // Throws like the Document would for a bad patch, before anything changes.
+          const start = mergeClip(target.clip, patch, duration, fps)?.start ?? 0;
+          const { tracks } = shiftTracks(target.tracks, start - (target.clip?.start ?? 0));
+          for (const [property, track] of Object.entries(tracks))
+            ops.push({ type: 'setTrack', id, property, keyframes: track.keyframes });
+        }
+        return ops;
+      }),
     );
     return clips.map(({ id }) => ({ id, clip: element(id).clip }));
   },

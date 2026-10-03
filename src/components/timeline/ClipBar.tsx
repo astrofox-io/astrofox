@@ -1,8 +1,11 @@
 import { clsx as classNames } from 'cnfast';
 import type React from 'react';
 import { useRef } from 'react';
+import timelinePanelStore from '@/app/actions/timelinePanel';
 import { projectDocument } from '@/app/document';
+import type { DocumentOp } from '@/lib/document/types';
 import { type Clip, clipRange, editClip, snapTime } from '@/lib/timeline/clip';
+import { shiftTracks, type Tracks } from '@/lib/timeline/tracks';
 import { CLIP_COLORS } from './constants';
 
 type DragMode = 'move' | 'trim-start' | 'trim-end';
@@ -26,6 +29,18 @@ interface DragState {
   mode: DragMode;
   originX: number;
   clip: Clip | null;
+  /** The element's keys when a move began, when they move with the bar. */
+  tracks: Tracks | null;
+  /** How far those keys have moved so far in this drag. */
+  lastShift?: number;
+}
+
+/** The element's keys, when moving its bar should carry them. */
+function tracksToCarry(id: string, mode: DragMode): Tracks | null {
+  if (mode !== 'move' || !timelinePanelStore.getState().moveKeys) return null;
+  const state = projectDocument.getState();
+  const tracks = (state.elementById[id] ?? state.sceneById[id])?.tracks;
+  return tracks && Object.keys(tracks).length > 0 ? tracks : null;
 }
 
 /**
@@ -55,7 +70,7 @@ export default function ClipBar({
     if (event.button !== 0) return;
     event.stopPropagation();
     onSelect(id);
-    drag.current = { mode, originX: event.clientX, clip };
+    drag.current = { mode, originX: event.clientX, clip, tracks: tracksToCarry(id, mode) };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
@@ -76,7 +91,31 @@ export default function ClipBar({
       fps,
       snap: time => snapTime(time, snapTargets, pixelsPerSecond, snap, fps),
     });
-    projectDocument.apply({ type: 'setClip', id, patch });
+    const ops: DocumentOp[] = [{ type: 'setClip', id, patch }];
+
+    // Keys re-apply from where they were when the drag began, by however far
+    // the clip's start actually moved (after snapping and limits).
+    if (state.tracks && patch.start != null) {
+      const { tracks, shift } = shiftTracks(state.tracks, patch.start - range.start);
+
+      for (const [property, track] of Object.entries(tracks)) {
+        ops.push({ type: 'setTrack', id, property, keyframes: track.keyframes });
+      }
+
+      // Selected keys of this element move with it.
+      const { selectedKeys } = timelinePanelStore.getState();
+      if (selectedKeys.some(key => key.id === id)) {
+        const before = state.lastShift ?? 0;
+        timelinePanelStore.setState({
+          selectedKeys: selectedKeys.map(key =>
+            key.id === id ? { ...key, time: key.time + shift - before } : key,
+          ),
+        });
+      }
+      state.lastShift = shift;
+    }
+
+    projectDocument.apply(ops);
   }
 
   function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {

@@ -174,7 +174,11 @@
     "connect": "Conectar"
   },
   "reactor-panel": {
-    "close-panel": "Cerrar panel"
+    "close-panel": "Cerrar panel",
+    "mode": "Modo",
+    "mode-replace": "Reemplazar",
+    "mode-add": "Sumar",
+    "mode-multiply": "Multiplicar"
   },
   "stage": {
     "open-picture-in-picture": "Abrir imagen en imagen",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "Zoom"
+  },
+  "timeline": {
+    "animate": "Animar",
+    "add-keyframe": "Añadir fotograma clave",
+    "remove-keyframe": "Quitar fotograma clave",
+    "keyframe": "Fotograma clave",
+    "easing": "Suavizado",
+    "easing-linear": "Lineal",
+    "easing-hold": "Mantener",
+    "easing-ease-in": "Acelerar",
+    "easing-ease-out": "Desacelerar",
+    "easing-ease-in-out": "Acelerar y desacelerar",
+    "delete-keyframes": "Eliminar fotogramas clave",
+    "move-keys": "Mover fotogramas clave",
+    "move-keys-help": "Al arrastrar una barra, sus fotogramas clave se mueven con ella"
   }
 }

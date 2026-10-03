@@ -174,7 +174,11 @@
     "connect": "연결"
   },
   "reactor-panel": {
-    "close-panel": "패널 닫기"
+    "close-panel": "패널 닫기",
+    "mode": "모드",
+    "mode-replace": "대체",
+    "mode-add": "더하기",
+    "mode-multiply": "곱하기"
   },
   "stage": {
     "open-picture-in-picture": "PIP 열기",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "줌"
+  },
+  "timeline": {
+    "animate": "애니메이션",
+    "add-keyframe": "키프레임 추가",
+    "remove-keyframe": "키프레임 제거",
+    "keyframe": "키프레임",
+    "easing": "이징",
+    "easing-linear": "선형",
+    "easing-hold": "유지",
+    "easing-ease-in": "이즈 인",
+    "easing-ease-out": "이즈 아웃",
+    "easing-ease-in-out": "이즈 인 아웃",
+    "delete-keyframes": "키프레임 삭제",
+    "move-keys": "키프레임 함께 이동",
+    "move-keys-help": "막대를 드래그하면 키프레임도 함께 이동합니다"
   }
 }

@@ -3,16 +3,21 @@ import { endHistoryGesture } from '@/app/history';
 import type { DocumentOp, LayerJSON } from '@/lib/document/types';
 import { snapToFrame } from '@/lib/timeline/clip';
 import {
+  type AnimatableConfig,
   type Easing,
   evaluateTrack,
   type Keyframe,
   keyIndexAt,
   moveKeys,
+  pasteKeys,
   removeKeys,
   setEasing,
   setKey,
+  type TrackType,
+  trackTypeFor,
 } from '@/lib/timeline/tracks';
 import { getProjectDuration, getProjectFps, getTransportTime } from '@/lib/timeline/transport';
+import appStore from './app';
 import timelinePanelStore from './timelinePanel';
 
 /**
@@ -236,4 +241,113 @@ export function captureKeys(keys: readonly KeyRef[]) {
   }
 
   return origin;
+}
+
+// ---- Copy and paste ---------------------------------------------------------
+
+/** Copied keys of one property, with times relative to the earliest copied key. */
+interface CopiedTrack {
+  id: string;
+  property: string;
+  type: TrackType;
+  keyframes: Keyframe[];
+}
+
+let copiedKeys: CopiedTrack[] = [];
+
+function trackTypeOf(id: string, property: string): TrackType | null {
+  const config = (
+    projectDocument.findLayer(id)?.constructor as { config?: AnimatableConfig } | undefined
+  )?.config;
+  return config ? trackTypeFor(config, property) : null;
+}
+
+/** Copy the selected keys. Returns false when none are selected. */
+export function copySelectedKeys() {
+  const { selectedKeys } = timelinePanelStore.getState();
+  if (selectedKeys.length === 0) return false;
+
+  const start = Math.min(...selectedKeys.map(key => key.time));
+  const copied: CopiedTrack[] = [];
+
+  for (const { id, property, times } of selectionGroups(selectedKeys)) {
+    const type = trackTypeOf(id, property);
+    const keyframes = keyframesOf(id, property)
+      .filter(key => times.some(time => Math.abs(key.time - time) < 1e-6))
+      .map(key => ({ ...key, time: key.time - start }));
+
+    if (type && keyframes.length > 0) {
+      copied.push({ id, property, type, keyframes });
+    }
+  }
+
+  copiedKeys = copied;
+
+  return copied.length > 0;
+}
+
+/** Copy the selected keys, then remove them. */
+export function cutSelectedKeys() {
+  return copySelectedKeys() && deleteSelectedKeys();
+}
+
+/**
+ * Where copied keys go: onto the selected element when the keys came from one
+ * other element and it has every copied property (of the same kind), so keys
+ * can be carried between layers; otherwise back onto the elements they came
+ * from.
+ */
+function pasteTarget(copied: readonly CopiedTrack[]) {
+  const activeId = appStore.getState().activeElementId;
+  const sources = new Set(copied.map(track => track.id));
+
+  if (
+    activeId &&
+    sources.size === 1 &&
+    !sources.has(activeId) &&
+    copied.every(track => trackTypeOf(activeId, track.property) === track.type)
+  ) {
+    return () => activeId;
+  }
+
+  return (track: CopiedTrack) => track.id;
+}
+
+/**
+ * Paste copied keys at the playhead (on the frame grid), keeping their spacing,
+ * as one undo step, and select them. Pasted keys replace keys at the same
+ * times. Returns false when nothing was pasted.
+ */
+export function pasteKeysAtPlayhead() {
+  const target = pasteTarget(copiedKeys);
+  const at = keyTime();
+  const ops: DocumentOp[] = [];
+  const pasted: KeyRef[] = [];
+
+  for (const track of copiedKeys) {
+    const id = target(track);
+
+    if (!layer(id) || trackTypeOf(id, track.property) !== track.type) {
+      continue;
+    }
+
+    const keyframes = pasteKeys(keyframesOf(id, track.property), track.keyframes, at);
+    ops.push({ type: 'setTrack', id, property: track.property, keyframes });
+
+    for (const key of track.keyframes) {
+      pasted.push({ id, property: track.property, time: at + key.time });
+    }
+  }
+
+  if (ops.length === 0) return false;
+
+  endHistoryGesture();
+  projectDocument.apply(ops);
+  timelinePanelStore.setState({
+    selectedKeys: pasted.filter(key =>
+      keyframesOf(key.id, key.property).some(item => Math.abs(item.time - key.time) < 1e-6),
+    ),
+  });
+
+  return true;
 }

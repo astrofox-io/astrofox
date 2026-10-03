@@ -174,7 +174,11 @@
     "connect": "Verbinden"
   },
   "reactor-panel": {
-    "close-panel": "Panel schließen"
+    "close-panel": "Panel schließen",
+    "mode": "Modus",
+    "mode-replace": "Ersetzen",
+    "mode-add": "Addieren",
+    "mode-multiply": "Multiplizieren"
   },
   "stage": {
     "open-picture-in-picture": "Bild-in-Bild öffnen",
@@ -510,5 +514,20 @@
     "y": "Y",
     "z": "Z",
     "zoom": "Zoom"
+  },
+  "timeline": {
+    "animate": "Animieren",
+    "add-keyframe": "Keyframe hinzufügen",
+    "remove-keyframe": "Keyframe entfernen",
+    "keyframe": "Keyframe",
+    "easing": "Easing",
+    "easing-linear": "Linear",
+    "easing-hold": "Halten",
+    "easing-ease-in": "Langsam beginnen",
+    "easing-ease-out": "Langsam enden",
+    "easing-ease-in-out": "Langsam beginnen und enden",
+    "delete-keyframes": "Keyframes löschen",
+    "move-keys": "Keyframes mitbewegen",
+    "move-keys-help": "Beim Verschieben eines Balkens werden seine Keyframes mitbewegt"
   }
 }
