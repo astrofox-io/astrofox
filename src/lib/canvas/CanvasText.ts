@@ -7,6 +7,9 @@ export default class CanvasText extends Entity {
   canvas: CanvasElement;
   context: CanvasContext;
   loadingFonts: Set<string>;
+  version = 0;
+  onFontLoad?: () => void;
+  private renderedText?: { text: unknown; font: string; color: unknown };
 
   static defaultProperties = {
     text: '',
@@ -53,25 +56,41 @@ export default class CanvasText extends Entity {
       return;
     }
 
-    if (this.loadingFonts.has(font)) {
+    const key = `${font}\0${text}`;
+    if (this.loadingFonts.has(key)) {
       return;
     }
 
-    this.loadingFonts.add(font);
+    this.loadingFonts.add(key);
 
     document.fonts
       .load(font, text || ' ')
-      .then(() => this.render())
+      .then(() => {
+        if (this.getFont() === font && this.properties.text === text) {
+          this.render(true);
+          this.onFontLoad?.();
+        }
+      })
       .catch(() => {})
       .finally(() => {
-        this.loadingFonts.delete(font);
+        this.loadingFonts.delete(key);
       });
   }
 
-  render() {
+  render(force = false) {
     const { canvas, context } = this;
     const { text, size, color } = this.properties as Record<string, unknown>;
     const font = this.getFont();
+
+    if (
+      !force &&
+      this.renderedText &&
+      this.renderedText.text === text &&
+      this.renderedText.font === font &&
+      this.renderedText.color === color
+    ) {
+      return;
+    }
 
     this.loadFontIfNeeded(font, text as string);
 
@@ -91,14 +110,7 @@ export default class CanvasText extends Entity {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(text as string, width / 2, height / 2);
-
-    // Debugging
-    /*
-    context.beginPath();
-    context.rect(0, 0, canvas.width, canvas.height);
-    context.lineWidth = 2;
-    context.strokeStyle = 'red';
-    context.stroke();
-    */
+    this.renderedText = { text, font, color };
+    this.version += 1;
   }
 }
