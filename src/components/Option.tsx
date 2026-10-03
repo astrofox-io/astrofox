@@ -2,6 +2,7 @@ import { clsx as classNames } from 'cnfast';
 import type React from 'react';
 import { setAnimatedValue } from '@/app/actions/keyframes';
 import { useDocument } from '@/app/document';
+import usePlayheadTime from '@/app/hooks/usePlayheadTime';
 import { Link } from '@/app/icons';
 import inputComponents from '@/components/inputComponents';
 import KeyframeButton from '@/components/KeyframeButton';
@@ -10,7 +11,6 @@ import ReactorButton from '@/components/ReactorButton';
 import ReactorInput from '@/components/ReactorInput';
 import type Display from '@/lib/core/Display';
 import { evaluateTrack, type TrackType, trackTypeFor } from '@/lib/timeline/tracks';
-import transportStore from '@/lib/timeline/transport';
 
 interface OptionProps {
   display: Display & { properties: Record<string, unknown> };
@@ -70,8 +70,10 @@ export default function Option({
     const layer = state.elementById[display.id] ?? state.sceneById[display.id];
     return layer?.tracks?.[name];
   });
-  // An animated control shows its value at the playhead and edits the key there.
-  const time = transportStore(state => (track ? state.time : 0));
+  // An animated control shows its value at the playhead and edits the key
+  // there. While playing it follows at a reduced rate, so a panel full of
+  // animated controls does not re-render on every frame.
+  const time = usePlayheadTime(Boolean(track));
 
   if (track) {
     const animated = evaluateTrack(track, time);

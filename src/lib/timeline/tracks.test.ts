@@ -86,6 +86,51 @@ describe('ease', () => {
 });
 
 describe('mixColors', () => {
+  // The exact conversion the lookup tables stand in for.
+  function reference(from: string, to: string, amount: number) {
+    const parse = (color: string) =>
+      [1, 3, 5].map(i => Number.parseInt(color.slice(i, i + 2), 16) / 255);
+    const linear = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    const srgb = (c: number) => (c <= 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055);
+    const a = parse(from);
+    const b = parse(to);
+    return `#${a
+      .map((channel, i) => {
+        const mixed = srgb(linear(channel) + (linear(b[i]) - linear(channel)) * amount);
+        return Math.round(Math.max(0, Math.min(1, mixed)) * 255)
+          .toString(16)
+          .padStart(2, '0');
+      })
+      .join('')}`;
+  }
+
+  it('matches the exact conversion for any colours and amount', () => {
+    let seed = 12345;
+    const random = () => {
+      seed = (seed * 1103515245 + 12345) % 2147483648;
+      return seed / 2147483648;
+    };
+    const color = () =>
+      `#${Math.floor(random() * 0x1000000)
+        .toString(16)
+        .padStart(6, '0')}`;
+
+    for (let i = 0; i < 20000; i += 1) {
+      const from = color();
+      const to = color();
+      const amount = i % 10 === 0 ? Math.round(random()) : random();
+      expect(mixColors(from, to, amount)).toBe(reference(from, to, amount));
+    }
+  });
+
+  it('returns each end colour unchanged', () => {
+    for (let byte = 0; byte < 256; byte += 1) {
+      const hex = `#${byte.toString(16).padStart(2, '0').repeat(3)}`;
+      expect(mixColors(hex, '#000000', 0)).toBe(hex);
+      expect(mixColors('#000000', hex, 1)).toBe(hex);
+    }
+  });
+
   it('expands short hex colours', () => {
     expect(mixColors('#f00', '#f00', 0.5)).toBe('#ff0000');
   });

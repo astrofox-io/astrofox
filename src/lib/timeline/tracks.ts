@@ -96,48 +96,82 @@ export function ease(easing: Easing, u: number): number {
 
 // ---- Colour ---------------------------------------------------------------------
 
-function parseHex(color: string): [number, number, number] {
-  let hex = color.slice(1);
-
-  if (hex.length === 3) {
-    hex = hex
-      .split('')
-      .map(c => c + c)
-      .join('');
-  }
-
-  return [0, 2, 4].map(i => Number.parseInt(hex.slice(i, i + 2), 16) / 255) as [
-    number,
-    number,
-    number,
-  ];
-}
-
 function toLinear(c: number) {
   return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 }
 
-function toSrgb(c: number) {
-  return c <= 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055;
+// Colour blending runs every frame for every colour track, so it works from
+// tables instead of parsing and raising to powers each time. Results are the
+// same as converting exactly and rounding to the nearest byte.
+
+/** Each sRGB byte in linear light. */
+const LINEAR = Float64Array.from({ length: 256 }, (_, byte) => toLinear(byte / 255));
+
+/**
+ * The linear values where the nearest sRGB byte goes up by one: byte `b` is
+ * the number of thresholds at or below a linear value, as rounding
+ * `toSrgb(linear) * 255` would give.
+ */
+const THRESHOLDS = Float64Array.from({ length: 255 }, (_, byte) => toLinear((byte + 0.5) / 255));
+
+const HEX_BYTES = Array.from({ length: 256 }, (_, byte) => byte.toString(16).padStart(2, '0'));
+
+function toByte(linear: number) {
+  let low = 0;
+  let high = 255;
+
+  while (low < high) {
+    const mid = (low + high) >> 1;
+
+    if (linear >= THRESHOLDS[mid]) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+
+  return low;
 }
 
-function toHexByte(c: number) {
-  return Math.round(Math.max(0, Math.min(1, c)) * 255)
-    .toString(16)
-    .padStart(2, '0');
+/** Parsed colours in linear light. A project holds few distinct key colours. */
+const linearCache = new Map<string, readonly [number, number, number]>();
+const MAX_CACHED_COLORS = 4096;
+
+function linearRgb(color: string): readonly [number, number, number] {
+  const cached = linearCache.get(color);
+
+  if (cached) {
+    return cached;
+  }
+
+  const hex =
+    color.length === 4
+      ? `${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
+      : color.slice(1);
+  const value = Number.parseInt(hex, 16);
+  const rgb = [
+    LINEAR[(value >> 16) & 255],
+    LINEAR[(value >> 8) & 255],
+    LINEAR[value & 255],
+  ] as const;
+
+  if (linearCache.size >= MAX_CACHED_COLORS) {
+    linearCache.clear();
+  }
+
+  linearCache.set(color, rgb);
+
+  return rgb;
 }
 
 /** Blend two hex colours in linear light. Returns `#rrggbb`. */
 export function mixColors(from: string, to: string, amount: number): string {
-  const a = parseHex(from);
-  const b = parseHex(to);
+  const a = linearRgb(from);
+  const b = linearRgb(to);
 
-  return `#${a
-    .map((channel, i) => {
-      const linear = toLinear(channel) + (toLinear(b[i]) - toLinear(channel)) * amount;
-      return toHexByte(toSrgb(linear));
-    })
-    .join('')}`;
+  return `#${HEX_BYTES[toByte(a[0] + (b[0] - a[0]) * amount)]}${
+    HEX_BYTES[toByte(a[1] + (b[1] - a[1]) * amount)]
+  }${HEX_BYTES[toByte(a[2] + (b[2] - a[2]) * amount)]}`;
 }
 
 export function isTrackColor(value: unknown): value is string {
