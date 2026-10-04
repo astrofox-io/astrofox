@@ -174,11 +174,7 @@
     "connect": "Verbinden"
   },
   "reactor-panel": {
-    "close-panel": "Panel schließen",
-    "mode": "Modus",
-    "mode-replace": "Ersetzen",
-    "mode-add": "Addieren",
-    "mode-multiply": "Multiplizieren"
+    "close-panel": "Panel schließen"
   },
   "stage": {
     "open-picture-in-picture": "Bild-in-Bild öffnen",

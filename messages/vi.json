@@ -174,11 +174,7 @@
     "connect": "Kết nối"
   },
   "reactor-panel": {
-    "close-panel": "Đóng bảng",
-    "mode": "Chế độ",
-    "mode-replace": "Thay thế",
-    "mode-add": "Cộng",
-    "mode-multiply": "Nhân"
+    "close-panel": "Đóng bảng"
   },
   "stage": {
     "open-picture-in-picture": "Mở hình trong hình",

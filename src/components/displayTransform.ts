@@ -11,7 +11,7 @@ type TransformableDisplay = {
   name?: string;
   enabled?: boolean;
   properties?: Record<string, unknown>;
-  text?: { canvas?: CanvasLike };
+  text?: { canvas?: CanvasLike; pixelRatio?: number };
   shape?: { canvas?: CanvasLike };
   wave?: { canvas?: CanvasLike };
   bars?: { canvas?: CanvasLike };
@@ -56,8 +56,9 @@ function getCanvasSize(display: TransformableDisplay) {
     display.radial?.canvas ||
     display.ring?.canvas;
 
-  const width = Number(canvas?.width) || 0;
-  const height = Number(canvas?.height) || 0;
+  const pixelRatio = display.text?.canvas ? (display.text.pixelRatio ?? 1) : 1;
+  const width = (Number(canvas?.width) || 0) / pixelRatio;
+  const height = (Number(canvas?.height) || 0) / pixelRatio;
 
   // A canvas collapsed to a line (or empty) has nothing to resize.
   if (width <= 1 || height <= 1) {

@@ -204,11 +204,7 @@
     "connect": "Connect"
   },
   "reactor-panel": {
-    "close-panel": "Close panel",
-    "mode": "Mode",
-    "mode-replace": "Replace",
-    "mode-add": "Add",
-    "mode-multiply": "Multiply"
+    "close-panel": "Close panel"
   },
   "stage": {
     "open-picture-in-picture": "Open picture in picture",

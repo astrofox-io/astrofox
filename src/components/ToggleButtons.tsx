@@ -1,11 +1,10 @@
-import { clsx as classNames } from 'cnfast';
-import { AlignStartVertical, type LucideIcon } from 'lucide-react';
+import { AlignStartVertical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useAppStore from '@/app/actions/app';
 import useAudioStore from '@/app/actions/audio';
 import useTimelinePanel, { toggleTimelineOpen } from '@/app/actions/timelinePanel';
 import { Cycle } from '@/app/icons';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import IconToggleButton from '@/components/IconToggleButton';
 import transportStore, { setTransportLoop } from '@/lib/timeline/transport';
 
 export default function ToggleButtons() {
@@ -24,64 +23,17 @@ export default function ToggleButtons() {
   }
 
   return (
-    <div className={'flex [&.is-focused_.button]:opacity-[1]'}>
-      <ToggleButton
-        icon={Cycle}
-        title={t('repeat')}
-        enabled={looping}
-        onClick={handleLoopButtonClick}
-      />
-      <ToggleButton
-        icon={AlignStartVertical}
-        title={t(timelineOpen ? 'hide-timeline' : 'show-timeline')}
-        enabled={timelineOpen}
+    <div className="flex gap-2.5">
+      <IconToggleButton label={t('repeat')} pressed={looping} onClick={handleLoopButtonClick}>
+        <Cycle className="size-4" />
+      </IconToggleButton>
+      <IconToggleButton
+        label={t(timelineOpen ? 'hide-timeline' : 'show-timeline')}
+        pressed={timelineOpen}
         onClick={toggleTimelineOpen}
-      />
+      >
+        <AlignStartVertical className="size-4" />
+      </IconToggleButton>
     </div>
   );
 }
-
-interface ToggleButtonProps {
-  enabled?: boolean;
-  title?: string;
-  icon?: LucideIcon;
-  onClick?: () => void;
-}
-
-const ToggleButton = ({ enabled, title, icon, onClick }: ToggleButtonProps) => {
-  const IconComponent = icon;
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <button
-              type="button"
-              className={'mr-2.5 [&:last-child]:mr-0 cursor-default'}
-              onClick={onClick}
-            />
-          }
-        >
-          {IconComponent && (
-            <IconComponent
-              className={classNames('w-4 h-4', {
-                '!text-neutral-500 hover:!text-neutral-400': !enabled,
-                '!text-neutral-200 hover:!text-neutral-100': enabled,
-              })}
-            />
-          )}
-        </TooltipTrigger>
-        {title && (
-          <TooltipContent
-            side="top"
-            sideOffset={6}
-            className="rounded bg-neutral-950 px-3 py-2 text-sm text-neutral-200 shadow-lg z-100"
-          >
-            {title}
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
-  );
-};

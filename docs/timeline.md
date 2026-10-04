@@ -78,14 +78,8 @@ duplicating an element copies them.
 
 ## Reactors on animated properties
 
-A reactor binding has a **mode** (in the ⚡ menu once bound):
-
-- **Replace** (the default, and how bindings always worked) sets the property
-  to the reactor output scaled to its range, ignoring keys.
-- **Add** adds the scaled output to the property's value, authored or
-  keyframed.
-- **Multiply** scales the value by the output (0 to 1), e.g. to pulse an
-  animated opacity.
+A reactor sets its bound property to its output scaled to the binding's
+range, overriding the authored or keyframed value.
 
 Clip fades always apply last, so they fade an element even when a reactor
 drives its opacity.

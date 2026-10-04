@@ -437,7 +437,6 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
             id: op.reactorId,
             min: op.min,
             max: op.max,
-            ...(op.mode && op.mode !== 'replace' ? { mode: op.mode } : {}),
           });
           pending.dirty.add(op.id);
         }
@@ -773,7 +772,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
   /**
    * Refuse a batch with a track or binding the rules do not allow, before any
    * of it runs: keys for a property that cannot be animated, or of the wrong
-   * type, out of order or out of range; a binding with an unknown mode.
+   * type, out of order or out of range; a binding with an invalid id or range.
    */
   function checkLayerEdits(operations: DocumentOp[]) {
     for (const op of operations) {
@@ -792,7 +791,7 @@ export function createDocument(deps: DocumentDeps): ProjectDocument {
 
         checkKeyframes(op.keyframes, type, op.property);
       } else if (op.type === 'bindReactor') {
-        checkBinding({ id: op.reactorId, min: op.min, max: op.max, mode: op.mode });
+        checkBinding({ id: op.reactorId, min: op.min, max: op.max });
       } else if (op.type === 'setBindings') {
         for (const binding of Object.values(op.bindings)) checkBinding(binding);
       }

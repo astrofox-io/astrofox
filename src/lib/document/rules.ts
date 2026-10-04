@@ -7,7 +7,6 @@ import {
   TIMELINE_FPS_OPTIONS,
 } from '@/lib/timeline/settings';
 import { checkTracks, trackTypeFor } from '@/lib/timeline/tracks';
-import { REACTOR_MODES } from '@/lib/types';
 import { assertSafe } from '@/lib/utils/object';
 import type { Canvas, LoadInput } from './types';
 
@@ -43,9 +42,9 @@ export function checkLayerTracks(tracks: unknown, Type: RuleType | undefined) {
   checkTracks(tracks, Type ? property => trackTypeFor(Type.config, property) : undefined);
 }
 
-/** Throw unless `binding` is a reactor binding: a reactor id, a range and an optional mode. */
+/** Throw unless `binding` is a reactor binding: a reactor id and a range. */
 export function checkBinding(binding: unknown) {
-  const b = binding as { id?: unknown; min?: unknown; max?: unknown; mode?: unknown };
+  const b = binding as { id?: unknown; min?: unknown; max?: unknown };
   if (
     !b ||
     typeof b.id !== 'string' ||
@@ -55,8 +54,6 @@ export function checkBinding(binding: unknown) {
     !Number.isFinite(b.max)
   )
     throw new Error('Invalid reactor binding.');
-  if (b.mode !== undefined && !(REACTOR_MODES as readonly unknown[]).includes(b.mode))
-    throw new Error(`Reactor binding mode must be one of: ${REACTOR_MODES.join(', ')}.`);
 }
 
 export interface RuleContext {

@@ -1,4 +1,4 @@
-import { Maximize2, Trash2, ZoomIn, ZoomOut } from 'lucide-react';
+import { Diamond, Magnet, Maximize2, Trash2, ZoomIn, ZoomOut } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,10 +28,10 @@ import useTimelinePanel, {
 } from '@/app/actions/timelinePanel';
 import { projectDocument, useDocument } from '@/app/document';
 import { Times } from '@/app/icons';
+import IconToggleButton from '@/components/IconToggleButton';
 import NumberInput from '@/components/NumberInput';
 import SelectInput from '@/components/SelectInput';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { EASINGS, type Easing } from '@/lib/timeline/tracks';
 import transportStore, {
@@ -419,22 +419,23 @@ export default function TimelinePanel() {
               }
             />
           </div>
-          <div className="flex items-center gap-1.5" title={t('move-keys-help')}>
-            <span>{t('move-keys')}</span>
-            <Switch
-              size="sm"
-              checked={moveKeys}
-              aria-label={t('move-keys-help')}
-              onCheckedChange={checked => setTimelineMoveKeys(!!checked)}
-            />
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span>{t('snap')}</span>
-            <Switch
-              size="sm"
-              checked={snap}
-              onCheckedChange={checked => setTimelineSnap(!!checked)}
-            />
+          <div className="flex items-center gap-0.5">
+            <IconToggleButton
+              label={t('move-keys')}
+              className="size-6"
+              pressed={moveKeys}
+              onClick={() => setTimelineMoveKeys(!moveKeys)}
+            >
+              <Diamond className="size-3.5" />
+            </IconToggleButton>
+            <IconToggleButton
+              label={t('snap')}
+              className="size-6"
+              pressed={snap}
+              onClick={() => setTimelineSnap(!snap)}
+            >
+              <Magnet className="size-3.5" />
+            </IconToggleButton>
           </div>
           <div className="flex items-center gap-0.5">
             <IconButton label={t('zoom-out')} onClick={() => zoomBy(1 / ZOOM_STEP)}>

@@ -71,18 +71,12 @@ describe('evaluate', () => {
     expect(at(box, 1).color).toBe('#ffffff');
   });
 
-  it('applies a reactor in its mode on top of the keyframed value', () => {
+  it('lets a reactor override the keyframed value', () => {
     const box = new Box();
     box.setTrack('size', 'number', [{ time: 0, value: 40, easing: 'linear' }]);
 
     box.setReactor('size', { id: 'r', min: 0, max: 10 });
     expect(at(box, 0, { r: 0.5 }).size).toBe(5);
-
-    box.setReactor('size', { id: 'r', min: 0, max: 10, mode: 'add' });
-    expect(at(box, 0, { r: 0.5 }).size).toBe(45);
-
-    box.setReactor('size', { id: 'r', min: 0, max: 1, mode: 'multiply' });
-    expect(at(box, 0, { r: 0.5 }).size).toBe(20);
   });
 
   it('fades opacity whatever drives it, including a reactor', () => {

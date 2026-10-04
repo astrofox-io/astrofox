@@ -2,7 +2,7 @@
 import { useThree } from '@react-three/fiber';
 import React from 'react';
 import { events } from '@/app/global';
-import CanvasText from '@/lib/canvas/CanvasText';
+import CanvasText, { TEXT_PIXEL_RATIO } from '@/lib/canvas/CanvasText';
 import { CanvasTextureLayer } from './CanvasTextureLayer';
 
 export function TextDisplayLayer({ display, order, frameData }) {
@@ -72,6 +72,7 @@ export function TextDisplayLayer({ display, order, frameData }) {
       frameData={frameData}
       drawFrame={drawFrame}
       color={tint ? color : '#FFFFFF'}
+      pixelRatio={TEXT_PIXEL_RATIO}
     />
   );
 }

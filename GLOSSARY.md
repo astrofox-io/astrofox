@@ -40,7 +40,7 @@ Domain terms used in the code. Add a term when a module is named after it.
 
 **Unresolved media**: media a project refers to that could not be found when it was opened (`MediaRef`, listed in the Relink dialog). Setting a display's `sourcePath` (new media, or none) or removing the display drops its entry; the Document does this.
 
-**Reactor**: turns audio (or a static signal) into a 0–1 output that can drive a Layer's numeric property through a **binding** (`{ id, min, max, mode? }`). The output is scaled to min..max; the binding's **mode** says what happens next: `replace` (the default) sets the property to it, `add` adds it to the property's value, `multiply` scales the value by it. Reactors run on top of keyframes.
+**Reactor**: turns audio (or a static signal) into a 0–1 output that drives a Layer's numeric property through a **binding**. The binding maps that output to a chosen range, overriding the property's authored or keyframed value.
 
 **Authored value**: the value a person or MCP client set on a property, as opposed to the runtime value a frame renders with (after keyframes, reactor output and clip fades, in that order). The Document stores authored values.
 

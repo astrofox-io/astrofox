@@ -3,7 +3,14 @@ import React from 'react';
 import { CanvasTexture, LinearFilter, SRGBColorSpace } from 'three';
 import { TexturePlane } from './TexturePlane';
 
-export function CanvasTextureLayer({ display, order, frameData, drawFrame, color = '#FFFFFF' }) {
+export function CanvasTextureLayer({
+  display,
+  order,
+  frameData,
+  drawFrame,
+  color = '#FFFFFF',
+  pixelRatio = 1,
+}) {
   const { properties = {} } = display;
   const { x = 0, y = 0, rotation = 0, zoom = 1, opacity = 1 } = properties;
 
@@ -112,8 +119,9 @@ export function CanvasTextureLayer({ display, order, frameData, drawFrame, color
     };
   }, [texture]);
 
-  const width = plane.width;
-  const height = plane.height;
+  // Canvas dimensions are texture pixels; the plane is measured in stage units.
+  const width = plane.width / pixelRatio;
+  const height = plane.height / pixelRatio;
 
   return (
     <TexturePlane
@@ -123,8 +131,8 @@ export function CanvasTextureLayer({ display, order, frameData, drawFrame, color
       height={height}
       x={x}
       y={y}
-      originX={plane.originX}
-      originY={plane.originY}
+      originX={plane.originX / pixelRatio}
+      originY={plane.originY / pixelRatio}
       rotation={rotation}
       zoom={zoom}
       opacity={opacity}

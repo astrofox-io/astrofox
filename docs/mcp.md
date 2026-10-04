@@ -171,9 +171,8 @@ control bounds, except for unbounded controls such as rotation. An animated
 property cannot be set with `update_element`; use `set_keyframes`, or
 `clear_keyframes` to make it static again (it returns to its authored value).
 
-A reactor bound to an animated property applies on top of the keys in its
-`bind_reactor` `mode`: `replace` (the default) ignores them, `add` adds the
-scaled output, `multiply` scales the keyframed value (min 0, max 1 pulses it).
+A reactor bound to an animated property overrides its keyframed value with
+the output scaled to the binding's min/max range.
 Clip fades always apply last, so they also fade a reactor-driven opacity.
 
 ## Behavior and limits

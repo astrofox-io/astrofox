@@ -42,17 +42,6 @@ export function getAuthoredProperties(entity: Entity): Record<string, unknown> {
 // `update()`, so those writes do not become authored values.
 let evaluating = 0;
 
-/** A property value after a reactor binding, in the binding's mode. */
-export function applyReactor(value: unknown, binding: ReactorConfig, output: number): unknown {
-  const scaled = (binding.max - binding.min) * output + binding.min;
-
-  if (typeof value !== 'number' || !binding.mode || binding.mode === 'replace') {
-    return scaled;
-  }
-
-  return binding.mode === 'add' ? value + scaled : value * scaled;
-}
-
 /**
  * Base class for scenes, displays and effects.
  *
@@ -157,7 +146,8 @@ export default class Display extends Entity {
   }
 
   setReactor(prop: string, config: ReactorConfig) {
-    this.reactors[prop] = config;
+    // Keep only binding fields, including when loading older project files.
+    this.reactors[prop] = { id: config.id, min: config.min, max: config.max };
   }
 
   removeReactor(prop: string) {
@@ -184,8 +174,8 @@ export default class Display extends Entity {
 
   /**
    * Recompute runtime properties for a frame: the authored value, or the
-   * keyframe track's value at the frame time; then reactor output in the
-   * binding's mode; then `opacity` scaled by the clip fade envelope, last, so
+   * keyframe track's value at the frame time; then reactor output scaled to
+   * the binding's range; then `opacity` scaled by the clip fade envelope, last, so
    * fades apply whatever drives opacity. Only values that differ from the
    * current runtime values go through `update()`, exactly as reactor updates
    * always did.
@@ -208,7 +198,7 @@ export default class Display extends Entity {
         const output = frameData.reactors[binding.id];
 
         if (output !== undefined) {
-          value = applyReactor(value, binding, output);
+          value = binding.min + (binding.max - binding.min) * output;
         }
       }
 

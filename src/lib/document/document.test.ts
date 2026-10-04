@@ -373,43 +373,6 @@ describe('apply', () => {
     ).toThrow(/project end \(20s\)/);
   });
 
-  it('binds a reactor in a mode, storing only modes other than replace', () => {
-    doc.apply({
-      type: 'bindReactor',
-      id: 'd1',
-      property: 'width',
-      reactorId: 'r1',
-      min: 0,
-      max: 1,
-      mode: 'multiply',
-    });
-    expect(doc.getState().elementById.d1.reactors.width).toEqual({
-      id: 'r1',
-      min: 0,
-      max: 1,
-      mode: 'multiply',
-    });
-
-    doc.apply({
-      type: 'bindReactor',
-      id: 'd1',
-      property: 'width',
-      reactorId: 'r1',
-      min: 0,
-      max: 1,
-      mode: 'replace',
-    });
-    expect(doc.getState().elementById.d1.reactors.width).toEqual({ id: 'r1', min: 0, max: 1 });
-
-    expect(() =>
-      doc.apply({
-        type: 'setBindings',
-        id: 'd1',
-        bindings: { width: { id: 'r1', min: 0, max: 1, mode: 'divide' as never } },
-      }),
-    ).toThrow(/mode/);
-  });
-
   it('sets, replaces and clears keyframe tracks', () => {
     const keyframes = [
       { time: 1, value: 0, easing: 'linear' as const },
@@ -715,15 +678,6 @@ describe('rules', () => {
           }),
         ]),
         'time order',
-      ],
-      [
-        'a binding with an unknown mode',
-        scene([
-          layer('d1', 'BoxDisplay', {
-            reactors: { width: { id: 'r1', min: 0, max: 1, mode: 'divide' } },
-          }),
-        ]),
-        'mode',
       ],
       ['a canvas too large', { ...fixture, canvas: { width: 10000, height: 100 } }, 'Canvas width'],
       [

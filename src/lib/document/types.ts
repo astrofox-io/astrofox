@@ -1,7 +1,7 @@
 import type { Clip, ClipPatch } from '@/lib/timeline/clip';
 import type { TimelineFps, TimelineSettings } from '@/lib/timeline/settings';
 import type { Keyframe, Tracks } from '@/lib/timeline/tracks';
-import type { ReactorConfig, ReactorMode } from '@/lib/types';
+import type { ReactorConfig } from '@/lib/types';
 
 export const DEFAULT_PROJECT_NAME = 'Untitled Project';
 
@@ -119,8 +119,6 @@ export type DocumentOp =
       reactorId: string;
       min: number;
       max: number;
-      /** Defaults to `replace`. */
-      mode?: ReactorMode;
     }
   /** The property returns to its authored value. */
   | { type: 'unbindReactor'; id: string; property: string }

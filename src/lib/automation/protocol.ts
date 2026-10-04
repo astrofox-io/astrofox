@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { CANVAS_LIMITS } from '../document/rules';
 import { MAX_PROJECT_DURATION, MIN_PROJECT_DURATION } from '../timeline/settings';
 import { EASINGS, MAX_KEYFRAMES } from '../timeline/tracks';
-import { REACTOR_MODES } from '../types';
 import { assertSafe } from '../utils/object';
 
 const id = z.string().min(1).max(200);
@@ -130,7 +129,7 @@ export const commands = {
   },
   bind_reactor: {
     description:
-      'Bind a reactor to a supported numeric element property, or unbind it with reactorId=null. The output (0-1) is scaled to min..max, then: replace (default) sets the property to it; add adds it to the property value (authored or keyframed); multiply scales the value by it, e.g. min 0, max 1 to pulse an animated opacity. In replace mode min and max must be within the property bounds.',
+      'Bind a reactor to a supported numeric element property, or unbind it with reactorId=null. The output (0-1) is scaled to min..max and sets the property value, overriding keyframes. Min and max must be within the property bounds.',
     schema: z
       .object({
         elementId: id,
@@ -138,7 +137,6 @@ export const commands = {
         reactorId: id.nullable(),
         min: z.number().finite().default(0),
         max: z.number().finite().default(1),
-        mode: z.enum(REACTOR_MODES).default('replace'),
       })
       .strict(),
     effect: 'edit',
@@ -209,7 +207,7 @@ export const commands = {
   },
   set_keyframes: {
     description:
-      'Animate element properties over project time. Each track sets keys for one property: time in absolute project seconds, value in the property type (number, or #rrggbb for colors), and the easing toward the next key (default linear; hold keeps the value until the next key). Before the first key the property holds the first value; after the last, the last. mode replace (default) replaces the property keys; merge sets keys at the given times and keeps the rest. Number and color controls can be animated (describe_element_type lists them under animatable); values must be within the control bounds, except unbounded controls such as rotation, whose keys may hold any number of turns. Reactor bindings apply on top of keys in their mode.',
+      'Animate element properties over project time. Each track sets keys for one property: time in absolute project seconds, value in the property type (number, or #rrggbb for colors), and the easing toward the next key (default linear; hold keeps the value until the next key). Before the first key the property holds the first value; after the last, the last. mode replace (default) replaces the property keys; merge sets keys at the given times and keeps the rest. Number and color controls can be animated (describe_element_type lists them under animatable); values must be within the control bounds, except unbounded controls such as rotation, whose keys may hold any number of turns. Reactor bindings override keyframed values.',
     schema: z
       .object({
         tracks: z

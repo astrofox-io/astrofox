@@ -174,11 +174,7 @@
     "connect": "接続"
   },
   "reactor-panel": {
-    "close-panel": "パネルを閉じる",
-    "mode": "モード",
-    "mode-replace": "置換",
-    "mode-add": "加算",
-    "mode-multiply": "乗算"
+    "close-panel": "パネルを閉じる"
   },
   "stage": {
     "open-picture-in-picture": "ピクチャーインピクチャーを開く",

@@ -58,9 +58,8 @@ type Tracks = Record<string /* property */, {
   keyframes: { id: string; time: number; value: number | string | string[]; easing: EasingName }[];
 }>;
 
-interface ReactorConfig {          // existing, plus:
+interface ReactorConfig {
   id: string; min: number; max: number;
-  mode?: 'replace' | 'add' | 'multiply';   // default 'replace' (current behaviour)
 }
 
 // Project-level, saved in the .afx snapshot next to stage/scenes/reactors.
@@ -75,7 +74,7 @@ Serialized entity (additive):
 
 ```json
 { "id": "…", "name": "TextDisplay", "properties": { "…": "authored values" },
-  "reactors": { "opacity": { "id": "…", "min": 0, "max": 1, "mode": "multiply" } },
+  "reactors": { "opacity": { "id": "…", "min": 0, "max": 1 } },
   "clip": { "start": 4, "end": 12.5, "fadeIn": 0.5 },
   "tracks": { "x": { "type": "number", "keyframes": [ … ] } } }
 ```
@@ -85,8 +84,8 @@ Serialized entity (additive):
 ```
 authored properties
   → keyframe tracks at t (Phase 2)
+  → reactors (override bound properties)
   → clip fade envelope × opacity (if element has `opacity`)
-  → reactors (replace | add | multiply)
   = runtime properties (what layers/passes read)
 ```
 
@@ -239,15 +238,14 @@ type has `opacity` (so an agent knows fades will work).
 ## Phase 2 — Keyframes (the "how" of the feature)
 
 Deliverable: any numeric/colour property can change over time, from the
-controls panel, the timeline, or MCP. Reactors compose with animation.
+controls panel, the timeline, or MCP. Reactors override bound properties.
 
 - `src/lib/timeline/tracks.ts` — port the prototype's `tracks.ts` unchanged
   (normalize, evaluate, colours in linear light, `hold` easing), plus
   `constrainNumber` using resolved control bounds (rotation unwrapped,
   scale ≥ 0).
 - `Display.tracks`, serialized/restored like `clip`; evaluated in the pipeline
-  before fades and reactors. `ReactorConfig.mode` (`replace|add|multiply`)
-  with `replace` default so current bindings are unchanged.
+  before reactors and fades. Reactors override bound properties.
 - Editing semantics (from the prototype doc, kept): click ◇ next to a control
   to add a key at the playhead; editing an animated property writes/updates
   the key at the playhead; removing the last key makes the property static
@@ -263,7 +261,6 @@ controls panel, the timeline, or MCP. Reactors compose with animation.
   - `clear_keyframes({ id, properties?: string[] })`
   - `describe_element_type` → per control `animatable` and `easings` list;
     values validated with `validateProperties` bounds.
-  - `bind_reactor` gains `mode`.
 - History: tracks are in `toJSON`, so undo is automatic; per-drag gestures as
   in Phase 1.
 
@@ -323,7 +320,7 @@ src/lib/core/render/StageRoot.tsx      chg   gating
 src/lib/core/render/effects/*          chg   gating, time uniform
 src/lib/plugins/PluginHost.ts          chg   frame.time from frameData.time
 src/lib/audio/Audio.ts, Player.ts      chg   fractional seek, seekTime
-src/lib/types.ts                       chg   RenderFrameData.time/fps, ReactorConfig.mode
+src/lib/types.ts                       chg   RenderFrameData.time/fps
 src/lib/automation/protocol.ts         chg   new tools
 src/lib/automation/dispatcher.ts       chg   handlers, deterministic preview
 src/lib/automation/validation.ts       chg   clip/tracks whitelist + validators

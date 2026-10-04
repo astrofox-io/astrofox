@@ -174,11 +174,7 @@
     "connect": "連接"
   },
   "reactor-panel": {
-    "close-panel": "關閉面板",
-    "mode": "模式",
-    "mode-replace": "取代",
-    "mode-add": "相加",
-    "mode-multiply": "相乘"
+    "close-panel": "關閉面板"
   },
   "stage": {
     "open-picture-in-picture": "開啟子母畫面",

@@ -327,7 +327,7 @@ const handlers: Handlers = {
     projectDocument.apply({ type: 'removeReactor', id });
     return { removed: id };
   },
-  bind_reactor: ({ elementId, property, reactorId, min, max, mode }) => {
+  bind_reactor: ({ elementId, property, reactorId, min, max }) => {
     const target = element(elementId);
     if (reactorId === null) {
       projectDocument.apply({ type: 'unbindReactor', id: elementId, property });
@@ -337,10 +337,8 @@ const handlers: Handlers = {
     const control = resolvedControls(entityType(target), target)[property];
     if (!control?.withReactor || typeof target.properties[property] !== 'number')
       throw new Error('Property does not support a numeric reactor binding.');
-    if (mode === 'replace') {
-      validateProperties(entityType(target), { [property]: min }, target);
-      validateProperties(entityType(target), { [property]: max }, target);
-    }
+    validateProperties(entityType(target), { [property]: min }, target);
+    validateProperties(entityType(target), { [property]: max }, target);
     projectDocument.apply({
       type: 'bindReactor',
       id: elementId,
@@ -348,7 +346,6 @@ const handlers: Handlers = {
       reactorId,
       min,
       max,
-      mode,
     });
     return layerJSON(elementId);
   },

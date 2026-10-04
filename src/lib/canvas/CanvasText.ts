@@ -3,7 +3,11 @@ import Entity from '@/lib/core/Entity';
 import type { CanvasContext, CanvasElement } from '@/lib/types';
 import { resetCanvas } from '@/lib/utils/canvas';
 
+// Supersample glyphs so font hinting at fractional sizes stays below a stage pixel.
+export const TEXT_PIXEL_RATIO = 2;
+
 export default class CanvasText extends Entity {
+  readonly pixelRatio = TEXT_PIXEL_RATIO;
   canvas: CanvasElement;
   context: CanvasContext;
   loadingFonts: Set<string>;
@@ -42,9 +46,12 @@ export default class CanvasText extends Entity {
     const { italic, bold, size, font } = this.properties as Record<string, unknown>;
     const fontFamily = this.normalizeFontFamily(font as string);
 
-    return [italic ? 'italic' : 'normal', bold ? 'bold' : 'normal', `${size}px`, fontFamily].join(
-      ' ',
-    );
+    return [
+      italic ? 'italic' : 'normal',
+      bold ? 'bold' : 'normal',
+      `${Number(size) * this.pixelRatio}px`,
+      fontFamily,
+    ].join(' ');
   }
 
   loadFontIfNeeded(font: string, text: string) {
@@ -99,7 +106,7 @@ export default class CanvasText extends Entity {
     const length = Math.ceil(context.measureText(text as string).width);
     const spacing = (text as string).length ? Math.ceil(length / (text as string).length) : 0;
     const width = Math.max(1, length + spacing);
-    const height = Math.max(1, (size as number) * 2);
+    const height = Math.max(1, Math.ceil((size as number) * 2 * this.pixelRatio));
 
     // Reset canvas
     resetCanvas(canvas, width, height);
@@ -108,8 +115,13 @@ export default class CanvasText extends Entity {
     context.font = font;
     context.fillStyle = color as string;
     context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(text as string, width / 2, height / 2);
+    // The middle baseline uses font metrics that jump as animated sizes change.
+    // Centre the glyph bounds around the actual integer-sized canvas instead.
+    context.textBaseline = 'alphabetic';
+    const metrics = context.measureText(text as string);
+    const baseline =
+      canvas.height / 2 + (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
+    context.fillText(text as string, canvas.width / 2, baseline);
     this.renderedText = { text, font, color };
     this.version += 1;
   }

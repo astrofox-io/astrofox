@@ -174,11 +174,7 @@
     "connect": "연결"
   },
   "reactor-panel": {
-    "close-panel": "패널 닫기",
-    "mode": "모드",
-    "mode-replace": "대체",
-    "mode-add": "더하기",
-    "mode-multiply": "곱하기"
+    "close-panel": "패널 닫기"
   },
   "stage": {
     "open-picture-in-picture": "PIP 열기",

@@ -174,11 +174,7 @@
     "connect": "Connecter"
   },
   "reactor-panel": {
-    "close-panel": "Fermer le panneau",
-    "mode": "Mode",
-    "mode-replace": "Remplacer",
-    "mode-add": "Ajouter",
-    "mode-multiply": "Multiplier"
+    "close-panel": "Fermer le panneau"
   },
   "stage": {
     "open-picture-in-picture": "Ouvrir l'incrustation d'image",
