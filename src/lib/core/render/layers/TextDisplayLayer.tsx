@@ -3,6 +3,8 @@ import { useThree } from '@react-three/fiber';
 import React from 'react';
 import { events } from '@/app/global';
 import CanvasText, { TEXT_PIXEL_RATIO } from '@/lib/canvas/CanvasText';
+import { loadTextFont } from '@/lib/fonts';
+import { registerFramePreparer } from '../framePreparation';
 import { CanvasTextureLayer } from './CanvasTextureLayer';
 
 export function TextDisplayLayer({ display, order, frameData }) {
@@ -51,6 +53,13 @@ export function TextDisplayLayer({ display, order, frameData }) {
     },
     [display, tint, invalidate],
   );
+
+  React.useEffect(() => {
+    return registerFramePreparer(async () => {
+      await loadTextFont(display.properties, TEXT_PIXEL_RATIO);
+      textRef.current?.render(true);
+    });
+  }, [display]);
 
   React.useEffect(() => {
     return () => {

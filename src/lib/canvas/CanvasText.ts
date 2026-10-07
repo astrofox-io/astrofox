@@ -1,5 +1,6 @@
 import { resolveCanvasFontFamily } from '@/app/fontFamilies';
 import Entity from '@/lib/core/Entity';
+import { hasFontStylesheet, loadTextFont } from '@/lib/fonts';
 import type { CanvasContext, CanvasElement } from '@/lib/types';
 import { resetCanvas } from '@/lib/utils/canvas';
 
@@ -18,7 +19,7 @@ export default class CanvasText extends Entity {
   static defaultProperties = {
     text: '',
     size: 40,
-    font: 'Roboto',
+    font: 'Inter',
     italic: false,
     bold: false,
     color: '#FFFFFF',
@@ -33,12 +34,6 @@ export default class CanvasText extends Entity {
   }
 
   normalizeFontFamily(font: string) {
-    if (font === 'Chunkfive') {
-      return 'Bevan';
-    }
-    if (font === 'Intro') {
-      return 'Exo 2';
-    }
     return resolveCanvasFontFamily(font);
   }
 
@@ -59,7 +54,10 @@ export default class CanvasText extends Entity {
       return;
     }
 
-    if (document.fonts.check(font, text || ' ')) {
+    if (
+      hasFontStylesheet(String(this.properties.font)) &&
+      document.fonts.check(font, text || ' ')
+    ) {
       return;
     }
 
@@ -70,8 +68,7 @@ export default class CanvasText extends Entity {
 
     this.loadingFonts.add(key);
 
-    document.fonts
-      .load(font, text || ' ')
+    loadTextFont({ ...this.properties, text }, this.pixelRatio)
       .then(() => {
         if (this.getFont() === font && this.properties.text === text) {
           this.render(true);

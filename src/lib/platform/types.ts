@@ -13,6 +13,8 @@ export interface Platform {
   readonly environment: PlatformEnvironment;
   /** File pickers and saving what they return. Present on both. */
   readonly dialogs: Dialogs;
+  /** Enumerate installed font families. Desktop only; never used on the web. */
+  readonly fonts: { list(): Promise<string[]> } | null;
   /** The native window chrome. Desktop only. */
   readonly window: AppWindow | null;
   /** Files by absolute path. Desktop only. */

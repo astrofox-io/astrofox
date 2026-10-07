@@ -1,4 +1,4 @@
-import { fontVariables, inter } from '@/app/fonts';
+import { inter } from '@/app/fonts';
 import '@/app/tailwind.css';
 import '@/app/styles/index.css';
 import Script from 'next/script';
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         ) : null}
       </head>
-      <body className={`${fontVariables} ${inter.className}`}>{children}</body>
+      <body className={`${inter.variable} ${inter.className}`}>{children}</body>
     </html>
   );
 }

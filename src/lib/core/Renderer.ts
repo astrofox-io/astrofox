@@ -1,4 +1,5 @@
-import { analyzer, events, player, reactors, renderBackend } from '@/app/global';
+import { analyzer, events, player, reactors, renderBackend, stage } from '@/app/global';
+import { loadStageFonts } from '@/lib/fonts';
 import transportStore, { tickTransport } from '@/lib/timeline/transport';
 import type { RenderFrameData } from '@/lib/types';
 import Clock from './Clock';
@@ -62,7 +63,10 @@ export default class Renderer {
 
     this.offlineFrames = createOfflineFrames({
       ensureStage: () => renderBackend.ensureRoot(),
-      fontsReady: () => document.fonts?.ready ?? Promise.resolve(),
+      fontsReady: async () => {
+        await loadStageFonts(stage);
+        await document.fonts.ready;
+      },
       pauseLive: () => {
         this.stop();
         return () => this.requestRender();

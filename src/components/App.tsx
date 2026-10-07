@@ -5,7 +5,6 @@ import AddElementDrawer from '@/components/AddElementDrawer';
 import LeftPanel from '@/components/LeftPanel';
 import Modals from '@/components/Modals';
 import Player from '@/components/Player';
-import Preload from '@/components/Preload';
 import ReactorPanel from '@/components/ReactorPanel';
 import RightPanel from '@/components/RightPanel';
 import Stage from '@/components/Stage';
@@ -105,7 +104,6 @@ function App() {
       onDrop={ignoreEvents}
       onDragOver={ignoreEvents}
     >
-      <Preload />
       <TitleBar />
       <div className="flex flex-row flex-1 overflow-hidden relative">
         <div

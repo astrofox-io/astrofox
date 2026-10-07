@@ -134,6 +134,7 @@ export function createWebPlatform(environment: PlatformEnvironment = {}): Platfo
     isDesktop: false,
     environment: { ...environment, IS_DESKTOP: false },
     dialogs: webDialogs,
+    fonts: null,
     window: null,
     files: null,
     encoder: null,

@@ -52,6 +52,18 @@ Astrofox is a client-side Next.js app. Projects are opened and saved as local `.
 
 **File I/O:** web and desktop use the same browser pickers (File System Access API, with `<input>` / download fallbacks). The Electron bridge is reserved for window chrome, temp files, and **ffmpeg** export (absolute paths only when needed). See `docs/desktop-capabilities.md`.
 
+**Fonts:** Inter is the only bundled font and the default for new text layers.
+Desktop scans installed font families through Chromium's Local Font Access API;
+it never downloads text fonts. The web picker searches the Google Fonts catalog
+and loads selected families and their available regular/bold/italic faces from
+Google's CSS API on demand. Internet access is required for uncached web fonts.
+Projects keep their font family names; unavailable families fall back to Inter.
+
+`src/lib/config/googleFonts.json` is a metadata snapshot from
+`https://fonts.google.com/metadata/fonts` (no font files or API key). Refresh it
+with `pnpm fonts:refresh` when updating the catalog. This metadata endpoint is
+not a documented API contract; refreshes validate the expected response shape.
+
 ### Web (Vercel)
 
 Commits deploy through Vercel using the standard build:

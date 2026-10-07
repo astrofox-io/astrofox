@@ -1,16 +1,8 @@
-import { resolveFontFamily } from '@/app/fontFamilies';
 import type CanvasText from '@/lib/canvas/CanvasText';
-import fonts from '@/lib/config/fonts.json';
 import Display from '@/lib/core/Display';
 import { layer2D, registerDisplayLayer } from '@/lib/core/render/displayLayerRegistry';
 import { TextDisplayLayer } from '@/lib/core/render/layers/TextDisplayLayer';
 import { stageHeight, stageWidth } from '@/lib/utils/controls';
-
-const fontOptions = fonts.map(item => ({
-  label: item,
-  value: item,
-  style: { fontFamily: resolveFontFamily(item) },
-}));
 
 export default class TextDisplay extends Display {
   // The renderer owns this canvas; the transform overlay reads its dimensions.
@@ -31,7 +23,7 @@ export default class TextDisplay extends Display {
     defaultProperties: {
       text: '',
       size: 40,
-      font: 'Roboto',
+      font: 'Inter',
       italic: false,
       bold: false,
       x: 0,
@@ -48,8 +40,7 @@ export default class TextDisplay extends Display {
       },
       font: {
         label: 'Font',
-        type: 'select',
-        items: fontOptions,
+        type: 'font',
       },
       size: {
         label: 'Size',

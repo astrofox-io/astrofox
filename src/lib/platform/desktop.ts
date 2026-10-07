@@ -179,6 +179,18 @@ export function createDesktopPlatform(
     isDesktop: true,
     environment,
     dialogs,
+    fonts: {
+      async list() {
+        const query = (
+          window as Window & {
+            queryLocalFonts?: () => Promise<{ family: string }[]>;
+          }
+        ).queryLocalFonts;
+        if (!query) throw new Error('Local Font Access is unavailable.');
+        const fonts = await query.call(window);
+        return [...new Set(fonts.map(font => font.family))].sort((a, b) => a.localeCompare(b));
+      },
+    },
     window: {
       minimize: () => bridge.invoke('window:minimize'),
       toggleMaximize: () => bridge.invoke('window:maximize'),

@@ -15,6 +15,7 @@ pickers. Interactive file operations continue to follow the policy below.
 | Offline MP4 export | Bundled **ffmpeg** (`platform.encoder`) |
 | Window chrome | `platform.window` (min / max / close / state) |
 | Reveal export in folder | `platform.files.reveal` |
+| Installed font families | Local Font Access API through `platform.fonts.list()` |
 
 ## The platform
 
@@ -26,6 +27,7 @@ web, so code checks the capability, not "is this desktop":
 | Capability | Web | Desktop |
 |------------|-----|---------|
 | `dialogs` | File System Access / `<input>` / download | Same, plus native dialogs with `preferNativePath` |
+| `fonts` | `null` (text uses Google Fonts) | Installed families through Local Font Access |
 | `window` | `null` | Frameless window chrome and its state |
 | `files` | `null` | Files by absolute path, the temp directory, reveal in folder |
 | `encoder` | `null` | ffmpeg, when the binary is installed |

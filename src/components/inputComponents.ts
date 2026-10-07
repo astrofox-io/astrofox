@@ -1,6 +1,7 @@
 import CheckboxInput from '@/components/CheckboxInput';
 import ColorInput from '@/components/ColorInput';
 import ColorRangeInput from '@/components/ColorRangeInput';
+import FontInput from '@/components/FontInput';
 import ImageInput from '@/components/ImageInput';
 import NumberInput from '@/components/NumberInput';
 import RangeInput from '@/components/RangeInput';
@@ -21,6 +22,7 @@ const inputComponents: Record<string, InputComponentEntry> = {
   colorrange: [ColorRangeInput as unknown as React.ComponentType<Record<string, unknown>>],
   range: [RangeInput as unknown as React.ComponentType<Record<string, unknown>>],
   select: [SelectInput as unknown as React.ComponentType<Record<string, unknown>>],
+  font: [FontInput as unknown as React.ComponentType<Record<string, unknown>>],
   image: [ImageInput as unknown as React.ComponentType<Record<string, unknown>>],
   video: [VideoInput as unknown as React.ComponentType<Record<string, unknown>>],
   time: [TimeInput as unknown as React.ComponentType<Record<string, unknown>>],

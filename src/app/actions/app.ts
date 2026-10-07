@@ -19,6 +19,7 @@ import * as displays from '@/lib/displays';
 import { hasLayer, selectionAfterRemoval } from '@/lib/document/selection';
 import type { DocumentChange } from '@/lib/document/types';
 import * as effects from '@/lib/effects';
+import { initializeFonts } from '@/lib/fonts';
 import { platform } from '@/lib/platform';
 import { loadInstalledPlugins } from '@/lib/plugins';
 import { getTransportState, initTransport } from '@/lib/timeline/transport';
@@ -536,6 +537,7 @@ export async function initApp() {
   }
 
   appInitPromise = (async () => {
+    void initializeFonts();
     await loadPlugins();
     await loadLibrary();
     projectDocument.subscribe(keepSelectionValid);

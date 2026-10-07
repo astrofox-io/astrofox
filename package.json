@@ -36,6 +36,7 @@
     "dist:linux": "pnpm install-ffmpeg && pnpm build:renderer && electron-builder --linux --publish never",
     "install-ffmpeg": "node ./scripts/install-ffmpeg.mjs",
     "plugin-libs": "node ./scripts/copy-plugin-libs.mjs",
+    "fonts:refresh": "node ./scripts/refresh-google-fonts.mjs",
     "postinstall": "node ./scripts/copy-plugin-libs.mjs",
     "build:electron": "node ./scripts/build-electron.mjs",
     "dev:desktop:mcp": "pnpm build:electron && cross-env ASTROFOX_MCP=1 dotenv -- node ./scripts/dev-electron.mjs",

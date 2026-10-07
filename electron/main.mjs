@@ -421,14 +421,34 @@ const ALLOWED_PERMISSIONS = new Set([
 ]);
 
 function hardenSession() {
-  session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
-    callback(ALLOWED_PERMISSIONS.has(permission));
-  });
+  // Font enumeration belongs only to the app's main frame, never plugins.
+  session.defaultSession.setPermissionRequestHandler(
+    (webContents, permission, callback, details) => {
+      if (permission === 'local-fonts') {
+        callback(
+          webContents === mainWindow?.webContents &&
+            details.isMainFrame &&
+            isAllowedNavigation(details.requestingUrl),
+        );
+        return;
+      }
+      callback(ALLOWED_PERMISSIONS.has(permission));
+    },
+  );
 
   // Permission checks (sync) must also allow fileSystem or pickers stay blocked.
-  session.defaultSession.setPermissionCheckHandler((_webContents, permission) => {
-    return ALLOWED_PERMISSIONS.has(permission);
-  });
+  session.defaultSession.setPermissionCheckHandler(
+    (webContents, permission, requestingOrigin, details) => {
+      if (permission === 'local-fonts') {
+        return (
+          webContents === mainWindow?.webContents &&
+          details.isMainFrame &&
+          isAllowedNavigation(requestingOrigin)
+        );
+      }
+      return ALLOWED_PERMISSIONS.has(permission);
+    },
+  );
 }
 
 function createWindow() {

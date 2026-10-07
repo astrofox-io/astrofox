@@ -1,8 +1,9 @@
 import audioStore, { loadAudioFile } from '@/app/actions/audio';
 import { raiseError } from '@/app/actions/error';
 import { showModal } from '@/app/actions/modals';
-import { api, audioContext, logger, player, renderBackend, renderer } from '@/app/global';
+import { api, audioContext, logger, player, renderBackend, renderer, stage } from '@/app/global';
 import { t } from '@/i18n/config';
+import { loadStageFonts } from '@/lib/fonts';
 import { platform } from '@/lib/platform';
 import transportStore, {
   getProjectDuration,
@@ -15,6 +16,7 @@ import transportStore, {
 } from '@/lib/timeline/transport';
 import { getVideoEncoderConfig, VIDEO_ENCODERS, type VideoEncoder } from '@/lib/video/encoders';
 import {
+  ExportCancelledError,
   type ExportEncoder,
   type ExportProgress,
   isExportCancelledError,
@@ -205,17 +207,23 @@ export function startExport(request: ExportRequest): ExportJob {
   let progress: ExportProgress = { status: 'preparing' };
   let savedPath: string | undefined;
   let error: string | undefined;
+  let encoderStarted = false;
+  let cancelledBeforeStart = false;
 
   pauseTransport();
   appStore.setState({ isVideoRecording: true, statusText: t('status.export-preparing') });
 
-  const result = encoder
-    .run(plan, next => {
-      // Frame counts change every frame; the other phases only when they begin.
-      if (next.status === 'rendering-video' || next.status !== progress.status) {
-        showProgress(plan, next);
-      }
-      progress = next;
+  const result = loadStageFonts(stage)
+    .then(() => {
+      if (cancelledBeforeStart) throw new ExportCancelledError();
+      encoderStarted = true;
+      return encoder.run(plan, next => {
+        // Frame counts change every frame; the other phases only when they begin.
+        if (next.status === 'rendering-video' || next.status !== progress.status) {
+          showProgress(plan, next);
+        }
+        progress = next;
+      });
     })
     .then(
       path => {
@@ -258,6 +266,13 @@ export function startExport(request: ExportRequest): ExportJob {
     result,
     cancel() {
       if (state !== 'running') return;
+
+      if (!encoderStarted) {
+        cancelledBeforeStart = true;
+        state = 'cancelling';
+        appStore.setState({ statusText: t('status.export-cancelling') });
+        return;
+      }
 
       if (plan.mode === 'offline') {
         state = 'cancelling';
