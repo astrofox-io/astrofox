@@ -1,4 +1,5 @@
-@import "tailwindcss";
+/* Scan application source only; build caches can contain corrupted class strings. */
+@import "tailwindcss" source("../");
 @plugin "tailwindcss-animate";
 
 @theme {

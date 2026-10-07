@@ -1,7 +1,10 @@
-import { audioContext } from '@/app/global';
 import Audio from '@/lib/audio/Audio';
 
 export async function loadAudioData(data: string | ArrayBuffer): Promise<Audio> {
+  // SpectrumAnalyzer imports downmix from this module during app startup.
+  // Resolve the shared context only when loading audio to avoid a cycle back
+  // through app/global while the analyzer class is still initializing.
+  const { audioContext } = await import('@/app/global');
   const audio = new Audio(audioContext);
   await audio.load(data);
   return audio;
