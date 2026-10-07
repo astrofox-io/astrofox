@@ -233,6 +233,8 @@
     "fit-to-screen": "Fit to screen"
   },
   "inputs": {
+    "search-fonts": "Search fonts...",
+    "no-fonts-found": "No fonts found.",
     "open-file": "Open file",
     "remove-image": "Remove image",
     "remove-video": "Remove video",

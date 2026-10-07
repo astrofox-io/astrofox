@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import SelectInput from '@/components/SelectInput';
+import { useTranslation } from 'react-i18next';
+import ComboboxInput from '@/components/ComboboxInput';
 import { initializeFonts, useFonts } from '@/lib/fonts';
 
 interface FontInputProps {
@@ -9,18 +10,21 @@ interface FontInputProps {
 }
 
 export default function FontInput({ name = 'font', value = 'Inter', onChange }: FontInputProps) {
+  const { t } = useTranslation();
   const families = useFonts(state => state.families);
   useEffect(() => {
     void initializeFonts();
   }, []);
 
   return (
-    <SelectInput
+    <ComboboxInput
       name={name}
       value={value}
       items={families}
-      optionsClassName="max-h-80"
-      onChange={(key, family) => onChange?.(key, String(family))}
+      label={t('labels.font')}
+      searchPlaceholder={t('inputs.search-fonts')}
+      emptyMessage={t('inputs.no-fonts-found')}
+      onChange={onChange}
     />
   );
 }
