@@ -17,3 +17,4 @@ minimumReleaseAgeExclude:
   - '@next/swc-win32-arm64-msvc@16.3.5'
   - '@next/swc-win32-x64-msvc@16.3.5'
   - next@16.3.5
+  - music-metadata@12.3.0

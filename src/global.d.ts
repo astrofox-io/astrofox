@@ -16,16 +16,3 @@ interface Window {
 interface Navigator {
   requestMIDIAccess?: () => Promise<MIDIAccess>;
 }
-
-declare module 'jsmediatags/dist/jsmediatags.min.js' {
-  const jsmediatags: {
-    read(
-      file: File | Blob | string,
-      callbacks: {
-        onSuccess: (result: { tags: Record<string, unknown> | null }) => void;
-        onError: (error: unknown) => void;
-      },
-    ): void;
-  };
-  export default jsmediatags;
-}

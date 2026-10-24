@@ -1,4 +1,3 @@
-import jsmediatags from 'jsmediatags/dist/jsmediatags.min.js';
 import { t } from '@/i18n/config';
 import EventEmitter from '@/lib/core/EventEmitter';
 import { platform } from '@/lib/platform';
@@ -111,16 +110,12 @@ export async function loadAudioTags(file: File | FileHandle) {
   try {
     const audioFile = await toFile(file);
     if (!audioFile) return null;
-    return await new Promise<Record<string, unknown> | null>(resolve => {
-      jsmediatags.read(audioFile, {
-        onSuccess: (result: { tags: Record<string, unknown> | null }) =>
-          resolve(result.tags || null),
-        onError: (error: unknown) => {
-          log(error);
-          resolve(null);
-        },
-      });
-    });
+    const { parseBlob } = await import('music-metadata');
+    const { common } = await parseBlob(audioFile, { skipCovers: true });
+    return {
+      artist: common.artists?.join(' / ') || common.artist,
+      title: common.title,
+    };
   } catch (error) {
     log(error);
     return null;
